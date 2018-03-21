@@ -77,7 +77,16 @@ let copy_to src dst = Genarray.blit src dst
 let fill x a = Genarray.fill x a
 
 
-let reshape x dimension = reshape x dimension
+let reshape x d =
+  let minus_one = Owl_utils.Array.count d (-1) in
+  assert (minus_one <= 1);
+  if minus_one = 0 then reshape x d
+  else (
+    let n = numel x in
+    let m = Array.fold_right ( * ) d (-1) in
+    let e = Array.map (fun a -> if a = -1 then n / m else a) d in
+    reshape x e
+  )
 
 
 let reset x = Genarray.fill x (Owl_const.zero (kind x))
@@ -3538,6 +3547,70 @@ let draw ?(axis=0) x n =
   let slice = Array.init (num_dims x) (fun i -> if i = axis then L_ indices else R_ [||]) in
   let samples = Owl_slicing.get_fancy_array_typ slice x in
   samples, indices
+
+(*
+let contract_one_ index_pair x =
+  let n = num_dims x in
+  let i, j = index_pair in
+  assert (n > 1 && i >= 0 && i < n && j >= 0 && j < n);
+  let s0 = shape x in
+  assert (s0.(i) = s0.(j) && i <> j);
+  let s1 = Owl_utils.Array.filteri (fun k _ -> k <> i && k <> j) s0 in
+  let s2 = Owl_utils.Array.filteri (fun k _ -> k = i || k = j) s0 in
+  let s3 = Array.append s1 [|s0.(i)|] in
+  let s4 = Array.append s1 [|1|] in
+
+  let y = zeros (kind x) s1 in
+  let p = resize ~head:true x s3 in
+  let q = reshape y s4 in
+
+  let i0 = strides x in
+  let i1 = Owl_utils.Array.filteri (fun k _ -> k <> i && k <> j) i0 in
+  let i2 = Owl_utils.Array.filteri (fun k _ -> k = i || k = j) i0 in
+  let i3 = Array.append i1 [| Array.fold_left ( + ) 0 i2 |] in
+  let i4 = strides q in
+  let incp = Array.map Int32.of_int i3 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let incq = Array.map Int32.of_int i4 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+
+  Owl_ndarray._ndarray_contract_one (kind x) p q incp incq;
+  y
+*)
+
+let _check_index_pair x idx =
+  let i, j = idx in
+  let s = shape x in
+  let n = num_dims x in
+  (i >= 0 && i < n && j >= 0 && j < n) && (s.(i) = s.(j) && i <> j)
+
+
+let contract_one index_pairs x =
+  let d = num_dims x in
+  assert (d > 1);
+  assert (Array.for_all (_check_index_pair x) index_pairs);
+
+  let permut_1 = Owl_utils.Array.of_tuples index_pairs in
+  let permut_0 = Owl_utils.Array.(complement (range 0 (d - 1)) permut_1) in
+  let permut = Owl_utils.Array.(permut_0 @ permut_1) in
+
+  let s0 = shape x in
+  let i0 = strides x in
+  let sa = Array.copy s0 in
+  Owl_utils.Array.set_n sa permut_1 1;
+  let ia = Owl_utils.calc_stride sa in
+
+  let s1 = Owl_utils.Array.permute permut s0 in
+  let i1 = Owl_utils.Array.permute permut i0 in
+  let sb = Owl_utils.Array.permute permut sa in
+  let ib = Owl_utils.Array.permute permut ia in
+
+  let p = reshape x s1 in
+  let q = zeros (kind x) sb in
+  let incp = Array.map Int32.of_int i1 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let incq = Array.map Int32.of_int ib |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+
+  let rtd = d - (Array.length permut_1) in
+  Owl_ndarray._ndarray_contract_one (kind x) p q incp incq (Int32.of_int rtd);
+  reshape q (Array.sub sb 0 rtd)
 
 
 

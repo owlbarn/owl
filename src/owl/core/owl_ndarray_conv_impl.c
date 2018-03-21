@@ -43,6 +43,8 @@ value FUN_NATIVE (spatial) (
   const int output_crb = output_rows * output_cols * batches;
   const int kernel_cri = kernel_cols * kernel_rows * in_channel;
 
+  INIT;
+
   TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
 
@@ -85,9 +87,9 @@ value FUN_NATIVE (spatial) (
   }
 
   GEMM(CblasRowMajor, CblasNoTrans, CblasNoTrans,
-    output_crb, out_channel, kernel_cri, 1,
+    output_crb, out_channel, kernel_cri, ALPHA,
     inpt2d, kernel_cri, kernel_ptr, out_channel,
-    0, output_ptr, out_channel);
+    BETA, output_ptr, out_channel);
 
   free(inpt2d);
 
@@ -98,7 +100,8 @@ value FUN_NATIVE (spatial) (
 value FUN_BYTE (spatial) (value * argv, int argn) {
   return FUN_NATIVE (spatial) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
-    argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15], argv[16]
+    argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],
+    argv[15], argv[16]
   );
 }
 
@@ -139,6 +142,8 @@ value FUN_NATIVE (spatial_backward_kernel) (
   const int output_cr  = output_rows * output_cols;
   const int output_crb = output_rows * output_cols * batches;
   const int kernel_cri = kernel_cols * kernel_rows * in_channel;
+
+  INIT;
 
   TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
@@ -183,9 +188,9 @@ value FUN_NATIVE (spatial_backward_kernel) (
   }
 
   GEMM(CblasRowMajor, CblasTrans, CblasNoTrans,
-    out_channel, kernel_cri, output_crb, 1,
+    out_channel, kernel_cri, output_crb, ALPHA,
     output_ptr, out_channel, inpt2d, kernel_cri,
-    0, kern2d, kernel_cri);
+    BETA, kern2d, kernel_cri);
 
   int cnt = 0;
   for (int j = 0; j < kernel_cri; ++j) {
@@ -245,6 +250,8 @@ value FUN_NATIVE (spatial_backward_input) (
   const int output_crb = output_rows * output_cols * batches;
   const int kernel_cri = kernel_cols * kernel_rows * in_channel;
 
+  INIT;
+
   TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
 
@@ -258,9 +265,9 @@ value FUN_NATIVE (spatial_backward_input) (
   if (p_left < 0) p_left = 0;
 
   GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
-    output_crb, kernel_cri, out_channel, 1,
+    output_crb, kernel_cri, out_channel, ALPHA,
     output_ptr, out_channel, kernel_ptr, out_channel,
-    0, inpt2d, kernel_cri);
+    BETA, inpt2d, kernel_cri);
 
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
@@ -347,6 +354,8 @@ value FUN_NATIVE (cuboid) (
   const int output_drcb = output_dpts * output_rows * output_cols * batches;
   const int kernel_idrc = in_channel  * kernel_dpts * kernel_rows * kernel_cols;
 
+  INIT;
+
   TYPE *inpt2d = (TYPE *) calloc(kernel_idrc * output_drcb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
 
@@ -401,9 +410,9 @@ value FUN_NATIVE (cuboid) (
   }
 
   GEMM(CblasRowMajor, CblasNoTrans, CblasNoTrans,
-    output_drcb, out_channel, kernel_idrc, 1,
+    output_drcb, out_channel, kernel_idrc, ALPHA,
     inpt2d, kernel_idrc, kernel_ptr, out_channel,
-    0, output_ptr, out_channel);
+    BETA, output_ptr, out_channel);
 
   free(inpt2d);
 
@@ -414,7 +423,8 @@ value FUN_NATIVE (cuboid) (
 value FUN_BYTE (cuboid) (value * argv, int argn) {
   return FUN_NATIVE (cuboid) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
-    argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15], argv[16], argv[17], argv[18]
+    argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],
+    argv[15], argv[16], argv[17], argv[18]
   );
 }
 
@@ -459,6 +469,8 @@ value FUN_NATIVE (cuboid_backward_kernel) (
   const int output_drc  = output_dpts * output_rows * output_cols;
   const int output_drcb = output_dpts * output_rows * output_cols * batches;
   const int kernel_idrc = in_channel  * kernel_dpts * kernel_rows * kernel_cols;
+
+  INIT;
 
   TYPE *inpt2d = (TYPE *) calloc(kernel_idrc * output_drcb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
@@ -512,9 +524,9 @@ value FUN_NATIVE (cuboid_backward_kernel) (
   }
 
   GEMM(CblasRowMajor, CblasTrans, CblasNoTrans,
-    out_channel, kernel_idrc, output_drcb, 1,
+    out_channel, kernel_idrc, output_drcb, ALPHA,
     output_ptr, out_channel, inpt2d, kernel_idrc,
-    0, kern2d, kernel_idrc);
+    BETA, kern2d, kernel_idrc);
 
   int cnt = 0;
   for (int j = 0; j < kernel_idrc; ++j) {
@@ -533,7 +545,8 @@ value FUN_NATIVE (cuboid_backward_kernel) (
 value FUN_BYTE (cuboid_backward_kernel) (value * argv, int argn) {
   return FUN_NATIVE (cuboid_backward_kernel) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
-    argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15], argv[16], argv[17]
+    argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],
+    argv[15], argv[16], argv[17]
   );
 }
 
@@ -578,6 +591,8 @@ value FUN_NATIVE (cuboid_backward_input) (
   const int output_drcb = output_dpts * output_rows * output_cols * batches;
   const int kernel_idrc = in_channel  * kernel_dpts * kernel_rows * kernel_cols;
 
+  INIT;
+
   TYPE *inpt2d = (TYPE *) calloc(kernel_idrc * output_drcb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
 
@@ -592,9 +607,9 @@ value FUN_NATIVE (cuboid_backward_input) (
   pd = pad_dpts / 2; if (pd < 0) pd = 0;
 
   GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
-    output_drcb, kernel_idrc, out_channel, 1,
+    output_drcb, kernel_idrc, out_channel, ALPHA,
     output_ptr, out_channel, kernel_ptr, out_channel,
-    0, inpt2d, kernel_idrc);
+    BETA, inpt2d, kernel_idrc);
 
   for (int i = 0; i < output_drcb; ++i) {
     int bt  = i / output_drc;
@@ -641,7 +656,8 @@ value FUN_NATIVE (cuboid_backward_input) (
 value FUN_BYTE (cuboid_backward_input) (value * argv, int argn) {
   return FUN_NATIVE (cuboid_backward_input) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
-    argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15], argv[16], argv[17]
+    argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],
+    argv[15], argv[16], argv[17]
   );
 }
 

@@ -35,6 +35,8 @@
     owl_ndarray_conv_stub
     owl_ndarray_pool_impl
     owl_ndarray_pool_stub
+    owl_ndarray_contract_impl
+    owl_ndarray_contract_stub
     owl_ndarray_transpose_impl
     owl_ndarray_transpose_stub
     owl_matrix_swap_impl
