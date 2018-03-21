@@ -29,4 +29,4 @@ struct contract_pair {
 };
 
 
-#endif  /* OWL_SLICING_H */
+#endif  /* OWL_CONTRACT_H */
