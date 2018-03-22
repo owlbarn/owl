@@ -3612,17 +3612,17 @@ let contract_two index_pairs x y =
   let shpz = Owl_utils.Array.(shpz_x @ shpz_y) in
   let z = zeros (kind x) shpz in
 
-  let shpz0 = Owl_utils.Array.(shpz @ make inner_nx 1) in
+  let loop0 = Owl_utils.Array.(shpz @ (sub shpx outer_nx inner_nx)) in
   let incx0 = Owl_utils.Array.(insert incx (make outer_ny 0) outer_nx) in
   let incy0 = Owl_utils.Array.(insert incy (make outer_nx 0) 0) in
   let incz0 = Owl_utils.Array.(strides z @ (make inner_nx 0)) in
-  let shpz1 = Array.map Int32.of_int shpz0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let loop1 = Array.map Int64.of_int loop0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
   let incx1 = Array.map Int32.of_int incx0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
   let incy1 = Array.map Int32.of_int incy0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
   let incz1 = Array.map Int32.of_int incz0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
-  let ndims = Array.length shpz0 |> Int32.of_int in
-  Owl_ndarray._ndarray_contract_two (kind x) x y z incx1 incy1 incz1 shpz1 ndims;
-  z
+  let ndims = Array.length loop0 |> Int32.of_int in
+  Owl_ndarray._ndarray_contract_two (kind x) x y z incx1 incy1 incz1 loop1 ndims;
+  z, loop0, incx0, incy0, incz0
 
 
 (* ends here *)
