@@ -115,5 +115,13 @@ val atanh : float -> float
 (** ``atanh x`` *)
 
 
+(** {6 Helper functions} *)
+
+val same_sign : float -> float -> bool
+(** ``same_sign x y`` returns ``true`` if ``x`` and ``y`` have the same sign,
+otherwise it returns ``false``. Positive and negative zeros are special cases
+and always returns ``true``. *)
+
+
 
 (* ends here *)

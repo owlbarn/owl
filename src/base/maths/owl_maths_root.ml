@@ -107,13 +107,13 @@ let ridder ?(max_iter=1000) ?(xtol=1e-6) f a b =
         x := xm +. sgn *. dm *. fm /. s;
         let fn = f !x in
 
-        if Owl_maths.same_sign fn fm = false then (
+        if Owl_base_maths.same_sign fn fm = false then (
           xa := !x;
           xb := xm;
           fa := fn;
           fb := fm;
         )
-        else if Owl_maths.same_sign fn !fa = false then (
+        else if Owl_base_maths.same_sign fn !fa = false then (
           xb := !x;
           fb := fn;
         )
@@ -239,7 +239,7 @@ let bracket_expand ?(rate=1.6) ?(max_iter=100) f a b =
   (
     try
       for i = 1 to max_iter do
-        assert (Owl_maths.same_sign !fa !fb);
+        assert (Owl_base_maths.same_sign !fa !fb);
         let d = (!xb -. !xa) *. rate in
         xa := !xa -. d;
         xb := !xb +. d;
@@ -249,7 +249,7 @@ let bracket_expand ?(rate=1.6) ?(max_iter=100) f a b =
     with _ -> ()
   );
 
-  if Owl_maths.same_sign !fa !fb then None
+  if Owl_base_maths.same_sign !fa !fb then None
   else Some (!xa, !xb)
 
 

@@ -75,3 +75,8 @@ let atanh x = 0.5 *. (log ((1. +. x) /. (1. -. x)))
 let relu x = Pervasives.max 0. x
 
 let sigmoid x = 1. /. (1. +. (log (~-. x)) )
+
+let same_sign x y =
+  if x >= 0. && y >= 0. then true
+  else if x <= 0. && y <= 0. then true
+  else false
