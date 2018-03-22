@@ -32,7 +32,7 @@ val atan2 : float -> float -> float
     this is the angle to the vector (x, y) counting from the x-axis. *)
 
 val abs : float -> float
-(** ``abs x`` gives |x|. *)
+(** ``abs x`` gives ``|x|``. *)
 
 val neg : float -> float
 (** ``neg x`` gives -x. *)
@@ -177,10 +177,10 @@ val sinc : float -> float
 (** ``sinc x`` gives sin(x)/x and 1 for x=0. *)
 
 val logsinh : float -> float
-(** ``logsinh x`` gives log(sinh(x)) but handles large |x|. *)
+(** ``logsinh x`` gives log(sinh(x)) but handles large ``|x|``. *)
 
 val logcosh : float -> float
-(** ``logcosh x`` gives log(cosh(x)) but handles large |x|. *)
+(** ``logcosh x`` gives log(cosh(x)) but handles large ``|x|``. *)
 
 val sindg : float -> float
 (** Sine of angle given in degrees. *)
@@ -201,7 +201,7 @@ val xlogy : float -> float -> float
 (** ``xlogy(x, y)`` gives x*log(y). *)
 
 val xlog1py : float -> float -> float
-(** ``xlog1py(x, y)``gives x*log(y+1). *)
+(** ``xlog1py(x, y)`` gives x*log(y+1). *)
 
 val logit : float -> float
 (** ``logit(x)`` gives log(p/(1-p)). *)
@@ -565,12 +565,14 @@ and always returns ``true``. *)
 val nextafter : float -> float -> float
 (** ``nextafter from to`` returns the next representable double precision value
 of ``from`` in the direction of ``to``. If ``from`` equals ``to``, this value
-   is returned. *)
+is returned.
+ *)
 
 val nextafterf : float -> float -> float
 (** ``nextafter from to`` returns the next representable single precision value
 of ``from`` in the direction of ``to``. If ``from`` equals ``to``, this value
-   is returned. *)
+is returned.
+ *)
 
 
 (* ends here *)
