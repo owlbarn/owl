@@ -77,7 +77,7 @@ let relu x = Pervasives.max 0. x
 let sigmoid x = 1. /. (1. +. (log (~-. x)) )
 
 
-
+(* Helper functions *)
 
 let is_odd x = ((Pervasives.abs x) mod 2) = 1
 

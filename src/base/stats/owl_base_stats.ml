@@ -1,4 +1,8 @@
-(** Owl - Experimental *)
+(*
+ * OWL - an OCaml numerical library for scientific computing
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
+
 
 let rand_gen = Random.State.make_self_init ()
 
