@@ -1758,6 +1758,9 @@ val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 val contract_one : (int * int) array -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
 
+val contract_two : (int * int) array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** TODO *)
+
 
 (** {6 Cast functions}  *)
 

@@ -3601,7 +3601,28 @@ let contract_two index_pairs x y =
   let shpy = Owl_utils.Array.permute permut_y (shape y) in
   let incy = Owl_utils.Array.permute permut_y (strides y) in
 
-  ()
+  let outer_nx = Array.length permut_x0 in
+  let outer_ny = Array.length permut_y0 in
+  let inner_nx = Array.length permut_x1 in
+  let inner_ny = Array.length permut_y1 in
+  assert (inner_nx = inner_ny);
+
+  let shpz_x = Array.sub shpx 0 outer_nx in
+  let shpz_y = Array.sub shpy 0 outer_ny in
+  let shpz = Owl_utils.Array.(shpz_x @ shpz_y) in
+  let z = zeros (kind x) shpz in
+
+  let shpz0 = Owl_utils.Array.(shpz @ make inner_nx 1) in
+  let incx0 = Owl_utils.Array.(insert incx (make outer_ny 0) outer_nx) in
+  let incy0 = Owl_utils.Array.(insert incy (make outer_nx 0) 0) in
+  let incz0 = Owl_utils.Array.(strides z @ (make inner_nx 0)) in
+  let shpz1 = Array.map Int32.of_int shpz0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let incx1 = Array.map Int32.of_int incx0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let incy1 = Array.map Int32.of_int incy0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let incz1 = Array.map Int32.of_int incz0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let ndims = Array.length shpz0 |> Int32.of_int in
+  Owl_ndarray._ndarray_contract_two (kind x) x y z incx1 incy1 incz1 shpz1 ndims;
+  z
 
 
 (* ends here *)
