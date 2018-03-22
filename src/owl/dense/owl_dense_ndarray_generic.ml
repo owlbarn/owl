@@ -3556,7 +3556,7 @@ let _check_index_pair x idx =
   (i >= 0 && i < n && j >= 0 && j < n) && (s.(i) = s.(j) && i <> j)
 
 
-let contract_one index_pairs x =
+let contract1 index_pairs x =
   let d = num_dims x in
   assert (d > 1);
   assert (Array.for_all (_check_index_pair x) index_pairs);
@@ -3586,7 +3586,7 @@ let contract_one index_pairs x =
   reshape q (Array.sub sb 0 rtd)
 
 
-let contract_two index_pairs x y =
+let contract2 index_pairs x y =
   let dx = num_dims x in
   let permut_x1 = Owl_utils.Array.map fst index_pairs in
   let permut_x0 = Owl_utils.Array.(complement (range 0 (dx - 1)) permut_x1) in
@@ -3622,7 +3622,7 @@ let contract_two index_pairs x y =
   let incz1 = Array.map Int32.of_int incz0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
   let ndims = Array.length loop0 |> Int32.of_int in
   Owl_ndarray._ndarray_contract_two (kind x) x y z incx1 incy1 incz1 loop1 ndims;
-  z, loop0, incx0, incy0, incz0
+  z
 
 
 (* ends here *)

@@ -106,7 +106,7 @@ value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB, val
 
 
 /******** contract two tensors ********/
-#include <stdio.h>
+
 void FUNCTION (c, contract_two_1) (struct contract_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
@@ -121,7 +121,6 @@ void FUNCTION (c, contract_two_1) (struct contract_pair *p) {
   int incz = p->incz[d];
 
   for (int i = 0; i < n; i++) {
-    printf("=== n:%i posx:%i incx:%i posy:%i incy:%i posz:%i incz:%i\n", n, posx, incx, posy, incy, posz, incz);
     *(z + posz) += *(x + posx) * *(y + posy);
     posx += incx;
     posy += incy;
@@ -148,7 +147,6 @@ void FUNCTION (c, contract_two) (struct contract_pair *p) {
     p->posz += p->ofsz[d];
 
     for (int i = 0; i < n; i++) {
-      printf("+++ n:%i posx:%i incx:%i posy:%i incy:%i posz:%i incz:%i\n", n, p->posx, incx, p->posy, incy, p->posz, incz);
       p->dep += 1;
       FUNCTION (c, contract_two) (p);
       p->dep -= 1;
