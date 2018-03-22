@@ -239,7 +239,16 @@ let reset varr = (Genarray.fill varr 0.)
 
 
 (* The result shares the underlying buffer with original, not a copy *)
-let reshape varr newshape = (Bigarray.reshape varr newshape)
+let reshape x d =
+  let minus_one = Owl_utils.Array.count d (-1) in
+  assert (minus_one <= 1);
+  if minus_one = 0 then reshape x d
+  else (
+    let n = numel x in
+    let m = Array.fold_right ( * ) d (-1) in
+    let e = Array.map (fun a -> if a = -1 then n / m else a) d in
+    reshape x e
+  )
 
 
 (* Return the array as a contiguous block, without copying *)

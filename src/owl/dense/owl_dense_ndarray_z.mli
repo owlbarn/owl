@@ -545,7 +545,9 @@ val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
 (** {6 Tensor Calculus}  *)
 
-val contract_one : (int * int) array -> arr -> arr
+val contract1 : (int * int) array -> arr -> arr
+
+val contract2 : (int * int) array -> arr -> arr -> arr
 
 
 (** {6 Experimental functions} *)
