@@ -3549,17 +3549,18 @@ let draw ?(axis=0) x n =
   samples, indices
 
 
-let _check_index_pair x idx =
-  let i, j = idx in
+let _contract1_check_indices idx x =
   let s = shape x in
   let n = num_dims x in
-  (i >= 0 && i < n && j >= 0 && j < n) && (s.(i) = s.(j) && i <> j)
+  Array.for_all (fun (i,j) ->
+    (i >= 0 && i < n && j >= 0 && j < n) && (s.(i) = s.(j) && i <> j)
+  ) idx
 
 
 let contract1 index_pairs x =
   let d = num_dims x in
   assert (d > 1);
-  assert (Array.for_all (_check_index_pair x) index_pairs);
+  assert (_contract1_check_indices index_pairs x);
 
   let permut_1 = Owl_utils.Array.of_tuples index_pairs in
   let permut_0 = Owl_utils.Array.(complement (range 0 (d - 1)) permut_1) in
@@ -3586,7 +3587,19 @@ let contract1 index_pairs x =
   reshape q (Array.sub sb 0 rtd)
 
 
+let _contract2_check_indices idx x y =
+  let sx = shape x in
+  let nx = num_dims x in
+  let sy = shape y in
+  let ny = num_dims y in
+  Array.for_all (fun (i,j) ->
+    i >= 0 && i < nx && j >= 0 && j < ny && sx.(i) = sy.(j)
+  ) idx
+
+
 let contract2 index_pairs x y =
+  assert (_contract2_check_indices index_pairs x y);
+
   let dx = num_dims x in
   let permut_x1 = Owl_utils.Array.map fst index_pairs in
   let permut_x0 = Owl_utils.Array.(complement (range 0 (dx - 1)) permut_x1) in
