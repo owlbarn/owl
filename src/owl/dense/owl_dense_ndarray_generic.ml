@@ -3586,8 +3586,22 @@ let contract_one index_pairs x =
   reshape q (Array.sub sb 0 rtd)
 
 
-let contract_two index_pairs x y = ()
+let contract_two index_pairs x y =
+  let dx = num_dims x in
+  let permut_x1 = Owl_utils.Array.map fst index_pairs in
+  let permut_x0 = Owl_utils.Array.(complement (range 0 (dx - 1)) permut_x1) in
+  let permut_x = Owl_utils.Array.(permut_x0 @ permut_x1) in
+  let shpx = Owl_utils.Array.permute permut_x (shape x) in
+  let incx = Owl_utils.Array.permute permut_x (strides x) in
 
+  let dy = num_dims y in
+  let permut_y1 = Owl_utils.Array.map snd index_pairs in
+  let permut_y0 = Owl_utils.Array.(complement (range 0 (dy - 1)) permut_y1) in
+  let permut_y = Owl_utils.Array.(permut_y0 @ permut_y1) in
+  let shpy = Owl_utils.Array.permute permut_y (shape y) in
+  let incy = Owl_utils.Array.permute permut_y (strides y) in
+
+  ()
 
 
 (* ends here *)
