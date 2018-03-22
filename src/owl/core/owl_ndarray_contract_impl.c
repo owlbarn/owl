@@ -11,13 +11,13 @@
 void FUNCTION (c, contract_one_1) (struct contract_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
-  int d = p->dim - 2;
-  int n = p->n[d];
-  int posx = p->posx + p->ofsx[d];
-  int posy = p->posy + p->ofsy[d];
-  int incx = p->incx[d] + p->incx[d + 1];
+  long d = p->dim - 2;
+  long n = p->n[d];
+  long posx = p->posx + p->ofsx[d];
+  long posy = p->posy + p->ofsy[d];
+  long incx = p->incx[d] + p->incx[d + 1];
 
-  for (int i = 0; i < n; i++) {
+  for (long i = 0; i < n; i++) {
     MAPFUN (*(x + posx), *(y + posy));
     posx += incx;
   }
@@ -29,18 +29,18 @@ void FUNCTION (c, contract_one) (struct contract_pair *p) {
   if (p->dep == p->dim - 2)
     FUNCTION (c, contract_one_1) (p);
   else {
-    int d = p->dep;
-    int n = p->n[d];
-    int incx = p->incx[d];
-    int incy = p->incy[d];
-    int save_posx = p->posx;
-    int save_posy = p->posy;
+    long d = p->dep;
+    long n = p->n[d];
+    long incx = p->incx[d];
+    long incy = p->incy[d];
+    long save_posx = p->posx;
+    long save_posy = p->posy;
     p->posx += p->ofsx[d];
     p->posy += p->ofsy[d];
 
     if (p->dep < p->drt) {
       // outer loop
-      for (int i = 0; i < n; i++) {
+      for (long i = 0; i < n; i++) {
         p->dep += 1;
         FUNCTION (c, contract_one) (p);
         p->dep -= 1;
@@ -51,7 +51,7 @@ void FUNCTION (c, contract_one) (struct contract_pair *p) {
     else {
       // inner loop
       incx += p->incx[d + 1];
-      for (int i = 0; i < n; i++) {
+      for (long i = 0; i < n; i++) {
         p->dep += 2;
         FUNCTION (c, contract_one) (p);
         p->dep -= 2;
@@ -74,12 +74,12 @@ value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB, val
   TYPE *Y_data = (TYPE *) Y->data;
 
   struct caml_ba_array *A = Caml_ba_array_val(vA);
-  int *incx = (int *) A->data;
+  long *incx = (long *) A->data;
 
   struct caml_ba_array *B = Caml_ba_array_val(vB);
-  int *incy = (int *) B->data;
+  long *incy = (long *) B->data;
 
-  int N = Int32_val(vN);
+  long N = Int64_val(vN);
 
   struct contract_pair * sp = calloc(1, sizeof(struct contract_pair));
   sp->dim = X->num_dims;
@@ -90,8 +90,8 @@ value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB, val
   sp->y = Y_data;
   sp->posx = 0;
   sp->posy = 0;
-  sp->ofsx = calloc(sp->dim, sizeof(int));
-  sp->ofsy = calloc(sp->dim, sizeof(int));
+  sp->ofsx = calloc(sp->dim, sizeof(long));
+  sp->ofsy = calloc(sp->dim, sizeof(long));
   sp->incx = incx;
   sp->incy = incy;
 
@@ -111,16 +111,16 @@ void FUNCTION (c, contract_two_1) (struct contract_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
   TYPE *z = (TYPE *) p->z;
-  int d = p->dim - 1;
-  int n = p->n[d];
-  int posx = p->posx + p->ofsx[d];
-  int posy = p->posy + p->ofsy[d];
-  int posz = p->posz + p->ofsz[d];
-  int incx = p->incx[d];
-  int incy = p->incy[d];
-  int incz = p->incz[d];
+  long d = p->dim - 1;
+  long n = p->n[d];
+  long posx = p->posx + p->ofsx[d];
+  long posy = p->posy + p->ofsy[d];
+  long posz = p->posz + p->ofsz[d];
+  long incx = p->incx[d];
+  long incy = p->incy[d];
+  long incz = p->incz[d];
 
-  for (int i = 0; i < n; i++) {
+  for (long i = 0; i < n; i++) {
     *(z + posz) += *(x + posx) * *(y + posy);
     posx += incx;
     posy += incy;
@@ -134,19 +134,19 @@ void FUNCTION (c, contract_two) (struct contract_pair *p) {
   if (p->dep == p->dim - 1)
     FUNCTION (c, contract_two_1) (p);
   else {
-    int d = p->dep;
-    int n = p->n[d];
-    int incx = p->incx[d];
-    int incy = p->incy[d];
-    int incz = p->incz[d];
-    int save_posx = p->posx;
-    int save_posy = p->posy;
-    int save_posz = p->posz;
+    long d = p->dep;
+    long n = p->n[d];
+    long incx = p->incx[d];
+    long incy = p->incy[d];
+    long incz = p->incz[d];
+    long save_posx = p->posx;
+    long save_posy = p->posy;
+    long save_posz = p->posz;
     p->posx += p->ofsx[d];
     p->posy += p->ofsy[d];
     p->posz += p->ofsz[d];
 
-    for (int i = 0; i < n; i++) {
+    for (long i = 0; i < n; i++) {
       p->dep += 1;
       FUNCTION (c, contract_two) (p);
       p->dep -= 1;
@@ -178,18 +178,18 @@ value FUNCTION (stub, contract_two) (
   TYPE *Z_data = (TYPE *) Z->data;
 
   struct caml_ba_array *A = Caml_ba_array_val(vA);
-  int *incx = (int *) A->data;
+  long *incx = (long *) A->data;
 
   struct caml_ba_array *B = Caml_ba_array_val(vB);
-  int *incy = (int *) B->data;
+  long *incy = (long *) B->data;
 
   struct caml_ba_array *C = Caml_ba_array_val(vC);
-  int *incz = (int *) C->data;
+  long *incz = (long *) C->data;
 
   struct caml_ba_array *D = Caml_ba_array_val(vD);
   long *loops = (long *) D->data;
 
-  int dim = Int32_val(vN);
+  long dim = Int64_val(vN);
 
   struct contract_pair * sp = calloc(1, sizeof(struct contract_pair));
   sp->dim = dim;
@@ -201,9 +201,9 @@ value FUNCTION (stub, contract_two) (
   sp->posx = 0;
   sp->posy = 0;
   sp->posz = 0;
-  sp->ofsx = calloc(sp->dim, sizeof(int));
-  sp->ofsy = calloc(sp->dim, sizeof(int));
-  sp->ofsz = calloc(sp->dim, sizeof(int));
+  sp->ofsx = calloc(sp->dim, sizeof(long));
+  sp->ofsy = calloc(sp->dim, sizeof(long));
+  sp->ofsz = calloc(sp->dim, sizeof(long));
   sp->incx = incx;
   sp->incy = incy;
   sp->incz = incz;

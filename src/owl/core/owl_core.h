@@ -36,6 +36,14 @@ extern void c_complex32_ndarray_contract_one (struct contract_pair *sp);
 
 extern void c_complex64_ndarray_contract_one (struct contract_pair *sp);
 
+extern void c_float32_ndarray_contract_two (struct contract_pair *sp);
+
+extern void c_float64_ndarray_contract_two (struct contract_pair *sp);
+
+extern void c_complex32_ndarray_contract_two (struct contract_pair *sp);
+
+extern void c_complex64_ndarray_contract_two (struct contract_pair *sp);
+
 extern void c_float32_matrix_swap_rows (float *x, int m, int n, int i, int j);
 
 extern void c_float64_matrix_swap_rows (double *x, int m, int n, int i, int j);

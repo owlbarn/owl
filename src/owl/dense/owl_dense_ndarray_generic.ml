@@ -3579,11 +3579,11 @@ let contract1 index_pairs x =
 
   let p = reshape x s1 in
   let q = zeros (kind x) sb in
-  let incp = Array.map Int32.of_int i1 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
-  let incq = Array.map Int32.of_int ib |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let incp = Array.map Int64.of_int i1 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let incq = Array.map Int64.of_int ib |> Array1.of_array int64 c_layout |> genarray_of_array1 in
 
   let rtd = d - (Array.length permut_1) in
-  Owl_ndarray._ndarray_contract_one (kind x) p q incp incq (Int32.of_int rtd);
+  Owl_ndarray._ndarray_contract_one (kind x) p q incp incq (Int64.of_int rtd);
   reshape q (Array.sub sb 0 rtd)
 
 
@@ -3630,10 +3630,10 @@ let contract2 index_pairs x y =
   let incy0 = Owl_utils.Array.(insert incy (make outer_nx 0) 0) in
   let incz0 = Owl_utils.Array.(strides z @ (make inner_nx 0)) in
   let loop1 = Array.map Int64.of_int loop0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
-  let incx1 = Array.map Int32.of_int incx0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
-  let incy1 = Array.map Int32.of_int incy0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
-  let incz1 = Array.map Int32.of_int incz0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
-  let ndims = Array.length loop0 |> Int32.of_int in
+  let incx1 = Array.map Int64.of_int incx0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let incy1 = Array.map Int64.of_int incy0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let incz1 = Array.map Int64.of_int incz0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let ndims = Array.length loop0 |> Int64.of_int in
   Owl_ndarray._ndarray_contract_two (kind x) x y z incx1 incy1 incz1 loop1 ndims;
   z
 
