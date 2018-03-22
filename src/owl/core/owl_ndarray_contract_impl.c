@@ -81,25 +81,25 @@ value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB, val
 
   long N = Int64_val(vN);
 
-  struct contract_pair * sp = calloc(1, sizeof(struct contract_pair));
-  sp->dim = X->num_dims;
-  sp->dep = 0;
-  sp->drt = N;
-  sp->n = X->dim;
-  sp->x = X_data;
-  sp->y = Y_data;
-  sp->posx = 0;
-  sp->posy = 0;
-  sp->ofsx = calloc(sp->dim, sizeof(long));
-  sp->ofsy = calloc(sp->dim, sizeof(long));
-  sp->incx = incx;
-  sp->incy = incy;
+  struct contract_pair * cp = calloc(1, sizeof(struct contract_pair));
+  cp->dim = X->num_dims;
+  cp->dep = 0;
+  cp->drt = N;
+  cp->n = X->dim;
+  cp->x = X_data;
+  cp->y = Y_data;
+  cp->posx = 0;
+  cp->posy = 0;
+  cp->ofsx = calloc(cp->dim, sizeof(long));
+  cp->ofsy = calloc(cp->dim, sizeof(long));
+  cp->incx = incx;
+  cp->incy = incy;
 
-  FUNCTION (c, contract_one) (sp);
+  FUNCTION (c, contract_one) (cp);
 
-  free(sp->ofsx);
-  free(sp->ofsy);
-  free(sp);
+  free(cp->ofsx);
+  free(cp->ofsy);
+  free(cp);
 
   return Val_unit;
 }
@@ -191,29 +191,29 @@ value FUNCTION (stub, contract_two) (
 
   long dim = Int64_val(vN);
 
-  struct contract_pair * sp = calloc(1, sizeof(struct contract_pair));
-  sp->dim = dim;
-  sp->dep = 0;
-  sp->n = loops;
-  sp->x = X_data;
-  sp->y = Y_data;
-  sp->z = Z_data;
-  sp->posx = 0;
-  sp->posy = 0;
-  sp->posz = 0;
-  sp->ofsx = calloc(sp->dim, sizeof(long));
-  sp->ofsy = calloc(sp->dim, sizeof(long));
-  sp->ofsz = calloc(sp->dim, sizeof(long));
-  sp->incx = incx;
-  sp->incy = incy;
-  sp->incz = incz;
+  struct contract_pair * cp = calloc(1, sizeof(struct contract_pair));
+  cp->dim = dim;
+  cp->dep = 0;
+  cp->n = loops;
+  cp->x = X_data;
+  cp->y = Y_data;
+  cp->z = Z_data;
+  cp->posx = 0;
+  cp->posy = 0;
+  cp->posz = 0;
+  cp->ofsx = calloc(cp->dim, sizeof(long));
+  cp->ofsy = calloc(cp->dim, sizeof(long));
+  cp->ofsz = calloc(cp->dim, sizeof(long));
+  cp->incx = incx;
+  cp->incy = incy;
+  cp->incz = incz;
 
-  FUNCTION (c, contract_two) (sp);
+  FUNCTION (c, contract_two) (cp);
 
-  free(sp->ofsx);
-  free(sp->ofsy);
-  free(sp->ofsz);
-  free(sp);
+  free(cp->ofsx);
+  free(cp->ofsy);
+  free(cp->ofsz);
+  free(cp);
 
   return Val_unit;
 }
