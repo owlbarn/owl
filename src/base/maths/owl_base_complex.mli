@@ -49,6 +49,18 @@ val sec : t -> t
 
 val csc : t -> t
 
+val sinh : t -> t
+
+val cosh : t -> t
+
+val tanh : t -> t
+
+val sech : t -> t
+
+val csch : t -> t
+
+val coth : t -> t
+
 
 (** {6 Binary functions} *)
 

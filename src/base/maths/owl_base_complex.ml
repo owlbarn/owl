@@ -80,4 +80,36 @@ let sec x = inv (cos x)
 let csc x = inv (sin x)
 
 
+let sinh x =
+  let open Pervasives in
+  { re = (sinh x.re) *. (cos x.im); im = (cosh x.re) *. (sin x.im) }
+
+
+let cosh x =
+  let open Pervasives in
+  { re = (cosh x.re) *. (cos x.im); im = (sinh x.re) *. (sin x.im) }
+
+
+let tanh x =
+  let open Pervasives in
+  if abs_float x.re < 1. then (
+    let d = ((cos x.im) ** 2.) +. ((sinh x.re) ** 2.) in
+    { re = (sinh x.re) *. (cosh x.re) /. d; im = 0.5 *. (sin (2. *. x.im)) /. d }
+  )
+  else (
+    let d = ((cos x.im) ** 2.) +. ((sinh x.re) ** 2.) in
+    let f = 1. +. (((cos x.re) /. (sinh x.im)) ** 2.) in
+    { re = 1. /. ((tanh x.re) *. f); im = 0.5 *. (sin (2. *. x.im)) /. d }
+  )
+
+
+let sech x = inv (cosh x)
+
+
+let csch x = inv (sinh x)
+
+
+let coth x = inv (tanh x)
+
+
 (* ends here *)
