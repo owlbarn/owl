@@ -1760,7 +1760,8 @@ val contract1 : (int * int) array -> ('a, 'b) t -> ('a, 'b) t
 ``contract1 index_pairs x`` performs indices contraction (a.k.a tensor
 contraction) on ``x``. ``index_pairs`` is an array of contracted indices.
 
-Caveat: Not well tested yet, use with care!
+Caveat: Not well tested yet, use with care! Also, consider to use TTGT in
+future for better perfomance.
  *)
 
 val contract2 : (int * int) array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -1770,7 +1771,8 @@ contraction) on two ndarrays ``x`` and ``y``. ``index_pairs`` is an array of
 contracted indices, the first element is the index of ``x``, the second is that
 of ``y``.
 
-Caveat: Not well tested yet, use with care!
+Caveat: Not well tested yet, use with care! Also, consider to use TTGT in
+future for better perfomance.
  *)
 
 
