@@ -61,6 +61,30 @@ val csch : t -> t
 
 val coth : t -> t
 
+val asin : t -> t
+
+val acos : t -> t
+
+val atan : t -> t
+
+val asec : t -> t
+
+val acsc : t -> t
+
+val acot : t -> t
+
+val asinh : t -> t
+
+val acosh : t -> t
+
+val atanh : t -> t
+
+val asech : t -> t
+
+val acsch : t -> t
+
+val acoth : t -> t
+
 
 (** {6 Binary functions} *)
 
