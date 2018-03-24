@@ -42,9 +42,6 @@ val inv : t -> t
 val sqrt : t -> t
 (** TODO *)
 
-val arg : t -> float
-(** TODO *)
-
 val exp : t -> t
 (** TODO *)
 
@@ -123,8 +120,11 @@ val acsch : t -> t
 val acoth : t -> t
 (** TODO *)
 
+val arg : t -> float
+(** ``arg x`` returns the angle of a complex number ``x``. *)
+
 val phase : t -> float
-(** TODO *)
+(** ``phase x`` returns the phase of a complex number ``x``. *)
 
 
 (** {6 Binary functions} *)
@@ -165,23 +165,47 @@ val div_re : t -> float -> t
 val div_im : t -> float -> t
 (** TODO *)
 
+val pow : t -> t -> t
+(** TODO *)
+
 val polar : float -> float -> t
 (** TODO *)
 
-val pow : t -> t -> t
+val rect : float -> float -> t
+(** ``rect r phi`` return a complex number with polar coordinates ``r`` and ``phi``. *)
+
+
+(** {6 Comparison functions} *)
+
+val equal : t -> t -> bool
+(** TODO *)
+
+val not_equal : t -> t -> bool
+(** TODO *)
+
+val less : t -> t -> bool
+(** TODO *)
+
+val greater : t -> t -> bool
+(** TODO *)
+
+val less_equal : t -> t -> bool
+(** TODO *)
+
+val greater_equal : t -> t -> bool
 (** TODO *)
 
 
 (** {6 Helper functions} *)
 
 val complex : float -> float -> t
-(** TODO *)
+(** ``complex re im`` returns a complex number ``{re; im}``. *)
 
 val of_tuple : float * float -> t
-(** TODO *)
+(** ``of_tuple (re, im)`` returns a complex number ``{re; im}``. *)
 
 val to_tuple : t -> float * float
-(** TODO *)
+(** ``to_tuple x`` converts a complex number to tuple ``(x.re; x.im)``. *)
 
 val is_nan : t -> bool
 (** ``is_nan x`` returns ``true`` if ``x.re`` is ``nan`` or ``x.im`` is ``nan``. *)

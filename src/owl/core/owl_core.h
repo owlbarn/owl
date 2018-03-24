@@ -109,9 +109,9 @@ extern void c_complex64_ndarray_set_fancy (struct fancy_pair *sp);
 
 // compare two numbers (real & complex & int)
 
-#define CEQF(X,Y) ((crealf(X) == crealf(Y)) && (cimagf(X) < cimagf(Y)))
+#define CEQF(X,Y) ((crealf(X) == crealf(Y)) && (cimagf(X) == cimagf(Y)))
 
-#define CEQ(X,Y) ((creal(X) == creal(Y)) && (cimag(X) < cimag(Y)))
+#define CEQ(X,Y) ((creal(X) == creal(Y)) && (cimag(X) == cimag(Y)))
 
 #define CNEQF(X,Y) ((crealf(X) != crealf(Y)) || (cimagf(X) != cimagf(Y)))
 

@@ -275,13 +275,40 @@ let acoth x = atanh (inv x)
 let phase x = atan2 x.im x.re
 
 
+let rect r phi =
+  let re = r *. Pervasives.cos phi in
+  let im = r *. Pervasives.sin phi in
+  { re; im }
+
+
 (* Comparison functions *)
 
-let equal x y = ()
+let equal x y = (x.re = y.re) && (x.im = y.im)
 
 
-(* Operators *)
+let not_equal x y = (x.re <> y.re) || (x.im <> y.im)
 
+
+let less x y =
+  let abs_x = abs x in
+  let abs_y = abs y in
+  if abs_x < abs_y then true
+  else if abs_x > abs_y then false
+  else arg x < arg y
+
+
+let greater x y =
+  let abs_x = abs x in
+  let abs_y = abs y in
+  if abs_x > abs_y then true
+  else if abs_x < abs_y then false
+  else arg x > arg y
+
+
+let less_equal x y = not (greater x y)
+
+
+let greater_equal x y = not (less x y)
 
 
 (* Helper functions *)
