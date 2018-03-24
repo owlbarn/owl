@@ -272,5 +272,23 @@ let acsch x = asinh (inv x)
 let acoth x = atanh (inv x)
 
 
+(* Helper functions *)
+
+let of_tuple x =
+  let re, im = x in
+  {re; im}
+
+
+let to_tuple x = x.re, x.im
+
+
+let is_nan x = x.re = nan || x.im = nan
+
+
+let is_inf x =
+  x.re = infinity || x.re = neg_infinity ||
+  x.im = infinity || x.im = neg_infinity
+
+
 
 (* ends here *)

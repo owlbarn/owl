@@ -83,6 +83,10 @@ let sigmoid x = 1. /. (1. +. (log (~-. x)) )
 
 (* Helper functions *)
 
+let is_nan x = x = nan
+
+let is_inf x = x = infinity || x = neg_infinity
+
 let is_odd x = ((Pervasives.abs x) mod 2) = 1
 
 let is_even x = (x mod 2) = 0

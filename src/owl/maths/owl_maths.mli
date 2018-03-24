@@ -548,6 +548,12 @@ Returns:
 
 (** {6 Helper functions} *)
 
+val is_nan : float -> bool
+(** ``is_nan x`` returns ``true`` if ``x`` is ``nan``. *)
+
+val is_inf : float -> bool
+(** ``is_inf x`` returns ``true`` if ``x`` is ``infinity`` or ``neg_infinity``. *)
+
 val is_odd : int -> bool
 (** ``is_odd x`` returns ``true`` if ``x`` is odd. *)
 

@@ -302,6 +302,10 @@ let struve v x = Owl_maths_special.struve v x
 
 let same_sign = Owl_base_maths.same_sign
 
+let is_nan = Owl_base_maths.is_nan
+
+let is_inf = Owl_base_maths.is_inf
+
 let is_odd = Owl_base_maths.is_odd
 
 let is_even = Owl_base_maths.is_even

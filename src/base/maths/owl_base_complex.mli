@@ -167,3 +167,18 @@ val polar : float -> float -> t
 
 val pow : t -> t -> t
 (** TODO *)
+
+
+(** {6 Helper functions} *)
+
+val of_tuple : float * float -> t
+(** TODO *)
+
+val to_tuple : t -> float * float
+(** TODO *)
+
+val is_nan : t -> bool
+(** ``is_nan x`` returns ``true`` if ``x.re`` is ``nan`` or ``x.im`` is ``nan``. *)
+
+val is_inf : t -> bool
+(** ``is_inf x`` returns ``true`` if either ``x.re`` or ``x.im`` is ``infinity`` or ``neg_infinity``. *)
