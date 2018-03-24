@@ -123,6 +123,9 @@ val acsch : t -> t
 val acoth : t -> t
 (** TODO *)
 
+val phase : t -> float
+(** TODO *)
+
 
 (** {6 Binary functions} *)
 
@@ -170,6 +173,9 @@ val pow : t -> t -> t
 
 
 (** {6 Helper functions} *)
+
+val complex : float -> float -> t
+(** TODO *)
 
 val of_tuple : float * float -> t
 (** TODO *)

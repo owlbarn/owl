@@ -272,7 +272,22 @@ let acsch x = asinh (inv x)
 let acoth x = atanh (inv x)
 
 
+let phase x = atan2 x.im x.re
+
+
+(* Comparison functions *)
+
+let equal x y = ()
+
+
+(* Operators *)
+
+
+
 (* Helper functions *)
+
+let complex re im = { re; im }
+
 
 let of_tuple x =
   let re, im = x in
