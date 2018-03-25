@@ -11,5 +11,5 @@ let uniform_int_rvs n = Random.int n
 let std_uniform_rvs () = Random.float 1.
 
 
-let uniform_rvs a b =
+let uniform_rvs ~a ~b =
   a +. (b -. a) *. (Random.float 1.)

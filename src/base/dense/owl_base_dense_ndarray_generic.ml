@@ -451,21 +451,21 @@ let of_array kind arr dims =
 
 
 let uniform kind ?(a=0.) ?(b=1.) dims =
-  let uniform_gen_fun = (fun _ -> Owl_base_stats.uniform_rvs a b) in
+  let uniform_gen_fun = (fun _ -> Owl_base_stats.uniform_rvs ~a ~b) in
   let varr = empty kind dims in
   _apply_fun uniform_gen_fun varr;
   varr
 
 
 let bernoulli kind ?(p=0.5) dims =
-  let bernoulli_gen_fun = (fun _ -> Owl_base_stats.bernoulli_rvs p) in
+  let bernoulli_gen_fun = (fun _ -> Owl_base_stats.bernoulli_rvs ~p) in
   let varr = empty kind dims in
   _apply_fun bernoulli_gen_fun varr;
   varr
 
 
 let gaussian kind ?(mu=0.) ?(sigma=1.) dims =
-  let gaussian_gen_fun = (fun _ -> Owl_base_stats.gaussian_rvs mu sigma) in
+  let gaussian_gen_fun = (fun _ -> Owl_base_stats.gaussian_rvs ~mu ~sigma) in
   let varr = empty kind dims in
   _apply_fun gaussian_gen_fun varr;
   varr

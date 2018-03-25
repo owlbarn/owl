@@ -12,7 +12,7 @@ let _z1 = ref 1.
 
 
 (* TODO: use the polar, is more efficient *)
-let gaussian_rvs mu sigma =
+let gaussian_rvs ~mu ~sigma =
   if !_case
   then (_case := false; mu +. sigma *. !_z1)
   else (

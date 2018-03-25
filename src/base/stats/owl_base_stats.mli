@@ -96,13 +96,16 @@ val histogram : float array -> int -> int array
 
 (** {6 Random variables} *)
 
-val uniform_rvs : float -> float -> float
+val uniform_rvs : a:float -> b:float -> float
 (** Refer to :doc:`owl_stats`. *)
 
-val bernoulli_rvs : float -> float
+val bernoulli_rvs : p:float -> float
 (** Refer to :doc:`owl_stats`. *)
 
-val gaussian_rvs : float -> float -> float
+val gaussian_rvs : mu:float -> sigma:float -> float
+(** Refer to :doc:`owl_stats`. *)
+
+val exponential_rvs : lambda:float -> float
 (** Refer to :doc:`owl_stats`. *)
 
 

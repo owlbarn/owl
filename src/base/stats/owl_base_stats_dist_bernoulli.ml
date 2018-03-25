@@ -4,7 +4,7 @@
  *)
 
 
-let bernoulli_rvs p =
+let bernoulli_rvs ~p =
   assert (p >= 0. && p <= 1.);
   if (Random.float 1.) <= p then 1.
   else 0.

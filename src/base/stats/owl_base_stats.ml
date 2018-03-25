@@ -21,6 +21,9 @@ let bernoulli_rvs = Owl_base_stats_dist_bernoulli.bernoulli_rvs
 let gaussian_rvs = Owl_base_stats_dist_gaussian.gaussian_rvs
 
 
+let exponential_rvs = Owl_base_stats_dist_exponential.exponential_rvs
+
+
 (* Randomisation function *)
 
 let shuffle x =
