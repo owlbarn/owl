@@ -58,12 +58,20 @@ val central_moment : int -> float array -> float
 (** ``central_moment n x`` calcuates the ``n`` th central moment of ``x``. *)
 
 val cov : ?m0:float -> ?m1:float -> float array -> float array -> float
-(** ``cov x0 x1`` calculates the covariance of ``x0`` and ``x1``, the mean of ``x0``
-and ``x1`` can be specified by ``m0`` and ``m1`` respectively.
+(**
+``cov x0 x1`` calculates the covariance of ``x0`` and ``x1``, the mean of
+``x0`` and ``x1`` can be specified by ``m0`` and ``m1`` respectively.
  *)
 
+val concordant : 'a array -> 'b array -> int
+(** TODO *)
+
+val discordant : 'a array -> 'b array -> int
+(** TODO *)
+
 val corrcoef : float array -> float array -> float
-(** ``corrcoef x y`` calculates the Pearson correlation of ``x`` and ``y``. Namely,
+(**
+``corrcoef x y`` calculates the Pearson correlation of ``x`` and ``y``. Namely,
 ``corrcoef x y = cov(x, y) / (sigma_x * sigma_y)``.
  *)
 

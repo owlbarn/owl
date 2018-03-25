@@ -16,11 +16,13 @@ let shuffle x =
   Owl_stats_extend.shuffle y;
   y
 
+
 let choose x k =
   assert (Array.length x >= k);
   let y = Array.make k x.(0) in
   Owl_stats_extend.choose ~src:x ~dst:y;
   y
+
 
 let sample x k =
   let y = Array.make k x.(0) in
@@ -32,23 +34,30 @@ let sample x k =
 
 let sum x = Owl_stats_extend.sum x
 
+
 let mean x = Owl_stats_extend.mean x
+
 
 let _get_mean m x =
   match m with
   | Some a -> a
   | None   -> mean x
 
+
 let var ?mean x = Owl_stats_extend.var x (_get_mean mean x)
 
+
 let std ?mean x = Owl_stats_extend.std x (_get_mean mean x)
+
 
 let sem ?mean x =
   let s = std ?mean x in
   let n = float_of_int (Array.length x) in
   s /. (sqrt n)
 
+
 let absdev ?mean x = Owl_stats_extend.absdev x (_get_mean mean x)
+
 
 let skew ?mean ?sd x =
   let m = _get_mean mean x in
@@ -58,6 +67,7 @@ let skew ?mean ?sd x =
   in
   Owl_stats_extend.skew x m s
 
+
 let kurtosis ?mean ?sd x =
   let m = _get_mean mean x in
   let s = match sd with
@@ -66,40 +76,28 @@ let kurtosis ?mean ?sd x =
   in
   Owl_stats_extend.kurtosis x m s
 
+
 (* TODO: move to C code *)
-let central_moment n x =
-  let m = float_of_int n in
-  let u = mean x in
-  let x = Array.map (fun x -> (x -. u) ** m) x in
-  let a = Array.fold_left (+.) 0. x in
-  a /. (float_of_int (Array.length x))
+let central_moment = Owl_base_stats.central_moment
+
 
 let corrcoef x0 x1 =
   assert Array.(length x0 = length x1);
   Owl_stats_extend.corrcoef x0 x1
 
-(* TODO: optimise *)
-let sort ?(inc=true) x =
-  let y = Array.copy x in
-  let c = if inc then 1 else (-1) in
-  Array.sort (fun a b ->
-    if a < b then (-c)
-    else if a > b then c
-    else 0
-  ) y; y
 
-let argsort ?(inc=true) x =
-  let n = Array.length x in
-  let dir = if inc then 1 else (-1) in
-  let order = Array.init n (fun i -> i) in begin
-    Array.sort (fun i j -> dir * compare x.(i) x.(j)) order;
-    order
-  end
+(* TODO: optimise *)
+let sort = Owl_base_stats.sort
+
+
+let argsort = Owl_base_stats.argsort
+
 
 let _resolve_ties next d = function
   | `Average    -> float_of_int next -. float_of_int d /. 2.
   | `Min        -> float_of_int (next - d)
   | `Max        -> float_of_int next
+
 
 let rank ?(ties_strategy=`Average) vs =
   let n = Array.length vs in
@@ -117,7 +115,8 @@ let rank ?(ties_strategy=`Average) vs =
       else
         incr d  (* Found a duplicate! *)
     done;
-  end; ranks
+  end;
+  ranks
 
 
 let autocorrelation ?(lag=1) x =
@@ -133,63 +132,22 @@ let autocorrelation ?(lag=1) x =
   done in
   (!a /. !b)
 
+
 let cov ?m0 ?m1 x0 x1 =
   assert Array.(length x0 = length x1);
   let m0 = _get_mean m0 x0 in
   let m1 = _get_mean m1 x1 in
   Owl_stats_extend.cov x0 x1 m0 m1
 
-let _concordant x0 x1 =
-  let c = ref 0 in
-  for i = 0 to (Array.length x0) - 1 do
-    for j = 0 to (Array.length x0) - 1 do
-      if (i <> j) && (
-        ((x0.(i) < x0.(j)) && (x1.(i) < x1.(j))) ||
-        ((x0.(i) > x0.(j)) && (x1.(i) > x1.(j))) ) then
-        c := !c + 1
-    done
-  done; (!c / 2)
 
-let _discordant x0 x1 =
-  let c = ref 0 in
-  for i = 0 to (Array.length x0) - 1 do
-    for j = 0 to (Array.length x0) - 1 do
-      if (i <> j) && (
-        ((x0.(i) < x0.(j)) && (x1.(i) > x1.(j))) ||
-        ((x0.(i) > x0.(j)) && (x1.(i) < x1.(j))) ) then
-        c := !c + 1
-    done
-  done; (!c / 2)
+let concordant = Owl_base_stats.concordant
 
-let concordant x0 x1 =
-  let c = ref 0 in
-  for i = 0 to (Array.length x0) - 2 do
-    for j = i + 1 to (Array.length x0) - 1 do
-      if (i <> j) && (
-        ((x0.(i) < x0.(j)) && (x1.(i) < x1.(j))) ||
-        ((x0.(i) > x0.(j)) && (x1.(i) > x1.(j))) ) then
-        c := !c + 1
-    done
-  done;
-  !c
 
-let discordant x0 x1 =
-  let c = ref 0 in
-  for i = 0 to (Array.length x0) - 2 do
-    for j = i + 1 to (Array.length x0) - 1 do
-      if (i <> j) && (
-        ((x0.(i) < x0.(j)) && (x1.(i) > x1.(j))) ||
-        ((x0.(i) > x0.(j)) && (x1.(i) < x1.(j))) ) then
-        c := !c + 1
-    done
-  done;
-  !c
+let discordant = Owl_base_stats.discordant
 
-let kendall_tau x0 x1 =
-  let a = float_of_int (concordant x0 x1) in
-  let b = float_of_int (discordant x0 x1) in
-  let n = float_of_int (Array.length x0) in
-  2. *. (a -. b) /. (n *. (n -. 1.))
+
+let kendall_tau = Owl_base_stats.kendall_tau
+
 
 let spearman_rho x0 x1 =
   let r0 = rank x0 in
@@ -198,53 +156,27 @@ let spearman_rho x0 x1 =
   let b = (std r0) *. (std r1) in
   a /. b
 
-let minmax_i x =
-  assert (Array.length x > 0);
-  let _min = ref x.(0) in
-  let _max = ref x.(0) in
-  let _min_idx = ref 0 in
-  let _max_idx = ref 0 in
-  Array.iteri (fun i a ->
-    if a < !_min then (
-      _min := a;
-      _min_idx := i
-    )
-    else if a > !_max then (
-      _max := a;
-      _max_idx := i;
-    )
-  ) x;
-  !_min_idx, !_max_idx
 
-let min_i x = minmax_i x |> fst
+let minmax_i = Owl_base_stats.minmax_i
 
-let max_i x = minmax_i x |> snd
 
-let min x = Array.fold_left min infinity x
+let min_i = Owl_base_stats.min_i
 
-let max x = Array.fold_left max neg_infinity x
 
-let minmax x =
-  let _min = ref infinity in
-  let _max = ref neg_infinity in
-  Array.iter (fun a ->
-    if a < !_min then _min := a;
-    if a > !_max then _max := a;
-  ) x;
-  !_min, !_max
+let max_i = Owl_base_stats.max_i
 
-let histogram x n =
-  let a, b = minmax x in
-  match a = b with
-  | true  -> [|1|]
-  | false -> (
-    let c = (b -. a) /. (float_of_int n) in
-    let d = Array.make n 0 in
-    Array.iter (fun y ->
-      let i = int_of_float ((y -. a) /. c) in
-      let i = if y = b then i - 1 else i in
-      d.(i) <- d.(i) + 1
-    ) x; d)
+
+let min = Owl_base_stats.min
+
+
+let max = Owl_base_stats.max
+
+
+let minmax = Owl_base_stats.minmax
+
+
+let histogram = Owl_base_stats.histogram
+
 
 let ecdf x =
   let x = sort ~inc:true x in
@@ -266,28 +198,37 @@ let ecdf x =
   done;
   !y, !f
 
+
 let quantile x p =
   assert (p >= 0. && p <= 1.);
   Owl_stats_extend.quantile (sort ~inc:true x) p
 
+
 let percentile x p = quantile x (p /. 100.)
+
 
 let median x = percentile x 0.5
 
+
 let first_quartile x = percentile x 0.25
+
 
 let third_quartile x = percentile x 0.75
 
+
 let z_score ~mu ~sigma x = Array.map (fun y -> (y -. mu) /. sigma) x
+
 
 let t_score x =
   let mu = mean x in
   let sigma = std x in
   z_score ~mu ~sigma x
 
+
 let normlise_pdf x =
   let c = Owl_stats_extend.sum x in
   Array.map (fun x -> x /. c) x
+
 
 (* TODO *)
 

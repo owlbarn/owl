@@ -54,6 +54,76 @@ val kurtosis : ?mean:float -> ?sd:float -> float array -> float
 standardized moment of ``x``.
  *)
 
+val central_moment : int -> float array -> float
+(** ``central_moment n x`` calcuates the ``n`` th central moment of ``x``. *)
+
+val cov : ?m0:float -> ?m1:float -> float array -> float array -> float
+(**
+``cov x0 x1`` calculates the covariance of ``x0`` and ``x1``, the mean of
+``x0`` and ``x1`` can be specified by ``m0`` and ``m1`` respectively.
+ *)
+
+val concordant : 'a array -> 'b array -> int
+(** TODO *)
+
+val discordant : 'a array -> 'b array -> int
+(** TODO *)
+
+val kendall_tau : float array -> float array -> float
+(** ``kendall_tau x y`` calcuates the Kendall Tau correlation between ``x`` and ``y``. *)
+
+val min : float array -> float
+(** ``min x`` returns the minimum element in ``x``. *)
+
+val max : float array -> float
+(** ``max x`` returns the maximum element in ``x``. *)
+
+val minmax : float array -> float * float
+(** ``minmax x`` returns both ``(minimum, maximum)`` elements in ``x``. *)
+
+val min_i : float array -> int
+(** ``min_i x`` returns the index of the minimum in ``x``. *)
+
+val max_i : float array -> int
+(** ``max_i x`` returns the index of the maximum in ``x``. *)
+
+val minmax_i : float array -> int * int
+(** ``minmax_i x`` returns the indices of both minimum and maximum in ``x``. *)
+
+val sort : ?inc:bool -> float array -> float array
+(** ``sort x`` sorts the elements in the ``x`` in increasing order if
+``inc = true``, otherwise in decreasing order if ``inc=false``. By default,
+``inc`` is ``true``. Note a copy is returned, the original data is not modified.
+ *)
+
+val argsort : ?inc:bool -> float array -> int array
+(**
+``argsort x`` sorts the elements in ``x`` and returns the indices mapping of
+the elements in the current array to their original position in ``x``.
+
+The sorting is in increasing order if ``inc = true``, otherwise in decreasing
+order if ``inc=false``. By default, ``inc`` is ``true``.
+ *)
+
+val rank : ?ties_strategy:[ `Average | `Min | `Max ] -> float array -> float array
+(**
+Computes sample's ranks.
+
+The ranking order is from the smallest one to the largest. For example
+``rank [|54.; 74.; 55.; 86.; 56.|]`` returns ``[|1.; 4.; 2.; 5.; 3.|]``.
+Note that the ranking starts with one!
+
+``ties_strategy`` controls which ranks are assigned to equal values:
+
+- ``Average`` the mean of ranks should be assigned to each value.
+  {b Default}.
+- ``Min`` the minimum of ranks is assigned to each value.
+- ``Max`` the maximum of ranks is assigned to each value.
+ *)
+
+val histogram : float array -> int -> int array
+(** ``histogram x n`` creates a histogram of ``n`` buckets for ``x``. *)
+
 
 (** {6 Random variables} *)
 
