@@ -28,7 +28,7 @@ let sample x k =
   y
 
 
-(** [ Statistics function ]  *)
+(* Basic statistical functions *)
 
 let sum x = Owl_stats_extend.sum x
 

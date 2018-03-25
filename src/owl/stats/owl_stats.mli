@@ -37,8 +37,9 @@ val std : ?mean:float -> float array -> float
 (** ``std x`` calculates the standard deviation of ``x``. *)
 
 val sem : ?mean:float -> float array -> float
-(** ``sem x`` calculates the standard error of ``x``, also referred to as standard
-error of the mean.
+(**
+``sem x`` calculates the standard error of ``x``, also referred to as
+standard error of the mean.
  *)
 
 val absdev : ?mean:float -> float array -> float
@@ -48,7 +49,8 @@ val skew : ?mean:float -> ?sd:float -> float array -> float
 (** ``skew x`` calculates the skewness (the third standardized moment) of ``x``. *)
 
 val kurtosis : ?mean:float -> ?sd:float -> float array -> float
-(** ``kurtosis x`` calculates the Pearson's kurtosis of ``x``, i.e. the fourth
+(**
+``kurtosis x`` calculates the Pearson's kurtosis of ``x``, i.e. the fourth
 standardized moment of ``x``.
  *)
 

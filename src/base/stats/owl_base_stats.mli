@@ -22,6 +22,39 @@ val sample : 'a array -> int -> 'a array
 (** ``sample x n`` draw ``n`` samples from ``x`` with replacement.  *)
 
 
+(** {6 Basic statistical functions} *)
+
+val sum : float array -> float
+(** ``sum x`` returns the summation of the elements in ``x``. *)
+
+val mean : float array -> float
+(** ``mean x`` returns the mean of the elements in ``x``. *)
+
+val var : ?mean:float -> float array -> float
+(** ``var x`` returns the variance of elements in ``x``. *)
+
+val std : ?mean:float -> float array -> float
+(** ``std x`` calculates the standard deviation of ``x``. *)
+
+val sem : ?mean:float -> float array -> float
+(**
+``sem x`` calculates the standard error of ``x``, also referred to as
+standard error of the mean.
+ *)
+
+val absdev : ?mean:float -> float array -> float
+(** ``absdev x`` calculates the average absolute deviation of ``x``. *)
+
+val skew : ?mean:float -> ?sd:float -> float array -> float
+(** ``skew x`` calculates the skewness (the third standardized moment) of ``x``. *)
+
+val kurtosis : ?mean:float -> ?sd:float -> float array -> float
+(**
+``kurtosis x`` calculates the Pearson's kurtosis of ``x``, i.e. the fourth
+standardized moment of ``x``.
+ *)
+
+
 (** {6 Random variables} *)
 
 val uniform : float -> float -> float

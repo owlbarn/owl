@@ -91,6 +91,92 @@ let sample x k =
   y
 
 
+(* Basic statistical functions *)
+
+let sum x = Array.fold_left ( +. ) 0. x
+
+
+let mean x =
+  let n = float_of_int (Array.length x) in
+  sum x /. n
+
+
+let _get_mean m x =
+  match m with
+  | Some a -> a
+  | None   -> mean x
+
+
+let var ?mean x =
+  let m = _get_mean mean x in
+  let t = ref 0. in
+
+  Array.iter (fun a ->
+    let d = a -. m in
+    t := !t +. d *. d
+  ) x;
+
+  let l = float_of_int (Array.length x) in
+  let n = if l = 1. then 1. else l -. 1. in
+  !t /. n
+
+
+let std ?mean x = sqrt (var ?mean x)
+
+
+let sem ?mean x =
+  let s = std ?mean x in
+  let n = float_of_int (Array.length x) in
+  s /. (sqrt n)
+
+
+let absdev ?mean x =
+  let m = _get_mean mean x in
+  let t = ref 0. in
+
+  Array.iter (fun a ->
+    let d = abs_float (a -. m) in
+    t := !t +. d
+  ) x;
+
+  let n = float_of_int (Array.length x) in
+  !t /. n
+
+
+let skew ?mean ?sd x =
+  let m = _get_mean mean x in
+  let s = match sd with
+    | Some a -> a
+    | None   -> std ~mean:m x
+  in
+  let t = ref 0. in
+
+  Array.iter (fun a ->
+    let s = (a -. m) /. s in
+    t := !t +. s *. s *. s
+  ) x;
+
+  let n = float_of_int (Array.length x) in
+  !t /. n
+
+
+let kurtosis ?mean ?sd x =
+  let m = _get_mean mean x in
+  let s = match sd with
+    | Some a -> a
+    | None   -> std ~mean:m x
+  in
+  let t = ref 0. in
+
+  Array.iter (fun a ->
+    let s = (a -. m) /. s in
+    let u = s *. s in
+    t := !t +. u *. u
+  ) x;
+
+  let n = float_of_int (Array.length x) in
+  !t /. n
+
 
 
 (* ends here *)
