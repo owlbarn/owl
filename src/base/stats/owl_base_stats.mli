@@ -108,5 +108,9 @@ val gaussian_rvs : mu:float -> sigma:float -> float
 val exponential_rvs : lambda:float -> float
 (** Refer to :doc:`owl_stats`. *)
 
+val cauchy_rvs : loc:float -> scale:float -> float
+(** Refer to :doc:`owl_stats`. *)
+
+
 
 (* ends here *)

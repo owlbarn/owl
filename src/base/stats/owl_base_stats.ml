@@ -24,6 +24,9 @@ let gaussian_rvs = Owl_base_stats_dist_gaussian.gaussian_rvs
 let exponential_rvs = Owl_base_stats_dist_exponential.exponential_rvs
 
 
+let cauchy_rvs = Owl_base_stats_dist_cauchy.cauchy_rvs
+
+
 (* Randomisation function *)
 
 let shuffle x =

@@ -11,10 +11,29 @@ let _z0 = ref 0.
 let _z1 = ref 1.
 
 
+let std_gaussian_rvs () =
+  if !_case then (
+    _case := false;
+    !_z1
+  )
+  else (
+    _case := true;
+    _u1 := Random.float 1.;
+    _u2 := Random.float 1.;
+    _z0 := (sqrt ((~-. 2.) *. (log (!_u1)))) *.
+           (cos (2. *. Owl_const.pi *. (!_u2)));
+    _z1 := (sqrt ((~-. 2.) *. (log (!_u1)))) *.
+           (sin (2. *. Owl_const.pi *. (!_u2)));
+    !_z0
+  )
+
+
 (* TODO: use the polar, is more efficient *)
 let gaussian_rvs ~mu ~sigma =
-  if !_case
-  then (_case := false; mu +. sigma *. !_z1)
+  if !_case then (
+    _case := false;
+    mu +. sigma *. !_z1
+  )
   else (
     _case := true;
     _u1 := Random.float 1.;
