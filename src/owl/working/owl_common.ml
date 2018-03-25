@@ -17,10 +17,19 @@ module PRNG = struct
 
   external rand_gaussian : unit -> float = "owl_std_gaussian_rvs"
 
-  let init () =
-    Random.self_init ();
+
+  let self_init () =
+    Owl_base_stats_state.self_init ();
     let seed = Random.int 65535 in
     sfmt_seed seed;
     ziggurat_init ()
+
+
+  let init seed =
+    Owl_base_stats_state.init seed;
+    let seed = Random.int 65535 in
+    sfmt_seed seed;
+    ziggurat_init ()
+
 
 end

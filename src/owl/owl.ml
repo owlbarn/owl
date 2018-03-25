@@ -79,10 +79,8 @@ end
 (* initialise owl's working environment *)
 
 let _ =
-  (* FIXME: need to unify with the Stats module in the future *)
-  Random.State.make_self_init () |> ignore;
   (* init the internal state of PRNG *)
-  Owl_common.PRNG.init ();
+  Owl_common.PRNG.self_init ();
   (* set up owl's folder *)
   let home = Sys.getenv "HOME" ^ "/.owl" in
   let dir_dataset = home ^ "/dataset" in
