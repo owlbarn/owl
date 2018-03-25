@@ -127,14 +127,14 @@ val histogram : float array -> int -> int array
 
 (** {6 Random variables} *)
 
-val uniform : float -> float -> float
+val uniform_rvs : float -> float -> float
 (** ``uniform a b`` returns a continuous RV uniformly distributed within [``a``, ``b``]. *)
 
-val bernoulli : float -> float
-(** ``bernoulli p`` returns a continuous RV equal to ``1.`` with probability ``p``, ``0.`` otherwise *)
+val bernoulli_rvs : float -> float
+(** ``bernoulli_rvs p`` returns a continuous RV equal to ``1.`` with probability ``p``, ``0.`` otherwise *)
 
-val gaussian : float -> float -> float
-(** ``gaussian mu sigma`` returns a continous RV normally distributed with mean ``mu`` and stddev ``sigma`` *)
+val gaussian_rvs : float -> float -> float
+(** ``gaussian_rvs mu sigma`` returns a continous RV normally distributed with mean ``mu`` and stddev ``sigma`` *)
 
 
 (* ends here *)
