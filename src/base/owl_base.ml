@@ -38,4 +38,4 @@ module Utils = Owl_utils
 
 
 (* initialise base library *)
-let _ = Owl_base_stats_state.self_init ()
+let _ = Owl_base_stats_prng.self_init ()

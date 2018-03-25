@@ -691,8 +691,8 @@ let test_rough_cdf_matches _ =
 
 (*a Initialization *)
 let _ =
-  Owl_common.PRNG.init ();
-  Owl_common.PRNG.sfmt_seed 1
+  Owl_stats_prng.self_init ();
+  Owl_stats_prng.sfmt_seed 1
 
 (*a Tests *)
 
@@ -812,7 +812,7 @@ let tests_for_p_0_3 = [ bin_frequency           ,  true, 0, 1000;
 
  *)
 let test_true_is_not_random _ =
-  Owl_common.PRNG.sfmt_seed 1;
+  Owl_stats_prng.sfmt_seed 1;
   let test_name = "always true" in
   let pretest _ = () in
   let sampler _ length = (length, (fun _ -> true)) in
@@ -833,7 +833,7 @@ let test_true_is_not_random _ =
 
  *)
 let test_alternate_is_not_random _ =
-    Owl_common.PRNG.sfmt_seed 1;
+    Owl_stats_prng.sfmt_seed 1;
     let test_name = "every other" in
     let pretest _ = () in
     let sampler _ length = (length, (fun x -> ((x land 1)==0))) in
@@ -852,7 +852,7 @@ let test_alternate_is_not_random _ =
 
  *)
 let test_three_of_four_is_not_random _ =
-  Owl_common.PRNG.sfmt_seed 1;
+  Owl_stats_prng.sfmt_seed 1;
   let test_name = "three of four" in
   let pretest _ = () in
   let sampler _ length = (length, (fun x -> ((x land 3)==0))) in
@@ -877,7 +877,7 @@ let test_three_of_four_is_not_random _ =
 
  *)
 let test_two_of_four_is_not_random _ =
-  Owl_common.PRNG.sfmt_seed 1;
+  Owl_stats_prng.sfmt_seed 1;
   let test_name = "two of four" in
   let pretest _ = () in
   let sampler _ length = (length, (fun x -> ((x land 3)<2))) in
@@ -899,7 +899,7 @@ let test_two_of_four_is_not_random _ =
  *)
 let test_uniform_ints_0_1 _ =
   let test_name = "uniform_int ~a:0 ~b:1" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.uniform_int_rvs ~a:0 ~b:1)==0)) in
   let tests = [ bin_frequency           ,  false, 0, 100;
                 bin_frequency           ,  false, 0, 1000;
@@ -919,7 +919,7 @@ let test_uniform_ints_0_1 _ =
  *)
 let test_uniform_ints_1_100 _ =
   let test_name = "uniform_int ~a:1 ~b:100 <= 50" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.uniform_int_rvs ~a:1 ~b:100)<51)) in
   let tests = [ bin_frequency           ,  false, 0, 100;
                 bin_frequency           ,  false, 0, 1000;
@@ -951,7 +951,7 @@ let test_uniform_ints_1_100 _ =
  *)
 let test_uniform_ints_1_100_even _ =
   let test_name = "uniform_int ~a:1 ~b:100 even" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 0 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 0 in
   let sampler _ length = (length, (fun _ -> ((M.uniform_int_rvs ~a:1 ~b:100) land 1)==0)) in
   let tests = tests_for_p_0_5 in
   run_random_tests test_name pretest sampler tests
@@ -964,7 +964,7 @@ let test_uniform_ints_1_100_even _ =
  *)
 let test_uniform_ints_0_to_65535 (bit:int) _ =
   let test_name = sfmt "uniform_int ~a:0 ~b:65535 bit %d" bit in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 0 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 0 in
   let sampler _ length = (length, (fun _ -> (((M.uniform_int_rvs ~a:0 ~b:65535) lsr bit) land 1)==0)) in
   let tests = tests_for_p_0_5 in
   run_random_tests test_name pretest sampler tests
@@ -995,7 +995,7 @@ let test_uniform_ints_0_to_65535_bit_15 _ = test_uniform_ints_0_to_65535 15 ()
  *)
 let test_uniform_ints_1_100_48 _ =
   let test_name = "uniform_int ~a:1 ~b:100 <= 48" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 0 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 0 in
   let sampler _ length = (length, (fun _ -> (M.uniform_int_rvs ~a:1 ~b:100)<=48)) in
   let tests = [ bin_frequency           ,  false, 0, 100;
                 bin_frequency           ,  false, 0, 1000;
@@ -1033,7 +1033,7 @@ let test_uniform_ints_1_100_48 _ =
  *)
 let test_uniform_ints_1_100_45 _ =
   let test_name = "uniform_int ~a:1 ~b:100 <= 45" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 0 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 0 in
   let sampler _ length = (length, (fun _ -> (M.uniform_int_rvs ~a:1 ~b:100)<=45)) in
   let tests = [ bin_frequency           ,  false, 0, 100;
                 bin_frequency           ,  true, 0, 1000;
@@ -1072,7 +1072,7 @@ let test_uniform_ints_1_100_45 _ =
  *)
 let test_uniform_ints_1_300_100 _ =
   let test_name = "uniform_int ~a:1 ~b:300 mod 3 is 0" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> ((M.uniform_int_rvs ~a:1 ~b:300) mod 3)=0)) in
   let tests = [ bin_frequency           ,  true, 0, 100;
                 bin_frequency           ,  true, 0, 1000;
@@ -1115,7 +1115,7 @@ let test_uniform_ints_1_300_100 _ =
  *)
 let test_gaussian_mean_0 _ =
   let test_name = "gaussian mean 0 sd 1 > 0" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.gaussian_rvs ~mu:0. ~sigma:1.)>0.)) in
   let tests = tests_for_p_0_5 in
   run_random_tests test_name pretest sampler tests
@@ -1135,7 +1135,7 @@ let test_gaussian_mean_0 _ =
  *)
 let test_gaussian_mean_0_p0_3_left _ =
   let test_name = "gaussian mean 0 sd 1 < -.43 0" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.gaussian_rvs ~mu:0. ~sigma:1.)<(-0.43))) in
   let tests = tests_for_p_0_3 in
   run_random_tests test_name pretest sampler tests
@@ -1155,7 +1155,7 @@ let test_gaussian_mean_0_p0_3_left _ =
  *)
 let test_gaussian_mean_0_p0_3_right _ =
   let test_name = "gaussian mean 0 sd 1 > 0.43" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.gaussian_rvs ~mu:0. ~sigma:1.)>(0.43))) in
   let tests = tests_for_p_0_3 in
   run_random_tests test_name pretest sampler tests
@@ -1170,7 +1170,7 @@ let test_gaussian_mean_0_p0_3_right _ =
  *)
 let test_exponential_lambda_1 _ =
   let test_name = "exponential lambda 1 > 0.69" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.exponential_rvs ~lambda:1.)>0.69)) in
   let tests = tests_for_p_0_5 in
   run_random_tests test_name pretest sampler tests
@@ -1185,7 +1185,7 @@ let test_exponential_lambda_1 _ =
  *)
 let test_exponential_lambda_1_p0_3_left _ =
   let test_name = "exponential lambda 1 < 0.41" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.exponential_rvs ~lambda:1.)< 0.41)) in
   let tests = tests_for_p_0_3 in
   run_random_tests test_name pretest sampler tests
@@ -1200,7 +1200,7 @@ let test_exponential_lambda_1_p0_3_left _ =
  *)
 let test_exponential_lambda_1_p0_3_right _ =
   let test_name = "exponential lambda 1 > 1.10" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.exponential_rvs ~lambda:1.)>1.10)) in
   let tests = tests_for_p_0_3 in
   run_random_tests test_name pretest sampler tests
@@ -1215,7 +1215,7 @@ let test_exponential_lambda_1_p0_3_right _ =
  *)
 let test_hypergeometric_50_500_100 _ =
   let test_name = "hypergeometric 50 of 500 good pick 100 > 9 good" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 2 in (* fails in one of the patterns with seed 1 *)
+  let pretest _ = Owl_stats_prng.sfmt_seed 2 in (* fails in one of the patterns with seed 1 *)
   let sampler _ length = (length, (fun _ -> (M.hypergeometric_rvs ~good:100 ~bad:(1000-100) ~sample:195)>=20)) in
   let tests = tests_for_p_0_5 in
   run_random_tests test_name pretest sampler tests
@@ -1230,7 +1230,7 @@ let test_hypergeometric_50_500_100 _ =
  *)
 let test_hypergeometric_50_500_100_p0_3_left _ =
   let test_name = "hypergeometric 50 of 500 good pick 100 > 9 good" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 2 in (* fails in one of the patterns with seed 1 *)
+  let pretest _ = Owl_stats_prng.sfmt_seed 2 in (* fails in one of the patterns with seed 1 *)
   let sampler _ length = (length, (fun _ -> (M.hypergeometric_rvs ~good:100 ~bad:(1000-100) ~sample:180)>=20)) in
   let tests = tests_for_p_0_3 in
   run_random_tests test_name pretest sampler tests
@@ -1245,7 +1245,7 @@ let test_hypergeometric_50_500_100_p0_3_left _ =
  *)
 let test_hypergeometric_50_500_100_p0_3_right _ =
   let test_name = "hypergeometric 50 of 500 good pick 100 > 9 good" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 2 in (* fails in one of the patterns with seed 1 *)
+  let pretest _ = Owl_stats_prng.sfmt_seed 2 in (* fails in one of the patterns with seed 1 *)
   let sampler _ length = (length, (fun _ -> (M.hypergeometric_rvs ~good:100 ~bad:(1000-100) ~sample:212)<20)) in
   let tests = tests_for_p_0_3 in
   run_random_tests test_name pretest sampler tests
@@ -1261,7 +1261,7 @@ let test_hypergeometric_50_500_100_p0_3_right _ =
  *)
 let test_gamma_shape_7_5_scale_1 _ =
   let test_name = "gamma scale 7.5 scale 1.0 > 7.17" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.gamma_rvs ~shape:7.5 ~scale:1.)>7.17)) in
   let tests = tests_for_p_0_5 in
   run_random_tests test_name pretest sampler tests
@@ -1275,7 +1275,7 @@ let test_gamma_shape_7_5_scale_1 _ =
  *)
 let test_gamma_shape_7_5_scale_1_p0_3_left _ =
   let test_name = "gamma scale 7.5 scale 1.0 < 6.08" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.gamma_rvs ~shape:7.5 ~scale:1.)<6.08)) in
   let tests = tests_for_p_0_3 in
   run_random_tests test_name pretest sampler tests
@@ -1289,7 +1289,7 @@ let test_gamma_shape_7_5_scale_1_p0_3_left _ =
  *)
 let test_gamma_shape_7_5_scale_1_p0_3_right _ =
   let test_name = "gamma scale 7.5 scale 1.0 > 8.38" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.gamma_rvs ~shape:7.5 ~scale:1.)>8.38)) in
   let tests = tests_for_p_0_3 in
   run_random_tests test_name pretest sampler tests
@@ -1304,7 +1304,7 @@ let test_gamma_shape_7_5_scale_1_p0_3_right _ =
  *)
 let test_beta_alpha_2_beta_5 _ =
   let test_name = "beta (alpha 2 beta 5)  0.265" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.beta_rvs ~a:2.0 ~b:5.0)>0.265)) in
   let tests = tests_for_p_0_5 in
   run_random_tests test_name pretest sampler tests
@@ -1319,7 +1319,7 @@ let test_beta_alpha_2_beta_5 _ =
  *)
 let test_beta_alpha_2_beta_5_p0_3_left _ =
   let test_name = "beta (alpha 2 beta 5) < 0.195" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.beta_rvs ~a:2.0 ~b:5.0)<0.195)) in
   let tests = tests_for_p_0_3 in
   run_random_tests test_name pretest sampler tests
@@ -1334,7 +1334,7 @@ let test_beta_alpha_2_beta_5_p0_3_left _ =
  *)
 let test_beta_alpha_2_beta_5_p0_3_right _ =
   let test_name = "beta (alpha 2 beta 5) > 0.341" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.beta_rvs ~a:2.0 ~b:5.0)>0.341)) in
   let tests = tests_for_p_0_3 in
   run_random_tests test_name pretest sampler tests
@@ -1349,7 +1349,7 @@ let test_beta_alpha_2_beta_5_p0_3_right _ =
  *)
 let test_chi2_df_4 _ =
   let test_name = "chi2 (4 df) > 3.36" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.chi2_rvs ~df:4.00)>3.36)) in
   let tests = tests_for_p_0_5 in
   run_random_tests test_name pretest sampler tests
@@ -1363,7 +1363,7 @@ let test_chi2_df_4 _ =
  *)
 let test_chi2_df_4_p0_3_left _ =
   let test_name = "chi2 (4 df) < 2.38" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 2 in (* seed 1 fails *)
+  let pretest _ = Owl_stats_prng.sfmt_seed 2 in (* seed 1 fails *)
   let sampler _ length = (length, (fun _ -> (M.chi2_rvs ~df:4.00)<2.38)) in
   let tests = tests_for_p_0_3 in
   run_random_tests test_name pretest sampler tests
@@ -1377,7 +1377,7 @@ let test_chi2_df_4_p0_3_left _ =
  *)
 let test_chi2_df_4_p0_3_right _ =
   let test_name = "chi2 (4 df) > 4.58" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = (length, (fun _ -> (M.chi2_rvs ~df:4.00)>4.58)) in
   let tests = tests_for_p_0_3 in
   run_random_tests test_name pretest sampler tests

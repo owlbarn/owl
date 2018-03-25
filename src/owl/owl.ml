@@ -57,8 +57,6 @@ module Lazy = Owl_lazy
 
 module Graph = Owl_graph
 
-module Common = Owl_common
-
 
 (* backend modules *)
 
@@ -80,7 +78,7 @@ end
 
 let _ =
   (* init the internal state of PRNG *)
-  Owl_common.PRNG.self_init ();
+  Owl_stats_prng.self_init ();
   (* set up owl's folder *)
   let home = Sys.getenv "HOME" ^ "/.owl" in
   let dir_dataset = home ^ "/dataset" in
