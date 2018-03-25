@@ -9,6 +9,19 @@ tests. The module also includes some basic statistical functions such as mean,
 variance, skew, and etc.
 *)
 
+
+(** {6 Randomisation functions} *)
+
+val shuffle : 'a array -> 'a array
+(** ``shuffle x`` return a new array of the shuffled ``x``.  *)
+
+val choose : 'a array -> int -> 'a array
+(** ``choose x n`` draw ``n`` samples from ``x`` without replecement.  *)
+
+val sample : 'a array -> int -> 'a array
+(** ``sample x n`` draw ``n`` samples from ``x`` with replacement.  *)
+
+
 (** {6 Random variables} *)
 
 val uniform : float -> float -> float
