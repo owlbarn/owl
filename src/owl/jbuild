@@ -177,6 +177,8 @@
     -Wno-logical-op-parentheses
     ; For development use before release
     ; -Wall -pedantic -Wextra -Wunused
+    ; Experimental OpenMP
+    ;;;-Xpreprocessor -fopenmp
   ))
   (c_library_flags (
     -L/usr/local/lib/gcc/7
@@ -184,6 +186,8 @@
     -lopenblas
     -lgfortran
     -lm
+    ; Experimental switches
+    ;;;-lomp
   ))
   (flags (
     ; Turn off some warnings as 4.06.0 is pernickety and errors out
