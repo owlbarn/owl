@@ -1,4 +1,8 @@
-(** Owl - Experimental *)
+(*
+ * OWL - an OCaml numerical library for scientific computing
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
+
 
 let add x y = x +. y
 
@@ -75,3 +79,21 @@ let atanh x = 0.5 *. (log ((1. +. x) /. (1. -. x)))
 let relu x = Pervasives.max 0. x
 
 let sigmoid x = 1. /. (1. +. (log (~-. x)) )
+
+
+(* Helper functions *)
+
+let is_nan x = x = nan
+
+let is_inf x = x = infinity || x = neg_infinity
+
+let is_odd x = ((Pervasives.abs x) mod 2) = 1
+
+let is_even x = (x mod 2) = 0
+
+let is_pow2 x = (x <> 0) && (x land (x - 1) = 0)
+
+let same_sign x y =
+  if x >= 0. && y >= 0. then true
+  else if x <= 0. && y <= 0. then true
+  else false

@@ -43,7 +43,6 @@
     owl_matrix_swap_stub
     owl_matrix_check_impl
     owl_matrix_check_stub
-    owl_common_c
     owl_distribution_common_c
     owl_dense_common_c
     owl_dense_common_cmp
@@ -57,10 +56,11 @@
     owl_fftpack_float32
     owl_fftpack_float64
     ; stats
+    SFMT
     owl_stats_extend_misc
     owl_stats_extend_stub
     owl_stats_extend_shuffle
-    SFMT
+    owl_stats_prng_stub
     owl_stats_ziggurat
     owl_stats_dist_stub
     owl_stats_dist_beta

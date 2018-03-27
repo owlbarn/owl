@@ -31,6 +31,13 @@ let count x a =
   !c
 
 
+(* insert an array y into x starting at the position pos in x *)
+let insert x y pos =
+  let n = Array.length x in
+  assert (pos >= 0 && pos < n);
+  Array.(sub x 0 pos @ y @ sub x pos (n - pos))
+
+
 (* filter array, f : int -> 'a -> bool * 'b *)
 let filteri_v f x =
   let r = Owl_utils_stack.make () in

@@ -239,7 +239,16 @@ let reset varr = (Genarray.fill varr 0.)
 
 
 (* The result shares the underlying buffer with original, not a copy *)
-let reshape varr newshape = (Bigarray.reshape varr newshape)
+let reshape x d =
+  let minus_one = Owl_utils.Array.count d (-1) in
+  assert (minus_one <= 1);
+  if minus_one = 0 then reshape x d
+  else (
+    let n = numel x in
+    let m = Array.fold_right ( * ) d (-1) in
+    let e = Array.map (fun a -> if a = -1 then n / m else a) d in
+    reshape x e
+  )
 
 
 (* Return the array as a contiguous block, without copying *)
@@ -442,21 +451,21 @@ let of_array kind arr dims =
 
 
 let uniform kind ?(a=0.) ?(b=1.) dims =
-  let uniform_gen_fun = (fun _ -> Owl_base_stats.uniform a b) in
+  let uniform_gen_fun = (fun _ -> Owl_base_stats.uniform_rvs ~a ~b) in
   let varr = empty kind dims in
   _apply_fun uniform_gen_fun varr;
   varr
 
 
 let bernoulli kind ?(p=0.5) dims =
-  let bernoulli_gen_fun = (fun _ -> Owl_base_stats.bernoulli p) in
+  let bernoulli_gen_fun = (fun _ -> Owl_base_stats.bernoulli_rvs ~p) in
   let varr = empty kind dims in
   _apply_fun bernoulli_gen_fun varr;
   varr
 
 
 let gaussian kind ?(mu=0.) ?(sigma=1.) dims =
-  let gaussian_gen_fun = (fun _ -> Owl_base_stats.gaussian mu sigma) in
+  let gaussian_gen_fun = (fun _ -> Owl_base_stats.gaussian_rvs ~mu ~sigma) in
   let varr = empty kind dims in
   _apply_fun gaussian_gen_fun varr;
   varr

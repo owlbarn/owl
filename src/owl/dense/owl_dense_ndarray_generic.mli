@@ -1755,8 +1755,25 @@ val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 
 (** {6 Tensor Calculus}  *)
 
-val contract_one : (int * int) array -> ('a, 'b) t -> ('a, 'b) t
-(** TODO *)
+val contract1 : (int * int) array -> ('a, 'b) t -> ('a, 'b) t
+(**
+``contract1 index_pairs x`` performs indices contraction (a.k.a tensor
+contraction) on ``x``. ``index_pairs`` is an array of contracted indices.
+
+Caveat: Not well tested yet, use with care! Also, consider to use TTGT in
+future for better perfomance.
+ *)
+
+val contract2 : (int * int) array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``contract2 index_pairs x y`` performs indices contraction (a.k.a tensor
+contraction) on two ndarrays ``x`` and ``y``. ``index_pairs`` is an array of
+contracted indices, the first element is the index of ``x``, the second is that
+of ``y``.
+
+Caveat: Not well tested yet, use with care! Also, consider to use TTGT in
+future for better perfomance.
+ *)
 
 
 (** {6 Cast functions}  *)
@@ -1811,110 +1828,112 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 
 (** {6 Neural network related}  *)
 
-val conv1d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+val conv1d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val conv2d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+val conv2d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val conv3d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+val conv3d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool1d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val max_pool1d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool2d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val max_pool2d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool3d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val max_pool3d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val avg_pool1d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val avg_pool1d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val avg_pool2d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val avg_pool2d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val avg_pool3d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val avg_pool3d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool2d_argmax : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t * (int64, int64_elt) t
+val max_pool2d_argmax : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t * (int64, int64_elt) t
 (**
 []
  *)
 
-val conv1d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+val conv1d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val conv1d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+val conv1d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val conv2d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+val conv2d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val conv2d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+val conv2d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val conv3d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+val conv3d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+val conv3d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool1d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+val max_pool1d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+val max_pool2d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool3d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
-(** [] *)
-
-val avg_pool1d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+val max_pool3d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val avg_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+val avg_pool1d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val avg_pool3d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+val avg_pool2d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(**
+[]
+ *)
+
+val avg_pool3d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
 (** [] *)
 
 

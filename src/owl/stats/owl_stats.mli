@@ -37,8 +37,9 @@ val std : ?mean:float -> float array -> float
 (** ``std x`` calculates the standard deviation of ``x``. *)
 
 val sem : ?mean:float -> float array -> float
-(** ``sem x`` calculates the standard error of ``x``, also referred to as standard
-error of the mean.
+(**
+``sem x`` calculates the standard error of ``x``, also referred to as
+standard error of the mean.
  *)
 
 val absdev : ?mean:float -> float array -> float
@@ -48,7 +49,8 @@ val skew : ?mean:float -> ?sd:float -> float array -> float
 (** ``skew x`` calculates the skewness (the third standardized moment) of ``x``. *)
 
 val kurtosis : ?mean:float -> ?sd:float -> float array -> float
-(** ``kurtosis x`` calculates the Pearson's kurtosis of ``x``, i.e. the fourth
+(**
+``kurtosis x`` calculates the Pearson's kurtosis of ``x``, i.e. the fourth
 standardized moment of ``x``.
  *)
 
@@ -56,12 +58,20 @@ val central_moment : int -> float array -> float
 (** ``central_moment n x`` calcuates the ``n`` th central moment of ``x``. *)
 
 val cov : ?m0:float -> ?m1:float -> float array -> float array -> float
-(** ``cov x0 x1`` calculates the covariance of ``x0`` and ``x1``, the mean of ``x0``
-and ``x1`` can be specified by ``m0`` and ``m1`` respectively.
+(**
+``cov x0 x1`` calculates the covariance of ``x0`` and ``x1``, the mean of
+``x0`` and ``x1`` can be specified by ``m0`` and ``m1`` respectively.
  *)
 
+val concordant : 'a array -> 'b array -> int
+(** TODO *)
+
+val discordant : 'a array -> 'b array -> int
+(** TODO *)
+
 val corrcoef : float array -> float array -> float
-(** ``corrcoef x y`` calculates the Pearson correlation of ``x`` and ``y``. Namely,
+(**
+``corrcoef x y`` calculates the Pearson correlation of ``x`` and ``y``. Namely,
 ``corrcoef x y = cov(x, y) / (sigma_x * sigma_y)``.
  *)
 

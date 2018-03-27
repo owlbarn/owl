@@ -5,13 +5,6 @@
 
 (** Maths: fundamental and advanced mathematical functions. *)
 
-(**
-   This module contains some basic and advanced mathematical operations.
-   If you cannot find some function in this module, try Stats module.
-
-   Please refer to Scipy documentation.
-*)
-
 
 (** {6 Basic functions} *)
 
@@ -113,6 +106,29 @@ val acosh : float -> float
 
 val atanh : float -> float
 (** ``atanh x`` *)
+
+
+(** {6 Helper functions} *)
+
+val is_nan : float -> bool
+(** ``is_nan x`` returns ``true`` if ``x`` is ``nan``. *)
+
+val is_inf : float -> bool
+(** ``is_inf x`` returns ``true`` if ``x`` is ``infinity`` or ``neg_infinity``. *)
+
+val is_odd : int -> bool
+(** ``is_odd x`` returns ``true`` if ``x`` is odd. *)
+
+val is_even : int -> bool
+(** ``is_even x`` returns ``true`` if ``x`` is even. *)
+
+val is_pow2 : int -> bool
+(** ``is_pow2 x`` return ``true`` if ``x`` is integer power of 2, e.g. 32, 64, etc. *)
+
+val same_sign : float -> float -> bool
+(** ``same_sign x y`` returns ``true`` if ``x`` and ``y`` have the same sign,
+otherwise it returns ``false``. Positive and negative zeros are special cases
+and always returns ``true``. *)
 
 
 

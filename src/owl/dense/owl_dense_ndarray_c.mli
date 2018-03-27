@@ -496,9 +496,58 @@ val pow_scalar : arr -> elt -> arr
 val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
 
 
+(** {6 Neural network related functions} *)
+
+val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
+
+val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
+
+val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
+
+val max_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
+
+val max_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
+
+val max_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
+
+val avg_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
+
+val avg_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
+
+val avg_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
+
+val max_pool2d_argmax : ?padding:padding -> arr -> int array -> int array -> arr * (int64, int64_elt, c_layout) Genarray.t
+
+val conv1d_backward_input : arr -> arr -> int array -> arr -> arr
+
+val conv1d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
+
+val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
+
+val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+val max_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+val max_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+val avg_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+
 (** {6 Tensor Calculus}  *)
 
-val contract_one : (int * int) array -> arr -> arr
+val contract1 : (int * int) array -> arr -> arr
+
+val contract2 : (int * int) array -> arr -> arr -> arr
 
 
 (** {6 Experimental functions} *)

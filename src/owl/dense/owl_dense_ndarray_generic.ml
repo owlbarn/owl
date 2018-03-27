@@ -3548,45 +3548,19 @@ let draw ?(axis=0) x n =
   let samples = Owl_slicing.get_fancy_array_typ slice x in
   samples, indices
 
-(*
-let contract_one_ index_pair x =
-  let n = num_dims x in
-  let i, j = index_pair in
-  assert (n > 1 && i >= 0 && i < n && j >= 0 && j < n);
-  let s0 = shape x in
-  assert (s0.(i) = s0.(j) && i <> j);
-  let s1 = Owl_utils.Array.filteri (fun k _ -> k <> i && k <> j) s0 in
-  let s2 = Owl_utils.Array.filteri (fun k _ -> k = i || k = j) s0 in
-  let s3 = Array.append s1 [|s0.(i)|] in
-  let s4 = Array.append s1 [|1|] in
 
-  let y = zeros (kind x) s1 in
-  let p = resize ~head:true x s3 in
-  let q = reshape y s4 in
-
-  let i0 = strides x in
-  let i1 = Owl_utils.Array.filteri (fun k _ -> k <> i && k <> j) i0 in
-  let i2 = Owl_utils.Array.filteri (fun k _ -> k = i || k = j) i0 in
-  let i3 = Array.append i1 [| Array.fold_left ( + ) 0 i2 |] in
-  let i4 = strides q in
-  let incp = Array.map Int32.of_int i3 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
-  let incq = Array.map Int32.of_int i4 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
-
-  Owl_ndarray._ndarray_contract_one (kind x) p q incp incq;
-  y
-*)
-
-let _check_index_pair x idx =
-  let i, j = idx in
+let _contract1_check_indices idx x =
   let s = shape x in
   let n = num_dims x in
-  (i >= 0 && i < n && j >= 0 && j < n) && (s.(i) = s.(j) && i <> j)
+  Array.for_all (fun (i,j) ->
+    (i >= 0 && i < n && j >= 0 && j < n) && (s.(i) = s.(j) && i <> j)
+  ) idx
 
 
-let contract_one index_pairs x =
+let contract1 index_pairs x =
   let d = num_dims x in
   assert (d > 1);
-  assert (Array.for_all (_check_index_pair x) index_pairs);
+  assert (_contract1_check_indices index_pairs x);
 
   let permut_1 = Owl_utils.Array.of_tuples index_pairs in
   let permut_0 = Owl_utils.Array.(complement (range 0 (d - 1)) permut_1) in
@@ -3605,13 +3579,63 @@ let contract_one index_pairs x =
 
   let p = reshape x s1 in
   let q = zeros (kind x) sb in
-  let incp = Array.map Int32.of_int i1 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
-  let incq = Array.map Int32.of_int ib |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let incp = Array.map Int64.of_int i1 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let incq = Array.map Int64.of_int ib |> Array1.of_array int64 c_layout |> genarray_of_array1 in
 
   let rtd = d - (Array.length permut_1) in
-  Owl_ndarray._ndarray_contract_one (kind x) p q incp incq (Int32.of_int rtd);
+  Owl_ndarray._ndarray_contract_one (kind x) p q incp incq (Int64.of_int rtd);
   reshape q (Array.sub sb 0 rtd)
 
+
+let _contract2_check_indices idx x y =
+  let sx = shape x in
+  let nx = num_dims x in
+  let sy = shape y in
+  let ny = num_dims y in
+  Array.for_all (fun (i,j) ->
+    i >= 0 && i < nx && j >= 0 && j < ny && sx.(i) = sy.(j)
+  ) idx
+
+
+let contract2 index_pairs x y =
+  assert (_contract2_check_indices index_pairs x y);
+
+  let dx = num_dims x in
+  let permut_x1 = Owl_utils.Array.map fst index_pairs in
+  let permut_x0 = Owl_utils.Array.(complement (range 0 (dx - 1)) permut_x1) in
+  let permut_x = Owl_utils.Array.(permut_x0 @ permut_x1) in
+  let shpx = Owl_utils.Array.permute permut_x (shape x) in
+  let incx = Owl_utils.Array.permute permut_x (strides x) in
+
+  let dy = num_dims y in
+  let permut_y1 = Owl_utils.Array.map snd index_pairs in
+  let permut_y0 = Owl_utils.Array.(complement (range 0 (dy - 1)) permut_y1) in
+  let permut_y = Owl_utils.Array.(permut_y0 @ permut_y1) in
+  let shpy = Owl_utils.Array.permute permut_y (shape y) in
+  let incy = Owl_utils.Array.permute permut_y (strides y) in
+
+  let outer_nx = Array.length permut_x0 in
+  let outer_ny = Array.length permut_y0 in
+  let inner_nx = Array.length permut_x1 in
+  let inner_ny = Array.length permut_y1 in
+  assert (inner_nx = inner_ny);
+
+  let shpz_x = Array.sub shpx 0 outer_nx in
+  let shpz_y = Array.sub shpy 0 outer_ny in
+  let shpz = Owl_utils.Array.(shpz_x @ shpz_y) in
+  let z = zeros (kind x) shpz in
+
+  let loop0 = Owl_utils.Array.(shpz @ (sub shpx outer_nx inner_nx)) in
+  let incx0 = Owl_utils.Array.(insert incx (make outer_ny 0) outer_nx) in
+  let incy0 = Owl_utils.Array.(insert incy (make outer_nx 0) 0) in
+  let incz0 = Owl_utils.Array.(strides z @ (make inner_nx 0)) in
+  let loop1 = Array.map Int64.of_int loop0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let incx1 = Array.map Int64.of_int incx0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let incy1 = Array.map Int64.of_int incy0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let incz1 = Array.map Int64.of_int incz0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let ndims = Array.length loop0 |> Int64.of_int in
+  Owl_ndarray._ndarray_contract_two (kind x) x y z incx1 incy1 incz1 loop1 ndims;
+  z
 
 
 (* ends here *)
