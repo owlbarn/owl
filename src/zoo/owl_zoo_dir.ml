@@ -31,6 +31,9 @@ and _download_gist gid vid =
 
 
 and _dir_zoo_ocaml gid vid added =
+  let replace input output =
+    Str.global_replace (Str.regexp_string input) output
+  in
   let dir_gist = Owl_zoo_path.gist_path gid vid in
   Sys.readdir (dir_gist)
   |> Array.to_list
@@ -40,11 +43,11 @@ and _dir_zoo_ocaml gid vid added =
 
       (* extend file path in a script *)
       let f' = "/tmp/" ^ l in
-      Sys.command (Printf.sprintf "cp %s %s" f f') |> ignore;
-      let cmd = Printf.sprintf
-        "sed -i 's/extend_zoo_path/extend_zoo_path ~gid:\"%s\" ~vid:\"%s\"/g' %s"
-        gid vid f' in
-      Sys.command cmd |> ignore;
+      let f_str = Owl_utils.read_file_string f in
+      let f'_str = replace "extend_zoo_path"
+        (Printf.sprintf "extend_zoo_path ~gid:\"%s\" ~vid:\"%s\"" gid vid) f_str
+      in
+      Owl_utils.write_file f' f'_str;
 
       _extract_zoo_gist f' added;
       Toploop.mod_use_file Format.std_formatter f'

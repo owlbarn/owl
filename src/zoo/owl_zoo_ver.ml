@@ -18,8 +18,8 @@ let syscall cmd =
    with End_of_file -> ());
   Unix.close_process (ic, oc) |> ignore;
   Buffer.contents buf
-  
- 
+
+
 (** Version information of gists is saved as key-value pairs in Hash table:
 key: gid; value: (version list, timestamp). *)
 let create_htb () =
@@ -50,10 +50,13 @@ let get_timestamp (gid : string) =
 (** Get the most up-to-date gist version from Gist server; return "" if the gid
 is not found or network error happens. *)
 let get_remote_vid (gid : string) =
-  let cmd = "curl https://api.github.com/gists/" ^ gid ^
-    " | grep '\"version\"' | head -n1 | grep -o -E '[0-9A-Za-z]+' | grep -v 'version'"
-  in
-  syscall cmd |> String.trim
+  let cmd = "curl https://api.github.com/gists/" ^ gid in
+  let s = syscall cmd in
+  let r = Str.regexp "\"version\":[ \n\r\t]+\"\\([0-9a-z]+\\)\"" in
+  try
+    let _ = Str.search_forward r s 0 in
+    Str.matched_group 1 s
+  with Not_found -> ""
 
 
 (** Get the latest version downloaded on local machine; if the local version is
