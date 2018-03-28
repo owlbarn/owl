@@ -165,6 +165,7 @@
     zetac
   ))
   (c_flags (
+    (:include c_flags.sexp)
     -g -O3 -Ofast
     ; Experimental switches
     ; -ffast-math may break IEEE754 semantics
@@ -202,4 +203,12 @@
     eigen
     plplot
   ))
+))
+
+
+(rule
+ ((targets (c_flags.sexp
+            c_library_flags.sexp))
+  (deps    (config/discover.exe))
+  (action  (run ${<} -ocamlc ${OCAMLC}))
 ))
