@@ -41,6 +41,6 @@ let () =
         )
     in
 
-    write_sexp "c_flags.sexp"         Base.(sexp_of_list sexp_of_string conf.cflags);
+    write_sexp "c_flags.sexp" Base.(sexp_of_list sexp_of_string conf.cflags);
     write_sexp "c_library_flags.sexp" Base.(sexp_of_list sexp_of_string conf.libs)
   )
