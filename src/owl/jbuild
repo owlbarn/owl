@@ -182,8 +182,7 @@
     ;;;-Xpreprocessor -fopenmp
   ))
   (c_library_flags (
-    -L/usr/local/lib/gcc/7
-    -L/usr/local/opt/openblas/lib
+    (:include c_library_flags.sexp)
     -lopenblas
     -lgfortran
     -lm

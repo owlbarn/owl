@@ -2,4 +2,4 @@
 
 (executable
  ((name discover)
-  (libraries (base stdio configurator))))
+  (libraries (base stdio configurator unix))))
