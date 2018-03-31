@@ -21,7 +21,7 @@
 #define ACCFN(a, b) if (a < b) a = b
 #define UPDATEFN(a, b) a
 #define PLT(a,b) a < b
-#include "owl_ndarray_pool_impl.c"
+#include "owl_ndarray_pool_impl.h"
 #undef PLT
 #undef UPDATEFN
 #undef ACCFN
@@ -40,7 +40,7 @@
 #define ACCFN(a, b) a += b
 #define UPDATEFN(a, b) a / b
 #define PLT(a,b) a < b
-#include "owl_ndarray_pool_impl.c"
+#include "owl_ndarray_pool_impl.h"
 #undef PLT
 #undef UPDATEFN
 #undef ACCFN
@@ -59,7 +59,7 @@
 #define ACCFN(a, b) if (a < b) a = b
 #define UPDATEFN(a, b) a
 #define PLT(a,b) a < b
-#include "owl_ndarray_pool_impl.c"
+#include "owl_ndarray_pool_impl.h"
 #undef PLT
 #undef UPDATEFN
 #undef ACCFN
@@ -78,7 +78,7 @@
 #define ACCFN(a, b) a += b
 #define UPDATEFN(a, b) a / b
 #define PLT(a,b) a < b
-#include "owl_ndarray_pool_impl.c"
+#include "owl_ndarray_pool_impl.h"
 #undef PLT
 #undef UPDATEFN
 #undef ACCFN
@@ -97,7 +97,7 @@
 #define ACCFN(a, b) if CLTF(a,b) a = b
 #define UPDATEFN(a, b) a
 #define PLT CLTF
-#include "owl_ndarray_pool_impl.c"
+#include "owl_ndarray_pool_impl.h"
 #undef PLT
 #undef UPDATEFN
 #undef ACCFN
@@ -116,7 +116,7 @@
 #define ACCFN(a, b) a += b
 #define UPDATEFN(a, b) a / b
 #define PLT CLTF
-#include "owl_ndarray_pool_impl.c"
+#include "owl_ndarray_pool_impl.h"
 #undef PLT
 #undef UPDATEFN
 #undef ACCFN
@@ -135,7 +135,7 @@
 #define ACCFN(a, b) if CLT(a,b) a = b
 #define UPDATEFN(a, b) a
 #define PLT CLT
-#include "owl_ndarray_pool_impl.c"
+#include "owl_ndarray_pool_impl.h"
 #undef PLT
 #undef UPDATEFN
 #undef ACCFN
@@ -154,7 +154,7 @@
 #define ACCFN(a, b) a += b
 #define UPDATEFN(a, b) a / b
 #define PLT CLT
-#include "owl_ndarray_pool_impl.c"
+#include "owl_ndarray_pool_impl.h"
 #undef PLT
 #undef UPDATEFN
 #undef ACCFN

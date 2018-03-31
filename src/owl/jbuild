@@ -27,27 +27,16 @@
   (c_names (
     ; Core
     owl_core_utils
-    owl_slicing_basic_impl
     owl_slicing_basic_stub
-    owl_slicing_fancy_impl
     owl_slicing_fancy_stub
-    owl_ndarray_conv_impl
+    owl_ndarray_maths_stub
     owl_ndarray_conv_stub
-    owl_ndarray_pool_impl
     owl_ndarray_pool_stub
-    owl_ndarray_contract_impl
     owl_ndarray_contract_stub
-    owl_ndarray_transpose_impl
     owl_ndarray_transpose_stub
-    owl_matrix_swap_impl
     owl_matrix_swap_stub
-    owl_matrix_check_impl
     owl_matrix_check_stub
     owl_distribution_common_c
-    owl_ndarray_maths_cmp
-    owl_ndarray_maths_map
-    owl_ndarray_maths_fold
-    owl_ndarray_maths_stub
     owl_cblas_generated_stub
     owl_lapacke_generated_stub
     ; FFTPACK
