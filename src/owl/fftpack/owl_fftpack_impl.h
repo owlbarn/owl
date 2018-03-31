@@ -6,7 +6,7 @@
 
 #ifdef Treal
 
-#include "fftpack.c"
+#include "fftpack_impl.h"
 
 
 /** Owl's interface function to FFTPACK **/
