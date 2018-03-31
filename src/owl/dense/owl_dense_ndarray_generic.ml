@@ -8,6 +8,7 @@ open Owl_types
 open Bigarray
 
 open Owl_dense_common
+open Owl_ndarray
 
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
