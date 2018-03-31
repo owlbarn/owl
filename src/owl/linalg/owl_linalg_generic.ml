@@ -545,19 +545,19 @@ let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
 
 (* Check matrix properties *)
 
-let is_triu x = Owl_core._matrix_is_triu (M.kind x) x
+let is_triu x = Owl_matrix._matrix_is_triu (M.kind x) x
 
 
-let is_tril x = Owl_core._matrix_is_tril (M.kind x) x
+let is_tril x = Owl_matrix._matrix_is_tril (M.kind x) x
 
 
-let is_symmetric x = Owl_core._matrix_is_symmetric (M.kind x) x
+let is_symmetric x = Owl_matrix._matrix_is_symmetric (M.kind x) x
 
 
-let is_hermitian x = Owl_core._matrix_is_hermitian (M.kind x) x
+let is_hermitian x = Owl_matrix._matrix_is_hermitian (M.kind x) x
 
 
-let is_diag x = Owl_core._matrix_is_diag (M.kind x) x
+let is_diag x = Owl_matrix._matrix_is_diag (M.kind x) x
 
 
 let is_posdef x =

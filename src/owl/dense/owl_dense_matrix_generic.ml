@@ -272,19 +272,19 @@ let set x i j a = Owl_dense_ndarray_generic.set x [|i;j|] a
 
 let swap_rows x i i' =
   let m, n = shape x in
-  Owl_core._matrix_swap_rows (kind x) x m n i i'
+  Owl_matrix._matrix_swap_rows (kind x) x m n i i'
 
 
 let swap_cols x j j' =
   let m, n = shape x in
-  Owl_core._matrix_swap_cols (kind x) x m n j j'
+  Owl_matrix._matrix_swap_cols (kind x) x m n j j'
 
 
 let transpose x =
   let k = kind x in
   let m, n = shape x in
   let y = empty k n m in
-  Owl_core._matrix_transpose k x y;
+  Owl_matrix._matrix_transpose k x y;
   y
 
 
@@ -292,7 +292,7 @@ let ctranspose x =
   let k = kind x in
   let m, n = shape x in
   let y = empty k n m in
-  Owl_core._matrix_ctranspose k x y;
+  Owl_matrix._matrix_ctranspose k x y;
   y
 
 

@@ -1144,7 +1144,7 @@ let matrix_transpose x =
   let s = shape x in
   let m, n = s.(0), s.(1) in
   let y = empty k [|n;m|] in
-  Owl_core._matrix_transpose k x y;
+  Owl_matrix._matrix_transpose k x y;
   y
 
 
