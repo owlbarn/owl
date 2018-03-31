@@ -5,7 +5,7 @@
 
 open Bigarray
 
-open Owl_dense_common_types
+open Owl_core_types
 
 
 external owl_float32_ndarray_conv_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =

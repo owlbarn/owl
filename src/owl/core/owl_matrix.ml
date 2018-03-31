@@ -4,7 +4,7 @@
  *)
 
 open Bigarray
-open Owl_dense_common_types
+open Owl_core_types
 
 
 external owl_float32_matrix_swap_rows : ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "stub_float32_matrix_swap_rows"

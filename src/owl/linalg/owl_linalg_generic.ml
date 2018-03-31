@@ -38,19 +38,19 @@ let select_ev keyword ev =
   let s = M.zeros int32 m n in
   let _ = match keyword with
     | `LHP -> (
-        let _op = Owl_dense_common._re_elt k in
+        let _op = Owl_ndarray._re_elt k in
         M.iteri_2d (fun i j a -> if _op a < 0. then M.set s i j 1l) ev
       )
     | `RHP -> (
-        let _op = Owl_dense_common._re_elt k in
+        let _op = Owl_ndarray._re_elt k in
         M.iteri_2d (fun i j a -> if _op a >= 0. then M.set s i j 1l) ev
       )
     | `UDI -> (
-        let _op = fun a -> Owl_dense_common.(_abs_elt k a |> _re_elt k) in
+        let _op = fun a -> Owl_ndarray.(_abs_elt k a |> _re_elt k) in
         M.iteri_2d (fun i j a -> if _op a < 1. then M.set s i j 1l) ev
       )
     | `UDO -> (
-        let _op = fun a -> Owl_dense_common.(_abs_elt k a |> _re_elt k) in
+        let _op = fun a -> Owl_ndarray.(_abs_elt k a |> _re_elt k) in
         M.iteri_2d (fun i j a -> if _op a >= 1. then M.set s i j 1l) ev
       )
   in
@@ -98,7 +98,7 @@ let det x =
   let d = ref (Owl_const.one (M.kind x)) in
   let c = ref 0 in
 
-  let _mul_op = Owl_dense_common._mul_elt (M.kind x) in
+  let _mul_op = Owl_ndarray._mul_elt (M.kind x) in
   for i = 0 to m - 1 do
     d := _mul_op !d (M.get a i i);
     (* NOTE: +1 to adjust to Fortran index *)
@@ -107,7 +107,7 @@ let det x =
   done;
 
   match Owl_maths.is_odd !c with
-  | true  -> Owl_dense_common._neg_elt (M.kind x) !d
+  | true  -> Owl_ndarray._neg_elt (M.kind x) !d
   | false -> !d
 
 
@@ -122,9 +122,9 @@ let logdet x =
   let d = ref (Owl_const.zero _kind) in
   let c = ref 0 in
 
-  let _add_op = Owl_dense_common._add_elt _kind in
-  let _log_op = Owl_dense_common._log_elt _kind in
-  let _neg_op = Owl_dense_common._neg_elt _kind in
+  let _add_op = Owl_ndarray._add_elt _kind in
+  let _log_op = Owl_ndarray._log_elt _kind in
+  let _neg_op = Owl_ndarray._neg_elt _kind in
 
   for i = 0 to m - 1 do
     d := _add_op !d (_log_op (M.get a i i));
@@ -134,7 +134,7 @@ let logdet x =
   done;
 
   match Owl_maths.is_odd !c with
-  | true  -> Owl_dense_common._neg_elt _kind !d
+  | true  -> Owl_ndarray._neg_elt _kind !d
   | false -> !d
 
 
@@ -601,18 +601,18 @@ let norm ?(p=2.) x =
 let vecnorm ?(p=2.) x =
   let k = M.kind x in
   if p = 1. then
-    M.l1norm' x |> Owl_dense_common._re_elt k
+    M.l1norm' x |> Owl_ndarray._re_elt k
   else if p = 2. then
-    M.l2norm' x |> Owl_dense_common._re_elt k
+    M.l2norm' x |> Owl_ndarray._re_elt k
   else (
     let v = M.flatten x |> M.abs in
     if p = infinity then
-      M.max' v |> Owl_dense_common._re_elt k
+      M.max' v |> Owl_ndarray._re_elt k
     else if p = neg_infinity then
-      M.min' v |> Owl_dense_common._re_elt k
+      M.min' v |> Owl_ndarray._re_elt k
     else (
-      M.pow_scalar_ v (Owl_dense_common._float_typ_elt k p);
-      let a = M.sum' v |> Owl_dense_common._re_elt k in
+      M.pow_scalar_ v (Owl_ndarray._float_typ_elt k p);
+      let a = M.sum' v |> Owl_ndarray._re_elt k in
       a ** (1. /. p)
     )
   )
@@ -705,9 +705,9 @@ let linreg x y =
   let k = M.kind x in
   let p = M.get (M.cov ~a:x ~b:y) 0 1 in
   let q = M.get (M.var ~axis:0 x) 0 0 in
-  let b = Owl_dense_common._div_elt k p q in
-  let c = Owl_dense_common._mul_elt k b (M.mean' x) in
-  let a = Owl_dense_common._sub_elt k (M.mean' y) c in
+  let b = Owl_ndarray._div_elt k p q in
+  let c = Owl_ndarray._mul_elt k b (M.mean' x) in
+  let a = Owl_ndarray._sub_elt k (M.mean' y) c in
   a, b
 
 
@@ -722,7 +722,7 @@ let pinv ?tol x =
     | Some tol -> tol
     | None     -> eps *. a *. b
   in
-  let tol = Owl_dense_common._float_typ_elt (M.kind x) t in
+  let tol = Owl_ndarray._float_typ_elt (M.kind x) t in
   let s' = M.(reci_tol ~tol s |> diagm) in
   let ut = M.ctranspose u in
   let v = M.ctranspose vt in
@@ -735,7 +735,7 @@ let sylvester a b c =
   let d = M.((ctranspose qa) *@ (c *@ qb)) in
   let y, s = Owl_lapacke.trsyl 'N' 'N' 1 ra rb d in
   let z = M.(qa *@ (y *@ (ctranspose qb))) in
-  M.mul_scalar_ z (Owl_dense_common._float_typ_elt (M.kind c) (1. /. s));
+  M.mul_scalar_ z (Owl_ndarray._float_typ_elt (M.kind c) (1. /. s));
   z
 
 
@@ -745,7 +745,7 @@ let lyapunov a c =
   let tb = _get_trans_code (M.kind c) in
   let y, s = Owl_lapacke.trsyl 'N' tb 1 r r d in
   let z = M.(q *@ (y *@ (ctranspose q))) in
-  M.mul_scalar_ z (Owl_dense_common._float_typ_elt (M.kind c) (1. /. s));
+  M.mul_scalar_ z (Owl_ndarray._float_typ_elt (M.kind c) (1. /. s));
   z
 
 
@@ -845,7 +845,7 @@ let expm x =
     let norm_x = norm ~p:1. x in
     (* for small norm, use lower order Padé-approximation *)
     if norm_x <= 2.097847961257068 then (
-      let c = Array.map (Owl_dense_common._float_typ_elt (M.kind x)) (
+      let c = Array.map (Owl_ndarray._float_typ_elt (M.kind x)) (
         if norm_x > 0.9504178996162932 then
           [|17643225600.; 8821612800.; 2075673600.; 302702400.; 30270240.; 2162160.; 110880.; 3960.; 90.; 1.|]
         else if norm_x > 0.2539398330063230 then
@@ -881,12 +881,12 @@ let expm x =
       let t = ceil s in
       let x =
         if s > 0. then
-          Owl_dense_common._float_typ_elt (M.kind x) (2. ** t)
+          Owl_ndarray._float_typ_elt (M.kind x) (2. ** t)
           |> M.div_scalar x
         else x
       in
 
-      let c = Array.map (Owl_dense_common._float_typ_elt (M.kind x))
+      let c = Array.map (Owl_ndarray._float_typ_elt (M.kind x))
         [|64764752532480000.; 32382376266240000.; 7771770303897600.;
           1187353796428800.;  129060195264000.;   10559470521600.;
           670442572800.;      33522128640.;       1323241920.;
@@ -1029,17 +1029,17 @@ let tanm x =
 
 
 let sinhm x =
-  let a = Owl_dense_common._float_typ_elt (M.kind x) 0.5 in
+  let a = Owl_ndarray._float_typ_elt (M.kind x) 0.5 in
   M.( a $* ((expm x) - (expm (neg x))) )
 
 
 let coshm x =
-  let a = Owl_dense_common._float_typ_elt (M.kind x) 0.5 in
+  let a = Owl_ndarray._float_typ_elt (M.kind x) 0.5 in
   M.( a $* ((expm x) + (expm (neg x))) )
 
 
 let sinhcoshm x =
-  let a = Owl_dense_common._float_typ_elt (M.kind x) 0.5 in
+  let a = Owl_ndarray._float_typ_elt (M.kind x) 0.5 in
   let b = expm x in
   let c = expm (M.neg x) in
   M.(a $* (b - c)), M.(a $* (b + c))

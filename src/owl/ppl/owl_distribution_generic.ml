@@ -5,7 +5,7 @@
 
 open Bigarray
 
-open Owl_dense_common
+open Owl_ndarray
 
 open Owl_dense_ndarray_generic
 

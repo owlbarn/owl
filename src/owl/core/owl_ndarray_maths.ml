@@ -5,7 +5,7 @@
 
 open Bigarray
 
-open Owl_dense_common_types
+open Owl_core_types
 
 
 (* basic operations on individual element *)

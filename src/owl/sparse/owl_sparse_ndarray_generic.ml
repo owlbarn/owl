@@ -4,7 +4,9 @@
  *)
 
 open Bigarray
-open Owl_dense_common
+
+open Owl_ndarray
+
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 

@@ -12,7 +12,8 @@
 
 open Owl_types
 
-open Owl_dense_common
+open Owl_ndarray
+
 
 type 'a arr = {
   mutable shape  : int array;

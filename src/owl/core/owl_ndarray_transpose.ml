@@ -5,7 +5,7 @@
 
 open Bigarray
 
-open Owl_dense_common_types
+open Owl_core_types
 
 
 external owl_float32_ndarray_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int32, int32_elt) owl_arr -> (int32, int32_elt) owl_arr -> unit = "stub_float32_ndarray_transpose"

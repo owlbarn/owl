@@ -6,6 +6,8 @@
 (** Tensor operations implementation in Owl's Ndarray *)
 
 
+include Owl_ndarray_maths
+
 include Owl_ndarray_conv
 
 include Owl_ndarray_pool

@@ -7,7 +7,6 @@ open Owl_types
 
 open Bigarray
 
-open Owl_dense_common
 open Owl_ndarray
 
 
