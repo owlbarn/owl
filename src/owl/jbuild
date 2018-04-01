@@ -172,7 +172,7 @@
 (rule
  ((targets (c_flags.sexp
             c_library_flags.sexp))
-  (deps    (config/discover.exe))
+  (deps    (config/configure.exe))
   (action
     (setenv ENABLE_EXPMODE 0 ; turn on experiment features like flto
     (setenv ENABLE_DEVMODE 0 ; turn on all the warnings in development
