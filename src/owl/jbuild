@@ -151,27 +151,8 @@
     zeta
     zetac
   ))
-  (c_flags (
-    (:include c_flags.sexp)
-    -g -O3 -Ofast
-    ; Experimental switches
-    ; -ffast-math may break IEEE754 semantics
-    -march=native -mfpmath=sse -funroll-loops -ffast-math
-    ; Turn off LTO since it is not well supported at the moment
-    ; -flto
-    ; For Mersenne Twister RNG
-    -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing
-    ; Turn off the warning on logical op parentheses
-    -Wno-logical-op-parentheses
-    ; For development use before release
-    ; -Wall -pedantic -Wextra -Wunused
-  ))
-  (c_library_flags (
-    (:include c_library_flags.sexp)
-    -lopenblas
-    -lgfortran
-    -lm
-  ))
+  (c_flags ((:include c_flags.sexp)))
+  (c_library_flags ((:include c_library_flags.sexp)))
   (flags (
     ; Turn off some warnings as 4.06.0 is pernickety and errors out
     :standard
@@ -193,6 +174,9 @@
             c_library_flags.sexp))
   (deps    (config/discover.exe))
   (action
-    (setenv ENABLE_OPENMP 1
-      (run ${<} -ocamlc ${OCAMLC})))
+    (setenv ENABLE_EXPMODE 0 ; turn on experiment features like flto
+    (setenv ENABLE_DEVMODE 0 ; turn on all the warnings in development
+    (setenv ENABLE_OPENMP  1 ; turn on OpenMP support in core module
+      (run ${<} -ocamlc ${OCAMLC}))
+    )))
 ))
