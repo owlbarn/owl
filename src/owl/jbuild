@@ -151,14 +151,9 @@
     zeta
     zetac
   ))
-  (c_flags ((:include c_flags.sexp)))
+  (c_flags         ((:include c_flags.sexp)))
   (c_library_flags ((:include c_library_flags.sexp)))
-  (flags (
-    ; Turn off some warnings as 4.06.0 is pernickety and errors out
-    :standard
-    -safe-string
-    ; -w "-32-27-6-37-3"
-  ))
+  (flags           ((:include ocaml_flags.sexp)))
   (libraries (
     owl_base
     ctypes
@@ -171,7 +166,8 @@
 
 (rule
  ((targets (c_flags.sexp
-            c_library_flags.sexp))
+            c_library_flags.sexp
+            ocaml_flags.sexp))
   (deps    (config/configure.exe))
   (action
     (setenv ENABLE_EXPMODE 0 ; turn on experiment features like flto

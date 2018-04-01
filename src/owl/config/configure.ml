@@ -15,6 +15,21 @@ let get_os_type c =
   match sys with Some s -> s | None -> ""
 
 
+let get_ocaml_default_flags c = [
+  ":standard";
+  "-safe-string";
+]
+
+
+let get_ocaml_devmode_flags c =
+  let enable_devmode = Sys.getenv "ENABLE_DEVMODE" |> int_of_string in
+  if enable_devmode = 0 then []
+  else if enable_devmode = 1 then [
+    "-w"; "-32-27-6-37-3";
+  ]
+  else failwith "Error: ENABLE_DEVMODE only accepts 0/1."
+
+
 let get_default_cflags c = [
   (* Basic optimisation *)
   "-g"; "-O3"; "-Ofast";
@@ -121,9 +136,16 @@ let () =
       @ get_openmp_cflags c
     in
 
+    (* configure ocaml options *)
+    let ocaml_flags = []
+      @ get_ocaml_default_flags c
+      @ get_ocaml_devmode_flags c
+    in
+
     (* assemble default config *)
     let conf : C.Pkg_config.package_conf = { cflags; libs } in
 
     write_sexp "c_flags.sexp" Base.(sexp_of_list sexp_of_string conf.cflags);
-    write_sexp "c_library_flags.sexp" Base.(sexp_of_list sexp_of_string conf.libs)
+    write_sexp "c_library_flags.sexp" Base.(sexp_of_list sexp_of_string conf.libs);
+    write_sexp "ocaml_flags.sexp" Base.(sexp_of_list sexp_of_string ocaml_flags);
   )
