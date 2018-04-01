@@ -165,16 +165,12 @@
     -Wno-logical-op-parentheses
     ; For development use before release
     ; -Wall -pedantic -Wextra -Wunused
-    ; Experimental OpenMP
-    ;;;-Xpreprocessor -fopenmp
   ))
   (c_library_flags (
     (:include c_library_flags.sexp)
     -lopenblas
     -lgfortran
     -lm
-    ; Experimental switches
-    ;;;-lomp
   ))
   (flags (
     ; Turn off some warnings as 4.06.0 is pernickety and errors out
@@ -196,5 +192,7 @@
  ((targets (c_flags.sexp
             c_library_flags.sexp))
   (deps    (config/discover.exe))
-  (action  (run ${<} -ocamlc ${OCAMLC}))
+  (action
+    (setenv ENABLE_OPENMP 1
+      (run ${<} -ocamlc ${OCAMLC})))
 ))
