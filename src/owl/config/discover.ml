@@ -79,10 +79,10 @@ let get_openmp_cflags c =
   if enable_openmp = 0 then []
   else if enable_openmp = 1 then (
     match get_os_type c with
-    | "linux"     -> []
-    | "linux_elf" -> []
+    | "linux"     -> [ "-fopenmp" ]
+    | "linux_elf" -> [ "-fopenmp" ]
     | "macosx"    -> [ "-Xpreprocessor"; "-fopenmp" ]
-    | "mingw64"   -> []
+    | "mingw64"   -> [ "-fopenmp" ]
     | _           -> []
   )
   else failwith "Error: ENABLE_OPENMP only accepts 0/1."
@@ -93,10 +93,10 @@ let get_openmp_libs c =
   if enable_openmp = 0 then []
   else if enable_openmp = 1 then (
     match get_os_type c with
-    | "linux"     -> []
-    | "linux_elf" -> []
+    | "linux"     -> [ "-lgomp" ]
+    | "linux_elf" -> [ "-lgomp" ]
     | "macosx"    -> [ "-lomp" ]
-    | "mingw64"   -> []
+    | "mingw64"   -> [ "-lgomp" ]
     | _           -> []
   )
   else failwith "Error: ENABLE_OPENMP only accepts 0/1."
