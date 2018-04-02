@@ -12,7 +12,7 @@ USER opam
 
 RUN sudo apt-get -y update
 RUN sudo apt-get -y install m4 wget unzip aspcud libshp-dev libplplot-dev gfortran
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes alcotest utop plplot eigen base stdio
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes alcotest utop plplot eigen base stdio configurator
 
 
 #################### SET UP ENV VARS #######################

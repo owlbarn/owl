@@ -15,7 +15,7 @@ RUN sudo zypper -n in git wget unzip m4 pkg-config gcc-fortran
 RUN sudo sudo zypper ref && sudo zypper -n in openblas-devel && sudo update-alternatives --config libblas.so.3
 
 RUN opam update && opam switch 4.06.0 && eval $(opam config env)
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop eigen base stdio
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop eigen base stdio configurator
 
 
 #################### SET UP ENV VARS #######################

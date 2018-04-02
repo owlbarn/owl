@@ -12,7 +12,7 @@ USER opam
 
 RUN sudo apk update
 RUN sudo apk add m4 wget unzip aspcud openblas-dev
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes alcotest utop base stdio
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes alcotest utop base stdio configurator
 
 
 #################### SET UP ENV VARS #######################
