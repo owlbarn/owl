@@ -2428,8 +2428,8 @@ let of_arrays kind arrays =
   let n = Array.length (arrays.(0)) in
   let varr = empty kind [|m; n|] in
   begin
-    for i = 0 to n - 1 do
-      for j = 0 to m - 1 do
+    for i = 0 to m - 1 do
+      for j = 0 to n - 1 do
         Genarray.set varr [|i; j|] (Array.unsafe_get (arrays.(i)) j)
       done
     done;
