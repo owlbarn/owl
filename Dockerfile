@@ -29,8 +29,8 @@ ENV CAML_LD_LIBRARY_PATH /home/opam/.opam/4.06.0/lib/stublibs
 
 ENV OWLPATH /home/opam/owl
 RUN cd /home/opam && git clone https://github.com/ryanrhymes/owl.git
-RUN sed -i -- 's/-lopenblas/-lopenblas -llapacke/g' $OWLPATH/src/owl/jbuild  # FIXME: hacking
-RUN sed -i -- 's:/usr/local/opt/openblas/lib:/usr/lib/x86_64-linux-gnu/:g' $OWLPATH/src/owl/jbuild  # FIXME: hacking
+RUN sed -i -- 's/-lopenblas/-lopenblas -llapacke/g' $OWLPATH/src/owl/config/configure.ml  # FIXME: hacking
+RUN sed -i -- 's:/usr/local/opt/openblas/lib:/usr/lib/x86_64-linux-gnu/:g' $OWLPATH/src/owl/config/configure.ml  # FIXME: hacking
 RUN make -C $OWLPATH && make -C $OWLPATH install && make -C $OWLPATH test && make -C $OWLPATH clean
 
 

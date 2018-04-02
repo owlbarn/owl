@@ -33,7 +33,7 @@ RUN cd $OPENBLASPATH && sudo make && sudo make install && sudo make clean
 
 ENV OWLPATH /home/opam/owl
 RUN cd /home/opam && git clone https://github.com/ryanrhymes/owl.git
-RUN sed -i -- 's:/usr/local/opt/openblas/lib:/opt/OpenBLAS/lib:g' $OWLPATH/src/owl/jbuild  # FIXME: hacking
+RUN sed -i -- 's:/usr/local/opt/openblas/lib:/opt/OpenBLAS/lib:g' $OWLPATH/src/owl/config/configure.ml  # FIXME: hacking
 RUN cd $OWLPATH && make && make install
 
 
