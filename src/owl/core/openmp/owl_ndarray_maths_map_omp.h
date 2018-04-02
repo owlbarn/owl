@@ -52,15 +52,26 @@ CAMLprim value FUN4(value vN, value vX, value vY)
   NUMBER1 *start_y;
 
   caml_enter_blocking_section();  /* Allow other threads */
-  printf("openmp fun4 ...\n");
   start_x = X_data;
   stop_x = start_x + N;
   start_y = Y_data;
 
-  #pragma omp parallel for schedule(guided) num_threads(4)
-  for (int i = 0; i < N; i++) {
-    NUMBER x = *(start_x + i);
-    *(start_y + i) = (MAPFN(x));
+  if (N >= 5000000) {
+    printf("openmp fun4 ... N=%i\n", N);
+    #pragma omp parallel for schedule(guided)
+    for (int i = 0; i < N; i++) {
+      NUMBER x = *(start_x + i);
+      *(start_y + i) = (MAPFN(x));
+    }
+  }
+  else {
+    while (start_x != stop_x) {
+      NUMBER x = *start_x;
+      *start_y = (MAPFN(x));
+
+      start_x += 1;
+      start_y += 1;
+    };
   }
 
   caml_leave_blocking_section();  /* Disallow other threads */
@@ -191,11 +202,20 @@ CAMLprim value FUN15(value vN, value vX, value vY, value vZ)
   start_y = Y_data;
   start_z = Z_data;
 
-  while (start_x != stop_x) {
-    MAPFN(start_x, start_y, start_z);
-    start_x += 1;
-    start_y += 1;
-    start_z += 1;
+  if (N >= 5000000) {
+    printf("openmp fun15 ... N=%i\n", N);
+    #pragma omp parallel for schedule(guided)
+    for (int i = 0; i < N; i++) {
+      MAPFN((start_x + i), (start_y + i), (start_z + i));
+    }
+  }
+  else {
+    while (start_x != stop_x) {
+      MAPFN(start_x, start_y, start_z);
+      start_x += 1;
+      start_y += 1;
+      start_z += 1;
+    }
   };
 
   caml_leave_blocking_section();  /* Disallow other threads */
