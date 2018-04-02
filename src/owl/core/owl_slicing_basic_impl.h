@@ -223,7 +223,7 @@ void FUNCTION (c, slice) (struct slice_pair *p) {
 
 
 // stub function
-value FUNCTION (stub, slice) (value vX, value vY, value vZ) {
+CAMLprim value FUNCTION (stub, slice) (value vX, value vY, value vZ) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 

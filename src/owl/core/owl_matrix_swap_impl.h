@@ -22,7 +22,7 @@ void FUNCTION (c, swap_rows) (TYPE *x, int m, int n, int i, int j) {
 
 
 // stub function of swap_rows
-value FUNCTION (stub, swap_rows) (value vX, value vM, value vN, value vI, value vJ) {
+CAMLprim value FUNCTION (stub, swap_rows) (value vX, value vM, value vN, value vI, value vJ) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 
@@ -55,7 +55,7 @@ void FUNCTION (c, swap_cols) (TYPE *x, int m, int n, int i, int j) {
 
 
 // stub function of swap_cols
-value FUNCTION (stub, swap_cols) (value vX, value vM, value vN, value vI, value vJ) {
+CAMLprim value FUNCTION (stub, swap_cols) (value vX, value vM, value vN, value vI, value vJ) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 
@@ -87,7 +87,7 @@ void FUNCTION (c, transpose) (TYPE *x, TYPE *y, int m, int n) {
 
 
 // stub function of transpose
-value FUNCTION (stub, transpose) (value vX, value vY) {
+CAMLprim value FUNCTION (stub, transpose) (value vX, value vY) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 
@@ -117,7 +117,7 @@ void FUNCTION (c, ctranspose) (TYPE *x, TYPE *y, int m, int n) {
 
 
 // stub function of ctranspose
-value FUNCTION (stub, ctranspose) (value vX, value vY) {
+CAMLprim value FUNCTION (stub, ctranspose) (value vX, value vY) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 

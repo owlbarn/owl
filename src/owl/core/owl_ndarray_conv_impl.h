@@ -6,7 +6,7 @@
 #ifdef OWL_ENABLE_TEMPLATE
 
 
-value FUN_NATIVE (spatial) (
+CAMLprim value FUN_NATIVE (spatial) (
   value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
   value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
   value vKernel_cols, value vKernel_rows,
@@ -97,7 +97,7 @@ value FUN_NATIVE (spatial) (
 }
 
 
-value FUN_BYTE (spatial) (value * argv, int argn) {
+CAMLprim value FUN_BYTE (spatial) (value * argv, int argn) {
   return FUN_NATIVE (spatial) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],
@@ -106,7 +106,7 @@ value FUN_BYTE (spatial) (value * argv, int argn) {
 }
 
 
-value FUN_NATIVE (spatial_backward_kernel) (
+CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
   value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
   value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
   value vKernel_cols, value vKernel_rows,
@@ -206,7 +206,7 @@ value FUN_NATIVE (spatial_backward_kernel) (
 }
 
 
-value FUN_BYTE (spatial_backward_kernel) (value * argv, int argn) {
+CAMLprim value FUN_BYTE (spatial_backward_kernel) (value * argv, int argn) {
   return FUN_NATIVE (spatial_backward_kernel) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15]
@@ -214,7 +214,7 @@ value FUN_BYTE (spatial_backward_kernel) (value * argv, int argn) {
 }
 
 
-value FUN_NATIVE (spatial_backward_input) (
+CAMLprim value FUN_NATIVE (spatial_backward_input) (
   value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
   value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
   value vKernel_cols, value vKernel_rows,
@@ -303,7 +303,7 @@ value FUN_NATIVE (spatial_backward_input) (
 }
 
 
-value FUN_BYTE (spatial_backward_input) (value * argv, int argn) {
+CAMLprim value FUN_BYTE (spatial_backward_input) (value * argv, int argn) {
   return FUN_NATIVE (spatial_backward_input) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15]
@@ -311,7 +311,7 @@ value FUN_BYTE (spatial_backward_input) (value * argv, int argn) {
 }
 
 
-value FUN_NATIVE (cuboid) (
+CAMLprim value FUN_NATIVE (cuboid) (
   value vInput, value vKernel, value vOutput,
   value vBatches, value vInput_cols, value vInput_rows,
   value vInput_dpts, value vIn_channel,
@@ -420,7 +420,7 @@ value FUN_NATIVE (cuboid) (
 }
 
 
-value FUN_BYTE (cuboid) (value * argv, int argn) {
+CAMLprim value FUN_BYTE (cuboid) (value * argv, int argn) {
   return FUN_NATIVE (cuboid) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],
@@ -429,7 +429,7 @@ value FUN_BYTE (cuboid) (value * argv, int argn) {
 }
 
 
-value FUN_NATIVE (cuboid_backward_kernel) (
+CAMLprim value FUN_NATIVE (cuboid_backward_kernel) (
   value vInput, value vKernel, value vOutput,
   value vBatches, value vInput_cols, value vInput_rows,
   value vInput_dpts, value vIn_channel,
@@ -542,7 +542,7 @@ value FUN_NATIVE (cuboid_backward_kernel) (
 }
 
 
-value FUN_BYTE (cuboid_backward_kernel) (value * argv, int argn) {
+CAMLprim value FUN_BYTE (cuboid_backward_kernel) (value * argv, int argn) {
   return FUN_NATIVE (cuboid_backward_kernel) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],
@@ -551,7 +551,7 @@ value FUN_BYTE (cuboid_backward_kernel) (value * argv, int argn) {
 }
 
 
-value FUN_NATIVE (cuboid_backward_input) (
+CAMLprim value FUN_NATIVE (cuboid_backward_input) (
   value vInput, value vKernel, value vOutput,
   value vBatches, value vInput_cols, value vInput_rows,
   value vInput_dpts, value vIn_channel,
@@ -653,7 +653,7 @@ value FUN_NATIVE (cuboid_backward_input) (
 }
 
 
-value FUN_BYTE (cuboid_backward_input) (value * argv, int argn) {
+CAMLprim value FUN_BYTE (cuboid_backward_input) (value * argv, int argn) {
   return FUN_NATIVE (cuboid_backward_input) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],

@@ -6,7 +6,7 @@
 #ifdef OWL_ENABLE_TEMPLATE
 
 
-value FUN_NATIVE (spatial) (
+CAMLprim value FUN_NATIVE (spatial) (
   value vInput_ptr, value vOutput_ptr,
   value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
   value vKernel_cols, value vKernel_rows,
@@ -88,7 +88,7 @@ value FUN_NATIVE (spatial) (
 }
 
 
-value FUN_BYTE (spatial) (value * argv, int argn) {
+CAMLprim value FUN_BYTE (spatial) (value * argv, int argn) {
   return FUN_NATIVE (spatial) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14]
@@ -96,7 +96,7 @@ value FUN_BYTE (spatial) (value * argv, int argn) {
 }
 
 
-value FUN_NATIVE (spatial_backward) (
+CAMLprim value FUN_NATIVE (spatial_backward) (
   value vInput, value vOutput_back, value vInput_back,
   value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
   value vKernel_cols, value vKernel_rows,
@@ -196,7 +196,7 @@ value FUN_NATIVE (spatial_backward) (
 }
 
 
-value FUN_BYTE (spatial_backward) (value * argv, int argn) {
+CAMLprim value FUN_BYTE (spatial_backward) (value * argv, int argn) {
   return FUN_NATIVE (spatial_backward) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14]
@@ -204,7 +204,7 @@ value FUN_BYTE (spatial_backward) (value * argv, int argn) {
 }
 
 
-value FUN_NATIVE (cuboid) (
+CAMLprim value FUN_NATIVE (cuboid) (
   value vInput, value vOutput,
   value vBatches, value vInput_cols, value vInput_rows,
   value vInput_dpts, value vIn_channel,
@@ -304,7 +304,7 @@ value FUN_NATIVE (cuboid) (
 }
 
 
-value FUN_BYTE (cuboid) (value * argv, int argn) {
+CAMLprim value FUN_BYTE (cuboid) (value * argv, int argn) {
   return FUN_NATIVE (cuboid) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],
@@ -313,7 +313,7 @@ value FUN_BYTE (cuboid) (value * argv, int argn) {
 }
 
 
-value FUN_NATIVE (cuboid_backward) (
+CAMLprim value FUN_NATIVE (cuboid_backward) (
   value vInput, value vOutput_back, value vInput_back,
   value vBatches, value vInput_cols, value vInput_rows,
   value vInput_dpts, value vIn_channel,
@@ -435,7 +435,7 @@ value FUN_NATIVE (cuboid_backward) (
 }
 
 
-value FUN_BYTE (cuboid_backward) (value * argv, int argn) {
+CAMLprim value FUN_BYTE (cuboid_backward) (value * argv, int argn) {
   return FUN_NATIVE (cuboid_backward) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],
@@ -445,7 +445,7 @@ value FUN_BYTE (cuboid_backward) (value * argv, int argn) {
 
 #ifdef OWL_NDARRAY_MAX
 
-value FUN_NATIVE (spatial_arg) (
+CAMLprim value FUN_NATIVE (spatial_arg) (
   value vInput_ptr, value vOutput_ptr, value vArgmax_ptr,
   value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
   value vKernel_cols, value vKernel_rows,
@@ -529,7 +529,7 @@ value FUN_NATIVE (spatial_arg) (
 }
 
 
-value FUN_BYTE (spatial_arg) (value * argv, int argn) {
+CAMLprim value FUN_BYTE (spatial_arg) (value * argv, int argn) {
   return FUN_NATIVE (spatial_arg) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14]
