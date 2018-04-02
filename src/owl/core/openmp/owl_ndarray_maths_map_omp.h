@@ -56,9 +56,10 @@ CAMLprim value FUN4(value vN, value vX, value vY)
   stop_x = start_x + N;
   start_y = Y_data;
 
-  if (N >= 5000000) {
-    printf("openmp fun4 ... N=%i\n", N);
-    #pragma omp parallel for schedule(guided)
+  if (N >= 2000000) {
+    // DEBUG
+    //printf("openmp fun4 ... N=%i\n", N);
+    #pragma omp parallel for schedule(static)
     for (int i = 0; i < N; i++) {
       NUMBER x = *(start_x + i);
       *(start_y + i) = (MAPFN(x));
@@ -202,9 +203,10 @@ CAMLprim value FUN15(value vN, value vX, value vY, value vZ)
   start_y = Y_data;
   start_z = Z_data;
 
-  if (N >= 5000000) {
-    printf("openmp fun15 ... N=%i\n", N);
-    #pragma omp parallel for schedule(guided)
+  if (N >= 2000000) {
+    // DEBUG
+    //printf("openmp fun15 ... N=%i\n", N);
+    #pragma omp parallel for schedule(static)
     for (int i = 0; i < N; i++) {
       MAPFN((start_x + i), (start_y + i), (start_z + i));
     }

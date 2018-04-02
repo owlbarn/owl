@@ -713,6 +713,9 @@ Please refer to ``iteri_slice`` for more details.
 val fold_slice : ?axis:int -> ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 (** Similar to ``foldi_slice`` but slice index is not passed in. *)
 
+val pmap : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** TODO *)
+
 
 (** {6 Examination & Comparison}  *)
 
