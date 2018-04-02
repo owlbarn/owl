@@ -3638,11 +3638,5 @@ let contract2 index_pairs x y =
   z
 
 
-let pmap f x =
-  let y = copy x in
-  Owl_ndarray_pmap._ndarray_pmap (kind x) f x y;
-  y
-
-
 
 (* ends here *)

@@ -30,7 +30,6 @@
     owl_core_utils
     owl_slicing_basic_stub
     owl_slicing_fancy_stub
-    owl_ndarray_pmap_stub
     owl_ndarray_maths_stub
     owl_ndarray_conv_stub
     owl_ndarray_pool_stub
@@ -174,7 +173,7 @@
   (action
     (setenv ENABLE_EXPMODE 0 ; turn on experiment features like flto
     (setenv ENABLE_DEVMODE 0 ; turn on all the warnings in development
-    (setenv ENABLE_OPENMP  1 ; turn on OpenMP support in core module
+    (setenv ENABLE_OPENMP  0 ; turn on OpenMP support in core module
       (run ${<} -ocamlc ${OCAMLC}))
     )))
 ))

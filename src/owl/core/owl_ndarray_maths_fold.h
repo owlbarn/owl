@@ -20,7 +20,7 @@ CAMLprim value FUN5(value vN, value vX)
   NUMBER *start_x, *stop_x;
   INIT;
 
-  caml_enter_blocking_section();  /* Allow other threads */
+  caml_release_runtime_system();  /* Allow other threads */
 
   start_x = X_data;
   stop_x = start_x + N;
@@ -30,7 +30,7 @@ CAMLprim value FUN5(value vN, value vX)
     start_x += 1;
   };
 
-  caml_leave_blocking_section();  /* Disallow other threads */
+  caml_acquire_runtime_system();  /* Disallow other threads */
 
   CAMLreturn(COPYNUM(r));
 }
@@ -51,7 +51,7 @@ CAMLprim value FUN6(value vN, value vX)
 
   NUMBER *start_x;
 
-  caml_enter_blocking_section();  /* Allow other threads */
+  caml_release_runtime_system();  /* Allow other threads */
 
   start_x = X_data;
 
@@ -66,7 +66,7 @@ CAMLprim value FUN6(value vN, value vX)
     start_x += 1;
   };
 
-  caml_leave_blocking_section();  /* Disallow other threads */
+  caml_acquire_runtime_system();  /* Disallow other threads */
 
   CAMLreturn(Val_int(r));
 }
@@ -87,7 +87,7 @@ CAMLprim value FUN8(value vN, value vX)
 
   NUMBER *start_x, *stop_x, *max_start, max_x;
 
-  caml_enter_blocking_section();  /* Allow other threads */
+  caml_release_runtime_system();  /* Allow other threads */
 
   start_x = X_data;
   stop_x = start_x + N;
@@ -106,7 +106,7 @@ CAMLprim value FUN8(value vN, value vX)
 
   r = log(r) + max_x;
 
-  caml_leave_blocking_section();  /* Disallow other threads */
+  caml_acquire_runtime_system();  /* Disallow other threads */
 
   CAMLreturn(caml_copy_double(r));
 }
@@ -128,7 +128,7 @@ CAMLprim value FUN9(value vN, value vC, value vX)
   NUMBER *start_x, *stop_x;
   INIT;
 
-  caml_enter_blocking_section();  /* Allow other threads */
+  caml_release_runtime_system();  /* Allow other threads */
 
   start_x = X_data;
   stop_x = start_x + N;
@@ -138,7 +138,7 @@ CAMLprim value FUN9(value vN, value vC, value vX)
     start_x += 1;
   };
 
-  caml_leave_blocking_section();  /* Disallow other threads */
+  caml_acquire_runtime_system();  /* Disallow other threads */
 
   CAMLreturn(COPYNUM(r));
 }
@@ -164,7 +164,7 @@ CAMLprim value FUN11(value vN, value vX, value vY)
   NUMBER1 *start_y;
   INIT;
 
-  caml_enter_blocking_section();  /* Allow other threads */
+  caml_release_runtime_system();  /* Allow other threads */
 
   start_x = X_data;
   stop_x = start_x + N;
@@ -176,7 +176,7 @@ CAMLprim value FUN11(value vN, value vX, value vY)
     start_y += 1;
   };
 
-  caml_leave_blocking_section();  /* Disallow other threads */
+  caml_acquire_runtime_system();  /* Disallow other threads */
 
   CAMLreturn(COPYNUM(r));
 }
@@ -196,7 +196,7 @@ CAMLprim value FUN23(value vN, value vX, value vA, vB)
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   NUMBER *X_data = (NUMBER *) X->data;
 
-  caml_enter_blocking_section();  /* Allow other threads */
+  caml_release_runtime_system();  /* Allow other threads */
 
   NUMBER *start_x;
   start_x = X_data;
@@ -209,7 +209,7 @@ CAMLprim value FUN23(value vN, value vX, value vA, vB)
     start_x += 1;
   };
 
-  caml_leave_blocking_section();  /* Disallow other threads */
+  caml_acquire_runtime_system();  /* Disallow other threads */
 
   CAMLreturn(Val_unit);
 }
@@ -235,7 +235,7 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
   struct caml_ba_array *Y = Caml_ba_array_val(vY);
   NUMBER1 *Y_data = (NUMBER1 *) Y->data;
 
-  caml_enter_blocking_section();  /* Allow other threads */
+  caml_release_runtime_system();  /* Allow other threads */
 
   NUMBER  *start_x = X_data;
   NUMBER1 *start_y = Y_data;
@@ -279,7 +279,7 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
    * }
    ***/
 
-  caml_leave_blocking_section();  /* Disallow other threads */
+  caml_acquire_runtime_system();  /* Disallow other threads */
 
   CAMLreturn(Val_unit);
 }
