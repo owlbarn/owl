@@ -15,7 +15,7 @@ RUN sudo yum -y install git wget unzip m4 pkg-config gcc-gfortran
 RUN sudo dnf -y install openblas-devel
 
 RUN opam update && opam switch 4.06.0 && eval $(opam config env)
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop eigen
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop eigen base stdio
 
 
 #################### SET UP ENV VARS #######################
