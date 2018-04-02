@@ -9,6 +9,7 @@
 #include "owl_macros.h"
 #include "owl_slicing.h"
 #include "owl_ndarray_contract.h"
+#include <stdio.h> // DEBUG
 
 
 /** Core function declaration **/
