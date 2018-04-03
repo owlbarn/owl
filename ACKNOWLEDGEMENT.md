@@ -38,4 +38,6 @@ Because Owl is always under active development, there might be a lag between the
 
 - Many functions rely on [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) and its [OCaml binding](https://github.com/ryanrhymes/eigen). The binding also contains some functions (e.g., convolution functions) from Google's [Tensorflow](https://www.tensorflow.org/).
 
+- [Jérémie Dimino](https://github.com/diml) and many others built the powerful [building system](https://github.com/ocaml/dune) and convenient [toplevel](https://github.com/diml/utop) for OCaml.
+
 - Other projects which have been providing useful insights: [Oml](https://github.com/hammerlab/oml), [pareto](https://github.com/superbobry/pareto).

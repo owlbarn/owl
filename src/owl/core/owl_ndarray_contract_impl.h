@@ -66,7 +66,7 @@ void FUNCTION (c, contract_one) (struct contract_pair *p) {
 
 
 // stub function of contract_one
-value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB, value vN) {
+CAMLprim value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB, value vN) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 
@@ -163,7 +163,7 @@ void FUNCTION (c, contract_two) (struct contract_pair *p) {
 
 
 // stub function of contract_two
-value FUNCTION (stub, contract_two) (
+CAMLprim value FUNCTION (stub, contract_two) (
   value vX, value vY, value vZ,
   value vA, value vB, value vC,
   value vD, value vN
@@ -219,7 +219,7 @@ value FUNCTION (stub, contract_two) (
 }
 
 
-value FUNCTION (stub, contract_two_byte) (value * argv, int __unused_argn) {
+CAMLprim value FUNCTION (stub, contract_two_byte) (value * argv, int __unused_argn) {
   return FUNCTION (stub, contract_two) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7]
   );

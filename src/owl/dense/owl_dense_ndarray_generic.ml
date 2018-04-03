@@ -7,7 +7,7 @@ open Owl_types
 
 open Bigarray
 
-open Owl_dense_common
+open Owl_ndarray
 
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
@@ -71,7 +71,10 @@ let slice_left = Genarray.slice_left
 let slice_right = Genarray.slice_right
 
 
-let copy_to src dst = Genarray.blit src dst
+let copy_to src dst =
+  let k = kind src in
+  let n = numel src in
+  _owl_copy k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 src dst
 
 
 let fill x a = Genarray.fill x a
@@ -126,7 +129,7 @@ let same_shape x y = (shape x) = (shape y)
 
 let copy x =
   let y = empty (kind x) (shape x) in
-  Genarray.blit x y;
+  _owl_copy (kind x) (numel x) ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 x y;
   y
 
 
@@ -1144,7 +1147,7 @@ let matrix_transpose x =
   let s = shape x in
   let m, n = s.(0), s.(1) in
   let y = empty k [|n;m|] in
-  Owl_core._matrix_transpose k x y;
+  Owl_matrix._matrix_transpose k x y;
   y
 
 
@@ -3636,6 +3639,7 @@ let contract2 index_pairs x y =
   let ndims = Array.length loop0 |> Int64.of_int in
   Owl_ndarray._ndarray_contract_two (kind x) x y z incx1 incy1 incz1 loop1 ndims;
   z
+
 
 
 (* ends here *)

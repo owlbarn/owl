@@ -73,7 +73,7 @@ void FUNCTION (c, fancy) (struct fancy_pair *p) {
 
 
 // stub function
-value FUNCTION (stub, fancy) (value vX, value vY, value vA, value vB) {
+CAMLprim value FUNCTION (stub, fancy) (value vX, value vY, value vA, value vB) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 

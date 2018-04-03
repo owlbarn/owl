@@ -7,7 +7,7 @@
 
 
 // stub function for is_triu
-value FUNCTION (stub, is_triu) (value vX) {
+CAMLprim value FUNCTION (stub, is_triu) (value vX) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 
@@ -29,7 +29,7 @@ value FUNCTION (stub, is_triu) (value vX) {
 
 
 // stub function for is_triu
-value FUNCTION (stub, is_tril) (value vX) {
+CAMLprim value FUNCTION (stub, is_tril) (value vX) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 
@@ -51,7 +51,7 @@ value FUNCTION (stub, is_tril) (value vX) {
 
 
 // stub function for is_diag
-value FUNCTION (stub, is_diag) (value vX) {
+CAMLprim value FUNCTION (stub, is_diag) (value vX) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 
@@ -74,7 +74,7 @@ value FUNCTION (stub, is_diag) (value vX) {
 
 
 // stub function for is_symmetric
-value FUNCTION (stub, is_symmetric) (value vX) {
+CAMLprim value FUNCTION (stub, is_symmetric) (value vX) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 
@@ -112,7 +112,7 @@ value FUNCTION (stub, is_symmetric) (value vX) {
 
 
 // stub function for is_hermitian
-value FUNCTION (stub, is_hermitian) (value vX) {
+CAMLprim value FUNCTION (stub, is_hermitian) (value vX) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 

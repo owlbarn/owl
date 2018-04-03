@@ -2,6 +2,7 @@
 
 (copy_files# ext/*)
 (copy_files# core/*)
+(copy_files# core/openmp/*)
 (copy_files# dense/*)
 (copy_files# sparse/*)
 (copy_files# maths/*)
@@ -27,32 +28,19 @@
   (c_names (
     ; Core
     owl_core_utils
-    owl_slicing_basic_impl
     owl_slicing_basic_stub
-    owl_slicing_fancy_impl
     owl_slicing_fancy_stub
-    owl_ndarray_conv_impl
+    owl_ndarray_maths_stub
     owl_ndarray_conv_stub
-    owl_ndarray_pool_impl
     owl_ndarray_pool_stub
-    owl_ndarray_contract_impl
     owl_ndarray_contract_stub
-    owl_ndarray_transpose_impl
     owl_ndarray_transpose_stub
-    owl_matrix_swap_impl
     owl_matrix_swap_stub
-    owl_matrix_check_impl
     owl_matrix_check_stub
     owl_distribution_common_c
-    owl_dense_common_c
-    owl_dense_common_cmp
-    owl_dense_common_map
-    owl_dense_common_fold
     owl_cblas_generated_stub
     owl_lapacke_generated_stub
     ; FFTPACK
-    fftpack
-    owl_fftpack_impl
     owl_fftpack_float32
     owl_fftpack_float64
     ; stats
@@ -164,33 +152,9 @@
     zeta
     zetac
   ))
-  (c_flags (
-    -g -O3 -Ofast
-    ; Experimental switches
-    ; -ffast-math may break IEEE754 semantics
-    -march=native -mfpmath=sse -funroll-loops -ffast-math
-    ; Turn off LTO since it is not well supported at the moment
-    ; -flto
-    ; For Mersenne Twister RNG
-    -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing
-    ; Turn off the warning on logical op parentheses
-    -Wno-logical-op-parentheses
-    ; For development use before release
-    ; -Wall -pedantic -Wextra -Wunused
-  ))
-  (c_library_flags (
-    -L/usr/local/lib/gcc/7
-    -L/usr/local/opt/openblas/lib
-    -lopenblas
-    -lgfortran
-    -lm
-  ))
-  (flags (
-    ; Turn off some warnings as 4.06.0 is pernickety and errors out
-    :standard
-    -safe-string
-    ; -w "-32-27-6-37-3"
-  ))
+  (c_flags         ((:include c_flags.sexp)))
+  (c_library_flags ((:include c_library_flags.sexp)))
+  (flags           ((:include ocaml_flags.sexp)))
   (libraries (
     owl_base
     ctypes
@@ -198,4 +162,18 @@
     eigen
     plplot
   ))
+))
+
+
+(rule
+ ((targets (c_flags.sexp
+            c_library_flags.sexp
+            ocaml_flags.sexp))
+  (deps    (config/configure.exe))
+  (action
+    (setenv ENABLE_EXPMODE 0 ; turn on experiment features like flto
+    (setenv ENABLE_DEVMODE 0 ; turn on all the warnings in development
+    (setenv ENABLE_OPENMP  0 ; turn on OpenMP support in core module
+      (run ${<} -ocamlc ${OCAMLC}))
+    )))
 ))
