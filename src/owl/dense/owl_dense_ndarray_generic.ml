@@ -71,7 +71,10 @@ let slice_left = Genarray.slice_left
 let slice_right = Genarray.slice_right
 
 
-let copy_to src dst = Genarray.blit src dst
+let copy_to src dst =
+  let k = kind src in
+  let n = numel src in
+  _owl_copy k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 src dst
 
 
 let fill x a = Genarray.fill x a
@@ -126,7 +129,7 @@ let same_shape x y = (shape x) = (shape y)
 
 let copy x =
   let y = empty (kind x) (shape x) in
-  Genarray.blit x y;
+  _owl_copy (kind x) (numel x) ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 x y;
   y
 
 
