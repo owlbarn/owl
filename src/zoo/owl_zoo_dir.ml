@@ -42,7 +42,17 @@ and _dir_zoo_ocaml gid vid added =
       let f = Printf.sprintf "%s/%s" dir_gist l in
 
       (* extend file path in a script *)
-      let f' = "/tmp/" ^ l in
+      (* TODO: dir permission, and the case of collision *)
+      let rec mkdir () =
+        let rand_num = Random.int 100000 |> string_of_int in
+        let tmp_dir = Filename.get_temp_dir_name () ^  "/zoo" ^ rand_num in
+        try
+          Unix.mkdir tmp_dir 0o600;
+          tmp_dir
+        with Unix.(Unix_error (EEXIST, _, _))
+          -> mkdir ()
+      in
+      let f' = mkdir () ^ "/" ^ l in
       let f_str = Owl_utils.read_file_string f in
       let f'_str = replace "extend_zoo_path"
         (Printf.sprintf "extend_zoo_path ~gid:\"%s\" ~vid:\"%s\"" gid vid) f_str
