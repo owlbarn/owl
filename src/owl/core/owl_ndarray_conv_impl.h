@@ -662,4 +662,106 @@ CAMLprim value FUN_BYTE (cuboid_backward_input) (value * argv, int argn) {
 }
 
 
+CAMLprim value FUN_NATIVE (spatial_transpose) (
+  value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
+  value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
+  value vKernel_cols, value vKernel_rows,
+  value vOutput_cols, value vOutput_rows, value vOut_channel,
+  value vRow_stride,  value vCol_stride,
+  value vPadding, value vRow_in_stride, value vCol_in_stride
+) {
+  struct caml_ba_array *IN = Caml_ba_array_val(vInput_ptr);
+  struct caml_ba_array *KE = Caml_ba_array_val(vKernel_ptr);
+  struct caml_ba_array *OU = Caml_ba_array_val(vOutput_ptr);
+  TYPE *input_ptr  = (TYPE *) IN->data;
+  TYPE *kernel_ptr = (TYPE *) KE->data;
+  TYPE *output_ptr = (TYPE *) OU->data;
+
+  int batches       = Long_val(vBatches);
+  int input_cols    = Long_val(vInput_cols);
+  int input_rows    = Long_val(vInput_rows);
+  int in_channel    = Long_val(vIn_channel);
+  int kernel_cols   = Long_val(vKernel_cols);
+  int kernel_rows   = Long_val(vKernel_rows);
+  int output_cols   = Long_val(vOutput_cols);
+  int output_rows   = Long_val(vOutput_rows);
+  int out_channel   = Long_val(vOut_channel);
+  int row_stride    = Long_val(vRow_stride);
+  int col_stride    = Long_val(vCol_stride);
+  int padding       = Long_val(vPadding);
+  int row_in_stride = Long_val(vRow_in_stride);
+  int col_in_stride = Long_val(vCol_in_stride);
+
+  const int input_cri  = in_channel  * input_rows  * input_cols;
+  const int input_ri   = in_channel  * input_rows;
+  const int output_cri = out_channel * output_rows * output_cols;
+  const int output_cr  = output_rows * output_cols;
+  const int output_crb = output_rows * output_cols * batches;
+  const int kernel_cri = kernel_cols * kernel_rows * in_channel;
+  const int input_crb  = input_rows  * input_cols  * batches;
+  const int input_cr   = input_rows  * input_cols;
+  const int output_ri  = in_channel  * output_rows;
+
+  INIT;
+
+  TYPE *output2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  if (output2d == NULL) exit(1);
+
+  memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
+
+  int pad_rows = row_stride * (output_rows - 1) + kernel_rows - input_rows;
+  int pad_cols = col_stride * (output_cols - 1) + kernel_cols - input_cols;
+  int p_top  = pad_rows / 2;
+  int p_left = pad_cols / 2;
+  if (p_top  < 0) p_top  = 0;
+  if (p_left < 0) p_left = 0;
+
+  GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
+    input_crb, kernel_cri, in_channel, ALPHA,
+    input_ptr, in_channel, kernel_ptr, in_channel,
+    BETA, output2d, kernel_cri);
+
+  for (int i = 0; i < input_crb; ++i) {
+    int bt = i / input_cr;
+    int cr = i % input_cr;
+    int c = cr / input_rows;
+    int r = cr % input_rows;
+
+    const int cstart = c * col_stride - p_left;
+    const int rstart = r * row_stride - p_top;
+    const int cend = cstart + kernel_cols;
+    const int rend = rstart + kernel_rows;
+    const int output_idx_base = bt * output_cri;
+
+    int cnt = 0;
+    for (int a = cstart; a < cend; ++a) {
+      for (int b = rstart; b < rend; ++b) {
+        for (int h = 0; h < in_channel; ++h) {
+          if (a < output_cols && a >= 0 &&
+              b < output_rows && b >= 0) {
+            int output_idx =
+               output_idx_base + a * output_ri + b * out_channel + h;
+            output_ptr[output_idx] += output2d[i * kernel_cri + cnt];
+          }
+          ++cnt;
+        }
+      }
+    }
+  }
+
+  free(output2d);
+
+  return Val_unit;
+}
+
+
+CAMLprim value FUN_BYTE (spatial_transpose) (value * argv, int argn) {
+  return FUN_NATIVE (spatial) (
+    argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
+    argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],
+    argv[15], argv[16]
+  );
+}
+
+
 #endif /* OWL_ENABLE_TEMPLATE */

@@ -41,6 +41,7 @@ let get_default_cflags c = [
 
 
 let get_default_libs c = [
+  "-L/opt/OpenBLAS/lib/";
   "-lopenblas";
   "-lgfortran";
   "-lm";
