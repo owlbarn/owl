@@ -579,6 +579,7 @@ val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
 val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
+val conv2d_transpose : ?padding:padding -> arr -> arr -> int array -> arr
 
 (** {6 Tensor Calculus}  *)
 
