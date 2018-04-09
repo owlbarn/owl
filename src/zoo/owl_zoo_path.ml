@@ -6,9 +6,11 @@
  let dir = Sys.getenv "HOME" ^ "/.owl/zoo"
  let htb = dir ^ "/" ^ "zoo_ver.htb"
 
+
 (* Used internally *)
  let gist_path gid vid =
    dir  ^ "/" ^ gid ^ "/" ^ vid
+
 
 (* Used by script developers *)
 let extend_zoo_path ?(gid="") ?(vid="") filepath =
@@ -27,14 +29,14 @@ let mk_temp_dir ?(mode=0o700) ?dir pat =
     let rand = Random.State.(bits (make_self_init ()) land 0xFFFFFF) in
     Printf.sprintf "%06x" rand
   in
-  let raise_err msg = raise (Sys_error msg) in
+  let raise_err msg = raise (Sys_error ("mk_temp_dir: " ^ msg)) in
   let rec loop count =
-    if count < 0 then raise_err "mk_temp_dir: too many failing attemps" else
+    if count < 0 then raise_err "too many failing attemps" else
     let dir = Printf.sprintf "%s/%s%s" dir pat (rand_digits ()) in
     try (Unix.mkdir dir mode; dir) with
     | Unix.Unix_error (Unix.EEXIST, _, _) -> loop (count - 1)
     | Unix.Unix_error (Unix.EINTR, _, _)  -> loop count
     | Unix.Unix_error (e, _, _)           ->
-      raise_err ("mk_temp_dir: " ^ (Unix.error_message e))
+      raise_err (Unix.error_message e)
   in
   loop 1000
