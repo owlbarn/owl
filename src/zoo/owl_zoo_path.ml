@@ -22,8 +22,8 @@ let extend_zoo_path ?(gid="") ?(vid="") filepath =
 (* Make temporary directory *)
 let mk_temp_dir ?(mode=0o700) ?dir pat =
   let dir = match dir with
-  | Some d -> d
-  | None   -> Filename.get_temp_dir_name ()
+    | Some d -> d
+    | None   -> Filename.get_temp_dir_name ()
   in
   let rand_digits () =
     let rand = Random.State.(bits (make_self_init ()) land 0xFFFFFF) in
@@ -34,9 +34,8 @@ let mk_temp_dir ?(mode=0o700) ?dir pat =
     if count < 0 then raise_err "too many failing attemps" else
     let dir = Printf.sprintf "%s/%s%s" dir pat (rand_digits ()) in
     try (Unix.mkdir dir mode; dir) with
-    | Unix.Unix_error (Unix.EEXIST, _, _) -> loop (count - 1)
-    | Unix.Unix_error (Unix.EINTR, _, _)  -> loop count
-    | Unix.Unix_error (e, _, _)           ->
-      raise_err (Unix.error_message e)
+      | Unix.Unix_error (Unix.EEXIST, _, _) -> loop (count - 1)
+      | Unix.Unix_error (Unix.EINTR, _, _)  -> loop count
+      | Unix.Unix_error (e, _, _)           -> raise_err (Unix.error_message e)
   in
   loop 1000
