@@ -15,9 +15,9 @@ test:
 install:
 	jbuilder install
 	# sigh, the following code deals with the OPAM bug :(
-	$(eval WRONG_DIR=${OPAM_SWITCH_PREFIX}/lib/stubslibs/dllowl_stub.so)
-	$(eval RIGHT_DIR=${OPAM_SWITCH_PREFIX}/lib/stublibs/dllowl_stub.so)
-	if [ -d ${WRONG_DIR} ]; then cp ${WRONG_DIR} ${RIGHT_DIR}; fi
+	$(eval WRONG_DST=${OPAM_SWITCH_PREFIX}/lib/stubslibs/dllowl_stubs.so)
+	$(eval RIGHT_DST=${OPAM_SWITCH_PREFIX}/lib/stublibs/dllowl_stubs.so)
+	if [ -f ${WRONG_DST} ]; then mv ${WRONG_DST} ${RIGHT_DST}; fi
 
 .PHONY: uninstall
 uninstall:
