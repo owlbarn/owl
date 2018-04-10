@@ -3,13 +3,17 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
- let dir = Sys.getenv "HOME" ^ "/.owl/zoo"
- let htb = dir ^ "/" ^ "zoo_ver.htb"
+
+(* Root of Zoo System *)
+let dir = Sys.getenv "HOME" ^ "/.owl/zoo"
+
+
+(* Path of Zoo version database *)
+let htb = dir ^ "/" ^ "zoo_ver.htb"
 
 
 (* Used internally *)
- let gist_path gid vid =
-   dir  ^ "/" ^ gid ^ "/" ^ vid
+let gist_path gid vid = dir  ^ "/" ^ gid ^ "/" ^ vid
 
 
 (* Used by script developers *)
