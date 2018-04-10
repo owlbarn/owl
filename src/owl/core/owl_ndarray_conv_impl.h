@@ -704,17 +704,58 @@ CAMLprim value FUN_NATIVE (spatial_transpose) (
 
   INIT;
 
-  TYPE *output2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
-  if (output2d == NULL) exit(1);
-
-  memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
-
-  int pad_rows = row_stride * (output_rows - 1) + kernel_rows - input_rows;
-  int pad_cols = col_stride * (output_cols - 1) + kernel_cols - input_cols;
+  int pad_rows = row_stride * (input_rows - 1) + kernel_rows - output_rows;
+  int pad_cols = col_stride * (input_cols - 1) + kernel_cols - output_cols;
   int p_top  = pad_rows / 2;
   int p_left = pad_cols / 2;
   if (p_top  < 0) p_top  = 0;
   if (p_left < 0) p_left = 0;
+
+
+  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  if (inpt2d == NULL) exit(1);
+
+  memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
+
+  for (int i = 0; i < output_crb; ++i) {
+    int bt = i / output_cr;
+    int cr = i % output_cr;
+    int c = cr / output_rows;
+    int r = cr % output_rows;
+
+    const int cstart = c * col_stride - p_left;
+    const int rstart = r * row_stride - p_top;
+    const int cend = cstart + kernel_cols;
+    const int rend = rstart + kernel_rows;
+    const int input_idx_base = bt * input_cri;
+
+    int cnt = 0;
+    for (int a = cstart; a < cend; ++a) {
+      for (int b = rstart; b < rend; ++b) {
+        for (int h = 0; h < in_channel; ++h) {
+          if (a < input_cols && a >= 0 &&
+              b < input_rows && b >= 0) {
+            int input_idx =
+               input_idx_base + a * input_ri + b * in_channel + h;
+            inpt2d[i * kernel_cri + cnt] = input_ptr[input_idx];
+          }
+          ++cnt;
+        }
+      }
+    }
+  }
+
+  GEMM(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+    output_crb, out_channel, kernel_cri, ALPHA,
+    inpt2d, kernel_cri, kernel_ptr, out_channel,
+    BETA, output_ptr, out_channel);
+
+  free(inpt2d);
+
+  /*
+
+  TYPE *output2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  if (output2d == NULL) exit(1);
 
   GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
     input_crb, kernel_cri, in_channel, ALPHA,
@@ -750,6 +791,10 @@ CAMLprim value FUN_NATIVE (spatial_transpose) (
   }
 
   free(output2d);
+  
+  */
+
+
 
   return Val_unit;
 }
