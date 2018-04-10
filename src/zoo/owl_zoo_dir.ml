@@ -42,7 +42,7 @@ and _dir_zoo_ocaml gid vid added =
       let f = Printf.sprintf "%s/%s" dir_gist l in
 
       (* extend file path in a script *)
-      let f' = "/tmp/" ^ l in
+      let f' = Owl_zoo_path.mk_temp_dir "zoo" ^ "/" ^ l in
       let f_str = Owl_utils.read_file_string f in
       let f'_str = replace "extend_zoo_path"
         (Printf.sprintf "extend_zoo_path ~gid:\"%s\" ~vid:\"%s\"" gid vid) f_str
