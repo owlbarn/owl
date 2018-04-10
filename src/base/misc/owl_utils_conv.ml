@@ -29,6 +29,7 @@ let calc_conv2d_output_shape
   in
   (output_cols, output_rows)
 
+
 let calc_conv2d_transpose_output_shape
   padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   =
