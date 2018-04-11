@@ -208,6 +208,13 @@ let _owl_spatial_trans_conv_backward_input: type a b . (a, b) kind -> (a, b) owl
   | Complex64 -> owl_complex64_ndarray_conv_spatial_transpose_backward_input
   | _         -> failwith "_owl_spatial_trans_conv_backward_input: unsupported operation"
 
+let _owl_spatial_trans_conv_backward_input: type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
+  | Float32   -> owl_float32_ndarray_conv_spatial_transpose_backward_input
+  | Float64   -> owl_float64_ndarray_conv_spatial_transpose_backward_input
+  | Complex32 -> owl_complex32_ndarray_conv_spatial_transpose_backward_input
+  | Complex64 -> owl_complex64_ndarray_conv_spatial_transpose_backward_input
+  | _         -> failwith "_owl_spatial_trans_conv_backward_input: unsupported operation"
+
 let _owl_spatial_trans_conv_backward_kernel: type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
   | Float32   -> owl_float32_ndarray_conv_spatial_transpose_backward_kernel
   | Float64   -> owl_float64_ndarray_conv_spatial_transpose_backward_kernel
