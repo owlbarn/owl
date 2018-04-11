@@ -711,11 +711,35 @@ CAMLprim value FUN_NATIVE (spatial_transpose) (
   if (p_top  < 0) p_top  = 0;
   if (p_left < 0) p_left = 0;
 
+  int ext_input_cols = input_cols + (input_cols - 1) * (col_stride - 1);
+  int ext_input_rows = input_rows + (input_rows - 1) * (row_stride - 1);
+
+  TYPE *ext_inp = (TYPE *) calloc(batches * ext_input_cols * ext_input_rows
+    * in_channel, sizeof(TYPE));
+  if (ext_inp == NULL) exit(1);
 
   TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
 
-  memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
+  //memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
+
+  const int ext_input_cri = ext_input_cols * ext_input_rows * in_channel;
+  const int ext_input_ri  = ext_input_rows * in_channel;
+
+  for (int b = 0; b < batches; ++b){
+    for (int c = 0; c < input_cols; c++){
+      for (int r = 0; r < input_rows; r++){
+        for (int i = 0; i < in_channel; i++) {
+          int cx = col_stride * c;
+          int rx = row_stride * r;
+          int idx_old = b * input_cri + c * input_ri + r * in_channel + i;
+          int idx = b * ext_input_cri + cx * ext_input_ri + rx * in_channel + i;
+          ext_inp[idx] = input_ptr[i];
+        }
+      }
+    }
+  }
+
 
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
@@ -727,17 +751,17 @@ CAMLprim value FUN_NATIVE (spatial_transpose) (
     const int rstart = r * row_stride - p_top;
     const int cend = cstart + kernel_cols;
     const int rend = rstart + kernel_rows;
-    const int input_idx_base = bt * input_cri;
+    const int input_idx_base = bt * ext_input_cri;
 
     int cnt = 0;
     for (int a = cstart; a < cend; ++a) {
       for (int b = rstart; b < rend; ++b) {
         for (int h = 0; h < in_channel; ++h) {
-          if (a < input_cols && a >= 0 &&
-              b < input_rows && b >= 0) {
+          if (a < ext_input_cols && a >= 0 &&
+              b < ext_input_rows && b >= 0) {
             int input_idx =
-               input_idx_base + a * input_ri + b * in_channel + h;
-            inpt2d[i * kernel_cri + cnt] = input_ptr[input_idx];
+               input_idx_base + a * ext_input_ri + b * in_channel + h;
+            inpt2d[i * kernel_cri + cnt] = ext_inp[input_idx];
           }
           ++cnt;
         }
@@ -751,6 +775,7 @@ CAMLprim value FUN_NATIVE (spatial_transpose) (
     BETA, output_ptr, out_channel);
 
   free(inpt2d);
+  free(ext_inp);
 
   /*
 
@@ -791,7 +816,7 @@ CAMLprim value FUN_NATIVE (spatial_transpose) (
   }
 
   free(output2d);
-  
+
   */
 
 
