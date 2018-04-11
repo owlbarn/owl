@@ -1108,7 +1108,6 @@ CAMLprim value FUN_NATIVE (spatial_transpose_backward_input) (
     }
   }
 
-<<<<<<< 0cf830fcc8701002df7386c1e166b984e1cf4688
   int idx_old = 0;
   for (int b = 0; b < batches; ++b){
     for (int c = 0; c < input_cols; c++){
@@ -1122,11 +1121,6 @@ CAMLprim value FUN_NATIVE (spatial_transpose_backward_input) (
       }
     }
   }
-=======
-  free(output2d);
-
-  */
->>>>>>> coding...
 
 
   free(inpt2d);
