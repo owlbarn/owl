@@ -561,6 +561,8 @@ val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
 
 val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
 
+val conv2d_transpose_backward_input : arr -> arr -> int array -> arr -> arr
+
 val conv2d_transpose_backward_kernel : arr -> arr -> int array -> arr -> arr
 
 val max_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
