@@ -1718,7 +1718,7 @@ let conv2d ?(padding=SAME) input kernel stride =
 
   output
 
-
+(* transpose 2d convolution *)
 let conv2d_transpose ?(padding=SAME) input kernel stride =
   assert (num_dims input = 4);
   assert (num_dims kernel = 4);
@@ -1835,6 +1835,44 @@ let conv2d_backward_kernel input kernel stride output' =
 
   kernel'
 
+(* gradient of conv2d w.r.t the kernel *)
+let conv2d_transpose_backward_kernel input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let kernel' = empty (kind kernel) (shape kernel) in
+
+  _owl_spatial_trans_conv_backward_kernel (kind input)
+    input kernel' output' batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride row_in_stride col_in_stride;
+
+  kernel'
 
 (* conv3d: 5d input and 5d kernel, refer to tensorflow doc
   input : [batch; input_column; input_row; input_depth; input_channel]
