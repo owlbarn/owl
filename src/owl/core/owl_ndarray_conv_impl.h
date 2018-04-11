@@ -1124,7 +1124,7 @@ CAMLprim value FUN_NATIVE (spatial_transpose_backward_input) (
 
 
   free(inpt2d);
-  free(ext_inp);
+  free(ext_inp); */
 
   return Val_unit;
 }
