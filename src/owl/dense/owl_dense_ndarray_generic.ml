@@ -1748,7 +1748,7 @@ let conv2d_transpose ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  _owl_spatial_conv (kind input)
+  _owl_spatial_trans_conv (kind input)
     input kernel output batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride pad_typ row_in_stride col_in_stride;

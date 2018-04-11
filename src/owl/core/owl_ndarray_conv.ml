@@ -151,6 +151,11 @@ external owl_float32_ndarray_conv_spatial_transpose : ('a, 'b) owl_arr -> ('a, '
 "stub_float32_ndarray_conv_spatial_transpose_bytecode"
 "stub_float32_ndarray_conv_spatial_transpose_native"
 
-let _owl_spatial_conv : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
+external owl_float64_ndarray_conv_spatial_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_float64_ndarray_conv_spatial_transpose_bytecode"
+"stub_float64_ndarray_conv_spatial_transpose_native"
+
+let _owl_spatial_trans_conv: type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
   | Float32   -> owl_float32_ndarray_conv_spatial_transpose
-  | _         -> failwith "_owl_spatial_conv: unsupported operation"
+  | Float64   -> owl_float64_ndarray_conv_spatial_transpose
+  | _         -> failwith "_owl_spatial_trans_conv: unsupported operation"
