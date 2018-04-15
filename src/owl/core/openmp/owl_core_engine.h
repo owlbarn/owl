@@ -8,7 +8,7 @@
 
 
 // threshold of the ndarray size to trigger openmp
-#define OWL_OPENMP_THRESHOLD 1000000
+#define OWL_OPENMP_THRESHOLD 100000
 
 
 #ifdef _OPENMP
