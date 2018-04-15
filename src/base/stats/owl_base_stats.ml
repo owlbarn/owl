@@ -27,6 +27,12 @@ let exponential_rvs = Owl_base_stats_dist_exponential.exponential_rvs
 let cauchy_rvs = Owl_base_stats_dist_cauchy.cauchy_rvs
 
 
+let std_gamma_rvs = Owl_base_stats_dist_gamma.std_gamma_rvs
+
+
+let gamma_rvs = Owl_base_stats_dist_gamma.gamma_rvs
+
+
 (* Randomisation function *)
 
 let shuffle x =
