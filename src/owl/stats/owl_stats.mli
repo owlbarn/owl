@@ -317,38 +317,85 @@ val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypot
 
 (** {6 Discrete random variables} *)
 
+(** The ``_rvs`` functions generate random numbers according to 
+    the specified distribution.  ``_pdf`` are "density" functions 
+    that return the probability of the element specified by the 
+    arguments, while ``_cdf`` functions are cumulative distribution 
+    functions that return the probability of all elements
+    less than or equal to the chosen element, and ``_sf`` functions
+    are survival functions returning one minus the corresponding CDF 
+    function.  `log` versions of functions return the 
+    result for the natural logarithm of a chosen element.  *)
+
 val uniform_int_rvs : a:int -> b:int -> int
-(** TODO *)
+(**
+``uniform_rvs ~a ~b`` returns a random uniformly distributed integer
+between ``a`` and ``b``, inclusive.  *)
 
 val binomial_rvs : p:float -> n:int -> int
-(** ``binomial_rvs p n`` *)
+(**
+``binomial_rvs p n`` returns a random integer representing the number of 
+successes in ``n`` trials with probability of success ``p`` on each trial.
+*)
 
 val binomial_pdf : int -> p:float -> n:int -> float
-(** ``binomial_pdf k ~p ~n`` *)
+(** 
+``binomial_pdf k ~p ~n`` returns the binomially distributed probability
+of ``k`` successes in ``n`` trials with probability ``p`` of success on 
+each trial.
+*)
 
 val binomial_logpdf : int -> p:float -> n:int -> float
-(** ``binomial_logpdf k ~p ~n`` *)
+(** 
+``binomial_logpdf k ~p ~n`` returns the log-binomially distributed probability
+of ``k`` successes in ``n`` trials with probability ``p`` of success on 
+each trial.
+*)
 
 val binomial_cdf : int -> p:float -> n:int -> float
-(** ``binomial_cdf k ~p ~n`` *)
+(** 
+``binomial_cdf k ~p ~n`` returns the binomially distributed cumulative 
+probability of less than or equal to ``k`` successes in ``n`` trials,
+with probability ``p`` on each trial.
+*)
 
 val binomial_logcdf : int -> p:float -> n:int -> float
-(** ``binomial_logcdf k ~p ~n`` *)
+(** 
+``binomial_logcdf k ~p ~n`` returns the log-binomially distributed cumulative 
+probability of less than or equal to ``k`` successes in ``n`` trials, 
+with probability ``p`` on each trial.
+*)
 
 val binomial_sf : int -> p:float -> n:int -> float
-(** ``binomial_sf k ~p ~n`` *)
+(** ``binomial_sf k ~p ~n`` is the binomial survival function, i.e. 
+``1 - (binomial_cdf k ~p ~n)``.
+*)
 
 val binomial_logsf : int -> p:float -> n:int -> float
-(** ``binomial_logsf k ~p ~n`` *)
+(** ``binomial_loggf k ~p ~n`` is the logbinomial survival function, i.e. 
+``1 - (binomial_logcdf k ~p ~n)``.
+*)
 
 val hypergeometric_rvs : good:int -> bad:int -> sample:int -> int
-(** TODO *)
+(** ``hypergeometric_rvs ~good ~bad ~sample`` returns a random hypergeometrically 
+distributed integer representing the number of successes in a sample (without 
+replacement) of size ``~sample`` from a population with ``~good`` successful
+elements and ``~bad`` unsuccessful elements.
+*)
 
 val hypergeometric_pdf : int -> good:int -> bad:int -> sample:int -> float
-(** TODO *)
+(** 
+``hypergeometric_pdf k ~good ~bad ~sample`` returns the hypergeometrically 
+distributed probability of ``k`` successes in a sample (without replacement) of
+``~sample`` elements from a population containing ``~good`` successful elements 
+and ``~bad`` "unsuccessful" ones.
+*)
 
 val hypergeometric_logpdf : int -> good:int -> bad:int -> sample:int -> float
-(** TODO *)
+(** 
+``hypergeometric_logpdf k ~good ~bad ~sample`` returns a value equivalent to a
+log-transformed result from ``hypergeometric_pdf``.
+*)
 
 
 (** {6 Continuous random variables} *)
