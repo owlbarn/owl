@@ -33,6 +33,12 @@ let std_gamma_rvs = Owl_base_stats_dist_gamma.std_gamma_rvs
 let gamma_rvs = Owl_base_stats_dist_gamma.gamma_rvs
 
 
+let gumbel1_rvs = Owl_base_stats_dist_gumbel1.gumbel1_rvs
+
+
+let gumbel2_rvs = Owl_base_stats_dist_gumbel2.gumbel2_rvs
+
+
 (* Randomisation function *)
 
 let shuffle x =
