@@ -7,6 +7,10 @@
 #define OWL_CORE_ENGINE_H
 
 
+// threshold of the ndarray size to trigger openmp
+#define OWL_OPENMP_THRESHOLD 1000000
+
+
 #ifdef _OPENMP
   // choose OpenMP engine
   #define OWL_NDARRAY_MATHS_CMP  "owl_ndarray_maths_cmp_omp.h"
