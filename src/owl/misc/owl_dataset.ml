@@ -40,32 +40,23 @@ let download_all () =
   List.iter (fun fname -> download_data fname) l
 
 let draw_samples x y n =
-  let s  = Owl_dense_ndarray_generic.shape x in
-  let col_num = s.(0) in
-  let a = Array.init col_num (fun i -> i) in
-  let a = Owl_stats.choose a n |> Array.to_list in
-  let slice_op = match (Array.length s) with
-    | 2 -> [L a; R []]
-    | 4 -> [L a; R []; R []; R []]
-    | _ -> failwith "Owl_dataset.draw_samples"
-  in
-  Owl_dense_ndarray.S.get_slice slice_op x,
-  Owl_dense_ndarray.S.get_slice [L a; R []] y
+  let x', y', _ = Owl_dense_matrix_generic.draw_rows2 ~replacement:false x y n in
+  x', y'
 
 (* load mnist train data, the return is a triplet. The first is a 60000 x 784
-  ndarray where each row represents a 28 x 28 image. The second is label and the
+  matrix where each row represents a 28 x 28 image. The second is label and the
   third is the corresponding unravelled row vector of the label. *)
 let load_mnist_train_data () =
   let p = local_data_path () in
-  Owl_dense_ndarray.S.load (p ^ "mnist-train-images"),
-  Owl_dense_ndarray.S.load (p ^ "mnist-train-labels"),
-  Owl_dense_ndarray.S.load (p ^ "mnist-train-lblvec")
+  Owl_dense_matrix.S.load (p ^ "mnist-train-images"),
+  Owl_dense_matrix.S.load (p ^ "mnist-train-labels"),
+  Owl_dense_matrix.S.load (p ^ "mnist-train-lblvec")
 
 let load_mnist_test_data () =
   let p = local_data_path () in
-  Owl_dense_ndarray.S.load (p ^ "mnist-test-images"),
-  Owl_dense_ndarray.S.load (p ^ "mnist-test-labels"),
-  Owl_dense_ndarray.S.load (p ^ "mnist-test-lblvec")
+  Owl_dense_matrix.S.load (p ^ "mnist-test-images"),
+  Owl_dense_matrix.S.load (p ^ "mnist-test-labels"),
+  Owl_dense_matrix.S.load (p ^ "mnist-test-lblvec")
 
 let print_mnist_image x =
   Owl_dense_matrix_generic.reshape x [|28; 28|]
@@ -77,24 +68,24 @@ let print_mnist_image x =
 (* similar to load_mnist_train_data but returns [x] as [*,28,28,1] ndarray *)
 let load_mnist_train_data_arr () =
   let x, label, y = load_mnist_train_data () in
-  let m = (Owl_dense_ndarray.S.shape x).(0) in
+  let m = Owl_dense_matrix.S.row_num x in
   let x = Owl_dense_ndarray.S.reshape x [|m;28;28;1|] in
   x, label, y
 
 let load_mnist_test_data_arr () =
   let x, label, y = load_mnist_test_data () in
-  let m = (Owl_dense_ndarray.S.shape x).(0) in
+  let m = Owl_dense_matrix.S.row_num x in
   let x = Owl_dense_ndarray.S.reshape x [|m;28;28;1|] in
   x, label, y
 
 (* load cifar train data, there are five batches in total. The loaded data is a
-  10000 * 3072 ndarray. Each row represents a 32 x 32 image of three colour
+  10000 * 3072 matrix. Each row represents a 32 x 32 image of three colour
   channels, unravelled into a row vector. The labels are also returned. *)
 let load_cifar_train_data batch =
   let p = local_data_path () in
   Owl_dense_ndarray.S.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_data"),
-  Owl_dense_ndarray.S.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_labels"),
-  Owl_dense_ndarray.S.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_lblvec")
+  Owl_dense_matrix.S.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_labels"),
+  Owl_dense_matrix.S.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_lblvec")
 
 let load_cifar_test_data () =
   let p = local_data_path () in
