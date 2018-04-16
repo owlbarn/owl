@@ -122,7 +122,8 @@ val minmax_i : float array -> int * int
 (** ``minmax_i x`` returns the indices of both minimum and maximum in ``x``. *)
 
 val sort : ?inc:bool -> float array -> float array
-(** ``sort x`` sorts the elements in the ``x`` in increasing order if
+(** 
+``sort x`` sorts the elements in the ``x`` in increasing order if
 ``inc = true``, otherwise in decreasing order if ``inc=false``. By default,
 ``inc`` is ``true``. Note a copy is returned, the original data is not modified.
  *)
@@ -367,17 +368,20 @@ with probability ``p`` on each trial.
 *)
 
 val binomial_sf : int -> p:float -> n:int -> float
-(** ``binomial_sf k ~p ~n`` is the binomial survival function, i.e. 
+(** 
+``binomial_sf k ~p ~n`` is the binomial survival function, i.e. 
 ``1 - (binomial_cdf k ~p ~n)``.
 *)
 
 val binomial_logsf : int -> p:float -> n:int -> float
-(** ``binomial_loggf k ~p ~n`` is the logbinomial survival function, i.e. 
+(** 
+``binomial_loggf k ~p ~n`` is the logbinomial survival function, i.e. 
 ``1 - (binomial_logcdf k ~p ~n)``.
 *)
 
 val hypergeometric_rvs : good:int -> bad:int -> sample:int -> int
-(** ``hypergeometric_rvs ~good ~bad ~sample`` returns a random hypergeometrically 
+(** 
+``hypergeometric_rvs ~good ~bad ~sample`` returns a random hypergeometrically 
 distributed integer representing the number of successes in a sample (without 
 replacement) of size ``~sample`` from a population with ``~good`` successful
 elements and ``~bad`` unsuccessful elements.
