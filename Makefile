@@ -15,6 +15,7 @@ test:
 install:
 	jbuilder install
 	# sigh, the following code deals with the OPAM bug :(
+	# we also need a backup plan if this ENV is not set.
 	$(eval WRONG_DST=${OPAM_SWITCH_PREFIX}/lib/stubslibs/dllowl_stubs.so)
 	$(eval RIGHT_DST=${OPAM_SWITCH_PREFIX}/lib/stublibs/dllowl_stubs.so)
 	if [ -f ${WRONG_DST} ]; then mv ${WRONG_DST} ${RIGHT_DST}; fi
