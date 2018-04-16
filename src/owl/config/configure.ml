@@ -41,7 +41,6 @@ let get_default_cflags c = [
 
 
 let get_default_libs c = [
-  "-L/opt/OpenBLAS/lib/";
   "-lopenblas";
   "-lgfortran";
   "-lm";
@@ -79,7 +78,9 @@ let get_gcc_path c =
 
 let get_openblas_path c =
   let p0 = "/usr/local/opt/openblas/lib" in
+  let p1 = "/opt/OpenBLAS/lib/" in
   if Sys.file_exists p0 then ["-L" ^ p0]
+  else if Sys.file_exists p1 then ["-L" ^ p1]
   else []
 
 
