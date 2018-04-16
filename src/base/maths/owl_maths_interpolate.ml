@@ -48,3 +48,53 @@ let polint xs ys x =
   done;
 
   !y, !dy
+
+
+(* TODO: not tested yet *)
+let ratint xs ys x =
+  let n = Array.length xs in
+  assert Array.(length ys = n);
+  let c = Array.copy ys in
+  let d = Array.copy ys in
+
+  let hh = ref (abs_float (x -. xs.(0))) in
+  let y = ref 0. in
+  let dy = ref 0. in
+  let ns = ref 0 in
+  let eps = 1e-25 in
+
+  try (
+    for i = 0 to n do
+      let h = abs_float (x -. xs.(i)) in
+      if h = 0. then (
+        y := ys.(i);
+        dy := 0.;
+        raise Owl_exception.FOUND
+      )
+      else if h < !hh then (
+        ns := i;
+        hh := h;
+        c.(i) <- ys.(i);
+        d.(i) <- ys.(i) +. eps
+      )
+    done;
+
+    y := ys.(!ns);
+    ns := !ns - 1;
+
+    for m = 1 to n - 1 do
+      for i = 1 to n - m do
+        let w = c.(i) -. d.(i-1) in
+        let h = xs.(i+m-1) -. x in
+        let t = (xs.(i-1) -. x) *. d.(i-1) /. h in
+        let dd = t -. c.(i) in
+        if dd = 0. then failwith "Has a pole";
+        let dd = w /. dd in
+        d.(i-1) <- c.(i) *. dd;
+        c.(i-1) <- t *. dd;
+      done;
+    done;
+
+    !y, !dy
+  )
+  with Owl_exception.FOUND -> !y, !dy | e -> raise e
