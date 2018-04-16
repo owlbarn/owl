@@ -1,6 +1,7 @@
 ### 0.3.7 (in progress)
 
 * Fix some bugs and improve performance.
+* Fix some docker files for automatic image building.
 * Move more pure OCaml implementation to base library.
 * Add a new math module to support complex numbers.
 * Improve the configuration and building system.
