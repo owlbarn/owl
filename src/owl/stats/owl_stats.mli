@@ -388,7 +388,7 @@ val hypergeometric_pdf : int -> good:int -> bad:int -> sample:int -> float
 ``hypergeometric_pdf k ~good ~bad ~sample`` returns the hypergeometrically 
 distributed probability of ``k`` successes in a sample (without replacement) of
 ``~sample`` elements from a population containing ``~good`` successful elements 
-and ``~bad`` "unsuccessful" ones.
+and ``~bad`` unsuccessful ones.
 *)
 
 val hypergeometric_logpdf : int -> good:int -> bad:int -> sample:int -> float
