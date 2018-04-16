@@ -318,7 +318,8 @@ val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypot
 
 (** {6 Discrete random variables} *)
 
-(** The ``_rvs`` functions generate random numbers according to 
+(** 
+    The ``_rvs`` functions generate random numbers according to 
     the specified distribution.  ``_pdf`` are "density" functions 
     that return the probability of the element specified by the 
     arguments, while ``_cdf`` functions are cumulative distribution 
@@ -326,7 +327,8 @@ val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypot
     less than or equal to the chosen element, and ``_sf`` functions
     are survival functions returning one minus the corresponding CDF 
     function.  `log` versions of functions return the 
-    result for the natural logarithm of a chosen element.  *)
+    result for the natural logarithm of a chosen element.  
+ *)
 
 val uniform_int_rvs : a:int -> b:int -> int
 (**
