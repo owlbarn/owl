@@ -15,10 +15,10 @@ RUN apt-get -y install git build-essential ocaml wget unzip aspcud m4 pkg-config
 RUN apt-get -y install camlp4-extra libshp-dev libplplot-dev
 RUN apt-get -y install libopenblas-dev liblapacke-dev
 
-ENV OPAM=opam-full-2.0.0-rc
-RUN wget https://github.com/ocaml/opam/releases/download/2.0.0-rc/$OPAM.tar.gz \
-    && tar -xvf $OPAM.tar.gz \
-    && cd $OPAM \
+ENV VER=2.0.0-rc
+RUN wget https://github.com/ocaml/opam/releases/download/$VER/opam-full-$VER.tar.gz \
+    && tar -xvf opam-full-$VER.tar.gz \
+    && cd opam-full-$VER \
     && ./configure && make lib-ext && make && make install
 
 RUN yes | opam init && eval $(opam config env) && opam switch create 4.06.0
