@@ -8,9 +8,9 @@ let test_op s c op = Perf_common.test_op s c op
 let _ =
   let _ = Random.self_init () in
   let m, n = 2500, 2500 and c = 1 in
-  print_endline (Bytes.make 60 '+');
+  print_endline (String.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
-  print_endline (Bytes.make 60 '-');
+  print_endline (String.make 60 '-');
   let x, y = (M.uniform_int m n), (M.uniform_int m n) in
   let z = M.add x x in
   test_op "zeros         " c (fun () -> M.zeros m n);
@@ -20,8 +20,8 @@ let _ =
   test_op "uniform       " c (fun () -> M.uniform m n);
   test_op "nnz_rows      " c (fun () -> M.nnz_rows z);
   test_op "row_num_nz    " c (fun () -> M.row_num_nz z);
-  test_op "copy trt     " c (fun () -> M.copy x);
-  test_op "copy csc     " c (fun () -> M.copy z);
+  test_op "copy trt      " c (fun () -> M.copy x);
+  test_op "copy csc      " c (fun () -> M.copy z);
   test_op "col           " c (fun () -> M.col x (n-1));
   test_op "row           " c (fun () -> M.row x (m-1));
   test_op "cols          " c (fun () -> M.cols x [|1;2|]);
@@ -51,9 +51,9 @@ let _ =
   test_op "abs           " c (fun () -> M.abs x);
   test_op "neg           " c (fun () -> M.neg x);
   test_op "sum           " c (fun () -> M.sum x);
-  test_op "mean       " c (fun () -> M.mean x);
+  test_op "mean          " c (fun () -> M.mean x);
   test_op "sum_rows      " c (fun () -> M.sum_rows x);
-  test_op "mean_rows  " c (fun () -> M.mean_rows x);
+  test_op "mean_rows     " c (fun () -> M.mean_rows x);
   test_op "minmax        " c (fun () -> M.minmax x);
   test_op "is_zero       " c (fun () -> M.is_zero x);
   test_op "is_negative   " c (fun () -> M.is_negative x);
@@ -67,4 +67,4 @@ let _ =
   test_op "shuffle       " c (fun () -> M.shuffle x);
   test_op "save          " c (fun () -> M.save x "zsparse.tmp");
   test_op "load          " c (fun () -> M.load "zsparse.tmp");
-  print_endline (Bytes.make 60 '+');
+  print_endline (String.make 60 '+');

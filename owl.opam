@@ -17,11 +17,10 @@ build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 
 depends: [
   "ctypes"
-  "gsl" {>= "1.20.0"}
-  "conf-gsl"
+  "base-bigarray"
   "jbuilder" {build}
   "plplot"
   "eigen" {>= "0.0.3"}
   "conf-openblas"
 ]
-available: [ ocaml-version >= "4.04.0" ]
+available: [ ocaml-version >= "4.06.0" ]

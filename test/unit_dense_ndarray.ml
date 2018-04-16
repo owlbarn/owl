@@ -5,6 +5,12 @@ open Owl_types
 
 module M = Owl_dense_ndarray_generic
 
+(* define the test error *)
+let eps = 5e-10
+
+let approx_equal a b = Pervasives.(abs_float (a -. b) < eps)
+
+
 (* make testable *)
 let ndarray = Alcotest.testable (fun p (x : (float, float64_elt) M.t) -> ()) M.equal
 
@@ -35,6 +41,9 @@ let _ =
    M.set vec [|0;0|] {Complex.re=0.0;im=3.0};
    M.set vec [|1;0|] {Complex.re=0.0;im=(-4.0)}
 
+let x3 = M.sequential Float64 ~a:1. [|6|]
+
+
 (* a module with functions to test *)
 module To_test = struct
 
@@ -58,7 +67,7 @@ module To_test = struct
     M.get x [|1;0;1|] = 5.
 
   let get_slice () =
-    let y = M.get_slice [R[];R[0];R[0]] x0 |> M.flatten in
+    let y = M.get_slice [[];[0];[0]] x0 |> M.flatten in
     let z = M.zeros Float64 [|2|] in
     M.set z [|1|] 3.;
     M.equal y z
@@ -72,13 +81,9 @@ module To_test = struct
 
   let map () = M.map (fun a -> a +. 1.) x0 |> M.sum' = 18.
 
-  let fold () = M.fold (fun c a -> c +. a) 0. x0 = 6.
-
-  let foldi () =
-    let a = M.foldi (fun i c a ->
-      if i.(2) = 0 then c +. a else c
-    ) 0. x0
-    in a = 5.
+  let fold () =
+    let a = M.fold (fun c a -> c +. a) 0. x0 in
+    M.get a [|0|] = 6.
 
   let add () = M.equal (M.add x0 x1) x2
 
@@ -123,12 +128,6 @@ module To_test = struct
 
   let for_all () = M.for_all ((<=) 0.) x0
 
-  let filter () = M.filter ((=) 3.) x0 = [| [|1;0;0|] |]
-
-  let filteri () = M.filteri (fun i a ->
-    i.(2) = 1 && a = 3.
-    ) x1 = [| [|0;1;1|] |]
-
   let transpose () =
     let y = M.copy x0 in
     let y = M.transpose y in
@@ -166,6 +165,134 @@ module To_test = struct
     M.get y [|0;0|] = 2. &&
     M.get y [|0;1|] = 1. &&
     M.get y [|0;2|] = 0.
+
+  let same_shape_1 () =
+    let x = M.empty Float64 [|1;2;3|] in
+    let y = M.empty Float64 [|1;2;3|] in
+    M.same_shape x y = true
+
+  let same_shape_2 () =
+    let x = M.empty Float64 [|1;2;3|] in
+    let y = M.empty Float64 [|1;2;4|] in
+    M.same_shape x y = false
+
+  let same_shape_3 () =
+    let x = M.empty Float64 [|1;2;3|] in
+    let y = M.empty Float64 [|1;2;3;4|] in
+    M.same_shape x y = false
+
+  let same_shape_4 () =
+    let x = M.empty Float64 [|1;2;3|] in
+    let y = M.empty Float64 [|3;2;1|] in
+    M.same_shape x y = false
+
+  let same_shape_5 () =
+    let x = M.empty Float64 [|1|] in
+    let y = M.empty Float64 [|1|] in
+    M.same_shape x y = true
+
+  let linspace () =
+    let x = M.linspace Float64 0. 9. 10 in
+    let a = M.get x [|0|] in
+    let b = M.get x [|5|] in
+    let c = M.get x [|9|] in
+    a = 0. && b = 5. && c = 9.
+
+  let logspace_2 () =
+    let x = M.logspace Float64 ~base:2. 0. 5. 6 in
+    let a = M.get x [|0|] in
+    let b = M.get x [|2|] in
+    let c = M.get x [|5|] in
+    a = 1. && b = 4. && c = 32.
+
+  let logspace_10 () =
+    let x = M.logspace Float64 ~base:10. 0. 5. 6 in
+    let a = M.get x [|0|] in
+    let b = M.get x [|2|] in
+    let c = M.get x [|5|] in
+    (a -. 1. < eps) && (b -. 100. < eps) && (c -. 100000. < eps)
+
+  let logspace_e () =
+    let _e = Owl.Const.e in
+    let x = M.logspace Float64 0. 5. 6 in
+    let a = M.get x [|0|] in
+    let b = M.get x [|2|] in
+    let c = M.get x [|5|] in
+    (a -. _e < eps) && (b -. Owl.Maths.(pow _e 2.) < eps) && (c -. Owl.Maths.(pow _e 5.) < eps)
+
+  let vecnorm_01 () =
+    let a = M.vecnorm' ~p:1. x3 in
+    approx_equal a 21.
+
+  let vecnorm_02 () =
+    let a = M.vecnorm' ~p:2. x3 in
+    approx_equal a 9.539392014169456
+
+  let vecnorm_03 () =
+    let a = M.vecnorm' ~p:3. x3 in
+    approx_equal a 7.6116626110202441
+
+  let vecnorm_04 () =
+    let a = M.vecnorm' ~p:4. x3 in
+    approx_equal a 6.9062985796189906
+
+  let vecnorm_05 () =
+    let a = M.vecnorm' ~p:infinity x3 in
+    approx_equal a 6.
+
+  let vecnorm_06 () =
+    let a = M.vecnorm' ~p:(-1.) x3 in
+    approx_equal a 0.40816326530612251
+
+  let vecnorm_07 () =
+    let a = M.vecnorm' ~p:(-2.) x3 in
+    approx_equal a 0.81885036774322384
+
+  let vecnorm_08 () =
+    let a = M.vecnorm' ~p:(-3.) x3 in
+    approx_equal a 0.94358755060582611
+
+  let vecnorm_09 () =
+    let a = M.vecnorm' ~p:(-4.) x3 in
+    approx_equal a 0.98068869669651115
+
+  let vecnorm_10 () =
+    let a = M.vecnorm' ~p:neg_infinity x3 in
+    approx_equal a 1.
+
+  let expand_01 () =
+    let y = M.expand ~hi:true x0 5 in
+    M.shape y = [|2;2;3;1;1|]
+
+  let expand_02 () =
+    let y = M.expand ~hi:false x0 5 in
+    M.shape y = [|1;1;2;2;3|]
+
+  let concatenate_01 () =
+    let x = M.sequential Float64 ~a:1. [|2;3;4|] in
+    let y = M.sequential Float64 ~a:25. [|1;3;4|] in
+    let z = M.sequential Float64 ~a:1. [|3;3;4|] in
+    let a = M.concatenate ~axis:0 [|x; y|] in
+    M.(a = z)
+
+  let concatenate_02 () =
+    let x = M.of_array Float64 [|0.;2.|] [|2; 1|] in
+    let y = M.of_array Float64 [|1.;3.|] [|2; 1|] in
+    let z = M.sequential Float64 ~a:0. [|2;2|] in
+    let a = M.concatenate ~axis:1 [|x; y|] in
+    M.(a = z)
+
+  let diff_1 () =
+    let x = M.sequential Float64 [|3;3|] in
+    let y = M.create Float64 [|2;3|] 3. in
+    let z = M.diff ~axis:0 x in
+    M.(y = z)
+
+  let diff_2 () =
+    let x = M.sequential Float64 [|3;3|] in
+    let y = M.ones Float64 [|3;2|] in
+    let z = M.diff ~axis:1 x in
+    M.(y = z)
 
 end
 
@@ -209,9 +336,6 @@ let map () =
 
 let fold () =
   Alcotest.(check bool) "fold" true (To_test.fold ())
-
-let foldi () =
-  Alcotest.(check bool) "foldi" true (To_test.foldi ())
 
 let add () =
   Alcotest.(check bool) "add" true (To_test.add ())
@@ -273,12 +397,6 @@ let not_exists () =
 let for_all () =
   Alcotest.(check bool) "for_all" true (To_test.for_all ())
 
-let filter () =
-  Alcotest.(check bool) "filter" true (To_test.filter ())
-
-let filteri () =
-  Alcotest.(check bool) "filteri" true (To_test.filteri ())
-
 let transpose () =
   Alcotest.(check bool) "transpose" true (To_test.transpose ())
 
@@ -303,6 +421,81 @@ let reverse () =
 let rotate () =
   Alcotest.(check bool) "rotate" true (To_test.rotate ())
 
+let same_shape_1 () =
+  Alcotest.(check bool) "same_shape_1" true (To_test.same_shape_1 ())
+
+let same_shape_2 () =
+  Alcotest.(check bool) "same_shape_2" true (To_test.same_shape_2 ())
+
+let same_shape_3 () =
+  Alcotest.(check bool) "same_shape_3" true (To_test.same_shape_3 ())
+
+let same_shape_4 () =
+  Alcotest.(check bool) "same_shape_4" true (To_test.same_shape_4 ())
+
+let same_shape_5 () =
+  Alcotest.(check bool) "same_shape_5" true (To_test.same_shape_5 ())
+
+let linspace () =
+  Alcotest.(check bool) "linspace" true (To_test.linspace ())
+
+let logspace_2 () =
+  Alcotest.(check bool) "logspace_2" true (To_test.logspace_2 ())
+
+let logspace_10 () =
+  Alcotest.(check bool) "logspace_10" true (To_test.logspace_10 ())
+
+let logspace_e () =
+  Alcotest.(check bool) "logspace_e" true (To_test.logspace_e ())
+
+let vecnorm_01 () =
+  Alcotest.(check bool) "vecnorm_01" true (To_test.vecnorm_01 ())
+
+let vecnorm_02 () =
+  Alcotest.(check bool) "vecnorm_02" true (To_test.vecnorm_02 ())
+
+let vecnorm_03 () =
+  Alcotest.(check bool) "vecnorm_03" true (To_test.vecnorm_03 ())
+
+let vecnorm_04 () =
+  Alcotest.(check bool) "vecnorm_04" true (To_test.vecnorm_04 ())
+
+let vecnorm_05 () =
+  Alcotest.(check bool) "vecnorm_05" true (To_test.vecnorm_05 ())
+
+let vecnorm_06 () =
+  Alcotest.(check bool) "vecnorm_06" true (To_test.vecnorm_06 ())
+
+let vecnorm_07 () =
+  Alcotest.(check bool) "vecnorm_07" true (To_test.vecnorm_07 ())
+
+let vecnorm_08 () =
+  Alcotest.(check bool) "vecnorm_08" true (To_test.vecnorm_08 ())
+
+let vecnorm_09 () =
+  Alcotest.(check bool) "vecnorm_09" true (To_test.vecnorm_09 ())
+
+let vecnorm_10 () =
+  Alcotest.(check bool) "vecnorm_10" true (To_test.vecnorm_10 ())
+
+let expand_01 () =
+  Alcotest.(check bool) "expand_01" true (To_test.expand_01 ())
+
+let expand_02 () =
+  Alcotest.(check bool) "expand_02" true (To_test.expand_02 ())
+
+let concatenate_01 () =
+  Alcotest.(check bool) "concatenate_01" true (To_test.concatenate_01 ())
+
+let concatenate_02 () =
+  Alcotest.(check bool) "concatenate_02" true (To_test.concatenate_02 ())
+
+let diff_1 () =
+  Alcotest.(check bool) "diff_1" true (To_test.diff_1 ())
+
+let diff_2 () =
+  Alcotest.(check bool) "diff_2" true (To_test.diff_2 ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -317,7 +510,6 @@ let test_set = [
   "fill", `Slow, fill;
   "map", `Slow, map;
   "fold", `Slow, fold;
-  "foldi", `Slow, foldi;
   "add", `Slow, add;
   "mul", `Slow, mul;
   "add_scalar", `Slow, add_scalar;
@@ -338,8 +530,6 @@ let test_set = [
   "exists", `Slow, exists;
   "not_exists", `Slow, not_exists;
   "for_all", `Slow, for_all;
-  "filter", `Slow, filter;
-  "filteri", `Slow, filteri;
   "transpose", `Slow, transpose;
   "flatten", `Slow, flatten;
   "reshape", `Slow, reshape;
@@ -348,4 +538,29 @@ let test_set = [
   "broadcast_add", `Slow, broadcast_add;
   "reverse", `Slow, reverse;
   "rotate", `Slow, rotate;
+  "same_shape_1", `Slow, same_shape_1;
+  "same_shape_2", `Slow, same_shape_2;
+  "same_shape_3", `Slow, same_shape_3;
+  "same_shape_4", `Slow, same_shape_4;
+  "same_shape_5", `Slow, same_shape_5;
+  "linspace", `Slow, linspace;
+  "logspace_2", `Slow, logspace_2;
+  "logspace_10", `Slow, logspace_10;
+  "logspace_e", `Slow, logspace_e;
+  "vecnorm_01", `Slow, vecnorm_01;
+  "vecnorm_02", `Slow, vecnorm_02;
+  "vecnorm_03", `Slow, vecnorm_03;
+  "vecnorm_04", `Slow, vecnorm_04;
+  "vecnorm_05", `Slow, vecnorm_05;
+  "vecnorm_06", `Slow, vecnorm_06;
+  "vecnorm_07", `Slow, vecnorm_07;
+  "vecnorm_08", `Slow, vecnorm_08;
+  "vecnorm_09", `Slow, vecnorm_09;
+  "vecnorm_10", `Slow, vecnorm_10;
+  "expand_01", `Slow, expand_01;
+  "expand_02", `Slow, expand_02;
+  "concatenate_01", `Slow, concatenate_01;
+  "concatenate_02", `Slow, concatenate_02;
+  "diff_1", `Slow, diff_1;
+  "diff_2", `Slow, diff_2;
 ]

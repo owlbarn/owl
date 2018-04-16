@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 GIST=$1
-DIRNAME=$2
+GVER=$2
+DIRNAME=$3
 
 if [ -z $DIRNAME ]; then
   DIRNAME="$HOME/.owl/zoo"
@@ -11,12 +12,17 @@ if [ -d $DIRNAME ]; then
 fi
 
 if [ -z $GIST ]; then
-  echo "usage: `basename $0` <gist_id> <dirname>"
+  echo "usage: `basename $0` <gist_id> <version_id> <dirname>"
+  exit 1
+fi
+
+if [ -z $GVER ]; then
+  echo "usage: `basename $0` <gist_id> <version_id> <dirname>"
   exit 1
 fi
 
 GIST_DIR=$(echo $GIST | tr '/' '-')
-MODEL_DIR="$DIRNAME/$GIST_DIR"
+MODEL_DIR="$DIRNAME/$GIST_DIR/$GVER"
 
 if [ -d $MODEL_DIR ]; then
     echo "Warning: $MODEL_DIR already exists, overwriting!"
@@ -24,7 +30,7 @@ fi
 
 echo "Downloading the gist to $MODEL_DIR ..."
 mkdir -p $MODEL_DIR
-wget https://gist.github.com/$GIST/download -O $MODEL_DIR/gist.zip
-unzip -o -j $MODEL_DIR/gist.zip -d $MODEL_DIR
-rm $MODEL_DIR/gist.zip
+wget https://codeload.github.com/gist/$GIST/zip/$GVER -O $MODEL_DIR/gist_ver.zip
+unzip -o -j $MODEL_DIR/gist_ver.zip -d $MODEL_DIR
+rm $MODEL_DIR/gist_ver.zip
 echo "Succeed!"

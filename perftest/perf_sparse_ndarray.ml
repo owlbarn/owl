@@ -13,9 +13,9 @@ let _ =
   let _ = Random.self_init () in
   let m, n, o = 10, 1000, 10000 and c = 1 in
   let density = 0.00001 in
-  print_endline (Bytes.make 60 '+');
+  print_endline (String.make 60 '+');
   Printf.printf "| test ndarray size: %i x %i x %i    exps: %i\n" m n o c;
-  print_endline (Bytes.make 60 '-');
+  print_endline (String.make 60 '-');
   let x = M.uniform ~density Bigarray.Float64 [|m;n;o|] in
   let y = M.uniform ~density Bigarray.Float64 [|m;n;o|] in
   test_op "zeros             " c (fun () -> M.zeros Bigarray.Float64 [|m;n;o|]);
@@ -33,7 +33,7 @@ let _ =
   test_op "equal             " c (fun () -> M.equal x x);
   test_op "greater           " c (fun () -> M.greater x x);
   test_op "greater_equal     " c (fun () -> M.greater_equal x x);
-  test_op "copy             " c (fun () -> M.copy x);
+  test_op "copy              " c (fun () -> M.copy x);
   test_op "iteri             " c (fun () -> M.iteri (fun i a -> ()) x);
   test_op "iter              " c (fun () -> M.iter (fun a -> ()) x);
   test_op "iteri (0,*,*)     " c (fun () -> M.iteri ~axis:[|Some 0; None; None|] (fun i a -> ()) x);
@@ -46,4 +46,4 @@ let _ =
   test_op "map_nz            " c (fun () -> M.map_nz (fun a -> a) x);
   test_op "map_nz (sin)      " c (fun () -> M.map_nz (fun a -> sin a) x);
   test_op "map_nz (+1)       " c (fun () -> M.map_nz (fun a -> a +. 1.) x);
-  print_endline (Bytes.make 60 '+');
+  print_endline (String.make 60 '+');

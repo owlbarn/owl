@@ -1,5 +1,5 @@
 #!/usr/bin/env owl
-(* This example demonstrates how to use Owl to implement Google's Inception V3.
+(* This example demonstrates how to use Owl to implement Google's Inception V3 (https://arxiv.org/abs/1512.00567).
   Note that only the network structure of Inception is defined.
 
   If you want to use Google Inception for inference, please use Zoo system to

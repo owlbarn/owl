@@ -1,6 +1,84 @@
-### 0.3.1 (in progress)
+### 0.3.7 (in progress)
 
-* Design View module for Ndarray.
+* Fix some bugs and improve performance.
+* Move more pure OCaml implementation to base library.
+* Add a new math module to support complex numbers.
+* Improve the configuration and building system.
+* Change template code into C header files.
+
+
+### 0.3.6 (2018-03-22)
+
+* Fix some bugs and improve performance.
+* Add more unit tests for Ndarray module.
+* Add version control in Zoo gist system.
+* Add tensor contract operations in Ndarray.
+* Add more documentation of various functions.
+* Add support of complex numbers of convolution and pooling functions.
+* Enhance Owl's own Array submodule in Utils module.
+* Fix pretty printer for rank 0 ndarrays.
+* Add functions to iterate slices in an ndarray.
+* Adjust the structure of OpenCL module.
+
+
+### 0.3.5 (2018-03-12)
+
+* Add functions for numerical integration.
+* Add functions for interoperation.
+* Add several root-finding algorithms.
+* Introduce Owl's exception module.
+* Add more functions in Linalg module.
+* Add native convolution function in core.
+* Remove Eigen dependency of dense data structure.
+* Fix some bugs and improve performance.
+
+
+### 0.3.4 (2018-02-26)
+
+* Update README, ACKNOWLEDGEMENT, and etc.
+* Initial implementation of OpenCL Context module.
+* Fix some bugs and improve the performance.
+* Add Adam learning rate algorithm in Optimise module.
+* Add a number of statistical functions into Stats.
+* Enhance View functor and add more functions.
+* Include and documentation of NLP modules.
+* Add dockerfile for various linux distributions.
+
+
+### 0.3.3 (2018-02-12)
+
+* Fix some bugs and improve the performance.
+* Integrate with Owl's documentation system.
+* Add native C implementation of pooling operations.
+* Add more operators in Operator module.
+* Add more functions in Linalg module.
+* Optimise the Base library.
+* Add more unit tests.
+
+
+### 0.3.2 (2018-02-08)
+
+* Fix some bugs and improve the performance.
+* Functorise many unit tests and add more tests.
+* Rewrite the documentation migrate to Sphinx system.
+* Migrate many pure OCaml code into Base library.
+* Implement the initial version of Base library.
+
+
+### 0.3.1 (2018-01-25)
+
+* Design View module as an experimental module for Ndarray.
+* Include Mersenne Twister (SFMT) to generate random numbers.
+* Implement random number generator of various distributions.
+* Implement native functions for maths and stats module.
+* Include FFTPACK to provide native support for FFT functions.
+* Minimise dependency, remove dependencies on Gsl and etc.
+* Implement slicing and indexing as native C functions.
+* Use new extended indexing operators for slicing functions.
+* Refine ndarray fold function and introduce scan function.
+* Reorganise the module structure in the source tree.
+* Fix some bugs and enhance the performance of core functions.
+* Add another 200+ unit tests.
 
 
 ### 0.3.0 (2017-12-05)

@@ -1,6 +1,6 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 open Owl_zoo_cmd
@@ -8,7 +8,7 @@ open Owl_zoo_cmd
 
 let _ =
   (* initialise logger *)
-  Owl_log.color_on ();
+  Owl_log.set_color true;
   Owl_log.(set_level DEBUG);
   (* add zoo directive *)
   Owl_zoo_dir.add_dir_zoo ();
@@ -16,9 +16,12 @@ let _ =
   if Array.length Sys.argv < 2 then
     start_toplevel ()
   else if Sys.argv.(1) = "-upload" then
-    upload_gist Sys.argv.(2)
+    upload_gist Sys.argv.(2) |> ignore
   else if Sys.argv.(1) = "-download" then
-    download_gist Sys.argv.(2)
+    if Array.length Sys.argv <= 3 then
+      download_gist Sys.argv.(2)
+    else
+      download_gist ~vid:(Sys.argv.(3)) Sys.argv.(2)
   else if Sys.argv.(1) = "-remove" then
     remove_gist Sys.argv.(2)
   else if Sys.argv.(1) = "-info" then
@@ -26,7 +29,9 @@ let _ =
   else if Sys.argv.(1) = "-run" then
     run_gist Sys.argv.(2)
   else if Sys.argv.(1) = "-list" then
-    list_gist ()
+    if Array.length Sys.argv >= 3 then
+      list_gist Sys.argv.(2)
+    else list_gist ""
   else if Sys.argv.(1) = "-help" then
     print_info ()
   else if Sys.argv.(1) = "-update" then (

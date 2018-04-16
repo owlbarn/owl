@@ -1,38 +1,179 @@
 (jbuild_version 1)
 
+(copy_files# ext/*)
+(copy_files# core/*)
+(copy_files# core/openmp/*)
+(copy_files# dense/*)
+(copy_files# sparse/*)
+(copy_files# maths/*)
+(copy_files# maths/cdflib/*)
+(copy_files# maths/cephes/*)
+(copy_files# stats/*)
+(copy_files# stats/sfmt/*)
+(copy_files# cblas/*)
+(copy_files# lapacke/*)
+(copy_files# linalg/*)
+(copy_files# optimise/*)
+(copy_files# neural/*)
+(copy_files# fftpack/*)
+(copy_files# misc/*)
+(copy_files# nlp/*)
+(copy_files# ppl/*)
+(copy_files# working/*)
+
 (library (
   (name owl)
   (public_name owl)
   (wrapped false)
   (c_names (
-    owl_dense_common_c
-    owl_dense_common_vec_cmp
-    owl_dense_common_vec_map
-    owl_dense_common_vec_fold
+    ; Core
+    owl_core_utils
+    owl_slicing_basic_stub
+    owl_slicing_fancy_stub
+    owl_ndarray_maths_stub
+    owl_ndarray_conv_stub
+    owl_ndarray_pool_stub
+    owl_ndarray_contract_stub
+    owl_ndarray_transpose_stub
+    owl_matrix_swap_stub
+    owl_matrix_check_stub
+    owl_distribution_common_c
     owl_cblas_generated_stub
     owl_lapacke_generated_stub
+    ; FFTPACK
+    owl_fftpack_float32
+    owl_fftpack_float64
+    ; stats
+    SFMT
+    owl_stats_extend_misc
+    owl_stats_extend_stub
+    owl_stats_extend_shuffle
+    owl_stats_prng_stub
+    owl_stats_ziggurat
+    owl_stats_dist_stub
+    owl_stats_dist_beta
+    owl_stats_dist_binomial
+    owl_stats_dist_cauchy
+    owl_stats_dist_chi2
+    owl_stats_dist_exponential
+    owl_stats_dist_exponpow
+    owl_stats_dist_f
+    owl_stats_dist_gamma
+    owl_stats_dist_gaussian
+    owl_stats_dist_gennorm
+    owl_stats_dist_geometric
+    owl_stats_dist_gumbel1
+    owl_stats_dist_gumbel2
+    owl_stats_dist_hypergeometric
+    owl_stats_dist_laplace
+    owl_stats_dist_logistic
+    owl_stats_dist_lognormal
+    owl_stats_dist_logseries
+    owl_stats_dist_lomax
+    owl_stats_dist_negative_binomial
+    owl_stats_dist_noncentral_chi2
+    owl_stats_dist_noncentral_f
+    owl_stats_dist_poisson
+    owl_stats_dist_power
+    owl_stats_dist_rayleigh
+    owl_stats_dist_t
+    owl_stats_dist_triangular
+    owl_stats_dist_uniform
+    owl_stats_dist_vonmises
+    owl_stats_dist_wald
+    owl_stats_dist_weibull
+    owl_stats_dist_zipf
+    ; CDFlib
+    owl_dcdflib
+    owl_ipmpar
+    ; maths
+    owl_maths_special_impl
+    owl_maths_special_stub
+    owl_maths_special_gamma
+    sf_error
+    airy
+    bdtr
+    beta
+    btdtr
+    cbrt
+    chbevl
+    chdtr
+    const
+    dawsn
+    ellie
+    ellik
+    ellpe
+    ellpj
+    ellpk
+    exp10
+    exp2
+    expn
+    fdtr
+    fresnl
+    gamma
+    gdtr
+    gels
+    hyp2f1
+    hyperg
+    i0
+    i1
+    igam
+    igami
+    incbet
+    incbi
+    j0
+    j1
+    jv
+    k0
+    k1
+    kn
+    kolmogorov
+    lanczos
+    mtherr
+    nbdtr
+    ndtr
+    ndtri
+    pdtr
+    psi
+    rgamma
+    round
+    scipy_iv
+    shichi
+    sici
+    sincos
+    sindg
+    spence
+    stdtr
+    struve
+    tandg
+    tukey
+    unity
+    yn
+    zeta
+    zetac
   ))
-  (c_flags (
-    -g -O3 -Ofast
-    ; Experimental switches
-    ; -ffast-math may break IEEE754 semantics
-    -march=native -funroll-loops -ffast-math -flto
-    ; For development use before release
-    ; -Wall -pedantic -Wextra -Wunused
-  ))
-  (c_library_flags (
-    -L/usr/local/lib/gcc/7
-    -L/usr/local/opt/openblas/lib
-    -lopenblas
-    -lgfortran
-    -lm
-  ))
-  (flags (:standard -safe-string))
+  (c_flags         ((:include c_flags.sexp)))
+  (c_library_flags ((:include c_library_flags.sexp)))
+  (flags           ((:include ocaml_flags.sexp)))
   (libraries (
+    owl_base
     ctypes
     ctypes.stubs
-    gsl
     eigen
     plplot
   ))
+))
+
+
+(rule
+ ((targets (c_flags.sexp
+            c_library_flags.sexp
+            ocaml_flags.sexp))
+  (deps    (config/configure.exe))
+  (action
+    (setenv ENABLE_EXPMODE 0 ; turn on experiment features like flto
+    (setenv ENABLE_DEVMODE 0 ; turn on all the warnings in development
+    (setenv ENABLE_OPENMP  0 ; turn on OpenMP support in core module
+      (run ${<} -ocamlc ${OCAMLC}))
+    )))
 ))

@@ -1,0 +1,22 @@
+(jbuild_version 1)
+
+(copy_files# types/*)
+(copy_files# maths/*)
+(copy_files# stats/*)
+(copy_files# dense/*)
+(copy_files# core/*)
+(copy_files# optimise/*)
+(copy_files# neural/*)
+(copy_files# linalg/*)
+(copy_files# misc/*)
+
+(library (
+  (name owl_base)
+  (public_name owl_base)
+  (wrapped false)
+  (flags (:standard -safe-string))
+  (libraries (
+    ; Let's keep the dependency minimal
+    bigarray
+  ))
+))

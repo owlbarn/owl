@@ -1,12 +1,12 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 include Owl_types
 
 
-let version = "0.3.1 dev"
+let version = "%%VERSION%%"
 
 (* So we don't have to open Bigarray all the time. *)
 
@@ -73,14 +73,13 @@ module Mat = struct
   include Owl_dense.Matrix.D
 end
 
-module Vec = struct
-  include Owl_dense.Vector.D
-end
 
-
-(* set up owl's folder *)
+(* initialise owl's working environment *)
 
 let _ =
+  (* init the internal state of PRNG *)
+  Owl_stats_prng.self_init ();
+  (* set up owl's folder *)
   let home = Sys.getenv "HOME" ^ "/.owl" in
   let dir_dataset = home ^ "/dataset" in
   let dir_zoo = home ^ "/zoo" in
