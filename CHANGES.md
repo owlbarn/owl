@@ -6,6 +6,7 @@
 * Add a new math module to support complex numbers.
 * Improve the configuration and building system.
 * Change template code into C header files.
+* Add initial support for OpenMP with evaluation.
 
 
 ### 0.3.6 (2018-03-22)
