@@ -15,12 +15,15 @@ RUN apt-get -y install git build-essential ocaml wget unzip aspcud m4 pkg-config
 RUN apt-get -y install camlp4-extra libshp-dev libplplot-dev
 RUN apt-get -y install libopenblas-dev liblapacke-dev
 
-RUN apt-get -y install opam \
-    && yes | opam init && eval $(opam config env)
-RUN opam update && opam switch 4.06.0 && eval $(opam config env)
+ENV VER=2.0.0-rc
+RUN wget https://github.com/ocaml/opam/releases/download/$VER/opam-full-$VER.tar.gz \
+    && tar -xvf opam-full-$VER.tar.gz \
+    && cd opam-full-$VER \
+    && ./configure && make lib-ext && make && make install
+
+RUN yes | opam init && eval $(opam config env) && opam switch create 4.06.0
 
 RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes plplot alcotest utop base stdio configurator
-
 
 #################### SET UP ENV VARS #######################
 
@@ -45,9 +48,9 @@ ENV OWLPATH /root/owl
 RUN cd /root && git clone https://github.com/ryanrhymes/owl.git
 
 # remove unrecognised sse compiler option on arm; add libraries for linking
-RUN sed -i -- 's/-lopenblas/-lopenblas -llapacke/g' $OWLPATH/src/owl/jbuild \
-    && sed -i -- 's/-march=native -mfpmath=sse/-march=native/g' $OWLPATH/src/owl/jbuild \
-    && sed -i -- 's/-DSFMT_MEXP=19937 -msse2/-DSFMT_MEXP=19937/g' $OWLPATH/src/owl/jbuild
+RUN sed -i -- 's/-lopenblas/-lopenblas -llapacke/g' $OWLPATH/src/owl/config/configure.ml \
+    && sed -i -- 's/-mfpmath=sse//g' $OWLPATH/src/owl/config/configure.ml \
+    && sed -i -- 's/-msse2//g' $OWLPATH/src/owl/config/configure.ml
 
 RUN cd $OWLPATH \
     && eval `opam config env ` \
@@ -57,7 +60,6 @@ RUN cd $OWLPATH \
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
 RUN echo "#require \"owl_top\";; open Owl;;" >> /root/.ocamlinit \
-    && bash -c 'echo -e "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/root/.opam/4.06.0/lib/stubslibs" >> /root/.bashrc' \
     && opam config env >> /root/.bashrc \
     && bash -c "source /root/.bashrc"
 
