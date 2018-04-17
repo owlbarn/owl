@@ -41,6 +41,7 @@ doc:
 cleanall:
 	jbuilder uninstall && jbuilder clean
 	$(RM) -r $(find . -name .merlin)
+	$(RM) $(OPAM_STUBS)/dllowl_stubs.so
 
 release:
 	opam install --yes topkg topkg-care topkg-jbuilder opam-publish
