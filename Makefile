@@ -1,7 +1,13 @@
 .PHONY: all
-all:
-	# jbuilder build --dev
+all: build
+
+.PHONY: build
+build: depends
 	jbuilder build @install
+
+.PHONY: depend depends
+depend depends:
+	jbuilder external-lib-deps --missing @install
 
 .PHONY: clean
 clean:
