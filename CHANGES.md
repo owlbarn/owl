@@ -1,11 +1,11 @@
-### 0.3.7 (in progress)
+### 0.3.7 (2018-04-17)
 
 * Fix some bugs and improve performance.
 * Move more pure OCaml implementation to base library.
 * Add a new math module to support complex numbers.
 * Improve the configuration and building system.
 * Change template code into C header files.
-
+* Tidy up packaging
 
 ### 0.3.6 (2018-03-22)
 
