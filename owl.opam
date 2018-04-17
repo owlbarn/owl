@@ -21,6 +21,7 @@ depends: [
   "plplot"
   "eigen" {>= "0.0.3"}
   "conf-openblas" {>= "0.2.0"}
+  "owl-base"
 ]
 
 available: [ ocaml-version >= "4.06.0" ]
