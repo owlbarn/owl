@@ -10,7 +10,7 @@ build: depends
 
 .PHONY: depend depends
 depend depends:
-	jbuilder external-lib-deps --missing @install
+	jbuilder external-lib-deps --missing @install @runtest
 
 .PHONY: clean
 clean:
@@ -41,3 +41,7 @@ doc:
 cleanall:
 	jbuilder uninstall && jbuilder clean
 	$(RM) -r $(find . -name .merlin)
+
+release:
+	topkg tag
+	topkg bistro
