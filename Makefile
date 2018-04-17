@@ -1,3 +1,6 @@
+OPAM_LIB := $(shell opam config var lib 2>/dev/null)
+OPAM_STUBS := $(shell opam config var stublibs 2>/dev/null)
+
 .PHONY: all
 all: build
 
@@ -18,16 +21,17 @@ test:
 	jbuilder runtest -j1 --no-buffer
 
 .PHONY: install
-install:
+install: build
 	jbuilder install
-	# sigh, the following code deals with the OPAM bug :(
-	$(eval WRONG_DST=${OPAM_SWITCH_PREFIX}/lib/stubslibs/dllowl_stubs.so)
-	$(eval RIGHT_DST=${OPAM_SWITCH_PREFIX}/lib/stublibs/dllowl_stubs.so)
-	if [ -f ${WRONG_DST} ]; then mv ${WRONG_DST} ${RIGHT_DST}; fi
+	[ -f "$(OPAM_LIB)/stubslibs/dllowl_stubs.so" ] && \
+	  mv "$(OPAM_LIB)/stubslibs/dllowl_stubs.so" \
+	     "$(OPAM_STUBS)/dllowl_stubs.so"
+	$(RM) -d $(OPAM_LIB)/stubslibs || true
 
 .PHONY: uninstall
 uninstall:
 	jbuilder uninstall
+	$(RM) $(OPAM_STUBS)/dllowl_stubs.so
 
 .PHONY: doc
 doc:
