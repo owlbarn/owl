@@ -5,6 +5,7 @@
 * Move more pure OCaml implementation to base library.
 * Add a new math module to support complex numbers.
 * Improve the configuration and building system.
+* Improve the automatic documentation building system.
 * Change template code into C header files.
 * Add initial support for OpenMP with evaluation.
 
