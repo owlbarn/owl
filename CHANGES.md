@@ -5,7 +5,7 @@
 * Add a new math module to support complex numbers.
 * Improve the configuration and building system.
 * Change template code into C header files.
-
+* Tidy up packaging
 
 ### 0.3.6 (2018-03-22)
 
