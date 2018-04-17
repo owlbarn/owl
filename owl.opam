@@ -20,7 +20,7 @@ depends: [
   "ctypes"
   "plplot"
   "eigen" {>= "0.0.3"}
-  "conf-openblas"
+  "conf-openblas" {>= "0.2.0"}
 ]
 
 available: [ ocaml-version >= "4.06.0" ]
