@@ -42,6 +42,7 @@ cleanall:
 	jbuilder uninstall && jbuilder clean
 	$(RM) -r $(find . -name .merlin)
 
+.PHONY: release
 release:
 	opam install --yes topkg topkg-care topkg-jbuilder opam-publish
 	topkg tag
