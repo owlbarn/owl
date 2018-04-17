@@ -34,12 +34,12 @@ let calc_conv2d_transpose_output_shape
   padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   =
   let output_cols = match padding with
-    | SAME  -> (input_cols - 1) * col_stride + kernel_cols - 2
-    | VALID -> (input_cols - 1) * col_stride + kernel_cols
+    | SAME  -> input_cols * col_stride
+    | VALID -> input_cols * col_stride + (max (kernel_cols - col_stride) 0)
   in
   let output_rows = match padding with
-    | SAME  -> (input_rows - 1) * row_stride + kernel_rows - 2
-    | VALID -> (input_rows - 1) * row_stride + kernel_rows
+    | SAME  -> input_rows * row_stride
+    | VALID -> input_rows * row_stride + (max (kernel_rows - row_stride) 0)
   in
   (output_cols, output_rows)
 
