@@ -43,6 +43,7 @@ cleanall:
 	$(RM) -r $(find . -name .merlin)
 	$(RM) $(OPAM_STUBS)/dllowl_stubs.so
 
+.PHONY: release
 release:
 	opam install --yes topkg topkg-care topkg-jbuilder opam-publish
 	topkg tag
