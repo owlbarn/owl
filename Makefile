@@ -43,5 +43,6 @@ cleanall:
 	$(RM) -r $(find . -name .merlin)
 
 release:
+	opam install --yes topkg topkg-care topkg-jbuilder opam-publish
 	topkg tag
 	topkg bistro
