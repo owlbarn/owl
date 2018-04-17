@@ -1,4 +1,4 @@
-### 0.3.7 (2018-04-17)
+### 0.3.7 (in progress)
 
 * Fix some bugs and improve performance.
 * Move more pure OCaml implementation to base library.
