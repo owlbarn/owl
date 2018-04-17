@@ -1,4 +1,9 @@
-### 0.3.7 (in progress)
+### 0.3.8 (in progress)
+
+* Fix some bugs and improve performance.
+
+
+### 0.3.7 (2018-04-17)
 
 * Fix some bugs and improve performance.
 * Fix some docker files for automatic image building.
@@ -8,6 +13,7 @@
 * Improve the automatic documentation building system.
 * Change template code into C header files.
 * Add initial support for OpenMP with evaluation.
+* Tidy up packaging using TOPKG.
 
 
 ### 0.3.6 (2018-03-22)

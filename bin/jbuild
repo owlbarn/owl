@@ -3,7 +3,7 @@
 (executable (
   (name        zoo)
   (public_name owl)
-  (package     owl_zoo)
+  (package     owl-zoo)
   (libraries  (
     owl
     owl_zoo
@@ -15,7 +15,7 @@
 
 (install (
   (section bin)
-  (package owl_zoo)
+  (package owl-zoo)
   (files (
     (owl_upload_gist.sh as owl_upload_gist.sh)
     (owl_download_gist.sh as owl_download_gist.sh)

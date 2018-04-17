@@ -156,7 +156,7 @@
   (c_library_flags ((:include c_library_flags.sexp)))
   (flags           ((:include ocaml_flags.sexp)))
   (libraries (
-    owl_base
+    owl-base
     ctypes
     ctypes.stubs
     eigen
