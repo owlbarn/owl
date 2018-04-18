@@ -1,3 +1,8 @@
+### 0.3.8 (in progress)
+
+* Fix some bugs and improve performance.
+
+
 ### 0.3.7 (2018-04-18)
 
 * Fix some bugs and improve performance.
