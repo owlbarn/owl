@@ -3543,6 +3543,22 @@ let sum_slices ?axis x =
   reshape y s
 *)
 
+let sum_reduce ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let y = ref x in
+      for i = 0 to (num_dims x - 1) do
+        if Array.mem i a then (
+          let m, n, o, s = reduce_params i !y in
+          let y = zeros _kind s in
+          _owl_sum_along _kind m n o x y
+        )
+      done;
+      !y
+    )
+  | None   -> _owl_sum _kind (numel x) x |> create _kind [|1|]
+
 
 let draw ?(axis=0) x n =
   let b = nth_dim x axis in
