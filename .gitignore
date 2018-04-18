@@ -21,4 +21,5 @@ setup.log
 
 # jbuild generated files
 .merlin
+!pkg/.merlin
 *.install

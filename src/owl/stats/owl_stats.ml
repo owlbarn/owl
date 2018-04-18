@@ -123,13 +123,13 @@ let autocorrelation ?(lag=1) x =
   let n = Array.length x in
   let y = mean x in
   let a = ref 0. in
-  let _ = for i = 0 to (n - lag - 1) do
+  for i = 0 to (n - lag - 1) do
     a := !a +. ((x.(i) -. y) *. (x.(i+lag) -. y))
-  done in
+  done;
   let b = ref 0. in
-  let _ = for i = 0 to (n - 1) do
+  for i = 0 to (n - 1) do
     b := !b +. (x.(i) -. y) ** 2.
-  done in
+  done;
   (!a /. !b)
 
 
@@ -535,9 +535,9 @@ let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
   let prob = hypergeometric_pdf ~good:(a + b) ~bad:(c + d) ~sample:(a + c) a in
   let oddsratio = ((float_of_int a) *. (float_of_int d)) /. ((float_of_int b) *. (float_of_int c)) in
   let p = match side with
-    | BothSide -> cdf a (a + b) (c + d) (a + c) ~max_prob:prob
+    | BothSide  -> cdf a (a + b) (c + d) (a + c) ~max_prob:prob
     | RightSide -> cdf b (b + a) (c + d) (b + d)
-    | LeftSide -> cdf a (a + b) (c + d) (a + c)
+    | LeftSide  -> cdf a (a + b) (c + d) (a + c)
   in
   let h = alpha > p in
   make_hypothesis h p oddsratio
@@ -555,7 +555,7 @@ let tiecorrect rankvals =
   match size with
   | 0.0 -> 1.0
   | 1.0 -> 1.0
-  | _ -> 1.0 -. (float_of_int numerator)/.(size *. size *. size -. size)
+  | _   -> 1.0 -. (float_of_int numerator)/.(size *. size *. size -. size)
 
 
 (* Mann–Whitney U test *)
@@ -635,9 +635,9 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
     let z = (t -. mn) /. se in
     let p = 2.0 *. gaussian_sf ~mu:0. ~sigma:1. (abs_float z) in
     match side with
-    | BothSide -> p
+    | BothSide  -> p
     | RightSide -> (1. -. p /. 2.)
-    | LeftSide -> p /. 2.
+    | LeftSide  -> p /. 2.
   in
   let exact v =
     let rec f w n =
@@ -656,9 +656,9 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
       else Array.fold_left (+.) 0. (Owl_utils.Array.map (fun i -> f (float_of_int i) n1) (Owl_utils.Array.range 0 (int_of_float v)))
     in
     match side with
-    | BothSide -> 2. *. p /. (2. ** n1)
+    | BothSide  -> 2. *. p /. (2. ** n1)
     | RightSide -> 1. -. (p /. (2. ** n1))
-    | LeftSide -> p /. (2. ** n1)
+    | LeftSide  -> p /. (2. ** n1)
   in
   let p =
     if (Array.length d) = (Array.length x) && n < 10. then exact t

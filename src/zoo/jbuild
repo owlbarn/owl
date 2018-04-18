@@ -2,7 +2,7 @@
 
 (library (
   (name owl_zoo)
-  (public_name owl_zoo)
+  (public_name owl-zoo)
   (wrapped false)
   (modes (byte))
   (flags (:standard -safe-string))
