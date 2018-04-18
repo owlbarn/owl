@@ -23,10 +23,10 @@ test:
 .PHONY: install
 install: build
 	jbuilder install
-	[ -f "$(OPAM_LIB)/stubslibs/dllowl_stubs.so" ] && \
-	  mv "$(OPAM_LIB)/stubslibs/dllowl_stubs.so" \
-	     "$(OPAM_STUBS)/dllowl_stubs.so"
-	$(RM) -d $(OPAM_LIB)/stubslibs || true
+	-[ -f "$(OPAM_LIB)/stubslibs/dllowl_stubs.so" ] \
+	  && mv "$(OPAM_LIB)/stubslibs/dllowl_stubs.so" \
+	        "$(OPAM_STUBS)/dllowl_stubs.so"
+	-$(RM) -d $(OPAM_LIB)/stubslibs
 
 .PHONY: uninstall
 uninstall:
@@ -43,6 +43,7 @@ cleanall:
 	$(RM) -r $(find . -name .merlin)
 	$(RM) $(OPAM_STUBS)/dllowl_stubs.so
 
+.PHONY: release
 release:
 	opam install --yes topkg topkg-care topkg-jbuilder opam-publish
 	topkg tag
