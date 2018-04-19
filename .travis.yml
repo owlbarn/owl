@@ -10,6 +10,7 @@ script:
 
 env:
   global:
+    - GIT_MERGE_VERBOSITY=0
     - PACKAGE="owl"
   matrix:
     - DISTRO=ubuntu-16.04 OCAML_VERSION=4.06.0
