@@ -6,10 +6,11 @@ install:
   - wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-docker.sh
 
 script:
-  - bash ./.travis-docker.sh
+  - GIT_MERGE_VERBOSITY=0 bash ./.travis-docker.sh
 
 env:
   global:
+    - GIT_MERGE_VERBOSITY=0
     - PACKAGE="owl"
   matrix:
     - DISTRO=ubuntu-16.04 OCAML_VERSION=4.06.0
