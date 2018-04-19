@@ -6,7 +6,7 @@ install:
   - wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-docker.sh
 
 script:
-  - bash ./.travis-docker.sh
+  - GIT_MERGE_VERBOSITY=0 bash ./.travis-docker.sh
 
 env:
   global:
