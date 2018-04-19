@@ -102,6 +102,8 @@ let build =
       OS.Cmd.run @@ Cmd.(find % "." % "-name" % ".merlin" % "-delete"))
 (* end cut'n'paste *)
 
+(* end cut'n'paste *)
+
 let publish =
   Pkg.publish ~artefacts:[`Distrib] ()
 
