@@ -2,6 +2,7 @@
 #use "topfind"
 #require "topkg,unix"
 
+(* cut'n'paste from @samoht topkg-jbuilder for now *)
 open StdLabels
 open Topkg
 open Fpath
@@ -66,7 +67,6 @@ let rename src dst =
   | Unix.Unix_error (e, _, _) ->
      R.error_msgf "rename %s into %s: %s" src dst (uerror e)
 
-
 let is_doc files =
   (* [topkg doc] generate a call to build index.html *)
   List.mem "doc/api.docdir/index.html" ~set:files
@@ -100,6 +100,8 @@ let build =
       let find = Conf.tool "find" os in
       OS.Cmd.run @@ Cmd.(rm % "-rf" % build_dir) >>= fun () ->
       OS.Cmd.run @@ Cmd.(find % "." % "-name" % ".merlin" % "-delete"))
+
+(* end cut'n'paste *)
 
 let publish =
   Pkg.publish ~artefacts:[`Distrib] ()
