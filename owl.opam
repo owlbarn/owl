@@ -21,7 +21,7 @@ depends: [
   "base"
   "base-bigarray"
   "conf-openblas" {>= "0.2.0"}
-  "configurator"
+  "configurator" {build}
   "ctypes"
   "eigen" {>= "0.0.3"}
   "jbuilder" {build}
