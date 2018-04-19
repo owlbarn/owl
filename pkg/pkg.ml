@@ -100,7 +100,6 @@ let build =
       let find = Conf.tool "find" os in
       OS.Cmd.run @@ Cmd.(rm % "-rf" % build_dir) >>= fun () ->
       OS.Cmd.run @@ Cmd.(find % "." % "-name" % ".merlin" % "-delete"))
-
 (* end cut'n'paste *)
 
 let publish =
