@@ -18,7 +18,7 @@ build-test: [
 
 depends: [
   "alcotest" {test}
-  "base"
+  "base" {build}
   "base-bigarray"
   "conf-openblas" {>= "0.2.0"}
   "configurator" {build}
@@ -27,7 +27,7 @@ depends: [
   "jbuilder" {build}
   "owl-base"
   "plplot"
-  "stdio"
+  "stdio" {build}
 ]
 
 available: [ ocaml-version >= "4.06.0" ]
