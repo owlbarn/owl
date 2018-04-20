@@ -1071,9 +1071,8 @@ val sum' : ('a, 'b) t -> 'a
 
 val sum_reduce : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (**
-``sum_reduce ~axis x`` sums the elements in ``x`` along multiple specified ``axis``.
+``sum_reduce ~axis x`` sums the elements in ``x`` along multiple axes specified in the ``axis`` array.
  *)
-
 
 val prod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**

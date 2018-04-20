@@ -2044,12 +2044,10 @@ module Make
       l'
 
     let run x l =
+      let a = F (1. /. float_of_int (shape x).(l.axis)) in
       if l.training = true then (
-        let a = F (1. /. float_of_int (shape x).(l.axis)) in
-        let s = Array.(make (length l.in_shape + 1) 1) in
-        s.(l.axis) <- l.in_shape.(l.axis - 1);
-        let mu' = Maths.(a * (sum_reduce ~axis:s x)) in
-        let var' = Maths.(a * (sum_reduce ~axis:s (x * x))) in
+        let mu' = Maths.(a * (sum ~axis:l.axis x)) in
+        let var' = Maths.(a * (sum ~axis:l.axis (x * x))) in
         l.mu <- Maths.(l.decay * l.mu + (F 1. - l.decay) * mu') |> primal';
         l.var <- Maths.(l.decay * l.var + (F 1. - l.decay) * var') |> primal';
       );
