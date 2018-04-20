@@ -47,4 +47,17 @@ cleanall:
 release:
 	opam install --yes topkg topkg-care topkg-jbuilder opam-publish
 	topkg tag
-	topkg bistro
+	topkg distrib
+	topkg publish
+
+	topkg opam pkg
+	topkg opam submit
+
+	topkg opam pkg --pkg-name owl
+	topkg opam submit --pkg-name owl
+
+	topkg opam pkg --pkg-name owl-zoo
+	topkg opam submit --pkg-name owl-zoo
+
+	topkg opam pkg --pkg-name owl-top
+	topkg opam submit --pkg-name owl-top

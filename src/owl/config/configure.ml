@@ -42,6 +42,7 @@ let get_default_cflags c = [
 
 let get_default_libs c = [
   "-lopenblas";
+  "-llapacke";
   "-lgfortran";
   "-lm";
 ]

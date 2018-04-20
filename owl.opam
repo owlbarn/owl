@@ -12,17 +12,22 @@ build: [
   [ "jbuilder" "build" "-p" name "-j" jobs ]
 ]
 
-build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
+build-test: [
+  [ "jbuilder" "runtest" "-p" name "-j" jobs ]
+]
 
 depends: [
   "alcotest" {test}
+  "base"
   "base-bigarray"
   "conf-openblas" {>= "0.2.0"}
+  "configurator" {build}
   "ctypes"
   "eigen" {>= "0.0.3"}
   "jbuilder" {build}
   "owl-base"
   "plplot"
+  "stdio"
 ]
 
 available: [ ocaml-version >= "4.06.0" ]
