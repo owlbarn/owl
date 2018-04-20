@@ -16,7 +16,7 @@ RUN sudo apt-get -y install camlp4-extra libshp-dev libplplot-dev
 RUN sudo apt-get -y install libopenblas-dev liblapacke-dev
 
 RUN opam update && opam switch 4.06.0 && eval $(opam config env)
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop eigen plplot base stdio configurator
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop eigen plplot base stdio configurator alcotest
 
 
 #################### SET UP ENV VARS #######################
