@@ -12,10 +12,8 @@ let dir = Sys.getenv "HOME" ^ "/.owl/zoo"
 let htb = dir ^ "/" ^ "zoo_ver.htb"
 
 
-
 (* Used internally *)
 let gist_path gid vid = dir  ^ "/" ^ gid ^ "/" ^ vid
-
 
 
 (* Used by script developers *)

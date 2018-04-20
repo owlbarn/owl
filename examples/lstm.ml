@@ -19,7 +19,7 @@ let str_to_chars s =
 
 let prepare wndsz stepsz =
   Owl_log.info "load file ...";
-  let txt = load_file "217ef87bc36845c4e78e398d52bc4c5b/wonderland.txt" in
+  let txt = load_file ~gist:"217ef87bc36845c4e78e398d52bc4c5b" "wonderland.txt" in
   let chars = txt |> String.lowercase_ascii |> str_to_chars in
 
   Owl_log.info "build vocabulary ...";
