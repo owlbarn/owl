@@ -8,6 +8,6 @@
   (flags (:standard -safe-string))
   (libraries (
     owl
-    owl_zoo
+    owl-zoo
   ))
 ))
