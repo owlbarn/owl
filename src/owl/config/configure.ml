@@ -40,12 +40,16 @@ let get_default_cflags c = [
 ]
 
 
-let get_default_libs c = [
-  "-lopenblas";
-  "-lgfortran";
-  "-lm";
-]
-
+let get_default_libs c =
+  let ls = [
+    "-lopenblas";
+    "-lgfortran";
+    "-lm";
+  ] in
+  get_os_type c |> function
+  | ("linux"|"linux_elf") -> "-llapacke" :: ls
+  | (""|"macosx"|"mingw64") -> ls
+  | s -> failwith ("get_default_libs: unknown system "^s)
 
 let get_expmode_cflags c =
   let enable_expmode = Sys.getenv "ENABLE_EXPMODE" |> int_of_string in
@@ -78,7 +82,9 @@ let get_gcc_path c =
 
 let get_openblas_path c =
   let p0 = "/usr/local/opt/openblas/lib" in
+  let p1 = "/opt/OpenBLAS/lib/" in
   if Sys.file_exists p0 then ["-L" ^ p0]
+  else if Sys.file_exists p1 then ["-L" ^ p1]
   else []
 
 

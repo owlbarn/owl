@@ -111,6 +111,17 @@ val exponential_rvs : lambda:float -> float
 val cauchy_rvs : loc:float -> scale:float -> float
 (** Refer to :doc:`owl_stats`. *)
 
+val std_gamma_rvs : shape:float -> float
+(** Refer to :doc:`owl_stats`. *)
+
+val gamma_rvs : shape:float -> scale:float -> float
+(** Refer to :doc:`owl_stats`. *)
+
+val gumbel1_rvs : a:float -> b:float -> float
+(** Refer to :doc:`owl_stats`. *)
+
+val gumbel2_rvs : a:float -> b:float -> float
+(** Refer to :doc:`owl_stats`. *)
 
 
 (* ends here *)

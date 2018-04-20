@@ -1,10 +1,14 @@
-### 0.3.7 (in progress)
+### 0.3.7 (2018-04-18)
 
 * Fix some bugs and improve performance.
+* Fix some docker files for automatic image building.
 * Move more pure OCaml implementation to base library.
 * Add a new math module to support complex numbers.
 * Improve the configuration and building system.
+* Improve the automatic documentation building system.
 * Change template code into C header files.
+* Add initial support for OpenMP with evaluation.
+* Tidy up packaging using TOPKG.
 
 
 ### 0.3.6 (2018-03-22)

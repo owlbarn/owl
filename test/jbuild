@@ -3,9 +3,8 @@
 (executables (
   (names (test_runner))
   (libraries (
-    owl
-    owl_base
     alcotest
+    owl
   ))
   (flags (:standard -safe-string))
 ))
