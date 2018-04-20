@@ -48,6 +48,9 @@ CAMLprim value FUN_NATIVE (spatial) (
     if (pc < 0) pc = 0;
   }
 
+  #ifdef _OPENMP
+    #pragma omp parallel for schedule(static)
+  #endif /* _OPENMP */
   for (int i = 0; i < batches; ++i) {
     const int input_idx_base = i * input_cri;
     const int output_idx_base_i = i * output_cri;
@@ -136,13 +139,15 @@ CAMLprim value FUN_NATIVE (spatial_backward) (
   memset(input_backward_ptr, 0,
     batches * input_cols * input_rows * in_channel * sizeof(TYPE));
 
-  int i, j, k, l;
-  for (i = 0; i < batches; ++i) {
+  #ifdef _OPENMP
+    #pragma omp parallel for schedule(static)
+  #endif /* _OPENMP */
+  for (int i = 0; i < batches; ++i) {
     const int input_idx_base = i * input_cri;
     const int output_idx_base_i = i * output_cri;
-    for (j = 0; j < output_cols; ++j) {
+    for (int j = 0; j < output_cols; ++j) {
       const int output_idx_base_j = output_idx_base_i + j * output_ri;
-      for (k = 0; k < output_rows; ++k) {
+      for (int k = 0; k < output_rows; ++k) {
         const int output_idx_base = output_idx_base_j + k * in_channel;
 
         const int cstart = j * col_stride - pad_cols;
@@ -150,7 +155,7 @@ CAMLprim value FUN_NATIVE (spatial_backward) (
         const int cend   = cstart + kernel_cols;
         const int rend   = rstart + kernel_rows;
 
-        for (l = 0; l < in_channel; ++l) {
+        for (int l = 0; l < in_channel; ++l) {
           TYPE m;
           int output_idx = output_idx_base + l;
           m = *(output_backward_ptr + output_idx);
@@ -255,6 +260,9 @@ CAMLprim value FUN_NATIVE (cuboid) (
     pd = pad_dpts / 2; if (pd < 0) pd = 0;
   }
 
+  #ifdef _OPENMP
+    #pragma omp parallel for schedule(static)
+  #endif /* _OPENMP */
   for (int i = 0; i < batches; ++i) {
     const int input_idx_base = i * input_crdi;
     const int output_idx_base_i = i * output_crdi;
@@ -367,6 +375,9 @@ CAMLprim value FUN_NATIVE (cuboid_backward) (
 
   memset(input_backward_ptr, 0, batches * input_crdi * sizeof(TYPE));
 
+  #ifdef _OPENMP
+    #pragma omp parallel for schedule(static)
+  #endif /* _OPENMP */
   for (int i = 0; i < batches; ++i) {
     const int input_idx_base = i * input_crdi;
     const int output_idx_base_i = i * output_crdi;
@@ -484,6 +495,9 @@ CAMLprim value FUN_NATIVE (spatial_arg) (
   memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
   memset(argmax_ptr, 0, batches * output_cri * sizeof(int64_t));
 
+  #ifdef _OPENMP
+    #pragma omp parallel for schedule(static)
+  #endif /* _OPENMP */
   for (int i = 0; i < batches; ++i) {
     const int input_idx_base = i * input_cri;
     const int output_idx_base_i = i * output_cri;
