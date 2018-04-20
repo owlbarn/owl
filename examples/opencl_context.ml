@@ -1,7 +1,7 @@
 #!/usr/bin/env owl
 (* This example demonstrates how to use Context module to run raw OpenCL code *)
 
-#require "owl_opencl"
+#require "owl-opencl"
 open Owl
 
 
