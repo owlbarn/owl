@@ -176,6 +176,44 @@ let build ?(lo=0.) ?(hi=1.) ?stopwords fname =
   { w2i; i2w; i2f }
 
 
+(* build vocabulary for alphabets *)
+let build_alphabet ?(lo=0.) ?(hi=1.) ?stopwords fname =
+  let w2f = Hashtbl.create (64 * 1024) in
+  let f s =
+    String.iter (fun c ->
+      let w = String.make 1 c in
+      match Hashtbl.mem w2f w with
+      | true  -> (
+          let freq = Hashtbl.find w2f w in
+          Hashtbl.replace w2f w (freq + 1)
+        )
+      | false -> Hashtbl.add w2f w 1
+    ) s
+  in
+  iteri_lines_of_file (fun _ s -> f s) fname;
+  (* trim frequency if necessary *)
+  if lo <> 0. || hi <> 1. then
+    _trim_percent_w2f lo hi w2f;
+  (* trim stopwords if necessary *)
+  (
+    match stopwords with
+    | Some sw  -> remove_stopwords sw w2f
+    | None     -> ()
+  );
+  (* build w2i and i2w tables from trimmed w2f *)
+  let w2i = Hashtbl.(create (length w2f)) in
+  let i2w = Hashtbl.(create (length w2f)) in
+  let i2f = Hashtbl.(create (length w2f)) in
+  let i = ref 0 in
+  Hashtbl.iter (fun w f ->
+    Hashtbl.add w2i w !i;
+    Hashtbl.add i2w !i w;
+    Hashtbl.add i2f !i f;
+    i := !i + 1;
+  ) w2f;
+  { w2i; i2w; i2f }
+
+
 (* return (index, freq) array in increasing or decreasing freq *)
 let sort_freq ?(inc=true) d =
   let all_freq = Array.make (length d) (0, 0) in
@@ -195,6 +233,7 @@ let sort_freq ?(inc=true) d =
 (* return k most popular words *)
 let top d k =
   let all_freq = sort_freq ~inc:false d in
+  assert (length d >= k);
   Array.sub all_freq 0 k |>
   Array.map (fun (i, freq) -> (index2word d i, freq))
 

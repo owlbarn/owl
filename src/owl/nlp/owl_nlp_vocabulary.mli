@@ -65,7 +65,18 @@ val re_index : t -> t
 val build : ?lo:float -> ?hi:float -> ?stopwords:(string, 'a) Hashtbl.t -> string -> t
 (**
 ``build ~lo ~hi ~stopwords fname`` builds a vocabulary from a text corpus file
-of name ``fname``.
+of name ``fname``. Tokens are the words separated by white spaces.
+
+Parameters:
+  * ``lo``: percentage of lower bound of word frequency.
+  * ``hi``: percentage of higher bound of word frequency.
+  * ``fname``: file name of the text corpus, each line contains a doc.
+ *)
+
+val build_alphabet : ?lo:float -> ?hi:float -> ?stopwords:(string, 'a) Hashtbl.t -> string -> t
+(**
+``build_alphabet ~lo ~hi ~stopwords fname`` builds a vocabulary from a text
+corpus file of name ``fname``. Tokens are the words separated by white spaces.
 
 Parameters:
   * ``lo``: percentage of lower bound of word frequency.
