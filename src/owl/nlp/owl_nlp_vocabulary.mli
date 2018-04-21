@@ -64,13 +64,13 @@ val re_index : t -> t
 
 val build : ?lo:float -> ?hi:float -> ?stopwords:(string, 'a) Hashtbl.t -> string -> t
 (**
-``build ~lo ~hi ~stopwords fname`` builds a vocabulary from a corpus file of
-name ``fname``.
+``build ~lo ~hi ~stopwords fname`` builds a vocabulary from a text corpus file
+of name ``fname``.
 
 Parameters:
   * ``lo``: percentage of lower bound of word frequency.
   * ``hi``: percentage of higher bound of word frequency.
-  * ``fname``: file name of the corpus, each line contains a doc.
+  * ``fname``: file name of the text corpus, each line contains a doc.
  *)
 
 val trim_percent : lo:float -> hi:float -> t -> t
@@ -113,3 +113,9 @@ val load : string -> t
 
 val save_txt : t -> string -> unit
 (** ``save_txt v fname`` saves the vocabulary in the text format to a file of name ``s``. *)
+
+val to_string : t -> string
+(** ``to_string v`` returns the summary information of a vocabulary. *)
+
+val pp_vocab : Format.formatter -> t -> unit
+(** Pretty printer for vocabulary type. *)

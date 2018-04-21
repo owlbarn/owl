@@ -8,27 +8,37 @@
 
 open Owl_nlp_utils
 
+
 type t = {
   mutable w2i : (string, int) Hashtbl.t;  (* word -> index *)
   mutable i2w : (int, string) Hashtbl.t;  (* index -> word *)
   mutable i2f : (int, int) Hashtbl.t      (* index -> freq *)
 }
 
+
 let get_w2i d = d.w2i
+
 
 let get_i2w d = d.i2w
 
+
 let exits_w d w = Hashtbl.mem d.w2i w
+
 
 let exits_i d i = Hashtbl.mem d.i2w i
 
+
 let word2index d w = Hashtbl.find d.w2i w
+
 
 let index2word d i = Hashtbl.find d.i2w i
 
+
 let length d = Hashtbl.length d.w2i
 
+
 let freq_i d i = Hashtbl.find d.i2f i
+
 
 let freq_w d w = w |> word2index d |> freq_i d
 
@@ -39,6 +49,7 @@ let copy d = {
   i2w = Hashtbl.copy d.i2w;
   i2f = Hashtbl.copy d.i2f;
 }
+
 
 (* re-index the indices in the vocabulary *)
 let re_index d =
@@ -53,6 +64,7 @@ let re_index d =
     i := !i + 1;
   ) d.w2i;
   { w2i; i2w; i2f }
+
 
 (* remove extremely low and high frequency words based on percentage
   lo: the percentage of lower bound
@@ -78,6 +90,7 @@ let _trim_percent_w2f lo hi h =
     | _          -> None
   ) h
 
+
 (* similar to _trim_percent, but trim all three hashtbls in the vocabulary *)
 let trim_percent ~lo ~hi vocab =
   let d = copy vocab in
@@ -89,12 +102,14 @@ let trim_percent ~lo ~hi vocab =
   ) d.i2w;
   re_index d
 
+
 (* similar to trim_percent, but according the word absolute count *)
 let _trim_count_w2f lo hi h =
   Hashtbl.filter_map_inplace (fun _ freq ->
     if freq >= lo && freq <= hi then Some freq
     else None
   ) h
+
 
 (* similar to trim_count but trim all three hashtbls *)
 let trim_count ~lo ~hi vocab =
@@ -107,6 +122,7 @@ let trim_count ~lo ~hi vocab =
   ) d.i2w;
   re_index d
 
+
 (* remove stopwords from vocabulary
   sw: hashtbl contains the vocabulary
  *)
@@ -116,6 +132,7 @@ Hashtbl.filter_map_inplace (fun w v ->
   | true  -> None
   | false -> Some v
 ) h
+
 
 (* return both word->index and index->word hashtbl
   lo: percentage of lower bound of word frequency
@@ -158,6 +175,7 @@ let build ?(lo=0.) ?(hi=1.) ?stopwords fname =
   ) w2f;
   { w2i; i2w; i2f }
 
+
 (* return (index, freq) array in increasing or decreasing freq *)
 let sort_freq ?(inc=true) d =
   let all_freq = Array.make (length d) (0, 0) in
@@ -173,11 +191,13 @@ let sort_freq ?(inc=true) d =
   Array.sort f all_freq;
   all_freq
 
+
 (* return k most popular words *)
 let top d k =
   let all_freq = sort_freq ~inc:false d in
   Array.sub all_freq 0 k |>
   Array.map (fun (i, freq) -> (index2word d i, freq))
+
 
 (* return k least popular words *)
 let bottom d k =
@@ -185,15 +205,19 @@ let bottom d k =
   Array.sub all_freq 0 k |>
   Array.map (fun (i, freq) -> (index2word d i, freq))
 
+
 (* convert w2i to a list of tuples *)
 let w2i_to_tuples d = Hashtbl.fold (fun w i a -> (w,i) :: a) d.w2i []
 
 
 (* I/O functions *)
 
+
 let save d fname = Owl_utils.marshal_to_file d fname
 
+
 let load fname : t = Owl_utils.marshal_from_file fname
+
 
 let save_txt d fname =
   let fh = open_out fname in
@@ -204,6 +228,27 @@ let save_txt d fname =
     output_string fh s
   );
   close_out fh
+
+
+let to_string x =
+  let topk = top x 5 |> Array.fold_left (fun acc (s,i) ->
+    Printf.sprintf "%s(%s,%i) " acc s i
+  ) ""
+  in
+  Printf.sprintf "length: %i; tokens:%s..." (length x) topk
+
+
+let pp_vocab formatter x =
+  Format.open_box 0;
+  Format.fprintf formatter "%s" (to_string x);
+  Format.close_box ()
+
+
+let to_array x = None
+
+
+let of_array x = None
+
 
 
 (* ends here *)
