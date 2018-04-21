@@ -96,11 +96,17 @@ Parameters:
 val remove_stopwords : ('a, 'b) Hashtbl.t -> ('a, 'c) Hashtbl.t -> unit
 (** ``remove_stopwords stopwords v`` removes the stopwords defined in a hashtbl from vocabulary ``v``. *)
 
+val copy : t -> t
+(** ``copy v`` makes a copy of vocabulary ``v``. *)
+
 val w2i_to_tuples : t -> (string * int) list
 (** ``w2w2i_to_tuples v`` converts vocabulary ``v`` to a list of ``(word, index)`` tuples. *)
 
-val copy : t -> t
-(** ``copy v`` makes a copy of vocabulary ``v``. *)
+val to_array : t -> (int * string) array
+(** ``to_array v`` converts a vocabulary to a (word, index) array. *)
+
+val of_array : (int * string) array -> t
+(** ``of_array v`` converts a (word, index) array to a vocabulary. *)
 
 
 (** {6 I/O functions} *)

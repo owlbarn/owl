@@ -244,10 +244,24 @@ let pp_vocab formatter x =
   Format.close_box ()
 
 
-let to_array x = None
+let to_array x =
+  let s = Owl_utils.Stack.make () in
+  Hashtbl.iter (fun i w -> Owl_utils.Stack.push s (i,w)) x.i2w;
+  Owl_utils.Stack.to_array s
 
 
-let of_array x = None
+let of_array x =
+  let n = Array.length x in
+  let w2i = Hashtbl.create n in
+  let i2w = Hashtbl.create n in
+  let i2f = Hashtbl.create n in
+  Array.iter (fun (i,w) ->
+    Hashtbl.add w2i w i;
+    Hashtbl.add i2w i w;
+    Hashtbl.add i2f i 1;
+  ) x;
+  { w2i; i2w; i2f }
+
 
 
 
