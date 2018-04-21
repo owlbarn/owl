@@ -20,13 +20,13 @@ let rec _extract_zoo_gist f added =
 
 and _download_gist gid vid =
   if (Owl_zoo_ver.exist gid vid) = true then
-    Owl_log.info "owl_zoo: %s/%s cached" gid vid
+    Owl_log.info "owl-zoo: %s/%s cached" gid vid
   else (
-    Owl_log.info "owl_zoo: %s/%s missing; downloading" gid vid;
+    Owl_log.info "owl-zoo: %s/%s missing; downloading" gid vid;
     let cmd = Printf.sprintf "owl_download_gist.sh %s %s" gid vid in
     let ret = Sys.command cmd in
     if ret = 0 then Owl_zoo_ver.update gid vid
-    else Owl_log.debug "owl_zoo: Error downloading gist %s/%s" gid vid
+    else Owl_log.debug "owl-zoo: Error downloading gist %s/%s" gid vid
   )
 
 

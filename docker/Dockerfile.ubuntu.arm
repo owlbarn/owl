@@ -59,7 +59,7 @@ RUN cd $OWLPATH \
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
-RUN echo "#require \"owl_top\";; open Owl;;" >> /root/.ocamlinit \
+RUN echo "#require \"owl-top\";; open Owl;;" >> /root/.ocamlinit \
     && opam config env >> /root/.bashrc \
     && bash -c "source /root/.bashrc"
 

@@ -67,7 +67,7 @@ let get_latest_vid (gid : string) =
     assert (Array.length v > 0);
     Array.get v (Array.length v - 1)
   ) else (
-    Owl_log.debug "owl_zoo: Gist %s does not exist on local cache; fetching vid from server" gid;
+    Owl_log.debug "owl-zoo: Gist %s does not exist on local cache; fetching vid from server" gid;
     get_remote_vid gid
   )
 
@@ -91,7 +91,7 @@ let update (gid : string) (vid : string) =
       Hashtbl.replace tb gid (v', ts);
       Owl_utils.marshal_to_file tb htb;
     ) else (
-      Owl_log.debug "owl_zoo: Gist %s/%s already exists in the record" gid vid
+      Owl_log.debug "owl-zoo: Gist %s/%s already exists in the record" gid vid
     )
   ) else (
     let v = [|vid|] in
@@ -108,7 +108,7 @@ let remove (gid : string)  =
     Hashtbl.remove tb gid;
     Owl_utils.marshal_to_file tb htb;
   ) else (
-    Owl_log.debug "owl_zoo: Gist %s not found in the record" gid
+    Owl_log.debug "owl-zoo: Gist %s not found in the record" gid
   )
 
 
