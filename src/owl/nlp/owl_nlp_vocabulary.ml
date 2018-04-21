@@ -134,23 +134,41 @@ Hashtbl.filter_map_inplace (fun w v ->
 ) h
 
 
+
+let _build_word_proc w2f s =
+  Str.split Owl_nlp_utils.regexp_split s
+  |> List.iter (fun w ->
+    match Hashtbl.mem w2f w with
+    | true  -> (
+        let freq = Hashtbl.find w2f w in
+        Hashtbl.replace w2f w (freq + 1)
+      )
+    | false -> Hashtbl.add w2f w 1
+  )
+
+
+let _build_alphabet_proc w2f s =
+  String.iter (fun c ->
+    let w = String.make 1 c in
+    match Hashtbl.mem w2f w with
+    | true  -> (
+        let freq = Hashtbl.find w2f w in
+        Hashtbl.replace w2f w (freq + 1)
+      )
+    | false -> Hashtbl.add w2f w 1
+  ) s
+
+
 (* return both word->index and index->word hashtbl
   lo: percentage of lower bound of word frequency
   hi: percentage of higher bound of word frequency
   fname: file name of the vocabulary, each line contains a doc
  *)
-let build ?(lo=0.) ?(hi=1.) ?stopwords fname =
+let build ?(lo=0.) ?(hi=1.) ?(alphabet=false) ?stopwords fname =
   let w2f = Hashtbl.create (64 * 1024) in
-  let f s =
-    Str.split Owl_nlp_utils.regexp_split s
-    |> List.iter (fun w ->
-      match Hashtbl.mem w2f w with
-      | true  -> (
-          let freq = Hashtbl.find w2f w in
-          Hashtbl.replace w2f w (freq + 1)
-        )
-      | false -> Hashtbl.add w2f w 1
-    )
+  let f = match alphabet with
+    | true  -> _build_alphabet_proc w2f
+    | false -> _build_word_proc w2f
   in
   iteri_lines_of_file (fun _ s -> f s) fname;
   (* trim frequency if necessary *)
@@ -176,21 +194,13 @@ let build ?(lo=0.) ?(hi=1.) ?stopwords fname =
   { w2i; i2w; i2f }
 
 
-(* build vocabulary for alphabets *)
-let build_alphabet ?(lo=0.) ?(hi=1.) ?stopwords fname =
+(* similar to build but build from string rather than file *)
+let build_from_string ?(lo=0.) ?(hi=1.) ?(alphabet=false) ?stopwords s =
   let w2f = Hashtbl.create (64 * 1024) in
-  let f s =
-    String.iter (fun c ->
-      let w = String.make 1 c in
-      match Hashtbl.mem w2f w with
-      | true  -> (
-          let freq = Hashtbl.find w2f w in
-          Hashtbl.replace w2f w (freq + 1)
-        )
-      | false -> Hashtbl.add w2f w 1
-    ) s
-  in
-  iteri_lines_of_file (fun _ s -> f s) fname;
+  (
+    if alphabet then _build_alphabet_proc w2f s
+    else _build_word_proc w2f s
+  );
   (* trim frequency if necessary *)
   if lo <> 0. || hi <> 1. then
     _trim_percent_w2f lo hi w2f;
