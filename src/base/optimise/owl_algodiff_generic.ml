@@ -203,6 +203,22 @@ module Make
     | Arr x -> Arr A.(repeat ?axis x reps)
     | _     -> failwith "error: AD.repeat"
 
+  let repeat_mul ?axis x reps =
+    let a = match axis with
+      | Some a -> a
+      | None   -> failwith "error: AD.repeat_mul"
+    in
+    match primal' x with
+    | Arr x -> Arr (
+        let n = Array.length a in
+        let y = ref x in
+        for i = 0 to (n - 1) do
+          y := A.(repeat ~axis:(a.(i)) !y reps.(i))
+        done;
+        !y
+      )
+    | _     -> failwith "error: AD.repeat_mul"
+
   (* packing and unpacking functions *)
 
   let pack_arr x = Arr x
@@ -1363,7 +1379,7 @@ module Make
               | Set_Slice_C_D (a, b, i)  -> push ((get_slice i !aa, b) :: t)
               | Sum_D a                  -> push ((!aa, a) :: t)
               | Sum__D (a, i)            -> push ((repeat ~axis:i !aa (shape a).(i), a) :: t)
-              | Sum___D (a, i)           -> push ((repeat ~axis:i.(0) !aa (shape a).(i.(0)), a) :: t)
+              | Sum___D (a, i)           -> let dims = Array.(map (get (shape a)) i) in push ((repeat_mul ~axis:i !aa dims, a) :: t)
               | Dot_D_D (a, b)           -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
               | Dot_D_C (a, b)           -> push (((dot !aa (transpose b)), a) :: t)
               | Dot_C_D (a, b)           -> push (((dot (transpose a) !aa), b) :: t)
