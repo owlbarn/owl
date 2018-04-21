@@ -6,7 +6,7 @@
   (package     owl-zoo)
   (libraries  (
     owl
-    owl_zoo
+    owl-zoo
   ))
   (flags (:standard -safe-string))
   (link_flags (-linkall))

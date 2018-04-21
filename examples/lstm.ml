@@ -19,7 +19,7 @@ let str_to_chars s =
 
 let prepare wndsz stepsz =
   Owl_log.info "load file ...";
-  let txt = load_file "217ef87bc36845c4e78e398d52bc4c5b/wonderland.txt" in
+  let txt = load_file ~gist:"217ef87bc36845c4e78e398d52bc4c5b" "wonderland.txt" in
   let chars = txt |> String.lowercase_ascii |> str_to_chars in
 
   Owl_log.info "build vocabulary ...";
@@ -97,7 +97,7 @@ let train () =
   let params = Params.config
     ~checkpoint:(Checkpoint.Custom (fun s ->
       if Checkpoint.(s.current_batch mod 100 = 0) then
-        test network i2w wndsz 1000 (Dense.Matrix.S.row x 200)
+        test network i2w wndsz 500 (Dense.Matrix.S.row x 200)
     ))
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 50.
   in
