@@ -32,7 +32,7 @@ and _download_gist gid vid =
 
 and _dir_zoo_ocaml gid vid added =
   let replace input output =
-    Str.global_replace (Str.regexp_string input) output
+    Str.global_replace (Str.regexp input) output
   in
   let dir_gist = Owl_zoo_path.gist_path gid vid in
   Sys.readdir (dir_gist)
@@ -46,6 +46,10 @@ and _dir_zoo_ocaml gid vid added =
       let f_str = Owl_utils.read_file_string f in
       let f'_str = replace "extend_zoo_path"
         (Printf.sprintf "extend_zoo_path ~gid:\"%s\" ~vid:\"%s\"" gid vid) f_str
+      in
+      let gist = gid ^ "/" ^ vid in
+      let f'_str = replace "load_file[ \t]+\\([0-9a-zA-Z'._\"]+\\)"
+        (Printf.sprintf "load_file ~gist:\"%s\" \\1" gist) f'_str
       in
       Owl_utils.write_file f' f'_str;
 
