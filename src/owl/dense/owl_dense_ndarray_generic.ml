@@ -3563,7 +3563,7 @@ let sum_reduce ?axis x =
       !y
     )
   | None   ->
-    _owl_sum _kind (numel x) x |> create _kind (Array.make (num_dims x) 1)
+      _owl_sum _kind (numel x) x |> create _kind (Array.make (num_dims x) 1)
 
 
 let draw ?(axis=0) x n =
