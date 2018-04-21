@@ -249,6 +249,13 @@ let bottom d k =
 let w2i_to_tuples d = Hashtbl.fold (fun w i a -> (w,i) :: a) d.w2i []
 
 
+(* tokenise a string according to the passed in vocabulary*)
+let tokenise v s =
+  Array.init (String.length s) (fun i ->
+    word2index v (String.make 1 s.[i])
+  )
+
+
 (* I/O functions *)
 
 

@@ -75,8 +75,8 @@ Parameters:
 
 val build_alphabet : ?lo:float -> ?hi:float -> ?stopwords:(string, 'a) Hashtbl.t -> string -> t
 (**
-``build_alphabet ~lo ~hi ~stopwords fname`` builds a vocabulary from a text
-corpus file of name ``fname``. Tokens are the words separated by white spaces.
+``build_alphabet ~lo ~hi ~stopwords fname`` builds a vocabulary for the
+alphabets from the corpus file of name ``fname``.
 
 Parameters:
   * ``lo``: percentage of lower bound of word frequency.
@@ -109,6 +109,9 @@ val remove_stopwords : ('a, 'b) Hashtbl.t -> ('a, 'c) Hashtbl.t -> unit
 
 val copy : t -> t
 (** ``copy v`` makes a copy of vocabulary ``v``. *)
+
+val tokenise : t -> string -> int array
+(** ``tokenise v s`` tokenises the string ``s`` according to the vocabulary ``v``. *)
 
 val w2i_to_tuples : t -> (string * int) list
 (** ``w2w2i_to_tuples v`` converts vocabulary ``v`` to a list of ``(word, index)`` tuples. *)
