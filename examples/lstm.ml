@@ -11,53 +11,34 @@ open Neural.S.Graph
 open Algodiff.S
 
 
-let str_to_chars s =
-  let l = Array.make (String.length s) ' ' in
-  String.iteri (fun i c -> l.(i) <- c) s;
-  l
-
-
 let prepare wndsz stepsz =
-  Owl_log.info "load file ...";
-  let txt = load_file ~gist:"217ef87bc36845c4e78e398d52bc4c5b" "wonderland.txt" in
-  let chars = txt |> String.lowercase_ascii |> str_to_chars in
-
   Owl_log.info "build vocabulary ...";
-  let h = Hashtbl.create 1024 in
-  Array.iter (fun c ->
-    if Hashtbl.mem h c = false then Hashtbl.add h c c
-  ) chars;
-  let w2i = Hashtbl.create 1024 in
-  let i2w = Hashtbl.create 1024 in
-  Hashtbl.fold (fun k v a -> v :: a) h []
-  |> List.sort (Pervasives.compare)
-  |> List.iteri (fun i w ->
-      Hashtbl.add w2i w (float_of_int i);
-      Hashtbl.add i2w (float_of_int i) w;
-    );
+  let txt = load_file ~gist:"217ef87bc36845c4e78e398d52bc4c5b" "wonderland.txt" in
+  let chars = String.lowercase_ascii txt in
+  let vocab = Owl_nlp.Vocabulary.build_from_string ~alphabet:true chars in
 
   Owl_log.info "tokenise ...";
-  let tokens = Array.map (Hashtbl.find w2i) chars in
+  let tokens = Owl_nlp.Vocabulary.tokenise vocab chars in
 
   Owl_log.info "make x matrix (indices) ...";
-  let m = (Array.length chars - wndsz) / stepsz in
+  let m = (String.length chars - wndsz) / stepsz in
   let x = Dense.Matrix.S.zeros m wndsz in
   for i = 0 to m - 1 do
     for j = 0 to wndsz - 1 do
-      Dense.Matrix.S.set x i j tokens.(i*stepsz + j)
+      Dense.Matrix.S.set x i j (float_of_int tokens.(i*stepsz + j))
     done;
   done;
 
   Owl_log.info "make y matrix (one-hot) ...";
-  let y = Dense.Matrix.S.zeros m (Hashtbl.length w2i) in
+  let y = Dense.Matrix.S.zeros m (Owl_nlp.Vocabulary.length vocab) in
   for i = 0 to m - 1 do
-    let j = int_of_float tokens.(i*stepsz + wndsz) in
+    let j = int_of_float (float_of_int tokens.(i*stepsz + wndsz)) in
     Dense.Matrix.S.set y i j 1.
   done;
 
   Owl_log.info "chars:%i, symbols:%i, wndsz:%i, stepsz:%i"
-    (String.length txt) (Hashtbl.length w2i) wndsz stepsz;
-  w2i, i2w, x, y
+    (String.length txt) (Owl_nlp.Vocabulary.length vocab) wndsz stepsz;
+  vocab, x, y
 
 
 let make_network wndsz vocabsz =
@@ -69,7 +50,7 @@ let make_network wndsz vocabsz =
   |> get_network
 
 
-let test nn i2w wndsz tlen x =
+let test nn vocab wndsz tlen x =
   let all_char = ref x in
   let nxt_char = Dense.Matrix.S.zeros 1 1 in
   for i = 0 to tlen - 1 do
@@ -81,23 +62,23 @@ let test nn i2w wndsz tlen x =
   done;
   Dense.Matrix.S.get_slice [[];[wndsz;-1]] !all_char
   |> Dense.Matrix.S.to_array
-  |> Array.map (Hashtbl.find i2w)
-  |> Array.fold_left (fun a c -> a ^ (String.make 1 c)) ""
+  |> Array.map (fun i -> Owl_nlp.Vocabulary.index2word vocab (int_of_float i))
+  |> Array.fold_left (fun a c -> a ^ c) ""
   |> Printf.printf "generated text: %s\n"
   |> flush_all
 
 
 let train () =
   let wndsz = 100 and stepsz = 1 in
-  let w2i, i2w, x, y = prepare wndsz stepsz in
-  let vocabsz = Hashtbl.length w2i in
+  let vocab, x, y = prepare wndsz stepsz in
+  let vocabsz = Owl_nlp.Vocabulary.length vocab in
 
   let network = make_network wndsz vocabsz in
   Graph.print network;
   let params = Params.config
     ~checkpoint:(Checkpoint.Custom (fun s ->
       if Checkpoint.(s.current_batch mod 100 = 0) then
-        test network i2w wndsz 500 (Dense.Matrix.S.row x 200)
+        test network vocab wndsz 500 (Dense.Matrix.S.row x 200)
     ))
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 50.
   in
