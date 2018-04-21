@@ -112,10 +112,10 @@ However, installing from OpenBLAS source code leads to way better performance in
 Owl is well integrated with `utop`. You can use `utop` to try out the experiments in our tutorials. If you want `utop` to automatically load Owl for you, you can also edit `.ocamlinit` file in your home folder by adding the following lines. (Note that the library name is `owl` with lowercase `o`.)
 
 ```bash
-#require "owl_top"
+#require "owl-top"
 ```
 
-The `owl_top` is the toplevel library of Owl, it automatically loads `owl` core library and installs the corresponding pretty printers of various data types.
+The `owl-top` is the toplevel library of Owl, it automatically loads `owl` core library and installs the corresponding pretty printers of various data types.
 
 
 ## Access Modules

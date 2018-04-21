@@ -2,7 +2,7 @@
 
 (library (
   (name owl_opencl)
-  (public_name owl_opencl)
+  (public_name owl-opencl)
   (wrapped false)
   (c_names (
     owl_opencl_generated_stub

@@ -21,7 +21,7 @@ ENV PATH /home/opam/.opam/4.06.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/u
 ENV CAML_LD_LIBRARY_PATH /home/opam/.opam/4.06.0/lib/stublibs
 ENV LD_LIBRARY_PATH /usr/lib/:/usr/local/lib:/home/opam/.opam/4.06.0/lib/:/home/opam/.opam/4.06.0/lib/stublibs/
 
-RUN echo "#require \"owl_top\";; open Owl;;" >> /home/opam/.ocamlinit \
+RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit \
     && bash -c 'echo -e "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> /home/opam/.profile' \
     && opam config env >> /home/opam/.profile \
     && bash -c "source /home/opam/.profile"

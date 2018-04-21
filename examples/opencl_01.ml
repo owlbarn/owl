@@ -1,5 +1,5 @@
 #!/usr/bin/env owl
-#require "owl_opencl"
+#require "owl-opencl"
 
 open Owl
 
