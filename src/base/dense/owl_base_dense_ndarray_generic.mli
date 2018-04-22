@@ -318,6 +318,10 @@ val sum' : (float, 'b) t -> float
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
+val sum_reduce : ?axis:int array -> (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+(* TODO: change float to 'a *)
 val min' : (float, 'b) t -> float
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

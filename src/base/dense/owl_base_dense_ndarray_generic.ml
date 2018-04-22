@@ -763,6 +763,51 @@ let max' varr = (_fold_left (Pervasives.max) Pervasives.min_float varr)
 let sum' varr = (_fold_left (+.) 0. varr)
 
 
+(** Folding along a specified axis, aka reduction.
+ m: number of slices; n: x's slice size; o: x' strides, also y's slice size;
+ x: source; y: shape of destination. Note that o <= n.
+*)
+let owl_sum_along m n o x ys =
+  let x = flatten x in
+  let y = zeros (kind x) ys |> flatten in
+  let idx = ref 0 in
+  let idy = ref 0 in
+  let incy = ref 0 in
+  for i = 0 to (m - 1) do
+    for j = 0 to (n - 1) do
+      let addon = Genarray.get x [|!idx + j|] in
+      let orig  = Genarray.get y [|!idy + !incy|] in
+      (* "+." limit the type of x to float *)
+      Genarray.set y [|!idy + !incy|] (orig +. addon);
+      incy := if (!incy + 1 = o) then 0 else !incy + 1
+    done;
+    idx := !idx + n;
+    idy := !idy + o;
+  done;
+  reshape y ys
+
+
+let sum_reduce ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let y = ref x in
+      for i = 0 to (num_dims x - 1) do
+        if Array.mem i a then (
+          let m, n, o, s = reduce_params i !y in
+          y := owl_sum_along m n o !y s
+        )
+      done;
+      !y
+    )
+  | None   -> (
+      let y = sum' x in
+      let z = zeros (kind x) (Array.make (num_dims x) 1) in
+      Genarray.set z (Array.make (num_dims x) 0) y;
+      z
+    )
+
+
 let l1norm' varr =
   let l1norm_fun =
     (fun aggregate elem -> (aggregate +. (Scalar.abs (elem)))) in
