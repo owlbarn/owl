@@ -30,6 +30,7 @@ let calc_conv2d_output_shape
   (output_cols, output_rows)
 
 
+(* calculate the output shape of [conv2d_transpose] given input and kernel and stride *)
 let calc_conv2d_transpose_output_shape
   padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   =
