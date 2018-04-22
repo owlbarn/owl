@@ -764,9 +764,8 @@ let sum' varr = (_fold_left (+.) 0. varr)
 
 
 (** Folding along a specified axis, aka reduction.
- m: number of slices; n: x's slice size; o: x' strides, also y's slice size;
- x: source; y: shape of destination. Note that o <= n.
-*)
+    m: number of slices; n: x's slice size; o: x' strides, also y's slice size;
+    x: source; y: shape of destination. Note that o <= n. *)
 let owl_sum_along m n o x ys =
   let x = flatten x in
   let y = zeros (kind x) ys |> flatten in
