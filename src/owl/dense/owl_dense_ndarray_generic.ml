@@ -3660,6 +3660,28 @@ let sum_slices ?axis x =
 *)
 
 
+(* Simiar to `sum`, but sums the elements along multiple axes specified in an array.
+  E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of shape [|1;1;1;1|].
+ *)
+let sum_reduce ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let y = ref x in
+      for i = 0 to (num_dims x - 1) do
+        if Array.mem i a then (
+          let m, n, o, s = reduce_params i !y in
+          let z = zeros _kind s in
+          _owl_sum_along _kind m n o !y z;
+          y := z
+        )
+      done;
+      !y
+    )
+  | None   ->
+      _owl_sum _kind (numel x) x |> create _kind (Array.make (num_dims x) 1)
+
+
 let draw ?(axis=0) x n =
   let b = nth_dim x axis in
   let indices = Array.init n (fun _ -> Owl_stats.uniform_int_rvs ~a:0 ~b:(b-1)) in

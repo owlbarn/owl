@@ -4,6 +4,7 @@
  */
 
 #include "owl_core.h"
+#include "owl_core_engine.h"
 
 
 #define OWL_ENABLE_TEMPLATE
@@ -14,7 +15,7 @@
 #define FUNCTION(prefix, name) prefix ## _ ## float32_matrix ## _ ## name
 #define TYPE float
 #define CONJ_FUN(X) X
-#include "owl_matrix_swap_impl.h"
+#include OWL_MATRIX_SWAP_IMPL
 #undef CONJ_FUN
 #undef TYPE
 #undef FUNCTION
@@ -23,7 +24,7 @@
 #define FUNCTION(prefix, name) prefix ## _ ## float64_matrix ## _ ## name
 #define TYPE double
 #define CONJ_FUN(X) X
-#include "owl_matrix_swap_impl.h"
+#include OWL_MATRIX_SWAP_IMPL
 #undef CONJ_FUN
 #undef TYPE
 #undef FUNCTION
@@ -32,7 +33,7 @@
 #define FUNCTION(prefix, name) prefix ## _ ## complex32_matrix ## _ ## name
 #define TYPE _Complex float
 #define CONJ_FUN(X) conjf(X)
-#include "owl_matrix_swap_impl.h"
+#include OWL_MATRIX_SWAP_IMPL
 #undef CONJ_FUN
 #undef TYPE
 #undef FUNCTION
@@ -41,7 +42,7 @@
 #define FUNCTION(prefix, name) prefix ## _ ## complex64_matrix ## _ ## name
 #define TYPE _Complex double
 #define CONJ_FUN(X) conj(X)
-#include "owl_matrix_swap_impl.h"
+#include OWL_MATRIX_SWAP_IMPL
 #undef CONJ_FUN
 #undef TYPE
 #undef FUNCTION

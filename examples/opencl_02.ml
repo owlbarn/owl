@@ -1,7 +1,7 @@
 #!/usr/bin/env owl
 (* This example demonstrates the use of OpenCL's Ndarray module *)
 
-#require "owl_opencl"
+#require "owl-opencl"
 open Owl
 
 let test_gpu x () =

@@ -56,9 +56,7 @@ CAMLprim value FUN4(value vN, value vX, value vY)
   stop_x = start_x + N;
   start_y = Y_data;
 
-  if (N >= 2000000) {
-    // DEBUG
-    //printf("openmp fun4 ... N=%i\n", N);
+  if (N >= OWL_OPENMP_THRESHOLD) {
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < N; i++) {
       NUMBER x = *(start_x + i);
@@ -97,9 +95,17 @@ CAMLprim value FUN12(value vN, value vA, value vB, value vX)
 
   caml_release_runtime_system();  /* Allow other threads */
 
-  for (int i = 1; i <= N; i++) {
-    MAPFN(*X_data);
-    X_data++;
+  if (N >= OWL_OPENMP_THRESHOLD) {
+    #pragma omp parallel for schedule(static)
+    for (int i = 1; i <= N; i++) {
+      MAPFN(*(X_data + i - 1));
+    }
+  }
+  else {
+    for (int i = 1; i <= N; i++) {
+      MAPFN(*X_data);
+      X_data++;
+    }
   }
 
   caml_acquire_runtime_system();  /* Disallow other threads */
@@ -152,20 +158,27 @@ CAMLprim value FUN14(value vN, value vX, value vY)
   struct caml_ba_array *Y = Caml_ba_array_val(vY);
   NUMBER1 *Y_data = (NUMBER1 *) Y->data;
 
-  NUMBER *start_x, *stop_x;
+  NUMBER *start_x;
   NUMBER1 *start_y;
 
   caml_release_runtime_system();  /* Allow other threads */
 
   start_x = X_data;
-  stop_x = start_x + N;
   start_y = Y_data;
 
-  while (start_x != stop_x) {
-    MAPFN(start_x, start_y);
-    start_x += 1;
-    start_y += 1;
-  };
+  if (N >= OWL_OPENMP_THRESHOLD) {
+    #pragma omp parallel for schedule(static)
+    for (int i = 0; i < N; i++) {
+      MAPFN((start_x + i), (start_y + i));
+    }
+  }
+  else {
+    for (int i = 0; i < N; i++) {
+      MAPFN(start_x, start_y);
+      start_x += 1;
+      start_y += 1;
+    }
+  }
 
   caml_acquire_runtime_system();  /* Disallow other threads */
 
@@ -203,9 +216,7 @@ CAMLprim value FUN15(value vN, value vX, value vY, value vZ)
   start_y = Y_data;
   start_z = Z_data;
 
-  if (N >= 2000000) {
-    // DEBUG
-    //printf("openmp fun15 ... N=%i\n", N);
+  if (N >= OWL_OPENMP_THRESHOLD) {
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < N; i++) {
       MAPFN((start_x + i), (start_y + i), (start_z + i));
@@ -218,7 +229,7 @@ CAMLprim value FUN15(value vN, value vX, value vY, value vZ)
       start_y += 1;
       start_z += 1;
     }
-  };
+  }
 
   caml_acquire_runtime_system();  /* Disallow other threads */
 
@@ -243,20 +254,27 @@ CAMLprim value FUN17(value vN, value vX, value vY, value vA)
   struct caml_ba_array *Y = Caml_ba_array_val(vY);
   NUMBER1 *Y_data = (NUMBER1 *) Y->data;
 
-  NUMBER *start_x, *stop_x;
+  NUMBER *start_x;
   NUMBER1 *start_y;
 
   caml_release_runtime_system();  /* Allow other threads */
 
   start_x = X_data;
-  stop_x = start_x + N;
   start_y = Y_data;
 
-  while (start_x != stop_x) {
-    MAPFN(start_x, start_y);
-    start_x += 1;
-    start_y += 1;
-  };
+  if (N >= OWL_OPENMP_THRESHOLD) {
+    #pragma omp parallel for schedule(static)
+    for (int i = 0; i < N; i++) {
+      MAPFN((start_x + i), (start_y + i));
+    }
+  }
+  else {
+    for (int i = 0; i < N; i++) {
+      MAPFN(start_x, start_y);
+      start_x += 1;
+      start_y += 1;
+    }
+  }
 
   caml_acquire_runtime_system();  /* Disallow other threads */
 
@@ -331,10 +349,18 @@ CAMLprim value FUN19_IMPL(
   start_x = X_data + ofsx;
   start_y = Y_data + ofsy;
 
-  for (int i = 0; i < N; i++) {
-    MAPFN(start_x, start_y);
-    start_x += incx;
-    start_y += incy;
+  if (N >= OWL_OPENMP_THRESHOLD) {
+    #pragma omp parallel for schedule(static)
+    for (int i = 0; i < N; i++) {
+      MAPFN((start_x + i * incx), (start_y + i * incy));
+    }
+  }
+  else {
+    for (int i = 0; i < N; i++) {
+      MAPFN(start_x, start_y);
+      start_x += incx;
+      start_y += incy;
+    }
   }
 
   caml_acquire_runtime_system();  /* Disallow other threads */
@@ -391,18 +417,33 @@ CAMLprim value FUN20_IMPL(
   start_x_m = X_data + ofsx;
   start_y_m = Y_data + ofsy;
 
-  for (int i = 0; i < M; i++) {
-    start_x_n = start_x_m;
-    start_y_n = start_y_m;
+  if (N >= OWL_OPENMP_THRESHOLD) {
+    #pragma omp parallel for schedule(static)
+    for (int i = 0; i < M; i++) {
+      start_x_n = start_x_m + i * incx_m;
+      start_y_n = start_y_m + i * incy_m;
 
-    for (int j = 0; j < N; j++) {
-      MAPFN(start_x_n, start_y_n);
-      start_x_n += incx_n;
-      start_y_n += incy_n;
+      for (int j = 0; j < N; j++) {
+        MAPFN(start_x_n, start_y_n);
+        start_x_n += incx_n;
+        start_y_n += incy_n;
+      }
     }
+  }
+  else {
+    for (int i = 0; i < M; i++) {
+      start_x_n = start_x_m;
+      start_y_n = start_y_m;
 
-    start_x_m += incx_m;
-    start_y_m += incy_m;
+      for (int j = 0; j < N; j++) {
+        MAPFN(start_x_n, start_y_n);
+        start_x_n += incx_n;
+        start_y_n += incy_n;
+      }
+
+      start_x_m += incx_m;
+      start_y_m += incy_m;
+    }
   }
 
   caml_acquire_runtime_system();  /* Disallow other threads */

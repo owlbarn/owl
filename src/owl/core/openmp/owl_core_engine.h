@@ -7,17 +7,25 @@
 #define OWL_CORE_ENGINE_H
 
 
+// threshold of the ndarray size to trigger openmp
+#define OWL_OPENMP_THRESHOLD 100000
+
+
 #ifdef _OPENMP
   // choose OpenMP engine
+  #define OWL_MATRIX_SWAP_IMPL   "owl_matrix_swap_impl_omp.h"
   #define OWL_NDARRAY_MATHS_CMP  "owl_ndarray_maths_cmp_omp.h"
   #define OWL_NDARRAY_MATHS_MAP  "owl_ndarray_maths_map_omp.h"
   #define OWL_NDARRAY_MATHS_FOLD "owl_ndarray_maths_fold_omp.h"
+  #define OWL_SLICING_BASIC_IMPL "owl_slicing_basic_impl_omp.h"
 
 #else
   // choose CPU engine
+  #define OWL_MATRIX_SWAP_IMPL   "owl_matrix_swap_impl.h"
   #define OWL_NDARRAY_MATHS_CMP  "owl_ndarray_maths_cmp.h"
   #define OWL_NDARRAY_MATHS_MAP  "owl_ndarray_maths_map.h"
   #define OWL_NDARRAY_MATHS_FOLD "owl_ndarray_maths_fold.h"
+  #define OWL_SLICING_BASIC_IMPL "owl_slicing_basic_impl.h"
 
 #endif  /* _OPENMP */
 

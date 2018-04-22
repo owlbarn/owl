@@ -15,7 +15,7 @@ RUN sudo yum -y install git wget unzip m4 pkg-config gcc-gfortran epel-release
 RUN sudo yum -y install openblas-devel
 
 RUN opam update && opam switch 4.06.0 && eval $(opam config env)
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop eigen base stdio configurator
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop eigen base stdio configurator alcotest
 
 
 #################### SET UP ENV VARS #######################
@@ -39,6 +39,6 @@ RUN make -C $OWLPATH && make -C $OWLPATH install && make -C $OWLPATH clean
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
-RUN echo "#require \"owl_top\";; open Owl;;" >> /home/opam/.ocamlinit
+RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit
 WORKDIR $OWLPATH
 ENTRYPOINT /bin/bash

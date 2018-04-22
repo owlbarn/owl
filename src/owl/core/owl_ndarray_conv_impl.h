@@ -58,6 +58,9 @@ CAMLprim value FUN_NATIVE (spatial) (
     if (pc < 0) pc = 0;
   }
 
+  #ifdef _OPENMP
+    #pragma omp parallel for schedule(static)
+  #endif /* _OPENMP */
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
     int cr = i % output_cr;
@@ -159,6 +162,9 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
   if (p_top  < 0) p_top  = 0;
   if (p_left < 0) p_left = 0;
 
+  #ifdef _OPENMP
+    #pragma omp parallel for schedule(static)
+  #endif /* _OPENMP */
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
     int cr = i % output_cr;
@@ -373,6 +379,9 @@ CAMLprim value FUN_NATIVE (cuboid) (
     pd = pad_dpts / 2; if (pd < 0) pd = 0;
   }
 
+  #ifdef _OPENMP
+    #pragma omp parallel for schedule(static)
+  #endif /* _OPENMP */
   for (int i = 0; i < output_drcb; ++i) {
     int bt  = i / output_drc;
     int jkd = i % output_drc;
@@ -487,6 +496,9 @@ CAMLprim value FUN_NATIVE (cuboid_backward_kernel) (
   pr = pad_rows / 2; if (pr < 0) pr = 0;
   pd = pad_dpts / 2; if (pd < 0) pd = 0;
 
+  #ifdef _OPENMP
+    #pragma omp parallel for schedule(static)
+  #endif /* _OPENMP */
   for (int i = 0; i < output_drcb; ++i) {
     int bt  = i / output_drc;
     int jkd = i % output_drc;
