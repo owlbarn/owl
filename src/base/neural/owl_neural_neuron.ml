@@ -2047,8 +2047,8 @@ module Make
       let a = F (1. /. float_of_int (shape x).(l.axis)) in
       if l.training = true then (
         let s = Owl_utils_array.range 0 (Array.length l.in_shape) in
-        let s = List.filter (fun x -> x != l.axis)
-          (Array.to_list s) |> Array.of_list in
+        let s = List.filter (fun x -> x != l.axis) (Array.to_list s)
+          |> Array.of_list in
         let mu' = Maths.(a * (sum_reduce ~axis:s x)) in
         let var' = Maths.(a * (sum_reduce ~axis:s (x * x))) in
         l.mu <- Maths.(l.decay * l.mu + (F 1. - l.decay) * mu') |> primal';
