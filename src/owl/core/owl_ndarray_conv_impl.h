@@ -751,6 +751,9 @@ CAMLprim value FUN_NATIVE (spatial_transpose) (
     }
   }
 
+  #ifdef _OPENMP
+    #pragma omp parallel for schedule(static)
+  #endif /* _OPENMP */
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
     int cr = i % output_cr;
@@ -882,6 +885,9 @@ CAMLprim value FUN_NATIVE (spatial_transpose_backward_kernel) (
     }
   }
 
+  #ifdef _OPENMP
+    #pragma omp parallel for schedule(static)
+  #endif /* _OPENMP */
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
     int cr = i % output_cr;
