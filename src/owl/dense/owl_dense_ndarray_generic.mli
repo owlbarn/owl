@@ -1171,9 +1171,9 @@ val max_i : ('a, 'b) t -> 'a * int array
 
 val minmax_i : ('a, 'b) t -> ('a * (int array)) * ('a * (int array))
 (**
-``minmax_i x`` returns ``((min_v,min_i), (max_v,max_i))`` where ``(min_v,min_i)``
-is the minimum value in ``x`` along with its index while ``(max_v,max_i)`` is the
-maximum value along its index.
+``minmax_i x`` returns ``((min_v,min_i), (max_v,max_i))`` where
+``(min_v,min_i)`` is the minimum value in ``x`` along with its index while
+``(max_v,max_i)`` is the maximum value along its index.
  *)
 
 val abs : ('a, 'b) t -> ('a, 'b) t
@@ -1193,7 +1193,8 @@ val abs_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 
 val abs2 : ('a, 'b) t -> ('a, 'b) t
 (**
-``abs2 x`` returns the square of absolute value of all elements in ``x`` in a new ndarray.
+``abs2 x`` returns the square of absolute value of all elements in ``x`` in a
+new ndarray.
  *)
 
 val abs2_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
@@ -1310,8 +1311,8 @@ a new ndarray.
 
 val cos : ('a, 'b) t -> ('a, 'b) t
 (**
-``cos x`` computes the cosine of the elements in ``x`` and returns the result in
-a new ndarray.
+``cos x`` computes the cosine of the elements in ``x`` and returns the result
+in a new ndarray.
  *)
 
 val tan : ('a, 'b) t -> ('a, 'b) t
@@ -1322,8 +1323,8 @@ in a new ndarray.
 
 val asin : ('a, 'b) t -> ('a, 'b) t
 (**
-``asin x`` computes the arc sine of the elements in ``x`` and returns the result
-in a new ndarray.
+``asin x`` computes the arc sine of the elements in ``x`` and returns the
+result in a new ndarray.
  *)
 
 val acos : ('a, 'b) t -> ('a, 'b) t
@@ -1388,7 +1389,8 @@ in a new ndarray.
 
 val round : ('a, 'b) t -> ('a, 'b) t
 (**
-``round x`` rounds the elements in ``x`` and returns the result in a new ndarray.
+``round x`` rounds the elements in ``x`` and returns the result in a new
+ndarray.
  *)
 
 val trunc : ('a, 'b) t -> ('a, 'b) t
@@ -1400,14 +1402,14 @@ result in a new ndarray.
 val fix : ('a, 'b) t -> ('a, 'b) t
 (**
 ``fix x`` rounds each element of ``x`` to the nearest integer toward zero.
-For positive elements, the behavior is the same as ``floor``. For negative ones,
-the behavior is the same as ``ceil``.
+For positive elements, the behavior is the same as ``floor``. For negative
+ones, the behavior is the same as ``ceil``.
  *)
 
 val modf : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
-``modf x`` performs ``modf`` over all the elements in ``x``, the fractal part is
-saved in the first element of the returned tuple whereas the integer part is
+``modf x`` performs ``modf`` over all the elements in ``x``, the fractal part
+is saved in the first element of the returned tuple whereas the integer part is
 saved in the second element.
  *)
 
@@ -1425,8 +1427,8 @@ and returns the result in a new ndarray.
 
 val logistic : (float, 'a) t -> (float, 'a) t
 (**
-``logistic x`` computes the logistic function ``1/(1 + exp(-a)`` of the elements
-in ``x`` and returns the result in a new ndarray.
+``logistic x`` computes the logistic function ``1/(1 + exp(-a)`` of the
+elements in ``x`` and returns the result in a new ndarray.
  *)
 
 val relu : (float, 'a) t -> (float, 'a) t
@@ -1451,8 +1453,8 @@ in a new ndarray.
 
 val softplus : (float, 'a) t -> (float, 'a) t
 (**
-``softplus x`` computes the softplus function ``log(1 + exp(x)`` of the elements
-in ``x`` and returns the result in a new ndarray.
+``softplus x`` computes the softplus function ``log(1 + exp(x)`` of the
+elements in ``x`` and returns the result in a new ndarray.
  *)
 
 val softsign : (float, 'a) t -> (float, 'a) t
@@ -1539,8 +1541,9 @@ generalised p-norm the same as ``venorm``.
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``cumsum ~axis x`` : performs cumulative sum of the elements along the given
-axis ``~axis``. If ``~axis`` is ``None``, then the ``cumsum`` is performed along the
-lowest dimension. The returned result however always remains the same shape.
+axis ``~axis``. If ``~axis`` is ``None``, then the ``cumsum`` is performed
+along the lowest dimension. The returned result however always remains the same
+shape.
  *)
 
 val cumprod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
