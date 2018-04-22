@@ -1051,12 +1051,14 @@ val re_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 
 val im_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 (**
-``im_c2s x`` returns all the imaginary components of ``x`` in a new ndarray of same shape.
+``im_c2s x`` returns all the imaginary components of ``x`` in a new ndarray of
+same shape.
  *)
 
 val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (**
-``im_d2z x`` returns all the imaginary components of ``x`` in a new ndarray of same shape.
+``im_d2z x`` returns all the imaginary components of ``x`` in a new ndarray of
+same shape.
  *)
 
 val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1071,7 +1073,8 @@ val sum' : ('a, 'b) t -> 'a
 
 val sum_reduce : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (**
-``sum_reduce ~axis x`` sums the elements in ``x`` along multiple axes specified in the ``axis`` array.
+``sum_reduce ~axis x`` sums the elements in ``x`` along multiple axes specified
+in the ``axis`` array.
  *)
 
 val prod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1125,8 +1128,8 @@ smaller phase will be selected.
 
 val min' : ('a, 'b) t -> 'a
 (**
-``min' x`` is similar to ``min`` but returns the minimum of all elements in ``x``
-in scalar value.
+``min' x`` is similar to ``min`` but returns the minimum of all elements in
+``x`` in scalar value.
  *)
 
 val max : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1140,14 +1143,14 @@ greater phase will be selected.
 
 val max' : ('a, 'b) t -> 'a
 (**
-``max' x`` is similar to ``max`` but returns the maximum of all elements in ``x``
-in scalar value.
+``max' x`` is similar to ``max`` but returns the maximum of all elements in
+``x`` in scalar value.
  *)
 
 val minmax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
-``minmax' x`` returns ``(min_v, max_v)``, ``min_v`` is the minimum value in ``x``
-while ``max_v`` is the maximum.
+``minmax' x`` returns ``(min_v, max_v)``, ``min_v`` is the minimum value in
+``x`` while ``max_v`` is the maximum.
  *)
 
 val minmax' : ('a, 'b) t -> 'a * 'a
@@ -1963,6 +1966,14 @@ val print_index : int array -> unit
 val _check_transpose_axis : int array -> int -> unit
 (**
 ``_check_transpose_axis a d`` checks whether ``a`` is a legiti('a, 'b) te transpose index.
+ *)
+
+val one_hot : int -> ('a, 'b) t -> ('a, 'b) t
+(**
+``one_hot idx depth`` creates one-hot vectors according to the indices ndarray
+and the specified depth. If ``idx`` is rank N, then the return is rank N+1.
+More specifically, if ``idx`` is of shape ``[|a;b;c|]``, the return is of shape
+``[|a;b;c;depth|]``.
  *)
 
 val sum_slices : ?axis:int -> ('a, 'b) t -> ('a, 'b) t

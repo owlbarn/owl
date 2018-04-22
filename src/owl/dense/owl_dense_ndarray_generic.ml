@@ -2525,6 +2525,17 @@ let diff ?axis ?(n=1) x =
   !y
 
 
+let one_hot depth idx =
+  let sx = shape idx in
+  let sy = Array.append sx [|depth|] in
+  let k = kind idx in
+  let n = numel idx in
+  let y = zeros (kind idx) sy in
+  _owl_one_hot k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:depth idx y;
+  y
+
+
+
 (* TODO: optimise performance, slow along the low dimension *)
 let cumulative_op ?axis _cumop x =
   let d = num_dims x in

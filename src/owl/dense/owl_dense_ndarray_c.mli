@@ -552,6 +552,8 @@ val contract2 : (int * int) array -> arr -> arr -> arr
 
 (** {6 Experimental functions} *)
 
+val one_hot : int -> arr -> arr
+
 val sum_slices : ?axis:int -> arr -> arr
 
 val sum_reduce : ?axis:int array -> arr -> arr
