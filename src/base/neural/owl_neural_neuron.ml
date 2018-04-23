@@ -2043,7 +2043,8 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    (* reference: https://arxiv.org/abs/1502.03167 *)
+    (* Reference: https://arxiv.org/abs/1502.03167.
+       Implementaton in Keras: https://bit.ly/2vBsvgI *)
     let run x l =
       if l.training = true then (
         let a = F (float_of_int ((numel x) / (shape x).(l.axis))) in
