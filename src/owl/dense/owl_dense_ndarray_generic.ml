@@ -3579,9 +3579,9 @@ let sum_reduce ?axis x =
       _owl_sum _kind (numel x) x |> create _kind (Array.make (num_dims x) 1)
 
 
-let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ?(padding=false) ~window x =
+let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ~window x =
   let d = num_dims x in
-  let a = if axis > 0 then axis else d + axis in
+  let a = if axis >= 0 then axis else d + axis in
   let sx = shape x in
   assert (a < d);
   assert (ofs + window <= sx.(a));
@@ -3591,17 +3591,18 @@ let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ?(padding=false) ~window x =
   let m = (numel x) / _slicez.(a) in
   let n = (sx.(a) - ofs - window) / step + 1 in
   let o = _stride.(a) * window in
+  let ofsx_m = _stride.(a) * ofs in
   let incx_m = _slicez.(a) in
   let incx_n = _stride.(a) * step in
-  let incx_o = 1 in
-  let ofsx_o = 0 in
 
-  let incy_m = incx_m in
-  let incy_n = window in
-  let incy_o = 1 in
-  let ofsy_o = 0 in
-
-  ()
+  sx.(a) <- n * window;
+  let y = zeros (kind x) sx in
+  let incy_m = (slice_size y).(a) in
+  let incy_n = o in
+  
+  Owl_ndarray_slide._ndarray_slide (kind x) x y m n o ofsx_m incx_m incx_n incy_m incy_n;
+  let sy = Owl_utils.Array.replace a 1 sx [|n;window|] in
+  reshape y sy
 
 
 let draw ?(axis=0) x n =

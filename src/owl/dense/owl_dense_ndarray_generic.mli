@@ -1986,6 +1986,9 @@ shape ``[|4;5|]``. Currently, the operation is done using ``gemm``, fast but use
 more memory.
  *)
 
+val slide : ?axis:int -> ?ofs:int -> ?step:int -> window:int -> ('a, 'b) t -> ('a, 'b) t
+(** TODO *)
+
 
 (** {6 In-place modification}  *)
 
