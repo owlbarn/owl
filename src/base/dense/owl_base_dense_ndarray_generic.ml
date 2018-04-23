@@ -799,12 +799,7 @@ let sum_reduce ?axis x =
       done;
       !y
     )
-  | None   -> (
-      let y = sum' x in
-      let z = zeros (kind x) (Array.make (num_dims x) 1) in
-      Genarray.set z (Array.make (num_dims x) 0) y;
-      z
-    )
+  | None   -> create (kind x) (Array.make (num_dims x) 1) (sum' x)
 
 
 let l1norm' varr =
