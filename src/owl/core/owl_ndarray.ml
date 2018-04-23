@@ -16,5 +16,7 @@ include Owl_ndarray_contract
 
 include Owl_ndarray_transpose
 
+include Owl_ndarray_slide
+
 
 (* ends here *)

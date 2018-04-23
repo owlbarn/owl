@@ -3600,7 +3600,7 @@ let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ~window x =
   let incy_m = (slice_size y).(a) in
   let incy_n = o in
 
-  Owl_ndarray_slide._ndarray_slide (kind x) x y m n o ofsx_m incx_m incx_n incy_m incy_n;
+  Owl_ndarray._ndarray_slide (kind x) x y m n o ofsx_m incx_m incx_n incy_m incy_n;
   let sy = Owl_utils.Array.replace a 1 sx [|n;window|] in
   reshape y sy
 
