@@ -313,12 +313,10 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 val sum : ?axis:int -> (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val sum' : (float, 'b) t -> float
+val sum' : ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val sum_reduce : ?axis:int array -> (float, 'b) t -> (float, 'b) t
+val sum_reduce : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
