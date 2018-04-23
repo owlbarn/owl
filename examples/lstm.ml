@@ -10,33 +10,19 @@ open Neural.S
 open Neural.S.Graph
 
 
-let prepare wndsz stepsz =
-  Owl_log.info "build vocabulary ...";
-  let text = load_file ~gist:"217ef87bc36845c4e78e398d52bc4c5b" "wonderland.txt" in
-  let chars = String.lowercase_ascii text in
+let prepare window step =
+  Owl_log.info "build vocabulary and tokenise ...";
+  let chars = load_file ~gist:"217ef87bc36845c4e78e398d52bc4c5b" "wonderland.txt" |> String.lowercase_ascii in
   let vocab = Nlp.Vocabulary.build_from_string ~alphabet:true chars in
+  let t_arr = Nlp.Vocabulary.tokenise vocab chars |> Array.map float_of_int in
+  let tokens = Dense.Ndarray.S.of_array t_arr [| Array.length t_arr |] in
 
-  Owl_log.info "tokenise ...";
-  let tokens = Nlp.Vocabulary.tokenise vocab chars in
-
-  Owl_log.info "make x matrix (indices) ...";
-  let m = (String.length chars - wndsz) / stepsz in
-  let x = Dense.Matrix.S.zeros m wndsz in
-  for i = 0 to m - 1 do
-    for j = 0 to wndsz - 1 do
-      Dense.Matrix.S.set x i j (float_of_int tokens.(i*stepsz + j))
-    done;
-  done;
-
-  Owl_log.info "make y matrix (one-hot) ...";
-  let y = Dense.Matrix.S.zeros m (Nlp.Vocabulary.length vocab) in
-  for i = 0 to m - 1 do
-    let j = int_of_float (float_of_int tokens.(i*stepsz + wndsz)) in
-    Dense.Matrix.S.set y i j 1.
-  done;
+  Owl_log.info "construct x (sliding) and y (one-hot) ...";
+  let x = Dense.Ndarray.S.slide ~step:1 ~window tokens in
+  let y = Dense.Ndarray.S.(one_hot (Nlp.Vocabulary.length vocab) tokens.${[[window;-1]]}) in
 
   Owl_log.info "chars:%i, symbols:%i, wndsz:%i, stepsz:%i"
-    (String.length text) (Nlp.Vocabulary.length vocab) wndsz stepsz;
+    (String.length chars) (Nlp.Vocabulary.length vocab) window step;
   vocab, x, y
 
 
