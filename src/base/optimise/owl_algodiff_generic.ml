@@ -79,6 +79,7 @@ module Make
     | Set_Slice_C_D of t * t * int list list
     | Sum_D         of t
     | Sum__D        of t * int
+    | Sum___D       of t * int array
     | Dot_D_D       of t * t
     | Dot_D_C       of t * t
     | Dot_C_D       of t * t
@@ -201,6 +202,19 @@ module Make
     match primal' x with
     | Arr x -> Arr A.(repeat ?axis x reps)
     | _     -> failwith "error: AD.repeat"
+
+  (* TODO: Redesign the API of repeat. *)
+  let repeat_axes axis x reps =
+    match primal' x with
+    | Arr x -> Arr (
+        let n = Array.length axis in
+        let y = ref x in
+        for i = 0 to (n - 1) do
+          y := A.(repeat ~axis:(axis.(i)) !y reps.(i))
+        done;
+        !y
+      )
+    | _     -> failwith "error: AD.repeat_axes"
 
   (* packing and unpacking functions *)
 
@@ -752,6 +766,17 @@ module Make
       let r a = Sum__D (a, axis) in
       op_d_d a ff fd df r
 
+    and sum_reduce ?(axis=[|0|]) a =
+      let ff = function
+        | F a      -> F a
+        | Arr x    -> Arr A.(sum_reduce ~axis x)
+        | _        -> error_uniop "sum_reduce" a
+      in
+      let fd a = sum_reduce ~axis a in
+      let df cp ap at = sum_reduce ~axis at in
+      let r a = Sum___D (a, axis) in
+      op_d_d a ff fd df r
+
     and mean a = (sum' a) / F (numel a |> float_of_int)
 
     and ( *@ ) a b = dot a b
@@ -1225,6 +1250,7 @@ module Make
               | Set_Slice_C_D (_, b, _)  -> reset (b :: t)
               | Sum_D a                  -> reset (a :: t)
               | Sum__D (a, _)            -> reset (a :: t)
+              | Sum___D (a, _)           -> reset (a :: t)
               | Dot_D_D (a, b)           -> reset (a :: b :: t)
               | Dot_D_C (a, _)           -> reset (a :: t)
               | Dot_C_D (_, b)           -> reset (b :: t)
@@ -1350,6 +1376,7 @@ module Make
               | Set_Slice_C_D (a, b, i)  -> push ((get_slice i !aa, b) :: t)
               | Sum_D a                  -> push ((!aa, a) :: t)
               | Sum__D (a, i)            -> push ((repeat ~axis:i !aa (shape a).(i), a) :: t)
+              | Sum___D (a, i)           -> let dims = Array.(map (get (shape a)) i) in push ((repeat_axes i !aa dims, a) :: t)
               | Dot_D_D (a, b)           -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
               | Dot_D_C (a, b)           -> push (((dot !aa (transpose b)), a) :: t)
               | Dot_C_D (a, b)           -> push (((dot (transpose a) !aa), b) :: t)
@@ -1690,6 +1717,7 @@ module Make
                   | Set_Slice_C_D (a, b, i)  -> "Set_Slice_C_D", [a; b]
                   | Sum_D a                  -> "Sum_D", [ a ]
                   | Sum__D (a, i)            -> "Sum__D", [ a ]
+                  | Sum___D (a, i)           -> "Sum___D", [ a ]
                   | Dot_D_D (a, b)           -> "Dot_D_D", [a; b]
                   | Dot_D_C (a, b)           -> "Dot_D_C", [a; b]
                   | Dot_C_D (a, b)           -> "Dot_C_D", [a; b]

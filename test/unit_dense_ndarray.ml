@@ -43,6 +43,8 @@ let _ =
 
 let x3 = M.sequential Float64 ~a:1. [|6|]
 
+let x4 = M.ones Float64 [|2;3;4|]
+
 
 (* a module with functions to test *)
 module To_test = struct
@@ -98,6 +100,9 @@ module To_test = struct
   let neg () = M.equal (M.map (fun a -> (-1.) *. a) x0) (M.neg x0)
 
   let sum' () = M.sum' x0 = 6.
+
+  let sum_reduce () =
+    M.sum_reduce ~axis:[|0;2|] x4 = M.of_array Float64 [|8.;8.;8.|] [|1;3;1|]
 
   let min' () = M.min' x0 = 0.
 
@@ -378,6 +383,9 @@ let neg () =
 let sum' () =
   Alcotest.(check bool) "sum'" true (To_test.sum' ())
 
+let sum_reduce () =
+  Alcotest.(check bool) "sum_reduce" true (To_test.sum_reduce ())
+
 let min' () =
   Alcotest.(check bool) "min'" true (To_test.min' ())
 
@@ -543,6 +551,7 @@ let test_set = [
   "abs", `Slow, abs;
   "neg", `Slow, neg;
   "sum'", `Slow, sum';
+  "sum_reduce", `Slow, sum_reduce;
   "min'", `Slow, min';
   "max'", `Slow, max';
   "minmax_i", `Slow, minmax_i;
