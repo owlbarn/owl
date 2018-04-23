@@ -766,12 +766,12 @@ let sum' varr =
   _fold_left (Owl_base_dense_common._add_elt _kind) (Owl_const.zero _kind) varr
 
 
-(* Folding along a specified axis, aka reduction. The 
+(* Folding along a specified axis, aka reduction. The
    f: function of type 'a -> 'a -> 'a.
-   m:  number of slices.
+   m: number of slices.
    n: x's slice size.
    o: x's strides, also y's slice size.
-   x:  source; y: shape of destination. Note that o <= n. 
+   x: source; y: shape of destination. Note that o <= n. 
  *)
 let fold_along f m n o x ys =
   let x = flatten x in
