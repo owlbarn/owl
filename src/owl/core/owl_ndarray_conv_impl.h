@@ -704,15 +704,18 @@ CAMLprim value FUN_NATIVE (spatial_transpose) (
   int row_in_stride = Long_val(vRow_in_stride);
   int col_in_stride = Long_val(vCol_in_stride);
 
-  const int input_cri  = in_channel  * input_rows  * input_cols;
-  const int input_ri   = in_channel  * input_rows;
   const int output_cri = out_channel * output_rows * output_cols;
   const int output_cr  = output_rows * output_cols;
   const int output_crb = output_rows * output_cols * batches;
   const int kernel_cri = kernel_cols * kernel_rows * in_channel;
-  const int input_crb  = input_rows  * input_cols  * batches;
-  const int input_cr   = input_rows  * input_cols;
   const int output_ri  = in_channel  * output_rows;
+
+  const int ext_input_cols = input_cols + (input_cols - 1) * (col_stride - 1);
+  const int ext_input_rows = input_rows + (input_rows - 1) * (row_stride - 1);
+  const int ext_input_cri = ext_input_cols * ext_input_rows * in_channel;
+  const int ext_input_ri  = ext_input_rows * in_channel;
+  const int ext_input_crb = ext_input_cols * ext_input_rows * batches;
+  const int ext_input_cr  = ext_input_cols * ext_input_rows;
 
   INIT;
 
@@ -725,13 +728,6 @@ CAMLprim value FUN_NATIVE (spatial_transpose) (
 
   TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
-
-  const int ext_input_cols = input_cols + (input_cols - 1) * (col_stride - 1);
-  const int ext_input_rows = input_rows + (input_rows - 1) * (row_stride - 1);
-  const int ext_input_cri = ext_input_cols * ext_input_rows * in_channel;
-  const int ext_input_ri  = ext_input_rows * in_channel;
-  const int ext_input_crb = ext_input_cols * ext_input_rows * batches;
-  const int ext_input_cr  = ext_input_cols * ext_input_rows;
 
   TYPE *ext_inp = (TYPE *) calloc(batches * ext_input_cols * ext_input_rows
     * in_channel, sizeof(TYPE));
