@@ -766,10 +766,12 @@ let sum' varr =
   _fold_left (Owl_base_dense_common._add_elt _kind) (Owl_const.zero _kind) varr
 
 
-(** Folding along a specified axis, aka reduction. The [fold_fun] is of type a' -> a' -> a'.
-    m: number of slices; n: x's slice size; o: x' strides, also y's slice size;
-    x: source; y: shape of destination. Note that o <= n. *)
-let fold_along fold_fun m n o x ys =
+(* Folding along a specified axis, aka reduction. The 
+   op: function of type a' -> 'a -> 'a.
+   m:  number of slices; n: x's slice size; o: x's strides, also y's slice size;
+   x:  source; y: shape of destination. Note that o <= n. 
+ *)
+let fold_along op m n o x ys =
   let x = flatten x in
   let y = zeros (kind x) ys |> flatten in
   let idx = ref 0 in
@@ -779,7 +781,7 @@ let fold_along fold_fun m n o x ys =
     for j = 0 to (n - 1) do
       let addon = Genarray.get x [|!idx + j|] in
       let orig  = Genarray.get y [|!idy + !incy|] in
-      Genarray.set y [|!idy + !incy|] (fold_fun orig addon);
+      Genarray.set y [|!idy + !incy|] (op orig addon);
       incy := if (!incy + 1 = o) then 0 else !incy + 1
     done;
     idx := !idx + n;
