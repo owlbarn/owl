@@ -260,6 +260,16 @@ let concatenate ?(axis=0) xs =
   y
 
 
+let slide ?(axis=-1) ?(step=1) ?window x =
+  let d = num_dims x in
+  let axis = if axis > 0 then axis else d + axis in
+  assert (axis < d);
+
+  let step = match step with
+    | Some a -> a
+
+
+
 let concat_vertical x1 x2 = concatenate ~axis:0 [|x1;x2|]
 
 
