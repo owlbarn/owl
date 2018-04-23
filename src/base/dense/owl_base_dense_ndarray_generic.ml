@@ -758,6 +758,7 @@ let min' varr = (_fold_left (Pervasives.min) Pervasives.max_float varr)
 (* Max of all elements in the NDarray *)
 let max' varr = (_fold_left (Pervasives.max) Pervasives.min_float varr)
 
+(* TODO: revise functions with float type to 'a *)
 
 (* Sum of all elements *)
 let sum' varr =
@@ -765,10 +766,10 @@ let sum' varr =
   _fold_left (Owl_base_dense_common._add_elt _kind) (Owl_const.zero _kind) varr
 
 
-(** Folding along a specified axis, aka reduction.
+(** Folding along a specified axis, aka reduction. The [fold_fun] is of type a' -> a' -> a'.
     m: number of slices; n: x's slice size; o: x' strides, also y's slice size;
     x: source; y: shape of destination. Note that o <= n. *)
-let owl_sum_along add_fun m n o x ys =
+let fold_along fold_fun m n o x ys =
   let x = flatten x in
   let y = zeros (kind x) ys |> flatten in
   let idx = ref 0 in
@@ -778,7 +779,7 @@ let owl_sum_along add_fun m n o x ys =
     for j = 0 to (n - 1) do
       let addon = Genarray.get x [|!idx + j|] in
       let orig  = Genarray.get y [|!idy + !incy|] in
-      Genarray.set y [|!idy + !incy|] (add_fun orig addon);
+      Genarray.set y [|!idy + !incy|] (fold_fun orig addon);
       incy := if (!incy + 1 = o) then 0 else !incy + 1
     done;
     idx := !idx + n;
@@ -795,7 +796,7 @@ let sum_reduce ?axis x =
       for i = 0 to (num_dims x - 1) do
         if Array.mem i a then (
           let m, n, o, s = reduce_params i !y in
-          y := owl_sum_along (Owl_base_dense_common._add_elt _kind) m n o !y s
+          y := fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s
         )
       done;
       !y
