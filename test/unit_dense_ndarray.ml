@@ -299,6 +299,26 @@ module To_test = struct
     let z = M.diff ~axis:1 x in
     M.(y = z)
 
+  let one_hot_1 () =
+    let idx = M.of_array Float64 [|3.;2.;1.|] [|3|] in
+    let x = M.one_hot 4 idx in
+    let y = M.zeros Float64 [|3;4|] in
+    M.set y [|0;3|] 1.;
+    M.set y [|1;2|] 1.;
+    M.set y [|2;1|] 1.;
+    M.(x = y)
+
+  let one_hot_2 () =
+    let idx = M.of_array Float64 [|3.;2.;0.;1.|] [|2;2|] in
+    let x = M.one_hot 4 idx in
+    let y = M.zeros Float64 [|2;2;4|] in
+    M.set y [|0;0;3|] 1.;
+    M.set y [|0;1;2|] 1.;
+    M.set y [|1;0;0|] 1.;
+    M.set y [|1;1;1|] 1.;
+    M.(x = y)
+
+
 end
 
 (* the tests *)
@@ -504,6 +524,12 @@ let diff_1 () =
 let diff_2 () =
   Alcotest.(check bool) "diff_2" true (To_test.diff_2 ())
 
+let one_hot_1 () =
+  Alcotest.(check bool) "one_hot_1" true (To_test.one_hot_1 ())
+
+let one_hot_2 () =
+  Alcotest.(check bool) "one_hot_2" true (To_test.one_hot_2 ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -572,4 +598,6 @@ let test_set = [
   "concatenate_02", `Slow, concatenate_02;
   "diff_1", `Slow, diff_1;
   "diff_2", `Slow, diff_2;
+  "one_hot_1", `Slow, one_hot_1;
+  "one_hot_2", `Slow, one_hot_2;
 ]

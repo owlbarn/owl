@@ -2525,6 +2525,17 @@ let diff ?axis ?(n=1) x =
   !y
 
 
+let one_hot depth idx =
+  let sx = shape idx in
+  let sy = Array.append sx [|depth|] in
+  let k = kind idx in
+  let n = numel idx in
+  let y = zeros (kind idx) sy in
+  _owl_one_hot k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:depth idx y;
+  y
+
+
+
 (* TODO: optimise performance, slow along the low dimension *)
 let cumulative_op ?axis _cumop x =
   let d = num_dims x in
@@ -3544,8 +3555,10 @@ let sum_slices ?axis x =
 *)
 
 
-(* Simiar to `sum`, but sums the elements along multiple axes specified in an array.
-  E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of shape [|1;1;1;1|].
+(* Simiar to `sum`, but sums the elements along multiple axes specified in an
+  array. E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an
+  ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of
+  shape [|1;1;1;1|].
  *)
 let sum_reduce ?axis x =
   let _kind = kind x in
@@ -3564,6 +3577,32 @@ let sum_reduce ?axis x =
     )
   | None   ->
       _owl_sum _kind (numel x) x |> create _kind (Array.make (num_dims x) 1)
+
+
+let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ~window x =
+  let d = num_dims x in
+  let a = if axis >= 0 then axis else d + axis in
+  let sx = shape x in
+  assert (a < d);
+  assert (ofs + window <= sx.(a));
+
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = (sx.(a) - ofs - window) / step + 1 in
+  let o = _stride.(a) * window in
+  let ofsx_m = _stride.(a) * ofs in
+  let incx_m = _slicez.(a) in
+  let incx_n = _stride.(a) * step in
+
+  sx.(a) <- n * window;
+  let y = empty (kind x) sx in
+  let incy_m = (slice_size y).(a) in
+  let incy_n = o in
+
+  Owl_ndarray_slide._ndarray_slide (kind x) x y m n o ofsx_m incx_m incx_n incy_m incy_n;
+  let sy = Owl_utils.Array.replace a 1 sx [|n;window|] in
+  reshape y sy
 
 
 let draw ?(axis=0) x n =

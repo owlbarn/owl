@@ -1051,12 +1051,14 @@ val re_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 
 val im_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 (**
-``im_c2s x`` returns all the imaginary components of ``x`` in a new ndarray of same shape.
+``im_c2s x`` returns all the imaginary components of ``x`` in a new ndarray of
+same shape.
  *)
 
 val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (**
-``im_d2z x`` returns all the imaginary components of ``x`` in a new ndarray of same shape.
+``im_d2z x`` returns all the imaginary components of ``x`` in a new ndarray of
+same shape.
  *)
 
 val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1071,7 +1073,8 @@ val sum' : ('a, 'b) t -> 'a
 
 val sum_reduce : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (**
-``sum_reduce ~axis x`` sums the elements in ``x`` along multiple axes specified in the ``axis`` array.
+``sum_reduce ~axis x`` sums the elements in ``x`` along multiple axes specified
+in the ``axis`` array.
  *)
 
 val prod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1125,8 +1128,8 @@ smaller phase will be selected.
 
 val min' : ('a, 'b) t -> 'a
 (**
-``min' x`` is similar to ``min`` but returns the minimum of all elements in ``x``
-in scalar value.
+``min' x`` is similar to ``min`` but returns the minimum of all elements in
+``x`` in scalar value.
  *)
 
 val max : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1140,14 +1143,14 @@ greater phase will be selected.
 
 val max' : ('a, 'b) t -> 'a
 (**
-``max' x`` is similar to ``max`` but returns the maximum of all elements in ``x``
-in scalar value.
+``max' x`` is similar to ``max`` but returns the maximum of all elements in
+``x`` in scalar value.
  *)
 
 val minmax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
-``minmax' x`` returns ``(min_v, max_v)``, ``min_v`` is the minimum value in ``x``
-while ``max_v`` is the maximum.
+``minmax' x`` returns ``(min_v, max_v)``, ``min_v`` is the minimum value in
+``x`` while ``max_v`` is the maximum.
  *)
 
 val minmax' : ('a, 'b) t -> 'a * 'a
@@ -1168,9 +1171,9 @@ val max_i : ('a, 'b) t -> 'a * int array
 
 val minmax_i : ('a, 'b) t -> ('a * (int array)) * ('a * (int array))
 (**
-``minmax_i x`` returns ``((min_v,min_i), (max_v,max_i))`` where ``(min_v,min_i)``
-is the minimum value in ``x`` along with its index while ``(max_v,max_i)`` is the
-maximum value along its index.
+``minmax_i x`` returns ``((min_v,min_i), (max_v,max_i))`` where
+``(min_v,min_i)`` is the minimum value in ``x`` along with its index while
+``(max_v,max_i)`` is the maximum value along its index.
  *)
 
 val abs : ('a, 'b) t -> ('a, 'b) t
@@ -1190,7 +1193,8 @@ val abs_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 
 val abs2 : ('a, 'b) t -> ('a, 'b) t
 (**
-``abs2 x`` returns the square of absolute value of all elements in ``x`` in a new ndarray.
+``abs2 x`` returns the square of absolute value of all elements in ``x`` in a
+new ndarray.
  *)
 
 val abs2_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
@@ -1307,8 +1311,8 @@ a new ndarray.
 
 val cos : ('a, 'b) t -> ('a, 'b) t
 (**
-``cos x`` computes the cosine of the elements in ``x`` and returns the result in
-a new ndarray.
+``cos x`` computes the cosine of the elements in ``x`` and returns the result
+in a new ndarray.
  *)
 
 val tan : ('a, 'b) t -> ('a, 'b) t
@@ -1319,8 +1323,8 @@ in a new ndarray.
 
 val asin : ('a, 'b) t -> ('a, 'b) t
 (**
-``asin x`` computes the arc sine of the elements in ``x`` and returns the result
-in a new ndarray.
+``asin x`` computes the arc sine of the elements in ``x`` and returns the
+result in a new ndarray.
  *)
 
 val acos : ('a, 'b) t -> ('a, 'b) t
@@ -1385,7 +1389,8 @@ in a new ndarray.
 
 val round : ('a, 'b) t -> ('a, 'b) t
 (**
-``round x`` rounds the elements in ``x`` and returns the result in a new ndarray.
+``round x`` rounds the elements in ``x`` and returns the result in a new
+ndarray.
  *)
 
 val trunc : ('a, 'b) t -> ('a, 'b) t
@@ -1397,14 +1402,14 @@ result in a new ndarray.
 val fix : ('a, 'b) t -> ('a, 'b) t
 (**
 ``fix x`` rounds each element of ``x`` to the nearest integer toward zero.
-For positive elements, the behavior is the same as ``floor``. For negative ones,
-the behavior is the same as ``ceil``.
+For positive elements, the behavior is the same as ``floor``. For negative
+ones, the behavior is the same as ``ceil``.
  *)
 
 val modf : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
-``modf x`` performs ``modf`` over all the elements in ``x``, the fractal part is
-saved in the first element of the returned tuple whereas the integer part is
+``modf x`` performs ``modf`` over all the elements in ``x``, the fractal part
+is saved in the first element of the returned tuple whereas the integer part is
 saved in the second element.
  *)
 
@@ -1422,8 +1427,8 @@ and returns the result in a new ndarray.
 
 val logistic : (float, 'a) t -> (float, 'a) t
 (**
-``logistic x`` computes the logistic function ``1/(1 + exp(-a)`` of the elements
-in ``x`` and returns the result in a new ndarray.
+``logistic x`` computes the logistic function ``1/(1 + exp(-a)`` of the
+elements in ``x`` and returns the result in a new ndarray.
  *)
 
 val relu : (float, 'a) t -> (float, 'a) t
@@ -1448,8 +1453,8 @@ in a new ndarray.
 
 val softplus : (float, 'a) t -> (float, 'a) t
 (**
-``softplus x`` computes the softplus function ``log(1 + exp(x)`` of the elements
-in ``x`` and returns the result in a new ndarray.
+``softplus x`` computes the softplus function ``log(1 + exp(x)`` of the
+elements in ``x`` and returns the result in a new ndarray.
  *)
 
 val softsign : (float, 'a) t -> (float, 'a) t
@@ -1536,8 +1541,9 @@ generalised p-norm the same as ``venorm``.
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``cumsum ~axis x`` : performs cumulative sum of the elements along the given
-axis ``~axis``. If ``~axis`` is ``None``, then the ``cumsum`` is performed along the
-lowest dimension. The returned result however always remains the same shape.
+axis ``~axis``. If ``~axis`` is ``None``, then the ``cumsum`` is performed
+along the lowest dimension. The returned result however always remains the same
+shape.
  *)
 
 val cumprod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1965,11 +1971,33 @@ val _check_transpose_axis : int array -> int -> unit
 ``_check_transpose_axis a d`` checks whether ``a`` is a legiti('a, 'b) te transpose index.
  *)
 
+val one_hot : int -> ('a, 'b) t -> ('a, 'b) t
+(**
+``one_hot idx depth`` creates one-hot vectors according to the indices ndarray
+and the specified depth. If ``idx`` is rank N, then the return is rank N+1.
+More specifically, if ``idx`` is of shape ``[|a;b;c|]``, the return is of shape
+``[|a;b;c;depth|]``.
+ *)
+
 val sum_slices : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``sum_slices ~axis:2 x`` for ``x`` of ``[|2;3;4;5|]``, it returns an ndarray of
-shape ``[|4;5|]``. Currently, the operation is done using ``gemm``, fast but uses
-more memory.
+shape ``[|4;5|]``. Currently, the operation is done using ``gemm``, it is fast
+but consumes more memory.
+ *)
+
+val slide : ?axis:int -> ?ofs:int -> ?step:int -> window:int -> ('a, 'b) t -> ('a, 'b) t
+(**
+``slide ~axis ~window x`` generates a new ndarray by sliding a window along
+specified ``axis`` in ``x``. E.g., if ``x`` has shape ``[|a;b;c|]`` and
+``axis = 1``, then ``[|a; number of windows; window; c|]`` is the shape of the
+returned ndarray.
+
+Parameters:
+  * ``axis`` is the axis for sliding, the default is -1, i.e. highest dimension.
+  * ``ofs`` is the starting position of the sliding window. The default is 0.
+  * ``step`` is the step size, the default is 1.
+  * ``window`` is the size of the sliding window.
  *)
 
 

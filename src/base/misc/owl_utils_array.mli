@@ -111,6 +111,12 @@ val count : 'a array -> 'a -> int
 val insert : 'a array -> 'a array -> int -> 'a array
 (** TODO *)
 
+val remove : 'a array -> int -> 'a array
+(** TODO *)
+
+val replace : int -> int -> 'a array -> 'a array -> 'a array
+(** TODO *)
+
 val filteri_v : (int -> 'a -> bool * 'b) -> 'a array -> 'b array
 (** TODO *)
 

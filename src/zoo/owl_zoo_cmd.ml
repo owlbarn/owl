@@ -108,13 +108,17 @@ let show_info gist =
   print_endline info
 
 
-(* f is a file name in the gist, e.g., #readme.md *)
-let load_file ?(gist="") f =
+let query_path gist =
   let gid, vid, _, _ =
     try Owl_zoo_ver.parse_gist_string gist
     with Owl_exception.ZOO_ILLEGAL_GIST_NAME -> "", "", true, true
   in
-  let path = Owl_zoo_path.extend_zoo_path ~gid ~vid f in
+  Owl_zoo_path.extend_zoo_path ~gid ~vid ""
+
+
+(* f is a file name in the gist, e.g., #readme.md *)
+let load_file ?(gist="") f =
+  let path = (query_path gist) ^ f in
   Owl_utils.read_file_string path
 
 
