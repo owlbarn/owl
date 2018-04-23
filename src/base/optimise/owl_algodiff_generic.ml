@@ -203,7 +203,8 @@ module Make
     | Arr x -> Arr A.(repeat ?axis x reps)
     | _     -> failwith "error: AD.repeat"
 
-  let repeat_mul axis x reps =
+  (* TODO: Redesign the API of repeat. *)
+  let repeat_axes axis x reps =
     match primal' x with
     | Arr x -> Arr (
         let n = Array.length axis in
@@ -213,7 +214,7 @@ module Make
         done;
         !y
       )
-    | _     -> failwith "error: AD.repeat_mul"
+    | _     -> failwith "error: AD.repeat_axes"
 
   (* packing and unpacking functions *)
 
@@ -1375,7 +1376,7 @@ module Make
               | Set_Slice_C_D (a, b, i)  -> push ((get_slice i !aa, b) :: t)
               | Sum_D a                  -> push ((!aa, a) :: t)
               | Sum__D (a, i)            -> push ((repeat ~axis:i !aa (shape a).(i), a) :: t)
-              | Sum___D (a, i)           -> let dims = Array.(map (get (shape a)) i) in push ((repeat_mul i !aa dims, a) :: t)
+              | Sum___D (a, i)           -> let dims = Array.(map (get (shape a)) i) in push ((repeat_axes i !aa dims, a) :: t)
               | Dot_D_D (a, b)           -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
               | Dot_D_C (a, b)           -> push (((dot !aa (transpose b)), a) :: t)
               | Dot_C_D (a, b)           -> push (((dot (transpose a) !aa), b) :: t)
