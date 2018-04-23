@@ -1982,12 +1982,23 @@ More specifically, if ``idx`` is of shape ``[|a;b;c|]``, the return is of shape
 val sum_slices : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``sum_slices ~axis:2 x`` for ``x`` of ``[|2;3;4;5|]``, it returns an ndarray of
-shape ``[|4;5|]``. Currently, the operation is done using ``gemm``, fast but uses
-more memory.
+shape ``[|4;5|]``. Currently, the operation is done using ``gemm``, it is fast
+but consumes more memory.
  *)
 
 val slide : ?axis:int -> ?ofs:int -> ?step:int -> window:int -> ('a, 'b) t -> ('a, 'b) t
-(** TODO *)
+(**
+``slide ~axis ~window x`` generates a new ndarray by sliding a window along
+specified ``axis`` in ``x``. E.g., if ``x`` has shape ``[|a;b;c|]`` and
+``axis = 1``, then ``[|a; number of windows; window; c|]`` is the shape of the
+returned ndarray.
+
+Parameters:
+  * ``axis`` is the axis for sliding, the default is -1, i.e. highest dimension.
+  * ``ofs`` is the starting position of the sliding window. The default is 0.
+  * ``step`` is the step size, the default is 1.
+  * ``window`` is the size of the sliding window.
+ *)
 
 
 (** {6 In-place modification}  *)
