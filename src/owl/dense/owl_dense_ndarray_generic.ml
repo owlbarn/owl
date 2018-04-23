@@ -1719,6 +1719,7 @@ let conv2d ?(padding=SAME) input kernel stride =
   output
 
 
+(*FIXME: TravisCI can't find conv_utils.calc_conv2d_transpose_output_shape *)
 let calc_conv2d_transpose_output_shape
   padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   =
