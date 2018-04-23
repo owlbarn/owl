@@ -260,16 +260,6 @@ let concatenate ?(axis=0) xs =
   y
 
 
-let slide ?(axis=-1) ?(step=1) ?window x =
-  let d = num_dims x in
-  let axis = if axis > 0 then axis else d + axis in
-  assert (axis < d);
-
-  let step = match step with
-    | Some a -> a
-
-
-
 let concat_vertical x1 x2 = concatenate ~axis:0 [|x1;x2|]
 
 
@@ -3565,8 +3555,10 @@ let sum_slices ?axis x =
 *)
 
 
-(* Simiar to `sum`, but sums the elements along multiple axes specified in an array.
-  E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of shape [|1;1;1;1|].
+(* Simiar to `sum`, but sums the elements along multiple axes specified in an
+  array. E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an
+  ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of
+  shape [|1;1;1;1|].
  *)
 let sum_reduce ?axis x =
   let _kind = kind x in
@@ -3585,6 +3577,31 @@ let sum_reduce ?axis x =
     )
   | None   ->
       _owl_sum _kind (numel x) x |> create _kind (Array.make (num_dims x) 1)
+
+
+let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ?(padding=false) ~window x =
+  let d = num_dims x in
+  let a = if axis > 0 then axis else d + axis in
+  let sx = shape x in
+  assert (a < d);
+  assert (ofs + window <= sx.(a));
+
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = (sx.(a) - ofs - window) / step + 1 in
+  let o = _stride.(a) * window in
+  let incx_m = _slicez.(a) in
+  let incx_n = _stride.(a) * step in
+  let incx_o = 1 in
+  let ofsx_o = 0 in
+
+  let incy_m = incx_m in
+  let incy_n = window in
+  let incy_o = 1 in
+  let ofsy_o = 0 in
+
+  ()
 
 
 let draw ?(axis=0) x n =

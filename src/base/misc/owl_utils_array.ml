@@ -38,6 +38,15 @@ let insert x y pos =
   Array.(sub x 0 pos @ y @ sub x pos (n - pos))
 
 
+(* remove the element at position pos *)
+let remove x pos =
+  let n = Array.length x in
+  assert (pos >= 0 && pos < n);
+  let a0 = Array.sub x 0 pos in
+  let a1 = Array.sub x (pos + 1) (n - pos - 1) in
+  a0 @ a1
+
+
 (* filter array, f : int -> 'a -> bool * 'b *)
 let filteri_v f x =
   let r = Owl_utils_stack.make () in
