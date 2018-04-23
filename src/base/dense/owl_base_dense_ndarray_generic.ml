@@ -767,7 +767,7 @@ let sum' varr =
 
 
 (* Folding along a specified axis, aka reduction. The 
-   f: function of type a' -> 'a -> 'a.
+   f: function of type 'a -> 'a -> 'a.
    m:  number of slices; 
    n: x's slice size; 
    o: x's strides, also y's slice size;
