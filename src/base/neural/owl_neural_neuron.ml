@@ -2043,14 +2043,15 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
+    (* reference: https://arxiv.org/abs/1502.03167 *)
     let run x l =
-      let a = F (1. /. float_of_int (shape x).(l.axis)) in
       if l.training = true then (
+        let a = F (float_of_int ((numel x) / (shape x).(l.axis))) in
         let s = Owl_utils_array.range 0 (Array.length l.in_shape) in
         let s = List.filter (fun x -> x != l.axis) (Array.to_list s)
           |> Array.of_list in
-        let mu' = Maths.(a * (sum_reduce ~axis:s x)) in
-        let var' = Maths.(a * (sum_reduce ~axis:s (x * x))) in
+        let mu' = Maths.((sum_reduce ~axis:s x) / a) in
+        let var' = Maths.((sum_reduce ~axis:s (x * x)) / a) in
         l.mu <- Maths.(l.decay * l.mu + (F 1. - l.decay) * mu') |> primal';
         l.var <- Maths.(l.decay * l.var + (F 1. - l.decay) * var') |> primal';
       );
