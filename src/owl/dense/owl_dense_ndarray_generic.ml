@@ -1742,7 +1742,7 @@ let conv2d_transpose ?(padding=SAME) input kernel stride =
   let row_in_stride = 1 in
 
   let output_cols, output_rows =
-    Owl_utils_conv.calc_conv2d_transpose_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+    Owl_utils.calc_conv2d_transpose_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   in
   let output = empty (kind input) [|batches; output_cols; output_rows; out_channel|] in
 
