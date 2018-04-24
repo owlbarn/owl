@@ -1178,10 +1178,10 @@ CAMLprim value FUN_NATIVE (spatial_transpose_backward_kernel) (
 
   INIT;
 
-  int pad_rows = row_stride * (input_rows - 1) + kernel_rows - output_rows;
-  int pad_cols = col_stride * (input_cols - 1) + kernel_cols - output_cols;
-  int p_top  = pad_rows / 2;
-  int p_left = pad_cols / 2;
+  int pad_cols = output_cols + kernel_cols - 1 - ext_input_cols;
+  int pad_rows = output_rows + kernel_rows - 1 - ext_input_rows;
+  int p_top  = (int) (ceil (pad_rows / 2.));
+  int p_left = (int) (ceil (pad_cols / 2.));
   if (p_top  <= 0) p_top  = kernel_rows - 1;
   if (p_left <= 0) p_left = kernel_cols - 1;
 
@@ -1189,19 +1189,11 @@ CAMLprim value FUN_NATIVE (spatial_transpose_backward_kernel) (
   if (inpt2d == NULL) exit(1);
   TYPE *kern2d = (TYPE *) calloc(kernel_cri * out_channel, sizeof(TYPE));
   if (kern2d == NULL) exit(1);
-
-  memset(kernel_ptr, 0, kernel_cols * kernel_rio * sizeof(TYPE));
-
-  const int ext_input_cols = input_cols + (input_cols - 1) * (col_stride - 1);
-  const int ext_input_rows = input_rows + (input_rows - 1) * (row_stride - 1);
-  const int ext_input_cri = ext_input_cols * ext_input_rows * in_channel;
-  const int ext_input_ri  = ext_input_rows * in_channel;
-  const int ext_input_crb = ext_input_cols * ext_input_rows * batches;
-  const int ext_input_cr  = ext_input_cols * ext_input_rows;
-
   TYPE *ext_inp = (TYPE *) calloc(batches * ext_input_cols * ext_input_rows
     * in_channel, sizeof(TYPE));
   if (ext_inp == NULL) exit(1);
+
+  memset(kernel_ptr, 0, kernel_cols * kernel_rio * sizeof(TYPE));
 
   int idx_old = 0;
   for (int b = 0; b < batches; ++b){
@@ -1316,20 +1308,6 @@ CAMLprim value FUN_NATIVE (spatial_transpose_backward_input) (
   const int kernel_cri = kernel_cols * kernel_rows * in_channel;
   const int output_cri = out_channel * output_rows * output_cols;
 
-  INIT;
-
-  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
-  if (inpt2d == NULL) exit(1);
-
-  memset(input_ptr, 0, batches * input_cri * sizeof(TYPE));
-
-  int pad_rows = row_stride * (input_rows - 1) + kernel_rows - output_rows;
-  int pad_cols = col_stride * (input_cols - 1) + kernel_cols - output_cols;
-  int p_top  = pad_rows / 2;
-  int p_left = pad_cols / 2;
-  if (p_top  <= 0) p_top  = kernel_rows - 1;
-  if (p_left <= 0) p_left = kernel_cols - 1;
-
   const int ext_input_cols = input_cols + (input_cols - 1) * (col_stride - 1);
   const int ext_input_rows = input_rows + (input_rows - 1) * (row_stride - 1);
   const int ext_input_cri = ext_input_cols * ext_input_rows * in_channel;
@@ -1337,9 +1315,24 @@ CAMLprim value FUN_NATIVE (spatial_transpose_backward_input) (
   const int ext_input_crb = ext_input_cols * ext_input_rows * batches;
   const int ext_input_cr  = ext_input_cols * ext_input_rows;
 
+  INIT;
+
+  int pad_cols = output_cols + kernel_cols - 1 - ext_input_cols;
+  int pad_rows = output_rows + kernel_rows - 1 - ext_input_rows;
+  int p_top  = (int) (ceil (pad_rows / 2.));
+  int p_left = (int) (ceil (pad_cols / 2.));
+  if (p_top  <= 0) p_top  = kernel_rows - 1;
+  if (p_left <= 0) p_left = kernel_cols - 1;
+
+  //printf("padding: %d -- %d\n", pad_cols, pad_rows);
+
+  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  if (inpt2d == NULL) exit(1);
   TYPE *ext_inp = (TYPE *) calloc(batches * ext_input_cols * ext_input_rows
     * in_channel, sizeof(TYPE));
   if (ext_inp == NULL) exit(1);
+
+  memset(input_ptr, 0, batches * input_cri * sizeof(TYPE));
 
   GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
     output_crb, kernel_cri, out_channel, ALPHA,
@@ -1352,8 +1345,10 @@ CAMLprim value FUN_NATIVE (spatial_transpose_backward_input) (
     int c = cr / output_rows;
     int r = cr % output_rows;
 
-    const int cstart = c * col_stride - p_left;
-    const int rstart = r * row_stride - p_top;
+    //printf("\n %d %d \n", c, r);
+
+    const int cstart = c - p_left;
+    const int rstart = r - p_top;
     const int cend = cstart + kernel_cols;
     const int rend = rstart + kernel_rows;
     const int input_idx_base = bt * ext_input_cri;
@@ -1362,6 +1357,7 @@ CAMLprim value FUN_NATIVE (spatial_transpose_backward_input) (
     for (int a = cstart; a < cend; ++a) {
       for (int b = rstart; b < rend; ++b) {
         for (int h = 0; h < in_channel; ++h) {
+          //printf("%d -- %d -- %d\n", a, b, h);
           if (a < ext_input_cols && a >= 0 &&
               b < ext_input_rows && b >= 0 &&
               a % col_stride == 0 &&
@@ -1369,12 +1365,14 @@ CAMLprim value FUN_NATIVE (spatial_transpose_backward_input) (
             int input_idx =
                input_idx_base + a * ext_input_ri + b * in_channel + h;
             ext_inp[input_idx] += inpt2d[i * kernel_cri + cnt];
+            //printf("ext_index:%d; idx:(%d, %d)\n", input_idx, i, cnt);
           }
           ++cnt;
         }
       }
     }
   }
+  //printf("\n");
 
   int idx_old = 0;
   for (int b = 0; b < batches; ++b){
