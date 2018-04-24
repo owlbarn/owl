@@ -320,10 +320,10 @@ let resize ?(head=true) x d =
 
 let sort x =
   let y = copy x in
-  _owl_sort (kind y) (numel y) y;
+  Owl_ndarray._owl_sort (kind y) (numel y) y;
   y
 
-let sort_ x = _owl_sort (kind x) (numel x) x
+let sort_ x = Owl_ndarray._owl_sort (kind x) (numel x) x
 
 
 let strides x = x |> shape |> Owl_utils.calc_stride

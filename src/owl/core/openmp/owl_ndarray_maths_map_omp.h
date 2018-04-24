@@ -10,29 +10,6 @@
 #endif
 
 
-// function to perform in-place sorting
-#ifdef FUN3
-
-CAMLprim value FUN3(value vN, value vX)
-{
-  CAMLparam2(vN, vX);
-  int N = Long_val(vN);
-
-  struct caml_ba_array *X = Caml_ba_array_val(vX);
-  NUMBER *X_data = (NUMBER *) X->data;
-
-  caml_release_runtime_system();  /* Allow other threads */
-
-  MAPFN(X_data);
-
-  caml_acquire_runtime_system();  /* Disallow other threads */
-
-  CAMLreturn(Val_unit);
-}
-
-#endif /* FUN3 */
-
-
 // function to perform mapping of elements from x to y
 #ifdef FUN4
 
@@ -807,7 +784,6 @@ CAMLprim value FUN28(value *argv, int __unused_argn)
 #undef MAPFN2
 #undef MAPFN3
 #undef INIT
-#undef FUN3
 #undef FUN4
 #undef FUN12
 #undef FUN13

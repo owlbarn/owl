@@ -35,7 +35,7 @@ let make_network wndsz vocabsz =
   |> get_network
 
 
-let test nn vocab wndsz tlen x =
+let sample nn vocab wndsz tlen x =
   let all_char = ref x in
   let nxt_char = Dense.Matrix.S.zeros 1 1 in
   for i = 0 to tlen - 1 do
@@ -62,7 +62,8 @@ let train () =
   let params = Params.config
     ~checkpoint:(Checkpoint.Custom (fun s ->
       if Checkpoint.(s.current_batch mod 100 = 0) then
-        test network vocab wndsz 500 (Dense.Matrix.S.row x 200)
+        let xt = Dense.Matrix.S.draw_rows x 1 |> fst in
+        sample network vocab wndsz 100 xt
     ))
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 50.
   in
