@@ -11,28 +11,7 @@ void FUNCTION (c, repeat) (
   int ofsx_m, int incx_m, int incx_n, int incy_m, int incy_n
 ) {
 
-  TYPE *start_x_m = x;
-  TYPE *start_x_n = x;
-  TYPE *start_y_m = y;
-  TYPE *start_y_n = y;
-
-  for (int i = 0; i < m; i++) {
-    start_x_n = start_x_m + ofsx_m;
-    start_y_n = start_y_m;
-
-    for (int j = 0; j < n; j++) {
-
-      for (int k = 0; k < o; k++) {
-        *(start_y_n + k) = *(start_x_n + k);
-      }
-
-      start_x_n += incx_n;
-      start_y_n += incy_n;
-    }
-
-    start_x_m += incx_m;
-    start_y_m += incy_m;
-  }
+  // TODO
 
 }
 
