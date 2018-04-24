@@ -36,17 +36,14 @@ let make_network wndsz vocabsz =
 
 
 let sample nn vocab wndsz tlen x =
-  let all_char = ref x in
-  let nxt_char = Dense.Matrix.S.zeros 1 1 in
+  let all_char = Dense.Matrix.S.resize x [|1; wndsz + tlen|] in
   for i = 0 to tlen - 1 do
-    let xt = Dense.Matrix.S.get_slice [[];[i;i+wndsz-1]] !all_char in
-    let yt = Graph.run (Arr xt) nn |> Algodiff.S.unpack_arr in
-    let _, next_i = Dense.Matrix.S.max_i yt in
-    Dense.Matrix.S.set nxt_char 0 0 (float_of_int next_i.(1));
-    all_char := Dense.Matrix.S.(!all_char @|| nxt_char)
+    let xt = Dense.Matrix.S.get_slice [[];[i;i+wndsz-1]] all_char in
+    let yt = Graph.run (Arr xt) nn |> Algodiff.S.unpack_arr |> Dense.Matrix.S.to_array in
+    let next_i = Stats.(choose (Array.sub (argsort ~inc:false yt) 0 5) 1).(0) in
+    Dense.Matrix.S.set all_char 0 (wndsz + i) (float_of_int next_i);
   done;
-  Dense.Matrix.S.get_slice [[];[wndsz;-1]] !all_char
-  |> Dense.Matrix.S.to_array
+  Dense.Matrix.S.(to_array all_char.${ [[];[wndsz;-1]] })
   |> Array.fold_left (fun a i -> a ^ Nlp.Vocabulary.index2word vocab (int_of_float i)) ""
   |> Printf.printf "generated text: %s\n"
   |> flush_all
