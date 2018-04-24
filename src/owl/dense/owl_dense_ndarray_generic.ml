@@ -1719,21 +1719,6 @@ let conv2d ?(padding=SAME) input kernel stride =
   output
 
 
-(*FIXME: TravisCI can't find conv_utils.calc_conv2d_transpose_output_shape *)
-let calc_conv2d_transpose_output_shape
-  padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
-  =
-  let output_cols = match padding with
-    | SAME  -> input_cols * col_stride
-    | VALID -> input_cols * col_stride + (max (kernel_cols - col_stride) 0)
-  in
-  let output_rows = match padding with
-    | SAME  -> input_rows * row_stride
-    | VALID -> input_rows * row_stride + (max (kernel_rows - row_stride) 0)
-  in
-  (output_cols, output_rows)
-
-
 (* transpose 2d convolution *)
 let conv2d_transpose ?(padding=SAME) input kernel stride =
   assert (num_dims input = 4);
@@ -1758,7 +1743,7 @@ let conv2d_transpose ?(padding=SAME) input kernel stride =
   let row_in_stride = 1 in
 
   let output_cols, output_rows =
-    calc_conv2d_transpose_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+    Owl_utils.calc_conv2d_transpose_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   in
   let output = empty (kind input) [|batches; output_cols; output_rows; out_channel|] in
 
