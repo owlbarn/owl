@@ -587,9 +587,13 @@ val contract2 : (int * int) array -> arr -> arr -> arr
 
 (** {6 Experimental functions} *)
 
+val one_hot : int -> arr -> arr
+
 val sum_slices : ?axis:int -> arr -> arr
 
 val sum_reduce : ?axis:int array -> arr -> arr
+
+val slide : ?axis:int -> ?ofs:int -> ?step:int -> window:int -> arr -> arr
 
 
 (** {6 Fucntions of in-place modification } *)
