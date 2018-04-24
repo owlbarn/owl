@@ -40,7 +40,7 @@ let verify_value fn input_shape kernel_shape stride pad expected =
   let b = N.of_array expected output_shape in
   close a b
 
-let test1 input_shape kernel_shape stride pad magic_num =
+let test_forward input_shape kernel_shape stride pad magic_num =
   let ph = if pad = SAME then 0 else stride.(0) - 1 in
   let pw = if pad = SAME then 0 else stride.(1) - 1 in
 
@@ -86,23 +86,23 @@ module To_test_conv2d_transpose = struct
 
   (* testConv2DTransposeSingleStride *)
   let fun00 () =
-    test1 [|1;6;4;3|] [|3;3;3;2|] [|1;1|] SAME [|12.0; 15.0; 6.0|]
+    test_forward [|1;6;4;3|] [|3;3;3;2|] [|1;1|] SAME [|12.0; 15.0; 6.0|]
 
   (* testConv2DTransposeTwoStride *)
   let fun01 () =
-    test1 [|1;3;3;1|] [|3;3;1;1|] [|2;2|] SAME [|1.0; 3.0; 1.0|]
+    test_forward [|1;3;3;1|] [|3;3;1;1|] [|2;2|] SAME [|1.0; 3.0; 1.0|]
 
   (* testConv2DTransposeSame *)
   let fun02 () =
-    test1 [|1;2;2;1|] [|3;3;1;1|] [|1;1|] SAME  [|4.0; 0.0; 0.0|]
+    test_forward [|1;2;2;1|] [|3;3;1;1|] [|1;1|] SAME  [|4.0; 0.0; 0.0|]
 
   (* testConv2DTransposeValid *)
   let fun03 () =
-    test1 [|1;6;4;3|] [|3;3;3;1|] [|2;2|] VALID [|3.0; 9.0; 3.0|]
+    test_forward [|1;6;4;3|] [|3;3;3;1|] [|2;2|] VALID [|3.0; 9.0; 3.0|]
 
   (* testConv2DTransposeValid *)
   let fun04 () =
-    test1 [|1;2;2;1|] [|3;3;1;1|] [|2;2|] VALID [|1.0; 3.0; 1.0|]
+    test_forward [|1;2;2;1|] [|3;3;1;1|] [|2;2|] VALID [|1.0; 3.0; 1.0|]
 
 end
 
