@@ -1,3 +1,11 @@
+### 0.3.8 (2018-04-19)
+
+* Add more helper functions in Array module in Base.
+* Add core functions such as one_hot, slide, and etc.
+* Fix normalisation neuron in neural network module.
+* Fix building, installation, and publishing on OPAM.
+
+
 ### 0.3.7 (2018-04-18)
 
 * Fix some bugs and improve performance.
