@@ -7,9 +7,9 @@ module N = Owl.Dense.Ndarray.S
 (* Functions used in tests *)
 
 let compute_conv2d_trans input_shape kernel_shape stride pad =
-    let inp = N.ones input_shape  in
-    let kernel = N.ones kernel_shape in
-    N.conv2d_transpose ~padding:pad inp kernel stride
+  let inp = N.ones input_shape in
+  let kernel = N.ones kernel_shape in
+  N.conv2d_transpose ~padding:pad inp kernel stride
 
 
 let test input_shape kernel_shape stride pad magic_num =
@@ -27,7 +27,6 @@ let test input_shape kernel_shape stride pad magic_num =
           let t = magic_num.(0) in
           let h_in = (h mod stride.(0) = 0) && (h > ph) && (h < s.(1) - 1 - ph) in
           let w_in = (w mod stride.(1) = 0) && (w > pw) && (w < s.(2) - 1 - pw) in
-          Printf.printf "(%d, %d) => (%B, %B)\n" h w h_in w_in;
           let addon =
             if (h_in && w_in) then magic_num.(1) else
             if (h_in || w_in) then magic_num.(2) else 0.
@@ -62,7 +61,7 @@ module To_test_conv2d_transpose = struct
 
   (* testConv2DTransposeSame *)
   let fun01 () =
-    test [|1;6;4;3|] [|3;3;3;1|] [|2;2|] SAME [|3.0; 9.0; 3.0|]
+    test [|1;3;3;1|] [|3;3;1;1|] [|2;2|] SAME [|1.0; 3.0; 1.0|]
 
   (* testConv2DTransposeSame2 *)
   let fun02 () =
