@@ -3,6 +3,21 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
+
+#ifndef OWL_CORE_ARGSORT_IMPL
+#define OWL_CORE_ARGSORT_IMPL
+
+
+void owl_argsort () {
+  // TODO ...
+  return;
+}
+
+
+#endif /* OWL_CORE_ARGSORT_IMPL */
+
+
+
 #ifdef OWL_ENABLE_TEMPLATE
 
 
