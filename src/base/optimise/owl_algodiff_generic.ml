@@ -114,6 +114,9 @@ module Make
     | Avgpool1D_D   of t * padding * int array * int array
     | Avgpool2D_D   of t * padding * int array * int array
     | Avgpool3D_D   of t * padding * int array * int array
+    | Conv2D_Trans_D_D of t * t * int array
+    | Conv2D_Trans_D_C of t * t * int array
+    | Conv2D_Trans_C_D of t * t * int array
 
 
   (* generate global tags *)
@@ -993,6 +996,39 @@ module Make
       |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
+    and conv2d_transpose ?padding a b s =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> Arr A.(conv2d_transpose ?padding a b s)
+        | _            -> error_binop "conv2d_transpose" a b
+      in
+      let fd a b = conv2d_transpose ?padding a b s in
+      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+      let df_da cp ap at = at in
+      let df_db cp bp bt = bt in
+      let df_dab cp ap at bp bt = at + bt in
+      let r_d_d a b = Conv2D_Trans_D_D (a, b, s) in
+      let r_d_c a b = Conv2D_Trans_D_C (a, b, s) in
+      let r_c_d a b = Conv2D_Trans_C_D (a, b, s) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and conv2d_transpose_backward_input a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.conv2d_transpose_backward_input a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and conv2d_transpose_backward_kernel a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.conv2d_transpose_backward_kernel a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride *)
     and conv3d ?padding a b s =
       let ff a b =
         match a, b with
@@ -1284,6 +1320,9 @@ module Make
               | Concat_D_D (a, b, _)     -> reset (a :: b :: t)
               | Concat_D_C (a, _, _)     -> reset (a :: t)
               | Concat_C_D (_, b, _)     -> reset (b :: t)
+              | Conv2D_Trans_D_D (a, b, _) -> reset (a :: b :: t)
+              | Conv2D_Trans_D_C (a, _, _) -> reset (a :: t)
+              | Conv2D_Trans_C_D (_, b, _) -> reset (b :: t)
               )
             else reset t
             )
@@ -1417,7 +1456,10 @@ module Make
               | Concat_D_D (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: (s.(1) ,b) :: t)
               | Concat_D_C (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: t)
               | Concat_C_D (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(1) ,b) :: t)
-            )
+              | Conv2D_Trans_D_D (a, b, s) -> push ((conv2d_transpose_backward_input a b s !aa, a) :: (conv2d_transpose_backward_kernel a b s !aa, b) :: t)
+              | Conv2D_Trans_D_C (a, b, s) -> push ((conv2d_transpose_backward_input a b s !aa, a) :: t)
+              | Conv2D_Trans_C_D (a, b, s) -> push ((conv2d_transpose_backward_kernel a b s !aa, b) :: t)
+              )
             else push t
             )
           | _ -> push t
@@ -1758,6 +1800,9 @@ module Make
                   | Concat_D_D (a, b, i)     -> "Concat_D_D", [a; b]
                   | Concat_D_C (a, b, i)     -> "Concat_D_C", [a; b]
                   | Concat_C_D (a, b, i)     -> "Concat_C_D", [a; b]
+                  | Conv2D_Trans_D_D (a, b, s) -> "Conv2D_D_D", [a; b]
+                  | Conv2D_Trans_D_C (a, b, s) -> "Conv2D_D_C", [a; b]
+                  | Conv2D_Trans_C_D (a, b, s) -> "Conv2D_C_D", [a; b]
                 )
               | F a                     -> Printf.sprintf "Const", []
               | Arr a                   -> Printf.sprintf "Const", []

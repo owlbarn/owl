@@ -202,6 +202,9 @@ module type Sig = sig
     val conv2d : ?padding:padding -> t -> t -> int array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val conv2d_transpose : ?padding:padding -> t -> t -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val conv3d : ?padding:padding -> t -> t -> int array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

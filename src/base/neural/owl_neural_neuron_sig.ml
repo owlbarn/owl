@@ -537,6 +537,61 @@ module Conv2D : sig
 
 end
 
+module Conv2DTranspose : sig
+
+  type neuron_typ = {
+    mutable w : t;
+    mutable b : t;
+    mutable kernel : int array;
+    mutable stride : int array;
+    mutable padding : Owl_types.padding;
+    mutable init_typ : Init.typ;
+    mutable in_shape : int array;
+    mutable out_shape : int array;
+  }
+  (** Neuron type definition. *)
+
+  val create : ?inputs:int array -> Owl_types.padding -> int array -> int array -> Init.typ -> neuron_typ
+  (** Create the neuron. *)
+
+  val connect : int array -> neuron_typ -> unit
+  (** Connect this neuron to others in a neural network. *)
+
+  val init : neuron_typ -> unit
+  (** Initialise the neuron and its parameters. *)
+
+  val reset : neuron_typ -> unit
+  (** Reset the parameters in a neuron. *)
+
+  val mktag : int -> neuron_typ -> unit
+  (** Tag the neuron, used by ``Algodiff`` module. *)
+
+  val mkpar : neuron_typ -> t array
+  (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+
+  val mkpri : neuron_typ -> t array
+  (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+
+  val mkadj : neuron_typ -> t array
+  (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+
+  val update : neuron_typ -> t array -> unit
+  (** Update parameters in a neuron, used by ``Optimise`` module. *)
+
+  val copy : neuron_typ -> neuron_typ
+  (** Make a deep copy of the neuron and its parameters. *)
+
+  val run : t -> neuron_typ -> t
+  (** Execute the computation in this neuron. *)
+
+  val to_string : neuron_typ -> string
+  (** Convert the neuron to its string representation. The string is often a summary of the parameters defined in the neuron. *)
+
+  val to_name : unit -> string
+  (** Return the name of the neuron. *)
+
+end
+
 
   (** {6 Conv3D neuron} *)
 
@@ -1482,6 +1537,7 @@ type neuron =
   | Conv1D of Conv1D.neuron_typ
   | Conv2D of Conv2D.neuron_typ
   | Conv3D of Conv3D.neuron_typ
+  | Conv2DTranspose of Conv2DTranspose.neuron_typ
   | FullyConnected of FullyConnected.neuron_typ
   | MaxPool1D of MaxPool1D.neuron_typ
   | MaxPool2D of MaxPool2D.neuron_typ
