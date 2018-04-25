@@ -771,7 +771,7 @@ let sum' varr =
    m: number of slices.
    n: x's slice size.
    o: x's strides, also y's slice size.
-   x: source; y: shape of destination. Note that o <= n. 
+   x: source; y: shape of destination. Note that o <= n.
  *)
 let fold_along f m n o x ys =
   let x = flatten x in
@@ -1805,6 +1805,11 @@ let conv2d_backward_kernel input kernel stride output' =
     kernel'
   end
 
+
+(* TODO: add correct implementaton into these placeholders *)
+let conv2d_transpose = conv2d
+let conv2d_transpose_backward_input = conv2d_backward_input
+let conv2d_transpose_backward_kernel = conv2d_backward_kernel
 
 (* gradient of conv1d w.r.t the input *)
 let conv1d_backward_input input kernel stride output' =
