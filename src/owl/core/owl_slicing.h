@@ -24,7 +24,8 @@ struct slice_pair {
 };
 
 
-/** Define structure for copying a fancy slice from x to y.
+/**
+ * Define structure for copying a fancy slice from x to y.
  * slice field contains a list of triplet with the format of (a,b,c). If a is
  * non-negative, then (a,b,c) is a normal slice definition, i.e., the same as
  * (start, stop, step).

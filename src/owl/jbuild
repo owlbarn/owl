@@ -35,6 +35,8 @@
     owl_ndarray_pool_stub
     owl_ndarray_contract_stub
     owl_ndarray_transpose_stub
+    owl_ndarray_slide_stub
+    owl_ndarray_repeat_stub
     owl_matrix_swap_stub
     owl_matrix_check_stub
     owl_distribution_common_c

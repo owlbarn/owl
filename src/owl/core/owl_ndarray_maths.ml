@@ -2556,6 +2556,32 @@ let _owl_repeat : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
   | Int64          -> owl_int64_repeat
   | _              -> failwith "_owl_repeat: unsupported operation"
 
+external owl_float32_one_hot : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float32_one_hot" "float32_one_hot_impl"
+external owl_float64_one_hot : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float64_one_hot" "float64_one_hot_impl"
+external owl_complex32_one_hot : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex32_one_hot" "complex32_one_hot_impl"
+external owl_complex64_one_hot : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex64_one_hot" "complex64_one_hot_impl"
+external owl_int8_one_hot : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "int8_one_hot" "int8_one_hot_impl"
+external owl_uint8_one_hot : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "uint8_one_hot" "uint8_one_hot_impl"
+external owl_int16_one_hot : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "int16_one_hot" "int16_one_hot_impl"
+external owl_uint16_one_hot : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "uint16_one_hot" "uint16_one_hot_impl"
+external owl_int32_one_hot : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "int32_one_hot" "int32_one_hot_impl"
+external owl_int64_one_hot : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "int64_one_hot" "int64_one_hot_impl"
+
+let _owl_one_hot : type a b. (a, b) kind -> (a, b) owl_arr_op18 =
+  fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
+  match k with
+  | Float32        -> owl_float32_one_hot n x ofsx incx y ofsy incy
+  | Float64        -> owl_float64_one_hot n x ofsx incx y ofsy incy
+  | Complex32      -> owl_complex32_one_hot n x ofsx incx y ofsy incy
+  | Complex64      -> owl_complex64_one_hot n x ofsx incx y ofsy incy
+  | Int8_signed    -> owl_int8_one_hot n x ofsx incx y ofsy incy
+  | Int8_unsigned  -> owl_uint8_one_hot n x ofsx incx y ofsy incy
+  | Int16_signed   -> owl_int16_one_hot n x ofsx incx y ofsy incy
+  | Int16_unsigned -> owl_uint16_one_hot n x ofsx incx y ofsy incy
+  | Int32          -> owl_int32_one_hot n x ofsx incx y ofsy incy
+  | Int64          -> owl_int64_one_hot n x ofsx incx y ofsy incy
+  | _              -> failwith "_owl_one_hot: unsupported operation"
+
 external owl_float32_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_add" "float32_broadcast_add_impl"
 external owl_float64_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_add" "float64_broadcast_add_impl"
 external owl_complex32_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_add" "complex64_broadcast_add_impl"

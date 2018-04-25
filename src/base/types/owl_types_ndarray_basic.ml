@@ -123,6 +123,8 @@ module type Sig = sig
 
   val sum_slices : ?axis:int -> arr -> arr
 
+  val sum_reduce : ?axis:int array -> arr -> arr
+
   val signum : arr -> arr
 
   val sigmoid : arr -> arr

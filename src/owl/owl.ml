@@ -57,6 +57,8 @@ module Lazy = Owl_lazy
 
 module Graph = Owl_graph
 
+module Nlp = Owl_nlp
+
 
 (* backend modules *)
 

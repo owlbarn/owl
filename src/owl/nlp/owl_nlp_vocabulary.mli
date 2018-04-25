@@ -62,15 +62,25 @@ val re_index : t -> t
 
 (** {6 Core functions} *)
 
-val build : ?lo:float -> ?hi:float -> ?stopwords:(string, 'a) Hashtbl.t -> string -> t
+val build : ?lo:float -> ?hi:float -> ?alphabet:bool -> ?stopwords:(string, 'a) Hashtbl.t -> string -> t
 (**
-``build ~lo ~hi ~stopwords fname`` builds a vocabulary from a corpus file of
-name ``fname``.
+``build ~lo ~hi ~stopwords fname`` builds a vocabulary from a text corpus file
+of name ``fname``. If ``alphabet=false`` then tokens are the words separated by
+white spaces; if ``alphabet=true`` then tokens are the characters and a
+vocabulary of alphabets is returned.
 
 Parameters:
   * ``lo``: percentage of lower bound of word frequency.
   * ``hi``: percentage of higher bound of word frequency.
-  * ``fname``: file name of the corpus, each line contains a doc.
+  * ``alphabet`` : build vocabulary for alphabets or words.
+  * ``fname``: file name of the text corpus, each line contains a doc.
+ *)
+
+
+val build_from_string : ?lo:float -> ?hi:float -> ?alphabet:bool -> ?stopwords:(string, 'a) Hashtbl.t -> string -> t
+(**
+``build_from_string`` is similar to ``build`` but builds the vocabulary from an
+input string rather than a file.
  *)
 
 val trim_percent : lo:float -> hi:float -> t -> t
@@ -96,11 +106,20 @@ Parameters:
 val remove_stopwords : ('a, 'b) Hashtbl.t -> ('a, 'c) Hashtbl.t -> unit
 (** ``remove_stopwords stopwords v`` removes the stopwords defined in a hashtbl from vocabulary ``v``. *)
 
+val copy : t -> t
+(** ``copy v`` makes a copy of vocabulary ``v``. *)
+
+val tokenise : t -> string -> int array
+(** ``tokenise v s`` tokenises the string ``s`` according to the vocabulary ``v``. *)
+
 val w2i_to_tuples : t -> (string * int) list
 (** ``w2w2i_to_tuples v`` converts vocabulary ``v`` to a list of ``(word, index)`` tuples. *)
 
-val copy : t -> t
-(** ``copy v`` makes a copy of vocabulary ``v``. *)
+val to_array : t -> (int * string) array
+(** ``to_array v`` converts a vocabulary to a (word, index) array. *)
+
+val of_array : (int * string) array -> t
+(** ``of_array v`` converts a (word, index) array to a vocabulary. *)
 
 
 (** {6 I/O functions} *)
@@ -113,3 +132,9 @@ val load : string -> t
 
 val save_txt : t -> string -> unit
 (** ``save_txt v fname`` saves the vocabulary in the text format to a file of name ``s``. *)
+
+val to_string : t -> string
+(** ``to_string v`` returns the summary information of a vocabulary. *)
+
+val pp_vocab : Format.formatter -> t -> unit
+(** Pretty printer for vocabulary type. *)
