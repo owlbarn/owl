@@ -45,13 +45,19 @@ cleanall:
 
 .PHONY: release
 release:
-	opam install --yes topkg topkg-care topkg-jbuilder opam-publish
+	opam install --yes tls topkg topkg-care topkg-jbuilder opam-publish
 	topkg tag
 	topkg distrib
 	topkg publish
 
 	topkg opam pkg
+	topkg opam submit
+
 	topkg opam pkg --pkg-name owl
-	topkg opam pkg --pkg-name owl-zoo
-	topkg opam pkg --pkg-name owl-top
 	topkg opam submit --pkg-name owl
+
+	topkg opam pkg --pkg-name owl-zoo
+	topkg opam submit --pkg-name owl-zoo
+
+	topkg opam pkg --pkg-name owl-top
+	topkg opam submit --pkg-name owl-top
