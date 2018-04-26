@@ -43,7 +43,6 @@ let get_default_cflags c = [
 let get_default_libs c =
   let ls = [
     "-lopenblas";
-    "-lgfortran";
     "-lm";
   ] in
   get_os_type c |> function
