@@ -57,12 +57,12 @@ typedef struct { double r, i; } complex_double;
 
 #define SWAPCODE(TYPE, a, b, n) {     \
   size_t i = (n) / sizeof (TYPE);     \
-	TYPE *ai = (TYPE *)(void *)(a);     \
-	TYPE *bi = (TYPE *)(void *)(b);     \
-	do {                                \
-		TYPE t = *ai;                     \
-		*ai++ = *bi;                      \
-		*bi++ = t;                        \
+  TYPE *ai = (TYPE *)(void *)(a);     \
+  TYPE *bi = (TYPE *)(void *)(b);     \
+  do {                                \
+    TYPE t = *ai;                     \
+    *ai++ = *bi;                      \
+    *bi++ = t;                        \
   } while (--i > 0);                  \
 }
 
@@ -72,11 +72,11 @@ typedef struct { double r, i; } complex_double;
 #if defined(_MSC_VER)
   #define OWL_INLINE __inline
 #elif defined(__GNUC__)
-	#if defined(__STRICT_ANSI__)
-		#define OWL_INLINE __inline__
-	#else
-		#define OWL_INLINE inline
-	#endif
+  #if defined(__STRICT_ANSI__)
+    #define OWL_INLINE __inline__
+  #else
+    #define OWL_INLINE inline
+  #endif
 #else
   #define OWL_INLINE
 #endif
