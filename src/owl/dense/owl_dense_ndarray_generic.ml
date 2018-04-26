@@ -969,6 +969,12 @@ let dropout ?(rate=0.5) x =
   x
 
 
+let argsort x =
+  let y = sequential Int64 (shape x) in
+  Owl_ndarray._owl_argsort (kind x) (numel x) x y;
+  y
+
+
 (* advanced operations *)
 
 let iteri f x =

@@ -577,6 +577,13 @@ as result, the original ``x`` remains intact. If you want to perform in-place
 sorting, please use `sort_` instead.
  *)
 
+val argsort : ('a, 'b) t -> (int64, int64_elt) t
+(**
+`argsort x`` returns the indices with which the elements in ``x`` are sorted in
+increasing order. Note that the returned index ndarray has the same shape as
+that of ``x``, and the indices are 1D indices.
+ *)
+
 
 (**{6 Iteration functions} *)
 

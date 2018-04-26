@@ -34,6 +34,39 @@ typedef struct { double r, i; } complex_double;
 #define Double_array_val(v)    ((double *)v)
 
 
+// Basic maths macros
+
+#define OWL_TRUE  1
+
+#define OWL_FALSE 0
+
+#define OWL_MIN(a,b) ({        \
+  __typeof__ (a) _a = (a);     \
+  __typeof__ (b) _b = (b);     \
+  _a < _b ? _a : _b;           \
+})
+
+#define OWL_MAX(a,b) ({        \
+  __typeof__ (a) _a = (a);     \
+  __typeof__ (b) _b = (b);     \
+  _a > _b ? _a : _b;           \
+})
+
+
+// Operation macros
+
+#define SWAPCODE(TYPE, a, b, n) {     \
+  size_t i = (n) / sizeof (TYPE);     \
+	TYPE *ai = (TYPE *)(void *)(a);     \
+	TYPE *bi = (TYPE *)(void *)(b);     \
+	do {                                \
+		TYPE t = *ai;                     \
+		*ai++ = *bi;                      \
+		*bi++ = t;                        \
+  } while (--i > 0);                  \
+}
+
+
 //  Other
 
 #if defined(_MSC_VER)

@@ -13,90 +13,110 @@
 
 #define FUNCTION(prefix, name) prefix ## _ ## float32_ndarray ## _ ## name
 #define TYPE float
-#define MAPFN(X) qsort(X,N,sizeof(float),float32_cmp)
+#define CMPFN1 float32_cmp
+#define CMPFN2 float32_cmp_r
 #include "owl_ndarray_sort_impl.h"
-#undef MAPFN
+#undef CMPFN2
+#undef CMPFN1
 #undef TYPE
 #undef FUNCTION
 
 
 #define FUNCTION(prefix, name) prefix ## _ ## float64_ndarray ## _ ## name
 #define TYPE double
-#define MAPFN(X) qsort(X,N,sizeof(double),float64_cmp)
+#define CMPFN1 float64_cmp
+#define CMPFN2 float64_cmp_r
 #include "owl_ndarray_sort_impl.h"
-#undef MAPFN
+#undef CMPFN2
+#undef CMPFN1
 #undef TYPE
 #undef FUNCTION
 
 
 #define FUNCTION(prefix, name) prefix ## _ ## complex32_ndarray ## _ ## name
 #define TYPE _Complex float
-#define MAPFN(X) qsort(X,N,sizeof(_Complex float),complex32_cmpf)
+#define CMPFN1 complex32_cmp
+#define CMPFN2 complex32_cmp_r
 #include "owl_ndarray_sort_impl.h"
-#undef MAPFN
+#undef CMPFN2
+#undef CMPFN1
 #undef TYPE
 #undef FUNCTION
 
 
 #define FUNCTION(prefix, name) prefix ## _ ## complex64_ndarray ## _ ## name
 #define TYPE _Complex double
-#define MAPFN(X) qsort(X,N,sizeof(_Complex double),complex64_cmpf)
+#define CMPFN1 complex64_cmp
+#define CMPFN2 complex64_cmp_r
 #include "owl_ndarray_sort_impl.h"
-#undef MAPFN
+#undef CMPFN2
+#undef CMPFN1
 #undef TYPE
 #undef FUNCTION
 
 
 #define FUNCTION(prefix, name) prefix ## _ ## int8_ndarray ## _ ## name
 #define TYPE int8_t
-#define MAPFN(X) qsort(X,N,sizeof(int8_t),int8_cmp)
+#define CMPFN1 int8_cmp
+#define CMPFN2 int8_cmp_r
 #include "owl_ndarray_sort_impl.h"
-#undef MAPFN
+#undef CMPFN2
+#undef CMPFN1
 #undef TYPE
 #undef FUNCTION
 
 
 #define FUNCTION(prefix, name) prefix ## _ ## uint8_ndarray ## _ ## name
 #define TYPE uint8_t
-#define MAPFN(X) qsort(X,N,sizeof(uint8_t),uint8_cmp)
+#define CMPFN1 uint8_cmp
+#define CMPFN2 uint8_cmp_r
 #include "owl_ndarray_sort_impl.h"
-#undef MAPFN
+#undef CMPFN2
+#undef CMPFN1
 #undef TYPE
 #undef FUNCTION
 
 
 #define FUNCTION(prefix, name) prefix ## _ ## int16_ndarray ## _ ## name
 #define TYPE int16_t
-#define MAPFN(X) qsort(X,N,sizeof(int16_t),int16_cmp)
+#define CMPFN1 int16_cmp
+#define CMPFN2 int16_cmp_r
 #include "owl_ndarray_sort_impl.h"
-#undef MAPFN
+#undef CMPFN2
+#undef CMPFN1
 #undef TYPE
 #undef FUNCTION
 
 
 #define FUNCTION(prefix, name) prefix ## _ ## uint16_ndarray ## _ ## name
 #define TYPE uint16_t
-#define MAPFN(X) qsort(X,N,sizeof(uint16_t),uint16_cmp)
+#define CMPFN1 uint16_cmp
+#define CMPFN2 uint16_cmp_r
 #include "owl_ndarray_sort_impl.h"
-#undef MAPFN
+#undef CMPFN2
+#undef CMPFN1
 #undef TYPE
 #undef FUNCTION
 
 
 #define FUNCTION(prefix, name) prefix ## _ ## int32_ndarray ## _ ## name
 #define TYPE int32_t
-#define MAPFN(X) qsort(X,N,sizeof(int32_t),int32_cmp)
+#define CMPFN1 int32_cmp
+#define CMPFN2 int32_cmp_r
 #include "owl_ndarray_sort_impl.h"
-#undef MAPFN
+#undef CMPFN2
+#undef CMPFN1
 #undef TYPE
 #undef FUNCTION
 
 
 #define FUNCTION(prefix, name) prefix ## _ ## int64_ndarray ## _ ## name
 #define TYPE int64_t
-#define MAPFN(X) qsort(X,N,sizeof(int64_t),int64_cmp)
+#define CMPFN1 int64_cmp
+#define CMPFN2 int64_cmp_r
 #include "owl_ndarray_sort_impl.h"
-#undef MAPFN
+#undef CMPFN2
+#undef CMPFN1
 #undef TYPE
 #undef FUNCTION
 
