@@ -43,6 +43,17 @@ cleanall:
 	$(RM) -r $(find . -name .merlin)
 	$(RM) $(OPAM_STUBS)/dllowl_stubs.so
 
+define _OWL_RELEASE_WARNING
+############################################################################
+# NB. To complete the release to OPAM you now need to close all but one    #
+# of the PRs just opened, rebase the closed PRs onto the one remaining,    #
+# and then force push the result to your opam-repository fork. This will   #
+# update the remaining PR so that all 4 interdependent packages are merged #
+# into OPAM simultaneously.                                                #
+############################################################################
+endef
+export _OWL_RELEASE_WARNING
+
 .PHONY: release
 release:
 	opam install --yes tls topkg topkg-care topkg-jbuilder opam-publish
@@ -61,3 +72,5 @@ release:
 
 	topkg opam pkg --pkg-name owl-top
 	topkg opam submit --pkg-name owl-top
+
+	@echo "$$_OWL_RELEASE_WARNING"
