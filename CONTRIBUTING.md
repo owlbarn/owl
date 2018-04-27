@@ -82,6 +82,7 @@ This is a must read before committing your code to Owl's repository. You should
 use `git commit -s` to sign off your commits. If omitted, I will assume you are
 complied with DCO and implicitly signed off.
 
+```text
 Developer's Certificate of Origin 1.1
 
 By making a contribution to this project, I certify that:
@@ -107,3 +108,4 @@ By making a contribution to this project, I certify that:
     personal information I submit with it, including my sign-off) is
     maintained indefinitely and may be redistributed consistent with
     this project or the open source license(s) involved.
+```
