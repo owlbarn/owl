@@ -56,7 +56,7 @@ snippets in `owl`.
 
 Before you start implementing something, especially something significant.
 Please submit a proposal first on
-[owl's issue tracker](https://github.com/ryanrhymes/owl/issues). This first
+[Owl's issue tracker](https://github.com/ryanrhymes/owl/issues). This first
 can ensure you get enough support from me in the following development. Second,
 this avoids unnecessary duplicated work in case someone else already started
 working the same feature, which indeed happened before. Last, you may find
