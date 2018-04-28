@@ -8,13 +8,14 @@ type elt =
   | Int'    of int
   | Float'  of float
   | String' of string
+  | Any'
 
 
 type series =
-  | Int    of int array
-  | Float  of float array
-  | String of string array
-  | Any
+  | Int_Series    of int array
+  | Float_Series  of float array
+  | String_Series of string array
+  | Any_Series
 
 
 type t = {
@@ -31,16 +32,22 @@ let unpack_float' = function Float' x -> x | _ -> raise Owl_exception.NOT_SUPPOR
 
 let unpack_string' = function String' x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
-let unpack_int = function Int x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+let unpack_int_series = function Int_Series x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
-let unpack_float = function Float x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+let unpack_float_series = function Float_Series x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
-let unpack_string = function String x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+let unpack_string_series = function String_Series x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+
+let pack_int_series x = Int_Series x
+
+let pack_float_series x = Float_Series x
+
+let pack_string_series x = String_Series x
 
 
 let make head_names =
   let col_num = Array.length head_names in
-  let data = Array.make col_num Any in
+  let data = Array.make col_num Any_Series in
   let head = Hashtbl.create 64 in
   Array.iteri (fun i s ->
     assert (Hashtbl.mem head s = false);
@@ -53,33 +60,43 @@ let make head_names =
 
 let allocate_space data =
   Array.(map (function
-    | Int c    -> Int (append c (copy c))
-    | Float c  -> Float (append c (copy c))
-    | String c -> String (append c (copy c))
-    | Any      -> Any
+    | Int_Series c    -> Int_Series (append c (copy c))
+    | Float_Series c  -> Float_Series (append c (copy c))
+    | String_Series c -> String_Series (append c (copy c))
+    | Any_Series      -> Any_Series
   ) data)
 
 
-let assign x i a =
+let set_elt_in_series x i a =
   match a with
-  | Int' a    -> (unpack_int x).(i) <- a
-  | Float' a  -> (unpack_float x).(i) <- a
-  | String' a -> (unpack_string x).(i) <- a
+  | Int' a    -> (unpack_int_series x).(i) <- a
+  | Float' a  -> (unpack_float_series x).(i) <- a
+  | String' a -> (unpack_string_series x).(i) <- a
+  | Any'      -> ()
+
+
+let get_elt_in_series x i =
+  match x with
+  | Int_Series c    -> Int' c.(i)
+  | Float_Series c  -> Float' c.(i)
+  | String_Series c -> String' c.(i)
+  | Any_Series      -> Any'
 
 
 let init_series n a =
   match a with
-  | Int' a    -> Int (Array.make n a)
-  | Float' a  -> Float (Array.make n a)
-  | String' a -> String (Array.make n a)
+  | Int' a    -> Int_Series (Array.make n a)
+  | Float' a  -> Float_Series (Array.make n a)
+  | String' a -> String_Series (Array.make n a)
+  | Any'      -> Any_Series
 
 
 let length_series x =
   match x with
-  | Int a    -> Array.length a
-  | Float a  -> Array.length a
-  | String a -> Array.length a
-  | Any      -> 0
+  | Int_Series a    -> Array.length a
+  | Float_Series a  -> Array.length a
+  | String_Series a -> Array.length a
+  | Any_Series      -> 0
 
 
 let append x row =
@@ -94,12 +111,31 @@ let append x row =
       x.data <- allocate_space x.data;
       x.size <- length_series x.data.(0)
     );
-    Array.iteri (fun i a -> assign x.data.(i) x.used a) row;
+    Array.iteri (fun i a -> set_elt_in_series x.data.(i) x.used a) row;
     x.used <- x.used + 1
   )
 
 
-let get_row x i = ()
+let get_row x i = Array.map (fun y -> get_elt_in_series y i) x.data
 
 
-let get_col x j = ()
+let get_col x j =
+  match x.data.(j) with
+  | Int_Series c    -> Int_Series (Array.sub c 0 x.used)
+  | Float_Series c  -> Float_Series (Array.sub c 0 x.used)
+  | String_Series c -> String_Series (Array.sub c 0 x.used)
+  | Any_Series      -> Any_Series
+
+
+let get_rows x idx = Array.map (get_row x) idx
+
+
+let get_cols x idx = Array.map (get_col x) idx
+
+
+let get_col_by_name x name =
+  let j = Hashtbl.find x.head name in
+  get_col x j
+
+
+let get_cols_by_name x names = ()
