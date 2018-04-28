@@ -138,4 +138,32 @@ let get_col_by_name x name =
   get_col x j
 
 
-let get_cols_by_name x names = ()
+let get_cols_by_name x names = Array.map (get_col_by_name x) names
+
+
+let get x i j =
+  match x.data.(j) with
+  | Int_Series c    -> Int' c.(i)
+  | Float_Series c  -> Float' c.(i)
+  | String_Series c -> String' c.(i)
+  | Any_Series      -> Any'
+
+
+let set x i j a =
+  match x.data.(j) with
+  | Int_Series c    -> c.(i) <- (unpack_int' a)
+  | Float_Series c  -> c.(i) <- (unpack_float' a)
+  | String_Series c -> c.(i) <- (unpack_string' a)
+  | Any_Series      -> ()
+
+
+let get_by_name x i name =
+  let j = Hashtbl.find x.head name in
+  get x i j
+
+let set_by_name x i name a =
+  let j = Hashtbl.find x.head name in
+  set x i j a
+
+
+(* ends here *)

@@ -32,11 +32,15 @@ val unpack_float_series : series -> float array
 val unpack_string_series : series -> string array
 
 
-(** {6 Core operations} *)
+(** {6 Basic get and set functions} *)
 
-val make : string array -> t
+val get : t -> int -> int -> elt
 
-val append : t -> elt array -> unit
+val set : t -> int -> int -> elt -> unit
+
+val get_by_name : t -> int -> string -> elt
+
+val set_by_name : t -> int -> string -> elt -> unit
 
 val get_row : t -> int -> elt array
 
@@ -47,3 +51,15 @@ val get_rows : t -> int array -> elt array array
 val get_cols : t -> int array -> series array
 
 val get_col_by_name : t -> string -> series
+
+val get_cols_by_name : t -> string array -> series array
+
+
+(** {6 Core operations} *)
+
+val make : string array -> t
+
+val append : t -> elt array -> unit
+
+
+(** {6 Extended indexing operators} *)
