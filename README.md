@@ -84,6 +84,11 @@ First, you need to clone the repository.
 ```bash
 git clone git@github.com:owlbarn/owl.git
 ```
+or with 
+
+```bash
+git clone https://github.com/owlbarn/owl.git
+```
 
 Second, you need to figure out the missing dependencies and install them.
 
@@ -102,7 +107,7 @@ make && make install
 The most important dependency is [OpenBLAS](https://github.com/xianyi/OpenBLAS). Linking to the correct OpenBLAS is the key to achieve the best performance. Depending on the specific platform, you can use `yum`, `apt-get`, `brew` to install the binary format. For example on Mac OSX,
 
 ```bash
-brew install homebrew/science/openblas
+brew install openblas
 ```
 
 However, installing from OpenBLAS source code leads to way better performance in my own experiment. In future, the dependency on OpenBLAS should also be resolved by `opam` automatically.
