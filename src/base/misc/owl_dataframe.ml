@@ -166,4 +166,26 @@ let set_by_name x i name a =
   set x i j a
 
 
+let ( .%( ) ) x idx = get_by_name x (fst idx) (snd idx)
+
+
+let ( .%( )<- ) x idx a = set_by_name x (fst idx) (snd idx) a
+
+
+let col_num x = Array.length x.data
+
+let row_num x = x.used
+
+let numel x = (row_num x) * (col_num x)
+
+let to_cols x = x.data
+
+let to_rows x = ()
+
+
+let read_csv fname =
+  
+
+
+
 (* ends here *)

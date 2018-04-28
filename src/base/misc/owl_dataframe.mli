@@ -32,6 +32,15 @@ val unpack_float_series : series -> float array
 val unpack_string_series : series -> string array
 
 
+(** {6 Obtain properties} *)
+
+val row_num : t -> int
+
+val col_num : t -> int
+
+val numel : t -> int 
+
+
 (** {6 Basic get and set functions} *)
 
 val get : t -> int -> int -> elt
@@ -62,4 +71,21 @@ val make : string array -> t
 val append : t -> elt array -> unit
 
 
+(** {6 Math operators} *)
+
+
+
+(** {6 Iteration functions} *)
+
+
+
 (** {6 Extended indexing operators} *)
+
+val ( .%( ) ) : t -> int * string -> elt
+
+val ( .%( )<- ) : t -> int * string -> elt -> unit
+
+
+(** {6 IO functions} *)
+
+val to_cols : t -> series array
