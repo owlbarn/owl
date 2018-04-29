@@ -40,6 +40,12 @@ val col_num : t -> int
 
 val numel : t -> int
 
+val get_heads : t -> string array
+
+val set_heads : t -> string array -> unit
+
+val get_head : t -> int -> string
+
 
 (** {6 Basic get and set functions} *)
 
@@ -89,3 +95,5 @@ val ( .%( )<- ) : t -> int * string -> elt -> unit
 (** {6 IO functions} *)
 
 val to_cols : t -> series array
+
+val load : ?sep:char -> string array -> string -> t

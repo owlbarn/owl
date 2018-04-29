@@ -21,7 +21,7 @@ val marshal_from_file : string -> 'a
 val marshal_to_file : 'a -> string -> unit
 (** TODO *)
 
-val read_csv : ?sep:char -> ?f:(string list -> string list) -> string -> string list array
+val read_csv : ?sep:char -> string -> string array array
 (** TODO *)
 
 
@@ -37,6 +37,9 @@ val iteri_lines_of_marshal : ?verbose:bool -> (int -> 'a -> 'b) -> string -> uni
 (** TODO *)
 
 val mapi_lines_of_marshal : (int -> 'a -> 'b) -> string -> 'b array
+(** TODO *)
+
+val iteri_csv : ?sep:char -> (int -> string array -> unit) -> string -> unit
 (** TODO *)
 
 

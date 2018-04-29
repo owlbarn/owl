@@ -137,18 +137,24 @@ let head n fname =
   Owl_utils.Stack.to_array lines
 
 
-let read_csv ?(sep='\t') ?f fname =
+let read_csv ?(sep='\t') fname =
   let lines = Owl_utils.Stack.make () in
-  let _ = match f with
-    | Some f ->
-        iteri_lines_of_file (fun i s ->
-          let items = String.split_on_char sep s in
-          Owl_utils.Stack.push lines (f items)
-        ) fname
-    | None  ->
-        iteri_lines_of_file (fun i s ->
-          let items = String.split_on_char sep s in
-          Owl_utils.Stack.push lines items
-        ) fname
-  in
+  iteri_lines_of_file (fun i s ->
+    String.trim s
+    |> String.split_on_char sep
+    |> Array.of_list
+    |> Owl_utils.Stack.push lines
+  ) fname;
   Owl_utils.Stack.to_array lines
+
+
+let save_csv ?(sep='\t') x fname = ()
+
+
+let iteri_csv ?(sep='\t') proc fname =
+  iteri_lines_of_file (fun i s ->
+    String.trim s
+    |> String.split_on_char sep
+    |> Array.of_list
+    |> proc i
+  ) fname

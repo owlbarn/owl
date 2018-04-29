@@ -116,6 +116,23 @@ let append x row =
   )
 
 
+let get_heads x =
+  Hashtbl.fold (fun k _ acc -> Array.append acc [|k|]) x.head [||]
+
+
+let set_heads x head_names =
+  assert (Array.length head_names = Array.length x.data);
+  let head = Hashtbl.create 64 in
+  Array.iteri (fun i s ->
+    assert (Hashtbl.mem head s = false);
+    Hashtbl.add head s i
+  ) head_names;
+  x.head <- head
+
+
+let get_head x i = (get_heads x).(i)
+
+
 let get_row x i = Array.map (fun y -> get_elt_in_series y i) x.data
 
 
@@ -174,16 +191,39 @@ let ( .%( )<- ) x idx a = set_by_name x (fst idx) (snd idx) a
 
 let col_num x = Array.length x.data
 
+
 let row_num x = x.used
+
 
 let numel x = (row_num x) * (col_num x)
 
+
 let to_cols x = x.data
+
 
 let to_rows x = ()
 
 
+let _convert_to_elt = function
+  | "%i" -> fun a -> Int' (int_of_string a)
+  | "%f" -> fun a -> Float' (float_of_string a)
+  | "%s" -> fun a -> String' a
+  | _    -> failwith "_convert_to_elt: unsupported type"
 
+
+let load ?sep types fname =
+  let convert_f = Array.map _convert_to_elt types in
+  let n = Array.length convert_f in
+  let head_names = Array.init n (Printf.sprintf "h#%i") in
+  let dataframe = make head_names in
+  Owl_io.iteri_csv ?sep (fun _ line ->
+    let row = Array.map2 (fun f a -> f a) convert_f line in
+    append dataframe row
+  ) fname;
+  dataframe
+
+
+let save ?sep x fname = ()
 
 
 (* ends here *)

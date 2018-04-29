@@ -108,10 +108,24 @@ let iter2 f x y =
   done
 
 
+let iter2i f x y =
+  let c = min (Array.length x) (Array.length y) in
+  for i = 0 to c - 1 do
+    f i x.(i) y.(i)
+  done
+
+
 let iter3 f x y z =
   let c = min (Array.length x) (Array.length y) |> min (Array.length z) in
   for i = 0 to c - 1 do
     f x.(i) y.(i) z.(i)
+  done
+
+
+let iter3i f x y z =
+  let c = min (Array.length x) (Array.length y) |> min (Array.length z) in
+  for i = 0 to c - 1 do
+    f i x.(i) y.(i) z.(i)
   done
 
 
