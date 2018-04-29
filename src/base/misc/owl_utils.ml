@@ -67,21 +67,6 @@ let count_dup l =
       in (x,c)::acc
 
 
-(* save a marshalled object to a file *)
-let marshal_to_file x f =
-  let s = Marshal.to_string x [] in
-  let h = open_out f in
-  output_string h s;
-  close_out h
-
-
-(* load a marshalled object from a file *)
-let marshal_from_file f =
-  let h = open_in f in
-  let s = really_input_string h (in_channel_length h) in
-  Marshal.from_string s 0
-
-
 (* search the list given a value, return the position of its first occurrence *)
 let list_search x l =
   let rec _search x l c =
@@ -198,39 +183,6 @@ let format_time t =
     let m = int_of_float (t /. 60.) mod 60 in
     Printf.sprintf "%ih%02im" h m
   )
-
-
-(* read a file of a given path *)
-let read_file ?(trim=true) f =
-  let h = open_in f in
-  let s = Stack.make () in
-  (
-    try while true do
-      let l = match trim with
-        | true  -> input_line h |> String.trim
-        | false -> input_line h
-      in
-      Stack.push s l;
-    done with End_of_file -> ()
-  );
-  close_in h;
-  Stack.to_array s
-
-
-let read_file_string f =
-  let ic = open_in f in
-  let n = in_channel_length ic in
-  let s = Bytes.create n in
-  really_input ic s 0 n;
-  close_in ic;
-  Bytes.to_string s
-
-
-(* write a file of a given path *)
-let write_file f s =
-  let h = open_out f in
-  Printf.fprintf h "%s" s;
-  close_out h
 
 
 (** measure the time spent in a function in millisecond *)

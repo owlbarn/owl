@@ -2568,7 +2568,7 @@ let inv varr =
 
 
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
-let load k f = Owl_utils.marshal_from_file f
+let load k f = Owl_io.marshal_from_file f
 
 
 let max_rows varr =

@@ -5,8 +5,6 @@
 
 (** NLP: TFIDF module *)
 
-open Owl_nlp_utils
-
 
 type tf_typ =
   | Binary
@@ -93,7 +91,7 @@ let doc_count vocab fname =
   let d_f = Array.make n_w 0. in
   let _h = Hashtbl.create 1024 in
   let n_d = ref 0 in
-  Owl_nlp_utils.iteri_lines_of_marshal (fun i doc ->
+  Owl_io.iteri_lines_of_marshal (fun i doc ->
     Hashtbl.clear _h;
     Array.iter (fun w ->
       match Hashtbl.mem _h w with
@@ -145,7 +143,7 @@ let _build_with norm sort tf_fun df_fun m =
   let offset = Owl_utils.Stack.make () in
   Owl_utils.Stack.push offset 0;
 
-  Owl_nlp_utils.iteri_lines_of_marshal (fun i doc ->
+  Owl_io.iteri_lines_of_marshal (fun i doc ->
     (* first count terms in one doc *)
     term_count _h doc;
 
@@ -206,9 +204,9 @@ let next_batch ?(size=100) m =
   );
   Owl_utils.Stack.to_array batch
 
-let iteri f m = iteri_lines_of_marshal f m.uri
+let iteri f m = Owl_io.iteri_lines_of_marshal f m.uri
 
-let mapi f m = mapi_lines_of_marshal f m.uri
+let mapi f m = Owl_io.mapi_lines_of_marshal f m.uri
 
 let get m i : (int * float) array =
   let fh = open_in m.uri in
@@ -248,9 +246,9 @@ let apply m doc =
 let save m f =
   m.corpus <- Owl_nlp_corpus.reduce_model m.corpus;
   m.handle <- None;
-  Owl_utils.marshal_to_file m f
+  Owl_io.marshal_to_file m f
 
-let load f : t = Owl_utils.marshal_from_file f
+let load f : t = Owl_io.marshal_from_file f
 
 let to_string m =
   Printf.sprintf "TfIdf model\n" ^

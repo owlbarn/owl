@@ -1470,9 +1470,9 @@ let print ?max_row ?max_col ?header ?fmt x =
 
 let pp_dsnda formatter x = Owl_pretty.pp_dsnda formatter x
 
-let save x f = Owl_utils.marshal_to_file x f
+let save x f = Owl_io.marshal_to_file x f
 
-let load k f = Owl_utils.marshal_from_file f
+let load k f = Owl_io.marshal_from_file f
 
 let of_array k x d =
   let n = Array.fold_left (fun a b -> a * b) 1 d in

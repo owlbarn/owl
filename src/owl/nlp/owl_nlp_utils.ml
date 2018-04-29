@@ -90,86 +90,18 @@ let tokenise dict data = Array.map (Hashtbl.find dict) data
 
 let tokenise_all dict data = Array.map (Array.map (Hashtbl.find dict)) data
 
-let save_vocabulary x f = Owl_utils.marshal_to_file x f
+let save_vocabulary x f = Owl_io.marshal_to_file x f
 
-let load_vocabulary f = Owl_utils.marshal_from_file f
+let load_vocabulary f = Owl_io.marshal_from_file f
 
 let save_lda_model m f =
   Owl_log.info "save LDA model";
-  Owl_utils.marshal_to_file m (f ^ ".model")
+  Owl_io.marshal_to_file m (f ^ ".model")
 
 let load_lda_model f =
   Owl_log.info "load LDA model";
-  Owl_utils.marshal_from_file (f ^ ".model")
+  Owl_io.marshal_from_file (f ^ ".model")
 
-(* recent core functions *)
-
-
-(* iterate every doc in the corpus without loading the whole corpus in the
-  memory, then apply passed in function f. note that each line is a doc.
- *)
-let iteri_lines_of_file ?(verbose=true) f fname =
-  let i = ref 0 in
-  let h = open_in fname in
-  (
-    let t0 = Unix.gettimeofday () in
-    let t1 = ref (Unix.gettimeofday ()) in
-    try while true do
-      f !i (input_line h);
-      i := !i + 1;
-      (* output summary if in verbose mode *)
-      if verbose = true then (
-        let t2 = Unix.gettimeofday () in
-        if t2 -. !t1 > 5. then (
-          t1 := t2;
-          let speed = float_of_int !i /. (t2 -. t0) |> int_of_float in
-          Owl_log.info "processed %i, avg. %i docs/s" !i speed
-        )
-      )
-    done with End_of_file -> ()
-  );
-  close_in h
-
-(* map every doc in the corpus into another type *)
-let mapi_lines_of_file f fname =
-  let stack = Owl_utils.Stack.make () in
-  iteri_lines_of_file (fun i s ->
-    Owl_utils.Stack.push stack (f i s)
-  ) fname;
-  Owl_utils.Stack.to_array stack
-
-(* similar to iteri_lines_of_file but for marshaled file *)
-let iteri_lines_of_marshal ?(verbose=true) f fname =
-  let i = ref 0 in
-  let h = open_in fname in
-  (
-    let t1 = ref (Unix.gettimeofday ()) in
-    let i1 = ref 0 in
-
-    try while true do
-      f !i (Marshal.from_channel h);
-      i := !i + 1;
-      (* output summary if in verbose mode *)
-      if verbose = true then (
-        let t2 = Unix.gettimeofday () in
-        if t2 -. !t1 > 5. then (
-          let speed = float_of_int (!i - !i1) /. (t2 -. !t1) |> int_of_float in
-          i1 := !i;
-          t1 := t2;
-          Owl_log.info "processed %i, avg. %i docs/s" !i speed
-        )
-      )
-    done with End_of_file -> ()
-  );
-  close_in h
-
-(* similar to mapi_lines_of_file but for marshaled file *)
-let mapi_lines_of_marshal f fname =
-  let stack = Owl_utils.Stack.make () in
-  iteri_lines_of_marshal (fun i s ->
-    Owl_utils.Stack.push stack (f i s)
-  ) fname;
-  Owl_utils.Stack.to_array stack
 
 (* TODO: perform simple processing of the passed in string *)
 let simple_process s = s

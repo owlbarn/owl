@@ -494,10 +494,10 @@ module Make
   let print nn = pp_network Format.std_formatter nn
 
 
-  let save nn f = Owl_utils.marshal_to_file (copy nn) f
+  let save nn f = Owl_io.marshal_to_file (copy nn) f
 
 
-  let load f : network = Owl_utils.marshal_from_file f
+  let load f : network = Owl_io.marshal_from_file f
 
 
   let save_weights nn f =
@@ -506,11 +506,11 @@ module Make
       let ws = Neuron.mkpar n.neuron in
       Hashtbl.add h n.name ws
     ) nn.topo;
-    Owl_utils.marshal_to_file h f
+    Owl_io.marshal_to_file h f
 
 
   let load_weights nn f =
-    let h = Owl_utils.marshal_from_file f in
+    let h = Owl_io.marshal_from_file f in
     Array.iter (fun n ->
       let ws = Hashtbl.find h n.name in
       Neuron.update n.neuron ws

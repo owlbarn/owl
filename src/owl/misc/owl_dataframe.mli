@@ -38,7 +38,7 @@ val row_num : t -> int
 
 val col_num : t -> int
 
-val numel : t -> int 
+val numel : t -> int
 
 
 (** {6 Basic get and set functions} *)
@@ -89,3 +89,5 @@ val ( .%( )<- ) : t -> int * string -> elt -> unit
 (** {6 IO functions} *)
 
 val to_cols : t -> series array
+
+val read_csv : string -> unit
