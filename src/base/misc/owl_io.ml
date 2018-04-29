@@ -122,3 +122,33 @@ let marshal_from_file f =
   let h = open_in f in
   let s = really_input_string h (in_channel_length h) in
   Marshal.from_string s 0
+
+
+let head n fname =
+  let lines = Owl_utils.Stack.make () in
+  (
+    try
+      iteri_lines_of_file (fun i s ->
+        assert (i < n);
+        Owl_utils.Stack.push lines s
+      ) fname
+    with exn -> ()
+  );
+  Owl_utils.Stack.to_array lines
+
+
+let read_csv ?(sep='\t') ?f fname =
+  let lines = Owl_utils.Stack.make () in
+  let _ = match f with
+    | Some f ->
+        iteri_lines_of_file (fun i s ->
+          let items = String.split_on_char sep s in
+          Owl_utils.Stack.push lines (f items)
+        ) fname
+    | None  ->
+        iteri_lines_of_file (fun i s ->
+          let items = String.split_on_char sep s in
+          Owl_utils.Stack.push lines items
+        ) fname
+  in
+  Owl_utils.Stack.to_array lines

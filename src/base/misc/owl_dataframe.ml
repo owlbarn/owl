@@ -183,9 +183,6 @@ let to_cols x = x.data
 let to_rows x = ()
 
 
-let read_csv fname =
-  Owl_io.iteri_lines_of_file (fun i s -> print_endline s) fname
-
 
 
 

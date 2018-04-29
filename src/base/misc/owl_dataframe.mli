@@ -89,5 +89,3 @@ val ( .%( )<- ) : t -> int * string -> elt -> unit
 (** {6 IO functions} *)
 
 val to_cols : t -> series array
-
-val read_csv : string -> unit
