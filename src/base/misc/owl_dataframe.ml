@@ -183,12 +183,6 @@ let set_by_name x i name a =
   set x i j a
 
 
-let ( .%( ) ) x idx = get_by_name x (fst idx) (snd idx)
-
-
-let ( .%( )<- ) x idx a = set_by_name x (fst idx) (snd idx) a
-
-
 let col_num x = Array.length x.data
 
 
@@ -202,6 +196,25 @@ let to_cols x = x.data
 
 
 let to_rows x = ()
+
+
+let copy x =
+  let head = Hashtbl.copy x.head in
+  let used = x.used in
+  let size = x.size in
+  let data = Array.map (function
+    | Int_Series c    -> Int_Series (Array.copy c)
+    | Float_Series c  -> Float_Series (Array.copy c)
+    | String_Series c -> String_Series (Array.copy c)
+    | Any_Series      -> Any_Series
+  ) x.data in
+  { data; head; used; size }
+
+
+let concat_horizontal x y = ()
+
+
+let concat_vertical x y = ()
 
 
 let _convert_to_elt = function
@@ -224,6 +237,12 @@ let load ?sep types fname =
 
 
 let save ?sep x fname = ()
+
+
+let ( .%( ) ) x idx = get_by_name x (fst idx) (snd idx)
+
+
+let ( .%( )<- ) x idx a = set_by_name x (fst idx) (snd idx) a
 
 
 (* ends here *)
