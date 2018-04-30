@@ -48,6 +48,9 @@ val row_num : t -> int
 val col_num : t -> int
 (** TODO *)
 
+val shape : t -> int * int
+(** TODO *)
+
 val numel : t -> int
 (** TODO *)
 
@@ -129,10 +132,13 @@ val ( .%( )<- ) : t -> int * string -> elt -> unit
 (** TODO *)
 
 
-(** {6 IO functions} *)
+(** {6 IO & helper functions} *)
 
 val to_cols : t -> series array
 (** TODO *)
 
 val load : ?sep:char -> string array -> string -> t
+(** TODO *)
+
+val elt_to_str : elt -> string
 (** TODO *)

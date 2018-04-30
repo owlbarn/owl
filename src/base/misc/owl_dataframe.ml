@@ -91,12 +91,18 @@ let init_series n a =
   | Any'      -> Any_Series
 
 
-let length_series x =
-  match x with
-  | Int_Series a    -> Array.length a
-  | Float_Series a  -> Array.length a
-  | String_Series a -> Array.length a
+let length_series = function
+  | Int_Series c    -> Array.length c
+  | Float_Series c  -> Array.length c
+  | String_Series c -> Array.length c
   | Any_Series      -> 0
+
+
+let elt_to_str = function
+  | Int' a    -> string_of_int a
+  | Float' a  -> string_of_float a
+  | String' a -> a
+  | Any'      -> ""
 
 
 let append x row =
@@ -189,6 +195,9 @@ let col_num x = Array.length x.data
 
 
 let row_num x = x.used
+
+
+let shape x = row_num x, col_num x
 
 
 let numel x = (row_num x) * (col_num x)

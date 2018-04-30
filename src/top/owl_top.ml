@@ -14,6 +14,7 @@ let printers = [
   "Owl.Algodiff.D.pp_num";
   "Owl.Graph.pp_node";
   "Owl.Nlp.Vocabulary.pp_vocab";
+  "Owl_pretty.pp_dataframe";
 ]
 
 
