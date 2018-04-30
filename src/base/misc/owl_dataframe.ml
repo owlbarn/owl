@@ -117,7 +117,9 @@ let append x row =
 
 
 let get_heads x =
-  Hashtbl.fold (fun k _ acc -> Array.append acc [|k|]) x.head [||]
+  let kv = Hashtbl.fold (fun k v acc -> Array.append acc [|(k,v)|]) x.head [||] in
+  Array.sort (fun a b -> (snd a) - (snd b)) kv;
+  Array.map fst kv
 
 
 let set_heads x head_names =
@@ -214,7 +216,11 @@ let copy x =
 let concat_horizontal x y =
   assert (row_num x = row_num y);
   let z = copy x in
-  Hashtbl.iter (fun k v -> Hashtbl.add z.head k v) y.head;
+  let i = ref (col_num x) in
+  Hashtbl.iter (fun k v ->
+    Hashtbl.add z.head k (v + !i);
+    i := !i + 1;
+  ) y.head;
   z.data <- Array.append z.data y.data;
   z
 
