@@ -148,13 +148,34 @@ let read_csv ?(sep='\t') fname =
   Owl_utils.Stack.to_array lines
 
 
-let save_csv ?(sep='\t') x fname = ()
+let write_csv ?(sep='\t') x fname =
+  let h = open_out fname in
+  Array.iter (fun row ->
+    let s = Array.fold_left (fun acc elt ->
+      Printf.sprintf "%s%s%c" acc elt sep
+    ) "" row
+    in
+    Printf.fprintf h "%s\n" s
+  ) x;
+  close_out h
 
 
-let iteri_csv ?(sep='\t') proc fname =
+let read_csv_proc ?(sep='\t') proc fname =
   iteri_lines_of_file (fun i s ->
     String.trim s
     |> String.split_on_char sep
     |> Array.of_list
     |> proc i
   ) fname
+
+
+let write_csv_proc ?(sep='\t') x proc fname =
+  let h = open_out fname in
+  Array.iter (fun row ->
+    let s = Array.fold_left (fun acc elt ->
+      Printf.sprintf "%s%s%c" acc (proc elt) sep
+    ) "" row
+    in
+    Printf.fprintf h "%s\n" s
+  ) x;
+  close_out h

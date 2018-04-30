@@ -19,7 +19,26 @@ type elt =
   | Any'
 (** TODO *)
 
+
 (** {6 Pakcking & unpacking functions} *)
+
+val pack_int : int -> elt
+(** TODO *)
+
+val pack_float : float -> elt
+(** TODO *)
+
+val pack_string : string -> elt
+(** TODO *)
+
+val unpack_int : elt -> int
+(** TODO *)
+
+val unpack_float : elt -> float
+(** TODO *)
+
+val unpack_string : elt -> string
+(** TODO *)
 
 val pack_int_series : int array -> series
 (** TODO *)
@@ -134,10 +153,13 @@ val ( .%( )<- ) : t -> int * string -> elt -> unit
 
 (** {6 IO & helper functions} *)
 
-val to_cols : t -> series array
+val load : ?sep:char -> string array -> string -> t
 (** TODO *)
 
-val load : ?sep:char -> string array -> string -> t
+val save : ?sep:char -> t -> string -> unit
+(** TODO *)
+
+val to_cols : t -> series array
 (** TODO *)
 
 val elt_to_str : elt -> string

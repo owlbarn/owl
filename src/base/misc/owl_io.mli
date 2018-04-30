@@ -24,6 +24,15 @@ val marshal_to_file : 'a -> string -> unit
 val read_csv : ?sep:char -> string -> string array array
 (** TODO *)
 
+val write_csv : ?sep:char -> string array array -> string -> unit
+(** TODO *)
+
+val read_csv_proc : ?sep:char -> (int -> string array -> unit) -> string -> unit
+(** TODO *)
+
+val write_csv_proc : ?sep:char -> 'a array array -> ('a -> string) -> string -> unit
+(** TODO *)
+
 
 (** {6 Iteration functions} *)
 
@@ -37,9 +46,6 @@ val iteri_lines_of_marshal : ?verbose:bool -> (int -> 'a -> 'b) -> string -> uni
 (** TODO *)
 
 val mapi_lines_of_marshal : (int -> 'a -> 'b) -> string -> 'b array
-(** TODO *)
-
-val iteri_csv : ?sep:char -> (int -> string array -> unit) -> string -> unit
 (** TODO *)
 
 

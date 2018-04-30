@@ -26,17 +26,23 @@ type t = {
 }
 
 
-let unpack_int' = function Int' x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+let unpack_int = function Int' x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
-let unpack_float' = function Float' x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+let unpack_float = function Float' x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
-let unpack_string' = function String' x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+let unpack_string = function String' x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
 let unpack_int_series = function Int_Series x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
 let unpack_float_series = function Float_Series x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
 let unpack_string_series = function String_Series x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+
+let pack_int x = Int' x
+
+let pack_float x = Float' x
+
+let pack_string x = String' x
 
 let pack_int_series x = Int_Series x
 
@@ -176,9 +182,9 @@ let get x i j =
 
 let set x i j a =
   match x.data.(j) with
-  | Int_Series c    -> c.(i) <- (unpack_int' a)
-  | Float_Series c  -> c.(i) <- (unpack_float' a)
-  | String_Series c -> c.(i) <- (unpack_string' a)
+  | Int_Series c    -> c.(i) <- (unpack_int a)
+  | Float_Series c  -> c.(i) <- (unpack_float a)
+  | String_Series c -> c.(i) <- (unpack_string a)
   | Any_Series      -> ()
 
 
@@ -249,14 +255,22 @@ let load ?sep types fname =
   let n = Array.length convert_f in
   let head_names = Array.init n (Printf.sprintf "h#%i") in
   let dataframe = make head_names in
-  Owl_io.iteri_csv ?sep (fun _ line ->
+  Owl_io.read_csv_proc ?sep (fun _ line ->
     let row = Array.map2 (fun f a -> f a) convert_f line in
     append dataframe row
   ) fname;
   dataframe
 
 
-let save ?sep x fname = raise Owl_exception.NOT_IMPLEMENTED
+let save ?sep x fname =
+  let m, n = shape x in
+  let csv = Array.make_matrix m n "" in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      csv.(i).(j) <- elt_to_str (get x i j)
+    done;
+  done;
+  Owl_io.write_csv ?sep csv fname
 
 
 let ( .%( ) ) x idx = get_by_name x (fst idx) (snd idx)
