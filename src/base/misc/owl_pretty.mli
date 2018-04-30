@@ -28,8 +28,8 @@ the headers. [fmt] is the function to format every element into string.
 val pp_dataframe : Format.formatter -> Owl_dataframe.t -> unit
 (** ``pp_dataframe`` is the pretty printer for dataframe. *)
 
-val dataframe_to_string :  ?header:bool -> ?max_row:int -> ?max_col:int -> ?elt_to_str_fun:(Owl_dataframe.elt -> string) -> Owl_dataframe.t -> string
+val dataframe_to_string : ?header:bool -> ?names:string array -> ?max_row:int -> ?max_col:int -> ?elt_to_str_fun:(Owl_dataframe.elt -> string) -> Owl_dataframe.t -> string
 (** ``dataframe_to_string x`` converts ``x`` into a string for pretty printing *)
 
-val print_dataframe : ?header:bool -> ?max_row:int -> ?max_col:int -> ?elt_to_str_fun:(Owl_dataframe.elt -> string) -> Format.formatter -> Owl_dataframe.t -> unit
+val print_dataframe : ?header:bool -> ?names:string array -> ?max_row:int -> ?max_col:int -> ?elt_to_str_fun:(Owl_dataframe.elt -> string) -> Format.formatter -> Owl_dataframe.t -> unit
 (** ``print_dataframe x`` converts ``x`` into a string for pretty printing *)

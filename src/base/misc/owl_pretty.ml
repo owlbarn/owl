@@ -163,7 +163,7 @@ let print ?header ?max_row ?max_col ?elt_to_str_fun ?(formatter=Format.std_forma
 
 (** Dataframe pretty printing *)
 
-let dataframe_to_string ?(header=true) ?(max_row=10) ?(max_col=10) ?elt_to_str_fun x =
+let dataframe_to_string ?(header=true) ?names ?(max_row=10) ?(max_col=10) ?elt_to_str_fun x =
   let elt_to_str_fun =
     match elt_to_str_fun with
     | Some f -> f
@@ -176,6 +176,16 @@ let dataframe_to_string ?(header=true) ?(max_row=10) ?(max_col=10) ?elt_to_str_f
   let row_indices, col_indices = _chunk_table max_row max_col row_num col_num in
   let tbody = _fill_table elt_to_str_fun get_elt_fun row_indices col_indices x in
   let row_header, col_header = _make_header row_indices col_indices x_shape x in
+
+  (* rewrite column header if names is not None ... *)
+  let col_header =
+    if header = true then
+      match names with
+      | Some c -> Array.map (fun j -> if j < 0 then "" else c.(j)) col_indices
+      | None   -> col_header
+    else col_header
+  in
+
   let table = match header with
     | true  -> _glue_headers row_header col_header tbody
     | false -> tbody
@@ -183,11 +193,13 @@ let dataframe_to_string ?(header=true) ?(max_row=10) ?(max_col=10) ?elt_to_str_f
   _format_table table
 
 
-let print_dataframe ?header ?max_row ?max_col ?elt_to_str_fun formatter x =
-  let s = dataframe_to_string ?header ?max_row ?max_col ?elt_to_str_fun x in
+let print_dataframe ?header ?names ?max_row ?max_col ?elt_to_str_fun formatter x =
+  let s = dataframe_to_string ?header ?names ?max_row ?max_col ?elt_to_str_fun x in
   Format.open_box 0;
   Format.fprintf formatter "%s" s;
   Format.close_box ()
 
 
-let pp_dataframe formatter x = print_dataframe formatter x
+let pp_dataframe formatter x =
+  let names = Owl_dataframe.get_heads x in
+  print_dataframe ~names formatter x
