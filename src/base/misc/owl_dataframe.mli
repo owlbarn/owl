@@ -105,6 +105,12 @@ val copy : t -> t
 val append : t -> elt array -> unit
 (** TODO *)
 
+val concat_horizontal : t -> t -> t
+(** TODO *)
+
+val concat_vertical : t -> t -> t
+(** TODO *)
+
 
 (** {6 Math operators} *)
 

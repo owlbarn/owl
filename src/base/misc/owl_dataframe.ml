@@ -195,7 +195,7 @@ let numel x = (row_num x) * (col_num x)
 let to_cols x = x.data
 
 
-let to_rows x = ()
+let to_rows x = raise Owl_exception.NOT_IMPLEMENTED
 
 
 let copy x =
@@ -211,10 +211,15 @@ let copy x =
   { data; head; used; size }
 
 
-let concat_horizontal x y = ()
+let concat_horizontal x y =
+  assert (row_num x = row_num y);
+  let z = copy x in
+  Hashtbl.iter (fun k v -> Hashtbl.add z.head k v) y.head;
+  z.data <- Array.append z.data y.data;
+  z
 
 
-let concat_vertical x y = ()
+let concat_vertical x y = raise Owl_exception.NOT_IMPLEMENTED
 
 
 let _convert_to_elt = function
@@ -236,7 +241,7 @@ let load ?sep types fname =
   dataframe
 
 
-let save ?sep x fname = ()
+let save ?sep x fname = raise Owl_exception.NOT_IMPLEMENTED
 
 
 let ( .%( ) ) x idx = get_by_name x (fst idx) (snd idx)
