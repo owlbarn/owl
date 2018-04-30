@@ -179,3 +179,16 @@ let write_csv_proc ?(sep='\t') x proc fname =
     Printf.fprintf h "%s\n" s
   ) x;
   close_out h
+
+
+let csv_head ?(sep='\t') idx fname =
+  let h = open_in fname in
+  for i = 1 to idx - 1 do
+    input_line h |> ignore
+  done;
+  input_line h
+  |> String.trim
+  |> String.split_on_char sep
+  |> Array.of_list
+
+  

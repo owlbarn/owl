@@ -53,3 +53,6 @@ val mapi_lines_of_marshal : (int -> 'a -> 'b) -> string -> 'b array
 
 val head : int -> string -> string array
 (** TODO *)
+
+val csv_head : ?sep:char -> int -> string -> string array
+(** TODO *)

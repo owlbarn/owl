@@ -250,19 +250,25 @@ let _convert_to_elt = function
   | _    -> failwith "_convert_to_elt: unsupported type"
 
 
-let load ?sep types fname =
+let of_csv ?sep ?head types fname =
+  let head_i = 0 in
+  let head_names = match head with
+    | Some a -> a
+    | None   -> Owl_io.csv_head ?sep head_i fname
+  in
+
   let convert_f = Array.map _convert_to_elt types in
-  let n = Array.length convert_f in
-  let head_names = Array.init n (Printf.sprintf "h#%i") in
   let dataframe = make head_names in
-  Owl_io.read_csv_proc ?sep (fun _ line ->
-    let row = Array.map2 (fun f a -> f a) convert_f line in
-    append dataframe row
+  Owl_io.read_csv_proc ?sep (fun i line ->
+    if i <> head_i then (
+      let row = Array.map2 (fun f a -> f a) convert_f line in
+      append dataframe row
+    )
   ) fname;
   dataframe
 
 
-let save ?sep x fname =
+let to_csv ?sep x fname =
   let m, n = shape x in
   let csv = Array.make_matrix m n "" in
   for i = 0 to m - 1 do

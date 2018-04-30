@@ -153,10 +153,10 @@ val ( .%( )<- ) : t -> int * string -> elt -> unit
 
 (** {6 IO & helper functions} *)
 
-val load : ?sep:char -> string array -> string -> t
+val of_csv : ?sep:char -> ?head:string array -> string array -> string -> t
 (** TODO *)
 
-val save : ?sep:char -> t -> string -> unit
+val to_csv : ?sep:char -> t -> string -> unit
 (** TODO *)
 
 val to_cols : t -> series array
