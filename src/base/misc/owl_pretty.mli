@@ -14,9 +14,9 @@ val pp_dsnda : Format.formatter -> ('a, 'b, 'c) Bigarray.Genarray.t -> unit
 val dsnda_to_string :  ?header:bool -> ?max_row:int -> ?max_col:int -> ?elt_to_str_fun:('a -> string) -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t -> string
 (** ``dsnda_to_string x`` converts ``x`` into a string for pretty printing *)
 
-val print : ?header:bool -> ?max_row:int -> ?max_col:int -> ?elt_to_str_fun:('a -> string) -> ?formatter:Format.formatter -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t -> unit
+val print_dsnda : ?header:bool -> ?max_row:int -> ?max_col:int -> ?elt_to_str_fun:('a -> string) -> ?formatter:Format.formatter -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t -> unit
 (**
-``print`` provides the better control of pretty printing function of owl's
+``print_dsnda`` provides the better control of pretty printing function of owl's
 n-dimensional array. [max_row] and [max_col] specify the maximum number of
 rows and columns to display. [header] specifies whether or not to print out
 the headers. [fmt] is the function to format every element into string.

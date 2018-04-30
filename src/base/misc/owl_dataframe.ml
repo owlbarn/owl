@@ -51,14 +51,18 @@ let pack_float_series x = Float_Series x
 let pack_string_series x = String_Series x
 
 
-let make head_names =
+let make ?data head_names =
   let col_num = Array.length head_names in
-  let data = Array.make col_num Any_Series in
   let head = Hashtbl.create 64 in
   Array.iteri (fun i s ->
     assert (Hashtbl.mem head s = false);
     Hashtbl.add head s i
   ) head_names;
+  let data = match data with
+    | Some a -> a
+    | None   -> Array.make col_num Any_Series
+  in
+  assert (Array.length data = col_num);
   let used = 0 in
   let size = 0 in
   { data; head; used; size }
@@ -111,7 +115,14 @@ let elt_to_str = function
   | Any'      -> ""
 
 
-let append x row =
+let str_to_elt_fun = function
+  | "%i" -> fun a -> Int' (int_of_string a)
+  | "%f" -> fun a -> if a = "" then Float' nan else Float' (float_of_string a)
+  | "%s" -> fun a -> String' a
+  | _    -> failwith "str_to_elt_fun: unsupported type"
+
+
+let append_row x row =
   if x.size = 0 then (
     let n = 16 in
     x.data <- Array.map (init_series n) row;
@@ -126,6 +137,10 @@ let append x row =
     Array.iteri (fun i a -> set_elt_in_series x.data.(i) x.used a) row;
     x.used <- x.used + 1
   )
+
+
+(* TODO *)
+let append_col x col = raise Owl_exception.NOT_IMPLEMENTED
 
 
 let get_heads x =
@@ -243,11 +258,12 @@ let concat_horizontal x y =
 let concat_vertical x y = raise Owl_exception.NOT_IMPLEMENTED
 
 
-let _convert_to_elt = function
-  | "%i" -> fun a -> Int' (int_of_string a)
-  | "%f" -> fun a -> Float' (float_of_string a)
-  | "%s" -> fun a -> String' a
-  | _    -> failwith "_convert_to_elt: unsupported type"
+(* TODO *)
+let head n x = raise Owl_exception.NOT_IMPLEMENTED
+
+
+(* TODO *)
+let tail n x = raise Owl_exception.NOT_IMPLEMENTED
 
 
 let of_csv ?sep ?head types fname =
@@ -257,13 +273,15 @@ let of_csv ?sep ?head types fname =
     | None   -> Owl_io.csv_head ?sep head_i fname
   in
 
-  let convert_f = Array.map _convert_to_elt types in
+  let convert_f = Array.map str_to_elt_fun types in
   let dataframe = make head_names in
   Owl_io.read_csv_proc ?sep (fun i line ->
-    if i <> head_i then (
-      let row = Array.map2 (fun f a -> f a) convert_f line in
-      append dataframe row
-    )
+    try
+      if i <> head_i then (
+        let row = Array.map2 (fun f a -> f a) convert_f line in
+        append_row dataframe row
+      )
+    with exn -> Owl_log.warn "of_csv: fail to parse line#%i" i
   ) fname;
   dataframe
 

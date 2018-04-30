@@ -103,13 +103,24 @@ let _glue_headers row_header col_header table =
   ) table
 
 
-let _format_table table =
+let _format_table hline table =
   let row_num = Array.length table in
   let col_num = Array.length table.(0) in
   let col_width = Array.init col_num (fun i -> _calc_col_width table i) in
   let out_s = ref "\n" in
 
   for i = 0 to row_num - 1 do
+    (* print hline if necessary *)
+    if hline = true && i < 2 then (
+      let hline = Array.init col_num (fun j ->
+        if j = 0 then String.make col_width.(j) ' '
+        else "+" ^ String.make col_width.(j) '-'
+      )
+      in
+      let s = Array.fold_left (fun acc a -> acc ^ a) "" hline in
+      out_s := !out_s ^ s ^ "\n";
+    );
+    (* print rest of content *)
     for j = 0 to col_num - 1 do
       let new_s = _align_str table.(i).(j) col_width.(j) in
       out_s := !out_s ^ new_s ^ " "
@@ -143,7 +154,7 @@ let dsnda_to_string ?(header=true) ?(max_row=10) ?(max_col=10) ?elt_to_str_fun x
       | true  -> _glue_headers row_header col_header tbody
       | false -> tbody
     in
-    _format_table table
+    _format_table false table
   )
 
 
@@ -157,13 +168,13 @@ let print_table ?header ?max_row ?max_col ?elt_to_str_fun formatter x =
 let pp_dsnda formatter x = print_table formatter x
 
 
-let print ?header ?max_row ?max_col ?elt_to_str_fun ?(formatter=Format.std_formatter) x =
+let print_dsnda ?header ?max_row ?max_col ?elt_to_str_fun ?(formatter=Format.std_formatter) x =
   print_table ?header ?max_row ?max_col ?elt_to_str_fun formatter x
 
 
 (** Dataframe pretty printing *)
 
-let dataframe_to_string ?(header=true) ?names ?(max_row=10) ?(max_col=10) ?elt_to_str_fun x =
+let dataframe_to_string ?(header=true) ?names ?(max_row=40) ?(max_col=10) ?elt_to_str_fun x =
   let elt_to_str_fun =
     match elt_to_str_fun with
     | Some f -> f
@@ -190,7 +201,7 @@ let dataframe_to_string ?(header=true) ?names ?(max_row=10) ?(max_col=10) ?elt_t
     | true  -> _glue_headers row_header col_header tbody
     | false -> tbody
   in
-  _format_table table
+  _format_table header table
 
 
 let print_dataframe ?header ?names ?max_row ?max_col ?elt_to_str_fun formatter x =

@@ -1466,7 +1466,7 @@ let print ?max_row ?max_col ?header ?fmt x =
     | Some a -> Some a
     | None   -> Some n
   in
-  Owl_pretty.print ?max_row ?max_col ?header ?elt_to_str_fun:fmt x
+  Owl_pretty.print_dsnda ?max_row ?max_col ?header ?elt_to_str_fun:fmt x
 
 let pp_dsnda formatter x = Owl_pretty.pp_dsnda formatter x
 

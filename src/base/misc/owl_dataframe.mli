@@ -118,13 +118,13 @@ val get_cols_by_name : t -> string array -> series array
 
 (** {6 Core operations} *)
 
-val make : string array -> t
+val make : ?data:series array -> string array -> t
 (** TODO *)
 
 val copy : t -> t
 (** TODO *)
 
-val append : t -> elt array -> unit
+val append_row : t -> elt array -> unit
 (** TODO *)
 
 val concat_horizontal : t -> t -> t

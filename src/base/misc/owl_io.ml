@@ -137,6 +137,10 @@ let head n fname =
   Owl_utils.Stack.to_array lines
 
 
+(* TODO *)
+let tail n fname = raise Owl_exception.NOT_IMPLEMENTED
+
+
 let read_csv ?(sep='\t') fname =
   let lines = Owl_utils.Stack.make () in
   iteri_lines_of_file (fun i s ->
@@ -190,5 +194,3 @@ let csv_head ?(sep='\t') idx fname =
   |> String.trim
   |> String.split_on_char sep
   |> Array.of_list
-
-  
