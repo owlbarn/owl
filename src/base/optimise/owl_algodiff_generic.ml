@@ -1300,7 +1300,7 @@ module Make
      the left due to the expand function called in broadcasting. *)
   let _shrink a v =
     match a, v with
-    | F _, Arr v -> F (A.sum' v)
+    | F _, Arr v   -> F (A.sum' v)
     | Arr a, Arr v -> (
         let shp_a = A.shape a in
         let shp_v = A.shape v in
@@ -1311,7 +1311,7 @@ module Make
         )
         else Arr v
       )
-    | a, v -> v
+    | a, v         -> v
 
 
   let reverse_push v x =
