@@ -186,7 +186,7 @@ let filter2_i f x y = filter2i_i (fun _ a b -> f a b) x y
 
 
 (* pad n value of v to the left/right of array x *)
-let pad s x v n =
+let pad s v n x =
   let l = Array.length x in
   let y = Array.make (l + n) v in
   let _ = match s with
@@ -199,9 +199,9 @@ let align s v x y =
   let len_x = Array.length x in
   let len_y = Array.length y in
   if len_x < len_y then
-    pad s x v (len_y - len_x), Array.copy y
+    pad s v (len_y - len_x) x, Array.copy y
   else if len_x > len_y then
-    Array.copy x, pad s y v (len_x - len_y)
+    Array.copy x, pad s v (len_x - len_y) y
   else
     Array.copy x, Array.copy y
 
