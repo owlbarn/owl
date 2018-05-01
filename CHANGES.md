@@ -6,9 +6,10 @@
 * Add core functions such as one_hot, slide, and etc.
 * Fix normalisation neuron in neural network module.
 * Fix building, installation, and publishing on OPAM.
+* Fix broadcasting issue in Algodiff module.
 
 
-### 0.3.7 (2018-04-18)
+### 0.3.7 (2018-04-25)
 
 * Fix some bugs and improve performance.
 * Fix some docker files for automatic image building.
