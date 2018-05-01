@@ -178,7 +178,7 @@ val filter2_i : ('a -> 'b -> bool) -> 'a array -> 'b array -> int array
 the elements to function ``f``.
  *)
 
-val pad : [ `Left | `Right ] -> 'a -> int -> 'a array -> 'a array
+val pad : [ `Left | `Right ] -> 'a array -> 'a -> int -> 'a array
 (** TODO *)
 
 val align : [ `Left | `Right ] -> 'a -> 'a array -> 'a array -> 'a array * 'a array
