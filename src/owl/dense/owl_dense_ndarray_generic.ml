@@ -3688,14 +3688,12 @@ let sum_reduce ?axis x =
   match axis with
   | Some a -> (
       let y = ref x in
-      for i = 0 to (num_dims x - 1) do
-        if Array.mem i a then (
-          let m, n, o, s = reduce_params i !y in
-          let z = zeros _kind s in
-          _owl_sum_along _kind m n o !y z;
-          y := z
-        )
-      done;
+      Array.iter (fun i ->
+        let m, n, o, s = reduce_params i !y in
+        let z = zeros _kind s in
+        _owl_sum_along _kind m n o !y z;
+        y := z
+      ) a;
       !y
     )
   | None   ->
