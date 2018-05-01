@@ -179,6 +179,10 @@ let get_rows x idx = Array.map (get_row x) idx
 let get_cols x idx = Array.map (get_col x) idx
 
 
+(* TODO *)
+let get_row_assoc x idx = raise Owl_exception.NOT_IMPLEMENTED
+
+
 let get_col_by_name x name =
   let j = Hashtbl.find x.head name in
   get_col x j
@@ -266,13 +270,42 @@ let head n x = raise Owl_exception.NOT_IMPLEMENTED
 let tail n x = raise Owl_exception.NOT_IMPLEMENTED
 
 
-let of_csv ?sep ?head types fname =
+let iteri_row f x =
+  let m = row_num x in
+  for i = 0 to m - 1 do
+    f i (get_row x i)
+  done
+
+
+let iter_row f x = iteri_row (fun _ row -> f row) x
+
+
+let filteri f x =
+  let head = Hashtbl.copy x.head in
+  let used = 0 in
+  let size = 0 in
+  let data = Array.map (fun _ -> Any_Series) x.data in
+  let y = { data; head; used; size } in
+  iteri_row (fun i row ->
+    if f i row = true then append_row y row
+  ) x;
+  y
+
+
+let filter f x = filteri (fun _ row -> f row) x
+
+
+let of_csv ?sep ?head ?types fname =
   let head_i = 0 in
   let head_names = match head with
     | Some a -> a
     | None   -> Owl_io.csv_head ?sep head_i fname
   in
-
+  let types = match types with
+    | Some a -> a
+    | None   -> Array.map (fun _ -> "%s") head_names
+  in
+  assert (Array.length head_names = Array.length types);
   let convert_f = Array.map str_to_elt_fun types in
   let dataframe = make head_names in
   Owl_io.read_csv_proc ?sep (fun i line ->

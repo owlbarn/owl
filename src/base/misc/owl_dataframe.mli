@@ -140,6 +140,17 @@ val concat_vertical : t -> t -> t
 
 (** {6 Iteration functions} *)
 
+val iteri_row : (int -> elt array -> unit) -> t -> unit
+(** TODO *)
+
+val iter_row :  (elt array -> unit) -> t -> unit
+(** TODO *)
+
+val filteri : (int -> elt array -> bool) -> t -> t
+(** TODO *)
+
+val filter : (elt array -> bool) -> t -> t
+(** TODO *)
 
 
 (** {6 Extended indexing operators} *)
@@ -153,7 +164,7 @@ val ( .%( )<- ) : t -> int * string -> elt -> unit
 
 (** {6 IO & helper functions} *)
 
-val of_csv : ?sep:char -> ?head:string array -> string array -> string -> t
+val of_csv : ?sep:char -> ?head:string array -> ?types:string array -> string -> t
 (** TODO *)
 
 val to_csv : ?sep:char -> t -> string -> unit

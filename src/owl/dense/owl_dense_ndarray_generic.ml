@@ -3634,7 +3634,7 @@ let draw_cols2 ?(replacement=true) x y c =
   x_cols, cols y l, l
 
 
-(* FIXME: optimise ...
+(*
   simiar to sum_rows in matrix, sum all the slices along an axis.
   The default [axis] is the highest dimension. E.g., for [x] of [|2;3;4;5|],
   [sum_slices ~axis:2] returns an ndarray of shape [|4;5|].
@@ -3659,36 +3659,21 @@ let sum_slices ?axis x =
   let s = Array.(sub s axis (length s - axis)) in
   reshape y s
 
-(** Slower than the previous one ... need to optimise sum function
 
-let sum_slices ?axis x =
-  let axis = match axis with
-    | Some a -> a
-    | None   -> num_dims x - 1
-  in
-  (* reshape into 2d matrix *)
-  let s = shape x in
-  let n = (Owl_utils.calc_slice s).(axis) in
-  let m = (numel x) / n in
-  let y = reshape x [|m;n|] in
-  let y = sum ~axis:0 y in
-  (* reshape back into ndarray *)
-  let s = Array.(sub s axis (length s - axis)) in
-  reshape y s
-*)
-
-
-(* Simiar to `sum`, but sums the elements along multiple axes specified in an
+(*
+  Simiar to `sum`, but sums the elements along multiple axes specified in an
   array. E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an
   ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of
   shape [|1;1;1;1|].
  *)
 let sum_reduce ?axis x =
   let _kind = kind x in
+  let _dims = num_dims x in
   match axis with
   | Some a -> (
       let y = ref x in
       Array.iter (fun i ->
+        assert (i < _dims);
         let m, n, o, s = reduce_params i !y in
         let z = zeros _kind s in
         _owl_sum_along _kind m n o !y z;
