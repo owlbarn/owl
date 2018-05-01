@@ -343,8 +343,8 @@ let broadcast_align_shape x0 x1 =
   let d0 = num_dims x0 in
   let d1 = num_dims x1 in
   let d3 = max d0 d1 in
-  let y0 = expand x0 d3 in
-  let y1 = expand x1 d3 in
+  let y0 = expand ~hi:false x0 d3 in
+  let y1 = expand ~hi:false x1 d3 in
   (* check whether the shape is valid *)
   let s0 = shape y0 in
   let s1 = shape y1 in

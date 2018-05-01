@@ -117,18 +117,6 @@ val remove : 'a array -> int -> 'a array
 val replace : int -> int -> 'a array -> 'a array -> 'a array
 (** TODO *)
 
-val filteri_v : (int -> 'a -> bool * 'b) -> 'a array -> 'b array
-(** TODO *)
-
-val filter_v : ('a -> bool * 'b) -> 'a array -> 'b array
-(** TODO *)
-
-val filteri : (int -> 'a -> bool) -> 'a array -> 'a array
-(** TODO *)
-
-val filter : ('a -> bool) -> 'a array -> 'a array
-(** TODO *)
-
 val mapi : (int -> 'a -> 'b) -> 'a array -> 'b array
 (** TODO *)
 
@@ -153,8 +141,51 @@ val map2i : (int -> 'a -> 'b -> 'c) -> 'a array -> 'b array -> 'c array
 val map2i_split2 : (int -> 'a -> 'b -> 'c * 'd) -> 'a array -> 'b array -> 'c array * 'd array
 (** TODO *)
 
+val filteri_v : (int -> 'a -> bool * 'b) -> 'a array -> 'b array
+(** TODO *)
+
+val filter_v : ('a -> bool * 'b) -> 'a array -> 'b array
+(** TODO *)
+
+val filteri : (int -> 'a -> bool) -> 'a array -> 'a array
+(** TODO *)
+
+val filter : ('a -> bool) -> 'a array -> 'a array
+(** TODO *)
+
+val filter2i : (int -> 'a -> 'b -> bool) -> 'a array -> 'b array -> ('a * 'b) array
+(**
+``filter2i f x y`` filters the elements in ``x`` and ``y`` using passed in
+function ``f``. Both arrays must have same length.
+ *)
+
+val filter2 : ('a -> 'b -> bool) -> 'a array -> 'b array -> ('a * 'b) array
+(**
+``filter2 f x y`` is similar to ``filter2i`` but without passing index of
+the elements to function ``f``.
+ *)
+
+val filter2i_i : (int -> 'a -> 'b -> bool) -> 'a array -> 'b array -> int array
+(**
+``filter2i_i f x y`` filters the elements in ``x`` and ``y`` using passed in
+function ``f``. Both arrays must have same length. Note that the indices of
+those satisfying the predicate ``f`` are returned in an array.
+ *)
+
+val filter2_i : ('a -> 'b -> bool) -> 'a array -> 'b array -> int array
+(**
+``filter2_i f x y`` is similar to ``filter2i_i`` but without passing index of
+the elements to function ``f``.
+ *)
+
 val pad : [ `Left | `Right ] -> 'a array -> 'a -> int -> 'a array
 (** TODO *)
+
+val align : [ `Left | `Right ] -> 'a -> 'a array -> 'a array -> 'a array * 'a array
+(**
+``align side v x y`` aligns two arrays ``x`` and ``y`` along the specified side
+with value ``v``. The copies of two arrays are returned.
+ *)
 
 val greater_eqaul : 'a array -> 'a array -> bool
 (** TODO *)
@@ -169,4 +200,7 @@ val of_tuples : ('a * 'a) array -> 'a array
 (** TODO *)
 
 val complement : 'a array -> 'a array -> 'a array
+(** TODO *)
+
+val to_string : ?prefix:string -> ?suffix:string -> ?sep:string -> ('a -> string) -> 'a array -> string
 (** TODO *)

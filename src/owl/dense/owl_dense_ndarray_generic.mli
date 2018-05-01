@@ -1599,8 +1599,8 @@ val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
-``add x y`` adds all the elements in ``x`` and ``y`` elementwise, and returns the
-result in a new ndarray.
+``add x y`` adds all the elements in ``x`` and ``y`` elementwise, and returns
+the result in a new ndarray.
 
 General broadcast operation is automatically applied to add/sub/mul/div, etc.
 The function compares the dimension element-wise from the highest to the
@@ -1610,8 +1610,8 @@ lowest with the following broadcast rules (same as numpy):
 
 val sub : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
-``sub x y`` subtracts all the elements in ``x`` and ``y`` elementwise, and returns
-the result in a new ndarray.
+``sub x y`` subtracts all the elements in ``x`` and ``y`` elementwise, and
+returns the result in a new ndarray.
  *)
 
 val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -1622,8 +1622,8 @@ returns the result in a new ndarray.
 
 val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
-``div x y`` divides all the elements in ``x`` and ``y`` elementwise, and returns
-the result in a new ndarray.
+``div x y`` divides all the elements in ``x`` and ``y`` elementwise, and
+returns the result in a new ndarray.
  *)
 
 val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
