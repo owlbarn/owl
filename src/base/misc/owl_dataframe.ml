@@ -329,10 +329,29 @@ let filteri_row f x =
 let filter_row f x = filteri_row (fun _ row -> f row) x
 
 
-let filteri_map f x = None
+let filter_mapi_row f x =
+  let head = Hashtbl.copy x.head in
+  let used = 0 in
+  let size = 0 in
+  let data = Array.map (fun _ -> Any_Series) x.data in
+  let y = { data; head; used; size } in
+  iteri_row (fun i row ->
+    match f i row with
+    | Some r -> append_row y r
+    | None   -> ()
+  ) x;
+  y
 
 
-let filter_map f x = None
+let filter_map_row f x = filter_mapi_row (fun _ row -> f row) x
+
+
+(* TODO *)
+let get_slice = None
+
+
+(* TODO *)
+let set_slice = None
 
 
 let of_csv ?sep ?head ?types fname =
@@ -379,7 +398,8 @@ let ( .%( )<- ) x idx a = set_by_name x (fst idx) (snd idx) a
 let ( .?( ) ) x f = filter_row f x
 
 
-let ( .?( )<- ) x f = filter_map
+let ( .?( )<- ) x f g =
+  filter_map_row (fun r -> if f r = true then Some (g r) else None) x
 
 
 

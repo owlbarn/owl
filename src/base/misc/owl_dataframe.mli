@@ -167,6 +167,12 @@ val filteri_row : (int -> elt array -> bool) -> t -> t
 val filter_row : (elt array -> bool) -> t -> t
 (** TODO *)
 
+val filter_mapi_row : (int -> elt array -> elt array option) -> t -> t
+(** TODO *)
+
+val filter_map_row : (elt array -> elt array option) -> t -> t
+(** TODO *)
+
 
 (** {6 Extended indexing operators} *)
 
@@ -177,6 +183,9 @@ val ( .%( )<- ) : t -> int * string -> elt -> unit
 (** TODO *)
 
 val ( .?( ) ) : t -> (elt array -> bool) -> t
+(** TODO *)
+
+val ( .?( )<- ) : t -> (elt array -> bool) -> (elt array -> elt array) -> t
 (** TODO *)
 
 
