@@ -10,6 +10,14 @@ script:
 
 env:
   global:
-    - PACKAGE="owl" GIT_MERGE_VERBOSITY=0
+    - OCAML_VERSION=4.06.1
+    - PACKAGE="owl"
+    - PIN="owl-base:."
+    - PRE_INSTALL_HOOK="cd /home/opam/opam-repository && git pull origin master && opam update -uy"
   matrix:
-    - DISTRO=ubuntu-14.04 OCAML_VERSION=4.06.0 # match opam-repository travis
+    - DISTRO=alpine
+    - DISTRO=centos-7
+    - DISTRO=fedora-25
+    - DISTRO=opensuse-42.2
+    - DISTRO=ubuntu-14.04       # opam-repository travis
+    - DISTRO=ubuntu-16.04
