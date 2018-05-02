@@ -108,10 +108,24 @@ let iter2 f x y =
   done
 
 
+let iter2i f x y =
+  let c = min (Array.length x) (Array.length y) in
+  for i = 0 to c - 1 do
+    f i x.(i) y.(i)
+  done
+
+
 let iter3 f x y z =
   let c = min (Array.length x) (Array.length y) |> min (Array.length z) in
   for i = 0 to c - 1 do
     f x.(i) y.(i) z.(i)
+  done
+
+
+let iter3i f x y z =
+  let c = min (Array.length x) (Array.length y) |> min (Array.length z) in
+  for i = 0 to c - 1 do
+    f i x.(i) y.(i) z.(i)
   done
 
 
@@ -137,6 +151,40 @@ let map2i_split2 f x y =
   )
 
 
+let filter2i f x y =
+  let x_len = Array.length x in
+  let y_len = Array.length y in
+  assert (x_len = y_len);
+  if x_len = 0 then [||]
+  else (
+    let r = Owl_utils_stack.make () in
+    iter2i (fun i a b ->
+      if f i a b then Owl_utils_stack.push r (a, b)
+    ) x y;
+    Owl_utils_stack.to_array r
+  )
+
+
+let filter2 f x y = filter2i (fun _ a b -> f a b) x y
+
+
+let filter2i_i f x y =
+  let len_x = Array.length x in
+  let len_y = Array.length y in
+  assert (len_x = len_y);
+  if len_x = 0 then [||]
+  else (
+    let r = Owl_utils_stack.make () in
+    iter2i (fun i a b ->
+      if f i a b then Owl_utils_stack.push r i
+    ) x y;
+    Owl_utils_stack.to_array r
+  )
+
+
+let filter2_i f x y = filter2i_i (fun _ a b -> f a b) x y
+
+
 (* pad n value of v to the left/right of array x *)
 let pad s x v n =
   let l = Array.length x in
@@ -145,6 +193,17 @@ let pad s x v n =
     | `Left  -> Array.blit x 0 y n l
     | `Right -> Array.blit x 0 y 0 l
   in y
+
+
+let align s v x y =
+  let len_x = Array.length x in
+  let len_y = Array.length y in
+  if len_x < len_y then
+    pad s x v (len_y - len_x), Array.copy y
+  else if len_x > len_y then
+    Array.copy x, pad s y v (len_x - len_y)
+  else
+    Array.copy x, Array.copy y
 
 
 (* [x] is greater or equal than [y] elementwise *)
@@ -192,6 +251,12 @@ let complement x y =
   let s = Owl_utils_stack.make () in
   Hashtbl.iter (fun a _ -> Owl_utils_stack.push s a) h;
   Owl_utils_stack.to_array s
+
+
+(* pretty-print an array to string *)
+let to_string ?(prefix="") ?(suffix="") ?(sep=",") elt_to_str x =
+  let s = Array.to_list x |> List.map elt_to_str |> String.concat sep in
+  Printf.sprintf "%s%s%s" prefix s suffix
 
 
 (* ends here *)

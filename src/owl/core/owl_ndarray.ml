@@ -18,5 +18,7 @@ include Owl_ndarray_transpose
 
 include Owl_ndarray_slide
 
+include Owl_ndarray_sort
+
 
 (* ends here *)

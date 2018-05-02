@@ -24,6 +24,9 @@ Returns:
 exception NOT_IMPLEMENTED
 (** Exception of not implemented yet. *)
 
+exception NOT_SUPPORTED
+(** Exception of not supported type. *)
+
 exception FOUND
 (** Exception of found an element. *)
 

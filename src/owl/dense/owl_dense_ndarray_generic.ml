@@ -320,10 +320,10 @@ let resize ?(head=true) x d =
 
 let sort x =
   let y = copy x in
-  _owl_sort (kind y) (numel y) y;
+  Owl_ndarray._owl_sort (kind y) (numel y) y;
   y
 
-let sort_ x = _owl_sort (kind x) (numel x) x
+let sort_ x = Owl_ndarray._owl_sort (kind x) (numel x) x
 
 
 let strides x = x |> shape |> Owl_utils.calc_stride
@@ -343,8 +343,8 @@ let broadcast_align_shape x0 x1 =
   let d0 = num_dims x0 in
   let d1 = num_dims x1 in
   let d3 = max d0 d1 in
-  let y0 = expand x0 d3 in
-  let y1 = expand x1 d3 in
+  let y0 = expand ~hi:false x0 d3 in
+  let y1 = expand ~hi:false x1 d3 in
   (* check whether the shape is valid *)
   let s0 = shape y0 in
   let s1 = shape y1 in
@@ -969,6 +969,12 @@ let dropout ?(rate=0.5) x =
   x
 
 
+let argsort x =
+  let y = sequential Int64 (shape x) in
+  Owl_ndarray._owl_argsort (kind x) (numel x) x y;
+  y
+
+
 (* advanced operations *)
 
 let iteri f x =
@@ -1460,13 +1466,13 @@ let print ?max_row ?max_col ?header ?fmt x =
     | Some a -> Some a
     | None   -> Some n
   in
-  Owl_pretty.print ?max_row ?max_col ?header ?elt_to_str_fun:fmt x
+  Owl_pretty.print_dsnda ?max_row ?max_col ?header ?elt_to_str_fun:fmt x
 
 let pp_dsnda formatter x = Owl_pretty.pp_dsnda formatter x
 
-let save x f = Owl_utils.marshal_to_file x f
+let save x f = Owl_io.marshal_to_file x f
 
-let load k f = Owl_utils.marshal_from_file f
+let load k f = Owl_io.marshal_from_file f
 
 let of_array k x d =
   let n = Array.fold_left (fun a b -> a * b) 1 d in

@@ -545,6 +545,13 @@ as result, the original ``x`` remains intact. If you want to perform in-place
 sorting, please use `sort_` instead.
  *)
 
+val argsort : ('a, 'b) t -> (int64, int64_elt) t
+(**
+``argsort x`` returns the indices with which the elements in ``x`` are sorted in
+increasing order. Note that the returned index ndarray has the same shape as
+that of ``x``, and the indices are 1D indices.
+ *)
+
 val draw : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 (**
 ``draw ~axis x n`` draws ``n`` samples from ``x`` along the specified ``axis``,
@@ -1592,8 +1599,8 @@ val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
-``add x y`` adds all the elements in ``x`` and ``y`` elementwise, and returns the
-result in a new ndarray.
+``add x y`` adds all the elements in ``x`` and ``y`` elementwise, and returns
+the result in a new ndarray.
 
 General broadcast operation is automatically applied to add/sub/mul/div, etc.
 The function compares the dimension element-wise from the highest to the
@@ -1603,8 +1610,8 @@ lowest with the following broadcast rules (same as numpy):
 
 val sub : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
-``sub x y`` subtracts all the elements in ``x`` and ``y`` elementwise, and returns
-the result in a new ndarray.
+``sub x y`` subtracts all the elements in ``x`` and ``y`` elementwise, and
+returns the result in a new ndarray.
  *)
 
 val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -1615,8 +1622,8 @@ returns the result in a new ndarray.
 
 val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
-``div x y`` divides all the elements in ``x`` and ``y`` elementwise, and returns
-the result in a new ndarray.
+``div x y`` divides all the elements in ``x`` and ``y`` elementwise, and
+returns the result in a new ndarray.
  *)
 
 val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t

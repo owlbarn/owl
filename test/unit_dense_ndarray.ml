@@ -318,6 +318,24 @@ module To_test = struct
     M.set y [|1;1;1|] 1.;
     M.(x = y)
 
+  let sort () =
+    let x = M.of_array Float64 [|3.;2.;0.;1.|] [|2;2|] in
+    let y = M.of_array Float64 [|0.;1.;2.;3.|] [|2;2|] in
+    let z = M.sort x in
+    M.(y = z)
+
+  let argsort_1 () =
+    let x = M.of_array Float64 [|2.;3.;0.;1.|] [|4|] in
+    let y = M.of_array Int64 [|2L;3L;0L;1L|] [|4|] in
+    let z = M.argsort x in
+    M.(y = z)
+
+  let argsort_2 () =
+    let x = M.of_array Float64 [|3.;2.;0.;1.|] [|2;2|] in
+    let y = M.of_array Int64 [|2L;3L;1L;0L|] [|2;2|] in
+    let z = M.argsort x in
+    M.(y = z)
+
 
 end
 
@@ -530,6 +548,15 @@ let one_hot_1 () =
 let one_hot_2 () =
   Alcotest.(check bool) "one_hot_2" true (To_test.one_hot_2 ())
 
+let sort () =
+  Alcotest.(check bool) "sort" true (To_test.sort ())
+
+let argsort_1 () =
+  Alcotest.(check bool) "argsort_1" true (To_test.argsort_1 ())
+
+let argsort_2 () =
+  Alcotest.(check bool) "argsort_2" true (To_test.argsort_2 ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -600,4 +627,7 @@ let test_set = [
   "diff_2", `Slow, diff_2;
   "one_hot_1", `Slow, one_hot_1;
   "one_hot_2", `Slow, one_hot_2;
+  "sort", `Slow, sort;
+  "argsort_1", `Slow, argsort_1;
+  "argsort_2", `Slow, argsort_2;
 ]

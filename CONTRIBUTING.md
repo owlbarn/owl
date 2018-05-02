@@ -5,9 +5,10 @@ OCaml distribution. These are just guidelines, not rules, use your
 best judgment and feel free to propose changes to this document itself
 in a pull request.
 
-Owl is currently under acive maintaining. Besides coding, there are many other
+Owl is currently under active maintaining. Besides coding, there are many other
 ways you can contribute. Bug reporting, typo fix, asking/answering questions,
-and improvement of existing documents are all well appriciated.
+and improvement of existing documents are all well appreciated.
+
 
 ## Coding Guidelines
 
@@ -29,6 +30,7 @@ match l with
 - Do not have line longer than 80 columns.
 - Use spaces rather than tab.
 
+
 ## Test before a PR
 
 - `utop` provides a convenient environment for playing with `Owl`. However, a
@@ -49,11 +51,12 @@ snippets in `owl`.
 - Keep corner cases in mind. For example, does your code also work for complex
  +numbers?
 
+
 ## Submit a Proposal
 
 Before you start implementing something, especially something significant.
 Please submit a proposal first on
-[owl's issue tracker](https://github.com/ryanrhymes/owl/issues). This first
+[Owl's issue tracker](https://github.com/ryanrhymes/owl/issues). This first
 can ensure you get enough support from me in the following development. Second,
 this avoids unnecessary duplicated work in case someone else already started
 working the same feature, which indeed happened before. Last, you may find
@@ -64,9 +67,45 @@ want to contribute to which module. In case something more significant that
 can be a standalone module, please also briefly specify the included functions,
 although these can be subject to changes in future implementation.
 
+
 ## Documentation
 
 - Be concise, simple, and correct.
 - Make sure the grammar is correct.
 - Refer to the original paper whenever possible.
 - Use both long documentation in `mli` and short inline documentation in code.
+
+
+## Agreement on Commits
+
+This is a must read before committing your code to Owl's repository. You should
+use `git commit -s` to sign off your commits. If omitted, I will assume you are
+complied with DCO and implicitly signed off.
+
+```text
+Developer's Certificate of Origin 1.1
+
+By making a contribution to this project, I certify that:
+
+(a) The contribution was created in whole or in part by me and I
+    have the right to submit it under the open source license
+    indicated in the file; or
+
+(b) The contribution is based upon previous work that, to the best
+    of my knowledge, is covered under an appropriate open source
+    license and I have the right under that license to submit that
+    work with modifications, whether created in whole or in part
+    by me, under the same open source license (unless I am
+    permitted to submit under a different license), as indicated
+    in the file; or
+
+(c) The contribution was provided directly to me by some other
+    person who certified (a), (b) or (c) and I have not modified
+    it.
+
+(d) I understand and agree that this project and the contribution
+    are public and that a record of the contribution (including all
+    personal information I submit with it, including my sign-off) is
+    maintained indefinitely and may be redistributed consistent with
+    this project or the open source license(s) involved.
+```

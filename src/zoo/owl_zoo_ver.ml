@@ -25,14 +25,14 @@ key: gid; value: (version list, timestamp). *)
 let create_htb () =
   let tb = Hashtbl.create 128 in
   Hashtbl.add tb "" ([|""|], 0.);
-  Owl_utils.marshal_to_file tb htb
+  Owl_io.marshal_to_file tb htb
 
 
 (** Try to get the value of key `gid`; if not found, return default values with
 a `true` flag. *)
 let get_value (gid : string) =
   if not (Sys.file_exists htb) then create_htb ();
-  let tb = Owl_utils.marshal_from_file htb in
+  let tb = Owl_io.marshal_from_file htb in
   if (gid = "") then ([|""|], 0., tb, true)
   else try
     let v, ts = Hashtbl.find tb gid in
@@ -89,7 +89,7 @@ let update (gid : string) (vid : string) =
       let v' = Array.append v [|vid|] in
       let ts = Unix.time () in
       Hashtbl.replace tb gid (v', ts);
-      Owl_utils.marshal_to_file tb htb;
+      Owl_io.marshal_to_file tb htb;
     ) else (
       Owl_log.debug "owl-zoo: Gist %s/%s already exists in the record" gid vid
     )
@@ -97,7 +97,7 @@ let update (gid : string) (vid : string) =
     let v = [|vid|] in
     let ts = Unix.time () in
     Hashtbl.add tb gid (v, ts);
-    Owl_utils.marshal_to_file tb htb;
+    Owl_io.marshal_to_file tb htb;
   )
 
 
@@ -106,7 +106,7 @@ let remove (gid : string)  =
   let _, _, tb, miss_flag = get_value gid in
   if (miss_flag == false) then (
     Hashtbl.remove tb gid;
-    Owl_utils.marshal_to_file tb htb;
+    Owl_io.marshal_to_file tb htb;
   ) else (
     Owl_log.debug "owl-zoo: Gist %s not found in the record" gid
   )

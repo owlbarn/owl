@@ -122,16 +122,16 @@ let gauss_legendre ?(eps=3e-11) ?(a=(-1.)) ?(b=(+1.)) n =
             p1 := ((2. *. j' -. 1.) *. !z *. !p2 -. (j' -. 1.) *. !p3) /. j';
           done;
           pp := n' *. (!z *. !p1 -. !p2) /. (!z *. !z -. 1.);
-    			let z1 = !z in
-    			z := z1 -. !p1 /. !pp;
+          let z1 = !z in
+          z := z1 -. !p1 /. !pp;
           assert (abs_float (!z -. z1) > eps);
         done
       with _ -> ()
     );
     x.(i - 1) <- xm -. xl *. !z;
-		x.(n - i) <- xm +. xl *. !z;
-		w.(i - 1) <- 2. *. xl /. ((1. -. !z *. !z) *. !pp *. !pp);
-		w.(n - i) <- w.(i - 1);
+    x.(n - i) <- xm +. xl *. !z;
+    w.(i - 1) <- 2. *. xl /. ((1. -. !z *. !z) *. !pp *. !pp);
+    w.(n - i) <- w.(i - 1);
   done;
 
   x, w

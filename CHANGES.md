@@ -1,3 +1,14 @@
+### 0.3.8
+
+* Add initial support for dataframe functionality.
+* Add IO module for Owl's specific file operations.
+* Add more helper functions in Array module in Base.
+* Add core functions such as one_hot, slide, and etc.
+* Fix normalisation neuron in neural network module.
+* Fix building, installation, and publishing on OPAM.
+* Fix broadcasting issue in Algodiff module.
+
+
 ### 0.3.7 (2018-04-25)
 
 * Fix some bugs and improve performance.
