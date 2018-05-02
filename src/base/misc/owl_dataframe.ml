@@ -5,10 +5,10 @@
 
 
 type elt =
-  | Int'    of int
-  | Float'  of float
-  | String' of string
-  | Any'
+  | Int    of int
+  | Float  of float
+  | String of string
+  | Any
 
 
 type series =
@@ -26,11 +26,11 @@ type t = {
 }
 
 
-let unpack_int = function Int' x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+let unpack_int = function Int x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
-let unpack_float = function Float' x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+let unpack_float = function Float x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
-let unpack_string = function String' x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+let unpack_string = function String x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
 let unpack_int_series = function Int_Series x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
@@ -38,11 +38,11 @@ let unpack_float_series = function Float_Series x -> x | _ -> raise Owl_exceptio
 
 let unpack_string_series = function String_Series x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
-let pack_int x = Int' x
+let pack_int x = Int x
 
-let pack_float x = Float' x
+let pack_float x = Float x
 
-let pack_string x = String' x
+let pack_string x = String x
 
 let pack_int_series x = Int_Series x
 
@@ -79,26 +79,33 @@ let allocate_space data =
 
 let set_elt_in_series x i a =
   match a with
-  | Int' a    -> (unpack_int_series x).(i) <- a
-  | Float' a  -> (unpack_float_series x).(i) <- a
-  | String' a -> (unpack_string_series x).(i) <- a
-  | Any'      -> ()
+  | Int a    -> (unpack_int_series x).(i) <- a
+  | Float a  -> (unpack_float_series x).(i) <- a
+  | String a -> (unpack_string_series x).(i) <- a
+  | Any      -> ()
 
 
 let get_elt_in_series x i =
   match x with
-  | Int_Series c    -> Int' c.(i)
-  | Float_Series c  -> Float' c.(i)
-  | String_Series c -> String' c.(i)
-  | Any_Series      -> Any'
+  | Int_Series c    -> Int c.(i)
+  | Float_Series c  -> Float c.(i)
+  | String_Series c -> String c.(i)
+  | Any_Series      -> Any
 
 
 let init_series n a =
   match a with
-  | Int' a    -> Int_Series (Array.make n a)
-  | Float' a  -> Float_Series (Array.make n a)
-  | String' a -> String_Series (Array.make n a)
-  | Any'      -> Any_Series
+  | Int a    -> Int_Series (Array.make n a)
+  | Float a  -> Float_Series (Array.make n a)
+  | String a -> String_Series (Array.make n a)
+  | Any      -> Any_Series
+
+
+let resize n = function
+  | Int_Series c    -> Int_Series (Owl_utils_array.resize ~head:true 0 n c)
+  | Float_Series c  -> Float_Series (Owl_utils_array.resize ~head:true 0. n c)
+  | String_Series c -> String_Series (Owl_utils_array.resize ~head:true "" n c)
+  | Any_Series      -> Any_Series
 
 
 let length_series = function
@@ -109,20 +116,33 @@ let length_series = function
 
 
 let elt_to_str = function
-  | Int' a    -> string_of_int a
-  | Float' a  -> string_of_float a
-  | String' a -> a
-  | Any'      -> ""
+  | Int a    -> string_of_int a
+  | Float a  -> string_of_float a
+  | String a -> a
+  | Any      -> ""
 
 
 let str_to_elt_fun = function
-  | "%i" -> fun a -> Int' (int_of_string a)
-  | "%f" -> fun a -> if a = "" then Float' nan else Float' (float_of_string a)
-  | "%s" -> fun a -> String' a
+  | "%i" -> fun a -> Int (int_of_string a)
+  | "%f" -> fun a -> if a = "" then Float nan else Float (float_of_string a)
+  | "%s" -> fun a -> String a
   | _    -> failwith "str_to_elt_fun: unsupported type"
 
 
+let col_num x = Array.length x.data
+
+
+let row_num x = x.used
+
+
+let shape x = row_num x, col_num x
+
+
+let numel x = (row_num x) * (col_num x)
+
+
 let append_row x row =
+  assert (col_num x = Array.length row);
   if x.size = 0 then (
     let n = 16 in
     x.data <- Array.map (init_series n) row;
@@ -139,8 +159,12 @@ let append_row x row =
   )
 
 
-(* TODO *)
-let append_col x col = raise Owl_exception.NOT_IMPLEMENTED
+let append_col x col head =
+  let m, n = shape x in
+  assert (m = length_series col);
+  let col = resize x.size col in
+  Hashtbl.add x.head head n;
+  x.data <- Array.append x.data [| col |]
 
 
 let get_heads x =
@@ -159,10 +183,10 @@ let set_heads x head_names =
   x.head <- head
 
 
-let get_head x i = (get_heads x).(i)
+let id_to_head x i = (get_heads x).(i)
 
 
-let get_head_idx x name = Hashtbl.find x.head name
+let head_to_id x name = Hashtbl.find x.head name
 
 
 let get_row x i = Array.map (fun y -> get_elt_in_series y i) x.data
@@ -196,10 +220,10 @@ let get_cols_by_name x names = Array.map (get_col_by_name x) names
 
 let get x i j =
   match x.data.(j) with
-  | Int_Series c    -> Int' c.(i)
-  | Float_Series c  -> Float' c.(i)
-  | String_Series c -> String' c.(i)
-  | Any_Series      -> Any'
+  | Int_Series c    -> Int c.(i)
+  | Float_Series c  -> Float c.(i)
+  | String_Series c -> String c.(i)
+  | Any_Series      -> Any
 
 
 let set x i j a =
@@ -219,22 +243,16 @@ let set_by_name x i name a =
   set x i j a
 
 
-let col_num x = Array.length x.data
-
-
-let row_num x = x.used
-
-
-let shape x = row_num x, col_num x
-
-
-let numel x = (row_num x) * (col_num x)
-
-
 let to_cols x = x.data
 
 
-let to_rows x = raise Owl_exception.NOT_IMPLEMENTED
+let to_rows x =
+  let stack = Owl_utils.Stack.make () in
+  let m = row_num x in
+  for i = 0 to m - 1 do
+    Owl_utils.Stack.push stack (get_row x i)
+  done;
+  Owl_utils.Stack.to_array stack
 
 
 let copy x =
@@ -296,7 +314,7 @@ let mapi_row f x =
 let map_row f x = mapi_row (fun _ row -> f row) x
 
 
-let filteri f x =
+let filteri_row f x =
   let head = Hashtbl.copy x.head in
   let used = 0 in
   let size = 0 in
@@ -308,7 +326,7 @@ let filteri f x =
   y
 
 
-let filter f x = filteri (fun _ row -> f row) x
+let filter_row f x = filteri_row (fun _ row -> f row) x
 
 
 let filteri_map f x = None
@@ -358,7 +376,7 @@ let ( .%( ) ) x idx = get_by_name x (fst idx) (snd idx)
 let ( .%( )<- ) x idx a = set_by_name x (fst idx) (snd idx) a
 
 
-let ( .?( ) ) x f = filter f x
+let ( .?( ) ) x f = filter_row f x
 
 
 let ( .?( )<- ) x f = filter_map

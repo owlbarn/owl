@@ -185,6 +185,20 @@ let filter2i_i f x y =
 let filter2_i f x y = filter2i_i (fun _ a b -> f a b) x y
 
 
+let resize ?(head=true) v n x =
+  let m = Array.length x in
+  if n < m then Array.(sub x 0 n |> copy)
+  else if n > m then (
+    let y = Array.make n v in
+    (
+      if head = true then Array.blit x 0 y 0 m
+      else Array.blit x 0 y (n - m) m
+    );
+    y
+  )
+  else Array.copy x
+
+
 (* pad n value of v to the left/right of array x *)
 let pad s v n x =
   let l = Array.length x in

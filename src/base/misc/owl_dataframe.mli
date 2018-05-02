@@ -13,14 +13,14 @@ type series
 (** TODO *)
 
 type elt =
-  | Int'    of int
-  | Float'  of float
-  | String' of string
-  | Any'
+  | Int    of int
+  | Float  of float
+  | String of string
+  | Any
 (** TODO *)
 
 
-(** {6 Pakcking & unpacking functions} *)
+(** {6 Pakcking & unpacking element} *)
 
 val pack_int : int -> elt
 (** TODO *)
@@ -39,6 +39,9 @@ val unpack_float : elt -> float
 
 val unpack_string : elt -> string
 (** TODO *)
+
+
+(** {6 Pakcking & unpacking series} *)
 
 val pack_int_series : int array -> series
 (** TODO *)
@@ -79,10 +82,10 @@ val get_heads : t -> string array
 val set_heads : t -> string array -> unit
 (** TODO *)
 
-val get_head : t -> int -> string
+val id_to_head : t -> int -> string
 (** TODO *)
 
-val get_head_idx : t -> string -> int
+val head_to_id : t -> string -> int
 (** TODO *)
 
 
@@ -130,6 +133,9 @@ val copy : t -> t
 val append_row : t -> elt array -> unit
 (** TODO *)
 
+val append_col : t -> series -> string -> unit
+(** TODO *)
+
 val concat_horizontal : t -> t -> t
 (** TODO *)
 
@@ -155,10 +161,10 @@ val mapi_row : (int -> elt array -> elt array) -> t -> t
 val map_row : (elt array -> elt array) -> t -> t
 (** TODO *)
 
-val filteri : (int -> elt array -> bool) -> t -> t
+val filteri_row : (int -> elt array -> bool) -> t -> t
 (** TODO *)
 
-val filter : (elt array -> bool) -> t -> t
+val filter_row : (elt array -> bool) -> t -> t
 (** TODO *)
 
 
@@ -180,6 +186,9 @@ val of_csv : ?sep:char -> ?head:string array -> ?types:string array -> string ->
 (** TODO *)
 
 val to_csv : ?sep:char -> t -> string -> unit
+(** TODO *)
+
+val to_rows : t -> elt array array
 (** TODO *)
 
 val to_cols : t -> series array

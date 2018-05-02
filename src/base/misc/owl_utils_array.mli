@@ -178,6 +178,14 @@ val filter2_i : ('a -> 'b -> bool) -> 'a array -> 'b array -> int array
 the elements to function ``f``.
  *)
 
+
+val resize : ?head:bool -> 'a -> int -> 'a array -> 'a array
+(**
+``resize ~head v n x`` resizes ``x`` of length ``m`` to length ``n``. If
+``m <= n``, a copy of ``x`` subarray is returned. If ``m > n``, then ``x`` is
+extended, the extra space is filled with value ``v``.
+ *)
+
 val pad : [ `Left | `Right ] -> 'a -> int -> 'a array -> 'a array
 (** TODO *)
 

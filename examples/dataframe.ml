@@ -30,7 +30,7 @@ let example_04 gist_path =
   let fname = gist_path ^ "insurance.csv" in
   let types =  [|"%i";"%s";"%s";"%f";"%f";"%f";"%f";"%f";"%f";"%f";"%f";"%f";"%f";"%f";"%f";"%s";"%s";"%i"|] in
   let d0 = Dataframe.of_csv ~sep:',' ~types fname in
-  let d1 = Dataframe.(filter (fun row ->
+  let d1 = Dataframe.(filter_row (fun row ->
     (unpack_string row.(15)) = "Commercial" && (unpack_float row.(3)) > 0.
     ) d0) in
   Owl_pretty.pp_dataframe Format.std_formatter d1
