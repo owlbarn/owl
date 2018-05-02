@@ -162,6 +162,9 @@ let set_heads x head_names =
 let get_head x i = (get_heads x).(i)
 
 
+let get_head_idx x name = Hashtbl.find x.head name
+
+
 let get_row x i = Array.map (fun y -> get_elt_in_series y i) x.data
 
 
@@ -295,6 +298,12 @@ let filteri f x =
 let filter f x = filteri (fun _ row -> f row) x
 
 
+let filteri_map f x = None
+
+
+let filter_map f x = None
+
+
 let of_csv ?sep ?head ?types fname =
   let head_i = 0 in
   let head_names = match head with
@@ -334,6 +343,13 @@ let ( .%( ) ) x idx = get_by_name x (fst idx) (snd idx)
 
 
 let ( .%( )<- ) x idx a = set_by_name x (fst idx) (snd idx) a
+
+
+let ( .?( ) ) x f = filter f x
+
+
+let ( .?( )<- ) x f = filter_map
+
 
 
 (* ends here *)

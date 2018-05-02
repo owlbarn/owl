@@ -82,6 +82,9 @@ val set_heads : t -> string array -> unit
 val get_head : t -> int -> string
 (** TODO *)
 
+val get_head_idx : t -> string -> int
+(** TODO *)
+
 
 (** {6 Basic get and set functions} *)
 
@@ -159,6 +162,9 @@ val ( .%( ) ) : t -> int * string -> elt
 (** TODO *)
 
 val ( .%( )<- ) : t -> int * string -> elt -> unit
+(** TODO *)
+
+val ( .?( ) ) : t -> (elt array -> bool) -> t
 (** TODO *)
 
 
