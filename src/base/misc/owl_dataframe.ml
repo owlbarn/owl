@@ -283,6 +283,19 @@ let iteri_row f x =
 let iter_row f x = iteri_row (fun _ row -> f row) x
 
 
+let mapi_row f x =
+  let head = Hashtbl.copy x.head in
+  let used = 0 in
+  let size = 0 in
+  let data = Array.map (fun _ -> Any_Series) x.data in
+  let y = { data; head; used; size } in
+  iteri_row (fun i row -> append_row y (f i row)) x;
+  y
+
+
+let map_row f x = mapi_row (fun _ row -> f row) x
+
+
 let filteri f x =
   let head = Hashtbl.copy x.head in
   let used = 0 in

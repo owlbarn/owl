@@ -149,6 +149,12 @@ val iteri_row : (int -> elt array -> unit) -> t -> unit
 val iter_row :  (elt array -> unit) -> t -> unit
 (** TODO *)
 
+val mapi_row : (int -> elt array -> elt array) -> t -> t
+(** TODO *)
+
+val map_row : (elt array -> elt array) -> t -> t
+(** TODO *)
+
 val filteri : (int -> elt array -> bool) -> t -> t
 (** TODO *)
 
