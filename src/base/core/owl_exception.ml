@@ -9,6 +9,8 @@ let check p e =
 
 exception NOT_IMPLEMENTED
 
+exception NOT_SUPPORTED
+
 exception FOUND
 
 exception NOT_FOUND

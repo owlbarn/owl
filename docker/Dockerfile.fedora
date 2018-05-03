@@ -39,6 +39,6 @@ RUN make -C $OWLPATH && make -C $OWLPATH install && make -C $OWLPATH clean
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
-RUN echo "#require \"owl_top\";; open Owl;;" >> /home/opam/.ocamlinit
+RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit
 WORKDIR $OWLPATH
 ENTRYPOINT /bin/bash

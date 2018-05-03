@@ -157,11 +157,11 @@ extern "C" {
 #if defined(_MSC_VER)
   #define OWL_INLINE __inline
 #elif defined(__GNUC__)
-	#if defined(__STRICT_ANSI__)
-		#define OWL_INLINE __inline__
-	#else
-		#define OWL_INLINE inline
-	#endif
+  #if defined(__STRICT_ANSI__)
+    #define OWL_INLINE __inline__
+  #else
+    #define OWL_INLINE inline
+  #endif
 #else
   #define OWL_INLINE
 #endif

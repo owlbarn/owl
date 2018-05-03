@@ -160,6 +160,9 @@ module type Sig = sig
     val sum : ?axis:int -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val sum_reduce : ?axis:int array -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val mean : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

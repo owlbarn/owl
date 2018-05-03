@@ -483,7 +483,7 @@ let print ?max_row ?max_col ?header ?fmt varr =
     | Some a -> Some a
     | None   -> Some n
   in
-  Owl_pretty.print ?max_row ?max_col ?header ?elt_to_str_fun:fmt varr
+  Owl_pretty.print_dsnda ?max_row ?max_col ?header ?elt_to_str_fun:fmt varr
 
 
 (* TODO: optimise *)
@@ -758,9 +758,54 @@ let min' varr = (_fold_left (Pervasives.min) Pervasives.max_float varr)
 (* Max of all elements in the NDarray *)
 let max' varr = (_fold_left (Pervasives.max) Pervasives.min_float varr)
 
+(* TODO: revise functions with float type to 'a *)
 
 (* Sum of all elements *)
-let sum' varr = (_fold_left (+.) 0. varr)
+let sum' varr =
+  let _kind = kind varr in
+  _fold_left (Owl_base_dense_common._add_elt _kind) (Owl_const.zero _kind) varr
+
+
+(* Folding along a specified axis, aka reduction. The
+   f: function of type 'a -> 'a -> 'a.
+   m: number of slices.
+   n: x's slice size.
+   o: x's strides, also y's slice size.
+   x: source; y: shape of destination. Note that o <= n.
+ *)
+let fold_along f m n o x ys =
+  let x = flatten x in
+  let y = zeros (kind x) ys |> flatten in
+  let idx = ref 0 in
+  let idy = ref 0 in
+  let incy = ref 0 in
+  for i = 0 to (m - 1) do
+    for j = 0 to (n - 1) do
+      let addon = Genarray.get x [|!idx + j|] in
+      let orig  = Genarray.get y [|!idy + !incy|] in
+      Genarray.set y [|!idy + !incy|] (f orig addon);
+      incy := if (!incy + 1 = o) then 0 else !incy + 1
+    done;
+    idx := !idx + n;
+    idy := !idy + o;
+  done;
+  reshape y ys
+
+
+let sum_reduce ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let y = ref x in
+      for i = 0 to (num_dims x - 1) do
+        if Array.mem i a then (
+          let m, n, o, s = reduce_params i !y in
+          y := fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s
+        )
+      done;
+      !y
+    )
+  | None   -> create (kind x) (Array.make (num_dims x) 1) (sum' x)
 
 
 let l1norm' varr =
@@ -2523,7 +2568,7 @@ let inv varr =
 
 
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
-let load k f = Owl_utils.marshal_from_file f
+let load k f = Owl_io.marshal_from_file f
 
 
 let max_rows varr =

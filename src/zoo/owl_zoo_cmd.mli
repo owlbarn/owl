@@ -50,3 +50,9 @@ val print_info : unit -> unit
 
 val start_toplevel : unit -> unit
 (** Start the toplevel system tailored for Owl's zoo system. *)
+
+val query_path : string -> string
+(** ``query_path gist`` returns the absolute path of a given gist. *)
+
+val load_file : ?gist:string -> string -> string
+(** Load a zoo file with the given gist name and file name, the file path is relative to the gist/version folder. *)

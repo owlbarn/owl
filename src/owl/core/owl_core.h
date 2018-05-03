@@ -138,9 +138,9 @@ extern int float32_cmp (const void * a, const void * b);
 
 extern int float64_cmp (const void * a, const void * b);
 
-extern int complex32_cmpf (const void * a, const void * b);
+extern int complex32_cmp (const void * a, const void * b);
 
-extern int complex64_cmpf (const void * a, const void * b);
+extern int complex64_cmp (const void * a, const void * b);
 
 extern int int8_cmp (const void * a, const void * b);
 
@@ -153,6 +153,26 @@ extern int uint16_cmp (const void * a, const void * b);
 extern int int32_cmp (const void * a, const void * b);
 
 extern int int64_cmp (const void * a, const void * b);
+
+extern int float32_cmp_r (const void * a, const void * b, const void * z);
+
+extern int float64_cmp_r (const void * a, const void * b, const void * z);
+
+extern int complex32_cmp_r (const void * a, const void * b, const void * z);
+
+extern int complex64_cmp_r (const void * a, const void * b, const void * z);
+
+extern int int8_cmp_r (const void * a, const void * b, const void * z);
+
+extern int uint8_cmp_r (const void * a, const void * b, const void * z);
+
+extern int int16_cmp_r (const void * a, const void * b, const void * z);
+
+extern int uint16_cmp_r (const void * a, const void * b, const void * z);
+
+extern int int32_cmp_r (const void * a, const void * b, const void * z);
+
+extern int int64_cmp_r (const void * a, const void * b, const void * z);
 
 
 // copy two double type numbers, for interfacing to foreign functions

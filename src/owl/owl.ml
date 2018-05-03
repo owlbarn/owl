@@ -23,6 +23,8 @@ let complex64 = Bigarray.complex64
 
 module Const = Owl_const
 
+module Exception = Owl_exception
+
 module Dense = Owl_dense
 
 module Sparse = Owl_sparse
@@ -53,14 +55,20 @@ module Ext = Owl_ext
 
 module Dataset = Owl_dataset
 
+module Dataframe = Owl_dataframe
+
 module Lazy = Owl_lazy
 
 module Graph = Owl_graph
+
+module Nlp = Owl_nlp
 
 
 (* backend modules *)
 
 module Cblas = Owl_cblas
+
+module Lapacke = Owl_lapacke
 
 
 (* shortcuts to 64-bit precision modules *)

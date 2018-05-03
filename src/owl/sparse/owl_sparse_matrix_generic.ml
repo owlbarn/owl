@@ -578,9 +578,9 @@ let pp_spmat x =
     Owl_dense_matrix_generic.print (to_dense x);
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
-let save x f = Owl_utils.marshal_to_file x f
+let save x f = Owl_io.marshal_to_file x f
 
-let load k f = Owl_utils.marshal_from_file f
+let load k f = Owl_io.marshal_from_file f
 
 (* TODO: optimise *)
 let rows x l =

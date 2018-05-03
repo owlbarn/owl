@@ -5772,58 +5772,6 @@
 #define MAPFN(X) CLT(X,a) ? a : (CGT(X,b) ? b : X)
 #include OWL_NDARRAY_MATHS_MAP
 
-// sort
-
-#define FUN3 float32_sort
-#define NUMBER float
-#define MAPFN(X) qsort(X,N,sizeof(float),float32_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 float64_sort
-#define NUMBER float
-#define MAPFN(X) qsort(X,N,sizeof(double),float64_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 complex32_sort
-#define NUMBER _Complex float
-#define MAPFN(X) qsort(X,N,sizeof(_Complex float),complex32_cmpf)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 complex64_sort
-#define NUMBER _Complex double
-#define MAPFN(X) qsort(X,N,sizeof(_Complex double),complex64_cmpf)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 int8_sort
-#define NUMBER int8_t
-#define MAPFN(X) qsort(X,N,sizeof(int8_t),int8_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 uint8_sort
-#define NUMBER uint8_t
-#define MAPFN(X) qsort(X,N,sizeof(uint8_t),uint8_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 int16_sort
-#define NUMBER int16_t
-#define MAPFN(X) qsort(X,N,sizeof(int16_t),int16_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 uint16_sort
-#define NUMBER uint16_t
-#define MAPFN(X) qsort(X,N,sizeof(uint16_t),uint16_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 int32_sort
-#define NUMBER int32_t
-#define MAPFN(X) qsort(X,N,sizeof(int32_t),int32_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 int64_sort
-#define NUMBER int64_t
-#define MAPFN(X) qsort(X,N,sizeof(int64_t),int64_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
 // repeat
 
 #define FUN20 float32_repeat
@@ -5894,6 +5842,88 @@
 #define NUMBER int64_t
 #define NUMBER1 int64_t
 #define MAPFN(X,Y) *Y = *X
+#include OWL_NDARRAY_MATHS_MAP
+
+// one_hot
+
+#define FUN19 float32_one_hot
+#define FUN19_IMPL float32_one_hot_impl
+#define NUMBER float
+#define NUMBER1 float
+#define INIT
+#define MAPFN(X,Y) *(Y + ((int) *X)) = 1
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN19 float64_one_hot
+#define FUN19_IMPL float64_one_hot_impl
+#define NUMBER double
+#define NUMBER1 double
+#define INIT
+#define MAPFN(X,Y) *(Y + ((int) *X)) = 1
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN19 complex32_one_hot
+#define FUN19_IMPL complex32_one_hot_impl
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define INIT
+#define MAPFN(X,Y) *(Y + ((int) *X)) = 1
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN19 complex64_one_hot
+#define FUN19_IMPL complex64_one_hot_impl
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define INIT
+#define MAPFN(X,Y) *(Y + ((int) *X)) = 1
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN19 int8_one_hot
+#define FUN19_IMPL int8_one_hot_impl
+#define NUMBER int8_t
+#define NUMBER1 int8_t
+#define INIT
+#define MAPFN(X,Y) *(Y + ((int) *X)) = 1
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN19 uint8_one_hot
+#define FUN19_IMPL uint8_one_hot_impl
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define INIT
+#define MAPFN(X,Y) *(Y + ((int) *X)) = 1
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN19 int16_one_hot
+#define FUN19_IMPL int16_one_hot_impl
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define INIT
+#define MAPFN(X,Y) *(Y + ((int) *X)) = 1
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN19 uint16_one_hot
+#define FUN19_IMPL uint16_one_hot_impl
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define INIT
+#define MAPFN(X,Y) *(Y + ((int) *X)) = 1
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN19 int32_one_hot
+#define FUN19_IMPL int32_one_hot_impl
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define INIT
+#define MAPFN(X,Y) *(Y + ((int) *X)) = 1
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN19 int64_one_hot
+#define FUN19_IMPL int64_one_hot_impl
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define INIT
+#define MAPFN(X,Y) *(Y + ((int) *X)) = 1
 #include OWL_NDARRAY_MATHS_MAP
 
 // broadcast_add
