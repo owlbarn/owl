@@ -185,8 +185,22 @@ let filter2i_i f x y =
 let filter2_i f x y = filter2i_i (fun _ a b -> f a b) x y
 
 
+let resize ?(head=true) v n x =
+  let m = Array.length x in
+  if n < m then Array.(sub x 0 n |> copy)
+  else if n > m then (
+    let y = Array.make n v in
+    (
+      if head = true then Array.blit x 0 y 0 m
+      else Array.blit x 0 y (n - m) m
+    );
+    y
+  )
+  else Array.copy x
+
+
 (* pad n value of v to the left/right of array x *)
-let pad s x v n =
+let pad s v n x =
   let l = Array.length x in
   let y = Array.make (l + n) v in
   let _ = match s with
@@ -199,9 +213,9 @@ let align s v x y =
   let len_x = Array.length x in
   let len_y = Array.length y in
   if len_x < len_y then
-    pad s x v (len_y - len_x), Array.copy y
+    pad s v (len_y - len_x) x, Array.copy y
   else if len_x > len_y then
-    Array.copy x, pad s y v (len_x - len_y)
+    Array.copy x, pad s v (len_x - len_y) y
   else
     Array.copy x, Array.copy y
 
@@ -231,6 +245,40 @@ let swap x i j =
 let permute p x =
   let n = Array.length x in
   Array.init n (fun i -> x.(p.(i)))
+
+
+let get_slice slice x =
+  assert (Array.length slice = 3);
+  let n = Array.length x in
+  let start = if slice.(0) < 0 then n + slice.(0) else slice.(0) in
+  let stop = if slice.(1) < 0 then n + slice.(1) else slice.(1) in
+  let step = slice.(2) in
+  assert (abs step <= n && start < n && stop < n);
+
+  let m = (abs (stop - start)) / (abs step) in
+  let stack = Owl_utils_stack.make () in
+  let idx = ref start in
+  for i = 0 to m do
+    Owl_utils_stack.push stack x.(!idx);
+    idx := !idx + step
+  done;
+  Owl_utils_stack.to_array stack
+
+
+let set_slice slice x y =
+  assert (Array.length slice = 3);
+  let n = Array.length x in
+  let start = if slice.(0) < 0 then n + slice.(0) else slice.(0) in
+  let stop = if slice.(1) < 0 then n + slice.(1) else slice.(1) in
+  let step = slice.(2) in
+  assert (abs step <= n && start < n && stop < n);
+
+  let idx = ref start in
+  for i = 0 to Array.length y - 1 do
+    assert (!idx < n);
+    x.(!idx) <- y.(i);
+    idx := !idx + step
+  done
 
 
 (* convert a list of tuples into array *)
