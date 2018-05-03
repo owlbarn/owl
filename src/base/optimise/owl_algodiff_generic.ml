@@ -236,7 +236,7 @@ module Make
 
   let deep_info x = match primal' x with
     | F a   -> Printf.sprintf "F(%g)" a
-    | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils.string_of_array string_of_int)
+    | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils_array.to_string string_of_int)
     | _     -> "you should not have reached here!"
 
   let type_info x = match x with
@@ -1294,28 +1294,35 @@ module Make
     reset [x]
 
 
+  (* check adjoint a and its update v, ensure rank a >= rank v. This function
+     fixes the inconsistent shapes between a and v by performing the inverse
+     operation of the previous broadcasting function. Note that padding is on
+     the left due to the expand function called in broadcasting. *)
+  let _shrink a v =
+    match a, v with
+    | F _, Arr v -> F (A.sum' v)
+    | Arr a, Arr v -> (
+        let shp_a = A.shape a in
+        let shp_v = A.shape v in
+        if shp_a <> shp_v then (
+          let shp_a, shp_v = Owl_utils_array.align `Left 1 shp_a shp_v in
+          let axis = Owl_utils_array.filter2_i ( <> ) shp_a shp_v in
+          Arr (A.sum_reduce ~axis v)
+        )
+        else Arr v
+      )
+    | a, v -> v
+
+
   let reverse_push v x =
     let open Maths in
-    (* check adjoint a and its update v, ensure rank a >= rank v *)
-    let _melt a v =
-      match a, v with
-      | F _, Arr v -> F (A.sum' v)
-      | Arr a, Arr v -> (
-          (* check if this is due to previous broadcast operation *)
-          (* FIXME: need to check full-shape, sum_cols if necessary *)
-          match A.(shape a = shape v) with
-          | true  -> Arr v
-          | false -> Arr (A.sum_slices v)
-        )
-      | a, v -> v
-    in
     let rec push xs =
       match xs with
       | []          -> ()
       | (v, x) :: t -> (
           match x with
           | DR (ap, aa, ao, af, ai) -> (
-            let v = _melt !aa v in
+            let v = _shrink !aa v in
             aa := Maths.(!aa + v);
             af := Pervasives.(!af - 1);
             if !af = 0 then (
@@ -1411,7 +1418,7 @@ module Make
               | Concat_D_D (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: (s.(1) ,b) :: t)
               | Concat_D_C (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: t)
               | Concat_C_D (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(1) ,b) :: t)
-              )
+            )
             else push t
             )
           | _ -> push t

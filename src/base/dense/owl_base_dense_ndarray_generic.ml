@@ -483,7 +483,7 @@ let print ?max_row ?max_col ?header ?fmt varr =
     | Some a -> Some a
     | None   -> Some n
   in
-  Owl_pretty.print ?max_row ?max_col ?header ?elt_to_str_fun:fmt varr
+  Owl_pretty.print_dsnda ?max_row ?max_col ?header ?elt_to_str_fun:fmt varr
 
 
 (* TODO: optimise *)
@@ -771,7 +771,7 @@ let sum' varr =
    m: number of slices.
    n: x's slice size.
    o: x's strides, also y's slice size.
-   x: source; y: shape of destination. Note that o <= n. 
+   x: source; y: shape of destination. Note that o <= n.
  *)
 let fold_along f m n o x ys =
   let x = flatten x in
@@ -2568,7 +2568,7 @@ let inv varr =
 
 
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
-let load k f = Owl_utils.marshal_from_file f
+let load k f = Owl_io.marshal_from_file f
 
 
 let max_rows varr =

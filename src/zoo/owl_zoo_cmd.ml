@@ -27,7 +27,7 @@ let preprocess script =
     "let load_file = Owl_zoo_cmd.load_file;;\n" ^
     Printf.sprintf "#use \"%s\"\n" script
   in
-  Utils.write_file tmp_script content;
+  Owl_io.write_file tmp_script content;
   tmp_script
 
 
@@ -46,7 +46,7 @@ let upload_gist gist_dir =
   Owl_log.debug "owl-zoo: %s uploading" gist_dir;
   let cmd = Printf.sprintf "owl_upload_gist.sh %s" gist_dir in
   Sys.command cmd |> ignore;
-  let gist_arr = Owl_utils.read_file (gist_dir ^ "/gist.id") in
+  let gist_arr = Owl_io.read_file (gist_dir ^ "/gist.id") in
   gist_arr.(0)
 
 
@@ -91,7 +91,7 @@ let show_info gist =
   let readme = dir ^ "/#readme.md" in
   let info_s =
     if Sys.file_exists readme then (
-      Owl_utils.read_file readme
+      Owl_io.read_file readme
       |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
     )
     else "missing #readme.md"
@@ -119,7 +119,7 @@ let query_path gist =
 (* f is a file name in the gist, e.g., #readme.md *)
 let load_file ?(gist="") f =
   let path = (query_path gist) ^ f in
-  Owl_utils.read_file_string path
+  Owl_io.read_file_string path
 
 
 let run args script =
@@ -132,7 +132,7 @@ let run args script =
 let run_gist gist =
   let tmp_script = Filename.temp_file "zoo_tmp" ".ml" in
   let content = Printf.sprintf "\n#zoo \"%s\"\n" gist in
-  Utils.write_file tmp_script content;
+  Owl_io.write_file tmp_script content;
   run [|""|] tmp_script |> ignore
 
 

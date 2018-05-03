@@ -5,7 +5,7 @@
 
 
 let rec _extract_zoo_gist f added =
-  let s = Owl_utils.read_file_string f in
+  let s = Owl_io.read_file_string f in
   let regex = Str.regexp "^#zoo \"\\([0-9A-Za-z]+\\)\"" in
   try
     let pos = ref 0 in
@@ -43,7 +43,7 @@ and _dir_zoo_ocaml gid vid added =
 
       (* extend file path in a script *)
       let f' = Owl_zoo_path.mk_temp_dir "zoo" ^ "/" ^ l in
-      let f_str = Owl_utils.read_file_string f in
+      let f_str = Owl_io.read_file_string f in
       let f'_str = replace "extend_zoo_path"
         (Printf.sprintf "extend_zoo_path ~gid:\"%s\" ~vid:\"%s\"" gid vid) f_str
       in
@@ -51,7 +51,7 @@ and _dir_zoo_ocaml gid vid added =
       let f'_str = replace "load_file[ \t]+\\([0-9a-zA-Z'._\"]+\\)"
         (Printf.sprintf "load_file ~gist:\"%s\" \\1" gist) f'_str
       in
-      Owl_utils.write_file f' f'_str;
+      Owl_io.write_file f' f'_str;
 
       _extract_zoo_gist f' added;
       Toploop.mod_use_file Format.std_formatter f'

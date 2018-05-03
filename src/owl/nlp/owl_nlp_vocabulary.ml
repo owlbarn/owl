@@ -170,7 +170,7 @@ let build ?(lo=0.) ?(hi=1.) ?(alphabet=false) ?stopwords fname =
     | true  -> _build_alphabet_proc w2f
     | false -> _build_word_proc w2f
   in
-  iteri_lines_of_file (fun _ s -> f s) fname;
+  Owl_io.iteri_lines_of_file (fun _ s -> f s) fname;
   (* trim frequency if necessary *)
   if lo <> 0. || hi <> 1. then
     _trim_percent_w2f lo hi w2f;
@@ -269,10 +269,10 @@ let tokenise v s =
 (* I/O functions *)
 
 
-let save d fname = Owl_utils.marshal_to_file d fname
+let save d fname = Owl_io.marshal_to_file d fname
 
 
-let load fname : t = Owl_utils.marshal_from_file fname
+let load fname : t = Owl_io.marshal_from_file fname
 
 
 let save_txt d fname =

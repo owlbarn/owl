@@ -1,6 +1,6 @@
 # Owl - An OCaml Numerical Library
 
-%%VERSION%% travis-ci: [![Travis build Status](https://travis-ci.org/ryanrhymes/owl.svg?branch=master)](https://travis-ci.org/owlbarn/owl)
+%%VERSION%% travis-ci: [![Travis build Status](https://travis-ci.org/owlbarn/owl.svg?branch=master)](https://travis-ci.org/owlbarn/owl)
 
 Owl is an emerging numerical library for scientific computing and engineering. The library is developed in the OCaml language and inherits all its powerful features such as static type checking, powerful module system, and superior runtime efficiency. Owl allows you to write succinct type-safe numerical applications in functional language without sacrificing performance, significantly reduces the cost from prototype to production use.
 
@@ -48,25 +48,25 @@ Owl's current version on OPAM is `0.2.9`, and it lags way behind the master bran
 
 ### Option 2: Pull from Docker Hub
 
-You only need to pull in [Owl's docker image](https://hub.docker.com/r/ryanrhymes/owl/) and start a container, then play with it in `utop`. The source code is stored in `/root/owl` directory.
+You only need to pull in [Owl's docker image](https://hub.docker.com/r/owlbarn/owl/) and start a container, then play with it in `utop`. The source code is stored in `/root/owl` directory.
 
 ```bash
-docker pull ryanrhymes/owl
-docker run -t -i ryanrhymes/owl
+docker pull owlbarn/owl
+docker run -t -i owlbarn/owl
 ```
 
-There are several Linux distributions provided including an [ARM-based Ubuntu](https://github.com/ryanrhymes/owl/blob/master/docker/Dockerfile.ubuntu.arm). You can pull in a specific Owl image with corresponding tags.
+There are several Linux distributions provided including an [ARM-based Ubuntu](https://github.com/owlbarn/owl/blob/master/docker/Dockerfile.ubuntu.arm). You can pull in a specific Owl image with corresponding tags.
 
 ```bash
-docker pull ryanrhymes/owl:ubuntu
-docker pull ryanrhymes/owl:debian
-docker pull ryanrhymes/owl:alpine
-docker pull ryanrhymes/owl:centos
-docker pull ryanrhymes/owl:opensuse
-docker pull ryanrhymes/owl:fedora
+docker pull owlbarn/owl:ubuntu
+docker pull owlbarn/owl:debian
+docker pull owlbarn/owl:alpine
+docker pull owlbarn/owl:centos
+docker pull owlbarn/owl:opensuse
+docker pull owlbarn/owl:fedora
 ```
 
-All these images are perfectly synced with the master branch by automatic building. You can check the building history on [Docker Hub](https://hub.docker.com/r/ryanrhymes/owl/builds/).
+All these images are perfectly synced with the master branch by automatic building. You can check the building history on [Docker Hub](https://hub.docker.com/r/owlbarn/owl/builds/).
 
 ### Option 3: Pin the Dev-Repo
 
@@ -82,7 +82,12 @@ opam pin add owl --dev-repo
 First, you need to clone the repository.
 
 ```bash
-git clone git@github.com:ryanrhymes/owl.git
+git clone git@github.com:owlbarn/owl.git
+```
+or with
+
+```bash
+git clone https://github.com/owlbarn/owl.git
 ```
 
 Second, you need to figure out the missing dependencies and install them.
@@ -102,7 +107,7 @@ make && make install
 The most important dependency is [OpenBLAS](https://github.com/xianyi/OpenBLAS). Linking to the correct OpenBLAS is the key to achieve the best performance. Depending on the specific platform, you can use `yum`, `apt-get`, `brew` to install the binary format. For example on Mac OSX,
 
 ```bash
-brew install homebrew/science/openblas
+brew install openblas
 ```
 
 However, installing from OpenBLAS source code leads to way better performance in my own experiment. In future, the dependency on OpenBLAS should also be resolved by `opam` automatically.
@@ -131,7 +136,7 @@ open Owl;;
 
 ## Create Matrices
 
-[`Dense.Matrix`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_dense_matrix.ml) module supports dense matrix operations while [`Sparse.Matrix`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_sparse_matrix.ml) module supports sparse ones. There are five submodules in `Dense.Matrix`:
+[`Dense.Matrix`](https://github.com/owlbarn/owl/blob/master/lib/owl_dense_matrix.ml) module supports dense matrix operations while [`Sparse.Matrix`](https://github.com/owlbarn/owl/blob/master/lib/owl_sparse_matrix.ml) module supports sparse ones. There are five submodules in `Dense.Matrix`:
 
 * `Dense.Matrix.S` module supports single precision float numbers `float32`;
 * `Dense.Matrix.D` module supports double precision float numbers `float64`;
@@ -353,7 +358,7 @@ Linalg.D.is_symmetric x;;  (* is it symmetric *)
 ...
 ```
 
-Owl has implemented a complete set of OCaml interface to [`CBLAS`](https://github.com/ryanrhymes/owl/blob/master/src/owl/cblas/owl_cblas.mli) and [`LAPACKE`](https://github.com/ryanrhymes/owl/blob/master/src/owl/lapacke/owl_lapacke_generated.mli) libraries. You can utilise these highly optimised functions to achieve the best performance. However in most cases, you should only use the high-level functions in `Linalg` module rather than dealing with these low-level interface.
+Owl has implemented a complete set of OCaml interface to [`CBLAS`](https://github.com/owlbarn/owl/blob/master/src/owl/cblas/owl_cblas.mli) and [`LAPACKE`](https://github.com/owlbarn/owl/blob/master/src/owl/lapacke/owl_lapacke_generated.mli) libraries. You can utilise these highly optimised functions to achieve the best performance. However in most cases, you should only use the high-level functions in `Linalg` module rather than dealing with these low-level interface.
 
 
 
@@ -447,12 +452,12 @@ The end result is as follows. You probably have already grasped the idea of how 
 
 There are a lot of basic and advanced mathematical and statistical functions in `Maths` and `Stats` modules. The document lags significantly behind the development, so I recommend you to read the mli file directly at the moment.
 
-[`Stats`](https://github.com/ryanrhymes/owl/blob/master/src/owl/stats/owl_stats.mli) includes many functions for random numbers: `*_rvs` for random number generator, `*_pdf` for probably density/mass functions, `*_cdf` for cumulative density functions, `*_sf` for survival functions, `*_sf` for percentile functions, and etc. In addition, there are also many other statistical functions such as ranking correlations: `Stats.kendall_tau` and `Stats.spearman_rho`); hypothesis tests, and etc.
+[`Stats`](https://github.com/owlbarn/owl/blob/master/src/owl/stats/owl_stats.mli) includes many functions for random numbers: `*_rvs` for random number generator, `*_pdf` for probably density/mass functions, `*_cdf` for cumulative density functions, `*_sf` for survival functions, `*_sf` for percentile functions, and etc. In addition, there are also many other statistical functions such as ranking correlations: `Stats.kendall_tau` and `Stats.spearman_rho`); hypothesis tests, and etc.
 
 
 ## N-dimensional Array
 
-Owl has a very powerful module to manipulate dense N-dimensional arrays, i.e., [`Dense.Ndarray`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_dense_ndarray.ml). Ndarray is very similar to the corresponding modules in Numpy and Julia. For sparse N-dimensional arrays, you can use `Sparse.Ndarray` which provides a similar set of APIs as aforementioned Ndarray. Here is an [initial evaluation](https://github.com/ryanrhymes/owl/wiki/Evaluation:-Performance-Test) on the performance of Ndarray.
+Owl has a very powerful module to manipulate dense N-dimensional arrays, i.e., [`Dense.Ndarray`](https://github.com/owlbarn/owl/blob/master/lib/owl_dense_ndarray.ml). Ndarray is very similar to the corresponding modules in Numpy and Julia. For sparse N-dimensional arrays, you can use `Sparse.Ndarray` which provides a similar set of APIs as aforementioned Ndarray. Here is an [initial evaluation](https://github.com/owlbarn/owl/wiki/Evaluation:-Performance-Test) on the performance of Ndarray.
 
 Similar to `Matrix` module, `Ndarray` also has five submodules `S` (for `float32`), `D` (for `float32`), `C` (for `complex32`), `Z` (for `complex64`), and `Generic` (for all types) to handle different number types. There is an alias in `Owl` for double precision float ndarray (i.e., `Dense.Ndarray.D`) which is `Arr`. `Ndarray` also natively supports broadcast operations
 
@@ -567,7 +572,7 @@ Plot.output h;;
 
 Then you should be able to see a figure like this one below. For more advanced use, please see my separate tutorial.
 
-![plot021](https://raw.githubusercontent.com/wiki/ryanrhymes/owl/image/plot_021.png)
+![plot021](https://raw.githubusercontent.com/wiki/owlbarn/owl/image/plot_021.png)
 
 
 ## Machine Learning and Neural Network
@@ -662,10 +667,12 @@ Actor system is currently in a closed repository (due to my techreport writing).
 
 ## How To Contribute
 
-Owl is under active development, and I really look forward to your comments and contributions. Besides setting up a complete development environment on your native system, the easiest way to contribute is to use the [Owl Docker Images](https://hub.docker.com/r/ryanrhymes/owl/). Moreover, we have also built a docker image for ARM-based platform so that you can run Owl on Raspberry PI and Cubietruck (see the section above).
+Owl is under active development, and I really look forward to your comments and contributions. Besides setting up a complete development environment on your native system, the easiest way to contribute is to use the [Owl Docker Images](https://hub.docker.com/r/owlbarn/owl/). Moreover, we have also built a docker image for ARM-based platform so that you can run Owl on Raspberry PI and Cubietruck (see the section above).
 
 Just pull the image and dig into code saved in `/root/owl`, then have fun!
 
-**Student Project:** If you happen to be a student in the [Computer Lab](http://www.cl.cam.ac.uk/) and want to do some challenging development and design, here are some [Part II Projects](http://www.cl.cam.ac.uk/research/srg/netos/stud-projs/studproj-17/#owl0). If you are interested in more researchy topics, I also offer Part III Projects and please contact me directly via [Email](mailto:liang.wang@cl.cam.ac.uk).
+**Student Projects:** If you happen to be a student in the [Computer Lab](http://www.cl.cam.ac.uk/) and want to do some challenging development and design, here are some [Part II Project suggestions](http://www.cl.cam.ac.uk/research/srg/netos/stud-projs/studproj-17/#owl0). If you are interested in more researchy topics, I also offer Part III Projects -- please contact me directly via [Email](mailto:liang.wang@cl.cam.ac.uk).
 
-**Acknowledgement: Funded in part by EPSRC project - Contrive (EP/N028422/1).** Please refer to the [full acknowledgement](https://github.com/ryanrhymes/owl/blob/master/ACKNOWLEDGEMENT.md) for more details.
+**Acknowledgement: Funded in part by EPSRC project - Contrive (EP/N028422/1).** Please refer to the [full acknowledgement](https://github.com/owlbarn/owl/blob/master/ACKNOWLEDGEMENT.md) for more details.
+
+**Contribution Agreement:** Contributions must comply with the [Developer's Certificate of Origin](https://developercertificate.org/), which means you need to sign off your commits. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details.

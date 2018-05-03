@@ -5772,58 +5772,6 @@
 #define MAPFN(X) CLT(X,a) ? a : (CGT(X,b) ? b : X)
 #include OWL_NDARRAY_MATHS_MAP
 
-// sort
-
-#define FUN3 float32_sort
-#define NUMBER float
-#define MAPFN(X) qsort(X,N,sizeof(float),float32_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 float64_sort
-#define NUMBER float
-#define MAPFN(X) qsort(X,N,sizeof(double),float64_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 complex32_sort
-#define NUMBER _Complex float
-#define MAPFN(X) qsort(X,N,sizeof(_Complex float),complex32_cmpf)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 complex64_sort
-#define NUMBER _Complex double
-#define MAPFN(X) qsort(X,N,sizeof(_Complex double),complex64_cmpf)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 int8_sort
-#define NUMBER int8_t
-#define MAPFN(X) qsort(X,N,sizeof(int8_t),int8_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 uint8_sort
-#define NUMBER uint8_t
-#define MAPFN(X) qsort(X,N,sizeof(uint8_t),uint8_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 int16_sort
-#define NUMBER int16_t
-#define MAPFN(X) qsort(X,N,sizeof(int16_t),int16_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 uint16_sort
-#define NUMBER uint16_t
-#define MAPFN(X) qsort(X,N,sizeof(uint16_t),uint16_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 int32_sort
-#define NUMBER int32_t
-#define MAPFN(X) qsort(X,N,sizeof(int32_t),int32_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
-#define FUN3 int64_sort
-#define NUMBER int64_t
-#define MAPFN(X) qsort(X,N,sizeof(int64_t),int64_cmp)
-#include OWL_NDARRAY_MATHS_MAP
-
 // repeat
 
 #define FUN20 float32_repeat

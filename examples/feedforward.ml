@@ -222,9 +222,9 @@ let to_string nn =
 
 let print nn = to_string nn |> Printf.printf "%s"
 
-let save nn f = Owl_utils.marshal_to_file nn f
+let save nn f = Owl_io.marshal_to_file nn f
 
-let load f : network = Owl_utils.marshal_from_file f
+let load f : network = Owl_io.marshal_from_file f
 
 let save_weights nn f =
   let h = Hashtbl.create (layer_num nn) in
@@ -232,10 +232,10 @@ let save_weights nn f =
     let ws = Graph.Neuron.mkpar l.neuron in
     Hashtbl.add h l.name ws
   ) nn.layers;
-  Owl_utils.marshal_to_file h f
+  Owl_io.marshal_to_file h f
 
 let load_weights nn f =
-  let h = Owl_utils.marshal_from_file f in
+  let h = Owl_io.marshal_from_file f in
   Array.iter (fun l ->
     let ws = Hashtbl.find h l.name in
     Graph.Neuron.update l.neuron ws

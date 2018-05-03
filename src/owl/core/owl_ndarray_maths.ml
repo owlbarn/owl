@@ -2508,30 +2508,6 @@ let _owl_clip_by_value : type a b. (a, b) kind -> (a, b) owl_arr_op07 = function
   | Complex64 -> owl_complex64_clip_by_value
   | _         -> failwith "_owl_clip_by_value: unsupported operation"
 
-external owl_float32_sort : int -> ('a, 'b) owl_arr -> unit = "float32_sort"
-external owl_float64_sort : int -> ('a, 'b) owl_arr -> unit = "float64_sort"
-external owl_complex32_sort : int -> ('a, 'b) owl_arr -> unit = "complex32_sort"
-external owl_complex64_sort : int -> ('a, 'b) owl_arr -> unit = "complex64_sort"
-external owl_int8_sort : int -> ('a, 'b) owl_arr -> unit = "int8_sort"
-external owl_uint8_sort : int -> ('a, 'b) owl_arr -> unit = "uint8_sort"
-external owl_int16_sort : int -> ('a, 'b) owl_arr -> unit = "int16_sort"
-external owl_uint16_sort : int -> ('a, 'b) owl_arr -> unit = "uint16_sort"
-external owl_int32_sort : int -> ('a, 'b) owl_arr -> unit = "int32_sort"
-external owl_int64_sort : int -> ('a, 'b) owl_arr -> unit = "int64_sort"
-
-let _owl_sort : type a b. (a, b) kind -> int -> (a, b) owl_arr -> unit = function
-  | Float32        -> owl_float32_sort
-  | Float64        -> owl_float64_sort
-  | Complex32      -> owl_complex32_sort
-  | Complex64      -> owl_complex64_sort
-  | Int8_signed    -> owl_int8_sort
-  | Int8_unsigned  -> owl_uint8_sort
-  | Int16_signed   -> owl_int16_sort
-  | Int16_unsigned -> owl_uint16_sort
-  | Int32          -> owl_int32_sort
-  | Int64          -> owl_int64_sort
-  | _              -> failwith "_owl_sort: unsupported operation"
-
 external owl_float32_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float32_repeat" "float32_repeat_impl"
 external owl_float64_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float64_repeat" "float64_repeat_impl"
 external owl_complex32_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex32_repeat" "complex32_repeat_impl"
