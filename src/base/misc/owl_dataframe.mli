@@ -253,6 +253,9 @@ val of_csv : ?sep:char -> ?head:string array -> ?types:string array -> string ->
 a CSV file with the name ``fname``. Currently, the function supports four data
 types: ``b`` for boolean; ``i`` for int; ``f`` for float; ``s`` for string.
 
+Note if ``types`` parameter is ignored, then all the elements will be parsed
+as string element by default.
+
 Parameters:
   * ``sep``: delimiter, the default one is tab.
   * ``head``: column names, if not passed in, the first line of CSV file will be used.
