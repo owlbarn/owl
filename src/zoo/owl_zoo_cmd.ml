@@ -119,7 +119,7 @@ let query_path gist =
 (* f is a file name in the gist, e.g., #readme.md *)
 let load_file ?(gist="") f =
   let path = (query_path gist) ^ f in
-  Owl_utils.read_file_string path
+  Owl_io.read_file_string path
 
 
 let run args script =
