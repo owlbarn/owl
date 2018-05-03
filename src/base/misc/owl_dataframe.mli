@@ -154,7 +154,7 @@ val tail : int -> t -> t
 
 val make : ?data:series array -> string array -> t
 (**
-``create ~data head_names`` creates a dataframe with an array of series data
+``make ~data head_names`` creates a dataframe with an array of series data
 and corresponding column names. If data is not passed in, the function will
 return an empty dataframe.
  *)
