@@ -121,6 +121,18 @@ val get_col_by_name : t -> string -> series
 val get_cols_by_name : t -> string array -> series array
 (** TODO *)
 
+val get_slice : int list list -> t -> t
+(** TODO *)
+
+val get_slice_by_name : int list * string list -> t -> t
+(** TODO *)
+
+val head : int -> t -> t
+(** TODO *)
+
+val tail : int -> t -> t
+(** TODO *)
+
 
 (** {6 Core operations} *)
 
@@ -186,6 +198,9 @@ val ( .?( ) ) : t -> (elt array -> bool) -> t
 (** TODO *)
 
 val ( .?( )<- ) : t -> (elt array -> bool) -> (elt array -> elt array) -> t
+(** TODO *)
+
+val ( .$( ) ) : t -> int list * string list -> t
 (** TODO *)
 
 

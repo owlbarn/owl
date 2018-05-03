@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Owl_types
+
 
 type elt =
   | Int    of int
@@ -122,6 +124,13 @@ let length_series = function
   | Float_Series c  -> Array.length c
   | String_Series c -> Array.length c
   | Any_Series      -> 0
+
+
+let slice_series slice = function
+  | Int_Series c    -> Int_Series (Owl_utils_array.get_slice slice c)
+  | Float_Series c  -> Float_Series (Owl_utils_array.get_slice slice c)
+  | String_Series c -> String_Series (Owl_utils_array.get_slice slice c)
+  | Any_Series      -> Any_Series
 
 
 let elt_to_str = function
@@ -312,14 +321,6 @@ let concat_vertical x y =
   { data; head; used; size = used }
 
 
-(* TODO *)
-let head n x = raise Owl_exception.NOT_IMPLEMENTED
-
-
-(* TODO *)
-let tail n x = raise Owl_exception.NOT_IMPLEMENTED
-
-
 let iteri_row f x =
   let m = row_num x in
   for i = 0 to m - 1 do
@@ -375,12 +376,50 @@ let filter_mapi_row f x =
 let filter_map_row f x = filter_mapi_row (fun _ row -> f row) x
 
 
-(* TODO *)
-let get_slice = None
+let get_slice slice x =
+  let slice = Array.(map of_list (of_list slice)) |> Array.map (fun s -> R_ s) in
+  let shp_x = [|row_num x; col_num x|] in
+  let _tmp0 = Owl_base_slicing.check_slice_definition slice shp_x in
+  let slice = Array.map (function R_ s -> s | _ -> failwith "get_slice: unsupported") _tmp0 in
+  let name = Owl_utils_array.get_slice slice.(1) (get_heads x) in
+  let data = Array.map (head_to_id x) name |> get_cols x |> Array.map (slice_series slice.(0)) in
+  let used = length_series data.(0) in
+  let head = Hashtbl.create (Array.length name) in
+  Array.iteri (fun i s -> Hashtbl.add head s i) name;
+  { data; head; used; size = used }
 
 
 (* TODO *)
 let set_slice = None
+
+
+let get_slice_by_name slice x =
+  let row_slice = Array.of_list (fst slice) in
+  let col_slice = Array.of_list (snd slice) in
+  let shp_x = [|row_num x; col_num x|] in
+  let _tmp0 = Owl_base_slicing.check_slice_definition [| R_ row_slice |] shp_x in
+  let row_slice = (function R_ s -> s | _ -> failwith "get_slice: unsupported") _tmp0.(0) in
+  let data = Array.map (slice_series row_slice) (get_cols_by_name x col_slice) in
+  let used = length_series data.(0) in
+  let head = Hashtbl.create (Array.length col_slice) in
+  Array.iteri (fun i s -> Hashtbl.add head s i) col_slice;
+  { data; head; used; size = used }
+
+
+(* TODO *)
+let set_slice_by_name = None
+
+
+let head n x =
+  let m = row_num x in
+  assert (n > 0 && n <= m);
+  get_slice [[0;n-1];[]] x
+
+
+let tail n x =
+  let m = row_num x in
+  assert (n > 0 && n <= m);
+  get_slice [[-n;-1];[]] x
 
 
 let of_csv ?sep ?head ?types fname =
@@ -429,6 +468,13 @@ let ( .?( ) ) x f = filter_row f x
 
 let ( .?( )<- ) x f g =
   filter_map_row (fun r -> if f r = true then Some (g r) else None) x
+
+
+let ( .$( ) ) x slice = get_slice_by_name slice x
+
+
+(* TODO *)
+let ( .$( )<- ) x idx a = None
 
 
 
