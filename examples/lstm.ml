@@ -40,7 +40,7 @@ let sample nn vocab wndsz tlen x =
   for i = 0 to tlen - 1 do
     let xt = Dense.Matrix.S.get_slice [[];[i;i+wndsz-1]] all_char in
     let yt = Graph.run (Arr xt) nn |> Algodiff.S.unpack_arr |> Dense.Matrix.S.to_array in
-    let next_i = Stats.(choose (Array.sub (argsort ~inc:false yt) 0 5) 1).(0) in
+    let next_i = Stats.(choose (Array.sub (argsort ~inc:false yt) 0 3) 1).(0) in
     Dense.Matrix.S.set all_char 0 (wndsz + i) (float_of_int next_i);
   done;
   Dense.Matrix.S.(to_array all_char.${ [[];[wndsz;-1]] })

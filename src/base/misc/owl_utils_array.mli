@@ -97,7 +97,21 @@ val unsafe_set : 'a array -> int -> 'a -> unit
 (** {6 Extended functions} *)
 
 val ( @ ) : 'a array -> 'a array -> 'a array
-(** TODO *)
+(** Operator of array concatenation. *)
+
+val get_slice : int array -> 'a array -> 'a array
+(**
+``get_slice slice x`` returns a copy of slice of ``x`` defined by ``slice``.
+The ``slice`` definition must have ``[|start;stop;step|]`` format. The value
+of start, stop, and step can be negative, and the boundary is inclusive.
+ *)
+
+val set_slice : int array -> 'a array -> 'a array -> unit
+(**
+``set_slice slice x y`` sets the elements in ``x`` to the corresponding value
+of the elements in ``y`` based on the slice definition ``slice``. Please refer
+to ``get_slice`` function for the information on the format of slice definiton.
+ *)
 
 val set_n : 'a array -> int array -> 'a -> unit
 (** TODO *)
@@ -177,7 +191,6 @@ val filter2_i : ('a -> 'b -> bool) -> 'a array -> 'b array -> int array
 ``filter2_i f x y`` is similar to ``filter2i_i`` but without passing index of
 the elements to function ``f``.
  *)
-
 
 val resize : ?head:bool -> 'a -> int -> 'a array -> 'a array
 (**

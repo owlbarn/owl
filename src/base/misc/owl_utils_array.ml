@@ -247,6 +247,40 @@ let permute p x =
   Array.init n (fun i -> x.(p.(i)))
 
 
+let get_slice slice x =
+  assert (Array.length slice = 3);
+  let n = Array.length x in
+  let start = if slice.(0) < 0 then n + slice.(0) else slice.(0) in
+  let stop = if slice.(1) < 0 then n + slice.(1) else slice.(1) in
+  let step = slice.(2) in
+  assert (abs step <= n && start < n && stop < n);
+
+  let m = (abs (stop - start)) / (abs step) in
+  let stack = Owl_utils_stack.make () in
+  let idx = ref start in
+  for i = 0 to m do
+    Owl_utils_stack.push stack x.(!idx);
+    idx := !idx + step
+  done;
+  Owl_utils_stack.to_array stack
+
+
+let set_slice slice x y =
+  assert (Array.length slice = 3);
+  let n = Array.length x in
+  let start = if slice.(0) < 0 then n + slice.(0) else slice.(0) in
+  let stop = if slice.(1) < 0 then n + slice.(1) else slice.(1) in
+  let step = slice.(2) in
+  assert (abs step <= n && start < n && stop < n);
+
+  let idx = ref start in
+  for i = 0 to Array.length y - 1 do
+    assert (!idx < n);
+    x.(!idx) <- y.(i);
+    idx := !idx + step
+  done
+
+
 (* convert a list of tuples into array *)
 let of_tuples x =
   let s = Owl_utils_stack.make () in
