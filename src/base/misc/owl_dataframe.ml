@@ -101,11 +101,20 @@ let init_series n a =
   | Any      -> Any_Series
 
 
-let resize n = function
+let resize_series n = function
   | Int_Series c    -> Int_Series (Owl_utils_array.resize ~head:true 0 n c)
   | Float_Series c  -> Float_Series (Owl_utils_array.resize ~head:true 0. n c)
   | String_Series c -> String_Series (Owl_utils_array.resize ~head:true "" n c)
   | Any_Series      -> Any_Series
+
+
+let append_series x y =
+  match x, y with
+  | Int_Series x, Int_Series y       -> Int_Series (Array.append x y)
+  | Float_Series x, Float_Series y   -> Float_Series (Array.append x y)
+  | String_Series x, String_Series y -> String_Series (Array.append x y)
+  | Any_Series, Any_Series           -> Any_Series
+  | _                                -> failwith "append_series: unsupported type"
 
 
 let length_series = function
@@ -162,7 +171,7 @@ let append_row x row =
 let append_col x col head =
   let m, n = shape x in
   assert (m = length_series col);
-  let col = resize x.size col in
+  let col = resize_series x.size col in
   Hashtbl.add x.head head n;
   x.data <- Array.append x.data [| col |]
 
@@ -270,17 +279,37 @@ let copy x =
 
 let concat_horizontal x y =
   assert (row_num x = row_num y);
-  let z = copy x in
+  let head = Hashtbl.copy x.head in
   let i = ref (col_num x) in
   Hashtbl.iter (fun k v ->
-    Hashtbl.add z.head k (v + !i);
+    Hashtbl.add head k (v + !i);
     i := !i + 1;
   ) y.head;
-  z.data <- Array.append z.data y.data;
-  z
+  let col_num_x = col_num x in
+  let col_num_y = col_num y in
+  let data = Array.make (col_num_x + col_num_y) Any_Series in
+  let size = max x.size y.size in
+  for i = 0 to col_num_x - 1 do
+    data.(i) <- resize_series size x.data.(i)
+  done;
+  for i = 0 to col_num_y - 1 do
+    data.(i) <- resize_series size x.data.(col_num_x + i)
+  done;
+  { data; head; used = x.used; size }
 
 
-let concat_vertical x y = raise Owl_exception.NOT_IMPLEMENTED
+let concat_vertical x y =
+  assert (col_num x = col_num y);
+  let head = Hashtbl.copy x.head in
+  let used = x.used + y.used in
+  let data = Array.make (col_num x) Any_Series in
+  for i = 0 to (col_num x) - 1 do
+    let sx = get_col x i in
+    let j = id_to_head x i |> head_to_id y in
+    let sy = get_col y j in
+    data.(i) <- append_series sx sy
+  done;
+  { data; head; used; size = used }
 
 
 (* TODO *)
