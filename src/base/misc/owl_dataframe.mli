@@ -7,10 +7,10 @@
 (** {6 Type definition} *)
 
 type t
-(** TODO *)
+(** Abstract dataframe type. *)
 
 type series
-(** TODO *)
+(** Abstract series type. *)
 
 type elt =
   | Bool   of bool
@@ -18,218 +18,258 @@ type elt =
   | Float  of float
   | String of string
   | Any
-(** TODO *)
+(** Type of the elements in a series. *)
 
 
 (** {6 Pakcking & unpacking element} *)
 
 val pack_bool : bool -> elt
-(** TODO *)
+(** Pack the boolean value to ``elt`` type. *)
 
 val pack_int : int -> elt
-(** TODO *)
+(** Pack the int value to ``elt`` type. *)
 
 val pack_float : float -> elt
-(** TODO *)
+(** Pack the float value to ``elt`` type. *)
 
 val pack_string : string -> elt
-(** TODO *)
+(** Pack the string value to ``elt`` type. *)
 
 val unpack_bool : elt -> bool
-(** TODO *)
+(** Unpack ``elt`` type to boolean value. *)
 
 val unpack_int : elt -> int
-(** TODO *)
+(** Unpack ``elt`` type to int value. *)
 
 val unpack_float : elt -> float
-(** TODO *)
+(** Unpack ``elt`` type to float value. *)
 
 val unpack_string : elt -> string
-(** TODO *)
+(** Unpack ``elt`` type to string value. *)
 
 
 (** {6 Pakcking & unpacking series} *)
 
 val pack_bool_series : bool array -> series
-(** TODO *)
+(** Pack boolean array to ``series`` type. *)
 
 val pack_int_series : int array -> series
-(** TODO *)
+(** Pack int array to ``series`` type. *)
 
 val pack_float_series : float array -> series
-(** TODO *)
+(** Pack float array to ``series`` type. *)
 
 val pack_string_series : string array -> series
-(** TODO *)
-
-val unpack_int_series : series -> int array
-(** TODO *)
+(** Pack string array to ``series`` type. *)
 
 val unpack_bool_series : series -> bool array
-(** TODO *)
+(** Unpack ``series`` type to boolean array. *)
+
+val unpack_int_series : series -> int array
+(** Unpack ``series`` type to int array. *)
 
 val unpack_float_series : series -> float array
-(** TODO *)
+(** Unpack ``series`` type to float array. *)
 
 val unpack_string_series : series -> string array
-(** TODO *)
+(** Unpack ``series`` type to string array. *)
 
 
 (** {6 Obtain properties} *)
 
 val row_num : t -> int
-(** TODO *)
+(** ``row_num x`` returns the number of rows in ``x``. *)
 
 val col_num : t -> int
-(** TODO *)
+(** ``col_num x`` returns the number of columns in ``x``. *)
 
 val shape : t -> int * int
-(** TODO *)
+(** ``shape x`` returns the shape of ``x``, i.e. ``(row numnber, column number)``. *)
 
 val numel : t -> int
-(** TODO *)
+(** ``numel x`` returns the number of elements in ``x``. *)
 
 val get_heads : t -> string array
-(** TODO *)
+(** ``get_heads x`` returns the column names of ``x``. *)
 
 val set_heads : t -> string array -> unit
-(** TODO *)
+(** ``set_heads x head_names`` sets ``head_names`` as the column names of ``x``. *)
 
 val id_to_head : t -> int -> string
-(** TODO *)
+(** ``id_to_head head_name`` converts head name to its corresponding column index. *)
 
 val head_to_id : t -> string -> int
-(** TODO *)
+(** ``head_to_id i`` converts column index ``i`` to its corresponding head name. *)
 
 
 (** {6 Basic get and set functions} *)
 
 val get : t -> int -> int -> elt
-(** TODO *)
+(** ``get x i j`` returns the element at ``(i,j)``. *)
 
 val set : t -> int -> int -> elt -> unit
-(** TODO *)
+(** ``set x i j v`` sets the value of element at ``(i,j)`` to ``v``. *)
 
 val get_by_name : t -> int -> string -> elt
-(** TODO *)
+(** ``get_by_name x i head_name`` is similar to ``get`` but uses column name. *)
 
 val set_by_name : t -> int -> string -> elt -> unit
-(** TODO *)
+(** ``set_by_name x i head_name`` is similar to ``set`` but uses column name. *)
 
 val get_row : t -> int -> elt array
-(** TODO *)
+(** ``get_row x i`` returns the ith row in ``x``. *)
 
 val get_col : t -> int -> series
-(** TODO *)
+(** ``get_col x i`` returns the ith column in ``x``. *)
 
 val get_rows : t -> int array -> elt array array
-(** TODO *)
+(** ``get_rows x a`` returns the rows of ``x`` specified in ``a``. *)
 
 val get_cols : t -> int array -> series array
-(** TODO *)
+(** ``get_cols x a`` returns the columns of ``x`` specified in ``a``. *)
 
 val get_col_by_name : t -> string -> series
-(** TODO *)
+(** ``get_col_by_name`` is similar to ``get_col`` but uses column name. *)
 
 val get_cols_by_name : t -> string array -> series array
-(** TODO *)
+(** ``get_cols_by_name`` is similar to ``get_cols`` but uses column names. *)
 
 val get_slice : int list list -> t -> t
-(** TODO *)
+(**
+``get_slice s x`` returns a slice of ``x`` defined by ``s``. For more details,
+please refer to :doc:`owl_dense_ndarray_generic`.
+ *)
 
 val get_slice_by_name : int list * string list -> t -> t
-(** TODO *)
+(** ``get_slice_by_name`` is similar to ``get_slice`` but uses column name. *)
 
 val head : int -> t -> t
-(** TODO *)
+(** ``head n x`` returns top ``n`` rows of ``x``. *)
 
 val tail : int -> t -> t
-(** TODO *)
+(** ``tail n x`` returns bottom ``n`` rows of ``x``. *)
 
 
 (** {6 Core operations} *)
 
 val make : ?data:series array -> string array -> t
-(** TODO *)
+(**
+``create ~data head_names`` creates a dataframe with an array of series data
+and corresponding column names. If data is not passed in, the function will
+return an empty dataframe.
+ *)
 
 val copy : t -> t
-(** TODO *)
+(** ``copy x`` returns a copy of dataframe ``x``. *)
 
 val append_row : t -> elt array -> unit
-(** TODO *)
+(** ``append_row x row`` appends a row to the dataframe ``x``. *)
 
 val append_col : t -> series -> string -> unit
-(** TODO *)
+(** ``append_col x col`` appends a column to the dataframe ``x``. *)
 
 val concat_horizontal : t -> t -> t
-(** TODO *)
+(**
+``concat_horizontal x y`` merges two dataframes ``x`` and ``y``. Note that
+``x`` and ``y`` must have the same number of rows, and each column name should
+be unique.
+ *)
 
 val concat_vertical : t -> t -> t
-(** TODO *)
-
-
-(** {6 Math operators} *)
-
+(**
+``concat_vertical x y`` concatenates two dataframes by appending ``y`` to
+``x``. The two dataframes ``x`` and ``y`` must have the same number of columns
+and the same column names.
+ *)
 
 
 (** {6 Iteration functions} *)
 
 val iteri_row : (int -> elt array -> unit) -> t -> unit
-(** TODO *)
+(** ``iteri_row f x`` iterates the rows of ``x`` and applies ``f``. *)
 
 val iter_row :  (elt array -> unit) -> t -> unit
-(** TODO *)
+(** ``iter_row`` is simiar to ``iteri_row`` without passing in row indices. *)
 
 val mapi_row : (int -> elt array -> elt array) -> t -> t
-(** TODO *)
+(**
+``mapi_row f x`` transforms current dataframe ``x`` to a new dataframe by
+applying function ``f``. Note that the returned value of ``f`` must be
+consistent with ``x`` w.r.t to its length and type, otherwise runtime error
+will occur.
+ *)
 
 val map_row : (elt array -> elt array) -> t -> t
-(** TODO *)
+(** ``map_row`` is simiar to ``mapi_row`` but without passing in row indices. *)
 
 val filteri_row : (int -> elt array -> bool) -> t -> t
-(** TODO *)
+(**
+``filteri_row`` creates a new dataframe from ``x`` by filtering out those rows
+which satisfy the condition ``f``.
+ *)
 
 val filter_row : (elt array -> bool) -> t -> t
-(** TODO *)
+(** ``filter_row`` is similar to ``filteri_row`` without passing in row indices. *)
 
 val filter_mapi_row : (int -> elt array -> elt array option) -> t -> t
-(** TODO *)
+(**
+``filter_map_row f x`` creates a new dataframe from ``x`` by applying ``f`` to
+each row. If ``f`` returns ``None`` then the row is excluded in the returned
+dataframe; if ``f`` returns ``Some row`` then the row is included.
+ *)
 
 val filter_map_row : (elt array -> elt array option) -> t -> t
-(** TODO *)
+(** ``filter_map_row`` is similar to ``filter_mapi_row`` without passing in row indices. *)
 
 
 (** {6 Extended indexing operators} *)
 
 val ( .%( ) ) : t -> int * string -> elt
-(** TODO *)
+(** Extended indexing operator associated with ``get_by_name`` function. *)
 
 val ( .%( )<- ) : t -> int * string -> elt -> unit
-(** TODO *)
+(** Extended indexing operator associated with ``set_by_name`` function. *)
 
 val ( .?( ) ) : t -> (elt array -> bool) -> t
-(** TODO *)
+(** Extended indexing operator associated with ``filter_row`` function. *)
 
 val ( .?( )<- ) : t -> (elt array -> bool) -> (elt array -> elt array) -> t
-(** TODO *)
+(**
+Extended indexing operator associated with ``filter_map_row`` function.
+Given a dataframe ``x``, ``f`` is used for filtering and ``g`` is used for
+transforming. In other words, ``x.?(f) <- g`` means that if ``f row`` is
+``true`` then ``g row`` is included in the returned dataframe.
+ *)
 
 val ( .$( ) ) : t -> int list * string list -> t
-(** TODO *)
+(** Extended indexing operator associated with ``get_slice_by_name`` function. *)
 
 
 (** {6 IO & helper functions} *)
 
 val of_csv : ?sep:char -> ?head:string array -> ?types:string array -> string -> t
-(** TODO *)
+(**
+``of_csv ~sep ~head ~types fname`` creates a dataframe by reading the data in
+a CSV file with the name ``fname``. Currently, the function supports four data
+types: ``b`` for boolean; ``i`` for int; ``f`` for float; ``s`` for string.
+
+Parameters:
+  * ``sep``: delimiter, the default one is tab.
+  * ``head``: column names, if not passed in, the first line of CSV file will be used.
+  * ``types``: data type of each column, must be consistent with head.
+ *)
 
 val to_csv : ?sep:char -> t -> string -> unit
-(** TODO *)
+(**
+``to_csv ~sep x fname`` converts a dataframe to CSV file of name ``fname``. The
+delimiter is specified by ``sep``.
+ *)
 
 val to_rows : t -> elt array array
-(** TODO *)
+(** ``to_rows x`` returns an array of rows in ``x``. *)
 
 val to_cols : t -> series array
-(** TODO *)
+(** ``to_cols x`` returns an arrays of columns in ``x``. *)
 
 val elt_to_str : elt -> string
-(** TODO *)
+(** ``elt_to_str x`` converts element ``x`` to its string representation. *)
