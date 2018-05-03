@@ -27,9 +27,6 @@ val show_info : string -> unit
 
 (** {6 Execute gists} *)
 
-val load_file : ?gist:string -> string -> string
-(** Load a zoo file with the given gist name and file name, the file path is relative to the gist/version folder. *)
-
 val eval : string -> unit
 (** Evaluate an OCaml expression in toplevel. *)
 

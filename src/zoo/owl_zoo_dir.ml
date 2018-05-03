@@ -51,7 +51,7 @@ and _dir_zoo_ocaml gid vid added =
       let f'_str = replace "load_file[ \t]+\\([0-9a-zA-Z'._\"]+\\)"
         (Printf.sprintf "load_file ~gist:\"%s\" \\1" gist) f'_str
       in
-      Owl_utils.write_file f' f'_str;
+      Owl_io.write_file f' f'_str;
 
       _extract_zoo_gist f' added;
       Toploop.mod_use_file Format.std_formatter f'

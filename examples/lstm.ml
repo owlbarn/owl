@@ -17,44 +17,9 @@ let prepare window step =
   let t_arr = Nlp.Vocabulary.tokenise vocab chars |> Array.map float_of_int in
   let tokens = Dense.Ndarray.S.of_array t_arr [| Array.length t_arr |] in
 
-
-let prepare wndsz stepsz =
-  Owl_log.info "load file ...";
-  let txt = load_file ~gist:"217ef87bc36845c4e78e398d52bc4c5b" "wonderland.txt" in
-  let chars = txt |> String.lowercase_ascii |> str_to_chars in
-
-  Owl_log.info "build vocabulary ...";
-  let h = Hashtbl.create 1024 in
-  Array.iter (fun c ->
-    if Hashtbl.mem h c = false then Hashtbl.add h c c
-  ) chars;
-  let w2i = Hashtbl.create 1024 in
-  let i2w = Hashtbl.create 1024 in
-  Hashtbl.fold (fun k v a -> v :: a) h []
-  |> List.sort (Pervasives.compare)
-  |> List.iteri (fun i w ->
-      Hashtbl.add w2i w (float_of_int i);
-      Hashtbl.add i2w (float_of_int i) w;
-    );
-
-  Owl_log.info "tokenise ...";
-  let tokens = Array.map (Hashtbl.find w2i) chars in
-
-  Owl_log.info "make x matrix (indices) ...";
-  let m = (Array.length chars - wndsz) / stepsz in
-  let x = Dense.Matrix.S.zeros m wndsz in
-  for i = 0 to m - 1 do
-    for j = 0 to wndsz - 1 do
-      Dense.Matrix.S.set x i j tokens.(i*stepsz + j)
-    done;
-  done;
-
-  Owl_log.info "make y matrix (one-hot) ...";
-  let y = Dense.Matrix.S.zeros m (Hashtbl.length w2i) in
-  for i = 0 to m - 1 do
-    let j = int_of_float tokens.(i*stepsz + wndsz) in
-    Dense.Matrix.S.set y i j 1.
-  done;
+  Owl_log.info "construct x (sliding) and y (one-hot) ...";
+  let x = Dense.Ndarray.S.slide ~step:1 ~window tokens in
+  let y = Dense.Ndarray.S.(one_hot (Nlp.Vocabulary.length vocab) tokens.${[[window;-1]]}) in
 
   Owl_log.info "chars:%i, symbols:%i, wndsz:%i, stepsz:%i"
     (String.length chars) (Nlp.Vocabulary.length vocab) window step;
