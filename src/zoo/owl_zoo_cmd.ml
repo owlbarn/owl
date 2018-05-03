@@ -111,7 +111,7 @@ let show_info gist =
 let query_path gist =
   let gid, vid, _, _ =
     try Owl_zoo_ver.parse_gist_string gist
-    with Owl_exception.ZOO_ILLEGAL_GIST_NAME -> "", "", true, true
+    with Owl_exception.ZOO_ILLEGAL_GIST_NAME -> "", "", 0., true
   in
   Owl_zoo_path.extend_zoo_path ~gid ~vid ""
 

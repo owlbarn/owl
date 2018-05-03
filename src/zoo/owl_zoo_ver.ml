@@ -61,13 +61,14 @@ let get_remote_vid (gid : string) =
 
 (** Get the latest version downloaded on local machine; if the local version is
 not found on record, get the newest vid from Gist server. *)
-let get_latest_vid (gid : string) =
-  let v, _, _, miss_flag = get_value gid in
-  if (miss_flag == false) then (
+let get_latest_vid (gid : string) (tol : float)=
+  let v, ts, _, miss_flag = get_value gid in
+  let t = Unix.time () in
+  if (miss_flag == false && (t -. ts) < tol) then (
     assert (Array.length v > 0);
     Array.get v (Array.length v - 1)
   ) else (
-    Owl_log.debug "owl-zoo: Gist %s does not exist on local cache; fetching vid from server" gid;
+    Owl_log.debug "owl-zoo: Gist %s within time tolerence %f does not exist on local cache; fetching vid from server" gid tol;
     get_remote_vid gid
   )
 
@@ -112,47 +113,42 @@ let remove (gid : string)  =
   )
 
 
+(* TODO: richer time format *)
+let to_timestamp time_str = float_of_string time_str
+
 (** Parse a full gist name scheme string and return a gist id, a version id, a
-bool flag to indicate if the "latest" keyword is used as vid, and a bool flag
-to indicate if `pin` is set in the gist name. *)
+float value to indicate the tolerance for time lag of this version, and a bool
+flag to indicate if `pin` is set to true in the gist name. *)
+(* TODO: cascade tolerance; wrong input(?) *)
 let parse_gist_string gist =
-  let strip_string s =
-    Str.global_replace (Str.regexp "[\r\n\t ]") "" s
-  in
   let validate_len s len =
     if ((String.length s) = len) then s
     else raise Owl_exception.ZOO_ILLEGAL_GIST_NAME
   in
-
-  let regex = Str.regexp "/" in
-  let lst = Str.split_delim regex gist
-    |> List.map strip_string in
-
-  if (List.length lst > 3) then
-  raise Owl_exception.ZOO_ILLEGAL_GIST_NAME;
-
-  let latest_flag = ref false in
-  let gid, vid =
-    match lst with
-    | gid :: [] ->
-      latest_flag := true;
-      gid, get_latest_vid gid
-    | gid :: vid :: _ ->
-      gid,
-      (match vid with
-      | "latest" ->
-        latest_flag := true; get_latest_vid gid
-      | _        -> vid)
-    | _ -> raise Owl_exception.ZOO_ILLEGAL_GIST_NAME
-  in
-  let pin_flag =
-    match lst with
-    | a :: b :: ["pin"] -> true
-    | _ -> false
+  let split ?(delim=" ") str =
+    let regex = Str.regexp delim in
+    Str.split_delim regex str
   in
 
-  if (!latest_flag && pin_flag == true) then
-  raise Owl_exception.ZOO_ILLEGAL_GIST_NAME;
+  let lst = split ~delim:"?" ("gid=" ^ gist) in
+  let params = Hashtbl.create 5 in
+  List.iter (fun p ->
+    let kv = split ~delim:"=" p |> Array.of_list in
+    Hashtbl.add params kv.(0) kv.(1)
+  ) lst;
 
-  (validate_len gid 32), (validate_len vid 40),
-   !latest_flag, pin_flag
+  let gid = Hashtbl.find params "gid" in
+  let tol =
+    try Hashtbl.find params "tol" |> to_timestamp
+    with Not_found -> infinity
+  in
+  let vid =
+    try Hashtbl.find params "vid"
+    with Not_found -> get_latest_vid gid tol
+  in
+  let pin =
+    try Hashtbl.find params "pin" |> bool_of_string with
+    | Not_found -> false
+    | Invalid_argument _ -> raise Owl_exception.ZOO_ILLEGAL_GIST_NAME
+  in
+  (validate_len gid 32), (validate_len vid 40), tol, pin

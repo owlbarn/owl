@@ -23,7 +23,7 @@ server. *)
 val get_timestamp : string -> float
 (** ``get_timestamp`` gets the timestamp of the latest version of a gist. *)
 
-val parse_gist_string : string -> string * string * bool * bool
+val parse_gist_string : string -> string * string * float * bool
 (** ``parse_gist_string`` accepts a full gist name scheme string and return a
 gist id, a version id, a bool flag to indicate if the "latest" keyword is used
 as vid, and a bool flag to indicate if `pin` is set in the gist name. *)

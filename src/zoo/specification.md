@@ -1,13 +1,10 @@
 ## The naming scheme
 
-- The naming of a gist: `gid/[vid|latest]/[pin|unpin]`
-- "latest" means the newest version on local cache. To get the up-to-date version from Gist server, the user needs to run `owl -download` command explicitly. The download time as metadata will be saved when downloaded. After a certain period of time, the newest version will also be pulled to local cache at `owl -run` or `#zoo` when "latest" is set.
-- When `pin` is set, a file ("$gid-$vid.graph") that contains the zoo gist dependency graph of current script will be loaded, so that fixed versions of dependencies will be loaded. If such file does not exists in current directory, then the current script will be parsed to generate one. `pin` only works when the version id is specified, otherwise this flag will be ignored.
-- All three parts of a name do not have to be listed explicitly. Expansion rules:
-    + `gid` --> `gid/latest` --> `gid/latest/unpin`
-    + `gid/vid` --> `gid/vid/unpin`
-    + `gid/vid/pin`
-- "latest" will introduce cache inconsistency. The latest version on one machine might not be the same on the other. Ideally, every published service should contain a specific version id, and "latest" should only be used during development. One solution is to replace "latest" with the version id when this gist is uploaded. Without replacing it with version id, the name `gid/latest/pin` is ambiguous.
+- The naming of a gist: `gid?vid="version_id"?tol="time_str"?pin="true"`
+- `vid`, `tol`, `pin` are all optional parameters.
+  * `tol` is tolerance threshold value. Any version that exists on a user's local cache longer than `tol` is deemed outdated and thus requires update when used.
+  * `vid` specifies the id of an version of a gist; when not used, it is set to the version that exists on local cache and is within `tol`; if such version does not exist, then the latest version from Gist server will be used.
+  * When `pin` is set, a file ("$gid-$vid.graph") that contains the zoo gist dependency graph of current script will be loaded, so that fixed versions of dependencies will be loaded. If such file does not exists in current directory, then the current script will be parsed to generate one. `pin` only works when the version id is specified, otherwise this flag will be ignored.
 
 ## How each command understands "gist"
 
@@ -22,4 +19,4 @@
 
 - Prerequisite: users need to install and login to `gist` and `git`.
 - Uploading a folder to Gist requires a `#readme.md` file in that folder. The first line of this file will be used as a short description for the shared scripts in the same folder. The hashtag is used to make sure this file is always shown at the top in `gist.github.com`, where files in a Gist are displayed in the alphabetical order.
-- When users need to use a file A in the same gist folder, they should extend its path with `Owl_zoo_path.extend_zoo_path(A)`, so that its path can be found when downloaded to local cache.
+- When users need to use a file A in the same gist folder, they should extend its path with `Owl_zoo_path.extend_zoo_path A`, so that its path can be found when downloaded to local cache.
