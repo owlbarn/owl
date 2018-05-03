@@ -114,7 +114,9 @@ let remove (gid : string)  =
 
 
 (* TODO: richer time format *)
-let to_timestamp time_str = float_of_string time_str
+let to_timestamp time_str =
+  try float_of_string time_str with
+  Failure _ -> raise Owl_exception.ZOO_ILLEGAL_GIST_NAME
 
 (** Parse a full gist name scheme string and return a gist id, a version id, a
 float value to indicate the tolerance for time lag of this version, and a bool
