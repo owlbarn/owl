@@ -7,6 +7,7 @@ open Owl_types
 
 
 type elt =
+  | Bool   of bool
   | Int    of int
   | Float  of float
   | String of string
@@ -14,6 +15,7 @@ type elt =
 
 
 type series =
+  | Bool_Series   of bool array
   | Int_Series    of int array
   | Float_Series  of float array
   | String_Series of string array
@@ -28,11 +30,15 @@ type t = {
 }
 
 
+let unpack_bool = function Bool x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+
 let unpack_int = function Int x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
 let unpack_float = function Float x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
 let unpack_string = function String x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
+
+let unpack_bool_series = function Bool_Series x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
 let unpack_int_series = function Int_Series x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
@@ -40,11 +46,15 @@ let unpack_float_series = function Float_Series x -> x | _ -> raise Owl_exceptio
 
 let unpack_string_series = function String_Series x -> x | _ -> raise Owl_exception.NOT_SUPPORTED
 
+let pack_bool x = Bool x
+
 let pack_int x = Int x
 
 let pack_float x = Float x
 
 let pack_string x = String x
+
+let pack_bool_series x = Bool_Series x
 
 let pack_int_series x = Int_Series x
 
@@ -72,6 +82,7 @@ let make ?data head_names =
 
 let allocate_space data =
   Array.(map (function
+    | Bool_Series c   -> Bool_Series (append c (copy c))
     | Int_Series c    -> Int_Series (append c (copy c))
     | Float_Series c  -> Float_Series (append c (copy c))
     | String_Series c -> String_Series (append c (copy c))
@@ -79,8 +90,8 @@ let allocate_space data =
   ) data)
 
 
-let set_elt_in_series x i a =
-  match a with
+let set_elt_in_series x i = function
+  | Bool a   -> (unpack_bool_series x).(i) <- a
   | Int a    -> (unpack_int_series x).(i) <- a
   | Float a  -> (unpack_float_series x).(i) <- a
   | String a -> (unpack_string_series x).(i) <- a
@@ -89,14 +100,15 @@ let set_elt_in_series x i a =
 
 let get_elt_in_series x i =
   match x with
+  | Bool_Series c   -> Bool c.(i)
   | Int_Series c    -> Int c.(i)
   | Float_Series c  -> Float c.(i)
   | String_Series c -> String c.(i)
   | Any_Series      -> Any
 
 
-let init_series n a =
-  match a with
+let init_series n = function
+  | Bool a   -> Bool_Series (Array.make n a)
   | Int a    -> Int_Series (Array.make n a)
   | Float a  -> Float_Series (Array.make n a)
   | String a -> String_Series (Array.make n a)
@@ -104,6 +116,7 @@ let init_series n a =
 
 
 let resize_series n = function
+  | Bool_Series c   -> Bool_Series (Owl_utils_array.resize ~head:true true n c)
   | Int_Series c    -> Int_Series (Owl_utils_array.resize ~head:true 0 n c)
   | Float_Series c  -> Float_Series (Owl_utils_array.resize ~head:true 0. n c)
   | String_Series c -> String_Series (Owl_utils_array.resize ~head:true "" n c)
@@ -112,6 +125,7 @@ let resize_series n = function
 
 let append_series x y =
   match x, y with
+  | Bool_Series x, Bool_Series y     -> Bool_Series (Array.append x y)
   | Int_Series x, Int_Series y       -> Int_Series (Array.append x y)
   | Float_Series x, Float_Series y   -> Float_Series (Array.append x y)
   | String_Series x, String_Series y -> String_Series (Array.append x y)
@@ -120,6 +134,7 @@ let append_series x y =
 
 
 let length_series = function
+  | Bool_Series c   -> Array.length c
   | Int_Series c    -> Array.length c
   | Float_Series c  -> Array.length c
   | String_Series c -> Array.length c
@@ -127,6 +142,7 @@ let length_series = function
 
 
 let slice_series slice = function
+  | Bool_Series c   -> Bool_Series (Owl_utils_array.get_slice slice c)
   | Int_Series c    -> Int_Series (Owl_utils_array.get_slice slice c)
   | Float_Series c  -> Float_Series (Owl_utils_array.get_slice slice c)
   | String_Series c -> String_Series (Owl_utils_array.get_slice slice c)
@@ -134,6 +150,7 @@ let slice_series slice = function
 
 
 let elt_to_str = function
+  | Bool a   -> string_of_bool a
   | Int a    -> string_of_int a
   | Float a  -> string_of_float a
   | String a -> a
@@ -141,9 +158,10 @@ let elt_to_str = function
 
 
 let str_to_elt_fun = function
-  | "%i" -> fun a -> Int (int_of_string a)
-  | "%f" -> fun a -> if a = "" then Float nan else Float (float_of_string a)
-  | "%s" -> fun a -> String a
+  | "b" -> fun a -> Bool (bool_of_string a)
+  | "i" -> fun a -> Int (int_of_string a)
+  | "f" -> fun a -> if a = "" then Float nan else Float (float_of_string a)
+  | "s" -> fun a -> String a
   | _    -> failwith "str_to_elt_fun: unsupported type"
 
 
@@ -212,6 +230,7 @@ let get_row x i = Array.map (fun y -> get_elt_in_series y i) x.data
 
 let get_col x j =
   match x.data.(j) with
+  | Bool_Series c   -> Bool_Series (Array.sub c 0 x.used)
   | Int_Series c    -> Int_Series (Array.sub c 0 x.used)
   | Float_Series c  -> Float_Series (Array.sub c 0 x.used)
   | String_Series c -> String_Series (Array.sub c 0 x.used)
@@ -238,6 +257,7 @@ let get_cols_by_name x names = Array.map (get_col_by_name x) names
 
 let get x i j =
   match x.data.(j) with
+  | Bool_Series c   -> Bool c.(i)
   | Int_Series c    -> Int c.(i)
   | Float_Series c  -> Float c.(i)
   | String_Series c -> String c.(i)
@@ -246,6 +266,7 @@ let get x i j =
 
 let set x i j a =
   match x.data.(j) with
+  | Bool_Series c   -> c.(i) <- (unpack_bool a)
   | Int_Series c    -> c.(i) <- (unpack_int a)
   | Float_Series c  -> c.(i) <- (unpack_float a)
   | String_Series c -> c.(i) <- (unpack_string a)
@@ -278,6 +299,7 @@ let copy x =
   let used = x.used in
   let size = x.size in
   let data = Array.map (function
+    | Bool_Series c   -> Bool_Series (Array.copy c)
     | Int_Series c    -> Int_Series (Array.copy c)
     | Float_Series c  -> Float_Series (Array.copy c)
     | String_Series c -> String_Series (Array.copy c)
@@ -430,7 +452,7 @@ let of_csv ?sep ?head ?types fname =
   in
   let types = match types with
     | Some a -> a
-    | None   -> Array.map (fun _ -> "%s") head_names
+    | None   -> Array.map (fun _ -> "s") head_names
   in
   assert (Array.length head_names = Array.length types);
   let convert_f = Array.map str_to_elt_fun types in

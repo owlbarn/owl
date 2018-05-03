@@ -8,14 +8,14 @@ open Owl
 
 let example_01 gist_path =
   let fname = gist_path ^ "funding.csv" in
-  let types =  [|"%s";"%s";"%f";"%s";"%s";"%s";"%s";"%f";"%s";"%s"|] in
+  let types =  [|"s";"s";"f";"s";"s";"s";"s";"f";"s";"s"|] in
   let df = Dataframe.of_csv ~sep:',' ~types fname in
   Owl_pretty.pp_dataframe Format.std_formatter df
 
 
 let example_02 gist_path =
   let fname = gist_path ^ "sales.csv" in
-  let types =  [|"%s";"%s";"%f";"%s";"%s";"%s";"%s";"%s";"%s";"%s";"%f";"%f"|] in
+  let types =  [|"s";"s";"f";"s";"s";"s";"s";"s";"s";"s";"f";"f"|] in
   let df = Dataframe.of_csv ~sep:',' ~types fname in
   Owl_pretty.pp_dataframe Format.std_formatter df
 
@@ -28,7 +28,7 @@ let example_03 gist_path =
 
 let example_04 gist_path =
   let fname = gist_path ^ "insurance.csv" in
-  let types =  [|"%i";"%s";"%s";"%f";"%f";"%f";"%f";"%f";"%f";"%f";"%f";"%f";"%f";"%f";"%f";"%s";"%s";"%i"|] in
+  let types =  [|"i";"s";"s";"f";"f";"f";"f";"f";"f";"f";"f";"f";"f";"f";"f";"s";"s";"i"|] in
   let d0 = Dataframe.of_csv ~sep:',' ~types fname in
   let d1 = Dataframe.(filter_row (fun row ->
     (unpack_string row.(15)) = "Commercial" && (unpack_float row.(3)) > 0.

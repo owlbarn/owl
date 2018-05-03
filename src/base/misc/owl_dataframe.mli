@@ -13,6 +13,7 @@ type series
 (** TODO *)
 
 type elt =
+  | Bool   of bool
   | Int    of int
   | Float  of float
   | String of string
@@ -22,6 +23,9 @@ type elt =
 
 (** {6 Pakcking & unpacking element} *)
 
+val pack_bool : bool -> elt
+(** TODO *)
+
 val pack_int : int -> elt
 (** TODO *)
 
@@ -29,6 +33,9 @@ val pack_float : float -> elt
 (** TODO *)
 
 val pack_string : string -> elt
+(** TODO *)
+
+val unpack_bool : elt -> bool
 (** TODO *)
 
 val unpack_int : elt -> int
@@ -43,6 +50,9 @@ val unpack_string : elt -> string
 
 (** {6 Pakcking & unpacking series} *)
 
+val pack_bool_series : bool array -> series
+(** TODO *)
+
 val pack_int_series : int array -> series
 (** TODO *)
 
@@ -53,6 +63,9 @@ val pack_string_series : string array -> series
 (** TODO *)
 
 val unpack_int_series : series -> int array
+(** TODO *)
+
+val unpack_bool_series : series -> bool array
 (** TODO *)
 
 val unpack_float_series : series -> float array
