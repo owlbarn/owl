@@ -420,6 +420,8 @@ val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
 ``repeat ~axis x a`` repeats the elements along ``axis`` for ``a`` times. The default
 value of ``?axis`` is the highest dimension of ``x``. This function is similar to
 ``numpy.repeat`` except that ``a`` is an integer instead of an array.
+
+Not that the ``axis`` can be negative.
  *)
 
 val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t

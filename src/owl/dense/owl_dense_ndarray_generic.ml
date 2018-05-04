@@ -188,13 +188,10 @@ let tile x reps =
   _tile 0 0 0; y
 
 
-let repeat ?axis x reps =
+let repeat ?(axis=(-1)) x reps =
   let highest_dim = Array.length (shape x) - 1 in
   (* by default, repeat at the highest dimension *)
-  let axis = match axis with
-    | Some a -> a
-    | None   -> highest_dim
-  in
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
   (* calculate the new shape of y based on reps *)
   let _kind = kind x in
   let _shape_y = shape x in
@@ -224,6 +221,7 @@ let repeat ?axis x reps =
 
 
 let concatenate ?(axis=0) xs =
+  let axis = Owl_utils.adjust_index axis (num_dims xs.(0)) in
   (* get the shapes of all inputs and etc. *)
   let shapes = Array.map shape xs in
   let shape0 = Array.copy shapes.(0) in

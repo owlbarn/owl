@@ -670,16 +670,16 @@ let atanh varr = (map Scalar.atanh varr)
 
 
 (* TODO: can this be made more efficient? *)
-let sum ?(axis=0) varr =
+let sum ?(axis=(-1)) varr =
   let old_dims = shape varr in
   let old_rank = Array.length old_dims in
-  if old_rank = 0
-  then varr
+  let axis = Owl_utils.adjust_index axis old_rank in
+  if old_rank = 0 then varr
   else
     let old_ind = Array.make old_rank 0 in
     let new_rank = old_rank - 1 in
     let new_dims = Array.init new_rank
-        (fun i -> if i < axis then old_dims.(i) else old_dims.(i + 1))
+      (fun i -> if i < axis then old_dims.(i) else old_dims.(i + 1))
     in
     let new_varr = empty (kind varr) new_dims in
     let new_ind = Array.make new_rank 0 in
@@ -725,6 +725,72 @@ let sum_slices ?(axis=0) varr =
     done;
     result_varr
   end
+
+
+let min ?(axis=(-1)) varr =
+  let old_dims = shape varr in
+  let old_rank = Array.length old_dims in
+  let axis = Owl_utils.adjust_index axis old_rank in
+  if old_rank = 0 then varr
+  else
+    let old_ind = Array.make old_rank 0 in
+    let new_rank = old_rank - 1 in
+    let new_dims = Array.init new_rank
+      (fun i -> if i < axis then old_dims.(i) else old_dims.(i + 1))
+    in
+    let new_varr = empty (kind varr) new_dims in
+    let new_ind = Array.make new_rank 0 in
+    let should_stop = ref false in
+    let acc = ref infinity in
+    begin
+      while not !should_stop do
+        for i = 0 to new_rank - 1 do (* copy the new index into the old one *)
+          old_ind.(if i < axis then i else i + 1) <- new_ind.(i)
+        done;
+        acc := infinity;
+        for i = 0 to old_dims.(axis) - 1 do
+          old_ind.(axis) <- i;
+          acc := Pervasives.min !acc (Genarray.get varr old_ind)
+        done;
+        Genarray.set new_varr new_ind !acc;
+        if not (_next_index new_ind new_dims) then
+          should_stop := true
+      done;
+      new_varr
+    end
+
+
+let max ?(axis=(-1)) varr =
+  let old_dims = shape varr in
+  let old_rank = Array.length old_dims in
+  let axis = Owl_utils.adjust_index axis old_rank in
+  if old_rank = 0 then varr
+  else
+    let old_ind = Array.make old_rank 0 in
+    let new_rank = old_rank - 1 in
+    let new_dims = Array.init new_rank
+      (fun i -> if i < axis then old_dims.(i) else old_dims.(i + 1))
+    in
+    let new_varr = empty (kind varr) new_dims in
+    let new_ind = Array.make new_rank 0 in
+    let should_stop = ref false in
+    let acc = ref neg_infinity in
+    begin
+      while not !should_stop do
+        for i = 0 to new_rank - 1 do (* copy the new index into the old one *)
+          old_ind.(if i < axis then i else i + 1) <- new_ind.(i)
+        done;
+        acc := neg_infinity;
+        for i = 0 to old_dims.(axis) - 1 do
+          old_ind.(axis) <- i;
+          acc := Pervasives.min !acc (Genarray.get varr old_ind)
+        done;
+        Genarray.set new_varr new_ind !acc;
+        if not (_next_index new_ind new_dims) then
+          should_stop := true
+      done;
+      new_varr
+    end
 
 
 (* -1. for negative numbers, 0 or (-0) for 0,
