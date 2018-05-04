@@ -35,7 +35,4 @@ let train () =
   Graph.train ~params network x y
 
 
-let test () = () (* TODO *)
-
-
 let _ = train ()
