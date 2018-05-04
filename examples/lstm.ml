@@ -31,7 +31,7 @@ let make_network wndsz vocabsz =
   |> embedding vocabsz 40
   |> lstm 128
   |> linear 512 ~act_typ:Activation.Relu
-  |> linear vocabsz ~act_typ:Activation.Softmax
+  |> linear vocabsz ~act_typ:Activation.(Softmax 1)
   |> get_network
 
 

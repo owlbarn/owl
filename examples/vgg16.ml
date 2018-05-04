@@ -40,7 +40,7 @@ let make_network img_size =
   |> flatten
   |> fully_connected ~act_typ:Activation.Relu 4096
   |> fully_connected ~act_typ:Activation.Relu 4096
-  |> fully_connected ~act_typ:Activation.Softmax 1000
+  |> fully_connected ~act_typ:Activation.(Softmax 1) 1000
   |> get_network
 
 let _ = make_network 224 |> print

@@ -591,7 +591,7 @@ Now, let's see how to define a two-layer neural network.
 ```ocaml
 let nn = input [|784|]
   |> linear 300 ~act_typ:Activation.Tanh
-  |> linear 10  ~act_typ:Activation.Softmax
+  |> linear 10  ~act_typ:Activation.(Softmax 1)
   |> get_network
 ;;
 ```

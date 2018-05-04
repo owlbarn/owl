@@ -42,7 +42,7 @@ let make_network img_size =
   |> conv2d ~padding:VALID [|1;1;512;1000|] [|1;1|]
   |> activation Activation.Relu
   |> global_avg_pool2d
-  |> activation Activation.Softmax
+  |> activation Activation.(Softmax 1)
   |> get_network
 
 let _ = make_network 227 |> print
