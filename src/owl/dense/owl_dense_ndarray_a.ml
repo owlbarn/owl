@@ -126,7 +126,7 @@ let sub_left x i =
   let s_len = x.stride.(i_len - 1) in
   let pad_len = num_dims x - i_len in
   assert (pad_len > 0);
-  let i = Owl_utils.Array.pad `Right i 0 pad_len in
+  let i = Owl_utils.Array.pad `Right 0 pad_len i in
   let start_pos = Owl_utils.index_nd_1d i x.stride in
   let data_y = Array.sub x.data start_pos s_len in
   let shape_y = Array.sub x.shape i_len pad_len in
@@ -149,9 +149,9 @@ let expand ?(hi=false) x d =
   match d0 > 0 with
   | true  -> (
       if hi = true then
-        Owl_utils.Array.pad `Right (shape x) 1 d0 |> reshape x
+        Owl_utils.Array.pad `Right 1 d0 (shape x) |> reshape x
       else
-        Owl_utils.Array.pad `Left (shape x) 1 d0 |> reshape x
+        Owl_utils.Array.pad `Left 1 d0 (shape x) |> reshape x
     )
   | false -> x
 
@@ -412,11 +412,11 @@ let tile x reps =
   let b = Array.length reps in
   let x, reps = match a < b with
     | true -> (
-      let d = Owl_utils.Array.pad `Left (shape x) 1 (b - a) in
+      let d = Owl_utils.Array.pad `Left 1 (b - a) (shape x) in
       (reshape x d), reps
       )
     | false -> (
-      let r = Owl_utils.Array.pad `Left reps 1 (a - b) in
+      let r = Owl_utils.Array.pad `Left 1 (a - b) reps in
       x, r
       )
   in
@@ -549,7 +549,7 @@ let concatenate ?(axis=0) xs =
 let _expand_padding_index d s =
   let ls = Array.length s in
   let ld = Array.length d in
-  let d = Owl_utils.(Array.pad `Right d [|0;0|] (ls - ld)) in
+  let d = Owl_utils.Array.pad `Right [|0;0|] (ls - ld) d in
   Array.map (function
     | [||]  -> [|0;0|]
     | [|x|] -> [|x;x|]

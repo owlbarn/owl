@@ -63,6 +63,8 @@ module Graph = Owl_graph
 
 module Nlp = Owl_nlp
 
+module Log = Owl_log
+
 
 (* backend modules *)
 
