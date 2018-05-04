@@ -1478,6 +1478,8 @@ val softmax : ?axis:int -> (float, 'a) t -> (float, 'a) t
 ``softmax x`` computes the softmax functions ``(exp x) / (sum (exp x))`` of
 all the elements along the specified ``axis`` in ``x`` and returns the result
 in a new ndarray.
+
+By default, ``axis = -1``, i.e. along the highest dimension.
  *)
 
 val sigmoid : (float, 'a) t -> (float, 'a) t
