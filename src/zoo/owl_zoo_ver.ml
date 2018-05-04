@@ -118,10 +118,10 @@ let to_timestamp time_str =
   try float_of_string time_str with
   Failure _ -> raise Owl_exception.ZOO_ILLEGAL_GIST_NAME
 
+
 (** Parse a full gist name scheme string and return a gist id, a version id, a
-float value to indicate the tolerance for time lag of this version, and a bool
-flag to indicate if `pin` is set to true in the gist name. *)
-(* TODO: cascade tolerance; wrong input(?) *)
+float value indicating the time tolerance for this gist, and a bool
+flag indicating if `pin` is set to true in the gist name. *)
 let parse_gist_string gist =
   let validate_len s len =
     if ((String.length s) = len) then s
@@ -153,4 +153,5 @@ let parse_gist_string gist =
     | Not_found -> false
     | Invalid_argument _ -> raise Owl_exception.ZOO_ILLEGAL_GIST_NAME
   in
+
   (validate_len gid 32), (validate_len vid 40), tol, pin

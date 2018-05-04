@@ -1,10 +1,10 @@
 ## The naming scheme
 
-- The naming of a gist: `gid?vid="version_id"?tol="time_str"?pin="true"`
-- `vid`, `tol`, `pin` are all optional parameters.
-  * `tol` is tolerance threshold value. Any version that exists on a user's local cache longer than `tol` is deemed outdated and thus requires update when used.
-  * `vid` specifies the id of an version of a gist; when not used, it is set to the version that exists on local cache and is within `tol`; if such version does not exist, then the latest version from Gist server will be used.
-  * When `pin` is set, a file ("$gid-$vid.graph") that contains the zoo gist dependency graph of current script will be loaded, so that fixed versions of dependencies will be loaded. If such file does not exists in current directory, then the current script will be parsed to generate one. `pin` only works when the version id is specified, otherwise this flag will be ignored.
+- The naming of a gist: `gid?vid="version_id"?tol="time_str"`. Here `vid` and `tol` are both optional parameters.
+- `tol` is a threshold value that indicates a gist's tolerance for the time it exists on the local cache. Any gist that exists on a user's local cache longer than `tol` is deemed outdated and thus requires update the `vid` from the Gist server before being used.
+  * If `tol` is not set, `zoo` will always try to use the latest locally cached version.
+  * Currently the format of `time_str` is simple: a string of numbers that indicates seconds.
+- `vid` specifies the id of certain version of a gist. When `vid` is not set, it defaults to the latest gist version that exists on local cache for no longer than `tol`; if such version does not exist, then the newest version from Gist server will be used. When `vid` is set, the `tol` parameter will be ignored.
 
 ## How each command understands "gist"
 
