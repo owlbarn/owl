@@ -141,7 +141,7 @@ module type Sig = sig
 
   val softsign_ : arr -> unit
 
-  val softmax_ : arr -> unit
+  val softmax_ : ?axis:int -> arr -> unit
 
   val sigmoid_ : arr -> unit
 

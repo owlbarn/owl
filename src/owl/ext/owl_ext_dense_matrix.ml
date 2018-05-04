@@ -791,7 +791,7 @@ module type SD_Sig = sig
 
   val softsign : mat -> mat
 
-  val softmax : mat -> mat
+  val softmax :?axis:int -> mat -> mat
 
   val sigmoid : mat -> mat
 
@@ -927,7 +927,7 @@ module Make_SD
 
   let softsign x = M.softsign (unpack_box x) |> pack_box
 
-  let softmax x = M.softmax (unpack_box x) |> pack_box
+  let softmax ?axis x = M.softmax ?axis (unpack_box x) |> pack_box
 
   let sigmoid x = M.sigmoid (unpack_box x) |> pack_box
 

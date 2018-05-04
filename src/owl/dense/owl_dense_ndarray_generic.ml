@@ -3370,19 +3370,38 @@ let softsign_ x = _owl_softsign (kind x) (numel x) x x
 
 let sigmoid_ x = _owl_sigmoid (kind x) (numel x) x x
 
-let softmax x =
+let softmax ?axis x =
   let x = copy x in
-  sub_scalar_ x (max' x);
-  exp_ x;
-  let a = sum' x in
-  div_scalar_ x a;
+  let _ = match axis with
+    | Some a -> (
+        sub_ x (max ~axis:a x);
+        exp_ x;
+        let a = sum ~axis:a x in
+        div_ x a;
+      )
+    | None   -> (
+        sub_scalar_ x (max' x);
+        exp_ x;
+        let a = sum' x in
+        div_scalar_ x a;
+      )
+  in
   x
 
-let softmax_ x =
-  sub_scalar_ x (max' x);
-  exp_ x;
-  let a = sum' x in
-  div_scalar_ x a
+let softmax_ ?axis x =
+  match axis with
+  | Some a -> (
+      sub_ x (max ~axis:a x);
+      exp_ x;
+      let a = sum ~axis:a x in
+      div_ x a;
+    )
+  | None   -> (
+      sub_scalar_ x (max' x);
+      exp_ x;
+      let a = sum' x in
+      div_scalar_ x a
+    )
 
 let cumsum_ ?axis x =
   let _cumop = _owl_cumsum (kind x) in

@@ -1471,10 +1471,11 @@ val softsign : (float, 'a) t -> (float, 'a) t
 elements in ``x`` and returns the result in a new ndarray.
  *)
 
-val softmax : (float, 'a) t -> (float, 'a) t
+val softmax : ?axis:int -> (float, 'a) t -> (float, 'a) t
 (**
 ``softmax x`` computes the softmax functions ``(exp x) / (sum (exp x))`` of
-all the elements in ``x`` and returns the result in a new array.
+all the elements along the specified ``axis`` in ``x`` and returns the result
+in a new ndarray.
  *)
 
 val sigmoid : (float, 'a) t -> (float, 'a) t
@@ -2380,7 +2381,7 @@ val sigmoid_ : ('a, 'b) t -> unit
 ``sigmoid_ x`` is similar to ``sigmoid`` but output is written to ``x``
  *)
 
-val softmax_ : ('a, 'b) t -> unit
+val softmax_ : ?axis:int -> ('a, 'b) t -> unit
 (**
 ``softmax_ x`` is similar to ``softmax`` but output is written to ``x``
  *)
