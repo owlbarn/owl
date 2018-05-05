@@ -67,7 +67,7 @@ not found on record, get the newest vid from Gist server. *)
 let get_latest_vid (gid : string) (tol : float) =
   let v, ts, _, miss_flag = get_value gid in
   let t = Unix.time () in
-  if (miss_flag == false && (t -. ts) < tol) then (
+  if miss_flag = false && (t -. ts) < tol then (
     assert (Array.length v > 0);
     Array.get v (Array.length v - 1)
   ) else (
@@ -79,7 +79,7 @@ let get_latest_vid (gid : string) (tol : float) =
 (** Check if a specific version of a gist exists on the record. *)
 let exist (gid : string) (vid : string) =
   let v, _, _, miss_flag = get_value gid in
-  if (miss_flag == false) then
+  if miss_flag = false then
     Array.mem vid v
   else false
 
@@ -108,7 +108,7 @@ let update (gid : string) (vid : string) =
 (** Remove a gist's record. *)
 let remove (gid : string)  =
   let _, _, tb, miss_flag = get_value gid in
-  if (miss_flag == false) then (
+  if miss_flag = false then (
     Hashtbl.remove tb gid;
     Owl_io.marshal_to_file tb htb;
   ) 
