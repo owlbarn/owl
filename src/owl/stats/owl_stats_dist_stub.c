@@ -1536,3 +1536,15 @@ value owl_stub_binomial_logsf(value vK, value vP, value vN) {
   double y = binomial_logsf(k, p, n);
   return caml_copy_double(y);
 }
+
+
+value owl_stub_multinomial_rvs(value vK, value vN, value vP, value vS) {
+  int k = Long_val(vK);
+  int n = Long_val(vN);
+  struct caml_ba_array *P = Caml_ba_array_val(vP);
+  double *p = (double *) P->data;
+  struct caml_ba_array *S = Caml_ba_array_val(vS);
+  int32_t *s = (int32_t *) S->data;
+  multinomial_rvs(k, n, p, s);
+  return Val_unit;
+}

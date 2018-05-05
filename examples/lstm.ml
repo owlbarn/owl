@@ -3,7 +3,7 @@
    The book used is Alice’s Adventures in Wonderland by Lewis Carroll.
  *)
 
-#zoo "217ef87bc36845c4e78e398d52bc4c5b"
+#zoo "217ef87bc36845c4e78e398d52bc4c5b?tol=50"
 
 open Owl
 open Neural.S

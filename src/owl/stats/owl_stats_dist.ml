@@ -3,6 +3,11 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Bigarray
+
+open Owl_types
+
+
 (* OCaml stub for owl_stats_dist_ functions *)
 
 external std_uniform_rvs : unit -> float = "owl_stub_std_uniform_rvs"
@@ -352,3 +357,13 @@ external binomial_logcdf : int -> p:float -> n:int -> float = "owl_stub_binomial
 external binomial_sf : int -> p:float -> n:int -> float = "owl_stub_binomial_sf"
 
 external binomial_logsf : int -> p:float -> n:int -> float = "owl_stub_binomial_logsf"
+
+external _multinomial_rvs : k:int -> n:int -> p:(float, float64_elt) owl_arr -> (int32, int32_elt) owl_arr -> unit = "owl_stub_multinomial_rvs"
+
+let multinomial_rvs n ~p =
+  let k = Array.length p in
+  let _p = Genarray.create float64 c_layout [|k|] in
+  let _s = Genarray.create int32 c_layout [|k|] in
+  Array.iteri (fun i a -> Genarray.set _p [|i|] a) p;
+  _multinomial_rvs ~k ~n ~p:_p _s;
+  Array.init k (fun i -> Genarray.get _s [|i|] |> Int32.to_int)

@@ -228,10 +228,17 @@ extern double binomial_sf (long k, double p, long n);
 
 extern double binomial_logsf (long k, double p, long n);
 
-
 /** Negative Binomial distribution **/
 
 extern long negative_binomial_rvs(double, double);
+
+/** Multinomial distribution **/
+
+extern void multinomial_rvs (const long K, const long N, const double p[], int32_t n[]);
+
+extern double multinomial_pdf (const long K, const double p[], const int32_t n[]);
+
+extern double multinomial_logpdf (const long K, const double p[], const int32_t n[]);
 
 /** Poisson distribution **/
 
