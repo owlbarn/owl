@@ -47,7 +47,7 @@ and _dir_zoo_ocaml gid vid added =
       let f'_str = replace "extend_zoo_path"
         (Printf.sprintf "extend_zoo_path ~gid:\"%s\" ~vid:\"%s\"" gid vid) f_str
       in
-      let gist = gid ^ "/" ^ vid in
+      let gist = gid ^ "?vid=" ^ vid in
       let f'_str = replace "load_file[ \t]+\\([0-9a-zA-Z'._\"]+\\)"
         (Printf.sprintf "load_file ~gist:\"%s\" \\1" gist) f'_str
       in
@@ -61,7 +61,7 @@ and _dir_zoo_ocaml gid vid added =
 
 and process_dir_zoo ?added gist =
   let gid, vid, _, _ = Owl_zoo_ver.parse_gist_string gist in
-  let gist' = Printf.sprintf "%s/%s" gid vid in
+  let gist' = Printf.sprintf "%s?vid=%s" gid vid in
 
   let added = match added with
     | Some h -> h
