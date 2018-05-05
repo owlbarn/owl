@@ -11,11 +11,13 @@ let htb = Owl_zoo_path.htb
 let syscall cmd =
   let ic, oc = Unix.open_process cmd in
   let buf = Buffer.create 50 in
-  (try
-     while true do
-       Buffer.add_channel buf ic 1
-     done
-   with End_of_file -> ());
+  (
+    try
+      while true do
+        Buffer.add_channel buf ic 1
+      done
+    with End_of_file -> ()
+  );
   Unix.close_process (ic, oc) |> ignore;
   Buffer.contents buf
 
@@ -44,7 +46,7 @@ let get_value (gid : string) =
 does not exist. *)
 let get_timestamp (gid : string) =
   let _, ts, _, miss_flag = get_value gid in
-  if (miss_flag == false) then ts else 0.
+  if miss_flag = false then ts else 0.
 
 
 (** Get the most up-to-date gist version from Gist server; return "" if the gid
@@ -53,9 +55,10 @@ let get_remote_vid (gid : string) =
   let cmd = "curl https://api.github.com/gists/" ^ gid in
   let s = syscall cmd in
   let r = Str.regexp "\"version\":[ \n\r\t]+\"\\([0-9a-z]+\\)\"" in
-  try
-    let _ = Str.search_forward r s 0 in
+  try (
+    Str.search_forward r s 0;
     Str.matched_group 1 s
+  )
   with Not_found -> ""
 
 
@@ -108,15 +111,16 @@ let remove (gid : string)  =
   if (miss_flag == false) then (
     Hashtbl.remove tb gid;
     Owl_io.marshal_to_file tb htb;
-  ) else (
+  ) 
+  else (
     Owl_log.debug "owl-zoo: Gist %s not found in the record" gid
   )
 
 
 (* TODO: richer time format *)
 let to_timestamp time_str =
-  try float_of_string time_str with
-  Failure _ -> raise Owl_exception.ZOO_ILLEGAL_GIST_NAME
+  try float_of_string time_str 
+  with Failure _ -> raise Owl_exception.ZOO_ILLEGAL_GIST_NAME
 
 
 (** Parse a full gist name scheme string and return a gist id, a version id, a
@@ -150,7 +154,7 @@ let parse_gist_string gist =
   in
   let pin =
     try Hashtbl.find params "pin" |> bool_of_string with
-    | Not_found -> false
+    | Not_found          -> false
     | Invalid_argument _ -> raise Owl_exception.ZOO_ILLEGAL_GIST_NAME
   in
 
