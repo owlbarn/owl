@@ -310,7 +310,7 @@ let slice_size x = x |> shape |> Owl_utils.calc_slice
 (* prepare the parameters for reduce/fold operation, [a] is axis *)
 let reduce_params a x =
   let d = num_dims x in
-  assert (0 <= a && a < d);
+  let a = Owl_utils.adjust_index a d in
 
   let _shape = shape x in
   let _stride = strides x in
@@ -320,6 +320,7 @@ let reduce_params a x =
   let o = _stride.(a) in
   _shape.(a) <- 1;
   m, n, o, _shape
+
 
 (* TODO: performance can be optimised by removing embedded loops *)
 (* generic fold funtion *)
@@ -669,40 +670,6 @@ let acosh varr = (map Scalar.acosh varr)
 let atanh varr = (map Scalar.atanh varr)
 
 
-(* TODO: can this be made more efficient? *)
-let sum ?(axis=(-1)) varr =
-  let old_dims = shape varr in
-  let old_rank = Array.length old_dims in
-  let axis = Owl_utils.adjust_index axis old_rank in
-  if old_rank = 0 then varr
-  else
-    let old_ind = Array.make old_rank 0 in
-    let new_rank = old_rank - 1 in
-    let new_dims = Array.init new_rank
-      (fun i -> if i < axis then old_dims.(i) else old_dims.(i + 1))
-    in
-    let new_varr = empty (kind varr) new_dims in
-    let new_ind = Array.make new_rank 0 in
-    let should_stop = ref false in
-    let sum = ref 0. in
-    begin
-      while not !should_stop do
-        for i = 0 to new_rank - 1 do (* copy the new index into the old one *)
-          old_ind.(if i < axis then i else i + 1) <- new_ind.(i)
-        done;
-        sum := 0.;
-        for i = 0 to old_dims.(axis) - 1 do
-          old_ind.(axis) <- i;
-          sum := !sum +. (Genarray.get varr old_ind)
-        done;
-        Genarray.set new_varr new_ind !sum;
-        if not (_next_index new_ind new_dims) then
-          should_stop := true
-      done;
-      new_varr
-    end
-
-
 let sum_slices ?(axis=0) varr =
   let dims = shape varr in
   let rank = Array.length dims in
@@ -725,72 +692,6 @@ let sum_slices ?(axis=0) varr =
     done;
     result_varr
   end
-
-
-let min ?(axis=(-1)) varr =
-  let old_dims = shape varr in
-  let old_rank = Array.length old_dims in
-  let axis = Owl_utils.adjust_index axis old_rank in
-  if old_rank = 0 then varr
-  else
-    let old_ind = Array.make old_rank 0 in
-    let new_rank = old_rank - 1 in
-    let new_dims = Array.init new_rank
-      (fun i -> if i < axis then old_dims.(i) else old_dims.(i + 1))
-    in
-    let new_varr = empty (kind varr) new_dims in
-    let new_ind = Array.make new_rank 0 in
-    let should_stop = ref false in
-    let acc = ref infinity in
-    begin
-      while not !should_stop do
-        for i = 0 to new_rank - 1 do (* copy the new index into the old one *)
-          old_ind.(if i < axis then i else i + 1) <- new_ind.(i)
-        done;
-        acc := infinity;
-        for i = 0 to old_dims.(axis) - 1 do
-          old_ind.(axis) <- i;
-          acc := Pervasives.min !acc (Genarray.get varr old_ind)
-        done;
-        Genarray.set new_varr new_ind !acc;
-        if not (_next_index new_ind new_dims) then
-          should_stop := true
-      done;
-      new_varr
-    end
-
-
-let max ?(axis=(-1)) varr =
-  let old_dims = shape varr in
-  let old_rank = Array.length old_dims in
-  let axis = Owl_utils.adjust_index axis old_rank in
-  if old_rank = 0 then varr
-  else
-    let old_ind = Array.make old_rank 0 in
-    let new_rank = old_rank - 1 in
-    let new_dims = Array.init new_rank
-      (fun i -> if i < axis then old_dims.(i) else old_dims.(i + 1))
-    in
-    let new_varr = empty (kind varr) new_dims in
-    let new_ind = Array.make new_rank 0 in
-    let should_stop = ref false in
-    let acc = ref neg_infinity in
-    begin
-      while not !should_stop do
-        for i = 0 to new_rank - 1 do (* copy the new index into the old one *)
-          old_ind.(if i < axis then i else i + 1) <- new_ind.(i)
-        done;
-        acc := neg_infinity;
-        for i = 0 to old_dims.(axis) - 1 do
-          old_ind.(axis) <- i;
-          acc := Pervasives.min !acc (Genarray.get varr old_ind)
-        done;
-        Genarray.set new_varr new_ind !acc;
-        if not (_next_index new_ind new_dims) then
-          should_stop := true
-      done;
-      new_varr
-    end
 
 
 (* -1. for negative numbers, 0 or (-0) for 0,
@@ -858,20 +759,36 @@ let fold_along f m n o x ys =
   reshape y ys
 
 
-let sum_reduce ?axis x =
+let sum ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
+      let m, n, o, s = reduce_params a x in
+      fold_along (Owl_base_dense_common._add_elt _kind) m n o x s
+    )
+  | None   -> create (kind x) (Array.make 1 1) (sum' x)
+
+
+let sum_reduce ?axis x =
+  let _kind = kind x in
+  let _dims = num_dims x in
+  match axis with
+  | Some a -> (
       let y = ref x in
-      for i = 0 to (num_dims x - 1) do
-        if Array.mem i a then (
-          let m, n, o, s = reduce_params i !y in
-          y := fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s
-        )
-      done;
+      Array.iter (fun i ->
+        assert (i < _dims);
+        let m, n, o, s = reduce_params i !y in
+        y := fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s
+      ) a;
       !y
     )
-  | None   -> create (kind x) (Array.make (num_dims x) 1) (sum' x)
+  | None   -> create (kind x) (Array.make _dims 1) (sum' x)
+
+
+let min ?axis x = failwith "not implemented"
+
+
+let max ?axis x = failwith "not implemented"
 
 
 let l1norm' varr =
