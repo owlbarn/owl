@@ -61,7 +61,7 @@ let get_remote_vid (gid : string) =
 
 (** Get the latest version downloaded on local machine; if the local version is
 not found on record, get the newest vid from Gist server. *)
-let get_latest_vid (gid : string) (tol : float)=
+let get_latest_vid (gid : string) (tol : float) =
   let v, ts, _, miss_flag = get_value gid in
   let t = Unix.time () in
   if (miss_flag == false && (t -. ts) < tol) then (
