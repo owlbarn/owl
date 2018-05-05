@@ -56,7 +56,7 @@ let get_remote_vid (gid : string) =
   let s = syscall cmd in
   let r = Str.regexp "\"version\":[ \n\r\t]+\"\\([0-9a-z]+\\)\"" in
   try (
-    Str.search_forward r s 0;
+    Str.search_forward r s 0 |> ignore;
     Str.matched_group 1 s
   )
   with Not_found -> ""
@@ -111,7 +111,7 @@ let remove (gid : string)  =
   if miss_flag = false then (
     Hashtbl.remove tb gid;
     Owl_io.marshal_to_file tb htb;
-  ) 
+  )
   else (
     Owl_log.debug "owl-zoo: Gist %s not found in the record" gid
   )
@@ -119,7 +119,7 @@ let remove (gid : string)  =
 
 (* TODO: richer time format *)
 let to_timestamp time_str =
-  try float_of_string time_str 
+  try float_of_string time_str
   with Failure _ -> raise Owl_exception.ZOO_ILLEGAL_GIST_NAME
 
 
