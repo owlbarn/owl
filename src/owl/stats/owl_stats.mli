@@ -416,6 +416,18 @@ not sum to 1, the last element of the ``p`` array is not used and is replaced
 with the remaining probability left over from the earlier elements.
  *)
 
+val multinomial_pdf : int array -> p:float array -> float
+(**
+``multinomial_rvs x ~p`` return the probabilty of ``x`` given the probabilty
+mass of a multinomial distribution.
+ *)
+
+val multinomial_logpdf : int array -> p:float array -> float
+(**
+``multinomial_rvs x ~p`` return the logarithm probabilty of ``x`` given the
+probabilty mass of a multinomial distribution.
+ *)
+
 
 (** {6 Continuous random variables} *)
 

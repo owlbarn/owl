@@ -1548,3 +1548,23 @@ value owl_stub_multinomial_rvs(value vK, value vN, value vP, value vS) {
   multinomial_rvs(k, n, p, s);
   return Val_unit;
 }
+
+value owl_stub_multinomial_pdf(value vK, value vP, value vS) {
+  int k = Long_val(vK);
+  struct caml_ba_array *P = Caml_ba_array_val(vP);
+  double *p = (double *) P->data;
+  struct caml_ba_array *S = Caml_ba_array_val(vS);
+  int32_t *s = (int32_t *) S->data;
+  double q = multinomial_pdf(k, p, s);
+  return caml_copy_double(q);
+}
+
+value owl_stub_multinomial_logpdf(value vK, value vP, value vS) {
+  int k = Long_val(vK);
+  struct caml_ba_array *P = Caml_ba_array_val(vP);
+  double *p = (double *) P->data;
+  struct caml_ba_array *S = Caml_ba_array_val(vS);
+  int32_t *s = (int32_t *) S->data;
+  double q = multinomial_logpdf(k, p, s);
+  return caml_copy_double(q);
+}
