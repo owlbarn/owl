@@ -131,7 +131,7 @@ module Make
       | Relu                (* Rectified linear unit *)
       | Sigmoid             (* Element-wise sigmoid *)
       | HardSigmoid         (* Linear approximation of sigmoid *)
-      | Softmax             (* Element-wise softmax *)
+      | Softmax of int      (* Softmax along specified axis *)
       | Softplus            (* Element-wise softplus *)
       | Softsign            (* Element-wise softsign *)
       | Tanh                (* Element-wise tanh *)
@@ -163,7 +163,7 @@ module Make
       | Relu        -> Maths.relu x
       | Sigmoid     -> Maths.sigmoid x
       | HardSigmoid -> Maths.(max2 (F 0.) (min2 (F 1.) ((F 0.2) * x + (F 0.5))))
-      | Softmax     -> Mat.map_by_row Maths.softmax x  (* FIXME: this probably needs to be fixed *)
+      | Softmax a   -> Maths.softmax ~axis:a x
       | Softplus    -> Maths.softplus x
       | Softsign    -> Maths.softsign x
       | Tanh        -> Maths.tanh x
@@ -182,7 +182,7 @@ module Make
       | Relu        -> Printf.sprintf "%s" "relu"
       | Sigmoid     -> Printf.sprintf "%s" "sigmoid"
       | HardSigmoid -> Printf.sprintf "%s" "hard_sigmoid"
-      | Softmax     -> Printf.sprintf "%s" "softmax"
+      | Softmax a   -> Printf.sprintf "%s %i" "softmax" a
       | Softplus    -> Printf.sprintf "%s" "softplus"
       | Softsign    -> Printf.sprintf "%s" "softsign"
       | Tanh        -> Printf.sprintf "%s" "tanh"

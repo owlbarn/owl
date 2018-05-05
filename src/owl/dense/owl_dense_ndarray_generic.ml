@@ -47,7 +47,7 @@ let shape x = Genarray.dims x
 let nth_dim x i = Genarray.nth_dim x i
 
 
-let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
+let numel x = Owl_utils.numel x
 
 
 let kind x = Genarray.kind x
@@ -188,13 +188,10 @@ let tile x reps =
   _tile 0 0 0; y
 
 
-let repeat ?axis x reps =
+let repeat ?(axis=(-1)) x reps =
   let highest_dim = Array.length (shape x) - 1 in
   (* by default, repeat at the highest dimension *)
-  let axis = match axis with
-    | Some a -> a
-    | None   -> highest_dim
-  in
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
   (* calculate the new shape of y based on reps *)
   let _kind = kind x in
   let _shape_y = shape x in
@@ -224,6 +221,7 @@ let repeat ?axis x reps =
 
 
 let concatenate ?(axis=0) xs =
+  let axis = Owl_utils.adjust_index axis (num_dims xs.(0)) in
   (* get the shapes of all inputs and etc. *)
   let shapes = Array.map shape xs in
   let shape0 = Array.copy shapes.(0) in
@@ -1079,7 +1077,7 @@ let map2i_nd f x y =
 
 let iteri_slice ?(axis=0) f x =
   let d = num_dims x in
-  assert (axis >=0 && axis < d - 1);
+  let axis = Owl_utils.adjust_index axis d in
   let m = (numel x) / (strides x).(axis) in
   let s = Array.sub (shape x) (axis + 1) (d - axis - 1) in
   let n = s.(0) in
@@ -1098,7 +1096,7 @@ let iter_slice ?axis f x = iteri_slice ?axis (fun _ y -> f y) x
 
 let mapi_slice ?(axis=0) f x =
   let d = num_dims x in
-  assert (axis >=0 && axis < d - 1);
+  let axis = Owl_utils.adjust_index axis d in
   let m = (numel x) / (strides x).(axis) in
   let s = Array.sub (shape x) (axis + 1) (d - axis - 1) in
   let n = s.(0) in
@@ -2633,13 +2631,9 @@ let _diff a x =
   y
 
 
-let diff ?axis ?(n=1) x =
+let diff ?(axis=(-1)) ?(n=1) x =
   let d = num_dims x in
-  let a = match axis with
-    | Some a -> a
-    | None   -> d - 1
-  in
-  assert (0 <= a && a < d);
+  let a = Owl_utils.adjust_index axis d in
   assert (n < nth_dim x a);
   let y = ref x in
   for i = 1 to n do
@@ -2660,13 +2654,9 @@ let one_hot depth idx =
 
 
 (* TODO: optimise performance, slow along the low dimension *)
-let cumulative_op ?axis _cumop x =
+let cumulative_op ?(axis=(-1)) _cumop x =
   let d = num_dims x in
-  let a = match axis with
-    | Some a -> a
-    | None   -> d - 1
-  in
-  assert (0 <= a && a < d);
+  let a = Owl_utils.adjust_index axis d in
 
   let _stride = strides x in
   let _slicez = slice_size x in
@@ -2763,28 +2753,13 @@ let sum' x = _owl_sum (kind x) (numel x) x
 let prod' x = _owl_prod (kind x) (numel x) x
 
 
-(* prepare the parameters for reduce/fold operation, [a] is axis *)
-let reduce_params a x =
-  let d = num_dims x in
-  assert (0 <= a && a < d);
-
-  let _shape = shape x in
-  let _stride = strides x in
-  let _slicez = slice_size x in
-  let m = (numel x) / _slicez.(a) in
-  let n = _slicez.(a) in
-  let o = _stride.(a) in
-  _shape.(a) <- 1;
-  m, n, o, _shape
-
-
 (* TODO: performance can be optimised by removing embedded loops *)
 (* generic fold funtion *)
 let foldi ?axis f a x =
   let x' = flatten x |> array1_of_genarray in
   match axis with
   | Some axis -> (
-      let m, n, o, s = reduce_params axis x in
+      let m, n, o, s = Owl_utils.reduce_params axis x in
       let start_x = ref 0 in
       let start_y = ref 0 in
       let incy = ref 0 in
@@ -2825,13 +2800,9 @@ let foldi_nd ?axis f a x =
 
 
 (* generic scan function *)
-let scani ?axis f x =
+let scani ?(axis=(-1)) f x =
   let d = num_dims x in
-  let a = match axis with
-    | Some a -> a
-    | None   -> d - 1
-  in
-  assert (0 <= a && a < d);
+  let a = Owl_utils.adjust_index axis d in
 
   let _stride = strides x in
   let _slicez = slice_size x in
@@ -2870,7 +2841,7 @@ let sum ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = zeros _kind s in
       _owl_sum_along _kind m n o x y;
       y
@@ -2882,7 +2853,7 @@ let prod ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = ones _kind s in
       _owl_prod_along _kind m n o x y;
       y
@@ -2894,7 +2865,7 @@ let min ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = create _kind s (Owl_const.pos_inf _kind) in
       _owl_min_along _kind m n o x y;
       y
@@ -2906,7 +2877,7 @@ let max ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = create _kind s (Owl_const.neg_inf _kind) in
       _owl_max_along _kind m n o x y;
       y
@@ -2950,6 +2921,7 @@ let var ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
+      let a = Owl_utils.adjust_index a (num_dims x) in
       let mu = mean ~axis:a x in
       let y = sub x mu in
       _owl_sqr _kind (numel y) y y;
@@ -2975,6 +2947,7 @@ let std ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
+      let a = Owl_utils.adjust_index a (num_dims x) in
       let mu = mean ~axis:a x in
       let y = sub x mu in
       _owl_sqr _kind (numel y) y y;
@@ -2991,7 +2964,7 @@ let l1norm ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = zeros _kind s in
       _owl_l1norm_along _kind m n o x y;
       y
@@ -3003,7 +2976,7 @@ let l2norm_sqr ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = zeros _kind s in
       _owl_l2norm_sqr_along _kind m n o x y;
       y
@@ -3015,7 +2988,7 @@ let l2norm ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = zeros _kind s in
       _owl_l2norm_sqr_along _kind m n o x y;
       _owl_sqrt _kind (numel y) y y;
@@ -3370,19 +3343,21 @@ let softsign_ x = _owl_softsign (kind x) (numel x) x x
 
 let sigmoid_ x = _owl_sigmoid (kind x) (numel x) x x
 
-let softmax x =
+let softmax ?(axis=(-1)) x =
   let x = copy x in
-  sub_scalar_ x (max' x);
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
+  sub_ x (max ~axis x);
   exp_ x;
-  let a = sum' x in
-  div_scalar_ x a;
+  let a = sum ~axis x in
+  div_ x a;
   x
 
-let softmax_ x =
-  sub_scalar_ x (max' x);
+let softmax_ ?(axis=(-1)) x =
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
+  sub_ x (max ~axis x);
   exp_ x;
-  let a = sum' x in
-  div_scalar_ x a
+  let a = sum ~axis x in
+  div_ x a
 
 let cumsum_ ?axis x =
   let _cumop = _owl_cumsum (kind x) in
@@ -3674,7 +3649,7 @@ let sum_reduce ?axis x =
       let y = ref x in
       Array.iter (fun i ->
         assert (i < _dims);
-        let m, n, o, s = reduce_params i !y in
+        let m, n, o, s = Owl_utils.reduce_params i !y in
         let z = zeros _kind s in
         _owl_sum_along _kind m n o !y z;
         y := z

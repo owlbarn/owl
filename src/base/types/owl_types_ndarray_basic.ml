@@ -119,6 +119,10 @@ module type Sig = sig
 
   val atanh : arr -> arr
 
+  val min : ?axis:int -> arr -> arr
+
+  val max : ?axis:int -> arr -> arr
+
   val sum : ?axis:int -> arr -> arr
 
   val sum_reduce : ?axis:int array -> arr -> arr

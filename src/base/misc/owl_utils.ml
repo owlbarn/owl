@@ -15,13 +15,6 @@ module Stack = Owl_utils_stack
 module Array = Owl_utils_array
 
 
-(* Adjust the index according to the [0, m). m is the boundary, i can be negative. *)
-let adjust_index i m =
-  if i >= 0 && i < m then i
-  else if i < 0 && i >= -m then i + m
-  else raise Owl_exception.INDEX_OUT_OF_BOUND
-
-
 (* Computes a left fold over a range of integers from a to b (inclusive) *)
 let range_fold a b ~f ~init =
   let rec go acc x =

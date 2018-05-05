@@ -190,7 +190,7 @@ module type Sig = sig
     val softsign: t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-    val softmax : t -> t
+    val softmax : ?axis:int -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val dropout : ?rate:float -> t -> t

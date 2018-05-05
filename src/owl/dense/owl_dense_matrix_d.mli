@@ -549,7 +549,7 @@ val softplus : mat -> mat
 
 val softsign : mat -> mat
 
-val softmax : mat -> mat
+val softmax :?axis:int -> mat -> mat
 
 val sigmoid : mat -> mat
 
@@ -791,7 +791,7 @@ val softsign_ : mat -> unit
 
 val sigmoid_ : mat -> unit
 
-val softmax_ : mat -> unit
+val softmax_ : ?axis:int -> mat -> unit
 
 val cumsum_ : ?axis:int -> mat -> unit
 

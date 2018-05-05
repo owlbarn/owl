@@ -105,7 +105,7 @@ let make_network img_size =
   |> mix_typ8
   |> mix_typ9 1280 |> mix_typ9 2048
   |> global_avg_pool2d
-  |> linear 1000 ~act_typ:Activation.Softmax
+  |> linear 1000 ~act_typ:Activation.(Softmax 1)
   |> get_network
 
 let _ = make_network 299 |> print

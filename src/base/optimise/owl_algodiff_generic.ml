@@ -755,7 +755,7 @@ module Make
       let r a = Sum_D a in
       op_d_d a ff fd df r
 
-    and sum ?(axis=0) a =
+    and sum ?(axis=(-1)) a =
       let ff = function
         | F a      -> F a
         | Arr a    -> Arr A.(sum ~axis a)
@@ -872,11 +872,10 @@ module Make
 
     and softsign x = x / (F 1. + abs x)
 
-    (* FIXME: use numerically stable version *)
-    and softmax x =
-      let c = F A.(max' (unpack_arr x)) in
+    and softmax ?(axis=(-1)) x =
+      let c = Arr A.(max ~axis (unpack_arr x)) in
       let y = exp (x - c) in
-      let a = sum' y in
+      let a = sum ~axis y in
       y / a
 
     and cross_entropy x y = x * log y |> sum' |> neg

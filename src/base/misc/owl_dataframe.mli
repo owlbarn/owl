@@ -154,7 +154,7 @@ val tail : int -> t -> t
 
 val make : ?data:series array -> string array -> t
 (**
-``create ~data head_names`` creates a dataframe with an array of series data
+``make ~data head_names`` creates a dataframe with an array of series data
 and corresponding column names. If data is not passed in, the function will
 return an empty dataframe.
  *)
@@ -252,6 +252,9 @@ val of_csv : ?sep:char -> ?head:string array -> ?types:string array -> string ->
 ``of_csv ~sep ~head ~types fname`` creates a dataframe by reading the data in
 a CSV file with the name ``fname``. Currently, the function supports four data
 types: ``b`` for boolean; ``i`` for int; ``f`` for float; ``s`` for string.
+
+Note if ``types`` parameter is ignored, then all the elements will be parsed
+as string element by default.
 
 Parameters:
   * ``sep``: delimiter, the default one is tab.

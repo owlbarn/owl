@@ -3,9 +3,11 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Bigarray
+
 open Owl_types_common
 
-type arr
+type arr = (float, float32_elt, c_layout) Genarray.t
 
 type elt = float
 
@@ -117,6 +119,10 @@ val asinh : arr -> arr
 val acosh : arr -> arr
 
 val atanh : arr -> arr
+
+val min : ?axis:int -> arr -> arr
+
+val max : ?axis:int -> arr -> arr
 
 val sum : ?axis:int -> arr -> arr
 

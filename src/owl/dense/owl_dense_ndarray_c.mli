@@ -699,8 +699,6 @@ val softsign_ : arr -> unit
 
 val sigmoid_ : arr -> unit
 
-val softmax_ : arr -> unit
-
 val cumsum_ : ?axis:int -> arr -> unit
 
 val cumprod_ : ?axis:int -> arr -> unit

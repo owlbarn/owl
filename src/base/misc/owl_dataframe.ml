@@ -162,7 +162,7 @@ let str_to_elt_fun = function
   | "i" -> fun a -> Int (int_of_string a)
   | "f" -> fun a -> if a = "" then Float nan else Float (float_of_string a)
   | "s" -> fun a -> String a
-  | _    -> failwith "str_to_elt_fun: unsupported type"
+  | _   -> failwith "str_to_elt_fun: unsupported type"
 
 
 let col_num x = Array.length x.data

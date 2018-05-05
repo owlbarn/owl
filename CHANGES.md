@@ -7,6 +7,7 @@
 * Fix normalisation neuron in neural network module.
 * Fix building, installation, and publishing on OPAM.
 * Fix broadcasting issue in Algodiff module.
+* Support negative axises in some ndarray functions.
 
 
 ### 0.3.7 (2018-04-25)
