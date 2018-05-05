@@ -73,6 +73,7 @@
     owl_stats_dist_lognormal
     owl_stats_dist_logseries
     owl_stats_dist_lomax
+    owl_stats_dist_multinomial
     owl_stats_dist_negative_binomial
     owl_stats_dist_noncentral_chi2
     owl_stats_dist_noncentral_f
