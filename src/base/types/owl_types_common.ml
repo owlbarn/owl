@@ -4,6 +4,10 @@
  *)
 
 
+(* basic ndarray type *)
+
+type ('a, 'b) owl_arr = ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t
+
 (* type of slice definition *)
 
 type index =

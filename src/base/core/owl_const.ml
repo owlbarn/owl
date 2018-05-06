@@ -40,6 +40,8 @@ let pi_2    = 1.570796326794896619231321691639751442  (* pi/2 *)
 
 let pi_4    = 0.785398163397448309615660845819875721  (* pi/4 *)
 
+let eps     = 1e-15                                   (* platform dependent error *)
+
 
 (** Functions that return constants using Bigarray kind *)
 

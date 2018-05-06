@@ -307,4 +307,36 @@ let to_string ?(prefix="") ?(suffix="") ?(sep=",") elt_to_str x =
   Printf.sprintf "%s%s%s" prefix s suffix
 
 
+let balance_last mass x =
+  let k = Array.length x - 1 in
+  let q = ref mass in
+  Array.mapi (fun i a ->
+    assert (!q >= 0.);
+    if i < k then (
+      q := !q -. a;
+      a
+    )
+    else !q
+  ) x
+
+
+let index_of x a =
+  let pos = ref (-1) in
+  let r =
+    try (
+      iteri (fun i b ->
+        if a = b then (
+          pos := i;
+          raise Owl_exception.FOUND
+        )
+      ) x;
+      !pos
+    )
+    with _ -> !pos
+  in
+  if r < 0 then raise Owl_exception.NOT_FOUND
+  else r
+
+
+
 (* ends here *)

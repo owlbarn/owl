@@ -130,6 +130,11 @@ val same_sign : float -> float -> bool
 otherwise it returns ``false``. Positive and negative zeros are special cases
 and always returns ``true``. *)
 
+val is_simplex : float array -> bool
+(**
+``is_simplex x`` checks whether ``x`` is simplex. In other words,
+:math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall x_i \in [1,K]`.
+ *)
 
 
 (* ends here *)

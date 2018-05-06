@@ -122,7 +122,7 @@ val minmax_i : float array -> int * int
 (** ``minmax_i x`` returns the indices of both minimum and maximum in ``x``. *)
 
 val sort : ?inc:bool -> float array -> float array
-(** 
+(**
 ``sort x`` sorts the elements in the ``x`` in increasing order if
 ``inc = true``, otherwise in decreasing order if ``inc=false``. By default,
 ``inc`` is ``true``. Note a copy is returned, the original data is not modified.
@@ -318,16 +318,16 @@ val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypot
 
 (** {6 Discrete random variables} *)
 
-(** 
-    The ``_rvs`` functions generate random numbers according to 
-    the specified distribution.  ``_pdf`` are "density" functions 
-    that return the probability of the element specified by the 
-    arguments, while ``_cdf`` functions are cumulative distribution 
+(**
+    The ``_rvs`` functions generate random numbers according to
+    the specified distribution.  ``_pdf`` are "density" functions
+    that return the probability of the element specified by the
+    arguments, while ``_cdf`` functions are cumulative distribution
     functions that return the probability of all elements
     less than or equal to the chosen element, and ``_sf`` functions
-    are survival functions returning one minus the corresponding CDF 
-    function.  `log` versions of functions return the 
-    result for the natural logarithm of a chosen element.  
+    are survival functions returning one minus the corresponding CDF
+    function.  `log` versions of functions return the
+    result for the natural logarithm of a chosen element.
  *)
 
 val uniform_int_rvs : a:int -> b:int -> int
@@ -337,71 +337,105 @@ between ``a`` and ``b``, inclusive.  *)
 
 val binomial_rvs : p:float -> n:int -> int
 (**
-``binomial_rvs p n`` returns a random integer representing the number of 
+``binomial_rvs p n`` returns a random integer representing the number of
 successes in ``n`` trials with probability of success ``p`` on each trial.
 *)
 
 val binomial_pdf : int -> p:float -> n:int -> float
-(** 
+(**
 ``binomial_pdf k ~p ~n`` returns the binomially distributed probability
-of ``k`` successes in ``n`` trials with probability ``p`` of success on 
+of ``k`` successes in ``n`` trials with probability ``p`` of success on
 each trial.
 *)
 
 val binomial_logpdf : int -> p:float -> n:int -> float
-(** 
+(**
 ``binomial_logpdf k ~p ~n`` returns the log-binomially distributed probability
-of ``k`` successes in ``n`` trials with probability ``p`` of success on 
+of ``k`` successes in ``n`` trials with probability ``p`` of success on
 each trial.
 *)
 
 val binomial_cdf : int -> p:float -> n:int -> float
-(** 
-``binomial_cdf k ~p ~n`` returns the binomially distributed cumulative 
+(**
+``binomial_cdf k ~p ~n`` returns the binomially distributed cumulative
 probability of less than or equal to ``k`` successes in ``n`` trials,
 with probability ``p`` on each trial.
 *)
 
 val binomial_logcdf : int -> p:float -> n:int -> float
-(** 
-``binomial_logcdf k ~p ~n`` returns the log-binomially distributed cumulative 
-probability of less than or equal to ``k`` successes in ``n`` trials, 
+(**
+``binomial_logcdf k ~p ~n`` returns the log-binomially distributed cumulative
+probability of less than or equal to ``k`` successes in ``n`` trials,
 with probability ``p`` on each trial.
 *)
 
 val binomial_sf : int -> p:float -> n:int -> float
-(** 
-``binomial_sf k ~p ~n`` is the binomial survival function, i.e. 
+(**
+``binomial_sf k ~p ~n`` is the binomial survival function, i.e.
 ``1 - (binomial_cdf k ~p ~n)``.
 *)
 
 val binomial_logsf : int -> p:float -> n:int -> float
-(** 
-``binomial_loggf k ~p ~n`` is the logbinomial survival function, i.e. 
+(**
+``binomial_loggf k ~p ~n`` is the logbinomial survival function, i.e.
 ``1 - (binomial_logcdf k ~p ~n)``.
 *)
 
 val hypergeometric_rvs : good:int -> bad:int -> sample:int -> int
-(** 
-``hypergeometric_rvs ~good ~bad ~sample`` returns a random hypergeometrically 
-distributed integer representing the number of successes in a sample (without 
+(**
+``hypergeometric_rvs ~good ~bad ~sample`` returns a random hypergeometrically
+distributed integer representing the number of successes in a sample (without
 replacement) of size ``~sample`` from a population with ``~good`` successful
 elements and ``~bad`` unsuccessful elements.
 *)
 
 val hypergeometric_pdf : int -> good:int -> bad:int -> sample:int -> float
-(** 
-``hypergeometric_pdf k ~good ~bad ~sample`` returns the hypergeometrically 
+(**
+``hypergeometric_pdf k ~good ~bad ~sample`` returns the hypergeometrically
 distributed probability of ``k`` successes in a sample (without replacement) of
-``~sample`` elements from a population containing ``~good`` successful elements 
+``~sample`` elements from a population containing ``~good`` successful elements
 and ``~bad`` unsuccessful ones.
 *)
 
 val hypergeometric_logpdf : int -> good:int -> bad:int -> sample:int -> float
-(** 
+(**
 ``hypergeometric_logpdf k ~good ~bad ~sample`` returns a value equivalent to a
 log-transformed result from ``hypergeometric_pdf``.
 *)
+
+val multinomial_rvs : int -> p:float array -> int array
+(**
+``multinomial_rvs n ~p`` generates random numbers of multinomial distribution
+from ``n`` trials. The probabilty mass function is as follows.
+
+.. math::
+  P(x) = \frac{n!}{{x_1}! \cdot\cdot\cdot {x_k}!} p_{1}^{x_1} \cdot\cdot\cdot p_{k}^{x_k}
+
+``p`` is the probabilty mass of ``k`` categories. If the elements in ``p`` do
+not sum to 1, the last element of the ``p`` array is not used and is replaced
+with the remaining probability left over from the earlier elements.
+
+For implemantation, refer to :cite:`davis1993computer`.
+ *)
+
+val multinomial_pdf : int array -> p:float array -> float
+(**
+``multinomial_rvs x ~p`` return the probabilty of ``x`` given the probabilty
+mass of a multinomial distribution.
+ *)
+
+val multinomial_logpdf : int array -> p:float array -> float
+(**
+``multinomial_rvs x ~p`` returns the logarithm probabilty of ``x`` given the
+probabilty mass of a multinomial distribution.
+ *)
+
+val categorical_rvs : float array -> int
+(**
+``categorical_rvs p`` returns the value of a random variable which follows the
+categorical distribution. This is equavalent to only one trial from
+``multinomial_rvs`` function, so it is just a simple wrapping.
+ *)
 
 
 (** {6 Continuous random variables} *)
@@ -889,6 +923,30 @@ val rayleigh_logsf : float -> sigma:float -> float
 val rayleigh_isf : float -> sigma:float -> float
 (** TODO *)
 
+val dirichlet_rvs : alpha:float array -> float array
+(**
+``dirichlet_rvs ~alpha`` returns random variables of ``K-1`` order Dirichlet
+distribution, follows the following probabilty dense function.
+
+.. math::
+  f(x_1,...,x_K; \alpha_1,...,\alpha_K) = \frac{1}{\mathbf{B(\alpha)}} \prod_{i=1}^K x_i^{\alpha_i - 1}
+
+The normalising constant is the multivariate Beta function, which can be
+expressed in terms of the gamma function:
+
+.. math::
+  \mathbf{B(\alpha)} = \frac{\prod_{i=1}^K \Gamma(\alpha_i)}{\Gamma(\sum_{i=1}^K \alpha_i)}
+
+Note that ``x`` is a standard K-1 simplex, i.e.
+:math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall x_i \in [1,K]`.
+
+ *)
+
+val dirichlet_pdf : float array -> alpha:float array -> float
+(** TODO *)
+
+val dirichlet_logpdf : float array -> alpha:float array -> float
+(** TODO *)
 
 
 (* ends here *)

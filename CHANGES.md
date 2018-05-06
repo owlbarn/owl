@@ -8,6 +8,7 @@
 * Fix building, installation, and publishing on OPAM.
 * Fix broadcasting issue in Algodiff module.
 * Support negative axises in some ndarray functions.
+* Add more statistical distribution functions.
 
 
 ### 0.3.7 (2018-04-25)

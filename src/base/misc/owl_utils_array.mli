@@ -223,5 +223,15 @@ val of_tuples : ('a * 'a) array -> 'a array
 val complement : 'a array -> 'a array -> 'a array
 (** TODO *)
 
+val balance_last : float -> float array -> float array
+(**
+``balance_last mass x`` performs the following function. Let ``k`` be the
+length of ``x``, if ``i < l - 1``, then ``x.(i) = x.(i)``, otherwise
+``x.(l - 1) = mass - \sum x.(i)``.
+ *)
+
+val index_of : 'a array -> 'a -> int
+(** ``index_of x a`` returns the index of first occurrence of ``a`` in ``x``. *)
+
 val to_string : ?prefix:string -> ?suffix:string -> ?sep:string -> ('a -> string) -> 'a array -> string
 (** TODO *)
