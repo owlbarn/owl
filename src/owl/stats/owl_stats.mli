@@ -424,8 +424,15 @@ mass of a multinomial distribution.
 
 val multinomial_logpdf : int array -> p:float array -> float
 (**
-``multinomial_rvs x ~p`` return the logarithm probabilty of ``x`` given the
+``multinomial_rvs x ~p`` returns the logarithm probabilty of ``x`` given the
 probabilty mass of a multinomial distribution.
+ *)
+
+val categorical_rvs : float array -> int
+(**
+``categorical_rvs p`` returns the value of a random variable which follows the
+categorical distribution. This is equavalent to only one trial from
+``multinomial_rvs`` function, so it is just a simple wrapping.
  *)
 
 

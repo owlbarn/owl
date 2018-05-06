@@ -320,4 +320,23 @@ let balance_last mass x =
   ) x
 
 
+let index_of x a =
+  let pos = ref (-1) in
+  let r =
+    try (
+      iteri (fun i b ->
+        if a = b then (
+          pos := i;
+          raise Owl_exception.FOUND
+        )
+      ) x;
+      !pos
+    )
+    with _ -> !pos
+  in
+  if r < 0 then raise Owl_exception.NOT_FOUND
+  else r
+
+
+
 (* ends here *)

@@ -230,5 +230,8 @@ length of ``x``, if ``i < l - 1``, then ``x.(i) = x.(i)``, otherwise
 ``x.(l - 1) = mass - \sum x.(i)``.
  *)
 
+val index_of : 'a array -> 'a -> int
+(** ``index_of x a`` returns the index of first occurrence of ``a`` in ``x``. *)
+
 val to_string : ?prefix:string -> ?suffix:string -> ?sep:string -> ('a -> string) -> 'a array -> string
 (** TODO *)

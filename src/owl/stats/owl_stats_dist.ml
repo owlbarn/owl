@@ -392,3 +392,7 @@ let multinomial_logpdf x ~p =
   Array.iteri (fun i a -> Genarray.set _p [|i|] a);
   Array.iteri (fun i a -> Genarray.set _s [|i|] (Int32.of_int a)) x;
   _multinomial_logpdf ~k ~p:_p _s
+
+let categorical_rvs p =
+  let x = multinomial_rvs 1 ~p in
+  Owl_utils.Array.index_of x 1
