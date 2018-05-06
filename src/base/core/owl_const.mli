@@ -72,6 +72,9 @@ val pi_2 : float
 val pi_4 : float
 (** pi_4 = 0.785398163397448309615660845819875721 *)
 
+val eps  : float
+(** eps = 1e-15 *)
+
 
 (** {6 Constants depending on Bigarray kind} *)
 

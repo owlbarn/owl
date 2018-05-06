@@ -396,3 +396,37 @@ let multinomial_logpdf x ~p =
 let categorical_rvs p =
   let x = multinomial_rvs 1 ~p in
   Owl_utils.Array.index_of x 1
+
+external _dirichlet_rvs : k:int -> alpha:(float, float64_elt) owl_arr -> theta:(float, float64_elt) owl_arr -> unit = "owl_stub_dirchlet_rvs"
+
+let dirichlet_rvs ~alpha =
+  let k = Array.length alpha in
+  let _a = Genarray.create float64 c_layout [|k|] in
+  let _b = Genarray.create float64 c_layout [|k|] in
+  Array.iteri (fun i c -> Genarray.set _a [|i|] c) alpha;
+  _dirichlet_rvs ~k ~alpha:_a ~theta:_b;
+  Array.init k (fun i -> Genarray.get _b [|i|])
+
+external _dirichlet_pdf : k:int -> alpha:(float, float64_elt) owl_arr -> theta:(float, float64_elt) owl_arr -> float = "owl_stub_dirchlet_pdf"
+
+let dirichlet_pdf x ~alpha =
+  if Owl_base_maths.is_simplex x = false then
+    raise Owl_exception.NOT_SIMPLEX;
+  let k = Array.length alpha in
+  let _a = Genarray.create float64 c_layout [|k|] in
+  let _x = Genarray.create float64 c_layout [|k|] in
+  Array.iteri (fun i c -> Genarray.set _a [|i|] c) alpha;
+  Array.iteri (fun i c -> Genarray.set _x [|i|] c) x;
+  _dirichlet_pdf ~k ~alpha:_a ~theta:_x
+
+external _dirichlet_logpdf : k:int -> alpha:(float, float64_elt) owl_arr -> theta:(float, float64_elt) owl_arr -> float = "owl_stub_dirchlet_logpdf"
+
+let dirichlet_logpdf x ~alpha =
+  if Owl_base_maths.is_simplex x = false then
+    raise Owl_exception.NOT_SIMPLEX;
+  let k = Array.length alpha in
+  let _a = Genarray.create float64 c_layout [|k|] in
+  let _x = Genarray.create float64 c_layout [|k|] in
+  Array.iteri (fun i c -> Genarray.set _a [|i|] c) alpha;
+  Array.iteri (fun i c -> Genarray.set _x [|i|] c) x;
+  _dirichlet_logpdf ~k ~alpha:_a ~theta:_x

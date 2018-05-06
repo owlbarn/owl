@@ -244,6 +244,14 @@ extern double multinomial_logpdf (const long K, const double p[], const int32_t 
 
 extern long poisson_rvs(double lambda);
 
+/** Poisson distribution **/
+
+extern void dirichlet_rvs (const int K, const double alpha[], double theta[]);
+
+extern double dirichlet_pdf (const int K, const double alpha[], const double theta[]);
+
+extern double dirichlet_logpdf (const int K, const double alpha[], const double theta[]);
+
 /** Cauchy distribution **/
 
 extern double std_cauchy_rvs();

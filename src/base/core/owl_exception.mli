@@ -57,6 +57,9 @@ exception MAX_ITERATION
 exception SINGULAR
 (** Exception of singular matrix. *)
 
+exception NOT_SIMPLEX
+(** Exception of not being simplex. *)
+
 exception INDEX_OUT_OF_BOUND
 (** Exception of index out of boundary. *)
 

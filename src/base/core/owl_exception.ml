@@ -31,6 +31,8 @@ exception MAX_ITERATION
 
 exception SINGULAR
 
+exception NOT_SIMPLEX
+
 exception INDEX_OUT_OF_BOUND
 
 exception ZOO_ILLEGAL_GIST_NAME

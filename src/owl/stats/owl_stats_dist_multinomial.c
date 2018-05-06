@@ -5,7 +5,6 @@
 
 #include "owl_maths.h"
 #include "owl_stats.h"
-#include "owl_maths.h"
 
 /** Multinomial distribution **/
 

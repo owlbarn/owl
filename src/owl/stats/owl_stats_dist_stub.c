@@ -1549,6 +1549,7 @@ value owl_stub_multinomial_rvs(value vK, value vN, value vP, value vS) {
   return Val_unit;
 }
 
+
 value owl_stub_multinomial_pdf(value vK, value vP, value vS) {
   int k = Long_val(vK);
   struct caml_ba_array *P = Caml_ba_array_val(vP);
@@ -1559,6 +1560,7 @@ value owl_stub_multinomial_pdf(value vK, value vP, value vS) {
   return caml_copy_double(q);
 }
 
+
 value owl_stub_multinomial_logpdf(value vK, value vP, value vS) {
   int k = Long_val(vK);
   struct caml_ba_array *P = Caml_ba_array_val(vP);
@@ -1567,4 +1569,37 @@ value owl_stub_multinomial_logpdf(value vK, value vP, value vS) {
   int32_t *s = (int32_t *) S->data;
   double q = multinomial_logpdf(k, p, s);
   return caml_copy_double(q);
+}
+
+
+value owl_stub_dirchlet_rvs(value vK, value vA, value vB) {
+  int k = Long_val(vK);
+  struct caml_ba_array *A = Caml_ba_array_val(vA);
+  double *a = (double *) A->data;
+  struct caml_ba_array *B = Caml_ba_array_val(vB);
+  double *b = (double *) B->data;
+  dirichlet_rvs(k, a, b);
+  return Val_unit;
+}
+
+
+value owl_stub_dirchlet_pdf(value vK, value vA, value vB) {
+  int k = Long_val(vK);
+  struct caml_ba_array *A = Caml_ba_array_val(vA);
+  double *a = (double *) A->data;
+  struct caml_ba_array *B = Caml_ba_array_val(vB);
+  double *b = (double *) B->data;
+  double p = dirichlet_pdf(k, a, b);
+  return caml_copy_double(p);
+}
+
+
+value owl_stub_dirchlet_logpdf(value vK, value vA, value vB) {
+  int k = Long_val(vK);
+  struct caml_ba_array *A = Caml_ba_array_val(vA);
+  double *a = (double *) A->data;
+  struct caml_ba_array *B = Caml_ba_array_val(vB);
+  double *b = (double *) B->data;
+  double p = dirichlet_logpdf(k, a, b);
+  return caml_copy_double(p);
 }

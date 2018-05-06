@@ -58,7 +58,7 @@
     owl_stats_dist_binomial
     owl_stats_dist_cauchy
     owl_stats_dist_chi2
-    owl_stats_dirichlet
+    owl_stats_dist_dirichlet
     owl_stats_dist_exponential
     owl_stats_dist_exponpow
     owl_stats_dist_f

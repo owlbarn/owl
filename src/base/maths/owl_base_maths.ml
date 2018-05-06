@@ -97,3 +97,21 @@ let same_sign x y =
   if x >= 0. && y >= 0. then true
   else if x <= 0. && y <= 0. then true
   else false
+
+let is_simplex x =
+  let acc = ref 0. in
+  let chk = ref true in
+  (
+    try
+      Array.iter (fun a ->
+        if a < 0. then (
+          chk := false;
+          raise Owl_exception.FOUND
+        );
+        acc := !acc +. a
+      ) x;
+    with exn -> ()
+  );
+  let df = abs_float (1. -. !acc) in
+  if df > Owl_const.eps then chk := false;
+  !chk

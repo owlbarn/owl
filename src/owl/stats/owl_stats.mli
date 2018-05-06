@@ -923,6 +923,14 @@ val rayleigh_logsf : float -> sigma:float -> float
 val rayleigh_isf : float -> sigma:float -> float
 (** TODO *)
 
+val dirichlet_rvs : alpha:float array -> float array
+(** TODO *)
+
+val dirichlet_pdf : float array -> alpha:float array -> float
+(** TODO *)
+
+val dirichlet_logpdf : float array -> alpha:float array -> float
+(** TODO *)
 
 
 (* ends here *)

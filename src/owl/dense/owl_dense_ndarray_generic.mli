@@ -512,7 +512,7 @@ val expand : ?hi:bool -> ('a, 'b) t -> int -> ('a, 'b) t
 (**
 ``expand x d`` reshapes ``x`` by increasing its rank from ``num_dims x`` to
 ``d``. The opposite operation is ``squeeze x``. The ``hi`` parameter is used to
-specify wether the expandsion is along high dimension (by setting ``true``), or
+specify whether the expandsion is along high dimension (by setting ``true``), or
 along the low dimension (by setting ``false``). The default value is ``false``.
  *)
 
