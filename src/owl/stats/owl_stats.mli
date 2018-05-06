@@ -924,7 +924,23 @@ val rayleigh_isf : float -> sigma:float -> float
 (** TODO *)
 
 val dirichlet_rvs : alpha:float array -> float array
-(** TODO *)
+(**
+``dirichlet_rvs ~alpha`` returns random variables of ``K-1`` order Dirichlet
+distribution, follows the following probabilty dense function.
+
+.. math::
+  f(x_1,...,x_K; \alpha_1,...,\alpha_K) = \frac{1}{\mathbf{B(\alpha)}} \prod_{i=1}^K x_i^{\alpha_i - 1}
+
+The normalising constant is the multivariate Beta function, which can be
+expressed in terms of the gamma function:
+
+.. math::
+  \mathbf{B(\alpha)} = \frac{\prod_{i=1}^K \Gamma(\alpha_i)}{\Gamma(\sum_{i=1}^K \alpha_i)}
+
+Note that ``x`` is a standard K-1 simplex, i.e.
+:math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall x_i \in [1,K]`.
+
+ *)
 
 val dirichlet_pdf : float array -> alpha:float array -> float
 (** TODO *)
