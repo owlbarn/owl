@@ -1724,7 +1724,7 @@ let conv2d ?(padding=SAME) input kernel stride =
 
 
 (* transpose 2d convolution *)
-let conv2d_transpose ?(padding=SAME) input kernel stride =
+let transpose_conv2d ?(padding=SAME) input kernel stride =
   assert (num_dims input = 4);
   assert (num_dims kernel = 4);
   assert (Array.length stride = 2);
@@ -1747,7 +1747,7 @@ let conv2d_transpose ?(padding=SAME) input kernel stride =
   let row_in_stride = 1 in
 
   let output_cols, output_rows =
-    Owl_utils.calc_conv2d_transpose_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+    Owl_utils.calc_transpose_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   in
   let output = empty (kind input) [|batches; output_cols; output_rows; out_channel|] in
 
@@ -1840,8 +1840,8 @@ let conv2d_backward_kernel input kernel stride output' =
 
   kernel'
 
-(* gradient of conv2d_transpose w.r.t the kernel *)
-let conv2d_transpose_backward_kernel input kernel stride output' =
+(* gradient of transpose_conv2d w.r.t the kernel *)
+let transpose_conv2d_backward_kernel input kernel stride output' =
   assert (num_dims input = 4);
   assert (num_dims kernel = 4);
   assert (num_dims output' = 4);
@@ -1880,8 +1880,8 @@ let conv2d_transpose_backward_kernel input kernel stride output' =
   kernel'
 
 
-(* gradient of conv2d_transpose w.r.t the input *)
-let conv2d_transpose_backward_input  input kernel stride output' =
+(* gradient of transpose_conv2d w.r.t the input *)
+let transpose_conv2d_backward_input  input kernel stride output' =
   assert (num_dims input = 4);
   assert (num_dims kernel = 4);
   assert (num_dims output' = 4);

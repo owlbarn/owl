@@ -1019,6 +1019,96 @@ module Make
 
   end
 
+  (* definition of TransposeConv2D neuron *)
+  module TransposeConv2D = struct
+
+    type neuron_typ = {
+      mutable w         : t;
+      mutable b         : t;
+      mutable kernel    : int array;
+      mutable stride    : int array;
+      mutable padding   : padding;
+      mutable init_typ  : Init.typ;
+      mutable in_shape  : int array;
+      mutable out_shape : int array;
+    }
+
+    let create ?inputs padding kernel stride init_typ =
+      let w, h, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3) in
+      let in_shape = match inputs with
+        | Some a -> assert (i = a.(2)); a
+        | None   -> [|0;0;i|]
+      in
+      {
+        w         = Arr.empty [|w;h;i;o|];
+        b         = Arr.empty [|o|];
+        kernel    = kernel;
+        stride    = stride;
+        padding   = padding;
+        init_typ  = init_typ;
+        in_shape  = in_shape;
+        out_shape = [|0;0;o|];
+      }
+
+    let connect out_shape l =
+      assert Array.(length out_shape = length l.in_shape);
+      assert (out_shape.(2) = l.in_shape.(2));
+      l.in_shape.(0) <- out_shape.(0);
+      l.in_shape.(1) <- out_shape.(1);
+      let out_cols, out_rows =
+        Owl_utils.calc_transpose_conv2d_output_shape
+        l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1)
+        l.stride.(0) l.stride.(1)
+      in
+      l.out_shape.(0) <- out_cols;
+      l.out_shape.(1) <- out_rows
+
+    let init l =
+      l.w <- Init.run l.init_typ l.kernel l.w;
+      l.b <- Arr.(zeros (shape l.b))
+
+    let reset l =
+      Arr.reset l.w;
+      Arr.reset l.b
+
+    let mktag t l =
+      l.w <- make_reverse l.w t;
+      l.b <- make_reverse l.b t
+
+    let mkpar l = [|l.w; l.b|]
+
+    let mkpri l = [|primal l.w; primal l.b|]
+
+    let mkadj l = [|adjval l.w; adjval l.b|]
+
+    let update l u =
+      l.w <- u.(0) |> primal';
+      l.b <- u.(1) |> primal'
+
+    let copy l =
+      let l' = create l.padding l.kernel l.stride l.init_typ in
+      mkpri l |> Array.map copy_primal' |> update l';
+      l'
+
+    let run x l = Maths.((transpose_conv2d ~padding:l.padding x l.w l.stride) + l.b)
+
+    let to_string l =
+      let ws = Arr.shape l.w in
+      let bn = Arr.shape l.b in
+      let in_str = Owl_utils_array.to_string string_of_int l.in_shape in
+      let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
+      Printf.sprintf "    TransposeConv2D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
+      Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+      Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3) + bn.(0)) ^
+      Printf.sprintf "    kernel : %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3) ^
+      Printf.sprintf "    b      : %i\n" bn.(0) ^
+      Printf.sprintf "    stride : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
+      ""
+
+    let to_name () = "transpose_conv2d"
+
+  end
+
 
   (* definition of Conv3D neuron *)
   module Conv3D = struct
@@ -2309,6 +2399,7 @@ module Make
     | Conv1D          of Conv1D.neuron_typ
     | Conv2D          of Conv2D.neuron_typ
     | Conv3D          of Conv3D.neuron_typ
+    | TransposeConv2D of TransposeConv2D.neuron_typ
     | FullyConnected  of FullyConnected.neuron_typ
     | MaxPool1D       of MaxPool1D.neuron_typ
     | MaxPool2D       of MaxPool2D.neuron_typ
@@ -2346,6 +2437,7 @@ module Make
     | Conv1D l          -> Conv1D.(l.in_shape, l.out_shape)
     | Conv2D l          -> Conv2D.(l.in_shape, l.out_shape)
     | Conv3D l          -> Conv3D.(l.in_shape, l.out_shape)
+    | TransposeConv2D l -> TransposeConv2D.(l.in_shape, l.out_shape)
     | FullyConnected l  -> FullyConnected.(l.in_shape, l.out_shape)
     | MaxPool1D l       -> MaxPool1D.(l.in_shape, l.out_shape)
     | MaxPool2D l       -> MaxPool2D.(l.in_shape, l.out_shape)
@@ -2389,6 +2481,7 @@ module Make
     | Conv1D l          -> Conv1D.connect out_shapes.(0) l
     | Conv2D l          -> Conv2D.connect out_shapes.(0) l
     | Conv3D l          -> Conv3D.connect out_shapes.(0) l
+    | TransposeConv2D l -> TransposeConv2D.connect out_shapes.(0) l
     | FullyConnected l  -> FullyConnected.connect out_shapes.(0) l
     | MaxPool1D l       -> MaxPool1D.connect out_shapes.(0) l
     | MaxPool2D l       -> MaxPool2D.connect out_shapes.(0) l
@@ -2416,108 +2509,115 @@ module Make
 
 
   let init = function
-    | Linear l         -> Linear.init l
-    | LinearNoBias l   -> LinearNoBias.init l
-    | Embedding l      -> Embedding.init l
-    | LSTM l           -> LSTM.init l
-    | GRU l            -> GRU.init l
-    | Recurrent l      -> Recurrent.init l
-    | Conv1D l         -> Conv1D.init l
-    | Conv2D l         -> Conv2D.init l
-    | Conv3D l         -> Conv3D.init l
-    | FullyConnected l -> FullyConnected.init l
-    | Normalisation l  -> Normalisation.init l
-    | _                -> () (* activation, etc. *)
+    | Linear l          -> Linear.init l
+    | LinearNoBias l    -> LinearNoBias.init l
+    | Embedding l       -> Embedding.init l
+    | LSTM l            -> LSTM.init l
+    | GRU l             -> GRU.init l
+    | Recurrent l       -> Recurrent.init l
+    | Conv1D l          -> Conv1D.init l
+    | Conv2D l          -> Conv2D.init l
+    | Conv3D l          -> Conv3D.init l
+    | TransposeConv2D l -> TransposeConv2D.init l
+    | FullyConnected l  -> FullyConnected.init l
+    | Normalisation l   -> Normalisation.init l
+    | _                 -> () (* activation, etc. *)
 
 
   let reset = function
-    | Linear l         -> Linear.reset l
-    | LinearNoBias l   -> LinearNoBias.reset l
-    | Embedding l      -> Embedding.reset l
-    | LSTM l           -> LSTM.reset l
-    | GRU l            -> GRU.reset l
-    | Recurrent l      -> Recurrent.reset l
-    | Conv1D l         -> Conv1D.reset l
-    | Conv2D l         -> Conv2D.reset l
-    | Conv3D l         -> Conv3D.reset l
-    | FullyConnected l -> FullyConnected.reset l
-    | Normalisation l  -> Normalisation.reset l
-    | _                -> () (* activation, etc. *)
+    | Linear l          -> Linear.reset l
+    | LinearNoBias l    -> LinearNoBias.reset l
+    | Embedding l       -> Embedding.reset l
+    | LSTM l            -> LSTM.reset l
+    | GRU l             -> GRU.reset l
+    | Recurrent l       -> Recurrent.reset l
+    | Conv1D l          -> Conv1D.reset l
+    | Conv2D l          -> Conv2D.reset l
+    | Conv3D l          -> Conv3D.reset l
+    | TransposeConv2D l -> TransposeConv2D.reset l
+    | FullyConnected l  -> FullyConnected.reset l
+    | Normalisation l   -> Normalisation.reset l
+    | _                 -> () (* activation, etc. *)
 
 
   let mktag t = function
-    | Linear l         -> Linear.mktag t l
-    | LinearNoBias l   -> LinearNoBias.mktag t l
-    | Embedding l      -> Embedding.mktag t l
-    | LSTM l           -> LSTM.mktag t l
-    | GRU l            -> GRU.mktag t l
-    | Recurrent l      -> Recurrent.mktag t l
-    | Conv1D l         -> Conv1D.mktag t l
-    | Conv2D l         -> Conv2D.mktag t l
-    | Conv3D l         -> Conv3D.mktag t l
-    | FullyConnected l -> FullyConnected.mktag t l
-    | Normalisation l  -> Normalisation.mktag t l
-    | _                -> () (* activation, etc. *)
+    | Linear l          -> Linear.mktag t l
+    | LinearNoBias l    -> LinearNoBias.mktag t l
+    | Embedding l       -> Embedding.mktag t l
+    | LSTM l            -> LSTM.mktag t l
+    | GRU l             -> GRU.mktag t l
+    | Recurrent l       -> Recurrent.mktag t l
+    | Conv1D l          -> Conv1D.mktag t l
+    | Conv2D l          -> Conv2D.mktag t l
+    | Conv3D l          -> Conv3D.mktag t l
+    | TransposeConv2D l -> TransposeConv2D.mktag t l
+    | FullyConnected l  -> FullyConnected.mktag t l
+    | Normalisation l   -> Normalisation.mktag t l
+    | _                 -> () (* activation, etc. *)
 
 
   let mkpar = function
-    | Linear l         -> Linear.mkpar l
-    | LinearNoBias l   -> LinearNoBias.mkpar l
-    | Embedding l      -> Embedding.mkpar l
-    | LSTM l           -> LSTM.mkpar l
-    | GRU l            -> GRU.mkpar l
-    | Recurrent l      -> Recurrent.mkpar l
-    | Conv1D l         -> Conv1D.mkpar l
-    | Conv2D l         -> Conv2D.mkpar l
-    | Conv3D l         -> Conv3D.mkpar l
-    | FullyConnected l -> FullyConnected.mkpar l
-    | Normalisation l  -> Normalisation.mkpar l
-    | _                -> [||] (* activation, etc. *)
+    | Linear l          -> Linear.mkpar l
+    | LinearNoBias l    -> LinearNoBias.mkpar l
+    | Embedding l       -> Embedding.mkpar l
+    | LSTM l            -> LSTM.mkpar l
+    | GRU l             -> GRU.mkpar l
+    | Recurrent l       -> Recurrent.mkpar l
+    | Conv1D l          -> Conv1D.mkpar l
+    | Conv2D l          -> Conv2D.mkpar l
+    | Conv3D l          -> Conv3D.mkpar l
+    | TransposeConv2D l -> TransposeConv2D.mkpar l
+    | FullyConnected l  -> FullyConnected.mkpar l
+    | Normalisation l   -> Normalisation.mkpar l
+    | _                 -> [||] (* activation, etc. *)
 
 
   let mkpri = function
-    | Linear l         -> Linear.mkpri l
-    | LinearNoBias l   -> LinearNoBias.mkpri l
-    | Embedding l      -> Embedding.mkpri l
-    | LSTM l           -> LSTM.mkpri l
-    | GRU l            -> GRU.mkpri l
-    | Recurrent l      -> Recurrent.mkpri l
-    | Conv1D l         -> Conv1D.mkpri l
-    | Conv2D l         -> Conv2D.mkpri l
-    | Conv3D l         -> Conv3D.mkpri l
-    | FullyConnected l -> FullyConnected.mkpri l
-    | Normalisation l  -> Normalisation.mkpri l
-    | _                -> [||] (* activation, etc. *)
+    | Linear l          -> Linear.mkpri l
+    | LinearNoBias l    -> LinearNoBias.mkpri l
+    | Embedding l       -> Embedding.mkpri l
+    | LSTM l            -> LSTM.mkpri l
+    | GRU l             -> GRU.mkpri l
+    | Recurrent l       -> Recurrent.mkpri l
+    | Conv1D l          -> Conv1D.mkpri l
+    | Conv2D l          -> Conv2D.mkpri l
+    | Conv3D l          -> Conv3D.mkpri l
+    | TransposeConv2D l -> TransposeConv2D.mkpri l
+    | FullyConnected l  -> FullyConnected.mkpri l
+    | Normalisation l   -> Normalisation.mkpri l
+    | _                 -> [||] (* activation, etc. *)
 
 
   let mkadj = function
-    | Linear l         -> Linear.mkadj l
-    | LinearNoBias l   -> LinearNoBias.mkadj l
-    | Embedding l      -> Embedding.mkadj l
-    | LSTM l           -> LSTM.mkadj l
-    | GRU l            -> GRU.mkadj l
-    | Recurrent l      -> Recurrent.mkadj l
-    | Conv1D l         -> Conv1D.mkadj l
-    | Conv2D l         -> Conv2D.mkadj l
-    | Conv3D l         -> Conv3D.mkadj l
-    | FullyConnected l -> FullyConnected.mkadj l
-    | Normalisation l  -> Normalisation.mkadj l
-    | _                -> [||] (* activation, etc. *)
+    | Linear l          -> Linear.mkadj l
+    | LinearNoBias l    -> LinearNoBias.mkadj l
+    | Embedding l       -> Embedding.mkadj l
+    | LSTM l            -> LSTM.mkadj l
+    | GRU l             -> GRU.mkadj l
+    | Recurrent l       -> Recurrent.mkadj l
+    | Conv1D l          -> Conv1D.mkadj l
+    | Conv2D l          -> Conv2D.mkadj l
+    | Conv3D l          -> Conv3D.mkadj l
+    | TransposeConv2D l -> TransposeConv2D.mkadj l
+    | FullyConnected l  -> FullyConnected.mkadj l
+    | Normalisation l   -> Normalisation.mkadj l
+    | _                 -> [||] (* activation, etc. *)
 
 
   let update l u = match l with
-    | Linear l         -> Linear.update l u
-    | LinearNoBias l   -> LinearNoBias.update l u
-    | Embedding l      -> Embedding.update l u
-    | LSTM l           -> LSTM.update l u
-    | GRU l            -> GRU.update l u
-    | Recurrent l      -> Recurrent.update l u
-    | Conv1D l         -> Conv1D.update l u
-    | Conv2D l         -> Conv2D.update l u
-    | Conv3D l         -> Conv3D.update l u
-    | FullyConnected l -> FullyConnected.update l u
-    | Normalisation l  -> Normalisation.update l u
-    | _                -> () (* activation, etc. *)
+    | Linear l          -> Linear.update l u
+    | LinearNoBias l    -> LinearNoBias.update l u
+    | Embedding l       -> Embedding.update l u
+    | LSTM l            -> LSTM.update l u
+    | GRU l             -> GRU.update l u
+    | Recurrent l       -> Recurrent.update l u
+    | Conv1D l          -> Conv1D.update l u
+    | Conv2D l          -> Conv2D.update l u
+    | Conv3D l          -> Conv3D.update l u
+    | TransposeConv2D l -> TransposeConv2D.update l u
+    | FullyConnected l  -> FullyConnected.update l u
+    | Normalisation l   -> Normalisation.update l u
+    | _                 -> () (* activation, etc. *)
 
 
   let copy = function
@@ -2531,6 +2631,7 @@ module Make
     | Conv1D l          -> Conv1D Conv1D.(copy l)
     | Conv2D l          -> Conv2D Conv2D.(copy l)
     | Conv3D l          -> Conv3D Conv3D.(copy l)
+    | TransposeConv2D l -> TransposeConv2D TransposeConv2D.(copy l)
     | FullyConnected l  -> FullyConnected FullyConnected.(copy l)
     | MaxPool1D l       -> MaxPool1D MaxPool1D.(copy l)
     | MaxPool2D l       -> MaxPool2D MaxPool2D.(copy l)
@@ -2568,6 +2669,7 @@ module Make
     | Conv1D l          -> Conv1D.run a.(0) l
     | Conv2D l          -> Conv2D.run a.(0) l
     | Conv3D l          -> Conv3D.run a.(0) l
+    | TransposeConv2D l -> TransposeConv2D.run a.(0) l
     | FullyConnected l  -> FullyConnected.run a.(0) l
     | MaxPool1D l       -> MaxPool1D.run a.(0) l
     | MaxPool2D l       -> MaxPool2D.run a.(0) l
@@ -2605,6 +2707,7 @@ module Make
     | Conv1D l          -> Conv1D.to_string l
     | Conv2D l          -> Conv2D.to_string l
     | Conv3D l          -> Conv3D.to_string l
+    | TransposeConv2D l -> TransposeConv2D.to_string l
     | FullyConnected l  -> FullyConnected.to_string l
     | MaxPool1D l       -> MaxPool1D.to_string l
     | MaxPool2D l       -> MaxPool2D.to_string l
@@ -2642,6 +2745,7 @@ module Make
     | Conv1D _          -> Conv1D.to_name ()
     | Conv2D _          -> Conv2D.to_name ()
     | Conv3D _          -> Conv3D.to_name ()
+    | TransposeConv2D _ -> TransposeConv2D.to_name ()
     | FullyConnected _  -> FullyConnected.to_name ()
     | MaxPool1D _       -> MaxPool1D.to_name ()
     | MaxPool2D _       -> MaxPool2D.to_name ()

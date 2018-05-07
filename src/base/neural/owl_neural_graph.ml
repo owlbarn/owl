@@ -297,6 +297,12 @@ module Make
     let n = make_node ?name [||] [||] neuron None nn in
     add_node ?act_typ nn [|input_node|] n
 
+  let transpose_conv2d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
+    let neuron = TransposeConv2D (TransposeConv2D.create padding kernel strides init_typ) in
+    let nn = get_network input_node in
+    let n = make_node ?name [||] [||] neuron None nn in
+    add_node ?act_typ nn [|input_node|] n
+
 
   let conv3d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
     let neuron = Conv3D (Conv3D.create padding kernel strides init_typ) in
