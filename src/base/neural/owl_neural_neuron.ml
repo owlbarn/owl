@@ -1095,8 +1095,8 @@ module Make
     let to_string l =
       let ws = Arr.shape l.w in
       let bn = Arr.shape l.b in
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_array.to_string string_of_int l.in_shape in
+      let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
       Printf.sprintf "    Conv2DTranspose : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
       Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3) + bn.(0)) ^
