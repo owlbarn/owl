@@ -2534,7 +2534,7 @@ module Make
     | Conv1D l          -> Conv1D.reset l
     | Conv2D l          -> Conv2D.reset l
     | Conv3D l          -> Conv3D.reset l
-    | TransposeConv2D l ->TransposeConv2D.reset l
+    | TransposeConv2D l -> TransposeConv2D.reset l
     | FullyConnected l  -> FullyConnected.reset l
     | Normalisation l   -> Normalisation.reset l
     | _                 -> () (* activation, etc. *)
