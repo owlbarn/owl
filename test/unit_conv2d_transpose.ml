@@ -13,26 +13,26 @@ let tolerance_f32 = 5e-4
 let close a b =
   N.(sub a b |> abs |> sum') < tolerance_f32
 
-let compute_conv2d_trans input_shape kernel_shape stride pad =
+let compute_trans_conv2d input_shape kernel_shape stride pad =
   let inp = N.ones input_shape in
   let kernel = N.ones kernel_shape in
-  N.conv2d_transpose ~padding:pad inp kernel stride
+  N.transpose_conv2d ~padding:pad inp kernel stride
 
-let compute_conv2d_trans_bi input_shape kernel_shape stride pad =
+let compute_trans_conv2d_bi input_shape kernel_shape stride pad =
   let inp = N.ones input_shape in
   let kernel = N.ones kernel_shape in
-  let output = N.conv2d_transpose ~padding:pad inp kernel stride in
+  let output = N.transpose_conv2d ~padding:pad inp kernel stride in
   let os = N.shape output in
   let output' = N.ones os in
-  N.conv2d_transpose_backward_input inp kernel stride output'
+  N.transpose_conv2d_backward_input inp kernel stride output'
 
-let compute_conv2d_trans_bk input_shape kernel_shape stride pad =
+let compute_trans_conv2d_bk input_shape kernel_shape stride pad =
   let inp = N.ones input_shape in
   let kernel = N.ones kernel_shape in
-  let output = N.conv2d_transpose ~padding:pad inp kernel stride in
+  let output = N.transpose_conv2d ~padding:pad inp kernel stride in
   let os = N.shape output in
   let output' = N.ones os in
-  N.conv2d_transpose_backward_kernel inp kernel stride output'
+  N.transpose_conv2d_backward_kernel inp kernel stride output'
 
 let verify_value fn input_shape kernel_shape stride pad expected =
   let a = fn input_shape kernel_shape stride pad in
@@ -44,7 +44,7 @@ let test_forward input_shape kernel_shape stride pad magic_num =
   let ph = if pad = SAME then 0 else stride.(0) - 1 in
   let pw = if pad = SAME then 0 else stride.(1) - 1 in
 
-  let result = compute_conv2d_trans input_shape kernel_shape stride pad in
+  let result = compute_trans_conv2d input_shape kernel_shape stride pad in
   let s = N.shape result in
   let expected = N.zeros s in
 
@@ -114,19 +114,19 @@ module To_test_conv2d_transpose_backward = struct
   (* BackwardInputTwoStride *)
   let fun00 () =
     let expected = [|9.; 9.; 9.; 9.|] in
-    verify_value compute_conv2d_trans_bi [|1;2;2;1|] [|3;3;1;1|]
+    verify_value compute_trans_conv2d_bi [|1;2;2;1|] [|3;3;1;1|]
       [|2;2|] VALID expected
 
   (* BackwardInputSingleStride *)
   let fun01 () =
     let expected = [|9.; 9.; 9.; 9.|] in
-    verify_value compute_conv2d_trans_bi [|1;2;2;1|] [|3;3;1;1|]
+    verify_value compute_trans_conv2d_bi [|1;2;2;1|] [|3;3;1;1|]
       [|1;1|] VALID expected
 
   (* BackwardInputTowStrideSame *)
   let fun02 () =
     let expected = [|9.; 9.; 6.; 9.; 9.; 6.; 6.; 6.; 4.|] in
-    verify_value compute_conv2d_trans_bi [|1;3;3;1|] [|3;3;1;1|]
+    verify_value compute_trans_conv2d_bi [|1;3;3;1|] [|3;3;1;1|]
       [|2;2|] SAME expected
 
   (* BackwardInputSingleStrideSame *)
@@ -134,31 +134,31 @@ module To_test_conv2d_transpose_backward = struct
     let expected = [|
       4.; 6.; 6.; 4.; 6.; 9.; 9.; 6.;
       6.; 9.; 9.; 6.; 4.; 6.; 6.; 4.|] in
-    verify_value compute_conv2d_trans_bi [|1;4;4;1|] [|3;3;1;1|]
+    verify_value compute_trans_conv2d_bi [|1;4;4;1|] [|3;3;1;1|]
       [|1;1|] SAME expected
 
   (* BackwardKernelTwoStride *)
   let fun04 () =
     let expected = [|4.; 4.; 4.; 4.; 4.; 4.; 4.; 4.; 4.|] in
-    verify_value compute_conv2d_trans_bk [|1;2;2;1|] [|3;3;1;1|]
+    verify_value compute_trans_conv2d_bk [|1;2;2;1|] [|3;3;1;1|]
       [|2;2|] VALID expected
 
   (* BackwardKernelSingleStride *)
   let fun05 () =
     let expected = [|4.; 4.; 4.; 4.; 4.; 4.; 4.; 4.; 4.|] in
-    verify_value compute_conv2d_trans_bk [|1;2;2;1|] [|3;3;1;1|]
+    verify_value compute_trans_conv2d_bk [|1;2;2;1|] [|3;3;1;1|]
       [|1;1|] VALID expected
 
   (* BackwardKernelTowStrideSame *)
   let fun06 () =
     let expected = [|4.; 6.; 6.; 6.; 9.; 9.; 6.; 9.; 9.|] in
-    verify_value compute_conv2d_trans_bk [|1;3;3;1|] [|3;3;1;1|]
+    verify_value compute_trans_conv2d_bk [|1;3;3;1|] [|3;3;1;1|]
       [|2;2|] SAME expected
 
   (* BackwardKernelSingleStrideSame *)
   let fun07 () =
     let expected = [|9.; 12.; 9.; 12.; 16.; 12.; 9.; 12.; 9.|] in
-    verify_value compute_conv2d_trans_bk [|1;4;4;1|] [|3;3;1;1|]
+    verify_value compute_trans_conv2d_bk [|1;4;4;1|] [|3;3;1;1|]
       [|1;1|] SAME expected
 
 end

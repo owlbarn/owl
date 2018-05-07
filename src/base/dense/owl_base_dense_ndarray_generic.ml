@@ -1776,9 +1776,9 @@ let conv2d_backward_kernel input kernel stride output' =
 
 
 (* TODO: add correct implementaton into these placeholders *)
-let conv2d_transpose = conv2d
-let conv2d_transpose_backward_input = conv2d_backward_input
-let conv2d_transpose_backward_kernel = conv2d_backward_kernel
+let transpose_conv2d = conv2d
+let transpose_conv2d_backward_input = conv2d_backward_input
+let transpose_conv2d_backward_kernel = conv2d_backward_kernel
 
 (* gradient of conv1d w.r.t the input *)
 let conv1d_backward_input input kernel stride output' =

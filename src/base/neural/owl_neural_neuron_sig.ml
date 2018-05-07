@@ -537,7 +537,7 @@ module Conv2D : sig
 
 end
 
-module Conv2DTranspose : sig
+module TransposeConv2D : sig
 
   type neuron_typ = {
     mutable w : t;
@@ -1537,7 +1537,7 @@ type neuron =
   | Conv1D of Conv1D.neuron_typ
   | Conv2D of Conv2D.neuron_typ
   | Conv3D of Conv3D.neuron_typ
-  | Conv2DTranspose of Conv2DTranspose.neuron_typ
+  | TransposeConv2D of TransposeConv2D.neuron_typ
   | FullyConnected of FullyConnected.neuron_typ
   | MaxPool1D of MaxPool1D.neuron_typ
   | MaxPool2D of MaxPool2D.neuron_typ
