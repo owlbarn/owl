@@ -1019,7 +1019,7 @@ module Make
 
   end
 
-  (* definition of Conv2D neuron *)
+  (* definition of TransposeConv2D neuron *)
   module TransposeConv2D = struct
 
     type neuron_typ = {
