@@ -90,6 +90,22 @@ extern double exponential_isf(double q, double lambda);
 
 extern double exponential_entropy(double lambda);
 
+/** Exponential power distribution **/
+
+extern double exponpow_rvs(double a, double b);
+
+extern double exponpow_pdf(double x, double a, double b);
+
+extern double exponpow_logpdf(double x, double a, double b);
+
+extern double exponpow_cdf(double x, double a, double b);
+
+extern double exponpow_logcdf(double x, double a, double b);
+
+extern double exponpow_sf(double x, double a, double b);
+
+extern double exponpow_logsf(double x, double a, double b);
+
 /** Gaussian distribution **/
 
 extern double std_gaussian_rvs();

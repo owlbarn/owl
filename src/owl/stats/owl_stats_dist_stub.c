@@ -176,6 +176,68 @@ value owl_stub_exponential_isf(value vQ, value vA) {
 }
 
 
+value owl_stub_exponpow_rvs(value vA, value vB) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_rvs(a, b);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_exponpow_pdf(value vX, value vA, value vB) {
+  double x = Double_val(vX);
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_pdf(x, a, b);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_exponpow_logpdf(value vX, value vA, value vB) {
+  double x = Double_val(vX);
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_logpdf(x, a, b);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_exponpow_cdf(value vX, value vA, value vB) {
+  double x = Double_val(vX);
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_cdf(x, a, b);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_exponpow_logcdf(value vX, value vA, value vB) {
+  double x = Double_val(vX);
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_logcdf(x, a, b);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_exponpow_sf(value vX, value vA, value vB) {
+  double x = Double_val(vX);
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_sf(x, a, b);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_exponpow_logsf(value vX, value vA, value vB) {
+  double x = Double_val(vX);
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_logsf(x, a, b);
+  return caml_copy_double(y);
+}
+
+
 value owl_stub_gaussian_rvs(value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
