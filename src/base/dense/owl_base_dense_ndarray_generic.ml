@@ -135,7 +135,7 @@ let _expand_slice_indices index_list dims =
       | [start] -> _enumerate_slice_def dims.(i) start start
       | [start; stop] -> _enumerate_slice_def dims.(i) start stop
       | [start; stop; step] -> _enumerate_slice_def dims.(i) ~step:step start stop
-      | _ -> failwith "incorrect slice definition"
+      | x -> Array.of_list x
   ) in
   Array.append
     (Array.of_list (List.mapi _expand_slice_index index_list)) (* for the axis where the index was specified *)
@@ -771,10 +771,28 @@ let sum_reduce ?axis x =
   | None   -> create (kind x) (Array.make _dims 1) (sum' x)
 
 
-let min ?axis x = failwith "not implemented"
+  (* TODO: fix this *)
+  let min ?axis x =
+    let _kind = kind x in
+    match axis with
+    | Some a -> (
+        let m, n, o, s = Owl_utils.reduce_params a x in
+        let y = create _kind s (Owl_const.zero _kind) in (* FIXME *)
+        y
+      )
+    | None   -> min' x |> create _kind [|1|]
 
 
-let max ?axis x = failwith "not implemented"
+(* TODO: fix this *)
+let max ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = Owl_utils.reduce_params a x in
+      let y = create _kind s (Owl_const.zero _kind) in (* FIXME *)
+      y
+    )
+  | None   -> max' x |> create _kind [|1|]
 
 
 let l1norm' varr =
