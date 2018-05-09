@@ -239,12 +239,21 @@ let gammainccinv a x = Owl_maths_special.gammainccinv a x
 
 let psi x = Owl_maths_special.psi x
 
-(* TODO: look up table is faster, but let's leave it for future *)
 let fact x =
   assert (x >= 0);
-  Owl_maths_special.gamma (float_of_int x +. 1.0)
+  Owl_maths_special.fact x
 
-let log_fact x = log (fact x)
+let log_fact x =
+  assert (x >= 0);
+  Owl_maths_special.log_fact x
+
+let doublefact x =
+  assert (x >= 0);
+  Owl_maths_special.doublefact x
+
+let log_doublefact x =
+  assert (x >= 0);
+  Owl_maths_special.log_doublefact x
 
 let beta a b = Owl_maths_special.beta a b
 
@@ -256,9 +265,11 @@ let zeta x q = Owl_maths_special.zeta x q
 
 let zetac x = Owl_maths_special.zetac x
 
-let combination_float n k = (fact n /. fact (n - k) /. fact k) |> trunc
+let combination_float n k = Owl_maths_special.combination n k |> trunc
 
 let combination n k = combination_float n k |> int_of_float
+
+let log_combination n k = Owl_maths_special.log_combination n k
 
 let permutation_float n k =
   let r = ref 1. in
@@ -289,11 +300,19 @@ let fresnel x =
 
 let struve v x = Owl_maths_special.struve v x
 
-let is_odd x = ((Pervasives.abs x) mod 2) = 1
+let same_sign = Owl_base_maths.same_sign
 
-let is_even x = (x mod 2) = 0
+let is_simplex = Owl_base_maths.is_simplex
 
-let is_pow2 x = (x <> 0) && (x land (x - 1) = 0)
+let is_nan = Owl_base_maths.is_nan
+
+let is_inf = Owl_base_maths.is_inf
+
+let is_odd = Owl_base_maths.is_odd
+
+let is_even = Owl_base_maths.is_even
+
+let is_pow2 = Owl_base_maths.is_pow2
 
 let nextafter = Owl_maths_special.nextafter
 

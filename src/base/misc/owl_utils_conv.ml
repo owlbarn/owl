@@ -30,6 +30,21 @@ let calc_conv2d_output_shape
   (output_cols, output_rows)
 
 
+(* calculate the output shape of [conv2d_transpose] given input and kernel and stride *)
+let calc_conv2d_transpose_output_shape
+  padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  =
+  let output_cols = match padding with
+    | SAME  -> input_cols * col_stride
+    | VALID -> input_cols * col_stride + (max (kernel_cols - col_stride) 0)
+  in
+  let output_rows = match padding with
+    | SAME  -> input_rows * row_stride
+    | VALID -> input_rows * row_stride + (max (kernel_rows - row_stride) 0)
+  in
+  (output_cols, output_rows)
+
+
 (* calculate the padding size along width and height *)
 let calc_conv2d_padding
   input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride

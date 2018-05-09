@@ -4,7 +4,9 @@
  *)
 
 open Bigarray
-open Owl_dense_common
+
+open Owl_ndarray
+
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
@@ -535,9 +537,9 @@ let pp_spnda x =
     _pp (n - 20) (n - 1)
   )
 
-let save x f = Owl_utils.marshal_to_file x f
+let save x f = Owl_io.marshal_to_file x f
 
-let load k f = Owl_utils.marshal_from_file f
+let load k f = Owl_io.marshal_from_file f
 
 let _random_basic a k f d =
   let x = zeros k d in

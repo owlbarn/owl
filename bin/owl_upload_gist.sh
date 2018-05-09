@@ -5,17 +5,14 @@ gist -v >/dev/null 2>&1 || { echo >&2 "Error: 'gist' is not installed!"; exit 1;
 
 # check for valid directory
 DIRNAME=$1
-if [ ! -f $DIRNAME/readme.md ]; then
+if [ ! -f $DIRNAME/\#readme.md ]; then
     echo "usage: `basename $0` <dirname>"
-    echo "       <dirname>/readme.md must exist"
+    echo "       <dirname>/#readme.md must exist"
     exit 1
 fi
 cd $DIRNAME
 
-# force to log into github
-gist --login
-
-NAME=`head -n 1 readme.md`
+NAME=`head -n 1 \#readme.md`
 FILES=`ls * | xargs echo`
 
 # add new or upate a gist
@@ -25,15 +22,23 @@ if [ ! -f $GISTFILE ]; then
     echo "empty" > $GISTFILE
 
     echo "Uploading new gist"
-    INFO=`gist -p -d "$NAME" $FILES $GISTFILE`
+    INFO=`gist -p -d "$NAME" $GISTFILE`
 
     GIST=`echo $INFO | sed -n 's/^https:\/\/gist.github.com\/*//p'`
     echo $GIST > $GISTFILE
-    gist -u $GIST $GISTFILE
+
+    TMP_DIR=`mktemp -d`
+    git clone git@gist.github.com:$GIST.git $TMP_DIR
+    cp $FILES $GISTFILE $TMP_DIR/
+    (cd $TMP_DIR; git add .; git commit -m "zoo upload"; git push)
 else
     GIST=`cat $GISTFILE`
+
     echo "Updating gist $GIST"
-    gist -u $GIST -d "$NAME" $FILES
+    TMP_DIR=`mktemp -d`
+    git clone git@gist.github.com:$GIST.git $TMP_DIR
+    cp $FILES $GISTFILE $TMP_DIR/
+    (cd $TMP_DIR; git add .; git commit -m "zoo upload"; git push)
 fi
 
 RESULT=$?

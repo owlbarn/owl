@@ -12,8 +12,8 @@ vectorised mathematical operations.
 About the comparison of two complex numbers ``x`` and ``y``, Owl uses the
 following conventions: 1) ``x`` and ``y`` are equal iff both real and imaginary
 parts are equal; 2) ``x`` is less than ``y`` if the magnitude of ``x`` is less than
-the magnitude of ``x``; in case both ``x`` and ``y`` have the same magnitudes, ``x``
-is less than ``x`` if the phase of ``x`` is less than the phase of ``y``; 3) less or
+the magnitude of ``y``; in case both ``x`` and ``y`` have the same magnitudes, ``x``
+is less than ``y`` if the phase of ``x`` is less than the phase of ``y``; 3) less or
 equal, greater, greater or equal relation can be further defined atop of the
 aforementioned conventions.
  *)
@@ -186,7 +186,7 @@ val size_in_bytes : ('a, 'b) t -> int
 ``size_in_bytes x`` returns the size of ``x`` in bytes in memory.
  *)
 
-val same_shape : ('a, 'b) t -> ('a, 'b) t -> bool
+val same_shape : ('a, 'b) t -> ('c, 'd) t -> bool
 (**
 ``same_shape x y`` checks whether ``x`` and ``y`` has the same shape or not.
 *)
@@ -200,7 +200,7 @@ values: ``Bigarray.Float32``, ``Bigarray.Float64``, ``Bigarray.Complex32``, and
 
 val strides : ('a, 'b) t -> int array
 (**
-``strides x`` calcuates the strides of ``x``. E.g., if ``x`` is of shape
+``strides x`` calculates the strides of ``x``. E.g., if ``x`` is of shape
 ``[|3;4;5|]``, the returned strides will be ``[|20;5;1|]``.
  *)
 
@@ -309,6 +309,18 @@ val sub_left : ('a, 'b) t -> int -> int -> ('a, 'b) t
 Some as ``Bigarray.sub_left``, please refer to Bigarray documentation.
  *)
 
+val sub_ndarray : int array -> ('a, 'b) t -> ('a, 'b) t array
+(**
+``sub_ndarray parts x`` is similar to ``Bigarray.sub_left``. It splits the
+passed in ndarray ``x`` along the ``axis 0`` according to ``parts``. The
+elelments in ``parts`` do not need to be equal but they must sum up to the
+dimension along axis zero.
+
+The returned sub-ndarrays share the same memory as ``x``. Because there is no
+copies made, this function is much faster than using `split` function to divide
+the lowest dimensionality of ``x``.
+ *)
+
 val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 Same as ``Bigarray.slice_left``, please refer to Bigarray documentation.
@@ -338,13 +350,14 @@ val resize : ?head:bool -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 ``resize ~head x d`` resizes the ndarray ``x``. If there are less number of
 elelments in the new shape than the old one, the new ndarray shares part of
-the memeory with the old ``x``. ``head`` indicates the alignment between the new
-and old data, either from head or from tail. Note the data is flattened
+the memeory with the old ``x``. ``head`` indicates the alignment between the
+new and old data, either from head or from tail. Note the data is flattened
 before the operation.
 
 If there are more elements in the new shape ``d``. Then new memeory space will
-be allocated and the content of ``x`` will be copied to the new memory. The rest
-of the allocated space will be filled with zeros.
+be allocated and the content of ``x`` will be copied to the new memory. The
+rest of the allocated space will be filled with zeros. The default value of
+``head`` is ``true``.
  *)
 
 val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
@@ -352,6 +365,9 @@ val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
 ``reshape x d`` transforms ``x`` into a new shape definted by ``d``. Note the
 ``reshape`` function will not make a copy of ``x``, the returned ndarray shares
 the same memory with the original ``x``.
+
+One shape dimension (only one) can be set to ``-1``. In this case, the value is
+inferred from the length of the array and remaining dimensions.
  *)
 
 val flatten : ('a, 'b) t -> ('a, 'b) t
@@ -404,6 +420,8 @@ val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
 ``repeat ~axis x a`` repeats the elements along ``axis`` for ``a`` times. The default
 value of ``?axis`` is the highest dimension of ``x``. This function is similar to
 ``numpy.repeat`` except that ``a`` is an integer instead of an array.
+
+Not that the ``axis`` can be negative.
  *)
 
 val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -424,6 +442,35 @@ highest dimension.
 The associated operator is ``@=``, please refer to :doc:`owl_operator`.
  *)
 
+val concat_vh : ('a, 'b) t array array -> ('a, 'b) t
+(**
+``concat_vh`` is used to assemble small parts of matrices into a bigger one.
+E.g. In ``[| [|a; b; c|]; [|d; e; f|]; [|g; h; i|] |]``, wherein `a, b, c ... i`
+are matrices of different shapes. They will be concatenated into a big matrix
+as follows.
+
+.. math::
+  \begin{bmatrix}
+    a & b & c \\
+    d & e & f \\
+    g & h & i
+  \end{bmatrix}
+
+This is achieved by first concatenating along ``axis:1`` for each element in the
+array, then concatenating along ``axis:0``. The number of elements in each
+array needs not to be equal as long as the aggregated dimensions match. E.g.,
+please check the following example.
+
+.. code-block:: ocaml
+
+  let a00 = Mat.sequential 2 3 in
+  let a01 = Mat.sequential 2 2 in
+  let a02 = Mat.sequential 2 1 in
+  let a10 = Mat.sequential 3 3 in
+  let a11 = Mat.sequential 3 3 in
+  Mat.concat_vh [| [|a00; a01; a02|]; [|a10; a11|] |];;
+ *)
+
 val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 (**
 ``concatenate ~axis:2 x`` concatenates an array of ndarrays along the third
@@ -434,7 +481,26 @@ lowest dimension of a matrix/ndarray.
 
 val split : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
 (**
-``split ~axis parts x`` ... TODO
+``split ~axis parts x`` splits an ndarray ``x`` into parts along the specified
+``axis``. This function is the inverse operation of ``concatenate``. The
+elements in ``x`` must sum up to the dimension in the specified axis.
+ *)
+
+val split_vh : (int * int) array array -> ('a, 'b) t -> ('a, 'b) t array array
+(**
+``split_vh parts x`` splits a passed in ndarray ``x`` along the first two
+dimensions, i.e. ``axis 0`` and ``axis 1``. This is the inverse operation of
+``concat_vh`` function, and the function is very useful in dividing a big
+matrix into smaller (especially heterogeneous) parts.
+
+For example, given a matrix ``x`` of shape ``[|8;10|]``, it is possible to
+split in the following ways.
+
+.. code-block:: ocaml
+
+  Mat.split_vh [| [|(8,5);(8,5)|] |] x;;
+  Mat.split_vh [| [|(4,5);(4,5)|]; [|(4,10)|] |] x;;
+  Mat.split_vh [| [|(4,5);(4,5)|]; [|(4,5);(4,5)|] |] x;;
  *)
 
 val squeeze : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
@@ -446,7 +512,7 @@ val expand : ?hi:bool -> ('a, 'b) t -> int -> ('a, 'b) t
 (**
 ``expand x d`` reshapes ``x`` by increasing its rank from ``num_dims x`` to
 ``d``. The opposite operation is ``squeeze x``. The ``hi`` parameter is used to
-specify wether the expandsion is along high dimension (by setting ``true``), or
+specify whether the expandsion is along high dimension (by setting ``true``), or
 along the low dimension (by setting ``false``). The default value is ``false``.
  *)
 
@@ -482,6 +548,13 @@ as result, the original ``x`` remains intact. If you want to perform in-place
 sorting, please use `sort_` instead.
  *)
 
+val argsort : ('a, 'b) t -> (int64, int64_elt) t
+(**
+``argsort x`` returns the indices with which the elements in ``x`` are sorted in
+increasing order. Note that the returned index ndarray has the same shape as
+that of ``x``, and the indices are 1D indices.
+ *)
+
 val draw : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 (**
 ``draw ~axis x n`` draws ``n`` samples from ``x`` along the specified ``axis``,
@@ -495,7 +568,7 @@ val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -
  *)
 
 
-(** {6 Iterate array elements}  *)
+(** {6 Iteration functions}  *)
 
 val iteri :(int -> 'a -> unit) -> ('a, 'b) t -> unit
 (**
@@ -579,19 +652,76 @@ val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val iteri_nd :(int array -> 'a -> unit) -> ('a, 'b) t -> unit
-(** Similar to `iteri` but n-d indices are passed to the user function. *)
+(** Similar to ``iteri`` but n-d indices are passed to the user function. *)
 
 val mapi_nd : (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** Similar to `mapi` but n-d indices are passed to the user function. *)
+(** Similar to ``mapi`` but n-d indices are passed to the user function. *)
 
 val foldi_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Similar to `foldi` but n-d indices are passed to the user function. *)
+(** Similar to ``foldi`` but n-d indices are passed to the user function. *)
 
 val scani_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** Similar to `scani` but n-d indices are passed to the user function. *)
+(** Similar to ``scani`` but n-d indices are passed to the user function. *)
 
 val filteri_nd : (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
-(** Similar to `filteri` but n-d indices are returned. *)
+(** Similar to ``filteri`` but n-d indices are returned. *)
+
+val iter2i_nd :(int array -> 'a -> 'c -> unit) -> ('a, 'b) t -> ('c, 'd) t -> unit
+(** Similar to ``iter2i`` but n-d indices are passed to the user function. *)
+
+val map2i_nd : (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to ``map2i`` but n-d indices are passed to the user function. *)
+
+val iteri_slice : ?axis:int -> (int -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
+(**
+``iteri_slice ~axis f x`` iterates the slices along the specified ``axis`` in
+``x`` and applies the function ``f``. The 1-d index of of the slice is passed
+in. By default, the ``axis`` is 0. Setting ``axis`` to the highest dimension
+is not allowed because in that case you can just use `iteri` to iterate all the
+elements in ``x`` which is more efficient.
+
+Note that the slice is obtained by slicing left (due to Owl's C-layout ndarray)
+a sub-array out of ``x``. E.g., if ``x`` has shape ``[|3;4;5|]``, setting
+``axis=0`` will iterate three ``4 x 5`` matrices. The slice shares the same
+memory with ``x`` so no copy is made.
+ *)
+
+val iter_slice : ?axis:int -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
+(** Similar to ``iteri_slice`` but slice index is not passed in. *)
+
+val mapi_slice : ?axis:int -> (int -> ('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
+(**
+``mapi_slice ~axis f x`` maps the slices along the specified ``axis`` in
+``x`` and applies the function ``f``. By default, ``axis`` is 0. The index of
+of the slice is passed in.
+
+Please refer to ``iteri_slice`` for more details.
+*)
+
+val map_slice : ?axis:int -> (('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
+(** Similar to ``mapi_slice`` but slice index is not passed in. *)
+
+val filteri_slice : ?axis:int -> (int -> ('a, 'b) t -> bool) -> ('a, 'b) t -> ('a, 'b) t array
+(**
+``filteri_slice ~axis f x`` filters the slices along the specified ``axis`` in
+``x``. The slices which satisfy the predicate ``f`` are returned in an array.
+
+Please refer to ``iteri_slice`` for more details.
+*)
+
+val filter_slice : ?axis:int -> (('a, 'b) t -> bool) -> ('a, 'b) t -> ('a, 'b) t array
+(** Similar to ``filteri_slice`` but slice index is not passed in. *)
+
+val foldi_slice : ?axis:int -> (int -> 'c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
+(**
+``foldi_slice ~axis f a x`` fold (left) the slices along the specified ``axis``
+in ``x``. The slices which satisfy the predicate ``f`` are returned in an array.
+
+Please refer to ``iteri_slice`` for more details.
+*)
+
+val fold_slice : ?axis:int -> ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
+(** Similar to ``foldi_slice`` but slice index is not passed in. *)
 
 
 (** {6 Examination & Comparison}  *)
@@ -662,7 +792,7 @@ element in ``x``. Otherwise, the function returns ``true``.
 
 val equal : ('a, 'b) t -> ('a, 'b) t -> bool
 (**
-``equal x y`` returns ``true`` if two ('a, 'b) trices ``x`` and ``y`` are equal.
+``equal x y`` returns ``true`` if two matrices ``x`` and ``y`` are equal.
  *)
 
 val not_equal : ('a, 'b) t -> ('a, 'b) t -> bool
@@ -931,12 +1061,14 @@ val re_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 
 val im_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 (**
-``im_c2s x`` returns all the imaginary components of ``x`` in a new ndarray of same shape.
+``im_c2s x`` returns all the imaginary components of ``x`` in a new ndarray of
+same shape.
  *)
 
 val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (**
-``im_d2z x`` returns all the imaginary components of ``x`` in a new ndarray of same shape.
+``im_d2z x`` returns all the imaginary components of ``x`` in a new ndarray of
+same shape.
  *)
 
 val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -947,6 +1079,12 @@ val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 val sum' : ('a, 'b) t -> 'a
 (**
 ``sum' x`` returns the sumtion of all elements in ``x``.
+ *)
+
+val sum_reduce : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
+(**
+``sum_reduce ~axis x`` sums the elements in ``x`` along multiple axes specified
+in the ``axis`` array.
  *)
 
 val prod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1000,8 +1138,8 @@ smaller phase will be selected.
 
 val min' : ('a, 'b) t -> 'a
 (**
-``min' x`` is similar to ``min`` but returns the minimum of all elements in ``x``
-in scalar value.
+``min' x`` is similar to ``min`` but returns the minimum of all elements in
+``x`` in scalar value.
  *)
 
 val max : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1015,14 +1153,14 @@ greater phase will be selected.
 
 val max' : ('a, 'b) t -> 'a
 (**
-``max' x`` is similar to ``max`` but returns the maximum of all elements in ``x``
-in scalar value.
+``max' x`` is similar to ``max`` but returns the maximum of all elements in
+``x`` in scalar value.
  *)
 
 val minmax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
-``minmax' x`` returns ``(min_v, max_v)``, ``min_v`` is the minimum value in ``x``
-while ``max_v`` is the maximum.
+``minmax' x`` returns ``(min_v, max_v)``, ``min_v`` is the minimum value in
+``x`` while ``max_v`` is the maximum.
  *)
 
 val minmax' : ('a, 'b) t -> 'a * 'a
@@ -1043,9 +1181,9 @@ val max_i : ('a, 'b) t -> 'a * int array
 
 val minmax_i : ('a, 'b) t -> ('a * (int array)) * ('a * (int array))
 (**
-``minmax_i x`` returns ``((min_v,min_i), (max_v,max_i))`` where ``(min_v,min_i)``
-is the minimum value in ``x`` along with its index while ``(max_v,max_i)`` is the
-maximum value along its index.
+``minmax_i x`` returns ``((min_v,min_i), (max_v,max_i))`` where
+``(min_v,min_i)`` is the minimum value in ``x`` along with its index while
+``(max_v,max_i)`` is the maximum value along its index.
  *)
 
 val abs : ('a, 'b) t -> ('a, 'b) t
@@ -1065,7 +1203,8 @@ val abs_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 
 val abs2 : ('a, 'b) t -> ('a, 'b) t
 (**
-``abs2 x`` returns the square of absolute value of all elements in ``x`` in a new ndarray.
+``abs2 x`` returns the square of absolute value of all elements in ``x`` in a
+new ndarray.
  *)
 
 val abs2_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
@@ -1182,8 +1321,8 @@ a new ndarray.
 
 val cos : ('a, 'b) t -> ('a, 'b) t
 (**
-``cos x`` computes the cosine of the elements in ``x`` and returns the result in
-a new ndarray.
+``cos x`` computes the cosine of the elements in ``x`` and returns the result
+in a new ndarray.
  *)
 
 val tan : ('a, 'b) t -> ('a, 'b) t
@@ -1194,8 +1333,8 @@ in a new ndarray.
 
 val asin : ('a, 'b) t -> ('a, 'b) t
 (**
-``asin x`` computes the arc sine of the elements in ``x`` and returns the result
-in a new ndarray.
+``asin x`` computes the arc sine of the elements in ``x`` and returns the
+result in a new ndarray.
  *)
 
 val acos : ('a, 'b) t -> ('a, 'b) t
@@ -1260,7 +1399,8 @@ in a new ndarray.
 
 val round : ('a, 'b) t -> ('a, 'b) t
 (**
-``round x`` rounds the elements in ``x`` and returns the result in a new ndarray.
+``round x`` rounds the elements in ``x`` and returns the result in a new
+ndarray.
  *)
 
 val trunc : ('a, 'b) t -> ('a, 'b) t
@@ -1271,15 +1411,15 @@ result in a new ndarray.
 
 val fix : ('a, 'b) t -> ('a, 'b) t
 (**
-``fix x``  rounds each element of ``x`` to the nearest integer toward zero.
-For positive elements, the behavior is the same as ``floor``. For negative ones,
-the behavior is the same as ``ceil``.
+``fix x`` rounds each element of ``x`` to the nearest integer toward zero.
+For positive elements, the behavior is the same as ``floor``. For negative
+ones, the behavior is the same as ``ceil``.
  *)
 
 val modf : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
-``modf x`` performs ``modf`` over all the elements in ``x``, the fractal part is
-saved in the first element of the returned tuple whereas the integer part is
+``modf x`` performs ``modf`` over all the elements in ``x``, the fractal part
+is saved in the first element of the returned tuple whereas the integer part is
 saved in the second element.
  *)
 
@@ -1297,8 +1437,8 @@ and returns the result in a new ndarray.
 
 val logistic : (float, 'a) t -> (float, 'a) t
 (**
-``logistic x`` computes the logistic function ``1/(1 + exp(-a)`` of the elements
-in ``x`` and returns the result in a new ndarray.
+``logistic x`` computes the logistic function ``1/(1 + exp(-a)`` of the
+elements in ``x`` and returns the result in a new ndarray.
  *)
 
 val relu : (float, 'a) t -> (float, 'a) t
@@ -1323,8 +1463,8 @@ in a new ndarray.
 
 val softplus : (float, 'a) t -> (float, 'a) t
 (**
-``softplus x`` computes the softplus function ``log(1 + exp(x)`` of the elements
-in ``x`` and returns the result in a new ndarray.
+``softplus x`` computes the softplus function ``log(1 + exp(x)`` of the
+elements in ``x`` and returns the result in a new ndarray.
  *)
 
 val softsign : (float, 'a) t -> (float, 'a) t
@@ -1333,10 +1473,13 @@ val softsign : (float, 'a) t -> (float, 'a) t
 elements in ``x`` and returns the result in a new ndarray.
  *)
 
-val softmax : (float, 'a) t -> (float, 'a) t
+val softmax : ?axis:int -> (float, 'a) t -> (float, 'a) t
 (**
 ``softmax x`` computes the softmax functions ``(exp x) / (sum (exp x))`` of
-all the elements in ``x`` and returns the result in a new array.
+all the elements along the specified ``axis`` in ``x`` and returns the result
+in a new ndarray.
+
+By default, ``axis = -1``, i.e. along the highest dimension.
  *)
 
 val sigmoid : (float, 'a) t -> (float, 'a) t
@@ -1404,15 +1547,16 @@ Returns:
 
 val vecnorm' : ?p:float -> ('a, 'b) t -> 'a
 (**
-``vecnorm'`` flattens the input into 1-d vector first, then calcuates the
+``vecnorm'`` flattens the input into 1-d vector first, then calculates the
 generalised p-norm the same as ``venorm``.
  *)
 
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``cumsum ~axis x`` : performs cumulative sum of the elements along the given
-axis ``~axis``. If ``~axis`` is ``None``, then the ``cumsum`` is performed along the
-lowest dimension. The returned result however always remains the same shape.
+axis ``~axis``. If ``~axis`` is ``None``, then the ``cumsum`` is performed
+along the lowest dimension. The returned result however always remains the same
+shape.
  *)
 
 val cumprod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1431,6 +1575,21 @@ val cummax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 ``cummax ~axis x`` : performs cumulative ``max`` along ``axis`` dimension.
  *)
 
+val diff : ?axis:int -> ?n:int -> ('a, 'b) t -> ('a, 'b) t
+(**
+``diff ~axis ~n x`` calculates the ``n``-th difference of ``x`` along the
+specified ``axis``.
+
+Parameters:
+  * ``axis``: axis to calculate the difference. The default value is the
+    highest dimension.
+  * ``n``: how many times to calculate the difference. The default value is 1.
+
+Return:
+  * The difference ndarray y. Note that the shape of ``y`` 1 less than that of
+    ``x`` along specified axis.
+ *)
+
 val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (**
 ``angle x`` calculates the phase angle of all complex numbers in ``x``.
@@ -1446,8 +1605,8 @@ val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
-``add x y`` adds all the elements in ``x`` and ``y`` elementwise, and returns the
-result in a new ndarray.
+``add x y`` adds all the elements in ``x`` and ``y`` elementwise, and returns
+the result in a new ndarray.
 
 General broadcast operation is automatically applied to add/sub/mul/div, etc.
 The function compares the dimension element-wise from the highest to the
@@ -1457,8 +1616,8 @@ lowest with the following broadcast rules (same as numpy):
 
 val sub : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
-``sub x y`` subtracts all the elements in ``x`` and ``y`` elementwise, and returns
-the result in a new ndarray.
+``sub x y`` subtracts all the elements in ``x`` and ``y`` elementwise, and
+returns the result in a new ndarray.
  *)
 
 val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -1469,8 +1628,8 @@ returns the result in a new ndarray.
 
 val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
-``div x y`` divides all the elements in ``x`` and ``y`` elementwise, and returns
-the result in a new ndarray.
+``div x y`` divides all the elements in ``x`` and ``y`` elementwise, and
+returns the result in a new ndarray.
  *)
 
 val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
@@ -1536,16 +1695,6 @@ in a ndarray ``x``.
 val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (**
 ``pow_scalar x a`` computes each element in ``x`` power to ``a``.
- *)
-
-val mpow : ('a, 'b) t -> float -> ('a, 'b) t
-(**
-``mpow x r`` returns the dot product of square matrix ``x`` with
-itself ``r`` times, and more generally raises the matrix to the
-``r``th power.  ``r`` is a float that must be equal to an integer;
-it can be be negative, zero, or positive. Non-integer exponents
-are not yet implemented. (If ``r`` is negative, ``mpow`` calls ``inv``,
-and warnings in documentation for ``inv`` apply.)
  *)
 
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
@@ -1628,13 +1777,36 @@ val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
  *)
 
 
+(** {6 Tensor Calculus}  *)
+
+val contract1 : (int * int) array -> ('a, 'b) t -> ('a, 'b) t
+(**
+``contract1 index_pairs x`` performs indices contraction (a.k.a tensor
+contraction) on ``x``. ``index_pairs`` is an array of contracted indices.
+
+Caveat: Not well tested yet, use with care! Also, consider to use TTGT in
+future for better perfomance.
+ *)
+
+val contract2 : (int * int) array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``contract2 index_pairs x y`` performs indices contraction (a.k.a tensor
+contraction) on two ndarrays ``x`` and ``y``. ``index_pairs`` is an array of
+contracted indices, the first element is the index of ``x``, the second is that
+of ``y``.
+
+Caveat: Not well tested yet, use with care! Also, consider to use TTGT in
+future for better perfomance.
+ *)
+
+
 (** {6 Cast functions}  *)
 
 val cast : ('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
 (**
 ``cast kind x`` casts ``x`` of type ``('c, 'd) t`` to type ``('a, 'b) t``
 specify by the passed in ``kind`` parameter. This function is a generalisation
-of the other type casting functions such as ``cast_s2d``, ``cast_c2z``, and etc.
+of the other casting functions such as ``cast_s2d``, ``cast_c2z``, and etc.
  *)
 
 val cast_s2d : (float, float32_elt) t -> (float, float64_elt) t
@@ -1680,110 +1852,127 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 
 (** {6 Neural network related}  *)
 
-val conv1d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+val conv1d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val conv2d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+val conv2d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val conv3d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+val conv2d_transpose : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool1d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val conv3d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool2d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val max_pool1d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool3d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val max_pool2d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val avg_pool1d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val max_pool3d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val avg_pool2d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val avg_pool1d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val avg_pool3d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val avg_pool2d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool2d_argmax : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t * (int64, int64_elt) t
+val avg_pool3d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val conv1d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+val max_pool2d_argmax : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t * (int64, int64_elt) t
 (**
 []
  *)
 
-val conv1d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+val conv1d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val conv2d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+val conv1d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val conv2d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+val conv2d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val conv3d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+val conv2d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+val conv2d_transpose_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool1d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+val conv2d_transpose_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+val conv3d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val max_pool3d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
-(** [] *)
-
-val avg_pool1d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+val conv3d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val avg_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+val max_pool1d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
 (**
 []
  *)
 
-val avg_pool3d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+val max_pool2d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(**
+[]
+ *)
+
+val max_pool3d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(**
+[]
+ *)
+
+val avg_pool1d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(**
+[]
+ *)
+
+val avg_pool2d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(**
+[]
+ *)
+
+val avg_pool3d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
 (** [] *)
 
 
@@ -1810,11 +1999,33 @@ val _check_transpose_axis : int array -> int -> unit
 ``_check_transpose_axis a d`` checks whether ``a`` is a legiti('a, 'b) te transpose index.
  *)
 
+val one_hot : int -> ('a, 'b) t -> ('a, 'b) t
+(**
+``one_hot idx depth`` creates one-hot vectors according to the indices ndarray
+and the specified depth. If ``idx`` is rank N, then the return is rank N+1.
+More specifically, if ``idx`` is of shape ``[|a;b;c|]``, the return is of shape
+``[|a;b;c;depth|]``.
+ *)
+
 val sum_slices : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``sum_slices ~axis:2 x`` for ``x`` of ``[|2;3;4;5|]``, it returns an ndarray of
-shape ``[|4;5|]``. Currently, the operation is done using ``gemm``, fast but uses
-more memory.
+shape ``[|4;5|]``. Currently, the operation is done using ``gemm``, it is fast
+but consumes more memory.
+ *)
+
+val slide : ?axis:int -> ?ofs:int -> ?step:int -> window:int -> ('a, 'b) t -> ('a, 'b) t
+(**
+``slide ~axis ~window x`` generates a new ndarray by sliding a window along
+specified ``axis`` in ``x``. E.g., if ``x`` has shape ``[|a;b;c|]`` and
+``axis = 1``, then ``[|a; number of windows; window; c|]`` is the shape of the
+returned ndarray.
+
+Parameters:
+  * ``axis`` is the axis for sliding, the default is -1, i.e. highest dimension.
+  * ``ofs`` is the starting position of the sliding window. The default is 0.
+  * ``step`` is the step size, the default is 1.
+  * ``window`` is the size of the sliding window.
  *)
 
 
@@ -2174,7 +2385,7 @@ val sigmoid_ : ('a, 'b) t -> unit
 ``sigmoid_ x`` is similar to ``sigmoid`` but output is written to ``x``
  *)
 
-val softmax_ : ('a, 'b) t -> unit
+val softmax_ : ?axis:int -> ('a, 'b) t -> unit
 (**
 ``softmax_ x`` is similar to ``softmax`` but output is written to ``x``
  *)
@@ -2319,9 +2530,6 @@ val copy_col_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Refer to :doc:`owl_dense_matrix_generic` *)
-
-val inv : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t

@@ -148,9 +148,13 @@ val concat_vertical : mat -> mat -> mat
 
 val concat_horizontal : mat -> mat -> mat
 
+val concat_vh : mat array array -> mat
+
 val concatenate : ?axis:int -> mat array -> mat
 
 val split : ?axis:int -> int array -> mat -> mat array
+
+val split_vh : (int * int) array array -> mat -> mat array array
 
 val transpose : mat -> mat
 
@@ -175,6 +179,8 @@ val top : mat -> int -> int array array
 val bottom : mat -> int -> int array array
 
 val sort : mat -> mat
+
+val argsort : mat -> (int64, int64_elt, c_layout) Genarray.t
 
 
 (** {6 Iterate elements, columns, and rows.} *)
@@ -208,6 +214,10 @@ val foldi_2d : ?axis:int -> (int -> int -> elt -> elt -> elt) -> elt -> mat -> m
 val scani_2d : ?axis:int -> (int -> int -> elt -> elt -> elt) -> mat -> mat
 
 val filteri_2d : (int -> int -> elt -> bool) -> mat -> (int * int) array
+
+val iter2i_2d :(int -> int -> elt -> elt -> unit) -> mat -> mat -> unit
+
+val map2i_2d : (int -> int -> elt -> elt -> elt) -> mat -> mat -> mat
 
 val iter2i : (int -> elt -> elt -> unit) -> mat -> mat -> unit
 
@@ -388,9 +398,9 @@ val save : mat -> string -> unit
 
 val load : string -> mat
 
-val save_txt : mat -> string -> unit
+val save_txt : ?sep:string -> mat -> string -> unit
 
-val load_txt : string -> mat
+val load_txt : ?sep:string -> string -> mat
 
 
 (** {6 Unary mathematical operations } *)
@@ -412,8 +422,6 @@ val min_i : mat -> elt * int array
 val max_i : mat -> elt * int array
 
 val minmax_i : mat -> (elt * int array) * (elt * int array)
-
-val inv : mat -> mat
 
 val trace : mat -> elt
 
@@ -541,7 +549,7 @@ val softplus : mat -> mat
 
 val softsign : mat -> mat
 
-val softmax : mat -> mat
+val softmax :?axis:int -> mat -> mat
 
 val sigmoid : mat -> mat
 
@@ -574,6 +582,8 @@ val cumprod : ?axis:int -> mat -> mat
 val cummin : ?axis:int -> mat -> mat
 
 val cummax : ?axis:int -> mat -> mat
+
+val diff : ?axis:int -> ?n:int -> mat -> mat
 
 val var : ?axis:int -> mat -> mat
 
@@ -617,8 +627,6 @@ val pow : mat -> mat -> mat
 val scalar_pow : elt -> mat -> mat
 
 val pow_scalar : mat -> elt -> mat
-
-val mpow : mat -> float -> mat
 
 val atan2 : mat -> mat -> mat
 
@@ -783,7 +791,7 @@ val softsign_ : mat -> unit
 
 val sigmoid_ : mat -> unit
 
-val softmax_ : mat -> unit
+val softmax_ : ?axis:int -> mat -> unit
 
 val cumsum_ : ?axis:int -> mat -> unit
 

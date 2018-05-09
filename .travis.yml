@@ -1,25 +1,23 @@
 language: c
-sudo: required
-script: bash -ex .travis-opam.sh
+sudo: false
+services: docker
+
+install:
+  - wget https://raw.githubusercontent.com/mor1/ocaml-ci-scripts/tree/quieten-git-pull/.travis-docker.sh
+
+script:
+  - bash ./.travis-docker.sh
+
 env:
   global:
-  - OCAML_VERSION=4.04
-  - PACKAGE="owl"
-  - TESTS=true
-  - EXTRA_DEPS="alcotest ocaml-compiler-libs"
-  - INSTALL=false
+    - OCAML_VERSION=4.06.0      # 4.06.1 Docker images not yet available
+    - PACKAGE="owl"
+    - PINS="owl-base:."
+    - PRE_INSTALL_HOOK="cd /home/opam/opam-repository && git pull origin master && opam update -uy"
   matrix:
-  include:
-    - os: osx
-      osx_image: xcode7.3
-    - os: osx
-      osx_image: xcode8.2
-install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      sudo apt-get update;
-    elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
-      brew update;
-      rm '/usr/local/include/c++';
-      brew install homebrew/science/openblas;
-    fi
-  - wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh
+    - DISTRO=alpine
+    - DISTRO=centos-7
+    - DISTRO=fedora-25
+    - DISTRO=opensuse-42.2
+    - DISTRO=ubuntu-14.04       # opam-repository travis
+    - DISTRO=ubuntu-16.04

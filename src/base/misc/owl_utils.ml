@@ -15,11 +15,6 @@ module Stack = Owl_utils_stack
 module Array = Owl_utils_array
 
 
-let range a b =
-  let r = Array.make (b - a + 1) 0 in
-  for i = a to b do r.(i - a) <- i done; r
-
-
 (* Computes a left fold over a range of integers from a to b (inclusive) *)
 let range_fold a b ~f ~init =
   let rec go acc x =
@@ -65,21 +60,6 @@ let count_dup l =
       in (x,c)::acc
 
 
-(* save a marshalled object to a file *)
-let marshal_to_file x f =
-  let s = Marshal.to_string x [] in
-  let h = open_out f in
-  output_string h s;
-  close_out h
-
-
-(* load a marshalled object from a file *)
-let marshal_from_file f =
-  let h = open_in f in
-  let s = really_input_string h (in_channel_length h) in
-  Marshal.from_string s 0
-
-
 (* search the list given a value, return the position of its first occurrence *)
 let list_search x l =
   let rec _search x l c =
@@ -98,12 +78,6 @@ let array2_to_array1 x =
   let c = m * n in
   let x = genarray_of_array2 x in
   reshape_1 x c
-
-
-(* pretty-print an array to string *)
-let string_of_array ?(prefix="") ?(suffix="") ?(sep=",") string_of_x x =
-  let s = Array.to_list x |> List.map string_of_x |> String.concat sep in
-  Printf.sprintf "%s%s%s" prefix s suffix
 
 (* iter function for ['a array array] type *)
 let aarr_iter f x = Array.iter (Array.iter f) x
@@ -182,23 +156,6 @@ let array1_copy x =
   y
 
 
-(* read a file of a given path *)
-let read_file ?(trim=true) f =
-  let h = open_in f in
-  let s = Stack.make () in
-  (
-    try while true do
-      let l = match trim with
-        | true  -> input_line h |> String.trim
-        | false -> input_line h
-      in
-      Stack.push s l;
-    done with End_of_file -> ()
-  );
-  close_in h;
-  Stack.to_array s
-
-
 (* format time period into human-readable format *)
 let format_time t =
   if t < 60. then
@@ -213,19 +170,6 @@ let format_time t =
     let m = int_of_float (t /. 60.) mod 60 in
     Printf.sprintf "%ih%02im" h m
   )
-
-
-(* TODO: optimise - read file into a string *)
-let read_file_string ?trim f =
-  read_file ?trim f
-  |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
-
-
-(* write a file of a given path *)
-let write_file f s =
-  let h = open_out f in
-  Printf.fprintf h "%s" s;
-  close_out h
 
 
 (** measure the time spent in a function in millisecond *)

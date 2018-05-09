@@ -7,7 +7,7 @@ open Owl_types
 
 open Bigarray
 
-open Owl_dense_common
+open Owl_ndarray
 
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
@@ -47,7 +47,7 @@ let shape x = Genarray.dims x
 let nth_dim x i = Genarray.nth_dim x i
 
 
-let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
+let numel x = Owl_utils.numel x
 
 
 let kind x = Genarray.kind x
@@ -71,13 +71,25 @@ let slice_left = Genarray.slice_left
 let slice_right = Genarray.slice_right
 
 
-let copy_to src dst = Genarray.blit src dst
+let copy_to src dst =
+  let k = kind src in
+  let n = numel src in
+  _owl_copy k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 src dst
 
 
 let fill x a = Genarray.fill x a
 
 
-let reshape x dimension = reshape x dimension
+let reshape x d =
+  let minus_one = Owl_utils.Array.count d (-1) in
+  assert (minus_one <= 1);
+  if minus_one = 0 then reshape x d
+  else (
+    let n = numel x in
+    let m = Array.fold_right ( * ) d (-1) in
+    let e = Array.map (fun a -> if a = -1 then n / m else a) d in
+    reshape x e
+  )
 
 
 let reset x = Genarray.fill x (Owl_const.zero (kind x))
@@ -117,7 +129,7 @@ let same_shape x y = (shape x) = (shape y)
 
 let copy x =
   let y = empty (kind x) (shape x) in
-  Genarray.blit x y;
+  _owl_copy (kind x) (numel x) ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 x y;
   y
 
 
@@ -137,10 +149,10 @@ let tile x reps =
   let b = Array.length reps in
   let x, reps = match a < b with
     | true ->
-        let d = Owl_utils.Array.pad `Left (shape x) 1 (b - a) in
+        let d = Owl_utils.Array.pad `Left 1 (b - a) (shape x) in
         (reshape x d), reps
     | false ->
-        let r = Owl_utils.Array.pad `Left reps 1 (a - b) in
+        let r = Owl_utils.Array.pad `Left 1 (a - b) reps in
         x, r
   in
   (* calculate the smallest continuous slice dx *)
@@ -176,13 +188,10 @@ let tile x reps =
   _tile 0 0 0; y
 
 
-let repeat ?axis x reps =
+let repeat ?(axis=(-1)) x reps =
   let highest_dim = Array.length (shape x) - 1 in
   (* by default, repeat at the highest dimension *)
-  let axis = match axis with
-    | Some a -> a
-    | None   -> highest_dim
-  in
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
   (* calculate the new shape of y based on reps *)
   let _kind = kind x in
   let _shape_y = shape x in
@@ -212,6 +221,7 @@ let repeat ?axis x reps =
 
 
 let concatenate ?(axis=0) xs =
+  let axis = Owl_utils.adjust_index axis (num_dims xs.(0)) in
   (* get the shapes of all inputs and etc. *)
   let shapes = Array.map shape xs in
   let shape0 = Array.copy shapes.(0) in
@@ -254,6 +264,9 @@ let concat_vertical x1 x2 = concatenate ~axis:0 [|x1;x2|]
 let concat_horizontal x1 x2 = concatenate ~axis:(num_dims x1 - 1) [|x1;x2|]
 
 
+let concat_vh xs = Array.map (concatenate ~axis:1) xs |> concatenate ~axis:0
+
+
 let squeeze ?(axis=[||]) x =
   let a = match Array.length axis with
     | 0 -> Array.init (num_dims x) (fun i -> i)
@@ -271,9 +284,9 @@ let expand ?(hi=false) x d =
   match d0 > 0 with
   | true  -> (
       if hi = true then
-        Owl_utils.Array.pad `Right (shape x) 1 d0 |> reshape x
+        Owl_utils.Array.pad `Right 1 d0 (shape x) |> reshape x
       else
-        Owl_utils.Array.pad `Left (shape x) 1 d0 |> reshape x
+        Owl_utils.Array.pad `Left 1 d0 (shape x) |> reshape x
     )
   | false -> x
 
@@ -305,10 +318,10 @@ let resize ?(head=true) x d =
 
 let sort x =
   let y = copy x in
-  _owl_sort (kind y) (numel y) y;
+  Owl_ndarray._owl_sort (kind y) (numel y) y;
   y
 
-let sort_ x = _owl_sort (kind x) (numel x) x
+let sort_ x = Owl_ndarray._owl_sort (kind x) (numel x) x
 
 
 let strides x = x |> shape |> Owl_utils.calc_stride
@@ -328,13 +341,13 @@ let broadcast_align_shape x0 x1 =
   let d0 = num_dims x0 in
   let d1 = num_dims x1 in
   let d3 = max d0 d1 in
-  let y0 = expand x0 d3 in
-  let y1 = expand x1 d3 in
+  let y0 = expand ~hi:false x0 d3 in
+  let y1 = expand ~hi:false x1 d3 in
   (* check whether the shape is valid *)
   let s0 = shape y0 in
   let s1 = shape y1 in
   Array.iter2 (fun a b ->
-    assert (not(a <> 1 && b <> 1 && a <> b))
+    Owl_exception.(check (not(a <> 1 && b <> 1 && a <> b)) NOT_BROADCASTABLE);
   ) s0 s1;
   (* calculate the output shape *)
   let s2 = Array.map2 max s0 s1 in
@@ -954,6 +967,12 @@ let dropout ?(rate=0.5) x =
   x
 
 
+let argsort x =
+  let y = sequential Int64 (shape x) in
+  Owl_ndarray._owl_argsort (kind x) (numel x) x y;
+  y
+
+
 (* advanced operations *)
 
 let iteri f x =
@@ -1046,6 +1065,75 @@ let iteri_nd f x = iteri (fun i a -> f (Owl_utils.ind x i) a) x
 let mapi_nd f x = mapi (fun i a -> f (Owl_utils.ind x i) a) x
 
 
+let iter2i_nd f x y =
+  assert (same_shape x y);
+  iter2i (fun i a b -> f (Owl_utils.ind x i) a b) x y
+
+
+let map2i_nd f x y =
+  assert (same_shape x y);
+  map2i (fun i a b -> f (Owl_utils.ind x i) a b) x y
+
+
+let iteri_slice ?(axis=0) f x =
+  let d = num_dims x in
+  let axis = Owl_utils.adjust_index axis d in
+  let m = (numel x) / (strides x).(axis) in
+  let s = Array.sub (shape x) (axis + 1) (d - axis - 1) in
+  let n = s.(0) in
+  s.(0) <- m * s.(0);
+  let y = reshape x s in
+  let ofs = ref (-n) in
+
+  for i = 0 to m - 1 do
+    ofs := !ofs + n;
+    f i (sub_left y !ofs n)
+  done
+
+
+let iter_slice ?axis f x = iteri_slice ?axis (fun _ y -> f y) x
+
+
+let mapi_slice ?(axis=0) f x =
+  let d = num_dims x in
+  let axis = Owl_utils.adjust_index axis d in
+  let m = (numel x) / (strides x).(axis) in
+  let s = Array.sub (shape x) (axis + 1) (d - axis - 1) in
+  let n = s.(0) in
+  s.(0) <- m * s.(0);
+  let y = reshape x s in
+  let ofs = ref (-n) in
+
+  Array.init m (fun i ->
+    ofs := !ofs + n;
+    f i (sub_left y !ofs n)
+  )
+
+
+let map_slice ?axis f x = mapi_slice ?axis (fun _ y -> f y) x
+
+
+let filteri_slice ?axis f x =
+  let s = Owl_utils.Stack.make () in
+  iteri_slice ?axis (fun i y ->
+    if (f i y) then Owl_utils.Stack.push s y
+  ) x;
+  Owl_utils.Stack.to_array s
+
+
+let filter_slice ?axis f x = filteri_slice ?axis (fun _ y -> f y) x
+
+
+let foldi_slice ?axis f a x =
+  let acc = ref a in
+  iteri_slice ?axis (fun i y -> acc := f i !acc y) x;
+  !acc
+
+let fold_slice ?axis f x = foldi_slice ?axis (fun _ y -> f y) x
+
+
+(* manipulation functions *)
+
 let _check_transpose_axis axis d =
   let info = "check_transpose_axis fails" in
   if Array.length axis <> d then
@@ -1063,34 +1151,37 @@ let matrix_transpose x =
   let s = shape x in
   let m, n = s.(0), s.(1) in
   let y = empty k [|n;m|] in
-  Owl_core._matrix_transpose k x y;
+  Owl_matrix._matrix_transpose k x y;
   y
 
 
-(*TODO: FIXME: optimise*)
 let transpose ?axis x =
   let d = num_dims x in
-  if d = 2 then matrix_transpose x
+  let a = match axis with
+    | Some a -> a
+    | None   -> Array.init d (fun i -> d - i - 1)
+  in
+  (* trivial case *)
+  if a = Array.init d (fun i -> i) then copy x
   else (
-    let a = match axis with
-      | Some a -> a
-      | None -> Array.init d (fun i -> d - i - 1)
-    in
     (* check if axis is a correct permutation *)
     _check_transpose_axis a d;
-    let s0 = shape x in
-    let s1 = Array.map (fun j -> s0.(j)) a in
-    let i' = Array.make d 0 in
-    let y = empty (kind x) s1 in
-    (* allocate space for nd index *)
-    let l = Array.make d 0 in
-    let s = Owl_utils.calc_stride s0 in
-    iteri (fun i z ->
-      Owl_utils.index_1d_nd i l s;
-      Array.iteri (fun k j -> i'.(k) <- l.(j)) a;
-      set y i' z
-    ) x;
-    y
+    if d = 2 then matrix_transpose x
+    else (
+      let sx = shape x in
+      let sy = Array.map (fun j -> sx.(j)) a in
+      let y = empty (kind x) sy in
+      (* calculate the inverse of the permutation *)
+      let b = Array.make d 0 in
+      Array.iteri (fun i j -> b.(j) <- i) a;
+      let _incy = strides y in
+      let _incy = Array.map (fun j -> Int32.of_int _incy.(j)) b in
+      let _incx = Array.map Int32.of_int (strides x) in
+      let incx = Array1.of_array Int32 C_layout _incx |> genarray_of_array1 in
+      let incy = Array1.of_array Int32 C_layout _incy |> genarray_of_array1 in
+      Owl_ndarray._ndarray_transpose (kind x) x y incx incy;
+      y
+    )
   )
 
 
@@ -1351,6 +1442,7 @@ let nnz x = _owl_nnz (kind x) (numel x) x
 
 let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
 
+
 (* input/output functions *)
 
 let print_index i =
@@ -1372,13 +1464,13 @@ let print ?max_row ?max_col ?header ?fmt x =
     | Some a -> Some a
     | None   -> Some n
   in
-  Owl_pretty.print ?max_row ?max_col ?header ?elt_to_str_fun:fmt x
+  Owl_pretty.print_dsnda ?max_row ?max_col ?header ?elt_to_str_fun:fmt x
 
 let pp_dsnda formatter x = Owl_pretty.pp_dsnda formatter x
 
-let save x f = Owl_utils.marshal_to_file x f
+let save x f = Owl_io.marshal_to_file x f
 
-let load k f = Owl_utils.marshal_from_file f
+let load k f = Owl_io.marshal_from_file f
 
 let of_array k x d =
   let n = Array.fold_left (fun a b -> a * b) 1 d in
@@ -1507,7 +1599,7 @@ let clip_by_l2norm t x =
 let _expand_padding_index d s =
   let ls = Array.length s in
   let ld = Array.length d in
-  let d = Owl_utils.(Array.pad `Right d [|0;0|] (ls - ld)) in
+  let d = Owl_utils.Array.pad `Right [|0;0|] (ls - ld) d in
   Array.map (function
     | [||]  -> [|0;0|]
     | [|x|] -> [|x;x|]
@@ -1623,7 +1715,45 @@ let conv2d ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  _eigen_spatial_conv (kind input)
+  _owl_spatial_conv (kind input)
+    input kernel output batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride pad_typ row_in_stride col_in_stride;
+
+  output
+
+
+(* transpose 2d convolution *)
+let conv2d_transpose ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let output_cols, output_rows =
+    Owl_utils.calc_conv2d_transpose_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let output = empty (kind input) [|batches; output_cols; output_rows; out_channel|] in
+
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _owl_spatial_trans_conv (kind input)
     input kernel output batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride pad_typ row_in_stride col_in_stride;
@@ -1663,7 +1793,7 @@ let conv2d_backward_input input kernel stride output' =
 
   let input' = empty (kind input) (shape input) in
 
-  _eigen_spatial_conv_backward_input (kind input')
+  _owl_spatial_conv_backward_input (kind input')
     input' kernel output' batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride row_in_stride col_in_stride;
@@ -1703,12 +1833,91 @@ let conv2d_backward_kernel input kernel stride output' =
 
   let kernel' = empty (kind kernel) (shape kernel) in
 
-  _eigen_spatial_conv_backward_kernel (kind input)
+  _owl_spatial_conv_backward_kernel (kind input)
     input kernel' output' batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride row_in_stride col_in_stride;
 
   kernel'
+
+(* gradient of conv2d_transpose w.r.t the kernel *)
+let conv2d_transpose_backward_kernel input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let kernel' = empty (kind kernel) (shape kernel) in
+
+  _owl_spatial_trans_conv_backward_kernel (kind input)
+    input kernel' output' batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride row_in_stride col_in_stride;
+
+  kernel'
+
+
+(* gradient of conv2d_transpose w.r.t the input *)
+let conv2d_transpose_backward_input  input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let input' = empty (kind input) (shape input) in
+
+  _owl_spatial_trans_conv_backward_input (kind input')
+    input' kernel output' batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride row_in_stride col_in_stride;
+
+  input'
 
 
 (* conv3d: 5d input and 5d kernel, refer to tensorflow doc
@@ -1747,7 +1956,7 @@ let conv3d ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  _eigen_cuboid_conv (kind input)
+  _owl_cuboid_conv (kind input)
     input kernel output batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -1791,7 +2000,7 @@ let conv3d_backward_input input kernel stride output' =
 
   let input' = empty (kind input) (shape input) in
 
-  _eigen_cuboid_conv_backward_input (kind input')
+  _owl_cuboid_conv_backward_input (kind input')
     input' kernel output' batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -1835,7 +2044,7 @@ let conv3d_backward_kernel input kernel stride output' =
 
   let kernel' = empty (kind kernel) (shape kernel) in
 
-  _eigen_cuboid_conv_backward_kernel (kind input)
+  _owl_cuboid_conv_backward_kernel (kind input)
     input kernel' output' batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -2402,14 +2611,52 @@ let avg_pool1d_backward padding input kernel stride output' =
   reshape input' input_shp
 
 
-(* TODO: optimise performance, slow along the low dimension *)
-let cumulative_op ?axis _cumop x =
+let _diff a x =
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = _slicez.(a) - _stride.(a) in
+  let incx_m = _slicez.(a) in
+  let incx_n = 1 in
+  let incy_m = _slicez.(a) - _stride.(a) in
+  let incy_n = 1 in
+  let ofsx = _stride.(a) in
+  let ofsy = 0 in
+
+  let k = kind x in
+  let s = shape x in
+  s.(a) <- s.(a) - 1;
+  let y = empty k s in
+  _owl_diff k m n x ofsx incx_m incx_n y ofsy incy_m incy_n;
+  y
+
+
+let diff ?(axis=(-1)) ?(n=1) x =
   let d = num_dims x in
-  let a = match axis with
-    | Some a -> a
-    | None   -> d - 1
-  in
-  assert (0 <= a && a < d);
+  let a = Owl_utils.adjust_index axis d in
+  assert (n < nth_dim x a);
+  let y = ref x in
+  for i = 1 to n do
+    y := _diff a !y
+  done;
+  !y
+
+
+let one_hot depth idx =
+  let sx = shape idx in
+  let sy = Array.append sx [|depth|] in
+  let k = kind idx in
+  let n = numel idx in
+  let y = zeros (kind idx) sy in
+  _owl_one_hot k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:depth idx y;
+  y
+
+
+
+(* TODO: optimise performance, slow along the low dimension *)
+let cumulative_op ?(axis=(-1)) _cumop x =
+  let d = num_dims x in
+  let a = Owl_utils.adjust_index axis d in
 
   let _stride = strides x in
   let _slicez = slice_size x in
@@ -2461,7 +2708,18 @@ let modf x =
   x, y
 
 
-(* TODO: optimise *)
+let sub_ndarray parts x =
+  let n = Array.fold_left (+) 0 parts in
+  assert (n = (shape x).(0));
+  let m = Array.length parts in
+  let ofs = ref (-parts.(0)) in
+
+  Array.init m (fun i ->
+    ofs := !ofs + parts.(i);
+    sub_left x !ofs parts.(i)
+  )
+
+
 let split ?(axis=0) parts x =
   let x_shp = shape x in
   let x_dim = num_dims x in
@@ -2480,25 +2738,19 @@ let split ?(axis=0) parts x =
   slices
 
 
+let split_vh parts x =
+  assert (num_dims x >= 2);
+  let parts_a0 = Array.map (fun p -> fst p.(0)) parts in
+  Array.mapi (fun i part ->
+    let parts_a1 = Array.map snd parts.(i) in
+    split ~axis:1 parts_a1 part
+  ) (sub_ndarray parts_a0 x)
+
+
 let sum' x = _owl_sum (kind x) (numel x) x
 
 
 let prod' x = _owl_prod (kind x) (numel x) x
-
-
-(* prepare the parameters for reduce/fold operation, [a] is axis *)
-let reduce_params a x =
-  let d = num_dims x in
-  assert (0 <= a && a < d);
-
-  let _shape = shape x in
-  let _stride = strides x in
-  let _slicez = slice_size x in
-  let m = (numel x) / _slicez.(a) in
-  let n = _slicez.(a) in
-  let o = _stride.(a) in
-  _shape.(a) <- 1;
-  m, n, o, _shape
 
 
 (* TODO: performance can be optimised by removing embedded loops *)
@@ -2507,7 +2759,7 @@ let foldi ?axis f a x =
   let x' = flatten x |> array1_of_genarray in
   match axis with
   | Some axis -> (
-      let m, n, o, s = reduce_params axis x in
+      let m, n, o, s = Owl_utils.reduce_params axis x in
       let start_x = ref 0 in
       let start_y = ref 0 in
       let incy = ref 0 in
@@ -2548,13 +2800,9 @@ let foldi_nd ?axis f a x =
 
 
 (* generic scan function *)
-let scani ?axis f x =
+let scani ?(axis=(-1)) f x =
   let d = num_dims x in
-  let a = match axis with
-    | Some a -> a
-    | None   -> d - 1
-  in
-  assert (0 <= a && a < d);
+  let a = Owl_utils.adjust_index axis d in
 
   let _stride = strides x in
   let _slicez = slice_size x in
@@ -2593,7 +2841,7 @@ let sum ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = zeros _kind s in
       _owl_sum_along _kind m n o x y;
       y
@@ -2605,7 +2853,7 @@ let prod ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = ones _kind s in
       _owl_prod_along _kind m n o x y;
       y
@@ -2617,7 +2865,7 @@ let min ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = create _kind s (Owl_const.pos_inf _kind) in
       _owl_min_along _kind m n o x y;
       y
@@ -2629,7 +2877,7 @@ let max ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = create _kind s (Owl_const.neg_inf _kind) in
       _owl_max_along _kind m n o x y;
       y
@@ -2673,6 +2921,7 @@ let var ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
+      let a = Owl_utils.adjust_index a (num_dims x) in
       let mu = mean ~axis:a x in
       let y = sub x mu in
       _owl_sqr _kind (numel y) y y;
@@ -2698,6 +2947,7 @@ let std ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
+      let a = Owl_utils.adjust_index a (num_dims x) in
       let mu = mean ~axis:a x in
       let y = sub x mu in
       _owl_sqr _kind (numel y) y y;
@@ -2714,7 +2964,7 @@ let l1norm ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = zeros _kind s in
       _owl_l1norm_along _kind m n o x y;
       y
@@ -2726,7 +2976,7 @@ let l2norm_sqr ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = zeros _kind s in
       _owl_l2norm_sqr_along _kind m n o x y;
       y
@@ -2738,7 +2988,7 @@ let l2norm ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, s = reduce_params a x in
+      let m, n, o, s = Owl_utils.reduce_params a x in
       let y = zeros _kind s in
       _owl_l2norm_sqr_along _kind m n o x y;
       _owl_sqrt _kind (numel y) y y;
@@ -3093,19 +3343,21 @@ let softsign_ x = _owl_softsign (kind x) (numel x) x x
 
 let sigmoid_ x = _owl_sigmoid (kind x) (numel x) x x
 
-let softmax x =
+let softmax ?(axis=(-1)) x =
   let x = copy x in
-  sub_scalar_ x (max' x);
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
+  sub_ x (max ~axis x);
   exp_ x;
-  let a = sum' x in
-  div_scalar_ x a;
+  let a = sum ~axis x in
+  div_ x a;
   x
 
-let softmax_ x =
-  sub_scalar_ x (max' x);
+let softmax_ ?(axis=(-1)) x =
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
+  sub_ x (max ~axis x);
   exp_ x;
-  let a = sum' x in
-  div_scalar_ x a
+  let a = sum ~axis x in
+  div_ x a
 
 let cumsum_ ?axis x =
   let _cumop = _owl_cumsum (kind x) in
@@ -3198,14 +3450,14 @@ let col_num x =
 
 let row x i =
   let m, n = _matrix_shape x in
-  assert (i < m);
+  let i = Owl_utils.adjust_index i m in
   let y = Bigarray.Genarray.slice_left x [|i|] in
   reshape y [|1;n|]
 
 
 let col x j =
   let m, n = _matrix_shape x in
-  assert (j < n);
+  let j = Owl_utils.adjust_index j n in
   let _kind = kind x in
   let y = empty _kind [|m;1|] in
   _owl_copy _kind m ~ofsx:j ~incx:n ~ofsy:0 ~incy:1 x y;
@@ -3223,6 +3475,7 @@ let copy_col_to v x i =
   copy_area_to v r1 x r2
 
 
+(* NOTE: same implementaton code as that in Owl_linalg_generic *)
 let dot x1 x2 =
   let m, k = _matrix_shape x1 in
   let l, n = _matrix_shape x2 in
@@ -3243,14 +3496,6 @@ let dot x1 x2 =
   x3
 
 
-let inv x =
-  let m, n = _matrix_shape x in
-  assert (m = n && num_dims x = 2);
-  let x' = Bigarray.array2_of_genarray x in
-  Owl_dense_common._eigen_inv (kind x) x'
-  |> Bigarray.genarray_of_array2
-
-
 let eye k n =
   let x = zeros k [|n;n|] in
   let y = Bigarray.array2_of_genarray x in
@@ -3259,25 +3504,6 @@ let eye k n =
     Bigarray.Array2.unsafe_set y i i a
   done;
   x
-
-
-let mpow x r =
-  let frac_part, _ = Pervasives.modf r in
-  if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
-  let m, n = _matrix_shape x in assert (m = n);
-  (* integer matrix powers using floats: *)
-  let rec _mpow acc s =
-    if s = 1. then acc
-    else if mod_float s 2. = 0.  (* exponent is even? *)
-    then even_mpow acc s
-    else dot x (even_mpow acc (s -. 1.))
-  and even_mpow acc s =
-    let acc2 = _mpow acc (s /. 2.) in
-    dot acc2 acc2
-  in  (* r is equal to an integer: *)
-  if r = 0.0 then eye (kind x) n
-  else if r > 0.0 then _mpow x r
-  else _mpow (inv x) (-. r)
 
 
 let diag ?(k=0) x =
@@ -3337,7 +3563,7 @@ let to_arrays x =
 
 
 let rows x l =
-  let m, n = Array.length (l), col_num x in
+  let m, n = Array.length l, col_num x in
   let y = empty (kind x) [|m;n|] in
   Array.iteri (fun i j ->
     copy_row_to (row x j) y i
@@ -3347,11 +3573,11 @@ let rows x l =
 
 let cols x l =
   let m, n = _matrix_shape x in
-  let nl = Array.length (l) in
+  let nl = Array.length l in
   let _kind = kind x in
   let y = empty _kind [|m;nl|] in
   Array.iteri (fun i j ->
-    assert (i < nl && j < n);
+    let j = Owl_utils.adjust_index j n in
     _owl_copy _kind m ~ofsx:j ~incx:n ~ofsy:i ~incy:nl x y;
   ) l;
   y
@@ -3383,7 +3609,7 @@ let draw_cols2 ?(replacement=true) x y c =
   x_cols, cols y l, l
 
 
-(* FIXME: optimise ...
+(*
   simiar to sum_rows in matrix, sum all the slices along an axis.
   The default [axis] is the highest dimension. E.g., for [x] of [|2;3;4;5|],
   [sum_slices ~axis:2] returns an ndarray of shape [|4;5|].
@@ -3408,23 +3634,56 @@ let sum_slices ?axis x =
   let s = Array.(sub s axis (length s - axis)) in
   reshape y s
 
-(** Slower than the previous one ... need to optimise sum function
 
-let sum_slices ?axis x =
-  let axis = match axis with
-    | Some a -> a
-    | None   -> num_dims x - 1
-  in
-  (* reshape into 2d matrix *)
-  let s = shape x in
-  let n = (Owl_utils.calc_slice s).(axis) in
-  let m = (numel x) / n in
-  let y = reshape x [|m;n|] in
-  let y = sum ~axis:0 y in
-  (* reshape back into ndarray *)
-  let s = Array.(sub s axis (length s - axis)) in
-  reshape y s
-*)
+(*
+  Simiar to `sum`, but sums the elements along multiple axes specified in an
+  array. E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an
+  ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of
+  shape [|1;1;1;1|].
+ *)
+let sum_reduce ?axis x =
+  let _kind = kind x in
+  let _dims = num_dims x in
+  match axis with
+  | Some a -> (
+      let y = ref x in
+      Array.iter (fun i ->
+        assert (i < _dims);
+        let m, n, o, s = Owl_utils.reduce_params i !y in
+        let z = zeros _kind s in
+        _owl_sum_along _kind m n o !y z;
+        y := z
+      ) a;
+      !y
+    )
+  | None   ->
+      _owl_sum _kind (numel x) x |> create _kind (Array.make (num_dims x) 1)
+
+
+let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ~window x =
+  let d = num_dims x in
+  let a = if axis >= 0 then axis else d + axis in
+  let sx = shape x in
+  assert (a < d);
+  assert (ofs + window <= sx.(a));
+
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = (sx.(a) - ofs - window) / step + 1 in
+  let o = _stride.(a) * window in
+  let ofsx_m = _stride.(a) * ofs in
+  let incx_m = _slicez.(a) in
+  let incx_n = _stride.(a) * step in
+
+  sx.(a) <- n * window;
+  let y = empty (kind x) sx in
+  let incy_m = (slice_size y).(a) in
+  let incy_n = o in
+
+  Owl_ndarray._ndarray_slide (kind x) x y m n o ofsx_m incx_m incx_n incy_m incy_n;
+  let sy = Owl_utils.Array.replace a 1 sx [|n;window|] in
+  reshape y sy
 
 
 let draw ?(axis=0) x n =
@@ -3433,6 +3692,95 @@ let draw ?(axis=0) x n =
   let slice = Array.init (num_dims x) (fun i -> if i = axis then L_ indices else R_ [||]) in
   let samples = Owl_slicing.get_fancy_array_typ slice x in
   samples, indices
+
+
+let _contract1_check_indices idx x =
+  let s = shape x in
+  let n = num_dims x in
+  Array.for_all (fun (i,j) ->
+    (i >= 0 && i < n && j >= 0 && j < n) && (s.(i) = s.(j) && i <> j)
+  ) idx
+
+
+let contract1 index_pairs x =
+  let d = num_dims x in
+  assert (d > 1);
+  assert (_contract1_check_indices index_pairs x);
+
+  let permut_1 = Owl_utils.Array.of_tuples index_pairs in
+  let permut_0 = Owl_utils.Array.(complement (range 0 (d - 1)) permut_1) in
+  let permut = Owl_utils.Array.(permut_0 @ permut_1) in
+
+  let s0 = shape x in
+  let i0 = strides x in
+  let sa = Array.copy s0 in
+  Owl_utils.Array.set_n sa permut_1 1;
+  let ia = Owl_utils.calc_stride sa in
+
+  let s1 = Owl_utils.Array.permute permut s0 in
+  let i1 = Owl_utils.Array.permute permut i0 in
+  let sb = Owl_utils.Array.permute permut sa in
+  let ib = Owl_utils.Array.permute permut ia in
+
+  let p = reshape x s1 in
+  let q = zeros (kind x) sb in
+  let incp = Array.map Int64.of_int i1 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let incq = Array.map Int64.of_int ib |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+
+  let rtd = d - (Array.length permut_1) in
+  Owl_ndarray._ndarray_contract_one (kind x) p q incp incq (Int64.of_int rtd);
+  reshape q (Array.sub sb 0 rtd)
+
+
+let _contract2_check_indices idx x y =
+  let sx = shape x in
+  let nx = num_dims x in
+  let sy = shape y in
+  let ny = num_dims y in
+  Array.for_all (fun (i,j) ->
+    i >= 0 && i < nx && j >= 0 && j < ny && sx.(i) = sy.(j)
+  ) idx
+
+
+let contract2 index_pairs x y =
+  assert (_contract2_check_indices index_pairs x y);
+
+  let dx = num_dims x in
+  let permut_x1 = Owl_utils.Array.map fst index_pairs in
+  let permut_x0 = Owl_utils.Array.(complement (range 0 (dx - 1)) permut_x1) in
+  let permut_x = Owl_utils.Array.(permut_x0 @ permut_x1) in
+  let shpx = Owl_utils.Array.permute permut_x (shape x) in
+  let incx = Owl_utils.Array.permute permut_x (strides x) in
+
+  let dy = num_dims y in
+  let permut_y1 = Owl_utils.Array.map snd index_pairs in
+  let permut_y0 = Owl_utils.Array.(complement (range 0 (dy - 1)) permut_y1) in
+  let permut_y = Owl_utils.Array.(permut_y0 @ permut_y1) in
+  let shpy = Owl_utils.Array.permute permut_y (shape y) in
+  let incy = Owl_utils.Array.permute permut_y (strides y) in
+
+  let outer_nx = Array.length permut_x0 in
+  let outer_ny = Array.length permut_y0 in
+  let inner_nx = Array.length permut_x1 in
+  let inner_ny = Array.length permut_y1 in
+  assert (inner_nx = inner_ny);
+
+  let shpz_x = Array.sub shpx 0 outer_nx in
+  let shpz_y = Array.sub shpy 0 outer_ny in
+  let shpz = Owl_utils.Array.(shpz_x @ shpz_y) in
+  let z = zeros (kind x) shpz in
+
+  let loop0 = Owl_utils.Array.(shpz @ (sub shpx outer_nx inner_nx)) in
+  let incx0 = Owl_utils.Array.(insert incx (make outer_ny 0) outer_nx) in
+  let incy0 = Owl_utils.Array.(insert incy (make outer_nx 0) 0) in
+  let incz0 = Owl_utils.Array.(strides z @ (make inner_nx 0)) in
+  let loop1 = Array.map Int64.of_int loop0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let incx1 = Array.map Int64.of_int incx0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let incy1 = Array.map Int64.of_int incy0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let incz1 = Array.map Int64.of_int incz0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let ndims = Array.length loop0 |> Int64.of_int in
+  Owl_ndarray._ndarray_contract_two (kind x) x y z incx1 incy1 incz1 loop1 ndims;
+  z
 
 
 

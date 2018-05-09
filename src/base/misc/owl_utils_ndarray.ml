@@ -23,6 +23,27 @@ let elt_to_str : type a b. (a, b) kind -> (a -> string) = function
   | Complex64      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
 
 
+(* convert an element of string to elt type *)
+let elt_of_str : type a b. (a, b) kind -> (string -> a) = function
+  | Char           -> fun v -> Scanf.sscanf v "%c%!" (fun c -> c)
+  | Nativeint      -> fun v -> Nativeint.of_string v
+  | Int8_signed    -> fun v -> int_of_string v
+  | Int8_unsigned  -> fun v -> int_of_string v
+  | Int16_signed   -> fun v -> int_of_string v
+  | Int16_unsigned -> fun v -> int_of_string v
+  | Int            -> fun v -> int_of_string v
+  | Int32          -> fun v -> Int32.of_string v
+  | Int64          -> fun v -> Int64.of_string v
+  | Float32        -> fun v -> float_of_string v
+  | Float64        -> fun v -> float_of_string v
+  | Complex32      -> fun v -> Scanf.sscanf v "(%f, %fi)%!" (fun re im -> {Complex.re; im})
+  | Complex64      -> fun v -> Scanf.sscanf v "(%f, %fi)%!" (fun re im -> {Complex.re; im})
+
+
+(* calculate the number of elements in an ndarray *)
+let numel x = Array.fold_right (fun c a -> c * a) (Genarray.dims x) 1
+
+
 (* calculate the stride of a ndarray, s is the shape
   for [x] of shape [|2;3;4|], the return is [|12;4;1|]
  *)
@@ -83,6 +104,27 @@ let i1d x i_nd =
   let stride = calc_stride shape in
   index_nd_1d i_nd stride
 
+
+(* Adjust the index according to the [0, m). m is the boundary, i can be negative. *)
+let adjust_index i m =
+  if i >= 0 && i < m then i
+  else if i < 0 && i >= -m then i + m
+  else raise Owl_exception.INDEX_OUT_OF_BOUND
+
+
+(* prepare the parameters for reduce/fold operation, [a] is axis *)
+let reduce_params a x =
+  let d = Genarray.num_dims x in
+  let a = adjust_index a d in
+
+  let _shape = Genarray.dims x in
+  let _stride = calc_stride _shape in
+  let _slicez = calc_slice _shape in
+  let m = (numel x) / _slicez.(a) in
+  let n = _slicez.(a) in
+  let o = _stride.(a) in
+  _shape.(a) <- 1;
+  m, n, o, _shape
 
 
 (* ends here *)

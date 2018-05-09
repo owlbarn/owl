@@ -129,6 +129,12 @@ module To_test = struct
     let x = Mat.of_array [|1.;0.;0.;0.;1.;0.;0.;1.;1.|] 3 3 in
     M.is_diag x = false
 
+  let mpow () =
+    let x = Mat.uniform 4 4 in
+    let y = M.mpow x 3. in
+    let z = Mat.(dot x (dot x x)) in
+    approx_equal Mat.((y - z) |> sum') 0.
+
   let expm_1 () =
     let x = Mat.sequential ~a:1. 3 3 in
     let y = Mat.of_array
@@ -318,6 +324,9 @@ let is_diag_1 () =
 let is_diag_2 () =
   Alcotest.(check bool) "is_diag_2" true (To_test.is_diag_2 ())
 
+let mpow () =
+  Alcotest.(check bool) "mpow" true (To_test.mpow ())
+
 let expm_1 () =
   Alcotest.(check bool) "expm_1" true (To_test.expm_1 ())
 
@@ -382,6 +391,7 @@ let test_set = [
   "is_symmetric_2", `Slow, is_symmetric_2;
   "is_diag_1", `Slow, is_diag_1;
   "is_diag_2", `Slow, is_diag_2;
+  "mpow", `Slow, mpow;
   "expm_1", `Slow, expm_1;
   "expm_2", `Slow, expm_2;
   "expm_3", `Slow, expm_3;

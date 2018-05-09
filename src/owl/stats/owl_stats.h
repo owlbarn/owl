@@ -90,6 +90,22 @@ extern double exponential_isf(double q, double lambda);
 
 extern double exponential_entropy(double lambda);
 
+/** Exponential power distribution **/
+
+extern double exponpow_rvs(double a, double b);
+
+extern double exponpow_pdf(double x, double a, double b);
+
+extern double exponpow_logpdf(double x, double a, double b);
+
+extern double exponpow_cdf(double x, double a, double b);
+
+extern double exponpow_logcdf(double x, double a, double b);
+
+extern double exponpow_sf(double x, double a, double b);
+
+extern double exponpow_logsf(double x, double a, double b);
+
 /** Gaussian distribution **/
 
 extern double std_gaussian_rvs();
@@ -214,15 +230,43 @@ extern double noncentral_f_rvs(double dfnum, double dfden, double nonc);
 
 /** Binomial distribution **/
 
-// TODO
+extern long binomial_rvs (double p, long n);
+
+extern double binomial_pdf (long k, double p, long n);
+
+extern double binomial_logpdf (long k, double p, long n);
+
+extern double binomial_cdf (long k, double p, long n);
+
+extern double binomial_logcdf (long k, double p, long n);
+
+extern double binomial_sf (long k, double p, long n);
+
+extern double binomial_logsf (long k, double p, long n);
 
 /** Negative Binomial distribution **/
 
 extern long negative_binomial_rvs(double, double);
 
+/** Multinomial distribution **/
+
+extern void multinomial_rvs (const long K, const long N, const double p[], int32_t n[]);
+
+extern double multinomial_pdf (const long K, const double p[], const int32_t n[]);
+
+extern double multinomial_logpdf (const long K, const double p[], const int32_t n[]);
+
 /** Poisson distribution **/
 
 extern long poisson_rvs(double lambda);
+
+/** Poisson distribution **/
+
+extern void dirichlet_rvs (const int K, const double alpha[], double theta[]);
+
+extern double dirichlet_pdf (const int K, const double alpha[], const double theta[]);
+
+extern double dirichlet_logpdf (const int K, const double alpha[], const double theta[]);
 
 /** Cauchy distribution **/
 

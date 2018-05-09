@@ -90,6 +90,8 @@ val set_slice : int list list -> arr -> arr -> unit
 
 val sub_left : arr -> int -> int -> arr
 
+val sub_ndarray : int array -> arr -> arr array
+
 val slice_left : arr -> int array -> arr
 
 val copy_to : arr -> arr -> unit
@@ -126,7 +128,11 @@ val concat_horizontal : arr -> arr -> arr
 
 val concatenate : ?axis:int -> arr array -> arr
 
+val concat_vh : arr array array -> arr
+
 val split : ?axis:int -> int array -> arr -> arr array
+
+val split_vh : (int * int) array array -> arr -> arr array array
 
 val squeeze : ?axis:int array -> arr -> arr
 
@@ -141,6 +147,8 @@ val top : arr -> int -> int array array
 val bottom : arr -> int -> int array array
 
 val sort : arr -> arr
+
+val argsort : arr -> (int64, int64_elt, c_layout) Genarray.t
 
 val draw : ?axis:int -> arr -> int -> arr * int array
 
@@ -186,6 +194,26 @@ val foldi_nd : ?axis:int -> (int array -> elt -> elt -> elt) -> elt -> arr -> ar
 val scani_nd : ?axis:int -> (int array -> elt -> elt -> elt) -> arr -> arr
 
 val filteri_nd : (int array -> elt -> bool) -> arr -> int array array
+
+val iter2i_nd :(int array -> elt -> elt -> unit) -> arr -> arr -> unit
+
+val map2i_nd : (int array -> elt -> elt -> elt) -> arr -> arr -> arr
+
+val iteri_slice : ?axis:int -> (int -> arr -> unit) -> arr -> unit
+
+val iter_slice : ?axis:int -> (arr -> unit) -> arr -> unit
+
+val mapi_slice : ?axis:int -> (int -> arr -> 'c) -> arr -> 'c array
+
+val map_slice : ?axis:int -> (arr -> 'c) -> arr -> 'c array
+
+val filteri_slice : ?axis:int -> (int -> arr -> bool) -> arr -> arr array
+
+val filter_slice : ?axis:int -> (arr -> bool) -> arr -> arr array
+
+val foldi_slice : ?axis:int -> (int -> 'c -> arr -> 'c) -> 'c -> arr -> 'c
+
+val fold_slice : ?axis:int -> ('c -> arr -> 'c) -> 'c -> arr -> 'c
 
 
 (** {6 Examine array elements or compare two arrays } *)
@@ -362,6 +390,8 @@ val cummin : ?axis:int -> arr -> arr
 
 val cummax : ?axis:int -> arr -> arr
 
+val diff : ?axis:int -> ?n:int -> arr -> arr
+
 val sqr : arr -> arr
 
 val sqrt : arr -> arr
@@ -468,9 +498,75 @@ val pow_scalar : arr -> elt -> arr
 val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
 
 
+(** {6 Neural network related functions} *)
+
+val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
+
+val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
+
+val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
+
+val conv2d_transpose : ?padding:padding -> arr -> arr -> int array -> arr
+
+val max_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
+
+val max_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
+
+val max_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
+
+val avg_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
+
+val avg_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
+
+val avg_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
+
+val max_pool2d_argmax : ?padding:padding -> arr -> int array -> int array -> arr * (int64, int64_elt, c_layout) Genarray.t
+
+val conv1d_backward_input : arr -> arr -> int array -> arr -> arr
+
+val conv1d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
+
+val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
+
+val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+val conv2d_transpose_backward_input : arr -> arr -> int array -> arr -> arr
+
+val conv2d_transpose_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+val max_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+val max_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+val avg_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+
+(** {6 Tensor Calculus}  *)
+
+val contract1 : (int * int) array -> arr -> arr
+
+val contract2 : (int * int) array -> arr -> arr -> arr
+
+
 (** {6 Experimental functions} *)
 
+val one_hot : int -> arr -> arr
+
 val sum_slices : ?axis:int -> arr -> arr
+
+val sum_reduce : ?axis:int array -> arr -> arr
+
+val slide : ?axis:int -> ?ofs:int -> ?step:int -> window:int -> arr -> arr
 
 
 (** {6 Fucntions of in-place modification } *)
@@ -602,8 +698,6 @@ val softplus_ : arr -> unit
 val softsign_ : arr -> unit
 
 val sigmoid_ : arr -> unit
-
-val softmax_ : arr -> unit
 
 val cumsum_ : ?axis:int -> arr -> unit
 

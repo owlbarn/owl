@@ -16,11 +16,11 @@ int float64_cmp (const void * a, const void * b) {
   return ( *(double*)a < *(double*)b ? -1 : (*(double*)a > *(double*)b ? 1 : 0) );
 }
 
-int complex32_cmpf (const void * a, const void * b) {
+int complex32_cmp (const void * a, const void * b) {
  return ( CLTF(*(_Complex float*)a,*(_Complex float*)b) ? -1 : (CGTF(*(_Complex float*)a,*(_Complex float*)b) ? 1 : 0) );
 }
 
-int complex64_cmpf (const void * a, const void * b) {
+int complex64_cmp (const void * a, const void * b) {
  return ( CLT(*(_Complex double*)a,*(_Complex double*)b) ? -1 : (CGT(*(_Complex double*)a,*(_Complex double*)b) ? 1 : 0) );
 }
 
@@ -46,6 +46,69 @@ int int32_cmp (const void * a, const void * b) {
 
 int int64_cmp (const void * a, const void * b) {
   return ( *(int64_t*)a < *(int64_t*)b ? -1 : (*(int64_t*)a > *(int64_t*)b ? 1 : 0) );
+}
+
+
+// compare two numbers, used in qsort_r and argsort
+
+int float32_cmp_r (const void * i, const void * j, const void * z) {
+  float a = *((float*)z + (*(int64_t*)i));
+  float b = *((float*)z + (*(int64_t*)j));
+  return ( a < b ? -1 : (a > b ? 1 : 0) );
+}
+
+int float64_cmp_r (const void * i, const void * j, const void * z) {
+  double a = *((double*)z + (*(int64_t*)i));
+  double b = *((double*)z + (*(int64_t*)j));
+  return ( a < b ? -1 : (a > b ? 1 : 0) );
+}
+
+int complex32_cmp_r (const void * i, const void * j, const void * z) {
+  _Complex float a = *((_Complex float*)z + (*(int64_t*)i));
+  _Complex float b = *((_Complex float*)z + (*(int64_t*)j));
+  return ( CLTF(a,b) ? -1 : (CGTF(a,b) ? 1 : 0) );
+}
+
+int complex64_cmp_r (const void * i, const void * j, const void * z) {
+  _Complex double a = *((_Complex double*)z + (*(int64_t*)i));
+  _Complex double b = *((_Complex double*)z + (*(int64_t*)j));
+  return ( CLT(a,b) ? -1 : (CGT(a,b) ? 1 : 0) );
+}
+
+int int8_cmp_r (const void * i, const void * j, const void * z) {
+  int8_t a = *((int8_t*)z + (*(int64_t*)i));
+  int8_t b = *((int8_t*)z + (*(int64_t*)j));
+  return ( a < b ? -1 : (a > b ? 1 : 0) );
+}
+
+int uint8_cmp_r (const void * i, const void * j, const void * z) {
+  uint8_t a = *((uint8_t*)z + (*(int64_t*)i));
+  uint8_t b = *((uint8_t*)z + (*(int64_t*)j));
+  return ( a < b ? -1 : (a > b ? 1 : 0) );
+}
+
+int int16_cmp_r (const void * i, const void * j, const void * z) {
+  int16_t a = *((int16_t*)z + (*(int64_t*)i));
+  int16_t b = *((int16_t*)z + (*(int64_t*)j));
+  return ( a < b ? -1 : (a > b ? 1 : 0) );
+}
+
+int uint16_cmp_r (const void * i, const void * j, const void * z) {
+  uint16_t a = *((uint16_t*)z + (*(int64_t*)i));
+  uint16_t b = *((uint16_t*)z + (*(int64_t*)j));
+  return ( a < b ? -1 : (a > b ? 1 : 0) );
+}
+
+int int32_cmp_r (const void * i, const void * j, const void * z) {
+  int32_t a = *((int32_t*)z + (*(int64_t*)i));
+  int32_t b = *((int32_t*)z + (*(int64_t*)j));
+  return ( a < b ? -1 : (a > b ? 1 : 0) );
+}
+
+int int64_cmp_r (const void * i, const void * j, const void * z) {
+  int64_t a = *((int64_t*)z + (*(int64_t*)i));
+  int64_t b = *((int64_t*)z + (*(int64_t*)j));
+  return ( a < b ? -1 : (a > b ? 1 : 0) );
 }
 
 

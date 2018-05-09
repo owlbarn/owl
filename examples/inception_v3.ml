@@ -1,5 +1,5 @@
 #!/usr/bin/env owl
-(* This example demonstrates how to use Owl to implement Google's Inception V3.
+(* This example demonstrates how to use Owl to implement Google's Inception V3 (https://arxiv.org/abs/1512.00567).
   Note that only the network structure of Inception is defined.
 
   If you want to use Google Inception for inference, please use Zoo system to
@@ -105,7 +105,7 @@ let make_network img_size =
   |> mix_typ8
   |> mix_typ9 1280 |> mix_typ9 2048
   |> global_avg_pool2d
-  |> linear 1000 ~act_typ:Activation.Softmax
+  |> linear 1000 ~act_typ:Activation.(Softmax 1)
   |> get_network
 
 let _ = make_network 299 |> print

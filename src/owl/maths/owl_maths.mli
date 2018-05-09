@@ -16,172 +16,174 @@
 (** {6 Basic functions} *)
 
 val add : float -> float -> float
-(** ``add x y`` *)
+(** ``add x y`` gives x + y. *)
 
 val sub : float -> float -> float
-(** ``sub x y`` *)
+(** ``sub x y`` gives x - y. *)
 
 val mul : float -> float -> float
-(** ``mul x y`` *)
+(** ``mul x y`` gives x * y. *)
 
 val div : float -> float -> float
-(** ``div x y`` *)
+(** ``div x y`` gives x / y. *)
 
 val atan2 : float -> float -> float
-(** ``atan2 x y`` *)
+(** ``atan2 y x`` gives arctan(y/x), accounting for the sign of the arguments;
+    this is the angle to the vector (x, y) counting from the x-axis. *)
 
 val abs : float -> float
-(** ``abs x`` *)
+(** ``abs x`` gives ``|x|``. *)
 
 val neg : float -> float
-(** ``neg x`` *)
+(** ``neg x`` gives -x. *)
 
 val reci : float -> float
-(** ``reci x`` *)
+(** ``reci x`` gives 1/x. *)
 
 val floor : float -> float
-(** ``floor x`` *)
+(** ``floor x`` gives the largest integer <= x. *)
 
 val ceil : float -> float
-(** ``ceil x`` *)
+(** ``ceil x`` gives the smallest integer >= x. *)
 
 val round : float -> float
-(** ``round x`` *)
+(** ``round x`` rounds, towards the bigger integer when on the fence. *)
 
 val trunc : float -> float
-(** ``trunc x`` *)
+(** ``trunc x`` integer part. *)
 
 val sqr : float -> float
-(** ``sqr x`` *)
+(** ``sqr x`` square. *)
 
 val sqrt : float -> float
-(** ``sqrt x`` *)
+(** ``sqrt x`` square root. *)
 
 val pow : float -> float -> float
-(** ``pow x`` *)
+(** ``pow x y`` gives x^y. *)
 
 val exp : float -> float
-(** ``exp x`` *)
+(** ``exp x`` exponential. *)
 
 val expm1 : float -> float
-(** ``expm1`` *)
+(** ``expm1 x`` gives exp(x) - 1 but more accurate for x ~ 0. *)
 
 val log : float -> float
-(** ``log x`` *)
+(** ``log x`` natural logarithm *)
 
 val log1p : float -> float
-(** ``log1p x`` *)
+(** ``log1p x`` gives log (x + 1) but more accurate for x ~ 0. Inverse of
+    ``expm1``. *)
 
 val logabs : float -> float
-(** ``logabs x`` *)
+(** ``logabs x`` gives log(abs(x)). *)
 
 val log2 : float -> float
-(** ``log2 x`` *)
+(** ``log2 x`` gives the base-2 logarithm of x. *)
 
 val log10 : float -> float
-(** ``log10 x`` *)
+(** ``log10 x`` gives the base-10 logarithm of x. *)
 
 val logn : float -> float -> float
-(** ``logn x`` *)
+(** ``logn x`` gives the base-n logarithm of x. *)
 
 val sigmoid : float -> float
-(** ``sigmod x`` *)
+(** ``sigmoid x`` gives the logistic sigmoid function 1 / (1 + exp(-x)). *)
 
 val signum : float -> float
-(** ``signum x`` *)
+(** ``signum x`` gives the sign of x: -1, 0 or 1. *)
 
 val softsign : float -> float
-(** ``softsign x`` *)
+(** ``softsign x`` smoothed sign function. *)
 
 val softplus : float -> float
-(** ``softplus x`` *)
+(** ``softplus x`` gives log(1+exp(x)). *)
 
 val relu : float -> float
-(** ``relu x`` *)
+(** ``relu x`` gives max(0, x). *)
 
 val sin : float -> float
-(** ``sin x`` *)
+(** ``sin x`` gives sin(x). *)
 
 val cos : float -> float
-(** ``cos x`` *)
+(** ``cos x`` gives cos(x). *)
 
 val tan : float -> float
-(** ``tan x`` *)
+(** ``tan x`` gives tan(x). *)
 
 val cot : float -> float
-(** ``cot x`` *)
+(** ``cot x`` gives 1/tan(x). *)
 
 val sec : float -> float
-(** ``sec x`` *)
+(** ``sec x`` gives 1/cos(x). *)
 
 val csc : float -> float
-(** ``csc x`` *)
+(** ``csc x`` gives 1/sin(x). *)
 
 val asin : float -> float
-(** ``asin x`` *)
+(** ``asin x`` gives arcsin(x). *)
 
 val acos : float -> float
-(** ``acos x`` *)
+(** ``acos x`` gives arccos(x). *)
 
 val atan : float -> float
-(** ``atan x`` *)
+(** ``atan x`` gives arctan(x). *)
 
 val acot : float -> float
-(** ``acot x`` *)
+(** ``acot x`` gives arccotan(x). *)
 
 val asec : float -> float
-(** ``asec x`` *)
+(** ``asec x`` gives arcsec(x). *)
 
 val acsc : float -> float
-(** ``acsc x`` *)
+(** ``acsc x`` gives arccosec(x). *)
 
 val sinh : float -> float
-(** ``sinh x`` *)
+(** ``sinh x`` gives sinh(x). *)
 
 val cosh : float -> float
-(** ``cosh x`` *)
+(** ``cosh x`` gives cosh(x). *)
 
 val tanh : float -> float
-(** ``tanh x`` *)
+(** ``tanh x`` gives tanh(x). *)
 
 val coth : float -> float
-(** ``coth x`` *)
+(** ``coth x`` gives coth(x). *)
 
 val sech : float -> float
-(** ``sech x`` *)
+(** ``sech x`` gives sech(x). *)
 
 val csch : float -> float
-(** ``csch x`` *)
+(** ``csch x`` gives cosech(x). *)
 
 val asinh : float -> float
-(** ``asinh x`` *)
+(** ``asinh x`` gives arcsinh(x). *)
 
 val acosh : float -> float
-(** ``acosh x`` *)
+(** ``acosh x`` gives arccosh(x). *)
 
 val atanh : float -> float
-(** ``atanh x`` *)
+(** ``atanh x`` gives arctanh(x). *)
 
 val acoth : float -> float
-(** ``acoth x`` *)
+(** ``acoth x`` gives arccoth(x). *)
 
 val asech : float -> float
-(** ``asech x`` *)
+(** ``asech x`` gives arcsech(x). *)
 
 val acsch : float -> float
-(** ``acsch x`` *)
+(** ``acsch x`` gives arccosech(x). *)
 
 val sinc : float -> float
-(** ``sinc x`` *)
+(** ``sinc x`` gives sin(x)/x and 1 for x=0. *)
 
 val logsinh : float -> float
-(** ``logsinh x`` *)
+(** ``logsinh x`` gives log(sinh(x)) but handles large ``|x|``. *)
 
 val logcosh : float -> float
-(** ``logcosh x`` *)
+(** ``logcosh x`` gives log(cosh(x)) but handles large ``|x|``. *)
 
 val sindg : float -> float
-(** Sine of angle given in degrees *)
+(** Sine of angle given in degrees. *)
 
 val cosdg : float -> float
 (** Cosine of the angle x given in degrees. *)
@@ -196,16 +198,16 @@ val hypot : float -> float -> float
 (** Calculate the length of the hypotenuse. *)
 
 val xlogy : float -> float -> float
-(** ``xlogy(x, y) = x*log(y)`` *)
+(** ``xlogy(x, y)`` gives x*log(y). *)
 
 val xlog1py : float -> float -> float
-(** ``xlog1py(x, y) = x*log1p(y)`` *)
+(** ``xlog1py(x, y)`` gives x*log(y+1). *)
 
 val logit : float -> float
-(** ``logit(x) = log(p/(1-p))`` *)
+(** ``logit(x)`` gives log(p/(1-p)). *)
 
 val expit : float -> float
-(** ``expit(x) = 1/(1+exp(-x))`` *)
+(** ``expit(x)`` gives 1/(1+exp(-x)). *)
 
 
 (** {6 Airy functions} *)
@@ -318,13 +320,13 @@ val gammainc : float -> float -> float
 (** Incomplete gamma function. *)
 
 val gammaincinv : float -> float -> float
-(** Inverse function of ``gammainc`` *)
+(** Inverse function of ``gammainc``. *)
 
 val gammaincc : float -> float -> float
-(** Complemented incomplete gamma integral *)
+(** Complemented incomplete gamma integral. *)
 
 val gammainccinv : float -> float -> float
-(** Inverse function of ``gammaincc`` *)
+(** Inverse function of ``gammaincc``. *)
 
 val psi : float -> float
 (** The digamma function. *)
@@ -355,41 +357,49 @@ val fact : int -> float
 val log_fact : int -> float
 (** Logarithm of factorial function ``log_fact n`` calculates ``log n!``. *)
 
+val doublefact : int -> float
+(** Double factorial function ``doublefact n`` calculates n!! = n(n-2)(n-4)... *)
+
+val log_doublefact : int -> float
+(** Logarithm of double factorial function. ``log_doublefact n`` calculates
+    log(n!!) *)
+
 val permutation : int -> int -> int
-(** ``permutation n k`` return the number of permutations of n things taken k at a time. *)
+(** ``permutation n k`` gives the number n!/(n-k)! of ordered subsets of length k, taken
+    from a set of n elements. *)
 
 val permutation_float : int -> int -> float
 (**
-``permutation_float n k`` return the number of permutations of n things taken
-k at a time. This function can deal with larger range than ``permutation``.
+``permutation_float`` is like ``permutation`` but deal with larger range.
  *)
 
 val combination : int -> int -> int
-(** ``combination n k`` return the combination number of taking k out of n. *)
+(** ``combination n k`` gives the number n!/(k!(n-k)!) of subsets of k elements
+    of a set of n elements. This is the binomial coefficient 'n choose k' *)
 
 val combination_float : int -> int -> float
-(**
-``combination_float n k`` return the combination number of taking k out of n.
-This function can deal with larger range than ``combination``.
- *)
+(** ``combination_float`` is like ``combination`` but can deal with a larger range. *)
+
+val log_combination : int -> int -> float
+(** ``log_combination n k`` gives the logarithm of 'n choose k'. *)
 
 
 (** {6 Error functions} *)
 
 val erf : float -> float
-(** Error function. *)
+(** Error function. :math:`\int_{-\infty}^x \frac{1}{\sqrt(2\pi)} exp(-1/2 y^2) dy` *)
 
 val erfc : float -> float
-(** Complementary error function, ``1 - erf(x)`` *)
+(** Complementary error function, 1 - erf(x). *)
 
 val erfcx : float -> float
-(** Scaled complementary error function, ``exp(x**2) * erfc(x)``. *)
+(** Scaled complementary error function, exp(x^2) * erfc(x). *)
 
 val erfinv : float -> float
-(** Inverse of ``erf x``. *)
+(** Inverse of erf. *)
 
 val erfcinv : float -> float
-(** Inverse of ``erfc x`` *)
+(** Inverse of erfc. *)
 
 
 (** {6 Dawson & Fresnel integrals} *)
@@ -398,17 +408,14 @@ val dawsn : float -> float
 (** Dawson’s integral. *)
 
 val fresnel : float -> float * float
-(**
-Fresnel sin and cos integrals, ``fresnel x`` returns a tuple consisting of
-``(Fresnel sin integral, Fresnel cos integral)``.
- *)
+(** Fresnel sin and cos integrals. ``fresnel x`` returns a tuple consisting of
+``(Fresnel sin integral, Fresnel cos integral)``. *)
 
 
 (** {6 Struve functions} *)
 
 val struve : float -> float -> float
-(**
-Struve function ``struve v x`` returns the value of the Struve function of
+(** ``struve v x`` returns the value of the Struve function of
 order ``v`` at ``x``. The Struve function is defined as,
 
 .. math::
@@ -420,8 +427,6 @@ Parameters:
   * ``v``: order of the Struve function (float).
   * ``x``: Argument of the Struve function (float; must be positive unless v is an integer).
 
-Returns:
-  * Value of the Struve function of order ``v`` at ``x``.
  *)
 
 
@@ -434,10 +439,10 @@ val shichi : float -> float * float
 (** Hyperbolic sine and cosine integrals, ``shichi x`` returns ``(shi, chi)``. *)
 
 val shi : float -> float
-(** Hyperbolic sine integrals. *)
+(** Hyperbolic sine integral. *)
 
 val chi : float -> float
-(** Hyperbolic cosine integrals. *)
+(** Hyperbolic cosine integral. *)
 
 val sici : float -> float * float
 (** Sine and cosine integrals, ``sici x`` returns ``(si, ci)``. *)
@@ -449,7 +454,8 @@ val ci : float -> float
 (** Cosine integral. *)
 
 val zeta : float -> float -> float
-(** Riemann or Hurwitz zeta function ``zeta x q``. *)
+(** ``zeta x q`` gives the Hurwitz zeta function :math:`\zeta(x, q)`, which
+    reduces to the Riemann zeta function :math:`\zeta(x)` when q=1. *)
 
 val zetac : float -> float
 (** Riemann zeta function minus 1. *)
@@ -542,6 +548,12 @@ Returns:
 
 (** {6 Helper functions} *)
 
+val is_nan : float -> bool
+(** ``is_nan x`` returns ``true`` if ``x`` is ``nan``. *)
+
+val is_inf : float -> bool
+(** ``is_inf x`` returns ``true`` if ``x`` is ``infinity`` or ``neg_infinity``. *)
+
 val is_odd : int -> bool
 (** ``is_odd x`` returns ``true`` if ``x`` is odd. *)
 
@@ -551,16 +563,27 @@ val is_even : int -> bool
 val is_pow2 : int -> bool
 (** ``is_pow2 x`` return ``true`` if ``x`` is integer power of 2, e.g. 32, 64, etc. *)
 
-val nextafter : float -> float -> float
+val same_sign : float -> float -> bool
+(** ``same_sign x y`` returns ``true`` if ``x`` and ``y`` have the same sign,
+otherwise it returns ``false``. Positive and negative zeros are special cases
+and always returns ``true``. *)
+
+val is_simplex : float array -> bool
 (**
-``nextafter from to`` returns the next representable double precision value
-of ``from`` in the direction of ``to``. If from equals to ``to``, ``to`` is returned.
+``is_simplex x`` checks whether ``x`` is simplex. In other words,
+:math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall x_i \in [1,K]`.
+ *)
+ 
+val nextafter : float -> float -> float
+(** ``nextafter from to`` returns the next representable double precision value
+of ``from`` in the direction of ``to``. If ``from`` equals ``to``, this value
+is returned.
  *)
 
 val nextafterf : float -> float -> float
-(**
-``nextafter from to`` returns the next representable single precision value
-of ``from`` in the direction of ``to``. If from equals to ``to``, ``to`` is returned.
+(** ``nextafter from to`` returns the next representable single precision value
+of ``from`` in the direction of ``to``. If ``from`` equals ``to``, this value
+is returned.
  *)
 
 

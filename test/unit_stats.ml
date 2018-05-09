@@ -58,7 +58,7 @@ module To_test = struct
   let ks2_test_statistic a b =
     let h = M.ks2_test a b in
     h.score
-    
+
 end
 
 (* The tests *)
@@ -210,7 +210,7 @@ let ks_pval_test4 () =
 let ks_pval_test5 () =
   Alcotest.check_raises
     "ks_test exception"
-    M.EXN_EMPTY_ARRAY
+    Owl_exception.EMPTY_ARRAY
     (fun _ -> ignore (To_test.ks_test_pval [| |] (fun x -> M.gaussian_cdf ~mu:0. ~sigma:1. x));)
 
 
@@ -242,7 +242,7 @@ let ks2_pval_test2 () =
 let ks2_pval_test3 () =
   Alcotest.check_raises
     "ks2_test exception"
-    M.EXN_EMPTY_ARRAY
+    Owl_exception.EMPTY_ARRAY
     (fun _ -> ignore (To_test.ks2_test_pval [||] [|1.; 2.; 3.;|]);)
 
 (* The tests *)

@@ -23,6 +23,8 @@ let complex64 = Bigarray.complex64
 
 module Const = Owl_const
 
+module Exception = Owl_exception
+
 module Dense = Owl_dense
 
 module Sparse = Owl_sparse
@@ -53,16 +55,22 @@ module Ext = Owl_ext
 
 module Dataset = Owl_dataset
 
+module Dataframe = Owl_dataframe
+
 module Lazy = Owl_lazy
 
 module Graph = Owl_graph
 
-module Common = Owl_common
+module Nlp = Owl_nlp
+
+module Log = Owl_log
 
 
 (* backend modules *)
 
 module Cblas = Owl_cblas
+
+module Lapacke = Owl_lapacke
 
 
 (* shortcuts to 64-bit precision modules *)
@@ -79,10 +87,8 @@ end
 (* initialise owl's working environment *)
 
 let _ =
-  (* FIXME: need to unify with the Stats module in the future *)
-  Random.State.make_self_init () |> ignore;
   (* init the internal state of PRNG *)
-  Owl_common.PRNG.init ();
+  Owl_stats_prng.self_init ();
   (* set up owl's folder *)
   let home = Sys.getenv "HOME" ^ "/.owl" in
   let dir_dataset = home ^ "/dataset" in

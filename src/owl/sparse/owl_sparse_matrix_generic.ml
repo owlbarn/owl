@@ -385,7 +385,7 @@ let max2 x y = _eigen_max2 x.d y.d
 
 let sum x = _eigen_sum x.d
 
-let mean x = (Owl_dense_common._mean_elt x.k) (sum x) (numel x)
+let mean x = (Owl_ndarray._mean_elt x.k) (sum x) (numel x)
 
 let abs x = {
   m = x.m;
@@ -403,11 +403,11 @@ let neg x = {
 
 (* TODO: optimise *)
 let reci x =
-  let _op = Owl_dense_common._inv_elt (kind x) in
+  let _op = Owl_ndarray._inv_elt (kind x) in
   map_nz (fun a -> _op a) x
 
 let power_scalar x c =
-  let _op = Owl_dense_common._power_scalar_elt (kind x) in
+  let _op = Owl_ndarray._power_scalar_elt (kind x) in
   map (fun y -> (_op) y c) x
 
 let l1norm x = x |> abs |> sum
@@ -493,14 +493,14 @@ let sum_cols x =
 let mean_rows x =
   let m, n = shape x in
   let k = kind x in
-  let a = (Owl_dense_common._mean_elt k) (Owl_const.one k) m in
+  let a = (Owl_ndarray._mean_elt k) (Owl_const.one k) m in
   let y = Owl_dense_matrix_generic.create k 1 m a |> of_dense in
   dot y x
 
 let mean_cols x =
   let m, n = shape x in
   let k = kind x in
-  let a = (Owl_dense_common._mean_elt k) (Owl_const.one k) n in
+  let a = (Owl_ndarray._mean_elt k) (Owl_const.one k) n in
   let y = Owl_dense_matrix_generic.create k n 1 a |> of_dense in
   dot x y
 
@@ -563,7 +563,7 @@ let binary ?(density=0.15) k m n =
   _random_basic density k (fun () -> _a1) m n
 
 let uniform ?(density=0.15) ?(scale=1.) k m n =
-  let _op = Owl_dense_common._owl_uniform_fun k in
+  let _op = Owl_ndarray._owl_uniform_fun k in
   _random_basic density k (fun () -> _op scale) m n
 
 let print x = _eigen_print x.d
@@ -578,9 +578,9 @@ let pp_spmat x =
     Owl_dense_matrix_generic.print (to_dense x);
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
-let save x f = Owl_utils.marshal_to_file x f
+let save x f = Owl_io.marshal_to_file x f
 
-let load k f = Owl_utils.marshal_from_file f
+let load k f = Owl_io.marshal_from_file f
 
 (* TODO: optimise *)
 let rows x l =

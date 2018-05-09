@@ -3531,13 +3531,7 @@ let trsen
   let wr = ref (Genarray.create _kind _layout [|0;0|]) in
   let wi = ref (Genarray.create _kind _layout [|0;0|]) in
   let _select = bigarray_start Ctypes_static.Genarray select in
-
-  (* FIXME: not sure summation is really needed *)
-  let m = ref 0l in
-  for i = 0 to Owl_dense_matrix_generic.col_num select - 1 do
-    m := Int32.add !m (Owl_dense_matrix_generic.get select 0 i)
-  done;
-  let _m = Ctypes.(allocate int32_t !m) in
+  let _m = Ctypes.(allocate int32_t 0l) in
 
   let ret = match _kind with
     | Float32   -> (

@@ -74,6 +74,28 @@ extern "C" {
 #define OWL_SQRT1_2l  0.707106781186547524400844362104849039L /* 1/sqrt(2) */
 
 
+/* Machine dependent constants */
+
+#define OWL_FLOAT_MIN        1.1754943508222875e-38
+
+#define OWL_FLOAT_MAX        3.4028234663852886e+38
+
+#define OWL_SQRT_FLOAT_MIN   1.0842021724855044e-19
+
+#define OWL_DOUBLE_MIN       2.2250738585072014e-308
+
+#define OWL_DOUBLE_MAX       1.7976931348623157e+308
+
+#define OWL_SQRT_DOUBLE_MIN  1.4916681462400413e-154
+
+
+/* Inline functions */
+
+#define OWL_IS_ODD(X) (X % 2 == 1)
+
+#define OWL_IS_EVEN(X) (X % 2 == 0)
+
+
 /*
  * IEEE 754 fpu handling. Those are guaranteed to be macros
  */
@@ -139,11 +161,11 @@ extern "C" {
 #if defined(_MSC_VER)
   #define OWL_INLINE __inline
 #elif defined(__GNUC__)
-	#if defined(__STRICT_ANSI__)
-		#define OWL_INLINE __inline__
-	#else
-		#define OWL_INLINE inline
-	#endif
+  #if defined(__STRICT_ANSI__)
+    #define OWL_INLINE __inline__
+  #else
+    #define OWL_INLINE inline
+  #endif
 #else
   #define OWL_INLINE
 #endif
@@ -168,6 +190,18 @@ extern double sinc(double x);
 extern double erfinv(double x);
 
 extern double erfcinv(double x);
+
+extern double sf_fact(const int x);
+
+extern double sf_log_fact(const int x);
+
+extern double sf_doublefact(const int x);
+
+extern double sf_log_doublefact(const int x);
+
+extern double sf_combination(int n, int m);
+
+extern double sf_log_combination(int n, int m);
 
 
 #ifdef __cplusplus

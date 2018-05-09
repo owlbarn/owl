@@ -5,7 +5,7 @@
 
 open Bigarray
 
-open Owl_dense_common
+open Owl_ndarray
 
 include Owl_dense_ndarray_generic
 
@@ -270,22 +270,21 @@ let get x i j = Owl_dense_ndarray_generic.get x [|i;j|]
 let set x i j a = Owl_dense_ndarray_generic.set x [|i;j|] a
 
 
-(* TODO: optimise *)
 let swap_rows x i i' =
-  let _x = Bigarray.array2_of_genarray x in
-  _eigen_swap_rows (kind x) _x i i'
+  let m, n = shape x in
+  Owl_matrix._matrix_swap_rows (kind x) x m n i i'
 
 
 let swap_cols x j j' =
-  let _x = Bigarray.array2_of_genarray x in
-  _eigen_swap_cols (kind x) _x j j'
+  let m, n = shape x in
+  Owl_matrix._matrix_swap_cols (kind x) x m n j j'
 
 
 let transpose x =
   let k = kind x in
   let m, n = shape x in
   let y = empty k n m in
-  Owl_core._matrix_transpose k x y;
+  Owl_matrix._matrix_transpose k x y;
   y
 
 
@@ -293,7 +292,7 @@ let ctranspose x =
   let k = kind x in
   let m, n = shape x in
   let y = empty k n m in
-  Owl_core._matrix_ctranspose k x y;
+  Owl_matrix._matrix_ctranspose k x y;
   y
 
 
@@ -473,6 +472,36 @@ let scani_2d ?axis f x =
   ) x
 
 
+let iter2i_2d f x y =
+  assert (same_shape x y);
+  let m, n = shape x in
+  let x = array2_of_genarray x in
+  let y = array2_of_genarray y in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      let a = Array2.unsafe_get x i j in
+      let b = Array2.unsafe_get y i j in
+      f i j a b
+    done
+  done
+
+
+let map2i_2d f x y =
+  assert (same_shape x y);
+  let m, n = shape x in
+  let z = copy x in
+  let x = array2_of_genarray z in
+  let y = array2_of_genarray y in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      let a = Array2.unsafe_get x i j in
+      let b = Array2.unsafe_get y i j in
+      Array2.unsafe_set x i j (f i j a b)
+    done
+  done;
+  z
+
+
 let sum_cols x = sum ~axis:1 x
 
 
@@ -529,28 +558,32 @@ let of_array k x m n =
   reshape y [|m; n|]
 
 
-(* FIXME *)
-let save_txt x f =
+let save_txt ?(sep="\t") x f =
   let _op = Owl_utils.elt_to_str (kind x) in
   let h = open_out f in
   iter_rows (fun y ->
-    iter (fun z -> Printf.fprintf h "%s\t" (_op z)) y;
+    iter (fun z -> Printf.fprintf h "%s%s" (_op z) sep) y;
     Printf.fprintf h "\n"
   ) x;
   close_out h
 
-(* FIXME *)
-let load_txt k f =
+
+let load_txt ?(sep="\t") k f =
+  let _op = Owl_utils.elt_of_str k in
   let h = open_in f in
   let s = input_line h in
-  let n = List.length(Str.split (Str.regexp "\t") s) in
-  let m = ref 1 in (* counting lines in the input file *)
-  let _ = try while true do ignore(input_line h); m := !m + 1
-    done with End_of_file -> () in
-  let x = zeros k !m n in seek_in h 0;
+  let n = List.length(Str.split (Str.regexp sep) s) in
+  let m = ref 1 in (* count lines in the input file *)
+  (
+    try while true do
+      ignore(input_line h); m := !m + 1
+    done with End_of_file -> ()
+  );
+  let x = zeros k !m n in
+  seek_in h 0;
   for i = 0 to !m - 1 do
-    let s = Str.split (Str.regexp "\t") (input_line h) in
-    List.iteri (fun j y -> set x i j (float_of_string y)) s
+    let s = Str.split (Str.regexp sep) (input_line h) in
+    List.iteri (fun j y -> set x i j (_op y)) s
   done;
   close_in h; x
 
@@ -642,8 +675,8 @@ let _hadamard_20 = Array.map float_of_int
 let hadamard k n =
   (* function to build up hadamard matrix recursively *)
   let rec _make_hadamard
-    (cp_op  : ('a, 'b) Owl_dense_common_types.owl_arr_op18)
-    (neg_op : ('a, 'b) Owl_dense_common_types.owl_arr_op18)
+    (cp_op  : ('a, 'b) Owl_core_types.owl_arr_op18)
+    (neg_op : ('a, 'b) Owl_core_types.owl_arr_op18)
     len n base x =
     if len = base then ()
     else (
@@ -836,7 +869,7 @@ let cov ?b ~a =
   let n = row_num a - 1
     |> Pervasives.max 1
     |> float_of_int
-    |> Owl_dense_common._float_typ_elt (kind a)
+    |> Owl_ndarray._float_typ_elt (kind a)
   in
 
   div_scalar c n

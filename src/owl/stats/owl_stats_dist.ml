@@ -3,6 +3,11 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Bigarray
+
+open Owl_types
+
+
 (* OCaml stub for owl_stats_dist_ functions *)
 
 external std_uniform_rvs : unit -> float = "owl_stub_std_uniform_rvs"
@@ -44,6 +49,20 @@ external exponential_sf : float -> lambda:float -> float = "owl_stub_exponential
 external exponential_logsf : float -> lambda:float -> float = "owl_stub_exponential_logsf"
 
 external exponential_isf : float -> lambda:float -> float = "owl_stub_exponential_isf"
+
+external exponpow_rvs : a:float -> b:float -> float = "owl_stub_exponpow_rvs"
+
+external exponpow_pdf : float -> a:float -> b:float -> float = "owl_stub_exponpow_pdf"
+
+external exponpow_logpdf : float -> a:float -> b:float -> float = "owl_stub_exponpow_logpdf"
+
+external exponpow_cdf : float -> a:float -> b:float -> float = "owl_stub_exponpow_cdf"
+
+external exponpow_logcdf : float -> a:float -> b:float -> float = "owl_stub_exponpow_logcdf"
+
+external exponpow_sf : float -> a:float -> b:float -> float = "owl_stub_exponpow_sf"
+
+external exponpow_logsf : float -> a:float -> b:float -> float = "owl_stub_exponpow_logsf"
 
 external gaussian_rvs : mu:float -> sigma:float -> float = "owl_stub_gaussian_rvs"
 
@@ -338,3 +357,90 @@ external hypergeometric_rvs : good:int -> bad:int -> sample:int -> int = "owl_st
 external hypergeometric_pdf : int -> good:int -> bad:int -> sample:int -> float = "owl_stub_hypergeometric_pdf"
 
 external hypergeometric_logpdf : int -> good:int -> bad:int -> sample:int -> float = "owl_stub_hypergeometric_logpdf"
+
+external binomial_rvs : p:float -> n:int -> int = "owl_stub_binomial_rvs"
+
+external binomial_pdf : int -> p:float -> n:int -> float = "owl_stub_binomial_pdf"
+
+external binomial_logpdf : int -> p:float -> n:int -> float = "owl_stub_binomial_logpdf"
+
+external binomial_cdf : int -> p:float -> n:int -> float = "owl_stub_binomial_cdf"
+
+external binomial_logcdf : int -> p:float -> n:int -> float = "owl_stub_binomial_logcdf"
+
+external binomial_sf : int -> p:float -> n:int -> float = "owl_stub_binomial_sf"
+
+external binomial_logsf : int -> p:float -> n:int -> float = "owl_stub_binomial_logsf"
+
+external _multinomial_rvs : k:int -> n:int -> p:(float, float64_elt) owl_arr -> (int32, int32_elt) owl_arr -> unit = "owl_stub_multinomial_rvs"
+
+let multinomial_rvs n ~p =
+  let k = Array.length p in
+  let _p = Genarray.create float64 c_layout [|k|] in
+  let _s = Genarray.create int32 c_layout [|k|] in
+  Owl_utils.Array.balance_last 1. p |>
+  Array.iteri (fun i a -> Genarray.set _p [|i|] a);
+  _multinomial_rvs ~k ~n ~p:_p _s;
+  Array.init k (fun i -> Genarray.get _s [|i|] |> Int32.to_int)
+
+external _multinomial_pdf : k:int -> p:(float, float64_elt) owl_arr -> (int32, int32_elt) owl_arr -> float = "owl_stub_multinomial_pdf"
+
+let multinomial_pdf x ~p =
+  let k = Array.length x in
+  assert (k = Array.length p);
+  let _p = Genarray.create float64 c_layout [|k|] in
+  let _s = Genarray.create int32 c_layout [|k|] in
+  Owl_utils.Array.balance_last 1. p |>
+  Array.iteri (fun i a -> Genarray.set _p [|i|] a);
+  Array.iteri (fun i a -> Genarray.set _s [|i|] (Int32.of_int a)) x;
+  _multinomial_pdf ~k ~p:_p _s
+
+external _multinomial_logpdf : k:int -> p:(float, float64_elt) owl_arr -> (int32, int32_elt) owl_arr -> float = "owl_stub_multinomial_logpdf"
+
+let multinomial_logpdf x ~p =
+  let k = Array.length x in
+  assert (k = Array.length p);
+  let _p = Genarray.create float64 c_layout [|k|] in
+  let _s = Genarray.create int32 c_layout [|k|] in
+  Owl_utils.Array.balance_last 1. p |>
+  Array.iteri (fun i a -> Genarray.set _p [|i|] a);
+  Array.iteri (fun i a -> Genarray.set _s [|i|] (Int32.of_int a)) x;
+  _multinomial_logpdf ~k ~p:_p _s
+
+let categorical_rvs p =
+  let x = multinomial_rvs 1 ~p in
+  Owl_utils.Array.index_of x 1
+
+external _dirichlet_rvs : k:int -> alpha:(float, float64_elt) owl_arr -> theta:(float, float64_elt) owl_arr -> unit = "owl_stub_dirchlet_rvs"
+
+let dirichlet_rvs ~alpha =
+  let k = Array.length alpha in
+  let _a = Genarray.create float64 c_layout [|k|] in
+  let _b = Genarray.create float64 c_layout [|k|] in
+  Array.iteri (fun i c -> Genarray.set _a [|i|] c) alpha;
+  _dirichlet_rvs ~k ~alpha:_a ~theta:_b;
+  Array.init k (fun i -> Genarray.get _b [|i|])
+
+external _dirichlet_pdf : k:int -> alpha:(float, float64_elt) owl_arr -> theta:(float, float64_elt) owl_arr -> float = "owl_stub_dirchlet_pdf"
+
+let dirichlet_pdf x ~alpha =
+  if Owl_base_maths.is_simplex x = false then
+    raise Owl_exception.NOT_SIMPLEX;
+  let k = Array.length alpha in
+  let _a = Genarray.create float64 c_layout [|k|] in
+  let _x = Genarray.create float64 c_layout [|k|] in
+  Array.iteri (fun i c -> Genarray.set _a [|i|] c) alpha;
+  Array.iteri (fun i c -> Genarray.set _x [|i|] c) x;
+  _dirichlet_pdf ~k ~alpha:_a ~theta:_x
+
+external _dirichlet_logpdf : k:int -> alpha:(float, float64_elt) owl_arr -> theta:(float, float64_elt) owl_arr -> float = "owl_stub_dirchlet_logpdf"
+
+let dirichlet_logpdf x ~alpha =
+  if Owl_base_maths.is_simplex x = false then
+    raise Owl_exception.NOT_SIMPLEX;
+  let k = Array.length alpha in
+  let _a = Genarray.create float64 c_layout [|k|] in
+  let _x = Genarray.create float64 c_layout [|k|] in
+  Array.iteri (fun i c -> Genarray.set _a [|i|] c) alpha;
+  Array.iteri (fun i c -> Genarray.set _x [|i|] c) x;
+  _dirichlet_logpdf ~k ~alpha:_a ~theta:_x

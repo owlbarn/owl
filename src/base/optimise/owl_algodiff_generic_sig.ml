@@ -160,6 +160,9 @@ module type Sig = sig
     val sum : ?axis:int -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val sum_reduce : ?axis:int array -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val mean : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
@@ -187,7 +190,7 @@ module type Sig = sig
     val softsign: t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-    val softmax : t -> t
+    val softmax : ?axis:int -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val dropout : ?rate:float -> t -> t

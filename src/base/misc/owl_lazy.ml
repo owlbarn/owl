@@ -449,7 +449,7 @@ module Make (A : Ndarray_Mutable) = struct
 
   let softsign x = _make_node "softsign" (Fun01 A.softsign_) [|x|]
 
-  let softmax x = _make_node "softmax" (Fun01 A.softmax_) [|x|]
+  let softmax ?axis x = _make_node "softmax" (Fun01 (A.softmax_ ?axis)) [|x|]
 
   let sigmoid x = _make_node "sigmoid" (Fun01 A.sigmoid_) [|x|]
 

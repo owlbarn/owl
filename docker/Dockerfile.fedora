@@ -1,0 +1,44 @@
+############################################################
+# Dockerfile to build Owl docker image
+# Based on ryanrhymes/owl master branch
+# By Liang Wang <liang.wang@cl.cam.ac.uk>
+############################################################
+
+FROM ocaml/opam2:fedora-26-ocaml-4.06.0
+USER opam
+
+
+##################### PREREQUISITES ########################
+
+RUN sudo yum update -y
+RUN sudo yum -y install git wget unzip m4 pkg-config gcc-gfortran
+RUN sudo dnf -y install openblas-devel
+
+RUN opam update && opam switch 4.06.0 && eval $(opam config env)
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop eigen base stdio configurator alcotest
+
+
+#################### SET UP ENV VARS #######################
+
+ENV PATH /home/opam/.opam/4.06.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+ENV CAML_LD_LIBRARY_PATH /home/opam/.opam/4.06.0/lib/stublibs
+
+
+################## INSTALL OWL LIBRARY #####################
+
+ENV OWLPATH /home/opam/owl
+RUN cd /home/opam && git clone https://github.com/ryanrhymes/owl.git
+
+RUN rm -f $OWLPATH/src/owl/misc/owl_plot.* \
+    && sed -i '/plplot/d' $OWLPATH/src/owl/jbuild \
+    && sed -i '/module Plot = Owl_plot/d' $OWLPATH/src/owl/owl.ml
+
+RUN sed -i -- 's:/usr/local/opt/openblas/lib:/usr/lib/x86_64-linux-gnu/:g' $OWLPATH/src/owl/config/configure.ml  # FIXME: hacking
+RUN make -C $OWLPATH && make -C $OWLPATH install && make -C $OWLPATH clean
+
+
+############## SET UP DEFAULT CONTAINER VARS ##############
+
+RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit
+WORKDIR $OWLPATH
+ENTRYPOINT /bin/bash

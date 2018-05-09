@@ -79,7 +79,7 @@ module Activation : sig
     | Relu
     | Sigmoid
     | HardSigmoid
-    | Softmax
+    | Softmax of int
     | Softplus
     | Softsign
     | Tanh
@@ -1273,7 +1273,7 @@ module Normalisation : sig
 
   val create : ?training:bool -> ?decay:float -> ?mu:arr -> ?var:arr -> int -> neuron_typ
   (** Create the neuron. *)
-  
+
   val connect : int array -> neuron_typ -> unit
   (** Connect this neuron to others in a neural network. *)
 

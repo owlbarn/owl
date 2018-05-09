@@ -17,28 +17,43 @@ end
 module Generic = struct
   include Owl_dense_matrix_generic
   include Operator
+  (* inject function aliases *)
+  let inv = Owl_linalg_generic.inv
+  let mpow = Owl_linalg_generic.mpow
 end
 
 
 module S = struct
   include Owl_dense_matrix_s
   include Operator
+  (* inject function aliases *)
+  let inv = Owl_linalg_s.inv
+  let mpow = Owl_linalg_s.mpow
 end
 
 
 module D = struct
   include Owl_dense_matrix_d
   include Operator
+  (* inject function aliases *)
+  let inv = Owl_linalg_d.inv
+  let mpow = Owl_linalg_d.mpow
 end
 
 
 module C = struct
   include Owl_dense_matrix_c
   include Operator
+  (* inject function aliases *)
+  let inv = Owl_linalg_c.inv
+  let mpow = Owl_linalg_c.mpow
 end
 
 
 module Z = struct
   include Owl_dense_matrix_z
   include Operator
+  (* inject function aliases *)
+  let inv = Owl_linalg_z.inv
+  let mpow = Owl_linalg_z.mpow
 end

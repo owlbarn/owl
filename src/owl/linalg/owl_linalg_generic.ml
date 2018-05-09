@@ -25,6 +25,38 @@ module M = struct
 end
 
 
+(* Helper functions *)
+
+let is_square x =
+  let m, n = M.shape x in
+  m = n
+
+
+let select_ev keyword ev =
+  let k = M.kind ev in
+  let m, n = M.shape ev in
+  let s = M.zeros int32 m n in
+  let _ = match keyword with
+    | `LHP -> (
+        let _op = Owl_ndarray._re_elt k in
+        M.iteri_2d (fun i j a -> if _op a < 0. then M.set s i j 1l) ev
+      )
+    | `RHP -> (
+        let _op = Owl_ndarray._re_elt k in
+        M.iteri_2d (fun i j a -> if _op a >= 0. then M.set s i j 1l) ev
+      )
+    | `UDI -> (
+        let _op = fun a -> Owl_ndarray.(_abs_elt k a |> _re_elt k) in
+        M.iteri_2d (fun i j a -> if _op a < 1. then M.set s i j 1l) ev
+      )
+    | `UDO -> (
+        let _op = fun a -> Owl_ndarray.(_abs_elt k a |> _re_elt k) in
+        M.iteri_2d (fun i j a -> if _op a >= 1. then M.set s i j 1l) ev
+      )
+  in
+  s
+
+
 (* LU decomposition *)
 
 let lu x =
@@ -66,7 +98,7 @@ let det x =
   let d = ref (Owl_const.one (M.kind x)) in
   let c = ref 0 in
 
-  let _mul_op = Owl_dense_common._mul_elt (M.kind x) in
+  let _mul_op = Owl_ndarray._mul_elt (M.kind x) in
   for i = 0 to m - 1 do
     d := _mul_op !d (M.get a i i);
     (* NOTE: +1 to adjust to Fortran index *)
@@ -75,7 +107,7 @@ let det x =
   done;
 
   match Owl_maths.is_odd !c with
-  | true  -> Owl_dense_common._neg_elt (M.kind x) !d
+  | true  -> Owl_ndarray._neg_elt (M.kind x) !d
   | false -> !d
 
 
@@ -90,9 +122,9 @@ let logdet x =
   let d = ref (Owl_const.zero _kind) in
   let c = ref 0 in
 
-  let _add_op = Owl_dense_common._add_elt _kind in
-  let _log_op = Owl_dense_common._log_elt _kind in
-  let _neg_op = Owl_dense_common._neg_elt _kind in
+  let _add_op = Owl_ndarray._add_elt _kind in
+  let _log_op = Owl_ndarray._log_elt _kind in
+  let _neg_op = Owl_ndarray._neg_elt _kind in
 
   for i = 0 to m - 1 do
     d := _add_op !d (_log_op (M.get a i i));
@@ -102,7 +134,7 @@ let logdet x =
   done;
 
   match Owl_maths.is_odd !c with
-  | true  -> Owl_dense_common._neg_elt _kind !d
+  | true  -> Owl_ndarray._neg_elt _kind !d
   | false -> !d
 
 
@@ -277,26 +309,95 @@ let chol ?(upper=true) x =
   | false -> Owl_lapacke.potrf 'L' x |> M.tril
 
 
+(* Schur Decomposition *)
+
+let _magic_complex
+  : type a b c d. (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
+  = fun otyp re im ->
+  let ityp = M.kind re in
+  match ityp, otyp with
+  | Float32, Complex32   -> M.complex float32 complex32 re im
+  | Float64, Complex64   -> M.complex float64 complex64 re im
+  | Complex32, Complex32 -> re
+  | Complex64, Complex64 -> re
+  | _                    -> failwith "owl_linalg_generic:_magic_complex"
+
+
 let schur
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x ->
+  assert (is_square x);
   let x = M.copy x in
   let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
-
-  let w = match (M.kind x) with
-    | Float32   -> M.complex float32 complex32 wr wi |> Obj.magic
-    | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
-    | Complex32 -> Obj.magic wr
-    | Complex64 -> Obj.magic wr
-    | _         -> failwith "owl_linalg_generic:schur"
-  in
+  let w = _magic_complex otyp wr wi in
   t, z, w
 
 
 let schur_tz x =
-  let x = M.copy x in
-  let t, z, _, _ = Owl_lapacke.gees ~jobvs:'V' ~a:x in
+  assert (is_square x);
+  let a = M.copy x in
+  let t, z, _, _ = Owl_lapacke.gees ~jobvs:'V' ~a in
   t, z
+
+
+let ordschur
+  : type a b c d. otyp:(c, d) kind -> select:(int32, int32_elt) t -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
+  = fun ~otyp ~select t q ->
+  let t = M.copy t in
+  let q = M.copy q in
+  M.iter (fun a -> assert (a = 0l || a = 1l)) select;
+  let ts, zs, wr, wi = Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q in
+  let ws = _magic_complex otyp wr wi in
+  ts, zs, ws
+
+
+
+(* Generalised Schur Decomposition *)
+
+let qz
+  : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (c, d) t
+  = fun ~otyp x y ->
+  assert (is_square x);
+  assert (is_square y);
+  let a = M.copy x in
+  let b = M.copy y in
+  let s, t, ar, ai, bt, q, z = Owl_lapacke.gges ~jobvsl:'V' ~jobvsr:'V' ~a ~b in
+  let alpha = _magic_complex otyp ar ai in
+  let beta = M.cast otyp bt in
+  let e = M.(alpha / beta) in
+  s, t, q, z, e
+
+
+let ordqz
+  : type a b c d. otyp:(c, d) kind -> select:(int32, int32_elt) t -> (a, b) t -> (a, b) t -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (c, d) t
+  = fun ~otyp ~select a b q z ->
+  let a = M.copy a in
+  let b = M.copy b in
+  let q = M.copy q in
+  let z = M.copy z in
+  let a, b, ar, ai, bt, q, z = Owl_lapacke.tgsen ~select ~a ~b ~q ~z in
+  let alpha = _magic_complex otyp ar ai in
+  let beta = M.cast otyp bt in
+  let e = M.(alpha / beta) in
+  a, b, q, z, e
+
+
+let qzvals
+  : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
+  = fun ~otyp x y ->
+  assert (is_square x);
+  assert (is_square y);
+  let a = M.copy x in
+  let b = M.copy y in
+  let ar, ai, bt, _, _ = Owl_lapacke.ggev ~jobvl:'N' ~jobvr:'N' ~a ~b in
+  let alpha = _magic_complex otyp ar ai in
+  let beta = M.cast otyp bt in
+  M.(alpha / beta)
+
+
+(* TODO: RQ Decomposition *)
+
+let rq x = ()
 
 
 (* Eigenvalue problem *)
@@ -444,24 +545,19 @@ let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
 
 (* Check matrix properties *)
 
-let is_square x =
-  let m, n = M.shape x in
-  m = n
+let is_triu x = Owl_matrix._matrix_is_triu (M.kind x) x
 
 
-let is_triu x = Owl_core._matrix_is_triu (M.kind x) x
+let is_tril x = Owl_matrix._matrix_is_tril (M.kind x) x
 
 
-let is_tril x = Owl_core._matrix_is_tril (M.kind x) x
+let is_symmetric x = Owl_matrix._matrix_is_symmetric (M.kind x) x
 
 
-let is_symmetric x = Owl_core._matrix_is_symmetric (M.kind x) x
+let is_hermitian x = Owl_matrix._matrix_is_hermitian (M.kind x) x
 
 
-let is_hermitian x = Owl_core._matrix_is_hermitian (M.kind x) x
-
-
-let is_diag x = Owl_core._matrix_is_diag (M.kind x) x
+let is_diag x = Owl_matrix._matrix_is_diag (M.kind x) x
 
 
 let is_posdef x =
@@ -505,18 +601,18 @@ let norm ?(p=2.) x =
 let vecnorm ?(p=2.) x =
   let k = M.kind x in
   if p = 1. then
-    M.l1norm' x |> Owl_dense_common._re_elt k
+    M.l1norm' x |> Owl_ndarray._re_elt k
   else if p = 2. then
-    M.l2norm' x |> Owl_dense_common._re_elt k
+    M.l2norm' x |> Owl_ndarray._re_elt k
   else (
     let v = M.flatten x |> M.abs in
     if p = infinity then
-      M.max' v |> Owl_dense_common._re_elt k
+      M.max' v |> Owl_ndarray._re_elt k
     else if p = neg_infinity then
-      M.min' v |> Owl_dense_common._re_elt k
+      M.min' v |> Owl_ndarray._re_elt k
     else (
-      M.pow_scalar_ v (Owl_dense_common._float_typ_elt k p);
-      let a = M.sum' v |> Owl_dense_common._re_elt k in
+      M.pow_scalar_ v (Owl_ndarray._float_typ_elt k p);
+      let a = M.sum' v |> Owl_ndarray._re_elt k in
       a ** (1. /. p)
     )
   )
@@ -609,9 +705,9 @@ let linreg x y =
   let k = M.kind x in
   let p = M.get (M.cov ~a:x ~b:y) 0 1 in
   let q = M.get (M.var ~axis:0 x) 0 0 in
-  let b = Owl_dense_common._div_elt k p q in
-  let c = Owl_dense_common._mul_elt k b (M.mean' x) in
-  let a = Owl_dense_common._sub_elt k (M.mean' y) c in
+  let b = Owl_ndarray._div_elt k p q in
+  let c = Owl_ndarray._mul_elt k b (M.mean' x) in
+  let a = Owl_ndarray._sub_elt k (M.mean' y) c in
   a, b
 
 
@@ -626,11 +722,66 @@ let pinv ?tol x =
     | Some tol -> tol
     | None     -> eps *. a *. b
   in
-  let tol = Owl_dense_common._float_typ_elt (M.kind x) t in
+  let tol = Owl_ndarray._float_typ_elt (M.kind x) t in
   let s' = M.(reci_tol ~tol s |> diagm) in
   let ut = M.ctranspose u in
   let v = M.ctranspose vt in
   M.(v *@ s' *@ ut)
+
+
+let sylvester a b c =
+  let ra, qa = schur_tz a in
+  let rb, qb = schur_tz b in
+  let d = M.((ctranspose qa) *@ (c *@ qb)) in
+  let y, s = Owl_lapacke.trsyl 'N' 'N' 1 ra rb d in
+  let z = M.(qa *@ (y *@ (ctranspose qb))) in
+  M.mul_scalar_ z (Owl_ndarray._float_typ_elt (M.kind c) (1. /. s));
+  z
+
+
+let lyapunov a c =
+  let r, q = schur_tz a in
+  let d = M.((ctranspose q) *@ (c *@ q)) in
+  let tb = _get_trans_code (M.kind c) in
+  let y, s = Owl_lapacke.trsyl 'N' tb 1 r r d in
+  let z = M.(q *@ (y *@ (ctranspose q))) in
+  M.mul_scalar_ z (Owl_ndarray._float_typ_elt (M.kind c) (1. /. s));
+  z
+
+
+let care a b q r =
+  let g = M.(b *@ (inv r) *@ (transpose b)) in
+  let z = M.(concat_vh [| [| a    ; neg g             |];
+                          [| neg q; neg (transpose a) |] |]) in
+
+  let t, u, wr, _ = Owl_lapacke.gees ~jobvs:'V' ~a:z in
+  let select = M.(zeros int32 (row_num wr) (col_num wr)) in
+  M.iteri_2d (fun i j re -> if re < 0. then M.set select i j 1l) wr;
+  ignore (Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q:u);
+
+  let m, n = M.shape u in
+  let u0 = M.get_slice [ [0; m / 2 - 1]; [0; n / 2 - 1] ] u in
+  let u1 = M.get_slice [ [m / 2; m - 1]; [0; n / 2 - 1] ] u in
+  M.(u1 *@ (inv u0))
+
+
+let dare a b q r =
+  let g = M.(b *@ (inv r) *@ (transpose b)) in
+  let c = M.transpose (inv a) in
+  let z = M.(concat_vh [| [| a + g *@ c *@ q; (neg g) *@ c |];
+                          [| (neg c) *@ q   ; c            |] |]) in
+
+  let t, u, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:z in
+  let select = M.(zeros int32 (row_num wr) (col_num wr)) in
+  M.iter2i_2d (fun i j re im ->
+    if Complex.(norm {re; im}) <= 1. then M.set select i j 1l
+  ) wr wi;
+  ignore (Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q:u);
+
+  let m, n = M.shape u in
+  let u0 = M.get_slice [ [0; m / 2 - 1]; [0; n / 2 - 1] ] u in
+  let u1 = M.get_slice [ [m / 2; m - 1]; [0; n / 2 - 1] ] u in
+  M.(u1 *@ (inv u0))
 
 
 (* helper functions *)
@@ -653,11 +804,31 @@ let peakflops ?(n=2000) () =
 
 (* Matrix functions *)
 
+
+let mpow x r =
+  let frac_part, _ = Pervasives.modf r in
+  if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
+  let m, n = M.shape x in assert (m = n);
+  (* integer matrix powers using floats: *)
+  let rec _mpow acc s =
+    if s = 1. then acc
+    else if mod_float s 2. = 0.  (* exponent is even? *)
+    then even_mpow acc s
+    else M.dot x (even_mpow acc (s -. 1.))
+  and even_mpow acc s =
+    let acc2 = _mpow acc (s /. 2.) in
+    M.dot acc2 acc2
+  in  (* r is equal to an integer: *)
+  if r = 0.0 then M.(eye (kind x)) n
+  else if r > 0.0 then _mpow x r
+  else _mpow (inv x) (-. r)
+
+
 (* DEBUG: initial expm implemented with eig, obsoleted *)
 let expm_eig
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (c, d) t
   = fun ~otyp x ->
-  assert (is_square x);
+  Owl_exception.(check (is_square x) NOT_SQUARE);
   let v, w = eig ~otyp x in
   let vi = inv v in
   let u = M.(exp w |> diagm) in
@@ -665,7 +836,7 @@ let expm_eig
 
 
 let expm x =
-  assert (is_square x);
+  Owl_exception.(check (is_square x) NOT_SQUARE);
   (* trivial case *)
   if M.shape x = (1, 1) then M.exp x
   else (
@@ -674,7 +845,7 @@ let expm x =
     let norm_x = norm ~p:1. x in
     (* for small norm, use lower order Padé-approximation *)
     if norm_x <= 2.097847961257068 then (
-      let c = Array.map (Owl_dense_common._float_typ_elt (M.kind x)) (
+      let c = Array.map (Owl_ndarray._float_typ_elt (M.kind x)) (
         if norm_x > 0.9504178996162932 then
           [|17643225600.; 8821612800.; 2075673600.; 302702400.; 30270240.; 2162160.; 110880.; 3960.; 90.; 1.|]
         else if norm_x > 0.2539398330063230 then
@@ -710,12 +881,12 @@ let expm x =
       let t = ceil s in
       let x =
         if s > 0. then
-          Owl_dense_common._float_typ_elt (M.kind x) (2. ** t)
+          Owl_ndarray._float_typ_elt (M.kind x) (2. ** t)
           |> M.div_scalar x
         else x
       in
 
-      let c = Array.map (Owl_dense_common._float_typ_elt (M.kind x))
+      let c = Array.map (Owl_ndarray._float_typ_elt (M.kind x))
         [|64764752532480000.; 32382376266240000.; 7771770303897600.;
           1187353796428800.;  129060195264000.;   10559470521600.;
           670442572800.;      33522128640.;       1323241920.;
@@ -858,17 +1029,17 @@ let tanm x =
 
 
 let sinhm x =
-  let a = Owl_dense_common._float_typ_elt (M.kind x) 0.5 in
+  let a = Owl_ndarray._float_typ_elt (M.kind x) 0.5 in
   M.( a $* ((expm x) - (expm (neg x))) )
 
 
 let coshm x =
-  let a = Owl_dense_common._float_typ_elt (M.kind x) 0.5 in
+  let a = Owl_ndarray._float_typ_elt (M.kind x) 0.5 in
   M.( a $* ((expm x) + (expm (neg x))) )
 
 
 let sinhcoshm x =
-  let a = Owl_dense_common._float_typ_elt (M.kind x) 0.5 in
+  let a = Owl_ndarray._float_typ_elt (M.kind x) 0.5 in
   let b = expm x in
   let c = expm (M.neg x) in
   M.(a $* (b - c)), M.(a $* (b + c))
@@ -881,7 +1052,7 @@ let tanhm x =
 
 
 (* TODO *)
-let logm x = "logm: not implemented"
+let logm x = failwith "logm: not implemented"
 
 
 (* TODO *)

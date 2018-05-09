@@ -4,6 +4,7 @@
  */
 
 #include "owl_core.h"
+#include "owl_core_engine.h"
 
 
 #define OWL_ENABLE_TEMPLATE
@@ -16,7 +17,7 @@
 #define FUNCTION(prefix, name) prefix ## _ ## float32_ndarray_get ## _ ## name
 #define TYPE float
 #define MAPFUN(x, y) y = x
-#include "owl_slicing_basic_impl.c"
+#include OWL_SLICING_BASIC_IMPL
 #undef MAPFUN
 #undef TYPE
 #undef FUNCTION
@@ -25,7 +26,7 @@
 #define FUNCTION(prefix, name) prefix ## _ ## float64_ndarray_get ## _ ## name
 #define TYPE double
 #define MAPFUN(x, y) y = x
-#include "owl_slicing_basic_impl.c"
+#include OWL_SLICING_BASIC_IMPL
 #undef MAPFUN
 #undef TYPE
 #undef FUNCTION
@@ -34,7 +35,7 @@
 #define FUNCTION(prefix, name) prefix ## _ ## complex32_ndarray_get ## _ ## name
 #define TYPE _Complex float
 #define MAPFUN(x, y) y = x
-#include "owl_slicing_basic_impl.c"
+#include OWL_SLICING_BASIC_IMPL
 #undef MAPFUN
 #undef TYPE
 #undef FUNCTION
@@ -43,7 +44,7 @@
 #define FUNCTION(prefix, name) prefix ## _ ## complex64_ndarray_get ## _ ## name
 #define TYPE _Complex double
 #define MAPFUN(x, y) y = x
-#include "owl_slicing_basic_impl.c"
+#include OWL_SLICING_BASIC_IMPL
 #undef MAPFUN
 #undef TYPE
 #undef FUNCTION
@@ -54,7 +55,7 @@
 #define FUNCTION(prefix, name) prefix ## _ ## float32_ndarray_set ## _ ## name
 #define TYPE float
 #define MAPFUN(x, y) x = y
-#include "owl_slicing_basic_impl.c"
+#include OWL_SLICING_BASIC_IMPL
 #undef MAPFUN
 #undef TYPE
 #undef FUNCTION
@@ -63,7 +64,7 @@
 #define FUNCTION(prefix, name) prefix ## _ ## float64_ndarray_set ## _ ## name
 #define TYPE double
 #define MAPFUN(x, y) x = y
-#include "owl_slicing_basic_impl.c"
+#include OWL_SLICING_BASIC_IMPL
 #undef MAPFUN
 #undef TYPE
 #undef FUNCTION
@@ -72,7 +73,7 @@
 #define FUNCTION(prefix, name) prefix ## _ ## complex32_ndarray_set ## _ ## name
 #define TYPE _Complex float
 #define MAPFUN(x, y) x = y
-#include "owl_slicing_basic_impl.c"
+#include OWL_SLICING_BASIC_IMPL
 #undef MAPFUN
 #undef TYPE
 #undef FUNCTION
@@ -81,7 +82,7 @@
 #define FUNCTION(prefix, name) prefix ## _ ## complex64_ndarray_set ## _ ## name
 #define TYPE _Complex double
 #define MAPFUN(x, y) x = y
-#include "owl_slicing_basic_impl.c"
+#include OWL_SLICING_BASIC_IMPL
 #undef MAPFUN
 #undef TYPE
 #undef FUNCTION
