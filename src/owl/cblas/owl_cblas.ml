@@ -8,7 +8,13 @@ open Bigarray
 open Owl_cblas_basic
 
 
+(** Type definition *)
+
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
+
+type side = Owl_cblas_basic.cblas_side
+
+type uplo = Owl_cblas_basic.cblas_uplo
 
 
 (** Helper functions *)
@@ -43,10 +49,12 @@ let _cblas_trans : type a b . (a, b) kind -> bool -> cblas_transpose
 let gemm ?(transa=false) ?(transb=false) ?alpha ?beta ~a ~b ~c =
   let m, k = _matrix_shape a in
   let l, n = _matrix_shape b in
+  let p, q = _matrix_shape c in
 
-  let _m, _k = if transa then k, m else m, k in
-  let _l, _n = if transb then n, l else l, n in
-  assert (_k = _l && _m > 0 && _n > 0);
+  let m, k = if transa then k, m else m, k in
+  let l, n = if transb then n, l else l, n in
+  assert (k = l && m > 0 && n > 0);
+  assert (p = m && q = n);
 
   let _kind = Genarray.kind a in
   let alpha = match alpha with
@@ -69,3 +77,59 @@ let gemm ?(transa=false) ?(transb=false) ?alpha ?beta ~a ~b ~c =
   let c = _flatten c |> array1_of_genarray in
 
   Owl_cblas_basic.gemm layout transa transb m n k alpha a lda b ldb beta c ldc
+
+
+let symm ?(side=CblasRight) ?(uplo=CblasUpper) ?alpha ?beta ~a ~b ~c =
+  let m, k = _matrix_shape a in
+  let l, n = _matrix_shape b in
+  let p, q = _matrix_shape c in
+  assert (k = l && m > 0 && n > 0);
+  assert (p = m && q = n && p = q);
+
+  let _kind = Genarray.kind a in
+  let alpha = match alpha with
+    | Some alpha -> alpha
+    | None       -> Owl_const.one _kind
+  in
+  let beta = match beta with
+    | Some beta -> beta
+    | None      -> Owl_const.zero _kind
+  in
+  let layout = Owl_cblas_basic.CblasRowMajor in
+  let lda = match side with | CblasLeft -> m | CblasRight -> n in
+  let ldb = n in
+  let ldc = n in
+
+  let a = _flatten a |> array1_of_genarray in
+  let b = _flatten b |> array1_of_genarray in
+  let c = _flatten c |> array1_of_genarray in
+
+  Owl_cblas_basic.symm layout side uplo m n alpha a lda b ldb beta c ldc
+
+
+let syrk ?(uplo=CblasUpper) ?(trans=false) ?alpha ?beta ~a ~c =
+  let n, k = _matrix_shape a in
+  let p, q = _matrix_shape c in
+
+  let n, k = if trans then k, n else n, k in
+  assert (n > 0 && k > 0);
+  assert (p = n && q = n);
+
+  let _kind = Genarray.kind a in
+  let alpha = match alpha with
+    | Some alpha -> alpha
+    | None       -> Owl_const.one _kind
+  in
+  let beta = match beta with
+    | Some beta -> beta
+    | None      -> Owl_const.zero _kind
+  in
+  let layout = Owl_cblas_basic.CblasRowMajor in
+  let trans = _cblas_trans _kind trans in
+  let lda = match trans with | CblasNoTrans -> k | _  -> n in
+  let ldc = n in
+
+  let a = _flatten a |> array1_of_genarray in
+  let c = _flatten c |> array1_of_genarray in
+
+  Owl_cblas_basic.syrk layout uplo trans n k alpha a lda beta c ldc

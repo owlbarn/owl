@@ -1,4 +1,4 @@
-### 0.3.8
+### 0.3.8 (in progress)
 
 * Add initial support for dataframe functionality.
 * Add IO module for Owl's specific file operations.
@@ -9,6 +9,7 @@
 * Fix broadcasting issue in Algodiff module.
 * Support negative axises in some ndarray functions.
 * Add more statistical distribution functions.
+* Add another higher level wrapper for CBLAS module.
 
 
 ### 0.3.7 (2018-04-25)
