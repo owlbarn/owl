@@ -8,6 +8,9 @@ open Bigarray
 open Owl_cblas_basic
 
 
+type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
+
+
 let _matrix_shape x =
   let s = Genarray.dims x in
   assert (Array.length s = 2);
