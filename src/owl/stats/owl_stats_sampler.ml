@@ -4,6 +4,28 @@
  *)
 
 
+let rejection ~m ~proprvs ~proppdf ~pdf nsamples =
+  assert (m > 0.);
+  let log_m = log m in
+  let accept = ref 0 in
+  let reject = ref 0 in
+  let samples = Array.make nsamples 0. in
+
+  while !accept < nsamples do
+    let x = proprvs () in
+    let a = log (Owl_stats_dist.std_uniform_rvs ()) in
+    let b = (log (pdf x)) -. (log (proppdf x)) -. log_m in
+    assert (b < 0.);
+    if a < b then (
+      samples.(!accept) <- x;
+      accept := !accept + 1;
+    )
+    else reject := !reject + 1
+  done;
+
+  samples
+
+
 let metropolis ?burnin ?thin ~initial ~proprvs ~proppdf ~pdf nsamples =
   let burnin = match burnin with Some a -> a | None -> 1000 in
   let thin = match thin with Some a -> a | None -> 10 in
@@ -37,9 +59,6 @@ let metropolis ?burnin ?thin ~initial ~proprvs ~proppdf ~pdf nsamples =
 
 
 let gibbs = None
-
-
-let rejection = None
 
 
 let adaptive_rejection = None
