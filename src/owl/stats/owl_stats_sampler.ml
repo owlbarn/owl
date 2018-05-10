@@ -3,12 +3,17 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+type 'a t = {
+  samples : 'a array;
+  accept  : float;
+}
+
 
 let rejection ~m ~proprvs ~proppdf ~pdf nsamples =
   assert (m > 0.);
   let log_m = log m in
   let accept = ref 0 in
-  let reject = ref 0 in
+  let total = ref 0 in
   let samples = Array.make nsamples 0. in
 
   while !accept < nsamples do
@@ -19,11 +24,18 @@ let rejection ~m ~proprvs ~proppdf ~pdf nsamples =
     if a < b then (
       samples.(!accept) <- x;
       accept := !accept + 1;
-    )
-    else reject := !reject + 1
+    );
+    total := !total + 1
   done;
 
-  samples
+  let accept = (float_of_int !accept) /. (float_of_int !total) in
+  { samples; accept }
+
+
+let ars = None
+
+
+let arms = None
 
 
 let metropolis ?burnin ?thin ~initial ~proprvs ~proppdf ~pdf nsamples =
@@ -53,12 +65,18 @@ let metropolis ?burnin ?thin ~initial ~proprvs ~proppdf ~pdf nsamples =
     samples.(i) <- x'
   done;
 
-  Owl_utils.Array.filteri (fun i _ ->
+  let samples = Owl_utils.Array.filteri (fun i _ ->
     (i >= burnin) && (i mod thin = 0)
   ) samples
+  in
+  let accept = (float_of_int !accept) /. (float_of_int niter) in
+  { samples; accept }
 
 
 let gibbs = None
+
+
+let slice = None
 
 
 let adaptive_rejection = None
