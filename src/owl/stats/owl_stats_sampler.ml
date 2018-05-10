@@ -80,3 +80,14 @@ let slice = None
 
 
 let adaptive_rejection = None
+
+
+let to_string t =
+  Printf.sprintf "[ samples: %i; accept_ratio: %g ]"
+  (Array.length t.samples) t.accept
+
+
+let pp_t formatter t =
+  Format.open_box 0;
+  Format.fprintf formatter "%s" (to_string t);
+  Format.close_box ()

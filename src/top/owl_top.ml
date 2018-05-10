@@ -15,6 +15,7 @@ let printers = [
   "Owl.Graph.pp_node";
   "Owl.Nlp.Vocabulary.pp_vocab";
   "Owl_pretty.pp_dataframe";
+  "Owl_stats_sampler.pp_t";
 ]
 
 
