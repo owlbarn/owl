@@ -573,6 +573,6 @@ from eigen values ``ev`` according to the passed in keywards.
 val peakflops : ?n:int -> unit -> float
 (**
 ``peakflops ()`` returns the peak number of float point operations using
-``Owl_cblas.dgemm`` function. The default matrix size is ``2000 x 2000``, but you
-can change this by setting ``n`` to other numbers as you like.
+``Owl_cblas_basic.dgemm`` function. The default matrix size is ``2000 x 2000``,
+but you can change this by setting ``n`` to other numbers as you like.
  *)
