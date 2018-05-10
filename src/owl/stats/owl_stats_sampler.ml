@@ -30,7 +30,7 @@ let metropolis ?burnin ?thin ~initial ~proprvs ~proppdf ~pdf nsamples =
     if b then accept := !accept + 1;
     samples.(i) <- x'
   done;
-  Owl_log.info "accept ratio: %g" (float_of_int (!accept) /. float_of_int niter);
+
   Owl_utils.Array.filteri (fun i _ ->
     (i >= burnin) && (i mod thin = 0)
   ) samples
