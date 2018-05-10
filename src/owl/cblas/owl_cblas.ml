@@ -11,19 +11,21 @@ open Owl_cblas_basic
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 
 
+(** Helper functions *)
+
 let _matrix_shape x =
   let s = Genarray.dims x in
   assert (Array.length s = 2);
   s.(0), s.(1)
 
 
-let flatten x =
+let _flatten x =
   let d = Genarray.dims x in
   let n = Array.fold_right ( * ) d 1 in
   reshape x [|n|]
 
 
-let _trans_typ : type a b . (a, b) kind -> bool -> cblas_transpose
+let _cblas_trans : type a b . (a, b) kind -> bool -> cblas_transpose
   = fun _kind trans ->
   if trans = true then
     match _kind with
@@ -36,9 +38,15 @@ let _trans_typ : type a b . (a, b) kind -> bool -> cblas_transpose
     CblasNoTrans
 
 
+(** Level-3 BLAS: matrix-matrix operations *)
+
 let gemm ?(transa=false) ?(transb=false) ?alpha ?beta ~a ~b ~c =
   let m, k = _matrix_shape a in
   let l, n = _matrix_shape b in
+
+  let _m, _k = if transa then k, m else m, k in
+  let _l, _n = if transb then n, l else l, n in
+  assert (_k = _l && _m > 0 && _n > 0);
 
   let _kind = Genarray.kind a in
   let alpha = match alpha with
@@ -49,21 +57,15 @@ let gemm ?(transa=false) ?(transb=false) ?alpha ?beta ~a ~b ~c =
     | Some beta -> beta
     | None      -> Owl_const.zero _kind
   in
-  let a = flatten a |> array1_of_genarray in
-  let b = flatten b |> array1_of_genarray in
-  let c = flatten c |> array1_of_genarray in
-
   let layout = Owl_cblas_basic.CblasRowMajor in
-  let transa = _trans_typ _kind transa in
-  let transb = _trans_typ _kind transb in
-  let lda = match transa with
-    | CblasNoTrans -> k
-    | _            -> m
-  in
-  let ldb = match transb with
-    | CblasNoTrans -> n
-    | _            -> k
-  in
+  let transa = _cblas_trans _kind transa in
+  let transb = _cblas_trans _kind transb in
+  let lda = match transa with | CblasNoTrans -> k | _  -> m in
+  let ldb = match transb with | CblasNoTrans -> n | _  -> k in
   let ldc = n in
+
+  let a = _flatten a |> array1_of_genarray in
+  let b = _flatten b |> array1_of_genarray in
+  let c = _flatten c |> array1_of_genarray in
 
   Owl_cblas_basic.gemm layout transa transb m n k alpha a lda b ldb beta c ldc
