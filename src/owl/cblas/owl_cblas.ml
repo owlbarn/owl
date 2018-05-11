@@ -47,6 +47,35 @@ let _cblas_trans : type a b . (a, b) kind -> bool -> cblas_transpose
 let _cblas_diag = function true -> CblasUnit | false -> CblasNonUnit
 
 
+(** Level-1 BLAS: vector-vector operations *)
+
+
+
+(** Level-2 BLAS: matrix-vector operations *)
+
+let gemv ?(trans=false) ?(incx=1) ?(incy=1) ?alpha ?beta ~a ~x ~y =
+  let m, n = _matrix_shape a in
+
+  let _kind = Genarray.kind a in
+  let alpha = match alpha with
+    | Some alpha -> alpha
+    | None       -> Owl_const.one _kind
+  in
+  let beta = match beta with
+    | Some beta -> beta
+    | None      -> Owl_const.zero _kind
+  in
+  let layout = Owl_cblas_basic.CblasRowMajor in
+  let trans = _cblas_trans _kind trans in
+  let lda = n in
+
+  let a = _flatten a |> array1_of_genarray in
+  let x = _flatten x |> array1_of_genarray in
+  let y = _flatten y |> array1_of_genarray in
+
+  Owl_cblas_basic.gemv layout trans m n alpha a lda x incx bete y incy
+
+
 (** Level-3 BLAS: matrix-matrix operations *)
 
 let gemm ?(transa=false) ?(transb=false) ?alpha ?beta ~a ~b ~c =
