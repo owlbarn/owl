@@ -28,7 +28,7 @@ type cblas_uplo = CblasUpper | CblasLower
 (** Upper or lower triangular matrix. *)
 
 type cblas_diag = CblasNonUnit | CblasUnit
-(** Diag type *)
+(** Diag type, unit triangular. *)
 
 type cblas_side = CblasLeft | CblasRight
 (** Side type *)

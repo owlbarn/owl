@@ -33,3 +33,21 @@ val symm : ?side:side -> ?uplo:uplo -> ?alpha:'a -> ?beta:'a -> a:('a, 'b) t -> 
 
 val syrk : ?uplo:uplo -> ?trans:bool -> ?alpha:'a -> ?beta:'a -> a:('a, 'b) t -> c:('a, 'b) t -> unit
 (** Performs a symmetric rank-k update. *)
+
+val syr2k : ?uplo:uplo -> ?trans:bool -> ?alpha:'a -> ?beta:'a -> a:('a, 'b) t -> b:('a, 'b) t -> c:('a, 'b) t -> unit
+(** Performs a symmetric rank-2k update. *)
+
+val trmm : ?side:side -> ?uplo:uplo -> ?transa:bool -> ?diag:bool -> ?alpha:'a -> a:('a, 'b) t -> b:('a, 'b) t -> unit
+(** Computes a matrix-matrix product where one input matrix is triangular. *)
+
+val trsm : ?side:side -> ?uplo:uplo -> ?transa:bool -> ?diag:bool -> ?alpha:'a -> a:('a, 'b) t -> b:('a, 'b) t -> unit
+(** Solves a triangular matrix equation. *)
+
+val hemm : ?side:side -> ?uplo:uplo -> ?alpha:Complex.t -> ?beta:Complex.t -> a:(Complex.t, 'a) t -> b:(Complex.t, 'a) t -> c:(Complex.t, 'a) t -> unit
+(** Computes a matrix-matrix product where one input matrix is Hermitian. *)
+
+val herk : ?uplo:uplo -> ?trans:bool -> ?alpha:float -> ?beta:float -> a:(Complex.t, 'a) t -> c:(Complex.t, 'a) t -> unit
+(** Performs a Hermitian rank-k update. *)
+
+val her2k : ?uplo:uplo -> ?trans:bool -> ?alpha:Complex.t -> ?beta:float -> a:(Complex.t, 'a) t -> b:(Complex.t, 'a) t -> c:(Complex.t, 'a) t -> unit
+(** Performs a Hermitian rank-2k update. *)
