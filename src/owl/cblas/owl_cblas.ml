@@ -73,7 +73,7 @@ let gemv ?(trans=false) ?(incx=1) ?(incy=1) ?alpha ?beta ~a ~x ~y =
   let x = _flatten x |> array1_of_genarray in
   let y = _flatten y |> array1_of_genarray in
 
-  Owl_cblas_basic.gemv layout trans m n alpha a lda x incx bete y incy
+  Owl_cblas_basic.gemv layout trans m n alpha a lda x incx beta y incy
 
 
 (** Level-3 BLAS: matrix-matrix operations *)
