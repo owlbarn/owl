@@ -3,7 +3,8 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** CBLAS interface: high-level interface  beween Owl and level-1, level-2,
+(**
+  CBLAS interface: high-level interface beween Owl and level-1, level-2,
   level-3 BLAS functions.
  *)
 

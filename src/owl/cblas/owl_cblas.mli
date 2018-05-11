@@ -25,6 +25,9 @@ type uplo = Owl_cblas_basic.cblas_uplo
 val gemv : ?trans:bool -> ?incx:int -> ?incy:int -> ?alpha:'a -> ?beta:'a -> a:('a, 'b) t -> x:('a, 'b) t -> y:('a, 'b) t -> unit
 (** Computes a matrix-vector product using a general matrix *)
 
+val gbmv : ?trans:bool -> ?incx:int -> ?incy:int -> ?alpha:'a -> ?beta:'a -> kl:int -> ku:int -> a:('a, 'b) t -> x:('a, 'b) t -> y:('a, 'b) t -> unit
+(** Computes a matrix-vector product using a general band matrix *)
+
 
 (** {6 Level-3 BLAS: matrix-matrix operations} *)
 

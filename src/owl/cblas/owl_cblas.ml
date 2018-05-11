@@ -76,6 +76,30 @@ let gemv ?(trans=false) ?(incx=1) ?(incy=1) ?alpha ?beta ~a ~x ~y =
   Owl_cblas_basic.gemv layout trans m n alpha a lda x incx beta y incy
 
 
+let gbmv ?(trans=false) ?(incx=1) ?(incy=1) ?alpha ?beta ~kl ~ku ~a ~x ~y =
+  let m, n = _matrix_shape a in
+  assert (kl >= 0 && ku >= 0);
+
+  let _kind = Genarray.kind a in
+  let alpha = match alpha with
+    | Some alpha -> alpha
+    | None       -> Owl_const.one _kind
+  in
+  let beta = match beta with
+    | Some beta -> beta
+    | None      -> Owl_const.zero _kind
+  in
+  let layout = Owl_cblas_basic.CblasRowMajor in
+  let trans = _cblas_trans _kind trans in
+  let lda = n in
+
+  let a = _flatten a |> array1_of_genarray in
+  let x = _flatten x |> array1_of_genarray in
+  let y = _flatten y |> array1_of_genarray in
+
+  Owl_cblas_basic.gbmv layout trans m n kl ku alpha a lda x incx beta y incy
+
+
 (** Level-3 BLAS: matrix-matrix operations *)
 
 let gemm ?(transa=false) ?(transb=false) ?alpha ?beta ~a ~b ~c =
