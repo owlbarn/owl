@@ -66,6 +66,9 @@ let pack_op op input = Trace {
 }
 
 
+let pack_flt x = F x
+
+
 let unpack_flt = function
   | F x   -> x
   | _     -> failwith "owl_opencl_operand:unpack_flt"

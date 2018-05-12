@@ -80,8 +80,16 @@ let functions () = [
     map_arr_scalar_fun "float32_fmod_scalar"    "float" "fmod(a[gid], b)";
     map_arr_scalar_fun "float32_atan2_scalar"   "float" "atan2(a[gid], b)";
     map_arr_scalar_fun "float32_atan2pi_scalar" "float" "atan2pi(a[gid], b)";
+    map_arr_scalar_fun "float32_scalar_add"     "float" "b + a[gid]";
+    map_arr_scalar_fun "float32_scalar_sub"     "float" "b - a[gid]";
+    map_arr_scalar_fun "float32_scalar_mul"     "float" "b * a[gid]";
+    map_arr_scalar_fun "float32_scalar_div"     "float" "b / a[gid]";
+    map_arr_scalar_fun "float32_scalar_pow"     "float" "pow(b, a[gid])";
+    map_arr_scalar_fun "float32_scalar_fmod"    "float" "fmod(b, a[gid])";
+    map_arr_scalar_fun "float32_scalar_atan2"   "float" "atan2(b, a[gid])";
+    map_arr_scalar_fun "float32_scalar_atan2pi" "float" "atan2pi(b, a[gid])";
 
-    (* float32 functions *)
+    (* float64 functions *)
     (*
     map_arr_fun        "float64_erf"            "double" "erf(a[gid])";
     map_arr_fun        "float64_erfc"           "double" "erfc(a[gid])";
@@ -147,7 +155,7 @@ let functions () = [
     map_arr_scalar_fun "float64_atan2_scalar"   "double" "atan2(a[gid], b)";
     map_arr_scalar_fun "float64_atan2pi_scalar" "double" "atan2pi(a[gid], b)";
     *)
-    
+
     (* TODO: complex32 functions *)
     (* TODO: int32 functions *)
     (* TODO: int64 functions *)

@@ -131,6 +131,22 @@ let atan2_scalar x a = map_arr_scalar "atan2_scalar" x a
 
 let atan2pi_scalar x a = map_arr_scalar "atan2pi_scalar" x a
 
+let scalar_add a x = map_arr_scalar "scalar_add" x a
+
+let scalar_sub a x = map_arr_scalar "scalar_sub" x a
+
+let scalar_mul a x = map_arr_scalar "scalar_mul" x a
+
+let scalar_div a x = map_arr_scalar "scalar_div" x a
+
+let scalar_pow a x = map_arr_scalar "scalar_pow" x a
+
+let scalar_fmod a x = map_arr_scalar "scalar_fmod" x a
+
+let scalar_atan2 a x = map_arr_scalar "scalar_atan2" x a
+
+let scalar_atan2pi a x = map_arr_scalar "scalar_atan2pi" x a
+
 
 (* helper functions *)
 
@@ -142,7 +158,7 @@ let to_ndarray
   (y.outval.(0) |> unpack_arr)
 
 
-let of_ndarray x = pack_arr x
+let of_ndarray x = pack_arr (Owl_dense_ndarray_generic.copy x)
 
 
 (* ends here *)

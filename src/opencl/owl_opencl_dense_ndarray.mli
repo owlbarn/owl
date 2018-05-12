@@ -199,3 +199,27 @@ val atan2_scalar : t -> t -> t
 
 val atan2pi_scalar : t -> t -> t
 (** ``atan2pi_scalar x a`` *)
+
+val scalar_add : t -> t -> t
+(** ``scalar_add a x`` *)
+
+val scalar_sub : t -> t -> t
+(** ``scalar_sub a x`` *)
+
+val scalar_mul : t -> t -> t
+(** ``scalar_mul a x`` *)
+
+val scalar_div : t -> t -> t
+(** ``scalar_div a x`` *)
+
+val scalar_pow : t -> t -> t
+(** ``scalar_pow a x`` *)
+
+val scalar_fmod : t -> t -> t
+(** ``scalar_fmod a x`` *)
+
+val scalar_atan2 : t -> t -> t
+(** ``scalar_atan2 a x`` *)
+
+val scalar_atan2pi : t -> t -> t
+(** ``scalar_atan2pi a x`` *)

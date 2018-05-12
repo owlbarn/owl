@@ -225,6 +225,7 @@ module Context = struct
     let err_ret = allocate int32_t 0l in
     let ctx = clCreateContext _properties _num_devices _devices magic_null magic_null err_ret in
     cl_check_err !@err_ret;
+    Gc.finalise release ctx;
     ctx
 
 
@@ -291,6 +292,12 @@ module Program = struct
     }
 
 
+  let retain program = clRetainProgram program |> cl_check_err
+
+
+  let release program = clReleaseProgram program |> cl_check_err
+
+
   let create_with_source ctx str =
     let str_num = Array.length str in
     let _str = allocate_n (ptr char) ~count:str_num in
@@ -302,10 +309,11 @@ module Program = struct
     let str_num = Unsigned.UInt32.of_int str_num in
     let program = clCreateProgramWithSource ctx str_num _str magic_null err_ret in
     cl_check_err !@err_ret;
+    Gc.finalise release program;
     program
 
 
-  let create_with_binary = ()
+  let create_with_binary () = raise Owl_exception.NOT_IMPLEMENTED
 
 
   let build ?(options="") program devices =
@@ -317,16 +325,10 @@ module Program = struct
     clBuildProgram program _num_devices _devices _options magic_null magic_null |> cl_check_err
 
 
-  let compile = ()
+  let compile () = raise Owl_exception.NOT_IMPLEMENTED
 
 
-  let link = ()
-
-
-  let retain program = clRetainProgram program |> cl_check_err
-
-
-  let release program = clReleaseProgram program |> cl_check_err
+  let link () = raise Owl_exception.NOT_IMPLEMENTED
 
 
   let to_string x =
@@ -398,15 +400,22 @@ module Kernel = struct
     }
 
 
+  let retain kernel = clRetainKernel kernel |> cl_check_err
+
+
+  let release kernel = clReleaseKernel kernel |> cl_check_err
+
+
   let create program kernel_name =
     let _kernel_name = char_ptr_of_string kernel_name in
     let err_ret = allocate int32_t 0l in
     let kernel = clCreateKernel program _kernel_name err_ret in
     cl_check_err !@err_ret;
+    Gc.finalise release kernel;
     kernel
 
 
-  let create_in_program program kernels = ()
+  let create_in_program program kernels = raise Owl_exception.NOT_IMPLEMENTED
 
 
   let set_arg kernel arg_idx arg_size arg_val =
@@ -454,12 +463,6 @@ module Kernel = struct
     !@event
 
 
-  let retain kernel = clRetainKernel kernel |> cl_check_err
-
-
-  let release kernel = clReleaseKernel kernel |> cl_check_err
-
-
   let to_string x =
     let info = get_info x in
     Printf.sprintf "Kernel Info\n" ^
@@ -503,18 +506,19 @@ module CommandQueue = struct
   }
 
 
+  let retain cmdq = clRetainCommandQueue cmdq |> cl_check_err
+
+
+  let release cmdq = clReleaseCommandQueue cmdq |> cl_check_err
+
+
   let create ?(properties=[]) context device =
     let _properties = List.fold_left ( lor ) 0 properties |> Unsigned.ULong.of_int in
     let err_ret = allocate int32_t 0l in
     let cmdq = clCreateCommandQueue context device _properties err_ret in
     cl_check_err !@err_ret;
+    Gc.finalise release cmdq;
     cmdq
-
-
-  let retain cmdq = clRetainCommandQueue cmdq |> cl_check_err
-
-
-  let release cmdq = clReleaseCommandQueue cmdq |> cl_check_err
 
 
   let flush cmdq = clFlush cmdq |> cl_check_err
@@ -601,17 +605,24 @@ module Event = struct
   }
 
 
+  let retain event = clRetainEvent event |> cl_check_err
+
+
+  let release event = clReleaseEvent event |> cl_check_err
+
+
   let create ctx =
     let err_ret = allocate int32_t 0l in
     let event = clCreateUserEvent ctx err_ret in
     cl_check_err !@err_ret;
+    Gc.finalise release event;
     event
 
 
   let set_status event status = clSetUserEventStatus event (Int32.of_int status) |> cl_check_err
 
 
-  let set_callback () = failwith "opencl:event:set_callback: not implemented yet"
+  let set_callback () = raise Owl_exception.NOT_IMPLEMENTED
 
 
   let wait_for event_list =
@@ -622,12 +633,6 @@ module Event = struct
     in
     let num_events = List.length event_list |> Unsigned.UInt32.of_int in
     clWaitForEvents num_events _event_list
-
-
-  let retain event = clRetainEvent event |> cl_check_err
-
-
-  let release event = clReleaseEvent event |> cl_check_err
 
 
   let to_string x =
@@ -671,6 +676,12 @@ module Buffer = struct
   }
 
 
+  let retain memobj = clRetainMemObject memobj |> cl_check_err
+
+
+  let release memobj = clReleaseMemObject memobj |> cl_check_err
+
+
   let create ?(flags=[]) ctx x =
     let _flags = List.fold_left ( lor ) 0 flags |> Unsigned.ULong.of_int in
     let size = Bigarray.Genarray.size_in_bytes x |> Unsigned.Size_t.of_int in
@@ -678,10 +689,11 @@ module Buffer = struct
     let err_ret = allocate int32_t 0l in
     let buf = clCreateBuffer ctx _flags size _x err_ret in
     cl_check_err !@err_ret;
+    Gc.finalise release buf;
     buf
 
 
-  let create_sub () = ()
+  let create_sub () = raise Owl_exception.NOT_IMPLEMENTED
 
 
   let enqueue_read ?(blocking=true) ?(wait_for=[]) cmdq src ofs len dst =
@@ -758,12 +770,6 @@ module Buffer = struct
 
     clEnqueueUnmapMemObject cmdq buf mem_ptr num_events event_list event |> cl_check_err;
     !@event
-
-
-  let retain memobj = clRetainMemObject memobj |> cl_check_err
-
-
-  let release memobj = clReleaseMemObject memobj |> cl_check_err
 
 
   let to_string x =
