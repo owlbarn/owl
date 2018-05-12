@@ -650,7 +650,8 @@ module Make
       Checkpoint.(state.gs <- gs');
       Checkpoint.(state.ps <- ps');
       Checkpoint.(state.current_batch <- state.current_batch + 1);
-      (** TODO: Gc.minor (); *)
+      (** FIXME: only for experimental purpose, more thinking *)
+      Gc.minor ();
     done;
 
     (* print optimisation summary *)
