@@ -12,13 +12,10 @@ open Owl_base_optimise.S
 
 (* module signature of model parallel engine *)
 
-module type KeyValueTypeSig = sig
-  type key_t
-  type value_t
-end
-
-
-module type EngineGenSig = functor (KeyValueTypeSpecifier : KeyValueTypeSig) -> sig
+module type EngineGenSig = functor (KeyValueTypeSpecifier : sig
+                                        type key_t
+                                        type value_t
+                                   end) -> sig
   type key_t = KeyValueTypeSpecifier.key_t
   type value_t = KeyValueTypeSpecifier.value_t
   type vars_t = (key_t * value_t) list
