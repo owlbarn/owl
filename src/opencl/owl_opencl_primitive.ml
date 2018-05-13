@@ -116,17 +116,17 @@ let get_val_mem_ptr x i =
 let allocate_from_arr ctx a =
   let a_val, a_mem, a_ptr = get_val_mem_ptr a 0 in
   let b_val, b_mem, b_ptr =
-    match a.refnum = 1 with
-    | true  -> a_val, a_mem, a_ptr
-    | false -> (
-        let a_upk = a_val |> unpack_arr in
-        let a_knd = Owl_dense_ndarray_generic.kind a_upk in
-        let a_shp = Owl_dense_ndarray_generic.shape a_upk in
-        let b_val = Owl_dense_ndarray_generic.empty a_knd a_shp in
-        let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
-        let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
-        F32 b_val, b_mem, b_ptr
-      )
+    if a.refnum = 1 then
+      a_val, a_mem, a_ptr
+    else (
+      let a_upk = a_val |> unpack_arr in
+      let a_knd = Owl_dense_ndarray_generic.kind a_upk in
+      let a_shp = Owl_dense_ndarray_generic.shape a_upk in
+      let b_val = Owl_dense_ndarray_generic.empty a_knd a_shp in
+      let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
+      let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
+      F32 b_val, b_mem, b_ptr
+    )
   in
   (a_val, a_mem, a_ptr), (b_val, b_mem, b_ptr)
 
@@ -142,17 +142,17 @@ let allocate_from_inputs ctx x =
     let a_val, a_mem, a_ptr = get_val_mem_ptr a 0 in
 
     let b_val, b_mem, b_ptr =
-      match a.refnum = 1 with
-      | true  -> a_val, a_mem, a_ptr
-      | false -> (
-          let a_upk = a_val |> unpack_arr in
-          let a_knd = Owl_dense_ndarray_generic.kind a_upk in
-          let a_shp = Owl_dense_ndarray_generic.shape a_upk in
-          let b_val = Owl_dense_ndarray_generic.empty a_knd a_shp in
-          let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
-          let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
-          F32 b_val, b_mem, b_ptr
-        )
+      if a.refnum = 1 then
+        a_val, a_mem, a_ptr
+      else (
+        let a_upk = a_val |> unpack_arr in
+        let a_knd = Owl_dense_ndarray_generic.kind a_upk in
+        let a_shp = Owl_dense_ndarray_generic.shape a_upk in
+        let b_val = Owl_dense_ndarray_generic.empty a_knd a_shp in
+        let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
+        let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
+        F32 b_val, b_mem, b_ptr
+      )
     in
 
     Owl_utils.Stack.push src (a_val, a_mem, a_ptr);
