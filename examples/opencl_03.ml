@@ -52,4 +52,5 @@ let loop_lazy x =
 
 let _ =
   let x = Dense.Ndarray.S.uniform [|1000; 1000|] in
-  loop_lazy x
+  loop_lazy x;
+  loop_gpu x
