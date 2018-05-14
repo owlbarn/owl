@@ -537,6 +537,9 @@ module Conv2D : sig
 
 end
 
+
+  (** {6 TransposeConv2D neuron} *)
+
 module TransposeConv2D : sig
 
   type neuron_typ = {
