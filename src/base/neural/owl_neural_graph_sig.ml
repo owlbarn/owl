@@ -182,6 +182,15 @@ Arguments:
   * ``stride``: int array of 2 integers
   *)
 
+  val transpose_conv2d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+  (**
+``transpose_conv2d kernels strides node`` adds a 2D transpose convolution node on previous ``node``.
+
+Arguments:
+  * ``kernel``: int array consists of ``w, h, i, o``. ``w`` and ``h`` specify the width and height of the 2D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
+  * ``stride``: int array of 2 integers
+  *)
+
   val conv3d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
   (**
 ``conv3d kernels strides node`` adds a 3D convolution node (e.g. spatial
