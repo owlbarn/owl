@@ -2142,7 +2142,7 @@ module Make
         let s = List.filter (fun x -> x != l.axis) (Array.to_list s)
           |> Array.of_list in
         let mu' = Maths.((sum_reduce ~axis:s x) / a) in
-        let var' = Maths.((sum_reduce ~axis:s (x * x)) / a) in
+        let var' = Maths.((sum_reduce ~axis:s ((x - mu') * (x - mu'))) / a) in
         l.mu <- Maths.(l.decay * l.mu + (F 1. - l.decay) * mu') |> primal';
         l.var <- Maths.(l.decay * l.var + (F 1. - l.decay) * var') |> primal';
       );
