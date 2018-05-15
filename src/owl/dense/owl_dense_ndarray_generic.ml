@@ -1881,7 +1881,7 @@ let transpose_conv2d_backward_kernel input kernel stride output' =
 
 
 (* gradient of transpose_conv2d w.r.t the input *)
-let transpose_conv2d_backward_input  input kernel stride output' =
+let transpose_conv2d_backward_input input kernel stride output' =
   assert (num_dims input = 4);
   assert (num_dims kernel = 4);
   assert (num_dims output' = 4);
