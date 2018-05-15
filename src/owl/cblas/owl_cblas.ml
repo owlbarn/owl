@@ -136,12 +136,20 @@ let gemm ?(transa=false) ?(transb=false) ?alpha ?beta ~a ~b ~c =
 
 
 let symm ?(side=CblasRight) ?(uplo=CblasUpper) ?alpha ?beta ~a ~b ~c =
-  let m, k = _matrix_shape a in
-  let l, n = _matrix_shape b in
-  let p, q = _matrix_shape c in
-  assert (k = l && m > 0 && n > 0);
-  assert (p = m && q = n && p = q);
-
+  let m, n, lda, ldb, ldc =
+    let m, k = _matrix_shape a in
+    let l, n = _matrix_shape b in
+    let p, q = _matrix_shape c in
+    let () = match side with
+    | CblasLeft ->
+      assert (k = l && m > 0 && n > 0);
+      assert (p = m && q = n);
+    | CblasRight ->
+      assert (n = m && l > 0 && k > 0);
+      assert (p = l && q = k);
+    in
+      p, q, k, n, q
+  in
   let _kind = Genarray.kind a in
   let alpha = match alpha with
     | Some alpha -> alpha
@@ -152,9 +160,6 @@ let symm ?(side=CblasRight) ?(uplo=CblasUpper) ?alpha ?beta ~a ~b ~c =
     | None      -> Owl_const.zero _kind
   in
   let layout = Owl_cblas_basic.CblasRowMajor in
-  let lda = match side with CblasLeft -> m | CblasRight -> n in
-  let ldb = n in
-  let ldc = n in
 
   let a = _flatten a |> array1_of_genarray in
   let b = _flatten b |> array1_of_genarray in
