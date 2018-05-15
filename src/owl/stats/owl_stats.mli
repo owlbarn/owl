@@ -497,6 +497,31 @@ val exponential_logsf : float -> lambda:float -> float
 val exponential_isf : float -> lambda:float -> float
 (** TODO *)
 
+val exponpow_rvs : a:float -> b:float -> float
+(**
+.. math::
+  p(x) dx = (1/(2 a Gamma(1+1/b))) * exp(-|x/a|^b) dx
+
+ *)
+
+val exponpow_pdf : float -> a:float -> b:float -> float
+(** TODO *)
+
+val exponpow_logpdf : float -> a:float -> b:float -> float
+(** TODO *)
+
+val exponpow_cdf : float -> a:float -> b:float -> float
+(** TODO *)
+
+val exponpow_logcdf : float -> a:float -> b:float -> float
+(** TODO *)
+
+val exponpow_sf : float -> a:float -> b:float -> float
+(** TODO *)
+
+val exponpow_logsf : float -> a:float -> b:float -> float
+(** TODO *)
+
 val gaussian_rvs : mu:float -> sigma:float -> float
 (** TODO *)
 

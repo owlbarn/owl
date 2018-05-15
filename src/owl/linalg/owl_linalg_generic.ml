@@ -790,12 +790,12 @@ let dare a b q r =
 let peakflops ?(n=2000) () =
   let x = M.ones float64 n n |> M.flatten |> array1_of_genarray in
   let z = M.ones float64 n n |> M.flatten |> array1_of_genarray in
-  let layout = Owl_cblas.CblasRowMajor in
-  let transa = Owl_cblas.CblasNoTrans in
-  let transb = Owl_cblas.CblasNoTrans in
+  let layout = Owl_cblas_basic.CblasRowMajor in
+  let transa = Owl_cblas_basic.CblasNoTrans in
+  let transb = Owl_cblas_basic.CblasNoTrans in
 
   let t0 = Unix.gettimeofday () in
-  Owl_cblas.gemm layout transa transb n n n 1.0 x n x n 0.0 z n;
+  Owl_cblas_basic.gemm layout transa transb n n n 1.0 x n x n 0.0 z n;
   let t1 = Unix.gettimeofday () in
 
   let flops = 2. *. (float_of_int n) ** 3. /. (t1 -. t0) in

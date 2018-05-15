@@ -50,6 +50,20 @@ external exponential_logsf : float -> lambda:float -> float = "owl_stub_exponent
 
 external exponential_isf : float -> lambda:float -> float = "owl_stub_exponential_isf"
 
+external exponpow_rvs : a:float -> b:float -> float = "owl_stub_exponpow_rvs"
+
+external exponpow_pdf : float -> a:float -> b:float -> float = "owl_stub_exponpow_pdf"
+
+external exponpow_logpdf : float -> a:float -> b:float -> float = "owl_stub_exponpow_logpdf"
+
+external exponpow_cdf : float -> a:float -> b:float -> float = "owl_stub_exponpow_cdf"
+
+external exponpow_logcdf : float -> a:float -> b:float -> float = "owl_stub_exponpow_logcdf"
+
+external exponpow_sf : float -> a:float -> b:float -> float = "owl_stub_exponpow_sf"
+
+external exponpow_logsf : float -> a:float -> b:float -> float = "owl_stub_exponpow_logsf"
+
 external gaussian_rvs : mu:float -> sigma:float -> float = "owl_stub_gaussian_rvs"
 
 external gaussian_pdf : float -> mu:float -> sigma:float -> float = "owl_stub_gaussian_pdf"

@@ -797,7 +797,7 @@ let scalar_sub a x =
 let scalar_mul a x =
   let x = copy x in
   let x' = flatten x |> array1_of_genarray in
-  Owl_cblas.scal (numel x) a x' 1;
+  Owl_cblas_basic.scal (numel x) a x' 1;
   x
 
 let scalar_div a x =
@@ -3489,10 +3489,10 @@ let dot x1 x2 =
   let b = flatten x2 |> Bigarray.array1_of_genarray in
   let c = flatten x3 |> Bigarray.array1_of_genarray in
 
-  let layout = Owl_cblas.CblasRowMajor in
-  let transa = Owl_cblas.CblasNoTrans in
-  let transb = Owl_cblas.CblasNoTrans in
-  Owl_cblas.gemm layout transa transb m n k alpha a k b n beta c n;
+  let layout = Owl_cblas_basic.CblasRowMajor in
+  let transa = Owl_cblas_basic.CblasNoTrans in
+  let transb = Owl_cblas_basic.CblasNoTrans in
+  Owl_cblas_basic.gemm layout transa transb m n k alpha a k b n beta c n;
   x3
 
 

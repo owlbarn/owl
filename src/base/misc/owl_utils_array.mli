@@ -162,10 +162,10 @@ val filter_v : ('a -> bool * 'b) -> 'a array -> 'b array
 (** TODO *)
 
 val filteri : (int -> 'a -> bool) -> 'a array -> 'a array
-(** TODO *)
+(** ``filteri f x`` filters out the elements in ``x`` according to predicate ``f``. *)
 
 val filter : ('a -> bool) -> 'a array -> 'a array
-(** TODO *)
+(** ``filter f x`` filters out the elements in ``x`` according to predicate ``f``. *)
 
 val filter2i : (int -> 'a -> 'b -> bool) -> 'a array -> 'b array -> ('a * 'b) array
 (**
