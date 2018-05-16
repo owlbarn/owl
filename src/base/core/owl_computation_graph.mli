@@ -288,14 +288,14 @@ open Owl_types
     val elt_greater_scalar : arr -> elt -> arr
     val elt_less_equal_scalar : arr -> elt -> arr
     val elt_greater_equal_scalar : arr -> elt -> arr
-    val approx_equal : ?eps:'a -> arr -> arr -> bool
-    val approx_equal_scalar : ?eps:'a -> 'b -> 'c -> 'd
-    val approx_elt_equal : ?eps:'a -> arr -> arr -> arr
-    val approx_elt_equal_scalar : ?eps:'a -> arr -> elt -> arr
+    val approx_equal : ?eps:elt -> arr -> arr -> bool
+    val approx_equal_scalar : ?eps:elt -> 'b -> 'c -> 'd
+    val approx_elt_equal : ?eps:elt -> arr -> arr -> arr
+    val approx_elt_equal_scalar : ?eps:elt -> arr -> elt -> arr
     val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
     val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
     val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
-    val transpose_conv2d : ?padding:'a -> arr -> arr -> int array -> arr
+    val transpose_conv2d : ?padding:padding -> arr -> arr -> int array -> arr
     val max_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
     val max_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
     val max_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
