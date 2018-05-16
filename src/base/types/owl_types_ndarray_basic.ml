@@ -185,11 +185,6 @@ module type Sig = sig
 
   val scalar_div : elt -> arr -> arr
 
-  (* FIXME *)
-  val equal : arr -> arr -> bool
-
-  val elt_greater_equal_scalar : arr -> elt -> arr
-
   (* Neural network related functions *)
 
   val conv1d : ?padding:padding -> arr -> arr -> int array -> arr

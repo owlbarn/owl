@@ -6,7 +6,7 @@ open Owl_types
 (** Functor to generate test module *)
 
 module Make
-  (N : Ndarray_Basic with type elt = float)
+  (N : Ndarray_Compare with type elt = float)
   = struct
 
   (* some test input *)
