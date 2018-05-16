@@ -1,11 +1,12 @@
+(*
+ * OWL - an OCaml numerical library for scientific computing
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
+
 open Owl_types
 
-    type value =
-        F of float
-      | F32 of
-          (float, Bigarray.float32_elt, Bigarray.c_layout) Bigarray.Genarray.t
-      | F64 of
-          (float, Bigarray.float64_elt, Bigarray.c_layout) Bigarray.Genarray.t
+    type value
+
     type t = attr Owl_graph.node
     and attr = {
       op : op;
@@ -324,7 +325,7 @@ open Owl_types
     val dot : arr -> arr -> arr
     val inv : arr -> arr
     val trace : arr -> elt
-    val transpose : ?axis:'a -> arr -> arr
+    val transpose : ?axis:int array -> arr -> arr
     val to_rows : arr -> arr array
     val of_rows : arr array -> arr
     val of_array : elt array -> int array -> arr
