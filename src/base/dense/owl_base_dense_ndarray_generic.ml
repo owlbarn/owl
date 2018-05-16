@@ -1774,11 +1774,57 @@ let conv2d_backward_kernel input kernel stride output' =
     kernel'
   end
 
+let transpose ?axis varr =
+  let dims = shape varr in
+  let rank = Array.length dims in
+  let axis_perm = match axis with
+    | Some perm -> perm
+    | None -> Array.init rank (fun i -> rank - i - 1)
+  in
+  let new_dims = _apply_perm dims axis_perm in
+  let new_varr = empty (kind varr) new_dims in
+  let ind = Array.make rank 0 in
+  let should_stop = ref false in
+  begin
+    while not !should_stop do
+      Genarray.set new_varr
+        (_apply_perm ind axis_perm) (Genarray.get varr ind);
+      if not (_next_index ind dims) then
+        should_stop := true
+    done;
+    new_varr
+  end
+
+
+let transpose_conv2d ?(padding=SAME) input kernel stride =
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+
+  let output_cols, output_rows = Owl_utils.calc_transpose_conv2d_output_shape
+    padding input_cols input_rows kernel_cols kernel_rows
+    row_stride col_stride
+  in
+  let output' = empty (kind input) [|batches; output_cols; output_rows;
+    out_channel|]
+  in
+  let kernel = transpose ~axis:[|0;1;3;2|] kernel in
+  conv2d_backward_input output' kernel stride input
 
 (* TODO: add correct implementaton into these placeholders *)
-let transpose_conv2d = conv2d
-let transpose_conv2d_backward_input = conv2d_backward_input
-let transpose_conv2d_backward_kernel = conv2d_backward_kernel
+let transpose_conv2d_backward_input input kernel stride output' =
+  conv2d output' kernel stride
+let transpose_conv2d_backward_kernel input kernel stride output' =
+  conv2d_backward_kernel output' kernel stride input
 
 (* gradient of conv1d w.r.t the input *)
 let conv1d_backward_input input kernel stride output' =
@@ -2453,28 +2499,6 @@ let of_arrays kind arrays =
       done
     done;
     varr
-  end
-
-
-let transpose ?axis varr =
-  let dims = shape varr in
-  let rank = Array.length dims in
-  let axis_perm = match axis with
-    | Some perm -> perm
-    | None -> Array.init rank (fun i -> rank - i - 1)
-  in
-  let new_dims = _apply_perm dims axis_perm in
-  let new_varr = empty (kind varr) new_dims in
-  let ind = Array.make rank 0 in
-  let should_stop = ref false in
-  begin
-    while not !should_stop do
-      Genarray.set new_varr
-        (_apply_perm ind axis_perm) (Genarray.get varr ind);
-      if not (_next_index ind dims) then
-        should_stop := true
-    done;
-    new_varr
   end
 
 
