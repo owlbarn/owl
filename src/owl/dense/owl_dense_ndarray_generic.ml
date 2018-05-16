@@ -1751,12 +1751,10 @@ let transpose_conv2d ?(padding=SAME) input kernel stride =
   in
   let output = empty (kind input) [|batches; output_cols; output_rows; out_channel|] in
 
-  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
-
-  _owl_spatial_trans_conv (kind input)
-    input kernel output batches input_cols input_rows in_channel
-    kernel_cols kernel_rows output_cols output_rows out_channel
-    row_stride col_stride pad_typ row_in_stride col_in_stride;
+  _owl_spatial_conv_backward_input (kind input)
+    output kernel input batches output_cols output_rows out_channel
+    kernel_cols kernel_rows input_cols input_rows in_channel
+    row_stride col_stride row_in_stride col_in_stride;
 
   output
 
@@ -1872,9 +1870,9 @@ let transpose_conv2d_backward_kernel input kernel stride output' =
 
   let kernel' = empty (kind kernel) (shape kernel) in
 
-  _owl_spatial_trans_conv_backward_kernel (kind input)
-    input kernel' output' batches input_cols input_rows in_channel
-    kernel_cols kernel_rows output_cols output_rows out_channel
+  _owl_spatial_conv_backward_kernel (kind input)
+    output' kernel' input batches output_cols output_rows out_channel
+    kernel_cols kernel_rows input_cols input_rows in_channel
     row_stride col_stride row_in_stride col_in_stride;
 
   kernel'
@@ -1912,10 +1910,11 @@ let transpose_conv2d_backward_input  input kernel stride output' =
 
   let input' = empty (kind input) (shape input) in
 
-  _owl_spatial_trans_conv_backward_input (kind input')
-    input' kernel output' batches input_cols input_rows in_channel
-    kernel_cols kernel_rows output_cols output_rows out_channel
-    row_stride col_stride row_in_stride col_in_stride;
+  let dummy_pad_typ = 0 in
+  _owl_spatial_conv (kind input)
+    output' kernel input' batches output_cols output_rows out_channel
+    kernel_cols kernel_rows input_cols input_rows in_channel
+    row_stride col_stride dummy_pad_typ row_in_stride col_in_stride;
 
   input'
 
