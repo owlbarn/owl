@@ -541,7 +541,7 @@ module Make (A : Ndarray_Mutable) = struct
   let l2norm_sqr' x = _make_node "l2norm_sqr'" (Fun07 A.l2norm_sqr') [|x|]
 
 
-  (* comparion functions *)
+  (* comparison functions *)
 
   let elt_equal x y = _make_node "elt_equal" (Fun02 (A.elt_equal_, A.elt_equal)) [|x; y|]
 
