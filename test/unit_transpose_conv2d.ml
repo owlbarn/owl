@@ -1,4 +1,4 @@
-(** Unit test for Convolution3D operations *)
+(** Unit test for Transpose Convolution2D operations *)
 
 open Owl_types
 
