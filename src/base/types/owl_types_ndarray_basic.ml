@@ -11,7 +11,7 @@ module type Sig = sig
 
   type arr
 
-  type elt = float
+  type elt
 
   (* creation and operation functions *)
 
@@ -269,5 +269,9 @@ module type Sig = sig
   val of_array : elt array -> int array -> arr
 
   val of_arrays : elt array array -> arr
+
+  val float_to_elt : float -> elt
+
+  val elt_to_float : elt -> float
 
 end

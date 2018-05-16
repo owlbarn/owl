@@ -1,0 +1,372 @@
+open Owl_types
+
+    type value =
+        F of float
+      | F32 of
+          (float, Bigarray.float32_elt, Bigarray.c_layout) Bigarray.Genarray.t
+      | F64 of
+          (float, Bigarray.float64_elt, Bigarray.c_layout) Bigarray.Genarray.t
+    type t = attr Owl_graph.node
+    and attr = {
+      op : op;
+      shape : int array option array;
+      value : value array;
+    }
+    and arr = Arr of t
+    and elt = Elt of t
+    and op =
+      | Noop
+      | Var
+      | Const
+      | Empty
+      | Zeros
+      | Ones
+      | Create
+      | Sequential
+      | Uniform
+      | Gaussian
+      | Bernoulli
+      | Init
+      | Shape
+      | Numel
+      | Get
+      | Set
+      | GetSlice
+      | SetSlice
+      | Copy
+      | Reset
+      | Reshape
+      | Reverse
+      | Tile
+      | Repeat
+      | Concatenate
+      | Split
+      | Draw
+      | Map
+      | Fold
+      | Scan
+      | Print
+      | Abs
+      | Neg
+      | Floor
+      | Ceil
+      | Round
+      | Sqr
+      | Sqrt
+      | Log
+      | Log2
+      | Log10
+      | Exp
+      | Sin
+      | Cos
+      | Tan
+      | Sinh
+      | Cosh
+      | Tanh
+      | Asin
+      | Acos
+      | Atan
+      | Asinh
+      | Acosh
+      | Atanh
+      | Min
+      | Max
+      | Sum
+      | SumReduce
+      | Signum
+      | Sigmoid
+      | Relu
+      | Min'
+      | Max'
+      | Sum'
+      | L1norm'
+      | L2norm'
+      | L2NormSqr'
+      | ClipByValue
+      | ClipByL2norm
+      | Pow
+      | ScalarPow
+      | PowScalar
+      | Atan2
+      | ScalarAtan2
+      | Atan2Scalar
+      | Add
+      | Sub
+      | Mul
+      | Div
+      | AddScalar
+      | SubScalar
+      | MulScalar
+      | DivScalar
+      | ScalarAdd
+      | ScalarSub
+      | ScalarMul
+      | ScalarDiv
+      | IsZero
+      | IsPositive
+      | IsNegative
+      | IsNonpositive
+      | IsNonnegative
+      | Equal
+      | NotEqual
+      | Less
+      | Greater
+      | LessEqual
+      | GreaterEqual
+      | EltEqual
+      | EltNotEqual
+      | EltLess
+      | EltGreater
+      | EltLessEqual
+      | EltGreaterEqual
+      | EltEqualScalar
+      | EltNotEqualScalar
+      | EltLessScalar
+      | EltGreaterScalar
+      | EltLessEqualScalar
+      | EltGreaterEqualScalar
+      | ApproxEqual
+      | ApproxEqualScalar
+      | ApproxEltEqual
+      | ApproxEltEqualScalar
+      | Conv1d
+      | Conv2d
+      | Conv3d
+      | TransposeConv2d
+      | MaxPool1d
+      | MaxPool2d
+      | MaxPool3d
+      | AvgPool1d
+      | AvgPool2d
+      | AvgPool3d
+      | Conv1dBackwardInput
+      | Conv1dBackwardKernel
+      | Conv2dBackwardInput
+      | Conv2dBackwardKernel
+      | Conv3dBackwardInput
+      | Conv3dBackwardKernel
+      | TransposeConv2dBackwardInput
+      | TransposeConv2dBackwardKernel
+      | MaxPool1dBackward
+      | MaxPool2dBackward
+      | MaxPool3dBackward
+      | AvgPool1dBackward
+      | AvgPool2dBackward
+      | AvgPool3dBackward
+      | RowNum
+      | ColNum
+      | Row
+      | Rows
+      | CopyRowTo
+      | CopyColTo
+      | Dot
+      | Inv
+      | Trace
+      | Transpose
+      | ToRows
+      | OfRows
+      | OfArray
+      | OfArrays
+    val pack_arr : t -> arr
+    val unpack_arr : arr -> t
+    val pack_elt : t -> elt
+    val unpack_elt : elt -> t
+    val infer_shape : op -> attr Owl_graph.node array -> int array option array
+    val make_node : ?name:string -> ?value:value array -> ?shape:int array option array -> op -> attr Owl_graph.node
+    val refnum : 'a Owl_graph.node -> int
+    val make_then_connect : op -> attr Owl_graph.node array -> attr Owl_graph.node
+    val var_arr : name:string -> int array option -> arr
+    val var_elt : name:string -> elt
+    val const_arr : name:string -> int array option -> arr
+    val const_elt : name:string -> elt
+    val empty : int array -> arr
+    val zeros : int array -> arr
+    val ones : int array -> arr
+    val create : int array -> 'a -> arr
+    val sequential : ?a:'a -> ?step:'b -> int array -> arr
+    val uniform : ?a:'a -> ?b:'b -> int array -> arr
+    val gaussian : ?mu:'a -> ?sigma:'b -> int array -> arr
+    val bernoulli : ?p:'a -> int array -> arr
+    val init : int array -> 'a -> arr
+    val shape : arr -> int array
+    val numel : arr -> int
+    val get : arr -> int array -> elt
+    val set : arr -> int array -> elt -> unit
+    val get_slice : int list list -> arr -> arr
+    val set_slice : int list list -> arr -> arr -> unit
+    val copy : arr -> arr
+    val reset : arr -> unit
+    val reshape : arr -> int array -> arr
+    val reverse : arr -> arr
+    val tile : arr -> int array -> arr
+    val repeat : ?axis:int -> arr -> int -> arr
+    val concatenate : ?axis:int -> arr array -> arr
+    val split : ?axis:int -> int array -> arr -> arr array
+    val draw : ?axis:int -> arr -> int -> arr * int array
+    val map : (elt -> elt) -> arr -> arr
+    val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> arr -> arr
+    val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
+    val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
+
+    val abs : arr -> arr
+    val neg : arr -> arr
+    val floor : arr -> arr
+    val ceil : arr -> arr
+    val round : arr -> arr
+    val sqr : arr -> arr
+    val sqrt : arr -> arr
+    val log : arr -> arr
+    val log2 : arr -> arr
+    val log10 : arr -> arr
+    val exp : arr -> arr
+    val sin : arr -> arr
+    val cos : arr -> arr
+    val tan : arr -> arr
+    val sinh : arr -> arr
+    val cosh : arr -> arr
+    val tanh : arr -> arr
+    val asin : arr -> arr
+    val acos : arr -> arr
+    val atan : arr -> arr
+    val asinh : arr -> arr
+    val acosh : arr -> arr
+    val atanh : arr -> arr
+    val min : ?axis:int -> arr -> arr
+    val max : ?axis:int -> arr -> arr
+    val sum : ?axis:int -> arr -> arr
+    val sum_reduce : ?axis:int array -> arr -> arr
+    val signum : arr -> arr
+    val sigmoid : arr -> arr
+    val relu : arr -> arr
+    val min' : arr -> elt
+    val max' : arr -> elt
+    val sum' : arr -> elt
+    val l1norm' : arr -> elt
+    val l2norm' : arr -> elt
+    val l2norm_sqr' : arr -> elt
+    val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
+    val clip_by_l2norm : elt -> arr -> arr
+    val pow : arr -> arr -> arr
+    val scalar_pow : elt -> arr -> arr
+    val pow_scalar : arr -> elt -> arr
+    val atan2 : arr -> arr -> arr
+    val scalar_atan2 : elt -> arr -> arr
+    val atan2_scalar : arr -> elt -> arr
+    val add : arr -> arr -> arr
+    val sub : arr -> arr -> arr
+    val mul : arr -> arr -> arr
+    val div : arr -> arr -> arr
+    val add_scalar : arr -> elt -> arr
+    val sub_scalar : arr -> elt -> arr
+    val mul_scalar : arr -> elt -> arr
+    val div_scalar : arr -> elt -> arr
+    val scalar_add : elt -> arr -> arr
+    val scalar_sub : elt -> arr -> arr
+    val scalar_mul : elt -> arr -> arr
+    val scalar_div : elt -> arr -> arr
+    val is_zero : arr -> bool
+    val is_positive : arr -> bool
+    val is_negative : arr -> bool
+    val is_nonpositive : arr -> bool
+    val is_nonnegative : arr -> bool
+    val equal : arr -> arr -> bool
+    val not_equal : arr -> arr -> bool
+    val less : arr -> arr -> bool
+    val greater : arr -> arr -> bool
+    val less_equal : arr -> arr -> bool
+    val greater_equal : arr -> arr -> bool
+    val elt_equal : arr -> arr -> arr
+    val elt_not_equal : arr -> arr -> arr
+    val elt_less : arr -> arr -> arr
+    val elt_greater : arr -> arr -> arr
+    val elt_less_equal : arr -> arr -> arr
+    val elt_greater_equal : arr -> arr -> arr
+    val elt_equal_scalar : arr -> elt -> arr
+    val elt_not_equal_scalar : arr -> elt -> arr
+    val elt_less_scalar : arr -> elt -> arr
+    val elt_greater_scalar : arr -> elt -> arr
+    val elt_less_equal_scalar : arr -> elt -> arr
+    val elt_greater_equal_scalar : arr -> elt -> arr
+    val approx_equal : ?eps:'a -> arr -> arr -> bool
+    val approx_equal_scalar : ?eps:'a -> 'b -> 'c -> 'd
+    val approx_elt_equal : ?eps:'a -> arr -> arr -> arr
+    val approx_elt_equal_scalar : ?eps:'a -> arr -> elt -> arr
+    val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
+    val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
+    val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
+    val transpose_conv2d : ?padding:'a -> arr -> arr -> int array -> arr
+    val max_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
+    val max_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
+    val max_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
+    val avg_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
+    val avg_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
+    val avg_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
+    val conv1d_backward_input : arr -> arr -> int array -> arr -> arr
+    val conv1d_backward_kernel : arr -> arr -> int array -> arr -> arr
+    val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
+    val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
+    val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
+    val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
+    val transpose_conv2d_backward_input : arr -> arr -> int array -> arr -> arr
+    val transpose_conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
+    val max_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
+    val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+    val max_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
+    val avg_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
+    val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+    val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
+    val row_num : arr -> int
+    val col_num : arr -> int
+    val row : arr -> int -> arr
+    val rows : arr -> int array -> arr
+    val copy_row_to : arr -> arr -> int -> unit
+    val copy_col_to : arr -> arr -> int -> unit
+    val dot : arr -> arr -> arr
+    val inv : arr -> arr
+    val trace : arr -> elt
+    val transpose : ?axis:'a -> arr -> arr
+    val to_rows : arr -> arr array
+    val of_rows : arr array -> arr
+    val of_array : elt array -> int array -> arr
+    val of_arrays : elt array array -> arr
+    val float_to_elt : float -> elt
+    val elt_to_float : elt -> float
+
+
+module Scalar : sig
+    val add : elt -> elt -> elt
+    val sub : elt -> elt -> elt
+    val mul : elt -> elt -> elt
+    val div : elt -> elt -> elt
+    val pow : elt -> elt -> elt
+    val atan2 : elt -> elt -> elt
+    val abs : elt -> elt
+    val neg : elt -> elt
+    val sqr : elt -> elt
+    val sqrt : elt -> elt
+    val exp : elt -> elt
+    val log : elt -> elt
+    val log2 : elt -> elt
+    val log10 : elt -> elt
+    val signum : elt -> elt
+    val floor : elt -> elt
+    val ceil : elt -> elt
+    val round : elt -> elt
+    val sin : elt -> elt
+    val cos : elt -> elt
+    val tan : elt -> elt
+    val sinh : elt -> elt
+    val cosh : elt -> elt
+    val tanh : elt -> elt
+    val asin : elt -> elt
+    val acos : elt -> elt
+    val atan : elt -> elt
+    val asinh : elt -> elt
+    val acosh : elt -> elt
+    val atanh : elt -> elt
+    val relu : elt -> elt
+    val sigmoid : elt -> elt
+end
+
+
+val to_dot : attr Owl_graph.node list -> string

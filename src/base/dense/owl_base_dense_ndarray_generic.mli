@@ -642,5 +642,14 @@ val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 
+(** {6 Helper functions}  *)
+
+val float_to_elt : 'a -> 'a
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val elt_to_float : 'a -> 'a
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+
 
 (* ends here *)

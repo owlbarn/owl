@@ -5,7 +5,9 @@ open Owl_types
 
 (** Functor to generate test module *)
 
-module Make (N : Ndarray_Algodiff) = struct
+module Make
+  (N : Ndarray_Algodiff with type elt = float) 
+  = struct
 
 
   (* Functions used in tests *)

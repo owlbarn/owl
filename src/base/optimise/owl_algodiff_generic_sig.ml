@@ -20,7 +20,7 @@ module type Sig = sig
   (** Trace type *)
 
   type t =
-    | F   of float                                  (* constructor of float numbers *)
+    | F   of elt                                    (* constructor of float numbers *)
     | Arr of arr                                    (* constructor of ndarrays *)
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
@@ -256,7 +256,7 @@ module type Sig = sig
 
     val ones : int -> int -> t
 
-    val uniform : ?a:float -> ?b:float -> int -> int -> t
+    val uniform : ?a:elt -> ?b:elt -> int -> int -> t
 
     val gaussian : ?mu:elt -> ?sigma:elt -> int -> int -> t
 
@@ -305,7 +305,7 @@ module type Sig = sig
 
     val ones : int array -> t
 
-    val uniform : ?a:float -> ?b:float -> int array -> t
+    val uniform : ?a:elt -> ?b:elt -> int array -> t
 
     val gaussian : ?mu:elt -> ?sigma:elt -> int array -> t
 
@@ -411,17 +411,23 @@ Namely, it calculates ``(hessian x) v``.
 
   (* low-level functions, only use them if you know what you are doing. *)
 
-  val pack_flt : elt -> t
-  (** TODO *)
+  val pack_elt : elt -> t
+  (** convert from ``elt`` type to ``t`` type. *)
 
-  val unpack_flt : t -> elt
-  (** TODO *)
+  val unpack_elt : t -> elt
+  (** convert from ``t`` type to ``elt`` type. *)
+
+  val pack_flt : float -> t
+  (** convert from ``float`` type to ``t`` type. *)
+
+  val unpack_flt : t -> float
+  (** convert from ``t`` type to ``float`` type. *)
 
   val pack_arr : arr -> t
-  (** TODO *)
+  (** convert from ``arr`` type to ``t`` type. *)
 
   val unpack_arr : t -> arr
-  (** TODO *)
+  (** convert from ``t`` type to ``arr`` type. *)
 
   val tag : unit -> int
   (** TODO *)

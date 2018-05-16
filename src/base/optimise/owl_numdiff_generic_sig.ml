@@ -60,4 +60,4 @@ end
 
 (* This is a dumb module for checking the module signature. *)
 
-module Impl (A : Ndarray_Numdiff) : Sig = Owl_numdiff_generic.Make (A)
+(* module Impl (A : Ndarray_Numdiff) : Sig = Owl_numdiff_generic.Make (A) *)

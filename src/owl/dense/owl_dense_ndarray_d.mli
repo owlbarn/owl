@@ -1097,3 +1097,10 @@ val rayleigh_sf : sigma:arr -> arr -> arr
 val rayleigh_logsf : sigma:arr -> arr -> arr
 
 val rayleigh_isf : sigma:arr -> arr -> arr
+
+
+(** {6 Helper functions}  *)
+
+val float_to_elt : float -> elt
+
+val elt_to_float : elt -> float

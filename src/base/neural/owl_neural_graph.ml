@@ -170,7 +170,7 @@ module Make
   let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
 
 
-  let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
+  let backward nn y = reverse_prop (_f 1.) y; mkpri nn, mkadj nn
 
 
   let copy nn =

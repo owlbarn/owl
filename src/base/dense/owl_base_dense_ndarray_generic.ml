@@ -2565,5 +2565,11 @@ let max_rows varr =
   end
 
 
+(* Helper functions *)
+
+let float_to_elt x = x
+
+let elt_to_float x = x
+
 
 (* ends here *)

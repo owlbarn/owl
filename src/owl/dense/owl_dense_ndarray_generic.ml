@@ -3783,5 +3783,12 @@ let contract2 index_pairs x y =
   z
 
 
+(* Helper functions *)
+
+let float_to_elt x = x
+
+let elt_to_float x = x
+
+
 
 (* ends here *)

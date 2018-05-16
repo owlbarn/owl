@@ -418,3 +418,10 @@ val of_rows : arr array -> arr
 val of_array : elt array -> int array -> arr
 
 val of_arrays : elt array array -> arr
+
+
+(** {6 Helper functions}  *)
+
+val float_to_elt : float -> elt
+
+val elt_to_float : elt -> float

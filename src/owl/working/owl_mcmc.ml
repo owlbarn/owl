@@ -5,7 +5,7 @@
 
 open Owl_types
 
-
+(*
 module Make (A : Stats_Dist) = struct
 
   module D = Owl_distribution.Make (A)
@@ -70,3 +70,4 @@ module Make (A : Stats_Dist) = struct
 
 
 end
+*)

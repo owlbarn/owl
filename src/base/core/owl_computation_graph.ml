@@ -27,6 +27,7 @@ and arr = Arr of t
 and elt = Elt of t
 
 and op =
+  | Noop
   | Var
   | Const
   | Empty
@@ -221,10 +222,10 @@ let infer_shape operator args =
   | Sub   -> _infer_shape_2 input_shapes
   | Mul   -> _infer_shape_2 input_shapes
   | Div   -> _infer_shape_2 input_shapes
-  | _     -> _infer_shape_2 input_shapes
+  | _     -> _infer_shape_1 input_shapes
 
 
-let make_node ?value ?shape op =
+let make_node ?name ?value ?shape op =
   let value = match value with Some v -> v | None -> [||] in
   let shape =
     if Array.length value > 0 then
@@ -232,7 +233,7 @@ let make_node ?value ?shape op =
     else
       match shape with Some s -> s | None -> [||]
   in
-  Owl_graph.node { op; shape; value }
+  Owl_graph.node ?name { op; shape; value }
 
 
 let refnum x = Owl_graph.outdegree x
@@ -245,7 +246,15 @@ let make_then_connect op x =
   y
 
 
-let variable shape = make_node ~shape:[|shape|] Var
+let noop x = make_then_connect Noop [|unpack_arr x|] |> pack_arr
+
+let var_arr ~name shape = make_node ~name ~shape:[|shape|] Var |> pack_arr
+
+let var_elt ~name = make_node ~name ~shape:[|Some [||]|] Var |> pack_elt
+
+let const_arr ~name shape = make_node ~name ~shape:[|shape|] Const |> pack_arr
+
+let const_elt ~name = make_node ~name ~shape:[|Some [||]|] Const |> pack_elt
 
 let empty shape = make_node ~shape:[|Some shape|] Empty |> pack_arr
 
@@ -275,11 +284,11 @@ let set x i v = make_then_connect Set [|unpack_arr x|] |> ignore
 
 let get_slice slice x = make_then_connect GetSlice [|unpack_arr x|] |> pack_arr
 
-let set_slice slice x y = make_then_connect SetSlice [|unpack_arr x; unpack_arr y|]
+let set_slice slice x y = make_then_connect SetSlice [|unpack_arr x; unpack_arr y|] |> ignore
 
 let copy x = make_then_connect Copy [|unpack_arr x|] |> pack_arr
 
-let reset slice x = raise Owl_exception.NOT_IMPLEMENTED
+let reset x = raise Owl_exception.NOT_IMPLEMENTED
 
 let reshape x shape = make_then_connect Reshape [|unpack_arr x|] |> pack_arr
 
@@ -289,19 +298,29 @@ let tile x axises = make_then_connect Tile [|unpack_arr x|] |> pack_arr
 
 let repeat ?axis x repeats = make_then_connect Repeat [|unpack_arr x|] |> pack_arr
 
-let concatenate ?axis xs = make_then_connect Concatenate xs |> pack_arr
+let concatenate ?axis xs = make_then_connect Concatenate (Array.map unpack_arr xs) |> pack_arr
 
-let split ?axis parts x = make_then_connect Split [|unpack_arr x|]
+let split ?axis parts x =
+  let y = make_then_connect Split [|unpack_arr x|] in
+  (* FIXME: wrong shape *)
+  Array.map (fun s ->
+    let z = make_node ~shape:[|Some parts|] Noop in
+    connect [|y|] [|z|];
+    pack_arr y
+  ) parts
 
-let draw ?axis x n = make_then_connect Draw [|unpack_arr x|]
+
+let draw ?axis x n =
+  let y = make_then_connect Draw [|unpack_arr x|] |> pack_arr in
+  y, [||]
 
 let map f x = make_then_connect Map [|unpack_arr x|] |> pack_arr
 
-let fold ?axis f x = make_then_connect Fold [|unpack_arr x|] |> pack_arr
+let fold ?axis f a x = make_then_connect Fold [|unpack_arr x|] |> pack_arr
 
 let scan ?axis f x = make_then_connect Scan [|unpack_arr x|] |> pack_arr
 
-let print ?max_row ?max_col ?header ?fmt x = make_then_connect Print [|unpack_arr x|]
+let print ?max_row ?max_col ?header ?fmt x = make_then_connect Print [|unpack_arr x|] |> ignore
 
 
 let abs x = make_then_connect Abs [|unpack_arr x|] |> pack_arr
@@ -378,7 +397,7 @@ let l2norm_sqr' x = make_then_connect L2NormSqr' [|unpack_arr x|] |> pack_elt
 
 let clip_by_value ?amin ?amax x = make_then_connect ClipByValue [|unpack_arr x|] |> pack_arr
 
-let clip_by_l2norm x = make_then_connect ClipByL2norm [|unpack_arr x|] |> pack_arr
+let clip_by_l2norm a x = make_then_connect ClipByL2norm [|unpack_arr x|] |> pack_arr
 
 let pow x y = make_then_connect Pow [|unpack_arr x; unpack_arr y|] |> pack_arr
 
@@ -408,13 +427,13 @@ let mul_scalar x a = make_then_connect MulScalar [|unpack_arr x; unpack_elt a|] 
 
 let div_scalar x a = make_then_connect DivScalar [|unpack_arr x; unpack_elt a|] |> pack_arr
 
-let scalar_add x a = make_then_connect ScalarAdd [|unpack_elt a; unpack_arr x|] |> pack_arr
+let scalar_add a x = make_then_connect ScalarAdd [|unpack_elt a; unpack_arr x|] |> pack_arr
 
-let scalar_sub x a = make_then_connect ScalarSub [|unpack_elt a; unpack_arr x|] |> pack_arr
+let scalar_sub a x = make_then_connect ScalarSub [|unpack_elt a; unpack_arr x|] |> pack_arr
 
-let scalar_mul x a = make_then_connect ScalarMul [|unpack_elt a; unpack_arr x|] |> pack_arr
+let scalar_mul a x = make_then_connect ScalarMul [|unpack_elt a; unpack_arr x|] |> pack_arr
 
-let scalar_div x a = make_then_connect ScalarDiv [|unpack_elt a; unpack_arr x|] |> pack_arr
+let scalar_div a x = make_then_connect ScalarDiv [|unpack_elt a; unpack_arr x|] |> pack_arr
 
 let is_zero x = raise Owl_exception.NOT_IMPLEMENTED
 
@@ -471,82 +490,89 @@ let approx_elt_equal ?eps x y = make_then_connect ApproxEltEqual [|unpack_arr x;
 let approx_elt_equal_scalar ?eps x a = make_then_connect ApproxEltEqualScalar [|unpack_arr x; unpack_elt a|] |> pack_arr
 
 
-let conv1d ?padding input kernel stride = make_then_connect Conv1d [|input; kernel|] |> pack_arr
+let conv1d ?padding input kernel stride = make_then_connect Conv1d [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
-let conv2d ?padding input kernel stride = make_then_connect Conv2d [|input; kernel|] |> pack_arr
+let conv2d ?padding input kernel stride = make_then_connect Conv2d [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
-let conv3d ?padding input kernel stride = make_then_connect Conv3d [|input; kernel|] |> pack_arr
+let conv3d ?padding input kernel stride = make_then_connect Conv3d [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
-let transpose_conv2d ?padding input kernel stride = make_then_connect TransposeConv2d [|input; kernel|] |> pack_arr
+let transpose_conv2d ?padding input kernel stride = make_then_connect TransposeConv2d [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
-let max_pool1d ?padding input kernel stride = make_then_connect MaxPool1d [|input|] |> pack_arr
+let max_pool1d ?padding input kernel stride = make_then_connect MaxPool1d [|unpack_arr input|] |> pack_arr
 
-let max_pool2d ?padding input kernel stride = make_then_connect MaxPool2d [|input|] |> pack_arr
+let max_pool2d ?padding input kernel stride = make_then_connect MaxPool2d [|unpack_arr input|] |> pack_arr
 
-let max_pool3d ?padding input kernel stride = make_then_connect MaxPool3d [|input|] |> pack_arr
+let max_pool3d ?padding input kernel stride = make_then_connect MaxPool3d [|unpack_arr input|] |> pack_arr
 
-let avg_pool1d ?padding input kernel stride = make_then_connect AvgPool1d [|input|] |> pack_arr
+let avg_pool1d ?padding input kernel stride = make_then_connect AvgPool1d [|unpack_arr input|] |> pack_arr
 
-let avg_pool2d ?padding input kernel stride = make_then_connect AvgPool2d [|input|] |> pack_arr
+let avg_pool2d ?padding input kernel stride = make_then_connect AvgPool2d [|unpack_arr input|] |> pack_arr
 
-let avg_pool3d ?padding input kernel stride = make_then_connect AvgPool3d [|input|] |> pack_arr
+let avg_pool3d ?padding input kernel stride = make_then_connect AvgPool3d [|unpack_arr input|] |> pack_arr
 
-let conv1d_backward_input input kernel stride output' = make_then_connect Conv1dBackwardInput [|input; kernel; output'|] |> pack_arr
+let conv1d_backward_input input kernel stride output' = make_then_connect Conv1dBackwardInput [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let conv1d_backward_kernel input kernel stride output' = make_then_connect Conv1dBackwardKernel [|input; kernel; output'|] |> pack_arr
+let conv1d_backward_kernel input kernel stride output' = make_then_connect Conv1dBackwardKernel [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let conv2d_backward_input input kernel stride output' = make_then_connect Conv2dBackwardInput [|input; kernel; output'|] |> pack_arr
+let conv2d_backward_input input kernel stride output' = make_then_connect Conv2dBackwardInput [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let conv2d_backward_kernel input kernel stride output' = make_then_connect Conv2dBackwardKernel [|input; kernel; output'|] |> pack_arr
+let conv2d_backward_kernel input kernel stride output' = make_then_connect Conv2dBackwardKernel [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let conv3d_backward_input input kernel stride output' = make_then_connect Conv3dBackwardInput [|input; kernel; output'|] |> pack_arr
+let conv3d_backward_input input kernel stride output' = make_then_connect Conv3dBackwardInput [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let conv3d_backward_kernel input kernel stride output' = make_then_connect Conv3dBackwardKernel [|input; kernel; output'|] |> pack_arr
+let conv3d_backward_kernel input kernel stride output' = make_then_connect Conv3dBackwardKernel [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let transpose_conv2d_backward_input input kernel stride output' = make_then_connect TransposeConv2dBackwardInput [|input; kernel; output'|] |> pack_arr
+let transpose_conv2d_backward_input input kernel stride output' = make_then_connect TransposeConv2dBackwardInput [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let transpose_conv2d_backward_kernel input kernel stride output' = make_then_connect TransposeConv2dBackwardKernel [|input; kernel; output'|] |> pack_arr
+let transpose_conv2d_backward_kernel input kernel stride output' = make_then_connect TransposeConv2dBackwardKernel [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let max_pool1d_backward padding input kernel stride output' = make_then_connect MaxPool1dBackward [|input; output'|] |> pack_arr
+let max_pool1d_backward padding input kernel stride output' = make_then_connect MaxPool1dBackward [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
-let max_pool2d_backward padding input kernel stride output' = make_then_connect MaxPool2dBackward [|input; output'|] |> pack_arr
+let max_pool2d_backward padding input kernel stride output' = make_then_connect MaxPool2dBackward [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
-let max_pool3d_backward padding input kernel stride output' = make_then_connect MaxPool3dBackward [|input; output'|] |> pack_arr
+let max_pool3d_backward padding input kernel stride output' = make_then_connect MaxPool3dBackward [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
-let avg_pool1d_backward padding input kernel stride output' = make_then_connect AvgPool1dBackward [|input; output'|] |> pack_arr
+let avg_pool1d_backward padding input kernel stride output' = make_then_connect AvgPool1dBackward [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
-let avg_pool2d_backward padding input kernel stride output' = make_then_connect AvgPool2dBackward [|input; output'|] |> pack_arr
+let avg_pool2d_backward padding input kernel stride output' = make_then_connect AvgPool2dBackward [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
-let avg_pool3d_backward padding input kernel stride output' = make_then_connect AvgPool3dBackward [|input; output'|] |> pack_arr
+let avg_pool3d_backward padding input kernel stride output' = make_then_connect AvgPool3dBackward [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
 let row_num x = raise Owl_exception.NOT_IMPLEMENTED
 
 let col_num x = raise Owl_exception.NOT_IMPLEMENTED
 
-let row x i = make_then_connect Row [|unpack_arr x|]
+let row x i = make_then_connect Row [|unpack_arr x|] |> pack_arr
 
-let rows x i = make_then_connect Rows [|unpack_arr x|]
+let rows x i = make_then_connect Rows [|unpack_arr x|] |> pack_arr
 
-let copy_row_to x y i = make_then_connect CopyRowTo [|unpack_arr x|]
+let copy_row_to x y i = make_then_connect CopyRowTo [|unpack_arr x|] |> ignore
 
-let copy_col_to x y j = make_then_connect CopyColTo [|unpack_arr x|]
+let copy_col_to x y j = make_then_connect CopyColTo [|unpack_arr x|] |> ignore
 
 let dot x y = make_then_connect Dot [|unpack_arr x; unpack_arr y|] |> pack_arr
 
 let inv x = make_then_connect Inv [|unpack_arr x|] |> pack_arr
 
-let trace x = make_then_connect Trace [|unpack_arr x|] |> pack_arr
+let trace x = make_then_connect Trace [|unpack_arr x|] |> pack_elt
 
 let transpose ?axis x = make_then_connect Transpose [|unpack_arr x|] |> pack_arr
 
-let to_rows x = make_then_connect ToRows [|unpack_arr x|]
+let to_rows x =
+  let y = make_then_connect ToRows [|unpack_arr x|] in
+  (* FIXME: wrong shape *)
+  [||]
 
-let of_rows xs = make_then_connect OfRows xs
+let of_rows xs = make_then_connect OfRows (Array.map unpack_arr xs) |> pack_arr
 
 let of_array x shape = raise Owl_exception.NOT_IMPLEMENTED
 
-let of_arrays x shape = raise Owl_exception.NOT_IMPLEMENTED
+let of_arrays x = raise Owl_exception.NOT_IMPLEMENTED
 
+
+let float_to_elt x = const_elt ""
+
+let elt_to_float x =  unpack_elt x; 0.
 
 
 module Scalar = struct
@@ -616,3 +642,167 @@ module Scalar = struct
   let sigmoid x = make_then_connect Sigmoid [|unpack_elt x|] |> pack_elt
 
 end
+
+
+let op_to_str = function
+  | Noop -> "Noop"
+  | Var -> "Var"
+  | Const -> "Const"
+  | Empty -> "Empty"
+  | Zeros -> "Zeros"
+  | Ones -> "Ones"
+  | Create -> "Create"
+  | Sequential -> "Sequential"
+  | Uniform -> "Uniform"
+  | Gaussian -> "Gaussian"
+  | Bernoulli -> "Bernoulli"
+  | Init -> "Init"
+  | Shape -> "Shape"
+  | Numel -> "Numel"
+  | Get -> "Get"
+  | Set -> "Set"
+  | GetSlice -> "GetSlice"
+  | SetSlice -> "SetSlice"
+  | Copy -> "Copy"
+  | Reset -> "Reset"
+  | Reshape -> "Reshape"
+  | Reverse -> "Reverse"
+  | Tile -> "Tile"
+  | Repeat -> "Repeat"
+  | Concatenate -> "Concatenate"
+  | Split -> "Split"
+  | Draw -> "Draw"
+  | Map -> "Map"
+  | Fold -> "Fold"
+  | Scan -> "Scan"
+  | Print -> "Print"
+  | Abs -> "Abs"
+  | Neg -> "Neg"
+  | Floor -> "Floor"
+  | Ceil -> "Ceil"
+  | Round -> "Round"
+  | Sqr -> "Sqr"
+  | Sqrt -> "Sqrt"
+  | Log -> "Log"
+  | Log2 -> "Log2"
+  | Log10 -> "Log10"
+  | Exp -> "Exp"
+  | Sin -> "Sin"
+  | Cos -> "Cos"
+  | Tan -> "Tan"
+  | Sinh -> "Sinh"
+  | Cosh -> "Cosh"
+  | Tanh -> "Tanh"
+  | Asin -> "Asin"
+  | Acos -> "Acos"
+  | Atan -> "Atan"
+  | Asinh -> "Asinh"
+  | Acosh -> "Acosh"
+  | Atanh -> "Atanh"
+  | Min -> "Min"
+  | Max -> "Max"
+  | Sum -> "Sum"
+  | SumReduce -> "SumReduce"
+  | Signum -> "Signum"
+  | Sigmoid -> "Sigmoid"
+  | Relu -> "Relu"
+  | Min' -> "Min'"
+  | Max' -> "Max'"
+  | Sum' -> "Sum'"
+  | L1norm' -> "L1norm'"
+  | L2norm' -> "L2norm'"
+  | L2NormSqr' -> "L2NormSqr'"
+  | ClipByValue -> "ClipByValue"
+  | ClipByL2norm -> "ClipByL2norm"
+  | Pow -> "Pow"
+  | ScalarPow -> "ScalarPow"
+  | PowScalar -> "PowScalar"
+  | Atan2 -> "Atan2"
+  | ScalarAtan2 -> "ScalarAtan2"
+  | Atan2Scalar -> "Atan2Scalar"
+  | Add -> "Add"
+  | Sub -> "Sub"
+  | Mul -> "Mul"
+  | Div -> "Div"
+  | AddScalar -> "AddScalar"
+  | SubScalar -> "SubScalar"
+  | MulScalar -> "MulScalar"
+  | DivScalar -> "DivScalar"
+  | ScalarAdd -> "ScalarAdd"
+  | ScalarSub -> "ScalarSub"
+  | ScalarMul -> "ScalarMul"
+  | ScalarDiv -> "ScalarDiv"
+  | IsZero -> "IsZero"
+  | IsPositive -> "IsPositive"
+  | IsNegative -> "IsNegative"
+  | IsNonpositive -> "IsNonpositive"
+  | IsNonnegative -> "IsNonnegative"
+  | Equal -> "Equal"
+  | NotEqual -> "NotEqual"
+  | Less -> "Less"
+  | Greater -> "Greater"
+  | LessEqual -> "LessEqual"
+  | GreaterEqual -> "GreaterEqual"
+  | EltEqual -> "EltEqual"
+  | EltNotEqual -> "EltNotEqual"
+  | EltLess -> "EltLess"
+  | EltGreater -> "EltGreater"
+  | EltLessEqual -> "EltLessEqual"
+  | EltGreaterEqual -> "EltGreaterEqual"
+  | EltEqualScalar -> "EltEqualScalar"
+  | EltNotEqualScalar -> "EltNotEqualScalar"
+  | EltLessScalar -> "EltLessScalar"
+  | EltGreaterScalar -> "EltGreaterScalar"
+  | EltLessEqualScalar -> "EltLessEqualScalar"
+  | EltGreaterEqualScalar -> "EltGreaterEqualScalar"
+  | ApproxEqual -> "ApproxEqual"
+  | ApproxEqualScalar -> "ApproxEqualScalar"
+  | ApproxEltEqual -> "ApproxEltEqual"
+  | ApproxEltEqualScalar -> "ApproxEltEqualScalar"
+  | Conv1d -> "Conv1d"
+  | Conv2d -> "Conv2d"
+  | Conv3d -> "Conv3d"
+  | TransposeConv2d -> "TransposeConv2d"
+  | MaxPool1d -> "MaxPool1d"
+  | MaxPool2d -> "MaxPool2d"
+  | MaxPool3d -> "MaxPool3d"
+  | AvgPool1d -> "AvgPool1d"
+  | AvgPool2d -> "AvgPool2d"
+  | AvgPool3d -> "AvgPool3d"
+  | Conv1dBackwardInput -> "Conv1dBackwardInput"
+  | Conv1dBackwardKernel -> "Conv1dBackwardKernel"
+  | Conv2dBackwardInput -> "Conv2dBackwardInput"
+  | Conv2dBackwardKernel -> "Conv2dBackwardKernel"
+  | Conv3dBackwardInput -> "Conv3dBackwardInput"
+  | Conv3dBackwardKernel -> "Conv3dBackwardKernel"
+  | TransposeConv2dBackwardInput -> "TransposeConv2dBackwardInput"
+  | TransposeConv2dBackwardKernel -> "TransposeConv2dBackwardKernel"
+  | MaxPool1dBackward -> "MaxPool1dBackward"
+  | MaxPool2dBackward -> "MaxPool2dBackward"
+  | MaxPool3dBackward -> "MaxPool3dBackward"
+  | AvgPool1dBackward -> "AvgPool1dBackward"
+  | AvgPool2dBackward -> "AvgPool2dBackward"
+  | AvgPool3dBackward -> "AvgPool3dBackward"
+  | RowNum -> "RowNum"
+  | ColNum -> "ColNum"
+  | Row -> "Row"
+  | Rows -> "Rows"
+  | CopyRowTo -> "CopyRowTo"
+  | CopyColTo -> "CopyColTo"
+  | Dot -> "Dot"
+  | Inv -> "Inv"
+  | Trace -> "Trace"
+  | Transpose -> "Transpose"
+  | ToRows -> "ToRows"
+  | OfRows -> "OfRows"
+  | OfArray -> "OfArray"
+  | OfArrays -> "OfArrays"
+
+
+let to_dot x =
+  let x = Array.of_list x in
+  let edge_s = fold_in_edges (fun a u v -> Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)) "" x in
+  let node_s = fold_ancestors (fun a n ->
+    Printf.sprintf "%s%i [ label=\"#%i | { %s | %s }\" ];\n" a (id n) (id n) (name n) (op_to_str (attr n).op)
+  ) "" x in
+  Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s

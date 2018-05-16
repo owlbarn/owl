@@ -15,6 +15,8 @@ module Make
   type arr = A.arr
   type elt = A.elt
 
+  let _f x = A.float_to_elt x
+
 
   (* global epsilon value used in numerical differentiation *)
   let _eps = 0.00001
@@ -46,11 +48,11 @@ module Make
     let g = A.create [|n|] (f x) in
     let gg = A.mapi (fun i xi ->
       let x' = A.copy x in
-      A.set x' [|i|] (xi +. _eps);
+      A.set x' [|i|] (_f ((A.elt_to_float xi) +. _eps));
       f x'
     ) x
     in
-    g, A.((gg - g) *$ _ep1)
+    g, A.((gg - g) *$ (_f _ep1))
 
 
   (* gradient of f : vector -> scalar *)
@@ -66,12 +68,13 @@ module Make
 
     for i = 0 to m - 1 do
       let x' = A.copy x in
-      A.set x' [|i|] ((A.get x [|i|]) +. _eps);
+      let a = A.elt_to_float (A.get x [|i|]) in
+      A.set x' [|i|] (_f (a +. _eps));
       let y' = A.reshape (f x') [|1; n|] in
       A.set_slice [[i];[]] jj y'
     done;
 
-    y, A.((jj - j) *$ _ep1)
+    y, A.((jj - j) *$ (_f _ep1))
 
 
   (* transposed jacobian of f : vector -> vector *)

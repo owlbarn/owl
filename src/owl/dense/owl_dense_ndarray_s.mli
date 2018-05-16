@@ -806,3 +806,10 @@ val draw_cols : ?replacement:bool -> arr -> int -> arr * int array
 val draw_rows2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
 
 val draw_cols2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
+
+
+(** {6 Helper functions}  *)
+
+val float_to_elt : float -> elt
+
+val elt_to_float : elt -> float

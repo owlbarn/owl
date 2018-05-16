@@ -2569,4 +2569,13 @@ val draw_cols2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 
+(** {6 Helper functions}  *)
+
+val float_to_elt : 'a -> 'a
+(** Identity function to deal with the type conversion required by other functors. *)
+
+val elt_to_float : 'a -> 'a
+(** Identity function to deal with the type conversion required by other functors. *)
+
+
 (* ends here *)
