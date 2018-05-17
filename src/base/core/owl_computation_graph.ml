@@ -5,6 +5,8 @@
 
 open Bigarray
 
+open Owl_types
+
 open Owl_graph
 
 
@@ -37,25 +39,24 @@ and op =
   | Sequential
   | Uniform
   | Gaussian
-  | Bernoulli of float option
-  | Init of (int -> elt)
-  | Get of int array
-  | Set of int array
-  | GetSlice of int list list
-  | SetSlice of int list list
+  | Bernoulli                     of float option
+  | Init                          of (int -> elt)
+  | Get                           of int array
+  | Set                           of int array
+  | GetSlice                      of int list list
+  | SetSlice                      of int list list
   | Copy
   | Reset
-  | Reshape
+  | Reshape                       of int array
   | Reverse
-  | Tile of int array
-  | Repeat of int option * int
+  | Tile                          of int array
+  | Repeat                        of int option * int
   | Concatenate
   | Split
-  | Draw of int
-  | Map of (elt -> elt)
-  | Fold of int option * (elt -> elt -> elt)
-  | Scan of int option * (elt -> elt -> elt)
-  | Print
+  | Draw                          of int
+  | Map                           of (elt -> elt)
+  | Fold                          of int option * (elt -> elt -> elt)
+  | Scan                          of int option * (elt -> elt -> elt)
   | Abs
   | Neg
   | Floor
@@ -79,10 +80,10 @@ and op =
   | Asinh
   | Acosh
   | Atanh
-  | Min of int option
-  | Max of int option
-  | Sum of int option
-  | SumReduce of int array option
+  | Min                           of int option
+  | Max                           of int option
+  | Sum                           of int option
+  | SumReduce                     of int array option
   | Signum
   | Sigmoid
   | Relu
@@ -135,34 +136,34 @@ and op =
   | EltGreaterScalar
   | EltLessEqualScalar
   | EltGreaterEqualScalar
-  | ApproxEqual
-  | ApproxEqualScalar
-  | ApproxEltEqual
-  | ApproxEltEqualScalar
-  | Conv1d
-  | Conv2d
-  | Conv3d
-  | TransposeConv2d
-  | MaxPool1d
-  | MaxPool2d
-  | MaxPool3d
-  | AvgPool1d
-  | AvgPool2d
-  | AvgPool3d
-  | Conv1dBackwardInput
-  | Conv1dBackwardKernel
-  | Conv2dBackwardInput
-  | Conv2dBackwardKernel
-  | Conv3dBackwardInput
-  | Conv3dBackwardKernel
-  | TransposeConv2dBackwardInput
-  | TransposeConv2dBackwardKernel
-  | MaxPool1dBackward
-  | MaxPool2dBackward
-  | MaxPool3dBackward
-  | AvgPool1dBackward
-  | AvgPool2dBackward
-  | AvgPool3dBackward
+  | ApproxEqual                   of float option
+  | ApproxEqualScalar             of float option
+  | ApproxEltEqual                of float option
+  | ApproxEltEqualScalar          of float option
+  | Conv1d                        of padding option * int array
+  | Conv2d                        of padding option * int array
+  | Conv3d                        of padding option * int array
+  | TransposeConv2d               of padding option * int array
+  | MaxPool1d                     of padding option * int array * int array
+  | MaxPool2d                     of padding option * int array * int array
+  | MaxPool3d                     of padding option * int array * int array
+  | AvgPool1d                     of padding option * int array * int array
+  | AvgPool2d                     of padding option * int array * int array
+  | AvgPool3d                     of padding option * int array * int array
+  | Conv1dBackwardInput           of int array
+  | Conv1dBackwardKernel          of int array
+  | Conv2dBackwardInput           of int array
+  | Conv2dBackwardKernel          of int array
+  | Conv3dBackwardInput           of int array
+  | Conv3dBackwardKernel          of int array
+  | TransposeConv2dBackwardInput  of int array
+  | TransposeConv2dBackwardKernel of int array
+  | MaxPool1dBackward             of padding * int array * int array
+  | MaxPool2dBackward             of padding * int array * int array
+  | MaxPool3dBackward             of padding * int array * int array
+  | AvgPool1dBackward             of padding * int array * int array
+  | AvgPool2dBackward             of padding * int array * int array
+  | AvgPool3dBackward             of padding * int array * int array
   | RowNum
   | ColNum
   | Row
@@ -172,11 +173,163 @@ and op =
   | Dot
   | Inv
   | Trace
-  | Transpose
+  | Transpose                     of int array option
   | ToRows
   | OfRows
   | OfArray
   | OfArrays
+
+
+let op_to_str = function
+  | Noop                                        -> "Noop"
+  | Var                                         -> "Var"
+  | Const                                       -> "Const"
+  | Empty                                       -> "Empty"
+  | Zeros                                       -> "Zeros"
+  | Ones                                        -> "Ones"
+  | Create                                      -> "Create"
+  | Sequential                                  -> "Sequential"
+  | Uniform                                     -> "Uniform"
+  | Gaussian                                    -> "Gaussian"
+  | Bernoulli _                                 -> "Bernoulli"
+  | Init _                                      -> "Init"
+  | Get i                                       -> "Get"
+  | Set i                                       -> "Set"
+  | GetSlice i                                  -> "GetSlice"
+  | SetSlice i                                  -> "SetSlice"
+  | Copy                                        -> "Copy"
+  | Reset                                       -> "Reset"
+  | Reshape shape                               -> "Reshape"
+  | Reverse                                     -> "Reverse"
+  | Tile repeats                                -> "Tile"
+  | Repeat (axis, repeats)                      -> "Repeat"
+  | Concatenate                                 -> "Concatenate"
+  | Split                                       -> "Split"
+  | Draw n                                      -> "Draw"
+  | Map f                                       -> "Map"
+  | Fold (axis, f)                              -> "Fold"
+  | Scan (axis, f)                              -> "Scan"
+  | Abs                                         -> "Abs"
+  | Neg                                         -> "Neg"
+  | Floor                                       -> "Floor"
+  | Ceil                                        -> "Ceil"
+  | Round                                       -> "Round"
+  | Sqr                                         -> "Sqr"
+  | Sqrt                                        -> "Sqrt"
+  | Log                                         -> "Log"
+  | Log2                                        -> "Log2"
+  | Log10                                       -> "Log10"
+  | Exp                                         -> "Exp"
+  | Sin                                         -> "Sin"
+  | Cos                                         -> "Cos"
+  | Tan                                         -> "Tan"
+  | Sinh                                        -> "Sinh"
+  | Cosh                                        -> "Cosh"
+  | Tanh                                        -> "Tanh"
+  | Asin                                        -> "Asin"
+  | Acos                                        -> "Acos"
+  | Atan                                        -> "Atan"
+  | Asinh                                       -> "Asinh"
+  | Acosh                                       -> "Acosh"
+  | Atanh                                       -> "Atanh"
+  | Min i                                       -> "Min"
+  | Max i                                       -> "Max"
+  | Sum i                                       -> "Sum"
+  | SumReduce i                                 -> "SumReduce"
+  | Signum                                      -> "Signum"
+  | Sigmoid                                     -> "Sigmoid"
+  | Relu                                        -> "Relu"
+  | Min'                                        -> "Min'"
+  | Max'                                        -> "Max'"
+  | Sum'                                        -> "Sum'"
+  | L1norm'                                     -> "L1norm'"
+  | L2norm'                                     -> "L2norm'"
+  | L2NormSqr'                                  -> "L2NormSqr'"
+  | ClipByValue                                 -> "ClipByValue"
+  | ClipByL2norm                                -> "ClipByL2norm"
+  | Pow                                         -> "Pow"
+  | ScalarPow                                   -> "ScalarPow"
+  | PowScalar                                   -> "PowScalar"
+  | Atan2                                       -> "Atan2"
+  | ScalarAtan2                                 -> "ScalarAtan2"
+  | Atan2Scalar                                 -> "Atan2Scalar"
+  | Add                                         -> "Add"
+  | Sub                                         -> "Sub"
+  | Mul                                         -> "Mul"
+  | Div                                         -> "Div"
+  | AddScalar                                   -> "AddScalar"
+  | SubScalar                                   -> "SubScalar"
+  | MulScalar                                   -> "MulScalar"
+  | DivScalar                                   -> "DivScalar"
+  | ScalarAdd                                   -> "ScalarAdd"
+  | ScalarSub                                   -> "ScalarSub"
+  | ScalarMul                                   -> "ScalarMul"
+  | ScalarDiv                                   -> "ScalarDiv"
+  | IsZero                                      -> "IsZero"
+  | IsPositive                                  -> "IsPositive"
+  | IsNegative                                  -> "IsNegative"
+  | IsNonpositive                               -> "IsNonpositive"
+  | IsNonnegative                               -> "IsNonnegative"
+  | Equal                                       -> "Equal"
+  | NotEqual                                    -> "NotEqual"
+  | Less                                        -> "Less"
+  | Greater                                     -> "Greater"
+  | LessEqual                                   -> "LessEqual"
+  | GreaterEqual                                -> "GreaterEqual"
+  | EltEqual                                    -> "EltEqual"
+  | EltNotEqual                                 -> "EltNotEqual"
+  | EltLess                                     -> "EltLess"
+  | EltGreater                                  -> "EltGreater"
+  | EltLessEqual                                -> "EltLessEqual"
+  | EltGreaterEqual                             -> "EltGreaterEqual"
+  | EltEqualScalar                              -> "EltEqualScalar"
+  | EltNotEqualScalar                           -> "EltNotEqualScalar"
+  | EltLessScalar                               -> "EltLessScalar"
+  | EltGreaterScalar                            -> "EltGreaterScalar"
+  | EltLessEqualScalar                          -> "EltLessEqualScalar"
+  | EltGreaterEqualScalar                       -> "EltGreaterEqualScalar"
+  | ApproxEqual eps                             -> "ApproxEqual"
+  | ApproxEqualScalar eps                       -> "ApproxEqualScalar"
+  | ApproxEltEqual eps                          -> "ApproxEltEqual"
+  | ApproxEltEqualScalar eps                    -> "ApproxEltEqualScalar"
+  | Conv1d (padding, stride)                    -> "Conv1d"
+  | Conv2d (padding, stride)                    -> "Conv2d"
+  | Conv3d (padding, stride)                    -> "Conv3d"
+  | TransposeConv2d (padding, stride)           -> "TransposeConv2d"
+  | MaxPool1d (padding, kernel, stride)         -> "MaxPool1d"
+  | MaxPool2d (padding, kernel, stride)         -> "MaxPool2d"
+  | MaxPool3d (padding, kernel, stride)         -> "MaxPool3d"
+  | AvgPool1d (padding, kernel, stride)         -> "AvgPool1d"
+  | AvgPool2d (padding, kernel, stride)         -> "AvgPool2d"
+  | AvgPool3d (padding, kernel, stride)         -> "AvgPool3d"
+  | Conv1dBackwardInput stride                  -> "Conv1dBackwardInput"
+  | Conv1dBackwardKernel stride                 -> "Conv1dBackwardKernel"
+  | Conv2dBackwardInput stride                  -> "Conv2dBackwardInput"
+  | Conv2dBackwardKernel stride                 -> "Conv2dBackwardKernel"
+  | Conv3dBackwardInput stride                  -> "Conv3dBackwardInput"
+  | Conv3dBackwardKernel stride                 -> "Conv3dBackwardKernel"
+  | TransposeConv2dBackwardInput stride         -> "TransposeConv2dBackwardInput"
+  | TransposeConv2dBackwardKernel stride        -> "TransposeConv2dBackwardKernel"
+  | MaxPool1dBackward (padding, kernel, stride) -> "MaxPool1dBackward"
+  | MaxPool2dBackward (padding, kernel, stride) -> "MaxPool2dBackward"
+  | MaxPool3dBackward (padding, kernel, stride) -> "MaxPool3dBackward"
+  | AvgPool1dBackward (padding, kernel, stride) -> "AvgPool1dBackward"
+  | AvgPool2dBackward (padding, kernel, stride) -> "AvgPool2dBackward"
+  | AvgPool3dBackward (padding, kernel, stride) -> "AvgPool3dBackward"
+  | RowNum                                      -> "RowNum"
+  | ColNum                                      -> "ColNum"
+  | Row                                         -> "Row"
+  | Rows                                        -> "Rows"
+  | CopyRowTo                                   -> "CopyRowTo"
+  | CopyColTo                                   -> "CopyColTo"
+  | Dot                                         -> "Dot"
+  | Inv                                         -> "Inv"
+  | Trace                                       -> "Trace"
+  | Transpose i                                 -> "Transpose"
+  | ToRows                                      -> "ToRows"
+  | OfRows                                      -> "OfRows"
+  | OfArray                                     -> "OfArray"
+  | OfArrays                                    -> "OfArrays"
 
 
 let pack_arr x = Arr x
@@ -200,8 +353,14 @@ let _infer_shape_1 input_shapes =
   | None   -> [| None |]
 
 
-(* FIXME *)
 let _infer_shape_2 input_shapes =
+  match input_shapes.(1).(0) with
+  | Some s -> [| Some Array.(copy s) |]
+  | None   -> [| None |]
+
+
+(* FIXME *)
+let _infer_shape_3 input_shapes =
   let s0 = input_shapes.(0).(0) in
   let s1 = input_shapes.(1).(0) in
   match s0, s1 with
@@ -212,15 +371,137 @@ let _infer_shape_2 input_shapes =
 let infer_shape operator args =
   let input_shapes = Array.map (fun a -> (attr a).shape) args in
   match operator with
-  | Var   -> _infer_shape_1 input_shapes
-  | Const -> _infer_shape_1 input_shapes
-  | Sin   -> _infer_shape_1 input_shapes
-  | Cos   -> _infer_shape_1 input_shapes
-  | Add   -> _infer_shape_2 input_shapes
-  | Sub   -> _infer_shape_2 input_shapes
-  | Mul   -> _infer_shape_2 input_shapes
-  | Div   -> _infer_shape_2 input_shapes
-  | _     -> _infer_shape_1 input_shapes
+  | Get _                                       -> [| Some [||] |]
+  | GetSlice slice                              -> failwith "not implemented"
+  | Copy                                        -> _infer_shape_1 input_shapes
+  | Reshape shape                               -> [| Some shape |]
+  | Reverse                                     -> _infer_shape_1 input_shapes
+  | Tile repeats                                -> failwith "not implemented"
+  | Repeat (axis, repeats)                      -> failwith "not implemented"
+  | Concatenate                                 -> failwith "not implemented"
+  | Split                                       -> failwith "not implemented"
+  | Draw n                                      -> failwith "not implemented"
+  | Map _                                       -> _infer_shape_1 input_shapes
+  | Fold (axis, f)                              -> failwith "not implemented"
+  | Scan (axis, f)                              -> _infer_shape_1 input_shapes
+  | Abs                                         -> _infer_shape_1 input_shapes
+  | Neg                                         -> _infer_shape_1 input_shapes
+  | Floor                                       -> _infer_shape_1 input_shapes
+  | Ceil                                        -> _infer_shape_1 input_shapes
+  | Round                                       -> _infer_shape_1 input_shapes
+  | Sqr                                         -> _infer_shape_1 input_shapes
+  | Sqrt                                        -> _infer_shape_1 input_shapes
+  | Log                                         -> _infer_shape_1 input_shapes
+  | Log2                                        -> _infer_shape_1 input_shapes
+  | Log10                                       -> _infer_shape_1 input_shapes
+  | Exp                                         -> _infer_shape_1 input_shapes
+  | Sin                                         -> _infer_shape_1 input_shapes
+  | Cos                                         -> _infer_shape_1 input_shapes
+  | Tan                                         -> _infer_shape_1 input_shapes
+  | Sinh                                        -> _infer_shape_1 input_shapes
+  | Cosh                                        -> _infer_shape_1 input_shapes
+  | Tanh                                        -> _infer_shape_1 input_shapes
+  | Asin                                        -> _infer_shape_1 input_shapes
+  | Acos                                        -> _infer_shape_1 input_shapes
+  | Atan                                        -> _infer_shape_1 input_shapes
+  | Asinh                                       -> _infer_shape_1 input_shapes
+  | Acosh                                       -> _infer_shape_1 input_shapes
+  | Atanh                                       -> _infer_shape_1 input_shapes
+  | Min axis                                    -> failwith "not implemented"
+  | Max axis                                    -> failwith "not implemented"
+  | Sum axis                                    -> failwith "not implemented"
+  | SumReduce axises                            -> failwith "not implemented"
+  | Signum                                      -> _infer_shape_1 input_shapes
+  | Sigmoid                                     -> _infer_shape_1 input_shapes
+  | Relu                                        -> _infer_shape_1 input_shapes
+  | Min'                                        -> [| Some [||] |]
+  | Max'                                        -> [| Some [||] |]
+  | Sum'                                        -> [| Some [||] |]
+  | L1norm'                                     -> [| Some [||] |]
+  | L2norm'                                     -> [| Some [||] |]
+  | L2NormSqr'                                  -> [| Some [||] |]
+  | ClipByValue                                 -> _infer_shape_1 input_shapes
+  | ClipByL2norm                                -> _infer_shape_1 input_shapes
+  | Pow                                         -> _infer_shape_1 input_shapes
+  | ScalarPow                                   -> _infer_shape_2 input_shapes
+  | PowScalar                                   -> _infer_shape_1 input_shapes
+  | Atan2                                       -> _infer_shape_3 input_shapes
+  | ScalarAtan2                                 -> _infer_shape_2 input_shapes
+  | Atan2Scalar                                 -> _infer_shape_1 input_shapes
+  | Add                                         -> _infer_shape_3 input_shapes
+  | Sub                                         -> _infer_shape_3 input_shapes
+  | Mul                                         -> _infer_shape_3 input_shapes
+  | Div                                         -> _infer_shape_3 input_shapes
+  | AddScalar                                   -> _infer_shape_1 input_shapes
+  | SubScalar                                   -> _infer_shape_1 input_shapes
+  | MulScalar                                   -> _infer_shape_1 input_shapes
+  | DivScalar                                   -> _infer_shape_1 input_shapes
+  | ScalarAdd                                   -> _infer_shape_2 input_shapes
+  | ScalarSub                                   -> _infer_shape_2 input_shapes
+  | ScalarMul                                   -> _infer_shape_2 input_shapes
+  | ScalarDiv                                   -> _infer_shape_2 input_shapes
+  | IsZero                                      -> [| Some [||] |]
+  | IsPositive                                  -> [| Some [||] |]
+  | IsNegative                                  -> [| Some [||] |]
+  | IsNonpositive                               -> [| Some [||] |]
+  | IsNonnegative                               -> [| Some [||] |]
+  | Equal                                       -> [| Some [||] |]
+  | NotEqual                                    -> [| Some [||] |]
+  | Less                                        -> [| Some [||] |]
+  | Greater                                     -> [| Some [||] |]
+  | LessEqual                                   -> [| Some [||] |]
+  | GreaterEqual                                -> [| Some [||] |]
+  | EltEqual                                    -> _infer_shape_1 input_shapes
+  | EltNotEqual                                 -> _infer_shape_1 input_shapes
+  | EltLess                                     -> _infer_shape_1 input_shapes
+  | EltGreater                                  -> _infer_shape_1 input_shapes
+  | EltLessEqual                                -> _infer_shape_1 input_shapes
+  | EltGreaterEqual                             -> _infer_shape_1 input_shapes
+  | EltEqualScalar                              -> _infer_shape_1 input_shapes
+  | EltNotEqualScalar                           -> _infer_shape_1 input_shapes
+  | EltLessScalar                               -> _infer_shape_1 input_shapes
+  | EltGreaterScalar                            -> _infer_shape_1 input_shapes
+  | EltLessEqualScalar                          -> _infer_shape_1 input_shapes
+  | EltGreaterEqualScalar                       -> _infer_shape_1 input_shapes
+  | ApproxEqual _                               -> [| Some [||] |]
+  | ApproxEqualScalar _                         -> [| Some [||] |]
+  | ApproxEltEqual _                            -> _infer_shape_1 input_shapes
+  | ApproxEltEqualScalar _                      -> _infer_shape_1 input_shapes
+  | Conv1d (padding, stride)                    -> failwith "not implemented"
+  | Conv2d (padding, stride)                    -> failwith "not implemented"
+  | Conv3d (padding, stride)                    -> failwith "not implemented"
+  | TransposeConv2d (padding, stride)           -> failwith "not implemented"
+  | MaxPool1d (padding, kernel, stride)         -> failwith "not implemented"
+  | MaxPool2d (padding, kernel, stride)         -> failwith "not implemented"
+  | MaxPool3d (padding, kernel, stride)         -> failwith "not implemented"
+  | AvgPool1d (padding, kernel, stride)         -> failwith "not implemented"
+  | AvgPool2d (padding, kernel, stride)         -> failwith "not implemented"
+  | AvgPool3d (padding, kernel, stride)         -> failwith "not implemented"
+  | Conv1dBackwardInput stride                  -> failwith "not implemented"
+  | Conv1dBackwardKernel stride                 -> failwith "not implemented"
+  | Conv2dBackwardInput stride                  -> failwith "not implemented"
+  | Conv2dBackwardKernel stride                 -> failwith "not implemented"
+  | Conv3dBackwardInput stride                  -> failwith "not implemented"
+  | Conv3dBackwardKernel stride                 -> failwith "not implemented"
+  | TransposeConv2dBackwardInput stride         -> failwith "not implemented"
+  | TransposeConv2dBackwardKernel stride        -> failwith "not implemented"
+  | MaxPool1dBackward (padding, kernel, stride) -> failwith "not implemented"
+  | MaxPool2dBackward (padding, kernel, stride) -> failwith "not implemented"
+  | MaxPool3dBackward (padding, kernel, stride) -> failwith "not implemented"
+  | AvgPool1dBackward (padding, kernel, stride) -> failwith "not implemented"
+  | AvgPool2dBackward (padding, kernel, stride) -> failwith "not implemented"
+  | AvgPool3dBackward (padding, kernel, stride) -> failwith "not implemented"
+  | Row                                         -> failwith "not implemented"
+  | Rows                                        -> failwith "not implemented"
+  | Dot                                         -> failwith "not implemented"
+  | Inv                                         -> failwith "not implemented"
+  | Trace                                       -> [| Some [||] |]
+  | Transpose axies                             -> failwith "not implemented"
+  | ToRows                                      -> failwith "not implemented"
+  | OfRows                                      -> failwith "not implemented"
+  | OfArray                                     -> failwith "not implemented"
+  | OfArrays                                    -> failwith "not implemented"
+  | _                                           -> [| None |]
 
 
 let make_node ?name ?value ?shape op =
@@ -280,7 +561,7 @@ let shape x =
   assert (Array.length x_shape > 0);
   match x_shape.(0) with
   | Some s -> s
-  | None   -> [||] (* FIXME failwith "computation_graph:shape" *)
+  | None   -> failwith "computation_graph:shape"
 
 let numel x = Array.fold_left ( * ) 1 (shape x)
 
@@ -300,7 +581,7 @@ let reshape x shape =
   let n_old = numel x in
   let n_new = Array.fold_left ( * ) 1 shape in
   assert (n_old = n_new);
-  make_then_connect Reshape [|unpack_arr x|] |> pack_arr
+  make_then_connect (Reshape shape) [|unpack_arr x|] |> pack_arr
 
 let reverse x = make_then_connect Reverse [|unpack_arr x|] |> pack_arr
 
@@ -329,7 +610,7 @@ let fold ?axis f a x = make_then_connect (Fold (axis, f)) [|unpack_arr x; unpack
 
 let scan ?axis f x = make_then_connect (Scan (axis, f)) [|unpack_arr x|] |> pack_arr
 
-let print ?max_row ?max_col ?header ?fmt x = make_then_connect Print [|unpack_arr x|] |> ignore
+let print ?max_row ?max_col ?header ?fmt x = ()
 
 
 let abs x = make_then_connect Abs [|unpack_arr x|] |> pack_arr
@@ -404,7 +685,10 @@ let l2norm' x = make_then_connect L2norm' [|unpack_arr x|] |> pack_elt
 
 let l2norm_sqr' x = make_then_connect L2NormSqr' [|unpack_arr x|] |> pack_elt
 
-let clip_by_value ?amin ?amax x = make_then_connect ClipByValue [|unpack_arr x|] |> pack_arr
+let clip_by_value ?amin ?amax x =
+  let amin = match amin with Some a -> a | None -> var_elt "" in
+  let amax = match amax with Some a -> a | None -> var_elt "" in
+  make_then_connect ClipByValue [|unpack_arr x; unpack_elt amin; unpack_elt amax|] |> pack_arr
 
 let clip_by_l2norm a x = make_then_connect ClipByL2norm [|unpack_arr x|] |> pack_arr
 
@@ -490,66 +774,102 @@ let elt_less_equal_scalar x a = make_then_connect EltLessEqualScalar [|unpack_ar
 
 let elt_greater_equal_scalar x a = make_then_connect EltGreaterEqualScalar [|unpack_arr x; unpack_elt a|] |> pack_arr
 
-let approx_equal ?eps x y = make_then_connect ApproxEqual [|unpack_arr x; unpack_arr y|]; true
+let approx_equal ?eps x y =
+  make_then_connect (ApproxEqual eps) [|unpack_arr x; unpack_arr y|] |> ignore;
+  true
 
-let approx_equal_scalar ?eps x a = make_then_connect ApproxEqualScalar [|unpack_arr x; unpack_elt a|]; true
+let approx_equal_scalar ?eps x a =
+  make_then_connect (ApproxEqualScalar eps) [|unpack_arr x; unpack_elt a|] |> ignore;
+  true
 
-let approx_elt_equal ?eps x y = make_then_connect ApproxEltEqual [|unpack_arr x; unpack_arr y|] |> pack_arr
+let approx_elt_equal ?eps x y =
+  make_then_connect (ApproxEltEqual eps) [|unpack_arr x; unpack_arr y|] |> pack_arr
 
-let approx_elt_equal_scalar ?eps x a = make_then_connect ApproxEltEqualScalar [|unpack_arr x; unpack_elt a|] |> pack_arr
+let approx_elt_equal_scalar ?eps x a =
+  make_then_connect (ApproxEltEqualScalar eps) [|unpack_arr x; unpack_elt a|] |> pack_arr
 
 
-let conv1d ?padding input kernel stride = make_then_connect Conv1d [|unpack_arr input; unpack_arr kernel|] |> pack_arr
+let conv1d ?padding input kernel stride =
+  make_then_connect (Conv1d (padding, stride)) [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
-let conv2d ?padding input kernel stride = make_then_connect Conv2d [|unpack_arr input; unpack_arr kernel|] |> pack_arr
+let conv2d ?padding input kernel stride =
+  make_then_connect (Conv2d (padding, stride)) [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
-let conv3d ?padding input kernel stride = make_then_connect Conv3d [|unpack_arr input; unpack_arr kernel|] |> pack_arr
+let conv3d ?padding input kernel stride =
+  make_then_connect (Conv3d (padding, stride)) [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
-let transpose_conv2d ?padding input kernel stride = make_then_connect TransposeConv2d [|unpack_arr input; unpack_arr kernel|] |> pack_arr
+let transpose_conv2d ?padding input kernel stride =
+  make_then_connect (TransposeConv2d (padding, stride)) [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
-let max_pool1d ?padding input kernel stride = make_then_connect MaxPool1d [|unpack_arr input|] |> pack_arr
+let max_pool1d ?padding input kernel stride =
+  make_then_connect (MaxPool1d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
-let max_pool2d ?padding input kernel stride = make_then_connect MaxPool2d [|unpack_arr input|] |> pack_arr
+let max_pool2d ?padding input kernel stride =
+  make_then_connect (MaxPool2d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
-let max_pool3d ?padding input kernel stride = make_then_connect MaxPool3d [|unpack_arr input|] |> pack_arr
+let max_pool3d ?padding input kernel stride =
+  make_then_connect (MaxPool3d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
-let avg_pool1d ?padding input kernel stride = make_then_connect AvgPool1d [|unpack_arr input|] |> pack_arr
+let avg_pool1d ?padding input kernel stride =
+  make_then_connect (AvgPool1d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
-let avg_pool2d ?padding input kernel stride = make_then_connect AvgPool2d [|unpack_arr input|] |> pack_arr
+let avg_pool2d ?padding input kernel stride =
+  make_then_connect (AvgPool2d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
-let avg_pool3d ?padding input kernel stride = make_then_connect AvgPool3d [|unpack_arr input|] |> pack_arr
+let avg_pool3d ?padding input kernel stride =
+  make_then_connect (AvgPool3d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
-let conv1d_backward_input input kernel stride output' = make_then_connect Conv1dBackwardInput [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
+let conv1d_backward_input input kernel stride output' =
+  make_then_connect (Conv1dBackwardInput stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let conv1d_backward_kernel input kernel stride output' = make_then_connect Conv1dBackwardKernel [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
+let conv1d_backward_kernel input kernel stride output' =
+  make_then_connect (Conv1dBackwardKernel stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let conv2d_backward_input input kernel stride output' = make_then_connect Conv2dBackwardInput [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
+let conv2d_backward_input input kernel stride output' =
+  make_then_connect (Conv2dBackwardInput stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let conv2d_backward_kernel input kernel stride output' = make_then_connect Conv2dBackwardKernel [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
+let conv2d_backward_kernel input kernel stride output' =
+  make_then_connect (Conv2dBackwardKernel stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let conv3d_backward_input input kernel stride output' = make_then_connect Conv3dBackwardInput [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
+let conv3d_backward_input input kernel stride output' =
+  make_then_connect (Conv3dBackwardInput stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let conv3d_backward_kernel input kernel stride output' = make_then_connect Conv3dBackwardKernel [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
+let conv3d_backward_kernel input kernel stride output' =
+  make_then_connect (Conv3dBackwardKernel stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let transpose_conv2d_backward_input input kernel stride output' = make_then_connect TransposeConv2dBackwardInput [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
+let transpose_conv2d_backward_input input kernel stride output' =
+  make_then_connect (TransposeConv2dBackwardInput stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let transpose_conv2d_backward_kernel input kernel stride output' = make_then_connect TransposeConv2dBackwardKernel [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
+let transpose_conv2d_backward_kernel input kernel stride output' =
+  make_then_connect (TransposeConv2dBackwardKernel stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
-let max_pool1d_backward padding input kernel stride output' = make_then_connect MaxPool1dBackward [|unpack_arr input; unpack_arr output'|] |> pack_arr
+let max_pool1d_backward padding input kernel stride output' =
+  make_then_connect (MaxPool1dBackward (padding, kernel, stride)) [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
-let max_pool2d_backward padding input kernel stride output' = make_then_connect MaxPool2dBackward [|unpack_arr input; unpack_arr output'|] |> pack_arr
+let max_pool2d_backward padding input kernel stride output' =
+  make_then_connect (MaxPool2dBackward (padding, kernel, stride)) [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
-let max_pool3d_backward padding input kernel stride output' = make_then_connect MaxPool3dBackward [|unpack_arr input; unpack_arr output'|] |> pack_arr
+let max_pool3d_backward padding input kernel stride output' =
+  make_then_connect (MaxPool3dBackward (padding, kernel, stride)) [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
-let avg_pool1d_backward padding input kernel stride output' = make_then_connect AvgPool1dBackward [|unpack_arr input; unpack_arr output'|] |> pack_arr
+let avg_pool1d_backward padding input kernel stride output' =
+  make_then_connect (AvgPool1dBackward (padding, kernel, stride)) [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
-let avg_pool2d_backward padding input kernel stride output' = make_then_connect AvgPool2dBackward [|unpack_arr input; unpack_arr output'|] |> pack_arr
+let avg_pool2d_backward padding input kernel stride output' =
+  make_then_connect (AvgPool2dBackward (padding, kernel, stride)) [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
-let avg_pool3d_backward padding input kernel stride output' = make_then_connect AvgPool3dBackward [|unpack_arr input; unpack_arr output'|] |> pack_arr
+let avg_pool3d_backward padding input kernel stride output' =
+  make_then_connect (AvgPool3dBackward (padding, kernel, stride)) [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
-let row_num x = raise Owl_exception.NOT_IMPLEMENTED
+let row_num x =
+  let s = shape x in
+  assert (Array.length s = 2);
+  s.(0)
 
-let col_num x = raise Owl_exception.NOT_IMPLEMENTED
+let col_num x =
+  let s = shape x in
+  assert (Array.length s = 2);
+  s.(1)
 
 let row x i = make_then_connect Row [|unpack_arr x|] |> pack_arr
 
@@ -565,10 +885,10 @@ let inv x = make_then_connect Inv [|unpack_arr x|] |> pack_arr
 
 let trace x = make_then_connect Trace [|unpack_arr x|] |> pack_elt
 
-let transpose ?axis x = make_then_connect Transpose [|unpack_arr x|] |> pack_arr
+let transpose ?axis x = make_then_connect (Transpose axis) [|unpack_arr x|] |> pack_arr
 
 let to_rows x =
-  let y = make_then_connect ToRows [|unpack_arr x|] in
+  let _ = make_then_connect ToRows [|unpack_arr x|] in
   (* FIXME: wrong shape *)
   [||]
 
@@ -651,159 +971,6 @@ module Scalar = struct
   let sigmoid x = make_then_connect Sigmoid [|unpack_elt x|] |> pack_elt
 
 end
-
-
-let op_to_str = function
-  | Noop -> "Noop"
-  | Var -> "Var"
-  | Const -> "Const"
-  | Empty -> "Empty"
-  | Zeros -> "Zeros"
-  | Ones -> "Ones"
-  | Create -> "Create"
-  | Sequential -> "Sequential"
-  | Uniform -> "Uniform"
-  | Gaussian -> "Gaussian"
-  | Bernoulli _ -> "Bernoulli"
-  | Init _ -> "Init"
-  | Get i -> "Get"
-  | Set i -> "Set"
-  | GetSlice i -> "GetSlice"
-  | SetSlice i -> "SetSlice"
-  | Copy -> "Copy"
-  | Reset -> "Reset"
-  | Reshape -> "Reshape"
-  | Reverse -> "Reverse"
-  | Tile a -> "Tile"
-  | Repeat (a, b) -> "Repeat"
-  | Concatenate -> "Concatenate"
-  | Split -> "Split"
-  | Draw n -> "Draw"
-  | Map f -> "Map"
-  | Fold (axis, f) -> "Fold"
-  | Scan (axis, f) -> "Scan"
-  | Print -> "Print"
-  | Abs -> "Abs"
-  | Neg -> "Neg"
-  | Floor -> "Floor"
-  | Ceil -> "Ceil"
-  | Round -> "Round"
-  | Sqr -> "Sqr"
-  | Sqrt -> "Sqrt"
-  | Log -> "Log"
-  | Log2 -> "Log2"
-  | Log10 -> "Log10"
-  | Exp -> "Exp"
-  | Sin -> "Sin"
-  | Cos -> "Cos"
-  | Tan -> "Tan"
-  | Sinh -> "Sinh"
-  | Cosh -> "Cosh"
-  | Tanh -> "Tanh"
-  | Asin -> "Asin"
-  | Acos -> "Acos"
-  | Atan -> "Atan"
-  | Asinh -> "Asinh"
-  | Acosh -> "Acosh"
-  | Atanh -> "Atanh"
-  | Min i -> "Min"
-  | Max i -> "Max"
-  | Sum i -> "Sum"
-  | SumReduce i -> "SumReduce"
-  | Signum -> "Signum"
-  | Sigmoid -> "Sigmoid"
-  | Relu -> "Relu"
-  | Min' -> "Min'"
-  | Max' -> "Max'"
-  | Sum' -> "Sum'"
-  | L1norm' -> "L1norm'"
-  | L2norm' -> "L2norm'"
-  | L2NormSqr' -> "L2NormSqr'"
-  | ClipByValue -> "ClipByValue"
-  | ClipByL2norm -> "ClipByL2norm"
-  | Pow -> "Pow"
-  | ScalarPow -> "ScalarPow"
-  | PowScalar -> "PowScalar"
-  | Atan2 -> "Atan2"
-  | ScalarAtan2 -> "ScalarAtan2"
-  | Atan2Scalar -> "Atan2Scalar"
-  | Add -> "Add"
-  | Sub -> "Sub"
-  | Mul -> "Mul"
-  | Div -> "Div"
-  | AddScalar -> "AddScalar"
-  | SubScalar -> "SubScalar"
-  | MulScalar -> "MulScalar"
-  | DivScalar -> "DivScalar"
-  | ScalarAdd -> "ScalarAdd"
-  | ScalarSub -> "ScalarSub"
-  | ScalarMul -> "ScalarMul"
-  | ScalarDiv -> "ScalarDiv"
-  | IsZero -> "IsZero"
-  | IsPositive -> "IsPositive"
-  | IsNegative -> "IsNegative"
-  | IsNonpositive -> "IsNonpositive"
-  | IsNonnegative -> "IsNonnegative"
-  | Equal -> "Equal"
-  | NotEqual -> "NotEqual"
-  | Less -> "Less"
-  | Greater -> "Greater"
-  | LessEqual -> "LessEqual"
-  | GreaterEqual -> "GreaterEqual"
-  | EltEqual -> "EltEqual"
-  | EltNotEqual -> "EltNotEqual"
-  | EltLess -> "EltLess"
-  | EltGreater -> "EltGreater"
-  | EltLessEqual -> "EltLessEqual"
-  | EltGreaterEqual -> "EltGreaterEqual"
-  | EltEqualScalar -> "EltEqualScalar"
-  | EltNotEqualScalar -> "EltNotEqualScalar"
-  | EltLessScalar -> "EltLessScalar"
-  | EltGreaterScalar -> "EltGreaterScalar"
-  | EltLessEqualScalar -> "EltLessEqualScalar"
-  | EltGreaterEqualScalar -> "EltGreaterEqualScalar"
-  | ApproxEqual -> "ApproxEqual"
-  | ApproxEqualScalar -> "ApproxEqualScalar"
-  | ApproxEltEqual -> "ApproxEltEqual"
-  | ApproxEltEqualScalar -> "ApproxEltEqualScalar"
-  | Conv1d -> "Conv1d"
-  | Conv2d -> "Conv2d"
-  | Conv3d -> "Conv3d"
-  | TransposeConv2d -> "TransposeConv2d"
-  | MaxPool1d -> "MaxPool1d"
-  | MaxPool2d -> "MaxPool2d"
-  | MaxPool3d -> "MaxPool3d"
-  | AvgPool1d -> "AvgPool1d"
-  | AvgPool2d -> "AvgPool2d"
-  | AvgPool3d -> "AvgPool3d"
-  | Conv1dBackwardInput -> "Conv1dBackwardInput"
-  | Conv1dBackwardKernel -> "Conv1dBackwardKernel"
-  | Conv2dBackwardInput -> "Conv2dBackwardInput"
-  | Conv2dBackwardKernel -> "Conv2dBackwardKernel"
-  | Conv3dBackwardInput -> "Conv3dBackwardInput"
-  | Conv3dBackwardKernel -> "Conv3dBackwardKernel"
-  | TransposeConv2dBackwardInput -> "TransposeConv2dBackwardInput"
-  | TransposeConv2dBackwardKernel -> "TransposeConv2dBackwardKernel"
-  | MaxPool1dBackward -> "MaxPool1dBackward"
-  | MaxPool2dBackward -> "MaxPool2dBackward"
-  | MaxPool3dBackward -> "MaxPool3dBackward"
-  | AvgPool1dBackward -> "AvgPool1dBackward"
-  | AvgPool2dBackward -> "AvgPool2dBackward"
-  | AvgPool3dBackward -> "AvgPool3dBackward"
-  | RowNum -> "RowNum"
-  | ColNum -> "ColNum"
-  | Row -> "Row"
-  | Rows -> "Rows"
-  | CopyRowTo -> "CopyRowTo"
-  | CopyColTo -> "CopyColTo"
-  | Dot -> "Dot"
-  | Inv -> "Inv"
-  | Trace -> "Trace"
-  | Transpose -> "Transpose"
-  | ToRows -> "ToRows"
-  | OfRows -> "OfRows"
-  | OfArray -> "OfArray"
-  | OfArrays -> "OfArrays"
 
 
 let shape_to_str shp =
