@@ -30,20 +30,25 @@ let visualise_02 () =
 
 let visualise_03 () =
   let t = tag () in
-  let x = make_reverse (G.var_arr "x" None |> pack_arr) t in
+  let x = make_reverse (G.var_arr "x" (Some [|3;4|]) |> pack_arr) t in
   let y = make_reverse (G.var_arr "y" None |> pack_arr) t in
   let z = f x y in
-  let s = [primal z |> unpack_elt |> G.unpack_elt] |> G.to_dot in
-  Owl_io.write_file "cgraph_03_forward.dot" s;
+  let s0 = [primal z |> unpack_elt |> G.unpack_elt] |> G.to_dot in
+  Owl_io.write_file "cgraph_03_forward.dot" s0;
   Sys.command "dot -Tpdf cgraph_03_forward.dot -o cgraph_03_forward.pdf" |> ignore;
 
   reverse_prop (pack_flt 1.) z;
-  let s = [adjval x |> unpack_arr |> G.unpack_arr] |> G.to_dot in
-  Owl_io.write_file "cgraph_03_backward_x.dot" s;
+  let x' = adjval x |> unpack_arr |> G.unpack_arr in
+  let y' = adjval y |> unpack_arr |> G.unpack_arr in
+  let s1 = G.to_dot [x'] in
+  let s2 = G.to_dot [y'] in
+  let s3 = G.to_dot [x'; y'] in
+  Owl_io.write_file "cgraph_03_backward_x.dot" s1;
   Sys.command "dot -Tpdf cgraph_03_backward_x.dot -o cgraph_03_backward_x.pdf" |> ignore;
-  let s = [adjval y |> unpack_arr |> G.unpack_arr] |> G.to_dot in
-  Owl_io.write_file "cgraph_03_backward_y.dot" s;
-  Sys.command "dot -Tpdf cgraph_03_backward_y.dot -o cgraph_03_backward_y.pdf" |> ignore
+  Owl_io.write_file "cgraph_03_backward_y.dot" s2;
+  Sys.command "dot -Tpdf cgraph_03_backward_y.dot -o cgraph_03_backward_y.pdf" |> ignore;
+  Owl_io.write_file "cgraph_03_backward_xy.dot" s3;
+  Sys.command "dot -Tpdf cgraph_03_backward_xy.dot -o cgraph_03_backward_xy.pdf" |> ignore
 
 
 let _ =

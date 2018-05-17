@@ -37,26 +37,24 @@ and op =
   | Sequential
   | Uniform
   | Gaussian
-  | Bernoulli
-  | Init
-  | Shape
-  | Numel
-  | Get
-  | Set
-  | GetSlice
-  | SetSlice
+  | Bernoulli of float option
+  | Init of (int -> elt)
+  | Get of int array
+  | Set of int array
+  | GetSlice of int list list
+  | SetSlice of int list list
   | Copy
   | Reset
   | Reshape
   | Reverse
-  | Tile
-  | Repeat
+  | Tile of int array
+  | Repeat of int option * int
   | Concatenate
   | Split
-  | Draw
-  | Map
-  | Fold
-  | Scan
+  | Draw of int
+  | Map of (elt -> elt)
+  | Fold of int option * (elt -> elt -> elt)
+  | Scan of int option * (elt -> elt -> elt)
   | Print
   | Abs
   | Neg
@@ -81,10 +79,10 @@ and op =
   | Asinh
   | Acosh
   | Atanh
-  | Min
-  | Max
-  | Sum
-  | SumReduce
+  | Min of int option
+  | Max of int option
+  | Sum of int option
+  | SumReduce of int array option
   | Signum
   | Sigmoid
   | Relu
@@ -239,11 +237,14 @@ let make_node ?name ?value ?shape op =
 let refnum x = Owl_graph.outdegree x
 
 
-let make_then_connect op x =
-  let shape = infer_shape op x in
-  let y = make_node ~shape op in
-  connect x [|y|];
-  y
+let make_then_connect ?shape op parents =
+  let shape = match shape with
+    | Some s -> s
+    | None   -> infer_shape op parents
+  in
+  let child = make_node ~shape op in
+  connect parents [|child|];
+  child
 
 
 let noop x = make_then_connect Noop [|unpack_arr x|] |> pack_arr
@@ -262,7 +263,7 @@ let zeros shape = make_node ~shape:[|Some shape|] Zeros |> pack_arr
 
 let ones shape = make_node ~shape:[|Some shape|] Ones |> pack_arr
 
-let create shape v = make_node ~shape:[|Some shape|] Create |> pack_arr
+let create shape v = make_then_connect ~shape:[|Some shape|] Create [|unpack_elt v|] |> pack_arr
 
 let sequential ?a ?step shape = make_node ~shape:[|Some shape|] Sequential |> pack_arr
 
@@ -270,33 +271,42 @@ let uniform ?a ?b shape = make_node ~shape:[|Some shape|] Uniform |> pack_arr
 
 let gaussian ?mu ?sigma shape = make_node ~shape:[|Some shape|] Gaussian |> pack_arr
 
-let bernoulli ?p shape = make_node ~shape:[|Some shape|] Bernoulli |> pack_arr
+let bernoulli ?p shape = make_node ~shape:[|Some shape|] (Bernoulli p) |> pack_arr
 
-let init shape f = make_node ~shape:[|Some shape|] Init |> pack_arr
+let init shape f = make_node ~shape:[|Some shape|] (Init f) |> pack_arr
 
-let shape x = [||]
+let shape x =
+  let x_shape = (unpack_arr x |> attr).shape in
+  assert (Array.length x_shape > 0);
+  match x_shape.(0) with
+  | Some s -> s
+  | None   -> [||] (* FIXME failwith "computation_graph:shape" *)
 
-let numel x = 0
+let numel x = Array.fold_left ( * ) 1 (shape x)
 
-let get x i = make_then_connect Get [|unpack_arr x|] |> pack_elt
+let get x i = make_then_connect (Get i) [|unpack_arr x|] |> pack_elt
 
-let set x i v = make_then_connect Set [|unpack_arr x|] |> ignore
+let set x i v = make_then_connect (Set i) [|unpack_arr x; unpack_elt v|] |> ignore
 
-let get_slice slice x = make_then_connect GetSlice [|unpack_arr x|] |> pack_arr
+let get_slice slice x = make_then_connect (GetSlice slice) [|unpack_arr x|] |> pack_arr
 
-let set_slice slice x y = make_then_connect SetSlice [|unpack_arr x; unpack_arr y|] |> ignore
+let set_slice slice x y = make_then_connect (SetSlice slice) [|unpack_arr x; unpack_arr y|] |> ignore
 
 let copy x = make_then_connect Copy [|unpack_arr x|] |> pack_arr
 
-let reset x = make_then_connect Reset [|unpack_arr x|] |> ignore
+let reset x = make_then_connect Reset [|unpack_arr x|] |> pack_arr |> ignore
 
-let reshape x shape = make_then_connect Reshape [|unpack_arr x|] |> pack_arr
+let reshape x shape =
+  let n_old = numel x in
+  let n_new = Array.fold_left ( * ) 1 shape in
+  assert (n_old = n_new);
+  make_then_connect Reshape [|unpack_arr x|] |> pack_arr
 
 let reverse x = make_then_connect Reverse [|unpack_arr x|] |> pack_arr
 
-let tile x axises = make_then_connect Tile [|unpack_arr x|] |> pack_arr
+let tile x axises = make_then_connect (Tile axises) [|unpack_arr x|] |> pack_arr
 
-let repeat ?axis x repeats = make_then_connect Repeat [|unpack_arr x|] |> pack_arr
+let repeat ?axis x repeats = make_then_connect (Repeat (axis, repeats)) [|unpack_arr x|] |> pack_arr
 
 let concatenate ?axis xs = make_then_connect Concatenate (Array.map unpack_arr xs) |> pack_arr
 
@@ -311,14 +321,14 @@ let split ?axis parts x =
 
 
 let draw ?axis x n =
-  let y = make_then_connect Draw [|unpack_arr x|] |> pack_arr in
+  let y = make_then_connect (Draw n) [|unpack_arr x|] |> pack_arr in
   y, [||]
 
-let map f x = make_then_connect Map [|unpack_arr x|] |> pack_arr
+let map f x = make_then_connect (Map f) [|unpack_arr x|] |> pack_arr
 
-let fold ?axis f a x = make_then_connect Fold [|unpack_arr x|] |> pack_arr
+let fold ?axis f a x = make_then_connect (Fold (axis, f)) [|unpack_arr x; unpack_elt a|] |> pack_arr
 
-let scan ?axis f x = make_then_connect Scan [|unpack_arr x|] |> pack_arr
+let scan ?axis f x = make_then_connect (Scan (axis, f)) [|unpack_arr x|] |> pack_arr
 
 let print ?max_row ?max_col ?header ?fmt x = make_then_connect Print [|unpack_arr x|] |> ignore
 
@@ -369,13 +379,13 @@ let acosh x = make_then_connect Acosh [|unpack_arr x|] |> pack_arr
 
 let atanh x = make_then_connect Atanh [|unpack_arr x|] |> pack_arr
 
-let min ?axis x = make_then_connect Min [|unpack_arr x|] |> pack_arr
+let min ?axis x = make_then_connect (Min axis) [|unpack_arr x|] |> pack_arr
 
-let max ?axis x = make_then_connect Max [|unpack_arr x|] |> pack_arr
+let max ?axis x = make_then_connect (Max axis) [|unpack_arr x|] |> pack_arr
 
-let sum ?axis x = make_then_connect Sum [|unpack_arr x|] |> pack_arr
+let sum ?axis x = make_then_connect (Sum axis) [|unpack_arr x|] |> pack_arr
 
-let sum_reduce ?axis x = make_then_connect SumReduce [|unpack_arr x|] |> pack_arr
+let sum_reduce ?axis x = make_then_connect (SumReduce axis) [|unpack_arr x|] |> pack_arr
 
 let signum x = make_then_connect Signum [|unpack_arr x|] |> pack_arr
 
@@ -572,7 +582,7 @@ let of_arrays x = raise Owl_exception.NOT_IMPLEMENTED
 
 let float_to_elt x = const_elt ""
 
-let elt_to_float x =  unpack_elt x; 0.
+let elt_to_float x =  infinity
 
 
 module Scalar = struct
@@ -655,26 +665,24 @@ let op_to_str = function
   | Sequential -> "Sequential"
   | Uniform -> "Uniform"
   | Gaussian -> "Gaussian"
-  | Bernoulli -> "Bernoulli"
-  | Init -> "Init"
-  | Shape -> "Shape"
-  | Numel -> "Numel"
-  | Get -> "Get"
-  | Set -> "Set"
-  | GetSlice -> "GetSlice"
-  | SetSlice -> "SetSlice"
+  | Bernoulli _ -> "Bernoulli"
+  | Init _ -> "Init"
+  | Get i -> "Get"
+  | Set i -> "Set"
+  | GetSlice i -> "GetSlice"
+  | SetSlice i -> "SetSlice"
   | Copy -> "Copy"
   | Reset -> "Reset"
   | Reshape -> "Reshape"
   | Reverse -> "Reverse"
-  | Tile -> "Tile"
-  | Repeat -> "Repeat"
+  | Tile a -> "Tile"
+  | Repeat (a, b) -> "Repeat"
   | Concatenate -> "Concatenate"
   | Split -> "Split"
-  | Draw -> "Draw"
-  | Map -> "Map"
-  | Fold -> "Fold"
-  | Scan -> "Scan"
+  | Draw n -> "Draw"
+  | Map f -> "Map"
+  | Fold (axis, f) -> "Fold"
+  | Scan (axis, f) -> "Scan"
   | Print -> "Print"
   | Abs -> "Abs"
   | Neg -> "Neg"
@@ -699,10 +707,10 @@ let op_to_str = function
   | Asinh -> "Asinh"
   | Acosh -> "Acosh"
   | Atanh -> "Atanh"
-  | Min -> "Min"
-  | Max -> "Max"
-  | Sum -> "Sum"
-  | SumReduce -> "SumReduce"
+  | Min i -> "Min"
+  | Max i -> "Max"
+  | Sum i -> "Sum"
+  | SumReduce i -> "SumReduce"
   | Signum -> "Signum"
   | Sigmoid -> "Sigmoid"
   | Relu -> "Relu"
@@ -799,12 +807,22 @@ let op_to_str = function
   | OfArrays -> "OfArrays"
 
 
+let shape_to_str shp =
+  assert (Array.length shp > 0);
+  let s = match shp.(0) with
+    | Some s -> Owl_utils_array.to_string string_of_int s
+    | None   -> "? ..."
+  in
+  Printf.sprintf "[ %s ]" s
+
+
 let to_dot x =
   let x = Array.of_list x in
   let edge_s = fold_in_edges (fun a u v -> Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)) "" x in
   let node_s = fold_ancestors (fun a n ->
-    Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i }\" ];\n"
-      a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n)
+    let shape_s = shape_to_str (attr n).shape in
+    Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; s:%s }\" ];\n"
+      a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) shape_s
   ) "" x
   in
   Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
