@@ -319,7 +319,6 @@ let split ?axis parts x =
     pack_arr y
   ) parts
 
-
 let draw ?axis x n =
   let y = make_then_connect (Draw n) [|unpack_arr x|] |> pack_arr in
   y, [||]
