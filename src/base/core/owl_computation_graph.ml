@@ -274,9 +274,9 @@ let bernoulli ?p shape = make_node ~shape:[|Some shape|] Bernoulli |> pack_arr
 
 let init shape f = make_node ~shape:[|Some shape|] Init |> pack_arr
 
-let shape x = raise Owl_exception.NOT_IMPLEMENTED
+let shape x = [||]
 
-let numel x = raise Owl_exception.NOT_IMPLEMENTED
+let numel x = 0
 
 let get x i = make_then_connect Get [|unpack_arr x|] |> pack_elt
 
@@ -288,7 +288,7 @@ let set_slice slice x y = make_then_connect SetSlice [|unpack_arr x; unpack_arr 
 
 let copy x = make_then_connect Copy [|unpack_arr x|] |> pack_arr
 
-let reset x = raise Owl_exception.NOT_IMPLEMENTED
+let reset x = make_then_connect Reset [|unpack_arr x|] |> ignore
 
 let reshape x shape = make_then_connect Reshape [|unpack_arr x|] |> pack_arr
 
@@ -481,9 +481,9 @@ let elt_less_equal_scalar x a = make_then_connect EltLessEqualScalar [|unpack_ar
 
 let elt_greater_equal_scalar x a = make_then_connect EltGreaterEqualScalar [|unpack_arr x; unpack_elt a|] |> pack_arr
 
-let approx_equal ?eps x y = raise Owl_exception.NOT_IMPLEMENTED
+let approx_equal ?eps x y = make_then_connect ApproxEqual [|unpack_arr x; unpack_arr y|]; true
 
-let approx_equal_scalar ?eps x a = raise Owl_exception.NOT_IMPLEMENTED
+let approx_equal_scalar ?eps x a = make_then_connect ApproxEqualScalar [|unpack_arr x; unpack_elt a|]; true
 
 let approx_elt_equal ?eps x y = make_then_connect ApproxEltEqual [|unpack_arr x; unpack_arr y|] |> pack_arr
 
@@ -803,6 +803,8 @@ let to_dot x =
   let x = Array.of_list x in
   let edge_s = fold_in_edges (fun a u v -> Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)) "" x in
   let node_s = fold_ancestors (fun a n ->
-    Printf.sprintf "%s%i [ label=\"#%i | { %s | %s }\" ];\n" a (id n) (id n) (name n) (op_to_str (attr n).op)
-  ) "" x in
+    Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i }\" ];\n"
+      a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n)
+  ) "" x
+  in
   Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s

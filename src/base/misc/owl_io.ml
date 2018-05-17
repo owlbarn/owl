@@ -33,7 +33,7 @@ let read_file_string f =
 
 
 (* write a file of a given path *)
-let write_file f s =
+let write_file ?(flag=Open_creat) f s =
   let h = open_out f in
   Printf.fprintf h "%s" s;
   close_out h

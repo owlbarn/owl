@@ -2280,7 +2280,7 @@ module Make
 
       let s = shape x in
       let mask = match (primal' x) with
-        | Arr y -> Arr A.(let c = uniform s in elt_greater_equal_scalar c (float_to_elt l.rate))
+        | Arr _ -> Arr A.(bernoulli ~p:(1. -. l.rate) s)
         | _     -> failwith "owl_neural_neuron:alphadropout:run"
       in
 
