@@ -705,11 +705,17 @@ let _fold_left f a varr =
 
 
 (* Min of all elements in the NDarray *)
-let min' varr = (_fold_left (Pervasives.min) Pervasives.max_float varr)
+let min' varr =
+  let _kind = kind varr in
+  let _max_val = Owl_base_dense_common._max_val_elt _kind in
+  (_fold_left (Owl_base_dense_common._min_elt _kind) _max_val varr)
 
 
 (* Max of all elements in the NDarray *)
-let max' varr = (_fold_left (Pervasives.max) Pervasives.min_float varr)
+let max' varr =
+  let _kind = kind varr in
+  let _min_val = Owl_base_dense_common._min_val_elt _kind in
+  (_fold_left (Owl_base_dense_common._max_elt _kind) _min_val varr)
 
 (* TODO: revise functions with float type to 'a *)
 
@@ -726,9 +732,9 @@ let sum' varr =
    o: x's strides, also y's slice size.
    x: source; y: shape of destination. Note that o <= n.
  *)
-let fold_along f m n o x ys =
+let fold_along f m n o x ys nelem =
   let x = flatten x in
-  let y = zeros (kind x) ys |> flatten in
+  let y = create (kind x) ys nelem |> flatten in
   let idx = ref 0 in
   let idy = ref 0 in
   let incy = ref 0 in
@@ -747,10 +753,11 @@ let fold_along f m n o x ys =
 
 let sum ?axis x =
   let _kind = kind x in
+  let zero = Owl_base_dense_common._zero_val_elt _kind in
   match axis with
   | Some a -> (
       let m, n, o, s = Owl_utils.reduce_params a x in
-      fold_along (Owl_base_dense_common._add_elt _kind) m n o x s
+      fold_along (Owl_base_dense_common._add_elt _kind) m n o x s zero
     )
   | None   -> create (kind x) (Array.make 1 1) (sum' x)
 
@@ -758,27 +765,27 @@ let sum ?axis x =
 let sum_reduce ?axis x =
   let _kind = kind x in
   let _dims = num_dims x in
+  let zero = Owl_base_dense_common._zero_val_elt _kind in
   match axis with
   | Some a -> (
       let y = ref x in
       Array.iter (fun i ->
         assert (i < _dims);
         let m, n, o, s = Owl_utils.reduce_params i !y in
-        y := fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s
+        y := fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s zero
       ) a;
       !y
     )
   | None   -> create (kind x) (Array.make _dims 1) (sum' x)
 
 
-  (* TODO: fix this *)
   let min ?axis x =
     let _kind = kind x in
+    let max_val = Owl_base_dense_common._max_val_elt _kind in
     match axis with
     | Some a -> (
         let m, n, o, s = Owl_utils.reduce_params a x in
-        let y = create _kind s (Owl_const.zero _kind) in (* FIXME *)
-        y
+        fold_along (Owl_base_dense_common._min_elt _kind) m n o x s max_val
       )
     | None   -> min' x |> create _kind [|1|]
 
@@ -786,11 +793,11 @@ let sum_reduce ?axis x =
 (* TODO: fix this *)
 let max ?axis x =
   let _kind = kind x in
+  let min_val = Owl_base_dense_common._min_val_elt _kind in
   match axis with
   | Some a -> (
       let m, n, o, s = Owl_utils.reduce_params a x in
-      let y = create _kind s (Owl_const.zero _kind) in (* FIXME *)
-      y
+      fold_along (Owl_base_dense_common._max_elt _kind) m n o x s min_val
     )
   | None   -> max' x |> create _kind [|1|]
 
