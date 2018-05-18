@@ -1797,17 +1797,28 @@ let transpose ?axis varr =
   end
 
 
-(* transpose 2d convolution *)
+(* transpose_conv2d: 4d input and 4d kernel, refer to tensorlfow doc
+  input : [batch; input_column; input_row; input_channel]
+  kernel: [kernel_column; kernel_row; input_channel; output_channel]
+  stride: [column_stride; row_stride]
+  output: [batch; output_column; output_row; output_channel]
+ *)
 let transpose_conv2d ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (Array.length stride = 2);
+
   let input_shp = shape input in
   let batches = input_shp.(0) in
   let input_cols = input_shp.(1) in
   let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
 
   let kernel_shp = shape kernel in
   let kernel_cols = kernel_shp.(0) in
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
