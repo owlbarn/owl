@@ -24,6 +24,15 @@ let range a b =
   r
 
 
+(* flatten an array array to array *)
+let flatten x =
+  let r = Owl_utils_stack.make () in
+  iter (fun y ->
+    iter (fun z -> Owl_utils_stack.push r z ) y
+  ) x;
+  Owl_utils_stack.to_array r
+
+
 (* count the number of occurrence of a in x *)
 let count x a =
   let c = ref 0 in

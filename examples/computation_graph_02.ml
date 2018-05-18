@@ -1,10 +1,11 @@
 #!/usr/bin/env owl
 
 open Owl
-
 module G = Owl_computation_graph
-
 include Owl_algodiff_generic.Make (G)
+
+include Owl_neural_generic.Make (G)
+open Graph
 
 
 let f x y = Maths.((x * sin (x + x) + ((pack_flt 1.) * sqrt x) / (pack_flt 7.)) * (relu y) |> sum')

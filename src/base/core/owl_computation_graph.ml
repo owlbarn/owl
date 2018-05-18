@@ -346,18 +346,21 @@ let _infer_shape_00 input_shapes = [| Some [||] |]
 
 
 let _infer_shape_01 input_shapes =
+  Owl_log.warn "_infer_shape_01";
   match input_shapes.(0).(0) with
   | Some s -> [| Some Array.(copy s) |]
   | None   -> [| None |]
 
 
 let _infer_shape_02 input_shapes =
+  Owl_log.warn "_infer_shape_02";
   match input_shapes.(1).(0) with
   | Some s -> [| Some Array.(copy s) |]
   | None   -> [| None |]
 
 
 let _infer_shape_03 input_shapes =
+  Owl_log.warn "_infer_shape_03";
   let s0 = input_shapes.(0).(0) in
   let s1 = input_shapes.(1).(0) in
   match s0, s1 with
@@ -366,24 +369,28 @@ let _infer_shape_03 input_shapes =
 
 
 let _infer_shape_04 input_shapes axis =
+  Owl_log.warn "_infer_shape_04";
   match input_shapes.(0).(0) with
   | Some s -> [| Some Owl_utils.(calc_fold_shape s axis) |]
   | None   -> [| None |]
 
 
 let _infer_shape_05 input_shapes repeats =
+  Owl_log.warn "_infer_shape_05";
   match input_shapes.(0).(0) with
   | Some s -> [| Some Owl_utils.(calc_tile_shape s repeats) |]
   | None   -> [| None |]
 
 
 let _infer_shape_06 input_shapes axis repeats =
+Owl_log.warn "_infer_shape_06";
   match input_shapes.(0).(0) with
   | Some s -> [| Some Owl_utils.(calc_repeat_shape s axis repeats) |]
   | None   -> [| None |]
 
 
 let _infer_shape_07 input_shapes axis =
+Owl_log.warn "_infer_shape_07";
   let s0 = Array.map (fun s -> s.(0)) input_shapes in
   if Array.exists (function Some _ -> false | None -> true) s0 then [| None |]
   else (
@@ -393,6 +400,7 @@ let _infer_shape_07 input_shapes axis =
 
 
 let _infer_shape_08 input_shapes axis parts =
+  Owl_log.warn "_infer_shape_08";
   match input_shapes.(0).(0) with
   | Some s -> (
       let s0 = Owl_utils.(calc_split_shape s axis parts) in
@@ -402,18 +410,21 @@ let _infer_shape_08 input_shapes axis parts =
 
 
 let _infer_shape_09 input_shapes axis n =
+  Owl_log.warn "_infer_shape_09";
   match input_shapes.(0).(0) with
   | Some s -> [| Some Owl_utils.(calc_draw_shape s axis n) |]
   | None   -> [| None |]
 
 
 let _infer_shape_10 input_shapes axis =
+  Owl_log.warn "_infer_shape_10";
   match input_shapes.(0).(0) with
   | Some s -> [| Some Owl_utils.(calc_reduce_shape s axis) |]
   | None   -> [| None |]
 
 
 let _infer_shape_11 input_shapes padding stride =
+  Owl_log.warn "_infer_shape_11";
   let input_shape = input_shapes.(0).(0) in
   let kernel_shape = input_shapes.(1).(0) in
   match input_shape, kernel_shape with
@@ -422,6 +433,7 @@ let _infer_shape_11 input_shapes padding stride =
 
 
 let _infer_shape_12 input_shapes padding stride =
+  Owl_log.warn "_infer_shape_12";
   let input_shape = input_shapes.(0).(0) in
   let kernel_shape = input_shapes.(1).(0) in
   match input_shape, kernel_shape with
@@ -430,6 +442,7 @@ let _infer_shape_12 input_shapes padding stride =
 
 
 let _infer_shape_13 input_shapes padding stride =
+  Owl_log.warn "_infer_shape_13";
   let input_shape = input_shapes.(0).(0) in
   let kernel_shape = input_shapes.(1).(0) in
   match input_shape, kernel_shape with
@@ -438,6 +451,7 @@ let _infer_shape_13 input_shapes padding stride =
 
 
 let _infer_shape_14 input_shapes padding stride =
+  Owl_log.warn "_infer_shape_14";
   let input_shape = input_shapes.(0).(0) in
   let kernel_shape = input_shapes.(1).(0) in
   match input_shape, kernel_shape with
@@ -446,6 +460,7 @@ let _infer_shape_14 input_shapes padding stride =
 
 
 let _infer_shape_15 input_shapes padding kernel stride =
+  Owl_log.warn "_infer_shape_15";
   let input_shape = input_shapes.(0).(0) in
   match input_shape with
   | Some input -> [| Some Owl_utils.(calc_conv1d_shape input padding kernel stride) |]
@@ -453,6 +468,7 @@ let _infer_shape_15 input_shapes padding kernel stride =
 
 
 let _infer_shape_16 input_shapes padding kernel stride =
+  Owl_log.warn "_infer_shape_16";
   let input_shape = input_shapes.(0).(0) in
   match input_shape with
   | Some input -> [| Some Owl_utils.(calc_conv2d_shape input padding kernel stride) |]
@@ -460,6 +476,7 @@ let _infer_shape_16 input_shapes padding kernel stride =
 
 
 let _infer_shape_17 input_shapes padding kernel stride =
+  Owl_log.warn "_infer_shape_17";
   let input_shape = input_shapes.(0).(0) in
   match input_shape with
   | Some input -> [| Some Owl_utils.(calc_conv3d_shape input padding kernel stride) |]
@@ -467,12 +484,14 @@ let _infer_shape_17 input_shapes padding kernel stride =
 
 
 let _infer_shape_18 input_shapes axis =
+  Owl_log.warn "_infer_shape_18";
   match input_shapes.(0).(0) with
   | Some s -> [| Some Owl_utils.(calc_transpose_shape s axis) |]
   | None   -> [| None |]
 
 
 let _infer_shape_19 input_shapes =
+  Owl_log.warn "_infer_shape_19";
   let x_shape = input_shapes.(0).(0) in
   let y_shape = input_shapes.(1).(0) in
   match x_shape, y_shape with
@@ -481,6 +500,7 @@ let _infer_shape_19 input_shapes =
 
 
 let _infer_shape_20 input_shapes axis =
+  Owl_log.warn "_infer_shape_20";
   match input_shapes.(0).(0) with
   | Some s -> (
       let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
@@ -488,6 +508,14 @@ let _infer_shape_20 input_shapes axis =
       [| Some Owl_base_slicing.(calc_slice_shape axis) |]
     )
   | None   -> [| None |]
+
+
+let _infer_shape_21 input_shapes padding kernel stride =
+  Owl_log.warn "_infer_shape_21";
+  let input_shape = input_shapes.(0).(0) in
+  match input_shape with
+  | Some input -> [| Some Owl_utils.(calc_pool2d_shape input padding kernel stride) |]
+  | _          -> [| None |]
 
 
 let _infer_shape_xx input_shapes = [| None |]
@@ -597,10 +625,10 @@ let infer_shape operator args =
   | Conv3d (padding, stride)                    -> _infer_shape_13 input_shapes padding stride
   | TransposeConv2d (padding, stride)           -> _infer_shape_14 input_shapes padding stride
   | MaxPool1d (padding, kernel, stride)         -> _infer_shape_15 input_shapes padding kernel stride
-  | MaxPool2d (padding, kernel, stride)         -> _infer_shape_16 input_shapes padding kernel stride
+  | MaxPool2d (padding, kernel, stride)         -> _infer_shape_21 input_shapes padding kernel stride
   | MaxPool3d (padding, kernel, stride)         -> _infer_shape_17 input_shapes padding kernel stride
   | AvgPool1d (padding, kernel, stride)         -> _infer_shape_15 input_shapes padding kernel stride
-  | AvgPool2d (padding, kernel, stride)         -> _infer_shape_16 input_shapes padding kernel stride
+  | AvgPool2d (padding, kernel, stride)         -> _infer_shape_21 input_shapes padding kernel stride
   | AvgPool3d (padding, kernel, stride)         -> _infer_shape_17 input_shapes padding kernel stride
   | Conv1dBackwardInput stride                  -> _infer_shape_01 input_shapes
   | Conv1dBackwardKernel stride                 -> _infer_shape_02 input_shapes
@@ -662,62 +690,103 @@ let const_arr ~name shape = make_node ~name ~shape:[|shape|] Const |> pack_arr
 
 let const_elt ~name = make_node ~name ~shape:[|Some [||]|] Const |> pack_elt
 
-let empty shape = make_node ~shape:[|Some shape|] Empty |> pack_arr
+let empty shape =
+  Owl_log.warn "empty";
+  make_node ~shape:[|Some shape|] Empty |> pack_arr
 
-let zeros shape = make_node ~shape:[|Some shape|] Zeros |> pack_arr
+let zeros shape =
+  Owl_log.warn "zeros";
+  make_node ~shape:[|Some shape|] Zeros |> pack_arr
 
-let ones shape = make_node ~shape:[|Some shape|] Ones |> pack_arr
+let ones shape =
+  Owl_log.warn "ones";
+  make_node ~shape:[|Some shape|] Ones |> pack_arr
 
-let create shape v = make_then_connect ~shape:[|Some shape|] Create [|unpack_elt v|] |> pack_arr
+let create shape v =
+  Owl_log.warn "create";
+  make_then_connect ~shape:[|Some shape|] Create [|unpack_elt v|] |> pack_arr
 
-let sequential ?a ?step shape = make_node ~shape:[|Some shape|] Sequential |> pack_arr
+let sequential ?a ?step shape =
+  Owl_log.warn "sequential";
+  make_node ~shape:[|Some shape|] Sequential |> pack_arr
 
-let uniform ?a ?b shape = make_node ~shape:[|Some shape|] Uniform |> pack_arr
+let uniform ?a ?b shape =
+  Owl_log.warn "uniform";
+  make_node ~shape:[|Some shape|] Uniform |> pack_arr
 
-let gaussian ?mu ?sigma shape = make_node ~shape:[|Some shape|] Gaussian |> pack_arr
+let gaussian ?mu ?sigma shape =
+  Owl_log.warn "gaussian";
+  make_node ~shape:[|Some shape|] Gaussian |> pack_arr
 
-let bernoulli ?p shape = make_node ~shape:[|Some shape|] (Bernoulli p) |> pack_arr
+let bernoulli ?p shape =
+  Owl_log.warn "bernoulli";
+  make_node ~shape:[|Some shape|] (Bernoulli p) |> pack_arr
 
-let init shape f = make_node ~shape:[|Some shape|] (Init f) |> pack_arr
+let init shape f =
+  Owl_log.warn "init";
+  make_node ~shape:[|Some shape|] (Init f) |> pack_arr
 
 let shape x =
+  Owl_log.warn "shape";
   let x_shape = (unpack_arr x |> attr).shape in
   assert (Array.length x_shape > 0);
   match x_shape.(0) with
   | Some s -> s
   | None   -> [||]
 
-let numel x = Array.fold_left ( * ) 1 (shape x)
+let numel x =
+  Owl_log.warn "numel";
+  Array.fold_left ( * ) 1 (shape x)
 
-let get x i = make_then_connect (Get i) [|unpack_arr x|] |> pack_elt
+let get x i =
+  Owl_log.warn "get";
+  make_then_connect (Get i) [|unpack_arr x|] |> pack_elt
 
-let set x i v = make_then_connect (Set i) [|unpack_arr x; unpack_elt v|] |> ignore
+let set x i v =
+  Owl_log.warn "set";
+  make_then_connect (Set i) [|unpack_arr x; unpack_elt v|] |> ignore
 
-let get_slice slice x = make_then_connect (GetSlice slice) [|unpack_arr x|] |> pack_arr
+let get_slice slice x =
+  Owl_log.warn "get_slice";
+  make_then_connect (GetSlice slice) [|unpack_arr x|] |> pack_arr
 
-let set_slice slice x y = make_then_connect (SetSlice slice) [|unpack_arr x; unpack_arr y|] |> ignore
+let set_slice slice x y =
+  Owl_log.warn "set_slice";
+  make_then_connect (SetSlice slice) [|unpack_arr x; unpack_arr y|] |> ignore
 
-let copy x = make_then_connect Copy [|unpack_arr x|] |> pack_arr
+let copy x =
+  Owl_log.warn "copy";
+  make_then_connect Copy [|unpack_arr x|] |> pack_arr
 
-let reset x = make_then_connect Reset [|unpack_arr x|] |> pack_arr |> ignore
+let reset x =
+  Owl_log.warn "reset";
+  make_then_connect Reset [|unpack_arr x|] |> pack_arr |> ignore
 
 let reshape x shape =
+  Owl_log.warn "reshape";
   let n_old = numel x in
   let n_new = Array.fold_left ( * ) 1 shape in
   assert (n_old = n_new);
   make_then_connect (Reshape shape) [|unpack_arr x|] |> pack_arr
 
-let reverse x = make_then_connect Reverse [|unpack_arr x|] |> pack_arr
+let reverse x =
+  Owl_log.warn "reverse";
+  make_then_connect Reverse [|unpack_arr x|] |> pack_arr
 
-let tile x axises = make_then_connect (Tile axises) [|unpack_arr x|] |> pack_arr
+let tile x axises =
+  Owl_log.warn "tile";
+  make_then_connect (Tile axises) [|unpack_arr x|] |> pack_arr
 
 let repeat ?(axis=(-1)) x repeats =
+  Owl_log.warn "repeat";
   make_then_connect (Repeat (axis, repeats)) [|unpack_arr x|] |> pack_arr
 
 let concatenate ?(axis=0) xs =
+  Owl_log.warn "concatenate";
   make_then_connect (Concatenate axis) (Array.map unpack_arr xs) |> pack_arr
 
 let split ?(axis=0) parts x =
+  Owl_log.warn "split";
   let y = make_then_connect (Split (axis, parts)) [|unpack_arr x|] in
   (* FIXME: wrong shape *)
   Array.map (fun s ->
@@ -727,14 +796,21 @@ let split ?(axis=0) parts x =
   ) parts
 
 let draw ?(axis=0) x n =
+  Owl_log.warn "draw";
   let y = make_then_connect (Draw (axis, n)) [|unpack_arr x|] |> pack_arr in
   y, [||]
 
-let map f x = make_then_connect (Map f) [|unpack_arr x|] |> pack_arr
+let map f x =
+  Owl_log.warn "map";
+  make_then_connect (Map f) [|unpack_arr x|] |> pack_arr
 
-let fold ?(axis=(-1)) f a x = make_then_connect (Fold (axis, f)) [|unpack_arr x; unpack_elt a|] |> pack_arr
+let fold ?(axis=(-1)) f a x =
+  Owl_log.warn "fold";
+  make_then_connect (Fold (axis, f)) [|unpack_arr x; unpack_elt a|] |> pack_arr
 
-let scan ?(axis=(-1)) f x = make_then_connect (Scan (axis, f)) [|unpack_arr x|] |> pack_arr
+let scan ?(axis=(-1)) f x =
+  Owl_log.warn "scan";
+  make_then_connect (Scan (axis, f)) [|unpack_arr x|] |> pack_arr
 
 let print ?max_row ?max_col ?header ?fmt x = ()
 
@@ -916,75 +992,98 @@ let approx_elt_equal_scalar ?eps x a =
 
 
 let conv1d ?(padding=SAME) input kernel stride =
+  Owl_log.warn "conv1d";
   make_then_connect (Conv1d (padding, stride)) [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
 let conv2d ?(padding=SAME) input kernel stride =
+  Owl_log.warn "conv2d";
   make_then_connect (Conv2d (padding, stride)) [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
 let conv3d ?(padding=SAME) input kernel stride =
+  Owl_log.warn "conv3d";
   make_then_connect (Conv3d (padding, stride)) [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
 let transpose_conv2d ?(padding=SAME) input kernel stride =
   make_then_connect (TransposeConv2d (padding, stride)) [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
 let max_pool1d ?(padding=SAME) input kernel stride =
+  Owl_log.warn "max_pool1d";
   make_then_connect (MaxPool1d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
 let max_pool2d ?(padding=SAME) input kernel stride =
+  Owl_log.warn "max_pool2d";
   make_then_connect (MaxPool2d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
 let max_pool3d ?(padding=SAME) input kernel stride =
+  Owl_log.warn "max_pool3d";
   make_then_connect (MaxPool3d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
 let avg_pool1d ?(padding=SAME) input kernel stride =
+  Owl_log.warn "avg_pool1d";
   make_then_connect (AvgPool1d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
 let avg_pool2d ?(padding=SAME) input kernel stride =
+  Owl_log.warn "avg_pool2d";
   make_then_connect (AvgPool2d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
 let avg_pool3d ?(padding=SAME) input kernel stride =
+  Owl_log.warn "avg_pool3d";
   make_then_connect (AvgPool3d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
 let conv1d_backward_input input kernel stride output' =
+  Owl_log.warn "conv1d_backward_input";
   make_then_connect (Conv1dBackwardInput stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
 let conv1d_backward_kernel input kernel stride output' =
+  Owl_log.warn "conv1d_backward_kernel";
   make_then_connect (Conv1dBackwardKernel stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
 let conv2d_backward_input input kernel stride output' =
+  Owl_log.warn "conv2d_backward_input";
   make_then_connect (Conv2dBackwardInput stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
 let conv2d_backward_kernel input kernel stride output' =
+  Owl_log.warn "conv2d_backward_kernel";
   make_then_connect (Conv2dBackwardKernel stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
 let conv3d_backward_input input kernel stride output' =
+  Owl_log.warn "conv3d_backward_input";
   make_then_connect (Conv3dBackwardInput stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
 let conv3d_backward_kernel input kernel stride output' =
+  Owl_log.warn "conv3d_backward_kernel";
   make_then_connect (Conv3dBackwardKernel stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
 let transpose_conv2d_backward_input input kernel stride output' =
+  Owl_log.warn "transpose_conv2d_backward_input";
   make_then_connect (TransposeConv2dBackwardInput stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
 let transpose_conv2d_backward_kernel input kernel stride output' =
+  Owl_log.warn "transpose_conv2d_backward_kernel";
   make_then_connect (TransposeConv2dBackwardKernel stride) [|unpack_arr input; unpack_arr kernel; unpack_arr output'|] |> pack_arr
 
 let max_pool1d_backward padding input kernel stride output' =
+  Owl_log.warn "conmax_pool1d_backwardv2d";
   make_then_connect (MaxPool1dBackward (padding, kernel, stride)) [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
 let max_pool2d_backward padding input kernel stride output' =
+  Owl_log.warn "max_pool2d_backward";
   make_then_connect (MaxPool2dBackward (padding, kernel, stride)) [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
 let max_pool3d_backward padding input kernel stride output' =
+  Owl_log.warn "max_pool3d_backward";
   make_then_connect (MaxPool3dBackward (padding, kernel, stride)) [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
 let avg_pool1d_backward padding input kernel stride output' =
+  Owl_log.warn "avg_pool1d_backward";
   make_then_connect (AvgPool1dBackward (padding, kernel, stride)) [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
 let avg_pool2d_backward padding input kernel stride output' =
+  Owl_log.warn "avg_pool2d_backward";
   make_then_connect (AvgPool2dBackward (padding, kernel, stride)) [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
 let avg_pool3d_backward padding input kernel stride output' =
+  Owl_log.warn "avg_pool3d_backward";
   make_then_connect (AvgPool3dBackward (padding, kernel, stride)) [|unpack_arr input; unpack_arr output'|] |> pack_arr
 
 let row_num x =

@@ -113,6 +113,9 @@ of the elements in ``y`` based on the slice definition ``slice``. Please refer
 to ``get_slice`` function for the information on the format of slice definiton.
  *)
 
+val flatten : 'a array array -> 'a array
+(** Flatten an array array into an array. *)
+
 val set_n : 'a array -> int array -> 'a -> unit
 (** TODO *)
 

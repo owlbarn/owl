@@ -223,6 +223,7 @@ let calc_conv2d_shape input_shape padding kernel_shape stride_shape =
 
   let col_stride = stride_shape.(0) in
   let row_stride = stride_shape.(1) in
+
   let output_cols, output_rows =
     Owl_utils_conv.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   in
@@ -289,6 +290,24 @@ let calc_transpose_conv2d_shape input_shape padding kernel_shape stride_shape =
     Owl_utils_conv.calc_transpose_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   in
   [|batches; output_cols; output_rows; out_channel|]
+
+
+let calc_pool2d_shape input_shape padding kernel_shape stride_shape =
+  let batches = input_shape.(0) in
+  let input_cols = input_shape.(1) in
+  let input_rows = input_shape.(2) in
+  let in_channel = input_shape.(3) in
+
+  let kernel_cols = kernel_shape.(0) in
+  let kernel_rows = kernel_shape.(1) in
+
+  let col_stride = stride_shape.(0) in
+  let row_stride = stride_shape.(1) in
+
+  let output_cols, output_rows =
+    Owl_utils_conv.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  [|batches; output_cols; output_rows; in_channel|]
 
 
 let calc_transpose_shape input_shape axis =
