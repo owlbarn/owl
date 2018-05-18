@@ -32,11 +32,6 @@ let visualise_04 () =
   let loss = A.(Maths.((cross_entropy yt yt') / (pack_flt (Mat.row_num yt |> float_of_int)))) in
   let _, adj0 = Graph.(backward network loss) in
 
-  let f () =
-    let l = A.(Maths.((cross_entropy yt yt') / (pack_flt (Mat.row_num yt |> float_of_int)))) in
-    let _, adj0 = Graph.(backward network l)
-  in Owl_log.info "time %g" (Utils.time f);
-
   let s0 = G.to_dot [loss |> A.unpack_elt |> G.unpack_elt] in
   Owl_io.write_file "cgraph_04_loss.dot" s0;
   Sys.command "dot -Tpdf cgraph_04_loss.dot -o cgraph_04_loss.pdf" |> ignore;
