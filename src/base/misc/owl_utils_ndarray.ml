@@ -127,6 +127,8 @@ let reduce_params a x =
   m, n, o, _shape
 
 
+(* various functions to calculate output shape, used in computation graph. *)
+
 let calc_broadcast_shape s0 s1 =
   let sa, sb = Owl_utils_array.align `Left 1 s0 s1 in
   Array.iter2 (fun a b ->
@@ -291,6 +293,9 @@ let calc_transpose_conv2d_shape input_shape padding kernel_shape stride_shape =
 
 let calc_transpose_shape input_shape axis =
   Array.map (fun j -> input_shape.(j)) axis
+
+
+let calc_dot_shape x_shape y_shape = [|x_shape.(0); y_shape.(1)|]
 
 
 

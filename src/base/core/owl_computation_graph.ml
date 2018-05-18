@@ -342,6 +342,9 @@ let unpack_elt = function Elt x -> x
 
 (* infer the shape of outcome from inputs *)
 
+let _infer_shape_00 input_shapes = [| Some [||] |]
+
+
 let _infer_shape_01 input_shapes =
   match input_shapes.(0).(0) with
   | Some s -> [| Some Array.(copy s) |]
@@ -469,14 +472,32 @@ let _infer_shape_18 input_shapes axis =
   | None   -> [| None |]
 
 
-let _infer_shape_x input_shapes = [| None |]
+let _infer_shape_19 input_shapes =
+  let x_shape = input_shapes.(0).(0) in
+  let y_shape = input_shapes.(1).(0) in
+  match x_shape, y_shape with
+  | Some s0, Some s1 -> [| Some Owl_utils.(calc_dot_shape s0 s1) |]
+  | _, _                    -> [| None |]
+
+
+let _infer_shape_20 input_shapes axis =
+  match input_shapes.(0).(0) with
+  | Some s -> (
+      let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
+      let axis = Owl_base_slicing.check_slice_definition axis s in
+      [| Some Owl_base_slicing.(calc_slice_shape axis) |]
+    )
+  | None   -> [| None |]
+
+
+let _infer_shape_xx input_shapes = [| None |]
 
 
 let infer_shape operator args =
   let input_shapes = Array.map (fun a -> (attr a).shape) args in
   match operator with
-  | Get _                                       -> [| Some [||] |]
-  | GetSlice slice                              -> _infer_shape_x input_shapes
+  | Get _                                       -> _infer_shape_00 input_shapes
+  | GetSlice slice                              -> _infer_shape_20 input_shapes slice
   | Copy                                        -> _infer_shape_01 input_shapes
   | Reshape shape                               -> [| Some shape |]
   | Reverse                                     -> _infer_shape_01 input_shapes
@@ -518,12 +539,12 @@ let infer_shape operator args =
   | Signum                                      -> _infer_shape_01 input_shapes
   | Sigmoid                                     -> _infer_shape_01 input_shapes
   | Relu                                        -> _infer_shape_01 input_shapes
-  | Min'                                        -> [| Some [||] |]
-  | Max'                                        -> [| Some [||] |]
-  | Sum'                                        -> [| Some [||] |]
-  | L1norm'                                     -> [| Some [||] |]
-  | L2norm'                                     -> [| Some [||] |]
-  | L2NormSqr'                                  -> [| Some [||] |]
+  | Min'                                        -> _infer_shape_00 input_shapes
+  | Max'                                        -> _infer_shape_00 input_shapes
+  | Sum'                                        -> _infer_shape_00 input_shapes
+  | L1norm'                                     -> _infer_shape_00 input_shapes
+  | L2norm'                                     -> _infer_shape_00 input_shapes
+  | L2NormSqr'                                  -> _infer_shape_00 input_shapes
   | ClipByValue                                 -> _infer_shape_01 input_shapes
   | ClipByL2norm                                -> _infer_shape_01 input_shapes
   | Pow                                         -> _infer_shape_01 input_shapes
@@ -544,17 +565,17 @@ let infer_shape operator args =
   | ScalarSub                                   -> _infer_shape_02 input_shapes
   | ScalarMul                                   -> _infer_shape_02 input_shapes
   | ScalarDiv                                   -> _infer_shape_02 input_shapes
-  | IsZero                                      -> [| Some [||] |]
-  | IsPositive                                  -> [| Some [||] |]
-  | IsNegative                                  -> [| Some [||] |]
-  | IsNonpositive                               -> [| Some [||] |]
-  | IsNonnegative                               -> [| Some [||] |]
-  | Equal                                       -> [| Some [||] |]
-  | NotEqual                                    -> [| Some [||] |]
-  | Less                                        -> [| Some [||] |]
-  | Greater                                     -> [| Some [||] |]
-  | LessEqual                                   -> [| Some [||] |]
-  | GreaterEqual                                -> [| Some [||] |]
+  | IsZero                                      -> _infer_shape_00 input_shapes
+  | IsPositive                                  -> _infer_shape_00 input_shapes
+  | IsNegative                                  -> _infer_shape_00 input_shapes
+  | IsNonpositive                               -> _infer_shape_00 input_shapes
+  | IsNonnegative                               -> _infer_shape_00 input_shapes
+  | Equal                                       -> _infer_shape_00 input_shapes
+  | NotEqual                                    -> _infer_shape_00 input_shapes
+  | Less                                        -> _infer_shape_00 input_shapes
+  | Greater                                     -> _infer_shape_00 input_shapes
+  | LessEqual                                   -> _infer_shape_00 input_shapes
+  | GreaterEqual                                -> _infer_shape_00 input_shapes
   | EltEqual                                    -> _infer_shape_01 input_shapes
   | EltNotEqual                                 -> _infer_shape_01 input_shapes
   | EltLess                                     -> _infer_shape_01 input_shapes
@@ -567,8 +588,8 @@ let infer_shape operator args =
   | EltGreaterScalar                            -> _infer_shape_01 input_shapes
   | EltLessEqualScalar                          -> _infer_shape_01 input_shapes
   | EltGreaterEqualScalar                       -> _infer_shape_01 input_shapes
-  | ApproxEqual _                               -> [| Some [||] |]
-  | ApproxEqualScalar _                         -> [| Some [||] |]
+  | ApproxEqual _                               -> _infer_shape_00 input_shapes
+  | ApproxEqualScalar _                         -> _infer_shape_00 input_shapes
   | ApproxEltEqual _                            -> _infer_shape_01 input_shapes
   | ApproxEltEqualScalar _                      -> _infer_shape_01 input_shapes
   | Conv1d (padding, stride)                    -> _infer_shape_11 input_shapes padding stride
@@ -597,14 +618,14 @@ let infer_shape operator args =
   | AvgPool3dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
   | Row                                         -> _infer_shape_09 input_shapes 0 1
   | Rows i                                      -> _infer_shape_09 input_shapes 0 Array.(length i)
-  | Dot                                         -> _infer_shape_x input_shapes
-  | Inv                                         -> _infer_shape_x input_shapes
-  | Trace                                       -> [| Some [||] |]
+  | Dot                                         -> _infer_shape_19 input_shapes
+  | Inv                                         -> _infer_shape_01 input_shapes
+  | Trace                                       -> _infer_shape_00 input_shapes
   | Transpose axis                              -> _infer_shape_18 input_shapes axis
-  | ToRows                                      -> _infer_shape_x input_shapes
-  | OfRows                                      -> _infer_shape_x input_shapes
-  | OfArray                                     -> _infer_shape_x input_shapes
-  | OfArrays                                    -> _infer_shape_x input_shapes
+  | ToRows                                      -> _infer_shape_xx input_shapes
+  | OfRows                                      -> _infer_shape_xx input_shapes
+  | OfArray                                     -> _infer_shape_xx input_shapes
+  | OfArrays                                    -> _infer_shape_xx input_shapes
   | _                                           -> [| None |]
 
 
