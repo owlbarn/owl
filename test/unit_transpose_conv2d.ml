@@ -192,46 +192,61 @@ module To_test_transpose_conv2d_backward = struct
     verify_value compute_trans_conv2d_bi ~seq:true [|1;2;2;1|] [|3;3;1;1|]
       [|2;2|] SAME expected
 
-  (* BackwardKernelTwoStrideValid *)
+  (* BackwardInputMultiChannelSame *)
   let fun07 () =
+    let expected = [|18.; 18.; 12.; 12.; 12.; 12.; 8.; 8.|] in
+    verify_value compute_trans_conv2d_bi [|1;2;2;2|] [|3;3;2;2|]
+      [|2;2|] SAME expected
+
+  (* BackwardKernelTwoStrideValid *)
+  let fun08 () =
     let expected = [|4.; 4.; 4.; 4.; 4.; 4.; 4.; 4.; 4.|] in
     verify_value compute_trans_conv2d_bk [|1;2;2;1|] [|3;3;1;1|]
       [|2;2|] VALID expected
 
   (* BackwardKernelSingleStrideValid *)
-  let fun08 () =
+  let fun09 () =
     let expected = [|4.; 4.; 4.; 4.; 4.; 4.; 4.; 4.; 4.|] in
     verify_value compute_trans_conv2d_bk [|1;2;2;1|] [|3;3;1;1|]
       [|1;1|] VALID expected
 
   (* BackwardKernelTwoStrideSame *)
-  let fun09 () =
+  let fun10 () =
     let expected = [|9.; 9.; 6.; 9.; 9.; 6.; 6.; 6.; 4.|] in
     verify_value compute_trans_conv2d_bk [|1;3;3;1|] [|3;3;1;1|]
       [|2;2|] SAME expected
 
   (* BackwardKernelSingleStrideSame *)
-  let fun10 () =
+  let fun11 () =
     let expected = [|9.; 12.; 9.; 12.; 16.; 12.; 9.; 12.; 9.|] in
     verify_value compute_trans_conv2d_bk [|1;4;4;1|] [|3;3;1;1|]
       [|1;1|] SAME expected
 
   (* BackwardKernelDifferentStrideSame *)
-  let fun11 () =
+  let fun12 () =
     let expected = [|6.; 6.; 4.; 9.; 9.; 6.; 6.; 6.; 4.|] in
     verify_value compute_trans_conv2d_bk [|1;3;3;1|] [|3;3;1;1|]
       [|1;2|] SAME expected
 
   (* BackwardInputDifferentKernelSame *)
-  let fun12 () =
+  let fun13 () =
     let expected = [|9.; 9.; 6.|] in
     verify_value compute_trans_conv2d_bk [|1;3;3;1|] [|1;3;1;1|]
       [|2;2|] SAME expected
 
   (* BackwardInputSequentialOutputValid *)
-  let fun13 () =
+  let fun14 () =
     let expected = [|24.; 28.; 14.; 40.; 44.; 22.; 20.; 22.; 11.|] in
     verify_value compute_trans_conv2d_bk ~seq:true [|1;2;2;1|] [|3;3;1;1|]
+      [|2;2|] SAME expected
+
+  (* BackwardInputMultiChannelSame *)
+  let fun15 () =
+    let expected = [|
+      4.; 4.; 4.; 4.; 4.; 4.; 4.; 4.; 2.; 2.; 2.; 2.; 4.; 4.; 4.; 4.; 4.; 4.;
+      4.; 4.; 2.; 2.; 2.; 2.; 2.; 2.; 2.; 2.; 2.; 2.; 2.; 2.; 1.; 1.; 1.; 1.|]
+    in
+    verify_value compute_trans_conv2d_bk [|1;2;2;2|] [|3;3;2;2|]
       [|2;2|] SAME expected
 
 end
@@ -324,6 +339,14 @@ let fun_ctb13 () =
   Alcotest.(check bool) "fun_ctb13" true
     (To_test_transpose_conv2d_backward.fun13 ())
 
+let fun_ctb14 () =
+  Alcotest.(check bool) "fun_ctb14" true
+    (To_test_transpose_conv2d_backward.fun14 ())
+
+let fun_ctb15 () =
+  Alcotest.(check bool) "fun_ctb15" true
+    (To_test_transpose_conv2d_backward.fun15 ())
+
 let test_set = [
   "fun_ctf00", `Slow, fun_ctf00;
   "fun_ctf01", `Slow, fun_ctf01;
@@ -348,4 +371,6 @@ let test_set = [
   "fun_ctb11", `Slow, fun_ctb11;
   "fun_ctb12", `Slow, fun_ctb12;
   "fun_ctb13", `Slow, fun_ctb13;
+  "fun_ctb14", `Slow, fun_ctb14;
+  "fun_ctb15", `Slow, fun_ctb15;
 ]

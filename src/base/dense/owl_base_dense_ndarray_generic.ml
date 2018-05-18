@@ -1774,6 +1774,7 @@ let conv2d_backward_kernel input kernel stride output' =
     kernel'
   end
 
+
 let transpose ?axis varr =
   let dims = shape varr in
   let rank = Array.length dims in
@@ -1796,6 +1797,7 @@ let transpose ?axis varr =
   end
 
 
+(* transpose 2d convolution *)
 let transpose_conv2d ?(padding=SAME) input kernel stride =
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -1820,11 +1822,53 @@ let transpose_conv2d ?(padding=SAME) input kernel stride =
   let kernel = transpose ~axis:[|0;1;3;2|] kernel in
   conv2d_backward_input output' kernel stride input
 
-(* TODO: add correct implementaton into these placeholders *)
+
+(* gradient of transpose_conv2d w.r.t the input *)
 let transpose_conv2d_backward_input input kernel stride output' =
-  conv2d output' kernel stride
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+
+  let padding = SAME in
+  let output_cols_same, output_rows_same =
+    Owl_utils.calc_transpose_conv2d_output_shape
+      padding input_cols input_rows kernel_cols kernel_rows
+      row_stride col_stride
+  in
+
+  let p = if ((output_cols_same = output_cols)
+    && (output_rows_same = output_rows) ) then SAME else VALID
+  in
+  let kernel = transpose ~axis:[|0;1;3;2|] kernel in
+  conv2d ~padding:p output' kernel stride
+
+
+(* gradient of transpose_conv2d w.r.t the kernel *)
 let transpose_conv2d_backward_kernel input kernel stride output' =
   conv2d_backward_kernel output' kernel stride input
+
 
 (* gradient of conv1d w.r.t the input *)
 let conv1d_backward_input input kernel stride output' =
