@@ -137,16 +137,16 @@ and op =
   | ApproxEqualScalar             of float option
   | ApproxEltEqual                of float option
   | ApproxEltEqualScalar          of float option
-  | Conv1d                        of padding option * int array
-  | Conv2d                        of padding option * int array
-  | Conv3d                        of padding option * int array
-  | TransposeConv2d               of padding option * int array
-  | MaxPool1d                     of padding option * int array * int array
-  | MaxPool2d                     of padding option * int array * int array
-  | MaxPool3d                     of padding option * int array * int array
-  | AvgPool1d                     of padding option * int array * int array
-  | AvgPool2d                     of padding option * int array * int array
-  | AvgPool3d                     of padding option * int array * int array
+  | Conv1d                        of padding * int array
+  | Conv2d                        of padding * int array
+  | Conv3d                        of padding * int array
+  | TransposeConv2d               of padding * int array
+  | MaxPool1d                     of padding * int array * int array
+  | MaxPool2d                     of padding * int array * int array
+  | MaxPool3d                     of padding * int array * int array
+  | AvgPool1d                     of padding * int array * int array
+  | AvgPool2d                     of padding * int array * int array
+  | AvgPool3d                     of padding * int array * int array
   | Conv1dBackwardInput           of int array
   | Conv1dBackwardKernel          of int array
   | Conv2dBackwardInput           of int array
@@ -164,13 +164,13 @@ and op =
   | RowNum
   | ColNum
   | Row
-  | Rows
+  | Rows                          of int array
   | CopyRowTo
   | CopyColTo
   | Dot
   | Inv
   | Trace
-  | Transpose                     of int array option
+  | Transpose                     of int array
   | ToRows
   | OfRows
   | OfArray
@@ -316,7 +316,7 @@ let op_to_str = function
   | RowNum                                      -> "RowNum"
   | ColNum                                      -> "ColNum"
   | Row                                         -> "Row"
-  | Rows                                        -> "Rows"
+  | Rows i                                      -> "Rows"
   | CopyRowTo                                   -> "CopyRowTo"
   | CopyColTo                                   -> "CopyColTo"
   | Dot                                         -> "Dot"
@@ -407,6 +407,65 @@ let _infer_shape_09 input_shapes axis n =
 let _infer_shape_10 input_shapes axis =
   match input_shapes.(0).(0) with
   | Some s -> [| Some Owl_utils.(calc_reduce_shape s axis) |]
+  | None   -> [| None |]
+
+
+let _infer_shape_11 input_shapes padding stride =
+  let input_shape = input_shapes.(0).(0) in
+  let kernel_shape = input_shapes.(1).(0) in
+  match input_shape, kernel_shape with
+  | Some input, Some kernel -> [| Some Owl_utils.(calc_conv1d_shape input padding kernel stride) |]
+  | _, _                    -> [| None |]
+
+
+let _infer_shape_12 input_shapes padding stride =
+  let input_shape = input_shapes.(0).(0) in
+  let kernel_shape = input_shapes.(1).(0) in
+  match input_shape, kernel_shape with
+  | Some input, Some kernel -> [| Some Owl_utils.(calc_conv2d_shape input padding kernel stride) |]
+  | _, _                    -> [| None |]
+
+
+let _infer_shape_13 input_shapes padding stride =
+  let input_shape = input_shapes.(0).(0) in
+  let kernel_shape = input_shapes.(1).(0) in
+  match input_shape, kernel_shape with
+  | Some input, Some kernel -> [| Some Owl_utils.(calc_conv3d_shape input padding kernel stride) |]
+  | _, _                    -> [| None |]
+
+
+let _infer_shape_14 input_shapes padding stride =
+  let input_shape = input_shapes.(0).(0) in
+  let kernel_shape = input_shapes.(1).(0) in
+  match input_shape, kernel_shape with
+  | Some input, Some kernel -> [| Some Owl_utils.(calc_transpose_conv2d_shape input padding kernel stride) |]
+  | _, _                    -> [| None |]
+
+
+let _infer_shape_15 input_shapes padding kernel stride =
+  let input_shape = input_shapes.(0).(0) in
+  match input_shape with
+  | Some input -> [| Some Owl_utils.(calc_conv1d_shape input padding kernel stride) |]
+  | _          -> [| None |]
+
+
+let _infer_shape_16 input_shapes padding kernel stride =
+  let input_shape = input_shapes.(0).(0) in
+  match input_shape with
+  | Some input -> [| Some Owl_utils.(calc_conv2d_shape input padding kernel stride) |]
+  | _          -> [| None |]
+
+
+let _infer_shape_17 input_shapes padding kernel stride =
+  let input_shape = input_shapes.(0).(0) in
+  match input_shape with
+  | Some input -> [| Some Owl_utils.(calc_conv3d_shape input padding kernel stride) |]
+  | _          -> [| None |]
+
+
+let _infer_shape_18 input_shapes axis =
+  match input_shapes.(0).(0) with
+  | Some s -> [| Some Owl_utils.(calc_transpose_shape s axis) |]
   | None   -> [| None |]
 
 
@@ -512,36 +571,36 @@ let infer_shape operator args =
   | ApproxEqualScalar _                         -> [| Some [||] |]
   | ApproxEltEqual _                            -> _infer_shape_01 input_shapes
   | ApproxEltEqualScalar _                      -> _infer_shape_01 input_shapes
-  | Conv1d (padding, stride)                    -> _infer_shape_x input_shapes
-  | Conv2d (padding, stride)                    -> _infer_shape_x input_shapes
-  | Conv3d (padding, stride)                    -> _infer_shape_x input_shapes
-  | TransposeConv2d (padding, stride)           -> _infer_shape_x input_shapes
-  | MaxPool1d (padding, kernel, stride)         -> _infer_shape_x input_shapes
-  | MaxPool2d (padding, kernel, stride)         -> _infer_shape_x input_shapes
-  | MaxPool3d (padding, kernel, stride)         -> _infer_shape_x input_shapes
-  | AvgPool1d (padding, kernel, stride)         -> _infer_shape_x input_shapes
-  | AvgPool2d (padding, kernel, stride)         -> _infer_shape_x input_shapes
-  | AvgPool3d (padding, kernel, stride)         -> _infer_shape_x input_shapes
-  | Conv1dBackwardInput stride                  -> _infer_shape_x input_shapes
-  | Conv1dBackwardKernel stride                 -> _infer_shape_x input_shapes
-  | Conv2dBackwardInput stride                  -> _infer_shape_x input_shapes
-  | Conv2dBackwardKernel stride                 -> _infer_shape_x input_shapes
-  | Conv3dBackwardInput stride                  -> _infer_shape_x input_shapes
-  | Conv3dBackwardKernel stride                 -> _infer_shape_x input_shapes
-  | TransposeConv2dBackwardInput stride         -> _infer_shape_x input_shapes
-  | TransposeConv2dBackwardKernel stride        -> _infer_shape_x input_shapes
-  | MaxPool1dBackward (padding, kernel, stride) -> _infer_shape_x input_shapes
-  | MaxPool2dBackward (padding, kernel, stride) -> _infer_shape_x input_shapes
-  | MaxPool3dBackward (padding, kernel, stride) -> _infer_shape_x input_shapes
-  | AvgPool1dBackward (padding, kernel, stride) -> _infer_shape_x input_shapes
-  | AvgPool2dBackward (padding, kernel, stride) -> _infer_shape_x input_shapes
-  | AvgPool3dBackward (padding, kernel, stride) -> _infer_shape_x input_shapes
-  | Row                                         -> _infer_shape_x input_shapes
-  | Rows                                        -> _infer_shape_x input_shapes
+  | Conv1d (padding, stride)                    -> _infer_shape_11 input_shapes padding stride
+  | Conv2d (padding, stride)                    -> _infer_shape_12 input_shapes padding stride
+  | Conv3d (padding, stride)                    -> _infer_shape_13 input_shapes padding stride
+  | TransposeConv2d (padding, stride)           -> _infer_shape_14 input_shapes padding stride
+  | MaxPool1d (padding, kernel, stride)         -> _infer_shape_15 input_shapes padding kernel stride
+  | MaxPool2d (padding, kernel, stride)         -> _infer_shape_16 input_shapes padding kernel stride
+  | MaxPool3d (padding, kernel, stride)         -> _infer_shape_17 input_shapes padding kernel stride
+  | AvgPool1d (padding, kernel, stride)         -> _infer_shape_15 input_shapes padding kernel stride
+  | AvgPool2d (padding, kernel, stride)         -> _infer_shape_16 input_shapes padding kernel stride
+  | AvgPool3d (padding, kernel, stride)         -> _infer_shape_17 input_shapes padding kernel stride
+  | Conv1dBackwardInput stride                  -> _infer_shape_01 input_shapes
+  | Conv1dBackwardKernel stride                 -> _infer_shape_02 input_shapes
+  | Conv2dBackwardInput stride                  -> _infer_shape_01 input_shapes
+  | Conv2dBackwardKernel stride                 -> _infer_shape_02 input_shapes
+  | Conv3dBackwardInput stride                  -> _infer_shape_01 input_shapes
+  | Conv3dBackwardKernel stride                 -> _infer_shape_02 input_shapes
+  | TransposeConv2dBackwardInput stride         -> _infer_shape_01 input_shapes
+  | TransposeConv2dBackwardKernel stride        -> _infer_shape_02 input_shapes
+  | MaxPool1dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
+  | MaxPool2dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
+  | MaxPool3dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
+  | AvgPool1dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
+  | AvgPool2dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
+  | AvgPool3dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
+  | Row                                         -> _infer_shape_09 input_shapes 0 1
+  | Rows i                                      -> _infer_shape_09 input_shapes 0 Array.(length i)
   | Dot                                         -> _infer_shape_x input_shapes
   | Inv                                         -> _infer_shape_x input_shapes
   | Trace                                       -> [| Some [||] |]
-  | Transpose axies                             -> _infer_shape_x input_shapes
+  | Transpose axis                              -> _infer_shape_18 input_shapes axis
   | ToRows                                      -> _infer_shape_x input_shapes
   | OfRows                                      -> _infer_shape_x input_shapes
   | OfArray                                     -> _infer_shape_x input_shapes
@@ -835,34 +894,34 @@ let approx_elt_equal_scalar ?eps x a =
   make_then_connect (ApproxEltEqualScalar eps) [|unpack_arr x; unpack_elt a|] |> pack_arr
 
 
-let conv1d ?padding input kernel stride =
+let conv1d ?(padding=SAME) input kernel stride =
   make_then_connect (Conv1d (padding, stride)) [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
-let conv2d ?padding input kernel stride =
+let conv2d ?(padding=SAME) input kernel stride =
   make_then_connect (Conv2d (padding, stride)) [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
-let conv3d ?padding input kernel stride =
+let conv3d ?(padding=SAME) input kernel stride =
   make_then_connect (Conv3d (padding, stride)) [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
-let transpose_conv2d ?padding input kernel stride =
+let transpose_conv2d ?(padding=SAME) input kernel stride =
   make_then_connect (TransposeConv2d (padding, stride)) [|unpack_arr input; unpack_arr kernel|] |> pack_arr
 
-let max_pool1d ?padding input kernel stride =
+let max_pool1d ?(padding=SAME) input kernel stride =
   make_then_connect (MaxPool1d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
-let max_pool2d ?padding input kernel stride =
+let max_pool2d ?(padding=SAME) input kernel stride =
   make_then_connect (MaxPool2d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
-let max_pool3d ?padding input kernel stride =
+let max_pool3d ?(padding=SAME) input kernel stride =
   make_then_connect (MaxPool3d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
-let avg_pool1d ?padding input kernel stride =
+let avg_pool1d ?(padding=SAME) input kernel stride =
   make_then_connect (AvgPool1d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
-let avg_pool2d ?padding input kernel stride =
+let avg_pool2d ?(padding=SAME) input kernel stride =
   make_then_connect (AvgPool2d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
-let avg_pool3d ?padding input kernel stride =
+let avg_pool3d ?(padding=SAME) input kernel stride =
   make_then_connect (AvgPool3d (padding, kernel, stride)) [|unpack_arr input|] |> pack_arr
 
 let conv1d_backward_input input kernel stride output' =
@@ -919,7 +978,7 @@ let col_num x =
 
 let row x i = make_then_connect Row [|unpack_arr x|] |> pack_arr
 
-let rows x i = make_then_connect Rows [|unpack_arr x|] |> pack_arr
+let rows x i = make_then_connect (Rows i) [|unpack_arr x|] |> pack_arr
 
 let copy_row_to x y i = make_then_connect CopyRowTo [|unpack_arr x|] |> ignore
 
@@ -931,7 +990,13 @@ let inv x = make_then_connect Inv [|unpack_arr x|] |> pack_arr
 
 let trace x = make_then_connect Trace [|unpack_arr x|] |> pack_elt
 
-let transpose ?axis x = make_then_connect (Transpose axis) [|unpack_arr x|] |> pack_arr
+let transpose ?axis x =
+  let d = Array.length (shape x) in
+  let axis = match axis with
+    | Some a -> a
+    | None   -> Array.init d (fun i -> d - i - 1)
+  in
+  make_then_connect (Transpose axis) [|unpack_arr x|] |> pack_arr
 
 let to_rows x =
   let _ = make_then_connect ToRows [|unpack_arr x|] in

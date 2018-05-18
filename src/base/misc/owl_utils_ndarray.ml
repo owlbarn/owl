@@ -208,4 +208,90 @@ let calc_reduce_shape shape axis =
   s
 
 
+let calc_conv2d_shape input_shape padding kernel_shape stride_shape =
+  let batches = input_shape.(0) in
+  let input_cols = input_shape.(1) in
+  let input_rows = input_shape.(2) in
+  let in_channel = input_shape.(3) in
+
+  let kernel_cols = kernel_shape.(0) in
+  let kernel_rows = kernel_shape.(1) in
+  let out_channel = kernel_shape.(3) in
+  assert (in_channel = kernel_shape.(2));
+
+  let col_stride = stride_shape.(0) in
+  let row_stride = stride_shape.(1) in
+  let output_cols, output_rows =
+    Owl_utils_conv.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  [|batches; output_cols; output_rows; out_channel|]
+
+
+let calc_conv1d_shape input_shape padding kernel_shape stride_shape =
+  let batches = input_shape.(0) in
+  let input_cols = input_shape.(1) in
+  let in_channel = input_shape.(2) in
+  let input_shape = [|batches; 1; input_cols; in_channel|] in
+
+  let kernel_cols = kernel_shape.(0) in
+  let out_channel = kernel_shape.(2) in
+  assert (in_channel = kernel_shape.(1));
+  let kernel_shape = [|1; kernel_cols; in_channel; out_channel|] in
+
+  let col_stride = stride_shape.(0) in
+  let stride_shape = [|1; col_stride|] in
+
+  let output_shape = calc_conv2d_shape input_shape padding kernel_shape stride_shape in
+  let output_cols = output_shape.(2) in
+  [|batches; output_cols; out_channel|]
+
+
+let calc_conv3d_shape input_shape padding kernel_shape stride_shape =
+  let batches = input_shape.(0) in
+  let input_cols = input_shape.(1) in
+  let input_rows = input_shape.(2) in
+  let input_dpts = input_shape.(3) in
+  let in_channel = input_shape.(4) in
+
+  let kernel_cols = kernel_shape.(0) in
+  let kernel_rows = kernel_shape.(1) in
+  let kernel_dpts = kernel_shape.(2) in
+  let out_channel = kernel_shape.(4) in
+  assert (in_channel = kernel_shape.(3));
+
+  let col_stride = stride_shape.(0) in
+  let row_stride = stride_shape.(1) in
+  let dpt_stride = stride_shape.(2) in
+
+  let output_cols, output_rows, output_dpts =
+    Owl_utils_conv.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+  in
+  [|batches; output_cols; output_rows; output_dpts; out_channel|]
+
+
+let calc_transpose_conv2d_shape input_shape padding kernel_shape stride_shape =
+  let batches = input_shape.(0) in
+  let input_cols = input_shape.(1) in
+  let input_rows = input_shape.(2) in
+  let in_channel = input_shape.(3) in
+
+  let kernel_cols = kernel_shape.(0) in
+  let kernel_rows = kernel_shape.(1) in
+  let out_channel = kernel_shape.(3) in
+  assert (in_channel = kernel_shape.(2));
+
+  let col_stride = stride_shape.(0) in
+  let row_stride = stride_shape.(1) in
+
+  let output_cols, output_rows =
+    Owl_utils_conv.calc_transpose_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  [|batches; output_cols; output_rows; out_channel|]
+
+
+let calc_transpose_shape input_shape axis =
+  Array.map (fun j -> input_shape.(j)) axis
+
+
+
 (* ends here *)
