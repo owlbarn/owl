@@ -2724,13 +2724,15 @@ let split ?(axis=0) parts x =
   let x_shp = shape x in
   let x_dim = num_dims x in
   let _d = Array.fold_left ( + ) 0 parts in
-  assert (axis < x_dim);
-  assert (_d = x_shp.(axis));
+
+  let a = Owl_utils.adjust_index axis _d in
+  assert (a < x_dim);
+  assert (_d = x_shp.(a));
 
   let _pos = ref 0 in
   let slices = Array.map (fun d ->
     let s_def = Array.make x_dim (R_ [||]) in
-    s_def.(axis) <- R_ [|!_pos; !_pos + d - 1|];
+    s_def.(a) <- R_ [|!_pos; !_pos + d - 1|];
     _pos := !_pos + d;
     Owl_slicing.get_slice_array_typ s_def x
   ) parts
@@ -3687,6 +3689,7 @@ let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ~window x =
 
 
 let draw ?(axis=0) x n =
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
   let b = nth_dim x axis in
   let indices = Array.init n (fun _ -> Owl_stats.uniform_int_rvs ~a:0 ~b:(b-1)) in
   let slice = Array.init (num_dims x) (fun i -> if i = axis then L_ indices else R_ [||]) in

@@ -31,7 +31,7 @@ let visualise_02 () =
 let visualise_03 () =
   let t = tag () in
   let x = make_reverse (G.var_arr "x" (Some [|3;4|]) |> pack_arr) t in
-  let y = make_reverse (G.var_arr "y" None |> pack_arr) t in
+  let y = make_reverse (G.var_arr "y" (Some [|1;4|]) |> pack_arr) t in
   let z = f x y in
   let s0 = [primal z |> unpack_elt |> G.unpack_elt] |> G.to_dot in
   Owl_io.write_file "cgraph_03_forward.dot" s0;

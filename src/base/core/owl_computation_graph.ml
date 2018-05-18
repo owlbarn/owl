@@ -10,10 +10,7 @@ open Owl_types
 open Owl_graph
 
 
-type value =
-  | F   of float
-  | F32 of (float, float32_elt, c_layout) Genarray.t
-  | F64 of (float, float64_elt, c_layout) Genarray.t
+type value
 
 
 type t = attr node
@@ -50,13 +47,13 @@ and op =
   | Reshape                       of int array
   | Reverse
   | Tile                          of int array
-  | Repeat                        of int option * int
-  | Concatenate
-  | Split
-  | Draw                          of int
+  | Repeat                        of int * int
+  | Concatenate                   of int
+  | Split                         of int * int array
+  | Draw                          of int * int
   | Map                           of (elt -> elt)
-  | Fold                          of int option * (elt -> elt -> elt)
-  | Scan                          of int option * (elt -> elt -> elt)
+  | Fold                          of int * (elt -> elt -> elt)
+  | Scan                          of int * (elt -> elt -> elt)
   | Abs
   | Neg
   | Floor
@@ -80,10 +77,10 @@ and op =
   | Asinh
   | Acosh
   | Atanh
-  | Min                           of int option
-  | Max                           of int option
-  | Sum                           of int option
-  | SumReduce                     of int array option
+  | Min                           of int
+  | Max                           of int
+  | Sum                           of int
+  | SumReduce                     of int array
   | Signum
   | Sigmoid
   | Relu
@@ -195,17 +192,17 @@ let op_to_str = function
   | Init _                                      -> "Init"
   | Get i                                       -> "Get"
   | Set i                                       -> "Set"
-  | GetSlice i                                  -> "GetSlice"
-  | SetSlice i                                  -> "SetSlice"
+  | GetSlice slice                              -> "GetSlice"
+  | SetSlice slice                              -> "SetSlice"
   | Copy                                        -> "Copy"
   | Reset                                       -> "Reset"
   | Reshape shape                               -> "Reshape"
   | Reverse                                     -> "Reverse"
   | Tile repeats                                -> "Tile"
   | Repeat (axis, repeats)                      -> "Repeat"
-  | Concatenate                                 -> "Concatenate"
-  | Split                                       -> "Split"
-  | Draw n                                      -> "Draw"
+  | Concatenate axis                            -> "Concatenate"
+  | Split (axis, parts)                         -> "Split"
+  | Draw (axis, n)                              -> "Draw"
   | Map f                                       -> "Map"
   | Fold (axis, f)                              -> "Fold"
   | Scan (axis, f)                              -> "Scan"
@@ -232,10 +229,10 @@ let op_to_str = function
   | Asinh                                       -> "Asinh"
   | Acosh                                       -> "Acosh"
   | Atanh                                       -> "Atanh"
-  | Min i                                       -> "Min"
-  | Max i                                       -> "Max"
-  | Sum i                                       -> "Sum"
-  | SumReduce i                                 -> "SumReduce"
+  | Min axis                                    -> "Min"
+  | Max axis                                    -> "Max"
+  | Sum axis                                    -> "Sum"
+  | SumReduce axis                              -> "SumReduce"
   | Signum                                      -> "Signum"
   | Sigmoid                                     -> "Sigmoid"
   | Relu                                        -> "Relu"
@@ -332,6 +329,8 @@ let op_to_str = function
   | OfArrays                                    -> "OfArrays"
 
 
+(* packing and unpacking functions *)
+
 let pack_arr x = Arr x
 
 let unpack_arr = function Arr x -> x
@@ -341,105 +340,151 @@ let pack_elt x = Elt x
 let unpack_elt = function Elt x -> x
 
 
-let _shape = function
-  | F _   -> [||]
-  | F32 x -> Genarray.dims x
-  | F64 x -> Genarray.dims x
+(* infer the shape of outcome from inputs *)
 
-
-let _infer_shape_1 input_shapes =
+let _infer_shape_01 input_shapes =
   match input_shapes.(0).(0) with
   | Some s -> [| Some Array.(copy s) |]
   | None   -> [| None |]
 
 
-let _infer_shape_2 input_shapes =
+let _infer_shape_02 input_shapes =
   match input_shapes.(1).(0) with
   | Some s -> [| Some Array.(copy s) |]
   | None   -> [| None |]
 
 
-(* FIXME *)
-let _infer_shape_3 input_shapes =
+let _infer_shape_03 input_shapes =
   let s0 = input_shapes.(0).(0) in
   let s1 = input_shapes.(1).(0) in
   match s0, s1 with
-  | Some s0, Some s1 -> [| Some s0 |]
+  | Some s0, Some s1 -> [| Some Owl_utils.(calc_broadcast_shape s0 s1) |]
   | _, _             -> [| None |]
+
+
+let _infer_shape_04 input_shapes axis =
+  match input_shapes.(0).(0) with
+  | Some s -> [| Some Owl_utils.(calc_fold_shape s axis) |]
+  | None   -> [| None |]
+
+
+let _infer_shape_05 input_shapes repeats =
+  match input_shapes.(0).(0) with
+  | Some s -> [| Some Owl_utils.(calc_tile_shape s repeats) |]
+  | None   -> [| None |]
+
+
+let _infer_shape_06 input_shapes axis repeats =
+  match input_shapes.(0).(0) with
+  | Some s -> [| Some Owl_utils.(calc_repeat_shape s axis repeats) |]
+  | None   -> [| None |]
+
+
+let _infer_shape_07 input_shapes axis =
+  let s0 = Array.map (fun s -> s.(0)) input_shapes in
+  if Array.exists (function Some _ -> false | None -> true) s0 then [| None |]
+  else (
+    let s1 = Array.map (function Some a -> a | None -> failwith "_infer_shape_07") s0 in
+    [| Some Owl_utils.(calc_concatenate_shape s1 axis) |]
+  )
+
+
+let _infer_shape_08 input_shapes axis parts =
+  match input_shapes.(0).(0) with
+  | Some s -> (
+      let s0 = Owl_utils.(calc_split_shape s axis parts) in
+      Array.map (fun s -> Some s) s0
+    )
+  | None   -> Array.(make (length parts) None)
+
+
+let _infer_shape_09 input_shapes axis n =
+  match input_shapes.(0).(0) with
+  | Some s -> [| Some Owl_utils.(calc_draw_shape s axis n) |]
+  | None   -> [| None |]
+
+
+let _infer_shape_10 input_shapes axis =
+  match input_shapes.(0).(0) with
+  | Some s -> [| Some Owl_utils.(calc_reduce_shape s axis) |]
+  | None   -> [| None |]
+
+
+let _infer_shape_x input_shapes = [| None |]
 
 
 let infer_shape operator args =
   let input_shapes = Array.map (fun a -> (attr a).shape) args in
   match operator with
   | Get _                                       -> [| Some [||] |]
-  | GetSlice slice                              -> failwith "not implemented"
-  | Copy                                        -> _infer_shape_1 input_shapes
+  | GetSlice slice                              -> _infer_shape_x input_shapes
+  | Copy                                        -> _infer_shape_01 input_shapes
   | Reshape shape                               -> [| Some shape |]
-  | Reverse                                     -> _infer_shape_1 input_shapes
-  | Tile repeats                                -> failwith "not implemented"
-  | Repeat (axis, repeats)                      -> failwith "not implemented"
-  | Concatenate                                 -> failwith "not implemented"
-  | Split                                       -> failwith "not implemented"
-  | Draw n                                      -> failwith "not implemented"
-  | Map _                                       -> _infer_shape_1 input_shapes
-  | Fold (axis, f)                              -> failwith "not implemented"
-  | Scan (axis, f)                              -> _infer_shape_1 input_shapes
-  | Abs                                         -> _infer_shape_1 input_shapes
-  | Neg                                         -> _infer_shape_1 input_shapes
-  | Floor                                       -> _infer_shape_1 input_shapes
-  | Ceil                                        -> _infer_shape_1 input_shapes
-  | Round                                       -> _infer_shape_1 input_shapes
-  | Sqr                                         -> _infer_shape_1 input_shapes
-  | Sqrt                                        -> _infer_shape_1 input_shapes
-  | Log                                         -> _infer_shape_1 input_shapes
-  | Log2                                        -> _infer_shape_1 input_shapes
-  | Log10                                       -> _infer_shape_1 input_shapes
-  | Exp                                         -> _infer_shape_1 input_shapes
-  | Sin                                         -> _infer_shape_1 input_shapes
-  | Cos                                         -> _infer_shape_1 input_shapes
-  | Tan                                         -> _infer_shape_1 input_shapes
-  | Sinh                                        -> _infer_shape_1 input_shapes
-  | Cosh                                        -> _infer_shape_1 input_shapes
-  | Tanh                                        -> _infer_shape_1 input_shapes
-  | Asin                                        -> _infer_shape_1 input_shapes
-  | Acos                                        -> _infer_shape_1 input_shapes
-  | Atan                                        -> _infer_shape_1 input_shapes
-  | Asinh                                       -> _infer_shape_1 input_shapes
-  | Acosh                                       -> _infer_shape_1 input_shapes
-  | Atanh                                       -> _infer_shape_1 input_shapes
-  | Min axis                                    -> failwith "not implemented"
-  | Max axis                                    -> failwith "not implemented"
-  | Sum axis                                    -> failwith "not implemented"
-  | SumReduce axises                            -> failwith "not implemented"
-  | Signum                                      -> _infer_shape_1 input_shapes
-  | Sigmoid                                     -> _infer_shape_1 input_shapes
-  | Relu                                        -> _infer_shape_1 input_shapes
+  | Reverse                                     -> _infer_shape_01 input_shapes
+  | Tile repeats                                -> _infer_shape_05 input_shapes repeats
+  | Repeat (axis, repeats)                      -> _infer_shape_06 input_shapes axis repeats
+  | Concatenate axis                            -> _infer_shape_07 input_shapes axis
+  | Split (axis, parts)                         -> _infer_shape_08 input_shapes axis parts
+  | Draw (axis, n)                              -> _infer_shape_09 input_shapes axis n
+  | Map _                                       -> _infer_shape_01 input_shapes
+  | Fold (axis, f)                              -> _infer_shape_04 input_shapes axis
+  | Scan (axis, f)                              -> _infer_shape_01 input_shapes
+  | Abs                                         -> _infer_shape_01 input_shapes
+  | Neg                                         -> _infer_shape_01 input_shapes
+  | Floor                                       -> _infer_shape_01 input_shapes
+  | Ceil                                        -> _infer_shape_01 input_shapes
+  | Round                                       -> _infer_shape_01 input_shapes
+  | Sqr                                         -> _infer_shape_01 input_shapes
+  | Sqrt                                        -> _infer_shape_01 input_shapes
+  | Log                                         -> _infer_shape_01 input_shapes
+  | Log2                                        -> _infer_shape_01 input_shapes
+  | Log10                                       -> _infer_shape_01 input_shapes
+  | Exp                                         -> _infer_shape_01 input_shapes
+  | Sin                                         -> _infer_shape_01 input_shapes
+  | Cos                                         -> _infer_shape_01 input_shapes
+  | Tan                                         -> _infer_shape_01 input_shapes
+  | Sinh                                        -> _infer_shape_01 input_shapes
+  | Cosh                                        -> _infer_shape_01 input_shapes
+  | Tanh                                        -> _infer_shape_01 input_shapes
+  | Asin                                        -> _infer_shape_01 input_shapes
+  | Acos                                        -> _infer_shape_01 input_shapes
+  | Atan                                        -> _infer_shape_01 input_shapes
+  | Asinh                                       -> _infer_shape_01 input_shapes
+  | Acosh                                       -> _infer_shape_01 input_shapes
+  | Atanh                                       -> _infer_shape_01 input_shapes
+  | Min axis                                    -> _infer_shape_04 input_shapes axis
+  | Max axis                                    -> _infer_shape_04 input_shapes axis
+  | Sum axis                                    -> _infer_shape_04 input_shapes axis
+  | SumReduce axis                              -> _infer_shape_10 input_shapes axis
+  | Signum                                      -> _infer_shape_01 input_shapes
+  | Sigmoid                                     -> _infer_shape_01 input_shapes
+  | Relu                                        -> _infer_shape_01 input_shapes
   | Min'                                        -> [| Some [||] |]
   | Max'                                        -> [| Some [||] |]
   | Sum'                                        -> [| Some [||] |]
   | L1norm'                                     -> [| Some [||] |]
   | L2norm'                                     -> [| Some [||] |]
   | L2NormSqr'                                  -> [| Some [||] |]
-  | ClipByValue                                 -> _infer_shape_1 input_shapes
-  | ClipByL2norm                                -> _infer_shape_1 input_shapes
-  | Pow                                         -> _infer_shape_1 input_shapes
-  | ScalarPow                                   -> _infer_shape_2 input_shapes
-  | PowScalar                                   -> _infer_shape_1 input_shapes
-  | Atan2                                       -> _infer_shape_3 input_shapes
-  | ScalarAtan2                                 -> _infer_shape_2 input_shapes
-  | Atan2Scalar                                 -> _infer_shape_1 input_shapes
-  | Add                                         -> _infer_shape_3 input_shapes
-  | Sub                                         -> _infer_shape_3 input_shapes
-  | Mul                                         -> _infer_shape_3 input_shapes
-  | Div                                         -> _infer_shape_3 input_shapes
-  | AddScalar                                   -> _infer_shape_1 input_shapes
-  | SubScalar                                   -> _infer_shape_1 input_shapes
-  | MulScalar                                   -> _infer_shape_1 input_shapes
-  | DivScalar                                   -> _infer_shape_1 input_shapes
-  | ScalarAdd                                   -> _infer_shape_2 input_shapes
-  | ScalarSub                                   -> _infer_shape_2 input_shapes
-  | ScalarMul                                   -> _infer_shape_2 input_shapes
-  | ScalarDiv                                   -> _infer_shape_2 input_shapes
+  | ClipByValue                                 -> _infer_shape_01 input_shapes
+  | ClipByL2norm                                -> _infer_shape_01 input_shapes
+  | Pow                                         -> _infer_shape_01 input_shapes
+  | ScalarPow                                   -> _infer_shape_02 input_shapes
+  | PowScalar                                   -> _infer_shape_01 input_shapes
+  | Atan2                                       -> _infer_shape_03 input_shapes
+  | ScalarAtan2                                 -> _infer_shape_02 input_shapes
+  | Atan2Scalar                                 -> _infer_shape_01 input_shapes
+  | Add                                         -> _infer_shape_03 input_shapes
+  | Sub                                         -> _infer_shape_03 input_shapes
+  | Mul                                         -> _infer_shape_03 input_shapes
+  | Div                                         -> _infer_shape_03 input_shapes
+  | AddScalar                                   -> _infer_shape_01 input_shapes
+  | SubScalar                                   -> _infer_shape_01 input_shapes
+  | MulScalar                                   -> _infer_shape_01 input_shapes
+  | DivScalar                                   -> _infer_shape_01 input_shapes
+  | ScalarAdd                                   -> _infer_shape_02 input_shapes
+  | ScalarSub                                   -> _infer_shape_02 input_shapes
+  | ScalarMul                                   -> _infer_shape_02 input_shapes
+  | ScalarDiv                                   -> _infer_shape_02 input_shapes
   | IsZero                                      -> [| Some [||] |]
   | IsPositive                                  -> [| Some [||] |]
   | IsNegative                                  -> [| Some [||] |]
@@ -451,67 +496,64 @@ let infer_shape operator args =
   | Greater                                     -> [| Some [||] |]
   | LessEqual                                   -> [| Some [||] |]
   | GreaterEqual                                -> [| Some [||] |]
-  | EltEqual                                    -> _infer_shape_1 input_shapes
-  | EltNotEqual                                 -> _infer_shape_1 input_shapes
-  | EltLess                                     -> _infer_shape_1 input_shapes
-  | EltGreater                                  -> _infer_shape_1 input_shapes
-  | EltLessEqual                                -> _infer_shape_1 input_shapes
-  | EltGreaterEqual                             -> _infer_shape_1 input_shapes
-  | EltEqualScalar                              -> _infer_shape_1 input_shapes
-  | EltNotEqualScalar                           -> _infer_shape_1 input_shapes
-  | EltLessScalar                               -> _infer_shape_1 input_shapes
-  | EltGreaterScalar                            -> _infer_shape_1 input_shapes
-  | EltLessEqualScalar                          -> _infer_shape_1 input_shapes
-  | EltGreaterEqualScalar                       -> _infer_shape_1 input_shapes
+  | EltEqual                                    -> _infer_shape_01 input_shapes
+  | EltNotEqual                                 -> _infer_shape_01 input_shapes
+  | EltLess                                     -> _infer_shape_01 input_shapes
+  | EltGreater                                  -> _infer_shape_01 input_shapes
+  | EltLessEqual                                -> _infer_shape_01 input_shapes
+  | EltGreaterEqual                             -> _infer_shape_01 input_shapes
+  | EltEqualScalar                              -> _infer_shape_01 input_shapes
+  | EltNotEqualScalar                           -> _infer_shape_01 input_shapes
+  | EltLessScalar                               -> _infer_shape_01 input_shapes
+  | EltGreaterScalar                            -> _infer_shape_01 input_shapes
+  | EltLessEqualScalar                          -> _infer_shape_01 input_shapes
+  | EltGreaterEqualScalar                       -> _infer_shape_01 input_shapes
   | ApproxEqual _                               -> [| Some [||] |]
   | ApproxEqualScalar _                         -> [| Some [||] |]
-  | ApproxEltEqual _                            -> _infer_shape_1 input_shapes
-  | ApproxEltEqualScalar _                      -> _infer_shape_1 input_shapes
-  | Conv1d (padding, stride)                    -> failwith "not implemented"
-  | Conv2d (padding, stride)                    -> failwith "not implemented"
-  | Conv3d (padding, stride)                    -> failwith "not implemented"
-  | TransposeConv2d (padding, stride)           -> failwith "not implemented"
-  | MaxPool1d (padding, kernel, stride)         -> failwith "not implemented"
-  | MaxPool2d (padding, kernel, stride)         -> failwith "not implemented"
-  | MaxPool3d (padding, kernel, stride)         -> failwith "not implemented"
-  | AvgPool1d (padding, kernel, stride)         -> failwith "not implemented"
-  | AvgPool2d (padding, kernel, stride)         -> failwith "not implemented"
-  | AvgPool3d (padding, kernel, stride)         -> failwith "not implemented"
-  | Conv1dBackwardInput stride                  -> failwith "not implemented"
-  | Conv1dBackwardKernel stride                 -> failwith "not implemented"
-  | Conv2dBackwardInput stride                  -> failwith "not implemented"
-  | Conv2dBackwardKernel stride                 -> failwith "not implemented"
-  | Conv3dBackwardInput stride                  -> failwith "not implemented"
-  | Conv3dBackwardKernel stride                 -> failwith "not implemented"
-  | TransposeConv2dBackwardInput stride         -> failwith "not implemented"
-  | TransposeConv2dBackwardKernel stride        -> failwith "not implemented"
-  | MaxPool1dBackward (padding, kernel, stride) -> failwith "not implemented"
-  | MaxPool2dBackward (padding, kernel, stride) -> failwith "not implemented"
-  | MaxPool3dBackward (padding, kernel, stride) -> failwith "not implemented"
-  | AvgPool1dBackward (padding, kernel, stride) -> failwith "not implemented"
-  | AvgPool2dBackward (padding, kernel, stride) -> failwith "not implemented"
-  | AvgPool3dBackward (padding, kernel, stride) -> failwith "not implemented"
-  | Row                                         -> failwith "not implemented"
-  | Rows                                        -> failwith "not implemented"
-  | Dot                                         -> failwith "not implemented"
-  | Inv                                         -> failwith "not implemented"
+  | ApproxEltEqual _                            -> _infer_shape_01 input_shapes
+  | ApproxEltEqualScalar _                      -> _infer_shape_01 input_shapes
+  | Conv1d (padding, stride)                    -> _infer_shape_x input_shapes
+  | Conv2d (padding, stride)                    -> _infer_shape_x input_shapes
+  | Conv3d (padding, stride)                    -> _infer_shape_x input_shapes
+  | TransposeConv2d (padding, stride)           -> _infer_shape_x input_shapes
+  | MaxPool1d (padding, kernel, stride)         -> _infer_shape_x input_shapes
+  | MaxPool2d (padding, kernel, stride)         -> _infer_shape_x input_shapes
+  | MaxPool3d (padding, kernel, stride)         -> _infer_shape_x input_shapes
+  | AvgPool1d (padding, kernel, stride)         -> _infer_shape_x input_shapes
+  | AvgPool2d (padding, kernel, stride)         -> _infer_shape_x input_shapes
+  | AvgPool3d (padding, kernel, stride)         -> _infer_shape_x input_shapes
+  | Conv1dBackwardInput stride                  -> _infer_shape_x input_shapes
+  | Conv1dBackwardKernel stride                 -> _infer_shape_x input_shapes
+  | Conv2dBackwardInput stride                  -> _infer_shape_x input_shapes
+  | Conv2dBackwardKernel stride                 -> _infer_shape_x input_shapes
+  | Conv3dBackwardInput stride                  -> _infer_shape_x input_shapes
+  | Conv3dBackwardKernel stride                 -> _infer_shape_x input_shapes
+  | TransposeConv2dBackwardInput stride         -> _infer_shape_x input_shapes
+  | TransposeConv2dBackwardKernel stride        -> _infer_shape_x input_shapes
+  | MaxPool1dBackward (padding, kernel, stride) -> _infer_shape_x input_shapes
+  | MaxPool2dBackward (padding, kernel, stride) -> _infer_shape_x input_shapes
+  | MaxPool3dBackward (padding, kernel, stride) -> _infer_shape_x input_shapes
+  | AvgPool1dBackward (padding, kernel, stride) -> _infer_shape_x input_shapes
+  | AvgPool2dBackward (padding, kernel, stride) -> _infer_shape_x input_shapes
+  | AvgPool3dBackward (padding, kernel, stride) -> _infer_shape_x input_shapes
+  | Row                                         -> _infer_shape_x input_shapes
+  | Rows                                        -> _infer_shape_x input_shapes
+  | Dot                                         -> _infer_shape_x input_shapes
+  | Inv                                         -> _infer_shape_x input_shapes
   | Trace                                       -> [| Some [||] |]
-  | Transpose axies                             -> failwith "not implemented"
-  | ToRows                                      -> failwith "not implemented"
-  | OfRows                                      -> failwith "not implemented"
-  | OfArray                                     -> failwith "not implemented"
-  | OfArrays                                    -> failwith "not implemented"
+  | Transpose axies                             -> _infer_shape_x input_shapes
+  | ToRows                                      -> _infer_shape_x input_shapes
+  | OfRows                                      -> _infer_shape_x input_shapes
+  | OfArray                                     -> _infer_shape_x input_shapes
+  | OfArrays                                    -> _infer_shape_x input_shapes
   | _                                           -> [| None |]
 
 
+(* core manipulation functions *)
+
 let make_node ?name ?value ?shape op =
   let value = match value with Some v -> v | None -> [||] in
-  let shape =
-    if Array.length value > 0 then
-      Array.map (fun v -> Some (_shape v)) value
-    else
-      match shape with Some s -> s | None -> [||]
-  in
+  let shape = match shape with Some s -> s | None -> [| None |] in
   Owl_graph.node ?name { op; shape; value }
 
 
@@ -527,6 +569,8 @@ let make_then_connect ?shape op parents =
   connect parents [|child|];
   child
 
+
+(* mathematical functions *)
 
 let noop x = make_then_connect Noop [|unpack_arr x|] |> pack_arr
 
@@ -561,7 +605,7 @@ let shape x =
   assert (Array.length x_shape > 0);
   match x_shape.(0) with
   | Some s -> s
-  | None   -> failwith "computation_graph:shape"
+  | None   -> [||]
 
 let numel x = Array.fold_left ( * ) 1 (shape x)
 
@@ -587,12 +631,14 @@ let reverse x = make_then_connect Reverse [|unpack_arr x|] |> pack_arr
 
 let tile x axises = make_then_connect (Tile axises) [|unpack_arr x|] |> pack_arr
 
-let repeat ?axis x repeats = make_then_connect (Repeat (axis, repeats)) [|unpack_arr x|] |> pack_arr
+let repeat ?(axis=(-1)) x repeats =
+  make_then_connect (Repeat (axis, repeats)) [|unpack_arr x|] |> pack_arr
 
-let concatenate ?axis xs = make_then_connect Concatenate (Array.map unpack_arr xs) |> pack_arr
+let concatenate ?(axis=0) xs =
+  make_then_connect (Concatenate axis) (Array.map unpack_arr xs) |> pack_arr
 
-let split ?axis parts x =
-  let y = make_then_connect Split [|unpack_arr x|] in
+let split ?(axis=0) parts x =
+  let y = make_then_connect (Split (axis, parts)) [|unpack_arr x|] in
   (* FIXME: wrong shape *)
   Array.map (fun s ->
     let z = make_node ~shape:[|Some parts|] Noop in
@@ -600,15 +646,15 @@ let split ?axis parts x =
     pack_arr y
   ) parts
 
-let draw ?axis x n =
-  let y = make_then_connect (Draw n) [|unpack_arr x|] |> pack_arr in
+let draw ?(axis=0) x n =
+  let y = make_then_connect (Draw (axis, n)) [|unpack_arr x|] |> pack_arr in
   y, [||]
 
 let map f x = make_then_connect (Map f) [|unpack_arr x|] |> pack_arr
 
-let fold ?axis f a x = make_then_connect (Fold (axis, f)) [|unpack_arr x; unpack_elt a|] |> pack_arr
+let fold ?(axis=(-1)) f a x = make_then_connect (Fold (axis, f)) [|unpack_arr x; unpack_elt a|] |> pack_arr
 
-let scan ?axis f x = make_then_connect (Scan (axis, f)) [|unpack_arr x|] |> pack_arr
+let scan ?(axis=(-1)) f x = make_then_connect (Scan (axis, f)) [|unpack_arr x|] |> pack_arr
 
 let print ?max_row ?max_col ?header ?fmt x = ()
 
@@ -659,13 +705,13 @@ let acosh x = make_then_connect Acosh [|unpack_arr x|] |> pack_arr
 
 let atanh x = make_then_connect Atanh [|unpack_arr x|] |> pack_arr
 
-let min ?axis x = make_then_connect (Min axis) [|unpack_arr x|] |> pack_arr
+let min ?(axis=(-1)) x = make_then_connect (Min axis) [|unpack_arr x|] |> pack_arr
 
-let max ?axis x = make_then_connect (Max axis) [|unpack_arr x|] |> pack_arr
+let max ?(axis=(-1)) x = make_then_connect (Max axis) [|unpack_arr x|] |> pack_arr
 
-let sum ?axis x = make_then_connect (Sum axis) [|unpack_arr x|] |> pack_arr
+let sum ?(axis=(-1)) x = make_then_connect (Sum axis) [|unpack_arr x|] |> pack_arr
 
-let sum_reduce ?axis x = make_then_connect (SumReduce axis) [|unpack_arr x|] |> pack_arr
+let sum_reduce ?(axis=[|-1|]) x = make_then_connect (SumReduce axis) [|unpack_arr x|] |> pack_arr
 
 let signum x = make_then_connect Signum [|unpack_arr x|] |> pack_arr
 

@@ -158,6 +158,10 @@ let fold_out_edges f a x =
   !a
 
 
+(* TODO *)
+let map f x = None
+
+
 (* TODO: optimise *)
 let copy ?(dir=Ancestor) x =
   let _make_if_not_exists h n =
