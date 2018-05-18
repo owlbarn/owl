@@ -173,7 +173,7 @@ and op =
   | Transpose                     of int array
   | ToRows
   | OfRows
-  | OfArray
+  | OfArray                       of int array
   | OfArrays
 
 
@@ -325,7 +325,7 @@ let op_to_str = function
   | Transpose i                                 -> "Transpose"
   | ToRows                                      -> "ToRows"
   | OfRows                                      -> "OfRows"
-  | OfArray                                     -> "OfArray"
+  | OfArray shape                               -> "OfArray"
   | OfArrays                                    -> "OfArrays"
 
 
@@ -624,7 +624,7 @@ let infer_shape operator args =
   | Transpose axis                              -> _infer_shape_18 input_shapes axis
   | ToRows                                      -> _infer_shape_xx input_shapes
   | OfRows                                      -> _infer_shape_xx input_shapes
-  | OfArray                                     -> _infer_shape_xx input_shapes
+  | OfArray shape                               -> [| Some shape |]
   | OfArrays                                    -> _infer_shape_xx input_shapes
   | _                                           -> [| None |]
 
