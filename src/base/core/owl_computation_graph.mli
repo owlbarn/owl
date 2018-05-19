@@ -5,8 +5,8 @@
 
 open Owl_types
 
-type t
-(** TODO *)
+type attr
+
 
 type arr
 (** TODO *)
@@ -15,19 +15,16 @@ type elt
 (** TODO *)
 
 
-val pack_arr : t -> arr
+val pack_arr : attr Owl_graph.node -> arr
 (** TODO *)
 
-val unpack_arr : arr -> t
+val unpack_arr : arr -> attr Owl_graph.node
 (** TODO *)
 
-val pack_elt : t -> elt
+val pack_elt : attr Owl_graph.node -> elt
 (** TODO *)
 
-val unpack_elt : elt -> t
-(** TODO *)
-
-val refnum : t -> int
+val unpack_elt : elt -> attr Owl_graph.node
 (** TODO *)
 
 val var_arr : name:string -> int array option -> arr
@@ -536,5 +533,5 @@ module Scalar : sig
 end
 
 
-val to_dot : t list -> string
+val to_dot : attr Owl_graph.node list -> string
 (** TODO *)
