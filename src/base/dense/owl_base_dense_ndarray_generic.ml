@@ -1880,6 +1880,7 @@ let transpose_conv2d_backward_input input kernel stride output' =
 let transpose_conv2d_backward_kernel input kernel stride output' =
   conv2d_backward_kernel output' kernel stride input
 
+<<<<<<< HEAD
 
 (* transpose_conv1d: 3d input and 3d kernel, refer to tensorlfow doc
    input : [batch; input_column; input_channel]
@@ -1913,6 +1914,8 @@ let transpose_conv1d ?(padding=SAME) input kernel stride =
   let output = reshape output [|batches; output_cols; out_channel|] in
   output
 
+=======
+>>>>>>> upstream/master
 
 (* gradient of conv1d w.r.t the input *)
 let conv1d_backward_input input kernel stride output' =
