@@ -21,6 +21,7 @@ let () =
     "conv2d",               Unit_conv2d.test_set;
     "conv3d",               Unit_conv3d.test_set;
     "transpose_conv2d",     Unit_transpose_conv2d.test_set;
+    "transpose_conv3d",     Unit_transpose_conv3d.test_set;
     "learning rate",        Unit_learning_rate.test_set;
     "base: algodiff diff",  Unit_base_algodiff_diff.test_set;
     "base: algodiff grad",  Unit_base_algodiff_grad.test_set;
