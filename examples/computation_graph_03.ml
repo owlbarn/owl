@@ -1,11 +1,11 @@
 #!/usr/bin/env owl
 
-
-module G = Owl_computation_graph
+open Owl
+module G = Owl_computation_graph.Make (Arr)
 module A = Owl_algodiff_generic.Make (G)
 include Owl_neural_generic.Make (G)
 open Graph
-open Owl
+
 
 
 let make_mnist_network input_shape =
@@ -66,7 +66,7 @@ let visualise_lstm () =
 
   let s0 = G.to_dot [loss |> A.unpack_elt |> G.unpack_elt] in
   Owl_io.write_file "cgraph_04_lstm_loss.dot" s0;
-  Sys.command "dot -Tpdf cgraph_04_lstm_loss.dot -o cgraph_04_lstm_loss.pdf" |> ignore;
+  (* Sys.command "dot -Tpdf -Gnslimit=1 cgraph_04_lstm_loss.dot -o cgraph_04_lstm_loss.pdf" |> ignore; *)
 
   let s1 = adj0
     |> Utils.Array.flatten
@@ -74,8 +74,8 @@ let visualise_lstm () =
     |> Array.to_list
     |> G.to_dot
   in
-  Owl_io.write_file "cgraph_04_lstm_grad.dot" s1;
-  Sys.command "dot -Tpdf cgraph_04_lstm_grad.dot -o cgraph_04_lstm_grad.pdf" |> ignore
+  Owl_io.write_file "cgraph_04_lstm_grad.dot" s1
+  (* Sys.command "dot -Tpdf -Gnslimit=1 cgraph_04_lstm_grad.dot -o cgraph_04_lstm_grad.pdf" |> ignore *)
 
 
 let _ =
