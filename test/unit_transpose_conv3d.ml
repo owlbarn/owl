@@ -99,7 +99,7 @@ module To_test_transpose_conv3d = struct
 end
 
 
-(* Test Transpose Convolution2D backward operations *)
+(* Test Transpose Convolution3D backward operations *)
 
 module To_test_transpose_conv3d_backward = struct
 
