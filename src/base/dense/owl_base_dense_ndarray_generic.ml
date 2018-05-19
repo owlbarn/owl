@@ -1886,7 +1886,7 @@ let transpose_conv2d_backward_kernel input kernel stride output' =
    kernel: [kernel_column; input_channel; output_channel]
    stride: [column_stride]
    output: [batch; output_column; output_channel]
-*)
+ *)
 let transpose_conv1d ?(padding=SAME) input kernel stride =
   assert (num_dims input = 3);
   assert (num_dims kernel = 3);
