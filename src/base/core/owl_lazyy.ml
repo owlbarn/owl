@@ -20,7 +20,7 @@ module Make (A : Ndarray_Algodiff) = struct
   let rec _eval_term x =
     if is_valid x = false then (
       let _ = match (get_operator x) with
-        | Var          -> Printf.printf "var"
+        | Var          -> is_assigned x; Printf.printf "var"
         | Sin          -> _eval_map_0 x A.sin
         | _            -> Owl_log.warn "unknown"
       in
@@ -31,8 +31,8 @@ module Make (A : Ndarray_Algodiff) = struct
     and _eval_map_0 x f =
       let x_parent = (parents x).(0) in
       _eval_term x_parent;
-      let a = (get_value x_parent).(0) |> unpack_arr |> f in
-      set_value x [|pack_arr a|]
+      let a = (get_value x_parent).(0) |> value_to_arr |> f in
+      set_value x [|arr_to_value a|]
 
 
   let eval_elt x = None

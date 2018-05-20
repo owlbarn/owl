@@ -344,13 +344,13 @@ module Make (A : Ndarray_Algodiff) = struct
 
   let elt_to_node = function Elt x -> x
 
-  let pack_arr x = ArrVal x
+  let arr_to_value x = ArrVal x
 
-  let unpack_arr = function ArrVal x -> x | _ -> failwith "Owl_computation_graph: unpack_arr"
+  let value_to_arr = function ArrVal x -> x | _ -> failwith "Owl_computation_graph: value_to_arr"
 
-  let pack_elt x = EltVal x
+  let elt_to_value x = EltVal x
 
-  let unpack_elt = function EltVal x -> x | _ -> failwith "Owl_computation_graph: unpack_elt"
+  let value_to_elt = function EltVal x -> x | _ -> failwith "Owl_computation_graph: value_to_elt"
 
 
   (* infer the shape of outcome from inputs *)
@@ -673,7 +673,7 @@ module Make (A : Ndarray_Algodiff) = struct
   (* core manipulation functions *)
 
   let make_node ?name ?value ?shape op =
-    let value = match value with Some v -> v | None -> [||] in
+    let value = match value with Some v -> v | None -> [| |] in
     let shape = match shape with Some s -> s | None -> [| None |] in
     let state = Invalid in
     Owl_graph.node ?name { op; state; shape; value }
@@ -687,6 +687,32 @@ module Make (A : Ndarray_Algodiff) = struct
     let child = make_node ~shape op in
     connect parents [|child|];
     child
+
+
+  let var_arr ~name shape =
+    make_node ~name ~shape:[| Some shape |] Var
+    |> node_to_arr
+
+
+  let var_elt ~name =
+    make_node ~name ~shape:[| Some [||] |] Var
+    |> node_to_elt
+
+
+  let const_arr ~name value =
+    make_node ~name ~value:[|arr_to_value value|] ~shape:[| Some A.(shape value) |] Const
+    |> node_to_arr
+
+
+  let const_elt ~name value =
+    make_node ~name ~value:[|elt_to_value value|] ~shape:[| Some [||] |] Const
+    |> node_to_elt
+
+
+  let assign_arr x arr = (arr_to_node x |> attr).value <- [| ArrVal arr |]
+
+
+  let assign_elt x elt = (elt_to_node x |> attr).value <- [| EltVal elt |]
 
 
   let refnum x = Owl_graph.outdegree x
@@ -728,14 +754,6 @@ module Make (A : Ndarray_Algodiff) = struct
   (* mathematical functions *)
 
   let noop x = make_then_connect Noop [|arr_to_node x|] |> node_to_arr
-
-  let var_arr ~name shape = make_node ~name ~shape:[|shape|] Var |> node_to_arr
-
-  let var_elt ~name = make_node ~name ~shape:[|Some [||]|] Var |> node_to_elt
-
-  let const_arr ~name shape = make_node ~name ~shape:[|shape|] Const |> node_to_arr
-
-  let const_elt ~name = make_node ~name ~shape:[|Some [||]|] Const |> node_to_elt
 
   let empty shape =
     Owl_log.warn "empty";
@@ -1175,11 +1193,6 @@ module Make (A : Ndarray_Algodiff) = struct
   let of_array x shape = raise Owl_exception.NOT_IMPLEMENTED
 
   let of_arrays x = raise Owl_exception.NOT_IMPLEMENTED
-
-
-  let float_to_elt x = const_elt ""
-
-  let elt_to_float x =  infinity
 
 
   module Scalar = struct
