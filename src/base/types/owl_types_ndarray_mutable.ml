@@ -6,7 +6,7 @@
 
 module type Sig = sig
 
-  include Owl_types_ndarray_compare.Sig
+  include Owl_types_ndarray_algodiff.Sig
 
 
   val hypot : arr -> arr -> arr

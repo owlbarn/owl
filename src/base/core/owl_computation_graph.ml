@@ -352,6 +352,16 @@ module Make (A : Ndarray_Algodiff) = struct
 
   let value_to_elt = function EltVal x -> x | _ -> failwith "Owl_computation_graph: value_to_elt"
 
+  let unpack_arr x =
+    let value = (arr_to_node x |> attr).value in
+    assert (Array.length value > 0);
+    value_to_arr value.(0)
+
+  let unpack_elt x =
+    let value = (elt_to_node x |> attr).value in
+    assert (Array.length value > 0);
+    value_to_elt value.(0)
+
 
   (* infer the shape of outcome from inputs *)
 
@@ -749,6 +759,12 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let invalidate_graph x = iter_descendants invalidate [|x|]
+
+
+  let float_to_elt x = const_elt ~name:"" (A.float_to_elt x)
+
+
+  let elt_to_float x = unpack_elt x |> A.elt_to_float
 
 
   (* mathematical functions *)

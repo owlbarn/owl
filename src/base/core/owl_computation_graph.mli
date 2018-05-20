@@ -210,6 +210,18 @@ module Make (A : Ndarray_Algodiff) : sig
   val get_operator : attr Owl_graph.node -> op
   (** TODO *)
 
+  val unpack_arr : arr -> A.arr
+  (** TODO *)
+
+  val unpack_elt : elt -> A.elt
+  (** TODO *)
+
+  val float_to_elt : float -> elt
+  (** TODO *)
+
+  val elt_to_float : elt -> float
+  (** TODO *)
+
 
   val var_arr : name:string -> int array -> arr
   (** TODO *)
@@ -227,6 +239,9 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
   val assign_elt : elt -> A.elt -> unit
+  (** TODO *)
+
+  val refnum : attr Owl_graph.node -> int
   (** TODO *)
 
   val is_var : attr Owl_graph.node -> bool
@@ -737,6 +752,9 @@ module Make (A : Ndarray_Algodiff) : sig
 
   end
 
+
+  val op_to_str : op -> string
+  (** TODO *)
 
   val to_dot : attr Owl_graph.node list -> string
   (** TODO *)
