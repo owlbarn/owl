@@ -54,6 +54,7 @@ module Make (A : Ndarray_Algodiff) : sig
     | Map                           of (elt -> elt)
     | Fold                          of int * (elt -> elt -> elt)
     | Scan                          of int * (elt -> elt -> elt)
+    | OneHot                        of int
     | Abs
     | Neg
     | Floor
@@ -390,6 +391,9 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
   val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
+  (** TODO *)
+
+  val one_hot : int -> arr -> arr
   (** TODO *)
 
   val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit

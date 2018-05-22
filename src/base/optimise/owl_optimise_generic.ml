@@ -383,7 +383,7 @@ module Make
       |> flush_all
 
     let run typ save_fun current_batch current_loss state =
-      state.loss.(current_batch) <- current_loss;
+      state.loss.(current_batch) <- (primal' current_loss);
       state.stop <- (state.current_batch >= state.batches);
       let interval = match typ with
         | Batch i  -> i
@@ -517,7 +517,7 @@ module Make
           Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
           Checkpoint.(state.us <- [| [|_f 0.|] |]);
           Checkpoint.(state.ch <- [| [| [|_f 0.; _f 0.|] |] |]);
-          Checkpoint.(state.loss.(0) <- _loss);
+          Checkpoint.(state.loss.(0) <- primal' _loss);
           state
         )
     in
@@ -549,6 +549,8 @@ module Make
       Checkpoint.(state.gs.(0).(0) <- g');
       Checkpoint.(state.ps.(0).(0) <- p');
       Checkpoint.(state.current_batch <- state.current_batch + 1);
+      (* force GC to release bigarray memory *)
+      Gc.minor ();
     done;
 
     (* print optimisation summary *)
@@ -610,7 +612,7 @@ module Make
           Checkpoint.(state.ps <- Owl_utils.aarr_map Maths.neg _gs);
           Checkpoint.(state.us <- Owl_utils.aarr_map (fun _ -> _f 0.) _gs);
           Checkpoint.(state.ch <- Owl_utils.aarr_map (fun _ -> [|_f 0.; _f 0.|]) _gs);
-          Checkpoint.(state.loss.(0) <- _loss);
+          Checkpoint.(state.loss.(0) <- primal' _loss);
           state
         )
     in
@@ -647,7 +649,7 @@ module Make
       Checkpoint.(state.gs <- gs');
       Checkpoint.(state.ps <- ps');
       Checkpoint.(state.current_batch <- state.current_batch + 1);
-      (** FIXME: only for experimental purpose, more thinking *)
+      (* force GC to release bigarray memory *)
       Gc.minor ();
     done;
 
@@ -697,7 +699,7 @@ module Make
           Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
           Checkpoint.(state.us <- [| [|_f 0.|] |]);
           Checkpoint.(state.ch <- [| [| [|_f 0.; _f 0.|] |] |]);
-          Checkpoint.(state.loss.(0) <- _loss);
+          Checkpoint.(state.loss.(0) <- primal' _loss);
           state
         )
     in
@@ -729,6 +731,8 @@ module Make
       Checkpoint.(state.gs.(0).(0) <- g');
       Checkpoint.(state.ps.(0).(0) <- p');
       Checkpoint.(state.current_batch <- state.current_batch + 1);
+      (* force GC to release bigarray memory *)
+      Gc.minor ();
     done;
 
     (* print optimisation summary *)
@@ -769,9 +773,9 @@ module Make
       in
       let loss = Maths.(loss + reg) in
       let ws, gs' = backward loss in
-      Owl_log.error "graph size: %i" (Owl_graph.length (unpack_elt loss |> Obj.magic |> G.elt_to_node));
+      (*Owl_log.error "graph size: %i" (Owl_graph.length (unpack_elt loss |> Obj.magic |> G.elt_to_node));
       let s = G.to_dot [| unpack_elt loss |> Obj.magic |> G.elt_to_node |] in
-      Owl_io.write_file "yyy.dot" s;
+      Owl_io.write_file "yyy.dot" s;*)
       loss, ws, gs'
     in
 
@@ -789,7 +793,7 @@ module Make
           Checkpoint.(state.ps <- Owl_utils.aarr_map Maths.neg _gs);
           Checkpoint.(state.us <- Owl_utils.aarr_map (fun _ -> _f 0.) _gs);
           Checkpoint.(state.ch <- Owl_utils.aarr_map (fun _ -> [|pack_arr (A.zeros [|1|]); pack_arr (A.zeros [|1|])|]) _gs);
-          Checkpoint.(state.loss.(0) <- (pack_flt (unpack_flt _loss)));
+          Checkpoint.(state.loss.(0) <- (primal' _loss));
           state
         )
     in
@@ -830,7 +834,7 @@ module Make
       Checkpoint.(state.gs <- gs');
       Checkpoint.(state.ps <- ps');
       Checkpoint.(state.current_batch <- state.current_batch + 1);
-      (** FIXME: only for experimental purpose, more thinking *)
+      (* force GC to release bigarray memory *)
       Gc.minor ();
     done;
 

@@ -329,5 +329,8 @@ let calc_transpose_shape input_shape axis =
 let calc_dot_shape x_shape y_shape = [|x_shape.(0); y_shape.(1)|]
 
 
+let calc_onehot_shape input_shape depth = Array.append input_shape [|depth|]
+
+
 
 (* ends here *)

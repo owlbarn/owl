@@ -59,6 +59,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Map                           of (elt -> elt)
     | Fold                          of int * (elt -> elt -> elt)
     | Scan                          of int * (elt -> elt -> elt)
+    | OneHot                        of int
     | Abs
     | Neg
     | Floor
@@ -243,6 +244,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Map f                                       -> "Map"
     | Fold (axis, f)                              -> "Fold"
     | Scan (axis, f)                              -> "Scan"
+    | OneHot depth                                -> "OneHot"
     | Abs                                         -> "Abs"
     | Neg                                         -> "Neg"
     | Floor                                       -> "Floor"
@@ -555,6 +557,12 @@ module Make (A : Ndarray_Algodiff) = struct
     | _          -> [| None |]
 
 
+  let _infer_shape_22 input_shapes depth =
+    match input_shapes.(0).(0) with
+    | Some s -> [| Some Owl_utils.(calc_onehot_shape s depth) |]
+    | None   -> [| None |]
+
+
   let _infer_shape_xx input_shapes = failwith "_infer_shape_xx: not implemented"
 
 
@@ -574,6 +582,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Map _                                       -> _infer_shape_01 input_shapes
     | Fold (axis, f)                              -> _infer_shape_04 input_shapes axis
     | Scan (axis, f)                              -> _infer_shape_01 input_shapes
+    | OneHot depth                                -> _infer_shape_22 input_shapes depth
     | Abs                                         -> _infer_shape_01 input_shapes
     | Neg                                         -> _infer_shape_01 input_shapes
     | Floor                                       -> _infer_shape_01 input_shapes
@@ -1014,6 +1023,9 @@ module Make (A : Ndarray_Algodiff) = struct
   let scan ?(axis=(-1)) f x =
     Owl_log.debug "scan";
     make_then_connect (Scan (axis, f)) [|arr_to_node x|] |> node_to_arr
+
+  let one_hot depth x =
+    make_then_connect (OneHot depth) [|arr_to_node x|] |> node_to_arr
 
   let print ?max_row ?max_col ?header ?fmt x = ()
 

@@ -69,6 +69,8 @@ module type Sig = sig
 
   val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
 
+  val one_hot : int -> arr -> arr
+
   val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
 
   (* mathematical functions *)

@@ -2353,17 +2353,7 @@ module Make
       let x = primal' x |> unpack_arr in
       let s = A.shape x in
       let m, n = s.(0), s.(1) in
-      let y = A.zeros [|(m * n); l.in_dim|] in
-
-      let i' = ref 0 in
-      for i = 0 to m - 1 do
-        i' := i * n;
-        for j = 0 to n - 1 do
-          let k = int_of_float A.(get x [|i;j|] |> elt_to_float) in
-          A.set y [|(!i' + j); k|] (A.float_to_elt 1.)
-        done;
-      done;
-
+      let y = A.one_hot l.in_dim (A.reshape x [|m * n|]) in
       let y = Maths.((Arr y) *@ l.w) in
       Maths.reshape y [|m; n; l.out_shape.(1)|]
 
