@@ -404,21 +404,18 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_01 input_shapes =
-    Owl_log.debug "_infer_shape_01";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Array.(copy s) |]
     | None   -> [| None |]
 
 
   let _infer_shape_02 input_shapes =
-    Owl_log.debug "_infer_shape_02";
     match input_shapes.(1).(0) with
     | Some s -> [| Some Array.(copy s) |]
     | None   -> [| None |]
 
 
   let _infer_shape_03 input_shapes =
-    Owl_log.debug "_infer_shape_03";
     let s0 = input_shapes.(0).(0) in
     let s1 = input_shapes.(1).(0) in
     match s0, s1 with
@@ -427,28 +424,24 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_04 input_shapes axis =
-    Owl_log.debug "_infer_shape_04";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Owl_utils.(calc_fold_shape s axis) |]
     | None   -> [| None |]
 
 
   let _infer_shape_05 input_shapes repeats =
-    Owl_log.debug "_infer_shape_05";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Owl_utils.(calc_tile_shape s repeats) |]
     | None   -> [| None |]
 
 
   let _infer_shape_06 input_shapes axis repeats =
-  Owl_log.debug "_infer_shape_06";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Owl_utils.(calc_repeat_shape s axis repeats) |]
     | None   -> [| None |]
 
 
   let _infer_shape_07 input_shapes axis =
-  Owl_log.debug "_infer_shape_07";
     let s0 = Array.map (fun s -> s.(0)) input_shapes in
     if Array.exists (function Some _ -> false | None -> true) s0 then [| None |]
     else (
@@ -458,7 +451,6 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_08 input_shapes axis parts =
-    Owl_log.debug "_infer_shape_08";
     match input_shapes.(0).(0) with
     | Some s -> (
         let s0 = Owl_utils.(calc_split_shape s axis parts) in
@@ -468,21 +460,18 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_09 input_shapes axis n =
-    Owl_log.debug "_infer_shape_09";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Owl_utils.(calc_draw_shape s axis n) |]
     | None   -> [| None |]
 
 
   let _infer_shape_10 input_shapes axis =
-    Owl_log.debug "_infer_shape_10";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Owl_utils.(calc_reduce_shape s axis) |]
     | None   -> [| None |]
 
 
   let _infer_shape_11 input_shapes padding stride =
-    Owl_log.debug "_infer_shape_11";
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
@@ -491,7 +480,6 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_12 input_shapes padding stride =
-    Owl_log.debug "_infer_shape_12";
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
@@ -500,7 +488,6 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_13 input_shapes padding stride =
-    Owl_log.debug "_infer_shape_13";
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
@@ -509,7 +496,6 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_14 input_shapes padding stride =
-    Owl_log.debug "_infer_shape_14";
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
@@ -518,7 +504,6 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_15 input_shapes padding kernel stride =
-    Owl_log.debug "_infer_shape_15";
     let input_shape = input_shapes.(0).(0) in
     match input_shape with
     | Some input -> [| Some Owl_utils.(calc_conv1d_shape input padding kernel stride) |]
@@ -526,7 +511,6 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_16 input_shapes padding kernel stride =
-    Owl_log.debug "_infer_shape_16";
     let input_shape = input_shapes.(0).(0) in
     match input_shape with
     | Some input -> [| Some Owl_utils.(calc_conv2d_shape input padding kernel stride) |]
@@ -534,7 +518,6 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_17 input_shapes padding kernel stride =
-    Owl_log.debug "_infer_shape_17";
     let input_shape = input_shapes.(0).(0) in
     match input_shape with
     | Some input -> [| Some Owl_utils.(calc_conv3d_shape input padding kernel stride) |]
@@ -542,14 +525,12 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_18 input_shapes axis =
-    Owl_log.debug "_infer_shape_18";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Owl_utils.(calc_transpose_shape s axis) |]
     | None   -> [| None |]
 
 
   let _infer_shape_19 input_shapes =
-    Owl_log.debug "_infer_shape_19";
     let x_shape = input_shapes.(0).(0) in
     let y_shape = input_shapes.(1).(0) in
     match x_shape, y_shape with
@@ -558,7 +539,6 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_20 input_shapes axis =
-    Owl_log.debug "_infer_shape_20";
     match input_shapes.(0).(0) with
     | Some s -> (
         let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
@@ -569,7 +549,6 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_21 input_shapes padding kernel stride =
-    Owl_log.debug "_infer_shape_21";
     let input_shape = input_shapes.(0).(0) in
     match input_shape with
     | Some input -> [| Some Owl_utils.(calc_pool2d_shape input padding kernel stride) |]

@@ -24,7 +24,7 @@ let _color_to_str = function
   | Magenta -> "\027[35m"
   | Cyan    -> "\027[36m"
 
-let _level = ref INFO
+let _level = ref DEBUG
 
 let _output = ref stderr
 

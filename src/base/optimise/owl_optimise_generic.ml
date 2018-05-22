@@ -737,7 +737,7 @@ module Make
     (* return both loss history and weight *)
     state, !x
 
-
+  module G = Owl_computation_graph.Make (A)
   let minimise_network ?state params forward backward update save x y =
     let open Params in
     if params.verbosity = true && state = None then
@@ -769,8 +769,9 @@ module Make
       in
       let loss = Maths.(loss + reg) in
       let ws, gs' = backward loss in
-      (* Owl_log.error "graph size: %i" (Owl_graph.length (unpack_elt loss |> Obj.magic |> G.elt_to_node)); *)
-      (* A.eval_arr (Array.append (Array.map unpack_arr (Owl_utils_array.flatten ws)) (Array.map unpack_arr (Owl_utils_array.flatten gs'))); *)
+      Owl_log.error "graph size: %i" (Owl_graph.length (unpack_elt loss |> Obj.magic |> G.elt_to_node));
+      let s = G.to_dot [| unpack_elt loss |> Obj.magic |> G.elt_to_node |] in
+      Owl_io.write_file "yyy.dot" s;
       loss, ws, gs'
     in
 
