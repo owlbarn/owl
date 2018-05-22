@@ -13,6 +13,12 @@ include Array
 let ( @ ) a b = Array.append a b
 
 
+(* pretty-print an array to string *)
+let to_string ?(prefix="") ?(suffix="") ?(sep=",") elt_to_str x =
+  let s = Array.to_list x |> List.map elt_to_str |> String.concat sep in
+  Printf.sprintf "%s%s%s" prefix s suffix
+
+
 (* set multiple elements to the same value a in x *)
 let set_n x idx a = Array.iter (fun i -> x.(i) <- a) idx
 
@@ -308,12 +314,6 @@ let complement x y =
   let s = Owl_utils_stack.make () in
   Hashtbl.iter (fun a _ -> Owl_utils_stack.push s a) h;
   Owl_utils_stack.to_array s
-
-
-(* pretty-print an array to string *)
-let to_string ?(prefix="") ?(suffix="") ?(sep=",") elt_to_str x =
-  let s = Array.to_list x |> List.map elt_to_str |> String.concat sep in
-  Printf.sprintf "%s%s%s" prefix s suffix
 
 
 let balance_last mass x =

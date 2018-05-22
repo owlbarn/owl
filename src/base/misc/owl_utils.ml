@@ -156,6 +156,10 @@ let array1_copy x =
   y
 
 
+(* map function for ['a array array array] type *)
+let aaarrr_map f x = Array.map (Array.map (Array.map f)) x
+
+
 (* format time period into human-readable format *)
 let format_time t =
   if t < 60. then

@@ -56,6 +56,22 @@ let connect parents children =
   ) parents
 
 
+let connect_descendants parents children =
+  Array.iter (fun parent ->
+    Array.iter (fun child ->
+        parent.next <- (Array.append parent.next [|child|]);
+    ) children
+  ) parents
+
+
+let connect_ancestors parents children =
+  Array.iter (fun parent ->
+    Array.iter (fun child ->
+        child.prev <- (Array.append child.prev [|parent|]);
+    ) children
+  ) parents
+
+
 let remove_node x =
   let f = fun y -> y.id <> x.id in
   Array.iter (fun parent ->
@@ -185,9 +201,26 @@ let copy ?(dir=Ancestor) x =
   Array.map (fun n -> Hashtbl.find h n.id) x
 
 
+(* TODO *)
 let to_array = None
 
+(* TODO *)
 let to_hashtbl = None
+
+
+let num_ancestor x =
+  let n = ref 0 in
+  iter_ancestors (fun _ -> n := !n + 1) [|x|];
+  !n
+
+
+let num_descendant x =
+  let n = ref 0 in
+  iter_descendants (fun _ -> n := !n + 1) [|x|];
+  !n
+
+
+let length x = (num_ancestor x) + (num_descendant x) - 1
 
 
 let node_to_str x =

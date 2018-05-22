@@ -29,14 +29,14 @@ module Make (A : Ndarray_Algodiff) : sig
     | Noop
     | Var
     | Const
-    | Empty
-    | Zeros
-    | Ones
+    | Empty                         of int array
+    | Zeros                         of int array
+    | Ones                          of int array
     | Create
     | Sequential
-    | Uniform
+    | Uniform                       of int array
     | Gaussian
-    | Bernoulli                     of float option
+    | Bernoulli                     of float * (int array)
     | Init                          of (int -> elt)
     | Get                           of int array
     | Set                           of int array
@@ -175,6 +175,38 @@ module Make (A : Ndarray_Algodiff) : sig
     | OfRows
     | OfArray                       of int array
     | OfArrays
+    | Scalar_Add
+    | Scalar_Sub
+    | Scalar_Mul
+    | Scalar_Div
+    | Scalar_Pow
+    | Scalar_Atan2
+    | Scalar_Abs
+    | Scalar_Neg
+    | Scalar_Sqr
+    | Scalar_Sqrt
+    | Scalar_Exp
+    | Scalar_Log
+    | Scalar_Log2
+    | Scalar_Log10
+    | Scalar_Signum
+    | Scalar_Floor
+    | Scalar_Ceil
+    | Scalar_Round
+    | Scalar_Sin
+    | Scalar_Cos
+    | Scalar_Tan
+    | Scalar_Sinh
+    | Scalar_Cosh
+    | Scalar_Tanh
+    | Scalar_Asin
+    | Scalar_Acos
+    | Scalar_Atan
+    | Scalar_Asinh
+    | Scalar_Acosh
+    | Scalar_Atanh
+    | Scalar_Relu
+    | Scalar_Sigmoid
 
 
   val node_to_arr : attr Owl_graph.node -> arr
@@ -207,13 +239,23 @@ module Make (A : Ndarray_Algodiff) : sig
   val get_value : attr Owl_graph.node -> value array
   (** TODO *)
 
+  val set_operator : attr Owl_graph.node -> op -> unit
+  (** TODO *)
+
   val get_operator : attr Owl_graph.node -> op
   (** TODO *)
+
+  val pack_arr : A.arr -> arr
 
   val unpack_arr : arr -> A.arr
   (** TODO *)
 
+  val pack_elt : A.elt -> elt
+
   val unpack_elt : elt -> A.elt
+  (** TODO *)
+
+  val arr_to_arr : arr -> arr
   (** TODO *)
 
   val float_to_elt : float -> elt
@@ -248,6 +290,9 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
   val is_const : attr Owl_graph.node -> bool
+  (** TODO *)
+
+  val is_mutable : attr Owl_graph.node -> bool
   (** TODO *)
 
   val is_assigned : attr Owl_graph.node -> unit
@@ -755,6 +800,8 @@ module Make (A : Ndarray_Algodiff) : sig
 
   val op_to_str : op -> string
   (** TODO *)
+
+  val node_to_str : attr Owl_graph.node -> string
 
   val to_dot : attr Owl_graph.node list -> string
   (** TODO *)

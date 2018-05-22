@@ -21,28 +21,37 @@ type 'a node
 (** {6 Obtaining properties} *)
 
 val id : 'a node -> int
-(** ``id x`` returns the id of node ``x``.  *)
+(** ``id x`` returns the id of node ``x``. *)
 
 val name : 'a node -> string
-(** ``name x`` returns the name string of node ``x``.  *)
+(** ``name x`` returns the name string of node ``x``. *)
 
 val parents : 'a node -> 'a node array
-(** ``parents x`` returns the parents of node ``x``.  *)
+(** ``parents x`` returns the parents of node ``x``. *)
 
 val children : 'a node -> 'a node array
-(** ``children x`` returns the children of node ``x``.  *)
+(** ``children x`` returns the children of node ``x``. *)
 
 val indegree : 'a node -> int
-(** ``indegree x`` returns the in-degree of node ``x``.  *)
+(** ``indegree x`` returns the in-degree of node ``x``. *)
 
 val outdegree : 'a node -> int
-(** ``outdegree x`` returns the out-degree of node ``x``.  *)
+(** ``outdegree x`` returns the out-degree of node ``x``. *)
 
 val attr : 'a node -> 'a
-(** ``attr x`` returns the ``attr`` field of node ``x``.  *)
+(** ``attr x`` returns the ``attr`` field of node ``x``. *)
 
 val set_attr : 'a node -> 'a -> unit
-(** ``set_attr x`` sets the ``attr`` field of node ``x``.  *)
+(** ``set_attr x`` sets the ``attr`` field of node ``x``. *)
+
+val num_ancestor : 'a node -> int
+(** ``num_ancestor x`` returns the number of ancestors of ``x``. *)
+
+val num_descendant : 'a node -> int
+(** ``num_descendant x`` returns the number of descendants of ``x``. *)
+
+val length : 'a node -> int
+(** ``length x`` returns the total number of ancestors and descendants of ``x``. *)
 
 
 (** {6 Manipulation functions} *)
@@ -57,7 +66,22 @@ in ``next``. The ``attr`` will be saved in ``attr`` field.
 val connect : 'a node array -> 'a node array -> unit
 (**
 ``connect parents children`` connects a set of parents to a set of children.
-The created links are the Cartesian product of parents and children.
+The created links are the Cartesian product of parents and children. In other
+words, they are bidirectional links between parents and children.
+*)
+
+val connect_descendants : 'a node array -> 'a node array -> unit
+(**
+``connect_descendants parents children`` connects parents to their children.
+In other words, this function creates unidirectional links from parents to
+children.
+*)
+
+val connect_ancestors : 'a node array -> 'a node array -> unit
+(**
+``connect_ancestors parents children`` connects children to their parents.
+In other words, this function creates unidirectional links from children to
+parents.
 *)
 
 val remove_node : 'a node -> unit

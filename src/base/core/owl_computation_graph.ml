@@ -34,14 +34,14 @@ module Make (A : Ndarray_Algodiff) = struct
     | Noop
     | Var
     | Const
-    | Empty
-    | Zeros
-    | Ones
+    | Empty                         of int array
+    | Zeros                         of int array
+    | Ones                          of int array
     | Create
     | Sequential
-    | Uniform
+    | Uniform                       of int array
     | Gaussian
-    | Bernoulli                     of float option
+    | Bernoulli                     of float * (int array)
     | Init                          of (int -> elt)
     | Get                           of int array
     | Set                           of int array
@@ -180,20 +180,52 @@ module Make (A : Ndarray_Algodiff) = struct
     | OfRows
     | OfArray                       of int array
     | OfArrays
+    | Scalar_Add
+    | Scalar_Sub
+    | Scalar_Mul
+    | Scalar_Div
+    | Scalar_Pow
+    | Scalar_Atan2
+    | Scalar_Abs
+    | Scalar_Neg
+    | Scalar_Sqr
+    | Scalar_Sqrt
+    | Scalar_Exp
+    | Scalar_Log
+    | Scalar_Log2
+    | Scalar_Log10
+    | Scalar_Signum
+    | Scalar_Floor
+    | Scalar_Ceil
+    | Scalar_Round
+    | Scalar_Sin
+    | Scalar_Cos
+    | Scalar_Tan
+    | Scalar_Sinh
+    | Scalar_Cosh
+    | Scalar_Tanh
+    | Scalar_Asin
+    | Scalar_Acos
+    | Scalar_Atan
+    | Scalar_Asinh
+    | Scalar_Acosh
+    | Scalar_Atanh
+    | Scalar_Relu
+    | Scalar_Sigmoid
 
 
   let op_to_str = function
     | Noop                                        -> "Noop"
     | Var                                         -> "Var"
     | Const                                       -> "Const"
-    | Empty                                       -> "Empty"
-    | Zeros                                       -> "Zeros"
-    | Ones                                        -> "Ones"
+    | Empty shape                                 -> "Empty"
+    | Zeros shape                                 -> "Zeros"
+    | Ones shape                                  -> "Ones"
     | Create                                      -> "Create"
     | Sequential                                  -> "Sequential"
-    | Uniform                                     -> "Uniform"
+    | Uniform shape                               -> "Uniform"
     | Gaussian                                    -> "Gaussian"
-    | Bernoulli _                                 -> "Bernoulli"
+    | Bernoulli (p, shape)                        -> "Bernoulli"
     | Init _                                      -> "Init"
     | Get i                                       -> "Get"
     | Set i                                       -> "Set"
@@ -332,6 +364,38 @@ module Make (A : Ndarray_Algodiff) = struct
     | OfRows                                      -> "OfRows"
     | OfArray shape                               -> "OfArray"
     | OfArrays                                    -> "OfArrays"
+    | Scalar_Add                                  -> "Scalar Add"
+    | Scalar_Sub                                  -> "Scalar Sub"
+    | Scalar_Mul                                  -> "Scalar Mul"
+    | Scalar_Div                                  -> "Scalar Div"
+    | Scalar_Pow                                  -> "Scalar Pow"
+    | Scalar_Atan2                                -> "Scalar Atan2"
+    | Scalar_Abs                                  -> "Scalar Abs"
+    | Scalar_Neg                                  -> "Scalar Neg"
+    | Scalar_Sqr                                  -> "Scalar Sqr"
+    | Scalar_Sqrt                                 -> "Scalar Sqrt"
+    | Scalar_Exp                                  -> "Scalar Exp"
+    | Scalar_Log                                  -> "Scalar Log"
+    | Scalar_Log2                                 -> "Scalar Log2"
+    | Scalar_Log10                                -> "Scalar Log10"
+    | Scalar_Signum                               -> "Scalar Signum"
+    | Scalar_Floor                                -> "Scalar Floor"
+    | Scalar_Ceil                                 -> "Scalar Ceil"
+    | Scalar_Round                                -> "Scalar Round"
+    | Scalar_Sin                                  -> "Scalar Sin"
+    | Scalar_Cos                                  -> "Scalar Cos"
+    | Scalar_Tan                                  -> "Scalar Tan"
+    | Scalar_Sinh                                 -> "Scalar Sinh"
+    | Scalar_Cosh                                 -> "Scalar Cosh"
+    | Scalar_Tanh                                 -> "Scalar Tanh"
+    | Scalar_Asin                                 -> "Scalar Asin"
+    | Scalar_Acos                                 -> "Scalar Acos"
+    | Scalar_Atan                                 -> "Scalar Atan"
+    | Scalar_Asinh                                -> "Scalar Asinh"
+    | Scalar_Acosh                                -> "Scalar Acosh"
+    | Scalar_Atanh                                -> "Scalar Atanh"
+    | Scalar_Relu                                 -> "Scalar Relu"
+    | Scalar_Sigmoid                              -> "Scalar Sigmoid"
 
 
   (* packing and unpacking functions *)
@@ -352,16 +416,6 @@ module Make (A : Ndarray_Algodiff) = struct
 
   let value_to_elt = function EltVal x -> x | _ -> failwith "Owl_computation_graph: value_to_elt"
 
-  let unpack_arr x =
-    let value = (arr_to_node x |> attr).value in
-    assert (Array.length value > 0);
-    value_to_arr value.(0)
-
-  let unpack_elt x =
-    let value = (elt_to_node x |> attr).value in
-    assert (Array.length value > 0);
-    value_to_elt value.(0)
-
 
   (* infer the shape of outcome from inputs *)
 
@@ -369,21 +423,21 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_01 input_shapes =
-    Owl_log.warn "_infer_shape_01";
+    Owl_log.debug "_infer_shape_01";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Array.(copy s) |]
     | None   -> [| None |]
 
 
   let _infer_shape_02 input_shapes =
-    Owl_log.warn "_infer_shape_02";
+    Owl_log.debug "_infer_shape_02";
     match input_shapes.(1).(0) with
     | Some s -> [| Some Array.(copy s) |]
     | None   -> [| None |]
 
 
   let _infer_shape_03 input_shapes =
-    Owl_log.warn "_infer_shape_03";
+    Owl_log.debug "_infer_shape_03";
     let s0 = input_shapes.(0).(0) in
     let s1 = input_shapes.(1).(0) in
     match s0, s1 with
@@ -392,28 +446,28 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_04 input_shapes axis =
-    Owl_log.warn "_infer_shape_04";
+    Owl_log.debug "_infer_shape_04";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Owl_utils.(calc_fold_shape s axis) |]
     | None   -> [| None |]
 
 
   let _infer_shape_05 input_shapes repeats =
-    Owl_log.warn "_infer_shape_05";
+    Owl_log.debug "_infer_shape_05";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Owl_utils.(calc_tile_shape s repeats) |]
     | None   -> [| None |]
 
 
   let _infer_shape_06 input_shapes axis repeats =
-  Owl_log.warn "_infer_shape_06";
+  Owl_log.debug "_infer_shape_06";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Owl_utils.(calc_repeat_shape s axis repeats) |]
     | None   -> [| None |]
 
 
   let _infer_shape_07 input_shapes axis =
-  Owl_log.warn "_infer_shape_07";
+  Owl_log.debug "_infer_shape_07";
     let s0 = Array.map (fun s -> s.(0)) input_shapes in
     if Array.exists (function Some _ -> false | None -> true) s0 then [| None |]
     else (
@@ -423,7 +477,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_08 input_shapes axis parts =
-    Owl_log.warn "_infer_shape_08";
+    Owl_log.debug "_infer_shape_08";
     match input_shapes.(0).(0) with
     | Some s -> (
         let s0 = Owl_utils.(calc_split_shape s axis parts) in
@@ -433,21 +487,21 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_09 input_shapes axis n =
-    Owl_log.warn "_infer_shape_09";
+    Owl_log.debug "_infer_shape_09";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Owl_utils.(calc_draw_shape s axis n) |]
     | None   -> [| None |]
 
 
   let _infer_shape_10 input_shapes axis =
-    Owl_log.warn "_infer_shape_10";
+    Owl_log.debug "_infer_shape_10";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Owl_utils.(calc_reduce_shape s axis) |]
     | None   -> [| None |]
 
 
   let _infer_shape_11 input_shapes padding stride =
-    Owl_log.warn "_infer_shape_11";
+    Owl_log.debug "_infer_shape_11";
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
@@ -456,7 +510,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_12 input_shapes padding stride =
-    Owl_log.warn "_infer_shape_12";
+    Owl_log.debug "_infer_shape_12";
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
@@ -465,7 +519,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_13 input_shapes padding stride =
-    Owl_log.warn "_infer_shape_13";
+    Owl_log.debug "_infer_shape_13";
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
@@ -474,7 +528,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_14 input_shapes padding stride =
-    Owl_log.warn "_infer_shape_14";
+    Owl_log.debug "_infer_shape_14";
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
@@ -483,7 +537,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_15 input_shapes padding kernel stride =
-    Owl_log.warn "_infer_shape_15";
+    Owl_log.debug "_infer_shape_15";
     let input_shape = input_shapes.(0).(0) in
     match input_shape with
     | Some input -> [| Some Owl_utils.(calc_conv1d_shape input padding kernel stride) |]
@@ -491,7 +545,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_16 input_shapes padding kernel stride =
-    Owl_log.warn "_infer_shape_16";
+    Owl_log.debug "_infer_shape_16";
     let input_shape = input_shapes.(0).(0) in
     match input_shape with
     | Some input -> [| Some Owl_utils.(calc_conv2d_shape input padding kernel stride) |]
@@ -499,7 +553,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_17 input_shapes padding kernel stride =
-    Owl_log.warn "_infer_shape_17";
+    Owl_log.debug "_infer_shape_17";
     let input_shape = input_shapes.(0).(0) in
     match input_shape with
     | Some input -> [| Some Owl_utils.(calc_conv3d_shape input padding kernel stride) |]
@@ -507,14 +561,14 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_18 input_shapes axis =
-    Owl_log.warn "_infer_shape_18";
+    Owl_log.debug "_infer_shape_18";
     match input_shapes.(0).(0) with
     | Some s -> [| Some Owl_utils.(calc_transpose_shape s axis) |]
     | None   -> [| None |]
 
 
   let _infer_shape_19 input_shapes =
-    Owl_log.warn "_infer_shape_19";
+    Owl_log.debug "_infer_shape_19";
     let x_shape = input_shapes.(0).(0) in
     let y_shape = input_shapes.(1).(0) in
     match x_shape, y_shape with
@@ -523,7 +577,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_20 input_shapes axis =
-    Owl_log.warn "_infer_shape_20";
+    Owl_log.debug "_infer_shape_20";
     match input_shapes.(0).(0) with
     | Some s -> (
         let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
@@ -534,7 +588,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let _infer_shape_21 input_shapes padding kernel stride =
-    Owl_log.warn "_infer_shape_21";
+    Owl_log.debug "_infer_shape_21";
     let input_shape = input_shapes.(0).(0) in
     match input_shape with
     | Some input -> [| Some Owl_utils.(calc_pool2d_shape input padding kernel stride) |]
@@ -677,15 +731,47 @@ module Make (A : Ndarray_Algodiff) = struct
     | OfRows                                      -> _infer_shape_xx input_shapes
     | OfArray shape                               -> [| Some shape |]
     | OfArrays                                    -> _infer_shape_xx input_shapes
+    | Scalar_Add                                  -> _infer_shape_00 input_shapes
+    | Scalar_Sub                                  -> _infer_shape_00 input_shapes
+    | Scalar_Mul                                  -> _infer_shape_00 input_shapes
+    | Scalar_Div                                  -> _infer_shape_00 input_shapes
+    | Scalar_Pow                                  -> _infer_shape_00 input_shapes
+    | Scalar_Atan2                                -> _infer_shape_00 input_shapes
+    | Scalar_Abs                                  -> _infer_shape_00 input_shapes
+    | Scalar_Neg                                  -> _infer_shape_00 input_shapes
+    | Scalar_Sqr                                  -> _infer_shape_00 input_shapes
+    | Scalar_Sqrt                                 -> _infer_shape_00 input_shapes
+    | Scalar_Exp                                  -> _infer_shape_00 input_shapes
+    | Scalar_Log                                  -> _infer_shape_00 input_shapes
+    | Scalar_Log2                                 -> _infer_shape_00 input_shapes
+    | Scalar_Log10                                -> _infer_shape_00 input_shapes
+    | Scalar_Signum                               -> _infer_shape_00 input_shapes
+    | Scalar_Floor                                -> _infer_shape_00 input_shapes
+    | Scalar_Ceil                                 -> _infer_shape_00 input_shapes
+    | Scalar_Round                                -> _infer_shape_00 input_shapes
+    | Scalar_Sin                                  -> _infer_shape_00 input_shapes
+    | Scalar_Cos                                  -> _infer_shape_00 input_shapes
+    | Scalar_Tan                                  -> _infer_shape_00 input_shapes
+    | Scalar_Sinh                                 -> _infer_shape_00 input_shapes
+    | Scalar_Cosh                                 -> _infer_shape_00 input_shapes
+    | Scalar_Tanh                                 -> _infer_shape_00 input_shapes
+    | Scalar_Asin                                 -> _infer_shape_00 input_shapes
+    | Scalar_Acos                                 -> _infer_shape_00 input_shapes
+    | Scalar_Atan                                 -> _infer_shape_00 input_shapes
+    | Scalar_Asinh                                -> _infer_shape_00 input_shapes
+    | Scalar_Acosh                                -> _infer_shape_00 input_shapes
+    | Scalar_Atanh                                -> _infer_shape_00 input_shapes
+    | Scalar_Relu                                 -> _infer_shape_00 input_shapes
+    | Scalar_Sigmoid                              -> _infer_shape_00 input_shapes
     | _                                           -> [| None |]
 
 
   (* core manipulation functions *)
 
-  let make_node ?name ?value ?shape op =
+  let make_node ?name ?value ?shape ?state op =
     let value = match value with Some v -> v | None -> [| |] in
     let shape = match shape with Some s -> s | None -> [| None |] in
-    let state = Invalid in
+    let state = match state with Some s -> s | None -> Invalid in
     Owl_graph.node ?name { op; state; shape; value }
 
 
@@ -695,7 +781,12 @@ module Make (A : Ndarray_Algodiff) = struct
       | None   -> infer_shape op parents
     in
     let child = make_node ~shape op in
-    connect parents [|child|];
+    Array.iter (fun parent ->
+      match (attr parent).op with
+      | Const -> connect_ancestors [|parent|] [|child|]
+      | _     -> connect [|parent|] [|child|]
+    ) parents;
+    (* connect parents [|child|]; *)
     child
 
 
@@ -710,19 +801,25 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let const_arr ~name value =
-    make_node ~name ~value:[|arr_to_value value|] ~shape:[| Some A.(shape value) |] Const
+    make_node ~name ~value:[|arr_to_value value|] ~shape:[| Some A.(shape value) |] ~state:Valid Const
     |> node_to_arr
 
 
   let const_elt ~name value =
-    make_node ~name ~value:[|elt_to_value value|] ~shape:[| Some [||] |] Const
+    make_node ~name ~value:[|elt_to_value value|] ~shape:[| Some [||] |] ~state:Valid Const
     |> node_to_elt
 
 
-  let assign_arr x arr = (arr_to_node x |> attr).value <- [| ArrVal arr |]
+  let assign_arr x arr =
+    let attr = arr_to_node x |> attr in
+    attr.value <- [| ArrVal arr |];
+    attr.state <- Valid
 
 
-  let assign_elt x elt = (elt_to_node x |> attr).value <- [| EltVal elt |]
+  let assign_elt x elt =
+    let attr = elt_to_node x |> attr in
+    attr.value <- [| EltVal elt |];
+    attr.state <- Valid
 
 
   let refnum x = Owl_graph.outdegree x
@@ -734,6 +831,9 @@ module Make (A : Ndarray_Algodiff) = struct
   let get_value x = (attr x).value
 
 
+  let set_operator x op = (attr x).op <- op
+
+
   let get_operator x = (attr x).op
 
 
@@ -741,6 +841,9 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let is_const x = (attr x).op = Const
+
+
+  let is_mutable x = match (attr x).op with Const | Var -> false | _ -> true
 
 
   let is_assigned x = assert (Array.length (attr x).value > 0)
@@ -761,6 +864,34 @@ module Make (A : Ndarray_Algodiff) = struct
   let invalidate_graph x = iter_descendants invalidate [|x|]
 
 
+  let pack_arr arr = const_arr ~name:"" arr
+
+  let unpack_arr x =
+    let value = (arr_to_node x |> attr).value in
+    assert (Array.length value > 0);
+    value_to_arr value.(0)
+
+  let pack_elt elt =
+    let x = var_elt ~name:"" in
+    assign_elt x elt;
+    x
+
+  let unpack_elt x =
+    let value = (elt_to_node x |> attr).value in
+    assert (Array.length value > 0);
+    value_to_elt value.(0)
+
+  (* TODO: should move to symbolic ... *)
+  let arr_to_arr x =
+    let attr = arr_to_node x |> attr in
+    let op = attr.op in
+    let state = attr.state in
+    let shape = attr.shape in
+    let value = attr.value in
+    Owl_graph.node ~name:"" { op; state; shape; value }
+    |> node_to_arr
+
+
   let float_to_elt x = const_elt ~name:"" (A.float_to_elt x)
 
 
@@ -772,43 +903,52 @@ module Make (A : Ndarray_Algodiff) = struct
   let noop x = make_then_connect Noop [|arr_to_node x|] |> node_to_arr
 
   let empty shape =
-    Owl_log.warn "empty";
-    make_node ~shape:[|Some shape|] Empty |> node_to_arr
+    Owl_log.debug "empty";
+    make_node ~shape:[|Some shape|] (Empty shape) |> node_to_arr
 
   let zeros shape =
-    Owl_log.warn "zeros";
-    make_node ~shape:[|Some shape|] Zeros |> node_to_arr
+    Owl_log.debug "zeros";
+    make_node ~shape:[|Some shape|] (Zeros shape) |> node_to_arr
 
   let ones shape =
-    Owl_log.warn "ones";
-    make_node ~shape:[|Some shape|] Ones |> node_to_arr
+    Owl_log.debug "ones";
+    make_node ~shape:[|Some shape|] (Ones shape) |> node_to_arr
 
   let create shape v =
-    Owl_log.warn "create";
+    Owl_log.debug "create";
     make_then_connect ~shape:[|Some shape|] Create [|elt_to_node v|] |> node_to_arr
 
   let sequential ?a ?step shape =
-    Owl_log.warn "sequential";
+    Owl_log.debug "sequential";
     make_node ~shape:[|Some shape|] Sequential |> node_to_arr
 
   let uniform ?a ?b shape =
-    Owl_log.warn "uniform";
-    make_node ~shape:[|Some shape|] Uniform |> node_to_arr
+    Owl_log.debug "uniform";
+    let a = match a with
+      | Some a -> a
+      | None   -> const_elt ~name:"uniform_a" (A.float_to_elt 0.)
+    in
+    let b = match b with
+      | Some b -> b
+      | None   -> const_elt ~name:"uniform_b" (A.float_to_elt 1.)
+    in
+    make_then_connect ~shape:[|Some shape|] (Uniform shape) [|elt_to_node a; elt_to_node b|]
+    |> node_to_arr
 
   let gaussian ?mu ?sigma shape =
-    Owl_log.warn "gaussian";
+    Owl_log.debug "gaussian";
     make_node ~shape:[|Some shape|] Gaussian |> node_to_arr
 
-  let bernoulli ?p shape =
-    Owl_log.warn "bernoulli";
-    make_node ~shape:[|Some shape|] (Bernoulli p) |> node_to_arr
+  let bernoulli ?(p=0.5) shape =
+    Owl_log.debug "bernoulli";
+    make_node ~shape:[|Some shape|] (Bernoulli (p, shape)) |> node_to_arr
 
   let init shape f =
-    Owl_log.warn "init";
+    Owl_log.debug "init";
     make_node ~shape:[|Some shape|] (Init f) |> node_to_arr
 
   let shape x =
-    Owl_log.warn "shape";
+    Owl_log.debug "shape";
     let x_shape = (arr_to_node x |> attr).shape in
     assert (Array.length x_shape > 0);
     match x_shape.(0) with
@@ -816,60 +956,61 @@ module Make (A : Ndarray_Algodiff) = struct
     | None   -> [||]
 
   let numel x =
-    Owl_log.warn "numel";
+    Owl_log.debug "numel";
     Array.fold_left ( * ) 1 (shape x)
 
   let get x i =
-    Owl_log.warn "get";
+    Owl_log.debug "get";
     make_then_connect (Get i) [|arr_to_node x|] |> node_to_elt
 
   let set x i v =
-    Owl_log.warn "set";
+    Owl_log.debug "set";
     make_then_connect (Set i) [|arr_to_node x; elt_to_node v|] |> ignore
 
   let get_slice slice x =
-    Owl_log.warn "get_slice";
+    Owl_log.debug "get_slice";
     make_then_connect (GetSlice slice) [|arr_to_node x|] |> node_to_arr
 
   let set_slice slice x y =
-    Owl_log.warn "set_slice";
+    Owl_log.debug "set_slice";
     make_then_connect (SetSlice slice) [|arr_to_node x; arr_to_node y|] |> ignore
 
   let copy x =
-    Owl_log.warn "copy";
+    Owl_log.debug "copy";
     make_then_connect Copy [|arr_to_node x|] |> node_to_arr
 
   let reset x =
-    Owl_log.warn "reset";
+    Owl_log.debug "reset";
     make_then_connect Reset [|arr_to_node x|] |> node_to_arr |> ignore
 
   let reshape x shape =
-    Owl_log.warn "reshape";
+    Owl_log.debug "reshape";
     let n_old = numel x in
     let n_new = Array.fold_left ( * ) 1 shape in
     assert (n_old = n_new);
     make_then_connect (Reshape shape) [|arr_to_node x|] |> node_to_arr
 
   let reverse x =
-    Owl_log.warn "reverse";
+    Owl_log.debug "reverse";
     make_then_connect Reverse [|arr_to_node x|] |> node_to_arr
 
   let tile x axises =
-    Owl_log.warn "tile";
+    Owl_log.debug "tile";
     make_then_connect (Tile axises) [|arr_to_node x|] |> node_to_arr
 
   let repeat ?(axis=(-1)) x repeats =
-    Owl_log.warn "repeat";
+    Owl_log.debug "repeat";
     make_then_connect (Repeat (axis, repeats)) [|arr_to_node x|] |> node_to_arr
 
   let concatenate ?(axis=0) xs =
-    Owl_log.warn "concatenate";
+    Owl_log.debug "concatenate";
     make_then_connect (Concatenate axis) (Array.map arr_to_node xs) |> node_to_arr
 
   let split ?(axis=0) parts x =
-    Owl_log.warn "split";
+    Owl_log.debug "split";
     let y = make_then_connect (Split (axis, parts)) [|arr_to_node x|] in
     (* FIXME: wrong shape *)
+    failwith "split: not implemented";
     Array.map (fun s ->
       let z = make_node ~shape:[|Some parts|] Noop in
       connect [|y|] [|z|];
@@ -877,20 +1018,20 @@ module Make (A : Ndarray_Algodiff) = struct
     ) parts
 
   let draw ?(axis=0) x n =
-    Owl_log.warn "draw";
+    Owl_log.debug "draw";
     let y = make_then_connect (Draw (axis, n)) [|arr_to_node x|] |> node_to_arr in
     y, [||]
 
   let map f x =
-    Owl_log.warn "map";
+    Owl_log.debug "map";
     make_then_connect (Map f) [|arr_to_node x|] |> node_to_arr
 
   let fold ?(axis=(-1)) f a x =
-    Owl_log.warn "fold";
+    Owl_log.debug "fold";
     make_then_connect (Fold (axis, f)) [|arr_to_node x; elt_to_node a|] |> node_to_arr
 
   let scan ?(axis=(-1)) f x =
-    Owl_log.warn "scan";
+    Owl_log.debug "scan";
     make_then_connect (Scan (axis, f)) [|arr_to_node x|] |> node_to_arr
 
   let print ?max_row ?max_col ?header ?fmt x = ()
@@ -1073,98 +1214,98 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let conv1d ?(padding=SAME) input kernel stride =
-    Owl_log.warn "conv1d";
+    Owl_log.debug "conv1d";
     make_then_connect (Conv1d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
 
   let conv2d ?(padding=SAME) input kernel stride =
-    Owl_log.warn "conv2d";
+    Owl_log.debug "conv2d";
     make_then_connect (Conv2d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
 
   let conv3d ?(padding=SAME) input kernel stride =
-    Owl_log.warn "conv3d";
+    Owl_log.debug "conv3d";
     make_then_connect (Conv3d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
 
   let transpose_conv2d ?(padding=SAME) input kernel stride =
     make_then_connect (TransposeConv2d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
 
   let max_pool1d ?(padding=SAME) input kernel stride =
-    Owl_log.warn "max_pool1d";
+    Owl_log.debug "max_pool1d";
     make_then_connect (MaxPool1d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let max_pool2d ?(padding=SAME) input kernel stride =
-    Owl_log.warn "max_pool2d";
+    Owl_log.debug "max_pool2d";
     make_then_connect (MaxPool2d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let max_pool3d ?(padding=SAME) input kernel stride =
-    Owl_log.warn "max_pool3d";
+    Owl_log.debug "max_pool3d";
     make_then_connect (MaxPool3d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let avg_pool1d ?(padding=SAME) input kernel stride =
-    Owl_log.warn "avg_pool1d";
+    Owl_log.debug "avg_pool1d";
     make_then_connect (AvgPool1d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let avg_pool2d ?(padding=SAME) input kernel stride =
-    Owl_log.warn "avg_pool2d";
+    Owl_log.debug "avg_pool2d";
     make_then_connect (AvgPool2d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let avg_pool3d ?(padding=SAME) input kernel stride =
-    Owl_log.warn "avg_pool3d";
+    Owl_log.debug "avg_pool3d";
     make_then_connect (AvgPool3d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let conv1d_backward_input input kernel stride output' =
-    Owl_log.warn "conv1d_backward_input";
+    Owl_log.debug "conv1d_backward_input";
     make_then_connect (Conv1dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let conv1d_backward_kernel input kernel stride output' =
-    Owl_log.warn "conv1d_backward_kernel";
+    Owl_log.debug "conv1d_backward_kernel";
     make_then_connect (Conv1dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let conv2d_backward_input input kernel stride output' =
-    Owl_log.warn "conv2d_backward_input";
+    Owl_log.debug "conv2d_backward_input";
     make_then_connect (Conv2dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let conv2d_backward_kernel input kernel stride output' =
-    Owl_log.warn "conv2d_backward_kernel";
+    Owl_log.debug "conv2d_backward_kernel";
     make_then_connect (Conv2dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let conv3d_backward_input input kernel stride output' =
-    Owl_log.warn "conv3d_backward_input";
+    Owl_log.debug "conv3d_backward_input";
     make_then_connect (Conv3dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let conv3d_backward_kernel input kernel stride output' =
-    Owl_log.warn "conv3d_backward_kernel";
+    Owl_log.debug "conv3d_backward_kernel";
     make_then_connect (Conv3dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let transpose_conv2d_backward_input input kernel stride output' =
-    Owl_log.warn "transpose_conv2d_backward_input";
+    Owl_log.debug "transpose_conv2d_backward_input";
     make_then_connect (TransposeConv2dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let transpose_conv2d_backward_kernel input kernel stride output' =
-    Owl_log.warn "transpose_conv2d_backward_kernel";
+    Owl_log.debug "transpose_conv2d_backward_kernel";
     make_then_connect (TransposeConv2dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let max_pool1d_backward padding input kernel stride output' =
-    Owl_log.warn "conmax_pool1d_backwardv2d";
+    Owl_log.debug "conmax_pool1d_backwardv2d";
     make_then_connect (MaxPool1dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let max_pool2d_backward padding input kernel stride output' =
-    Owl_log.warn "max_pool2d_backward";
+    Owl_log.debug "max_pool2d_backward";
     make_then_connect (MaxPool2dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let max_pool3d_backward padding input kernel stride output' =
-    Owl_log.warn "max_pool3d_backward";
+    Owl_log.debug "max_pool3d_backward";
     make_then_connect (MaxPool3dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let avg_pool1d_backward padding input kernel stride output' =
-    Owl_log.warn "avg_pool1d_backward";
+    Owl_log.debug "avg_pool1d_backward";
     make_then_connect (AvgPool1dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let avg_pool2d_backward padding input kernel stride output' =
-    Owl_log.warn "avg_pool2d_backward";
+    Owl_log.debug "avg_pool2d_backward";
     make_then_connect (AvgPool2dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let avg_pool3d_backward padding input kernel stride output' =
-    Owl_log.warn "avg_pool3d_backward";
+    Owl_log.debug "avg_pool3d_backward";
     make_then_connect (AvgPool3dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let row_num x =
@@ -1213,69 +1354,69 @@ module Make (A : Ndarray_Algodiff) = struct
 
   module Scalar = struct
 
-    let add x y = make_then_connect Add [|elt_to_node x; elt_to_node y|] |> node_to_elt
+    let add x y = make_then_connect Scalar_Add [|elt_to_node x; elt_to_node y|] |> node_to_elt
 
-    let sub x y = make_then_connect Sub [|elt_to_node x; elt_to_node y|] |> node_to_elt
+    let sub x y = make_then_connect Scalar_Sub [|elt_to_node x; elt_to_node y|] |> node_to_elt
 
-    let mul x y = make_then_connect Mul [|elt_to_node x; elt_to_node y|] |> node_to_elt
+    let mul x y = make_then_connect Scalar_Mul [|elt_to_node x; elt_to_node y|] |> node_to_elt
 
-    let div x y = make_then_connect Div [|elt_to_node x; elt_to_node y|] |> node_to_elt
+    let div x y = make_then_connect Scalar_Div [|elt_to_node x; elt_to_node y|] |> node_to_elt
 
-    let pow x y = make_then_connect Pow [|elt_to_node x; elt_to_node y|] |> node_to_elt
+    let pow x y = make_then_connect Scalar_Pow [|elt_to_node x; elt_to_node y|] |> node_to_elt
 
-    let atan2 x y = make_then_connect Atan2 [|elt_to_node x; elt_to_node y|] |> node_to_elt
+    let atan2 x y = make_then_connect Scalar_Atan2 [|elt_to_node x; elt_to_node y|] |> node_to_elt
 
-    let abs x = make_then_connect Abs [|elt_to_node x|] |> node_to_elt
+    let abs x = make_then_connect Scalar_Abs [|elt_to_node x|] |> node_to_elt
 
-    let neg x = make_then_connect Neg [|elt_to_node x|] |> node_to_elt
+    let neg x = make_then_connect Scalar_Neg [|elt_to_node x|] |> node_to_elt
 
-    let sqr x = make_then_connect Sqr [|elt_to_node x|] |> node_to_elt
+    let sqr x = make_then_connect Scalar_Sqr [|elt_to_node x|] |> node_to_elt
 
-    let sqrt x = make_then_connect Sqrt [|elt_to_node x|] |> node_to_elt
+    let sqrt x = make_then_connect Scalar_Sqrt [|elt_to_node x|] |> node_to_elt
 
-    let exp x = make_then_connect Exp [|elt_to_node x|] |> node_to_elt
+    let exp x = make_then_connect Scalar_Exp [|elt_to_node x|] |> node_to_elt
 
-    let log x = make_then_connect Log [|elt_to_node x|] |> node_to_elt
+    let log x = make_then_connect Scalar_Log [|elt_to_node x|] |> node_to_elt
 
-    let log2 x = make_then_connect Log2 [|elt_to_node x|] |> node_to_elt
+    let log2 x = make_then_connect Scalar_Log2 [|elt_to_node x|] |> node_to_elt
 
-    let log10 x = make_then_connect Log10 [|elt_to_node x|] |> node_to_elt
+    let log10 x = make_then_connect Scalar_Log10 [|elt_to_node x|] |> node_to_elt
 
-    let signum x = make_then_connect Signum [|elt_to_node x|] |> node_to_elt
+    let signum x = make_then_connect Scalar_Signum [|elt_to_node x|] |> node_to_elt
 
-    let floor x = make_then_connect Floor [|elt_to_node x|] |> node_to_elt
+    let floor x = make_then_connect Scalar_Floor [|elt_to_node x|] |> node_to_elt
 
-    let ceil x = make_then_connect Ceil [|elt_to_node x|] |> node_to_elt
+    let ceil x = make_then_connect Scalar_Ceil [|elt_to_node x|] |> node_to_elt
 
-    let round x = make_then_connect Round [|elt_to_node x|] |> node_to_elt
+    let round x = make_then_connect Scalar_Round [|elt_to_node x|] |> node_to_elt
 
-    let sin x = make_then_connect Sin [|elt_to_node x|] |> node_to_elt
+    let sin x = make_then_connect Scalar_Sin [|elt_to_node x|] |> node_to_elt
 
-    let cos x = make_then_connect Cos [|elt_to_node x|] |> node_to_elt
+    let cos x = make_then_connect Scalar_Cos [|elt_to_node x|] |> node_to_elt
 
-    let tan x = make_then_connect Tan [|elt_to_node x|] |> node_to_elt
+    let tan x = make_then_connect Scalar_Tan [|elt_to_node x|] |> node_to_elt
 
-    let sinh x = make_then_connect Sinh [|elt_to_node x|] |> node_to_elt
+    let sinh x = make_then_connect Scalar_Sinh [|elt_to_node x|] |> node_to_elt
 
-    let cosh x = make_then_connect Cosh [|elt_to_node x|] |> node_to_elt
+    let cosh x = make_then_connect Scalar_Cosh [|elt_to_node x|] |> node_to_elt
 
-    let tanh x = make_then_connect Tanh [|elt_to_node x|] |> node_to_elt
+    let tanh x = make_then_connect Scalar_Tanh [|elt_to_node x|] |> node_to_elt
 
-    let asin x = make_then_connect Asin [|elt_to_node x|] |> node_to_elt
+    let asin x = make_then_connect Scalar_Asin [|elt_to_node x|] |> node_to_elt
 
-    let acos x = make_then_connect Acos [|elt_to_node x|] |> node_to_elt
+    let acos x = make_then_connect Scalar_Acos [|elt_to_node x|] |> node_to_elt
 
-    let atan x = make_then_connect Atan [|elt_to_node x|] |> node_to_elt
+    let atan x = make_then_connect Scalar_Atan [|elt_to_node x|] |> node_to_elt
 
-    let asinh x = make_then_connect Asinh [|elt_to_node x|] |> node_to_elt
+    let asinh x = make_then_connect Scalar_Asinh [|elt_to_node x|] |> node_to_elt
 
-    let acosh x = make_then_connect Acosh [|elt_to_node x|] |> node_to_elt
+    let acosh x = make_then_connect Scalar_Acosh [|elt_to_node x|] |> node_to_elt
 
-    let atanh x = make_then_connect Atanh [|elt_to_node x|] |> node_to_elt
+    let atanh x = make_then_connect Scalar_Atanh [|elt_to_node x|] |> node_to_elt
 
-    let relu x = make_then_connect Relu [|elt_to_node x|] |> node_to_elt
+    let relu x = make_then_connect Scalar_Relu [|elt_to_node x|] |> node_to_elt
 
-    let sigmoid x = make_then_connect Sigmoid [|elt_to_node x|] |> node_to_elt
+    let sigmoid x = make_then_connect Scalar_Sigmoid [|elt_to_node x|] |> node_to_elt
 
   end
 
@@ -1287,6 +1428,14 @@ module Make (A : Ndarray_Algodiff) = struct
       | None   -> "? ..."
     in
     Printf.sprintf "[ %s ]" s
+
+
+  let node_to_str n =
+    let attr = attr n in
+    let shape_s = shape_to_str attr.shape in
+    let state_s = if attr.state = Valid then "valid" else "invalid" in
+    Printf.sprintf "[ #%i | name: %s | op: %s | state: %s | r:%i | s:%s ]"
+      (id n) (name n) (op_to_str attr.op) state_s (refnum n) shape_s
 
 
   let to_dot x =

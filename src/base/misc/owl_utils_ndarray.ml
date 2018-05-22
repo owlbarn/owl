@@ -127,6 +127,18 @@ let reduce_params a x =
   m, n, o, _shape
 
 
+(* check whether two shapes are broadcastable *)
+let broadcastable s0 s1 =
+  let sa, sb = Owl_utils_array.align `Left 1 s0 s1 in
+  try (
+    Array.iter2 (fun a b ->
+      Owl_exception.(check (not(a <> 1 && b <> 1 && a <> b)) NOT_BROADCASTABLE);
+    ) sa sb;
+    true
+  )
+  with exn -> false
+
+
 (* various functions to calculate output shape, used in computation graph. *)
 
 let calc_broadcast_shape s0 s1 =
