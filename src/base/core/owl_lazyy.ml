@@ -78,7 +78,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Gaussian                                    -> failwith "Gaussian"
         | Bernoulli (p, shape)                        -> _eval_map_08 x (fun x -> A.bernoulli ~p shape)
         | Init _                                      -> failwith "Init"
-        | Get i                                       -> failwith "Get"
+        | Get i                                       -> _eval_map_07 x (fun x -> A.get x i)
         | Set i                                       -> failwith "Set"
         | GetSlice slice                              -> _eval_map_05 x (fun x -> A.get_slice slice x.(0))
         | SetSlice slice                              -> failwith "SetSlice"
@@ -369,16 +369,10 @@ module Make (A : Ndarray_Mutable) = struct
     Owl_io.write_file fname s0
 
 
-  let eval_elt xs =
-    let ys = Array.map elt_to_node xs |> Array.to_list in
-    dump_dot "yyy.dot" ys;
-    Array.iter (fun x -> elt_to_node x |> _eval_term) xs
+  let eval_elt xs = Array.iter (fun x -> elt_to_node x |> _eval_term) xs
 
 
-  let eval_arr xs =
-    let ys = Array.map arr_to_node xs |> Array.to_list in
-    dump_dot "zzz.dot" ys;
-    Array.iter (fun x -> arr_to_node x |> _eval_term) xs
+  let eval_arr xs = Array.iter (fun x -> arr_to_node x |> _eval_term) xs
 
 
   let elt_to_float x =

@@ -398,25 +398,6 @@ module Make (A : Ndarray_Algodiff) = struct
     | Scalar_Sigmoid                              -> "Scalar Sigmoid"
 
 
-  (* packing and unpacking functions *)
-
-  let node_to_arr x = Arr x
-
-  let arr_to_node = function Arr x -> x
-
-  let node_to_elt x = Elt x
-
-  let elt_to_node = function Elt x -> x
-
-  let arr_to_value x = ArrVal x
-
-  let value_to_arr = function ArrVal x -> x | _ -> failwith "Owl_computation_graph: value_to_arr"
-
-  let elt_to_value x = EltVal x
-
-  let value_to_elt = function EltVal x -> x | _ -> failwith "Owl_computation_graph: value_to_elt"
-
-
   (* infer the shape of outcome from inputs *)
 
   let _infer_shape_00 input_shapes = [| Some [||] |]
@@ -595,7 +576,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | _          -> [| None |]
 
 
-  let _infer_shape_xx input_shapes = [| None |]
+  let _infer_shape_xx input_shapes = failwith "_infer_shape_xx: not implemented"
 
 
   let infer_shape operator args =
@@ -768,6 +749,21 @@ module Make (A : Ndarray_Algodiff) = struct
 
   (* core manipulation functions *)
 
+  let node_to_arr x = Arr x
+
+  let arr_to_node = function Arr x -> x
+
+  let node_to_elt x = Elt x
+
+  let elt_to_node = function Elt x -> x
+
+  let arr_to_value x = ArrVal x
+
+  let value_to_arr = function ArrVal x -> x | _ -> failwith "Owl_computation_graph: value_to_arr"
+
+  let elt_to_value x = EltVal x
+
+  let value_to_elt = function EltVal x -> x | _ -> failwith "Owl_computation_graph: value_to_elt"
   let make_node ?name ?value ?shape ?state op =
     let value = match value with Some v -> v | None -> [| |] in
     let shape = match shape with Some s -> s | None -> [| None |] in
@@ -810,18 +806,6 @@ module Make (A : Ndarray_Algodiff) = struct
     |> node_to_elt
 
 
-  let assign_arr x arr =
-    let attr = arr_to_node x |> attr in
-    attr.value <- [| ArrVal arr |];
-    attr.state <- Valid
-
-
-  let assign_elt x elt =
-    let attr = elt_to_node x |> attr in
-    attr.value <- [| EltVal elt |];
-    attr.state <- Valid
-
-
   let refnum x = Owl_graph.outdegree x
 
 
@@ -862,6 +846,24 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let invalidate_graph x = iter_descendants invalidate [|x|]
+
+
+  let assign_arr x arr =
+    let node = arr_to_node x in
+    if is_var node then (
+      set_value node [| ArrVal arr |];
+      invalidate_graph node
+    )
+    else failwith "assign_arr: const cannot be assigned"
+
+
+  let assign_elt x elt =
+    let node = elt_to_node x in
+    if is_var node then (
+      set_value node [| EltVal elt |];
+      invalidate_graph node
+    )
+    else failwith "assign_elt: const cannot be assigned"
 
 
   let pack_arr arr = const_arr ~name:"" arr
@@ -1439,7 +1441,6 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let to_dot x =
-    let x = Array.of_list x in
     let edge_s = fold_in_edges (fun a u v -> Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)) "" x in
     let node_s = fold_ancestors (fun a n ->
       let shape_s = shape_to_str (attr n).shape in
