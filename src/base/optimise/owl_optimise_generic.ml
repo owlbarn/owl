@@ -564,7 +564,7 @@ module Make
      neural network of graph structure. In Owl's earlier versions, the functions
      in the regression module were actually implemented using this function.
    *)
-  let minimise_network''' ?state params forward backward update save x y =
+  let minimise_network ?state params forward backward update save x y =
     let open Params in
     if params.verbosity = true && state = None then
       print_endline (Params.to_string params);
@@ -741,8 +741,8 @@ module Make
     (* return both loss history and weight *)
     state, !x
 
-  module G = Owl_computation_graph.Make (A)
-  let minimise_network ?state params forward backward update save x y =
+
+  let minimise_network_lazy ?state params forward backward update save x y =
     let open Params in
     if params.verbosity = true && state = None then
       print_endline (Params.to_string params);
@@ -773,9 +773,6 @@ module Make
       in
       let loss = Maths.(loss + reg) in
       let ws, gs' = backward loss in
-      (*Owl_log.error "graph size: %i" (Owl_graph.length (unpack_elt loss |> Obj.magic |> G.elt_to_node));
-      let s = G.to_dot [| unpack_elt loss |> Obj.magic |> G.elt_to_node |] in
-      Owl_io.write_file "yyy.dot" s;*)
       loss, ws, gs'
     in
 
