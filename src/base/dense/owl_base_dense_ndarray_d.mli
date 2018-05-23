@@ -70,6 +70,8 @@ val split : ?axis:int -> int array -> arr -> arr array
 
 val draw : ?axis:int -> arr -> int -> arr * int array
 
+val one_hot : int -> arr -> arr
+
 val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
 
 (* mathematical functions *)
@@ -187,6 +189,7 @@ val scalar_sub : elt -> arr -> arr
 val scalar_mul : elt -> arr -> arr
 
 val scalar_div : elt -> arr -> arr
+
 
 (** {6 Iterate array elements}  *)
 
@@ -423,6 +426,12 @@ val of_arrays : elt array array -> arr
 
 (** {6 Helper functions}  *)
 
+val arr_to_arr : arr -> arr
+
 val float_to_elt : float -> elt
 
 val elt_to_float : elt -> float
+
+val eval_elt : elt array -> unit
+
+val eval_arr : arr array -> unit

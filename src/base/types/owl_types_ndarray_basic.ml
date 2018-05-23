@@ -267,14 +267,14 @@ module type Sig = sig
 
   val of_arrays : elt array array -> arr
 
+
+  (* helper functions *)
+
   val arr_to_arr : arr -> arr
 
   val float_to_elt : float -> elt
 
   val elt_to_float : elt -> float
-
-
-  (* helper functions *)
 
   val eval_elt : elt array -> unit
 

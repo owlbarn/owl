@@ -135,6 +135,10 @@ val split : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
 val draw : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val one_hot : int -> ('a, 'b) t -> ('a, 'b) t
+(** TODO: not implemented *)
+
+
 (** {6 Iterate array elements}  *)
 
 val iteri : (int -> 'a -> unit) -> ('a, 'b) t -> unit
@@ -644,11 +648,20 @@ val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b
 
 (** {6 Helper functions}  *)
 
+val arr_to_arr : 'a -> 'a
+(** Identity function to deal with the type conversion required by other functors. *)
+
 val float_to_elt : 'a -> 'a
-(** Refer to :doc:`owl_dense_matrix_generic` *)
+(** Identity function to deal with the type conversion required by other functors. *)
 
 val elt_to_float : 'a -> 'a
-(** Refer to :doc:`owl_dense_matrix_generic` *)
+(** Identity function to deal with the type conversion required by other functors. *)
+
+val eval_elt : 'a array -> unit
+(** TODO *)
+
+val eval_arr : ('a, 'b) t array -> unit
+(** TODO *)
 
 
 
