@@ -19,19 +19,30 @@ type dir = Ancestor | Descendant
 
 let _global_id = ref 0
 
+
 let id x = x.id
+
 
 let name x = x.name
 
+
+let set_name x s = x.name <- s
+
+
 let parents x = x.prev
+
 
 let children x = x.next
 
+
 let indegree x = Array.length x.prev
+
 
 let outdegree x = Array.length x.next
 
+
 let attr x = x.attr
+
 
 let set_attr x a = x.attr <- a
 

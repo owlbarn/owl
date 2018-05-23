@@ -26,6 +26,9 @@ val id : 'a node -> int
 val name : 'a node -> string
 (** ``name x`` returns the name string of node ``x``. *)
 
+val set_name : 'a node -> string -> unit
+(** ``set_name x s`` sets the name string of node ``x`` to ``s``. *)
+
 val parents : 'a node -> 'a node array
 (** ``parents x`` returns the parents of node ``x``. *)
 

@@ -818,7 +818,10 @@ module Make (A : Ndarray_Algodiff) = struct
   let is_mutable x = match (attr x).op with Const | Var -> false | _ -> true
 
 
-  let is_assigned x = assert (Array.length (attr x).value > 0)
+  let is_assigned x =
+    if Array.length (attr x).value = 0 then
+      let info = Printf.sprintf "node#%i is not assigned." (id x) in
+      failwith info
 
 
   let is_valid x = (attr x).state = Valid
@@ -827,10 +830,7 @@ module Make (A : Ndarray_Algodiff) = struct
   let validate x = (attr x).state <- Valid
 
 
-  let invalidate x =
-    let a = attr x in
-    a.state <- Invalid;
-    a.value <- [||]
+  let invalidate x = (attr x).state <- Invalid
 
 
   let invalidate_graph x = iter_descendants invalidate [|x|]
