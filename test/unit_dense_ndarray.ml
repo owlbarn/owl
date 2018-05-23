@@ -113,6 +113,12 @@ module To_test = struct
     a = 0. && i = [|0;0;0|] &&
     b = 3. && j = [|1;0;0|]
 
+  let init_nd () =
+    let ok = ref true in
+    let a = M.init_nd Int [|2; 5; 7|] (function [|i; j; k|] -> 35 * i + 7 * j + k | _ -> 0) in
+    M.iteri (fun i x -> if i <> x then ok := false) a;
+    !ok
+
   let is_zero () = M.is_zero x0
 
   let is_positive () = M.is_positive x0
@@ -413,6 +419,9 @@ let max' () =
 let minmax_i () =
   Alcotest.(check bool) "minmax_i" true (To_test.minmax_i ())
 
+let init_nd () =
+  Alcotest.(check bool) "init_nd" true (To_test.init_nd ())
+
 let is_zero () =
   Alcotest.(check bool) "is_zero" false (To_test.is_zero ())
 
@@ -582,6 +591,7 @@ let test_set = [
   "min'", `Slow, min';
   "max'", `Slow, max';
   "minmax_i", `Slow, minmax_i;
+  "init_nd", `Slow, init_nd;
   "is_zero", `Slow, is_zero;
   "is_positive", `Slow, is_positive;
   "is_negative", `Slow, is_negative;
