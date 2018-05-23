@@ -8,6 +8,9 @@ open Owl_types
 
 module Make (A : Ndarray_Algodiff) : sig
 
+
+  (** {6 Type definition} *)
+
   type arr
   (** TODO *)
 
@@ -210,6 +213,8 @@ module Make (A : Ndarray_Algodiff) : sig
     | Scalar_Sigmoid
 
 
+  (** {6 Type conversion functions} *)
+
   val node_to_arr : attr Owl_graph.node -> arr
   (** TODO *)
 
@@ -234,24 +239,14 @@ module Make (A : Ndarray_Algodiff) : sig
   val value_to_elt : value -> A.elt
   (** TODO *)
 
-  val set_value : attr Owl_graph.node -> value array -> unit
-  (** TODO *)
-
-  val get_value : attr Owl_graph.node -> value array
-  (** TODO *)
-
-  val set_operator : attr Owl_graph.node -> op -> unit
-  (** TODO *)
-
-  val get_operator : attr Owl_graph.node -> op
-  (** TODO *)
-
   val pack_arr : A.arr -> arr
+  (** TODO *)
 
   val unpack_arr : arr -> A.arr
   (** TODO *)
 
   val pack_elt : A.elt -> elt
+  (** TODO *)
 
   val unpack_elt : elt -> A.elt
   (** TODO *)
@@ -265,6 +260,8 @@ module Make (A : Ndarray_Algodiff) : sig
   val elt_to_float : elt -> float
   (** TODO *)
 
+
+  (** {6 Manipulation functions} *)
 
   val var_arr : name:string -> int array -> arr
   (** TODO *)
@@ -311,6 +308,20 @@ module Make (A : Ndarray_Algodiff) : sig
   val invalidate_graph : attr Owl_graph.node -> unit
   (** TODO *)
 
+  val set_value : attr Owl_graph.node -> value array -> unit
+  (** TODO *)
+
+  val get_value : attr Owl_graph.node -> value array
+  (** TODO *)
+
+  val set_operator : attr Owl_graph.node -> op -> unit
+  (** TODO *)
+
+  val get_operator : attr Owl_graph.node -> op
+  (** TODO *)
+
+
+  (** {6 Creation functions} *)
 
   val empty : int array -> arr
   (** TODO *)
@@ -399,6 +410,8 @@ module Make (A : Ndarray_Algodiff) : sig
   val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
   (** TODO *)
 
+
+  (** {6 Mathematical functions} *)
 
   val abs : arr -> arr
   (** TODO *)
@@ -764,6 +777,8 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
 
+  (** {6 Scalar maths functions} *)
+
   module Scalar : sig
 
     val add : elt -> elt -> elt
@@ -801,6 +816,8 @@ module Make (A : Ndarray_Algodiff) : sig
 
   end
 
+
+  (** {6 Helper functions} *)
 
   val op_to_str : op -> string
   (** TODO *)
