@@ -150,18 +150,6 @@ module Make
 
   let update nn us = Array.iter2 (fun n u -> update n.neuron u) nn.topo us
 
-(*
-  let update nn us =
-    let vs = Owl_utils.Array.flatten us |> Array.map (fun x -> Neuron.unpack_arr x |> Obj.magic |> L.arr_to_node) in
-    let s0 = L.to_dot (Array.to_list vs) in
-    Owl_io.write_file "zzz.dot" s0;
-    Array.iter2 (fun n u ->
-      let v = Array.map (fun x -> Neuron.unpack_arr x) u in
-      A.eval_arr v;
-      update n.neuron u
-    ) nn.topo us;
-    Owl_log.error "update ..."
-*)
 
   let run x nn =
     Array.iter (fun n ->
@@ -183,17 +171,7 @@ module Make
 
 
   let backward nn y = reverse_prop (_f 1.) y; mkpri nn, mkadj nn
-(*
-  let backward nn y =
-    reverse_prop (_f 1.) y;
-    let pri, adj = mkpri nn, mkadj nn in
-    let vs = Owl_utils.Array.flatten adj |> Array.map (fun x -> Neuron.unpack_arr x |> Obj.magic |> L.arr_to_node) in
-    let s0 = L.to_dot (Array.to_list vs) in
-    Owl_io.write_file "zzz.dot" s0;
-    Owl_log.error "eval all terms ...";
-    A.eval_arr (Owl_utils.Array.flatten adj |> Array.map Neuron.unpack_arr);
-    pri, adj
-*)
+
 
   let copy nn =
     let nn' = make_network ~nnid:nn.nnid nn.size None [||] in

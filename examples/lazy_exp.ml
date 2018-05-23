@@ -93,11 +93,11 @@ let run xt yt var adj =
     Owl_log.info "iter#%i ..." i;
     let xs, idx = Dense.Ndarray.S.draw ~axis:0 x 100 in
     let ys = Dense.Ndarray.S.rows y idx in
-    Owl_log.info "=== %i start assign ..." i;
+    Owl_log.debug "=== %i start assign ..." i;
     L.assign_arr xt xs;
     L.assign_arr yt ys;
     Array.iter (fun u -> L.arr_to_node u |> L.invalidate) var;
-    Owl_log.info "=== %i stop assign ..." i;
+    Owl_log.debug "=== %i stop assign ..." i;
     L.eval_arr adj;
 
     Gc.minor ()
@@ -105,6 +105,7 @@ let run xt yt var adj =
 
 
 let _ =
+  Owl_log.(set_level DEBUG);
   let network = make_network [|28;28;1|] in
   let xt, yt, var, adj = compile network in
   run xt yt var adj
