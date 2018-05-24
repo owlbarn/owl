@@ -364,7 +364,7 @@ module Make (A : Ndarray_Mutable) = struct
     set_value x [|arr_to_value b|]
 
 
-  (* NOTE: this function is debugging purpose *)
+  (* NOTE: this function is for debugging purpose *)
   let dump_dot fname xs =
     let s0 = to_dot xs in
     Owl_io.write_file fname s0
