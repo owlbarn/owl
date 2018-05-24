@@ -735,6 +735,39 @@ module Make (A : Ndarray_Algodiff) = struct
     | _                                           -> [| None |]
 
 
+  (* Helper functions *)
+
+  let refnum x = Owl_graph.outdegree x
+
+
+  let shape_to_str shp =
+    assert (Array.length shp > 0);
+    let s = match shp.(0) with
+      | Some s -> Owl_utils_array.to_string string_of_int s
+      | None   -> "? ..."
+    in
+    Printf.sprintf "[ %s ]" s
+
+
+  let node_to_str n =
+    let attr = attr n in
+    let shape_s = shape_to_str attr.shape in
+    let state_s = if attr.state = Valid then "valid" else "invalid" in
+    Printf.sprintf "[ #%i | name: %s | op: %s | state: %s | r:%i | s:%s ]"
+      (id n) (name n) (op_to_str attr.op) state_s (refnum n) shape_s
+
+
+  let to_dot x =
+    let edge_s = fold_in_edges (fun a u v -> Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)) "" x in
+    let node_s = fold_ancestors (fun a n ->
+      let shape_s = shape_to_str (attr n).shape in
+      Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; s:%s }\" ];\n"
+        a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) shape_s
+    ) "" x
+    in
+    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
+
+
   (* core manipulation functions *)
 
   let node_to_arr x = Arr x
@@ -794,9 +827,6 @@ module Make (A : Ndarray_Algodiff) = struct
     |> node_to_elt
 
 
-  let refnum x = Owl_graph.outdegree x
-
-
   let set_value x v = (attr x).value <- v
 
 
@@ -819,9 +849,12 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let is_assigned x =
-    if Array.length (attr x).value = 0 then
-      let info = Printf.sprintf "node#%i is not assigned." (id x) in
-      failwith info
+    let value = (attr x).value in
+    let valen = Array.length value in
+    if valen = 0 then (
+      Owl_log.error "value not assigned: %s" (node_to_str x);
+      assert (valen > 0)
+    )
 
 
   let is_valid x = (attr x).state = Valid
@@ -856,20 +889,25 @@ module Make (A : Ndarray_Algodiff) = struct
 
   let pack_arr arr = const_arr ~name:"" arr
 
+
   let unpack_arr x =
     let value = (arr_to_node x |> attr).value in
-    assert (Array.length value > 0);
+    let valen = Array.length value in
+    if valen = 0 then (
+      Owl_log.error "value not assigned: %s" (arr_to_node x |> node_to_str);
+      assert (valen > 0)
+    );
     value_to_arr value.(0)
 
-  let pack_elt elt =
-    let x = var_elt ~name:"" in
-    assign_elt x elt;
-    x
+
+  let pack_elt elt = const_elt ~name:"" elt
+
 
   let unpack_elt x =
     let value = (elt_to_node x |> attr).value in
     assert (Array.length value > 0);
     value_to_elt value.(0)
+
 
   (* TODO: should move to symbolic ... *)
   let arr_to_arr x =
@@ -1412,34 +1450,6 @@ module Make (A : Ndarray_Algodiff) = struct
     let sigmoid x = make_then_connect Scalar_Sigmoid [|elt_to_node x|] |> node_to_elt
 
   end
-
-
-  let shape_to_str shp =
-    assert (Array.length shp > 0);
-    let s = match shp.(0) with
-      | Some s -> Owl_utils_array.to_string string_of_int s
-      | None   -> "? ..."
-    in
-    Printf.sprintf "[ %s ]" s
-
-
-  let node_to_str n =
-    let attr = attr n in
-    let shape_s = shape_to_str attr.shape in
-    let state_s = if attr.state = Valid then "valid" else "invalid" in
-    Printf.sprintf "[ #%i | name: %s | op: %s | state: %s | r:%i | s:%s ]"
-      (id n) (name n) (op_to_str attr.op) state_s (refnum n) shape_s
-
-
-  let to_dot x =
-    let edge_s = fold_in_edges (fun a u v -> Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)) "" x in
-    let node_s = fold_ancestors (fun a n ->
-      let shape_s = shape_to_str (attr n).shape in
-      Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; s:%s }\" ];\n"
-        a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) shape_s
-    ) "" x
-    in
-    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
 
 
 end

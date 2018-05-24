@@ -158,6 +158,18 @@ val map2i : (int -> 'a -> 'b -> 'c) -> 'a array -> 'b array -> 'c array
 val map2i_split2 : (int -> 'a -> 'b -> 'c * 'd) -> 'a array -> 'b array -> 'c array * 'd array
 (** TODO *)
 
+val map3i : (int -> 'a -> 'b -> 'c -> 'd) -> 'a array -> 'b array -> 'c array -> 'd array
+(** TODO *)
+
+val map3 : ('a -> 'b -> 'c -> 'd) -> 'a array -> 'b array -> 'c array -> 'd array
+(** TODO *)
+
+val map4i : (int -> 'a -> 'b -> 'c -> 'd -> 'e) -> 'a array -> 'b array -> 'c array -> 'd array -> 'e array
+(** TODO *)
+
+val map4 : ('a -> 'b -> 'c -> 'd -> 'e) -> 'a array -> 'b array -> 'c array -> 'd array -> 'e array
+(** TODO *)
+
 val filteri_v : (int -> 'a -> bool * 'b) -> 'a array -> 'b array
 (** TODO *)
 

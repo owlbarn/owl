@@ -68,6 +68,9 @@ module type Sig = sig
   val add_node : ?act_typ:Activation.typ -> network -> node array -> node -> node
   (** Add a node to the given network. *)
 
+  val input_shape : network -> int array
+  (** Get input shape of a network (without batch dimension), i.e. shape of input neruon. *)
+
 
   (** {6 Interface to optimisation engine} *)
 

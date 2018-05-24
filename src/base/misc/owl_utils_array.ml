@@ -214,6 +214,29 @@ let resize ?(head=true) v n x =
   else Array.copy x
 
 
+let map3i f x y z =
+  let nx = Array.length x in
+  let ny = Array.length y in
+  let nz = Array.length z in
+  assert (nx = ny && ny = nz);
+  Array.init nx (fun i -> f i x.(i) y.(i) z.(i))
+
+
+let map3 f x y z = map3i (fun _ a b c -> f a b c) x y z
+
+
+let map4i f w x y z =
+  let nw = Array.length w in
+  let nx = Array.length x in
+  let ny = Array.length y in
+  let nz = Array.length z in
+  assert (nw = nx && nx = ny && ny = nz);
+  Array.init nx (fun i -> f i w.(i) x.(i) y.(i) z.(i))
+
+
+let map4 f w x y z = map4i (fun _ a b c d -> f a b c d) w x y z
+
+
 (* pad n value of v to the left/right of array x *)
 let pad s v n x =
   let l = Array.length x in

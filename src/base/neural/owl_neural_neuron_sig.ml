@@ -104,6 +104,7 @@ module Activation : sig
   (** Connect this neuron to others in a neural network. *)
 
   val run_activation : t -> typ -> t
+  (** Run one specific activation function. *)
 
   val copy : neuron_typ -> neuron_typ
   (** Make a deep copy of the neuron and its parameters. *)
@@ -112,6 +113,7 @@ module Activation : sig
   (** Execute the computation in this neuron. *)
 
   val activation_to_string : typ -> string
+  (** Return the name of a specific activation function. *)
 
   val to_string : neuron_typ -> string
   (** Convert the neuron to its string representation. The string is often a summary of the parameters defined in the neuron. *)

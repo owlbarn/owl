@@ -80,6 +80,9 @@ module Make
   let get_network n = n.network
 
 
+  let input_shape n = (get_root n).neuron |> Neuron.get_in_shape
+  
+
   (* collect the outputs of a given set of nodes *)
   let collect_output nodes =
     Array.map (fun n ->
