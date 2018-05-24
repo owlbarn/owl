@@ -115,7 +115,7 @@ let init_nd k d f =
   let x = empty k d in
   let y = array1_of_genarray (flatten x) in
   let n = numel x in
-  let s = shape x in
+  let s = Owl_utils.calc_stride d in
   let j = Array.copy s in
   for i = 0 to n - 1 do
     Owl_utils.index_1d_nd i j s;
