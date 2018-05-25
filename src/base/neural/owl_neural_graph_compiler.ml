@@ -114,6 +114,13 @@ module Make
       Owl_graph.set_name b s
     ) adj;
 
+    (* freeze the graph *)
+    let a0 = [| unpack_elt loss |> Lazy.elt_to_node |] in
+    let a1 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) pri in
+    let a2 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) adj in
+    let a3 = Owl_utils_array.(a0 @ a1 @ a2) in
+    Lazy.freeze_ancestors a3;
+
     x, y, pri, adj, loss
 
 

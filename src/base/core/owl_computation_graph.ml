@@ -23,10 +23,11 @@ module Make (A : Ndarray_Algodiff) = struct
 
   type t = attr node
   and attr = {
-    mutable op    : op;
-    mutable state : state;
-    mutable shape : (int array option) array;
-    mutable value : value array;
+    mutable op     : op;
+    mutable freeze : bool;
+    mutable state  : state;
+    mutable shape  : (int array option) array;
+    mutable value  : value array;
   }
   and arr = Arr of t
   and elt = Elt of t
@@ -772,24 +773,34 @@ module Make (A : Ndarray_Algodiff) = struct
 
   let node_to_arr x = Arr x
 
+
   let arr_to_node = function Arr x -> x
+
 
   let node_to_elt x = Elt x
 
+
   let elt_to_node = function Elt x -> x
+
 
   let arr_to_value x = ArrVal x
 
+
   let value_to_arr = function ArrVal x -> x | _ -> failwith "Owl_computation_graph: value_to_arr"
+
 
   let elt_to_value x = EltVal x
 
+
   let value_to_elt = function EltVal x -> x | _ -> failwith "Owl_computation_graph: value_to_elt"
-  let make_node ?name ?value ?shape ?state op =
+
+
+  let make_node ?name ?value ?shape ?freeze ?state op =
     let value = match value with Some v -> v | None -> [| |] in
     let shape = match shape with Some s -> s | None -> [| None |] in
     let state = match state with Some s -> s | None -> Invalid in
-    Owl_graph.node ?name { op; state; shape; value }
+    let freeze = match freeze with Some s -> s | None -> false in
+    Owl_graph.node ?name { op; freeze; state; shape; value }
 
 
   let make_then_connect ?shape op parents =
@@ -799,9 +810,10 @@ module Make (A : Ndarray_Algodiff) = struct
     in
     let child = make_node ~shape op in
     Array.iter (fun parent ->
-      match (attr parent).op with
-      | Const -> connect_ancestors [|parent|] [|child|]
-      | _     -> connect [|parent|] [|child|]
+      if (attr parent).freeze = true then
+        connect_ancestors [|parent|] [|child|]
+      else
+        connect [|parent|] [|child|]
     ) parents;
     (* connect parents [|child|]; *)
     child
@@ -817,13 +829,17 @@ module Make (A : Ndarray_Algodiff) = struct
     |> node_to_elt
 
 
-  let const_arr ~name value =
-    make_node ~name ~value:[|arr_to_value value|] ~shape:[| Some A.(shape value) |] ~state:Valid Const
+  let const_arr ~name v =
+    let value = [| arr_to_value v |] in
+    let shape = [| Some A.(shape v) |] in
+    make_node ~name ~value ~shape ~freeze:true ~state:Valid Const
     |> node_to_arr
 
 
-  let const_elt ~name value =
-    make_node ~name ~value:[|elt_to_value value|] ~shape:[| Some [||] |] ~state:Valid Const
+  let const_elt ~name v =
+    let value = [| elt_to_value v |] in
+    let shape = [| Some [||] |] in
+    make_node ~name ~value ~shape ~freeze:true ~state:Valid Const
     |> node_to_elt
 
 
@@ -867,6 +883,15 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let invalidate_graph x = iter_descendants invalidate [|x|]
+
+
+  let freeze x = (attr x).freeze <- true
+
+
+  let freeze_descendants x = iter_descendants freeze x
+
+
+  let freeze_ancestors x = iter_ancestors freeze x
 
 
   let assign_arr x arr =
@@ -913,10 +938,11 @@ module Make (A : Ndarray_Algodiff) = struct
   let arr_to_arr x =
     let attr = arr_to_node x |> attr in
     let op = attr.op in
+    let freeze = attr.freeze in
     let state = attr.state in
     let shape = attr.shape in
     let value = attr.value in
-    Owl_graph.node ~name:"" { op; state; shape; value }
+    Owl_graph.node ~name:"" { op; state; freeze; shape; value }
     |> node_to_arr
 
 

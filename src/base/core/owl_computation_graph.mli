@@ -18,10 +18,11 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
   type attr = {
-    mutable op    : op;
-    mutable state : state;
-    mutable shape : (int array option) array;
-    mutable value : value array;
+    mutable op     : op;
+    mutable freeze : bool;
+    mutable state  : state;
+    mutable shape  : (int array option) array;
+    mutable value  : value array;
   }
 
   and state
@@ -320,6 +321,15 @@ module Make (A : Ndarray_Algodiff) : sig
   val get_operator : attr Owl_graph.node -> op
   (** TODO *)
 
+  val freeze : attr Owl_graph.node -> unit
+  (** TODO *)
+
+  val freeze_ancestors :  attr Owl_graph.node array -> unit
+  (** TODO *)
+
+  val freeze_descendants :  attr Owl_graph.node array -> unit
+  (** TODO *)
+  
 
   (** {6 Creation functions} *)
 
