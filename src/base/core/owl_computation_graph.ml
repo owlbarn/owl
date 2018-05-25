@@ -753,7 +753,7 @@ module Make (A : Ndarray_Algodiff) = struct
     let attr = attr n in
     let shape_s = shape_to_str attr.shape in
     let state_s = if attr.state = Valid then "valid" else "invalid" in
-    Printf.sprintf "[ #%i | name: %s | op: %s | state: %s | r:%i | s:%s ]"
+    Printf.sprintf "[ #%i | name:%s | op:%s | state:%s | r:%i | s:%s ]"
       (id n) (name n) (op_to_str attr.op) state_s (refnum n) shape_s
 
 

@@ -2766,4 +2766,4 @@ module Make
 
 end
 
-(* Make function ends *)
+(* Make functor ends *)

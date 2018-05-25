@@ -914,7 +914,6 @@ module Make
       (* FIXME ... *)
       let ws' = Array.map (fun w -> unpack_arr w |> A.arr_to_arr |> pack_arr) ws' in
       Checkpoint.(state.ch <- Owl_utils.aaarrr_map (fun c -> unpack_arr c |> A.arr_to_arr |> pack_arr) state.ch);
-
       update ws ws';
       (* save historical data *)
       if params.momentum <> Momentum.None then Checkpoint.(state.us <- [| us' |]);
@@ -934,4 +933,4 @@ module Make
 
 end
 
-(* Make function ends *)
+(* Make functor ends *)

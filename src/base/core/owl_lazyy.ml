@@ -64,9 +64,9 @@ module Make (A : Ndarray_Mutable) = struct
   let rec _eval_term x =
     Owl_log.debug "eval %s ..." (node_to_str x);
     if is_valid x = false then (
-     (
+      (
         match (get_operator x) with
-        | Noop                                        -> ()
+        | Noop                                        -> _eval_map_01 x (fun x -> ())
         | Var                                         -> is_assigned x
         | Const                                       -> is_assigned x
         | Empty shape                                 -> _eval_map_08 x (fun x -> A.empty shape)
@@ -388,3 +388,5 @@ module Make (A : Ndarray_Mutable) = struct
 
 
 end
+
+(* Make functor ends *)

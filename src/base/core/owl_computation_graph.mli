@@ -823,9 +823,12 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
   val node_to_str : attr Owl_graph.node -> string
+  (** TODO *)
 
   val to_dot : attr Owl_graph.node array -> string
   (** TODO *)
+
+
 
 
 end

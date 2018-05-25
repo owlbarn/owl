@@ -13,6 +13,7 @@ module Make
   module Lazy = Owl_lazyy.Make (A)
   module Algodiff = Owl_algodiff_generic.Make (Lazy)
   module Neural = Owl_neural_generic.Make (Lazy)
+  module Computation_Optimiser = Owl_computation_optimiser.Make (Lazy)
 
   open Algodiff
   open Neural
@@ -125,10 +126,25 @@ module Make
     Lazy.assign_arr (Algodiff.unpack_arr xt) xt_new;
     Lazy.assign_arr (Algodiff.unpack_arr yt) yt_new;
     Lazy.eval_arr (Array.map Algodiff.unpack_arr adj);
+    (*
+    Lazy.eval_arr (Array.map Algodiff.unpack_arr pri);
+    Lazy.eval_elt [| Algodiff.unpack_elt loss |];
+
+    let _loss = Algodiff.unpack_flt loss |> Algodiff.pack_flt in
+    let _pri = Array.map (fun v -> Algodiff.unpack_arr v |> Lazy.arr_to_arr |> Algodiff.pack_arr) pri in
+    let _adj = Array.map (fun v -> Algodiff.unpack_arr v |> Lazy.arr_to_arr |> Algodiff.pack_arr) adj in
+    _loss, _pri, _adj
+    *)
     loss, pri, adj
 
 
   let make_update_fun pri adj =
+    let a0 = Array.map (fun v -> Algodiff.unpack_arr v |> Lazy.arr_to_node) pri in
+    let a1 = Array.map (fun v -> Algodiff.unpack_arr v |> Lazy.arr_to_node) adj in
+    let a2 = Owl_utils_array.(a0 @ a1) in
+    let s0 = Lazy.to_dot a2 in
+    Owl_io.write_file "xxx.dot" s0;
+
     Array.iter2 (fun u v ->
       let u = Algodiff.unpack_arr u in
       let v = Algodiff.unpack_arr v |> Lazy.unpack_arr in
@@ -146,10 +162,18 @@ module Make
     let update = make_update_fun in
     let save fname = () in
 
-    let s = Lazy.to_dot Owl_utils_array.([|Algodiff.unpack_elt loss |> Lazy.elt_to_node|] @ (adj |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node))) in
-    Owl_io.write_file "zzz.dot" s;
+    (* FIXME: for debug purpose *)
+    let cgraph = Owl_utils_array.([|Algodiff.unpack_elt loss |> Lazy.elt_to_node|] @
+      (adj |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node))) in
+    let s0 = Lazy.to_dot cgraph in
+    Owl_io.write_file "yyy.dot" s0;
+    Computation_Optimiser.run cgraph;
+    let s1 = Lazy.to_dot cgraph in
+    Owl_io.write_file "zzz.dot" s1;
 
     Graph.Optimise.minimise_graph ?state params eval update save x y
 
 
 end
+
+(* Make functor ends *)

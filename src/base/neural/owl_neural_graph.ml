@@ -81,7 +81,7 @@ module Make
 
 
   let input_shape n = (get_root n).neuron |> Neuron.get_in_shape
-  
+
 
   (* collect the outputs of a given set of nodes *)
   let collect_output nodes =
@@ -554,4 +554,4 @@ module Make
 
 end
 
-(* Make function ends *)
+(* Make functor ends *)
