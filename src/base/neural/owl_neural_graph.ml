@@ -77,7 +77,19 @@ module Make
     else x.(0)
 
 
-  let get_network n = n.network
+  let get_network ?name n =
+    let name = match name with
+      | Some s -> s
+      | None   -> Random.int 65535 |> string_of_int
+    in
+    n.network.nnid <- name;
+    n.network
+
+
+  let get_network_name n = n.nnid
+
+
+  let set_network_name n name = n.nnid <- name
 
 
   let input_shape n = (get_root n).neuron |> Neuron.get_in_shape

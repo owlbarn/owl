@@ -32,7 +32,13 @@ let set_name x s = x.name <- s
 let parents x = x.prev
 
 
+let set_parents x parents = x.prev <- parents
+
+
 let children x = x.next
+
+
+let set_children x children = x.next <- children
 
 
 let indegree x = Array.length x.prev
@@ -60,27 +66,23 @@ let node ?id ?(name="") ?(prev=[||]) ?(next=[||]) attr =
 
 let connect parents children =
   Array.iter (fun parent ->
+    parent.next <- Array.append parent.next children;
     Array.iter (fun child ->
-        parent.next <- (Array.append parent.next [|child|]);
-        child.prev <- (Array.append child.prev [|parent|]);
+      child.prev <- Array.append child.prev parents
     ) children
   ) parents
 
 
 let connect_descendants parents children =
   Array.iter (fun parent ->
-    Array.iter (fun child ->
-        parent.next <- (Array.append parent.next [|child|]);
-    ) children
+    parent.next <- Array.append parent.next children
   ) parents
 
 
 let connect_ancestors parents children =
-  Array.iter (fun parent ->
-    Array.iter (fun child ->
-        child.prev <- (Array.append child.prev [|parent|]);
-    ) children
-  ) parents
+  Array.iter (fun child ->
+    child.prev <- Array.append child.prev parents
+  ) children
 
 
 let remove_node x =

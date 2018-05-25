@@ -329,7 +329,7 @@ module Make (A : Ndarray_Algodiff) : sig
 
   val freeze_descendants :  attr Owl_graph.node array -> unit
   (** TODO *)
-  
+
 
   (** {6 Creation functions} *)
 
@@ -422,6 +422,9 @@ module Make (A : Ndarray_Algodiff) : sig
 
 
   (** {6 Mathematical functions} *)
+
+  val noop : arr -> arr
+  (** Identity function. *)
 
   val abs : arr -> arr
   (** TODO *)

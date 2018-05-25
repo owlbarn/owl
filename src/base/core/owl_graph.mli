@@ -32,8 +32,14 @@ val set_name : 'a node -> string -> unit
 val parents : 'a node -> 'a node array
 (** ``parents x`` returns the parents of node ``x``. *)
 
+val set_parents : 'a node -> 'a node array -> unit
+(** ``set_parents x parents`` set ``x`` parents to ``parents``. *)
+
 val children : 'a node -> 'a node array
 (** ``children x`` returns the children of node ``x``. *)
+
+val set_children : 'a node -> 'a node array -> unit
+(** ``set_children x children`` sets ``x`` children to ``children``. *)
 
 val indegree : 'a node -> int
 (** ``indegree x`` returns the in-degree of node ``x``. *)
