@@ -65,13 +65,15 @@ let get_remote_vid (gid : string) =
 (** Get the latest version downloaded on local machine; if the local version is
 not found on record, get the newest vid from Gist server. *)
 let get_latest_vid (gid : string) (tol : float) =
-  let v, ts, _, miss_flag = get_value gid in
+  let v, ts, tb, miss_flag = get_value gid in
   let t = Unix.time () in
   if miss_flag = false && (t -. ts) < tol then (
     assert (Array.length v > 0);
     Array.get v (Array.length v - 1)
   ) else (
     Owl_log.debug "owl-zoo: Gist %s within time tolerence %f does not exist on local cache; fetching vid from server" gid tol;
+    Hashtbl.replace tb gid (v, t);
+    Owl_io.marshal_to_file tb htb;
     get_remote_vid gid
   )
 
