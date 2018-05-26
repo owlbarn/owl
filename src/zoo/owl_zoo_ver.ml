@@ -71,7 +71,7 @@ let get_latest_vid (gid : string) (tol : float) =
     assert (Array.length v > 0);
     Array.get v (Array.length v - 1)
   ) else (
-    Owl_log.debug "owl-zoo: Gist %s within time tolerence %f does not exist on local cache; fetching vid from server" gid tol;
+    Owl_log.debug "owl-zoo: Gist %s exceeds time tolerence %f; fetching newest vid from server" gid tol;
     Hashtbl.replace tb gid (v, t);
     Owl_io.marshal_to_file tb htb;
     get_remote_vid gid
