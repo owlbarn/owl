@@ -270,7 +270,7 @@ module type Sig = sig
 
   (* helper functions *)
 
-  val arr_to_arr : arr -> arr
+  val arr_to_var : arr -> arr
 
   val float_to_elt : float -> elt
 

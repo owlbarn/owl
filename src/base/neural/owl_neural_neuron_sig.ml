@@ -1332,7 +1332,7 @@ module Normalisation : sig
   (** Neuron type definition. *)
 
   val create : ?training:bool -> ?decay:float -> ?mu:arr -> ?var:arr -> int -> neuron_typ
-  (** Create the neuron. *)
+  (** Create the neuron. Note that axis 0 is the batch axis. *)
 
   val connect : int array -> neuron_typ -> unit
   (** Connect this neuron to others in a neural network. *)

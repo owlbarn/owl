@@ -2139,9 +2139,8 @@ module Make
     let run x l =
       if l.training = true then (
         let a = _f (float_of_int ((numel x) / (shape x).(l.axis))) in
-        let s = Owl_utils_array.range 0 (Array.length l.in_shape) in
-        let s = List.filter (fun x -> x != l.axis) (Array.to_list s)
-          |> Array.of_list in
+        let s = Owl_utils_array.(range 0 (length l.in_shape)
+          |> filter (fun x -> x != l.axis)) in
         let mu' = Maths.((sum_reduce ~axis:s x) / a) in
         let var' = Maths.((sum_reduce ~axis:s (x * x)) / a) in
         l.mu <- Maths.(l.decay * l.mu + (_f 1. - l.decay) * mu') |> primal';

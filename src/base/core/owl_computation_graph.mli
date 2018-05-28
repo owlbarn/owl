@@ -252,7 +252,7 @@ module Make (A : Ndarray_Algodiff) : sig
   val unpack_elt : elt -> A.elt
   (** TODO *)
 
-  val arr_to_arr : arr -> arr
+  val arr_to_var : arr -> arr
   (** TODO *)
 
   val float_to_elt : float -> elt
@@ -289,6 +289,9 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
   val is_const : attr Owl_graph.node -> bool
+  (** TODO *)
+
+  val is_freeze : attr Owl_graph.node -> bool
   (** TODO *)
 
   val is_mutable : attr Owl_graph.node -> bool

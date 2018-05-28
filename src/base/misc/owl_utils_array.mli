@@ -236,7 +236,7 @@ val of_tuples : ('a * 'a) array -> 'a array
 (** TODO *)
 
 val complement : 'a array -> 'a array -> 'a array
-(** TODO *)
+(* Given set x and y, return complement of y, i.e. x \ y *)
 
 val balance_last : float -> float array -> float array
 (**

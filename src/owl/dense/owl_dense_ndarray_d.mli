@@ -1101,7 +1101,7 @@ val rayleigh_isf : sigma:arr -> arr -> arr
 
 (** {6 Helper functions}  *)
 
-val arr_to_arr : arr -> arr
+val arr_to_var : arr -> arr
 
 val float_to_elt : float -> elt
 

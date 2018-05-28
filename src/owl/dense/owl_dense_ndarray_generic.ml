@@ -3804,7 +3804,7 @@ let contract2 index_pairs x y =
 
 (* Helper functions *)
 
-let arr_to_arr x = x
+let arr_to_var x = x
 
 let float_to_elt x = x
 

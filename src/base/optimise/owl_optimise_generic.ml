@@ -823,8 +823,8 @@ module Make
       (* update the weight *)
       let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
       (* FIXME ... *)
-      let ws' = Owl_utils.aarr_map (fun w -> unpack_arr w |> A.arr_to_arr |> pack_arr) ws' in
-      Checkpoint.(state.ch <- Owl_utils.aaarrr_map (fun c -> unpack_arr c |> A.arr_to_arr |> pack_arr) state.ch);
+      let ws' = Owl_utils.aarr_map (fun w -> unpack_arr w |> A.arr_to_var |> pack_arr) ws' in
+      Checkpoint.(state.ch <- Owl_utils.aaarrr_map (fun c -> unpack_arr c |> A.arr_to_var |> pack_arr) state.ch);
 
       update ws';
       (* save historical data *)
@@ -843,7 +843,10 @@ module Make
     state
 
 
-  (* FIXME: this is an experimental function. *)
+  (* This function minimises a general computation graph.
+    [eval] evaluates the graph and return (loss value, original weights, gradient)
+    [update] updates the original weights to their new values.
+   *)
   let minimise_graph ?state params eval update save x y =
     let open Params in
     if params.verbosity = true && state = None then
@@ -874,7 +877,7 @@ module Make
           let state = Checkpoint.init_state batches_per_epoch params.epochs in
           (* first iteration to bootstrap the optimisation *)
           let _loss, _ws, _gs = iterate 0 in
-          update _ws _gs;
+          update _ws _ws;
           (* variables used for specific gradient method *)
           Checkpoint.(state.gs <- [| _gs |]);
           Checkpoint.(state.ps <- [| Array.map Maths.neg _gs |]);
@@ -911,9 +914,11 @@ module Make
       let us' = Owl_utils_array.map2 momt_fun Checkpoint.(state.us.(0)) us' in
       (* update the weight *)
       let ws' = Owl_utils_array.map2 (fun w u -> Maths.(w + u)) ws us' in
-      (* FIXME ... *)
-      let ws' = Array.map (fun w -> unpack_arr w |> A.arr_to_arr |> pack_arr) ws' in
-      Checkpoint.(state.ch <- Owl_utils.aaarrr_map (fun c -> unpack_arr c |> A.arr_to_arr |> pack_arr) state.ch);
+      (* evaluate ws' before upating original ws *)
+      A.eval_arr (Array.map unpack_arr ws');
+      (* convert to var so that ch can disconnect from the original graph *)
+      Checkpoint.(state.ch <- Owl_utils.aaarrr_map (fun c -> unpack_arr c |> A.arr_to_var |> pack_arr) state.ch);
+      (* update original weights *)
       update ws ws';
       (* save historical data *)
       if params.momentum <> Momentum.None then Checkpoint.(state.us <- [| us' |]);

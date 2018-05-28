@@ -861,7 +861,10 @@ module Make (A : Ndarray_Algodiff) = struct
   let is_const x = (attr x).op = Const
 
 
-  let is_mutable x = match (attr x).op with Const | Var -> false | _ -> true
+  let is_mutable x =
+    match (attr x).op with
+      | Const | Var -> false
+      | _ -> true
 
 
   let is_assigned x =
@@ -883,6 +886,9 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let invalidate_graph x = iter_descendants invalidate [|x|]
+
+
+  let is_freeze x = (attr x).freeze
 
 
   let freeze x = (attr x).freeze <- true
@@ -935,7 +941,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   (* TODO: should move to symbolic ... *)
-  let arr_to_arr x =
+  let arr_to_var x =
     let attr = arr_to_node x |> attr in
     let op = attr.op in
     let freeze = attr.freeze in

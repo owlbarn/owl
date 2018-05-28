@@ -63,8 +63,8 @@ module Make (A : Ndarray_Mutable) = struct
 
   let rec _eval_term x =
     Owl_log.debug "eval %s ..." (node_to_str x);
-    if is_valid x = false then (
-      (
+    if is_valid x = false then
+      let _ = try
         match (get_operator x) with
         | Noop                                        -> _eval_map_01 x (fun x -> ())
         | Var                                         -> is_assigned x
@@ -247,9 +247,14 @@ module Make (A : Ndarray_Mutable) = struct
         | Scalar_Relu                                 -> _eval_map_09 x A.Scalar.relu
         | Scalar_Sigmoid                              -> _eval_map_09 x A.Scalar.sigmoid
         | _                                           -> failwith "owl_lazy:_eval_term"
-      );
+
+        with exn -> (
+          Owl_log.error "Error in evaluating %s" (node_to_str x);
+          raise exn
+        )
+      in
       validate x
-    )
+
 
   (* [f] is pure, shape changes so always allocate mem, for [arr -> arr] *)
   and _eval_map_00 x f =
@@ -381,10 +386,10 @@ module Make (A : Ndarray_Mutable) = struct
     unpack_elt x |> A.elt_to_float
 
 
-  let arr_to_arr x =
+  let arr_to_var x =
     eval_arr [|x|];
     set_operator (arr_to_node x) Var;
-    arr_to_arr x
+    arr_to_var x
 
 
 end

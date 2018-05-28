@@ -73,6 +73,7 @@ module Make
     let network_shape = Graph.input_shape network in
     let input_shape = Array.append [|batch|] network_shape in
 
+    (* initialise the network weight *)
     Graph.init network;
     Graph.mkpar network
     |> Owl_utils.aarr_map (fun v ->
@@ -80,7 +81,7 @@ module Make
       Lazy.eval_arr [| v |];
       let u = Lazy.var_arr ~name: "" (Lazy.shape v) in
       Lazy.(assign_arr u (unpack_arr v));
-      pack_arr u
+      Algodiff.pack_arr u
     )
     |> Graph.update network;
 
@@ -119,6 +120,7 @@ module Make
     let a1 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) pri in
     let a2 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) adj in
     let a3 = Owl_utils_array.(a0 @ a1 @ a2) in
+    (* FIXME: experimental *)
     Lazy.freeze_ancestors a3;
 
     (* return key parameters *)
@@ -137,12 +139,28 @@ module Make
     loss, pri, adj
 
 
-  let make_update_fun pri adj =
+  let make_update_fun pri pri_new =
     Array.iter2 (fun u v ->
       let u = Algodiff.unpack_arr u in
       let v = Algodiff.unpack_arr v |> Lazy.unpack_arr in
       Lazy.assign_arr u v
-    ) pri adj
+    ) pri pri_new
+
+
+  let plot ws' gs' ps' us' ch' =
+    let ws' = Array.map (fun v -> Algodiff.unpack_arr v |> Lazy.arr_to_node) ws' in
+    let gs' = Array.map (fun v -> Algodiff.unpack_arr v |> Lazy.arr_to_node) gs' in
+    let ps' = Array.map (fun v -> Algodiff.unpack_arr v |> Lazy.arr_to_node) ps' in
+    let us' = Array.map (fun v -> Algodiff.unpack_arr v |> Lazy.arr_to_node) us' in
+    let ch' = Array.map (fun v -> Algodiff.unpack_arr v |> Lazy.arr_to_node) (Owl_utils_array.flatten ch') in
+    Array.iteri (fun i v -> Owl_graph.set_name v (Printf.sprintf "ws_%i" i)) ws';
+    Array.iteri (fun i v -> Owl_graph.set_name v (Printf.sprintf "gs_%i" i)) gs';
+    Array.iteri (fun i v -> Owl_graph.set_name v (Printf.sprintf "ps_%i" i)) ps';
+    Array.iteri (fun i v -> Owl_graph.set_name v (Printf.sprintf "us_%i" i)) us';
+    Array.iteri (fun i v -> Owl_graph.set_name v (Printf.sprintf "ch_%i" i)) ch';
+    let cgraph = Owl_utils_array.(ws' @ gs' @ ps' @ us' @ ch') in
+    let dot_str = Lazy.to_dot cgraph in
+    Owl_io.write_file ("zargs.dot") dot_str
 
 
   let train ?state ?params network x y =
@@ -160,7 +178,7 @@ module Make
       (adj |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node))) in
     let name = Neural.Graph.get_network_name network in
     let dot_raw = Lazy.to_dot cgraph in
-
+    (* FIXME: experimental *)
     Computation_Optimiser.run cgraph;
 
     let dot_opt = Lazy.to_dot cgraph in
