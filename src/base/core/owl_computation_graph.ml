@@ -906,7 +906,9 @@ module Make (A : Ndarray_Algodiff) = struct
       set_value node [| ArrVal arr |];
       invalidate_graph node
     )
-    else failwith "assign_arr: const cannot be assigned"
+    else
+      Printf.sprintf "assign_arr: const cannot be assigned, %s" (node_to_str node)
+      |> failwith
 
 
   let assign_elt x elt =
@@ -915,7 +917,9 @@ module Make (A : Ndarray_Algodiff) = struct
       set_value node [| EltVal elt |];
       invalidate_graph node
     )
-    else failwith "assign_elt: const cannot be assigned"
+    else
+      Printf.sprintf "assign_elt: const cannot be assigned, %s" (node_to_str node)
+      |> failwith
 
 
   let pack_arr arr = const_arr ~name:"" arr

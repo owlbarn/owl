@@ -27,8 +27,9 @@ let train network =
   let y = C.Lazy.pack_arr y |> C.Algodiff.pack_arr in
   let params = Params.config
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 0.1
+    (* ~momentum:(Momentum.Standard 0.1) *)
   in
-  C.train_shallow ~params network x y
+  C.train ~params network x y
 
 
 let _ =

@@ -742,107 +742,6 @@ module Make
     state, !x
 
 
-  (* FIXME: this is an experimental function. *)
-  let minimise_network_lazy ?state params forward backward update save x y =
-    let open Params in
-    if params.verbosity = true && state = None then
-      print_endline (Params.to_string params);
-
-    (* make alias functions *)
-    let bach_fun = Batch.run params.batch in
-    let loss_fun = Loss.run params.loss in
-    let grad_fun = Gradient.run params.gradient in
-    let rate_fun = Learning_Rate.run params.learning_rate in
-    let regl_fun = Regularisation.run params.regularisation in
-    let momt_fun = Momentum.run params.momentum in
-    let upch_fun = Learning_Rate.update_ch params.learning_rate in
-    let clip_fun = Clipping.run params.clipping in
-    let stop_fun = Stopping.run params.stopping in
-    let chkp_fun = Checkpoint.run params.checkpoint in
-
-    (* operations in the ith iteration *)
-    let iterate i =
-      let xt, yt = bach_fun x y i in
-      let yt', ws = forward xt in
-      let loss = loss_fun yt yt' in
-      (* take the mean of the loss *)
-      let loss = Maths.(loss / (_f (Mat.row_num yt |> float_of_int))) in
-      (* add regularisation term if necessary *)
-      let reg = match params.regularisation <> Regularisation.None with
-        | true  -> Owl_utils.aarr_fold (fun a w -> Maths.(a + regl_fun w)) (_f 0.) ws
-        | false -> _f 0.
-      in
-      let loss = Maths.(loss + reg) in
-      let ws, gs' = backward loss in
-      loss, ws, gs'
-    in
-
-    (* init new or continue previous state of optimisation process *)
-    let state = match state with
-      | Some state -> state
-      | None       -> (
-          let batches_per_epoch = Batch.batches params.batch x in
-          let state = Checkpoint.init_state batches_per_epoch params.epochs in
-          (* first iteration to bootstrap the optimisation *)
-          let _loss, _ws, _gs = iterate 0 in
-          update _ws;
-          (* variables used for specific gradient method *)
-          Checkpoint.(state.gs <- _gs);
-          Checkpoint.(state.ps <- Owl_utils.aarr_map Maths.neg _gs);
-          Checkpoint.(state.us <- Owl_utils.aarr_map (fun _ -> _f 0.) _gs);
-          Checkpoint.(state.ch <- Owl_utils.aarr_map (fun _ -> [|pack_arr (A.zeros [|1|]); pack_arr (A.zeros [|1|])|]) _gs);
-          Checkpoint.(state.loss.(0) <- (primal' _loss));
-          state
-        )
-    in
-
-    (* try to iterate all batches *)
-    while Checkpoint.(state.stop = false) do
-      let loss', ws, gs' = iterate Checkpoint.(state.current_batch) in
-      (* check if the stopping criterion is met *)
-      Checkpoint.(state.stop <- stop_fun (unpack_flt loss'));
-      (* checkpoint of the optimisation if necessary *)
-      chkp_fun save Checkpoint.(state.current_batch) (loss' |> unpack_flt |> pack_flt) state;
-      (* print out the current state of optimisation *)
-      if params.verbosity = true then Checkpoint.print_state_info state;
-      (* clip the gradient if necessary *)
-      let gs' = Owl_utils.aarr_map clip_fun gs' in
-      (* calculate gradient descent *)
-      let ps' = Checkpoint.(Owl_utils.aarr_map4 (grad_fun (fun a -> a)) ws state.gs state.ps gs') in
-      (* update gcache if necessary *)
-      Checkpoint.(state.ch <- Owl_utils.aarr_map2 upch_fun gs' state.ch);
-      (* adjust direction based on learning_rate *)
-      let us' = Checkpoint.(
-        Owl_utils.aarr_map3 (fun p' g' c ->
-          Maths.(p' * rate_fun state.current_batch g' c)
-        ) ps' gs' state.ch
-      )
-      in
-      (* adjust direction based on momentum *)
-      let us' = Owl_utils.aarr_map2 momt_fun Checkpoint.(state.us) us' in
-      (* update the weight *)
-      let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
-      (* FIXME ... *)
-      let ws' = Owl_utils.aarr_map (fun w -> unpack_arr w |> A.arr_to_var |> pack_arr) ws' in
-      Checkpoint.(state.ch <- Owl_utils.aaarrr_map (fun c -> unpack_arr c |> A.arr_to_var |> pack_arr) state.ch);
-
-      update ws';
-      (* save historical data *)
-      if params.momentum <> Momentum.None then Checkpoint.(state.us <- us');
-      Checkpoint.(state.gs <- gs');
-      Checkpoint.(state.ps <- ps');
-      Checkpoint.(state.current_batch <- state.current_batch + 1);
-      (* force GC to release bigarray memory *)
-      Gc.minor ();
-    done;
-
-    (* print optimisation summary *)
-    if params.verbosity = true && Checkpoint.(state.current_batch >= state.batches) then
-      Checkpoint.print_summary state;
-    (* return the current state *)
-    state
-
-
   (* This function minimises a general computation graph.
     [eval] evaluates the graph and return (loss value, original weights, gradient)
     [update] updates the original weights to their new values.
@@ -866,6 +765,7 @@ module Make
     let iterate i =
       let xt, yt = bach_fun x y i in
       let loss, ws, gs' = eval xt yt in
+      (* TODO: regularisation is not supported yet *)
       loss, ws, gs'
     in
 
@@ -924,6 +824,62 @@ module Make
       if params.momentum <> Momentum.None then Checkpoint.(state.us <- [| us' |]);
       Checkpoint.(state.gs <- [| gs' |]);
       Checkpoint.(state.ps <- [| ps' |]);
+      Checkpoint.(state.current_batch <- state.current_batch + 1);
+      (* force GC to release bigarray memory *)
+      Gc.minor ();
+    done;
+
+    (* print optimisation summary *)
+    if params.verbosity = true && Checkpoint.(state.current_batch >= state.batches) then
+      Checkpoint.print_summary state;
+    (* return the current state *)
+    state
+
+
+  (* This function minimises deeply compiled neural network. *)
+  let minimise_compiled_network ?state params eval update save x y =
+    let open Params in
+    if params.verbosity = true && state = None then
+      print_endline (Params.to_string params);
+
+    (* make alias functions *)
+    let bach_fun = Batch.run params.batch in
+    let stop_fun = Stopping.run params.stopping in
+    let chkp_fun = Checkpoint.run params.checkpoint in
+
+    (* operations in the ith iteration *)
+    let iterate i =
+      let xt, yt = bach_fun x y i in
+      let loss = eval xt yt in
+      loss
+    in
+
+    (* init new or continue previous state of optimisation process *)
+    let state = match state with
+      | Some state -> state
+      | None       -> (
+          let batches_per_epoch = Batch.batches params.batch x in
+          let state = Checkpoint.init_state batches_per_epoch params.epochs in
+          (* first iteration to bootstrap the optimisation *)
+          let _loss = iterate 0 in
+          update ();
+          (* variables used for specific gradient method *)
+          Checkpoint.(state.loss.(0) <- (primal' _loss));
+          state
+        )
+    in
+
+    (* try to iterate all batches *)
+    while Checkpoint.(state.stop = false) do
+      let loss' = iterate Checkpoint.(state.current_batch) in
+      (* check if the stopping criterion is met *)
+      Checkpoint.(state.stop <- stop_fun (unpack_flt loss'));
+      (* checkpoint of the optimisation if necessary *)
+      chkp_fun save Checkpoint.(state.current_batch) (loss' |> unpack_flt |> pack_flt) state;
+      (* print out the current state of optimisation *)
+      if params.verbosity = true then Checkpoint.print_state_info state;
+      update ();
+      (* save historical data *)
       Checkpoint.(state.current_batch <- state.current_batch + 1);
       (* force GC to release bigarray memory *)
       Gc.minor ();

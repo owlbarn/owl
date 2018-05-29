@@ -1,13 +1,11 @@
 #!/usr/bin/env owl
-(* This example demonstrates using lazy functor to train a model on mnist. *)
+(* This example demonstrates using lazy functor to train a model on cifar10. *)
 
 open Owl
-
-module C = Owl_neural_graph_compiler.Make (Dense.Ndarray.S)
-
-open C.Neural
-open C.Neural.Graph
-open C.Algodiff
+module L = Owl_lazyy.Make (Dense.Ndarray.S)
+include Owl_algodiff_generic.Make (L)
+include Owl_neural_generic.Make (L)
+open Graph
 
 
 let make_network input_shape =
@@ -23,21 +21,18 @@ let make_network input_shape =
   |> dropout 0.1
   |> fully_connected 512 ~act_typ:Activation.Relu
   |> linear 10 ~act_typ:Activation.(Softmax 1)
-  |> get_network ~name:"cifar"
+  |> get_network
 
 
-let train network =
+let train () =
   let x, _, y = Dataset.load_cifar_train_data 1 in
-  let x = C.Lazy.pack_arr x |> C.Algodiff.pack_arr in
-  let y = C.Lazy.pack_arr y |> C.Algodiff.pack_arr in
-  let params = Params.config
-    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 10.
-  in
-  C.train_shallow ~params network x y
-
-
-let _ =
-  Owl_log.(set_level INFO);
   let network = make_network [|32;32;3|] in
-  Graph.print network; flush_all ();
-  train network
+  Graph.print network;
+  let params = Params.config
+    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005)
+    ~checkpoint:(Checkpoint.Epoch 1.) ~stopping:(Stopping.Const 1e-6) 10.
+  in
+  Graph.train ~params network (L.pack_arr x) (L.pack_arr y)
+
+
+let _ = train ()
