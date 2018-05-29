@@ -1,11 +1,23 @@
-sudo: required
-
 language: c
-
+sudo: false
 services: docker
 
-before_install: docker build -t ryanrhymes/owl:test .
+install:
+  - wget https://raw.githubusercontent.com/mor1/ocaml-ci-scripts/tree/quieten-git-pull/.travis-docker.sh
 
-script: docker run ryanrhymes/owl:test /bin/bash -c "cd /root/owl"
+script:
+  - bash ./.travis-docker.sh
 
-install: true
+env:
+  global:
+    - OCAML_VERSION=4.06.0      # 4.06.1 Docker images not yet available
+    - PACKAGE="owl"
+    - PINS="owl-base:."
+    - PRE_INSTALL_HOOK="cd /home/opam/opam-repository && git pull origin master && opam update -uy"
+  matrix:
+    - DISTRO=alpine
+    - DISTRO=centos-7
+    - DISTRO=fedora-25
+    - DISTRO=opensuse-42.2
+    - DISTRO=ubuntu-14.04       # opam-repository travis
+    - DISTRO=ubuntu-16.04

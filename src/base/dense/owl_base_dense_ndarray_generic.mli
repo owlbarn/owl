@@ -309,12 +309,20 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 
 (** {6 Unary math operators }  *)
 
+val min : ?axis:int -> (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val max : ?axis:int -> (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 (* TODO: change float to 'a *)
 val sum : ?axis:int -> (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val sum' : (float, 'b) t -> float
+val sum' : ('a, 'b) t -> 'a
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val sum_reduce : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
@@ -516,6 +524,15 @@ val conv2d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> 
 val conv3d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val transpose_conv1d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val transpose_conv2d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val transpose_conv3d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val max_pool1d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
@@ -550,6 +567,24 @@ val conv3d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (floa
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val transpose_conv1d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val transpose_conv1d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val transpose_conv2d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val transpose_conv2d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val transpose_conv3d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val transpose_conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val max_pool1d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t

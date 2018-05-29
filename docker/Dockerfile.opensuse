@@ -15,7 +15,7 @@ RUN sudo zypper -n in git wget unzip m4 pkg-config gcc-fortran
 RUN sudo sudo zypper ref && sudo zypper -n in openblas-devel && sudo update-alternatives --config libblas.so.3
 
 RUN opam update && opam switch 4.06.0 && eval $(opam config env)
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop eigen
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop eigen base stdio configurator alcotest
 
 
 #################### SET UP ENV VARS #######################
@@ -33,12 +33,12 @@ RUN rm -f $OWLPATH/src/owl/misc/owl_plot.* \
     && sed -i '/plplot/d' $OWLPATH/src/owl/jbuild \
     && sed -i '/module Plot = Owl_plot/d' $OWLPATH/src/owl/owl.ml
 
-RUN sed -i -- 's:/usr/local/opt/openblas/lib:/usr/lib/x86_64-linux-gnu/:g' $OWLPATH/src/owl/jbuild  # FIXME: hacking
+RUN sed -i -- 's:/usr/local/opt/openblas/lib:/usr/lib/x86_64-linux-gnu/:g' $OWLPATH/src/owl/config/configure.ml  # FIXME: hacking
 RUN make -C $OWLPATH && make -C $OWLPATH install && make -C $OWLPATH clean
 
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
-RUN echo "#require \"owl_top\";; open Owl;;" >> /home/opam/.ocamlinit
+RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit
 WORKDIR $OWLPATH
 ENTRYPOINT /bin/bash

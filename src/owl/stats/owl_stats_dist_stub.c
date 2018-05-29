@@ -176,6 +176,68 @@ value owl_stub_exponential_isf(value vQ, value vA) {
 }
 
 
+value owl_stub_exponpow_rvs(value vA, value vB) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_rvs(a, b);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_exponpow_pdf(value vX, value vA, value vB) {
+  double x = Double_val(vX);
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_pdf(x, a, b);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_exponpow_logpdf(value vX, value vA, value vB) {
+  double x = Double_val(vX);
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_logpdf(x, a, b);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_exponpow_cdf(value vX, value vA, value vB) {
+  double x = Double_val(vX);
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_cdf(x, a, b);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_exponpow_logcdf(value vX, value vA, value vB) {
+  double x = Double_val(vX);
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_logcdf(x, a, b);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_exponpow_sf(value vX, value vA, value vB) {
+  double x = Double_val(vX);
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_sf(x, a, b);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_exponpow_logsf(value vX, value vA, value vB) {
+  double x = Double_val(vX);
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = exponpow_logsf(x, a, b);
+  return caml_copy_double(y);
+}
+
+
 value owl_stub_gaussian_rvs(value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
@@ -1535,4 +1597,71 @@ value owl_stub_binomial_logsf(value vK, value vP, value vN) {
   int n = Long_val(vN);
   double y = binomial_logsf(k, p, n);
   return caml_copy_double(y);
+}
+
+
+value owl_stub_multinomial_rvs(value vK, value vN, value vP, value vS) {
+  int k = Long_val(vK);
+  int n = Long_val(vN);
+  struct caml_ba_array *P = Caml_ba_array_val(vP);
+  double *p = (double *) P->data;
+  struct caml_ba_array *S = Caml_ba_array_val(vS);
+  int32_t *s = (int32_t *) S->data;
+  multinomial_rvs(k, n, p, s);
+  return Val_unit;
+}
+
+
+value owl_stub_multinomial_pdf(value vK, value vP, value vS) {
+  int k = Long_val(vK);
+  struct caml_ba_array *P = Caml_ba_array_val(vP);
+  double *p = (double *) P->data;
+  struct caml_ba_array *S = Caml_ba_array_val(vS);
+  int32_t *s = (int32_t *) S->data;
+  double q = multinomial_pdf(k, p, s);
+  return caml_copy_double(q);
+}
+
+
+value owl_stub_multinomial_logpdf(value vK, value vP, value vS) {
+  int k = Long_val(vK);
+  struct caml_ba_array *P = Caml_ba_array_val(vP);
+  double *p = (double *) P->data;
+  struct caml_ba_array *S = Caml_ba_array_val(vS);
+  int32_t *s = (int32_t *) S->data;
+  double q = multinomial_logpdf(k, p, s);
+  return caml_copy_double(q);
+}
+
+
+value owl_stub_dirchlet_rvs(value vK, value vA, value vB) {
+  int k = Long_val(vK);
+  struct caml_ba_array *A = Caml_ba_array_val(vA);
+  double *a = (double *) A->data;
+  struct caml_ba_array *B = Caml_ba_array_val(vB);
+  double *b = (double *) B->data;
+  dirichlet_rvs(k, a, b);
+  return Val_unit;
+}
+
+
+value owl_stub_dirchlet_pdf(value vK, value vA, value vB) {
+  int k = Long_val(vK);
+  struct caml_ba_array *A = Caml_ba_array_val(vA);
+  double *a = (double *) A->data;
+  struct caml_ba_array *B = Caml_ba_array_val(vB);
+  double *b = (double *) B->data;
+  double p = dirichlet_pdf(k, a, b);
+  return caml_copy_double(p);
+}
+
+
+value owl_stub_dirchlet_logpdf(value vK, value vA, value vB) {
+  int k = Long_val(vK);
+  struct caml_ba_array *A = Caml_ba_array_val(vA);
+  double *a = (double *) A->data;
+  struct caml_ba_array *B = Caml_ba_array_val(vB);
+  double *b = (double *) B->data;
+  double p = dirichlet_logpdf(k, a, b);
+  return caml_copy_double(p);
 }

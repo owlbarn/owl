@@ -25,7 +25,7 @@ double std_gamma_rvs(double shape) {
       }
       else {
         Y = -log((1 - U) / shape);
-        X = pow(1.0 - shape + shape * Y, 1./ shape);
+        X = pow(1.0 - shape + shape * Y, 1. / shape);
         if (X <= (V + Y))
           return X;
       }

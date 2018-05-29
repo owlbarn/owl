@@ -16,7 +16,7 @@ let make_network input_shape =
   |> max_pool2d [|2;2|] [|2;2|]
   |> fully_connected 120 ~act_typ:Activation.Relu
   |> linear 84  ~act_typ:Activation.Relu
-  |> linear 10 ~act_typ:Activation.Softmax
+  |> linear 10 ~act_typ:Activation.(Softmax 1)
   |> get_network
 
 

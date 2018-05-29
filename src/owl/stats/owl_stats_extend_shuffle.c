@@ -21,8 +21,8 @@ static inline void owl_stats_swap (void* base, int size, int i, int j) {
 }
 
 
-static inline void owl_stats_copy (void* dest, int i, void* src, int j, int size) {
-  register char* a = size * i + (char*) dest ;
+static inline void owl_stats_copy (void* dst, int i, void* src, int j, int size) {
+  register char* a = size * i + (char*) dst ;
   register char* b = size * j + (char*) src ;
 
   for (register int s = size; s > 0; s--)

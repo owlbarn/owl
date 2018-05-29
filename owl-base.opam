@@ -1,0 +1,21 @@
+opam-version: "1.2"
+maintainer: "Liang Wang <ryanrhymes@gmail.com>"
+authors: [ "Liang Wang" ]
+license: "MIT"
+homepage: "https://github.com/owlbarn/owl"
+dev-repo: "git+https://github.com/owlbarn/owl.git"
+bug-reports: "https://github.com/owlbarn/owl/issues"
+doc: "https://owlbarn.github.io/"
+
+build: [
+  [ "jbuilder" "subst" "-n" name ] {pinned}
+  [ "jbuilder" "build" "-p" name "-j" jobs ]
+]
+
+depends: [
+  "alcotest" {test}
+  "base-bigarray"
+  "jbuilder" {build}
+]
+
+available: [ ocaml-version >= "4.06.0" ]

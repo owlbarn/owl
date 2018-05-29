@@ -4,7 +4,7 @@
  *)
 
 open Bigarray
-open Owl_dense_common_types
+open Owl_core_types
 
 
 external owl_float32_rfftf : (float, float32_elt) owl_arr -> (Complex.t, complex32_elt) owl_arr -> int -> unit = "float32_rfftf"

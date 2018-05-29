@@ -392,7 +392,7 @@ module Make_Basic
   let map2i f x y = M.map2i f (unpack_box x) (unpack_box y) |> pack_box
 
   let map2 f x y = M.map2i f (unpack_box x) (unpack_box y) |> pack_box
-  
+
 
   let exists f x = M.exists f (unpack_box x)
 
@@ -591,7 +591,7 @@ module type SD_Sig = sig
 
   val softsign : arr -> arr
 
-  val softmax : arr -> arr
+  val softmax : ?axis:int -> arr -> arr
 
   val sigmoid : arr -> arr
 
@@ -729,7 +729,7 @@ module Make_SD
 
   let softsign x = M.softsign (unpack_box x) |> pack_box
 
-  let softmax x = M.softmax (unpack_box x) |> pack_box
+  let softmax ?axis x = M.softmax ?axis (unpack_box x) |> pack_box
 
   let sigmoid x = M.sigmoid (unpack_box x) |> pack_box
 

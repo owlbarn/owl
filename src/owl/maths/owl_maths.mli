@@ -32,7 +32,7 @@ val atan2 : float -> float -> float
     this is the angle to the vector (x, y) counting from the x-axis. *)
 
 val abs : float -> float
-(** ``abs x`` gives |x|. *)
+(** ``abs x`` gives ``|x|``. *)
 
 val neg : float -> float
 (** ``neg x`` gives -x. *)
@@ -177,10 +177,10 @@ val sinc : float -> float
 (** ``sinc x`` gives sin(x)/x and 1 for x=0. *)
 
 val logsinh : float -> float
-(** ``logsinh x`` gives log(sinh(x)) but handles large |x|. *)
+(** ``logsinh x`` gives log(sinh(x)) but handles large ``|x|``. *)
 
 val logcosh : float -> float
-(** ``logcosh x`` gives log(cosh(x)) but handles large |x|. *)
+(** ``logcosh x`` gives log(cosh(x)) but handles large ``|x|``. *)
 
 val sindg : float -> float
 (** Sine of angle given in degrees. *)
@@ -201,7 +201,7 @@ val xlogy : float -> float -> float
 (** ``xlogy(x, y)`` gives x*log(y). *)
 
 val xlog1py : float -> float -> float
-(** ``xlog1py(x, y)``gives x*log(y+1). *)
+(** ``xlog1py(x, y)`` gives x*log(y+1). *)
 
 val logit : float -> float
 (** ``logit(x)`` gives log(p/(1-p)). *)
@@ -548,6 +548,12 @@ Returns:
 
 (** {6 Helper functions} *)
 
+val is_nan : float -> bool
+(** ``is_nan x`` returns ``true`` if ``x`` is ``nan``. *)
+
+val is_inf : float -> bool
+(** ``is_inf x`` returns ``true`` if ``x`` is ``infinity`` or ``neg_infinity``. *)
+
 val is_odd : int -> bool
 (** ``is_odd x`` returns ``true`` if ``x`` is odd. *)
 
@@ -562,15 +568,23 @@ val same_sign : float -> float -> bool
 otherwise it returns ``false``. Positive and negative zeros are special cases
 and always returns ``true``. *)
 
+val is_simplex : float array -> bool
+(**
+``is_simplex x`` checks whether ``x`` is simplex. In other words,
+:math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall x_i \in [1,K]`.
+ *)
+ 
 val nextafter : float -> float -> float
 (** ``nextafter from to`` returns the next representable double precision value
 of ``from`` in the direction of ``to``. If ``from`` equals ``to``, this value
-   is returned. *)
+is returned.
+ *)
 
 val nextafterf : float -> float -> float
 (** ``nextafter from to`` returns the next representable single precision value
 of ``from`` in the direction of ``to``. If ``from`` equals ``to``, this value
-   is returned. *)
+is returned.
+ *)
 
 
 (* ends here *)

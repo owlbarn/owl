@@ -43,6 +43,8 @@ let _ =
 
 let x3 = M.sequential Float64 ~a:1. [|6|]
 
+let x4 = M.ones Float64 [|2;3;4|]
+
 
 (* a module with functions to test *)
 module To_test = struct
@@ -99,6 +101,9 @@ module To_test = struct
 
   let sum' () = M.sum' x0 = 6.
 
+  let sum_reduce () =
+    M.sum_reduce ~axis:[|0;2|] x4 = M.of_array Float64 [|8.;8.;8.|] [|1;3;1|]
+
   let min' () = M.min' x0 = 0.
 
   let max' () = M.max' x0 = 3.
@@ -107,6 +112,12 @@ module To_test = struct
     let (a, i), (b, j) = M.minmax_i x0 in
     a = 0. && i = [|0;0;0|] &&
     b = 3. && j = [|1;0;0|]
+
+  let init_nd () =
+    let ok = ref true in
+    let a = M.init_nd Int [|2; 5; 7|] (function [|i; j; k|] -> 35 * i + 7 * j + k | _ -> 0) in
+    M.iteri (fun i x -> if i <> x then ok := false) a;
+    !ok
 
   let is_zero () = M.is_zero x0
 
@@ -294,6 +305,44 @@ module To_test = struct
     let z = M.diff ~axis:1 x in
     M.(y = z)
 
+  let one_hot_1 () =
+    let idx = M.of_array Float64 [|3.;2.;1.|] [|3|] in
+    let x = M.one_hot 4 idx in
+    let y = M.zeros Float64 [|3;4|] in
+    M.set y [|0;3|] 1.;
+    M.set y [|1;2|] 1.;
+    M.set y [|2;1|] 1.;
+    M.(x = y)
+
+  let one_hot_2 () =
+    let idx = M.of_array Float64 [|3.;2.;0.;1.|] [|2;2|] in
+    let x = M.one_hot 4 idx in
+    let y = M.zeros Float64 [|2;2;4|] in
+    M.set y [|0;0;3|] 1.;
+    M.set y [|0;1;2|] 1.;
+    M.set y [|1;0;0|] 1.;
+    M.set y [|1;1;1|] 1.;
+    M.(x = y)
+
+  let sort () =
+    let x = M.of_array Float64 [|3.;2.;0.;1.|] [|2;2|] in
+    let y = M.of_array Float64 [|0.;1.;2.;3.|] [|2;2|] in
+    let z = M.sort x in
+    M.(y = z)
+
+  let argsort_1 () =
+    let x = M.of_array Float64 [|2.;3.;0.;1.|] [|4|] in
+    let y = M.of_array Int64 [|2L;3L;0L;1L|] [|4|] in
+    let z = M.argsort x in
+    M.(y = z)
+
+  let argsort_2 () =
+    let x = M.of_array Float64 [|3.;2.;0.;1.|] [|2;2|] in
+    let y = M.of_array Int64 [|2L;3L;1L;0L|] [|2;2|] in
+    let z = M.argsort x in
+    M.(y = z)
+
+
 end
 
 (* the tests *)
@@ -358,6 +407,9 @@ let neg () =
 let sum' () =
   Alcotest.(check bool) "sum'" true (To_test.sum' ())
 
+let sum_reduce () =
+  Alcotest.(check bool) "sum_reduce" true (To_test.sum_reduce ())
+
 let min' () =
   Alcotest.(check bool) "min'" true (To_test.min' ())
 
@@ -366,6 +418,9 @@ let max' () =
 
 let minmax_i () =
   Alcotest.(check bool) "minmax_i" true (To_test.minmax_i ())
+
+let init_nd () =
+  Alcotest.(check bool) "init_nd" true (To_test.init_nd ())
 
 let is_zero () =
   Alcotest.(check bool) "is_zero" false (To_test.is_zero ())
@@ -496,6 +551,21 @@ let diff_1 () =
 let diff_2 () =
   Alcotest.(check bool) "diff_2" true (To_test.diff_2 ())
 
+let one_hot_1 () =
+  Alcotest.(check bool) "one_hot_1" true (To_test.one_hot_1 ())
+
+let one_hot_2 () =
+  Alcotest.(check bool) "one_hot_2" true (To_test.one_hot_2 ())
+
+let sort () =
+  Alcotest.(check bool) "sort" true (To_test.sort ())
+
+let argsort_1 () =
+  Alcotest.(check bool) "argsort_1" true (To_test.argsort_1 ())
+
+let argsort_2 () =
+  Alcotest.(check bool) "argsort_2" true (To_test.argsort_2 ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -517,9 +587,11 @@ let test_set = [
   "abs", `Slow, abs;
   "neg", `Slow, neg;
   "sum'", `Slow, sum';
+  "sum_reduce", `Slow, sum_reduce;
   "min'", `Slow, min';
   "max'", `Slow, max';
   "minmax_i", `Slow, minmax_i;
+  "init_nd", `Slow, init_nd;
   "is_zero", `Slow, is_zero;
   "is_positive", `Slow, is_positive;
   "is_negative", `Slow, is_negative;
@@ -563,4 +635,9 @@ let test_set = [
   "concatenate_02", `Slow, concatenate_02;
   "diff_1", `Slow, diff_1;
   "diff_2", `Slow, diff_2;
+  "one_hot_1", `Slow, one_hot_1;
+  "one_hot_2", `Slow, one_hot_2;
+  "sort", `Slow, sort;
+  "argsort_1", `Slow, argsort_1;
+  "argsort_2", `Slow, argsort_2;
 ]

@@ -5,7 +5,7 @@
 
 
 let rec _extract_zoo_gist f added =
-  let s = Owl_utils.read_file_string f in
+  let s = Owl_io.read_file_string f in
   let regex = Str.regexp "^#zoo \"\\([0-9A-Za-z]+\\)\"" in
   try
     let pos = ref 0 in
@@ -20,17 +20,20 @@ let rec _extract_zoo_gist f added =
 
 and _download_gist gid vid =
   if (Owl_zoo_ver.exist gid vid) = true then
-    Owl_log.info "owl_zoo: %s/%s cached" gid vid
+    Owl_log.info "owl-zoo: %s/%s cached" gid vid
   else (
-    Owl_log.info "owl_zoo: %s/%s missing; downloading" gid vid;
+    Owl_log.info "owl-zoo: %s/%s missing; downloading" gid vid;
     let cmd = Printf.sprintf "owl_download_gist.sh %s %s" gid vid in
     let ret = Sys.command cmd in
     if ret = 0 then Owl_zoo_ver.update gid vid
-    else Owl_log.debug "owl_zoo: Error downloading gist %s/%s" gid vid
+    else Owl_log.debug "owl-zoo: Error downloading gist %s/%s" gid vid
   )
 
 
 and _dir_zoo_ocaml gid vid added =
+  let replace input output =
+    Str.global_replace (Str.regexp input) output
+  in
   let dir_gist = Owl_zoo_path.gist_path gid vid in
   Sys.readdir (dir_gist)
   |> Array.to_list
@@ -39,12 +42,16 @@ and _dir_zoo_ocaml gid vid added =
       let f = Printf.sprintf "%s/%s" dir_gist l in
 
       (* extend file path in a script *)
-      let f' = "/tmp/" ^ l in
-      Sys.command (Printf.sprintf "cp %s %s" f f') |> ignore;
-      let cmd = Printf.sprintf
-        "sed -i 's/extend_zoo_path/extend_zoo_path ~gid:\"%s\" ~vid:\"%s\"/g' %s"
-        gid vid f' in
-      Sys.command cmd |> ignore;
+      let f' = Owl_zoo_path.mk_temp_dir "zoo" ^ "/" ^ l in
+      let f_str = Owl_io.read_file_string f in
+      let f'_str = replace "extend_zoo_path"
+        (Printf.sprintf "extend_zoo_path ~gid:\"%s\" ~vid:\"%s\"" gid vid) f_str
+      in
+      let gist = gid ^ "?vid=" ^ vid in
+      let f'_str = replace "load_file[ \t]+\\([0-9a-zA-Z'._\"]+\\)"
+        (Printf.sprintf "load_file ~gist:\"%s\" \\1" gist) f'_str
+      in
+      Owl_io.write_file f' f'_str;
 
       _extract_zoo_gist f' added;
       Toploop.mod_use_file Format.std_formatter f'
@@ -54,7 +61,7 @@ and _dir_zoo_ocaml gid vid added =
 
 and process_dir_zoo ?added gist =
   let gid, vid, _, _ = Owl_zoo_ver.parse_gist_string gist in
-  let gist' = Printf.sprintf "%s/%s" gid vid in
+  let gist' = Printf.sprintf "%s?vid=%s" gid vid in
 
   let added = match added with
     | Some h -> h

@@ -7,7 +7,8 @@ open Bigarray
 
 open Owl_types
 
-open Owl_dense_common_types
+open Owl_core_types
+
 
 (* include the base implementation of slicing function *)
 

@@ -5,7 +5,6 @@
 
 (** NLP: Corpus module *)
 
-open Owl_nlp_utils
 
 type t = {
   mutable uri     : string;                       (* path of the binary corpus *)
@@ -86,13 +85,13 @@ let next corpus : string = corpus |> get_bin_fh |> Marshal.from_channel
 
 let next_tok corpus : int array = corpus |> get_tok_fh |> Marshal.from_channel
 
-let iteri f corpus = iteri_lines_of_marshal f (get_bin_uri corpus)
+let iteri f corpus = Owl_io.iteri_lines_of_marshal f (get_bin_uri corpus)
 
-let iteri_tok f corpus = iteri_lines_of_marshal f (get_tok_uri corpus)
+let iteri_tok f corpus = Owl_io.iteri_lines_of_marshal f (get_tok_uri corpus)
 
-let mapi f corpus = mapi_lines_of_marshal f (get_bin_uri corpus)
+let mapi f corpus = Owl_io.mapi_lines_of_marshal f (get_bin_uri corpus)
 
-let mapi_tok f corpus = mapi_lines_of_marshal f (get_tok_uri corpus)
+let mapi_tok f corpus = Owl_io.mapi_lines_of_marshal f (get_tok_uri corpus)
 
 let get corpus i : string =
   let fh = get_bin_fh corpus in
@@ -183,7 +182,7 @@ let build ?docid ?stopwords ?lo ?hi ?vocab ?(minlen=10) fname =
 
   (* binarise and tokenise at the same time *)
   Owl_log.info "convert to binary and tokenise ...";
-  iteri_lines_of_file (fun i s ->
+  Owl_io.iteri_lines_of_file (fun i s ->
 
     let t = Str.split Owl_nlp_utils.regexp_split s
       |> List.filter (Owl_nlp_vocabulary.exits_w vocab)
@@ -230,7 +229,7 @@ let unique fi_name fo_name =
   let h = Hashtbl.create 1024 in
   let rm = Owl_utils.Stack.make () in
   let fo = open_out fo_name in
-  Owl_nlp_utils.iteri_lines_of_file (fun i s ->
+  Owl_io.iteri_lines_of_file (fun i s ->
     match Hashtbl.mem h s with
     | true  -> Owl_utils.Stack.push rm i
     | false -> (
@@ -257,7 +256,7 @@ let simple_process s =
  *)
 let preprocess f fi_name fo_name =
   let fo = open_out fo_name in
-  Owl_nlp_utils.iteri_lines_of_file (fun i s ->
+  Owl_io.iteri_lines_of_file (fun i s ->
     output_bytes fo (f s);
     output_char fo '\n';
   ) fi_name;
@@ -280,10 +279,10 @@ let reduce_model corpus = {
 
 let save corpus f =
   let x = reduce_model corpus in
-  Owl_utils.marshal_to_file x f
+  Owl_io.marshal_to_file x f
 
 let load f : t =
-  let corpus = Owl_utils.marshal_from_file f in
+  let corpus = Owl_io.marshal_from_file f in
   get_bin_fh corpus |> ignore;
   get_tok_fh corpus |> ignore;
   get_vocab corpus  |> ignore;

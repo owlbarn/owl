@@ -28,7 +28,7 @@ let l0 = {
 let l1 = {
   w = Maths.(Mat.uniform 300 10 * F 0.15 - F 0.075);
   b = Mat.zeros 1 10;
-  a = Mat.map_by_row Maths.softmax;
+  a = Maths.softmax ~axis:1;
 }
 
 let nn = {layers = [|l0; l1|]}

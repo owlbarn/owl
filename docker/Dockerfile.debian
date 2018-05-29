@@ -12,7 +12,7 @@ USER opam
 
 RUN sudo apt-get -y update
 RUN sudo apt-get -y install m4 wget unzip aspcud libshp-dev libplplot-dev gfortran
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes alcotest utop plplot eigen
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes alcotest utop plplot eigen base stdio configurator
 
 
 #################### SET UP ENV VARS #######################
@@ -33,13 +33,13 @@ RUN cd $OPENBLASPATH && sudo make && sudo make install && sudo make clean
 
 ENV OWLPATH /home/opam/owl
 RUN cd /home/opam && git clone https://github.com/ryanrhymes/owl.git
-RUN sed -i -- 's:/usr/local/opt/openblas/lib:/opt/OpenBLAS/lib:g' $OWLPATH/src/owl/jbuild  # FIXME: hacking
+RUN sed -i -- 's:/usr/local/opt/openblas/lib:/opt/OpenBLAS/lib:g' $OWLPATH/src/owl/config/configure.ml  # FIXME: hacking
 RUN cd $OWLPATH && make && make install
 
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
-RUN echo "#require \"owl_top\";; open Owl;;" >> /home/opam/.ocamlinit \
+RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit \
     && bash -c 'echo -e "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> /home/opam/.profile' \
     && opam config env >> /home/opam/.profile \
     && bash -c "source /home/opam/.profile"

@@ -24,6 +24,9 @@ Returns:
 exception NOT_IMPLEMENTED
 (** Exception of not implemented yet. *)
 
+exception NOT_SUPPORTED
+(** Exception of not supported type. *)
+
 exception FOUND
 (** Exception of found an element. *)
 
@@ -53,6 +56,9 @@ exception MAX_ITERATION
 
 exception SINGULAR
 (** Exception of singular matrix. *)
+
+exception NOT_SIMPLEX
+(** Exception of not being simplex. *)
 
 exception INDEX_OUT_OF_BOUND
 (** Exception of index out of boundary. *)

@@ -3,9 +3,11 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Bigarray
+
 open Owl_types_common
 
-type arr
+type arr = (float, float64_elt, c_layout) Genarray.t
 
 type elt = float
 
@@ -118,9 +120,15 @@ val acosh : arr -> arr
 
 val atanh : arr -> arr
 
+val min : ?axis:int -> arr -> arr
+
+val max : ?axis:int -> arr -> arr
+
 val sum : ?axis:int -> arr -> arr
 
 val sum_slices : ?axis:int -> arr -> arr
+
+val sum_reduce : ?axis:int array -> arr -> arr
 
 val signum : arr -> arr
 
@@ -339,6 +347,12 @@ val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
 
 val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
 
+val transpose_conv1d : ?padding:padding -> arr -> arr -> int array -> arr
+
+val transpose_conv2d : ?padding:padding -> arr -> arr -> int array -> arr
+
+val transpose_conv3d : ?padding:padding -> arr -> arr -> int array -> arr
+
 val max_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
 
 val max_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
@@ -362,6 +376,18 @@ val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
 val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
 
 val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+val transpose_conv1d_backward_input : arr -> arr -> int array -> arr -> arr
+
+val transpose_conv1d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+val transpose_conv2d_backward_input : arr -> arr -> int array -> arr -> arr
+
+val transpose_conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+val transpose_conv3d_backward_input : arr -> arr -> int array -> arr -> arr
+
+val transpose_conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
 
 val max_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
 

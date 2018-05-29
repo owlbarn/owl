@@ -449,7 +449,7 @@ module Make (A : Ndarray_Mutable) = struct
 
   let softsign x = _make_node "softsign" (Fun01 A.softsign_) [|x|]
 
-  let softmax x = _make_node "softmax" (Fun01 A.softmax_) [|x|]
+  let softmax ?axis x = _make_node "softmax" (Fun01 (A.softmax_ ?axis)) [|x|]
 
   let sigmoid x = _make_node "sigmoid" (Fun01 A.sigmoid_) [|x|]
 
@@ -541,7 +541,7 @@ module Make (A : Ndarray_Mutable) = struct
   let l2norm_sqr' x = _make_node "l2norm_sqr'" (Fun07 A.l2norm_sqr') [|x|]
 
 
-  (* comparion functions *)
+  (* comparison functions *)
 
   let elt_equal x y = _make_node "elt_equal" (Fun02 (A.elt_equal_, A.elt_equal)) [|x; y|]
 

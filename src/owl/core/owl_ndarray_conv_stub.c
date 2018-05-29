@@ -20,7 +20,7 @@
 #define ALPHA 1.
 #define BETA 0.
 #define GEMM cblas_sgemm
-#include "owl_ndarray_conv_impl.c"
+#include "owl_ndarray_conv_impl.h"
 #undef GEMM
 #undef BETA
 #undef ALPHA
@@ -37,7 +37,7 @@
 #define ALPHA 1.
 #define BETA 0.
 #define GEMM cblas_dgemm
-#include "owl_ndarray_conv_impl.c"
+#include "owl_ndarray_conv_impl.h"
 #undef GEMM
 #undef BETA
 #undef ALPHA
@@ -54,7 +54,7 @@
 #define ALPHA &alpha
 #define BETA &beta
 #define GEMM cblas_cgemm
-#include "owl_ndarray_conv_impl.c"
+#include "owl_ndarray_conv_impl.h"
 #undef GEMM
 #undef BETA
 #undef ALPHA
@@ -71,7 +71,7 @@
 #define ALPHA &alpha
 #define BETA &beta
 #define GEMM cblas_zgemm
-#include "owl_ndarray_conv_impl.c"
+#include "owl_ndarray_conv_impl.h"
 #undef GEMM
 #undef BETA
 #undef ALPHA

@@ -7,7 +7,7 @@ open Bigarray
 
 open Owl_types
 
-open Owl_dense_common_types
+open Owl_core_types
 
 
 (* Interface to the native c functions *)

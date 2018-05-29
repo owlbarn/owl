@@ -20,6 +20,8 @@ let () =
     "pooling3d",            Unit_pool3d.test_set;
     "conv2d",               Unit_conv2d.test_set;
     "conv3d",               Unit_conv3d.test_set;
+    "transpose_conv2d",     Unit_transpose_conv2d.test_set;
+    "transpose_conv3d",     Unit_transpose_conv3d.test_set;
     "learning rate",        Unit_learning_rate.test_set;
     "base: algodiff diff",  Unit_base_algodiff_diff.test_set;
     "base: algodiff grad",  Unit_base_algodiff_grad.test_set;
@@ -28,6 +30,7 @@ let () =
     "base: pooling3d",      Unit_base_pool3d.test_set;
     "base: conv2d",         Unit_base_conv2d.test_set;
     "base: conv3d",         Unit_base_conv3d.test_set;
-    "view",                 Unit_view.test_set;
-    "maths_root",           Unit_maths_root.test_set;
+    "base: view",           Unit_view.test_set;
+    "base: maths_root",     Unit_maths_root.test_set;
+    "base: complex",        Unit_base_complex.test_set;
   ]

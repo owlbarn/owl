@@ -9,6 +9,7 @@
 #include "owl_macros.h"
 #include "owl_slicing.h"
 #include "owl_ndarray_contract.h"
+#include <stdio.h> // DEBUG
 
 
 /** Core function declaration **/
@@ -35,6 +36,14 @@ extern void c_float64_ndarray_contract_one (struct contract_pair *sp);
 extern void c_complex32_ndarray_contract_one (struct contract_pair *sp);
 
 extern void c_complex64_ndarray_contract_one (struct contract_pair *sp);
+
+extern void c_float32_ndarray_contract_two (struct contract_pair *sp);
+
+extern void c_float64_ndarray_contract_two (struct contract_pair *sp);
+
+extern void c_complex32_ndarray_contract_two (struct contract_pair *sp);
+
+extern void c_complex64_ndarray_contract_two (struct contract_pair *sp);
 
 extern void c_float32_matrix_swap_rows (float *x, int m, int n, int i, int j);
 
@@ -101,9 +110,9 @@ extern void c_complex64_ndarray_set_fancy (struct fancy_pair *sp);
 
 // compare two numbers (real & complex & int)
 
-#define CEQF(X,Y) ((crealf(X) == crealf(Y)) && (cimagf(X) < cimagf(Y)))
+#define CEQF(X,Y) ((crealf(X) == crealf(Y)) && (cimagf(X) == cimagf(Y)))
 
-#define CEQ(X,Y) ((creal(X) == creal(Y)) && (cimag(X) < cimag(Y)))
+#define CEQ(X,Y) ((creal(X) == creal(Y)) && (cimag(X) == cimag(Y)))
 
 #define CNEQF(X,Y) ((crealf(X) != crealf(Y)) || (cimagf(X) != cimagf(Y)))
 
@@ -129,9 +138,9 @@ extern int float32_cmp (const void * a, const void * b);
 
 extern int float64_cmp (const void * a, const void * b);
 
-extern int complex32_cmpf (const void * a, const void * b);
+extern int complex32_cmp (const void * a, const void * b);
 
-extern int complex64_cmpf (const void * a, const void * b);
+extern int complex64_cmp (const void * a, const void * b);
 
 extern int int8_cmp (const void * a, const void * b);
 
@@ -144,6 +153,26 @@ extern int uint16_cmp (const void * a, const void * b);
 extern int int32_cmp (const void * a, const void * b);
 
 extern int int64_cmp (const void * a, const void * b);
+
+extern int float32_cmp_r (const void * a, const void * b, const void * z);
+
+extern int float64_cmp_r (const void * a, const void * b, const void * z);
+
+extern int complex32_cmp_r (const void * a, const void * b, const void * z);
+
+extern int complex64_cmp_r (const void * a, const void * b, const void * z);
+
+extern int int8_cmp_r (const void * a, const void * b, const void * z);
+
+extern int uint8_cmp_r (const void * a, const void * b, const void * z);
+
+extern int int16_cmp_r (const void * a, const void * b, const void * z);
+
+extern int uint16_cmp_r (const void * a, const void * b, const void * z);
+
+extern int int32_cmp_r (const void * a, const void * b, const void * z);
+
+extern int int64_cmp_r (const void * a, const void * b, const void * z);
 
 
 // copy two double type numbers, for interfacing to foreign functions

@@ -180,6 +180,8 @@ val bottom : mat -> int -> int array array
 
 val sort : mat -> mat
 
+val argsort : mat -> (int64, int64_elt, c_layout) Genarray.t
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 
@@ -547,7 +549,7 @@ val softplus : mat -> mat
 
 val softsign : mat -> mat
 
-val softmax : mat -> mat
+val softmax :?axis:int -> mat -> mat
 
 val sigmoid : mat -> mat
 
@@ -789,7 +791,7 @@ val softsign_ : mat -> unit
 
 val sigmoid_ : mat -> unit
 
-val softmax_ : mat -> unit
+val softmax_ : ?axis:int -> mat -> unit
 
 val cumsum_ : ?axis:int -> mat -> unit
 

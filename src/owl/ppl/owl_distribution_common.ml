@@ -7,7 +7,7 @@
 
 open Bigarray
 
-open Owl_dense_common_types
+open Owl_core_types
 
 
 external owl_float32_uniform_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_uniform_rvs" "float32_uniform_rvs_impl"

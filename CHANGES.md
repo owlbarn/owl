@@ -1,7 +1,42 @@
-### 0.3.6 (in progress)
+### 0.3.8 (2018-05-22)
+
+* Add initial support for dataframe functionality.
+* Add IO module for Owl's specific file operations.
+* Add more helper functions in Array module in Base.
+* Add core functions such as one_hot, slide, and etc.
+* Fix normalisation neuron in neural network module.
+* Fix building, installation, and publishing on OPAM.
+* Fix broadcasting issue in Algodiff module.
+* Support negative axises in some ndarray functions.
+* Add more statistical distribution functions.
+* Add another higher level wrapper for CBLAS module.
+
+
+### 0.3.7 (2018-04-25)
 
 * Fix some bugs and improve performance.
-* Add more functions into Ndarray module.
+* Fix some docker files for automatic image building.
+* Move more pure OCaml implementation to base library.
+* Add a new math module to support complex numbers.
+* Improve the configuration and building system.
+* Improve the automatic documentation building system.
+* Change template code into C header files.
+* Add initial support for OpenMP with evaluation.
+* Tidy up packaging using TOPKG.
+
+
+### 0.3.6 (2018-03-22)
+
+* Fix some bugs and improve performance.
+* Add more unit tests for Ndarray module.
+* Add version control in Zoo gist system.
+* Add tensor contract operations in Ndarray.
+* Add more documentation of various functions.
+* Add support of complex numbers of convolution and pooling functions.
+* Enhance Owl's own Array submodule in Utils module.
+* Fix pretty printer for rank 0 ndarrays.
+* Add functions to iterate slices in an ndarray.
+* Adjust the structure of OpenCL module.
 
 
 ### 0.3.5 (2018-03-12)

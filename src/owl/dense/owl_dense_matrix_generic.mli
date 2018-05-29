@@ -577,6 +577,13 @@ as result, the original ``x`` remains intact. If you want to perform in-place
 sorting, please use `sort_` instead.
  *)
 
+val argsort : ('a, 'b) t -> (int64, int64_elt) t
+(**
+``argsort x`` returns the indices with which the elements in ``x`` are sorted in
+increasing order. Note that the returned index ndarray has the same shape as
+that of ``x``, and the indices are 1D indices.
+ *)
+
 
 (**{6 Iteration functions} *)
 
@@ -1664,10 +1671,11 @@ val softsign : (float, 'a) t -> (float, 'a) t
 elements in ``x`` and returns the result in a new matrix.
  *)
 
-val softmax : (float, 'a) t -> (float, 'a) t
+val softmax : ?axis:int -> (float, 'a) t -> (float, 'a) t
 (**
 ``softmax x`` computes the softmax functions ``(exp x) / (sum (exp x))`` of
-all the elements in ``x`` and returns the result in a new array.
+all the elements along the specified ``axis`` in ``x`` and returns the result
+in a new ndarray.
  *)
 
 val sigmoid : (float, 'a) t -> (float, 'a) t
@@ -1721,10 +1729,10 @@ val vecnorm' : ?p:float -> ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic`. *)
 
 val max_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
-(** TODO *)
+(** Refer to :doc:`owl_dense_ndarray_generic`. *)
 
 val avg_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
-(** TODO *)
+(** Refer to :doc:`owl_dense_ndarray_generic`. *)
 
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
@@ -1859,7 +1867,9 @@ val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val add_diag : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** TODO *)
+(** ``add_diag x a`` adds ``a`` to the diagonal elements in ``x``. A new copy
+of the data is returned.
+ *)
 
 val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
@@ -2383,7 +2393,7 @@ val sigmoid_ : ('a, 'b) t -> unit
 ``sigmoid_ x`` is similar to ``sigmoid`` but output is written to ``x``
  *)
 
-val softmax_ : ('a, 'b) t -> unit
+val softmax_ : ?axis:int -> ('a, 'b) t -> unit
 (**
 ``softmax_ x`` is similar to ``softmax`` but output is written to ``x``
  *)

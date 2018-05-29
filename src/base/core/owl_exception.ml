@@ -9,6 +9,8 @@ let check p e =
 
 exception NOT_IMPLEMENTED
 
+exception NOT_SUPPORTED
+
 exception FOUND
 
 exception NOT_FOUND
@@ -28,6 +30,8 @@ exception NOT_CONVERGE
 exception MAX_ITERATION
 
 exception SINGULAR
+
+exception NOT_SIMPLEX
 
 exception INDEX_OUT_OF_BOUND
 

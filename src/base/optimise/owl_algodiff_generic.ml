@@ -79,6 +79,7 @@ module Make
     | Set_Slice_C_D of t * t * int list list
     | Sum_D         of t
     | Sum__D        of t * int
+    | Sum___D       of t * int array
     | Dot_D_D       of t * t
     | Dot_D_C       of t * t
     | Dot_C_D       of t * t
@@ -113,6 +114,15 @@ module Make
     | Avgpool1D_D   of t * padding * int array * int array
     | Avgpool2D_D   of t * padding * int array * int array
     | Avgpool3D_D   of t * padding * int array * int array
+    | Tr_Conv1D_D_D of t * t * int array
+    | Tr_Conv1D_D_C of t * t * int array
+    | Tr_Conv1D_C_D of t * t * int array
+    | Tr_Conv2D_D_D of t * t * int array
+    | Tr_Conv2D_D_C of t * t * int array
+    | Tr_Conv2D_C_D of t * t * int array
+    | Tr_Conv3D_D_D of t * t * int array
+    | Tr_Conv3D_D_C of t * t * int array
+    | Tr_Conv3D_C_D of t * t * int array
 
 
   (* generate global tags *)
@@ -202,6 +212,19 @@ module Make
     | Arr x -> Arr A.(repeat ?axis x reps)
     | _     -> failwith "error: AD.repeat"
 
+  (* TODO: Redesign the API of repeat. *)
+  let repeat_axes axis x reps =
+    match primal' x with
+    | Arr x -> Arr (
+        let n = Array.length axis in
+        let y = ref x in
+        for i = 0 to (n - 1) do
+          y := A.(repeat ~axis:(axis.(i)) !y reps.(i))
+        done;
+        !y
+      )
+    | _     -> failwith "error: AD.repeat_axes"
+
   (* packing and unpacking functions *)
 
   let pack_arr x = Arr x
@@ -222,7 +245,7 @@ module Make
 
   let deep_info x = match primal' x with
     | F a   -> Printf.sprintf "F(%g)" a
-    | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils.string_of_array string_of_int)
+    | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils_array.to_string string_of_int)
     | _     -> "you should not have reached here!"
 
   let type_info x = match x with
@@ -741,7 +764,7 @@ module Make
       let r a = Sum_D a in
       op_d_d a ff fd df r
 
-    and sum ?(axis=0) a =
+    and sum ?(axis=(-1)) a =
       let ff = function
         | F a      -> F a
         | Arr a    -> Arr A.(sum ~axis a)
@@ -750,6 +773,17 @@ module Make
       let fd a = sum ~axis a in
       let df cp ap at = sum ~axis at in
       let r a = Sum__D (a, axis) in
+      op_d_d a ff fd df r
+
+    and sum_reduce ?(axis=[|0|]) a =
+      let ff = function
+        | F a      -> F a
+        | Arr x    -> Arr A.(sum_reduce ~axis x)
+        | _        -> error_uniop "sum_reduce" a
+      in
+      let fd a = sum_reduce ~axis a in
+      let df cp ap at = sum_reduce ~axis at in
+      let r a = Sum___D (a, axis) in
       op_d_d a ff fd df r
 
     and mean a = (sum' a) / F (numel a |> float_of_int)
@@ -847,11 +881,10 @@ module Make
 
     and softsign x = x / (F 1. + abs x)
 
-    (* FIXME: use numerically stable version *)
-    and softmax x =
-      let c = F A.(max' (unpack_arr x)) in
+    and softmax ?(axis=(-1)) x =
+      let c = Arr A.(max ~axis (unpack_arr x)) in
       let y = exp (x - c) in
-      let a = sum' y in
+      let a = sum ~axis y in
       y / a
 
     and cross_entropy x y = x * log y |> sum' |> neg
@@ -936,6 +969,39 @@ module Make
       |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
+    and transpose_conv1d ?padding a b s =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> Arr A.(transpose_conv1d ?padding a b s)
+        | _            -> error_binop "transpose_conv1d" a b
+      in
+      let fd a b = transpose_conv1d ?padding a b s in
+      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+      let df_da cp ap at = at in
+      let df_db cp bp bt = bt in
+      let df_dab cp ap at bp bt = at + bt in
+      let r_d_d a b = Tr_Conv1D_D_D (a, b, s) in
+      let r_d_c a b = Tr_Conv1D_D_C (a, b, s) in
+      let r_c_d a b = Tr_Conv1D_C_D (a, b, s) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and transpose_conv1d_backward_input a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.transpose_conv1d_backward_input a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and transpose_conv1d_backward_kernel a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.transpose_conv1d_backward_kernel a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride *)
     and conv2d ?padding a b s =
       let ff a b =
         match a, b with
@@ -969,6 +1035,39 @@ module Make
       |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
+    and transpose_conv2d ?padding a b s =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> Arr A.(transpose_conv2d ?padding a b s)
+        | _            -> error_binop "transpose_conv2d" a b
+      in
+      let fd a b = transpose_conv2d ?padding a b s in
+      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+      let df_da cp ap at = at in
+      let df_db cp bp bt = bt in
+      let df_dab cp ap at bp bt = at + bt in
+      let r_d_d a b = Tr_Conv2D_D_D (a, b, s) in
+      let r_d_c a b = Tr_Conv2D_D_C (a, b, s) in
+      let r_c_d a b = Tr_Conv2D_C_D (a, b, s) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and transpose_conv2d_backward_input a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.transpose_conv2d_backward_input a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and transpose_conv2d_backward_kernel a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.transpose_conv2d_backward_kernel a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride *)
     and conv3d ?padding a b s =
       let ff a b =
         match a, b with
@@ -999,6 +1098,39 @@ module Make
       let b = unpack_arr b in
       let o = unpack_arr o in
       A.conv3d_backward_kernel a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride *)
+    and transpose_conv3d ?padding a b s =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> Arr A.(transpose_conv3d ?padding a b s)
+        | _            -> error_binop "transpose_conv3d" a b
+      in
+      let fd a b = transpose_conv3d ?padding a b s in
+      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+      let df_da cp ap at = at in
+      let df_db cp bp bt = bt in
+      let df_dab cp ap at bp bt = at + bt in
+      let r_d_d a b = Tr_Conv3D_D_D (a, b, s) in
+      let r_d_c a b = Tr_Conv3D_D_C (a, b, s) in
+      let r_c_d a b = Tr_Conv3D_C_D (a, b, s) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and transpose_conv3d_backward_input a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.transpose_conv3d_backward_input a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and transpose_conv3d_backward_kernel a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.transpose_conv3d_backward_kernel a b s o
       |> pack_arr
 
     and reshape a s =
@@ -1225,6 +1357,7 @@ module Make
               | Set_Slice_C_D (_, b, _)  -> reset (b :: t)
               | Sum_D a                  -> reset (a :: t)
               | Sum__D (a, _)            -> reset (a :: t)
+              | Sum___D (a, _)           -> reset (a :: t)
               | Dot_D_D (a, b)           -> reset (a :: b :: t)
               | Dot_D_C (a, _)           -> reset (a :: t)
               | Dot_C_D (_, b)           -> reset (b :: t)
@@ -1259,6 +1392,15 @@ module Make
               | Concat_D_D (a, b, _)     -> reset (a :: b :: t)
               | Concat_D_C (a, _, _)     -> reset (a :: t)
               | Concat_C_D (_, b, _)     -> reset (b :: t)
+              | Tr_Conv1D_D_D (a, b, _)  -> reset (a :: b :: t)
+              | Tr_Conv1D_D_C (a, _, _)  -> reset (a :: t)
+              | Tr_Conv1D_C_D (_, b, _)  -> reset (b :: t)
+              | Tr_Conv2D_D_D (a, b, _)  -> reset (a :: b :: t)
+              | Tr_Conv2D_D_C (a, _, _)  -> reset (a :: t)
+              | Tr_Conv2D_C_D (_, b, _)  -> reset (b :: t)
+              | Tr_Conv3D_D_D (a, b, _)  -> reset (a :: b :: t)
+              | Tr_Conv3D_D_C (a, _, _)  -> reset (a :: t)
+              | Tr_Conv3D_C_D (_, b, _)  -> reset (b :: t)
               )
             else reset t
             )
@@ -1268,28 +1410,35 @@ module Make
     reset [x]
 
 
+  (* check adjoint a and its update v, ensure rank a >= rank v. This function
+     fixes the inconsistent shapes between a and v by performing the inverse
+     operation of the previous broadcasting function. Note that padding is on
+     the left due to the expand function called in broadcasting. *)
+  let _shrink a v =
+    match a, v with
+    | F _, Arr v   -> F (A.sum' v)
+    | Arr a, Arr v -> (
+        let shp_a = A.shape a in
+        let shp_v = A.shape v in
+        if shp_a <> shp_v then (
+          let shp_a, shp_v = Owl_utils_array.align `Left 1 shp_a shp_v in
+          let axis = Owl_utils_array.filter2_i ( <> ) shp_a shp_v in
+          Arr (A.sum_reduce ~axis v)
+        )
+        else Arr v
+      )
+    | a, v         -> v
+
+
   let reverse_push v x =
     let open Maths in
-    (* check adjoint a and its update v, ensure rank a >= rank v *)
-    let _melt a v =
-      match a, v with
-      | F _, Arr v -> F (A.sum' v)
-      | Arr a, Arr v -> (
-          (* check if this is due to previous broadcast operation *)
-          (* FIXME: need to check full-shape, sum_cols if necessary *)
-          match A.(shape a = shape v) with
-          | true  -> Arr v
-          | false -> Arr (A.sum_slices v)
-        )
-      | a, v -> v
-    in
     let rec push xs =
       match xs with
       | []          -> ()
       | (v, x) :: t -> (
           match x with
           | DR (ap, aa, ao, af, ai) -> (
-            let v = _melt !aa v in
+            let v = _shrink !aa v in
             aa := Maths.(!aa + v);
             af := Pervasives.(!af - 1);
             if !af = 0 then (
@@ -1350,6 +1499,7 @@ module Make
               | Set_Slice_C_D (a, b, i)  -> push ((get_slice i !aa, b) :: t)
               | Sum_D a                  -> push ((!aa, a) :: t)
               | Sum__D (a, i)            -> push ((repeat ~axis:i !aa (shape a).(i), a) :: t)
+              | Sum___D (a, i)           -> let dims = Array.(map (get (shape a)) i) in push ((repeat_axes i !aa dims, a) :: t)
               | Dot_D_D (a, b)           -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
               | Dot_D_C (a, b)           -> push (((dot !aa (transpose b)), a) :: t)
               | Dot_C_D (a, b)           -> push (((dot (transpose a) !aa), b) :: t)
@@ -1384,6 +1534,15 @@ module Make
               | Concat_D_D (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: (s.(1) ,b) :: t)
               | Concat_D_C (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: t)
               | Concat_C_D (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(1) ,b) :: t)
+              | Tr_Conv1D_D_D (a, b, s)  -> push ((transpose_conv1d_backward_input a b s !aa, a) :: (transpose_conv1d_backward_kernel a b s !aa, b) :: t)
+              | Tr_Conv1D_D_C (a, b, s)  -> push ((transpose_conv1d_backward_input a b s !aa, a) :: t)
+              | Tr_Conv1D_C_D (a, b, s)  -> push ((transpose_conv1d_backward_kernel a b s !aa, b) :: t)
+              | Tr_Conv2D_D_D (a, b, s)  -> push ((transpose_conv2d_backward_input a b s !aa, a) :: (transpose_conv2d_backward_kernel a b s !aa, b) :: t)
+              | Tr_Conv2D_D_C (a, b, s)  -> push ((transpose_conv2d_backward_input a b s !aa, a) :: t)
+              | Tr_Conv2D_C_D (a, b, s)  -> push ((transpose_conv2d_backward_kernel a b s !aa, b) :: t)
+              | Tr_Conv3D_D_D (a, b, s)  -> push ((transpose_conv3d_backward_input a b s !aa, a) :: (transpose_conv3d_backward_kernel a b s !aa, b) :: t)
+              | Tr_Conv3D_D_C (a, b, s)  -> push ((transpose_conv3d_backward_input a b s !aa, a) :: t)
+              | Tr_Conv3D_C_D (a, b, s)  -> push ((transpose_conv3d_backward_kernel a b s !aa, b) :: t)
               )
             else push t
             )
@@ -1690,6 +1849,7 @@ module Make
                   | Set_Slice_C_D (a, b, i)  -> "Set_Slice_C_D", [a; b]
                   | Sum_D a                  -> "Sum_D", [ a ]
                   | Sum__D (a, i)            -> "Sum__D", [ a ]
+                  | Sum___D (a, i)           -> "Sum___D", [ a ]
                   | Dot_D_D (a, b)           -> "Dot_D_D", [a; b]
                   | Dot_D_C (a, b)           -> "Dot_D_C", [a; b]
                   | Dot_C_D (a, b)           -> "Dot_C_D", [a; b]
@@ -1724,6 +1884,15 @@ module Make
                   | Concat_D_D (a, b, i)     -> "Concat_D_D", [a; b]
                   | Concat_D_C (a, b, i)     -> "Concat_D_C", [a; b]
                   | Concat_C_D (a, b, i)     -> "Concat_C_D", [a; b]
+                  | Tr_Conv1D_D_D (a, b, s)  -> "Tr_Conv1D_D_D", [a; b]
+                  | Tr_Conv1D_D_C (a, b, s)  -> "Tr_Conv1D_D_C", [a; b]
+                  | Tr_Conv1D_C_D (a, b, s)  -> "Tr_Conv1D_C_D", [a; b]
+                  | Tr_Conv2D_D_D (a, b, s)  -> "Tr_Conv2D_D_D", [a; b]
+                  | Tr_Conv2D_D_C (a, b, s)  -> "Tr_Conv2D_D_C", [a; b]
+                  | Tr_Conv2D_C_D (a, b, s)  -> "Tr_Conv2D_C_D", [a; b]
+                  | Tr_Conv3D_D_D (a, b, s)  -> "Tr_Conv3D_D_D", [a; b]
+                  | Tr_Conv3D_D_C (a, b, s)  -> "Tr_Conv3D_D_C", [a; b]
+                  | Tr_Conv3D_C_D (a, b, s)  -> "Tr_Conv3D_C_D", [a; b]
                 )
               | F a                     -> Printf.sprintf "Const", []
               | Arr a                   -> Printf.sprintf "Const", []

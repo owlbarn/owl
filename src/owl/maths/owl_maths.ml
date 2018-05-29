@@ -27,11 +27,6 @@ let reci x = 1. /. x
 
 let signum x = if x = 0. then 0. else if x > 0. then 1. else -1.
 
-let same_sign x y =
-  if x >= 0. && y >= 0. then true
-  else if x <= 0. && y <= 0. then true
-  else false
-
 let softsign x = x /. (1. +. abs x)
 
 let softplus x = log (1. +. exp x)
@@ -305,11 +300,19 @@ let fresnel x =
 
 let struve v x = Owl_maths_special.struve v x
 
-let is_odd x = ((Pervasives.abs x) mod 2) = 1
+let same_sign = Owl_base_maths.same_sign
 
-let is_even x = (x mod 2) = 0
+let is_simplex = Owl_base_maths.is_simplex
 
-let is_pow2 x = (x <> 0) && (x land (x - 1) = 0)
+let is_nan = Owl_base_maths.is_nan
+
+let is_inf = Owl_base_maths.is_inf
+
+let is_odd = Owl_base_maths.is_odd
+
+let is_even = Owl_base_maths.is_even
+
+let is_pow2 = Owl_base_maths.is_pow2
 
 let nextafter = Owl_maths_special.nextafter
 
