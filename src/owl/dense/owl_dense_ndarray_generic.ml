@@ -376,6 +376,41 @@ let broadcast_op ?out op x0 x1 =
   y2
 
 
+(* the following functions are for broadcasting among x, y, z three variables. *)
+let broadcast_align_shape2 x0 x1 x2 =
+  let s0, s1, s2 = Owl_utils_array.align3 `Left 1 (shape x0) (shape x1) (shape x2) in
+  let y0 = reshape x0 s0 in
+  let y1 = reshape x1 s1 in
+  let y2 = reshape x2 s2 in
+  let s3 = Owl_utils_array.map3 (fun a b c -> max a (max b c)) s0 s1 s2 in
+
+  Owl_utils_array.iter4 (fun a b c d ->
+    Owl_exception.(check (not(a <> 1 && a <> d)) NOT_BROADCASTABLE);
+    Owl_exception.(check (not(b <> 1 && b <> d)) NOT_BROADCASTABLE);
+    Owl_exception.(check (not(c <> 1 && c <> d)) NOT_BROADCASTABLE);
+  ) s0 s1 s2 s3;
+
+  (* calculate the strides *)
+  let t0 = Owl_utils.calc_stride s0 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t1 = Owl_utils.calc_stride s1 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t2 = Owl_utils.calc_stride s2 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t3 = Owl_utils.calc_stride s3 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  (* return aligned arrays, shapes, strides *)
+  y0, y1, y2, s0, s1, s2, s3, t0, t1, t2, t3
+
+
+let broadcast_op2 ?out op x0 x1 x2 =
+  (* align the input rank, calculate the output shape and stride *)
+  let y0, y1, y2, s0, s1, s2, s3, t0, t1, t2, t3 = broadcast_align_shape2 x0 x1 x2 in
+  let y3 = match out with
+    | Some y3 -> y3
+    | None    -> empty (kind x0) s3
+  in
+  (* call the specific map function *)
+  op y0 t0 y1 t1 y2 t2 y3 t3;
+  y3
+
+
 (* mathematical functions *)
 
 let min_i x =
@@ -520,6 +555,23 @@ let scalar_fmod a x =
   let y = empty (kind x) (shape x) in
   _owl_scalar_fmod (kind x) (numel y) x y a;
   y
+
+
+let fma x y z =
+  let xshp = shape x in
+  let yshp = shape y in
+  let zshp = shape z in
+  let rshp = Owl_utils.calc_broadcast_shape2 xshp yshp zshp in
+  let out = empty (kind x) rshp in
+  if xshp = yshp && yshp = zshp then
+    Owl_ndarray_fma._ndarray_fma (kind x) (numel x) x y z out
+  else (
+    let _op = Owl_ndarray_fma._ndarray_fma_broadcast (kind x) in
+    broadcast_op2 _op ~out x y z |> ignore
+  );
+  out
+
+
 
 let ssqr_diff' x y = _owl_ssqr_diff (kind x) (numel x) x y
 

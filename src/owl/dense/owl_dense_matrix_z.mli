@@ -635,6 +635,8 @@ val kron : mat -> mat -> mat
 
 val clip_by_value : ?amin:elt -> ?amax:elt -> mat -> mat
 
+val fma : mat -> mat -> mat -> mat
+
 
 (** {6 Fucntions of in-place modification } *)
 

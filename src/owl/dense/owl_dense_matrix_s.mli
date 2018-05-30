@@ -660,6 +660,8 @@ val cov : ?b:mat -> a:mat -> mat
 
 val kron : mat -> mat -> mat
 
+val fma : mat -> mat -> mat -> mat
+
 
 (** {6 Fucntions of in-place modification } *)
 

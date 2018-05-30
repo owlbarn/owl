@@ -144,6 +144,20 @@ let iter3i f x y z =
   done
 
 
+let iter4i f w x y z =
+  let nw = Array.length w in
+  let nx = Array.length x in
+  let ny = Array.length y in
+  let nz = Array.length z in
+  assert (nw = nx && nx = ny && ny = nz);
+  for i = 0 to nw - 1 do
+    f i w.(i) x.(i) y.(i) z.(i)
+  done
+
+
+let iter4 f w x y z = iter4i (fun _ a b c d -> f a b c d) w x y z
+
+
 let map2i f x y =
   let c = min (Array.length x) (Array.length y) in
   Array.init c (fun i -> f i x.(i) y.(i))
@@ -261,6 +275,17 @@ let align s v x y =
     Array.copy x, pad s v (len_x - len_y) y
   else
     Array.copy x, Array.copy y
+
+
+let align3 s v x y z =
+  let len_x = Array.length x in
+  let len_y = Array.length y in
+  let len_z = Array.length z in
+  let len = max len_x (max len_y len_z) in
+  let x = if len_x < len then pad s v (len - len_x) x else Array.copy x in
+  let y = if len_y < len then pad s v (len - len_y) y else Array.copy y in
+  let z = if len_z < len then pad s v (len - len_z) z else Array.copy z in
+  x, y, z
 
 
 (* [x] is greater or equal than [y] elementwise *)

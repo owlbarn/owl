@@ -497,6 +497,8 @@ val pow_scalar : arr -> elt -> arr
 
 val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
 
+val fma : arr -> arr -> arr -> arr
+
 
 (** {6 Neural network related functions} *)
 

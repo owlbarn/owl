@@ -1776,6 +1776,9 @@ val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 ``clip_by_l2norm t x`` clips the ``x`` according to the threshold set by ``t``.
  *)
 
+val fma : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** ``fma x y z`` calculates the `fused multiply add`, i.e. ``(x * y) + z``. *)
+
 
 (** {6 Tensor Calculus}  *)
 

@@ -55,7 +55,7 @@ standardized moment of ``x``.
  *)
 
 val central_moment : int -> float array -> float
-(** ``central_moment n x`` calcuates the ``n`` th central moment of ``x``. *)
+(** ``central_moment n x`` calculates the ``n`` th central moment of ``x``. *)
 
 val cov : ?m0:float -> ?m1:float -> float array -> float array -> float
 (**
@@ -76,13 +76,13 @@ val corrcoef : float array -> float array -> float
  *)
 
 val kendall_tau : float array -> float array -> float
-(** ``kendall_tau x y`` calcuates the Kendall Tau correlation between ``x`` and ``y``. *)
+(** ``kendall_tau x y`` calculates the Kendall Tau correlation between ``x`` and ``y``. *)
 
 val spearman_rho : float array -> float array -> float
-(** ``spearman_rho x y`` calcuates the Spearman Rho correlation between ``x`` and ``y``. *)
+(** ``spearman_rho x y`` calculates the Spearman Rho correlation between ``x`` and ``y``. *)
 
 val autocorrelation : ?lag:int -> float array -> float
-(** ``autocorrelation ~lag x`` calcuates the autocorrelation of ``x`` with the given ``lag``. *)
+(** ``autocorrelation ~lag x`` calculates the autocorrelation of ``x`` with the given ``lag``. *)
 
 val percentile : float array -> float -> float
 (** ``percentile x p`` returns the ``p`` percentile of the data ``x``. ``p`` is between
@@ -164,10 +164,10 @@ order with duplicates removed.
  *)
 
 val z_score : mu:float -> sigma:float -> float array -> float array
-(** ``z_score x`` calcuates the z score of a given array ``x``. *)
+(** ``z_score x`` calculates the z score of a given array ``x``. *)
 
 val t_score : float array -> float array
-(** ``t_score x`` calcuates the t score of a given array ``x``. *)
+(** ``t_score x`` calculates the t score of a given array ``x``. *)
 
 val normlise_pdf : float array -> float array
 (** TODO *)

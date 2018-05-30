@@ -190,6 +190,8 @@ val scalar_mul : elt -> arr -> arr
 
 val scalar_div : elt -> arr -> arr
 
+val fma : arr -> arr -> arr -> arr
+
 
 (** {6 Iterate array elements}  *)
 

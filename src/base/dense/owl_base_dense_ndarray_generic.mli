@@ -516,6 +516,9 @@ val clip_by_value : ?amin:float -> ?amax:float -> (float, 'b) t -> (float, 'b) t
 val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val fma : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 
 (** {6 Neural network related}  *)
 

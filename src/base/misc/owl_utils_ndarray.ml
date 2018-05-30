@@ -141,13 +141,24 @@ let broadcastable s0 s1 =
 
 (* various functions to calculate output shape, used in computation graph. *)
 
-let calc_broadcast_shape s0 s1 =
+let calc_broadcast_shape1 s0 s1 =
   let sa, sb = Owl_utils_array.align `Left 1 s0 s1 in
   Array.iter2 (fun a b ->
     Owl_exception.(check (not(a <> 1 && b <> 1 && a <> b)) NOT_BROADCASTABLE);
   ) sa sb;
   (* calculate the output shape *)
   Array.map2 max sa sb
+
+
+let calc_broadcast_shape2 s0 s1 s2 =
+  let sa, sb, sc = Owl_utils_array.align3 `Left 1 s0 s1 s2 in
+  let sd = Owl_utils_array.map3 (fun a b c -> max a (max b c)) sa sb sc in
+  Owl_utils_array.iter4 (fun a b c d ->
+    Owl_exception.(check (not(a <> 1 && a <> d)) NOT_BROADCASTABLE);
+    Owl_exception.(check (not(b <> 1 && b <> d)) NOT_BROADCASTABLE);
+    Owl_exception.(check (not(c <> 1 && c <> d)) NOT_BROADCASTABLE);
+  ) sa sb sc sd;
+  sd
 
 
 let calc_fold_shape shape axis =

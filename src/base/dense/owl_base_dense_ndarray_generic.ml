@@ -894,6 +894,10 @@ let clip_by_value ?(amin=Pervasives.min_float) ?(amax=Pervasives.max_float) varr
   (map clip_by_val_fun varr)
 
 
+(* TODO *)
+let fma x y z = failwith "Owl_base_dense_ndarray_generic:fma: not implemented"
+
+
 (* Addition is commutative *)
 let scalar_add a varr = (add_scalar varr a)
 

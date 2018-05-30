@@ -1986,6 +1986,9 @@ and ``b``. If ``a`` is an ``m x n`` matrix and ``b`` is a ``p x q`` matrix, then
 between the elements of ``a`` and the matrix ``b``.
  *)
 
+val fma : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** ``fma x y z`` calculates the `fused multiply add`, i.e. ``(x * y) + z``. *)
+
 
 (** {6 Cast functions}  *)
 

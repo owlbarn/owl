@@ -422,7 +422,7 @@ module Make (A : Ndarray_Algodiff) = struct
     let s0 = input_shapes.(0).(0) in
     let s1 = input_shapes.(1).(0) in
     match s0, s1 with
-    | Some s0, Some s1 -> [| Some Owl_utils.(calc_broadcast_shape s0 s1) |]
+    | Some s0, Some s1 -> [| Some Owl_utils.(calc_broadcast_shape1 s0 s1) |]
     | _, _             -> [| None |]
 
 

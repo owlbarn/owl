@@ -152,6 +152,12 @@ val iter3i : (int -> 'a -> 'b -> 'c -> 'd) -> 'a array -> 'b array -> 'c array -
 val iter3 : ('a -> 'b -> 'c -> 'd) -> 'a array -> 'b array -> 'c array -> unit
 (** TODO *)
 
+val iter4i : (int -> 'a -> 'b -> 'c -> 'd -> unit) -> 'a array -> 'b array -> 'c array -> 'd array -> unit
+(** TODO *)
+
+val iter4 : ('a -> 'b -> 'c -> 'd -> unit) -> 'a array -> 'b array -> 'c array -> 'd array -> unit
+(** TODO *)
+
 val map2i : (int -> 'a -> 'b -> 'c) -> 'a array -> 'b array -> 'c array
 (** TODO *)
 
@@ -228,6 +234,9 @@ val align : [ `Left | `Right ] -> 'a -> 'a array -> 'a array -> 'a array * 'a ar
 ``align side v x y`` aligns two arrays ``x`` and ``y`` along the specified side
 with value ``v``. The copies of two arrays are returned.
  *)
+
+val align3 : [ `Left | `Right ] -> 'a -> 'a array -> 'a array -> 'a array -> 'a array * 'a array * 'a array
+(** ``align3 side v x y z`` aligns three arrays ``x``, ``y``, and ``z``. *)
 
 val greater_eqaul : 'a array -> 'a array -> bool
 (** TODO *)
