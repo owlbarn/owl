@@ -207,6 +207,12 @@ val filter2_i : ('a -> 'b -> bool) -> 'a array -> 'b array -> int array
 the elements to function ``f``.
  *)
 
+val filter2_split : ('a -> 'b -> bool) -> 'a array -> 'b array -> 'a array * 'b array
+(**
+``filter2_split f x y`` is similar to ``filter2 f x y``, but the returned
+results are two separated arrays rather than merging into one tuple array.
+ *)
+
 val resize : ?head:bool -> 'a -> int -> 'a array -> 'a array
 (**
 ``resize ~head v n x`` resizes ``x`` of length ``m`` to length ``n``. If

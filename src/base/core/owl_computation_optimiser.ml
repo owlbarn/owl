@@ -216,6 +216,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
   (* add ndarray a zero *)
   and pattern_001 x =
+    Owl_log.debug "pattern_001";
     let parents = parents x in
     let a = parents.(0) in
     let b = parents.(1) in
@@ -253,6 +254,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
   (* noop pattern *)
   and pattern_003 x =
+    Owl_log.debug "pattern_003";
     let parent = (parents x).(0) in
     _optimise_term parent;
     let op = get_operator x in
@@ -270,6 +272,20 @@ module Make (A : Ndarray_Algodiff) = struct
       ) children;
       remove_node x
     )
+
+
+  (* FMA pattern *)
+  and pattern_004 x =
+    Owl_log.debug "pattern_004";
+    let parents = parents x in
+    let a = parents.(0) in
+    let b = parents.(1) in
+    _optimise_term a;
+    _optimise_term b;
+    if get_operator a = Mul && refnum a = 1 then (
+      
+    )
+    else ()
 
 
   let run x =

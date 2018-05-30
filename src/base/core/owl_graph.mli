@@ -47,6 +47,9 @@ val indegree : 'a node -> int
 val outdegree : 'a node -> int
 (** ``outdegree x`` returns the out-degree of node ``x``. *)
 
+val degree : 'a node -> int
+(** ``degree x`` returns the total number of links of ``x``. *)
+
 val attr : 'a node -> 'a
 (** ``attr x`` returns the ``attr`` field of node ``x``. *)
 

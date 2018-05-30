@@ -882,7 +882,7 @@ module Make
       (* save historical data *)
       Checkpoint.(state.current_batch <- state.current_batch + 1);
       (* force GC to release bigarray memory *)
-      Gc.minor ();
+      (* FIXME Gc.minor (); *)
     done;
 
     (* print optimisation summary *)

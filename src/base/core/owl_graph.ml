@@ -47,6 +47,9 @@ let indegree x = Array.length x.prev
 let outdegree x = Array.length x.next
 
 
+let degree x = Array.(length x.prev + length x.next)
+
+
 let attr x = x.attr
 
 

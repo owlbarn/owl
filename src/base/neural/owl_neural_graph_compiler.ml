@@ -190,6 +190,7 @@ module Make
 
   let compile_deep (params : Graph.Optimise.Params.typ) network full_size =
     (* extract configurations of a network *)
+
     let loss_fun = Loss.run params.loss in
     let grad_fun = Gradient.run params.gradient in
     let rate_fun = Learning_Rate.run params.learning_rate in
@@ -199,6 +200,7 @@ module Make
     let clip_fun = Clipping.run params.clipping in
 
     (* infer input shape from batch size and network shape *)
+
     let batch = match params.batch with
       | Full       -> full_size
       | Mini n     -> n
@@ -209,6 +211,7 @@ module Make
     let input_shape = Array.append [|batch|] network_shape in
 
     (* initialise the network weight *)
+
     Graph.init network;
     Graph.mkpar network
     |> Owl_utils.aarr_map (fun v ->
@@ -221,6 +224,7 @@ module Make
     |> Graph.update network;
 
     (* derive the computation graph in forward mode *)
+
     let x = Lazy.var_arr ~name:"x" input_shape |> pack_arr in
     let y' = Graph.forward network x |> fst in
     let output_shape = unpack_arr y' |> Lazy.shape in
@@ -239,18 +243,19 @@ module Make
     Owl_graph.set_name (unpack_elt loss |> Lazy.elt_to_node) "loss";
 
     (* derive the computation graph in reverse mode *)
+
     let z = Graph.(backward network loss) in
     let pri = Owl_utils_array.flatten (fst z) in
     let adj = Owl_utils_array.flatten (snd z) in
 
-    (* assign input variable names *)
+    (* assign input/output variable names *)
+
     Array.iteri (fun i a ->
       let b = unpack_arr a |> Lazy.arr_to_node in
       let s = Printf.sprintf "x%i" i in
       Owl_graph.set_name b s
     ) pri;
 
-    (* assign output variable names *)
     Array.iteri (fun i a ->
       let b = unpack_arr a |> Lazy.arr_to_node in
       let s = Printf.sprintf "x%i'" i in
@@ -283,8 +288,8 @@ module Make
     in
 
     let ch = Array.mapi (fun i w ->
-      let name1 = Printf.sprintf "ch%ia" i in
-      let name2 = Printf.sprintf "ch%ib" i in
+      let name1 = Printf.sprintf "cha%i" i in
+      let name2 = Printf.sprintf "chb%i" i in
       let shape = Lazy.shape (unpack_arr w) in
       let ch1 = Lazy.var_arr ~name:name1 shape |> pack_arr in
       let ch2 = Lazy.var_arr ~name:name2 shape |> pack_arr in
@@ -292,7 +297,72 @@ module Make
     ) ws
     in
 
-    (* initialise values of some variables *)
+    (* calculate the new weights of the network *)
+
+    (* clip the gradient if necessary *)
+    let gs' = Array.map clip_fun gs' in
+    (* calculate gradient descent *)
+    let ps' = Checkpoint.(Owl_utils_array.map4 (grad_fun (fun a -> a)) ws gs ps gs') in
+    (* update gcache if necessary *)
+    let ch' = Owl_utils_array.map2 upch_fun gs' ch in
+    (* adjust direction based on learning_rate *)
+    let us' = Checkpoint.(
+      Owl_utils_array.map3 (fun p' g' c ->
+        (* FIXME: 999 is just place holder *)
+        Maths.(p' * rate_fun 999 g' c)
+      ) ps' gs' ch'
+    )
+    in
+    (* adjust direction based on momentum *)
+    let us' = Owl_utils_array.map2 momt_fun us us' in
+    (* update the weight *)
+    let ws' = Owl_utils_array.map2 (fun w u -> Maths.(w + u)) ws us' in
+
+    (* assign output variable names *)
+
+    Array.iteri (fun i a ->
+      let b = unpack_arr a |> Lazy.arr_to_node in
+      let s = Printf.sprintf "ws'%i" i in
+      Owl_graph.set_name b s
+    ) ws';
+
+    Array.iteri (fun i a ->
+      let b = unpack_arr a |> Lazy.arr_to_node in
+      let s = Printf.sprintf "ps'%i" i in
+      Owl_graph.set_name b s
+    ) ps';
+
+    Array.iteri (fun i a ->
+      let b = unpack_arr a |> Lazy.arr_to_node in
+      let s = Printf.sprintf "us'%i" i in
+      Owl_graph.set_name b s
+    ) us';
+
+    Array.iteri (fun i a ->
+      let c0 = unpack_arr a.(0) |> Lazy.arr_to_node in
+      let c1 = unpack_arr a.(1) |> Lazy.arr_to_node in
+      let s0 = Printf.sprintf "cha'%i" i in
+      let s1 = Printf.sprintf "chb'%i" i in
+      Owl_graph.set_name c0 s0;
+      Owl_graph.set_name c1 s1;
+    ) ch';
+
+    (* remove unused intermediate nodes *)
+
+    let ch, ch' = Owl_utils_array.(flatten ch, flatten ch') in
+    let gs, gs' = Owl_utils_array.filter2_split (fun g g' -> unpack_arr g |> Lazy.arr_to_node |> Owl_graph.degree <> 0) gs gs' in
+    let ps, ps' = Owl_utils_array.filter2_split (fun p p' -> unpack_arr p |> Lazy.arr_to_node |> Owl_graph.degree <> 0) ps ps' in
+    let us, us' = Owl_utils_array.filter2_split (fun u u' -> unpack_arr u |> Lazy.arr_to_node |> Owl_graph.degree <> 0) us us' in
+    let ch, ch' = Owl_utils_array.filter2_split (fun c c' -> unpack_arr c |> Lazy.arr_to_node |> Owl_graph.degree <> 0) ch ch' in
+
+    (* append noop node to avoid re-evaluation *)
+
+    let gs' = Array.map (fun g -> unpack_arr g |> Lazy.noop |> pack_arr) gs' in
+    let ps' = Array.map (fun p -> unpack_arr p |> Lazy.noop |> pack_arr) ps' in
+    let us' = Array.map (fun u -> unpack_arr u |> Lazy.noop |> pack_arr) us' in
+    let ch' = Array.map (fun c -> unpack_arr c |> Lazy.noop |> pack_arr) ch' in
+
+    (* initialise values of remaining variables *)
 
     Array.iter (fun g ->
       let g = Algodiff.unpack_arr g in
@@ -313,43 +383,23 @@ module Make
     ) us;
 
     Array.iter (fun c ->
-      let ca = Algodiff.unpack_arr c.(0) in
-      let cb = Algodiff.unpack_arr c.(1) in
-      let shape = Lazy.shape ca in
-      Lazy.assign_arr ca (A.zeros shape);
-      Lazy.assign_arr cb (A.zeros shape);
+      let c = Algodiff.unpack_arr c in
+      let shape = Lazy.shape c in
+      Lazy.assign_arr c (A.zeros shape)
     ) ch;
 
-    (* clip the gradient if necessary *)
-    let gs' = Array.map clip_fun gs' in
-    (* calculate gradient descent *)
-    let ps' = Checkpoint.(Owl_utils_array.map4 (grad_fun (fun a -> a)) ws gs ps gs') in
-    (* update gcache if necessary *)
-    let ch' = Owl_utils_array.map2 upch_fun gs' ch in
-    (* adjust direction based on learning_rate *)
-    let us' = Checkpoint.(
-      Owl_utils_array.map3 (fun p' g' c ->
-        Maths.(p' * rate_fun 999 g' c)
-      ) ps' gs' ch'
-    )
-    in
-    (* adjust direction based on momentum *)
-    let us' = Owl_utils_array.map2 momt_fun us us' in
-    (* update the weight *)
-    let ws' = Owl_utils_array.map2 (fun w u -> Maths.(w + u)) ws us' in
-
     (* freeze the graph *)
-    let a0 = [| unpack_elt loss |> Lazy.elt_to_node |] in
-    let a1 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) pri in
-    let a2 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) ws' in
-    let a3 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) gs' in
-    let a4 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) ps' in
-    let a5 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) us' in
-    let a6 = Owl_utils_array.(a0 @ a1 @ a2 @ a3 @ a4 @ a5) in
 
-    Lazy.freeze_ancestors a6;
+    let a0 = [| unpack_elt loss |> Lazy.elt_to_node |] in
+    let a1 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) ws' in
+    let a2 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) gs' in
+    let a3 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) ps' in
+    let a4 = Array.map (fun v -> unpack_arr v |> Lazy.arr_to_node) us' in
+    let a5 = Owl_utils_array.(a0 @ a1 @ a2 @ a3 @ a4) in
+    Lazy.freeze_ancestors a5;
 
     (* return key parameters *)
+
     loss, x, y, ws, gs, ps, us, ch, ws', gs', ps', us', ch'
 
 
@@ -360,8 +410,8 @@ module Make
     let gs' = Array.map Algodiff.unpack_arr gs' in
     let ps' = Array.map Algodiff.unpack_arr ps' in
     let us' = Array.map Algodiff.unpack_arr us' in
-    let ch' = Array.map Algodiff.unpack_arr (Owl_utils_array.flatten ch') in
-    let var = Owl_utils_array.(ws' @ gs' @ ps' @ us' @ ch') in
+    let ch' = Array.map Algodiff.unpack_arr ch' in
+    let all = Owl_utils_array.(ws' @ gs' @ ps' @ us' @ ch') in
 
     let _eval xt' yt' =
       let xt' = Algodiff.unpack_arr xt' in
@@ -371,7 +421,7 @@ module Make
       let yt' = Lazy.unpack_arr yt' in
       Lazy.assign_arr xt xt';
       Lazy.assign_arr yt yt';
-      Lazy.eval_arr var;
+      Lazy.eval_arr all;
       loss
     in
     _eval
@@ -382,20 +432,18 @@ module Make
     let gs = Array.map Algodiff.unpack_arr gs in
     let ps = Array.map Algodiff.unpack_arr ps in
     let us = Array.map Algodiff.unpack_arr us in
-    let ch = Owl_utils_array.(map Algodiff.unpack_arr (flatten ch)) in
+    let ch = Array.map Algodiff.unpack_arr ch in
+    let al = Owl_utils_array.(ws @ gs @ ps @ us @ ch) in
 
     let ws' = Array.map Algodiff.unpack_arr ws' in
     let gs' = Array.map Algodiff.unpack_arr gs' in
     let ps' = Array.map Algodiff.unpack_arr ps' in
     let us' = Array.map Algodiff.unpack_arr us' in
-    let ch' = Owl_utils_array.(map Algodiff.unpack_arr (flatten ch')) in
+    let ch' = Array.map Algodiff.unpack_arr ch' in
+    let al' = Owl_utils_array.(ws' @ gs' @ ps' @ us' @ ch') in
 
     let _update () =
-      Array.iter2 (fun u v -> Lazy.assign_arr u (Lazy.unpack_arr v)) ws ws';
-      Array.iter2 (fun u v -> Lazy.assign_arr u (Lazy.unpack_arr v)) gs gs';
-      Array.iter2 (fun u v -> Lazy.assign_arr u (Lazy.unpack_arr v)) ps ps';
-      Array.iter2 (fun u v -> Lazy.assign_arr u (Lazy.unpack_arr v)) us us';
-      Array.iter2 (fun u v -> Lazy.assign_arr u (Lazy.unpack_arr v)) ch ch';
+      Array.iter2 (fun u v -> Lazy.assign_arr u (Lazy.unpack_arr v)) al al'
     in
     _update
 
@@ -412,19 +460,23 @@ module Make
     let save fname = () in
 
     (* FIXME: for debug purpose *)
-    let cgraph = Owl_utils_array.([|Algodiff.unpack_elt loss |> Lazy.elt_to_node|] @
+    let cgraph =
+      Owl_utils_array.([|Algodiff.unpack_elt loss |> Lazy.elt_to_node|] @
       (ws' |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node)) @
       (gs' |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node)) @
       (ps' |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node)) @
-      (ch' |> flatten |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node)) @
+      (us' |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node)) @
+      (ch' |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node)) @
       (ws  |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node)) @
       (gs  |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node)) @
       (ps  |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node)) @
-      (ch  |> flatten |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node))
+      (us  |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node)) @
+      (ch  |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node))
       )
     in
     let name = Neural.Graph.get_network_name network in
     let dot_raw = Lazy.to_dot cgraph in
+    
     (* FIXME: experimental *)
     Computation_Optimiser.run cgraph;
 

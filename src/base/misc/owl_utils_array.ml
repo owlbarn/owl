@@ -200,6 +200,11 @@ let filter2i_i f x y =
 let filter2_i f x y = filter2i_i (fun _ a b -> f a b) x y
 
 
+let filter2_split f x y =
+  let z = filter2 f x y in
+  Array.(map fst z, map snd z)
+
+
 let resize ?(head=true) v n x =
   let m = Array.length x in
   if n < m then Array.(sub x 0 n |> copy)

@@ -570,6 +570,7 @@ module Make (A : Ndarray_Algodiff) = struct
   let infer_shape operator args =
     let input_shapes = Array.map (fun a -> (attr a).shape) args in
     match operator with
+    | Noop                                        -> _infer_shape_01 input_shapes
     | Get _                                       -> _infer_shape_00 input_shapes
     | GetSlice slice                              -> _infer_shape_20 input_shapes slice
     | Copy                                        -> _infer_shape_01 input_shapes
@@ -861,10 +862,7 @@ module Make (A : Ndarray_Algodiff) = struct
   let is_const x = (attr x).op = Const
 
 
-  let is_mutable x =
-    match (attr x).op with
-      | Const | Var -> false
-      | _ -> true
+  let is_mutable x = match (attr x).op with Const | Var -> false | _ -> true
 
 
   let is_assigned x =
@@ -964,7 +962,9 @@ module Make (A : Ndarray_Algodiff) = struct
 
   (* mathematical functions *)
 
-  let noop x = make_then_connect Noop [|arr_to_node x|] |> node_to_arr
+  let noop x =
+    Owl_log.debug "noop";
+    make_then_connect Noop [|arr_to_node x|] |> node_to_arr
 
   let empty shape =
     Owl_log.debug "empty";
