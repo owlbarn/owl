@@ -233,5 +233,14 @@ length of ``x``, if ``i < l - 1``, then ``x.(i) = x.(i)``, otherwise
 val index_of : 'a array -> 'a -> int
 (** ``index_of x a`` returns the index of first occurrence of ``a`` in ``x``. *)
 
+val bsearch : cmp:('a -> 'a -> int) -> 'a  -> 'a array -> int
+(**
+Binary search. ``bsearch cmp x a`` returns the index of the largest value
+in the sorted array a less than or equal to x, according to the comparison
+function cmp. If x is smaller than all elements, returns -1; if it is bigger
+than or equal to the largest element, returns ``Array.length a``. Raises if
+a is empty.
+*)
+
 val to_string : ?prefix:string -> ?suffix:string -> ?sep:string -> ('a -> string) -> 'a array -> string
 (** TODO *)

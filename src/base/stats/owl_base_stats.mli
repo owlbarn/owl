@@ -93,6 +93,15 @@ val rank : ?ties_strategy:[ `Average | `Min | `Max ] -> float array -> float arr
 val histogram : float array -> int -> int array
 (** Refer to :doc:`owl_stats`. *)
 
+val histogram' : bins:[ `Edges of float array | `N of int ] -> float array ->
+  float array * int array
+(** Refer to :doc:`owl_stats`. *)
+
+val fractions_of_counts : int array -> float array
+(** Refer to :doc:`owl_stats`. *)
+
+val density_of_bin_counts : float array * int array -> float array
+(** Refer to :doc:`owl_stats`. *)
 
 (** {6 Random variables} *)
 

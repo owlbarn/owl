@@ -156,6 +156,30 @@ Note that the ranking starts with one!
 val histogram : float array -> int -> int array
 (** ``histogram x n`` creates a histogram of ``n`` buckets for ``x``. *)
 
+val histogram' : bins:[ `Edges of float array | `N of int ] -> float array ->
+  float array * int array
+(**
+``histogram' ~bins x`` creates a histogram from values in ``x``. If bins
+matches `` `N n`` it will construct ``n`` equally spaced bins from the
+minimum to the maximum in ``x``. If bins matches `` `Edges b``, the array
+``b`` is taken as the sorted bin edges. Bin edges are taken as
+left-inclusive, right-exclusive, except for the last bin which is
+right-inclusive. Values outside the bins are dropped. Returns a tuple of bin
+edges and counts.
+*)
+
+val fractions_of_counts : int array -> float array
+(**
+``fractions_of_counts counts`` returns the bin counts normalized to
+sum to 1.
+*)
+
+val density_of_bin_counts : float array * int array -> float array
+(**
+``density_of_bin_counts (bins, counts)`` normalizes the counts as a density.
+That is, the returned densities, multiplied by the bin widths, sum to 1.
+*)
+
 val ecdf : float array -> float array * float array
 (**
 ``ecdf x`` returns ``(x',f)`` which are the empirical cumulative distribution

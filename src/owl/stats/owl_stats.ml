@@ -178,6 +178,13 @@ let minmax = Owl_base_stats.minmax
 let histogram = Owl_base_stats.histogram
 
 
+let histogram' = Owl_base_stats.histogram'
+
+let fractions_of_counts =  Owl_base_stats.fractions_of_counts
+
+let density_of_bin_counts = Owl_base_stats.density_of_bin_counts
+
+
 let ecdf x =
   let x = sort ~inc:true x in
   let n = Array.length x in

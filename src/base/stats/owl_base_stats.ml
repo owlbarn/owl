@@ -334,5 +334,45 @@ let histogram x n =
       d
     )
 
+let histogram' ~(bins:[`N of int | `Edges of float array]) x =
+  let bins, counts = match bins with
+    | `N n ->
+      let bmin, bmax = minmax x in
+      let db = (bmax -. bmin) /. float_of_int n in
+      let b = Array.init (n + 1) (fun i -> bmin +. float_of_int i *. db) in
+      let c = Array.make n 0 in
+      Array.iter (fun y ->           (* fast direct binning for uniform bins *)
+          let i = int_of_float ((y -. bmin) /. db) in
+          let i = if y = bmax then n - 1 else i in
+          c.(i) <- c.(i) + 1) x;
+      b, c
+    | `Edges b ->
+      let get_i y = Owl_utils_array.bsearch
+          ~cmp:(compare :> float -> _ -> _) y b in
+      let n = Array.length b in
+      let c = Array.make (n-1) 0 in
+      Array.iter (fun y ->
+          let i =                         (* do count on the rightmost edge! *)
+            let i' = get_i y in
+            if i' = n && y = b.(n-1) then n - 1 else i' in
+          try c.(i) <- c.(i) + 1
+          with Invalid_argument _ -> ()) x;
+      b, c in
+  bins, counts
+
+(* FIXME: histogram implementation alternative: sort the values first, then go
+ * from bin to bin and scan along the values to see how many are still in the
+ * bin. one sort instead of n bsearches... could be faster but this will depend
+ * on approximate pre-ordering of the values. *)
+
+let fractions_of_counts counts =
+  let total = Array.fold_left (+) 0 counts |> float_of_int in
+  Array.map (fun c -> float_of_int c /. total) counts
+
+let density_of_bin_counts (bins, counts) =
+  let total = Array.fold_left (+) 0 counts |> float_of_int in
+  Array.mapi (fun i c ->
+      float_of_int c /. (bins.(i+1) -. bins.(i)) /. total) counts
+
 
 (* ends here *)
