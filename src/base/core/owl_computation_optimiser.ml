@@ -214,7 +214,7 @@ module Make (A : Ndarray_Algodiff) = struct
     Array.iter _optimise_term parents
 
 
-  (* add ndarray a zero *)
+  (* add ndarray pattern *)
   and pattern_001 x =
     Owl_log.debug "pattern_001";
     let parents = parents x in
@@ -222,34 +222,43 @@ module Make (A : Ndarray_Algodiff) = struct
     let b = parents.(1) in
     _optimise_term a;
     _optimise_term b;
-    (
-      match get_operator a with
-      | Zeros shape -> (
-          set_operator x Noop;
-          remove_edge a x;
-          let value = get_value x in
-          if Array.length value > 0 then
-            set_value x [|value.(1)|];
-          _optimise_term x
-        )
-      | _           -> ()
-    );
-    (
-      match get_operator b with
-      | Zeros shape -> (
-          set_operator x Noop;
-          remove_edge b x;
-          let value = get_value x in
-          if Array.length value > 0 then
-            set_value x [|value.(0)|];
-          _optimise_term x
-        )
-      | _           -> ()
+    pattern_002 x;
+    (* FIXME: why it gets slower ... *)
+    pattern_004 x
+
+
+  (* add ndarray pattern: add ndarray a zero *)
+  and pattern_002 x =
+    Owl_log.debug "pattern_002";
+    let x_parents = parents x in
+    let a = x_parents.(0) in
+    let b = x_parents.(1) in
+    if get_operator x = Add then (
+      (
+        match get_operator a with
+        | Zeros shape -> (
+            set_operator x Noop;
+            remove_edge a x;
+            let value = get_value x in
+            if Array.length value > 0 then
+              set_value x [|value.(1)|];
+            _optimise_term x
+          )
+        | _           -> ()
+      );
+      (
+        match get_operator b with
+        | Zeros shape -> (
+            set_operator x Noop;
+            remove_edge b x;
+            let value = get_value x in
+            if Array.length value > 0 then
+              set_value x [|value.(0)|];
+            _optimise_term x
+          )
+        | _           -> ()
+      )
     )
-
-
-  (* add_scalar a zero *)
-  and pattern_002 x = ()
 
 
   (* noop pattern *)
@@ -260,32 +269,34 @@ module Make (A : Ndarray_Algodiff) = struct
     let op = get_operator x in
     let is_leaf = outdegree x = 0 in
     if op = Noop && is_leaf = false then (
-      let children = children x in
-      connect_descendants [|parent|] children;
-      Array.iter (fun child ->
-        let prev = Array.map (fun v ->
-          (* NOTE: must be == to check physical equality *)
-          if v == x then parent else v
-        ) (parents child)
-        in
-        set_parents child prev
-      ) children;
+      set_children parent (children x);
+      replace_parent x parent;
       remove_node x
     )
 
 
-  (* FMA pattern *)
+  (* add ndarray pattern: FMA pattern *)
   and pattern_004 x =
     Owl_log.debug "pattern_004";
-    let parents = parents x in
-    let a = parents.(0) in
-    let b = parents.(1) in
-    _optimise_term a;
-    _optimise_term b;
-    if get_operator a = Mul && refnum a = 1 then (
-      
+    if get_operator x = Add then (
+      let x_parents = parents x in
+      let a = x_parents.(0) in
+      let b = x_parents.(1) in
+      if get_operator a = Mul && refnum a = 1 then (
+        let new_parents = Owl_utils_array.((parents a) @ [|b|]) in
+        set_parents x new_parents;
+        replace_child a x;
+        set_operator x FMA;
+        remove_node a;
+      )
+      else if get_operator b = Mul && refnum b = 1 then (
+        let new_parents = Owl_utils_array.((parents b) @ [|a|]) in
+        set_parents x new_parents;
+        replace_child b x;
+        set_operator x FMA;
+        remove_node b;
+      )
     )
-    else ()
 
 
   let run x =

@@ -108,6 +108,18 @@ val remove_edge : 'a node -> 'a node -> unit
 it does not remove [dst -> src] if there exists one.
  *)
 
+val replace_child : 'a node -> 'a node -> unit
+(**
+``replace_child x y`` replaces ``x`` with ``y`` in ``x`` parents. Namely, ``x``
+parents now make link to ``y`` rather than ``x`` in ``next`` field.
+ *)
+
+val replace_parent : 'a node -> 'a node -> unit
+(**
+``replace_parent x y`` replaces ``x`` with ``y`` in ``x`` children. Namely,
+``x`` children now make link to ``y`` rather than ``x`` in ``prev`` field.
+ *)
+
 val copy : ?dir:dir -> 'a node array -> 'a node array
 (**
 ``copy ~dir x`` makes a copy of ``x`` and all its ancestors

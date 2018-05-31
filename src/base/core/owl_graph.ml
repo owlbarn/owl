@@ -103,6 +103,26 @@ let remove_edge src dst =
   dst.prev <- Owl_utils.Array.filter (fun x -> x.id <> src.id) dst.prev
 
 
+let replace_child child_0 child_1 =
+  Array.iter (fun parent ->
+    let next = Array.map (fun v ->
+      if v == child_0 then child_1 else v
+    ) parent.next
+    in
+    parent.next <- next;
+  ) child_0.prev
+
+
+let replace_parent parent_0 parent_1 =
+  Array.iter (fun child ->
+    let prev = Array.map (fun v ->
+      if v == parent_0 then parent_1 else v
+    ) child.prev
+    in
+    child.prev <- prev;
+  ) parent_0.next
+
+
 (* depth-first search from [x]; [f : node -> unit] is applied to each node;
   [next node -> node array] returns the next set of nodes to iterate;
 *)

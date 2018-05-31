@@ -2047,458 +2047,454 @@ val sort_ : ('a, 'b) t -> unit
 ``sort_ x`` performs in-place quicksort of the elelments in ``x``.
  *)
 
-val add_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val add_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``add_ x y`` is simiar to ``add`` function but the output is written to ``x``.
-The broadcast operation only allows broadcasting ``y`` over ``x``, so you need to
-make sure ``x`` is big enough to hold the output result.
+``add_ x y`` is simiar to ``add`` function but the output is written to
+``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
-val sub_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val sub_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``sub_ x y`` is simiar to ``sub`` function but the output is written to ``x``.
-The broadcast operation only allows broadcasting ``y`` over ``x``, so you need to
-make sure ``x`` is big enough to hold the output result.
+``sub_ x y`` is simiar to ``sub`` function but the output is written to
+``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
-val mul_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val mul_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``mul_ x y`` is simiar to ``mul`` function but the output is written to ``x``.
-The broadcast operation only allows broadcasting ``y`` over ``x``, so you need to
-make sure ``x`` is big enough to hold the output result.
+``mul_ x y`` is simiar to ``mul`` function but the output is written to
+``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
-val div_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val div_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``div_ x y`` is simiar to ``div`` function but the output is written to ``x``.
-The broadcast operation only allows broadcasting ``y`` over ``x``, so you need to
-make sure ``x`` is big enough to hold the output result.
+``div_ x y`` is simiar to ``div`` function but the output is written to
+``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
-val pow_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val pow_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``pow_ x y`` is simiar to ``pow`` function but the output is written to ``x``.
-The broadcast operation only allows broadcasting ``y`` over ``x``, so you need to
-make sure ``x`` is big enough to hold the output result.
+``pow_ x y`` is simiar to ``pow`` function but the output is written to
+``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
-val atan2_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val atan2_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``atan2_ x y`` is simiar to ``atan2`` function but the output is written to ``x``.
-The broadcast operation only allows broadcasting ``y`` over ``x``, so you need to
-make sure ``x`` is big enough to hold the output result.
+``atan2_ x y`` is simiar to ``atan2`` function but the output is written to
+``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
-val hypot_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val hypot_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``hypot_ x y`` is simiar to ``hypot`` function but the output is written to ``x``.
-The broadcast operation only allows broadcasting ``y`` over ``x``, so you need to
-make sure ``x`` is big enough to hold the output result.
+``hypot_ x y`` is simiar to ``hypot`` function but the output is written to
+``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
-val fmod_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val fmod_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``fmod_ x y`` is simiar to ``fmod`` function but the output is written to ``x``.
-The broadcast operation only allows broadcasting ``y`` over ``x``, so you need to
-make sure ``x`` is big enough to hold the output result.
+``fmod_ x y`` is simiar to ``fmod`` function but the output is written to
+``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
-val min2_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val min2_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``min2_ x y`` is simiar to ``min2`` function but the output is written to ``x``.
-The broadcast operation only allows broadcasting ``y`` over ``x``, so you need to
-make sure ``x`` is big enough to hold the output result.
+``min2_ x y`` is simiar to ``min2`` function but the output is written to
+``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
-val max2_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val max2_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``max2_ x y`` is simiar to ``max2`` function but the output is written to ``x``.
-The broadcast operation only allows broadcasting ``y`` over ``x``, so you need to
-make sure ``x`` is big enough to hold the output result.
+``max2_ x y`` is simiar to ``max2`` function but the output is written to
+``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
-val add_scalar_ : ('a, 'b) t -> 'a -> unit
+val add_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``add_scalar_ x y`` is simiar to ``add_scalar`` function but the output is
 written to ``x``.
  *)
 
-val sub_scalar_ : ('a, 'b) t -> 'a -> unit
+val sub_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``sub_scalar_ x y`` is simiar to ``sub_scalar`` function but the output is
 written to ``x``.
  *)
 
-val mul_scalar_ : ('a, 'b) t -> 'a -> unit
+val mul_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``mul_scalar_ x y`` is simiar to ``mul_scalar`` function but the output is
 written to ``x``.
  *)
 
-val div_scalar_ : ('a, 'b) t -> 'a -> unit
+val div_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``div_scalar_ x y`` is simiar to ``div_scalar`` function but the output is
 written to ``x``.
  *)
 
-val pow_scalar_ : ('a, 'b) t -> 'a -> unit
+val pow_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``pow_scalar_ x y`` is simiar to ``pow_scalar`` function but the output is
 written to ``x``.
  *)
 
-val atan2_scalar_ : ('a, 'b) t -> 'a -> unit
+val atan2_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``atan2_scalar_ x y`` is simiar to ``atan2_scalar`` function but the output is
 written to ``x``.
  *)
 
-val fmod_scalar_ : ('a, 'b) t -> 'a -> unit
+val fmod_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``fmod_scalar_ x y`` is simiar to ``fmod_scalar`` function but the output is
 written to ``x``.
  *)
 
-val scalar_add_ : 'a -> ('a, 'b) t -> unit
+val scalar_add_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
 ``scalar_add_ a x`` is simiar to ``scalar_add`` function but the output is
 written to ``x``.
  *)
 
-val scalar_sub_ : 'a -> ('a, 'b) t -> unit
+val scalar_sub_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
 ``scalar_sub_ a x`` is simiar to ``scalar_sub`` function but the output is
 written to ``x``.
  *)
 
-val scalar_mul_ : 'a -> ('a, 'b) t -> unit
+val scalar_mul_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
 ``scalar_mul_ a x`` is simiar to ``scalar_mul`` function but the output is
 written to ``x``.
  *)
 
-val scalar_div_ : 'a -> ('a, 'b) t -> unit
+val scalar_div_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
 ``scalar_div_ a x`` is simiar to ``scalar_div`` function but the output is
 written to ``x``.
  *)
 
-val scalar_pow_ : 'a -> ('a, 'b) t -> unit
+val scalar_pow_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
 ``scalar_pow_ a x`` is simiar to ``scalar_pow`` function but the output is
 written to ``x``.
  *)
 
-val scalar_atan2_ : 'a -> ('a, 'b) t -> unit
+val scalar_atan2_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
 ``scalar_atan2_ a x`` is simiar to ``scalar_atan2`` function but the output is
 written to ``x``.
  *)
 
-val scalar_fmod_ : 'a -> ('a, 'b) t -> unit
+val scalar_fmod_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
 ``scalar_fmod_ a x`` is simiar to ``scalar_fmod`` function but the output is
 written to ``x``.
  *)
 
-val conj_ : ('a, 'b) t -> unit
+val fma_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(**
+``fma_ ~out x y z`` is simiar to ``fma x y z`` function but the output is
+written to ``out``.
+ *)
+
+val conj_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``conj_ x`` is similar to ``conj`` but output is written to ``x``
  *)
 
-val abs_ : ('a, 'b) t -> unit
+val abs_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``abs_ x`` is similar to ``abs`` but output is written to ``x``
  *)
 
-val neg_ : ('a, 'b) t -> unit
+val neg_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``neg_ x`` is similar to ``neg`` but output is written to ``x``
  *)
 
-val reci_ : ('a, 'b) t -> unit
+val reci_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``reci_ x`` is similar to ``reci`` but output is written to ``x``
  *)
 
-val signum_ : ('a, 'b) t -> unit
+val signum_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``signum_ x`` is similar to ``signum`` but output is written to ``x``
  *)
 
-val sqr_ : ('a, 'b) t -> unit
+val sqr_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``sqr_ x`` is similar to ``sqr`` but output is written to ``x``
  *)
 
-val sqrt_ : ('a, 'b) t -> unit
+val sqrt_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``sqrt_ x`` is similar to ``sqrt`` but output is written to ``x``
  *)
 
-val cbrt_ : ('a, 'b) t -> unit
+val cbrt_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``cbrt_ x`` is similar to ``cbrt`` but output is written to ``x``
  *)
 
-val exp_ : ('a, 'b) t -> unit
+val exp_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``exp_ x`` is similar to ``exp_`` but output is written to ``x``
  *)
 
-val exp2_ : ('a, 'b) t -> unit
+val exp2_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``exp2_ x`` is similar to ``exp2`` but output is written to ``x``
  *)
 
-val exp10_ : ('a, 'b) t -> unit
+val exp10_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``exp2_ x`` is similar to ``exp2`` but output is written to ``x``
  *)
 
-val expm1_ : ('a, 'b) t -> unit
+val expm1_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``expm1_ x`` is similar to ``expm1`` but output is written to ``x``
  *)
 
-val log_ : ('a, 'b) t -> unit
+val log_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``log_ x`` is similar to ``log`` but output is written to ``x``
  *)
 
-val log2_ : ('a, 'b) t -> unit
+val log2_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``log2_ x`` is similar to ``log2`` but output is written to ``x``
  *)
 
-val log10_ : ('a, 'b) t -> unit
+val log10_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``log10_ x`` is similar to ``log10`` but output is written to ``x``
  *)
 
-val log1p_ : ('a, 'b) t -> unit
+val log1p_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``log1p_ x`` is similar to ``log1p`` but output is written to ``x``
  *)
 
-val sin_ : ('a, 'b) t -> unit
+val sin_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``sin_ x`` is similar to ``sin`` but output is written to ``x``
  *)
 
-val cos_ : ('a, 'b) t -> unit
+val cos_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``cos_ x`` is similar to ``cos`` but output is written to ``x``
  *)
 
-val tan_ : ('a, 'b) t -> unit
+val tan_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``tan_ x`` is similar to ``tan`` but output is written to ``x``
  *)
 
-val asin_ : ('a, 'b) t -> unit
+val asin_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``asin_ x`` is similar to ``asin`` but output is written to ``x``
  *)
 
-val acos_ : ('a, 'b) t -> unit
+val acos_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``acos_ x`` is similar to ``acos`` but output is written to ``x``
  *)
 
-val atan_ : ('a, 'b) t -> unit
+val atan_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``atan_ x`` is similar to ``atan`` but output is written to ``x``
  *)
 
-val sinh_ : ('a, 'b) t -> unit
+val sinh_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``sinh_ x`` is similar to ``sinh`` but output is written to ``x``
  *)
 
-val cosh_ : ('a, 'b) t -> unit
+val cosh_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``cosh_ x`` is similar to ``cosh`` but output is written to ``x``
  *)
 
-val tanh_ : ('a, 'b) t -> unit
+val tanh_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``tanh_ x`` is similar to ``tanh`` but output is written to ``x``
  *)
 
-val asinh_ : ('a, 'b) t -> unit
+val asinh_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``asinh_ x`` is similar to ``asinh`` but output is written to ``x``
  *)
 
-val acosh_ : ('a, 'b) t -> unit
+val acosh_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``acosh_ x`` is similar to ``acosh`` but output is written to ``x``
  *)
 
-val atanh_ : ('a, 'b) t -> unit
+val atanh_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``atanh_ x`` is similar to ``atanh`` but output is written to ``x``
  *)
 
-val floor_ : ('a, 'b) t -> unit
+val floor_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``floor_ x`` is similar to ``floor`` but output is written to ``x``
  *)
 
-val ceil_ : ('a, 'b) t -> unit
+val ceil_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``ceil_ x`` is similar to ``ceil`` but output is written to ``x``
  *)
 
-val round_ : ('a, 'b) t -> unit
+val round_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``round_ x`` is similar to ``round`` but output is written to ``x``
  *)
 
-val trunc_ : ('a, 'b) t -> unit
+val trunc_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``trunc_ x`` is similar to ``trunc`` but output is written to ``x``
  *)
 
-val fix_ : ('a, 'b) t -> unit
+val fix_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``fix_ x`` is similar to ``fix`` but output is written to ``x``
  *)
 
-val erf_ : ('a, 'b) t -> unit
+val erf_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``erf_ x`` is similar to ``erf`` but output is written to ``x``
  *)
 
-val erfc_ : ('a, 'b) t -> unit
+val erfc_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``erfc_ x`` is similar to ``erfc`` but output is written to ``x``
  *)
 
-val relu_ : ('a, 'b) t -> unit
+val relu_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``relu_ x`` is similar to ``relu`` but output is written to ``x``
  *)
 
-val softplus_ : ('a, 'b) t -> unit
+val softplus_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``softplus_ x`` is similar to ``softplus`` but output is written to ``x``
  *)
 
-val softsign_ : ('a, 'b) t -> unit
+val softsign_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``softsign_ x`` is similar to ``softsign`` but output is written to ``x``
  *)
 
-val sigmoid_ : ('a, 'b) t -> unit
+val sigmoid_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``sigmoid_ x`` is similar to ``sigmoid`` but output is written to ``x``
  *)
 
-val softmax_ : ?axis:int -> ('a, 'b) t -> unit
+val softmax_ : ?out:('a, 'b) t -> ?axis:int -> ('a, 'b) t -> unit
 (**
 ``softmax_ x`` is similar to ``softmax`` but output is written to ``x``
  *)
 
-val cumsum_ : ?axis:int -> ('a, 'b) t -> unit
+val cumsum_ : ?out:('a, 'b) t -> ?axis:int -> ('a, 'b) t -> unit
 (**
 ``cumsum_ x`` is similar to ``cumsum`` but output is written to ``x``
  *)
 
-val cumprod_ : ?axis:int -> ('a, 'b) t -> unit
+val cumprod_ : ?out:('a, 'b) t -> ?axis:int -> ('a, 'b) t -> unit
 (**
 ``cumprod_ x`` is similar to ``cumprod`` but output is written to ``x``
  *)
 
-val cummin_ : ?axis:int -> ('a, 'b) t -> unit
+val cummin_ : ?out:('a, 'b) t -> ?axis:int -> ('a, 'b) t -> unit
 (**
 ``cummin_ x`` is similar to ``cummin`` but output is written to ``x``
  *)
 
-val cummax_ : ?axis:int -> ('a, 'b) t -> unit
+val cummax_ : ?out:('a, 'b) t -> ?axis:int -> ('a, 'b) t -> unit
 (**
 ``cummax_ x`` is similar to ``cummax`` but output is written to ``x``
  *)
 
-val dropout_ : ?rate:float -> ('a, 'b) t -> unit
+val dropout_ : ?out:('a, 'b) t -> ?rate:float -> ('a, 'b) t -> unit
 (**
 ``dropout_ x`` is similar to ``dropout`` but output is written to ``x``
  *)
 
-val elt_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val elt_equal_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``elt_equal_ x y`` is simiar to ``elt_equal`` function but the output is written
-to ``x``. The broadcast operation only allows broadcasting ``y`` over ``x``, so you
-need to make sure ``x`` is big enough to hold the output result.
+``elt_equal_ x y`` is simiar to ``elt_equal`` function but the output is
+written to ``out``. You need to make sure ``out`` is big enough to hold the
+output result.
  *)
 
-val elt_not_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val elt_not_equal_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``elt_not_equal_ x y`` is simiar to ``elt_not_equal`` function but the output is
-written to ``x``. The broadcast operation only allows broadcasting ``y`` over ``x``,
-so you need to make sure ``x`` is big enough to hold the output result.
+written to ``out``. You need to make sure ``out`` is big enough to hold the
+output result.
  *)
 
-val elt_less_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val elt_less_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``elt_less_ x y`` is simiar to ``elt_less`` function but the output is written
-to ``x``. The broadcast operation only allows broadcasting ``y`` over ``x``, so you
-need to make sure ``x`` is big enough to hold the output result.
+to ``out``. You need to make sure ``out`` is big enough to hold the output
+result.
  *)
 
-val elt_greater_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val elt_greater_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``elt_greater_ x y`` is simiar to ``elt_greater`` function but the output is
-written to ``x``. The broadcast operation only allows broadcasting ``y`` over ``x``,
-so you need to make sure ``x`` is big enough to hold the output result.
+written to ``out``. You need to make sure ``out`` is big enough to hold the
+output result.
  *)
 
-val elt_less_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val elt_less_equal_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``elt_less_equal_ x y`` is simiar to ``elt_less_equal`` function but the output
-is written to ``x``. The broadcast operation only allows broadcasting ``y`` over
-``x``, so you need to make sure ``x`` is big enough to hold the output result.
+is written to ``out``. You need to make sure ``out`` is big enough to hold the
+output result.
  *)
 
-val elt_greater_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+val elt_greater_equal_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``elt_greater_equal_ x y`` is simiar to ``elt_greater_equal`` function but the
-output is written to ``x``. The broadcast operation only allows broadcasting ``y``
-over ``x``, so you need to make sure ``x`` is big enough to hold the output result.
+output is written to ``out``. You need to make sure ``out`` is big enough to
+hold the output result.
  *)
 
-val elt_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+val elt_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``elt_equal_scalar_ x a`` is simiar to ``elt_equal_scalar`` function but the
 output is written to ``x``.
  *)
 
-val elt_not_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+val elt_not_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``elt_not_equal_scalar_ x a`` is simiar to ``elt_not_equal_scalar`` function but
 the output is written to ``x``.
  *)
 
-val elt_less_scalar_ : ('a, 'b) t -> 'a -> unit
+val elt_less_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``elt_less_scalar_ x a`` is simiar to ``elt_less_scalar`` function but the
 output is written to ``x``.
  *)
 
-val elt_greater_scalar_ : ('a, 'b) t -> 'a -> unit
+val elt_greater_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``elt_greater_scalar_ x a`` is simiar to ``elt_greater_scalar`` function but the
 output is written to ``x``.
  *)
 
-val elt_less_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+val elt_less_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``elt_less_equal_scalar_ x a`` is simiar to ``elt_less_equal_scalar`` function
 but the output is written to ``x``.
  *)
 
-val elt_greater_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+val elt_greater_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
 ``elt_greater_equal_scalar_ x a`` is simiar to ``elt_greater_equal_scalar``
 function but the output is written to ``x``.

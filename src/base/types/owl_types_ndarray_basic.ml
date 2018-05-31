@@ -47,6 +47,8 @@ module type Sig = sig
 
   val copy : arr -> arr
 
+  val copy_to : arr -> arr -> unit
+
   val reset : arr -> unit
 
   val reshape : arr -> int array -> arr
@@ -186,6 +188,9 @@ module type Sig = sig
   val scalar_mul : elt -> arr -> arr
 
   val scalar_div : elt -> arr -> arr
+
+  val fma : arr -> arr -> arr -> arr
+
 
   (* Neural network related functions *)
 

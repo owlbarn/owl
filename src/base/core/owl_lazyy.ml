@@ -21,44 +21,135 @@ module Make (A : Ndarray_Mutable) = struct
 
   let allocate_1 x =
     let x_val = value_to_arr (attr x).value.(0) in
-    if refnum x = 1 && is_mutable x then (
+    if refnum x = 1 && get_reuse x then (
       invalidate x;
       x_val
     )
     else A.copy x_val
 
 
-  let allocate_2 x y =
-    let x_val = value_to_arr (attr x).value.(0) in
-    let y_val = value_to_arr (attr y).value.(0) in
-    let x_shp = A.shape x_val in
-    let y_shp = A.shape y_val in
-    let x_shp, y_shp = Owl_utils_array.align `Left 1 x_shp y_shp in
+  let allocate_from_parent_1 x parent =
+    let parent_val = value_to_arr (get_value parent).(0) in
+    if is_assigned x = true then (
+      let x_val = value_to_arr (get_value x).(0) in
+      if x_val == parent_val then invalidate parent;
+      x_val
+    )
+    else (
+      if refnum parent = 1 && get_reuse parent then (
+        invalidate parent;
+        parent_val
+      )
+      else A.empty (A.shape parent_val)
+    )
 
-    if x_shp = y_shp then (
-      if refnum x = 1 && is_mutable x then (
-        invalidate x;
-        Some (x_val, y_val)
-      )
-      else if refnum y = 1 && is_mutable y then (
-        invalidate y;
-        Some (y_val, x_val)
-      )
-      else if refnum x = 2 && x == y && is_mutable x then (
-        invalidate x;
-        Some (x_val, y_val)
-      )
-      else Some (A.copy x_val, y_val)
+
+  let allocate_from_parent_2 x parent_0 parent_1 =
+    let parent_0_val = value_to_arr (get_value parent_0).(0) in
+    let parent_1_val = value_to_arr (get_value parent_1).(0) in
+    if is_assigned x = true then (
+      let x_val = value_to_arr (get_value x).(0) in
+      if x_val == parent_0_val then invalidate parent_0
+      else if x_val == parent_1_val then invalidate parent_1;
+      x_val
     )
-    else if Owl_utils.Array.greater_eqaul x_shp y_shp && refnum x = 1 && is_mutable x then (
-      invalidate x;
-      Some (x_val, y_val)
+    else (
+      let shp_0 = A.shape parent_0_val in
+      let shp_1 = A.shape parent_1_val in
+      let shp_0, shp_1 = Owl_utils_array.align `Left 1 shp_0 shp_1 in
+      let shp_x = Owl_utils.calc_broadcast_shape1 shp_0 shp_1 in
+
+      if shp_0 = shp_x then (
+        if refnum parent_0 = 1 && get_reuse parent_0 then (
+          invalidate parent_0;
+          parent_0_val
+        )
+        else if refnum parent_0 = 2 && parent_0 == parent_1 && get_reuse parent_0 then (
+          invalidate parent_0;
+          parent_0_val
+        )
+        else A.empty shp_x
+      )
+      else if shp_1 = shp_x then (
+        if refnum parent_1 = 1 && get_reuse parent_1 then (
+          invalidate parent_1;
+          parent_1_val
+        )
+        else A.empty shp_x
+      )
+      else A.empty shp_x
     )
-    else if Owl_utils.Array.greater_eqaul y_shp x_shp && refnum y = 1 && is_mutable y then (
-      invalidate y;
-      Some (y_val, x_val)
+
+
+  let allocate_from_parent_3 x parent_0 parent_1 parent_2 =
+    let parent_0_val = value_to_arr (get_value parent_0).(0) in
+    let parent_1_val = value_to_arr (get_value parent_1).(0) in
+    let parent_2_val = value_to_arr (get_value parent_2).(0) in
+    if is_assigned x = true then (
+      let x_val = value_to_arr (get_value x).(0) in
+      if x_val == parent_0_val then invalidate parent_0
+      else if x_val == parent_1_val then invalidate parent_1
+      else if x_val == parent_2_val then invalidate parent_2;
+      x_val
     )
-    else None
+    else (
+      let shp_0 = A.shape parent_0_val in
+      let shp_1 = A.shape parent_1_val in
+      let shp_2 = A.shape parent_2_val in
+      let shp_0, shp_1, shp_2 = Owl_utils_array.align3 `Left 1 shp_0 shp_1 shp_2 in
+      let shp_x = Owl_utils.calc_broadcast_shape2 shp_0 shp_1 shp_2 in
+
+      if shp_0 = shp_x && refnum parent_0 = 1 && get_reuse parent_0 then (
+        Owl_log.error "%s" (node_to_str parent_0);
+        invalidate parent_0;
+        parent_0_val
+      )
+      else if shp_1 = shp_x && refnum parent_1 = 1 && get_reuse parent_1 then (
+        invalidate parent_1;
+        parent_1_val
+      )
+      else if shp_2 = shp_x && refnum parent_2 = 1 && get_reuse parent_2 then (
+        invalidate parent_2;
+        parent_2_val
+      )
+      else A.empty shp_x
+      (*
+      if shp_0 = shp_x then (
+        if refnum parent_0 = 1 && get_reuse parent_0 then (
+          invalidate parent_0;
+          parent_0_val
+        )
+        else if refnum parent_0 = 2 && parent_0 == parent_1 && get_reuse parent_0 then (
+          invalidate parent_0;
+          parent_0_val
+        )
+        else if refnum parent_0 = 2 && parent_0 == parent_2 && get_reuse parent_0 then (
+          invalidate parent_0;
+          parent_0_val
+        )
+        else A.empty shp_x
+      )
+      else if shp_1 = shp_x then (
+        if refnum parent_1 = 1 && get_reuse parent_1 then (
+          invalidate parent_1;
+          parent_1_val
+        )
+        else if refnum parent_1 = 2 && parent_1 == parent_2 && get_reuse parent_1 then (
+          invalidate parent_1;
+          parent_1_val
+        )
+        else A.empty shp_x
+      )
+      else if shp_2 = shp_x then (
+        if refnum parent_2 = 1 && get_reuse parent_2 then (
+          invalidate parent_2;
+          parent_2_val
+        )
+        else A.empty shp_x
+      )
+      else A.empty shp_x
+      *)
+    )
 
 
   let rec _eval_term x =
@@ -66,9 +157,9 @@ module Make (A : Ndarray_Mutable) = struct
     if is_valid x = false then
       let _ = try
         match (get_operator x) with
-        | Noop                                        -> _eval_map_01 x (fun x -> ())
-        | Var                                         -> is_assigned x
-        | Const                                       -> is_assigned x
+        | Noop                                        -> _eval_map_99 x (fun x -> x)
+        | Var                                         -> check_assigned x
+        | Const                                       -> check_assigned x
         | Empty shape                                 -> _eval_map_08 x (fun x -> A.empty shape)
         | Zeros shape                                 -> _eval_map_08 x (fun x -> A.zeros shape)
         | Ones shape                                  -> _eval_map_08 x (fun x -> A.ones shape)
@@ -133,16 +224,16 @@ module Make (A : Ndarray_Mutable) = struct
         | L2NormSqr'                                  -> _eval_map_07 x A.l2norm_sqr'
         | ClipByValue                                 -> failwith "ClipByValue"
         | ClipByL2norm                                -> failwith "ClipByL2norm"
-        | Pow                                         -> _eval_map_02 x A.pow_ A.pow
+        | Pow                                         -> _eval_map_02 x A.pow_
         | ScalarPow                                   -> _eval_map_04 x A.scalar_pow_
         | PowScalar                                   -> _eval_map_03 x A.pow_scalar_
-        | Atan2                                       -> _eval_map_02 x A.atan2_ A.atan2
+        | Atan2                                       -> _eval_map_02 x A.atan2_
         | ScalarAtan2                                 -> _eval_map_04 x A.scalar_atan2_
         | Atan2Scalar                                 -> _eval_map_03 x A.atan2_scalar_
-        | Add                                         -> _eval_map_02 x A.add_ A.add
-        | Sub                                         -> _eval_map_02 x A.sub_ A.sub
-        | Mul                                         -> _eval_map_02 x A.mul_ A.mul
-        | Div                                         -> _eval_map_02 x A.div_ A.div
+        | Add                                         -> _eval_map_02 x A.add_
+        | Sub                                         -> _eval_map_02 x A.sub_
+        | Mul                                         -> _eval_map_02 x A.mul_
+        | Div                                         -> _eval_map_02 x A.div_
         | AddScalar                                   -> _eval_map_03 x A.add_scalar_
         | SubScalar                                   -> _eval_map_03 x A.sub_scalar_
         | MulScalar                                   -> _eval_map_03 x A.mul_scalar_
@@ -151,6 +242,7 @@ module Make (A : Ndarray_Mutable) = struct
         | ScalarSub                                   -> _eval_map_04 x A.scalar_sub_
         | ScalarMul                                   -> _eval_map_04 x A.scalar_mul_
         | ScalarDiv                                   -> _eval_map_04 x A.scalar_div_
+        | FMA                                         -> _eval_map_12 x A.fma_
         | IsZero                                      -> failwith "IsZero"
         | IsPositive                                  -> failwith "IsPositive"
         | IsNegative                                  -> failwith "IsNegative"
@@ -162,12 +254,12 @@ module Make (A : Ndarray_Mutable) = struct
         | Greater                                     -> failwith "Greater"
         | LessEqual                                   -> failwith "LessEqual"
         | GreaterEqual                                -> failwith "GreaterEqual"
-        | EltEqual                                    -> _eval_map_02 x A.elt_equal_ A.elt_equal
-        | EltNotEqual                                 -> _eval_map_02 x A.elt_not_equal_ A.elt_not_equal
-        | EltLess                                     -> _eval_map_02 x A.elt_less_ A.elt_less
-        | EltGreater                                  -> _eval_map_02 x A.elt_greater_ A.elt_greater
-        | EltLessEqual                                -> _eval_map_02 x A.elt_less_equal_ A.elt_less_equal
-        | EltGreaterEqual                             -> _eval_map_02 x A.elt_greater_equal_ A.elt_greater_equal
+        | EltEqual                                    -> _eval_map_02 x A.elt_equal_
+        | EltNotEqual                                 -> _eval_map_02 x A.elt_not_equal_
+        | EltLess                                     -> _eval_map_02 x A.elt_less_
+        | EltGreater                                  -> _eval_map_02 x A.elt_greater_
+        | EltLessEqual                                -> _eval_map_02 x A.elt_less_equal_
+        | EltGreaterEqual                             -> _eval_map_02 x A.elt_greater_equal_
         | EltEqualScalar                              -> _eval_map_03 x A.elt_equal_scalar_
         | EltNotEqualScalar                           -> _eval_map_03 x A.elt_not_equal_scalar_
         | EltLessScalar                               -> _eval_map_03 x A.elt_less_scalar_
@@ -268,24 +360,23 @@ module Make (A : Ndarray_Mutable) = struct
   and _eval_map_01 x f =
     let x_parent = (parents x).(0) in
     _eval_term x_parent;
-    let a = allocate_1 x_parent in
-    f a;
-    set_value x [|arr_to_value a|]
+    let a = value_to_arr (get_value x_parent).(0) in
+    let out = allocate_from_parent_1 x x_parent in
+    f ~out a;
+    set_value x [|arr_to_value out|]
 
 
-  (* [f] is inpure and [g] is pure, for [arr -> arr -> arr] *)
-  and _eval_map_02 x f g =
+  (* [f] is inpure, for [arr -> arr -> arr] *)
+  and _eval_map_02 x f =
     let x_parent_0 = (parents x).(0) in
     let x_parent_1 = (parents x).(1) in
     _eval_term x_parent_0;
     _eval_term x_parent_1;
     let a = value_to_arr (get_value x_parent_0).(0) in
     let b = value_to_arr (get_value x_parent_1).(0) in
-    let c = match allocate_2 x_parent_0 x_parent_1 with
-      | Some (p, q) -> f p q; p    (* in-place function, p will be written *)
-      | None        -> g a b       (* pure function without touching a and b *)
-    in
-    set_value x [|arr_to_value c|]
+    let out = allocate_from_parent_2 x x_parent_0 x_parent_1 in
+    f ~out a b;
+    set_value x [|arr_to_value out|]
 
 
   (* [f] is inpure, for [arr -> elt -> arr] *)
@@ -294,10 +385,11 @@ module Make (A : Ndarray_Mutable) = struct
     let x_parent_1 = (parents x).(1) in
     _eval_term x_parent_0;
     _eval_term x_parent_1;
-    let a = allocate_1 x_parent_0 in
+    let a = value_to_arr (get_value x_parent_0).(0) in
     let b = value_to_elt (get_value x_parent_1).(0) in
-    f a b;
-    set_value x [|arr_to_value a|]
+    let out = allocate_from_parent_1 x x_parent_0 in
+    f ~out a b;
+    set_value x [|arr_to_value out|]
 
 
   (* [f] is inpure, for [elt -> arr -> arr] *)
@@ -307,9 +399,10 @@ module Make (A : Ndarray_Mutable) = struct
     _eval_term x_parent_0;
     _eval_term x_parent_1;
     let a = value_to_elt (get_value x_parent_0).(0) in
-    let b = allocate_1 x_parent_1 in
-    f a b;
-    set_value x [|arr_to_value b|]
+    let b = value_to_arr (get_value x_parent_1).(0) in
+    let out = allocate_from_parent_1 x x_parent_1 in
+    f ~out a b;
+    set_value x [|arr_to_value out|]
 
 
   (* [f] is pure, shape changes so always allocate mem, for [arr array -> arr] *)
@@ -360,6 +453,7 @@ module Make (A : Ndarray_Mutable) = struct
     let c = f a b in
     set_value x [|elt_to_value c|]
 
+
   (* [f] is inpure but returns modified memory, for [arr -> arr] *)
   and _eval_map_11 x f =
     let x_parent = (parents x).(0) in
@@ -367,6 +461,30 @@ module Make (A : Ndarray_Mutable) = struct
     let a = allocate_1 x_parent in
     let b = f a in
     set_value x [|arr_to_value b|]
+
+
+  (* [f] is inpure, for [arr -> arr -> arr -> arr] *)
+  and _eval_map_12 x f =
+    let x_parent_0 = (parents x).(0) in
+    let x_parent_1 = (parents x).(1) in
+    let x_parent_2 = (parents x).(2) in
+    _eval_term x_parent_0;
+    _eval_term x_parent_1;
+    _eval_term x_parent_2;
+    let a = (get_value x_parent_0).(0) |> value_to_arr in
+    let b = (get_value x_parent_1).(0) |> value_to_arr in
+    let c = (get_value x_parent_2).(0) |> value_to_arr in
+    let out = allocate_from_parent_3 x x_parent_0 x_parent_1 x_parent_2 in
+    f ~out a b c;
+    set_value x [|arr_to_value out|]
+
+
+  (* dummy map for functions like noop, not invalidate parent *)
+  and _eval_map_99 x f =
+    let x_parent = (parents x).(0) in
+    _eval_term x_parent;
+    let a = (get_value x_parent).(0) |> value_to_arr |> f in
+    set_value x [|arr_to_value a|]
 
 
   (* NOTE: this function is for debugging purpose *)

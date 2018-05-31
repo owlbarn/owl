@@ -33,6 +33,8 @@ let get_ocaml_devmode_flags c =
 let get_default_cflags c = [
   (* Basic optimisation *)
   "-g"; "-O3"; "-Ofast";
+  (* FIXME: experimental switches *)
+  (* "-mavx2"; "-mfma"; "-ffp-contract=fast"; *)
   (* Experimental switches, -ffast-math may break IEEE754 semantics*)
   "-march=native"; "-mfpmath=sse"; "-funroll-loops"; "-ffast-math";
   (* Configure Mersenne Twister RNG *)

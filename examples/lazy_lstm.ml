@@ -4,10 +4,12 @@
 #zoo "217ef87bc36845c4e78e398d52bc4c5b"
 
 open Owl
-module L = Owl_lazyy.Make (Dense.Ndarray.S)
-include Owl_algodiff_generic.Make (L)
-include Owl_neural_generic.Make (L)
-open Graph
+
+module C = Owl_neural_graph_compiler.Make (Dense.Ndarray.S)
+
+open C.Neural
+open C.Neural.Graph
+open C.Algodiff
 
 
 let prepare window step =
@@ -32,20 +34,22 @@ let make_network wndsz vocabsz =
   |> lstm 128
   |> linear 512 ~act_typ:Activation.Relu
   |> linear vocabsz ~act_typ:Activation.(Softmax 1)
-  |> get_network
+  |> get_network ~name:"lstm"
 
 
 let train () =
   let wndsz = 100 and stepsz = 1 in
   let vocab, x, y = prepare wndsz stepsz in
   let vocabsz = Nlp.Vocabulary.length vocab in
+  let x = C.Lazy.pack_arr x |> C.Algodiff.pack_arr in
+  let y = C.Lazy.pack_arr y |> C.Algodiff.pack_arr in
 
   let network = make_network wndsz vocabsz in
   Graph.print network;
   let params = Params.config
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 50.
   in
-  train ~params network (L.pack_arr x) (L.pack_arr y) |> ignore
+  C.train ~params network x y |> ignore
 
 
 let _ = train ()

@@ -20,6 +20,7 @@ module Make (A : Ndarray_Algodiff) : sig
   type attr = {
     mutable op     : op;
     mutable freeze : bool;
+    mutable reuse  : bool;
     mutable state  : state;
     mutable shape  : (int array option) array;
     mutable value  : value array;
@@ -115,6 +116,7 @@ module Make (A : Ndarray_Algodiff) : sig
     | ScalarSub
     | ScalarMul
     | ScalarDiv
+    | FMA
     | IsZero
     | IsPositive
     | IsNegative
@@ -294,10 +296,10 @@ module Make (A : Ndarray_Algodiff) : sig
   val is_freeze : attr Owl_graph.node -> bool
   (** TODO *)
 
-  val is_mutable : attr Owl_graph.node -> bool
+  val is_assigned : attr Owl_graph.node -> bool
   (** TODO *)
 
-  val is_assigned : attr Owl_graph.node -> unit
+  val check_assigned : attr Owl_graph.node -> unit
   (** TODO *)
 
   val is_valid : attr Owl_graph.node -> bool
@@ -312,16 +314,22 @@ module Make (A : Ndarray_Algodiff) : sig
   val invalidate_graph : attr Owl_graph.node -> unit
   (** TODO *)
 
+  val set_operator : attr Owl_graph.node -> op -> unit
+  (** TODO *)
+
+  val get_operator : attr Owl_graph.node -> op
+  (** TODO *)
+
   val set_value : attr Owl_graph.node -> value array -> unit
   (** TODO *)
 
   val get_value : attr Owl_graph.node -> value array
   (** TODO *)
 
-  val set_operator : attr Owl_graph.node -> op -> unit
+  val set_reuse : attr Owl_graph.node -> bool -> unit
   (** TODO *)
 
-  val get_operator : attr Owl_graph.node -> op
+  val get_reuse : attr Owl_graph.node -> bool
   (** TODO *)
 
   val freeze : attr Owl_graph.node -> unit
@@ -382,6 +390,9 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
   val copy : arr -> arr
+  (** TODO *)
+
+  val copy_to : arr -> arr -> unit
   (** TODO *)
 
   val reset : arr -> unit
@@ -595,6 +606,9 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
   val scalar_div : elt -> arr -> arr
+  (** TODO *)
+
+  val fma : arr -> arr -> arr -> arr
   (** TODO *)
 
   val is_zero : arr -> bool

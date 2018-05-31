@@ -865,8 +865,8 @@ let expm x =
         let j = 2 * i in
         let k = j + 1 in
         p := M.dot !p x2;
-        M.(add_ u (mul_scalar !p c.(k)));
-        M.(add_ v (mul_scalar !p c.(j)));
+        M.(add_ ~out:u u (mul_scalar !p c.(k)));
+        M.(add_ ~out:v v (mul_scalar !p c.(j)));
       done;
 
       let u = M.dot x u in

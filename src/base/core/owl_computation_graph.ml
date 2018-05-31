@@ -23,11 +23,12 @@ module Make (A : Ndarray_Algodiff) = struct
 
   type t = attr node
   and attr = {
-    mutable op     : op;
-    mutable freeze : bool;
-    mutable state  : state;
-    mutable shape  : (int array option) array;
-    mutable value  : value array;
+    mutable op     : op;                        (* operation stored in this node *)
+    mutable freeze : bool;                      (* whether or not a node can link to other nodes *)
+    mutable reuse  : bool;                      (* whether others can resuse the allocated memory *)
+    mutable state  : state;                     (* state to show whether re-evaluation is needed *)
+    mutable shape  : (int array option) array;  (* shape of the output values stored in the node *)
+    mutable value  : value array;               (* output values of the node *)
   }
   and arr = Arr of t
   and elt = Elt of t
@@ -117,6 +118,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | ScalarSub
     | ScalarMul
     | ScalarDiv
+    | FMA
     | IsZero
     | IsPositive
     | IsNegative
@@ -302,6 +304,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | ScalarSub                                   -> "ScalarSub"
     | ScalarMul                                   -> "ScalarMul"
     | ScalarDiv                                   -> "ScalarDiv"
+    | FMA                                         -> "FMA"
     | IsZero                                      -> "IsZero"
     | IsPositive                                  -> "IsPositive"
     | IsNegative                                  -> "IsNegative"
@@ -564,6 +567,15 @@ module Make (A : Ndarray_Algodiff) = struct
     | None   -> [| None |]
 
 
+  let _infer_shape_23 input_shapes =
+    let s0 = input_shapes.(0).(0) in
+    let s1 = input_shapes.(1).(0) in
+    let s2 = input_shapes.(2).(0) in
+    match s0, s1, s2 with
+    | Some s0, Some s1, Some s2 -> [| Some Owl_utils.(calc_broadcast_shape2 s0 s1 s2) |]
+    | _, _, _                   -> [| None |]
+
+
   let _infer_shape_xx input_shapes = failwith "_infer_shape_xx: not implemented"
 
 
@@ -641,6 +653,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | ScalarSub                                   -> _infer_shape_02 input_shapes
     | ScalarMul                                   -> _infer_shape_02 input_shapes
     | ScalarDiv                                   -> _infer_shape_02 input_shapes
+    | FMA                                         -> _infer_shape_23 input_shapes
     | IsZero                                      -> _infer_shape_00 input_shapes
     | IsPositive                                  -> _infer_shape_00 input_shapes
     | IsNegative                                  -> _infer_shape_00 input_shapes
@@ -796,12 +809,13 @@ module Make (A : Ndarray_Algodiff) = struct
   let value_to_elt = function EltVal x -> x | _ -> failwith "Owl_computation_graph: value_to_elt"
 
 
-  let make_node ?name ?value ?shape ?freeze ?state op =
+  let make_node ?name ?value ?shape ?freeze ?reuse ?state op =
     let value = match value with Some v -> v | None -> [| |] in
     let shape = match shape with Some s -> s | None -> [| None |] in
     let state = match state with Some s -> s | None -> Invalid in
+    let reuse = match reuse with Some s -> s | None -> true in
     let freeze = match freeze with Some s -> s | None -> false in
-    Owl_graph.node ?name { op; freeze; state; shape; value }
+    Owl_graph.node ?name { op; freeze; reuse; state; shape; value }
 
 
   let make_then_connect ?shape op parents =
@@ -821,26 +835,26 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let var_arr ~name shape =
-    make_node ~name ~shape:[| Some shape |] Var
+    make_node ~name ~shape:[| Some shape |] ~reuse:false Var
     |> node_to_arr
 
 
   let var_elt ~name =
-    make_node ~name ~shape:[| Some [||] |] Var
+    make_node ~name ~shape:[| Some [||] |] ~reuse:false Var
     |> node_to_elt
 
 
   let const_arr ~name v =
     let value = [| arr_to_value v |] in
     let shape = [| Some A.(shape v) |] in
-    make_node ~name ~value ~shape ~freeze:true ~state:Valid Const
+    make_node ~name ~value ~shape ~freeze:true ~reuse:false ~state:Valid Const
     |> node_to_arr
 
 
   let const_elt ~name v =
     let value = [| elt_to_value v |] in
     let shape = [| Some [||] |] in
-    make_node ~name ~value ~shape ~freeze:true ~state:Valid Const
+    make_node ~name ~value ~shape ~freeze:true ~reuse:false ~state:Valid Const
     |> node_to_elt
 
 
@@ -856,16 +870,28 @@ module Make (A : Ndarray_Algodiff) = struct
   let get_operator x = (attr x).op
 
 
+  let set_reuse x reuse =
+    let op = (attr x).op in
+    assert (op <> Var && op <> Const);
+    (attr x).reuse <- reuse
+
+
+  let get_reuse x = (attr x).reuse
+
+
   let is_var x = (attr x).op = Var
 
 
   let is_const x = (attr x).op = Const
 
 
-  let is_mutable x = match (attr x).op with Const | Var -> false | _ -> true
-
-
   let is_assigned x =
+    let value = (attr x).value in
+    let valen = Array.length value in
+    valen > 0
+
+
+  let check_assigned x =
     let value = (attr x).value in
     let valen = Array.length value in
     if valen = 0 then (
@@ -898,28 +924,6 @@ module Make (A : Ndarray_Algodiff) = struct
   let freeze_ancestors x = iter_ancestors freeze x
 
 
-  let assign_arr x arr =
-    let node = arr_to_node x in
-    if is_var node then (
-      set_value node [| ArrVal arr |];
-      invalidate_graph node
-    )
-    else
-      Printf.sprintf "assign_arr: const cannot be assigned, %s" (node_to_str node)
-      |> failwith
-
-
-  let assign_elt x elt =
-    let node = elt_to_node x in
-    if is_var node then (
-      set_value node [| EltVal elt |];
-      invalidate_graph node
-    )
-    else
-      Printf.sprintf "assign_elt: const cannot be assigned, %s" (node_to_str node)
-      |> failwith
-
-
   let pack_arr arr = const_arr ~name:"" arr
 
 
@@ -942,15 +946,56 @@ module Make (A : Ndarray_Algodiff) = struct
     value_to_elt value.(0)
 
 
+  let assign_arr x arr =
+    let node = arr_to_node x in
+    if is_var node then (
+      if is_assigned node then (
+        let dst = unpack_arr x in
+        A.copy_to arr dst
+      )
+      else (
+        let dst = A.copy arr in
+        set_value node [| ArrVal dst |]
+      );
+      invalidate_graph node
+    )
+    else
+      Printf.sprintf "assign_arr: const cannot be assigned, %s" (node_to_str node)
+      |> failwith
+
+
+  let assign_arr''' x arr =
+    let node = arr_to_node x in
+    if is_var node then (
+      set_value node [| ArrVal arr |];
+      invalidate_graph node
+    )
+    else
+      Printf.sprintf "assign_arr: const cannot be assigned, %s" (node_to_str node)
+      |> failwith
+
+
+  let assign_elt x elt =
+    let node = elt_to_node x in
+    if is_var node then (
+      set_value node [| EltVal elt |];
+      invalidate_graph node
+    )
+    else
+      Printf.sprintf "assign_elt: const cannot be assigned, %s" (node_to_str node)
+      |> failwith
+
+
   (* TODO: should move to symbolic ... *)
   let arr_to_var x =
     let attr = arr_to_node x |> attr in
     let op = attr.op in
     let freeze = attr.freeze in
+    let reuse = false in
     let state = attr.state in
     let shape = attr.shape in
     let value = attr.value in
-    Owl_graph.node ~name:"" { op; state; freeze; shape; value }
+    Owl_graph.node ~name:"" { op; state; reuse; freeze; shape; value }
     |> node_to_arr
 
 
@@ -1042,6 +1087,8 @@ module Make (A : Ndarray_Algodiff) = struct
   let copy x =
     Owl_log.debug "copy";
     make_then_connect Copy [|arr_to_node x|] |> node_to_arr
+
+  let copy_to x y = failwith "copy_to: not implemented"
 
   let reset x =
     Owl_log.debug "reset";
@@ -1218,6 +1265,8 @@ module Make (A : Ndarray_Algodiff) = struct
   let scalar_mul a x = make_then_connect ScalarMul [|elt_to_node a; arr_to_node x|] |> node_to_arr
 
   let scalar_div a x = make_then_connect ScalarDiv [|elt_to_node a; arr_to_node x|] |> node_to_arr
+
+  let fma x y z = make_then_connect FMA [|arr_to_node x; arr_to_node y; arr_to_node z|] |> node_to_arr
 
   let is_zero x = raise Owl_exception.NOT_IMPLEMENTED
 

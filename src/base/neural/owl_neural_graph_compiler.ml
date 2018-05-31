@@ -355,12 +355,12 @@ module Make
     let us, us' = Owl_utils_array.filter2_split (fun u u' -> unpack_arr u |> Lazy.arr_to_node |> Owl_graph.degree <> 0) us us' in
     let ch, ch' = Owl_utils_array.filter2_split (fun c c' -> unpack_arr c |> Lazy.arr_to_node |> Owl_graph.degree <> 0) ch ch' in
 
-    (* append noop node to avoid re-evaluation *)
+    (* do not allow reusing memory to avoid re-evaluation *)
 
-    let gs' = Array.map (fun g -> unpack_arr g |> Lazy.noop |> pack_arr) gs' in
-    let ps' = Array.map (fun p -> unpack_arr p |> Lazy.noop |> pack_arr) ps' in
-    let us' = Array.map (fun u -> unpack_arr u |> Lazy.noop |> pack_arr) us' in
-    let ch' = Array.map (fun c -> unpack_arr c |> Lazy.noop |> pack_arr) ch' in
+    Array.iter (fun g -> unpack_arr g |> Lazy.arr_to_node |> (fun x -> Lazy.set_reuse x false)) gs';
+    Array.iter (fun p -> unpack_arr p |> Lazy.arr_to_node |> (fun x -> Lazy.set_reuse x false)) ps';
+    Array.iter (fun u -> unpack_arr u |> Lazy.arr_to_node |> (fun x -> Lazy.set_reuse x false)) us';
+    Array.iter (fun c -> unpack_arr c |> Lazy.arr_to_node |> (fun x -> Lazy.set_reuse x false)) ch';
 
     (* initialise values of remaining variables *)
 
@@ -453,13 +453,18 @@ module Make
       | Some p -> p
       | None   -> Graph.Optimise.Params.default ()
     in
+
+    (* compile network into static graph *)
+    let network_name = Neural.Graph.get_network_name network in
+    Owl_log.info "compile network %s into static graph ..." network_name;
     let x_size = (unpack_arr x |> Lazy.shape).(0) in
     let loss, xt, yt, ws, gs, ps, us, ch, ws', gs', ps', us', ch' = compile_deep params network x_size in
     let eval = make_eval_fun loss xt yt ws gs ps us ch ws' gs' ps' us' ch' in
     let update = make_update_fun ws gs ps us ch ws' gs' ps' us' ch' in
     let save fname = () in
 
-    (* FIXME: for debug purpose *)
+    (* Experimental: optimise graph structure *)
+    Owl_log.info "optimise %s graph structure ..." network_name;
     let cgraph =
       Owl_utils_array.([|Algodiff.unpack_elt loss |> Lazy.elt_to_node|] @
       (ws' |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node)) @
@@ -474,16 +479,16 @@ module Make
       (ch  |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node))
       )
     in
-    let name = Neural.Graph.get_network_name network in
+    let name = Graph.get_network_name network in
     let dot_raw = Lazy.to_dot cgraph in
-    
-    (* FIXME: experimental *)
+
     Computation_Optimiser.run cgraph;
 
     let dot_opt = Lazy.to_dot cgraph in
     Owl_io.write_file (name ^ "_raw.dot") dot_raw;
     Owl_io.write_file (name ^ "_opt.dot") dot_opt;
 
+    Owl_log.info "start training %s ..." network_name;
     Graph.Optimise.minimise_compiled_network ?state params eval update save x y
 
 

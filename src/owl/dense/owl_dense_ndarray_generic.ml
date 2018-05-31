@@ -572,6 +572,18 @@ let fma x y z =
   out
 
 
+let fma_ ?out x y z =
+  let out = match out with Some o -> o | None -> x in
+  let xshp = shape x in
+  let yshp = shape y in
+  let zshp = shape z in
+  if xshp = yshp && yshp = zshp then
+    Owl_ndarray_fma._ndarray_fma (kind x) (numel x) x y z out
+  else (
+    let _op = Owl_ndarray_fma._ndarray_fma_broadcast (kind x) in
+    broadcast_op2 _op ~out x y z |> ignore
+  )
+
 
 let ssqr_diff' x y = _owl_ssqr_diff (kind x) (numel x) x y
 
@@ -2706,7 +2718,7 @@ let one_hot depth idx =
 
 
 (* TODO: optimise performance, slow along the low dimension *)
-let cumulative_op ?(axis=(-1)) _cumop x =
+let cumulative_op ?(axis=(-1)) _cumop x y =
   let d = num_dims x in
   let a = Owl_utils.adjust_index axis d in
 
@@ -2721,34 +2733,34 @@ let cumulative_op ?(axis=(-1)) _cumop x =
   let ofsx = 0 in
   let ofsy = _stride.(a) in
 
-  _cumop m n x ofsx incx_m incx_n x ofsy incy_m incy_n
+  _cumop m n x ofsx incx_m incx_n y ofsy incy_m incy_n
 
 
 let cumsum ?axis x =
   let x = copy x in
   let _cumop = _owl_cumsum (kind x) in
-  cumulative_op ?axis _cumop x;
+  cumulative_op ?axis _cumop x x;
   x
 
 
 let cumprod ?axis x =
   let x = copy x in
   let _cumop = _owl_cumprod (kind x) in
-  cumulative_op ?axis _cumop x;
+  cumulative_op ?axis _cumop x x;
   x
 
 
 let cummin ?axis x =
   let x = copy x in
   let _cumop = _owl_cummin (kind x) in
-  cumulative_op ?axis _cumop x;
+  cumulative_op ?axis _cumop x x;
   x
 
 
 let cummax ?axis x =
   let x = copy x in
   let _cumop = _owl_cummax (kind x) in
-  cumulative_op ?axis _cumop x;
+  cumulative_op ?axis _cumop x x;
   x
 
 
@@ -3119,341 +3131,466 @@ let bottom x n = _search_close_to_extreme x n (Owl_const.pos_inf (kind x)) ( < )
 
 (* fucntions which modify the data in-place, not so pure *)
 
-let add_ x y =
+let add_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_add (kind x) (numel x) x y x
+  if sx = sy then _owl_add (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_add (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_add (kind x)) x y ~out |> ignore
   )
 
-let sub_ x y =
+let sub_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_sub (kind x) (numel x) x y x
+  if sx = sy then _owl_sub (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_sub (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_sub (kind x)) x y ~out |> ignore
   )
 
-let mul_ x y =
+let mul_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_mul (kind x) (numel x) x y x
+  if sx = sy then _owl_mul (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_mul (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_mul (kind x)) x y ~out |> ignore
   )
 
-let div_ x y =
+let div_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_div (kind x) (numel x) x y x
+  if sx = sy then _owl_div (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_div (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_div (kind x)) x y ~out |> ignore
   )
 
-let pow_ x y =
+let pow_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_pow (kind x) (numel x) x y x
+  if sx = sy then _owl_pow (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_pow (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_pow (kind x)) x y ~out |> ignore
   )
 
-let atan2_ x y =
+let atan2_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_atan2 (kind x) (numel x) x y x
+  if sx = sy then _owl_atan2 (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_atan2 (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_atan2 (kind x)) x y ~out |> ignore
   )
 
-let hypot_ x y =
+let hypot_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_hypot (kind x) (numel x) x y x
+  if sx = sy then _owl_hypot (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_hypot (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_hypot (kind x)) x y ~out |> ignore
   )
 
-let fmod_ x y =
+let fmod_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_fmod (kind x) (numel x) x y x
+  if sx = sy then _owl_fmod (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_fmod (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_fmod (kind x)) x y ~out |> ignore
   )
 
-let min2_ x y =
+let min2_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_min2 (kind x) (numel x) x y x
+  if sx = sy then _owl_min2 (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_min2 (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_min2 (kind x)) x y ~out |> ignore
   )
 
-let max2_ x y =
+let max2_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_max2 (kind x) (numel x) x y x
+  if sx = sy then _owl_max2 (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_max2 (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_max2 (kind x)) x y ~out |> ignore
   )
 
-let elt_equal_ x y =
+let elt_equal_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_equal (kind x) (numel x) x y out
+  else (
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_elt_equal (kind x)) x y ~out |> ignore
+  )
+
+let elt_not_equal_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_not_equal (kind x) (numel x) x y out
+  else (
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_elt_not_equal (kind x)) x y ~out |> ignore
+  )
+
+let elt_less_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_less (kind x) (numel x) x y out
+  else (
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_elt_less (kind x)) x y ~out |> ignore
+  )
+
+let elt_greater_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_greater (kind x) (numel x) x y out
+  else (
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_elt_greater (kind x)) x y ~out |> ignore
+  )
+
+let elt_less_equal_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_less_equal (kind x) (numel x) x y out
+  else (
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_elt_less_equal (kind x)) x y ~out |> ignore
+  )
+
+let elt_greater_equal_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
   if sx = sy then _owl_elt_equal (kind x) (numel x) x y x
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_elt_equal (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_elt_greater_equal (kind x)) x y ~out |> ignore
   )
 
-let elt_not_equal_ x y =
-  let sx = shape x in
-  let sy = shape y in
-  if sx = sy then _owl_elt_not_equal (kind x) (numel x) x y x
-  else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_elt_not_equal (kind x)) x y ~out:x |> ignore
-  )
+let elt_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_elt_equal_scalar (kind x) (numel x) x out a
 
-let elt_less_ x y =
-  let sx = shape x in
-  let sy = shape y in
-  if sx = sy then _owl_elt_less (kind x) (numel x) x y x
-  else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_elt_less (kind x)) x y ~out:x |> ignore
-  )
+let elt_not_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_elt_not_equal_scalar (kind x) (numel x) x out a
 
-let elt_greater_ x y =
-  let sx = shape x in
-  let sy = shape y in
-  if sx = sy then _owl_elt_greater (kind x) (numel x) x y x
-  else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_elt_greater (kind x)) x y ~out:x |> ignore
-  )
+let elt_less_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_elt_less_scalar (kind x) (numel x) x out a
 
-let elt_less_equal_ x y =
-  let sx = shape x in
-  let sy = shape y in
-  if sx = sy then _owl_elt_less_equal (kind x) (numel x) x y x
-  else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_elt_less_equal (kind x)) x y ~out:x |> ignore
-  )
+let elt_greater_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_elt_greater_scalar (kind x) (numel x) x out a
 
-let elt_greater_equal_ x y =
-  let sx = shape x in
-  let sy = shape y in
-  if sx = sy then _owl_elt_equal (kind x) (numel x) x y x
-  else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    let sx, sy = Owl_utils_array.align `Left 1 sx sy in
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_elt_greater_equal (kind x)) x y ~out:x |> ignore
-  )
+let elt_less_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_elt_less_equal_scalar (kind x) (numel x) x out a
 
-let elt_equal_scalar_ x a = _owl_elt_equal_scalar (kind x) (numel x) x x a
+let elt_greater_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_elt_greater_equal_scalar (kind x) (numel x) x out a
 
-let elt_not_equal_scalar_ x a = _owl_elt_not_equal_scalar (kind x) (numel x) x x a
+let add_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_add_scalar (kind x) (numel x) x out a
 
-let elt_less_scalar_ x a = _owl_elt_less_scalar (kind x) (numel x) x x a
+let sub_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  add_scalar_ ~out x (_neg_elt (kind x) a)
 
-let elt_greater_scalar_ x a = _owl_elt_greater_scalar (kind x) (numel x) x x a
+let mul_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_mul_scalar (kind x) (numel x) x out a
 
-let elt_less_equal_scalar_ x a = _owl_elt_less_equal_scalar (kind x) (numel x) x x a
+let div_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_div_scalar (kind x) (numel x) x out a
 
-let elt_greater_equal_scalar_ x a = _owl_elt_greater_equal_scalar (kind x) (numel x) x x a
+let pow_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_pow_scalar (kind x) (numel x) x out a
 
-let add_scalar_ x a = _owl_add_scalar (kind x) (numel x) x x a
+let atan2_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_atan2_scalar (kind x) (numel x) x out a
 
-let sub_scalar_ x a = add_scalar_ x (_neg_elt (kind x) a)
+let fmod_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_fmod_scalar (kind x) (numel x) x out a
 
-let mul_scalar_ x a = _owl_mul_scalar (kind x) (numel x) x x a
+let scalar_add_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_add_scalar (kind x) (numel x) x out a
 
-let div_scalar_ x a = _owl_div_scalar (kind x) (numel x) x x a
+let scalar_sub_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_scalar_sub (kind x) (numel x) x out a
 
-let pow_scalar_ x a = _owl_pow_scalar (kind x) (numel x) x x a
+let scalar_mul_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_mul_scalar (kind x) (numel x) x out a
 
-let atan2_scalar_ x a = _owl_atan2_scalar (kind x) (numel x) x x a
+let scalar_div_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_scalar_div (kind x) (numel x) x out a
 
-let fmod_scalar_ x a = _owl_fmod_scalar (kind x) (numel x) x x a
+let scalar_pow_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_scalar_pow (kind x) (numel x) x out a
 
-let scalar_add_ a x = _owl_add_scalar (kind x) (numel x) x x a
+let scalar_atan2_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_scalar_atan2 (kind x) (numel x) x out a
 
-let scalar_sub_ a x = _owl_scalar_sub (kind x) (numel x) x x a
+let scalar_fmod_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_scalar_fmod (kind x) (numel x) x out a
 
-let scalar_mul_ a x = _owl_mul_scalar (kind x) (numel x) x x a
+let conj_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_conj (kind x) (numel x) x out
 
-let scalar_div_ a x = _owl_scalar_div (kind x) (numel x) x x a
+let abs_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_abs (kind x) (numel x) x out
 
-let scalar_pow_ a x = _owl_scalar_pow (kind x) (numel x) x x a
+let neg_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_neg (kind x) (numel x) x out
 
-let scalar_atan2_ a x = _owl_scalar_atan2 (kind x) (numel x) x x a
+let reci_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_reci (kind x) (numel x) x out
 
-let scalar_fmod_ a x = _owl_scalar_fmod (kind x) (numel x) x x a
+let signum_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_signum (kind x) (numel x) x out
 
-let conj_ x = _owl_conj (kind x) (numel x) x x
+let sqr_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_sqr (kind x) (numel x) x out
 
-let abs_ x = _owl_abs (kind x) (numel x) x x
+let sqrt_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_sqrt (kind x) (numel x) x out
 
-let neg_ x = _owl_neg (kind x) (numel x) x x
+let cbrt_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_cbrt (kind x) (numel x) x out
 
-let reci_ x = _owl_reci (kind x) (numel x) x x
+let exp_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_exp (kind x) (numel x) x out
 
-let signum_ x = _owl_signum (kind x) (numel x) x x
+let exp2_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_exp2 (kind x) (numel x) x out
 
-let sqr_ x = _owl_sqr (kind x) (numel x) x x
+let exp10_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_exp10 (kind x) (numel x) x out
 
-let sqrt_ x = _owl_sqrt (kind x) (numel x) x x
+let expm1_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_expm1 (kind x) (numel x) x out
 
-let cbrt_ x = _owl_cbrt (kind x) (numel x) x x
+let log_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_log (kind x) (numel x) x out
 
-let exp_ x = _owl_exp (kind x) (numel x) x x
+let log2_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_log2 (kind x) (numel x) x out
 
-let exp2_ x = _owl_exp2 (kind x) (numel x) x x
+let log10_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_log10 (kind x) (numel x) x out
 
-let exp10_ x = _owl_exp10 (kind x) (numel x) x x
+let log1p_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_log1p (kind x) (numel x) x out
 
-let expm1_ x = _owl_expm1 (kind x) (numel x) x x
+let sin_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_sin (kind x) (numel x) x out
 
-let log_ x = _owl_log (kind x) (numel x) x x
+let cos_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_cos (kind x) (numel x) x out
 
-let log2_ x = _owl_log2 (kind x) (numel x) x x
+let tan_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_tan (kind x) (numel x) x out
 
-let log10_ x = _owl_log10 (kind x) (numel x) x x
+let asin_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_asin (kind x) (numel x) x out
 
-let log1p_ x = _owl_log1p (kind x) (numel x) x x
+let acos_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_acos (kind x) (numel x) x out
 
-let sin_ x = _owl_sin (kind x) (numel x) x x
+let atan_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_atan (kind x) (numel x) x out
 
-let cos_ x = _owl_cos (kind x) (numel x) x x
+let sinh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_sinh (kind x) (numel x) x out
 
-let tan_ x = _owl_tan (kind x) (numel x) x x
+let cosh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_cosh (kind x) (numel x) x out
 
-let asin_ x = _owl_asin (kind x) (numel x) x x
+let tanh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_tanh (kind x) (numel x) x out
 
-let acos_ x = _owl_acos (kind x) (numel x) x x
+let asinh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_asinh (kind x) (numel x) x out
 
-let atan_ x = _owl_atan (kind x) (numel x) x x
+let acosh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_acosh (kind x) (numel x) x out
 
-let sinh_ x = _owl_sinh (kind x) (numel x) x x
+let atanh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_atanh (kind x) (numel x) x out
 
-let cosh_ x = _owl_cosh (kind x) (numel x) x x
+let floor_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_floor (kind x) (numel x) x out
 
-let tanh_ x = _owl_tanh (kind x) (numel x) x x
+let ceil_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_ceil (kind x) (numel x) x out
 
-let asinh_ x = _owl_asinh (kind x) (numel x) x x
+let round_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_round (kind x) (numel x) x out
 
-let acosh_ x = _owl_acosh (kind x) (numel x) x x
+let trunc_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_trunc (kind x) (numel x) x out
 
-let atanh_ x = _owl_atanh (kind x) (numel x) x x
+let fix_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_fix (kind x) (numel x) x out
 
-let floor_ x = _owl_floor (kind x) (numel x) x x
+let erf_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_erf (kind x) (numel x) x out
 
-let ceil_ x = _owl_ceil (kind x) (numel x) x x
+let erfc_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_erfc (kind x) (numel x) x out
 
-let round_ x = _owl_round (kind x) (numel x) x x
+let relu_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_relu (kind x) (numel x) x out
 
-let trunc_ x = _owl_trunc (kind x) (numel x) x x
+let softplus_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_softplus (kind x) (numel x) x out
 
-let fix_ x = _owl_fix (kind x) (numel x) x x
+let softsign_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_softsign (kind x) (numel x) x out
 
-let erf_ x = _owl_erf (kind x) (numel x) x x
-
-let erfc_ x = _owl_erfc (kind x) (numel x) x x
-
-let relu_ x = _owl_relu (kind x) (numel x) x x
-
-let softplus_ x = _owl_softplus (kind x) (numel x) x x
-
-let softsign_ x = _owl_softsign (kind x) (numel x) x x
-
-let sigmoid_ x = _owl_sigmoid (kind x) (numel x) x x
+let sigmoid_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_sigmoid (kind x) (numel x) x out
 
 let softmax ?(axis=(-1)) x =
   let x = copy x in
   let axis = Owl_utils.adjust_index axis (num_dims x) in
-  sub_ x (max ~axis x);
-  exp_ x;
+  sub_ ~out:x x (max ~axis x);
+  exp_ ~out:x x;
   let a = sum ~axis x in
-  div_ x a;
+  div_ ~out:x x a;
   x
 
-let softmax_ ?(axis=(-1)) x =
+let softmax_ ?out ?(axis=(-1)) x =
+  let out = match out with Some o -> o | None -> x in
   let axis = Owl_utils.adjust_index axis (num_dims x) in
-  sub_ x (max ~axis x);
-  exp_ x;
+  sub_ ~out x (max ~axis x);
+  exp_ ~out x;
   let a = sum ~axis x in
-  div_ x a
+  div_ ~out x a
 
-let cumsum_ ?axis x =
+let cumsum_ ?out ?axis x =
+  let out = match out with Some o -> o | None -> x in
   let _cumop = _owl_cumsum (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x out
 
-let cumprod_ ?axis x =
+let cumprod_ ?out ?axis x =
+  let out = match out with Some o -> o | None -> x in
   let _cumop = _owl_cumprod (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x out
 
-let cummin_ ?axis x =
+let cummin_ ?out ?axis x =
+  let out = match out with Some o -> o | None -> x in
   let _cumop = _owl_cummin (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x out
 
-let cummax_ ?axis x =
+let cummax_ ?out ?axis x =
+  let out = match out with Some o -> o | None -> x in
   let _cumop = _owl_cummax (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x out
 
 let cross_entropy' x y =
   let y = copy y in
-  log_ y;
-  mul_ y x;
+  log_ ~out:y y;
+  mul_ ~out:y y x;
   _neg_elt (kind y) (sum' y)
 
-let dropout_ ?(rate=0.5) x =
+let dropout_ ?out ?(rate=0.5) x =
   assert (rate >= 0. && rate <= 1.);
-  _owl_dropout (kind x) (numel x) x rate 0
+  let out = match out with Some o -> o | None -> x in
+  if not (out == x) then copy_to x out;
+  _owl_dropout (kind x) (numel x) out rate 0
 
 
 (** Matrix functions *)
