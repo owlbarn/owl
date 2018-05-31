@@ -964,17 +964,6 @@ module Make (A : Ndarray_Algodiff) = struct
       |> failwith
 
 
-  let assign_arr''' x arr =
-    let node = arr_to_node x in
-    if is_var node then (
-      set_value node [| ArrVal arr |];
-      invalidate_graph node
-    )
-    else
-      Printf.sprintf "assign_arr: const cannot be assigned, %s" (node_to_str node)
-      |> failwith
-
-
   let assign_elt x elt =
     let node = elt_to_node x in
     if is_var node then (

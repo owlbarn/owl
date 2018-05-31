@@ -100,7 +100,6 @@ module Make (A : Ndarray_Mutable) = struct
       let shp_x = Owl_utils.calc_broadcast_shape2 shp_0 shp_1 shp_2 in
 
       if shp_0 = shp_x && refnum parent_0 = 1 && get_reuse parent_0 then (
-        Owl_log.error "%s" (node_to_str parent_0);
         invalidate parent_0;
         parent_0_val
       )
@@ -113,42 +112,6 @@ module Make (A : Ndarray_Mutable) = struct
         parent_2_val
       )
       else A.empty shp_x
-      (*
-      if shp_0 = shp_x then (
-        if refnum parent_0 = 1 && get_reuse parent_0 then (
-          invalidate parent_0;
-          parent_0_val
-        )
-        else if refnum parent_0 = 2 && parent_0 == parent_1 && get_reuse parent_0 then (
-          invalidate parent_0;
-          parent_0_val
-        )
-        else if refnum parent_0 = 2 && parent_0 == parent_2 && get_reuse parent_0 then (
-          invalidate parent_0;
-          parent_0_val
-        )
-        else A.empty shp_x
-      )
-      else if shp_1 = shp_x then (
-        if refnum parent_1 = 1 && get_reuse parent_1 then (
-          invalidate parent_1;
-          parent_1_val
-        )
-        else if refnum parent_1 = 2 && parent_1 == parent_2 && get_reuse parent_1 then (
-          invalidate parent_1;
-          parent_1_val
-        )
-        else A.empty shp_x
-      )
-      else if shp_2 = shp_x then (
-        if refnum parent_2 = 1 && get_reuse parent_2 then (
-          invalidate parent_2;
-          parent_2_val
-        )
-        else A.empty shp_x
-      )
-      else A.empty shp_x
-      *)
     )
 
 
