@@ -559,13 +559,13 @@ let of_array k x m n =
 
 
 let save_txt ?(sep="\t") ?(append=false) x f =
-  let perm = 0o644  (* note: will be AND'ed with user's umask *)
+  let perm = 0o644 in (* will be AND'ed with user's umask *)
   let open_flags = if append
                    then [Open_wronly; Open_creat; Open_append] 
 		   else [Open_wronly; Open_creat; Open_trunc] 
   in
   let _op = Owl_utils.elt_to_str (kind x) in
-  let h = open_out_gen open_flags f in
+  let h = open_out_gen open_flags perm f in
   iter_rows (fun y ->
     iter (fun z -> Printf.fprintf h "%s%s" (_op z) sep) y;
     Printf.fprintf h "\n"
