@@ -271,9 +271,9 @@ module Make (A : Ndarray_Algodiff) = struct
     | Asinh                                       -> "Asinh"
     | Acosh                                       -> "Acosh"
     | Atanh                                       -> "Atanh"
-    | Min axis                                    -> "Min"
-    | Max axis                                    -> "Max"
-    | Sum axis                                    -> "Sum"
+    | Min axis                                    -> Printf.sprintf "Min axis:%i" axis
+    | Max axis                                    -> Printf.sprintf "Max axis:%i" axis
+    | Sum axis                                    -> Printf.sprintf "Sum axis:%i" axis
     | SumReduce axis                              -> "SumReduce"
     | Signum                                      -> "Signum"
     | Sigmoid                                     -> "Sigmoid"

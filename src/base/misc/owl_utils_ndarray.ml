@@ -44,7 +44,7 @@ let elt_of_str : type a b. (a, b) kind -> (string -> a) = function
 let numel x = Array.fold_right (fun c a -> c * a) (Genarray.dims x) 1
 
 
-(* calculate the stride of a ndarray, s is the shape
+(* calculate the stride of a ndarray, s is the shape.
   for [x] of shape [|2;3;4|], the return is [|12;4;1|]
  *)
 let calc_stride s =

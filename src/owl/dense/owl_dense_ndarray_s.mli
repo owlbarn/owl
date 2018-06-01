@@ -604,6 +604,14 @@ val slide : ?axis:int -> ?ofs:int -> ?step:int -> window:int -> arr -> arr
 
 val sort_ : arr -> unit
 
+val transpose_ : out:arr -> ?axis:int array -> arr -> unit
+
+val sum_ : out:arr -> axis:int -> arr -> unit
+
+val min_ : out:arr -> axis:int -> arr -> unit
+
+val max_ : out:arr -> axis:int -> arr -> unit
+
 val add_ : ?out:arr -> arr -> arr -> unit
 
 val sub_ : ?out:arr -> arr -> arr -> unit
@@ -653,6 +661,8 @@ val scalar_atan2_ : ?out:arr -> elt -> arr -> unit
 val scalar_fmod_ : ?out:arr -> elt -> arr -> unit
 
 val fma_ : ?out:arr -> arr -> arr -> arr -> unit
+
+val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:elt -> ?beta:elt -> a:arr -> b:arr -> arr -> unit
 
 val conj_ : ?out:arr -> arr -> unit
 
@@ -767,6 +777,54 @@ val elt_greater_scalar_ : ?out:arr -> arr -> elt -> unit
 val elt_less_equal_scalar_ : ?out:arr -> arr -> elt -> unit
 
 val elt_greater_equal_scalar_ : ?out:arr -> arr -> elt -> unit
+
+val conv1d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
+
+val conv2d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
+
+val transpose_conv2d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
+
+val conv3d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
+
+val max_pool1d_ : out:arr -> ?padding:padding -> arr -> int array -> int array -> unit
+
+val max_pool2d_ : out:arr -> ?padding:padding -> arr -> int array -> int array -> unit
+
+val max_pool3d_ : out:arr -> ?padding:padding -> arr -> int array -> int array -> unit
+
+val avg_pool1d_ : out:arr -> ?padding:padding -> arr -> int array -> int array -> unit
+
+val avg_pool2d_ : out:arr -> ?padding:padding -> arr -> int array -> int array -> unit
+
+val avg_pool3d_ : out:arr -> ?padding:padding -> arr -> int array -> int array -> unit
+
+val conv1d_backward_input_ : out:arr -> arr -> arr -> int array -> arr -> unit
+
+val conv1d_backward_kernel_ : out:arr -> arr -> arr -> int array -> arr -> unit
+
+val conv2d_backward_input_ : out:arr -> arr -> arr -> int array -> arr -> unit
+
+val conv2d_backward_kernel_ : out:arr -> arr -> arr -> int array -> arr -> unit
+
+val transpose_conv2d_backward_input_ : out:arr -> arr -> arr -> int array -> arr -> unit
+
+val transpose_conv2d_backward_kernel_ : out:arr -> arr -> arr -> int array -> arr -> unit
+
+val conv3d_backward_input_ : out:arr -> arr -> arr -> int array -> arr -> unit
+
+val conv3d_backward_kernel_ : out:arr -> arr -> arr -> int array -> arr -> unit
+
+val max_pool1d_backward_ : out:arr -> padding -> arr -> int array -> int array -> arr -> unit
+
+val max_pool2d_backward_ : out:arr -> padding -> arr -> int array -> int array -> arr -> unit
+
+val max_pool3d_backward_ : out:arr -> padding -> arr -> int array -> int array -> arr -> unit
+
+val avg_pool1d_backward_ : out:arr -> padding -> arr -> int array -> int array -> arr -> unit
+
+val avg_pool2d_backward_ : out:arr -> padding -> arr -> int array -> int array -> arr -> unit
+
+val avg_pool3d_backward_ : out:arr -> padding -> arr -> int array -> int array -> arr -> unit
 
 
 (** {6 Matrix functions} *)

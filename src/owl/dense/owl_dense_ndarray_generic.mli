@@ -1856,124 +1856,76 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 (** {6 Neural network related}  *)
 
 val conv1d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val conv2d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val transpose_conv2d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val conv3d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val max_pool1d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val max_pool2d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val max_pool3d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val avg_pool1d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val avg_pool2d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val avg_pool3d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val max_pool2d_argmax : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t * (int64, int64_elt) t
-(**
-[]
- *)
+(** TODO *)
 
 val conv1d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val conv1d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val conv2d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val conv2d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val transpose_conv2d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val transpose_conv2d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val conv3d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val conv3d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val max_pool1d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val max_pool2d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val max_pool3d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val avg_pool1d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val avg_pool2d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
-(**
-[]
- *)
+(** TODO *)
 
 val avg_pool3d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
 (** [] *)
@@ -2038,6 +1990,20 @@ val sort_ : ('a, 'b) t -> unit
 (**
 ``sort_ x`` performs in-place quicksort of the elelments in ``x``.
  *)
+
+val transpose_ : out:('a, 'b) t -> ?axis:int array -> ('a, 'b) t -> unit
+(**
+``transpose_ ~out x`` is similar to ``transpose x`` but the output is written to ``out``.
+ *)
+
+val sum_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val min_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val max_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
+(** TODO *)
 
 val add_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
@@ -2492,6 +2458,78 @@ val elt_greater_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 function but the output is written to ``x``.
  *)
 
+val conv1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val conv2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val transpose_conv2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val conv3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val max_pool1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val max_pool2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val max_pool3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val avg_pool1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val avg_pool2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val avg_pool3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val conv1d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val conv1d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val conv2d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val conv2d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val transpose_conv2d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val transpose_conv2d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val conv3d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val conv3d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val max_pool1d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val max_pool2d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val max_pool3d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val avg_pool1d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val avg_pool2d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val avg_pool3d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** [] *)
+
 
 (** {6 Matrix functions}  *)
 
@@ -2529,6 +2567,9 @@ val copy_col_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:'a -> ?beta:'a -> a:('a, 'b) t -> b:('a, 'b) t -> ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t

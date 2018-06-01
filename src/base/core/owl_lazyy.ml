@@ -28,6 +28,17 @@ module Make (A : Ndarray_Mutable) = struct
     else A.copy x_val
 
 
+  let allocate_from_parent_0 x =
+    if is_assigned x = true then (
+      let x_val = value_to_arr (get_value x).(0) in
+      x_val
+    )
+    else (
+      let x_shp = shape (node_to_arr x) in
+      A.empty x_shp
+    )
+
+
   let allocate_from_parent_1 x parent =
     let parent_val = value_to_arr (get_value parent).(0) in
     if is_assigned x = true then (
@@ -172,9 +183,9 @@ module Make (A : Ndarray_Mutable) = struct
         | Asinh                                       -> _eval_map_01 x A.asinh_
         | Acosh                                       -> _eval_map_01 x A.acosh_
         | Atanh                                       -> _eval_map_01 x A.atanh_
-        | Min axis                                    -> _eval_map_00 x A.(min ~axis)
-        | Max axis                                    -> _eval_map_00 x A.(max ~axis)
-        | Sum axis                                    -> _eval_map_00 x A.(sum ~axis)
+        | Min axis                                    -> _eval_map_06 x (fun ~out x -> A.min_ ~out ~axis x.(0))
+        | Max axis                                    -> _eval_map_06 x (fun ~out x -> A.max_ ~out ~axis x.(0))
+        | Sum axis                                    -> _eval_map_06 x (fun ~out x -> A.sum_ ~out ~axis x.(0))
         | SumReduce axis                              -> _eval_map_00 x A.(sum_reduce ~axis)
         | Signum                                      -> _eval_map_01 x A.signum_
         | Sigmoid                                     -> _eval_map_01 x A.sigmoid_
@@ -233,38 +244,38 @@ module Make (A : Ndarray_Mutable) = struct
         | ApproxEqualScalar eps                       -> failwith "ApproxEqualScalar"
         | ApproxEltEqual eps                          -> failwith "ApproxEltEqual"
         | ApproxEltEqualScalar eps                    -> failwith "ApproxEltEqualScalar"
-        | Conv1d (padding, stride)                    -> _eval_map_05 x (fun x -> A.conv1d ~padding x.(0) x.(1) stride)
-        | Conv2d (padding, stride)                    -> _eval_map_05 x (fun x -> A.conv2d ~padding x.(0) x.(1) stride)
-        | Conv3d (padding, stride)                    -> _eval_map_05 x (fun x -> A.conv3d ~padding x.(0) x.(1) stride)
-        | TransposeConv2d (padding, stride)           -> _eval_map_05 x (fun x -> A.transpose_conv2d ~padding x.(0) x.(1) stride)
-        | MaxPool1d (padding, kernel, stride)         -> _eval_map_00 x (fun x -> A.max_pool1d ~padding x kernel stride)
-        | MaxPool2d (padding, kernel, stride)         -> _eval_map_00 x (fun x -> A.max_pool2d ~padding x kernel stride)
-        | MaxPool3d (padding, kernel, stride)         -> _eval_map_00 x (fun x -> A.max_pool3d ~padding x kernel stride)
-        | AvgPool1d (padding, kernel, stride)         -> _eval_map_00 x (fun x -> A.avg_pool1d ~padding x kernel stride)
-        | AvgPool2d (padding, kernel, stride)         -> _eval_map_00 x (fun x -> A.avg_pool2d ~padding x kernel stride)
-        | AvgPool3d (padding, kernel, stride)         -> _eval_map_00 x (fun x -> A.avg_pool3d ~padding x kernel stride)
-        | Conv1dBackwardInput stride                  -> _eval_map_05 x (fun x -> A.conv1d_backward_input x.(0) x.(1) stride x.(2))
-        | Conv1dBackwardKernel stride                 -> _eval_map_05 x (fun x -> A.conv1d_backward_kernel x.(0) x.(1) stride x.(2))
-        | Conv2dBackwardInput stride                  -> _eval_map_05 x (fun x -> A.conv2d_backward_input x.(0) x.(1) stride x.(2))
-        | Conv2dBackwardKernel stride                 -> _eval_map_05 x (fun x -> A.conv2d_backward_kernel x.(0) x.(1) stride x.(2))
-        | Conv3dBackwardInput stride                  -> _eval_map_05 x (fun x -> A.conv3d_backward_input x.(0) x.(1) stride x.(2))
-        | Conv3dBackwardKernel stride                 -> _eval_map_05 x (fun x -> A.conv3d_backward_kernel x.(0) x.(1) stride x.(2))
-        | TransposeConv2dBackwardInput stride         -> _eval_map_05 x (fun x -> A.transpose_conv2d_backward_input x.(0) x.(1) stride x.(2))
-        | TransposeConv2dBackwardKernel stride        -> _eval_map_05 x (fun x -> A.transpose_conv2d_backward_kernel x.(0) x.(1) stride x.(2))
-        | MaxPool1dBackward (padding, kernel, stride) -> _eval_map_05 x (fun x -> A.max_pool1d_backward padding x.(0) kernel stride x.(1))
-        | MaxPool2dBackward (padding, kernel, stride) -> _eval_map_05 x (fun x -> A.max_pool2d_backward padding x.(0) kernel stride x.(1))
-        | MaxPool3dBackward (padding, kernel, stride) -> _eval_map_05 x (fun x -> A.max_pool3d_backward padding x.(0) kernel stride x.(1))
-        | AvgPool1dBackward (padding, kernel, stride) -> _eval_map_05 x (fun x -> A.avg_pool1d_backward padding x.(0) kernel stride x.(1))
-        | AvgPool2dBackward (padding, kernel, stride) -> _eval_map_05 x (fun x -> A.avg_pool2d_backward padding x.(0) kernel stride x.(1))
-        | AvgPool3dBackward (padding, kernel, stride) -> _eval_map_05 x (fun x -> A.avg_pool3d_backward padding x.(0) kernel stride x.(1))
+        | Conv1d (padding, stride)                    -> _eval_map_06 x (fun ~out x -> A.conv1d_ ~out ~padding x.(0) x.(1) stride)
+        | Conv2d (padding, stride)                    -> _eval_map_06 x (fun ~out x -> A.conv2d_ ~out ~padding x.(0) x.(1) stride)
+        | Conv3d (padding, stride)                    -> _eval_map_06 x (fun ~out x -> A.conv3d_ ~out ~padding x.(0) x.(1) stride)
+        | TransposeConv2d (padding, stride)           -> _eval_map_06 x (fun ~out x -> A.transpose_conv2d_ ~out ~padding x.(0) x.(1) stride)
+        | MaxPool1d (padding, kernel, stride)         -> _eval_map_06 x (fun ~out x -> A.max_pool1d_ ~out ~padding x.(0) kernel stride)
+        | MaxPool2d (padding, kernel, stride)         -> _eval_map_06 x (fun ~out x -> A.max_pool2d_ ~out ~padding x.(0) kernel stride)
+        | MaxPool3d (padding, kernel, stride)         -> _eval_map_06 x (fun ~out x -> A.max_pool3d_ ~out ~padding x.(0) kernel stride)
+        | AvgPool1d (padding, kernel, stride)         -> _eval_map_06 x (fun ~out x -> A.avg_pool1d_ ~out ~padding x.(0) kernel stride)
+        | AvgPool2d (padding, kernel, stride)         -> _eval_map_06 x (fun ~out x -> A.avg_pool2d_ ~out ~padding x.(0) kernel stride)
+        | AvgPool3d (padding, kernel, stride)         -> _eval_map_06 x (fun ~out x -> A.avg_pool3d_ ~out ~padding x.(0) kernel stride)
+        | Conv1dBackwardInput stride                  -> _eval_map_06 x (fun ~out x -> A.conv1d_backward_input_ ~out x.(0) x.(1) stride x.(2))
+        | Conv1dBackwardKernel stride                 -> _eval_map_06 x (fun ~out x -> A.conv1d_backward_kernel_ ~out x.(0) x.(1) stride x.(2))
+        | Conv2dBackwardInput stride                  -> _eval_map_06 x (fun ~out x -> A.conv2d_backward_input_ ~out x.(0) x.(1) stride x.(2))
+        | Conv2dBackwardKernel stride                 -> _eval_map_06 x (fun ~out x -> A.conv2d_backward_kernel_ ~out x.(0) x.(1) stride x.(2))
+        | Conv3dBackwardInput stride                  -> _eval_map_06 x (fun ~out x -> A.conv3d_backward_input_ ~out x.(0) x.(1) stride x.(2))
+        | Conv3dBackwardKernel stride                 -> _eval_map_06 x (fun ~out x -> A.conv3d_backward_kernel_ ~out x.(0) x.(1) stride x.(2))
+        | TransposeConv2dBackwardInput stride         -> _eval_map_06 x (fun ~out x -> A.transpose_conv2d_backward_input_ ~out x.(0) x.(1) stride x.(2))
+        | TransposeConv2dBackwardKernel stride        -> _eval_map_06 x (fun ~out x -> A.transpose_conv2d_backward_kernel_ ~out x.(0) x.(1) stride x.(2))
+        | MaxPool1dBackward (padding, kernel, stride) -> _eval_map_06 x (fun ~out x -> A.max_pool1d_backward_ ~out padding x.(0) kernel stride x.(1))
+        | MaxPool2dBackward (padding, kernel, stride) -> _eval_map_06 x (fun ~out x -> A.max_pool2d_backward_ ~out padding x.(0) kernel stride x.(1))
+        | MaxPool3dBackward (padding, kernel, stride) -> _eval_map_06 x (fun ~out x -> A.max_pool3d_backward_ ~out padding x.(0) kernel stride x.(1))
+        | AvgPool1dBackward (padding, kernel, stride) -> _eval_map_06 x (fun ~out x -> A.avg_pool1d_backward_ ~out padding x.(0) kernel stride x.(1))
+        | AvgPool2dBackward (padding, kernel, stride) -> _eval_map_06 x (fun ~out x -> A.avg_pool2d_backward_ ~out padding x.(0) kernel stride x.(1))
+        | AvgPool3dBackward (padding, kernel, stride) -> _eval_map_06 x (fun ~out x -> A.avg_pool3d_backward_ ~out padding x.(0) kernel stride x.(1))
         | Row                                         -> failwith "Row"
         | Rows i                                      -> failwith "Rows"
         | CopyRowTo                                   -> failwith "CopyRowTo"
         | CopyColTo                                   -> failwith "CopyColTo"
-        | Dot                                         -> _eval_map_05 x (fun x -> A.dot x.(0) x.(1))
+        | Dot                                         -> _eval_map_06 x (fun ~out x -> A.dot_ ~a:x.(0) ~b:x.(1) out)
         | Inv                                         -> _eval_map_00 x A.inv
         | Trace                                       -> _eval_map_07 x A.trace
-        | Transpose axis                              -> _eval_map_00 x A.(transpose ~axis)
+        | Transpose axis                              -> _eval_map_06 x (fun ~out x -> A.transpose_ ~out ~axis x.(0))
         | ToRows                                      -> failwith "ToRows"
         | OfRows                                      -> failwith "OfRows"
         | OfArray shape                               -> failwith "OfArray"
@@ -376,6 +387,18 @@ module Make (A : Ndarray_Mutable) = struct
     ) (parents x) |> f
     in
     set_value x [|arr_to_value a|]
+
+
+  (* [f] is inpure, allocate mem for first run, for [arr array -> arr] *)
+  and _eval_map_06 x f =
+    let a = Array.map (fun x ->
+      _eval_term x;
+      value_to_arr (get_value x).(0)
+    ) (parents x)
+    in
+    let out = allocate_from_parent_0 x in
+    f ~out a;
+    set_value x [|arr_to_value out|]
 
 
   (* [f] is pure, for [arr -> elt] *)
