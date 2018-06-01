@@ -1255,6 +1255,7 @@ let transpose ?axis x =
 
 
 let transpose_ ~out ?axis x =
+Owl_log.error "oh no ...";
   let d = num_dims x in
   let a = match axis with
     | Some a -> a
@@ -4529,21 +4530,8 @@ let dot x1 x2 =
   x3
 
 
-let dot_ ?(transa=false) ?(transb=false) ?alpha ?beta ~a ~b c =
-  let m, k = _matrix_shape a in
-  let l, n = _matrix_shape b in
-  let _kind = kind a in
-
-  let alpha = match alpha with Some a -> a | None -> Owl_const.one _kind in
-  let beta = match beta with Some a -> a | None -> Owl_const.zero _kind in
-  let a = flatten a |> Bigarray.array1_of_genarray in
-  let b = flatten b |> Bigarray.array1_of_genarray in
-  let c = flatten c |> Bigarray.array1_of_genarray in
-
-  let layout = Owl_cblas_basic.CblasRowMajor in
-  let transa = if transa then Owl_cblas_basic.CblasTrans else Owl_cblas_basic.CblasNoTrans in
-  let transb = if transb then Owl_cblas_basic.CblasTrans else Owl_cblas_basic.CblasNoTrans in
-  Owl_cblas_basic.gemm layout transa transb m n k alpha a k b n beta c n
+let dot_ ?(transa=false) ?(transb=false) ?alpha ?beta ~c a b =
+  Owl_cblas.gemm ~transa ~transb ?alpha ?beta ~a ~b ~c
 
 
 let eye k n =

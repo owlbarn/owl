@@ -2569,7 +2569,7 @@ val copy_col_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:'a -> ?beta:'a -> a:('a, 'b) t -> b:('a, 'b) t -> ('a, 'b) t -> unit
+val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:'a -> ?beta:'a -> c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t

@@ -162,7 +162,7 @@ module Make (A : Ndarray_Algodiff) = struct
         | Rows i                                      -> pattern_000 x
         | CopyRowTo                                   -> pattern_000 x
         | CopyColTo                                   -> pattern_000 x
-        | Dot                                         -> pattern_000 x
+        | Dot (transa, transb, alpha, beta)           -> pattern_005 x
         | Inv                                         -> pattern_000 x
         | Trace                                       -> pattern_000 x
         | Transpose axis                              -> pattern_000 x
@@ -223,7 +223,6 @@ module Make (A : Ndarray_Algodiff) = struct
     _optimise_term a;
     _optimise_term b;
     pattern_002 x;
-    (* FIXME: why it gets slower ... *)
     pattern_004 x
 
 
@@ -297,6 +296,55 @@ module Make (A : Ndarray_Algodiff) = struct
         remove_node b;
       )
     )
+
+
+  (* gemm pattern *)
+  and pattern_005 x =
+    Owl_log.debug "pattern_005";
+    let x_parents = parents x in
+    let a = x_parents.(0) in
+    let b = x_parents.(1) in
+    _optimise_term a;
+    _optimise_term b;
+    pattern_006 x
+
+
+  (* gemm pattern: transpose *)
+  and pattern_006 x =
+    Owl_log.debug "pattern_006";
+    match get_operator x with
+    | Dot (transa, transb, alpha, beta) -> (
+        let x_parents = parents x in
+        let a = x_parents.(0) in
+        let b = x_parents.(1) in
+        (
+          match get_operator a with
+          | Transpose i -> (
+              if refnum a = 1 then (
+                let op = Dot (not transa, transb, alpha, beta) in
+                set_operator x op;
+                let a_parent = (parents a).(0) in
+                replace_child a x;
+                replace_parent a a_parent;
+              )
+            )
+          | _           -> ()
+        );
+        (
+          match get_operator b with
+          | Transpose i -> (
+              if refnum b = 1 then (
+                let op = Dot (transa, not transb, alpha, beta) in
+                set_operator x op;
+                let b_parent = (parents b).(0) in
+                replace_child b x;
+                replace_parent b b_parent;
+              )
+            )
+          | _           -> ()
+        );
+      )
+    | _                                 -> ()
 
 
   let run x =

@@ -71,7 +71,7 @@ module type Sig = sig
 
   val fma_ : ?out:arr -> arr -> arr -> arr -> unit
 
-  val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:elt -> ?beta:elt -> a:arr -> b:arr -> arr -> unit
+  val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:elt -> ?beta:elt -> c:arr -> arr -> arr -> unit
 
   val abs_ : ?out:arr -> arr -> unit
 

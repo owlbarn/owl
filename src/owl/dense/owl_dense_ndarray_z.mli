@@ -633,7 +633,7 @@ val scalar_fmod_ : ?out:arr -> elt -> arr -> unit
 
 val fma_ : ?out:arr -> arr -> arr -> arr -> unit
 
-val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:elt -> ?beta:elt -> a:arr -> b:arr -> arr -> unit
+val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:elt -> ?beta:elt -> c:arr -> arr -> arr -> unit
 
 val conj_ : ?out:arr -> arr -> unit
 

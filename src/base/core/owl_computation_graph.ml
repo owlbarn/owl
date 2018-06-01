@@ -176,7 +176,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Rows                          of int array
     | CopyRowTo
     | CopyColTo
-    | Dot
+    | Dot                           of bool * bool * elt * elt
     | Inv
     | Trace
     | Transpose                     of int array
@@ -362,7 +362,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Rows i                                      -> "Rows"
     | CopyRowTo                                   -> "CopyRowTo"
     | CopyColTo                                   -> "CopyColTo"
-    | Dot                                         -> "Dot"
+    | Dot (transa, transb, alpha, beta)           -> "Dot"
     | Inv                                         -> "Inv"
     | Trace                                       -> "Trace"
     | Transpose i                                 -> "Transpose"
@@ -707,7 +707,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | AvgPool3dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
     | Row                                         -> _infer_shape_09 input_shapes 0 1
     | Rows i                                      -> _infer_shape_09 input_shapes 0 Array.(length i)
-    | Dot                                         -> _infer_shape_19 input_shapes
+    | Dot (transa, transb, alpha, beta)           -> _infer_shape_19 input_shapes
     | Inv                                         -> _infer_shape_01 input_shapes
     | Trace                                       -> _infer_shape_00 input_shapes
     | Transpose axis                              -> _infer_shape_18 input_shapes axis
@@ -1431,11 +1431,17 @@ module Make (A : Ndarray_Algodiff) = struct
 
   let copy_col_to x y j = make_then_connect CopyColTo [|arr_to_node x|] |> ignore
 
-  let dot x y = make_then_connect Dot [|arr_to_node x; arr_to_node y|] |> node_to_arr
-
   let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
 
   let trace x = make_then_connect Trace [|arr_to_node x|] |> node_to_elt
+
+  let dot x y =
+    let transa = false in
+    let transb = false in
+    let alpha = A.float_to_elt 1. |> pack_elt in
+    let beta = A.float_to_elt 0. |> pack_elt in
+    let op = Dot (transa, transb, alpha, beta) in
+    make_then_connect op [|arr_to_node x; arr_to_node y|] |> node_to_arr
 
   let transpose ?axis x =
     let d = Array.length (shape x) in

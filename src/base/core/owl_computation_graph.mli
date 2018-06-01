@@ -174,7 +174,7 @@ module Make (A : Ndarray_Algodiff) : sig
     | Rows                          of int array
     | CopyRowTo
     | CopyColTo
-    | Dot
+    | Dot                           of bool * bool * elt * elt
     | Inv
     | Trace
     | Transpose                     of int array

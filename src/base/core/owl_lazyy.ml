@@ -272,7 +272,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Rows i                                      -> failwith "Rows"
         | CopyRowTo                                   -> failwith "CopyRowTo"
         | CopyColTo                                   -> failwith "CopyColTo"
-        | Dot                                         -> _eval_map_06 x (fun ~out x -> A.dot_ ~a:x.(0) ~b:x.(1) out)
+        | Dot (transa, transb, alpha, beta)           -> _eval_map_06 x (fun ~out x -> A.dot_ ~transa ~transb ~alpha:(unpack_elt alpha) ~beta:(unpack_elt beta) ~c:out x.(0) x.(1))
         | Inv                                         -> _eval_map_00 x A.inv
         | Trace                                       -> _eval_map_07 x A.trace
         | Transpose axis                              -> _eval_map_06 x (fun ~out x -> A.transpose_ ~out ~axis x.(0))
