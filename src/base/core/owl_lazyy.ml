@@ -135,13 +135,13 @@ module Make (A : Ndarray_Mutable) = struct
         | Var                                         -> check_assigned x
         | Const                                       -> check_assigned x
         | Empty shape                                 -> _eval_map_08 x (fun x -> A.empty shape)
-        | Zeros shape                                 -> _eval_map_08 x (fun x -> A.zeros shape)
-        | Ones shape                                  -> _eval_map_08 x (fun x -> A.ones shape)
+        | Zeros shape                                 -> _eval_map_06 x (fun ~out x -> A.zeros_ ~out)
+        | Ones shape                                  -> _eval_map_06 x (fun ~out x -> A.ones_ ~out)
         | Create                                      -> failwith "Create"
         | Sequential                                  -> failwith "Sequential"
         | Uniform shape                               -> _eval_map_08 x (fun x -> A.uniform ~a:x.(0) ~b:x.(1) shape)
         | Gaussian                                    -> failwith "Gaussian"
-        | Bernoulli (p, shape)                        -> _eval_map_08 x (fun x -> A.bernoulli ~p shape)
+        | Bernoulli (p, shape)                        -> _eval_map_06 x (fun ~out x -> A.bernoulli_ ~p ~out)
         | Init _                                      -> failwith "Init"
         | Get i                                       -> _eval_map_07 x (fun x -> A.get x i)
         | Set i                                       -> failwith "Set"

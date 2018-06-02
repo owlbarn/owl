@@ -98,7 +98,7 @@ module Make (A : Ndarray_Algodiff) = struct
         | Add                                         -> pattern_001 x
         | Sub                                         -> pattern_000 x
         | Mul                                         -> pattern_000 x
-        | Div                                         -> pattern_000 x
+        | Div                                         -> pattern_007 x
         | AddScalar                                   -> pattern_000 x
         | SubScalar                                   -> pattern_000 x
         | MulScalar                                   -> pattern_000 x
@@ -345,6 +345,54 @@ module Make (A : Ndarray_Algodiff) = struct
         );
       )
     | _                                 -> ()
+
+
+  (* div pattern *)
+  and pattern_007 x =
+    Owl_log.debug "pattern_007";
+    let x_parents = parents x in
+    let a = x_parents.(0) in
+    let b = x_parents.(1) in
+    _optimise_term a;
+    _optimise_term b;
+    pattern_008 x
+
+
+  (* div pattern: zero divided by x *)
+  and pattern_008 x =
+    Owl_log.debug "pattern_008";
+    if get_operator x = Div then (
+      let x_parents = parents x in
+      let a = x_parents.(0) in
+      let b = x_parents.(1) in
+      let x_shp = shape (node_to_arr x) in
+      match get_operator a with
+      | Zeros _ -> (
+          remove_edge a x;
+          remove_edge b x;
+          set_operator x (Zeros x_shp)
+        )
+      | _       -> ()
+    )
+
+
+  (* div pattern: x divided by one *)
+  and pattern_009 x =
+    Owl_log.debug "pattern_009";
+    if get_operator x = Div then (
+      let x_parents = parents x in
+      let b = x_parents.(1) in
+      let x_shp = shape (node_to_arr x) in
+      match get_operator b with
+      | Ones b_shp -> (
+          if x_shp = b_shp then (
+            remove_edge b x;
+            set_operator x Noop;
+            _optimise_term x
+          )
+        )
+      | _       -> ()
+    )
 
 
   let run x =

@@ -602,6 +602,12 @@ val slide : ?axis:int -> ?ofs:int -> ?step:int -> window:int -> arr -> arr
 
 (** {6 Fucntions of in-place modification } *)
 
+val bernoulli_ : ?p:float -> out:arr -> unit
+
+val zeros_ : out:arr -> unit
+
+val ones_ : out:arr -> unit
+
 val sort_ : arr -> unit
 
 val transpose_ : out:arr -> ?axis:int array -> arr -> unit

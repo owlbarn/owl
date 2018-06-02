@@ -229,7 +229,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Sequential                                  -> "Sequential"
     | Uniform shape                               -> "Uniform"
     | Gaussian                                    -> "Gaussian"
-    | Bernoulli (p, shape)                        -> "Bernoulli"
+    | Bernoulli (p, shape)                        -> Printf.sprintf "Bernoulli p:%g" p
     | Init _                                      -> "Init"
     | Get i                                       -> "Get"
     | Set i                                       -> "Set"
@@ -247,7 +247,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Map f                                       -> "Map"
     | Fold (axis, f)                              -> "Fold"
     | Scan (axis, f)                              -> "Scan"
-    | OneHot depth                                -> "OneHot"
+    | OneHot depth                                -> Printf.sprintf "OneHot d:%i" depth
     | Abs                                         -> "Abs"
     | Neg                                         -> "Neg"
     | Floor                                       -> "Floor"
@@ -759,7 +759,7 @@ module Make (A : Ndarray_Algodiff) = struct
     assert (Array.length shp > 0);
     let s = match shp.(0) with
       | Some s -> Owl_utils_array.to_string string_of_int s
-      | None   -> "? ..."
+      | None   -> "unkown"
     in
     Printf.sprintf "[ %s ]" s
 
@@ -770,17 +770,6 @@ module Make (A : Ndarray_Algodiff) = struct
     let state_s = if attr.state = Valid then "valid" else "invalid" in
     Printf.sprintf "[ #%i | name:%s | op:%s | state:%s | r:%i | s:%s ]"
       (id n) (name n) (op_to_str attr.op) state_s (refnum n) shape_s
-
-
-  let to_dot x =
-    let edge_s = fold_in_edges (fun a u v -> Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)) "" x in
-    let node_s = fold_ancestors (fun a n ->
-      let shape_s = shape_to_str (attr n).shape in
-      Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; s:%s }\" ];\n"
-        a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) shape_s
-    ) "" x
-    in
-    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
 
 
   (* core manipulation functions *)
@@ -992,6 +981,34 @@ module Make (A : Ndarray_Algodiff) = struct
 
 
   let elt_to_float x = unpack_elt x |> A.elt_to_float
+
+
+  (* print shape for ndarrays, whilst value for scalars *)
+  let shape_or_value x =
+    let shape = (attr x).shape in
+    if is_assigned x = true then (
+      match shape.(0) with
+      | Some s -> (
+          if Array.length s = 0 then
+            Printf.sprintf "v:%g" (node_to_elt x |> elt_to_float)
+          else
+            Printf.sprintf "s:%s" (shape_to_str shape)
+        )
+      | None   -> Printf.sprintf "s:%s" (shape_to_str shape)
+    )
+    else
+      Printf.sprintf "s:%s" (shape_to_str shape)
+
+
+  let to_dot x =
+    let edge_s = fold_in_edges (fun a u v -> Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)) "" x in
+    let node_s = fold_ancestors (fun a n ->
+      let svs = shape_or_value n in
+      Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; %s }\" ];\n"
+        a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) svs
+    ) "" x
+    in
+    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
 
 
   (* mathematical functions *)

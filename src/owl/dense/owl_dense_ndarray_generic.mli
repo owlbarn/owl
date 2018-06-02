@@ -1986,6 +1986,15 @@ Parameters:
 
 (** {6 In-place modification}  *)
 
+val bernoulli_ : ?p:float -> out:('a, 'b) t -> unit
+(** TODO *)
+
+val zeros_ : out:('a, 'b) t -> unit
+(** TODO *)
+
+val ones_ : out:('a, 'b) t -> unit
+(** TODO *)
+
 val sort_ : ('a, 'b) t -> unit
 (**
 ``sort_ x`` performs in-place quicksort of the elelments in ``x``.

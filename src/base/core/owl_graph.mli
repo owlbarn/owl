@@ -104,8 +104,9 @@ from all its parent nodes and child nodes.
 
 val remove_edge : 'a node -> 'a node -> unit
 (**
-``remove_edge src dst`` removes a link ``src -> dst`` from the graph. Note that
-it does not remove [dst -> src] if there exists one.
+``remove_edge src dst`` removes a link ``src -> dst`` from the graph. Namely,
+the correponding entry of ``dst`` in ``src.next`` and ``src`` in ``dst.prev``
+will be removed. Note that it does not remove [dst -> src] if there exists one.
  *)
 
 val replace_child : 'a node -> 'a node -> unit

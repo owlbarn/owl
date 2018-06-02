@@ -996,20 +996,37 @@ let logspace k ?(base=Owl_const.e) a b n =
   );
   x
 
+
 let bernoulli k ?(p=0.5) d =
   assert (p >= 0. && p <= 1.);
   let x = empty k d in
   (_owl_bernoulli k) (numel x) x p 0;
   x
 
+
+let bernoulli_ ?(p=0.5) ~out =
+  assert (p >= 0. && p <= 1.);
+  let k = kind out in
+  (_owl_bernoulli k) (numel out) out p 0
+
+
 let create kind dimension a =
   let x = empty kind dimension in
   let _ = fill x a in
   x
 
+
 let zeros kind dimension = create kind dimension (Owl_const.zero kind)
 
+
+let zeros_ ~out = reset out
+
+
 let ones kind dimension = create kind dimension (Owl_const.one kind)
+
+
+let ones_ ~out = fill out (Owl_const.one (kind out))
+
 
 let sequential k ?a ?step dimension =
   let a = match a with
