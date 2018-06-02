@@ -1803,6 +1803,199 @@ let conv2d_backward_kernel input kernel stride output' =
   kernel'
 
 
+let upsample_kernel2d kernel rate =
+  if rate = 1 then kernel else (
+    let kernel_shp  = shape kernel in
+    let kernel_cols = kernel_shp.(0) in
+    let kernel_rows = kernel_shp.(1) in
+    let in_channel  = kernel_shp.(2) in
+    let out_channel = kernel_shp.(3) in
+
+    let col_up = kernel_cols + (kernel_cols - 1) * (rate - 1) in
+    let row_up = kernel_rows + (kernel_rows - 1) * (rate - 1) in
+    let new_kernel = zeros (kind kernel)
+      [|col_up; row_up; in_channel; out_channel|] in
+
+    let kernel_array = to_array kernel in
+    let cnt = ref 0 in
+    for c = 0 to (kernel_cols - 1) do
+      for r = 0 to (kernel_rows - 1) do
+        for i = 0 to (in_channel - 1) do
+          for o = 0 to (out_channel - 1) do
+            let v = kernel_array.(!cnt) in
+            cnt := !cnt + 1;
+            set new_kernel [|c * rate; r * rate; i; o|] v;
+          done
+        done
+      done
+    done;
+    new_kernel
+  )
+
+
+let downsample_kernel2d kernel rate =
+  if rate = 1 then kernel else (
+    let kernel_shp  = shape kernel in
+    let kernel_cols = kernel_shp.(0) in
+    let kernel_rows = kernel_shp.(1) in
+    let in_channel  = kernel_shp.(2) in
+    let out_channel = kernel_shp.(3) in
+
+    let col_down = (kernel_cols + (rate - 1)) / rate in
+    let row_down = (kernel_rows + (rate - 1)) / rate in
+    let new_kernel = zeros (kind kernel)
+      [|col_down; row_down; in_channel; out_channel|] in
+
+    let kernel_array = to_array new_kernel in
+    let cnt = ref 0 in
+    for c = 0 to (col_down - 1) do
+      for r = 0 to (row_down - 1) do
+        for i = 0 to (in_channel - 1) do
+          for o = 0 to (out_channel - 1) do
+            let v = get kernel [|c * rate; r * rate; i; o|] in
+            kernel_array.(!cnt) <- v;
+            cnt := !cnt + 1
+          done
+        done
+      done
+    done;
+    of_array (kind kernel) kernel_array [|col_down; row_down; in_channel; out_channel|]
+  )
+
+
+(* atrous_conv2d: 4d input and 4d kernel, refer to tensorlfow doc
+  input : [batch; input_column; input_row; input_channel]
+  kernel: [kernel_column; kernel_row; input_channel; output_channel]
+  stride: [column_stride; row_stride]
+  rate  : int
+  output: [batch; output_column; output_row; output_channel]
+ *)
+let atrous_conv2d ?(padding=SAME) ?(stride=[|1;1|]) input kernel rate =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (Array.length stride = 2);
+  assert (rate > 0);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel = upsample_kernel2d kernel rate in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let output_cols, output_rows =
+    Owl_utils.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let output = empty (kind input) [|batches; output_cols; output_rows; out_channel|] in
+
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _owl_spatial_conv (kind input)
+    input kernel output batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride pad_typ row_in_stride col_in_stride;
+
+  output
+
+
+(* gradient of atrous_conv2d w.r.t the input *)
+let atrous_conv2d_backward_input ?(stride=[|1;1|]) input kernel output' rate =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+  assert (rate > 0);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel = upsample_kernel2d kernel rate in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let input' = empty (kind input) (shape input) in
+
+  _owl_spatial_conv_backward_input (kind input')
+    input' kernel output' batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride row_in_stride col_in_stride;
+
+  input'
+
+
+(* gradient of atrous_conv2d w.r.t the kernel *)
+let atrous_conv2d_backward_kernel ?(stride=[|1;1|]) input kernel output' rate =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+  assert (rate > 0);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel = upsample_kernel2d kernel rate in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let kernel' = empty (kind kernel) (shape kernel) in
+
+  _owl_spatial_conv_backward_kernel (kind input)
+    input kernel' output' batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride row_in_stride col_in_stride;
+
+  downsample_kernel2d kernel' rate
+
+
 (* transpose_conv2d: 4d input and 4d kernel, refer to tensorlfow doc
   input : [batch; input_column; input_row; input_channel]
   kernel: [kernel_column; kernel_row; input_channel; output_channel]
