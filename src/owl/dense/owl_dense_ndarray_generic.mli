@@ -1986,6 +1986,12 @@ Parameters:
 
 (** {6 In-place modification}  *)
 
+val create_ : out:('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val uniform_ : ?a:'a -> ?b:'a -> out:('a, 'b) t -> unit
+(** TODO *)
+
 val bernoulli_ : ?p:float -> out:('a, 'b) t -> unit
 (** TODO *)
 

@@ -10,12 +10,17 @@ module type Sig = sig
 
   include Owl_types_ndarray_algodiff.Sig
 
+
+  val create_ : out:arr -> elt -> unit
+
+  val uniform_ : ?a:elt -> ?b:elt -> out:arr -> unit
+
   val bernoulli_ : ?p:float -> out:arr -> unit
 
   val zeros_ : out:arr -> unit
 
   val ones_ : out:arr -> unit
-  
+
   val transpose_ : out:arr -> ?axis:int array -> arr -> unit
 
   val hypot : arr -> arr -> arr

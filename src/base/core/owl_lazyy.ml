@@ -16,6 +16,8 @@ module Make (A : Ndarray_Mutable) = struct
 
   include Owl_computation_graph.Make (A)
 
+  module Computation_Optimiser = Owl_computation_optimiser.Make (A)
+
 
   (* allocate memory and evaluate experssions *)
 
@@ -134,12 +136,12 @@ module Make (A : Ndarray_Mutable) = struct
         | Noop                                        -> _eval_map_99 x (fun x -> x)
         | Var                                         -> check_assigned x
         | Const                                       -> check_assigned x
-        | Empty shape                                 -> _eval_map_08 x (fun x -> A.empty shape)
+        | Empty shape                                 -> _eval_map_08 x (fun ~out x -> ())
         | Zeros shape                                 -> _eval_map_06 x (fun ~out x -> A.zeros_ ~out)
         | Ones shape                                  -> _eval_map_06 x (fun ~out x -> A.ones_ ~out)
-        | Create                                      -> failwith "Create"
+        | Create shape                                -> _eval_map_08 x (fun ~out x -> A.create_ ~out x.(0))
         | Sequential                                  -> failwith "Sequential"
-        | Uniform shape                               -> _eval_map_08 x (fun x -> A.uniform ~a:x.(0) ~b:x.(1) shape)
+        | Uniform shape                               -> _eval_map_08 x (fun ~out x -> A.uniform_ ~a:x.(0) ~b:x.(1) ~out)
         | Gaussian                                    -> failwith "Gaussian"
         | Bernoulli (p, shape)                        -> _eval_map_06 x (fun ~out x -> A.bernoulli_ ~p ~out)
         | Init _                                      -> failwith "Init"
@@ -409,14 +411,16 @@ module Make (A : Ndarray_Mutable) = struct
     set_value x [|elt_to_value a|]
 
 
-  (* [f] is pure, for [elt array -> arr] *)
+  (* [f] is inpure, for [elt array -> arr] *)
   and _eval_map_08 x f =
     let a = Array.map (fun x ->
       _eval_term x;
       value_to_elt (get_value x).(0)
-    ) (parents x) |> f
+    ) (parents x)
     in
-    set_value x [|arr_to_value a|]
+    let out = allocate_from_parent_0 x in
+    f ~out a;
+    set_value x [|arr_to_value out|]
 
 
   (* [f] is pure, for [elt -> elt] *)
@@ -494,6 +498,9 @@ module Make (A : Ndarray_Mutable) = struct
     eval_arr [|x|];
     set_operator (arr_to_node x) Var;
     arr_to_var x
+
+
+  let optimise_graph = Computation_Optimiser.run
 
 
 end

@@ -39,7 +39,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Empty                         of int array
     | Zeros                         of int array
     | Ones                          of int array
-    | Create
+    | Create                        of int array
     | Sequential
     | Uniform                       of int array
     | Gaussian
@@ -225,7 +225,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Empty shape                                 -> "Empty"
     | Zeros shape                                 -> "Zeros"
     | Ones shape                                  -> "Ones"
-    | Create                                      -> "Create"
+    | Create shape                                -> "Create"
     | Sequential                                  -> "Sequential"
     | Uniform shape                               -> "Uniform"
     | Gaussian                                    -> "Gaussian"
@@ -583,6 +583,7 @@ module Make (A : Ndarray_Algodiff) = struct
     let input_shapes = Array.map (fun a -> (attr a).shape) args in
     match operator with
     | Noop                                        -> _infer_shape_01 input_shapes
+    | Create shape                                -> [| Some shape |]
     | Get _                                       -> _infer_shape_00 input_shapes
     | GetSlice slice                              -> _infer_shape_20 input_shapes slice
     | Copy                                        -> _infer_shape_01 input_shapes
@@ -798,6 +799,9 @@ module Make (A : Ndarray_Algodiff) = struct
   let value_to_elt = function EltVal x -> x | _ -> failwith "Owl_computation_graph: value_to_elt"
 
 
+  let value_to_float x = A.elt_to_float (value_to_elt x)
+
+
   let make_node ?name ?value ?shape ?freeze ?reuse ?state op =
     let value = match value with Some v -> v | None -> [| |] in
     let shape = match shape with Some s -> s | None -> [| None |] in
@@ -931,7 +935,11 @@ module Make (A : Ndarray_Algodiff) = struct
 
   let unpack_elt x =
     let value = (elt_to_node x |> attr).value in
-    assert (Array.length value > 0);
+    let valen = Array.length value in
+    if valen = 0 then (
+      Owl_log.error "value not assigned: %s" (elt_to_node x |> node_to_str);
+      assert (valen > 0)
+    );
     value_to_elt value.(0)
 
 
@@ -1031,7 +1039,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
   let create shape v =
     Owl_log.debug "create";
-    make_then_connect ~shape:[|Some shape|] Create [|elt_to_node v|] |> node_to_arr
+    make_then_connect ~shape:[|Some shape|] (Create shape) [|elt_to_node v|] |> node_to_arr
 
   let sequential ?a ?step shape =
     Owl_log.debug "sequential";

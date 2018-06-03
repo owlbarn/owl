@@ -964,12 +964,21 @@ let elt_greater_equal_scalar x a =
   _owl_elt_greater_equal_scalar (kind x) (numel x) x y a;
   y
 
+
 let uniform k ?a ?b d =
   let a = match a with Some a -> a | None -> Owl_const.zero k in
   let b = match b with Some b -> b | None -> Owl_const.one k in
   let x = empty k d in
   _owl_uniform k (numel x) x a b;
   x
+
+
+let uniform_ ?a ?b ~out =
+  let k = kind out in
+  let a = match a with Some a -> a | None -> Owl_const.zero k in
+  let b = match b with Some b -> b | None -> Owl_const.one k in
+  _owl_uniform k (numel out) out a b
+
 
 let gaussian k ?mu ?sigma d =
   let mu = match mu with Some a -> a | None -> Owl_const.zero k in
@@ -1014,6 +1023,9 @@ let create kind dimension a =
   let x = empty kind dimension in
   let _ = fill x a in
   x
+
+
+let create_ ~out a = fill out a
 
 
 let zeros kind dimension = create kind dimension (Owl_const.zero kind)
@@ -1272,7 +1284,6 @@ let transpose ?axis x =
 
 
 let transpose_ ~out ?axis x =
-Owl_log.error "oh no ...";
   let d = num_dims x in
   let a = match axis with
     | Some a -> a

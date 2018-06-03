@@ -37,7 +37,7 @@ module Make (A : Ndarray_Algodiff) : sig
     | Empty                         of int array
     | Zeros                         of int array
     | Ones                          of int array
-    | Create
+    | Create                        of int array
     | Sequential
     | Uniform                       of int array
     | Gaussian
@@ -261,6 +261,9 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
   val elt_to_float : elt -> float
+  (** TODO *)
+
+  val value_to_float : value -> float
   (** TODO *)
 
 

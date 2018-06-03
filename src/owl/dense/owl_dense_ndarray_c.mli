@@ -573,6 +573,10 @@ val slide : ?axis:int -> ?ofs:int -> ?step:int -> window:int -> arr -> arr
 
 (** {6 Fucntions of in-place modification } *)
 
+val create_ : out:arr -> elt -> unit
+
+val uniform_ : ?a:elt -> ?b:elt -> out:arr -> unit
+
 val bernoulli_ : ?p:float -> out:arr -> unit
 
 val zeros_ : out:arr -> unit

@@ -28,7 +28,7 @@ module Make (A : Ndarray_Algodiff) = struct
         | Empty shape                                 -> pattern_000 x
         | Zeros shape                                 -> pattern_000 x
         | Ones shape                                  -> pattern_000 x
-        | Create                                      -> pattern_000 x
+        | Create shape                                -> pattern_000 x
         | Sequential                                  -> pattern_000 x
         | Uniform shape                               -> pattern_000 x
         | Gaussian                                    -> pattern_000 x
@@ -105,7 +105,7 @@ module Make (A : Ndarray_Algodiff) = struct
         | DivScalar                                   -> pattern_000 x
         | ScalarAdd                                   -> pattern_000 x
         | ScalarSub                                   -> pattern_000 x
-        | ScalarMul                                   -> pattern_000 x
+        | ScalarMul                                   -> pattern_014 x
         | ScalarDiv                                   -> pattern_000 x
         | IsZero                                      -> pattern_000 x
         | IsPositive                                  -> pattern_000 x
@@ -170,38 +170,38 @@ module Make (A : Ndarray_Algodiff) = struct
         | OfRows                                      -> pattern_000 x
         | OfArray shape                               -> pattern_000 x
         | OfArrays                                    -> pattern_000 x
-        | Scalar_Add                                  -> pattern_000 x
-        | Scalar_Sub                                  -> pattern_000 x
-        | Scalar_Mul                                  -> pattern_000 x
-        | Scalar_Div                                  -> pattern_000 x
-        | Scalar_Pow                                  -> pattern_000 x
-        | Scalar_Atan2                                -> pattern_000 x
-        | Scalar_Abs                                  -> pattern_000 x
-        | Scalar_Neg                                  -> pattern_000 x
-        | Scalar_Sqr                                  -> pattern_000 x
-        | Scalar_Sqrt                                 -> pattern_000 x
-        | Scalar_Exp                                  -> pattern_000 x
-        | Scalar_Log                                  -> pattern_000 x
-        | Scalar_Log2                                 -> pattern_000 x
-        | Scalar_Log10                                -> pattern_000 x
-        | Scalar_Signum                               -> pattern_000 x
-        | Scalar_Floor                                -> pattern_000 x
-        | Scalar_Ceil                                 -> pattern_000 x
-        | Scalar_Round                                -> pattern_000 x
-        | Scalar_Sin                                  -> pattern_000 x
-        | Scalar_Cos                                  -> pattern_000 x
-        | Scalar_Tan                                  -> pattern_000 x
-        | Scalar_Sinh                                 -> pattern_000 x
-        | Scalar_Cosh                                 -> pattern_000 x
-        | Scalar_Tanh                                 -> pattern_000 x
-        | Scalar_Asin                                 -> pattern_000 x
-        | Scalar_Acos                                 -> pattern_000 x
-        | Scalar_Atan                                 -> pattern_000 x
-        | Scalar_Asinh                                -> pattern_000 x
-        | Scalar_Acosh                                -> pattern_000 x
-        | Scalar_Atanh                                -> pattern_000 x
-        | Scalar_Relu                                 -> pattern_000 x
-        | Scalar_Sigmoid                              -> pattern_000 x
+        | Scalar_Add                                  -> pattern_010 x
+        | Scalar_Sub                                  -> pattern_010 x
+        | Scalar_Mul                                  -> pattern_010 x
+        | Scalar_Div                                  -> pattern_010 x
+        | Scalar_Pow                                  -> pattern_010 x
+        | Scalar_Atan2                                -> pattern_010 x
+        | Scalar_Abs                                  -> pattern_012 x
+        | Scalar_Neg                                  -> pattern_012 x
+        | Scalar_Sqr                                  -> pattern_012 x
+        | Scalar_Sqrt                                 -> pattern_012 x
+        | Scalar_Exp                                  -> pattern_012 x
+        | Scalar_Log                                  -> pattern_012 x
+        | Scalar_Log2                                 -> pattern_012 x
+        | Scalar_Log10                                -> pattern_012 x
+        | Scalar_Signum                               -> pattern_012 x
+        | Scalar_Floor                                -> pattern_012 x
+        | Scalar_Ceil                                 -> pattern_012 x
+        | Scalar_Round                                -> pattern_012 x
+        | Scalar_Sin                                  -> pattern_012 x
+        | Scalar_Cos                                  -> pattern_012 x
+        | Scalar_Tan                                  -> pattern_012 x
+        | Scalar_Sinh                                 -> pattern_012 x
+        | Scalar_Cosh                                 -> pattern_012 x
+        | Scalar_Tanh                                 -> pattern_012 x
+        | Scalar_Asin                                 -> pattern_012 x
+        | Scalar_Acos                                 -> pattern_012 x
+        | Scalar_Atan                                 -> pattern_012 x
+        | Scalar_Asinh                                -> pattern_012 x
+        | Scalar_Acosh                                -> pattern_012 x
+        | Scalar_Atanh                                -> pattern_012 x
+        | Scalar_Relu                                 -> pattern_012 x
+        | Scalar_Sigmoid                              -> pattern_012 x
         | _                                           -> failwith "Owl_computation_optimiser:_optimise_term"
       );
       validate x
@@ -395,10 +395,123 @@ module Make (A : Ndarray_Algodiff) = struct
     )
 
 
+
+  (* Binary operator pattern for const scalar *)
+  and pattern_010 x =
+    Owl_log.debug "pattern_010";
+    let parents = parents x in
+    let a = parents.(0) in
+    let b = parents.(1) in
+    _optimise_term a;
+    _optimise_term b;
+    match (get_operator a, get_operator b) with
+    | Const, Const -> (
+        let a_val = node_to_elt a |> elt_to_float in
+        let b_val = node_to_elt b |> elt_to_float in
+        let c_val = pattern_011 (get_operator x) a_val b_val in
+        set_parents x [||];
+        set_reuse x false;
+        set_operator x Const;
+        freeze x;
+        (* FIXME: OMG, I need to fix this ... to many conversions *)
+        set_value x [| float_to_elt c_val |> unpack_elt |> elt_to_value |];
+      )
+    | _            -> ()
+
+
+  (* Binary operator pattern: evaluation function for pattern_010 *)
+  and pattern_011 op a b =
+    match op with
+    | Scalar_Add   -> a +. b
+    | Scalar_Sub   -> a -. b
+    | Scalar_Mul   -> a *. b
+    | Scalar_Div   -> a /. b
+    | Scalar_Pow   -> a ** b
+    | Scalar_Atan2 -> Pervasives.atan2 a b
+    | _            -> failwith "pattern_011: not supported"
+
+
+  (* Unary operator pattern for const scalar *)
+  and pattern_012 x =
+    Owl_log.debug "pattern_012";
+    let parents = parents x in
+    let a = parents.(0) in
+    _optimise_term a;
+    match get_operator a with
+    | Const -> (
+        let a_val = node_to_elt a |> elt_to_float in
+        let b_val = pattern_013 (get_operator x) a_val in
+        set_parents x [||];
+        set_reuse x false;
+        set_operator x Const;
+        freeze x;
+        (* FIXME: OMG, I need to fix this ... to many conversions *)
+        set_value x [| float_to_elt b_val |> unpack_elt |> elt_to_value |];
+      )
+    | _            -> ()
+
+
+  (* Unary operator pattern: evaluation function for pattern_012 *)
+  and pattern_013 op x =
+    let open Owl_base_maths in
+    match op with
+    | Scalar_Abs     -> abs x
+    | Scalar_Neg     -> neg x
+    | Scalar_Sqr     -> x *. x
+    | Scalar_Sqrt    -> sqrt x
+    | Scalar_Exp     -> exp x
+    | Scalar_Log     -> log x
+    | Scalar_Log2    -> log2 x
+    | Scalar_Log10   -> log10 x
+    | Scalar_Signum  -> signum x
+    | Scalar_Floor   -> floor x
+    | Scalar_Ceil    -> ceil x
+    | Scalar_Round   -> round x
+    | Scalar_Sin     -> sin x
+    | Scalar_Cos     -> cos x
+    | Scalar_Tan     -> tan x
+    | Scalar_Sinh    -> sinh x
+    | Scalar_Cosh    -> cosh x
+    | Scalar_Tanh    -> tanh x
+    | Scalar_Asin    -> asin x
+    | Scalar_Acos    -> acos x
+    | Scalar_Atan    -> atan x
+    | Scalar_Asinh   -> asinh x
+    | Scalar_Acosh   -> acosh x
+    | Scalar_Atanh   -> atanh x
+    | Scalar_Relu    -> relu x
+    | Scalar_Sigmoid -> sigmoid x
+    | _            -> failwith "pattern_013: not supported"
+
+
+  (* ScalarMul pattern *)
+  and pattern_014 x =
+    Owl_log.debug "pattern_014";
+    let x_parents = parents x in
+    let a = x_parents.(0) in
+    let b = x_parents.(1) in
+    _optimise_term a;
+    _optimise_term b;
+    match (get_operator a, get_operator b) with
+    | _, Zeros shp -> (
+        set_operator x (Zeros shp);
+        set_parents x [||];
+        remove_edge a x;
+        remove_edge b x;
+      )
+    | _, Ones shp  -> (
+        set_parents x [|a|];
+        set_operator x (Create shp);
+        remove_edge b x;
+      )
+    | _            -> ()
+
+
+
   let run x =
-    Array.iter _optimise_term (Obj.magic x);
+    Array.iter _optimise_term x;
     (* NOTE: invalidate ancestors *)
-    iter_ancestors (fun v -> invalidate v) (Obj.magic x)
+    iter_ancestors (fun v -> invalidate v) x
 
 
 end

@@ -13,7 +13,6 @@ module Make
   module Lazy = Owl_lazyy.Make (A)
   module Algodiff = Owl_algodiff_generic.Make (Lazy)
   module Neural = Owl_neural_generic.Make (Lazy)
-  module Computation_Optimiser = Owl_computation_optimiser.Make (Lazy)
 
   open Algodiff
   open Neural
@@ -177,7 +176,7 @@ module Make
     let name = Neural.Graph.get_network_name network in
     let dot_raw = Lazy.to_dot cgraph in
     (* FIXME: experimental *)
-    Computation_Optimiser.run cgraph;
+    (* Computation_Optimiser.run cgraph; *)
 
     let dot_opt = Lazy.to_dot cgraph in
     Owl_io.write_file (name ^ "_raw.dot") dot_raw;
@@ -482,7 +481,7 @@ module Make
     let name = Graph.get_network_name network in
     let dot_raw = Lazy.to_dot cgraph in
 
-    Computation_Optimiser.run cgraph;
+    Lazy.optimise_graph cgraph;
 
     let dot_opt = Lazy.to_dot cgraph in
     Owl_io.write_file (name ^ "_raw.dot") dot_raw;
