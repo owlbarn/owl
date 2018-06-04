@@ -99,7 +99,7 @@ module Make (A : Ndarray_Algodiff) = struct
         | Sub                                         -> pattern_000 x
         | Mul                                         -> pattern_000 x
         | Div                                         -> pattern_007 x
-        | AddScalar                                   -> pattern_000 x
+        | AddScalar                                   -> pattern_015 x
         | SubScalar                                   -> pattern_000 x
         | MulScalar                                   -> pattern_000 x
         | DivScalar                                   -> pattern_000 x
@@ -226,7 +226,7 @@ module Make (A : Ndarray_Algodiff) = struct
     pattern_004 x
 
 
-  (* add ndarray pattern: add ndarray a zero *)
+  (* add ndarray pattern: x + 0 *)
   and pattern_002 x =
     Owl_log.debug "pattern_002";
     let x_parents = parents x in
@@ -274,7 +274,7 @@ module Make (A : Ndarray_Algodiff) = struct
     )
 
 
-  (* add ndarray pattern: FMA pattern *)
+  (* add ndarray pattern: FMA x * y + z *)
   and pattern_004 x =
     Owl_log.debug "pattern_004";
     if get_operator x = Add then (
@@ -298,7 +298,7 @@ module Make (A : Ndarray_Algodiff) = struct
     )
 
 
-  (* gemm pattern *)
+  (* gemm pattern :  alpha * x *@ y + beta * z *)
   and pattern_005 x =
     Owl_log.debug "pattern_005";
     let x_parents = parents x in
@@ -358,7 +358,7 @@ module Make (A : Ndarray_Algodiff) = struct
     pattern_008 x
 
 
-  (* div pattern: zero divided by x *)
+  (* div pattern: 0 / x *)
   and pattern_008 x =
     Owl_log.debug "pattern_008";
     if get_operator x = Div then (
@@ -376,7 +376,7 @@ module Make (A : Ndarray_Algodiff) = struct
     )
 
 
-  (* div pattern: x divided by one *)
+  (* div pattern: x / 1 *)
   and pattern_009 x =
     Owl_log.debug "pattern_009";
     if get_operator x = Div then (
@@ -484,7 +484,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | _            -> failwith "pattern_013: not supported"
 
 
-  (* ScalarMul pattern *)
+  (* ScalarMul pattern : a $* 0, a $* 1 *)
   and pattern_014 x =
     Owl_log.debug "pattern_014";
     let x_parents = parents x in
@@ -506,6 +506,22 @@ module Make (A : Ndarray_Algodiff) = struct
       )
     | _            -> ()
 
+
+  (* AddScalar pattern : a +$ 0 *)
+  and pattern_015 x =
+    Owl_log.debug "pattern_015";
+    let x_parents = parents x in
+    let a = x_parents.(0) in
+    let b = x_parents.(1) in
+    _optimise_term a;
+    _optimise_term b;
+    match (get_operator a, get_operator b) with
+    | Zeros shp, _ -> (
+        set_parents x [|b|];
+        set_operator x (Create shp);
+        remove_edge a x;
+      )
+    | _            -> ()
 
 
   let run x =
