@@ -149,14 +149,14 @@ module Make (N : Ndarray_Algodiff) = struct
       verify_value test_conv3d [|1;7;7;7;1|] [|2;2;2;1;1|] [|3;3;3|] SAME expected
 
     (* testKernelSmallerThanStride4 *)
-    let fun10 () =
+    let fun11 () =
       let expected = [|
         0.540816; 0.580175; 0.816327; 0.855685;
         2.469388; 2.508746; 2.744898; 2.784257|] in
       verify_value test_conv3d [|1;7;7;7;1|] [|2;2;2;1;1|] [|3;3;3|] VALID expected
 
     (* testKernelSizeMatchesInputSize *)
-    let fun11 () =
+    let fun12 () =
       let expected = [|1.5625; 1.875|] in
       verify_value test_conv3d [|1;2;1;2;1|] [|2;1;2;1;2|] [|1;1;1|] VALID expected
 
@@ -377,6 +377,9 @@ module Make (N : Ndarray_Algodiff) = struct
   let fun_conv11 () =
     Alcotest.(check bool) "fun_conv11" true (To_test_conv3d.fun11 ())
 
+  let fun_conv12 () =
+    Alcotest.(check bool) "fun_conv12" true (To_test_conv3d.fun12 ())
+
   (* tests for conv3d input backward operation *)
 
   let fun_cbi00 () =
@@ -443,6 +446,7 @@ module Make (N : Ndarray_Algodiff) = struct
     "fun_conv09", `Slow, fun_conv09;
     "fun_conv10", `Slow, fun_conv10;
     "fun_conv11", `Slow, fun_conv11;
+    "fun_conv12", `Slow, fun_conv12;
     "fun_cbi00", `Slow, fun_cbi00;
     "fun_cbi01", `Slow, fun_cbi01;
     "fun_cbi02", `Slow, fun_cbi02;
