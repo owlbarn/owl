@@ -506,11 +506,11 @@ val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
 
 val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
 
-val atrous_conv1d : ?padding:padding -> ?stride:int array -> arr -> arr -> int -> arr
+val dilated_conv1d : ?padding:padding -> ?stride:int array -> arr -> arr -> int array -> arr
 
-val atrous_conv2d : ?padding:padding -> ?stride:int array -> arr -> arr -> int -> arr
+val dilated_conv2d : ?padding:padding -> ?stride:int array -> arr -> arr -> int array -> arr
 
-val atrous_conv3d : ?padding:padding -> ?stride:int array -> arr -> arr -> int -> arr
+val dilated_conv3d : ?padding:padding -> ?stride:int array -> arr -> arr -> int array -> arr
 
 val transpose_conv1d : ?padding:padding -> arr -> arr -> int array -> arr
 
@@ -544,17 +544,17 @@ val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
 
 val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
 
-val atrous_conv1d_backward_input : ?stride:int array -> arr -> arr -> arr -> int -> arr
+val dilated_conv1d_backward_input : ?stride:int array -> arr -> arr -> arr -> int array -> arr
 
-val atrous_conv1d_backward_kernel : ?stride:int array -> arr -> arr -> arr -> int -> arr
+val dilated_conv1d_backward_kernel : ?stride:int array -> arr -> arr -> arr -> int array -> arr
 
-val atrous_conv2d_backward_input : ?stride:int array -> arr -> arr -> arr -> int -> arr
+val dilated_conv2d_backward_input : ?stride:int array -> arr -> arr -> arr -> int array -> arr
 
-val atrous_conv2d_backward_kernel : ?stride:int array -> arr -> arr -> arr -> int -> arr
+val dilated_conv2d_backward_kernel : ?stride:int array -> arr -> arr -> arr -> int array -> arr
 
-val atrous_conv3d_backward_input : ?stride:int array -> arr -> arr -> arr -> int -> arr
+val dilated_conv3d_backward_input : ?stride:int array -> arr -> arr -> arr -> int array -> arr
 
-val atrous_conv3d_backward_kernel : ?stride:int array -> arr -> arr -> arr -> int -> arr
+val dilated_conv3d_backward_kernel : ?stride:int array -> arr -> arr -> arr -> int array -> arr
 
 val transpose_conv1d_backward_input : arr -> arr -> int array -> arr -> arr
 

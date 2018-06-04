@@ -1857,7 +1857,7 @@ val conv1d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, '
 []
  *)
 
-val atrous_conv1d : ?padding:padding -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
+val dilated_conv1d : ?padding:padding -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
@@ -1872,7 +1872,7 @@ val conv2d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, '
 []
  *)
 
-val atrous_conv2d : ?padding:padding -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
+val dilated_conv2d : ?padding:padding -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
@@ -1887,7 +1887,7 @@ val conv3d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, '
 []
  *)
 
-val atrous_conv3d : ?padding:padding -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
+val dilated_conv3d : ?padding:padding -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
@@ -1942,12 +1942,12 @@ val conv1d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 []
  *)
 
-val atrous_conv1d_backward_input : ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
+val dilated_conv1d_backward_input : ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val atrous_conv1d_backward_kernel : ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
+val dilated_conv1d_backward_kernel : ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
@@ -1972,12 +1972,12 @@ val conv2d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 []
  *)
 
-val atrous_conv2d_backward_input : ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
+val dilated_conv2d_backward_input : ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val atrous_conv2d_backward_kernel : ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
+val dilated_conv2d_backward_kernel : ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
@@ -2002,12 +2002,12 @@ val conv3d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 []
  *)
 
-val atrous_conv3d_backward_input : ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
+val dilated_conv3d_backward_input : ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
 
-val atrous_conv3d_backward_kernel : ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
+val dilated_conv3d_backward_kernel : ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 []
  *)
