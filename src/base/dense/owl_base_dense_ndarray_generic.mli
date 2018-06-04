@@ -524,6 +524,15 @@ val conv2d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> 
 val conv3d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val dilated_conv1d : ?padding:padding -> ?stride:int array -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val dilated_conv2d : ?padding:padding -> ?stride:int array -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val dilated_conv3d : ?padding:padding -> ?stride:int array -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val transpose_conv1d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
@@ -567,6 +576,24 @@ val conv3d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (floa
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val dilated_conv1d_backward_input : ?stride:int array -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val dilated_conv1d_backward_kernel : ?stride:int array -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val dilated_conv2d_backward_input : ?stride:int array -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val dilated_conv2d_backward_kernel : ?stride:int array -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val dilated_conv3d_backward_input : ?stride:int array -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val dilated_conv3d_backward_kernel : ?stride:int array -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val transpose_conv1d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t

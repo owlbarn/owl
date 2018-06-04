@@ -2600,6 +2600,293 @@ let avg_pool1d_backward padding input kernel stride output' =
   reshape input' input_shp
 
 
+let upsample_kernel2d kernel rate =
+  if rate = [|1;1|] then kernel else (
+    let kernel_shp  = shape kernel in
+    let kernel_cols = kernel_shp.(0) in
+    let kernel_rows = kernel_shp.(1) in
+    let in_channel  = kernel_shp.(2) in
+    let out_channel = kernel_shp.(3) in
+    let col_rate    = rate.(0) in
+    let row_rate    = rate.(1) in
+
+    let col_up = kernel_cols + (kernel_cols - 1) * (col_rate - 1) in
+    let row_up = kernel_rows + (kernel_rows - 1) * (row_rate - 1) in
+    let new_kernel = zeros (kind kernel)
+      [|col_up; row_up; in_channel; out_channel|] in
+
+    for c = 0 to (kernel_cols - 1) do
+      for r = 0 to (kernel_rows - 1) do
+        for i = 0 to (in_channel - 1) do
+          for o = 0 to (out_channel - 1) do
+            let v = get kernel [|c; r; i; o|] in
+            set new_kernel [|c * col_rate; r * row_rate; i; o|] v;
+          done
+        done
+      done
+    done;
+    new_kernel
+  )
+
+
+let downsample_kernel2d kernel rate =
+  if rate = [|1;1|] then kernel else (
+    let kernel_shp  = shape kernel in
+    let kernel_cols = kernel_shp.(0) in
+    let kernel_rows = kernel_shp.(1) in
+    let in_channel  = kernel_shp.(2) in
+    let out_channel = kernel_shp.(3) in
+    let col_rate    = rate.(0) in
+    let row_rate    = rate.(1) in
+
+    let col_down = (kernel_cols + (col_rate - 1)) / col_rate in
+    let row_down = (kernel_rows + (row_rate - 1)) / row_rate in
+    let new_kernel = zeros (kind kernel)
+      [|col_down; row_down; in_channel; out_channel|] in
+
+    for c = 0 to (col_down - 1) do
+      for r = 0 to (row_down - 1) do
+        for i = 0 to (in_channel - 1) do
+          for o = 0 to (out_channel - 1) do
+            let v = get kernel [|c * col_rate; r * row_rate; i; o|] in
+            set new_kernel [|c; r; i; o|] v
+          done
+        done
+      done
+    done;
+    new_kernel
+  )
+
+
+(* dilated_conv2d: 4d input and 4d kernel, refer to tensorlfow doc
+  input : [batch; input_column; input_row; input_channel]
+  kernel: [kernel_column; kernel_row; input_channel; output_channel]
+  stride: [column_stride; row_stride]
+  rate  : [col_dilation_stride; row_dilation_rate]
+  output: [batch; output_column; output_row; output_channel]
+ *)
+let dilated_conv2d ?(padding=SAME) ?(stride=[|1;1|]) input kernel rate =
+  assert (Array.length rate = 2);
+  let kernel = upsample_kernel2d kernel rate in
+  conv2d ~padding input kernel stride
+
+
+(* gradient of dilated_conv2d w.r.t the input *)
+let dilated_conv2d_backward_input ?(stride=[|1;1|]) input kernel output' rate =
+  assert (Array.length rate = 2);
+  let kernel = upsample_kernel2d kernel rate in
+  conv2d_backward_input input kernel stride output'
+
+
+(* gradient of dilated_conv2d w.r.t the kernel *)
+let dilated_conv2d_backward_kernel ?(stride=[|1;1|]) input kernel output' rate =
+  assert (Array.length rate = 2);
+  let kernel  = upsample_kernel2d kernel rate in
+  let kernel' = conv2d_backward_kernel input kernel stride output' in
+  downsample_kernel2d kernel' rate
+
+
+let upsample_kernel3d kernel rate =
+  if rate = [|1;1;1|] then kernel else (
+    let kernel_shp  = shape kernel in
+    let kernel_cols = kernel_shp.(0) in
+    let kernel_rows = kernel_shp.(1) in
+    let kernel_dpts = kernel_shp.(2) in
+    let in_channel  = kernel_shp.(3) in
+    let out_channel = kernel_shp.(4) in
+    let col_rate    = rate.(0) in
+    let row_rate    = rate.(1) in
+    let dpt_rate    = rate.(2) in
+
+
+    let col_up = kernel_cols + (kernel_cols - 1) * (col_rate - 1) in
+    let row_up = kernel_rows + (kernel_rows - 1) * (row_rate - 1) in
+    let dpt_up = kernel_dpts + (kernel_dpts - 1) * (dpt_rate - 1) in
+    let new_kernel = zeros (kind kernel)
+      [|col_up; row_up; dpt_up; in_channel; out_channel|] in
+
+    for c = 0 to (kernel_cols - 1) do
+      for r = 0 to (kernel_rows - 1) do
+        for d = 0 to (kernel_dpts - 1) do
+          for i = 0 to (in_channel - 1) do
+            for o = 0 to (out_channel - 1) do
+              let v = get kernel [|c; r; d; i; o|] in
+              set new_kernel [|c * col_rate; r * row_rate; d * dpt_rate; i; o|] v;
+            done
+          done
+        done
+      done
+    done;
+    new_kernel
+  )
+
+
+let downsample_kernel3d kernel rate =
+  if rate = [|1;1;1|] then kernel else (
+    let kernel_shp  = shape kernel in
+    let kernel_cols = kernel_shp.(0) in
+    let kernel_rows = kernel_shp.(1) in
+    let kernel_dpts = kernel_shp.(2) in
+    let in_channel  = kernel_shp.(3) in
+    let out_channel = kernel_shp.(4) in
+    let col_rate    = rate.(0) in
+    let row_rate    = rate.(1) in
+    let dpt_rate    = rate.(2) in
+
+    let col_down = (kernel_cols + (col_rate - 1)) / col_rate in
+    let row_down = (kernel_rows + (row_rate - 1)) / row_rate in
+    let dpt_down = (kernel_dpts + (dpt_rate - 1)) / dpt_rate in
+    let new_kernel = zeros (kind kernel)
+      [|col_down; row_down; dpt_down; in_channel; out_channel|] in
+
+    for c = 0 to (col_down - 1) do
+      for r = 0 to (row_down - 1) do
+        for d = 0 to (dpt_down - 1) do
+          for i = 0 to (in_channel - 1) do
+            for o = 0 to (out_channel - 1) do
+              let v = get kernel [|c * col_rate; r * row_rate; d * dpt_rate; i; o|] in
+              set new_kernel [|c; r; d; i; o|] v
+            done
+          done
+        done
+      done
+    done;
+    new_kernel
+  )
+
+(* dilated_conv3d: 5d input and 5d kernel, refer to tensorflow doc
+  input : [batch; input_column; input_row; input_depth; input_channel]
+  kernel: [kernel_column; kernel_row; kernel_depth; input_channel; output_channel]
+  stride: [column_stride; row_stride; depth_stride]
+  rate  : [col_dilation_stride; row_dilation_rate; depth_dilation_rate]
+  output: [batch; output_column; output_row; output_dpts; output_channel]
+ *)
+let dilated_conv3d ?(padding=SAME) ?(stride=[|1;1;1|]) input kernel rate =
+  assert (Array.length rate = 3);
+  let kernel = upsample_kernel3d kernel rate in
+  conv3d ~padding input kernel stride
+
+
+(* gradient of dilated_conv3d w.r.t the input *)
+let dilated_conv3d_backward_input ?(stride=[|1;1;1|]) input kernel output' rate =
+  assert (Array.length rate = 3);
+  let kernel = upsample_kernel3d kernel rate in
+  conv3d_backward_input input kernel stride output'
+
+
+(* gradient of dilated_conv3d w.r.t the kernel *)
+let dilated_conv3d_backward_kernel ?(stride=[|1;1;1|]) input kernel output' rate =
+  assert (Array.length rate = 3);
+  let kernel  = upsample_kernel3d kernel rate in
+  let kernel' = conv3d_backward_kernel input kernel stride output' in
+  downsample_kernel3d kernel' rate
+
+
+(* dilated_conv1d: 3d input and 3d kernel, refer to tensorlfow doc
+  input : [batch; input_column; input_channel]
+  kernel: [kernel_column; input_channel; output_channel]
+  stride: [column_stride]
+  output: [batch; output_column; output_channel]
+ *)
+let dilated_conv1d ?(padding=SAME) ?(stride=[|1|]) input kernel rate =
+  assert (num_dims input = 3);
+  assert (num_dims kernel = 3);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input = reshape input [|batches; 1; input_cols; in_channel|] in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let out_channel = kernel_shp.(2) in
+  assert (in_channel = kernel_shp.(1));
+  let kernel = reshape kernel [|1;kernel_cols; in_channel; out_channel|] in
+
+  let col_stride = stride.(0) in
+  let stride = [|1; col_stride|] in
+
+  let output = dilated_conv2d ~padding ~stride input kernel rate in
+  let output_shp = shape output in
+  let output_cols = output_shp.(2) in
+  let output = reshape output [|batches; output_cols; out_channel|] in
+  output
+
+
+(* gradient of dilated_conv1d w.r.t the input *)
+let dilated_conv1d_backward_input ?(stride=[|1|]) input kernel output' rate =
+  assert (num_dims input = 3);
+  assert (num_dims kernel = 3);
+  assert (num_dims output' = 3);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input_rows = 1 in
+  let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let out_channel = kernel_shp.(2) in
+  assert (in_channel = kernel_shp.(1));
+  let kernel_rows = 1 in
+  let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
+
+  let output'_shp = shape output' in
+  let output_cols = output'_shp.(1) in
+  assert (batches = output'_shp.(0));
+  assert (out_channel = output'_shp.(2));
+  let output_rows = 1 in
+  let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+  let col_stride = stride.(0) in
+  let row_stride = 1 in
+  let stride = [|row_stride; col_stride|] in
+
+  let input' = dilated_conv2d_backward_input ~stride input kernel output' rate in
+  reshape input' input_shp
+
+
+(* gradient of dilated_conv1d w.r.t the kernel *)
+let dilated_conv1d_backward_kernel ?(stride=[|1|]) input kernel output' rate =
+  assert (num_dims input = 3);
+  assert (num_dims kernel = 3);
+  assert (num_dims output' = 3);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input_rows = 1 in
+  let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let out_channel = kernel_shp.(2) in
+  assert (in_channel = kernel_shp.(1));
+  let kernel_rows = 1 in
+  let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
+
+  let output'_shp = shape output' in
+  let output_cols = output'_shp.(1) in
+  assert (batches = output'_shp.(0));
+  assert (out_channel = output'_shp.(2));
+  let output_rows = 1 in
+  let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+  let col_stride = stride.(0) in
+  let row_stride = 1 in
+  let stride = [|row_stride; col_stride|] in
+
+  let kernel' = dilated_conv2d_backward_kernel ~stride input kernel output' rate in
+  reshape kernel' kernel_shp
+
+
 (* matrix functions *)
 
 let _remove_unit_dims dims =
