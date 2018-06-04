@@ -22,16 +22,20 @@ let syscall cmd =
   Buffer.contents buf
 
 
-(** Version information of gists is saved as key-value pairs in Hash table:
-key: gid; value: (version list, timestamp). *)
+(** 
+Version information of gists is saved as key-value pairs in Hash table:
+key: gid; value: (version list, timestamp). 
+*)
 let create_htb () =
   let tb = Hashtbl.create 128 in
   Hashtbl.add tb "" ([|""|], 0.);
   Owl_io.marshal_to_file tb htb
 
 
-(** Try to get the value of key `gid`; if not found, return default values with
-a `true` flag. *)
+(** 
+Try to get the value of key `gid`; if not found, return default values with
+a `true` flag. 
+*)
 let get_value (gid : string) =
   if not (Sys.file_exists htb) then create_htb ();
   let tb = Owl_io.marshal_from_file htb in
@@ -49,8 +53,10 @@ let get_timestamp (gid : string) =
   if miss_flag = false then ts else 0.
 
 
-(** Get the most up-to-date gist version from Gist server; return "" if the gid
-is not found or network error happens. *)
+(** 
+Get the most up-to-date gist version from Gist server; return "" if the gid
+is not found or network error happens. 
+*)
 let get_remote_vid (gid : string) =
   let cmd = "curl https://api.github.com/gists/" ^ gid in
   let s = syscall cmd in
@@ -86,8 +92,10 @@ let exist (gid : string) (vid : string) =
   else false
 
 
-(** Add a specific version of a gist to the record; if this version already
-exists, do nothing; if this gist does not exist, create a new item. *)
+(** 
+Add a specific version of a gist to the record; if this version already
+exists, do nothing; if this gist does not exist, create a new item. 
+*)
 let update (gid : string) (vid : string) =
   let v, _, tb, miss_flag = get_value gid in
   if (miss_flag = false) then (
@@ -125,9 +133,11 @@ let to_timestamp time_str =
   with Failure _ -> raise Owl_exception.ZOO_ILLEGAL_GIST_NAME
 
 
-(** Parse a full gist name scheme string and return a gist id, a version id, a
+(** 
+Parse a full gist name scheme string and return a gist id, a version id, a
 float value indicating the time tolerance for this gist, and a bool
-flag indicating if `pin` is set to true in the gist name. *)
+flag indicating if `pin` is set to true in the gist name. 
+*)
 let parse_gist_string gist =
   let validate_len s len =
     if ((String.length s) = len) then s
