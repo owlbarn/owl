@@ -702,7 +702,8 @@ let histogram ?(h=_default_handle) ?(spec=[]) ?(bin=10) x =
   let x = Owl_dense_matrix.D.to_array x in
   _adjust_range h x X;
   let xmin, xmax = Owl_stats.minmax x in
-  let ymin, ymax = 0., Owl_stats.(histogram x bin |> Array.map float_of_int |> max)  *. 1.1 in
+  let ymin, ymax = 0., Owl_stats.((
+      histogram (`N bin) x).counts |> Array.map float_of_int |> max)  *. 1.1 in
   _adjust_range h [|xmin; xmax|] X;
   _adjust_range h [|ymin; ymax|] Y;
   (* prepare the closure *)
@@ -1670,7 +1671,7 @@ let spy ?(h=_default_handle) ?(spec=[]) x =
   let xs = Owl_utils.Stack.make () in
   let ys = Owl_utils.Stack.make () in
   let m, n = Owl_dense_matrix.D.shape x in
-  
+
   for i = 0 to m - 1 do
     for j = 0 to n - 1 do
       let a = Owl_dense_matrix.D.get x i j in

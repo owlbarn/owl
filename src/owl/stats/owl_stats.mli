@@ -153,32 +153,61 @@ Note that the ranking starts with one!
 - ``Max`` the maximum of ranks is assigned to each value.
  *)
 
-val histogram : float array -> int -> int array
-(** ``histogram x n`` creates a histogram of ``n`` buckets for ``x``. *)
+type histogram = {
+  bins: float array;
+  counts: int array;
+  weighted_counts: float array option;
+  normalised_counts: float array option;
+  density: float array option}
+(** type for computed histograms, with optional weighted counts and normalized
+ * counts *)
 
-val histogram' : bins:[ `Edges of float array | `N of int ] -> float array ->
-  float array * int array
+val histogram : [ `Bins of float array | `N of int ] -> float array -> histogram
 (**
-``histogram' ~bins x`` creates a histogram from values in ``x``. If bins
-matches `` `N n`` it will construct ``n`` equally spaced bins from the
-minimum to the maximum in ``x``. If bins matches `` `Edges b``, the array
-``b`` is taken as the sorted bin edges. Bin edges are taken as
-left-inclusive, right-exclusive, except for the last bin which is
-right-inclusive. Values outside the bins are dropped. Returns a tuple of bin
-edges and counts.
+``histogram bins x`` creates a histogram from values in ``x``. If bins matches
+`` `N n`` it will construct ``n`` equally spaced bins from the minimum to
+the maximum in ``x``. If bins matches `` `Bins b``, ``b`` is taken as the
+sorted array of boundaries of adjacent bin intervals. Bin interval
+boundaries are taken as left-inclusive, right-exclusive, except for the last
+bin which is also right-inclusive. Values outside the bins are dropped.
+Returns a histogram including the ``n+1`` bin boundaries and ``n`` counts,
+but without normalisation.
 *)
 
-val fractions_of_counts : int array -> float array
+val histogram_weighted : [ `Bins of float array | `N of int ] ->
+float array -> float array -> histogram
 (**
-``fractions_of_counts counts`` returns the bin counts normalized to
-sum to 1.
+``histogram bins wts x`` is like ``histogram bins x`` but computes additionally
+a histogram of weighted counts with weights ``wts``. The array ``wts`` must
+match ``x`` in length.
 *)
 
-val density_of_bin_counts : float array * int array -> float array
+val histogram_sorted : [ `Bins of float array | `N of int ] -> float array -> histogram
 (**
-``density_of_bin_counts (bins, counts)`` normalizes the counts as a density.
-That is, the returned densities, multiplied by the bin widths, sum to 1.
+``histogram_sorted bins x`` is like ``histogram`` but assumes that ``x`` is sorted
+already, allowing increased efficiency. Undefined results if ``x`` is not in
+fact sorted.
 *)
+
+val histogram_sorted_weighted : [ `Bins of float array | `N of int ] ->
+float array -> float array -> histogram
+(**
+``histogram_sorted_weighted bins x`` is like ``histogram_weighted`` but
+assumes that ``x`` is sorted already. Undefined results if ``x`` is not in fact
+sorted.
+*)
+
+val normalise : histogram -> histogram
+(** ``normalize hist`` calculates a probability mass function using
+``hist.weighted_counts`` if present, otherwise using ``hist.counts``. The
+result sums to one. It is stored in the ``normalised_counts`` field. *)
+
+val normalise_density : histogram -> histogram
+(** ``normalize_density hist`` calculates a probability density function using
+``hist.weighted_counts`` if present, otherwise using ``hist.counts``. The
+result is normalized as density that is piecewise constant over the bin
+intervals. That is, the sum over density times corresponding bin width is
+one. The result is stored in the ``density`` field. *)
 
 val ecdf : float array -> float array * float array
 (**
