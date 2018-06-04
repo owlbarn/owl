@@ -56,13 +56,13 @@ val attr : 'a node -> 'a
 val set_attr : 'a node -> 'a -> unit
 (** ``set_attr x`` sets the ``attr`` field of node ``x``. *)
 
-val num_ancestor : 'a node -> int
+val num_ancestor : 'a node array -> int
 (** ``num_ancestor x`` returns the number of ancestors of ``x``. *)
 
-val num_descendant : 'a node -> int
+val num_descendant : 'a node array -> int
 (** ``num_descendant x`` returns the number of descendants of ``x``. *)
 
-val length : 'a node -> int
+val length : 'a node array -> int
 (** ``length x`` returns the total number of ancestors and descendants of ``x``. *)
 
 

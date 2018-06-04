@@ -246,17 +246,17 @@ let to_hashtbl = None
 
 let num_ancestor x =
   let n = ref 0 in
-  iter_ancestors (fun _ -> n := !n + 1) [|x|];
+  iter_ancestors (fun _ -> n := !n + 1) x;
   !n
 
 
 let num_descendant x =
   let n = ref 0 in
-  iter_descendants (fun _ -> n := !n + 1) [|x|];
+  iter_descendants (fun _ -> n := !n + 1) x;
   !n
 
 
-let length x = (num_ancestor x) + (num_descendant x) - 1
+let length x = (num_ancestor x) + (num_descendant x) - (Array.length x)
 
 
 let node_to_str x =

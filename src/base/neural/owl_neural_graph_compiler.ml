@@ -463,7 +463,6 @@ module Make
     let save fname = () in
 
     (* Experimental: optimise graph structure *)
-    Owl_log.info "optimise %s graph structure ..." network_name;
     let cgraph =
       Owl_utils_array.([|Algodiff.unpack_elt loss |> Lazy.elt_to_node|] @
       (ws' |> map (fun u -> Algodiff.unpack_arr u |> Lazy.arr_to_node)) @

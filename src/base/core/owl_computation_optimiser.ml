@@ -563,10 +563,24 @@ module Make (A : Ndarray_Algodiff) = struct
     | _            -> ()
 
 
+  let estimate_complexity graph =
+    let nodes = ref 0 in
+    Owl_graph.iter_ancestors (fun _ -> nodes := !nodes + 1) graph;
+    let edges = ref 0 in
+    Owl_graph.iter_in_edges (fun _ _ -> edges := !edges + 1) graph;
+    !nodes, !edges
+
+
   let run x =
+    let nodes, edges = estimate_complexity x in
+    Owl_log.info "unoptimised graph: %i nodes, %i edges ..." nodes edges;
+
     Array.iter _optimise_term x;
     (* NOTE: invalidate ancestors *)
-    iter_ancestors (fun v -> invalidate v) x
+    iter_ancestors (fun v -> invalidate v) x;
+
+    let nodes, edges = estimate_complexity x in
+    Owl_log.info "optimised graph: %i nodes, %i edges ..." nodes edges
 
 
 end
