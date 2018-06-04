@@ -106,7 +106,7 @@ module Make (A : Ndarray_Algodiff) = struct
         | ScalarAdd                                   -> pattern_000 x
         | ScalarSub                                   -> pattern_000 x
         | ScalarMul                                   -> pattern_014 x
-        | ScalarDiv                                   -> pattern_000 x
+        | ScalarDiv                                   -> pattern_017 x
         | IsZero                                      -> pattern_000 x
         | IsPositive                                  -> pattern_000 x
         | IsNegative                                  -> pattern_000 x
@@ -202,6 +202,7 @@ module Make (A : Ndarray_Algodiff) = struct
         | Scalar_Atanh                                -> pattern_012 x
         | Scalar_Relu                                 -> pattern_012 x
         | Scalar_Sigmoid                              -> pattern_012 x
+        | Fused_Adagrad                               -> pattern_000 x
         | _                                           -> failwith "Owl_computation_optimiser:_optimise_term"
       );
       validate x
@@ -505,6 +506,42 @@ module Make (A : Ndarray_Algodiff) = struct
         remove_edge b x;
       )
     | _            -> ()
+
+
+  (* ScalarDiv pattern *)
+  and pattern_016 x =
+    Owl_log.debug "pattern_016";
+    let x_parents = parents x in
+    let a = x_parents.(0) in
+    let b = x_parents.(1) in
+    _optimise_term a;
+    _optimise_term b;
+    pattern_017 x
+
+
+  (* ScalarDiv pattern: Adagrad pattern *)
+  and pattern_017 x =
+    if get_operator x = ScalarDiv then (
+      let x_parents = parents x in
+      let a = x_parents.(0) in
+      let b = x_parents.(1) in
+      if get_operator a = Const && get_operator b = Sqrt && refnum b = 1 then (
+        let b_parents = parents b in
+        let b_a = b_parents.(0) in
+        if get_operator b_a = AddScalar && refnum b_a = 1 then (
+          let b_a_parents = parents b_a in
+          let b_a_a = b_a_parents.(0) in
+          let b_a_b = b_a_parents.(1) in
+          if get_operator b_a_b = Const then (
+            let b_a_b_val = node_to_elt b_a_b |> elt_to_float in
+            if b_a_b_val = 1e-32 then (
+              Owl_log.error "hit the adagrad pattern ...";
+              set_operator x Fused_Adagrad
+            )
+          )
+        )
+      )
+    )
 
 
   (* AddScalar pattern : a +$ 0 *)

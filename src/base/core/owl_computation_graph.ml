@@ -216,6 +216,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Scalar_Atanh
     | Scalar_Relu
     | Scalar_Sigmoid
+    | Fused_Adagrad
 
 
   let op_to_str = function
@@ -402,6 +403,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Scalar_Atanh                                -> "Scalar Atanh"
     | Scalar_Relu                                 -> "Scalar Relu"
     | Scalar_Sigmoid                              -> "Scalar Sigmoid"
+    | Fused_Adagrad                               -> "Fused_Adagrad"
 
 
   (* infer the shape of outcome from inputs *)
@@ -748,6 +750,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Scalar_Atanh                                -> _infer_shape_00 input_shapes
     | Scalar_Relu                                 -> _infer_shape_00 input_shapes
     | Scalar_Sigmoid                              -> _infer_shape_00 input_shapes
+    | Fused_Adagrad                               -> _infer_shape_01 input_shapes
     | _                                           -> [| None |]
 
 
