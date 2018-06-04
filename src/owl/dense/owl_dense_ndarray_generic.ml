@@ -4448,6 +4448,11 @@ let dropout_ ?out ?(rate=0.5) x =
   _owl_dropout (kind x) (numel x) out rate 0
 
 
+let fused_adagrad_ ?out ~rate ~eps x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_fused_adagrad (kind x) (numel x) rate eps x out
+
+
 (** Matrix functions *)
 
 type area = { a : int; b : int; c : int; d : int }

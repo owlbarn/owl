@@ -214,7 +214,7 @@ module Make (A : Ndarray_Algodiff) : sig
     | Scalar_Atanh
     | Scalar_Relu
     | Scalar_Sigmoid
-    | Fused_Adagrad
+    | Fused_Adagrad                 of float * float
 
 
   (** {6 Type conversion functions} *)

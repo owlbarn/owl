@@ -6869,6 +6869,20 @@
 #define MAPFN(X,Y,Z) *Z = (*X >= *Y)
 #include OWL_NDARRAY_MATHS_MAP
 
+// fused_adagrad
+
+#define FUN29 float32_fused_adagrad
+#define INIT float a = Double_val(vA), eps = Double_val(vB)
+#define NUMBER float
+#define MAPFN(X,Y) Y = a / sqrt (X + eps);
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN29 float64_fused_adagrad
+#define INIT double a = Double_val(vA), eps = Double_val(vB)
+#define NUMBER double
+#define MAPFN(X,Y) Y = a / sqrt (X + eps);
+#include OWL_NDARRAY_MATHS_MAP
+
 
 //////////////////// function templates ends ////////////////////
 

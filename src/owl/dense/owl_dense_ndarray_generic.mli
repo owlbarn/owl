@@ -2543,7 +2543,10 @@ val avg_pool2d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array 
 (** TODO *)
 
 val avg_pool3d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
-(** [] *)
+(** TODO *)
+
+val fused_adagrad_ : ?out:('a, 'b) t -> rate:'a -> eps:'a -> ('a, 'b) t -> unit
+(** TODO *)
 
 
 (** {6 Matrix functions}  *)

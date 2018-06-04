@@ -314,6 +314,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Scalar_Atanh                                -> _eval_map_09 x A.Scalar.atanh
         | Scalar_Relu                                 -> _eval_map_09 x A.Scalar.relu
         | Scalar_Sigmoid                              -> _eval_map_09 x A.Scalar.sigmoid
+        | Fused_Adagrad (rate, eps)                   -> _eval_map_06 x (fun ~out x -> A.fused_adagrad_ ~out ~rate ~eps x.(0))
         | _                                           -> failwith "owl_lazy:_eval_term"
 
         with exn -> (

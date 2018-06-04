@@ -47,7 +47,7 @@ module type Sig = sig
 
   val copy : arr -> arr
 
-  val copy_to : arr -> arr -> unit
+  val copy_to : arr -> arr -> unit  (* FIXME: move to mutable? *)
 
   val reset : arr -> unit
 

@@ -277,5 +277,7 @@ module type Sig = sig
 
   val avg_pool3d_backward_ : out:arr -> padding -> arr -> int array -> int array -> arr -> unit
 
+  val fused_adagrad_ : ?out:arr -> rate:float -> eps:float -> arr -> unit
+
 
 end

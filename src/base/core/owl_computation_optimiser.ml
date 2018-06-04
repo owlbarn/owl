@@ -202,7 +202,7 @@ module Make (A : Ndarray_Algodiff) = struct
         | Scalar_Atanh                                -> pattern_012 x
         | Scalar_Relu                                 -> pattern_012 x
         | Scalar_Sigmoid                              -> pattern_012 x
-        | Fused_Adagrad                               -> pattern_000 x
+        | Fused_Adagrad (rate, eps)                   -> pattern_000 x
         | _                                           -> failwith "Owl_computation_optimiser:_optimise_term"
       );
       validate x
@@ -535,8 +535,10 @@ module Make (A : Ndarray_Algodiff) = struct
           if get_operator b_a_b = Const then (
             let b_a_b_val = node_to_elt b_a_b |> elt_to_float in
             if b_a_b_val = 1e-32 then (
-              Owl_log.error "hit the adagrad pattern ...";
-              set_operator x Fused_Adagrad
+              let a_val = node_to_elt a |> elt_to_float in
+              set_parents x [| b_a_a |];
+              replace_child b_a x;
+              set_operator x (Fused_Adagrad (a_val, b_a_b_val))
             )
           )
         )

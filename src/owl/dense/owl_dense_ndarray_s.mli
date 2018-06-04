@@ -836,6 +836,8 @@ val avg_pool2d_backward_ : out:arr -> padding -> arr -> int array -> int array -
 
 val avg_pool3d_backward_ : out:arr -> padding -> arr -> int array -> int array -> arr -> unit
 
+val fused_adagrad_ : ?out:arr -> rate:float -> eps:float -> arr -> unit
+
 
 (** {6 Matrix functions} *)
 
