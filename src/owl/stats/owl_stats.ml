@@ -176,11 +176,11 @@ let minmax = Owl_base_stats.minmax
 
 
 type histogram = Owl_base_stats.histogram = {
-  bins: float array;
-  counts: int array;
-  weighted_counts: float array option;
-  normalised_counts: float array option;
-  density: float array option}
+  bins              : float array;
+  counts            : int array;
+  weighted_counts   : float array option;
+  normalised_counts : float array option;
+  density           : float array option}
 
 
 let histogram = Owl_base_stats.histogram
