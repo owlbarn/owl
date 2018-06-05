@@ -180,7 +180,8 @@ type histogram = Owl_base_stats.histogram = {
   counts            : int array;
   weighted_counts   : float array option;
   normalised_counts : float array option;
-  density           : float array option}
+  density           : float array option
+}
 
 
 let histogram = Owl_base_stats.histogram
