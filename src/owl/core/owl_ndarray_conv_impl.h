@@ -62,6 +62,7 @@ CAMLprim value FUN_NATIVE (spatial_im2col) (
     if (pc < 0) pc = 0;
   }
 
+
   #ifdef _OPENMP
     #pragma omp parallel for schedule(static)
   #endif /* _OPENMP */
