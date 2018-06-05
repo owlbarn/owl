@@ -95,7 +95,8 @@ type histogram = {
   counts            : int array;
   weighted_counts   : float array option;
   normalised_counts : float array option;
-  density           : float array option}
+  density           : float array option
+}
 (** Refer to :doc:`owl_stats`. *)
 
 val histogram : [ `Bins of float array | `N of int ] -> float array -> histogram
