@@ -175,12 +175,7 @@ let max = Owl_base_stats.max
 let minmax = Owl_base_stats.minmax
 
 
-type histogram = Owl_base_stats.histogram = {
-  bins: float array;
-  counts: int array;
-  weighted_counts: float array option;
-  normalised_counts: float array option;
-  density: float array option}
+type histogram = Owl_base_stats.histogram
 
 
 let histogram = Owl_base_stats.histogram
@@ -266,11 +261,13 @@ let ksdensity x = None
 
 type tail = BothSide | RightSide | LeftSide
 
+
 type hypothesis = {
   reject : bool;
   p_value : float;
   score : float;
 }
+
 
 let make_hypothesis reject p_value score = {
   reject;
@@ -420,6 +417,7 @@ let smirnov n e =
   else
     e *. (helper2 ())
 
+
 let kolmogorov y =
   let x = (-2.) *. y *. y in
   let rec helper sign sum r =
@@ -433,6 +431,7 @@ let kolmogorov y =
   if y < 1.1e-16 then 1.0
   else
     2. *. helper 1. 0. 1.
+
 
 let ks_test ?(alpha=0.05) x f =
   let x' = sort x in
@@ -460,6 +459,7 @@ let rec uniques l = match l with
      if x1 = x2 then uniques (x2 :: xs)
      else x1 :: (uniques (x2 :: xs))
 
+
 (* Compute the empirical CDF of a list of samples from the input
    domain (sorted list of floats). The output is a list of length
    equal to domain. Both inputs are assumed to be sorted. *)
@@ -484,6 +484,7 @@ let empCdf domain samples =
   let a = aggregate 0 domain samples in
   List.map (fun x -> (float_of_int x) /. n) a
 
+
 let ks2_test ?(alpha=0.05) x y =
   let n1 = Array.length x in
   let n2 = Array.length y in
@@ -507,6 +508,7 @@ let ks2_test ?(alpha=0.05) x y =
 
 let ad_test x = None
 (* Anderson-Darling test *)
+
 
 let dw_test x = None
 (* Durbin-Watson test *)

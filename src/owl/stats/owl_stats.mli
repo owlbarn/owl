@@ -153,14 +153,11 @@ Note that the ranking starts with one!
 - ``Max`` the maximum of ranks is assigned to each value.
  *)
 
-type histogram = {
-  bins: float array;
-  counts: int array;
-  weighted_counts: float array option;
-  normalised_counts: float array option;
-  density: float array option}
-(** type for computed histograms, with optional weighted counts and normalized
- * counts *)
+type histogram = Owl_base_stats.histogram
+(**
+Type for computed histograms, with optional weighted counts and normalized
+counts.
+*)
 
 val histogram : [ `Bins of float array | `N of int ] -> float array -> histogram
 (**
