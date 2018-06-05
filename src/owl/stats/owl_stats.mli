@@ -158,7 +158,8 @@ type histogram = {
   counts            : int array;
   weighted_counts   : float array option;
   normalised_counts : float array option;
-  density           : float array option}
+  density           : float array option
+}
 (** type for computed histograms, with optional weighted counts and normalized
  * counts *)
 
