@@ -62,11 +62,10 @@ CAMLprim value FUN_NATIVE (spatial_im2col) (
     if (pc < 0) pc = 0;
   }
 
+
   #ifdef _OPENMP
     #pragma omp parallel for schedule(static)
   #endif /* _OPENMP */
-
-  int cnt = 0;
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
     int cr = i % output_cr;
@@ -79,6 +78,7 @@ CAMLprim value FUN_NATIVE (spatial_im2col) (
     const int rend = rstart + kernel_rows;
     const int input_idx_base = bt * input_cri;
 
+    int cnt = 0;
     for (int a = cstart; a < cend; ++a) {
       for (int b = rstart; b < rend; ++b) {
         for (int h = 0; h < in_channel; ++h) {
@@ -86,7 +86,7 @@ CAMLprim value FUN_NATIVE (spatial_im2col) (
               b < input_rows && b >= 0) {
             int input_idx =
                input_idx_base + a * input_ri + b * in_channel + h;
-            inpt2d[cnt] = input_ptr[input_idx];
+            inpt2d[i * kernel_cri + cnt] = input_ptr[input_idx];
           }
           ++cnt;
         }
@@ -169,7 +169,6 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel_im2col) (
     #pragma omp parallel for schedule(static)
   #endif /* _OPENMP */
 
-  int cnt = 0;
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
     int cr = i % output_cr;
@@ -182,6 +181,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel_im2col) (
     const int rend = rstart + kernel_rows;
     const int input_idx_base = bt * input_cri;
 
+    int cnt = 0;
     for (int a = cstart; a < cend; ++a) {
       for (int b = rstart; b < rend; ++b) {
         for (int h = 0; h < in_channel; ++h) {
@@ -189,7 +189,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel_im2col) (
               b < input_rows && b >= 0) {
             int input_idx =
                input_idx_base + a * input_ri + b * in_channel + h;
-            inpt2d[cnt] = input_ptr[input_idx];
+            inpt2d[i * kernel_cri + cnt] = input_ptr[input_idx];
           }
           ++cnt;
         }
@@ -202,7 +202,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel_im2col) (
     output_ptr, out_channel, inpt2d, kernel_cri,
     BETA, kern2d, kernel_cri);
 
-  cnt = 0;
+  int cnt = 0;
   for (int j = 0; j < kernel_cri; ++j) {
     for (int i = 0; i < out_channel; ++i) {
       kernel_ptr[cnt++] = kern2d[i * kernel_cri + j];
@@ -277,7 +277,6 @@ CAMLprim value FUN_NATIVE (spatial_backward_input_im2col) (
     output_ptr, out_channel, kernel_ptr, out_channel,
     BETA, inpt2d, kernel_cri);
 
-  int cnt = 0;
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
     int cr = i % output_cr;
@@ -290,6 +289,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_input_im2col) (
     const int rend = rstart + kernel_rows;
     const int input_idx_base = bt * input_cri;
 
+    int cnt = 0;
     for (int a = cstart; a < cend; ++a) {
       for (int b = rstart; b < rend; ++b) {
         for (int h = 0; h < in_channel; ++h) {
@@ -297,7 +297,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_input_im2col) (
               b < input_rows && b >= 0) {
             int input_idx =
                input_idx_base + a * input_ri + b * in_channel + h;
-            input_ptr[input_idx] += inpt2d[cnt];
+            input_ptr[input_idx] += inpt2d[i * kernel_cri + cnt];
           }
           ++cnt;
         }
@@ -383,7 +383,6 @@ CAMLprim value FUN_NATIVE (cuboid_im2col) (
     #pragma omp parallel for schedule(static)
   #endif /* _OPENMP */
 
-  int cnt = 0;
   for (int i = 0; i < output_drcb; ++i) {
     int bt  = i / output_drc;
     int jkd = i % output_drc;
@@ -400,6 +399,7 @@ CAMLprim value FUN_NATIVE (cuboid_im2col) (
     const int dend   = dstart + kernel_dpts;
     const int input_idx_base = bt * input_crdi;
 
+    int cnt = 0;
     for (int a = cstart; a < cend; ++a) {
       for (int b = rstart; b < rend; ++b) {
         for (int c = dstart; c < dend; ++c) {
@@ -410,7 +410,7 @@ CAMLprim value FUN_NATIVE (cuboid_im2col) (
               int input_idx =
                 input_idx_base + a * input_rdi + b * input_di +
                 c * in_channel + h;
-              inpt2d[cnt] = input_ptr[input_idx];
+              inpt2d[i * kernel_idrc + cnt] = input_ptr[input_idx];
             }
             ++cnt;
           }
@@ -500,7 +500,6 @@ CAMLprim value FUN_NATIVE (cuboid_backward_kernel_im2col) (
     #pragma omp parallel for schedule(static)
   #endif /* _OPENMP */
 
-  int cnt = 0;
   for (int i = 0; i < output_drcb; ++i) {
     int bt  = i / output_drc;
     int jkd = i % output_drc;
@@ -517,6 +516,7 @@ CAMLprim value FUN_NATIVE (cuboid_backward_kernel_im2col) (
     const int dend   = dstart + kernel_dpts;
     const int input_idx_base = bt * input_crdi;
 
+    int cnt = 0;
     for (int a = cstart; a < cend; ++a) {
       for (int b = rstart; b < rend; ++b) {
         for (int c = dstart; c < dend; ++c) {
@@ -527,7 +527,7 @@ CAMLprim value FUN_NATIVE (cuboid_backward_kernel_im2col) (
               int input_idx =
                 input_idx_base + a * input_rdi + b * input_di +
                 c * in_channel + h;
-              inpt2d[cnt] = input_ptr[input_idx];
+              inpt2d[i * kernel_idrc + cnt] = input_ptr[input_idx];
             }
             ++cnt;
           }
@@ -541,7 +541,7 @@ CAMLprim value FUN_NATIVE (cuboid_backward_kernel_im2col) (
     output_ptr, out_channel, inpt2d, kernel_idrc,
     BETA, kern2d, kernel_idrc);
 
-  cnt = 0;
+  int cnt = 0;
   for (int j = 0; j < kernel_idrc; ++j) {
     for (int i = 0; i < out_channel; ++i) {
       kernel_ptr[cnt++] = kern2d[i * kernel_idrc + j];
@@ -623,7 +623,6 @@ CAMLprim value FUN_NATIVE (cuboid_backward_input_im2col) (
     output_ptr, out_channel, kernel_ptr, out_channel,
     BETA, inpt2d, kernel_idrc);
 
-  int cnt = 0;
   for (int i = 0; i < output_drcb; ++i) {
     int bt  = i / output_drc;
     int jkd = i % output_drc;
@@ -640,6 +639,7 @@ CAMLprim value FUN_NATIVE (cuboid_backward_input_im2col) (
     const int dend   = dstart + kernel_dpts;
     const int input_idx_base = bt * input_crdi;
 
+    int cnt = 0;
     for (int a = cstart; a < cend; ++a) {
       for (int b = rstart; b < rend; ++b) {
         for (int c = dstart; c < dend; ++c) {
@@ -650,7 +650,7 @@ CAMLprim value FUN_NATIVE (cuboid_backward_input_im2col) (
               int input_idx =
                 input_idx_base + a * input_rdi + b * input_di +
                 c * in_channel + h;
-              input_ptr[input_idx] += inpt2d[cnt];
+              input_ptr[input_idx] += inpt2d[i * kernel_idrc + cnt];
             }
             ++cnt;
           }
