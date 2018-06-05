@@ -154,11 +154,11 @@ Note that the ranking starts with one!
  *)
 
 type histogram = {
-  bins: float array;
-  counts: int array;
-  weighted_counts: float array option;
-  normalised_counts: float array option;
-  density: float array option}
+  bins              : float array;
+  counts            : int array;
+  weighted_counts   : float array option;
+  normalised_counts : float array option;
+  density           : float array option}
 (** type for computed histograms, with optional weighted counts and normalized
  * counts *)
 
