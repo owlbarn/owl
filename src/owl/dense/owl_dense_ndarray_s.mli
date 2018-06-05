@@ -614,6 +614,8 @@ val ones_ : out:arr -> unit
 
 val sort_ : arr -> unit
 
+val one_hot_ : out:arr -> int -> arr -> unit
+
 val transpose_ : out:arr -> ?axis:int array -> arr -> unit
 
 val sum_ : out:arr -> axis:int -> arr -> unit

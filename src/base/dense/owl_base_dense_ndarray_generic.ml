@@ -234,6 +234,9 @@ let copy varr =
   end
 
 
+let copy_to x = failwith "Owl_base_dense_ndarray_generic:copy_to: not implemented"
+
+
 (* Reset to zero *)
 let reset varr = (Genarray.fill varr 0.)
 

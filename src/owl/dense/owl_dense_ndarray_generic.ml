@@ -3547,6 +3547,13 @@ let one_hot depth idx =
   y
 
 
+let one_hot_ ~out depth idx =
+  let k = kind idx in
+  let n = numel idx in
+  reset out;
+  _owl_one_hot k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:depth idx out
+
+
 
 (* TODO: optimise performance, slow along the low dimension *)
 let cumulative_op ?(axis=(-1)) _cumop x y =

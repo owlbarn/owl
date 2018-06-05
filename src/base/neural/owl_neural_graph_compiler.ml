@@ -10,7 +10,7 @@ module Make
   (A : Ndarray_Mutable)
   = struct
 
-  module Lazy = Owl_lazyy.Make (A)
+  module Lazy = Owl_lazy.Make (A)
   module Algodiff = Owl_algodiff_generic.Make (Lazy)
   module Neural = Owl_neural_generic.Make (Lazy)
 
@@ -21,14 +21,14 @@ module Make
   let compile_simple network input_shape loss_fun =
     Graph.init network;
     Graph.mkpar network
-    |> Owl_utils.aarr_map (fun v -> Lazy.var_arr ~name: "" (unpack_arr v |> Lazy.shape) |> pack_arr)
+    |> Owl_utils.aarr_map (fun v -> Lazy.var_arr "" ~shape:(unpack_arr v |> Lazy.shape) |> pack_arr)
     |> Graph.update network;
 
     (* derive the computation graph in reverse mode *)
-    let x = Lazy.var_arr ~name:"x" input_shape |> pack_arr in
+    let x = Lazy.var_arr "x" ~shape:input_shape |> pack_arr in
     let y' = Graph.forward network x |> fst in
     let output_shape = unpack_arr y' |> Lazy.shape in
-    let y = Lazy.var_arr ~name:"y" output_shape |> pack_arr in
+    let y = Lazy.var_arr "y" ~shape:output_shape |> pack_arr in
     let loss = loss_fun y y' in
     let z = Graph.(backward network loss) in
     let pri = Owl_utils_array.flatten (fst z) in
@@ -81,17 +81,17 @@ module Make
     |> Owl_utils.aarr_map (fun v ->
       let v = Algodiff.unpack_arr v in
       Lazy.eval_arr [| v |];
-      let u = Lazy.var_arr ~name: "" (Lazy.shape v) in
+      let u = Lazy.var_arr "" ~shape:(Lazy.shape v) in
       Lazy.(assign_arr u (unpack_arr v));
       Algodiff.pack_arr u
     )
     |> Graph.update network;
 
     (* derive the computation graph in forward mode *)
-    let x = Lazy.var_arr ~name:"x" input_shape |> pack_arr in
+    let x = Lazy.var_arr "x" ~shape:input_shape |> pack_arr in
     let y' = Graph.forward network x |> fst in
     let output_shape = unpack_arr y' |> Lazy.shape in
-    let y = Lazy.var_arr ~name:"y" output_shape |> pack_arr in
+    let y = Lazy.var_arr "y" ~shape:output_shape |> pack_arr in
 
     let loss = loss_fun y y' in
     let loss = Maths.(loss / (_f (Mat.row_num y |> float_of_int))) in
@@ -216,7 +216,7 @@ module Make
     |> Owl_utils.aarr_map (fun v ->
       let v = Algodiff.unpack_arr v in
       Lazy.eval_arr [| v |];
-      let u = Lazy.var_arr ~name: "" (Lazy.shape v) in
+      let u = Lazy.var_arr "" ~shape:(Lazy.shape v) in
       Lazy.(assign_arr u (unpack_arr v));
       Algodiff.pack_arr u
     )
@@ -224,10 +224,10 @@ module Make
 
     (* derive the computation graph in forward mode *)
 
-    let x = Lazy.var_arr ~name:"x" input_shape |> pack_arr in
+    let x = Lazy.var_arr "x" ~shape:input_shape |> pack_arr in
     let y' = Graph.forward network x |> fst in
     let output_shape = unpack_arr y' |> Lazy.shape in
-    let y = Lazy.var_arr ~name:"y" output_shape |> pack_arr in
+    let y = Lazy.var_arr "y" ~shape:output_shape |> pack_arr in
 
     let loss = loss_fun y y' in
     let loss = Maths.(loss / (_f (Mat.row_num y |> float_of_int))) in
@@ -268,21 +268,21 @@ module Make
     let gs = Array.mapi (fun i w ->
       let name = Printf.sprintf "gs%i" i in
       let shape = Lazy.shape (unpack_arr w) in
-      Lazy.var_arr ~name shape |> pack_arr
+      Lazy.var_arr name ~shape |> pack_arr
     ) ws
     in
 
     let ps = Array.mapi (fun i w ->
       let name = Printf.sprintf "ps%i" i in
       let shape = Lazy.shape (unpack_arr w) in
-      Lazy.var_arr ~name shape |> pack_arr
+      Lazy.var_arr name ~shape |> pack_arr
     ) ws
     in
 
     let us = Array.mapi (fun i w ->
       let name = Printf.sprintf "us%i" i in
       let shape = Lazy.shape (unpack_arr w) in
-      Lazy.var_arr ~name shape |> pack_arr
+      Lazy.var_arr name ~shape |> pack_arr
     ) ws
     in
 
@@ -290,8 +290,8 @@ module Make
       let name1 = Printf.sprintf "cha%i" i in
       let name2 = Printf.sprintf "chb%i" i in
       let shape = Lazy.shape (unpack_arr w) in
-      let ch1 = Lazy.var_arr ~name:name1 shape |> pack_arr in
-      let ch2 = Lazy.var_arr ~name:name2 shape |> pack_arr in
+      let ch1 = Lazy.var_arr name1 ~shape |> pack_arr in
+      let ch2 = Lazy.var_arr name2 ~shape |> pack_arr in
       [|ch1; ch2|]
     ) ws
     in

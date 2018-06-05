@@ -8,13 +8,13 @@ open Owl_types
 
 module Make (A : Stats_Dist) = struct
 
-  module D = Owl_distribution.Make (A)
+  module Dist = Owl_distribution.Make (A)
 
-  module L = Owl_lazy.Make (A)
+  module Lazy = Owl_lazy.Make (A)
 
   type t = {
-    mutable dist : D.dist;
-    mutable expr : L.t;
+    mutable dist : Dist.dist;
+    mutable expr : Lazy.value;
   }
 
 

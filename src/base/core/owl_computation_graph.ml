@@ -106,6 +106,9 @@ module Make (A : Ndarray_Algodiff) = struct
     | Atan2
     | ScalarAtan2
     | Atan2Scalar
+    | Hypot
+    | Min2
+    | Max2
     | Add
     | Sub
     | Mul
@@ -293,6 +296,9 @@ module Make (A : Ndarray_Algodiff) = struct
     | Atan2                                       -> "Atan2"
     | ScalarAtan2                                 -> "ScalarAtan2"
     | Atan2Scalar                                 -> "Atan2Scalar"
+    | Hypot                                       -> "Hypot"
+    | Min2                                        -> "Min2"
+    | Max2                                        -> "Max2"
     | Add                                         -> "Add"
     | Sub                                         -> "Sub"
     | Mul                                         -> "Mul"
@@ -644,6 +650,9 @@ module Make (A : Ndarray_Algodiff) = struct
     | Atan2                                       -> _infer_shape_03 input_shapes
     | ScalarAtan2                                 -> _infer_shape_02 input_shapes
     | Atan2Scalar                                 -> _infer_shape_01 input_shapes
+    | Hypot                                       -> _infer_shape_01 input_shapes
+    | Min2                                        -> _infer_shape_01 input_shapes
+    | Max2                                       -> _infer_shape_01 input_shapes
     | Add                                         -> _infer_shape_03 input_shapes
     | Sub                                         -> _infer_shape_03 input_shapes
     | Mul                                         -> _infer_shape_03 input_shapes
@@ -759,6 +768,23 @@ module Make (A : Ndarray_Algodiff) = struct
   let refnum x = Owl_graph.outdegree x
 
 
+  let is_shape_unkown x =
+    let x_shape = (attr x).shape in
+    match x_shape.(0) with
+    | Some _ -> true
+    | None   -> false
+
+
+  let infer_shape_graph xs =
+    iter_descendants (fun x ->
+      if is_shape_unkown x = false then (
+        let x_attr = attr x in
+        let x_parents = parents x in
+        x_attr.shape <- infer_shape x_attr.op x_parents
+      )
+    ) xs
+
+
   let shape_to_str shp =
     assert (Array.length shp > 0);
     let s = match shp.(0) with
@@ -830,24 +856,24 @@ module Make (A : Ndarray_Algodiff) = struct
     child
 
 
-  let var_arr ~name shape =
-    make_node ~name ~shape:[| Some shape |] ~reuse:false Var
+  let var_arr ?shape name =
+    make_node ~name ~shape:[| shape |] ~reuse:false Var
     |> node_to_arr
 
 
-  let var_elt ~name =
+  let var_elt name =
     make_node ~name ~shape:[| Some [||] |] ~reuse:false Var
     |> node_to_elt
 
 
-  let const_arr ~name v =
+  let const_arr name v =
     let value = [| arr_to_value v |] in
     let shape = [| Some A.(shape v) |] in
     make_node ~name ~value ~shape ~freeze:true ~reuse:false ~state:Valid Const
     |> node_to_arr
 
 
-  let const_elt ~name v =
+  let const_elt name v =
     let value = [| elt_to_value v |] in
     let shape = [| Some [||] |] in
     make_node ~name ~value ~shape ~freeze:true ~reuse:false ~state:Valid Const
@@ -920,7 +946,7 @@ module Make (A : Ndarray_Algodiff) = struct
   let freeze_ancestors x = iter_ancestors freeze x
 
 
-  let pack_arr arr = const_arr ~name:"" arr
+  let pack_arr arr = const_arr "" arr
 
 
   let unpack_arr x =
@@ -933,7 +959,7 @@ module Make (A : Ndarray_Algodiff) = struct
     value_to_arr value.(0)
 
 
-  let pack_elt elt = const_elt ~name:"" elt
+  let pack_elt elt = const_elt "" elt
 
 
   let unpack_elt x =
@@ -955,7 +981,10 @@ module Make (A : Ndarray_Algodiff) = struct
       )
       else (
         let dst = A.copy arr in
-        set_value node [| ArrVal dst |]
+        set_value node [| ArrVal dst |];
+        (* propagate the shape information *)
+        (attr node).shape <- [| Some A.(shape dst) |];
+        infer_shape_graph [| node |]
       );
       invalidate_graph node
     )
@@ -988,7 +1017,7 @@ module Make (A : Ndarray_Algodiff) = struct
     |> node_to_arr
 
 
-  let float_to_elt x = const_elt ~name:"" (A.float_to_elt x)
+  let float_to_elt x = const_elt "" (A.float_to_elt x)
 
 
   let elt_to_float x = unpack_elt x |> A.elt_to_float
@@ -1052,11 +1081,11 @@ module Make (A : Ndarray_Algodiff) = struct
     Owl_log.debug "uniform";
     let a = match a with
       | Some a -> a
-      | None   -> const_elt ~name:"uniform_a" (A.float_to_elt 0.)
+      | None   -> const_elt "uniform_a" (A.float_to_elt 0.)
     in
     let b = match b with
       | Some b -> b
-      | None   -> const_elt ~name:"uniform_b" (A.float_to_elt 1.)
+      | None   -> const_elt "uniform_b" (A.float_to_elt 1.)
     in
     make_then_connect ~shape:[|Some shape|] (Uniform shape) [|elt_to_node a; elt_to_node b|]
     |> node_to_arr
@@ -1258,6 +1287,12 @@ module Make (A : Ndarray_Algodiff) = struct
   let scalar_atan2 a x = make_then_connect ScalarAtan2 [|elt_to_node a; arr_to_node x|] |> node_to_arr
 
   let atan2_scalar x a = make_then_connect Atan2Scalar [|arr_to_node x; elt_to_node a|] |> node_to_arr
+
+  let hypot x y = make_then_connect Hypot [|arr_to_node x; arr_to_node y|] |> node_to_arr
+
+  let min2 x y = make_then_connect Min2 [|arr_to_node x; arr_to_node y|] |> node_to_arr
+
+  let max2 x y = make_then_connect Max2 [|arr_to_node x; arr_to_node y|] |> node_to_arr
 
   let add x y = make_then_connect Add [|arr_to_node x; arr_to_node y|] |> node_to_arr
 

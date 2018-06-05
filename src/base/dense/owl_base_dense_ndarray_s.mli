@@ -52,6 +52,8 @@ val set_slice : int list list -> arr -> arr -> unit
 
 val copy : arr -> arr
 
+val copy_to : arr -> arr -> unit
+
 val reset : arr -> unit
 
 val reshape : arr -> int array -> arr

@@ -15,148 +15,148 @@ let x4 = Arr.(uniform [|4; 4|] -$ 1.)
 module To_test = struct
 
   let fun00 () =
-    let x = M.variable () in
+    let x = M.var_arr "" in
     let y = M.abs x in
     M.assign_arr x x3;
-    M.eval y;
-    let a = M.to_arr y in
+    M.eval_arr [|y|];
+    let a = M.unpack_arr y in
     let b = Arr.abs x3 in
     Arr.(a = b)
 
   let fun01 () =
-    let x = M.variable () in
+    let x = M.var_arr "" in
     let y = x |> M.sin |> M.cos in
     M.assign_arr x x3;
-    M.eval y;
-    let a = M.to_arr y in
+    M.eval_arr [|y|];
+    let a = M.unpack_arr y in
     let b = x3 |> Arr.sin |> Arr.cos in
     Arr.(a = b)
 
   let fun02 () =
-    let x = M.variable () in
+    let x = M.var_arr "" in
     let y = x |> M.neg |> M.cosh |> M.tanh in
     M.assign_arr x x3;
-    M.eval y;
-    let a = M.to_arr y in
+    M.eval_arr [|y|];
+    let a = M.unpack_arr y in
     let b = x3 |> Arr.cosh |> Arr.tanh in
     Arr.(a = b)
 
   let fun03 () =
-    let x = M.variable () in
-    let y = M.variable () in
+    let x = M.var_arr "" in
+    let y = M.var_arr "" in
     let z = M.add x y in
     M.assign_arr x x2;
     M.assign_arr y x3;
-    M.eval z;
-    let a = M.to_arr z in
+    M.eval_arr [|z|];
+    let a = M.unpack_arr z in
     let b = Arr.add x2 x3 in
     Arr.(a = b)
 
   let fun04 () =
-    let x = M.variable () in
-    let y = M.variable () in
+    let x = M.var_arr "" in
+    let y = M.var_arr "" in
     let z = M.sub x y in
     M.assign_arr x x2;
     M.assign_arr y x3;
-    M.eval z;
-    let a = M.to_arr z in
+    M.eval_arr [|z|];
+    let a = M.unpack_arr z in
     let b = Arr.sub x2 x3 in
     Arr.(a = b)
 
   let fun05 () =
-    let x = M.variable () in
-    let y = M.variable () in
+    let x = M.var_arr "" in
+    let y = M.var_arr "" in
     let z = M.mul x y in
     M.assign_arr x x2;
     M.assign_arr y x3;
-    M.eval z;
-    let a = M.to_arr z in
+    M.eval_arr [|z|];
+    let a = M.unpack_arr z in
     let b = Arr.mul x2 x3 in
     Arr.(a = b)
 
   let fun06 () =
-    let x = M.variable () in
-    let y = M.variable () in
+    let x = M.var_arr "" in
+    let y = M.var_arr "" in
     let z = M.div x y in
     M.assign_arr x x2;
     M.assign_arr y x3;
-    M.eval z;
-    let a = M.to_arr z in
+    M.eval_arr [|z|];
+    let a = M.unpack_arr z in
     let b = Arr.div x2 x3 in
     Arr.(a = b)
 
   let fun07 () =
-    let x = M.variable () in
-    let y = M.variable () in
+    let x = M.var_arr "" in
+    let y = M.var_arr "" in
     let z = M.pow x y in
     M.assign_arr x x2;
     M.assign_arr y x3;
-    M.eval z;
-    let a = M.to_arr z in
+    M.eval_arr [|z|];
+    let a = M.unpack_arr z in
     let b = Arr.pow x2 x3 in
     Arr.(a = b)
 
   let fun08 () =
-    let x = M.variable () in
-    let y = M.variable () in
+    let x = M.var_arr "" in
+    let y = M.var_arr "" in
     let z = M.atan2 x y in
     M.assign_arr x x2;
     M.assign_arr y x3;
-    M.eval z;
-    let a = M.to_arr z in
+    M.eval_arr [|z|];
+    let a = M.unpack_arr z in
     let b = Arr.atan2 x2 x3 in
     Arr.(a = b)
 
   let fun09 () =
-    let x = M.variable () in
-    let y = M.variable () in
+    let x = M.var_arr "" in
+    let y = M.var_arr "" in
     let z = M.hypot x y in
     M.assign_arr x x2;
     M.assign_arr y x3;
-    M.eval z;
-    let a = M.to_arr z in
+    M.eval_arr [|z|];
+    let a = M.unpack_arr z in
     let b = Arr.hypot x2 x3 in
     Arr.(a = b)
 
   let fun10 () =
-    let x = M.variable () in
-    let y = M.variable () in
+    let x = M.var_arr "" in
+    let y = M.var_arr "" in
     let z = M.min2 x y in
     M.assign_arr x x2;
     M.assign_arr y x3;
-    M.eval z;
-    let a = M.to_arr z in
+    M.eval_arr [|z|];
+    let a = M.unpack_arr z in
     let b = Arr.min2 x2 x3 in
     Arr.(a = b)
 
   let fun11 () =
-    let x = M.variable () in
-    let y = M.variable () in
+    let x = M.var_arr "" in
+    let y = M.var_arr "" in
     let z = M.max2 x y in
     M.assign_arr x x2;
     M.assign_arr y x3;
-    M.eval z;
-    let a = M.to_arr z in
+    M.eval_arr [|z|];
+    let a = M.unpack_arr z in
     let b = Arr.max2 x2 x3 in
     Arr.(a = b)
 
   let fun12 () =
-    let x = M.variable () in
-    let y = M.variable () in
+    let x = M.var_arr "" in
+    let y = M.var_arr "" in
     let z = M.max2 x y in
     M.assign_arr x x2;
     M.assign_arr y x3;
-    M.eval z;
-    let a = M.to_arr z in
+    M.eval_arr [|z|];
+    let a = M.unpack_arr z in
     let b = Arr.max2 x2 x3 in
     Arr.(a = b)
 
   let fun13 () =
-    let x = M.variable () in
+    let x = M.var_arr "" in
     let y = M.dot x x in
     M.assign_arr x x4;
-    M.eval y;
-    let a = M.to_arr y in
+    M.eval_arr [|y|];
+    let a = M.unpack_arr y in
     let b = Arr.dot x4 x4 in
     Arr.(a = b)
 

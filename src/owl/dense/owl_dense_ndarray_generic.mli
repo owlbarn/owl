@@ -2001,6 +2001,9 @@ val zeros_ : out:('a, 'b) t -> unit
 val ones_ : out:('a, 'b) t -> unit
 (** TODO *)
 
+val one_hot_ : out:('a, 'b) t -> int -> ('a, 'b) t -> unit
+(** TODO *)
+
 val sort_ : ('a, 'b) t -> unit
 (**
 ``sort_ x`` performs in-place quicksort of the elelments in ``x``.

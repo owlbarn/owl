@@ -161,7 +161,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Map f                                       -> failwith "Map"
         | Fold (axis, f)                              -> failwith "Fold"
         | Scan (axis, f)                              -> failwith "Scan"
-        | OneHot depth                                -> _eval_map_00 x (fun x -> A.one_hot depth x)
+        | OneHot depth                                -> _eval_map_06 x (fun ~out x -> A.one_hot_ ~out depth x.(0))
         | Abs                                         -> _eval_map_01 x A.abs_
         | Neg                                         -> _eval_map_01 x A.neg_
         | Floor                                       -> _eval_map_01 x A.floor_
@@ -206,6 +206,9 @@ module Make (A : Ndarray_Mutable) = struct
         | Atan2                                       -> _eval_map_02 x A.atan2_
         | ScalarAtan2                                 -> _eval_map_04 x A.scalar_atan2_
         | Atan2Scalar                                 -> _eval_map_03 x A.atan2_scalar_
+        | Hypot                                       -> _eval_map_02 x A.hypot_
+        | Min2                                        -> _eval_map_02 x A.min2_
+        | Max2                                        -> _eval_map_02 x A.max2_
         | Add                                         -> _eval_map_02 x A.add_
         | Sub                                         -> _eval_map_02 x A.sub_
         | Mul                                         -> _eval_map_02 x A.mul_

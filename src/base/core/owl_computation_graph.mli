@@ -104,6 +104,9 @@ module Make (A : Ndarray_Algodiff) : sig
     | Atan2
     | ScalarAtan2
     | Atan2Scalar
+    | Hypot
+    | Min2
+    | Max2
     | Add
     | Sub
     | Mul
@@ -268,18 +271,18 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
 
-  (** {6 Manipulation functions} *)
+  (** {6 Variable creation functions} *)
 
-  val var_arr : name:string -> int array -> arr
+  val var_arr : ?shape:int array -> string -> arr
   (** TODO *)
 
-  val var_elt : name:string -> elt
+  val var_elt : string -> elt
   (** TODO *)
 
-  val const_arr : name:string -> A.arr -> arr
+  val const_arr : string -> A.arr -> arr
   (** TODO *)
 
-  val const_elt : name:string -> A.elt -> elt
+  val const_elt : string -> A.elt -> elt
   (** TODO *)
 
   val assign_arr : arr -> A.arr -> unit
@@ -287,6 +290,9 @@ module Make (A : Ndarray_Algodiff) : sig
 
   val assign_elt : elt -> A.elt -> unit
   (** TODO *)
+
+
+  (** {6 Graph property and manipulation} *)
 
   val refnum : attr Owl_graph.node -> int
   (** TODO *)
@@ -345,8 +351,17 @@ module Make (A : Ndarray_Algodiff) : sig
   val freeze_descendants :  attr Owl_graph.node array -> unit
   (** TODO *)
 
+  val is_shape_unkown : attr Owl_graph.node -> bool
+  (** TODO *)
 
-  (** {6 Creation functions} *)
+  val infer_shape : op -> attr Owl_graph.node array -> int array option array
+  (** TODO *)
+
+  val infer_shape_graph : attr Owl_graph.node array -> unit
+  (** TODO *)
+
+
+  (** {6 Ndarray creation functions} *)
 
   val empty : int array -> arr
   (** TODO *)
@@ -374,6 +389,9 @@ module Make (A : Ndarray_Algodiff) : sig
 
   val init : int array -> (int -> elt) -> arr
   (** TODO *)
+
+
+  (** {6 Obtaining properties} *)
 
   val shape : arr -> int array
   (** TODO *)
@@ -574,6 +592,15 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
   val atan2_scalar : arr -> elt -> arr
+  (** TODO *)
+
+  val hypot : arr -> arr -> arr
+  (** TODO *)
+
+  val min2 : arr -> arr -> arr
+  (** TODO *)
+
+  val max2 : arr -> arr -> arr
   (** TODO *)
 
   val add : arr -> arr -> arr
@@ -861,8 +888,6 @@ module Make (A : Ndarray_Algodiff) : sig
 
   val to_dot : attr Owl_graph.node array -> string
   (** TODO *)
-
-
 
 
 end
