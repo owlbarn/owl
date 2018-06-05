@@ -320,11 +320,11 @@ let minmax x =
 
 
 type histogram = {
-  bins: float array;
-  counts: int array;
-  weighted_counts: float array option;
-  normalised_counts: float array option;
-  density: float array option}
+  bins              : float array;
+  counts            : int array;
+  weighted_counts   : float array option;
+  normalised_counts : float array option;
+  density           : float array option}
 
 let make_uniform_bins n bmin bmax =
   let db = (bmax -. bmin) /. float_of_int n in
