@@ -175,7 +175,31 @@ let max = Owl_base_stats.max
 let minmax = Owl_base_stats.minmax
 
 
+type histogram = Owl_base_stats.histogram = {
+  bins              : float array;
+  counts            : int array;
+  weighted_counts   : float array option;
+  normalised_counts : float array option;
+  density           : float array option
+}
+
+
 let histogram = Owl_base_stats.histogram
+
+
+let histogram_weighted = Owl_base_stats.histogram_weighted
+
+
+let histogram_sorted = Owl_base_stats.histogram_sorted
+
+
+let histogram_sorted_weighted = Owl_base_stats.histogram_sorted_weighted
+
+
+let normalise = Owl_base_stats.normalise
+
+
+let normalise_density = Owl_base_stats.normalise_density
 
 
 let ecdf x =

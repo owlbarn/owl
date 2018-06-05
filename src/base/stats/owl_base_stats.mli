@@ -90,9 +90,34 @@ val argsort : ?inc:bool -> float array -> int array
 val rank : ?ties_strategy:[ `Average | `Min | `Max ] -> float array -> float array
 (** Refer to :doc:`owl_stats`. *)
 
-val histogram : float array -> int -> int array
+type histogram = {
+  bins              : float array;
+  counts            : int array;
+  weighted_counts   : float array option;
+  normalised_counts : float array option;
+  density           : float array option
+}
 (** Refer to :doc:`owl_stats`. *)
 
+val histogram : [ `Bins of float array | `N of int ] -> float array -> histogram
+(** Refer to :doc:`owl_stats`. *)
+
+val histogram_weighted : [ `Bins of float array | `N of int ] ->
+float array -> float array -> histogram
+(** Refer to :doc:`owl_stats`. *)
+
+val histogram_sorted : [ `Bins of float array | `N of int ] -> float array -> histogram
+(** Refer to :doc:`owl_stats`. *)
+
+val histogram_sorted_weighted : [ `Bins of float array | `N of int ] ->
+float array -> float array -> histogram
+(** Refer to :doc:`owl_stats`. *)
+
+val normalise : histogram -> histogram
+(** Refer to :doc:`owl_stats`. *)
+
+val normalise_density : histogram -> histogram
+(** Refer to :doc:`owl_stats`. *)
 
 (** {6 Random variables} *)
 
