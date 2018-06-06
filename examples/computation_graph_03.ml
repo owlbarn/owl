@@ -1,7 +1,7 @@
 #!/usr/bin/env owl
 
 open Owl
-module G = Owl_computation_graph.Make (Arr)
+module G = Owl_computation_symbol.Make (Arr)
 module A = Owl_algodiff_generic.Make (G)
 include Owl_neural_generic.Make (G)
 open Graph

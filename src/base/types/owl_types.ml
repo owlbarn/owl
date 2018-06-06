@@ -55,5 +55,11 @@ module type Stats_Dist = sig
 end
 
 
+module type Computation_Engine = sig
+
+  include Owl_types_computation_engine.Sig
+
+end
+
 
 (* ends here *)

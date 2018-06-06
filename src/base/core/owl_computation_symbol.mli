@@ -291,6 +291,9 @@ module Make (A : Ndarray_Algodiff) : sig
   val assign_elt : elt -> A.elt -> unit
   (** TODO *)
 
+  val unsafe_assign_arr : arr -> A.arr -> unit
+  (** TODO *)
+
 
   (** {6 Graph property and manipulation} *)
 
@@ -304,6 +307,12 @@ module Make (A : Ndarray_Algodiff) : sig
   (** TODO *)
 
   val is_freeze : attr Owl_graph.node -> bool
+  (** TODO *)
+
+  val is_arr : attr Owl_graph.node -> bool
+  (** TODO *)
+
+  val is_elt : attr Owl_graph.node -> bool
   (** TODO *)
 
   val is_assigned : attr Owl_graph.node -> bool

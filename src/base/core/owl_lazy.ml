@@ -14,8 +14,10 @@ open Owl_graph
 
 module Make (A : Ndarray_Mutable) = struct
 
-  include Owl_computation_graph.Make (A)
+  module Symbol = Owl_computation_symbol.Make (A)
+  module CGraph = Owl_computation_graph.Make (A)
 
+  include Symbol
 
   (* allocate memory and evaluate experssions *)
 
@@ -489,6 +491,9 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   let eval_arr xs = Array.iter (fun x -> arr_to_node x |> _eval_term) xs
+
+
+  let eval_graph graph = CGraph.get_outputs graph |> Array.iter _eval_term
 
 
   let elt_to_float x =

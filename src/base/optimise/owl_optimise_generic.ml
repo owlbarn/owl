@@ -44,10 +44,21 @@ module Make
       | Arr x, Arr y -> (
           let n = A.row_num y in
           let a = (i * c) mod n in
-          let b = Pervasives.min (a + c - 1) (n - 1) in
-          let x = A.get_slice [[a;b]] x in
-          let y = A.get_slice [[a;b]] y in
-          Arr x, Arr y
+          let b = a + c - 1 in
+          if b < n then (
+            let x = A.get_slice [[a;b]] x in
+            let y = A.get_slice [[a;b]] y in
+            Arr x, Arr y
+          )
+          else (
+            let x0 = A.get_slice [[a;n-1]] x in
+            let y0 = A.get_slice [[a;n-1]] y in
+            let x1 = A.get_slice [[0;b-n]] x in
+            let y1 = A.get_slice [[0;b-n]] y in
+            let x = A.concatenate ~axis:0 [|x0; x1|] in
+            let y = A.concatenate ~axis:0 [|y0; y1|] in
+            Arr x, Arr y
+          )
         )
       | x, _         -> failwith ("Owl_optimise.Utils.get_chunk:" ^ (type_info x))
 

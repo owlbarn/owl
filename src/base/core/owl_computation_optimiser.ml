@@ -14,7 +14,7 @@ open Owl_graph
 
 module Make (A : Ndarray_Algodiff) = struct
 
-  module Symbol = Owl_computation_graph.Make (A)
+  module Symbol = Owl_computation_symbol.Make (A)
 
   open Symbol
 
