@@ -165,9 +165,9 @@ val histogram : [ `Bins of float array | `N of int ] -> ?weights:float array ->
 ``histogram bins x`` creates a histogram from values in ``x``. If bins matches
 `` `N n`` it will construct ``n`` equally spaced bins from the minimum to
 the maximum in ``x``. If bins matches `` `Bins b``, ``b`` is taken as the
-sorted array of boundaries of adjacent bin intervals. Bin interval
-boundaries are taken as left-inclusive, right-exclusive, except for the last
-bin which is also right-inclusive. Values outside the bins are dropped.
+sorted array of boundaries of adjacent bin intervals. Bin boundaries are taken
+as left-inclusive, right-exclusive, except for the last bin which is also
+right-inclusive. Values outside the bins are dropped silently.
 
 ``histogram bins ~weights x`` creates a weighted histogram with the given
 ``weights`` which must match ``x`` in length. The bare counts are also
@@ -181,21 +181,26 @@ val histogram_sorted : [ `Bins of float array | `N of int ] -> ?weights:float ar
   -> float array -> histogram
 (**
 ``histogram_sorted bins x`` is like ``histogram`` but assumes that ``x`` is sorted
-already, allowing increased efficiency. Undefined results if ``x`` is not in
-fact sorted.
+already. This increases efficiency if there are less bins than data. Undefined
+results if ``x`` is not in fact sorted.
 *)
 
 val normalise : histogram -> histogram
 (** ``normalize hist`` calculates a probability mass function using
 ``hist.weighted_counts`` if present, otherwise using ``hist.counts``. The
-result sums to one. It is stored in the ``normalised_counts`` field. *)
+result is stored in the ``normalised_counts`` field and sums to one. *)
 
 val normalise_density : histogram -> histogram
 (** ``normalize_density hist`` calculates a probability density function using
 ``hist.weighted_counts`` if present, otherwise using ``hist.counts``. The
-result is normalized as density that is piecewise constant over the bin
+result is normalized as a density that is piecewise constant over the bin
 intervals. That is, the sum over density times corresponding bin width is
-one. The result is stored in the ``density`` field. *)
+one. If bins are infinitely wide, their density is 0 and the sum over width
+times density of all finite bins is the total weight in the finite bins. The
+result is stored in the ``density`` field. *)
+
+val pp_hist: Format.formatter -> histogram -> unit
+(** Pretty-print summary information on a histogram record *)
 
 val ecdf : float array -> float array * float array
 (**

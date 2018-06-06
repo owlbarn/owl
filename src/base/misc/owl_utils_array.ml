@@ -348,13 +348,13 @@ let bsearch ~cmp k bin_edges =
       | 0            -> middle
       | n when n < 0 -> aux i (middle - 1)
       | _            -> aux (middle + 1) j in
-  let n = Array.length bin_edges in
-  if n = 0 then failwith "empty array"
+  let n = Array.length bin_edges - 1 in
+  if n < 0 then failwith "empty array"
   else
-    match cmp bin_edges.(0) k, cmp bin_edges.(n-1) k with
+    match cmp bin_edges.(0) k, cmp bin_edges.(n) k with
     | c, _ when c > 0  -> -1
     | _, c when c <= 0 -> n
-    | _                -> aux 0 (n-1)
+    | _                -> aux 0 n
 
 
 (* ends here *)

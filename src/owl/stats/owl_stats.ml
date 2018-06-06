@@ -190,6 +190,9 @@ let normalise = Owl_base_stats.normalise
 let normalise_density = Owl_base_stats.normalise_density
 
 
+let pp_hist = Owl_base_stats.pp_hist
+
+
 let ecdf x =
   let x = sort ~inc:true x in
   let n = Array.length x in

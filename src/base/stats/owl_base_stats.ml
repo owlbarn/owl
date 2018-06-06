@@ -349,8 +349,8 @@ let setup_uniform_binning n x =
 let hist_uniform n x =
   let bmin, bmax, db, bins, get_bin = setup_uniform_binning n x in
   let c = Array.make n 0 in
-  x |> Array.iter (fun x' ->
-      let i = get_bin x' in
+  x |> Array.iter (fun y ->
+      let i = get_bin y in
       c.%(i) <- c.%(i) + 1);
   bins, c
 
@@ -360,8 +360,8 @@ let hist_weighted_uniform n w x =
   let bmin, bmax, db, bins, get_bin = setup_uniform_binning n x in
   let c = Array.make n 0 in
   let wc = Array.make n 0. in
-  x |> Array.iteri (fun j x' ->
-      let i = get_bin x' in
+  x |> Array.iteri (fun j y ->
+      let i = get_bin y in
       c.%(i)  <- c.%(i) + 1;
       wc.%(i) <- wc.%(i) +. w.%(j));
   (bins, c), Some wc
@@ -373,7 +373,7 @@ let setup_nonuniform_binning bins =
   if n < 1 then failwith "Need at least two bin boundaries!";
   let get_bin y =
     let i = Owl_utils_array.bsearch ~cmp:fcmp y bins in
-    if i = n + 1 && y = bins.(n) then n else i in
+    if i = n && fcmp y bins.(n) = 0 then i - 1 else i in
   n, get_bin
 
 let hist_nonuniform bins x =
@@ -463,6 +463,23 @@ let hist_weighted_sorted bins w x =
   done;
   (bins, c), Some wc
 
+let hist_to_string { bins; counts; weighted_counts; normalised_counts; density } =
+  let n_counts = Array.fold_left (+) 0 counts in
+  let n = Array.length bins - 1 in
+  let w = match weighted_counts with
+    | None -> ""
+    | Some wc ->
+      let tot = Array.fold_left (+.) 0. wc in
+      Printf.sprintf "; tot. weight: %g" tot in
+  let norm = match normalised_counts with
+    | None -> ""
+    | Some _ -> "; normalised" in
+  let pdf = match density with
+    | None -> ""
+    | Some _ -> "; density" in
+  Printf.sprintf "[ N: %i; N_bins: %i%s%s%s ]"
+  n_counts n w norm pdf
+
 
 (* now the external api *)
 
@@ -511,5 +528,9 @@ let normalise_density ({bins; counts; weighted_counts} as h) =
             wc /. (bins.(i+1) -. bins.(i)) /. total) wcounts in
   {h with density=Some ds}
 
+let pp_hist formatter hist =
+  Format.open_box 0;
+  Format.fprintf formatter "%s" (hist_to_string hist);
+  Format.close_box ()
 
 (* ends here *)

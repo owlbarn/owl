@@ -59,7 +59,53 @@ module To_test = struct
     let h = M.ks2_test a b in
     h.score
 
+  let hist_uni n x =
+    let h = M.histogram (`N n) x in
+    h.counts
+
+  let hist_uni_sorted n x =
+    let h = M.histogram_sorted (`N n) x in
+    h.counts
+
+  let hist_bin bins x =
+    let h = M.histogram (`Bins bins) x in
+    h.counts
+
+  let hist_bin_sorted bins x =
+    let h = M.histogram_sorted (`Bins bins) x in
+    h.counts
+
+  let hist_bin_weighted bins weights x =
+    let h = M.histogram (`Bins bins) ~weights x in
+    h.counts, h.weighted_counts
+
+  let hist_bin_weighted_sorted bins weights x =
+    let h = M.histogram_sorted (`Bins bins) ~weights x in
+    h.counts, h.weighted_counts
+
+  let hist_normalise bins ?weights x =
+    let h = M.histogram (`Bins bins) ?weights x
+          |> M.normalise
+          |> M.normalise_density in
+    h.normalised_counts, h.density
+
 end
+
+
+module Data = struct
+  let x1 = [|0.; -1.; 0.; sqrt 0.5; 2.;|]
+  let x1_sorted = [| -1.; 0.; 0.; sqrt 0.5; 2.;|]
+  let w1 = [|0.; 2.; 1.; 1.; 0.2; |]
+  let w1_sorted = [|2.; 0.; 1.; 1.; 0.2; |]
+  let x2 = Array.append x1 [|infinity|]
+  let x2_sorted = Array.append x1_sorted [|infinity|]
+  let w2 = Array.append w1 [|0.2|]
+  let bin_wrong = [|4.|]
+  let bin1 = [| -1.; 0. |]
+  let bin2 = [| -.1.; 0.; sqrt 0.5; 3.|]
+  let bin2_inf = [| -.infinity; 0.; sqrt 0.5; infinity|]
+end
+
 
 (* The tests *)
 (* P-values computed using stats.fisher_exact from SciPy 0.18.1 *)
@@ -245,6 +291,83 @@ let ks2_pval_test3 () =
     Owl_exception.EMPTY_ARRAY
     (fun _ -> ignore (To_test.ks2_test_pval [||] [|1.; 2.; 3.;|]);)
 
+let hist_uni_1 () =
+  Alcotest.(check (array int))
+    "uniform histogram"
+    [|1; 3; 1|]
+    (To_test.hist_uni 3 Data.x1)
+
+let hist_uni_sorted_1 () =
+  Alcotest.(check (array int))
+    "uniform histogram sorted"
+    [|1; 3; 1|]
+    (To_test.hist_uni_sorted 3 Data.x1_sorted)
+
+let hist_bins_1 () =
+  Alcotest.(check (array int))
+    "histogram with bins"
+    [|3|]
+    (To_test.hist_bin Data.bin1 Data.x1)
+
+let hist_bins_2 () =
+  Alcotest.(check (array int))
+    "histogram with infinite bins"
+    [|1; 2; 2|]
+    (To_test.hist_bin Data.bin2 Data.x2)
+
+let hist_bins_sorted_2 () =
+  Alcotest.(check (array int))
+    "histogram with infinite bins sorted"
+    [|1; 2; 2|]
+    (To_test.hist_bin_sorted Data.bin2 Data.x2_sorted)
+
+let hist_bins_wrong () =
+  Alcotest.(check_raises)
+    "histogram with bins"
+    (Failure "Need at least two bin boundaries!")
+    (fun () -> To_test.hist_bin Data.bin_wrong Data.x1|> ignore)
+
+(* a utility *)
+let fao =
+  let open Alcotest in
+  let fl = testable Fmt.float (fun x y ->
+      x = y || (* cover infinity cases *)
+      abs_float (x -. y) <= eps) in
+  option (array fl)
+
+let hist_bins_weights () =
+  Alcotest.(check (pair (array int) fao))
+    "weighted histogram with bins"
+    ([|3|], Some [|3.|])
+    (To_test.hist_bin_weighted Data.bin1 Data.w1 Data.x1)
+
+let hist_bins_weights_sorted () =
+  Alcotest.(check (pair (array int) fao))
+    "weighted histogram with bins sorted"
+    ([|3|], Some [|3.|])
+    (To_test.hist_bin_weighted_sorted Data.bin1 Data.w1_sorted Data.x1_sorted)
+
+let hist_bins_normalise () =
+  Alcotest.(check (pair fao fao))
+    "normalisation test unweighted"
+    (Some [|1./.5.; 2./.5.; 2./.5.|],
+     Some [|1./.5.; 2./.5./.sqrt 0.5; 2./.5./.(3. -. sqrt 0.5)|])
+    (To_test.hist_normalise Data.bin2 Data.x2)
+
+let hist_bins_normalise_weights () =
+  Alcotest.(check (pair fao fao))
+    "normalisation test with weights"
+    (Some [|2./.4.2; 1./.4.2; 1.2/.4.2|],
+     Some [|2./.4.2; 1./.4.2/.sqrt 0.5; 1.2/.4.2/.(3. -. sqrt 0.5)|])
+    (To_test.hist_normalise Data.bin2 ~weights:Data.w2 Data.x2)
+
+let hist_bins_normalise_binf () =
+  Alcotest.(check (pair fao fao))
+    "normalisation test unweighted, infinite bins"
+    (Some [|1./.6.; 2./.6.; 3./.6.|],
+     Some [|0.; 2./.6./.sqrt 0.5; 0.|])
+    (To_test.hist_normalise Data.bin2_inf Data.x2)
+
 (* The tests *)
 let test_set = [
   "mannwhitneyu_test_left_side_asym" , `Slow, mannwhitneyu_test_left_side_asym;
@@ -273,4 +396,18 @@ let test_set = [
   "ks2_pval_test2", `Slow, ks2_pval_test2;
   "ks2_pval_test3", `Slow, ks2_pval_test3;
   "ks2_teststat", `Slow, ks2_teststat;
+  "hist_uni_1", `Slow, hist_uni_1;
+  "hist_uni_sorted_1", `Slow, hist_uni_sorted_1;
+  "hist_bins_1", `Slow, hist_bins_1;
+  "hist_bins_2", `Slow, hist_bins_2;
+  "hist_bins_sorted_2", `Slow, hist_bins_sorted_2;
+  "hist_bins_wrong", `Slow, hist_bins_wrong;
+  "hist_bins_weights", `Slow, hist_bins_weights;
+  "hist_bins_weights_sorted", `Slow, hist_bins_weights_sorted;
+  "hist_bins_normalise", `Slow, hist_bins_normalise;
+  "hist_bins_normalise_weights", `Slow, hist_bins_normalise_weights;
+  "hist_bins_normalise_binf", `Slow, hist_bins_normalise_binf;
 ]
+
+
+

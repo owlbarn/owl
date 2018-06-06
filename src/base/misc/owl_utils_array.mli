@@ -236,9 +236,8 @@ val index_of : 'a array -> 'a -> int
 val bsearch : cmp:('a -> 'a -> int) -> 'a  -> 'a array -> int
 (**
 Binary search. ``bsearch cmp x a`` returns the index of the largest value
-in the sorted array ``a`` less than or equal to ``x``, according to the 
-comparison function ``cmp``. If ``x`` is smaller than all elements, returns -1; 
-if it is bigger than or equal to the largest element, returns ``Array.length a``. 
+in the sorted array ``a`` less than or equal to ``x``, according to the
+comparison function ``cmp``. If ``x`` is smaller than all elements, returns -1.
 The function raises an exception if ``a`` is empty.
 *)
 
