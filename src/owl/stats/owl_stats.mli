@@ -159,7 +159,8 @@ Type for computed histograms, with optional weighted counts and normalized
 counts.
 *)
 
-val histogram : [ `Bins of float array | `N of int ] -> float array -> histogram
+val histogram : [ `Bins of float array | `N of int ] -> ?weights:float array ->
+  float array -> histogram
 (**
 ``histogram bins x`` creates a histogram from values in ``x``. If bins matches
 `` `N n`` it will construct ``n`` equally spaced bins from the minimum to
@@ -167,31 +168,21 @@ the maximum in ``x``. If bins matches `` `Bins b``, ``b`` is taken as the
 sorted array of boundaries of adjacent bin intervals. Bin interval
 boundaries are taken as left-inclusive, right-exclusive, except for the last
 bin which is also right-inclusive. Values outside the bins are dropped.
-Returns a histogram including the ``n+1`` bin boundaries and ``n`` counts,
-but without normalisation.
+
+``histogram bins ~weights x`` creates a weighted histogram with the given
+``weights`` which must match ``x`` in length. The bare counts are also
+provided.
+
+Returns a histogram including the ``n+1`` bin boundaries, ``n`` counts and
+weighted counts if applicable, but without normalisation.
 *)
 
-val histogram_weighted : [ `Bins of float array | `N of int ] ->
-float array -> float array -> histogram
-(**
-``histogram bins wts x`` is like ``histogram bins x`` but computes additionally
-a histogram of weighted counts with weights ``wts``. The array ``wts`` must
-match ``x`` in length.
-*)
-
-val histogram_sorted : [ `Bins of float array | `N of int ] -> float array -> histogram
+val histogram_sorted : [ `Bins of float array | `N of int ] -> ?weights:float array
+  -> float array -> histogram
 (**
 ``histogram_sorted bins x`` is like ``histogram`` but assumes that ``x`` is sorted
 already, allowing increased efficiency. Undefined results if ``x`` is not in
 fact sorted.
-*)
-
-val histogram_sorted_weighted : [ `Bins of float array | `N of int ] ->
-float array -> float array -> histogram
-(**
-``histogram_sorted_weighted bins x`` is like ``histogram_weighted`` but
-assumes that ``x`` is sorted already. Undefined results if ``x`` is not in fact
-sorted.
 *)
 
 val normalise : histogram -> histogram

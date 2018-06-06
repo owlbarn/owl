@@ -181,13 +181,7 @@ type histogram = Owl_base_stats.histogram
 let histogram = Owl_base_stats.histogram
 
 
-let histogram_weighted = Owl_base_stats.histogram_weighted
-
-
 let histogram_sorted = Owl_base_stats.histogram_sorted
-
-
-let histogram_sorted_weighted = Owl_base_stats.histogram_sorted_weighted
 
 
 let normalise = Owl_base_stats.normalise

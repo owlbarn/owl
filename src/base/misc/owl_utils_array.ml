@@ -337,12 +337,12 @@ let index_of x a =
   if r < 0 then raise Owl_exception.NOT_FOUND
   else r
 
-(* binary search. adapted from CCArray.bsearch in containers.
- * bins edges are left-inclusive, right-exclusive *)
+(* Binary search. Adapted from CCArray.bsearch in containers.
+ * Bin edges are taken as left-inclusive, right-exclusive *)
 let bsearch ~cmp k bin_edges =
   let rec aux i j =
     if i > j then j
-    else 
+    else
       let middle = i + (j - i) / 2 in (* avoid overflow *)
       match cmp k bin_edges.(middle) with
       | 0            -> middle
@@ -350,7 +350,7 @@ let bsearch ~cmp k bin_edges =
       | _            -> aux (middle + 1) j in
   let n = Array.length bin_edges in
   if n = 0 then failwith "empty array"
-  else 
+  else
     match cmp bin_edges.(0) k, cmp bin_edges.(n-1) k with
     | c, _ when c > 0  -> -1
     | _, c when c <= 0 -> n
