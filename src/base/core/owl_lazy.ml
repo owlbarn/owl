@@ -16,8 +16,6 @@ module Make (A : Ndarray_Mutable) = struct
 
   include Owl_computation_graph.Make (A)
 
-  module Computation_Optimiser = Owl_computation_optimiser.Make (A)
-
 
   (* allocate memory and evaluate experssions *)
 
@@ -502,9 +500,6 @@ module Make (A : Ndarray_Mutable) = struct
     eval_arr [|x|];
     set_operator (arr_to_node x) Var;
     arr_to_var x
-
-
-  let optimise_graph = Computation_Optimiser.run
 
 
 end

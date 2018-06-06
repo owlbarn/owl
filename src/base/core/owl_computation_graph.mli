@@ -345,10 +345,10 @@ module Make (A : Ndarray_Algodiff) : sig
   val freeze : attr Owl_graph.node -> unit
   (** TODO *)
 
-  val freeze_ancestors :  attr Owl_graph.node array -> unit
+  val freeze_ancestors : attr Owl_graph.node array -> unit
   (** TODO *)
 
-  val freeze_descendants :  attr Owl_graph.node array -> unit
+  val freeze_descendants : attr Owl_graph.node array -> unit
   (** TODO *)
 
   val is_shape_unkown : attr Owl_graph.node -> bool

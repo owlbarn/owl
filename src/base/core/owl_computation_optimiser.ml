@@ -14,7 +14,9 @@ open Owl_graph
 
 module Make (A : Ndarray_Algodiff) = struct
 
-  include Owl_computation_graph.Make (A)
+  module Symbol = Owl_computation_graph.Make (A)
+
+  open Symbol
 
 
   let rec _optimise_term x =
@@ -571,15 +573,15 @@ module Make (A : Ndarray_Algodiff) = struct
     !nodes, !edges
 
 
-  let run x =
-    let nodes, edges = estimate_complexity x in
+  let run xs =
+    let nodes, edges = estimate_complexity xs in
     Owl_log.info "unoptimised graph: %i nodes, %i edges ..." nodes edges;
 
-    Array.iter _optimise_term x;
+    Array.iter _optimise_term xs;
     (* NOTE: invalidate ancestors *)
-    iter_ancestors (fun v -> invalidate v) x;
+    iter_ancestors (fun v -> invalidate v) xs;
 
-    let nodes, edges = estimate_complexity x in
+    let nodes, edges = estimate_complexity xs in
     Owl_log.info "optimised graph: %i nodes, %i edges ..." nodes edges
 
 

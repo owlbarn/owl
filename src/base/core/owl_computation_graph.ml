@@ -652,7 +652,7 @@ module Make (A : Ndarray_Algodiff) = struct
     | Atan2Scalar                                 -> _infer_shape_01 input_shapes
     | Hypot                                       -> _infer_shape_01 input_shapes
     | Min2                                        -> _infer_shape_01 input_shapes
-    | Max2                                       -> _infer_shape_01 input_shapes
+    | Max2                                        -> _infer_shape_01 input_shapes
     | Add                                         -> _infer_shape_03 input_shapes
     | Sub                                         -> _infer_shape_03 input_shapes
     | Mul                                         -> _infer_shape_03 input_shapes
