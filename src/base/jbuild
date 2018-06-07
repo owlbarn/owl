@@ -10,19 +10,13 @@
 (copy_files# linalg/*)
 (copy_files# misc/*)
 
-(copy_files# lwt/*)
-
 (library (
   (name owl_base)
   (public_name owl-base)
   (wrapped false)
   (flags (:standard -safe-string))
-
-  (preprocess (pps (lwt_ppx)))
   (libraries (
     ; Let's keep the dependency minimal
     bigarray
-    unix
-    lwt
   ))
 ))
