@@ -4,14 +4,19 @@
  *)
 
 
-module type Sig = sig
+ module type Ndarray_Mutable = sig
 
-  type arr
+   include Owl_types_ndarray_mutable.Sig
 
-  type elt
+ end
 
-  val eval_elt : elt array -> unit
 
-  val eval_arr : arr array -> unit
+module type Sig = sig module Make : functor (A : Ndarray_Mutable) -> sig
 
-end
+type elt = A.elt
+type arr = A.arr
+
+val eval_elt : elt array -> unit
+
+val eval_arr : arr array -> unit
+end end

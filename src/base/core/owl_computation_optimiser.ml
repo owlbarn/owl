@@ -14,9 +14,9 @@ open Owl_graph
 
 module Make (A : Ndarray_Algodiff) = struct
 
-  module Symbol = Owl_computation_symbol.Make (A)
+  module Operator = Owl_computation_operator.Make (A)
 
-  open Symbol
+  open Operator.Symbol
 
 
   let rec _optimise_term x =
@@ -269,8 +269,8 @@ module Make (A : Ndarray_Algodiff) = struct
     let parent = (parents x).(0) in
     _optimise_term parent;
     let op = get_operator x in
-    let is_leaf = outdegree x = 0 in
-    if op = Noop && is_leaf = false then (
+    let resuable = get_reuse x in
+    if op = Noop && resuable then (
       set_children parent (children x);
       replace_parent x parent;
       remove_node x
@@ -368,7 +368,7 @@ module Make (A : Ndarray_Algodiff) = struct
       let x_parents = parents x in
       let a = x_parents.(0) in
       let b = x_parents.(1) in
-      let x_shp = shape (node_to_arr x) in
+      let x_shp = Operator.shape (node_to_arr x) in
       match get_operator a with
       | Zeros _ -> (
           remove_edge a x;
@@ -385,7 +385,7 @@ module Make (A : Ndarray_Algodiff) = struct
     if get_operator x = Div then (
       let x_parents = parents x in
       let b = x_parents.(1) in
-      let x_shp = shape (node_to_arr x) in
+      let x_shp = Operator.shape (node_to_arr x) in
       match get_operator b with
       | Ones b_shp -> (
           if x_shp = b_shp then (
@@ -565,6 +565,8 @@ module Make (A : Ndarray_Algodiff) = struct
     | _            -> ()
 
 
+  (* core optimise functions *)
+
   let estimate_complexity graph =
     let nodes = ref 0 in
     Owl_graph.iter_ancestors (fun _ -> nodes := !nodes + 1) graph;
@@ -573,7 +575,7 @@ module Make (A : Ndarray_Algodiff) = struct
     !nodes, !edges
 
 
-  let run xs =
+  let optimise_nodes xs =
     let nodes, edges = estimate_complexity xs in
     Owl_log.info "unoptimised graph: %i nodes, %i edges ..." nodes edges;
 

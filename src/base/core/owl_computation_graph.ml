@@ -10,9 +10,9 @@ open Owl_graph
 
 module Make (A : Ndarray_Algodiff) = struct
 
-  module Symbol = Owl_computation_symbol.Make (A)
-
-  open Symbol
+  include Owl_computation_symbol.Make (A)
+  include Owl_computation_operator.Make (A)
+  include Owl_computation_optimiser.Make (A)
 
 
   type graph = {
@@ -86,7 +86,7 @@ module Make (A : Ndarray_Algodiff) = struct
   let set_node_elt_val x v = (attr x).value <- [| v |]
 
 
-  let is_iopair_safety i o =
+  let is_iopair_safe i o =
     let safe_pair = ref true in
     let pass_by_o = ref false in
     let branching = ref 0 in
@@ -104,7 +104,7 @@ module Make (A : Ndarray_Algodiff) = struct
   let make_iopair graph input output =
     assert (Array.length input = Array.length output);
     let iopair = Array.map2 (fun i o -> (i, o)) input output in
-    let iosafe = Array.map2 (fun i o -> is_iopair_safety i o) input output in
+    let iosafe = Array.map2 (fun i o -> is_iopair_safe i o) input output in
     graph.iopair <- iopair;
     graph.iosafe <- iosafe
 
@@ -137,6 +137,14 @@ module Make (A : Ndarray_Algodiff) = struct
 
   let init_inputs f graph =
     Array.iter (fun v -> (attr v).value <- [| f v |]) graph.input
+
+
+  let optimise graph = optimise_nodes graph.output
+
+
+  (* helper functions *)
+
+  let graph_to_dot x = get_outputs x |> Symbol.nodes_to_dot
 
 
 

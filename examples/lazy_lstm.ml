@@ -9,7 +9,7 @@ module C = Owl_neural_graph_compiler.Make (Dense.Ndarray.S)
 
 open C.Neural
 open C.Neural.Graph
-open C.Algodiff
+open C.Neural.Algodiff
 
 
 let prepare window step =
@@ -41,8 +41,8 @@ let train () =
   let wndsz = 100 and stepsz = 1 in
   let vocab, x, y = prepare wndsz stepsz in
   let vocabsz = Nlp.Vocabulary.length vocab in
-  let x = C.Lazy.pack_arr x |> C.Algodiff.pack_arr in
-  let y = C.Lazy.pack_arr y |> C.Algodiff.pack_arr in
+  let x = C.CGraph.pack_arr x |> Algodiff.pack_arr in
+  let y = C.CGraph.pack_arr y |> Algodiff.pack_arr in
 
   let network = make_network wndsz vocabsz in
   Graph.print network;

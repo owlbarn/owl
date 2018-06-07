@@ -14,10 +14,10 @@ open Owl_graph
 
 module Make (A : Ndarray_Mutable) = struct
 
-  module Symbol = Owl_computation_symbol.Make (A)
   module CGraph = Owl_computation_graph.Make (A)
 
-  include Symbol
+  include CGraph
+
 
   (* allocate memory and evaluate experssions *)
 
@@ -479,12 +479,6 @@ module Make (A : Ndarray_Mutable) = struct
     _eval_term x_parent;
     let a = (get_value x_parent).(0) |> value_to_arr |> f in
     set_value x [|arr_to_value a|]
-
-
-  (* NOTE: this function is for debugging purpose *)
-  let dump_dot fname xs =
-    let s0 = to_dot xs in
-    Owl_io.write_file fname s0
 
 
   let eval_elt xs = Array.iter (fun x -> elt_to_node x |> _eval_term) xs

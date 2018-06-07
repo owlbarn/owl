@@ -4864,16 +4864,9 @@ let contract2 index_pairs x y =
 
 (* Helper functions *)
 
-let arr_to_var x = x
-
 let float_to_elt x = x
 
 let elt_to_float x = x
-
-let eval_elt x = ()
-
-let eval_arr x = ()
-
 
 
 (* ends here *)

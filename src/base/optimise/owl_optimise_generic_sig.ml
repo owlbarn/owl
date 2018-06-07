@@ -302,6 +302,9 @@ This function minimises ``f : x -> y`` w.r.t ``x``.
 ``x`` is an ndarray; and ``y`` is an scalar value.
    *)
 
+  val minimise_compiled_network : ?state:Checkpoint.state -> Params.typ -> (t -> t -> t) -> (unit -> 'a) -> (string -> unit) -> t -> t -> Checkpoint.state
+  (** TODO *)
+
 
 end
 

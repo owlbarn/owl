@@ -12,6 +12,7 @@ module Make (A : Ndarray_Algodiff) = struct
 
   (* module aliases: graphical network & parallel *)
 
+  module Algodiff       = Owl_algodiff_generic.Make (A)
   module Graph          = Owl_neural_graph.Make (A)
   (* module Parallel       = Owl_neural_parallel.Make (Graph) *)
 

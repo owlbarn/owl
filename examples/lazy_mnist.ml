@@ -7,7 +7,7 @@ module C = Owl_neural_graph_compiler.Make (Dense.Ndarray.S)
 
 open C.Neural
 open C.Neural.Graph
-open C.Algodiff
+open C.Neural.Algodiff
 
 
 let make_network input_shape =
@@ -23,12 +23,13 @@ let make_network input_shape =
 
 let train network =
   let x, _, y = Dataset.load_mnist_train_data_arr () in
-  let x = C.Lazy.pack_arr x |> C.Algodiff.pack_arr in
-  let y = C.Lazy.pack_arr y |> C.Algodiff.pack_arr in
+  let x = C.CGraph.pack_arr x |> Algodiff.pack_arr in
+  let y = C.CGraph.pack_arr y |> Algodiff.pack_arr in
   let params = Params.config
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 0.1
+    (* ~momentum:(Momentum.Standard 0.1) *)
   in
-  C.train_shallow ~params network x y
+  C.train ~params network x y
 
 
 let _ =

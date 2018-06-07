@@ -2577,15 +2577,9 @@ let one_hot depth x = failwith "Owl_base_dense_ndarray_generic:one_hot: not impl
 
 (* Helper functions *)
 
-let arr_to_var x = x
-
 let float_to_elt x = x
 
 let elt_to_float x = x
-
-let eval_elt x = ()
-
-let eval_arr x = ()
 
 
 

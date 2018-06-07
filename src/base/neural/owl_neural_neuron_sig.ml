@@ -758,8 +758,8 @@ module MaxPool2D : sig
   }
   (** Neuron type definition. *)
 
-  val create :
-      Owl_types.padding -> int array -> int array -> neuron_typ
+  val create : Owl_types.padding -> int array -> int array -> neuron_typ
+  (** Create the neuron. *)
 
   val connect : int array -> neuron_typ -> unit
   (** Connect this neuron to others in a neural network. *)
@@ -792,8 +792,8 @@ module AvgPool1D : sig
   }
   (** Neuron type definition. *)
 
-  val create :
-      Owl_types.padding -> int array -> int array -> neuron_typ
+  val create : Owl_types.padding -> int array -> int array -> neuron_typ
+  (** Create the neuron. *)
 
   val connect : int array -> neuron_typ -> unit
   (** Connect this neuron to others in a neural network. *)

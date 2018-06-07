@@ -654,21 +654,11 @@ val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b
 
 (** {6 Helper functions}  *)
 
-val arr_to_var : 'a -> 'a
-(** Identity function to deal with the type conversion required by other functors. *)
-
 val float_to_elt : 'a -> 'a
 (** Identity function to deal with the type conversion required by other functors. *)
 
 val elt_to_float : 'a -> 'a
 (** Identity function to deal with the type conversion required by other functors. *)
-
-val eval_elt : 'a array -> unit
-(** TODO *)
-
-val eval_arr : ('a, 'b) t array -> unit
-(** TODO *)
-
 
 
 (* ends here *)

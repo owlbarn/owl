@@ -429,12 +429,6 @@ val of_arrays : elt array array -> arr
 
 (** {6 Helper functions}  *)
 
-val arr_to_var : arr -> arr
-
 val float_to_elt : float -> elt
 
 val elt_to_float : elt -> float
-
-val eval_elt : elt array -> unit
-
-val eval_arr : arr array -> unit
