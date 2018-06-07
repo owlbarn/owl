@@ -30,8 +30,8 @@ let calc_conv2d_output_shape
   (output_cols, output_rows)
 
 
-(* calculate the output shape of [conv2d_transpose] given input and kernel and stride *)
-let calc_conv2d_transpose_output_shape
+(* calculate the output shape of [transpose_conv2d] given input and kernel and stride *)
+let calc_transpose_conv2d_output_shape
   padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   =
   let output_cols = match padding with
@@ -67,6 +67,15 @@ let calc_conv1d_output_shape padding input_cols kernel_cols col_stride =
   |> fst
 
 
+(* calc_transpose_conv1d_output_shape actually calls its 2d version  *)
+let calc_transpose_conv1d_output_shape padding input_cols kernel_cols col_stride =
+  let input_rows = 1 in
+  let kernel_rows = 1 in
+  let row_stride = 1 in
+  calc_transpose_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  |> fst
+
+
 (* calculate the output shape of [conv3d] given input and kernel and stride *)
 let calc_conv3d_output_shape
   padding input_cols input_rows input_dpts
@@ -93,6 +102,27 @@ let calc_conv3d_output_shape
   let output_dpts = match padding with
     | SAME  -> (input_dpts /. dpt_stride) |> ceil |> int_of_float
     | VALID -> ((input_dpts -. kernel_dpts +. 1.) /. dpt_stride) |> ceil |> int_of_float
+  in
+  (output_cols, output_rows, output_dpts)
+
+
+(* calculate the output shape of [transpose_conv3d] given input and kernel and stride *)
+let calc_transpose_conv3d_output_shape
+  padding input_cols input_rows input_dpts
+  kernel_cols kernel_rows kernel_dpts
+  row_stride col_stride dpt_stride
+  =
+  let output_cols = match padding with
+    | SAME  -> input_cols * col_stride
+    | VALID -> input_cols * col_stride + (max (kernel_cols - col_stride) 0)
+  in
+  let output_rows = match padding with
+    | SAME  -> input_rows * row_stride
+    | VALID -> input_rows * row_stride + (max (kernel_rows - row_stride) 0)
+  in
+  let output_dpts = match padding with
+    | SAME  -> input_dpts * dpt_stride
+    | VALID -> input_dpts * dpt_stride + (max (kernel_dpts - dpt_stride) 0)
   in
   (output_cols, output_rows, output_dpts)
 

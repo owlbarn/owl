@@ -319,20 +319,197 @@ let minmax x =
   !_min, !_max
 
 
-let histogram x n =
-  let a, b = minmax x in
-  match a = b with
-  | true  -> [|1|]
-  | false -> (
-      let c = (b -. a) /. (float_of_int n) in
-      let d = Array.make n 0 in
-      Array.iter (fun y ->
-        let i = int_of_float ((y -. a) /. c) in
-        let i = if y = b then i - 1 else i in
-        d.(i) <- d.(i) + 1
-      ) x;
-      d
-    )
+type histogram = {
+  bins              : float array;
+  counts            : int array;
+  weighted_counts   : float array option;
+  normalised_counts : float array option;
+  density           : float array option
+}
+
+let make_uniform_bins n bmin bmax =
+  let db = (bmax -. bmin) /. float_of_int n in
+  let bins = Array.init (n + 1) (fun i -> bmin +. float_of_int i *. db) in
+  db, bins
+
+let get_uniform_bin bmin bmax db n y =
+  let i = int_of_float ((y -. bmin) /. db) in
+  if i = n && y = bmax then n - 1 else i
+
+(* fast direct binning for uniform bins *)
+let hist_uniform n x =
+  let bmin, bmax = minmax x in
+  let db, bins = make_uniform_bins n bmin bmax in
+  let get_i y = get_uniform_bin bmin bmax db n y in
+  let c = Array.make n 0 in
+  Array.iter (fun y ->
+    let i = get_i y in
+    c.(i) <- c.(i) + 1) x;
+  bins, c
+
+let hist_weighted_uniform n w x =
+  let bmin, bmax = minmax x in
+  let db, bins = make_uniform_bins n bmin bmax in
+  let get_i y = get_uniform_bin bmin bmax db n y in
+  let c = Array.make n 0 in
+  let wc = Array.make n 0. in
+  Array.iteri (fun j y ->
+    let i = get_i y in
+    c.(i) <- c.(i) + 1;
+    wc.(i) <- wc.(i) +. w.(j)
+  ) x;
+  bins, c, wc
+
+let get_nonuniform_bin n bins y =
+  let i = Owl_utils_array.bsearch
+      ~cmp:(compare :> float -> _ -> _)
+      y bins in
+  if i = n && y = bins.(n-1) then n - 1 else i
+
+let hist_nonuniform bins x =
+  let n = Array.length bins in
+  let get_i y = get_nonuniform_bin n bins y in
+  let c = Array.make (n-1) 0 in
+    Array.iter (fun y ->
+      let i = get_i y in
+      try c.(i) <- c.(i) + 1
+      (* drop out-of bounds data! *)
+      with Invalid_argument _ -> ()
+    ) x;
+    bins, c
+
+let hist_weighted_nonuniform bins w x =
+  let n = Array.length bins in
+  let get_i y = get_nonuniform_bin n bins y in
+  let c = Array.make (n-1) 0
+  and wc = Array.make n 0. in
+  Array.iteri (fun j y ->
+    let i = get_i y in
+    try c.(i) <- c.(i) + 1; wc.(i) <- wc.(i) +. w.(j)
+    with Invalid_argument _ -> ()
+  ) x;
+  bins, c, wc
+
+let make_uniform_bins_from_sorted n x =
+  let bmin, bmax = minmax x in
+  let db = (bmax -. bmin) /. float_of_int n in
+  Array.init (n + 1) (fun i -> bmin +. float_of_int i *. db)
+
+(* utility. find start of upward iteration *)
+let init_bin_i_x_j bins x =
+  let cmp = (compare :> float -> _ -> _) in
+  if cmp bins.(0) x.(0) < 1 then
+    ref (Owl_utils_array.bsearch ~cmp x.(0) bins), ref 0
+  else
+    ref 0, ref (1 + Owl_utils_array.bsearch ~cmp bins.(0) x)
+
+(* this assumes without check that x is sorted *)
+let hist_sorted bins x =
+  let cmp = (compare :> float -> _ -> _) in
+  (* FIXME: since this is a performance tweak it would make sense to unsafe
+   * get and set the counts. write tests and then do it!! *)
+  (*let module Array = struct*)
+    (*include Array*)
+    (*let get = unsafe_get*)
+    (*let set = unsafe_set end in*)
+  let bin_n = Array.length bins in
+  let x_n = Array.length x in
+  let c = Array.make (bin_n-1) 0 in
+  let bin_i, x_j = init_bin_i_x_j bins x in
+  (* now iterate up the bins *)
+  while !bin_i <= bin_n - 2 do
+    while !x_j < x_n && cmp x.(!x_j) bins.(!bin_i + 1) < 0 do
+      c.(!bin_i) <- c.(!bin_i) + 1;
+      incr x_j
+    done;
+    incr bin_i;
+  done;
+  (* last bin is right-inclusive... *)
+  while !x_j < x_n && cmp x.(!x_j) bins.(bin_n-1) = 0 do
+      c.(bin_n-2) <- c.(bin_n-2) + 1; incr x_j done;
+  bins, c
+
+let hist_weighted_sorted bins wts x =
+  let cmp = (compare :> float -> _ -> _) in
+  let bin_n = Array.length bins in
+  let x_n = Array.length x in
+  let c = Array.make (bin_n-1) 0 in
+  let wc = Array.make (bin_n-1) 0. in
+  let bin_i, x_j = init_bin_i_x_j bins x in
+  (* now iterate up the bins *)
+  while !bin_i <= bin_n - 2 do
+    while !x_j < x_n && cmp x.(!x_j) bins.(!bin_i + 1) < 0 do
+      c.(!bin_i) <- c.(!bin_i) + 1;
+      wc.(!bin_i) <- wc.(!bin_i) +. wts.(!x_j);
+      incr x_j
+    done;
+    incr bin_i;
+  done;
+  (* last bin is right-inclusive... *)
+  while !x_j < x_n && cmp x.(!x_j) bins.(bin_n-1) = 0 do
+    c.(bin_n-2) <- c.(bin_n-2) + 1;
+    wc.(bin_n-2) <- wc.(bin_n-2) +. wts.(!x_j);
+    incr x_j
+  done;
+  bins, c, wc
+
+(* now the external api *)
+
+let histogram
+    (bins:[`N of int|`Bins of float array]) x =
+  let bins, counts = match bins with
+    | `N n    -> hist_uniform n x
+    | `Bins b -> hist_nonuniform b x in
+  {bins; counts;
+   weighted_counts=None; normalised_counts=None; density=None}
+
+let histogram_weighted
+    (bins:[`N of int|`Bins of float array]) wts x =
+  let bins, counts, wcounts = match bins with
+    | `N n    -> hist_weighted_uniform n wts x
+    | `Bins b -> hist_weighted_nonuniform b wts x in
+  {bins; counts; weighted_counts=Some wcounts;
+   normalised_counts=None; density=None}
+
+let histogram_sorted
+    (bins:[`N of int|`Bins of float array]) x =
+  let bins = match bins with
+    | `N n    -> make_uniform_bins_from_sorted n x
+    | `Bins b -> b in
+  let bins, counts = hist_sorted bins x in
+  {bins; counts;
+   weighted_counts=None; normalised_counts=None; density=None}
+
+let histogram_sorted_weighted
+    (bins:[`N of int|`Bins of float array]) wts x =
+  let bins = match bins with
+    | `N n    -> make_uniform_bins_from_sorted n x
+    | `Bins b -> b in
+  let bins, counts, wcounts = hist_weighted_sorted bins wts x in
+  {bins; counts; weighted_counts=Some wcounts;
+   normalised_counts=None; density=None}
+
+let normalise ({counts; weighted_counts} as h) =
+  let normalised_counts = match weighted_counts with
+    | None ->
+        let total = Array.fold_left (+) 0 counts |> float_of_int in
+        Some (Array.map (fun c -> float_of_int c /. total) counts)
+    | Some wcounts ->
+        let total = Array.fold_left (+.) 0. wcounts in
+        Some (Array.map (fun wc -> wc /. total) wcounts) in
+  {h with normalised_counts}
+
+let normalise_density ({bins; counts; weighted_counts} as h) =
+  let density = match weighted_counts with
+    | None ->
+        let total = Array.fold_left (+) 0 counts |> float_of_int in
+        Some (Array.mapi (fun i c ->
+            float_of_int c /. (bins.(i+1) -. bins.(i)) /. total) counts)
+    | Some wcounts ->
+        let total = Array.fold_left (+.) 0. wcounts in
+        Some (Array.mapi (fun i wc ->
+            wc /. (bins.(i+1) -. bins.(i)) /. total) wcounts) in
+  {h with density}
 
 
 (* ends here *)

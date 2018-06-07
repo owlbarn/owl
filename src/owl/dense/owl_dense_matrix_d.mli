@@ -398,7 +398,7 @@ val save : mat -> string -> unit
 
 val load : string -> mat
 
-val save_txt : ?sep:string -> mat -> string -> unit
+val save_txt : ?sep:string -> ?append:bool -> mat -> string -> unit
 
 val load_txt : ?sep:string -> string -> mat
 

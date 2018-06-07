@@ -198,6 +198,12 @@ module type Sig = sig
 
   val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
 
+  val transpose_conv1d : ?padding:padding -> arr -> arr -> int array -> arr
+
+  val transpose_conv2d : ?padding:padding -> arr -> arr -> int array -> arr
+
+  val transpose_conv3d : ?padding:padding -> arr -> arr -> int array -> arr
+
   val max_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
 
   val max_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
@@ -221,6 +227,18 @@ module type Sig = sig
   val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
 
   val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+  val transpose_conv1d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val transpose_conv1d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+  val transpose_conv2d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val transpose_conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+  val transpose_conv3d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val transpose_conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
 
   val max_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
