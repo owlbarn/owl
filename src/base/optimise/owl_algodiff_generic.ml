@@ -123,6 +123,15 @@ module Make
     | Tr_Conv3D_D_D of t * t * int array
     | Tr_Conv3D_D_C of t * t * int array
     | Tr_Conv3D_C_D of t * t * int array
+    | Di_Conv1D_D_D of t * t * int array
+    | Di_Conv1D_D_C of t * t * int array
+    | Di_Conv1D_C_D of t * t * int array
+    | Di_Conv2D_D_D of t * t * int array
+    | Di_Conv2D_D_C of t * t * int array
+    | Di_Conv2D_C_D of t * t * int array
+    | Di_Conv3D_D_D of t * t * int array
+    | Di_Conv3D_D_C of t * t * int array
+    | Di_Conv3D_C_D of t * t * int array
 
 
   (* generate global tags *)
@@ -1001,6 +1010,39 @@ module Make
       A.transpose_conv1d_backward_kernel a b s o
       |> pack_arr
 
+    (* a:input; b:kernel; r:rate *)
+    and dilated_conv1d ?padding a b r =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> Arr A.(dilated_conv1d ?padding a b r)
+        | _            -> error_binop "dilated_conv1d" a b
+      in
+      let fd a b = dilated_conv1d ?padding a b r in
+      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+      let df_da cp ap at = at in
+      let df_db cp bp bt = bt in
+      let df_dab cp ap at bp bt = at + bt in
+      let r_d_d a b = Di_Conv1D_D_D (a, b, r) in
+      let r_d_c a b = Di_Conv1D_D_C (a, b, r) in
+      let r_c_d a b = Di_Conv1D_C_D (a, b, r) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+    (* a:input; b:kernel; o:output'; r:rate *)
+    and dilated_conv1d_backward_input a b r o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.dilated_conv1d_backward_input a b o r
+      |> pack_arr
+
+    (* a:input; b:kernel; o:output'; r:rate *)
+    and dilated_conv1d_backward_kernel a b r o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.dilated_conv1d_backward_kernel a b o r
+      |> pack_arr
+
     (* a:input; b:kernel; s:stride *)
     and conv2d ?padding a b s =
       let ff a b =
@@ -1032,6 +1074,39 @@ module Make
       let b = unpack_arr b in
       let o = unpack_arr o in
       A.conv2d_backward_kernel a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; r:rate *)
+    and dilated_conv2d ?padding a b r =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> Arr A.(dilated_conv2d ?padding a b r)
+        | _            -> error_binop "dilated_conv2d" a b
+      in
+      let fd a b = dilated_conv2d ?padding a b r in
+      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+      let df_da cp ap at = at in
+      let df_db cp bp bt = bt in
+      let df_dab cp ap at bp bt = at + bt in
+      let r_d_d a b = Di_Conv2D_D_D (a, b, r) in
+      let r_d_c a b = Di_Conv2D_D_C (a, b, r) in
+      let r_c_d a b = Di_Conv2D_C_D (a, b, r) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+    (* a:input; b:kernel; o:output'; r:rate *)
+    and dilated_conv2d_backward_input a b r o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.dilated_conv2d_backward_input a b o r
+      |> pack_arr
+
+    (* a:input; b:kernel; o:output'; r:rate *)
+    and dilated_conv2d_backward_kernel a b r o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.dilated_conv2d_backward_kernel a b o r
       |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
@@ -1098,6 +1173,39 @@ module Make
       let b = unpack_arr b in
       let o = unpack_arr o in
       A.conv3d_backward_kernel a b s o
+      |> pack_arr
+
+   (* a:input; b:kernel; r:rate *)
+    and dilated_conv3d ?padding a b r =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> Arr A.(dilated_conv3d ?padding a b r)
+        | _            -> error_binop "dilated_conv3d" a b
+      in
+      let fd a b = dilated_conv3d ?padding a b r in
+      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+      let df_da cp ap at = at in
+      let df_db cp bp bt = bt in
+      let df_dab cp ap at bp bt = at + bt in
+      let r_d_d a b = Di_Conv3D_D_D (a, b, r) in
+      let r_d_c a b = Di_Conv3D_D_C (a, b, r) in
+      let r_c_d a b = Di_Conv3D_C_D (a, b, r) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+    (* a:input; b:kernel; o:output'; r:rate *)
+    and dilated_conv3d_backward_input a b r o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.dilated_conv3d_backward_input a b o r
+      |> pack_arr
+
+    (* a:input; b:kernel; o:output'; r:rate *)
+    and dilated_conv3d_backward_kernel a b r o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.dilated_conv3d_backward_kernel a b o r
       |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
@@ -1401,6 +1509,15 @@ module Make
               | Tr_Conv3D_D_D (a, b, _)  -> reset (a :: b :: t)
               | Tr_Conv3D_D_C (a, _, _)  -> reset (a :: t)
               | Tr_Conv3D_C_D (_, b, _)  -> reset (b :: t)
+              | Di_Conv1D_D_D (a, b, _)  -> reset (a :: b :: t)
+              | Di_Conv1D_D_C (a, _, _)  -> reset (a :: t)
+              | Di_Conv1D_C_D (_, b, _)  -> reset (b :: t)
+              | Di_Conv2D_D_D (a, b, _)  -> reset (a :: b :: t)
+              | Di_Conv2D_D_C (a, _, _)  -> reset (a :: t)
+              | Di_Conv2D_C_D (_, b, _)  -> reset (b :: t)
+              | Di_Conv3D_D_D (a, b, _)  -> reset (a :: b :: t)
+              | Di_Conv3D_D_C (a, _, _)  -> reset (a :: t)
+              | Di_Conv3D_C_D (_, b, _)  -> reset (b :: t)
               )
             else reset t
             )
@@ -1543,6 +1660,15 @@ module Make
               | Tr_Conv3D_D_D (a, b, s)  -> push ((transpose_conv3d_backward_input a b s !aa, a) :: (transpose_conv3d_backward_kernel a b s !aa, b) :: t)
               | Tr_Conv3D_D_C (a, b, s)  -> push ((transpose_conv3d_backward_input a b s !aa, a) :: t)
               | Tr_Conv3D_C_D (a, b, s)  -> push ((transpose_conv3d_backward_kernel a b s !aa, b) :: t)
+              | Di_Conv1D_D_D (a, b, r)  -> push ((dilated_conv1d_backward_input a b r !aa, a) :: (dilated_conv1d_backward_kernel a b r !aa, b) :: t)
+              | Di_Conv1D_D_C (a, b, r)  -> push ((dilated_conv1d_backward_input a b r !aa, a) :: t)
+              | Di_Conv1D_C_D (a, b, r)  -> push ((dilated_conv1d_backward_kernel a b r !aa, b) :: t)
+              | Di_Conv2D_D_D (a, b, r)  -> push ((dilated_conv2d_backward_input a b r !aa, a) :: (dilated_conv2d_backward_kernel a b r !aa, b) :: t)
+              | Di_Conv2D_D_C (a, b, r)  -> push ((dilated_conv2d_backward_input a b r !aa, a) :: t)
+              | Di_Conv2D_C_D (a, b, r)  -> push ((dilated_conv2d_backward_kernel a b r !aa, b) :: t)
+              | Di_Conv3D_D_D (a, b, r)  -> push ((dilated_conv3d_backward_input a b r !aa, a) :: (dilated_conv3d_backward_kernel a b r !aa, b) :: t)
+              | Di_Conv3D_D_C (a, b, r)  -> push ((dilated_conv3d_backward_input a b r !aa, a) :: t)
+              | Di_Conv3D_C_D (a, b, r)  -> push ((dilated_conv3d_backward_kernel a b r !aa, b) :: t)
               )
             else push t
             )
@@ -1893,6 +2019,15 @@ module Make
                   | Tr_Conv3D_D_D (a, b, s)  -> "Tr_Conv3D_D_D", [a; b]
                   | Tr_Conv3D_D_C (a, b, s)  -> "Tr_Conv3D_D_C", [a; b]
                   | Tr_Conv3D_C_D (a, b, s)  -> "Tr_Conv3D_C_D", [a; b]
+                  | Di_Conv1D_D_D (a, b, r)  -> "Di_Conv1D_D_D", [a; b]
+                  | Di_Conv1D_D_C (a, b, r)  -> "Di_Conv1D_D_C", [a; b]
+                  | Di_Conv1D_C_D (a, b, r)  -> "Di_Conv1D_C_D", [a; b]
+                  | Di_Conv2D_D_D (a, b, r)  -> "Di_Conv2D_D_D", [a; b]
+                  | Di_Conv2D_D_C (a, b, r)  -> "Di_Conv2D_D_C", [a; b]
+                  | Di_Conv2D_C_D (a, b, r)  -> "Di_Conv2D_C_D", [a; b]
+                  | Di_Conv3D_D_D (a, b, r)  -> "Di_Conv3D_D_D", [a; b]
+                  | Di_Conv3D_D_C (a, b, r)  -> "Di_Conv3D_D_C", [a; b]
+                  | Di_Conv3D_C_D (a, b, r)  -> "Di_Conv3D_C_D", [a; b]
                 )
               | F a                     -> Printf.sprintf "Const", []
               | Arr a                   -> Printf.sprintf "Const", []
