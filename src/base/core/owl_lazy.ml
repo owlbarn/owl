@@ -490,17 +490,6 @@ module Make (A : Ndarray_Mutable) = struct
   let eval_graph graph = CGraph.get_outputs graph |> Array.iter _eval_term
 
 
-  let elt_to_float x =
-    eval_elt [|x|];
-    unpack_elt x |> A.elt_to_float
-
-
-  let arr_to_var x =
-    eval_arr [|x|];
-    set_operator (arr_to_node x) Var;
-    arr_to_var x
-
-
 end
 
 (* Make functor ends *)
