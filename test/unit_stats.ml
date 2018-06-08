@@ -97,11 +97,13 @@ module Data = struct
   let x1_sorted = [| -1.; 0.; 0.; sqrt 0.5; 2.;|]
   let w1 = [|0.; 2.; 1.; 1.; 0.2; |]
   let w1_sorted = [|2.; 0.; 1.; 1.; 0.2; |]
+  let bin1 = [| -1.; 0. |]
+  let bin_wrong = [|4.|]
+  let bin_low = [| -3.; -2. |]
+  let bin_high = [| 3.; 4. |]
   let x2 = Array.append x1 [|infinity|]
   let x2_sorted = Array.append x1_sorted [|infinity|]
   let w2 = Array.append w1 [|0.2|]
-  let bin_wrong = [|4.|]
-  let bin1 = [| -1.; 0. |]
   let bin2 = [| -.1.; 0.; sqrt 0.5; 3.|]
   let bin2_inf = [| -.infinity; 0.; sqrt 0.5; infinity|]
 end
@@ -309,6 +311,36 @@ let hist_bins_1 () =
     [|3|]
     (To_test.hist_bin Data.bin1 Data.x1)
 
+let hist_bins_low () =
+  Alcotest.(check (array int))
+    "bin below"
+    [|0|]
+    (To_test.hist_bin Data.bin_low Data.x1)
+
+let hist_bins_high () =
+  Alcotest.(check (array int))
+    "bin above"
+    [|0|]
+    (To_test.hist_bin Data.bin_high Data.x1)
+
+let hist_bins_sorted_low () =
+  Alcotest.(check (array int))
+    "bin below sorted"
+    [|0|]
+    (To_test.hist_bin_sorted Data.bin_low Data.x1_sorted)
+
+let hist_bins_sorted_high () =
+  Alcotest.(check (array int))
+    "bin above sorted"
+    [|0|]
+    (To_test.hist_bin Data.bin_high Data.x1_sorted)
+
+let hist_bins_wrong () =
+  Alcotest.(check_raises)
+    "histogram with bins"
+    (Failure "Need at least two bin boundaries!")
+    (fun () -> To_test.hist_bin Data.bin_wrong Data.x1|> ignore)
+
 let hist_bins_2 () =
   Alcotest.(check (array int))
     "histogram with infinite bins"
@@ -320,12 +352,6 @@ let hist_bins_sorted_2 () =
     "histogram with infinite bins sorted"
     [|1; 2; 2|]
     (To_test.hist_bin_sorted Data.bin2 Data.x2_sorted)
-
-let hist_bins_wrong () =
-  Alcotest.(check_raises)
-    "histogram with bins"
-    (Failure "Need at least two bin boundaries!")
-    (fun () -> To_test.hist_bin Data.bin_wrong Data.x1|> ignore)
 
 (* a utility *)
 let fao =
@@ -399,9 +425,13 @@ let test_set = [
   "hist_uni_1", `Slow, hist_uni_1;
   "hist_uni_sorted_1", `Slow, hist_uni_sorted_1;
   "hist_bins_1", `Slow, hist_bins_1;
+  "hist_bins_low", `Slow, hist_bins_low;
+  "hist_bins_high", `Slow, hist_bins_high;
+  "hist_bins_sorted_low", `Slow, hist_bins_low;
+  "hist_bins_sorted_high", `Slow, hist_bins_high;
+  "hist_bins_wrong", `Slow, hist_bins_wrong;
   "hist_bins_2", `Slow, hist_bins_2;
   "hist_bins_sorted_2", `Slow, hist_bins_sorted_2;
-  "hist_bins_wrong", `Slow, hist_bins_wrong;
   "hist_bins_weights", `Slow, hist_bins_weights;
   "hist_bins_weights_sorted", `Slow, hist_bins_weights_sorted;
   "hist_bins_normalise", `Slow, hist_bins_normalise;
