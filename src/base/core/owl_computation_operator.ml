@@ -12,9 +12,12 @@ open Owl_graph
 
 (* Functor of making Lazy module of different number types *)
 
-module Make (A : Ndarray_Algodiff) = struct
+module Make
+  (A : Ndarray_Algodiff)
+  (D : Computation_Device)
+  = struct
 
-  module Symbol = Owl_computation_symbol.Make (A)
+  module Symbol = Owl_computation_symbol.Make (A) (D)
 
   open Symbol
 

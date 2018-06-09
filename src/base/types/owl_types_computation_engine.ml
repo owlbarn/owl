@@ -8,145 +8,154 @@ module type Sig = sig
 
   module Make : functor (A : Owl_types_ndarray_mutable.Sig) -> sig
 
-  module CGraph : sig
-  
-    include Owl_types_ndarray_algodiff.Sig
+    module CGraph : sig
 
-    type op
+      include Owl_types_ndarray_algodiff.Sig
 
-    type attr
+      type op
 
-    type value
+      type attr
 
-    type graph
+      type value
 
-
-    (** {6 Type conversion functions} *)
-
-    val node_to_arr : attr Owl_graph.node -> arr
-
-    val arr_to_node : arr -> attr Owl_graph.node
-
-    val node_to_elt : attr Owl_graph.node -> elt
-
-    val elt_to_node : elt -> attr Owl_graph.node
-
-    val arr_to_value : A.arr -> value
-
-    val value_to_arr : value -> A.arr
-
-    val elt_to_value : A.elt -> value
-
-    val value_to_elt : value -> A.elt
-
-    val pack_arr : A.arr -> arr
-
-    val unpack_arr : arr -> A.arr
-
-    val pack_elt : A.elt -> elt
-
-    val unpack_elt : elt -> A.elt
-
-    val arr_to_var : arr -> arr
-
-    val float_to_elt : float -> elt
-
-    val elt_to_float : elt -> float
-
-    val value_to_float : value -> float
+      type graph
 
 
-    (** {6 Variable creation functions} *)
+      (** {6 Type conversion functions} *)
 
-    val var_arr : ?shape:int array -> string -> arr
+      val node_to_arr : attr Owl_graph.node -> arr
 
-    val var_elt : string -> elt
+      val arr_to_node : arr -> attr Owl_graph.node
 
-    val const_arr : string -> A.arr -> arr
+      val node_to_elt : attr Owl_graph.node -> elt
 
-    val const_elt : string -> A.elt -> elt
+      val elt_to_node : elt -> attr Owl_graph.node
 
-    val assign_arr : arr -> A.arr -> unit
+      val arr_to_value : A.arr -> value
 
-    val assign_elt : elt -> A.elt -> unit
+      val value_to_arr : value -> A.arr
 
-    val unsafe_assign_arr : arr -> A.arr -> unit
+      val elt_to_value : A.elt -> value
+
+      val value_to_elt : value -> A.elt
+
+      val pack_arr : A.arr -> arr
+
+      val unpack_arr : arr -> A.arr
+
+      val pack_elt : A.elt -> elt
+
+      val unpack_elt : elt -> A.elt
+
+      val arr_to_var : arr -> arr
+
+      val float_to_elt : float -> elt
+
+      val elt_to_float : elt -> float
+
+      val value_to_float : value -> float
 
 
-    (** {6 Graph property and manipulation} *)
+      (** {6 Variable creation functions} *)
 
-    val refnum : attr Owl_graph.node -> int
+      val var_arr : ?shape:int array -> string -> arr
 
-    val is_var : attr Owl_graph.node -> bool
+      val var_elt : string -> elt
 
-    val is_const : attr Owl_graph.node -> bool
+      val const_arr : string -> A.arr -> arr
 
-    val is_freeze : attr Owl_graph.node -> bool
+      val const_elt : string -> A.elt -> elt
 
-    val is_arr : attr Owl_graph.node -> bool
+      val assign_arr : arr -> A.arr -> unit
 
-    val is_elt : attr Owl_graph.node -> bool
+      val assign_elt : elt -> A.elt -> unit
 
-    val is_assigned : attr Owl_graph.node -> bool
+      val unsafe_assign_arr : arr -> A.arr -> unit
 
-    val check_assigned : attr Owl_graph.node -> unit
 
-    val is_valid : attr Owl_graph.node -> bool
+      (** {6 Graph property and manipulation} *)
 
-    val validate : attr Owl_graph.node -> unit
+      val refnum : attr Owl_graph.node -> int
 
-    val invalidate : attr Owl_graph.node -> unit
+      val is_var : attr Owl_graph.node -> bool
 
-    val invalidate_graph : attr Owl_graph.node -> unit
+      val is_const : attr Owl_graph.node -> bool
 
-    val set_operator : attr Owl_graph.node -> op -> unit
+      val is_freeze : attr Owl_graph.node -> bool
 
-    val get_operator : attr Owl_graph.node -> op
+      val is_arr : attr Owl_graph.node -> bool
 
-    val set_value : attr Owl_graph.node -> value array -> unit
+      val is_elt : attr Owl_graph.node -> bool
 
-    val get_value : attr Owl_graph.node -> value array
+      val is_assigned : attr Owl_graph.node -> bool
 
-    val set_reuse : attr Owl_graph.node -> bool -> unit
+      val check_assigned : attr Owl_graph.node -> unit
 
-    val get_reuse : attr Owl_graph.node -> bool
+      val is_valid : attr Owl_graph.node -> bool
 
-    val freeze : attr Owl_graph.node -> unit
+      val validate : attr Owl_graph.node -> unit
 
-    val freeze_ancestors : attr Owl_graph.node array -> unit
+      val invalidate : attr Owl_graph.node -> unit
 
-    val freeze_descendants : attr Owl_graph.node array -> unit
+      val invalidate_graph : attr Owl_graph.node -> unit
 
-    val is_shape_unkown : attr Owl_graph.node -> bool
+      val set_operator : attr Owl_graph.node -> op -> unit
 
-    val infer_shape : op -> attr Owl_graph.node array -> int array option array
+      val get_operator : attr Owl_graph.node -> op
 
-    val infer_shape_graph : attr Owl_graph.node array -> unit
+      val set_value : attr Owl_graph.node -> value array -> unit
 
-    val make_iopair : graph -> attr Owl_graph.node array -> attr Owl_graph.node array -> unit
+      val get_value : attr Owl_graph.node -> value array
 
-    val remove_unused_iopair : attr Owl_graph.node array -> attr Owl_graph.node array -> attr Owl_graph.node array * attr Owl_graph.node array
+      val set_reuse : attr Owl_graph.node -> bool -> unit
 
-    val update_iopair : graph -> unit
+      val get_reuse : attr Owl_graph.node -> bool
 
-    val make_graph : input:attr Owl_graph.node array -> output:attr Owl_graph.node array -> string -> graph
+      val freeze : attr Owl_graph.node -> unit
 
-    val graph_to_dot : graph -> string
+      val freeze_ancestors : attr Owl_graph.node array -> unit
 
-    val optimise : graph -> unit
+      val freeze_descendants : attr Owl_graph.node array -> unit
+
+      val is_shape_unkown : attr Owl_graph.node -> bool
+
+      val infer_shape : op -> attr Owl_graph.node array -> int array option array
+
+      val infer_shape_graph : attr Owl_graph.node array -> unit
+
+      val make_iopair : graph -> attr Owl_graph.node array -> attr Owl_graph.node array -> unit
+
+      val remove_unused_iopair : attr Owl_graph.node array -> attr Owl_graph.node array -> attr Owl_graph.node array * attr Owl_graph.node array
+
+      val update_iopair : graph -> unit
+
+      val make_graph : input:attr Owl_graph.node array -> output:attr Owl_graph.node array -> string -> graph
+
+      val graph_to_dot : graph -> string
+
+      val optimise : graph -> unit
+
+    end
+
+
+    (** {6 Type aliases} *)
+
+    type arr = CGraph.arr
+
+    type elt = CGraph.elt
+
+    type graph = CGraph.graph
+
+
+    (** {6 Core evaluation functions of the engine} *)
+
+    val eval_arr : arr array -> unit
+
+    val eval_elt : elt array -> unit
+
+    val eval_graph : graph -> unit
 
   end
 
-  type arr = CGraph.arr
-  type elt = CGraph.elt
-  type graph = CGraph.graph
-
-  val eval_arr : arr array -> unit
-
-  val eval_elt : elt array -> unit
-
-  val eval_graph : graph -> unit
-
-  end
 
 end

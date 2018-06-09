@@ -12,9 +12,12 @@ open Owl_graph
 
 (* Functor of making a Lazy engine to execute a computation graph. *)
 
-module Make (A : Ndarray_Algodiff) = struct
+module Make
+  (A : Ndarray_Algodiff)
+  (D : Computation_Device)
+  = struct
 
-  module Operator = Owl_computation_operator.Make (A)
+  module Operator = Owl_computation_operator.Make (A) (D)
 
   open Operator.Symbol
 

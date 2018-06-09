@@ -8,13 +8,14 @@ open Owl_types
 
 module Make
   (A : Ndarray_Mutable)
+  (E : Owl_types_computation_engine.Sig)
   = struct
 
-  module Lazy = Owl_lazy.Make (A)
-  module CGraph = Owl_computation_graph.Make (A)
-  module Neural = Owl_neural_generic.Make (CGraph)
+  module Engine = E.Make (A)
+  module CGraph = Engine.CGraph
+  module Neural = Owl_neural_generic.Make (Engine.CGraph)
 
-  open CGraph
+  open Engine
   open Neural
   open Algodiff
 
@@ -82,7 +83,7 @@ module Make
     Graph.mkpar network
     |> Owl_utils.aarr_map (fun v ->
       let v = Algodiff.unpack_arr v in
-      Lazy.eval_arr [| v |];
+      Engine.eval_arr [| v |];
       let u = CGraph.var_arr "" ~shape:(CGraph.shape v) in
       CGraph.(assign_arr u (unpack_arr v));
       Algodiff.pack_arr u
@@ -162,7 +163,7 @@ module Make
     Graph.mkpar network
     |> Owl_utils.aarr_map (fun v ->
       let v = Algodiff.unpack_arr v in
-      Lazy.eval_arr [| v |];
+      Engine.eval_arr [| v |];
       let u = CGraph.var_arr "" ~shape:(CGraph.shape v) in
       CGraph.(assign_arr u (unpack_arr v));
       Algodiff.pack_arr u
@@ -323,12 +324,12 @@ module Make
     let _eval xt' yt' =
       let xt' = Algodiff.unpack_arr xt' in
       let yt' = Algodiff.unpack_arr yt' in
-      Lazy.eval_arr [|xt'; yt'|];
+      Engine.eval_arr [|xt'; yt'|];
       let xt' = CGraph.unpack_arr xt' in
       let yt' = CGraph.unpack_arr yt' in
       CGraph.unsafe_assign_arr xt xt';
       CGraph.unsafe_assign_arr yt yt';
-      Lazy.eval_graph cgraph;
+      Engine.eval_graph cgraph;
       loss
     in
     _eval

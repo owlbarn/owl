@@ -8,11 +8,14 @@ open Owl_types
 open Owl_graph
 
 
-module Make (A : Ndarray_Algodiff) = struct
+module Make
+  (A : Ndarray_Algodiff)
+  (D : Computation_Device)
+  = struct
 
-  include Owl_computation_symbol.Make (A)
-  include Owl_computation_operator.Make (A)
-  include Owl_computation_optimiser.Make (A)
+  include Owl_computation_symbol.Make (A) (D)
+  include Owl_computation_operator.Make (A) (D)
+  include Owl_computation_optimiser.Make (A) (D)
 
 
   type graph = {
@@ -22,6 +25,7 @@ module Make (A : Ndarray_Algodiff) = struct
     mutable iopair : (attr node * attr node) array;  (* input and output loopback pairs *)
     mutable iosafe : bool array;                     (* whether it is safe to use unsafe_assign_arr *)
     mutable htbl   : (string, attr node) Hashtbl.t;  (* node name to node mapping *)
+    mutable device : device
   }
 
 
@@ -57,7 +61,10 @@ module Make (A : Ndarray_Algodiff) = struct
     (* empty io pairing by default *)
     let iopair = [| |] in
     let iosafe = [| |] in
-    { name; input; output; iopair; iosafe; htbl }
+    (* create a device dependent field *)
+    let device = make_device () in
+    (* return the graph record *)
+    { name; input; output; iopair; iosafe; htbl; device }
 
 
   let get_inputs x = x.input

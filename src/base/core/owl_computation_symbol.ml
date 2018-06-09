@@ -12,14 +12,20 @@ open Owl_graph
 
 (* Functor of making Lazy module of different number types *)
 
-module Make (A : Ndarray_Algodiff) = struct
+module Make
+  (A : Ndarray_Algodiff)
+  (D : Computation_Device)
+  = struct
+
+  (* create device-dependent module *)
+  module Device = D.Make (A)
+
+  include Device
 
 
   (* type definitions *)
 
   type state = Valid | Invalid
-
-  type value = ArrVal of A.arr | EltVal of A.elt
 
   type t = attr node
   and attr = {
@@ -816,21 +822,6 @@ module Make (A : Ndarray_Algodiff) = struct
   let elt_to_node = function Elt x -> x
 
 
-  let arr_to_value x = ArrVal x
-
-
-  let value_to_arr = function ArrVal x -> x | _ -> failwith "Owl_computation_graph: value_to_arr"
-
-
-  let elt_to_value x = EltVal x
-
-
-  let value_to_elt = function EltVal x -> x | _ -> failwith "Owl_computation_graph: value_to_elt"
-
-
-  let value_to_float x = A.elt_to_float (value_to_elt x)
-
-
   let make_node ?name ?value ?shape ?freeze ?reuse ?state op =
     let value = match value with Some v -> v | None -> [| |] in
     let shape = match shape with Some s -> s | None -> [| None |] in
@@ -993,7 +984,7 @@ module Make (A : Ndarray_Algodiff) = struct
         (attr node).shape <- [| Some A.(shape arr) |];
         infer_shape_graph [| node |]
       );
-      set_value node [| ArrVal arr |];
+      set_value node [| arr_to_value arr |];
       invalidate_graph node
     )
     else
@@ -1011,7 +1002,7 @@ module Make (A : Ndarray_Algodiff) = struct
       )
       else (
         let dst = A.copy arr in
-        set_value node [| ArrVal dst |];
+        set_value node [| arr_to_value dst |];
         (* propagate the shape information *)
         (attr node).shape <- [| Some A.(shape dst) |];
         infer_shape_graph [| node |]
@@ -1027,7 +1018,7 @@ module Make (A : Ndarray_Algodiff) = struct
   let assign_elt x elt =
     let node = elt_to_node x in
     if is_var node then (
-      set_value node [| EltVal elt |];
+      set_value node [| elt_to_value elt |];
       invalidate_graph node
     )
     else
