@@ -65,6 +65,8 @@ module Nlp = Owl_nlp
 
 module Log = Owl_log
 
+module Computation = Owl_computation
+
 
 (* backend modules *)
 

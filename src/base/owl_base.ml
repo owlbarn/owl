@@ -37,5 +37,8 @@ module Log = Owl_log
 module Utils = Owl_utils
 
 
+module Computation = Owl_computation
+
+
 (* initialise base library *)
 let _ = Owl_base_stats_prng.self_init ()

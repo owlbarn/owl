@@ -3,7 +3,7 @@
 
 open Owl
 
-module C = Owl_neural_graph_compiler.Make (Dense.Ndarray.S) (Owl_computation_engine)
+module C = Owl_neural_graph_compiler.Make (Dense.Ndarray.S) (Computation.Engine)
 
 open C.Neural
 open C.Neural.Graph

@@ -31,14 +31,6 @@ module type Sig = sig
 
       val elt_to_node : elt -> attr Owl_graph.node
 
-      val arr_to_value : A.arr -> value
-
-      val value_to_arr : value -> A.arr
-
-      val elt_to_value : A.elt -> value
-
-      val value_to_elt : value -> A.elt
-
       val pack_arr : A.arr -> arr
 
       val unpack_arr : arr -> A.arr
@@ -52,8 +44,6 @@ module type Sig = sig
       val float_to_elt : float -> elt
 
       val elt_to_float : elt -> float
-
-      val value_to_float : value -> float
 
 
       (** {6 Variable creation functions} *)
