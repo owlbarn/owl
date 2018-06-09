@@ -115,7 +115,7 @@ let _enumerate_slice_def dim ?(step) start stop =
   let stop = if stop < 0 then dim + stop else stop in
   let step = match step with
     | Some x -> x
-    | None -> if (start <= stop) then 1 else -1
+    | None   -> if (start <= stop) then 1 else -1
   in
   let _ =
     assert (((start <= stop) && (step > 0)) || ((start > stop) && (step < 0)))
@@ -131,11 +131,11 @@ let _expand_slice_indices index_list dims =
   let sdef_len = List.length index_list in (* the number of dimensions this slice specifies *)
   let _expand_slice_index = (
     fun i ind -> match ind with
-      | [] -> Array.init dims.(i) (fun i -> i)
-      | [start] -> _enumerate_slice_def dims.(i) start start
-      | [start; stop] -> _enumerate_slice_def dims.(i) start stop
+      | []                  -> Array.init dims.(i) (fun i -> i)
+      | [start]             -> _enumerate_slice_def dims.(i) start start
+      | [start; stop]       -> _enumerate_slice_def dims.(i) start stop
       | [start; stop; step] -> _enumerate_slice_def dims.(i) ~step:step start stop
-      | x -> Array.of_list x
+      | x                   -> Array.of_list x
   ) in
   Array.append
     (Array.of_list (List.mapi _expand_slice_index index_list)) (* for the axis where the index was specified *)
