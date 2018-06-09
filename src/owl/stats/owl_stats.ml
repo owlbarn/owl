@@ -181,19 +181,16 @@ type histogram = Owl_base_stats.histogram
 let histogram = Owl_base_stats.histogram
 
 
-let histogram_weighted = Owl_base_stats.histogram_weighted
-
-
 let histogram_sorted = Owl_base_stats.histogram_sorted
-
-
-let histogram_sorted_weighted = Owl_base_stats.histogram_sorted_weighted
 
 
 let normalise = Owl_base_stats.normalise
 
 
 let normalise_density = Owl_base_stats.normalise_density
+
+
+let pp_hist = Owl_base_stats.pp_hist
 
 
 let ecdf x =

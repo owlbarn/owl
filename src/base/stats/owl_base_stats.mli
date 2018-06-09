@@ -99,24 +99,21 @@ type histogram = {
 }
 (** Refer to :doc:`owl_stats`. *)
 
-val histogram : [ `Bins of float array | `N of int ] -> float array -> histogram
+val histogram : [ `Bins of float array | `N of int ] -> ?weights:float array ->
+  float array -> histogram
 (** Refer to :doc:`owl_stats`. *)
 
-val histogram_weighted : [ `Bins of float array | `N of int ] ->
-float array -> float array -> histogram
-(** Refer to :doc:`owl_stats`. *)
-
-val histogram_sorted : [ `Bins of float array | `N of int ] -> float array -> histogram
-(** Refer to :doc:`owl_stats`. *)
-
-val histogram_sorted_weighted : [ `Bins of float array | `N of int ] ->
-float array -> float array -> histogram
+val histogram_sorted : [ `Bins of float array | `N of int ] -> ?weights:float array
+  -> float array -> histogram
 (** Refer to :doc:`owl_stats`. *)
 
 val normalise : histogram -> histogram
 (** Refer to :doc:`owl_stats`. *)
 
 val normalise_density : histogram -> histogram
+(** Refer to :doc:`owl_stats`. *)
+
+val pp_hist: Format.formatter -> histogram -> unit
 (** Refer to :doc:`owl_stats`. *)
 
 (** {6 Random variables} *)
