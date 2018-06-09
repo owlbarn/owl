@@ -309,10 +309,10 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 
 (** {6 Unary math operators }  *)
 
-val min : ?axis:int -> (float, 'b) t -> (float, 'b) t
+val min : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val max : ?axis:int -> (float, 'b) t -> (float, 'b) t
+val max : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
@@ -326,11 +326,11 @@ val sum_reduce : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
-val min' : (float, 'b) t -> float
+val min' : ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
-val max' : (float, 'b) t -> float
+val max' : ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
