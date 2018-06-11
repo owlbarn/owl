@@ -15,6 +15,14 @@ let head_s = "
 "
 
 
+let noop_s = "
+__kernel void owl_opencl_noop(__local float *a)
+{
+  return;
+}
+"
+
+
 let functions () = [
     (* float32 functions *)
     map_arr_fun        "float32_erf"            "float" "erf(a[gid])";
@@ -164,7 +172,7 @@ let functions () = [
 
 let code () =
   let fun_s = functions () |> List.fold_left ( ^ ) "" in
-  head_s ^ fun_s
+  Printf.sprintf "%s\n%s\n%s" head_s noop_s fun_s
 
 
 (* ends here *)
