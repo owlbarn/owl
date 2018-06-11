@@ -33,6 +33,13 @@ module Make (A : Ndarray_Mutable) = struct
     Array.iter (fun v -> CL_Dev.(reset_events v)) (get_value x)
 
 
+  let is_cpu_gpu_malloc x =
+    let x_val = get_value x in
+    if Array.length x_val = 0 then false
+    else if Array.length x_val.(0).gpu_mem = 0 then false
+    else true
+
+
   let allocate_cpu_mem x =
     if is_assigned x = false then (
       let x_shp = shape (node_to_arr x) in
