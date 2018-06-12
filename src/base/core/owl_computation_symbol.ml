@@ -17,7 +17,12 @@ module Make
   (D : Computation_Device)
   = struct
 
+  (* module constant *)
+
+  let number = A.number
+
   (* create device-dependent module *)
+
   module Device = D.Make (A)
 
   include Device

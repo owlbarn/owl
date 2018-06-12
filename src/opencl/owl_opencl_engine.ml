@@ -44,10 +44,18 @@ module Make (A : Ndarray_Mutable) = struct
     Owl_utils_stack.to_array stack
 
 
+  let make_typed_kernel_name fun_name =
+    match A.number with
+    | F32 -> "owl_opencl_float32_" ^ fun_name
+    | F64 -> "owl_opencl_float64_" ^ fun_name
+    | _   -> failwith "make_typed_kernel_name"
+
+
   let make_kernel x program fun_name =
     let x_val = (get_value x).(0) in
     if Array.length x_val.kernel = 0 then (
-      let kernel = Kernel.create program fun_name in
+      let typed_fun = make_typed_kernel_name fun_name in
+      let kernel = Kernel.create program typed_fun in
       x_val.kernel <- [| kernel |];
     );
     x_val.kernel.(0)
@@ -88,6 +96,11 @@ module Make (A : Ndarray_Mutable) = struct
   let get_gpu_ptr x_val =
     let gpu_mem = CL_Dev.(x_val.gpu_mem.(0)) in
     Ctypes.allocate cl_mem gpu_mem
+
+
+  let get_elt_ptr x_val =
+    let elt_mem = value_to_float x_val in
+    Ctypes.allocate Ctypes.float elt_mem
 
 
   let cpu_to_gpu_copy param x_val =
@@ -212,29 +225,29 @@ module Make (A : Ndarray_Mutable) = struct
         | Fold (axis, f)                              -> failwith "Fold"
         | Scan (axis, f)                              -> failwith "Scan"
         | OneHot depth                                -> _eval_map_xx x
-        | Abs                                         -> _eval_map_xx x
-        | Neg                                         -> _eval_map_xx x
-        | Floor                                       -> _eval_map_xx x
-        | Ceil                                        -> _eval_map_xx x
-        | Round                                       -> _eval_map_xx x
-        | Sqr                                         -> _eval_map_xx x
-        | Sqrt                                        -> _eval_map_xx x
-        | Log                                         -> _eval_map_xx x
-        | Log2                                        -> _eval_map_xx x
-        | Log10                                       -> _eval_map_xx x
-        | Exp                                         -> _eval_map_xx x
-        | Sin                                         -> _eval_map_01 x param "owl_opencl_float32_sin"
-        | Cos                                         -> _eval_map_01 x param "owl_opencl_float32_cos"
-        | Tan                                         -> _eval_map_xx x
-        | Sinh                                        -> _eval_map_xx x
-        | Cosh                                        -> _eval_map_xx x
-        | Tanh                                        -> _eval_map_xx x
-        | Asin                                        -> _eval_map_xx x
-        | Acos                                        -> _eval_map_xx x
-        | Atan                                        -> _eval_map_xx x
-        | Asinh                                       -> _eval_map_xx x
-        | Acosh                                       -> _eval_map_xx x
-        | Atanh                                       -> _eval_map_xx x
+        | Abs                                         -> _eval_map_01 x param "abs"
+        | Neg                                         -> _eval_map_01 x param "neg"
+        | Floor                                       -> _eval_map_01 x param "floor"
+        | Ceil                                        -> _eval_map_01 x param "ceil"
+        | Round                                       -> _eval_map_01 x param "round"
+        | Sqr                                         -> _eval_map_01 x param "sqr"
+        | Sqrt                                        -> _eval_map_01 x param "sqrt"
+        | Log                                         -> _eval_map_01 x param "log"
+        | Log2                                        -> _eval_map_01 x param "log2"
+        | Log10                                       -> _eval_map_01 x param "log10"
+        | Exp                                         -> _eval_map_01 x param "exp"
+        | Sin                                         -> _eval_map_01 x param "sin"
+        | Cos                                         -> _eval_map_01 x param "cos"
+        | Tan                                         -> _eval_map_01 x param "tan"
+        | Sinh                                        -> _eval_map_01 x param "sinh"
+        | Cosh                                        -> _eval_map_01 x param "cosh"
+        | Tanh                                        -> _eval_map_01 x param "tanh"
+        | Asin                                        -> _eval_map_01 x param "asin"
+        | Acos                                        -> _eval_map_01 x param "acos"
+        | Atan                                        -> _eval_map_01 x param "atan"
+        | Asinh                                       -> _eval_map_01 x param "asinh"
+        | Acosh                                       -> _eval_map_01 x param "acosh"
+        | Atanh                                       -> _eval_map_01 x param "atanh"
         | Min axis                                    -> _eval_map_xx x
         | Max axis                                    -> _eval_map_xx x
         | Sum axis                                    -> _eval_map_xx x
@@ -250,23 +263,23 @@ module Make (A : Ndarray_Mutable) = struct
         | L2NormSqr'                                  -> _eval_map_xx x
         | ClipByValue                                 -> failwith "ClipByValue"
         | ClipByL2norm                                -> failwith "ClipByL2norm"
-        | Pow                                         -> _eval_map_xx x
+        | Pow                                         -> _eval_map_02 x param "pow"
         | ScalarPow                                   -> _eval_map_xx x
-        | PowScalar                                   -> _eval_map_xx x
-        | Atan2                                       -> _eval_map_xx x
+        | PowScalar                                   -> _eval_map_03 x param "pow_scalar"
+        | Atan2                                       -> _eval_map_02 x param "atan2"
         | ScalarAtan2                                 -> _eval_map_xx x
-        | Atan2Scalar                                 -> _eval_map_xx x
-        | Hypot                                       -> _eval_map_xx x
-        | Min2                                        -> _eval_map_xx x
-        | Max2                                        -> _eval_map_xx x
-        | Add                                         -> _eval_map_02 x param "owl_opencl_float32_add"
-        | Sub                                         -> _eval_map_xx x
-        | Mul                                         -> _eval_map_xx x
-        | Div                                         -> _eval_map_xx x
-        | AddScalar                                   -> _eval_map_xx x
-        | SubScalar                                   -> _eval_map_xx x
-        | MulScalar                                   -> _eval_map_xx x
-        | DivScalar                                   -> _eval_map_xx x
+        | Atan2Scalar                                 -> _eval_map_03 x param "atan2_scalar"
+        | Hypot                                       -> _eval_map_02 x param "hypot"
+        | Min2                                        -> _eval_map_02 x param "min2"
+        | Max2                                        -> _eval_map_02 x param "max2"
+        | Add                                         -> _eval_map_02 x param "add"
+        | Sub                                         -> _eval_map_02 x param "sub"
+        | Mul                                         -> _eval_map_02 x param "mul"
+        | Div                                         -> _eval_map_02 x param "div"
+        | AddScalar                                   -> _eval_map_03 x param "add_scalar"
+        | SubScalar                                   -> _eval_map_03 x param "sub_scalar"
+        | MulScalar                                   -> _eval_map_03 x param "mul_scalar"
+        | DivScalar                                   -> _eval_map_03 x param "div_scalar"
         | ScalarAdd                                   -> _eval_map_xx x
         | ScalarSub                                   -> _eval_map_xx x
         | ScalarMul                                   -> _eval_map_xx x
@@ -283,18 +296,18 @@ module Make (A : Ndarray_Mutable) = struct
         | Greater                                     -> failwith "Greater"
         | LessEqual                                   -> failwith "LessEqual"
         | GreaterEqual                                -> failwith "GreaterEqual"
-        | EltEqual                                    -> _eval_map_xx x
-        | EltNotEqual                                 -> _eval_map_xx x
-        | EltLess                                     -> _eval_map_xx x
-        | EltGreater                                  -> _eval_map_xx x
-        | EltLessEqual                                -> _eval_map_xx x
-        | EltGreaterEqual                             -> _eval_map_xx x
-        | EltEqualScalar                              -> _eval_map_xx x
-        | EltNotEqualScalar                           -> _eval_map_xx x
-        | EltLessScalar                               -> _eval_map_xx x
-        | EltGreaterScalar                            -> _eval_map_xx x
-        | EltLessEqualScalar                          -> _eval_map_xx x
-        | EltGreaterEqualScalar                       -> _eval_map_xx x
+        | EltEqual                                    -> _eval_map_02 x param "elt_equal"
+        | EltNotEqual                                 -> _eval_map_02 x param "elt_not_equal"
+        | EltLess                                     -> _eval_map_02 x param "elt_less"
+        | EltGreater                                  -> _eval_map_02 x param "elt_greater"
+        | EltLessEqual                                -> _eval_map_02 x param "elt_less_equal"
+        | EltGreaterEqual                             -> _eval_map_02 x param "elt_greater_equal"
+        | EltEqualScalar                              -> _eval_map_03 x param "elt_equal_scalar"
+        | EltNotEqualScalar                           -> _eval_map_03 x param "elt_not_equal_scalar"
+        | EltLessScalar                               -> _eval_map_03 x param "elt_less_scalar"
+        | EltGreaterScalar                            -> _eval_map_03 x param "elt_greater_scalar"
+        | EltLessEqualScalar                          -> _eval_map_03 x param "elt_less_equal_scalar"
+        | EltGreaterEqualScalar                       -> _eval_map_03 x param "elt_greater_equal_scalar"
         | ApproxEqual eps                             -> failwith "ApproxEqual"
         | ApproxEqualScalar eps                       -> failwith "ApproxEqualScalar"
         | ApproxEltEqual eps                          -> failwith "ApproxEltEqual"
@@ -407,7 +420,7 @@ module Make (A : Ndarray_Mutable) = struct
     let _size = node_to_arr x |> numel in
     let wait_for = aggregate_events (parents x) |> Array.to_list in
     let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
-    CL_Dev.set_events (get_value x).(0) [| event |]
+    CL_Dev.append_events (get_value x).(0) [| event |]
 
 
   (* [f] is inpure, for [arr -> arr -> arr] *)
@@ -426,6 +439,29 @@ module Make (A : Ndarray_Mutable) = struct
     let kernel = make_kernel x program fun_name in
     Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
     Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr;
+    let _size = node_to_arr x |> numel in
+    let wait_for = aggregate_events (parents x) |> Array.to_list in
+    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
+    CL_Dev.append_events (get_value x).(0) [| event |]
+
+
+  (* [f] is inpure, for [arr -> elt -> arr] *)
+  and _eval_map_03 x param fun_name =
+    let x_parent_0 = (parents x).(0) in
+    let x_parent_1 = (parents x).(1) in
+    _eval_term x_parent_0 param;
+    _eval_term x_parent_1 param;
+
+    let ctx, cmdq, program = param in
+    allocate_from_parent_1 ctx x x_parent_0;
+    let a_ptr = (get_value x_parent_0).(0) |> get_gpu_ptr in
+    let b_ptr = (get_value x_parent_1).(0) |> get_elt_ptr in
+    let c_ptr = (get_value x).(0) |> get_gpu_ptr in
+
+    let kernel = make_kernel x program fun_name in
+    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_float_ptr b_ptr;
     Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr;
     let _size = node_to_arr x |> numel in
     let wait_for = aggregate_events (parents x) |> Array.to_list in

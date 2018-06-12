@@ -9,9 +9,13 @@ open Owl_types_common
 
 module type Sig = sig
 
+  (* types and constants *)
+
   type arr
 
   type elt
+
+  val number : number
 
   (* creation and operation functions *)
 

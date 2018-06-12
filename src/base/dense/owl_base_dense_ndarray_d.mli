@@ -7,9 +7,14 @@ open Bigarray
 
 open Owl_types_common
 
+
+(* types and constants *)
+
 type arr = (float, float64_elt, c_layout) Genarray.t
 
 type elt = float
+
+val number : number
 
 
 (* creation and operation functions *)

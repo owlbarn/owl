@@ -132,6 +132,10 @@ let default =
   Owl_log.info "OpenCL: initialising context ...";
   let ctx = create devs code in
   Owl_log.info "OpenCL: finished initialisation.";
+  Array.iteri (fun dev_id dev ->
+    let dev_name = (Device.get_info dev).name in
+    Owl_log.info "OpenCL: device #%i: %s" dev_id dev_name
+  ) devs;
   ctx
 
 
@@ -165,8 +169,10 @@ let eval ?(param=[||]) ?(ctx=default) ?(dev_id=0) ?(work_dim=1) ?(work_size=[||]
   ) param;
 
   (* execute kernel *)
-  let _ = Kernel.enqueue_ndrange cmdq kernel work_dim !work_sz in
-  CommandQueue.finish cmdq
+  let _ =
+    Kernel.enqueue_ndrange cmdq kernel work_dim !work_sz in
+    CommandQueue.finish cmdq
+
 
 
 (* end here *)

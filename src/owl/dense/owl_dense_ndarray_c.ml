@@ -12,6 +12,8 @@ type elt = Complex.t
 type arr = (Complex.t, complex32_elt, c_layout) Genarray.t
 type cast_arr = (float, float32_elt, c_layout) Genarray.t
 
+let number = Owl_types.C32
+
 
 (* overload functions in Owl_dense_ndarray_generic *)
 

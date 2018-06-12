@@ -7,8 +7,14 @@ open Bigarray
 
 open Owl_types
 
+
+(** {6 Types and constants} *)
+
 type elt = float
+
 type arr = (float, float32_elt, c_layout) Genarray.t
+
+val number : number
 
 
 (** {6 Create N-dimensional array} *)

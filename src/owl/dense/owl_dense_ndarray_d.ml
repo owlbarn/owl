@@ -14,6 +14,8 @@ include N
 type elt = float
 type arr = (float, float64_elt, c_layout) Genarray.t
 
+let number = Owl_types.F64
+
 
 (* overload functions in Owl_dense_ndarray_generic *)
 
