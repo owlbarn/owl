@@ -20,29 +20,32 @@ module Make (A : Ndarray_Basic) = struct
   type value = {
     mutable cpu_mem : cpu_mem array;
     mutable gpu_mem : cl_mem array;
-    mutable events  : cl_event array
+    mutable kernel  : cl_kernel array;
+    mutable events  : cl_event array;
   }
 
 
   let make_device () = OpenCL
 
 
-  let make_value cpu_mem gpu_mem events =
-    { cpu_mem; gpu_mem; events }
+  let make_value cpu_mem gpu_mem kernel events =
+    { cpu_mem; gpu_mem; kernel; events }
 
 
   let copy_value x_val =
     let cpu_mem = Array.copy x_val.cpu_mem in
     let gpu_mem = Array.copy x_val.gpu_mem in
+    let kernel = Array.copy x_val.kernel in
     let events = Array.copy x_val.events in
-    make_value cpu_mem gpu_mem events
+    make_value cpu_mem gpu_mem kernel events
 
 
   let arr_to_value x =
     let cpu_mem = [| ArrVal x |] in
     let gpu_mem = [| |] in
+    let kernel  = [| |] in
     let events  = [| |] in
-    { cpu_mem; gpu_mem; events }
+    { cpu_mem; gpu_mem; kernel; events }
 
 
   let value_to_arr x =
@@ -54,8 +57,9 @@ module Make (A : Ndarray_Basic) = struct
   let elt_to_value x =
     let cpu_mem = [| EltVal x |] in
     let gpu_mem = [| |] in
+    let kernel  = [| |] in
     let events  = [| |] in
-    { cpu_mem; gpu_mem; events }
+    { cpu_mem; gpu_mem; kernel; events }
 
 
   let value_to_elt x =

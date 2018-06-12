@@ -33,6 +33,26 @@ module Make (A : Ndarray_Mutable) = struct
     Array.iter (fun v -> CL_Dev.(reset_events v)) (get_value x)
 
 
+  let aggregate_events xs =
+    let stack = Owl_utils_stack.make () in
+    Array.iter (fun x ->
+      let events = (get_value x).(0).events in
+      Array.iter (fun e ->
+        Owl_utils_stack.push stack e
+      ) events
+    ) xs;
+    Owl_utils_stack.to_array stack
+
+
+  let make_kernel x program fun_name =
+    let x_val = (get_value x).(0) in
+    if Array.length x_val.kernel = 0 then (
+      let kernel = Kernel.create program fun_name in
+      x_val.kernel <- [| kernel |];
+    );
+    x_val.kernel.(0)
+
+
   let is_cpu_gpu_malloc x =
     let x_val = get_value x in
     if Array.length x_val = 0 then false
@@ -44,7 +64,7 @@ module Make (A : Ndarray_Mutable) = struct
     if is_assigned x = false then (
       let x_shp = shape (node_to_arr x) in
       let cpu_mem = A.empty x_shp in
-      let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [||] [||] in
+      let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [||] [||] [||] in
       set_value x [| new_val |]
     )
 
@@ -55,7 +75,7 @@ module Make (A : Ndarray_Mutable) = struct
       let cpu_mem = value_to_arr x_val in
       let flags = [ cl_MEM_USE_HOST_PTR ] in
       let gpu_mem = Buffer.create ~flags ctx (Obj.magic cpu_mem) in
-      let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [|gpu_mem|] [||] in
+      let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [|gpu_mem|] [||] [||] in
       set_value x [| new_val |]
     )
 
@@ -239,7 +259,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Hypot                                       -> _eval_map_xx x
         | Min2                                        -> _eval_map_xx x
         | Max2                                        -> _eval_map_xx x
-        | Add                                         -> _eval_map_xx x
+        | Add                                         -> _eval_map_02 x param "owl_opencl_float32_add"
         | Sub                                         -> _eval_map_xx x
         | Mul                                         -> _eval_map_xx x
         | Div                                         -> _eval_map_xx x
@@ -376,42 +396,48 @@ module Make (A : Ndarray_Mutable) = struct
     _eval_term x_parent param;
 
     let ctx, cmdq, program = param in
-    allocate_from_parent_1 ctx.context x x_parent;
+    allocate_from_parent_1 ctx x x_parent;
     let x_parent_val = (get_value x_parent).(0) in
     let i_ptr = get_gpu_ptr x_parent_val in
-    let x_val = (get_value x).(0) in
-    let o_ptr = get_gpu_ptr x_val in
+    let o_ptr = (get_value x).(0) |> get_gpu_ptr in
 
-    let kernel = Owl_opencl_context.make_kernel ctx fun_name in
+    let kernel = make_kernel x program fun_name in
     Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem i_ptr;
     Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem o_ptr;
     let _size = node_to_arr x |> numel in
-    let wait_for = Array.to_list x_parent_val.events in
+    let wait_for = aggregate_events (parents x) |> Array.to_list in
     let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
-    CL_Dev.set_events x_val [| event |]
-  (*
-  and _eval_map_01 x param fun_name =
-    let x_parent = (parents x).(0) in
-    _eval_term x_parent param;
-    let a = value_to_arr (get_value x_parent).(0) in
-    let out = allocate_from_parent_1 x x_parent in
-    let o_val, o_mem, o_ptr = out in
+    CL_Dev.set_events (get_value x).(0) [| event |]
+
+
+  (* [f] is inpure, for [arr -> arr -> arr] *)
+  and _eval_map_02 x param fun_name =
+    let x_parent_0 = (parents x).(0) in
+    let x_parent_1 = (parents x).(1) in
+    _eval_term x_parent_0 param;
+    _eval_term x_parent_1 param;
 
     let ctx, cmdq, program = param in
-    let kernel = Owl_opencl_context.make_kernel ctx fun_name in
-    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem o_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem o_ptr;
+    allocate_from_parent_2 ctx x x_parent_0 x_parent_1;
+    let a_ptr = (get_value x_parent_0).(0) |> get_gpu_ptr in
+    let b_ptr = (get_value x_parent_1).(0) |> get_gpu_ptr in
+    let c_ptr = (get_value x).(0) |> get_gpu_ptr in
 
+    let kernel = make_kernel x program fun_name in
+    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr;
+    let _size = node_to_arr x |> numel in
+    let wait_for = aggregate_events (parents x) |> Array.to_list in
+    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
+    CL_Dev.append_events (get_value x).(0) [| event |]
 
-    (* f ~out a; *)
-    set_value x [|arr_to_value out|]
-*)
 
   (* copy from cpu to gpu *)
   and _eval_map_98 x param =
     if is_valid x = false then (
       let ctx, cmdq, program = param in
-      allocate_from_parent_0 ctx.context x;
+      allocate_from_parent_0 ctx x;
       let x_val = (get_value x).(0) in
       cpu_to_gpu_copy param x_val
     )
@@ -422,7 +448,7 @@ module Make (A : Ndarray_Mutable) = struct
     let dev = Owl_opencl_context.(get_dev default dev_id) in
     let cmdq = Owl_opencl_context.(get_cmdq default dev) in
     let prog = Owl_opencl_context.(get_program default) in
-    let param = (Owl_opencl_context.default, cmdq, prog) in
+    let param = (ctx, cmdq, prog) in
     Array.iter (fun x -> let y = arr_to_node x in _eval_term y param) xs;
     Owl_opencl_base.CommandQueue.finish cmdq
 
