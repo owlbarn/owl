@@ -264,10 +264,10 @@ module Make (A : Ndarray_Mutable) = struct
         | ClipByValue                                 -> failwith "ClipByValue"
         | ClipByL2norm                                -> failwith "ClipByL2norm"
         | Pow                                         -> _eval_map_02 x param "pow"
-        | ScalarPow                                   -> _eval_map_xx x
+        | ScalarPow                                   -> _eval_map_04 x param "scalar_pow"
         | PowScalar                                   -> _eval_map_03 x param "pow_scalar"
         | Atan2                                       -> _eval_map_02 x param "atan2"
-        | ScalarAtan2                                 -> _eval_map_xx x
+        | ScalarAtan2                                 -> _eval_map_04 x param "scalar_atan2"
         | Atan2Scalar                                 -> _eval_map_03 x param "atan2_scalar"
         | Hypot                                       -> _eval_map_02 x param "hypot"
         | Min2                                        -> _eval_map_02 x param "min2"
@@ -280,10 +280,10 @@ module Make (A : Ndarray_Mutable) = struct
         | SubScalar                                   -> _eval_map_03 x param "sub_scalar"
         | MulScalar                                   -> _eval_map_03 x param "mul_scalar"
         | DivScalar                                   -> _eval_map_03 x param "div_scalar"
-        | ScalarAdd                                   -> _eval_map_xx x
-        | ScalarSub                                   -> _eval_map_xx x
-        | ScalarMul                                   -> _eval_map_xx x
-        | ScalarDiv                                   -> _eval_map_xx x
+        | ScalarAdd                                   -> _eval_map_04 x param "scalar_add"
+        | ScalarSub                                   -> _eval_map_04 x param "scalar_sub"
+        | ScalarMul                                   -> _eval_map_04 x param "scalar_mul"
+        | ScalarDiv                                   -> _eval_map_04 x param "scalar_div"
         | FMA                                         -> _eval_map_xx x
         | IsZero                                      -> failwith "IsZero"
         | IsPositive                                  -> failwith "IsPositive"
@@ -381,7 +381,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Scalar_Relu                                 -> _eval_map_xx x
         | Scalar_Sigmoid                              -> _eval_map_xx x
         | Fused_Adagrad (rate, eps)                   -> _eval_map_xx x
-        | _                                           -> failwith "owl_lazy:_eval_term"
+        | _                                           -> failwith "owl_opencl_engine:_eval_term"
 
         with exn -> (
           Owl_log.error "Error in evaluating %s" (node_to_str x);
@@ -462,6 +462,29 @@ module Make (A : Ndarray_Mutable) = struct
     let kernel = make_kernel x program fun_name in
     Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
     Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_float_ptr b_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr;
+    let _size = node_to_arr x |> numel in
+    let wait_for = aggregate_events (parents x) |> Array.to_list in
+    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
+    CL_Dev.append_events (get_value x).(0) [| event |]
+
+
+  (* [f] is inpure, for [elt -> arr -> arr] *)
+  and _eval_map_04 x param fun_name =
+    let x_parent_0 = (parents x).(0) in
+    let x_parent_1 = (parents x).(1) in
+    _eval_term x_parent_0 param;
+    _eval_term x_parent_1 param;
+
+    let ctx, cmdq, program = param in
+    allocate_from_parent_1 ctx x x_parent_1;
+    let a_ptr = (get_value x_parent_1).(0) |> get_elt_ptr in
+    let b_ptr = (get_value x_parent_0).(0) |> get_gpu_ptr in
+    let c_ptr = (get_value x).(0) |> get_gpu_ptr in
+
+    let kernel = make_kernel x program fun_name in
+    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_float_ptr a_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
     Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr;
     let _size = node_to_arr x |> numel in
     let wait_for = aggregate_events (parents x) |> Array.to_list in
