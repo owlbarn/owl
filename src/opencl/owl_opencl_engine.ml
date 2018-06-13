@@ -252,9 +252,9 @@ module Make (A : Ndarray_Mutable) = struct
         | Max axis                                    -> _eval_map_xx x
         | Sum axis                                    -> _eval_map_xx x
         | SumReduce axis                              -> _eval_map_xx x
-        | Signum                                      -> _eval_map_xx x
-        | Sigmoid                                     -> _eval_map_xx x
-        | Relu                                        -> _eval_map_xx x
+        | Signum                                      -> _eval_map_01 x param "signum"
+        | Sigmoid                                     -> _eval_map_01 x param "sigmoid"
+        | Relu                                        -> _eval_map_01 x param "relu"
         | Min'                                        -> _eval_map_xx x
         | Max'                                        -> _eval_map_xx x
         | Sum'                                        -> _eval_map_xx x

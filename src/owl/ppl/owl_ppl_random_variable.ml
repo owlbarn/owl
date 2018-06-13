@@ -14,7 +14,7 @@ module Make (A : Stats_Dist) = struct
 
   type t = {
     mutable dist : Dist.dist;
-    mutable expr : Lazy.CGraph.value;
+    mutable expr : Lazy.value;
   }
 
 

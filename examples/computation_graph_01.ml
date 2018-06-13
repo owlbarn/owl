@@ -1,64 +1,55 @@
 #!/usr/bin/env owl
-(* This example shows how to visualise the computation graph generated in
-   Algodiff. To run this exmaple, you need to have Graphviz installed on your
-   computer. Or you can use other visualisation tools for the generated dot file.
- *)
-
-#zoo "2e7c902812a7ae0547e24f7ea743c7e6"
-#zoo "217ef87bc36845c4e78e398d52bc4c5b"
 
 open Owl
-open Algodiff.S
+module G = Owl_computation_engine.Make (Arr)
+include Owl_algodiff_generic.Make (G.CGraph)
 
 
-let f x y = Maths.((x * sin (x + x) + ( F 1. * sqrt x) / F 7.) * (relu y) |> sum')
+let f x y = Maths.((x * sin (x + x) + ((pack_flt 1.) * sqrt x) / (pack_flt 7.)) * (relu y) |> sum')
 
 
-let visualise_simple_01 () =
-  let t = tag () in
-  let x = make_reverse (F 5.) t in
-  let y = make_reverse (Mat.uniform 3 4) t in
+let visualise_01 () =
+  let x = G.var_elt "x" |> pack_elt in
+  let y = G.var_elt "y" |> pack_elt in
   let z = f x y in
-  to_trace [z]
+  let s = [| unpack_elt z |> G.elt_to_node |] |> G.nodes_to_dot in
+  Owl_io.write_file "cgraph_01.dot" s;
+  Sys.command "dot -Tpdf cgraph_01.dot -o cgraph_01.pdf" |> ignore
 
 
-let visualise_simple_02 () =
+let visualise_02 () =
+  let x = G.var_elt "x" |> pack_elt in
+  let y = G.var_arr "y" |> pack_arr in
+  let z = (grad (f x)) y in
+  let s = [| unpack_arr z |> G.arr_to_node |] |> G.nodes_to_dot in
+  Owl_io.write_file "cgraph_02.dot" s;
+  Sys.command "dot -Tpdf cgraph_02.dot -o cgraph_02.pdf" |> ignore
+
+
+let visualise_03 () =
   let t = tag () in
-  let x = make_reverse (F 5.) t in
-  let y = make_reverse (Mat.uniform 3 4) t in
+  let x = make_reverse (G.var_arr "x" ~shape:[|3;4|] |> pack_arr) t in
+  let y = make_reverse (G.var_arr "y" ~shape:[|1;4|] |> pack_arr) t in
   let z = f x y in
-  to_dot [z]
+  let s0 = [| primal z |> unpack_elt |> G.elt_to_node |] |> G.nodes_to_dot in
+  Owl_io.write_file "cgraph_03_forward.dot" s0;
+  Sys.command "dot -Tpdf cgraph_03_forward.dot -o cgraph_03_forward.pdf" |> ignore;
 
-
-let visualise_vgg () =
-  let network = Cifar10.make_network [|32;32;3|] in
-  let x, _, y = Dataset.load_cifar_train_data 1 in
-  let xt, yt = Optimise.S.Utils.draw_samples (Arr x) (Arr y) 5 in
-  let yt', _ = Neural.S.Graph.(init network; forward network xt) in
-  let loss = Maths.((cross_entropy yt yt') / (F (Mat.row_num yt |> float_of_int))) in
-  to_dot [loss]
-
-
-let visualise_lstm () =
-  let wndsz = 10 and stepsz = 1 in
-  let w2i, i2w, x, y = Lstm.prepare wndsz stepsz in
-  let vocabsz = Hashtbl.length w2i in
-  let network = Lstm.make_network wndsz vocabsz in
-  let xt, yt = Optimise.S.Utils.draw_samples (Arr x) (Arr y) 15 in
-  let yt', _ = Neural.S.Graph.(init network; forward network xt) in
-  let loss = Maths.((cross_entropy yt yt') / (F (Mat.row_num yt |> float_of_int))) in
-  to_dot [loss]
+  reverse_prop (pack_flt 1.) z;
+  let x' = adjval x |> unpack_arr |> G.arr_to_node in
+  let y' = adjval y |> unpack_arr |> G.arr_to_node in
+  let s1 = G.nodes_to_dot [|x'|] in
+  let s2 = G.nodes_to_dot [|y'|] in
+  let s3 = G.nodes_to_dot [|x'; y'|] in
+  Owl_io.write_file "cgraph_03_backward_x.dot" s1;
+  Sys.command "dot -Tpdf cgraph_03_backward_x.dot -o cgraph_03_backward_x.pdf" |> ignore;
+  Owl_io.write_file "cgraph_03_backward_y.dot" s2;
+  Sys.command "dot -Tpdf cgraph_03_backward_y.dot -o cgraph_03_backward_y.pdf" |> ignore;
+  Owl_io.write_file "cgraph_03_backward_xy.dot" s3;
+  Sys.command "dot -Tpdf cgraph_03_backward_xy.dot -o cgraph_03_backward_xy.pdf" |> ignore
 
 
 let _ =
-  Owl_log.info "visualise simple computation graph to terminal ...";
-  visualise_simple_01 () |> print_endline;
-  Owl_log.info "visualise simple computation graph to dot file ...";
-  visualise_simple_02 () |> Owl_utils.write_file "plot_algodiff_graph1.dot";
-  Sys.command "dot -Tpdf plot_algodiff_graph1.dot -o plot_algodiff_graph1.pdf";
-  Owl_log.info "visualise VGG neural network ...";
-  visualise_vgg () |> Owl_utils.write_file "plot_algodiff_graph2.dot";
-  Sys.command "dot -Tpdf plot_algodiff_graph2.dot -o plot_algodiff_graph2.pdf";
-  Owl_log.info "visualise LSTM neural network ...";
-  visualise_lstm () |> Owl_utils.write_file "plot_algodiff_graph3.dot";
-  Sys.command "dot -Tpdf plot_algodiff_graph3.dot -o plot_algodiff_graph3.pdf"
+  visualise_01 ();
+  visualise_02 ();
+  visualise_03 ()
