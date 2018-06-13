@@ -9,7 +9,7 @@ open Owl_types
 (* Functor of making numerical differentiation module of different precisions *)
 
 module Make
-  (A : Ndarray_Numdiff)
+  (A : Ndarray_Numdiff with type elt = float)
   = struct
 
   type arr = A.arr
@@ -46,7 +46,7 @@ module Make
     let g = A.create [|n|] (f x) in
     let gg = A.mapi (fun i xi ->
       let x' = A.copy x in
-      A.set x' [|i|] (xi +. _eps);
+      A.set x' [|i|] ((A.elt_to_float xi) +. _eps);
       f x'
     ) x
     in
@@ -66,7 +66,8 @@ module Make
 
     for i = 0 to m - 1 do
       let x' = A.copy x in
-      A.set x' [|i|] ((A.get x [|i|]) +. _eps);
+      let a = A.elt_to_float (A.get x [|i|]) in
+      A.set x' [|i|] (a +. _eps);
       let y' = A.reshape (f x') [|1; n|] in
       A.set_slice [[i];[]] jj y'
     done;

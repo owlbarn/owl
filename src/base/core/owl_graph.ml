@@ -19,19 +19,39 @@ type dir = Ancestor | Descendant
 
 let _global_id = ref 0
 
+
 let id x = x.id
+
 
 let name x = x.name
 
+
+let set_name x s = x.name <- s
+
+
 let parents x = x.prev
+
+
+let set_parents x parents = x.prev <- parents
+
 
 let children x = x.next
 
+
+let set_children x children = x.next <- children
+
+
 let indegree x = Array.length x.prev
+
 
 let outdegree x = Array.length x.next
 
+
+let degree x = Array.(length x.prev + length x.next)
+
+
 let attr x = x.attr
+
 
 let set_attr x a = x.attr <- a
 
@@ -49,11 +69,23 @@ let node ?id ?(name="") ?(prev=[||]) ?(next=[||]) attr =
 
 let connect parents children =
   Array.iter (fun parent ->
+    parent.next <- Array.append parent.next children;
     Array.iter (fun child ->
-        parent.next <- (Array.append parent.next [|child|]);
-        child.prev <- (Array.append child.prev [|parent|]);
+      child.prev <- Array.append child.prev parents
     ) children
   ) parents
+
+
+let connect_descendants parents children =
+  Array.iter (fun parent ->
+    parent.next <- Array.append parent.next children
+  ) parents
+
+
+let connect_ancestors parents children =
+  Array.iter (fun child ->
+    child.prev <- Array.append child.prev parents
+  ) children
 
 
 let remove_node x =
@@ -69,6 +101,26 @@ let remove_node x =
 let remove_edge src dst =
   src.next <- Owl_utils.Array.filter (fun x -> x.id <> dst.id) src.next;
   dst.prev <- Owl_utils.Array.filter (fun x -> x.id <> src.id) dst.prev
+
+
+let replace_child child_0 child_1 =
+  Array.iter (fun parent ->
+    let next = Array.map (fun v ->
+      if v == child_0 then child_1 else v
+    ) parent.next
+    in
+    parent.next <- next;
+  ) child_0.prev
+
+
+let replace_parent parent_0 parent_1 =
+  Array.iter (fun child ->
+    let prev = Array.map (fun v ->
+      if v == parent_0 then parent_1 else v
+    ) child.prev
+    in
+    child.prev <- prev;
+  ) parent_0.next
 
 
 (* depth-first search from [x]; [f : node -> unit] is applied to each node;
@@ -158,6 +210,10 @@ let fold_out_edges f a x =
   !a
 
 
+(* TODO *)
+let map f x = None
+
+
 (* TODO: optimise *)
 let copy ?(dir=Ancestor) x =
   let _make_if_not_exists h n =
@@ -181,9 +237,26 @@ let copy ?(dir=Ancestor) x =
   Array.map (fun n -> Hashtbl.find h n.id) x
 
 
+(* TODO *)
 let to_array = None
 
+(* TODO *)
 let to_hashtbl = None
+
+
+let num_ancestor x =
+  let n = ref 0 in
+  iter_ancestors (fun _ -> n := !n + 1) x;
+  !n
+
+
+let num_descendant x =
+  let n = ref 0 in
+  iter_descendants (fun _ -> n := !n + 1) x;
+  !n
+
+
+let length x = (num_ancestor x) + (num_descendant x) - (Array.length x)
 
 
 let node_to_str x =

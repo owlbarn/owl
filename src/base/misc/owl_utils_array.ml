@@ -13,6 +13,12 @@ include Array
 let ( @ ) a b = Array.append a b
 
 
+(* pretty-print an array to string *)
+let to_string ?(prefix="") ?(suffix="") ?(sep=",") elt_to_str x =
+  let s = Array.to_list x |> List.map elt_to_str |> String.concat sep in
+  Printf.sprintf "%s%s%s" prefix s suffix
+
+
 (* set multiple elements to the same value a in x *)
 let set_n x idx a = Array.iter (fun i -> x.(i) <- a) idx
 
@@ -22,6 +28,15 @@ let range a b =
   let r = Array.make (b - a + 1) 0 in
   for i = a to b do r.(i - a) <- i done;
   r
+
+
+(* flatten an array array to array *)
+let flatten x =
+  let r = Owl_utils_stack.make () in
+  iter (fun y ->
+    iter (fun z -> Owl_utils_stack.push r z ) y
+  ) x;
+  Owl_utils_stack.to_array r
 
 
 (* count the number of occurrence of a in x *)
@@ -129,6 +144,20 @@ let iter3i f x y z =
   done
 
 
+let iter4i f w x y z =
+  let nw = Array.length w in
+  let nx = Array.length x in
+  let ny = Array.length y in
+  let nz = Array.length z in
+  assert (nw = nx && nx = ny && ny = nz);
+  for i = 0 to nw - 1 do
+    f i w.(i) x.(i) y.(i) z.(i)
+  done
+
+
+let iter4 f w x y z = iter4i (fun _ a b c d -> f a b c d) w x y z
+
+
 let map2i f x y =
   let c = min (Array.length x) (Array.length y) in
   Array.init c (fun i -> f i x.(i) y.(i))
@@ -185,6 +214,11 @@ let filter2i_i f x y =
 let filter2_i f x y = filter2i_i (fun _ a b -> f a b) x y
 
 
+let filter2_split f x y =
+  let z = filter2 f x y in
+  Array.(map fst z, map snd z)
+
+
 let resize ?(head=true) v n x =
   let m = Array.length x in
   if n < m then Array.(sub x 0 n |> copy)
@@ -197,6 +231,29 @@ let resize ?(head=true) v n x =
     y
   )
   else Array.copy x
+
+
+let map3i f x y z =
+  let nx = Array.length x in
+  let ny = Array.length y in
+  let nz = Array.length z in
+  assert (nx = ny && ny = nz);
+  Array.init nx (fun i -> f i x.(i) y.(i) z.(i))
+
+
+let map3 f x y z = map3i (fun _ a b c -> f a b c) x y z
+
+
+let map4i f w x y z =
+  let nw = Array.length w in
+  let nx = Array.length x in
+  let ny = Array.length y in
+  let nz = Array.length z in
+  assert (nw = nx && nx = ny && ny = nz);
+  Array.init nx (fun i -> f i w.(i) x.(i) y.(i) z.(i))
+
+
+let map4 f w x y z = map4i (fun _ a b c d -> f a b c d) w x y z
 
 
 (* pad n value of v to the left/right of array x *)
@@ -218,6 +275,17 @@ let align s v x y =
     Array.copy x, pad s v (len_x - len_y) y
   else
     Array.copy x, Array.copy y
+
+
+let align3 s v x y z =
+  let len_x = Array.length x in
+  let len_y = Array.length y in
+  let len_z = Array.length z in
+  let len = max len_x (max len_y len_z) in
+  let x = if len_x < len then pad s v (len - len_x) x else Array.copy x in
+  let y = if len_y < len then pad s v (len - len_y) y else Array.copy y in
+  let z = if len_z < len then pad s v (len - len_z) z else Array.copy z in
+  x, y, z
 
 
 (* [x] is greater or equal than [y] elementwise *)
@@ -301,12 +369,6 @@ let complement x y =
   Owl_utils_stack.to_array s
 
 
-(* pretty-print an array to string *)
-let to_string ?(prefix="") ?(suffix="") ?(sep=",") elt_to_str x =
-  let s = Array.to_list x |> List.map elt_to_str |> String.concat sep in
-  Printf.sprintf "%s%s%s" prefix s suffix
-
-
 let balance_last mass x =
   let k = Array.length x - 1 in
   let q = ref mass in
@@ -337,6 +399,24 @@ let index_of x a =
   if r < 0 then raise Owl_exception.NOT_FOUND
   else r
 
+(* Binary search. Adapted from CCArray.bsearch in containers.
+ * Bin edges are taken as left-inclusive, right-exclusive *)
+let bsearch ~cmp k bin_edges =
+  let rec aux i j =
+    if i > j then j
+    else
+      let middle = i + (j - i) / 2 in (* avoid overflow *)
+      match cmp k bin_edges.(middle) with
+      | 0            -> middle
+      | n when n < 0 -> aux i (middle - 1)
+      | _            -> aux (middle + 1) j in
+  let n = Array.length bin_edges - 1 in
+  if n < 0 then failwith "empty array"
+  else
+    match cmp bin_edges.(0) k, cmp bin_edges.(n) k with
+    | c, _ when c > 0  -> -1
+    | _, c when c <= 0 -> n
+    | _                -> aux 0 n
 
 
 (* ends here *)

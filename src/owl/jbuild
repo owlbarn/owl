@@ -30,6 +30,7 @@
     owl_core_utils
     owl_slicing_basic_stub
     owl_slicing_fancy_stub
+    owl_ndarray_fma_stub
     owl_ndarray_maths_stub
     owl_ndarray_conv_stub
     owl_ndarray_pool_stub

@@ -26,12 +26,16 @@ install: build
 	-[ -f "$(OPAM_LIB)/stubslibs/dllowl_stubs.so" ] \
 	  && mv "$(OPAM_LIB)/stubslibs/dllowl_stubs.so" \
 	        "$(OPAM_STUBS)/dllowl_stubs.so"
+	-[ -f "$(OPAM_LIB)/stubslibs/dllowl_opencl_stubs.so" ] \
+	  && mv "$(OPAM_LIB)/stubslibs/dllowl_opencl_stubs.so" \
+	        "$(OPAM_STUBS)/dllowl_opencl_stubs.so"
 	-$(RM) -d $(OPAM_LIB)/stubslibs
 
 .PHONY: uninstall
 uninstall:
 	jbuilder uninstall
 	$(RM) $(OPAM_STUBS)/dllowl_stubs.so
+	$(RM) $(OPAM_STUBS)/dllowl_opencl_stubs.so
 
 .PHONY: doc
 doc:
@@ -42,6 +46,7 @@ cleanall:
 	jbuilder uninstall && jbuilder clean
 	$(RM) -r $(find . -name .merlin)
 	$(RM) $(OPAM_STUBS)/dllowl_stubs.so
+	$(RM) $(OPAM_STUBS)/dllowl_opencl_stubs.so
 
 define _OWL_RELEASE_WARNING
 ############################################################################

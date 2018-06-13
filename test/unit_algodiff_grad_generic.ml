@@ -9,7 +9,9 @@ let approx_equal ?eps:(eps=1e-12) a b = Pervasives.abs_float (a -. b) < eps
 
 (* functor to generate test unit. *)
 
-module Make (M : Ndarray_Algodiff) = struct
+module Make
+  (M : Ndarray_Algodiff with type elt = float)
+  = struct
 
   module AlgoM = Owl_algodiff_generic.Make (M)
   open AlgoM

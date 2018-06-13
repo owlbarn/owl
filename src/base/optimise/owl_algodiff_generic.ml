@@ -18,7 +18,7 @@ module Make
   type elt = A.elt
 
   type t =
-    | F   of float
+    | F   of elt
     | Arr of arr
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
@@ -136,6 +136,7 @@ module Make
 
   (* generate global tags *)
   let _global_tag = ref 0
+
   let tag () = _global_tag := !_global_tag + 1; !_global_tag
 
 
@@ -147,7 +148,7 @@ module Make
     else 0
 
   let reset_zero = function
-    | F _    -> F 0.
+    | F _    -> F A.(float_to_elt 0.)
     | Arr ap -> A.reset ap; Arr ap
     | _      -> failwith "error: reset_zero"
 
@@ -162,7 +163,7 @@ module Make
     | ap                  -> ap
 
   let rec zero = function
-    | F _                     -> F 0.
+    | F _                     -> F A.(float_to_elt 0.)
     | Arr ap                  -> Arr A.(zeros (shape ap))
     | DF (ap, _, _)           -> ap |> primal' |> zero
     | DR (ap, _, _, _, _)     -> ap |> primal' |> zero
@@ -236,6 +237,22 @@ module Make
 
   (* packing and unpacking functions *)
 
+  let pack_elt x = F x
+
+  let unpack_elt x =
+    match (primal x) with
+    | F x -> x
+    | _   -> failwith "error: AD.unpack_elt"
+
+  let pack_flt x = F A.(float_to_elt x)
+
+  let _f x = F A.(float_to_elt x) (* shorcut for type conversion *)
+
+  let unpack_flt x =
+    match (primal x) with
+    | F x -> A.elt_to_float x
+    | _   -> failwith "error: AD.unpack_flt"
+
   let pack_arr x = Arr x
 
   let unpack_arr x =
@@ -243,17 +260,11 @@ module Make
     | Arr x -> x
     | _     -> failwith "error: AD.unpack_arr"
 
-  let pack_flt x = F x
-
-  let unpack_flt x =
-    match (primal x) with
-    | F x -> x
-    | _   -> failwith "error: AD.unpack_flt"
 
   (* functions to report errors, help in debugging *)
 
   let deep_info x = match primal' x with
-    | F a   -> Printf.sprintf "F(%g)" a
+    | F a   -> Printf.sprintf "F(%g)" A.(elt_to_float a)
     | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils_array.to_string string_of_int)
     | _     -> "you should not have reached here!"
 
@@ -408,9 +419,9 @@ module Make
         | _            -> error_binop "( ** )" a b
       in
       let fd a b = a ** b in
-      let df_da cp ap at = at * (ap ** (b - (F 1.))) * b in
+      let df_da cp ap at = at * (ap ** (b - (pack_flt 1.))) * b in
       let df_db cp bp bt = bt * cp * (log a) in
-      let df_dab cp ap at bp bt = (ap ** (bp - (F 1.))) * ((at * bp) + (ap * bt * log ap)) in
+      let df_dab cp ap at bp bt = (ap ** (bp - (pack_flt 1.))) * ((at * bp) + (ap * bt * log ap)) in
       let r_d_d a b = Pow_D_D (a, b) in
       let r_d_c a b = Pow_D_C (a, b) in
       let r_c_d a b = Pow_C_D (a, b) in
@@ -434,9 +445,9 @@ module Make
       let r_c_d a b = Atan2_C_D (a, b) in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    and min2 a b = ((a + b) - abs (a - b)) / F 2.
+    and min2 a b = ((a + b) - abs (a - b)) / (pack_flt 2.)
 
-    and max2 a b = ((a + b) + abs (b - a)) / F 2.
+    and max2 a b = ((a + b) + abs (b - a)) / (pack_flt 2.)
 
     and neg a =
       let ff = function
@@ -445,7 +456,7 @@ module Make
         | _        -> error_uniop "neg" a
       in
       let fd a = neg a in
-      let df cp ap at = (F 0.) - at in
+      let df cp ap at = (pack_flt 0.) - at in
       let r a = Neg_D a in
       op_d_d a ff fd df r
 
@@ -511,7 +522,7 @@ module Make
         | _        -> error_uniop "sqr" a
       in
       let fd a = sqr a in
-      let df cp ap at = (F 2.) * at * ap in
+      let df cp ap at = (pack_flt 2.) * at * ap in
       let r a = Sqr_D a in
       op_d_d a ff fd df r
 
@@ -522,7 +533,7 @@ module Make
         | _        -> error_uniop "sqrt" a
       in
       let fd a = sqrt a in
-      let df cp ap at = at / ((F 2.) * cp) in
+      let df cp ap at = at / ((pack_flt 2.) * cp) in
       let r a = Sqrt_D a in
       op_d_d a ff fd df r
 
@@ -544,7 +555,7 @@ module Make
         | _        -> error_uniop "log2" a
       in
       let fd a = log2 a in
-      let df cp ap at = at / (ap * (F Owl_const.log2e)) in
+      let df cp ap at = at / (ap * (pack_flt Owl_const.log2e)) in
       let r a = Log2_D a in
       op_d_d a ff fd df r
 
@@ -555,7 +566,7 @@ module Make
         | _        -> error_uniop "log10" a
       in
       let fd a = log10 a in
-      let df cp ap at = at / (ap * (F Owl_const.log10e)) in
+      let df cp ap at = at / (ap * (pack_flt Owl_const.log10e)) in
       let r a = Log10_D a in
       op_d_d a ff fd df r
 
@@ -643,7 +654,7 @@ module Make
         | _        -> error_uniop "asin" a
       in
       let fd a = asin a in
-      let df cp ap at = at / sqrt ((F 1.) - sqr ap) in
+      let df cp ap at = at / sqrt ((pack_flt 1.) - sqr ap) in
       let r a = Asin_D a in
       op_d_d a ff fd df r
 
@@ -654,7 +665,7 @@ module Make
         | _        -> error_uniop "acos" a
       in
       let fd a = acos a in
-      let df cp ap at = (neg at) / sqrt ((F 1.) - sqr ap) in
+      let df cp ap at = (neg at) / sqrt ((pack_flt 1.) - sqr ap) in
       let r a = Acos_D a in
       op_d_d a ff fd df r
 
@@ -665,7 +676,7 @@ module Make
         | _        -> error_uniop "atan" a
       in
       let fd a = atan a in
-      let df cp ap at = at / ((F 1.) + sqr ap) in
+      let df cp ap at = at / ((pack_flt 1.) + sqr ap) in
       let r a = Atan_D a in
       op_d_d a ff fd df r
 
@@ -676,7 +687,7 @@ module Make
         | _        -> error_uniop "asinh" a
       in
       let fd a = asinh a in
-      let df cp ap at = at / sqrt ((sqr ap) + (F 1.)) in
+      let df cp ap at = at / sqrt ((sqr ap) + (pack_flt 1.)) in
       let r a = Asinh_D a in
       op_d_d a ff fd df r
 
@@ -687,7 +698,7 @@ module Make
         | _        -> error_uniop "acosh" a
       in
       let fd a = acosh a in
-      let df cp ap at = at / sqrt ((sqr ap) - (F 1.)) in
+      let df cp ap at = at / sqrt ((sqr ap) - (pack_flt 1.)) in
       let r a = Acosh_D a in
       op_d_d a ff fd df r
 
@@ -698,7 +709,7 @@ module Make
         | _        -> error_uniop "atanh" a
       in
       let fd a = atanh a in
-      let df cp ap at = at / ((F 1.) - sqr ap) in
+      let df cp ap at = at / ((pack_flt 1.) - sqr ap) in
       let r a = Atanh_D a in
       op_d_d a ff fd df r
 
@@ -706,7 +717,7 @@ module Make
       match a with
       | Arr ap               -> F (A.get ap [|i;j|])
       | DF (ap, at, ai)      -> DF (get_item ap i j, get_item at i j, ai)
-      | DR (ap, _, _, _, ai) -> DR (get_item ap i j, ref (F 0.), Get_Item (a, i, j), ref 0, ai)
+      | DR (ap, _, _, _, ai) -> DR (get_item ap i j, ref (pack_flt 0.), Get_Item (a, i, j), ref 0, ai)
       | _                    -> error_uniop "get_item" a
 
     and set_item a i j b =
@@ -715,7 +726,7 @@ module Make
         | _                 -> error_uniop "set_item" a
       in
       let fd a b = set_item a i j b in
-      let df_da cp ap at = set_item at i j (F 0.) in
+      let df_da cp ap at = set_item at i j (pack_flt 0.) in
       let df_db cp bp bt = add_item (zero a) i j bt in
       let df_dab cp ap at bp bt = set_item at i j bt in
       let r_d_d a b = SetI_D_D (a, i, j, b) in
@@ -795,7 +806,7 @@ module Make
       let r a = Sum___D (a, axis) in
       op_d_d a ff fd df r
 
-    and mean a = (sum' a) / F (numel a |> float_of_int)
+    and mean a = (sum' a) / F (numel a |> float_of_int |> A.float_to_elt)
 
     and ( *@ ) a b = dot a b
     and dot a b =
@@ -850,7 +861,7 @@ module Make
         | _        -> error_uniop "l2norm_sqr'" a
       in
       let fd a = l2norm_sqr' a in
-      let df cp ap at = (F 2.) * (ap * at) in
+      let df cp ap at = (pack_flt 2.) * (ap * at) in
       let r a = L2NormS_D a in
       op_d_d a ff fd df r
 
@@ -861,7 +872,7 @@ module Make
         | _        -> error_uniop "sigmoid" a
       in
       let fd a = sigmoid a in
-      let df cp ap at = at * cp * (F 1. - cp) in
+      let df cp ap at = at * cp * ((pack_flt 1.) - cp) in
       let r a = Sigmoid_D a in
       op_d_d a ff fd df r
 
@@ -872,7 +883,7 @@ module Make
         | _        -> error_uniop "relu" a
       in
       let fd a = relu a in
-      let df cp ap at = at * (F 1. + (signum ap)) / (F 2.) in
+      let df cp ap at = at * ((pack_flt 1.) + (signum ap)) / (pack_flt 2.) in
       let r a = Relu_D a in
       op_d_d a ff fd df r
 
@@ -886,9 +897,9 @@ module Make
       let r a = Inv_D a in
       op_d_d a ff fd df r
 
-    and softplus x = log (F 1. + exp x)
+    and softplus x = log ((pack_flt 1.) + exp x)
 
-    and softsign x = x / (F 1. + abs x)
+    and softsign x = x / ((pack_flt 1.) + abs x)
 
     and softmax ?(axis=(-1)) x =
       let c = Arr A.(max ~axis (unpack_arr x)) in
@@ -1573,8 +1584,8 @@ module Make
               | Div_D_D (a, b)           -> push (((!aa / (primal b)), a) :: ((!aa * ((neg (primal a)) / ((primal b) * (primal b)))), b) :: t)
               | Div_D_C (a, b)           -> push (((!aa / b), a) :: t)
               | Div_C_D (a, b)           -> push (((!aa * ((neg a) / ((primal b) * (primal b)))), b) :: t)
-              | Pow_D_D (a, b)           -> push (((!aa * ((primal a) ** ((primal b) - (F 1.))) * (primal b)), a) :: ((!aa * ((primal a) ** (primal b)) * log (primal a)), b) :: t)
-              | Pow_D_C (a, b)           -> push (((!aa * ((primal a) ** (b - (F 1.))) * b), a) :: t)
+              | Pow_D_D (a, b)           -> push (((!aa * ((primal a) ** ((primal b) - (pack_flt 1.))) * (primal b)), a) :: ((!aa * ((primal a) ** (primal b)) * log (primal a)), b) :: t)
+              | Pow_D_C (a, b)           -> push (((!aa * ((primal a) ** (b - (pack_flt 1.))) * b), a) :: t)
               | Pow_C_D (a, b)           -> push (((!aa * (a ** (primal b)) * log a), b) :: t)
               | Atan2_D_D (a, b)         -> let d = (sqr (primal a)) + (sqr (primal b)) in push (((!aa * (primal b) / d), a) :: ((!aa * (neg (primal a)) / d), b) :: t)
               | Atan2_D_C (a, b)         -> push (((!aa * b / ((sqr (primal a)) + (sqr b))), a) :: t)
@@ -1585,11 +1596,11 @@ module Make
               | Floor_D a                -> push ((zero a, a) :: t)
               | Ceil_D a                 -> push ((zero a, a) :: t)
               | Round_D a                -> push ((zero a, a) :: t)
-              | Sqr_D a                  -> push (((!aa * (primal a) * (F 2.)), a) :: t)
-              | Sqrt_D a                 -> push (((!aa / ((F 2.) * ap)), a) :: t)
+              | Sqr_D a                  -> push (((!aa * (primal a) * (pack_flt 2.)), a) :: t)
+              | Sqrt_D a                 -> push (((!aa / ((pack_flt 2.) * ap)), a) :: t)
               | Log_D a                  -> push (((!aa / (primal a)), a) :: t)
-              | Log2_D a                 -> push (((!aa / ((primal a) * (F Owl_const.log2e))), a) :: t)
-              | Log10_D a                -> push (((!aa / ((primal a) * (F Owl_const.log10e))), a) :: t)
+              | Log2_D a                 -> push (((!aa / ((primal a) * (pack_flt Owl_const.log2e))), a) :: t)
+              | Log10_D a                -> push (((!aa / ((primal a) * (pack_flt Owl_const.log10e))), a) :: t)
               | Exp_D a                  -> push (((!aa * ap), a) :: t)
               | Sin_D a                  -> push (((!aa * cos (primal a)), a) :: t)
               | Cos_D a                  -> push (((!aa * (neg (sin (primal a)))), a) :: t)
@@ -1597,15 +1608,15 @@ module Make
               | Sinh_D a                 -> push (((!aa * (cosh (primal a))), a) :: t)
               | Cosh_D a                 -> push (((!aa * (sinh (primal a))), a) :: t)
               | Tanh_D a                 -> push (((!aa / (sqr (cosh (primal a)))), a) :: t)
-              | Asin_D a                 -> push (((!aa / sqrt ((F 1.) - sqr (primal a))), a) :: t)
-              | Acos_D a                 -> push ((((neg !aa) / sqrt ((F 1.) - sqr (primal a))), a) :: t)
-              | Atan_D a                 -> push (((!aa / ((F 1.) + sqr (primal a))), a) :: t)
-              | Asinh_D a                -> push (((!aa / sqrt ((sqr (primal a)) + (F 1.))), a) :: t)
-              | Acosh_D a                -> push (((!aa / sqrt ((sqr (primal a)) - (F 1.))), a) :: t)
-              | Atanh_D a                -> push (((!aa / ((F 1.) - sqr (primal a))), a) :: t)
+              | Asin_D a                 -> push (((!aa / sqrt ((pack_flt 1.) - sqr (primal a))), a) :: t)
+              | Acos_D a                 -> push ((((neg !aa) / sqrt ((pack_flt 1.) - sqr (primal a))), a) :: t)
+              | Atan_D a                 -> push (((!aa / ((pack_flt 1.) + sqr (primal a))), a) :: t)
+              | Asinh_D a                -> push (((!aa / sqrt ((sqr (primal a)) + (pack_flt 1.))), a) :: t)
+              | Acosh_D a                -> push (((!aa / sqrt ((sqr (primal a)) - (pack_flt 1.))), a) :: t)
+              | Atanh_D a                -> push (((!aa / ((pack_flt 1.) - sqr (primal a))), a) :: t)
               | Get_Item (a, i, j)       -> push ((set_item (zero a) i j (sum' !aa), a) :: t)
-              | SetI_D_D (a, i, j, b)    -> push ((set_item !aa i j (F 0.), a) :: (get_item !aa i j, b) :: t)
-              | SetI_D_C (a, i, j, _)    -> push ((set_item !aa i j (F 0.), a) :: t)
+              | SetI_D_D (a, i, j, b)    -> push ((set_item !aa i j (pack_flt 0.), a) :: (get_item !aa i j, b) :: t)
+              | SetI_D_C (a, i, j, _)    -> push ((set_item !aa i j (pack_flt 0.), a) :: t)
               | SetI_C_D (_, i, j, b)    -> push ((get_item !aa i j, b) :: t)
               | AddI_D_D (a, i, j, b)    -> push ((!aa, a) :: (get_item !aa i j, b) :: t)
               | AddI_D_C (a, _, _, _)    -> push ((!aa, a) :: t)
@@ -1623,9 +1634,9 @@ module Make
               | Trans_D a                -> push (((transpose !aa), a) :: t)
               | L1Norm_D a               -> push (((!aa * (signum (primal a))), a) :: t)
               | L2Norm_D a               -> push (((!aa / ap * (primal a)), a) :: t)
-              | L2NormS_D a              -> push (((!aa * (F 2.) * (primal a)), a) :: t)
-              | Sigmoid_D a              -> push (((!aa * ap * (F 1. - ap)), a) :: t)
-              | Relu_D a                 -> push (((!aa * ((signum (primal a) + F 1.) / (F 2.))), a) :: t)
+              | L2NormS_D a              -> push (((!aa * (pack_flt 2.) * (primal a)), a) :: t)
+              | Sigmoid_D a              -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
+              | Relu_D a                 -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
               | Inv_D a                  -> let dpt = transpose ap in push ((((neg dpt) * !aa * dpt), a) :: t)
               | Add_Row_D_D (a, b, i)    -> push ((!aa, a) :: (get_row !aa i, b) :: t)
               | Add_Row_D_C (a, b, i)    -> push ((!aa, a) :: t)
@@ -1690,7 +1701,7 @@ module Make
 
   (* derivative of f (scalar -> scalr) at x, forward ad *)
   let diff' f x =
-    let x = make_forward x (F 1.) (tag ()) in
+    let x = make_forward x (pack_flt 1.) (tag ()) in
     let y = f x in
     primal y, tangent y
 
@@ -1702,7 +1713,7 @@ module Make
     let x = make_reverse x (tag ()) in
     let y = f x in
     reverse_reset y;
-    reverse_push (F 1.) y;
+    reverse_push (pack_flt 1.) y;
     primal y, x |> adjval
 
   (* gradient of f (vector -> scalar) at x, reverse ad *)
@@ -1739,7 +1750,7 @@ module Make
       | true  ->  (
           Array.init n (fun i ->
             let v = A.zeros [|1;n|] in
-            A.set v [|0;i|] 1.;
+            A.(set v [|0;i|] (float_to_elt 1.));
             jacobianv f x (Arr v)
           )
           |> Array.iteri (fun i v ->
@@ -1751,7 +1762,7 @@ module Make
       | false -> (
           Array.init m (fun i ->
             let v = A.zeros [|1;m|] in
-            A.set v [|0;i|] 1.;
+            A.(set v [|0;i|] (float_to_elt 1.));
             jacobianTv f x (Arr v)
           )
           |> Array.iteri (fun i v ->

@@ -776,6 +776,42 @@ CAMLprim value FUN28(value *argv, int __unused_argn)
 #endif /* FUN28 */
 
 
+// function to map [x] w.r.t scalar values, similar to FUN12 but saves to Y
+#ifdef FUN29
+
+CAMLprim value FUN29(value vN, value vA, value vB, value vX, value vY)
+{
+  CAMLparam5(vN, vA, vB, vX, vY);
+  int N = Long_val(vN);
+  INIT;
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *X_data = (NUMBER *) X->data;
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  NUMBER *Y_data = (NUMBER *) Y->data;
+
+  caml_release_runtime_system();  /* Allow other threads */
+
+  if (N >= OWL_OPENMP_THRESHOLD) {
+    #pragma omp parallel for schedule(static)
+    for (int i = 0; i < N; i++) {
+      MAPFN(*(X_data + i), *(Y_data + i));
+    }
+  }
+  else {
+    for (int i = 0; i < N; i++) {
+      MAPFN(*(X_data + i), *(Y_data + i));
+    }
+  }
+
+  caml_acquire_runtime_system();  /* Disallow other threads */
+
+  CAMLreturn(Val_unit);
+}
+
+#endif /* FUN29 */
+
+
 #undef NUMBER
 #undef NUMBER1
 #undef NUMBER2
@@ -806,6 +842,7 @@ CAMLprim value FUN28(value *argv, int __unused_argn)
 #undef FUN27_CODE
 #undef FUN28
 #undef FUN28_IMPL
+#undef FUN29
 
 
 #endif /* OWL_ENABLE_TEMPLATE */

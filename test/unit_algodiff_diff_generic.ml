@@ -9,7 +9,9 @@ let approx_equal a b = Pervasives.abs_float (a -. b) < 1e-16
 
 (* functor to generate test unit. *)
 
-module Make (M : Ndarray_Algodiff) = struct
+module Make
+  (M : Ndarray_Algodiff with type elt = float) 
+  = struct
 
   module AlgoM = Owl_algodiff_generic.Make (M)
   open AlgoM
@@ -135,8 +137,8 @@ module Make (M : Ndarray_Algodiff) = struct
 
   (* Test data *)
   let xs = [| -4.; -3.; -2.; -1.2; -1.1; -1.; -0.9; -0.8; -0.7; -0.6; -0.5;
-              -0.4; -0.3; -0.2; -0.1; 0.; 0.1; 0.2; 0.3; 0.4; 0.5; 0.6; 0.7; 0.8; 0.9;
-              1.; 1.1; 1.2; 2.; 3.; 4.; |]
+              -0.4; -0.3; -0.2; -0.1; 0.; 0.1; 0.2; 0.3; 0.4; 0.5; 0.6; 0.7;
+              0.8; 0.9; 1.; 1.1; 1.2; 2.; 3.; 4.; |]
 
   let xs_filter f =
     let filter acc x     = if (f x) then x::acc else acc in

@@ -61,13 +61,13 @@ module Make
       match x with
       | Arr _ -> (
           match t with
-          | Uniform (a, b)       -> Arr.(uniform ~a ~b s)
-          | Gaussian (mu, sigma) -> Arr.(gaussian ~mu ~sigma s)
-          | Standard             -> Arr.(uniform ~a:(-.r0) ~b:r0 s)
-          | Tanh                 -> Arr.(uniform ~a:(-.r1) ~b:r1 s)
-          | GlorotUniform        -> Arr.(uniform ~a:(-.r1) ~b:r1 s)
-          | GlorotNormal         -> Arr.(gaussian ~sigma:r2 s)
-          | LecunNormal          -> Arr.(gaussian ~sigma:r0 s)
+          | Uniform (a, b)       -> Arr.(uniform ~a:(A.float_to_elt a) ~b:(A.float_to_elt b) s)
+          | Gaussian (mu, sigma) -> Arr.(gaussian ~mu:(A.float_to_elt mu) ~sigma:(A.float_to_elt sigma) s)
+          | Standard             -> Arr.(uniform ~a:(A.float_to_elt (-.r0)) ~b:(A.float_to_elt r0) s)
+          | Tanh                 -> Arr.(uniform ~a:(A.float_to_elt (-.r1)) ~b:(A.float_to_elt r1) s)
+          | GlorotUniform        -> Arr.(uniform ~a:(A.float_to_elt (-.r1)) ~b:(A.float_to_elt r1) s)
+          | GlorotNormal         -> Arr.(gaussian ~sigma:(A.float_to_elt r2) s)
+          | LecunNormal          -> Arr.(gaussian ~sigma:(A.float_to_elt r0) s)
           | Custom f             -> f s
         )
       | _     -> failwith "Owl_neural:init:run"
@@ -159,17 +159,17 @@ module Make
 
     let run_activation x activation =
       match activation with
-      | Elu         -> Maths.((relu x) + (x |> neg |> relu |> neg |> exp) - F 1.)
+      | Elu         -> Maths.((relu x) + (x |> neg |> relu |> neg |> exp) - _f 1.)
       | Relu        -> Maths.relu x
       | Sigmoid     -> Maths.sigmoid x
-      | HardSigmoid -> Maths.(max2 (F 0.) (min2 (F 1.) ((F 0.2) * x + (F 0.5))))
+      | HardSigmoid -> Maths.(max2 (_f 0.) (min2 (_f 1.) ((_f 0.2) * x + (_f 0.5))))
       | Softmax a   -> Maths.softmax ~axis:a x
       | Softplus    -> Maths.softplus x
       | Softsign    -> Maths.softsign x
       | Tanh        -> Maths.tanh x
-      | Relu6       -> Maths.(min2 (relu x) (F 6.))
-      | LeakyRelu a -> Maths.((relu x) - (F a) * (x |> neg |> relu))
-      | TRelu a     -> Maths.(relu (x - F a))
+      | Relu6       -> Maths.(min2 (relu x) (_f 6.))
+      | LeakyRelu a -> Maths.((relu x) - (_f a) * (x |> neg |> relu))
+      | TRelu a     -> Maths.(relu (x - _f a))
       | Custom f    -> f x
       | None        -> x
 
@@ -814,7 +814,7 @@ module Make
         let z  = Maths.(((t *@ l.wxz) + (l.h *@ l.whz) + l.bz) |> sigmoid) in
         let r  = Maths.(((t *@ l.wxr) + (l.h *@ l.whr) + l.br) |> sigmoid) in
         let h' = Maths.(((t *@ l.wxh) + ((l.h * r) *@ l.whh))  |> tanh) in
-        l.h <- Maths.((F 1. - z) * h' + (z * l.h));
+        l.h <- Maths.((_f 1. - z) * h' + (z * l.h));
       done;
       l.h
 
@@ -2210,7 +2210,7 @@ module Make
     let copy l = create l.rate
 
     let run x l =
-      let a = F (1. /. (1. -. l.rate)) in
+      let a = _f (1. /. (1. -. l.rate)) in
       let b = Maths.(dropout ~rate:l.rate x) in
       Maths.(a * b)
 
@@ -2482,7 +2482,7 @@ module Make
       for i = 1 to n - 1 do
         acc := Maths.(!acc + x.(i))
       done;
-      Maths.(!acc / F (float_of_int n))
+      Maths.(!acc / _f (float_of_int n))
 
     let to_string l =
       let in_str = Owl_utils_array.to_string string_of_int l.in_shape in
@@ -2573,7 +2573,7 @@ module Make
       gamma     = Arr.empty [|0|];
       mu        = (match mu with Some a -> Arr a | None -> Arr.empty [|0|]);
       var       = (match var with Some a -> Arr a | None -> Arr.empty [|0|]);
-      decay     = F decay;
+      decay     = _f decay;
       training  = training;
       in_shape  = [||];
       out_shape = [||];
@@ -2619,16 +2619,15 @@ module Make
        Implementaton in Keras: https://bit.ly/2vBsvgI.*)
     let run x l =
       if l.training = true then (
-        let a = F (float_of_int ((numel x) / (shape x).(l.axis))) in
-        let s = Owl_utils_array.range 0 (Array.length l.in_shape) in
-        let s = List.filter (fun x -> x != l.axis) (Array.to_list s)
-          |> Array.of_list in
+        let a = _f (float_of_int ((numel x) / (shape x).(l.axis))) in
+        let s = Owl_utils_array.(range 0 (length l.in_shape)
+          |> filter (fun x -> x != l.axis)) in
         let mu' = Maths.((sum_reduce ~axis:s x) / a) in
         let var' = Maths.((sum_reduce ~axis:s ((x - mu') * (x - mu'))) / a) in
-        l.mu <- Maths.(l.decay * l.mu + (F 1. - l.decay) * mu') |> primal';
-        l.var <- Maths.(l.decay * l.var + (F 1. - l.decay) * var') |> primal';
+        l.mu <- Maths.(l.decay * l.mu + (_f 1. - l.decay) * mu') |> primal';
+        l.var <- Maths.(l.decay * l.var + (_f 1. - l.decay) * var') |> primal';
       );
-      let x' = Maths.((x - l.mu) / sqrt (l.var + F 1e-8)) in
+      let x' = Maths.((x - l.mu) / sqrt (l.var + _f 1e-8)) in
       Maths.(x' * l.gamma + l.beta)
 
     let to_string l =
@@ -2673,7 +2672,7 @@ module Make
     let run x l =
       let s = shape x in
       let a = match (primal' x) with
-        | Arr _ -> Arr.gaussian ~sigma:l.sigma s
+        | Arr _ -> Arr.gaussian ~sigma:(A.float_to_elt l.sigma) s
         | _     -> failwith "owl_neural_neuron:gaussiannoise:run"
       in
       Maths.(x + a)
@@ -2714,10 +2713,10 @@ module Make
       let s = shape x in
       let sigma = Pervasives.sqrt (l.rate /. (1. -. l.rate)) in
       let a = match (primal' x) with
-        | Arr _ -> Arr.gaussian ~sigma s
+        | Arr _ -> Arr.gaussian ~sigma:(A.float_to_elt sigma) s
         | _     -> failwith "owl_neural_neuron:gaussiandropout:run"
       in
-      Maths.(x * (a + F 1.))
+      Maths.(x * (a + _f 1.))
 
     let to_string l =
       let in_str = Owl_utils_array.to_string string_of_int l.in_shape in
@@ -2761,14 +2760,14 @@ module Make
 
       let s = shape x in
       let mask = match (primal' x) with
-        | Arr y -> Arr A.(let c = uniform s in elt_greater_equal_scalar c l.rate)
+        | Arr _ -> Arr A.(bernoulli ~p:(1. -. l.rate) s)
         | _     -> failwith "owl_neural_neuron:alphadropout:run"
       in
 
-      let p = F p in
-      let a = F a in
-      let b = F b in
-      let x = Maths.(x * mask + p * (F 1. - mask)) in
+      let p = _f p in
+      let a = _f a in
+      let b = _f b in
+      let x = Maths.(x * mask + p * (_f 1. - mask)) in
       Maths.(a * x + b)
 
     let to_string l =
@@ -2834,17 +2833,7 @@ module Make
       let x = primal' x |> unpack_arr in
       let s = A.shape x in
       let m, n = s.(0), s.(1) in
-      let y = A.zeros [|(m * n); l.in_dim|] in
-
-      let i' = ref 0 in
-      for i = 0 to m - 1 do
-        i' := i * n;
-        for j = 0 to n - 1 do
-          let k = int_of_float (A.get x [|i;j|]) in
-          A.set y [|(!i' + j); k|] 1.
-        done;
-      done;
-
+      let y = A.one_hot l.in_dim (A.reshape x [|m * n|]) in
       let y = Maths.((Arr y) *@ l.w) in
       Maths.reshape y [|m; n; l.out_shape.(1)|]
 
@@ -3327,4 +3316,4 @@ module Make
 
 end
 
-(* Make function ends *)
+(* Make functor ends *)

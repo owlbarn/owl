@@ -53,8 +53,14 @@ module type Sig = sig
   val get_node : network -> string -> node
   (** Get a node in a network with the given name. *)
 
-  val get_network : node -> network
+  val get_network : ?name:string -> node -> network
   (** Get the neural network of a given node associated with. *)
+
+  val get_network_name : network -> string
+  (** ``get_network_name n`` returns the name of the network ``n``. *)
+
+  val set_network_name : network -> string -> unit
+  (** ``set_network_name n s`` sets the name of the network ``n`` to ``s``. *)
 
   val collect_output : node array -> t array
   (** Collect the output values of given nodes. *)
@@ -67,6 +73,9 @@ module type Sig = sig
 
   val add_node : ?act_typ:Activation.typ -> network -> node array -> node -> node
   (** Add a node to the given network. *)
+
+  val input_shape : network -> int array
+  (** Get input shape of a network (without batch dimension), i.e. shape of input neruon. *)
 
 
   (** {6 Interface to optimisation engine} *)

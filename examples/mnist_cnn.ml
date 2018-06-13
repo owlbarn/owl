@@ -4,7 +4,7 @@
 open Owl
 open Neural.S
 open Neural.S.Graph
-open Algodiff.S
+open Neural.S.Algodiff
 
 
 let make_network input_shape =

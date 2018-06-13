@@ -23,9 +23,6 @@ module Make
   include Owl_algodiff_generic.Make (A)
 
 
-
-  (* This module contains the helper fucntions used by other sub-modules. They are
-     useful but not general enough to be included in Algodiff.[S|D].Maths module. *)
   module Utils = struct
 
     let sample_num x =
@@ -47,10 +44,21 @@ module Make
       | Arr x, Arr y -> (
           let n = A.row_num y in
           let a = (i * c) mod n in
-          let b = Pervasives.min (a + c - 1) (n - 1) in
-          let x = A.get_slice [[a;b]] x in
-          let y = A.get_slice [[a;b]] y in
-          Arr x, Arr y
+          let b = a + c - 1 in
+          if b < n then (
+            let x = A.get_slice [[a;b]] x in
+            let y = A.get_slice [[a;b]] y in
+            Arr x, Arr y
+          )
+          else (
+            let x0 = A.get_slice [[a;n-1]] x in
+            let y0 = A.get_slice [[a;n-1]] y in
+            let x1 = A.get_slice [[0;b-n]] x in
+            let y1 = A.get_slice [[0;b-n]] y in
+            let x = A.concatenate ~axis:0 [|x0; x1|] in
+            let y = A.concatenate ~axis:0 [|y0; y1|] in
+            Arr x, Arr y
+          )
         )
       | x, _         -> failwith ("Owl_optimise.Utils.get_chunk:" ^ (type_info x))
 
@@ -69,17 +77,17 @@ module Make
       | Schedule  of float array
 
     let run = function
-      | Adagrad a        -> fun _ _ c -> Maths.(F a / sqrt (c.(0) + F 1e-32))
-      | Const a          -> fun _ _ _ -> F a
-      | Decay (a, k)     -> fun i _ _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
-      | Exp_decay (a, k) -> fun i _ _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
-      | RMSprop (a, _)   -> fun _ _ c -> Maths.(F a / sqrt (c.(0) + F 1e-32))
-      | Adam (a, b1, b2) -> fun i g c -> Maths.(F a *
-          (sqrt (F 1. - F b2 ** F (float_of_int i))) /
-          (F 1. - F b1 ** F (float_of_int i)) *
-          c.(0) / (sqrt c.(1) + F 1e-8) /
-          (g + F 1e-32))
-      | Schedule a       -> fun i _ _ -> F a.(i mod (Array.length a))
+      | Adagrad a        -> fun _ _ c -> Maths.(_f a / sqrt (c.(0) + _f 1e-32))
+      | Const a          -> fun _ _ _ -> _f a
+      | Decay (a, k)     -> fun i _ _ -> Maths.(_f a / (_f 1. + _f k * (_f (float_of_int i))))
+      | Exp_decay (a, k) -> fun i _ _ -> Maths.(_f a * exp (neg (_f k) * (_f (float_of_int i))))
+      | RMSprop (a, _)   -> fun _ _ c -> Maths.(_f a / sqrt (c.(0) + _f 1e-32))
+      | Adam (a, b1, b2) -> fun i g c -> Maths.(_f a *
+          (sqrt (_f 1. - _f b2 ** _f (float_of_int i))) /
+          (_f 1. - _f b1 ** _f (float_of_int i)) *
+          c.(0) / (sqrt c.(1) + _f 1e-8) /
+          (g + _f 1e-32))
+      | Schedule a       -> fun i _ _ -> _f a.(i mod (Array.length a))
 
     let default = function
       | Adagrad _   -> Adagrad 0.01
@@ -92,11 +100,11 @@ module Make
 
     let update_ch typ g c = match typ with
       | Adagrad _        -> [|Maths.(c.(0) + g * g); c.(1)|]
-      | RMSprop (_, k)   -> [|Maths.((F k * c.(0)) + (F 1. - F k) * g * g); c.(1)|]
+      | RMSprop (_, k)   -> [|Maths.((_f k * c.(0)) + (_f 1. - _f k) * g * g); c.(1)|]
       | Adam (_, b1, b2) ->
-        let m = Maths.(F b1 * c.(0) + (F 1. - F b1) * g) in
-        let v = Maths.(F b2 * c.(1) + (F 1. - F b2) * g * g) in
-        [|m; v|]
+          let m = Maths.(_f b1 * c.(0) + (_f 1. - _f b1) * g) in
+          let v = Maths.(_f b2 * c.(1) + (_f 1. - _f b2) * g * g) in
+          [|m; v|]
       | _                -> c
 
     let to_string = function
@@ -115,8 +123,8 @@ module Make
 
     type typ =
       | Full
-      | Mini of int
-      | Sample of int
+      | Mini       of int
+      | Sample     of int
       | Stochastic
 
     let run typ x y i = match typ with
@@ -151,7 +159,7 @@ module Make
       | Custom of (t -> t -> t)
 
     let run typ y y' = match typ with
-      | Hinge         -> Maths.(sum' (max2 (F 0.) (F 1. - y * y')))
+      | Hinge         -> Maths.(sum' (max2 (_f 0.) (_f 1. - y * y')))
       | L1norm        -> Maths.(l1norm' (y - y'))
       | L2norm        -> Maths.(l2norm' (y - y'))
       | Quadratic     -> Maths.(l2norm_sqr' (y - y'))
@@ -184,7 +192,7 @@ module Make
       | GD          -> fun _ _ _ _ g' -> Maths.neg g'
       | CG          -> fun _ _ g p g' -> (
           let y = Maths.(g' - g) in
-          let b = Maths.((sum' (g' * y)) / ((sum' (p * y)) + F 1e-32)) in
+          let b = Maths.((sum' (g' * y)) / ((sum' (p * y)) + _f 1e-32)) in
           Maths.((neg g') + (b * p))
         )
       | CD          -> fun _ _ g p g' -> (
@@ -231,8 +239,8 @@ module Make
       | None
 
     let run = function
-      | Standard m -> fun u u' -> Maths.(F m * u + u')
-      | Nesterov m -> fun u u' -> Maths.((F m * F m * u) + (F m + F 1.) * u')
+      | Standard m -> fun u u' -> Maths.(_f m * u + u')
+      | Nesterov m -> fun u u' -> Maths.((_f m * _f m * u) + (_f m + _f 1.) * u')
       | None       -> fun _ u' -> u'
 
     let default = function
@@ -257,10 +265,10 @@ module Make
       | None
 
     let run typ x = match typ with
-      | L1norm a           -> Maths.(F a * l1norm' x)
-      | L2norm a           -> Maths.(F a * l2norm' x)
-      | Elastic_net (a, b) -> Maths.(F a * l1norm' x + F b * l2norm' x)
-      | None               -> F 0.
+      | L1norm a           -> Maths.(_f a * l1norm' x)
+      | L2norm a           -> Maths.(_f a * l2norm' x)
+      | Elastic_net (a, b) -> Maths.(_f a * l1norm' x + _f b * l2norm' x)
+      | None               -> _f 0.
 
     let to_string = function
       | L1norm a           -> Printf.sprintf "l1norm (alpha = %g)" a
@@ -279,8 +287,8 @@ module Make
       | None
 
     let run typ x = match typ with
-      | L2norm t     -> clip_by_l2norm t x
-      | Value (a, b) -> clip_by_value ~amin:a ~amax:b x
+      | L2norm t     -> clip_by_l2norm (A.float_to_elt t) x
+      | Value (a, b) -> clip_by_value ~amin:(A.float_to_elt a) ~amax:(A.float_to_elt b) x
       | None         -> x
 
     let default = function
@@ -350,13 +358,13 @@ module Make
         batches_per_epoch = batches_per_epoch;
         epochs            = epochs;
         batches           = batches;
-        loss              = Array.make (batches + 1) (F 0.);
+        loss              = Array.make (batches + 1) (_f 0.);
         start_at          = Unix.gettimeofday ();
         stop              = false;
-        gs                = [| [| F 0. |] |];
-        ps                = [| [| F 0. |] |];
-        us                = [| [| F 0. |] |];
-        ch                = [| [| [| F 0.; F 0.|] |] |];
+        gs                = [| [| _f 0. |] |];
+        ps                = [| [| _f 0. |] |];
+        us                = [| [| _f 0. |] |];
+        ch                = [| [| [| _f 0.; _f 0.|] |] |];
       }
 
     let default_checkpoint_fun save_fun =
@@ -518,8 +526,8 @@ module Make
           (* variables used for specific gradient method *)
           Checkpoint.(state.gs <- [| [|_g0|] |]);
           Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
-          Checkpoint.(state.us <- [| [|F 0.|] |]);
-          Checkpoint.(state.ch <- [| [| [|F 0.; F 0.|] |] |]);
+          Checkpoint.(state.us <- [| [|_f 0.|] |]);
+          Checkpoint.(state.ch <- [| [| [|_f 0.; _f 0.|] |] |]);
           Checkpoint.(state.loss.(0) <- primal' _loss);
           state
         )
@@ -590,11 +598,11 @@ module Make
       let yt', ws = forward xt in
       let loss = loss_fun yt yt' in
       (* take the mean of the loss *)
-      let loss = Maths.(loss / (F (Mat.row_num yt |> float_of_int))) in
+      let loss = Maths.(loss / (_f (Mat.row_num yt |> float_of_int))) in
       (* add regularisation term if necessary *)
       let reg = match params.regularisation <> Regularisation.None with
-        | true  -> Owl_utils.aarr_fold (fun a w -> Maths.(a + regl_fun w)) (F 0.) ws
-        | false -> F 0.
+        | true  -> Owl_utils.aarr_fold (fun a w -> Maths.(a + regl_fun w)) (_f 0.) ws
+        | false -> _f 0.
       in
       let loss = Maths.(loss + reg) in
       let ws, gs' = backward loss in
@@ -613,8 +621,8 @@ module Make
           (* variables used for specific gradient method *)
           Checkpoint.(state.gs <- _gs);
           Checkpoint.(state.ps <- Owl_utils.aarr_map Maths.neg _gs);
-          Checkpoint.(state.us <- Owl_utils.aarr_map (fun _ -> F 0.) _gs);
-          Checkpoint.(state.ch <- Owl_utils.aarr_map (fun _ -> [|F 0.; F 0.|]) _gs);
+          Checkpoint.(state.us <- Owl_utils.aarr_map (fun _ -> _f 0.) _gs);
+          Checkpoint.(state.ch <- Owl_utils.aarr_map (fun _ -> [|_f 0.; _f 0.|]) _gs);
           Checkpoint.(state.loss.(0) <- primal' _loss);
           state
         )
@@ -700,8 +708,8 @@ module Make
           (* variables used for specific gradient method *)
           Checkpoint.(state.gs <- [| [|_g0|] |]);
           Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
-          Checkpoint.(state.us <- [| [|F 0.|] |]);
-          Checkpoint.(state.ch <- [| [| [|F 0.; F 0.|] |] |]);
+          Checkpoint.(state.us <- [| [|_f 0.|] |]);
+          Checkpoint.(state.ch <- [| [| [|_f 0.; _f 0.|] |] |]);
           Checkpoint.(state.loss.(0) <- primal' _loss);
           state
         )
@@ -745,6 +753,62 @@ module Make
     state, !x
 
 
+  (* This function minimises deeply compiled neural network. *)
+  let minimise_compiled_network ?state params eval update save x y =
+    let open Params in
+    if params.verbosity = true && state = None then
+      print_endline (Params.to_string params);
+
+    (* make alias functions *)
+    let bach_fun = Batch.run params.batch in
+    let stop_fun = Stopping.run params.stopping in
+    let chkp_fun = Checkpoint.run params.checkpoint in
+
+    (* operations in the ith iteration *)
+    let iterate i =
+      let xt, yt = bach_fun x y i in
+      let loss = eval xt yt in
+      loss
+    in
+
+    (* init new or continue previous state of optimisation process *)
+    let state = match state with
+      | Some state -> state
+      | None       -> (
+          let batches_per_epoch = Batch.batches params.batch x in
+          let state = Checkpoint.init_state batches_per_epoch params.epochs in
+          (* first iteration to bootstrap the optimisation *)
+          let _loss = iterate 0 in
+          update ();
+          (* variables used for specific gradient method *)
+          Checkpoint.(state.loss.(0) <- (primal' _loss));
+          state
+        )
+    in
+
+    (* try to iterate all batches *)
+    while Checkpoint.(state.stop = false) do
+      let loss' = iterate Checkpoint.(state.current_batch) in
+      (* check if the stopping criterion is met *)
+      Checkpoint.(state.stop <- stop_fun (unpack_flt loss'));
+      (* checkpoint of the optimisation if necessary *)
+      chkp_fun save Checkpoint.(state.current_batch) (loss' |> unpack_flt |> pack_flt) state;
+      (* print out the current state of optimisation *)
+      if params.verbosity = true then Checkpoint.print_state_info state;
+      update ();
+      (* save historical data *)
+      Checkpoint.(state.current_batch <- state.current_batch + 1);
+      (* force GC to release bigarray memory *)
+      (* FIXME Gc.minor (); *)
+    done;
+
+    (* print optimisation summary *)
+    if params.verbosity = true && Checkpoint.(state.current_batch >= state.batches) then
+      Checkpoint.print_summary state;
+    (* return the current state *)
+    state
+
+
 end
 
-(* Make function ends *)
+(* Make functor ends *)

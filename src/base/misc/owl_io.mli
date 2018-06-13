@@ -12,7 +12,7 @@ val read_file : ?trim:bool -> string -> string array
 val read_file_string : string -> string
 (** TODO *)
 
-val write_file : string -> string -> unit
+val write_file : ?flag:open_flag -> string -> string -> unit
 (** TODO *)
 
 val marshal_from_file : string -> 'a

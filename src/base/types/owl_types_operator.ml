@@ -111,21 +111,21 @@ module type ExtendSig = sig
 
   val approx_elt_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> ('a, 'b) t
 
-  val add_ : ('a, 'b) t -> ('a, 'b) t -> unit
+  val add_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 
-  val sub_ : ('a, 'b) t -> ('a, 'b) t -> unit
+  val sub_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 
-  val mul_ : ('a, 'b) t -> ('a, 'b) t -> unit
+  val mul_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 
-  val div_ : ('a, 'b) t -> ('a, 'b) t -> unit
+  val div_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 
-  val add_scalar_ : ('a, 'b) t -> 'a -> unit
+  val add_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 
-  val sub_scalar_ : ('a, 'b) t -> 'a -> unit
+  val sub_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 
-  val mul_scalar_ : ('a, 'b) t -> 'a -> unit
+  val mul_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 
-  val div_scalar_ : ('a, 'b) t -> 'a -> unit
+  val div_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 
   val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 

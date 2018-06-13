@@ -14,5 +14,5 @@ let rec desc ?(eta=F 0.01) ?(eps=1e-6) f x =
 let _ =
   (* [f] must be  [f : scalar -> scalar] *)
   let f = Maths.sin in
-  let y = desc f (F (Stats.Rnd.uniform ())) in
+  let y = desc f (F (Stats.std_uniform_rvs ())) in
   Owl_log.info "argmin f(x) = %g" (unpack_flt y)

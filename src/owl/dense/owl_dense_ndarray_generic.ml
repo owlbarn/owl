@@ -376,6 +376,41 @@ let broadcast_op ?out op x0 x1 =
   y2
 
 
+(* the following functions are for broadcasting among x, y, z three variables. *)
+let broadcast_align_shape2 x0 x1 x2 =
+  let s0, s1, s2 = Owl_utils_array.align3 `Left 1 (shape x0) (shape x1) (shape x2) in
+  let y0 = reshape x0 s0 in
+  let y1 = reshape x1 s1 in
+  let y2 = reshape x2 s2 in
+  let s3 = Owl_utils_array.map3 (fun a b c -> max a (max b c)) s0 s1 s2 in
+
+  Owl_utils_array.iter4 (fun a b c d ->
+    Owl_exception.(check (not(a <> 1 && a <> d)) NOT_BROADCASTABLE);
+    Owl_exception.(check (not(b <> 1 && b <> d)) NOT_BROADCASTABLE);
+    Owl_exception.(check (not(c <> 1 && c <> d)) NOT_BROADCASTABLE);
+  ) s0 s1 s2 s3;
+
+  (* calculate the strides *)
+  let t0 = Owl_utils.calc_stride s0 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t1 = Owl_utils.calc_stride s1 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t2 = Owl_utils.calc_stride s2 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t3 = Owl_utils.calc_stride s3 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  (* return aligned arrays, shapes, strides *)
+  y0, y1, y2, s0, s1, s2, s3, t0, t1, t2, t3
+
+
+let broadcast_op2 ?out op x0 x1 x2 =
+  (* align the input rank, calculate the output shape and stride *)
+  let y0, y1, y2, s0, s1, s2, s3, t0, t1, t2, t3 = broadcast_align_shape2 x0 x1 x2 in
+  let y3 = match out with
+    | Some y3 -> y3
+    | None    -> empty (kind x0) s3
+  in
+  (* call the specific map function *)
+  op y0 t0 y1 t1 y2 t2 y3 t3;
+  y3
+
+
 (* mathematical functions *)
 
 let min_i x =
@@ -520,6 +555,35 @@ let scalar_fmod a x =
   let y = empty (kind x) (shape x) in
   _owl_scalar_fmod (kind x) (numel y) x y a;
   y
+
+
+let fma x y z =
+  let xshp = shape x in
+  let yshp = shape y in
+  let zshp = shape z in
+  let rshp = Owl_utils.calc_broadcast_shape2 xshp yshp zshp in
+  let out = empty (kind x) rshp in
+  if xshp = yshp && yshp = zshp then
+    Owl_ndarray_fma._ndarray_fma (kind x) (numel x) x y z out
+  else (
+    let _op = Owl_ndarray_fma._ndarray_fma_broadcast (kind x) in
+    broadcast_op2 _op ~out x y z |> ignore
+  );
+  out
+
+
+let fma_ ?out x y z =
+  let out = match out with Some o -> o | None -> x in
+  let xshp = shape x in
+  let yshp = shape y in
+  let zshp = shape z in
+  if xshp = yshp && yshp = zshp then
+    Owl_ndarray_fma._ndarray_fma (kind x) (numel x) x y z out
+  else (
+    let _op = Owl_ndarray_fma._ndarray_fma_broadcast (kind x) in
+    broadcast_op2 _op ~out x y z |> ignore
+  )
+
 
 let ssqr_diff' x y = _owl_ssqr_diff (kind x) (numel x) x y
 
@@ -900,12 +964,21 @@ let elt_greater_equal_scalar x a =
   _owl_elt_greater_equal_scalar (kind x) (numel x) x y a;
   y
 
+
 let uniform k ?a ?b d =
   let a = match a with Some a -> a | None -> Owl_const.zero k in
   let b = match b with Some b -> b | None -> Owl_const.one k in
   let x = empty k d in
   _owl_uniform k (numel x) x a b;
   x
+
+
+let uniform_ ?a ?b ~out =
+  let k = kind out in
+  let a = match a with Some a -> a | None -> Owl_const.zero k in
+  let b = match b with Some b -> b | None -> Owl_const.one k in
+  _owl_uniform k (numel out) out a b
+
 
 let gaussian k ?mu ?sigma d =
   let mu = match mu with Some a -> a | None -> Owl_const.zero k in
@@ -932,20 +1005,40 @@ let logspace k ?(base=Owl_const.e) a b n =
   );
   x
 
+
 let bernoulli k ?(p=0.5) d =
   assert (p >= 0. && p <= 1.);
   let x = empty k d in
   (_owl_bernoulli k) (numel x) x p 0;
   x
 
+
+let bernoulli_ ?(p=0.5) ~out =
+  assert (p >= 0. && p <= 1.);
+  let k = kind out in
+  (_owl_bernoulli k) (numel out) out p 0
+
+
 let create kind dimension a =
   let x = empty kind dimension in
   let _ = fill x a in
   x
 
+
+let create_ ~out a = fill out a
+
+
 let zeros kind dimension = create kind dimension (Owl_const.zero kind)
 
+
+let zeros_ ~out = reset out
+
+
 let ones kind dimension = create kind dimension (Owl_const.one kind)
+
+
+let ones_ ~out = fill out (Owl_const.one (kind out))
+
 
 let sequential k ?a ?step dimension =
   let a = match a with
@@ -1155,6 +1248,11 @@ let matrix_transpose x =
   y
 
 
+let matrix_transpose_ ~out x =
+  let k = kind x in
+  Owl_matrix._matrix_transpose k x out
+
+
 let transpose ?axis x =
   let d = num_dims x in
   let a = match axis with
@@ -1181,6 +1279,34 @@ let transpose ?axis x =
       let incy = Array1.of_array Int32 C_layout _incy |> genarray_of_array1 in
       Owl_ndarray._ndarray_transpose (kind x) x y incx incy;
       y
+    )
+  )
+
+
+let transpose_ ~out ?axis x =
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None   -> Array.init d (fun i -> d - i - 1)
+  in
+  (* trivial case *)
+  if a = Array.init d (fun i -> i) then copy_to x out
+  else (
+    (* check if axis is a correct permutation *)
+    _check_transpose_axis a d;
+    if d = 2 then matrix_transpose_ ~out x
+    else (
+      let sx = shape x in
+      let sy = Array.map (fun j -> sx.(j)) a in
+      (* calculate the inverse of the permutation *)
+      let b = Array.make d 0 in
+      Array.iteri (fun i j -> b.(j) <- i) a;
+      let _incy = Owl_utils.calc_stride sy in
+      let _incy = Array.map (fun j -> Int32.of_int _incy.(j)) b in
+      let _incx = Array.map Int32.of_int (strides x) in
+      let incx = Array1.of_array Int32 C_layout _incx |> genarray_of_array1 in
+      let incy = Array1.of_array Int32 C_layout _incy |> genarray_of_array1 in
+      Owl_ndarray._ndarray_transpose (kind x) x out incx incy
     )
   )
 
@@ -1723,6 +1849,39 @@ let conv2d ?(padding=SAME) input kernel stride =
   output
 
 
+let conv2d_ ~out ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let output_cols, output_rows =
+    Owl_utils.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _owl_spatial_conv (kind input)
+    input kernel out batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride pad_typ row_in_stride col_in_stride
+
+
 (* gradient of conv2d w.r.t the input *)
 let conv2d_backward_input input kernel stride output' =
   assert (num_dims input = 4);
@@ -2041,6 +2200,73 @@ let transpose_conv2d ?(padding=SAME) input kernel stride =
   output
 
 
+let transpose_conv2d_ ~out ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let output_cols, output_rows =
+    Owl_utils.calc_transpose_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+
+  _owl_spatial_conv_backward_input (kind input)
+    out kernel input batches output_cols output_rows out_channel
+    kernel_cols kernel_rows input_cols input_rows in_channel
+    row_stride col_stride row_in_stride col_in_stride
+
+
+let conv2d_backward_kernel_ ~out input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  _owl_spatial_conv_backward_kernel (kind input)
+    input out output' batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride row_in_stride col_in_stride
+
+
 (* gradient of transpose_conv2d w.r.t the kernel *)
 let transpose_conv2d_backward_kernel input kernel stride output' =
   assert (num_dims input = 4);
@@ -2079,6 +2305,41 @@ let transpose_conv2d_backward_kernel input kernel stride output' =
     row_stride col_stride row_in_stride col_in_stride;
 
   kernel'
+
+
+let transpose_conv2d_backward_kernel_ ~out input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  _owl_spatial_conv_backward_kernel (kind input)
+    output' out input batches output_cols output_rows out_channel
+    kernel_cols kernel_rows input_cols input_rows in_channel
+    row_stride col_stride row_in_stride col_in_stride
 
 
 (* gradient of transpose_conv2d w.r.t the input *)
@@ -2120,6 +2381,42 @@ let transpose_conv2d_backward_input input kernel stride output' =
     row_stride col_stride dummy_pad_typ row_in_stride col_in_stride;
 
   input'
+
+
+let transpose_conv2d_backward_input_ ~out input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let dummy_pad_typ = 0 in
+  _owl_spatial_conv (kind input)
+    output' kernel out batches output_cols output_rows out_channel
+    kernel_cols kernel_rows input_cols input_rows in_channel
+    row_stride col_stride dummy_pad_typ row_in_stride col_in_stride
 
 
 (* conv3d: 5d input and 5d kernel, refer to tensorflow doc
@@ -2168,6 +2465,42 @@ let conv3d ?(padding=SAME) input kernel stride =
   output
 
 
+let conv3d_ ~out ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 5);
+  assert (num_dims kernel = 5);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let kernel_dpts = kernel_shp.(2) in
+  let out_channel = kernel_shp.(4) in
+  assert (in_channel = kernel_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let output_cols, output_rows, output_dpts =
+    Owl_utils.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+  in
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _owl_cuboid_conv (kind input)
+    input kernel out batches
+    input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts out_channel
+    dpt_stride row_stride col_stride pad_typ
+
+
 (* gradient of conv3d w.r.t the input *)
 let conv3d_backward_input input kernel stride output' =
   assert (num_dims input = 5);
@@ -2210,6 +2543,45 @@ let conv3d_backward_input input kernel stride output' =
     dpt_stride row_stride col_stride;
 
   input'
+
+
+let conv3d_backward_input_ ~out input kernel stride output' =
+  assert (num_dims input = 5);
+  assert (num_dims kernel = 5);
+  assert (num_dims output' = 5);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let kernel_dpts = kernel_shp.(2) in
+  let out_channel = kernel_shp.(4) in
+  assert (in_channel = kernel_shp.(3));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  let output_dpts =  output_shp.(3) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(4));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  _owl_cuboid_conv_backward_input (kind input)
+    out kernel output' batches
+    input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts out_channel
+    dpt_stride row_stride col_stride
 
 
 (* gradient of conv3d w.r.t the kernel *)
@@ -2629,7 +3001,7 @@ let conv1d ?(padding=SAME) input kernel stride =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   assert (in_channel = kernel_shp.(1));
-  let kernel = reshape kernel [|1;kernel_cols; in_channel; out_channel|] in
+  let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
   let col_stride = stride.(0) in
   let stride = [|1; col_stride|] in
@@ -2639,6 +3011,29 @@ let conv1d ?(padding=SAME) input kernel stride =
   let output_cols = output_shp.(2) in
   let output = reshape output [|batches; output_cols; out_channel|] in
   output
+
+
+let conv1d_ ~out ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 3);
+  assert (num_dims kernel = 3);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input = reshape input [|batches; 1; input_cols; in_channel|] in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let out_channel = kernel_shp.(2) in
+  assert (in_channel = kernel_shp.(1));
+  let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
+
+  let col_stride = stride.(0) in
+  let stride = [|1; col_stride|] in
+
+  conv2d_ ~out ~padding input kernel stride
 
 
 (* gradient of conv1d w.r.t the input *)
@@ -2675,6 +3070,40 @@ let conv1d_backward_input input kernel stride output' =
 
   let input' = conv2d_backward_input input kernel stride output' in
   reshape input' input_shp
+
+
+let conv1d_backward_input_ ~out input kernel stride output' =
+  assert (num_dims input = 3);
+  assert (num_dims kernel = 3);
+  assert (num_dims output' = 3);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input_rows = 1 in
+  let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let out_channel = kernel_shp.(2) in
+  assert (in_channel = kernel_shp.(1));
+  let kernel_rows = 1 in
+  let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
+
+  let output'_shp = shape output' in
+  let output_cols = output'_shp.(1) in
+  assert (batches = output'_shp.(0));
+  assert (out_channel = output'_shp.(2));
+  let output_rows = 1 in
+  let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+  let col_stride = stride.(0) in
+  let row_stride = 1 in
+  let stride = [|row_stride; col_stride|] in
+
+  conv2d_backward_input_ ~out input kernel stride output'
 
 
 (* gradient of conv1d w.r.t the kernel *)
@@ -2833,7 +3262,7 @@ let transpose_conv1d ?(padding=SAME) input kernel stride =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   assert (in_channel = kernel_shp.(1));
-  let kernel = reshape kernel [|1;kernel_cols; in_channel; out_channel|] in
+  let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
   let col_stride = stride.(0) in
   let stride = [|1; col_stride|] in
@@ -2957,6 +3386,36 @@ let max_pool2d ?(padding=SAME) input kernel stride =
   output
 
 
+let max_pool2d_ ~out ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 4);
+  assert (Array.length kernel = 2);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let output_cols, output_rows =
+    Owl_utils.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _owl_spatial_max_pooling (kind input)
+    input out batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows
+    row_stride col_stride pad_typ row_in_stride col_in_stride
+
+
 (* max_pool1d: 3d input and 1d kernel, refer to tensorlfow doc
   input : [batch; input_column; input_channel]
   kernel: [kernel_column]
@@ -2985,6 +3444,26 @@ let max_pool1d ?(padding=SAME) input kernel stride =
   let output_cols = output_shp.(2) in
   let output = reshape output [|batches; output_cols; in_channel|] in
   output
+
+
+let max_pool1d_ ~out ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 3);
+  assert (Array.length kernel = 1);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input = reshape input [|batches; 1; input_cols; in_channel|] in
+
+  let kernel_cols = kernel.(0) in
+  let kernel = [|1; kernel_cols|] in
+
+  let col_stride = stride.(0) in
+  let stride = [|1; col_stride|] in
+
+  max_pool2d_ ~padding ~out input kernel stride
 
 
 (* similar to max_pool2d *)
@@ -3022,6 +3501,36 @@ let avg_pool2d ?(padding=SAME) input kernel stride =
   output
 
 
+let avg_pool2d_ ~out ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 4);
+  assert (Array.length kernel = 2);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let output_cols, output_rows =
+    Owl_utils.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _owl_spatial_avg_pooling (kind input)
+    input out batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows
+    row_stride col_stride pad_typ row_in_stride col_in_stride
+
+
 (* similar to max_pool1d *)
 let avg_pool1d ?(padding=SAME) input kernel stride =
   assert (num_dims input = 3);
@@ -3045,6 +3554,26 @@ let avg_pool1d ?(padding=SAME) input kernel stride =
   let output_cols = output_shp.(2) in
   let output = reshape output [|batches; output_cols; in_channel|] in
   output
+
+
+let avg_pool1d_ ~out ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 3);
+  assert (Array.length kernel = 1);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input = reshape input [|batches; 1; input_cols; in_channel|] in
+
+  let kernel_cols = kernel.(0) in
+  let kernel = [|1; kernel_cols|] in
+
+  let col_stride = stride.(0) in
+  let stride = [|1; col_stride|] in
+
+  avg_pool2d_ ~out ~padding input kernel stride
 
 
 (* max_pool3d: 5d input and 3d kernel, refer to tensorflow doc
@@ -3090,6 +3619,39 @@ let max_pool3d ?(padding=SAME) input kernel stride =
   output
 
 
+let max_pool3d_ ~out ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 5);
+  assert (Array.length kernel = 3);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+  let kernel_dpts = kernel.(2) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let output_cols, output_rows, output_dpts =
+    Owl_utils.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+  in
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _owl_cuboid_max_pooling (kind input)
+    input out batches
+    input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts
+    dpt_stride row_stride col_stride pad_typ
+
+
 (* simiar to max_pool3d *)
 let avg_pool3d ?(padding=SAME) input kernel stride =
   assert (num_dims input = 5);
@@ -3126,6 +3688,39 @@ let avg_pool3d ?(padding=SAME) input kernel stride =
     dpt_stride row_stride col_stride pad_typ;
 
   output
+
+
+let avg_pool3d_ ~out ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 5);
+  assert (Array.length kernel = 3);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+  let kernel_dpts = kernel.(2) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let output_cols, output_rows, output_dpts =
+    Owl_utils.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+  in
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _owl_cuboid_avg_pooling (kind input)
+    input out batches
+    input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts
+    dpt_stride row_stride col_stride pad_typ
 
 
 (* similar to max_pool2d, but also return the flatten indices of the max values *)
@@ -3201,6 +3796,41 @@ let max_pool3d_backward padding input kernel stride output' =
 
   input'
 
+
+let max_pool3d_backward_ ~out padding input kernel stride output' =
+  assert (num_dims input = 5);
+  assert (Array.length kernel = 3);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+  let kernel_dpts = kernel.(2) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let output_cols, output_rows, output_dpts =
+    Owl_utils.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+  in
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _owl_cuboid_max_pooling_backward (kind input)
+    input output' out
+    batches input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts
+    col_stride row_stride dpt_stride
+    pad_typ
+
+
 (* calculate the gradient of max_pool2d *)
 let max_pool2d_backward padding input kernel stride output' =
   assert (num_dims input = 4);
@@ -3236,6 +3866,37 @@ let max_pool2d_backward padding input kernel stride output' =
   input'
 
 
+let max_pool2d_backward_ ~out padding input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (Array.length kernel = 2);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+
+  let output_cols, output_rows =
+    Owl_utils.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let pad_top, pad_left, _, _ =
+    Owl_utils.calc_conv2d_padding input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
+  in
+
+  _owl_spatial_max_pooling_backward (kind input)
+    input output' out
+    batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows
+    row_stride col_stride pad_top pad_left
+
+
 (* calculate the gradient of max_pool1d *)
 let max_pool1d_backward padding input kernel stride output' =
   assert (num_dims input = 3);
@@ -3265,6 +3926,36 @@ let max_pool1d_backward padding input kernel stride output' =
 
   let input' = max_pool2d_backward padding input kernel stride output' in
   reshape input' input_shp
+
+
+let max_pool1d_backward_ ~out padding input kernel stride output' =
+  assert (num_dims input = 3);
+  assert (Array.length kernel = 1);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = 1 in
+  let in_channel = input_shp.(2) in
+  let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = 1 in
+  let kernel = [|kernel_rows; kernel_cols|] in
+
+  let col_stride = stride.(0) in
+  let row_stride = 1 in
+  let stride = [|row_stride; col_stride|] in
+
+  let output'_shp = shape output' in
+  let output_cols = output'_shp.(1) in
+  let output_rows = 1 in
+  let out_channel = output'_shp.(2) in
+  let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+  max_pool2d_backward_ ~out padding input kernel stride output'
+
 
 (* calculate the gradient of max_pool2d *)
 let avg_pool3d_backward padding input kernel stride output' =
@@ -3303,6 +3994,41 @@ let avg_pool3d_backward padding input kernel stride output' =
 
   input'
 
+
+let avg_pool3d_backward_ ~out padding input kernel stride output' =
+  assert (num_dims input = 5);
+  assert (Array.length kernel = 3);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+  let kernel_dpts = kernel.(2) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let output_cols, output_rows, output_dpts =
+    Owl_utils.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+  in
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _owl_cuboid_avg_pooling_backward (kind input)
+    out output'
+    batches input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts
+    col_stride row_stride dpt_stride
+    pad_typ
+
+
 (* calculate the gradient of avg_pool2d *)
 let avg_pool2d_backward padding input kernel stride output' =
   assert (num_dims input = 4);
@@ -3338,6 +4064,37 @@ let avg_pool2d_backward padding input kernel stride output' =
   input'
 
 
+let avg_pool2d_backward_ ~out padding input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (Array.length kernel = 2);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+
+  let output_cols, output_rows =
+    Owl_utils.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let pad_top, pad_left, _, _ =
+    Owl_utils.calc_conv2d_padding input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
+  in
+
+  _owl_spatial_avg_pooling_backward (kind input)
+    out output'
+    batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows
+    row_stride col_stride pad_top pad_left
+
+
 (* calculate the gradient of avg_pool1d *)
 let avg_pool1d_backward padding input kernel stride output' =
   assert (num_dims input = 3);
@@ -3367,6 +4124,35 @@ let avg_pool1d_backward padding input kernel stride output' =
 
   let input' = avg_pool2d_backward padding input kernel stride output' in
   reshape input' input_shp
+
+
+let avg_pool1d_backward_ ~out padding input kernel stride output' =
+  assert (num_dims input = 3);
+  assert (Array.length kernel = 1);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = 1 in
+  let in_channel = input_shp.(2) in
+  let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = 1 in
+  let kernel = [|kernel_rows; kernel_cols|] in
+
+  let col_stride = stride.(0) in
+  let row_stride = 1 in
+  let stride = [|row_stride; col_stride|] in
+
+  let output'_shp = shape output' in
+  let output_cols = output'_shp.(1) in
+  let output_rows = 1 in
+  let out_channel = output'_shp.(2) in
+  let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+  avg_pool2d_backward_ ~out padding input kernel stride output'
 
 
 let _diff a x =
@@ -3410,9 +4196,16 @@ let one_hot depth idx =
   y
 
 
+let one_hot_ ~out depth idx =
+  let k = kind idx in
+  let n = numel idx in
+  reset out;
+  _owl_one_hot k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:depth idx out
+
+
 
 (* TODO: optimise performance, slow along the low dimension *)
-let cumulative_op ?(axis=(-1)) _cumop x =
+let cumulative_op ?(axis=(-1)) _cumop x y =
   let d = num_dims x in
   let a = Owl_utils.adjust_index axis d in
 
@@ -3427,34 +4220,34 @@ let cumulative_op ?(axis=(-1)) _cumop x =
   let ofsx = 0 in
   let ofsy = _stride.(a) in
 
-  _cumop m n x ofsx incx_m incx_n x ofsy incy_m incy_n
+  _cumop m n x ofsx incx_m incx_n y ofsy incy_m incy_n
 
 
 let cumsum ?axis x =
   let x = copy x in
   let _cumop = _owl_cumsum (kind x) in
-  cumulative_op ?axis _cumop x;
+  cumulative_op ?axis _cumop x x;
   x
 
 
 let cumprod ?axis x =
   let x = copy x in
   let _cumop = _owl_cumprod (kind x) in
-  cumulative_op ?axis _cumop x;
+  cumulative_op ?axis _cumop x x;
   x
 
 
 let cummin ?axis x =
   let x = copy x in
   let _cumop = _owl_cummin (kind x) in
-  cumulative_op ?axis _cumop x;
+  cumulative_op ?axis _cumop x x;
   x
 
 
 let cummax ?axis x =
   let x = copy x in
   let _cumop = _owl_cummax (kind x) in
-  cumulative_op ?axis _cumop x;
+  cumulative_op ?axis _cumop x x;
   x
 
 
@@ -3482,13 +4275,15 @@ let split ?(axis=0) parts x =
   let x_shp = shape x in
   let x_dim = num_dims x in
   let _d = Array.fold_left ( + ) 0 parts in
-  assert (axis < x_dim);
-  assert (_d = x_shp.(axis));
+
+  let a = Owl_utils.adjust_index axis _d in
+  assert (a < x_dim);
+  assert (_d = x_shp.(a));
 
   let _pos = ref 0 in
   let slices = Array.map (fun d ->
     let s_def = Array.make x_dim (R_ [||]) in
-    s_def.(axis) <- R_ [|!_pos; !_pos + d - 1|];
+    s_def.(a) <- R_ [|!_pos; !_pos + d - 1|];
     _pos := !_pos + d;
     Owl_slicing.get_slice_array_typ s_def x
   ) parts
@@ -3607,6 +4402,14 @@ let sum ?axis x =
   | None   -> _owl_sum _kind (numel x) x |> create _kind [|1|]
 
 
+let sum_ ~out ~axis x =
+  let _kind = kind x in
+  let m, n, o, s = Owl_utils.reduce_params axis x in
+  (* TODO: this can be optimised, only need to reset first slice actually. *)
+  reset out;
+  _owl_sum_along _kind m n o x out
+
+
 let prod ?axis x =
   let _kind = kind x in
   match axis with
@@ -3631,6 +4434,14 @@ let min ?axis x =
   | None   -> min' x |> create _kind [|1|]
 
 
+let min_ ~out ~axis x =
+  let _kind = kind x in
+  let m, n, o, s = Owl_utils.reduce_params axis x in
+  (* TODO: this can be optimised, only need to reset first slice actually. *)
+  fill out (Owl_const.pos_inf _kind);
+  _owl_min_along _kind m n o x out
+
+
 let max ?axis x =
   let _kind = kind x in
   match axis with
@@ -3641,6 +4452,14 @@ let max ?axis x =
       y
     )
   | None   -> max' x |> create _kind [|1|]
+
+
+let max_ ~out ~axis x =
+  let _kind = kind x in
+  let m, n, o, s = Owl_utils.reduce_params axis x in
+  (* TODO: this can be optimised, only need to reset first slice actually. *)
+  fill out (Owl_const.neg_inf _kind);
+  _owl_max_along _kind m n o x out
 
 
 let minmax ?axis x = min ?axis x, max ?axis x
@@ -3823,325 +4642,471 @@ let bottom x n = _search_close_to_extreme x n (Owl_const.pos_inf (kind x)) ( < )
 
 (* fucntions which modify the data in-place, not so pure *)
 
-let add_ x y =
+let add_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_add (kind x) (numel x) x y x
+  if sx = sy then _owl_add (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_add (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_add (kind x)) x y ~out |> ignore
   )
 
-let sub_ x y =
+let sub_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_sub (kind x) (numel x) x y x
+  if sx = sy then _owl_sub (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_sub (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_sub (kind x)) x y ~out |> ignore
   )
 
-let mul_ x y =
+let mul_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_mul (kind x) (numel x) x y x
+  if sx = sy then _owl_mul (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_mul (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_mul (kind x)) x y ~out |> ignore
   )
 
-let div_ x y =
+let div_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_div (kind x) (numel x) x y x
+  if sx = sy then _owl_div (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_div (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_div (kind x)) x y ~out |> ignore
   )
 
-let pow_ x y =
+let pow_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_pow (kind x) (numel x) x y x
+  if sx = sy then _owl_pow (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_pow (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_pow (kind x)) x y ~out |> ignore
   )
 
-let atan2_ x y =
+let atan2_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_atan2 (kind x) (numel x) x y x
+  if sx = sy then _owl_atan2 (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_atan2 (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_atan2 (kind x)) x y ~out |> ignore
   )
 
-let hypot_ x y =
+let hypot_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_hypot (kind x) (numel x) x y x
+  if sx = sy then _owl_hypot (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_hypot (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_hypot (kind x)) x y ~out |> ignore
   )
 
-let fmod_ x y =
+let fmod_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_fmod (kind x) (numel x) x y x
+  if sx = sy then _owl_fmod (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_fmod (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_fmod (kind x)) x y ~out |> ignore
   )
 
-let min2_ x y =
+let min2_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_min2 (kind x) (numel x) x y x
+  if sx = sy then _owl_min2 (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_min2 (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_min2 (kind x)) x y ~out |> ignore
   )
 
-let max2_ x y =
+let max2_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
-  if sx = sy then _owl_max2 (kind x) (numel x) x y x
+  if sx = sy then _owl_max2 (kind x) (numel x) x y out
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_max2 (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_max2 (kind x)) x y ~out |> ignore
   )
 
-let elt_equal_ x y =
+let elt_equal_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_equal (kind x) (numel x) x y out
+  else (
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_elt_equal (kind x)) x y ~out |> ignore
+  )
+
+let elt_not_equal_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_not_equal (kind x) (numel x) x y out
+  else (
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_elt_not_equal (kind x)) x y ~out |> ignore
+  )
+
+let elt_less_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_less (kind x) (numel x) x y out
+  else (
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_elt_less (kind x)) x y ~out |> ignore
+  )
+
+let elt_greater_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_greater (kind x) (numel x) x y out
+  else (
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_elt_greater (kind x)) x y ~out |> ignore
+  )
+
+let elt_less_equal_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_less_equal (kind x) (numel x) x y out
+  else (
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_elt_less_equal (kind x)) x y ~out |> ignore
+  )
+
+let elt_greater_equal_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
   let sx = shape x in
   let sy = shape y in
   if sx = sy then _owl_elt_equal (kind x) (numel x) x y x
   else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_elt_equal (kind x)) x y ~out:x |> ignore
+    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    assert (shape out = so);
+    broadcast_op (_owl_broadcast_elt_greater_equal (kind x)) x y ~out |> ignore
   )
 
-let elt_not_equal_ x y =
-  let sx = shape x in
-  let sy = shape y in
-  if sx = sy then _owl_elt_not_equal (kind x) (numel x) x y x
-  else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_elt_not_equal (kind x)) x y ~out:x |> ignore
-  )
+let elt_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_elt_equal_scalar (kind x) (numel x) x out a
 
-let elt_less_ x y =
-  let sx = shape x in
-  let sy = shape y in
-  if sx = sy then _owl_elt_less (kind x) (numel x) x y x
-  else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_elt_less (kind x)) x y ~out:x |> ignore
-  )
+let elt_not_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_elt_not_equal_scalar (kind x) (numel x) x out a
 
-let elt_greater_ x y =
-  let sx = shape x in
-  let sy = shape y in
-  if sx = sy then _owl_elt_greater (kind x) (numel x) x y x
-  else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_elt_greater (kind x)) x y ~out:x |> ignore
-  )
+let elt_less_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_elt_less_scalar (kind x) (numel x) x out a
 
-let elt_less_equal_ x y =
-  let sx = shape x in
-  let sy = shape y in
-  if sx = sy then _owl_elt_less_equal (kind x) (numel x) x y x
-  else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_elt_less_equal (kind x)) x y ~out:x |> ignore
-  )
+let elt_greater_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_elt_greater_scalar (kind x) (numel x) x out a
 
-let elt_greater_equal_ x y =
-  let sx = shape x in
-  let sy = shape y in
-  if sx = sy then _owl_elt_equal (kind x) (numel x) x y x
-  else (
-    (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.Array.greater_eqaul sx sy);
-    broadcast_op (_owl_broadcast_elt_greater_equal (kind x)) x y ~out:x |> ignore
-  )
+let elt_less_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_elt_less_equal_scalar (kind x) (numel x) x out a
 
-let elt_equal_scalar_ x a = _owl_elt_equal_scalar (kind x) (numel x) x x a
+let elt_greater_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_elt_greater_equal_scalar (kind x) (numel x) x out a
 
-let elt_not_equal_scalar_ x a = _owl_elt_not_equal_scalar (kind x) (numel x) x x a
+let add_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_add_scalar (kind x) (numel x) x out a
 
-let elt_less_scalar_ x a = _owl_elt_less_scalar (kind x) (numel x) x x a
+let sub_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  add_scalar_ ~out x (_neg_elt (kind x) a)
 
-let elt_greater_scalar_ x a = _owl_elt_greater_scalar (kind x) (numel x) x x a
+let mul_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_mul_scalar (kind x) (numel x) x out a
 
-let elt_less_equal_scalar_ x a = _owl_elt_less_equal_scalar (kind x) (numel x) x x a
+let div_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_div_scalar (kind x) (numel x) x out a
 
-let elt_greater_equal_scalar_ x a = _owl_elt_greater_equal_scalar (kind x) (numel x) x x a
+let pow_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_pow_scalar (kind x) (numel x) x out a
 
-let add_scalar_ x a = _owl_add_scalar (kind x) (numel x) x x a
+let atan2_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_atan2_scalar (kind x) (numel x) x out a
 
-let sub_scalar_ x a = add_scalar_ x (_neg_elt (kind x) a)
+let fmod_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  _owl_fmod_scalar (kind x) (numel x) x out a
 
-let mul_scalar_ x a = _owl_mul_scalar (kind x) (numel x) x x a
+let scalar_add_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_add_scalar (kind x) (numel x) x out a
 
-let div_scalar_ x a = _owl_div_scalar (kind x) (numel x) x x a
+let scalar_sub_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_scalar_sub (kind x) (numel x) x out a
 
-let pow_scalar_ x a = _owl_pow_scalar (kind x) (numel x) x x a
+let scalar_mul_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_mul_scalar (kind x) (numel x) x out a
 
-let atan2_scalar_ x a = _owl_atan2_scalar (kind x) (numel x) x x a
+let scalar_div_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_scalar_div (kind x) (numel x) x out a
 
-let fmod_scalar_ x a = _owl_fmod_scalar (kind x) (numel x) x x a
+let scalar_pow_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_scalar_pow (kind x) (numel x) x out a
 
-let scalar_add_ a x = _owl_add_scalar (kind x) (numel x) x x a
+let scalar_atan2_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_scalar_atan2 (kind x) (numel x) x out a
 
-let scalar_sub_ a x = _owl_scalar_sub (kind x) (numel x) x x a
+let scalar_fmod_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_scalar_fmod (kind x) (numel x) x out a
 
-let scalar_mul_ a x = _owl_mul_scalar (kind x) (numel x) x x a
+let conj_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_conj (kind x) (numel x) x out
 
-let scalar_div_ a x = _owl_scalar_div (kind x) (numel x) x x a
+let abs_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_abs (kind x) (numel x) x out
 
-let scalar_pow_ a x = _owl_scalar_pow (kind x) (numel x) x x a
+let neg_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_neg (kind x) (numel x) x out
 
-let scalar_atan2_ a x = _owl_scalar_atan2 (kind x) (numel x) x x a
+let reci_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_reci (kind x) (numel x) x out
 
-let scalar_fmod_ a x = _owl_scalar_fmod (kind x) (numel x) x x a
+let signum_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_signum (kind x) (numel x) x out
 
-let conj_ x = _owl_conj (kind x) (numel x) x x
+let sqr_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_sqr (kind x) (numel x) x out
 
-let abs_ x = _owl_abs (kind x) (numel x) x x
+let sqrt_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_sqrt (kind x) (numel x) x out
 
-let neg_ x = _owl_neg (kind x) (numel x) x x
+let cbrt_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_cbrt (kind x) (numel x) x out
 
-let reci_ x = _owl_reci (kind x) (numel x) x x
+let exp_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_exp (kind x) (numel x) x out
 
-let signum_ x = _owl_signum (kind x) (numel x) x x
+let exp2_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_exp2 (kind x) (numel x) x out
 
-let sqr_ x = _owl_sqr (kind x) (numel x) x x
+let exp10_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_exp10 (kind x) (numel x) x out
 
-let sqrt_ x = _owl_sqrt (kind x) (numel x) x x
+let expm1_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_expm1 (kind x) (numel x) x out
 
-let cbrt_ x = _owl_cbrt (kind x) (numel x) x x
+let log_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_log (kind x) (numel x) x out
 
-let exp_ x = _owl_exp (kind x) (numel x) x x
+let log2_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_log2 (kind x) (numel x) x out
 
-let exp2_ x = _owl_exp2 (kind x) (numel x) x x
+let log10_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_log10 (kind x) (numel x) x out
 
-let exp10_ x = _owl_exp10 (kind x) (numel x) x x
+let log1p_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_log1p (kind x) (numel x) x out
 
-let expm1_ x = _owl_expm1 (kind x) (numel x) x x
+let sin_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_sin (kind x) (numel x) x out
 
-let log_ x = _owl_log (kind x) (numel x) x x
+let cos_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_cos (kind x) (numel x) x out
 
-let log2_ x = _owl_log2 (kind x) (numel x) x x
+let tan_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_tan (kind x) (numel x) x out
 
-let log10_ x = _owl_log10 (kind x) (numel x) x x
+let asin_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_asin (kind x) (numel x) x out
 
-let log1p_ x = _owl_log1p (kind x) (numel x) x x
+let acos_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_acos (kind x) (numel x) x out
 
-let sin_ x = _owl_sin (kind x) (numel x) x x
+let atan_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_atan (kind x) (numel x) x out
 
-let cos_ x = _owl_cos (kind x) (numel x) x x
+let sinh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_sinh (kind x) (numel x) x out
 
-let tan_ x = _owl_tan (kind x) (numel x) x x
+let cosh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_cosh (kind x) (numel x) x out
 
-let asin_ x = _owl_asin (kind x) (numel x) x x
+let tanh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_tanh (kind x) (numel x) x out
 
-let acos_ x = _owl_acos (kind x) (numel x) x x
+let asinh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_asinh (kind x) (numel x) x out
 
-let atan_ x = _owl_atan (kind x) (numel x) x x
+let acosh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_acosh (kind x) (numel x) x out
 
-let sinh_ x = _owl_sinh (kind x) (numel x) x x
+let atanh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_atanh (kind x) (numel x) x out
 
-let cosh_ x = _owl_cosh (kind x) (numel x) x x
+let floor_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_floor (kind x) (numel x) x out
 
-let tanh_ x = _owl_tanh (kind x) (numel x) x x
+let ceil_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_ceil (kind x) (numel x) x out
 
-let asinh_ x = _owl_asinh (kind x) (numel x) x x
+let round_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_round (kind x) (numel x) x out
 
-let acosh_ x = _owl_acosh (kind x) (numel x) x x
+let trunc_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_trunc (kind x) (numel x) x out
 
-let atanh_ x = _owl_atanh (kind x) (numel x) x x
+let fix_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_fix (kind x) (numel x) x out
 
-let floor_ x = _owl_floor (kind x) (numel x) x x
+let erf_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_erf (kind x) (numel x) x out
 
-let ceil_ x = _owl_ceil (kind x) (numel x) x x
+let erfc_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_erfc (kind x) (numel x) x out
 
-let round_ x = _owl_round (kind x) (numel x) x x
+let relu_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_relu (kind x) (numel x) x out
 
-let trunc_ x = _owl_trunc (kind x) (numel x) x x
+let softplus_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_softplus (kind x) (numel x) x out
 
-let fix_ x = _owl_fix (kind x) (numel x) x x
+let softsign_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_softsign (kind x) (numel x) x out
 
-let erf_ x = _owl_erf (kind x) (numel x) x x
-
-let erfc_ x = _owl_erfc (kind x) (numel x) x x
-
-let relu_ x = _owl_relu (kind x) (numel x) x x
-
-let softplus_ x = _owl_softplus (kind x) (numel x) x x
-
-let softsign_ x = _owl_softsign (kind x) (numel x) x x
-
-let sigmoid_ x = _owl_sigmoid (kind x) (numel x) x x
+let sigmoid_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_sigmoid (kind x) (numel x) x out
 
 let softmax ?(axis=(-1)) x =
   let x = copy x in
   let axis = Owl_utils.adjust_index axis (num_dims x) in
-  sub_ x (max ~axis x);
-  exp_ x;
+  sub_ ~out:x x (max ~axis x);
+  exp_ ~out:x x;
   let a = sum ~axis x in
-  div_ x a;
+  div_ ~out:x x a;
   x
 
-let softmax_ ?(axis=(-1)) x =
+let softmax_ ?out ?(axis=(-1)) x =
+  let out = match out with Some o -> o | None -> x in
   let axis = Owl_utils.adjust_index axis (num_dims x) in
-  sub_ x (max ~axis x);
-  exp_ x;
+  sub_ ~out x (max ~axis x);
+  exp_ ~out x;
   let a = sum ~axis x in
-  div_ x a
+  div_ ~out x a
 
-let cumsum_ ?axis x =
+let cumsum_ ?out ?axis x =
+  let out = match out with Some o -> o | None -> x in
   let _cumop = _owl_cumsum (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x out
 
-let cumprod_ ?axis x =
+let cumprod_ ?out ?axis x =
+  let out = match out with Some o -> o | None -> x in
   let _cumop = _owl_cumprod (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x out
 
-let cummin_ ?axis x =
+let cummin_ ?out ?axis x =
+  let out = match out with Some o -> o | None -> x in
   let _cumop = _owl_cummin (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x out
 
-let cummax_ ?axis x =
+let cummax_ ?out ?axis x =
+  let out = match out with Some o -> o | None -> x in
   let _cumop = _owl_cummax (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x out
 
 let cross_entropy' x y =
   let y = copy y in
-  log_ y;
-  mul_ y x;
+  log_ ~out:y y;
+  mul_ ~out:y y x;
   _neg_elt (kind y) (sum' y)
 
-let dropout_ ?(rate=0.5) x =
+let dropout_ ?out ?(rate=0.5) x =
   assert (rate >= 0. && rate <= 1.);
-  _owl_dropout (kind x) (numel x) x rate 0
+  let out = match out with Some o -> o | None -> x in
+  if not (out == x) then copy_to x out;
+  _owl_dropout (kind x) (numel x) out rate 0
+
+
+let fused_adagrad_ ?out ~rate ~eps x =
+  let out = match out with Some o -> o | None -> x in
+  _owl_fused_adagrad (kind x) (numel x) rate eps x out
 
 
 (** Matrix functions *)
@@ -4252,6 +5217,10 @@ let dot x1 x2 =
   let transb = Owl_cblas_basic.CblasNoTrans in
   Owl_cblas_basic.gemm layout transa transb m n k alpha a k b n beta c n;
   x3
+
+
+let dot_ ?(transa=false) ?(transb=false) ?alpha ?beta ~c a b =
+  Owl_cblas.gemm ~transa ~transb ?alpha ?beta ~a ~b ~c
 
 
 let eye k n =
@@ -4445,6 +5414,7 @@ let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ~window x =
 
 
 let draw ?(axis=0) x n =
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
   let b = nth_dim x axis in
   let indices = Array.init n (fun _ -> Owl_stats.uniform_int_rvs ~a:0 ~b:(b-1)) in
   let slice = Array.init (num_dims x) (fun i -> if i = axis then L_ indices else R_ [||]) in
@@ -4540,6 +5510,12 @@ let contract2 index_pairs x y =
   Owl_ndarray._ndarray_contract_two (kind x) x y z incx1 incy1 incz1 loop1 ndims;
   z
 
+
+(* Helper functions *)
+
+let float_to_elt x = x
+
+let elt_to_float x = x
 
 
 (* ends here *)

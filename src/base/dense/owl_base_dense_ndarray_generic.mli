@@ -108,6 +108,9 @@ val reset : (float, 'b) t -> unit
 val copy : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val copy_to : ('a, 'b) t -> ('a, 'b) t -> unit
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
@@ -134,6 +137,10 @@ val split : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
 
 val draw : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val one_hot : int -> ('a, 'b) t -> ('a, 'b) t
+(** TODO: not implemented *)
+
 
 (** {6 Iterate array elements}  *)
 
@@ -309,10 +316,10 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 
 (** {6 Unary math operators }  *)
 
-val min : ?axis:int -> (float, 'b) t -> (float, 'b) t
+val min : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val max : ?axis:int -> (float, 'b) t -> (float, 'b) t
+val max : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
@@ -326,11 +333,11 @@ val sum_reduce : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
-val min' : (float, 'b) t -> float
+val min' : ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
-val max' : (float, 'b) t -> float
+val max' : ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
@@ -512,6 +519,9 @@ val clip_by_value : ?amin:float -> ?amax:float -> (float, 'b) t -> (float, 'b) t
 val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val fma : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 
 (** {6 Neural network related}  *)
 
@@ -686,6 +696,14 @@ val draw_rows : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
+
+(** {6 Helper functions}  *)
+
+val float_to_elt : 'a -> 'a
+(** Identity function to deal with the type conversion required by other functors. *)
+
+val elt_to_float : 'a -> 'a
+(** Identity function to deal with the type conversion required by other functors. *)
 
 
 (* ends here *)

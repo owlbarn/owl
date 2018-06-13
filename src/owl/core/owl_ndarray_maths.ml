@@ -2882,5 +2882,13 @@ let _owl_broadcast_elt_greater_equal : type a b. (a, b) kind -> (a, b) owl_arr_o
   | Int64          -> owl_int64_broadcast_elt_greater_equal
   | _              -> failwith "_owl_broadcast_elt_greater_equal: unsupported operation"
 
+external owl_float32_fused_adagrad : int -> float -> float -> (float, 'a) owl_arr -> (float, 'a) owl_arr -> unit = "float32_fused_adagrad"
+external owl_float64_fused_adagrad : int -> float -> float -> (float, 'a) owl_arr -> (float, 'a) owl_arr -> unit = "float64_fused_adagrad"
+
+let _owl_fused_adagrad : type a b. (a, b) kind -> (a, b) owl_arr_op33 = function
+  | Float32   -> owl_float32_fused_adagrad
+  | Float64   -> owl_float64_fused_adagrad
+  | _         -> failwith "_owl_fused_adagrad: unsupported operation"
+
 
 (* ends here *)

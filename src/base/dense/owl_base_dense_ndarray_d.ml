@@ -13,6 +13,8 @@ include M
 type elt = float
 type arr = (float, float64_elt, c_layout) Genarray.t
 
+let number = Owl_types.F64
+
 
 let empty dims = M.empty Float64 dims
 

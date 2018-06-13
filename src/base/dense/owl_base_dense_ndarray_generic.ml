@@ -115,7 +115,7 @@ let _enumerate_slice_def dim ?(step) start stop =
   let stop = if stop < 0 then dim + stop else stop in
   let step = match step with
     | Some x -> x
-    | None -> if (start <= stop) then 1 else -1
+    | None   -> if (start <= stop) then 1 else -1
   in
   let _ =
     assert (((start <= stop) && (step > 0)) || ((start > stop) && (step < 0)))
@@ -131,11 +131,11 @@ let _expand_slice_indices index_list dims =
   let sdef_len = List.length index_list in (* the number of dimensions this slice specifies *)
   let _expand_slice_index = (
     fun i ind -> match ind with
-      | [] -> Array.init dims.(i) (fun i -> i)
-      | [start] -> _enumerate_slice_def dims.(i) start start
-      | [start; stop] -> _enumerate_slice_def dims.(i) start stop
+      | []                  -> Array.init dims.(i) (fun i -> i)
+      | [start]             -> _enumerate_slice_def dims.(i) start start
+      | [start; stop]       -> _enumerate_slice_def dims.(i) start stop
       | [start; stop; step] -> _enumerate_slice_def dims.(i) ~step:step start stop
-      | _ -> failwith "incorrect slice definition"
+      | x                   -> Array.of_list x
   ) in
   Array.append
     (Array.of_list (List.mapi _expand_slice_index index_list)) (* for the axis where the index was specified *)
@@ -232,6 +232,9 @@ let copy varr =
   begin
     Genarray.blit varr varr_copy; varr_copy
   end
+
+
+let copy_to x = failwith "Owl_base_dense_ndarray_generic:copy_to: not implemented"
 
 
 (* Reset to zero *)
@@ -705,11 +708,17 @@ let _fold_left f a varr =
 
 
 (* Min of all elements in the NDarray *)
-let min' varr = (_fold_left (Pervasives.min) Pervasives.max_float varr)
+let min' varr =
+  let _kind = kind varr in
+  let _max_val = Owl_base_dense_common._max_val_elt _kind in
+  (_fold_left (Owl_base_dense_common._min_elt _kind) _max_val varr)
 
 
 (* Max of all elements in the NDarray *)
-let max' varr = (_fold_left (Pervasives.max) Pervasives.min_float varr)
+let max' varr =
+  let _kind = kind varr in
+  let _min_val = Owl_base_dense_common._min_val_elt _kind in
+  (_fold_left (Owl_base_dense_common._max_elt _kind) _min_val varr)
 
 (* TODO: revise functions with float type to 'a *)
 
@@ -726,9 +735,9 @@ let sum' varr =
    o: x's strides, also y's slice size.
    x: source; y: shape of destination. Note that o <= n.
  *)
-let fold_along f m n o x ys =
+let fold_along f m n o x ys nelem =
   let x = flatten x in
-  let y = zeros (kind x) ys |> flatten in
+  let y = create (kind x) ys nelem |> flatten in
   let idx = ref 0 in
   let idy = ref 0 in
   let incy = ref 0 in
@@ -747,10 +756,11 @@ let fold_along f m n o x ys =
 
 let sum ?axis x =
   let _kind = kind x in
+  let zero = Owl_base_dense_common._zero_val_elt _kind in
   match axis with
   | Some a -> (
       let m, n, o, s = Owl_utils.reduce_params a x in
-      fold_along (Owl_base_dense_common._add_elt _kind) m n o x s
+      fold_along (Owl_base_dense_common._add_elt _kind) m n o x s zero
     )
   | None   -> create (kind x) (Array.make 1 1) (sum' x)
 
@@ -758,23 +768,41 @@ let sum ?axis x =
 let sum_reduce ?axis x =
   let _kind = kind x in
   let _dims = num_dims x in
+  let zero = Owl_base_dense_common._zero_val_elt _kind in
   match axis with
   | Some a -> (
       let y = ref x in
       Array.iter (fun i ->
         assert (i < _dims);
         let m, n, o, s = Owl_utils.reduce_params i !y in
-        y := fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s
+        y := fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s zero
       ) a;
       !y
     )
   | None   -> create (kind x) (Array.make _dims 1) (sum' x)
 
 
-let min ?axis x = failwith "not implemented"
+  let min ?axis x =
+    let _kind = kind x in
+    let max_val = Owl_base_dense_common._max_val_elt _kind in
+    match axis with
+    | Some a -> (
+        let m, n, o, s = Owl_utils.reduce_params a x in
+        fold_along (Owl_base_dense_common._min_elt _kind) m n o x s max_val
+      )
+    | None   -> min' x |> create _kind [|1|]
 
 
-let max ?axis x = failwith "not implemented"
+(* TODO: fix this *)
+let max ?axis x =
+  let _kind = kind x in
+  let min_val = Owl_base_dense_common._min_val_elt _kind in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = Owl_utils.reduce_params a x in
+      fold_along (Owl_base_dense_common._max_elt _kind) m n o x s min_val
+    )
+  | None   -> max' x |> create _kind [|1|]
 
 
 let l1norm' varr =
@@ -892,6 +920,10 @@ let div_scalar varr a =
 let clip_by_value ?(amin=Pervasives.min_float) ?(amax=Pervasives.max_float) varr =
   let clip_by_val_fun = (fun x -> Pervasives.min amax (Pervasives.max amin x)) in
   (map clip_by_val_fun varr)
+
+
+(* TODO *)
+let fma x y z = failwith "Owl_base_dense_ndarray_generic:fma: not implemented"
 
 
 (* Addition is commutative *)
@@ -3124,6 +3156,16 @@ let max_rows varr =
     done;
     result
   end
+
+
+let one_hot depth x = failwith "Owl_base_dense_ndarray_generic:one_hot: not implemented"
+
+
+(* Helper functions *)
+
+let float_to_elt x = x
+
+let elt_to_float x = x
 
 
 

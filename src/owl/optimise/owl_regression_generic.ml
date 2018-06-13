@@ -22,7 +22,7 @@ module Make
     let x = if bias = true then A.concatenate ~axis:1 [| x; A.ones [|l;1|] |] else x in
     (* initialise the matrices according to fan_in/out *)
     let r = 1. /. (float_of_int o) in
-    let p = Arr A.(uniform ~a:(-.r) ~b:r [|o;n|]) in
+    let p = Arr A.(uniform ~a:(float_to_elt (-.r)) ~b:(float_to_elt r) [|o;n|]) in
     (* make the function to minimise *)
     let f w x =
       let w = Mat.reshape o n w in
@@ -110,14 +110,15 @@ module Make
       ~loss:(Loss.Quadratic) ~verbosity:false
       ~stopping:(Stopping.Const 1e-16) 1000.
     in
-    let w = minimise_weight params f (Mat.of_arrays [|[|a;l;b|]|]) (Arr x) (Arr y)
+    let a, l, b = A.(float_to_elt a, float_to_elt l, float_to_elt b) in
+    let w = minimise_weight params f (Mat.of_arrays [|[|a; l; b|]|]) (Arr x) (Arr y)
       |> snd |> unpack_arr
     in
     A.(get w [|0;0|], get w [|0;1|], get w [|0;2|])
 
 
   let poly x y n =
-    let z = Array.init (n + 1) (fun i -> A.(pow_scalar x (float_of_int i))) in
+    let z = Array.init (n + 1) (fun i -> A.(pow_scalar x (float_of_int i |> float_to_elt))) in
     let x = A.concatenate ~axis:1 z in
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Const 1.) ~gradient:(Gradient.Newton)

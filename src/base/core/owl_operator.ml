@@ -119,21 +119,21 @@ module Make_Extend (M : ExtendSig) = struct
 
   let ( **$ ) = M.pow_scalar
 
-  let ( += ) = M.add_
+  let ( += ) x y = M.add_ ~out:x x y
 
-  let ( -= ) = M.sub_
+  let ( -= ) x y = M.sub_ ~out:x x y
 
-  let ( *= ) = M.mul_
+  let ( *= ) x y = M.mul_ ~out:x x y
 
-  let ( /= ) = M.div_
+  let ( /= ) x y = M.div_ ~out:x x y
 
-  let ( +$= ) = M.add_scalar_
+  let ( +$= ) x a = M.add_scalar_ ~out:x x a
 
-  let ( -$= ) = M.sub_scalar_
+  let ( -$= ) x a = M.sub_scalar_ ~out:x x a
 
-  let ( *$= ) = M.mul_scalar_
+  let ( *$= ) x a = M.mul_scalar_ ~out:x x a
 
-  let ( /$= ) = M.div_scalar_
+  let ( /$= ) x a = M.div_scalar_ ~out:x x a
 
   let ( @= ) = M.concat_vertical
 
