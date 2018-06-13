@@ -303,6 +303,63 @@ let conv3d input_shape padding kernel_shape stride_shape =
   [|batches; output_cols; output_rows; output_dpts; out_channel|]
 
 
+let dilated_conv2d input_shape padding kernel_shape stride_shape rate_shape =
+  let kernel_cols = kernel_shape.(0) in
+  let kernel_rows = kernel_shape.(1) in
+  let in_channel  = kernel_shape.(2) in
+  let out_channel = kernel_shape.(3) in
+
+  let rate_cols = rate_shape.(0) in
+  let rate_rows = rate_shape.(1) in
+
+  let col_up = kernel_cols + (kernel_cols - 1) * (rate_cols - 1) in
+  let row_up = kernel_rows + (kernel_rows - 1) * (rate_rows - 1) in
+  let kernel_shape' = [|col_up; row_up; in_channel; out_channel|] in
+
+  conv2d input_shape padding kernel_shape' stride_shape
+
+
+let dilated_conv1d input_shape padding kernel_shape stride_shape rate_shape =
+  let batches = input_shape.(0) in
+  let input_cols = input_shape.(1) in
+  let in_channel = input_shape.(2) in
+  let input_shape = [|batches; 1; input_cols; in_channel|] in
+
+  let kernel_cols = kernel_shape.(0) in
+  let out_channel = kernel_shape.(2) in
+  assert (in_channel = kernel_shape.(1));
+  let kernel_shape = [|1; kernel_cols; in_channel; out_channel|] in
+
+  let col_stride = stride_shape.(0) in
+  let stride_shape = [|1; col_stride|] in
+
+  let col_rate = rate_shape.(0) in
+  let rate_shape = [|1; col_rate|] in
+
+  let output_shape = dilated_conv2d input_shape padding kernel_shape stride_shape rate_shape in
+  let output_cols = output_shape.(2) in
+  [|batches; output_cols; out_channel|]
+
+
+let dilated_conv3d input_shape padding kernel_shape stride_shape rate_shape =
+  let kernel_cols = kernel_shape.(0) in
+  let kernel_rows = kernel_shape.(1) in
+  let kernel_dpts = kernel_shape.(2) in
+  let in_channel  = kernel_shape.(3) in
+  let out_channel = kernel_shape.(4) in
+
+  let rate_cols = rate_shape.(0) in
+  let rate_rows = rate_shape.(1) in
+  let rate_dpts = rate_shape.(2) in
+
+  let col_up = kernel_cols + (kernel_cols - 1) * (rate_cols - 1) in
+  let row_up = kernel_rows + (kernel_rows - 1) * (rate_rows - 1) in
+  let dpt_up = kernel_dpts + (kernel_dpts - 1) * (rate_dpts - 1) in
+  let kernel_shape' = [|col_up; row_up; dpt_up; in_channel; out_channel|] in
+
+  conv3d input_shape padding kernel_shape' stride_shape
+
+
 let transpose_conv2d input_shape padding kernel_shape stride_shape =
   let batches = input_shape.(0) in
   let input_cols = input_shape.(1) in

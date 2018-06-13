@@ -2527,10 +2527,25 @@ val conv1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> 
 val conv2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
 (** TODO *)
 
+val conv3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val dilated_conv1d_ : out:('a, 'b) t -> ?padding:padding -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val dilated_conv2d_ : out:('a, 'b) t -> ?padding:padding -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val dilated_conv3d_ : out:('a, 'b) t -> ?padding:padding -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val transpose_conv1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
 val transpose_conv2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
 (** TODO *)
 
-val conv3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+val transpose_conv3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
 (** TODO *)
 
 val max_pool1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
@@ -2563,16 +2578,46 @@ val conv2d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int a
 val conv2d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
 (** TODO *)
 
+val conv3d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val conv3d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val dilated_conv1d_backward_input_ : out:('a, 'b) t -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val dilated_conv1d_backward_kernel_ : out:('a, 'b) t -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val dilated_conv2d_backward_input_ : out:('a, 'b) t -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val dilated_conv2d_backward_kernel_ : out:('a, 'b) t -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val dilated_conv3d_backward_input_ : out:('a, 'b) t -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val dilated_conv3d_backward_kernel_ : out:('a, 'b) t -> ?stride:int array -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val transpose_conv1d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val transpose_conv1d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
 val transpose_conv2d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
 (** TODO *)
 
 val transpose_conv2d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
 (** TODO *)
 
-val conv3d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val transpose_conv3d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
 (** TODO *)
 
-val conv3d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val transpose_conv3d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
 (** TODO *)
 
 val max_pool1d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
