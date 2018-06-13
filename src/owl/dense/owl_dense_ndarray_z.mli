@@ -798,9 +798,9 @@ val conv1d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
 
 val conv2d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
 
-val transpose_conv2d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
-
 val conv3d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
+
+val transpose_conv2d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
 
 val max_pool1d_ : out:arr -> ?padding:padding -> arr -> int array -> int array -> unit
 
@@ -822,13 +822,13 @@ val conv2d_backward_input_ : out:arr -> arr -> arr -> int array -> arr -> unit
 
 val conv2d_backward_kernel_ : out:arr -> arr -> arr -> int array -> arr -> unit
 
-val transpose_conv2d_backward_input_ : out:arr -> arr -> arr -> int array -> arr -> unit
-
-val transpose_conv2d_backward_kernel_ : out:arr -> arr -> arr -> int array -> arr -> unit
-
 val conv3d_backward_input_ : out:arr -> arr -> arr -> int array -> arr -> unit
 
 val conv3d_backward_kernel_ : out:arr -> arr -> arr -> int array -> arr -> unit
+
+val transpose_conv2d_backward_input_ : out:arr -> arr -> arr -> int array -> arr -> unit
+
+val transpose_conv2d_backward_kernel_ : out:arr -> arr -> arr -> int array -> arr -> unit
 
 val max_pool1d_backward_ : out:arr -> padding -> arr -> int array -> int array -> arr -> unit
 
