@@ -877,7 +877,7 @@ module Make
       assert (out_shape.(1) = l.in_shape.(1));
       l.in_shape.(0) <- out_shape.(0);
       let out_cols =
-        Owl_utils.calc_conv1d_output_shape
+        Owl_utils_infer_shape.calc_conv1d_output_shape
         l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
       in
       l.out_shape.(0) <- out_cols
@@ -965,7 +965,7 @@ module Make
       assert (out_shape.(1) = l.in_shape.(1));
       l.in_shape.(0) <- out_shape.(0);
       let out_cols =
-        Owl_utils.calc_transpose_conv1d_output_shape
+        Owl_utils_infer_shape.calc_transpose_conv1d_output_shape
         l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
       in
       l.out_shape.(0) <- out_cols
@@ -1060,7 +1060,7 @@ module Make
       l.in_shape.(0) <- out_shape.(0);
       let out_cols =
         let col_up = l.kernel.(0) + (l.kernel.(0) - 1) * (l.rate.(0) - 1) in
-        Owl_utils.calc_conv1d_output_shape
+        Owl_utils_infer_shape.calc_conv1d_output_shape
           l.padding l.in_shape.(0) col_up l.stride.(0)
       in
       l.out_shape.(0) <- out_cols
@@ -1150,7 +1150,7 @@ module Make
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
       let out_cols, out_rows =
-        Owl_utils.calc_conv2d_output_shape
+        Owl_utils_infer_shape.calc_conv2d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1)
         l.stride.(0) l.stride.(1)
       in
@@ -1241,7 +1241,7 @@ module Make
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
       let out_cols, out_rows =
-        Owl_utils.calc_transpose_conv2d_output_shape
+        Owl_utils_infer_shape.calc_transpose_conv2d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1)
         l.stride.(0) l.stride.(1)
       in
@@ -1339,7 +1339,7 @@ module Make
       let out_cols, out_rows =
         let col_up = l.kernel.(0) + (l.kernel.(0) - 1) * (l.rate.(0) - 1) in
         let row_up = l.kernel.(1) + (l.kernel.(1) - 1) * (l.rate.(1) - 1) in
-        Owl_utils.calc_conv2d_output_shape
+        Owl_utils_infer_shape.calc_conv2d_output_shape
           l.padding l.in_shape.(0) l.in_shape.(1) col_up row_up
           l.stride.(0) l.stride.(1)
       in
@@ -1432,7 +1432,7 @@ module Make
       l.in_shape.(1) <- out_shape.(1);
       l.in_shape.(2) <- out_shape.(2);
       let out_cols, out_rows, out_dpts =
-        Owl_utils.calc_conv3d_output_shape
+        Owl_utils_infer_shape.calc_conv3d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.in_shape.(2)
         l.kernel.(0) l.kernel.(1) l.kernel.(2)
         l.stride.(0) l.stride.(1) l.stride.(2)
@@ -1526,7 +1526,7 @@ module Make
       l.in_shape.(1) <- out_shape.(1);
       l.in_shape.(2) <- out_shape.(2);
       let out_cols, out_rows, out_dpts =
-        Owl_utils.calc_transpose_conv3d_output_shape
+        Owl_utils_infer_shape.calc_transpose_conv3d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.in_shape.(2)
         l.kernel.(0) l.kernel.(1) l.kernel.(2)
         l.stride.(0) l.stride.(1) l.stride.(2)
@@ -1629,7 +1629,7 @@ module Make
         let col_up = l.kernel.(0) + (l.kernel.(0) - 1) * (l.rate.(0) - 1) in
         let row_up = l.kernel.(1) + (l.kernel.(1) - 1) * (l.rate.(1) - 1) in
         let dpt_up = l.kernel.(2) + (l.kernel.(2) - 1) * (l.rate.(2) - 1) in
-        Owl_utils.calc_conv3d_output_shape
+        Owl_utils_infer_shape.calc_conv3d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.in_shape.(2)
         col_up row_up dpt_up
         l.stride.(0) l.stride.(1) l.stride.(2)
@@ -1790,7 +1790,7 @@ module Make
       assert Array.(length out_shape = length l.in_shape);
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
-      let out_cols = Owl_utils.calc_conv1d_output_shape
+      let out_cols = Owl_utils_infer_shape.calc_conv1d_output_shape
         l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
       in
       l.out_shape.(0) <- out_cols;
@@ -1840,7 +1840,7 @@ module Make
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
       l.in_shape.(2) <- out_shape.(2);
-      let out_cols, out_rows = Owl_utils.calc_conv2d_output_shape
+      let out_cols, out_rows = Owl_utils_infer_shape.calc_conv2d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1) l.stride.(0) l.stride.(1)
       in
       l.out_shape.(0) <- out_cols;
@@ -1890,7 +1890,7 @@ module Make
       assert Array.(length out_shape = length l.in_shape);
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
-      let out_cols = Owl_utils.calc_conv1d_output_shape
+      let out_cols = Owl_utils_infer_shape.calc_conv1d_output_shape
         l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
       in
       l.out_shape.(0) <- out_cols;
@@ -1940,7 +1940,7 @@ module Make
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
       l.in_shape.(2) <- out_shape.(2);
-      let out_cols, out_rows = Owl_utils.calc_conv2d_output_shape
+      let out_cols, out_rows = Owl_utils_infer_shape.calc_conv2d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1) l.stride.(0) l.stride.(1)
       in
       l.out_shape.(0) <- out_cols;

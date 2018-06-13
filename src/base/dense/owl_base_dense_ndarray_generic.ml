@@ -1273,12 +1273,12 @@ let conv2d ?(padding=SAME) input kernel stride =
   let row_stride = stride.(1) in
 
   let (output_cols, output_rows) =
-    Owl_utils_conv.calc_conv2d_output_shape padding input_cols input_rows
+    Owl_utils_infer_shape.calc_conv2d_output_shape padding input_cols input_rows
       kernel_cols kernel_rows row_stride col_stride
   in
   let _kind = kind input in
   let output = empty _kind [|batches; output_cols; output_rows; out_channel|] in
-  let (pad_top, pad_left, _, _) = Owl_utils_conv.calc_conv2d_padding
+  let (pad_top, pad_left, _, _) = Owl_utils_infer_shape.calc_conv2d_padding
       input_cols input_rows kernel_cols kernel_rows output_cols output_rows
       row_stride col_stride
   in
@@ -1378,7 +1378,7 @@ let conv1d ?(padding=SAME) input kernel stride =
     let dpt_stride = stride.(2) in
 
     let output_cols, output_rows, output_dpts =
-      Owl_utils_conv.calc_conv3d_output_shape padding
+      Owl_utils_infer_shape.calc_conv3d_output_shape padding
         input_cols input_rows input_dpts
         kernel_cols kernel_rows kernel_dpts
         row_stride col_stride dpt_stride
@@ -1387,7 +1387,7 @@ let conv1d ?(padding=SAME) input kernel stride =
     let output =
       empty _kind [|batches; output_cols; output_rows; output_dpts; out_channel|] in
     let (pad_top, pad_left, pad_shallow, _, _, _) =
-      Owl_utils_conv.calc_conv3d_padding
+      Owl_utils_infer_shape.calc_conv3d_padding
         input_cols input_rows input_dpts
         kernel_cols kernel_rows kernel_dpts
         output_cols output_rows output_dpts
@@ -1452,14 +1452,14 @@ let _pool2d ?(padding=SAME) input kernel stride
   let row_stride = stride.(1) in
 
   let (output_cols, output_rows) =
-    Owl_utils_conv.calc_conv2d_output_shape padding
+    Owl_utils_infer_shape.calc_conv2d_output_shape padding
       input_cols input_rows
       kernel_cols kernel_rows
       row_stride col_stride
   in
   let _kind = kind input in
   let output = empty _kind [|batches; output_cols; output_rows; in_channel|] in
-  let (pad_top, pad_left, _, _) = Owl_utils_conv.calc_conv2d_padding
+  let (pad_top, pad_left, _, _) = Owl_utils_infer_shape.calc_conv2d_padding
       input_cols input_rows kernel_cols kernel_rows output_cols output_rows
       row_stride col_stride
   in
@@ -1511,7 +1511,7 @@ let _pool3d ?(padding=SAME) input kernel stride
   let dpt_stride = stride.(2) in
 
   let output_cols, output_rows, output_dpts =
-    Owl_utils_conv.calc_conv3d_output_shape padding
+    Owl_utils_infer_shape.calc_conv3d_output_shape padding
       input_cols input_rows input_dpts
       kernel_cols kernel_rows kernel_dpts
       row_stride col_stride dpt_stride
@@ -1519,7 +1519,7 @@ let _pool3d ?(padding=SAME) input kernel stride
   let _kind = kind input in
   let output = empty _kind [|batches; output_cols; output_rows; output_dpts; in_channel|] in
   let (pad_top, pad_left, pad_shallow, _, _, _) =
-    Owl_utils_conv.calc_conv3d_padding
+    Owl_utils_infer_shape.calc_conv3d_padding
       input_cols input_rows input_dpts
       kernel_cols kernel_rows kernel_dpts
       output_cols output_rows output_dpts
@@ -1702,7 +1702,7 @@ let conv2d_backward_input input kernel stride output' =
   let row_stride = stride.(1) in
 
   let input' = empty (kind input) (shape input) in
-  let (pad_top, pad_left, _, _) = Owl_utils_conv.calc_conv2d_padding
+  let (pad_top, pad_left, _, _) = Owl_utils_infer_shape.calc_conv2d_padding
       input_cols input_rows kernel_cols kernel_rows output_cols output_rows
       row_stride col_stride
   in
@@ -1772,7 +1772,7 @@ let conv2d_backward_kernel input kernel stride output' =
 
   let kernel' = empty (kind kernel) (shape kernel) in
 
-  let (pad_top, pad_left, _, _) = Owl_utils_conv.calc_conv2d_padding
+  let (pad_top, pad_left, _, _) = Owl_utils_infer_shape.calc_conv2d_padding
       input_cols input_rows kernel_cols kernel_rows output_cols output_rows
       row_stride col_stride
   in
@@ -1855,7 +1855,7 @@ let transpose_conv2d ?(padding=SAME) input kernel stride =
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
 
-  let output_cols, output_rows = Owl_utils.calc_transpose_conv2d_output_shape
+  let output_cols, output_rows = Owl_utils_infer_shape.calc_transpose_conv2d_output_shape
     padding input_cols input_rows kernel_cols kernel_rows
     row_stride col_stride
   in
@@ -1896,7 +1896,7 @@ let transpose_conv2d_backward_input input kernel stride output' =
 
   let padding = SAME in
   let output_cols_same, output_rows_same =
-    Owl_utils.calc_transpose_conv2d_output_shape
+    Owl_utils_infer_shape.calc_transpose_conv2d_output_shape
       padding input_cols input_rows kernel_cols kernel_rows
       row_stride col_stride
   in
@@ -2125,7 +2125,7 @@ let conv3d_backward_input input kernel stride output' =
 
   let input' = empty (kind input) (shape input) in
   let (pad_top, pad_left, pad_shallow, _, _, _) =
-    Owl_utils_conv.calc_conv3d_padding
+    Owl_utils_infer_shape.calc_conv3d_padding
       input_cols input_rows input_dpts
       kernel_cols kernel_rows kernel_dpts
       output_cols output_rows output_dpts
@@ -2209,7 +2209,7 @@ let conv3d_backward_kernel input kernel stride output' =
   let kernel' = empty (kind kernel) (shape kernel) in
 
   let (pad_top, pad_left, pad_shallow, _, _, _) =
-    Owl_utils_conv.calc_conv3d_padding
+    Owl_utils_infer_shape.calc_conv3d_padding
       input_cols input_rows input_dpts
       kernel_cols kernel_rows kernel_dpts
       output_cols output_rows output_dpts
@@ -2282,7 +2282,7 @@ let transpose_conv3d ?(padding=SAME) input kernel stride =
   let dpt_stride = stride.(2) in
 
   let output_cols, output_rows, output_dpts =
-    Owl_utils.calc_transpose_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+    Owl_utils_infer_shape.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
   in
   let output = empty (kind input) [|batches; output_cols; output_rows; output_dpts; out_channel|] in
 
@@ -2324,7 +2324,7 @@ let transpose_conv3d_backward_input input kernel stride output' =
 
   let padding = SAME in
   let output_cols_same, output_rows_same, output_dpts_same =
-    Owl_utils.calc_transpose_conv3d_output_shape padding
+    Owl_utils_infer_shape.calc_conv3d_output_shape padding
       input_cols input_rows input_dpts
       kernel_cols kernel_rows kernel_dpts
       row_stride col_stride dpt_stride
@@ -2368,7 +2368,7 @@ let _pool2d_backward padding input kernel stride output'
   assert (batches = output_shp.(0));
   assert (in_channel = output_shp.(3));
 
-  let (pad_top, pad_left, _, _) = Owl_utils_conv.calc_conv2d_padding
+  let (pad_top, pad_left, _, _) = Owl_utils_infer_shape.calc_conv2d_padding
       input_cols input_rows kernel_cols kernel_rows output_cols output_rows
       row_stride col_stride
   in
@@ -2478,7 +2478,7 @@ let _pool3d_backward padding input kernel stride output'
   assert (in_channel = output_shp.(4));
 
   let (pad_top, pad_left, pad_shallow, _, _, _) =
-    Owl_utils_conv.calc_conv3d_padding
+    Owl_utils_infer_shape.calc_conv3d_padding
       input_cols input_rows input_dpts
       kernel_cols kernel_rows kernel_dpts
       output_cols output_rows output_dpts

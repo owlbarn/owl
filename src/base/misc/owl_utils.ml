@@ -6,8 +6,6 @@
 (** Helper functions used in the library *)
 
 
-include Owl_utils_conv
-
 include Owl_utils_ndarray
 
 module Stack = Owl_utils_stack
