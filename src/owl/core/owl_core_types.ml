@@ -78,3 +78,7 @@ type ('a, 'b) owl_arr_op31 = ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) ow
 type ('a, 'b) owl_arr_op32 = ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
 
 type ('a, 'b) owl_arr_op33 = int -> 'a -> 'a -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit
+
+type ('a, 'b) owl_arr_op34 = ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
+
+type ('a, 'b) owl_arr_op35 = ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
