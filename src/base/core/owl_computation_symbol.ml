@@ -163,7 +163,9 @@ module Make
     | Conv1d                        of padding * int array
     | Conv2d                        of padding * int array
     | Conv3d                        of padding * int array
+    | TransposeConv1d               of padding * int array
     | TransposeConv2d               of padding * int array
+    | TransposeConv3d               of padding * int array
     | MaxPool1d                     of padding * int array * int array
     | MaxPool2d                     of padding * int array * int array
     | MaxPool3d                     of padding * int array * int array
@@ -176,8 +178,12 @@ module Make
     | Conv2dBackwardKernel          of int array
     | Conv3dBackwardInput           of int array
     | Conv3dBackwardKernel          of int array
+    | TransposeConv1dBackwardInput  of int array
+    | TransposeConv1dBackwardKernel of int array
     | TransposeConv2dBackwardInput  of int array
     | TransposeConv2dBackwardKernel of int array
+    | TransposeConv3dBackwardInput  of int array
+    | TransposeConv3dBackwardKernel of int array
     | MaxPool1dBackward             of padding * int array * int array
     | MaxPool2dBackward             of padding * int array * int array
     | MaxPool3dBackward             of padding * int array * int array
@@ -353,7 +359,9 @@ module Make
     | Conv1d (padding, stride)                    -> "Conv1d"
     | Conv2d (padding, stride)                    -> "Conv2d"
     | Conv3d (padding, stride)                    -> "Conv3d"
+    | TransposeConv1d (padding, stride)           -> "TransposeConv1d"
     | TransposeConv2d (padding, stride)           -> "TransposeConv2d"
+    | TransposeConv3d (padding, stride)           -> "TransposeConv3d"
     | MaxPool1d (padding, kernel, stride)         -> "MaxPool1d"
     | MaxPool2d (padding, kernel, stride)         -> "MaxPool2d"
     | MaxPool3d (padding, kernel, stride)         -> "MaxPool3d"
@@ -366,8 +374,12 @@ module Make
     | Conv2dBackwardKernel stride                 -> "Conv2dBackwardKernel"
     | Conv3dBackwardInput stride                  -> "Conv3dBackwardInput"
     | Conv3dBackwardKernel stride                 -> "Conv3dBackwardKernel"
+    | TransposeConv1dBackwardInput stride         -> "TransposeConv1dBackwardInput"
+    | TransposeConv1dBackwardKernel stride        -> "TransposeConv1dBackwardKernel"
     | TransposeConv2dBackwardInput stride         -> "TransposeConv2dBackwardInput"
     | TransposeConv2dBackwardKernel stride        -> "TransposeConv2dBackwardKernel"
+    | TransposeConv3dBackwardInput stride         -> "TransposeConv3dBackwardInput"
+    | TransposeConv3dBackwardKernel stride        -> "TransposeConv3dBackwardKernel"
     | MaxPool1dBackward (padding, kernel, stride) -> "MaxPool1dBackward"
     | MaxPool2dBackward (padding, kernel, stride) -> "MaxPool2dBackward"
     | MaxPool3dBackward (padding, kernel, stride) -> "MaxPool3dBackward"
@@ -595,6 +607,22 @@ module Make
     | _, _, _                   -> [| None |]
 
 
+  let _infer_shape_24 input_shapes padding stride =
+    let input_shape = input_shapes.(0).(0) in
+    let kernel_shape = input_shapes.(1).(0) in
+    match input_shape, kernel_shape with
+    | Some input, Some kernel -> [| Some Owl_utils.(calc_transpose_conv1d_shape input padding kernel stride) |]
+    | _, _                    -> [| None |]
+
+
+  let _infer_shape_25 input_shapes padding stride =
+    let input_shape = input_shapes.(0).(0) in
+    let kernel_shape = input_shapes.(1).(0) in
+    match input_shape, kernel_shape with
+    | Some input, Some kernel -> [| Some Owl_utils.(calc_transpose_conv3d_shape input padding kernel stride) |]
+    | _, _                    -> [| None |]
+
+
   let _infer_shape_xx input_shapes = failwith "_infer_shape_xx: not implemented"
 
 
@@ -707,7 +735,9 @@ module Make
     | Conv1d (padding, stride)                    -> _infer_shape_11 input_shapes padding stride
     | Conv2d (padding, stride)                    -> _infer_shape_12 input_shapes padding stride
     | Conv3d (padding, stride)                    -> _infer_shape_13 input_shapes padding stride
+    | TransposeConv1d (padding, stride)           -> _infer_shape_24 input_shapes padding stride
     | TransposeConv2d (padding, stride)           -> _infer_shape_14 input_shapes padding stride
+    | TransposeConv3d (padding, stride)           -> _infer_shape_25 input_shapes padding stride
     | MaxPool1d (padding, kernel, stride)         -> _infer_shape_15 input_shapes padding kernel stride
     | MaxPool2d (padding, kernel, stride)         -> _infer_shape_21 input_shapes padding kernel stride
     | MaxPool3d (padding, kernel, stride)         -> _infer_shape_17 input_shapes padding kernel stride
@@ -720,8 +750,12 @@ module Make
     | Conv2dBackwardKernel stride                 -> _infer_shape_02 input_shapes
     | Conv3dBackwardInput stride                  -> _infer_shape_01 input_shapes
     | Conv3dBackwardKernel stride                 -> _infer_shape_02 input_shapes
+    | TransposeConv1dBackwardInput stride         -> _infer_shape_01 input_shapes
+    | TransposeConv1dBackwardKernel stride        -> _infer_shape_02 input_shapes
     | TransposeConv2dBackwardInput stride         -> _infer_shape_01 input_shapes
     | TransposeConv2dBackwardKernel stride        -> _infer_shape_02 input_shapes
+    | TransposeConv3dBackwardInput stride         -> _infer_shape_01 input_shapes
+    | TransposeConv3dBackwardKernel stride        -> _infer_shape_02 input_shapes
     | MaxPool1dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
     | MaxPool2dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
     | MaxPool3dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes

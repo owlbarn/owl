@@ -315,6 +315,29 @@ let calc_transpose_conv2d_shape input_shape padding kernel_shape stride_shape =
   [|batches; output_cols; output_rows; out_channel|]
 
 
+let calc_transpose_conv1d_shape input_shape padding kernel_shape stride_shape =
+  let batches = input_shape.(0) in
+  let input_cols = input_shape.(1) in
+  let in_channel = input_shape.(2) in
+  let input_shape = [|batches; 1; input_cols; in_channel|] in
+
+  let kernel_cols = kernel_shape.(0) in
+  let out_channel = kernel_shape.(2) in
+  assert (in_channel = kernel_shape.(1));
+  let kernel_shape = [|1; kernel_cols; in_channel; out_channel|] in
+
+  let col_stride = stride_shape.(0) in
+  let stride_shape = [|1; col_stride|] in
+
+  let output_shape = calc_transpose_conv2d_shape input_shape padding kernel_shape stride_shape in
+  let output_cols = output_shape.(2) in
+  [|batches; output_cols; out_channel|]
+
+
+let calc_transpose_conv3d_shape input_shape padding kernel_shape stride_shape =
+  failwith "calc_transpose_conv3d_shape: not implemented yet"
+
+
 let calc_pool2d_shape input_shape padding kernel_shape stride_shape =
   let batches = input_shape.(0) in
   let input_cols = input_shape.(1) in

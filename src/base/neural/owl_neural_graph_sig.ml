@@ -191,6 +191,26 @@ Arguments:
   * ``stride``: int array of 2 integers
   *)
 
+  val conv3d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+  (**
+``conv3d kernels strides node`` adds a 3D convolution node (e.g. spatial
+convolution over volumes) on previous ``node``.
+
+Arguments:
+  * ``kernel``: int array consists of ``w, h, d, i, o``. ``w``, ``h``, and ``d`` specify the 3 dimensionality of the 3D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
+  * ``stride``: int array of 3 integers
+  *)
+
+
+  val transpose_conv1d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+  (**
+``transpose_conv1d kernels strides node`` adds a 1D transpose convolution node (e.g. temporal convolution) on previous ``node``.
+
+Arguments:
+  * ``kernel``: int array consists of ``h, i, o``. ``h`` specifies the dimension of the 1D convolution window. ``i`` and ``o`` are the dimensionalities of the input and output space.
+  * ``stride``: int array of 1 integer
+  *)
+
   val transpose_conv2d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
   (**
 ``transpose_conv2d kernels strides node`` adds a 2D transpose convolution node on previous ``node``.
@@ -200,10 +220,9 @@ Arguments:
   * ``stride``: int array of 2 integers
   *)
 
-  val conv3d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+  val transpose_conv3d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
   (**
-``conv3d kernels strides node`` adds a 3D convolution node (e.g. spatial
-convolution over volumes) on previous ``node``.
+``transpose_conv3d kernels strides node`` adds a 3D transpose convolution node (e.g. spatial convolution over volumes) on previous ``node``.
 
 Arguments:
   * ``kernel``: int array consists of ``w, h, d, i, o``. ``w``, ``h``, and ``d`` specify the 3 dimensionality of the 3D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.

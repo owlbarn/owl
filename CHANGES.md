@@ -1,4 +1,9 @@
-### 0.3.8 (in progress)
+### 0.4.0 (in progress)
+
+* Fix some bugs and improve performance.
+
+
+### 0.3.8 (2018-05-22)
 
 * Add initial support for dataframe functionality.
 * Add IO module for Owl's specific file operations.

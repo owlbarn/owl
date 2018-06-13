@@ -364,8 +364,14 @@ module Make
     Owl_log.debug "conv3d";
     make_then_connect (Conv3d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
 
+  let transpose_conv1d ?(padding=SAME) input kernel stride =
+    make_then_connect (TransposeConv1d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
+
   let transpose_conv2d ?(padding=SAME) input kernel stride =
     make_then_connect (TransposeConv2d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
+
+  let transpose_conv3d ?(padding=SAME) input kernel stride =
+    make_then_connect (TransposeConv3d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
 
   let max_pool1d ?(padding=SAME) input kernel stride =
     Owl_log.debug "max_pool1d";
@@ -415,6 +421,14 @@ module Make
     Owl_log.debug "conv3d_backward_kernel";
     make_then_connect (Conv3dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
+  let transpose_conv1d_backward_input input kernel stride output' =
+    Owl_log.debug "transpose_conv1d_backward_input";
+    make_then_connect (TransposeConv1dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
+
+  let transpose_conv1d_backward_kernel input kernel stride output' =
+    Owl_log.debug "transpose_conv1d_backward_kernel";
+    make_then_connect (TransposeConv1dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
+
   let transpose_conv2d_backward_input input kernel stride output' =
     Owl_log.debug "transpose_conv2d_backward_input";
     make_then_connect (TransposeConv2dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
@@ -422,6 +436,14 @@ module Make
   let transpose_conv2d_backward_kernel input kernel stride output' =
     Owl_log.debug "transpose_conv2d_backward_kernel";
     make_then_connect (TransposeConv2dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
+
+  let transpose_conv3d_backward_input input kernel stride output' =
+    Owl_log.debug "transpose_conv3d_backward_input";
+    make_then_connect (TransposeConv3dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
+
+  let transpose_conv3d_backward_kernel input kernel stride output' =
+    Owl_log.debug "transpose_conv3d_backward_kernel";
+    make_then_connect (TransposeConv3dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let max_pool1d_backward padding input kernel stride output' =
     Owl_log.debug "conmax_pool1d_backwardv2d";

@@ -1196,11 +1196,14 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 by using ``save`` function.
  *)
 
-val save_txt : ?sep:string -> ('a, 'b) t -> string -> unit
+val save_txt : ?sep:string -> ?append:bool -> ('a, 'b) t -> string -> unit
 (**
-``save_txt ~sep x f`` save the matrix ``x`` into a tab-delimited text file ``f``
-delimited by the specified string ``sep``. Note that the operation can be very
-time consuming.
+``save_txt ~sep ~append x f`` saves the matrix ``x`` into a text file ``f`` 
+delimited by the specified string ``sep`` (default: tab).  If ``append`` is
+``false`` (it is by default), an existing file will be truncated and overwritten.
+If ``append`` is ``true`` and the file exists, new rows will be appended to it.
+Files are created, if necessary, with the AND of 0o644 and the user's umask value.
+Note that the operation can be very time consuming.
  *)
 
 val load_txt : ?sep:string -> ('a, 'b) kind -> string -> ('a, 'b) t

@@ -115,7 +115,7 @@ let init_nd k d f =
   let x = empty k d in
   let y = array1_of_genarray (flatten x) in
   let n = numel x in
-  let s = shape x in
+  let s = Owl_utils.calc_stride d in
   let j = Array.copy s in
   for i = 0 to n - 1 do
     Owl_utils.index_1d_nd i j s;
@@ -1882,77 +1882,6 @@ let conv2d_ ~out ?(padding=SAME) input kernel stride =
     row_stride col_stride pad_typ row_in_stride col_in_stride
 
 
-(* transpose 2d convolution *)
-let transpose_conv2d ?(padding=SAME) input kernel stride =
-  assert (num_dims input = 4);
-  assert (num_dims kernel = 4);
-  assert (Array.length stride = 2);
-
-  let input_shp = shape input in
-  let batches = input_shp.(0) in
-  let input_cols = input_shp.(1) in
-  let input_rows = input_shp.(2) in
-  let in_channel = input_shp.(3) in
-
-  let kernel_shp = shape kernel in
-  let kernel_cols = kernel_shp.(0) in
-  let kernel_rows = kernel_shp.(1) in
-  let out_channel = kernel_shp.(3) in
-  assert (in_channel = kernel_shp.(2));
-
-  let col_stride = stride.(0) in
-  let row_stride = stride.(1) in
-  let col_in_stride = 1 in
-  let row_in_stride = 1 in
-
-  let output_cols, output_rows =
-    Owl_utils.calc_transpose_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
-  in
-  let output = empty (kind input) [|batches; output_cols; output_rows; out_channel|] in
-
-  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
-
-  _owl_spatial_trans_conv (kind input)
-    input kernel output batches input_cols input_rows in_channel
-    kernel_cols kernel_rows output_cols output_rows out_channel
-    row_stride col_stride pad_typ row_in_stride col_in_stride;
-
-  output
-
-
-let transpose_conv2d_ ~out ?(padding=SAME) input kernel stride =
-  assert (num_dims input = 4);
-  assert (num_dims kernel = 4);
-  assert (Array.length stride = 2);
-
-  let input_shp = shape input in
-  let batches = input_shp.(0) in
-  let input_cols = input_shp.(1) in
-  let input_rows = input_shp.(2) in
-  let in_channel = input_shp.(3) in
-
-  let kernel_shp = shape kernel in
-  let kernel_cols = kernel_shp.(0) in
-  let kernel_rows = kernel_shp.(1) in
-  let out_channel = kernel_shp.(3) in
-  assert (in_channel = kernel_shp.(2));
-
-  let col_stride = stride.(0) in
-  let row_stride = stride.(1) in
-  let col_in_stride = 1 in
-  let row_in_stride = 1 in
-
-  let output_cols, output_rows =
-    Owl_utils.calc_transpose_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
-  in
-  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
-
-  _owl_spatial_trans_conv (kind input)
-    input kernel out batches input_cols input_rows in_channel
-    kernel_cols kernel_rows output_cols output_rows out_channel
-    row_stride col_stride pad_typ row_in_stride col_in_stride
-
-
 (* gradient of conv2d w.r.t the input *)
 let conv2d_backward_input input kernel stride output' =
   assert (num_dims input = 4);
@@ -1993,41 +1922,6 @@ let conv2d_backward_input input kernel stride output' =
   input'
 
 
-let conv2d_backward_input_ ~out input kernel stride output' =
-  assert (num_dims input = 4);
-  assert (num_dims kernel = 4);
-  assert (num_dims output' = 4);
-  assert (Array.length stride = 2);
-
-  let input_shp = shape input in
-  let batches = input_shp.(0) in
-  let input_cols = input_shp.(1) in
-  let input_rows = input_shp.(2) in
-  let in_channel = input_shp.(3) in
-
-  let kernel_shp = shape kernel in
-  let kernel_cols = kernel_shp.(0) in
-  let kernel_rows = kernel_shp.(1) in
-  let out_channel = kernel_shp.(3) in
-  assert (in_channel = kernel_shp.(2));
-
-  let output_shp = shape output' in
-  let output_cols = output_shp.(1) in
-  let output_rows = output_shp.(2) in
-  assert (batches = output_shp.(0));
-  assert (out_channel = output_shp.(3));
-
-  let col_stride = stride.(0) in
-  let row_stride = stride.(1) in
-  let col_in_stride = 1 in
-  let row_in_stride = 1 in
-
-  _owl_spatial_conv_backward_input (kind input)
-    out kernel output' batches input_cols input_rows in_channel
-    kernel_cols kernel_rows output_cols output_rows out_channel
-    row_stride col_stride row_in_stride col_in_stride
-
-
 (* gradient of conv2d w.r.t the kernel *)
 let conv2d_backward_kernel input kernel stride output' =
   assert (num_dims input = 4);
@@ -2066,6 +1960,114 @@ let conv2d_backward_kernel input kernel stride output' =
     row_stride col_stride row_in_stride col_in_stride;
 
   kernel'
+
+
+let conv2d_backward_input_ ~out input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  _owl_spatial_conv_backward_input (kind input)
+    out kernel output' batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride row_in_stride col_in_stride
+
+
+(* transpose_conv2d: 4d input and 4d kernel, refer to tensorlfow doc
+  input : [batch; input_column; input_row; input_channel]
+  kernel: [kernel_column; kernel_row; input_channel; output_channel]
+  stride: [column_stride; row_stride]
+  output: [batch; output_column; output_row; output_channel]
+ *)
+let transpose_conv2d ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let output_cols, output_rows =
+    Owl_utils.calc_transpose_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let output = empty (kind input) [|batches; output_cols; output_rows; out_channel|] in
+
+  _owl_spatial_conv_backward_input (kind input)
+    output kernel input batches output_cols output_rows out_channel
+    kernel_cols kernel_rows input_cols input_rows in_channel
+    row_stride col_stride row_in_stride col_in_stride;
+
+  output
+
+
+let transpose_conv2d_ ~out ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let output_cols, output_rows =
+    Owl_utils.calc_transpose_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+
+  _owl_spatial_conv_backward_input (kind input)
+    out kernel input batches output_cols output_rows out_channel
+    kernel_cols kernel_rows input_cols input_rows in_channel
+    row_stride col_stride row_in_stride col_in_stride
 
 
 let conv2d_backward_kernel_ ~out input kernel stride output' =
@@ -2135,9 +2137,9 @@ let transpose_conv2d_backward_kernel input kernel stride output' =
 
   let kernel' = empty (kind kernel) (shape kernel) in
 
-  _owl_spatial_trans_conv_backward_kernel (kind input)
-    input kernel' output' batches input_cols input_rows in_channel
-    kernel_cols kernel_rows output_cols output_rows out_channel
+  _owl_spatial_conv_backward_kernel (kind input)
+    output' kernel' input batches output_cols output_rows out_channel
+    kernel_cols kernel_rows input_cols input_rows in_channel
     row_stride col_stride row_in_stride col_in_stride;
 
   kernel'
@@ -2172,9 +2174,9 @@ let transpose_conv2d_backward_kernel_ ~out input kernel stride output' =
   let col_in_stride = 1 in
   let row_in_stride = 1 in
 
-  _owl_spatial_trans_conv_backward_kernel (kind input)
-    input out output' batches input_cols input_rows in_channel
-    kernel_cols kernel_rows output_cols output_rows out_channel
+  _owl_spatial_conv_backward_kernel (kind input)
+    output' out input batches output_cols output_rows out_channel
+    kernel_cols kernel_rows input_cols input_rows in_channel
     row_stride col_stride row_in_stride col_in_stride
 
 
@@ -2210,10 +2212,11 @@ let transpose_conv2d_backward_input input kernel stride output' =
 
   let input' = empty (kind input) (shape input) in
 
-  _owl_spatial_trans_conv_backward_input (kind input')
-    input' kernel output' batches input_cols input_rows in_channel
-    kernel_cols kernel_rows output_cols output_rows out_channel
-    row_stride col_stride row_in_stride col_in_stride;
+  let dummy_pad_typ = 0 in
+  _owl_spatial_conv (kind input)
+    output' kernel input' batches output_cols output_rows out_channel
+    kernel_cols kernel_rows input_cols input_rows in_channel
+    row_stride col_stride dummy_pad_typ row_in_stride col_in_stride;
 
   input'
 
@@ -2247,10 +2250,11 @@ let transpose_conv2d_backward_input_ ~out input kernel stride output' =
   let col_in_stride = 1 in
   let row_in_stride = 1 in
 
-  _owl_spatial_trans_conv_backward_input (kind input)
-    out kernel output' batches input_cols input_rows in_channel
-    kernel_cols kernel_rows output_cols output_rows out_channel
-    row_stride col_stride row_in_stride col_in_stride
+  let dummy_pad_typ = 0 in
+  _owl_spatial_conv (kind input)
+    output' kernel out batches output_cols output_rows out_channel
+    kernel_cols kernel_rows input_cols input_rows in_channel
+    row_stride col_stride dummy_pad_typ row_in_stride col_in_stride
 
 
 (* conv3d: 5d input and 5d kernel, refer to tensorflow doc
@@ -2501,6 +2505,139 @@ let conv3d_backward_kernel_ ~out input kernel stride output' =
     dpt_stride row_stride col_stride
 
 
+(* transpose_conv3d: 5d input and 5d kernel, refer to tensorflow doc
+  input : [batch; input_column; input_row; input_depth; input_channel]
+  kernel: [kernel_column; kernel_row; kernel_depth; input_channel; output_channel]
+  stride: [column_stride; row_stride; depth_stride]
+  output: [batch; output_column; output_row; output_dpts; output_channel]
+ *)
+let transpose_conv3d ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 5);
+  assert (num_dims kernel = 5);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let kernel_dpts = kernel_shp.(2) in
+  let out_channel = kernel_shp.(4) in
+  assert (in_channel = kernel_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let output_cols, output_rows, output_dpts =
+    Owl_utils.calc_transpose_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+  in
+  let output = empty (kind input) [|batches; output_cols; output_rows; output_dpts; out_channel|] in
+
+  _owl_cuboid_conv_backward_input (kind input)
+    output kernel input batches
+    output_cols output_rows output_dpts out_channel
+    kernel_cols kernel_rows kernel_dpts
+    input_cols input_rows input_dpts in_channel
+    dpt_stride row_stride col_stride;
+
+  output
+
+
+(* gradient of transpose_conv3d w.r.t the input *)
+let transpose_conv3d_backward_input input kernel stride output' =
+  assert (num_dims input = 5);
+  assert (num_dims kernel = 5);
+  assert (num_dims output' = 5);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let kernel_dpts = kernel_shp.(2) in
+  let out_channel = kernel_shp.(4) in
+  assert (in_channel = kernel_shp.(3));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  let output_dpts =  output_shp.(3) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(4));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let input' = empty (kind input) (shape input) in
+
+  let dummy_pad_typ = 0 in
+  _owl_cuboid_conv (kind input)
+    output' kernel input' batches
+    output_cols output_rows output_dpts out_channel
+    kernel_cols kernel_rows kernel_dpts
+    input_cols input_rows input_dpts in_channel
+    dpt_stride row_stride col_stride dummy_pad_typ;
+
+  input'
+
+
+(* gradient of transpose_conv3d w.r.t the kernel *)
+let transpose_conv3d_backward_kernel input kernel stride output' =
+  assert (num_dims input = 5);
+  assert (num_dims kernel = 5);
+  assert (num_dims output' = 5);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let kernel_dpts = kernel_shp.(2) in
+  let out_channel = kernel_shp.(4) in
+  assert (in_channel = kernel_shp.(3));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  let output_dpts =  output_shp.(3) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(4));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let kernel' = empty (kind kernel) (shape kernel) in
+
+  _owl_cuboid_conv_backward_kernel (kind input)
+    output' kernel' input batches
+    output_cols output_rows output_dpts out_channel
+    kernel_cols kernel_rows kernel_dpts
+    input_cols input_rows input_dpts in_channel
+    dpt_stride row_stride col_stride;
+
+  kernel'
+
+
 (* conv1d: 3d input and 3d kernel, refer to tensorlfow doc
   input : [batch; input_column; input_channel]
   kernel: [kernel_column; input_channel; output_channel]
@@ -2695,6 +2832,105 @@ let conv1d_backward_kernel_ ~out input kernel stride output' =
   let stride = [|row_stride; col_stride|] in
 
   conv2d_backward_kernel_ ~out input kernel stride output'
+
+
+let transpose_conv1d ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 3);
+  assert (num_dims kernel = 3);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input = reshape input [|batches; 1; input_cols; in_channel|] in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let out_channel = kernel_shp.(2) in
+  assert (in_channel = kernel_shp.(1));
+  let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
+
+  let col_stride = stride.(0) in
+  let stride = [|1; col_stride|] in
+
+  let output = transpose_conv2d ~padding input kernel stride in
+  let output_shp = shape output in
+  let output_cols = output_shp.(2) in
+  let output = reshape output [|batches; output_cols; out_channel|] in
+  output
+
+
+(* gradient of transpose_conv1d w.r.t the input *)
+let transpose_conv1d_backward_input input kernel stride output' =
+  assert (num_dims input = 3);
+  assert (num_dims kernel = 3);
+  assert (num_dims output' = 3);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input_rows = 1 in
+  let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let out_channel = kernel_shp.(2) in
+  assert (in_channel = kernel_shp.(1));
+  let kernel_rows = 1 in
+  let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
+
+  let output'_shp = shape output' in
+  let output_cols = output'_shp.(1) in
+  assert (batches = output'_shp.(0));
+  assert (out_channel = output'_shp.(2));
+  let output_rows = 1 in
+  let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+  let col_stride = stride.(0) in
+  let row_stride = 1 in
+  let stride = [|row_stride; col_stride|] in
+
+  let input' = transpose_conv2d_backward_input input kernel stride output' in
+  reshape input' input_shp
+
+
+(* gradient of transpose_conv1d w.r.t the kernel *)
+let transpose_conv1d_backward_kernel input kernel stride output' =
+  assert (num_dims input = 3);
+  assert (num_dims kernel = 3);
+  assert (num_dims output' = 3);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input_rows = 1 in
+  let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let out_channel = kernel_shp.(2) in
+  assert (in_channel = kernel_shp.(1));
+  let kernel_rows = 1 in
+  let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
+
+  let output'_shp = shape output' in
+  let output_cols = output'_shp.(1) in
+  assert (batches = output'_shp.(0));
+  assert (out_channel = output'_shp.(2));
+  let output_rows = 1 in
+  let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+  let col_stride = stride.(0) in
+  let row_stride = 1 in
+  let stride = [|row_stride; col_stride|] in
+
+  let kernel' = transpose_conv2d_backward_kernel input kernel stride output' in
+  reshape kernel' kernel_shp
 
 
 (* max_pool2d: 4d input and 2d kernel, refer to tensorlfow doc
