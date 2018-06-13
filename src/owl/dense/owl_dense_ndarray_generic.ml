@@ -561,7 +561,7 @@ let fma x y z =
   let xshp = shape x in
   let yshp = shape y in
   let zshp = shape z in
-  let rshp = Owl_utils.calc_broadcast_shape2 xshp yshp zshp in
+  let rshp = Owl_utils_infer_shape.broadcast2 xshp yshp zshp in
   let out = empty (kind x) rshp in
   if xshp = yshp && yshp = zshp then
     Owl_ndarray_fma._ndarray_fma (kind x) (numel x) x y z out
@@ -1922,6 +1922,41 @@ let conv2d_backward_input input kernel stride output' =
   input'
 
 
+let conv2d_backward_input_ ~out input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  _owl_spatial_conv_backward_input (kind input)
+    out kernel output' batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride row_in_stride col_in_stride
+
+
 (* gradient of conv2d w.r.t the kernel *)
 let conv2d_backward_kernel input kernel stride output' =
   assert (num_dims input = 4);
@@ -1960,6 +1995,41 @@ let conv2d_backward_kernel input kernel stride output' =
     row_stride col_stride row_in_stride col_in_stride;
 
   kernel'
+
+
+let conv2d_backward_kernel_ ~out input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+  assert (in_channel = kernel_shp.(2));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  _owl_spatial_conv_backward_kernel (kind input)
+    input out output' batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride row_in_stride col_in_stride
 
 
 let upsample_kernel2d kernel rate =
@@ -2229,41 +2299,6 @@ let transpose_conv2d_ ~out ?(padding=SAME) input kernel stride =
   _owl_spatial_conv_backward_input (kind input)
     out kernel input batches output_cols output_rows out_channel
     kernel_cols kernel_rows input_cols input_rows in_channel
-    row_stride col_stride row_in_stride col_in_stride
-
-
-let conv2d_backward_kernel_ ~out input kernel stride output' =
-  assert (num_dims input = 4);
-  assert (num_dims kernel = 4);
-  assert (num_dims output' = 4);
-  assert (Array.length stride = 2);
-
-  let input_shp = shape input in
-  let batches = input_shp.(0) in
-  let input_cols = input_shp.(1) in
-  let input_rows = input_shp.(2) in
-  let in_channel = input_shp.(3) in
-
-  let kernel_shp = shape kernel in
-  let kernel_cols = kernel_shp.(0) in
-  let kernel_rows = kernel_shp.(1) in
-  let out_channel = kernel_shp.(3) in
-  assert (in_channel = kernel_shp.(2));
-
-  let output_shp = shape output' in
-  let output_cols = output_shp.(1) in
-  let output_rows = output_shp.(2) in
-  assert (batches = output_shp.(0));
-  assert (out_channel = output_shp.(3));
-
-  let col_stride = stride.(0) in
-  let row_stride = stride.(1) in
-  let col_in_stride = 1 in
-  let row_in_stride = 1 in
-
-  _owl_spatial_conv_backward_kernel (kind input)
-    input out output' batches input_cols input_rows in_channel
-    kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride row_in_stride col_in_stride
 
 
@@ -2626,6 +2661,45 @@ let conv3d_backward_kernel input kernel stride output' =
     dpt_stride row_stride col_stride;
 
   kernel'
+
+
+let conv3d_backward_kernel_ ~out input kernel stride output' =
+  assert (num_dims input = 5);
+  assert (num_dims kernel = 5);
+  assert (num_dims output' = 5);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let kernel_dpts = kernel_shp.(2) in
+  let out_channel = kernel_shp.(4) in
+  assert (in_channel = kernel_shp.(3));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  let output_dpts =  output_shp.(3) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(4));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  _owl_cuboid_conv_backward_kernel (kind input)
+    input out output' batches
+    input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts out_channel
+    dpt_stride row_stride col_stride
 
 
 let upsample_kernel3d kernel rate =
@@ -3140,6 +3214,40 @@ let conv1d_backward_kernel input kernel stride output' =
 
   let kernel' = conv2d_backward_kernel input kernel stride output' in
   reshape kernel' kernel_shp
+
+
+let conv1d_backward_kernel_ ~out input kernel stride output' =
+  assert (num_dims input = 3);
+  assert (num_dims kernel = 3);
+  assert (num_dims output' = 3);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input_rows = 1 in
+  let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let out_channel = kernel_shp.(2) in
+  assert (in_channel = kernel_shp.(1));
+  let kernel_rows = 1 in
+  let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
+
+  let output'_shp = shape output' in
+  let output_cols = output'_shp.(1) in
+  assert (batches = output'_shp.(0));
+  assert (out_channel = output'_shp.(2));
+  let output_rows = 1 in
+  let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+  let col_stride = stride.(0) in
+  let row_stride = 1 in
+  let stride = [|row_stride; col_stride|] in
+
+  conv2d_backward_kernel_ ~out input kernel stride output'
 
 
 (* dilated_conv1d: 3d input and 3d kernel, refer to tensorlfow doc
@@ -4648,7 +4756,7 @@ let add_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_add (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_add (kind x)) x y ~out |> ignore
   )
@@ -4659,7 +4767,7 @@ let sub_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_sub (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_sub (kind x)) x y ~out |> ignore
   )
@@ -4670,7 +4778,7 @@ let mul_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_mul (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_mul (kind x)) x y ~out |> ignore
   )
@@ -4681,7 +4789,7 @@ let div_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_div (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_div (kind x)) x y ~out |> ignore
   )
@@ -4692,7 +4800,7 @@ let pow_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_pow (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_pow (kind x)) x y ~out |> ignore
   )
@@ -4703,7 +4811,7 @@ let atan2_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_atan2 (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_atan2 (kind x)) x y ~out |> ignore
   )
@@ -4714,7 +4822,7 @@ let hypot_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_hypot (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_hypot (kind x)) x y ~out |> ignore
   )
@@ -4725,7 +4833,7 @@ let fmod_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_fmod (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_fmod (kind x)) x y ~out |> ignore
   )
@@ -4736,7 +4844,7 @@ let min2_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_min2 (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_min2 (kind x)) x y ~out |> ignore
   )
@@ -4747,7 +4855,7 @@ let max2_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_max2 (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_max2 (kind x)) x y ~out |> ignore
   )
@@ -4758,7 +4866,7 @@ let elt_equal_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_elt_equal (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_elt_equal (kind x)) x y ~out |> ignore
   )
@@ -4769,7 +4877,7 @@ let elt_not_equal_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_elt_not_equal (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_elt_not_equal (kind x)) x y ~out |> ignore
   )
@@ -4780,7 +4888,7 @@ let elt_less_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_elt_less (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_elt_less (kind x)) x y ~out |> ignore
   )
@@ -4791,7 +4899,7 @@ let elt_greater_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_elt_greater (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_elt_greater (kind x)) x y ~out |> ignore
   )
@@ -4802,7 +4910,7 @@ let elt_less_equal_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_elt_less_equal (kind x) (numel x) x y out
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_elt_less_equal (kind x)) x y ~out |> ignore
   )
@@ -4813,7 +4921,7 @@ let elt_greater_equal_ ?out x y =
   let sy = shape y in
   if sx = sy then _owl_elt_equal (kind x) (numel x) x y x
   else (
-    let so = Owl_utils.calc_broadcast_shape1 sx sy in
+    let so = Owl_utils_infer_shape.broadcast1 sx sy in
     assert (shape out = so);
     broadcast_op (_owl_broadcast_elt_greater_equal (kind x)) x y ~out |> ignore
   )

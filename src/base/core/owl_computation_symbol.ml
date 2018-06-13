@@ -456,25 +456,25 @@ module Make
     let s0 = input_shapes.(0).(0) in
     let s1 = input_shapes.(1).(0) in
     match s0, s1 with
-    | Some s0, Some s1 -> [| Some Owl_utils.(calc_broadcast_shape1 s0 s1) |]
+    | Some s0, Some s1 -> [| Some Owl_utils_infer_shape.(broadcast1 s0 s1) |]
     | _, _             -> [| None |]
 
 
   let _infer_shape_04 input_shapes axis =
     match input_shapes.(0).(0) with
-    | Some s -> [| Some Owl_utils.(calc_fold_shape s axis) |]
+    | Some s -> [| Some Owl_utils_infer_shape.(fold s axis) |]
     | None   -> [| None |]
 
 
   let _infer_shape_05 input_shapes repeats =
     match input_shapes.(0).(0) with
-    | Some s -> [| Some Owl_utils.(calc_tile_shape s repeats) |]
+    | Some s -> [| Some Owl_utils_infer_shape.(tile s repeats) |]
     | None   -> [| None |]
 
 
   let _infer_shape_06 input_shapes axis repeats =
     match input_shapes.(0).(0) with
-    | Some s -> [| Some Owl_utils.(calc_repeat_shape s axis repeats) |]
+    | Some s -> [| Some Owl_utils_infer_shape.(repeat s axis repeats) |]
     | None   -> [| None |]
 
 
@@ -483,14 +483,14 @@ module Make
     if Array.exists (function Some _ -> false | None -> true) s0 then [| None |]
     else (
       let s1 = Array.map (function Some a -> a | None -> failwith "_infer_shape_07") s0 in
-      [| Some Owl_utils.(calc_concatenate_shape s1 axis) |]
+      [| Some Owl_utils_infer_shape.(concatenate s1 axis) |]
     )
 
 
   let _infer_shape_08 input_shapes axis parts =
     match input_shapes.(0).(0) with
     | Some s -> (
-        let s0 = Owl_utils.(calc_split_shape s axis parts) in
+        let s0 = Owl_utils_infer_shape.(split s axis parts) in
         Array.map (fun s -> Some s) s0
       )
     | None   -> Array.(make (length parts) None)
@@ -498,13 +498,13 @@ module Make
 
   let _infer_shape_09 input_shapes axis n =
     match input_shapes.(0).(0) with
-    | Some s -> [| Some Owl_utils.(calc_draw_shape s axis n) |]
+    | Some s -> [| Some Owl_utils_infer_shape.(draw s axis n) |]
     | None   -> [| None |]
 
 
   let _infer_shape_10 input_shapes axis =
     match input_shapes.(0).(0) with
-    | Some s -> [| Some Owl_utils.(calc_reduce_shape s axis) |]
+    | Some s -> [| Some Owl_utils_infer_shape.(reduce s axis) |]
     | None   -> [| None |]
 
 
@@ -512,7 +512,7 @@ module Make
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
-    | Some input, Some kernel -> [| Some Owl_utils.(calc_conv1d_shape input padding kernel stride) |]
+    | Some input, Some kernel -> [| Some Owl_utils_infer_shape.(conv1d input padding kernel stride) |]
     | _, _                    -> [| None |]
 
 
@@ -520,7 +520,7 @@ module Make
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
-    | Some input, Some kernel -> [| Some Owl_utils.(calc_conv2d_shape input padding kernel stride) |]
+    | Some input, Some kernel -> [| Some Owl_utils_infer_shape.(conv2d input padding kernel stride) |]
     | _, _                    -> [| None |]
 
 
@@ -528,7 +528,7 @@ module Make
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
-    | Some input, Some kernel -> [| Some Owl_utils.(calc_conv3d_shape input padding kernel stride) |]
+    | Some input, Some kernel -> [| Some Owl_utils_infer_shape.(conv3d input padding kernel stride) |]
     | _, _                    -> [| None |]
 
 
@@ -536,34 +536,34 @@ module Make
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
-    | Some input, Some kernel -> [| Some Owl_utils.(calc_transpose_conv2d_shape input padding kernel stride) |]
+    | Some input, Some kernel -> [| Some Owl_utils_infer_shape.(transpose_conv2d input padding kernel stride) |]
     | _, _                    -> [| None |]
 
 
   let _infer_shape_15 input_shapes padding kernel stride =
     let input_shape = input_shapes.(0).(0) in
     match input_shape with
-    | Some input -> [| Some Owl_utils.(calc_conv1d_shape input padding kernel stride) |]
+    | Some input -> [| Some Owl_utils_infer_shape.(conv1d input padding kernel stride) |]
     | _          -> [| None |]
 
 
   let _infer_shape_16 input_shapes padding kernel stride =
     let input_shape = input_shapes.(0).(0) in
     match input_shape with
-    | Some input -> [| Some Owl_utils.(calc_conv2d_shape input padding kernel stride) |]
+    | Some input -> [| Some Owl_utils_infer_shape.(conv2d input padding kernel stride) |]
     | _          -> [| None |]
 
 
   let _infer_shape_17 input_shapes padding kernel stride =
     let input_shape = input_shapes.(0).(0) in
     match input_shape with
-    | Some input -> [| Some Owl_utils.(calc_conv3d_shape input padding kernel stride) |]
+    | Some input -> [| Some Owl_utils_infer_shape.(conv3d input padding kernel stride) |]
     | _          -> [| None |]
 
 
   let _infer_shape_18 input_shapes axis =
     match input_shapes.(0).(0) with
-    | Some s -> [| Some Owl_utils.(calc_transpose_shape s axis) |]
+    | Some s -> [| Some Owl_utils_infer_shape.(transpose s axis) |]
     | None   -> [| None |]
 
 
@@ -571,7 +571,7 @@ module Make
     let x_shape = input_shapes.(0).(0) in
     let y_shape = input_shapes.(1).(0) in
     match x_shape, y_shape with
-    | Some s0, Some s1 -> [| Some Owl_utils.(calc_dot_shape s0 s1) |]
+    | Some s0, Some s1 -> [| Some Owl_utils_infer_shape.(dot s0 s1) |]
     | _, _                    -> [| None |]
 
 
@@ -588,13 +588,13 @@ module Make
   let _infer_shape_21 input_shapes padding kernel stride =
     let input_shape = input_shapes.(0).(0) in
     match input_shape with
-    | Some input -> [| Some Owl_utils.(calc_pool2d_shape input padding kernel stride) |]
+    | Some input -> [| Some Owl_utils_infer_shape.(pool2d input padding kernel stride) |]
     | _          -> [| None |]
 
 
   let _infer_shape_22 input_shapes depth =
     match input_shapes.(0).(0) with
-    | Some s -> [| Some Owl_utils.(calc_onehot_shape s depth) |]
+    | Some s -> [| Some Owl_utils_infer_shape.(onehot s depth) |]
     | None   -> [| None |]
 
 
@@ -603,7 +603,7 @@ module Make
     let s1 = input_shapes.(1).(0) in
     let s2 = input_shapes.(2).(0) in
     match s0, s1, s2 with
-    | Some s0, Some s1, Some s2 -> [| Some Owl_utils.(calc_broadcast_shape2 s0 s1 s2) |]
+    | Some s0, Some s1, Some s2 -> [| Some Owl_utils_infer_shape.(broadcast2 s0 s1 s2) |]
     | _, _, _                   -> [| None |]
 
 
@@ -611,7 +611,7 @@ module Make
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
-    | Some input, Some kernel -> [| Some Owl_utils.(calc_transpose_conv1d_shape input padding kernel stride) |]
+    | Some input, Some kernel -> [| Some Owl_utils_infer_shape.(transpose_conv1d input padding kernel stride) |]
     | _, _                    -> [| None |]
 
 
@@ -619,7 +619,7 @@ module Make
     let input_shape = input_shapes.(0).(0) in
     let kernel_shape = input_shapes.(1).(0) in
     match input_shape, kernel_shape with
-    | Some input, Some kernel -> [| Some Owl_utils.(calc_transpose_conv3d_shape input padding kernel stride) |]
+    | Some input, Some kernel -> [| Some Owl_utils_infer_shape.(transpose_conv3d input padding kernel stride) |]
     | _, _                    -> [| None |]
 
 
