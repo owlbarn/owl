@@ -1092,7 +1092,7 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    let run x l = Maths.((dilated_conv1d ~padding:l.padding x l.w l.rate) + l.b)
+    let run x l = Maths.((dilated_conv1d ~padding:l.padding x l.w l.stride l.rate) + l.b)
 
     let to_string l =
       let ws = Arr.shape l.w in
@@ -1373,7 +1373,7 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    let run x l = Maths.((dilated_conv2d ~padding:l.padding x l.w l.rate) + l.b)
+    let run x l = Maths.((dilated_conv2d ~padding:l.padding x l.w l.stride l.rate) + l.b)
 
     let to_string l =
       let ws = Arr.shape l.w in
@@ -1382,11 +1382,11 @@ module Make
       let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
       Printf.sprintf "    DilateConv2D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-      Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2) + bn.(0)) ^
-      Printf.sprintf "    kernel : %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ^
+      Printf.sprintf "    params : %i\n" (ws.(0) * ws.(1) * ws.(2) * ws.(3) + bn.(0)) ^
+      Printf.sprintf "    kernel : %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3) ^
       Printf.sprintf "    b      : %i\n" bn.(0) ^
-      Printf.sprintf "    stride : [%i]\n" l.stride.(0) ^
-      Printf.sprintf "    rate   : [%i]\n" l.stride.(0) ^
+      Printf.sprintf "    stride : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
+      Printf.sprintf "    rate   : [%i; %i]\n" l.rate.(0) l.rate.(1) ^
       ""
 
     let to_name () = "dilated_conv2d"
@@ -1665,7 +1665,7 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    let run x l = Maths.((dilated_conv3d ~padding:l.padding x l.w l.rate) + l.b)
+    let run x l = Maths.((dilated_conv3d ~padding:l.padding x l.w l.stride l.rate) + l.b)
 
     let to_string l =
       let ws = Arr.shape l.w in
@@ -1674,11 +1674,11 @@ module Make
       let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
       Printf.sprintf "    DilateConv3D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-      Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2) + bn.(0)) ^
-      Printf.sprintf "    kernel : %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ^
+      Printf.sprintf "    params : %i\n" (ws.(0) * ws.(1) * ws.(2) * ws.(3) * ws.(4) + bn.(0)) ^
+      Printf.sprintf "    kernel : %i x %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3)  ws.(4) ^
       Printf.sprintf "    b      : %i\n" bn.(0) ^
-      Printf.sprintf "    stride : [%i]\n" l.stride.(0) ^
-      Printf.sprintf "    rate   : [%i]\n" l.stride.(0) ^
+      Printf.sprintf "    stride : [%i; %i; %i]\n" l.stride.(0) l.stride.(1) l.stride.(2) ^
+      Printf.sprintf "    rate   : [%i; %i; %i]\n" l.rate.(0) l.rate.(1) l.rate.(2) ^
       ""
 
     let to_name () = "dilated_conv3d"
