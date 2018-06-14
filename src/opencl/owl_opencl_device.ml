@@ -32,11 +32,11 @@ module Make (A : Ndarray_Basic) = struct
     { cpu_mem; gpu_mem; kernel; events }
 
 
-  let copy_value x_val =
+  let copy_cpu_gpu_mem x_val =
     let cpu_mem = Array.copy x_val.cpu_mem in
     let gpu_mem = Array.copy x_val.gpu_mem in
-    let kernel = Array.copy x_val.kernel in
-    let events = Array.copy x_val.events in
+    let kernel = [| |] in
+    let events = [| |] in
     make_value cpu_mem gpu_mem kernel events
 
 

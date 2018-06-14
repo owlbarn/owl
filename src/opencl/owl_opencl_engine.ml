@@ -93,6 +93,11 @@ module Make (A : Ndarray_Mutable) = struct
     allocate_gpu_mem ctx x
 
 
+  let get_cpu_ptr x_val =
+    let cpu_mem = CL_Dev.value_to_arr x_val in
+    Ctypes.(bigarray_start genarray (Obj.magic cpu_mem))
+
+
   let get_gpu_ptr x_val =
     let gpu_mem = CL_Dev.(x_val.gpu_mem.(0)) in
     Ctypes.allocate cl_mem gpu_mem
@@ -105,19 +110,17 @@ module Make (A : Ndarray_Mutable) = struct
 
   let cpu_to_gpu_copy param x_val =
     let ctx, cmdq, _ = param in
-    let cpu_mem = CL_Dev.(x_val.gpu_mem.(0)) in
+    let cpu_ptr = get_cpu_ptr x_val in
     let gpu_mem = CL_Dev.(x_val.gpu_mem.(0)) in
-    let gpu_ptr = Ctypes.allocate cl_mem gpu_mem in
-    let event = Buffer.enqueue_read cmdq cpu_mem 0 sizeof_cl_mem (Ctypes.to_voidp gpu_ptr) in
+    let event = Buffer.enqueue_write cmdq gpu_mem 0 sizeof_cl_mem (Ctypes.to_voidp cpu_ptr) in
     CL_Dev.append_events x_val [| event |]
 
 
   let gpu_to_cpu_copy param x_val =
     let ctx, cmdq, _ = param in
-    let cpu_mem = CL_Dev.(x_val.gpu_mem.(0)) in
+    let cpu_ptr = get_cpu_ptr x_val in
     let gpu_mem = CL_Dev.(x_val.gpu_mem.(0)) in
-    let gpu_ptr = Ctypes.allocate cl_mem gpu_mem in
-    let event = Buffer.enqueue_write cmdq cpu_mem 0 sizeof_cl_mem (Ctypes.to_voidp gpu_ptr) in
+    let event = Buffer.enqueue_read cmdq gpu_mem 0 sizeof_cl_mem (Ctypes.to_voidp cpu_ptr) in
     CL_Dev.append_events x_val [| event |]
 
 
@@ -137,9 +140,7 @@ module Make (A : Ndarray_Mutable) = struct
     else (
       if refnum parent = 1 && get_reuse parent then (
         invalidate parent;
-        let x_val = CL_Dev.copy_value parent_val in
-        CL_Dev.reset_events x_val;
-        set_value x [| x_val |]
+        set_value x [| CL_Dev.copy_cpu_gpu_mem parent_val |]
       )
       else cpu_gpu_malloc ctx x
     )
@@ -164,24 +165,18 @@ module Make (A : Ndarray_Mutable) = struct
       if shp_0 = shp_x then (
         if refnum parent_0 = 1 && get_reuse parent_0 then (
           invalidate parent_0;
-          let x_val = CL_Dev.copy_value parent_0_val in
-          CL_Dev.reset_events x_val;
-          set_value x [| x_val |]
+          set_value x [| CL_Dev.copy_cpu_gpu_mem parent_0_val |]
         )
         else if refnum parent_0 = 2 && parent_0 == parent_1 && get_reuse parent_0 then (
           invalidate parent_0;
-          let x_val = CL_Dev.copy_value parent_0_val in
-          CL_Dev.reset_events x_val;
-          set_value x [| x_val |]
+          set_value x [| CL_Dev.copy_cpu_gpu_mem parent_0_val |]
         )
         else cpu_gpu_malloc ctx x
       )
       else if shp_1 = shp_x then (
         if refnum parent_1 = 1 && get_reuse parent_1 then (
           invalidate parent_1;
-          let x_val = CL_Dev.copy_value parent_1_val in
-          CL_Dev.reset_events x_val;
-          set_value x [| x_val |]
+          set_value x [| CL_Dev.copy_cpu_gpu_mem parent_1_val |]
         )
         else cpu_gpu_malloc ctx x
       )
@@ -412,7 +407,7 @@ module Make (A : Ndarray_Mutable) = struct
     allocate_from_parent_1 ctx x x_parent;
     let x_parent_val = (get_value x_parent).(0) in
     let i_ptr = get_gpu_ptr x_parent_val in
-    let o_ptr = (get_value x).(0) |> get_gpu_ptr in
+    let o_ptr = get_gpu_ptr (get_value x).(0) in
 
     let kernel = make_kernel x program fun_name in
     Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem i_ptr;
