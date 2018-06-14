@@ -147,12 +147,8 @@ module To_test_dilated_conv2d_bi = struct
 
   (* change stride *)
   let fun06 () =
-    let expected = [|
-      1.; 0.; 4.; 0.; 7.; 0.; 6.; 0.; 0.; 0.; 0.; 0.; 0.; 0.; 0.; 0.; 7.; 0.;
-      23.; 0.; 33.; 0.; 24.; 0.; 0.; 0.; 0.; 0.; 0.; 0.; 0.; 0.; 19.; 0.; 53.;
-      0.; 63.; 0.; 42.; 0.; 0.; 0.; 0.; 0.; 0.; 0.; 0.; 0.; 21.; 0.; 52.; 0.;
-      59.; 0.; 36.; 0.|] in
-    verify_value (test_dilated_conv2d_bi ~stride:[|2;2|])
+    let expected = [|134.; 154.; 174.; 294.; 314.; 334.; 454.; 474.; 494.|] in
+    verify_value (test_dilated_conv2d_bk ~stride:[|2;2|])
       [|1;7;8;1|] [|3;3;1;1|] [|2;2|] VALID expected
 
 end

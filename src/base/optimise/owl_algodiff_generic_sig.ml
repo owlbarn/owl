@@ -205,15 +205,6 @@ module type Sig = sig
     val conv3d : ?padding:padding -> t -> t -> int array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-    val transpose_conv1d : ?padding:padding -> t -> t -> int array -> t
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-
-    val transpose_conv2d : ?padding:padding -> t -> t -> int array -> t
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-
-    val transpose_conv3d : ?padding:padding -> t -> t -> int array -> t
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-
     val dilated_conv1d : ?padding:padding -> t -> t -> int array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
@@ -221,6 +212,15 @@ module type Sig = sig
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val dilated_conv3d : ?padding:padding -> t -> t -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val transpose_conv1d : ?padding:padding -> t -> t -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val transpose_conv2d : ?padding:padding -> t -> t -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val transpose_conv3d : ?padding:padding -> t -> t -> int array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val max_pool1d : padding -> t -> int array -> int array -> t

@@ -603,14 +603,14 @@ end
 module DilatedConv1D : sig
 
   type neuron_typ = {
-    mutable w : t;
-    mutable b : t;
-    mutable kernel : int array;
-    mutable stride : int array;
-    mutable rate   : int array;
-    mutable padding : Owl_types.padding;
-    mutable init_typ : Init.typ;
-    mutable in_shape : int array;
+    mutable w         : t;
+    mutable b         : t;
+    mutable kernel    : int array;
+    mutable stride    : int array;
+    mutable rate      : int array;
+    mutable padding   : Owl_types.padding;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
     mutable out_shape : int array;
   }
   (** Neuron type definition. *)
@@ -662,14 +662,14 @@ end
 module DilatedConv2D : sig
 
   type neuron_typ = {
-    mutable w : t;
-    mutable b : t;
-    mutable kernel : int array;
-    mutable stride : int array;
-    mutable rate   : int array;
-    mutable padding : Owl_types.padding;
-    mutable init_typ : Init.typ;
-    mutable in_shape : int array;
+    mutable w         : t;
+    mutable b         : t;
+    mutable kernel    : int array;
+    mutable stride    : int array;
+    mutable rate      : int array;
+    mutable padding   : Owl_types.padding;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
     mutable out_shape : int array;
   }
   (** Neuron type definition. *)
@@ -721,14 +721,14 @@ end
 module DilatedConv3D : sig
 
   type neuron_typ = {
-    mutable w : t;
-    mutable b : t;
-    mutable kernel : int array;
-    mutable stride : int array;
-    mutable rate   : int array;
-    mutable padding : Owl_types.padding;
-    mutable init_typ : Init.typ;
-    mutable in_shape : int array;
+    mutable w         : t;
+    mutable b         : t;
+    mutable kernel    : int array;
+    mutable stride    : int array;
+    mutable rate      : int array;
+    mutable padding   : Owl_types.padding;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
     mutable out_shape : int array;
   }
   (** Neuron type definition. *)
@@ -1835,12 +1835,12 @@ type neuron =
   | Conv1D          of Conv1D.neuron_typ
   | Conv2D          of Conv2D.neuron_typ
   | Conv3D          of Conv3D.neuron_typ
-  | TransposeConv1D of TransposeConv1D.neuron_typ
-  | TransposeConv2D of TransposeConv2D.neuron_typ
-  | TransposeConv3D of TransposeConv3D.neuron_typ
   | DilatedConv1D   of DilatedConv1D.neuron_typ
   | DilatedConv2D   of DilatedConv2D.neuron_typ
   | DilatedConv3D   of DilatedConv3D.neuron_typ
+  | TransposeConv1D of TransposeConv1D.neuron_typ
+  | TransposeConv2D of TransposeConv2D.neuron_typ
+  | TransposeConv3D of TransposeConv3D.neuron_typ
   | FullyConnected  of FullyConnected.neuron_typ
   | MaxPool1D       of MaxPool1D.neuron_typ
   | MaxPool2D       of MaxPool2D.neuron_typ

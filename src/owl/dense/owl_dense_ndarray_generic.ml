@@ -3205,6 +3205,7 @@ let dilated_conv1d_backward_kernel_ ~out ?(stride=[|1|]) input kernel output' ra
 
   dilated_conv2d_backward_kernel_ ~out ~stride input kernel output' rate
 
+
 (* transpose_conv2d: 4d input and 4d kernel, refer to tensorlfow doc
   input : [batch; input_column; input_row; input_channel]
   kernel: [kernel_column; kernel_row; input_channel; output_channel]
