@@ -3032,7 +3032,7 @@ let dilated_conv1d ?(padding=SAME) ?(stride=[|1|]) input kernel rate =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   assert (in_channel = kernel_shp.(1));
-  let kernel = reshape kernel [|1;kernel_cols; in_channel; out_channel|] in
+  let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
   let col_stride = stride.(0) in
   let stride = [|1; col_stride|] in
@@ -3059,7 +3059,7 @@ let dilated_conv1d_ ~out ?(padding=SAME) ?(stride=[|1|]) input kernel rate =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   assert (in_channel = kernel_shp.(1));
-  let kernel = reshape kernel [|1;kernel_cols; in_channel; out_channel|] in
+  let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
   let col_stride = stride.(0) in
   let stride = [|1; col_stride|] in

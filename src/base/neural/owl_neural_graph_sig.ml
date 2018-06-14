@@ -207,6 +207,7 @@ Arguments:
 
 Arguments:
   * ``kernel``: int array consists of ``h, i, o``. ``h`` specifies the dimension of the 1D convolution window. ``i`` and ``o`` are the dimensionalities of the input and output space.
+  * ``stride``: int array of 1 integer.
   * ``rate``: int array of 1 integer.
   *)
 
@@ -216,6 +217,7 @@ Arguments:
 
 Arguments:
   * ``kernel``: int array consists of ``w, h, i, o``. ``w`` and ``h`` specify the width and height of the 2D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
+  * ``stride``: int array of 2 integers.
   * ``rate``: int array of 2 integers.
   *)
 
@@ -225,6 +227,7 @@ Arguments:
 
 Arguments:
   * ``kernel``: int array consists of ``w, h, d, i, o``. ``w``, ``h``, and ``d`` specify the 3 dimensionality of the 3D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
+  * ``stride``: int array of 3 integers.
   * ``rate``: int array of 3 integers.
   *)
 
