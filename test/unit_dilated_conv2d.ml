@@ -13,21 +13,20 @@ let tolerance_f32 = 5e-4
 let close a b =
   N.(sub a b |> abs |> sum') < tolerance_f32
 
-let test_dilated_conv2d ?(stride=[|1;1|]) input_shape kernel_shape rate pad =
+let test_dilated_conv2d ?(stride=[|1; 1|]) input_shape kernel_shape rate pad =
   let inp = N.sequential ~a:1. input_shape  in
   let kernel = N.sequential ~a:1. kernel_shape in
   N.dilated_conv2d ~stride ~padding:pad inp kernel rate
 
-let test_dilated_conv2d_bi ?(stride=[|1;1|]) input_shape kernel_shape rate pad =
+let test_dilated_conv2d_bi ?(stride=[|1; 1|]) input_shape kernel_shape rate pad =
   let inp = N.sequential ~a:1. input_shape  in
   let kernel = N.sequential ~a:1. kernel_shape in
   let output = N.dilated_conv2d ~stride ~padding:pad inp kernel rate in
   let output_shape = N.shape output in
-  Printf.printf "shape: %s\n" (Owl_utils_array.to_string string_of_int output_shape);
   let output' = N.sequential ~a:1. output_shape in
   N.dilated_conv2d_backward_input ~stride inp kernel output' rate
 
-let test_dilated_conv2d_bk ?(stride=[|1;1|]) input_shape kernel_shape rate pad =
+let test_dilated_conv2d_bk ?(stride=[|1; 1|]) input_shape kernel_shape rate pad =
   let inp = N.sequential ~a:1. input_shape  in
   let kernel = N.sequential ~a:1. kernel_shape in
   let output = N.dilated_conv2d ~stride ~padding:pad inp kernel rate in

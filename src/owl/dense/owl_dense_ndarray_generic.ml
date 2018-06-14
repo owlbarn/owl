@@ -2480,10 +2480,10 @@ let conv1d_backward_kernel_ ~out input kernel stride output' =
   input : [batch; input_column; input_row; input_channel]
   kernel: [kernel_column; kernel_row; input_channel; output_channel]
   stride: [column_stride; row_stride]
-  rate  : [col_dilation_stride; row_dilation_rate]
+  rate  : [col_dilation_rate; row_dilation_rate]
   output: [batch; output_column; output_row; output_channel]
  *)
-let dilated_conv2d ?(padding=SAME) ?(stride=[|1;1|]) input kernel rate =
+let dilated_conv2d ?(padding=SAME) ?(stride=[|1; 1|]) input kernel rate =
   assert (num_dims input = 4);
   assert (num_dims kernel = 4);
   assert (Array.length stride = 2);
@@ -2524,7 +2524,7 @@ let dilated_conv2d ?(padding=SAME) ?(stride=[|1;1|]) input kernel rate =
   output
 
 
-let dilated_conv2d_ ~out ?(padding=SAME) ?(stride=[|1;1|]) input kernel rate =
+let dilated_conv2d_ ~out ?(padding=SAME) ?(stride=[|1; 1|]) input kernel rate =
   assert (num_dims input = 4);
   assert (num_dims kernel = 4);
   assert (Array.length stride = 2);
@@ -2563,7 +2563,7 @@ let dilated_conv2d_ ~out ?(padding=SAME) ?(stride=[|1;1|]) input kernel rate =
 
 
 (* gradient of dilated_conv2d w.r.t the input *)
-let dilated_conv2d_backward_input ?(stride=[|1;1|]) input kernel output' rate =
+let dilated_conv2d_backward_input ?(stride=[|1; 1|]) input kernel output' rate =
   assert (num_dims input = 4);
   assert (num_dims kernel = 4);
   assert (num_dims output' = 4);
@@ -2603,7 +2603,7 @@ let dilated_conv2d_backward_input ?(stride=[|1;1|]) input kernel output' rate =
   input'
 
 
-let dilated_conv2d_backward_input_ ~out ?(stride=[|1;1|]) input kernel output' rate =
+let dilated_conv2d_backward_input_ ~out ?(stride=[|1; 1|]) input kernel output' rate =
   assert (num_dims input = 4);
   assert (num_dims kernel = 4);
   assert (num_dims output' = 4);
@@ -2640,7 +2640,7 @@ let dilated_conv2d_backward_input_ ~out ?(stride=[|1;1|]) input kernel output' r
 
 
 (* gradient of dilated_conv2d w.r.t the kernel *)
-let dilated_conv2d_backward_kernel ?(stride=[|1;1|]) input kernel output' rate =
+let dilated_conv2d_backward_kernel ?(stride=[|1; 1|]) input kernel output' rate =
   assert (num_dims input = 4);
   assert (num_dims kernel = 4);
   assert (num_dims output' = 4);
@@ -2680,7 +2680,7 @@ let dilated_conv2d_backward_kernel ?(stride=[|1;1|]) input kernel output' rate =
   kernel'
 
 
-let dilated_conv2d_backward_kernel_ ~out ?(stride=[|1;1|]) input kernel output' rate =
+let dilated_conv2d_backward_kernel_ ~out ?(stride=[|1; 1|]) input kernel output' rate =
   assert (num_dims input = 4);
   assert (num_dims kernel = 4);
   assert (num_dims output' = 4);
@@ -2720,10 +2720,10 @@ let dilated_conv2d_backward_kernel_ ~out ?(stride=[|1;1|]) input kernel output' 
   input : [batch; input_column; input_row; input_depth; input_channel]
   kernel: [kernel_column; kernel_row; kernel_depth; input_channel; output_channel]
   stride: [column_stride; row_stride; depth_stride]
-  rate  : [col_dilation_stride; row_dilation_rate; depth_dilation_rate]
+  rate  : [col_dilation_rate; row_dilation_rate; depth_dilation_rate]
   output: [batch; output_column; output_row; output_dpts; output_channel]
  *)
-let dilated_conv3d ?(padding=SAME) ?(stride=[|1;1;1|]) input kernel rate =
+let dilated_conv3d ?(padding=SAME) ?(stride=[|1; 1; 1|]) input kernel rate =
   assert (num_dims input = 5);
   assert (num_dims kernel = 5);
   assert (Array.length stride = 3);
@@ -2773,7 +2773,7 @@ let dilated_conv3d ?(padding=SAME) ?(stride=[|1;1;1|]) input kernel rate =
   output
 
 
-let dilated_conv3d_ ~out ?(padding=SAME) ?(stride=[|1;1;1|]) input kernel rate =
+let dilated_conv3d_ ~out ?(padding=SAME) ?(stride=[|1; 1; 1|]) input kernel rate =
   assert (num_dims input = 5);
   assert (num_dims kernel = 5);
   assert (Array.length stride = 3);
@@ -2821,7 +2821,7 @@ let dilated_conv3d_ ~out ?(padding=SAME) ?(stride=[|1;1;1|]) input kernel rate =
 
 
 (* gradient of dilated_conv3d w.r.t the input *)
-let dilated_conv3d_backward_input ?(stride=[|1;1;1|]) input kernel output' rate =
+let dilated_conv3d_backward_input ?(stride=[|1; 1; 1|]) input kernel output' rate =
   assert (num_dims input = 5);
   assert (num_dims kernel = 5);
   assert (num_dims output' = 5);
@@ -2870,7 +2870,7 @@ let dilated_conv3d_backward_input ?(stride=[|1;1;1|]) input kernel output' rate 
   input'
 
 
-let dilated_conv3d_backward_input_ ~out ?(stride=[|1;1;1|]) input kernel output' rate =
+let dilated_conv3d_backward_input_ ~out ?(stride=[|1; 1; 1|]) input kernel output' rate =
   assert (num_dims input = 5);
   assert (num_dims kernel = 5);
   assert (num_dims output' = 5);
@@ -2916,7 +2916,7 @@ let dilated_conv3d_backward_input_ ~out ?(stride=[|1;1;1|]) input kernel output'
 
 
 (* gradient of dilated_conv3d w.r.t the kernel *)
-let dilated_conv3d_backward_kernel ?(stride=[|1;1;1|]) input kernel output' rate =
+let dilated_conv3d_backward_kernel ?(stride=[|1; 1; 1|]) input kernel output' rate =
   assert (num_dims input = 5);
   assert (num_dims kernel = 5);
   assert (num_dims output' = 5);
@@ -2965,7 +2965,7 @@ let dilated_conv3d_backward_kernel ?(stride=[|1;1;1|]) input kernel output' rate
   kernel'
 
 
-let dilated_conv3d_backward_kernel_ ~out ?(stride=[|1;1;1|]) input kernel output' rate =
+let dilated_conv3d_backward_kernel_ ~out ?(stride=[|1; 1; 1|]) input kernel output' rate =
   assert (num_dims input = 5);
   assert (num_dims kernel = 5);
   assert (num_dims output' = 5);
@@ -3014,6 +3014,7 @@ let dilated_conv3d_backward_kernel_ ~out ?(stride=[|1;1;1|]) input kernel output
   input : [batch; input_column; input_channel]
   kernel: [kernel_column; input_channel; output_channel]
   stride: [column_stride]
+  reate : [column_dilation_rate]
   output: [batch; output_column; output_channel]
  *)
 let dilated_conv1d ?(padding=SAME) ?(stride=[|1|]) input kernel rate =

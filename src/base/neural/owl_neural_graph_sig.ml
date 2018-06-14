@@ -179,7 +179,7 @@ convolution) on previous ``node``.
 
 Arguments:
   * ``kernel``: int array consists of ``h, i, o``. ``h`` specifies the dimension of the 1D convolution window. ``i`` and ``o`` are the dimensionalities of the input and output space.
-  * ``stride``: int array of 1 integer
+  * ``stride``: int array of 1 integer.
   *)
 
   val conv2d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
@@ -188,7 +188,7 @@ Arguments:
 
 Arguments:
   * ``kernel``: int array consists of ``w, h, i, o``. ``w`` and ``h`` specify the width and height of the 2D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``stride``: int array of 2 integers
+  * ``stride``: int array of 2 integers.
   *)
 
   val conv3d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
@@ -198,7 +198,7 @@ convolution over volumes) on previous ``node``.
 
 Arguments:
   * ``kernel``: int array consists of ``w, h, d, i, o``. ``w``, ``h``, and ``d`` specify the 3 dimensionality of the 3D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``stride``: int array of 3 integers
+  * ``stride``: int array of 3 integers.
   *)
 
   val dilated_conv1d : ?name:string -> ?padding:Owl_types.padding -> ?stride:int array -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
@@ -207,7 +207,7 @@ Arguments:
 
 Arguments:
   * ``kernel``: int array consists of ``h, i, o``. ``h`` specifies the dimension of the 1D convolution window. ``i`` and ``o`` are the dimensionalities of the input and output space.
-  * ``rate``: int array of 1 integer
+  * ``rate``: int array of 1 integer.
   *)
 
   val dilated_conv2d : ?name:string -> ?padding:Owl_types.padding -> ?stride:int array -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
@@ -216,7 +216,7 @@ Arguments:
 
 Arguments:
   * ``kernel``: int array consists of ``w, h, i, o``. ``w`` and ``h`` specify the width and height of the 2D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``rate``: int array of 2 integers
+  * ``rate``: int array of 2 integers.
   *)
 
   val dilated_conv3d : ?name:string -> ?padding:Owl_types.padding -> ?stride:int array -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
@@ -225,7 +225,7 @@ Arguments:
 
 Arguments:
   * ``kernel``: int array consists of ``w, h, d, i, o``. ``w``, ``h``, and ``d`` specify the 3 dimensionality of the 3D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``rate``: int array of 3 integers
+  * ``rate``: int array of 3 integers.
   *)
 
   val transpose_conv1d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
@@ -234,7 +234,7 @@ Arguments:
 
 Arguments:
   * ``kernel``: int array consists of ``h, i, o``. ``h`` specifies the dimension of the 1D convolution window. ``i`` and ``o`` are the dimensionalities of the input and output space.
-  * ``stride``: int array of 1 integer
+  * ``stride``: int array of 1 integer.
   *)
 
   val transpose_conv2d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
@@ -243,7 +243,7 @@ Arguments:
 
 Arguments:
   * ``kernel``: int array consists of ``w, h, i, o``. ``w`` and ``h`` specify the width and height of the 2D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``stride``: int array of 2 integers
+  * ``stride``: int array of 2 integers.
   *)
 
   val transpose_conv3d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
@@ -252,7 +252,7 @@ Arguments:
 
 Arguments:
   * ``kernel``: int array consists of ``w, h, d, i, o``. ``w``, ``h``, and ``d`` specify the 3 dimensionality of the 3D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``stride``: int array of 3 integers
+  * ``stride``: int array of 3 integers.
   *)
 
   val fully_connected : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int -> node -> node
@@ -260,7 +260,7 @@ Arguments:
 ``fully_connected outputs node`` adds a fully connected node to ``node``.
 
 Arguments:
-  * ``outputs``: integer, the number of output units in the node
+  * ``outputs``: integer, the number of output units in the node.
   *)
 
   val max_pool1d : ?name:string -> ?padding:Owl_types.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node

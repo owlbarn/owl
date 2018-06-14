@@ -13,12 +13,12 @@ let tolerance_f32 = 5e-4
 let close a b =
   N.(sub a b |> abs |> sum') < tolerance_f32
 
-let test_dilated_conv3d ?(stride=[|1;1;1|]) input_shape kernel_shape rate pad =
+let test_dilated_conv3d ?(stride=[|1; 1; 1|]) input_shape kernel_shape rate pad =
   let inp = N.sequential ~a:1. input_shape  in
   let kernel = N.sequential ~a:1. kernel_shape in
   N.dilated_conv3d ~stride ~padding:pad inp kernel rate
 
-let test_dilated_conv3d_bi ?(stride=[|1;1;1|]) input_shape kernel_shape rate pad =
+let test_dilated_conv3d_bi ?(stride=[|1; 1; 1|]) input_shape kernel_shape rate pad =
   let inp    = N.sequential ~a:1. input_shape in
   let kernel = N.sequential ~a:1. kernel_shape in
   let output = N.dilated_conv3d ~stride ~padding:pad inp kernel rate in
@@ -26,7 +26,7 @@ let test_dilated_conv3d_bi ?(stride=[|1;1;1|]) input_shape kernel_shape rate pad
   let output' = N.sequential ~a:0. output_shape in
   N.dilated_conv3d_backward_input ~stride inp kernel output' rate
 
-let test_dilated_conv3d_bk ?(stride=[|1;1;1|]) input_shape kernel_shape rate pad =
+let test_dilated_conv3d_bk ?(stride=[|1; 1; 1|]) input_shape kernel_shape rate pad =
   let inp = N.sequential ~a:1. input_shape  in
   let kernel = N.sequential ~a:1. kernel_shape in
   let output = N.dilated_conv3d ~stride ~padding:pad inp kernel rate in
