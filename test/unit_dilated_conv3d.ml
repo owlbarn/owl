@@ -16,23 +16,23 @@ let close a b =
 let test_dilated_conv3d ?(stride=[|1; 1; 1|]) input_shape kernel_shape rate pad =
   let inp = N.sequential ~a:1. input_shape  in
   let kernel = N.sequential ~a:1. kernel_shape in
-  N.dilated_conv3d ~stride ~padding:pad inp kernel rate
+  N.dilated_conv3d ~padding:pad inp kernel stride rate
 
 let test_dilated_conv3d_bi ?(stride=[|1; 1; 1|]) input_shape kernel_shape rate pad =
   let inp    = N.sequential ~a:1. input_shape in
   let kernel = N.sequential ~a:1. kernel_shape in
-  let output = N.dilated_conv3d ~stride ~padding:pad inp kernel rate in
+  let output = N.dilated_conv3d ~padding:pad inp kernel stride rate in
   let output_shape = N.shape output in
   let output' = N.sequential ~a:0. output_shape in
-  N.dilated_conv3d_backward_input ~stride inp kernel output' rate
+  N.dilated_conv3d_backward_input inp kernel stride rate output'
 
 let test_dilated_conv3d_bk ?(stride=[|1; 1; 1|]) input_shape kernel_shape rate pad =
   let inp = N.sequential ~a:1. input_shape  in
   let kernel = N.sequential ~a:1. kernel_shape in
-  let output = N.dilated_conv3d ~stride ~padding:pad inp kernel rate in
+  let output = N.dilated_conv3d ~padding:pad inp kernel stride rate in
   let output_shape = N.shape output in
   let output' = N.sequential ~a:1. output_shape in
-  N.dilated_conv3d_backward_kernel ~stride inp kernel output' rate
+  N.dilated_conv3d_backward_kernel inp kernel stride rate output'
 
 let verify_value fn input_shape kernel_shape stride pad expected =
   let a = fn input_shape kernel_shape stride pad in

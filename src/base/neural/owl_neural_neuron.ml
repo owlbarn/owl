@@ -944,15 +944,11 @@ module Make
       mutable out_shape : int array;
     }
 
-    let create ?inputs ?stride padding kernel rate init_typ =
+    let create ?inputs padding kernel stride rate init_typ =
       let h, i, o = kernel.(0), kernel.(1), kernel.(2) in
       let in_shape = match inputs with
         | Some a -> assert (i = a.(1)); a
         | None   -> [|0; i|]
-      in
-      let stride = match stride with
-        | Some a -> a
-        | None   -> [|1|]
       in
       {
         w         = Arr.empty [|h; i; o|];
@@ -1000,7 +996,7 @@ module Make
       l.b <- u.(1) |> primal'
 
     let copy l =
-      let l' = create ~stride:l.stride l.padding l.kernel l.rate l.init_typ in
+      let l' = create l.padding l.kernel l.stride l.rate l.init_typ in
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
@@ -1219,15 +1215,11 @@ module Make
       mutable out_shape : int array;
     }
 
-    let create ?inputs ?stride padding kernel rate init_typ =
+    let create ?inputs padding kernel stride rate init_typ =
       let w, h, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3) in
       let in_shape = match inputs with
         | Some a -> assert (i = a.(2)); a
         | None   -> [|0; 0; i|]
-      in
-      let stride = match stride with
-        | Some a -> a
-        | None   -> [|1; 1|]
       in
       {
         w         = Arr.empty [|w; h; i; o|];
@@ -1279,7 +1271,7 @@ module Make
       l.b <- u.(1) |> primal'
 
     let copy l =
-      let l' = create ~stride:l.stride l.padding l.kernel l.rate l.init_typ in
+      let l' = create l.padding l.kernel l.stride l.rate l.init_typ in
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
@@ -1504,15 +1496,11 @@ module Make
       mutable out_shape : int array;
     }
 
-    let create ?inputs ?stride padding kernel rate init_typ =
+    let create ?inputs padding kernel stride rate init_typ =
       let w, h, d, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3), kernel.(4) in
       let in_shape = match inputs with
         | Some a -> assert (i = a.(3)); a
         | None   -> [|0; 0; 0; i|]
-      in
-      let stride = match stride with
-        | Some a -> a
-        | None   -> [|1; 1; 1|]
       in
       {
         w         = Arr.empty [|w; h; d; i; o|];
@@ -1568,7 +1556,7 @@ module Make
       l.b <- u.(1) |> primal'
 
     let copy l =
-      let l' = create ~stride:l.stride l.padding l.kernel l.rate l.init_typ in
+      let l' = create l.padding l.kernel l.stride l.rate l.init_typ in
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
@@ -3026,9 +3014,9 @@ module Make
     | Conv1D l          -> Conv1D.reset l
     | Conv2D l          -> Conv2D.reset l
     | Conv3D l          -> Conv3D.reset l
-    | DilatedConv1D l -> DilatedConv1D.reset l
-    | DilatedConv2D l -> DilatedConv2D.reset l
-    | DilatedConv3D l -> DilatedConv3D.reset l
+    | DilatedConv1D l   -> DilatedConv1D.reset l
+    | DilatedConv2D l   -> DilatedConv2D.reset l
+    | DilatedConv3D l   -> DilatedConv3D.reset l
     | TransposeConv1D l -> TransposeConv1D.reset l
     | TransposeConv2D l -> TransposeConv2D.reset l
     | TransposeConv3D l -> TransposeConv3D.reset l

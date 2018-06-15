@@ -615,7 +615,7 @@ module DilatedConv1D : sig
   }
   (** Neuron type definition. *)
 
-  val create : ?inputs:int array -> ?stride:int array -> Owl_types.padding -> int array -> int array -> Init.typ -> neuron_typ
+  val create : ?inputs:int array -> Owl_types.padding -> int array -> int array -> int array -> Init.typ -> neuron_typ
   (** Create the neuron. *)
 
   val connect : int array -> neuron_typ -> unit
@@ -674,7 +674,7 @@ module DilatedConv2D : sig
   }
   (** Neuron type definition. *)
 
-  val create : ?inputs:int array -> ?stride:int array -> Owl_types.padding -> int array -> int array -> Init.typ -> neuron_typ
+  val create : ?inputs:int array -> Owl_types.padding -> int array -> int array -> int array -> Init.typ -> neuron_typ
   (** Create the neuron. *)
 
   val connect : int array -> neuron_typ -> unit
@@ -733,7 +733,7 @@ module DilatedConv3D : sig
   }
   (** Neuron type definition. *)
 
-  val create : ?inputs:int array -> ?stride:int array -> Owl_types.padding -> int array -> int array -> Init.typ -> neuron_typ
+  val create : ?inputs:int array -> Owl_types.padding -> int array -> int array -> int array -> Init.typ -> neuron_typ
   (** Create the neuron. *)
 
   val connect : int array -> neuron_typ -> unit

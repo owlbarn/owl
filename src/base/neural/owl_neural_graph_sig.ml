@@ -201,9 +201,9 @@ Arguments:
   * ``stride``: int array of 3 integers.
   *)
 
-  val dilated_conv1d : ?name:string -> ?padding:Owl_types.padding -> ?stride:int array -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+  val dilated_conv1d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> int array -> node -> node
   (**
-``dilated_conv1d kernels rate node`` adds a 1D dilated convolution node (e.g. temporal convolution) on previous ``node``.
+``dilated_conv1d kernels strides rates node`` adds a 1D dilated convolution node (e.g. temporal convolution) on previous ``node``.
 
 Arguments:
   * ``kernel``: int array consists of ``h, i, o``. ``h`` specifies the dimension of the 1D convolution window. ``i`` and ``o`` are the dimensionalities of the input and output space.
@@ -211,19 +211,19 @@ Arguments:
   * ``rate``: int array of 1 integer.
   *)
 
-  val dilated_conv2d : ?name:string -> ?padding:Owl_types.padding -> ?stride:int array -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+  val dilated_conv2d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> int array -> node -> node
   (**
-``dilated_conv2d kernels rate node`` adds a 2D dilated convolution node (e.g. spatial convolution over images) on previous ``node``.
+``dilated_conv2d kernels strides rates node`` adds a 2D dilated convolution node (e.g. spatial convolution over images) on previous ``node``.
 
 Arguments:
-  * ``kernel``: int array consists of ``w, h, i, o``. ``w`` and ``h`` specify the width and height of the 2D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``stride``: int array of 2 integers.
-  * ``rate``: int array of 2 integers.
+  * ``kernel`: int array consists of ``w, h, i, o``. ``w`` and ``h`` specify the width and height of the 2D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
+  * ``strides``: int array of 2 integers.
+  * ``rates``: int array of 2 integers.
   *)
 
-  val dilated_conv3d : ?name:string -> ?padding:Owl_types.padding -> ?stride:int array -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+  val dilated_conv3d : ?name:string -> ?padding:Owl_types.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> int array -> node -> node
   (**
-``dilated_conv3d kernels rate node`` adds a 3D dilated convolution node (e.g. spatial convolution over volumes) on previous ``node``.
+``dilated_conv3d kernels strides rates node`` adds a 3D dilated convolution node (e.g. spatial convolution over volumes) on previous ``node``.
 
 Arguments:
   * ``kernel``: int array consists of ``w, h, d, i, o``. ``w``, ``h``, and ``d`` specify the 3 dimensionality of the 3D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
