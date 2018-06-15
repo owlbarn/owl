@@ -155,14 +155,14 @@ let gru ?name ?(init_typ=Init.Tanh) cells nn =
   |> add_layer nn;
   nn
 
-let conv2d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides nn =
-  Conv2D (Conv2D.create padding kernel strides init_typ)
+let conv2d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel stride nn =
+  Conv2D (Conv2D.create padding kernel stride init_typ)
   |> make_layer ?name nn
   |> add_layer ?act_typ nn;
   nn
 
-let conv3d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel_width kernel strides nn =
-  Conv3D (Conv3D.create padding kernel strides init_typ)
+let conv3d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel_width kernel stride nn =
+  Conv3D (Conv3D.create padding kernel stride init_typ)
   |> make_layer ?name nn
   |> add_layer ?act_typ nn;
   nn
@@ -253,12 +253,12 @@ let train ?state ?params ?(init_model=true) nn x y =
   Optimise.S.minimise_network ?state p (forward nn) (backward nn) (update nn) (save nn) (Arr x) (Arr y)
 
 let test_model nn x y =
-  Mat.iter2_rows (fun u v ->
-    Owl_dataset.print_mnist_image (unpack_arr u);
-    let p = run u nn |> unpack_arr in
+  Dense.Matrix.S.iter2_rows (fun u v ->
+    Owl_dataset.print_mnist_image u;
+    let p = run (Arr u) nn |> unpack_arr in
     Owl_dense_matrix_generic.print p;
     Printf.printf "prediction: %i\n" (let _, i = Owl_dense_matrix_generic.max_i p in i.(1))
-  ) (Arr x) (Arr y)
+  ) x y
 
 
 
