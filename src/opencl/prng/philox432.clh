@@ -1,0 +1,157 @@
+
+ /*
+ ***********************************************************************
+ Copyright (c) 2015 Advanced Micro Devices, Inc. 
+ All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without 
+ modification, are permitted provided that the following conditions 
+ are met:
+ 
+ 1. Redistributions of source code must retain the above copyright 
+ notice, this list of conditions and the following disclaimer.
+ 
+ 2. Redistributions in binary form must reproduce the above copyright 
+ notice, this list of conditions and the following disclaimer in the 
+ documentation and/or other materials provided with the distribution.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR 
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
+ HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ ***********************************************************************
+ */
+
+/*! @file Philox432.clh
+*  @brief Specific device interface for the Philox432 generator
+*
+*  The functions defined in this file are not documented here.  Refer to the
+*  documentation of philox432.h.
+*/
+
+#pragma once
+#ifndef PHILOX432_CLH
+#define PHILOX432_CLH
+
+#include <clRNG/clRNG.clh>
+
+
+/********************************************************************************
+* Functions and types declarations                                             *
+********************************************************************************/
+
+typedef struct clrngPhilox432SB_ {
+	cl_uint msb, lsb;   //most significant bits, and the least significant bits
+}clrngPhilox432SB;
+
+typedef struct clrngPhilox432Counter_ {
+	clrngPhilox432SB H, L;
+} clrngPhilox432Counter;
+
+
+typedef struct {
+	clrngPhilox432Counter  ctr;  // 128 bits counter
+	cl_uint  deck[4];            // this table hold the 4x32 generated uint from philox4x32(ctr,kry) function
+	cl_uint deckIndex;           //the index of actual pregenerated integer to give to the user
+} clrngPhilox432StreamState;
+
+
+struct clrngPhilox432Stream_ {
+	clrngPhilox432StreamState current;
+#if __OPENCL_C_VERSION__ >= 200
+	// use generic address space
+	const clrngPhilox432StreamState* initial;
+#else
+	// force global address space
+	__global const clrngPhilox432StreamState* initial;
+#endif
+#ifdef CLRNG_ENABLE_SUBSTREAMS
+	clrngPhilox432StreamState substream;
+#endif
+};
+typedef struct clrngPhilox432Stream_ clrngPhilox432Stream;
+
+struct clrngPhilox432HostStream_ {
+	clrngPhilox432StreamState current;
+	clrngPhilox432StreamState initial;
+	clrngPhilox432StreamState substream;
+};
+typedef struct clrngPhilox432HostStream_ clrngPhilox432HostStream;
+
+clrngStatus clrngPhilox432CopyOverStreamsFromGlobal(size_t count, clrngPhilox432Stream* destStreams, __global const clrngPhilox432HostStream* srcStreams);
+clrngStatus clrngPhilox432CopyOverStreamsToGlobal(size_t count, __global clrngPhilox432HostStream* destStreams, const clrngPhilox432Stream* srcStreams);
+clrngStatus clrngPhilox432CopyOverStreams(size_t count, clrngPhilox432Stream* destStreams, const clrngPhilox432Stream* srcStreams);
+
+#define clrngPhilox432RandomU01          _CLRNG_TAG_FPTYPE(clrngPhilox432RandomU01)
+#define clrngPhilox432RandomInteger      _CLRNG_TAG_FPTYPE(clrngPhilox432RandomInteger)
+#define clrngPhilox432RandomU01Array     _CLRNG_TAG_FPTYPE(clrngPhilox432RandomU01Array)
+#define clrngPhilox432RandomIntegerArray _CLRNG_TAG_FPTYPE(clrngPhilox432RandomIntegerArray)
+
+clrngStatus clrngPhilox432RewindStreams(size_t count, clrngPhilox432Stream* streams);
+
+#ifdef CLRNG_ENABLE_SUBSTREAMS
+clrngStatus clrngPhilox432RewindSubstreams(size_t count, clrngPhilox432Stream* streams);
+clrngStatus clrngPhilox432ForwardToNextSubstreams(size_t count, clrngPhilox432Stream* streams);
+clrngStatus clrngPhilox432MakeOverSubstreams(clrngPhilox432Stream* stream, size_t count, clrngPhilox432Stream* substreams);
+#endif
+
+
+
+/********************************************************************************
+* Implementation                                                               *
+********************************************************************************/
+
+clrngStatus clrngPhilox432CopyOverStreamsFromGlobal(size_t count, clrngPhilox432Stream* destStreams, __global const clrngPhilox432HostStream* srcStreams)
+{
+	//Check params
+	if (!destStreams)
+		return clrngSetErrorString(CLRNG_INVALID_VALUE, "clrngPhilox432CopyOverStreamsFromGlobal(): destStreams cannot be NULL");
+	if (!srcStreams)
+		return clrngSetErrorString(CLRNG_INVALID_VALUE, "clrngPhilox432CopyOverStreamsFromGlobal(): srcStreams cannot be NULL");
+
+	for (size_t i = 0; i < count; i++) {
+		destStreams[i].current = srcStreams[i].current;
+		destStreams[i].initial = &srcStreams[i].initial;
+#ifdef CLRNG_ENABLE_SUBSTREAMS
+		destStreams[i].substream = srcStreams[i].substream;
+#endif
+	}
+
+	return CLRNG_SUCCESS;
+}
+
+clrngStatus clrngPhilox432CopyOverStreamsToGlobal(size_t count, __global clrngPhilox432HostStream* destStreams, const clrngPhilox432Stream* srcStreams)
+{
+	//Check params
+	if (!destStreams)
+		return clrngSetErrorString(CLRNG_INVALID_VALUE, "clrngPhilox432CopyOverStreamsToGlobal(): destStreams cannot be NULL");
+	if (!srcStreams)
+		return clrngSetErrorString(CLRNG_INVALID_VALUE, "clrngPhilox432CopyOverStreamsToGlobal(): srcStreams cannot be NULL");
+
+	for (size_t i = 0; i < count; i++) {
+		destStreams[i].current = srcStreams[i].current;
+		destStreams[i].initial = *srcStreams[i].initial;
+#ifdef CLRNG_ENABLE_SUBSTREAMS
+		destStreams[i].substream = srcStreams[i].substream;
+#endif
+	}
+
+	return CLRNG_SUCCESS;
+}
+
+// code that is common to host and device
+#include <clRNG/private/philox432.c.h>
+
+#endif
+
+/*
+vim: ft=c sw=4
+*/
