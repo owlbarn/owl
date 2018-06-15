@@ -859,17 +859,17 @@ module Make
       let h, i, o = kernel.(0), kernel.(1), kernel.(2) in
       let in_shape = match inputs with
         | Some a -> assert (i = a.(1)); a
-        | None   -> [|0;i|]
+        | None   -> [|0; i|]
       in
       {
-        w         = Arr.empty [|h;i;o|];
+        w         = Arr.empty [|h; i; o|];
         b         = Arr.empty [|o|];
         kernel    = kernel;
         stride    = stride;
         padding   = padding;
         init_typ  = init_typ;
         in_shape  = in_shape;
-        out_shape = [|0;o|];
+        out_shape = [|0; o|];
       }
 
     let connect out_shape l =
@@ -877,7 +877,7 @@ module Make
       assert (out_shape.(1) = l.in_shape.(1));
       l.in_shape.(0) <- out_shape.(0);
       let out_cols =
-        Owl_utils.calc_conv1d_output_shape
+        Owl_utils_infer_shape.calc_conv1d_output_shape
         l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
       in
       l.out_shape.(0) <- out_cols
@@ -918,13 +918,109 @@ module Make
       let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
       Printf.sprintf "    Conv1D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-      Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2) + bn.(0)) ^
+      Printf.sprintf "    params : %i\n" (ws.(0) * ws.(1) * ws.(2) + bn.(0)) ^
       Printf.sprintf "    kernel : %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ^
       Printf.sprintf "    b      : %i\n" bn.(0) ^
       Printf.sprintf "    stride : [%i]\n" l.stride.(0) ^
       ""
 
     let to_name () = "conv1d"
+
+  end
+
+
+  (* definition of DilatedConv1D neuron *)
+  module DilatedConv1D = struct
+
+    type neuron_typ = {
+      mutable w         : t;
+      mutable b         : t;
+      mutable kernel    : int array;
+      mutable stride    : int array;
+      mutable rate      : int array;
+      mutable padding   : padding;
+      mutable init_typ  : Init.typ;
+      mutable in_shape  : int array;
+      mutable out_shape : int array;
+    }
+
+    let create ?inputs ?stride padding kernel rate init_typ =
+      let h, i, o = kernel.(0), kernel.(1), kernel.(2) in
+      let in_shape = match inputs with
+        | Some a -> assert (i = a.(1)); a
+        | None   -> [|0; i|]
+      in
+      let stride = match stride with
+        | Some a -> a
+        | None   -> [|1|]
+      in
+      {
+        w         = Arr.empty [|h; i; o|];
+        b         = Arr.empty [|o|];
+        kernel    = kernel;
+        stride    = stride;
+        rate      = rate;
+        padding   = padding;
+        init_typ  = init_typ;
+        in_shape  = in_shape;
+        out_shape = [|0; o|];
+      }
+
+    let connect out_shape l =
+      assert Array.(length out_shape = length l.in_shape);
+      assert (out_shape.(1) = l.in_shape.(1));
+      l.in_shape.(0) <- out_shape.(0);
+      let out_cols =
+        let col_up = l.kernel.(0) + (l.kernel.(0) - 1) * (l.rate.(0) - 1) in
+        Owl_utils_infer_shape.calc_conv1d_output_shape
+          l.padding l.in_shape.(0) col_up l.stride.(0)
+      in
+      l.out_shape.(0) <- out_cols
+
+    let init l =
+      l.w <- Init.run l.init_typ l.kernel l.w;
+      l.b <- Arr.(zeros (shape l.b))
+
+    let reset l =
+      Arr.reset l.w;
+      Arr.reset l.b
+
+    let mktag t l =
+      l.w <- make_reverse l.w t;
+      l.b <- make_reverse l.b t
+
+    let mkpar l = [|l.w; l.b|]
+
+    let mkpri l = [|primal l.w; primal l.b|]
+
+    let mkadj l = [|adjval l.w; adjval l.b|]
+
+    let update l u =
+      l.w <- u.(0) |> primal';
+      l.b <- u.(1) |> primal'
+
+    let copy l =
+      let l' = create ~stride:l.stride l.padding l.kernel l.rate l.init_typ in
+      mkpri l |> Array.map copy_primal' |> update l';
+      l'
+
+    let run x l = Maths.((dilated_conv1d ~padding:l.padding x l.w l.stride l.rate) + l.b)
+
+    let to_string l =
+      let ws = Arr.shape l.w in
+      let bn = Arr.shape l.b in
+      let in_str = Owl_utils_array.to_string string_of_int l.in_shape in
+      let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
+      Printf.sprintf "    DilateConv1D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
+      Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+      Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2) + bn.(0)) ^
+      Printf.sprintf "    kernel : %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ^
+      Printf.sprintf "    b      : %i\n" bn.(0) ^
+      Printf.sprintf "    stride : [%i]\n" l.stride.(0) ^
+      Printf.sprintf "    rate   : [%i]\n" l.stride.(0) ^
+      ""
+
+    let to_name () = "dilated_conv1d"
 
   end
 
@@ -947,17 +1043,17 @@ module Make
       let h, i, o = kernel.(0), kernel.(1), kernel.(2) in
       let in_shape = match inputs with
         | Some a -> assert (i = a.(1)); a
-        | None   -> [|0;i|]
+        | None   -> [|0; i|]
       in
       {
-        w         = Arr.empty [|h;i;o|];
+        w         = Arr.empty [|h; i; o|];
         b         = Arr.empty [|o|];
         kernel    = kernel;
         stride    = stride;
         padding   = padding;
         init_typ  = init_typ;
         in_shape  = in_shape;
-        out_shape = [|0;o|];
+        out_shape = [|0; o|];
       }
 
     let connect out_shape l =
@@ -965,7 +1061,7 @@ module Make
       assert (out_shape.(1) = l.in_shape.(1));
       l.in_shape.(0) <- out_shape.(0);
       let out_cols =
-        Owl_utils.calc_transpose_conv1d_output_shape
+        Owl_utils_infer_shape.calc_transpose_conv1d_output_shape
         l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
       in
       l.out_shape.(0) <- out_cols
@@ -1006,7 +1102,7 @@ module Make
       let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
       Printf.sprintf "    TransposeConv1D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-      Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2) + bn.(0)) ^
+      Printf.sprintf "    params : %i\n" (ws.(0) * ws.(1) * ws.(2) + bn.(0)) ^
       Printf.sprintf "    kernel : %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ^
       Printf.sprintf "    b      : %i\n" bn.(0) ^
       Printf.sprintf "    stride : [%i]\n" l.stride.(0) ^
@@ -1035,17 +1131,17 @@ module Make
       let w, h, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3) in
       let in_shape = match inputs with
         | Some a -> assert (i = a.(2)); a
-        | None   -> [|0;0;i|]
+        | None   -> [|0; 0; i|]
       in
       {
-        w         = Arr.empty [|w;h;i;o|];
+        w         = Arr.empty [|w; h; i; o|];
         b         = Arr.empty [|o|];
         kernel    = kernel;
         stride    = stride;
         padding   = padding;
         init_typ  = init_typ;
         in_shape  = in_shape;
-        out_shape = [|0;0;o|];
+        out_shape = [|0; 0; o|];
       }
 
     let connect out_shape l =
@@ -1054,7 +1150,7 @@ module Make
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
       let out_cols, out_rows =
-        Owl_utils.calc_conv2d_output_shape
+        Owl_utils_infer_shape.calc_conv2d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1)
         l.stride.(0) l.stride.(1)
       in
@@ -1097,13 +1193,113 @@ module Make
       let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
       Printf.sprintf "    Conv2D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-      Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3) + bn.(0)) ^
+      Printf.sprintf "    params : %i\n" (ws.(0) * ws.(1) * ws.(2) * ws.(3) + bn.(0)) ^
       Printf.sprintf "    kernel : %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3) ^
       Printf.sprintf "    b      : %i\n" bn.(0) ^
       Printf.sprintf "    stride : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
       ""
 
     let to_name () = "conv2d"
+
+  end
+
+
+  (* definition of DilatedConv2D neuron *)
+  module DilatedConv2D = struct
+
+    type neuron_typ = {
+      mutable w         : t;
+      mutable b         : t;
+      mutable kernel    : int array;
+      mutable stride    : int array;
+      mutable rate      : int array;
+      mutable padding   : padding;
+      mutable init_typ  : Init.typ;
+      mutable in_shape  : int array;
+      mutable out_shape : int array;
+    }
+
+    let create ?inputs ?stride padding kernel rate init_typ =
+      let w, h, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3) in
+      let in_shape = match inputs with
+        | Some a -> assert (i = a.(2)); a
+        | None   -> [|0; 0; i|]
+      in
+      let stride = match stride with
+        | Some a -> a
+        | None   -> [|1; 1|]
+      in
+      {
+        w         = Arr.empty [|w; h; i; o|];
+        b         = Arr.empty [|o|];
+        kernel    = kernel;
+        stride    = stride;
+        rate      = rate;
+        padding   = padding;
+        init_typ  = init_typ;
+        in_shape  = in_shape;
+        out_shape = [|0; 0; o|];
+      }
+
+    let connect out_shape l =
+      assert Array.(length out_shape = length l.in_shape);
+      assert (out_shape.(2) = l.in_shape.(2));
+      l.in_shape.(0) <- out_shape.(0);
+      l.in_shape.(1) <- out_shape.(1);
+      let out_cols, out_rows =
+        let col_up = l.kernel.(0) + (l.kernel.(0) - 1) * (l.rate.(0) - 1) in
+        let row_up = l.kernel.(1) + (l.kernel.(1) - 1) * (l.rate.(1) - 1) in
+        Owl_utils_infer_shape.calc_conv2d_output_shape
+          l.padding l.in_shape.(0) l.in_shape.(1) col_up row_up
+          l.stride.(0) l.stride.(1)
+      in
+      l.out_shape.(0) <- out_cols;
+      l.out_shape.(1) <- out_rows
+
+    let init l =
+      l.w <- Init.run l.init_typ l.kernel l.w;
+      l.b <- Arr.(zeros (shape l.b))
+
+    let reset l =
+      Arr.reset l.w;
+      Arr.reset l.b
+
+    let mktag t l =
+      l.w <- make_reverse l.w t;
+      l.b <- make_reverse l.b t
+
+    let mkpar l = [|l.w; l.b|]
+
+    let mkpri l = [|primal l.w; primal l.b|]
+
+    let mkadj l = [|adjval l.w; adjval l.b|]
+
+    let update l u =
+      l.w <- u.(0) |> primal';
+      l.b <- u.(1) |> primal'
+
+    let copy l =
+      let l' = create ~stride:l.stride l.padding l.kernel l.rate l.init_typ in
+      mkpri l |> Array.map copy_primal' |> update l';
+      l'
+
+    let run x l = Maths.((dilated_conv2d ~padding:l.padding x l.w l.stride l.rate) + l.b)
+
+    let to_string l =
+      let ws = Arr.shape l.w in
+      let bn = Arr.shape l.b in
+      let in_str = Owl_utils_array.to_string string_of_int l.in_shape in
+      let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
+      Printf.sprintf "    DilateConv2D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
+      Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+      Printf.sprintf "    params : %i\n" (ws.(0) * ws.(1) * ws.(2) * ws.(3) + bn.(0)) ^
+      Printf.sprintf "    kernel : %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3) ^
+      Printf.sprintf "    b      : %i\n" bn.(0) ^
+      Printf.sprintf "    stride : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
+      Printf.sprintf "    rate   : [%i; %i]\n" l.rate.(0) l.rate.(1) ^
+      ""
+
+    let to_name () = "dilated_conv2d"
 
   end
 
@@ -1126,17 +1322,17 @@ module Make
       let w, h, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3) in
       let in_shape = match inputs with
         | Some a -> assert (i = a.(2)); a
-        | None   -> [|0;0;i|]
+        | None   -> [|0; 0; i|]
       in
       {
-        w         = Arr.empty [|w;h;i;o|];
+        w         = Arr.empty [|w; h; i; o|];
         b         = Arr.empty [|o|];
         kernel    = kernel;
         stride    = stride;
         padding   = padding;
         init_typ  = init_typ;
         in_shape  = in_shape;
-        out_shape = [|0;0;o|];
+        out_shape = [|0; 0; o|];
       }
 
     let connect out_shape l =
@@ -1145,7 +1341,7 @@ module Make
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
       let out_cols, out_rows =
-        Owl_utils.calc_transpose_conv2d_output_shape
+        Owl_utils_infer_shape.calc_transpose_conv2d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1)
         l.stride.(0) l.stride.(1)
       in
@@ -1188,7 +1384,7 @@ module Make
       let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
       Printf.sprintf "    TransposeConv2D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-      Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3) + bn.(0)) ^
+      Printf.sprintf "    params : %i\n" (ws.(0) * ws.(1) * ws.(2) * ws.(3) + bn.(0)) ^
       Printf.sprintf "    kernel : %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3) ^
       Printf.sprintf "    b      : %i\n" bn.(0) ^
       Printf.sprintf "    stride : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
@@ -1220,14 +1416,14 @@ module Make
         | None   -> [|0;0;0;i|]
       in
       {
-        w         = Arr.empty [|w;h;d;i;o|];
+        w         = Arr.empty [|w; h; d; i; o|];
         b         = Arr.empty [|o|];
         kernel    = kernel;
         stride    = stride;
         padding   = padding;
         init_typ  = init_typ;
         in_shape  = in_shape;
-        out_shape = [|0;0;0;o|];
+        out_shape = [|0; 0; 0; o|];
       }
 
     let connect out_shape l =
@@ -1237,7 +1433,7 @@ module Make
       l.in_shape.(1) <- out_shape.(1);
       l.in_shape.(2) <- out_shape.(2);
       let out_cols, out_rows, out_dpts =
-        Owl_utils.calc_conv3d_output_shape
+        Owl_utils_infer_shape.calc_conv3d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.in_shape.(2)
         l.kernel.(0) l.kernel.(1) l.kernel.(2)
         l.stride.(0) l.stride.(1) l.stride.(2)
@@ -1293,6 +1489,110 @@ module Make
   end
 
 
+  (* definition of DilatedConv3D neuron *)
+  module DilatedConv3D = struct
+
+    type neuron_typ = {
+      mutable w         : t;
+      mutable b         : t;
+      mutable kernel    : int array;
+      mutable stride    : int array;
+      mutable rate      : int array;
+      mutable padding   : padding;
+      mutable init_typ  : Init.typ;
+      mutable in_shape  : int array;
+      mutable out_shape : int array;
+    }
+
+    let create ?inputs ?stride padding kernel rate init_typ =
+      let w, h, d, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3), kernel.(4) in
+      let in_shape = match inputs with
+        | Some a -> assert (i = a.(3)); a
+        | None   -> [|0; 0; 0; i|]
+      in
+      let stride = match stride with
+        | Some a -> a
+        | None   -> [|1; 1; 1|]
+      in
+      {
+        w         = Arr.empty [|w; h; d; i; o|];
+        b         = Arr.empty [|o|];
+        kernel    = kernel;
+        stride    = stride;
+        rate      = rate;
+        padding   = padding;
+        init_typ  = init_typ;
+        in_shape  = in_shape;
+        out_shape = [|0; 0; 0; o|];
+      }
+
+    let connect out_shape l =
+      assert Array.(length out_shape = length l.in_shape);
+      assert (out_shape.(3) = l.in_shape.(3));
+      l.in_shape.(0) <- out_shape.(0);
+      l.in_shape.(1) <- out_shape.(1);
+      l.in_shape.(2) <- out_shape.(2);
+      let out_cols, out_rows, out_dpts =
+        let col_up = l.kernel.(0) + (l.kernel.(0) - 1) * (l.rate.(0) - 1) in
+        let row_up = l.kernel.(1) + (l.kernel.(1) - 1) * (l.rate.(1) - 1) in
+        let dpt_up = l.kernel.(2) + (l.kernel.(2) - 1) * (l.rate.(2) - 1) in
+        Owl_utils_infer_shape.calc_conv3d_output_shape
+        l.padding l.in_shape.(0) l.in_shape.(1) l.in_shape.(2)
+        col_up row_up dpt_up
+        l.stride.(0) l.stride.(1) l.stride.(2)
+      in
+      l.out_shape.(0) <- out_cols;
+      l.out_shape.(1) <- out_rows;
+      l.out_shape.(2) <- out_dpts
+
+    let init l =
+      l.w <- Init.run l.init_typ l.kernel l.w;
+      l.b <- Arr.(zeros (shape l.b))
+
+    let reset l =
+      Arr.reset l.w;
+      Arr.reset l.b
+
+    let mktag t l =
+      l.w <- make_reverse l.w t;
+      l.b <- make_reverse l.b t
+
+    let mkpar l = [|l.w; l.b|]
+
+    let mkpri l = [|primal l.w; primal l.b|]
+
+    let mkadj l = [|adjval l.w; adjval l.b|]
+
+    let update l u =
+      l.w <- u.(0) |> primal';
+      l.b <- u.(1) |> primal'
+
+    let copy l =
+      let l' = create ~stride:l.stride l.padding l.kernel l.rate l.init_typ in
+      mkpri l |> Array.map copy_primal' |> update l';
+      l'
+
+    let run x l = Maths.((dilated_conv3d ~padding:l.padding x l.w l.stride l.rate) + l.b)
+
+    let to_string l =
+      let ws = Arr.shape l.w in
+      let bn = Arr.shape l.b in
+      let in_str = Owl_utils_array.to_string string_of_int l.in_shape in
+      let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
+      Printf.sprintf "    DilateConv3D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
+      Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+      Printf.sprintf "    params : %i\n" (ws.(0) * ws.(1) * ws.(2) * ws.(3) * ws.(4) + bn.(0)) ^
+      Printf.sprintf "    kernel : %i x %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3)  ws.(4) ^
+      Printf.sprintf "    b      : %i\n" bn.(0) ^
+      Printf.sprintf "    stride : [%i; %i; %i]\n" l.stride.(0) l.stride.(1) l.stride.(2) ^
+      Printf.sprintf "    rate   : [%i; %i; %i]\n" l.rate.(0) l.rate.(1) l.rate.(2) ^
+      ""
+
+    let to_name () = "dilated_conv3d"
+
+  end
+
+
   (* definition of TransposeConv3D neuron *)
   module TransposeConv3D = struct
 
@@ -1311,17 +1611,17 @@ module Make
       let w, h, d, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3), kernel.(4) in
       let in_shape = match inputs with
         | Some a -> assert (i = a.(3)); a
-        | None   -> [|0;0;0;i|]
+        | None   -> [|0; 0; 0; i|]
       in
       {
-        w         = Arr.empty [|w;h;d;i;o|];
+        w         = Arr.empty [|w; h; d; i; o|];
         b         = Arr.empty [|o|];
         kernel    = kernel;
         stride    = stride;
         padding   = padding;
         init_typ  = init_typ;
         in_shape  = in_shape;
-        out_shape = [|0;0;0;o|];
+        out_shape = [|0; 0; 0; o|];
       }
 
     let connect out_shape l =
@@ -1331,7 +1631,7 @@ module Make
       l.in_shape.(1) <- out_shape.(1);
       l.in_shape.(2) <- out_shape.(2);
       let out_cols, out_rows, out_dpts =
-        Owl_utils.calc_transpose_conv3d_output_shape
+        Owl_utils_infer_shape.calc_transpose_conv3d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.in_shape.(2)
         l.kernel.(0) l.kernel.(1) l.kernel.(2)
         l.stride.(0) l.stride.(1) l.stride.(2)
@@ -1376,7 +1676,7 @@ module Make
       let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
       Printf.sprintf "    TransposeConv3D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-      Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3)*ws.(4) + bn.(0)) ^
+      Printf.sprintf "    params : %i\n" (ws.(0) * ws.(1) * ws.(2) * ws.(3) * ws.(4) + bn.(0)) ^
       Printf.sprintf "    kernel : %i x %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3)  ws.(4) ^
       Printf.sprintf "    b      : %i\n" bn.(0) ^
       Printf.sprintf "    stride : [%i; %i; %i]\n" l.stride.(0) l.stride.(1) l.stride.(2) ^
@@ -1491,7 +1791,7 @@ module Make
       assert Array.(length out_shape = length l.in_shape);
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
-      let out_cols = Owl_utils.calc_conv1d_output_shape
+      let out_cols = Owl_utils_infer_shape.calc_conv1d_output_shape
         l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
       in
       l.out_shape.(0) <- out_cols;
@@ -1541,7 +1841,7 @@ module Make
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
       l.in_shape.(2) <- out_shape.(2);
-      let out_cols, out_rows = Owl_utils.calc_conv2d_output_shape
+      let out_cols, out_rows = Owl_utils_infer_shape.calc_conv2d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1) l.stride.(0) l.stride.(1)
       in
       l.out_shape.(0) <- out_cols;
@@ -1591,7 +1891,7 @@ module Make
       assert Array.(length out_shape = length l.in_shape);
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
-      let out_cols = Owl_utils.calc_conv1d_output_shape
+      let out_cols = Owl_utils_infer_shape.calc_conv1d_output_shape
         l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
       in
       l.out_shape.(0) <- out_cols;
@@ -1641,7 +1941,7 @@ module Make
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
       l.in_shape.(2) <- out_shape.(2);
-      let out_cols, out_rows = Owl_utils.calc_conv2d_output_shape
+      let out_cols, out_rows = Owl_utils_infer_shape.calc_conv2d_output_shape
         l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1) l.stride.(0) l.stride.(1)
       in
       l.out_shape.(0) <- out_cols;
@@ -2571,6 +2871,9 @@ module Make
     | Conv1D          of Conv1D.neuron_typ
     | Conv2D          of Conv2D.neuron_typ
     | Conv3D          of Conv3D.neuron_typ
+    | DilatedConv1D   of DilatedConv1D.neuron_typ
+    | DilatedConv2D   of DilatedConv2D.neuron_typ
+    | DilatedConv3D   of DilatedConv3D.neuron_typ
     | TransposeConv1D of TransposeConv1D.neuron_typ
     | TransposeConv2D of TransposeConv2D.neuron_typ
     | TransposeConv3D of TransposeConv3D.neuron_typ
@@ -2611,6 +2914,9 @@ module Make
     | Conv1D l          -> Conv1D.(l.in_shape, l.out_shape)
     | Conv2D l          -> Conv2D.(l.in_shape, l.out_shape)
     | Conv3D l          -> Conv3D.(l.in_shape, l.out_shape)
+    | DilatedConv1D l   -> DilatedConv1D.(l.in_shape, l.out_shape)
+    | DilatedConv2D l   -> DilatedConv2D.(l.in_shape, l.out_shape)
+    | DilatedConv3D l   -> DilatedConv3D.(l.in_shape, l.out_shape)
     | TransposeConv1D l -> TransposeConv1D.(l.in_shape, l.out_shape)
     | TransposeConv2D l -> TransposeConv2D.(l.in_shape, l.out_shape)
     | TransposeConv3D l -> TransposeConv3D.(l.in_shape, l.out_shape)
@@ -2657,6 +2963,9 @@ module Make
     | Conv1D l          -> Conv1D.connect out_shapes.(0) l
     | Conv2D l          -> Conv2D.connect out_shapes.(0) l
     | Conv3D l          -> Conv3D.connect out_shapes.(0) l
+    | DilatedConv1D l -> DilatedConv1D.connect out_shapes.(0) l
+    | DilatedConv2D l -> DilatedConv2D.connect out_shapes.(0) l
+    | DilatedConv3D l -> DilatedConv3D.connect out_shapes.(0) l
     | TransposeConv1D l -> TransposeConv1D.connect out_shapes.(0) l
     | TransposeConv2D l -> TransposeConv2D.connect out_shapes.(0) l
     | TransposeConv3D l -> TransposeConv3D.connect out_shapes.(0) l
@@ -2696,6 +3005,9 @@ module Make
     | Conv1D l          -> Conv1D.init l
     | Conv2D l          -> Conv2D.init l
     | Conv3D l          -> Conv3D.init l
+    | DilatedConv1D l   -> DilatedConv1D.init l
+    | DilatedConv2D l   -> DilatedConv2D.init l
+    | DilatedConv3D l   -> DilatedConv3D.init l
     | TransposeConv1D l -> TransposeConv1D.init l
     | TransposeConv2D l -> TransposeConv2D.init l
     | TransposeConv3D l -> TransposeConv3D.init l
@@ -2714,6 +3026,9 @@ module Make
     | Conv1D l          -> Conv1D.reset l
     | Conv2D l          -> Conv2D.reset l
     | Conv3D l          -> Conv3D.reset l
+    | DilatedConv1D l -> DilatedConv1D.reset l
+    | DilatedConv2D l -> DilatedConv2D.reset l
+    | DilatedConv3D l -> DilatedConv3D.reset l
     | TransposeConv1D l -> TransposeConv1D.reset l
     | TransposeConv2D l -> TransposeConv2D.reset l
     | TransposeConv3D l -> TransposeConv3D.reset l
@@ -2732,6 +3047,9 @@ module Make
     | Conv1D l          -> Conv1D.mktag t l
     | Conv2D l          -> Conv2D.mktag t l
     | Conv3D l          -> Conv3D.mktag t l
+    | DilatedConv1D l   -> DilatedConv1D.mktag t l
+    | DilatedConv2D l   -> DilatedConv2D.mktag t l
+    | DilatedConv3D l   -> DilatedConv3D.mktag t l
     | TransposeConv1D l -> TransposeConv1D.mktag t l
     | TransposeConv2D l -> TransposeConv2D.mktag t l
     | TransposeConv3D l -> TransposeConv3D.mktag t l
@@ -2750,6 +3068,9 @@ module Make
     | Conv1D l          -> Conv1D.mkpar l
     | Conv2D l          -> Conv2D.mkpar l
     | Conv3D l          -> Conv3D.mkpar l
+    | DilatedConv1D l   -> DilatedConv1D.mkpar l
+    | DilatedConv2D l   -> DilatedConv2D.mkpar l
+    | DilatedConv3D l   -> DilatedConv3D.mkpar l
     | TransposeConv1D l -> TransposeConv1D.mkpar l
     | TransposeConv2D l -> TransposeConv2D.mkpar l
     | TransposeConv3D l -> TransposeConv3D.mkpar l
@@ -2768,6 +3089,9 @@ module Make
     | Conv1D l          -> Conv1D.mkpri l
     | Conv2D l          -> Conv2D.mkpri l
     | Conv3D l          -> Conv3D.mkpri l
+    | DilatedConv1D l   -> DilatedConv1D.mkpri l
+    | DilatedConv2D l   -> DilatedConv2D.mkpri l
+    | DilatedConv3D l   -> DilatedConv3D.mkpri l
     | TransposeConv1D l -> TransposeConv1D.mkpri l
     | TransposeConv2D l -> TransposeConv2D.mkpri l
     | TransposeConv3D l -> TransposeConv3D.mkpri l
@@ -2786,6 +3110,9 @@ module Make
     | Conv1D l          -> Conv1D.mkadj l
     | Conv2D l          -> Conv2D.mkadj l
     | Conv3D l          -> Conv3D.mkadj l
+    | DilatedConv1D l   -> DilatedConv1D.mkadj l
+    | DilatedConv2D l   -> DilatedConv2D.mkadj l
+    | DilatedConv3D l   -> DilatedConv3D.mkadj l
     | TransposeConv1D l -> TransposeConv1D.mkadj l
     | TransposeConv2D l -> TransposeConv2D.mkadj l
     | TransposeConv3D l -> TransposeConv3D.mkadj l
@@ -2804,6 +3131,9 @@ module Make
     | Conv1D l          -> Conv1D.update l u
     | Conv2D l          -> Conv2D.update l u
     | Conv3D l          -> Conv3D.update l u
+    | DilatedConv1D l   -> DilatedConv1D.update l u
+    | DilatedConv2D l   -> DilatedConv2D.update l u
+    | DilatedConv3D l   -> DilatedConv3D.update l u
     | TransposeConv1D l -> TransposeConv1D.update l u
     | TransposeConv2D l -> TransposeConv2D.update l u
     | TransposeConv3D l -> TransposeConv3D.update l u
@@ -2823,6 +3153,9 @@ module Make
     | Conv1D l          -> Conv1D Conv1D.(copy l)
     | Conv2D l          -> Conv2D Conv2D.(copy l)
     | Conv3D l          -> Conv3D Conv3D.(copy l)
+    | DilatedConv1D l   -> DilatedConv1D DilatedConv1D.(copy l)
+    | DilatedConv2D l   -> DilatedConv2D DilatedConv2D.(copy l)
+    | DilatedConv3D l   -> DilatedConv3D DilatedConv3D.(copy l)
     | TransposeConv1D l -> TransposeConv1D TransposeConv1D.(copy l)
     | TransposeConv2D l -> TransposeConv2D TransposeConv2D.(copy l)
     | TransposeConv3D l -> TransposeConv3D TransposeConv3D.(copy l)
@@ -2863,6 +3196,9 @@ module Make
     | Conv1D l          -> Conv1D.run a.(0) l
     | Conv2D l          -> Conv2D.run a.(0) l
     | Conv3D l          -> Conv3D.run a.(0) l
+    | DilatedConv1D l   -> DilatedConv1D.run a.(0) l
+    | DilatedConv2D l   -> DilatedConv2D.run a.(0) l
+    | DilatedConv3D l   -> DilatedConv3D.run a.(0) l
     | TransposeConv1D l -> TransposeConv1D.run a.(0) l
     | TransposeConv2D l -> TransposeConv2D.run a.(0) l
     | TransposeConv3D l -> TransposeConv3D.run a.(0) l
@@ -2903,6 +3239,9 @@ module Make
     | Conv1D l          -> Conv1D.to_string l
     | Conv2D l          -> Conv2D.to_string l
     | Conv3D l          -> Conv3D.to_string l
+    | DilatedConv1D l   -> DilatedConv1D.to_string l
+    | DilatedConv2D l   -> DilatedConv2D.to_string l
+    | DilatedConv3D l   -> DilatedConv3D.to_string l
     | TransposeConv1D l -> TransposeConv1D.to_string l
     | TransposeConv2D l -> TransposeConv2D.to_string l
     | TransposeConv3D l -> TransposeConv3D.to_string l
@@ -2943,6 +3282,9 @@ module Make
     | Conv1D _          -> Conv1D.to_name ()
     | Conv2D _          -> Conv2D.to_name ()
     | Conv3D _          -> Conv3D.to_name ()
+    | DilatedConv1D _   -> DilatedConv1D.to_name ()
+    | DilatedConv2D _   -> DilatedConv2D.to_name ()
+    | DilatedConv3D _   -> DilatedConv3D.to_name ()
     | TransposeConv1D _ -> TransposeConv1D.to_name ()
     | TransposeConv2D _ -> TransposeConv2D.to_name ()
     | TransposeConv3D _ -> TransposeConv3D.to_name ()

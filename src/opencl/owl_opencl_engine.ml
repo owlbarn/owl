@@ -160,7 +160,7 @@ module Make (A : Ndarray_Mutable) = struct
       let shp_0 = A.shape (value_to_arr parent_0_val) in
       let shp_1 = A.shape (value_to_arr parent_1_val) in
       let shp_0, shp_1 = Owl_utils_array.align `Left 1 shp_0 shp_1 in
-      let shp_x = Owl_utils.calc_broadcast_shape1 shp_0 shp_1 in
+      let shp_x = Owl_utils_infer_shape.broadcast1 shp_0 shp_1 in
 
       if shp_0 = shp_x then (
         if refnum parent_0 = 1 && get_reuse parent_0 then (

@@ -20,6 +20,12 @@ let () =
     "pooling3d",            Unit_pool3d.test_set;
     "conv2d",               Unit_conv2d.test_set;
     "conv3d",               Unit_conv3d.test_set;
+    "conv2d_mec",           Unit_conv_mec_naive.Conv2D_MEC.test_set;
+    "conv3d_mec",           Unit_conv_mec_naive.Conv3D_MEC.test_set;
+    "conv2d_naive",         Unit_conv_mec_naive.Conv2D_NAIVE.test_set;
+    "conv3d_naive",         Unit_conv_mec_naive.Conv3D_NAIVE.test_set;
+    "dilated_conv2d",       Unit_dilated_conv2d.test_set;
+    "dilated_conv3d",       Unit_dilated_conv3d.test_set;
     "transpose_conv2d",     Unit_transpose_conv2d.test_set;
     "transpose_conv3d",     Unit_transpose_conv3d.test_set;
     "learning rate",        Unit_learning_rate.test_set;

@@ -207,7 +207,7 @@ module To_test_transpose_conv3d_backward = struct
 end
 
 
-(* tests for conv3d_transpose forward operation *)
+(* tests for transpose_conv3d forward operation *)
 
 let fun_ctf00 () =
   Alcotest.(check bool) "fun_ctf00" true (To_test_transpose_conv3d.fun00 ())
