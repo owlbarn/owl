@@ -145,6 +145,9 @@ module Make
         | TransposeConv1d (padding, stride)           -> pattern_000 x
         | TransposeConv2d (padding, stride)           -> pattern_000 x
         | TransposeConv3d (padding, stride)           -> pattern_000 x
+        | DilatedConv1d (padding, stride, rate)       -> pattern_000 x
+        | DilatedConv2d (padding, stride, rate)       -> pattern_000 x
+        | DilatedConv3d (padding, stride, rate)       -> pattern_000 x
         | MaxPool1d (padding, kernel, stride)         -> pattern_000 x
         | MaxPool2d (padding, kernel, stride)         -> pattern_000 x
         | MaxPool3d (padding, kernel, stride)         -> pattern_000 x
@@ -163,6 +166,12 @@ module Make
         | TransposeConv2dBackwardKernel stride        -> pattern_000 x
         | TransposeConv3dBackwardInput stride         -> pattern_000 x
         | TransposeConv3dBackwardKernel stride        -> pattern_000 x
+        | DilatedConv1dBackwardInput (stride, rate)   -> pattern_000 x
+        | DilatedConv1dBackwardKernel (stride, rate)  -> pattern_000 x
+        | DilatedConv2dBackwardInput (stride, rate)   -> pattern_000 x
+        | DilatedConv2dBackwardKernel (stride, rate)  -> pattern_000 x
+        | DilatedConv3dBackwardInput (stride, rate)   -> pattern_000 x
+        | DilatedConv3dBackwardKernel (stride, rate)  -> pattern_000 x
         | MaxPool1dBackward (padding, kernel, stride) -> pattern_000 x
         | MaxPool2dBackward (padding, kernel, stride) -> pattern_000 x
         | MaxPool3dBackward (padding, kernel, stride) -> pattern_000 x

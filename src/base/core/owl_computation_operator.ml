@@ -373,6 +373,15 @@ module Make
   let transpose_conv3d ?(padding=SAME) input kernel stride =
     make_then_connect (TransposeConv3d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
 
+  let dilated_conv1d ?(padding=SAME) input kernel stride rate =
+    make_then_connect (DilatedConv1d (padding, stride, rate)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
+
+  let dilated_conv2d ?(padding=SAME) input kernel stride rate =
+    make_then_connect (DilatedConv2d (padding, stride, rate)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
+
+  let dilated_conv3d ?(padding=SAME) input kernel stride rate =
+    make_then_connect (DilatedConv3d (padding, stride, rate)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
+
   let max_pool1d ?(padding=SAME) input kernel stride =
     Owl_log.debug "max_pool1d";
     make_then_connect (MaxPool1d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
@@ -444,6 +453,30 @@ module Make
   let transpose_conv3d_backward_kernel input kernel stride output' =
     Owl_log.debug "transpose_conv3d_backward_kernel";
     make_then_connect (TransposeConv3dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
+
+  let dilated_conv1d_backward_input input kernel stride rate output' =
+    Owl_log.debug "dilated_conv1d_backward_input";
+    make_then_connect (DilatedConv1dBackwardInput (stride, rate)) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
+
+  let dilated_conv1d_backward_kernel input kernel stride rate output' =
+    Owl_log.debug "dilated_conv1d_backward_kernel";
+    make_then_connect (DilatedConv1dBackwardKernel (stride, rate)) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
+
+  let dilated_conv2d_backward_input input kernel stride rate output' =
+    Owl_log.debug "dilated_conv2d_backward_input";
+    make_then_connect (DilatedConv2dBackwardInput (stride, rate)) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
+
+  let dilated_conv2d_backward_kernel input kernel stride rate output' =
+    Owl_log.debug "dilated_conv2d_backward_kernel";
+    make_then_connect (DilatedConv2dBackwardKernel (stride, rate)) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
+
+  let dilated_conv3d_backward_input input kernel stride rate output' =
+    Owl_log.debug "dilated_conv3d_backward_input";
+    make_then_connect (DilatedConv3dBackwardInput (stride, rate)) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
+
+  let dilated_conv3d_backward_kernel input kernel stride rate output' =
+    Owl_log.debug "dilated_conv3d_backward_kernel";
+    make_then_connect (DilatedConv3dBackwardKernel (stride, rate)) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let max_pool1d_backward padding input kernel stride output' =
     Owl_log.debug "conmax_pool1d_backwardv2d";
