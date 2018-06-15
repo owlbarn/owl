@@ -1058,7 +1058,7 @@ module Make
     and dilated_conv1d ?padding a b s r =
       let ff a b =
         match a, b with
-        | Arr a, Arr b -> Arr A.(dilated_conv1d ?padding ~stride:s a b r)
+        | Arr a, Arr b -> Arr A.(dilated_conv1d ?padding a b s r)
         | _            -> error_binop "dilated_conv1d" a b
       in
       let fd a b = dilated_conv1d ?padding a b s r in
@@ -1076,7 +1076,7 @@ module Make
       let a = unpack_arr a in
       let b = unpack_arr b in
       let o = unpack_arr o in
-      A.dilated_conv1d_backward_input ~stride:s a b o r
+      A.dilated_conv1d_backward_input a b s r o
       |> pack_arr
 
     (* a:input; b:kernel; o:output'; s:stride; r:rate *)
@@ -1084,14 +1084,14 @@ module Make
       let a = unpack_arr a in
       let b = unpack_arr b in
       let o = unpack_arr o in
-      A.dilated_conv1d_backward_kernel ~stride:s a b o r
+      A.dilated_conv1d_backward_kernel a b s r o
       |> pack_arr
 
     (* a:input; b:kernel; s:stride; r:rate *)
     and dilated_conv2d ?padding a b s r =
       let ff a b =
         match a, b with
-        | Arr a, Arr b -> Arr A.(dilated_conv2d ?padding ~stride:s a b r)
+        | Arr a, Arr b -> Arr A.(dilated_conv2d ?padding a b s r)
         | _            -> error_binop "dilated_conv2d" a b
       in
       let fd a b = dilated_conv2d ?padding a b s r in
@@ -1109,7 +1109,7 @@ module Make
       let a = unpack_arr a in
       let b = unpack_arr b in
       let o = unpack_arr o in
-      A.dilated_conv2d_backward_input ~stride:s a b o r
+      A.dilated_conv2d_backward_input a b s r o
       |> pack_arr
 
     (* a:input; b:kernel; o:output'; s:stride; r:rate *)
@@ -1117,14 +1117,14 @@ module Make
       let a = unpack_arr a in
       let b = unpack_arr b in
       let o = unpack_arr o in
-      A.dilated_conv2d_backward_kernel ~stride:s a b o r
+      A.dilated_conv2d_backward_kernel a b s r o
       |> pack_arr
 
     (* a:input; b:kernel; s:stride; r:rate *)
     and dilated_conv3d ?padding a b s r =
       let ff a b =
         match a, b with
-        | Arr a, Arr b -> Arr A.(dilated_conv3d ?padding ~stride:s a b r)
+        | Arr a, Arr b -> Arr A.(dilated_conv3d ?padding a b s r)
         | _            -> error_binop "dilated_conv3d" a b
       in
       let fd a b = dilated_conv3d ?padding a b s r in
@@ -1142,7 +1142,7 @@ module Make
       let a = unpack_arr a in
       let b = unpack_arr b in
       let o = unpack_arr o in
-      A.dilated_conv3d_backward_input ~stride:s a b o r
+      A.dilated_conv3d_backward_input a b s r o
       |> pack_arr
 
     (* a:input; b:kernel; o:output'; s:stride; r:rate *)
@@ -1150,7 +1150,7 @@ module Make
       let a = unpack_arr a in
       let b = unpack_arr b in
       let o = unpack_arr o in
-      A.dilated_conv3d_backward_kernel ~stride:s a b o r
+      A.dilated_conv3d_backward_kernel a b s r o
       |> pack_arr
 
     (* a:input; b:kernel; s:stride *)

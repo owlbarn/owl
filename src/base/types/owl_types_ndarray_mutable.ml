@@ -237,11 +237,11 @@ module type Sig = sig
 
   val conv3d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
 
-  val dilated_conv1d_ : out:arr -> ?padding:padding -> ?stride:int array -> arr -> arr -> int array -> unit
+  val dilated_conv1d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> int array -> unit
 
-  val dilated_conv2d_ : out:arr -> ?padding:padding -> ?stride:int array -> arr -> arr -> int array -> unit
+  val dilated_conv2d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> int array -> unit
 
-  val dilated_conv3d_ : out:arr -> ?padding:padding -> ?stride:int array -> arr -> arr -> int array -> unit
+  val dilated_conv3d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> int array -> unit
 
   val transpose_conv1d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
 
@@ -273,17 +273,17 @@ module type Sig = sig
 
   val conv3d_backward_kernel_ : out:arr -> arr -> arr -> int array -> arr -> unit
 
-  val dilated_conv1d_backward_input_ : out:arr -> ?stride:int array -> arr -> arr -> arr -> int array -> unit
+  val dilated_conv1d_backward_input_ : out:arr -> arr -> arr -> int array -> int array -> arr -> unit
 
-  val dilated_conv1d_backward_kernel_ : out:arr -> ?stride:int array -> arr -> arr -> arr -> int array -> unit
+  val dilated_conv1d_backward_kernel_ : out:arr -> arr -> arr -> int array -> int array -> arr -> unit
 
-  val dilated_conv2d_backward_input_ : out:arr -> ?stride:int array -> arr -> arr -> arr -> int array -> unit
+  val dilated_conv2d_backward_input_ : out:arr -> arr -> arr -> int array -> int array -> arr -> unit
 
-  val dilated_conv2d_backward_kernel_ : out:arr -> ?stride:int array -> arr -> arr -> arr -> int array -> unit
+  val dilated_conv2d_backward_kernel_ : out:arr -> arr -> arr -> int array -> int array -> arr -> unit
 
-  val dilated_conv3d_backward_input_ : out:arr -> ?stride:int array -> arr -> arr -> arr -> int array -> unit
+  val dilated_conv3d_backward_input_ : out:arr -> arr -> arr -> int array -> int array -> arr -> unit
 
-  val dilated_conv3d_backward_kernel_ : out:arr -> ?stride:int array -> arr -> arr -> arr -> int array -> unit
+  val dilated_conv3d_backward_kernel_ : out:arr -> arr -> arr -> int array -> int array -> arr -> unit
 
   val transpose_conv1d_backward_input_ : out:arr -> arr -> arr -> int array -> arr -> unit
 
