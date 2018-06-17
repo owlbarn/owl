@@ -15,7 +15,17 @@ CAMLprim value owl_clrng_philox_create_streams_stub (value vN, value vCreator, v
   clrngPhilox432StreamCreator* creator = CTYPES_ADDR_OF_FATPTR(vCreator);
   clrngStatus* status = CTYPES_ADDR_OF_FATPTR(vStatus);
   clrngPhilox432Stream *streams = clrngPhilox432CreateStreams(creator, n, bufsz, status);
-
+/**
+  double x;
+  x = clrngPhilox432RandomU01_cl_double (streams);
+  printf ("r1: %.4f\n", x);
+  x = clrngPhilox432RandomU01_cl_double (streams);
+  printf ("r2: %.4f\n", x);
+  x = clrngPhilox432RandomU01_cl_double (streams);
+  printf ("r3: %.4f\n", x);
+  x = clrngPhilox432RandomU01_cl_double (streams);
+  printf ("r4: %.4f\n", x);
+**/
   return CTYPES_FROM_PTR(streams);
 }
 
@@ -31,10 +41,38 @@ CAMLprim value owl_clrng_philox_destroy_streams_stub (value vStreams)
 
 CAMLprim value owl_clrng_philox_create_over_streams_stub (value vN, value vCreator, value vStreams)
 {
-  int n = Long_val(vN);
+  size_t n = Long_val(vN);
   clrngPhilox432StreamCreator* creator = CTYPES_ADDR_OF_FATPTR(vCreator);
   clrngPhilox432Stream *streams = CTYPES_ADDR_OF_FATPTR(vStreams);
   clrngPhilox432CreateOverStreams(creator, n, streams);
 
   return Val_unit;
+}
+
+
+CAMLprim value owl_clrng_philox_rewind_streams_stub (value vN, value vStreams)
+{
+  size_t n = ctypes_size_t_val(vN);;
+  clrngPhilox432Stream *streams = CTYPES_ADDR_OF_FATPTR(vStreams);
+  clrngPhilox432RewindStreams (n, streams);
+
+  return Val_unit;
+}
+
+
+CAMLprim value owl_clrng_philox_uniform_float_stub (value vStreams)
+{
+  clrngPhilox432Stream *streams = CTYPES_ADDR_OF_FATPTR(vStreams);
+  float x = clrngPhilox432RandomU01_cl_float (streams);
+
+  return caml_copy_double(x);
+}
+
+
+CAMLprim value owl_clrng_philox_uniform_double_stub (value vStreams)
+{
+  clrngPhilox432Stream *streams = CTYPES_ADDR_OF_FATPTR(vStreams);
+  double x = clrngPhilox432RandomU01_cl_double (streams);
+
+  return caml_copy_double(x);
 }
