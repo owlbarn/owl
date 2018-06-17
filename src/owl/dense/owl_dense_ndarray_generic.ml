@@ -222,6 +222,45 @@ let repeat ?(axis=(-1)) x reps =
   reshape y _shape_y
 
 
+let repeat2 x reps =
+  let highest_dim = Array.length (shape x) - 1 in
+  let _kind = kind x in
+  let _shape_x = shape x in
+  let _shape_y = Array.map2 ( * ) _shape_x reps in
+  let y = empty _kind _shape_y in
+  let block = Owl_utils.calc_stride _shape_y in
+  let _stride_x = Owl_utils.calc_stride (shape x) in
+  Printf.printf "block #: %s\n" (Owl_utils_array.to_string string_of_int block);
+
+  let idx = Owl_utils_array.sub _shape_x 1 highest_dim in
+  let idx = Owl_utils_array.append idx [|1|] in
+  let idx = Array.map2 ( * ) idx reps in
+  let idx = Owl_utils.calc_slice idx in
+  Printf.printf "idx block #: %s\n" (Owl_utils_array.to_string string_of_int idx);
+
+  let rec fill h d b ofsx =
+    Printf.fprintf Pervasives.stderr "h, d, b, ofsx: %d, %d, %d, %d\n" h d b ofsx;
+    if d = highest_dim + 1 then (
+      Printf.printf "for each reps single: %d -- %d (1)\n"  ofsx h;
+      _owl_copy _kind reps.(highest_dim) ~ofsx ~incx:0 ~ofsy:h ~incy:1 x y
+    ) else (
+      for i = 0 to _shape_x.(d) - 1 do
+        Printf.fprintf Pervasives.stderr "%s" (String.make d ' ');
+        let h' = h + i * idx.(d) in
+        fill h' (d + 1) i (ofsx + i * _stride_x.(d));
+        for j = 1 to (reps.(d) - 1) do
+          let ofsy = h' + j * block.(d) in
+          Printf.printf "for each reps: %d -- %d (%d)\n"  h' ofsy block.(d);
+          _owl_copy _kind block.(d) ~ofsx:h' ~incx:1 ~ofsy ~incy:1 y y
+        done
+      done
+    )
+  in
+  fill 0 0 0 0;
+  (* reshape y' back to ndarray before return result *)
+  reshape y _shape_y
+
+
 let concatenate ?(axis=0) xs =
   let axis = Owl_utils.adjust_index axis (num_dims xs.(0)) in
   (* get the shapes of all inputs and etc. *)

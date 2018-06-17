@@ -123,6 +123,8 @@ val tile : arr -> int array -> arr
 
 val repeat : ?axis:int -> arr -> int -> arr
 
+val repeat2 : arr -> int array -> arr
+
 val concat_vertical : arr -> arr -> arr
 
 val concat_horizontal : arr -> arr -> arr
