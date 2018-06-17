@@ -31,7 +31,6 @@
  */
 
 #include "philox432.h"
-
 #include "private.h"
 #include <stdlib.h>
 
