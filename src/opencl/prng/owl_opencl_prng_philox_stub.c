@@ -8,10 +8,13 @@
 #include "ctypes_cstubs_internals.h"
 
 
-CAMLprim value owl_clrng_philox_create_streams_stub (value vN)
+CAMLprim value owl_clrng_philox_create_streams_stub
+  (value vN, value vBufsz, value vStatus)
 {
   int n = Long_val(vN);
-  clrngPhilox432Stream *streams = clrngPhilox432CreateStreams(NULL, n, NULL, NULL);
+  size_t* bufsz = CTYPES_ADDR_OF_FATPTR(vBufsz);
+  clrngStatus** status = CTYPES_ADDR_OF_FATPTR(vStatus);
+  clrngPhilox432Stream *streams = clrngPhilox432CreateStreams(NULL, n, bufsz, status);
 
   return CTYPES_FROM_PTR(streams);
 }
@@ -19,8 +22,8 @@ CAMLprim value owl_clrng_philox_create_streams_stub (value vN)
 
 CAMLprim value owl_clrng_philox_destroy_streams_stub (value vStreams)
 {
-  clrngPhilox432Stream** streams = CTYPES_ADDR_OF_FATPTR(vStreams);
-  clrngPhilox432DestroyStreams(*streams);
+  clrngPhilox432Stream* streams = CTYPES_ADDR_OF_FATPTR(vStreams);
+  clrngPhilox432DestroyStreams(streams);
 
   return Val_unit;
 }
