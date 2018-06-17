@@ -424,6 +424,8 @@ value of ``?axis`` is the highest dimension of ``x``. This function is similar t
 Not that the ``axis`` can be negative.
  *)
 
+val repeat2 : ('a, 'b) t -> int array -> ('a, 'b) t
+
 val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``concat_vertical x y`` concatenates two ndarray ``x`` and ``y`` vertically.
