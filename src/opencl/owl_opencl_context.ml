@@ -106,7 +106,7 @@ let create devs code =
     Hashtbl.add command_queue dev cmdq;
   ) devs;
 
-  let core_src = Owl_opencl_kernel_common.code () in
+  let core_src = Owl_opencl_kernel.code () in
   let prog_src = Array.append [|core_src|] code in
   let prog = Program.create_with_source ctx prog_src in
   Owl_opencl_base.Program.build prog devs;

@@ -4,7 +4,7 @@
  *)
 
 
-let philox_code = "
+let code () = "
 #pragma OPENCL EXTENSION cl_amd_fp64 : enable
 
 typedef double cl_double;
@@ -210,31 +210,3 @@ clrngStatus clrngPhilox432RewindStreams(size_t count, clrngPhilox432Stream* stre
   return CLRNG_SUCCESS;
 }
 "
-;;
-
-
-let uniform_code = "
-__kernel void owl_opencl_float32_std_uniform (__global float* out, __global clrngPhilox432HostStream* streams) {
-  int gid = get_global_id(0);
-  clrngPhilox432Stream private_stream;
-  clrngPhilox432CopyOverStreamsFromGlobal(1, &private_stream, &streams[gid]);
-  out[gid] = clrngPhilox432RandomU01_cl_float(&private_stream);
-}
-
-__kernel void owl_opencl_float32_uniform (float a, float b, __global float* out, __global clrngPhilox432HostStream* streams) {
-  int gid = get_global_id(0);
-  clrngPhilox432Stream private_stream;
-  clrngPhilox432CopyOverStreamsFromGlobal(1, &private_stream, &streams[gid]);
-  float scale = clrngPhilox432RandomU01_cl_float(&private_stream);
-  out[gid] = a + (b - a) * scale;
-}
-
-"
-;;
-
-
-let _ =
-  Owl_log.info "OpenCL: compile philox432 kernels ...";
-  let code = Printf.sprintf "%s\n%s\n" philox_code uniform_code in
-  Owl_opencl.Context.(add_kernels default [| code |]);
-  Owl_log.info "OpenCL: add philox432 kernels ..."

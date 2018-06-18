@@ -6,24 +6,7 @@
 open Owl_opencl_kernel_map
 
 
-let head_s = "
-  #pragma OPENCL EXTENSION cl_khr_fp64 : enable
-
-  #ifndef GROUP_SIZE
-  #define GROUP_SIZE (64)
-  #endif
-"
-
-
-let noop_s = "
-__kernel void owl_opencl_noop(__local float *a)
-{
-  return;
-}
-"
-
-
-let functions () = [
+let functions () = [|
     (* float32 functions *)
     map_arr_fun        "float32_erf"            "float" "erf(a[gid])";
     map_arr_fun        "float32_erfc"           "float" "erfc(a[gid])";
@@ -167,12 +150,11 @@ let functions () = [
     (* TODO: complex32 functions *)
     (* TODO: int32 functions *)
     (* TODO: int64 functions *)
-  ]
+  |]
 
 
 let code () =
-  let fun_s = functions () |> List.fold_left ( ^ ) "" in
-  Printf.sprintf "%s\n%s\n%s" head_s noop_s fun_s
+  functions () |> Array.fold_left ( ^ ) ""
 
 
 (* ends here *)

@@ -15,17 +15,7 @@ CAMLprim value owl_clrng_philox_create_streams_stub (value vN, value vCreator, v
   clrngPhilox432StreamCreator* creator = CTYPES_ADDR_OF_FATPTR(vCreator);
   clrngStatus* status = CTYPES_ADDR_OF_FATPTR(vStatus);
   clrngPhilox432Stream *streams = clrngPhilox432CreateStreams(creator, n, bufsz, status);
-/**
-  double x;
-  x = clrngPhilox432RandomU01_cl_double (streams);
-  printf ("r1: %.4f\n", x);
-  x = clrngPhilox432RandomU01_cl_double (streams);
-  printf ("r2: %.4f\n", x);
-  x = clrngPhilox432RandomU01_cl_double (streams);
-  printf ("r3: %.4f\n", x);
-  x = clrngPhilox432RandomU01_cl_double (streams);
-  printf ("r4: %.4f\n", x);
-**/
+
   return CTYPES_FROM_PTR(streams);
 }
 
