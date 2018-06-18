@@ -224,19 +224,20 @@ let repeat2 x reps =
   let highest_dim = Array.length (shape x) - 1 in
   let _kind = kind x in
   let _shape_x = shape x in
+  assert (Array.length reps = Array.length _shape_x);
   let _shape_y = Array.map2 ( * ) _shape_x reps in
   let y = empty _kind _shape_y in
   let block = Owl_utils.calc_stride _shape_y in
   let _stride_x = Owl_utils.calc_stride (shape x) in
-  Printf.printf "block #: %s\n" (Owl_utils_array.to_string string_of_int block);
+  (* Printf.printf "block #: %s\n" (Owl_utils_array.to_string string_of_int block); *)
 
   let idx = Owl_utils_array.sub _shape_x 1 highest_dim in
   let idx = Owl_utils_array.append idx [|1|] in
   let idx = Array.map2 ( * ) idx reps in
   let idx = Owl_utils.calc_slice idx in
-  Printf.printf "idx block #: %s\n" (Owl_utils_array.to_string string_of_int idx);
+  (*Printf.printf "idx block #: %s\n" (Owl_utils_array.to_string string_of_int idx);*)
 
-  let rec fill h d b ofsx =
+  (* let rec fill h d b ofsx =
     Printf.fprintf Pervasives.stderr "h, d, b, ofsx: %d, %d, %d, %d\n" h d b ofsx;
     if d = highest_dim + 1 then (
       Printf.printf "for each reps single: %d -- %d (1)\n"  ofsx h;
@@ -254,7 +255,57 @@ let repeat2 x reps =
       done
     )
   in
-  fill 0 0 0 0;
+  fill 0 0 0 0; *)
+
+  if Array.length reps = 1 then (
+    for i = 0 to reps.(0) - 1 do
+      _owl_copy _kind (numel x) ~ofsx:0 ~incx:1 ~ofsy:i ~incy:reps.(0) x y
+    done
+  )
+  else (
+    let _slice_sz = _stride_x.(highest_dim - 1) in
+    let gs = (numel x) / _slice_sz in
+
+
+    let new_idx = Array.sub _shape_x 0 (Array.length reps - 1) in
+    let new_idx = Owl_utils.calc_stride new_idx in
+
+
+    let foo = Array.copy _shape_x in
+    Owl_utils.array_reverse foo;
+    let foo = Owl_utils.calc_stride foo in
+    (* Printf.printf "foo: %s\n" (Owl_utils_array.to_string string_of_int foo); *)
+    let gidx = Array.make gs 0 in
+    for d = highest_dim - 1 downto 0 do
+      for i = 0 to gs - 1 do
+        gidx.(i) <- gidx.(i) + ( (i / new_idx.(d)) mod _shape_x.(d) ) * idx.(d)
+      done;
+      (* Printf.printf "gs in %d dim: %s\n" d (Owl_utils_array.to_string string_of_int gidx); *)
+    done;
+
+    for i = 0 to gs - 1 do
+      let d = highest_dim - 1 in
+      let ofsx = i * _slice_sz in
+      for j = 0 to reps.(d) - 1 do
+        let ofsy = gidx.(i) + j in
+        (* Printf.fprintf Pervasives.stderr "i, ofsx, ofxy (slice): %d, %d, %d, %d\n" i ofsx ofsy _slice_sz; *)
+        _owl_copy _kind _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:reps.(d) x y
+      done;
+    done;
+
+    let step = ref 1 in
+    for d = highest_dim - 1 downto 0 do
+      for s = 0 to foo.(highest_dim - 1 - d) - 1 do (* # of sub-block *)
+        let ofsx = gidx.(s * !step) in
+        for j = 1 to (reps.(d) - 1) do
+          let ofsy = ofsx + j * block.(d) in
+          (* Printf.fprintf Pervasives.stderr "copy: d, s, ofsx, ofxy (block): %d, %d, %d, %d, %d\n" d s ofsx ofsy block.(d); *)
+          _owl_copy _kind block.(d) ~ofsx ~incx:1 ~ofsy ~incy:1 y y
+        done;
+      done;
+      step := !step * _shape_x.(d);
+    done
+  );
   (* reshape y' back to ndarray before return result *)
   reshape y _shape_y
 
