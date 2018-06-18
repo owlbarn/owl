@@ -22,6 +22,8 @@ module Make (A : Ndarray_Mutable) = struct
 
   module CGraph = Owl_computation_graph.Make (A) (Owl_opencl_device)
 
+  module Engine_Init = Owl_opencl_engine_init.Make (A)
+
   module CL_Dev = Owl_opencl_device.Make (A)
 
   include CGraph
@@ -210,7 +212,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Ones shape                                  -> _eval_map_xx x
         | Create shape                                -> _eval_map_xx x
         | Sequential                                  -> failwith "Sequential"
-        | Uniform shape                               -> _eval_map_xx x
+        | Uniform shape                               -> _eval_map_97 x param "uniform"
         | Gaussian                                    -> failwith "Gaussian"
         | Bernoulli (p, shape)                        -> _eval_map_xx x
         | Init _                                      -> failwith "Init"
@@ -502,7 +504,7 @@ module Make (A : Ndarray_Mutable) = struct
   and _eval_map_97 x param fun_name =
     let a = Array.map (fun x_parent ->
       _eval_term x_parent param;
-      (get_value x).(0)
+      (get_value x_parent).(0)
     ) (parents x)
     in
 
@@ -513,12 +515,20 @@ module Make (A : Ndarray_Mutable) = struct
     let b_ptr = a.(1) |> get_elt_ptr in
     let o_ptr = (get_value x).(0) |> get_gpu_ptr in
 
-    let kernel = make_kernel x program fun_name in
-    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem o_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_float_ptr a_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 3 sizeof_float_ptr b_ptr;
-
     let _size = node_to_arr x |> numel in
+    if Array.length (get_value x).(0).kernel = 0 then (
+      let kernel = make_kernel x program fun_name in
+      let streams = Owl_opencl_prng_philox.make _size in
+      let streams_buf = Owl_opencl_prng_philox.make_stream_buffer ctx streams in
+      let streams_ptr = Ctypes.allocate cl_mem streams_buf in
+      Owl_opencl_base.Kernel.set_arg kernel 3 sizeof_cl_mem streams_ptr;
+    );
+
+    let kernel = make_kernel x program fun_name in
+    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_float_ptr a_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_float_ptr b_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem o_ptr;
+
     let wait_for = aggregate_events (parents x) |> Array.to_list in
     let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
     CL_Dev.append_events (get_value x).(0) [| event |]
@@ -541,13 +551,16 @@ module Make (A : Ndarray_Mutable) = struct
     let cmdq = Owl_opencl_context.(get_cmdq default dev) in
     let prog = Owl_opencl_context.(get_program default) in
     let param = (ctx, cmdq, prog) in
-    Array.iter (fun x ->
-      let y = arr_to_node x in
+
+    let nodes = Array.map arr_to_node xs in
+    (* FIXME *)
+    (* Engine_Init.init_nodes nodes param; *)
+    Array.iter (fun y ->
       _eval_term y param;
       (* read the results from buffer *)
       let y_val = (get_value y).(0) in
       gpu_to_cpu_copy param y_val |> ignore
-    ) xs;
+    ) nodes;
     Owl_opencl_base.CommandQueue.finish cmdq
 
 
