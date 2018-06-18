@@ -227,37 +227,9 @@ let repeat2 x reps =
   let _kind = kind x in
   let _shape_x = shape x in
   assert (Array.length reps = Array.length _shape_x);
+
   let _shape_y = Array.map2 ( * ) _shape_x reps in
   let y = empty _kind _shape_y in
-  let block = Owl_utils.calc_stride _shape_y in
-  let _stride_x = Owl_utils.calc_stride (shape x) in
-  (* Printf.printf "block #: %s\n" (Owl_utils_array.to_string string_of_int block); *)
-
-  let idx = Owl_utils_array.sub _shape_x 1 highest_dim in
-  let idx = Owl_utils_array.append idx [|1|] in
-  let idx = Array.map2 ( * ) idx reps in
-  let idx = Owl_utils.calc_slice idx in
-  (*Printf.printf "idx block #: %s\n" (Owl_utils_array.to_string string_of_int idx);*)
-
-  (* let rec fill h d b ofsx =
-    Printf.fprintf Pervasives.stderr "h, d, b, ofsx: %d, %d, %d, %d\n" h d b ofsx;
-    if d = highest_dim + 1 then (
-      Printf.printf "for each reps single: %d -- %d (1)\n"  ofsx h;
-      _owl_copy _kind reps.(highest_dim) ~ofsx ~incx:0 ~ofsy:h ~incy:1 x y
-    ) else (
-      for i = 0 to _shape_x.(d) - 1 do
-        Printf.fprintf Pervasives.stderr "%s" (String.make d ' ');
-        let h' = h + i * idx.(d) in
-        fill h' (d + 1) i (ofsx + i * _stride_x.(d));
-        for j = 1 to (reps.(d) - 1) do
-          let ofsy = h' + j * block.(d) in
-          Printf.printf "for each reps: %d -- %d (%d)\n"  h' ofsy block.(d);
-          _owl_copy _kind block.(d) ~ofsx:h' ~incx:1 ~ofsy ~incy:1 y y
-        done
-      done
-    )
-  in
-  fill 0 0 0 0; *)
 
   if Array.length reps = 1 then (
     for i = 0 to reps.(0) - 1 do
@@ -265,40 +237,59 @@ let repeat2 x reps =
     done
   )
   else (
+    (* size of block in each dim/depth of y *)
+    let block = Owl_utils.calc_stride _shape_y in
+
+    (* size of block on the second to last dim of x *)
+    let _stride_x = Owl_utils.calc_stride _shape_x in
     let _slice_sz = _stride_x.(highest_dim - 1) in
-    let gs = (numel x) / _slice_sz in
+    let block_num = (numel x) / _slice_sz in
 
+    (* size of block in counting indices *)
+    let block_idx = Owl_utils_array.sub _shape_x 1 highest_dim in
+    let block_idx = Owl_utils_array.append block_idx [|1|] in
+    let block_idx = Array.map2 ( * ) block_idx reps in
+    let block_idx = Owl_utils.calc_slice block_idx in
 
-    let new_idx = Array.sub _shape_x 0 (Array.length reps - 1) in
-    let new_idx = Owl_utils.calc_stride new_idx in
+    (* stride when treating the second to last dim as the highest dim *)
+    let _stride_sub = Array.sub _shape_x 0 (Array.length reps - 1)
+      |> Owl_utils.calc_stride
+    in
 
+    (* the number of next-level blocks a dim contains *)
+    let _slice_sub = Array.copy _shape_x in
+    for i = 1 to Array.length reps - 1 do
+      _slice_sub.(i) <- _slice_sub.(i - 1) * _slice_sub.(i)
+    done;
 
-    let foo = Array.copy _shape_x in
-    Owl_utils.array_reverse foo;
-    let foo = Owl_utils.calc_stride foo in
-    (* Printf.printf "foo: %s\n" (Owl_utils_array.to_string string_of_int foo); *)
-    let gidx = Array.make gs 0 in
+    (* starting indices of each sub_block *)
+    let sub_block_idx = Array.make block_num 0 in
     for d = highest_dim - 1 downto 0 do
-      for i = 0 to gs - 1 do
-        gidx.(i) <- gidx.(i) + ( (i / new_idx.(d)) mod _shape_x.(d) ) * idx.(d)
+      for i = 0 to block_num - 1 do
+        sub_block_idx.(i) <- sub_block_idx.(i) +
+          ((i / _stride_sub.(d)) mod _shape_x.(d)) * block_idx.(d)
       done;
-      (* Printf.printf "gs in %d dim: %s\n" d (Owl_utils_array.to_string string_of_int gidx); *)
     done;
 
-    for i = 0 to gs - 1 do
-      let d = highest_dim - 1 in
+    Printf.printf "block: %s\n" (Owl_utils_array.to_string string_of_int block);
+    Printf.printf "block_idx: %s\n" (Owl_utils_array.to_string string_of_int block_idx);
+    Printf.printf "_stride_sub: %s\n" (Owl_utils_array.to_string string_of_int _stride_sub);
+    Printf.printf "_slice_sub: %s\n" (Owl_utils_array.to_string string_of_int _slice_sub);
+
+    (* copy x content to each sub_block on second-to-last dim *)
+    for i = 0 to block_num - 1 do
       let ofsx = i * _slice_sz in
-      for j = 0 to reps.(d) - 1 do
-        let ofsy = gidx.(i) + j in
-        (* Printf.fprintf Pervasives.stderr "i, ofsx, ofxy (slice): %d, %d, %d, %d\n" i ofsx ofsy _slice_sz; *)
-        _owl_copy _kind _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:reps.(d) x y
+      for j = 0 to reps.(highest_dim) - 1 do
+        let ofsy = sub_block_idx.(i) + j in
+        _owl_copy _kind _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:reps.(highest_dim) x y
       done;
     done;
 
+    (* copy y's own sub_block to block on lower dimensions *)
     let step = ref 1 in
     for d = highest_dim - 1 downto 0 do
-      for s = 0 to foo.(highest_dim - 1 - d) - 1 do (* # of sub-block *)
-        let ofsx = gidx.(s * !step) in
+      for s = 0 to _slice_sub.(d) - 1 do
+        let ofsx = sub_block_idx.(s * _stride_sub.(d)) in
         for j = 1 to (reps.(d) - 1) do
           let ofsy = ofsx + j * block.(d) in
           (* Printf.fprintf Pervasives.stderr "copy: d, s, ofsx, ofxy (block): %d, %d, %d, %d, %d\n" d s ofsx ofsy block.(d); *)
