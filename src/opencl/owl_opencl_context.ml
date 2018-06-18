@@ -156,13 +156,13 @@ let eval ?(param=[||]) ?(ctx=default) ?(dev_id=0) ?(work_dim=1) ?(work_size=[||]
       )
     | F32 a_val -> (
         if !work_sz = [] then work_sz := [Owl_dense_ndarray_generic.numel a_val];
-        let a_mem = Buffer.create ~flags:[cl_MEM_USE_HOST_PTR] opencl_ctx a_val in
+        let a_mem = Buffer.create_bigarray ~flags:[cl_MEM_USE_HOST_PTR] opencl_ctx a_val in
         let a_ptr = Ctypes.allocate cl_mem a_mem in
         Owl_opencl_base.Kernel.set_arg kernel i sizeof_cl_mem a_ptr;
       )
     | F64 a_val -> (
         if !work_sz = [] then work_sz := [Owl_dense_ndarray_generic.numel a_val];
-        let a_mem = Buffer.create ~flags:[cl_MEM_USE_HOST_PTR] opencl_ctx a_val in
+        let a_mem = Buffer.create_bigarray ~flags:[cl_MEM_USE_HOST_PTR] opencl_ctx a_val in
         let a_ptr = Ctypes.allocate cl_mem a_mem in
         Owl_opencl_base.Kernel.set_arg kernel i sizeof_cl_mem a_ptr;
       )

@@ -284,8 +284,11 @@ module Buffer : sig
   val to_string : cl_mem -> string
   (** Get the string representation of a given object, often contains the object's basic information. *)
 
-  val create : ?flags:int list -> cl_context -> ('a, 'b) Owl_dense_ndarray_generic.t -> cl_mem
-  (** Create an object with the passed in parameters. *)
+  val create : ?flags:int list -> cl_context -> int -> unit Ctypes.ptr -> cl_mem
+  (** Create an object with the passed in void pointer. *)
+
+  val create_bigarray : ?flags:int list -> cl_context -> ('a, 'b) Owl_dense_ndarray_generic.t -> cl_mem
+  (** Create an object with the passed in bigarray. Refer to ``create`` for a more general function. *)
 
   val enqueue_read : ?blocking:bool -> ?wait_for:cl_event list -> cl_command_queue -> cl_mem -> int -> int -> unit Ctypes.ptr -> cl_event
   (** Enqueue a read operation on the given memory object to a command queue. *)

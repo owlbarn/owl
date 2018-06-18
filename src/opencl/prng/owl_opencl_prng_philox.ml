@@ -5,7 +5,11 @@
 
 open Ctypes
 
+open Owl_opencl_base
+
 open Owl_opencl_utils
+
+open Owl_opencl_generated
 
 module CI = Cstubs_internals
 
@@ -27,7 +31,7 @@ let status_null : status = Ctypes.null
 type t = {
   mutable streams  : streams ptr;
   mutable length   : int;
-  mutable buf_size : int;
+  mutable bufsize  : int;
 }
 
 
@@ -90,8 +94,8 @@ let uniform stream =
 
 let make length =
   let streams, buf_size_p = create_streams length in
-  let buf_size = Unsigned.Size_t.to_int !@buf_size_p in
-  { streams; length; buf_size }
+  let bufsize = Unsigned.Size_t.to_int !@buf_size_p in
+  { streams; length; bufsize }
 
 
 let rewind streams_t =
@@ -104,3 +108,38 @@ let get_nth_stream streams_t n =
   let streams_p = streams_t.streams in
   let nth_stream_p = streams_p +@ n in
   nth_stream_p
+
+
+let make_stream_buffer ctx streams_t =
+  let streams = streams_t.streams in
+  let bufsize = streams_t.bufsize in
+  let flags = [ cl_MEM_USE_HOST_PTR ] in
+  Buffer.create ~flags ctx bufsize (Obj.magic streams)
+
+
+let test dev_id =
+  let ctx = Owl_opencl_context.(get_opencl_ctx default) in
+  let dev = Owl_opencl_context.(get_dev default dev_id) in
+  let cmdq = Owl_opencl_context.(get_cmdq default dev) in
+
+  let streams = make 1000_000 in
+  let i_0 = make_stream_buffer ctx streams in
+
+  let arr = Owl.Dense.Ndarray.S.create [|1000; 1000|] 1.5 in
+  let flags = [ cl_MEM_USE_HOST_PTR ] in
+  let i_1 = Buffer.create_bigarray ~flags ctx arr in
+
+  let kernel = Owl_opencl_context.(make_kernel default "owl_opencl_float32_rand_uniform") in
+  let i_0_ptr = Ctypes.allocate cl_mem i_0 in
+  let i_1_ptr = Ctypes.allocate cl_mem i_1 in
+  Kernel.set_arg kernel 0 sizeof_cl_mem i_0_ptr;
+  Kernel.set_arg kernel 1 sizeof_cl_mem i_1_ptr;
+
+  let e_0 = Kernel.enqueue_ndrange ~wait_for:[] cmdq kernel 1 [1000_000] in
+  let e_1 = Buffer.enqueue_read ~wait_for:[e_0] cmdq i_1 0 sizeof_cl_mem (Ctypes.to_voidp i_1_ptr) in
+  Owl_opencl_base.CommandQueue.finish cmdq;
+  arr
+
+
+
+(* ends here *)

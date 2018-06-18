@@ -82,7 +82,7 @@ module Make (A : Ndarray_Mutable) = struct
     if Array.length x_val.gpu_mem = 0 then (
       let cpu_mem = value_to_arr x_val in
       let flags = [ cl_MEM_USE_HOST_PTR ] in
-      let gpu_mem = Buffer.create ~flags ctx (Obj.magic cpu_mem) in
+      let gpu_mem = Buffer.create_bigarray ~flags ctx (Obj.magic cpu_mem) in
       let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [|gpu_mem|] [||] [||] in
       set_value x [| new_val |]
     )

@@ -36,7 +36,7 @@ let pack_input = function
     )
   | F32 x   -> (
       let ctx = Owl_opencl_context.(default.context) in
-      let x_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx x in
+      let x_mem = Owl_opencl_base.Buffer.create_bigarray ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx x in
       {
         op      = Noop "";
         input   = [| |];
@@ -123,7 +123,7 @@ let allocate_from_arr ctx a =
       let a_knd = Owl_dense_ndarray_generic.kind a_upk in
       let a_shp = Owl_dense_ndarray_generic.shape a_upk in
       let b_val = Owl_dense_ndarray_generic.empty a_knd a_shp in
-      let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
+      let b_mem = Owl_opencl_base.Buffer.create_bigarray ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
       let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
       F32 b_val, b_mem, b_ptr
     )
@@ -149,7 +149,7 @@ let allocate_from_inputs ctx x =
         let a_knd = Owl_dense_ndarray_generic.kind a_upk in
         let a_shp = Owl_dense_ndarray_generic.shape a_upk in
         let b_val = Owl_dense_ndarray_generic.empty a_knd a_shp in
-        let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
+        let b_mem = Owl_opencl_base.Buffer.create_bigarray ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
         let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
         F32 b_val, b_mem, b_ptr
       )
@@ -234,7 +234,7 @@ let _reduce_eval param fun_name wait_for num_groups group_size a_val a_ptr =
 
   let a_knd = Owl_dense_ndarray_generic.kind a_val in
   let b_val = Owl_dense_ndarray_generic.empty a_knd [|num_groups|] in
-  let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
+  let b_mem = Owl_opencl_base.Buffer.create_bigarray ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
   let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
   let s_ptr = a_val |> Owl_dense_ndarray_generic.numel |> Ctypes.(allocate int) in
 

@@ -4,7 +4,7 @@
  *)
 
 
-let code = "
+let philox_code = "
 #pragma OPENCL EXTENSION cl_amd_fp64 : enable
 
 typedef double cl_double;
@@ -192,10 +192,10 @@ static cl_uint clrngPhilox432NextState(clrngPhilox432StreamState *currentState) 
 
   return result;
 }
-cl_double clrngPhilox432RandomU01_cl_double(clrngPhilox432Stream* stream) { return (clrngPhilox432NextState(&stream->current) + 0.5) * 1.0 / 0x100000000L; }
-cl_int clrngPhilox432RandomInteger_cl_double(clrngPhilox432Stream* stream, cl_int i, cl_int j) { return i + (cl_int)((j - i + 1) * clrngPhilox432RandomU01_cl_double(stream)); }
-clrngStatus clrngPhilox432RandomU01Array_cl_double(clrngPhilox432Stream* stream, size_t count, cl_double* buffer) { if (!stream) return (CLRNG_INVALID_VALUE); if (!buffer) return (CLRNG_INVALID_VALUE); for (size_t i = 0; i < count; i++) buffer[i] = clrngPhilox432RandomU01_cl_double(stream); return CLRNG_SUCCESS; }
-clrngStatus clrngPhilox432RandomIntegerArray_cl_double(clrngPhilox432Stream* stream, cl_int i, cl_int j, size_t count, cl_int* buffer) { if (!stream) return (CLRNG_INVALID_VALUE); if (!buffer) return (CLRNG_INVALID_VALUE); for (size_t k = 0; k < count; k++) buffer[k] = clrngPhilox432RandomInteger_cl_double(stream, i, j); return CLRNG_SUCCESS; }
+cl_float clrngPhilox432RandomU01_cl_float(clrngPhilox432Stream* stream) { return (clrngPhilox432NextState(&stream->current) + 0.5) * 1.0 / 0x100000000L; }
+cl_int clrngPhilox432RandomInteger_cl_float(clrngPhilox432Stream* stream, cl_int i, cl_int j) { return i + (cl_int)((j - i + 1) * clrngPhilox432RandomU01_cl_float(stream)); }
+clrngStatus clrngPhilox432RandomU01Array_cl_float(clrngPhilox432Stream* stream, size_t count, cl_float* buffer) { if (!stream) return (CLRNG_INVALID_VALUE); if (!buffer) return (CLRNG_INVALID_VALUE); for (size_t i = 0; i < count; i++) buffer[i] = clrngPhilox432RandomU01_cl_float(stream); return CLRNG_SUCCESS; }
+clrngStatus clrngPhilox432RandomIntegerArray_cl_float(clrngPhilox432Stream* stream, cl_int i, cl_int j, size_t count, cl_int* buffer) { if (!stream) return (CLRNG_INVALID_VALUE); if (!buffer) return (CLRNG_INVALID_VALUE); for (size_t k = 0; k < count; k++) buffer[k] = clrngPhilox432RandomInteger_cl_float(stream, i, j); return CLRNG_SUCCESS; }
 
 
 clrngStatus clrngPhilox432RewindStreams(size_t count, clrngPhilox432Stream* streams)
@@ -213,7 +213,19 @@ clrngStatus clrngPhilox432RewindStreams(size_t count, clrngPhilox432Stream* stre
 ;;
 
 
+let uniform_code = "
+__kernel void owl_opencl_float32_rand_uniform (__global clrngPhilox432Stream* streams, __global float* out) {
+  int gid = get_global_id(0);
+  clrngPhilox432Stream private_stream;
+  clrngPhilox432CopyOverStreamsFromGlobal(1, &private_stream, &streams[gid]);
+  out[gid] = clrngPhilox432RandomU01_cl_float(&private_stream);
+}
+"
+;;
+
+
 let _ =
   Owl_log.info "OpenCL: compile philox432 kernels ...";
+  let code = Printf.sprintf "%s\n%s\n" philox_code uniform_code in
   Owl_opencl.Context.(add_kernels default [| code |]);
   Owl_log.info "OpenCL: add philox432 kernels ..."

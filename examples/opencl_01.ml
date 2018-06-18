@@ -40,9 +40,9 @@ let c = Dense.Ndarray.S.zeros [|_size|];;
 
 
 Owl_log.info "set args ...";;
-let a' = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx a;;
-let b' = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b;;
-let c' = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx c;;
+let a' = Owl_opencl_base.Buffer.create_bigarray ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx a;;
+let b' = Owl_opencl_base.Buffer.create_bigarray ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b;;
+let c' = Owl_opencl_base.Buffer.create_bigarray ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx c;;
 let len = Ctypes.sizeof Owl_opencl_generated.cl_mem;;
 let _a = Ctypes.allocate Owl_opencl_generated.cl_mem a';;
 let _b = Ctypes.allocate Owl_opencl_generated.cl_mem b';;

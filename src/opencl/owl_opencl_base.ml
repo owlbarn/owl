@@ -682,12 +682,22 @@ module Buffer = struct
   let release memobj = clReleaseMemObject memobj |> cl_check_err
 
 
-  let create ?(flags=[]) ctx x =
+  let create_bigarray ?(flags=[]) ctx x =
     let _flags = List.fold_left ( lor ) 0 flags |> Unsigned.ULong.of_int in
     let size = Bigarray.Genarray.size_in_bytes x |> Unsigned.Size_t.of_int in
     let _x = bigarray_to_void_ptr x in
     let err_ret = allocate int32_t 0l in
     let buf = clCreateBuffer ctx _flags size _x err_ret in
+    cl_check_err !@err_ret;
+    Gc.finalise release buf;
+    buf
+
+
+  let create ?(flags=[]) ctx bufsize x_ptr =
+    let _flags = List.fold_left ( lor ) 0 flags |> Unsigned.ULong.of_int in
+    let size = Unsigned.Size_t.of_int bufsize in
+    let err_ret = allocate int32_t 0l in
+    let buf = clCreateBuffer ctx _flags size x_ptr err_ret in
     cl_check_err !@err_ret;
     Gc.finalise release buf;
     buf
