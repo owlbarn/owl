@@ -1,10 +1,19 @@
 (jbuild_version 1)
 
+(copy_files# kernel/*)
+(copy_files# prng/*)
+(copy_files# prng/Random123/*)
+(copy_files# prng/Random123/features/*)
+
 (library (
   (name owl_opencl)
   (public_name owl-opencl)
   (wrapped false)
   (c_names (
+    clRNG
+    private
+    philox432
+    owl_opencl_prng_philox_stub
     owl_opencl_generated_stub
   ))
   (c_flags (
