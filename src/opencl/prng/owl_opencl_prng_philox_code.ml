@@ -214,7 +214,7 @@ clrngStatus clrngPhilox432RewindStreams(size_t count, clrngPhilox432Stream* stre
 
 
 let uniform_code = "
-__kernel void owl_opencl_float32_rand_uniform (__global clrngPhilox432Stream* streams, __global float* out) {
+__kernel void owl_opencl_float32_rand_uniform (__global clrngPhilox432HostStream* streams, __global float* out) {
   int gid = get_global_id(0);
   clrngPhilox432Stream private_stream;
   clrngPhilox432CopyOverStreamsFromGlobal(1, &private_stream, &streams[gid]);

@@ -108,20 +108,31 @@ module Make (A : Ndarray_Mutable) = struct
     Ctypes.allocate Ctypes.float elt_mem
 
 
+  let size_in_bytes x_val =
+    let cpu_mem = CL_Dev.value_to_arr x_val in
+    let n = A.numel cpu_mem in
+    let elt_size = match A.number with
+      | F32 -> 4
+      | F64 -> 8
+      | _   -> failwith "size_in_bytes: unsupported type"
+    in
+    n * elt_size
+
+
   let cpu_to_gpu_copy param x_val =
     let ctx, cmdq, _ = param in
     let cpu_ptr = get_cpu_ptr x_val in
     let gpu_mem = CL_Dev.(x_val.gpu_mem.(0)) in
-    let event = Buffer.enqueue_write cmdq gpu_mem 0 sizeof_cl_mem (Ctypes.to_voidp cpu_ptr) in
-    CL_Dev.append_events x_val [| event |]
+    let size = size_in_bytes x_val in
+    Buffer.enqueue_write ~blocking:false cmdq gpu_mem 0 size (Ctypes.to_voidp cpu_ptr)
 
 
   let gpu_to_cpu_copy param x_val =
     let ctx, cmdq, _ = param in
     let cpu_ptr = get_cpu_ptr x_val in
     let gpu_mem = CL_Dev.(x_val.gpu_mem.(0)) in
-    let event = Buffer.enqueue_read cmdq gpu_mem 0 sizeof_cl_mem (Ctypes.to_voidp cpu_ptr) in
-    CL_Dev.append_events x_val [| event |]
+    let size = size_in_bytes x_val in
+    Buffer.enqueue_read ~blocking:false cmdq gpu_mem 0 size (Ctypes.to_voidp cpu_ptr)
 
 
   (* allocate memory and evaluate experssions *)
@@ -493,7 +504,8 @@ module Make (A : Ndarray_Mutable) = struct
       let ctx, cmdq, program = param in
       allocate_from_parent_0 ctx x;
       let x_val = (get_value x).(0) in
-      cpu_to_gpu_copy param x_val
+      let event = cpu_to_gpu_copy param x_val in
+      CL_Dev.append_events (get_value x).(0) [| event |]
     )
 
 

@@ -114,6 +114,7 @@ let make_stream_buffer ctx streams_t =
   let streams = streams_t.streams in
   let bufsize = streams_t.bufsize in
   let flags = [ cl_MEM_USE_HOST_PTR ] in
+  Owl_log.info "stream bufsize = %i" bufsize;
   Buffer.create ~flags ctx bufsize (Obj.magic streams)
 
 
@@ -135,8 +136,10 @@ let test dev_id =
   Kernel.set_arg kernel 0 sizeof_cl_mem i_0_ptr;
   Kernel.set_arg kernel 1 sizeof_cl_mem i_1_ptr;
 
+  let i_1_ppp = Ctypes.(bigarray_start genarray arr) in
+
   let e_0 = Kernel.enqueue_ndrange ~wait_for:[] cmdq kernel 1 [1000_000] in
-  let e_1 = Buffer.enqueue_read ~wait_for:[e_0] cmdq i_1 0 sizeof_cl_mem (Ctypes.to_voidp i_1_ptr) in
+  let e_1 = Buffer.enqueue_read ~wait_for:[e_0] cmdq i_1 0 (4 * 1000_000) (Ctypes.to_voidp i_1_ppp) in
   Owl_opencl_base.CommandQueue.finish cmdq;
   arr
 
