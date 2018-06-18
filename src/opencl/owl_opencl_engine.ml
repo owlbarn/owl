@@ -513,7 +513,7 @@ module Make (A : Ndarray_Mutable) = struct
 
     let a_ptr = a.(0) |> get_elt_ptr in
     let b_ptr = a.(1) |> get_elt_ptr in
-    let o_ptr = (get_value x).(0) |> get_gpu_ptr in
+    let c_ptr = (get_value x).(0) |> get_gpu_ptr in
 
     let _size = node_to_arr x |> numel in
     if Array.length (get_value x).(0).kernel = 0 then (
@@ -527,7 +527,7 @@ module Make (A : Ndarray_Mutable) = struct
     let kernel = make_kernel x program fun_name in
     Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_float_ptr a_ptr;
     Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_float_ptr b_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem o_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr;
 
     let wait_for = aggregate_events (parents x) |> Array.to_list in
     let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
