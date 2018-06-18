@@ -432,9 +432,9 @@ module Make (A : Ndarray_Mutable) = struct
 
   (* [f] is inpure, for [elt array -> arr] *)
   and _eval_map_08 x f =
-    let a = Array.map (fun x ->
-      _eval_term x;
-      value_to_elt (get_value x).(0)
+    let a = Array.map (fun x_parent ->
+      _eval_term x_parent;
+      value_to_elt (get_value x_parent).(0)
     ) (parents x)
     in
     let out = allocate_from_parent_0 x in

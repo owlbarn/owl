@@ -4,7 +4,7 @@
 #require "owl-opencl"
 open Owl
 
-module M = Owl_opencl_engine.Make (Dense.Ndarray.S);;
+module M = Owl_opencl_engine.Make (Dense.Ndarray.S)
 
 
 let loop_gpu a =
@@ -14,13 +14,12 @@ let loop_gpu a =
   for i = 1 to 5000 do
     y := M.sin !y
   done;
-  M.eval_arr ~dev_id:0 [|!y|];
+  M.eval_arr ~dev_id:1 [|!y|];
   !y
 
 
 let _ =
-  let a = Dense.Ndarray.S.ones [|2000; 2000|] in
+  let a = Dense.Ndarray.S.uniform [|2000; 2000|] in
   let f () = loop_gpu a in
   let t = Utils.time f in
-  Owl_log.info "loop_gpu takes %g ms" t;
-  Dense.Ndarray.Generic.pp_dsnda Format.std_formatter a
+  Owl_log.info "loop_gpu takes %g ms" t

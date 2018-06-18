@@ -130,11 +130,11 @@ let test dev_id =
   let flags = [ cl_MEM_USE_HOST_PTR ] in
   let i_1 = Buffer.create_bigarray ~flags ctx arr in
 
-  let kernel = Owl_opencl_context.(make_kernel default "owl_opencl_float32_rand_uniform") in
+  let kernel = Owl_opencl_context.(make_kernel default "owl_opencl_float32_rand_std_uniform") in
   let i_0_ptr = Ctypes.allocate cl_mem i_0 in
   let i_1_ptr = Ctypes.allocate cl_mem i_1 in
-  Kernel.set_arg kernel 0 sizeof_cl_mem i_0_ptr;
-  Kernel.set_arg kernel 1 sizeof_cl_mem i_1_ptr;
+  Kernel.set_arg kernel 1 sizeof_cl_mem i_0_ptr;
+  Kernel.set_arg kernel 0 sizeof_cl_mem i_1_ptr;
 
   let i_1_ppp = Ctypes.(bigarray_start genarray arr) in
 

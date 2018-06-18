@@ -214,12 +214,21 @@ clrngStatus clrngPhilox432RewindStreams(size_t count, clrngPhilox432Stream* stre
 
 
 let uniform_code = "
-__kernel void owl_opencl_float32_rand_uniform (__global clrngPhilox432HostStream* streams, __global float* out) {
+__kernel void owl_opencl_float32_rand_std_uniform (__global float* out, __global clrngPhilox432HostStream* streams) {
   int gid = get_global_id(0);
   clrngPhilox432Stream private_stream;
   clrngPhilox432CopyOverStreamsFromGlobal(1, &private_stream, &streams[gid]);
   out[gid] = clrngPhilox432RandomU01_cl_float(&private_stream);
 }
+
+__kernel void owl_opencl_float32_rand_uniform (float a, float b, __global float* out, __global clrngPhilox432HostStream* streams) {
+  int gid = get_global_id(0);
+  clrngPhilox432Stream private_stream;
+  clrngPhilox432CopyOverStreamsFromGlobal(1, &private_stream, &streams[gid]);
+  float scale = clrngPhilox432RandomU01_cl_float(&private_stream);
+  out[gid] = a + (b - a) * scale;
+}
+
 "
 ;;
 
