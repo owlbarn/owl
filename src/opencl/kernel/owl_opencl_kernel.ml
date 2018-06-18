@@ -9,6 +9,7 @@ let code () = [|
     Owl_opencl_kernel_head.code ();
     Owl_opencl_kernel_maths.code ();
     Owl_opencl_kernel_stats.code ();
+    Owl_opencl_kernel_broadcast.code ();
   |]
   |>
   Array.fold_left ( ^ ) ""
