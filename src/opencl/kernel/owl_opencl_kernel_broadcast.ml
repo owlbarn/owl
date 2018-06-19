@@ -63,10 +63,16 @@ let broadcast_arr_arr_fun fun_name cl_typ map_fun =
 
 let functions = [|
     (* float32 functions *)
-    broadcast_arr_arr_fun "float32_broadcast_add" "float" "a[i1d_a] + b[i1d_b]";
-    broadcast_arr_arr_fun "float32_broadcast_sub" "float" "a[i1d_a] - b[i1d_b]";
-    broadcast_arr_arr_fun "float32_broadcast_mul" "float" "a[i1d_a] * b[i1d_b]";
-    broadcast_arr_arr_fun "float32_broadcast_div" "float" "a[i1d_a] / b[i1d_b]";
+    broadcast_arr_arr_fun "float32_broadcast_add"   "float" "a[i1d_a] + b[i1d_b]";
+    broadcast_arr_arr_fun "float32_broadcast_sub"   "float" "a[i1d_a] - b[i1d_b]";
+    broadcast_arr_arr_fun "float32_broadcast_mul"   "float" "a[i1d_a] * b[i1d_b]";
+    broadcast_arr_arr_fun "float32_broadcast_div"   "float" "a[i1d_a] / b[i1d_b]";
+    broadcast_arr_arr_fun "float32_broadcast_pow"   "float" "pow(a[i1d_a], b[i1d_b])";
+    broadcast_arr_arr_fun "float32_broadcast_min2"  "float" "fmin(a[i1d_a], b[i1d_b])";
+    broadcast_arr_arr_fun "float32_broadcast_max2"  "float" "fmax(a[i1d_a], b[i1d_b])";
+    broadcast_arr_arr_fun "float32_broadcast_fmod"  "float" "fmod(a[i1d_a], b[i1d_b])";
+    broadcast_arr_arr_fun "float32_broadcast_hypot" "float" "hypot(a[i1d_a], b[i1d_b])";
+    broadcast_arr_arr_fun "float32_broadcast_atan2" "float" "atan2(a[i1d_a], b[i1d_b])";
   |]
 
 

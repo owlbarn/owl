@@ -22,7 +22,7 @@ module Make (A : Ndarray_Mutable) = struct
 
   module CGraph = Owl_computation_graph.Make (A) (Owl_opencl_device)
 
-  module Engine_Init = Owl_opencl_engine_init.Make (A)
+  module CGInit = Owl_opencl_engine_init.Make (A)
 
   module CL_Dev = Owl_opencl_device.Make (A)
 
@@ -553,14 +553,15 @@ module Make (A : Ndarray_Mutable) = struct
     let param = (ctx, cmdq, prog) in
 
     let nodes = Array.map arr_to_node xs in
-    (* FIXME *)
-    (* Engine_Init.init_nodes nodes param; *)
+    CGInit.init_nodes nodes param;
+
     Array.iter (fun y ->
       _eval_term y param;
       (* read the results from buffer *)
       let y_val = (get_value y).(0) in
       gpu_to_cpu_copy param y_val |> ignore
     ) nodes;
+
     Owl_opencl_base.CommandQueue.finish cmdq
 
 
