@@ -88,10 +88,10 @@ let test_04 a =
   let y_stride_gpu = get_strides_buf ctx [|0l;1l|] in
   let z_stride_gpu = get_strides_buf ctx [|10l;1l|] in
 
-  Base.Kernel.set_arg kernel 0 sizeof_int32 dim_ptr;
-  Base.Kernel.set_arg kernel 1 sizeof_cl_mem x_gpu;
-  Base.Kernel.set_arg kernel 2 sizeof_cl_mem y_gpu;
-  Base.Kernel.set_arg kernel 3 sizeof_cl_mem z_gpu;
+  Base.Kernel.set_arg kernel 0 sizeof_cl_mem x_gpu;
+  Base.Kernel.set_arg kernel 1 sizeof_cl_mem y_gpu;
+  Base.Kernel.set_arg kernel 2 sizeof_cl_mem z_gpu;
+  Base.Kernel.set_arg kernel 3 sizeof_int32 dim_ptr;
   Base.Kernel.set_arg kernel 4 sizeof_int32 x_stride_gpu;
   Base.Kernel.set_arg kernel 5 sizeof_int32 y_stride_gpu;
   Base.Kernel.set_arg kernel 6 sizeof_int32 z_stride_gpu;

@@ -92,7 +92,34 @@ module Make (A : Ndarray_Mutable) = struct
     let parent_val = (get_value parent).(0) in
     if refnum parent = 1 && get_reuse parent then
       set_value x [| CL_Dev.copy_cpu_gpu_mem parent_val |]
-    else allocate_cpu_gpu_buffer ctx x
+    else
+      allocate_cpu_gpu_buffer ctx x
+
+
+  let allocate_from_parent_2 ctx x parent_0 parent_1 =
+    let parent_0_val = (get_value parent_0).(0) in
+    let parent_1_val = (get_value parent_1).(0) in
+    let shp_0 = A.shape (value_to_arr parent_0_val) in
+    let shp_1 = A.shape (value_to_arr parent_1_val) in
+    let shp_0, shp_1 = Owl_utils_array.align `Left 1 shp_0 shp_1 in
+    let shp_x = Owl_utils_infer_shape.broadcast1 shp_0 shp_1 in
+
+    if shp_0 = shp_x then (
+      if refnum parent_0 = 1 && get_reuse parent_0 then
+        set_value x [| CL_Dev.copy_cpu_gpu_mem parent_0_val |]
+      else if refnum parent_0 = 2 && parent_0 == parent_1 && get_reuse parent_0 then
+        set_value x [| CL_Dev.copy_cpu_gpu_mem parent_0_val |]
+      else
+        allocate_cpu_gpu_buffer ctx x
+    )
+    else if shp_1 = shp_x then (
+      if refnum parent_1 = 1 && get_reuse parent_1 then
+        set_value x [| CL_Dev.copy_cpu_gpu_mem parent_1_val |]
+      else
+        allocate_cpu_gpu_buffer ctx x
+    )
+    else
+      allocate_cpu_gpu_buffer ctx x
 
 
   (* a node is initialised iff the kernel is allocated *)
@@ -175,19 +202,19 @@ module Make (A : Ndarray_Mutable) = struct
         | L2NormSqr'                                  -> _init_xx x param
         | ClipByValue                                 -> failwith "ClipByValue"
         | ClipByL2norm                                -> failwith "ClipByL2norm"
-        | Pow                                         -> _init_xx x param
+        | Pow                                         -> _init_03 x param "pow"
         | ScalarPow                                   -> _init_xx x param
         | PowScalar                                   -> _init_xx x param
-        | Atan2                                       -> _init_xx x param
+        | Atan2                                       -> _init_03 x param "atan2"
         | ScalarAtan2                                 -> _init_xx x param
         | Atan2Scalar                                 -> _init_xx x param
-        | Hypot                                       -> _init_xx x param
-        | Min2                                        -> _init_xx x param
-        | Max2                                        -> _init_xx x param
-        | Add                                         -> _init_xx x param
-        | Sub                                         -> _init_xx x param
-        | Mul                                         -> _init_xx x param
-        | Div                                         -> _init_xx x param
+        | Hypot                                       -> _init_03 x param "hypot"
+        | Min2                                        -> _init_03 x param "min2"
+        | Max2                                        -> _init_03 x param "max2"
+        | Add                                         -> _init_03 x param "add"
+        | Sub                                         -> _init_03 x param "sub"
+        | Mul                                         -> _init_03 x param "mul"
+        | Div                                         -> _init_03 x param "div"
         | AddScalar                                   -> _init_xx x param
         | SubScalar                                   -> _init_xx x param
         | MulScalar                                   -> _init_xx x param
@@ -304,23 +331,85 @@ module Make (A : Ndarray_Mutable) = struct
   and _init_xx x param = ()
 
 
+  (* varibles and consts *)
   and _init_00 x param =
     let ctx, cmdq, program = param in
     allocate_from_parent_0 ctx x
 
 
+  (* f : arr -> arr *)
   and _init_01 x param fun_name =
-    let x_parent = (parents x).(0) in
-    _init_term x_parent param;
+    let parent = (parents x).(0) in
+    _init_term parent param;
 
     let ctx, cmdq, program = param in
-    allocate_cpu_gpu_buffer ctx x;
-    let i_ptr = get_gpu_ptr (get_value x_parent).(0) in
-    let o_ptr = get_gpu_ptr (get_value x).(0) in
+    allocate_from_parent_1 ctx x parent;
+    let a_ptr = get_gpu_ptr (get_value parent).(0) in
+    let b_ptr = get_gpu_ptr (get_value x).(0) in
 
     let kernel = make_kernel x program fun_name in
-    Kernel.set_arg kernel 0 sizeof_cl_mem i_ptr;
-    Kernel.set_arg kernel 1 sizeof_cl_mem o_ptr
+    Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
+    Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr
+
+
+  (* f : arr -> arr -> arr *)
+  and _init_02 x param fun_name =
+    let parent_0 = (parents x).(0) in
+    let parent_1 = (parents x).(1) in
+    _init_term parent_0 param;
+    _init_term parent_1 param;
+
+    let parent_0_val = (get_value parent_0).(0) in
+    let parent_1_val = (get_value parent_1).(0) in
+    let shp_0 = A.shape (value_to_arr parent_0_val) in
+    let shp_1 = A.shape (value_to_arr parent_1_val) in
+    if Owl_utils_infer_shape.require_broadcasting shp_0 shp_1 then
+      _init_04 x param fun_name
+    else
+      _init_03 x param fun_name
+
+
+  (* f : arr -> arr -> arr, non-broadcasting *)
+  and _init_03 x param fun_name =
+    let parent_0 = (parents x).(0) in
+    let parent_1 = (parents x).(1) in
+
+    let ctx, cmdq, program = param in
+    allocate_from_parent_2 ctx x parent_0 parent_1;
+    let a_ptr = get_gpu_ptr (get_value parent_0).(0) in
+    let b_ptr = get_gpu_ptr (get_value parent_1).(0) in
+    let c_ptr = get_gpu_ptr (get_value x).(0) in
+
+    let kernel = make_kernel x program fun_name in
+    Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
+    Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
+    Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr
+
+
+  (* f : arr -> arr -> arr, broadcasting operation *)
+  and _init_04 x param fun_name =
+    let parent_0 = (parents x).(0) in
+    let parent_1 = (parents x).(1) in
+
+    let ctx, cmdq, program = param in
+    allocate_from_parent_2 ctx x parent_0 parent_1;
+    let a_ptr = get_gpu_ptr (get_value parent_0).(0) in
+    let b_ptr = get_gpu_ptr (get_value parent_1).(0) in
+    let c_ptr = get_gpu_ptr (get_value x).(0) in
+
+    let shp_x = A.shape (value_to_arr (get_value x).(0)) in
+    let dim = Int32.of_int (Array.length shp_x) in
+    let dim_ptr = Ctypes.(allocate int32_t dim) in
+    let sizeof_int32 = Ctypes.(sizeof (ptr int32_t)) in
+
+    let new_name = "broadcast_" ^ fun_name in
+    let kernel = make_kernel x program new_name in
+    Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
+    Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
+    Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr;
+    Kernel.set_arg kernel 3 sizeof_int32 dim_ptr;
+    (* TODO: not finished yet ... *)
+    ()
 
 
   let init_nodes xs param = Array.iter (fun x -> _init_term x param) xs

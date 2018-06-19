@@ -32,10 +32,10 @@ int index_nd_1d (int dim, int* ind, __global int* stride)
 let broadcast_arr_arr_template = "
 
 __kernel void owl_opencl_FUNNAME (
-  int dim,
   __global CLTYP *a,
   __global CLTYP *b,
   __global CLTYP *c,
+  int dim,
   __global int *stride_a,
   __global int *stride_b,
   __global int *stride_c

@@ -8,7 +8,13 @@ open Owl_types
 
 (* This module is for calculating the shape of an ndarray given inputs. *)
 
-(** TODO: rename calc_* functions *)
+
+(* check if broadcasting is required *)
+
+let require_broadcasting shape_x shape_y =
+  let shape_a, shape_b = Owl_utils_array.align `Left 1 shape_x shape_y in
+  shape_a = shape_b
+
 
 (* calculate the output shape of [conv2d] given input and kernel and stride *)
 let calc_conv2d_output_shape
