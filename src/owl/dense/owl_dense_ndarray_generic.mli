@@ -415,6 +415,8 @@ This function provides the exact behaviour as ``numpy.tile``, please refer to
 the numpy's online documentation for details.
  *)
 
+val tile2 : ('a, 'b) t -> int array -> ('a, 'b) t
+
 val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
 (**
 ``repeat ~axis x a`` repeats the elements along ``axis`` for ``a`` times. The default
