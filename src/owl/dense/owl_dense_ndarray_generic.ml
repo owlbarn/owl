@@ -226,7 +226,8 @@ let repeat2 x reps =
   let highest_dim = Array.length (shape x) - 1 in
   let _kind = kind x in
   let _shape_x = shape x in
-  assert (Array.length reps = Array.length _shape_x);
+  if Array.length reps != Array.length _shape_x then
+    failwith "repeat: repitition must be of the same dimension as input ndarray";
 
   let _shape_y = Array.map2 ( * ) _shape_x reps in
   let y = empty _kind _shape_y in
@@ -277,7 +278,7 @@ let repeat2 x reps =
     Printf.printf "_stride_sub: %s\n" (Owl_utils_array.to_string string_of_int _stride_sub);
     Printf.printf "_slice_sub: %s\n" (Owl_utils_array.to_string string_of_int _slice_sub);
     *)
-    
+
     (*
     (* copy x content to each sub_block on second-to-last dim *)
     for i = 0 to block_num - 1 do
@@ -304,6 +305,34 @@ let repeat2 x reps =
   );
   (* reshape y' back to ndarray before return result *)
   reshape y _shape_y
+
+
+let tile2 x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "tile: repitition must be >= 1";
+
+  (* align and promote the shape *)
+  let a = num_dims x in
+  let b = Array.length reps in
+  let x, reps = match a < b with
+    | true ->
+        let d = Owl_utils.Array.pad `Left 1 (b - a) (shape x) in
+        (reshape x d), reps
+    | false ->
+        let r = Owl_utils.Array.pad `Left 1 (a - b) reps in
+        x, r
+  in
+
+  let sx = shape x in
+  let sy = Array.map2 ( * ) sx reps in
+  let _kind = kind x in
+
+  let sx = Array.append [|1|] sx in
+  let reps = Array.append reps [|1|] in
+
+  let y = repeat2 (reshape x sx) reps in
+  reshape y sy
 
 
 let concatenate ?(axis=0) xs =
