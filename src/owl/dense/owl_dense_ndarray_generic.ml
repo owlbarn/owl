@@ -269,11 +269,14 @@ let repeat2 x reps =
       done;
     done;
 
+    (*
     Printf.printf "block: %s\n" (Owl_utils_array.to_string string_of_int block);
     Printf.printf "block_idx: %s\n" (Owl_utils_array.to_string string_of_int block_idx);
     Printf.printf "_stride_sub: %s\n" (Owl_utils_array.to_string string_of_int _stride_sub);
     Printf.printf "_slice_sub: %s\n" (Owl_utils_array.to_string string_of_int _slice_sub);
-
+    *)
+    
+    (*
     (* copy x content to each sub_block on second-to-last dim *)
     for i = 0 to block_num - 1 do
       let ofsx = i * _slice_sz in
@@ -284,7 +287,6 @@ let repeat2 x reps =
     done;
 
     (* copy y's own sub_block to block on lower dimensions *)
-    let step = ref 1 in
     for d = highest_dim - 1 downto 0 do
       for s = 0 to _slice_sub.(d) - 1 do
         let ofsx = sub_block_idx.(s * _stride_sub.(d)) in
@@ -294,8 +296,9 @@ let repeat2 x reps =
           _owl_copy _kind block.(d) ~ofsx ~incx:1 ~ofsy ~incy:1 y y
         done;
       done;
-      step := !step * _shape_x.(d);
     done
+    *)
+    Owl_ndarray_repeat._ndarray_repeat _kind x y reps block block_idx sub_block_idx _stride_sub _slice_sub highest_dim block_num _slice_sz
   );
   (* reshape y' back to ndarray before return result *)
   reshape y _shape_y
