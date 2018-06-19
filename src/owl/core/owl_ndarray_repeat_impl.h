@@ -25,27 +25,31 @@ CAMLprim value FUNCTION (stub, repeat_native) (
 
   int rep_highest = Int_val(Field(vReps, highest_dim));
 
+  int ofsx = 0;
   for (int i = 0; i < block_num; ++i) {
-    int ofsx = i * slice_sz;
     int block_idx = Int_val(Field(vSub_block_idx, i));
     for (int j = 0; j < rep_highest; ++j) {
       int ofsy = block_idx + j;
       COPYFUN(slice_sz, x, ofsx, 1, y, ofsy, rep_highest);
     }
+    ofsx += slice_sz;
   }
 
   for (int d = highest_dim - 1; d >= 0; d--) {
-    int step = Int_val(Field(vStride_sub, d));
+    int stepd = Int_val(Field(vStride_sub, d));
     int block_sz = Int_val(Field(vBlock, d));
     int repd = Int_val(Field(vReps, d));
     int sliced = Int_val(Field(vSlice_sub, d));
 
+    int step = 0;
     for (int s = 0; s < sliced; s++) {
-      int ofsx = Int_val(Field(vSub_block_idx, s * step));
+      int ofsx = Int_val(Field(vSub_block_idx, step));
+      int ofsy = ofsx + block_sz;
       for (int j = 1; j < repd; j++) {
-        int ofsy = ofsx + j * block_sz;
         COPYFUN(block_sz, y, ofsx, 1, y, ofsy, 1);
+        ofsy += block_sz;
       }
+      step += stepd;
     }
   }
 
