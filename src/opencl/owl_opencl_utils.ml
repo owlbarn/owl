@@ -96,6 +96,8 @@ let bigarray_to_void_ptr
   match Genarray.kind x with
   | Float32 -> coerce (ptr float) (ptr void) _x
   | Float64 -> coerce (ptr double) (ptr void) _x
+  | Int32   -> coerce (ptr int32_t) (ptr void) _x
+  | Int64   -> coerce (ptr int64_t) (ptr void) _x
   | _       -> failwith "owl_opencl_utils:unsupported type"
 
 

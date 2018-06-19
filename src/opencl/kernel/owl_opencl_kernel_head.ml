@@ -10,6 +10,8 @@ let head_s = "
   #ifndef GROUP_SIZE
   #define GROUP_SIZE (64)
   #endif
+
+  #define MAX_DIM 16        // constrained by ocaml bigarray
 "
 
 

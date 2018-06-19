@@ -6,7 +6,7 @@
 open Owl_opencl_kernel_map
 
 
-let functions () = [|
+let functions = [|
     (* float32 functions *)
     map_arr_fun        "float32_erf"            "float" "erf(a[gid])";
     map_arr_fun        "float32_erfc"           "float" "erfc(a[gid])";
@@ -153,8 +153,7 @@ let functions () = [|
   |]
 
 
-let code () =
-  functions () |> Array.fold_left ( ^ ) ""
+let code () = Array.fold_left ( ^ ) "" functions
 
 
 (* ends here *)
