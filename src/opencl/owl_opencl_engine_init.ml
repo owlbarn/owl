@@ -27,6 +27,75 @@ module Make (A : Ndarray_Mutable) = struct
   include CGraph
 
 
+  (* utility functions *)
+
+
+  let make_typed_kernel_name fun_name =
+    match A.number with
+    | F32 -> "owl_opencl_float32_" ^ fun_name
+    | F64 -> "owl_opencl_float64_" ^ fun_name
+    | _   -> failwith "make_typed_kernel_name"
+
+
+  let make_kernel x program fun_name =
+    let x_val = (get_value x).(0) in
+    let typed_fun = make_typed_kernel_name fun_name in
+    let kernel = Kernel.create program typed_fun in
+    x_val.kernel <- [| kernel |];
+    kernel
+
+
+  let allocate_cpu_buffer x =
+    if is_assigned x = false then (
+      let x_shp = shape (node_to_arr x) in
+      let cpu_mem = A.empty x_shp in
+      let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [||] [||] [||] in
+      set_value x [| new_val |]
+    )
+
+
+  let allocate_gpu_buffer ctx x =
+    let x_val = (get_value x).(0) in
+    if Array.length x_val.gpu_mem = 0 then (
+      let cpu_mem = value_to_arr x_val in
+      let flags = [ cl_MEM_USE_HOST_PTR ] in
+      let gpu_mem = Buffer.create_bigarray ~flags ctx (Obj.magic cpu_mem) in
+      let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [|gpu_mem|] [||] [||] in
+      set_value x [| new_val |]
+    )
+
+
+  let allocate_cpu_gpu_buffer ctx x =
+    allocate_cpu_buffer x;
+    allocate_gpu_buffer ctx x
+
+
+  let get_cpu_ptr x_val =
+    let cpu_mem = CL_Dev.value_to_arr x_val in
+    Ctypes.(bigarray_start genarray (Obj.magic cpu_mem))
+
+
+  let get_gpu_ptr x_val =
+    let gpu_mem = CL_Dev.(x_val.gpu_mem.(0)) in
+    Ctypes.allocate cl_mem gpu_mem
+
+
+  let get_elt_ptr x_val =
+    let elt_mem = value_to_float x_val in
+    Ctypes.allocate Ctypes.float elt_mem
+
+
+  let allocate_from_parent_0 ctx x = allocate_cpu_gpu_buffer ctx x
+
+
+  let allocate_from_parent_1 ctx x parent =
+    let parent_val = (get_value parent).(0) in
+    if refnum parent = 1 && get_reuse parent then
+      set_value x [| CL_Dev.copy_cpu_gpu_mem parent_val |]
+    else allocate_cpu_gpu_buffer ctx x
+
+
+  (* a node is initialised iff the kernel is allocated *)
   let is_initialised x =
     let x_val = get_value x in
     if Array.length x_val = 0 then false
@@ -39,95 +108,95 @@ module Make (A : Ndarray_Mutable) = struct
     if is_initialised x = false then
       try
         match (get_operator x) with
-        | Noop                                        -> init_xx x param
-        | Var                                         -> init_xx x param
+        | Noop                                        -> _init_xx x param
+        | Var                                         -> _init_00 x param
         | Const                                       -> check_assigned x
-        | Empty shape                                 -> init_xx x param
-        | Zeros shape                                 -> init_xx x param
-        | Ones shape                                  -> init_xx x param
-        | Create shape                                -> init_xx x param
+        | Empty shape                                 -> _init_xx x param
+        | Zeros shape                                 -> _init_xx x param
+        | Ones shape                                  -> _init_xx x param
+        | Create shape                                -> _init_xx x param
         | Sequential                                  -> failwith "Sequential"
-        | Uniform shape                               -> init_xx x param
+        | Uniform shape                               -> _init_xx x param
         | Gaussian                                    -> failwith "Gaussian"
-        | Bernoulli (p, shape)                        -> init_xx x param
+        | Bernoulli (p, shape)                        -> _init_xx x param
         | Init _                                      -> failwith "Init"
-        | Get i                                       -> init_xx x param
+        | Get i                                       -> _init_xx x param
         | Set i                                       -> failwith "Set"
-        | GetSlice slice                              -> init_xx x param
+        | GetSlice slice                              -> _init_xx x param
         | SetSlice slice                              -> failwith "SetSlice"
-        | Copy                                        -> init_xx x param
+        | Copy                                        -> _init_xx x param
         | Reset                                       -> failwith "Reset"
-        | Reshape shape                               -> init_xx x param
-        | Reverse                                     -> init_xx x param
-        | Tile repeats                                -> init_xx x param
-        | Repeat (axis, repeats)                      -> init_xx x param
-        | Concatenate axis                            -> init_xx x param
+        | Reshape shape                               -> _init_xx x param
+        | Reverse                                     -> _init_xx x param
+        | Tile repeats                                -> _init_xx x param
+        | Repeat (axis, repeats)                      -> _init_xx x param
+        | Concatenate axis                            -> _init_xx x param
         | Split (axis, parts)                         -> failwith "Split"
         | Draw (axis, n)                              -> failwith "Draw"
         | Map f                                       -> failwith "Map"
         | Fold (axis, f)                              -> failwith "Fold"
         | Scan (axis, f)                              -> failwith "Scan"
-        | OneHot depth                                -> init_xx x param
-        | Abs                                         -> init_xx x param
-        | Neg                                         -> init_xx x param
-        | Floor                                       -> init_xx x param
-        | Ceil                                        -> init_xx x param
-        | Round                                       -> init_xx x param
-        | Sqr                                         -> init_xx x param
-        | Sqrt                                        -> init_xx x param
-        | Log                                         -> init_xx x param
-        | Log2                                        -> init_xx x param
-        | Log10                                       -> init_xx x param
-        | Exp                                         -> init_xx x param
-        | Sin                                         -> init_00 x param
-        | Cos                                         -> init_xx x param
-        | Tan                                         -> init_xx x param
-        | Sinh                                        -> init_xx x param
-        | Cosh                                        -> init_xx x param
-        | Tanh                                        -> init_xx x param
-        | Asin                                        -> init_xx x param
-        | Acos                                        -> init_xx x param
-        | Atan                                        -> init_xx x param
-        | Asinh                                       -> init_xx x param
-        | Acosh                                       -> init_xx x param
-        | Atanh                                       -> init_xx x param
-        | Min axis                                    -> init_xx x param
-        | Max axis                                    -> init_xx x param
-        | Sum axis                                    -> init_xx x param
-        | SumReduce axis                              -> init_xx x param
-        | Signum                                      -> init_xx x param
-        | Sigmoid                                     -> init_xx x param
-        | Relu                                        -> init_xx x param
-        | Min'                                        -> init_xx x param
-        | Max'                                        -> init_xx x param
-        | Sum'                                        -> init_xx x param
-        | L1norm'                                     -> init_xx x param
-        | L2norm'                                     -> init_xx x param
-        | L2NormSqr'                                  -> init_xx x param
+        | OneHot depth                                -> _init_xx x param
+        | Abs                                         -> _init_01 x param "abs"
+        | Neg                                         -> _init_01 x param "neg"
+        | Floor                                       -> _init_01 x param "floor"
+        | Ceil                                        -> _init_01 x param "ceil"
+        | Round                                       -> _init_01 x param "round"
+        | Sqr                                         -> _init_01 x param "sqr"
+        | Sqrt                                        -> _init_01 x param "sqrt"
+        | Log                                         -> _init_01 x param "log"
+        | Log2                                        -> _init_01 x param "log2"
+        | Log10                                       -> _init_01 x param "log10"
+        | Exp                                         -> _init_01 x param "exp"
+        | Sin                                         -> _init_01 x param "sin"
+        | Cos                                         -> _init_01 x param "cos"
+        | Tan                                         -> _init_01 x param "tan"
+        | Sinh                                        -> _init_01 x param "sinh"
+        | Cosh                                        -> _init_01 x param "cosh"
+        | Tanh                                        -> _init_01 x param "tanh"
+        | Asin                                        -> _init_01 x param "asin"
+        | Acos                                        -> _init_01 x param "acos"
+        | Atan                                        -> _init_01 x param "atan"
+        | Asinh                                       -> _init_01 x param "asinh"
+        | Acosh                                       -> _init_01 x param "acosh"
+        | Atanh                                       -> _init_01 x param "atanh"
+        | Min axis                                    -> _init_xx x param
+        | Max axis                                    -> _init_xx x param
+        | Sum axis                                    -> _init_xx x param
+        | SumReduce axis                              -> _init_xx x param
+        | Signum                                      -> _init_xx x param
+        | Sigmoid                                     -> _init_xx x param
+        | Relu                                        -> _init_xx x param
+        | Min'                                        -> _init_xx x param
+        | Max'                                        -> _init_xx x param
+        | Sum'                                        -> _init_xx x param
+        | L1norm'                                     -> _init_xx x param
+        | L2norm'                                     -> _init_xx x param
+        | L2NormSqr'                                  -> _init_xx x param
         | ClipByValue                                 -> failwith "ClipByValue"
         | ClipByL2norm                                -> failwith "ClipByL2norm"
-        | Pow                                         -> init_xx x param
-        | ScalarPow                                   -> init_xx x param
-        | PowScalar                                   -> init_xx x param
-        | Atan2                                       -> init_xx x param
-        | ScalarAtan2                                 -> init_xx x param
-        | Atan2Scalar                                 -> init_xx x param
-        | Hypot                                       -> init_xx x param
-        | Min2                                        -> init_xx x param
-        | Max2                                        -> init_xx x param
-        | Add                                         -> init_xx x param
-        | Sub                                         -> init_xx x param
-        | Mul                                         -> init_xx x param
-        | Div                                         -> init_xx x param
-        | AddScalar                                   -> init_xx x param
-        | SubScalar                                   -> init_xx x param
-        | MulScalar                                   -> init_xx x param
-        | DivScalar                                   -> init_xx x param
-        | ScalarAdd                                   -> init_xx x param
-        | ScalarSub                                   -> init_xx x param
-        | ScalarMul                                   -> init_xx x param
-        | ScalarDiv                                   -> init_xx x param
-        | FMA                                         -> init_xx x param
+        | Pow                                         -> _init_xx x param
+        | ScalarPow                                   -> _init_xx x param
+        | PowScalar                                   -> _init_xx x param
+        | Atan2                                       -> _init_xx x param
+        | ScalarAtan2                                 -> _init_xx x param
+        | Atan2Scalar                                 -> _init_xx x param
+        | Hypot                                       -> _init_xx x param
+        | Min2                                        -> _init_xx x param
+        | Max2                                        -> _init_xx x param
+        | Add                                         -> _init_xx x param
+        | Sub                                         -> _init_xx x param
+        | Mul                                         -> _init_xx x param
+        | Div                                         -> _init_xx x param
+        | AddScalar                                   -> _init_xx x param
+        | SubScalar                                   -> _init_xx x param
+        | MulScalar                                   -> _init_xx x param
+        | DivScalar                                   -> _init_xx x param
+        | ScalarAdd                                   -> _init_xx x param
+        | ScalarSub                                   -> _init_xx x param
+        | ScalarMul                                   -> _init_xx x param
+        | ScalarDiv                                   -> _init_xx x param
+        | FMA                                         -> _init_xx x param
         | IsZero                                      -> failwith "IsZero"
         | IsPositive                                  -> failwith "IsPositive"
         | IsNegative                                  -> failwith "IsNegative"
@@ -139,91 +208,91 @@ module Make (A : Ndarray_Mutable) = struct
         | Greater                                     -> failwith "Greater"
         | LessEqual                                   -> failwith "LessEqual"
         | GreaterEqual                                -> failwith "GreaterEqual"
-        | EltEqual                                    -> init_xx x param
-        | EltNotEqual                                 -> init_xx x param
-        | EltLess                                     -> init_xx x param
-        | EltGreater                                  -> init_xx x param
-        | EltLessEqual                                -> init_xx x param
-        | EltGreaterEqual                             -> init_xx x param
-        | EltEqualScalar                              -> init_xx x param
-        | EltNotEqualScalar                           -> init_xx x param
-        | EltLessScalar                               -> init_xx x param
-        | EltGreaterScalar                            -> init_xx x param
-        | EltLessEqualScalar                          -> init_xx x param
-        | EltGreaterEqualScalar                       -> init_xx x param
+        | EltEqual                                    -> _init_xx x param
+        | EltNotEqual                                 -> _init_xx x param
+        | EltLess                                     -> _init_xx x param
+        | EltGreater                                  -> _init_xx x param
+        | EltLessEqual                                -> _init_xx x param
+        | EltGreaterEqual                             -> _init_xx x param
+        | EltEqualScalar                              -> _init_xx x param
+        | EltNotEqualScalar                           -> _init_xx x param
+        | EltLessScalar                               -> _init_xx x param
+        | EltGreaterScalar                            -> _init_xx x param
+        | EltLessEqualScalar                          -> _init_xx x param
+        | EltGreaterEqualScalar                       -> _init_xx x param
         | ApproxEqual eps                             -> failwith "ApproxEqual"
         | ApproxEqualScalar eps                       -> failwith "ApproxEqualScalar"
         | ApproxEltEqual eps                          -> failwith "ApproxEltEqual"
         | ApproxEltEqualScalar eps                    -> failwith "ApproxEltEqualScalar"
-        | Conv1d (padding, stride)                    -> init_xx x param
-        | Conv2d (padding, stride)                    -> init_xx x param
-        | Conv3d (padding, stride)                    -> init_xx x param
-        | TransposeConv2d (padding, stride)           -> init_xx x param
-        | MaxPool1d (padding, kernel, stride)         -> init_xx x param
-        | MaxPool2d (padding, kernel, stride)         -> init_xx x param
-        | MaxPool3d (padding, kernel, stride)         -> init_xx x param
-        | AvgPool1d (padding, kernel, stride)         -> init_xx x param
-        | AvgPool2d (padding, kernel, stride)         -> init_xx x param
-        | AvgPool3d (padding, kernel, stride)         -> init_xx x param
-        | Conv1dBackwardInput stride                  -> init_xx x param
-        | Conv1dBackwardKernel stride                 -> init_xx x param
-        | Conv2dBackwardInput stride                  -> init_xx x param
-        | Conv2dBackwardKernel stride                 -> init_xx x param
-        | Conv3dBackwardInput stride                  -> init_xx x param
-        | Conv3dBackwardKernel stride                 -> init_xx x param
-        | TransposeConv2dBackwardInput stride         -> init_xx x param
-        | TransposeConv2dBackwardKernel stride        -> init_xx x param
-        | MaxPool1dBackward (padding, kernel, stride) -> init_xx x param
-        | MaxPool2dBackward (padding, kernel, stride) -> init_xx x param
-        | MaxPool3dBackward (padding, kernel, stride) -> init_xx x param
-        | AvgPool1dBackward (padding, kernel, stride) -> init_xx x param
-        | AvgPool2dBackward (padding, kernel, stride) -> init_xx x param
-        | AvgPool3dBackward (padding, kernel, stride) -> init_xx x param
+        | Conv1d (padding, stride)                    -> _init_xx x param
+        | Conv2d (padding, stride)                    -> _init_xx x param
+        | Conv3d (padding, stride)                    -> _init_xx x param
+        | TransposeConv2d (padding, stride)           -> _init_xx x param
+        | MaxPool1d (padding, kernel, stride)         -> _init_xx x param
+        | MaxPool2d (padding, kernel, stride)         -> _init_xx x param
+        | MaxPool3d (padding, kernel, stride)         -> _init_xx x param
+        | AvgPool1d (padding, kernel, stride)         -> _init_xx x param
+        | AvgPool2d (padding, kernel, stride)         -> _init_xx x param
+        | AvgPool3d (padding, kernel, stride)         -> _init_xx x param
+        | Conv1dBackwardInput stride                  -> _init_xx x param
+        | Conv1dBackwardKernel stride                 -> _init_xx x param
+        | Conv2dBackwardInput stride                  -> _init_xx x param
+        | Conv2dBackwardKernel stride                 -> _init_xx x param
+        | Conv3dBackwardInput stride                  -> _init_xx x param
+        | Conv3dBackwardKernel stride                 -> _init_xx x param
+        | TransposeConv2dBackwardInput stride         -> _init_xx x param
+        | TransposeConv2dBackwardKernel stride        -> _init_xx x param
+        | MaxPool1dBackward (padding, kernel, stride) -> _init_xx x param
+        | MaxPool2dBackward (padding, kernel, stride) -> _init_xx x param
+        | MaxPool3dBackward (padding, kernel, stride) -> _init_xx x param
+        | AvgPool1dBackward (padding, kernel, stride) -> _init_xx x param
+        | AvgPool2dBackward (padding, kernel, stride) -> _init_xx x param
+        | AvgPool3dBackward (padding, kernel, stride) -> _init_xx x param
         | Row                                         -> failwith "Row"
         | Rows i                                      -> failwith "Rows"
         | CopyRowTo                                   -> failwith "CopyRowTo"
         | CopyColTo                                   -> failwith "CopyColTo"
-        | Dot (transa, transb, alpha, beta)           -> init_xx x param
-        | Inv                                         -> init_xx x param
-        | Trace                                       -> init_xx x param
-        | Transpose axis                              -> init_xx x param
+        | Dot (transa, transb, alpha, beta)           -> _init_xx x param
+        | Inv                                         -> _init_xx x param
+        | Trace                                       -> _init_xx x param
+        | Transpose axis                              -> _init_xx x param
         | ToRows                                      -> failwith "ToRows"
         | OfRows                                      -> failwith "OfRows"
         | OfArray shape                               -> failwith "OfArray"
         | OfArrays                                    -> failwith "OfArrays"
-        | Scalar_Add                                  -> init_xx x param
-        | Scalar_Sub                                  -> init_xx x param
-        | Scalar_Mul                                  -> init_xx x param
-        | Scalar_Div                                  -> init_xx x param
-        | Scalar_Pow                                  -> init_xx x param
-        | Scalar_Atan2                                -> init_xx x param
-        | Scalar_Abs                                  -> init_xx x param
-        | Scalar_Neg                                  -> init_xx x param
-        | Scalar_Sqr                                  -> init_xx x param
-        | Scalar_Sqrt                                 -> init_xx x param
-        | Scalar_Exp                                  -> init_xx x param
-        | Scalar_Log                                  -> init_xx x param
-        | Scalar_Log2                                 -> init_xx x param
-        | Scalar_Log10                                -> init_xx x param
-        | Scalar_Signum                               -> init_xx x param
-        | Scalar_Floor                                -> init_xx x param
-        | Scalar_Ceil                                 -> init_xx x param
-        | Scalar_Round                                -> init_xx x param
-        | Scalar_Sin                                  -> init_xx x param
-        | Scalar_Cos                                  -> init_xx x param
-        | Scalar_Tan                                  -> init_xx x param
-        | Scalar_Sinh                                 -> init_xx x param
-        | Scalar_Cosh                                 -> init_xx x param
-        | Scalar_Tanh                                 -> init_xx x param
-        | Scalar_Asin                                 -> init_xx x param
-        | Scalar_Acos                                 -> init_xx x param
-        | Scalar_Atan                                 -> init_xx x param
-        | Scalar_Asinh                                -> init_xx x param
-        | Scalar_Acosh                                -> init_xx x param
-        | Scalar_Atanh                                -> init_xx x param
-        | Scalar_Relu                                 -> init_xx x param
-        | Scalar_Sigmoid                              -> init_xx x param
-        | Fused_Adagrad (rate, eps)                   -> init_xx x param
+        | Scalar_Add                                  -> _init_xx x param
+        | Scalar_Sub                                  -> _init_xx x param
+        | Scalar_Mul                                  -> _init_xx x param
+        | Scalar_Div                                  -> _init_xx x param
+        | Scalar_Pow                                  -> _init_xx x param
+        | Scalar_Atan2                                -> _init_xx x param
+        | Scalar_Abs                                  -> _init_xx x param
+        | Scalar_Neg                                  -> _init_xx x param
+        | Scalar_Sqr                                  -> _init_xx x param
+        | Scalar_Sqrt                                 -> _init_xx x param
+        | Scalar_Exp                                  -> _init_xx x param
+        | Scalar_Log                                  -> _init_xx x param
+        | Scalar_Log2                                 -> _init_xx x param
+        | Scalar_Log10                                -> _init_xx x param
+        | Scalar_Signum                               -> _init_xx x param
+        | Scalar_Floor                                -> _init_xx x param
+        | Scalar_Ceil                                 -> _init_xx x param
+        | Scalar_Round                                -> _init_xx x param
+        | Scalar_Sin                                  -> _init_xx x param
+        | Scalar_Cos                                  -> _init_xx x param
+        | Scalar_Tan                                  -> _init_xx x param
+        | Scalar_Sinh                                 -> _init_xx x param
+        | Scalar_Cosh                                 -> _init_xx x param
+        | Scalar_Tanh                                 -> _init_xx x param
+        | Scalar_Asin                                 -> _init_xx x param
+        | Scalar_Acos                                 -> _init_xx x param
+        | Scalar_Atan                                 -> _init_xx x param
+        | Scalar_Asinh                                -> _init_xx x param
+        | Scalar_Acosh                                -> _init_xx x param
+        | Scalar_Atanh                                -> _init_xx x param
+        | Scalar_Relu                                 -> _init_xx x param
+        | Scalar_Sigmoid                              -> _init_xx x param
+        | Fused_Adagrad (rate, eps)                   -> _init_xx x param
         | _                                           -> failwith "owl_opencl_engine:_eval_term"
 
         with exn -> (
@@ -232,13 +301,26 @@ module Make (A : Ndarray_Mutable) = struct
         )
 
 
-  and init_xx x param = ()
+  and _init_xx x param = ()
 
 
-  and init_00 x param =
+  and _init_00 x param =
+    let ctx, cmdq, program = param in
+    allocate_from_parent_0 ctx x
+
+
+  and _init_01 x param fun_name =
     let x_parent = (parents x).(0) in
     _init_term x_parent param;
-    ()
+
+    let ctx, cmdq, program = param in
+    allocate_cpu_gpu_buffer ctx x;
+    let i_ptr = get_gpu_ptr (get_value x_parent).(0) in
+    let o_ptr = get_gpu_ptr (get_value x).(0) in
+
+    let kernel = make_kernel x program fun_name in
+    Kernel.set_arg kernel 0 sizeof_cl_mem i_ptr;
+    Kernel.set_arg kernel 1 sizeof_cl_mem o_ptr
 
 
   let init_nodes xs param = Array.iter (fun x -> _init_term x param) xs

@@ -552,6 +552,7 @@ module Make (A : Ndarray_Mutable) = struct
     let prog = Owl_opencl_context.(get_program default) in
     let param = (ctx, cmdq, prog) in
 
+    (* initialise the computation graph *)
     let nodes = Array.map arr_to_node xs in
     CGInit.init_nodes nodes param;
 
