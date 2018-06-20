@@ -30,6 +30,16 @@ let test_05 a =
   M.unpack_arr y
 
 
+let test_06 a =
+  let x = M.var_arr "x" in
+  let y = M.var_arr "y" in
+  M.assign_arr x (Dense.Ndarray.S.ones [|10; 10|]);
+  M.assign_arr y (Dense.Ndarray.S.ones [|10; 10|]);
+  let z = M.(add (cos x) y) in
+  M.eval_arr ~dev_id:1 [|z|];
+  M.unpack_arr z
+
+
 let test_03 a =
   let x = M.var_arr "x" in
   let y = M.var_arr "y" in
@@ -106,5 +116,5 @@ let test_04 a =
 let _ =
   Owl_log.(set_level DEBUG);
   let a = Dense.Ndarray.S.ones [|2000; 2000|] in
-  let b = test_05 a in
+  let b = test_06 a in
   Dense.Ndarray.Generic.pp_dsnda Format.std_formatter b

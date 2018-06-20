@@ -13,7 +13,8 @@ open Owl_types
 
 let require_broadcasting shape_x shape_y =
   let shape_a, shape_b = Owl_utils_array.align `Left 1 shape_x shape_y in
-  shape_a = shape_b
+  (* NOTE: compare content, not physical address *)
+  shape_a <> shape_b
 
 
 (* calculate the output shape of [conv2d] given input and kernel and stride *)

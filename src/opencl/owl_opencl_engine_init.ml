@@ -203,11 +203,11 @@ module Make (A : Ndarray_Mutable) = struct
         | ClipByValue                                 -> failwith "ClipByValue"
         | ClipByL2norm                                -> failwith "ClipByL2norm"
         | Pow                                         -> _init_02 x param "pow"
-        | ScalarPow                                   -> _init_06 x param "scalar_pow"
-        | PowScalar                                   -> _init_05 x param "pow_scalar"
+        | ScalarPow                                   -> _init_03 x param "scalar_pow"
+        | PowScalar                                   -> _init_03 x param "pow_scalar"
         | Atan2                                       -> _init_02 x param "atan2"
-        | ScalarAtan2                                 -> _init_06 x param "scalar_atan2"
-        | Atan2Scalar                                 -> _init_05 x param "atan2_scalar"
+        | ScalarAtan2                                 -> _init_03 x param "scalar_atan2"
+        | Atan2Scalar                                 -> _init_03 x param "atan2_scalar"
         | Hypot                                       -> _init_02 x param "hypot"
         | Min2                                        -> _init_02 x param "min2"
         | Max2                                        -> _init_02 x param "max2"
@@ -215,14 +215,14 @@ module Make (A : Ndarray_Mutable) = struct
         | Sub                                         -> _init_02 x param "sub"
         | Mul                                         -> _init_02 x param "mul"
         | Div                                         -> _init_02 x param "div"
-        | AddScalar                                   -> _init_05 x param "add_scalar"
-        | SubScalar                                   -> _init_05 x param "sub_scalar"
-        | MulScalar                                   -> _init_05 x param "mul_scalar"
-        | DivScalar                                   -> _init_05 x param "div_scalar"
-        | ScalarAdd                                   -> _init_06 x param "scalar_add"
-        | ScalarSub                                   -> _init_06 x param "scalar_sub"
-        | ScalarMul                                   -> _init_06 x param "scalar_mul"
-        | ScalarDiv                                   -> _init_06 x param "scalar_div"
+        | AddScalar                                   -> _init_03 x param "add_scalar"
+        | SubScalar                                   -> _init_03 x param "sub_scalar"
+        | MulScalar                                   -> _init_03 x param "mul_scalar"
+        | DivScalar                                   -> _init_03 x param "div_scalar"
+        | ScalarAdd                                   -> _init_03 x param "scalar_add"
+        | ScalarSub                                   -> _init_03 x param "scalar_sub"
+        | ScalarMul                                   -> _init_03 x param "scalar_mul"
+        | ScalarDiv                                   -> _init_03 x param "scalar_div"
         | FMA                                         -> _init_xx x param
         | IsZero                                      -> failwith "IsZero"
         | IsPositive                                  -> failwith "IsPositive"
@@ -356,6 +356,8 @@ module Make (A : Ndarray_Mutable) = struct
   and _init_02 x param fun_name =
     let parent_0 = (parents x).(0) in
     let parent_1 = (parents x).(1) in
+    _init_term parent_0 param;
+    _init_term parent_1 param;
 
     let parent_0_val = (get_value parent_0).(0) in
     let parent_1_val = (get_value parent_1).(0) in
@@ -426,34 +428,6 @@ module Make (A : Ndarray_Mutable) = struct
     Kernel.set_arg kernel 3 sizeof_int32 dim_ptr;
     Kernel.set_arg kernel 4 sizeof_int32 a_stride_ptr;
     Kernel.set_arg kernel 5 sizeof_int32 b_stride_ptr
-
-
-  (* f : arr -> elt -> arr *)
-  and _init_05 x param fun_name =
-    let parent = (parents x).(0) in
-
-    let ctx, cmdq, program = param in
-    allocate_from_parent_1 ctx x parent;
-    let a_ptr = get_gpu_ptr (get_value parent).(0) in
-    let c_ptr = get_gpu_ptr (get_value x).(0) in
-
-    let kernel = make_kernel x program fun_name in
-    Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
-    Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr
-
-
-  (* f : elt -> arr -> arr *)
-  and _init_06 x param fun_name =
-    let parent = (parents x).(1) in
-
-    let ctx, cmdq, program = param in
-    allocate_from_parent_1 ctx x parent;
-    let b_ptr = get_gpu_ptr (get_value parent).(0) in
-    let c_ptr = get_gpu_ptr (get_value x).(0) in
-
-    let kernel = make_kernel x program fun_name in
-    Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
-    Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr
 
 
   let init_nodes xs param = Array.iter (fun x -> _init_term x param) xs
