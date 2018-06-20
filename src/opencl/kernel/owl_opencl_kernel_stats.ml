@@ -30,6 +30,8 @@ __kernel void owl_opencl_float32_uniform (
   float a = ga[0];
   float b = gb[0];
   out[gid] = a + (b - a) * scale;
+
+  clrngPhilox432CopyOverStreamsToGlobal(1, &streams[gid], &private_stream);
 }
 "
 

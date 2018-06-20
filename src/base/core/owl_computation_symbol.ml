@@ -992,14 +992,16 @@ module Make
 
   let is_arr x =
     match (attr x).shape.(0) with
-    | Some _ -> true
-    | None   -> false
+    | Some [||] -> false
+    | Some _    -> true
+    | _         -> failwith "Owl_computation_symbol:is_arr"
 
 
   let is_elt x =
     match (attr x).shape.(0) with
-    | Some _ -> false
-    | None   -> true
+    | Some [||] -> true
+    | Some _    -> false
+    | _         -> failwith "Owl_computation_symbol:is_elt"
 
 
   let is_assigned x =

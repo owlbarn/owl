@@ -143,7 +143,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Ones shape                                  -> _init_xx x param
         | Create shape                                -> _init_xx x param
         | Sequential                                  -> failwith "Sequential"
-        | Uniform shape                               -> _init_xx x param
+        | Uniform shape                               -> _init_20 x param "uniform"
         | Gaussian                                    -> failwith "Gaussian"
         | Bernoulli (p, shape)                        -> _init_xx x param
         | Init _                                      -> failwith "Init"
