@@ -71,6 +71,12 @@ module Make (A : Ndarray_Basic) = struct
   let value_to_float x = A.elt_to_float (value_to_elt x)
 
 
+  let elt_to_arr x =
+    let v = value_to_elt x in
+    let a = A.create [|1|] v in
+    x.cpu_mem <- [| ArrVal a |]
+
+
   let set_events x_val events = x_val.events <- events
 
 
@@ -79,6 +85,9 @@ module Make (A : Ndarray_Basic) = struct
 
   let append_events x_val events =
     x_val.events <- Array.(append x_val.events events)
+
+
+  let get_kernel x_val = x_val.kernel.(0)
 
 
 end

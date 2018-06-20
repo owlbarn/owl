@@ -137,7 +137,7 @@ module Make (A : Ndarray_Mutable) = struct
         match (get_operator x) with
         | Noop                                        -> _init_xx x param
         | Var                                         -> _init_00 x param
-        | Const                                       -> check_assigned x
+        | Const                                       -> _init_00 x param
         | Empty shape                                 -> _init_xx x param
         | Zeros shape                                 -> _init_xx x param
         | Ones shape                                  -> _init_xx x param
@@ -334,6 +334,8 @@ module Make (A : Ndarray_Mutable) = struct
   (* varibles and consts *)
   and _init_00 x param =
     let ctx, cmdq, program = param in
+    if is_elt x = true then
+      CL_Dev.elt_to_arr (get_value x).(0);
     allocate_from_parent_0 ctx x
 
 
@@ -428,6 +430,31 @@ module Make (A : Ndarray_Mutable) = struct
     Kernel.set_arg kernel 3 sizeof_int32 dim_ptr;
     Kernel.set_arg kernel 4 sizeof_int32 a_stride_ptr;
     Kernel.set_arg kernel 5 sizeof_int32 b_stride_ptr
+
+
+  (* f : arr array -> arr, pseudo random number generators *)
+  and _init_20 x param fun_name =
+    let parents_val = Array.map (fun parent ->
+      _init_term parent param;
+      (get_value parent).(0)
+    ) (parents x)
+    in
+
+    let ctx, cmdq, program = param in
+    allocate_from_parent_0 ctx x;
+
+    let items = node_to_arr x |> numel in
+    let streams = Owl_opencl_prng_philox.make items in
+    let streams_buf = Owl_opencl_prng_philox.make_stream_buffer ctx streams in
+    let streams_ptr = Ctypes.allocate cl_mem streams_buf in
+
+    let kernel = make_kernel x program fun_name in
+    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem streams_ptr;
+    let args_val = Array.append parents_val [| (get_value x).(0) |] in
+    Array.iteri (fun i arg_val ->
+      let arg_ptr = get_gpu_ptr arg_val in
+      Kernel.set_arg kernel (i+1) sizeof_cl_mem arg_ptr;
+    ) args_val
 
 
   let init_nodes xs param = Array.iter (fun x -> _init_term x param) xs

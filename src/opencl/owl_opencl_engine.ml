@@ -46,55 +46,6 @@ module Make (A : Ndarray_Mutable) = struct
     Owl_utils_stack.to_array stack
 
 
-  let make_typed_kernel_name fun_name =
-    match A.number with
-    | F32 -> "owl_opencl_float32_" ^ fun_name
-    | F64 -> "owl_opencl_float64_" ^ fun_name
-    | _   -> failwith "make_typed_kernel_name"
-
-
-  let make_kernel x program fun_name =
-    let x_val = (get_value x).(0) in
-    if Array.length x_val.kernel = 0 then (
-      let typed_fun = make_typed_kernel_name fun_name in
-      let kernel = Kernel.create program typed_fun in
-      x_val.kernel <- [| kernel |];
-    );
-    x_val.kernel.(0)
-
-
-  let is_cpu_gpu_malloc x =
-    let x_val = get_value x in
-    if Array.length x_val = 0 then false
-    else if Array.length x_val.(0).gpu_mem = 0 then false
-    else true
-
-
-  let allocate_cpu_mem x =
-    if is_assigned x = false then (
-      let x_shp = shape (node_to_arr x) in
-      let cpu_mem = A.empty x_shp in
-      let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [||] [||] [||] in
-      set_value x [| new_val |]
-    )
-
-
-  let allocate_gpu_mem ctx x =
-    let x_val = (get_value x).(0) in
-    if Array.length x_val.gpu_mem = 0 then (
-      let cpu_mem = value_to_arr x_val in
-      let flags = [ cl_MEM_USE_HOST_PTR ] in
-      let gpu_mem = Buffer.create_bigarray ~flags ctx (Obj.magic cpu_mem) in
-      let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [|gpu_mem|] [||] [||] in
-      set_value x [| new_val |]
-    )
-
-
-  let cpu_gpu_malloc ctx x =
-    allocate_cpu_mem x;
-    allocate_gpu_mem ctx x
-
-
   let get_cpu_ptr x_val =
     let cpu_mem = CL_Dev.value_to_arr x_val in
     Ctypes.(bigarray_start genarray (Obj.magic cpu_mem))
@@ -103,11 +54,6 @@ module Make (A : Ndarray_Mutable) = struct
   let get_gpu_ptr x_val =
     let gpu_mem = CL_Dev.(x_val.gpu_mem.(0)) in
     Ctypes.allocate cl_mem gpu_mem
-
-
-  let get_elt_ptr x_val =
-    let elt_mem = value_to_float x_val in
-    Ctypes.allocate Ctypes.float elt_mem
 
 
   let size_in_bytes x_val =
@@ -137,64 +83,24 @@ module Make (A : Ndarray_Mutable) = struct
     Buffer.enqueue_read ~blocking:false cmdq gpu_mem 0 size (Ctypes.to_voidp cpu_ptr)
 
 
-  (* allocate memory and evaluate experssions *)
+  (* update parents' validity *)
 
-  let allocate_from_parent_0 ctx x = cpu_gpu_malloc ctx x
-
-
-  let allocate_from_parent_1 ctx x parent =
+  let update_validity_1 ctx x parent =
     let parent_val = (get_value parent).(0) in
     let parent_cpu_mem = parent_val.cpu_mem.(0) in
-    if is_assigned x = true then (
-      let x_val = (get_value x).(0) in
-      let x_cpu_mem = x_val.cpu_mem.(0) in
-      if x_cpu_mem == parent_cpu_mem then invalidate parent
-    )
-    else (
-      if refnum parent = 1 && get_reuse parent then (
-        invalidate parent;
-        set_value x [| CL_Dev.copy_cpu_gpu_mem parent_val |]
-      )
-      else cpu_gpu_malloc ctx x
-    )
+    let x_val = (get_value x).(0) in
+    let x_cpu_mem = x_val.cpu_mem.(0) in
+    if x_cpu_mem == parent_cpu_mem then invalidate parent
 
 
-  let allocate_from_parent_2 ctx x parent_0 parent_1 =
+  let update_validity_2 ctx x parent_0 parent_1 =
     let parent_0_val = (get_value parent_0).(0) in
     let parent_1_val = (get_value parent_1).(0) in
-    if is_assigned x = true then (
-      let parent_0_cpu_mem = parent_0_val.cpu_mem.(0) in
-      let parent_1_cpu_mem = parent_1_val.cpu_mem.(0) in
-      let x_cpu_mem = (get_value x).(0).cpu_mem.(0) in
-      if x_cpu_mem == parent_0_cpu_mem then invalidate parent_0
-      else if x_cpu_mem == parent_1_cpu_mem then invalidate parent_1
-    )
-    else (
-      let shp_0 = A.shape (value_to_arr parent_0_val) in
-      let shp_1 = A.shape (value_to_arr parent_1_val) in
-      let shp_0, shp_1 = Owl_utils_array.align `Left 1 shp_0 shp_1 in
-      let shp_x = Owl_utils_infer_shape.broadcast1 shp_0 shp_1 in
-
-      if shp_0 = shp_x then (
-        if refnum parent_0 = 1 && get_reuse parent_0 then (
-          invalidate parent_0;
-          set_value x [| CL_Dev.copy_cpu_gpu_mem parent_0_val |]
-        )
-        else if refnum parent_0 = 2 && parent_0 == parent_1 && get_reuse parent_0 then (
-          invalidate parent_0;
-          set_value x [| CL_Dev.copy_cpu_gpu_mem parent_0_val |]
-        )
-        else cpu_gpu_malloc ctx x
-      )
-      else if shp_1 = shp_x then (
-        if refnum parent_1 = 1 && get_reuse parent_1 then (
-          invalidate parent_1;
-          set_value x [| CL_Dev.copy_cpu_gpu_mem parent_1_val |]
-        )
-        else cpu_gpu_malloc ctx x
-      )
-      else cpu_gpu_malloc ctx x
-    )
+    let parent_0_cpu_mem = parent_0_val.cpu_mem.(0) in
+    let parent_1_cpu_mem = parent_1_val.cpu_mem.(0) in
+    let x_cpu_mem = (get_value x).(0).cpu_mem.(0) in
+    if x_cpu_mem == parent_0_cpu_mem then invalidate parent_0
+    else if x_cpu_mem == parent_1_cpu_mem then invalidate parent_1
 
 
   let rec _eval_term x param =
@@ -205,14 +111,14 @@ module Make (A : Ndarray_Mutable) = struct
       let _ = try
         match (get_operator x) with
         | Noop                                        -> _eval_map_xx x
-        | Var                                         -> _eval_map_98 x param
+        | Var                                         -> _eval_map_00 x param
         | Const                                       -> check_assigned x
         | Empty shape                                 -> _eval_map_xx x
         | Zeros shape                                 -> _eval_map_xx x
         | Ones shape                                  -> _eval_map_xx x
         | Create shape                                -> _eval_map_xx x
         | Sequential                                  -> failwith "Sequential"
-        | Uniform shape                               -> _eval_map_97 x param "uniform"
+        | Uniform shape                               -> _eval_map_20 x param "uniform"
         | Gaussian                                    -> failwith "Gaussian"
         | Bernoulli (p, shape)                        -> _eval_map_xx x
         | Init _                                      -> failwith "Init"
@@ -272,11 +178,11 @@ module Make (A : Ndarray_Mutable) = struct
         | ClipByValue                                 -> failwith "ClipByValue"
         | ClipByL2norm                                -> failwith "ClipByL2norm"
         | Pow                                         -> _eval_map_02 x param "pow"
-        | ScalarPow                                   -> _eval_map_04 x param "scalar_pow"
-        | PowScalar                                   -> _eval_map_03 x param "pow_scalar"
+        | ScalarPow                                   -> _eval_map_02 x param "scalar_pow"
+        | PowScalar                                   -> _eval_map_02 x param "pow_scalar"
         | Atan2                                       -> _eval_map_02 x param "atan2"
-        | ScalarAtan2                                 -> _eval_map_04 x param "scalar_atan2"
-        | Atan2Scalar                                 -> _eval_map_03 x param "atan2_scalar"
+        | ScalarAtan2                                 -> _eval_map_02 x param "scalar_atan2"
+        | Atan2Scalar                                 -> _eval_map_02 x param "atan2_scalar"
         | Hypot                                       -> _eval_map_02 x param "hypot"
         | Min2                                        -> _eval_map_02 x param "min2"
         | Max2                                        -> _eval_map_02 x param "max2"
@@ -284,14 +190,14 @@ module Make (A : Ndarray_Mutable) = struct
         | Sub                                         -> _eval_map_02 x param "sub"
         | Mul                                         -> _eval_map_02 x param "mul"
         | Div                                         -> _eval_map_02 x param "div"
-        | AddScalar                                   -> _eval_map_03 x param "add_scalar"
-        | SubScalar                                   -> _eval_map_03 x param "sub_scalar"
-        | MulScalar                                   -> _eval_map_03 x param "mul_scalar"
-        | DivScalar                                   -> _eval_map_03 x param "div_scalar"
-        | ScalarAdd                                   -> _eval_map_04 x param "scalar_add"
-        | ScalarSub                                   -> _eval_map_04 x param "scalar_sub"
-        | ScalarMul                                   -> _eval_map_04 x param "scalar_mul"
-        | ScalarDiv                                   -> _eval_map_04 x param "scalar_div"
+        | AddScalar                                   -> _eval_map_02 x param "add_scalar"
+        | SubScalar                                   -> _eval_map_02 x param "sub_scalar"
+        | MulScalar                                   -> _eval_map_02 x param "mul_scalar"
+        | DivScalar                                   -> _eval_map_02 x param "div_scalar"
+        | ScalarAdd                                   -> _eval_map_02 x param "scalar_add"
+        | ScalarSub                                   -> _eval_map_02 x param "scalar_sub"
+        | ScalarMul                                   -> _eval_map_02 x param "scalar_mul"
+        | ScalarDiv                                   -> _eval_map_02 x param "scalar_div"
         | FMA                                         -> _eval_map_xx x
         | IsZero                                      -> failwith "IsZero"
         | IsPositive                                  -> failwith "IsPositive"
@@ -310,12 +216,12 @@ module Make (A : Ndarray_Mutable) = struct
         | EltGreater                                  -> _eval_map_02 x param "elt_greater"
         | EltLessEqual                                -> _eval_map_02 x param "elt_less_equal"
         | EltGreaterEqual                             -> _eval_map_02 x param "elt_greater_equal"
-        | EltEqualScalar                              -> _eval_map_03 x param "elt_equal_scalar"
-        | EltNotEqualScalar                           -> _eval_map_03 x param "elt_not_equal_scalar"
-        | EltLessScalar                               -> _eval_map_03 x param "elt_less_scalar"
-        | EltGreaterScalar                            -> _eval_map_03 x param "elt_greater_scalar"
-        | EltLessEqualScalar                          -> _eval_map_03 x param "elt_less_equal_scalar"
-        | EltGreaterEqualScalar                       -> _eval_map_03 x param "elt_greater_equal_scalar"
+        | EltEqualScalar                              -> _eval_map_02 x param "elt_equal_scalar"
+        | EltNotEqualScalar                           -> _eval_map_02 x param "elt_not_equal_scalar"
+        | EltLessScalar                               -> _eval_map_02 x param "elt_less_scalar"
+        | EltGreaterScalar                            -> _eval_map_02 x param "elt_greater_scalar"
+        | EltLessEqualScalar                          -> _eval_map_02 x param "elt_less_equal_scalar"
+        | EltGreaterEqualScalar                       -> _eval_map_02 x param "elt_greater_equal_scalar"
         | ApproxEqual eps                             -> failwith "ApproxEqual"
         | ApproxEqualScalar eps                       -> failwith "ApproxEqualScalar"
         | ApproxEltEqual eps                          -> failwith "ApproxEltEqual"
@@ -403,146 +309,55 @@ module Make (A : Ndarray_Mutable) = struct
   and _eval_map_xx x = ()
 
 
-  (* [f] is pure, shape changes so always allocate mem, for [arr -> arr] *)
-  and _eval_map_00 x param f =
-    let x_parent = (parents x).(0) in
-    _eval_term x_parent param;
-    let a = (get_value x_parent).(0) |> value_to_arr |> f in
-    set_value x [|arr_to_value a|]
+  (* varibles and consts, copy cpu -> gpu *)
+  and _eval_map_00 x param =
+    if is_valid x = false then (
+      let ctx, cmdq, program = param in
+      let event = cpu_to_gpu_copy param (get_value x).(0) in
+      CL_Dev.append_events (get_value x).(0) [| event |]
+    )
 
 
   (* [f] is inpure, for [arr -> arr] *)
   and _eval_map_01 x param fun_name =
-    let x_parent = (parents x).(0) in
-    _eval_term x_parent param;
+    let parent = (parents x).(0) in
+    _eval_term parent param;
 
     let ctx, cmdq, program = param in
-    allocate_from_parent_1 ctx x x_parent;
-    let x_parent_val = (get_value x_parent).(0) in
-    let i_ptr = get_gpu_ptr x_parent_val in
-    let o_ptr = get_gpu_ptr (get_value x).(0) in
-
-    let kernel = make_kernel x program fun_name in
-    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem i_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem o_ptr;
-    let _size = node_to_arr x |> numel in
+    update_validity_1 ctx x parent;
+    let kernel = (get_value x).(0).kernel.(0) in
+    let items = [ node_to_arr x |> numel ] in
     let wait_for = aggregate_events (parents x) |> Array.to_list in
-    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
+    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 items in
     CL_Dev.append_events (get_value x).(0) [| event |]
 
 
   (* [f] is inpure, for [arr -> arr -> arr] *)
   and _eval_map_02 x param fun_name =
-    let x_parent_0 = (parents x).(0) in
-    let x_parent_1 = (parents x).(1) in
-    _eval_term x_parent_0 param;
-    _eval_term x_parent_1 param;
+    let parent_0 = (parents x).(0) in
+    let parent_1 = (parents x).(1) in
+    _eval_term parent_0 param;
+    _eval_term parent_1 param;
 
     let ctx, cmdq, program = param in
-    allocate_from_parent_2 ctx x x_parent_0 x_parent_1;
-    let a_ptr = (get_value x_parent_0).(0) |> get_gpu_ptr in
-    let b_ptr = (get_value x_parent_1).(0) |> get_gpu_ptr in
-    let c_ptr = (get_value x).(0) |> get_gpu_ptr in
-
-    let kernel = make_kernel x program fun_name in
-    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr;
-    let _size = node_to_arr x |> numel in
+    update_validity_2 ctx x parent_0 parent_1;
+    let kernel = (get_value x).(0).kernel.(0) in
+    let items = [ node_to_arr x |> numel ] in
     let wait_for = aggregate_events (parents x) |> Array.to_list in
-    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
-    CL_Dev.append_events (get_value x).(0) [| event |]
-
-
-  (* [f] is inpure, for [arr -> elt -> arr] *)
-  and _eval_map_03 x param fun_name =
-    let x_parent_0 = (parents x).(0) in
-    let x_parent_1 = (parents x).(1) in
-    _eval_term x_parent_0 param;
-    _eval_term x_parent_1 param;
-
-    let ctx, cmdq, program = param in
-    allocate_from_parent_1 ctx x x_parent_0;
-    let a_ptr = (get_value x_parent_0).(0) |> get_gpu_ptr in
-    let b_ptr = (get_value x_parent_1).(0) |> get_elt_ptr in
-    let c_ptr = (get_value x).(0) |> get_gpu_ptr in
-
-    let kernel = make_kernel x program fun_name in
-    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_float_ptr b_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr;
-    let _size = node_to_arr x |> numel in
-    let wait_for = aggregate_events (parents x) |> Array.to_list in
-    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
-    CL_Dev.append_events (get_value x).(0) [| event |]
-
-
-  (* [f] is inpure, for [elt -> arr -> arr] *)
-  and _eval_map_04 x param fun_name =
-    let x_parent_0 = (parents x).(0) in
-    let x_parent_1 = (parents x).(1) in
-    _eval_term x_parent_0 param;
-    _eval_term x_parent_1 param;
-
-    let ctx, cmdq, program = param in
-    allocate_from_parent_1 ctx x x_parent_1;
-    let a_ptr = (get_value x_parent_1).(0) |> get_elt_ptr in
-    let b_ptr = (get_value x_parent_0).(0) |> get_gpu_ptr in
-    let c_ptr = (get_value x).(0) |> get_gpu_ptr in
-
-    let kernel = make_kernel x program fun_name in
-    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_float_ptr a_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr;
-    let _size = node_to_arr x |> numel in
-    let wait_for = aggregate_events (parents x) |> Array.to_list in
-    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
+    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 items in
     CL_Dev.append_events (get_value x).(0) [| event |]
 
 
   (* for random generators *)
-  and _eval_map_97 x param fun_name =
-    let a = Array.map (fun x_parent ->
-      _eval_term x_parent param;
-      (get_value x_parent).(0)
-    ) (parents x)
-    in
+  and _eval_map_20 x param fun_name =
+    Array.iter (fun parent -> _eval_term parent param) (parents x);
 
     let ctx, cmdq, program = param in
-    allocate_from_parent_0 ctx x;
-
-    let a_ptr = a.(0) |> get_elt_ptr in
-    let b_ptr = a.(1) |> get_elt_ptr in
-    let c_ptr = (get_value x).(0) |> get_gpu_ptr in
-
-    let _size = node_to_arr x |> numel in
-    if Array.length (get_value x).(0).kernel = 0 then (
-      let kernel = make_kernel x program fun_name in
-      let streams = Owl_opencl_prng_philox.make _size in
-      let streams_buf = Owl_opencl_prng_philox.make_stream_buffer ctx streams in
-      let streams_ptr = Ctypes.allocate cl_mem streams_buf in
-      Owl_opencl_base.Kernel.set_arg kernel 3 sizeof_cl_mem streams_ptr;
-    );
-
-    let kernel = make_kernel x program fun_name in
-    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_float_ptr a_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_float_ptr b_ptr;
-    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr;
-
+    let kernel = (get_value x).(0).kernel.(0) in
+    let items = [ node_to_arr x |> numel ] in
     let wait_for = aggregate_events (parents x) |> Array.to_list in
-    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
+    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 items in
     CL_Dev.append_events (get_value x).(0) [| event |]
-
-
-  (* copy from cpu to gpu *)
-  and _eval_map_98 x param =
-    if is_valid x = false then (
-      let ctx, cmdq, program = param in
-      allocate_from_parent_0 ctx x;
-      let x_val = (get_value x).(0) in
-      let event = cpu_to_gpu_copy param x_val in
-      CL_Dev.append_events (get_value x).(0) [| event |]
-    )
 
 
   let eval_arr ?(dev_id=0) xs =
