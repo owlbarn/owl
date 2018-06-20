@@ -136,5 +136,17 @@ val is_simplex : float array -> bool
 :math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall x_i \in [1,K]`.
  *)
 
+val is_int : float -> bool
+(* ``is_int x`` checks if ``x`` is an integer, i.e. fractional part is zero. *)
+
+val is_sqr : int -> bool
+(** ``is_sqr x`` checks if ``x`` is the square of an integer. *)
+
+val fermat_fact : int -> int * int
+(**
+``fermat_fact x`` performs Fermat factorisation over ``x``, i.e. into two
+roughly equal factors. ``x`` must be an odd number.
+ *)
+
 
 (* ends here *)

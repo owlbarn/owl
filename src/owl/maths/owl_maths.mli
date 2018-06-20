@@ -572,6 +572,18 @@ other words, :math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall i \in
 [1,K]`, where :math:`K` is the dimension of :math:`x`.
  *)
 
+val is_int : float -> bool
+(* ``is_int x`` checks if ``x`` is an integer, i.e. fractional part is zero. *)
+
+val is_sqr : int -> bool
+(** ``is_sqr x`` checks if ``x`` is the square of an integer. *)
+
+val fermat_fact : int -> int * int
+(**
+``fermat_fact x`` performs Fermat factorisation over ``x``, i.e. into two
+roughly equal factors. ``x`` must be an odd number.
+ *)
+
 val nextafter : float -> float -> float
 (** ``nextafter from to`` returns the next representable double precision value
 of ``from`` in the direction of ``to``. If ``from`` equals ``to``, this value

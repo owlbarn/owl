@@ -314,6 +314,12 @@ let is_even = Owl_base_maths.is_even
 
 let is_pow2 = Owl_base_maths.is_pow2
 
+let is_int = Owl_base_maths.is_int
+
+let is_sqr = Owl_base_maths.is_sqr
+
+let fermat_fact = Owl_base_maths.fermat_fact
+
 let nextafter = Owl_maths_special.nextafter
 
 let nextafterf = Owl_maths_special.nextafterf
