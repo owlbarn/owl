@@ -247,6 +247,9 @@ let repeat2 x reps =
   let tag = ref true in (* children not processed yet *)
   let stack = Stack.create () in
 
+  Owl_ndarray_repeat._ndarray_repeat2 _kind x y reps _shape_x _stride_x block block_idx;
+
+  (*
   while ((!d != highest_dim + 1) && !tag)  || not (Stack.is_empty stack) do
     while ((!d != highest_dim + 1) && !tag) do
       for i = _shape_x.(!d) - 1 downto 0 do
@@ -275,6 +278,8 @@ let repeat2 x reps =
       );
     )
   done;
+  *)
+
 
   (*
   let rec fill h d b ofsx =
