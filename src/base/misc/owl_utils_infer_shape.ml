@@ -175,6 +175,18 @@ let broadcast2 s0 s1 s2 =
   sd
 
 
+(* no need to align two shapes before passing in. *)
+let broadcast1_stride s0 s1 =
+  let sa, sb = Owl_utils_array.align `Left 1 s0 s1 in
+  let stride_0 = Owl_utils_ndarray.calc_stride sa in
+  let stride_1 = Owl_utils_ndarray.calc_stride sb in
+  Owl_utils_array.iter2i (fun i d0 d1 ->
+    if d0 <> d1 then
+      if d0 = 1 then stride_0.(i) <- 0 else stride_1.(i) <- 0
+  ) sa sb;
+  stride_0, stride_1
+
+
 let fold shape axis =
   let d = Array.length shape in
   let a = Owl_utils_ndarray.adjust_index axis d in

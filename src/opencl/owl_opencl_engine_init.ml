@@ -202,27 +202,27 @@ module Make (A : Ndarray_Mutable) = struct
         | L2NormSqr'                                  -> _init_xx x param
         | ClipByValue                                 -> failwith "ClipByValue"
         | ClipByL2norm                                -> failwith "ClipByL2norm"
-        | Pow                                         -> _init_03 x param "pow"
-        | ScalarPow                                   -> _init_xx x param
-        | PowScalar                                   -> _init_xx x param
-        | Atan2                                       -> _init_03 x param "atan2"
-        | ScalarAtan2                                 -> _init_xx x param
-        | Atan2Scalar                                 -> _init_xx x param
-        | Hypot                                       -> _init_03 x param "hypot"
-        | Min2                                        -> _init_03 x param "min2"
-        | Max2                                        -> _init_03 x param "max2"
-        | Add                                         -> _init_03 x param "add"
-        | Sub                                         -> _init_03 x param "sub"
-        | Mul                                         -> _init_03 x param "mul"
-        | Div                                         -> _init_03 x param "div"
-        | AddScalar                                   -> _init_xx x param
-        | SubScalar                                   -> _init_xx x param
-        | MulScalar                                   -> _init_xx x param
-        | DivScalar                                   -> _init_xx x param
-        | ScalarAdd                                   -> _init_xx x param
-        | ScalarSub                                   -> _init_xx x param
-        | ScalarMul                                   -> _init_xx x param
-        | ScalarDiv                                   -> _init_xx x param
+        | Pow                                         -> _init_02 x param "pow"
+        | ScalarPow                                   -> _init_06 x param "scalar_pow"
+        | PowScalar                                   -> _init_05 x param "pow_scalar"
+        | Atan2                                       -> _init_02 x param "atan2"
+        | ScalarAtan2                                 -> _init_06 x param "scalar_atan2"
+        | Atan2Scalar                                 -> _init_05 x param "atan2_scalar"
+        | Hypot                                       -> _init_02 x param "hypot"
+        | Min2                                        -> _init_02 x param "min2"
+        | Max2                                        -> _init_02 x param "max2"
+        | Add                                         -> _init_02 x param "add"
+        | Sub                                         -> _init_02 x param "sub"
+        | Mul                                         -> _init_02 x param "mul"
+        | Div                                         -> _init_02 x param "div"
+        | AddScalar                                   -> _init_05 x param "add_scalar"
+        | SubScalar                                   -> _init_05 x param "sub_scalar"
+        | MulScalar                                   -> _init_05 x param "mul_scalar"
+        | DivScalar                                   -> _init_05 x param "div_scalar"
+        | ScalarAdd                                   -> _init_06 x param "scalar_add"
+        | ScalarSub                                   -> _init_06 x param "scalar_sub"
+        | ScalarMul                                   -> _init_06 x param "scalar_mul"
+        | ScalarDiv                                   -> _init_06 x param "scalar_div"
         | FMA                                         -> _init_xx x param
         | IsZero                                      -> failwith "IsZero"
         | IsPositive                                  -> failwith "IsPositive"
@@ -356,8 +356,6 @@ module Make (A : Ndarray_Mutable) = struct
   and _init_02 x param fun_name =
     let parent_0 = (parents x).(0) in
     let parent_1 = (parents x).(1) in
-    _init_term parent_0 param;
-    _init_term parent_1 param;
 
     let parent_0_val = (get_value parent_0).(0) in
     let parent_1_val = (get_value parent_1).(0) in
@@ -373,6 +371,8 @@ module Make (A : Ndarray_Mutable) = struct
   and _init_03 x param fun_name =
     let parent_0 = (parents x).(0) in
     let parent_1 = (parents x).(1) in
+    _init_term parent_0 param;
+    _init_term parent_1 param;
 
     let ctx, cmdq, program = param in
     allocate_from_parent_2 ctx x parent_0 parent_1;
@@ -390,17 +390,33 @@ module Make (A : Ndarray_Mutable) = struct
   and _init_04 x param fun_name =
     let parent_0 = (parents x).(0) in
     let parent_1 = (parents x).(1) in
+    _init_term parent_0 param;
+    _init_term parent_1 param;
 
     let ctx, cmdq, program = param in
     allocate_from_parent_2 ctx x parent_0 parent_1;
-    let a_ptr = get_gpu_ptr (get_value parent_0).(0) in
-    let b_ptr = get_gpu_ptr (get_value parent_1).(0) in
-    let c_ptr = get_gpu_ptr (get_value x).(0) in
+    let parent_0_val = (get_value parent_0).(0) in
+    let parent_1_val = (get_value parent_1).(0) in
+    let x_val = (get_value x).(0) in
+    let a_ptr = get_gpu_ptr parent_0_val in
+    let b_ptr = get_gpu_ptr parent_1_val in
+    let c_ptr = get_gpu_ptr x_val in
 
-    let shp_x = A.shape (value_to_arr (get_value x).(0)) in
-    let dim = Int32.of_int (Array.length shp_x) in
-    let dim_ptr = Ctypes.(allocate int32_t dim) in
+    let dim = A.shape (value_to_arr x_val) |> Array.length in
+    let dim_i32 = Int32.of_int dim in
+    let dim_ptr = Ctypes.(allocate int32_t dim_i32) in
     let sizeof_int32 = Ctypes.(sizeof (ptr int32_t)) in
+
+    let a_shp = A.shape (value_to_arr parent_0_val) in
+    let b_shp = A.shape (value_to_arr parent_1_val) in
+    let a_stride, b_stride = Owl_utils_infer_shape.broadcast1_stride a_shp b_shp in
+    let a_stride = Array.map Int32.of_int a_stride in
+    let b_stride = Array.map Int32.of_int b_stride in
+    let a_stride = Owl_dense_ndarray_generic.of_array Int32 a_stride [|dim|] in
+    let b_stride = Owl_dense_ndarray_generic.of_array Int32 b_stride [|dim|] in
+    let flags = [ cl_MEM_USE_HOST_PTR ] in
+    let a_stride_ptr = Buffer.create_bigarray ~flags ctx a_stride |> Ctypes.allocate cl_mem in
+    let b_stride_ptr = Buffer.create_bigarray ~flags ctx b_stride |> Ctypes.allocate cl_mem in
 
     let new_name = "broadcast_" ^ fun_name in
     let kernel = make_kernel x program new_name in
@@ -408,8 +424,36 @@ module Make (A : Ndarray_Mutable) = struct
     Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
     Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr;
     Kernel.set_arg kernel 3 sizeof_int32 dim_ptr;
-    (* TODO: not finished yet ... *)
-    ()
+    Kernel.set_arg kernel 4 sizeof_int32 a_stride_ptr;
+    Kernel.set_arg kernel 5 sizeof_int32 b_stride_ptr
+
+
+  (* f : arr -> elt -> arr *)
+  and _init_05 x param fun_name =
+    let parent = (parents x).(0) in
+
+    let ctx, cmdq, program = param in
+    allocate_from_parent_1 ctx x parent;
+    let a_ptr = get_gpu_ptr (get_value parent).(0) in
+    let c_ptr = get_gpu_ptr (get_value x).(0) in
+
+    let kernel = make_kernel x program fun_name in
+    Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
+    Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr
+
+
+  (* f : elt -> arr -> arr *)
+  and _init_06 x param fun_name =
+    let parent = (parents x).(1) in
+
+    let ctx, cmdq, program = param in
+    allocate_from_parent_1 ctx x parent;
+    let b_ptr = get_gpu_ptr (get_value parent).(0) in
+    let c_ptr = get_gpu_ptr (get_value x).(0) in
+
+    let kernel = make_kernel x program fun_name in
+    Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
+    Kernel.set_arg kernel 2 sizeof_cl_mem c_ptr
 
 
   let init_nodes xs param = Array.iter (fun x -> _init_term x param) xs
