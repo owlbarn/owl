@@ -4,11 +4,11 @@
  *)
 
 
-let reduce_arr_template_00 = "
-  __kernel void owl_opencl_CLTYP0_sum(
-      __global const CLTYP0 *input,
-      __global CLTYP0 *output,
-      __local CLTYP0 *shared,
+let reduce_arr_template_sum' = "
+  __kernel void owl_opencl_CLTYP_sum (
+      __global const CLTYP *a,
+      __global CLTYP *b,
+      __local CLTYP *shared,
       const unsigned int n)
   {
     size_t local_id = get_local_id(0);
@@ -22,7 +22,7 @@ let reduce_arr_template_00 = "
 
     while (i < n)
     {
-        shared[local_id] += input[i] + input[i + group_size];
+        shared[local_id] += a[i] + a[i + group_size];
         i += local_stride;
     }
 
@@ -73,7 +73,7 @@ let reduce_arr_template_00 = "
       barrier(CLK_LOCAL_MEM_FENCE);
     #endif
 
-    if (local_id == 0) { output[group_id] = shared[0]; }
+    if (local_id == 0) { b[group_id] = shared[0]; }
 
   }
 "
@@ -99,6 +99,12 @@ __kernel void owl_opencl_FUNNAME(
 
 }
 "
+
+
+let reduce_arr_sum' fun_name cl_typ map_fun init_fun =
+  Owl_opencl_utils.replace_subs reduce_arr_template_sum' [
+    ("CLTYP", cl_typ);
+  ]
 
 
 let reduce_arr_fun fun_name cl_typ map_fun init_fun =

@@ -118,7 +118,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Ones shape                                  -> _eval_map_xx x
         | Create shape                                -> _eval_map_xx x
         | Sequential                                  -> failwith "Sequential"
-        | Uniform shape                               -> _eval_map_20 x param "uniform"
+        | Uniform shape                               -> _eval_map_20 x param
         | Gaussian                                    -> failwith "Gaussian"
         | Bernoulli (p, shape)                        -> _eval_map_xx x
         | Init _                                      -> failwith "Init"
@@ -139,36 +139,36 @@ module Make (A : Ndarray_Mutable) = struct
         | Fold (axis, f)                              -> failwith "Fold"
         | Scan (axis, f)                              -> failwith "Scan"
         | OneHot depth                                -> _eval_map_xx x
-        | Abs                                         -> _eval_map_01 x param "abs"
-        | Neg                                         -> _eval_map_01 x param "neg"
-        | Floor                                       -> _eval_map_01 x param "floor"
-        | Ceil                                        -> _eval_map_01 x param "ceil"
-        | Round                                       -> _eval_map_01 x param "round"
-        | Sqr                                         -> _eval_map_01 x param "sqr"
-        | Sqrt                                        -> _eval_map_01 x param "sqrt"
-        | Log                                         -> _eval_map_01 x param "log"
-        | Log2                                        -> _eval_map_01 x param "log2"
-        | Log10                                       -> _eval_map_01 x param "log10"
-        | Exp                                         -> _eval_map_01 x param "exp"
-        | Sin                                         -> _eval_map_01 x param "sin"
-        | Cos                                         -> _eval_map_01 x param "cos"
-        | Tan                                         -> _eval_map_01 x param "tan"
-        | Sinh                                        -> _eval_map_01 x param "sinh"
-        | Cosh                                        -> _eval_map_01 x param "cosh"
-        | Tanh                                        -> _eval_map_01 x param "tanh"
-        | Asin                                        -> _eval_map_01 x param "asin"
-        | Acos                                        -> _eval_map_01 x param "acos"
-        | Atan                                        -> _eval_map_01 x param "atan"
-        | Asinh                                       -> _eval_map_01 x param "asinh"
-        | Acosh                                       -> _eval_map_01 x param "acosh"
-        | Atanh                                       -> _eval_map_01 x param "atanh"
-        | Min axis                                    -> _eval_map_01 x param "min"
-        | Max axis                                    -> _eval_map_01 x param "max"
-        | Sum axis                                    -> _eval_map_01 x param "sum"
+        | Abs                                         -> _eval_map_01 x param
+        | Neg                                         -> _eval_map_01 x param
+        | Floor                                       -> _eval_map_01 x param
+        | Ceil                                        -> _eval_map_01 x param
+        | Round                                       -> _eval_map_01 x param
+        | Sqr                                         -> _eval_map_01 x param
+        | Sqrt                                        -> _eval_map_01 x param
+        | Log                                         -> _eval_map_01 x param
+        | Log2                                        -> _eval_map_01 x param
+        | Log10                                       -> _eval_map_01 x param
+        | Exp                                         -> _eval_map_01 x param
+        | Sin                                         -> _eval_map_01 x param
+        | Cos                                         -> _eval_map_01 x param
+        | Tan                                         -> _eval_map_01 x param
+        | Sinh                                        -> _eval_map_01 x param
+        | Cosh                                        -> _eval_map_01 x param
+        | Tanh                                        -> _eval_map_01 x param
+        | Asin                                        -> _eval_map_01 x param
+        | Acos                                        -> _eval_map_01 x param
+        | Atan                                        -> _eval_map_01 x param
+        | Asinh                                       -> _eval_map_01 x param
+        | Acosh                                       -> _eval_map_01 x param
+        | Atanh                                       -> _eval_map_01 x param
+        | Min axis                                    -> _eval_map_01 x param
+        | Max axis                                    -> _eval_map_01 x param
+        | Sum axis                                    -> _eval_map_01 x param
         | SumReduce axis                              -> _eval_map_xx x
-        | Signum                                      -> _eval_map_01 x param "signum"
-        | Sigmoid                                     -> _eval_map_01 x param "sigmoid"
-        | Relu                                        -> _eval_map_01 x param "relu"
+        | Signum                                      -> _eval_map_01 x param
+        | Sigmoid                                     -> _eval_map_01 x param
+        | Relu                                        -> _eval_map_01 x param
         | Min'                                        -> _eval_map_xx x
         | Max'                                        -> _eval_map_xx x
         | Sum'                                        -> _eval_map_xx x
@@ -177,27 +177,27 @@ module Make (A : Ndarray_Mutable) = struct
         | L2NormSqr'                                  -> _eval_map_xx x
         | ClipByValue                                 -> failwith "ClipByValue"
         | ClipByL2norm                                -> failwith "ClipByL2norm"
-        | Pow                                         -> _eval_map_02 x param "pow"
-        | ScalarPow                                   -> _eval_map_02 x param "scalar_pow"
-        | PowScalar                                   -> _eval_map_02 x param "pow_scalar"
-        | Atan2                                       -> _eval_map_02 x param "atan2"
-        | ScalarAtan2                                 -> _eval_map_02 x param "scalar_atan2"
-        | Atan2Scalar                                 -> _eval_map_02 x param "atan2_scalar"
-        | Hypot                                       -> _eval_map_02 x param "hypot"
-        | Min2                                        -> _eval_map_02 x param "min2"
-        | Max2                                        -> _eval_map_02 x param "max2"
-        | Add                                         -> _eval_map_02 x param "add"
-        | Sub                                         -> _eval_map_02 x param "sub"
-        | Mul                                         -> _eval_map_02 x param "mul"
-        | Div                                         -> _eval_map_02 x param "div"
-        | AddScalar                                   -> _eval_map_02 x param "add_scalar"
-        | SubScalar                                   -> _eval_map_02 x param "sub_scalar"
-        | MulScalar                                   -> _eval_map_02 x param "mul_scalar"
-        | DivScalar                                   -> _eval_map_02 x param "div_scalar"
-        | ScalarAdd                                   -> _eval_map_02 x param "scalar_add"
-        | ScalarSub                                   -> _eval_map_02 x param "scalar_sub"
-        | ScalarMul                                   -> _eval_map_02 x param "scalar_mul"
-        | ScalarDiv                                   -> _eval_map_02 x param "scalar_div"
+        | Pow                                         -> _eval_map_02 x param
+        | ScalarPow                                   -> _eval_map_02 x param
+        | PowScalar                                   -> _eval_map_02 x param
+        | Atan2                                       -> _eval_map_02 x param
+        | ScalarAtan2                                 -> _eval_map_02 x param
+        | Atan2Scalar                                 -> _eval_map_02 x param
+        | Hypot                                       -> _eval_map_02 x param
+        | Min2                                        -> _eval_map_02 x param
+        | Max2                                        -> _eval_map_02 x param
+        | Add                                         -> _eval_map_02 x param
+        | Sub                                         -> _eval_map_02 x param
+        | Mul                                         -> _eval_map_02 x param
+        | Div                                         -> _eval_map_02 x param
+        | AddScalar                                   -> _eval_map_02 x param
+        | SubScalar                                   -> _eval_map_02 x param
+        | MulScalar                                   -> _eval_map_02 x param
+        | DivScalar                                   -> _eval_map_02 x param
+        | ScalarAdd                                   -> _eval_map_02 x param
+        | ScalarSub                                   -> _eval_map_02 x param
+        | ScalarMul                                   -> _eval_map_02 x param
+        | ScalarDiv                                   -> _eval_map_02 x param
         | FMA                                         -> _eval_map_xx x
         | IsZero                                      -> failwith "IsZero"
         | IsPositive                                  -> failwith "IsPositive"
@@ -210,18 +210,18 @@ module Make (A : Ndarray_Mutable) = struct
         | Greater                                     -> failwith "Greater"
         | LessEqual                                   -> failwith "LessEqual"
         | GreaterEqual                                -> failwith "GreaterEqual"
-        | EltEqual                                    -> _eval_map_02 x param "elt_equal"
-        | EltNotEqual                                 -> _eval_map_02 x param "elt_not_equal"
-        | EltLess                                     -> _eval_map_02 x param "elt_less"
-        | EltGreater                                  -> _eval_map_02 x param "elt_greater"
-        | EltLessEqual                                -> _eval_map_02 x param "elt_less_equal"
-        | EltGreaterEqual                             -> _eval_map_02 x param "elt_greater_equal"
-        | EltEqualScalar                              -> _eval_map_02 x param "elt_equal_scalar"
-        | EltNotEqualScalar                           -> _eval_map_02 x param "elt_not_equal_scalar"
-        | EltLessScalar                               -> _eval_map_02 x param "elt_less_scalar"
-        | EltGreaterScalar                            -> _eval_map_02 x param "elt_greater_scalar"
-        | EltLessEqualScalar                          -> _eval_map_02 x param "elt_less_equal_scalar"
-        | EltGreaterEqualScalar                       -> _eval_map_02 x param "elt_greater_equal_scalar"
+        | EltEqual                                    -> _eval_map_02 x param
+        | EltNotEqual                                 -> _eval_map_02 x param
+        | EltLess                                     -> _eval_map_02 x param
+        | EltGreater                                  -> _eval_map_02 x param
+        | EltLessEqual                                -> _eval_map_02 x param
+        | EltGreaterEqual                             -> _eval_map_02 x param
+        | EltEqualScalar                              -> _eval_map_02 x param
+        | EltNotEqualScalar                           -> _eval_map_02 x param
+        | EltLessScalar                               -> _eval_map_02 x param
+        | EltGreaterScalar                            -> _eval_map_02 x param
+        | EltLessEqualScalar                          -> _eval_map_02 x param
+        | EltGreaterEqualScalar                       -> _eval_map_02 x param
         | ApproxEqual eps                             -> failwith "ApproxEqual"
         | ApproxEqualScalar eps                       -> failwith "ApproxEqualScalar"
         | ApproxEltEqual eps                          -> failwith "ApproxEltEqual"
@@ -319,7 +319,7 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   (* [f] is inpure, for [arr -> arr] *)
-  and _eval_map_01 x param fun_name =
+  and _eval_map_01 x param =
     let parent = (parents x).(0) in
     _eval_term parent param;
 
@@ -333,7 +333,7 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   (* [f] is inpure, for [arr -> arr -> arr] *)
-  and _eval_map_02 x param fun_name =
+  and _eval_map_02 x param =
     let parent_0 = (parents x).(0) in
     let parent_1 = (parents x).(1) in
     _eval_term parent_0 param;
@@ -349,7 +349,7 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   (* for random generators *)
-  and _eval_map_20 x param fun_name =
+  and _eval_map_20 x param =
     Array.iter (fun parent -> _eval_term parent param) (parents x);
 
     let ctx, cmdq, program = param in

@@ -158,7 +158,9 @@ let map_functions = [|
 
 let reduce_functions = [|
     (* float32 functions *)
-    reduce_arr_fun     "float32_sum"            "float" "b[b1d] += a[a1d]" "b[b1d] = 0.";
+    reduce_arr_fun     "float32_min_along"      "float" "b[b1d] = min(a[a1d], b[b1d])" "b[b1d] = +INFINITY";
+    reduce_arr_fun     "float32_max_along"      "float" "b[b1d] = max(a[a1d], b[b1d])" "b[b1d] = -INFINITY";
+    reduce_arr_fun     "float32_sum_along"      "float" "b[b1d] += a[a1d]"             "b[b1d] = 0.";
     (* float64 functions *)
   |]
 

@@ -187,9 +187,9 @@ module Make (A : Ndarray_Mutable) = struct
         | Asinh                                       -> _init_01 x param "asinh"
         | Acosh                                       -> _init_01 x param "acosh"
         | Atanh                                       -> _init_01 x param "atanh"
-        | Min axis                                    -> _init_05 x param "min" axis
-        | Max axis                                    -> _init_05 x param "max" axis
-        | Sum axis                                    -> _init_05 x param "sum" axis
+        | Min axis                                    -> _init_05 x param "min_along" axis
+        | Max axis                                    -> _init_05 x param "max_along" axis
+        | Sum axis                                    -> _init_05 x param "sum_along" axis
         | SumReduce axis                              -> _init_xx x param
         | Signum                                      -> _init_01 x param "signum"
         | Sigmoid                                     -> _init_01 x param "sigmoid"
