@@ -232,14 +232,30 @@ let repeat2 x reps =
   let _shape_y = Array.map2 ( * ) _shape_x reps in
   let y = empty _kind _shape_y in
 
-  let block = Owl_utils.calc_stride _shape_y in
-  let _stride_x = Owl_utils.calc_stride _shape_x in
+  if Array.length reps = 1 then (
+    for i = 0 to reps.(0) - 1 do
+      _owl_copy _kind (numel x) ~ofsx:0 ~incx:1 ~ofsy:i ~incy:reps.(0) x y
+    done
+  )
+  else (
+    let block = Owl_utils.calc_stride _shape_y in
+    let _stride_x = Owl_utils.calc_stride _shape_x in
 
-  let block_idx = Owl_utils_array.sub _shape_x 1 highest_dim in
-  let block_idx = Owl_utils_array.append block_idx [|1|] in
-  let block_idx = Array.map2 ( * ) block_idx reps in
-  let block_idx = Owl_utils.calc_slice block_idx in
+    let block_idx = Owl_utils_array.sub _shape_x 1 highest_dim in
+    let block_idx = Owl_utils_array.append block_idx [|1|] in
+    let block_idx = Array.map2 ( * ) block_idx reps in
+    let block_idx = Owl_utils.calc_slice block_idx in
+    (* or:
+    let foo = Owl_utils.calc_slice reps in
+    let bar = Owl_utils.calc_stride _shape_x in
+    let block_idx = Array.map2 ( * ) foo bar in
+    *)
 
+    Owl_ndarray_repeat._ndarray_repeat2 _kind x y reps _shape_x _stride_x block block_idx;
+  );
+  reshape y _shape_y
+
+  (*
   let h = ref 0 in
   let d = ref 0 in
   let b = ref 0 in
@@ -247,9 +263,6 @@ let repeat2 x reps =
   let tag = ref true in (* children not processed yet *)
   let stack = Stack.create () in
 
-  Owl_ndarray_repeat._ndarray_repeat2 _kind x y reps _shape_x _stride_x block block_idx;
-
-  (*
   while ((!d != highest_dim + 1) && !tag)  || not (Stack.is_empty stack) do
     while ((!d != highest_dim + 1) && !tag) do
       for i = _shape_x.(!d) - 1 downto 0 do
@@ -303,9 +316,14 @@ let repeat2 x reps =
   fill 0 0 0 0;
   *)
 
-  reshape y _shape_y
 
-  (*
+let repeat3 x reps =
+  let highest_dim = Array.length (shape x) - 1 in
+  let _kind = kind x in
+  let _shape_x = shape x in
+  if Array.length reps != Array.length _shape_x then
+    failwith "repeat: repitition must be of the same dimension as input ndarray";
+
   let _shape_y = Array.map2 ( * ) _shape_x reps in
   let y = empty _kind _shape_y in
 
@@ -382,7 +400,6 @@ let repeat2 x reps =
   );
   (* reshape y' back to ndarray before return result *)
   reshape y _shape_y
-  *)
 
 
 let tile2 x reps =
