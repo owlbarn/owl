@@ -38,8 +38,7 @@ __kernel void owl_opencl_FUNNAME (
   int dim,
   __global int *stride_a,
   __global int *stride_b,
-  __global int *stride_c
-  )
+  __global int *stride_c)
 {
   int gid = get_global_id(0);
 

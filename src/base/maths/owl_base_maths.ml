@@ -173,3 +173,28 @@ let fermat_fact x =
   let fac0 = !y +. (sqrt !z) |> int_of_float in
   let fac1 = !y -. (sqrt !z) |> int_of_float in
   fac0, fac1
+
+
+(* TODO: not finished yet ... *)
+let is_prime x = failwith "not implemented yet"
+(*
+  let _detect_composite a d n s =
+    if mod_float (a ** d) n == 1. then false
+    else (
+      let r = ref true in
+      let _ =
+        try (
+          for i = 0 to s - 1 do
+            let i = float_of_int i in
+            let c = mod_float (a ** ((2. ** i) *. d)) n in
+            if c = n -. 1. then raise Owl_exception.FOUND
+          done
+        )
+        with exn -> r := false
+      in
+      !r
+    )
+  in
+
+  true
+*)

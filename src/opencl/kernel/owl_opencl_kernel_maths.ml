@@ -5,8 +5,10 @@
 
 open Owl_opencl_kernel_map
 
+open Owl_opencl_kernel_reduce
 
-let functions = [|
+
+let map_functions = [|
     (* float32 functions *)
     map_arr_fun        "float32_erf"            "float" "erf(a[gid])";
     map_arr_fun        "float32_erfc"           "float" "erfc(a[gid])";
@@ -153,7 +155,17 @@ let functions = [|
   |]
 
 
-let code () = Array.fold_left ( ^ ) "" functions
+
+let reduce_functions = [|
+    (* float32 functions *)
+    reduce_arr_fun     "float32_sum"            "float" "b[b1d] += a[a1d]" "b[b1d] = 0.";
+    (* float64 functions *)
+  |]
+
+let code () =
+  let s0 = Array.fold_left ( ^ ) "" map_functions in
+  let s1 = Array.fold_left ( ^ ) "" reduce_functions in
+  s0 ^ s1
 
 
 (* ends here *)

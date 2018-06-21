@@ -112,7 +112,7 @@ module Make (A : Ndarray_Mutable) = struct
         match (get_operator x) with
         | Noop                                        -> _eval_map_xx x
         | Var                                         -> _eval_map_00 x param
-        | Const                                       -> check_assigned x
+        | Const                                       -> _eval_map_00 x param
         | Empty shape                                 -> _eval_map_xx x
         | Zeros shape                                 -> _eval_map_xx x
         | Ones shape                                  -> _eval_map_xx x
@@ -162,9 +162,9 @@ module Make (A : Ndarray_Mutable) = struct
         | Asinh                                       -> _eval_map_01 x param "asinh"
         | Acosh                                       -> _eval_map_01 x param "acosh"
         | Atanh                                       -> _eval_map_01 x param "atanh"
-        | Min axis                                    -> _eval_map_xx x
-        | Max axis                                    -> _eval_map_xx x
-        | Sum axis                                    -> _eval_map_xx x
+        | Min axis                                    -> _eval_map_01 x param "min"
+        | Max axis                                    -> _eval_map_01 x param "max"
+        | Sum axis                                    -> _eval_map_01 x param "sum"
         | SumReduce axis                              -> _eval_map_xx x
         | Signum                                      -> _eval_map_01 x param "signum"
         | Sigmoid                                     -> _eval_map_01 x param "sigmoid"

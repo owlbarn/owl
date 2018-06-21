@@ -13,13 +13,14 @@ __kernel void owl_opencl_float32_std_uniform (
   clrngPhilox432Stream private_stream;
   clrngPhilox432CopyOverStreamsFromGlobal(1, &private_stream, &streams[gid]);
   out[gid] = clrngPhilox432RandomU01_cl_float(&private_stream);
+  clrngPhilox432CopyOverStreamsToGlobal(1, &streams[gid], &private_stream);
 }
 
 
 __kernel void owl_opencl_float32_uniform (
   __global clrngPhilox432HostStream* streams,
-  __global float* ga,
-  __global float* gb,
+  __global const float* ga,
+  __global const float* gb,
   __global float* out)
 {
   int gid = get_global_id(0);

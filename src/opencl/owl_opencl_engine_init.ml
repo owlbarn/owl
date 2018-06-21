@@ -187,13 +187,13 @@ module Make (A : Ndarray_Mutable) = struct
         | Asinh                                       -> _init_01 x param "asinh"
         | Acosh                                       -> _init_01 x param "acosh"
         | Atanh                                       -> _init_01 x param "atanh"
-        | Min axis                                    -> _init_xx x param
-        | Max axis                                    -> _init_xx x param
-        | Sum axis                                    -> _init_xx x param
+        | Min axis                                    -> _init_05 x param "min" axis
+        | Max axis                                    -> _init_05 x param "max" axis
+        | Sum axis                                    -> _init_05 x param "sum" axis
         | SumReduce axis                              -> _init_xx x param
-        | Signum                                      -> _init_xx x param
-        | Sigmoid                                     -> _init_xx x param
-        | Relu                                        -> _init_xx x param
+        | Signum                                      -> _init_01 x param "signum"
+        | Sigmoid                                     -> _init_01 x param "sigmoid"
+        | Relu                                        -> _init_01 x param "relu"
         | Min'                                        -> _init_xx x param
         | Max'                                        -> _init_xx x param
         | Sum'                                        -> _init_xx x param
@@ -235,18 +235,18 @@ module Make (A : Ndarray_Mutable) = struct
         | Greater                                     -> failwith "Greater"
         | LessEqual                                   -> failwith "LessEqual"
         | GreaterEqual                                -> failwith "GreaterEqual"
-        | EltEqual                                    -> _init_xx x param
-        | EltNotEqual                                 -> _init_xx x param
-        | EltLess                                     -> _init_xx x param
-        | EltGreater                                  -> _init_xx x param
-        | EltLessEqual                                -> _init_xx x param
-        | EltGreaterEqual                             -> _init_xx x param
-        | EltEqualScalar                              -> _init_xx x param
-        | EltNotEqualScalar                           -> _init_xx x param
-        | EltLessScalar                               -> _init_xx x param
-        | EltGreaterScalar                            -> _init_xx x param
-        | EltLessEqualScalar                          -> _init_xx x param
-        | EltGreaterEqualScalar                       -> _init_xx x param
+        | EltEqual                                    -> _init_02 x param "elt_equal"
+        | EltNotEqual                                 -> _init_02 x param "elt_not_equal"
+        | EltLess                                     -> _init_02 x param "elt_less"
+        | EltGreater                                  -> _init_02 x param "elt_greater"
+        | EltLessEqual                                -> _init_02 x param "elt_less_equal"
+        | EltGreaterEqual                             -> _init_02 x param "elt_greater_equal"
+        | EltEqualScalar                              -> _init_03 x param "elt_equal_scalar"
+        | EltNotEqualScalar                           -> _init_03 x param "elt_not_equal_scalar"
+        | EltLessScalar                               -> _init_03 x param "elt_less_scalar"
+        | EltGreaterScalar                            -> _init_03 x param "elt_greater_scalar"
+        | EltLessEqualScalar                          -> _init_03 x param "elt_less_equal_scalar"
+        | EltGreaterEqualScalar                       -> _init_03 x param "elt_greater_equal_scalar"
         | ApproxEqual eps                             -> failwith "ApproxEqual"
         | ApproxEqualScalar eps                       -> failwith "ApproxEqualScalar"
         | ApproxEltEqual eps                          -> failwith "ApproxEltEqual"
@@ -287,38 +287,38 @@ module Make (A : Ndarray_Mutable) = struct
         | OfRows                                      -> failwith "OfRows"
         | OfArray shape                               -> failwith "OfArray"
         | OfArrays                                    -> failwith "OfArrays"
-        | Scalar_Add                                  -> _init_xx x param
-        | Scalar_Sub                                  -> _init_xx x param
-        | Scalar_Mul                                  -> _init_xx x param
-        | Scalar_Div                                  -> _init_xx x param
-        | Scalar_Pow                                  -> _init_xx x param
-        | Scalar_Atan2                                -> _init_xx x param
-        | Scalar_Abs                                  -> _init_xx x param
-        | Scalar_Neg                                  -> _init_xx x param
-        | Scalar_Sqr                                  -> _init_xx x param
-        | Scalar_Sqrt                                 -> _init_xx x param
-        | Scalar_Exp                                  -> _init_xx x param
-        | Scalar_Log                                  -> _init_xx x param
-        | Scalar_Log2                                 -> _init_xx x param
-        | Scalar_Log10                                -> _init_xx x param
-        | Scalar_Signum                               -> _init_xx x param
-        | Scalar_Floor                                -> _init_xx x param
-        | Scalar_Ceil                                 -> _init_xx x param
-        | Scalar_Round                                -> _init_xx x param
-        | Scalar_Sin                                  -> _init_xx x param
-        | Scalar_Cos                                  -> _init_xx x param
-        | Scalar_Tan                                  -> _init_xx x param
-        | Scalar_Sinh                                 -> _init_xx x param
-        | Scalar_Cosh                                 -> _init_xx x param
-        | Scalar_Tanh                                 -> _init_xx x param
-        | Scalar_Asin                                 -> _init_xx x param
-        | Scalar_Acos                                 -> _init_xx x param
-        | Scalar_Atan                                 -> _init_xx x param
-        | Scalar_Asinh                                -> _init_xx x param
-        | Scalar_Acosh                                -> _init_xx x param
-        | Scalar_Atanh                                -> _init_xx x param
-        | Scalar_Relu                                 -> _init_xx x param
-        | Scalar_Sigmoid                              -> _init_xx x param
+        | Scalar_Add                                  -> _init_03 x param "add"
+        | Scalar_Sub                                  -> _init_03 x param "sub"
+        | Scalar_Mul                                  -> _init_03 x param "mul"
+        | Scalar_Div                                  -> _init_03 x param "div"
+        | Scalar_Pow                                  -> _init_03 x param "pow"
+        | Scalar_Atan2                                -> _init_03 x param "atan2"
+        | Scalar_Abs                                  -> _init_03 x param "abs"
+        | Scalar_Neg                                  -> _init_03 x param "neg"
+        | Scalar_Sqr                                  -> _init_03 x param "sqr"
+        | Scalar_Sqrt                                 -> _init_03 x param "sqrt"
+        | Scalar_Exp                                  -> _init_03 x param "exp"
+        | Scalar_Log                                  -> _init_03 x param "log"
+        | Scalar_Log2                                 -> _init_03 x param "log2"
+        | Scalar_Log10                                -> _init_03 x param "log10"
+        | Scalar_Signum                               -> _init_03 x param "signum"
+        | Scalar_Floor                                -> _init_03 x param "floor"
+        | Scalar_Ceil                                 -> _init_03 x param "ceil"
+        | Scalar_Round                                -> _init_03 x param "round"
+        | Scalar_Sin                                  -> _init_03 x param "sin"
+        | Scalar_Cos                                  -> _init_03 x param "cos"
+        | Scalar_Tan                                  -> _init_03 x param "tan"
+        | Scalar_Sinh                                 -> _init_03 x param "sinh"
+        | Scalar_Cosh                                 -> _init_03 x param "cosh"
+        | Scalar_Tanh                                 -> _init_03 x param "tanh"
+        | Scalar_Asin                                 -> _init_03 x param "asin"
+        | Scalar_Acos                                 -> _init_03 x param "acos"
+        | Scalar_Atan                                 -> _init_03 x param "atan"
+        | Scalar_Asinh                                -> _init_03 x param "asinh"
+        | Scalar_Acosh                                -> _init_03 x param "acosh"
+        | Scalar_Atanh                                -> _init_03 x param "atanh"
+        | Scalar_Relu                                 -> _init_03 x param "relu"
+        | Scalar_Sigmoid                              -> _init_03 x param "sigmoid"
         | Fused_Adagrad (rate, eps)                   -> _init_xx x param
         | _                                           -> failwith "owl_opencl_engine:_eval_term"
 
@@ -430,6 +430,31 @@ module Make (A : Ndarray_Mutable) = struct
     Kernel.set_arg kernel 3 sizeof_int32 dim_ptr;
     Kernel.set_arg kernel 4 sizeof_int32 a_stride_ptr;
     Kernel.set_arg kernel 5 sizeof_int32 b_stride_ptr
+
+
+  (* f : arr -> arr, reduce operation *)
+  and _init_05 x param fun_name axis =
+    let parent = (parents x).(0) in
+    _init_term parent param;
+
+    let ctx, cmdq, program = param in
+    allocate_from_parent_0 ctx x;
+    let a_ptr = get_gpu_ptr (get_value parent).(0) in
+    let b_ptr = get_gpu_ptr (get_value x).(0) in
+
+    let parent_shape = A.shape (value_to_arr (get_value parent).(0)) in
+    let dim_i32 = Int32.of_int parent_shape.(axis) in
+    let dim_ptr = Ctypes.(allocate int32_t dim_i32) in
+    let stride = Owl_utils_ndarray.calc_stride parent_shape in
+    let stride_i32 = Int32.of_int stride.(axis) in
+    let stride_ptr = Ctypes.(allocate int32_t stride_i32) in
+    let sizeof_int32 = Ctypes.(sizeof (ptr int32_t)) in
+
+    let kernel = make_kernel x program fun_name in
+    Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
+    Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
+    Kernel.set_arg kernel 2 sizeof_int32 dim_ptr;
+    Kernel.set_arg kernel 3 sizeof_int32 stride_ptr
 
 
   (* f : arr array -> arr, pseudo random number generators *)

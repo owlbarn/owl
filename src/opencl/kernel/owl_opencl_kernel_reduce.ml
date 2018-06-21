@@ -4,8 +4,8 @@
  *)
 
 
-let reduce_arr_template = "
-  __kernel void owl_opencl_MLTYP0_sum(
+let reduce_arr_template_00 = "
+  __kernel void owl_opencl_CLTYP0_sum(
       __global const CLTYP0 *input,
       __global CLTYP0 *output,
       __local CLTYP0 *shared,
@@ -77,3 +77,34 @@ let reduce_arr_template = "
 
   }
 "
+
+
+let reduce_arr_template_01 = "
+__kernel void owl_opencl_FUNNAME(
+    __global CLTYP *a,
+    __global CLTYP *b,
+    int dim,
+    int stride)
+{
+  // project b's 1d-index b1d to a's a1d
+  int b1d = get_global_id(0);
+  int a1d = (b1d / stride) * dim * stride + (b1d % stride);
+
+  INITFUN;
+
+  for (int i = 0; i < dim; i++) {
+    MAPFUN;
+    a1d += stride;
+  }
+
+}
+"
+
+
+let reduce_arr_fun fun_name cl_typ map_fun init_fun =
+  Owl_opencl_utils.replace_subs reduce_arr_template_01 [
+    ("FUNNAME", fun_name);
+    ("MAPFUN", map_fun);
+    ("INITFUN", init_fun);
+    ("CLTYP", cl_typ);
+  ]
