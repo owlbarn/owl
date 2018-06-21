@@ -77,7 +77,6 @@ CAMLprim value FUNCTION (stub, repeat2_native) (
   typedef struct _RDATA {
     int h;
     int d;
-    int b;
     int ofsx;
     int tag;
   } RDATA;
@@ -88,63 +87,57 @@ CAMLprim value FUNCTION (stub, repeat2_native) (
   TYPE *y = (TYPE *) Y->data;
 
   int highest_dim = Wosize_val(vShape_x) - 1;
-  /*
-  printf("highest_dim: %d\n", highest_dim);
-
-  printf("Reps:");
-  for (int i = 0; i < Wosize_val(vReps); ++i) {
-    printf("%d", Int_val(Field(vReps, i)));
-  }
-  printf("\n"); */
 
   int h = 0;
   int d = 0;
-  int b = 0;
   int ofsx = 0;
   int tag = 1;
-
-  int top = -1;
 
   int N = 1;
   for (int i = 0; i < Wosize_val(vShape_x); ++i) {
     N += Int_val(Field(vShape_x, i));
   }
-
   RDATA stack[N];
+  int top = -1;
 
   while (((d != highest_dim + 1) && tag) || (top != -1)) {
 
     while ((d != highest_dim + 1) && tag) {
-      for (int i = Int_val(Field(vShape_x, d)) - 1; i >= 0; i--) {
+      int shaped = Int_val(Field(vShape_x,   d));
+      int idxd   = Int_val(Field(vBlock_idx, d));
+      int strid  = Int_val(Field(vStride_x,  d));
+
+      int h_new = h + (shaped - 1) * idxd;
+      int o_new = ofsx + (shaped - 1) * strid;
+      for (int i = shaped - 1; i >= 0; i--) {
         int flag = 1;
         if (i == 0) { flag = 0; }
-        RDATA r;
-        r.h = h + i * Int_val(Field(vBlock_idx, d));
-        r.d = d + 1;
-        r.b = i;
-        r.ofsx = ofsx + i * Int_val(Field(vStride_x, d));
-        r.tag = flag;
-        //printf("Pushed: %d, %d, %d, %d, %d\n", r.h, r.d, r.b, r.ofsx, r.tag);
+        RDATA r = {h_new, d + 1, o_new, flag};
         stack[++top] = r;
+        h_new -= idxd;
+        o_new -= strid;
       }
       d++;
     }
 
     if (top != -1) {
       RDATA r = stack[top--];
-      h = r.h; d = r.d; b = r.b; ofsx = r.ofsx; tag = r.tag;
-      //printf("Popped: %d, %d, %d, %d, %d\n", r.h, r.d, r.b, r.ofsx, r.tag);
+      h = r.h; d = r.d; ofsx = r.ofsx; tag = r.tag;
       if ((tag == 1) && d != highest_dim + 1) {
         r.tag = 0;
         stack[++top] = r;
-        //printf("Pushed again: %d, %d, %d, %d, %d\n", r.h, r.d, r.b, r.ofsx, r.tag);
-      } else {
+      }
+      else {
         COPYFUN(Int_val(Field(vBlock, highest_dim)), x, ofsx, 0, y, h, 1);
-        //printf("small copy: %d: %d -- %d\n", Int_val(Field(vBlock, highest_dim)), ofsx, h);
-        for (int j = 1; j < Int_val(Field(vReps, d - 1)); j++) {
-          int ofsy = h + j * Int_val(Field(vBlock, d - 1));
-          COPYFUN(Int_val(Field(vBlock, d - 1)), y, h, 1, y, ofsy, 1);
-          //printf("large copy: %d: %d -- %d\n", Int_val(Field(vBlock, d - 1)), ofsx, ofsy);
+
+        int block_sz = Int_val(Field(vBlock, d - 1));
+        int repsd    = Int_val(Field(vReps,  d - 1));
+        int blockd   = Int_val(Field(vBlock, d - 1));
+
+        int ofsy = h + blockd;
+        for (int j = 1; j < repsd; j++) {
+          COPYFUN(block_sz, y, h, 1, y, ofsy, 1);
+          ofsy += blockd;
         }
       }
     }
