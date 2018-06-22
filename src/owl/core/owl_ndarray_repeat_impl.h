@@ -107,15 +107,23 @@ CAMLprim value FUNCTION (stub, repeat2_native) (
       int idxd   = Int_val(Field(vBlock_idx, d));
       int strid  = Int_val(Field(vStride_x,  d));
 
-      int h_new = h + (shaped - 1) * idxd;
-      int o_new = ofsx + (shaped - 1) * strid;
-      for (int i = shaped - 1; i >= 0; i--) {
-        int flag = 1;
-        if (i == 0) { flag = 0; }
-        RDATA r = {h_new, d + 1, o_new, flag};
+      if (shaped == 1) {
+        RDATA r = {h, d + 1, ofsx, 0};
+        printf("Pushed: (%d, %d, %d, 0)\n", h, d + 1, ofsx);
         stack[++top] = r;
-        h_new -= idxd;
-        o_new -= strid;
+      }
+      else {
+        int h_new = h + (shaped - 1) * idxd;
+        int o_new = ofsx + (shaped - 1) * strid;
+        for (int i = shaped - 1; i >= 0; i--) {
+          int flag = 1;
+          if (i == 0) { flag = 0; }
+          RDATA r = {h_new, d + 1, o_new, flag};
+          printf("Pushed: (%d, %d, %d, %d)\n", h_new, d + 1, o_new, flag);
+          stack[++top] = r;
+          h_new -= idxd;
+          o_new -= strid;
+        }
       }
       d++;
     }
@@ -123,12 +131,29 @@ CAMLprim value FUNCTION (stub, repeat2_native) (
     if (top != -1) {
       RDATA r = stack[top--];
       h = r.h; d = r.d; ofsx = r.ofsx; tag = r.tag;
-      if ((tag == 1) && d != highest_dim + 1) {
+      printf("Popped: %d, %d, %d, %d\n", h, d, ofsx, tag);
+
+      if (tag && d < highest_dim + 1) {
         r.tag = 0;
         stack[++top] = r;
+        printf("Re-Pushed: (%d, %d, %d, 0)\n", h, d, ofsx);
       }
-      else {
-        COPYFUN(Int_val(Field(vBlock, highest_dim)), x, ofsx, 0, y, h, 1);
+
+      else if (d == highest_dim + 1) {
+
+        int block_sz = Int_val(Field(vBlock, d - 1));
+        int repsd    = Int_val(Field(vReps,  d - 1));
+        int blockd   = Int_val(Field(vBlock, d - 1));
+
+        int ofsy = h;
+        for (int j = 0; j < repsd; j++) {
+          COPYFUN(block_sz, x, ofsx, 1, y, ofsy, 1);
+          printf("COPY Last-dim: %d -- %d, (%d)\n", ofsx, ofsy, block_sz);
+          ofsy += blockd;
+        }
+      } else {
+
+        //COPYFUN(Int_val(Field(vBlock, highest_dim)), x, ofsx, 0, y, h, 1);
 
         int block_sz = Int_val(Field(vBlock, d - 1));
         int repsd    = Int_val(Field(vReps,  d - 1));
@@ -138,6 +163,7 @@ CAMLprim value FUNCTION (stub, repeat2_native) (
         for (int j = 1; j < repsd; j++) {
           COPYFUN(block_sz, y, h, 1, y, ofsy, 1);
           ofsy += blockd;
+          printf("Pure COPY: %d -- %d, (%d)\n", h, ofsy, block_sz);
         }
       }
     }
