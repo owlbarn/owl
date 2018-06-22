@@ -94,15 +94,16 @@ CAMLprim value FUNCTION (stub, repeat2_native) (
   int tag = 1;
 
   int N = 1;
-  for (int i = 0; i < Wosize_val(vShape_x); ++i) {
+  for (int i = 0; i < Wosize_val(vShape_x) - 1; ++i) {
     N += Int_val(Field(vShape_x, i));
   }
   RDATA stack[N];
   int top = -1;
 
-  while (((d != highest_dim + 1) && tag) || (top != -1)) {
+  while (((d != highest_dim) && tag) || (top != -1)) {
 
-    while ((d != highest_dim + 1) && tag) {
+    while ((d != highest_dim) && tag) {
+      
       int shaped = Int_val(Field(vShape_x,   d));
       int idxd   = Int_val(Field(vBlock_idx, d));
       int strid  = Int_val(Field(vStride_x,  d));
@@ -133,36 +134,34 @@ CAMLprim value FUNCTION (stub, repeat2_native) (
       h = r.h; d = r.d; ofsx = r.ofsx; tag = r.tag;
       printf("Popped: %d, %d, %d, %d\n", h, d, ofsx, tag);
 
-      if (tag && d < highest_dim + 1) {
+      if (tag && d < highest_dim) {
         r.tag = 0;
         stack[++top] = r;
         printf("Re-Pushed: (%d, %d, %d, 0)\n", h, d, ofsx);
       }
 
-      else if (d == highest_dim + 1) {
+      else {
+        int block_sz, repsd, ofsy;
 
-        int block_sz = Int_val(Field(vBlock, d - 1));
-        int repsd    = Int_val(Field(vReps,  d - 1));
-        int blockd   = Int_val(Field(vBlock, d - 1));
+        if (d == highest_dim) {
+          block_sz = Int_val(Field(vShape_x, d));
+          repsd    = Int_val(Field(vReps,    d));
+          ofsy = h;
 
-        int ofsy = h;
-        for (int j = 0; j < repsd; j++) {
-          COPYFUN(block_sz, x, ofsx, 1, y, ofsy, 1);
-          printf("COPY Last-dim: %d -- %d, (%d)\n", ofsx, ofsy, block_sz);
-          ofsy += blockd;
+          for (int j = 0; j < repsd; j++) {
+            COPYFUN(block_sz, x, ofsx, 1, y, ofsy, repsd);
+            printf("COPY Last-dim: %d -- %d, (%d)\n", ofsx, ofsy, block_sz);
+            ofsy += 1;
+          }
         }
-      } else {
 
-        //COPYFUN(Int_val(Field(vBlock, highest_dim)), x, ofsx, 0, y, h, 1);
+        block_sz = Int_val(Field(vBlock, d - 1));
+        repsd    = Int_val(Field(vReps,  d - 1));
+        ofsy = h + block_sz;
 
-        int block_sz = Int_val(Field(vBlock, d - 1));
-        int repsd    = Int_val(Field(vReps,  d - 1));
-        int blockd   = Int_val(Field(vBlock, d - 1));
-
-        int ofsy = h + blockd;
         for (int j = 1; j < repsd; j++) {
           COPYFUN(block_sz, y, h, 1, y, ofsy, 1);
-          ofsy += blockd;
+          ofsy += block_sz;
           printf("Pure COPY: %d -- %d, (%d)\n", h, ofsy, block_sz);
         }
       }
