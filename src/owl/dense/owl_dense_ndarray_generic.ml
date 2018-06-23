@@ -241,15 +241,14 @@ let repeat2 x reps =
     let block = Owl_utils.calc_stride _shape_y in
     let _stride_x = Owl_utils.calc_stride _shape_x in
 
-    let block_idx = Owl_utils_array.sub _shape_x 1 highest_dim in
+    (* let block_idx = Owl_utils_array.sub _shape_x 1 highest_dim in
     let block_idx = Owl_utils_array.append block_idx [|1|] in
     let block_idx = Array.map2 ( * ) block_idx reps in
     let block_idx = Owl_utils.calc_slice block_idx in
-    (* or:
+    or:*)
     let foo = Owl_utils.calc_slice reps in
     let bar = Owl_utils.calc_stride _shape_x in
     let block_idx = Array.map2 ( * ) foo bar in
-    *)
 
     Owl_ndarray_repeat._ndarray_repeat2 _kind x y reps _shape_x _stride_x block block_idx;
   );

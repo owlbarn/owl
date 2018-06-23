@@ -5,6 +5,8 @@
 
 #ifdef OWL_ENABLE_TEMPLATE
 
+#include <time.h>
+
 
 CAMLprim value FUNCTION (stub, repeat_native) (
   value vX, value vY,
@@ -74,6 +76,7 @@ CAMLprim value FUNCTION (stub, repeat2_native) (
   value vBlock_idx
 ) {
 
+  clock_t begin = clock();
   typedef struct _RDATA {
     int h;
     int d;
@@ -103,28 +106,20 @@ CAMLprim value FUNCTION (stub, repeat2_native) (
   while (((d != highest_dim) && tag) || (top != -1)) {
 
     while ((d != highest_dim) && tag) {
-      
       int shaped = Int_val(Field(vShape_x,   d));
       int idxd   = Int_val(Field(vBlock_idx, d));
       int strid  = Int_val(Field(vStride_x,  d));
 
-      if (shaped == 1) {
-        RDATA r = {h, d + 1, ofsx, 0};
-        printf("Pushed: (%d, %d, %d, 0)\n", h, d + 1, ofsx);
+      int h_new = h + (shaped - 1) * idxd;
+      int o_new = ofsx + (shaped - 1) * strid;
+      for (int i = shaped - 1; i >= 0; i--) {
+        int flag = 1;
+        if (i == 0) { flag = 0; }
+        RDATA r = {h_new, d + 1, o_new, flag};
+        printf("Pushed: (%d, %d, %d, %d)\n", h_new, d + 1, o_new, flag);
         stack[++top] = r;
-      }
-      else {
-        int h_new = h + (shaped - 1) * idxd;
-        int o_new = ofsx + (shaped - 1) * strid;
-        for (int i = shaped - 1; i >= 0; i--) {
-          int flag = 1;
-          if (i == 0) { flag = 0; }
-          RDATA r = {h_new, d + 1, o_new, flag};
-          printf("Pushed: (%d, %d, %d, %d)\n", h_new, d + 1, o_new, flag);
-          stack[++top] = r;
-          h_new -= idxd;
-          o_new -= strid;
-        }
+        h_new -= idxd;
+        o_new -= strid;
       }
       d++;
     }
@@ -132,41 +127,50 @@ CAMLprim value FUNCTION (stub, repeat2_native) (
     if (top != -1) {
       RDATA r = stack[top--];
       h = r.h; d = r.d; ofsx = r.ofsx; tag = r.tag;
-      printf("Popped: %d, %d, %d, %d\n", h, d, ofsx, tag);
+      printf("Popped: %d, %d, %d, %d\n", r.h, r.d, r.ofsx, r.tag);
 
-      if (tag && d < highest_dim) {
+      if ((r.tag == 1) && (d < highest_dim)) {
         r.tag = 0;
         stack[++top] = r;
         printf("Re-Pushed: (%d, %d, %d, 0)\n", h, d, ofsx);
       }
-
       else {
+        printf("Used: %d, %d, %d, %d\n", h, d, ofsx, tag);
         int block_sz, repsd, ofsy;
 
         if (d == highest_dim) {
           block_sz = Int_val(Field(vShape_x, d));
           repsd    = Int_val(Field(vReps,    d));
-          ofsy = h;
 
+          /* ofsy = h;
           for (int j = 0; j < repsd; j++) {
             COPYFUN(block_sz, x, ofsx, 1, y, ofsy, repsd);
             printf("COPY Last-dim: %d -- %d, (%d)\n", ofsx, ofsy, block_sz);
             ofsy += 1;
+          } */
+
+          ofsy = h;
+          for (int j = 0; j < block_sz; ++j) {
+            COPYFUN(repsd, x, ofsx+j, 0, y, ofsy, 1);
+            printf("COPY Last-dim: %d -- %d, (%d)\n", ofsx+j, ofsy, repsd);
+            ofsy += repsd;
           }
         }
 
         block_sz = Int_val(Field(vBlock, d - 1));
         repsd    = Int_val(Field(vReps,  d - 1));
         ofsy = h + block_sz;
-
         for (int j = 1; j < repsd; j++) {
           COPYFUN(block_sz, y, h, 1, y, ofsy, 1);
-          ofsy += block_sz;
           printf("Pure COPY: %d -- %d, (%d)\n", h, ofsy, block_sz);
+          ofsy += block_sz;
         }
       }
     }
   }
+  clock_t end = clock();
+  double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  fprintf(stderr, "Time in C%f\n", time_spent);
 }
 
 #endif /* OWL_ENABLE_TEMPLATE */
