@@ -238,7 +238,7 @@ let repeat2 x reps =
     done
   )
   else (
-    let block = Owl_utils.calc_stride _shape_y in
+    (* let block = Owl_utils.calc_stride _shape_y in
     let _stride_x = Owl_utils.calc_stride _shape_x in
 
     (* let block_idx = Owl_utils_array.sub _shape_x 1 highest_dim in
@@ -247,12 +247,14 @@ let repeat2 x reps =
     let block_idx = Owl_utils.calc_slice block_idx in
     or:*)
     let foo = Owl_utils.calc_slice reps in
-    let bar = Owl_utils.calc_stride _shape_x in
-    let block_idx = Array.map2 ( * ) foo bar in
+    let block_idx = Array.map2 ( * ) foo _stride_x in
 
-    Owl_ndarray_repeat._ndarray_repeat2 _kind x y reps _shape_x _stride_x block block_idx;
+    Owl_ndarray_repeat._ndarray_repeat2 _kind x y reps _shape_x _stride_x block block_idx; *)
+    Owl_ndarray_repeat._ndarray_repeat3 _kind x y highest_dim reps _shape_x _shape_y;
+
   );
   reshape y _shape_y
+
 
   (*
   let h = ref 0 in
