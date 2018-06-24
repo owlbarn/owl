@@ -54,3 +54,18 @@ let _ndarray_repeat2
   | Complex32 -> owl_complex32_ndarray_repeat2
   | Complex64 -> owl_complex64_ndarray_repeat2
   | _         -> failwith "_ndarray_repeat2: unsupported operation"
+
+
+external owl_float32_ndarray_repeat3 : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int array -> int array -> int array -> unit = "stub_float32_ndarray_repeat3_byte" "stub_float32_ndarray_repeat3_native"
+external owl_float64_ndarray_repeat3 : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int array -> int array -> int array -> unit = "stub_float64_ndarray_repeat3_byte" "stub_float64_ndarray_repeat3_native"
+external owl_complex32_ndarray_repeat3 : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int array -> int array -> int array -> unit = "stub_complex32_ndarray_repeat3_byte" "stub_complex32_ndarray_repeat3_native"
+external owl_complex64_ndarray_repeat3 : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int array -> int array -> int array -> unit = "stub_complex64_ndarray_repeat3_byte" "stub_complex64_ndarray_repeat3_native"
+
+let _ndarray_repeat3
+  : type a b. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr -> int -> int array -> int array -> int array -> unit
+  = function
+  | Float32   -> owl_float32_ndarray_repeat3
+  | Float64   -> owl_float64_ndarray_repeat3
+  | Complex32 -> owl_complex32_ndarray_repeat3
+  | Complex64 -> owl_complex64_ndarray_repeat3
+  | _         -> failwith "_ndarray_repeat3: unsupported operation"
