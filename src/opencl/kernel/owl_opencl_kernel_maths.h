@@ -316,7 +316,7 @@
 
 #define CLFUN01 owl_opencl_float32_log1p
 #define TYPE float
-#define MAPFUN(X,Y) Y = lop1p(X)
+#define MAPFUN(X,Y) Y = log1p(X)
 #include "owl_opencl_kernel_map.h"
 #undef MAPFUN
 #undef TYPE
@@ -734,6 +734,7 @@
 #define MAPFUN(X,Y) Y = min(X, Y)
 #include "owl_opencl_kernel_reduce.h"
 #undef MAPFUN
+#undef INITFUN
 #undef TYPE
 #undef CLFUN06
 
@@ -744,6 +745,7 @@
 #define MAPFUN(X,Y) Y = max(X, Y)
 #include "owl_opencl_kernel_reduce.h"
 #undef MAPFUN
+#undef INITFUN
 #undef TYPE
 #undef CLFUN06
 
@@ -754,6 +756,7 @@
 #define MAPFUN(X,Y) Y += X
 #include "owl_opencl_kernel_reduce.h"
 #undef MAPFUN
+#undef INITFUN
 #undef TYPE
 #undef CLFUN06
 

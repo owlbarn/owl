@@ -4,6 +4,9 @@
  */
 
 
+#include "owl_opencl_prng_philox_kernel.h"
+
+
 __kernel void owl_opencl_float32_std_uniform (
   __global clrngPhilox432HostStream* streams,
   __global float* out)

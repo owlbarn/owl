@@ -6,7 +6,7 @@
 #ifdef OWL_ENABLE_TEMPLATE
 
 
-void FUNCTION (
+__kernel void FUNCTION (
   __global TYPE *a,
   __global TYPE *b,
   __global TYPE *c,
