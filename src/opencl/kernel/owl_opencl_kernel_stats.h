@@ -38,3 +38,11 @@ __kernel void owl_opencl_float32_uniform (
 
   clrngPhilox432CopyOverStreamsToGlobal(1, &streams[gid], &private_stream);
 }
+
+
+__kernel void owl_opencl_float32_std_gaussian (
+  __global clrngPhilox432HostStream* streams,
+  __global float* out)
+{
+  // TODO: Ratio-of-Uniforms Method
+}

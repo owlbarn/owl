@@ -38,7 +38,7 @@
 #ifndef PRIVATE_PHILOX432_CH
 #define PRIVATE_PHILOX432_CH
 
-#include "philox.h" 
+#include "philox.h"
 
 #define Philox432_NORM_cl_double    1.0 / 0x100000000L   // 1.0 /2^32
 #define Philox432_NORM_cl_float     2.32830644e-010;
@@ -107,7 +107,7 @@ void clrngPhilox432GenerateDeck(clrngPhilox432StreamState *currentState)
 */
 static cl_uint clrngPhilox432NextState(clrngPhilox432StreamState *currentState) {
 
-	if ((currentState->deckIndex == 0))
+	if (currentState->deckIndex == 0)
 	{
 		clrngPhilox432GenerateDeck(currentState);
 
