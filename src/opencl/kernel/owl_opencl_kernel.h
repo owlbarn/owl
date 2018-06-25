@@ -14,4 +14,6 @@
 
 #include "owl_opencl_kernel_maths.h"
 
+#include "owl_opencl_kernel_stats.h"
+
 #include "owl_opencl_kernel_broadcast.h"
