@@ -24,7 +24,7 @@ let post_process kernel_code =
 
 let make_kernel fname kernel_code =
   let h = open_out fname in
-  let ml_code = Printf.sprintf "let code = \"%s\"\n" kernel_code in
+  let ml_code = Printf.sprintf "let code = \"\n%s\"\n" kernel_code in
   Printf.fprintf h "%s" ml_code;
   close_out h
 
@@ -32,4 +32,4 @@ let make_kernel fname kernel_code =
 let _ =
   let raw_kernel_code = gcc_preprocess "owl_opencl_kernel.h" in
   let kernel_code = post_process raw_kernel_code in
-  make_kernel "owl_opencl_kernel_test.ml" kernel_code
+  make_kernel "owl_opencl_kernel_impl.ml" kernel_code
