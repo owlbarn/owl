@@ -41,7 +41,7 @@
 #ifndef PHILOX432_CLH
 #define PHILOX432_CLH
 
-#include <clRNG/clRNG.clh>
+#include "clRNG.cl.h"
 
 
 /********************************************************************************
@@ -148,7 +148,7 @@ clrngStatus clrngPhilox432CopyOverStreamsToGlobal(size_t count, __global clrngPh
 }
 
 // code that is common to host and device
-#include <clRNG/private/philox432.c.h>
+#include "philox432.c.h"
 
 #endif
 
