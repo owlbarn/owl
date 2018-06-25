@@ -129,13 +129,18 @@ let get_cmdq ctx dev = Hashtbl.find ctx.command_queue dev
 let default =
   let devs = gpu_devices () in
   let code = [||] in
-  Owl_log.info "OpenCL: initialising context ...";
+  Owl_log.info "OpenCL: initialising default context ...";
   let ctx = create devs code in
-  Owl_log.info "OpenCL: finished initialisation.";
+
+  let num_dev = Array.length devs in
+  let num_kernel = Array.length (kernels ctx) in
+  Owl_log.info "OpenCL: %i kernels compiled for %i devices." num_kernel num_dev;
+
   Array.iteri (fun dev_id dev ->
     let dev_name = (Device.get_info dev).name in
     Owl_log.info "OpenCL: device #%i: %s" dev_id dev_name
   ) devs;
+
   ctx
 
 

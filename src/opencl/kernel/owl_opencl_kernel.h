@@ -4,7 +4,8 @@
  */
 
 
-/* Include various static kernel modules
+/*
+ * Include various static kernel modules
  * Only single precision is currently implemented. However, it is very easy to
  * extend existing code structure to support double precision.
  */
