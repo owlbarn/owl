@@ -4,10 +4,4 @@
  *)
 
 
-let code () = [|
-    (* Add new kernels in the list *)
-    Owl_opencl_kernel_impl.code;
-    Owl_opencl_kernel_stats.code ();
-  |]
-  |>
-  Array.fold_left ( ^ ) ""
+let code () = Owl_opencl_kernel_impl.code
