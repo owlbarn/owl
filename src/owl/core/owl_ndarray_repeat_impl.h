@@ -167,6 +167,7 @@ CAMLprim value FUNCTION (stub, repeat2_native) (
   fprintf(stderr, "Time in C%f\n", time_spent);
 }
 
+
 CAMLprim value FUNCTION (stub, repeat2_byte) (value * argv, int argn) {
   return FUNCTION (stub, repeat2_native) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6]
@@ -181,19 +182,23 @@ CAMLprim value FUNCTION (stub, repeat3_native) (
   value vReps, value vShape_x, value vShape_y
 ) {
 
-  //clock_t begin = clock();
-  typedef struct _RDATA {
-    int h;
-    int d;
-    int ofsx;
-    int tag;
-  } RDATA;
-
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *x = (TYPE *) X->data;
   struct caml_ba_array *Y = Caml_ba_array_val(vY);
   TYPE *y = (TYPE *) Y->data;
   int highest_dim = Long_val(vHighest_dim);
+
+  /* Special Case : Vector */
+  if (highest_dim == 0) {
+    int xlen  = Int_val(Field(vShape_x, 0));
+    int repsd = Int_val(Field(vReps,    0));
+    int ofsy  = 0;
+    for (int i = 0; i < xlen; ++i) {
+      COPYFUN(repsd, x, i, 0, y, ofsy, 1);
+      ofsy += repsd;
+    }
+    return;
+  }
 
   /* Required stride & slice arrays */
   int block[highest_dim + 1];
@@ -217,27 +222,37 @@ CAMLprim value FUNCTION (stub, repeat3_native) (
     block_idx[i] *= stride_x[i];
   }
 
-  /* */
+  /* Initialize Stack */
+  typedef struct _RDATA {
+    int h;
+    int d;
+    int ofsx;
+    int tag;
+  } RDATA;
+
   int h = 0;
   int d = 0;
   int ofsx = 0;
   int tag = 1;
 
   int N = 1;
-  for (int i = 0; i <= highest_dim; ++i) {
+  for (int i = 0; i < highest_dim; ++i) {
     N += Int_val(Field(vShape_x, i));
   }
   RDATA stack[N];
   int top = -1;
 
+  /* Begin recursive-to-iterative prosedure */
   while (((d != highest_dim) && tag) || (top != -1)) {
 
+    // If the current job has not reached the highest dim and not yet explored,
+    // push its children to the stack.
     while ((d != highest_dim) && tag) {
-      int shaped = Int_val(Field(vShape_x,   d));
+      int shaped = Int_val(Field(vShape_x, d));
       int idxd   = block_idx[d];
       int strid  = stride_x[d];
 
-      int h_new = h + (shaped - 1) * idxd;
+      int h_new = h    + (shaped - 1) * idxd;
       int o_new = ofsx + (shaped - 1) * strid;
       for (int i = shaped - 1; i >= 0; i--) {
         int flag = 1;
@@ -251,47 +266,43 @@ CAMLprim value FUNCTION (stub, repeat3_native) (
       d++;
     }
 
+    // If the stack is not empty
     if (top != -1) {
       RDATA r = stack[top--];
       h = r.h; d = r.d; ofsx = r.ofsx; tag = r.tag;
-      //printf("Popped: %d, %d, %d, %d\n", r.h, r.d, r.ofsx, r.tag);
-
+      // If a node still contains unexplored children, push it back
       if ((r.tag == 1) && (d < highest_dim)) {
         r.tag = 0;
         stack[++top] = r;
-        //printf("Re-Pushed: (%d, %d, %d, 0)\n", h, d, ofsx);
       }
       else {
-        //printf("Used: %d, %d, %d, %d\n", h, d, ofsx, tag);
         int block_sz, repsd, ofsy;
-
+        // first, copy content from x to y for the highest dimension
         if (d == highest_dim) {
           block_sz = Int_val(Field(vShape_x, d));
           repsd    = Int_val(Field(vReps,    d));
-
-          ofsy = h;
-          for (int j = 0; j < block_sz; ++j) {
-            COPYFUN(repsd, x, ofsx+j, 0, y, ofsy, 1);
-            //printf("COPY Last-dim: %d -- %d, (%d)\n", ofsx+j, ofsy, repsd);
-            ofsy += repsd;
+          if (repsd == 1) {
+            COPYFUN(block_sz, x, ofsx, 1, y, h, 1);
+          }
+          else {
+            ofsy = h;
+            for (int j = 0; j < block_sz; ++j) {
+              COPYFUN(repsd, x, ofsx+j, 0, y, ofsy, 1);
+              ofsy += repsd;
+            }
           }
         }
-
+        // then, block-copy content within y
         block_sz = block[d - 1];
-        repsd    = Int_val(Field(vReps,  d - 1));
+        repsd = Int_val(Field(vReps,  d - 1));
         ofsy = h + block_sz;
         for (int j = 1; j < repsd; j++) {
           COPYFUN(block_sz, y, h, 1, y, ofsy, 1);
-          //printf("Pure COPY: %d -- %d, (%d)\n", h, ofsy, block_sz);
           ofsy += block_sz;
         }
       }
     }
   }
-  //clock_t end = clock();
-  //double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-  //fprintf(stderr, "Time in C%f\n", time_spent);
-
 }
 
 CAMLprim value FUNCTION (stub, repeat3_byte) (value * argv, int argn) {
