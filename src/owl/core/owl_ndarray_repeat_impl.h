@@ -199,11 +199,6 @@ CAMLprim value FUNCTION (stub, repeat3_native) (
   }
 
   /* Required stride & slice arrays */
-  int block[highest_dim + 1];
-  block[highest_dim] = 1;
-  for (int i = highest_dim - 1; i >= 0; --i) {
-    block[i] = Int_val(Field(vShape_y, i + 1)) * block[i + 1];
-  }
 
   int stride_x[highest_dim + 1];
   stride_x[highest_dim] = 1;
@@ -211,8 +206,14 @@ CAMLprim value FUNCTION (stub, repeat3_native) (
     stride_x[i] = Int_val(Field(vShape_x, i + 1)) * stride_x[i + 1];
   }
 
-  int block_idx[highest_dim + 1];
-  int HD = highest_dim; // opt: highest non-one-replication dimension
+  int slice_y[highest_dim + 1];
+  slice_y[highest_dim] = Int_val(Field(vShape_y, highest_dim));
+  for (int i = highest_dim - 1; i >= 0; --i) {
+    slice_y[i] = Int_val(Field(vShape_y, i)) * slice_y[i + 1];
+  }
+
+  int HD = highest_dim; //highest non-one-repeat dimension
+  int block_idx[highest_dim + 1]; //block size in counting indices
   block_idx[highest_dim] = Int_val(Field(vReps, highest_dim));
   int r, flag_one = 1;
   if (block_idx[highest_dim] != 1) { flag_one = 0; }
@@ -220,14 +221,11 @@ CAMLprim value FUNCTION (stub, repeat3_native) (
     r = Int_val(Field(vReps, i));
     block_idx[i] = r * block_idx[i + 1];
     if (r != 1) { flag_one = 0; }
-    //printf("fuck: %d -- %d\n", flag_one, r);
     if (flag_one && r == 1) { HD--; }
   }
   for (int i = 0; i <= highest_dim; ++i) {
     block_idx[i] *= stride_x[i];
   }
-  assert (HD > 0);
-  //fprintf(stderr, "HD: %d\n", HD);
 
   /* Initialize Stack */
   typedef struct _RDATA {
@@ -249,11 +247,8 @@ CAMLprim value FUNCTION (stub, repeat3_native) (
   RDATA stack[N];
   int top = -1;
 
-  //double time_spent = 0;
-
   /* Begin recursive-to-iterative prosedure */
   while (((d != HD) && tag) || (top != -1)) {
-
     // If the current job has not reached the highest dim and not yet explored,
     // push its children to the stack.
     while ((d != HD) && tag) {
@@ -267,7 +262,6 @@ CAMLprim value FUNCTION (stub, repeat3_native) (
         int flag = 1;
         if (i == 0) { flag = 0; }
         RDATA r = {h_new, d + 1, o_new, flag};
-        //fprintf(stderr, "Pushed: (%d, %d, %d, %d)\n", h_new, d + 1, o_new, flag);
         stack[++top] = r;
         h_new -= idxd;
         o_new -= strid;
@@ -277,52 +271,43 @@ CAMLprim value FUNCTION (stub, repeat3_native) (
 
     // If the stack is not empty
     if (top != -1) {
+
       RDATA r = stack[top--];
       h = r.h; d = r.d; ofsx = r.ofsx; tag = r.tag;
-      //fprintf(stderr, "Popped: %d, %d, %d, %d\n", r.h, r.d, r.ofsx, r.tag);
       // If a node still contains unexplored children, push it back
-      if ((r.tag == 1) && (d < HD)) {
+      if ((tag == 1) && (d < HD)) {
         r.tag = 0;
         stack[++top] = r;
-        // printf("Re-Pushed: (%d, %d, %d, 0)\n", h, d, ofsx);
       }
       else {
-        // printf("Used: %d, %d, %d, %d\n", h, d, ofsx, tag);
         int block_sz, repsd, ofsy;
         // first, copy content from x to y for the highest dimension
         if (d == HD) {
-          block_sz = block[d - 1];
-          repsd    = Int_val(Field(vReps, d));
+          repsd = Int_val(Field(vReps, d));
+          // different copy strategies
           if (repsd == 1) {
-            COPYFUN(block_sz, x, ofsx, 1, y, h, 1);
-            //fprintf(stderr, "COPY Last-dim1: %d -- %d, (%d)\n", ofsx, h, block_sz);
+            COPYFUN(slice_y[d], x, ofsx, 1, y, h, 1);
           }
           else {
-            int block_sz2 = Int_val(Field(vShape_x, d));
+            block_sz = Int_val(Field(vShape_x, d));
             ofsy = h;
-            for (int j = 0; j < block_sz2; ++j) {
+            for (int j = 0; j < block_sz; ++j) {
               COPYFUN(repsd, x, ofsx+j, 0, y, ofsy, 1);
-              //fprintf(stderr, "COPY Last-dim2: %d -- %d, (%d)\n", ofsx+j, ofsy, repsd);
               ofsy += repsd;
             }
           }
         }
         // then, block-copy content within y
-        block_sz = block[d - 1];
+        block_sz = slice_y[d];
         repsd = Int_val(Field(vReps,  d - 1));
         ofsy = h + block_sz;
-        //clock_t begin = clock();
         for (int j = 1; j < repsd; j++) {
           COPYFUN(block_sz, y, h, 1, y, ofsy, 1);
-          //fprintf(stderr, "Pure COPY: %d -- %d, (%d)\n", h, ofsy, block_sz);
           ofsy += block_sz;
         }
-        //clock_t end = clock();
-        //time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
       }
     }
   }
-  //fprintf(stderr, "Time in Copy %f\n", time_spent);
   return Val_unit;
 }
 
