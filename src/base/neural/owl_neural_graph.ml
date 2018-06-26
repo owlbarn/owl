@@ -299,64 +299,64 @@ module Make
     add_node nn [|input_node|] n
 
 
-  let conv1d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
-    let neuron = Conv1D (Conv1D.create padding kernel strides init_typ) in
+  let conv1d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel stride input_node =
+    let neuron = Conv1D (Conv1D.create padding kernel stride init_typ) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
     add_node ?act_typ nn [|input_node|] n
 
 
-  let conv2d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
-    let neuron = Conv2D (Conv2D.create padding kernel strides init_typ) in
+  let conv2d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel stride input_node =
+    let neuron = Conv2D (Conv2D.create padding kernel stride init_typ) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
     add_node ?act_typ nn [|input_node|] n
 
 
-  let conv3d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
-    let neuron = Conv3D (Conv3D.create padding kernel strides init_typ) in
+  let conv3d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel stride input_node =
+    let neuron = Conv3D (Conv3D.create padding kernel stride init_typ) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
     add_node ?act_typ nn [|input_node|] n
 
 
-  let dilated_conv1d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides rates input_node =
-    let neuron = DilatedConv1D (DilatedConv1D.create padding kernel strides rates init_typ) in
+  let dilated_conv1d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel stride rate input_node =
+    let neuron = DilatedConv1D (DilatedConv1D.create padding kernel stride rate init_typ) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
     add_node ?act_typ nn [|input_node|] n
 
 
-  let dilated_conv2d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides rates input_node =
-    let neuron = DilatedConv2D (DilatedConv2D.create padding kernel strides rates init_typ) in
+  let dilated_conv2d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel stride rate input_node =
+    let neuron = DilatedConv2D (DilatedConv2D.create padding kernel stride rate init_typ) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
     add_node ?act_typ nn [|input_node|] n
 
 
-  let dilated_conv3d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides rates input_node =
-    let neuron = DilatedConv3D (DilatedConv3D.create padding kernel strides rates init_typ) in
+  let dilated_conv3d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel stride rate input_node =
+    let neuron = DilatedConv3D (DilatedConv3D.create padding kernel stride rate init_typ) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
     add_node ?act_typ nn [|input_node|] n
 
 
-  let transpose_conv1d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
-    let neuron = TransposeConv1D (TransposeConv1D.create padding kernel strides init_typ) in
+  let transpose_conv1d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel stride input_node =
+    let neuron = TransposeConv1D (TransposeConv1D.create padding kernel stride init_typ) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
     add_node ?act_typ nn [|input_node|] n
 
 
-  let transpose_conv2d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
-    let neuron = TransposeConv2D (TransposeConv2D.create padding kernel strides init_typ) in
+  let transpose_conv2d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel stride input_node =
+    let neuron = TransposeConv2D (TransposeConv2D.create padding kernel stride init_typ) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
     add_node ?act_typ nn [|input_node|] n
 
 
-  let transpose_conv3d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
-    let neuron = TransposeConv3D (TransposeConv3D.create padding kernel strides init_typ) in
+  let transpose_conv3d ?name ?(padding=SAME) ?(init_typ=Init.Tanh) ?act_typ kernel stride input_node =
+    let neuron = TransposeConv3D (TransposeConv3D.create padding kernel stride init_typ) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
     add_node ?act_typ nn [|input_node|] n
