@@ -3,6 +3,9 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+
+(* NOTE: Obsoleted, do not use! *)
+
 open Bigarray
 
 module G = Owl_opencl_dense_ndarray
