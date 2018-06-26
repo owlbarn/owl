@@ -229,6 +229,21 @@ let repeat2 x reps =
   if Array.length reps != Array.length _shape_x then
     failwith "repeat: repitition must be of the same dimension as input ndarray";
 
+  if (Array.for_all (fun x -> x = 1) reps) = true then x else (
+    let _shape_y = Array.map2 ( * ) _shape_x reps in
+    let y = empty _kind _shape_y in
+    Owl_ndarray_repeat._ndarray_repeat3 _kind x y highest_dim reps _shape_x _shape_y;
+    reshape y _shape_y
+  )
+
+
+let repeat2_old x reps =
+  let highest_dim = Array.length (shape x) - 1 in
+  let _kind = kind x in
+  let _shape_x = shape x in
+  if Array.length reps != Array.length _shape_x then
+    failwith "repeat: repitition must be of the same dimension as input ndarray";
+
   let _shape_y = Array.map2 ( * ) _shape_x reps in
   let y = empty _kind _shape_y in
 
