@@ -126,9 +126,9 @@ module Make
     Owl_log.debug "tile";
     make_then_connect (Tile axises) [|arr_to_node x|] |> node_to_arr
 
-  let repeat ?(axis=(-1)) x repeats =
+  let repeat x repeats =
     Owl_log.debug "repeat";
-    make_then_connect (Repeat (axis, repeats)) [|arr_to_node x|] |> node_to_arr
+    make_then_connect (Repeat repeats) [|arr_to_node x|] |> node_to_arr
 
   let concatenate ?(axis=0) xs =
     Owl_log.debug "concatenate";

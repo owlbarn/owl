@@ -203,12 +203,10 @@ let tile shape repeats =
   Owl_utils_array.map2 (fun a b -> a * b) s r
 
 
-let repeat shape axis repeats =
-  let d = Array.length shape in
-  let a = Owl_utils_ndarray.adjust_index axis d in
-  let _shape = Array.copy shape in
-  _shape.(a) <- _shape.(a) * repeats;
-  _shape
+let repeat shape repeats =
+  assert (Array.exists ((>) 1) repeats = false);
+  assert (Array.length shape = Array.length repeats);
+  Owl_utils_array.map2 ( * ) shape repeats
 
 
 let concatenate shape axis =

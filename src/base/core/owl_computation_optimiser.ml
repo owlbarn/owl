@@ -48,7 +48,7 @@ module Make
         | Reshape shape                               -> pattern_000 x
         | Reverse                                     -> pattern_000 x
         | Tile repeats                                -> pattern_000 x
-        | Repeat (axis, repeats)                      -> pattern_000 x
+        | Repeat repeats                              -> pattern_000 x
         | Concatenate axis                            -> pattern_000 x
         | Split (axis, parts)                         -> pattern_000 x
         | Draw (axis, n)                              -> pattern_000 x

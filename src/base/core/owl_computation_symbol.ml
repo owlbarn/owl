@@ -65,7 +65,7 @@ module Make
     | Reshape                       of int array
     | Reverse
     | Tile                          of int array
-    | Repeat                        of int * int
+    | Repeat                        of int array
     | Concatenate                   of int
     | Split                         of int * int array
     | Draw                          of int * int
@@ -270,7 +270,7 @@ module Make
     | Reshape shape                               -> "Reshape"
     | Reverse                                     -> "Reverse"
     | Tile repeats                                -> "Tile"
-    | Repeat (axis, repeats)                      -> "Repeat"
+    | Repeat repeats                              -> "Repeat"
     | Concatenate axis                            -> "Concatenate"
     | Split (axis, parts)                         -> "Split"
     | Draw (axis, n)                              -> "Draw"
@@ -490,9 +490,9 @@ module Make
     | None   -> [| None |]
 
 
-  let _infer_shape_06 input_shapes axis repeats =
+  let _infer_shape_06 input_shapes repeats =
     match input_shapes.(0).(0) with
-    | Some s -> [| Some Owl_utils_infer_shape.(repeat s axis repeats) |]
+    | Some s -> [| Some Owl_utils_infer_shape.(repeat s repeats) |]
     | None   -> [| None |]
 
 
@@ -679,7 +679,7 @@ module Make
     | Reshape shape                               -> [| Some shape |]
     | Reverse                                     -> _infer_shape_01 input_shapes
     | Tile repeats                                -> _infer_shape_05 input_shapes repeats
-    | Repeat (axis, repeats)                      -> _infer_shape_06 input_shapes axis repeats
+    | Repeat repeats                              -> _infer_shape_06 input_shapes repeats
     | Concatenate axis                            -> _infer_shape_07 input_shapes axis
     | Split (axis, parts)                         -> _infer_shape_08 input_shapes axis parts
     | Draw (axis, n)                              -> _infer_shape_09 input_shapes axis n

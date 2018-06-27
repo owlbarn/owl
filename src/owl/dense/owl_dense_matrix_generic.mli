@@ -540,9 +540,9 @@ val tile : ('a, 'b) t -> int array -> ('a, 'b) t
 ``tile x a`` provides the exact behaviour as ``numpy.tile`` function.
  *)
 
-val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
+val repeat : ('a, 'b) t -> int array -> ('a, 'b) t
 (**
-``repeat ~axis x a`` repeats the elements along ``~axis`` for ``a`` times.
+``repeat x a`` repeats the elements ``x`` according the repetition specified by ``a``.
  *)
 
 val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
@@ -1198,7 +1198,7 @@ by using ``save`` function.
 
 val save_txt : ?sep:string -> ?append:bool -> ('a, 'b) t -> string -> unit
 (**
-``save_txt ~sep ~append x f`` saves the matrix ``x`` into a text file ``f`` 
+``save_txt ~sep ~append x f`` saves the matrix ``x`` into a text file ``f``
 delimited by the specified string ``sep`` (default: tab).  If ``append`` is
 ``false`` (it is by default), an existing file will be truncated and overwritten.
 If ``append`` is ``true`` and the file exists, new rows will be appended to it.

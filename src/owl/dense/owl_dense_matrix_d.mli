@@ -168,7 +168,7 @@ val swap_cols : mat -> int -> int -> unit
 
 val tile : mat -> int array -> mat
 
-val repeat : ?axis:int -> mat -> int -> mat
+val repeat : mat -> int array -> mat
 
 val pad : ?v:elt -> int list list -> mat -> mat
 

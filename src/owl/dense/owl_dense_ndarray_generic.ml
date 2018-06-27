@@ -143,7 +143,7 @@ let reverse x =
 let tile x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
-    failwith "tile: repitition must be >= 1";
+    failwith "tile: repetition must be >= 1";
   (* align and promote the shape *)
   let a = num_dims x in
   let b = Array.length reps in
@@ -188,44 +188,12 @@ let tile x reps =
   _tile 0 0 0; y
 
 
-let repeat ?(axis=(-1)) x reps =
-  let highest_dim = Array.length (shape x) - 1 in
-  (* by default, repeat at the highest dimension *)
-  let axis = Owl_utils.adjust_index axis (num_dims x) in
-  (* calculate the new shape of y based on reps *)
-  let _kind = kind x in
-  let _shape_y = shape x in
-  _shape_y.(axis) <- _shape_y.(axis) * reps;
-  let y = empty _kind _shape_y in
-  (* if repeat at the highest dimension, use this strategy *)
-  if axis = highest_dim then (
-    for i = 0 to reps - 1 do
-      _owl_copy _kind (numel x) ~ofsx:0 ~incx:1 ~ofsy:i ~incy:reps x y
-    done;
-  )
-  (* if repeat at another dimension, use this block copying *)
-  else (
-    let _stride_x = Owl_utils.calc_stride (shape x) in
-    let _slice_sz = _stride_x.(axis) in
-    (* be careful of the index, this is fortran layout *)
-    for i = 0 to (numel x) / _slice_sz - 1 do
-      let ofsx = i * _slice_sz in
-      for j = 0 to reps - 1 do
-        let ofsy = (i * reps + j) * _slice_sz in
-        _owl_copy _kind _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:1 x y
-      done;
-    done;
-  );
-  (* reshape y' back to ndarray before return result *)
-  reshape y _shape_y
-
-
-let repeat2 x reps =
+let repeat x reps =
   let highest_dim = Array.length (shape x) - 1 in
   let _kind = kind x in
   let _shape_x = shape x in
   if Array.length reps != Array.length _shape_x then
-    failwith "repeat: repitition must be of the same dimension as input ndarray";
+    failwith "repeat: repetition must be of the same dimension as input ndarray";
 
   if (Array.for_all (fun x -> x = 1) reps) = true then x else (
     let _shape_y = Array.map2 ( * ) _shape_x reps in
@@ -233,34 +201,6 @@ let repeat2 x reps =
     Owl_ndarray_repeat._ndarray_repeat _kind x y highest_dim reps _shape_x _shape_y;
     reshape y _shape_y
   )
-
-
-let tile2 x reps =
-  (* check the validity of reps *)
-  if Array.exists ((>) 1) reps then
-    failwith "tile: repitition must be >= 1";
-
-  (* align and promote the shape *)
-  let a = num_dims x in
-  let b = Array.length reps in
-  let x, reps = match a < b with
-    | true ->
-        let d = Owl_utils.Array.pad `Left 1 (b - a) (shape x) in
-        (reshape x d), reps
-    | false ->
-        let r = Owl_utils.Array.pad `Left 1 (a - b) reps in
-        x, r
-  in
-
-  let sx = shape x in
-  let sy = Array.map2 ( * ) sx reps in
-  let _kind = kind x in
-
-  let sx = Array.append [|1|] sx in
-  let reps = Array.append reps [|1|] in
-
-  let y = repeat2 (reshape x sx) reps in
-  reshape y sy
 
 
 let concatenate ?(axis=0) xs =

@@ -410,23 +410,15 @@ val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
 
 val tile : ('a, 'b) t -> int array -> ('a, 'b) t
 (**
-``tile x a`` tiles the data in ``x`` according the repitition specified by ``a``.
+``tile x a`` tiles the data in ``x`` according the repetition specified by ``a``.
 This function provides the exact behaviour as ``numpy.tile``, please refer to
 the numpy's online documentation for details.
  *)
 
-val tile2 : ('a, 'b) t -> int array -> ('a, 'b) t
-
-val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
+val repeat : ('a, 'b) t -> int array -> ('a, 'b) t
 (**
-``repeat ~axis x a`` repeats the elements along ``axis`` for ``a`` times. The default
-value of ``?axis`` is the highest dimension of ``x``. This function is similar to
-``numpy.repeat`` except that ``a`` is an integer instead of an array.
-
-Not that the ``axis`` can be negative.
+``repeat x a`` repeats the elements ``x`` according the repetition specified by ``a``. This function is similar to ``tile``.
  *)
-
-val repeat2 : ('a, 'b) t -> int array -> ('a, 'b) t
 
 val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**

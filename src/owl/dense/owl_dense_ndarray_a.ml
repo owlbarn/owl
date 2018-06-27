@@ -459,14 +459,12 @@ let tile x reps =
   in
   _tile 0 0 0; y
 
-
-let repeat ?axis x reps =
+(* TODO: Implement correct repeat *)
+let repeat x reps =
+  let reps = reps.(0) in
   let highest_dim = Array.length (shape x) - 1 in
   (* by default, repeat at the highest dimension *)
-  let axis = match axis with
-    | Some a -> a
-    | None   -> highest_dim
-  in
+  let axis = highest_dim in
   (* calculate the new shape of y based on reps *)
   let _shape_y = shape x in
   _shape_y.(axis) <- _shape_y.(axis) * reps;

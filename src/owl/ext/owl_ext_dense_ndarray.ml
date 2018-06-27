@@ -159,7 +159,7 @@ module type BasicSig = sig
 
   val tile : arr -> int array -> arr
 
-  val repeat : ?axis:int -> arr -> int -> arr
+  val repeat : arr -> int array -> arr
 
   val squeeze : ?axis:int array -> arr -> arr
 
@@ -364,7 +364,7 @@ module Make_Basic
 
   let tile x reps = M.tile (unpack_box x) reps
 
-  let repeat ?axis x reps = M.repeat ?axis (unpack_box x) reps
+  let repeat x reps = M.repeat (unpack_box x) reps
 
   let squeeze ?(axis=[||]) x = M.squeeze ~axis (unpack_box x) |> pack_box
 
