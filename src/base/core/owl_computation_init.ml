@@ -3,14 +3,12 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Bigarray
-
 open Owl_types
 
 open Owl_graph
 
 
-(* Functor of initialising a CPU-based engine to execute computation graphs. *)
+(* Functor of making initialisor of a CPU-based engine. *)
 
 module Make (A : Ndarray_Mutable) = struct
 
@@ -296,7 +294,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Scalar_Relu                                 -> _init_05 x
         | Scalar_Sigmoid                              -> _init_05 x
         | Fused_Adagrad (rate, eps)                   -> _init_00 x
-        | _                                           -> failwith "owl_opencl_engine:_eval_term"
+        | _                                           -> failwith "owl_computation_init:"
 
         with exn -> (
           Owl_log.error "initialising %s" (node_to_str x);
@@ -330,9 +328,6 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   and _init_05 x = Array.iter _init_term (parents x)
-
-
-  let init_nodes xs = Array.iter _init_term xs
 
 
 end
