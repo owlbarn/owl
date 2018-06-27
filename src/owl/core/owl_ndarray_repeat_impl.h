@@ -212,12 +212,11 @@ CAMLprim value FUNCTION (stub, repeat3_native) (
     slice_y[i] = Int_val(Field(vShape_y, i)) * slice_y[i + 1];
   }
 
-  int HD = highest_dim; //highest non-one-repeat dimension
-  int block_idx[highest_dim + 1]; //block size in counting indices
-  block_idx[highest_dim] = Int_val(Field(vReps, highest_dim));
-  int r, flag_one = 1;
-  if (block_idx[highest_dim] != 1) { flag_one = 0; }
-  for (int i = highest_dim - 1; i >= 0; --i) {
+  int r, flag_one;
+  int HD = highest_dim + 1; //highest non-one-repeat dimension
+  int block_idx[highest_dim + 2]; //block size in counting indices
+  block_idx[highest_dim + 1] = 1;
+  for (int i = highest_dim; i >= 0; --i) {
     r = Int_val(Field(vReps, i));
     block_idx[i] = r * block_idx[i + 1];
     if (r != 1) { flag_one = 0; }
@@ -226,6 +225,7 @@ CAMLprim value FUNCTION (stub, repeat3_native) (
   for (int i = 0; i <= highest_dim; ++i) {
     block_idx[i] *= stride_x[i];
   }
+  if (HD > highest_dim) { HD = highest_dim; }
 
   /* Initialize Stack */
   typedef struct _RDATA {
