@@ -228,9 +228,6 @@ module Make
     | _, _                    -> [| None |]
 
 
-  let _infer_shape_xx input_shapes = failwith "_infer_shape_xx: not implemented"
-
-
   let infer_shape operator args =
     let input_shapes = Array.map (fun a -> (Owl_graph.attr a).shape) args in
     match operator with
@@ -367,8 +364,8 @@ module Make
     | Inv                                         -> _infer_shape_01 input_shapes
     | Trace                                       -> _infer_shape_00 input_shapes
     | Transpose axis                              -> _infer_shape_18 input_shapes axis
-    | ToRows                                      -> _infer_shape_xx input_shapes
-    | OfRows                                      -> _infer_shape_xx input_shapes
+    | ToRows                                      -> failwith "_infer_shape:ToRows not implemented"
+    | OfRows                                      -> failwith "_infer_shape:OfRows not implemented"
     | Scalar_Add                                  -> _infer_shape_00 input_shapes
     | Scalar_Sub                                  -> _infer_shape_00 input_shapes
     | Scalar_Mul                                  -> _infer_shape_00 input_shapes
