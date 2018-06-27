@@ -199,17 +199,6 @@ module Make (A : Ndarray_Mutable) = struct
         | ScalarMul                                   -> _eval_map_02 x param
         | ScalarDiv                                   -> _eval_map_02 x param
         | FMA                                         -> _eval_map_xx x
-        | IsZero                                      -> failwith "IsZero"
-        | IsPositive                                  -> failwith "IsPositive"
-        | IsNegative                                  -> failwith "IsNegative"
-        | IsNonpositive                               -> failwith "IsNonpositive"
-        | IsNonnegative                               -> failwith "IsNonnegative"
-        | Equal                                       -> failwith "Equal"
-        | NotEqual                                    -> failwith "NotEqual"
-        | Less                                        -> failwith "Less"
-        | Greater                                     -> failwith "Greater"
-        | LessEqual                                   -> failwith "LessEqual"
-        | GreaterEqual                                -> failwith "GreaterEqual"
         | EltEqual                                    -> _eval_map_02 x param
         | EltNotEqual                                 -> _eval_map_02 x param
         | EltLess                                     -> _eval_map_02 x param
@@ -222,10 +211,6 @@ module Make (A : Ndarray_Mutable) = struct
         | EltGreaterScalar                            -> _eval_map_02 x param
         | EltLessEqualScalar                          -> _eval_map_02 x param
         | EltGreaterEqualScalar                       -> _eval_map_02 x param
-        | ApproxEqual eps                             -> failwith "ApproxEqual"
-        | ApproxEqualScalar eps                       -> failwith "ApproxEqualScalar"
-        | ApproxEltEqual eps                          -> failwith "ApproxEltEqual"
-        | ApproxEltEqualScalar eps                    -> failwith "ApproxEltEqualScalar"
         | Conv1d (padding, stride)                    -> _eval_map_xx x
         | Conv2d (padding, stride)                    -> _eval_map_xx x
         | Conv3d (padding, stride)                    -> _eval_map_xx x
@@ -260,8 +245,6 @@ module Make (A : Ndarray_Mutable) = struct
         | Transpose axis                              -> _eval_map_xx x
         | ToRows                                      -> failwith "ToRows"
         | OfRows                                      -> failwith "OfRows"
-        | OfArray shape                               -> failwith "OfArray"
-        | OfArrays                                    -> failwith "OfArrays"
         | Scalar_Add                                  -> _eval_map_xx x
         | Scalar_Sub                                  -> _eval_map_xx x
         | Scalar_Mul                                  -> _eval_map_xx x

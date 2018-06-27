@@ -121,17 +121,6 @@ module Make (A : Ndarray_Mutable) = struct
         | ScalarMul                                   -> _eval_map_05 x A.scalar_mul_
         | ScalarDiv                                   -> _eval_map_05 x A.scalar_div_
         | FMA                                         -> _eval_map_01 x (fun ~out x -> A.fma_ ~out x.(0) x.(1) x.(2))
-        | IsZero                                      -> failwith "IsZero"
-        | IsPositive                                  -> failwith "IsPositive"
-        | IsNegative                                  -> failwith "IsNegative"
-        | IsNonpositive                               -> failwith "IsNonpositive"
-        | IsNonnegative                               -> failwith "IsNonnegative"
-        | Equal                                       -> failwith "Equal"
-        | NotEqual                                    -> failwith "NotEqual"
-        | Less                                        -> failwith "Less"
-        | Greater                                     -> failwith "Greater"
-        | LessEqual                                   -> failwith "LessEqual"
-        | GreaterEqual                                -> failwith "GreaterEqual"
         | EltEqual                                    -> _eval_map_01 x (fun ~out x -> A.elt_equal_ ~out x.(0) x.(1))
         | EltNotEqual                                 -> _eval_map_01 x (fun ~out x -> A.elt_not_equal_ ~out x.(0) x.(1))
         | EltLess                                     -> _eval_map_01 x (fun ~out x -> A.elt_less_ ~out x.(0) x.(1))
@@ -144,10 +133,6 @@ module Make (A : Ndarray_Mutable) = struct
         | EltGreaterScalar                            -> _eval_map_04 x A.elt_greater_scalar_
         | EltLessEqualScalar                          -> _eval_map_04 x A.elt_less_equal_scalar_
         | EltGreaterEqualScalar                       -> _eval_map_04 x A.elt_greater_equal_scalar_
-        | ApproxEqual eps                             -> failwith "ApproxEqual"
-        | ApproxEqualScalar eps                       -> failwith "ApproxEqualScalar"
-        | ApproxEltEqual eps                          -> failwith "ApproxEltEqual"
-        | ApproxEltEqualScalar eps                    -> failwith "ApproxEltEqualScalar"
         | Conv1d (padding, stride)                    -> _eval_map_01 x (fun ~out x -> A.conv1d_ ~out ~padding x.(0) x.(1) stride)
         | Conv2d (padding, stride)                    -> _eval_map_01 x (fun ~out x -> A.conv2d_ ~out ~padding x.(0) x.(1) stride)
         | Conv3d (padding, stride)                    -> _eval_map_01 x (fun ~out x -> A.conv3d_ ~out ~padding x.(0) x.(1) stride)
@@ -197,8 +182,6 @@ module Make (A : Ndarray_Mutable) = struct
         | Transpose axis                              -> _eval_map_01 x (fun ~out x -> A.transpose_ ~out ~axis x.(0))
         | ToRows                                      -> failwith "ToRows"
         | OfRows                                      -> failwith "OfRows"
-        | OfArray shape                               -> failwith "OfArray"
-        | OfArrays                                    -> failwith "OfArrays"
         | Scalar_Add                                  -> _eval_map_03 x (fun x -> A.Scalar.add x.(0) x.(1))
         | Scalar_Sub                                  -> _eval_map_03 x (fun x -> A.Scalar.sub x.(0) x.(1))
         | Scalar_Mul                                  -> _eval_map_03 x (fun x -> A.Scalar.mul x.(0) x.(1))

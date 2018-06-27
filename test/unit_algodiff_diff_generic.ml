@@ -2,21 +2,32 @@
 
 open Owl_types
 
-(* define the test error *)
-let eps = 1e-16
-let approx_equal a b = Pervasives.abs_float (a -. b) < 1e-16
-
 
 (* functor to generate test unit. *)
 
 module Make
-  (M : Ndarray_Algodiff with type elt = float) 
+  (M : Ndarray_Algodiff with type elt = float)
   = struct
 
   module AlgoM = Owl_algodiff_generic.Make (M)
   open AlgoM
 
+  (* define the test error *)
+
+  let eps = 1e-14
+
+  let approx_equal a b = Pervasives.abs_float (a -. b) < eps
+
+  let approx_equal_arr a b =
+    let r = ref true in
+    M.(sub a b |> abs)
+    |> M.map (fun c -> if c >= eps then r := false; c)
+    |> ignore;
+    !r
+
+
   (* a module with functions to test *)
+  
   module To_test = struct
 
     let dumb () = true
@@ -85,7 +96,7 @@ module Make
       M.print df_arr;
       let diff_arr = M.map (fun x -> diff f (F x) |> unpack_flt) x_arr in
       M.print diff_arr;
-      M.approx_equal ~eps:eps df_arr diff_arr
+      approx_equal_arr df_arr diff_arr
       (** check_derivative_array ?eps f df x_arr returns true if the absolute delta
           between the *algodiff* derivative calculation and the provided df at every
           value in the float array x_arr is smaller than epsilon

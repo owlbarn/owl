@@ -335,21 +335,6 @@ module Make
 
   let elt_greater_equal_scalar x a = make_then_connect EltGreaterEqualScalar [|arr_to_node x; elt_to_node a|] |> node_to_arr
 
-  let approx_equal ?eps x y =
-    make_then_connect (ApproxEqual eps) [|arr_to_node x; arr_to_node y|] |> ignore;
-    true
-
-  let approx_equal_scalar ?eps x a =
-    make_then_connect (ApproxEqualScalar eps) [|arr_to_node x; elt_to_node a|] |> ignore;
-    true
-
-  let approx_elt_equal ?eps x y =
-    make_then_connect (ApproxEltEqual eps) [|arr_to_node x; arr_to_node y|] |> node_to_arr
-
-  let approx_elt_equal_scalar ?eps x a =
-    make_then_connect (ApproxEltEqualScalar eps) [|arr_to_node x; elt_to_node a|] |> node_to_arr
-
-
   let conv1d ?(padding=SAME) input kernel stride =
     Owl_log.debug "conv1d";
     make_then_connect (Conv1d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr

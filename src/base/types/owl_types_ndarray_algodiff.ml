@@ -6,7 +6,7 @@
 
 module type Sig = sig
 
-  include Owl_types_ndarray_compare.Sig
+  include Owl_types_ndarray_eltcmp.Sig
 
 
   module Scalar : sig

@@ -223,17 +223,6 @@ module Make (A : Ndarray_Mutable) = struct
         | ScalarMul                                   -> _init_03 x param "scalar_mul"
         | ScalarDiv                                   -> _init_03 x param "scalar_div"
         | FMA                                         -> _init_xx x param
-        | IsZero                                      -> failwith "IsZero"
-        | IsPositive                                  -> failwith "IsPositive"
-        | IsNegative                                  -> failwith "IsNegative"
-        | IsNonpositive                               -> failwith "IsNonpositive"
-        | IsNonnegative                               -> failwith "IsNonnegative"
-        | Equal                                       -> failwith "Equal"
-        | NotEqual                                    -> failwith "NotEqual"
-        | Less                                        -> failwith "Less"
-        | Greater                                     -> failwith "Greater"
-        | LessEqual                                   -> failwith "LessEqual"
-        | GreaterEqual                                -> failwith "GreaterEqual"
         | EltEqual                                    -> _init_02 x param "elt_equal"
         | EltNotEqual                                 -> _init_02 x param "elt_not_equal"
         | EltLess                                     -> _init_02 x param "elt_less"
@@ -246,10 +235,6 @@ module Make (A : Ndarray_Mutable) = struct
         | EltGreaterScalar                            -> _init_03 x param "elt_greater_scalar"
         | EltLessEqualScalar                          -> _init_03 x param "elt_less_equal_scalar"
         | EltGreaterEqualScalar                       -> _init_03 x param "elt_greater_equal_scalar"
-        | ApproxEqual eps                             -> failwith "ApproxEqual"
-        | ApproxEqualScalar eps                       -> failwith "ApproxEqualScalar"
-        | ApproxEltEqual eps                          -> failwith "ApproxEltEqual"
-        | ApproxEltEqualScalar eps                    -> failwith "ApproxEltEqualScalar"
         | Conv1d (padding, stride)                    -> _init_xx x param
         | Conv2d (padding, stride)                    -> _init_xx x param
         | Conv3d (padding, stride)                    -> _init_xx x param
@@ -284,8 +269,6 @@ module Make (A : Ndarray_Mutable) = struct
         | Transpose axis                              -> _init_xx x param
         | ToRows                                      -> failwith "ToRows"
         | OfRows                                      -> failwith "OfRows"
-        | OfArray shape                               -> failwith "OfArray"
-        | OfArrays                                    -> failwith "OfArrays"
         | Scalar_Add                                  -> _init_03 x param "add"
         | Scalar_Sub                                  -> _init_03 x param "sub"
         | Scalar_Mul                                  -> _init_03 x param "mul"

@@ -479,39 +479,6 @@ module Make (A : Ndarray_Mutable) : sig
   val fma : arr -> arr -> arr -> arr
   (** TODO *)
 
-  val is_zero : 'a -> 'b
-  (** TODO *)
-
-  val is_positive : 'a -> 'b
-  (** TODO *)
-
-  val is_negative : 'a -> 'b
-  (** TODO *)
-
-  val is_nonpositive : 'a -> 'b
-  (** TODO *)
-
-  val is_nonnegative : 'a -> 'b
-  (** TODO *)
-
-  val equal : 'a -> 'b -> 'c
-  (** TODO *)
-
-  val not_equal : 'a -> 'b -> 'c
-  (** TODO *)
-
-  val less : 'a -> 'b -> 'c
-  (** TODO *)
-
-  val greater : 'a -> 'b -> 'c
-  (** TODO *)
-
-  val less_equal : 'a -> 'b -> 'c
-  (** TODO *)
-
-  val greater_equal : 'a -> 'b -> 'c
-  (** TODO *)
-
   val elt_equal : arr -> arr -> arr
   (** TODO *)
 
@@ -546,18 +513,6 @@ module Make (A : Ndarray_Mutable) : sig
   (** TODO *)
 
   val elt_greater_equal_scalar : arr -> elt -> arr
-  (** TODO *)
-
-  val approx_equal : ?eps:float -> arr -> arr -> bool
-  (** TODO *)
-
-  val approx_equal_scalar : ?eps:float -> arr -> elt -> bool
-  (** TODO *)
-
-  val approx_elt_equal : ?eps:float -> arr -> arr -> arr
-  (** TODO *)
-
-  val approx_elt_equal_scalar : ?eps:float -> arr -> elt -> arr
   (** TODO *)
 
   val conv1d : ?padding:padding -> arr -> arr -> int array -> arr

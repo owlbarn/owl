@@ -110,17 +110,6 @@ module Make
         | ScalarSub                                   -> pattern_000 x
         | ScalarMul                                   -> pattern_014 x
         | ScalarDiv                                   -> pattern_017 x
-        | IsZero                                      -> pattern_000 x
-        | IsPositive                                  -> pattern_000 x
-        | IsNegative                                  -> pattern_000 x
-        | IsNonpositive                               -> pattern_000 x
-        | IsNonnegative                               -> pattern_000 x
-        | Equal                                       -> pattern_000 x
-        | NotEqual                                    -> pattern_000 x
-        | Less                                        -> pattern_000 x
-        | Greater                                     -> pattern_000 x
-        | LessEqual                                   -> pattern_000 x
-        | GreaterEqual                                -> pattern_000 x
         | EltEqual                                    -> pattern_000 x
         | EltNotEqual                                 -> pattern_000 x
         | EltLess                                     -> pattern_000 x
@@ -133,10 +122,6 @@ module Make
         | EltGreaterScalar                            -> pattern_000 x
         | EltLessEqualScalar                          -> pattern_000 x
         | EltGreaterEqualScalar                       -> pattern_000 x
-        | ApproxEqual eps                             -> pattern_000 x
-        | ApproxEqualScalar eps                       -> pattern_000 x
-        | ApproxEltEqual eps                          -> pattern_000 x
-        | ApproxEltEqualScalar eps                    -> pattern_000 x
         | Conv1d (padding, stride)                    -> pattern_000 x
         | Conv2d (padding, stride)                    -> pattern_000 x
         | Conv3d (padding, stride)                    -> pattern_000 x
@@ -186,8 +171,6 @@ module Make
         | Transpose axis                              -> pattern_000 x
         | ToRows                                      -> pattern_000 x
         | OfRows                                      -> pattern_000 x
-        | OfArray shape                               -> pattern_000 x
-        | OfArrays                                    -> pattern_000 x
         | Scalar_Add                                  -> pattern_010 x
         | Scalar_Sub                                  -> pattern_010 x
         | Scalar_Mul                                  -> pattern_010 x

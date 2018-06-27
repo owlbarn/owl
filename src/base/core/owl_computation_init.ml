@@ -198,17 +198,6 @@ module Make (A : Ndarray_Mutable) = struct
         | ScalarMul                                   -> _init_04 x
         | ScalarDiv                                   -> _init_04 x
         | FMA                                         -> _init_03 x
-        | IsZero                                      -> failwith "IsZero"
-        | IsPositive                                  -> failwith "IsPositive"
-        | IsNegative                                  -> failwith "IsNegative"
-        | IsNonpositive                               -> failwith "IsNonpositive"
-        | IsNonnegative                               -> failwith "IsNonnegative"
-        | Equal                                       -> failwith "Equal"
-        | NotEqual                                    -> failwith "NotEqual"
-        | Less                                        -> failwith "Less"
-        | Greater                                     -> failwith "Greater"
-        | LessEqual                                   -> failwith "LessEqual"
-        | GreaterEqual                                -> failwith "GreaterEqual"
         | EltEqual                                    -> _init_02 x
         | EltNotEqual                                 -> _init_02 x
         | EltLess                                     -> _init_02 x
@@ -221,10 +210,6 @@ module Make (A : Ndarray_Mutable) = struct
         | EltGreaterScalar                            -> _init_01 x
         | EltLessEqualScalar                          -> _init_01 x
         | EltGreaterEqualScalar                       -> _init_01 x
-        | ApproxEqual eps                             -> failwith "ApproxEqual"
-        | ApproxEqualScalar eps                       -> failwith "ApproxEqualScalar"
-        | ApproxEltEqual eps                          -> failwith "ApproxEltEqual"
-        | ApproxEltEqualScalar eps                    -> failwith "ApproxEltEqualScalar"
         | Conv1d (padding, stride)                    -> _init_00 x
         | Conv2d (padding, stride)                    -> _init_00 x
         | Conv3d (padding, stride)                    -> _init_00 x
@@ -259,8 +244,6 @@ module Make (A : Ndarray_Mutable) = struct
         | Transpose axis                              -> _init_00 x
         | ToRows                                      -> failwith "ToRows"
         | OfRows                                      -> failwith "OfRows"
-        | OfArray shape                               -> failwith "OfArray"
-        | OfArrays                                    -> failwith "OfArrays"
         | Scalar_Add                                  -> _init_05 x
         | Scalar_Sub                                  -> _init_05 x
         | Scalar_Mul                                  -> _init_05 x

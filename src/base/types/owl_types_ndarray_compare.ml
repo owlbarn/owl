@@ -6,7 +6,7 @@
 
 module type Sig = sig
 
-  include Owl_types_ndarray_basic.Sig
+  include Owl_types_ndarray_eltcmp.Sig
 
 
   val is_zero : arr -> bool
@@ -30,30 +30,6 @@ module type Sig = sig
   val less_equal : arr -> arr -> bool
 
   val greater_equal : arr -> arr -> bool
-
-  val elt_equal : arr -> arr -> arr
-
-  val elt_not_equal : arr -> arr -> arr
-
-  val elt_less : arr -> arr -> arr
-
-  val elt_greater : arr -> arr -> arr
-
-  val elt_less_equal : arr -> arr -> arr
-
-  val elt_greater_equal : arr -> arr -> arr
-
-  val elt_equal_scalar : arr -> elt -> arr
-
-  val elt_not_equal_scalar : arr -> elt -> arr
-
-  val elt_less_scalar : arr -> elt -> arr
-
-  val elt_greater_scalar : arr -> elt -> arr
-
-  val elt_less_equal_scalar : arr -> elt -> arr
-
-  val elt_greater_equal_scalar : arr -> elt -> arr
 
   val approx_equal : ?eps:float -> arr -> arr -> bool
 

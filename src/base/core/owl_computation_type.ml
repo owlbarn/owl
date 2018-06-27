@@ -132,17 +132,6 @@ module Make
     | ScalarMul
     | ScalarDiv
     | FMA
-    | IsZero
-    | IsPositive
-    | IsNegative
-    | IsNonpositive
-    | IsNonnegative
-    | Equal
-    | NotEqual
-    | Less
-    | Greater
-    | LessEqual
-    | GreaterEqual
     | EltEqual
     | EltNotEqual
     | EltLess
@@ -155,10 +144,6 @@ module Make
     | EltGreaterScalar
     | EltLessEqualScalar
     | EltGreaterEqualScalar
-    | ApproxEqual                   of float option
-    | ApproxEqualScalar             of float option
-    | ApproxEltEqual                of float option
-    | ApproxEltEqualScalar          of float option
     | Conv1d                        of padding * int array
     | Conv2d                        of padding * int array
     | Conv3d                        of padding * int array
@@ -210,8 +195,6 @@ module Make
     | Transpose                     of int array
     | ToRows
     | OfRows
-    | OfArray                       of int array
-    | OfArrays
     | Scalar_Add
     | Scalar_Sub
     | Scalar_Mul

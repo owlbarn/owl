@@ -310,17 +310,6 @@ module Make
     | ScalarMul                                   -> _infer_shape_02 input_shapes
     | ScalarDiv                                   -> _infer_shape_02 input_shapes
     | FMA                                         -> _infer_shape_23 input_shapes
-    | IsZero                                      -> _infer_shape_00 input_shapes
-    | IsPositive                                  -> _infer_shape_00 input_shapes
-    | IsNegative                                  -> _infer_shape_00 input_shapes
-    | IsNonpositive                               -> _infer_shape_00 input_shapes
-    | IsNonnegative                               -> _infer_shape_00 input_shapes
-    | Equal                                       -> _infer_shape_00 input_shapes
-    | NotEqual                                    -> _infer_shape_00 input_shapes
-    | Less                                        -> _infer_shape_00 input_shapes
-    | Greater                                     -> _infer_shape_00 input_shapes
-    | LessEqual                                   -> _infer_shape_00 input_shapes
-    | GreaterEqual                                -> _infer_shape_00 input_shapes
     | EltEqual                                    -> _infer_shape_01 input_shapes
     | EltNotEqual                                 -> _infer_shape_01 input_shapes
     | EltLess                                     -> _infer_shape_01 input_shapes
@@ -333,10 +322,6 @@ module Make
     | EltGreaterScalar                            -> _infer_shape_01 input_shapes
     | EltLessEqualScalar                          -> _infer_shape_01 input_shapes
     | EltGreaterEqualScalar                       -> _infer_shape_01 input_shapes
-    | ApproxEqual _                               -> _infer_shape_00 input_shapes
-    | ApproxEqualScalar _                         -> _infer_shape_00 input_shapes
-    | ApproxEltEqual _                            -> _infer_shape_01 input_shapes
-    | ApproxEltEqualScalar _                      -> _infer_shape_01 input_shapes
     | Conv1d (padding, stride)                    -> _infer_shape_11 input_shapes padding stride
     | Conv2d (padding, stride)                    -> _infer_shape_12 input_shapes padding stride
     | Conv3d (padding, stride)                    -> _infer_shape_13 input_shapes padding stride
@@ -384,8 +369,6 @@ module Make
     | Transpose axis                              -> _infer_shape_18 input_shapes axis
     | ToRows                                      -> _infer_shape_xx input_shapes
     | OfRows                                      -> _infer_shape_xx input_shapes
-    | OfArray shape                               -> [| Some shape |]
-    | OfArrays                                    -> _infer_shape_xx input_shapes
     | Scalar_Add                                  -> _infer_shape_00 input_shapes
     | Scalar_Sub                                  -> _infer_shape_00 input_shapes
     | Scalar_Mul                                  -> _infer_shape_00 input_shapes
