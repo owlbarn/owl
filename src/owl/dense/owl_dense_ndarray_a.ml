@@ -459,9 +459,80 @@ let tile x reps =
   in
   _tile 0 0 0; y
 
-(* TODO: Implement correct repeat *)
+
 let repeat x reps =
-  let reps = reps.(0) in
+  let highest_dim = Array.length (shape x) - 1 in
+  let _shape_x = shape x in
+  if Array.length reps != Array.length _shape_x then
+    failwith "repeat: repitition must be of the same dimension as input ndarray";
+
+  if (Array.for_all (fun x -> x = 1) reps) = true then x else (
+    let _shape_y = Array.map2 ( * ) _shape_x reps in
+
+    let y_data = Array.make (_calc_numel_from_shape _shape_y) x.data.(0) in
+    let y = make_arr _shape_y (Owl_utils.calc_stride _shape_y) y_data in
+    (* transform into a flat array first *)
+    let x' = x.data in
+    let y' = y.data in
+
+    if Array.length reps = 1 then (
+      let ofsy = ref 0 in
+      for i = 0 to numel x - 1 do
+        for j = 0 to reps.(0) - 1 do
+          y'.(!ofsy) <- x'.(i);
+          ofsy := !ofsy + 1;
+        done
+      done
+    )
+    else (
+      let block = Owl_utils.calc_stride _shape_y in
+      let _stride_x = Owl_utils.calc_stride _shape_x in
+
+      let rep_slice = Owl_utils.calc_slice reps in
+      let block_idx = Array.map2 ( * ) rep_slice _stride_x in
+
+      let h = ref 0 in
+      let d = ref 0 in
+      let b = ref 0 in
+      let ofsx = ref 0 in
+      let tag = ref true in
+      let stack = Stack.create () in
+
+      while ((!d != highest_dim + 1) && !tag)  || not (Stack.is_empty stack) do
+        while ((!d != highest_dim + 1) && !tag) do
+          for i = _shape_x.(!d) - 1 downto 0 do
+            let tag2 = if i = 0 then false else true in
+            Stack.push (!h + i * block_idx.(!d), !d + 1, i, !ofsx + i * _stride_x.(!d), tag2) stack;
+            (* Printf.printf "Pushed: %d, %d, %d, %d\n" (!h + i * block_idx.(!d)) (!d + 1) i (!ofsx + i * _stride_x.(!d)); *)
+          done;
+          d := !d + 1;
+        done;
+        if not (Stack.is_empty stack) then (
+          let t1, t2, t3, t4, t5 = Stack.pop stack in
+          (* Printf.printf "Popped: %d, %d, %d, %d\n" t1 t2 t3 t4; *)
+          h := t1; d := t2; b := t3; ofsx := t4; tag := t5;
+          if !tag = true && (!d != highest_dim + 1) then (
+            Stack.push (t1, t2, t3, t4, false) stack;
+            (* Printf.printf "PUSHED AGAIN: %d, %d, %d, %d\n" t1 t2 t3 t4; *)
+          ) else ( (* !d != highest_dim + 1) *)
+            (* _owl_copy _kind block.(highest_dim) ~ofsx:!ofsx ~incx:0 ~ofsy:!h ~incy:1 x y; *)
+            for i = 0 to block.(highest_dim) - 1 do
+              y'.(!h + i) <- x'.(!ofsx)
+            done;
+            for j = 1 to (reps.(!d - 1) - 1) do
+              let ofsy = !h + j * block.(!d - 1) in
+              (* Printf.printf "inner for each reps: %d -- %d (%d)\n" !h ofsy block.(!d - 1); *)
+              Array.blit y' !h y' ofsy block.(!d - 1);
+            done
+          );
+        )
+      done
+    );
+    y
+  )
+
+
+  (* let reps = reps.(0) in
   let highest_dim = Array.length (shape x) - 1 in
   (* by default, repeat at the highest dimension *)
   let axis = highest_dim in
@@ -499,7 +570,7 @@ let repeat x reps =
     done
   );
   (* all done, return the result *)
-  y
+  y *)
 
 
 let concatenate ?(axis=0) xs =
