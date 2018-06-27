@@ -23,31 +23,24 @@ module Make
   (* mathematical functions *)
 
   let noop x =
-    Owl_log.debug "noop";
     make_then_connect Noop [|arr_to_node x|] |> node_to_arr
 
   let empty shape =
-    Owl_log.debug "empty";
     make_node ~shape:[|Some shape|] (Empty shape) |> node_to_arr
 
   let zeros shape =
-    Owl_log.debug "zeros";
     make_node ~shape:[|Some shape|] (Zeros shape) |> node_to_arr
 
   let ones shape =
-    Owl_log.debug "ones";
     make_node ~shape:[|Some shape|] (Ones shape) |> node_to_arr
 
   let create shape v =
-    Owl_log.debug "create";
     make_then_connect ~shape:[|Some shape|] (Create shape) [|elt_to_node v|] |> node_to_arr
 
   let sequential ?a ?step shape =
-    Owl_log.debug "sequential";
     make_node ~shape:[|Some shape|] Sequential |> node_to_arr
 
   let uniform ?a ?b shape =
-    Owl_log.debug "uniform";
     let a = match a with
       | Some a -> a
       | None   -> const_elt "uniform_a" (A.float_to_elt 0.)
@@ -60,19 +53,15 @@ module Make
     |> node_to_arr
 
   let gaussian ?mu ?sigma shape =
-    Owl_log.debug "gaussian";
     make_node ~shape:[|Some shape|] Gaussian |> node_to_arr
 
   let bernoulli ?(p=0.5) shape =
-    Owl_log.debug "bernoulli";
     make_node ~shape:[|Some shape|] (Bernoulli (p, shape)) |> node_to_arr
 
   let init shape f =
-    Owl_log.debug "init";
     make_node ~shape:[|Some shape|] (Init f) |> node_to_arr
 
   let shape x =
-    Owl_log.debug "shape";
     let x_shape = (arr_to_node x |> attr).shape in
     assert (Array.length x_shape > 0);
     match x_shape.(0) with
@@ -80,60 +69,47 @@ module Make
     | None   -> [||]
 
   let numel x =
-    Owl_log.debug "numel";
     Array.fold_left ( * ) 1 (shape x)
 
   let get x i =
-    Owl_log.debug "get";
     make_then_connect (Get i) [|arr_to_node x|] |> node_to_elt
 
   let set x i v =
-    Owl_log.debug "set";
     make_then_connect (Set i) [|arr_to_node x; elt_to_node v|] |> ignore
 
   let get_slice slice x =
-    Owl_log.debug "get_slice";
     make_then_connect (GetSlice slice) [|arr_to_node x|] |> node_to_arr
 
   let set_slice slice x y =
-    Owl_log.debug "set_slice";
     make_then_connect (SetSlice slice) [|arr_to_node x; arr_to_node y|] |> ignore
 
   let copy x =
-    Owl_log.debug "copy";
     make_then_connect Copy [|arr_to_node x|] |> node_to_arr
 
   let copy_to x y = failwith "copy_to: not implemented"
 
   let reset x =
-    Owl_log.debug "reset";
     make_then_connect Reset [|arr_to_node x|] |> node_to_arr |> ignore
 
   let reshape x shape =
-    Owl_log.debug "reshape";
     let n_old = numel x in
     let n_new = Array.fold_left ( * ) 1 shape in
     assert (n_old = n_new);
     make_then_connect (Reshape shape) [|arr_to_node x|] |> node_to_arr
 
   let reverse x =
-    Owl_log.debug "reverse";
     make_then_connect Reverse [|arr_to_node x|] |> node_to_arr
 
   let tile x axises =
-    Owl_log.debug "tile";
     make_then_connect (Tile axises) [|arr_to_node x|] |> node_to_arr
 
   let repeat ?(axis=(-1)) x repeats =
-    Owl_log.debug "repeat";
     make_then_connect (Repeat (axis, repeats)) [|arr_to_node x|] |> node_to_arr
 
   let concatenate ?(axis=0) xs =
-    Owl_log.debug "concatenate";
     make_then_connect (Concatenate axis) (Array.map arr_to_node xs) |> node_to_arr
 
   let split ?(axis=0) parts x =
-    Owl_log.debug "split";
     let y = make_then_connect (Split (axis, parts)) [|arr_to_node x|] in
     (* FIXME: wrong shape *)
     failwith "split: not implemented";
@@ -144,20 +120,16 @@ module Make
     ) parts
 
   let draw ?(axis=0) x n =
-    Owl_log.debug "draw";
     let y = make_then_connect (Draw (axis, n)) [|arr_to_node x|] |> node_to_arr in
     y, [||]
 
   let map f x =
-    Owl_log.debug "map";
     make_then_connect (Map f) [|arr_to_node x|] |> node_to_arr
 
   let fold ?(axis=(-1)) f a x =
-    Owl_log.debug "fold";
     make_then_connect (Fold (axis, f)) [|arr_to_node x; elt_to_node a|] |> node_to_arr
 
   let scan ?(axis=(-1)) f x =
-    Owl_log.debug "scan";
     make_then_connect (Scan (axis, f)) [|arr_to_node x|] |> node_to_arr
 
   let one_hot depth x =
@@ -336,15 +308,12 @@ module Make
   let elt_greater_equal_scalar x a = make_then_connect EltGreaterEqualScalar [|arr_to_node x; elt_to_node a|] |> node_to_arr
 
   let conv1d ?(padding=SAME) input kernel stride =
-    Owl_log.debug "conv1d";
     make_then_connect (Conv1d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
 
   let conv2d ?(padding=SAME) input kernel stride =
-    Owl_log.debug "conv2d";
     make_then_connect (Conv2d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
 
   let conv3d ?(padding=SAME) input kernel stride =
-    Owl_log.debug "conv3d";
     make_then_connect (Conv3d (padding, stride)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
 
   let transpose_conv1d ?(padding=SAME) input kernel stride =
@@ -366,123 +335,93 @@ module Make
     make_then_connect (DilatedConv3d (padding, stride, rate)) [|arr_to_node input; arr_to_node kernel|] |> node_to_arr
 
   let max_pool1d ?(padding=SAME) input kernel stride =
-    Owl_log.debug "max_pool1d";
     make_then_connect (MaxPool1d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let max_pool2d ?(padding=SAME) input kernel stride =
-    Owl_log.debug "max_pool2d";
     make_then_connect (MaxPool2d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let max_pool3d ?(padding=SAME) input kernel stride =
-    Owl_log.debug "max_pool3d";
     make_then_connect (MaxPool3d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let avg_pool1d ?(padding=SAME) input kernel stride =
-    Owl_log.debug "avg_pool1d";
     make_then_connect (AvgPool1d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let avg_pool2d ?(padding=SAME) input kernel stride =
-    Owl_log.debug "avg_pool2d";
     make_then_connect (AvgPool2d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let avg_pool3d ?(padding=SAME) input kernel stride =
-    Owl_log.debug "avg_pool3d";
     make_then_connect (AvgPool3d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let conv1d_backward_input input kernel stride output' =
-    Owl_log.debug "conv1d_backward_input";
     make_then_connect (Conv1dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let conv1d_backward_kernel input kernel stride output' =
-    Owl_log.debug "conv1d_backward_kernel";
     make_then_connect (Conv1dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let conv2d_backward_input input kernel stride output' =
-    Owl_log.debug "conv2d_backward_input";
     make_then_connect (Conv2dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let conv2d_backward_kernel input kernel stride output' =
-    Owl_log.debug "conv2d_backward_kernel";
     make_then_connect (Conv2dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let conv3d_backward_input input kernel stride output' =
-    Owl_log.debug "conv3d_backward_input";
     make_then_connect (Conv3dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let conv3d_backward_kernel input kernel stride output' =
-    Owl_log.debug "conv3d_backward_kernel";
     make_then_connect (Conv3dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let transpose_conv1d_backward_input input kernel stride output' =
-    Owl_log.debug "transpose_conv1d_backward_input";
     make_then_connect (TransposeConv1dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let transpose_conv1d_backward_kernel input kernel stride output' =
-    Owl_log.debug "transpose_conv1d_backward_kernel";
     make_then_connect (TransposeConv1dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let transpose_conv2d_backward_input input kernel stride output' =
-    Owl_log.debug "transpose_conv2d_backward_input";
     make_then_connect (TransposeConv2dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let transpose_conv2d_backward_kernel input kernel stride output' =
-    Owl_log.debug "transpose_conv2d_backward_kernel";
     make_then_connect (TransposeConv2dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let transpose_conv3d_backward_input input kernel stride output' =
-    Owl_log.debug "transpose_conv3d_backward_input";
     make_then_connect (TransposeConv3dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let transpose_conv3d_backward_kernel input kernel stride output' =
-    Owl_log.debug "transpose_conv3d_backward_kernel";
     make_then_connect (TransposeConv3dBackwardKernel stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let dilated_conv1d_backward_input input kernel stride rate output' =
-    Owl_log.debug "dilated_conv1d_backward_input";
     make_then_connect (DilatedConv1dBackwardInput (stride, rate)) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let dilated_conv1d_backward_kernel input kernel stride rate output' =
-    Owl_log.debug "dilated_conv1d_backward_kernel";
     make_then_connect (DilatedConv1dBackwardKernel (stride, rate)) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let dilated_conv2d_backward_input input kernel stride rate output' =
-    Owl_log.debug "dilated_conv2d_backward_input";
     make_then_connect (DilatedConv2dBackwardInput (stride, rate)) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let dilated_conv2d_backward_kernel input kernel stride rate output' =
-    Owl_log.debug "dilated_conv2d_backward_kernel";
     make_then_connect (DilatedConv2dBackwardKernel (stride, rate)) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let dilated_conv3d_backward_input input kernel stride rate output' =
-    Owl_log.debug "dilated_conv3d_backward_input";
     make_then_connect (DilatedConv3dBackwardInput (stride, rate)) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let dilated_conv3d_backward_kernel input kernel stride rate output' =
-    Owl_log.debug "dilated_conv3d_backward_kernel";
     make_then_connect (DilatedConv3dBackwardKernel (stride, rate)) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
 
   let max_pool1d_backward padding input kernel stride output' =
-    Owl_log.debug "conmax_pool1d_backwardv2d";
     make_then_connect (MaxPool1dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let max_pool2d_backward padding input kernel stride output' =
-    Owl_log.debug "max_pool2d_backward";
     make_then_connect (MaxPool2dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let max_pool3d_backward padding input kernel stride output' =
-    Owl_log.debug "max_pool3d_backward";
     make_then_connect (MaxPool3dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let avg_pool1d_backward padding input kernel stride output' =
-    Owl_log.debug "avg_pool1d_backward";
     make_then_connect (AvgPool1dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let avg_pool2d_backward padding input kernel stride output' =
-    Owl_log.debug "avg_pool2d_backward";
     make_then_connect (AvgPool2dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let avg_pool3d_backward padding input kernel stride output' =
-    Owl_log.debug "avg_pool3d_backward";
     make_then_connect (AvgPool3dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let row_num x =

@@ -17,6 +17,7 @@ module type Sig = sig
 
   val number : number
 
+
   (* creation and operation functions *)
 
   val empty : int array -> arr
@@ -78,6 +79,7 @@ module type Sig = sig
   val one_hot : int -> arr -> arr
 
   val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
+
 
   (* mathematical functions *)
 
@@ -275,6 +277,7 @@ module type Sig = sig
   val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
   val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
 
   (* matrix functions *)
 

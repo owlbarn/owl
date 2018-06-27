@@ -22,6 +22,7 @@ module Make
 
   let rec _optimise_term x =
     Owl_log.debug "optimise %s ..." (node_to_str x);
+    
     if is_valid x = false then (
       (
         match (get_operator x) with
@@ -218,7 +219,6 @@ module Make
 
   (* add ndarray pattern *)
   and pattern_001 x =
-    Owl_log.debug "pattern_001";
     let parents = parents x in
     let a = parents.(0) in
     let b = parents.(1) in
@@ -230,7 +230,6 @@ module Make
 
   (* add ndarray pattern: x + 0 *)
   and pattern_002 x =
-    Owl_log.debug "pattern_002";
     let x_parents = parents x in
     let a = x_parents.(0) in
     let b = x_parents.(1) in
@@ -264,7 +263,6 @@ module Make
 
   (* noop pattern *)
   and pattern_003 x =
-    Owl_log.debug "pattern_003";
     let parent = (parents x).(0) in
     _optimise_term parent;
     let op = get_operator x in
@@ -278,7 +276,6 @@ module Make
 
   (* add ndarray pattern: FMA x * y + z *)
   and pattern_004 x =
-    Owl_log.debug "pattern_004";
     if get_operator x = Add then (
       let x_parents = parents x in
       let a = x_parents.(0) in
@@ -302,7 +299,6 @@ module Make
 
   (* gemm pattern :  alpha * x *@ y + beta * z *)
   and pattern_005 x =
-    Owl_log.debug "pattern_005";
     let x_parents = parents x in
     let a = x_parents.(0) in
     let b = x_parents.(1) in
@@ -313,7 +309,6 @@ module Make
 
   (* gemm pattern: transpose *)
   and pattern_006 x =
-    Owl_log.debug "pattern_006";
     match get_operator x with
     | Dot (transa, transb, alpha, beta) -> (
         let x_parents = parents x in
@@ -351,7 +346,6 @@ module Make
 
   (* div pattern *)
   and pattern_007 x =
-    Owl_log.debug "pattern_007";
     let x_parents = parents x in
     let a = x_parents.(0) in
     let b = x_parents.(1) in
@@ -362,7 +356,6 @@ module Make
 
   (* div pattern: 0 / x *)
   and pattern_008 x =
-    Owl_log.debug "pattern_008";
     if get_operator x = Div then (
       let x_parents = parents x in
       let a = x_parents.(0) in
@@ -380,7 +373,6 @@ module Make
 
   (* div pattern: x / 1 *)
   and pattern_009 x =
-    Owl_log.debug "pattern_009";
     if get_operator x = Div then (
       let x_parents = parents x in
       let b = x_parents.(1) in
@@ -400,7 +392,6 @@ module Make
 
   (* Binary operator pattern for const scalar *)
   and pattern_010 x =
-    Owl_log.debug "pattern_010";
     let parents = parents x in
     let a = parents.(0) in
     let b = parents.(1) in
@@ -435,7 +426,6 @@ module Make
 
   (* Unary operator pattern for const scalar *)
   and pattern_012 x =
-    Owl_log.debug "pattern_012";
     let parents = parents x in
     let a = parents.(0) in
     _optimise_term a;
@@ -488,7 +478,6 @@ module Make
 
   (* ScalarMul pattern : a $* 0, a $* 1 *)
   and pattern_014 x =
-    Owl_log.debug "pattern_014";
     let x_parents = parents x in
     let a = x_parents.(0) in
     let b = x_parents.(1) in
@@ -511,7 +500,6 @@ module Make
 
   (* ScalarDiv pattern *)
   and pattern_016 x =
-    Owl_log.debug "pattern_016";
     let x_parents = parents x in
     let a = x_parents.(0) in
     let b = x_parents.(1) in
@@ -549,7 +537,6 @@ module Make
 
   (* AddScalar pattern : a +$ 0 *)
   and pattern_015 x =
-    Owl_log.debug "pattern_015";
     let x_parents = parents x in
     let a = x_parents.(0) in
     let b = x_parents.(1) in
