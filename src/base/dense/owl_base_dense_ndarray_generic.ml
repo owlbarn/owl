@@ -578,11 +578,6 @@ let concatenate ?(axis=0) varrs =
   end
 
 
-(* TODO: is there a more efficient way to do this? *)
-let repeat ?(axis=0) varr reps =
-  let varrs = Array.make reps varr in
-  (concatenate ~axis:axis varrs)
-
 let owl_base_copy n ~ofsx ~incx ~ofsy ~incy x y =
   let sy = shape y in
   let xarr = flatten x in
@@ -597,7 +592,8 @@ let owl_base_copy n ~ofsx ~incx ~ofsy ~incy x y =
   reshape yarr sy
 
 
-let repeat2 x reps =
+(* TODO: is there a more efficient way to do this? *)
+let repeat x reps =
   let highest_dim = Array.length (shape x) - 1 in
   let _kind = kind x in
   let _shape_x = shape x in

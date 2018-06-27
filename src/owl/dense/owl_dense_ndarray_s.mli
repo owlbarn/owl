@@ -121,11 +121,7 @@ val swap : int -> int -> arr -> arr
 
 val tile : arr -> int array -> arr
 
-val tile2 : arr -> int array -> arr
-
-val repeat : ?axis:int -> arr -> int -> arr
-
-val repeat2 : arr -> int array -> arr
+val repeat : arr -> int array -> arr
 
 val concat_vertical : arr -> arr -> arr
 

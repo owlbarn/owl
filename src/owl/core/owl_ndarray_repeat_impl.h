@@ -51,8 +51,8 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   }
 
   int r, flag_one;
-  int HD = highest_dim + 1; //highest non-one-repeat dimension
-  int block_idx[highest_dim + 2]; //block size in counting indices
+  int HD = highest_dim + 1; // highest non-one-repeat dimension
+  int block_idx[highest_dim + 2]; // block size in counting indices
   block_idx[highest_dim + 1] = 1;
   for (int i = highest_dim; i >= 0; --i) {
     r = reps[i];
@@ -67,10 +67,10 @@ CAMLprim value FUNCTION (stub, repeat_native) (
 
   /* Initialize Stack */
   typedef struct _BLOCK {
-    int h;
-    int d;
-    int ofsx;
-    int tag;
+    int h;    // header index of a block
+    int d;    // dimension
+    int ofsx; // corresponding offset of x
+    int tag;  // bool, whether this block still has unexplored children
   } BLOCK;
 
   int h = 0;
@@ -109,7 +109,6 @@ CAMLprim value FUNCTION (stub, repeat_native) (
 
     // If the stack is not empty
     if (top != -1) {
-
       BLOCK r = stack[top--];
       h = r.h; d = r.d; ofsx = r.ofsx; tag = r.tag;
       // If a node still contains unexplored children, push it back
