@@ -16,10 +16,17 @@ module Make (A : Ndarray_Mutable) = struct
 
   module CGraph = Owl_computation_graph.Make (A) (Owl_computation_device)
 
+  module CGInit = Owl_computation_engine_init.Make (A)
+
   include CGraph
 
 
-  (* allocate memory and evaluate experssions *)
+  (* utility functions *)
+
+  let update_validity x =
+    validate x;
+    Array.iter invalidate (get_vnode x)
+
 
   let allocate_1 x =
     let x_val = value_to_arr (attr x).value.(0) in
@@ -30,106 +37,11 @@ module Make (A : Ndarray_Mutable) = struct
     else A.copy x_val
 
 
-  let allocate_from_parent_0 x =
-    if is_assigned x = true then (
-      let x_val = value_to_arr (get_value x).(0) in
-      x_val
-    )
-    else (
-      let x_shp = shape (node_to_arr x) in
-      A.empty x_shp
-    )
-
-
-  let allocate_from_parent_1 x parent =
-    let parent_val = value_to_arr (get_value parent).(0) in
-    if is_assigned x = true then (
-      let x_val = value_to_arr (get_value x).(0) in
-      if x_val == parent_val then invalidate parent;
-      x_val
-    )
-    else (
-      if refnum parent = 1 && get_reuse parent then (
-        invalidate parent;
-        parent_val
-      )
-      else A.empty (A.shape parent_val)
-    )
-
-
-  let allocate_from_parent_2 x parent_0 parent_1 =
-    let parent_0_val = value_to_arr (get_value parent_0).(0) in
-    let parent_1_val = value_to_arr (get_value parent_1).(0) in
-    if is_assigned x = true then (
-      let x_val = value_to_arr (get_value x).(0) in
-      if x_val == parent_0_val then invalidate parent_0
-      else if x_val == parent_1_val then invalidate parent_1;
-      x_val
-    )
-    else (
-      let shp_0 = A.shape parent_0_val in
-      let shp_1 = A.shape parent_1_val in
-      let shp_0, shp_1 = Owl_utils_array.align `Left 1 shp_0 shp_1 in
-      let shp_x = Owl_utils_infer_shape.broadcast1 shp_0 shp_1 in
-
-      if shp_0 = shp_x then (
-        if refnum parent_0 = 1 && get_reuse parent_0 then (
-          invalidate parent_0;
-          parent_0_val
-        )
-        else if refnum parent_0 = 2 && parent_0 == parent_1 && get_reuse parent_0 then (
-          invalidate parent_0;
-          parent_0_val
-        )
-        else A.empty shp_x
-      )
-      else if shp_1 = shp_x then (
-        if refnum parent_1 = 1 && get_reuse parent_1 then (
-          invalidate parent_1;
-          parent_1_val
-        )
-        else A.empty shp_x
-      )
-      else A.empty shp_x
-    )
-
-
-  let allocate_from_parent_3 x parent_0 parent_1 parent_2 =
-    let parent_0_val = value_to_arr (get_value parent_0).(0) in
-    let parent_1_val = value_to_arr (get_value parent_1).(0) in
-    let parent_2_val = value_to_arr (get_value parent_2).(0) in
-    if is_assigned x = true then (
-      let x_val = value_to_arr (get_value x).(0) in
-      if x_val == parent_0_val then invalidate parent_0
-      else if x_val == parent_1_val then invalidate parent_1
-      else if x_val == parent_2_val then invalidate parent_2;
-      x_val
-    )
-    else (
-      let shp_0 = A.shape parent_0_val in
-      let shp_1 = A.shape parent_1_val in
-      let shp_2 = A.shape parent_2_val in
-      let shp_0, shp_1, shp_2 = Owl_utils_array.align3 `Left 1 shp_0 shp_1 shp_2 in
-      let shp_x = Owl_utils_infer_shape.broadcast2 shp_0 shp_1 shp_2 in
-
-      if shp_0 = shp_x && refnum parent_0 = 1 && get_reuse parent_0 then (
-        invalidate parent_0;
-        parent_0_val
-      )
-      else if shp_1 = shp_x && refnum parent_1 = 1 && get_reuse parent_1 then (
-        invalidate parent_1;
-        parent_1_val
-      )
-      else if shp_2 = shp_x && refnum parent_2 = 1 && get_reuse parent_2 then (
-        invalidate parent_2;
-        parent_2_val
-      )
-      else A.empty shp_x
-    )
-
+  (* core evaluation function *)
 
   let rec _eval_term x =
     Owl_log.debug "eval %s ..." (node_to_str x);
+
     if is_valid x = false then
       let _ = try
         match (get_operator x) with
@@ -336,11 +248,11 @@ module Make (A : Ndarray_Mutable) = struct
         | _                                           -> failwith "owl_lazy:_eval_term"
 
         with exn -> (
-          Owl_log.error "Error in evaluating %s" (node_to_str x);
+          Owl_log.error "evaluating %s" (node_to_str x);
           raise exn
         )
       in
-      validate x
+      update_validity x
 
 
   (* [f] is pure, shape changes so always allocate mem, for [arr -> arr] *)
@@ -356,9 +268,8 @@ module Make (A : Ndarray_Mutable) = struct
     let x_parent = (parents x).(0) in
     _eval_term x_parent;
     let a = value_to_arr (get_value x_parent).(0) in
-    let out = allocate_from_parent_1 x x_parent in
-    f ~out a;
-    set_value x [|arr_to_value out|]
+    let out = value_to_arr (get_value x).(0) in
+    f ~out a
 
 
   (* [f] is inpure, for [arr -> arr -> arr] *)
@@ -369,9 +280,10 @@ module Make (A : Ndarray_Mutable) = struct
     _eval_term x_parent_1;
     let a = value_to_arr (get_value x_parent_0).(0) in
     let b = value_to_arr (get_value x_parent_1).(0) in
-    let out = allocate_from_parent_2 x x_parent_0 x_parent_1 in
+    let out = value_to_arr (get_value x).(0) in
     f ~out a b;
-    set_value x [|arr_to_value out|]
+    set_value x [|arr_to_value out|];
+    update_validity x
 
 
   (* [f] is inpure, for [arr -> elt -> arr] *)
@@ -382,9 +294,8 @@ module Make (A : Ndarray_Mutable) = struct
     _eval_term x_parent_1;
     let a = value_to_arr (get_value x_parent_0).(0) in
     let b = value_to_elt (get_value x_parent_1).(0) in
-    let out = allocate_from_parent_1 x x_parent_0 in
-    f ~out a b;
-    set_value x [|arr_to_value out|]
+    let out = value_to_arr (get_value x).(0) in
+    f ~out a b
 
 
   (* [f] is inpure, for [elt -> arr -> arr] *)
@@ -395,9 +306,8 @@ module Make (A : Ndarray_Mutable) = struct
     _eval_term x_parent_1;
     let a = value_to_elt (get_value x_parent_0).(0) in
     let b = value_to_arr (get_value x_parent_1).(0) in
-    let out = allocate_from_parent_1 x x_parent_1 in
-    f ~out a b;
-    set_value x [|arr_to_value out|]
+    let out = value_to_arr (get_value x).(0) in
+    f ~out a b
 
 
   (* [f] is pure, shape changes so always allocate mem, for [arr array -> arr] *)
@@ -417,9 +327,8 @@ module Make (A : Ndarray_Mutable) = struct
       value_to_arr (get_value x).(0)
     ) (parents x)
     in
-    let out = allocate_from_parent_0 x in
-    f ~out a;
-    set_value x [|arr_to_value out|]
+    let out = value_to_arr (get_value x).(0) in
+    f ~out a
 
 
   (* [f] is pure, for [arr -> elt] *)
@@ -437,9 +346,8 @@ module Make (A : Ndarray_Mutable) = struct
       value_to_elt (get_value x_parent).(0)
     ) (parents x)
     in
-    let out = allocate_from_parent_0 x in
-    f ~out a;
-    set_value x [|arr_to_value out|]
+    let out = value_to_arr (get_value x).(0) in
+    f ~out a
 
 
   (* [f] is pure, for [elt -> elt] *)
@@ -483,9 +391,8 @@ module Make (A : Ndarray_Mutable) = struct
     let a = (get_value x_parent_0).(0) |> value_to_arr in
     let b = (get_value x_parent_1).(0) |> value_to_arr in
     let c = (get_value x_parent_2).(0) |> value_to_arr in
-    let out = allocate_from_parent_3 x x_parent_0 x_parent_1 x_parent_2 in
-    f ~out a b c;
-    set_value x [|arr_to_value out|]
+    let out = value_to_arr (get_value x).(0) in
+    f ~out a b c
 
 
   (* dummy map for functions like noop, not invalidate parent *)
@@ -496,13 +403,24 @@ module Make (A : Ndarray_Mutable) = struct
     set_value x [|arr_to_value a|]
 
 
-  let eval_elt xs = Array.iter (fun x -> elt_to_node x |> _eval_term) xs
+  (* core interface *)
+
+  let eval_elt xs =
+    let nodes = Array.map elt_to_node xs in
+    CGInit.init_nodes nodes;
+    Array.iter _eval_term nodes
 
 
-  let eval_arr xs = Array.iter (fun x -> arr_to_node x |> _eval_term) xs
+  let eval_arr xs =
+    let nodes = Array.map arr_to_node xs in
+    CGInit.init_nodes nodes;
+    Array.iter _eval_term nodes
 
 
-  let eval_graph graph = CGraph.get_outputs graph |> Array.iter _eval_term
+  let eval_graph graph =
+    let nodes = CGraph.get_outputs graph in
+    CGInit.init_nodes nodes;
+    Array.iter _eval_term nodes
 
 
 end

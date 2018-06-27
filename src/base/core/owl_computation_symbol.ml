@@ -33,6 +33,7 @@ module Make
   type state = Valid | Invalid
 
   type t = attr node
+
   and attr = {
     mutable op     : op;                        (* operation stored in this node *)
     mutable freeze : bool;                      (* whether or not a node can link to other nodes *)
@@ -40,9 +41,13 @@ module Make
     mutable state  : state;                     (* state to show whether re-evaluation is needed *)
     mutable shape  : (int array option) array;  (* shape of the output values stored in the node *)
     mutable value  : value array;               (* output values of the node *)
+    mutable vnode  : t array;                   (* where current node inherits its value memory. *)
   }
+
   and arr = Arr of t
+
   and elt = Elt of t
+
   and op =
     | Noop
     | Var
@@ -918,7 +923,8 @@ module Make
     let state = match state with Some s -> s | None -> Invalid in
     let reuse = match reuse with Some s -> s | None -> true in
     let freeze = match freeze with Some s -> s | None -> false in
-    Owl_graph.node ?name { op; freeze; reuse; state; shape; value }
+    let vnode = [| (* used by the computation engine *) |] in
+    Owl_graph.node ?name { op; freeze; reuse; state; shape; value; vnode }
 
 
   let make_then_connect ?shape op parents =
@@ -982,6 +988,12 @@ module Make
 
 
   let get_reuse x = (attr x).reuse
+
+
+  let set_vnode x v = (attr x).vnode <- v
+
+
+  let get_vnode x = (attr x).vnode
 
 
   let is_var x = (attr x).op = Var
@@ -1121,14 +1133,15 @@ module Make
 
   (* TODO: should move to symbolic ... *)
   let arr_to_var x =
-    let attr = arr_to_node x |> attr in
-    let op = attr.op in
+    let attr   = arr_to_node x |> attr in
+    let op     = attr.op in
     let freeze = attr.freeze in
-    let reuse = false in
-    let state = attr.state in
-    let shape = attr.shape in
-    let value = attr.value in
-    Owl_graph.node ~name:"" { op; state; reuse; freeze; shape; value }
+    let reuse  = false in
+    let state  = attr.state in
+    let shape  = attr.shape in
+    let value  = attr.value in
+    let vnode  = attr.vnode in
+    Owl_graph.node ~name:"" { op; state; reuse; freeze; shape; value; vnode }
     |> node_to_arr
 
 

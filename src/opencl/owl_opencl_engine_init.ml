@@ -16,7 +16,7 @@ open Owl_opencl_context
 open Owl_opencl_generated
 
 
-(* Functor of making a Lazy engine to execute a computation graph. *)
+(* Functor of initialising an OpenCL engine to execute a computation graph. *)
 
 module Make (A : Ndarray_Mutable) = struct
 
@@ -28,7 +28,6 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   (* utility functions *)
-
 
   let make_typed_kernel_name fun_name =
     match A.number with

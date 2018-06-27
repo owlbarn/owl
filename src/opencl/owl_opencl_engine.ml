@@ -16,7 +16,7 @@ open Owl_opencl_context
 open Owl_opencl_generated
 
 
-(* Functor of making a Lazy engine to execute a computation graph. *)
+(* Functor of making an OpenCL engine to execute a computation graph. *)
 
 module Make (A : Ndarray_Mutable) = struct
 
