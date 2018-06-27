@@ -17,7 +17,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   TYPE *y = (TYPE *) Y->data;
   int highest_dim = Long_val(vHighest_dim);
 
-  /* Special Case : Vector */
+  /* Special case : vector input */
   if (highest_dim == 0) {
     int xlen  = Int_val(Field(vShape_x, 0));
     int repsd = Int_val(Field(vReps,    0));
@@ -66,6 +66,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   HD = (HD > highest_dim) ? highest_dim : HD;
 
   /* Initialize Stack */
+
   typedef struct _BLOCK {
     int h;    // header index of a block
     int d;    // dimension
@@ -86,6 +87,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   int top = -1;
 
   /* Begin recursive-to-iterative prosedure */
+  
   while (((d != HD) && tag) || (top != -1)) {
     // If the current job has not reached the highest dim and not yet explored,
     // push its children to the stack.
@@ -96,14 +98,14 @@ CAMLprim value FUNCTION (stub, repeat_native) (
 
       int h_new = h    + (shaped - 1) * idxd;
       int o_new = ofsx + (shaped - 1) * strid;
-      for (int i = shaped - 1; i >= 0; i--) {
-        int flag = 1;
-        if (i == 0) { flag = 0; }
-        BLOCK r = {h_new, d + 1, o_new, flag};
+      for (int i = shaped - 1; i > 0; i--) {
+        BLOCK r = {h_new, d + 1, o_new, 1};
         stack[++top] = r;
         h_new -= idxd;
         o_new -= strid;
       }
+      BLOCK r = {h_new, d + 1, o_new, 0};
+      stack[++top] = r;
       d++;
     }
 
