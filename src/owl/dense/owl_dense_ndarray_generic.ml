@@ -74,6 +74,8 @@ let slice_right = Genarray.slice_right
 let copy_to src dst =
   let k = kind src in
   let n = numel src in
+  let m = numel dst in
+  assert (m = n);
   _owl_copy k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 src dst
 
 
@@ -987,10 +989,12 @@ let gaussian k ?mu ?sigma d =
   _owl_gaussian k (numel x) x mu sigma;
   x
 
+
 let linspace k a b n =
   let x = empty k [|n|] in
   _owl_linspace k n a b x;
   x
+
 
 let logspace k ?(base=Owl_const.e) a b n =
   let x = empty k [|n|] in (

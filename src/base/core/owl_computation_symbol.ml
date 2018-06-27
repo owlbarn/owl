@@ -996,6 +996,9 @@ module Make
   let get_vnode x = (attr x).vnode
 
 
+  let is_inherited x = Array.length (get_vnode x) > 0
+
+
   let is_var x = (attr x).op = Var
 
 

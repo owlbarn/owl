@@ -39,7 +39,6 @@
     owl_ndarray_slide_stub
     owl_ndarray_sort_stub
     owl_ndarray_repeat_stub
-    owl_ndarray_utils_stub
     owl_matrix_swap_stub
     owl_matrix_check_stub
     owl_distribution_common_c

@@ -20,7 +20,5 @@ include Owl_ndarray_slide
 
 include Owl_ndarray_sort
 
-include Owl_ndarray_utils
-
 
 (* ends here *)
