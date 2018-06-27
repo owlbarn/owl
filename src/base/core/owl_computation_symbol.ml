@@ -32,7 +32,7 @@ module Make
     | Uniform shape                               -> "Uniform"
     | Gaussian                                    -> "Gaussian"
     | Bernoulli (p, shape)                        -> Printf.sprintf "Bernoulli p:%g" p
-    | Init _                                      -> "Init"
+    | Init (shape, f)                             -> "Init"
     | Get i                                       -> "Get"
     | Set i                                       -> "Set"
     | GetSlice slice                              -> "GetSlice"

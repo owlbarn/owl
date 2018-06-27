@@ -22,7 +22,7 @@ module Make
 
   let rec _optimise_term x =
     Owl_log.debug "optimise %s ..." (node_to_str x);
-    
+
     if is_valid x = false then (
       (
         match (get_operator x) with
@@ -37,7 +37,7 @@ module Make
         | Uniform shape                               -> pattern_000 x
         | Gaussian                                    -> pattern_000 x
         | Bernoulli (p, shape)                        -> pattern_000 x
-        | Init _                                      -> pattern_000 x
+        | Init (shape, f)                             -> pattern_000 x
         | Get i                                       -> pattern_000 x
         | Set i                                       -> pattern_000 x
         | GetSlice slice                              -> pattern_000 x

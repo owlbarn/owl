@@ -54,7 +54,7 @@ module Make
     | Uniform                       of int array
     | Gaussian
     | Bernoulli                     of float * (int array)
-    | Init                          of (int -> elt)
+    | Init                          of int array * (int -> elt)
     | Get                           of int array
     | Set                           of int array
     | GetSlice                      of int list list

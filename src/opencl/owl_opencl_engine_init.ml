@@ -145,7 +145,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Uniform shape                               -> _init_20 x param "uniform"
         | Gaussian                                    -> failwith "Gaussian"
         | Bernoulli (p, shape)                        -> _init_xx x param
-        | Init _                                      -> failwith "Init"
+        | Init (shape, f)                             -> failwith "Init"
         | Get i                                       -> _init_xx x param
         | Set i                                       -> failwith "Set"
         | GetSlice slice                              -> _init_xx x param

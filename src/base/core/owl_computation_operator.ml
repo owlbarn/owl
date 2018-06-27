@@ -59,7 +59,7 @@ module Make
     make_node ~shape:[|Some shape|] (Bernoulli (p, shape)) |> node_to_arr
 
   let init shape f =
-    make_node ~shape:[|Some shape|] (Init f) |> node_to_arr
+    make_node ~shape:[|Some shape|] (Init (shape, f)) |> node_to_arr
 
   let shape x =
     let x_shape = (arr_to_node x |> attr).shape in
@@ -260,28 +260,6 @@ module Make
   let scalar_div a x = make_then_connect ScalarDiv [|elt_to_node a; arr_to_node x|] |> node_to_arr
 
   let fma x y z = make_then_connect FMA [|arr_to_node x; arr_to_node y; arr_to_node z|] |> node_to_arr
-
-  let is_zero x = raise Owl_exception.NOT_IMPLEMENTED
-
-  let is_positive x = raise Owl_exception.NOT_IMPLEMENTED
-
-  let is_negative x = raise Owl_exception.NOT_IMPLEMENTED
-
-  let is_nonpositive x = raise Owl_exception.NOT_IMPLEMENTED
-
-  let is_nonnegative x = raise Owl_exception.NOT_IMPLEMENTED
-
-  let equal x y = raise Owl_exception.NOT_IMPLEMENTED
-
-  let not_equal x y = raise Owl_exception.NOT_IMPLEMENTED
-
-  let less x y = raise Owl_exception.NOT_IMPLEMENTED
-
-  let greater x y = raise Owl_exception.NOT_IMPLEMENTED
-
-  let less_equal x y = raise Owl_exception.NOT_IMPLEMENTED
-
-  let greater_equal x y = raise Owl_exception.NOT_IMPLEMENTED
 
   let elt_equal x y = make_then_connect EltEqual [|arr_to_node x; arr_to_node y|] |> node_to_arr
 

@@ -43,7 +43,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Uniform shape                               -> _eval_map_02 x (fun ~out x -> A.uniform_ ~a:x.(0) ~b:x.(1) ~out)
         | Gaussian                                    -> failwith "Gaussian"
         | Bernoulli (p, shape)                        -> _eval_map_01 x (fun ~out x -> A.bernoulli_ ~p ~out)
-        | Init _                                      -> failwith "Init"
+        | Init (shape, f)                             -> failwith "Init"
         | Get i                                       -> _eval_map_06 x (fun x -> A.get x i)
         | Set i                                       -> failwith "Set"
         | GetSlice slice                              -> _eval_map_00 x (fun x -> A.get_slice slice x.(0))
