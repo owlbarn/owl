@@ -71,12 +71,20 @@ let slice_left = Genarray.slice_left
 let slice_right = Genarray.slice_right
 
 
-let copy_to src dst =
-  let k = kind src in
-  let n = numel src in
-  let m = numel dst in
-  assert (m = n);
-  _owl_copy k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 src dst
+let copy x =
+  let y = empty (kind x) (shape x) in
+  _owl_copy (kind x) (numel x) ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 x y;
+  y
+
+
+let copy_ ~out src =
+  if Owl_ndarray._owl_ndarray_same_data out src = false then (
+    let k = kind src in
+    let n = numel src in
+    let m = numel out in
+    assert (m = n);
+    _owl_copy k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 src out
+  )
 
 
 let fill x a = Genarray.fill x a
@@ -95,9 +103,9 @@ let reshape x d =
 
 
 let reshape_ ~out x =
-  if Owl_ndarray._owl_ndarray_same_data x out = false then (
-    Owl_log.error "Oh damn ...";
-    copy_to x out
+  if Owl_ndarray._owl_ndarray_same_data out x = false then (
+    Owl_log.error "Oh damn ... reshape";
+    copy_ ~out x
   )
 
 
@@ -137,12 +145,6 @@ let same_shape x y = (shape x) = (shape y)
 
 
 let same_data x y = Owl_ndarray._owl_ndarray_same_data x y
-
-
-let copy x =
-  let y = empty (kind x) (shape x) in
-  _owl_copy (kind x) (numel x) ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 x y;
-  y
 
 
 let reverse x =
@@ -1304,7 +1306,7 @@ let transpose_ ~out ?axis x =
     | None   -> Array.init d (fun i -> d - i - 1)
   in
   (* trivial case *)
-  if a = Array.init d (fun i -> i) then copy_to x out
+  if a = Array.init d (fun i -> i) then copy_ ~out x
   else (
     (* check if axis is a correct permutation *)
     _check_transpose_axis a d;
@@ -5637,7 +5639,7 @@ let cross_entropy' x y =
 let dropout_ ?out ?(rate=0.5) x =
   assert (rate >= 0. && rate <= 1.);
   let out = match out with Some o -> o | None -> x in
-  if not (out == x) then copy_to x out;
+  if not (out == x) then copy_ ~out x;
   _owl_dropout (kind x) (numel x) out rate 0
 
 
@@ -5726,7 +5728,7 @@ let col x j =
 
 let copy_row_to v x i =
   let u = row x i in
-  copy_to v u
+  copy_ ~out:u v
 
 
 let copy_col_to v x i =

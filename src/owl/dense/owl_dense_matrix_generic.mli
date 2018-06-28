@@ -448,12 +448,6 @@ val copy : ('a, 'b) t -> ('a, 'b) t
 ``copy x`` returns a copy of matrix ``x``.
  *)
 
-val copy_to : ('a, 'b) t -> ('a, 'b) t -> unit
-(**
-``copy_to x y`` copies the elements of ``x`` to ``y``. ``x`` and ``y`` must have
-the same dimensions.
- *)
-
 val copy_row_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
 (**
 ``copy_row_to v x i`` copies an ``1`` by ``n`` row vector ``v`` to the ``ith`` row
@@ -2048,10 +2042,50 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 
 (** {6 In-place modification}  *)
 
+val create_ : out:('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val uniform_ : ?a:'a -> ?b:'a -> out:('a, 'b) t -> unit
+(** TODO *)
+
+val bernoulli_ : ?p:float -> out:('a, 'b) t -> unit
+(** TODO *)
+
+val zeros_ : out:('a, 'b) t -> unit
+(** TODO *)
+
+val ones_ : out:('a, 'b) t -> unit
+(** TODO *)
+
+val one_hot_ : out:('a, 'b) t -> int -> ('a, 'b) t -> unit
+(** TODO *)
+
 val sort_ : ('a, 'b) t -> unit
 (**
 ``sort_ x`` performs in-place quicksort of the elelments in ``x``.
  *)
+
+val copy_ : out:('a, 'b) t -> ('a, 'b) t -> unit
+(**
+``copy_ ~out src`` copies the data from ndarray ``src`` to destination ``out``.
+ *)
+
+val reshape_ : out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val transpose_ : out:('a, 'b) t -> ?axis:int array -> ('a, 'b) t -> unit
+(**
+``transpose_ ~out x`` is similar to ``transpose x`` but the output is written to ``out``.
+ *)
+
+val sum_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val min_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val max_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
+(** TODO *)
 
 val add_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
@@ -2202,6 +2236,9 @@ val fma_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 ``fma_ ~out x y z`` is simiar to ``fma x y z`` function but the output is
 written to ``out``.
  *)
+
+val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:'a -> ?beta:'a -> c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val conj_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**

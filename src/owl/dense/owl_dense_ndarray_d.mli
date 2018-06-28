@@ -97,8 +97,6 @@ val sub_ndarray : int array -> arr -> arr array
 
 val slice_left : arr -> int array -> arr
 
-val copy_to : arr -> arr -> unit
-
 val reset : arr -> unit
 
 val fill : arr -> elt -> unit
@@ -653,6 +651,8 @@ val ones_ : out:arr -> unit
 val sort_ : arr -> unit
 
 val one_hot_ : out:arr -> int -> arr -> unit
+
+val copy_ : out:arr -> arr -> unit
 
 val reshape_ : out:arr -> arr -> unit
 

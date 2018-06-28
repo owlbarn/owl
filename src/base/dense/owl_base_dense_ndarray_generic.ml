@@ -234,7 +234,7 @@ let copy varr =
   end
 
 
-let copy_to x = failwith "Owl_base_dense_ndarray_generic:copy_to: not implemented"
+let copy_ ~out x = failwith "Owl_base_dense_ndarray_generic:copy_: not implemented"
 
 
 (* Reset to zero *)

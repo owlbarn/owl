@@ -140,8 +140,6 @@ val fill : mat -> elt -> unit
 
 val copy : mat -> mat
 
-val copy_to : mat -> mat -> unit
-
 val copy_row_to : mat -> mat -> int -> unit
 
 val copy_col_to : mat -> mat -> int -> unit
@@ -667,7 +665,31 @@ val fma : mat -> mat -> mat -> mat
 
 (** {6 Fucntions of in-place modification } *)
 
+val create_ : out:mat -> elt -> unit
+
+val uniform_ : ?a:elt -> ?b:elt -> out:mat -> unit
+
+val bernoulli_ : ?p:float -> out:mat -> unit
+
+val zeros_ : out:mat -> unit
+
+val ones_ : out:mat -> unit
+
 val sort_ : mat -> unit
+
+val one_hot_ : out:mat -> int -> mat -> unit
+
+val copy_ : out:mat -> mat -> unit
+
+val reshape_ : out:mat -> mat -> unit
+
+val transpose_ : out:mat -> ?axis:int array -> mat -> unit
+
+val sum_ : out:mat -> axis:int -> mat -> unit
+
+val min_ : out:mat -> axis:int -> mat -> unit
+
+val max_ : out:mat -> axis:int -> mat -> unit
 
 val add_ : ?out:mat -> mat -> mat -> unit
 
@@ -718,6 +740,8 @@ val scalar_atan2_ : ?out:mat -> elt -> mat -> unit
 val scalar_fmod_ : ?out:mat -> elt -> mat -> unit
 
 val fma_ : ?out:mat -> mat -> mat -> mat -> unit
+
+val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:elt -> ?beta:elt -> c:mat -> mat -> mat -> unit
 
 val conj_ : ?out:mat -> mat -> unit
 

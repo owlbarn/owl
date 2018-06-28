@@ -48,7 +48,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Set i                                       -> failwith "Set"
         | GetSlice slice                              -> _eval_map_00 x (fun x -> A.get_slice slice x.(0))
         | SetSlice slice                              -> failwith "SetSlice"
-        | Copy                                        -> _eval_map_01 x (fun ~out y -> if is_inherited x = false then A.copy_to y.(0) out)
+        | Copy                                        -> _eval_map_01 x (fun ~out x -> A.copy_ ~out x.(0))
         | Reset                                       -> failwith "Reset"
         | Reshape shape                               -> _eval_map_01 x (fun ~out x -> A.reshape_ ~out x.(0))
         | Reverse                                     -> failwith "Reverse"

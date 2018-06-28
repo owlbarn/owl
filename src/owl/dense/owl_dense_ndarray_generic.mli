@@ -336,11 +336,6 @@ val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
 Same as ``Bigarray.slice_left``, please refer to Bigarray documentation.
  *)
 
-val copy_to : ('a, 'b) t -> ('a, 'b) t -> unit
-(**
-``copy_to src dst`` copies the data from ndarray ``src`` to ``dst``.
- *)
-
 val reset : ('a, 'b) t -> unit
 (**
 ``reset x`` resets all the elements in ``x`` to zero.
@@ -2064,6 +2059,11 @@ val sort_ : ('a, 'b) t -> unit
 ``sort_ x`` performs in-place quicksort of the elelments in ``x``.
  *)
 
+val copy_ : out:('a, 'b) t -> ('a, 'b) t -> unit
+(**
+``copy_ ~out src`` copies the data from ndarray ``src`` to destination ``out``.
+ *)
+
 val reshape_ : out:('a, 'b) t -> ('a, 'b) t -> unit
 (** TODO *)
 
@@ -2230,6 +2230,9 @@ val fma_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 ``fma_ ~out x y z`` is simiar to ``fma x y z`` function but the output is
 written to ``out``.
  *)
+
+val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:'a -> ?beta:'a -> c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val conj_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
@@ -2691,9 +2694,6 @@ val copy_col_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Refer to :doc:`owl_dense_matrix_generic` *)
-
-val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:'a -> ?beta:'a -> c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t

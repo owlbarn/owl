@@ -448,8 +448,8 @@ module Make
     let node = arr_to_node x in
     if is_var node then (
       if is_assigned node then (
-        let dst = unpack_arr x in
-        A.copy_to arr dst
+        let out = unpack_arr x in
+        A.copy_ ~out arr
       )
       else (
         let dst = A.copy arr in

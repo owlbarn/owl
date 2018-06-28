@@ -103,8 +103,6 @@ val sub_ndarray : int array -> arr -> arr array
 
 val slice_left : arr -> int array -> arr
 
-val copy_to : arr -> arr -> unit
-
 val reset : arr -> unit
 
 val fill : arr -> elt -> unit
@@ -623,6 +621,8 @@ val zeros_ : out:arr -> unit
 val ones_ : out:arr -> unit
 
 val sort_ : arr -> unit
+
+val copy_ : out:arr -> arr -> unit
 
 val reshape_ : out:arr -> arr -> unit
 

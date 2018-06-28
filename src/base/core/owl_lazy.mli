@@ -257,7 +257,7 @@ module Make (A : Ndarray_Mutable) : sig
   val copy : arr -> arr
   (** TODO *)
 
-  val copy_to : 'a -> 'b -> 'c
+  val copy_ : out:arr -> arr -> unit
   (** TODO *)
 
   val reset : arr -> unit

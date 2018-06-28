@@ -86,7 +86,7 @@ module Make
   let copy x =
     make_then_connect Copy [|arr_to_node x|] |> node_to_arr
 
-  let copy_to x y = failwith "copy_to: not implemented"
+  let copy_ ~out x = failwith "Owl_computation_operator:copy_: not implemented"
 
   let reset x =
     make_then_connect Reset [|arr_to_node x|] |> node_to_arr |> ignore
