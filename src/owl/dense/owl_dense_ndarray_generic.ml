@@ -247,15 +247,14 @@ let repeat_ ~out x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
     failwith "repeat_: repetition must be >= 1";
-  let highest_dim = Array.length (shape x) - 1 in
-  let _kind = kind x in
-  let _shape_x = shape x in
-  if Array.length reps != Array.length _shape_x then
-    failwith "repeat_: repetition must be of the same dimension as input shape";
+  let x_dims = num_dims x in
+  let highest_dim = x_dims - 1 in
+  assert (Array.length reps = x_dims);
 
-  if (Array.for_all (fun x -> x = 1) reps) = true then copy_ x out else (
-    Owl_ndarray_repeat._ndarray_repeat _kind x out highest_dim reps _shape_x
-  )
+  if (Array.for_all ((=) 1) reps) = true then 
+    copy_ x out
+  else
+    Owl_ndarray_repeat._ndarray_repeat (kind x) x out highest_dim reps (shape x)
 
 
 let concatenate ?(axis=0) xs =
