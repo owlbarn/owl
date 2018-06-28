@@ -583,16 +583,17 @@ let repeat x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
     failwith "repeat: repetition must be >= 1";
-  let highest_dim = Array.length (shape x) - 1 in
-  let _shape_x = shape x in
-  if Array.length reps != Array.length _shape_x then
-    failwith "repeat: repetition must be of the same dimension as input ndarray";
+  let x_dims = num_dims x in
+  let highest_dim = x_dims - 1 in
+  assert (Array.length reps = x_dims);
 
-  if (Array.for_all (fun x -> x = 1) reps) = true then x else (
+  if (Array.for_all ((=) 1) reps) = true then copy x
+  else (
     let _kind = kind x in
     let x' = flatten x in
-    let _shape_y = Array.map2 ( * ) _shape_x reps in
-    let num = Owl_utils_array.fold_right ( * ) _shape_y 1 in
+    let x_shape = shape x in
+    let y_shape = Array.map2 ( * ) x_shape reps in
+    let num = Owl_utils_array.fold_right ( * ) y_shape 1 in
     let y' = empty _kind [|num|] in
 
     if Array.length reps = 1 then (
@@ -606,8 +607,8 @@ let repeat x reps =
       done
     )
     else (
-      let stride_x = Owl_utils.calc_stride _shape_x in
-      let slice_y = Owl_utils.calc_slice _shape_y in
+      let stride_x = Owl_utils.calc_stride x_shape in
+      let slice_y = Owl_utils.calc_slice y_shape in
 
       let rep_slice = Owl_utils.calc_slice reps in
       let block_idx = Array.map2 ( * ) rep_slice stride_x in
@@ -629,7 +630,7 @@ let repeat x reps =
       while ((!d != hd) && !tag) || not (Stack.is_empty stack) do
 
         while (!d != hd) && !tag do
-          for i = _shape_x.(!d) - 1 downto 0 do
+          for i = x_shape.(!d) - 1 downto 0 do
             let flag = if i = 0 then false else true in
             Stack.push (!h + i * block_idx.(!d), !d + 1,
               !ofsx + i * stride_x.(!d), flag) stack
@@ -653,7 +654,7 @@ let repeat x reps =
                 Genarray.blit subx suby
               )
               else (
-                for i = 0 to _shape_x.(!d) - 1 do
+                for i = 0 to x_shape.(!d) - 1 do
                   let elemx = get x' [|!ofsx + i|] in
                   for j = 0 to repsd - 1 do
                     set y' [|!h + i * repsd + j|] elemx
@@ -672,7 +673,7 @@ let repeat x reps =
         )
       done
     );
-    reshape y' _shape_y
+    reshape y' y_shape
   )
 
 
