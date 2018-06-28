@@ -68,8 +68,7 @@ module Make
     | Some s -> s
     | None   -> [||]
 
-  let numel x =
-    Array.fold_left ( * ) 1 (shape x)
+  let numel x = Array.fold_left ( * ) 1 (shape x)
 
   let get x i =
     make_then_connect (Get i) [|arr_to_node x|] |> node_to_elt

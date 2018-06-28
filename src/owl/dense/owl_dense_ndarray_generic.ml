@@ -29,10 +29,16 @@ let set x i a = Genarray.set x i a
 let get_fancy axis x = Owl_slicing.get_fancy_list_typ axis x
 
 
+let get_fancy_ ~out axis x = Owl_slicing.get_fancy_list_typ_ axis x out
+
+
 let set_fancy axis x y = Owl_slicing.set_fancy_list_typ axis x y
 
 
 let get_slice axis x = Owl_slicing.get_slice_list_typ axis x
+
+
+let get_slice_ ~out axis x = Owl_slicing.get_slice_list_typ_ axis x out
 
 
 let set_slice axis x y = Owl_slicing.set_slice_list_typ axis x y
@@ -103,10 +109,8 @@ let reshape x d =
 
 
 let reshape_ ~out x =
-  if Owl_ndarray._owl_ndarray_same_data out x = false then (
-    Owl_log.error "Oh damn ... reshape";
+  if Owl_ndarray._owl_ndarray_same_data out x = false then
     copy_ ~out x
-  )
 
 
 let reset x = Genarray.fill x (Owl_const.zero (kind x))

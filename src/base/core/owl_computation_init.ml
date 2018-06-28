@@ -124,7 +124,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Get i                                       -> _init_05 x
         | Set i                                       -> failwith "Set"
         | GetSlice slice                              -> _init_00 x
-        | SetSlice slice                              -> failwith "SetSlice"
+        | SetSlice slice                              -> _init_01 x
         | Copy                                        -> _init_01 x
         | Reset                                       -> _init_01 x
         | Reshape shape                               -> _init_01 x

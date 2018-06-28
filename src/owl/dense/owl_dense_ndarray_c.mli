@@ -622,6 +622,10 @@ val ones_ : out:arr -> unit
 
 val sort_ : arr -> unit
 
+val get_fancy_ : out:arr -> index list -> arr -> unit
+
+val get_slice_ : out:arr -> int list list -> arr -> unit
+
 val copy_ : out:arr -> arr -> unit
 
 val reshape_ : out:arr -> arr -> unit

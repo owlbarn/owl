@@ -46,10 +46,10 @@ module Make (A : Ndarray_Mutable) = struct
         | Init (shape, f)                             -> failwith "Init"
         | Get i                                       -> _eval_map_06 x (fun x -> A.get x i)
         | Set i                                       -> failwith "Set"
-        | GetSlice slice                              -> _eval_map_00 x (fun x -> A.get_slice slice x.(0))
+        | GetSlice slice                              -> _eval_map_01 x (fun ~out x -> A.get_slice_ ~out slice x.(0))
         | SetSlice slice                              -> failwith "SetSlice"
         | Copy                                        -> _eval_map_01 x (fun ~out x -> A.copy_ ~out x.(0))
-        | Reset                                       -> failwith "Reset"
+        | Reset                                       -> _eval_map_01 x (fun ~out x -> A.reset out)
         | Reshape shape                               -> _eval_map_01 x (fun ~out x -> A.reshape_ ~out x.(0))
         | Reverse                                     -> failwith "Reverse"
         | Tile repeats                                -> _eval_map_00 x (fun x -> A.tile x.(0) repeats)

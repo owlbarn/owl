@@ -2059,6 +2059,12 @@ val sort_ : ('a, 'b) t -> unit
 ``sort_ x`` performs in-place quicksort of the elelments in ``x``.
  *)
 
+val get_fancy_ : out:('a, 'b) t -> index list -> ('a, 'b) t -> unit
+(** TODO *)
+
+val get_slice_ : out:('a, 'b) t -> int list list -> ('a, 'b) t -> unit
+(** TODO *)
+
 val copy_ : out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``copy_ ~out src`` copies the data from ndarray ``src`` to destination ``out``.
