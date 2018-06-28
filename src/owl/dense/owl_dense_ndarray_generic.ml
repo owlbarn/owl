@@ -253,7 +253,7 @@ let repeat_ ~out x reps =
   if Array.length reps != Array.length _shape_x then
     failwith "repeat_: repetition must be of the same dimension as input shape";
 
-  if (Array.for_all (fun x -> x = 1) reps) = true then copy_to x out else (
+  if (Array.for_all (fun x -> x = 1) reps) = true then copy_ x out else (
     Owl_ndarray_repeat._ndarray_repeat _kind x out highest_dim reps _shape_x
   )
 
