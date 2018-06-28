@@ -129,6 +129,9 @@ let init_nd k d f =
 let same_shape x y = (shape x) = (shape y)
 
 
+let same_data x y = Owl_ndarray._owl_ndarray_same_data x y
+
+
 let copy x =
   let y = empty (kind x) (shape x) in
   _owl_copy (kind x) (numel x) ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 x y;

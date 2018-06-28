@@ -191,6 +191,16 @@ val same_shape : ('a, 'b) t -> ('c, 'd) t -> bool
 ``same_shape x y`` checks whether ``x`` and ``y`` has the same shape or not.
 *)
 
+val same_data : ('a, 'b) t -> ('a, 'b) t -> bool
+(**
+``same_data x y`` checks whether ``x`` and ``y`` share the same underlying data
+in the memory. Namely, both variables point to the same memory address. This is
+done by checking the ``Data`` pointer in the Bigarray structure.
+
+This function is very useful for avoiding unnecessary copying between two
+ndarrays especially if one has been reshaped or sliced.
+*)
+
 val kind : ('a, 'b) t -> ('a, 'b) kind
 (**
 ``kind x`` returns the type of ndarray ``x``. It is one of the four possible

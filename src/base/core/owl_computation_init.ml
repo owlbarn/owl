@@ -37,7 +37,7 @@ module Make (A : Ndarray_Mutable) = struct
       )
     | None     -> (
         (* allocate new memory for dst node *)
-        let dst_val = arr_to_value (A.empty dst_shp) in
+        let dst_val = arr_to_value (A.zeros dst_shp) in
         set_value dst [| dst_val |];
         set_vnode dst [| |]
       )

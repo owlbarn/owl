@@ -38,6 +38,7 @@ let make_network wndsz vocabsz =
 
 
 let train () =
+  Owl_log.(set_level INFO);
   let wndsz = 100 and stepsz = 1 in
   let vocab, x, y = prepare wndsz stepsz in
   let vocabsz = Nlp.Vocabulary.length vocab in

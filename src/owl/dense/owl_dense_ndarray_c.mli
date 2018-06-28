@@ -68,6 +68,8 @@ val size_in_bytes : arr -> int
 
 val same_shape : arr -> arr -> bool
 
+val same_data : arr -> arr -> bool
+
 val strides : arr -> int array
 
 val slice_size : arr -> int array

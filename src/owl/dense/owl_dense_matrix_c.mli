@@ -114,6 +114,8 @@ val size_in_bytes : mat -> int
 
 val same_shape : mat -> mat -> bool
 
+val same_data : mat -> mat -> bool
+
 
 (** {6 Manipulate a matrix} *)
 

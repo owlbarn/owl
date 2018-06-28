@@ -286,6 +286,9 @@ val same_shape : ('a, 'b) t -> ('a, 'b) t -> bool
 ``same_shape x y`` returns ``true`` if two matrics have the same shape.
  *)
 
+val same_data : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic`. *)
+
 val kind : ('a, 'b) t -> ('a, 'b) kind
 (**
 ``kind x`` returns the type of matrix ``x``.
@@ -1198,7 +1201,7 @@ by using ``save`` function.
 
 val save_txt : ?sep:string -> ?append:bool -> ('a, 'b) t -> string -> unit
 (**
-``save_txt ~sep ~append x f`` saves the matrix ``x`` into a text file ``f`` 
+``save_txt ~sep ~append x f`` saves the matrix ``x`` into a text file ``f``
 delimited by the specified string ``sep`` (default: tab).  If ``append`` is
 ``false`` (it is by default), an existing file will be truncated and overwritten.
 If ``append`` is ``true`` and the file exists, new rows will be appended to it.
