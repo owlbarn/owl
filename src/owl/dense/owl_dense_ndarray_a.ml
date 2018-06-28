@@ -486,17 +486,17 @@ let repeat x reps =
       done
     )
     else (
-      let _stride_x = Owl_utils.calc_stride _shape_x in
+      let stride_x = Owl_utils.calc_stride _shape_x in
       let slice_y = Owl_utils.calc_slice _shape_y in
 
       let rep_slice = Owl_utils.calc_slice reps in
-      let block_idx = Array.map2 ( * ) rep_slice _stride_x in
+      let block_idx = Array.map2 ( * ) rep_slice stride_x in
 
       let hd = ref (highest_dim + 1) in
       let flag_one = true in
       for i = highest_dim downto 0 do
         let flag_one = if reps.(i) != 0 then false else flag_one in
-        if (flag_one && reps.(i) = 0) then hd := !hd - 1;
+        if flag_one && reps.(i) = 0 then hd := !hd - 1
       done;
       let hd = if !hd = highest_dim + 1 then highest_dim else !hd in
 
@@ -506,12 +506,13 @@ let repeat x reps =
       let tag = ref true in
       let stack = Stack.create () in
 
-      while ((!d != hd) && !tag)  || not (Stack.is_empty stack) do
+      while ((!d != hd) && !tag) || not (Stack.is_empty stack) do
 
-        while ((!d != hd) && !tag) do
+        while (!d != hd) && !tag do
           for i = _shape_x.(!d) - 1 downto 0 do
-            let tag2 = if i = 0 then false else true in
-            Stack.push (!h + i * block_idx.(!d), !d + 1, !ofsx + i * _stride_x.(!d), tag2) stack;
+            let flag = if i = 0 then false else true in
+            Stack.push (!h + i * block_idx.(!d), !d + 1,
+              !ofsx + i * stride_x.(!d), flag) stack
           done;
           d := !d + 1
         done;
@@ -524,9 +525,9 @@ let repeat x reps =
             Stack.push (t1, t2, t3, false) stack
           )
           else (
-            if (!d = hd) then (
+            if !d = hd then (
               let repsd = reps.(!d) in
-              if (repsd = 1) then (
+              if repsd = 1 then (
                 Array.blit x' !ofsx y' !h slice_y.(!d)
               )
               else (
