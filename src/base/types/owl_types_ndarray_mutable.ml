@@ -23,6 +23,8 @@ module type Sig = sig
 
   val one_hot_ : out:arr -> int -> arr -> unit
 
+  val reshape_ : out:arr -> arr -> unit
+
   val transpose_ : out:arr -> ?axis:int array -> arr -> unit
 
   val hypot : arr -> arr -> arr

@@ -94,6 +94,13 @@ let reshape x d =
   )
 
 
+let reshape_ ~out x =
+  if Owl_ndarray._owl_ndarray_same_data x out = false then (
+    Owl_log.error "Oh damn ...";
+    copy_to x out
+  )
+
+
 let reset x = Genarray.fill x (Owl_const.zero (kind x))
 
 

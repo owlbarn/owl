@@ -2064,6 +2064,9 @@ val sort_ : ('a, 'b) t -> unit
 ``sort_ x`` performs in-place quicksort of the elelments in ``x``.
  *)
 
+val reshape_ : out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
 val transpose_ : out:('a, 'b) t -> ?axis:int array -> ('a, 'b) t -> unit
 (**
 ``transpose_ ~out x`` is similar to ``transpose x`` but the output is written to ``out``.
