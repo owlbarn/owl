@@ -2062,7 +2062,13 @@ val sort_ : ('a, 'b) t -> unit
 val get_fancy_ : out:('a, 'b) t -> index list -> ('a, 'b) t -> unit
 (** TODO *)
 
+val set_fancy_ : out:('a, 'b) t -> index list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
 val get_slice_ : out:('a, 'b) t -> int list list -> ('a, 'b) t -> unit
+(** TODO *)
+
+val set_slice_ : out:('a, 'b) t -> int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** TODO *)
 
 val copy_ : out:('a, 'b) t -> ('a, 'b) t -> unit

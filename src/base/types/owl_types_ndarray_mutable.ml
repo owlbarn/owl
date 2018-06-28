@@ -25,6 +25,8 @@ module type Sig = sig
 
   val get_slice_ : out:arr -> int list list -> arr -> unit
 
+  val set_slice_ : out:arr -> int list list -> arr -> arr -> unit
+
   val reshape_ : out:arr -> arr -> unit
 
   val transpose_ : out:arr -> ?axis:int array -> arr -> unit

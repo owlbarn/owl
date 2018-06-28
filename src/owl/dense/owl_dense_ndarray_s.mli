@@ -654,7 +654,11 @@ val one_hot_ : out:arr -> int -> arr -> unit
 
 val get_fancy_ : out:arr -> index list -> arr -> unit
 
+val set_fancy_ : out:arr -> index list -> arr -> arr -> unit
+
 val get_slice_ : out:arr -> int list list -> arr -> unit
+
+val set_slice_ : out:arr -> int list list -> arr -> arr -> unit
 
 val copy_ : out:arr -> arr -> unit
 

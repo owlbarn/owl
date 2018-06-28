@@ -26,24 +26,6 @@ let get x i = Genarray.get x i
 let set x i a = Genarray.set x i a
 
 
-let get_fancy axis x = Owl_slicing.get_fancy_list_typ axis x
-
-
-let get_fancy_ ~out axis x = Owl_slicing.get_fancy_list_typ_ axis x out
-
-
-let set_fancy axis x y = Owl_slicing.set_fancy_list_typ axis x y
-
-
-let get_slice axis x = Owl_slicing.get_slice_list_typ axis x
-
-
-let get_slice_ ~out axis x = Owl_slicing.get_slice_list_typ_ axis x out
-
-
-let set_slice axis x y = Owl_slicing.set_slice_list_typ axis x y
-
-
 let num_dims x = Genarray.num_dims x
 
 
@@ -91,6 +73,36 @@ let copy_ ~out src =
     assert (m = n);
     _owl_copy k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 src out
   )
+
+
+let get_fancy axis x = Owl_slicing.get_fancy_list_typ axis x
+
+
+let get_fancy_ ~out axis x = Owl_slicing.get_fancy_list_typ_ axis x out
+
+
+let set_fancy axis x y = Owl_slicing.set_fancy_list_typ axis x y
+
+
+let set_fancy_ ~out axis x y =
+  if Owl_ndarray._owl_ndarray_same_data out x = false then
+    copy_ ~out x;
+  Owl_slicing.set_fancy_list_typ axis out y
+
+
+let get_slice axis x = Owl_slicing.get_slice_list_typ axis x
+
+
+let get_slice_ ~out axis x = Owl_slicing.get_slice_list_typ_ axis x out
+
+
+let set_slice axis x y = Owl_slicing.set_slice_list_typ axis x y
+
+
+let set_slice_ ~out axis x y =
+  if Owl_ndarray._owl_ndarray_same_data out x = false then
+    copy_ ~out x;
+  Owl_slicing.set_slice_list_typ axis out y
 
 
 let fill x a = Genarray.fill x a
