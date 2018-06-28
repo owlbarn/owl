@@ -2052,7 +2052,12 @@ val sort_ : ('a, 'b) t -> unit
 
 val transpose_ : out:('a, 'b) t -> ?axis:int array -> ('a, 'b) t -> unit
 (**
-``transpose_ ~out x`` is similar to ``transpose x`` but the output is written to ``out``.
+``transpose_ out x`` is similar to ``transpose x`` but the output is written to ``out``.
+ *)
+
+val repeat_ : out:('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(**
+``repeat_ out x reps`` is similar to ``repeat x reps`` but the output is written to ``out``.
  *)
 
 val sum_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit

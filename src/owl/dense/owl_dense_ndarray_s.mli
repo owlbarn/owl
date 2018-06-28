@@ -654,6 +654,8 @@ val one_hot_ : out:arr -> int -> arr -> unit
 
 val transpose_ : out:arr -> ?axis:int array -> arr -> unit
 
+val repeat_ : out:arr -> arr -> int array -> unit
+
 val sum_ : out:arr -> axis:int -> arr -> unit
 
 val min_ : out:arr -> axis:int -> arr -> unit

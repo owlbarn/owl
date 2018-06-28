@@ -25,6 +25,8 @@ module type Sig = sig
 
   val transpose_ : out:arr -> ?axis:int array -> arr -> unit
 
+  val repeat_ : out:arr -> arr -> int array -> unit
+
   val hypot : arr -> arr -> arr
 
   val fmod : arr -> arr -> arr
