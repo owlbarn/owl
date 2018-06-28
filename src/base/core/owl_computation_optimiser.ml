@@ -42,9 +42,9 @@ module Make
         | Set i                                       -> pattern_000 x
         | GetSlice slice                              -> pattern_000 x
         | SetSlice slice                              -> pattern_000 x
-        | Copy                                        -> pattern_000 x
+        | Copy                                        -> pattern_018 x
         | Reset                                       -> pattern_000 x
-        | Reshape shape                               -> pattern_000 x
+        | Reshape shape                               -> pattern_022 x
         | Reverse                                     -> pattern_000 x
         | Tile repeats                                -> pattern_000 x
         | Repeat (axis, repeats)                      -> pattern_000 x
@@ -101,7 +101,7 @@ module Make
         | Atan2Scalar                                 -> pattern_000 x
         | Add                                         -> pattern_001 x
         | Sub                                         -> pattern_000 x
-        | Mul                                         -> pattern_000 x
+        | Mul                                         -> pattern_019 x
         | Div                                         -> pattern_007 x
         | AddScalar                                   -> pattern_015 x
         | SubScalar                                   -> pattern_000 x
@@ -213,8 +213,7 @@ module Make
 
   (* dummy pattern *)
   and pattern_000 x =
-    let parents = parents x in
-    Array.iter _optimise_term parents
+    Array.iter _optimise_term (parents x)
 
 
   (* add ndarray pattern *)
@@ -549,6 +548,69 @@ module Make
         remove_edge a x;
       )
     | _            -> ()
+
+
+
+  (* copy pattern *)
+  and pattern_018 x =
+    let x_parents = parents x in
+    let a = x_parents.(0) in
+    _optimise_term a;
+    if refnum a = 1 then (
+      set_operator x Noop;
+      pattern_003 x
+    )
+
+
+  (* mul pattern *)
+  and pattern_019 x =
+    let x_parents = parents x in
+    let a = x_parents.(0) in
+    let b = x_parents.(1) in
+    _optimise_term a;
+    _optimise_term b;
+    pattern_020 x
+
+
+  (* mul pattern : a * 0 or 0 * a *)
+  and pattern_020 x =
+    if get_operator x = Mul then (
+      let x_parents = parents x in
+      let a = x_parents.(0) in
+      let b = x_parents.(1) in
+      let x_shp = Operator.shape (node_to_arr x) in
+      match (get_operator a, get_operator b) with
+      | Zeros _, _ | _, Zeros _ -> (
+          set_operator x (Zeros x_shp);
+          remove_edge a x;
+          remove_edge b x;
+        )
+      | _, _                    -> ()
+    )
+
+
+  (* mul pattern : a * 1 or 1 * a *)
+  and pattern_021 x = failwith "pattern_021: not implemented"
+
+
+  (* reshape pattern *)
+  and pattern_022 x =
+    let x_parents = parents x in
+    let a = x_parents.(0) in
+    _optimise_term a;
+    if refnum a = 1 then (
+      let x_shp = Operator.shape (node_to_arr x) in
+      match get_operator a with
+      | Zeros _ -> (
+          set_operator x (Zeros x_shp);
+          remove_edge a x
+        )
+      | Ones _  -> (
+          set_operator x (Ones x_shp);
+          remove_edge a x
+        )
+      | _       -> ()
+    )
 
 
   (* core optimise functions *)
