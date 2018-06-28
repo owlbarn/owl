@@ -157,7 +157,7 @@ module type BasicSig = sig
 
   val copy : mat -> mat
 
-  val copy_to : mat -> mat -> unit
+  val copy_ : out:mat -> mat -> unit
 
   val copy_row_to : mat -> mat -> int -> unit
 
@@ -471,7 +471,7 @@ module Make_Basic
 
   let copy x = M.copy (unpack_box x) |> pack_box
 
-  let copy_to src dst = M.copy_to (unpack_box src) (unpack_box dst)
+  let copy_ ~out src = M.copy_ ~out:(unpack_box out) (unpack_box src)
 
   let copy_row_to v x i = M.copy_row_to (unpack_box v) (unpack_box x) i
 

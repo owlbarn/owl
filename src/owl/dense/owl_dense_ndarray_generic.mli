@@ -191,6 +191,16 @@ val same_shape : ('a, 'b) t -> ('c, 'd) t -> bool
 ``same_shape x y`` checks whether ``x`` and ``y`` has the same shape or not.
 *)
 
+val same_data : ('a, 'b) t -> ('a, 'b) t -> bool
+(**
+``same_data x y`` checks whether ``x`` and ``y`` share the same underlying data
+in the memory. Namely, both variables point to the same memory address. This is
+done by checking the ``Data`` pointer in the Bigarray structure.
+
+This function is very useful for avoiding unnecessary copying between two
+ndarrays especially if one has been reshaped or sliced.
+*)
+
 val kind : ('a, 'b) t -> ('a, 'b) kind
 (**
 ``kind x`` returns the type of ndarray ``x``. It is one of the four possible
@@ -324,11 +334,6 @@ the lowest dimensionality of ``x``.
 val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 Same as ``Bigarray.slice_left``, please refer to Bigarray documentation.
- *)
-
-val copy_to : ('a, 'b) t -> ('a, 'b) t -> unit
-(**
-``copy_to src dst`` copies the data from ndarray ``src`` to ``dst``.
  *)
 
 val reset : ('a, 'b) t -> unit
@@ -2035,6 +2040,12 @@ val create_ : out:('a, 'b) t -> 'a -> unit
 val uniform_ : ?a:'a -> ?b:'a -> out:('a, 'b) t -> unit
 (** TODO *)
 
+val gaussian_ : ?mu:'a -> ?sigma:'a -> out:('a, 'b) t -> unit
+(** TODO *)
+
+val sequential_ :?a:'a -> ?step:'a -> out:('a, 'b) t -> unit
+(** TODO *)
+
 val bernoulli_ : ?p:float -> out:('a, 'b) t -> unit
 (** TODO *)
 
@@ -2051,6 +2062,29 @@ val sort_ : ('a, 'b) t -> unit
 (**
 ``sort_ x`` performs in-place quicksort of the elelments in ``x``.
  *)
+
+val get_fancy_ : out:('a, 'b) t -> index list -> ('a, 'b) t -> unit
+(** TODO *)
+
+val set_fancy_ : out:('a, 'b) t -> index list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val get_slice_ : out:('a, 'b) t -> int list list -> ('a, 'b) t -> unit
+(** TODO *)
+
+val set_slice_ : out:('a, 'b) t -> int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val copy_ : out:('a, 'b) t -> ('a, 'b) t -> unit
+(**
+``copy_ ~out src`` copies the data from ndarray ``src`` to destination ``out``.
+ *)
+
+val reshape_ : out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val reverse_ : out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
 
 val transpose_ : out:('a, 'b) t -> ?axis:int array -> ('a, 'b) t -> unit
 (**
@@ -2220,6 +2254,9 @@ val fma_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 ``fma_ ~out x y z`` is simiar to ``fma x y z`` function but the output is
 written to ``out``.
  *)
+
+val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:'a -> ?beta:'a -> c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val conj_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
@@ -2681,9 +2718,6 @@ val copy_col_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Refer to :doc:`owl_dense_matrix_generic` *)
-
-val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:'a -> ?beta:'a -> c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t

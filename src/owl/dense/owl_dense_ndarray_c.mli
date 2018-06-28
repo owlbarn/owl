@@ -68,6 +68,8 @@ val size_in_bytes : arr -> int
 
 val same_shape : arr -> arr -> bool
 
+val same_data : arr -> arr -> bool
+
 val strides : arr -> int array
 
 val slice_size : arr -> int array
@@ -100,8 +102,6 @@ val sub_left : arr -> int -> int -> arr
 val sub_ndarray : int array -> arr -> arr array
 
 val slice_left : arr -> int array -> arr
-
-val copy_to : arr -> arr -> unit
 
 val reset : arr -> unit
 
@@ -614,6 +614,10 @@ val create_ : out:arr -> elt -> unit
 
 val uniform_ : ?a:elt -> ?b:elt -> out:arr -> unit
 
+val gaussian_ : ?mu:elt -> ?sigma:elt -> out:arr -> unit
+
+val sequential_ :?a:elt -> ?step:elt -> out:arr -> unit
+
 val bernoulli_ : ?p:float -> out:arr -> unit
 
 val zeros_ : out:arr -> unit
@@ -621,6 +625,20 @@ val zeros_ : out:arr -> unit
 val ones_ : out:arr -> unit
 
 val sort_ : arr -> unit
+
+val get_fancy_ : out:arr -> index list -> arr -> unit
+
+val set_fancy_ : out:arr -> index list -> arr -> arr -> unit
+
+val get_slice_ : out:arr -> int list list -> arr -> unit
+
+val set_slice_ : out:arr -> int list list -> arr -> arr -> unit
+
+val copy_ : out:arr -> arr -> unit
+
+val reshape_ : out:arr -> arr -> unit
+
+val reverse_ : out:arr -> arr -> unit
 
 val transpose_ : out:arr -> ?axis:int array -> arr -> unit
 

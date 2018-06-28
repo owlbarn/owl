@@ -108,7 +108,7 @@ val reset : (float, 'b) t -> unit
 val copy : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val copy_to : ('a, 'b) t -> ('a, 'b) t -> unit
+val copy_ : out:('a, 'b) t -> ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val reshape : ('a, 'b) t -> int array -> ('a, 'b) t

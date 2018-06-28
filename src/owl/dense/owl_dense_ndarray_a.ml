@@ -99,9 +99,9 @@ let set_index x axis a =
 
 let slice_left = None
 
-let copy_to src dst =
-  assert (src.shape = dst.shape);
-  Array.blit src.data 0 dst.data 0 (numel src)
+let copy_ ~out src =
+  assert (src.shape = out.shape);
+  Array.blit src.data 0 out.data 0 (numel src)
 
 let fill x a = Array.fill x.data 0 (numel x) a
 

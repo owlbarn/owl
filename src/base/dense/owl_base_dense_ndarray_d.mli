@@ -57,7 +57,7 @@ val set_slice : int list list -> arr -> arr -> unit
 
 val copy : arr -> arr
 
-val copy_to : arr -> arr -> unit
+val copy_ : out:arr -> arr -> unit
 
 val reset : arr -> unit
 
@@ -350,6 +350,7 @@ val approx_elt_equal : ?eps:float -> arr -> arr -> arr
 
 val approx_elt_equal_scalar : ?eps:float -> arr -> float -> arr
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 
 (* Neural network related functions *)
 

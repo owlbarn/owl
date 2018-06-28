@@ -38,6 +38,20 @@ let get_fancy_array_typ axis x =
   )
 
 
+let get_fancy_array_typ_ axis x y =
+  let _kind = Genarray.kind x in
+  (* check axis is within boundary then re-format *)
+  let sx = Genarray.dims x in
+  let axis = check_slice_definition axis sx in
+  (* optimise the shape if possible *)
+  let axis', x', y' = optimise_input_shape axis x y in
+  (* slicing vs. fancy indexing *)
+  if is_basic_slicing axis = true then
+    Owl_slicing_basic.get _kind axis' x' y'
+  else
+    Owl_slicing_fancy.get _kind axis' x' y'
+
+
 let set_fancy_array_typ axis x y =
   let _kind = Genarray.kind x in
   (* check axis is within boundary then re-format *)
@@ -68,6 +82,14 @@ let get_slice_array_typ axis x =
   y
 
 
+let get_slice_array_typ_ axis x y =
+  let _kind = Genarray.kind x in
+  let sx = Genarray.dims x in
+  let axis = check_slice_definition axis sx in
+  let axis', x', y' = optimise_input_shape axis x y in
+  Owl_slicing_basic.get _kind axis' x' y'
+
+
 let set_slice_array_typ axis x y =
   let _kind = Genarray.kind x in
   let sx = Genarray.dims x in
@@ -82,6 +104,9 @@ let set_slice_array_typ axis x y =
 let get_fancy_list_typ axis x = get_fancy_array_typ (sdlist_to_sdarray axis) x
 
 
+let get_fancy_list_typ_ axis x y = get_fancy_array_typ_ (sdlist_to_sdarray axis) x y
+
+
 (* same as set_slice_array_typ function but take list type as slice definition *)
 let set_fancy_list_typ axis x y = set_fancy_array_typ (sdlist_to_sdarray axis) x y
 
@@ -90,6 +115,11 @@ let set_fancy_list_typ axis x y = set_fancy_array_typ (sdlist_to_sdarray axis) x
 let get_slice_list_typ axis x =
   let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
   get_slice_array_typ axis x
+
+
+let get_slice_list_typ_ axis x y =
+  let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
+  get_slice_array_typ_ axis x y
 
 
 (* simplified set_slice function which accept list of list as slice definition *)

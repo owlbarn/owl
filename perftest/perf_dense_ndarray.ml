@@ -44,7 +44,7 @@ let _ =
   test_op "swap 0 1          " c (fun () -> M.swap 0 1 x);
   test_op "fill              " c (fun () -> M.fill x 1.5);
   test_op "copy              " c (fun () -> M.copy x);
-  test_op "copy_to           " c (fun () -> M.copy_to x y);
+  test_op "copy_             " c (fun () -> M.copy_ ~out:y x);
   test_op "iteri             " c (fun () -> M.iteri (fun i a -> ()) x);
   test_op "iter              " c (fun () -> M.iter (fun a -> ()) x);
   test_op "mapi              " c (fun () -> M.mapi (fun i a -> a) x);

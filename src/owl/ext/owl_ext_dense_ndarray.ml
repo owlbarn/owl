@@ -139,7 +139,7 @@ module type BasicSig = sig
 
   val slice_left : arr -> int array -> arr
 
-  val copy_to : arr -> arr -> unit
+  val copy_ : out:arr -> arr -> unit
 
   val reset : arr -> unit
 
@@ -346,7 +346,7 @@ module Make_Basic
 
   let slice_left x i = M.slice_left (unpack_box x) i |> pack_box
 
-  let copy_to src dst = M.copy_to (unpack_box src) (unpack_box dst)
+  let copy_ ~out src = M.copy_ ~out:(unpack_box out) (unpack_box src)
 
   let fill x a = M.fill (unpack_box x) (unpack_elt a)
 

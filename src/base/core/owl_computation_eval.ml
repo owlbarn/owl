@@ -35,23 +35,23 @@ module Make (A : Ndarray_Mutable) = struct
         | Noop                                        -> _eval_map_00 x (fun x -> x.(0))
         | Var                                         -> check_assigned x
         | Const                                       -> check_assigned x
-        | Empty shape                                 -> _eval_map_02 x (fun ~out x -> ())
+        | Empty shape                                 -> _eval_map_01 x (fun ~out x -> ())
         | Zeros shape                                 -> _eval_map_01 x (fun ~out x -> A.zeros_ ~out)
         | Ones shape                                  -> _eval_map_01 x (fun ~out x -> A.ones_ ~out)
         | Create shape                                -> _eval_map_02 x (fun ~out x -> A.create_ ~out x.(0))
-        | Sequential                                  -> failwith "Sequential"
+        | Sequential                                  -> _eval_map_02 x (fun ~out x -> A.sequential_ ~a:x.(0) ~step:x.(1) ~out)
         | Uniform shape                               -> _eval_map_02 x (fun ~out x -> A.uniform_ ~a:x.(0) ~b:x.(1) ~out)
-        | Gaussian                                    -> failwith "Gaussian"
+        | Gaussian                                    -> _eval_map_02 x (fun ~out x -> A.gaussian_ ~mu:x.(0) ~sigma:x.(1) ~out)
         | Bernoulli (p, shape)                        -> _eval_map_01 x (fun ~out x -> A.bernoulli_ ~p ~out)
         | Init (shape, f)                             -> failwith "Init"
         | Get i                                       -> _eval_map_06 x (fun x -> A.get x i)
         | Set i                                       -> failwith "Set"
-        | GetSlice slice                              -> _eval_map_00 x (fun x -> A.get_slice slice x.(0))
-        | SetSlice slice                              -> failwith "SetSlice"
-        | Copy                                        -> _eval_map_01 x (fun ~out y -> if is_inherited x = false then A.copy_to y.(0) out)
-        | Reset                                       -> failwith "Reset"
-        | Reshape shape                               -> _eval_map_01 x (fun ~out y -> if is_inherited x = false then A.copy_to y.(0) out)
-        | Reverse                                     -> failwith "Reverse"
+        | GetSlice slice                              -> _eval_map_01 x (fun ~out x -> A.get_slice_ ~out slice x.(0))
+        | SetSlice slice                              -> _eval_map_01 x (fun ~out x -> A.set_slice_ ~out slice x.(0) x.(1))
+        | Copy                                        -> _eval_map_01 x (fun ~out x -> A.copy_ ~out x.(0))
+        | Reset                                       -> _eval_map_01 x (fun ~out x -> A.reset out)
+        | Reshape shape                               -> _eval_map_01 x (fun ~out x -> A.reshape_ ~out x.(0))
+        | Reverse                                     -> _eval_map_01 x (fun ~out x -> A.reverse_ ~out x.(0))
         | Tile repeats                                -> _eval_map_00 x (fun x -> A.tile x.(0) repeats)
         | Repeat repeats                              -> _eval_map_00 x (fun x -> A.repeat x.(0) repeats)
         | Concatenate axis                            -> _eval_map_00 x A.(concatenate ~axis)

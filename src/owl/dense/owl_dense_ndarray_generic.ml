@@ -26,18 +26,6 @@ let get x i = Genarray.get x i
 let set x i a = Genarray.set x i a
 
 
-let get_fancy axis x = Owl_slicing.get_fancy_list_typ axis x
-
-
-let set_fancy axis x y = Owl_slicing.set_fancy_list_typ axis x y
-
-
-let get_slice axis x = Owl_slicing.get_slice_list_typ axis x
-
-
-let set_slice axis x y = Owl_slicing.set_slice_list_typ axis x y
-
-
 let num_dims x = Genarray.num_dims x
 
 
@@ -71,12 +59,50 @@ let slice_left = Genarray.slice_left
 let slice_right = Genarray.slice_right
 
 
-let copy_to src dst =
-  let k = kind src in
-  let n = numel src in
-  let m = numel dst in
-  assert (m = n);
-  _owl_copy k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 src dst
+let copy x =
+  let y = empty (kind x) (shape x) in
+  _owl_copy (kind x) (numel x) ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 x y;
+  y
+
+
+let copy_ ~out src =
+  if Owl_ndarray._owl_ndarray_same_data out src = false then (
+    let k = kind src in
+    let n = numel src in
+    let m = numel out in
+    assert (m = n);
+    _owl_copy k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 src out
+  )
+
+
+let get_fancy axis x = Owl_slicing.get_fancy_list_typ axis x
+
+
+let get_fancy_ ~out axis x = Owl_slicing.get_fancy_list_typ_ axis x out
+
+
+let set_fancy axis x y = Owl_slicing.set_fancy_list_typ axis x y
+
+
+let set_fancy_ ~out axis x y =
+  if Owl_ndarray._owl_ndarray_same_data out x = false then
+    copy_ ~out x;
+  Owl_slicing.set_fancy_list_typ axis out y
+
+
+let get_slice axis x = Owl_slicing.get_slice_list_typ axis x
+
+
+let get_slice_ ~out axis x = Owl_slicing.get_slice_list_typ_ axis x out
+
+
+let set_slice axis x y = Owl_slicing.set_slice_list_typ axis x y
+
+
+let set_slice_ ~out axis x y =
+  if Owl_ndarray._owl_ndarray_same_data out x = false then
+    copy_ ~out x;
+  Owl_slicing.set_slice_list_typ axis out y
 
 
 let fill x a = Genarray.fill x a
@@ -92,6 +118,11 @@ let reshape x d =
     let e = Array.map (fun a -> if a = -1 then n / m else a) d in
     reshape x e
   )
+
+
+let reshape_ ~out x =
+  if Owl_ndarray._owl_ndarray_same_data out x = false then
+    copy_ ~out x
 
 
 let reset x = Genarray.fill x (Owl_const.zero (kind x))
@@ -129,10 +160,7 @@ let init_nd k d f =
 let same_shape x y = (shape x) = (shape y)
 
 
-let copy x =
-  let y = empty (kind x) (shape x) in
-  _owl_copy (kind x) (numel x) ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 x y;
-  y
+let same_data x y = Owl_ndarray._owl_ndarray_same_data x y
 
 
 let reverse x =
@@ -140,6 +168,13 @@ let reverse x =
   let n = numel x in
   _owl_copy (kind x) n ~ofsx:0 ~incx:1 ~ofsy:(n-1) ~incy:(-1) x y;
   y
+
+
+let reverse_ ~out x =
+  if Owl_ndarray._owl_ndarray_same_data out x = false then (
+    copy_ ~out x
+  );
+  reverse out |> ignore
 
 
 let tile x reps =
@@ -991,6 +1026,13 @@ let gaussian k ?mu ?sigma d =
   x
 
 
+let gaussian_ ?mu ?sigma ~out =
+  let k = kind out in
+  let mu = match mu with Some a -> a | None -> Owl_const.zero k in
+  let sigma = match sigma with Some a -> a | None -> Owl_const.one k in
+  _owl_gaussian k (numel out) out mu sigma
+
+
 let linspace k a b n =
   let x = empty k [|n|] in
   _owl_linspace k n a b x;
@@ -1057,6 +1099,20 @@ let sequential k ?a ?step dimension =
   let x = empty k dimension in
   _owl_sequential k (numel x) x a step;
   x
+
+
+let sequential_ ?a ?step ~out =
+  let k = kind out in
+  let a = match a with
+    | Some a -> a
+    | None   -> Owl_const.zero k
+  in
+  let step = match step with
+    | Some step -> step
+    | None      -> Owl_const.one k
+  in
+  _owl_sequential k (numel out) out a step
+
 
 let dropout ?(rate=0.5) x =
   assert (rate >= 0. && rate <= 1.);
@@ -1295,7 +1351,7 @@ let transpose_ ~out ?axis x =
     | None   -> Array.init d (fun i -> d - i - 1)
   in
   (* trivial case *)
-  if a = Array.init d (fun i -> i) then copy_to x out
+  if a = Array.init d (fun i -> i) then copy_ ~out x
   else (
     (* check if axis is a correct permutation *)
     _check_transpose_axis a d;
@@ -5628,7 +5684,7 @@ let cross_entropy' x y =
 let dropout_ ?out ?(rate=0.5) x =
   assert (rate >= 0. && rate <= 1.);
   let out = match out with Some o -> o | None -> x in
-  if not (out == x) then copy_to x out;
+  if not (out == x) then copy_ ~out x;
   _owl_dropout (kind x) (numel x) out rate 0
 
 
@@ -5717,7 +5773,7 @@ let col x j =
 
 let copy_row_to v x i =
   let u = row x i in
-  copy_to v u
+  copy_ ~out:u v
 
 
 let copy_col_to v x i =
