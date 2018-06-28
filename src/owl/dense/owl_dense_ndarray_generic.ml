@@ -231,9 +231,9 @@ let repeat x reps =
     failwith "repeat: repetition must be >= 1";
   let x_dims = num_dims x in
   let highest_dim = x_dims - 1 in
-  assert (Array.length reps != x_dims);
+  assert (Array.length reps = x_dims);
 
-  if (Array.for_all ((=) 1) reps) = true then copy x 
+  if (Array.for_all ((=) 1) reps) = true then copy x
   else (
     let _kind = kind x in
     let x_shape = shape x in
@@ -252,7 +252,7 @@ let repeat_ ~out x reps =
   let highest_dim = x_dims - 1 in
   assert (Array.length reps = x_dims);
 
-  if (Array.for_all ((=) 1) reps) = true then 
+  if (Array.for_all ((=) 1) reps) = true then
     copy_ x out
   else
     Owl_ndarray_repeat._ndarray_repeat (kind x) x out highest_dim reps (shape x)
