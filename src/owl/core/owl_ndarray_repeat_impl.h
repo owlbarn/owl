@@ -8,7 +8,7 @@
 
 CAMLprim value FUNCTION (stub, repeat_native) (
   value vX, value vY, value vHighest_dim,
-  value vReps, value vShape_x, value vShape_y
+  value vReps, value vShape_x
 ) {
 
   struct caml_ba_array *X = Caml_ba_array_val(vX);
@@ -18,6 +18,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   int highest_dim = Long_val(vHighest_dim);
 
   /* Special case : vector input */
+
   if (highest_dim == 0) {
     int xlen  = Int_val(Field(vShape_x, 0));
     int repsd = Int_val(Field(vReps,    0));
@@ -86,8 +87,8 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   BLOCK stack[N];
   int top = -1;
 
-  /* Begin recursive-to-iterative prosedure */
-  
+  /* Begin recursive-to-iterative procedure */
+
   while (((d != HD) && tag) || (top != -1)) {
     // If the current job has not reached the highest dim and not yet explored,
     // push its children to the stack.
@@ -114,7 +115,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
       BLOCK r = stack[top--];
       h = r.h; d = r.d; ofsx = r.ofsx; tag = r.tag;
       // If a node still contains unexplored children, push it back
-      if ((tag == 1) && (d < HD)) {
+      if (tag && (d < HD)) {
         r.tag = 0;
         stack[++top] = r;
       }
@@ -131,7 +132,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
             block_sz = shape_x[d];
             ofsy = h;
             for (int j = 0; j < block_sz; ++j) {
-              COPYFUN(repsd, x, ofsx+j, 0, y, ofsy, 1);
+              COPYFUN(repsd, x, ofsx + j, 0, y, ofsy, 1);
               ofsy += repsd;
             }
           }
@@ -148,12 +149,6 @@ CAMLprim value FUNCTION (stub, repeat_native) (
     }
   }
   return Val_unit;
-}
-
-CAMLprim value FUNCTION (stub, repeat_byte) (value * argv, int argn) {
-  return FUNCTION (stub, repeat_native) (
-    argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]
-  );
 }
 
 

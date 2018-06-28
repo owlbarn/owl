@@ -200,7 +200,7 @@ let repeat x reps =
   if (Array.for_all (fun x -> x = 1) reps) = true then x else (
     let _shape_y = Array.map2 ( * ) _shape_x reps in
     let y = empty _kind _shape_y in
-    Owl_ndarray_repeat._ndarray_repeat _kind x y highest_dim reps _shape_x _shape_y;
+    Owl_ndarray_repeat._ndarray_repeat _kind x y highest_dim reps _shape_x;
     reshape y _shape_y
   )
 
