@@ -38,7 +38,16 @@ module Make
     make_then_connect ~shape:[|Some shape|] (Create shape) [|elt_to_node v|] |> node_to_arr
 
   let sequential ?a ?step shape =
-    make_node ~shape:[|Some shape|] Sequential |> node_to_arr
+    let a = match a with
+      | Some a -> a
+      | None   -> const_elt "sequential_a" (A.float_to_elt 0.)
+    in
+    let b = match step with
+      | Some b -> b
+      | None   -> const_elt "sequential_step" (A.float_to_elt 1.)
+    in
+    make_then_connect ~shape:[|Some shape|] Sequential [|elt_to_node a; elt_to_node b|]
+    |> node_to_arr
 
   let uniform ?a ?b shape =
     let a = match a with
@@ -53,7 +62,16 @@ module Make
     |> node_to_arr
 
   let gaussian ?mu ?sigma shape =
-    make_node ~shape:[|Some shape|] Gaussian |> node_to_arr
+    let a = match mu with
+      | Some a -> a
+      | None   -> const_elt "sequential_a" (A.float_to_elt 0.)
+    in
+    let b = match sigma with
+      | Some b -> b
+      | None   -> const_elt "sequential_step" (A.float_to_elt 1.)
+    in
+    make_then_connect ~shape:[|Some shape|] Gaussian [|elt_to_node a; elt_to_node b|]
+    |> node_to_arr
 
   let bernoulli ?(p=0.5) shape =
     make_node ~shape:[|Some shape|] (Bernoulli (p, shape)) |> node_to_arr

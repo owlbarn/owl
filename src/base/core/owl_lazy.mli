@@ -221,13 +221,13 @@ module Make (A : Ndarray_Mutable) : sig
   val create : int array -> elt -> arr
   (** TODO *)
 
-  val sequential : ?a:'a -> ?step:'b -> int array -> arr
+  val sequential : ?a:elt -> ?step:elt -> int array -> arr
   (** TODO *)
 
   val uniform : ?a:elt -> ?b:elt -> int array -> arr
   (** TODO *)
 
-  val gaussian : ?mu:'a -> ?sigma:'b -> int array -> arr
+  val gaussian : ?mu:elt -> ?sigma:elt -> int array -> arr
   (** TODO *)
 
   val bernoulli : ?p:float -> int array -> arr

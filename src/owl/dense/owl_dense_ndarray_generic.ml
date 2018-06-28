@@ -170,6 +170,13 @@ let reverse x =
   y
 
 
+let reverse_ ~out x =
+  if Owl_ndarray._owl_ndarray_same_data out x = false then (
+    copy_ ~out x
+  );
+  reverse out |> ignore
+
+
 let tile x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
@@ -1018,6 +1025,13 @@ let gaussian k ?mu ?sigma d =
   x
 
 
+let gaussian_ ?mu ?sigma ~out =
+  let k = kind out in
+  let mu = match mu with Some a -> a | None -> Owl_const.zero k in
+  let sigma = match sigma with Some a -> a | None -> Owl_const.one k in
+  _owl_gaussian k (numel out) out mu sigma
+
+
 let linspace k a b n =
   let x = empty k [|n|] in
   _owl_linspace k n a b x;
@@ -1084,6 +1098,20 @@ let sequential k ?a ?step dimension =
   let x = empty k dimension in
   _owl_sequential k (numel x) x a step;
   x
+
+
+let sequential_ ?a ?step ~out =
+  let k = kind out in
+  let a = match a with
+    | Some a -> a
+    | None   -> Owl_const.zero k
+  in
+  let step = match step with
+    | Some step -> step
+    | None      -> Owl_const.one k
+  in
+  _owl_sequential k (numel out) out a step
+
 
 let dropout ?(rate=0.5) x =
   assert (rate >= 0. && rate <= 1.);

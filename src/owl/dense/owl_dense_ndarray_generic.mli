@@ -2042,6 +2042,12 @@ val create_ : out:('a, 'b) t -> 'a -> unit
 val uniform_ : ?a:'a -> ?b:'a -> out:('a, 'b) t -> unit
 (** TODO *)
 
+val gaussian_ : ?mu:'a -> ?sigma:'a -> out:('a, 'b) t -> unit
+(** TODO *)
+
+val sequential_ :?a:'a -> ?step:'a -> out:('a, 'b) t -> unit
+(** TODO *)
+
 val bernoulli_ : ?p:float -> out:('a, 'b) t -> unit
 (** TODO *)
 
@@ -2077,6 +2083,9 @@ val copy_ : out:('a, 'b) t -> ('a, 'b) t -> unit
  *)
 
 val reshape_ : out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val reverse_ : out:('a, 'b) t -> ('a, 'b) t -> unit
 (** TODO *)
 
 val transpose_ : out:('a, 'b) t -> ?axis:int array -> ('a, 'b) t -> unit
