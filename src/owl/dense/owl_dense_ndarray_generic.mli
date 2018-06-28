@@ -417,7 +417,9 @@ the numpy's online documentation for details.
 
 val repeat : ('a, 'b) t -> int array -> ('a, 'b) t
 (**
-``repeat x a`` repeats the elements ``x`` according the repetition specified by ``a``. This function is similar to ``tile``.
+``repeat x a`` repeats the elements of ``x`` according the repetition specified
+by ``a``. The i-th element of ``a`` specifies the number of times that the
+individual entries of the i-th dimension of ``x`` should be repeated.
  *)
 
 val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t

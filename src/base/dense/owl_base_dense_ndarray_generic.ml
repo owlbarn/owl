@@ -576,10 +576,13 @@ let concatenate ?(axis=0) varrs =
     done;
     result_varr
   end
-  
+
 
 (* TODO: is there a more efficient way to do copy? *)
 let repeat x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "repeat: repetition must be >= 1";
   let highest_dim = Array.length (shape x) - 1 in
   let _shape_x = shape x in
   if Array.length reps != Array.length _shape_x then

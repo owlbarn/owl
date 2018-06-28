@@ -191,11 +191,14 @@ let tile x reps =
 
 
 let repeat x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "repeat: repetition must be >= 1";
   let highest_dim = Array.length (shape x) - 1 in
   let _kind = kind x in
   let _shape_x = shape x in
   if Array.length reps != Array.length _shape_x then
-    failwith "repeat: repetition must be of the same dimension as input ndarray";
+    failwith "repeat: repetition must be of the same dimension as input shape";
 
   if (Array.for_all (fun x -> x = 1) reps) = true then copy x else (
     let _shape_y = Array.map2 ( * ) _shape_x reps in
@@ -206,11 +209,14 @@ let repeat x reps =
 
 
 let repeat_ ~out x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "repeat_: repetition must be >= 1";
   let highest_dim = Array.length (shape x) - 1 in
   let _kind = kind x in
   let _shape_x = shape x in
   if Array.length reps != Array.length _shape_x then
-    failwith "repeat_: repetition must be of the same dimension as input ndarray";
+    failwith "repeat_: repetition must be of the same dimension as input shape";
 
   if (Array.for_all (fun x -> x = 1) reps) = true then copy_to x out else (
     Owl_ndarray_repeat._ndarray_repeat _kind x out highest_dim reps _shape_x
