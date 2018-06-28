@@ -68,13 +68,6 @@ CAMLprim value FUNCTION (stub, repeat_native) (
 
   /* Initialise stack */
 
-  typedef struct _BLOCK {
-    int h;    // header index of a block
-    int d;    // dimension
-    int ofsx; // corresponding offset of x
-    int tag;  // bool, whether this block still has unexplored children
-  } BLOCK;
-
   int h = 0;
   int d = 0;
   int ofsx = 0;

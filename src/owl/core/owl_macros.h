@@ -81,5 +81,13 @@ typedef struct { double r, i; } complex_double;
   #define OWL_INLINE
 #endif
 
+// define structure of stack in repeat/tile operations
+typedef struct _BLOCK {
+  int h;    // header index of a block
+  int d;    // dimension
+  int ofsx; // corresponding offset of x
+  int tag;  // bool, whether this block still has unexplored children
+} BLOCK;
+
 
 #endif  /* OWL_MACROS_H */
