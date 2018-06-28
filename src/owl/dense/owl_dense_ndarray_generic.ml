@@ -5956,15 +5956,22 @@ let sum_reduce ?axis x =
   let _dims = num_dims x in
   match axis with
   | Some a -> (
-      let y = ref x in
-      Array.iter (fun i ->
-        assert (i < _dims);
-        let m, n, o, s = Owl_utils.reduce_params i !y in
-        let z = zeros _kind s in
-        _owl_sum_along _kind m n o !y z;
-        y := z
-      ) a;
-      !y
+      let a = List.sort_uniq compare (Array.to_list a) in
+      if List.length a = 1 then (
+        sum ~axis:(List.hd a) x
+      )
+      else (
+        (* TODO: optimise with C code *)
+        let y = ref x in
+        List.iter (fun i ->
+          assert (i < _dims);
+          let m, n, o, s = Owl_utils.reduce_params i !y in
+          let z = zeros _kind s in
+          _owl_sum_along _kind m n o !y z;
+          y := z
+        ) a;
+        !y
+      )
     )
   | None   ->
       _owl_sum _kind (numel x) x |> create _kind (Array.make (num_dims x) 1)
