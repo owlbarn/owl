@@ -51,14 +51,14 @@ CAMLprim value FUNCTION (stub, repeat_native) (
     slice_y[i] = shape_x[i] * reps[i] * slice_y[i + 1];
   }
 
-  int r, flag_one;
+  int r, flag_one = 1;
   int HD = highest_dim + 1; // highest non-one-repeat dimension
   int block_idx[highest_dim + 2]; // block size in counting indices
   block_idx[highest_dim + 1] = 1;
   for (int i = highest_dim; i >= 0; --i) {
     r = reps[i];
     block_idx[i] = r * block_idx[i + 1];
-    flag_one = (r != 1) ? 0 : 1;
+    flag_one = (r != 1) ? 0 : flag_one;
     if (flag_one && r == 1) { HD--; }
   }
   for (int i = 0; i <= highest_dim; ++i) {
