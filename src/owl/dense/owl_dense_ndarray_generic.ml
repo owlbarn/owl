@@ -180,7 +180,7 @@ let reverse_ ~out x =
 let tile x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
-    failwith "tile: repitition must be >= 1";
+    failwith "tile: repetition must be >= 1";
   (* align and promote the shape *)
   let a = num_dims x in
   let b = Array.length reps in
@@ -225,36 +225,37 @@ let tile x reps =
   _tile 0 0 0; y
 
 
-let repeat ?(axis=(-1)) x reps =
-  let highest_dim = Array.length (shape x) - 1 in
-  (* by default, repeat at the highest dimension *)
-  let axis = Owl_utils.adjust_index axis (num_dims x) in
-  (* calculate the new shape of y based on reps *)
-  let _kind = kind x in
-  let _shape_y = shape x in
-  _shape_y.(axis) <- _shape_y.(axis) * reps;
-  let y = empty _kind _shape_y in
-  (* if repeat at the highest dimension, use this strategy *)
-  if axis = highest_dim then (
-    for i = 0 to reps - 1 do
-      _owl_copy _kind (numel x) ~ofsx:0 ~incx:1 ~ofsy:i ~incy:reps x y
-    done;
-  )
-  (* if repeat at another dimension, use this block copying *)
+let repeat x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "repeat: repetition must be >= 1";
+  let x_dims = num_dims x in
+  let highest_dim = x_dims - 1 in
+  assert (Array.length reps = x_dims);
+
+  if (Array.for_all ((=) 1) reps) = true then copy x
   else (
-    let _stride_x = Owl_utils.calc_stride (shape x) in
-    let _slice_sz = _stride_x.(axis) in
-    (* be careful of the index, this is fortran layout *)
-    for i = 0 to (numel x) / _slice_sz - 1 do
-      let ofsx = i * _slice_sz in
-      for j = 0 to reps - 1 do
-        let ofsy = (i * reps + j) * _slice_sz in
-        _owl_copy _kind _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:1 x y
-      done;
-    done;
-  );
-  (* reshape y' back to ndarray before return result *)
-  reshape y _shape_y
+    let _kind = kind x in
+    let x_shape = shape x in
+    let y_shape = Array.map2 ( * ) x_shape reps in
+    let y = empty _kind y_shape in
+    Owl_ndarray_repeat._ndarray_repeat _kind x y highest_dim reps x_shape;
+    reshape y y_shape
+  )
+
+
+let repeat_ ~out x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "repeat_: repetition must be >= 1";
+  let x_dims = num_dims x in
+  let highest_dim = x_dims - 1 in
+  assert (Array.length reps = x_dims);
+
+  if (Array.for_all ((=) 1) reps) = true then
+    copy_ x out
+  else
+    Owl_ndarray_repeat._ndarray_repeat (kind x) x out highest_dim reps (shape x)
 
 
 let concatenate ?(axis=0) xs =

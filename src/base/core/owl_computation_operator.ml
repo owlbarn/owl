@@ -120,8 +120,8 @@ module Make
   let tile x axises =
     make_then_connect (Tile axises) [|arr_to_node x|] |> node_to_arr
 
-  let repeat ?(axis=(-1)) x repeats =
-    make_then_connect (Repeat (axis, repeats)) [|arr_to_node x|] |> node_to_arr
+  let repeat x repeats =
+    make_then_connect (Repeat repeats) [|arr_to_node x|] |> node_to_arr
 
   let concatenate ?(axis=0) xs =
     make_then_connect (Concatenate axis) (Array.map arr_to_node xs) |> node_to_arr

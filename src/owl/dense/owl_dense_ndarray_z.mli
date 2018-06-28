@@ -127,7 +127,7 @@ val swap : int -> int -> arr -> arr
 
 val tile : arr -> int array -> arr
 
-val repeat : ?axis:int -> arr -> int -> arr
+val repeat : arr -> int array -> arr
 
 val concat_vertical : arr -> arr -> arr
 
@@ -641,6 +641,8 @@ val reshape_ : out:arr -> arr -> unit
 val reverse_ : out:arr -> arr -> unit
 
 val transpose_ : out:arr -> ?axis:int array -> arr -> unit
+
+val repeat_ : out:arr -> arr -> int array -> unit
 
 val sum_ : out:arr -> axis:int -> arr -> unit
 

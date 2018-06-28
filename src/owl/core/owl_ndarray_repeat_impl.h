@@ -6,48 +6,141 @@
 #ifdef OWL_ENABLE_TEMPLATE
 
 
-void FUNCTION (c, repeat) (
-  TYPE *x, TYPE *y, int m, int n, int o,
-  int ofsx_m, int incx_m, int incx_n, int incy_m, int incy_n
-) {
-
-  // TODO
-
-}
-
-
 CAMLprim value FUNCTION (stub, repeat_native) (
-  value vX, value vY, value vM, value vN, value vO,
-  value vOFSX_M, value vINCX_M, value vINCX_N, value vINCY_M, value vINCY_N
+  value vX, value vY, value vHighest_dim,
+  value vReps, value vShape_x
 ) {
 
   struct caml_ba_array *X = Caml_ba_array_val(vX);
-  TYPE *X_data = (TYPE *) X->data;
-
+  TYPE *x = (TYPE *) X->data;
   struct caml_ba_array *Y = Caml_ba_array_val(vY);
-  TYPE *Y_data = (TYPE *) Y->data;
+  TYPE *y = (TYPE *) Y->data;
+  int highest_dim = Long_val(vHighest_dim);
 
-  int m = Long_val(vM);
-  int n = Long_val(vN);
-  int o = Long_val(vO);
-  int ofsx_m = Long_val(vOFSX_M);
-  int incx_m = Long_val(vINCX_M);
-  int incx_n = Long_val(vINCX_N);
-  int incy_m = Long_val(vINCY_M);
-  int incy_n = Long_val(vINCY_N);
+  /* Special case : vector input */
 
-  FUNCTION (c, repeat) (X_data, Y_data, m, n, o, ofsx_m, incx_m, incx_n, incy_m, incy_n);
+  if (highest_dim == 0) {
+    int xlen  = Int_val(Field(vShape_x, 0));
+    int repsd = Int_val(Field(vReps,    0));
+    int ofsy  = 0;
+    for (int i = 0; i < xlen; ++i) {
+      COPYFUN(repsd, x, i, 0, y, ofsy, 1);
+      ofsy += repsd;
+    }
+    return Val_unit;
+  }
 
-  return Val_unit;
-}
+  /* Necessary stride & slice arrays */
 
+  int reps[highest_dim + 1];
+  int shape_x[highest_dim + 1];
+  for (int i = 0; i <= highest_dim; ++i) {
+    reps[i]    = Int_val(Field(vReps, i));
+    shape_x[i] = Int_val(Field(vShape_x, i));
+  }
 
-CAMLprim value FUNCTION (stub, repeat_byte) (value * argv, int argn) {
-  return FUNCTION (stub, repeat_native) (
-    argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
-    argv[8], argv[9]
-  );
+  int stride_x[highest_dim + 1];
+  stride_x[highest_dim] = 1;
+  for (int i = highest_dim - 1; i >= 0; --i) {
+    stride_x[i] = shape_x[i + 1] * stride_x[i + 1];
+  }
 
+  int slice_y[highest_dim + 1];
+  slice_y[highest_dim] = shape_x[highest_dim] * reps[highest_dim];
+  for (int i = highest_dim - 1; i >= 0; --i) {
+    slice_y[i] = shape_x[i] * reps[i] * slice_y[i + 1];
+  }
+
+  int block_idx[highest_dim + 1]; // block size in counting indices
+  block_idx[highest_dim] = reps[highest_dim];
+  for (int i = highest_dim - 1; i >= 0; --i) {
+    block_idx[i] = reps[i] * block_idx[i + 1];
+  }
+  for (int i = 0; i <= highest_dim; ++i) {
+    block_idx[i] *= stride_x[i];
+  }
+
+  int HD = highest_dim + 1; // highest non-one-repeat dimension
+  for (int i = highest_dim; i >= 0; --i) {
+    if (reps[i] == 1) { HD--; } else { break; }
+  }
+  HD = (HD > highest_dim) ? highest_dim : HD;
+
+  /* Initialise stack */
+
+  int h = 0;
+  int d = 0;
+  int ofsx = 0;
+  int tag = 1;
+
+  int N = 1;
+  for (int i = 0; i < HD; ++i) {
+    N += shape_x[i];
+  }
+  BLOCK stack[N];
+  int top = -1;
+
+  /* Begin recursive-to-iterative procedure */
+
+  while (((d != HD) && tag) || (top != -1)) {
+    // If the current job has not reached the highest dim and not yet explored,
+    // push its children to the stack.
+    while ((d != HD) && tag) {
+      int shaped = shape_x[d];
+      int idxd   = block_idx[d];
+      int strid  = stride_x[d];
+
+      int h_new = h    + (shaped - 1) * idxd;
+      int o_new = ofsx + (shaped - 1) * strid;
+      for (int i = shaped - 1; i > 0; i--) {
+        BLOCK r = {h_new, d + 1, o_new, 1};
+        stack[++top] = r;
+        h_new -= idxd;
+        o_new -= strid;
+      }
+      BLOCK r = {h_new, d + 1, o_new, 0};
+      stack[++top] = r;
+      d++;
+    }
+
+    // If the stack is not empty
+    if (top != -1) {
+      BLOCK r = stack[top--];
+      h = r.head; d = r.dim; ofsx = r.ofsx; tag = r.tag;
+      // If a node still contains unexplored children, push it back
+      if (tag && (d < HD)) {
+        r.tag = 0;
+        stack[++top] = r;
+      }
+      else {
+        int block_sz, repsd, ofsy;
+        // first, copy content from x to y for the highest dimension
+        if (d == HD) {
+          repsd = reps[d];
+          // different copy strategies
+          if (repsd == 1) {
+            COPYFUN(slice_y[d], x, ofsx, 1, y, h, 1);
+          }
+          else {
+            block_sz = shape_x[d];
+            ofsy = h;
+            for (int j = 0; j < block_sz; ++j) {
+              COPYFUN(repsd, x, ofsx + j, 0, y, ofsy, 1);
+              ofsy += repsd;
+            }
+          }
+        }
+        // then, block-copy content within y
+        block_sz = slice_y[d];
+        repsd = reps[d - 1];
+        ofsy = h + block_sz;
+        for (int j = 1; j < repsd; j++) {
+          COPYFUN(block_sz, y, h, 1, y, ofsy, 1);
+          ofsy += block_sz;
+        }
+      }
+    }
+  }
   return Val_unit;
 }
 

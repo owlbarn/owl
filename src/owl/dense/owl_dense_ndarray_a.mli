@@ -88,7 +88,7 @@ val transpose : ?axis:int array -> 'a arr -> 'a arr
 
 val swap : int -> int -> 'a arr -> 'a arr
 
-val repeat : ?axis:int -> 'a arr -> int -> 'a arr
+val repeat : 'a arr -> int array -> 'a arr
 
 val tile : 'a arr -> int array -> 'a arr
 

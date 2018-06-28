@@ -42,7 +42,7 @@ module Make
     | Reshape shape                               -> "Reshape"
     | Reverse                                     -> "Reverse"
     | Tile repeats                                -> "Tile"
-    | Repeat (axis, repeats)                      -> "Repeat"
+    | Repeat repeats                              -> "Repeat"
     | Concatenate axis                            -> "Concatenate"
     | Split (axis, parts)                         -> "Split"
     | Draw (axis, n)                              -> "Draw"

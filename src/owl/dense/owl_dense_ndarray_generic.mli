@@ -415,18 +415,16 @@ val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
 
 val tile : ('a, 'b) t -> int array -> ('a, 'b) t
 (**
-``tile x a`` tiles the data in ``x`` according the repitition specified by ``a``.
+``tile x a`` tiles the data in ``x`` according the repetition specified by ``a``.
 This function provides the exact behaviour as ``numpy.tile``, please refer to
 the numpy's online documentation for details.
  *)
 
-val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
+val repeat : ('a, 'b) t -> int array -> ('a, 'b) t
 (**
-``repeat ~axis x a`` repeats the elements along ``axis`` for ``a`` times. The default
-value of ``?axis`` is the highest dimension of ``x``. This function is similar to
-``numpy.repeat`` except that ``a`` is an integer instead of an array.
-
-Not that the ``axis`` can be negative.
+``repeat x a`` repeats the elements of ``x`` according the repetition specified
+by ``a``. The i-th element of ``a`` specifies the number of times that the
+individual entries of the i-th dimension of ``x`` should be repeated.
  *)
 
 val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -2091,6 +2089,11 @@ val reverse_ : out:('a, 'b) t -> ('a, 'b) t -> unit
 val transpose_ : out:('a, 'b) t -> ?axis:int array -> ('a, 'b) t -> unit
 (**
 ``transpose_ ~out x`` is similar to ``transpose x`` but the output is written to ``out``.
+ *)
+
+val repeat_ : out:('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(**
+``repeat_ ~out x reps`` is similar to ``repeat x reps`` but the output is written to ``out``.
  *)
 
 val sum_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit

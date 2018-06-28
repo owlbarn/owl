@@ -53,7 +53,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Reshape shape                               -> _eval_map_01 x (fun ~out x -> A.reshape_ ~out x.(0))
         | Reverse                                     -> _eval_map_01 x (fun ~out x -> A.reverse_ ~out x.(0))
         | Tile repeats                                -> _eval_map_00 x (fun x -> A.tile x.(0) repeats)
-        | Repeat (axis, repeats)                      -> _eval_map_00 x (fun x -> A.repeat ~axis x.(0) repeats)
+        | Repeat repeats                              -> _eval_map_00 x (fun x -> A.repeat x.(0) repeats)
         | Concatenate axis                            -> _eval_map_00 x A.(concatenate ~axis)
         | Split (axis, parts)                         -> failwith "Split"
         | Draw (axis, n)                              -> failwith "Draw"

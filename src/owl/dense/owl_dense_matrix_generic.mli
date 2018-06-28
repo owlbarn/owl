@@ -537,9 +537,9 @@ val tile : ('a, 'b) t -> int array -> ('a, 'b) t
 ``tile x a`` provides the exact behaviour as ``numpy.tile`` function.
  *)
 
-val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
+val repeat : ('a, 'b) t -> int array -> ('a, 'b) t
 (**
-``repeat ~axis x a`` repeats the elements along ``~axis`` for ``a`` times.
+``repeat x a`` repeats the elements ``x`` according the repetition specified by ``a``.
  *)
 
 val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t

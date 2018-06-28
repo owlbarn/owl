@@ -126,7 +126,7 @@ val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 val tile : ('a, 'b) t -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
+val repeat : ('a, 'b) t -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
