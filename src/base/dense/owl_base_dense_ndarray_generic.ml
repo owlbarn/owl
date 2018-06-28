@@ -576,96 +576,101 @@ let concatenate ?(axis=0) varrs =
     done;
     result_varr
   end
+  
 
-
-let owl_base_copy n ~ofsx ~incx ~ofsy ~incy x y =
-  let sy = shape y in
-  let xarr = flatten x in
-  let yarr = flatten y in
-  let startx = ref ofsx in
-  let starty = ref ofsy in
-  for i = 0 to n - 1 do
-    set yarr [|!starty|] (get xarr [|!startx|]);
-    startx := !startx + incx;
-    starty := !starty + incy;
-  done;
-  reshape yarr sy
-
-
-(* TODO: is there a more efficient way to do this? *)
+(* TODO: is there a more efficient way to do copy? *)
 let repeat x reps =
   let highest_dim = Array.length (shape x) - 1 in
-  let _kind = kind x in
   let _shape_x = shape x in
   if Array.length reps != Array.length _shape_x then
-    failwith "repeat: repitition must be of the same dimension as input ndarray";
+    failwith "repeat: repetition must be of the same dimension as input ndarray";
 
-  let _shape_y = Array.map2 ( * ) _shape_x reps in
-  let y = empty _kind _shape_y in
+  if (Array.for_all (fun x -> x = 1) reps) = true then x else (
+    let _kind = kind x in
+    let x' = flatten x in
+    let _shape_y = Array.map2 ( * ) _shape_x reps in
+    let num = Owl_utils_array.fold_right ( * ) _shape_y 1 in
+    let y' = empty _kind [|num|] in
 
-  let y = ref y in
-  if Array.length reps = 1 then (
-    for i = 0 to reps.(0) - 1 do
-      y := owl_base_copy (numel x) ~ofsx:0 ~incx:1 ~ofsy:i ~incy:reps.(0) x !y
-    done
-  )
-  else (
-    (* size of block in each dim/depth of y *)
-    let block = Owl_utils.calc_stride _shape_y in
+    if Array.length reps = 1 then (
+      let ofsy = ref 0 in
+      for i = 0 to numel x - 1 do
+        let elemx = get x' [|i|] in
+        for j = 0 to reps.(0) - 1 do
+          set y' [|!ofsy|] elemx;
+          ofsy := !ofsy + 1
+        done
+      done
+    )
+    else (
+      let stride_x = Owl_utils.calc_stride _shape_x in
+      let slice_y = Owl_utils.calc_slice _shape_y in
 
-    (* size of block on the second to last dim of x *)
-    let _stride_x = Owl_utils.calc_stride _shape_x in
-    let _slice_sz = _stride_x.(highest_dim - 1) in
-    let block_num = (numel x) / _slice_sz in
+      let rep_slice = Owl_utils.calc_slice reps in
+      let block_idx = Array.map2 ( * ) rep_slice stride_x in
 
-    (* size of block in counting indices *)
-    let block_idx = Owl_utils_array.sub _shape_x 1 highest_dim in
-    let block_idx = Owl_utils_array.append block_idx [|1|] in
-    let block_idx = Array.map2 ( * ) block_idx reps in
-    let block_idx = Owl_utils.calc_slice block_idx in
-
-    (* stride when treating the second to last dim as the highest dim *)
-    let _stride_sub = Array.sub _shape_x 0 (Array.length reps - 1)
-      |> Owl_utils.calc_stride
-    in
-
-    (* the number of next-level blocks a dim contains *)
-    let _slice_sub = Array.copy _shape_x in
-    for i = 1 to Array.length reps - 1 do
-      _slice_sub.(i) <- _slice_sub.(i - 1) * _slice_sub.(i)
-    done;
-
-    (* starting indices of each sub_block *)
-    let sub_block_idx = Array.make block_num 0 in
-    for d = highest_dim - 1 downto 0 do
-      for i = 0 to block_num - 1 do
-        sub_block_idx.(i) <- sub_block_idx.(i) +
-          ((i / _stride_sub.(d)) mod _shape_x.(d)) * block_idx.(d)
+      let hd = ref (highest_dim + 1) in
+      let flag_one = true in
+      for i = highest_dim downto 0 do
+        let flag_one = if reps.(i) != 0 then false else flag_one in
+        if flag_one && reps.(i) = 0 then hd := !hd - 1
       done;
-    done;
+      let hd = if !hd = highest_dim + 1 then highest_dim else !hd in
 
-    (* copy x content to each sub_block on second-to-last dim *)
-    for i = 0 to block_num - 1 do
-      let ofsx = i * _slice_sz in
-      for j = 0 to reps.(highest_dim) - 1 do
-        let ofsy = sub_block_idx.(i) + j in
-        y := owl_base_copy _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:reps.(highest_dim) x !y
-      done;
-    done;
+      let h = ref 0 in
+      let d = ref 0 in
+      let ofsx = ref 0 in
+      let tag = ref true in
+      let stack = Stack.create () in
 
-    (* copy y's own sub_block to block on lower dimensions *)
-    for d = highest_dim - 1 downto 0 do
-      for s = 0 to _slice_sub.(d) - 1 do
-        let ofsx = sub_block_idx.(s * _stride_sub.(d)) in
-        for j = 1 to (reps.(d) - 1) do
-          let ofsy = ofsx + j * block.(d) in
-          y := owl_base_copy block.(d) ~ofsx ~incx:1 ~ofsy ~incy:1 !y !y
+      while ((!d != hd) && !tag) || not (Stack.is_empty stack) do
+
+        while (!d != hd) && !tag do
+          for i = _shape_x.(!d) - 1 downto 0 do
+            let flag = if i = 0 then false else true in
+            Stack.push (!h + i * block_idx.(!d), !d + 1,
+              !ofsx + i * stride_x.(!d), flag) stack
+          done;
+          d := !d + 1
         done;
-      done;
-    done
-  );
-  (* reshape y' back to ndarray before return result *)
-  reshape !y _shape_y
+
+        if not (Stack.is_empty stack) then (
+          let t1, t2, t3, t4 = Stack.pop stack in
+          h := t1; d := t2; ofsx := t3; tag := t4;
+
+          if !tag && (!d < hd) then (
+            Stack.push (t1, t2, t3, false) stack
+          )
+          else (
+            if !d = hd then (
+              let repsd = reps.(!d) in
+              if repsd = 1 then (
+                let subx = Genarray.sub_left x' !ofsx slice_y.(!d) in
+                let suby = Genarray.sub_left y' !h slice_y.(!d) in
+                Genarray.blit subx suby
+              )
+              else (
+                for i = 0 to _shape_x.(!d) - 1 do
+                  let elemx = get x' [|!ofsx + i|] in
+                  for j = 0 to repsd - 1 do
+                    set y' [|!h + i * repsd + j|] elemx
+                  done
+                done
+              )
+            );
+            let block_sz = slice_y.(!d) in
+            for j = 1 to (reps.(!d - 1) - 1) do
+              let ofsy = !h + j * block_sz in
+              let subx = Genarray.sub_left y' !h block_sz in
+              let suby = Genarray.sub_left y' ofsy block_sz in
+              Genarray.blit subx suby
+            done
+          )
+        )
+      done
+    );
+    reshape y' _shape_y
+  )
 
 
 (* mathematical functions *)

@@ -30,7 +30,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
     return Val_unit;
   }
 
-  /* Required stride & slice arrays */
+  /* Necessary stride & slice arrays */
 
   int reps[highest_dim + 1];
   int shape_x[highest_dim + 1];
@@ -66,7 +66,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   }
   HD = (HD > highest_dim) ? highest_dim : HD;
 
-  /* Initialize Stack */
+  /* Initialise stack */
 
   typedef struct _BLOCK {
     int h;    // header index of a block
