@@ -28,12 +28,11 @@ typedef struct { double r, i; } complex_double;
 // Define the stack structure
 
 typedef struct _BLOCK {
-  int h;    // header index of a block
-  int d;    // dimension
-  int ofsx; // corresponding offset of x
-  int tag;  // bool, whether this block still has unexplored children
+  int head;  // header index of a block
+  int dim;   // dimension
+  int ofsx;  // corresponding offset of x
+  int tag;   // bool, whether this block still has unexplored children
 } BLOCK;
-
 
 
 // Define macros for interfacing to foreign code

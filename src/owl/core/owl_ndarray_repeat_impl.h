@@ -106,7 +106,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
     // If the stack is not empty
     if (top != -1) {
       BLOCK r = stack[top--];
-      h = r.h; d = r.d; ofsx = r.ofsx; tag = r.tag;
+      h = r.head; d = r.dim; ofsx = r.ofsx; tag = r.tag;
       // If a node still contains unexplored children, push it back
       if (tag && (d < HD)) {
         r.tag = 0;
