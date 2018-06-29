@@ -277,13 +277,14 @@ module Make
       | None   -> infer_shape op parents
     in
     let child = make_node ~shape op in
+    (* define the dependency of operation, can have duplicates *)
+    connect_ancestors parents [|child|];
+    (* define the flow of computation graph, no duplicates *)
+    let uniq_parents = Owl_utils_array.unique parents in
     Array.iter (fun parent ->
-      if (attr parent).freeze = true then
-        connect_ancestors [|parent|] [|child|]
-      else
-        connect [|parent|] [|child|]
-    ) parents;
-    (* connect parents [|child|]; *)
+      if (attr parent).freeze = false then
+        connect_descendants [|parent|] [|child|]
+    ) uniq_parents;
     child
 
 

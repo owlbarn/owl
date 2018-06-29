@@ -80,20 +80,22 @@ val connect : 'a node array -> 'a node array -> unit
 ``connect parents children`` connects a set of parents to a set of children.
 The created links are the Cartesian product of parents and children. In other
 words, they are bidirectional links between parents and children.
+
+NOTE: this function does not eliminate any duplicates in the array.
 *)
 
 val connect_descendants : 'a node array -> 'a node array -> unit
 (**
 ``connect_descendants parents children`` connects parents to their children.
-In other words, this function creates unidirectional links from parents to
-children.
+This function creates unidirectional links from parents to children. In other
+words, this function save ``children`` to ``parent.next`` field.
 *)
 
 val connect_ancestors : 'a node array -> 'a node array -> unit
 (**
 ``connect_ancestors parents children`` connects children to their parents.
-In other words, this function creates unidirectional links from children to
-parents.
+This function creates unidirectional links from children to parents. In other
+words, this function save ``parents`` to ``child.prev`` field.
 *)
 
 val remove_node : 'a node -> unit

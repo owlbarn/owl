@@ -81,6 +81,14 @@ val memq : 'a -> 'a array -> bool
 val sort : ('a -> 'a -> int) -> 'a array -> unit
 (** Refer to OCaml native array. *)
 
+val sort_fill : ?min:int -> ?max:int -> ?fill:int -> int array -> int array
+(**
+``sort_fill ~min ~max ~fill x`` first sort ``x``, then expands it to an array
+of length ``max - min + 1``, and fills the holes with ``fill``. E.g.,
+``sort_fill ~min:1 ~max:5 ~fill:0 [|4;2|] x`` returns a new array as follows:
+``[|1; 0; 2; 0; 4; 5|]``.
+ *)
+
 val stable_sort : ('a -> 'a -> int) -> 'a array -> unit
 (** Refer to OCaml native array. *)
 
@@ -127,6 +135,9 @@ val count : 'a array -> 'a -> int
 
 val insert : 'a array -> 'a array -> int -> 'a array
 (** TODO *)
+
+val unique : 'a array -> 'a array
+(** ``unique x`` removes the duplicates in the array ``x``. *)
 
 val merge : 'a array -> 'a array -> 'a array
 (** ``merge x y`` merges two arrays and removes the duplicates. *)
