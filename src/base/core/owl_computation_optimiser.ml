@@ -257,7 +257,7 @@ module Make
     if op = Noop && resuable then (
       let x_children = children x in
       let parent_children = children parent in
-      let merged_children = Owl_utils_array.merge x_children parent_children in
+      let merged_children = Array.append x_children parent_children in
       set_children parent merged_children;
       replace_parent x parent;
       remove_node x
@@ -611,7 +611,7 @@ module Make
       match get_operator x_children.(0) with
       | Add | Sub | Mul | Div | Pow | Min2 | Max2 | Hypot | Atan2 -> (
           let parent_children = children x_parent in
-          let merged_children = Owl_utils_array.merge x_children parent_children in
+          let merged_children = Array.append x_children parent_children in
           set_children x_parent merged_children;
           replace_parent x x_parent;
           remove_node x
