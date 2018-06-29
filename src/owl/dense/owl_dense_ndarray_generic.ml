@@ -5945,6 +5945,31 @@ let sum_slices ?axis x =
   reshape y s
 
 
+let calc_groups shape axes =
+  let ndim = Array.length shape in
+  let new_shape = Array.make ndim 1 in
+
+  let axes = List.sort_uniq compare (Array.to_list axes) in
+  let head_flag = List.mem 0 axes in
+  let flag = ref head_flag in
+  let mul  = ref 1 in
+  let count = ref 0 in
+
+  for i = 0 to ndim - 1 do
+    if (List.mem i axes = !flag) then (
+      mul := !mul * shape.(i)
+    )
+    else (
+      new_shape.(!count) <- !mul;
+      mul := shape.(i);
+      count := !count + 1;
+      flag := not !flag;
+    )
+  done;
+  new_shape.(!count) <- !mul;
+  Array.sub new_shape 0 (!count + 1), head_flag
+
+
 (*
   Simiar to `sum`, but sums the elements along multiple axes specified in an
   array. E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an
@@ -5956,25 +5981,30 @@ let sum_reduce ?axis x =
   let _dims = num_dims x in
   match axis with
   | Some a -> (
-      let a = List.sort_uniq compare (Array.to_list a) in
-      if List.length a = 1 then (
-        sum ~axis:(List.hd a) x
+      let x_shape = shape x in
+      let dims', hd_flag = calc_groups x_shape a in
+      if Array.length dims' = 1 then (
+        _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
       )
       else (
-        (* TODO: optimise with C code *)
-        let y = ref x in
-        List.iter (fun i ->
-          assert (i < _dims);
-          let m, n, o, s = Owl_utils.reduce_params i !y in
-          let z = zeros _kind s in
-          _owl_sum_along _kind m n o !y z;
-          y := z
-        ) a;
-        !y
+        let y = ref (reshape x dims') in
+        let flag = ref hd_flag in
+        for i = 0 to Array.length dims' - 1 do
+          if (!flag = true) then (
+            let m, n, o, s = Owl_utils.reduce_params i !y in
+            let z = zeros _kind s in
+            _owl_sum_along _kind m n o !y z;
+            y := z
+          );
+          flag := not !flag;
+        done;
+        let y_shape = Array.copy x_shape in
+        Array.iter (fun j -> y_shape.(j) <- 1) a;
+        reshape !y y_shape
       )
     )
   | None   ->
-      _owl_sum _kind (numel x) x |> create _kind (Array.make (num_dims x) 1)
+      _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
 
 
 let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ~window x =
