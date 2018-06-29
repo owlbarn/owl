@@ -18,13 +18,17 @@ module Make
   let close a b =
     N.(sub a b |> abs |> sum') < tolerance_f32
 
-  let test ?(seq=false) expected shape axis =
+  let test ?(seq=false) ?(a=true) expected shape axis =
     let input = if seq = false then
       N.ones shape
     else
       N.sequential shape
     in
-    let output = N.sum_reduce ~axis input in
+    let output = if a = true then
+      N.sum_reduce ~axis input
+    else
+      N.sum_reduce input
+    in
     let out_shp = N.shape output in
     let expected = N.of_array expected out_shp in
     close output expected
@@ -84,6 +88,9 @@ module Make
       in
       test ~seq:true expected [|1;13;1;7|] [|0;3|]
 
+    let fun12 () =
+      test ~a:false [|720.|] [|1;2;3;4;5;6|] [|0|]
+
   end
 
 
@@ -125,6 +132,9 @@ module Make
   let fun_sr11 () =
     Alcotest.(check bool) "fun_11" true (To_test_sum_reduce.fun11 ())
 
+  let fun_sr12 () =
+    Alcotest.(check bool) "fun_12" true (To_test_sum_reduce.fun12 ())
+
   let test_set = [
     "fun_sr00",  `Slow, fun_sr00;
     "fun_sr01",  `Slow, fun_sr01;
@@ -138,6 +148,8 @@ module Make
     "fun_sr09",  `Slow, fun_sr09;
     "fun_sr10",  `Slow, fun_sr10;
     "fun_sr11",  `Slow, fun_sr11;
+    "fun_sr12",  `Slow, fun_sr12;
   ]
+
 
 end

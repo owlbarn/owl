@@ -5956,14 +5956,13 @@ let calc_groups shape axes =
   let ndim = Array.length shape in
   let new_shape = Array.make ndim 1 in
 
-  let axes = List.sort_uniq compare (Array.to_list axes) in
-  let head_flag = List.mem 0 axes in
+  let head_flag = Array.mem 0 axes in
   let flag = ref head_flag in
   let prod = ref 1 in
   let count = ref 0 in
 
   for i = 0 to ndim - 1 do
-    if (List.mem i axes = !flag) then (
+    if (Array.mem i axes = !flag) then (
       prod := !prod * shape.(i)
     )
     else (
@@ -5998,7 +5997,7 @@ let sum_reduce ?axis x =
         let y = ref (reshape x dims') in
         let flag = ref hd_flag in
         for i = 0 to Array.length dims' - 1 do
-          if (!flag = true) then (
+          if !flag = true then (
             let m, n, o, s = Owl_utils.reduce_params i !y in
             let z = zeros _kind s in
             _owl_sum_along _kind m n o !y z;
