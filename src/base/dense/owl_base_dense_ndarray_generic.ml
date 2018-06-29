@@ -765,29 +765,6 @@ let sum ?axis x =
   | None   -> create (kind x) (Array.make 1 1) (sum' x)
 
 
-let calc_groups shape axes =
-  let ndim = Array.length shape in
-  let new_shape = Array.make ndim 1 in
-
-  let flag = ref (Array.mem 0 axes) in
-  let prod = ref 1 in
-  let count = ref 0 in
-
-  for i = 0 to ndim - 1 do
-    if (Array.mem i axes = !flag) then (
-      prod := !prod * shape.(i)
-    )
-    else (
-      new_shape.(!count) <- !prod;
-      prod := shape.(i);
-      count := !count + 1;
-      flag := not !flag;
-    )
-  done;
-  new_shape.(!count) <- !prod;
-  Array.sub new_shape 0 (!count + 1)
-
-
 let sum_reduce ?axis x =
   let _kind = kind x in
   let _dims = num_dims x in
@@ -795,7 +772,7 @@ let sum_reduce ?axis x =
   match axis with
   | Some a -> (
       let x_shape = shape x in
-      let dims' = calc_groups x_shape a in
+      let dims' = Owl_utils.calc_groups x_shape a in
       if Array.length dims' = 1 then (
         create (kind x) (Array.make _dims 1) (sum' x)
       )

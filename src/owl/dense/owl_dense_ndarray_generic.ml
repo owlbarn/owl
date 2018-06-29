@@ -5946,35 +5946,6 @@ let sum_slices ?axis x =
 
 
 (*
-  A helper function to ``sum_reduce``. It first groups the elements in
-  ``shape`` sequentially, depending on whether the index of that element is
-  contained in array ``axes``, then computes the product of each group and
-  returns them in an int array.
- *)
-let calc_groups shape axes =
-  let ndim = Array.length shape in
-  let new_shape = Array.make ndim 1 in
-
-  let flag = ref (Array.mem 0 axes) in
-  let prod = ref 1 in
-  let count = ref 0 in
-
-  for i = 0 to ndim - 1 do
-    if (Array.mem i axes = !flag) then (
-      prod := !prod * shape.(i)
-    )
-    else (
-      new_shape.(!count) <- !prod;
-      prod := shape.(i);
-      count := !count + 1;
-      flag := not !flag;
-    )
-  done;
-  new_shape.(!count) <- !prod;
-  Array.sub new_shape 0 (!count + 1)
-
-
-(*
   Simiar to ``sum``, but sums the elements along multiple axes specified in an
   array. E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an
   ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of
@@ -5986,7 +5957,7 @@ let sum_reduce ?axis x =
   match axis with
   | Some a -> (
       let x_shape = shape x in
-      let dims' = calc_groups x_shape a in
+      let dims' = Owl_utils.calc_groups x_shape a in
       if Array.length dims' = 1 then (
         _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
       )

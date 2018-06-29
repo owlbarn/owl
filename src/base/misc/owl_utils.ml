@@ -158,6 +158,35 @@ let array1_copy x =
 let aaarrr_map f x = Array.map (Array.map (Array.map f)) x
 
 
+(*
+  ``calc_groups shape axes`` first groups the int elements in ``shape`` array
+  sequentially, depending on whether the index of that element is contained in
+  array ``axes``, then computes the product of each group and returns them in
+  an int array.
+ *)
+let calc_groups shape axes =
+  let ndim = Array.length shape in
+  let new_shape = Array.make ndim 1 in
+
+  let flag = ref (Array.mem 0 axes) in
+  let prod = ref 1 in
+  let count = ref 0 in
+
+  for i = 0 to ndim - 1 do
+    if (Array.mem i axes = !flag) then (
+      prod := !prod * shape.(i)
+    )
+    else (
+      new_shape.(!count) <- !prod;
+      prod := shape.(i);
+      count := !count + 1;
+      flag := not !flag;
+    )
+  done;
+  new_shape.(!count) <- !prod;
+  Array.sub new_shape 0 (!count + 1)
+
+
 (* format time period into human-readable format *)
 let format_time t =
   if t < 60. then
