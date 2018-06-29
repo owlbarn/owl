@@ -47,7 +47,7 @@ module Make
         | Reshape shape                               -> pattern_022 x
         | Reverse                                     -> pattern_000 x
         | Tile repeats                                -> pattern_000 x
-        | Repeat (axis, repeats)                      -> pattern_000 x
+        | Repeat (axis, repeats)                      -> pattern_023 x
         | Concatenate axis                            -> pattern_000 x
         | Split (axis, parts)                         -> pattern_000 x
         | Draw (axis, n)                              -> pattern_000 x
@@ -216,7 +216,7 @@ module Make
     Array.iter _optimise_term (parents x)
 
 
-  (* add ndarray pattern *)
+  (* Add ndarray pattern *)
   and pattern_001 x =
     let parents = parents x in
     let a = parents.(0) in
@@ -227,53 +227,44 @@ module Make
     pattern_004 x
 
 
-  (* add ndarray pattern: x + 0 *)
+  (* Add ndarray pattern: x + 0 or 0 + x *)
   and pattern_002 x =
     let x_parents = parents x in
     let a = x_parents.(0) in
     let b = x_parents.(1) in
     if get_operator x = Add then (
-      (
-        match get_operator a with
-        | Zeros shape -> (
-            set_operator x Noop;
-            remove_edge a x;
-            let value = get_value x in
-            if Array.length value > 0 then
-              set_value x [|value.(1)|];
-            _optimise_term x
-          )
-        | _           -> ()
-      );
-      (
-        match get_operator b with
-        | Zeros shape -> (
-            set_operator x Noop;
-            remove_edge b x;
-            let value = get_value x in
-            if Array.length value > 0 then
-              set_value x [|value.(0)|];
-            _optimise_term x
-          )
-        | _           -> ()
-      )
+      match (get_operator a, get_operator b) with
+      | Zeros _, _ -> (
+          set_operator x Noop;
+          remove_edge a x;
+          _optimise_term x
+        )
+      | _, Zeros _ -> (
+          set_operator x Noop;
+          remove_edge b x;
+          _optimise_term x
+        )
+      | _, _       -> ()
     )
 
 
-  (* noop pattern *)
+  (* Noop pattern *)
   and pattern_003 x =
     let parent = (parents x).(0) in
     _optimise_term parent;
     let op = get_operator x in
     let resuable = get_reuse x in
     if op = Noop && resuable then (
-      set_children parent (children x);
+      let x_children = children x in
+      let parent_children = children parent in
+      let merged_children = Owl_utils_array.merge x_children parent_children in
+      set_children parent merged_children;
       replace_parent x parent;
       remove_node x
     )
 
 
-  (* add ndarray pattern: FMA x * y + z *)
+  (* Add ndarray pattern: FMA x * y + z *)
   and pattern_004 x =
     if get_operator x = Add then (
       let x_parents = parents x in
@@ -296,7 +287,7 @@ module Make
     )
 
 
-  (* gemm pattern :  alpha * x *@ y + beta * z *)
+  (* Gemm pattern :  alpha * x *@ y + beta * z *)
   and pattern_005 x =
     let x_parents = parents x in
     let a = x_parents.(0) in
@@ -306,7 +297,7 @@ module Make
     pattern_006 x
 
 
-  (* gemm pattern: transpose *)
+  (* Gemm pattern: transpose *)
   and pattern_006 x =
     match get_operator x with
     | Dot (transa, transb, alpha, beta) -> (
@@ -343,7 +334,7 @@ module Make
     | _                                 -> ()
 
 
-  (* div pattern *)
+  (* Div pattern *)
   and pattern_007 x =
     let x_parents = parents x in
     let a = x_parents.(0) in
@@ -353,7 +344,7 @@ module Make
     pattern_008 x
 
 
-  (* div pattern: 0 / x *)
+  (* Div pattern: 0 / x *)
   and pattern_008 x =
     if get_operator x = Div then (
       let x_parents = parents x in
@@ -550,11 +541,9 @@ module Make
     | _            -> ()
 
 
-
-  (* copy pattern *)
+  (* Copy pattern *)
   and pattern_018 x =
-    let x_parents = parents x in
-    let a = x_parents.(0) in
+    let a = (parents x).(0) in
     _optimise_term a;
     if refnum a = 1 then (
       set_operator x Noop;
@@ -562,7 +551,7 @@ module Make
     )
 
 
-  (* mul pattern *)
+  (* Mul pattern *)
   and pattern_019 x =
     let x_parents = parents x in
     let a = x_parents.(0) in
@@ -572,7 +561,7 @@ module Make
     pattern_020 x
 
 
-  (* mul pattern : a * 0 or 0 * a *)
+  (* Mul pattern : a * 0 or 0 * a *)
   and pattern_020 x =
     if get_operator x = Mul then (
       let x_parents = parents x in
@@ -589,14 +578,13 @@ module Make
     )
 
 
-  (* mul pattern : a * 1 or 1 * a *)
+  (* Mul pattern : a * 1 or 1 * a *)
   and pattern_021 x = failwith "pattern_021: not implemented"
 
 
-  (* reshape pattern *)
+  (* Reshape pattern *)
   and pattern_022 x =
-    let x_parents = parents x in
-    let a = x_parents.(0) in
+    let a = (parents x).(0) in
     _optimise_term a;
     if refnum a = 1 then (
       let x_shp = Operator.shape (node_to_arr x) in
@@ -610,6 +598,25 @@ module Make
           remove_edge a x
         )
       | _       -> ()
+    )
+
+
+  (* Repeat pattern *)
+  and pattern_023 x =
+    let a = (parents x).(0) in
+    _optimise_term a;
+    if refnum x = 1 then (
+      let x_parent = (parents x).(0) in
+      let x_children = children x in
+      match get_operator x_children.(0) with
+      | Add | Sub | Mul | Div | Pow | Min2 | Max2 | Hypot | Atan2 -> (
+          let parent_children = children x_parent in
+          let merged_children = Owl_utils_array.merge x_children parent_children in
+          set_children x_parent merged_children;
+          replace_parent x x_parent;
+          remove_node x
+        )
+      | _                                                         -> ()
     )
 
 

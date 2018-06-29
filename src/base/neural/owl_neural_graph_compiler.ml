@@ -357,8 +357,10 @@ module Make
     let save fname = () in
 
     (* Experimental: optimise graph structure *)
+    Owl_io.marshal_to_file cgraph (network_name ^ "_raw.cgd");
     (* let dot_raw = CGraph.graph_to_dot cgraph in *)
     CGraph.optimise cgraph;
+    Owl_io.marshal_to_file cgraph (network_name ^ "_opt.cgd");
     (* let dot_opt = CGraph.graph_to_dot cgraph in *)
     (*
     let name = Graph.get_network_name network in

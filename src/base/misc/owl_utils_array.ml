@@ -419,4 +419,15 @@ let bsearch ~cmp k bin_edges =
     | _                -> aux 0 n
 
 
+(* merge two arrays, duplicates will be removed *)
+let merge x y =
+  let z = Array.append x y in
+  let htbl = Hashtbl.create (Array.length z) in
+  filter (fun a ->
+    let not_found = not (Hashtbl.mem htbl a) in
+    if not_found then Hashtbl.add htbl a None;
+    not_found
+  ) z
+
+
 (* ends here *)

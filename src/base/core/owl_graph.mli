@@ -113,12 +113,18 @@ val replace_child : 'a node -> 'a node -> unit
 (**
 ``replace_child x y`` replaces ``x`` with ``y`` in ``x`` parents. Namely, ``x``
 parents now make link to ``y`` rather than ``x`` in ``next`` field.
+
+NOTE: The function does NOT make link from ``y`` to ``x`` parents. Namely,
+the ``prev`` field of ``y`` remains intact.
  *)
 
 val replace_parent : 'a node -> 'a node -> unit
 (**
 ``replace_parent x y`` replaces ``x`` with ``y`` in ``x`` children. Namely,
 ``x`` children now make link to ``y`` rather than ``x`` in ``prev`` field.
+
+NOTE: The function does NOT make link from ``y`` to ``x`` children. Namely,
+the ``next`` field of ``y`` remains intact.
  *)
 
 val copy : ?dir:dir -> 'a node array -> 'a node array

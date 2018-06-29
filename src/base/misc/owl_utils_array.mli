@@ -128,6 +128,9 @@ val count : 'a array -> 'a -> int
 val insert : 'a array -> 'a array -> int -> 'a array
 (** TODO *)
 
+val merge : 'a array -> 'a array -> 'a array
+(** ``merge x y`` merges two arrays and removes the duplicates. *)
+
 val remove : 'a array -> int -> 'a array
 (** TODO *)
 
