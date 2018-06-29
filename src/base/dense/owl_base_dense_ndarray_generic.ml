@@ -771,26 +771,38 @@ let sum_reduce ?axis x =
   let zero = Owl_base_dense_common._zero_val_elt _kind in
   match axis with
   | Some a -> (
-      let y = ref x in
-      Array.iter (fun i ->
-        assert (i < _dims);
-        let m, n, o, s = Owl_utils.reduce_params i !y in
-        y := fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s zero
-      ) a;
-      !y
+      let x_shape = shape x in
+      let dims' = Owl_utils.squeeze_continuous_dims x_shape a in
+      if Array.length dims' = 1 then (
+        create (kind x) (Array.make _dims 1) (sum' x)
+      )
+      else (
+        let y = ref (reshape x dims') in
+        let flag = ref (Array.mem 0 a) in
+        for i = 0 to Array.length dims' - 1 do
+          if !flag = true then (
+            let m, n, o, s = Owl_utils.reduce_params i !y in
+            y := fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s zero
+          );
+          flag := not !flag
+        done;
+        let y_shape = Array.copy x_shape in
+        Array.iter (fun j -> y_shape.(j) <- 1) a;
+        reshape !y y_shape
+      )
     )
   | None   -> create (kind x) (Array.make _dims 1) (sum' x)
 
 
-  let min ?axis x =
-    let _kind = kind x in
-    let max_val = Owl_base_dense_common._max_val_elt _kind in
-    match axis with
-    | Some a -> (
-        let m, n, o, s = Owl_utils.reduce_params a x in
-        fold_along (Owl_base_dense_common._min_elt _kind) m n o x s max_val
-      )
-    | None   -> min' x |> create _kind [|1|]
+let min ?axis x =
+  let _kind = kind x in
+  let max_val = Owl_base_dense_common._max_val_elt _kind in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = Owl_utils.reduce_params a x in
+      fold_along (Owl_base_dense_common._min_elt _kind) m n o x s max_val
+    )
+  | None   -> min' x |> create _kind [|1|]
 
 
 (* TODO: fix this *)
