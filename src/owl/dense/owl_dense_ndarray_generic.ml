@@ -5945,6 +5945,13 @@ let sum_slices ?axis x =
   reshape y s
 
 
+(*
+  A helper function to ``sum_reduce``. It first groups the elements in
+  ``shape`` sequentially, depending on whether the index of that element is
+  contained in array ``axes``, then computes the product of each group and
+  returns them in an int array. The second returned value is a bool value
+  showing whether the first index is included in ``axes``.
+ *)
 let calc_groups shape axes =
   let ndim = Array.length shape in
   let new_shape = Array.make ndim 1 in
@@ -5952,26 +5959,26 @@ let calc_groups shape axes =
   let axes = List.sort_uniq compare (Array.to_list axes) in
   let head_flag = List.mem 0 axes in
   let flag = ref head_flag in
-  let mul  = ref 1 in
+  let prod = ref 1 in
   let count = ref 0 in
 
   for i = 0 to ndim - 1 do
     if (List.mem i axes = !flag) then (
-      mul := !mul * shape.(i)
+      prod := !prod * shape.(i)
     )
     else (
-      new_shape.(!count) <- !mul;
-      mul := shape.(i);
+      new_shape.(!count) <- !prod;
+      prod := shape.(i);
       count := !count + 1;
       flag := not !flag;
     )
   done;
-  new_shape.(!count) <- !mul;
+  new_shape.(!count) <- !prod;
   Array.sub new_shape 0 (!count + 1), head_flag
 
 
 (*
-  Simiar to `sum`, but sums the elements along multiple axes specified in an
+  Simiar to ``sum``, but sums the elements along multiple axes specified in an
   array. E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an
   ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of
   shape [|1;1;1;1|].
@@ -5987,7 +5994,7 @@ let sum_reduce ?axis x =
         _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
       )
       else (
-        (* TODO: optimise with C implementaton *)
+        (* TODO: optimise with C implementation *)
         let y = ref (reshape x dims') in
         let flag = ref hd_flag in
         for i = 0 to Array.length dims' - 1 do
@@ -5997,7 +6004,7 @@ let sum_reduce ?axis x =
             _owl_sum_along _kind m n o !y z;
             y := z
           );
-          flag := not !flag;
+          flag := not !flag
         done;
         let y_shape = Array.copy x_shape in
         Array.iter (fun j -> y_shape.(j) <- 1) a;
