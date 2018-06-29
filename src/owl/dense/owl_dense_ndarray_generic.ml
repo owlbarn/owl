@@ -5957,7 +5957,7 @@ let sum_reduce ?axis x =
   match axis with
   | Some a -> (
       let x_shape = shape x in
-      let dims' = Owl_utils.calc_groups x_shape a in
+      let dims' = Owl_utils.squeeze_continuous_dims x_shape a in
       if Array.length dims' = 1 then (
         _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
       )
