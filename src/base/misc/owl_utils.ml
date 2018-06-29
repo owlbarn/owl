@@ -159,10 +159,10 @@ let aaarrr_map f x = Array.map (Array.map (Array.map f)) x
 
 
 (*
-  ``squeeze_continuous_dims shape axes`` first groups the int elements in
+  ``squeeze_continuous_dims shape axes`` first groups the int elements in the
   ``shape`` array sequentially, depending on whether the index of that element
-  is contained in array ``axes``, then computes the product of each group and
-  returns them in an int array. Assuem ``axes`` only contains non-negative
+  is contained in the array ``axes``, then computes the product of each group and
+  returns them in an int array. Assume ``axes`` only contains non-negative
   integers.
  *)
 let squeeze_continuous_dims shape axes =
