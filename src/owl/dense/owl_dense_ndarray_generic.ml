@@ -5987,6 +5987,7 @@ let sum_reduce ?axis x =
         _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
       )
       else (
+        (* TODO: optimise with C implementaton *)
         let y = ref (reshape x dims') in
         let flag = ref hd_flag in
         for i = 0 to Array.length dims' - 1 do
