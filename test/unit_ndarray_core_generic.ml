@@ -94,7 +94,7 @@ module Make
   end
 
 
-  (* tests *)
+  (* Tests *)
 
   let fun_sr00 () =
     Alcotest.(check bool) "fun_00" true (To_test_sum_reduce.fun00 ())
