@@ -81,7 +81,7 @@ module Make
         | Min axis                                    -> pattern_000 x
         | Max axis                                    -> pattern_000 x
         | Sum axis                                    -> pattern_000 x
-        | SumReduce axis                              -> pattern_000 x
+        | SumReduce axis                              -> pattern_024 x
         | Signum                                      -> pattern_000 x
         | Sigmoid                                     -> pattern_000 x
         | Relu                                        -> pattern_000 x
@@ -618,6 +618,22 @@ module Make
         )
       | _                                                         -> ()
     )
+
+
+  (* SumReduce pattern *)
+  and pattern_024 x =
+    let x_parents = parents x in
+    let a = x_parents.(0) in
+    _optimise_term a;
+    (* if only reduce along one dimension, change to sum *)
+    match get_operator x with
+    | SumReduce axis -> (
+        if Array.length axis = 1 then (
+          set_operator x (Sum axis.(0));
+          _optimise_term x
+        )
+      )
+    | _              -> ()
 
 
   (* core optimise functions *)
