@@ -1,10 +1,11 @@
 (jbuild_version 1)
 
-(executable (
-  (name        zoo)
-  (public_name owl)
-  (package     owl-zoo)
-  (libraries  (
+(executables (
+  (public_names (owl))
+  (names        (owl_bin_zoo))
+  (modules      (owl_bin_zoo))
+  (package      owl-zoo)
+  (libraries    (
     owl
     owl-zoo
   ))
@@ -12,6 +13,21 @@
   (link_flags (-linkall))
   (modes      (byte))
 ))
+
+
+(executables (
+  (public_names (owlviz))
+  (names        (owl_bin_viz))
+  (modules      (owl_bin_viz))
+  (package      owl-zoo)
+  (libraries    (
+    owl
+  ))
+  (flags (:standard -safe-string))
+  (link_flags   (-linkall))
+  (modes        (native))
+))
+
 
 (install (
   (section bin)

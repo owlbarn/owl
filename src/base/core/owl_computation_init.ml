@@ -64,21 +64,12 @@ module Make (A : Ndarray_Mutable) = struct
     let shp_0, shp_1 = Owl_utils_array.align `Left 1 shp_0 shp_1 in
     let shp_x = Owl_utils_infer_shape.broadcast1 shp_0 shp_1 in
 
-    if shp_0 = shp_x then (
-      if refnum parent_0 = 1 && get_reuse parent_0 then
-        make_value_from (Some parent_0) x
-      else if refnum parent_0 = 2 && parent_0 == parent_1 && get_reuse parent_0 then
-        make_value_from (Some parent_0) x
-      else
-        make_value_from None x
-    )
-    else if shp_1 = shp_x then (
-      if refnum parent_1 = 1 && get_reuse parent_1 then
-        make_value_from (Some parent_1) x
-      else
-        make_value_from None x
-    )
-    else make_value_from None x
+    if shp_0 = shp_x && refnum parent_0 = 1 && get_reuse parent_0 then
+      make_value_from (Some parent_0) x
+    else if shp_1 = shp_x && refnum parent_1 = 1 && get_reuse parent_1 then
+      make_value_from (Some parent_1) x
+    else
+      make_value_from None x
 
 
   let allocate_from_parent_3 x parent_0 parent_1 parent_2 =
@@ -98,7 +89,8 @@ module Make (A : Ndarray_Mutable) = struct
       make_value_from (Some parent_1) x
     else if shp_2 = shp_x && refnum parent_2 = 1 && get_reuse parent_2 then
       make_value_from (Some parent_2) x
-    else make_value_from None x
+    else
+      make_value_from None x
 
 
   (* core initialisation function *)
