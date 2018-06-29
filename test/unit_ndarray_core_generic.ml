@@ -97,43 +97,43 @@ module Make
   (* Tests *)
 
   let fun_sr00 () =
-    Alcotest.(check bool) "fun_00" true (To_test_sum_reduce.fun00 ())
+    Alcotest.(check bool) "sum_reduce 00" true (To_test_sum_reduce.fun00 ())
 
   let fun_sr01 () =
-    Alcotest.(check bool) "fun_01" true (To_test_sum_reduce.fun01 ())
+    Alcotest.(check bool) "sum_reduce 01" true (To_test_sum_reduce.fun01 ())
 
   let fun_sr02 () =
-    Alcotest.(check bool) "fun_02" true (To_test_sum_reduce.fun02 ())
+    Alcotest.(check bool) "sum_reduce 02" true (To_test_sum_reduce.fun02 ())
 
   let fun_sr03 () =
-    Alcotest.(check bool) "fun_03" true (To_test_sum_reduce.fun03 ())
+    Alcotest.(check bool) "sum_reduce 03" true (To_test_sum_reduce.fun03 ())
 
   let fun_sr04 () =
-    Alcotest.(check bool) "fun_04" true (To_test_sum_reduce.fun04 ())
+    Alcotest.(check bool) "sum_reduce 04" true (To_test_sum_reduce.fun04 ())
 
   let fun_sr05 () =
-    Alcotest.(check bool) "fun_05" true (To_test_sum_reduce.fun05 ())
+    Alcotest.(check bool) "sum_reduce 05" true (To_test_sum_reduce.fun05 ())
 
   let fun_sr06 () =
-    Alcotest.(check bool) "fun_06" true (To_test_sum_reduce.fun06 ())
+    Alcotest.(check bool) "sum_reduce 06" true (To_test_sum_reduce.fun06 ())
 
   let fun_sr07 () =
-    Alcotest.(check bool) "fun_07" true (To_test_sum_reduce.fun07 ())
+    Alcotest.(check bool) "sum_reduce 07" true (To_test_sum_reduce.fun07 ())
 
   let fun_sr08 () =
-    Alcotest.(check bool) "fun_08" true (To_test_sum_reduce.fun08 ())
+    Alcotest.(check bool) "sum_reduce 08" true (To_test_sum_reduce.fun08 ())
 
   let fun_sr09 () =
-    Alcotest.(check bool) "fun_09" true (To_test_sum_reduce.fun09 ())
+    Alcotest.(check bool) "sum_reduce 09" true (To_test_sum_reduce.fun09 ())
 
   let fun_sr10 () =
-    Alcotest.(check bool) "fun_10" true (To_test_sum_reduce.fun10 ())
+    Alcotest.(check bool) "sum_reduce 10" true (To_test_sum_reduce.fun10 ())
 
   let fun_sr11 () =
-    Alcotest.(check bool) "fun_11" true (To_test_sum_reduce.fun11 ())
+    Alcotest.(check bool) "sum_reduce 11" true (To_test_sum_reduce.fun11 ())
 
   let fun_sr12 () =
-    Alcotest.(check bool) "fun_12" true (To_test_sum_reduce.fun12 ())
+    Alcotest.(check bool) "sum_reduce 12" true (To_test_sum_reduce.fun12 ())
 
   let test_set = [
     "fun_sr00",  `Slow, fun_sr00;
