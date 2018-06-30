@@ -35,6 +35,19 @@ module Make
   let graph_to_dot x = Symbol.nodes_to_dot x.output
 
 
+  let save_graph graph fname =
+    let data = (graph, number) in
+    Owl_io.marshal_to_file data fname
+
+
+  let load_graph fname =
+    let graph, num_typ = Owl_io.marshal_from_file fname in
+    if num_typ <> number then
+      failwith "load_graph: inconsistent type."
+    else
+      graph, num_typ
+
+
   let collect_rvs output =
     let stack = Owl_utils_stack.make () in
     Owl_graph.iter_ancestors (fun v ->

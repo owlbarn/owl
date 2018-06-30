@@ -8,8 +8,9 @@ open Owl
 open Owl_computation
 
 
-(* FIXME: This is a hack at the moment *)
-module CGraph = Owl_computation_graph.Make (Dense.Ndarray.S) (Owl_computation_device)
+module CGraph_S = Owl_computation_graph.Make (Dense.Ndarray.S) (Owl_computation_device)
+
+module CGraph_D = Owl_computation_graph.Make (Dense.Ndarray.S) (Owl_computation_device)
 
 
 let print_help () =
@@ -27,14 +28,18 @@ Usage
 
 
 let print_trace fname =
-  let graph_dump = Owl_io.marshal_from_file fname in
+  let graph_dump, number = Owl_io.marshal_from_file fname in
   let trace_string = "print_trace: not implemented" in
   print_endline trace_string
 
 
 let dump_dot_file fname =
-  let graph_dump = Owl_io.marshal_from_file fname in
-  let dot_string = CGraph.graph_to_dot graph_dump in
+  let graph_dump, number = Owl_io.marshal_from_file fname in
+  let dot_string =
+    match number with
+    | F32 -> CGraph_S.graph_to_dot graph_dump
+    | F64 -> CGraph_D.graph_to_dot graph_dump
+  in
   let dot_fname = fname ^ ".dot" in
   Owl_io.write_file dot_fname dot_string
 

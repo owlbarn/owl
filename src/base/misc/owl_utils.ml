@@ -5,6 +5,7 @@
 
 (** Helper functions used in the library *)
 
+open Owl_types
 
 include Owl_utils_ndarray
 
@@ -224,6 +225,23 @@ let eps
   | Complex32 -> 2. ** (-23.)
   | Complex64 -> 2. ** (-52.)
   | _         -> failwith "owl_utils:eps"
+
+
+let num_typ_to_str x =
+  match x with
+  | F32 -> "F32"
+  | F64 -> "F64"
+  | C32 -> "C32"
+  | C64 -> "C64"
+
+
+let num_typ_of_str x =
+  match x with
+  | "F32" -> F32
+  | "F64" -> F64
+  | "C32" -> C32
+  | "C64" -> C64
+  | _     -> failwith "num_typ_of_str"
 
 
 

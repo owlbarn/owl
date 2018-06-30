@@ -357,9 +357,9 @@ module Make
     let save fname = () in
 
     (* Experimental: optimise graph structure *)
-    Owl_io.marshal_to_file cgraph (network_name ^ "_raw.cgd");
+    CGraph.save_graph cgraph (network_name ^ "_raw.cgd");
     CGraph.optimise cgraph;
-    Owl_io.marshal_to_file cgraph (network_name ^ "_opt.cgd");
+    CGraph.save_graph cgraph (network_name ^ "_opt.cgd");
 
     Owl_log.info "start training %s ..." network_name;
     Graph.Optimise.minimise_compiled_network ?state params eval update save x y
