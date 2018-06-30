@@ -24,9 +24,29 @@ module Make
     mutable output : attr node array;                (* output nodes of the graph *)
     mutable iopair : (attr node * attr node) array;  (* input and output loopback pairs *)
     mutable iosafe : bool array;                     (* whether it is safe to use unsafe_assign_arr *)
+    mutable random : attr node array;                (* rvs automatically invalidate themselves *)
     mutable htbl   : (string, attr node) Hashtbl.t;  (* node name to node mapping *)
-    mutable device : device
+    mutable device : device                          (* device-dependent field *)
   }
+
+
+  (* utility functions *)
+
+  let graph_to_dot x = Symbol.nodes_to_dot x.output
+
+
+  let collect_rvs output =
+    let stack = Owl_utils_stack.make () in
+    Owl_graph.iter_ancestors (fun v ->
+      let op_typ = get_operator v in
+      if is_random_variable op_typ then
+        Owl_utils_stack.push stack v
+    ) output;
+    Owl_utils_stack.to_array stack
+
+
+  let invalidate_rvs graph =
+    Array.iter invalidate_graph graph.random
 
 
   (* core graph functions *)
@@ -61,10 +81,12 @@ module Make
     (* empty io pairing by default *)
     let iopair = [| |] in
     let iosafe = [| |] in
+    (* collect all the random variables *)
+    let random = collect_rvs output in
     (* create a device dependent field *)
     let device = make_device () in
     (* return the graph record *)
-    { name; input; output; iopair; iosafe; htbl; device }
+    { name; input; output; iopair; iosafe; random; htbl; device }
 
 
   let get_inputs x = x.input
@@ -147,11 +169,6 @@ module Make
 
 
   let optimise graph = optimise_nodes graph.output
-
-
-  (* helper functions *)
-
-  let graph_to_dot x = get_outputs x |> Symbol.nodes_to_dot
 
 
 

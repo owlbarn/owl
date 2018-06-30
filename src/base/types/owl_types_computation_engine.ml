@@ -119,6 +119,10 @@ module type Sig = sig
 
       val update_iopair : graph -> unit
 
+      val collect_rvs : graph -> attr Owl_graph.node array
+      
+      val invalidate_rvs : graph -> unit
+
       val make_graph : input:attr Owl_graph.node array -> output:attr Owl_graph.node array -> string -> graph
 
       val graph_to_dot : graph -> string

@@ -208,6 +208,15 @@ module Make
     | Fused_Adagrad (rate, eps)                   -> "Fused_Adagrad"
 
 
+  (* check whether a symbol is a random variable *)
+
+  let is_random_variable = function
+    | Uniform shape        -> true
+    | Gaussian             -> true
+    | Bernoulli (p, shape) -> true
+    | _                    -> false
+
+
   (* Helper functions *)
 
   let refnum x = Owl_graph.outdegree x
