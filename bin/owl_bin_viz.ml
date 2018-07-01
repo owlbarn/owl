@@ -67,9 +67,13 @@ let make_dot_file ?oname iname =
   Owl_io.write_file dot_name dot_string
 
 
-let make_pdf_file iname =
+let make_pdf_file ?dot_name iname =
   let pdf_name = change_cgd_suffix iname "pdf" in
-  let dot_name = Filename.temp_file "" "" in
+  let dot_name =
+    match dot_name with
+    | Some s -> s
+    | None   -> Filename.temp_file "" ""
+  in
   make_dot_file ~oname:dot_name iname;
   let cmd_str = Printf.sprintf "dot -Tpdf %s -o %s" dot_name pdf_name in
   Sys.command cmd_str |> ignore
@@ -79,7 +83,8 @@ let process_dumps fnames =
   Array.iter (fun fname ->
     try (
       Owl_log.info "processing %s ..." fname;
-      make_pdf_file fname
+      let dot_name = change_cgd_suffix fname "dot" in
+      make_pdf_file ~dot_name fname
     )
     with exn ->
       Owl_log.error "fail to process %s" fname
