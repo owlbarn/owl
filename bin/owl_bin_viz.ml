@@ -32,7 +32,7 @@ Usage
   owlviz [files]           generate both dot files and PDF figures
   owlviz -pdf [file]       generate the PDF figure from a graph dump
   owlviz -dot [file]       generate the dot file from a graph dump
-  owlviz -trace [file]     print out trace of a graph dump on the terminal
+  owlviz -trace [file]     generate the trace file from a graph dump
   owlviz -help             print out help information
   "
   in
