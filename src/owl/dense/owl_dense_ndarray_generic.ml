@@ -230,7 +230,6 @@ let repeat x reps =
   if Array.exists ((>) 1) reps then
     failwith "repeat: repetition must be >= 1";
   let x_dims = num_dims x in
-  let highest_dim = x_dims - 1 in
   assert (Array.length reps = x_dims);
 
   if (Array.for_all ((=) 1) reps) = true then copy x
@@ -239,7 +238,10 @@ let repeat x reps =
     let x_shape = shape x in
     let y_shape = Array.map2 ( * ) x_shape reps in
     let y = empty _kind y_shape in
-    Owl_ndarray_repeat._ndarray_repeat _kind x y highest_dim reps x_shape;
+
+    let reps' = reps |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+    let x_shape' = x_shape |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+    Owl_ndarray_repeat._ndarray_repeat _kind x y reps' x_shape';
     reshape y y_shape
   )
 
@@ -254,8 +256,11 @@ let repeat_ ~out x reps =
 
   if (Array.for_all ((=) 1) reps) = true then
     copy_ x out
-  else
-    Owl_ndarray_repeat._ndarray_repeat (kind x) x out highest_dim reps (shape x)
+  else (
+    let reps' = reps |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+    let x_shape' = shape x |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+    Owl_ndarray_repeat._ndarray_repeat (kind x) x out reps' x_shape'
+  )
 
 
 let concatenate ?(axis=0) xs =
