@@ -244,5 +244,19 @@ let num_typ_of_str x =
   | _     -> failwith "num_typ_of_str"
 
 
+let longest_string strings =
+  Array.fold_left (fun acc s -> max acc (String.length s)) 0 strings
+
+
+let pad_strings side s_max strings =
+  Array.map (fun s ->
+    let s_len = String.length s in
+    let s_len = max 0 (s_max - s_len) in
+    let s_pad = String.make s_len ' ' in
+    match side with
+    | `Left  -> s_pad ^ s
+    | `Right -> s ^ s_pad
+  ) strings
+
 
 (* ends here *)

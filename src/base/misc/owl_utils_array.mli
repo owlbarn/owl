@@ -240,6 +240,11 @@ val resize : ?head:bool -> 'a -> int -> 'a array -> 'a array
 extended, the extra space is filled with value ``v``.
  *)
 
+val fold2: ('a -> 'b -> 'c -> 'a) -> 'a -> 'b array -> 'c array -> 'a
+(**
+``fold2 a x y`` folds both ``x`` and ``y`` from left with starting value ``a``.
+ *)
+
 val pad : [ `Left | `Right ] -> 'a -> int -> 'a array -> 'a array
 (** TODO *)
 

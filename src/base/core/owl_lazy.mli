@@ -113,7 +113,7 @@ module Make (A : Ndarray_Mutable) : sig
   val nodes_to_dot : attr node array -> string
   (** TODO *)
 
-  val to_trace : 'a -> string
+  val nodes_to_trace : attr node array -> string
   (** TODO *)
 
 

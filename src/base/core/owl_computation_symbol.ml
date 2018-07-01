@@ -536,7 +536,21 @@ module Make
     Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
 
 
-  let to_trace x = "to_trace: not implemented yet"
+  let nodes_to_trace x =
+    let u_nodes = Owl_utils_stack.make () in
+    let v_nodes = Owl_utils_stack.make () in
+    iter_in_edges (fun u v ->
+      Owl_utils_stack.push u_nodes (node_to_str u);
+      Owl_utils_stack.push v_nodes (node_to_str v);
+    ) x;
+    let u_strings = Owl_utils_stack.to_array u_nodes in
+    let v_strings = Owl_utils_stack.to_array v_nodes in
+    let u_longest = Owl_utils.longest_string u_strings in
+    let u_strings = Owl_utils.pad_strings `Right u_longest u_strings in
+    Owl_utils_array.fold2 (fun acc u v ->
+      Printf.sprintf "%s%s -> %s\n" acc u v
+    ) "" u_strings v_strings
+
 
 
 end

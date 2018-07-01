@@ -13,24 +13,38 @@ module CGraph_S = Owl_computation_graph.Make (Dense.Ndarray.S) (Owl_computation_
 module CGraph_D = Owl_computation_graph.Make (Dense.Ndarray.S) (Owl_computation_device)
 
 
+let change_cgd_suffix fname suffix =
+  if Filename.check_suffix fname "cgd" then
+    (Filename.chop_suffix fname "cgd") ^ suffix
+  else
+    fname ^ "." ^ suffix
+
+
 let print_help () =
   let info = Printf.sprintf "
 Owl's Computation Graph Visualiser
 
 Usage
-  owlviz -pdf [file]       generate the PDF figure from a graph dump
-  owlviz -dot [file]       generate the dot file from a graph dump
-  owlviz -trace [file]     print out trace of a graph dump on the terminal
-  owlviz -help             print out help information
+  owlviz [files]            generate both dot files and PDF figures
+  owlviz -pdf [files]       generate the PDF figure from a graph dump
+  owlviz -dot [files]       generate the dot file from a graph dump
+  owlviz -trace [files]     print out trace of a graph dump on the terminal
+  owlviz -help              print out help information
   "
   in
   print_endline info
 
 
-let print_trace fname =
+let dump_trace_file fname =
   let graph_dump, number = Owl_io.marshal_from_file fname in
-  let trace_string = "print_trace: not implemented" in
-  print_endline trace_string
+  let trace_string =
+    match number with
+    | F32 -> CGraph_S.graph_to_trace graph_dump
+    | F64 -> CGraph_D.graph_to_trace graph_dump
+    | _   -> "owlviz: dump_trace_file"
+  in
+  let dot_fname = change_cgd_suffix fname "trace" in
+  Owl_io.write_file dot_fname trace_string
 
 
 let dump_dot_file fname =
@@ -39,15 +53,16 @@ let dump_dot_file fname =
     match number with
     | F32 -> CGraph_S.graph_to_dot graph_dump
     | F64 -> CGraph_D.graph_to_dot graph_dump
+    | _   -> "owlviz: dump_dot_file"
   in
-  let dot_fname = fname ^ ".dot" in
+  let dot_fname = change_cgd_suffix fname "dot" in
   Owl_io.write_file dot_fname dot_string
 
 
 let dump_pdf_file fname =
   dump_dot_file fname;
-  let dot_fname = fname ^ ".dot" in
-  let pdf_fname = fname ^ ".pdf" in
+  let dot_fname = change_cgd_suffix fname "dot" in
+  let pdf_fname = change_cgd_suffix fname "pdf" in
   let cmd_str = Printf.sprintf "dot -Tpdf %s -o %s" dot_fname pdf_fname in
   Sys.command cmd_str |> ignore
 
@@ -71,7 +86,7 @@ let main args =
       else if args.(1) = "-pdf" then
         dump_pdf_file args.(2)
       else if args.(1) = "-trace" then
-        print_trace args.(2)
+        dump_trace_file args.(2)
       else
         Owl_log.error "cannot recognise the command."
     )

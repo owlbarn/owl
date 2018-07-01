@@ -256,6 +256,12 @@ let map4i f w x y z =
 let map4 f w x y z = map4i (fun _ a b c d -> f a b c d) w x y z
 
 
+let fold2 f a x y =
+  let acc = ref a in
+  iter2 (fun u v -> acc := f !acc u v)  x y;
+  !acc
+
+
 (* pad n value of v to the left/right of array x *)
 let pad s v n x =
   let l = Array.length x in

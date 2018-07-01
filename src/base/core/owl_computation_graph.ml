@@ -35,6 +35,9 @@ module Make
   let graph_to_dot x = Symbol.nodes_to_dot x.output
 
 
+  let graph_to_trace x = Symbol.nodes_to_trace x.output
+
+
   let save_graph graph fname =
     let data = (graph, number) in
     Owl_io.marshal_to_file data fname
