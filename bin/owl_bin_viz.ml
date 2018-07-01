@@ -8,10 +8,14 @@ open Owl
 open Owl_computation
 
 
+(* all supported modules by computation graph *)
+
 module CGraph_S = Owl_computation_graph.Make (Dense.Ndarray.S) (Owl_computation_device)
 
 module CGraph_D = Owl_computation_graph.Make (Dense.Ndarray.S) (Owl_computation_device)
 
+
+(* core functions *)
 
 let change_cgd_suffix fname suffix =
   if Filename.check_suffix fname "cgd" then
@@ -81,6 +85,8 @@ let process_dumps fnames =
       Owl_log.error "fail to process %s" fname
   ) fnames
 
+
+(* main entrance of the program *)
 
 let main args =
   if Array.length args < 2 then
