@@ -26,7 +26,7 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   let make_value_from src dst =
-    let dst_shp = shape (node_to_arr dst) in
+    let dst_shp = node_shape dst in
     match src with
     | Some src -> (
         (* inherit memory from the src node *)
@@ -268,7 +268,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Scalar_Atanh                                -> _init_05 x
         | Scalar_Relu                                 -> _init_05 x
         | Scalar_Sigmoid                              -> _init_05 x
-        | Fused_Adagrad (rate, eps)                   -> _init_00 x
+        | Fused_Adagrad (rate, eps)                   -> _init_01 x
         | _                                           -> failwith "owl_computation_init:"
 
         with exn -> (

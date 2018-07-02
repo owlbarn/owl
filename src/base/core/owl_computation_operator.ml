@@ -79,12 +79,7 @@ module Make
   let init shape f =
     make_node ~shape:[|Some shape|] (Init (shape, f)) |> node_to_arr
 
-  let shape x =
-    let x_shape = (arr_to_node x |> attr).shape in
-    assert (Array.length x_shape > 0);
-    match x_shape.(0) with
-    | Some s -> s
-    | None   -> [||]
+  let shape x = arr_to_node x |> node_shape
 
   let numel x = Array.fold_left ( * ) 1 (shape x)
 
@@ -468,6 +463,8 @@ module Make
 
   let of_arrays x = raise Owl_exception.NOT_IMPLEMENTED
 
+
+  (** Scalar maths *)
 
   module Scalar = struct
 

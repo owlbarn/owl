@@ -32,10 +32,51 @@ module Make
 
   (* utility functions *)
 
-  let graph_to_dot x = Symbol.nodes_to_dot x.output
+  (* print shape for ndarrays, whilst value for scalars *)
+  let shape_or_value x =
+    let shape = (attr x).shape in
+    if is_assigned x = true then (
+      match shape.(0) with
+      | Some s -> (
+          if Array.length s = 0 then
+            Printf.sprintf "v:%g" (node_to_elt x |> elt_to_float)
+          else
+            Printf.sprintf "s:%s" (shape_to_str shape)
+        )
+      | None   -> Printf.sprintf "s:%s" (shape_to_str shape)
+    )
+    else
+      Printf.sprintf "s:%s" (shape_to_str shape)
 
 
-  let graph_to_trace x = Symbol.nodes_to_trace x.output
+  let graph_to_dot graph =
+    let edge_s = fold_in_edges (fun a u v ->
+        Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)
+    ) "" graph.output
+    in
+    let node_s = fold_ancestors (fun a n ->
+      let svs = shape_or_value n in
+      Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; %s }\" ];\n"
+        a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) svs
+    ) "" graph.output
+    in
+    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
+
+
+  let graph_to_trace graph =
+    let u_nodes = Owl_utils_stack.make () in
+    let v_nodes = Owl_utils_stack.make () in
+    iter_in_edges (fun u v ->
+      Owl_utils_stack.push u_nodes (node_to_str u);
+      Owl_utils_stack.push v_nodes (node_to_str v);
+    ) graph.output;
+    let u_strings = Owl_utils_stack.to_array u_nodes in
+    let v_strings = Owl_utils_stack.to_array v_nodes in
+    let u_longest = Owl_utils.longest_string u_strings in
+    let u_strings = Owl_utils.pad_strings `Right u_longest u_strings in
+    Owl_utils_array.fold2 (fun acc u v ->
+      Printf.sprintf "%s%s -> %s\n" acc u v
+    ) "" u_strings v_strings
 
 
   let save_graph graph fname =

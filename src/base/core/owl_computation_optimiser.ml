@@ -350,7 +350,7 @@ module Make
       let x_parents = parents x in
       let a = x_parents.(0) in
       let b = x_parents.(1) in
-      let x_shp = Operator.shape (node_to_arr x) in
+      let x_shp = node_shape x in
       match get_operator a with
       | Zeros _ -> (
           remove_edge a x;
@@ -366,7 +366,7 @@ module Make
     if get_operator x = Div then (
       let x_parents = parents x in
       let b = x_parents.(1) in
-      let x_shp = Operator.shape (node_to_arr x) in
+      let x_shp = node_shape x in
       match get_operator b with
       | Ones b_shp -> (
           if x_shp = b_shp then (
@@ -567,7 +567,7 @@ module Make
       let x_parents = parents x in
       let a = x_parents.(0) in
       let b = x_parents.(1) in
-      let x_shp = Operator.shape (node_to_arr x) in
+      let x_shp = node_shape x in
       match (get_operator a, get_operator b) with
       | Zeros _, _ | _, Zeros _ -> (
           set_operator x (Zeros x_shp);
@@ -587,7 +587,7 @@ module Make
     let a = (parents x).(0) in
     _optimise_term a;
     if refnum a = 1 then (
-      let x_shp = Operator.shape (node_to_arr x) in
+      let x_shp = node_shape x in
       match get_operator a with
       | Zeros _ -> (
           set_operator x (Zeros x_shp);

@@ -18,7 +18,7 @@ module Make
   include Owl_computation_shape.Make (A) (D)
 
 
-  (* convert symbols to strings *)
+  (* string representation of symbols *)
 
   let op_to_str = function
     | Noop                                        -> "Noop"
@@ -208,7 +208,8 @@ module Make
     | Fused_Adagrad (rate, eps)                   -> "Fused_Adagrad"
 
 
-  (* check whether a symbol is a random variable *)
+
+  (* utility functions *)
 
   let is_random_variable = function
     | Uniform shape        -> true
@@ -217,9 +218,15 @@ module Make
     | _                    -> false
 
 
-  (* Helper functions *)
-
   let refnum x = Owl_graph.outdegree x
+
+
+  let node_shape x =
+    let x_shape = (attr x).shape in
+    assert (Array.length x_shape > 0);
+    match x_shape.(0) with
+    | Some s -> s
+    | None   -> failwith "Owl_computation_symbol:node_shape"
 
 
   let is_shape_unkown x =
@@ -276,7 +283,7 @@ module Make
     let state = match state with Some s -> s | None -> Invalid in
     let reuse = match reuse with Some s -> s | None -> true in
     let freeze = match freeze with Some s -> s | None -> false in
-    let vnode = [| (* used by the computation engine *) |] in
+    let vnode = [| (* used by the computation engine only *) |] in
     Owl_graph.node ?name { op; freeze; reuse; state; shape; value; vnode }
 
 
@@ -419,7 +426,7 @@ module Make
     let value = (arr_to_node x |> attr).value in
     let valen = Array.length value in
     if valen = 0 then (
-      Owl_log.error "value not assigned: %s" (arr_to_node x |> node_to_str);
+      Owl_log.error "not evaluated: %s" (arr_to_node x |> node_to_str);
       assert (valen > 0)
     );
     value_to_arr value.(0)
@@ -432,7 +439,7 @@ module Make
     let value = (elt_to_node x |> attr).value in
     let valen = Array.length value in
     if valen = 0 then (
-      Owl_log.error "value not assigned: %s" (elt_to_node x |> node_to_str);
+      Owl_log.error "not evaluated: %s" (elt_to_node x |> node_to_str);
       assert (valen > 0)
     );
     value_to_elt value.(0)
@@ -488,69 +495,10 @@ module Make
       |> failwith
 
 
-  (* TODO: should move to symbolic ... *)
-  let arr_to_var x =
-    let attr   = arr_to_node x |> attr in
-    let op     = attr.op in
-    let freeze = attr.freeze in
-    let reuse  = false in
-    let state  = attr.state in
-    let shape  = attr.shape in
-    let value  = attr.value in
-    let vnode  = attr.vnode in
-    Owl_graph.node ~name:"" { op; state; reuse; freeze; shape; value; vnode }
-    |> node_to_arr
-
-
   let float_to_elt x = const_elt "" (A.float_to_elt x)
 
 
   let elt_to_float x = unpack_elt x |> A.elt_to_float
-
-
-  (* print shape for ndarrays, whilst value for scalars *)
-  let shape_or_value x =
-    let shape = (attr x).shape in
-    if is_assigned x = true then (
-      match shape.(0) with
-      | Some s -> (
-          if Array.length s = 0 then
-            Printf.sprintf "v:%g" (node_to_elt x |> elt_to_float)
-          else
-            Printf.sprintf "s:%s" (shape_to_str shape)
-        )
-      | None   -> Printf.sprintf "s:%s" (shape_to_str shape)
-    )
-    else
-      Printf.sprintf "s:%s" (shape_to_str shape)
-
-
-  let nodes_to_dot x =
-    let edge_s = fold_in_edges (fun a u v -> Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)) "" x in
-    let node_s = fold_ancestors (fun a n ->
-      let svs = shape_or_value n in
-      Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; %s }\" ];\n"
-        a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) svs
-    ) "" x
-    in
-    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
-
-
-  let nodes_to_trace x =
-    let u_nodes = Owl_utils_stack.make () in
-    let v_nodes = Owl_utils_stack.make () in
-    iter_in_edges (fun u v ->
-      Owl_utils_stack.push u_nodes (node_to_str u);
-      Owl_utils_stack.push v_nodes (node_to_str v);
-    ) x;
-    let u_strings = Owl_utils_stack.to_array u_nodes in
-    let v_strings = Owl_utils_stack.to_array v_nodes in
-    let u_longest = Owl_utils.longest_string u_strings in
-    let u_strings = Owl_utils.pad_strings `Right u_longest u_strings in
-    Owl_utils_array.fold2 (fun acc u v ->
-      Printf.sprintf "%s%s -> %s\n" acc u v
-    ) "" u_strings v_strings
-
 
 
 end

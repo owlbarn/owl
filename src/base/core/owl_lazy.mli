@@ -29,14 +29,11 @@ module Make (A : Ndarray_Mutable) : sig
   type attr
   (** TODO *)
 
-  type op
-  (** TODO *)
-
   type graph
   (** TODO *)
 
 
-  (** {6 Type conversion and utility functions} *)
+  (** {6 Type conversion functions} *)
 
   val arr_to_value : A.arr -> value
   (** TODO *)
@@ -77,110 +74,23 @@ module Make (A : Ndarray_Mutable) : sig
   val unpack_elt : elt -> A.elt
   (** TODO *)
 
-  val arr_to_var : arr -> arr
-  (** TODO *)
-
   val float_to_elt : float -> elt
   (** TODO *)
 
   val elt_to_float : elt -> float
   (** TODO *)
 
-  val refnum : attr node -> int
+
+  (** {6 Utility functions} *)
+
+  val graph_to_dot : graph -> string
   (** TODO *)
 
-  val infer_shape : op -> attr node array -> int array option array
-  (** TODO *)
-
-  val infer_shape_graph : attr node array -> unit
-  (** TODO *)
-
-  val is_shape_unkown : attr node -> bool
-  (** TODO *)
-
-  val shape_to_str : int array option array -> string
-  (** TODO *)
-
-  val node_to_str : attr node -> string
-  (** TODO *)
-
-  val op_to_str : op -> string
-  (** TODO *)
-
-  val shape_or_value : attr node -> string
-  (** TODO *)
-
-  val nodes_to_dot : attr node array -> string
-  (** TODO *)
-
-  val nodes_to_trace : attr node array -> string
+  val graph_to_trace : graph -> string
   (** TODO *)
 
 
-  (** {6 properties of computation node} *)
-
-  val set_value : attr node -> value array -> unit
-  (** TODO *)
-
-  val get_value : attr node -> value array
-  (** TODO *)
-
-  val set_operator : attr node -> op -> unit
-  (** TODO *)
-
-  val get_operator : attr node -> op
-  (** TODO *)
-
-  val set_reuse : attr node -> bool -> unit
-  (** TODO *)
-
-  val get_reuse : attr node -> bool
-  (** TODO *)
-
-  val is_var : attr node -> bool
-  (** TODO *)
-
-  val is_const : attr node -> bool
-  (** TODO *)
-
-  val is_arr : attr node -> bool
-  (** TODO *)
-
-  val is_elt : attr node -> bool
-  (** TODO *)
-
-  val is_assigned : attr node -> bool
-  (** TODO *)
-
-  val check_assigned : attr node -> unit
-  (** TODO *)
-
-  val is_valid : attr node -> bool
-  (** TODO *)
-
-  val validate : attr node -> unit
-  (** TODO *)
-
-  val invalidate : attr node -> unit
-  (** TODO *)
-
-  val invalidate_graph : attr node -> unit
-  (** TODO *)
-
-  val is_freeze : attr node -> bool
-  (** TODO *)
-
-  val freeze : attr node -> unit
-  (** TODO *)
-
-  val freeze_descendants : attr node array -> unit
-  (** TODO *)
-
-  val freeze_ancestors : attr node array -> unit
-  (** TODO *)
-
-
-  (** {6 Create variable placeholder} *)
+  (** {6 Create variables} *)
 
   val var_arr : ?shape:int array -> string -> arr
   (** TODO *)
@@ -255,9 +165,6 @@ module Make (A : Ndarray_Mutable) : sig
   (** TODO *)
 
   val copy : arr -> arr
-  (** TODO *)
-
-  val copy_ : out:arr -> arr -> unit
   (** TODO *)
 
   val reset : arr -> unit
@@ -641,37 +548,16 @@ module Make (A : Ndarray_Mutable) : sig
   val get_outputs : graph -> attr node array
   (** TODO *)
 
-  val get_node_arr_val : attr node -> A.arr
-  (** TODO *)
-
-  val get_node_elt_val : attr node -> A.elt
-  (** TODO *)
-
-  val set_node_arr_val : attr node -> value -> unit
-  (** TODO *)
-
-  val set_node_elt_val : attr node -> value -> unit
-  (** TODO *)
-
-  val is_iopair_safe : 'a node -> 'a node -> bool
-  (** TODO *)
-
   val make_iopair : graph -> attr node array -> attr node array -> unit
   (** TODO *)
 
   val update_iopair : graph -> unit
   (** TODO *)
 
-  val remove_unused_iopair : 'a node array -> 'b array -> 'a node array * 'b array
-  (** TODO *)
-
   val init_inputs : (attr node -> value) -> graph -> unit
   (** TODO *)
 
   val optimise : graph -> unit
-  (** TODO *)
-
-  val graph_to_dot : graph -> string
   (** TODO *)
 
   val eval_elt : elt array -> unit

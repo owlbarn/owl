@@ -46,7 +46,7 @@ module Make (A : Ndarray_Mutable) = struct
 
   let allocate_cpu_buffer x =
     if is_assigned x = false then (
-      let x_shp = shape (node_to_arr x) in
+      let x_shp = node_shape x in
       let cpu_mem = A.empty x_shp in
       let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [||] [||] [||] in
       set_value x [| new_val |]
