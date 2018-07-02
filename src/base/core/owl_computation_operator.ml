@@ -121,15 +121,7 @@ module Make
   let concatenate ?(axis=0) xs =
     make_then_connect (Concatenate axis) (Array.map arr_to_node xs) |> node_to_arr
 
-  let split ?(axis=0) parts x =
-    let y = make_then_connect (Split (axis, parts)) [|arr_to_node x|] in
-    (* FIXME: wrong shape *)
-    failwith "split: not implemented";
-    Array.map (fun s ->
-      let z = make_node ~shape:[|Some parts|] Noop in
-      connect [|y|] [|z|];
-      node_to_arr y
-    ) parts
+  let split ?(axis=0) parts x = failwith "split: not implemented"
 
   let draw ?(axis=0) x n =
     let y = make_then_connect (Draw (axis, n)) [|arr_to_node x|] |> node_to_arr in
@@ -223,11 +215,18 @@ module Make
   let l2norm_sqr' x = make_then_connect L2NormSqr' [|arr_to_node x|] |> node_to_elt
 
   let clip_by_value ?amin ?amax x =
-    let amin = match amin with Some a -> a | None -> var_elt "" in
-    let amax = match amax with Some a -> a | None -> var_elt "" in
-    make_then_connect ClipByValue [|arr_to_node x; elt_to_node amin; elt_to_node amax|] |> node_to_arr
+    let a = match amin with
+      | Some a -> a
+      | None   -> const_elt "clip_by_value_amin" (A.float_to_elt neg_infinity)
+    in
+    let b = match amax with
+      | Some b -> b
+      | None   -> const_elt "clip_by_value_amax" (A.float_to_elt infinity)
+    in
+    make_then_connect ClipByValue [|arr_to_node x; elt_to_node a; elt_to_node b|] |> node_to_arr
 
-  let clip_by_l2norm a x = make_then_connect ClipByL2norm [|arr_to_node x|] |> node_to_arr
+  let clip_by_l2norm a x =
+    make_then_connect ClipByL2norm [|arr_to_node x; elt_to_node a|] |> node_to_arr
 
   let pow x y = make_then_connect Pow [|arr_to_node x; arr_to_node y|] |> node_to_arr
 

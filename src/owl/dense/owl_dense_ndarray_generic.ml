@@ -1757,29 +1757,6 @@ let cast_s2z x = cast Complex64 x
 let cast_d2c x = cast Complex32 x
 
 
-(* clipping functions *)
-
-let clip_by_value ?amin ?amax x =
-  let k = kind x in
-  let amin = match amin with
-    | Some a -> a
-    | None   -> Owl_const.neg_inf k
-  in
-  let amax = match amax with
-    | Some a -> a
-    | None   -> Owl_const.pos_inf k
-  in
-  let y = copy x in
-  _owl_clip_by_value k (numel x) amin amax y;
-  y
-
-let clip_by_l2norm t x =
-  let a = l2norm' x in
-  match a > t with
-  | true  -> mul_scalar x (t /. a)
-  | false -> x
-
-
 (* padding and its helper functions *)
 
 let _expand_padding_index d s =
@@ -5690,6 +5667,45 @@ let dropout_ ?out ?(rate=0.5) x =
 let fused_adagrad_ ?out ~rate ~eps x =
   let out = match out with Some o -> o | None -> x in
   _owl_fused_adagrad (kind x) (numel x) rate eps x out
+
+
+let clip_by_value_ ?out ?amin ?amax x =
+  let out = match out with Some o -> o | None -> x in
+  if same_data out x = false then copy_ ~out x;
+  let k = kind x in
+  let amin = match amin with
+    | Some a -> a
+    | None   -> Owl_const.neg_inf k
+  in
+  let amax = match amax with
+    | Some a -> a
+    | None   -> Owl_const.pos_inf k
+  in
+  _owl_clip_by_value k (numel x) amin amax out
+
+
+let clip_by_value ?amin ?amax x =
+  let out = copy x in
+  clip_by_value_ ~out ?amin ?amax out;
+  out
+
+
+let clip_by_l2norm_ ?out t x =
+  let out = match out with Some o -> o | None -> x in
+  let a = l2norm' x in
+  if a > t then (
+    let b = _div_elt (kind x) t a in
+    mul_scalar_ ~out x b
+  )
+  else (
+    if same_data out x = false then copy_ ~out x
+  )
+
+
+let clip_by_l2norm t x =
+  let out = copy x in
+  clip_by_l2norm_ ~out t out;
+  out
 
 
 (** Matrix functions *)

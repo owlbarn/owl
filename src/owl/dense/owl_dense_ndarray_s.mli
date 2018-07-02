@@ -530,7 +530,7 @@ val cross_entropy' : arr -> arr -> float
 
 val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
 
-val clip_by_l2norm : float -> arr -> arr
+val clip_by_l2norm : elt -> arr -> arr
 
 val fma : arr -> arr -> arr -> arr
 
@@ -727,6 +727,10 @@ val scalar_atan2_ : ?out:arr -> elt -> arr -> unit
 val scalar_fmod_ : ?out:arr -> elt -> arr -> unit
 
 val fma_ : ?out:arr -> arr -> arr -> arr -> unit
+
+val clip_by_value_ : ?out:arr -> ?amin:elt -> ?amax:elt -> arr -> unit
+
+val clip_by_l2norm_ : ?out:arr -> elt -> arr -> unit
 
 val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:elt -> ?beta:elt -> c:arr -> arr -> arr -> unit
 

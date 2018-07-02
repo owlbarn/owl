@@ -317,7 +317,7 @@ module Make (A : Ndarray_Mutable) : sig
   val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
   (** TODO *)
 
-  val clip_by_l2norm : 'a -> arr -> arr
+  val clip_by_l2norm : elt -> arr -> arr
   (** TODO *)
 
   val pow : arr -> arr -> arr

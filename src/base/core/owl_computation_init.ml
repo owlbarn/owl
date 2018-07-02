@@ -112,7 +112,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Uniform shape                               -> _init_00 x
         | Gaussian                                    -> _init_00 x
         | Bernoulli (p, shape)                        -> _init_00 x
-        | Init (shape, f)                             -> failwith "Init"
+        | Init (shape, f)                             -> _init_00 x
         | Get i                                       -> _init_05 x
         | Set i                                       -> failwith "Set"
         | GetSlice slice                              -> _init_00 x
@@ -126,9 +126,9 @@ module Make (A : Ndarray_Mutable) = struct
         | Concatenate axis                            -> _init_00 x
         | Split (axis, parts)                         -> failwith "Split"
         | Draw (axis, n)                              -> failwith "Draw"
-        | Map f                                       -> failwith "Map"
-        | Fold (axis, f)                              -> failwith "Fold"
-        | Scan (axis, f)                              -> failwith "Scan"
+        | Map f                                       -> _init_00 x
+        | Fold (axis, f)                              -> _init_00 x
+        | Scan (axis, f)                              -> _init_00 x
         | OneHot depth                                -> _init_00 x
         | Abs                                         -> _init_01 x
         | Neg                                         -> _init_01 x
