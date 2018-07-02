@@ -222,13 +222,13 @@ let quantile x p =
 let percentile x p = quantile x (p /. 100.)
 
 
-let median x = percentile x 0.5
+let median x = percentile x 50.
 
 
-let first_quartile x = percentile x 0.25
+let first_quartile x = percentile x 25.
 
 
-let third_quartile x = percentile x 0.75
+let third_quartile x = percentile x 75.
 
 
 let z_score ~mu ~sigma x = Array.map (fun y -> (y -. mu) /. sigma) x
