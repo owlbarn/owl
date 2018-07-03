@@ -14,7 +14,7 @@ module Make (A : Ndarray_Mutable) = struct
 
   module CGraph = Owl_computation_graph.Make (A) (Owl_computation_device)
 
-  include CGraph
+  open CGraph
 
 
   (* utility functions *)

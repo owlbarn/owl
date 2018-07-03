@@ -37,3 +37,7 @@ type slice_ = index_ array
 (* type of padding in conv?d and maxpool operations *)
 
 type padding = SAME | VALID
+
+(* type of various computation devices *)
+
+type device_type = CPU | OpenCL | CUDA
