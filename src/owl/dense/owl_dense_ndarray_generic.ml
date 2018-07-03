@@ -251,7 +251,6 @@ let repeat_ ~out x reps =
   if Array.exists ((>) 1) reps then
     failwith "repeat_: repetition must be >= 1";
   let x_dims = num_dims x in
-  let highest_dim = x_dims - 1 in
   assert (Array.length reps = x_dims);
 
   if (Array.for_all ((=) 1) reps) = true then

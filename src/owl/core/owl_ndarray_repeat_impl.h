@@ -5,6 +5,8 @@
 
 #ifdef OWL_ENABLE_TEMPLATE
 
+#include<string.h>
+
 /*
 CAMLprim value FUNCTION (stub, repeat_native) (
   value vX, value vY, value vHighest_dim,
@@ -239,13 +241,15 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   int ofsy = 0;
   int block_sz = reps[HD];
 
-  int counter[HD];
+  int block_num[HD];
   for (int i = 0; i < HD; i++) {
-    counter[i] = slice_x[i] / slice_x[HD];
-    // fprintf(stderr, "%d ", counter[i]);
+    block_num[i] = slice_x[i] / slice_x[HD];
+    // fprintf(stderr, "%d ", block_num[i]);
   }
-  // fprintf(stderr, "End of counter\n");
+  // fprintf(stderr, "End of block_num\n");
 
+  int counter[HD];
+  memset(counter, 0, sizeof(counter));
   for (int i = 0; i < num_hd; ++i) {
     // fprintf(stderr, "ofsx, ofsy: %d, %d\n", ofsx, ofsy);
     // Copy the last-dim block
@@ -263,11 +267,15 @@ CAMLprim value FUNCTION (stub, repeat_native) (
     // Increase index
     ofsx += shape_x[HD];
     ofsy += stride_y[HD - 1] * reps[HD - 1];
+    int c;
     for (int j = HD - 1; j > 0; --j) {
-      if ((i + 1) % counter[j] == 0) {
+      //if ((i + 1) % block_num[j] == 0) {
+      c = counter[j];
+      if (c + 1 == block_num[j]) {
         // fprintf(stderr, "Add to ofsy: %d * %d\n", stride_y[j - 1], (reps[j - 1] - 1));
         ofsy += stride_y[j - 1] * (reps[j - 1] - 1);
       }
+      counter[j] = (c + 1 == block_num[j] ? 0 : c + 1);
     }
   }
 
@@ -278,12 +286,14 @@ CAMLprim value FUNCTION (stub, repeat_native) (
 
     // fprintf(stderr, "Dim: %d\n", d);
     for (int i = 0; i <= d; i++) {
-      counter[i] = slice_x[i] / slice_x[d + 1];
-      // fprintf(stderr, "%d ", counter[i]);
+      block_num[i] = slice_x[i] / slice_x[d + 1];
+      // fprintf(stderr, "%d ", block_num[i]);
     }
-    // fprintf(stderr, "End of inner counter\n");
+    // fprintf(stderr, "End of inner block_num\n");
 
-    for (int i = 0; i < counter[0]; ++i) {
+    memset(counter, 0, sizeof(counter));
+    int c;
+    for (int i = 0; i < block_num[0]; ++i) {
 
       int ofsy_sub = ofsy + block_sz;
       for (int j = 1; j < reps[d]; j++) {
@@ -294,10 +304,13 @@ CAMLprim value FUNCTION (stub, repeat_native) (
 
       ofsy += stride_y[d] * reps[d];
       for (int j = d - 1; j >= 0; --j) {
-        if ((i + 1) % counter[j + 1] == 0) {
+        c = counter[j];
+        // if ((i + 1) % block_num[j + 1] == 0) {
+        if (c + 1 == block_num[j + 1]) {
           // fprintf(stderr, "Add to ofsy: %d * %d\n", stride_y[j], (reps[j] - 1));
           ofsy += stride_y[j] * (reps[j] - 1);
         }
+        counter[j] = (c + 1 == block_num[j] ? 0 : c + 1);
       }
     }
 
