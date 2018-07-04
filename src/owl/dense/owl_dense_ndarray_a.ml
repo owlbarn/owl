@@ -519,7 +519,7 @@ let repeat x reps =
         )
         else (
           for j = 0 to slice_x.(hd) - 1 do
-            let elemx = x'.(!ofsx + j) in !ofsy_sub block_sz;
+            let elemx = x'.(!ofsx + j) in
             for k = 0 to block_sz - 1 do
               y'.(!ofsy_sub + k) <- elemx
             done;
