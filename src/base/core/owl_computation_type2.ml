@@ -9,17 +9,14 @@ open Owl_types
 (* Functor of making the type of a computation graph. *)
 
 module Make
-  (A : Ndarray_Mutable)
-  (D : Computation_Device)
+  (Device : Owl_types_computation_device2.Sig)
   = struct
 
   (* module constant, device-dependent types *)
 
-  let number = A.number
-
-  module Device = D.Make (A)
-
-  include Device
+  module Device = Device
+  
+  open Device
 
 
   (* type definitions *)

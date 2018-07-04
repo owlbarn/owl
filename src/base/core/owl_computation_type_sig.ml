@@ -5,21 +5,16 @@
 
 open Owl_types
 
+open Owl_graph
 
-(* Functor of making the type of a computation graph. *)
 
-module Make
-  (A : Ndarray_Mutable)
-  (D : Computation_Device)
-  = struct
+(* Functor of making the symbols of a computation graph. *)
 
-  (* module constant, device-dependent types *)
+module type Sig = sig
 
-  let number = A.number
+  module Device : Owl_types_computation_device2.Sig
 
-  module Device = D.Make (A)
-
-  include Device
+  open Device
 
 
   (* type definitions *)
@@ -228,6 +223,5 @@ module Make
     | Scalar_Relu
     | Scalar_Sigmoid
     | Fused_Adagrad                 of float * float
-
 
 end

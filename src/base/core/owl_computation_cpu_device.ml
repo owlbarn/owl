@@ -8,8 +8,10 @@ open Owl_types
 
 (* Functor of making CPU devices *)
 
-module Make (A : Ndarray_Basic) = struct
+module Make (A : Ndarray_Mutable) = struct
 
+  module A = A
+  
   type device = {
     device_type : device_type;
     initialised : bool;

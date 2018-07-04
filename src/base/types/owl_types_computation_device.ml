@@ -6,7 +6,7 @@
 
 module type Sig = sig
 
-  module Make : functor (A : Owl_types_ndarray_basic.Sig) -> sig
+  module Make : functor (A : Owl_types_ndarray_mutable.Sig) -> sig
 
     type device
 

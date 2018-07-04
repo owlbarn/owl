@@ -9,15 +9,23 @@ open Owl_graph
 
 
 module Make
-  (A : Ndarray_Mutable)
-  (D : Computation_Device)
+  (Optimiser : Owl_computation_optimiser_sig.Sig)
   = struct
 
-  include Owl_computation_symbol.Make (A) (D)
-  include Owl_computation_operator.Make (A) (D)
-  include Owl_computation_optimiser.Make (A) (D)
+  module Optimiser = Optimiser
 
-  module A = A
+  open Optimiser
+
+  open Optimiser.Operator
+
+  open Optimiser.Operator.Symbol
+
+  open Optimiser.Operator.Symbol.Shape.Type
+
+  open Optimiser.Operator.Symbol.Shape.Type.Device
+
+  module A = Optimiser.Operator.Symbol.Shape.Type.Device.A
+
 
   type graph = {
     mutable name   : string;                         (* name of the graph *)
@@ -81,13 +89,13 @@ module Make
 
 
   let save_graph graph fname =
-    let data = (graph, number) in
+    let data = (graph, A.number) in
     Owl_io.marshal_to_file data fname
 
 
   let load_graph fname =
     let graph, num_typ = Owl_io.marshal_from_file fname in
-    if num_typ <> number then
+    if num_typ <> A.number then
       failwith "load_graph: inconsistent type."
     else
       graph, num_typ
