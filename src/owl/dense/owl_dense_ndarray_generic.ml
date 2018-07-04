@@ -229,19 +229,38 @@ let repeat x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
     failwith "repeat: repetition must be >= 1";
+  let _kind = kind x in
   let x_dims = num_dims x in
   assert (Array.length reps = x_dims);
 
-  if (Array.for_all ((=) 1) reps) = true then copy x
+  (* case 1: all repeat equal to 1 *)
+  if (Array.for_all ((=) 1) reps) = true then
+    copy x
   else (
-    let _kind = kind x in
     let x_shape = shape x in
     let y_shape = Array.map2 ( * ) x_shape reps in
     let y = empty _kind y_shape in
 
-    let reps' = reps |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
-    let x_shape' = x_shape |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
-    Owl_ndarray_repeat._ndarray_repeat _kind x y reps' x_shape';
+    (* case 2 : vector input *)
+    if (x_dims = 1) then (
+      Owl_ndarray_repeat._ndarray_repeat_axis _kind x y 0 reps.(0)
+    )
+    (* case 3: only one axis to be repeated *)
+    else if (Owl_utils_array.count reps 1 = x_dims - 1) then (
+      let r = ref (-1) in
+      let a = ref (-1) in
+      while !r = -1 && !a < x_dims do
+        a := !a + 1;
+        if reps.(!a) != 1 then r := reps.(!a)
+      done;
+      Owl_ndarray_repeat._ndarray_repeat_axis _kind x y !a !r
+    )
+    (* general case *)
+    else (
+      let reps' = reps |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+      let x_shape' = x_shape |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+      Owl_ndarray_repeat._ndarray_repeat _kind x y reps' x_shape';
+    );
     reshape y y_shape
   )
 
