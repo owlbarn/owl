@@ -467,7 +467,9 @@ let repeat x reps =
   let x_dims = num_dims x in
   assert (Array.length reps = x_dims);
 
-  if (Array.for_all (fun x -> x = 1) reps) = true then x else (
+  if (Array.for_all (fun x -> x = 1) reps) = true then
+    copy x
+  else (
     let x_shape = shape x in
     let y_shape = Array.map2 ( * ) x_shape reps in
     let y_data  = Array.make (_calc_numel_from_shape y_shape) x.data.(0) in
@@ -476,7 +478,7 @@ let repeat x reps =
     let x' = x.data in
     let y' = y.data in
 
-    if Array.length reps = 1 then (
+    if x_dims = 1 then (
       (* TODO: omg, cannot use blit, so have to copy one by one, I need to
       fiugre out a more efficient way to copy at the highest dimension. *)
       let ofsy = ref 0 in
