@@ -3,11 +3,12 @@
 
 open Owl
 
-module C = Owl_neural_graph_compiler.Make (Dense.Ndarray.S) (Computation.Engine)
+module CPU_Engine = Owl_computation_engine.Make (Dense.Ndarray.S)
+module CGCompiler = Owl_neural_graph_compiler.Make (CPU_Engine)
 
-open C.Neural
-open C.Neural.Graph
-open C.Neural.Algodiff
+open CGCompiler.Neural
+open CGCompiler.Neural.Graph
+open CGCompiler.Neural.Algodiff
 
 
 let make_network input_shape =
@@ -23,13 +24,13 @@ let make_network input_shape =
 
 let train network =
   let x, _, y = Dataset.load_mnist_train_data_arr () in
-  let x = C.CGraph.pack_arr x |> Algodiff.pack_arr in
-  let y = C.CGraph.pack_arr y |> Algodiff.pack_arr in
+  let x = CGCompiler.CGraph.pack_arr x |> Algodiff.pack_arr in
+  let y = CGCompiler.CGraph.pack_arr y |> Algodiff.pack_arr in
   let params = Params.config
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 0.1
     (* ~momentum:(Momentum.Standard 0.1) *)
   in
-  C.train ~params network x y
+  CGCompiler.train ~params network x y
 
 
 let _ =

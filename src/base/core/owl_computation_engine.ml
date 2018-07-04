@@ -10,6 +10,8 @@ open Owl_types
 
 module Make (A : Ndarray_Mutable) = struct
 
+  module A = A
+  
   module CGraph = Owl_computation_graph.Make (A) (Owl_computation_device)
 
   module CG_Init = Owl_computation_init.Make (A) (Owl_computation_device)
