@@ -106,6 +106,8 @@ CAMLprim value FUNCTION (stub, repeat_native) (
     }
   }
 
+  /* Copy the lower dimensions within y */
+
   for (int d = HD - 1; d >= 0; --d) {
     for (int i = 0; i <= d; i++) {
       block_num[i] = slice_x[i] / slice_x[d + 1];
@@ -133,6 +135,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
       }
     }
   }
+
   return Val_unit;
 }
 
@@ -169,13 +172,11 @@ CAMLprim value FUNCTION (stub, repeat_axis_native) (
   int ofsx = 0;
   int ofsy = 0;
   for (int i = 0; i < block_num; ++i) {
-    int ofsy_sub = ofsy;
     for (int j = 0; j < rep; ++j) {
-      COPYFUN(slice_sz, x, ofsx, 1, y, ofsy_sub, 1);
-      ofsy_sub += slice_sz;
+      COPYFUN(slice_sz, x, ofsx, 1, y, ofsy, 1);
+      ofsy += slice_sz;
     }
     ofsx += slice_sz;
-    ofsy += slice_sz_rep;
   }
 
   return Val_unit;
