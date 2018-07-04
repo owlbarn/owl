@@ -16,6 +16,8 @@ module Make (A : Ndarray_Mutable) = struct
 
   module CG_Eval = Owl_computation_eval.Make (A) (Owl_computation_device)
 
+  include CGraph
+
 
   (* core interface *)
 

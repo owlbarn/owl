@@ -12,8 +12,6 @@ module Make (A : Ndarray_Mutable) = struct
 
   module CPU_Engine = Owl_computation_engine.Make (A)
 
-  include CPU_Engine.CGraph
-
   include CPU_Engine
 
 end
