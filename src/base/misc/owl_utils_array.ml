@@ -256,6 +256,12 @@ let map4i f w x y z =
 let map4 f w x y z = map4i (fun _ a b c d -> f a b c d) w x y z
 
 
+let fold2 f a x y =
+  let acc = ref a in
+  iter2 (fun u v -> acc := f !acc u v)  x y;
+  !acc
+
+
 (* pad n value of v to the left/right of array x *)
 let pad s v n x =
   let l = Array.length x in
@@ -417,6 +423,37 @@ let bsearch ~cmp k bin_edges =
     | c, _ when c > 0  -> -1
     | _, c when c <= 0 -> n
     | _                -> aux 0 n
+
+
+(* remove the duplicates in the array *)
+let unique x =
+  let htbl = Hashtbl.create (Array.length x) in
+  filter (fun a ->
+    let not_found = not (Hashtbl.mem htbl a) in
+    if not_found then Hashtbl.add htbl a None;
+    not_found
+  ) x
+
+
+(* merge two arrays, duplicates will be removed *)
+let merge x y = Array.append x y |> unique
+
+
+(* sort then fill the holes *)
+let sort_fill ?min ?max ?fill x =
+  let x = copy x in
+  Array.sort Pervasives.compare x;
+
+  let n = Array.length x in
+  let min = match min with Some a -> a | None -> x.(0) in
+  let max = match max with Some a -> a | None -> x.(n - 1) in
+  let fill = match fill with Some a -> a | None -> 0 in
+  assert (min <= x.(0) && max >= x.(n - 1));
+
+  let y = Array.make (max - min + 1) fill in
+  Array.iter (fun i -> y.(i - min) <- i) x;
+  y
+
 
 
 (* ends here *)

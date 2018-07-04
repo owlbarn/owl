@@ -87,6 +87,14 @@ val stable_sort : ('a -> 'a -> int) -> 'a array -> unit
 val fast_sort : ('a -> 'a -> int) -> 'a array -> unit
 (** Refer to OCaml native array. *)
 
+val sort_fill : ?min:int -> ?max:int -> ?fill:int -> int array -> int array
+(**
+``sort_fill ~min ~max ~fill x`` first sorts ``x``, then expands it to an array
+of length ``max - min + 1``, and fills the holes with ``fill``. E.g.,
+``sort_fill ~min:1 ~max:5 ~fill:0 [|4;2|] x`` returns a new array as follows:
+``[|1; 0; 2; 0; 4; 5|]``.
+ *)
+
 val unsafe_get : 'a array -> int -> 'a
 (** Refer to OCaml native array. *)
 
@@ -127,6 +135,12 @@ val count : 'a array -> 'a -> int
 
 val insert : 'a array -> 'a array -> int -> 'a array
 (** TODO *)
+
+val unique : 'a array -> 'a array
+(** ``unique x`` removes the duplicates in the array ``x``. *)
+
+val merge : 'a array -> 'a array -> 'a array
+(** ``merge x y`` merges two arrays and removes the duplicates. *)
 
 val remove : 'a array -> int -> 'a array
 (** TODO *)
@@ -224,6 +238,11 @@ val resize : ?head:bool -> 'a -> int -> 'a array -> 'a array
 ``resize ~head v n x`` resizes ``x`` of length ``m`` to length ``n``. If
 ``m <= n``, a copy of ``x`` subarray is returned. If ``m > n``, then ``x`` is
 extended, the extra space is filled with value ``v``.
+ *)
+
+val fold2: ('a -> 'b -> 'c -> 'a) -> 'a -> 'b array -> 'c array -> 'a
+(**
+``fold2 a x y`` folds both ``x`` and ``y`` from left with starting value ``a``.
  *)
 
 val pad : [ `Left | `Right ] -> 'a -> int -> 'a array -> 'a array

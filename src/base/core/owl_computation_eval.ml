@@ -14,7 +14,7 @@ module Make (A : Ndarray_Mutable) = struct
 
   module CGraph = Owl_computation_graph.Make (A) (Owl_computation_device)
 
-  include CGraph
+  open CGraph
 
 
   (* utility functions *)
@@ -97,8 +97,8 @@ module Make (A : Ndarray_Mutable) = struct
         | L1norm'                                     -> _eval_map_06 x A.l1norm'
         | L2norm'                                     -> _eval_map_06 x A.l2norm'
         | L2NormSqr'                                  -> _eval_map_06 x A.l2norm_sqr'
-        | ClipByValue                                 -> failwith "ClipByValue"
-        | ClipByL2norm                                -> failwith "ClipByL2norm"
+        | ClipByValue                                 -> _eval_map_07 x (fun ~out a e -> A.clip_by_value_ ~out ~amin:e.(0) ~amax:e.(1) a.(0))
+        | ClipByL2norm                                -> _eval_map_07 x (fun ~out a e -> A.clip_by_l2norm_ ~out e.(0) a.(0))
         | Pow                                         -> _eval_map_01 x (fun ~out x -> A.pow_ ~out x.(0) x.(1))
         | ScalarPow                                   -> _eval_map_05 x A.scalar_pow_
         | PowScalar                                   -> _eval_map_04 x A.pow_scalar_
@@ -299,6 +299,16 @@ module Make (A : Ndarray_Mutable) = struct
     _eval_term x_parent;
     let a = (get_value x_parent).(0) |> value_to_arr |> f in
     set_value x [|elt_to_value a|]
+
+
+  (* [f] is inpure, for [arr array -> elt array -> arr] *)
+  and _eval_map_07 x f =
+    let x_parents = parents x in
+    Array.iter _eval_term x_parents;
+    let arr_args = Owl_utils_array.filter is_arr x_parents |> Array.map (fun v -> (get_value v).(0) |> value_to_arr) in
+    let elt_args = Owl_utils_array.filter is_elt x_parents |> Array.map (fun v -> (get_value v).(0) |> value_to_elt) in
+    let out = value_to_arr (get_value x).(0) in
+    f ~out arr_args elt_args
 
 
 end

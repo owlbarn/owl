@@ -24,9 +24,86 @@ module Make
     mutable output : attr node array;                (* output nodes of the graph *)
     mutable iopair : (attr node * attr node) array;  (* input and output loopback pairs *)
     mutable iosafe : bool array;                     (* whether it is safe to use unsafe_assign_arr *)
+    mutable random : attr node array;                (* rvs automatically invalidate themselves *)
     mutable htbl   : (string, attr node) Hashtbl.t;  (* node name to node mapping *)
-    mutable device : device
+    mutable device : device                          (* device-dependent field *)
   }
+
+
+  (* utility functions *)
+
+  (* print shape for ndarrays, whilst value for scalars *)
+  let shape_or_value x =
+    let shape = (attr x).shape in
+    if is_assigned x = true then (
+      match shape.(0) with
+      | Some s -> (
+          if Array.length s = 0 then
+            Printf.sprintf "v:%g" (node_to_elt x |> elt_to_float)
+          else
+            Printf.sprintf "s:%s" (shape_to_str shape)
+        )
+      | None   -> Printf.sprintf "s:%s" (shape_to_str shape)
+    )
+    else
+      Printf.sprintf "s:%s" (shape_to_str shape)
+
+
+  let graph_to_dot graph =
+    let edge_s = fold_in_edges (fun a u v ->
+        Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)
+    ) "" graph.output
+    in
+    let node_s = fold_ancestors (fun a n ->
+      let svs = shape_or_value n in
+      Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; %s }\" ];\n"
+        a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) svs
+    ) "" graph.output
+    in
+    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
+
+
+  let graph_to_trace graph =
+    let u_nodes = Owl_utils_stack.make () in
+    let v_nodes = Owl_utils_stack.make () in
+    iter_in_edges (fun u v ->
+      Owl_utils_stack.push u_nodes (node_to_str u);
+      Owl_utils_stack.push v_nodes (node_to_str v);
+    ) graph.output;
+    let u_strings = Owl_utils_stack.to_array u_nodes in
+    let v_strings = Owl_utils_stack.to_array v_nodes in
+    let u_longest = Owl_utils.longest_string u_strings in
+    let u_strings = Owl_utils.pad_strings `Right u_longest u_strings in
+    Owl_utils_array.fold2 (fun acc u v ->
+      Printf.sprintf "%s%s -> %s\n" acc u v
+    ) "" u_strings v_strings
+
+
+  let save_graph graph fname =
+    let data = (graph, number) in
+    Owl_io.marshal_to_file data fname
+
+
+  let load_graph fname =
+    let graph, num_typ = Owl_io.marshal_from_file fname in
+    if num_typ <> number then
+      failwith "load_graph: inconsistent type."
+    else
+      graph, num_typ
+
+
+  let collect_rvs output =
+    let stack = Owl_utils_stack.make () in
+    Owl_graph.iter_ancestors (fun v ->
+      let op_typ = get_operator v in
+      if is_random_variable op_typ then
+        Owl_utils_stack.push stack v
+    ) output;
+    Owl_utils_stack.to_array stack
+
+
+  let invalidate_rvs graph =
+    Array.iter invalidate_graph graph.random
 
 
   (* core graph functions *)
@@ -61,10 +138,12 @@ module Make
     (* empty io pairing by default *)
     let iopair = [| |] in
     let iosafe = [| |] in
+    (* collect all the random variables *)
+    let random = collect_rvs output in
     (* create a device dependent field *)
     let device = make_device () in
     (* return the graph record *)
-    { name; input; output; iopair; iosafe; htbl; device }
+    { name; input; output; iopair; iosafe; random; htbl; device }
 
 
   let get_inputs x = x.input
@@ -147,12 +226,6 @@ module Make
 
 
   let optimise graph = optimise_nodes graph.output
-
-
-  (* helper functions *)
-
-  let graph_to_dot x = get_outputs x |> Symbol.nodes_to_dot
-
 
 
 end

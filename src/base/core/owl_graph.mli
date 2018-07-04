@@ -80,20 +80,22 @@ val connect : 'a node array -> 'a node array -> unit
 ``connect parents children`` connects a set of parents to a set of children.
 The created links are the Cartesian product of parents and children. In other
 words, they are bidirectional links between parents and children.
+
+NOTE: this function does not eliminate any duplicates in the array.
 *)
 
 val connect_descendants : 'a node array -> 'a node array -> unit
 (**
 ``connect_descendants parents children`` connects parents to their children.
-In other words, this function creates unidirectional links from parents to
-children.
+This function creates unidirectional links from parents to children. In other
+words, this function save ``children`` to ``parent.next`` field.
 *)
 
 val connect_ancestors : 'a node array -> 'a node array -> unit
 (**
 ``connect_ancestors parents children`` connects children to their parents.
-In other words, this function creates unidirectional links from children to
-parents.
+This function creates unidirectional links from children to parents. In other
+words, this function save ``parents`` to ``child.prev`` field.
 *)
 
 val remove_node : 'a node -> unit
@@ -113,12 +115,18 @@ val replace_child : 'a node -> 'a node -> unit
 (**
 ``replace_child x y`` replaces ``x`` with ``y`` in ``x`` parents. Namely, ``x``
 parents now make link to ``y`` rather than ``x`` in ``next`` field.
+
+NOTE: The function does NOT make link from ``y`` to ``x`` parents. Namely,
+the ``prev`` field of ``y`` remains intact.
  *)
 
 val replace_parent : 'a node -> 'a node -> unit
 (**
 ``replace_parent x y`` replaces ``x`` with ``y`` in ``x`` children. Namely,
 ``x`` children now make link to ``y`` rather than ``x`` in ``prev`` field.
+
+NOTE: The function does NOT make link from ``y`` to ``x`` children. Namely,
+the ``next`` field of ``y`` remains intact.
  *)
 
 val copy : ?dir:dir -> 'a node array -> 'a node array

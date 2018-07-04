@@ -97,6 +97,10 @@ module type Sig = sig
 
   val fma_ : ?out:arr -> arr -> arr -> arr -> unit
 
+  val clip_by_value_ : ?out:arr -> ?amin:elt -> ?amax:elt -> arr -> unit
+
+  val clip_by_l2norm_ : ?out:arr -> elt -> arr -> unit
+
   val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:elt -> ?beta:elt -> c:arr -> arr -> arr -> unit
 
   val abs_ : ?out:arr -> arr -> unit

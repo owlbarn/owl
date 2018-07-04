@@ -1774,7 +1774,7 @@ val clip_by_value : ?amin:'a -> ?amax:'a -> ('a, 'b) t -> ('a, 'b) t
 elements greater than ``amax`` will be set to ``amax``.
  *)
 
-val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
+val clip_by_l2norm : 'a -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``clip_by_l2norm t x`` clips the ``x`` according to the threshold set by ``t``.
  *)
@@ -2248,6 +2248,12 @@ val scalar_fmod_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 ``scalar_fmod_ a x`` is simiar to ``scalar_fmod`` function but the output is
 written to ``x``.
  *)
+
+val clip_by_value_ : ?out:('a, 'b) t -> ?amin:'a -> ?amax:'a -> ('a, 'b) t -> unit
+(** TODO *)
+
+val clip_by_l2norm_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
+(** TODO *)
 
 val fma_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**

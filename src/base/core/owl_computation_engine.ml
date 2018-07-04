@@ -34,6 +34,7 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   let eval_graph graph =
+    CGraph.invalidate_rvs graph;
     let nodes = CGraph.get_outputs graph in
     Array.iter CG_Init._init_term nodes;
     Array.iter CG_Eval._eval_term nodes

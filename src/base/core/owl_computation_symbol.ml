@@ -18,7 +18,7 @@ module Make
   include Owl_computation_shape.Make (A) (D)
 
 
-  (* convert symbols to strings *)
+  (* string representation of symbols *)
 
   let op_to_str = function
     | Noop                                        -> "Noop"
@@ -208,9 +208,25 @@ module Make
     | Fused_Adagrad (rate, eps)                   -> "Fused_Adagrad"
 
 
-  (* Helper functions *)
+
+  (* utility functions *)
+
+  let is_random_variable = function
+    | Uniform shape        -> true
+    | Gaussian             -> true
+    | Bernoulli (p, shape) -> true
+    | _                    -> false
+
 
   let refnum x = Owl_graph.outdegree x
+
+
+  let node_shape x =
+    let x_shape = (attr x).shape in
+    assert (Array.length x_shape > 0);
+    match x_shape.(0) with
+    | Some s -> s
+    | None   -> failwith "Owl_computation_symbol:node_shape"
 
 
   let is_shape_unkown x =
@@ -267,7 +283,7 @@ module Make
     let state = match state with Some s -> s | None -> Invalid in
     let reuse = match reuse with Some s -> s | None -> true in
     let freeze = match freeze with Some s -> s | None -> false in
-    let vnode = [| (* used by the computation engine *) |] in
+    let vnode = [| (* used by the computation engine only *) |] in
     Owl_graph.node ?name { op; freeze; reuse; state; shape; value; vnode }
 
 
@@ -277,13 +293,14 @@ module Make
       | None   -> infer_shape op parents
     in
     let child = make_node ~shape op in
+    (* define the dependency of operation, can have duplicates *)
+    connect_ancestors parents [|child|];
+    (* define the flow of computation graph, no duplicates *)
+    let uniq_parents = Owl_utils_array.unique parents in
     Array.iter (fun parent ->
-      if (attr parent).freeze = true then
-        connect_ancestors [|parent|] [|child|]
-      else
-        connect [|parent|] [|child|]
-    ) parents;
-    (* connect parents [|child|]; *)
+      if (attr parent).freeze = false then
+        connect_descendants [|parent|] [|child|]
+    ) uniq_parents;
     child
 
 
@@ -409,7 +426,7 @@ module Make
     let value = (arr_to_node x |> attr).value in
     let valen = Array.length value in
     if valen = 0 then (
-      Owl_log.error "value not assigned: %s" (arr_to_node x |> node_to_str);
+      Owl_log.error "not evaluated: %s" (arr_to_node x |> node_to_str);
       assert (valen > 0)
     );
     value_to_arr value.(0)
@@ -422,7 +439,7 @@ module Make
     let value = (elt_to_node x |> attr).value in
     let valen = Array.length value in
     if valen = 0 then (
-      Owl_log.error "value not assigned: %s" (elt_to_node x |> node_to_str);
+      Owl_log.error "not evaluated: %s" (elt_to_node x |> node_to_str);
       assert (valen > 0)
     );
     value_to_elt value.(0)
@@ -478,55 +495,10 @@ module Make
       |> failwith
 
 
-  (* TODO: should move to symbolic ... *)
-  let arr_to_var x =
-    let attr   = arr_to_node x |> attr in
-    let op     = attr.op in
-    let freeze = attr.freeze in
-    let reuse  = false in
-    let state  = attr.state in
-    let shape  = attr.shape in
-    let value  = attr.value in
-    let vnode  = attr.vnode in
-    Owl_graph.node ~name:"" { op; state; reuse; freeze; shape; value; vnode }
-    |> node_to_arr
-
-
   let float_to_elt x = const_elt "" (A.float_to_elt x)
 
 
   let elt_to_float x = unpack_elt x |> A.elt_to_float
-
-
-  (* print shape for ndarrays, whilst value for scalars *)
-  let shape_or_value x =
-    let shape = (attr x).shape in
-    if is_assigned x = true then (
-      match shape.(0) with
-      | Some s -> (
-          if Array.length s = 0 then
-            Printf.sprintf "v:%g" (node_to_elt x |> elt_to_float)
-          else
-            Printf.sprintf "s:%s" (shape_to_str shape)
-        )
-      | None   -> Printf.sprintf "s:%s" (shape_to_str shape)
-    )
-    else
-      Printf.sprintf "s:%s" (shape_to_str shape)
-
-
-  let nodes_to_dot x =
-    let edge_s = fold_in_edges (fun a u v -> Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)) "" x in
-    let node_s = fold_ancestors (fun a n ->
-      let svs = shape_or_value n in
-      Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; %s }\" ];\n"
-        a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) svs
-    ) "" x
-    in
-    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
-
-
-  let to_trace x = "to_trace: not implemented yet"
 
 
 end

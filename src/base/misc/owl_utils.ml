@@ -5,6 +5,7 @@
 
 (** Helper functions used in the library *)
 
+open Owl_types
 
 include Owl_utils_ndarray
 
@@ -158,6 +159,37 @@ let array1_copy x =
 let aaarrr_map f x = Array.map (Array.map (Array.map f)) x
 
 
+(*
+  ``squeeze_continuous_dims shape axes`` first groups the int elements in the
+  ``shape`` array sequentially, depending on whether the index of that element
+  is contained in the array ``axes``, then computes the product of each group and
+  returns them in an int array. Assume ``axes`` only contains non-negative
+  integers.
+ *)
+let squeeze_continuous_dims shape axes =
+  let ndim = Array.length shape in
+  let new_shape = Array.make ndim 1 in
+  let axes = Array.sort_fill ~min:0 ~max:(ndim - 1) ~fill:(-1) axes in
+
+  let flag  = ref (axes.(0) = 0) in
+  let prod  = ref 1 in
+  let count = ref 0 in
+
+  for i = 0 to ndim - 1 do
+    if ((axes.(i) = i) = !flag) then (
+      prod := !prod * shape.(i)
+    )
+    else (
+      new_shape.(!count) <- !prod;
+      prod  := shape.(i);
+      count := !count + 1;
+      flag  := not !flag;
+    )
+  done;
+  new_shape.(!count) <- !prod;
+  Array.sub new_shape 0 (!count + 1)
+
+
 (* format time period into human-readable format *)
 let format_time t =
   if t < 60. then
@@ -194,6 +226,37 @@ let eps
   | Complex64 -> 2. ** (-52.)
   | _         -> failwith "owl_utils:eps"
 
+
+let num_typ_to_str x =
+  match x with
+  | F32 -> "F32"
+  | F64 -> "F64"
+  | C32 -> "C32"
+  | C64 -> "C64"
+
+
+let num_typ_of_str x =
+  match x with
+  | "F32" -> F32
+  | "F64" -> F64
+  | "C32" -> C32
+  | "C64" -> C64
+  | _     -> failwith "num_typ_of_str"
+
+
+let longest_string strings =
+  Array.fold_left (fun acc s -> max acc (String.length s)) 0 strings
+
+
+let pad_strings side s_max strings =
+  Array.map (fun s ->
+    let s_len = String.length s in
+    let s_len = max 0 (s_max - s_len) in
+    let s_pad = String.make s_len ' ' in
+    match side with
+    | `Left  -> s_pad ^ s
+    | `Right -> s ^ s_pad
+  ) strings
 
 
 (* ends here *)

@@ -14,7 +14,7 @@ module Make (A : Ndarray_Mutable) = struct
 
   module CGraph = Owl_computation_graph.Make (A) (Owl_computation_device)
 
-  include CGraph
+  open CGraph
 
 
   (* utility functions *)
@@ -26,7 +26,7 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   let make_value_from src dst =
-    let dst_shp = shape (node_to_arr dst) in
+    let dst_shp = node_shape dst in
     match src with
     | Some src -> (
         (* inherit memory from the src node *)
@@ -64,21 +64,12 @@ module Make (A : Ndarray_Mutable) = struct
     let shp_0, shp_1 = Owl_utils_array.align `Left 1 shp_0 shp_1 in
     let shp_x = Owl_utils_infer_shape.broadcast1 shp_0 shp_1 in
 
-    if shp_0 = shp_x then (
-      if refnum parent_0 = 1 && get_reuse parent_0 then
-        make_value_from (Some parent_0) x
-      else if refnum parent_0 = 2 && parent_0 == parent_1 && get_reuse parent_0 then
-        make_value_from (Some parent_0) x
-      else
-        make_value_from None x
-    )
-    else if shp_1 = shp_x then (
-      if refnum parent_1 = 1 && get_reuse parent_1 then
-        make_value_from (Some parent_1) x
-      else
-        make_value_from None x
-    )
-    else make_value_from None x
+    if shp_0 = shp_x && refnum parent_0 = 1 && get_reuse parent_0 then
+      make_value_from (Some parent_0) x
+    else if shp_1 = shp_x && refnum parent_1 = 1 && get_reuse parent_1 then
+      make_value_from (Some parent_1) x
+    else
+      make_value_from None x
 
 
   let allocate_from_parent_3 x parent_0 parent_1 parent_2 =
@@ -98,7 +89,8 @@ module Make (A : Ndarray_Mutable) = struct
       make_value_from (Some parent_1) x
     else if shp_2 = shp_x && refnum parent_2 = 1 && get_reuse parent_2 then
       make_value_from (Some parent_2) x
-    else make_value_from None x
+    else
+      make_value_from None x
 
 
   (* core initialisation function *)
@@ -120,7 +112,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Uniform shape                               -> _init_00 x
         | Gaussian                                    -> _init_00 x
         | Bernoulli (p, shape)                        -> _init_00 x
-        | Init (shape, f)                             -> failwith "Init"
+        | Init (shape, f)                             -> _init_00 x
         | Get i                                       -> _init_05 x
         | Set i                                       -> failwith "Set"
         | GetSlice slice                              -> _init_00 x
@@ -134,9 +126,9 @@ module Make (A : Ndarray_Mutable) = struct
         | Concatenate axis                            -> _init_00 x
         | Split (axis, parts)                         -> failwith "Split"
         | Draw (axis, n)                              -> failwith "Draw"
-        | Map f                                       -> failwith "Map"
-        | Fold (axis, f)                              -> failwith "Fold"
-        | Scan (axis, f)                              -> failwith "Scan"
+        | Map f                                       -> _init_00 x
+        | Fold (axis, f)                              -> _init_00 x
+        | Scan (axis, f)                              -> _init_00 x
         | OneHot depth                                -> _init_00 x
         | Abs                                         -> _init_01 x
         | Neg                                         -> _init_01 x
@@ -276,7 +268,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Scalar_Atanh                                -> _init_05 x
         | Scalar_Relu                                 -> _init_05 x
         | Scalar_Sigmoid                              -> _init_05 x
-        | Fused_Adagrad (rate, eps)                   -> _init_00 x
+        | Fused_Adagrad (rate, eps)                   -> _init_01 x
         | _                                           -> failwith "owl_computation_init:"
 
         with exn -> (

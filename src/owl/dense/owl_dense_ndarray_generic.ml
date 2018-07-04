@@ -1781,29 +1781,6 @@ let cast_s2z x = cast Complex64 x
 let cast_d2c x = cast Complex32 x
 
 
-(* clipping functions *)
-
-let clip_by_value ?amin ?amax x =
-  let k = kind x in
-  let amin = match amin with
-    | Some a -> a
-    | None   -> Owl_const.neg_inf k
-  in
-  let amax = match amax with
-    | Some a -> a
-    | None   -> Owl_const.pos_inf k
-  in
-  let y = copy x in
-  _owl_clip_by_value k (numel x) amin amax y;
-  y
-
-let clip_by_l2norm t x =
-  let a = l2norm' x in
-  match a > t with
-  | true  -> mul_scalar x (t /. a)
-  | false -> x
-
-
 (* padding and its helper functions *)
 
 let _expand_padding_index d s =
@@ -5716,6 +5693,45 @@ let fused_adagrad_ ?out ~rate ~eps x =
   _owl_fused_adagrad (kind x) (numel x) rate eps x out
 
 
+let clip_by_value_ ?out ?amin ?amax x =
+  let out = match out with Some o -> o | None -> x in
+  if same_data out x = false then copy_ ~out x;
+  let k = kind x in
+  let amin = match amin with
+    | Some a -> a
+    | None   -> Owl_const.neg_inf k
+  in
+  let amax = match amax with
+    | Some a -> a
+    | None   -> Owl_const.pos_inf k
+  in
+  _owl_clip_by_value k (numel x) amin amax out
+
+
+let clip_by_value ?amin ?amax x =
+  let out = copy x in
+  clip_by_value_ ~out ?amin ?amax out;
+  out
+
+
+let clip_by_l2norm_ ?out t x =
+  let out = match out with Some o -> o | None -> x in
+  let a = l2norm' x in
+  if a > t then (
+    let b = _div_elt (kind x) t a in
+    mul_scalar_ ~out x b
+  )
+  else (
+    if same_data out x = false then copy_ ~out x
+  )
+
+
+let clip_by_l2norm t x =
+  let out = copy x in
+  clip_by_l2norm_ ~out t out;
+  out
+
+
 (** Matrix functions *)
 
 type area = { a : int; b : int; c : int; d : int }
@@ -5970,7 +5986,7 @@ let sum_slices ?axis x =
 
 
 (*
-  Simiar to `sum`, but sums the elements along multiple axes specified in an
+  Simiar to ``sum``, but sums the elements along multiple axes specified in an
   array. E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an
   ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of
   shape [|1;1;1;1|].
@@ -5980,18 +5996,31 @@ let sum_reduce ?axis x =
   let _dims = num_dims x in
   match axis with
   | Some a -> (
-      let y = ref x in
-      Array.iter (fun i ->
-        assert (i < _dims);
-        let m, n, o, s = Owl_utils.reduce_params i !y in
-        let z = zeros _kind s in
-        _owl_sum_along _kind m n o !y z;
-        y := z
-      ) a;
-      !y
+      let x_shape = shape x in
+      let dims' = Owl_utils.squeeze_continuous_dims x_shape a in
+      if Array.length dims' = 1 then (
+        _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
+      )
+      else (
+        (* TODO: optimise with C implementation *)
+        let y = ref (reshape x dims') in
+        let flag = ref (Array.mem 0 a) in
+        for i = 0 to Array.length dims' - 1 do
+          if !flag = true then (
+            let m, n, o, s = Owl_utils.reduce_params i !y in
+            let z = zeros _kind s in
+            _owl_sum_along _kind m n o !y z;
+            y := z
+          );
+          flag := not !flag
+        done;
+        let y_shape = Array.copy x_shape in
+        Array.iter (fun j -> y_shape.(j) <- 1) a;
+        reshape !y y_shape
+      )
     )
   | None   ->
-      _owl_sum _kind (numel x) x |> create _kind (Array.make (num_dims x) 1)
+      _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
 
 
 let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ~window x =

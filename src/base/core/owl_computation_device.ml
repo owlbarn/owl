@@ -10,12 +10,18 @@ open Owl_types
 
 module Make (A : Ndarray_Basic) = struct
 
-  type device = CPU
+  type device = {
+    device_type : device_type;
+    initialised : bool;
+  }
 
   type value = ArrVal of A.arr | EltVal of A.elt
 
 
-  let make_device () = CPU
+  let make_device () = {
+    device_type = CPU;
+    initialised = false;
+  }
 
 
   let arr_to_value x = ArrVal x
