@@ -233,7 +233,7 @@ let repeat x reps =
   let x_dims = num_dims x in
   assert (Array.length reps = x_dims);
 
-  (* case 1: all repeat equal to 1 *)
+  (* case 1: all repeats equal to 1 *)
   if (Array.for_all ((=) 1) reps) = true then
     copy x
   else (
@@ -257,8 +257,10 @@ let repeat x reps =
     )
     (* general case *)
     else (
-      let reps' = reps |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
-      let x_shape' = x_shape |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+      let reps' = reps |> Array.map Int64.of_int
+        |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+      let x_shape' = x_shape |> Array.map Int64.of_int
+        |> Array1.of_array int64 c_layout |> genarray_of_array1 in
       Owl_ndarray_repeat._ndarray_repeat _kind x y reps' x_shape';
     );
     reshape y y_shape
@@ -273,7 +275,7 @@ let repeat_ ~out x reps =
   let x_dims = num_dims x in
   assert (Array.length reps = x_dims);
 
-  (* case 1: all repeat equal to 1 *)
+  (* case 1: all repeats equal to 1 *)
   if (Array.for_all ((=) 1) reps) = true then
     copy_ x out
   else (
@@ -293,8 +295,10 @@ let repeat_ ~out x reps =
     )
     (* general case *)
     else (
-      let reps' = reps |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
-      let x_shape' = shape x |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+      let reps' = reps |> Array.map Int64.of_int
+        |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+      let x_shape' = shape x |> Array.map Int64.of_int
+        |> Array1.of_array int64 c_layout |> genarray_of_array1 in
       Owl_ndarray_repeat._ndarray_repeat _kind x out reps' x_shape'
     )
   )

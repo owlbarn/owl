@@ -102,7 +102,7 @@ module Make
   end
 
 
-  (* test repeat operations *)
+  (* test repeat and tile operation *)
 
   module To_test_repeat = struct
 

@@ -612,10 +612,8 @@ let repeat x reps =
       let stride_y = Owl_utils.calc_stride y_shape in
 
       let hd = ref (highest_dim + 1) in
-      let flag_one = true in
-      for i = highest_dim downto 0 do
-        let flag_one = if reps.(i) != 0 then false else flag_one in
-        if flag_one && reps.(i) = 0 then hd := !hd - 1
+      while !hd > 1 && reps.(!hd - 1) = 1 do
+        hd := !hd - 1;
       done;
       let hd = if !hd = highest_dim + 1 then highest_dim else !hd in
 
@@ -688,73 +686,6 @@ let repeat x reps =
           done
         done
       done
-
-(*
-      let stride_x = Owl_utils.calc_stride x_shape in
-      let slice_y = Owl_utils.calc_slice y_shape in
-
-      let rep_slice = Owl_utils.calc_slice reps in
-      let block_idx = Array.map2 ( * ) rep_slice stride_x in
-
-      let hd = ref (highest_dim + 1) in
-      let flag_one = true in
-      for i = highest_dim downto 0 do
-        let flag_one = if reps.(i) != 0 then false else flag_one in
-        if flag_one && reps.(i) = 0 then hd := !hd - 1
-      done;
-      let hd = if !hd = highest_dim + 1 then highest_dim else !hd in
-
-      let h = ref 0 in
-      let d = ref 0 in
-      let ofsx = ref 0 in
-      let tag = ref true in
-      let stack = Stack.create () in
-
-      while ((!d != hd) && !tag) || not (Stack.is_empty stack) do
-
-        while (!d != hd) && !tag do
-          for i = x_shape.(!d) - 1 downto 0 do
-            let flag = if i = 0 then false else true in
-            Stack.push (!h + i * block_idx.(!d), !d + 1,
-              !ofsx + i * stride_x.(!d), flag) stack
-          done;
-          d := !d + 1
-        done;
-
-        if not (Stack.is_empty stack) then (
-          let t1, t2, t3, t4 = Stack.pop stack in
-          h := t1; d := t2; ofsx := t3; tag := t4;
-
-          if !tag && (!d < hd) then (
-            Stack.push (t1, t2, t3, false) stack
-          )
-          else (
-            if !d = hd then (
-              let repsd = reps.(!d) in
-              if repsd = 1 then (
-                let subx = Genarray.sub_left x' !ofsx slice_y.(!d) in
-                let suby = Genarray.sub_left y' !h slice_y.(!d) in
-                Genarray.blit subx suby
-              )
-              else (
-                for i = 0 to x_shape.(!d) - 1 do
-                  let elemx = get x' [|!ofsx + i|] in
-                  for j = 0 to repsd - 1 do
-                    set y' [|!h + i * repsd + j|] elemx
-                  done
-                done
-              )
-            );
-            let block_sz = slice_y.(!d) in
-            for j = 1 to (reps.(!d - 1) - 1) do
-              let ofsy = !h + j * block_sz in
-              let subx = Genarray.sub_left y' !h block_sz in
-              let suby = Genarray.sub_left y' ofsy block_sz in
-              Genarray.blit subx suby
-            done
-          )
-        )
-      done *)
     );
     reshape y' y_shape
   )

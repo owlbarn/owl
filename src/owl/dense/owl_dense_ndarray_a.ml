@@ -495,10 +495,8 @@ let repeat x reps =
       let stride_y = Owl_utils.calc_stride y_shape in
 
       let hd = ref (highest_dim + 1) in
-      let flag_one = true in
-      for i = highest_dim downto 0 do
-        let flag_one = if reps.(i) != 0 then false else flag_one in
-        if flag_one && reps.(i) = 0 then hd := !hd - 1
+      while !hd > 1 && reps.(!hd - 1) = 1 do
+        hd := !hd - 1;
       done;
       let hd = if !hd = highest_dim + 1 then highest_dim else !hd in
 

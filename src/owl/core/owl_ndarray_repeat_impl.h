@@ -43,8 +43,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   int slice_x[highest_dim + 1];
   c_ndarray_slice(X, slice_x);
 
-  // highest non-one-repeat dimension
-  int HD = highest_dim + 1;
+  int HD = highest_dim + 1; /* Highest non-one-repeat dimension */
   for (int i = highest_dim; i >= 0; --i) {
     if (reps[i] == 1) { HD--; } else { break; }
   }
@@ -66,7 +65,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   int num_hd = block_num[0];
 
   for (int i = 0; i < num_hd; ++i) {
-    // Copy the last-dim block
+    /* Copy the last-dim block */
     int ofsy_sub = ofsy;
     if (block_sz == 1) {
       COPYFUN(slice_x[HD], x, ofsx, 1, y, ofsy, 1);
@@ -76,7 +75,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
         ofsy_sub += block_sz;
       }
     }
-    // Increase index
+    /* Increase index */
     ofsx += shape_x[HD];
     ofsy += stride_y[HD - 1] * reps[HD - 1];
     for (int j = HD - 1; j > 0; --j) {
@@ -100,13 +99,13 @@ CAMLprim value FUNCTION (stub, repeat_native) (
     memset(counter, 0, sizeof(counter));
 
     for (int i = 0; i < block_num[0]; ++i) {
-      // Block copy
+      /* Block copy */
       int ofsy_sub = ofsy + block_sz;
       for (int j = 1; j < reps[d]; j++) {
         COPYFUN(block_sz, y, ofsy, 1, y, ofsy_sub, 1);
         ofsy_sub += block_sz;
       }
-      // Increase index
+      /* Increase index */
       ofsy += stride_y[d] * reps[d];
       for (int j = d - 1; j >= 0; --j) {
         c = counter[j];
