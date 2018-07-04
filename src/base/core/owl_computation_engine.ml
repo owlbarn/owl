@@ -12,23 +12,21 @@ module Make (A : Ndarray_Mutable) = struct
 
   module CGraph = Owl_computation_graph.Make (A) (Owl_computation_device)
 
-  module CG_Init = Owl_computation_init.Make (A)
+  module CG_Init = Owl_computation_init.Make (A) (Owl_computation_device)
 
-  module CG_Eval = Owl_computation_eval.Make (A)
-
-  include CGraph
+  module CG_Eval = Owl_computation_eval.Make (A) (Owl_computation_device)
 
 
   (* core interface *)
 
   let eval_elt xs =
-    let nodes = Array.map elt_to_node xs in
+    let nodes = Array.map CGraph.elt_to_node xs in
     Array.iter CG_Init._init_term nodes;
     Array.iter CG_Eval._eval_term nodes
 
 
   let eval_arr xs =
-    let nodes = Array.map arr_to_node xs in
+    let nodes = Array.map CGraph.arr_to_node xs in
     Array.iter CG_Init._init_term nodes;
     Array.iter CG_Eval._eval_term nodes
 

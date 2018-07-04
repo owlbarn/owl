@@ -10,9 +10,12 @@ open Owl_graph
 
 (* Functor of making evaluator of a CPU-based engine *)
 
-module Make (A : Ndarray_Mutable) = struct
+module Make
+  (A : Ndarray_Mutable)
+  (D : Computation_Device)
+  = struct
 
-  module CGraph = Owl_computation_graph.Make (A) (Owl_computation_device)
+  module CGraph = Owl_computation_graph.Make (A) (D)
 
   open CGraph
 
