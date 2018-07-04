@@ -10,6 +10,8 @@ open Owl_types
 
 module Make (A : Ndarray_Mutable) = struct
 
+  (* module aliases *)
+
   module A = A
 
   module CPU_Device = Owl_computation_cpu_device
