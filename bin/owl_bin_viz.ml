@@ -10,9 +10,9 @@ open Owl_computation
 
 (* all supported modules by computation graph *)
 
-module CGraph_S = Owl_computation_graph.Make (Dense.Ndarray.S) (Owl_computation_device)
+module CGraph_S = Owl_computation_graph.Make (Dense.Ndarray.S) (Owl_computation_cpu_device)
 
-module CGraph_D = Owl_computation_graph.Make (Dense.Ndarray.S) (Owl_computation_device)
+module CGraph_D = Owl_computation_graph.Make (Dense.Ndarray.S) (Owl_computation_cpu_device)
 
 
 (* core functions *)

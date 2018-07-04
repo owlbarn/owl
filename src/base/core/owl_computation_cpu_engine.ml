@@ -11,12 +11,14 @@ open Owl_types
 module Make (A : Ndarray_Mutable) = struct
 
   module A = A
-  
-  module CGraph = Owl_computation_graph.Make (A) (Owl_computation_device)
 
-  module CG_Init = Owl_computation_init.Make (A) (Owl_computation_device)
+  module CPU_Device = Owl_computation_cpu_device
 
-  module CG_Eval = Owl_computation_eval.Make (A) (Owl_computation_device)
+  module CGraph = Owl_computation_graph.Make (A) (CPU_Device)
+
+  module CG_Init = Owl_computation_cpu_init.Make (A) (CPU_Device)
+
+  module CG_Eval = Owl_computation_cpu_eval.Make (A) (CPU_Device)
 
   include CGraph
 
