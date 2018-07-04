@@ -5,7 +5,6 @@
 
 #ifdef OWL_ENABLE_TEMPLATE
 
-#include<string.h>
 
 CAMLprim value FUNCTION (stub, repeat_native) (
   value vX, value vY, value vReps, value vShape_x
@@ -43,51 +42,38 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   int stride_x[highest_dim + 1];
   c_ndarray_stride(X, stride_x);
 
-  /* for (int i = 0; i <= highest_dim; i++) {
-    fprintf(stderr, "%d ", stride_x[i]);
-  }
-  fprintf(stderr, " End of stride_x\n"); */
-
   int stride_y[highest_dim + 1];
   c_ndarray_stride(Y, stride_y);
-  /* for (int i = 0; i <= highest_dim; i++) {
-    fprintf(stderr, "%d ", stride_y[i]);
-  }
-  fprintf(stderr, " End of stride_y\n"); */
-
-
-  int slice_y[highest_dim + 1];
-  c_ndarray_slice(Y, slice_y);
 
   int slice_x[highest_dim + 1];
   c_ndarray_slice(X, slice_x);
 
-  int block_idx[highest_dim + 1]; // block size in counting indices
+  int slice_y[highest_dim + 1];
+  c_ndarray_slice(Y, slice_y);
+
+  // block size in counting indices
+  int block_idx[highest_dim + 1];
   block_idx[highest_dim] = reps[highest_dim];
   for (int i = highest_dim - 1; i >= 0; --i) {
     block_idx[i] = reps[i] * block_idx[i + 1];
   }
   for (int i = 0; i <= highest_dim; ++i) {
     block_idx[i] *= stride_x[i];
-    // fprintf(stderr, "%d ", block_idx[i]);
   }
-  // fprintf(stderr, "\n");
 
-  int HD = highest_dim + 1; // highest non-one-repeat dimension
+  // highest non-one-repeat dimension
+  int HD = highest_dim + 1;
   for (int i = highest_dim; i >= 0; --i) {
     if (reps[i] == 1) { HD--; } else { break; }
   }
   HD = (HD > highest_dim) ? highest_dim : HD;
-  // fprintf(stderr, "HD: %d\n", HD);
 
   /* Copy the HD dimension from x to y */
 
   int block_num[HD];
   for (int i = 0; i < HD; i++) {
     block_num[i] = slice_x[i] / slice_x[HD];
-    // fprintf(stderr, "%d ", block_num[i]);
   }
-  // fprintf(stderr, "End of block_num\n");
   int counter[HD];
   int c;
   memset(counter, 0, sizeof(counter));
@@ -98,16 +84,13 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   int num_hd = slice_x[0] / slice_x[HD];
 
   for (int i = 0; i < num_hd; ++i) {
-    // fprintf(stderr, "ofsx, ofsy: %d, %d\n", ofsx, ofsy);
     // Copy the last-dim block
     int ofsy_sub = ofsy;
     if (block_sz == 1) {
       COPYFUN(slice_x[HD], x, ofsx, 1, y, ofsy, 1);
-      // fprintf(stderr, "COPY Last-dim1: %d -- %d, (%d)\n", ofsx, ofsy, slice_x[HD]);
     } else {
       for (int j = 0; j < slice_x[HD]; ++j) {
         COPYFUN(block_sz, x, ofsx + j, 0, y, ofsy_sub, 1);
-        // fprintf(stderr, "COPY Last-dim2: %d -- %d, (%d)\n", ofsx+j, ofsy_sub, block_sz);
         ofsy_sub += block_sz;
       }
     }
@@ -117,7 +100,6 @@ CAMLprim value FUNCTION (stub, repeat_native) (
     for (int j = HD - 1; j > 0; --j) {
       c = counter[j];
       if (c + 1 == block_num[j]) {
-        // fprintf(stderr, "Add to ofsy: %d * %d\n", stride_y[j - 1], (reps[j - 1] - 1));
         ofsy += stride_y[j - 1] * (reps[j - 1] - 1);
       }
       counter[j] = (c + 1 == block_num[j] ? 0 : c + 1);
@@ -125,12 +107,9 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   }
 
   for (int d = HD - 1; d >= 0; --d) {
-
     for (int i = 0; i <= d; i++) {
       block_num[i] = slice_x[i] / slice_x[d + 1];
-      // fprintf(stderr, "%d ", block_num[i]);
     }
-    // fprintf(stderr, "End of inner block_num\n");
 
     int ofsy = 0;
     int block_sz = stride_y[d];
@@ -141,17 +120,13 @@ CAMLprim value FUNCTION (stub, repeat_native) (
       int ofsy_sub = ofsy + block_sz;
       for (int j = 1; j < reps[d]; j++) {
         COPYFUN(block_sz, y, ofsy, 1, y, ofsy_sub, 1);
-        // fprintf(stderr, "Pure COPY: %d -- %d, (%d)\n", ofsy, ofsy_sub, block_sz);
         ofsy_sub += block_sz;
       }
-
       // Increase index
       ofsy += stride_y[d] * reps[d];
       for (int j = d - 1; j >= 0; --j) {
         c = counter[j];
-        // if ((i + 1) % block_num[j + 1] == 0) {
         if (c + 1 == block_num[j + 1]) {
-          // fprintf(stderr, "Add to ofsy: %d * %d\n", stride_y[j], (reps[j] - 1));
           ofsy += stride_y[j] * (reps[j] - 1);
         }
         counter[j] = (c + 1 == block_num[j] ? 0 : c + 1);
@@ -189,14 +164,18 @@ CAMLprim value FUNCTION (stub, repeat_axis_native) (
 
   int slice_sz = c_ndarray_stride_dim(X, axis);
   int block_num = numel_x / slice_sz;
+  int slice_sz_rep = rep * slice_sz;
 
-  int ofsx, ofsy;
+  int ofsx = 0;
+  int ofsy = 0;
   for (int i = 0; i < block_num; ++i) {
-    ofsx = i * slice_sz;
+    int ofsy_sub = ofsy;
     for (int j = 0; j < rep; ++j) {
-      ofsy = (i * rep + j) * slice_sz;
-      COPYFUN(slice_sz, x, ofsx, 1, y, ofsy, 1);
+      COPYFUN(slice_sz, x, ofsx, 1, y, ofsy_sub, 1);
+      ofsy_sub += slice_sz;
     }
+    ofsx += slice_sz;
+    ofsy += slice_sz_rep;
   }
 
   return Val_unit;

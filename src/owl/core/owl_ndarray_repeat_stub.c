@@ -4,6 +4,7 @@
  */
 
 #include "owl_core.h"
+#include <string.h>
 
 
 #define OWL_ENABLE_TEMPLATE
