@@ -464,15 +464,14 @@ let repeat x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
     failwith "repeat: repetition must be >= 1";
-  let highest_dim = Array.length (shape x) - 1 in
-  let _shape_x = shape x in
-  if Array.length reps != Array.length _shape_x then
-    failwith "repeat: repetition must be of the same dimension as input ndarray";
+  let x_dims = num_dims x in
+  assert (Array.length reps = x_dims);
 
   if (Array.for_all (fun x -> x = 1) reps) = true then x else (
-    let _shape_y = Array.map2 ( * ) _shape_x reps in
-    let y_data = Array.make (_calc_numel_from_shape _shape_y) x.data.(0) in
-    let y = make_arr _shape_y (Owl_utils.calc_stride _shape_y) y_data in
+    let x_shape = shape x in
+    let y_shape = Array.map2 ( * ) x_shape reps in
+    let y_data  = Array.make (_calc_numel_from_shape y_shape) x.data.(0) in
+    let y = make_arr y_shape (Owl_utils.calc_stride y_shape) y_data in
     (* transform into a flat array first *)
     let x' = x.data in
     let y' = y.data in
@@ -489,11 +488,9 @@ let repeat x reps =
       done
     )
     else (
-      let stride_x = Owl_utils.calc_stride _shape_x in
-      let slice_y = Owl_utils.calc_slice _shape_y in
-
-      let rep_slice = Owl_utils.calc_slice reps in
-      let block_idx = Array.map2 ( * ) rep_slice stride_x in
+      let highest_dim = x_dims - 1 in
+      let slice_x  = Owl_utils.calc_slice x_shape in
+      let stride_y = Owl_utils.calc_stride y_shape in
 
       let hd = ref (highest_dim + 1) in
       let flag_one = true in
@@ -503,52 +500,70 @@ let repeat x reps =
       done;
       let hd = if !hd = highest_dim + 1 then highest_dim else !hd in
 
-      let h = ref 0 in
-      let d = ref 0 in
+      (* Copy the HD dimension from x to y *)
+
+      let block_num = Array.make hd 0 in
+      for i = 0 to hd - 1 do
+        block_num.(i) <- slice_x.(i) / slice_x.(hd);
+      done;
+      let counter = Array.make hd 0 in
+
       let ofsx = ref 0 in
-      let tag = ref true in
-      let stack = Stack.create () in
+      let ofsy = ref 0 in
+      let block_sz = reps.(hd) in
 
-      while ((!d != hd) && !tag) || not (Stack.is_empty stack) do
-
-        while (!d != hd) && !tag do
-          for i = _shape_x.(!d) - 1 downto 0 do
-            let flag = if i = 0 then false else true in
-            Stack.push (!h + i * block_idx.(!d), !d + 1,
-              !ofsx + i * stride_x.(!d), flag) stack
-          done;
-          d := !d + 1
-        done;
-
-        if not (Stack.is_empty stack) then (
-          let t1, t2, t3, t4 = Stack.pop stack in
-          h := t1; d := t2; ofsx := t3; tag := t4;
-
-          if !tag && (!d < hd) then (
-            Stack.push (t1, t2, t3, false) stack
-          )
-          else (
-            if !d = hd then (
-              let repsd = reps.(!d) in
-              if repsd = 1 then (
-                Array.blit x' !ofsx y' !h slice_y.(!d)
-              )
-              else (
-                for i = 0 to _shape_x.(!d) - 1 do
-                  let elemx = x'.(!ofsx + i) in
-                  for j = 0 to repsd - 1 do
-                    y'.(!h + i * repsd + j) <- elemx
-                  done
-                done
-              )
-            );
-            let block_sz = slice_y.(!d) in
-            for j = 1 to (reps.(!d - 1) - 1) do
-              let ofsy = !h + j * block_sz in
-              Array.blit y' !h y' ofsy block_sz
-            done
-          )
+      for i = 0 to block_num.(0) - 1 do
+        let ofsy_sub = ref !ofsy in
+        if block_sz = 1 then (
+          Array.blit x' !ofsx y' !ofsy_sub slice_x.(hd);
         )
+        else (
+          for j = 0 to slice_x.(hd) - 1 do
+            let elemx = x'.(!ofsx + j) in !ofsy_sub block_sz;
+            for k = 0 to block_sz - 1 do
+              y'.(!ofsy_sub + k) <- elemx
+            done;
+            ofsy_sub := !ofsy_sub + block_sz
+          done
+        );
+        ofsx := !ofsx + x_shape.(hd);
+        ofsy := !ofsy + stride_y.(hd - 1) * reps.(hd - 1);
+        for j = hd - 1 downto 1 do
+          let c = counter.(j) in
+          if c + 1 = block_num.(j) then (
+            ofsy := !ofsy + stride_y.(j - 1) * (reps.(j - 1) - 1);
+          );
+          counter.(j) <- if c + 1 = block_num.(j) then 0 else c + 1
+        done
+      done;
+
+      (* Copy the lower dimensions within y *)
+
+      for d = hd - 1 downto 0 do
+        let block_num = Array.make (d + 1) 0 in
+        for i = 0 to d do
+          block_num.(i) <- slice_x.(i) / slice_x.(d + 1);
+        done;
+        let ofsy = ref 0 in
+        let block_sz = stride_y.(d) in
+        let counter = Array.make hd 0 in
+
+        for i = 0 to block_num.(0) - 1 do
+          let ofsy_sub = ref (!ofsy + block_sz) in
+          for j = 1 to reps.(d) - 1 do
+            Array.blit y' !ofsy y' !ofsy_sub block_sz;
+            ofsy_sub := !ofsy_sub + block_sz
+          done;
+
+          ofsy := !ofsy + stride_y.(d) * reps.(d);
+          for j = d - 1 downto 0 do
+            let c = counter.(j) in
+            if c + 1 = block_num.(j + 1) then (
+              ofsy := !ofsy + stride_y.(j) * (reps.(j) - 1);
+            );
+            counter.(j) <- if c + 1 = block_num.(j) then 0 else c + 1
+          done
+        done
       done
     );
     y

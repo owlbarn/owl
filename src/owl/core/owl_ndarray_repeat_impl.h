@@ -37,29 +37,11 @@ CAMLprim value FUNCTION (stub, repeat_native) (
     return Val_unit;
   }
 
-  /* Necessary stride & slice arrays */
-
-  int stride_x[highest_dim + 1];
-  c_ndarray_stride(X, stride_x);
-
   int stride_y[highest_dim + 1];
   c_ndarray_stride(Y, stride_y);
 
   int slice_x[highest_dim + 1];
   c_ndarray_slice(X, slice_x);
-
-  int slice_y[highest_dim + 1];
-  c_ndarray_slice(Y, slice_y);
-
-  // block size in counting indices
-  int block_idx[highest_dim + 1];
-  block_idx[highest_dim] = reps[highest_dim];
-  for (int i = highest_dim - 1; i >= 0; --i) {
-    block_idx[i] = reps[i] * block_idx[i + 1];
-  }
-  for (int i = 0; i <= highest_dim; ++i) {
-    block_idx[i] *= stride_x[i];
-  }
 
   // highest non-one-repeat dimension
   int HD = highest_dim + 1;
@@ -81,7 +63,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   int ofsx = 0;
   int ofsy = 0;
   int block_sz = reps[HD];
-  int num_hd = slice_x[0] / slice_x[HD];
+  int num_hd = block_num[0];
 
   for (int i = 0; i < num_hd; ++i) {
     // Copy the last-dim block
@@ -167,7 +149,6 @@ CAMLprim value FUNCTION (stub, repeat_axis_native) (
 
   int slice_sz = c_ndarray_stride_dim(X, axis);
   int block_num = numel_x / slice_sz;
-  int slice_sz_rep = rep * slice_sz;
 
   int ofsx = 0;
   int ofsy = 0;
