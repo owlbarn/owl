@@ -177,7 +177,7 @@ module type BasicSig = sig
 
   val tile : mat -> int array -> mat
 
-  val repeat : ?axis:int -> mat -> int -> mat
+  val repeat : mat -> int array -> mat
 
 
   val iteri : (int -> elt -> unit) -> mat -> unit
@@ -491,7 +491,7 @@ module Make_Basic
 
   let tile x reps = M.tile (unpack_box x) reps |> pack_box
 
-  let repeat ?axis x reps = M.repeat ?axis (unpack_box x) reps |> pack_box
+  let repeat x reps = M.repeat (unpack_box x) reps |> pack_box
 
 
   let iteri f x = M.iteri f (unpack_box x)

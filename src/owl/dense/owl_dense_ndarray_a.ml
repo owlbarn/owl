@@ -406,7 +406,7 @@ let transpose ?axis x =
 let tile x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
-    failwith "tile: repitition must be >= 1";
+    failwith "tile: repetition must be >= 1";
   (* align and promote the shape *)
   let a = num_dims x in
   let b = Array.length reps in
@@ -460,48 +460,114 @@ let tile x reps =
   _tile 0 0 0; y
 
 
-let repeat ?axis x reps =
-  let highest_dim = Array.length (shape x) - 1 in
-  (* by default, repeat at the highest dimension *)
-  let axis = match axis with
-    | Some a -> a
-    | None   -> highest_dim
-  in
-  (* calculate the new shape of y based on reps *)
-  let _shape_y = shape x in
-  _shape_y.(axis) <- _shape_y.(axis) * reps;
-  let y_data = Array.make (_calc_numel_from_shape _shape_y) x.data.(0) in
-  let y = make_arr _shape_y (Owl_utils.calc_stride _shape_y) y_data in
-  (* transform into a flat array first *)
-  let x' = x.data in
-  let y' = y.data in
-  (* if repeat at the highest dimension, use this strategy *)
-  if axis = highest_dim then (
-    (* TODO: omg, cannot use blit, so have to copy one by one, I need to fiugre
-      out a more efficient way to copy at the highest dimension. *)
-    let ofsy = ref 0 in
-    for i = 0 to numel x - 1 do
-      for j = 0 to reps - 1 do
-        y'.(!ofsy) <- x'.(i);
-        ofsy := !ofsy + 1;
-      done
-    done
-  )
-  (* if repeat at another dimension, use this block copying *)
+let repeat x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "repeat: repetition must be >= 1";
+  let x_dims = num_dims x in
+  assert (Array.length reps = x_dims);
+
+  if (Array.for_all (fun x -> x = 1) reps) = true then
+    copy x
   else (
-    let _stride_x = Owl_utils.calc_stride (shape x) in
-    let _slice_sz = _stride_x.(axis) in
-    (* be careful of the index, this is fortran layout *)
-    for i = 0 to (numel x) / _slice_sz - 1 do
-      let ofsx = i * _slice_sz in
-      for j = 0 to reps - 1 do
-        let ofsy = (i * reps + j) * _slice_sz in
-        Array.blit x' ofsx y' ofsy _slice_sz;
+    let x_shape = shape x in
+    let y_shape = Array.map2 ( * ) x_shape reps in
+    let y_data  = Array.make (_calc_numel_from_shape y_shape) x.data.(0) in
+    let y = make_arr y_shape (Owl_utils.calc_stride y_shape) y_data in
+    (* transform into a flat array first *)
+    let x' = x.data in
+    let y' = y.data in
+
+    if x_dims = 1 then (
+      (* TODO: omg, cannot use blit, so have to copy one by one, I need to
+      fiugre out a more efficient way to copy at the highest dimension. *)
+      let ofsy = ref 0 in
+      for i = 0 to numel x - 1 do
+        for j = 0 to reps.(0) - 1 do
+          y'.(!ofsy) <- x'.(i);
+          ofsy := !ofsy + 1;
+        done
       done
-    done
-  );
-  (* all done, return the result *)
-  y
+    )
+    else (
+      let highest_dim = x_dims - 1 in
+      let slice_x  = Owl_utils.calc_slice x_shape in
+      let stride_y = Owl_utils.calc_stride y_shape in
+
+      let hd = ref (highest_dim + 1) in
+      while !hd > 1 && reps.(!hd - 1) = 1 do
+        hd := !hd - 1;
+      done;
+      let hd = if !hd = highest_dim + 1 then highest_dim else !hd in
+
+      (* Copy the HD dimension from x to y *)
+
+      let block_num = Array.make hd 0 in
+      for i = 0 to hd - 1 do
+        block_num.(i) <- slice_x.(i) / slice_x.(hd);
+      done;
+      let counter = Array.make hd 0 in
+
+      let ofsx = ref 0 in
+      let ofsy = ref 0 in
+      let block_sz = reps.(hd) in
+
+      for i = 0 to block_num.(0) - 1 do
+        let ofsy_sub = ref !ofsy in
+        if block_sz = 1 then (
+          Array.blit x' !ofsx y' !ofsy_sub slice_x.(hd);
+        )
+        else (
+          for j = 0 to slice_x.(hd) - 1 do
+            let elemx = x'.(!ofsx + j) in
+            for k = 0 to block_sz - 1 do
+              y'.(!ofsy_sub + k) <- elemx
+            done;
+            ofsy_sub := !ofsy_sub + block_sz
+          done
+        );
+        ofsx := !ofsx + x_shape.(hd);
+        ofsy := !ofsy + stride_y.(hd - 1) * reps.(hd - 1);
+        for j = hd - 1 downto 1 do
+          let c = counter.(j) in
+          if c + 1 = block_num.(j) then (
+            ofsy := !ofsy + stride_y.(j - 1) * (reps.(j - 1) - 1);
+          );
+          counter.(j) <- if c + 1 = block_num.(j) then 0 else c + 1
+        done
+      done;
+
+      (* Copy the lower dimensions within y *)
+
+      for d = hd - 1 downto 0 do
+        let block_num = Array.make (d + 1) 0 in
+        for i = 0 to d do
+          block_num.(i) <- slice_x.(i) / slice_x.(d + 1);
+        done;
+        let ofsy = ref 0 in
+        let block_sz = stride_y.(d) in
+        let counter = Array.make hd 0 in
+
+        for i = 0 to block_num.(0) - 1 do
+          let ofsy_sub = ref (!ofsy + block_sz) in
+          for j = 1 to reps.(d) - 1 do
+            Array.blit y' !ofsy y' !ofsy_sub block_sz;
+            ofsy_sub := !ofsy_sub + block_sz
+          done;
+
+          ofsy := !ofsy + stride_y.(d) * reps.(d);
+          for j = d - 1 downto 0 do
+            let c = counter.(j) in
+            if c + 1 = block_num.(j + 1) then (
+              ofsy := !ofsy + stride_y.(j) * (reps.(j) - 1);
+            );
+            counter.(j) <- if c + 1 = block_num.(j) then 0 else c + 1
+          done
+        done
+      done
+    );
+    y
+  )
 
 
 let concatenate ?(axis=0) xs =

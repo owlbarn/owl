@@ -71,6 +71,8 @@ extern void c_complex64_matrix_transpose (_Complex double *x, _Complex double *y
 
 extern void c_ndarray_stride (struct caml_ba_array *X, int *stride);
 
+extern void c_ndarray_slice (struct caml_ba_array *X, int *slice);
+
 extern void c_slicing_stride (struct caml_ba_array *X, int64_t *slice, int *stride);
 
 extern void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int *offset);

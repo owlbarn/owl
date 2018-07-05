@@ -578,10 +578,117 @@ let concatenate ?(axis=0) varrs =
   end
 
 
-(* TODO: is there a more efficient way to do this? *)
-let repeat ?(axis=0) varr reps =
-  let varrs = Array.make reps varr in
-  (concatenate ~axis:axis varrs)
+(* TODO: is there a more efficient way to do copy? *)
+let repeat x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "repeat: repetition must be >= 1";
+  let x_dims = num_dims x in
+  assert (Array.length reps = x_dims);
+
+  if (Array.for_all ((=) 1) reps) = true then
+    copy x
+  else (
+    let _kind = kind x in
+    let x' = flatten x in
+    let x_shape = shape x in
+    let y_shape = Array.map2 ( * ) x_shape reps in
+    let num = Owl_utils_array.fold_right ( * ) y_shape 1 in
+    let y' = empty _kind [|num|] in
+
+    if x_dims = 1 then (
+      let ofsy = ref 0 in
+      for i = 0 to numel x - 1 do
+        let elemx = get x' [|i|] in
+        for j = 0 to reps.(0) - 1 do
+          set y' [|!ofsy|] elemx;
+          ofsy := !ofsy + 1
+        done
+      done
+    )
+    else (
+      let highest_dim = x_dims - 1 in
+      let slice_x  = Owl_utils.calc_slice x_shape in
+      let stride_y = Owl_utils.calc_stride y_shape in
+
+      let hd = ref (highest_dim + 1) in
+      while !hd > 1 && reps.(!hd - 1) = 1 do
+        hd := !hd - 1;
+      done;
+      let hd = if !hd = highest_dim + 1 then highest_dim else !hd in
+
+      (* Copy the HD dimension from x to y *)
+
+      let block_num = Array.make hd 0 in
+      for i = 0 to hd - 1 do
+        block_num.(i) <- slice_x.(i) / slice_x.(hd);
+      done;
+      let counter = Array.make hd 0 in
+
+      let ofsx = ref 0 in
+      let ofsy = ref 0 in
+      let block_sz = reps.(hd) in
+
+      for i = 0 to block_num.(0) - 1 do
+        let ofsy_sub = ref !ofsy in
+        if block_sz = 1 then (
+          let subx = Genarray.sub_left x' !ofsx slice_x.(hd) in
+          let suby = Genarray.sub_left y' !ofsy_sub slice_x.(hd) in
+          Genarray.blit subx suby
+        )
+        else (
+          for j = 0 to slice_x.(hd) - 1 do
+            let elemx = get x' [|!ofsx + j|] in
+            for k = 0 to block_sz - 1 do
+              set y' [|!ofsy_sub + k|] elemx
+            done;
+            ofsy_sub := !ofsy_sub + block_sz
+          done
+        );
+        ofsx := !ofsx + x_shape.(hd);
+        ofsy := !ofsy + stride_y.(hd - 1) * reps.(hd - 1);
+        for j = hd - 1 downto 1 do
+          let c = counter.(j) in
+          if c + 1 = block_num.(j) then (
+            ofsy := !ofsy + stride_y.(j - 1) * (reps.(j - 1) - 1);
+          );
+          counter.(j) <- if c + 1 = block_num.(j) then 0 else c + 1
+        done
+      done;
+
+      (* Copy the lower dimensions within y *)
+
+      for d = hd - 1 downto 0 do
+        let block_num = Array.make (d + 1) 0 in
+        for i = 0 to d do
+          block_num.(i) <- slice_x.(i) / slice_x.(d + 1);
+        done;
+        let ofsy = ref 0 in
+        let block_sz = stride_y.(d) in
+        let counter = Array.make hd 0 in
+
+        for i = 0 to block_num.(0) - 1 do
+          let ofsy_sub = ref (!ofsy + block_sz) in
+          for j = 1 to reps.(d) - 1 do
+            let subx = Genarray.sub_left y' !ofsy block_sz in
+            let suby = Genarray.sub_left y' !ofsy_sub block_sz in
+            Genarray.blit subx suby;
+            ofsy_sub := !ofsy_sub + block_sz
+          done;
+
+          ofsy := !ofsy + stride_y.(d) * reps.(d);
+          for j = d - 1 downto 0 do
+            let c = counter.(j) in
+            if c + 1 = block_num.(j + 1) then (
+              ofsy := !ofsy + stride_y.(j) * (reps.(j) - 1);
+            );
+            counter.(j) <- if c + 1 = block_num.(j) then 0 else c + 1
+          done
+        done
+      done
+    );
+    reshape y' y_shape
+  )
 
 
 (* mathematical functions *)

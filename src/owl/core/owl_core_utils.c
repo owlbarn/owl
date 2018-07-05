@@ -144,13 +144,24 @@ int c_ndarray_slice_dim (struct caml_ba_array *X, int d) {
   return s;
 }
 
-// calculate the slice size of all dimensions of a bigarray
+
+// calculate the stride size of all dimensions of a bigarray
 void c_ndarray_stride (struct caml_ba_array *X, int *stride) {
   int i = X->num_dims - 1;
   *(stride + i) = 1;
 
   for ( ; i > 0; i--)
     *(stride + i - 1) = *(stride + i) * X->dim[i];
+}
+
+
+// calculate the slice size of all dimensions of a bigarray
+void c_ndarray_slice (struct caml_ba_array *X, int *slice) {
+  int i = X->num_dims - 1;
+  *(slice + i) = X->dim[i];
+
+  for (; i > 0; i--)
+    *(slice + i - 1) = *(slice + i) * X->dim[i - 1];
 }
 
 

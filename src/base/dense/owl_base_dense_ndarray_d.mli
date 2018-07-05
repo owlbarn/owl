@@ -69,7 +69,7 @@ val reverse : arr -> arr
 
 val tile : arr -> int array -> arr
 
-val repeat : ?axis:int -> arr -> int -> arr
+val repeat : arr -> int array -> arr
 
 val concatenate : ?axis:int -> arr array -> arr
 

@@ -85,7 +85,7 @@ module type Sig = sig
   val tile : arr -> int array -> arr
   (** TODO *)
 
-  val repeat : ?axis:int -> arr -> int -> arr
+  val repeat : arr -> int array -> arr
   (** TODO *)
 
   val concatenate : ?axis:int -> arr array -> arr

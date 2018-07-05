@@ -63,7 +63,7 @@ module type Sig = sig
     | Reshape                       of int array
     | Reverse
     | Tile                          of int array
-    | Repeat                        of int * int
+    | Repeat                        of int array
     | Concatenate                   of int
     | Split                         of int * int array
     | Draw                          of int * int
