@@ -52,11 +52,10 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   /* Copy the HD dimension from x to y */
 
   int block_num[HD];
-  for (int i = 0; i < HD; i++) {
+  for (int i = 0; i < HD; ++i) {
     block_num[i] = slice_x[i] / slice_x[HD];
   }
   int counter[HD];
-  int c;
   memset(counter, 0, sizeof(counter));
 
   int ofsx = 0;
@@ -79,7 +78,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
     ofsx += shape_x[HD];
     ofsy += stride_y[HD - 1] * reps[HD - 1];
     for (int j = HD - 1; j > 0; --j) {
-      c = counter[j];
+      int c = counter[j];
       if (c + 1 == block_num[j]) {
         ofsy += stride_y[j - 1] * (reps[j - 1] - 1);
       }
@@ -90,7 +89,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
   /* Copy the lower dimensions within y */
 
   for (int d = HD - 1; d >= 0; --d) {
-    for (int i = 0; i <= d; i++) {
+    for (int i = 0; i <= d; ++i) {
       block_num[i] = slice_x[i] / slice_x[d + 1];
     }
 
@@ -101,14 +100,14 @@ CAMLprim value FUNCTION (stub, repeat_native) (
     for (int i = 0; i < block_num[0]; ++i) {
       /* Block copy */
       int ofsy_sub = ofsy + block_sz;
-      for (int j = 1; j < reps[d]; j++) {
+      for (int j = 1; j < reps[d]; ++j) {
         COPYFUN(block_sz, y, ofsy, 1, y, ofsy_sub, 1);
         ofsy_sub += block_sz;
       }
       /* Increase index */
       ofsy += stride_y[d] * reps[d];
       for (int j = d - 1; j >= 0; --j) {
-        c = counter[j];
+        int c = counter[j];
         if (c + 1 == block_num[j + 1]) {
           ofsy += stride_y[j] * (reps[j] - 1);
         }
