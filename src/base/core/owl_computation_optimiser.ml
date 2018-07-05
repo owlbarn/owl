@@ -52,7 +52,7 @@ module Make
         | Reshape shape                               -> pattern_022 x
         | Reverse                                     -> pattern_000 x
         | Tile repeats                                -> pattern_000 x
-        | Repeat repeats                              -> pattern_000 x
+        | Repeat repeats                              -> pattern_023 x
         | Concatenate axis                            -> pattern_000 x
         | Split (axis, parts)                         -> pattern_000 x
         | Draw (axis, n)                              -> pattern_000 x
@@ -615,11 +615,22 @@ module Make
       let x_children = children x in
       match get_operator x_children.(0) with
       | Add | Sub | Mul | Div | Pow | Min2 | Max2 | Hypot | Atan2 -> (
-          let parent_children = children x_parent in
-          let merged_children = Owl_utils_array.merge x_children parent_children in
-          set_children x_parent merged_children;
-          replace_parent x x_parent;
-          remove_node x
+          let reps =
+            match get_operator x with
+            | Repeat reps -> reps
+            | _           -> failwith "optimiser:pattern_023"
+          in
+          let optimisable = ref true in
+          Array.iter2 (fun d r ->
+            if r <> 1 && d <> 1 then optimisable := false
+          ) (node_shape x_parent) reps;
+          if !optimisable = true then (
+            let parent_children = children x_parent in
+            let merged_children = Owl_utils_array.merge x_children parent_children in
+            set_children x_parent merged_children;
+            replace_parent x x_parent;
+            remove_node x
+          )
         )
       | _                                                         -> ()
     )
