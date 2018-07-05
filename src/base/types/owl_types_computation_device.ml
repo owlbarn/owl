@@ -6,31 +6,30 @@
 
 module type Sig = sig
 
-  module Make : functor (A : Owl_types_ndarray_mutable.Sig) -> sig
 
-    type device
+  module A : Owl_types_ndarray_mutable.Sig
 
-    type value
+  type device
 
-
-    val make_device : unit -> device
+  type value
 
 
-    val arr_to_value : A.arr -> value
+  val make_device : unit -> device
 
 
-    val value_to_arr : value -> A.arr
+  val arr_to_value : A.arr -> value
 
 
-    val elt_to_value : A.elt -> value
+  val value_to_arr : value -> A.arr
 
 
-    val value_to_elt : value -> A.elt
+  val elt_to_value : A.elt -> value
 
 
-    val value_to_float : value -> float
+  val value_to_elt : value -> A.elt
 
 
-  end
+  val value_to_float : value -> float
+
 
 end

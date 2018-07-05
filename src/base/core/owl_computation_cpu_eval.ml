@@ -11,13 +11,14 @@ open Owl_graph
 (* Functor of making evaluator of a CPU-based engine *)
 
 module Make
-  (A : Ndarray_Mutable)
-  (D : Computation_Device)
+  (Graph : Owl_computation_graph_sig.Sig)
   = struct
 
-  module CGraph = Owl_computation_graph.Make (A) (D)
+  open Graph
 
-  open CGraph
+  open Graph.Optimiser.Operator.Symbol
+
+  open Graph.Optimiser.Operator.Symbol.Shape.Type.Device
 
 
   (* utility functions *)

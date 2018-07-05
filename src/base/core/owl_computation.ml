@@ -17,3 +17,5 @@ module Operator = Owl_computation_operator
 module Optimiser = Owl_computation_optimiser
 
 module Graph = Owl_computation_graph
+
+module Engine = Owl_computation_engine

@@ -12,7 +12,7 @@ open Owl_graph
 
 module type Sig = sig
 
-  module Device : Owl_types_computation_device2.Sig
+  module Device : Owl_types_computation_device.Sig
 
   open Device
 

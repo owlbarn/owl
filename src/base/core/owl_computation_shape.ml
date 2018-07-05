@@ -9,11 +9,12 @@ open Owl_types
 (* Functor of making the shape inference of a computation graph. *)
 
 module Make
-  (A : Ndarray_Mutable)
-  (D : Computation_Device)
+  (Type : Owl_computation_type_sig.Sig)
   = struct
 
-  include Owl_computation_type.Make (A) (D)
+  module Type = Type
+
+  open Type
 
 
   (* infer the shape of outcome from inputs *)
@@ -403,3 +404,5 @@ module Make
 
 
 end
+
+(* Make functor ends *)

@@ -4,6 +4,7 @@
 (copy_files# prng/*)
 (copy_files# prng/clrng/*)
 (copy_files# prng/clrng/Random123/*)
+(copy_files# prng/clrng/Random123/*.clh)
 (copy_files# prng/clrng/Random123/features/*)
 
 (library (
@@ -29,4 +30,11 @@
     ctypes.stubs
     owl
   ))
+))
+
+
+(rule
+ ((targets (owl_opencl_kernel_impl.ml))
+  (deps    (config/make_kernel.exe))
+  (action  (run ${<} -ocamlc ${OCAMLC}))
 ))

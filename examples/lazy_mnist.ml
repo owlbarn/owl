@@ -24,8 +24,8 @@ let make_network input_shape =
 
 let train network =
   let x, _, y = Dataset.load_mnist_train_data_arr () in
-  let x = CGCompiler.CGraph.pack_arr x |> Algodiff.pack_arr in
-  let y = CGCompiler.CGraph.pack_arr y |> Algodiff.pack_arr in
+  let x = CGCompiler.Engine.pack_arr x |> Algodiff.pack_arr in
+  let y = CGCompiler.Engine.pack_arr y |> Algodiff.pack_arr in
   let params = Params.config
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 0.1
     (* ~momentum:(Momentum.Standard 0.1) *)

@@ -10,9 +10,7 @@ open Owl_types
 
 module Make (A : Ndarray_Mutable) = struct
 
-  module CPU_Engine = Owl_computation_cpu_engine.Make (A)
-
-  include CPU_Engine
+  include Owl_computation_cpu_engine.Make (A)
 
 end
 
