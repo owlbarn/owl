@@ -136,6 +136,7 @@ CAMLprim value FUNCTION (stub, repeat_axis_native) (
   int numel_x = c_ndarray_numel(X);
 
   /* Special case : repeat along highest_dim */
+  
   if (axis == highest_dim) {
     int ofsy = 0;
     for (int i = 0; i < numel_x; ++i) {
