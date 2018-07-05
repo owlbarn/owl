@@ -136,7 +136,7 @@ CAMLprim value FUNCTION (stub, repeat_axis_native) (
   int numel_x = c_ndarray_numel(X);
 
   /* Special case : repeat along highest_dim */
-  
+
   if (axis == highest_dim) {
     int ofsy = 0;
     for (int i = 0; i < numel_x; ++i) {
@@ -161,6 +161,134 @@ CAMLprim value FUNCTION (stub, repeat_axis_native) (
 
   return Val_unit;
 }
+
+
+CAMLprim value FUNCTION (stub, tile_native) (
+  value vX, value vY, value vReps, value vShape_x
+) {
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  TYPE *x = (TYPE *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  TYPE *y = (TYPE *) Y->data;
+
+  struct caml_ba_array *Reps = Caml_ba_array_val(vReps);
+  int64_t *reps = (int64_t *) Reps->data;
+
+  struct caml_ba_array *Shape_x = Caml_ba_array_val(vShape_x);
+  int64_t *shape_x = (int64_t *) Shape_x->data;
+
+  int highest_dim = X->num_dims - 1;
+
+  /* Special case : vector input */
+
+  if (highest_dim == 0) {
+    int xlen  = shape_x[0];
+    int repsd = reps[0];
+    int ofsy  = 0;
+    for (int i = 0; i < repsd; ++i) {
+      COPYFUN(xlen, x, 0, 1, y, ofsy, 1);
+      ofsy += xlen;
+    }
+    return Val_unit;
+  }
+
+  int stride_y[highest_dim + 1];
+  c_ndarray_stride(Y, stride_y);
+
+  int slice_x[highest_dim + 1];
+  c_ndarray_slice(X, slice_x);
+
+  int slice_y[highest_dim + 1];
+  c_ndarray_slice(Y, slice_y);
+
+  int stride_r[highest_dim + 1];
+  stride_r[highest_dim] = 1;
+  for (int i = highest_dim - 1; i >= 0; i--) {
+    stride_r[i] = stride_r[i+1] * reps[i];
+  }
+  for (int i = 0; i <= highest_dim; i++) {
+    stride_r[i] = stride_r[i] * slice_x[i];
+    //fprintf(stderr, "%d ", stride_r[i]);
+  }
+
+  int HD = highest_dim + 1; /* Highest non-one-repeat dimension */
+  for (int i = highest_dim; i >= 0; --i) {
+    if (reps[i] == 1) { HD--; } else { break; }
+  }
+  HD = (HD > highest_dim) ? highest_dim : HD;
+
+  /* Copy the HD dimension from x to y */
+
+  int block_num[HD];
+  for (int i = 0; i < HD; i++) {
+    block_num[i] = slice_x[i] / slice_x[HD];
+  }
+  int counter[HD];
+  int c;
+  memset(counter, 0, sizeof(counter));
+
+  int ofsx = 0;
+  int ofsy = 0;
+  int block_sz = reps[HD];
+  int num_hd = block_num[0];
+
+  for (int i = 0; i < num_hd; ++i) {
+    /* Copy the last-dim block */
+    int ofsy_sub = ofsy;
+    for (int j = 0; j < block_sz; ++j) {
+      //fprintf(stderr, "Copy from x: %d -- %d (%d)\n", ofsx, ofsy_sub, slice_x[HD]);
+      COPYFUN(slice_x[HD], x, ofsx, 1, y, ofsy_sub, 1);
+      ofsy_sub += slice_x[HD];
+    }
+    /* Increase index */
+    ofsx += shape_x[HD];
+    //fprintf(stderr, "add to ofsy #1 %d: %d\n", ofsy, stride_r[HD] * reps[HD]);
+    ofsy += stride_r[HD] * reps[HD];
+    for (int j = HD - 1; j > 0; --j) {
+      c = counter[j];
+      if (c + 1 == block_num[j]) {
+        //fprintf(stderr, "add to ofsy %d: %d\n", ofsy, stride_r[j] * (reps[j] - 1));
+        ofsy += stride_r[j] * (reps[j] - 1);
+      }
+      counter[j] = (c + 1 == block_num[j] ? 0 : c + 1);
+    }
+  }
+
+  for (int d = HD - 1; d >= 0; --d) {
+    for (int i = 0; i <= d; i++) {
+      block_num[i] = slice_x[i] / slice_x[d];
+    }
+
+    int ofsy = 0;
+    int block_sz = stride_r[d];
+    memset(counter, 0, sizeof(counter));
+
+    for (int i = 0; i < block_num[0]; ++i) {
+      /* Block copy */
+      int ofsy_sub = ofsy + block_sz;
+      for (int j = 1; j < reps[d]; j++) {
+        COPYFUN(block_sz, y, ofsy, 1, y, ofsy_sub, 1);
+        //fprintf(stderr, "Copy in Y: %d -- %d (%d)\n", ofsy, ofsy_sub, block_sz);
+        ofsy_sub += block_sz;
+      }
+      /* Increase index */
+      ofsy += stride_r[d] * reps[d];
+      for (int j = d - 1; j >= 0; --j) {
+        int c = counter[j];
+        if (c + 1 == block_num[j]) {
+          //fprintf(stderr, "add to ofsy #2 %d: %d\n", ofsy, stride_r[j] * (reps[j] - 1));
+          ofsy += stride_r[j] * (reps[j] - 1);
+        }
+        counter[j] = (c + 1 == block_num[j] ? 0 : c + 1);
+      }
+    }
+  }
+
+  return Val_unit;
+}
+
 
 
 #endif /* OWL_ENABLE_TEMPLATE */

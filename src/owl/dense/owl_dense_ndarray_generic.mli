@@ -419,6 +419,7 @@ val tile : ('a, 'b) t -> int array -> ('a, 'b) t
 This function provides the exact behaviour as ``numpy.tile``, please refer to
 the numpy's online documentation for details.
  *)
+ val tile2 : ('a, 'b) t -> int array -> ('a, 'b) t
 
 val repeat : ('a, 'b) t -> int array -> ('a, 'b) t
 (**

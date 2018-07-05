@@ -303,6 +303,67 @@ let repeat_ ~out x reps =
     )
   )
 
+(*
+let tile2_old x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "tile: repitition must be >= 1";
+
+  (* align and promote the shape *)
+  let a = num_dims x in
+  let b = Array.length reps in
+  let x, reps = match a < b with
+    | true ->
+        let d = Owl_utils.Array.pad `Left 1 (b - a) (shape x) in
+        (reshape x d), reps
+    | false ->
+        let r = Owl_utils.Array.pad `Left 1 (a - b) reps in
+        x, r
+  in
+
+  let sx = shape x in
+  let sy = Array.map2 ( * ) sx reps in
+  let _kind = kind x in
+
+  let sx = Array.append [|1|] sx in
+  let reps = Array.append reps [|1|] in
+
+  let y = repeat (reshape x sx) reps in
+  reshape y sy
+*)
+
+let tile2 x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "tile: repitition must be >= 1";
+
+  (* case 1: all repeats equal to 1 *)
+  if (Array.for_all ((=) 1) reps) = true then
+    copy x
+  else (
+    (* align and promote the shape *)
+    let a = num_dims x in
+    let b = Array.length reps in
+    let x, reps = match a < b with
+      | true ->
+          let d = Owl_utils.Array.pad `Left 1 (b - a) (shape x) in
+          (reshape x d), reps
+      | false ->
+          let r = Owl_utils.Array.pad `Left 1 (a - b) reps in
+          x, r
+    in
+    let sx = shape x in
+    let sy = Array.map2 ( * ) sx reps in
+    let _kind = kind x in
+    let y = empty _kind sy in
+    let reps' = reps |> Array.map Int64.of_int
+      |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+    let x_shape' = sx |> Array.map Int64.of_int
+      |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+    Owl_ndarray_repeat._ndarray_tile _kind x y reps' x_shape';
+    y
+  )
+
 
 let concatenate ?(axis=0) xs =
   let axis = Owl_utils.adjust_index axis (num_dims xs.(0)) in
