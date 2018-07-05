@@ -52,6 +52,7 @@ module Make_Generic
 end
 
 
+(* Functor of making CPU-based engine with unrolled module hierarchy *)
 
 module Make
   (A : Ndarray_Mutable)

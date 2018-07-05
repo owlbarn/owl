@@ -5,11 +5,12 @@
 
 open Owl
 
-module C = Owl_neural_graph_compiler.Make (Dense.Ndarray.S) (Computation.Engine)
+module CPU_Engine = Owl_computation_cpu_engine.Make (Dense.Ndarray.S)
+module CGCompiler = Owl_neural_graph_compiler.Make (CPU_Engine)
 
-open C.Neural
-open C.Neural.Graph
-open C.Neural.Algodiff
+open CGCompiler.Neural
+open CGCompiler.Neural.Graph
+open CGCompiler.Neural.Algodiff
 
 
 let prepare window step =
@@ -42,15 +43,15 @@ let train () =
   let wndsz = 100 and stepsz = 1 in
   let vocab, x, y = prepare wndsz stepsz in
   let vocabsz = Nlp.Vocabulary.length vocab in
-  let x = C.CGraph.pack_arr x |> Algodiff.pack_arr in
-  let y = C.CGraph.pack_arr y |> Algodiff.pack_arr in
+  let x = CGCompiler.Engine.pack_arr x |> Algodiff.pack_arr in
+  let y = CGCompiler.Engine.pack_arr y |> Algodiff.pack_arr in
 
   let network = make_network wndsz vocabsz in
   Graph.print network;
   let params = Params.config
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 50.
   in
-  C.train ~params network x y |> ignore
+  CGCompiler.train ~params network x y |> ignore
 
 
 let _ = train ()
