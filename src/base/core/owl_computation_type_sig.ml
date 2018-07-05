@@ -17,11 +17,13 @@ module type Sig = sig
   open Device
 
 
-  (* type definitions *)
+  (** {6 Type definition} *)
 
   type state = Valid | Invalid
+  (** TODO *)
 
   type t = attr Owl_graph.node
+  (** TODO *)
 
   and attr = {
     mutable op     : op;                        (* operation stored in this node *)
@@ -32,6 +34,8 @@ module type Sig = sig
     mutable value  : value array;               (* output values of the node *)
     mutable vnode  : t array;                   (* where current node inherits its value memory. *)
   }
+  (** TODO *)
+
 
   and arr = Arr of t
 

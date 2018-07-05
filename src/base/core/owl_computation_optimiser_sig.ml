@@ -17,9 +17,13 @@ module type Sig = sig
   open Operator.Symbol.Shape.Type
 
 
+  (** {6 Core functions} *)
+
   val estimate_complexity : 'a Owl_graph.node array -> int * int
+  (** TODO *)
 
   val optimise_nodes : attr Owl_graph.node array -> unit
+  (** TODO *)
 
 
 end

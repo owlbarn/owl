@@ -14,6 +14,9 @@ module type Sig = sig
 
   open Type
 
+  (** {6 Core functions} *)
+
   val infer_shape : op -> attr Owl_graph.node array -> int array option array
+  (** TODO *)
 
 end
