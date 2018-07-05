@@ -3,43 +3,58 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types
 
+(**
+  This functor takes a device as its input, then it generates the computation
+  graph module without flattening the module hierarchy.
+ *)
 
-(* Functor of making a CPU-based engine to execute computation graphs. *)
+module Make_Graph
+  (Device : Owl_types_computation_device.Sig)
+  = struct
 
-module Make (A : Ndarray_Mutable) = struct
-
-  module CGraph = Owl_computation_graph.Make (A) (Owl_computation_device)
-
-  module CG_Init = Owl_computation_init.Make (A)
-
-  module CG_Eval = Owl_computation_eval.Make (A)
-
-  include CGraph
-
-
-  (* core interface *)
-
-  let eval_elt xs =
-    let nodes = Array.map elt_to_node xs in
-    Array.iter CG_Init._init_term nodes;
-    Array.iter CG_Eval._eval_term nodes
-
-
-  let eval_arr xs =
-    let nodes = Array.map arr_to_node xs in
-    Array.iter CG_Init._init_term nodes;
-    Array.iter CG_Eval._eval_term nodes
-
-
-  let eval_graph graph =
-    CGraph.invalidate_rvs graph;
-    let nodes = CGraph.get_outputs graph in
-    Array.iter CG_Init._init_term nodes;
-    Array.iter CG_Eval._eval_term nodes
-
+  include
+    Owl_computation_graph.Make (
+      Owl_computation_optimiser.Make (
+        Owl_computation_operator.Make (
+          Owl_computation_symbol.Make (
+            Owl_computation_shape.Make (
+              Owl_computation_type.Make (Device)
+            )
+          )
+        )
+      )
+    )
 
 end
 
-(* Make functor ends *)
+
+(**
+  This functor takes an engine as its input, flattens all its embedded modules
+  into the same level. Therefore the generated module has all the functions
+  sit at the top level, then can be passed to other functors like Algodiff.
+ *)
+
+module Flatten
+  (Engine : Owl_types_computation_engine.Sig)
+  = struct
+
+  include Engine
+
+  include Graph
+
+  include Optimiser
+
+  include Operator
+
+  include Symbol
+
+  include Shape
+
+  include Type
+
+  include Device
+
+  let number = A.number
+
+end

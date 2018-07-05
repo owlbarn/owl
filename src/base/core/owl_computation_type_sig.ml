@@ -5,25 +5,25 @@
 
 open Owl_types
 
+open Owl_graph
 
-(* Functor of making the type of a computation graph. *)
 
-module Make
-  (Device : Owl_types_computation_device.Sig)
-  = struct
+(* Functor of making the symbols of a computation graph. *)
 
-  (* module constant, device-dependent types *)
+module type Sig = sig
 
-  module Device = Device
+  module Device : Owl_types_computation_device.Sig
 
   open Device
 
 
-  (* type definitions *)
+  (** {6 Type definition} *)
 
   type state = Valid | Invalid
+  (** TODO *)
 
   type t = attr Owl_graph.node
+  (** TODO *)
 
   and attr = {
     mutable op     : op;                        (* operation stored in this node *)
@@ -34,6 +34,8 @@ module Make
     mutable value  : value array;               (* output values of the node *)
     mutable vnode  : t array;                   (* where current node inherits its value memory. *)
   }
+  (** TODO *)
+
 
   and arr = Arr of t
 
@@ -61,7 +63,7 @@ module Make
     | Reshape                       of int array
     | Reverse
     | Tile                          of int array
-    | Repeat                        of int array
+    | Repeat                        of int * int
     | Concatenate                   of int
     | Split                         of int * int array
     | Draw                          of int * int
@@ -226,7 +228,4 @@ module Make
     | Scalar_Sigmoid
     | Fused_Adagrad                 of float * float
 
-
 end
-
-(* Make functor ends *)

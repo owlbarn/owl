@@ -6,6 +6,10 @@
 
 (* Module aliases for computation graph *)
 
+module Type = Owl_computation_type
+
+module Shape = Owl_computation_shape
+
 module Symbol = Owl_computation_symbol
 
 module Operator = Owl_computation_operator
@@ -13,7 +17,5 @@ module Operator = Owl_computation_operator
 module Optimiser = Owl_computation_optimiser
 
 module Graph = Owl_computation_graph
-
-module Device = Owl_computation_device
 
 module Engine = Owl_computation_engine

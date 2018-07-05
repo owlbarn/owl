@@ -11,11 +11,16 @@ open Owl_graph
 (* Functor of making the symbols of a computation graph. *)
 
 module Make
-  (A : Ndarray_Algodiff)
-  (D : Computation_Device)
+  (Shape : Owl_computation_shape_sig.Sig)
   = struct
 
-  include Owl_computation_shape.Make (A) (D)
+  module Shape = Shape
+
+  open Shape
+
+  open Shape.Type
+
+  open Shape.Type.Device
 
 
   (* string representation of symbols *)
@@ -502,3 +507,5 @@ module Make
 
 
 end
+
+(* Make functor ends *)
