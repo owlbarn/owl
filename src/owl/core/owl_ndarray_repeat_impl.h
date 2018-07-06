@@ -206,7 +206,7 @@ CAMLprim value FUNCTION (stub, tile_native) (
   int stride_r[highest_dim + 1];
   stride_r[highest_dim] = 1;
   for (int i = highest_dim - 1; i >= 0; i--) {
-    stride_r[i] = stride_r[i+1] * reps[i];
+    stride_r[i] = stride_r[i+1] * reps[i + 1];
   }
   for (int i = 0; i <= highest_dim; i++) {
     stride_r[i] = stride_r[i] * slice_x[i];
@@ -289,6 +289,48 @@ CAMLprim value FUNCTION (stub, tile_native) (
   return Val_unit;
 }
 
+
+CAMLprim value FUNCTION (stub, tile_axis_native) (
+  value vX, value vY, value vAxis, value vRep
+) {
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  TYPE *x = (TYPE *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  TYPE *y = (TYPE *) Y->data;
+
+  int axis = Long_val(vAxis);
+  int rep = Long_val(vRep);
+  int highest_dim = X->num_dims - 1;
+  int numel_x = c_ndarray_numel(X);
+
+  /* Special case : tile along first dimension */
+
+  if (axis == 0) {
+    int ofsy = 0;
+    for (int i = 0; i < rep; ++i) {
+      COPYFUN(numel_x, x, 0, 1, y, ofsy, 1);
+      ofsy += numel_x;
+    }
+    return Val_unit;
+  }
+
+  int slice_sz = c_ndarray_slice_dim(X, axis);
+  int block_num = numel_x / slice_sz;
+
+  int ofsx = 0;
+  int ofsy = 0;
+  for (int i = 0; i < block_num; ++i) {
+    for (int j = 0; j < rep; ++j) {
+      COPYFUN(slice_sz, x, ofsx, 1, y, ofsy, 1);
+      ofsy += slice_sz;
+    }
+    ofsx += slice_sz;
+  }
+
+  return Val_unit;
+}
 
 
 #endif /* OWL_ENABLE_TEMPLATE */
