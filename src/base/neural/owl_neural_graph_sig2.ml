@@ -4,31 +4,28 @@
  *)
 
 
-open Owl_types
-
-
 module type Sig = sig
 
 
-  module Neuron : Owl_neural_neuron_sig.Sig
-
-  module Optimise : Owl_optimise_generic_sig.Sig
+  module Neuron : Owl_neural_neuron_sig2.Sig
 
   open Neuron
 
-  open Optimise
+  open Neuron.Optimise
+
+  open Neuron.Optimise.Algodiff
 
 
   (** {6 Type definition} *)
 
   type node = {
-    mutable name : string;
-    mutable prev : node array;
-    mutable next : node array;
-    mutable neuron : neuron;
-    mutable output : t option;
+    mutable name    : string;
+    mutable prev    : node array;
+    mutable next    : node array;
+    mutable neuron  : neuron;
+    mutable output  : t option;
     mutable network : network;
-    mutable train : bool;
+    mutable train   : bool;
   }
   and network = {
     mutable nnid : string;
@@ -113,7 +110,7 @@ module type Sig = sig
   val copy : network -> network
   (** Make a deep copy of the given network. *)
 
-  val model : network -> arr -> arr
+  val model : network -> A.arr -> A.arr
   (** Make a deep copy of the given network, excluding the neurons marked with ``training = true``. *)
 
 
@@ -359,7 +356,7 @@ Arguments:
   * ``rates``: float, drop probability
   *)
 
-  val normalisation : ?name:string -> ?axis:int -> ?training:bool -> ?decay:float -> ?mu:arr -> ?var:arr -> node -> node
+  val normalisation : ?name:string -> ?axis:int -> ?training:bool -> ?decay:float -> ?mu:A.arr -> ?var:A.arr -> node -> node
   (**
 ``normalisation axis node`` normalise the activations of the previous node at
 each batch.
@@ -468,13 +465,8 @@ name of their associated neurons are saved as key-value pairs in a hash table.
   val train_generic : ?state:Checkpoint.state -> ?params:Params.typ -> ?init_model:bool -> network -> t -> t -> Checkpoint.state
   (** Generic function of training a neural network. *)
 
-  val train : ?state:Checkpoint.state -> ?params:Params.typ -> ?init_model:bool -> network -> arr -> arr -> Checkpoint.state
+  val train : ?state:Checkpoint.state -> ?params:Params.typ -> ?init_model:bool -> network -> A.arr -> A.arr -> Checkpoint.state
   (** Train a neural network with various configurations. *)
 
 
 end
-
-
-(* This is a dumb module for checking the module signature. *)
-
-module Impl (A : Ndarray_Algodiff) : Sig = Owl_neural_graph.Make (A)

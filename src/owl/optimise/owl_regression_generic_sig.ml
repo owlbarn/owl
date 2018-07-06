@@ -6,9 +6,11 @@
 open Owl_types
 
 
-module Make
-  (A : Ndarray_Algodiff)
-  : sig
+module type Sig = sig
+
+  module Optimise : Owl_optimise_generic_sig2.Sig
+
+  open Optimise.Algodiff
 
 
   (** {6 Type definition} *)

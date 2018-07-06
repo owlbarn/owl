@@ -7,10 +7,14 @@ open Owl_types
 
 
 module Make
-  (A : Ndarray_Algodiff)
+  (Optimise : Owl_optimise_generic_sig2.Sig)
   = struct
 
-  include Owl_optimise_generic.Make (A)
+  module Optimise = Optimise
+
+  open Optimise
+
+  open Optimise.Algodiff
 
 
   (* iterative sovler for linear regression *)
