@@ -126,7 +126,7 @@ module Make
         | Reshape shape                               -> _init_01 x
         | Reverse                                     -> _init_01 x
         | Tile repeats                                -> _init_00 x
-        | Repeat repeats                              -> _init_01 x
+        | Repeat repeats                              -> _init_00 x
         | Concatenate axis                            -> _init_00 x
         | Split (axis, parts)                         -> failwith "Split"
         | Draw (axis, n)                              -> failwith "Draw"

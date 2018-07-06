@@ -39,6 +39,8 @@ module type Sig = sig
 
   val repeat_ : out:arr -> arr -> int array -> unit
 
+  val tile_ : out:arr -> arr -> int array -> unit
+
   val hypot : arr -> arr -> arr
 
   val fmod : arr -> arr -> arr
