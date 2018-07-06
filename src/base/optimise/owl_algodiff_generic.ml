@@ -9,17 +9,16 @@ open Owl_types
 (* Functor of making AD module of different precisions *)
 
 module Make
-  (A : Ndarray_Algodiff)
+  (A : Owl_types_ndarray_algodiff.Sig)
   = struct
+
+  module A = A
 
   (* type definitions *)
 
-  type arr = A.arr
-  type elt = A.elt
-
   type t =
-    | F   of elt
-    | Arr of arr
+    | F   of A.elt
+    | Arr of A.arr
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
   and trace_op =

@@ -7,7 +7,7 @@
 module type Sig = sig
 
 
-  module Neuron : Owl_neural_neuron_sig2.Sig
+  module Neuron : Owl_neural_neuron_sig.Sig
 
   open Neuron
 

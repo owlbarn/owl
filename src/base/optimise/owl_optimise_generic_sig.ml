@@ -3,12 +3,12 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types
-
 
 module type Sig = sig
 
-  include Owl_algodiff_generic_sig.Sig
+  module Algodiff : Owl_algodiff_generic_sig.Sig
+
+  open Algodiff
 
 
   (** {6 Utils module} *)
@@ -307,8 +307,3 @@ This function minimises ``f : x -> y`` w.r.t ``x``.
 
 
 end
-
-
-(* This is a dumb module for checking the module signature. *)
-
-module Impl (A : Ndarray_Algodiff) : Sig = Owl_optimise_generic.Make (A)

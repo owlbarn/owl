@@ -11,16 +11,16 @@ network module. The module supports both single and double precision float
 numbers.
  *)
 
-open Owl_types
-
 
 (* Make functor starts *)
 
 module Make
-  (A : Ndarray_Algodiff)
+  (Algodiff : Owl_algodiff_generic_sig.Sig)
   = struct
 
-  include Owl_algodiff_generic.Make (A)
+  module Algodiff = Algodiff
+
+  open Algodiff
 
 
   module Utils = struct

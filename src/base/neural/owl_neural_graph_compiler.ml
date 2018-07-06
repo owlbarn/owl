@@ -61,7 +61,7 @@ module Make
 
   (** Shallow compilation functions, includes only gradient *)
 
-  let compile_shallow (params : Graph.Optimise.Params.typ) network full_size =
+  let compile_shallow (params : Params.typ) network full_size =
     (* extract configurations of a network *)
     let loss_fun = Loss.run params.loss in
 
@@ -132,7 +132,7 @@ module Make
 
   (** Deep compilation functions, includes gs, us, ps, ch, and new weights *)
 
-  let compile_deep (params : Graph.Optimise.Params.typ) network full_size =
+  let compile_deep (params : Params.typ) network full_size =
     (* extract configurations of a network *)
 
     let loss_fun = Loss.run params.loss in
@@ -340,7 +340,7 @@ module Make
   let train ?state ?params network x y =
     let params = match params with
       | Some p -> p
-      | None   -> Graph.Optimise.Params.default ()
+      | None   -> Params.default ()
     in
 
     let network_name = Graph.get_network_name network in
@@ -359,7 +359,7 @@ module Make
     Engine.save_graph cgraph (network_name ^ "_opt.cgd");
 
     Owl_log.info "start training %s ..." network_name;
-    Graph.Optimise.minimise_compiled_network ?state params eval update save x y
+    Optimise.minimise_compiled_network ?state params eval update save x y
 
 
 end

@@ -11,10 +11,14 @@ open Owl_types
 (* Make functor starts *)
 
 module Make
-  (A : Ndarray_Algodiff)
+  (Optimise : Owl_optimise_generic_sig.Sig)
   = struct
 
-  include Owl_algodiff_generic.Make (A)
+  module Optimise = Optimise
+
+  open Optimise
+
+  open Optimise.Algodiff
 
 
   (* module for initialising weight matrix *)
@@ -2608,7 +2612,7 @@ module Make
        Implementaton in Keras: https://bit.ly/2vBsvgI.*)
     let run x l =
       if l.training = true then (
-        let a = _f (float_of_int ((numel x) / (shape x).(l.axis))) in
+        let a = _f (float_of_int ((Arr.numel x) / (shape x).(l.axis))) in
         let s = Owl_utils_array.(range 0 (length l.in_shape)
           |> filter (fun x -> x != l.axis)) in
         let mu' = Maths.((sum_reduce ~axis:s x) / a) in

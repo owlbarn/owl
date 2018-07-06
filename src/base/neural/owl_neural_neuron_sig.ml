@@ -3,12 +3,12 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types
-
 
 module type Sig = sig
 
-  include Owl_algodiff_generic_sig.Sig
+  module Optimise : Owl_optimise_generic_sig.Sig
+
+  open Optimise.Algodiff
 
 
   (** {6 Init neuron} *)
@@ -1624,7 +1624,7 @@ module Normalisation : sig
   }
   (** Neuron type definition. *)
 
-  val create : ?training:bool -> ?decay:float -> ?mu:arr -> ?var:arr -> int -> neuron_typ
+  val create : ?training:bool -> ?decay:float -> ?mu:A.arr -> ?var:A.arr -> int -> neuron_typ
   (** Create the neuron. Note that axis 0 is the batch axis. *)
 
   val connect : int array -> neuron_typ -> unit
@@ -1914,8 +1914,3 @@ val to_name : neuron -> string
 
 
 end
-
-
-(* This is a dumb module for checking the module signature. *)
-
-module Impl (A : Ndarray_Algodiff) : Sig = Owl_neural_neuron.Make (A)

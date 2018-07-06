@@ -8,20 +8,18 @@ open Owl_types
 
 module type Sig = sig
 
+  module A : Owl_types_ndarray_algodiff.Sig
+
+
   (** {6 Type definition} *)
 
-  type arr
-  (** General ndarray type *)
-
-  type elt
-  (** Scalar type *)
 
   type trace_op
   (** Trace type *)
 
   type t =
-    | F   of elt                                    (* constructor of float numbers *)
-    | Arr of arr                                    (* constructor of ndarrays *)
+    | F   of A.elt                                  (* constructor of float numbers *)
+    | Arr of A.arr                                  (* constructor of ndarrays *)
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
   (** Abstract number type *)
@@ -271,9 +269,9 @@ module type Sig = sig
 
     val ones : int -> int -> t
 
-    val uniform : ?a:elt -> ?b:elt -> int -> int -> t
+    val uniform : ?a:A.elt -> ?b:A.elt -> int -> int -> t
 
-    val gaussian : ?mu:elt -> ?sigma:elt -> int -> int -> t
+    val gaussian : ?mu:A.elt -> ?sigma:A.elt -> int -> int -> t
 
     val shape : t -> int * int
 
@@ -305,7 +303,7 @@ module type Sig = sig
 
     val map_by_row : (t -> t) -> t -> t
 
-    val of_arrays : elt array array -> t
+    val of_arrays : A.elt array array -> t
 
     val print : t -> unit
 
@@ -320,9 +318,9 @@ module type Sig = sig
 
     val ones : int array -> t
 
-    val uniform : ?a:elt -> ?b:elt -> int array -> t
+    val uniform : ?a:A.elt -> ?b:A.elt -> int array -> t
 
-    val gaussian : ?mu:elt -> ?sigma:elt -> int array -> t
+    val gaussian : ?mu:A.elt -> ?sigma:A.elt -> int array -> t
 
     val shape : t -> int array
 
@@ -426,10 +424,10 @@ Namely, it calculates ``(hessian x) v``.
 
   (* low-level functions, only use them if you know what you are doing. *)
 
-  val pack_elt : elt -> t
+  val pack_elt : A.elt -> t
   (** convert from ``elt`` type to ``t`` type. *)
 
-  val unpack_elt : t -> elt
+  val unpack_elt : t -> A.elt
   (** convert from ``t`` type to ``elt`` type. *)
 
   val pack_flt : float -> t
@@ -438,10 +436,10 @@ Namely, it calculates ``(hessian x) v``.
   val unpack_flt : t -> float
   (** convert from ``t`` type to ``float`` type. *)
 
-  val pack_arr : arr -> t
+  val pack_arr : A.arr -> t
   (** convert from ``arr`` type to ``t`` type. *)
 
-  val unpack_arr : t -> arr
+  val unpack_arr : t -> A.arr
   (** convert from ``t`` type to ``arr`` type. *)
 
   val tag : unit -> int
@@ -480,12 +478,14 @@ Namely, it calculates ``(hessian x) v``.
   val copy_primal' : t -> t
   (** TODO *)
 
+  val _f : float -> t
+  (** A shortcut function for ``F A.(float_to_elt x)``. *)
 
-  (* other functions, without tracking gradient *)
+  val clip_by_value : amin:A.elt -> amax:A.elt -> t -> t
+  (** other functions, without tracking gradient *)
 
-  val clip_by_value : amin:elt -> amax:elt -> t -> t
-
-  val clip_by_l2norm : elt -> t -> t
+  val clip_by_l2norm : A.elt -> t -> t
+  (** other functions, without tracking gradient *)
 
 
   (** {6 Helper functions} *)
@@ -508,8 +508,3 @@ Graphviz.
 
 
 end
-
-
-(* This is a dumb module for checking the module signature. *)
-
-module Impl (A : Ndarray_Algodiff) : Sig = Owl_algodiff_generic.Make(A)

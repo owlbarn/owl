@@ -12,12 +12,14 @@ open Owl_types
 (* Make functor starts *)
 
 module Make
-  (A : Ndarray_Algodiff)
+  (Neuron : Owl_neural_neuron_sig.Sig)
   = struct
 
-  module Neuron = Owl_neural_neuron.Make (A)
-  module Optimise = Owl_optimise_generic.Make (A)
+  module Neuron = Neuron
+
   open Neuron
+
+  open Neuron.Optimise.Algodiff
 
 
   (* graph network and node definition *)

@@ -16,8 +16,8 @@ module Make_Embedded
 
   include
     Owl_regression_generic.Make (
-      Owl_optimise_generic2.Make (
-        Owl_algodiff_generic2.Make (A)
+      Owl_optimise_generic.Make (
+        Owl_algodiff_generic.Make (A)
       )
     )
 

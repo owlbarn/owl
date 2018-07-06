@@ -7,7 +7,7 @@ open Owl_types
 
 
 module Make
-  (Optimise : Owl_optimise_generic_sig2.Sig)
+  (Optimise : Owl_optimise_generic_sig.Sig)
   = struct
 
   module Optimise = Optimise

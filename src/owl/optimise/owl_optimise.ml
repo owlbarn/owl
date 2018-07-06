@@ -5,13 +5,25 @@
 
 (* Alias modules of numerical differentiation. *)
 
+module Make_Embedded
+  (A : Owl_types_ndarray_algodiff.Sig)
+  = struct
+
+  include
+    Owl_optimise_generic.Make (
+      Owl_algodiff_generic.Make (A)
+    )
+
+end
+
+
 
 (* Optimise module of Float32 type *)
-module S = Owl_optimise_generic.Make (Owl_dense_ndarray.S)
+module S = Make_Embedded (Owl_dense_ndarray.S)
 
 
 (* Optimise module of Float64 type *)
-module D = Owl_optimise_generic.Make (Owl_dense_ndarray.D)
+module D = Make_Embedded (Owl_dense_ndarray.D)
 
 
 (* ends here *)

@@ -8,7 +8,7 @@ open Owl_types
 
 module type Sig = sig
 
-  module Optimise : Owl_optimise_generic_sig2.Sig
+  module Optimise : Owl_optimise_generic_sig.Sig
 
   open Optimise.Algodiff
 
