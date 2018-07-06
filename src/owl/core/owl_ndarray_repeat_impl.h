@@ -184,7 +184,7 @@ CAMLprim value FUNCTION (stub, tile_native) (
   /* Special case : vector input */
 
   if (highest_dim == 0) {
-    int xlen  = shape_x[0];
+    int xlen  = c_ndarray_numel(X);
     int repsd = reps[0];
     int ofsy  = 0;
     for (int i = 0; i < repsd; ++i) {
@@ -199,10 +199,10 @@ CAMLprim value FUNCTION (stub, tile_native) (
 
   int block_idx[highest_dim + 1];
   block_idx[highest_dim] = 1;
-  for (int i = highest_dim - 1; i >= 0; i--) {
+  for (int i = highest_dim - 1; i >= 0; --i) {
     block_idx[i] = block_idx[i+1] * reps[i + 1];
   }
-  for (int i = 0; i <= highest_dim; i++) {
+  for (int i = 0; i <= highest_dim; ++i) {
     block_idx[i] = block_idx[i] * slice_x[i];
   }
 
@@ -215,7 +215,7 @@ CAMLprim value FUNCTION (stub, tile_native) (
   /* Copy the HD dimension from x to y */
 
   int block_num[HD];
-  for (int i = 0; i < HD; i++) {
+  for (int i = 0; i < HD; ++i) {
     block_num[i] = slice_x[i] / slice_x[HD];
   }
   int counter[HD];
@@ -250,19 +250,19 @@ CAMLprim value FUNCTION (stub, tile_native) (
   /* Copy the lower dimensions within y */
 
   for (int d = HD - 1; d >= 0; --d) {
-    for (int i = 0; i <= d; i++) {
+    for (int i = 0; i <= d; ++i) {
       block_num[i] = slice_x[i] / slice_x[d];
     }
 
     int block_sz = block_idx[d];
-    int incr_d = block_idx[d] * reps[d];
+    int incr_d = block_sz * reps[d];
     memset(counter, 0, sizeof(counter));
 
     int ofsy = 0;
     for (int i = 0; i < block_num[0]; ++i) {
       /* Block copy */
       int ofsy_sub = ofsy + block_sz;
-      for (int j = 1; j < reps[d]; j++) {
+      for (int j = 1; j < reps[d]; ++j) {
         COPYFUN(block_sz, y, ofsy, 1, y, ofsy_sub, 1);
         ofsy_sub += block_sz;
       }
