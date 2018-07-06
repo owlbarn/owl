@@ -352,15 +352,33 @@ let tile2 x reps =
           let r = Owl_utils.Array.pad `Left 1 (a - b) reps in
           x, r
     in
-    let sx = shape x in
-    let sy = Array.map2 ( * ) sx reps in
+    let x_shape = shape x in
+    let y_shape = Array.map2 ( * ) x_shape reps in
     let _kind = kind x in
-    let y = empty _kind sy in
-    let reps' = reps |> Array.map Int64.of_int
-      |> Array1.of_array int64 c_layout |> genarray_of_array1 in
-    let x_shape' = sx |> Array.map Int64.of_int
-      |> Array1.of_array int64 c_layout |> genarray_of_array1 in
-    Owl_ndarray_repeat._ndarray_tile _kind x y reps' x_shape';
+    let y = empty _kind y_shape in
+    let x_dims = num_dims x in
+    (* case 2 : vector input *)
+    if (x_dims = 1) then (
+      Owl_ndarray_repeat._ndarray_tile_axis _kind x y 0 reps.(0)
+    )
+    (* case 3: only one axis to be repeated *)
+    else if (Owl_utils_array.count reps 1 = x_dims - 1) then (
+      let r = ref (-1) in
+      let ax = ref (-1) in
+      while !r = -1 && !ax < x_dims do
+        ax := !ax + 1;
+        if reps.(!ax) != 1 then r := reps.(!ax)
+      done;
+      Owl_ndarray_repeat._ndarray_tile_axis _kind x y !ax !r
+    )
+    (* general case *)
+    else (
+      let reps' = reps |> Array.map Int64.of_int
+        |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+      let x_shape' = x_shape |> Array.map Int64.of_int
+        |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+      Owl_ndarray_repeat._ndarray_tile _kind x y reps' x_shape'
+    );
     y
   )
 
