@@ -197,7 +197,7 @@ CAMLprim value FUNCTION (stub, tile_native) (
   int slice_x[highest_dim + 1];
   c_ndarray_slice(X, slice_x);
 
-  int block_idx[highest_dim + 1];
+  int block_idx[highest_dim + 1]; /* Block size for copy in each dimension */
   block_idx[highest_dim] = 1;
   for (int i = highest_dim - 1; i >= 0; --i) {
     block_idx[i] = block_idx[i+1] * reps[i + 1];
@@ -297,7 +297,7 @@ CAMLprim value FUNCTION (stub, tile_axis_native) (
   int highest_dim = X->num_dims - 1;
   int numel_x = c_ndarray_numel(X);
 
-  /* Special case : tile along first dimension */
+  /* Special case : repeat along the first dimension */
 
   if (axis == 0) {
     int ofsy = 0;
