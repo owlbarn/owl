@@ -177,54 +177,6 @@ let reverse_ ~out x =
   reverse out |> ignore
 
 
-let tile x reps =
-  (* check the validity of reps *)
-  if Array.exists ((>) 1) reps then
-    failwith "tile: repetition must be >= 1";
-  (* align and promote the shape *)
-  let a = num_dims x in
-  let b = Array.length reps in
-  let x, reps = match a < b with
-    | true ->
-        let d = Owl_utils.Array.pad `Left 1 (b - a) (shape x) in
-        (reshape x d), reps
-    | false ->
-        let r = Owl_utils.Array.pad `Left 1 (a - b) reps in
-        x, r
-  in
-  (* calculate the smallest continuous slice dx *)
-  let i = ref (Array.length reps - 1) in
-  let sx = shape x in
-  let dx = ref sx.(!i) in
-  while reps.(!i) = 1 && !i - 1 >= 0 do
-    i := !i - 1;
-    dx := !dx * sx.(!i);
-  done;
-  (* project x and y to 1-dimensional arrays *)
-  let sy = Owl_utils.Array.map2i (fun _ a b -> a * b) sx reps in
-  let _kind = kind x in
-  let y = empty _kind sy in
-  let stride_x = Owl_utils.calc_stride (shape x) in
-  let stride_y = Owl_utils.calc_stride (shape y) in
-  (* recursively tile the data within y *)
-  let rec _tile ofsx ofsy lvl =
-    if lvl = !i then
-      _owl_repeat _kind !dx reps.(lvl) x ofsx 1 0 y ofsy 1 !dx
-    else (
-      for j = 0 to sx.(lvl) - 1 do
-        let ofsx' = ofsx + j * stride_x.(lvl) in
-        let ofsy' = ofsy + j * stride_y.(lvl) in
-        _tile ofsx' ofsy' (lvl + 1);
-      done;
-      let _len = stride_y.(lvl) * sx.(lvl) in
-      for k = 1 to reps.(lvl) - 1 do
-        _owl_copy _kind _len ~ofsx:ofsy ~incx:1 ~ofsy:(ofsy + (k * _len)) ~incy:1 y y
-      done;
-    )
-  in
-  _tile 0 0 0; y
-
-
 let repeat x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
@@ -300,6 +252,103 @@ let repeat_ ~out x reps =
       let x_shape' = shape x |> Array.map Int64.of_int
         |> Array1.of_array int64 c_layout |> genarray_of_array1 in
       Owl_ndarray_repeat._ndarray_repeat _kind x out reps' x_shape'
+    )
+  )
+
+let tile x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "tile: repitition must be >= 1";
+
+  (* case 1: all repeats equal to 1 *)
+  if (Array.for_all ((=) 1) reps) = true then
+    copy x
+  else (
+    (* align and promote the shape *)
+    let a = num_dims x in
+    let b = Array.length reps in
+    let x, reps = match a < b with
+      | true ->
+          let d = Owl_utils.Array.pad `Left 1 (b - a) (shape x) in
+          (reshape x d), reps
+      | false ->
+          let r = Owl_utils.Array.pad `Left 1 (a - b) reps in
+          x, r
+    in
+    let x_shape = shape x in
+    let y_shape = Array.map2 ( * ) x_shape reps in
+    let _kind = kind x in
+    let y = empty _kind y_shape in
+    let x_dims = num_dims x in
+    (* case 2 : vector input *)
+    if (x_dims = 1) then (
+      Owl_ndarray_repeat._ndarray_tile_axis _kind x y 0 reps.(0)
+    )
+    (* case 3: only one axis to be repeated *)
+    else if (Owl_utils_array.count reps 1 = x_dims - 1) then (
+      let r = ref (-1) in
+      let ax = ref (-1) in
+      while !r = -1 && !ax < x_dims do
+        ax := !ax + 1;
+        if reps.(!ax) != 1 then r := reps.(!ax)
+      done;
+      Owl_ndarray_repeat._ndarray_tile_axis _kind x y !ax !r
+    )
+    (* general case *)
+    else (
+      let reps' = reps |> Array.map Int64.of_int
+        |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+      let x_shape' = x_shape |> Array.map Int64.of_int
+        |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+      Owl_ndarray_repeat._ndarray_tile _kind x y reps' x_shape'
+    );
+    y
+  )
+
+
+let tile_ ~out x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "tile: repitition must be >= 1";
+
+  (* case 1: all repeats equal to 1 *)
+  if (Array.for_all ((=) 1) reps) = true then
+    copy_ x out
+  else (
+    (* align and promote the shape *)
+    let a = num_dims x in
+    let b = Array.length reps in
+    let x, reps = match a < b with
+      | true ->
+          let d = Owl_utils.Array.pad `Left 1 (b - a) (shape x) in
+          (reshape x d), reps
+      | false ->
+          let r = Owl_utils.Array.pad `Left 1 (a - b) reps in
+          x, r
+    in
+    let _kind = kind x in
+    let x_dims = num_dims x in
+    (* case 2 : vector input *)
+    if (x_dims = 1) then (
+      Owl_ndarray_repeat._ndarray_tile_axis _kind x out 0 reps.(0)
+    )
+    (* case 3: only one axis to be repeated *)
+    else if (Owl_utils_array.count reps 1 = x_dims - 1) then (
+      let r = ref (-1) in
+      let ax = ref (-1) in
+      while !r = -1 && !ax < x_dims do
+        ax := !ax + 1;
+        if reps.(!ax) != 1 then r := reps.(!ax)
+      done;
+      Owl_ndarray_repeat._ndarray_tile_axis _kind x out !ax !r
+    )
+    (* general case *)
+    else (
+      let reps' = reps |> Array.map Int64.of_int
+        |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+      let x_shape' = shape x  |> Array.map Int64.of_int
+        |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+      Owl_ndarray_repeat._ndarray_tile _kind x out reps' x_shape'
     )
   )
 
