@@ -6,7 +6,7 @@
 open Owl
 
 module CPU_Engine = Owl_computation_cpu_engine.Make (Dense.Ndarray.S)
-module CGCompiler = Owl_neural_graph_compiler.Make (CPU_Engine)
+module CGCompiler = Owl_neural_compiler.Make (CPU_Engine)
 
 open CGCompiler.Neural
 open CGCompiler.Neural.Graph
