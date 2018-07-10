@@ -41,7 +41,7 @@ module Make
     let expected = N.of_array expected output_shp in
     output = expected
 
-  let repeat_slow x reps =
+  let repeat_along_axis x reps =
     let n = Array.length reps in
     let y = ref x in
     for i = n - 1 downto 0 do
@@ -51,7 +51,7 @@ module Make
     done;
     !y
 
-  let tile_slow x reps =
+  let tile_along_axis x reps =
     let n = Array.length reps in
     let y = ref x in
     for i = n - 1 downto 0 do
@@ -61,15 +61,15 @@ module Make
     done;
     !y
 
-  let test_repeat_slow shp reps =
+  let test_repeat_along_axis shp reps =
     let x = N.sequential shp in
-    let expected = repeat_slow x reps in
+    let expected = repeat_along_axis x reps in
     let result = N.repeat x reps in
     result = expected
 
-  let test_tile_slow shp reps =
+  let test_tile_along_axis shp reps =
     let x = N.sequential shp in
-    let expected = tile_slow x reps in
+    let expected = tile_along_axis x reps in
     let result = N.tile x reps in
     result = expected
 
@@ -439,19 +439,19 @@ module Make
         [|3;3;3;3|] [|2;2;1;1|] [|1|]
 
     let fun46 () =
-      test_repeat_slow [|10;10;10;10|] [|1;4;3;1|]
+      test_repeat_along_axis [|10;10;10;10|] [|1;4;3;1|]
 
     let fun47 () =
-      test_repeat_slow [|4;4;4;4;4|] [|3;3;3;3;3|]
+      test_repeat_along_axis [|4;4;4;4;4|] [|3;3;3;3;3|]
 
     let fun48 () =
-      test_repeat_slow [|4;3;2;3;4|] [|3;3;3;1;1|]
+      test_repeat_along_axis [|4;3;2;3;4|] [|3;3;3;1;1|]
 
     let fun49 () =
-      test_repeat_slow [|4;3;4;4;3;4|] [|1;1;6;5;1;1|]
+      test_repeat_along_axis [|4;3;4;4;3;4|] [|1;1;6;5;1;1|]
 
     let fun50 () =
-      test_repeat_slow [|3;4;5;3;4;5|] [|3;3;1;1;4;2|]
+      test_repeat_along_axis [|3;4;5;3;4;5|] [|3;3;1;1;4;2|]
 
     let fun51 () =
       test_repeat [|
@@ -532,19 +532,19 @@ module Make
         [|3;3;3;3|] [|1;1;1;1|] [|2;2;1;1|]
 
     let fun55 () =
-      test_tile_slow [|10;10;10;10|] [|1;4;3;1|]
+      test_tile_along_axis [|10;10;10;10|] [|1;4;3;1|]
 
     let fun56 () =
-      test_tile_slow [|4;4;4;4;4|] [|3;3;3;3;3|]
+      test_tile_along_axis [|4;4;4;4;4|] [|3;3;3;3;3|]
 
     let fun57 () =
-      test_tile_slow [|4;3;2;3;4|] [|3;3;3;1;1|]
+      test_tile_along_axis [|4;3;2;3;4|] [|3;3;3;1;1|]
 
     let fun58 () =
-      test_tile_slow [|4;3;4;4;3;4|] [|1;1;6;5;1;1|]
+      test_tile_along_axis [|4;3;4;4;3;4|] [|1;1;6;5;1;1|]
 
     let fun59 () =
-      test_tile_slow [|3;4;5;3;4;5|] [|3;3;1;1;4;2|]
+      test_tile_along_axis [|3;4;5;3;4;5|] [|3;3;1;1;4;2|]
 
   end
 
