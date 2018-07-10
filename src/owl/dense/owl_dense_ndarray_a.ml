@@ -526,7 +526,7 @@ let repeat x reps =
             ofsy_sub := !ofsy_sub + block_sz
           done
         );
-        ofsx := !ofsx + x_shape.(hd);
+        ofsx := !ofsx + slice_x.(hd);
         ofsy := !ofsy + stride_y.(hd - 1) * reps.(hd - 1);
         for j = hd - 1 downto 1 do
           let c = counter.(j) in
@@ -561,7 +561,7 @@ let repeat x reps =
             if c + 1 = block_num.(j + 1) then (
               ofsy := !ofsy + stride_y.(j) * (reps.(j) - 1);
             );
-            counter.(j) <- if c + 1 = block_num.(j) then 0 else c + 1
+            counter.(j) <- if c + 1 = block_num.(j + 1) then 0 else c + 1
           done
         done
       done
