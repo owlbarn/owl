@@ -20,7 +20,7 @@ module Make
   (A : Ndarray_Mutable)
   = struct
 
-  module OCL_Dev = Owl_opencl_device.Make (A)
+  module OCL_Dev = Owl_computation_opencl_device.Make (A)
 
   module Graph = Owl_computation_engine.Make_Graph (OCL_Dev)
 

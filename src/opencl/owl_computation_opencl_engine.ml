@@ -30,13 +30,13 @@ module Make_Embedded
 
   (* core interface *)
 
-  let eval_elt xs = ()
+  let eval_elt xs = failwith "not implemented yet"
 
 
-  let eval_arr xs = ()
+  let eval_arr xs = failwith "not implemented yet"
 
 
-  let eval_graph graph = ()
+  let eval_graph graph = failwith "not implemented yet"
 
 
 end
@@ -52,7 +52,7 @@ module Make
     Owl_computation_engine.Flatten (
       Make_Embedded (
         Owl_computation_engine.Make_Graph (
-          Owl_opencl_device.Make (A)
+          Owl_computation_opencl_device.Make (A)
         )
       )
     )

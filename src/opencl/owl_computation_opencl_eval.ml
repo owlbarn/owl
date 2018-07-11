@@ -18,7 +18,7 @@ module Make
   (A : Ndarray_Mutable)
   = struct
 
-  module OCL_Dev = Owl_opencl_device.Make (A)
+  module OCL_Dev = Owl_computation_opencl_device.Make (A)
 
   module Graph = Owl_computation_engine.Make_Graph (OCL_Dev)
 
@@ -28,7 +28,7 @@ module Make
   (* utility functions *)
 
   let reset_all_events x =
-    Array.iter (fun v -> OCL_Dev.(reset_events v)) (get_value x)
+    Array.iter (fun v -> OCL_Dev.reset_events v) (get_value x)
 
 
   let aggregate_events xs =
