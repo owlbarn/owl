@@ -23,9 +23,9 @@ module Make_Embedded
 
   (* module aliases *)
 
-  module CG_Init = Owl_opencl_engine_init.Make (A)
+  module CG_Init = Owl_computation_opencl_init.Make (A)
 
-  module CG_Eval = Owl_opencl_engine_eval.Make (A)
+  module CG_Eval = Owl_computation_opencl_eval.Make (A)
 
 
   (* core interface *)
