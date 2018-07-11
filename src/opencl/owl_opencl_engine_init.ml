@@ -11,20 +11,22 @@ open Owl_opencl_base
 
 open Owl_opencl_utils
 
-open Owl_opencl_context
-
 open Owl_opencl_generated
 
 
 (* Functor of initialising an OpenCL engine to execute a computation graph. *)
 
-module Make (A : Ndarray_Mutable) = struct
+module Make
+  (A : Ndarray_Mutable)
+  = struct
 
-  module CGraph = Owl_computation_graph.Make (A) (Owl_opencl_device)
+  module OCL_Dev = Owl_opencl_device.Make (A)
 
-  module CL_Dev = Owl_opencl_device.Make (A)
+  module Graph = Owl_computation_engine.Make_Graph (OCL_Dev)
 
-  include CGraph
+  open Graph.Optimiser.Operator.Symbol
+
+  open Graph.Optimiser.Operator.Symbol.Shape.Type.Device
 
 
   (* utility functions *)
@@ -48,7 +50,7 @@ module Make (A : Ndarray_Mutable) = struct
     if is_assigned x = false then (
       let x_shp = node_shape x in
       let cpu_mem = A.empty x_shp in
-      let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [||] [||] [||] in
+      let new_val = OCL_Dev.make_value [|ArrVal cpu_mem|] [||] [||] [||] in
       set_value x [| new_val |]
     )
 
@@ -59,7 +61,7 @@ module Make (A : Ndarray_Mutable) = struct
       let cpu_mem = value_to_arr x_val in
       let flags = [ cl_MEM_USE_HOST_PTR ] in
       let gpu_mem = Buffer.create_bigarray ~flags ctx (Obj.magic cpu_mem) in
-      let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [|gpu_mem|] [||] [||] in
+      let new_val = OCL_Dev.make_value [|ArrVal cpu_mem|] [|gpu_mem|] [||] [||] in
       set_value x [| new_val |]
     )
 
@@ -70,12 +72,12 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   let get_cpu_ptr x_val =
-    let cpu_mem = CL_Dev.value_to_arr x_val in
+    let cpu_mem = OCL_Dev.value_to_arr x_val in
     Ctypes.(bigarray_start genarray (Obj.magic cpu_mem))
 
 
   let get_gpu_ptr x_val =
-    let gpu_mem = CL_Dev.(x_val.gpu_mem.(0)) in
+    let gpu_mem = OCL_Dev.(x_val.gpu_mem.(0)) in
     Ctypes.allocate cl_mem gpu_mem
 
 
@@ -90,7 +92,7 @@ module Make (A : Ndarray_Mutable) = struct
   let allocate_from_parent_1 ctx x parent =
     let parent_val = (get_value parent).(0) in
     if refnum parent = 1 && get_reuse parent then
-      set_value x [| CL_Dev.copy_cpu_gpu_mem parent_val |]
+      set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_val |]
     else
       allocate_cpu_gpu_buffer ctx x
 
@@ -105,15 +107,15 @@ module Make (A : Ndarray_Mutable) = struct
 
     if shp_0 = shp_x then (
       if refnum parent_0 = 1 && get_reuse parent_0 then
-        set_value x [| CL_Dev.copy_cpu_gpu_mem parent_0_val |]
+        set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_0_val |]
       else if refnum parent_0 = 2 && parent_0 == parent_1 && get_reuse parent_0 then
-        set_value x [| CL_Dev.copy_cpu_gpu_mem parent_0_val |]
+        set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_0_val |]
       else
         allocate_cpu_gpu_buffer ctx x
     )
     else if shp_1 = shp_x then (
       if refnum parent_1 = 1 && get_reuse parent_1 then
-        set_value x [| CL_Dev.copy_cpu_gpu_mem parent_1_val |]
+        set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_1_val |]
       else
         allocate_cpu_gpu_buffer ctx x
     )
@@ -155,7 +157,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Reshape shape                               -> _init_xx x param
         | Reverse                                     -> _init_xx x param
         | Tile repeats                                -> _init_xx x param
-        | Repeat (axis, repeats)                      -> _init_xx x param
+        | Repeat repeats                              -> _init_xx x param
         | Concatenate axis                            -> _init_xx x param
         | Split (axis, parts)                         -> failwith "Split"
         | Draw (axis, n)                              -> failwith "Draw"
@@ -317,7 +319,7 @@ module Make (A : Ndarray_Mutable) = struct
   and _init_00 x param =
     let ctx, cmdq, program = param in
     if is_elt x = true then
-      CL_Dev.elt_to_arr (get_value x).(0);
+      OCL_Dev.elt_to_arr (get_value x).(0);
     allocate_from_parent_0 ctx x
 
 
@@ -450,7 +452,7 @@ module Make (A : Ndarray_Mutable) = struct
     let ctx, cmdq, program = param in
     allocate_from_parent_0 ctx x;
 
-    let items = node_to_arr x |> numel in
+    let items = node_numel x in
     let streams = Owl_opencl_prng_philox.make items in
     let streams_buf = Owl_opencl_prng_philox.make_stream_buffer ctx streams in
     let streams_ptr = Ctypes.allocate cl_mem streams_buf in

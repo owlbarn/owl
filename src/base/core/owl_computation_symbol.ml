@@ -234,6 +234,9 @@ module Make
     | None   -> failwith "Owl_computation_symbol:node_shape"
 
 
+  let node_numel x = Array.fold_left ( * ) 1 (node_shape x)
+
+
   let is_shape_unkown x =
     let x_shape = (attr x).shape in
     match x_shape.(0) with

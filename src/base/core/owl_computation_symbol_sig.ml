@@ -32,6 +32,9 @@ module type Sig = sig
   val node_shape : attr Owl_graph.node -> int array
   (** TODO *)
 
+  val node_numel : attr Owl_graph.node -> int
+  (** TODO *)
+
   val is_shape_unkown : attr Owl_graph.node -> bool
   (** TODO *)
 

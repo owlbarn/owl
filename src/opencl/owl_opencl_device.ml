@@ -10,10 +10,14 @@ open Owl_opencl_generated
 
 (* This module is for OpenCL-based devices *)
 
-module Make (A : Ndarray_Basic) = struct
+module Make (A : Ndarray_Mutable) = struct
 
+  module A = A
 
-  type device = OpenCL
+  type device = {
+    device_type : device_type;
+    initialised : bool;
+  }
 
   type cpu_mem = ArrVal of A.arr | EltVal of A.elt
 
@@ -25,19 +29,14 @@ module Make (A : Ndarray_Basic) = struct
   }
 
 
-  let make_device () = OpenCL
+  let make_device () = {
+    device_type = OpenCL;
+    initialised = false;
+  }
 
 
   let make_value cpu_mem gpu_mem kernel events =
     { cpu_mem; gpu_mem; kernel; events }
-
-
-  let copy_cpu_gpu_mem x_val =
-    let cpu_mem = Array.copy x_val.cpu_mem in
-    let gpu_mem = Array.copy x_val.gpu_mem in
-    let kernel = [| |] in
-    let events = [| |] in
-    make_value cpu_mem gpu_mem kernel events
 
 
   let arr_to_value x =
@@ -75,6 +74,14 @@ module Make (A : Ndarray_Basic) = struct
     let v = value_to_elt x in
     let a = A.create [|1|] v in
     x.cpu_mem <- [| ArrVal a |]
+
+
+  let copy_cpu_gpu_mem x_val =
+    let cpu_mem = Array.copy x_val.cpu_mem in
+    let gpu_mem = Array.copy x_val.gpu_mem in
+    let kernel = [| |] in
+    let events = [| |] in
+    make_value cpu_mem gpu_mem kernel events
 
 
   let set_events x_val events = x_val.events <- events
