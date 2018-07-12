@@ -175,6 +175,9 @@ val fold_out_edges : ('b -> 'a node -> 'a node -> 'b) -> 'b -> 'a node array -> 
 
 (** {6 Helper functions} *)
 
+val topo_sort : 'a node array -> 'a node array
+(* BFS topological sort of a given graph. *)
+
 val pp_node : Format.formatter -> 'a node -> unit
 (** Pretty print a given node. *)
 

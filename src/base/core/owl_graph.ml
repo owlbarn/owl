@@ -276,4 +276,21 @@ let to_string from_root x =
   !s
 
 
+let topo_sort nodes =
+  let h = Hashtbl.create 512 in
+  let s = Owl_utils_stack.make () in
+  let rec _bfs_iter nodes =
+    Array.iter (fun u ->
+      _bfs_iter (parents u);
+      if Hashtbl.mem h u.id = false then (
+        Hashtbl.add h u.id u;
+        Owl_utils_stack.push s u
+      )
+    ) nodes
+  in
+  _bfs_iter nodes;
+  Owl_utils_stack.to_array s
+
+
+
 (* ends here *)
