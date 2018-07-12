@@ -91,8 +91,10 @@ module Make
 
   let allocate_from_parent_1 ctx x parent =
     let parent_val = (get_value parent).(0) in
-    if refnum parent = 1 && get_reuse parent then
-      set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_val |]
+    if refnum parent = 1 && get_reuse parent then (
+      set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_val |];
+      set_vnode x [| parent |]
+    )
     else
       allocate_cpu_gpu_buffer ctx x
 
@@ -105,19 +107,13 @@ module Make
     let shp_0, shp_1 = Owl_utils_array.align `Left 1 shp_0 shp_1 in
     let shp_x = Owl_utils_infer_shape.broadcast1 shp_0 shp_1 in
 
-    if shp_0 = shp_x then (
-      if refnum parent_0 = 1 && get_reuse parent_0 then
-        set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_0_val |]
-      else if refnum parent_0 = 2 && parent_0 == parent_1 && get_reuse parent_0 then
-        set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_0_val |]
-      else
-        allocate_cpu_gpu_buffer ctx x
+    if shp_0 = shp_x && refnum parent_0 = 1 && get_reuse parent_0 then (
+      set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_0_val |];
+      set_vnode x [| parent_0 |]
     )
-    else if shp_1 = shp_x then (
-      if refnum parent_1 = 1 && get_reuse parent_1 then
-        set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_1_val |]
-      else
-        allocate_cpu_gpu_buffer ctx x
+    else if shp_1 = shp_x && refnum parent_1 = 1 && get_reuse parent_1 then (
+      set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_1_val |];
+      set_vnode x [| parent_1 |]
     )
     else
       allocate_cpu_gpu_buffer ctx x

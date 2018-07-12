@@ -81,22 +81,9 @@ module Make
 
   (* update parents' validity *)
 
-  let update_validity_1 ctx x parent =
-    let parent_val = (get_value parent).(0) in
-    let parent_cpu_mem = parent_val.cpu_mem.(0) in
-    let x_val = (get_value x).(0) in
-    let x_cpu_mem = x_val.cpu_mem.(0) in
-    if x_cpu_mem == parent_cpu_mem then invalidate parent
-
-
-  let update_validity_2 ctx x parent_0 parent_1 =
-    let parent_0_val = (get_value parent_0).(0) in
-    let parent_1_val = (get_value parent_1).(0) in
-    let parent_0_cpu_mem = parent_0_val.cpu_mem.(0) in
-    let parent_1_cpu_mem = parent_1_val.cpu_mem.(0) in
-    let x_cpu_mem = (get_value x).(0).cpu_mem.(0) in
-    if x_cpu_mem == parent_0_cpu_mem then invalidate parent_0
-    else if x_cpu_mem == parent_1_cpu_mem then invalidate parent_1
+  let update_validity x =
+    validate x;
+    Array.iter invalidate (get_vnode x)
 
 
   let rec _eval_term x param =
@@ -281,7 +268,7 @@ module Make
           raise exn
         )
       in
-      validate x
+      update_validity x
 
 
   (* dummy map *)
@@ -302,7 +289,6 @@ module Make
     _eval_term parent param;
 
     let ctx, cmdq, program = param in
-    update_validity_1 ctx x parent;
     let kernel = (get_value x).(0).kernel.(0) in
     let items = [ node_numel x ] in
     let wait_for = aggregate_events (parents x) |> Array.to_list in
@@ -318,7 +304,6 @@ module Make
     _eval_term parent_1 param;
 
     let ctx, cmdq, program = param in
-    update_validity_2 ctx x parent_0 parent_1;
     let kernel = (get_value x).(0).kernel.(0) in
     let items = [ node_numel x ] in
     let wait_for = aggregate_events (parents x) |> Array.to_list in
