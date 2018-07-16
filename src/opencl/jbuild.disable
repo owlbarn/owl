@@ -2,6 +2,7 @@
 
 (copy_files# types/*)
 (copy_files# kernel/*)
+(copy_files# compute/*)
 (copy_files# prng/*)
 (copy_files# prng/clrng/*)
 (copy_files# prng/clrng/Random123/*)
