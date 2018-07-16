@@ -15,12 +15,11 @@ module type Sig = sig
 
   (** {6 Type definition} *)
 
-  type device = {
-    device_type : device_type;
-    initialised : bool;
-  }
+  type device
+  (** TODO *)
 
   type cpu_mem = ArrVal of A.arr | EltVal of A.elt
+  (** TODO *)
 
   type value = {
     mutable cpu_mem : cpu_mem array;
@@ -28,6 +27,7 @@ module type Sig = sig
     mutable kernel  : cl_kernel array;
     mutable events  : cl_event array;
   }
+  (** TODO *)
 
 
   (** {6 Core functions} *)
@@ -55,11 +55,14 @@ module type Sig = sig
 
   val elt_to_arr : value -> unit
   (** TODO *)
-  
+
   val make_value : cpu_mem array -> cl_mem array -> cl_kernel array -> cl_event array -> value
   (** TODO *)
 
   val copy_cpu_gpu_mem : value -> value
+  (** TODO *)
+
+  val get_events : value -> cl_event array
   (** TODO *)
 
   val set_events : value -> cl_event array -> unit
@@ -72,6 +75,9 @@ module type Sig = sig
   (** TODO *)
 
   val get_kernel : value -> cl_kernel
+  (** TODO *)
+
+  val set_kernel : value -> cl_kernel -> unit
   (** TODO *)
 
 

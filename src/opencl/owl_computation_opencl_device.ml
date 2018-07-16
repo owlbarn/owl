@@ -84,6 +84,9 @@ module Make (A : Ndarray_Mutable) = struct
     make_value cpu_mem gpu_mem kernel events
 
 
+  let get_events x_val = x_val.events
+
+
   let set_events x_val events = x_val.events <- events
 
 
@@ -95,6 +98,9 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   let get_kernel x_val = x_val.kernel.(0)
+
+
+  let set_kernel x_val kernel = x_val.kernel <- [| kernel |]
 
 
 end
