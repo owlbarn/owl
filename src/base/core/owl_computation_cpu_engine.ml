@@ -8,7 +8,7 @@ open Owl_types
 
 (* Functor of making a CPU-based engine to execute computation graphs. *)
 
-module Make_Embedded
+module Make_Nested
   (Graph : Owl_computation_graph_sig.Sig)
   = struct
 
@@ -60,7 +60,7 @@ module Make
 
   include
     Owl_computation_engine.Flatten (
-      Make_Embedded (
+      Make_Nested (
         Owl_computation_engine.Make_Graph (
           Owl_computation_cpu_device.Make (A)
         )
