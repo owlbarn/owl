@@ -29,9 +29,6 @@ module Make_Nested
   let eval_elt xs = failwith "not implemented yet"
 
 
-  let eval_arr xs = failwith "not implemented yet"
-
-
   let eval_arr ?(dev_id=0) xs =
     let ctx = Owl_opencl_context.(get_opencl_ctx default) in
     let dev = Owl_opencl_context.(get_dev default dev_id) in
