@@ -4,7 +4,7 @@
 #require "owl-opencl"
 open Owl
 
-module M = Owl_opencl_engine.Make (Dense.Ndarray.S)
+module M = Owl_computation_opencl_engine.Make (Dense.Ndarray.S)
 
 
 let loop_gpu a =
@@ -14,7 +14,7 @@ let loop_gpu a =
   for i = 1 to 5000 do
     y := M.sin !y
   done;
-  M.eval_arr ~dev_id:1 [|!y|];
+  M.eval_arr ~dev_id:0 [|!y|];
   !y
 
 
