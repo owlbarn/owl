@@ -227,5 +227,6 @@ module type Sig = sig
     | Scalar_Relu
     | Scalar_Sigmoid
     | Fused_Adagrad                 of float * float
+  (** TODO *)
 
 end
