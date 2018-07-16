@@ -3,8 +3,6 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types
-
 open Owl_graph
 
 open Owl_opencl_base
@@ -17,12 +15,10 @@ open Owl_opencl_generated
 (* Functor of initialising an OpenCL engine to execute a computation graph. *)
 
 module Make
-  (A : Ndarray_Mutable)
+  (Device : Owl_types_computation_opencl_device.Sig)
   = struct
 
-  module OCL_Dev = Owl_computation_opencl_device.Make (A)
-
-  module Graph = Owl_computation_engine.Make_Graph (OCL_Dev)
+  module Graph = Owl_computation_engine.Make_Graph (Device)
 
   open Graph.Optimiser.Operator.Symbol
 
@@ -50,7 +46,7 @@ module Make
     if is_assigned x = false then (
       let x_shp = node_shape x in
       let cpu_mem = A.empty x_shp in
-      let new_val = OCL_Dev.make_value [|ArrVal cpu_mem|] [||] [||] [||] in
+      let new_val = Device.make_value [|ArrVal cpu_mem|] [||] [||] [||] in
       set_value x [| new_val |]
     )
 
@@ -61,7 +57,7 @@ module Make
       let cpu_mem = value_to_arr x_val in
       let flags = [ cl_MEM_USE_HOST_PTR ] in
       let gpu_mem = Buffer.create_bigarray ~flags ctx (Obj.magic cpu_mem) in
-      let new_val = OCL_Dev.make_value [|ArrVal cpu_mem|] [|gpu_mem|] [||] [||] in
+      let new_val = Device.make_value [|ArrVal cpu_mem|] [|gpu_mem|] [||] [||] in
       set_value x [| new_val |]
     )
 
@@ -72,12 +68,12 @@ module Make
 
 
   let get_cpu_ptr x_val =
-    let cpu_mem = OCL_Dev.value_to_arr x_val in
+    let cpu_mem = Device.value_to_arr x_val in
     Ctypes.(bigarray_start genarray (Obj.magic cpu_mem))
 
 
   let get_gpu_ptr x_val =
-    let gpu_mem = OCL_Dev.(x_val.gpu_mem.(0)) in
+    let gpu_mem = Device.(x_val.gpu_mem.(0)) in
     Ctypes.allocate cl_mem gpu_mem
 
 
@@ -92,7 +88,7 @@ module Make
   let allocate_from_parent_1 ctx x parent =
     let parent_val = (get_value parent).(0) in
     if refnum parent = 1 && get_reuse parent then (
-      set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_val |];
+      set_value x [| Device.copy_cpu_gpu_mem parent_val |];
       set_vnode x [| parent |]
     )
     else
@@ -108,11 +104,11 @@ module Make
     let shp_x = Owl_utils_infer_shape.broadcast1 shp_0 shp_1 in
 
     if shp_0 = shp_x && refnum parent_0 = 1 && get_reuse parent_0 then (
-      set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_0_val |];
+      set_value x [| Device.copy_cpu_gpu_mem parent_0_val |];
       set_vnode x [| parent_0 |]
     )
     else if shp_1 = shp_x && refnum parent_1 = 1 && get_reuse parent_1 then (
-      set_value x [| OCL_Dev.copy_cpu_gpu_mem parent_1_val |];
+      set_value x [| Device.copy_cpu_gpu_mem parent_1_val |];
       set_vnode x [| parent_1 |]
     )
     else
@@ -315,7 +311,7 @@ module Make
   and _init_00 x param =
     let ctx, cmdq, program = param in
     if is_elt x = true then
-      OCL_Dev.elt_to_arr (get_value x).(0);
+      Device.elt_to_arr (get_value x).(0);
     allocate_from_parent_0 ctx x
 
 

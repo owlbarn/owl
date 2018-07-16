@@ -35,10 +35,6 @@ module Make (A : Ndarray_Mutable) = struct
   }
 
 
-  let make_value cpu_mem gpu_mem kernel events =
-    { cpu_mem; gpu_mem; kernel; events }
-
-
   let arr_to_value x =
     let cpu_mem = [| ArrVal x |] in
     let gpu_mem = [| |] in
@@ -74,6 +70,10 @@ module Make (A : Ndarray_Mutable) = struct
     let v = value_to_elt x in
     let a = A.create [|1|] v in
     x.cpu_mem <- [| ArrVal a |]
+
+
+  let make_value cpu_mem gpu_mem kernel events =
+    { cpu_mem; gpu_mem; kernel; events }
 
 
   let copy_cpu_gpu_mem x_val =

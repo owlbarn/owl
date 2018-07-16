@@ -3,8 +3,6 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types
-
 open Owl_graph
 
 open Owl_opencl_base
@@ -15,20 +13,20 @@ open Owl_opencl_generated
 (* Functor of making an OpenCL engine to execute a computation graph. *)
 
 module Make
-  (A : Ndarray_Mutable)
+  (Device : Owl_types_computation_opencl_device.Sig)
   = struct
 
-  module OCL_Dev = Owl_computation_opencl_device.Make (A)
-
-  module Graph = Owl_computation_engine.Make_Graph (OCL_Dev)
+  module Graph = Owl_computation_engine.Make_Graph (Device)
 
   open Graph.Optimiser.Operator.Symbol
+
+  open Graph.Optimiser.Operator.Symbol.Shape.Type.Device
 
 
   (* utility functions *)
 
   let reset_all_events x =
-    Array.iter (fun v -> OCL_Dev.reset_events v) (get_value x)
+    Array.iter (fun v -> Device.reset_events v) (get_value x)
 
 
   let aggregate_events xs =
@@ -43,17 +41,17 @@ module Make
 
 
   let get_cpu_ptr x_val =
-    let cpu_mem = OCL_Dev.value_to_arr x_val in
+    let cpu_mem = Device.value_to_arr x_val in
     Ctypes.(bigarray_start genarray (Obj.magic cpu_mem))
 
 
   let get_gpu_ptr x_val =
-    let gpu_mem = OCL_Dev.(x_val.gpu_mem.(0)) in
+    let gpu_mem = Device.(x_val.gpu_mem.(0)) in
     Ctypes.allocate cl_mem gpu_mem
 
 
   let size_in_bytes x_val =
-    let cpu_mem = OCL_Dev.value_to_arr x_val in
+    let cpu_mem = Device.value_to_arr x_val in
     let n = A.numel cpu_mem in
     let elt_size = match A.number with
       | F32 -> 4
@@ -66,7 +64,7 @@ module Make
   let cpu_to_gpu_copy param x_val =
     let ctx, cmdq, _ = param in
     let cpu_ptr = get_cpu_ptr x_val in
-    let gpu_mem = OCL_Dev.(x_val.gpu_mem.(0)) in
+    let gpu_mem = Device.(x_val.gpu_mem.(0)) in
     let size = size_in_bytes x_val in
     Buffer.enqueue_write ~blocking:false cmdq gpu_mem 0 size (Ctypes.to_voidp cpu_ptr)
 
@@ -74,7 +72,7 @@ module Make
   let gpu_to_cpu_copy param x_val =
     let ctx, cmdq, _ = param in
     let cpu_ptr = get_cpu_ptr x_val in
-    let gpu_mem = OCL_Dev.(x_val.gpu_mem.(0)) in
+    let gpu_mem = Device.(x_val.gpu_mem.(0)) in
     let size = size_in_bytes x_val in
     Buffer.enqueue_read ~blocking:false cmdq gpu_mem 0 size (Ctypes.to_voidp cpu_ptr)
 
@@ -279,7 +277,7 @@ module Make
   and _eval_map_00 x param =
     if is_valid x = false then (
       let event = cpu_to_gpu_copy param (get_value x).(0) in
-      OCL_Dev.append_events (get_value x).(0) [| event |]
+      Device.append_events (get_value x).(0) [| event |]
     )
 
 
@@ -293,7 +291,7 @@ module Make
     let items = [ node_numel x ] in
     let wait_for = aggregate_events (parents x) |> Array.to_list in
     let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 items in
-    OCL_Dev.append_events (get_value x).(0) [| event |]
+    Device.append_events (get_value x).(0) [| event |]
 
 
   (* [f] is inpure, for [arr -> arr -> arr] *)
@@ -308,7 +306,7 @@ module Make
     let items = [ node_numel x ] in
     let wait_for = aggregate_events (parents x) |> Array.to_list in
     let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 items in
-    OCL_Dev.append_events (get_value x).(0) [| event |]
+    Device.append_events (get_value x).(0) [| event |]
 
 
   (* for random generators *)
@@ -320,7 +318,7 @@ module Make
     let items = [ node_numel x ] in
     let wait_for = aggregate_events (parents x) |> Array.to_list in
     let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 items in
-    OCL_Dev.append_events (get_value x).(0) [| event |]
+    Device.append_events (get_value x).(0) [| event |]
 
 
 end

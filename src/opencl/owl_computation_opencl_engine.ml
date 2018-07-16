@@ -8,24 +8,20 @@ open Owl_types
 
 (* Functor of making a CPU-based engine to execute computation graphs. *)
 
-module Make_Embedded
-  (Graph : Owl_computation_graph_sig.Sig)
+module Make_Nested
+  (Device : Owl_types_computation_opencl_device.Sig)
   = struct
 
-  module Graph = Graph
+  module Graph = Owl_computation_engine.Make_Graph (Device)
 
   open Graph.Optimiser.Operator.Symbol
-
-  open Graph.Optimiser.Operator.Symbol.Shape.Type
-
-  open Graph.Optimiser.Operator.Symbol.Shape.Type.Device
 
 
   (* module aliases *)
 
-  module CG_Init = Owl_computation_opencl_init.Make (A)
+  module CG_Init = Owl_computation_opencl_init.Make (Device)
 
-  module CG_Eval = Owl_computation_opencl_eval.Make (A)
+  module CG_Eval = Owl_computation_opencl_eval.Make (Device)
 
 
   (* core interface *)
@@ -35,7 +31,7 @@ module Make_Embedded
 
   let eval_arr xs = failwith "not implemented yet"
 
-(*
+
   let eval_arr ?(dev_id=0) xs =
     let ctx = Owl_opencl_context.(get_opencl_ctx default) in
     let dev = Owl_opencl_context.(get_dev default dev_id) in
@@ -45,17 +41,17 @@ module Make_Embedded
 
     (* initialise the computation graph *)
     let nodes = Array.map arr_to_node xs in
-    CG_Init.init_nodes (Obj.magic nodes) param;
+    CG_Init.init_nodes nodes param;
 
     Array.iter (fun y ->
-      CG_Eval._eval_term (Obj.magic y) param;
+      CG_Eval._eval_term y param;
       (* read the results from buffer *)
       let y_val = (get_value y).(0) in
       CG_Eval.gpu_to_cpu_copy param y_val |> ignore
     ) nodes;
 
     Owl_opencl_base.CommandQueue.finish cmdq
-*)
+
 
   let eval_graph graph = failwith "not implemented yet"
 
@@ -70,13 +66,25 @@ module Make
   = struct
 
   include
-    Owl_computation_engine.Flatten (
-      Make_Embedded (
-        Owl_computation_engine.Make_Graph (
-          Owl_computation_opencl_device.Make (A)
-        )
-      )
+    Make_Nested (
+      Owl_computation_opencl_device.Make (A)
     )
+
+  include Graph
+
+  include Optimiser
+
+  include Operator
+
+  include Symbol
+
+  include Shape
+
+  include Type
+
+  include Device
+
+  let number = A.number
 
 end
 

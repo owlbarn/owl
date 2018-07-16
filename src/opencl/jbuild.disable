@@ -1,5 +1,6 @@
 (jbuild_version 1)
 
+(copy_files# types/*)
 (copy_files# kernel/*)
 (copy_files# prng/*)
 (copy_files# prng/clrng/*)
