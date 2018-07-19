@@ -23,10 +23,10 @@ type series =
 
 
 type t = {
-  mutable data : series array;
-  mutable head : (string, int) Hashtbl.t;
-  mutable used : int;
-  mutable size : int;
+  mutable data : series array;             (* column-based table, each column is a time series *)
+  mutable head : (string, int) Hashtbl.t;  (* head and index of each column, stored in a hash table *)
+  mutable used : int;                      (* sise of the used buffer space *)
+  mutable size : int;                      (* size of the allocated buffer *)
 }
 
 
@@ -61,23 +61,6 @@ let pack_int_series x = Int_Series x
 let pack_float_series x = Float_Series x
 
 let pack_string_series x = String_Series x
-
-
-let make ?data head_names =
-  let col_num = Array.length head_names in
-  let head = Hashtbl.create 64 in
-  Array.iteri (fun i s ->
-    assert (Hashtbl.mem head s = false);
-    Hashtbl.add head s i
-  ) head_names;
-  let data = match data with
-    | Some a -> a
-    | None   -> Array.make col_num Any_Series
-  in
-  assert (Array.length data = col_num);
-  let used = 0 in
-  let size = 0 in
-  { data; head; used; size }
 
 
 let allocate_space data =
@@ -163,6 +146,31 @@ let str_to_elt_fun = function
   | "f" -> fun a -> if a = "" then Float nan else Float (float_of_string a)
   | "s" -> fun a -> String a
   | _   -> failwith "str_to_elt_fun: unsupported type"
+
+
+let make ?data head_names =
+  let col_num = Array.length head_names in
+  let head = Hashtbl.create 64 in
+  (* check the head names are unique *)
+  Array.iteri (fun i s ->
+    assert (Hashtbl.mem head s = false);
+    Hashtbl.add head s i
+  ) head_names;
+  let data = match data with
+    | Some a -> a
+    | None   -> Array.make col_num Any_Series
+  in
+  assert (Array.length data = col_num);
+  (* calculate the actual number of rows *)
+  let size =
+    if col_num = 0 then 0
+    else length_series data.(0)
+  in
+  let used = size in
+  (* check all the series have the same length *)
+  Array.iter (fun c -> assert (length_series c = size)) data;
+  (* return the generated frame *)
+  { data; head; used; size }
 
 
 let col_num x = Array.length x.data
@@ -412,7 +420,7 @@ let get_slice slice x =
 
 
 (* TODO *)
-let set_slice = None
+let set_slice x = raise Owl_exception.NOT_IMPLEMENTED
 
 
 let get_slice_by_name slice x =
@@ -429,7 +437,7 @@ let get_slice_by_name slice x =
 
 
 (* TODO *)
-let set_slice_by_name = None
+let set_slice_by_name x = raise Owl_exception.NOT_IMPLEMENTED
 
 
 let head n x =
@@ -496,7 +504,7 @@ let ( .$( ) ) x slice = get_slice_by_name slice x
 
 
 (* TODO *)
-let ( .$( )<- ) x idx a = None
+let ( .$( )<- ) x idx a = raise Owl_exception.NOT_IMPLEMENTED
 
 
 
