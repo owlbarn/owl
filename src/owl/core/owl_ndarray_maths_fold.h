@@ -290,9 +290,9 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 
 #include <string.h>
 
-CAMLprim value FUN27(value vX, value vY, value vN, value vXshape, value vAxes)
+CAMLprim value FUN27(value vX, value vY, value vN, value vXshape, value vFrd)
 {
-  CAMLparam5(vX, vY, vN, vXshape, vAxes);
+  CAMLparam5(vX, vY, vN, vXshape, vFrd);
 
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   NUMBER *x = (NUMBER *) X->data;
@@ -301,45 +301,29 @@ CAMLprim value FUN27(value vX, value vY, value vN, value vXshape, value vAxes)
 
   struct caml_ba_array *Xshape = Caml_ba_array_val(vXshape);
   int64_t *x_shape = (int64_t *) Xshape->data;
-  struct caml_ba_array *Axes = Caml_ba_array_val(vAxes);
-  int64_t *axes = (int64_t *) Axes->data;
 
   int N = Long_val(vN);
-  int ndim = X->num_dims;
-  int naxes = Axes->dim[0];
+  int ndim = Y->num_dims;
+  int frd = Long_val(vFrd);
 
   int strides[ndim];
   c_ndarray_stride(Y, strides);
-
-  for (int i = 0; i < naxes; i++) {
-    strides[axes[i]] = 0;
+  for (int i = frd; i < ndim; i+=2) {
+    strides[i] = 0;
   }
-  fprintf(stderr, "N:%d, ndim: %d, naxes:%d\n", N, ndim, naxes);
-
-  for (int i = 0; i < ndim; i++) {
-    fprintf(stderr, "%d ", strides[i]);
-  }
-  fprintf(stderr, "\n");
 
   int x_stride[ndim];
-  c_ndarray_stride(X, x_stride);
+  x_stride[ndim - 1] = 1;
+  for (int i = ndim - 2; i >= 0; i--) {
+    x_stride[i] = x_stride[i+1] * x_shape[i+1];
+  }
 
   caml_release_runtime_system();  /* Allow other threads */
-
-  NUMBER  *start_x = x;
 
   int counter[ndim];
   memset(counter, 0, ndim * sizeof(int));
 
   for (int ix = 0; ix < N; ix++) {
-
-
-    /* int cdiv = ix + 1, cmod = 0;
-    for (int j = ndim - 1; j >= 0; --j) {
-      cmod = cdiv % x_shape[j];
-      cdiv = cdiv / x_shape[j];
-      counter[j] = (cmod == 0) ? 0 : counter[j] + 1;
-    } */
 
     int cmod = ix;
     for (int j = 0; j < ndim; j++) {
@@ -347,25 +331,19 @@ CAMLprim value FUN27(value vX, value vY, value vN, value vXshape, value vAxes)
       cmod = cmod % x_stride[j];
     }
 
-    for (size_t k = 0; k < ndim; k++) {
-      fprintf(stderr, "%d ", counter[k]);
-    }
-    fprintf(stderr, " End of counter\n");
-
     int iy = 0;
     for (int j = 0; j < ndim; j++) {
       iy += strides[j] * counter[j];
     }
-    fprintf(stderr, "idy: %d\n", iy);
 
-    //ACCFN((x+ix), (y+iy));
-    *(y+iy) += *(x+ix);
+    ACCFN((x+ix), (y+iy));
   }
 
   caml_acquire_runtime_system();  /* Disallow other threads */
 
   CAMLreturn(Val_unit);
 }
+
 #endif /* FUN27 */
 
 #undef NUMBER
