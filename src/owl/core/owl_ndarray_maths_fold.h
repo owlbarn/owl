@@ -286,6 +286,35 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 
 #endif /* FUN26 */
 
+#ifdef FUN27
+CAMLprim value FUN27(value vX, value vY, value vN, value vYshape, value vAxes)
+{
+  CAMLparam5(vX, vY, vN, vYshape, vAxes);
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *x = (NUMBER *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  NUMBER1 *y = (NUMBER1 *) Y->data;
+
+  struct caml_ba_array *Yshape = Caml_ba_array_val(vYshape);
+  int64_t *y_shape = (int64_t *) Yshape->data;
+
+  struct caml_ba_array *Axes = Caml_ba_array_val(vAxes);
+  int64_t *axes = (int64_t *) Axes->data;
+
+  int N = Long_val(vN);
+
+  caml_release_runtime_system();  /* Allow other threads */
+
+  NUMBER  *start_x = x;
+  int incy = 0;
+
+  caml_acquire_runtime_system();  /* Disallow other threads */
+
+  CAMLreturn(Val_unit);
+}
+#endif /* FUN27 */
 
 #undef NUMBER
 #undef NUMBER1
@@ -302,6 +331,7 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 #undef FUN11
 #undef FUN23
 #undef FUN26
+#undef FUN27
 
 
 #endif /* OWL_ENABLE_TEMPLATE */

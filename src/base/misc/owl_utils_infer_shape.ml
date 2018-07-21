@@ -247,9 +247,9 @@ let draw shape axis n =
   s
 
 
-let reduce shape axis =
+let reduce shape axes =
   let d = Array.length shape in
-  let a = Array.map (fun i -> Owl_utils_ndarray.adjust_index i d) axis in
+  let a = Array.map (fun i -> Owl_utils_ndarray.adjust_index i d) axes in
   let s = Array.copy shape in
   Array.iter (fun i ->
     assert (i < d);

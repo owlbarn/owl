@@ -2351,6 +2351,14 @@
 #define ACCFN(X,Y) *Y += *X
 #include OWL_NDARRAY_MATHS_FOLD
 
+// sum_reduce
+
+#define FUN27 float32_sum_reduce
+#define NUMBER float
+#define NUMBER1 float
+#define ACCFN(X,Y) *Y += *X
+#include OWL_NDARRAY_MATHS_FOLD
+
 // prod
 
 #define FUN5 float32_prod

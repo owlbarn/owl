@@ -6095,6 +6095,46 @@ let sum_reduce ?axis x =
       _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
 
 
+let sum_reduce2 ?axis x =
+  let _kind = kind x in
+  let _dims = num_dims x in
+  match axis with
+  | Some a -> (
+      let x_shape = shape x in
+      let dims' = Owl_utils.squeeze_continuous_dims x_shape a in
+      if Array.length dims' = 1 then (
+        _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
+      )
+      else (
+        (* TODO: optimise with C implementation *)
+        let y_shape = Owl_utils_infer_shape.reduce x_shape a in
+        let y = empty _kind y_shape in
+        let x_size = numel x in
+        let y_shape' = y_shape |> Array.map Int64.of_int
+          |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+        let a' = a |> Array.map Int64.of_int
+          |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+        _owl_sum_reduce _kind x y x_size y_shape' a';
+        (*
+        let y = ref (reshape x dims') in
+        let flag = ref (Array.mem 0 a) in
+        for i = 0 to Array.length dims' - 1 do
+          if !flag = true then (
+            let m, n, o, s = Owl_utils.reduce_params i !y in
+            let z = zeros _kind s in
+            _owl_sum_along _kind m n o !y z;
+            y := z
+          );
+          flag := not !flag
+        done;
+        *)
+        reshape y y_shape
+      )
+    )
+  | None   ->
+      _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
+
+
 let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ~window x =
   let d = num_dims x in
   let a = if axis >= 0 then axis else d + axis in

@@ -1655,6 +1655,14 @@ let _owl_sum_along : type a b. (a, b) kind -> (a, b) owl_arr_op21 = function
   | Int64          -> owl_int64_sum_along
   | _              -> failwith "_owl_sum_along: unsupported operation"
 
+external owl_float32_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int ->
+(int64, 'c) owl_arr -> (int64, 'c) owl_arr -> unit = "float32_sum_reduce"
+
+let _owl_sum_reduce : type a b. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr
+  -> int -> (int64, 'c) owl_arr-> (int64, 'c) owl_arr -> unit = function
+  | Float32        -> owl_float32_sum_reduce
+  | _              -> failwith "_owl_sum: unsupported operation"
+
 external owl_float32_prod : int -> ('a, 'b) owl_arr -> 'a = "float32_prod"
 external owl_float64_prod : int -> ('a, 'b) owl_arr -> 'a = "float64_prod"
 external owl_complex32_prod : int -> ('a, 'b) owl_arr -> 'a = "complex32_prod"
