@@ -6108,9 +6108,9 @@ let sum_reduce2 ?axis x =
       else (
         (* TODO: optimise with C implementation *)
         let y_shape = Owl_utils_infer_shape.reduce x_shape a in
-        let y = empty _kind y_shape in
+        let y = zeros _kind y_shape in
         let x_size = numel x in
-        let y_shape' = y_shape |> Array.map Int64.of_int
+        let x_shape' = dims' |> Array.map Int64.of_int
           |> Array1.of_array int64 c_layout |> genarray_of_array1 in
         let a' = a |> Array.map Int64.of_int
           |> Array1.of_array int64 c_layout |> genarray_of_array1 in
