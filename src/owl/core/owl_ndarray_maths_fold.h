@@ -318,12 +318,19 @@ CAMLprim value FUN27(value vX, value vY, value vN, value vXshape, value vFrd)
     x_stride[i] = x_stride[i+1] * x_shape[i+1];
   }
 
+  int back_strides[ndim];
+  for (int i = 0; i < ndim; i++) {
+    back_strides[i] = (Y->dim[i] - 1) * strides[i];
+    //fprintf(stderr, "%d ", back_strides[i]);
+  }
+  //fprintf(stderr, "End of back_strides\n");
+
   caml_release_runtime_system();  /* Allow other threads */
 
   int counter[ndim];
   memset(counter, 0, ndim * sizeof(int));
 
-  for (int ix = 0; ix < N; ix++) {
+  /* for (int ix = 0; ix < N; ix++) {
 
     int cmod = ix;
     for (int j = 0; j < ndim; j++) {
@@ -337,6 +344,28 @@ CAMLprim value FUN27(value vX, value vY, value vN, value vXshape, value vFrd)
     }
 
     ACCFN((x+ix), (y+iy));
+  } */
+
+  int iy = 0;
+  for (int ix = 0; ix < N; ix++) {
+    ACCFN((x+ix), (y+iy));
+
+    for (int j = ndim - 1; j >= 0; j--) {
+      if (counter[j] + 1 == x_shape[j]) {
+        counter[j] = 0;
+        iy -= back_strides[j];
+      }
+      else {
+        counter[j]++;
+        iy += strides[j];
+        break;
+      }
+    }
+
+    /*for (int j = 0; j < ndim; j++) {
+      fprintf(stderr, "%d ", counter[j]);
+    }
+    fprintf(stderr, " end of counter\n"); */
   }
 
   caml_acquire_runtime_system();  /* Disallow other threads */
