@@ -1,6 +1,15 @@
-### 0.4.0 (in progress)
+### 0.4.0 (2018-07-25)
 
 * Fix some bugs and improve performance.
+* Introduce computation graph into the functor stack.
+* Optimise repeat and tile function in the core.
+* Adjust the OpenCL library according to computation graph.
+* Improve the API of Dataframe module.
+* Add more implementation of convolution operations.
+* Add dilated convolution functions.
+* Add transposed convolution functions.
+* Add more neurons into the Neural module.
+* Add more unit tests for core functions.
 
 
 ### 0.3.8 (2018-05-22)
