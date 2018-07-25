@@ -14,8 +14,7 @@ build: [
 
 depends: [
   "jbuilder" {build}
-  "ocaml-compiler-libs"
-  "owl"
+  "owl-base"
 ]
 
 available: [ ocaml-version >= "4.06.0" ]
