@@ -69,6 +69,11 @@ val set_output : handle -> string -> unit
 ``set_output``
  *)
 
+val get_output : handle -> string
+(**
+``get_output``
+ *)
+
 val set_title : handle -> string -> unit
 (**
 ``set_title``

@@ -505,6 +505,9 @@ let set_output h s =
   | false -> Owl_log.error "unsupported file type."
 
 
+let get_output h = h.output
+
+
 let set_title h s = (h.pages.(h.current_page)).title <- s
 
 
