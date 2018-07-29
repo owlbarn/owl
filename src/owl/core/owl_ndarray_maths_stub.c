@@ -2353,7 +2353,7 @@
 
 // sum_reduce
 
-#define FUN27 float32_sum_reduce
+#define FUN30 float32_sum_reduce
 #define NUMBER float
 #define NUMBER1 float
 #define ACCFN(X,Y) *Y += *X

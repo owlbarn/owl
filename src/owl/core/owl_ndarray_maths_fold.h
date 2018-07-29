@@ -286,11 +286,12 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 
 #endif /* FUN26 */
 
-#ifdef FUN27
+#ifdef FUN30
 
 #include <string.h>
+#include <sys/time.h>
 
-CAMLprim value FUN27(value vX, value vY, value vN, value vXshape, value vFrd)
+CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 {
   CAMLparam5(vX, vY, vN, vXshape, vFrd);
 
@@ -321,35 +322,16 @@ CAMLprim value FUN27(value vX, value vY, value vN, value vXshape, value vFrd)
   int back_strides[ndim];
   for (int i = 0; i < ndim; i++) {
     back_strides[i] = (Y->dim[i] - 1) * strides[i];
-    //fprintf(stderr, "%d ", back_strides[i]);
   }
-  //fprintf(stderr, "End of back_strides\n");
 
   caml_release_runtime_system();  /* Allow other threads */
 
   int counter[ndim];
   memset(counter, 0, ndim * sizeof(int));
 
-  /* for (int ix = 0; ix < N; ix++) {
-
-    int cmod = ix;
-    for (int j = 0; j < ndim; j++) {
-      counter[j] = cmod / x_stride[j];
-      cmod = cmod % x_stride[j];
-    }
-
-    int iy = 0;
-    for (int j = 0; j < ndim; j++) {
-      iy += strides[j] * counter[j];
-    }
-
-    ACCFN((x+ix), (y+iy));
-  } */
-
   int iy = 0;
   for (int ix = 0; ix < N; ix++) {
     ACCFN((x+ix), (y+iy));
-
     for (int j = ndim - 1; j >= 0; j--) {
       if (counter[j] + 1 == x_shape[j]) {
         counter[j] = 0;
@@ -361,11 +343,6 @@ CAMLprim value FUN27(value vX, value vY, value vN, value vXshape, value vFrd)
         break;
       }
     }
-
-    /*for (int j = 0; j < ndim; j++) {
-      fprintf(stderr, "%d ", counter[j]);
-    }
-    fprintf(stderr, " end of counter\n"); */
   }
 
   caml_acquire_runtime_system();  /* Disallow other threads */
@@ -373,7 +350,7 @@ CAMLprim value FUN27(value vX, value vY, value vN, value vXshape, value vFrd)
   CAMLreturn(Val_unit);
 }
 
-#endif /* FUN27 */
+#endif /* FUN30 */
 
 #undef NUMBER
 #undef NUMBER1
@@ -390,7 +367,7 @@ CAMLprim value FUN27(value vX, value vY, value vN, value vXshape, value vFrd)
 #undef FUN11
 #undef FUN23
 #undef FUN26
-#undef FUN27
+#undef FUN30
 
 
 #endif /* OWL_ENABLE_TEMPLATE */

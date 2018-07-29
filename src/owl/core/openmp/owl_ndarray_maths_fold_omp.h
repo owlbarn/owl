@@ -286,6 +286,14 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 
 #endif /* FUN26 */
 
+#ifdef FUN30
+
+CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
+{
+  CAMLparam5(vX, vY, vN, vXshape, vFrd);
+  CAMLreturn(Val_unit);
+}
+#endif /* FUN30 */
 
 #undef NUMBER
 #undef NUMBER1
@@ -302,6 +310,7 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 #undef FUN11
 #undef FUN23
 #undef FUN26
+#undef FUN30
 
 
 #endif /* OWL_ENABLE_TEMPLATE */
