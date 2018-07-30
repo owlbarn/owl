@@ -102,11 +102,18 @@ module Make (A : Ndarray_Mutable) = struct
   let get_cpu_ptr x_val =
     let cpu_mem = value_to_arr x_val in
     Ctypes.(bigarray_start genarray (Obj.magic cpu_mem))
+    |> Ctypes.to_voidp
 
 
   let get_gpu_ptr x_val =
     let gpu_mem = x_val.gpu_mem.(0) in
     Ctypes.allocate cl_mem gpu_mem
+
+
+  let get_cpu_mem x_val = x_val.cpu_mem.(0)
+
+
+  let get_gpu_mem x_val = x_val.gpu_mem.(0)
 
 
 end

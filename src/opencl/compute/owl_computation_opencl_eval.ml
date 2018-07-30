@@ -54,17 +54,17 @@ module Make
   let cpu_to_gpu_copy param x_val =
     let ctx, cmdq, _ = param in
     let cpu_ptr = Device.get_cpu_ptr x_val in
-    let gpu_mem = Device.(x_val.gpu_mem.(0)) in
+    let gpu_mem = Device.get_gpu_mem x_val in
     let size = size_in_bytes x_val in
-    Buffer.enqueue_write ~blocking:false cmdq gpu_mem 0 size (Ctypes.to_voidp cpu_ptr)
+    Buffer.enqueue_write ~blocking:false cmdq gpu_mem 0 size cpu_ptr
 
 
   let gpu_to_cpu_copy param x_val =
     let ctx, cmdq, _ = param in
     let cpu_ptr = Device.get_cpu_ptr x_val in
-    let gpu_mem = Device.(x_val.gpu_mem.(0)) in
+    let gpu_mem = Device.get_gpu_mem x_val in
     let size = size_in_bytes x_val in
-    Buffer.enqueue_read ~blocking:false cmdq gpu_mem 0 size (Ctypes.to_voidp cpu_ptr)
+    Buffer.enqueue_read ~blocking:false cmdq gpu_mem 0 size cpu_ptr
 
 
   (* update parents' validity *)
