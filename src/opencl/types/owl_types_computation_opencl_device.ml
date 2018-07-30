@@ -18,11 +18,11 @@ module type Sig = sig
   type device
   (** TODO *)
 
-  type cpu_mem = ArrVal of A.arr | EltVal of A.elt
+  type cpu_mem = A.arr
   (** TODO *)
 
   type value = {
-    mutable cpu_mem : cpu_mem array;
+    mutable cpu_mem : A.arr array;
     mutable gpu_mem : cl_mem array;
     mutable kernel  : cl_kernel array;
     mutable events  : cl_event array;
@@ -52,9 +52,6 @@ module type Sig = sig
 
 
   (** {6 OpenCL functions} *)
-
-  val elt_to_arr : value -> unit
-  (** TODO *)
 
   val make_value : cpu_mem array -> cl_mem array -> cl_kernel array -> cl_event array -> value
   (** TODO *)

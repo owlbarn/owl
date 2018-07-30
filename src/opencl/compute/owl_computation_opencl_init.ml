@@ -46,7 +46,7 @@ module Make
     if is_assigned x = false then (
       let x_shp = node_shape x in
       let cpu_mem = A.empty x_shp in
-      let new_val = Device.make_value [|ArrVal cpu_mem|] [||] [||] [||] in
+      let new_val = Device.make_value [|cpu_mem|] [||] [||] [||] in
       set_value x [| new_val |]
     )
 
@@ -57,7 +57,7 @@ module Make
       let cpu_mem = value_to_arr x_val in
       let flags = [ cl_MEM_USE_HOST_PTR ] in
       let gpu_mem = Buffer.create_bigarray ~flags ctx (Obj.magic cpu_mem) in
-      let new_val = Device.make_value [|ArrVal cpu_mem|] [|gpu_mem|] [||] [||] in
+      let new_val = Device.make_value [|cpu_mem|] [|gpu_mem|] [||] [||] in
       set_value x [| new_val |]
     )
 
@@ -269,32 +269,32 @@ module Make
         | Scalar_Div                                  -> _init_03 x param "div"
         | Scalar_Pow                                  -> _init_03 x param "pow"
         | Scalar_Atan2                                -> _init_03 x param "atan2"
-        | Scalar_Abs                                  -> _init_03 x param "abs"
-        | Scalar_Neg                                  -> _init_03 x param "neg"
-        | Scalar_Sqr                                  -> _init_03 x param "sqr"
-        | Scalar_Sqrt                                 -> _init_03 x param "sqrt"
-        | Scalar_Exp                                  -> _init_03 x param "exp"
-        | Scalar_Log                                  -> _init_03 x param "log"
-        | Scalar_Log2                                 -> _init_03 x param "log2"
-        | Scalar_Log10                                -> _init_03 x param "log10"
-        | Scalar_Signum                               -> _init_03 x param "signum"
-        | Scalar_Floor                                -> _init_03 x param "floor"
-        | Scalar_Ceil                                 -> _init_03 x param "ceil"
-        | Scalar_Round                                -> _init_03 x param "round"
-        | Scalar_Sin                                  -> _init_03 x param "sin"
-        | Scalar_Cos                                  -> _init_03 x param "cos"
-        | Scalar_Tan                                  -> _init_03 x param "tan"
-        | Scalar_Sinh                                 -> _init_03 x param "sinh"
-        | Scalar_Cosh                                 -> _init_03 x param "cosh"
-        | Scalar_Tanh                                 -> _init_03 x param "tanh"
-        | Scalar_Asin                                 -> _init_03 x param "asin"
-        | Scalar_Acos                                 -> _init_03 x param "acos"
-        | Scalar_Atan                                 -> _init_03 x param "atan"
-        | Scalar_Asinh                                -> _init_03 x param "asinh"
-        | Scalar_Acosh                                -> _init_03 x param "acosh"
-        | Scalar_Atanh                                -> _init_03 x param "atanh"
-        | Scalar_Relu                                 -> _init_03 x param "relu"
-        | Scalar_Sigmoid                              -> _init_03 x param "sigmoid"
+        | Scalar_Abs                                  -> _init_01 x param "abs"
+        | Scalar_Neg                                  -> _init_01 x param "neg"
+        | Scalar_Sqr                                  -> _init_01 x param "sqr"
+        | Scalar_Sqrt                                 -> _init_01 x param "sqrt"
+        | Scalar_Exp                                  -> _init_01 x param "exp"
+        | Scalar_Log                                  -> _init_01 x param "log"
+        | Scalar_Log2                                 -> _init_01 x param "log2"
+        | Scalar_Log10                                -> _init_01 x param "log10"
+        | Scalar_Signum                               -> _init_01 x param "signum"
+        | Scalar_Floor                                -> _init_01 x param "floor"
+        | Scalar_Ceil                                 -> _init_01 x param "ceil"
+        | Scalar_Round                                -> _init_01 x param "round"
+        | Scalar_Sin                                  -> _init_01 x param "sin"
+        | Scalar_Cos                                  -> _init_01 x param "cos"
+        | Scalar_Tan                                  -> _init_01 x param "tan"
+        | Scalar_Sinh                                 -> _init_01 x param "sinh"
+        | Scalar_Cosh                                 -> _init_01 x param "cosh"
+        | Scalar_Tanh                                 -> _init_01 x param "tanh"
+        | Scalar_Asin                                 -> _init_01 x param "asin"
+        | Scalar_Acos                                 -> _init_01 x param "acos"
+        | Scalar_Atan                                 -> _init_01 x param "atan"
+        | Scalar_Asinh                                -> _init_01 x param "asinh"
+        | Scalar_Acosh                                -> _init_01 x param "acosh"
+        | Scalar_Atanh                                -> _init_01 x param "atanh"
+        | Scalar_Relu                                 -> _init_01 x param "relu"
+        | Scalar_Sigmoid                              -> _init_01 x param "sigmoid"
         | Fused_Adagrad (rate, eps)                   -> _init_xx x param
         | _                                           -> failwith "owl_opencl_engine:_eval_term"
 
@@ -310,8 +310,6 @@ module Make
   (* varibles and consts *)
   and _init_00 x param =
     let ctx, cmdq, program = param in
-    if is_elt x = true then
-      Device.elt_to_arr (get_value x).(0);
     allocate_from_parent_0 ctx x
 
 
@@ -457,6 +455,8 @@ module Make
       Kernel.set_arg kernel (i+1) sizeof_cl_mem arg_ptr;
     ) args_val
 
+
+  (* Core functions to initislise a computation graph *)
 
   let init_nodes xs param = Array.iter (fun x -> _init_term x param) xs
 

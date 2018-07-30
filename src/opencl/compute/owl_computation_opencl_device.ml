@@ -19,7 +19,7 @@ module Make (A : Ndarray_Mutable) = struct
     initialised : bool;
   }
 
-  type cpu_mem = ArrVal of A.arr | EltVal of A.elt
+  type cpu_mem = A.arr
 
   type value = {
     mutable cpu_mem : cpu_mem array;
@@ -36,7 +36,7 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   let arr_to_value x =
-    let cpu_mem = [| ArrVal x |] in
+    let cpu_mem = [| x |] in
     let gpu_mem = [| |] in
     let kernel  = [| |] in
     let events  = [| |] in
@@ -44,13 +44,14 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   let value_to_arr x =
-    match x.cpu_mem.(0) with
-    | ArrVal v -> v
-    | _        -> failwith "value_to_arr: unsupported type"
+    if Array.length x.cpu_mem > 0 then
+      x.cpu_mem.(0)
+    else
+      failwith "value_to_arr: not evaluated yet"
 
 
   let elt_to_value x =
-    let cpu_mem = [| EltVal x |] in
+    let cpu_mem = [| A.create [| |] x |] in
     let gpu_mem = [| |] in
     let kernel  = [| |] in
     let events  = [| |] in
@@ -58,18 +59,13 @@ module Make (A : Ndarray_Mutable) = struct
 
 
   let value_to_elt x =
-    match x.cpu_mem.(0) with
-    | EltVal v -> v
-    | _        -> failwith "value_to_elt: unsupported type"
+    if Array.length x.cpu_mem > 0 then
+      A.get x.cpu_mem.(0) [| |]
+    else
+      failwith "value_to_elt: not evaluated yet"
 
 
   let value_to_float x = A.elt_to_float (value_to_elt x)
-
-
-  let elt_to_arr x =
-    let v = value_to_elt x in
-    let a = A.create [|1|] v in
-    x.cpu_mem <- [| ArrVal a |]
 
 
   let make_value cpu_mem gpu_mem kernel events =

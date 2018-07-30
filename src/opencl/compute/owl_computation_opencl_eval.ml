@@ -226,38 +226,38 @@ module Make
         | Transpose axis                              -> _eval_map_xx x
         | ToRows                                      -> failwith "ToRows"
         | OfRows                                      -> failwith "OfRows"
-        | Scalar_Add                                  -> _eval_map_xx x
-        | Scalar_Sub                                  -> _eval_map_xx x
-        | Scalar_Mul                                  -> _eval_map_xx x
-        | Scalar_Div                                  -> _eval_map_xx x
-        | Scalar_Pow                                  -> _eval_map_xx x
-        | Scalar_Atan2                                -> _eval_map_xx x
-        | Scalar_Abs                                  -> _eval_map_xx x
-        | Scalar_Neg                                  -> _eval_map_xx x
-        | Scalar_Sqr                                  -> _eval_map_xx x
-        | Scalar_Sqrt                                 -> _eval_map_xx x
-        | Scalar_Exp                                  -> _eval_map_xx x
-        | Scalar_Log                                  -> _eval_map_xx x
-        | Scalar_Log2                                 -> _eval_map_xx x
-        | Scalar_Log10                                -> _eval_map_xx x
-        | Scalar_Signum                               -> _eval_map_xx x
-        | Scalar_Floor                                -> _eval_map_xx x
-        | Scalar_Ceil                                 -> _eval_map_xx x
-        | Scalar_Round                                -> _eval_map_xx x
-        | Scalar_Sin                                  -> _eval_map_xx x
-        | Scalar_Cos                                  -> _eval_map_xx x
-        | Scalar_Tan                                  -> _eval_map_xx x
-        | Scalar_Sinh                                 -> _eval_map_xx x
-        | Scalar_Cosh                                 -> _eval_map_xx x
-        | Scalar_Tanh                                 -> _eval_map_xx x
-        | Scalar_Asin                                 -> _eval_map_xx x
-        | Scalar_Acos                                 -> _eval_map_xx x
-        | Scalar_Atan                                 -> _eval_map_xx x
-        | Scalar_Asinh                                -> _eval_map_xx x
-        | Scalar_Acosh                                -> _eval_map_xx x
-        | Scalar_Atanh                                -> _eval_map_xx x
-        | Scalar_Relu                                 -> _eval_map_xx x
-        | Scalar_Sigmoid                              -> _eval_map_xx x
+        | Scalar_Add                                  -> _eval_map_02 x param
+        | Scalar_Sub                                  -> _eval_map_02 x param
+        | Scalar_Mul                                  -> _eval_map_02 x param
+        | Scalar_Div                                  -> _eval_map_02 x param
+        | Scalar_Pow                                  -> _eval_map_02 x param
+        | Scalar_Atan2                                -> _eval_map_02 x param
+        | Scalar_Abs                                  -> _eval_map_01 x param
+        | Scalar_Neg                                  -> _eval_map_01 x param
+        | Scalar_Sqr                                  -> _eval_map_01 x param
+        | Scalar_Sqrt                                 -> _eval_map_01 x param
+        | Scalar_Exp                                  -> _eval_map_01 x param
+        | Scalar_Log                                  -> _eval_map_01 x param
+        | Scalar_Log2                                 -> _eval_map_01 x param
+        | Scalar_Log10                                -> _eval_map_01 x param
+        | Scalar_Signum                               -> _eval_map_01 x param
+        | Scalar_Floor                                -> _eval_map_01 x param
+        | Scalar_Ceil                                 -> _eval_map_01 x param
+        | Scalar_Round                                -> _eval_map_01 x param
+        | Scalar_Sin                                  -> _eval_map_01 x param
+        | Scalar_Cos                                  -> _eval_map_01 x param
+        | Scalar_Tan                                  -> _eval_map_01 x param
+        | Scalar_Sinh                                 -> _eval_map_01 x param
+        | Scalar_Cosh                                 -> _eval_map_01 x param
+        | Scalar_Tanh                                 -> _eval_map_01 x param
+        | Scalar_Asin                                 -> _eval_map_01 x param
+        | Scalar_Acos                                 -> _eval_map_01 x param
+        | Scalar_Atan                                 -> _eval_map_01 x param
+        | Scalar_Asinh                                -> _eval_map_01 x param
+        | Scalar_Acosh                                -> _eval_map_01 x param
+        | Scalar_Atanh                                -> _eval_map_01 x param
+        | Scalar_Relu                                 -> _eval_map_01 x param
+        | Scalar_Sigmoid                              -> _eval_map_01 x param
         | Fused_Adagrad (rate, eps)                   -> _eval_map_xx x
         | _                                           -> failwith "owl_opencl_engine:_eval_term"
 
