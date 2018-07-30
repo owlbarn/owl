@@ -56,7 +56,7 @@ module type Sig = sig
   val make_value : cpu_mem array -> cl_mem array -> cl_kernel array -> cl_event array -> value
   (** TODO *)
 
-  val copy_cpu_gpu_mem : value -> value
+  val refer_value : value -> value
   (** TODO *)
 
   val get_events : value -> cl_event array

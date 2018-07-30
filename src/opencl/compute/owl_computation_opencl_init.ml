@@ -88,7 +88,7 @@ module Make
   let allocate_from_parent_1 ctx x parent =
     let parent_val = (get_value parent).(0) in
     if refnum parent = 1 && get_reuse parent then (
-      set_value x [| Device.copy_cpu_gpu_mem parent_val |];
+      set_value x [| Device.refer_value parent_val |];
       set_vnode x [| parent |]
     )
     else
@@ -104,11 +104,11 @@ module Make
     let shp_x = Owl_utils_infer_shape.broadcast1 shp_0 shp_1 in
 
     if shp_0 = shp_x && refnum parent_0 = 1 && get_reuse parent_0 then (
-      set_value x [| Device.copy_cpu_gpu_mem parent_0_val |];
+      set_value x [| Device.refer_value parent_0_val |];
       set_vnode x [| parent_0 |]
     )
     else if shp_1 = shp_x && refnum parent_1 = 1 && get_reuse parent_1 then (
-      set_value x [| Device.copy_cpu_gpu_mem parent_1_val |];
+      set_value x [| Device.refer_value parent_1_val |];
       set_vnode x [| parent_1 |]
     )
     else

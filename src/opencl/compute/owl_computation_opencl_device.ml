@@ -72,7 +72,7 @@ module Make (A : Ndarray_Mutable) = struct
     { cpu_mem; gpu_mem; kernel; events }
 
 
-  let copy_cpu_gpu_mem x_val =
+  let refer_value x_val =
     let cpu_mem = Array.copy x_val.cpu_mem in
     let gpu_mem = Array.copy x_val.gpu_mem in
     let kernel = [| |] in

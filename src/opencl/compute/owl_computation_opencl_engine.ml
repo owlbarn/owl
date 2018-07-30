@@ -56,7 +56,9 @@ module Make_Nested
     eval_gen dev_id nodes
 
 
-  let eval_graph graph = failwith "not implemented yet"
+  let eval_graph ?(dev_id=0) graph =
+    Graph.invalidate_rvs graph;
+    Graph.get_outputs graph |> eval_gen dev_id
 
 
 end
