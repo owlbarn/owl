@@ -116,7 +116,7 @@ module Make
         | Noop                                        -> _init_xx x param
         | Var                                         -> _init_00 x param
         | Const                                       -> _init_00 x param
-        | Empty shape                                 -> _init_xx x param
+        | Empty shape                                 -> _init_00 x param
         | Zeros shape                                 -> _init_xx x param
         | Ones shape                                  -> _init_xx x param
         | Create shape                                -> _init_xx x param
