@@ -99,4 +99,14 @@ module Make (A : Ndarray_Mutable) = struct
   let set_kernel x_val kernel = x_val.kernel <- [| kernel |]
 
 
+  let get_cpu_ptr x_val =
+    let cpu_mem = value_to_arr x_val in
+    Ctypes.(bigarray_start genarray (Obj.magic cpu_mem))
+
+
+  let get_gpu_ptr x_val =
+    let gpu_mem = x_val.gpu_mem.(0) in
+    Ctypes.allocate cl_mem gpu_mem
+
+
 end

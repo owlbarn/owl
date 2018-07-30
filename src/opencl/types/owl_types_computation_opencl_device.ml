@@ -77,5 +77,11 @@ module type Sig = sig
   val set_kernel : value -> cl_kernel -> unit
   (** TODO *)
 
+  val get_cpu_ptr : value -> 'a Ctypes.ptr
+  (** TODO *)
+
+  val get_gpu_ptr : value -> cl_mem Ctypes.ptr
+  (** TODO *)
+
 
 end

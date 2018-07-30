@@ -67,21 +67,6 @@ module Make
     allocate_gpu_buffer ctx x
 
 
-  let get_cpu_ptr x_val =
-    let cpu_mem = Device.value_to_arr x_val in
-    Ctypes.(bigarray_start genarray (Obj.magic cpu_mem))
-
-
-  let get_gpu_ptr x_val =
-    let gpu_mem = Device.(x_val.gpu_mem.(0)) in
-    Ctypes.allocate cl_mem gpu_mem
-
-
-  let get_elt_ptr x_val =
-    let elt_mem = value_to_float x_val in
-    Ctypes.allocate Ctypes.float elt_mem
-
-
   let allocate_from_parent_0 ctx x = allocate_cpu_gpu_buffer ctx x
 
 
@@ -307,7 +292,7 @@ module Make
   and _init_xx x param = ()
 
 
-  (* varibles and consts *)
+  (* varibles, consts, creation *)
   and _init_00 x param =
     let ctx, cmdq, program = param in
     allocate_from_parent_0 ctx x
@@ -320,8 +305,8 @@ module Make
 
     let ctx, cmdq, program = param in
     allocate_from_parent_1 ctx x parent;
-    let a_ptr = get_gpu_ptr (get_value parent).(0) in
-    let b_ptr = get_gpu_ptr (get_value x).(0) in
+    let a_ptr = Device.get_gpu_ptr (get_value parent).(0) in
+    let b_ptr = Device.get_gpu_ptr (get_value x).(0) in
 
     let kernel = make_kernel x program fun_name in
     Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
@@ -354,9 +339,9 @@ module Make
 
     let ctx, cmdq, program = param in
     allocate_from_parent_2 ctx x parent_0 parent_1;
-    let a_ptr = get_gpu_ptr (get_value parent_0).(0) in
-    let b_ptr = get_gpu_ptr (get_value parent_1).(0) in
-    let c_ptr = get_gpu_ptr (get_value x).(0) in
+    let a_ptr = Device.get_gpu_ptr (get_value parent_0).(0) in
+    let b_ptr = Device.get_gpu_ptr (get_value parent_1).(0) in
+    let c_ptr = Device.get_gpu_ptr (get_value x).(0) in
 
     let kernel = make_kernel x program fun_name in
     Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
@@ -376,9 +361,9 @@ module Make
     let parent_0_val = (get_value parent_0).(0) in
     let parent_1_val = (get_value parent_1).(0) in
     let x_val = (get_value x).(0) in
-    let a_ptr = get_gpu_ptr parent_0_val in
-    let b_ptr = get_gpu_ptr parent_1_val in
-    let c_ptr = get_gpu_ptr x_val in
+    let a_ptr = Device.get_gpu_ptr parent_0_val in
+    let b_ptr = Device.get_gpu_ptr parent_1_val in
+    let c_ptr = Device.get_gpu_ptr x_val in
 
     let dim = A.shape (value_to_arr x_val) |> Array.length in
     let dim_i32 = Int32.of_int dim in
@@ -413,8 +398,8 @@ module Make
 
     let ctx, cmdq, program = param in
     allocate_from_parent_0 ctx x;
-    let a_ptr = get_gpu_ptr (get_value parent).(0) in
-    let b_ptr = get_gpu_ptr (get_value x).(0) in
+    let a_ptr = Device.get_gpu_ptr (get_value parent).(0) in
+    let b_ptr = Device.get_gpu_ptr (get_value x).(0) in
 
     let parent_shape = A.shape (value_to_arr (get_value parent).(0)) in
     let dim_i32 = Int32.of_int parent_shape.(axis) in
@@ -451,7 +436,7 @@ module Make
     Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem streams_ptr;
     let args_val = Array.append parents_val [| (get_value x).(0) |] in
     Array.iteri (fun i arg_val ->
-      let arg_ptr = get_gpu_ptr arg_val in
+      let arg_ptr = Device.get_gpu_ptr arg_val in
       Kernel.set_arg kernel (i+1) sizeof_cl_mem arg_ptr;
     ) args_val
 
@@ -459,7 +444,6 @@ module Make
   (* Core functions to initislise a computation graph *)
 
   let init_nodes xs param = Array.iter (fun x -> _init_term x param) xs
-
 
 
 end

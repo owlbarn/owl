@@ -40,16 +40,6 @@ module Make
     Owl_utils_stack.to_array stack
 
 
-  let get_cpu_ptr x_val =
-    let cpu_mem = Device.value_to_arr x_val in
-    Ctypes.(bigarray_start genarray (Obj.magic cpu_mem))
-
-
-  let get_gpu_ptr x_val =
-    let gpu_mem = Device.(x_val.gpu_mem.(0)) in
-    Ctypes.allocate cl_mem gpu_mem
-
-
   let size_in_bytes x_val =
     let cpu_mem = Device.value_to_arr x_val in
     let n = A.numel cpu_mem in
@@ -63,7 +53,7 @@ module Make
 
   let cpu_to_gpu_copy param x_val =
     let ctx, cmdq, _ = param in
-    let cpu_ptr = get_cpu_ptr x_val in
+    let cpu_ptr = Device.get_cpu_ptr x_val in
     let gpu_mem = Device.(x_val.gpu_mem.(0)) in
     let size = size_in_bytes x_val in
     Buffer.enqueue_write ~blocking:false cmdq gpu_mem 0 size (Ctypes.to_voidp cpu_ptr)
@@ -71,7 +61,7 @@ module Make
 
   let gpu_to_cpu_copy param x_val =
     let ctx, cmdq, _ = param in
-    let cpu_ptr = get_cpu_ptr x_val in
+    let cpu_ptr = Device.get_cpu_ptr x_val in
     let gpu_mem = Device.(x_val.gpu_mem.(0)) in
     let size = size_in_bytes x_val in
     Buffer.enqueue_read ~blocking:false cmdq gpu_mem 0 size (Ctypes.to_voidp cpu_ptr)
