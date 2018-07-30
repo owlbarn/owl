@@ -26,7 +26,7 @@ module Make_Nested
 
   (* core interface *)
 
-  let eval_elt ?(dev_id=0) xs =
+  let eval_gen dev_id nodes =
     let ctx = Owl_opencl_context.(get_opencl_ctx default) in
     let dev = Owl_opencl_context.(get_dev default dev_id) in
     let cmdq = Owl_opencl_context.(get_cmdq default dev) in
@@ -34,7 +34,6 @@ module Make_Nested
     let param = (ctx, cmdq, prog) in
 
     (* initialise the computation graph *)
-    let nodes = Array.map elt_to_node xs in
     CG_Init.init_nodes nodes param;
 
     Array.iter (fun y ->
@@ -45,27 +44,16 @@ module Make_Nested
     ) nodes;
 
     Owl_opencl_base.CommandQueue.finish cmdq
+
+
+  let eval_elt ?(dev_id=0) xs =
+    let nodes = Array.map elt_to_node xs in
+    eval_gen dev_id nodes
 
 
   let eval_arr ?(dev_id=0) xs =
-    let ctx = Owl_opencl_context.(get_opencl_ctx default) in
-    let dev = Owl_opencl_context.(get_dev default dev_id) in
-    let cmdq = Owl_opencl_context.(get_cmdq default dev) in
-    let prog = Owl_opencl_context.(get_program default) in
-    let param = (ctx, cmdq, prog) in
-
-    (* initialise the computation graph *)
     let nodes = Array.map arr_to_node xs in
-    CG_Init.init_nodes nodes param;
-
-    Array.iter (fun y ->
-      CG_Eval._eval_term y param;
-      (* read the results from buffer *)
-      let y_val = (get_value y).(0) in
-      CG_Eval.gpu_to_cpu_copy param y_val |> ignore
-    ) nodes;
-
-    Owl_opencl_base.CommandQueue.finish cmdq
+    eval_gen dev_id nodes
 
 
   let eval_graph graph = failwith "not implemented yet"
