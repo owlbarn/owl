@@ -18,3 +18,5 @@
 #include "owl_opencl_kernel_stats.h"
 
 #include "owl_opencl_kernel_broadcast.h"
+
+#include "owl_opencl_kernel_create.h"

@@ -117,9 +117,9 @@ module Make
         | Var                                         -> _init_00 x param
         | Const                                       -> _init_00 x param
         | Empty shape                                 -> _init_00 x param
-        | Zeros shape                                 -> _init_xx x param
-        | Ones shape                                  -> _init_xx x param
-        | Create shape                                -> _init_xx x param
+        | Zeros shape                                 -> _init_10 x param "zeros"
+        | Ones shape                                  -> _init_10 x param "ones"
+        | Create shape                                -> _init_10 x param "create"
         | Sequential                                  -> failwith "Sequential"
         | Uniform shape                               -> _init_20 x param "uniform"
         | Gaussian                                    -> failwith "Gaussian"
@@ -414,6 +414,24 @@ module Make
     Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
     Kernel.set_arg kernel 2 sizeof_int32 dim_ptr;
     Kernel.set_arg kernel 3 sizeof_int32 stride_ptr
+
+
+  (* f : arr array -> arr, non-broadcasting *)
+  and _init_10 x param fun_name =
+    let parents_val = Array.map (fun parent ->
+      _init_term parent param;
+      (get_value parent).(0)
+    ) (parents x)
+    in
+
+    let ctx, cmdq, program = param in
+    allocate_from_parent_0 ctx x;
+    let kernel = make_kernel x program fun_name in
+    let args_val = Array.append parents_val [| (get_value x).(0) |] in
+    Array.iteri (fun i arg_val ->
+      let arg_ptr = Device.get_gpu_ptr arg_val in
+      Kernel.set_arg kernel i sizeof_cl_mem arg_ptr;
+    ) args_val
 
 
   (* f : arr array -> arr, pseudo random number generators *)

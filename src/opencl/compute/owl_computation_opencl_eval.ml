@@ -84,12 +84,12 @@ module Make
         | Noop                                        -> _eval_map_xx x
         | Var                                         -> _eval_map_00 x param
         | Const                                       -> _eval_map_00 x param
-        | Empty shape                                 -> _eval_map_xx x
-        | Zeros shape                                 -> _eval_map_xx x
-        | Ones shape                                  -> _eval_map_xx x
-        | Create shape                                -> _eval_map_xx x
+        | Empty shape                                 -> _eval_map_00 x param
+        | Zeros shape                                 -> _eval_map_01 x param
+        | Ones shape                                  -> _eval_map_01 x param
+        | Create shape                                -> _eval_map_01 x param
         | Sequential                                  -> failwith "Sequential"
-        | Uniform shape                               -> _eval_map_20 x param
+        | Uniform shape                               -> _eval_map_01 x param
         | Gaussian                                    -> failwith "Gaussian"
         | Bernoulli (p, shape)                        -> _eval_map_xx x
         | Init (shape, f)                             -> failwith "Init"
@@ -148,40 +148,40 @@ module Make
         | L2NormSqr'                                  -> _eval_map_xx x
         | ClipByValue                                 -> failwith "ClipByValue"
         | ClipByL2norm                                -> failwith "ClipByL2norm"
-        | Pow                                         -> _eval_map_02 x param
-        | ScalarPow                                   -> _eval_map_02 x param
-        | PowScalar                                   -> _eval_map_02 x param
-        | Atan2                                       -> _eval_map_02 x param
-        | ScalarAtan2                                 -> _eval_map_02 x param
-        | Atan2Scalar                                 -> _eval_map_02 x param
-        | Hypot                                       -> _eval_map_02 x param
-        | Min2                                        -> _eval_map_02 x param
-        | Max2                                        -> _eval_map_02 x param
-        | Add                                         -> _eval_map_02 x param
-        | Sub                                         -> _eval_map_02 x param
-        | Mul                                         -> _eval_map_02 x param
-        | Div                                         -> _eval_map_02 x param
-        | AddScalar                                   -> _eval_map_02 x param
-        | SubScalar                                   -> _eval_map_02 x param
-        | MulScalar                                   -> _eval_map_02 x param
-        | DivScalar                                   -> _eval_map_02 x param
-        | ScalarAdd                                   -> _eval_map_02 x param
-        | ScalarSub                                   -> _eval_map_02 x param
-        | ScalarMul                                   -> _eval_map_02 x param
-        | ScalarDiv                                   -> _eval_map_02 x param
+        | Pow                                         -> _eval_map_01 x param
+        | ScalarPow                                   -> _eval_map_01 x param
+        | PowScalar                                   -> _eval_map_01 x param
+        | Atan2                                       -> _eval_map_01 x param
+        | ScalarAtan2                                 -> _eval_map_01 x param
+        | Atan2Scalar                                 -> _eval_map_01 x param
+        | Hypot                                       -> _eval_map_01 x param
+        | Min2                                        -> _eval_map_01 x param
+        | Max2                                        -> _eval_map_01 x param
+        | Add                                         -> _eval_map_01 x param
+        | Sub                                         -> _eval_map_01 x param
+        | Mul                                         -> _eval_map_01 x param
+        | Div                                         -> _eval_map_01 x param
+        | AddScalar                                   -> _eval_map_01 x param
+        | SubScalar                                   -> _eval_map_01 x param
+        | MulScalar                                   -> _eval_map_01 x param
+        | DivScalar                                   -> _eval_map_01 x param
+        | ScalarAdd                                   -> _eval_map_01 x param
+        | ScalarSub                                   -> _eval_map_01 x param
+        | ScalarMul                                   -> _eval_map_01 x param
+        | ScalarDiv                                   -> _eval_map_01 x param
         | FMA                                         -> _eval_map_xx x
-        | EltEqual                                    -> _eval_map_02 x param
-        | EltNotEqual                                 -> _eval_map_02 x param
-        | EltLess                                     -> _eval_map_02 x param
-        | EltGreater                                  -> _eval_map_02 x param
-        | EltLessEqual                                -> _eval_map_02 x param
-        | EltGreaterEqual                             -> _eval_map_02 x param
-        | EltEqualScalar                              -> _eval_map_02 x param
-        | EltNotEqualScalar                           -> _eval_map_02 x param
-        | EltLessScalar                               -> _eval_map_02 x param
-        | EltGreaterScalar                            -> _eval_map_02 x param
-        | EltLessEqualScalar                          -> _eval_map_02 x param
-        | EltGreaterEqualScalar                       -> _eval_map_02 x param
+        | EltEqual                                    -> _eval_map_01 x param
+        | EltNotEqual                                 -> _eval_map_01 x param
+        | EltLess                                     -> _eval_map_01 x param
+        | EltGreater                                  -> _eval_map_01 x param
+        | EltLessEqual                                -> _eval_map_01 x param
+        | EltGreaterEqual                             -> _eval_map_01 x param
+        | EltEqualScalar                              -> _eval_map_01 x param
+        | EltNotEqualScalar                           -> _eval_map_01 x param
+        | EltLessScalar                               -> _eval_map_01 x param
+        | EltGreaterScalar                            -> _eval_map_01 x param
+        | EltLessEqualScalar                          -> _eval_map_01 x param
+        | EltGreaterEqualScalar                       -> _eval_map_01 x param
         | Conv1d (padding, stride)                    -> _eval_map_xx x
         | Conv2d (padding, stride)                    -> _eval_map_xx x
         | Conv3d (padding, stride)                    -> _eval_map_xx x
@@ -216,12 +216,12 @@ module Make
         | Transpose axis                              -> _eval_map_xx x
         | ToRows                                      -> failwith "ToRows"
         | OfRows                                      -> failwith "OfRows"
-        | Scalar_Add                                  -> _eval_map_02 x param
-        | Scalar_Sub                                  -> _eval_map_02 x param
-        | Scalar_Mul                                  -> _eval_map_02 x param
-        | Scalar_Div                                  -> _eval_map_02 x param
-        | Scalar_Pow                                  -> _eval_map_02 x param
-        | Scalar_Atan2                                -> _eval_map_02 x param
+        | Scalar_Add                                  -> _eval_map_01 x param
+        | Scalar_Sub                                  -> _eval_map_01 x param
+        | Scalar_Mul                                  -> _eval_map_01 x param
+        | Scalar_Div                                  -> _eval_map_01 x param
+        | Scalar_Pow                                  -> _eval_map_01 x param
+        | Scalar_Atan2                                -> _eval_map_01 x param
         | Scalar_Abs                                  -> _eval_map_01 x param
         | Scalar_Neg                                  -> _eval_map_01 x param
         | Scalar_Sqr                                  -> _eval_map_01 x param
@@ -271,36 +271,8 @@ module Make
     )
 
 
-  (* [f] is inpure, for [arr -> arr] *)
+  (* [f] is inpure, for [arr array -> arr] *)
   and _eval_map_01 x param =
-    let parent = (parents x).(0) in
-    _eval_term parent param;
-
-    let ctx, cmdq, program = param in
-    let kernel = (get_value x).(0).kernel.(0) in
-    let items = [ node_numel x ] in
-    let wait_for = aggregate_events (parents x) |> Array.to_list in
-    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 items in
-    Device.append_events (get_value x).(0) [| event |]
-
-
-  (* [f] is inpure, for [arr -> arr -> arr] *)
-  and _eval_map_02 x param =
-    let parent_0 = (parents x).(0) in
-    let parent_1 = (parents x).(1) in
-    _eval_term parent_0 param;
-    _eval_term parent_1 param;
-
-    let ctx, cmdq, program = param in
-    let kernel = (get_value x).(0).kernel.(0) in
-    let items = [ node_numel x ] in
-    let wait_for = aggregate_events (parents x) |> Array.to_list in
-    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 items in
-    Device.append_events (get_value x).(0) [| event |]
-
-
-  (* for random generators *)
-  and _eval_map_20 x param =
     Array.iter (fun parent -> _eval_term parent param) (parents x);
 
     let ctx, cmdq, program = param in
