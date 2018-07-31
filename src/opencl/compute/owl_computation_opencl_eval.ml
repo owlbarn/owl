@@ -89,9 +89,9 @@ module Make
         | Ones shape                                  -> _eval_map_01 x param
         | Create shape                                -> _eval_map_01 x param
         | Sequential shape                            -> _eval_map_01 x param
-        | Uniform shape                               -> _eval_map_01 x param
-        | Gaussian shape                              -> _eval_map_01 x param
-        | Bernoulli shape                             -> _eval_map_01 x param
+        | Uniform shape                               -> _eval_map_02 x param
+        | Gaussian shape                              -> _eval_map_02 x param
+        | Bernoulli shape                             -> _eval_map_02 x param
         | Init (shape, f)                             -> failwith "Init"
         | Get i                                       -> _eval_map_xx x
         | Set i                                       -> failwith "Set"
@@ -278,6 +278,21 @@ module Make
     let ctx, cmdq, program = param in
     let kernel = (get_value x).(0).kernel.(0) in
     let items = [ node_numel x ] in
+    let wait_for = aggregate_events (parents x) |> Array.to_list in
+    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 items in
+    Device.append_events (get_value x).(0) [| event |]
+
+
+  (* [f] is inpure, for [arr array -> arr], for PRNG *)
+  and _eval_map_02 x param =
+    Array.iter (fun parent -> _eval_term parent param) (parents x);
+
+    let ctx, cmdq, program = param in
+    let kernel = (get_value x).(0).kernel.(0) in
+
+    let numpu = Owl_opencl_hardware.processing_units () in
+    let limit = node_numel x in
+    let items = [ Owl_opencl_utils.calc_opt_chunk numpu limit |> fst ] in
     let wait_for = aggregate_events (parents x) |> Array.to_list in
     let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 items in
     Device.append_events (get_value x).(0) [| event |]

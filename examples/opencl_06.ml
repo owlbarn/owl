@@ -82,5 +82,5 @@ let test_06 a =
 let _ =
   Owl_log.(set_level DEBUG);
   let a = Dense.Ndarray.S.ones [|2000; 2000|] in
-  let b = test_06 a in
+  let b = test_03 a in
   Dense.Ndarray.Generic.pp_dsnda Format.std_formatter b

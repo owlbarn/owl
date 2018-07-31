@@ -445,17 +445,24 @@ module Make
     let ctx, cmdq, program = param in
     allocate_from_parent_0 ctx x;
 
-    let items = node_numel x in
+    let numpu = Owl_opencl_hardware.processing_units () in
+    let limit = node_numel x in
+    let items, chunk = calc_opt_chunk numpu limit in
+    let chunk_ptr = Ctypes.(allocate int32_t) (Int32.of_int chunk) in
+    let limit_ptr = Ctypes.(allocate int32_t) (Int32.of_int limit) in
+
     let streams = Owl_opencl_prng_philox.make items in
     let streams_buf = Owl_opencl_prng_philox.make_stream_buffer ctx streams in
     let streams_ptr = Ctypes.allocate cl_mem streams_buf in
 
     let kernel = make_kernel x program fun_name in
-    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem streams_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_int32 chunk_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_int32 limit_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem streams_ptr;
     let args_val = Array.append parents_val [| (get_value x).(0) |] in
     Array.iteri (fun i arg_val ->
       let arg_ptr = Device.get_gpu_ptr arg_val in
-      Kernel.set_arg kernel (i+1) sizeof_cl_mem arg_ptr;
+      Kernel.set_arg kernel (i+3) sizeof_cl_mem arg_ptr;
     ) args_val
 
 
