@@ -28,4 +28,20 @@ __kernel void CLFUN51 (__global TYPE *a, __global TYPE *b)
 #endif /* CLFUN51 */
 
 
+#ifdef CLFUN52
+
+__kernel void CLFUN52 (
+  __global TYPE *a,
+  __global TYPE *b,
+  __global TYPE *c)
+{
+  int gid = get_global_id(0);
+  TYPE start = a[0];
+  TYPE step = b[0];
+  MAPFUN(c[gid],start,step,gid);
+}
+
+#endif /* CLFUN52 */
+
+
 #endif /* OWL_ENABLE_TEMPLATE */

@@ -18,7 +18,7 @@ let test_01 () =
   Owl_log.info "a = %g" a
 
 
-let test_02 a =
+let test_02 () =
   let x = M.ones [|3; 4|] in
   let y = M.uniform [|3; 4|] in
   let z = M.add x y in
@@ -27,6 +27,27 @@ let test_02 a =
   Dense.Ndarray.S.print a
 
 
+let test_03 () =
+  let a = M.const_elt "a" 1. in
+  let x = M.sequential ~a [|3; 4|] in
+  let y = M.uniform [|3; 4|] in
+  let z = M.add x y in
+  M.eval_arr ~dev_id:1 [|z|];
+  let a = M.unpack_arr z in
+  Dense.Ndarray.S.print a
+
+
+let test_04 () =
+  let a = M.const_elt "v" 5. in
+  let b = M.const_elt "v" 5. in
+  let x = M.create [|10; 10|] a in
+  let y = M.uniform ~b [|10; 10|] in
+  let z = M.add x y in
+  M.eval_arr ~dev_id:1 [|z|];
+  let a = M.unpack_arr z in
+  Dense.Ndarray.S.print a
+
+
 let _ =
   Owl_log.(set_level DEBUG);
-  test_02 ()
+  test_04 ()

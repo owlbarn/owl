@@ -36,6 +36,15 @@
 #undef CLFUN51
 
 
+#define CLFUN52 owl_opencl_float32_sequential
+#define TYPE float
+#define MAPFUN(X,START,STEP,I) X = START + I * STEP
+#include "owl_opencl_kernel_create_impl.h"
+#undef MAPFUN
+#undef TYPE
+#undef CLFUN52
+
+
 //////////////////// function templates ends ////////////////////
 
 #undef OWL_ENABLE_TEMPLATE

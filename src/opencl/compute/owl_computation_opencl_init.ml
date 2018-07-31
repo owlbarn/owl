@@ -120,7 +120,7 @@ module Make
         | Zeros shape                                 -> _init_10 x param "zeros"
         | Ones shape                                  -> _init_10 x param "ones"
         | Create shape                                -> _init_10 x param "create"
-        | Sequential                                  -> failwith "Sequential"
+        | Sequential                                  -> _init_10 x param "sequential"
         | Uniform shape                               -> _init_20 x param "uniform"
         | Gaussian                                    -> failwith "Gaussian"
         | Bernoulli (p, shape)                        -> _init_xx x param
