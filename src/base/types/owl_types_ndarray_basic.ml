@@ -34,7 +34,7 @@ module type Sig = sig
 
   val gaussian : ?mu:elt -> ?sigma:elt -> int array -> arr
 
-  val bernoulli : ?p:float -> int array -> arr
+  val bernoulli : ?p:elt -> int array -> arr
 
   val init : int array -> (int -> elt) -> arr
 

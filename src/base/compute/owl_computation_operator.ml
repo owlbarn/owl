@@ -76,8 +76,13 @@ module Make
     make_then_connect ~shape:[|Some shape|] (Gaussian shape) [|elt_to_node a; elt_to_node b|]
     |> node_to_arr
 
-  let bernoulli ?(p=0.5) shape =
-    make_node ~shape:[|Some shape|] (Bernoulli (p, shape)) |> node_to_arr
+  let bernoulli ?p shape =
+    let p = match p with
+      | Some p -> p
+      | None   -> const_elt "bernoulli_p" (A.float_to_elt 0.5)
+    in
+    make_then_connect ~shape:[|Some shape|] (Bernoulli shape) [|elt_to_node p|]
+    |> node_to_arr
 
   let init shape f =
     make_node ~shape:[|Some shape|] (Init (shape, f)) |> node_to_arr

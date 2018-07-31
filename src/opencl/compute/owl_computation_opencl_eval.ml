@@ -91,7 +91,7 @@ module Make
         | Sequential shape                            -> _eval_map_01 x param
         | Uniform shape                               -> _eval_map_01 x param
         | Gaussian shape                              -> _eval_map_01 x param
-        | Bernoulli (p, shape)                        -> _eval_map_xx x
+        | Bernoulli shape                             -> _eval_map_01 x param
         | Init (shape, f)                             -> failwith "Init"
         | Get i                                       -> _eval_map_xx x
         | Set i                                       -> failwith "Set"

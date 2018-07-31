@@ -123,7 +123,7 @@ module Make
         | Sequential shape                            -> _init_10 x param "sequential"
         | Uniform shape                               -> _init_20 x param "uniform"
         | Gaussian shape                              -> _init_20 x param "gaussian"
-        | Bernoulli (p, shape)                        -> _init_xx x param
+        | Bernoulli shape                             -> _init_20 x param "bernoulli"
         | Init (shape, f)                             -> failwith "Init"
         | Get i                                       -> _init_xx x param
         | Set i                                       -> failwith "Set"

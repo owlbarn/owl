@@ -38,8 +38,8 @@ let test_03 () =
 
 
 let test_04 () =
-  let a = M.const_elt "v" 5. in
-  let b = M.const_elt "v" 5. in
+  let a = M.const_elt "a" 5. in
+  let b = M.const_elt "b" 5. in
   let x = M.create [|10; 10|] a in
   let y = M.uniform ~b [|10; 10|] in
   let z = M.add x y in
@@ -48,6 +48,14 @@ let test_04 () =
   Dense.Ndarray.S.print a
 
 
+let test_05 () =
+  let p = M.const_elt "p" 0.3 in
+  let x = M.bernoulli ~p [|10; 10|] in
+  M.eval_arr ~dev_id:1 [|x|];
+  let a = M.unpack_arr x in
+  Dense.Ndarray.S.print a
+
+
 let _ =
   Owl_log.(set_level DEBUG);
-  test_04 ()
+  test_05 ()

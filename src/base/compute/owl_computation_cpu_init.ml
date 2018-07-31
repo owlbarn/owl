@@ -115,7 +115,7 @@ module Make
         | Sequential shape                            -> _init_00 x
         | Uniform shape                               -> _init_00 x
         | Gaussian shape                              -> _init_00 x
-        | Bernoulli (p, shape)                        -> _init_00 x
+        | Bernoulli shape                             -> _init_00 x
         | Init (shape, f)                             -> _init_00 x
         | Get i                                       -> _init_05 x
         | Set i                                       -> failwith "Set"

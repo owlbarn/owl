@@ -41,7 +41,7 @@ module Make
         | Sequential shape                            -> pattern_000 x
         | Uniform shape                               -> pattern_000 x
         | Gaussian shape                              -> pattern_000 x
-        | Bernoulli (p, shape)                        -> pattern_000 x
+        | Bernoulli shape                             -> pattern_000 x
         | Init (shape, f)                             -> pattern_000 x
         | Get i                                       -> pattern_000 x
         | Set i                                       -> pattern_000 x

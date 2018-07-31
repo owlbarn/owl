@@ -140,7 +140,7 @@ module Make (A : Ndarray_Mutable) : sig
   val gaussian : ?mu:elt -> ?sigma:elt -> int array -> arr
   (** TODO *)
 
-  val bernoulli : ?p:float -> int array -> arr
+  val bernoulli : ?p:elt -> int array -> arr
   (** TODO *)
 
   val init : int array -> (int -> elt) -> arr

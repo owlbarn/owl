@@ -36,7 +36,7 @@ module Make
     | Sequential shape                            -> "Sequential"
     | Uniform shape                               -> "Uniform"
     | Gaussian shape                              -> "Gaussian"
-    | Bernoulli (p, shape)                        -> Printf.sprintf "Bernoulli p:%g" p
+    | Bernoulli shape                             -> "Bernoulli"
     | Init (shape, f)                             -> "Init"
     | Get i                                       -> "Get"
     | Set i                                       -> "Set"
@@ -217,10 +217,10 @@ module Make
   (* utility functions *)
 
   let is_random_variable = function
-    | Uniform shape        -> true
-    | Gaussian shape       -> true
-    | Bernoulli (p, shape) -> true
-    | _                    -> false
+    | Uniform shape   -> true
+    | Gaussian shape  -> true
+    | Bernoulli shape -> true
+    | _               -> false
 
 
   let refnum x = Owl_graph.outdegree x

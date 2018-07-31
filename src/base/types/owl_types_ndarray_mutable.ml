@@ -19,7 +19,7 @@ module type Sig = sig
 
   val sequential_ :?a:elt -> ?step:elt -> out:arr -> unit
 
-  val bernoulli_ : ?p:float -> out:arr -> unit
+  val bernoulli_ : ?p:elt -> out:arr -> unit
 
   val zeros_ : out:arr -> unit
 

@@ -52,7 +52,7 @@ module type Sig = sig
     | Sequential                    of int array
     | Uniform                       of int array
     | Gaussian                      of int array
-    | Bernoulli                     of float * (int array)
+    | Bernoulli                     of int array
     | Init                          of int array * (int -> elt)
     | Get                           of int array
     | Set                           of int array

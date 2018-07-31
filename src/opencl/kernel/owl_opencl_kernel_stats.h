@@ -68,3 +68,21 @@ __kernel void owl_opencl_float32_gaussian (
 
   clrngPhilox432CopyOverStreamsToGlobal(1, &streams[gid], &private_stream);
 }
+
+
+__kernel void owl_opencl_float32_bernoulli (
+  __global clrngPhilox432HostStream* streams,
+  __global const float* ga,
+  __global float* out)
+{
+  int gid = get_global_id(0);
+  clrngPhilox432Stream private_stream;
+  clrngPhilox432CopyOverStreamsFromGlobal(1, &private_stream, &streams[gid]);
+
+  float e1 = 1. / 2.718281828459045235360287471352662498;
+  float p = ga[0];
+  float u = clrngPhilox432RandomU01_cl_float(&private_stream);
+  out[gid] = u < p;
+
+  clrngPhilox432CopyOverStreamsToGlobal(1, &streams[gid], &private_stream);
+}
