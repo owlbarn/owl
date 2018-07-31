@@ -38,9 +38,9 @@ module Make
         | Zeros shape                                 -> pattern_000 x
         | Ones shape                                  -> pattern_000 x
         | Create shape                                -> pattern_000 x
-        | Sequential                                  -> pattern_000 x
+        | Sequential shape                            -> pattern_000 x
         | Uniform shape                               -> pattern_000 x
-        | Gaussian                                    -> pattern_000 x
+        | Gaussian shape                              -> pattern_000 x
         | Bernoulli (p, shape)                        -> pattern_000 x
         | Init (shape, f)                             -> pattern_000 x
         | Get i                                       -> pattern_000 x

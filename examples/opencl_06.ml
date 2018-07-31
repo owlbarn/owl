@@ -27,6 +27,7 @@ let test_03 a =
     M.(arr_to_node x |> invalidate);
     M.eval_arr ~dev_id:1 [|x|]
   in
+  Owl_log.info "PRNG uniform ...";
   Owl_log.info "PRNG #1: %.g ms" (Utils.time f);
   Owl_log.info "PRNG #2: %.g ms" (Utils.time f);
   Owl_log.info "PRNG #3: %.g ms" (Utils.time f);
@@ -61,8 +62,25 @@ let test_05 a =
   M.unpack_arr y
 
 
+let test_06 a =
+  Owl_log.(set_level INFO);
+  let mu = M.const_elt "mu" 10. in
+  let x = M.gaussian ~mu [|2000; 2000|] in
+  let f () =
+    M.(arr_to_node x |> invalidate);
+    M.eval_arr ~dev_id:1 [|x|]
+  in
+  Owl_log.info "PRNG gaussian ...";
+  Owl_log.info "PRNG #1: %.g ms" (Utils.time f);
+  Owl_log.info "PRNG #2: %.g ms" (Utils.time f);
+  Owl_log.info "PRNG #3: %.g ms" (Utils.time f);
+  Owl_log.info "PRNG #4: %.g ms" (Utils.time f);
+  Owl_log.info "PRNG #5: %.g ms" (Utils.time f);
+  M.unpack_arr x
+
+
 let _ =
   Owl_log.(set_level DEBUG);
   let a = Dense.Ndarray.S.ones [|2000; 2000|] in
-  let b = test_03 a in
+  let b = test_06 a in
   Dense.Ndarray.Generic.pp_dsnda Format.std_formatter b

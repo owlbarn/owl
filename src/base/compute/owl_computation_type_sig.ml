@@ -49,9 +49,9 @@ module type Sig = sig
     | Zeros                         of int array
     | Ones                          of int array
     | Create                        of int array
-    | Sequential
+    | Sequential                    of int array
     | Uniform                       of int array
-    | Gaussian
+    | Gaussian                      of int array
     | Bernoulli                     of float * (int array)
     | Init                          of int array * (int -> elt)
     | Get                           of int array

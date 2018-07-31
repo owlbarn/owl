@@ -88,9 +88,9 @@ module Make
         | Zeros shape                                 -> _eval_map_01 x param
         | Ones shape                                  -> _eval_map_01 x param
         | Create shape                                -> _eval_map_01 x param
-        | Sequential                                  -> _eval_map_01 x param
+        | Sequential shape                            -> _eval_map_01 x param
         | Uniform shape                               -> _eval_map_01 x param
-        | Gaussian                                    -> failwith "Gaussian"
+        | Gaussian shape                              -> _eval_map_01 x param
         | Bernoulli (p, shape)                        -> _eval_map_xx x
         | Init (shape, f)                             -> failwith "Init"
         | Get i                                       -> _eval_map_xx x

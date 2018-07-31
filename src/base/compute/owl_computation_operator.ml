@@ -49,7 +49,7 @@ module Make
       | Some b -> b
       | None   -> const_elt "sequential_step" (A.float_to_elt 1.)
     in
-    make_then_connect ~shape:[|Some shape|] Sequential [|elt_to_node a; elt_to_node b|]
+    make_then_connect ~shape:[|Some shape|] (Sequential shape) [|elt_to_node a; elt_to_node b|]
     |> node_to_arr
 
   let uniform ?a ?b shape =
@@ -73,7 +73,7 @@ module Make
       | Some b -> b
       | None   -> const_elt "sequential_step" (A.float_to_elt 1.)
     in
-    make_then_connect ~shape:[|Some shape|] Gaussian [|elt_to_node a; elt_to_node b|]
+    make_then_connect ~shape:[|Some shape|] (Gaussian shape) [|elt_to_node a; elt_to_node b|]
     |> node_to_arr
 
   let bernoulli ?(p=0.5) shape =

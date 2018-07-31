@@ -33,9 +33,9 @@ module Make
     | Zeros shape                                 -> "Zeros"
     | Ones shape                                  -> "Ones"
     | Create shape                                -> "Create"
-    | Sequential                                  -> "Sequential"
+    | Sequential shape                            -> "Sequential"
     | Uniform shape                               -> "Uniform"
-    | Gaussian                                    -> "Gaussian"
+    | Gaussian shape                              -> "Gaussian"
     | Bernoulli (p, shape)                        -> Printf.sprintf "Bernoulli p:%g" p
     | Init (shape, f)                             -> "Init"
     | Get i                                       -> "Get"
@@ -218,7 +218,7 @@ module Make
 
   let is_random_variable = function
     | Uniform shape        -> true
-    | Gaussian             -> true
+    | Gaussian shape       -> true
     | Bernoulli (p, shape) -> true
     | _                    -> false
 

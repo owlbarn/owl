@@ -112,9 +112,9 @@ module Make
         | Zeros shape                                 -> _init_00 x
         | Ones shape                                  -> _init_00 x
         | Create shape                                -> _init_00 x
-        | Sequential                                  -> _init_00 x
+        | Sequential shape                            -> _init_00 x
         | Uniform shape                               -> _init_00 x
-        | Gaussian                                    -> _init_00 x
+        | Gaussian shape                              -> _init_00 x
         | Bernoulli (p, shape)                        -> _init_00 x
         | Init (shape, f)                             -> _init_00 x
         | Get i                                       -> _init_05 x

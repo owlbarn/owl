@@ -43,9 +43,9 @@ module Make
         | Zeros shape                                 -> _eval_map_01 x (fun ~out x -> A.zeros_ ~out)
         | Ones shape                                  -> _eval_map_01 x (fun ~out x -> A.ones_ ~out)
         | Create shape                                -> _eval_map_02 x (fun ~out x -> A.create_ ~out x.(0))
-        | Sequential                                  -> _eval_map_02 x (fun ~out x -> A.sequential_ ~a:x.(0) ~step:x.(1) ~out)
+        | Sequential shape                            -> _eval_map_02 x (fun ~out x -> A.sequential_ ~a:x.(0) ~step:x.(1) ~out)
         | Uniform shape                               -> _eval_map_02 x (fun ~out x -> A.uniform_ ~a:x.(0) ~b:x.(1) ~out)
-        | Gaussian                                    -> _eval_map_02 x (fun ~out x -> A.gaussian_ ~mu:x.(0) ~sigma:x.(1) ~out)
+        | Gaussian shape                              -> _eval_map_02 x (fun ~out x -> A.gaussian_ ~mu:x.(0) ~sigma:x.(1) ~out)
         | Bernoulli (p, shape)                        -> _eval_map_01 x (fun ~out x -> A.bernoulli_ ~p ~out)
         | Init (shape, f)                             -> failwith "Init"
         | Get i                                       -> _eval_map_06 x (fun x -> A.get x i)
