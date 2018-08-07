@@ -21,12 +21,6 @@ let example_02 gist_path =
 
 
 let example_03 gist_path =
-  let fname = gist_path ^ "estate.csv" in
-  let df = Dataframe.of_csv ~sep:',' fname in
-  Owl_pretty.pp_dataframe Format.std_formatter df
-
-
-let example_04 gist_path =
   let fname = gist_path ^ "insurance.csv" in
   let types =  [|"i";"s";"s";"f";"f";"f";"f";"f";"f";"f";"f";"f";"f";"f";"f";"s";"s";"i"|] in
   let d0 = Dataframe.of_csv ~sep:',' ~types fname in
@@ -36,11 +30,19 @@ let example_04 gist_path =
   Owl_pretty.pp_dataframe Format.std_formatter d1
 
 
+(* examples for automatic infer types and separators *)
+
+let example_04 gist_path =
+  let fname = gist_path ^ "estate.csv" in
+  let df = Dataframe.of_csv fname in
+  Owl_pretty.pp_dataframe Format.std_formatter df
+
+
 let example_05 gist_path =
   let fname = gist_path ^ "estate.csv" in
-  let d0 = Dataframe.of_csv ~sep:',' fname in
+  let d0 = Dataframe.of_csv fname in
   let d1 = Dataframe.(d0.?(fun row -> (unpack_string row.(7)) = "Condo")) in
-  let d2 = Dataframe.(d0.?(fun row -> (unpack_string row.(7)) = "Condo").?(fun row -> (unpack_string row.(4)) = "2")) in
+  let d2 = Dataframe.(d0.?(fun row -> (unpack_string row.(7)) = "Condo").?(fun row -> (unpack_int row.(4)) = 2)) in
   Owl_pretty.pp_dataframe Format.std_formatter d2
 
 

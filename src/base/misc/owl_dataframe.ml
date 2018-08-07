@@ -140,6 +140,14 @@ let elt_to_str = function
   | Any      -> ""
 
 
+let series_type_to_str = function
+  | Bool_Series c   -> "b"
+  | Int_Series c    -> "i"
+  | Float_Series c  -> "f"
+  | String_Series c -> "s"
+  | Any_Series      -> "a"
+
+
 let str_to_elt_fun = function
   | "b" -> fun a -> Bool (bool_of_string a)
   | "i" -> fun a -> Int (int_of_string a)
@@ -183,6 +191,9 @@ let shape x = row_num x, col_num x
 
 
 let numel x = (row_num x) * (col_num x)
+
+
+let types x = Array.map series_type_to_str x.data
 
 
 let append_row x row =
@@ -479,10 +490,12 @@ let guess_separator lines =
 
 
 let guess_types sep lines =
-  (* No need to add "s" since it is default type *)
+  (* Note: no need to add "s" since it is default type *)
+  (* ... *)
   let typ = [|"b"; "i"; "f"|] in
   let num_lines = Array.length lines in
-  assert (num_lines > 0);
+  (* at least two lines because the first one will be dropped *)
+  assert (num_lines > 1);
 
   let num_cols = lines.(0)
     |> String.trim
@@ -492,10 +505,11 @@ let guess_types sep lines =
 
   (* split into separate columns *)
   let stacks = Array.init num_cols (fun _ -> Owl_utils_stack.make ()) in
-  Array.iter (fun line ->
-    String.trim line
-    |> String.split_on_char sep
-    |> List.iteri (fun i c -> Owl_utils_stack.push stacks.(i) c)
+  Array.iteri (fun i line ->
+    if i > 0 then
+      String.trim line
+      |> String.split_on_char sep
+      |> List.iteri (fun i c -> Owl_utils_stack.push stacks.(i) c)
   ) lines;
   let cols = Array.map Owl_utils_stack.to_array stacks in
 
@@ -510,7 +524,8 @@ let guess_types sep lines =
           (
             try
               Array.iter (fun x ->
-                if String.length x > 0 then typ_fun x |> ignore
+                let y = String.trim x in
+                typ_fun y |> ignore
               ) col
             with exn -> wrong_guess := true
           );

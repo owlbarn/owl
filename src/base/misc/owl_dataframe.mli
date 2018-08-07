@@ -89,6 +89,9 @@ val shape : t -> int * int
 val numel : t -> int
 (** ``numel x`` returns the number of elements in ``x``. *)
 
+val types : t -> string array
+(** ``types x`` returns the string representation of column types. *)
+
 val get_heads : t -> string array
 (** ``get_heads x`` returns the column names of ``x``. *)
 
