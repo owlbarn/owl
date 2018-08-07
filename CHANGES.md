@@ -1,3 +1,9 @@
+### 0.4.1 (in progress)
+
+* Improve the APIs of Dataframe module.
+* Add more functions in Utils module.
+
+
 ### 0.4.0 (2018-07-25)
 
 * Fix some bugs and improve performance.
