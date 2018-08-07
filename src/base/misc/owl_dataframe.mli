@@ -171,6 +171,18 @@ val append_row : t -> elt array -> unit
 val append_col : t -> series -> string -> unit
 (** ``append_col x col`` appends a column to the dataframe ``x``. *)
 
+val insert_row : t -> int -> elt array -> unit
+(**
+``insert_row x i row`` inserts one ``row`` with at position ``i`` into
+dataframe ``x``.
+ *)
+
+val insert_col : t -> int -> string -> series -> unit
+(**
+``insert_col x j col_head s`` inserts series ``s`` with column head ``col_head``
+at position ``j`` into dataframe ``x``.
+ *)
+
 val remove_row : t -> int -> unit
 (**
 ``remove_row x i`` removes the ``ith`` row of ``x``. Negative index is

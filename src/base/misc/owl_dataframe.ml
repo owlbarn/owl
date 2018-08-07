@@ -140,6 +140,14 @@ let remove_ith_elt i = function
   | Any_Series      -> Any_Series
 
 
+let insert_ith_elt i e = function
+  | Bool_Series c   -> Bool_Series (Owl_utils_array.insert c [|unpack_bool e|] i)
+  | Int_Series c    -> Int_Series (Owl_utils_array.insert c [|unpack_int e|] i)
+  | Float_Series c  -> Float_Series (Owl_utils_array.insert c [|unpack_float e|] i)
+  | String_Series c -> String_Series (Owl_utils_array.insert c [|unpack_string e|] i)
+  | Any_Series      -> Any_Series
+
+
 let elt_to_str = function
   | Bool a   -> string_of_bool a
   | Int a    -> string_of_int a
@@ -247,9 +255,7 @@ let set_heads x head_names =
 
 
 let remove_row x i =
-  let n = row_num x in
-  let i = if i < 0 then n + i else i in
-  assert (i >= 0 && i < n);
+  let i = Owl_utils_ndarray.adjust_index i (row_num x) in
   let new_data = Array.map (fun s -> remove_ith_elt i s) x.data in
   x.data <- new_data;
   x.used <- x.used - 1;
@@ -257,11 +263,37 @@ let remove_row x i =
 
 
 let remove_col x j =
-  let n = col_num x in
-  let j = if j < 0 then n + j else j in
-  assert (j >= 0 && j < n);
+  let j = Owl_utils_ndarray.adjust_index j (col_num x) in
   x.data <- Owl_utils_array.filteri (fun i _ -> i <> j) x.data;
   let new_head = Owl_utils_array.filteri (fun i _ -> i <> j) (get_heads x) in
+  set_heads x new_head
+
+
+let insert_row x i row =
+  let i = Owl_utils_ndarray.adjust_index i (row_num x) in
+  if x.size = 0 then (
+    let n = 16 in
+    x.data <- Array.map (init_series n) row;
+    x.size <- n;
+    x.used <- 1
+  )
+  else (
+    if x.used = x.size then (
+      x.data <- allocate_space x.data;
+      x.size <- length_series x.data.(0)
+    );
+    let new_data = Array.mapi (fun j s -> insert_ith_elt i row.(j) s) x.data in
+    x.data <- new_data;
+    x.used <- x.used + 1;
+    x.size <- x.size + 1
+  )
+
+
+let insert_col x j col_head col =
+  let j = Owl_utils_ndarray.adjust_index j (col_num x) in
+  let new_data = Owl_utils_array.insert x.data [|col|] j in
+  x.data <- new_data;
+  let new_head = Owl_utils_array.insert (get_heads x) [|col_head|] j in
   set_heads x new_head
 
 
