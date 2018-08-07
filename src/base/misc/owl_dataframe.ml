@@ -452,7 +452,44 @@ let tail n x =
   get_slice [[-n;-1];[]] x
 
 
+let infer_separator fname =
+  let stack = Owl_utils.Stack.make () in
+  (
+    try
+      Owl_io.iteri_lines_of_file (fun i s ->
+        if i > 99 then raise Owl_exception.FOUND;
+        String.trim s |> Owl_utils.Stack.push stack;
+      ) fname
+    with exn -> ()
+  );
+  let lines = Owl_utils.Stack.to_array stack in
+
+  let sep = [|','; ' '; '\t'; ';'; ':'; '|'|] in
+  let not_sep = ref true in
+  let sep_idx = ref 0 in
+
+  while !not_sep = true do
+    let c = sep.(!sep_idx) in
+    let n = String.split_on_char c lines.(0) |> List.length in
+    (
+      try (
+        Array.iter (fun line ->
+          let m = String.split_on_char c line |> List.length in
+          if m <> n then raise Owl_exception.FOUND
+        ) lines;
+        not_sep := false
+      )
+      with exn -> ()
+    );
+    if !not_sep = true then sep_idx := !sep_idx + 1
+  done;
+
+  if !not_sep = false then Some sep.(!sep_idx)
+  else None
+
+
 let of_csv ?sep ?head ?types fname =
+  let sep = infer_separator fname in
   let head_i = 0 in
   let head_names = match head with
     | Some a -> a
