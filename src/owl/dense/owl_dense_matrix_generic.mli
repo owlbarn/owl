@@ -1152,8 +1152,11 @@ float array of length ``(numel x)``.
 
 val of_array : ('a, 'b) kind -> 'a array -> int -> int -> ('a, 'b) t
 (**
-``of_array x m n`` converts a float array ``x`` into an ``m`` by ``n`` matrix. Note the
-length of ``x`` must be equal to ``(m * n)``.
+``of_array x m n`` converts a float array ``x`` into an ``m`` by ``n`` matrix.
+Note the length of ``x`` must be equal to ``(m * n)``.
+
+Similar to ``reshape`` function, you can pass in one negative index to let Owl
+automatically infer its dimension.
  *)
 
 val to_arrays : ('a, 'b) t -> 'a array array
