@@ -452,18 +452,7 @@ let tail n x =
   get_slice [[-n;-1];[]] x
 
 
-let infer_separator fname =
-  let stack = Owl_utils.Stack.make () in
-  (
-    try
-      Owl_io.iteri_lines_of_file (fun i s ->
-        if i > 99 then raise Owl_exception.FOUND;
-        String.trim s |> Owl_utils.Stack.push stack;
-      ) fname
-    with exn -> ()
-  );
-  let lines = Owl_utils.Stack.to_array stack in
-
+let guess_separator lines =
   let sep = [|','; ' '; '\t'; ';'; ':'; '|'|] in
   let not_sep = ref true in
   let sep_idx = ref 0 in
@@ -484,31 +473,84 @@ let infer_separator fname =
     if !not_sep = true then sep_idx := !sep_idx + 1
   done;
 
-  if !not_sep = false then Some sep.(!sep_idx)
-  else None
+  (* if cannot detect, return comma as default sep *)
+  if !not_sep = false then sep.(!sep_idx)
+  else ','
+
+
+let guess_types sep lines =
+  (* No need to add "s" since it is default type *)
+  let typ = [|"b"; "i"; "f"|] in
+  let num_lines = Array.length lines in
+  assert (num_lines > 0);
+
+  let num_cols = lines.(0)
+    |> String.trim
+    |> String.split_on_char sep
+    |> List.length
+  in
+
+  (* split into separate columns *)
+  let stacks = Array.init num_cols (fun _ -> Owl_utils_stack.make ()) in
+  Array.iter (fun line ->
+    String.trim line
+    |> String.split_on_char sep
+    |> List.iteri (fun i c -> Owl_utils_stack.push stacks.(i) c)
+  ) lines;
+  let cols = Array.map Owl_utils_stack.to_array stacks in
+
+  (* guess the types of columns *)
+  Array.mapi (fun i col ->
+    let guess_typ = ref "s" in
+    (
+      try
+        Array.iter (fun col_typ ->
+          let typ_fun = str_to_elt_fun col_typ in
+          let wrong_guess = ref false in
+          (
+            try
+              Array.iter (fun x ->
+                if String.length x > 0 then typ_fun x |> ignore
+              ) col
+            with exn -> wrong_guess := true
+          );
+          if !wrong_guess = false then (
+            guess_typ := col_typ;
+            raise Owl_exception.FOUND
+          )
+        ) typ
+      with exn -> ()
+    );
+    !guess_typ
+  ) cols
 
 
 let of_csv ?sep ?head ?types fname =
-  let sep = infer_separator fname in
+  let lines = Owl_io.head 100 fname in
+  let sep = match sep with
+    | Some a -> a
+    | None   -> guess_separator lines
+  in
   let head_i = 0 in
   let head_names = match head with
     | Some a -> a
-    | None   -> Owl_io.csv_head ?sep head_i fname
+    | None   -> Owl_io.csv_head ~sep head_i fname
   in
   let types = match types with
     | Some a -> a
-    | None   -> Array.map (fun _ -> "s") head_names
+    | None   -> guess_types sep lines
   in
   assert (Array.length head_names = Array.length types);
   let convert_f = Array.map str_to_elt_fun types in
   let dataframe = make head_names in
-  Owl_io.read_csv_proc ?sep (fun i line ->
+  Owl_io.read_csv_proc ~sep (fun i line ->
     try
       if i <> head_i then (
         let row = Array.map2 (fun f a -> f a) convert_f line in
         append_row dataframe row
       )
-    with exn -> Owl_log.warn "of_csv: fail to parse line#%i" i
+    with exn ->
+      Owl_log.warn "of_csv: fail to parse line#%i @ %s" i fname
   ) fname;
   dataframe
 
