@@ -132,6 +132,14 @@ let slice_series slice = function
   | Any_Series      -> Any_Series
 
 
+let remove_ith_elt i = function
+  | Bool_Series c   -> Bool_Series (Owl_utils_array.remove c i)
+  | Int_Series c    -> Int_Series (Owl_utils_array.remove c i)
+  | Float_Series c  -> Float_Series (Owl_utils_array.remove c i)
+  | String_Series c -> String_Series (Owl_utils_array.remove c i)
+  | Any_Series      -> Any_Series
+
+
 let elt_to_str = function
   | Bool a   -> string_of_bool a
   | Int a    -> string_of_int a
@@ -236,6 +244,25 @@ let set_heads x head_names =
     Hashtbl.add head s i
   ) head_names;
   x.head <- head
+
+
+let remove_row x i =
+  let n = row_num x in
+  let i = if i < 0 then n + i else i in
+  assert (i >= 0 && i < n);
+  let new_data = Array.map (fun s -> remove_ith_elt i s) x.data in
+  x.data <- new_data;
+  x.used <- x.used - 1;
+  x.size <- x.size - 1
+
+
+let remove_col x j =
+  let n = col_num x in
+  let j = if j < 0 then n + j else j in
+  assert (j >= 0 && j < n);
+  x.data <- Owl_utils_array.filteri (fun i _ -> i <> j) x.data;
+  let new_head = Owl_utils_array.filteri (fun i _ -> i <> j) (get_heads x) in
+  set_heads x new_head
 
 
 let id_to_head x i = (get_heads x).(i)
@@ -491,7 +518,6 @@ let guess_separator lines =
 
 let guess_types sep lines =
   (* Note: no need to add "s" since it is default type *)
-  (* ... *)
   let typ = [|"b"; "i"; "f"|] in
   let num_lines = Array.length lines in
   (* at least two lines because the first one will be dropped *)

@@ -171,6 +171,18 @@ val append_row : t -> elt array -> unit
 val append_col : t -> series -> string -> unit
 (** ``append_col x col`` appends a column to the dataframe ``x``. *)
 
+val remove_row : t -> int -> unit
+(**
+``remove_row x i`` removes the ``ith`` row of ``x``. Negative index is
+accepted.
+ *)
+
+val remove_col : t -> int -> unit
+(**
+``remove_col x i`` removes the ``ith`` column of ``x``. Negative index is
+accepted.
+ *)
+
 val concat_horizontal : t -> t -> t
 (**
 ``concat_horizontal x y`` merges two dataframes ``x`` and ``y``. Note that
