@@ -117,9 +117,7 @@ let _enumerate_slice_def dim ?(step) start stop =
     | Some x -> x
     | None   -> if (start <= stop) then 1 else -1
   in
-  let _ =
-    assert (((start <= stop) && (step > 0)) || ((start > stop) && (step < 0)))
-  in
+  assert (((start <= stop) && (step > 0)) || ((start > stop) && (step < 0)));
   let step_abs = Pervasives.abs step in
   let len = ((Pervasives.abs (stop - start)) + step_abs) / step_abs in
   (Array.init len (fun i -> start + i * step))
@@ -143,30 +141,41 @@ let _expand_slice_indices index_list dims =
        (fun p -> Array.init dims.(p + sdef_len) (fun i -> i)))
 
 
+let reset x =
+  let _kind = Genarray.kind x in
+  Genarray.fill x (Owl_const.zero _kind)
+
 
 let empty kind dims = Genarray.create kind c_layout dims
 
 
 let create kind dims value =
-  let varr = empty kind dims in
-  Genarray.fill varr value;
-  varr
+  let x = empty kind dims in
+  Genarray.fill x value;
+  x
+
+
+let create_ ~out a = Genarray.fill out a
+
 
 let zeros kind dims = create kind dims (Owl_const.zero kind)
+
+
+let zeros_ ~out = reset out
 
 
 let ones kind dims = create kind dims (Owl_const.one kind)
 
 
-(* return the shape of the ndarray *)
+let ones_ ~out = Genarray.(fill out (Owl_const.one (kind out)))
+
+
 let shape varr = Genarray.dims varr
 
 
-(* return the rank of the ndarray *)
 let num_dims varr = Array.length (shape varr)
 
 
-(* return the number of elements in the ndarray*)
 let numel varr =
   let v_shape = shape varr in
   Array.fold_left ( * ) 1 v_shape
@@ -191,17 +200,15 @@ let get_slice index_list varr =
   let slice_ind = Array.make rank 0 in
   let original_ind = Array.make rank 0 in
   let should_stop = ref false in
-  begin
-    while not !should_stop do
-      for i = 0 to rank - 1 do
-        original_ind.(i) <- (index_array.(i)).(slice_ind.(i))
-      done;
-      Genarray.set slice_varr slice_ind (Genarray.get varr original_ind);
-      if not (_next_index slice_ind slice_dims) then
-        should_stop := true
+  while not !should_stop do
+    for i = 0 to rank - 1 do
+      original_ind.(i) <- (index_array.(i)).(slice_ind.(i))
     done;
-    slice_varr
-  end
+    Genarray.set slice_varr slice_ind (Genarray.get varr original_ind);
+    if not (_next_index slice_ind slice_dims) then
+      should_stop := true
+  done;
+  slice_varr
 
 
 (*TODO: optimise, test *)
@@ -214,31 +221,24 @@ let set_slice index_list varr slice_varr =
   let slice_ind = Array.make rank 0 in
   let original_ind = Array.make rank 0 in
   let should_stop = ref false in
-  begin
-    while not !should_stop do
-      for i = 0 to rank - 1 do
-        original_ind.(i) <- (index_array.(i)).(slice_ind.(i))
-      done;
-      Genarray.set varr original_ind (Genarray.get slice_varr slice_ind);
-      if not (_next_index slice_ind slice_dims) then
-        should_stop := true
+  while not !should_stop do
+    for i = 0 to rank - 1 do
+      original_ind.(i) <- (index_array.(i)).(slice_ind.(i))
     done;
-  end
+    Genarray.set varr original_ind (Genarray.get slice_varr slice_ind);
+    if not (_next_index slice_ind slice_dims) then
+      should_stop := true
+  done
 
 
 (*TODO: This is clone, not copying from one to another, maybe should specify this in documentation *)
-let copy varr =
-  let varr_copy = empty (kind varr) (shape varr) in
-  begin
-    Genarray.blit varr varr_copy; varr_copy
-  end
+let copy x =
+  let y = empty (kind x) (shape x) in
+  Genarray.blit x y;
+  y
 
 
 let copy_ ~out x = failwith "Owl_base_dense_ndarray_generic:copy_: not implemented"
-
-
-(* Reset to zero *)
-let reset varr = (Genarray.fill varr 0.)
 
 
 (* The result shares the underlying buffer with original, not a copy *)
@@ -255,46 +255,45 @@ let reshape x d =
 
 
 (* Return the array as a contiguous block, without copying *)
-let flatten varr = (reshape varr [|(numel varr)|])
+let flatten x = (reshape x [|(numel x)|])
 
-let reverse varr =
-  let n = numel varr in
-  let ret = empty (kind varr) (shape varr) in
-  let ret_flat = reshape ret [|n|] in
-  let varr_flat = reshape varr [|n|] in
-  begin
-    for i = 0 to n - 1 do
-      set ret_flat [|i|] (get varr_flat [|n - 1 - i|])
-    done;
-    ret
-  end
+
+let reverse x =
+  let n = numel x in
+  let y = empty (kind x) (shape x) in
+  let y_flat = reshape y [|n|] in
+  let x_flat = reshape x [|n|] in
+  for i = 0 to n - 1 do
+    set y_flat [|i|] (get x_flat [|n - 1 - i|])
+  done;
+  y
 
 
 (* Apply a function over a bigarray, with no copying *)
-let _apply_fun f varr =
-  let varr_linear = flatten varr |> array1_of_genarray in
-  let length = numel varr in
-  begin
-    for i = 0 to length - 1 do
-      (Array1.unsafe_set varr_linear i (f (Array1.unsafe_get varr_linear i)))
-    done
-  end
+let map_ f x =
+  let y = flatten x |> array1_of_genarray in
+  let length = numel x in
+  for i = 0 to length - 1 do
+    (Array1.unsafe_set y i (f (Array1.unsafe_get y i)))
+  done
+
 
 let init kind dims f =
   let varr = empty kind dims in
   let varr_flat = flatten varr |> array1_of_genarray in
   let n = numel varr in
-  begin
-    for i = 0 to n - 1 do
-      Array1.unsafe_set varr_flat i (f i)
-    done;
-    varr
-  end
+  for i = 0 to n - 1 do
+    Array1.unsafe_set varr_flat i (f i)
+  done;
+  varr
+
 
 (* Map a NDarray from elements x -> f(x), by copying the array *)
-let map f varr =
-  let varr_copy = copy varr in
-  (_apply_fun f varr_copy; varr_copy)
+let map f x =
+  let y = copy x in
+  map_ f y;
+  y
+
 
 let mapi f x =
   let y = copy x in
@@ -418,15 +417,48 @@ let filteri f x =
 
 let filter f x = filteri (fun _ y -> f y) x
 
+
 let sequential kind ?(a=0.) ?(step=1.) dims =
-  let varr = empty kind dims in
+  let x = empty kind dims in
   let count = ref 0. in
   let seq_fun =
     (fun x -> (count := !count +. 1.; a +. (!count -. 1.) *. step))
   in
-  _apply_fun seq_fun varr;
-  varr
+  map_ seq_fun x;
+  x
 
+(*
+let sequential k ?a ?step dimension =
+  let a = match a with
+    | Some a -> a
+    | None   -> Owl_const.zero k
+  in
+  let step = match step with
+    | Some step -> step
+    | None      -> Owl_const.one k
+  in
+  let x = empty k dimension in
+  let add_fun = Owl_base_dense_common._add_elt k in
+  let mul_fun = Owl_base_dense_common._mul_elt k in
+  let
+  map_ (fun i y -> add_fun y (mul_fun )
+  ) x;
+  x
+
+
+let sequential_ ?a ?step ~out =
+  let k = kind out in
+  let a = match a with
+    | Some a -> a
+    | None   -> Owl_const.zero k
+  in
+  let step = match step with
+    | Some step -> step
+    | None      -> Owl_const.one k
+  in
+  let add_fun =
+  _owl_sequential k (numel out) out a step
+*)
 
 let of_array kind arr dims =
   let varr = empty kind dims in
@@ -443,21 +475,21 @@ let of_array kind arr dims =
 let uniform kind ?(a=0.) ?(b=1.) dims =
   let uniform_gen_fun = (fun _ -> Owl_base_stats.uniform_rvs ~a ~b) in
   let varr = empty kind dims in
-  _apply_fun uniform_gen_fun varr;
+  map_ uniform_gen_fun varr;
   varr
 
 
 let bernoulli kind ?(p=0.5) dims =
   let bernoulli_gen_fun = (fun _ -> Owl_base_stats.bernoulli_rvs ~p) in
   let varr = empty kind dims in
-  _apply_fun bernoulli_gen_fun varr;
+  map_ bernoulli_gen_fun varr;
   varr
 
 
 let gaussian kind ?(mu=0.) ?(sigma=1.) dims =
   let gaussian_gen_fun = (fun _ -> Owl_base_stats.gaussian_rvs ~mu ~sigma) in
   let varr = empty kind dims in
-  _apply_fun gaussian_gen_fun varr;
+  map_ gaussian_gen_fun varr;
   varr
 
 
@@ -693,77 +725,188 @@ let repeat x reps =
 
 (* mathematical functions *)
 
-(* Absolute values of all elements, in a new arrray *)
-let abs varr = (map Scalar.abs varr)
+let abs x = map Scalar.abs x
 
 
-let neg varr = (map Scalar.neg varr)
+let abs_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.abs out
 
 
-let floor varr = (map Scalar.floor varr)
+let neg x = map Scalar.neg x
 
 
-let ceil varr = (map Scalar.ceil varr)
+let neg_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.neg out
 
 
-let round varr = (map Scalar.round varr)
+let floor x = map Scalar.floor x
 
 
-let sqr varr = (map Scalar.sqr varr)
+let floor_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.floor out
 
 
-let sqrt varr = (map Scalar.sqrt varr)
+let ceil x = map Scalar.ceil x
 
 
-let log varr = (map Scalar.log varr)
+let ceil_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.ceil out
 
 
-let log2 varr = (map Scalar.log2 varr)
+let round x = map Scalar.round x
 
 
-let log10 varr = (map Scalar.log10 varr)
+let round_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.round out
 
 
-let exp varr = (map Scalar.exp varr)
+let sqr x = map Scalar.sqr x
 
 
-let sin varr = (map Scalar.sin varr)
+let sqr_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.sqr out
 
 
-let cos varr = (map Scalar.cos varr)
+let sqrt x = map Scalar.sqrt x
 
 
-let tan varr = (map Scalar.tan varr)
+let sqrt_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.sqrt out
 
 
-let tan varr = (map Scalar.tan varr)
+let log x = map Scalar.log x
 
 
-let sinh varr = (map Scalar.sinh varr)
+let log_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.log out
 
 
-let cosh varr = (map Scalar.cosh varr)
+let log2 x = map Scalar.log2 x
 
 
-let tanh varr = (map Scalar.tanh varr)
+let log2_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.log2 out
 
 
-let asin varr = (map Scalar.asin varr)
+let log10 x = map Scalar.log10 x
 
 
-let acos varr = (map Scalar.acos varr)
+let log10_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.log10 out
 
 
-let atan varr = (map Scalar.atan varr)
+let exp x = map Scalar.exp x
 
 
-let asinh varr = (map Scalar.asinh varr)
+let exp_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.exp out
 
 
-let acosh varr = (map Scalar.acosh varr)
+let sin x = map Scalar.sin x
 
 
-let atanh varr = (map Scalar.atanh varr)
+let sin_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.sin out
+
+
+let cos x = map Scalar.cos x
+
+
+let cos_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.cos out
+
+
+let tan x = map Scalar.tan x
+
+
+let tan_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.tan out
+
+
+let sinh x = map Scalar.sinh x
+
+
+let sinh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.sinh out
+
+
+let cosh x = map Scalar.cosh x
+
+
+let cosh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.cosh out
+
+
+let tanh x = map Scalar.tanh x
+
+
+let tanh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.tanh out
+
+
+let asin x = map Scalar.asin x
+
+
+let asin_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.asin out
+
+
+let acos x = map Scalar.acos x
+
+
+let acos_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.acos out
+
+
+let atan x = map Scalar.atan x
+
+
+let atan_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.atan out
+
+
+let asinh x = map Scalar.asinh x
+
+
+let asinh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.asinh out
+
+
+let acosh x = map Scalar.acosh x
+
+
+let acosh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.acosh out
+
+
+let atanh x = map Scalar.atanh x
+
+
+let atanh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.atanh out
 
 
 let sum_slices ?(axis=0) varr =
@@ -792,14 +935,29 @@ let sum_slices ?(axis=0) varr =
 
 (* -1. for negative numbers, 0 or (-0) for 0,
  1 for positive numbers, nan for nan*)
-let signum varr = (map Scalar.signum varr)
+let signum x = map Scalar.signum x
+
+
+let signum_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.signum out
 
 
 (* Apply 1 / (1 + exp (-x)) for each element x *)
-let sigmoid varr = (map Scalar.sigmoid varr)
+let sigmoid x = map Scalar.sigmoid x
 
 
-let relu varr = (map Scalar.relu varr)
+let sigmoid_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.sigmoid out
+
+
+let relu x = map Scalar.relu x
+
+
+let relu_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.relu out
 
 
 let _fold_left f a varr =
@@ -815,24 +973,24 @@ let _fold_left f a varr =
 
 
 (* Min of all elements in the NDarray *)
-let min' varr =
-  let _kind = kind varr in
+let min' x =
+  let _kind = kind x in
   let _max_val = Owl_base_dense_common._max_val_elt _kind in
-  (_fold_left (Owl_base_dense_common._min_elt _kind) _max_val varr)
+  _fold_left (Owl_base_dense_common._min_elt _kind) _max_val x
 
 
 (* Max of all elements in the NDarray *)
-let max' varr =
-  let _kind = kind varr in
+let max' x =
+  let _kind = kind x in
   let _min_val = Owl_base_dense_common._min_val_elt _kind in
-  (_fold_left (Owl_base_dense_common._max_elt _kind) _min_val varr)
+  _fold_left (Owl_base_dense_common._max_elt _kind) _min_val x
 
 (* TODO: revise functions with float type to 'a *)
 
 (* Sum of all elements *)
-let sum' varr =
-  let _kind = kind varr in
-  _fold_left (Owl_base_dense_common._add_elt _kind) (Owl_const.zero _kind) varr
+let sum' x =
+  let _kind = kind x in
+  _fold_left (Owl_base_dense_common._add_elt _kind) (Owl_const.zero _kind) x
 
 
 (* Folding along a specified axis, aka reduction. The
@@ -912,7 +1070,6 @@ let min ?axis x =
   | None   -> min' x |> create _kind [|1|]
 
 
-(* TODO: fix this *)
 let max ?axis x =
   let _kind = kind x in
   let min_val = Owl_base_dense_common._min_val_elt _kind in

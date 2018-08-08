@@ -13,100 +13,100 @@ open Owl_core_types
  *)
 
 external owl_float32_ndarray_conv_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_spatial_im2col_bytecode"
- "stub_float32_ndarray_conv_spatial_im2col_native"
+  "stub_float32_ndarray_conv_spatial_im2col_bytecode"
+  "stub_float32_ndarray_conv_spatial_im2col_native"
 
- external owl_float32_ndarray_conv_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_spatial_backward_kernel_im2col_bytecode"
- "stub_float32_ndarray_conv_spatial_backward_kernel_im2col_native"
+external owl_float32_ndarray_conv_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_spatial_backward_kernel_im2col_bytecode"
+  "stub_float32_ndarray_conv_spatial_backward_kernel_im2col_native"
 
- external owl_float32_ndarray_conv_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_spatial_backward_input_im2col_bytecode"
- "stub_float32_ndarray_conv_spatial_backward_input_im2col_native"
+external owl_float32_ndarray_conv_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_spatial_backward_input_im2col_bytecode"
+  "stub_float32_ndarray_conv_spatial_backward_input_im2col_native"
 
- external owl_float32_ndarray_conv_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_cuboid_im2col_bytecode"
- "stub_float32_ndarray_conv_cuboid_im2col_native"
+external owl_float32_ndarray_conv_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_cuboid_im2col_bytecode"
+  "stub_float32_ndarray_conv_cuboid_im2col_native"
 
- external owl_float32_ndarray_conv_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_cuboid_backward_kernel_im2col_bytecode"
- "stub_float32_ndarray_conv_cuboid_backward_kernel_im2col_native"
+external owl_float32_ndarray_conv_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_cuboid_backward_kernel_im2col_bytecode"
+  "stub_float32_ndarray_conv_cuboid_backward_kernel_im2col_native"
 
- external owl_float32_ndarray_conv_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_cuboid_backward_input_im2col_bytecode"
- "stub_float32_ndarray_conv_cuboid_backward_input_im2col_native"
+external owl_float32_ndarray_conv_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_cuboid_backward_input_im2col_bytecode"
+  "stub_float32_ndarray_conv_cuboid_backward_input_im2col_native"
 
- external owl_float64_ndarray_conv_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_spatial_im2col_bytecode"
- "stub_float64_ndarray_conv_spatial_im2col_native"
+external owl_float64_ndarray_conv_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_spatial_im2col_bytecode"
+  "stub_float64_ndarray_conv_spatial_im2col_native"
 
- external owl_float64_ndarray_conv_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_spatial_backward_kernel_im2col_bytecode"
- "stub_float64_ndarray_conv_spatial_backward_kernel_im2col_native"
+external owl_float64_ndarray_conv_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_spatial_backward_kernel_im2col_bytecode"
+  "stub_float64_ndarray_conv_spatial_backward_kernel_im2col_native"
 
- external owl_float64_ndarray_conv_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_spatial_backward_input_im2col_bytecode"
- "stub_float64_ndarray_conv_spatial_backward_input_im2col_native"
+external owl_float64_ndarray_conv_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_spatial_backward_input_im2col_bytecode"
+  "stub_float64_ndarray_conv_spatial_backward_input_im2col_native"
 
- external owl_float64_ndarray_conv_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_cuboid_im2col_bytecode"
- "stub_float64_ndarray_conv_cuboid_im2col_native"
+external owl_float64_ndarray_conv_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_cuboid_im2col_bytecode"
+  "stub_float64_ndarray_conv_cuboid_im2col_native"
 
- external owl_float64_ndarray_conv_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_cuboid_backward_kernel_im2col_bytecode"
- "stub_float64_ndarray_conv_cuboid_backward_kernel_im2col_native"
+external owl_float64_ndarray_conv_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_cuboid_backward_kernel_im2col_bytecode"
+  "stub_float64_ndarray_conv_cuboid_backward_kernel_im2col_native"
 
- external owl_float64_ndarray_conv_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_cuboid_backward_input_im2col_bytecode"
- "stub_float64_ndarray_conv_cuboid_backward_input_im2col_native"
+external owl_float64_ndarray_conv_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_cuboid_backward_input_im2col_bytecode"
+  "stub_float64_ndarray_conv_cuboid_backward_input_im2col_native"
 
- external owl_complex32_ndarray_conv_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_spatial_im2col_bytecode"
- "stub_complex32_ndarray_conv_spatial_im2col_native"
+external owl_complex32_ndarray_conv_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_spatial_im2col_bytecode"
+  "stub_complex32_ndarray_conv_spatial_im2col_native"
 
- external owl_complex32_ndarray_conv_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_spatial_backward_kernel_im2col_bytecode"
- "stub_complex32_ndarray_conv_spatial_backward_kernel_im2col_native"
+external owl_complex32_ndarray_conv_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_spatial_backward_kernel_im2col_bytecode"
+  "stub_complex32_ndarray_conv_spatial_backward_kernel_im2col_native"
 
- external owl_complex32_ndarray_conv_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_spatial_backward_input_im2col_bytecode"
- "stub_complex32_ndarray_conv_spatial_backward_input_im2col_native"
+external owl_complex32_ndarray_conv_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_spatial_backward_input_im2col_bytecode"
+  "stub_complex32_ndarray_conv_spatial_backward_input_im2col_native"
 
- external owl_complex32_ndarray_conv_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_cuboid_im2col_bytecode"
- "stub_complex32_ndarray_conv_cuboid_im2col_native"
+external owl_complex32_ndarray_conv_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_cuboid_im2col_bytecode"
+  "stub_complex32_ndarray_conv_cuboid_im2col_native"
 
- external owl_complex32_ndarray_conv_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_cuboid_backward_kernel_im2col_bytecode"
- "stub_complex32_ndarray_conv_cuboid_backward_kernel_im2col_native"
+external owl_complex32_ndarray_conv_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_cuboid_backward_kernel_im2col_bytecode"
+  "stub_complex32_ndarray_conv_cuboid_backward_kernel_im2col_native"
 
- external owl_complex32_ndarray_conv_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_cuboid_backward_input_im2col_bytecode"
- "stub_complex32_ndarray_conv_cuboid_backward_input_im2col_native"
+external owl_complex32_ndarray_conv_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_cuboid_backward_input_im2col_bytecode"
+  "stub_complex32_ndarray_conv_cuboid_backward_input_im2col_native"
 
- external owl_complex64_ndarray_conv_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_spatial_im2col_bytecode"
- "stub_complex64_ndarray_conv_spatial_im2col_native"
+external owl_complex64_ndarray_conv_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_spatial_im2col_bytecode"
+  "stub_complex64_ndarray_conv_spatial_im2col_native"
 
- external owl_complex64_ndarray_conv_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_spatial_backward_kernel_im2col_bytecode"
- "stub_complex64_ndarray_conv_spatial_backward_kernel_im2col_native"
+external owl_complex64_ndarray_conv_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_spatial_backward_kernel_im2col_bytecode"
+  "stub_complex64_ndarray_conv_spatial_backward_kernel_im2col_native"
 
- external owl_complex64_ndarray_conv_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_spatial_backward_input_im2col_bytecode"
- "stub_complex64_ndarray_conv_spatial_backward_input_im2col_native"
+external owl_complex64_ndarray_conv_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_spatial_backward_input_im2col_bytecode"
+  "stub_complex64_ndarray_conv_spatial_backward_input_im2col_native"
 
- external owl_complex64_ndarray_conv_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_cuboid_im2col_bytecode"
- "stub_complex64_ndarray_conv_cuboid_im2col_native"
+external owl_complex64_ndarray_conv_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_cuboid_im2col_bytecode"
+  "stub_complex64_ndarray_conv_cuboid_im2col_native"
 
- external owl_complex64_ndarray_conv_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_cuboid_backward_kernel_im2col_bytecode"
- "stub_complex64_ndarray_conv_cuboid_backward_kernel_im2col_native"
+external owl_complex64_ndarray_conv_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_cuboid_backward_kernel_im2col_bytecode"
+  "stub_complex64_ndarray_conv_cuboid_backward_kernel_im2col_native"
 
- external owl_complex64_ndarray_conv_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_cuboid_backward_input_im2col_bytecode"
- "stub_complex64_ndarray_conv_cuboid_backward_input_im2col_native"
+external owl_complex64_ndarray_conv_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_cuboid_backward_input_im2col_bytecode"
+  "stub_complex64_ndarray_conv_cuboid_backward_input_im2col_native"
 
 
 let _owl_spatial_conv : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
@@ -157,100 +157,100 @@ let _owl_cuboid_conv_backward_kernel : type a b . (a, b) kind -> (a, b) owl_arr_
  *)
 
 external owl_float32_ndarray_conv_spatial_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_spatial_mec_bytecode"
- "stub_float32_ndarray_conv_spatial_mec_native"
+  "stub_float32_ndarray_conv_spatial_mec_bytecode"
+  "stub_float32_ndarray_conv_spatial_mec_native"
 
- external owl_float32_ndarray_conv_spatial_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_spatial_backward_kernel_mec_bytecode"
- "stub_float32_ndarray_conv_spatial_backward_kernel_mec_native"
+external owl_float32_ndarray_conv_spatial_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_spatial_backward_kernel_mec_bytecode"
+  "stub_float32_ndarray_conv_spatial_backward_kernel_mec_native"
 
- external owl_float32_ndarray_conv_spatial_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_spatial_backward_input_mec_bytecode"
- "stub_float32_ndarray_conv_spatial_backward_input_mec_native"
+external owl_float32_ndarray_conv_spatial_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_spatial_backward_input_mec_bytecode"
+  "stub_float32_ndarray_conv_spatial_backward_input_mec_native"
 
- external owl_float32_ndarray_conv_cuboid_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_cuboid_mec_bytecode"
- "stub_float32_ndarray_conv_cuboid_mec_native"
+external owl_float32_ndarray_conv_cuboid_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_cuboid_mec_bytecode"
+  "stub_float32_ndarray_conv_cuboid_mec_native"
 
- external owl_float32_ndarray_conv_cuboid_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_cuboid_backward_kernel_mec_bytecode"
- "stub_float32_ndarray_conv_cuboid_backward_kernel_mec_native"
+external owl_float32_ndarray_conv_cuboid_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_cuboid_backward_kernel_mec_bytecode"
+  "stub_float32_ndarray_conv_cuboid_backward_kernel_mec_native"
 
- external owl_float32_ndarray_conv_cuboid_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_cuboid_backward_input_mec_bytecode"
- "stub_float32_ndarray_conv_cuboid_backward_input_mec_native"
+external owl_float32_ndarray_conv_cuboid_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_cuboid_backward_input_mec_bytecode"
+  "stub_float32_ndarray_conv_cuboid_backward_input_mec_native"
 
- external owl_float64_ndarray_conv_spatial_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_spatial_mec_bytecode"
- "stub_float64_ndarray_conv_spatial_mec_native"
+external owl_float64_ndarray_conv_spatial_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_spatial_mec_bytecode"
+  "stub_float64_ndarray_conv_spatial_mec_native"
 
- external owl_float64_ndarray_conv_spatial_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_spatial_backward_kernel_mec_bytecode"
- "stub_float64_ndarray_conv_spatial_backward_kernel_mec_native"
+external owl_float64_ndarray_conv_spatial_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_spatial_backward_kernel_mec_bytecode"
+  "stub_float64_ndarray_conv_spatial_backward_kernel_mec_native"
 
- external owl_float64_ndarray_conv_spatial_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_spatial_backward_input_mec_bytecode"
- "stub_float64_ndarray_conv_spatial_backward_input_mec_native"
+external owl_float64_ndarray_conv_spatial_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_spatial_backward_input_mec_bytecode"
+  "stub_float64_ndarray_conv_spatial_backward_input_mec_native"
 
- external owl_float64_ndarray_conv_cuboid_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_cuboid_mec_bytecode"
- "stub_float64_ndarray_conv_cuboid_mec_native"
+external owl_float64_ndarray_conv_cuboid_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_cuboid_mec_bytecode"
+  "stub_float64_ndarray_conv_cuboid_mec_native"
 
- external owl_float64_ndarray_conv_cuboid_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_cuboid_backward_kernel_mec_bytecode"
- "stub_float64_ndarray_conv_cuboid_backward_kernel_mec_native"
+external owl_float64_ndarray_conv_cuboid_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_cuboid_backward_kernel_mec_bytecode"
+  "stub_float64_ndarray_conv_cuboid_backward_kernel_mec_native"
 
- external owl_float64_ndarray_conv_cuboid_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_cuboid_backward_input_mec_bytecode"
- "stub_float64_ndarray_conv_cuboid_backward_input_mec_native"
+external owl_float64_ndarray_conv_cuboid_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_cuboid_backward_input_mec_bytecode"
+  "stub_float64_ndarray_conv_cuboid_backward_input_mec_native"
 
- external owl_complex32_ndarray_conv_spatial_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_spatial_mec_bytecode"
- "stub_complex32_ndarray_conv_spatial_mec_native"
+external owl_complex32_ndarray_conv_spatial_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_spatial_mec_bytecode"
+  "stub_complex32_ndarray_conv_spatial_mec_native"
 
- external owl_complex32_ndarray_conv_spatial_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_spatial_backward_kernel_mec_bytecode"
- "stub_complex32_ndarray_conv_spatial_backward_kernel_mec_native"
+external owl_complex32_ndarray_conv_spatial_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_spatial_backward_kernel_mec_bytecode"
+  "stub_complex32_ndarray_conv_spatial_backward_kernel_mec_native"
 
- external owl_complex32_ndarray_conv_spatial_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_spatial_backward_input_mec_bytecode"
- "stub_complex32_ndarray_conv_spatial_backward_input_mec_native"
+external owl_complex32_ndarray_conv_spatial_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_spatial_backward_input_mec_bytecode"
+  "stub_complex32_ndarray_conv_spatial_backward_input_mec_native"
 
- external owl_complex32_ndarray_conv_cuboid_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_cuboid_mec_bytecode"
- "stub_complex32_ndarray_conv_cuboid_mec_native"
+external owl_complex32_ndarray_conv_cuboid_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_cuboid_mec_bytecode"
+  "stub_complex32_ndarray_conv_cuboid_mec_native"
 
- external owl_complex32_ndarray_conv_cuboid_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_cuboid_backward_kernel_mec_bytecode"
- "stub_complex32_ndarray_conv_cuboid_backward_kernel_mec_native"
+external owl_complex32_ndarray_conv_cuboid_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_cuboid_backward_kernel_mec_bytecode"
+  "stub_complex32_ndarray_conv_cuboid_backward_kernel_mec_native"
 
- external owl_complex32_ndarray_conv_cuboid_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_cuboid_backward_input_mec_bytecode"
- "stub_complex32_ndarray_conv_cuboid_backward_input_mec_native"
+external owl_complex32_ndarray_conv_cuboid_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_cuboid_backward_input_mec_bytecode"
+  "stub_complex32_ndarray_conv_cuboid_backward_input_mec_native"
 
- external owl_complex64_ndarray_conv_spatial_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_spatial_mec_bytecode"
- "stub_complex64_ndarray_conv_spatial_mec_native"
+external owl_complex64_ndarray_conv_spatial_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_spatial_mec_bytecode"
+  "stub_complex64_ndarray_conv_spatial_mec_native"
 
- external owl_complex64_ndarray_conv_spatial_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_spatial_backward_kernel_mec_bytecode"
- "stub_complex64_ndarray_conv_spatial_backward_kernel_mec_native"
+external owl_complex64_ndarray_conv_spatial_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_spatial_backward_kernel_mec_bytecode"
+  "stub_complex64_ndarray_conv_spatial_backward_kernel_mec_native"
 
- external owl_complex64_ndarray_conv_spatial_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_spatial_backward_input_mec_bytecode"
- "stub_complex64_ndarray_conv_spatial_backward_input_mec_native"
+external owl_complex64_ndarray_conv_spatial_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_spatial_backward_input_mec_bytecode"
+  "stub_complex64_ndarray_conv_spatial_backward_input_mec_native"
 
- external owl_complex64_ndarray_conv_cuboid_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_cuboid_mec_bytecode"
- "stub_complex64_ndarray_conv_cuboid_mec_native"
+external owl_complex64_ndarray_conv_cuboid_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_cuboid_mec_bytecode"
+  "stub_complex64_ndarray_conv_cuboid_mec_native"
 
- external owl_complex64_ndarray_conv_cuboid_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_cuboid_backward_kernel_mec_bytecode"
- "stub_complex64_ndarray_conv_cuboid_backward_kernel_mec_native"
+external owl_complex64_ndarray_conv_cuboid_backward_kernel_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_cuboid_backward_kernel_mec_bytecode"
+  "stub_complex64_ndarray_conv_cuboid_backward_kernel_mec_native"
 
- external owl_complex64_ndarray_conv_cuboid_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_cuboid_backward_input_mec_bytecode"
- "stub_complex64_ndarray_conv_cuboid_backward_input_mec_native"
+external owl_complex64_ndarray_conv_cuboid_backward_input_mec : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_cuboid_backward_input_mec_bytecode"
+  "stub_complex64_ndarray_conv_cuboid_backward_input_mec_native"
 
 
 let _owl_spatial_conv_mec : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
@@ -300,101 +300,101 @@ let _owl_cuboid_conv_backward_kernel_mec : type a b . (a, b) kind -> (a, b) owl_
  * naive convolution implementation
  *)
 
- external owl_float32_ndarray_conv_spatial_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_spatial_naive_bytecode"
- "stub_float32_ndarray_conv_spatial_naive_native"
+external owl_float32_ndarray_conv_spatial_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_spatial_naive_bytecode"
+  "stub_float32_ndarray_conv_spatial_naive_native"
 
- external owl_float32_ndarray_conv_spatial_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_spatial_backward_kernel_naive_bytecode"
- "stub_float32_ndarray_conv_spatial_backward_kernel_naive_native"
+external owl_float32_ndarray_conv_spatial_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_spatial_backward_kernel_naive_bytecode"
+  "stub_float32_ndarray_conv_spatial_backward_kernel_naive_native"
 
- external owl_float32_ndarray_conv_spatial_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_spatial_backward_input_naive_bytecode"
- "stub_float32_ndarray_conv_spatial_backward_input_naive_native"
+external owl_float32_ndarray_conv_spatial_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_spatial_backward_input_naive_bytecode"
+  "stub_float32_ndarray_conv_spatial_backward_input_naive_native"
 
- external owl_float32_ndarray_conv_cuboid_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_cuboid_naive_bytecode"
- "stub_float32_ndarray_conv_cuboid_naive_native"
+external owl_float32_ndarray_conv_cuboid_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_cuboid_naive_bytecode"
+  "stub_float32_ndarray_conv_cuboid_naive_native"
 
- external owl_float32_ndarray_conv_cuboid_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_cuboid_backward_kernel_naive_bytecode"
- "stub_float32_ndarray_conv_cuboid_backward_kernel_naive_native"
+external owl_float32_ndarray_conv_cuboid_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_cuboid_backward_kernel_naive_bytecode"
+  "stub_float32_ndarray_conv_cuboid_backward_kernel_naive_native"
 
- external owl_float32_ndarray_conv_cuboid_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_cuboid_backward_input_naive_bytecode"
- "stub_float32_ndarray_conv_cuboid_backward_input_naive_native"
+external owl_float32_ndarray_conv_cuboid_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_cuboid_backward_input_naive_bytecode"
+  "stub_float32_ndarray_conv_cuboid_backward_input_naive_native"
 
- external owl_float64_ndarray_conv_spatial_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_spatial_naive_bytecode"
- "stub_float64_ndarray_conv_spatial_naive_native"
+external owl_float64_ndarray_conv_spatial_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_spatial_naive_bytecode"
+  "stub_float64_ndarray_conv_spatial_naive_native"
 
- external owl_float64_ndarray_conv_spatial_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_spatial_backward_kernel_naive_bytecode"
- "stub_float64_ndarray_conv_spatial_backward_kernel_naive_native"
+external owl_float64_ndarray_conv_spatial_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_spatial_backward_kernel_naive_bytecode"
+  "stub_float64_ndarray_conv_spatial_backward_kernel_naive_native"
 
- external owl_float64_ndarray_conv_spatial_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_spatial_backward_input_naive_bytecode"
- "stub_float64_ndarray_conv_spatial_backward_input_naive_native"
+external owl_float64_ndarray_conv_spatial_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_spatial_backward_input_naive_bytecode"
+  "stub_float64_ndarray_conv_spatial_backward_input_naive_native"
 
- external owl_float64_ndarray_conv_cuboid_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_cuboid_naive_bytecode"
- "stub_float64_ndarray_conv_cuboid_naive_native"
+external owl_float64_ndarray_conv_cuboid_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_cuboid_naive_bytecode"
+  "stub_float64_ndarray_conv_cuboid_naive_native"
 
- external owl_float64_ndarray_conv_cuboid_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_cuboid_backward_kernel_naive_bytecode"
- "stub_float64_ndarray_conv_cuboid_backward_kernel_naive_native"
+external owl_float64_ndarray_conv_cuboid_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_cuboid_backward_kernel_naive_bytecode"
+  "stub_float64_ndarray_conv_cuboid_backward_kernel_naive_native"
 
- external owl_float64_ndarray_conv_cuboid_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_cuboid_backward_input_naive_bytecode"
- "stub_float64_ndarray_conv_cuboid_backward_input_naive_native"
+external owl_float64_ndarray_conv_cuboid_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_cuboid_backward_input_naive_bytecode"
+  "stub_float64_ndarray_conv_cuboid_backward_input_naive_native"
 
- external owl_complex32_ndarray_conv_spatial_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_spatial_naive_bytecode"
- "stub_complex32_ndarray_conv_spatial_naive_native"
+external owl_complex32_ndarray_conv_spatial_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_spatial_naive_bytecode"
+  "stub_complex32_ndarray_conv_spatial_naive_native"
 
- external owl_complex32_ndarray_conv_spatial_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_spatial_backward_kernel_naive_bytecode"
- "stub_complex32_ndarray_conv_spatial_backward_kernel_naive_native"
+external owl_complex32_ndarray_conv_spatial_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_spatial_backward_kernel_naive_bytecode"
+  "stub_complex32_ndarray_conv_spatial_backward_kernel_naive_native"
 
- external owl_complex32_ndarray_conv_spatial_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_spatial_backward_input_naive_bytecode"
- "stub_complex32_ndarray_conv_spatial_backward_input_naive_native"
+external owl_complex32_ndarray_conv_spatial_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_spatial_backward_input_naive_bytecode"
+  "stub_complex32_ndarray_conv_spatial_backward_input_naive_native"
 
- external owl_complex32_ndarray_conv_cuboid_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_cuboid_naive_bytecode"
- "stub_complex32_ndarray_conv_cuboid_naive_native"
+external owl_complex32_ndarray_conv_cuboid_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_cuboid_naive_bytecode"
+  "stub_complex32_ndarray_conv_cuboid_naive_native"
 
- external owl_complex32_ndarray_conv_cuboid_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_cuboid_backward_kernel_naive_bytecode"
- "stub_complex32_ndarray_conv_cuboid_backward_kernel_naive_native"
+external owl_complex32_ndarray_conv_cuboid_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_cuboid_backward_kernel_naive_bytecode"
+  "stub_complex32_ndarray_conv_cuboid_backward_kernel_naive_native"
 
- external owl_complex32_ndarray_conv_cuboid_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_cuboid_backward_input_naive_bytecode"
- "stub_complex32_ndarray_conv_cuboid_backward_input_naive_native"
+external owl_complex32_ndarray_conv_cuboid_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_cuboid_backward_input_naive_bytecode"
+  "stub_complex32_ndarray_conv_cuboid_backward_input_naive_native"
 
- external owl_complex64_ndarray_conv_spatial_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_spatial_naive_bytecode"
- "stub_complex64_ndarray_conv_spatial_naive_native"
+external owl_complex64_ndarray_conv_spatial_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_spatial_naive_bytecode"
+  "stub_complex64_ndarray_conv_spatial_naive_native"
 
- external owl_complex64_ndarray_conv_spatial_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_spatial_backward_kernel_naive_bytecode"
- "stub_complex64_ndarray_conv_spatial_backward_kernel_naive_native"
+external owl_complex64_ndarray_conv_spatial_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_spatial_backward_kernel_naive_bytecode"
+  "stub_complex64_ndarray_conv_spatial_backward_kernel_naive_native"
 
- external owl_complex64_ndarray_conv_spatial_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_spatial_backward_input_naive_bytecode"
- "stub_complex64_ndarray_conv_spatial_backward_input_naive_native"
+external owl_complex64_ndarray_conv_spatial_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_spatial_backward_input_naive_bytecode"
+  "stub_complex64_ndarray_conv_spatial_backward_input_naive_native"
 
- external owl_complex64_ndarray_conv_cuboid_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_cuboid_naive_bytecode"
- "stub_complex64_ndarray_conv_cuboid_naive_native"
+external owl_complex64_ndarray_conv_cuboid_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_cuboid_naive_bytecode"
+  "stub_complex64_ndarray_conv_cuboid_naive_native"
 
- external owl_complex64_ndarray_conv_cuboid_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_cuboid_backward_kernel_naive_bytecode"
- "stub_complex64_ndarray_conv_cuboid_backward_kernel_naive_native"
+external owl_complex64_ndarray_conv_cuboid_backward_kernel_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_cuboid_backward_kernel_naive_bytecode"
+  "stub_complex64_ndarray_conv_cuboid_backward_kernel_naive_native"
 
- external owl_complex64_ndarray_conv_cuboid_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_cuboid_backward_input_naive_bytecode"
- "stub_complex64_ndarray_conv_cuboid_backward_input_naive_native"
+external owl_complex64_ndarray_conv_cuboid_backward_input_naive : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_cuboid_backward_input_naive_bytecode"
+  "stub_complex64_ndarray_conv_cuboid_backward_input_naive_native"
 
 
 let _owl_spatial_conv_naive : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
@@ -446,100 +446,100 @@ let _owl_cuboid_conv_backward_kernel_naive : type a b . (a, b) kind -> (a, b) ow
 
 
 external owl_float32_ndarray_conv_dilated_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_dilated_spatial_im2col_bytecode"
- "stub_float32_ndarray_conv_dilated_spatial_im2col_native"
+  "stub_float32_ndarray_conv_dilated_spatial_im2col_bytecode"
+  "stub_float32_ndarray_conv_dilated_spatial_im2col_native"
 
- external owl_float32_ndarray_conv_dilated_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_dilated_spatial_backward_kernel_im2col_bytecode"
- "stub_float32_ndarray_conv_dilated_spatial_backward_kernel_im2col_native"
+external owl_float32_ndarray_conv_dilated_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_dilated_spatial_backward_kernel_im2col_bytecode"
+  "stub_float32_ndarray_conv_dilated_spatial_backward_kernel_im2col_native"
 
- external owl_float32_ndarray_conv_dilated_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_dilated_spatial_backward_input_im2col_bytecode"
- "stub_float32_ndarray_conv_dilated_spatial_backward_input_im2col_native"
+external owl_float32_ndarray_conv_dilated_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_dilated_spatial_backward_input_im2col_bytecode"
+  "stub_float32_ndarray_conv_dilated_spatial_backward_input_im2col_native"
 
- external owl_float32_ndarray_conv_dilated_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_dilated_cuboid_im2col_bytecode"
- "stub_float32_ndarray_conv_dilated_cuboid_im2col_native"
+external owl_float32_ndarray_conv_dilated_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_dilated_cuboid_im2col_bytecode"
+  "stub_float32_ndarray_conv_dilated_cuboid_im2col_native"
 
- external owl_float32_ndarray_conv_dilated_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_dilated_cuboid_backward_kernel_im2col_bytecode"
- "stub_float32_ndarray_conv_dilated_cuboid_backward_kernel_im2col_native"
+external owl_float32_ndarray_conv_dilated_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_dilated_cuboid_backward_kernel_im2col_bytecode"
+  "stub_float32_ndarray_conv_dilated_cuboid_backward_kernel_im2col_native"
 
- external owl_float32_ndarray_conv_dilated_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float32_ndarray_conv_dilated_cuboid_backward_input_im2col_bytecode"
- "stub_float32_ndarray_conv_dilated_cuboid_backward_input_im2col_native"
+external owl_float32_ndarray_conv_dilated_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_dilated_cuboid_backward_input_im2col_bytecode"
+  "stub_float32_ndarray_conv_dilated_cuboid_backward_input_im2col_native"
 
- external owl_float64_ndarray_conv_dilated_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_dilated_spatial_im2col_bytecode"
- "stub_float64_ndarray_conv_dilated_spatial_im2col_native"
+external owl_float64_ndarray_conv_dilated_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_dilated_spatial_im2col_bytecode"
+  "stub_float64_ndarray_conv_dilated_spatial_im2col_native"
 
- external owl_float64_ndarray_conv_dilated_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_dilated_spatial_backward_kernel_im2col_bytecode"
- "stub_float64_ndarray_conv_dilated_spatial_backward_kernel_im2col_native"
+external owl_float64_ndarray_conv_dilated_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_dilated_spatial_backward_kernel_im2col_bytecode"
+  "stub_float64_ndarray_conv_dilated_spatial_backward_kernel_im2col_native"
 
- external owl_float64_ndarray_conv_dilated_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_dilated_spatial_backward_input_im2col_bytecode"
- "stub_float64_ndarray_conv_dilated_spatial_backward_input_im2col_native"
+external owl_float64_ndarray_conv_dilated_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_dilated_spatial_backward_input_im2col_bytecode"
+  "stub_float64_ndarray_conv_dilated_spatial_backward_input_im2col_native"
 
- external owl_float64_ndarray_conv_dilated_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_dilated_cuboid_im2col_bytecode"
- "stub_float64_ndarray_conv_dilated_cuboid_im2col_native"
+external owl_float64_ndarray_conv_dilated_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_dilated_cuboid_im2col_bytecode"
+  "stub_float64_ndarray_conv_dilated_cuboid_im2col_native"
 
- external owl_float64_ndarray_conv_dilated_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_dilated_cuboid_backward_kernel_im2col_bytecode"
- "stub_float64_ndarray_conv_dilated_cuboid_backward_kernel_im2col_native"
+external owl_float64_ndarray_conv_dilated_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_dilated_cuboid_backward_kernel_im2col_bytecode"
+  "stub_float64_ndarray_conv_dilated_cuboid_backward_kernel_im2col_native"
 
- external owl_float64_ndarray_conv_dilated_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_float64_ndarray_conv_dilated_cuboid_backward_input_im2col_bytecode"
- "stub_float64_ndarray_conv_dilated_cuboid_backward_input_im2col_native"
+external owl_float64_ndarray_conv_dilated_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_dilated_cuboid_backward_input_im2col_bytecode"
+  "stub_float64_ndarray_conv_dilated_cuboid_backward_input_im2col_native"
 
- external owl_complex32_ndarray_conv_dilated_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_dilated_spatial_im2col_bytecode"
- "stub_complex32_ndarray_conv_dilated_spatial_im2col_native"
+external owl_complex32_ndarray_conv_dilated_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_dilated_spatial_im2col_bytecode"
+  "stub_complex32_ndarray_conv_dilated_spatial_im2col_native"
 
- external owl_complex32_ndarray_conv_dilated_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_dilated_spatial_backward_kernel_im2col_bytecode"
- "stub_complex32_ndarray_conv_dilated_spatial_backward_kernel_im2col_native"
+external owl_complex32_ndarray_conv_dilated_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_dilated_spatial_backward_kernel_im2col_bytecode"
+  "stub_complex32_ndarray_conv_dilated_spatial_backward_kernel_im2col_native"
 
- external owl_complex32_ndarray_conv_dilated_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_dilated_spatial_backward_input_im2col_bytecode"
- "stub_complex32_ndarray_conv_dilated_spatial_backward_input_im2col_native"
+external owl_complex32_ndarray_conv_dilated_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_dilated_spatial_backward_input_im2col_bytecode"
+  "stub_complex32_ndarray_conv_dilated_spatial_backward_input_im2col_native"
 
- external owl_complex32_ndarray_conv_dilated_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_dilated_cuboid_im2col_bytecode"
- "stub_complex32_ndarray_conv_dilated_cuboid_im2col_native"
+external owl_complex32_ndarray_conv_dilated_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_dilated_cuboid_im2col_bytecode"
+  "stub_complex32_ndarray_conv_dilated_cuboid_im2col_native"
 
- external owl_complex32_ndarray_conv_dilated_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_dilated_cuboid_backward_kernel_im2col_bytecode"
- "stub_complex32_ndarray_conv_dilated_cuboid_backward_kernel_im2col_native"
+external owl_complex32_ndarray_conv_dilated_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_dilated_cuboid_backward_kernel_im2col_bytecode"
+  "stub_complex32_ndarray_conv_dilated_cuboid_backward_kernel_im2col_native"
 
- external owl_complex32_ndarray_conv_dilated_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex32_ndarray_conv_dilated_cuboid_backward_input_im2col_bytecode"
- "stub_complex32_ndarray_conv_dilated_cuboid_backward_input_im2col_native"
+external owl_complex32_ndarray_conv_dilated_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_dilated_cuboid_backward_input_im2col_bytecode"
+  "stub_complex32_ndarray_conv_dilated_cuboid_backward_input_im2col_native"
 
- external owl_complex64_ndarray_conv_dilated_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_dilated_spatial_im2col_bytecode"
- "stub_complex64_ndarray_conv_dilated_spatial_im2col_native"
+external owl_complex64_ndarray_conv_dilated_spatial_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_dilated_spatial_im2col_bytecode"
+  "stub_complex64_ndarray_conv_dilated_spatial_im2col_native"
 
- external owl_complex64_ndarray_conv_dilated_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_dilated_spatial_backward_kernel_im2col_bytecode"
- "stub_complex64_ndarray_conv_dilated_spatial_backward_kernel_im2col_native"
+external owl_complex64_ndarray_conv_dilated_spatial_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_dilated_spatial_backward_kernel_im2col_bytecode"
+  "stub_complex64_ndarray_conv_dilated_spatial_backward_kernel_im2col_native"
 
- external owl_complex64_ndarray_conv_dilated_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_dilated_spatial_backward_input_im2col_bytecode"
- "stub_complex64_ndarray_conv_dilated_spatial_backward_input_im2col_native"
+external owl_complex64_ndarray_conv_dilated_spatial_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_dilated_spatial_backward_input_im2col_bytecode"
+  "stub_complex64_ndarray_conv_dilated_spatial_backward_input_im2col_native"
 
- external owl_complex64_ndarray_conv_dilated_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_dilated_cuboid_im2col_bytecode"
- "stub_complex64_ndarray_conv_dilated_cuboid_im2col_native"
+external owl_complex64_ndarray_conv_dilated_cuboid_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_dilated_cuboid_im2col_bytecode"
+  "stub_complex64_ndarray_conv_dilated_cuboid_im2col_native"
 
- external owl_complex64_ndarray_conv_dilated_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int  -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_dilated_cuboid_backward_kernel_im2col_bytecode"
- "stub_complex64_ndarray_conv_dilated_cuboid_backward_kernel_im2col_native"
+external owl_complex64_ndarray_conv_dilated_cuboid_backward_kernel_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int  -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_dilated_cuboid_backward_kernel_im2col_bytecode"
+  "stub_complex64_ndarray_conv_dilated_cuboid_backward_kernel_im2col_native"
 
- external owl_complex64_ndarray_conv_dilated_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
- "stub_complex64_ndarray_conv_dilated_cuboid_backward_input_im2col_bytecode"
- "stub_complex64_ndarray_conv_dilated_cuboid_backward_input_im2col_native"
+external owl_complex64_ndarray_conv_dilated_cuboid_backward_input_im2col : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_dilated_cuboid_backward_input_im2col_bytecode"
+  "stub_complex64_ndarray_conv_dilated_cuboid_backward_input_im2col_native"
 
 let _owl_dilated_spatial_conv : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
   | Float32   -> owl_float32_ndarray_conv_dilated_spatial_im2col
