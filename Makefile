@@ -59,4 +59,4 @@ release:
 	dune-release publish
 
 	dune-release opam pkg    --pkg-names $(PKGS)
-#	dune-release opam submit --pkg-names $(PKGS)
+	dune-release opam submit --pkg-names $(PKGS)
