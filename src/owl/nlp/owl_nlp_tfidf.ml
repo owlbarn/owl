@@ -30,13 +30,13 @@ type t = {
 (* variouis types of TF and IDF fucntions *)
 
 let term_freq = function
-  | Binary    -> fun tc tn -> 1.
-  | Count     -> fun tc tn -> tc
+  | Binary    -> fun _tc _tn -> 1.
+  | Count     -> fun tc _tn -> tc
   | Frequency -> fun tc tn -> tc /. tn
-  | Log_norm  -> fun tc tn -> 1. +. log tc
+  | Log_norm  -> fun tc _tn -> 1. +. log tc
 
 let doc_freq = function
-  | Unary      -> fun dc nd -> 1.
+  | Unary      -> fun _dc _nd -> 1.
   | Idf        -> fun dc nd -> log (nd /. dc)
   | Idf_Smooth -> fun dc nd -> log (nd /. (1. +. dc))
 
@@ -120,7 +120,7 @@ let term_count _h doc =
 
 (* make [x] a unit vector by dividing its l2norm *)
 let normalise x =
-  let c = Array.fold_left (fun a (w, b) -> a +. b *. b) 0. x |> sqrt in
+  let c = Array.fold_left (fun a (_w, b) -> a +. b *. b) 0. x |> sqrt in
   Array.map (fun (w, b) -> (w, b /. c)) x
 
 
@@ -131,7 +131,7 @@ let _build_with norm sort tf_fun df_fun m =
   let fname = m.uri in
 
   Owl_log.info "calculate document frequency ...";
-  let d_f, n_d = doc_count vocab tfile in
+  let d_f, _n_d = doc_count vocab tfile in
   let n_d = Owl_nlp_corpus.length m.corpus |> float_of_int in
   m.doc_freq <- d_f;
 
@@ -143,7 +143,7 @@ let _build_with norm sort tf_fun df_fun m =
   let offset = Owl_utils.Stack.make () in
   Owl_utils.Stack.push offset 0;
 
-  Owl_io.iteri_lines_of_marshal (fun i doc ->
+  Owl_io.iteri_lines_of_marshal (fun _i doc ->
     (* first count terms in one doc *)
     term_count _h doc;
 
@@ -198,9 +198,9 @@ let next m : (int * float) array = m |> get_handle |> Marshal.from_channel
 let next_batch ?(size=100) m =
   let batch = Owl_utils.Stack.make () in
   (
-    try for i = 0 to size - 1 do
+    try for _i = 0 to size - 1 do
       m |> next |> Owl_utils.Stack.push batch
-    done with exn -> ()
+    done with _exn -> ()
   );
   Owl_utils.Stack.to_array batch
 

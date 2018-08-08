@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+[@@@warning "-32"]
+
 open Owl_types
 
 open Bigarray
@@ -229,7 +231,7 @@ let repeat_ ~out x reps =
 
   (* case 1: all repeats equal to 1 *)
   if (Array.for_all ((=) 1) reps) = true then
-    copy_ x out
+    copy_ x ~out
   else (
     (* case 2 : vector input *)
     if (x_dims = 1) then (
@@ -313,7 +315,7 @@ let tile_ ~out x reps =
 
   (* case 1: all repeats equal to 1 *)
   if (Array.for_all ((=) 1) reps) = true then
-    copy_ x out
+    copy_ x ~out
   else (
     (* align and promote the shape *)
     let a = num_dims x in
@@ -380,7 +382,7 @@ let concatenate ?(axis=0) xs =
   let x_ofs = Array.make n 0 in
   (* copy data in the flattened space *)
   let y_ofs = ref 0 in
-  for i = 0 to m - 1 do
+  for _i = 0 to m - 1 do
     for j = 0 to n - 1 do
       _owl_copy _kind step_sz.(j) ~ofsx:x_ofs.(j) ~incx:1 ~ofsy:!y_ofs ~incy:1 xs.(j) y;
       x_ofs.(j) <- x_ofs.(j) + step_sz.(j);
@@ -499,7 +501,7 @@ let broadcast_align_shape x0 x1 =
  *)
 let broadcast_op ?out op x0 x1 =
   (* align the input rank, calculate the output shape and stride *)
-  let y0, y1, s0, s1, s2, t0, t1, t2 = broadcast_align_shape x0 x1 in
+  let y0, y1, _s0, _s1, s2, t0, t1, t2 = broadcast_align_shape x0 x1 in
   let y2 = match out with
     | Some y2 -> y2
     | None    -> empty (kind x0) s2
@@ -534,7 +536,7 @@ let broadcast_align_shape2 x0 x1 x2 =
 
 let broadcast_op2 ?out op x0 x1 x2 =
   (* align the input rank, calculate the output shape and stride *)
-  let y0, y1, y2, s0, s1, s2, s3, t0, t1, t2, t3 = broadcast_align_shape2 x0 x1 x2 in
+  let y0, y1, y2, _s0, _s1, _s2, s3, t0, t1, t2, t3 = broadcast_align_shape2 x0 x1 x2 in
   let y3 = match out with
     | Some y3 -> y3
     | None    -> empty (kind x0) s3
@@ -1546,7 +1548,7 @@ let rotate x degree =
     if m <= n then (
       let ofsx = ref 0 in
       let ofsy = ref (m * n - 1) in
-      for i = 0 to m - 1 do
+      for _i = 0 to m - 1 do
         _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:!ofsy ~incy:(-1) x y;
         ofsx := !ofsx + n;
         ofsy := !ofsy - n
@@ -1609,7 +1611,7 @@ let set_index x axis a =
     Array.iteri (fun i b -> indices.(i).(j) <- b) a
   ) axis;
   if Array.length a = 1 then
-    Array.iteri (fun i j -> Bigarray.Genarray.set x j a.(0)) indices
+    Array.iteri (fun _i j -> Bigarray.Genarray.set x j a.(0)) indices
   else
     Array.iteri (fun i j -> Bigarray.Genarray.set x j a.(i)) indices
 
@@ -1752,7 +1754,7 @@ let pp_dsnda formatter x = Owl_pretty.pp_dsnda formatter x
 
 let save x f = Owl_io.marshal_to_file x f
 
-let load k f = Owl_io.marshal_from_file f
+let load _k f = Owl_io.marshal_from_file f
 
 let of_array k x d =
   let n = Array.fold_left (fun a b -> a * b) 1 d in
@@ -1905,7 +1907,7 @@ let _highest_padding_dimension p =
   (try for i = l downto 0 do
     d := i;
     if p.(i) <> [|0;0|] then failwith "stop"
-  done with exn -> ());
+  done with _exn -> ());
   !d
 
 let pad ?v d x =
@@ -4836,7 +4838,7 @@ let diff ?(axis=(-1)) ?(n=1) x =
   let a = Owl_utils.adjust_index axis d in
   assert (n < nth_dim x a);
   let y = ref x in
-  for i = 1 to n do
+  for _i = 1 to n do
     y := _diff a !y
   done;
   !y
@@ -4977,7 +4979,7 @@ let foldi ?axis f a x =
       let y = create (kind x) s a in
       let y' = flatten y |> array1_of_genarray in
 
-      for i = 0 to m - 1 do
+      for _i = 0 to m - 1 do
         for j = 0 to n - 1 do
           let b = Array1.unsafe_get y' (!start_y + !incy) in
           let c = Array1.unsafe_get x' (!start_x + j) in
@@ -5026,7 +5028,7 @@ let scani ?(axis=(-1)) f x =
   let y = copy x in
   let y' = flatten y |> array1_of_genarray in
 
-  for i = 0 to m - 1 do
+  for _i = 0 to m - 1 do
     for j = 0 to n - 1 do
       let b = Array1.unsafe_get y' (!start_x + j) in
       let c = Array1.unsafe_get y' (!start_y + j) in
@@ -5060,7 +5062,7 @@ let sum ?axis x =
 
 let sum_ ~out ~axis x =
   let _kind = kind x in
-  let m, n, o, s = Owl_utils.reduce_params axis x in
+  let m, n, o, _s = Owl_utils.reduce_params axis x in
   (* TODO: this can be optimised, only need to reset first slice actually. *)
   reset out;
   _owl_sum_along _kind m n o x out
@@ -5092,7 +5094,7 @@ let min ?axis x =
 
 let min_ ~out ~axis x =
   let _kind = kind x in
-  let m, n, o, s = Owl_utils.reduce_params axis x in
+  let m, n, o, _s = Owl_utils.reduce_params axis x in
   (* TODO: this can be optimised, only need to reset first slice actually. *)
   fill out (Owl_const.pos_inf _kind);
   _owl_min_along _kind m n o x out
@@ -5112,7 +5114,7 @@ let max ?axis x =
 
 let max_ ~out ~axis x =
   let _kind = kind x in
-  let m, n, o, s = Owl_utils.reduce_params axis x in
+  let m, n, o, _s = Owl_utils.reduce_params axis x in
   (* TODO: this can be optimised, only need to reset first slice actually. *)
   fill out (Owl_const.neg_inf _kind);
   _owl_max_along _kind m n o x out

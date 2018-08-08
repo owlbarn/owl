@@ -3,10 +3,7 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types
-
 open Owl_graph
-
 
 module Make
   (Optimiser : Owl_computation_optimiser_sig.Sig)
@@ -15,8 +12,6 @@ module Make
   module Optimiser = Optimiser
 
   open Optimiser
-
-  open Optimiser.Operator
 
   open Optimiser.Operator.Symbol
 
@@ -189,7 +184,7 @@ module Make
         if v == o then pass_by_o := true;
         assert (not (!branching > 1 && !pass_by_o));
       ) [|i|]
-      with exn -> safe_pair := false
+      with _exn -> safe_pair := false
     in
     !safe_pair
 
@@ -223,7 +218,7 @@ module Make
 
   let remove_unused_iopair input output =
     let new_i, new_o =
-      Owl_utils_array.filter2_split (fun i o -> degree i <> 0) input output
+      Owl_utils_array.filter2_split (fun i _o -> degree i <> 0) input output
     in
     new_i, new_o
 

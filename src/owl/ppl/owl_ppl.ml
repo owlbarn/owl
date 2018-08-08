@@ -7,9 +7,6 @@
 
 open Owl_types
 
-open Owl_graph
-
-
 module Make (A : Stats_Dist) = struct
 
   include Owl_distribution.Make (A)

@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+[@@@warning "-32"]
 
 (** Random numbers and distributions *)
 
@@ -247,11 +248,11 @@ let normlise_pdf x =
 
 (* TODO *)
 
-let centerise x = None
+let centerise _x = None
 
-let standarderise x = None
+let standarderise _x = None
 
-let ksdensity x = None
+let ksdensity _x = None
 
 
 (* Hypothesis tests *)
@@ -503,11 +504,11 @@ let ks2_test ?(alpha=0.05) x y =
     make_hypothesis (pval < alpha) pval d
 
 
-let ad_test x = None
+let ad_test _x = None
 (* Anderson-Darling test *)
 
 
-let dw_test x = None
+let dw_test _x = None
 (* Durbin-Watson test *)
 
 
@@ -565,7 +566,7 @@ let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
   make_hypothesis h p oddsratio
 
 
-let lillie_test x = None
+let lillie_test _x = None
 (* Lilliefors test *)
 
 
@@ -573,7 +574,7 @@ let tiecorrect rankvals =
   let ranks_sort = sort rankvals in
   let counts = Owl_utils.count_dup (Array.to_list ranks_sort) in
   let size = (float_of_int (Array.length rankvals)) in
-  let numerator  = Array.fold_left (+) 0 (Array.of_list (List.map (fun (x, y) -> y * y * y - y) counts)) in
+  let numerator  = Array.fold_left (+) 0 (Array.of_list (List.map (fun (_x, y) -> y * y * y - y) counts)) in
   match size with
   | 0.0 -> 1.0
   | 1.0 -> 1.0
@@ -594,7 +595,7 @@ let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
   let rankx = Array.fold_left (+.) 0.0 (Array.sub ranked 0 (int_of_float n1)) in
   let u1 = n1 *. n2 +. (n1 *. (n1 +. 1.0)) /. 2.0 -. rankx in
   let u2 = n1 *. n2 -. u1 in
-  let asymptotic v =
+  let asymptotic _v =
     let t = tiecorrect ranked in
     let sd = sqrt(t *. n1 *. n2 *. (n1 +. n2 +. 1.0) /. 12.0) in
     let mean = n1 *. n2 /. 2.0 in
@@ -611,7 +612,7 @@ let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
     let h = alpha > p in
     make_hypothesis h p u2
   in
-  let exact v =
+  let exact _v =
     let bigu = match side with
       | BothSide -> Pervasives.min u1 u2
       | RightSide -> u1
@@ -643,14 +644,14 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
   let rp = Array.fold_left (+.) 0. rp in
   let rm = Array.fold_left (+.) 0. rm in
   let t = Pervasives.min rp rm in
-  let asymptotic v =
+  let asymptotic _v =
     let mn = n *. (n +. 1.) *. 0.25 in
     let se = n *. (n +. 1.) *. (2. *. n +. 1.) in
     let t_correction rankvals =
       let ranks_sort = sort rankvals in
       let counts = Owl_utils.count_dup (Array.to_list ranks_sort) in
       (* let size = (float_of_int (Array.length rankvals)) in *)
-      Array.fold_left (+) 0 (Array.of_list (List.map (fun (x, y) -> y * y * y - y) counts))
+      Array.fold_left (+) 0 (Array.of_list (List.map (fun (_x, y) -> y * y * y - y) counts))
     in
     let corr = float_of_int (t_correction rankval) in
     let se = sqrt((se -. 0.5 *. corr)/. 24.) in
@@ -724,7 +725,7 @@ let runs_test ?(alpha=0.05) ?(side=BothSide) ?v x =
   make_hypothesis h p z
 
 
-let crosstab x = None
+let crosstab _x = None
 (* Cross-tabulation *)
 
 

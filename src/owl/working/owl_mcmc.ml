@@ -3,9 +3,9 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(*
 open Owl_types
 
-(*
 module Make (A : Stats_Dist) = struct
 
   module D = Owl_distribution.Make (A)

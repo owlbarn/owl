@@ -27,8 +27,8 @@ type legend_position = North | South | West | East | NorthWest | NorthEast | Sou
 type axis = X | Y | Z | XY | XZ | YZ | XYZ
 (** axis type *)
 
-type spec =
 (** specification of a figure *)
+type spec =
   | RGB         of int * int * int
   | LineStyle   of int
   | LineWidth   of float

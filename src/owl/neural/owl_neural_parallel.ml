@@ -129,7 +129,7 @@ module Make (M : ModelSig) (E : EngineSig) = struct
     ) vars
 
 
-  let push task id vars =
+  let push task _id vars =
     (* there should be only one item in list *)
     let updates = List.map (fun (k, model) ->
       task.model <- M.copy model;
@@ -150,7 +150,7 @@ module Make (M : ModelSig) (E : EngineSig) = struct
 
 
   (* FIXME: currently running forever *)
-  let stop task context = false
+  let stop _task _context = false
 
 
   let train_generic ?params nn x y jid url =

@@ -7,9 +7,6 @@ open Bigarray
 
 open Owl_types
 
-open Owl_core_types
-
-
 (* include the base implementation of slicing function *)
 
 include Owl_base_slicing

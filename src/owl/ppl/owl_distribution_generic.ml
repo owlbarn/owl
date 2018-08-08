@@ -5,8 +5,6 @@
 
 open Bigarray
 
-open Owl_ndarray
-
 open Owl_dense_ndarray_generic
 
 open Owl_distribution_common
@@ -48,7 +46,7 @@ let broadcast_op0 op x0 x1 n =
 
 let broadcast_op2 op x0 x1 y2 =
   (* align the input rank, calculate the output shape and stride *)
-  let y0, y1, s0, s1, t0, t1 = broadcast_align_shape x0 x1 in
+  let y0, y1, _s0, _s1, t0, t1 = broadcast_align_shape x0 x1 in
   let y2 = copy y2 in
   let s2 = shape y2 in
   let t2 = Owl_utils.calc_stride s2 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
@@ -59,14 +57,14 @@ let broadcast_op2 op x0 x1 y2 =
 (* broadcast for [f : x -> y] *)
 let broadcast_op1 op x n =
   let y = empty (kind x) (Array.append [|n|] (shape x)) in
-  let x, y, sx, sy, tx, ty = broadcast_align_shape x y in
+  let x, y, _sx, _sy, tx, ty = broadcast_align_shape x y in
   (* call the specific map function *)
   op x tx y ty y ty;
   y
 
 let broadcast_op3 op x y =
   let y = copy y in
-  let x, y, sx, sy, tx, ty = broadcast_align_shape x y in
+  let x, y, _sx, _sy, tx, ty = broadcast_align_shape x y in
   (* call the specific map function *)
   op x tx y ty y ty;
   y

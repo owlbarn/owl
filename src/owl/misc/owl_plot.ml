@@ -320,7 +320,7 @@ let _set_device h =
   try let x = Owl_utils.get_suffix h.output in
     Plplot.plsdev x;
     Plplot.plsfnam h.output;
-  with exn -> ()
+  with _exn -> ()
 
 
 let _add_legend_item p plot_type line_style line_color marker marker_color fill_pattern fill_color =
@@ -376,8 +376,8 @@ let _draw_legend p =
   let markers = Array.map (fun x -> x.marker) p.legend_items in
   let box_colors = line_colors in
   let box_patterns = Array.map (fun x -> x.fill_pattern) p.legend_items in
-  let box_scales = Array.map (fun x -> 0.8) p.legend_items in
-  let box_linewidths = Array.map (fun x -> 1.) p.legend_items in
+  let box_scales = Array.map (fun _x -> 0.8) p.legend_items in
+  let box_linewidths = Array.map (fun _x -> 1.) p.legend_items in
   let _ = pllegend opt position 0.05 0.05
     0.1 15 1 1 0 0
     opt_array 1.0 1.0 2.0
@@ -444,7 +444,7 @@ let _draw_ticklabels p axis value =
     | PL_Z_AXIS -> p.zticklabels
   in
   try List.assoc value l
-  with exn -> Printf.sprintf "%g" value
+  with _exn -> Printf.sprintf "%g" value
 
 
 let _prepare_page p =
@@ -569,7 +569,7 @@ let legend_off h = (h.pages.(h.current_page)).legend <- false
 
 
 (* TODO *)
-let rgb = None
+let rgb = None [@@warning "-32"]
 
 
 (*FIXME: plptex3 to write text inside the viewport of a 3D plot*)
@@ -833,7 +833,7 @@ let draw_line ?(h=_default_handle) ?(spec=[]) x0 y0 x1 y1 =
 
 
 (* TODO *)
-let plot_multi = None
+let plot_multi = None [@@warning "-32"]
 
 
 let _draw_error_bar ?(w=0.) x y e =
@@ -1160,7 +1160,7 @@ let draw_circle ?(h=_default_handle) ?(spec=[]) x y rr =
   if not h.holdon then output h
 
 
-let _draw_arc fill n x =
+let _draw_arc _fill n x =
   let open Plplot in
   let a = 2. *. Owl_const.pi in
   let theta = a /. n in
@@ -1628,7 +1628,7 @@ let qqplot ?(h=_default_handle) ?(spec=[]) ?(pd=Owl_stats.gaussian_ppf ~mu:0. ~s
 
 (* TODO *)
 
-let scatterhist = None
+let scatterhist = None [@@warning "-32"]
 
 
 (* other plots *)

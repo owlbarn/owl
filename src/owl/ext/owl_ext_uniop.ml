@@ -20,7 +20,7 @@ module F = struct
   module M = Owl_maths
 
   let abs x = F M.(abs x)
-  let abs2 x = F M.(x *. x)
+  let abs2 x = F (x *. x)
   let neg x = F M.(neg x)
   let reci x = F M.(reci x)
   let signum x = F M.(signum x)

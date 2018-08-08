@@ -288,7 +288,7 @@ This function minimises the weight ``w`` of passed-in function ``f``.
 * ``w`` is a row vector but ``y`` can have any shape.
    *)
 
-  val minimise_network : ?state:Checkpoint.state -> Params.typ -> (t -> t * t array array) -> (t -> t array array * t array array) -> (t array array -> 'a) -> (string -> unit) -> t -> t -> Checkpoint.state
+  val minimise_network : ?state:Checkpoint.state -> Params.typ -> (t -> t * t array array) -> (t -> t array array * t array array) -> (t array array -> unit) -> (string -> unit) -> t -> t -> Checkpoint.state
   (**
 This function is specifically designed for minimising the weights in a neural
 network of graph structure. In Owl's earlier versions, the functions in the
@@ -302,7 +302,7 @@ This function minimises ``f : x -> y`` w.r.t ``x``.
 ``x`` is an ndarray; and ``y`` is an scalar value.
    *)
 
-  val minimise_compiled_network : ?state:Checkpoint.state -> Params.typ -> (t -> t -> t) -> (unit -> 'a) -> (string -> unit) -> t -> t -> Checkpoint.state
+  val minimise_compiled_network : ?state:Checkpoint.state -> Params.typ -> (t -> t -> t) -> (unit -> unit) -> (string -> unit) -> t -> t -> Checkpoint.state
   (** TODO *)
 
 

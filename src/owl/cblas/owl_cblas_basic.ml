@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+[@@@warning "-6"]
+
 (** Please refer to: Intel Math Kernel Library implements the BLAS
   url: https://software.intel.com/en-us/mkl-developer-reference-c
  *)
@@ -40,7 +42,7 @@ let rotg a b =
   let b = allocate double b in
   let c = allocate double 0. in
   let s = allocate double 0. in
-  C.drotg a b c s;
+  C.drotg ~a ~b ~c ~s;
   !@a, !@b, !@c, !@s
 
 
@@ -54,19 +56,19 @@ let rotmg
       let d1 = allocate float d1 in
       let d2 = allocate float d2 in
       let b1 = allocate float b1 in
-      let p  = Bigarray.(Array1.create Float32 C_layout 5) in
-      let _p = bigarray_start Ctypes_static.Array1 p in
-      C.srotmg d1 d2 b1 b2 _p;
-      !@d1, !@d2, !@b1, p
+      let p' = Bigarray.(Array1.create Float32 C_layout 5) in
+      let p  = bigarray_start Ctypes_static.Array1 p' in
+      C.srotmg ~d1 ~d2 ~b1 ~b2 ~p;
+      !@d1, !@d2, !@b1, p'
     )
   | Bigarray.Float64 -> (
       let d1 = allocate double d1 in
       let d2 = allocate double d2 in
       let b1 = allocate double b1 in
-      let p  = Bigarray.(Array1.create Float64 C_layout 5) in
-      let _p = bigarray_start Ctypes_static.Array1 p in
-      C.drotmg d1 d2 b1 b2 _p;
-      !@d1, !@d2, !@b1, p
+      let p' = Bigarray.(Array1.create Float64 C_layout 5) in
+      let p  = bigarray_start Ctypes_static.Array1 p' in
+      C.drotmg ~d1 ~d2 ~b1 ~b2 ~p;
+      !@d1, !@d2, !@b1, p'
     )
   | _                -> failwith "owl_cblas:rotmg"
 
@@ -80,8 +82,8 @@ let rotm
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _p = bigarray_start Ctypes_static.Array1 p in
   let _ = match Bigarray.Array1.kind x with
-    | Bigarray.Float32 -> C.srotm n _x incx _y incy _p
-    | Bigarray.Float64 -> C.drotm n _x incx _y incy _p
+    | Bigarray.Float32 -> C.srotm ~n ~x:_x ~incx ~y:_y ~incy ~p:_p
+    | Bigarray.Float64 -> C.drotm ~n ~x:_x ~incx ~y:_y ~incy ~p:_p
     | _                -> failwith "owl_cblas:rotm"
   in ()
 
@@ -94,8 +96,8 @@ let rot
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _ = match Bigarray.Array1.kind x with
-    | Bigarray.Float32 -> C.srot n _x incx _y incy c s
-    | Bigarray.Float64 -> C.drot n _x incx _y incy c s
+    | Bigarray.Float32 -> C.srot ~n ~x:_x ~incx ~y:_y ~incy ~c ~s
+    | Bigarray.Float64 -> C.drot ~n ~x:_x ~incx ~y:_y ~incy ~c ~s
     | _                -> failwith "owl_cblas:rot"
   in ()
 
@@ -441,7 +443,7 @@ let sbmv
 
 let spmv
   : type a. cblas_layout -> cblas_uplo -> int -> int -> float -> (float, a) t -> (float, a) t -> int -> float -> (float, a) t -> int -> unit
-  = fun layout uplo n k alpha ap x incx beta y incy ->
+  = fun layout uplo n _k alpha ap x incx beta y incy ->
   let _layout = cblas_layout layout in
   let _uplo = cblas_uplo uplo in
   let _x = bigarray_start Ctypes_static.Array1 x in

@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+[@@@warning "-6-34"]
+
 (** LAPACKE interface: high-level interface between Owl and LAPACKE *)
 
 (** Please refer to the documentation of Intel Math Kernel Library on the
@@ -15,19 +17,14 @@ open Ctypes
 
 open Bigarray
 
-open Owl_types
-
-
 module L = Owl_lapacke_generated
-
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 
-type s_t = (float, Bigarray.float32_elt) t
+type s_t= (float, Bigarray.float32_elt) t
 type d_t = (float, Bigarray.float64_elt) t
 type c_t = (Complex.t, Bigarray.complex32_elt) t
 type z_t = (Complex.t, Bigarray.complex64_elt) t
-
 type lapacke_layout = RowMajor | ColMajor
 let lapacke_layout : type a. a layout -> int = function
   | C_layout       -> 101
@@ -37,13 +34,13 @@ type lapacke_transpose = NoTrans | Trans | ConjTrans
 let lapacke_transpose = function NoTrans -> 'N' | Trans -> 'T' | ConjTrans -> 'C'
 
 type lapacke_uplo = Upper | Lower
-let lapacke_uplo = function Upper -> 121 | Lower -> 122
+let lapacke_uplo = function Upper -> 121 | Lower -> 122 [@@warning "-32"]
 
 type lapacke_diag = NonUnit | Unit
-let lapacke_diag = function NonUnit -> 131 | Unit -> 132
+let lapacke_diag = function NonUnit -> 131 | Unit -> 132 [@@warning "-32"]
 
 type lapacke_side = Left | Right
-let lapacke_side = function Left -> 141 | Right -> 142
+let lapacke_side = function Left -> 141 | Right -> 142 [@@warning "-32"]
 
 let check_lapack_error ret =
   if ret = 0 then ()
@@ -88,7 +85,7 @@ let gbtrf
   in
   check_lapack_error ret;
   ab, ipiv
-
+        [@@warning "-32"]
 
 let gbtrs
   : type a b. trans:lapacke_transpose -> kl:int -> ku:int -> n:int
@@ -1623,7 +1620,7 @@ let gttrs
   in
   check_lapack_error ret;
   b
-
+    [@@warning "-27"]
 
 let orglq
   : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t
@@ -2676,7 +2673,7 @@ let stein
   in
   check_lapack_error ret;
   z, ifailv
-
+       [@@warning "-27"]
 
 let syconv
   : type a b. uplo:char -> way:char -> a:(a, b) t -> ipiv:(int32, int32_elt) t

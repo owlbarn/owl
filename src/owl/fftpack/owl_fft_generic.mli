@@ -5,7 +5,6 @@
 
 (** Fast Fourier Transform *)
 
-open Bigarray
 open Owl_dense_ndarray_generic
 
 

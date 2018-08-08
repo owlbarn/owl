@@ -7,7 +7,6 @@
 
 open Owl_types
 
-
 (* Make functor starts *)
 
 module Make
@@ -15,8 +14,6 @@ module Make
   = struct
 
   module Optimise = Optimise
-
-  open Optimise
 
   open Optimise.Algodiff
 
@@ -1979,7 +1976,7 @@ module Make
       l.in_shape.(1) <- out_shape.(1);
       l.out_shape.(0) <- out_shape.(1)
 
-    let copy l = create ()
+    let copy _l = create ()
 
     let run x l =
       let kernel = [|l.in_shape.(0)|] in
@@ -2017,7 +2014,7 @@ module Make
       l.in_shape.(2) <- out_shape.(2);
       l.out_shape.(0) <- out_shape.(2)
 
-    let copy l = create ()
+    let copy _l = create ()
 
     let run x l =
       let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
@@ -2054,7 +2051,7 @@ module Make
       l.in_shape.(1) <- out_shape.(1);
       l.out_shape.(0) <- out_shape.(1)
 
-    let copy l = create ()
+    let copy _l = create ()
 
     let run x l =
       let kernel = [|l.in_shape.(0)|] in
@@ -2092,7 +2089,7 @@ module Make
       l.in_shape.(2) <- out_shape.(2);
       l.out_shape.(0) <- out_shape.(2)
 
-    let copy l = create ()
+    let copy _l = create ()
 
     let run x l =
       let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
@@ -2277,7 +2274,7 @@ module Make
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- [|o|]
 
-    let copy l = create ()
+    let copy _l = create ()
 
     let run x l = Maths.reshape x [|(shape x).(0); l.out_shape.(0)|]
 
@@ -2308,9 +2305,9 @@ module Make
       l.in_shape <- Array.copy out_shapes.(0);
       l.out_shape <- Array.copy out_shapes.(0)
 
-    let copy l = create ()
+    let copy _l = create ()
 
-    let run x l =
+    let run x _l =
       let n = Array.length x in
       (* at least two inputs *)
       assert (n > 1);
@@ -2348,9 +2345,9 @@ module Make
       l.in_shape <- Array.copy out_shapes.(0);
       l.out_shape <- Array.copy out_shapes.(0)
 
-    let copy l = create ()
+    let copy _l = create ()
 
-    let run x l =
+    let run x _l =
       let n = Array.length x in
       (* at least two inputs *)
       assert (n > 1);
@@ -2391,9 +2388,9 @@ module Make
       l.in_shape <- [|m; n|];
       l.out_shape <- [|n|]
 
-    let copy l = create ()
+    let copy _l = create ()
 
-    let run x l =
+    let run x _l =
       assert (Array.length x = 2);
       Maths.(x.(0) *@ x.(1))
 
@@ -2425,9 +2422,9 @@ module Make
       l.in_shape <- Array.copy out_shapes.(0);
       l.out_shape <- Array.copy out_shapes.(0)
 
-    let copy l = create ()
+    let copy _l = create ()
 
-    let run x l =
+    let run x _l =
       let n = Array.length x in
       (* at least two inputs *)
       assert (n > 1);
@@ -2465,9 +2462,9 @@ module Make
       l.in_shape <- Array.copy out_shapes.(0);
       l.out_shape <- Array.copy out_shapes.(0)
 
-    let copy l = create ()
+    let copy _l = create ()
 
-    let run x l =
+    let run x _l =
       let n = Array.length x in
       (* at least two inputs *)
       assert (n > 1);
@@ -2945,7 +2942,7 @@ module Make
 
 
   let connect out_shapes l = match l with
-    | Input l           -> () (* always the first neuron *)
+    | Input _l           -> () (* always the first neuron *)
     | Linear l          -> Linear.connect out_shapes.(0) l
     | LinearNoBias l    -> LinearNoBias.connect out_shapes.(0) l
     | Embedding l       -> Embedding.connect out_shapes.(0) l

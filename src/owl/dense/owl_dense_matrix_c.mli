@@ -48,11 +48,11 @@ val uniform : ?a:elt -> ?b:elt -> int -> int -> mat
 
 val gaussian : ?mu:elt -> ?sigma:elt -> int -> int -> mat
 
-val linspace : elt -> elt -> int -> mat
+val linspace : elt -> elt -> int -> mat [@@warning "-32"]
 
-val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat
+val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat [@@warning "-32"]
 
-val meshup : mat -> mat -> mat * mat
+val meshup : mat -> mat -> mat * mat [@@warning "-32"]
 
 val bernoulli : ?p:float -> int -> int -> mat
 
@@ -462,11 +462,11 @@ val mean : ?axis:int -> mat -> mat
 
 val mean': mat -> elt
 
-val var : ?axis:int -> mat -> mat
+val var : ?axis:int -> mat -> mat [@@warning "-32"]
 
 val var': mat -> elt
 
-val std : ?axis:int -> mat -> mat
+val std : ?axis:int -> mat -> mat [@@warning "-32"]
 
 val std': mat -> elt
 

@@ -15,13 +15,13 @@ let get_os_type c =
   match sys with Some s -> s | None -> ""
 
 
-let get_ocaml_default_flags c = [
+let get_ocaml_default_flags _c = [
   ":standard";
   "-safe-string";
 ]
 
 
-let get_ocaml_devmode_flags c =
+let get_ocaml_devmode_flags _c =
   let enable_devmode = Sys.getenv "ENABLE_DEVMODE" |> int_of_string in
   if enable_devmode = 0 then []
   else if enable_devmode = 1 then [
@@ -30,7 +30,7 @@ let get_ocaml_devmode_flags c =
   else failwith "Error: ENABLE_DEVMODE only accepts 0/1."
 
 
-let get_default_cflags c = [
+let get_default_cflags _c = [
   (* Basic optimisation *)
   "-g"; "-O3"; "-Ofast";
   (* FIXME: experimental switches *)
@@ -52,7 +52,7 @@ let get_default_libs c =
   | (""|"macosx"|"mingw64") -> ls
   | s -> failwith ("get_default_libs: unknown system "^s)
 
-let get_expmode_cflags c =
+let get_expmode_cflags _c =
   let enable_expmode = Sys.getenv "ENABLE_EXPMODE" |> int_of_string in
   if enable_expmode = 0 then []
   else if enable_expmode = 1 then [
@@ -61,7 +61,7 @@ let get_expmode_cflags c =
   else failwith "Error: ENABLE_EXPMODE only accepts 0/1."
 
 
-let get_devmode_cflags c =
+let get_devmode_cflags _c =
   let enable_devmode = Sys.getenv "ENABLE_DEVMODE" |> int_of_string in
   if enable_devmode = 0 then [
     "-Wno-logical-op-parentheses"
@@ -75,13 +75,13 @@ let get_devmode_cflags c =
   else failwith "Error: ENABLE_DEVMODE only accepts 0/1."
 
 
-let get_gcc_path c =
+let get_gcc_path _c =
   let p0 = "/usr/local/lib/gcc/7" in
   if Sys.file_exists p0 then ["-L" ^ p0]
   else []
 
 
-let get_openblas_path c =
+let get_openblas_path _c =
   let p0 = "/usr/local/opt/openblas/lib" in
   let p1 = "/opt/OpenBLAS/lib/" in
   if Sys.file_exists p0 then ["-L" ^ p0]

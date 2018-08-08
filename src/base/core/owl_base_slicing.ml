@@ -101,15 +101,15 @@ let calc_continuous_blksz axis shp =
       d := l + 1;
       if l < 0 then failwith "stop";
       match axis.(l) with
-      | I_ x -> failwith "stop" (* never reached *)
-      | L_ x -> failwith "stop"
+      | I_ _x -> failwith "stop" (* never reached *)
+      | L_ _x -> failwith "stop"
       | R_ x -> (
           if x.(0) = 0 && x.(1) = shp.(l) - 1 && x.(2) = 1 then
             ssz := slice_sz.(l)
           else failwith "stop"
         )
     done
-  with exn -> ()
+  with _exn -> ()
   in !d, !ssz
 
 
@@ -118,7 +118,7 @@ let calc_continuous_blksz axis shp =
  *)
 let calc_slice_shape axis =
   Array.map (function
-    | I_ x -> 1 (* never reached *)
+    | I_ _x -> 1 (* never reached *)
     | L_ x -> Array.length x
     | R_ x ->
         let a, b, c = x.(0), x.(1), x.(2) in
@@ -137,7 +137,7 @@ let rec __foreach_continuous_blk a d j i f =
   if j = d then f i
   else (
     match a.(j) with
-    | I_ x -> ( (* never reache here *) )
+    | I_ _x -> ( (* never reache here *) )
     | L_ x -> (
         Array.iter (fun k ->
           i.(j) <- k;
@@ -193,7 +193,7 @@ let optimise_input_shape axis x y =
           else failwith "stop"
       | _    -> failwith "stop"
     done
-  with exn -> ());
+  with _exn -> ());
   if n - !dim > 1 then (
     (* can be optimised *)
     let axis' = Array.sub axis 0 (!dim + 1) in

@@ -216,7 +216,7 @@ let concatenate shape axis =
   let shape0 = Array.copy shapes.(0) in
   shape0.(axis) <- 0;
   let acc_dim = ref 0 in
-  Array.iteri (fun i shape1 ->
+  Array.iteri (fun _i shape1 ->
     acc_dim := !acc_dim + shape1.(axis);
     shape1.(axis) <- 0;
     assert (shape0 = shape1);

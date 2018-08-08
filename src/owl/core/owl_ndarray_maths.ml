@@ -2478,7 +2478,7 @@ external owl_complex32_to_complex : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr 
 external owl_complex64_to_complex : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> unit = "complex64_to_complex"
 
 let _owl_to_complex : type a b c d. (a, b) kind -> (c, d) kind -> (a, b, c, d) owl_arr_op19 =
-  fun real_kind complex_kind l x y z ->
+  fun real_kind _complex_kind l x y z ->
   match real_kind with
   | Float32   -> owl_float32_to_complex l x y z
   | Float64   -> owl_float64_to_complex l x y z
@@ -2490,7 +2490,7 @@ external owl_float32_polar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('c,
 external owl_float64_polar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> unit = "float64_polar"
 
 let _owl_polar : type a b c d. (a, b) kind -> (c, d) kind -> (a, b, c, d) owl_arr_op19 =
-  fun real_kind complex_kind l x y z ->
+  fun real_kind _complex_kind l x y z ->
   match real_kind with
   | Float32   -> owl_float32_polar l x y z
   | Float64   -> owl_float64_polar l x y z

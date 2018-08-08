@@ -5,6 +5,8 @@
 
 (** [ Real dense matrix ]  *)
 
+[@@@warning "-34"]
+
 open Bigarray
 
 module M = Owl_dense_matrix_generic

@@ -12,6 +12,7 @@ open Owl_types_operator
 
 module Make_Basic (M : BasicSig) = struct
 
+  [@warning "-34"]
   type ('a, 'b) op_t0 = ('a, 'b) M.t
 
   let ( + ) = M.add
@@ -57,6 +58,7 @@ end
 
 module Make_Extend (M : ExtendSig) = struct
 
+  [@warning "-34"]
   type ('a, 'b) op_t1 = ('a, 'b) M.t
 
   let ( =$ ) = M.equal_scalar
@@ -152,6 +154,7 @@ end
 
 module Make_Matrix (M : MatrixSig) = struct
 
+  [@warning "-34"]
   type ('a, 'b) op_t2 = ('a, 'b) M.t
 
   let ( .%{ } ) x i = M.get x i.(0) i.(1)
@@ -165,6 +168,7 @@ end
 
 module Make_Ndarray (M : NdarraySig) = struct
 
+  [@warning "-34"]
   type ('a, 'b) op_t3 = ('a, 'b) M.t
 
   let ( .%{ } ) x i = M.get x i
@@ -176,6 +180,7 @@ end
 
 module Make_Linalg (M : LinalgSig) = struct
 
+  [@warning "-34"]
   type ('a, 'b) op_t4 = ('a, 'b) M.t
 
   let ( **@ ) x a = M.mpow x a

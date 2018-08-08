@@ -3,8 +3,6 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types
-
 open Owl_graph
 
 
@@ -13,8 +11,6 @@ open Owl_graph
 module Make
   (Graph : Owl_computation_graph_sig.Sig)
   = struct
-
-  open Graph
 
   open Graph.Optimiser.Operator.Symbol
 
@@ -39,31 +35,31 @@ module Make
         | Noop                                        -> _eval_map_00 x (fun x -> x.(0))
         | Var                                         -> check_assigned x
         | Const                                       -> check_assigned x
-        | Empty shape                                 -> _eval_map_01 x (fun ~out x -> ())
-        | Zeros shape                                 -> _eval_map_01 x (fun ~out x -> A.zeros_ ~out)
-        | Ones shape                                  -> _eval_map_01 x (fun ~out x -> A.ones_ ~out)
-        | Create shape                                -> _eval_map_02 x (fun ~out x -> A.create_ ~out x.(0))
-        | Sequential shape                            -> _eval_map_02 x (fun ~out x -> A.sequential_ ~a:x.(0) ~step:x.(1) ~out)
-        | Uniform shape                               -> _eval_map_02 x (fun ~out x -> A.uniform_ ~a:x.(0) ~b:x.(1) ~out)
-        | Gaussian shape                              -> _eval_map_02 x (fun ~out x -> A.gaussian_ ~mu:x.(0) ~sigma:x.(1) ~out)
-        | Bernoulli shape                             -> _eval_map_02 x (fun ~out x -> A.bernoulli_ ~p:x.(0) ~out)
-        | Init (shape, f)                             -> failwith "Init"
+        | Empty _shape                                 -> _eval_map_01 x (fun ~out _x -> ()) [@warning "-27"]
+        | Zeros _shape                                 -> _eval_map_01 x (fun ~out _x -> A.zeros_ ~out)
+        | Ones _shape                                  -> _eval_map_01 x (fun ~out _x -> A.ones_ ~out)
+        | Create _shape                                -> _eval_map_02 x (fun ~out x -> A.create_ ~out x.(0))
+        | Sequential _shape                            -> _eval_map_02 x (fun ~out x -> A.sequential_ ~a:x.(0) ~step:x.(1) ~out)
+        | Uniform _shape                               -> _eval_map_02 x (fun ~out x -> A.uniform_ ~a:x.(0) ~b:x.(1) ~out)
+        | Gaussian _shape                              -> _eval_map_02 x (fun ~out x -> A.gaussian_ ~mu:x.(0) ~sigma:x.(1) ~out)
+        | Bernoulli _shape                             -> _eval_map_02 x (fun ~out x -> A.bernoulli_ ~p:x.(0) ~out)
+        | Init (_shape, _f)                             -> failwith "Init"
         | Get i                                       -> _eval_map_06 x (fun x -> A.get x i)
-        | Set i                                       -> failwith "Set"
+        | Set _i                                       -> failwith "Set"
         | GetSlice slice                              -> _eval_map_01 x (fun ~out x -> A.get_slice_ ~out slice x.(0))
         | SetSlice slice                              -> _eval_map_01 x (fun ~out x -> A.set_slice_ ~out slice x.(0) x.(1))
-        | Copy                                        -> _eval_map_01 x (fun ~out x -> A.copy_ ~out x.(0))
-        | Reset                                       -> _eval_map_01 x (fun ~out x -> A.reset out)
-        | Reshape shape                               -> _eval_map_01 x (fun ~out x -> A.reshape_ ~out x.(0))
+        | Copy                                        -> _eval_map_01 x (fun ~out x -> A.copy_ ~out x.(0)) [@warning "-27"]
+        | Reset                                       -> _eval_map_01 x (fun ~out _x -> A.reset out)
+        | Reshape _shape                               -> _eval_map_01 x (fun ~out x -> A.reshape_ ~out x.(0))
         | Reverse                                     -> _eval_map_01 x (fun ~out x -> A.reverse_ ~out x.(0))
         | Tile repeats                                -> _eval_map_01 x (fun ~out x -> A.tile_ ~out x.(0) repeats)
         | Repeat repeats                              -> _eval_map_01 x (fun ~out x -> A.repeat_ ~out x.(0) repeats)
         | Concatenate axis                            -> _eval_map_00 x A.(concatenate ~axis)
-        | Split (axis, parts)                         -> failwith "Split"
-        | Draw (axis, n)                              -> failwith "Draw"
-        | Map f                                       -> failwith "Map"
-        | Fold (axis, f)                              -> failwith "Fold"
-        | Scan (axis, f)                              -> failwith "Scan"
+        | Split (_axis, _parts)                         -> failwith "Split"
+        | Draw (_axis, _n)                              -> failwith "Draw"
+        | Map _f                                       -> failwith "Map"
+        | Fold (_axis, _f)                              -> failwith "Fold"
+        | Scan (_axis, _f)                              -> failwith "Scan"
         | OneHot depth                                -> _eval_map_01 x (fun ~out x -> A.one_hot_ ~out depth x.(0))
         | Abs                                         -> _eval_map_01 x (fun ~out x -> A.abs_ ~out x.(0))
         | Neg                                         -> _eval_map_01 x (fun ~out x -> A.neg_ ~out x.(0))
@@ -177,7 +173,7 @@ module Make
         | AvgPool2dBackward (padding, kernel, stride) -> _eval_map_01 x (fun ~out x -> A.avg_pool2d_backward_ ~out padding x.(0) kernel stride x.(1))
         | AvgPool3dBackward (padding, kernel, stride) -> _eval_map_01 x (fun ~out x -> A.avg_pool3d_backward_ ~out padding x.(0) kernel stride x.(1))
         | Row                                         -> failwith "Row"
-        | Rows i                                      -> failwith "Rows"
+        | Rows _i                                      -> failwith "Rows"
         | CopyRowTo                                   -> failwith "CopyRowTo"
         | CopyColTo                                   -> failwith "CopyColTo"
         | Dot (transa, transb, alpha, beta)           -> _eval_map_01 x (fun ~out x -> A.dot_ ~transa ~transb ~alpha:(unpack_elt alpha) ~beta:(unpack_elt beta) ~c:out x.(0) x.(1))

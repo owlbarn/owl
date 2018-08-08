@@ -141,7 +141,7 @@ let dfs_iter f x next =
 
 
 (* TODO: BFS iterator *)
-let bfs_iter f next x = failwith "owl_graph:bfs_iter"
+let bfs_iter _f _next _x = failwith "owl_graph:bfs_iter"
 
 
 let iter_ancestors ?(order=DFS) f x =
@@ -156,7 +156,7 @@ let iter_descendants ?(order=DFS) f x =
   | DFS -> dfs_iter f x children
 
 
-let iter ?(dir=Ancestor) ?order f x =
+let _iter ?(dir=Ancestor) ?order f x =
   match dir with
   | Ancestor   -> iter_ancestors ?order f x
   | Descendant -> iter_descendants ?order f x
@@ -211,7 +211,7 @@ let fold_out_edges f a x =
 
 
 (* TODO *)
-let map f x = None
+let _map _f _x = None
 
 
 (* TODO: optimise *)
@@ -238,10 +238,10 @@ let copy ?(dir=Ancestor) x =
 
 
 (* TODO *)
-let to_array = None
+let _to_array = None
 
 (* TODO *)
-let to_hashtbl = None
+let _to_hashtbl = None
 
 
 let num_ancestor x =

@@ -273,7 +273,7 @@ let _exists_basic iter_fun f x =
   try iter_fun (fun y ->
     if (f y) = true then failwith "found"
   ) x; false
-  with exn -> true
+  with _exn -> true
 
 let exists f x = _exists_basic iter f x
 
@@ -379,9 +379,9 @@ let max x = _eigen_max x.d
 (* TODO: optimise *)
 let minmax x = _eigen_min x.d, _eigen_max x.d
 
-let min2 x y = _eigen_min2 x.d y.d
+let min2 x y = _eigen_min2 x.d y.d [@@warning "-32"]
 
-let max2 x y = _eigen_max2 x.d y.d
+let max2 x y = _eigen_max2 x.d y.d [@@warning "-32"]
 
 let sum x = _eigen_sum x.d
 
@@ -433,7 +433,7 @@ let permutation_matrix k d =
   y
 
 let draw_rows ?(replacement=true) x c =
-  let m, n = shape x in
+  let m, _n = shape x in
   let a = Array.init m (fun i -> i) in
   let l = match replacement with
     | true  -> Owl_stats.sample a c
@@ -445,7 +445,7 @@ let draw_rows ?(replacement=true) x c =
   dot y x, l
 
 let draw_cols ?(replacement=true) x c =
-  let m, n = shape x in
+  let _m, n = shape x in
   let a = Array.init n (fun i -> i) in
   let l = match replacement with
     | true  -> Owl_stats.sample a c
@@ -491,14 +491,14 @@ let sum_cols x =
   dot x y
 
 let mean_rows x =
-  let m, n = shape x in
+  let m, _n = shape x in
   let k = kind x in
   let a = (Owl_ndarray._mean_elt k) (Owl_const.one k) m in
   let y = Owl_dense_matrix_generic.create k 1 m a |> of_dense in
   dot y x
 
 let mean_cols x =
-  let m, n = shape x in
+  let _m, n = shape x in
   let k = kind x in
   let a = (Owl_ndarray._mean_elt k) (Owl_const.one k) n in
   let y = Owl_dense_matrix_generic.create k n 1 a |> of_dense in
@@ -507,12 +507,12 @@ let mean_cols x =
 let nnz_rows x =
   let s = Hashtbl.create 1000 in
   let _ = iteri_nz (fun i _ _ -> if not (Hashtbl.mem s i) then Hashtbl.add s i 0) x in
-  Hashtbl.fold (fun k v l -> l @ [k]) s [] |> Array.of_list
+  Hashtbl.fold (fun k _v l -> l @ [k]) s [] |> Array.of_list
 
 let nnz_cols x =
   let s = Hashtbl.create 1000 in
   let _ = iteri_nz (fun _ j _ -> if not (Hashtbl.mem s j) then Hashtbl.add s j 0) x in
-  Hashtbl.fold (fun k v l -> l @ [k]) s [] |> Array.of_list
+  Hashtbl.fold (fun k _v l -> l @ [k]) s [] |> Array.of_list
 
 let row_num_nz x = nnz_rows x |> Array.length
 
@@ -580,7 +580,7 @@ let pp_spmat x =
 
 let save x f = Owl_io.marshal_to_file x f
 
-let load k f = Owl_io.marshal_from_file f
+let load _k f = Owl_io.marshal_from_file f
 
 (* TODO: optimise *)
 let rows x l =
@@ -597,10 +597,10 @@ let cols x l =
   ) l;
   y
 
-let concat_vertical x y =
+let concat_vertical _x _y =
   failwith "owl_sparse_matrix_generic:concat_vertical:not implemented"
 
-let concat_horizontal x y =
+let concat_horizontal _x _y =
   failwith "owl_sparse_matrix_generic:concat_horizontal:not implemented"
 
-let mpow x a = failwith "owl_sparse_matrix_generic:mpow:not implemented"
+let mpow _x _a = failwith "owl_sparse_matrix_generic:mpow:not implemented"

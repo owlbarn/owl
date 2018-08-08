@@ -52,7 +52,7 @@ module Make
 
   (* project slice s1 to to s0 on one dimension *)
   let project_slice_dim s0 s1 =
-    let start_0, stop_0, stride_0 = s0.(0), s0.(1), s0.(2) in
+    let start_0, _stop_0, stride_0 = s0.(0), s0.(1), s0.(2) in
     let start_1, stop_1, stride_1 = s1.(0), s1.(1), s1.(2) in
     let start_2 = start_0 + start_1 * stride_0 in
     let stop_2 = start_0 + stop_1 * stride_0 in
@@ -66,7 +66,7 @@ module Make
 
   (* project the index onto the slice on one dimension *)
   let project_index_dim s i =
-    let start_, stop_, stride_ = s.(0), s.(1), s.(2) in
+    let start_, _stop_, stride_ = s.(0), s.(1), s.(2) in
     start_ + i * stride_
 
 
@@ -129,13 +129,13 @@ module Make
     let stride = x.ofstr.(dim).(1) in
     let i = [|i + offset|] in
     if dim = num_dims x - 1 then (
-      for j = 0 to x.shape.(dim) - 1 do
+      for _j = 0 to x.shape.(dim) - 1 do
         f i (A.get x.dvec i);
         i.(0) <- i.(0) + stride;
       done
     )
     else (
-      for j = 0 to x.shape.(dim) - 1 do
+      for _j = 0 to x.shape.(dim) - 1 do
         _iteri f x i.(0) (dim + 1);
         i.(0) <- i.(0) + stride;
       done
@@ -148,14 +148,14 @@ module Make
     let stride = x.ofstr.(dim).(1) in
     let i = [|i + offset|] in
     if dim = num_dims x - 1 then (
-      for j = 0 to x.shape.(dim) - 1 do
+      for _j = 0 to x.shape.(dim) - 1 do
         f (i, !k) (A.get x.dvec i);
         i.(0) <- i.(0) + stride;
         k := !k + 1;
       done
     )
     else (
-      for j = 0 to x.shape.(dim) - 1 do
+      for _j = 0 to x.shape.(dim) - 1 do
         _iteri_adjusted f x i.(0) k (dim + 1);
         i.(0) <- i.(0) + stride;
       done
@@ -186,14 +186,14 @@ module Make
     let i_x = [|i_x + offset_x|] in
     let i_y = [|i_y + offset_y|] in
     if dim = num_dims x - 1 then (
-      for j = 0 to x.shape.(dim) - 1 do
+      for _j = 0 to x.shape.(dim) - 1 do
         f i_x i_y (A.get x.dvec i_x) (A.get y.dvec i_y);
         i_x.(0) <- i_x.(0) + stride_x;
         i_y.(0) <- i_y.(0) + stride_y;
       done
     )
     else (
-      for j = 0 to x.shape.(dim) - 1 do
+      for _j = 0 to x.shape.(dim) - 1 do
         _iter2 f x y i_x.(0) i_y.(0) (dim + 1);
         i_x.(0) <- i_x.(0) + stride_x;
         i_y.(0) <- i_y.(0) + stride_y;
@@ -204,7 +204,7 @@ module Make
   let iter f x = _iteri (fun _ a -> f a) x 0 0
 
 
-  let iteri f x = _iteri_adjusted (fun (i, k) a -> f k a) x 0 (ref 0) 0
+  let iteri f x = _iteri_adjusted (fun (_i, k) a -> f k a) x 0 (ref 0) 0
 
 
   let iteri_nd f x = _iteri_nd f x (Array.make (num_dims x) 0) 0
@@ -219,7 +219,7 @@ module Make
   let mapi_nd f x = iteri_nd (fun i a -> set x i (f i a)) x
 
 
-  let fold ?axis f x = ()
+  let _fold ?_axis _f _x = ()
 
 
   let iter2 f x y =
@@ -235,7 +235,7 @@ module Make
     if is_same_view x y then
       _iteri (fun i a -> A.set x.dvec i (f a a)) x 0 0
     else
-      _iter2 (fun i j a b -> A.set y.dvec j (f a b)) x y 0 0 0
+      _iter2 (fun _i j a b -> A.set y.dvec j (f a b)) x y 0 0 0
 
 
   let set_slice axis x y =
@@ -249,7 +249,7 @@ module Make
     let r = ref true in
     (
       try iter2 (fun a b -> assert (a = b)) x y
-      with exn -> r := false
+      with _exn -> r := false
     );
     !r
 

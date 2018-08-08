@@ -3,9 +3,6 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types
-
-
 module type Sig = sig
 
   module Optimise : Owl_optimise_generic_sig.Sig

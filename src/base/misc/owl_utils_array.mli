@@ -154,16 +154,16 @@ val mapi : (int -> 'a -> 'b) -> 'a array -> 'b array
 val map : ('a -> 'b) -> 'a array -> 'b array
 (** TODO *)
 
-val iter2i : (int -> 'a -> 'b -> 'c) -> 'a array -> 'b array -> unit
+val iter2i : (int -> 'a -> 'b -> unit) -> 'a array -> 'b array -> unit
 (** TODO *)
 
-val iter2 : ('a -> 'b -> 'c) -> 'a array -> 'b array -> unit
+val iter2 : ('a -> 'b -> unit) -> 'a array -> 'b array -> unit
 (** TODO *)
 
-val iter3i : (int -> 'a -> 'b -> 'c -> 'd) -> 'a array -> 'b array -> 'c array -> unit
+val iter3i : (int -> 'a -> 'b -> 'c -> unit) -> 'a array -> 'b array -> 'c array -> unit
 (** TODO *)
 
-val iter3 : ('a -> 'b -> 'c -> 'd) -> 'a array -> 'b array -> 'c array -> unit
+val iter3 : ('a -> 'b -> 'c -> unit) -> 'a array -> 'b array -> 'c array -> unit
 (** TODO *)
 
 val iter4i : (int -> 'a -> 'b -> 'c -> 'd -> unit) -> 'a array -> 'b array -> 'c array -> 'd array -> unit

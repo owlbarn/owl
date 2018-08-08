@@ -111,7 +111,7 @@ val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> mat -> mat * int32_
 
 val mpow : mat -> float -> mat
 
-val expm : mat -> mat
+val expm : mat -> mat [@@warning "-32"]
 
 val expm : mat -> mat
 

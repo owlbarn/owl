@@ -437,11 +437,11 @@ val mean : ?axis:int -> mat -> mat
 
 val mean': mat -> elt
 
-val var : ?axis:int -> mat -> mat
+val var : ?axis:int -> mat -> mat [@@warning "-32"]
 
 val var': mat -> elt
 
-val std : ?axis:int -> mat -> mat
+val std : ?axis:int -> mat -> mat [@@warning "-32"]
 
 val std': mat -> elt
 

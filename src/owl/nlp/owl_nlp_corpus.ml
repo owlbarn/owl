@@ -122,9 +122,9 @@ let reset_iterators corpus =
 let next_batch ?(size=100) corpus =
   let batch = Owl_utils.Stack.make () in
   (
-    try for i = 0 to size - 1 do
+    try for _i = 0 to size - 1 do
       corpus |> next |> Owl_utils.Stack.push batch
-    done with exn -> ()
+    done with _exn -> ()
   );
   Owl_utils.Stack.to_array batch
 
@@ -132,9 +132,9 @@ let next_batch ?(size=100) corpus =
 let next_batch_tok ?(size=100) corpus =
   let batch = Owl_utils.Stack.make () in
   (
-    try for i = 0 to size - 1 do
+    try for _i = 0 to size - 1 do
       corpus |> next_tok |> Owl_utils.Stack.push batch
-    done with exn -> ()
+    done with _exn -> ()
   );
   Owl_utils.Stack.to_array batch
 
@@ -256,7 +256,7 @@ let simple_process s =
  *)
 let preprocess f fi_name fo_name =
   let fo = open_out fo_name in
-  Owl_io.iteri_lines_of_file (fun i s ->
+  Owl_io.iteri_lines_of_file (fun _i s ->
     output_bytes fo (f s);
     output_char fo '\n';
   ) fi_name;
@@ -293,7 +293,7 @@ let save_txt corpus f =
   let fh = open_out f in
   let vocab = get_vocab corpus in
   let i2w_f = Owl_nlp_vocabulary.index2word vocab in
-  iteri_tok (fun i t ->
+  iteri_tok (fun _i t ->
     let s = t
       |> Array.map i2w_f
       |> Array.to_list

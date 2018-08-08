@@ -5,9 +5,6 @@
 
 open Owl_types
 
-open Owl_graph
-
-
 (* Functor of making Lazy module of different number types *)
 
 module Make
@@ -106,7 +103,7 @@ module Make
   let copy x =
     make_then_connect Copy [|arr_to_node x|] |> node_to_arr
 
-  let copy_ ~out x = failwith "Owl_computation_operator:copy_: not implemented"
+  let copy_ ~out _x = failwith "Owl_computation_operator:copy_: not implemented" [@@warning "-27"]
 
   let reset x =
     make_then_connect Reset [|arr_to_node x|] |> node_to_arr |> ignore
@@ -129,7 +126,7 @@ module Make
   let concatenate ?(axis=0) xs =
     make_then_connect (Concatenate axis) (Array.map arr_to_node xs) |> node_to_arr
 
-  let split ?(axis=0) parts x = failwith "split: not implemented"
+  let split ?(axis=0) _parts _x = failwith "split: not implemented"  [@@warning "-27"]
 
   let draw ?(axis=0) x n =
     let y = make_then_connect (Draw (axis, n)) [|arr_to_node x|] |> node_to_arr in
@@ -147,7 +144,7 @@ module Make
   let one_hot depth x =
     make_then_connect (OneHot depth) [|arr_to_node x|] |> node_to_arr
 
-  let print ?max_row ?max_col ?header ?fmt x = ()
+  let print ?max_row ?max_col ?header ?fmt x = ()  [@@warning "-27"]
 
 
   let abs x = make_then_connect Abs [|arr_to_node x|] |> node_to_arr
@@ -431,13 +428,13 @@ module Make
     assert (Array.length s = 2);
     s.(1)
 
-  let row x i = make_then_connect Row [|arr_to_node x|] |> node_to_arr
+  let row x _i = make_then_connect Row [|arr_to_node x|] |> node_to_arr
 
   let rows x i = make_then_connect (Rows i) [|arr_to_node x|] |> node_to_arr
 
-  let copy_row_to x y i = make_then_connect CopyRowTo [|arr_to_node x|] |> ignore
+  let copy_row_to x _y _i = make_then_connect CopyRowTo [|arr_to_node x|] |> ignore
 
-  let copy_col_to x y j = make_then_connect CopyColTo [|arr_to_node x|] |> ignore
+  let copy_col_to x _y _j = make_then_connect CopyColTo [|arr_to_node x|] |> ignore
 
   let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
 
@@ -466,9 +463,9 @@ module Make
 
   let of_rows xs = make_then_connect OfRows (Array.map arr_to_node xs) |> node_to_arr
 
-  let of_array x shape = raise Owl_exception.NOT_IMPLEMENTED
+  let of_array _x _shape = raise Owl_exception.NOT_IMPLEMENTED
 
-  let of_arrays x = raise Owl_exception.NOT_IMPLEMENTED
+  let of_arrays _x = raise Owl_exception.NOT_IMPLEMENTED
 
 
   (** Scalar maths *)

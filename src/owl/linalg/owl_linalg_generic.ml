@@ -3,9 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Bigarray
+[@@@warning "-6"]
 
-open Owl_types
+open Bigarray
 
 type ('a, 'b) t = ('a, 'b) Owl_dense_matrix_generic.t
 
@@ -64,7 +64,7 @@ let lu x =
   let m, n = M.shape x in
   let minmn = Pervasives.min m n in
 
-  let a, ipiv = Owl_lapacke.getrf x in
+  let a, ipiv = Owl_lapacke.getrf ~a:x in
   let l = M.tril a in
   let u = M.resize (M.triu a) [|n; n|] in
 
@@ -77,7 +77,7 @@ let lu x =
 
 
 let lufact x =
-  let a, ipiv = Owl_lapacke.getrf x in
+  let a, ipiv = Owl_lapacke.getrf ~a:x in
   a, ipiv
 
 
@@ -85,8 +85,8 @@ let lufact x =
 
 let inv x =
   let x = M.copy x in
-  let a, ipiv = Owl_lapacke.getrf x in
-  Owl_lapacke.getri a ipiv
+  let a, ipiv = Owl_lapacke.getrf ~a:x in
+  Owl_lapacke.getri ~a ~ipiv
 
 
 let det x =
@@ -94,7 +94,7 @@ let det x =
   let m, n = M.shape x in
   assert (m = n);
 
-  let a, ipiv = Owl_lapacke.getrf x in
+  let a, ipiv = Owl_lapacke.getrf ~a:x in
   let d = ref (Owl_const.one (M.kind x)) in
   let c = ref 0 in
 
@@ -118,7 +118,7 @@ let logdet x =
   assert (m = n);
 
   let _kind = M.kind x in
-  let a, ipiv = Owl_lapacke.getrf x in
+  let a, ipiv = Owl_lapacke.getrf ~a:x in
   let d = ref (Owl_const.zero _kind) in
   let c = ref 0 in
 
@@ -160,7 +160,7 @@ let qr ?(thin=true) ?(pivot=false) x =
     | true  -> Owl_lapacke.geqp3 x
     | false -> (
         let jpvt = M.empty int32 0 0 in
-        let a, tau = Owl_lapacke.geqrf x in
+        let a, tau = Owl_lapacke.geqrf ~a:x in
         a, tau, jpvt
       )
   in
@@ -248,7 +248,7 @@ let svdvals x =
 let gsvd x y =
   let x = M.copy x in
   let y = M.copy y in
-  let m, n = M.shape x in
+  let m, _n = M.shape x in
   let p, _ = M.shape y in
   let u, v, q, alpha, beta, k, l, r =
     Owl_lapacke.ggsvd3 ~jobu:'U' ~jobv:'V' ~jobq:'Q' ~a:x ~b:y
@@ -397,7 +397,7 @@ let qzvals
 
 (* TODO: RQ Decomposition *)
 
-let rq x = ()
+let rq _x = () [@@warning "-32"]
 
 
 (* Eigenvalue problem *)
@@ -413,7 +413,7 @@ let eig
     | false, true  -> 'S'
     | false, false -> 'N'
   in
-  let a, wr, wi, _, vr, _, _, _, _, _, _ =
+  let _a, wr, wi, _, vr, _, _, _, _, _, _ =
     Owl_lapacke.geevx ~balanc ~jobvl:'N' ~jobvr:'V' ~sense:'N' ~a:x
   in
 
@@ -469,7 +469,7 @@ let eig
     | _         -> failwith "owl_linalg_generic:eigvals"
   in
   v, w
-
+       [@@warning "-27"]
 
 let eigvals
   : type a b c d. ?permute:bool -> ?scale:bool -> otyp:(a, b) kind -> (c, d) t -> (a, b) t
@@ -492,7 +492,7 @@ let eigvals
     | _         -> failwith "owl_linalg_generic:eigvals"
   in
   w
-
+    [@@warning "-27"]
 
 (* Hessenberg form of matrix *)
 
@@ -527,7 +527,7 @@ let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
     | true  -> 'U'
     | false -> 'L'
   in
-  let a, ipiv, ret =
+  let a, ipiv, _ret =
     match rook with
     | true  -> (
         match symmetric with
@@ -562,12 +562,12 @@ let is_diag x = Owl_matrix._matrix_is_diag (M.kind x) x
 
 let is_posdef x =
   try ignore (chol x); true
-  with exn -> false
+  with _exn -> false
 
 
 let _minmax_real
   : type a b. (a, b) kind -> (a, b) t -> float * float
-  = fun k v ->
+  = fun _k v ->
     match (M.kind v) with
     | Float32   -> M.minmax' v
     | Float64   -> M.minmax' v
@@ -627,7 +627,7 @@ let cond ?(p=2.) x =
   else if p = 1. || p = infinity then (
     assert (M.row_num x = M.col_num x);
     let x = M.copy x in
-    let a, ipiv = lufact x in
+    let a, _ipiv = lufact x in
     let anorm = norm ~p x in
     let _norm = if p = 1. then '1' else 'I' in
     let rcond = Owl_lapacke.gecon _norm a anorm in
@@ -672,7 +672,7 @@ let _get_trans_code
  *)
 let linsolve ?(trans=false) a b =
   let ma, na = M.shape a in
-  let mb, nb = M.shape b in
+  let mb, _nb = M.shape b in
   assert (ma = mb);
   let a = M.copy a in
   let b = M.copy b in
@@ -833,7 +833,7 @@ let expm_eig
   let vi = inv v in
   let u = M.(exp w |> diagm) in
   M.( dot (dot v u) vi )
-
+    [@@warning "-32"]
 
 let expm x =
   Owl_exception.(check (is_square x) NOT_SQUARE);
@@ -908,7 +908,7 @@ let expm x =
 
       let x = ref b in
       if s > 0. then (
-        for i = 1 to int_of_float t do
+        for _i = 1 to int_of_float t do
           x := M.dot !x !x
         done;
       );
@@ -1052,11 +1052,11 @@ let tanhm x =
 
 
 (* TODO *)
-let logm x = failwith "logm: not implemented"
+let logm _x = failwith "logm: not implemented" [@@warning "-32"]
 
 
 (* TODO *)
-let sqrtm x = failwith "sqrtm: not implemented"
+let sqrtm _x = failwith "sqrtm: not implemented" [@@warning "-32"]
 
 
 (* ends here *)

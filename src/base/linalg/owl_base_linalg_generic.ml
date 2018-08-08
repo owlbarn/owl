@@ -3,10 +3,6 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Bigarray
-
-open Owl_types
-
 type ('a, 'b) t = ('a, 'b) Owl_base_dense_ndarray_generic.t
 
 module M = Owl_base_dense_ndarray_generic
@@ -26,7 +22,7 @@ let is_triu x =
       done
     done;
     true
-  with exn -> false
+  with _exn -> false
 
 
 let is_tril x =
@@ -41,7 +37,7 @@ let is_tril x =
       done
     done;
     true
-  with exn -> false
+  with _exn -> false
 
 
 let is_symmetric x =
@@ -58,7 +54,7 @@ let is_symmetric x =
         done
       done;
       true
-    with exn -> false
+    with _exn -> false
   )
 
 
@@ -76,7 +72,7 @@ let is_hermitian x =
         done
       done;
       true
-    with exn -> false
+    with _exn -> false
   )
 
 

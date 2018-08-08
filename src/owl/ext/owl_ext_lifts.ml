@@ -7,7 +7,6 @@
   very inefficient on large data chunks. The performance of this module needs
   to be improved in the future. *)
 
-open Bigarray
 open Owl_ext_types
 
 

@@ -6,9 +6,6 @@
 (** NLP: Vocabulary module *)
 
 
-open Owl_nlp_utils
-
-
 type t = {
   mutable w2i : (string, int) Hashtbl.t;  (* word -> index *)
   mutable i2w : (int, string) Hashtbl.t;  (* index -> word *)
