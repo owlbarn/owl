@@ -58,5 +58,8 @@ release:
 	dune-release distrib
 	dune-release publish
 
-	dune-release opam pkg    --pkg-names $(PKGS)
-	dune-release opam submit --pkg-names $(PKGS)
+	dune-release opam pkg -p owl-base
+	dune-release opam pkg -p owl
+	dune-release opam pkg -p owl-zoo
+	dune-release opam pkg -p owl-top
+	dune-release opam submit -p $(PKGS)
