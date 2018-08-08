@@ -9,20 +9,20 @@ open Owl_core_types
 
 
 external owl_float32_ndarray_maxpool_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float32_ndarray_maxpool_spatial_bytecode"
-"stub_float32_ndarray_maxpool_spatial_native"
+  "stub_float32_ndarray_maxpool_spatial_bytecode"
+  "stub_float32_ndarray_maxpool_spatial_native"
 
 external owl_float32_ndarray_avgpool_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float32_ndarray_avgpool_spatial_bytecode"
-"stub_float32_ndarray_avgpool_spatial_native"
+  "stub_float32_ndarray_avgpool_spatial_bytecode"
+  "stub_float32_ndarray_avgpool_spatial_native"
 
 external owl_float32_ndarray_maxpool_spatial_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float32_ndarray_maxpool_spatial_backward_bytecode"
-"stub_float32_ndarray_maxpool_spatial_backward_native"
+  "stub_float32_ndarray_maxpool_spatial_backward_bytecode"
+  "stub_float32_ndarray_maxpool_spatial_backward_native"
 
 external _owl_float32_ndarray_avgpool_spatial_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float32_ndarray_avgpool_spatial_backward_bytecode"
-"stub_float32_ndarray_avgpool_spatial_backward_native"
+  "stub_float32_ndarray_avgpool_spatial_backward_bytecode"
+  "stub_float32_ndarray_avgpool_spatial_backward_native"
 
 let owl_float32_ndarray_avgpool_spatial_backward
   input output
@@ -39,24 +39,24 @@ let owl_float32_ndarray_avgpool_spatial_backward
     row_stride col_stride pad_rows pad_cols
 
 external owl_float32_ndarray_maxpool_argmax_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float32_ndarray_maxpool_spatial_arg_bytecode"
-"stub_float32_ndarray_maxpool_spatial_arg_native"
+  "stub_float32_ndarray_maxpool_spatial_arg_bytecode"
+  "stub_float32_ndarray_maxpool_spatial_arg_native"
 
 external owl_float32_ndarray_maxpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float32_ndarray_maxpool_cuboid_bytecode"
-"stub_float32_ndarray_maxpool_cuboid_native"
+  "stub_float32_ndarray_maxpool_cuboid_bytecode"
+  "stub_float32_ndarray_maxpool_cuboid_native"
 
 external owl_float32_ndarray_avgpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float32_ndarray_avgpool_cuboid_bytecode"
-"stub_float32_ndarray_avgpool_cuboid_native"
+  "stub_float32_ndarray_avgpool_cuboid_bytecode"
+  "stub_float32_ndarray_avgpool_cuboid_native"
 
 external owl_float32_ndarray_maxpool_cuboid_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float32_ndarray_maxpool_cuboid_backward_bytecode"
-"stub_float32_ndarray_maxpool_cuboid_backward_native"
+  "stub_float32_ndarray_maxpool_cuboid_backward_bytecode"
+  "stub_float32_ndarray_maxpool_cuboid_backward_native"
 
 external _owl_float32_ndarray_avgpool_cuboid_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float32_ndarray_avgpool_cuboid_backward_bytecode"
-"stub_float32_ndarray_avgpool_cuboid_backward_native"
+  "stub_float32_ndarray_avgpool_cuboid_backward_bytecode"
+  "stub_float32_ndarray_avgpool_cuboid_backward_native"
 
 let owl_float32_ndarray_avgpool_cuboid_backward
   input output
@@ -76,20 +76,20 @@ let owl_float32_ndarray_avgpool_cuboid_backward
     pad_typ
 
 external owl_float64_ndarray_maxpool_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float64_ndarray_maxpool_spatial_bytecode"
-"stub_float64_ndarray_maxpool_spatial_native"
+  "stub_float64_ndarray_maxpool_spatial_bytecode"
+  "stub_float64_ndarray_maxpool_spatial_native"
 
 external owl_float64_ndarray_avgpool_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float64_ndarray_avgpool_spatial_bytecode"
-"stub_float64_ndarray_avgpool_spatial_native"
+  "stub_float64_ndarray_avgpool_spatial_bytecode"
+  "stub_float64_ndarray_avgpool_spatial_native"
 
 external owl_float64_ndarray_maxpool_spatial_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float64_ndarray_maxpool_spatial_backward_bytecode"
-"stub_float64_ndarray_maxpool_spatial_backward_native"
+  "stub_float64_ndarray_maxpool_spatial_backward_bytecode"
+  "stub_float64_ndarray_maxpool_spatial_backward_native"
 
 external _owl_float64_ndarray_avgpool_spatial_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float64_ndarray_avgpool_spatial_backward_bytecode"
-"stub_float64_ndarray_avgpool_spatial_backward_native"
+  "stub_float64_ndarray_avgpool_spatial_backward_bytecode"
+  "stub_float64_ndarray_avgpool_spatial_backward_native"
 
 let owl_float64_ndarray_avgpool_spatial_backward
   input output
@@ -106,20 +106,20 @@ let owl_float64_ndarray_avgpool_spatial_backward
     row_stride col_stride pad_rows pad_cols
 
 external owl_float64_ndarray_maxpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float64_ndarray_maxpool_cuboid_bytecode"
-"stub_float64_ndarray_maxpool_cuboid_native"
+  "stub_float64_ndarray_maxpool_cuboid_bytecode"
+  "stub_float64_ndarray_maxpool_cuboid_native"
 
 external owl_float64_ndarray_avgpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float64_ndarray_avgpool_cuboid_bytecode"
-"stub_float64_ndarray_avgpool_cuboid_native"
+  "stub_float64_ndarray_avgpool_cuboid_bytecode"
+  "stub_float64_ndarray_avgpool_cuboid_native"
 
 external owl_float64_ndarray_maxpool_cuboid_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float64_ndarray_maxpool_cuboid_backward_bytecode"
-"stub_float64_ndarray_maxpool_cuboid_backward_native"
+  "stub_float64_ndarray_maxpool_cuboid_backward_bytecode"
+  "stub_float64_ndarray_maxpool_cuboid_backward_native"
 
 external _owl_float64_ndarray_avgpool_cuboid_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float64_ndarray_avgpool_cuboid_backward_bytecode"
-"stub_float64_ndarray_avgpool_cuboid_backward_native"
+  "stub_float64_ndarray_avgpool_cuboid_backward_bytecode"
+  "stub_float64_ndarray_avgpool_cuboid_backward_native"
 
 let owl_float64_ndarray_avgpool_cuboid_backward
   input output
@@ -139,24 +139,24 @@ let owl_float64_ndarray_avgpool_cuboid_backward
     pad_typ
 
 external owl_float64_ndarray_maxpool_argmax_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_float64_ndarray_maxpool_spatial_arg_bytecode"
-"stub_float64_ndarray_maxpool_spatial_arg_native"
+  "stub_float64_ndarray_maxpool_spatial_arg_bytecode"
+  "stub_float64_ndarray_maxpool_spatial_arg_native"
 
 external owl_complex32_ndarray_maxpool_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex32_ndarray_maxpool_spatial_bytecode"
-"stub_complex32_ndarray_maxpool_spatial_native"
+  "stub_complex32_ndarray_maxpool_spatial_bytecode"
+  "stub_complex32_ndarray_maxpool_spatial_native"
 
 external owl_complex32_ndarray_avgpool_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex32_ndarray_avgpool_spatial_bytecode"
-"stub_complex32_ndarray_avgpool_spatial_native"
+  "stub_complex32_ndarray_avgpool_spatial_bytecode"
+  "stub_complex32_ndarray_avgpool_spatial_native"
 
 external owl_complex32_ndarray_maxpool_spatial_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex32_ndarray_maxpool_spatial_backward_bytecode"
-"stub_complex32_ndarray_maxpool_spatial_backward_native"
+  "stub_complex32_ndarray_maxpool_spatial_backward_bytecode"
+  "stub_complex32_ndarray_maxpool_spatial_backward_native"
 
 external _owl_complex32_ndarray_avgpool_spatial_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex32_ndarray_avgpool_spatial_backward_bytecode"
-"stub_complex32_ndarray_avgpool_spatial_backward_native"
+  "stub_complex32_ndarray_avgpool_spatial_backward_bytecode"
+  "stub_complex32_ndarray_avgpool_spatial_backward_native"
 
 let owl_complex32_ndarray_avgpool_spatial_backward
   input output
@@ -173,24 +173,24 @@ let owl_complex32_ndarray_avgpool_spatial_backward
     row_stride col_stride pad_rows pad_cols
 
 external owl_complex32_ndarray_maxpool_argmax_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex32_ndarray_maxpool_spatial_arg_bytecode"
-"stub_complex32_ndarray_maxpool_spatial_arg_native"
+  "stub_complex32_ndarray_maxpool_spatial_arg_bytecode"
+  "stub_complex32_ndarray_maxpool_spatial_arg_native"
 
 external owl_complex32_ndarray_maxpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex32_ndarray_maxpool_cuboid_bytecode"
-"stub_complex32_ndarray_maxpool_cuboid_native"
+  "stub_complex32_ndarray_maxpool_cuboid_bytecode"
+  "stub_complex32_ndarray_maxpool_cuboid_native"
 
 external owl_complex32_ndarray_avgpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex32_ndarray_avgpool_cuboid_bytecode"
-"stub_complex32_ndarray_avgpool_cuboid_native"
+  "stub_complex32_ndarray_avgpool_cuboid_bytecode"
+  "stub_complex32_ndarray_avgpool_cuboid_native"
 
 external owl_complex32_ndarray_maxpool_cuboid_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex32_ndarray_maxpool_cuboid_backward_bytecode"
-"stub_complex32_ndarray_maxpool_cuboid_backward_native"
+  "stub_complex32_ndarray_maxpool_cuboid_backward_bytecode"
+  "stub_complex32_ndarray_maxpool_cuboid_backward_native"
 
 external _owl_complex32_ndarray_avgpool_cuboid_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex32_ndarray_avgpool_cuboid_backward_bytecode"
-"stub_complex32_ndarray_avgpool_cuboid_backward_native"
+  "stub_complex32_ndarray_avgpool_cuboid_backward_bytecode"
+  "stub_complex32_ndarray_avgpool_cuboid_backward_native"
 
 let owl_complex32_ndarray_avgpool_cuboid_backward
   input output
@@ -210,20 +210,20 @@ let owl_complex32_ndarray_avgpool_cuboid_backward
     pad_typ
 
 external owl_complex64_ndarray_maxpool_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex64_ndarray_maxpool_spatial_bytecode"
-"stub_complex64_ndarray_maxpool_spatial_native"
+  "stub_complex64_ndarray_maxpool_spatial_bytecode"
+  "stub_complex64_ndarray_maxpool_spatial_native"
 
 external owl_complex64_ndarray_avgpool_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex64_ndarray_avgpool_spatial_bytecode"
-"stub_complex64_ndarray_avgpool_spatial_native"
+  "stub_complex64_ndarray_avgpool_spatial_bytecode"
+  "stub_complex64_ndarray_avgpool_spatial_native"
 
 external owl_complex64_ndarray_maxpool_spatial_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex64_ndarray_maxpool_spatial_backward_bytecode"
-"stub_complex64_ndarray_maxpool_spatial_backward_native"
+  "stub_complex64_ndarray_maxpool_spatial_backward_bytecode"
+  "stub_complex64_ndarray_maxpool_spatial_backward_native"
 
 external _owl_complex64_ndarray_avgpool_spatial_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex64_ndarray_avgpool_spatial_backward_bytecode"
-"stub_complex64_ndarray_avgpool_spatial_backward_native"
+  "stub_complex64_ndarray_avgpool_spatial_backward_bytecode"
+  "stub_complex64_ndarray_avgpool_spatial_backward_native"
 
 let owl_complex64_ndarray_avgpool_spatial_backward
   input output
@@ -240,20 +240,20 @@ let owl_complex64_ndarray_avgpool_spatial_backward
     row_stride col_stride pad_rows pad_cols
 
 external owl_complex64_ndarray_maxpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex64_ndarray_maxpool_cuboid_bytecode"
-"stub_complex64_ndarray_maxpool_cuboid_native"
+  "stub_complex64_ndarray_maxpool_cuboid_bytecode"
+  "stub_complex64_ndarray_maxpool_cuboid_native"
 
 external owl_complex64_ndarray_avgpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex64_ndarray_avgpool_cuboid_bytecode"
-"stub_complex64_ndarray_avgpool_cuboid_native"
+  "stub_complex64_ndarray_avgpool_cuboid_bytecode"
+  "stub_complex64_ndarray_avgpool_cuboid_native"
 
 external owl_complex64_ndarray_maxpool_cuboid_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex64_ndarray_maxpool_cuboid_backward_bytecode"
-"stub_complex64_ndarray_maxpool_cuboid_backward_native"
+  "stub_complex64_ndarray_maxpool_cuboid_backward_bytecode"
+  "stub_complex64_ndarray_maxpool_cuboid_backward_native"
 
 external _owl_complex64_ndarray_avgpool_cuboid_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex64_ndarray_avgpool_cuboid_backward_bytecode"
-"stub_complex64_ndarray_avgpool_cuboid_backward_native"
+  "stub_complex64_ndarray_avgpool_cuboid_backward_bytecode"
+  "stub_complex64_ndarray_avgpool_cuboid_backward_native"
 
 let owl_complex64_ndarray_avgpool_cuboid_backward
   input output
@@ -273,8 +273,8 @@ let owl_complex64_ndarray_avgpool_cuboid_backward
     pad_typ
 
 external owl_complex64_ndarray_maxpool_argmax_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-"stub_complex64_ndarray_maxpool_spatial_arg_bytecode"
-"stub_complex64_ndarray_maxpool_spatial_arg_native"
+  "stub_complex64_ndarray_maxpool_spatial_arg_bytecode"
+  "stub_complex64_ndarray_maxpool_spatial_arg_native"
 
 
 let _owl_spatial_max_pooling : type a b . (a, b) kind -> (a, b) owl_arr_op26 = function
