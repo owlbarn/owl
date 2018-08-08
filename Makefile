@@ -52,6 +52,7 @@ distclean cleanall:
 PKGS=owl-base,owl,owl-zoo,owl-top
 .PHONY: release
 release:
+	make install # as package distrib steps rely on owl-base etc
 	opam install --yes dune-release
 	dune-release tag
 	dune-release distrib
