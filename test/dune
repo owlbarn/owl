@@ -1,16 +1,13 @@
-(jbuild_version 1)
+(executables 
+ (names test_runner)
+ (libraries 
+  alcotest
+  owl
+  )
+ (flags (:standard -safe-string))
+ )
 
-(executables (
-  (names (test_runner))
-  (libraries (
-    alcotest
-    owl
-  ))
-  (flags (:standard -safe-string))
-))
-
-(alias (
-  (name    runtest)
-  (deps    (test_runner.exe))
-  (action  (run ${<}))
-))
+(alias (name    runtest)
+       (deps    (:deps test_runner.exe))
+       (action  (run %{deps}))
+       )

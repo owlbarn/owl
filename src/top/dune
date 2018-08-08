@@ -1,13 +1,11 @@
-(jbuild_version 1)
-
-(library (
-  (name owl_top)
-  (public_name owl-top)
-  (wrapped false)
-  (modes (byte))
-  (flags (:standard -safe-string))
-  (libraries (
-    owl
-    owl-zoo
-  ))
-))
+(library
+ (name owl_top)
+ (public_name owl-top)
+ (wrapped false)
+ (modes byte)
+ (flags (:standard -safe-string))
+ (libraries
+  owl
+  owl-zoo
+  )
+ )

@@ -1,5 +1,3 @@
-(jbuild_version 1)
-
 (copy_files# ext/*)
 (copy_files# core/*)
 (copy_files# core/openmp/*)
@@ -21,166 +19,171 @@
 (copy_files# ppl/*)
 (copy_files# working/*)
 
-(library (
-  (name owl)
-  (public_name owl)
-  (wrapped false)
-  (c_names (
-    ; Core
-    owl_core_utils
-    owl_slicing_basic_stub
-    owl_slicing_fancy_stub
-    owl_ndarray_fma_stub
-    owl_ndarray_maths_stub
-    owl_ndarray_conv_stub
-    owl_ndarray_pool_stub
-    owl_ndarray_contract_stub
-    owl_ndarray_transpose_stub
-    owl_ndarray_slide_stub
-    owl_ndarray_sort_stub
-    owl_ndarray_repeat_stub
-    owl_ndarray_utils_stub
-    owl_matrix_swap_stub
-    owl_matrix_check_stub
-    owl_distribution_common_c
-    owl_cblas_generated_stub
-    owl_lapacke_generated_stub
-    ; FFTPACK
-    owl_fftpack_float32
-    owl_fftpack_float64
-    ; stats
-    SFMT
-    owl_stats_extend_misc
-    owl_stats_extend_stub
-    owl_stats_extend_shuffle
-    owl_stats_prng_stub
-    owl_stats_ziggurat
-    owl_stats_dist_stub
-    owl_stats_dist_beta
-    owl_stats_dist_binomial
-    owl_stats_dist_cauchy
-    owl_stats_dist_chi2
-    owl_stats_dist_dirichlet
-    owl_stats_dist_exponential
-    owl_stats_dist_exponpow
-    owl_stats_dist_f
-    owl_stats_dist_gamma
-    owl_stats_dist_gaussian
-    owl_stats_dist_gennorm
-    owl_stats_dist_geometric
-    owl_stats_dist_gumbel1
-    owl_stats_dist_gumbel2
-    owl_stats_dist_hypergeometric
-    owl_stats_dist_laplace
-    owl_stats_dist_logistic
-    owl_stats_dist_lognormal
-    owl_stats_dist_logseries
-    owl_stats_dist_lomax
-    owl_stats_dist_multinomial
-    owl_stats_dist_negative_binomial
-    owl_stats_dist_noncentral_chi2
-    owl_stats_dist_noncentral_f
-    owl_stats_dist_poisson
-    owl_stats_dist_power
-    owl_stats_dist_rayleigh
-    owl_stats_dist_t
-    owl_stats_dist_triangular
-    owl_stats_dist_uniform
-    owl_stats_dist_vonmises
-    owl_stats_dist_wald
-    owl_stats_dist_weibull
-    owl_stats_dist_zipf
-    ; CDFlib
-    owl_dcdflib
-    owl_ipmpar
-    ; maths
-    owl_maths_special_impl
-    owl_maths_special_stub
-    owl_maths_special_gamma
-    sf_error
-    airy
-    bdtr
-    beta
-    btdtr
-    cbrt
-    chbevl
-    chdtr
-    const
-    dawsn
-    ellie
-    ellik
-    ellpe
-    ellpj
-    ellpk
-    exp10
-    exp2
-    expn
-    fdtr
-    fresnl
-    gamma
-    gdtr
-    gels
-    hyp2f1
-    hyperg
-    i0
-    i1
-    igam
-    igami
-    incbet
-    incbi
-    j0
-    j1
-    jv
-    k0
-    k1
-    kn
-    kolmogorov
-    lanczos
-    mtherr
-    nbdtr
-    ndtr
-    ndtri
-    pdtr
-    psi
-    rgamma
-    round
-    scipy_iv
-    shichi
-    sici
-    sincos
-    sindg
-    spence
-    stdtr
-    struve
-    tandg
-    tukey
-    unity
-    yn
-    zeta
-    zetac
-  ))
-  (c_flags         ((:include c_flags.sexp)))
-  (c_library_flags ((:include c_library_flags.sexp)))
-  (flags           ((:include ocaml_flags.sexp)))
-  (libraries (
-    owl-base
-    ctypes
-    ctypes.stubs
-    eigen
-    plplot
-  ))
-))
+(library
+ (name owl)
+ (public_name owl)
+ (wrapped false)
+ (c_names
+  
+  ;; Core
+  owl_cblas_generated_stub
+  owl_core_utils
+  owl_distribution_common_c
+  owl_lapacke_generated_stub
+  owl_matrix_check_stub
+  owl_matrix_swap_stub
+  owl_ndarray_contract_stub
+  owl_ndarray_conv_stub
+  owl_ndarray_fma_stub
+  owl_ndarray_maths_stub
+  owl_ndarray_pool_stub
+  owl_ndarray_repeat_stub
+  owl_ndarray_slide_stub
+  owl_ndarray_sort_stub
+  owl_ndarray_transpose_stub
+  owl_ndarray_utils_stub
+  owl_slicing_basic_stub
+  owl_slicing_fancy_stub
+  
+  ;; FFTPACK
+  owl_fftpack_float32
+  owl_fftpack_float64
+  
+  ;; stats
+  SFMT
+  owl_stats_dist_beta
+  owl_stats_dist_binomial
+  owl_stats_dist_cauchy
+  owl_stats_dist_chi2
+  owl_stats_dist_dirichlet
+  owl_stats_dist_exponential
+  owl_stats_dist_exponpow
+  owl_stats_dist_f
+  owl_stats_dist_gamma
+  owl_stats_dist_gaussian
+  owl_stats_dist_gennorm
+  owl_stats_dist_geometric
+  owl_stats_dist_gumbel1
+  owl_stats_dist_gumbel2
+  owl_stats_dist_hypergeometric
+  owl_stats_dist_laplace
+  owl_stats_dist_logistic
+  owl_stats_dist_lognormal
+  owl_stats_dist_logseries
+  owl_stats_dist_lomax
+  owl_stats_dist_multinomial
+  owl_stats_dist_negative_binomial
+  owl_stats_dist_noncentral_chi2
+  owl_stats_dist_noncentral_f
+  owl_stats_dist_poisson
+  owl_stats_dist_power
+  owl_stats_dist_rayleigh
+  owl_stats_dist_stub
+  owl_stats_dist_t
+  owl_stats_dist_triangular
+  owl_stats_dist_uniform
+  owl_stats_dist_vonmises
+  owl_stats_dist_wald
+  owl_stats_dist_weibull
+  owl_stats_dist_zipf
+  owl_stats_extend_misc
+  owl_stats_extend_shuffle
+  owl_stats_extend_stub
+  owl_stats_prng_stub
+  owl_stats_ziggurat
 
+  ;; CDFlib
+  owl_dcdflib
+  owl_ipmpar
+
+  ;; maths
+  airy
+  bdtr
+  beta
+  btdtr
+  cbrt
+  chbevl
+  chdtr
+  const
+  dawsn
+  ellie
+  ellik
+  ellpe
+  ellpj
+  ellpk
+  exp10
+  exp2
+  expn
+  fdtr
+  fresnl
+  gamma
+  gdtr
+  gels
+  hyp2f1
+  hyperg
+  i0
+  i1
+  igam
+  igami
+  incbet
+  incbi
+  j0
+  j1
+  jv
+  k0
+  k1
+  kn
+  kolmogorov
+  lanczos
+  mtherr
+  nbdtr
+  ndtr
+  ndtri
+  owl_maths_special_gamma
+  owl_maths_special_impl
+  owl_maths_special_stub
+  pdtr
+  psi
+  rgamma
+  round
+  scipy_iv
+  sf_error
+  shichi
+  sici
+  sincos
+  sindg
+  spence
+  stdtr
+  struve
+  tandg
+  tukey
+  unity
+  yn
+  zeta
+  zetac
+  )
+ (c_flags (:include c_flags.sexp))
+ (c_library_flags (:include c_library_flags.sexp))
+ (flags (:include ocaml_flags.sexp))
+ (libraries
+  ctypes
+  ctypes.stubs
+  eigen
+  owl-base
+  plplot
+  )
+ )
 
 (rule
- ((targets (c_flags.sexp
-            c_library_flags.sexp
-            ocaml_flags.sexp))
-  (deps    (config/configure.exe))
+ (targets c_flags.sexp
+          c_library_flags.sexp
+          ocaml_flags.sexp
+          )
+  (deps    (:deps config/configure.exe))
   (action
-    (setenv ENABLE_EXPMODE 0 ; turn on experiment features like flto
-    (setenv ENABLE_DEVMODE 0 ; turn on all the warnings in development
-    (setenv ENABLE_OPENMP  0 ; turn on OpenMP support in core module
-      (run ${<} -ocamlc ${OCAMLC}))
-    )))
-))
+   (setenv ENABLE_EXPMODE 0 ;; turn on experiment features like flto
+           (setenv ENABLE_DEVMODE 0 ;; turn on all the warnings in development
+                   (setenv ENABLE_OPENMP  0 ;; turn on OpenMP support in core module
+                           (run %{deps} -ocamlc %{ocamlc})
+                           ))))
+)

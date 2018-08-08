@@ -8,12 +8,12 @@ bug-reports: "https://github.com/owlbarn/owl/issues"
 doc: "https://owlbarn.github.io/"
 
 build: [
-  [ "jbuilder" "subst" "-n" name ] {pinned}
-  [ "jbuilder" "build" "-p" name "-j" jobs ]
+  [ "dune" "subst" ] {pinned}
+  [ "dune" "build" "-p" name "-j" jobs ]
 ]
 
 depends: [
-  "jbuilder" {build}
+  "dune" {build}
   "ocaml-compiler-libs"
   "owl"
   "owl-zoo"
