@@ -522,6 +522,10 @@ let tail n x =
   get_slice [[-n;-1];[]] x
 
 
+(* TODO *)
+let sort ?cmp x = ()
+
+
 let guess_separator lines =
   let sep = [|','; ' '; '\t'; ';'; ':'; '|'|] in
   (* rank by dividing as many parts as possible *)
