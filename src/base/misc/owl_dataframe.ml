@@ -402,7 +402,7 @@ let concat_horizontal x y =
     data.(i) <- resize_series size x.data.(i)
   done;
   for i = 0 to col_num_y - 1 do
-    data.(i) <- resize_series size x.data.(col_num_x + i)
+    data.(col_num_x + i) <- resize_series size y.data.(i)
   done;
   { data; head; used = x.used; size }
 
@@ -626,26 +626,39 @@ let of_csv ?sep ?head ?types fname =
   assert (Array.length head_names = Array.length types);
   let convert_f = Array.map str_to_elt_fun types in
   let dataframe = make head_names in
+  let dropped_line = ref 0 in
+
   Owl_io.read_csv_proc ~sep (fun i line ->
     try
       if i <> head_i then (
         let row = Array.map2 (fun f a -> f a) convert_f line in
         append_row dataframe row
       )
-    with exn ->
+    with exn -> (
+      dropped_line := !dropped_line + 1;
       Owl_log.warn "of_csv: fail to parse line#%i @ %s" i fname
+    )
   ) fname;
+
+  if !dropped_line > 0 then
+    Owl_log.warn "%i lines have been dropped." !dropped_line;
+
   dataframe
 
 
 let to_csv ?sep x fname =
   let m, n = shape x in
-  let csv = Array.make_matrix m n "" in
-  for i = 0 to m - 1 do
+  (* include heads as the first line *)
+  let csv = Array.make_matrix (m + 1) n "" in
+  csv.(0) <- get_heads x;
+
+  (* dump the data into the table *)
+  for i = 1 to m do
     for j = 0 to n - 1 do
       csv.(i).(j) <- elt_to_str (get x i j)
     done;
   done;
+
   Owl_io.write_csv ?sep csv fname
 
 
