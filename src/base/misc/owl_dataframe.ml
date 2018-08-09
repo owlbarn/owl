@@ -657,9 +657,9 @@ let to_csv ?sep x fname =
   csv.(0) <- get_heads x;
 
   (* dump the data into the table *)
-  for i = 1 to m do
+  for i = 0 to m - 1 do
     for j = 0 to n - 1 do
-      csv.(i).(j) <- elt_to_str (get x i j)
+      csv.(i + 1).(j) <- elt_to_str (get x i j)
     done;
   done;
 
