@@ -435,6 +435,18 @@ val ceil : (float, 'b) t -> (float, 'b) t
 val round : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val trunc : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val fix : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val erf : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val erfc : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val relu : (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
@@ -695,6 +707,7 @@ val draw_rows : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 
 val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
 (** Refer to :doc:`owl_dense_matrix_generic` *)
+
 
 
 (** {6 Helper functions}  *)

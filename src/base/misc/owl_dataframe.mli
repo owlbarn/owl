@@ -301,5 +301,8 @@ val to_rows : t -> elt array array
 val to_cols : t -> series array
 (** ``to_cols x`` returns an arrays of columns in ``x``. *)
 
+(* val print : t -> unit *)
+(** ``print x`` pretty prints a dataframe on the terminal. *)
+
 val elt_to_str : elt -> string
 (** ``elt_to_str x`` converts element ``x`` to its string representation. *)

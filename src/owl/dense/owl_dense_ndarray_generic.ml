@@ -9,6 +9,8 @@ open Bigarray
 
 open Owl_ndarray
 
+open Owl_base_dense_common
+
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 

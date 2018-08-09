@@ -7,6 +7,8 @@ open Bigarray
 
 open Owl_ndarray
 
+open Owl_base_dense_common
+
 include Owl_dense_ndarray_generic
 
 
@@ -874,7 +876,7 @@ let cov ?b ~a =
   let n = row_num a - 1
     |> Pervasives.max 1
     |> float_of_int
-    |> Owl_ndarray._float_typ_elt (kind a)
+    |> _float_typ_elt (kind a)
   in
 
   div_scalar c n

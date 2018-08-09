@@ -524,6 +524,16 @@ let tail n x =
 
 let guess_separator lines =
   let sep = [|','; ' '; '\t'; ';'; ':'; '|'|] in
+  (* rank by dividing as many parts as possible *)
+  let tmp = Array.map (fun c ->
+    let l = String.split_on_char c lines.(0) in
+    c, List.length l
+  ) sep
+  in
+  (* sort by decreasing order *)
+  Array.sort (fun a b -> (snd b) - (snd a)) tmp;
+  let sep = Array.map fst tmp in
+
   let not_sep = ref true in
   let sep_idx = ref 0 in
 
@@ -637,6 +647,9 @@ let to_csv ?sep x fname =
     done;
   done;
   Owl_io.write_csv ?sep csv fname
+
+
+(* let print x = Owl_pretty.pp_dataframe Format.std_formatter x *)
 
 
 let ( .%( ) ) x idx = get_by_name x (fst idx) (snd idx)
