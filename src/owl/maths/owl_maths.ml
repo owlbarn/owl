@@ -308,6 +308,10 @@ let is_nan = Owl_base_maths.is_nan
 
 let is_inf = Owl_base_maths.is_inf
 
+let is_normal = Owl_base_maths.is_normal
+
+let is_subnormal = Owl_base_maths.is_subnormal
+
 let is_odd = Owl_base_maths.is_odd
 
 let is_even = Owl_base_maths.is_even

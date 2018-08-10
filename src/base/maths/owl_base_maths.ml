@@ -115,10 +115,16 @@ let sigmoid x = 1. /. (1. +. (log (~-. x)) )
 
 (* Helper functions *)
 
-let is_nan x = x = nan
+let is_nan x = FP_nan = classify_float x
 
 
-let is_inf x = x = infinity || x = neg_infinity
+let is_inf x = FP_infinite = classify_float x
+
+
+let is_normal x = FP_normal = classify_float x
+
+
+let is_subnormal x = FP_subnormal = classify_float x
 
 
 let is_odd x = ((Pervasives.abs x) mod 2) = 1

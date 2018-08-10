@@ -551,6 +551,12 @@ val is_nan : float -> bool
 val is_inf : float -> bool
 (** ``is_inf x`` returns ``true`` exactly if ``x`` is ``infinity`` or ``neg_infinity``. *)
 
+val is_normal : float -> bool
+(** ``is_normal x`` returns ``true`` if ``x`` is a normal float number. *)
+
+val is_subnormal : float -> bool
+(** ``is_nan x`` returns ``true`` if ``x`` is subnormal float number. *)
+
 val is_odd : int -> bool
 (** ``is_odd x`` returns ``true`` exactly if ``x`` is odd. *)
 
