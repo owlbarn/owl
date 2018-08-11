@@ -742,6 +742,14 @@ let neg_ ?out x =
   map_ Scalar.neg out
 
 
+let reci x = map Scalar.reci x
+
+
+let reci_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.reci out
+
+
 let floor x = map Scalar.floor x
 
 
@@ -1062,9 +1070,12 @@ let sum' x =
    o: x's strides, also y's slice size.
    x: source; y: shape of destination. Note that o <= n.
  *)
-let fold_along f m n o x ys nelem =
+let _fold_along ?out f m n o x ys nelem =
   let x = flatten x in
-  let y = create (kind x) ys nelem |> flatten in
+  let y = match out with
+    | Some o -> o |> flatten
+    | None   -> create (kind x) ys nelem |> flatten
+  in
   let idx = ref 0 in
   let idy = ref 0 in
   let incy = ref 0 in
@@ -1087,7 +1098,7 @@ let sum ?axis x =
   match axis with
   | Some a -> (
       let m, n, o, s = Owl_utils.reduce_params a x in
-      fold_along (Owl_base_dense_common._add_elt _kind) m n o x s zero
+      _fold_along (Owl_base_dense_common._add_elt _kind) m n o x s zero
     )
   | None   -> create (kind x) (Array.make 1 1) (sum' x)
 
@@ -1109,7 +1120,7 @@ let sum_reduce ?axis x =
         for i = 0 to Array.length dims' - 1 do
           if !flag = true then (
             let m, n, o, s = Owl_utils.reduce_params i !y in
-            y := fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s zero
+            y := _fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s zero
           );
           flag := not !flag
         done;
@@ -1127,9 +1138,24 @@ let min ?axis x =
   match axis with
   | Some a -> (
       let m, n, o, s = Owl_utils.reduce_params a x in
-      fold_along (Owl_base_dense_common._min_elt _kind) m n o x s max_val
+      _fold_along (Owl_base_dense_common._min_elt _kind) m n o x s max_val
     )
   | None   -> min' x |> create _kind [|1|]
+
+
+let min_ ~out ~axis x =
+  let _kind = kind x in
+  let max_val = Owl_base_dense_common._max_val_elt _kind in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = Owl_utils.reduce_params a x in
+      _fold_along ~out (Owl_base_dense_common._min_elt _kind) m n o x s max_val
+      |> ignore
+    )
+  | None   -> (
+      let y = flatten out in
+      set y [|0|] (min' x)
+    )
 
 
 let max ?axis x =
@@ -1138,9 +1164,24 @@ let max ?axis x =
   match axis with
   | Some a -> (
       let m, n, o, s = Owl_utils.reduce_params a x in
-      fold_along (Owl_base_dense_common._max_elt _kind) m n o x s min_val
+      _fold_along (Owl_base_dense_common._max_elt _kind) m n o x s min_val
     )
   | None   -> max' x |> create _kind [|1|]
+
+
+let max_ ~out ~axis x =
+  let _kind = kind x in
+  let min_val = Owl_base_dense_common._min_val_elt _kind in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = Owl_utils.reduce_params a x in
+      _fold_along ~out (Owl_base_dense_common._max_elt _kind) m n o x s min_val
+      |> ignore
+    )
+  | None   -> (
+      let y = flatten out in
+      set y [|0|] (max' x)
+    )
 
 
 let l1norm' varr =

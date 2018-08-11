@@ -29,6 +29,9 @@ val abs : float -> float
 val neg : float -> float
 (** ``neg x`` *)
 
+val reci : float -> float
+(** ``reci x`` *)
+
 val floor : float -> float
 (** ``floor x`` *)
 

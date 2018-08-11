@@ -28,6 +28,9 @@ let abs x = Pervasives.abs_float x
 let neg x = ~-. x
 
 
+let reci x = 1. /. x
+
+
 let sqr x = x *. x
 
 
