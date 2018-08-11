@@ -37,6 +37,15 @@ let sqrt x = Pervasives.sqrt x
 let exp x = Pervasives.exp x
 
 
+let exp2 x = 2. ** x
+
+
+let exp10 x = 10. ** x
+
+
+let expm1 x = Pervasives.expm1 x
+
+
 let log x = Pervasives.log x
 
 
@@ -44,6 +53,9 @@ let log2 x = (log x) /. (log 2.)
 
 
 let log10 x = Pervasives.log10 x
+
+
+let log1p x = Pervasives.log1p x
 
 
 let signum x =

@@ -112,9 +112,15 @@ external fresnel : float -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_fre
 let fresnel x ssa csa = fresnel x (CI.cptr ssa) (CI.cptr csa)
 
 
-(* Other functions *)
+(* Other special functions *)
 
 external expn : int -> float -> float = "owl_stub_sf_expn"
+
+external exp2 : float -> float = "owl_stub_sf_exp2"
+
+external exp10 : float -> float = "owl_stub_sf_exp10"
+
+external expm1 : float -> float = "owl_stub_sf_expm1"
 
 external shichi : float -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_shichi"
 
@@ -190,7 +196,7 @@ external combination : int -> int -> float = "owl_stub_sf_combination"
 external log_combination : int -> int -> float = "owl_stub_sf_log_combination"
 
 
-(* Other functions *)
+(* Other helper functions *)
 
 external nextafter : float -> float -> float = "stub_sf_nextafter"
 

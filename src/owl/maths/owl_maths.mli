@@ -64,18 +64,17 @@ val pow : float -> float -> float
 val exp : float -> float
 (** ``exp x`` exponential. *)
 
+val exp2 : float -> float
+(** ``exp2 x`` exponential. *)
+
+val exp10 : float -> float
+(** ``exp10 x`` exponential. *)
+
 val expm1 : float -> float
 (** ``expm1 x`` returns :math:`\exp(x) - 1` but more accurate for :math:`x \sim 0`. *)
 
 val log : float -> float
 (** ``log x`` natural logarithm *)
-
-val log1p : float -> float
-(** ``log1p x`` returns :math:`\log (x + 1)` but more accurate for :math:`x \sim 0`.
- Inverse of ``expm1``. *)
-
-val logabs : float -> float
-(** ``logabs x`` returns :math:`\log(|x|)`. *)
 
 val log2 : float -> float
 (** ``log2 x`` base-2 logarithm. *)
@@ -85,6 +84,13 @@ val log10 : float -> float
 
 val logn : float -> float -> float
 (** ``logn x`` base-n logarithm. *)
+
+val log1p : float -> float
+(** ``log1p x`` returns :math:`\log (x + 1)` but more accurate for :math:`x \sim 0`.
+ Inverse of ``expm1``. *)
+
+val logabs : float -> float
+(** ``logabs x`` returns :math:`\log(|x|)`. *)
 
 val sigmoid : float -> float
 (** ``sigmoid x`` returns the logistic sigmoid function

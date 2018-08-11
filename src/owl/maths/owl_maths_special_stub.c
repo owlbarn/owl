@@ -587,3 +587,24 @@ value owl_stub_sf_log_combination(value vN, value vM) {
   double y = sf_log_combination(n, m);
   return caml_copy_double(y);
 }
+
+
+value owl_stub_sf_exp2(value vX) {
+  double x = Double_val(vX);
+  double y = exp2(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_exp10(value vX) {
+  double x = Double_val(vX);
+  double y = exp10(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_expm1(value vX) {
+  double x = Double_val(vX);
+  double y = expm1(x);
+  return caml_copy_double(y);
+}

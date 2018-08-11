@@ -837,12 +837,44 @@ let log10_ ?out x =
   map_ Scalar.log10 out
 
 
+let log1p x = map Scalar.log1p x
+
+
+let log1p_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.log1p out
+
+
 let exp x = map Scalar.exp x
 
 
 let exp_ ?out x =
   let out = match out with Some o -> o | None -> x in
   map_ Scalar.exp out
+
+
+let exp2 x = map Scalar.exp2 x
+
+
+let exp2_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.exp2 out
+
+
+let exp10 x = map Scalar.exp10 x
+
+
+let exp10_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.exp10 out
+
+
+let expm1 x = map Scalar.expm1 x
+
+
+let expm1_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.expm1 out
 
 
 let sin x = map Scalar.sin x
@@ -1255,6 +1287,36 @@ let pow varr_a varr_b = (_broadcasted_op varr_a varr_b ( ** ))
 let pow_ ?out x y =
   let out = match out with Some o -> o | None -> x in
   let _op = Owl_base_dense_common._div_elt (kind x) in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op ~out x y _op
+
+
+let min2 x y =
+  let _op = Owl_base_dense_common._min_elt (kind x) in
+  _broadcasted_op x y _op
+
+
+let min2_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._min_elt (kind x) in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op ~out x y _op
+
+
+let max2 x y =
+  let _op = Owl_base_dense_common._max_elt (kind x) in
+  _broadcasted_op x y _op
+
+
+let max2_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._max_elt (kind x) in
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in

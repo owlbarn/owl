@@ -53,6 +53,15 @@ val pow : float -> float -> float
 val exp : float -> float
 (** ``exp x`` *)
 
+val exp2 : float -> float
+(** ``exp2 x`` *)
+
+val exp10 : float -> float
+(** ``exp10 x`` *)
+
+val expm1 : float -> float
+(** ``expm1 x`` *)
+
 val log : float -> float
 (** ``log x`` *)
 
@@ -61,6 +70,9 @@ val log2 : float -> float
 
 val log10 : float -> float
 (** ``log10 x`` *)
+
+val log1p : float -> float
+(** ``log1p x`` *)
 
 val sigmoid : float -> float
 (** ``sigmod x`` *)

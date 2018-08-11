@@ -54,6 +54,10 @@ let pow x y = x ** y
 
 let exp x = exp x
 
+let exp2 x = Owl_maths_special.exp2 x
+
+let exp10 x = Owl_maths_special.exp10 x
+
 let expm1 x = expm1 x
 
 let log x = log x
