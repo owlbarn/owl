@@ -348,6 +348,9 @@ val abs : (float, 'b) t -> (float, 'b) t
 val neg : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val reci : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val signum : (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
@@ -357,6 +360,9 @@ val sqr : (float, 'b) t -> (float, 'b) t
 
 (* TODO: change float to 'a *)
 val sqrt : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val cbrt : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
@@ -461,6 +467,12 @@ val erfc : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val relu : (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val softsign : (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val softplus : (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val sigmoid : (float, 'a) t -> (float, 'a) t
@@ -727,7 +739,7 @@ val draw_rows : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-
+(*
 (** {6 In-place modification}  *)
 
 val create_ : out:('a, 'b) t -> 'a -> unit
@@ -1170,7 +1182,7 @@ val avg_pool3d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array 
 
 val fused_adagrad_ : ?out:('a, 'b) t -> rate:'a -> eps:'a -> ('a, 'b) t -> unit
 (** TODO *)
-
+*)
 
 (** {6 Helper functions}  *)
 

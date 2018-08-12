@@ -31,10 +31,19 @@ let neg x = ~-. x
 let reci x = 1. /. x
 
 
+let softsign x = x /. (1. +. abs x)
+
+
+let softplus x = log (1. +. exp x)
+
+
 let sqr x = x *. x
 
 
 let sqrt x = Pervasives.sqrt x
+
+
+let cbrt x = x ** 0.33333333333333333333
 
 
 let exp x = Pervasives.exp x
@@ -62,12 +71,12 @@ let log1p x = Pervasives.log1p x
 
 
 let signum x =
-  if ((compare x nan) = 0)
-  then nan
+  if FP_nan = classify_float x then nan
   else (
-    if (x > 0.)
-    then 1.
-    else (if x < 0. then (~-. 1.) else 0.)
+    if x > 0. then 1.
+    else (
+      if x < 0. then (~-. 1.) else 0.
+    )
   )
 
 

@@ -821,6 +821,14 @@ let sqrt_ ?out x =
   map_ Scalar.sqrt out
 
 
+let cbrt x = map Scalar.cbrt x
+
+
+let cbrt_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.cbrt out
+
+
 let log x = map Scalar.log x
 
 
@@ -1029,6 +1037,22 @@ let relu x = map Scalar.relu x
 let relu_ ?out x =
   let out = match out with Some o -> o | None -> x in
   map_ Scalar.relu out
+
+
+let softsign x = map Scalar.softsign x
+
+
+let softsign_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.softsign out
+
+
+let softplus x = map Scalar.softplus x
+
+
+let softplus_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.softplus out
 
 
 let _fold_left f a varr =

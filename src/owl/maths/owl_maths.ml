@@ -25,7 +25,14 @@ let neg x = 0. -. x
 
 let reci x = 1. /. x
 
-let signum x = if x = 0. then 0. else if x > 0. then 1. else -1.
+let signum x =
+  if FP_nan = classify_float x then nan
+  else (
+    if x > 0. then 1.
+    else (
+      if x < 0. then (~-. 1.) else 0.
+    )
+  )
 
 let softsign x = x /. (1. +. abs x)
 

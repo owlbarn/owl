@@ -50,6 +50,9 @@ val sqr : float -> float
 val sqrt : float -> float
 (** ``sqrt x`` *)
 
+val cbrt : float -> float
+(** ``cbrt x`` *)
+
 val pow : float -> float -> float
 (** ``pow x`` *)
 
@@ -82,6 +85,12 @@ val sigmoid : float -> float
 
 val signum : float -> float
 (** ``signum x`` *)
+
+val softsign : float -> float
+(** ``softsign x`` *)
+
+val softplus : float -> float
+(** ``softplus x`` *)
 
 val relu : float -> float
 (** ``relu x`` *)
