@@ -344,6 +344,9 @@ val max' : ('a, 'b) t -> 'a
 val abs : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val conj : ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 (* TODO: change float to 'a *)
 val neg : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)

@@ -734,6 +734,24 @@ let abs_ ?out x =
   map_ Scalar.abs out
 
 
+let conj x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._conj_elt _kind in
+  map _func x
+
+
+let conj_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._conj_elt _kind in
+  let out = match out with Some o -> o | None -> x in
+  map _func out
+
+
+let neg_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.neg out
+
+
 let neg x = map Scalar.neg x
 
 
@@ -1558,12 +1576,12 @@ let greater_equal_scalar x a =
 
 (* Broadcasted operation, return an array with values of 1
    if (one_fun elem_from_a elem_from_b) == true, 0 otherwise *)
-let _elt_compare_util ?out varr_a varr_b one_fun =
-  let _kind = kind varr_a in
+let _elt_compare_util ?out x y cmp_fun =
+  let _kind = kind x in
   let c0 = Owl_const.zero _kind in
   let c1 = Owl_const.one _kind in
-  let comp_fun = (fun x y -> if (one_fun x y) then c1 else c0) in
-  (_broadcasted_op ?out varr_a varr_b comp_fun)
+  let _func a b = if cmp_fun a b then c1 else c0 in
+  _broadcasted_op ?out x y _func
 
 
 let elt_equal x y =
@@ -1631,12 +1649,14 @@ let elt_greater_equal_ ?out x y =
 
 (* Util function, return an array with values of 1
     if (one_fun elem_from_a b) == true, 0 otherwise *)
-let _elt_compare_scalar_util varr_a one_fun =
-  let _kind = kind varr_a in
+let _elt_compare_scalar_util ?out x cmp_fun =
+  let _kind = kind x in
   let c0 = Owl_const.zero _kind in
   let c1 = Owl_const.one _kind in
-  let comp_fun = (fun x -> if one_fun x then c1 else c0) in
-  (map comp_fun varr_a)
+  let _func a = if cmp_fun a then c1 else c0 in
+  match out with
+  | Some out -> map_ _func x
+  | None     -> map _func x
 
 
 let elt_equal_scalar varr_a b =

@@ -193,6 +193,13 @@ let _scale_elt : type a b. (a, b) kind -> (float -> a -> a) = function
   | Complex64 -> fun a b -> Complex.({re = a *. b.re; im = a *. b.im})
   | _         -> failwith "_scale_elt: unsupported operation"
 
+let _conj_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> fun x -> x
+  | Float64   -> fun x -> x
+  | Complex32 -> fun x -> Complex.({re = x.re; im = -.x.im})
+  | Complex64 -> fun x -> Complex.({re = x.re; im = -.x.im})
+  | _         -> failwith "_conj_elt: unsupported operation"
+
 let _float_typ_elt : type a b. (a, b) kind -> (float -> a) = function
   | Float32        -> fun a -> a
   | Float64        -> fun a -> a
