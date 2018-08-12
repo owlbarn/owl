@@ -1576,21 +1576,23 @@ let greater_equal_scalar x a =
 
 (* Broadcasted operation, return an array with values of 1
    if (one_fun elem_from_a elem_from_b) == true, 0 otherwise *)
-let _elt_compare_util ?out x y cmp_fun =
+let _make_elt_compare_fun ?out x y cmp_fun =
   let _kind = kind x in
   let c0 = Owl_const.zero _kind in
   let c1 = Owl_const.one _kind in
   let _func a b = if cmp_fun a b then c1 else c0 in
-  _broadcasted_op ?out x y _func
+  _func
 
 
 let elt_equal x y =
-  _elt_compare_util x y Pervasives.(=)
+  let _func = _make_elt_compare_fun x y Pervasives.(=) in
+  _broadcasted_op x y _func
 
 
 let elt_equal_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  _elt_compare_util ~out x y Pervasives.(=)
+  let _func = _make_elt_compare_fun x y Pervasives.(=) in
+  _broadcasted_op ~out x y _func
 
 
 let approx_elt_equal ?eps x y =
@@ -1599,119 +1601,174 @@ let approx_elt_equal ?eps x y =
     | None     -> Owl_utils.eps Float32
   in
   let approx_equal_fun = (fun x y -> (Scalar.abs (Scalar.sub x y)) < eps) in
-  (_elt_compare_util x y approx_equal_fun)
+  let _func = _make_elt_compare_fun x y approx_equal_fun in
+  _broadcasted_op x y _func
 
 
 let elt_not_equal x y =
-  _elt_compare_util x y Pervasives.(<>)
+  let _func = _make_elt_compare_fun x y Pervasives.(<>) in
+  _broadcasted_op x y _func
 
 
 let elt_not_equal_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  _elt_compare_util ~out x y Pervasives.(<>)
+  let _func = _make_elt_compare_fun x y Pervasives.(<>) in
+  _broadcasted_op ~out x y _func
 
 
 let elt_less x y =
-  _elt_compare_util x y Pervasives.(<)
+  let _func = _make_elt_compare_fun x y Pervasives.(<) in
+  _broadcasted_op x y _func
 
 
 let elt_less_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  _elt_compare_util ~out x y Pervasives.(<)
+  let _func = _make_elt_compare_fun x y Pervasives.(<) in
+  _broadcasted_op ~out x y _func
 
 
 let elt_greater x y =
-  _elt_compare_util x y Pervasives.(>)
+  let _func = _make_elt_compare_fun x y Pervasives.(>) in
+  _broadcasted_op x y _func
 
 
 let elt_greater_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  _elt_compare_util ~out x y Pervasives.(>)
+  let _func = _make_elt_compare_fun x y Pervasives.(>) in
+  _broadcasted_op ~out x y _func
 
 
 let elt_less_equal x y =
-  _elt_compare_util x y Pervasives.(<=)
+  let _func = _make_elt_compare_fun x y Pervasives.(<=) in
+  _broadcasted_op x y _func
 
 
 let elt_less_equal_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  _elt_compare_util ~out x y Pervasives.(<=)
+  let _func = _make_elt_compare_fun x y Pervasives.(<=) in
+  _broadcasted_op ~out x y _func
 
 
 let elt_greater_equal x y =
-  _elt_compare_util x y Pervasives.(>=)
+  let _func = _make_elt_compare_fun x y Pervasives.(>=) in
+  _broadcasted_op x y _func
 
 
 let elt_greater_equal_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  _elt_compare_util ~out x y Pervasives.(>=)
+  let _func = _make_elt_compare_fun x y Pervasives.(>=) in
+  _broadcasted_op ~out x y _func
 
 
 (* Util function, return an array with values of 1
     if (one_fun elem_from_a b) == true, 0 otherwise *)
-let _elt_compare_scalar_util ?out x cmp_fun =
+let _make_elt_compare_scalar x cmp_fun =
   let _kind = kind x in
   let c0 = Owl_const.zero _kind in
   let c1 = Owl_const.one _kind in
   let _func a = if cmp_fun a then c1 else c0 in
-  match out with
-  | Some out -> map_ _func x
-  | None     -> map _func x
+  _func
 
 
-let elt_equal_scalar varr_a b =
-  let equal_scalar_fun = (fun x -> x = b) in
-  (_elt_compare_scalar_util varr_a equal_scalar_fun)
+let elt_equal_scalar x a =
+  let cmp_fun = (fun y -> y = a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
 
 
-let approx_elt_equal_scalar ?eps varr_a b =
+let elt_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let cmp_fun = (fun y -> y = a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map_ _func out
+
+
+let approx_elt_equal_scalar ?eps x a =
   let eps = match eps with
     | Some eps -> eps
     | None     -> Owl_utils.eps Float32
   in
-  let approx_equal_scalar_fun = (fun x -> (Scalar.abs (Scalar.sub x b)) < eps) in
-  (_elt_compare_scalar_util varr_a approx_equal_scalar_fun)
+  let cmp_fun = (fun y -> (Scalar.abs (Scalar.sub y a)) < eps) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
 
 
-let elt_not_equal_scalar varr_a b =
-  let not_equal_scalar_fun = (fun x -> x <> b) in
-  (_elt_compare_scalar_util varr_a not_equal_scalar_fun)
+let elt_not_equal_scalar x a =
+  let cmp_fun = (fun y -> y <> a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
 
 
-let elt_less_scalar varr_a b =
-  let less_scalar_fun = (fun x -> x < b) in
-  (_elt_compare_scalar_util varr_a less_scalar_fun)
+let elt_not_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let cmp_fun = (fun y -> y <> a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map_ _func out
 
 
-let elt_greater_scalar varr_a b =
-  let greater_scalar_fun = (fun x -> x > b) in
-  (_elt_compare_scalar_util varr_a greater_scalar_fun)
+let elt_less_scalar x a =
+  let cmp_fun = (fun y -> y < a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
 
 
-let elt_less_equal_scalar varr_a b =
-  let less_equal_scalar_fun = (fun x -> x <= b) in
-  (_elt_compare_scalar_util varr_a less_equal_scalar_fun)
+let elt_less_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let cmp_fun = (fun y -> y < a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map_ _func out
 
 
-let elt_greater_equal_scalar varr_a b =
-  let greater_equal_scalar_fun = (fun x -> x > b) in
-  (_elt_compare_scalar_util varr_a greater_equal_scalar_fun)
+let elt_greater_scalar x a =
+  let cmp_fun = (fun y -> y > a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
 
 
-let exists f varr =
-  let n = numel varr in
-  let varr = flatten varr |> array1_of_genarray in
+let elt_greater_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let cmp_fun = (fun y -> y > a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map_ _func out
+
+
+let elt_less_equal_scalar x a =
+  let cmp_fun = (fun y -> y <= a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
+
+
+let elt_less_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let cmp_fun = (fun y -> y <= a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map_ _func out
+
+
+let elt_greater_equal_scalar x a =
+  let cmp_fun = (fun y -> y >= a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
+
+
+let elt_greater_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let cmp_fun = (fun y -> y >= a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func out
+
+
+let exists f x =
+  let n = numel x in
+  let x = flatten x |> array1_of_genarray in
   let found = ref false in
   let i = ref 0 in
-  begin
-    while (!i < n) && (not !found) do
-      let x = Array1.unsafe_get varr !i in
-      if f x
-      then found := true;
-      i := !i + 1
-    done;
-    !found
-  end
+  while (!i < n) && (not !found) do
+    let a = Array1.unsafe_get x !i in
+    if f a then found := true;
+    i := !i + 1
+  done;
+  !found
 
 
 let not_exists f varr = (not (exists f varr))
