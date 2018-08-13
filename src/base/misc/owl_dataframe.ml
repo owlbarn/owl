@@ -389,12 +389,10 @@ let copy x =
 let concat_horizontal x y =
   assert (row_num x = row_num y);
   let head = Hashtbl.copy x.head in
-  let i = ref (col_num x) in
-  Hashtbl.iter (fun k v ->
-    Hashtbl.add head k (v + !i);
-    i := !i + 1;
-  ) y.head;
   let col_num_x = col_num x in
+  Hashtbl.iter (fun k v ->
+    Hashtbl.add head k (v + col_num_x);
+  ) y.head;
   let col_num_y = col_num y in
   let data = Array.make (col_num_x + col_num_y) Any_Series in
   let size = max x.size y.size in
