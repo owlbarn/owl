@@ -411,7 +411,7 @@ let reci x =
   map_nz (fun a -> _op a) x
 
 let power_scalar x c =
-  let _op = Owl_base_dense_common._power_scalar_elt (kind x) in
+  let _op = Owl_base_dense_common._pow_elt (kind x) in
   map (fun y -> (_op) y c) x
 
 let l1norm x = x |> abs |> sum

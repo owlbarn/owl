@@ -16,8 +16,9 @@ let mul = ( *. )
 
 let div = ( /. )
 
-let atan2 = Pervasives.atan2
+let fmod = Pervasives.mod_float
 
+let atan2 = Pervasives.atan2
 
 let abs x = abs_float x
 

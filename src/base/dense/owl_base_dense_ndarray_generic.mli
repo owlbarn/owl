@@ -481,6 +481,9 @@ val softplus : (float, 'a) t -> (float, 'a) t
 val sigmoid : (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val softmax : ?axis:int -> (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 (* TODO: change float to 'a *)
 val l1norm' : (float, 'b) t -> float
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -556,6 +559,15 @@ val min2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val max2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val fmod : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val fmod_scalar : (float, 'a) t -> float -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val scalar_fmod : float -> (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)

@@ -19,7 +19,13 @@ let div x y = x /. y
 let pow x y = x ** y
 
 
+let fmod x y = Pervasives.mod_float x y
+
+
 let atan2 x y = Pervasives.atan2 x y
+
+
+let hypot x y = Pervasives.hypot x y
 
 
 let abs x = Pervasives.abs_float x

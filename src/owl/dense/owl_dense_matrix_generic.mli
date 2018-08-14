@@ -1926,7 +1926,7 @@ elementwise, and returns the result in a new matrix.
 
 val fmod : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (**
-``fmod x y`` performs float mod division.
+``fmod x y`` performs float modulus division.
  *)
 
 val fmod_scalar : (float, 'a) t -> float -> (float, 'a) t

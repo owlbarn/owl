@@ -20,8 +20,14 @@ val mul : float -> float -> float
 val div : float -> float -> float
 (** ``div x y`` *)
 
+val fmod : float -> float -> float
+(** ``fmod x y`` *)
+
 val atan2 : float -> float -> float
 (** ``atan2 x y`` *)
+
+val hypot : float -> float -> float
+(** ``hypot x y`` *)
 
 val abs : float -> float
 (** ``abs x`` *)

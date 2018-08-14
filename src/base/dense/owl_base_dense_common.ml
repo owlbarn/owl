@@ -179,7 +179,7 @@ let _mean_elt : type a b. (a, b) kind -> (a -> int -> a) = function
   | Int64          -> fun x n -> Int64.(div x (of_int n))
   | _              -> failwith "_mean_elt: unsupported operation"
 
-let _power_scalar_elt : type a b. (a, b) kind -> (a -> a -> a) = function
+let _pow_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( ** )
   | Float64   -> ( ** )
   | Complex32 -> Complex.pow

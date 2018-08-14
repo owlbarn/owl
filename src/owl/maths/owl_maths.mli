@@ -27,6 +27,9 @@ val mul : float -> float -> float
 val div : float -> float -> float
 (** ``div x y`` returns :math:`x / y`. *)
 
+val fmod : float -> float -> float
+(** ``fmod x y`` returns :math:`x % y`. *)
+
 val atan2 : float -> float -> float
 (** ``atan2 y x`` returns :math:`\arctan(y/x)`, accounting for the sign of the arguments;
  this is the angle to the vector :math:`(x, y)` counting from the x-axis. *)

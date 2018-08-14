@@ -223,16 +223,6 @@ let set_slice index_list varr slice_varr =
   done
 
 
-(*TODO: This is clone, not copying from one to another, maybe should specify this in documentation *)
-let copy x =
-  let y = empty (kind x) (shape x) in
-  Genarray.blit x y;
-  y
-
-
-let copy_ ~out x = failwith "Owl_base_dense_ndarray_generic:copy_: not implemented"
-
-
 (* The result shares the underlying buffer with original, not a copy *)
 let reshape x d =
   let minus_one = Owl_utils.Array.count d (-1) in
@@ -247,7 +237,24 @@ let reshape x d =
 
 
 (* Return the array as a contiguous block, without copying *)
-let flatten x = (reshape x [|(numel x)|])
+let flatten x = reshape x [|(numel x)|]
+
+
+let copy x =
+  let y = empty (kind x) (shape x) in
+  Genarray.blit x y;
+  y
+
+
+let copy_ ~out x =
+  let src = flatten x in
+  let dst = flatten out in
+  Genarray.blit src dst
+
+
+let reshape_ ~out x =
+  if not (x == out) then
+    copy_ ~out x
 
 
 let reverse x =
@@ -259,6 +266,15 @@ let reverse x =
     set y_flat [|i|] (get x_flat [|n - 1 - i|])
   done;
   y
+
+
+let reverse_ ~out x =
+  let n = numel x in
+  let y_flat = reshape out [|n|] in
+  let x_flat = reshape x [|n|] in
+  for i = 0 to n - 1 do
+    set y_flat [|i|] (get x_flat [|n - 1 - i|])
+  done
 
 
 let map_ f x =
@@ -1140,9 +1156,27 @@ let sum ?axis x =
   match axis with
   | Some a -> (
       let m, n, o, s = Owl_utils.reduce_params a x in
-      _fold_along (Owl_base_dense_common._add_elt _kind) m n o x s zero
+      let _op = Owl_base_dense_common._add_elt _kind in
+      _fold_along _op m n o x s zero
     )
   | None   -> create (kind x) (Array.make 1 1) (sum' x)
+
+
+let sum_ ~out ~axis x =
+  let _kind = kind x in
+  let zero = Owl_const.zero _kind in
+  Genarray.fill out zero;
+  match axis with
+  | Some a -> (
+      let m, n, o, s = Owl_utils.reduce_params a x in
+      let _op = Owl_base_dense_common._add_elt _kind in
+      _fold_along _op ~out m n o x s zero
+      |> ignore
+    )
+  | None   -> (
+      let y = flatten out in
+      set y [|0|] (sum' x)
+    )
 
 
 let sum_reduce ?axis x =
@@ -1188,10 +1222,12 @@ let min ?axis x =
 let min_ ~out ~axis x =
   let _kind = kind x in
   let max_val = Owl_base_dense_common._max_val_elt _kind in
+  Genarray.fill out max_val;
   match axis with
   | Some a -> (
       let m, n, o, s = Owl_utils.reduce_params a x in
-      _fold_along ~out (Owl_base_dense_common._min_elt _kind) m n o x s max_val
+      let _op = Owl_base_dense_common._min_elt _kind in
+      _fold_along ~out _op m n o x s max_val
       |> ignore
     )
   | None   -> (
@@ -1214,6 +1250,7 @@ let max ?axis x =
 let max_ ~out ~axis x =
   let _kind = kind x in
   let min_val = Owl_base_dense_common._min_val_elt _kind in
+  Genarray.fill out min_val;
   match axis with
   | Some a -> (
       let m, n, o, s = Owl_utils.reduce_params a x in
@@ -1241,28 +1278,6 @@ let l2norm_sqr' varr =
 let l2norm' varr =
   let l2norm_sqr_val = l2norm_sqr' varr in
   (Scalar.sqrt l2norm_sqr_val)
-
-
-(* scalar_pow a varr computes the power of scalar to each element of varr *)
-let scalar_pow a varr =
-  let scalar_pow_fun = (fun x -> (a ** x)) in
-  (map scalar_pow_fun varr)
-
-
-(* Raise each element to power a *)
-let pow_scalar varr a =
-  let pow_scalar_fun = (fun x -> (x ** a)) in
-  (map pow_scalar_fun varr)
-
-
-let scalar_atan2 a varr =
-  let scalar_atan2_fun = (fun x -> (Scalar.atan2 a x)) in
-  (map scalar_atan2_fun varr)
-
-
-let atan2_scalar varr a =
-  let atan2_scalar_fun = (fun x -> (Scalar.atan2 x a)) in
-  (map atan2_scalar_fun varr)
 
 
 let _broadcasted_op ?out varr_a varr_b op_fun =
@@ -1304,6 +1319,7 @@ let add_ ?out x y =
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
   assert (shape out = so);
   _broadcasted_op ~out x y _op
+  |> ignore
 
 
 let sub x y =
@@ -1319,6 +1335,7 @@ let sub_ ?out x y =
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
   assert (shape out = so);
   _broadcasted_op ~out x y _op
+  |> ignore
 
 
 let mul x y =
@@ -1334,6 +1351,7 @@ let mul_ ?out x y =
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
   assert (shape out = so);
   _broadcasted_op ~out x y _op
+  |> ignore
 
 
 let div x y =
@@ -1349,6 +1367,7 @@ let div_ ?out x y =
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
   assert (shape out = so);
   _broadcasted_op ~out x y _op
+  |> ignore
 
 
 let atan2 x y = _broadcasted_op x y (Scalar.atan2)
@@ -1361,10 +1380,23 @@ let atan2_ ?out x y =
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
   assert (shape out = so);
   _broadcasted_op x y (Scalar.atan2)
+  |> ignore
 
 
+let hypot x y = _broadcasted_op x y (Scalar.hypot)
 
-let pow varr_a varr_b = (_broadcasted_op varr_a varr_b ( ** ))
+
+let hypot_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op x y (Scalar.hypot)
+  |> ignore
+
+
+let pow x y = _broadcasted_op x y ( ** )
 
 
 let pow_ ?out x y =
@@ -1375,6 +1407,20 @@ let pow_ ?out x y =
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
   assert (shape out = so);
   _broadcasted_op ~out x y _op
+  |> ignore
+
+
+let fmod x y = _broadcasted_op x y (Scalar.fmod)
+
+
+let fmod_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op x y (Scalar.fmod)
+  |> ignore
 
 
 let min2 x y =
@@ -1390,6 +1436,7 @@ let min2_ ?out x y =
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
   assert (shape out = so);
   _broadcasted_op ~out x y _op
+  |> ignore
 
 
 let max2 x y =
@@ -1405,66 +1452,196 @@ let max2_ ?out x y =
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
   assert (shape out = so);
   _broadcasted_op ~out x y _op
+  |> ignore
 
 
-let add_scalar varr a =
-  let _op = Owl_base_dense_common._add_elt (kind varr) in
-  let add_scalar_fun = (fun x -> _op x a) in
-  (map add_scalar_fun varr)
+let add_scalar x a =
+  let _op = Owl_base_dense_common._add_elt (kind x) in
+  map (fun y -> _op y a) x
 
 
-let sub_scalar varr a =
-  let _op = Owl_base_dense_common._sub_elt (kind varr) in
-  let sub_scalar_fun = (fun x -> _op x a) in
-  (map sub_scalar_fun varr)
+let add_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._add_elt (kind x) in
+  map_ (fun y -> _op y a) out
 
 
-let mul_scalar varr a =
-  let _op = Owl_base_dense_common._mul_elt (kind varr) in
-  let mul_scalar_fun = (fun x -> _op x a) in
-  (map mul_scalar_fun varr)
+let sub_scalar x a =
+  let _op = Owl_base_dense_common._sub_elt (kind x) in
+  map (fun y -> _op y a) x
 
 
-let div_scalar varr a =
-  let _op = Owl_base_dense_common._div_elt (kind varr) in
-  let div_scalar_fun = (fun x -> _op x a) in
-  (map div_scalar_fun varr)
+let sub_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._sub_elt (kind x) in
+  map_ (fun y -> _op y a) out
 
 
-let clip_by_value ?(amin=Pervasives.min_float) ?(amax=Pervasives.max_float) varr =
-  let clip_by_val_fun = (fun x -> Pervasives.min amax (Pervasives.max amin x)) in
-  (map clip_by_val_fun varr)
+let mul_scalar x a =
+  let _op = Owl_base_dense_common._mul_elt (kind x) in
+  map (fun y -> _op y a) x
+
+
+let mul_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._mul_elt (kind x) in
+  map_ (fun y -> _op y a) out
+
+
+let div_scalar x a =
+  let _op = Owl_base_dense_common._div_elt (kind x) in
+  map (fun y -> _op y a) x
+
+
+let div_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._div_elt (kind x) in
+  map_ (fun y -> _op y a) out
+
+
+let pow_scalar x a =
+  let _op = Owl_base_dense_common._pow_elt (kind x) in
+  map (fun y -> _op y a) x
+
+
+let pow_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._pow_elt (kind x) in
+  map_ (fun y -> _op y a) out
+
+
+let atan2_scalar x a =
+  let _op = Scalar.atan2 in
+  map (fun y -> _op y a) x
+
+
+let atan2_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Scalar.atan2 in
+  map_ (fun y -> _op y a) out
+
+
+let fmod_scalar x a =
+  let _op = Scalar.fmod in
+  map (fun y -> _op y a) x
+
+
+let fmod_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Scalar.fmod in
+  map_ (fun y -> _op y a) out
 
 
 (* TODO *)
 let fma x y z = failwith "Owl_base_dense_ndarray_generic:fma: not implemented"
 
 
-(* Addition is commutative *)
-let scalar_add a varr = (add_scalar varr a)
+let scalar_add a x =
+  let _op = Owl_base_dense_common._add_elt (kind x) in
+  map (fun y -> _op a y) x
 
 
-let scalar_sub a varr =
-  let _op = Owl_base_dense_common._sub_elt (kind varr) in
-  let scalar_sub_fun = (fun x -> _op a x) in
-  (map scalar_sub_fun varr)
+let scalar_add_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._add_elt (kind x) in
+  map_ (fun y -> _op a y) out
 
 
-(* Multiplication is commutative *)
-let scalar_mul a varr = (mul_scalar varr a)
+let scalar_sub a x =
+  let _op = Owl_base_dense_common._sub_elt (kind x) in
+  map (fun y -> _op a y) x
 
 
-let scalar_div a varr =
-  let _op = Owl_base_dense_common._div_elt (kind varr) in
-  let scalar_div_fun = (fun x -> _op a x) in
-  (map scalar_div_fun varr)
+let scalar_sub_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._sub_elt (kind x) in
+  map_ (fun y -> _op a y) out
 
 
-let clip_by_l2norm clip_norm varr =
-  let l2norm_val = l2norm' varr in
-  if l2norm_val > clip_norm
-  then mul_scalar varr (clip_norm /. l2norm_val)
-  else varr
+let scalar_mul a x =
+  let _op = Owl_base_dense_common._mul_elt (kind x) in
+  map (fun y -> _op a y) x
+
+
+let scalar_mul_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._mul_elt (kind x) in
+  map_ (fun y -> _op a y) out
+
+
+let scalar_div a x =
+  let _op = Owl_base_dense_common._div_elt (kind x) in
+  map (fun y -> _op a y) x
+
+
+let scalar_div_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._div_elt (kind x) in
+  map_ (fun y -> _op a y) out
+
+
+let scalar_pow a x =
+  let _op = Owl_base_dense_common._pow_elt (kind x) in
+  map (fun y -> _op a y) x
+
+
+let scalar_pow_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._pow_elt (kind x) in
+  map_ (fun y -> _op a y) out
+
+
+let scalar_atan2 a x =
+  let _op =Scalar.atan2 in
+  map (fun y -> _op a y) x
+
+
+let scalar_atan2_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Scalar.atan2 in
+  map_ (fun y -> _op a y) out
+
+
+let scalar_fmod a x =
+  let _op =Scalar.fmod in
+  map (fun y -> _op a y) x
+
+
+let scalar_fmod_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Scalar.fmod in
+  map_ (fun y -> _op a y) out
+
+
+let clip_by_value ?(amin=Pervasives.min_float) ?(amax=Pervasives.max_float) x =
+  let _op = (fun y -> Pervasives.min amax (Pervasives.max amin y)) in
+  map _op x
+
+
+let clip_by_l2norm clip_norm x =
+  let l2norm_val = l2norm' x in
+  if l2norm_val > clip_norm then
+    mul_scalar x (clip_norm /. l2norm_val)
+  else x
+
+
+let softmax ?(axis=(-1)) x =
+  let x = copy x in
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
+  sub_ ~out:x x (max ~axis x);
+  exp_ ~out:x x;
+  let a = sum ~axis x in
+  div_ ~out:x x a;
+  x
+
+
+let softmax_ ?out ?(axis=(-1)) x =
+  let out = match out with Some o -> o | None -> x in
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
+  sub_ ~out x (max ~axis x);
+  exp_ ~out x;
+  let a = sum ~axis x in
+  div_ ~out x a
 
 
 (* Comparison functions *)
