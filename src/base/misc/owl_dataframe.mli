@@ -165,6 +165,11 @@ return an empty dataframe.
 val copy : t -> t
 (** ``copy x`` returns a copy of dataframe ``x``. *)
 
+val reset : t -> unit
+(**
+``reset x`` resets the dataframe ``x`` by setting all the time series to empty.
+ *)
+
 val append_row : t -> elt array -> unit
 (** ``append_row x row`` appends a row to the dataframe ``x``. *)
 

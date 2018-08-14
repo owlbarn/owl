@@ -386,6 +386,18 @@ let copy x =
   { data; head; used; size }
 
 
+let reset x =
+  x.used <- 0;
+  x.size <- 0;
+  x.data <- Array.map (function
+    | Bool_Series c   -> Bool_Series [||]
+    | Int_Series c    -> Int_Series [||]
+    | Float_Series c  -> Float_Series [||]
+    | String_Series c -> String_Series [||]
+    | Any_Series      -> Any_Series
+  ) x.data
+
+
 let concat_horizontal x y =
   assert (row_num x = row_num y);
   let head = Hashtbl.copy x.head in
