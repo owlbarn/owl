@@ -291,6 +291,7 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 #include <string.h>
 #include <sys/time.h>
 
+/*
 CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 {
   CAMLparam5(vX, vY, vN, vXshape, vFrd);
@@ -324,7 +325,7 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
     back_strides[i] = (Y->dim[i] - 1) * strides[i];
   }
 
-  caml_release_runtime_system();  /* Allow other threads */
+  caml_release_runtime_system();
 
   int counter[ndim];
   memset(counter, 0, ndim * sizeof(int));
@@ -345,7 +346,88 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
     }
   }
 
-  caml_acquire_runtime_system();  /* Disallow other threads */
+  caml_acquire_runtime_system();
+
+  CAMLreturn(Val_unit);
+}
+*/
+
+CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
+{
+  CAMLparam5(vX, vY, vN, vXshape, vFrd);
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *x = (NUMBER *) X->data;
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  NUMBER1 *y = (NUMBER1 *) Y->data;
+
+  struct caml_ba_array *Xshape = Caml_ba_array_val(vXshape);
+  int64_t *x_shape = (int64_t *) Xshape->data;
+
+  int N = Long_val(vN);
+  int ndim = Y->num_dims;
+  int frd = Long_val(vFrd);
+
+  int strides[ndim];
+  c_ndarray_stride(Y, strides);
+  for (int i = frd; i < ndim; i+=2) {
+    strides[i] = 0;
+  }
+
+  int x_stride[ndim];
+  x_stride[ndim - 1] = 1;
+  for (int i = ndim - 2; i >= 0; i--) {
+    x_stride[i] = x_stride[i+1] * x_shape[i+1];
+  }
+
+  int back_strides[ndim];
+  for (int i = 0; i < ndim; i++) {
+    back_strides[i] = (Y->dim[i] - 1) * strides[i];
+  }
+
+  int innersize = x_shape[ndim-1];
+  int loopsize  = x_shape[ndim-2];
+  int outersize = 1;
+  for (int i = 0; i < ndim - 1; i++) {
+    outersize *= x_shape[i];
+  }
+
+  fprintf(stderr, "inner: %d, outer: %d, loop: %d\n", innersize, outersize, loopsize);
+
+  caml_release_runtime_system();
+
+  int iy = 0;
+  int ictr = 0;
+  for (int ix = 0; ix < N; ) {
+    fprintf(stderr, "ix: %d, iy: %d\n", ix, iy);
+    for (int k = 0; k < innersize; k++) {
+      ACCFN((x+ix+k), (y+iy+k));
+    }
+
+    ix+=innersize;
+    ictr++;
+
+    if (ictr == loopsize) {
+      ictr = 0;
+
+      int temp[ndim];
+      int iterindex = ix;
+      int pre_iteridx = ix;
+      for (int i = ndim - 1; i >=0; i--) {
+        iterindex /= x_shape[i];
+        temp[i] = pre_iteridx - iterindex * x_shape[i];
+        pre_iteridx = iterindex;
+      }
+
+      iy = 0;
+      for (int i = 0; i < ndim; i++) {
+        printf("temp[%d]: %d, strides[%d]:%d\n", i, temp[i], i, strides[i]);
+        iy += temp[i] * strides[i];
+      }
+    }
+  }
+
+  caml_acquire_runtime_system();
 
   CAMLreturn(Val_unit);
 }
