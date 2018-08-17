@@ -374,17 +374,6 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
     strides[i] = 0;
   }
 
-  int x_stride[ndim];
-  x_stride[ndim - 1] = 1;
-  for (int i = ndim - 2; i >= 0; i--) {
-    x_stride[i] = x_stride[i+1] * x_shape[i+1];
-  }
-
-  int back_strides[ndim];
-  for (int i = 0; i < ndim; i++) {
-    back_strides[i] = (Y->dim[i] - 1) * strides[i];
-  }
-
   int innersize = x_shape[ndim-1];
   int loopsize  = x_shape[ndim-2];
   int outersize = 1;
@@ -397,22 +386,30 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
     || (ndim % 2 == 1 && frd == 0)) {
     y_step = 1;
   }
-  fprintf(stderr, "y_step: %d （frd: %d）\n", y_step, frd);
-
-  fprintf(stderr, "inner: %d, outer: %d, loop: %d\n", innersize, outersize, loopsize);
-
-  fprintf(stderr, "xptr: %u; yptr: %u; szieptr: %u\n", x, y, x_shape);
 
   caml_release_runtime_system();
 
   int iy = 0;
   int ictr = 0;
+
+  //clock_t start, diff = 0;
   for (int ix = 0; ix < N; ) {
-    fprintf(stderr, "ix: %d, iy: %d\n", ix, iy);
-    for (int k = 0; k < innersize; k++) {
-      //ACCFN((x+ix+k), (y + iy + k));
-      y[iy + (1 - y_step) * k] += x[ix + k];
+    //clock_t start = clock();
+    if (y_step == 0) {
+      for (int k = 0; k < innersize; k++) {
+        // ACCFN((x+ix+k), (y + iy + k));
+        y[iy + k] += x[ix + k];
+      }
     }
+    else {
+      float sum = 0.;
+      for (int k = 0; k < innersize; k++) {
+        sum += x[ix + k];
+      }
+      y[iy] = sum;
+    }
+
+    //diff += clock() - start;
 
     ix += innersize;
     iy += y_step;
@@ -420,26 +417,22 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 
     if (ictr == loopsize) {
       ictr = 0;
-      int temp[ndim];
+      iy = 0;
+      int residual;
       int pre_iteridx = ix;
       int iterindex = ix;
 
       for (int i = ndim - 1; i >= 0; i--) {
         iterindex /= x_shape[i];
-        fprintf(stderr, "x_shape[%d]: %d\n", i, x_shape[i]);
-        temp[i] = pre_iteridx - iterindex * x_shape[i];
-
-        fprintf(stderr, "iteridx: %d, (pre: %d, sub: %d)\n", iterindex, pre_iteridx, iterindex * x_shape[i]);
-
+        residual = pre_iteridx - iterindex * x_shape[i];
+        iy += residual * strides[i];
         pre_iteridx = iterindex;
-      }
-
-      iy = 0;
-      for (int i = 0; i < ndim; i++) {
-        iy += temp[i] * strides[i];
       }
     }
   }
+
+  //float msec = diff * 1000. / CLOCKS_PER_SEC;
+  //fprintf(stderr, "Time taken %f ms\n", msec);
 
   caml_acquire_runtime_system();
 
