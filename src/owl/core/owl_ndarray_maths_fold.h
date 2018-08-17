@@ -392,7 +392,16 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
     outersize *= x_shape[i];
   }
 
+  int y_step = 0;
+  if ((ndim % 2 == 0 && frd == 1)
+    || (ndim % 2 == 1 && frd == 0)) {
+    y_step = 1;
+  }
+  fprintf(stderr, "y_step: %d （frd: %d）\n", y_step, frd);
+
   fprintf(stderr, "inner: %d, outer: %d, loop: %d\n", innersize, outersize, loopsize);
+
+  fprintf(stderr, "xptr: %u; yptr: %u; szieptr: %u\n", x, y, x_shape);
 
   caml_release_runtime_system();
 
@@ -401,27 +410,32 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
   for (int ix = 0; ix < N; ) {
     fprintf(stderr, "ix: %d, iy: %d\n", ix, iy);
     for (int k = 0; k < innersize; k++) {
-      ACCFN((x+ix+k), (y+iy+k));
+      //ACCFN((x+ix+k), (y + iy + k));
+      y[iy + (1 - y_step) * k] += x[ix + k];
     }
 
-    ix+=innersize;
+    ix += innersize;
+    iy += y_step;
     ictr++;
 
     if (ictr == loopsize) {
       ictr = 0;
-
       int temp[ndim];
-      int iterindex = ix;
       int pre_iteridx = ix;
-      for (int i = ndim - 1; i >=0; i--) {
+      int iterindex = ix;
+
+      for (int i = ndim - 1; i >= 0; i--) {
         iterindex /= x_shape[i];
+        fprintf(stderr, "x_shape[%d]: %d\n", i, x_shape[i]);
         temp[i] = pre_iteridx - iterindex * x_shape[i];
+
+        fprintf(stderr, "iteridx: %d, (pre: %d, sub: %d)\n", iterindex, pre_iteridx, iterindex * x_shape[i]);
+
         pre_iteridx = iterindex;
       }
 
       iy = 0;
       for (int i = 0; i < ndim; i++) {
-        printf("temp[%d]: %d, strides[%d]:%d\n", i, temp[i], i, strides[i]);
         iy += temp[i] * strides[i];
       }
     }
