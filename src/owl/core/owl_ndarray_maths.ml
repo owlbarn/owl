@@ -1655,13 +1655,30 @@ let _owl_sum_along : type a b. (a, b) kind -> (a, b) owl_arr_op21 = function
   | Int64          -> owl_int64_sum_along
   | _              -> failwith "_owl_sum_along: unsupported operation"
 
-external owl_float32_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int ->
-(int64, 'c) owl_arr -> int -> unit = "float32_sum_reduce"
+external owl_float32_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> (int64, 'c) owl_arr -> int -> unit = "float32_sum_reduce"
+external owl_float64_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> (int64, 'c) owl_arr -> int -> unit = "float64_sum_reduce"
+external owl_complex32_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> (int64, 'c) owl_arr -> int -> unit = "complex32_sum_reduce"
+external owl_complex64_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> (int64, 'c) owl_arr -> int -> unit = "complex64_sum_reduce"
+external owl_int8_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> (int64, 'c) owl_arr -> int -> unit = "int8_sum_reduce"
+external owl_uint8_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> (int64, 'c) owl_arr -> int -> unit = "uint8_sum_reduce"
+external owl_int16_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> (int64, 'c) owl_arr -> int -> unit = "int16_sum_reduce"
+external owl_uint16_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> (int64, 'c) owl_arr -> int -> unit = "uint16_sum_reduce"
+external owl_int32_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> (int64, 'c) owl_arr -> int -> unit = "int32_sum_reduce"
+external owl_int64_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> (int64, 'c) owl_arr -> int -> unit = "int64_sum_reduce"
 
 let _owl_sum_reduce : type a b. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr
   -> int -> (int64, 'c) owl_arr-> int -> unit = function
   | Float32        -> owl_float32_sum_reduce
-  | _              -> failwith "_owl_sum: unsupported operation"
+  | Float64        -> owl_float64_sum_reduce
+  | Complex32      -> owl_complex32_sum_reduce
+  | Complex64      -> owl_complex64_sum_reduce
+  | Int8_signed    -> owl_int8_sum_reduce
+  | Int8_unsigned  -> owl_int16_sum_reduce
+  | Int16_signed   -> owl_int16_sum_reduce
+  | Int16_unsigned -> owl_uint16_sum_reduce
+  | Int32          -> owl_int32_sum_reduce
+  | Int64          -> owl_int64_sum_reduce
+  | _              -> failwith "_owl_sum_reduce: unsupported operation"
 
 external owl_float32_prod : int -> ('a, 'b) owl_arr -> 'a = "float32_prod"
 external owl_float64_prod : int -> ('a, 'b) owl_arr -> 'a = "float64_prod"

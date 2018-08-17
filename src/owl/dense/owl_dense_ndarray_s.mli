@@ -632,7 +632,7 @@ val one_hot : int -> arr -> arr
 val sum_slices : ?axis:int -> arr -> arr
 
 val sum_reduce : ?axis:int array -> arr -> arr
-val sum_reduce2 : ?axis:int array -> arr -> arr
+val sum_reduce_old : ?axis:int array -> arr -> arr
 
 val slide : ?axis:int -> ?ofs:int -> ?step:int -> window:int -> arr -> arr
 

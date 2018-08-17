@@ -6063,7 +6063,7 @@ let sum_slices ?axis x =
   ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of
   shape [|1;1;1;1|].
  *)
-let sum_reduce ?axis x =
+let sum_reduce_old ?axis x =
   let _kind = kind x in
   let _dims = num_dims x in
   match axis with
@@ -6095,7 +6095,7 @@ let sum_reduce ?axis x =
       _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
 
 
-let sum_reduce2 ?axis x =
+let sum_reduce ?axis x =
   let _kind = kind x in
   let _dims = num_dims x in
   match axis with
@@ -6106,8 +6106,8 @@ let sum_reduce2 ?axis x =
         _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
       )
       else (
-        let frd = if (Array.mem 0 a) then 0 else 1 in (*first reduced dimension*)
-
+        (* first dimension to be reduced *)
+        let frd = if (Array.mem 0 a) then 0 else 1 in
         let ys_sqz = Array.copy dims' in
         let idx = ref frd in
         while !idx < Array.length dims' do

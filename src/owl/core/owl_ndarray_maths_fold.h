@@ -288,8 +288,6 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 
 #ifdef FUN30
 
-//#include <immintrin.h>
-
 CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 {
   CAMLparam5(vX, vY, vN, vXshape, vFrd);
@@ -320,8 +318,8 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
   }
 
   int y_step = 0;
-  if ((ndim % 2 == 0 && frd == 1)
-    || (ndim % 2 == 1 && frd == 0)) {
+  if ((ndim % 2 == 0 && frd == 1) ||
+      (ndim % 2 == 1 && frd == 0)) {
     y_step = 1;
   }
 
@@ -336,21 +334,15 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
       for (int k = 0; k < innersize; k++) {
         ACCFN((x + ix + k), (y + iy + k));
       }
-      // Use AVX for innerloop
-      /* for(int i = 0; i < innersize; i += 8) {
-        __m256d a = _mm256_load_ps(&x[ix+i]);
-        __m256d b = _mm256_load_ps(&y[iy+i]);
-        __m256d c = _mm256_add_ps(a, b);
-        _mm256_store_ps(&y[iy+i], c);
-      } */
     }
     else {
       /* Case 2: last dimension to be reduced */
-      NUMBER1 sum = 0.;
+      INIT;
       for (int k = 0; k < innersize; k++) {
-        sum += x[ix + k];
+        //acc += x[ix + k];
+        ACCVAL(acc, x[ix + k]);
       }
-      y[iy] = sum;
+      y[iy] = acc;
     }
 
     ix += innersize;
@@ -387,6 +379,7 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 #undef AFCHKFN
 #undef COPYNUM
 #undef ACCFN
+#undef ACCVAL
 #undef INIT
 #undef FUN5
 #undef FUN6
