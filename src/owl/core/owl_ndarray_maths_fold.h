@@ -288,69 +288,7 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 
 #ifdef FUN30
 
-#include <string.h>
-#include <sys/time.h>
-
-/*
-CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
-{
-  CAMLparam5(vX, vY, vN, vXshape, vFrd);
-
-  struct caml_ba_array *X = Caml_ba_array_val(vX);
-  NUMBER *x = (NUMBER *) X->data;
-  struct caml_ba_array *Y = Caml_ba_array_val(vY);
-  NUMBER1 *y = (NUMBER1 *) Y->data;
-
-  struct caml_ba_array *Xshape = Caml_ba_array_val(vXshape);
-  int64_t *x_shape = (int64_t *) Xshape->data;
-
-  int N = Long_val(vN);
-  int ndim = Y->num_dims;
-  int frd = Long_val(vFrd);
-
-  int strides[ndim];
-  c_ndarray_stride(Y, strides);
-  for (int i = frd; i < ndim; i+=2) {
-    strides[i] = 0;
-  }
-
-  int x_stride[ndim];
-  x_stride[ndim - 1] = 1;
-  for (int i = ndim - 2; i >= 0; i--) {
-    x_stride[i] = x_stride[i+1] * x_shape[i+1];
-  }
-
-  int back_strides[ndim];
-  for (int i = 0; i < ndim; i++) {
-    back_strides[i] = (Y->dim[i] - 1) * strides[i];
-  }
-
-  caml_release_runtime_system();
-
-  int counter[ndim];
-  memset(counter, 0, ndim * sizeof(int));
-
-  int iy = 0;
-  for (int ix = 0; ix < N; ix++) {
-    ACCFN((x+ix), (y+iy));
-    for (int j = ndim - 1; j >= 0; j--) {
-      if (counter[j] + 1 == x_shape[j]) {
-        counter[j] = 0;
-        iy -= back_strides[j];
-      }
-      else {
-        counter[j]++;
-        iy += strides[j];
-        break;
-      }
-    }
-  }
-
-  caml_acquire_runtime_system();
-
-  CAMLreturn(Val_unit);
-}
-*/
+//#include <immintrin.h>
 
 CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 {
@@ -390,37 +328,41 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
   caml_release_runtime_system();
 
   int iy = 0;
-  int ictr = 0;
+  int cnt = 0;
 
-  //clock_t start, diff = 0;
   for (int ix = 0; ix < N; ) {
-    //clock_t start = clock();
     if (y_step == 0) {
+      /* Case 1: last dimension not to be reduced */
       for (int k = 0; k < innersize; k++) {
-        // ACCFN((x+ix+k), (y + iy + k));
-        y[iy + k] += x[ix + k];
+        ACCFN((x + ix + k), (y + iy + k));
       }
+      // Use AVX for innerloop
+      /* for(int i = 0; i < innersize; i += 8) {
+        __m256d a = _mm256_load_ps(&x[ix+i]);
+        __m256d b = _mm256_load_ps(&y[iy+i]);
+        __m256d c = _mm256_add_ps(a, b);
+        _mm256_store_ps(&y[iy+i], c);
+      } */
     }
     else {
-      float sum = 0.;
+      /* Case 2: last dimension to be reduced */
+      NUMBER1 sum = 0.;
       for (int k = 0; k < innersize; k++) {
         sum += x[ix + k];
       }
       y[iy] = sum;
     }
 
-    //diff += clock() - start;
-
     ix += innersize;
     iy += y_step;
-    ictr++;
+    cnt++;
 
-    if (ictr == loopsize) {
-      ictr = 0;
-      iy = 0;
+    if (cnt == loopsize) {
+      iy  = 0;
+      cnt = 0;
       int residual;
+      int iterindex   = ix;
       int pre_iteridx = ix;
-      int iterindex = ix;
 
       for (int i = ndim - 1; i >= 0; i--) {
         iterindex /= x_shape[i];
@@ -430,9 +372,6 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
       }
     }
   }
-
-  //float msec = diff * 1000. / CLOCKS_PER_SEC;
-  //fprintf(stderr, "Time taken %f ms\n", msec);
 
   caml_acquire_runtime_system();
 
