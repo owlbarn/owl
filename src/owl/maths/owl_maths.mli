@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -26,6 +26,9 @@ val mul : float -> float -> float
 
 val div : float -> float -> float
 (** ``div x y`` returns :math:`x / y`. *)
+
+val fmod : float -> float -> float
+(** ``fmod x y`` returns :math:`x % y`. *)
 
 val atan2 : float -> float -> float
 (** ``atan2 y x`` returns :math:`\arctan(y/x)`, accounting for the sign of the arguments;
@@ -64,18 +67,17 @@ val pow : float -> float -> float
 val exp : float -> float
 (** ``exp x`` exponential. *)
 
+val exp2 : float -> float
+(** ``exp2 x`` exponential. *)
+
+val exp10 : float -> float
+(** ``exp10 x`` exponential. *)
+
 val expm1 : float -> float
 (** ``expm1 x`` returns :math:`\exp(x) - 1` but more accurate for :math:`x \sim 0`. *)
 
 val log : float -> float
 (** ``log x`` natural logarithm *)
-
-val log1p : float -> float
-(** ``log1p x`` returns :math:`\log (x + 1)` but more accurate for :math:`x \sim 0`.
- Inverse of ``expm1``. *)
-
-val logabs : float -> float
-(** ``logabs x`` returns :math:`\log(|x|)`. *)
 
 val log2 : float -> float
 (** ``log2 x`` base-2 logarithm. *)
@@ -85,6 +87,13 @@ val log10 : float -> float
 
 val logn : float -> float -> float
 (** ``logn x`` base-n logarithm. *)
+
+val log1p : float -> float
+(** ``log1p x`` returns :math:`\log (x + 1)` but more accurate for :math:`x \sim 0`.
+ Inverse of ``expm1``. *)
+
+val logabs : float -> float
+(** ``logabs x`` returns :math:`\log(|x|)`. *)
 
 val sigmoid : float -> float
 (** ``sigmoid x`` returns the logistic sigmoid function
@@ -550,6 +559,12 @@ val is_nan : float -> bool
 
 val is_inf : float -> bool
 (** ``is_inf x`` returns ``true`` exactly if ``x`` is ``infinity`` or ``neg_infinity``. *)
+
+val is_normal : float -> bool
+(** ``is_normal x`` returns ``true`` if ``x`` is a normal float number. *)
+
+val is_subnormal : float -> bool
+(** ``is_nan x`` returns ``true`` if ``x`` is subnormal float number. *)
 
 val is_odd : int -> bool
 (** ``is_odd x`` returns ``true`` exactly if ``x`` is odd. *)

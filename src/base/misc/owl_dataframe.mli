@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -89,6 +89,9 @@ val shape : t -> int * int
 val numel : t -> int
 (** ``numel x`` returns the number of elements in ``x``. *)
 
+val types : t -> string array
+(** ``types x`` returns the string representation of column types. *)
+
 val get_heads : t -> string array
 (** ``get_heads x`` returns the column names of ``x``. *)
 
@@ -162,11 +165,40 @@ return an empty dataframe.
 val copy : t -> t
 (** ``copy x`` returns a copy of dataframe ``x``. *)
 
+val reset : t -> unit
+(**
+``reset x`` resets the dataframe ``x`` by setting all the time series to empty.
+ *)
+
 val append_row : t -> elt array -> unit
 (** ``append_row x row`` appends a row to the dataframe ``x``. *)
 
 val append_col : t -> series -> string -> unit
 (** ``append_col x col`` appends a column to the dataframe ``x``. *)
+
+val insert_row : t -> int -> elt array -> unit
+(**
+``insert_row x i row`` inserts one ``row`` with at position ``i`` into
+dataframe ``x``.
+ *)
+
+val insert_col : t -> int -> string -> series -> unit
+(**
+``insert_col x j col_head s`` inserts series ``s`` with column head ``col_head``
+at position ``j`` into dataframe ``x``.
+ *)
+
+val remove_row : t -> int -> unit
+(**
+``remove_row x i`` removes the ``ith`` row of ``x``. Negative index is
+accepted.
+ *)
+
+val remove_col : t -> int -> unit
+(**
+``remove_col x i`` removes the ``ith`` column of ``x``. Negative index is
+accepted.
+ *)
 
 val concat_horizontal : t -> t -> t
 (**
@@ -273,6 +305,9 @@ val to_rows : t -> elt array array
 
 val to_cols : t -> series array
 (** ``to_cols x`` returns an arrays of columns in ``x``. *)
+
+(* val print : t -> unit *)
+(** ``print x`` pretty prints a dataframe on the terminal. *)
 
 val elt_to_str : elt -> string
 (** ``elt_to_str x`` converts element ``x`` to its string representation. *)

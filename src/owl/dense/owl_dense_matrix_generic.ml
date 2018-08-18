@@ -1,11 +1,13 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 open Bigarray
 
 open Owl_ndarray
+
+open Owl_base_dense_common
 
 include Owl_dense_ndarray_generic
 
@@ -555,14 +557,14 @@ let add_diag x a =
 let of_array k x m n =
   let open Bigarray in
   let y = Array1.of_array k C_layout x |> genarray_of_array1 in
-  reshape y [|m; n|]
+  Owl_dense_ndarray_generic.reshape y [|m; n|]
 
 
 let save_txt ?(sep="\t") ?(append=false) x f =
   let perm = 0o666 in (* will be AND'ed with user's umask *)
   let open_flags = if append
-                   then [Open_wronly; Open_creat; Open_append; Open_text] 
-		   else [Open_wronly; Open_creat; Open_trunc;  Open_text] 
+                   then [Open_wronly; Open_creat; Open_append; Open_text]
+		   else [Open_wronly; Open_creat; Open_trunc;  Open_text]
   in
   let _op = Owl_utils.elt_to_str (kind x) in
   let h = open_out_gen open_flags perm f in
@@ -874,7 +876,7 @@ let cov ?b ~a =
   let n = row_num a - 1
     |> Pervasives.max 1
     |> float_of_int
-    |> Owl_ndarray._float_typ_elt (kind a)
+    |> _float_typ_elt (kind a)
   in
 
   div_scalar c n

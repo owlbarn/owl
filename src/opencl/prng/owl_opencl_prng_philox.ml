@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -116,32 +116,6 @@ let make_stream_buffer ctx streams_t =
   let flags = [ cl_MEM_USE_HOST_PTR ] in
   Owl_log.info "stream bufsize = %i" bufsize;
   Buffer.create ~flags ctx bufsize (Obj.magic streams)
-
-
-let test dev_id =
-  let ctx = Owl_opencl_context.(get_opencl_ctx default) in
-  let dev = Owl_opencl_context.(get_dev default dev_id) in
-  let cmdq = Owl_opencl_context.(get_cmdq default dev) in
-
-  let streams = make 1000_000 in
-  let i_0 = make_stream_buffer ctx streams in
-
-  let arr = Owl.Dense.Ndarray.S.create [|1000; 1000|] 1.5 in
-  let flags = [ cl_MEM_USE_HOST_PTR ] in
-  let i_1 = Buffer.create_bigarray ~flags ctx arr in
-
-  let kernel = Owl_opencl_context.(make_kernel default "owl_opencl_float32_std_uniform") in
-  let i_0_ptr = Ctypes.allocate cl_mem i_0 in
-  let i_1_ptr = Ctypes.allocate cl_mem i_1 in
-  Kernel.set_arg kernel 1 sizeof_cl_mem i_0_ptr;
-  Kernel.set_arg kernel 0 sizeof_cl_mem i_1_ptr;
-
-  let i_1_ppp = Ctypes.(bigarray_start genarray arr) in
-
-  let e_0 = Kernel.enqueue_ndrange ~wait_for:[] cmdq kernel 1 [1000_000] in
-  let e_1 = Buffer.enqueue_read ~wait_for:[e_0] cmdq i_1 0 (4 * 1000_000) (Ctypes.to_voidp i_1_ppp) in
-  Owl_opencl_base.CommandQueue.finish cmdq;
-  arr
 
 
 

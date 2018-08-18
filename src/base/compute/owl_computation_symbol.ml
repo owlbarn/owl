@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -33,10 +33,10 @@ module Make
     | Zeros shape                                 -> "Zeros"
     | Ones shape                                  -> "Ones"
     | Create shape                                -> "Create"
-    | Sequential                                  -> "Sequential"
+    | Sequential shape                            -> "Sequential"
     | Uniform shape                               -> "Uniform"
-    | Gaussian                                    -> "Gaussian"
-    | Bernoulli (p, shape)                        -> Printf.sprintf "Bernoulli p:%g" p
+    | Gaussian shape                              -> "Gaussian"
+    | Bernoulli shape                             -> "Bernoulli"
     | Init (shape, f)                             -> "Init"
     | Get i                                       -> "Get"
     | Set i                                       -> "Set"
@@ -217,10 +217,10 @@ module Make
   (* utility functions *)
 
   let is_random_variable = function
-    | Uniform shape        -> true
-    | Gaussian             -> true
-    | Bernoulli (p, shape) -> true
-    | _                    -> false
+    | Uniform shape   -> true
+    | Gaussian shape  -> true
+    | Bernoulli shape -> true
+    | _               -> false
 
 
   let refnum x = Owl_graph.outdegree x
@@ -232,6 +232,9 @@ module Make
     match x_shape.(0) with
     | Some s -> s
     | None   -> failwith "Owl_computation_symbol:node_shape"
+
+
+  let node_numel x = Array.fold_left ( * ) 1 (node_shape x)
 
 
   let is_shape_unkown x =

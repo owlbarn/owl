@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -40,6 +40,9 @@ let ulong_1 = Unsigned.ULong.one
 
 
 let sizeof_int = sizeof int
+
+
+let sizeof_int32 = sizeof int32_t
 
 
 let sizeof_cl_mem = sizeof cl_mem
@@ -137,6 +140,20 @@ let replace_subs s replacement =
     let regex = Str.regexp s0 in
     Str.global_replace regex s1 a
   ) s replacement
+
+
+(* Given number of PU and total size, calculate optimal chunks and chunk size. *)
+let calc_opt_chunk num_pu total_size =
+  let tmp_chunk = min total_size (2 * num_pu) in
+  let chunk_size =
+    ((float_of_int total_size) /. (float_of_int tmp_chunk))
+    |> ceil |> int_of_float
+  in
+  let num_chunk =
+    ((float_of_int total_size) /. (float_of_int chunk_size))
+    |> ceil |> int_of_float
+  in
+  num_chunk, chunk_size
 
 
 

@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -19,7 +19,7 @@ module type Sig = sig
 
   val sequential_ :?a:elt -> ?step:elt -> out:arr -> unit
 
-  val bernoulli_ : ?p:float -> out:arr -> unit
+  val bernoulli_ : ?p:elt -> out:arr -> unit
 
   val zeros_ : out:arr -> unit
 
@@ -38,6 +38,8 @@ module type Sig = sig
   val transpose_ : out:arr -> ?axis:int array -> arr -> unit
 
   val repeat_ : out:arr -> arr -> int array -> unit
+
+  val tile_ : out:arr -> arr -> int array -> unit
 
   val hypot : arr -> arr -> arr
 

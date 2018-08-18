@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -673,6 +673,8 @@ val reverse_ : out:arr -> arr -> unit
 val transpose_ : out:arr -> ?axis:int array -> arr -> unit
 
 val repeat_ : out:arr -> arr -> int array -> unit
+
+val tile_ : out:arr -> arr -> int array -> unit
 
 val sum_ : out:arr -> axis:int -> arr -> unit
 

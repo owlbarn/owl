@@ -4,7 +4,7 @@
 #require "owl-opencl"
 open Owl
 
-module M = Owl_opencl_engine.Make (Dense.Ndarray.S);;
+module M = Owl_computation_opencl_engine.Make (Dense.Ndarray.S);;
 
 
 let test_01 a =

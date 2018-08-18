@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -49,10 +49,10 @@ module type Sig = sig
     | Zeros                         of int array
     | Ones                          of int array
     | Create                        of int array
-    | Sequential
+    | Sequential                    of int array
     | Uniform                       of int array
-    | Gaussian
-    | Bernoulli                     of float * (int array)
+    | Gaussian                      of int array
+    | Bernoulli                     of int array
     | Init                          of int array * (int -> elt)
     | Get                           of int array
     | Set                           of int array
@@ -227,5 +227,6 @@ module type Sig = sig
     | Scalar_Relu
     | Scalar_Sigmoid
     | Fused_Adagrad                 of float * float
+  (** TODO *)
 
 end

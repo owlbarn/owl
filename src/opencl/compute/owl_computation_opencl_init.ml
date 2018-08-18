@@ -1,9 +1,7 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
-
-open Owl_types
 
 open Owl_graph
 
@@ -11,20 +9,20 @@ open Owl_opencl_base
 
 open Owl_opencl_utils
 
-open Owl_opencl_context
-
 open Owl_opencl_generated
 
 
 (* Functor of initialising an OpenCL engine to execute a computation graph. *)
 
-module Make (A : Ndarray_Mutable) = struct
+module Make
+  (Device : Owl_types_computation_opencl_device.Sig)
+  = struct
 
-  module CGraph = Owl_computation_graph.Make (A) (Owl_opencl_device)
+  module Graph = Owl_computation_engine.Make_Graph (Device)
 
-  module CL_Dev = Owl_opencl_device.Make (A)
+  open Graph.Optimiser.Operator.Symbol
 
-  include CGraph
+  open Graph.Optimiser.Operator.Symbol.Shape.Type.Device
 
 
   (* utility functions *)
@@ -48,7 +46,7 @@ module Make (A : Ndarray_Mutable) = struct
     if is_assigned x = false then (
       let x_shp = node_shape x in
       let cpu_mem = A.empty x_shp in
-      let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [||] [||] [||] in
+      let new_val = Device.make_value [|cpu_mem|] [||] [||] [||] in
       set_value x [| new_val |]
     )
 
@@ -59,7 +57,7 @@ module Make (A : Ndarray_Mutable) = struct
       let cpu_mem = value_to_arr x_val in
       let flags = [ cl_MEM_USE_HOST_PTR ] in
       let gpu_mem = Buffer.create_bigarray ~flags ctx (Obj.magic cpu_mem) in
-      let new_val = CL_Dev.make_value [|ArrVal cpu_mem|] [|gpu_mem|] [||] [||] in
+      let new_val = Device.make_value [|cpu_mem|] [|gpu_mem|] [||] [||] in
       set_value x [| new_val |]
     )
 
@@ -69,28 +67,15 @@ module Make (A : Ndarray_Mutable) = struct
     allocate_gpu_buffer ctx x
 
 
-  let get_cpu_ptr x_val =
-    let cpu_mem = CL_Dev.value_to_arr x_val in
-    Ctypes.(bigarray_start genarray (Obj.magic cpu_mem))
-
-
-  let get_gpu_ptr x_val =
-    let gpu_mem = CL_Dev.(x_val.gpu_mem.(0)) in
-    Ctypes.allocate cl_mem gpu_mem
-
-
-  let get_elt_ptr x_val =
-    let elt_mem = value_to_float x_val in
-    Ctypes.allocate Ctypes.float elt_mem
-
-
   let allocate_from_parent_0 ctx x = allocate_cpu_gpu_buffer ctx x
 
 
   let allocate_from_parent_1 ctx x parent =
     let parent_val = (get_value parent).(0) in
-    if refnum parent = 1 && get_reuse parent then
-      set_value x [| CL_Dev.copy_cpu_gpu_mem parent_val |]
+    if refnum parent = 1 && get_reuse parent then (
+      set_value x [| Device.refer_value parent_val |];
+      set_vnode x [| parent |]
+    )
     else
       allocate_cpu_gpu_buffer ctx x
 
@@ -103,19 +88,13 @@ module Make (A : Ndarray_Mutable) = struct
     let shp_0, shp_1 = Owl_utils_array.align `Left 1 shp_0 shp_1 in
     let shp_x = Owl_utils_infer_shape.broadcast1 shp_0 shp_1 in
 
-    if shp_0 = shp_x then (
-      if refnum parent_0 = 1 && get_reuse parent_0 then
-        set_value x [| CL_Dev.copy_cpu_gpu_mem parent_0_val |]
-      else if refnum parent_0 = 2 && parent_0 == parent_1 && get_reuse parent_0 then
-        set_value x [| CL_Dev.copy_cpu_gpu_mem parent_0_val |]
-      else
-        allocate_cpu_gpu_buffer ctx x
+    if shp_0 = shp_x && refnum parent_0 = 1 && get_reuse parent_0 then (
+      set_value x [| Device.refer_value parent_0_val |];
+      set_vnode x [| parent_0 |]
     )
-    else if shp_1 = shp_x then (
-      if refnum parent_1 = 1 && get_reuse parent_1 then
-        set_value x [| CL_Dev.copy_cpu_gpu_mem parent_1_val |]
-      else
-        allocate_cpu_gpu_buffer ctx x
+    else if shp_1 = shp_x && refnum parent_1 = 1 && get_reuse parent_1 then (
+      set_value x [| Device.refer_value parent_1_val |];
+      set_vnode x [| parent_1 |]
     )
     else
       allocate_cpu_gpu_buffer ctx x
@@ -137,14 +116,14 @@ module Make (A : Ndarray_Mutable) = struct
         | Noop                                        -> _init_xx x param
         | Var                                         -> _init_00 x param
         | Const                                       -> _init_00 x param
-        | Empty shape                                 -> _init_xx x param
-        | Zeros shape                                 -> _init_xx x param
-        | Ones shape                                  -> _init_xx x param
-        | Create shape                                -> _init_xx x param
-        | Sequential                                  -> failwith "Sequential"
+        | Empty shape                                 -> _init_00 x param
+        | Zeros shape                                 -> _init_10 x param "zeros"
+        | Ones shape                                  -> _init_10 x param "ones"
+        | Create shape                                -> _init_10 x param "create"
+        | Sequential shape                            -> _init_10 x param "sequential"
         | Uniform shape                               -> _init_20 x param "uniform"
-        | Gaussian                                    -> failwith "Gaussian"
-        | Bernoulli (p, shape)                        -> _init_xx x param
+        | Gaussian shape                              -> _init_20 x param "gaussian"
+        | Bernoulli shape                             -> _init_20 x param "bernoulli"
         | Init (shape, f)                             -> failwith "Init"
         | Get i                                       -> _init_xx x param
         | Set i                                       -> failwith "Set"
@@ -155,7 +134,7 @@ module Make (A : Ndarray_Mutable) = struct
         | Reshape shape                               -> _init_xx x param
         | Reverse                                     -> _init_xx x param
         | Tile repeats                                -> _init_xx x param
-        | Repeat (axis, repeats)                      -> _init_xx x param
+        | Repeat repeats                              -> _init_xx x param
         | Concatenate axis                            -> _init_xx x param
         | Split (axis, parts)                         -> failwith "Split"
         | Draw (axis, n)                              -> failwith "Draw"
@@ -275,32 +254,32 @@ module Make (A : Ndarray_Mutable) = struct
         | Scalar_Div                                  -> _init_03 x param "div"
         | Scalar_Pow                                  -> _init_03 x param "pow"
         | Scalar_Atan2                                -> _init_03 x param "atan2"
-        | Scalar_Abs                                  -> _init_03 x param "abs"
-        | Scalar_Neg                                  -> _init_03 x param "neg"
-        | Scalar_Sqr                                  -> _init_03 x param "sqr"
-        | Scalar_Sqrt                                 -> _init_03 x param "sqrt"
-        | Scalar_Exp                                  -> _init_03 x param "exp"
-        | Scalar_Log                                  -> _init_03 x param "log"
-        | Scalar_Log2                                 -> _init_03 x param "log2"
-        | Scalar_Log10                                -> _init_03 x param "log10"
-        | Scalar_Signum                               -> _init_03 x param "signum"
-        | Scalar_Floor                                -> _init_03 x param "floor"
-        | Scalar_Ceil                                 -> _init_03 x param "ceil"
-        | Scalar_Round                                -> _init_03 x param "round"
-        | Scalar_Sin                                  -> _init_03 x param "sin"
-        | Scalar_Cos                                  -> _init_03 x param "cos"
-        | Scalar_Tan                                  -> _init_03 x param "tan"
-        | Scalar_Sinh                                 -> _init_03 x param "sinh"
-        | Scalar_Cosh                                 -> _init_03 x param "cosh"
-        | Scalar_Tanh                                 -> _init_03 x param "tanh"
-        | Scalar_Asin                                 -> _init_03 x param "asin"
-        | Scalar_Acos                                 -> _init_03 x param "acos"
-        | Scalar_Atan                                 -> _init_03 x param "atan"
-        | Scalar_Asinh                                -> _init_03 x param "asinh"
-        | Scalar_Acosh                                -> _init_03 x param "acosh"
-        | Scalar_Atanh                                -> _init_03 x param "atanh"
-        | Scalar_Relu                                 -> _init_03 x param "relu"
-        | Scalar_Sigmoid                              -> _init_03 x param "sigmoid"
+        | Scalar_Abs                                  -> _init_01 x param "abs"
+        | Scalar_Neg                                  -> _init_01 x param "neg"
+        | Scalar_Sqr                                  -> _init_01 x param "sqr"
+        | Scalar_Sqrt                                 -> _init_01 x param "sqrt"
+        | Scalar_Exp                                  -> _init_01 x param "exp"
+        | Scalar_Log                                  -> _init_01 x param "log"
+        | Scalar_Log2                                 -> _init_01 x param "log2"
+        | Scalar_Log10                                -> _init_01 x param "log10"
+        | Scalar_Signum                               -> _init_01 x param "signum"
+        | Scalar_Floor                                -> _init_01 x param "floor"
+        | Scalar_Ceil                                 -> _init_01 x param "ceil"
+        | Scalar_Round                                -> _init_01 x param "round"
+        | Scalar_Sin                                  -> _init_01 x param "sin"
+        | Scalar_Cos                                  -> _init_01 x param "cos"
+        | Scalar_Tan                                  -> _init_01 x param "tan"
+        | Scalar_Sinh                                 -> _init_01 x param "sinh"
+        | Scalar_Cosh                                 -> _init_01 x param "cosh"
+        | Scalar_Tanh                                 -> _init_01 x param "tanh"
+        | Scalar_Asin                                 -> _init_01 x param "asin"
+        | Scalar_Acos                                 -> _init_01 x param "acos"
+        | Scalar_Atan                                 -> _init_01 x param "atan"
+        | Scalar_Asinh                                -> _init_01 x param "asinh"
+        | Scalar_Acosh                                -> _init_01 x param "acosh"
+        | Scalar_Atanh                                -> _init_01 x param "atanh"
+        | Scalar_Relu                                 -> _init_01 x param "relu"
+        | Scalar_Sigmoid                              -> _init_01 x param "sigmoid"
         | Fused_Adagrad (rate, eps)                   -> _init_xx x param
         | _                                           -> failwith "owl_opencl_engine:_eval_term"
 
@@ -313,11 +292,9 @@ module Make (A : Ndarray_Mutable) = struct
   and _init_xx x param = ()
 
 
-  (* varibles and consts *)
+  (* varibles, consts, creation *)
   and _init_00 x param =
     let ctx, cmdq, program = param in
-    if is_elt x = true then
-      CL_Dev.elt_to_arr (get_value x).(0);
     allocate_from_parent_0 ctx x
 
 
@@ -328,8 +305,8 @@ module Make (A : Ndarray_Mutable) = struct
 
     let ctx, cmdq, program = param in
     allocate_from_parent_1 ctx x parent;
-    let a_ptr = get_gpu_ptr (get_value parent).(0) in
-    let b_ptr = get_gpu_ptr (get_value x).(0) in
+    let a_ptr = Device.get_gpu_ptr (get_value parent).(0) in
+    let b_ptr = Device.get_gpu_ptr (get_value x).(0) in
 
     let kernel = make_kernel x program fun_name in
     Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
@@ -362,9 +339,9 @@ module Make (A : Ndarray_Mutable) = struct
 
     let ctx, cmdq, program = param in
     allocate_from_parent_2 ctx x parent_0 parent_1;
-    let a_ptr = get_gpu_ptr (get_value parent_0).(0) in
-    let b_ptr = get_gpu_ptr (get_value parent_1).(0) in
-    let c_ptr = get_gpu_ptr (get_value x).(0) in
+    let a_ptr = Device.get_gpu_ptr (get_value parent_0).(0) in
+    let b_ptr = Device.get_gpu_ptr (get_value parent_1).(0) in
+    let c_ptr = Device.get_gpu_ptr (get_value x).(0) in
 
     let kernel = make_kernel x program fun_name in
     Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
@@ -384,9 +361,9 @@ module Make (A : Ndarray_Mutable) = struct
     let parent_0_val = (get_value parent_0).(0) in
     let parent_1_val = (get_value parent_1).(0) in
     let x_val = (get_value x).(0) in
-    let a_ptr = get_gpu_ptr parent_0_val in
-    let b_ptr = get_gpu_ptr parent_1_val in
-    let c_ptr = get_gpu_ptr x_val in
+    let a_ptr = Device.get_gpu_ptr parent_0_val in
+    let b_ptr = Device.get_gpu_ptr parent_1_val in
+    let c_ptr = Device.get_gpu_ptr x_val in
 
     let dim = A.shape (value_to_arr x_val) |> Array.length in
     let dim_i32 = Int32.of_int dim in
@@ -421,8 +398,8 @@ module Make (A : Ndarray_Mutable) = struct
 
     let ctx, cmdq, program = param in
     allocate_from_parent_0 ctx x;
-    let a_ptr = get_gpu_ptr (get_value parent).(0) in
-    let b_ptr = get_gpu_ptr (get_value x).(0) in
+    let a_ptr = Device.get_gpu_ptr (get_value parent).(0) in
+    let b_ptr = Device.get_gpu_ptr (get_value x).(0) in
 
     let parent_shape = A.shape (value_to_arr (get_value parent).(0)) in
     let dim_i32 = Int32.of_int parent_shape.(axis) in
@@ -439,6 +416,24 @@ module Make (A : Ndarray_Mutable) = struct
     Kernel.set_arg kernel 3 sizeof_int32 stride_ptr
 
 
+  (* f : arr array -> arr, non-broadcasting *)
+  and _init_10 x param fun_name =
+    let parents_val = Array.map (fun parent ->
+      _init_term parent param;
+      (get_value parent).(0)
+    ) (parents x)
+    in
+
+    let ctx, cmdq, program = param in
+    allocate_from_parent_0 ctx x;
+    let kernel = make_kernel x program fun_name in
+    let args_val = Array.append parents_val [| (get_value x).(0) |] in
+    Array.iteri (fun i arg_val ->
+      let arg_ptr = Device.get_gpu_ptr arg_val in
+      Kernel.set_arg kernel i sizeof_cl_mem arg_ptr;
+    ) args_val
+
+
   (* f : arr array -> arr, pseudo random number generators *)
   and _init_20 x param fun_name =
     let parents_val = Array.map (fun parent ->
@@ -450,22 +445,30 @@ module Make (A : Ndarray_Mutable) = struct
     let ctx, cmdq, program = param in
     allocate_from_parent_0 ctx x;
 
-    let items = node_to_arr x |> numel in
+    let numpu = Owl_opencl_hardware.processing_units () in
+    let limit = node_numel x in
+    let items, chunk = calc_opt_chunk numpu limit in
+    let chunk_ptr = Ctypes.(allocate int32_t) (Int32.of_int chunk) in
+    let limit_ptr = Ctypes.(allocate int32_t) (Int32.of_int limit) in
+
     let streams = Owl_opencl_prng_philox.make items in
     let streams_buf = Owl_opencl_prng_philox.make_stream_buffer ctx streams in
     let streams_ptr = Ctypes.allocate cl_mem streams_buf in
 
     let kernel = make_kernel x program fun_name in
-    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem streams_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_int32 chunk_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_int32 limit_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem streams_ptr;
     let args_val = Array.append parents_val [| (get_value x).(0) |] in
     Array.iteri (fun i arg_val ->
-      let arg_ptr = get_gpu_ptr arg_val in
-      Kernel.set_arg kernel (i+1) sizeof_cl_mem arg_ptr;
+      let arg_ptr = Device.get_gpu_ptr arg_val in
+      Kernel.set_arg kernel (i+3) sizeof_cl_mem arg_ptr;
     ) args_val
 
 
-  let init_nodes xs param = Array.iter (fun x -> _init_term x param) xs
+  (* Core functions to initislise a computation graph *)
 
+  let init_nodes xs param = Array.iter (fun x -> _init_term x param) xs
 
 
 end

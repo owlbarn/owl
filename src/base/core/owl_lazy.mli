@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -140,7 +140,7 @@ module Make (A : Ndarray_Mutable) : sig
   val gaussian : ?mu:elt -> ?sigma:elt -> int array -> arr
   (** TODO *)
 
-  val bernoulli : ?p:float -> int array -> arr
+  val bernoulli : ?p:elt -> int array -> arr
   (** TODO *)
 
   val init : int array -> (int -> elt) -> arr

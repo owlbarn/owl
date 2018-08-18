@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -43,10 +43,10 @@ module Make
         | Zeros shape                                 -> _eval_map_01 x (fun ~out x -> A.zeros_ ~out)
         | Ones shape                                  -> _eval_map_01 x (fun ~out x -> A.ones_ ~out)
         | Create shape                                -> _eval_map_02 x (fun ~out x -> A.create_ ~out x.(0))
-        | Sequential                                  -> _eval_map_02 x (fun ~out x -> A.sequential_ ~a:x.(0) ~step:x.(1) ~out)
+        | Sequential shape                            -> _eval_map_02 x (fun ~out x -> A.sequential_ ~a:x.(0) ~step:x.(1) ~out)
         | Uniform shape                               -> _eval_map_02 x (fun ~out x -> A.uniform_ ~a:x.(0) ~b:x.(1) ~out)
-        | Gaussian                                    -> _eval_map_02 x (fun ~out x -> A.gaussian_ ~mu:x.(0) ~sigma:x.(1) ~out)
-        | Bernoulli (p, shape)                        -> _eval_map_01 x (fun ~out x -> A.bernoulli_ ~p ~out)
+        | Gaussian shape                              -> _eval_map_02 x (fun ~out x -> A.gaussian_ ~mu:x.(0) ~sigma:x.(1) ~out)
+        | Bernoulli shape                             -> _eval_map_02 x (fun ~out x -> A.bernoulli_ ~p:x.(0) ~out)
         | Init (shape, f)                             -> failwith "Init"
         | Get i                                       -> _eval_map_06 x (fun x -> A.get x i)
         | Set i                                       -> failwith "Set"
@@ -56,7 +56,7 @@ module Make
         | Reset                                       -> _eval_map_01 x (fun ~out x -> A.reset out)
         | Reshape shape                               -> _eval_map_01 x (fun ~out x -> A.reshape_ ~out x.(0))
         | Reverse                                     -> _eval_map_01 x (fun ~out x -> A.reverse_ ~out x.(0))
-        | Tile repeats                                -> _eval_map_00 x (fun x -> A.tile x.(0) repeats)
+        | Tile repeats                                -> _eval_map_01 x (fun ~out x -> A.tile_ ~out x.(0) repeats)
         | Repeat repeats                              -> _eval_map_01 x (fun ~out x -> A.repeat_ ~out x.(0) repeats)
         | Concatenate axis                            -> _eval_map_00 x A.(concatenate ~axis)
         | Split (axis, parts)                         -> failwith "Split"

@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -8,6 +8,8 @@ open Owl_types
 open Bigarray
 
 open Owl_ndarray
+
+open Owl_base_dense_common
 
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t

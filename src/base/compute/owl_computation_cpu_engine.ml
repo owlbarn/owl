@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -8,7 +8,7 @@ open Owl_types
 
 (* Functor of making a CPU-based engine to execute computation graphs. *)
 
-module Make_Embedded
+module Make_Nested
   (Graph : Owl_computation_graph_sig.Sig)
   = struct
 
@@ -30,23 +30,20 @@ module Make_Embedded
 
   (* core interface *)
 
-  let eval_elt xs =
-    let nodes = Array.map elt_to_node xs in
+  let eval_gen nodes =
     Array.iter CG_Init._init_term nodes;
     Array.iter CG_Eval._eval_term nodes
 
 
-  let eval_arr xs =
-    let nodes = Array.map arr_to_node xs in
-    Array.iter CG_Init._init_term nodes;
-    Array.iter CG_Eval._eval_term nodes
+  let eval_elt xs = Array.map elt_to_node xs |> eval_gen
+
+
+  let eval_arr xs = Array.map arr_to_node xs |> eval_gen
 
 
   let eval_graph graph =
     Graph.invalidate_rvs graph;
-    let nodes = Graph.get_outputs graph in
-    Array.iter CG_Init._init_term nodes;
-    Array.iter CG_Eval._eval_term nodes
+    Graph.get_outputs graph |> eval_gen
 
 
 end
@@ -60,7 +57,7 @@ module Make
 
   include
     Owl_computation_engine.Flatten (
-      Make_Embedded (
+      Make_Nested (
         Owl_computation_engine.Make_Graph (
           Owl_computation_cpu_device.Make (A)
         )

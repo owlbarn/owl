@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -67,6 +67,11 @@ val output : handle -> unit
 val set_output : handle -> string -> unit
 (**
 ``set_output``
+ *)
+
+val get_output : handle -> string
+(**
+``get_output``
  *)
 
 val set_title : handle -> string -> unit

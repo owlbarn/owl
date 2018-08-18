@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -107,6 +107,18 @@ let neg_inf : type a b. (a, b) kind -> a = function
   | Complex32 -> Complex.({re = neg_infinity; im = neg_infinity})
   | Complex64 -> Complex.({re = neg_infinity; im = neg_infinity})
   | _         -> failwith "neg_inf: unsupported operation"
+
+
+let min_float32 = ~-.340282346638528859811704183484516925440.0
+
+
+let max_float32 = 340282346638528859811704183484516925440.0
+
+
+let min_float64 = Pervasives.min_float
+
+
+let max_float64 = Pervasives.max_float
 
 
 (** Unit prefixes *)

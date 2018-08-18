@@ -1,11 +1,13 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 open Bigarray
 
 open Owl_ndarray
+
+open Owl_base_dense_common
 
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind

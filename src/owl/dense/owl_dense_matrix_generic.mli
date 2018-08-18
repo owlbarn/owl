@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -1152,8 +1152,11 @@ float array of length ``(numel x)``.
 
 val of_array : ('a, 'b) kind -> 'a array -> int -> int -> ('a, 'b) t
 (**
-``of_array x m n`` converts a float array ``x`` into an ``m`` by ``n`` matrix. Note the
-length of ``x`` must be equal to ``(m * n)``.
+``of_array x m n`` converts a float array ``x`` into an ``m`` by ``n`` matrix.
+Note the length of ``x`` must be equal to ``(m * n)``.
+
+Similar to ``reshape`` function, you can pass in one negative index to let Owl
+automatically infer its dimension.
  *)
 
 val to_arrays : ('a, 'b) t -> 'a array array
@@ -1923,7 +1926,7 @@ elementwise, and returns the result in a new matrix.
 
 val fmod : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (**
-``fmod x y`` performs float mod division.
+``fmod x y`` performs float modulus division.
  *)
 
 val fmod_scalar : (float, 'a) t -> float -> (float, 'a) t

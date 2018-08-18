@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -1359,8 +1359,9 @@ module Make
       |> pack_arr
 
     and dropout ?(rate=0.5) a =
+      let p = A.float_to_elt (1. -. rate) in
       let b = match (primal' a) with
-        | Arr a -> Arr (A.bernoulli ~p:(1. -. rate) (A.shape a))
+        | Arr a -> Arr (A.bernoulli ~p (A.shape a))
         | _     -> error_uniop "dropout" a
       in
       a * b

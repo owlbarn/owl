@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -112,10 +112,10 @@ module Make
         | Zeros shape                                 -> _init_00 x
         | Ones shape                                  -> _init_00 x
         | Create shape                                -> _init_00 x
-        | Sequential                                  -> _init_00 x
+        | Sequential shape                            -> _init_00 x
         | Uniform shape                               -> _init_00 x
-        | Gaussian                                    -> _init_00 x
-        | Bernoulli (p, shape)                        -> _init_00 x
+        | Gaussian shape                              -> _init_00 x
+        | Bernoulli shape                             -> _init_00 x
         | Init (shape, f)                             -> _init_00 x
         | Get i                                       -> _init_05 x
         | Set i                                       -> failwith "Set"
@@ -126,7 +126,7 @@ module Make
         | Reshape shape                               -> _init_01 x
         | Reverse                                     -> _init_01 x
         | Tile repeats                                -> _init_00 x
-        | Repeat repeats                              -> _init_01 x
+        | Repeat repeats                              -> _init_00 x
         | Concatenate axis                            -> _init_00 x
         | Split (axis, parts)                         -> failwith "Split"
         | Draw (axis, n)                              -> failwith "Draw"

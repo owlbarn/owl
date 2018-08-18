@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -92,6 +92,18 @@ val pos_inf : ('a, 'b) Bigarray.kind -> 'a
 
 val neg_inf : ('a, 'b) Bigarray.kind -> 'a
 (** ``neg_inf kind`` returns negative infinity of the given number type ``kind``. *)
+
+val min_float32 : float
+(** Miminum value of single precision float number, i.e. ~-.340282346638528859811704183484516925440.0 *)
+
+val max_float32 : float
+(** Maximum value of single precision float number, i.e. 340282346638528859811704183484516925440.0 *)
+
+val min_float64 : float
+(** Miminum value of double precision float number. *)
+
+val max_float64 : float
+(** Maximum value of double precision float number. *)
 
 
 (** {6 Unit prefixes} *)

@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -30,6 +30,9 @@ module type Sig = sig
   (** TODO *)
 
   val node_shape : attr Owl_graph.node -> int array
+  (** TODO *)
+
+  val node_numel : attr Owl_graph.node -> int
   (** TODO *)
 
   val is_shape_unkown : attr Owl_graph.node -> bool

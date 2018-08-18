@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -17,8 +17,7 @@ module Scalar = Owl_base_maths
 (* Prepend an array with ones to the given length *)
 let _prepend_dims dims desired_len =
   let dims_len = Array.length dims in
-  if dims_len >= desired_len
-  then dims
+  if dims_len >= desired_len then dims
   else (Array.append (Array.make (desired_len - dims_len) 1) dims)
 
 
@@ -27,21 +26,18 @@ let _get_broadcasted_dims dims_a dims_b =
   let ext_dims_a = _prepend_dims dims_a len_c in
   let ext_dims_b = _prepend_dims dims_b len_c in
   let dims_c = Array.make len_c 0 in
-  begin
-    for i = 0 to len_c - 1 do
-      let val_a = ext_dims_a.(i) in
-      let val_b = ext_dims_b.(i) in
-      if val_a = val_b
-      then dims_c.(i) <- val_a
-      else
-        begin
-          if val_a != 1 && val_b != 1
-          then raise (Invalid_argument "The arrays cannot be broadcast into the same shape")
-          else dims_c.(i) <- (Pervasives.max val_a val_b)
-        end
-    done;
-    (ext_dims_a, ext_dims_b, dims_c)
-  end
+
+  for i = 0 to len_c - 1 do
+    let val_a = ext_dims_a.(i) in
+    let val_b = ext_dims_b.(i) in
+    if val_a = val_b then
+      dims_c.(i) <- val_a
+    else
+      if val_a != 1 && val_b != 1
+      then raise (Invalid_argument "The arrays cannot be broadcast into the same shape")
+      else dims_c.(i) <- (Pervasives.max val_a val_b)
+  done;
+  (ext_dims_a, ext_dims_b, dims_c)
 
 
 (* Increment the index array, with respect to the dimensions array *)
@@ -49,21 +45,17 @@ let _next_index ind dims =
   let num_dims = Array.length ind in
   let p = ref (num_dims - 1) in
   let ok = ref false in
-  begin
-    while !p >= 0 && not !ok do
-      if ind.(!p) + 1 < dims.(!p) then
-        begin
-          ind.(!p) <- (ind.(!p) + 1);
-          ok := true;
-        end
-      else
-        begin
-          ind.(!p) <- 0;
-          p := !p - 1;
-        end
-    done;
-    !ok
-  end
+  while !p >= 0 && not !ok do
+    if ind.(!p) + 1 < dims.(!p) then (
+      ind.(!p) <- (ind.(!p) + 1);
+      ok := true;
+    )
+    else (
+      ind.(!p) <- 0;
+      p := !p - 1;
+    )
+  done;
+  !ok
 
 
 let _get_broadcasted_index ind dims =
@@ -88,8 +80,8 @@ let _apply_perm arr perm =
 
 
 let _draw_int_samples replacement range count =
-  if not replacement && count > range
-  then raise (Invalid_argument "cannot draw that many samples from the given range, without replacement")
+  if not replacement && count > range then
+    raise (Invalid_argument "cannot draw that many samples from the given range, without replacement")
   else (
     let pop_cnt = ref range in
     let pop = Array.init !pop_cnt (fun i -> i) in
@@ -97,8 +89,8 @@ let _draw_int_samples replacement range count =
     let draw_fun = (fun _ ->
         let index = Random.State.int rand_gen !pop_cnt in
         let sample = pop.(index) in
-        if replacement
-        then sample
+        if replacement then
+          sample
         else (
           pop_cnt := !pop_cnt - 1;
           pop.(index) <- pop.(!pop_cnt); (* eliminate sample by swapping with last element *)
@@ -117,9 +109,7 @@ let _enumerate_slice_def dim ?(step) start stop =
     | Some x -> x
     | None   -> if (start <= stop) then 1 else -1
   in
-  let _ =
-    assert (((start <= stop) && (step > 0)) || ((start > stop) && (step < 0)))
-  in
+  assert (((start <= stop) && (step > 0)) || ((start > stop) && (step < 0)));
   let step_abs = Pervasives.abs step in
   let len = ((Pervasives.abs (stop - start)) + step_abs) / step_abs in
   (Array.init len (fun i -> start + i * step))
@@ -143,30 +133,41 @@ let _expand_slice_indices index_list dims =
        (fun p -> Array.init dims.(p + sdef_len) (fun i -> i)))
 
 
+let reset x =
+  let _kind = Genarray.kind x in
+  Genarray.fill x (Owl_const.zero _kind)
+
 
 let empty kind dims = Genarray.create kind c_layout dims
 
 
 let create kind dims value =
-  let varr = empty kind dims in
-  Genarray.fill varr value;
-  varr
+  let x = empty kind dims in
+  Genarray.fill x value;
+  x
+
+
+let create_ ~out a = Genarray.fill out a
+
 
 let zeros kind dims = create kind dims (Owl_const.zero kind)
+
+
+let zeros_ ~out = reset out
 
 
 let ones kind dims = create kind dims (Owl_const.one kind)
 
 
-(* return the shape of the ndarray *)
+let ones_ ~out = Genarray.(fill out (Owl_const.one (kind out)))
+
+
 let shape varr = Genarray.dims varr
 
 
-(* return the rank of the ndarray *)
 let num_dims varr = Array.length (shape varr)
 
 
-(* return the number of elements in the ndarray*)
 let numel varr =
   let v_shape = shape varr in
   Array.fold_left ( * ) 1 v_shape
@@ -191,17 +192,15 @@ let get_slice index_list varr =
   let slice_ind = Array.make rank 0 in
   let original_ind = Array.make rank 0 in
   let should_stop = ref false in
-  begin
-    while not !should_stop do
-      for i = 0 to rank - 1 do
-        original_ind.(i) <- (index_array.(i)).(slice_ind.(i))
-      done;
-      Genarray.set slice_varr slice_ind (Genarray.get varr original_ind);
-      if not (_next_index slice_ind slice_dims) then
-        should_stop := true
+  while not !should_stop do
+    for i = 0 to rank - 1 do
+      original_ind.(i) <- (index_array.(i)).(slice_ind.(i))
     done;
-    slice_varr
-  end
+    Genarray.set slice_varr slice_ind (Genarray.get varr original_ind);
+    if not (_next_index slice_ind slice_dims) then
+      should_stop := true
+  done;
+  slice_varr
 
 
 (*TODO: optimise, test *)
@@ -214,31 +213,14 @@ let set_slice index_list varr slice_varr =
   let slice_ind = Array.make rank 0 in
   let original_ind = Array.make rank 0 in
   let should_stop = ref false in
-  begin
-    while not !should_stop do
-      for i = 0 to rank - 1 do
-        original_ind.(i) <- (index_array.(i)).(slice_ind.(i))
-      done;
-      Genarray.set varr original_ind (Genarray.get slice_varr slice_ind);
-      if not (_next_index slice_ind slice_dims) then
-        should_stop := true
+  while not !should_stop do
+    for i = 0 to rank - 1 do
+      original_ind.(i) <- (index_array.(i)).(slice_ind.(i))
     done;
-  end
-
-
-(*TODO: This is clone, not copying from one to another, maybe should specify this in documentation *)
-let copy varr =
-  let varr_copy = empty (kind varr) (shape varr) in
-  begin
-    Genarray.blit varr varr_copy; varr_copy
-  end
-
-
-let copy_ ~out x = failwith "Owl_base_dense_ndarray_generic:copy_: not implemented"
-
-
-(* Reset to zero *)
-let reset varr = (Genarray.fill varr 0.)
+    Genarray.set varr original_ind (Genarray.get slice_varr slice_ind);
+    if not (_next_index slice_ind slice_dims) then
+      should_stop := true
+  done
 
 
 (* The result shares the underlying buffer with original, not a copy *)
@@ -255,46 +237,78 @@ let reshape x d =
 
 
 (* Return the array as a contiguous block, without copying *)
-let flatten varr = (reshape varr [|(numel varr)|])
-
-let reverse varr =
-  let n = numel varr in
-  let ret = empty (kind varr) (shape varr) in
-  let ret_flat = reshape ret [|n|] in
-  let varr_flat = reshape varr [|n|] in
-  begin
-    for i = 0 to n - 1 do
-      set ret_flat [|i|] (get varr_flat [|n - 1 - i|])
-    done;
-    ret
-  end
+let flatten x = reshape x [|(numel x)|]
 
 
-(* Apply a function over a bigarray, with no copying *)
-let _apply_fun f varr =
-  let varr_linear = flatten varr |> array1_of_genarray in
-  let length = numel varr in
-  begin
-    for i = 0 to length - 1 do
-      (Array1.unsafe_set varr_linear i (f (Array1.unsafe_get varr_linear i)))
-    done
-  end
+let copy x =
+  let y = empty (kind x) (shape x) in
+  Genarray.blit x y;
+  y
+
+
+let copy_ ~out x =
+  let src = flatten x in
+  let dst = flatten out in
+  Genarray.blit src dst
+
+
+let reshape_ ~out x =
+  if not (x == out) then
+    copy_ ~out x
+
+
+let reverse x =
+  let n = numel x in
+  let y = empty (kind x) (shape x) in
+  let y_flat = reshape y [|n|] in
+  let x_flat = reshape x [|n|] in
+  for i = 0 to n - 1 do
+    set y_flat [|i|] (get x_flat [|n - 1 - i|])
+  done;
+  y
+
+
+let reverse_ ~out x =
+  let n = numel x in
+  let y_flat = reshape out [|n|] in
+  let x_flat = reshape x [|n|] in
+  for i = 0 to n - 1 do
+    set y_flat [|i|] (get x_flat [|n - 1 - i|])
+  done
+
+
+let map_ f x =
+  let y = flatten x |> array1_of_genarray in
+  let length = numel x in
+  for i = 0 to length - 1 do
+    (Array1.unsafe_set y i (f (Array1.unsafe_get y i)))
+  done
+
+
+let mapi_ f x =
+  let y = flatten x |> array1_of_genarray in
+  let length = numel x in
+  for i = 0 to length - 1 do
+    (Array1.unsafe_set y i (f i (Array1.unsafe_get y i)))
+  done
+
 
 let init kind dims f =
   let varr = empty kind dims in
   let varr_flat = flatten varr |> array1_of_genarray in
   let n = numel varr in
-  begin
-    for i = 0 to n - 1 do
-      Array1.unsafe_set varr_flat i (f i)
-    done;
-    varr
-  end
+  for i = 0 to n - 1 do
+    Array1.unsafe_set varr_flat i (f i)
+  done;
+  varr
+
 
 (* Map a NDarray from elements x -> f(x), by copying the array *)
-let map f varr =
-  let varr_copy = copy varr in
-  (_apply_fun f varr_copy; varr_copy)
+let map f x =
+  let y = copy x in
+  map_ f y;
+  y
+
 
 let mapi f x =
   let y = copy x in
@@ -418,62 +432,98 @@ let filteri f x =
 
 let filter f x = filteri (fun _ y -> f y) x
 
-let sequential kind ?(a=0.) ?(step=1.) dims =
-  let varr = empty kind dims in
-  let count = ref 0. in
-  let seq_fun =
-    (fun x -> (count := !count +. 1.; a +. (!count -. 1.) *. step))
+
+let sequential_ ?a ?step ~out =
+  let k = kind out in
+  let a = match a with
+    | Some a -> a
+    | None   -> Owl_const.zero k
   in
-  _apply_fun seq_fun varr;
-  varr
+  let step = match step with
+    | Some step -> step
+    | None      -> Owl_const.one k
+  in
+  let _add = Owl_base_dense_common._add_elt k in
+  let _mul = Owl_base_dense_common._mul_elt k in
+  let _flt = Owl_base_dense_common._float_typ_elt k in
+  mapi_ (fun i _ ->
+    _add a (_mul (_flt (float_of_int i)) step)
+  ) out
+
+
+let sequential k ?a ?step dimension =
+  let x = empty k dimension in
+  sequential_ ?a ?step ~out:x;
+  x
 
 
 let of_array kind arr dims =
   let varr = empty kind dims in
   let flat_varr = flatten varr |> array1_of_genarray in
   let n = numel varr in
-  begin
-    for i = 0 to n - 1 do
-      Array1.unsafe_set flat_varr i arr.(i)
-    done;
-    varr
-  end
-
-
-let uniform kind ?(a=0.) ?(b=1.) dims =
-  let uniform_gen_fun = (fun _ -> Owl_base_stats.uniform_rvs ~a ~b) in
-  let varr = empty kind dims in
-  _apply_fun uniform_gen_fun varr;
+  for i = 0 to n - 1 do
+    Array1.unsafe_set flat_varr i arr.(i)
+  done;
   varr
+
+
+let uniform kind ?a ?b dims =
+  let a = match a with Some a -> a | None -> 0. in
+  let b = match b with Some b -> b | None -> 1. in
+  let uniform_gen_fun = (fun _ -> Owl_base_stats.uniform_rvs ~a ~b) in
+  let x = empty kind dims in
+  map_ uniform_gen_fun x;
+  x
+
+
+let uniform_ ?a ?b ~out =
+  let a = match a with Some a -> a | None -> 0. in
+  let b = match b with Some b -> b | None -> 1. in
+  let uniform_gen_fun = (fun _ -> Owl_base_stats.uniform_rvs ~a ~b) in
+  map_ uniform_gen_fun out
 
 
 let bernoulli kind ?(p=0.5) dims =
   let bernoulli_gen_fun = (fun _ -> Owl_base_stats.bernoulli_rvs ~p) in
-  let varr = empty kind dims in
-  _apply_fun bernoulli_gen_fun varr;
-  varr
+  let x = empty kind dims in
+  map_ bernoulli_gen_fun x;
+  x
 
 
-let gaussian kind ?(mu=0.) ?(sigma=1.) dims =
+let bernoulli_ ?(p=0.5) ~out =
+  let bernoulli_gen_fun = (fun _ -> Owl_base_stats.bernoulli_rvs ~p) in
+  map_ bernoulli_gen_fun out
+
+
+let gaussian kind ?mu ?sigma dims =
+  let mu = match mu with Some a -> a | None -> 0. in
+  let sigma = match sigma with Some a -> a | None -> 1. in
   let gaussian_gen_fun = (fun _ -> Owl_base_stats.gaussian_rvs ~mu ~sigma) in
-  let varr = empty kind dims in
-  _apply_fun gaussian_gen_fun varr;
-  varr
+  let x = empty kind dims in
+  map_ gaussian_gen_fun x;
+  x
 
 
-let print ?max_row ?max_col ?header ?fmt varr =
-  let dims = shape varr in
+let gaussian_ ?mu ?sigma ~out =
+  let mu = match mu with Some a -> a | None -> 0. in
+  let sigma = match sigma with Some a -> a | None -> 1. in
+  let gaussian_gen_fun = (fun _ -> Owl_base_stats.gaussian_rvs ~mu ~sigma) in
+  map_ gaussian_gen_fun out
+
+
+let print ?max_row ?max_col ?header ?fmt x =
+  let dims = shape x in
   let rank = Array.length dims in
   let n = dims.(rank - 1) in
   let max_row = match max_row with
     | Some a -> Some a
-    | None   -> Some ((numel varr) / n)
+    | None   -> Some ((numel x) / n)
   in
   let max_col = match max_col with
     | Some a -> Some a
     | None   -> Some n
   in
-  Owl_pretty.print_dsnda ?max_row ?max_col ?header ?elt_to_str_fun:fmt varr
+  Owl_pretty.print_dsnda ?max_row ?max_col ?header ?elt_to_str_fun:fmt x
 
 
 (* TODO: optimise *)
@@ -490,17 +540,16 @@ let tile varr reps =
   let result_ind = Array.make result_rank 0 in
   let original_ind = Array.make result_rank 0 in
   let should_stop = ref false in
-  begin
-    while not !should_stop do
-      for i = 0 to result_rank - 1 do
-        original_ind.(i) <- (Pervasives.(mod) result_ind.(i) dims.(i))
-      done;
-      Genarray.set result_varr result_ind (Genarray.get varr original_ind);
-      if not (_next_index result_ind result_dims) then
-        should_stop := true
+
+  while not !should_stop do
+    for i = 0 to result_rank - 1 do
+      original_ind.(i) <- (Pervasives.(mod) result_ind.(i) dims.(i))
     done;
-    result_varr
-  end
+    Genarray.set result_varr result_ind (Genarray.get varr original_ind);
+    if not (_next_index result_ind result_dims) then
+      should_stop := true
+  done;
+  result_varr
 
 
 (* TODO: optimise *)
@@ -645,7 +694,7 @@ let repeat x reps =
             ofsy_sub := !ofsy_sub + block_sz
           done
         );
-        ofsx := !ofsx + x_shape.(hd);
+        ofsx := !ofsx + slice_x.(hd);
         ofsy := !ofsy + stride_y.(hd - 1) * reps.(hd - 1);
         for j = hd - 1 downto 1 do
           let c = counter.(j) in
@@ -682,7 +731,7 @@ let repeat x reps =
             if c + 1 = block_num.(j + 1) then (
               ofsy := !ofsy + stride_y.(j) * (reps.(j) - 1);
             );
-            counter.(j) <- if c + 1 = block_num.(j) then 0 else c + 1
+            counter.(j) <- if c + 1 = block_num.(j + 1) then 0 else c + 1
           done
         done
       done
@@ -693,77 +742,285 @@ let repeat x reps =
 
 (* mathematical functions *)
 
-(* Absolute values of all elements, in a new arrray *)
-let abs varr = (map Scalar.abs varr)
+let abs x = map Scalar.abs x
 
 
-let neg varr = (map Scalar.neg varr)
+let abs_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.abs out
 
 
-let floor varr = (map Scalar.floor varr)
+let conj x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._conj_elt _kind in
+  map _func x
 
 
-let ceil varr = (map Scalar.ceil varr)
+let conj_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._conj_elt _kind in
+  let out = match out with Some o -> o | None -> x in
+  map _func out
 
 
-let round varr = (map Scalar.round varr)
+let neg_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.neg out
 
 
-let sqr varr = (map Scalar.sqr varr)
+let neg x = map Scalar.neg x
 
 
-let sqrt varr = (map Scalar.sqrt varr)
+let neg_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.neg out
 
 
-let log varr = (map Scalar.log varr)
+let reci x = map Scalar.reci x
 
 
-let log2 varr = (map Scalar.log2 varr)
+let reci_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.reci out
 
 
-let log10 varr = (map Scalar.log10 varr)
+let floor x = map Scalar.floor x
 
 
-let exp varr = (map Scalar.exp varr)
+let floor_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.floor out
 
 
-let sin varr = (map Scalar.sin varr)
+let ceil x = map Scalar.ceil x
 
 
-let cos varr = (map Scalar.cos varr)
+let ceil_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.ceil out
 
 
-let tan varr = (map Scalar.tan varr)
+let round x = map Scalar.round x
 
 
-let tan varr = (map Scalar.tan varr)
+let round_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.round out
 
 
-let sinh varr = (map Scalar.sinh varr)
+let trunc x = map (fun a -> Pervasives.truncate a |> float_of_int) x
 
 
-let cosh varr = (map Scalar.cosh varr)
+let trunc_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ (fun a -> Pervasives.truncate a |> float_of_int) out
 
 
-let tanh varr = (map Scalar.tanh varr)
+let fix x =
+  let open Pervasives in
+  map (fun a -> if a < 0. then ceil a else floor a) x
 
 
-let asin varr = (map Scalar.asin varr)
+let fix_ ?out x =
+  let open Pervasives in
+  let out = match out with Some o -> o | None -> x in
+  map_ (fun a -> if a < 0. then ceil a else floor a) out
 
 
-let acos varr = (map Scalar.acos varr)
+let erf x = raise Owl_exception.NOT_IMPLEMENTED
 
 
-let atan varr = (map Scalar.atan varr)
+let erf_ ?out x = raise Owl_exception.NOT_IMPLEMENTED
 
 
-let asinh varr = (map Scalar.asinh varr)
+let erfc x = raise Owl_exception.NOT_IMPLEMENTED
 
 
-let acosh varr = (map Scalar.acosh varr)
+let erfc_ ?out x = raise Owl_exception.NOT_IMPLEMENTED
 
 
-let atanh varr = (map Scalar.atanh varr)
+let sqr x = map Scalar.sqr x
+
+
+let sqr_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.sqr out
+
+
+let sqrt x = map Scalar.sqrt x
+
+
+let sqrt_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.sqrt out
+
+
+let cbrt x = map Scalar.cbrt x
+
+
+let cbrt_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.cbrt out
+
+
+let log x = map Scalar.log x
+
+
+let log_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.log out
+
+
+let log2 x = map Scalar.log2 x
+
+
+let log2_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.log2 out
+
+
+let log10 x = map Scalar.log10 x
+
+
+let log10_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.log10 out
+
+
+let log1p x = map Scalar.log1p x
+
+
+let log1p_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.log1p out
+
+
+let exp x = map Scalar.exp x
+
+
+let exp_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.exp out
+
+
+let exp2 x = map Scalar.exp2 x
+
+
+let exp2_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.exp2 out
+
+
+let exp10 x = map Scalar.exp10 x
+
+
+let exp10_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.exp10 out
+
+
+let expm1 x = map Scalar.expm1 x
+
+
+let expm1_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.expm1 out
+
+
+let sin x = map Scalar.sin x
+
+
+let sin_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.sin out
+
+
+let cos x = map Scalar.cos x
+
+
+let cos_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.cos out
+
+
+let tan x = map Scalar.tan x
+
+
+let tan_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.tan out
+
+
+let sinh x = map Scalar.sinh x
+
+
+let sinh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.sinh out
+
+
+let cosh x = map Scalar.cosh x
+
+
+let cosh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.cosh out
+
+
+let tanh x = map Scalar.tanh x
+
+
+let tanh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.tanh out
+
+
+let asin x = map Scalar.asin x
+
+
+let asin_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.asin out
+
+
+let acos x = map Scalar.acos x
+
+
+let acos_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.acos out
+
+
+let atan x = map Scalar.atan x
+
+
+let atan_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.atan out
+
+
+let asinh x = map Scalar.asinh x
+
+
+let asinh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.asinh out
+
+
+let acosh x = map Scalar.acosh x
+
+
+let acosh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.acosh out
+
+
+let atanh x = map Scalar.atanh x
+
+
+let atanh_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.atanh out
 
 
 let sum_slices ?(axis=0) varr =
@@ -778,28 +1035,58 @@ let sum_slices ?(axis=0) varr =
       (Array.sub dims (axis + 1) (rank - axis - 1))
   in
   let row_sum = ref 0. in
-  begin
-    for j = 0 to num_cols - 1 do
-      row_sum := 0.;
-      for i = 0 to num_rows - 1 do
-        row_sum := !row_sum +. (Genarray.get varr_mat [|i; j|])
-      done;
-      Genarray.set result_vec [|j|] !row_sum
+
+  for j = 0 to num_cols - 1 do
+    row_sum := 0.;
+    for i = 0 to num_rows - 1 do
+      row_sum := !row_sum +. (Genarray.get varr_mat [|i; j|])
     done;
-    result_varr
-  end
+    Genarray.set result_vec [|j|] !row_sum
+  done;
+  result_varr
 
 
 (* -1. for negative numbers, 0 or (-0) for 0,
  1 for positive numbers, nan for nan*)
-let signum varr = (map Scalar.signum varr)
+let signum x = map Scalar.signum x
+
+
+let signum_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.signum out
 
 
 (* Apply 1 / (1 + exp (-x)) for each element x *)
-let sigmoid varr = (map Scalar.sigmoid varr)
+let sigmoid x = map Scalar.sigmoid x
 
 
-let relu varr = (map Scalar.relu varr)
+let sigmoid_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.sigmoid out
+
+
+let relu x = map Scalar.relu x
+
+
+let relu_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.relu out
+
+
+let softsign x = map Scalar.softsign x
+
+
+let softsign_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.softsign out
+
+
+let softplus x = map Scalar.softplus x
+
+
+let softplus_ ?out x =
+  let out = match out with Some o -> o | None -> x in
+  map_ Scalar.softplus out
 
 
 let _fold_left f a varr =
@@ -815,24 +1102,23 @@ let _fold_left f a varr =
 
 
 (* Min of all elements in the NDarray *)
-let min' varr =
-  let _kind = kind varr in
+let min' x =
+  let _kind = kind x in
   let _max_val = Owl_base_dense_common._max_val_elt _kind in
-  (_fold_left (Owl_base_dense_common._min_elt _kind) _max_val varr)
+  _fold_left (Owl_base_dense_common._min_elt _kind) _max_val x
 
 
 (* Max of all elements in the NDarray *)
-let max' varr =
-  let _kind = kind varr in
+let max' x =
+  let _kind = kind x in
   let _min_val = Owl_base_dense_common._min_val_elt _kind in
-  (_fold_left (Owl_base_dense_common._max_elt _kind) _min_val varr)
+  _fold_left (Owl_base_dense_common._max_elt _kind) _min_val x
 
-(* TODO: revise functions with float type to 'a *)
 
 (* Sum of all elements *)
-let sum' varr =
-  let _kind = kind varr in
-  _fold_left (Owl_base_dense_common._add_elt _kind) (Owl_const.zero _kind) varr
+let sum' x =
+  let _kind = kind x in
+  _fold_left (Owl_base_dense_common._add_elt _kind) (Owl_const.zero _kind) x
 
 
 (* Folding along a specified axis, aka reduction. The
@@ -842,9 +1128,12 @@ let sum' varr =
    o: x's strides, also y's slice size.
    x: source; y: shape of destination. Note that o <= n.
  *)
-let fold_along f m n o x ys nelem =
+let _fold_along ?out f m n o x ys nelem =
   let x = flatten x in
-  let y = create (kind x) ys nelem |> flatten in
+  let y = match out with
+    | Some o -> o |> flatten
+    | None   -> create (kind x) ys nelem |> flatten
+  in
   let idx = ref 0 in
   let idy = ref 0 in
   let incy = ref 0 in
@@ -863,19 +1152,37 @@ let fold_along f m n o x ys nelem =
 
 let sum ?axis x =
   let _kind = kind x in
-  let zero = Owl_base_dense_common._zero_val_elt _kind in
+  let zero = Owl_const.zero _kind in
   match axis with
   | Some a -> (
       let m, n, o, s = Owl_utils.reduce_params a x in
-      fold_along (Owl_base_dense_common._add_elt _kind) m n o x s zero
+      let _op = Owl_base_dense_common._add_elt _kind in
+      _fold_along _op m n o x s zero
     )
   | None   -> create (kind x) (Array.make 1 1) (sum' x)
+
+
+let sum_ ~out ~axis x =
+  let _kind = kind x in
+  let zero = Owl_const.zero _kind in
+  Genarray.fill out zero;
+  match axis with
+  | Some a -> (
+      let m, n, o, s = Owl_utils.reduce_params a x in
+      let _op = Owl_base_dense_common._add_elt _kind in
+      _fold_along _op ~out m n o x s zero
+      |> ignore
+    )
+  | None   -> (
+      let y = flatten out in
+      set y [|0|] (sum' x)
+    )
 
 
 let sum_reduce ?axis x =
   let _kind = kind x in
   let _dims = num_dims x in
-  let zero = Owl_base_dense_common._zero_val_elt _kind in
+  let zero = Owl_const.zero _kind in
   match axis with
   | Some a -> (
       let x_shape = shape x in
@@ -889,7 +1196,7 @@ let sum_reduce ?axis x =
         for i = 0 to Array.length dims' - 1 do
           if !flag = true then (
             let m, n, o, s = Owl_utils.reduce_params i !y in
-            y := fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s zero
+            y := _fold_along (Owl_base_dense_common._add_elt _kind) m n o !y s zero
           );
           flag := not !flag
         done;
@@ -907,21 +1214,53 @@ let min ?axis x =
   match axis with
   | Some a -> (
       let m, n, o, s = Owl_utils.reduce_params a x in
-      fold_along (Owl_base_dense_common._min_elt _kind) m n o x s max_val
+      _fold_along (Owl_base_dense_common._min_elt _kind) m n o x s max_val
     )
   | None   -> min' x |> create _kind [|1|]
 
 
-(* TODO: fix this *)
+let min_ ~out ~axis x =
+  let _kind = kind x in
+  let max_val = Owl_base_dense_common._max_val_elt _kind in
+  Genarray.fill out max_val;
+  match axis with
+  | Some a -> (
+      let m, n, o, s = Owl_utils.reduce_params a x in
+      let _op = Owl_base_dense_common._min_elt _kind in
+      _fold_along ~out _op m n o x s max_val
+      |> ignore
+    )
+  | None   -> (
+      let y = flatten out in
+      set y [|0|] (min' x)
+    )
+
+
 let max ?axis x =
   let _kind = kind x in
   let min_val = Owl_base_dense_common._min_val_elt _kind in
   match axis with
   | Some a -> (
       let m, n, o, s = Owl_utils.reduce_params a x in
-      fold_along (Owl_base_dense_common._max_elt _kind) m n o x s min_val
+      _fold_along (Owl_base_dense_common._max_elt _kind) m n o x s min_val
     )
   | None   -> max' x |> create _kind [|1|]
+
+
+let max_ ~out ~axis x =
+  let _kind = kind x in
+  let min_val = Owl_base_dense_common._min_val_elt _kind in
+  Genarray.fill out min_val;
+  match axis with
+  | Some a -> (
+      let m, n, o, s = Owl_utils.reduce_params a x in
+      _fold_along ~out (Owl_base_dense_common._max_elt _kind) m n o x s min_val
+      |> ignore
+    )
+  | None   -> (
+      let y = flatten out in
+      set y [|0|] (max' x)
+    )
 
 
 let l1norm' varr =
@@ -941,36 +1280,17 @@ let l2norm' varr =
   (Scalar.sqrt l2norm_sqr_val)
 
 
-(* scalar_pow a varr computes the power of scalar to each element of varr *)
-let scalar_pow a varr =
-  let scalar_pow_fun = (fun x -> (a ** x)) in
-  (map scalar_pow_fun varr)
-
-
-(* Raise each element to power a *)
-let pow_scalar varr a =
-  let pow_scalar_fun = (fun x -> (x ** a)) in
-  (map pow_scalar_fun varr)
-
-
-let scalar_atan2 a varr =
-  let scalar_atan2_fun = (fun x -> (Scalar.atan2 a x)) in
-  (map scalar_atan2_fun varr)
-
-
-let atan2_scalar varr a =
-  let atan2_scalar_fun = (fun x -> (Scalar.atan2 x a)) in
-  (map atan2_scalar_fun varr)
-
-
-let _broadcasted_op varr_a varr_b op_fun =
+let _broadcasted_op ?out varr_a varr_b op_fun =
   let (dims_a, dims_b, dims_c) =
     _get_broadcasted_dims (shape varr_a) (shape varr_b)
   in
   let _kind = kind varr_a in
   let varr_a = reshape varr_a dims_a in
   let varr_b = reshape varr_b dims_b in
-  let varr_c = empty _kind dims_c in
+  let varr_c = match out with
+    | Some out -> out
+    | None     -> empty _kind dims_c
+  in
   let ind = Array.make (Array.length dims_c) 0 in
   let should_stop = ref false in
   begin
@@ -986,90 +1306,342 @@ let _broadcasted_op varr_a varr_b op_fun =
   end
 
 
-let add varr_a varr_b =
-  let _op = Owl_base_dense_common._add_elt (kind varr_a) in
-  _broadcasted_op varr_a varr_b _op
+let add x y =
+  let _op = Owl_base_dense_common._add_elt (kind x) in
+  _broadcasted_op x y _op
 
 
-let sub varr_a varr_b =
-  let _op = Owl_base_dense_common._sub_elt (kind varr_a) in
-  _broadcasted_op varr_a varr_b _op
+let add_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._add_elt (kind x) in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op ~out x y _op
+  |> ignore
 
 
-let mul varr_a varr_b =
-  let _op = Owl_base_dense_common._mul_elt (kind varr_a) in
-  _broadcasted_op varr_a varr_b _op
+let sub x y =
+  let _op = Owl_base_dense_common._sub_elt (kind x) in
+  _broadcasted_op x y _op
 
 
-let div varr_a varr_b =
-  let _op = Owl_base_dense_common._div_elt (kind varr_a) in
-  _broadcasted_op varr_a varr_b _op
+let sub_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._sub_elt (kind x) in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op ~out x y _op
+  |> ignore
 
 
-let atan2 varr_a varr_b = (_broadcasted_op varr_a varr_b (Scalar.atan2))
+let mul x y =
+  let _op = Owl_base_dense_common._mul_elt (kind x) in
+  _broadcasted_op x y _op
 
 
-let pow varr_a varr_b = (_broadcasted_op varr_a varr_b ( ** ))
+let mul_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._mul_elt (kind x) in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op ~out x y _op
+  |> ignore
 
 
-let add_scalar varr a =
-  let _op = Owl_base_dense_common._add_elt (kind varr) in
-  let add_scalar_fun = (fun x -> _op x a) in
-  (map add_scalar_fun varr)
+let div x y =
+  let _op = Owl_base_dense_common._div_elt (kind x) in
+  _broadcasted_op x y _op
 
 
-let sub_scalar varr a =
-  let _op = Owl_base_dense_common._sub_elt (kind varr) in
-  let sub_scalar_fun = (fun x -> _op x a) in
-  (map sub_scalar_fun varr)
+let div_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._div_elt (kind x) in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op ~out x y _op
+  |> ignore
 
 
-let mul_scalar varr a =
-  let _op = Owl_base_dense_common._mul_elt (kind varr) in
-  let mul_scalar_fun = (fun x -> _op x a) in
-  (map mul_scalar_fun varr)
+let atan2 x y = _broadcasted_op x y (Scalar.atan2)
 
 
-let div_scalar varr a =
-  let _op = Owl_base_dense_common._div_elt (kind varr) in
-  let div_scalar_fun = (fun x -> _op x a) in
-  (map div_scalar_fun varr)
+let atan2_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op x y (Scalar.atan2)
+  |> ignore
 
 
-let clip_by_value ?(amin=Pervasives.min_float) ?(amax=Pervasives.max_float) varr =
-  let clip_by_val_fun = (fun x -> Pervasives.min amax (Pervasives.max amin x)) in
-  (map clip_by_val_fun varr)
+let hypot x y = _broadcasted_op x y (Scalar.hypot)
+
+
+let hypot_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op x y (Scalar.hypot)
+  |> ignore
+
+
+let pow x y = _broadcasted_op x y ( ** )
+
+
+let pow_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._div_elt (kind x) in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op ~out x y _op
+  |> ignore
+
+
+let fmod x y = _broadcasted_op x y (Scalar.fmod)
+
+
+let fmod_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op x y (Scalar.fmod)
+  |> ignore
+
+
+let min2 x y =
+  let _op = Owl_base_dense_common._min_elt (kind x) in
+  _broadcasted_op x y _op
+
+
+let min2_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._min_elt (kind x) in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op ~out x y _op
+  |> ignore
+
+
+let max2 x y =
+  let _op = Owl_base_dense_common._max_elt (kind x) in
+  _broadcasted_op x y _op
+
+
+let max2_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._max_elt (kind x) in
+  let sx = shape x in
+  let sy = shape y in
+  let so = Owl_utils_infer_shape.broadcast1 sx sy in
+  assert (shape out = so);
+  _broadcasted_op ~out x y _op
+  |> ignore
+
+
+let add_scalar x a =
+  let _op = Owl_base_dense_common._add_elt (kind x) in
+  map (fun y -> _op y a) x
+
+
+let add_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._add_elt (kind x) in
+  map_ (fun y -> _op y a) out
+
+
+let sub_scalar x a =
+  let _op = Owl_base_dense_common._sub_elt (kind x) in
+  map (fun y -> _op y a) x
+
+
+let sub_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._sub_elt (kind x) in
+  map_ (fun y -> _op y a) out
+
+
+let mul_scalar x a =
+  let _op = Owl_base_dense_common._mul_elt (kind x) in
+  map (fun y -> _op y a) x
+
+
+let mul_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._mul_elt (kind x) in
+  map_ (fun y -> _op y a) out
+
+
+let div_scalar x a =
+  let _op = Owl_base_dense_common._div_elt (kind x) in
+  map (fun y -> _op y a) x
+
+
+let div_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._div_elt (kind x) in
+  map_ (fun y -> _op y a) out
+
+
+let pow_scalar x a =
+  let _op = Owl_base_dense_common._pow_elt (kind x) in
+  map (fun y -> _op y a) x
+
+
+let pow_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._pow_elt (kind x) in
+  map_ (fun y -> _op y a) out
+
+
+let atan2_scalar x a =
+  let _op = Scalar.atan2 in
+  map (fun y -> _op y a) x
+
+
+let atan2_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Scalar.atan2 in
+  map_ (fun y -> _op y a) out
+
+
+let fmod_scalar x a =
+  let _op = Scalar.fmod in
+  map (fun y -> _op y a) x
+
+
+let fmod_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Scalar.fmod in
+  map_ (fun y -> _op y a) out
 
 
 (* TODO *)
 let fma x y z = failwith "Owl_base_dense_ndarray_generic:fma: not implemented"
 
 
-(* Addition is commutative *)
-let scalar_add a varr = (add_scalar varr a)
+let scalar_add a x =
+  let _op = Owl_base_dense_common._add_elt (kind x) in
+  map (fun y -> _op a y) x
 
 
-let scalar_sub a varr =
-  let _op = Owl_base_dense_common._sub_elt (kind varr) in
-  let scalar_sub_fun = (fun x -> _op a x) in
-  (map scalar_sub_fun varr)
+let scalar_add_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._add_elt (kind x) in
+  map_ (fun y -> _op a y) out
 
 
-(* Multiplication is commutative *)
-let scalar_mul a varr = (mul_scalar varr a)
+let scalar_sub a x =
+  let _op = Owl_base_dense_common._sub_elt (kind x) in
+  map (fun y -> _op a y) x
 
 
-let scalar_div a varr =
-  let _op = Owl_base_dense_common._div_elt (kind varr) in
-  let scalar_div_fun = (fun x -> _op a x) in
-  (map scalar_div_fun varr)
+let scalar_sub_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._sub_elt (kind x) in
+  map_ (fun y -> _op a y) out
 
 
-let clip_by_l2norm clip_norm varr =
-  let l2norm_val = l2norm' varr in
-  if l2norm_val > clip_norm
-  then mul_scalar varr (clip_norm /. l2norm_val)
-  else varr
+let scalar_mul a x =
+  let _op = Owl_base_dense_common._mul_elt (kind x) in
+  map (fun y -> _op a y) x
+
+
+let scalar_mul_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._mul_elt (kind x) in
+  map_ (fun y -> _op a y) out
+
+
+let scalar_div a x =
+  let _op = Owl_base_dense_common._div_elt (kind x) in
+  map (fun y -> _op a y) x
+
+
+let scalar_div_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._div_elt (kind x) in
+  map_ (fun y -> _op a y) out
+
+
+let scalar_pow a x =
+  let _op = Owl_base_dense_common._pow_elt (kind x) in
+  map (fun y -> _op a y) x
+
+
+let scalar_pow_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Owl_base_dense_common._pow_elt (kind x) in
+  map_ (fun y -> _op a y) out
+
+
+let scalar_atan2 a x =
+  let _op =Scalar.atan2 in
+  map (fun y -> _op a y) x
+
+
+let scalar_atan2_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Scalar.atan2 in
+  map_ (fun y -> _op a y) out
+
+
+let scalar_fmod a x =
+  let _op =Scalar.fmod in
+  map (fun y -> _op a y) x
+
+
+let scalar_fmod_ ?out a x =
+  let out = match out with Some o -> o | None -> x in
+  let _op = Scalar.fmod in
+  map_ (fun y -> _op a y) out
+
+
+let clip_by_value ?(amin=Pervasives.min_float) ?(amax=Pervasives.max_float) x =
+  let _op = (fun y -> Pervasives.min amax (Pervasives.max amin y)) in
+  map _op x
+
+
+let clip_by_l2norm clip_norm x =
+  let l2norm_val = l2norm' x in
+  if l2norm_val > clip_norm then
+    mul_scalar x (clip_norm /. l2norm_val)
+  else x
+
+
+let softmax ?(axis=(-1)) x =
+  let x = copy x in
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
+  sub_ ~out:x x (max ~axis x);
+  exp_ ~out:x x;
+  let a = sum ~axis x in
+  div_ ~out:x x a;
+  x
+
+
+let softmax_ ?out ?(axis=(-1)) x =
+  let out = match out with Some o -> o | None -> x in
+  let axis = Owl_utils.adjust_index axis (num_dims x) in
+  sub_ ~out x (max ~axis x);
+  exp_ ~out x;
+  let a = sum ~axis x in
+  div_ ~out x a
 
 
 (* Comparison functions *)
@@ -1079,23 +1651,21 @@ let clip_by_l2norm clip_norm varr =
 let _compare_util_shortcircuit varr_a varr_b comp_fun =
   let n = numel varr_a in
   let m = numel varr_b in
-  if n != m
-  then false
+  if n != m then
+    false
   else
     let varr_a = flatten varr_a |> array1_of_genarray in
     let varr_b = flatten varr_b |> array1_of_genarray in
     let all_ok = ref true in
-    let i = ref 0 in
-    begin
+    let i = ref 0 in (
       while !all_ok && (!i < n) do
         let x = Array1.unsafe_get varr_a !i in
         let y = Array1.unsafe_get varr_b !i in
-        if (not (comp_fun x y))
-        then all_ok := false;
+        if (not (comp_fun x y)) then all_ok := false;
         i := !i + 1
       done;
       !all_ok
-    end
+    )
 
 
 let approx_equal ?eps varr_a varr_b =
@@ -1107,28 +1677,28 @@ let approx_equal ?eps varr_a varr_b =
   (_compare_util_shortcircuit varr_a varr_b approx_equal_fun)
 
 
-let equal varr_a varr_b =
-  (_compare_util_shortcircuit varr_a varr_b Pervasives.(=))
+let equal x y =
+  (_compare_util_shortcircuit x y Pervasives.(=))
 
 
-let not_equal varr_a varr_b =
-  (_compare_util_shortcircuit varr_a varr_b Pervasives.(<>))
+let not_equal x y =
+  (_compare_util_shortcircuit x y Pervasives.(<>))
 
 
-let less varr_a varr_b =
-  (_compare_util_shortcircuit varr_a varr_b Pervasives.(<))
+let less x y =
+  (_compare_util_shortcircuit x y Pervasives.(<))
 
 
-let greater varr_a varr_b =
-  (_compare_util_shortcircuit varr_a varr_b Pervasives.(>))
+let greater x y =
+  (_compare_util_shortcircuit x y Pervasives.(>))
 
 
-let less_equal varr_a varr_b =
-  (_compare_util_shortcircuit varr_a varr_b Pervasives.(<=))
+let less_equal x y =
+  (_compare_util_shortcircuit x y Pervasives.(<=))
 
 
-let greater_equal varr_a varr_b =
-  (_compare_util_shortcircuit varr_a varr_b Pervasives.(>=))
+let greater_equal x y =
+  (_compare_util_shortcircuit x y Pervasives.(>=))
 
 
 (** Return true if for all elements of a comp_fun (xa, bb) == true, false otherwise.
@@ -1137,8 +1707,7 @@ let _compare_util_shortcircuit_scalar varr_a b comp_fun =
   let n = numel varr_a in
   let varr_a = flatten varr_a |> array1_of_genarray in
   let all_ok = ref true in
-  let i = ref 0 in
-  begin
+  let i = ref 0 in (
     while !all_ok && (!i < n) do
       let x = Array1.unsafe_get varr_a !i in
       if (not (comp_fun x b))
@@ -1146,7 +1715,7 @@ let _compare_util_shortcircuit_scalar varr_a b comp_fun =
       i := !i + 1
     done;
     !all_ok
-  end
+  )
 
 
 let approx_equal_scalar ?eps varr_a b =
@@ -1158,136 +1727,225 @@ let approx_equal_scalar ?eps varr_a b =
   (_compare_util_shortcircuit_scalar varr_a b approx_equal_scalar_fun)
 
 
-let equal_scalar varr_a b =
-  (_compare_util_shortcircuit_scalar varr_a b Pervasives.(=))
+let equal_scalar x a =
+  (_compare_util_shortcircuit_scalar x a Pervasives.(=))
 
 
-let not_equal_scalar varr_a b =
-  (_compare_util_shortcircuit_scalar varr_a b Pervasives.(<>))
+let not_equal_scalar x a =
+  (_compare_util_shortcircuit_scalar x a Pervasives.(<>))
 
 
-let less_scalar varr_a b =
-  (_compare_util_shortcircuit_scalar varr_a b Pervasives.(<))
+let less_scalar x a =
+  (_compare_util_shortcircuit_scalar x a Pervasives.(<))
 
 
-let greater_scalar varr_a b =
-  (_compare_util_shortcircuit_scalar varr_a b Pervasives.(>))
+let greater_scalar x a =
+  (_compare_util_shortcircuit_scalar x a Pervasives.(>))
 
 
 let less_equal_scalar varr_a b =
   (_compare_util_shortcircuit_scalar varr_a b Pervasives.(<=))
 
 
-let greater_equal_scalar varr_a b =
-  (_compare_util_shortcircuit_scalar varr_a b Pervasives.(>=))
+let greater_equal_scalar x a =
+  (_compare_util_shortcircuit_scalar x a Pervasives.(>=))
 
 
 (* Broadcasted operation, return an array with values of 1
    if (one_fun elem_from_a elem_from_b) == true, 0 otherwise *)
-let _elt_compare_util varr_a varr_b one_fun =
-  let _kind = kind varr_a in
+let _make_elt_compare_fun ?out x y cmp_fun =
+  let _kind = kind x in
   let c0 = Owl_const.zero _kind in
   let c1 = Owl_const.one _kind in
-  let comp_fun = (fun x y -> if (one_fun x y) then c1 else c0) in
-  (_broadcasted_op varr_a varr_b comp_fun)
+  let _func a b = if cmp_fun a b then c1 else c0 in
+  _func
 
 
-let elt_equal varr_a varr_b =
-  (_elt_compare_util varr_a varr_b Pervasives.(=))
+let elt_equal x y =
+  let _func = _make_elt_compare_fun x y Pervasives.(=) in
+  _broadcasted_op x y _func
 
 
-let approx_elt_equal ?eps varr_a varr_b =
+let elt_equal_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _func = _make_elt_compare_fun x y Pervasives.(=) in
+  _broadcasted_op ~out x y _func
+
+
+let approx_elt_equal ?eps x y =
   let eps = match eps with
     | Some eps -> eps
     | None     -> Owl_utils.eps Float32
   in
   let approx_equal_fun = (fun x y -> (Scalar.abs (Scalar.sub x y)) < eps) in
-  (_elt_compare_util varr_a varr_b approx_equal_fun)
+  let _func = _make_elt_compare_fun x y approx_equal_fun in
+  _broadcasted_op x y _func
 
 
-let elt_not_equal varr_a varr_b =
-  (_elt_compare_util varr_a varr_b Pervasives.(<>))
+let elt_not_equal x y =
+  let _func = _make_elt_compare_fun x y Pervasives.(<>) in
+  _broadcasted_op x y _func
 
 
-let elt_less varr_a varr_b =
-  (_elt_compare_util varr_a varr_b Pervasives.(<))
+let elt_not_equal_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _func = _make_elt_compare_fun x y Pervasives.(<>) in
+  _broadcasted_op ~out x y _func
 
 
-let elt_greater varr_a varr_b =
-  (_elt_compare_util varr_a varr_b Pervasives.(>))
+let elt_less x y =
+  let _func = _make_elt_compare_fun x y Pervasives.(<) in
+  _broadcasted_op x y _func
 
 
-let elt_less_equal varr_a varr_b =
-  (_elt_compare_util varr_a varr_b Pervasives.(<=))
+let elt_less_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _func = _make_elt_compare_fun x y Pervasives.(<) in
+  _broadcasted_op ~out x y _func
 
 
-let elt_greater_equal varr_a varr_b =
-  (_elt_compare_util varr_a varr_b Pervasives.(>=))
+let elt_greater x y =
+  let _func = _make_elt_compare_fun x y Pervasives.(>) in
+  _broadcasted_op x y _func
+
+
+let elt_greater_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _func = _make_elt_compare_fun x y Pervasives.(>) in
+  _broadcasted_op ~out x y _func
+
+
+let elt_less_equal x y =
+  let _func = _make_elt_compare_fun x y Pervasives.(<=) in
+  _broadcasted_op x y _func
+
+
+let elt_less_equal_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _func = _make_elt_compare_fun x y Pervasives.(<=) in
+  _broadcasted_op ~out x y _func
+
+
+let elt_greater_equal x y =
+  let _func = _make_elt_compare_fun x y Pervasives.(>=) in
+  _broadcasted_op x y _func
+
+
+let elt_greater_equal_ ?out x y =
+  let out = match out with Some o -> o | None -> x in
+  let _func = _make_elt_compare_fun x y Pervasives.(>=) in
+  _broadcasted_op ~out x y _func
 
 
 (* Util function, return an array with values of 1
     if (one_fun elem_from_a b) == true, 0 otherwise *)
-let _elt_compare_scalar_util varr_a one_fun =
-  let _kind = kind varr_a in
+let _make_elt_compare_scalar x cmp_fun =
+  let _kind = kind x in
   let c0 = Owl_const.zero _kind in
   let c1 = Owl_const.one _kind in
-  let comp_fun = (fun x -> if one_fun x then c1 else c0) in
-  (map comp_fun varr_a)
+  let _func a = if cmp_fun a then c1 else c0 in
+  _func
 
 
-let elt_equal_scalar varr_a b =
-  let equal_scalar_fun = (fun x -> x = b) in
-  (_elt_compare_scalar_util varr_a equal_scalar_fun)
+let elt_equal_scalar x a =
+  let cmp_fun = (fun y -> y = a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
 
 
-let approx_elt_equal_scalar ?eps varr_a b =
+let elt_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let cmp_fun = (fun y -> y = a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map_ _func out
+
+
+let approx_elt_equal_scalar ?eps x a =
   let eps = match eps with
     | Some eps -> eps
     | None     -> Owl_utils.eps Float32
   in
-  let approx_equal_scalar_fun = (fun x -> (Scalar.abs (Scalar.sub x b)) < eps) in
-  (_elt_compare_scalar_util varr_a approx_equal_scalar_fun)
+  let cmp_fun = (fun y -> (Scalar.abs (Scalar.sub y a)) < eps) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
 
 
-let elt_not_equal_scalar varr_a b =
-  let not_equal_scalar_fun = (fun x -> x <> b) in
-  (_elt_compare_scalar_util varr_a not_equal_scalar_fun)
+let elt_not_equal_scalar x a =
+  let cmp_fun = (fun y -> y <> a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
 
 
-let elt_less_scalar varr_a b =
-  let less_scalar_fun = (fun x -> x < b) in
-  (_elt_compare_scalar_util varr_a less_scalar_fun)
+let elt_not_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let cmp_fun = (fun y -> y <> a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map_ _func out
 
 
-let elt_greater_scalar varr_a b =
-  let greater_scalar_fun = (fun x -> x > b) in
-  (_elt_compare_scalar_util varr_a greater_scalar_fun)
+let elt_less_scalar x a =
+  let cmp_fun = (fun y -> y < a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
 
 
-let elt_less_equal_scalar varr_a b =
-  let less_equal_scalar_fun = (fun x -> x <= b) in
-  (_elt_compare_scalar_util varr_a less_equal_scalar_fun)
+let elt_less_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let cmp_fun = (fun y -> y < a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map_ _func out
 
 
-let elt_greater_equal_scalar varr_a b =
-  let greater_equal_scalar_fun = (fun x -> x > b) in
-  (_elt_compare_scalar_util varr_a greater_equal_scalar_fun)
+let elt_greater_scalar x a =
+  let cmp_fun = (fun y -> y > a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
 
 
-let exists f varr =
-  let n = numel varr in
-  let varr = flatten varr |> array1_of_genarray in
+let elt_greater_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let cmp_fun = (fun y -> y > a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map_ _func out
+
+
+let elt_less_equal_scalar x a =
+  let cmp_fun = (fun y -> y <= a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
+
+
+let elt_less_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let cmp_fun = (fun y -> y <= a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map_ _func out
+
+
+let elt_greater_equal_scalar x a =
+  let cmp_fun = (fun y -> y >= a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func x
+
+
+let elt_greater_equal_scalar_ ?out x a =
+  let out = match out with Some o -> o | None -> x in
+  let cmp_fun = (fun y -> y >= a) in
+  let _func = _make_elt_compare_scalar x cmp_fun in
+  map _func out
+
+
+let exists f x =
+  let n = numel x in
+  let x = flatten x |> array1_of_genarray in
   let found = ref false in
   let i = ref 0 in
-  begin
-    while (!i < n) && (not !found) do
-      let x = Array1.unsafe_get varr !i in
-      if f x
-      then found := true;
-      i := !i + 1
-    done;
-    !found
-  end
+  while (!i < n) && (not !found) do
+    let a = Array1.unsafe_get x !i in
+    if f a then found := true;
+    i := !i + 1
+  done;
+  !found
 
 
 let not_exists f varr = (not (exists f varr))

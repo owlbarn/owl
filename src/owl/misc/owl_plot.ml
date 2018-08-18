@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -503,6 +503,9 @@ let set_output h s =
   match (List.mem x _supported_device) with
   | true  -> h.output <- s
   | false -> Owl_log.error "unsupported file type."
+
+
+let get_output h = h.output
 
 
 let set_title h s = (h.pages.(h.current_page)).title <- s

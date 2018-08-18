@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
@@ -49,7 +49,7 @@ module Make
       | Some b -> b
       | None   -> const_elt "sequential_step" (A.float_to_elt 1.)
     in
-    make_then_connect ~shape:[|Some shape|] Sequential [|elt_to_node a; elt_to_node b|]
+    make_then_connect ~shape:[|Some shape|] (Sequential shape) [|elt_to_node a; elt_to_node b|]
     |> node_to_arr
 
   let uniform ?a ?b shape =
@@ -73,11 +73,16 @@ module Make
       | Some b -> b
       | None   -> const_elt "sequential_step" (A.float_to_elt 1.)
     in
-    make_then_connect ~shape:[|Some shape|] Gaussian [|elt_to_node a; elt_to_node b|]
+    make_then_connect ~shape:[|Some shape|] (Gaussian shape) [|elt_to_node a; elt_to_node b|]
     |> node_to_arr
 
-  let bernoulli ?(p=0.5) shape =
-    make_node ~shape:[|Some shape|] (Bernoulli (p, shape)) |> node_to_arr
+  let bernoulli ?p shape =
+    let p = match p with
+      | Some p -> p
+      | None   -> const_elt "bernoulli_p" (A.float_to_elt 0.5)
+    in
+    make_then_connect ~shape:[|Some shape|] (Bernoulli shape) [|elt_to_node p|]
+    |> node_to_arr
 
   let init shape f =
     make_node ~shape:[|Some shape|] (Init (shape, f)) |> node_to_arr

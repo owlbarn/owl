@@ -1,5 +1,5 @@
 /*
- * OWL - an OCaml numerical library for scientific computing
+ * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
@@ -75,7 +75,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
       }
     }
     /* Increase index */
-    ofsx += shape_x[HD];
+    ofsx += slice_x[HD];
     ofsy += stride_y[HD - 1] * reps[HD - 1];
     for (int j = HD - 1; j > 0; --j) {
       int c = counter[j];
@@ -111,7 +111,7 @@ CAMLprim value FUNCTION (stub, repeat_native) (
         if (c + 1 == block_num[j + 1]) {
           ofsy += stride_y[j] * (reps[j] - 1);
         }
-        counter[j] = (c + 1 == block_num[j] ? 0 : c + 1);
+        counter[j] = (c + 1 == block_num[j + 1] ? 0 : c + 1);
       }
     }
   }
@@ -236,7 +236,7 @@ CAMLprim value FUNCTION (stub, tile_native) (
       ofsy_sub += slice_sz;
     }
     /* Increase index */
-    ofsx += shape_x[HD];
+    ofsx += slice_x[HD];
     ofsy += incr_hd;
     for (int j = HD - 1; j > 0; --j) {
       int c = counter[j];
