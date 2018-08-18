@@ -34,7 +34,6 @@ CAMLprim value FUN4(value vN, value vX, value vY)
   start_y = Y_data;
 
   if (N >= OWL_OPENMP_THRESHOLD) {
-    omp_set_num_threads(2);
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < N; i++) {
       NUMBER x = *(start_x + i);
@@ -195,7 +194,6 @@ CAMLprim value FUN15(value vN, value vX, value vY, value vZ)
   start_z = Z_data;
 
   if (N >= OWL_OPENMP_THRESHOLD) {
-    omp_set_num_threads(2);
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < N; i++) {
       MAPFN((start_x + i), (start_y + i), (start_z + i));
@@ -329,7 +327,6 @@ CAMLprim value FUN19_IMPL(
   start_y = Y_data + ofsy;
 
   if (N >= OWL_OPENMP_THRESHOLD) {
-    omp_set_num_threads(2);
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < N; i++) {
       MAPFN((start_x + i * incx), (start_y + i * incy));

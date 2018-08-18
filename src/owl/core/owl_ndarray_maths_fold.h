@@ -239,8 +239,6 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 
   NUMBER  *start_x = X_data;
   NUMBER1 *start_y = Y_data;
-  NUMBER  *start_x0 = start_x;
-  NUMBER1 *start_y0 = start_y;
   int incy = 0;
 
   // case 1: optimisation
