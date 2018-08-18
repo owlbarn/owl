@@ -308,7 +308,7 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 
   int strides[ndim];
   c_ndarray_stride(Y, strides);
-  for (int i = frd; i < ndim; i+=2) {
+  for (int i = frd; i < ndim; i += 2) {
     strides[i] = 0;
   }
 
