@@ -6076,21 +6076,22 @@ let sum_reduce ?axis x =
         _owl_sum _kind (numel x) x |> create _kind (Array.make _dims 1)
       )
       else (
-        (* TODO: optimise with C implementation *)
-        let y = ref (reshape x dims') in
-        let flag = ref (Array.mem 0 a) in
-        for i = 0 to Array.length dims' - 1 do
-          if !flag = true then (
-            let m, n, o, s = Owl_utils.reduce_params i !y in
-            let z = zeros _kind s in
-            _owl_sum_along _kind m n o !y z;
-            y := z
-          );
-          flag := not !flag
+        (* first dimension to be reduced *)
+        let frd = if (Array.mem 0 a) then 0 else 1 in
+        let ys_sqz = Array.copy dims' in
+        let idx = ref frd in
+        while !idx < Array.length dims' do
+          ys_sqz.(!idx) <- 1;
+          idx := !idx + 2
         done;
-        let y_shape = Array.copy x_shape in
-        Array.iter (fun j -> y_shape.(j) <- 1) a;
-        reshape !y y_shape
+        let y = zeros _kind ys_sqz in
+
+        let xs_sqz = dims' |> Array.map Int64.of_int
+          |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+        _owl_sum_reduce _kind x y (numel x) xs_sqz frd;
+
+        let y_shape = Owl_utils_infer_shape.reduce x_shape a in
+        reshape y y_shape
       )
     )
   | None   ->
