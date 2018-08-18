@@ -1520,8 +1520,7 @@ external owl_uint16_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> 
 external owl_int32_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> (int64, 'c) owl_arr -> int -> unit = "int32_sum_reduce"
 external owl_int64_sum_reduce : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> (int64, 'c) owl_arr -> int -> unit = "int64_sum_reduce"
 
-let _owl_sum_reduce : type a b. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr
-  -> int -> (int64, 'c) owl_arr-> int -> unit = function
+let _owl_sum_reduce : type a b. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr -> int -> (int64, 'c) owl_arr-> int -> unit = function
   | Float32        -> owl_float32_sum_reduce
   | Float64        -> owl_float64_sum_reduce
   | Complex32      -> owl_complex32_sum_reduce

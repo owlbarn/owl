@@ -286,6 +286,8 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 
 #endif /* FUN26 */
 
+
+// function specifically for folding along multiple axes
 #ifdef FUN30
 
 CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
@@ -328,20 +330,20 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
   int iy = 0;
   int cnt = 0;
 
-  for (int ix = 0; ix < N; ) {
+  for (int ix = 0; ix < N;) {
     if (y_step == 0) {
       /* Case 1: last dimension not to be reduced */
       for (int k = 0; k < innersize; k++) {
-        ACCFN((x + ix + k), (y + iy + k));
+        ACCFN(y[iy+k], x[ix+k]);
       }
     }
     else {
       /* Case 2: last dimension to be reduced */
       INIT;
       for (int k = 0; k < innersize; k++) {
-        ACCVAL(acc, x[ix + k]);
+        ACCFN(acc, x[ix + k]);
       }
-      ACCVAL(y[iy], acc);
+      ACCFN(y[iy], acc);
     }
 
     ix += innersize;
@@ -349,10 +351,10 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
     cnt++;
 
     if (cnt == loopsize) {
-      iy  = 0;
+      iy = 0;
       cnt = 0;
       int residual;
-      int iterindex   = ix;
+      int iterindex = ix;
       int pre_iteridx = ix;
 
       for (int i = ndim - 1; i >= 0; i--) {
@@ -371,6 +373,7 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 
 #endif /* FUN30 */
 
+
 #undef NUMBER
 #undef NUMBER1
 #undef CHECKFN
@@ -378,7 +381,6 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 #undef AFCHKFN
 #undef COPYNUM
 #undef ACCFN
-#undef ACCVAL
 #undef INIT
 #undef FUN5
 #undef FUN6
