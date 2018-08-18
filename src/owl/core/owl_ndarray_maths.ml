@@ -1526,7 +1526,7 @@ let _owl_sum_reduce : type a b. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr 
   | Complex32      -> owl_complex32_sum_reduce
   | Complex64      -> owl_complex64_sum_reduce
   | Int8_signed    -> owl_int8_sum_reduce
-  | Int8_unsigned  -> owl_int16_sum_reduce
+  | Int8_unsigned  -> owl_uint8_sum_reduce
   | Int16_signed   -> owl_int16_sum_reduce
   | Int16_unsigned -> owl_uint16_sum_reduce
   | Int32          -> owl_int32_sum_reduce
