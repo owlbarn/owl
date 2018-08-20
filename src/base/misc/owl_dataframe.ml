@@ -545,11 +545,17 @@ let get_slice_by_name slice x =
   let row_slice = Array.of_list (fst slice) in
   let col_slice = Array.of_list (snd slice) in
   let shp_x = [|row_num x; col_num x|] in
-  let _tmp0 = Owl_base_slicing.check_slice_definition [| R_ row_slice |] shp_x in
-  let row_slice = (function R_ s -> s | _ -> failwith "get_slice: unsupported") _tmp0.(0) in
+  let refmt = Owl_base_slicing.check_slice_definition [| R_ row_slice |] shp_x in
+  let row_slice = (function R_ s -> s | _ -> failwith "get_slice: unsupported") refmt.(0) in
+
+  let col_slice =
+    if Array.length col_slice = 0 then get_heads x
+    else col_slice
+  in
   let data = Array.map (slice_series row_slice) (get_cols_by_name x col_slice) in
   let used = length_series data.(0) in
   let head = Hashtbl.create (Array.length col_slice) in
+
   Array.iteri (fun i s -> Hashtbl.add head s i) col_slice;
   { data; head; used; size = used }
 
