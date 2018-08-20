@@ -132,6 +132,14 @@ let slice_series slice = function
   | Any_Series      -> Any_Series
 
 
+let argsort_series = function
+  | Bool_Series c   -> Owl_utils_array.argsort Pervasives.compare c
+  | Int_Series c    -> Owl_utils_array.argsort Pervasives.compare c
+  | Float_Series c  -> Owl_utils_array.argsort Pervasives.compare c
+  | String_Series c -> Owl_utils_array.argsort Pervasives.compare c
+  | Any_Series      -> [||]
+
+
 let remove_ith_elt i = function
   | Bool_Series c   -> Bool_Series (Owl_utils_array.remove c i)
   | Int_Series c    -> Int_Series (Owl_utils_array.remove c i)
@@ -386,6 +394,20 @@ let copy x =
   { data; head; used; size }
 
 
+let copy_struct x =
+  let head = Hashtbl.copy x.head in
+  let used = 0 in
+  let size = 0 in
+  let data = Array.map (function
+    | Bool_Series c   -> Bool_Series [||]
+    | Int_Series c    -> Int_Series [||]
+    | Float_Series c  -> Float_Series [||]
+    | String_Series c -> String_Series [||]
+    | Any_Series      -> Any_Series
+  ) x.data in
+  { data; head; used; size }
+
+
 let reset x =
   x.used <- 0;
   x.size <- 0;
@@ -532,8 +554,21 @@ let tail n x =
   get_slice [[-n;-1];[]] x
 
 
-(* TODO *)
-let sort ?(inc=true) x head = ()
+let sort_by_name ?(inc=true) x head =
+  let series = get_col_by_name x head in
+  let indices = argsort_series series in
+  if inc = false then Owl_utils_array.reverse indices;
+  (* TODO: can be optimised by only copy structure *)
+  let y = copy_struct x in
+  Array.iter (fun i ->
+    get_row x i |> append_row y
+  ) indices;
+  y
+
+
+let sort ?inc x col_idx =
+  let head = (get_heads x).(col_idx) in
+  sort_by_name ?inc x head
 
 
 let guess_separator lines =
