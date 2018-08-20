@@ -558,7 +558,6 @@ let sort_by_name ?(inc=true) x head =
   let series = get_col_by_name x head in
   let indices = argsort_series series in
   if inc = false then Owl_utils_array.reverse indices;
-  (* TODO: can be optimised by only copy structure *)
   let y = copy_struct x in
   Array.iter (fun i ->
     get_row x i |> append_row y
