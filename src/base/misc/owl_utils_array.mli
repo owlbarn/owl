@@ -78,6 +78,12 @@ val mem : 'a -> 'a array -> bool
 val memq : 'a -> 'a array -> bool
 (** Refer to OCaml native array. *)
 
+val argsort : ('a -> 'a -> int) -> 'a array -> int array
+(**
+``argsort cmp x`` sorts ``x`` according to the compare function ``cmp`` and
+returns the corresponding indices.
+ *)
+
 val sort : ('a -> 'a -> int) -> 'a array -> unit
 (** Refer to OCaml native array. *)
 
@@ -147,6 +153,9 @@ val remove : 'a array -> int -> 'a array
 
 val replace : int -> int -> 'a array -> 'a array -> 'a array
 (** TODO *)
+
+val reverse : 'a array -> unit
+(** ``reverse x`` reverse the elements in ``x`` in place. *)
 
 val mapi : (int -> 'a -> 'b) -> 'a array -> 'b array
 (** TODO *)

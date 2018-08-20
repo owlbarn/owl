@@ -533,7 +533,7 @@ let tail n x =
 
 
 (* TODO *)
-let sort ?cmp x = ()
+let sort ?(inc=true) x head = ()
 
 
 let guess_separator lines =
