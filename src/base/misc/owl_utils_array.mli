@@ -78,7 +78,19 @@ val mem : 'a -> 'a array -> bool
 val memq : 'a -> 'a array -> bool
 (** Refer to OCaml native array. *)
 
-val argsort : ('a -> 'a -> int) -> 'a array -> int array
+val min_i : ?cmp:('a -> 'a -> int) -> 'a array -> int
+(**
+``min_i x`` returns the index of minimum value in array ``x``. If ``cmp`` is
+not passed in then ``Pervasives.compare`` is used as default value.
+*)
+
+val max_i : ?cmp:('a -> 'a -> int) -> 'a array -> int
+(**
+``max_i x`` returns the index of minimum value in array ``x``. If ``cmp`` is
+not passed in then ``Pervasives.compare`` is used as default value.
+ *)
+
+val argsort : ?cmp:('a -> 'a -> int) -> 'a array -> int array
 (**
 ``argsort cmp x`` sorts ``x`` according to the compare function ``cmp`` and
 returns the corresponding indices.

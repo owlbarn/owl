@@ -133,11 +133,27 @@ let slice_series slice = function
 
 
 let argsort_series = function
-  | Bool_Series c   -> Owl_utils_array.argsort Pervasives.compare c
-  | Int_Series c    -> Owl_utils_array.argsort Pervasives.compare c
-  | Float_Series c  -> Owl_utils_array.argsort Pervasives.compare c
-  | String_Series c -> Owl_utils_array.argsort Pervasives.compare c
+  | Bool_Series c   -> Owl_utils_array.argsort ~cmp:Pervasives.compare c
+  | Int_Series c    -> Owl_utils_array.argsort ~cmp:Pervasives.compare c
+  | Float_Series c  -> Owl_utils_array.argsort ~cmp:Pervasives.compare c
+  | String_Series c -> Owl_utils_array.argsort ~cmp:Pervasives.compare c
   | Any_Series      -> [||]
+
+
+let min_series = function
+  | Bool_Series c   -> Owl_utils_array.min_i ~cmp:Pervasives.compare c
+  | Int_Series c    -> Owl_utils_array.min_i ~cmp:Pervasives.compare c
+  | Float_Series c  -> Owl_utils_array.min_i ~cmp:Pervasives.compare c
+  | String_Series c -> Owl_utils_array.min_i ~cmp:Pervasives.compare c
+  | Any_Series      -> -1
+
+
+let max_series = function
+  | Bool_Series c   -> Owl_utils_array.max_i ~cmp:Pervasives.compare c
+  | Int_Series c    -> Owl_utils_array.max_i ~cmp:Pervasives.compare c
+  | Float_Series c  -> Owl_utils_array.max_i ~cmp:Pervasives.compare c
+  | String_Series c -> Owl_utils_array.max_i ~cmp:Pervasives.compare c
+  | Any_Series      -> -1
 
 
 let remove_ith_elt i = function
@@ -554,7 +570,17 @@ let tail n x =
   get_slice [[-n;-1];[]] x
 
 
-let sort_by_name ?(inc=true) x head =
+let min_i x head =
+  let series = get_col_by_name x head in
+  min_series series
+
+
+let max_i x head =
+  let series = get_col_by_name x head in
+  max_series series
+
+
+let sort ?(inc=true) x head =
   let series = get_col_by_name x head in
   let indices = argsort_series series in
   if inc = false then Owl_utils_array.reverse indices;
@@ -563,11 +589,6 @@ let sort_by_name ?(inc=true) x head =
     get_row x i |> append_row y
   ) indices;
   y
-
-
-let sort ?inc x col_idx =
-  let head = (get_heads x).(col_idx) in
-  sort_by_name ?inc x head
 
 
 let guess_separator lines =

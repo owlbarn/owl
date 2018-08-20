@@ -173,17 +173,23 @@ val reset : t -> unit
 ``reset x`` resets the dataframe ``x`` by setting all the time series to empty.
  *)
 
-val sort : ?inc:bool -> t -> int -> t
-(**
-``sort`` is simiar to ``sort_by_name`` but using the column index rather than
-the column name.
- *)
-
-val sort_by_name : ?inc:bool -> t -> string -> t
+val sort : ?inc:bool -> t -> string -> t
 (**
 ``sort ~inc x head`` sorts the entries in the dataframe ``x`` according to the
 specified column by head name ``head``. By default, ``inc`` equals ``true``,
 indicating increasing order.
+ *)
+
+val min_i : t -> string -> int
+(**
+``min_i x head`` returns the row index of the minimum value in the column
+specified  by the ``head`` name.
+ *)
+
+val max_i : t -> string -> int
+(**
+``max_i x head`` returns the row index of the maximum value in the column
+specified by the ``head`` name.
  *)
 
 val append_row : t -> elt array -> unit
