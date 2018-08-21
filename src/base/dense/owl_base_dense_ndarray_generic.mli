@@ -344,8 +344,14 @@ val max' : ('a, 'b) t -> 'a
 val abs : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val conj : ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 (* TODO: change float to 'a *)
 val neg : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val reci : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val signum : (float, 'a) t -> (float, 'a) t
@@ -359,8 +365,20 @@ val sqr : (float, 'b) t -> (float, 'b) t
 val sqrt : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val cbrt : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 (* TODO: change float to 'a *)
 val exp : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val exp2 : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val exp10 : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val expm1 : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
@@ -368,11 +386,15 @@ val log : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
+val log2 : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+(* TODO: change float to 'a *)
 val log10 : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
-val log2 : (float, 'b) t -> (float, 'b) t
+val log1p : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
@@ -435,10 +457,31 @@ val ceil : (float, 'b) t -> (float, 'b) t
 val round : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val trunc : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val fix : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val erf : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val erfc : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val relu : (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val softsign : (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val softplus : (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val sigmoid : (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val softmax : ?axis:int -> (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
@@ -510,6 +553,21 @@ val scalar_atan2 : float -> (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val atan2_scalar : (float, 'a) t -> float -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val min2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val max2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val fmod : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val fmod_scalar : (float, 'a) t -> float -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val scalar_fmod : float -> (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
@@ -696,6 +754,450 @@ val draw_rows : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
+(*
+(** {6 In-place modification}  *)
+
+val create_ : out:('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val uniform_ : ?a:'a -> ?b:'a -> out:('a, 'b) t -> unit
+(** TODO *)
+
+val gaussian_ : ?mu:'a -> ?sigma:'a -> out:('a, 'b) t -> unit
+(** TODO *)
+
+val sequential_ :?a:'a -> ?step:'a -> out:('a, 'b) t -> unit
+(** TODO *)
+
+val bernoulli_ : ?p:float -> out:('a, 'b) t -> unit
+(** TODO *)
+
+val zeros_ : out:('a, 'b) t -> unit
+(** TODO *)
+
+val ones_ : out:('a, 'b) t -> unit
+(** TODO *)
+
+val one_hot_ : out:('a, 'b) t -> int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val sort_ : ('a, 'b) t -> unit
+(** TODO *)
+
+val get_fancy_ : out:('a, 'b) t -> index list -> ('a, 'b) t -> unit
+(** TODO *)
+
+val set_fancy_ : out:('a, 'b) t -> index list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val get_slice_ : out:('a, 'b) t -> int list list -> ('a, 'b) t -> unit
+(** TODO *)
+
+val set_slice_ : out:('a, 'b) t -> int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val copy_ : out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val reshape_ : out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val reverse_ : out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val transpose_ : out:('a, 'b) t -> ?axis:int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val repeat_ : out:('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val tile_ : out:('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val sum_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val min_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val max_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val add_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val sub_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val mul_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val div_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val pow_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val atan2_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val hypot_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val fmod_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val min2_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val max2_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val add_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val sub_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val mul_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val div_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val pow_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val atan2_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val fmod_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val scalar_add_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
+(** TODO *)
+
+val scalar_sub_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
+(** TODO *)
+
+val scalar_mul_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
+(** TODO *)
+
+val scalar_div_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
+(** TODO *)
+
+val scalar_pow_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
+(** TODO *)
+
+val scalar_atan2_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
+(** TODO *)
+
+val scalar_fmod_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
+(** TODO *)
+
+val clip_by_value_ : ?out:('a, 'b) t -> ?amin:'a -> ?amax:'a -> ('a, 'b) t -> unit
+(** TODO *)
+
+val clip_by_l2norm_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
+(** TODO *)
+
+val fma_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:'a -> ?beta:'a -> c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val conj_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val abs_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val neg_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val reci_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val signum_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val sqr_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val sqrt_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val cbrt_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val exp_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val exp2_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val exp10_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val expm1_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val log_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val log2_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val log10_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val log1p_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val sin_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val cos_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val tan_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val asin_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val acos_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val atan_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val sinh_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val cosh_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val tanh_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val asinh_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val acosh_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val atanh_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val floor_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val ceil_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val round_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val trunc_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val fix_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val erf_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val erfc_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val relu_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val softplus_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val softsign_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val sigmoid_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val softmax_ : ?out:('a, 'b) t -> ?axis:int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val cumsum_ : ?out:('a, 'b) t -> ?axis:int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val cumprod_ : ?out:('a, 'b) t -> ?axis:int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val cummin_ : ?out:('a, 'b) t -> ?axis:int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val cummax_ : ?out:('a, 'b) t -> ?axis:int -> ('a, 'b) t -> unit
+(** TODO *)
+
+val dropout_ : ?out:('a, 'b) t -> ?rate:float -> ('a, 'b) t -> unit
+(** TODO *)
+
+val elt_equal_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val elt_not_equal_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val elt_less_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val elt_greater_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val elt_less_equal_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val elt_greater_equal_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** TODO *)
+
+val elt_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val elt_not_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val elt_less_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val elt_greater_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val elt_less_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val elt_greater_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
+(** TODO *)
+
+val conv1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val conv2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val conv3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val dilated_conv1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val dilated_conv2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val dilated_conv3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val transpose_conv1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val transpose_conv2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val transpose_conv3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val max_pool1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val max_pool2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val max_pool3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val avg_pool1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val avg_pool2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val avg_pool3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+(** TODO *)
+
+val conv1d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val conv1d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val conv2d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val conv2d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val conv3d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val conv3d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val dilated_conv1d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val dilated_conv1d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val dilated_conv2d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val dilated_conv2d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val dilated_conv3d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val dilated_conv3d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val transpose_conv1d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val transpose_conv1d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val transpose_conv2d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val transpose_conv2d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val transpose_conv3d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val transpose_conv3d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val max_pool1d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val max_pool2d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val max_pool3d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val avg_pool1d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val avg_pool2d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val avg_pool3d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+(** TODO *)
+
+val fused_adagrad_ : ?out:('a, 'b) t -> rate:'a -> eps:'a -> ('a, 'b) t -> unit
+(** TODO *)
+*)
 
 (** {6 Helper functions}  *)
 

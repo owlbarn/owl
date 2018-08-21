@@ -109,6 +109,18 @@ let neg_inf : type a b. (a, b) kind -> a = function
   | _         -> failwith "neg_inf: unsupported operation"
 
 
+let min_float32 = ~-.340282346638528859811704183484516925440.0
+
+
+let max_float32 = 340282346638528859811704183484516925440.0
+
+
+let min_float64 = Pervasives.min_float
+
+
+let max_float64 = Pervasives.max_float
+
+
 (** Unit prefixes *)
 
 module Prefix = struct

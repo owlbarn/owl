@@ -4,7 +4,11 @@
  *)
 
 open Bigarray
+
 open Owl_sparse_common
+
+open Owl_base_dense_common
+
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
@@ -385,7 +389,7 @@ let max2 x y = _eigen_max2 x.d y.d [@@warning "-32"]
 
 let sum x = _eigen_sum x.d
 
-let mean x = (Owl_ndarray._mean_elt x.k) (sum x) (numel x)
+let mean x = (_mean_elt x.k) (sum x) (numel x)
 
 let abs x = {
   m = x.m;
@@ -403,11 +407,11 @@ let neg x = {
 
 (* TODO: optimise *)
 let reci x =
-  let _op = Owl_ndarray._inv_elt (kind x) in
+  let _op = Owl_base_dense_common._inv_elt (kind x) in
   map_nz (fun a -> _op a) x
 
 let power_scalar x c =
-  let _op = Owl_ndarray._power_scalar_elt (kind x) in
+  let _op = Owl_base_dense_common._pow_elt (kind x) in
   map (fun y -> (_op) y c) x
 
 let l1norm x = x |> abs |> sum
@@ -493,14 +497,14 @@ let sum_cols x =
 let mean_rows x =
   let m, _n = shape x in
   let k = kind x in
-  let a = (Owl_ndarray._mean_elt k) (Owl_const.one k) m in
+  let a = (_mean_elt k) (Owl_const.one k) m in
   let y = Owl_dense_matrix_generic.create k 1 m a |> of_dense in
   dot y x
 
 let mean_cols x =
   let _m, n = shape x in
   let k = kind x in
-  let a = (Owl_ndarray._mean_elt k) (Owl_const.one k) n in
+  let a = (_mean_elt k) (Owl_const.one k) n in
   let y = Owl_dense_matrix_generic.create k n 1 a |> of_dense in
   dot x y
 

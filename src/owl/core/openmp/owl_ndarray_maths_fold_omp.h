@@ -287,6 +287,93 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 #endif /* FUN26 */
 
 
+// function specifically for folding along multiple axes
+#ifdef FUN30
+
+CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
+{
+  CAMLparam5(vX, vY, vN, vXshape, vFrd);
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *x = (NUMBER *) X->data;
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  NUMBER1 *y = (NUMBER1 *) Y->data;
+
+  struct caml_ba_array *Xshape = Caml_ba_array_val(vXshape);
+  int64_t *x_shape = (int64_t *) Xshape->data;
+
+  int N = Long_val(vN);
+  int ndim = Y->num_dims;
+  int frd = Long_val(vFrd);
+
+  int strides[ndim];
+  c_ndarray_stride(Y, strides);
+  for (int i = frd; i < ndim; i += 2) {
+    strides[i] = 0;
+  }
+
+  int innersize = x_shape[ndim-1];
+  int loopsize  = x_shape[ndim-2];
+  int outersize = 1;
+  for (int i = 0; i < ndim - 1; i++) {
+    outersize *= x_shape[i];
+  }
+
+  int y_step = 0;
+  if ((ndim % 2 == 0 && frd == 1) ||
+      (ndim % 2 == 1 && frd == 0)) {
+    y_step = 1;
+  }
+
+  caml_release_runtime_system();
+
+  int iy = 0;
+  int cnt = 0;
+
+  for (int ix = 0; ix < N;) {
+    if (y_step == 0) {
+      /* Case 1: last dimension not to be reduced */
+      for (int k = 0; k < innersize; k++) {
+        ACCFN(y[iy+k], x[ix+k]);
+      }
+    }
+    else {
+      /* Case 2: last dimension to be reduced */
+      INIT;
+      for (int k = 0; k < innersize; k++) {
+        ACCFN(acc, x[ix + k]);
+      }
+      ACCFN(y[iy], acc);
+    }
+
+    ix += innersize;
+    iy += y_step;
+    cnt++;
+
+    if (cnt == loopsize) {
+      iy = 0;
+      cnt = 0;
+      int residual;
+      int iterindex = ix;
+      int pre_iteridx = ix;
+
+      for (int i = ndim - 1; i >= 0; i--) {
+        iterindex /= x_shape[i];
+        residual = pre_iteridx - iterindex * x_shape[i];
+        iy += residual * strides[i];
+        pre_iteridx = iterindex;
+      }
+    }
+  }
+
+  caml_acquire_runtime_system();
+
+  CAMLreturn(Val_unit);
+}
+
+#endif /* FUN30 */
+
+
 #undef NUMBER
 #undef NUMBER1
 #undef CHECKFN
@@ -302,6 +389,7 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 #undef FUN11
 #undef FUN23
 #undef FUN26
+#undef FUN30
 
 
 #endif /* OWL_ENABLE_TEMPLATE */

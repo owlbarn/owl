@@ -2351,6 +2351,78 @@
 #define ACCFN(X,Y) *Y += *X
 #include OWL_NDARRAY_MATHS_FOLD
 
+// sum_reduce
+
+#define FUN30 float32_sum_reduce
+#define NUMBER float
+#define NUMBER1 float
+#define INIT float acc = 0.
+#define ACCFN(A,X) A += X
+#include OWL_NDARRAY_MATHS_FOLD
+
+#define FUN30 float64_sum_reduce
+#define NUMBER double
+#define NUMBER1 double
+#define INIT double acc = 0.
+#define ACCFN(A,X) A += X
+#include OWL_NDARRAY_MATHS_FOLD
+
+#define FUN30 complex32_sum_reduce
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define INIT complex_float acc = { 0.0, 0.0 }
+#define ACCFN(A,X) A.r += X.r; A.i += X.i
+#include OWL_NDARRAY_MATHS_FOLD
+
+#define FUN30 complex64_sum_reduce
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define INIT complex_double acc = { 0.0, 0.0 }
+#define ACCFN(A,X) A.r += X.r; A.i += X.i
+#include OWL_NDARRAY_MATHS_FOLD
+
+#define FUN30 int8_sum_reduce
+#define NUMBER int8_t
+#define NUMBER1 int8_t
+#define INIT int acc = 0
+#define ACCFN(A,X) A += X
+#include OWL_NDARRAY_MATHS_FOLD
+
+#define FUN30 uint8_sum_reduce
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define INIT int acc = 0
+#define ACCFN(A,X) A += X
+#include OWL_NDARRAY_MATHS_FOLD
+
+#define FUN30 int16_sum_reduce
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define INIT int acc = 0
+#define ACCFN(A,X) A += X
+#include OWL_NDARRAY_MATHS_FOLD
+
+#define FUN30 uint16_sum_reduce
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define INIT int acc = 0
+#define ACCFN(A,X) A += X
+#include OWL_NDARRAY_MATHS_FOLD
+
+#define FUN30 int32_sum_reduce
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define INIT int acc = 0
+#define ACCFN(A,X) A += X
+#include OWL_NDARRAY_MATHS_FOLD
+
+#define FUN30 int64_sum_reduce
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define INIT int acc = 0
+#define ACCFN(A,X) A += X
+#include OWL_NDARRAY_MATHS_FOLD
+
 // prod
 
 #define FUN5 float32_prod

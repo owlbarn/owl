@@ -165,6 +165,33 @@ return an empty dataframe.
 val copy : t -> t
 (** ``copy x`` returns a copy of dataframe ``x``. *)
 
+val copy_struct : t -> t
+(** ``copy_struct x`` only copies the structure of ``x`` with empty series. *)
+
+val reset : t -> unit
+(**
+``reset x`` resets the dataframe ``x`` by setting all the time series to empty.
+ *)
+
+val sort : ?inc:bool -> t -> string -> t
+(**
+``sort ~inc x head`` sorts the entries in the dataframe ``x`` according to the
+specified column by head name ``head``. By default, ``inc`` equals ``true``,
+indicating increasing order.
+ *)
+
+val min_i : t -> string -> int
+(**
+``min_i x head`` returns the row index of the minimum value in the column
+specified  by the ``head`` name.
+ *)
+
+val max_i : t -> string -> int
+(**
+``max_i x head`` returns the row index of the maximum value in the column
+specified by the ``head`` name.
+ *)
+
 val append_row : t -> elt array -> unit
 (** ``append_row x row`` appends a row to the dataframe ``x``. *)
 
@@ -300,6 +327,9 @@ val to_rows : t -> elt array array
 
 val to_cols : t -> series array
 (** ``to_cols x`` returns an arrays of columns in ``x``. *)
+
+(* val print : t -> unit *)
+(** ``print x`` pretty prints a dataframe on the terminal. *)
 
 val elt_to_str : elt -> string
 (** ``elt_to_str x`` converts element ``x`` to its string representation. *)

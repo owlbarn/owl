@@ -19,7 +19,13 @@ let div x y = x /. y
 let pow x y = x ** y
 
 
+let fmod x y = Pervasives.mod_float x y
+
+
 let atan2 x y = Pervasives.atan2 x y
+
+
+let hypot x y = Pervasives.hypot x y
 
 
 let abs x = Pervasives.abs_float x
@@ -28,13 +34,34 @@ let abs x = Pervasives.abs_float x
 let neg x = ~-. x
 
 
+let reci x = 1. /. x
+
+
+let softsign x = x /. (1. +. abs x)
+
+
+let softplus x = log (1. +. exp x)
+
+
 let sqr x = x *. x
 
 
 let sqrt x = Pervasives.sqrt x
 
 
+let cbrt x = x ** 0.33333333333333333333
+
+
 let exp x = Pervasives.exp x
+
+
+let exp2 x = 2. ** x
+
+
+let exp10 x = 10. ** x
+
+
+let expm1 x = Pervasives.expm1 x
 
 
 let log x = Pervasives.log x
@@ -46,13 +73,16 @@ let log2 x = (log x) /. (log 2.)
 let log10 x = Pervasives.log10 x
 
 
+let log1p x = Pervasives.log1p x
+
+
 let signum x =
-  if ((compare x nan) = 0)
-  then nan
+  if FP_nan = classify_float x then nan
   else (
-    if (x > 0.)
-    then 1.
-    else (if x < 0. then (~-. 1.) else 0.)
+    if x > 0. then 1.
+    else (
+      if x < 0. then (~-. 1.) else 0.
+    )
   )
 
 
@@ -115,10 +145,16 @@ let sigmoid x = 1. /. (1. +. (log (~-. x)) )
 
 (* Helper functions *)
 
-let is_nan x = x = nan
+let is_nan x = FP_nan = classify_float x
 
 
-let is_inf x = x = infinity || x = neg_infinity
+let is_inf x = FP_infinite = classify_float x
+
+
+let is_normal x = FP_normal = classify_float x
+
+
+let is_subnormal x = FP_subnormal = classify_float x
 
 
 let is_odd x = ((Pervasives.abs x) mod 2) = 1

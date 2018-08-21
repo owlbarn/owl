@@ -439,6 +439,16 @@ let unique x =
 let merge x y = Array.append x y |> unique
 
 
+let reverse x =
+  let n = Array.length x - 1 in
+  let m = Array.length x / 2 - 1 in
+  for i = 0 to m do
+    let t = x.(n - i) in
+    x.(n - i) <- x.(i);
+    x.(i) <- t
+  done
+
+
 (* sort then fill the holes *)
 let sort_fill ?min ?max ?fill x =
   let x = copy x in
@@ -454,6 +464,40 @@ let sort_fill ?min ?max ?fill x =
   Array.iter (fun i -> y.(i - min) <- i) x;
   y
 
+
+let argsort ?(cmp=Pervasives.compare) x =
+  let cmp_fun a b = cmp (fst a) (fst b) in
+  let n = Array.length x in
+  let y = Array.init n (fun i -> (x.(i),i)) in
+  Array.sort cmp_fun y;
+  Array.map snd y
+
+
+
+let min_i ?(cmp=Pervasives.compare) x =
+  assert (Array.length x > 0);
+  let idx = ref 0 in
+  let acc = ref x.(0) in
+  Array.iteri (fun i a ->
+    if cmp a !acc = -1 then (
+      idx := i;
+      acc := a;
+    )
+  ) x;
+  !idx
+
+
+let max_i ?(cmp=Pervasives.compare) x =
+  assert (Array.length x > 0);
+  let idx = ref 0 in
+  let acc = ref x.(0) in
+  Array.iteri (fun i a ->
+    if cmp a !acc = 1 then (
+      idx := i;
+      acc := a;
+    )
+  ) x;
+  !idx
 
 
 (* ends here *)

@@ -16,8 +16,9 @@ let mul = ( *. )
 
 let div = ( /. )
 
-let atan2 = Pervasives.atan2
+let fmod = Pervasives.mod_float
 
+let atan2 = Pervasives.atan2
 
 let abs x = abs_float x
 
@@ -25,7 +26,14 @@ let neg x = 0. -. x
 
 let reci x = 1. /. x
 
-let signum x = if x = 0. then 0. else if x > 0. then 1. else -1.
+let signum x =
+  if FP_nan = classify_float x then nan
+  else (
+    if x > 0. then 1.
+    else (
+      if x < 0. then (~-. 1.) else 0.
+    )
+  )
 
 let softsign x = x /. (1. +. abs x)
 
@@ -53,6 +61,10 @@ let sqrt x = sqrt x
 let pow x y = x ** y
 
 let exp x = exp x
+
+let exp2 x = Owl_maths_special.exp2 x
+
+let exp10 x = Owl_maths_special.exp10 x
 
 let expm1 x = expm1 x
 
@@ -307,6 +319,10 @@ let is_simplex = Owl_base_maths.is_simplex
 let is_nan = Owl_base_maths.is_nan
 
 let is_inf = Owl_base_maths.is_inf
+
+let is_normal = Owl_base_maths.is_normal
+
+let is_subnormal = Owl_base_maths.is_subnormal
 
 let is_odd = Owl_base_maths.is_odd
 

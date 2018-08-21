@@ -132,6 +132,30 @@ let slice_series slice = function
   | Any_Series      -> Any_Series
 
 
+let argsort_series = function
+  | Bool_Series c   -> Owl_utils_array.argsort ~cmp:Pervasives.compare c
+  | Int_Series c    -> Owl_utils_array.argsort ~cmp:Pervasives.compare c
+  | Float_Series c  -> Owl_utils_array.argsort ~cmp:Pervasives.compare c
+  | String_Series c -> Owl_utils_array.argsort ~cmp:Pervasives.compare c
+  | Any_Series      -> [||]
+
+
+let min_series = function
+  | Bool_Series c   -> Owl_utils_array.min_i ~cmp:Pervasives.compare c
+  | Int_Series c    -> Owl_utils_array.min_i ~cmp:Pervasives.compare c
+  | Float_Series c  -> Owl_utils_array.min_i ~cmp:Pervasives.compare c
+  | String_Series c -> Owl_utils_array.min_i ~cmp:Pervasives.compare c
+  | Any_Series      -> -1
+
+
+let max_series = function
+  | Bool_Series c   -> Owl_utils_array.max_i ~cmp:Pervasives.compare c
+  | Int_Series c    -> Owl_utils_array.max_i ~cmp:Pervasives.compare c
+  | Float_Series c  -> Owl_utils_array.max_i ~cmp:Pervasives.compare c
+  | String_Series c -> Owl_utils_array.max_i ~cmp:Pervasives.compare c
+  | Any_Series      -> -1
+
+
 let remove_ith_elt i = function
   | Bool_Series c   -> Bool_Series (Owl_utils_array.remove c i)
   | Int_Series c    -> Int_Series (Owl_utils_array.remove c i)
@@ -386,15 +410,39 @@ let copy x =
   { data; head; used; size }
 
 
+let copy_struct x =
+  let head = Hashtbl.copy x.head in
+  let used = 0 in
+  let size = 0 in
+  let data = Array.map (function
+    | Bool_Series c   -> Bool_Series [||]
+    | Int_Series c    -> Int_Series [||]
+    | Float_Series c  -> Float_Series [||]
+    | String_Series c -> String_Series [||]
+    | Any_Series      -> Any_Series
+  ) x.data in
+  { data; head; used; size }
+
+
+let reset x =
+  x.used <- 0;
+  x.size <- 0;
+  x.data <- Array.map (function
+    | Bool_Series c   -> Bool_Series [||]
+    | Int_Series c    -> Int_Series [||]
+    | Float_Series c  -> Float_Series [||]
+    | String_Series c -> String_Series [||]
+    | Any_Series      -> Any_Series
+  ) x.data
+
+
 let concat_horizontal x y =
   assert (row_num x = row_num y);
   let head = Hashtbl.copy x.head in
-  let i = ref (col_num x) in
-  Hashtbl.iter (fun k v ->
-    Hashtbl.add head k (v + !i);
-    i := !i + 1;
-  ) y.head;
   let col_num_x = col_num x in
+  Hashtbl.iter (fun k v ->
+    Hashtbl.add head k (v + col_num_x);
+  ) y.head;
   let col_num_y = col_num y in
   let data = Array.make (col_num_x + col_num_y) Any_Series in
   let size = max x.size y.size in
@@ -402,7 +450,7 @@ let concat_horizontal x y =
     data.(i) <- resize_series size x.data.(i)
   done;
   for i = 0 to col_num_y - 1 do
-    data.(i) <- resize_series size x.data.(col_num_x + i)
+    data.(col_num_x + i) <- resize_series size y.data.(i)
   done;
   { data; head; used = x.used; size }
 
@@ -497,11 +545,17 @@ let get_slice_by_name slice x =
   let row_slice = Array.of_list (fst slice) in
   let col_slice = Array.of_list (snd slice) in
   let shp_x = [|row_num x; col_num x|] in
-  let _tmp0 = Owl_base_slicing.check_slice_definition [| R_ row_slice |] shp_x in
-  let row_slice = (function R_ s -> s | _ -> failwith "get_slice: unsupported") _tmp0.(0) in
+  let refmt = Owl_base_slicing.check_slice_definition [| R_ row_slice |] shp_x in
+  let row_slice = (function R_ s -> s | _ -> failwith "get_slice: unsupported") refmt.(0) in
+
+  let col_slice =
+    if Array.length col_slice = 0 then get_heads x
+    else col_slice
+  in
   let data = Array.map (slice_series row_slice) (get_cols_by_name x col_slice) in
   let used = length_series data.(0) in
   let head = Hashtbl.create (Array.length col_slice) in
+
   Array.iteri (fun i s -> Hashtbl.add head s i) col_slice;
   { data; head; used; size = used }
 
@@ -522,8 +576,39 @@ let tail n x =
   get_slice [[-n;-1];[]] x
 
 
+let min_i x head =
+  let series = get_col_by_name x head in
+  min_series series
+
+
+let max_i x head =
+  let series = get_col_by_name x head in
+  max_series series
+
+
+let sort ?(inc=true) x head =
+  let series = get_col_by_name x head in
+  let indices = argsort_series series in
+  if inc = false then Owl_utils_array.reverse indices;
+  let y = copy_struct x in
+  Array.iter (fun i ->
+    get_row x i |> append_row y
+  ) indices;
+  y
+
+
 let guess_separator lines =
   let sep = [|','; ' '; '\t'; ';'; ':'; '|'|] in
+  (* rank by dividing as many parts as possible *)
+  let tmp = Array.map (fun c ->
+    let l = String.split_on_char c lines.(0) in
+    c, List.length l
+  ) sep
+  in
+  (* sort by decreasing order *)
+  Array.sort (fun a b -> (snd b) - (snd a)) tmp;
+  let sep = Array.map fst tmp in
+
   let not_sep = ref true in
   let sep_idx = ref 0 in
 
@@ -616,27 +701,43 @@ let of_csv ?sep ?head ?types fname =
   assert (Array.length head_names = Array.length types);
   let convert_f = Array.map str_to_elt_fun types in
   let dataframe = make head_names in
+  let dropped_line = ref 0 in
+
   Owl_io.read_csv_proc ~sep (fun i line ->
     try
       if i <> head_i then (
         let row = Array.map2 (fun f a -> f a) convert_f line in
         append_row dataframe row
       )
-    with _exn ->
+    with _exn -> (
+      dropped_line := !dropped_line + 1;
       Owl_log.warn "of_csv: fail to parse line#%i @ %s" i fname
+    )
   ) fname;
+
+  if !dropped_line > 0 then
+    Owl_log.warn "%i lines have been dropped." !dropped_line;
+
   dataframe
 
 
 let to_csv ?sep x fname =
   let m, n = shape x in
-  let csv = Array.make_matrix m n "" in
+  (* include heads as the first line *)
+  let csv = Array.make_matrix (m + 1) n "" in
+  csv.(0) <- get_heads x;
+
+  (* dump the data into the table *)
   for i = 0 to m - 1 do
     for j = 0 to n - 1 do
-      csv.(i).(j) <- elt_to_str (get x i j)
+      csv.(i + 1).(j) <- elt_to_str (get x i j)
     done;
   done;
+
   Owl_io.write_csv ?sep csv fname
+
+
+(* let print x = Owl_pretty.pp_dataframe Format.std_formatter x *)
 
 
 let ( .%( ) ) x idx = get_by_name x (fst idx) (snd idx)

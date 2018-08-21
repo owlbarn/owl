@@ -7,6 +7,8 @@ open Bigarray
 
 open Owl_ndarray
 
+open Owl_base_dense_common
+
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 

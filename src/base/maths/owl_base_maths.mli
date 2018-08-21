@@ -20,14 +20,23 @@ val mul : float -> float -> float
 val div : float -> float -> float
 (** ``div x y`` *)
 
+val fmod : float -> float -> float
+(** ``fmod x y`` *)
+
 val atan2 : float -> float -> float
 (** ``atan2 x y`` *)
+
+val hypot : float -> float -> float
+(** ``hypot x y`` *)
 
 val abs : float -> float
 (** ``abs x`` *)
 
 val neg : float -> float
 (** ``neg x`` *)
+
+val reci : float -> float
+(** ``reci x`` *)
 
 val floor : float -> float
 (** ``floor x`` *)
@@ -47,11 +56,23 @@ val sqr : float -> float
 val sqrt : float -> float
 (** ``sqrt x`` *)
 
+val cbrt : float -> float
+(** ``cbrt x`` *)
+
 val pow : float -> float -> float
 (** ``pow x`` *)
 
 val exp : float -> float
 (** ``exp x`` *)
+
+val exp2 : float -> float
+(** ``exp2 x`` *)
+
+val exp10 : float -> float
+(** ``exp10 x`` *)
+
+val expm1 : float -> float
+(** ``expm1 x`` *)
 
 val log : float -> float
 (** ``log x`` *)
@@ -62,11 +83,20 @@ val log2 : float -> float
 val log10 : float -> float
 (** ``log10 x`` *)
 
+val log1p : float -> float
+(** ``log1p x`` *)
+
 val sigmoid : float -> float
 (** ``sigmod x`` *)
 
 val signum : float -> float
 (** ``signum x`` *)
+
+val softsign : float -> float
+(** ``softsign x`` *)
+
+val softplus : float -> float
+(** ``softplus x`` *)
 
 val relu : float -> float
 (** ``relu x`` *)
@@ -115,6 +145,12 @@ val is_nan : float -> bool
 
 val is_inf : float -> bool
 (** ``is_inf x`` returns ``true`` if ``x`` is ``infinity`` or ``neg_infinity``. *)
+
+val is_normal : float -> bool
+(** ``is_normal x`` returns ``true`` if ``x`` is a normal float number. *)
+
+val is_subnormal : float -> bool
+(** ``is_nan x`` returns ``true`` if ``x`` is subnormal float number. *)
 
 val is_odd : int -> bool
 (** ``is_odd x`` returns ``true`` if ``x`` is odd. *)
