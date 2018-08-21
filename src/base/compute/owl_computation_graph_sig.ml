@@ -8,8 +8,6 @@ module type Sig = sig
 
   module Optimiser : Owl_computation_optimiser_sig.Sig
 
-  open Optimiser
-
   open Optimiser.Operator.Symbol.Shape.Type
 
   open Optimiser.Operator.Symbol.Shape.Type.Device

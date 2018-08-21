@@ -5,15 +5,15 @@ license: "MIT"
 homepage: "https://github.com/owlbarn/owl"
 dev-repo: "git+https://github.com/owlbarn/owl.git"
 bug-reports: "https://github.com/owlbarn/owl/issues"
-doc: "https://owlbarn.github.io/"
+doc: "https://owlbarn.github.io/owl/"
 
 build: [
-  [ "jbuilder" "subst" "-n" name ] {pinned}
-  [ "jbuilder" "build" "-p" name "-j" jobs ]
+  [ "dune" "subst" ] {pinned}
+  [ "dune" "build" "-p" name "-j" jobs ]
 ]
 
 build-test: [
-  [ "jbuilder" "runtest" "-p" name "-j" jobs ]
+  [ "dune" "runtest" "-p" name "-j" jobs ]
 ]
 
 depends: [
@@ -23,8 +23,8 @@ depends: [
   "conf-openblas" {>= "0.2.0"}
   "configurator" {build}
   "ctypes"
+  "dune" {build}
   "eigen" {>= "0.0.3"}
-  "jbuilder" {build}
   "owl-base"
   "plplot"
   "stdio" {build}

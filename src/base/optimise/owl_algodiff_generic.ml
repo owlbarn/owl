@@ -255,9 +255,9 @@ module Make
     | _     -> "you should not have reached here!"
 
   let type_info x = match x with
-    | F a                     -> Printf.sprintf "[%s]" (deep_info x)
-    | DF (ap, at, ai)         -> Printf.sprintf "[DF tag:%i ap:%s]" ai (deep_info ap)
-    | DR (ap, at, ao, af, ai) -> Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
+    | F _a                     -> Printf.sprintf "[%s]" (deep_info x)
+    | DF (ap, _at, ai)         -> Printf.sprintf "[DF tag:%i ap:%s]" ai (deep_info ap)
+    | DR (ap, _at, _ao, _af, ai) -> Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
     | _                       -> Printf.sprintf "[%s]" (deep_info x)
 
   let error_binop op a b =
@@ -284,14 +284,14 @@ module Make
 
     and op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d =
       match a, b with
-      | F ap, DF (bp, bt, bi)                      -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
-      | DF (ap, at, ai), F bp                      -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
-      | Arr ap, DF (bp, bt, bi)                    -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
-      | DF (ap, at, ai), Arr bp                    -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
-      | F ap, DR (bp, _, _, _, bi)                 -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
-      | DR (ap, _, _, _, ai), F bp                 -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
-      | Arr ap, DR (bp, _, _, _, bi)               -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
-      | DR (ap, _, _, _, ai), Arr bp               -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
+      | F _ap, DF (bp, bt, bi)                      -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
+      | DF (ap, at, ai), F _bp                      -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
+      | Arr _ap, DF (bp, bt, bi)                    -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
+      | DF (ap, at, ai), Arr _bp                    -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
+      | F _ap, DR (bp, _, _, _, bi)                 -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
+      | DR (ap, _, _, _, ai), F _bp                 -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
+      | Arr _ap, DR (bp, _, _, _, bi)               -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
+      | DR (ap, _, _, _, ai), Arr _bp               -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
       | DF (ap, at, ai), DR (bp, _, _, _, bi)      -> (
           match cmp_tag ai bi with
           | 1  -> let cp = fd ap b in DF (cp, df_da cp ap at, ai)
@@ -329,9 +329,9 @@ module Make
         | _            -> error_binop "( + )" a b
       in
       let fd a b = a + b in
-      let df_da cp ap at = at in
-      let df_db cp bp bt = bt in
-      let df_dab cp ap at bp bt = at + bt in
+      let df_da _cp _ap at = at in
+      let df_db _cp _bp bt = bt in
+      let df_dab _cp _ap at _bp bt = at + bt in
       let r_d_d a b = Add_D_D (a, b) in
       let r_d_c a b = Add_D_C (a, b) in
       let r_c_d a b = Add_C_D (a, b) in
@@ -348,9 +348,9 @@ module Make
         | _            -> error_binop "( - )" a b
       in
       let fd a b = a - b in
-      let df_da cp ap at = at in
-      let df_db cp bp bt = neg bt in
-      let df_dab cp ap at bp bt = at - bt in
+      let df_da _cp _ap at = at in
+      let df_db _cp _bp bt = neg bt in
+      let df_dab _cp _ap at _bp bt = at - bt in
       let r_d_d a b = Sub_D_D (a, b) in
       let r_d_c a b = Sub_D_C (a, b) in
       let r_c_d a b = Sub_C_D (a, b) in
@@ -367,9 +367,9 @@ module Make
         | _            -> error_binop "( * )" a b
       in
       let fd a b = a * b in
-      let df_da cp ap at = at * b in
-      let df_db cp bp bt = a * bt in
-      let df_dab cp ap at bp bt = (ap * bt) + (at * bp) in
+      let df_da _cp _ap at = at * b in
+      let df_db _cp _bp bt = a * bt in
+      let df_dab _cp ap at bp bt = (ap * bt) + (at * bp) in
       let r_d_d a b = Mul_D_D (a, b) in
       let r_d_c a b = Mul_D_C (a, b) in
       let r_c_d a b = Mul_C_D (a, b) in
@@ -386,9 +386,9 @@ module Make
         | _            -> error_binop "( / )" a b
       in
       let fd a b = a / b in
-      let df_da cp ap at = at / b in
+      let df_da _cp _ap at = at / b in
       let df_db cp bp bt = (neg bt) * cp / bp in
-      let df_dab cp ap at bp bt = (at - bt * cp) / bp in
+      let df_dab cp _ap at bp bt = (at - bt * cp) / bp in
       let r_d_d a b = Div_D_D (a, b) in
       let r_d_c a b = Div_D_C (a, b) in
       let r_c_d a b = Div_C_D (a, b) in
@@ -405,9 +405,9 @@ module Make
         | _            -> error_binop "( ** )" a b
       in
       let fd a b = a ** b in
-      let df_da cp ap at = at * (ap ** (b - (pack_flt 1.))) * b in
-      let df_db cp bp bt = bt * cp * (log a) in
-      let df_dab cp ap at bp bt = (ap ** (bp - (pack_flt 1.))) * ((at * bp) + (ap * bt * log ap)) in
+      let df_da _cp ap at = at * (ap ** (b - (pack_flt 1.))) * b in
+      let df_db cp _bp bt = bt * cp * (log a) in
+      let df_dab _cp ap at bp bt = (ap ** (bp - (pack_flt 1.))) * ((at * bp) + (ap * bt * log ap)) in
       let r_d_d a b = Pow_D_D (a, b) in
       let r_d_c a b = Pow_D_C (a, b) in
       let r_c_d a b = Pow_C_D (a, b) in
@@ -423,9 +423,9 @@ module Make
         | _            -> error_binop "atan2" a b
       in
       let fd a b = atan2 a b in
-      let df_da cp ap at = at * b / ((sqr ap) + (sqr b)) in
-      let df_db cp bp bt = (neg bt) * a / ((sqr a) + (sqr bp)) in
-      let df_dab cp ap at bp bt = ((at * bp) - (bt * ap)) / ((sqr ap) + (sqr bp)) in
+      let df_da _cp ap at = at * b / ((sqr ap) + (sqr b)) in
+      let df_db _cp bp bt = (neg bt) * a / ((sqr a) + (sqr bp)) in
+      let df_dab _cp ap at bp bt = ((at * bp) - (bt * ap)) / ((sqr ap) + (sqr bp)) in
       let r_d_d a b = Atan2_D_D (a, b) in
       let r_d_c a b = Atan2_D_C (a, b) in
       let r_c_d a b = Atan2_C_D (a, b) in
@@ -442,7 +442,7 @@ module Make
         | _        -> error_uniop "neg" a
       in
       let fd a = neg a in
-      let df cp ap at = (pack_flt 0.) - at in
+      let df _cp _ap at = (pack_flt 0.) - at in
       let r a = Neg_D a in
       op_d_d a ff fd df r
 
@@ -453,7 +453,7 @@ module Make
         | _        -> error_uniop "abs" a
       in
       let fd a = abs a in
-      let df cp ap at = at * (signum ap) in
+      let df _cp ap at = at * (signum ap) in
       let r a = Abs_D a in
       op_d_d a ff fd df r
 
@@ -464,7 +464,7 @@ module Make
         | _        -> error_uniop "signum" a
       in
       let fd a = signum a in
-      let df cp ap at = zero ap in
+      let df _cp ap _at = zero ap in
       let r a = Signum_D a in
       op_d_d a ff fd df r
 
@@ -475,7 +475,7 @@ module Make
         | _        -> error_uniop "floor" a
       in
       let fd a = floor a in
-      let df cp ap at = zero ap in
+      let df _cp ap _at = zero ap in
       let r a = Floor_D a in
       op_d_d a ff fd df r
 
@@ -486,7 +486,7 @@ module Make
         | _        -> error_uniop "ceil" a
       in
       let fd a = ceil a in
-      let df cp ap at = zero ap in
+      let df _cp ap _at = zero ap in
       let r a = Ceil_D a in
       op_d_d a ff fd df r
 
@@ -497,7 +497,7 @@ module Make
         | _        -> error_uniop "round" a
       in
       let fd a = round a in
-      let df cp ap at = zero ap in
+      let df _cp ap _at = zero ap in
       let r a = Round_D a in
       op_d_d a ff fd df r
 
@@ -508,7 +508,7 @@ module Make
         | _        -> error_uniop "sqr" a
       in
       let fd a = sqr a in
-      let df cp ap at = (pack_flt 2.) * at * ap in
+      let df _cp ap at = (pack_flt 2.) * at * ap in
       let r a = Sqr_D a in
       op_d_d a ff fd df r
 
@@ -519,7 +519,7 @@ module Make
         | _        -> error_uniop "sqrt" a
       in
       let fd a = sqrt a in
-      let df cp ap at = at / ((pack_flt 2.) * cp) in
+      let df cp _ap at = at / ((pack_flt 2.) * cp) in
       let r a = Sqrt_D a in
       op_d_d a ff fd df r
 
@@ -530,7 +530,7 @@ module Make
         | _        -> error_uniop "log" a
       in
       let fd a = log a in
-      let df cp ap at = at / ap in
+      let df _cp ap at = at / ap in
       let r a = Log_D a in
       op_d_d a ff fd df r
 
@@ -541,7 +541,7 @@ module Make
         | _        -> error_uniop "log2" a
       in
       let fd a = log2 a in
-      let df cp ap at = at / (ap * (pack_flt Owl_const.log2e)) in
+      let df _cp ap at = at / (ap * (pack_flt Owl_const.log2e)) in
       let r a = Log2_D a in
       op_d_d a ff fd df r
 
@@ -552,7 +552,7 @@ module Make
         | _        -> error_uniop "log10" a
       in
       let fd a = log10 a in
-      let df cp ap at = at / (ap * (pack_flt Owl_const.log10e)) in
+      let df _cp ap at = at / (ap * (pack_flt Owl_const.log10e)) in
       let r a = Log10_D a in
       op_d_d a ff fd df r
 
@@ -563,7 +563,7 @@ module Make
         | _        -> error_uniop "exp" a
       in
       let fd a = exp a in
-      let df cp ap at = at * cp in
+      let df cp _ap at = at * cp in
       let r a = Exp_D a in
       op_d_d a ff fd df r
 
@@ -574,7 +574,7 @@ module Make
         | _        -> error_uniop "sin" a
       in
       let fd a = sin a in
-      let df cp ap at = at * cos ap in
+      let df _cp ap at = at * cos ap in
       let r a = Sin_D a in
       op_d_d a ff fd df r
 
@@ -585,7 +585,7 @@ module Make
         | _        -> error_uniop "cos" a
       in
       let fd a = cos a in
-      let df cp ap at = neg (at * sin ap) in
+      let df _cp ap at = neg (at * sin ap) in
       let r a = Cos_D a in
       op_d_d a ff fd df r
 
@@ -596,7 +596,7 @@ module Make
         | _        -> error_uniop "tan" a
       in
       let fd a = tan a in
-      let df cp ap at = at / (sqr (cos ap)) in
+      let df _cp ap at = at / (sqr (cos ap)) in
       let r a = Tan_D a in
       op_d_d a ff fd df r
 
@@ -607,7 +607,7 @@ module Make
         | _        -> error_uniop "sinh" a
       in
       let fd a = sinh a in
-      let df cp ap at = at * (cosh ap) in
+      let df _cp ap at = at * (cosh ap) in
       let r a = Sinh_D a in
       op_d_d a ff fd df r
 
@@ -618,7 +618,7 @@ module Make
         | _        -> error_uniop "cosh" a
       in
       let fd a = cosh a in
-      let df cp ap at = at * (sinh ap) in
+      let df _cp ap at = at * (sinh ap) in
       let r a = Cosh_D a in
       op_d_d a ff fd df r
 
@@ -629,7 +629,7 @@ module Make
         | _        -> error_uniop "tanh" a
       in
       let fd a = tanh a in
-      let df cp ap at = at / (sqr (cosh ap)) in
+      let df _cp ap at = at / (sqr (cosh ap)) in
       let r a = Tanh_D a in
       op_d_d a ff fd df r
 
@@ -640,7 +640,7 @@ module Make
         | _        -> error_uniop "asin" a
       in
       let fd a = asin a in
-      let df cp ap at = at / sqrt ((pack_flt 1.) - sqr ap) in
+      let df _cp ap at = at / sqrt ((pack_flt 1.) - sqr ap) in
       let r a = Asin_D a in
       op_d_d a ff fd df r
 
@@ -651,7 +651,7 @@ module Make
         | _        -> error_uniop "acos" a
       in
       let fd a = acos a in
-      let df cp ap at = (neg at) / sqrt ((pack_flt 1.) - sqr ap) in
+      let df _cp ap at = (neg at) / sqrt ((pack_flt 1.) - sqr ap) in
       let r a = Acos_D a in
       op_d_d a ff fd df r
 
@@ -662,7 +662,7 @@ module Make
         | _        -> error_uniop "atan" a
       in
       let fd a = atan a in
-      let df cp ap at = at / ((pack_flt 1.) + sqr ap) in
+      let df _cp ap at = at / ((pack_flt 1.) + sqr ap) in
       let r a = Atan_D a in
       op_d_d a ff fd df r
 
@@ -673,7 +673,7 @@ module Make
         | _        -> error_uniop "asinh" a
       in
       let fd a = asinh a in
-      let df cp ap at = at / sqrt ((sqr ap) + (pack_flt 1.)) in
+      let df _cp ap at = at / sqrt ((sqr ap) + (pack_flt 1.)) in
       let r a = Asinh_D a in
       op_d_d a ff fd df r
 
@@ -684,7 +684,7 @@ module Make
         | _        -> error_uniop "acosh" a
       in
       let fd a = acosh a in
-      let df cp ap at = at / sqrt ((sqr ap) - (pack_flt 1.)) in
+      let df _cp ap at = at / sqrt ((sqr ap) - (pack_flt 1.)) in
       let r a = Acosh_D a in
       op_d_d a ff fd df r
 
@@ -695,7 +695,7 @@ module Make
         | _        -> error_uniop "atanh" a
       in
       let fd a = atanh a in
-      let df cp ap at = at / ((pack_flt 1.) - sqr ap) in
+      let df _cp ap at = at / ((pack_flt 1.) - sqr ap) in
       let r a = Atanh_D a in
       op_d_d a ff fd df r
 
@@ -712,9 +712,9 @@ module Make
         | _                 -> error_uniop "set_item" a
       in
       let fd a b = set_item a i j b in
-      let df_da cp ap at = set_item at i j (pack_flt 0.) in
-      let df_db cp bp bt = add_item (zero a) i j bt in
-      let df_dab cp ap at bp bt = set_item at i j bt in
+      let df_da _cp _ap at = set_item at i j (pack_flt 0.) in
+      let df_db _cp _bp bt = add_item (zero a) i j bt in
+      let df_dab _cp _ap at _bp bt = set_item at i j bt in
       let r_d_d a b = SetI_D_D (a, i, j, b) in
       let r_d_c a b = SetI_D_C (a, i, j, b) in
       let r_c_d a b = SetI_C_D (a, i, j, b) in
@@ -726,9 +726,9 @@ module Make
         | _                 -> error_binop "add_item" a b
       in
       let fd a b = add_item a i j b in
-      let df_da cp ap at = at in
-      let df_db cp bp bt = add_item (zero a) i j bt in
-      let df_dab cp ap at bp bt = add_item at i j bt in
+      let df_da _cp _ap at = at in
+      let df_db _cp _bp bt = add_item (zero a) i j bt in
+      let df_dab _cp _ap at _bp bt = add_item at i j bt in
       let r_d_d a b = AddI_D_D (a, i, j, b) in
       let r_d_c a b = AddI_D_C (a, i, j, b) in
       let r_c_d a b = AddI_C_D (a, i, j, b) in
@@ -740,7 +740,7 @@ module Make
         | _        -> error_uniop "slice" a
       in
       let fd a = get_slice i a in
-      let df cp ap at = get_slice i at in
+      let df _cp _ap at = get_slice i at in
       let r a = Get_Slice_D (a, i) in
       op_d_d a ff fd df r
 
@@ -751,9 +751,9 @@ module Make
         | _            -> error_binop "set_slice" a b
       in
       let fd a b = set_slice i a b in
-      let df_da cp ap at = set_slice i at (zero b) in
-      let df_db cp bp bt = set_slice i (zero a) bt in
-      let df_dab cp ap at bp bt = set_slice i at bt in
+      let df_da _cp _ap at = set_slice i at (zero b) in
+      let df_db _cp _bp bt = set_slice i (zero a) bt in
+      let df_dab _cp _ap at _bp bt = set_slice i at bt in
       let r_d_d a b = Set_Slice_D_D (a, b, i) in
       let r_d_c a b = Set_Slice_D_C (a, b, i) in
       let r_c_d a b = Set_Slice_C_D (a, b, i) in
@@ -766,7 +766,7 @@ module Make
         | _        -> error_uniop "sum" a
       in
       let fd a = sum' a in
-      let df cp ap at = sum' at in
+      let df _cp _ap at = sum' at in
       let r a = Sum_D a in
       op_d_d a ff fd df r
 
@@ -777,7 +777,7 @@ module Make
         | _        -> error_uniop "sum" a
       in
       let fd a = sum ~axis a in
-      let df cp ap at = sum ~axis at in
+      let df _cp _ap at = sum ~axis at in
       let r a = Sum__D (a, axis) in
       op_d_d a ff fd df r
 
@@ -788,7 +788,7 @@ module Make
         | _        -> error_uniop "sum_reduce" a
       in
       let fd a = sum_reduce ~axis a in
-      let df cp ap at = sum_reduce ~axis at in
+      let df _cp _ap at = sum_reduce ~axis at in
       let r a = Sum___D (a, axis) in
       op_d_d a ff fd df r
 
@@ -802,9 +802,9 @@ module Make
         | _                  -> error_binop "( *@ )" a b
       in
       let fd a b = a *@ b in
-      let df_da cp ap at = at *@ b in
-      let df_db cp bp bt = a *@ bt in
-      let df_dab cp ap at bp bt = (ap *@ bt) + (at *@ bp) in
+      let df_da _cp _ap at = at *@ b in
+      let df_db _cp _bp bt = a *@ bt in
+      let df_dab _cp ap at bp bt = (ap *@ bt) + (at *@ bp) in
       let r_d_d a b = Dot_D_D (a, b) in
       let r_d_c a b = Dot_D_C (a, b) in
       let r_c_d a b = Dot_C_D (a, b) in
@@ -816,7 +816,7 @@ module Make
         | _        -> error_uniop "transpose" a
       in
       let fd a = transpose a in
-      let df cp ap at = transpose at in
+      let df _cp _ap at = transpose at in
       let r a = Trans_D a in
       op_d_d a ff fd df r
 
@@ -826,7 +826,7 @@ module Make
         | _        -> error_uniop "l1norm'" a
       in
       let fd a = l1norm' a in
-      let df cp ap at = at * (signum ap) in
+      let df _cp ap at = at * (signum ap) in
       let r a = L1Norm_D a in
       op_d_d a ff fd df r
 
@@ -847,7 +847,7 @@ module Make
         | _        -> error_uniop "l2norm_sqr'" a
       in
       let fd a = l2norm_sqr' a in
-      let df cp ap at = (pack_flt 2.) * (ap * at) in
+      let df _cp ap at = (pack_flt 2.) * (ap * at) in
       let r a = L2NormS_D a in
       op_d_d a ff fd df r
 
@@ -858,7 +858,7 @@ module Make
         | _        -> error_uniop "sigmoid" a
       in
       let fd a = sigmoid a in
-      let df cp ap at = at * cp * ((pack_flt 1.) - cp) in
+      let df cp _ap at = at * cp * ((pack_flt 1.) - cp) in
       let r a = Sigmoid_D a in
       op_d_d a ff fd df r
 
@@ -869,7 +869,7 @@ module Make
         | _        -> error_uniop "relu" a
       in
       let fd a = relu a in
-      let df cp ap at = at * ((pack_flt 1.) + (signum ap)) / (pack_flt 2.) in
+      let df _cp ap at = at * ((pack_flt 1.) + (signum ap)) / (pack_flt 2.) in
       let r a = Relu_D a in
       op_d_d a ff fd df r
 
@@ -879,7 +879,7 @@ module Make
         | _        -> error_uniop "inv" a
       in
       let fd a = inv a in
-      let df cp ap at = (neg cp) * at * cp in
+      let df cp _ap at = (neg cp) * at * cp in
       let r a = Inv_D a in
       op_d_d a ff fd df r
 
@@ -902,9 +902,9 @@ module Make
         | _                  -> error_binop "add_row" a b
       in
       let fd a b = add_row a b i in
-      let df_da cp ap at = at in
-      let df_db cp bp bt = add_row (zero a) bt i in
-      let df_dab cp ap at bp bt = add_row at bt i in
+      let df_da _cp _ap at = at in
+      let df_db _cp _bp bt = add_row (zero a) bt i in
+      let df_dab _cp _ap at _bp bt = add_row at bt i in
       let r_d_d a b = Add_Row_D_D (a, b, i) in
       let r_d_c a b = Add_Row_D_C (a, b, i) in
       let r_c_d a b = Add_Row_C_D (a, b, i) in
@@ -916,7 +916,7 @@ module Make
         | _        -> error_uniop "get_row" a
       in
       let fd a = get_row a i in
-      let df cp ap at = get_row at i in
+      let df _cp _ap at = get_row at i in
       let r a = Get_Row_D (a, i) in
       op_d_d a ff fd df r
 
@@ -950,9 +950,9 @@ module Make
       in
       let fd a b = conv1d ?padding a b s in
       (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da cp ap at = failwith "conv1d:df_da" in
-      let df_db cp bp bt = failwith "conv1d:df_db" in
-      let df_dab cp ap at bp bt = failwith "conv1d:df_dab" in
+      let df_da _cp _ap _at = failwith "conv1d:df_da" in
+      let df_db _cp _bp _bt = failwith "conv1d:df_db" in
+      let df_dab _cp _ap _at _bp _bt = failwith "conv1d:df_dab" in
       let r_d_d a b = Conv1D_D_D (a, b, s) in
       let r_d_c a b = Conv1D_D_C (a, b, s) in
       let r_c_d a b = Conv1D_C_D (a, b, s) in
@@ -983,9 +983,9 @@ module Make
       in
       let fd a b = conv2d ?padding a b s in
       (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da cp ap at = at in
-      let df_db cp bp bt = bt in
-      let df_dab cp ap at bp bt = at + bt in
+      let df_da _cp _ap at = at in
+      let df_db _cp _bp bt = bt in
+      let df_dab _cp _ap at _bp bt = at + bt in
       let r_d_d a b = Conv2D_D_D (a, b, s) in
       let r_d_c a b = Conv2D_D_C (a, b, s) in
       let r_c_d a b = Conv2D_C_D (a, b, s) in
@@ -1016,9 +1016,9 @@ module Make
       in
       let fd a b = conv3d ?padding a b s in
       (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da cp ap at = at in
-      let df_db cp bp bt = bt in
-      let df_dab cp ap at bp bt = at + bt in
+      let df_da _cp _ap at = at in
+      let df_db _cp _bp bt = bt in
+      let df_dab _cp _ap at _bp bt = at + bt in
       let r_d_d a b = Conv3D_D_D (a, b, s) in
       let r_d_c a b = Conv3D_D_C (a, b, s) in
       let r_c_d a b = Conv3D_C_D (a, b, s) in
@@ -1049,9 +1049,9 @@ module Make
       in
       let fd a b = dilated_conv1d ?padding a b s r in
       (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da cp ap at = at in
-      let df_db cp bp bt = bt in
-      let df_dab cp ap at bp bt = at + bt in
+      let df_da _cp _ap at = at in
+      let df_db _cp _bp bt = bt in
+      let df_dab _cp _ap at _bp bt = at + bt in
       let r_d_d a b = Di_Conv1D_D_D (a, b, s, r) in
       let r_d_c a b = Di_Conv1D_D_C (a, b, s, r) in
       let r_c_d a b = Di_Conv1D_C_D (a, b, s, r) in
@@ -1082,9 +1082,9 @@ module Make
       in
       let fd a b = dilated_conv2d ?padding a b s r in
       (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da cp ap at = at in
-      let df_db cp bp bt = bt in
-      let df_dab cp ap at bp bt = at + bt in
+      let df_da _cp _ap at = at in
+      let df_db _cp _bp bt = bt in
+      let df_dab _cp _ap at _bp bt = at + bt in
       let r_d_d a b = Di_Conv2D_D_D (a, b, s, r) in
       let r_d_c a b = Di_Conv2D_D_C (a, b, s, r) in
       let r_c_d a b = Di_Conv2D_C_D (a, b, s, r) in
@@ -1115,9 +1115,9 @@ module Make
       in
       let fd a b = dilated_conv3d ?padding a b s r in
       (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da cp ap at = at in
-      let df_db cp bp bt = bt in
-      let df_dab cp ap at bp bt = at + bt in
+      let df_da _cp _ap at = at in
+      let df_db _cp _bp bt = bt in
+      let df_dab _cp _ap at _bp bt = at + bt in
       let r_d_d a b = Di_Conv3D_D_D (a, b, s, r) in
       let r_d_c a b = Di_Conv3D_D_C (a, b, s, r) in
       let r_c_d a b = Di_Conv3D_C_D (a, b, s, r) in
@@ -1148,9 +1148,9 @@ module Make
       in
       let fd a b = transpose_conv1d ?padding a b s in
       (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da cp ap at = at in
-      let df_db cp bp bt = bt in
-      let df_dab cp ap at bp bt = at + bt in
+      let df_da _cp _ap at = at in
+      let df_db _cp _bp bt = bt in
+      let df_dab _cp _ap at _bp bt = at + bt in
       let r_d_d a b = Tr_Conv1D_D_D (a, b, s) in
       let r_d_c a b = Tr_Conv1D_D_C (a, b, s) in
       let r_c_d a b = Tr_Conv1D_C_D (a, b, s) in
@@ -1181,9 +1181,9 @@ module Make
       in
       let fd a b = transpose_conv2d ?padding a b s in
       (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da cp ap at = at in
-      let df_db cp bp bt = bt in
-      let df_dab cp ap at bp bt = at + bt in
+      let df_da _cp _ap at = at in
+      let df_db _cp _bp bt = bt in
+      let df_dab _cp _ap at _bp bt = at + bt in
       let r_d_d a b = Tr_Conv2D_D_D (a, b, s) in
       let r_d_c a b = Tr_Conv2D_D_C (a, b, s) in
       let r_c_d a b = Tr_Conv2D_C_D (a, b, s) in
@@ -1214,9 +1214,9 @@ module Make
       in
       let fd a b = transpose_conv3d ?padding a b s in
       (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da cp ap at = at in
-      let df_db cp bp bt = bt in
-      let df_dab cp ap at bp bt = at + bt in
+      let df_da _cp _ap at = at in
+      let df_db _cp _bp bt = bt in
+      let df_dab _cp _ap at _bp bt = at + bt in
       let r_d_d a b = Tr_Conv3D_D_D (a, b, s) in
       let r_d_c a b = Tr_Conv3D_D_C (a, b, s) in
       let r_c_d a b = Tr_Conv3D_C_D (a, b, s) in
@@ -1244,7 +1244,7 @@ module Make
         | _        -> error_uniop "reshape" a
       in
       let fd a = reshape a s in
-      let df cp ap at = reshape at s in
+      let df _cp _ap at = reshape at s in
       let r a = Reshape_D a in
       op_d_d a ff fd df r
 
@@ -1257,7 +1257,7 @@ module Make
         | _        -> error_uniop "max_pool1d" a
       in
       let fd a = max_pool1d padding a b s in
-      let df cp ap at = failwith "max_pool1d:df" in
+      let df _cp _ap _at = failwith "max_pool1d:df" in
       let r a = Maxpool1D_D (a, padding, b, s) in
       op_d_d a ff fd df r
 
@@ -1275,7 +1275,7 @@ module Make
         | _        -> error_uniop "max_pool2d" a
       in
       let fd a = max_pool2d padding a b s in
-      let df cp ap at = failwith "max_pool2d:df" in
+      let df _cp _ap _at = failwith "max_pool2d:df" in
       let r a = Maxpool2D_D (a, padding, b, s) in
       op_d_d a ff fd df r
 
@@ -1293,7 +1293,7 @@ module Make
         | _        -> error_uniop "max_pool3d" a
       in
       let fd a = max_pool3d padding a b s in
-      let df cp ap at = failwith "max_pool3d:df" in
+      let df _cp _ap _at = failwith "max_pool3d:df" in
       let r a = Maxpool3D_D (a, padding, b, s) in
       op_d_d a ff fd df r
 
@@ -1311,7 +1311,7 @@ module Make
         | _        -> error_uniop "avg_pool1d" a
       in
       let fd a = avg_pool1d padding a b s in
-      let df cp ap at = failwith "avg_pool1d:df" in
+      let df _cp _ap _at = failwith "avg_pool1d:df" in
       let r a = Avgpool1D_D (a, padding, b, s) in
       op_d_d a ff fd df r
 
@@ -1329,7 +1329,7 @@ module Make
         | _        -> error_uniop "avg_pool2d" a
       in
       let fd a = avg_pool2d padding a b s in
-      let df cp ap at = failwith "avg_pool2d:df" in
+      let df _cp _ap _at = failwith "avg_pool2d:df" in
       let r a = Avgpool2D_D (a, padding, b, s) in
       op_d_d a ff fd df r
 
@@ -1347,7 +1347,7 @@ module Make
         | _        -> error_uniop "avg_pool3d" a
       in
       let fd a = avg_pool3d padding a b s in
-      let df cp ap at = failwith "avg_pool3d:df" in
+      let df _cp _ap _at = failwith "avg_pool3d:df" in
       let r a = Avgpool3D_D (a, padding, b, s) in
       op_d_d a ff fd df r
 
@@ -1373,9 +1373,9 @@ module Make
         | _            -> error_binop "concat" a b
       in
       let fd a b = concat axis a b in
-      let df_da cp ap at = concat axis at (zero b) in
-      let df_db cp bp bt = concat axis (zero a) bt in
-      let df_dab cp ap at bp bt = concat axis at bt in
+      let df_da _cp _ap at = concat axis at (zero b) in
+      let df_db _cp _bp bt = concat axis (zero a) bt in
+      let df_dab _cp _ap at _bp bt = concat axis at bt in
       let r_d_d a b = Concat_D_D (a, b, axis) in
       let r_d_c a b = Concat_D_C (a, b, axis) in
       let r_c_d a b = Concat_C_D (a, b, axis) in
@@ -1402,7 +1402,7 @@ module Make
       | [] -> ()
       | x :: t -> (
           match x with
-          | DR (ap, aa, ao, af, ai) -> (
+          | DR (_ap, aa, ao, af, _ai) -> (
             aa := reset_zero !aa;
             af := !af + 1;
             if !af = 1 then (
@@ -1542,7 +1542,7 @@ module Make
         )
         else Arr v
       )
-    | a, v         -> v
+    | _a, v         -> v
 
 
   let reverse_push v x =
@@ -1552,7 +1552,7 @@ module Make
       | []          -> ()
       | (v, x) :: t -> (
           match x with
-          | DR (ap, aa, ao, af, ai) -> (
+          | DR (ap, aa, ao, af, _ai) -> (
             let v = _shrink !aa v in
             aa := Maths.(!aa + v);
             af := Pervasives.(!af - 1);
@@ -1611,7 +1611,7 @@ module Make
               | Get_Slice_D (a, i)         -> push ((set_slice i (zero a) !aa, a) :: t)
               | Set_Slice_D_D (a, b, i)    -> push ((set_slice i !aa (zero b), a) :: (get_slice i !aa, b) :: t)
               | Set_Slice_D_C (a, b, i)    -> push ((set_slice i !aa (zero b), a) :: t)
-              | Set_Slice_C_D (a, b, i)    -> push ((get_slice i !aa, b) :: t)
+              | Set_Slice_C_D (_a, b, i)    -> push ((get_slice i !aa, b) :: t)
               | Sum_D a                    -> push ((!aa, a) :: t)
               | Sum__D (a, i)              -> let s = shape a in let reps = Array.(make (length s) 1) in reps.(i) <- s.(i); push ((repeat !aa reps, a) :: t)
               | Sum___D (a, i)             -> let s = shape a in let reps = Array.(make (length s) 1) in Array.iter (fun j -> reps.(j) <- s.(j)) i; push ((repeat !aa reps, a) :: t)
@@ -1626,8 +1626,8 @@ module Make
               | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
               | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) * !aa * dpt), a) :: t)
               | Add_Row_D_D (a, b, i)      -> push ((!aa, a) :: (get_row !aa i, b) :: t)
-              | Add_Row_D_C (a, b, i)      -> push ((!aa, a) :: t)
-              | Add_Row_C_D (a, b, i)      -> push ((get_row !aa i, b) :: t)
+              | Add_Row_D_C (a, _b, _i)      -> push ((!aa, a) :: t)
+              | Add_Row_C_D (_a, b, i)      -> push ((get_row !aa i, b) :: t)
               | Get_Row_D (a, i)           -> (adjref a) := add_row (adjval a) !aa i; push ((zero a, a) :: t)
               | Of_Rows_D a                -> push (t |> List.append (a |> Array.to_list |> List.mapi (fun i v -> (get_row !aa i, v))))
               | Conv1D_D_D (a, b, s)       -> push ((conv1d_backward_input a b s !aa, a) :: (conv1d_backward_kernel a b s !aa, b) :: t)
@@ -1915,7 +1915,7 @@ module Make
           if Hashtbl.mem nodes hd = false then (
             let op, prev =
               match hd with
-              | DR (ap, aa, ao, af, ai) -> (
+              | DR (_ap, _aa, ao, _af, _ai) -> (
                   match ao with
                   | Noop                       -> "Noop", []
                   | Add_D_D (a, b)             -> "Add_D_D", [a; b]
@@ -1960,20 +1960,20 @@ module Make
                   | Asinh_D a                  -> "Asinh_D", [ a ]
                   | Acosh_D a                  -> "Acosh_D", [ a ]
                   | Atanh_D a                  -> "Atanh_D", [ a ]
-                  | Get_Item (a, i, j)         -> "Get_Item", [ a ]
-                  | SetI_D_D (a, i, j, b)      -> "SetI_D_D", [a; b]
-                  | SetI_D_C (a, i, j, b)      -> "SetI_D_C", [a; b]
-                  | SetI_C_D (a, i, j, b)      -> "SetI_C_D", [a; b]
-                  | AddI_D_D (a, i, j, b)      -> "AddI_D_D", [a; b]
-                  | AddI_D_C (a, i, j, b)      -> "AddI_D_C", [a; b]
-                  | AddI_C_D (a, i, j, b)      -> "AddI_C_D", [a; b]
-                  | Get_Slice_D (a, i)         -> "Get_Slice_D", [ a ]
-                  | Set_Slice_D_D (a, b, i)    -> "Set_Slice_D_D", [a; b]
-                  | Set_Slice_D_C (a, b, i)    -> "Set_Slice_D_C", [a; b]
-                  | Set_Slice_C_D (a, b, i)    -> "Set_Slice_C_D", [a; b]
+                  | Get_Item (a, _i, _j)         -> "Get_Item", [ a ]
+                  | SetI_D_D (a, _i, _j, b)      -> "SetI_D_D", [a; b]
+                  | SetI_D_C (a, _i, _j, b)      -> "SetI_D_C", [a; b]
+                  | SetI_C_D (a, _i, _j, b)      -> "SetI_C_D", [a; b]
+                  | AddI_D_D (a, _i, _j, b)      -> "AddI_D_D", [a; b]
+                  | AddI_D_C (a, _i, _j, b)      -> "AddI_D_C", [a; b]
+                  | AddI_C_D (a, _i, _j, b)      -> "AddI_C_D", [a; b]
+                  | Get_Slice_D (a, _i)         -> "Get_Slice_D", [ a ]
+                  | Set_Slice_D_D (a, b, _i)    -> "Set_Slice_D_D", [a; b]
+                  | Set_Slice_D_C (a, b, _i)    -> "Set_Slice_D_C", [a; b]
+                  | Set_Slice_C_D (a, b, _i)    -> "Set_Slice_C_D", [a; b]
                   | Sum_D a                    -> "Sum_D", [ a ]
-                  | Sum__D (a, i)              -> "Sum__D", [ a ]
-                  | Sum___D (a, i)             -> "Sum___D", [ a ]
+                  | Sum__D (a, _i)              -> "Sum__D", [ a ]
+                  | Sum___D (a, _i)             -> "Sum___D", [ a ]
                   | Dot_D_D (a, b)             -> "Dot_D_D", [a; b]
                   | Dot_D_C (a, b)             -> "Dot_D_C", [a; b]
                   | Dot_C_D (a, b)             -> "Dot_C_D", [a; b]
@@ -1984,51 +1984,51 @@ module Make
                   | Sigmoid_D a                -> "Sigmoid_D", [ a ]
                   | Relu_D a                   -> "Relu_D", [ a ]
                   | Inv_D a                    -> "Inv_D", [ a ]
-                  | Add_Row_D_D (a, b, i)      -> "Add_Row_D_D", [a; b]
-                  | Add_Row_D_C (a, b, i)      -> "Add_Row_D_C", [a; b]
-                  | Add_Row_C_D (a, b, i)      -> "Add_Row_C_D", [a; b]
-                  | Get_Row_D (a, i)           -> "Get_Row_D", [ a ]
+                  | Add_Row_D_D (a, b, _i)      -> "Add_Row_D_D", [a; b]
+                  | Add_Row_D_C (a, b, _i)      -> "Add_Row_D_C", [a; b]
+                  | Add_Row_C_D (a, b, _i)      -> "Add_Row_C_D", [a; b]
+                  | Get_Row_D (a, _i)           -> "Get_Row_D", [ a ]
                   | Of_Rows_D a                -> "Of_Rows_D", (Array.to_list a)
-                  | Conv1D_D_D (a, b, s)       -> "Conv1D_D_D", [a; b]
-                  | Conv1D_D_C (a, b, s)       -> "Conv1D_D_C", [a; b]
-                  | Conv1D_C_D (a, b, s)       -> "Conv1D_C_D", [a; b]
-                  | Conv2D_D_D (a, b, s)       -> "Conv2D_D_D", [a; b]
-                  | Conv2D_D_C (a, b, s)       -> "Conv2D_D_C", [a; b]
-                  | Conv2D_C_D (a, b, s)       -> "Conv2D_C_D", [a; b]
-                  | Conv3D_D_D (a, b, s)       -> "Conv3D_D_D", [a; b]
-                  | Conv3D_D_C (a, b, s)       -> "Conv3D_D_C", [a; b]
-                  | Conv3D_C_D (a, b, s)       -> "Conv3D_C_D", [a; b]
-                  | Di_Conv1D_D_D (a, b, s, r) -> "Di_Conv1D_D_D", [a; b]
-                  | Di_Conv1D_D_C (a, b, s, r) -> "Di_Conv1D_D_C", [a; b]
-                  | Di_Conv1D_C_D (a, b, s, r) -> "Di_Conv1D_C_D", [a; b]
-                  | Di_Conv2D_D_D (a, b, s, r) -> "Di_Conv2D_D_D", [a; b]
-                  | Di_Conv2D_D_C (a, b, s, r) -> "Di_Conv2D_D_C", [a; b]
-                  | Di_Conv2D_C_D (a, b, s, r) -> "Di_Conv2D_C_D", [a; b]
-                  | Di_Conv3D_D_D (a, b, s, r) -> "Di_Conv3D_D_D", [a; b]
-                  | Di_Conv3D_D_C (a, b, s, r) -> "Di_Conv3D_D_C", [a; b]
-                  | Di_Conv3D_C_D (a, b, s, r) -> "Di_Conv3D_C_D", [a; b]
-                  | Tr_Conv1D_D_D (a, b, s)    -> "Tr_Conv1D_D_D", [a; b]
-                  | Tr_Conv1D_D_C (a, b, s)    -> "Tr_Conv1D_D_C", [a; b]
-                  | Tr_Conv1D_C_D (a, b, s)    -> "Tr_Conv1D_C_D", [a; b]
-                  | Tr_Conv2D_D_D (a, b, s)    -> "Tr_Conv2D_D_D", [a; b]
-                  | Tr_Conv2D_D_C (a, b, s)    -> "Tr_Conv2D_D_C", [a; b]
-                  | Tr_Conv2D_C_D (a, b, s)    -> "Tr_Conv2D_C_D", [a; b]
-                  | Tr_Conv3D_D_D (a, b, s)    -> "Tr_Conv3D_D_D", [a; b]
-                  | Tr_Conv3D_D_C (a, b, s)    -> "Tr_Conv3D_D_C", [a; b]
-                  | Tr_Conv3D_C_D (a, b, s)    -> "Tr_Conv3D_C_D", [a; b]
+                  | Conv1D_D_D (a, b, _s)       -> "Conv1D_D_D", [a; b]
+                  | Conv1D_D_C (a, b, _s)       -> "Conv1D_D_C", [a; b]
+                  | Conv1D_C_D (a, b, _s)       -> "Conv1D_C_D", [a; b]
+                  | Conv2D_D_D (a, b, _s)       -> "Conv2D_D_D", [a; b]
+                  | Conv2D_D_C (a, b, _s)       -> "Conv2D_D_C", [a; b]
+                  | Conv2D_C_D (a, b, _s)       -> "Conv2D_C_D", [a; b]
+                  | Conv3D_D_D (a, b, _s)       -> "Conv3D_D_D", [a; b]
+                  | Conv3D_D_C (a, b, _s)       -> "Conv3D_D_C", [a; b]
+                  | Conv3D_C_D (a, b, _s)       -> "Conv3D_C_D", [a; b]
+                  | Di_Conv1D_D_D (a, b, _s, _r) -> "Di_Conv1D_D_D", [a; b]
+                  | Di_Conv1D_D_C (a, b, _s, _r) -> "Di_Conv1D_D_C", [a; b]
+                  | Di_Conv1D_C_D (a, b, _s, _r) -> "Di_Conv1D_C_D", [a; b]
+                  | Di_Conv2D_D_D (a, b, _s, _r) -> "Di_Conv2D_D_D", [a; b]
+                  | Di_Conv2D_D_C (a, b, _s, _r) -> "Di_Conv2D_D_C", [a; b]
+                  | Di_Conv2D_C_D (a, b, _s, _r) -> "Di_Conv2D_C_D", [a; b]
+                  | Di_Conv3D_D_D (a, b, _s, _r) -> "Di_Conv3D_D_D", [a; b]
+                  | Di_Conv3D_D_C (a, b, _s, _r) -> "Di_Conv3D_D_C", [a; b]
+                  | Di_Conv3D_C_D (a, b, _s, _r) -> "Di_Conv3D_C_D", [a; b]
+                  | Tr_Conv1D_D_D (a, b, _s)    -> "Tr_Conv1D_D_D", [a; b]
+                  | Tr_Conv1D_D_C (a, b, _s)    -> "Tr_Conv1D_D_C", [a; b]
+                  | Tr_Conv1D_C_D (a, b, _s)    -> "Tr_Conv1D_C_D", [a; b]
+                  | Tr_Conv2D_D_D (a, b, _s)    -> "Tr_Conv2D_D_D", [a; b]
+                  | Tr_Conv2D_D_C (a, b, _s)    -> "Tr_Conv2D_D_C", [a; b]
+                  | Tr_Conv2D_C_D (a, b, _s)    -> "Tr_Conv2D_C_D", [a; b]
+                  | Tr_Conv3D_D_D (a, b, _s)    -> "Tr_Conv3D_D_D", [a; b]
+                  | Tr_Conv3D_D_C (a, b, _s)    -> "Tr_Conv3D_D_C", [a; b]
+                  | Tr_Conv3D_C_D (a, b, _s)    -> "Tr_Conv3D_C_D", [a; b]
                   | Reshape_D a                -> "Reshape_D", [ a ]
-                  | Maxpool1D_D (a, p, d, s)   -> "Maxpool1D_D", [ a ]
-                  | Maxpool2D_D (a, p, d, s)   -> "Maxpool2D_D", [ a ]
-                  | Maxpool3D_D (a, p, d, s)   -> "Maxpool3D_D", [ a ]
-                  | Avgpool1D_D (a, p, d, s)   -> "Avgpool1D_D", [ a ]
-                  | Avgpool2D_D (a, p, d, s)   -> "Avgpool2D_D", [ a ]
-                  | Avgpool3D_D (a, p, d, s)   -> "Avgpool3D_D", [ a ]
-                  | Concat_D_D (a, b, i)       -> "Concat_D_D", [a; b]
-                  | Concat_D_C (a, b, i)       -> "Concat_D_C", [a; b]
-                  | Concat_C_D (a, b, i)       -> "Concat_C_D", [a; b]
+                  | Maxpool1D_D (a, _p, _d, _s)   -> "Maxpool1D_D", [ a ]
+                  | Maxpool2D_D (a, _p, _d, _s)   -> "Maxpool2D_D", [ a ]
+                  | Maxpool3D_D (a, _p, _d, _s)   -> "Maxpool3D_D", [ a ]
+                  | Avgpool1D_D (a, _p, _d, _s)   -> "Avgpool1D_D", [ a ]
+                  | Avgpool2D_D (a, _p, _d, _s)   -> "Avgpool2D_D", [ a ]
+                  | Avgpool3D_D (a, _p, _d, _s)   -> "Avgpool3D_D", [ a ]
+                  | Concat_D_D (a, b, _i)       -> "Concat_D_D", [a; b]
+                  | Concat_D_C (a, b, _i)       -> "Concat_D_C", [a; b]
+                  | Concat_C_D (a, b, _i)       -> "Concat_C_D", [a; b]
                 )
-              | F a                     -> Printf.sprintf "Const", []
-              | Arr a                   -> Printf.sprintf "Const", []
+              | F _a                     -> Printf.sprintf "Const", []
+              | Arr _a                   -> Printf.sprintf "Const", []
               | DF (_, _, _)            -> Printf.sprintf "DF", []
             in
             (* check if the node has been visited before *)
@@ -2057,14 +2057,14 @@ module Make
 
   (* convert graph to dot file output *)
   let _convert_dot_output nodes =
-    let network = Hashtbl.fold (fun v (v_id, v_op, v_prev) s0 ->
+    let network = Hashtbl.fold (fun _v (v_id, _v_op, v_prev) s0 ->
       s0 ^ List.fold_left (fun s1 u ->
-        let u_id, u_op, _ = Hashtbl.find nodes u in
+        let u_id, _u_op, _ = Hashtbl.find nodes u in
         s1 ^ Printf.sprintf "\t%i -> %i;\n" u_id v_id
       ) "" v_prev
     ) nodes ""
     in
-    let attrs = Hashtbl.fold (fun v (v_id, v_op, v_prev) s0 ->
+    let attrs = Hashtbl.fold (fun v (v_id, v_op, _v_prev) s0 ->
       if v_op = "Const" then
         s0 ^ Printf.sprintf "%i [ label=\"#%i | { %s | %s }\" fillcolor=gray, style=filled ];\n"
           v_id v_id v_op (deep_info v)

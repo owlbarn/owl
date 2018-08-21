@@ -18,7 +18,7 @@ let trapzd f a b n =
     let x = ref (a +. 0.5 *. d) in
     let s = ref 0. in
 
-    for i = 1 to (int_of_float m) do
+    for _i = 1 to (int_of_float m) do
       x := !x +. d;
       s := !s +. f !x;
     done;
@@ -140,7 +140,7 @@ let gauss_legendre ?(eps=3e-11) ?(a=(-1.)) ?(b=(+1.)) n =
 let gauss_legendre_cache = Array.init 50 gauss_legendre
 
 
-let gauss_laguerre ?(eps=3e-11) a b n = ()
+let _gauss_laguerre ?(_eps=3e-11) _a _b _n = ()
 
 
 let gaussian_fixed ?(n=10) f a b =

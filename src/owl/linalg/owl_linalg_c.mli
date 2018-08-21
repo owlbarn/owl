@@ -113,8 +113,6 @@ val mpow : mat -> float -> mat
 
 val expm : mat -> mat
 
-val expm : mat -> mat
-
 val sinm : mat -> mat
 
 val cosm : mat -> mat

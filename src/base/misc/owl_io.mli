@@ -12,7 +12,7 @@ val read_file : ?trim:bool -> string -> string array
 val read_file_string : string -> string
 (** TODO *)
 
-val write_file : ?flag:open_flag -> string -> string -> unit
+val write_file : ?_flag:open_flag -> string -> string -> unit
 (** TODO *)
 
 val marshal_from_file : string -> 'a
@@ -42,7 +42,7 @@ val iteri_lines_of_file : ?verbose:bool -> (int -> string -> unit) -> string -> 
 val mapi_lines_of_file : (int -> string -> 'a) -> string -> 'a array
 (** TODO *)
 
-val iteri_lines_of_marshal : ?verbose:bool -> (int -> 'a -> 'b) -> string -> unit
+val iteri_lines_of_marshal : ?verbose:bool -> (int -> 'a -> unit) -> string -> unit
 (** TODO *)
 
 val mapi_lines_of_marshal : (int -> 'a -> 'b) -> string -> 'b array

@@ -184,7 +184,7 @@ let is_simplex x =
         );
         acc := !acc +. a
       ) x;
-    with exn -> ()
+    with _exn -> ()
   );
   let df = abs_float (1. -. !acc) in
   if df > Owl_const.eps then chk := false;
@@ -212,7 +212,7 @@ let fermat_fact x =
 
 
 (* TODO: not finished yet ... *)
-let is_prime x = failwith "not implemented yet"
+let is_prime _x = failwith "not implemented yet"
 (*
   let _detect_composite a d n s =
     if mod_float (a ** d) n == 1. then false

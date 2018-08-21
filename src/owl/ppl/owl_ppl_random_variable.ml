@@ -18,7 +18,7 @@ module Make (A : Stats_Dist) = struct
   }
 
 
-  let uniform ~a ~b = ()
+  let uniform ~a ~b = () [@@warning "-27"]
 
 
 end

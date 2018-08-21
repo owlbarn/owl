@@ -30,7 +30,7 @@ let bisec ?(max_iter=1000) ?(xtol=1e-6) f a b =
       | false -> ref b, ref (a -. b)
     in
     try
-      for i = 1 to max_iter do
+      for _i = 1 to max_iter do
         d := !d *. 0.5;
         let c = !x +. !d in
         let fc = f c in
@@ -59,7 +59,7 @@ let false_pos ?(max_iter=1000) ?(xtol=1e-6) f a b =
     let x = ref infinity in
     let e = ref infinity in
     try
-      for i = 1 to max_iter do
+      for _i = 1 to max_iter do
         let d = !xb -. !xa in
         x := !xa +. d *. !fa /. (!fa -. !fb);
         let fc = f !x in
@@ -97,7 +97,7 @@ let ridder ?(max_iter=1000) ?(xtol=1e-6) f a b =
     let x = ref infinity in
 
     try
-      for i = 1 to max_iter do
+      for _i = 1 to max_iter do
         let dm = 0.5 *. (!xb -. !xa) in
         let xm = !xa +. dm in
         let fm = f xm in
@@ -153,7 +153,7 @@ let brent ?(max_iter=1000) ?(xtol=1e-6) f a b =
     let eps = 3e-16 in
 
     try
-      for i = 1 to max_iter do
+      for _i = 1 to max_iter do
 
         if (!fb > 0. && !fc > 0.) || (!fb < 0. && !fc < 0.) then (
           xc := !xa;
@@ -238,7 +238,7 @@ let bracket_expand ?(rate=1.6) ?(max_iter=100) f a b =
   let fb = ref (f b) in
   (
     try
-      for i = 1 to max_iter do
+      for _i = 1 to max_iter do
         assert (Owl_base_maths.same_sign !fa !fb);
         let d = (!xb -. !xa) *. rate in
         xa := !xa -. d;

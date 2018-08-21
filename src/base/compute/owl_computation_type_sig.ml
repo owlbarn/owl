@@ -5,9 +5,6 @@
 
 open Owl_types
 
-open Owl_graph
-
-
 (* Functor of making the symbols of a computation graph. *)
 
 module type Sig = sig

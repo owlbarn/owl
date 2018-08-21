@@ -81,7 +81,7 @@ let show_info m i t =
 
 module SimpleLDA = struct
 
-  let init m = ()
+  let init _m = ()
 
   let sampling m d =
     let p = MD.zeros 1 m.n_k in
@@ -188,7 +188,7 @@ module SparseLDA = struct
     (* Process the document *)
     Array.iteri (fun i w ->
         let k = m.t__z.(d).(i) in
-        exclude_token_sparse m w d k s r q;
+        exclude_token_sparse m w d k ~s ~r ~q;
         (* Calculate q *)
         let qsum = ref 0. in
         let k_q = ref 0 in
@@ -237,7 +237,7 @@ module SparseLDA = struct
                     k := key)
               ) !q_non_zero
         );
-        include_token_sparse m w d !k s r q;
+        include_token_sparse m w d !k ~s ~r ~q;
         m.t__z.(d).(i) <- !k;
       ) m.data.(d)
 end
@@ -245,18 +245,18 @@ end
 
 module FTreeLDA = struct
 
-  let init m = ()
+  let init _m = ()
 
-  let sampling m d = ()
+  let sampling _m _d = ()
 
 end
 
 
 module LightLDA = struct
 
-  let init m = ()
+  let init _m = ()
 
-  let sampling m d = ()
+  let sampling _m _d = ()
 
 end
 

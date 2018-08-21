@@ -215,7 +215,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     type t = { df : A.arr; }
     (** Type definition of a specific distribution *)
 
-    val make : df:A.arr -> sigma:'a -> t
+    val make : df:A.arr -> _sigma:'a -> t
     (** Make a distribution of the given parameters. *)
 
     val sample : t -> int -> A.arr

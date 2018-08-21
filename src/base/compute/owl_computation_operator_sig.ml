@@ -12,8 +12,6 @@ module type Sig = sig
 
   module Symbol : Owl_computation_symbol_sig.Sig
 
-  open Symbol
-
   open Symbol.Shape.Type
 
 

@@ -6,23 +6,23 @@ all: build
 
 .PHONY: depend depends
 depend depends:
-	jbuilder external-lib-deps --missing @install @runtest
+	dune external-lib-deps --missing @install @runtest
 
 .PHONY: build
 build: depends
-	jbuilder build @install
+	dune build @install
 
 .PHONY: test
 test: depends
-	jbuilder runtest -j 1 --no-buffer -p owl
+	dune runtest -j 1 --no-buffer -p owl
 
 .PHONY: clean
 clean:
-	jbuilder clean
+	dune clean
 
 .PHONY: install
 install: build
-	jbuilder install
+	dune install
 	[ -f "$(OPAM_LIB)/stubslibs/dllowl_stubs.so" ] \
 	  && mv "$(OPAM_LIB)/stubslibs/dllowl_stubs.so" \
 	        "$(OPAM_STUBS)/dllowl_stubs.so" || true
@@ -33,49 +33,33 @@ install: build
 
 .PHONY: uninstall
 uninstall:
-	jbuilder uninstall
+	dune uninstall
 	$(RM) $(OPAM_STUBS)/dllowl_stubs.so
 	$(RM) $(OPAM_STUBS)/dllowl_opencl_stubs.so
 
 .PHONY: doc
 doc:
-	jbuilder build @doc
+	opam install -y odoc
+	dune build @doc
 
-.PHONY: cleanall
-cleanall:
-	jbuilder uninstall && jbuilder clean
+.PHONY: distclean cleanall
+distclean cleanall:
+	dune uninstall && dune clean
 	$(RM) -r $(find . -name .merlin)
 	$(RM) $(OPAM_STUBS)/dllowl_stubs.so
 	$(RM) $(OPAM_STUBS)/dllowl_opencl_stubs.so
 
-define _OWL_RELEASE_WARNING
-############################################################################
-# NB. To complete the release to OPAM you now need to close all but one    #
-# of the PRs just opened, rebase the closed PRs onto the one remaining,    #
-# and then force push the result to your opam-repository fork. This will   #
-# update the remaining PR so that all 4 interdependent packages are merged #
-# into OPAM simultaneously.                                                #
-############################################################################
-endef
-export _OWL_RELEASE_WARNING
-
+PKGS=owl-base,owl,owl-zoo,owl-top
 .PHONY: release
 release:
-	opam install --yes tls topkg topkg-care topkg-jbuilder opam-publish
-	topkg tag
-	topkg distrib
-	topkg publish
+	make install # as package distrib steps rely on owl-base etc
+	opam install --yes dune-release
+	dune-release tag
+	dune-release distrib
+	dune-release publish
 
-	topkg opam pkg
-	topkg opam submit
-
-	topkg opam pkg --pkg-name owl
-	topkg opam submit --pkg-name owl
-
-	topkg opam pkg --pkg-name owl-zoo
-	topkg opam submit --pkg-name owl-zoo
-
-	topkg opam pkg --pkg-name owl-top
-	topkg opam submit --pkg-name owl-top
-
-	@echo "$$_OWL_RELEASE_WARNING"
+	dune-release opam pkg -p owl-base
+	dune-release opam pkg -p owl
+	dune-release opam pkg -p owl-zoo
+	dune-release opam pkg -p owl-top
+	dune-release opam submit -p $(PKGS)

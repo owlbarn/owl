@@ -198,7 +198,7 @@ module Make (A : Stats_Dist) = struct
       df : A.arr;
     }
 
-    let make ~df ~sigma =
+    let make ~df ~_sigma =
       Utility._check_broadcast_shape [|df|];
       { df }
 

@@ -3,8 +3,7 @@
 * Improve the APIs of Dataframe module.
 * Add more functions in Utils module.
 
-
-### 0.4.0 (2018-07-25)
+### 0.4.0 (2018-08-08)
 
 * Fix some bugs and improve performance.
 * Introduce computation graph into the functor stack.
@@ -16,7 +15,8 @@
 * Add transposed convolution functions.
 * Add more neurons into the Neural module.
 * Add more unit tests for core functions.
-
+* Move from `jbuilder` to `dune`
+* Assuage many warnings
 
 ### 0.3.8 (2018-05-22)
 

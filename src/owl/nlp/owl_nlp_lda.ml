@@ -5,6 +5,8 @@
  *   Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+[@@@warning "-6"]
+
 (** NLP: LDA module *)
 
 
@@ -44,14 +46,14 @@ let exclude_token m w d k =
   m.t_wk.(w).(k) <- (m.t_wk.(w).(k) -. 1.);
   m.t_dk.(d).(k) <- (m.t_dk.(d).(k) -. 1.)
 
-let show_info m i t =
+let show_info _m i t =
   Owl_log.info "iter#%i t(s):%.1f t_dk:%.3f t_wk:%.3f" i t 0. 0.
 
 (* implement several LDA with specific samplings *)
 
 module SimpleLDA = struct
 
-  let init m = ()
+  let init _m = ()
 
   let sampling m d doc =
     let p = Array.make m.n_k 0. in
@@ -222,18 +224,18 @@ end
 
 module FTreeLDA = struct
 
-  let init m = failwith "FTreeLDA: not implemented"
+  let init _m = failwith "FTreeLDA: not implemented"
 
-  let sampling m d doc = failwith "FTreeLDA: not implemented"
+  let sampling _m _d _doc = failwith "FTreeLDA: not implemented"
 
 end
 
 
 module LightLDA = struct
 
-  let init m = failwith "LightLDA: not implemented"
+  let init _m = failwith "LightLDA: not implemented"
 
-  let sampling m d doc = failwith "LightLDA: not implemented"
+  let sampling _m _d _doc = failwith "LightLDA: not implemented"
 
 end
 

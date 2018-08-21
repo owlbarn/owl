@@ -5,6 +5,7 @@
 
 (** Log module provides logging functionality. *)
 
+[@@@warning "-37"]
 type color = Red | Green | Yellow | Blue | Magenta | Cyan
 
 type level = DEBUG | INFO | WARN | ERROR | FATAL

@@ -33,7 +33,7 @@ let read_file_string f =
 
 
 (* write a file of a given path *)
-let write_file ?(flag=Open_creat) f s =
+let write_file ?(_flag=Open_creat) f s =
   let h = open_out f in
   Printf.fprintf h "%s" s;
   close_out h
@@ -132,18 +132,18 @@ let head n fname =
         assert (i < n);
         Owl_utils.Stack.push lines s
       ) fname
-    with exn -> ()
+    with _exn -> ()
   );
   Owl_utils.Stack.to_array lines
 
 
 (* TODO *)
-let tail n fname = raise Owl_exception.NOT_IMPLEMENTED
+let _tail _n _fname = raise Owl_exception.NOT_IMPLEMENTED
 
 
 let read_csv ?(sep='\t') fname =
   let lines = Owl_utils.Stack.make () in
-  iteri_lines_of_file (fun i s ->
+  iteri_lines_of_file (fun _i s ->
     String.trim s
     |> String.split_on_char sep
     |> Array.of_list
@@ -187,7 +187,7 @@ let write_csv_proc ?(sep='\t') x proc fname =
 
 let csv_head ?(sep='\t') idx fname =
   let h = open_in fname in
-  for i = 1 to idx - 1 do
+  for _i = 1 to idx - 1 do
     input_line h |> ignore
   done;
   input_line h

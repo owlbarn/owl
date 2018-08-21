@@ -1,0 +1,13 @@
+(executables 
+ (names test_runner)
+ (libraries 
+  alcotest
+  owl
+  )
+ (flags (:standard -safe-string))
+ )
+
+(alias (name    runtest)
+       (deps    (:deps test_runner.exe))
+       (action  (run %{deps}))
+       )

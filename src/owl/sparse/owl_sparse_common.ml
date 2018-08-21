@@ -5,7 +5,6 @@
 
 open Bigarray
 open Eigen_types
-open Owl_types
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 

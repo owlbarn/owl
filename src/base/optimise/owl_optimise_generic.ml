@@ -11,6 +11,7 @@ network module. The module supports both single and double precision float
 numbers.
  *)
 
+[@@@warning "-45"]
 
 (* Make functor starts *)
 
@@ -522,13 +523,13 @@ module Make
           let batches_per_epoch = Batch.batches params.batch x in
           let state = Checkpoint.init_state batches_per_epoch params.epochs in
           (* first iteration to bootstrap the optimisation *)
-          let _loss, _g0, _ = iterate 0 w in
+          let loss, _g0, _ = iterate 0 w in
           (* variables used for specific gradient method *)
           Checkpoint.(state.gs <- [| [|_g0|] |]);
           Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
           Checkpoint.(state.us <- [| [|_f 0.|] |]);
           Checkpoint.(state.ch <- [| [| [|_f 0.; _f 0.|] |] |]);
-          Checkpoint.(state.loss.(0) <- primal' _loss);
+          Checkpoint.(state.loss.(0) <- primal' loss);
           state
         )
     in
@@ -616,14 +617,14 @@ module Make
           let batches_per_epoch = Batch.batches params.batch x in
           let state = Checkpoint.init_state batches_per_epoch params.epochs in
           (* first iteration to bootstrap the optimisation *)
-          let _loss, _ws, _gs = iterate 0 in
+          let loss, _ws, _gs = iterate 0 in
           update _ws;
           (* variables used for specific gradient method *)
           Checkpoint.(state.gs <- _gs);
           Checkpoint.(state.ps <- Owl_utils.aarr_map Maths.neg _gs);
           Checkpoint.(state.us <- Owl_utils.aarr_map (fun _ -> _f 0.) _gs);
           Checkpoint.(state.ch <- Owl_utils.aarr_map (fun _ -> [|_f 0.; _f 0.|]) _gs);
-          Checkpoint.(state.loss.(0) <- primal' _loss);
+          Checkpoint.(state.loss.(0) <- primal' loss);
           state
         )
     in
@@ -704,13 +705,13 @@ module Make
       | None       -> (
           let state = Checkpoint.init_state 1 params.epochs in
           (* first iteration to bootstrap the optimisation *)
-          let _loss, _g0, _ = iterate 0 x in
+          let loss, _g0, _ = iterate 0 x in
           (* variables used for specific gradient method *)
           Checkpoint.(state.gs <- [| [|_g0|] |]);
           Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
           Checkpoint.(state.us <- [| [|_f 0.|] |]);
           Checkpoint.(state.ch <- [| [| [|_f 0.; _f 0.|] |] |]);
-          Checkpoint.(state.loss.(0) <- primal' _loss);
+          Checkpoint.(state.loss.(0) <- primal' loss);
           state
         )
     in
@@ -778,10 +779,10 @@ module Make
           let batches_per_epoch = Batch.batches params.batch x in
           let state = Checkpoint.init_state batches_per_epoch params.epochs in
           (* first iteration to bootstrap the optimisation *)
-          let _loss = iterate 0 in
+          let loss = iterate 0 in
           update ();
           (* variables used for specific gradient method *)
-          Checkpoint.(state.loss.(0) <- (primal' _loss));
+          Checkpoint.(state.loss.(0) <- (primal' loss));
           state
         )
     in

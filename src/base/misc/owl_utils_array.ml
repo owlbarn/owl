@@ -332,7 +332,7 @@ let get_slice slice x =
   let m = (abs (stop - start)) / (abs step) in
   let stack = Owl_utils_stack.make () in
   let idx = ref start in
-  for i = 0 to m do
+  for _i = 0 to m do
     Owl_utils_stack.push stack x.(!idx);
     idx := !idx + step
   done;

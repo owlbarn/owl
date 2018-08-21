@@ -40,7 +40,7 @@ let _remove_ith_item x i =
   for j = i to (nnz x) - 2 do
     x.d.{j} <- x.d.{j + 1}
   done;
-  Hashtbl.filter_map_inplace (fun k v ->
+  Hashtbl.filter_map_inplace (fun _k v ->
     if v = i then None
     else if v > i then Some (v - 1)
     else Some v
@@ -60,7 +60,7 @@ let _in_slice s x =
         )
       | None -> ()
     ) s
-  with exn -> ());
+  with _exn -> ());
   !r
 
 let zeros k s =
@@ -93,7 +93,7 @@ let same_shape x y =
     let s0 = shape x in
     let s1 = shape y in
     let b = ref true in
-    Array.iteri (fun i d ->
+    Array.iteri (fun i _d ->
       if s0.(i) <> s1.(i) then b := false
     ) s0;
     !b
@@ -112,7 +112,7 @@ let copy x = {
 let get x i =
   try let j = Hashtbl.find x.h i in
     Array1.unsafe_get x.d j
-  with exn -> Owl_const.zero (kind x)
+  with _exn -> Owl_const.zero (kind x)
 
 let set x i a =
   _allocate_more_space x;
@@ -121,12 +121,12 @@ let set x i a =
     try let j = Hashtbl.find x.h i in
       Array1.unsafe_set x.d j _a0;
       _remove_ith_item x j;
-    with exn -> ()
+    with _exn -> ()
   )
   else (
     try let j = Hashtbl.find x.h i in
       Array1.unsafe_set x.d j a;
-    with exn -> (
+    with _exn -> (
       let j = nnz x in
       Hashtbl.add x.h (Array.copy i) j;
       Array1.unsafe_set x.d j a
@@ -348,7 +348,7 @@ let _exists_basic iter_fun f x =
   try iter_fun (fun y ->
     if (f y) = true then failwith "found"
   ) x; false
-  with exn -> true
+  with _exn -> true
 
 let exists f x = _exists_basic iter f x
 
@@ -509,6 +509,7 @@ let print_index i =
 let print_element k v =
   let s = (Owl_utils.elt_to_str k) v in
   Printf.printf "%s" s
+    [@@warning "-32"]
 
 let print x =
   let _op = Owl_utils.elt_to_str (kind x) in
@@ -541,7 +542,7 @@ let pp_spnda x =
 
 let save x f = Owl_io.marshal_to_file x f
 
-let load k f = Owl_io.marshal_from_file f
+let load _k f = Owl_io.marshal_from_file f
 
 let _random_basic a k f d =
   let x = zeros k d in
@@ -549,7 +550,7 @@ let _random_basic a k f d =
   let c = int_of_float ((float_of_int n) *. a) in
   let i = Array.copy d in
   let s = Owl_utils.calc_stride d in
-  for k = 0 to c - 1 do
+  for _k = 0 to c - 1 do
     let j = Owl_stats.uniform_int_rvs ~a:0 ~b:(n-1) in
     Owl_utils.index_1d_nd j i s;
     set x i (f ())

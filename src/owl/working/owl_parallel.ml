@@ -168,13 +168,13 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     let create_fun d = M.ones d in
     distributed_create create_fun d
 
-  let sequential ?a ?step d = None
+  let sequential ?_a ?_step _d = None
 
   let uniform ?a ?b d =
     let create_fun d = M.uniform ?a ?b d in
     distributed_create create_fun d
 
-  let gaussian d = None
+  let gaussian _d = None
 
   (* given 1d index, calculate its owner *)
   let calc_index_owner i_1d c_start c_len =
@@ -187,7 +187,7 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
         if a <= i_1d && i_1d < b then failwith "found"
       done;
       !i
-    with exn -> !i
+    with _exn -> !i
 
   let get x i_nd =
     let stride = Owl_utils.calc_stride x.shape in
@@ -248,7 +248,7 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     let z_id = E.union x.id y.id in
     let z_id = E.map_partition (fun l ->
       let x_node_id, x_arr = List.nth l 0 in
-      let y_node_id, y_arr = List.nth l 1 in
+      let _y_node_id, y_arr = List.nth l 1 in
       [ (x_node_id, f x_arr y_arr) ]
     ) z_id
     in
@@ -261,7 +261,7 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
   let map2 f x y = map2_chunk (M.map2 f) x y
 
   let fold f x a =
-    let y_id = E.map (fun (node_id, arr) ->
+    let y_id = E.map (fun (_node_id, arr) ->
       let b = ref M.(get arr [|0|]) in
       for i = 1 to M.numel arr - 1 do
         b := f !b M.(get arr [|i|])
@@ -271,14 +271,14 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     E.collect y_id
     |> List.fold_left (fun b c -> f b (List.nth c 0)) a
 
-  let fill x a = map_chunk (fun y -> M.fill y a) |> ignore
+  let fill _x a = map_chunk (fun y -> M.fill y a) |> ignore
 
 
   (* of_ndarray and to_ndarray convert between distributed ndarray and local
     ndarray. They are equivalent to [distribute] and [collect] in some other
     distributed data processing frameworks. *)
 
-  let of_ndarray x = None
+  let of_ndarray _x = None
 
   let to_ndarray x =
     let l = E.collect x.id
@@ -303,9 +303,9 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     done;
     !a
 
-  let min x = None
+  let min _x = None
 
-  let max x = None
+  let max _x = None
 
   let add x y = map2_chunk M.add x y
 

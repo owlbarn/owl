@@ -181,10 +181,10 @@ let elt_to_str = function
 
 
 let series_type_to_str = function
-  | Bool_Series c   -> "b"
-  | Int_Series c    -> "i"
-  | Float_Series c  -> "f"
-  | String_Series c -> "s"
+  | Bool_Series _c   -> "b"
+  | Int_Series _c    -> "i"
+  | Float_Series _c  -> "f"
+  | String_Series _c -> "s"
   | Any_Series      -> "a"
 
 
@@ -346,7 +346,7 @@ let get_cols x idx = Array.map (get_col x) idx
 
 
 (* TODO *)
-let get_row_assoc x idx = raise Owl_exception.NOT_IMPLEMENTED
+let _get_row_assoc _x _idx = raise Owl_exception.NOT_IMPLEMENTED
 
 
 let get_col_by_name x name =
@@ -538,7 +538,7 @@ let get_slice slice x =
 
 
 (* TODO *)
-let set_slice x = raise Owl_exception.NOT_IMPLEMENTED
+let _set_slice _x = raise Owl_exception.NOT_IMPLEMENTED
 
 
 let get_slice_by_name slice x =
@@ -561,7 +561,7 @@ let get_slice_by_name slice x =
 
 
 (* TODO *)
-let set_slice_by_name x = raise Owl_exception.NOT_IMPLEMENTED
+let _set_slice_by_name _x = raise Owl_exception.NOT_IMPLEMENTED
 
 
 let head n x =
@@ -623,7 +623,7 @@ let guess_separator lines =
         ) lines;
         not_sep := false
       )
-      with exn -> ()
+      with _exn -> ()
     );
     if !not_sep = true then sep_idx := !sep_idx + 1
   done;
@@ -657,7 +657,7 @@ let guess_types sep lines =
   let cols = Array.map Owl_utils_stack.to_array stacks in
 
   (* guess the types of columns *)
-  Array.mapi (fun i col ->
+  Array.mapi (fun _i col ->
     let guess_typ = ref "s" in
     (
       try
@@ -670,14 +670,14 @@ let guess_types sep lines =
                 let y = String.trim x in
                 typ_fun y |> ignore
               ) col
-            with exn -> wrong_guess := true
+            with _exn -> wrong_guess := true
           );
           if !wrong_guess = false then (
             guess_typ := col_typ;
             raise Owl_exception.FOUND
           )
         ) typ
-      with exn -> ()
+      with _exn -> ()
     );
     !guess_typ
   ) cols
@@ -709,7 +709,7 @@ let of_csv ?sep ?head ?types fname =
         let row = Array.map2 (fun f a -> f a) convert_f line in
         append_row dataframe row
       )
-    with exn -> (
+    with _exn -> (
       dropped_line := !dropped_line + 1;
       Owl_log.warn "of_csv: fail to parse line#%i @ %s" i fname
     )
@@ -757,7 +757,7 @@ let ( .$( ) ) x slice = get_slice_by_name slice x
 
 
 (* TODO *)
-let ( .$( )<- ) x idx a = raise Owl_exception.NOT_IMPLEMENTED
+let [@warning "-32"] ( .$( )<- ) _x _idx _a = raise Owl_exception.NOT_IMPLEMENTED
 
 
 

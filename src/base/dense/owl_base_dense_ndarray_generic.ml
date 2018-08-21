@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+[@@@warning "-32"]
+
 open Bigarray
 
 open Owl_types
@@ -340,7 +342,7 @@ let foldi ?axis f a x =
       let y = create (kind x) s a in
       let y' = flatten y |> array1_of_genarray in
 
-      for i = 0 to m - 1 do
+      for _i = 0 to m - 1 do
         for j = 0 to n - 1 do
           let b = Array1.unsafe_get y' (!start_y + !incy) in
           let c = Array1.unsafe_get x' (!start_x + j) in
@@ -389,7 +391,7 @@ let scani ?axis f x =
   let y = copy x in
   let y' = flatten y |> array1_of_genarray in
 
-  for i = 0 to m - 1 do
+  for _i = 0 to m - 1 do
     for j = 0 to n - 1 do
       let b = Array1.unsafe_get y' (!start_x + j) in
       let c = Array1.unsafe_get y' (!start_y + j) in
@@ -649,7 +651,7 @@ let repeat x reps =
       let ofsy = ref 0 in
       for i = 0 to numel x - 1 do
         let elemx = get x' [|i|] in
-        for j = 0 to reps.(0) - 1 do
+        for _j = 0 to reps.(0) - 1 do
           set y' [|!ofsy|] elemx;
           ofsy := !ofsy + 1
         done
@@ -678,7 +680,7 @@ let repeat x reps =
       let ofsy = ref 0 in
       let block_sz = reps.(hd) in
 
-      for i = 0 to block_num.(0) - 1 do
+      for _i = 0 to block_num.(0) - 1 do
         let ofsy_sub = ref !ofsy in
         if block_sz = 1 then (
           let subx = Genarray.sub_left x' !ofsx slice_x.(hd) in
@@ -716,9 +718,9 @@ let repeat x reps =
         let block_sz = stride_y.(d) in
         let counter = Array.make hd 0 in
 
-        for i = 0 to block_num.(0) - 1 do
+        for _i = 0 to block_num.(0) - 1 do
           let ofsy_sub = ref (!ofsy + block_sz) in
-          for j = 1 to reps.(d) - 1 do
+          for _j = 1 to reps.(d) - 1 do
             let subx = Genarray.sub_left y' !ofsy block_sz in
             let suby = Genarray.sub_left y' !ofsy_sub block_sz in
             Genarray.blit subx suby;
@@ -1137,7 +1139,7 @@ let _fold_along ?out f m n o x ys nelem =
   let idx = ref 0 in
   let idy = ref 0 in
   let incy = ref 0 in
-  for i = 0 to (m - 1) do
+  for _i = 0 to (m - 1) do
     for j = 0 to (n - 1) do
       let addon = Genarray.get x [|!idx + j|] in
       let orig  = Genarray.get y [|!idy + !incy|] in
@@ -1533,7 +1535,7 @@ let fmod_scalar_ ?out x a =
 
 
 (* TODO *)
-let fma x y z = failwith "Owl_base_dense_ndarray_generic:fma: not implemented"
+let fma _x _y _z = failwith "Owl_base_dense_ndarray_generic:fma: not implemented"
 
 
 let scalar_add a x =
@@ -3121,7 +3123,7 @@ let transpose_conv3d_backward_kernel input kernel stride output' =
 
 (* TODO: definitely optimise *)
 (* General function for avg_pool2d and max_pool2d *)
-let _pool2d_backward padding input kernel stride output'
+let _pool2d_backward _padding input kernel stride output'
     init_pool_fun add_val_pool_fun end_pool_fun compute_grad_fun =
   assert (num_dims input = 4);
   assert (Array.length kernel = 2);
@@ -3217,7 +3219,7 @@ let avg_pool2d_backward padding input kernel stride output' =
   in
   let end_pool_fun = (fun () -> (!sum_pool /. !cnt)) in
   let compute_grad_fun =
-    (fun input_val input_grad output_val output_grad ->
+    (fun _input_val input_grad _output_val output_grad ->
        input_grad +. output_grad /. !cnt)
   in
   (_pool2d_backward padding input kernel stride output'
@@ -3226,7 +3228,7 @@ let avg_pool2d_backward padding input kernel stride output' =
 
 (* TODO: definitely optimise *)
 (* General function for avg_pool3d and max_pool3d *)
-let _pool3d_backward padding input kernel stride output'
+let _pool3d_backward _padding input kernel stride output'
     init_pool_fun add_val_pool_fun end_pool_fun compute_grad_fun =
   assert (num_dims input = 5);
   assert (Array.length kernel = 3);
@@ -3340,7 +3342,7 @@ let avg_pool3d_backward padding input kernel stride output' =
   in
   let end_pool_fun = (fun () -> (!sum_pool /. !cnt)) in
   let compute_grad_fun =
-    (fun input_val input_grad output_val output_grad ->
+    (fun _input_val input_grad _output_val output_grad ->
        input_grad +. output_grad /. !cnt)
   in
   (_pool3d_backward padding input kernel stride output'
@@ -3916,7 +3918,7 @@ let inv varr =
 
 
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
-let load k f = Owl_io.marshal_from_file f
+let load _k f = Owl_io.marshal_from_file f
 
 
 let max_rows varr =
@@ -3937,9 +3939,8 @@ let max_rows varr =
     done;
     result
   end
-
-
-let one_hot depth x = failwith "Owl_base_dense_ndarray_generic:one_hot: not implemented"
+ 
+let one_hot _depth _x = failwith "Owl_base_dense_ndarray_generic:one_hot: not implemented"
 
 
 (* Helper functions *)

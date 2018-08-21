@@ -16,11 +16,6 @@ module Make_Nested
 
   open Graph.Optimiser.Operator.Symbol
 
-  open Graph.Optimiser.Operator.Symbol.Shape.Type
-
-  open Graph.Optimiser.Operator.Symbol.Shape.Type.Device
-
-
   (* module aliases *)
 
   module CG_Init = Owl_computation_cpu_init.Make (Graph)

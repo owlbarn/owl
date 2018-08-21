@@ -347,7 +347,7 @@ let setup_uniform_binning n x =
   bmin, bmax, db, bins, get_bin
 
 let hist_uniform n x =
-  let bmin, bmax, db, bins, get_bin = setup_uniform_binning n x in
+  let _bmin, _bmax, _db, bins, get_bin = setup_uniform_binning n x in
   let c = Array.make n 0 in
   x |> Array.iter (fun y ->
       let i = get_bin y in
@@ -357,7 +357,7 @@ let hist_uniform n x =
 let hist_weighted_uniform n w x =
   if Array.(length x <> length w) then
     failwith  "Data and weights must have the same length.";
-  let bmin, bmax, db, bins, get_bin = setup_uniform_binning n x in
+  let _bmin, _bmax, _db, bins, get_bin = setup_uniform_binning n x in
   let c = Array.make n 0 in
   let wc = Array.make n 0. in
   x |> Array.iteri (fun j y ->
@@ -506,7 +506,7 @@ let histogram_sorted
   {bins; counts; weighted_counts;
    normalised_counts=None; density=None}
 
-let normalise ({counts; weighted_counts} as h) =
+let normalise ({counts; weighted_counts; _} as h) =
   let nc = match weighted_counts with
     | None ->
         let total = Array.fold_left (+) 0 counts |> float_of_int in
@@ -516,7 +516,7 @@ let normalise ({counts; weighted_counts} as h) =
         Array.map (fun wc -> wc /. total) wcounts in
   {h with normalised_counts=Some nc}
 
-let normalise_density ({bins; counts; weighted_counts} as h) =
+let normalise_density ({bins; counts; weighted_counts; _} as h) =
   let ds = match weighted_counts with
     | None ->
         let total = Array.fold_left (+) 0 counts |> float_of_int in

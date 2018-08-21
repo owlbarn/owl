@@ -13,6 +13,8 @@
   for more information.
  *)
 
+[@@@warning "-32"]
+
 open Bigarray
 
 open Owl_types

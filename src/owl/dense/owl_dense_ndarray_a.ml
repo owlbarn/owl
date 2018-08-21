@@ -12,8 +12,6 @@
 
 open Owl_types
 
-open Owl_ndarray
-
 
 type 'a arr = {
   mutable shape  : int array;
@@ -97,7 +95,7 @@ let set_index x axis a =
   ) axis;
   Array.iteri (fun i j -> set x j a.(i)) indices
 
-let slice_left = None
+let slice_left = None [@@warning "-32"]
 
 let copy_ ~out src =
   assert (src.shape = out.shape);
@@ -483,7 +481,7 @@ let repeat x reps =
       fiugre out a more efficient way to copy at the highest dimension. *)
       let ofsy = ref 0 in
       for i = 0 to numel x - 1 do
-        for j = 0 to reps.(0) - 1 do
+        for _j = 0 to reps.(0) - 1 do
           y'.(!ofsy) <- x'.(i);
           ofsy := !ofsy + 1;
         done
@@ -512,7 +510,7 @@ let repeat x reps =
       let ofsy = ref 0 in
       let block_sz = reps.(hd) in
 
-      for i = 0 to block_num.(0) - 1 do
+      for _i = 0 to block_num.(0) - 1 do
         let ofsy_sub = ref !ofsy in
         if block_sz = 1 then (
           Array.blit x' !ofsx y' !ofsy_sub slice_x.(hd);
@@ -548,9 +546,9 @@ let repeat x reps =
         let block_sz = stride_y.(d) in
         let counter = Array.make hd 0 in
 
-        for i = 0 to block_num.(0) - 1 do
+        for _i = 0 to block_num.(0) - 1 do
           let ofsy_sub = ref (!ofsy + block_sz) in
-          for j = 1 to reps.(d) - 1 do
+          for _j = 1 to reps.(d) - 1 do
             Array.blit y' !ofsy y' !ofsy_sub block_sz;
             ofsy_sub := !ofsy_sub + block_sz
           done;
@@ -598,7 +596,7 @@ let concatenate ?(axis=0) xs =
   let x_ofs = Array.make n 0 in
   (* copy data in the flattened space *)
   let z_ofs = ref 0 in
-  for i = 0 to m - 1 do
+  for _i = 0 to m - 1 do
     for j = 0 to n - 1 do
       Array.blit x_flt.(j) x_ofs.(j) z !z_ofs step_sz.(j);
       x_ofs.(j) <- x_ofs.(j) + step_sz.(j);
@@ -644,7 +642,7 @@ let _highest_padding_dimension p =
   (try for i = l downto 0 do
     d := i;
     if p.(i) <> [|0;0|] then failwith "stop"
-  done with exn -> ());
+  done with _exn -> ());
   !d
 
 let pad v d x =
@@ -725,7 +723,7 @@ let get_fancy axis x =
         if c > 0 then ref (!ofsy_i * b)
         else ref ((!ofsy_i + 1) * b - 1)
       in
-      for i = 0 to b - 1 do
+      for _i = 0 to b - 1 do
         y'.(!ofsy) <- x'.(!ofsx);
         ofsx := !ofsx + cx;
         ofsy := !ofsy + cy;
@@ -794,7 +792,7 @@ let set_fancy axis x y =
         if c > 0 then ref (!ofsy_i * b)
         else ref ((!ofsy_i + 1) * b - 1)
       in
-      for i = 0 to b - 1 do
+      for _i = 0 to b - 1 do
         x'.(!ofsx) <- y'.(!ofsy);
         ofsx := !ofsx + cx;
         ofsy := !ofsy + cy;

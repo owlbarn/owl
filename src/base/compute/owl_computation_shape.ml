@@ -19,7 +19,7 @@ module Make
 
   (* infer the shape of outcome from inputs *)
 
-  let _infer_shape_00 input_shapes = [| Some [||] |]
+  let _infer_shape_00 _input_shapes = [| Some [||] |]
 
 
   let _infer_shape_01 input_shapes =
@@ -245,8 +245,8 @@ module Make
     | Split (axis, parts)                         -> _infer_shape_08 input_shapes axis parts
     | Draw (axis, n)                              -> _infer_shape_09 input_shapes axis n
     | Map _                                       -> _infer_shape_01 input_shapes
-    | Fold (axis, f)                              -> _infer_shape_04 input_shapes axis
-    | Scan (axis, f)                              -> _infer_shape_01 input_shapes
+    | Fold (axis, _f)                              -> _infer_shape_04 input_shapes axis
+    | Scan (_axis, _f)                              -> _infer_shape_01 input_shapes
     | OneHot depth                                -> _infer_shape_22 input_shapes depth
     | Abs                                         -> _infer_shape_01 input_shapes
     | Neg                                         -> _infer_shape_01 input_shapes
@@ -335,33 +335,33 @@ module Make
     | AvgPool1d (padding, kernel, stride)         -> _infer_shape_15 input_shapes padding kernel stride
     | AvgPool2d (padding, kernel, stride)         -> _infer_shape_21 input_shapes padding kernel stride
     | AvgPool3d (padding, kernel, stride)         -> _infer_shape_17 input_shapes padding kernel stride
-    | Conv1dBackwardInput stride                  -> _infer_shape_01 input_shapes
-    | Conv1dBackwardKernel stride                 -> _infer_shape_02 input_shapes
-    | Conv2dBackwardInput stride                  -> _infer_shape_01 input_shapes
-    | Conv2dBackwardKernel stride                 -> _infer_shape_02 input_shapes
-    | Conv3dBackwardInput stride                  -> _infer_shape_01 input_shapes
-    | Conv3dBackwardKernel stride                 -> _infer_shape_02 input_shapes
-    | TransposeConv1dBackwardInput stride         -> _infer_shape_01 input_shapes
-    | TransposeConv1dBackwardKernel stride        -> _infer_shape_02 input_shapes
-    | TransposeConv2dBackwardInput stride         -> _infer_shape_01 input_shapes
-    | TransposeConv2dBackwardKernel stride        -> _infer_shape_02 input_shapes
-    | TransposeConv3dBackwardInput stride         -> _infer_shape_01 input_shapes
-    | TransposeConv3dBackwardKernel stride        -> _infer_shape_02 input_shapes
-    | DilatedConv1dBackwardInput (stride, rate)   -> _infer_shape_01 input_shapes
-    | DilatedConv1dBackwardKernel (stride, rate)  -> _infer_shape_02 input_shapes
-    | DilatedConv2dBackwardInput (stride, rate)   -> _infer_shape_01 input_shapes
-    | DilatedConv2dBackwardKernel (stride, rate)  -> _infer_shape_02 input_shapes
-    | DilatedConv3dBackwardInput (stride, rate)   -> _infer_shape_01 input_shapes
-    | DilatedConv3dBackwardKernel (stride, rate)  -> _infer_shape_02 input_shapes
-    | MaxPool1dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
-    | MaxPool2dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
-    | MaxPool3dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
-    | AvgPool1dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
-    | AvgPool2dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
-    | AvgPool3dBackward (padding, kernel, stride) -> _infer_shape_01 input_shapes
+    | Conv1dBackwardInput _stride                  -> _infer_shape_01 input_shapes
+    | Conv1dBackwardKernel _stride                 -> _infer_shape_02 input_shapes
+    | Conv2dBackwardInput _stride                  -> _infer_shape_01 input_shapes
+    | Conv2dBackwardKernel _stride                 -> _infer_shape_02 input_shapes
+    | Conv3dBackwardInput _stride                  -> _infer_shape_01 input_shapes
+    | Conv3dBackwardKernel _stride                 -> _infer_shape_02 input_shapes
+    | TransposeConv1dBackwardInput _stride         -> _infer_shape_01 input_shapes
+    | TransposeConv1dBackwardKernel _stride        -> _infer_shape_02 input_shapes
+    | TransposeConv2dBackwardInput _stride         -> _infer_shape_01 input_shapes
+    | TransposeConv2dBackwardKernel _stride        -> _infer_shape_02 input_shapes
+    | TransposeConv3dBackwardInput _stride         -> _infer_shape_01 input_shapes
+    | TransposeConv3dBackwardKernel _stride        -> _infer_shape_02 input_shapes
+    | DilatedConv1dBackwardInput (_stride, _rate)   -> _infer_shape_01 input_shapes
+    | DilatedConv1dBackwardKernel (_stride, _rate)  -> _infer_shape_02 input_shapes
+    | DilatedConv2dBackwardInput (_stride, _rate)   -> _infer_shape_01 input_shapes
+    | DilatedConv2dBackwardKernel (_stride, _rate)  -> _infer_shape_02 input_shapes
+    | DilatedConv3dBackwardInput (_stride, _rate)   -> _infer_shape_01 input_shapes
+    | DilatedConv3dBackwardKernel (_stride, _rate)  -> _infer_shape_02 input_shapes
+    | MaxPool1dBackward (_padding, _kernel, _stride) -> _infer_shape_01 input_shapes
+    | MaxPool2dBackward (_padding, _kernel, _stride) -> _infer_shape_01 input_shapes
+    | MaxPool3dBackward (_padding, _kernel, _stride) -> _infer_shape_01 input_shapes
+    | AvgPool1dBackward (_padding, _kernel, _stride) -> _infer_shape_01 input_shapes
+    | AvgPool2dBackward (_padding, _kernel, _stride) -> _infer_shape_01 input_shapes
+    | AvgPool3dBackward (_padding, _kernel, _stride) -> _infer_shape_01 input_shapes
     | Row                                         -> _infer_shape_09 input_shapes 0 1
     | Rows i                                      -> _infer_shape_09 input_shapes 0 Array.(length i)
-    | Dot (transa, transb, alpha, beta)           -> _infer_shape_19 input_shapes
+    | Dot (_transa, _transb, _alpha, _beta)           -> _infer_shape_19 input_shapes
     | Inv                                         -> _infer_shape_01 input_shapes
     | Trace                                       -> _infer_shape_00 input_shapes
     | Transpose axis                              -> _infer_shape_18 input_shapes axis
@@ -399,7 +399,7 @@ module Make
     | Scalar_Atanh                                -> _infer_shape_00 input_shapes
     | Scalar_Relu                                 -> _infer_shape_00 input_shapes
     | Scalar_Sigmoid                              -> _infer_shape_00 input_shapes
-    | Fused_Adagrad (rate, eps)                   -> _infer_shape_01 input_shapes
+    | Fused_Adagrad (_rate, _eps)                   -> _infer_shape_01 input_shapes
     | _                                           -> [| None |]
 
 

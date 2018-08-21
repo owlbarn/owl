@@ -91,7 +91,7 @@ module type BasicSig = sig
   type arr
   type elt
 
-  val empty : int array -> arr
+  val empty : int array -> arr [@@warning "-32"]
 
   val empty : int array -> arr
 
@@ -314,7 +314,7 @@ module Make_Basic
 
   let linspace a b n = M.linspace a b n |> pack_box
 
-  let logspace ?base a b n = M.logspace a b n |> pack_box
+  let logspace ?base a b n = M.logspace a b n |> pack_box [@@warning "-27"]
 
 
   let shape x = M.shape (unpack_box x)
@@ -653,7 +653,7 @@ module Make_SD
 
   let max_i x = let a, i = M.max_i (unpack_box x) in (pack_elt a, i)
 
-  let minmax_i x = let (a,i), (b,j) = M.minmax_i (unpack_box x) in (pack_elt a,i), (pack_elt b, i)
+  let minmax_i x = let (a,i), (b,_j) = M.minmax_i (unpack_box x) in (pack_elt a,i), (pack_elt b, i)
 
   let abs x = M.abs (unpack_box x) |> pack_box
 

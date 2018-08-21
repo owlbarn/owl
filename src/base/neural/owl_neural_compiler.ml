@@ -3,9 +3,6 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types
-
-
 module Make
   (E : Owl_types_computation_engine.Sig)
   = struct
@@ -244,16 +241,15 @@ module Make
     (* clip the gradient if necessary *)
     let gs' = Array.map clip_fun gs' in
     (* calculate gradient descent *)
-    let ps' = Checkpoint.(Owl_utils_array.map4 (grad_fun (fun a -> a)) ws gs ps gs') in
+    let ps' = Owl_utils_array.map4 (grad_fun (fun a -> a)) ws gs ps gs' in
     (* update gcache if necessary *)
     let ch' = Owl_utils_array.map2 upch_fun gs' ch in
     (* adjust direction based on learning_rate *)
-    let us' = Checkpoint.(
+    let us' =
       Owl_utils_array.map3 (fun p' g' c ->
         (* FIXME: 999 is just place holder *)
         Maths.(p' * rate_fun 999 g' c)
       ) ps' gs' ch'
-    )
     in
     (* adjust direction based on momentum *)
     let us' = Owl_utils_array.map2 momt_fun us us' in
@@ -351,7 +347,7 @@ module Make
     let loss, xt, yt, cgraph = compile_deep params network x_size in
     let eval = make_eval_fun loss xt yt cgraph in
     let update = make_update_fun cgraph in
-    let save fname = () in
+    let save _fname = () in
 
     (* Experimental: optimise graph structure *)
     Engine.save_graph cgraph (network_name ^ "_raw.cgd");

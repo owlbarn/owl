@@ -84,7 +84,7 @@ let process_dumps fnames =
       let dot_name = change_cgd_suffix fname "dot" in
       make_pdf_file ~dot_name fname
     )
-    with exn ->
+    with _exn ->
       Owl_log.error "fail to process %s" fname
   ) fnames
 

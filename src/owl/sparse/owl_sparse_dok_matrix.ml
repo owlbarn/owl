@@ -4,9 +4,6 @@
  *)
 
 
-open Bigarray
-open Owl_sparse_common
-
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 type ('a, 'b) t = {
@@ -81,4 +78,4 @@ let iteri_nz f x = Hashtbl.iter (fun (i,j) v -> f i j v) x.d
 
 let save x f = Owl_io.marshal_to_file x f
 
-let load k f = Owl_io.marshal_from_file f
+let load _k f = Owl_io.marshal_from_file f

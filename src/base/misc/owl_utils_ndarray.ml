@@ -136,7 +136,7 @@ let broadcastable s0 s1 =
     ) sa sb;
     true
   )
-  with exn -> false
+  with _exn -> false
 
 
 (* ends here *)

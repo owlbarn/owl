@@ -48,7 +48,7 @@ let _chunk_table max_row max_col row_num col_num =
   row_indices, col_indices
 
 
-let _make_header ?(row_prefix="R") ?(col_prefix="C") row_indices col_indices shape x =
+let _make_header ?(row_prefix="R") ?(col_prefix="C") row_indices col_indices shape _x =
   let stride = Owl_utils.calc_stride shape in
   let dim_num = Array.length shape in
   let col_num = shape.(dim_num - 1) in

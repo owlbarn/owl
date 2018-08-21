@@ -3,8 +3,6 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types
-
 open Owl_graph
 
 
@@ -13,8 +11,6 @@ open Owl_graph
 module Make
   (Graph : Owl_computation_graph_sig.Sig)
   = struct
-
-  open Graph
 
   open Graph.Optimiser.Operator.Symbol
 
@@ -108,32 +104,32 @@ module Make
         | Noop                                        -> _init_05 x
         | Var                                         -> _init_05 x
         | Const                                       -> _init_05 x
-        | Empty shape                                 -> _init_00 x
-        | Zeros shape                                 -> _init_00 x
-        | Ones shape                                  -> _init_00 x
-        | Create shape                                -> _init_00 x
-        | Sequential shape                            -> _init_00 x
-        | Uniform shape                               -> _init_00 x
-        | Gaussian shape                              -> _init_00 x
-        | Bernoulli shape                             -> _init_00 x
-        | Init (shape, f)                             -> _init_00 x
-        | Get i                                       -> _init_05 x
-        | Set i                                       -> failwith "Set"
-        | GetSlice slice                              -> _init_00 x
-        | SetSlice slice                              -> _init_01 x
+        | Empty _shape                                 -> _init_00 x
+        | Zeros _shape                                 -> _init_00 x
+        | Ones _shape                                  -> _init_00 x
+        | Create _shape                                -> _init_00 x
+        | Sequential _shape                            -> _init_00 x
+        | Uniform _shape                               -> _init_00 x
+        | Gaussian _shape                              -> _init_00 x
+        | Bernoulli _shape                             -> _init_00 x
+        | Init (_shape, _f)                             -> _init_00 x
+        | Get _i                                       -> _init_05 x
+        | Set _i                                       -> failwith "Set"
+        | GetSlice _slice                              -> _init_00 x
+        | SetSlice _slice                              -> _init_01 x
         | Copy                                        -> _init_01 x
         | Reset                                       -> _init_01 x
-        | Reshape shape                               -> _init_01 x
+        | Reshape _shape                               -> _init_01 x
         | Reverse                                     -> _init_01 x
-        | Tile repeats                                -> _init_00 x
-        | Repeat repeats                              -> _init_00 x
-        | Concatenate axis                            -> _init_00 x
-        | Split (axis, parts)                         -> failwith "Split"
-        | Draw (axis, n)                              -> failwith "Draw"
-        | Map f                                       -> _init_00 x
-        | Fold (axis, f)                              -> _init_00 x
-        | Scan (axis, f)                              -> _init_00 x
-        | OneHot depth                                -> _init_00 x
+        | Tile _repeats                                -> _init_00 x
+        | Repeat _repeats                              -> _init_00 x
+        | Concatenate _axis                            -> _init_00 x
+        | Split (_axis, _parts)                         -> failwith "Split"
+        | Draw (_axis, _n)                              -> failwith "Draw"
+        | Map _f                                       -> _init_00 x
+        | Fold (_axis, _f)                              -> _init_00 x
+        | Scan (_axis, _f)                              -> _init_00 x
+        | OneHot _depth                                -> _init_00 x
         | Abs                                         -> _init_01 x
         | Neg                                         -> _init_01 x
         | Floor                                       -> _init_01 x
@@ -157,10 +153,10 @@ module Make
         | Asinh                                       -> _init_01 x
         | Acosh                                       -> _init_01 x
         | Atanh                                       -> _init_01 x
-        | Min axis                                    -> _init_00 x
-        | Max axis                                    -> _init_00 x
-        | Sum axis                                    -> _init_00 x
-        | SumReduce axis                              -> _init_00 x
+        | Min _axis                                    -> _init_00 x
+        | Max _axis                                    -> _init_00 x
+        | Sum _axis                                    -> _init_00 x
+        | SumReduce _axis                              -> _init_00 x
         | Signum                                      -> _init_01 x
         | Sigmoid                                     -> _init_01 x
         | Relu                                        -> _init_01 x
@@ -206,38 +202,38 @@ module Make
         | EltGreaterScalar                            -> _init_01 x
         | EltLessEqualScalar                          -> _init_01 x
         | EltGreaterEqualScalar                       -> _init_01 x
-        | Conv1d (padding, stride)                    -> _init_00 x
-        | Conv2d (padding, stride)                    -> _init_00 x
-        | Conv3d (padding, stride)                    -> _init_00 x
-        | TransposeConv2d (padding, stride)           -> _init_00 x
-        | MaxPool1d (padding, kernel, stride)         -> _init_00 x
-        | MaxPool2d (padding, kernel, stride)         -> _init_00 x
-        | MaxPool3d (padding, kernel, stride)         -> _init_00 x
-        | AvgPool1d (padding, kernel, stride)         -> _init_00 x
-        | AvgPool2d (padding, kernel, stride)         -> _init_00 x
-        | AvgPool3d (padding, kernel, stride)         -> _init_00 x
-        | Conv1dBackwardInput stride                  -> _init_00 x
-        | Conv1dBackwardKernel stride                 -> _init_00 x
-        | Conv2dBackwardInput stride                  -> _init_00 x
-        | Conv2dBackwardKernel stride                 -> _init_00 x
-        | Conv3dBackwardInput stride                  -> _init_00 x
-        | Conv3dBackwardKernel stride                 -> _init_00 x
-        | TransposeConv2dBackwardInput stride         -> _init_00 x
-        | TransposeConv2dBackwardKernel stride        -> _init_00 x
-        | MaxPool1dBackward (padding, kernel, stride) -> _init_00 x
-        | MaxPool2dBackward (padding, kernel, stride) -> _init_00 x
-        | MaxPool3dBackward (padding, kernel, stride) -> _init_00 x
-        | AvgPool1dBackward (padding, kernel, stride) -> _init_00 x
-        | AvgPool2dBackward (padding, kernel, stride) -> _init_00 x
-        | AvgPool3dBackward (padding, kernel, stride) -> _init_00 x
+        | Conv1d (_padding, _stride)                    -> _init_00 x
+        | Conv2d (_padding, _stride)                    -> _init_00 x
+        | Conv3d (_padding, _stride)                    -> _init_00 x
+        | TransposeConv2d (_padding, _stride)           -> _init_00 x
+        | MaxPool1d (_padding, _kernel, _stride)         -> _init_00 x
+        | MaxPool2d (_padding, _kernel, _stride)         -> _init_00 x
+        | MaxPool3d (_padding, _kernel, _stride)         -> _init_00 x
+        | AvgPool1d (_padding, _kernel, _stride)         -> _init_00 x
+        | AvgPool2d (_padding, _kernel, _stride)         -> _init_00 x
+        | AvgPool3d (_padding, _kernel, _stride)         -> _init_00 x
+        | Conv1dBackwardInput _stride                  -> _init_00 x
+        | Conv1dBackwardKernel _stride                 -> _init_00 x
+        | Conv2dBackwardInput _stride                  -> _init_00 x
+        | Conv2dBackwardKernel _stride                 -> _init_00 x
+        | Conv3dBackwardInput _stride                  -> _init_00 x
+        | Conv3dBackwardKernel _stride                 -> _init_00 x
+        | TransposeConv2dBackwardInput _stride         -> _init_00 x
+        | TransposeConv2dBackwardKernel _stride        -> _init_00 x
+        | MaxPool1dBackward (_padding, _kernel, _stride) -> _init_00 x
+        | MaxPool2dBackward (_padding, _kernel, _stride) -> _init_00 x
+        | MaxPool3dBackward (_padding, _kernel, _stride) -> _init_00 x
+        | AvgPool1dBackward (_padding, _kernel, _stride) -> _init_00 x
+        | AvgPool2dBackward (_padding, _kernel, _stride) -> _init_00 x
+        | AvgPool3dBackward (_padding, _kernel, _stride) -> _init_00 x
         | Row                                         -> failwith "Row"
-        | Rows i                                      -> failwith "Rows"
+        | Rows _i                                      -> failwith "Rows"
         | CopyRowTo                                   -> failwith "CopyRowTo"
         | CopyColTo                                   -> failwith "CopyColTo"
-        | Dot (transa, transb, alpha, beta)           -> _init_00 x
+        | Dot (_transa, _transb, _alpha, _beta)           -> _init_00 x
         | Inv                                         -> _init_00 x
         | Trace                                       -> _init_05 x
-        | Transpose axis                              -> _init_00 x
+        | Transpose _axis                              -> _init_00 x
         | ToRows                                      -> failwith "ToRows"
         | OfRows                                      -> failwith "OfRows"
         | Scalar_Add                                  -> _init_05 x
@@ -272,7 +268,7 @@ module Make
         | Scalar_Atanh                                -> _init_05 x
         | Scalar_Relu                                 -> _init_05 x
         | Scalar_Sigmoid                              -> _init_05 x
-        | Fused_Adagrad (rate, eps)                   -> _init_01 x
+        | Fused_Adagrad (_rate, _eps)                   -> _init_01 x
         | _                                           -> failwith "owl_computation_init:"
 
         with exn -> (

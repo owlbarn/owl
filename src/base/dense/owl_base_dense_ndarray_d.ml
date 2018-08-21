@@ -5,8 +5,6 @@
 
 open Bigarray
 
-open Owl_types
-
 module M = Owl_base_dense_ndarray_generic
 include M
 

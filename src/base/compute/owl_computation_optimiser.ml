@@ -3,8 +3,6 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types
-
 open Owl_graph
 
 
@@ -15,8 +13,6 @@ module Make
   = struct
 
   module Operator = Operator
-
-  open Operator
 
   open Operator.Symbol
 
@@ -34,32 +30,32 @@ module Make
         | Noop                                        -> pattern_003 x
         | Var                                         -> ()
         | Const                                       -> pattern_000 x
-        | Empty shape                                 -> pattern_000 x
-        | Zeros shape                                 -> pattern_000 x
-        | Ones shape                                  -> pattern_000 x
-        | Create shape                                -> pattern_000 x
-        | Sequential shape                            -> pattern_000 x
-        | Uniform shape                               -> pattern_000 x
-        | Gaussian shape                              -> pattern_000 x
-        | Bernoulli shape                             -> pattern_000 x
-        | Init (shape, f)                             -> pattern_000 x
-        | Get i                                       -> pattern_000 x
-        | Set i                                       -> pattern_000 x
-        | GetSlice slice                              -> pattern_000 x
-        | SetSlice slice                              -> pattern_000 x
+        | Empty _shape                                 -> pattern_000 x
+        | Zeros _shape                                 -> pattern_000 x
+        | Ones _shape                                  -> pattern_000 x
+        | Create _shape                                -> pattern_000 x
+        | Sequential _shape                            -> pattern_000 x
+        | Uniform _shape                               -> pattern_000 x
+        | Gaussian _shape                              -> pattern_000 x
+        | Bernoulli _shape                             -> pattern_000 x
+        | Init (_shape, _f)                             -> pattern_000 x
+        | Get _i                                       -> pattern_000 x
+        | Set _i                                       -> pattern_000 x
+        | GetSlice _slice                              -> pattern_000 x
+        | SetSlice _slice                              -> pattern_000 x
         | Copy                                        -> pattern_018 x
         | Reset                                       -> pattern_000 x
-        | Reshape shape                               -> pattern_022 x
+        | Reshape _shape                               -> pattern_022 x
         | Reverse                                     -> pattern_000 x
-        | Tile repeats                                -> pattern_000 x
-        | Repeat repeats                              -> pattern_023 x
-        | Concatenate axis                            -> pattern_000 x
-        | Split (axis, parts)                         -> pattern_000 x
-        | Draw (axis, n)                              -> pattern_000 x
-        | Map f                                       -> pattern_000 x
-        | Fold (axis, f)                              -> pattern_000 x
-        | Scan (axis, f)                              -> pattern_000 x
-        | OneHot depth                                -> pattern_000 x
+        | Tile _repeats                                -> pattern_000 x
+        | Repeat _repeats                              -> pattern_023 x
+        | Concatenate _axis                            -> pattern_000 x
+        | Split (_axis, _parts)                         -> pattern_000 x
+        | Draw (_axis, _n)                              -> pattern_000 x
+        | Map _f                                       -> pattern_000 x
+        | Fold (_axis,_f)                              -> pattern_000 x
+        | Scan (_axis,_f)                              -> pattern_000 x
+        | OneHot _depth                                -> pattern_000 x
         | Abs                                         -> pattern_000 x
         | Neg                                         -> pattern_000 x
         | Floor                                       -> pattern_000 x
@@ -83,10 +79,10 @@ module Make
         | Asinh                                       -> pattern_000 x
         | Acosh                                       -> pattern_000 x
         | Atanh                                       -> pattern_000 x
-        | Min axis                                    -> pattern_000 x
-        | Max axis                                    -> pattern_000 x
-        | Sum axis                                    -> pattern_000 x
-        | SumReduce axis                              -> pattern_024 x
+        | Min _axis                                    -> pattern_000 x
+        | Max _axis                                    -> pattern_000 x
+        | Sum _axis                                    -> pattern_000 x
+        | SumReduce _axis                              -> pattern_024 x
         | Signum                                      -> pattern_000 x
         | Sigmoid                                     -> pattern_000 x
         | Relu                                        -> pattern_000 x
@@ -128,53 +124,53 @@ module Make
         | EltGreaterScalar                            -> pattern_000 x
         | EltLessEqualScalar                          -> pattern_000 x
         | EltGreaterEqualScalar                       -> pattern_000 x
-        | Conv1d (padding, stride)                    -> pattern_000 x
-        | Conv2d (padding, stride)                    -> pattern_000 x
-        | Conv3d (padding, stride)                    -> pattern_000 x
-        | TransposeConv1d (padding, stride)           -> pattern_000 x
-        | TransposeConv2d (padding, stride)           -> pattern_000 x
-        | TransposeConv3d (padding, stride)           -> pattern_000 x
-        | DilatedConv1d (padding, stride, rate)       -> pattern_000 x
-        | DilatedConv2d (padding, stride, rate)       -> pattern_000 x
-        | DilatedConv3d (padding, stride, rate)       -> pattern_000 x
-        | MaxPool1d (padding, kernel, stride)         -> pattern_000 x
-        | MaxPool2d (padding, kernel, stride)         -> pattern_000 x
-        | MaxPool3d (padding, kernel, stride)         -> pattern_000 x
-        | AvgPool1d (padding, kernel, stride)         -> pattern_000 x
-        | AvgPool2d (padding, kernel, stride)         -> pattern_000 x
-        | AvgPool3d (padding, kernel, stride)         -> pattern_000 x
-        | Conv1dBackwardInput stride                  -> pattern_000 x
-        | Conv1dBackwardKernel stride                 -> pattern_000 x
-        | Conv2dBackwardInput stride                  -> pattern_000 x
-        | Conv2dBackwardKernel stride                 -> pattern_000 x
-        | Conv3dBackwardInput stride                  -> pattern_000 x
-        | Conv3dBackwardKernel stride                 -> pattern_000 x
-        | TransposeConv1dBackwardInput stride         -> pattern_000 x
-        | TransposeConv1dBackwardKernel stride        -> pattern_000 x
-        | TransposeConv2dBackwardInput stride         -> pattern_000 x
-        | TransposeConv2dBackwardKernel stride        -> pattern_000 x
-        | TransposeConv3dBackwardInput stride         -> pattern_000 x
-        | TransposeConv3dBackwardKernel stride        -> pattern_000 x
-        | DilatedConv1dBackwardInput (stride, rate)   -> pattern_000 x
-        | DilatedConv1dBackwardKernel (stride, rate)  -> pattern_000 x
-        | DilatedConv2dBackwardInput (stride, rate)   -> pattern_000 x
-        | DilatedConv2dBackwardKernel (stride, rate)  -> pattern_000 x
-        | DilatedConv3dBackwardInput (stride, rate)   -> pattern_000 x
-        | DilatedConv3dBackwardKernel (stride, rate)  -> pattern_000 x
-        | MaxPool1dBackward (padding, kernel, stride) -> pattern_000 x
-        | MaxPool2dBackward (padding, kernel, stride) -> pattern_000 x
-        | MaxPool3dBackward (padding, kernel, stride) -> pattern_000 x
-        | AvgPool1dBackward (padding, kernel, stride) -> pattern_000 x
-        | AvgPool2dBackward (padding, kernel, stride) -> pattern_000 x
-        | AvgPool3dBackward (padding, kernel, stride) -> pattern_000 x
+        | Conv1d (_padding, _stride)                    -> pattern_000 x
+        | Conv2d (_padding, _stride)                    -> pattern_000 x
+        | Conv3d (_padding, _stride)                    -> pattern_000 x
+        | TransposeConv1d (_padding, _stride)           -> pattern_000 x
+        | TransposeConv2d (_padding, _stride)           -> pattern_000 x
+        | TransposeConv3d (_padding, _stride)           -> pattern_000 x
+        | DilatedConv1d (_padding, _stride, _rate)       -> pattern_000 x
+        | DilatedConv2d (_padding, _stride, _rate)       -> pattern_000 x
+        | DilatedConv3d (_padding, _stride, _rate)       -> pattern_000 x
+        | MaxPool1d (_padding, _kernel, _stride)         -> pattern_000 x
+        | MaxPool2d (_padding, _kernel, _stride)         -> pattern_000 x
+        | MaxPool3d (_padding, _kernel, _stride)         -> pattern_000 x
+        | AvgPool1d (_padding, _kernel, _stride)         -> pattern_000 x
+        | AvgPool2d (_padding, _kernel, _stride)         -> pattern_000 x
+        | AvgPool3d (_padding, _kernel, _stride)         -> pattern_000 x
+        | Conv1dBackwardInput _stride                  -> pattern_000 x
+        | Conv1dBackwardKernel _stride                 -> pattern_000 x
+        | Conv2dBackwardInput _stride                  -> pattern_000 x
+        | Conv2dBackwardKernel _stride                 -> pattern_000 x
+        | Conv3dBackwardInput _stride                  -> pattern_000 x
+        | Conv3dBackwardKernel _stride                 -> pattern_000 x
+        | TransposeConv1dBackwardInput _stride         -> pattern_000 x
+        | TransposeConv1dBackwardKernel _stride        -> pattern_000 x
+        | TransposeConv2dBackwardInput _stride         -> pattern_000 x
+        | TransposeConv2dBackwardKernel _stride        -> pattern_000 x
+        | TransposeConv3dBackwardInput _stride         -> pattern_000 x
+        | TransposeConv3dBackwardKernel _stride        -> pattern_000 x
+        | DilatedConv1dBackwardInput (_stride, _rate)   -> pattern_000 x
+        | DilatedConv1dBackwardKernel (_stride, _rate)  -> pattern_000 x
+        | DilatedConv2dBackwardInput (_stride, _rate)   -> pattern_000 x
+        | DilatedConv2dBackwardKernel (_stride, _rate)  -> pattern_000 x
+        | DilatedConv3dBackwardInput (_stride, _rate)   -> pattern_000 x
+        | DilatedConv3dBackwardKernel (_stride, _rate)  -> pattern_000 x
+        | MaxPool1dBackward (_padding, _kernel, _stride) -> pattern_000 x
+        | MaxPool2dBackward (_padding, _kernel, _stride) -> pattern_000 x
+        | MaxPool3dBackward (_padding, _kernel, _stride) -> pattern_000 x
+        | AvgPool1dBackward (_padding, _kernel, _stride) -> pattern_000 x
+        | AvgPool2dBackward (_padding, _kernel, _stride) -> pattern_000 x
+        | AvgPool3dBackward (_padding, _kernel, _stride) -> pattern_000 x
         | Row                                         -> pattern_000 x
-        | Rows i                                      -> pattern_000 x
+        | Rows _i                                      -> pattern_000 x
         | CopyRowTo                                   -> pattern_000 x
         | CopyColTo                                   -> pattern_000 x
-        | Dot (transa, transb, alpha, beta)           -> pattern_005 x
+        | Dot (_transa, _transb, _alpha, _beta)           -> pattern_005 x
         | Inv                                         -> pattern_000 x
         | Trace                                       -> pattern_000 x
-        | Transpose axis                              -> pattern_000 x
+        | Transpose _axis                              -> pattern_000 x
         | ToRows                                      -> pattern_000 x
         | OfRows                                      -> pattern_000 x
         | Scalar_Add                                  -> pattern_010 x
@@ -209,7 +205,7 @@ module Make
         | Scalar_Atanh                                -> pattern_012 x
         | Scalar_Relu                                 -> pattern_012 x
         | Scalar_Sigmoid                              -> pattern_012 x
-        | Fused_Adagrad (rate, eps)                   -> pattern_000 x
+        | Fused_Adagrad (_rate, _eps)                   -> pattern_000 x
         | _                                           -> failwith "Owl_computation_optimiser:_optimise_term"
       );
       validate x
@@ -311,7 +307,7 @@ module Make
         let b = x_parents.(1) in
         (
           match get_operator a with
-          | Transpose i -> (
+          | Transpose _i -> (
               if refnum a = 1 then (
                 let op = Dot (not transa, transb, alpha, beta) in
                 set_operator x op;
@@ -324,7 +320,7 @@ module Make
         );
         (
           match get_operator b with
-          | Transpose i -> (
+          | Transpose _i -> (
               if refnum b = 1 then (
                 let op = Dot (transa, not transb, alpha, beta) in
                 set_operator x op;
@@ -584,7 +580,7 @@ module Make
 
 
   (* Mul pattern : a * 1 or 1 * a *)
-  and pattern_021 x = failwith "pattern_021: not implemented"
+  and pattern_021 _x = failwith "pattern_021: not implemented"
 
 
   (* Reshape pattern *)
