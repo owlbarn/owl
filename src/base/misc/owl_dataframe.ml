@@ -415,11 +415,11 @@ let copy_struct x =
   let used = 0 in
   let size = 0 in
   let data = Array.map (function
-    | Bool_Series c   -> Bool_Series [||]
-    | Int_Series c    -> Int_Series [||]
-    | Float_Series c  -> Float_Series [||]
-    | String_Series c -> String_Series [||]
-    | Any_Series      -> Any_Series
+    | Bool_Series _c   -> Bool_Series [||]
+    | Int_Series _c    -> Int_Series [||]
+    | Float_Series _c  -> Float_Series [||]
+    | String_Series _c -> String_Series [||]
+    | Any_Series       -> Any_Series
   ) x.data in
   { data; head; used; size }
 
@@ -428,11 +428,11 @@ let reset x =
   x.used <- 0;
   x.size <- 0;
   x.data <- Array.map (function
-    | Bool_Series c   -> Bool_Series [||]
-    | Int_Series c    -> Int_Series [||]
-    | Float_Series c  -> Float_Series [||]
-    | String_Series c -> String_Series [||]
-    | Any_Series      -> Any_Series
+    | Bool_Series _c   -> Bool_Series [||]
+    | Int_Series _c    -> Int_Series [||]
+    | Float_Series _c  -> Float_Series [||]
+    | String_Series _c -> String_Series [||]
+    | Any_Series       -> Any_Series
   ) x.data
 
 

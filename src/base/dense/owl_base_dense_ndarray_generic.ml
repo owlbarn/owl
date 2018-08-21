@@ -829,16 +829,16 @@ let fix_ ?out x =
   map_ (fun a -> if a < 0. then ceil a else floor a) out
 
 
-let erf x = raise Owl_exception.NOT_IMPLEMENTED
+let erf _x = raise Owl_exception.NOT_IMPLEMENTED
 
 
-let erf_ ?out x = raise Owl_exception.NOT_IMPLEMENTED
+let erf_ ?_out _x = raise Owl_exception.NOT_IMPLEMENTED
 
 
-let erfc x = raise Owl_exception.NOT_IMPLEMENTED
+let erfc _x = raise Owl_exception.NOT_IMPLEMENTED
 
 
-let erfc_ ?out x = raise Owl_exception.NOT_IMPLEMENTED
+let erfc_ ?_out _x = raise Owl_exception.NOT_IMPLEMENTED
 
 
 let sqr x = map Scalar.sqr x
@@ -1755,22 +1755,21 @@ let greater_equal_scalar x a =
 
 (* Broadcasted operation, return an array with values of 1
    if (one_fun elem_from_a elem_from_b) == true, 0 otherwise *)
-let _make_elt_compare_fun ?out x y cmp_fun =
-  let _kind = kind x in
-  let c0 = Owl_const.zero _kind in
-  let c1 = Owl_const.one _kind in
+let _make_elt_compare_fun kind cmp_fun =
+  let c0 = Owl_const.zero kind in
+  let c1 = Owl_const.one kind in
   let _func a b = if cmp_fun a b then c1 else c0 in
   _func
 
 
 let elt_equal x y =
-  let _func = _make_elt_compare_fun x y Pervasives.(=) in
+  let _func = _make_elt_compare_fun (kind x) Pervasives.(=) in
   _broadcasted_op x y _func
 
 
 let elt_equal_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  let _func = _make_elt_compare_fun x y Pervasives.(=) in
+  let _func = _make_elt_compare_fun (kind x) Pervasives.(=) in
   _broadcasted_op ~out x y _func
 
 
@@ -1780,62 +1779,62 @@ let approx_elt_equal ?eps x y =
     | None     -> Owl_utils.eps Float32
   in
   let approx_equal_fun = (fun x y -> (Scalar.abs (Scalar.sub x y)) < eps) in
-  let _func = _make_elt_compare_fun x y approx_equal_fun in
+  let _func = _make_elt_compare_fun (kind x) approx_equal_fun in
   _broadcasted_op x y _func
 
 
 let elt_not_equal x y =
-  let _func = _make_elt_compare_fun x y Pervasives.(<>) in
+  let _func = _make_elt_compare_fun (kind x) Pervasives.(<>) in
   _broadcasted_op x y _func
 
 
 let elt_not_equal_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  let _func = _make_elt_compare_fun x y Pervasives.(<>) in
+  let _func = _make_elt_compare_fun (kind x) Pervasives.(<>) in
   _broadcasted_op ~out x y _func
 
 
 let elt_less x y =
-  let _func = _make_elt_compare_fun x y Pervasives.(<) in
+  let _func = _make_elt_compare_fun (kind x) Pervasives.(<) in
   _broadcasted_op x y _func
 
 
 let elt_less_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  let _func = _make_elt_compare_fun x y Pervasives.(<) in
+  let _func = _make_elt_compare_fun (kind x) Pervasives.(<) in
   _broadcasted_op ~out x y _func
 
 
 let elt_greater x y =
-  let _func = _make_elt_compare_fun x y Pervasives.(>) in
+  let _func = _make_elt_compare_fun (kind x) Pervasives.(>) in
   _broadcasted_op x y _func
 
 
 let elt_greater_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  let _func = _make_elt_compare_fun x y Pervasives.(>) in
+  let _func = _make_elt_compare_fun (kind x) Pervasives.(>) in
   _broadcasted_op ~out x y _func
 
 
 let elt_less_equal x y =
-  let _func = _make_elt_compare_fun x y Pervasives.(<=) in
+  let _func = _make_elt_compare_fun (kind x) Pervasives.(<=) in
   _broadcasted_op x y _func
 
 
 let elt_less_equal_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  let _func = _make_elt_compare_fun x y Pervasives.(<=) in
+  let _func = _make_elt_compare_fun (kind x) Pervasives.(<=) in
   _broadcasted_op ~out x y _func
 
 
 let elt_greater_equal x y =
-  let _func = _make_elt_compare_fun x y Pervasives.(>=) in
+  let _func = _make_elt_compare_fun (kind x) Pervasives.(>=) in
   _broadcasted_op x y _func
 
 
 let elt_greater_equal_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  let _func = _make_elt_compare_fun x y Pervasives.(>=) in
+  let _func = _make_elt_compare_fun (kind x) Pervasives.(>=) in
   _broadcasted_op ~out x y _func
 
 
@@ -3939,7 +3938,7 @@ let max_rows varr =
     done;
     result
   end
- 
+
 let one_hot _depth _x = failwith "Owl_base_dense_ndarray_generic:one_hot: not implemented"
 
 
