@@ -185,7 +185,7 @@ let series_type_to_str = function
   | Int_Series _c    -> "i"
   | Float_Series _c  -> "f"
   | String_Series _c -> "s"
-  | Any_Series      -> "a"
+  | Any_Series       -> "a"
 
 
 let str_to_elt_fun = function

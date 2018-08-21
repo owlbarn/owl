@@ -101,9 +101,9 @@ let calc_continuous_blksz axis shp =
       d := l + 1;
       if l < 0 then failwith "stop";
       match axis.(l) with
-      | I_ _x -> failwith "stop" (* never reached *)
-      | L_ _x -> failwith "stop"
-      | R_ x -> (
+      | I_ _  -> failwith "stop" (* never reached *)
+      | L_ _  -> failwith "stop"
+      | R_ x  -> (
           if x.(0) = 0 && x.(1) = shp.(l) - 1 && x.(2) = 1 then
             ssz := slice_sz.(l)
           else failwith "stop"
@@ -137,7 +137,7 @@ let rec __foreach_continuous_blk a d j i f =
   if j = d then f i
   else (
     match a.(j) with
-    | I_ _x -> ( (* never reache here *) )
+    | I_ _ -> ( (* never reache here *) )
     | L_ x -> (
         Array.iter (fun k ->
           i.(j) <- k;

@@ -255,10 +255,10 @@ module Make
     | _     -> "you should not have reached here!"
 
   let type_info x = match x with
-    | F _a                     -> Printf.sprintf "[%s]" (deep_info x)
-    | DF (ap, _at, ai)         -> Printf.sprintf "[DF tag:%i ap:%s]" ai (deep_info ap)
+    | F _a                       -> Printf.sprintf "[%s]" (deep_info x)
+    | DF (ap, _at, ai)           -> Printf.sprintf "[DF tag:%i ap:%s]" ai (deep_info ap)
     | DR (ap, _at, _ao, _af, ai) -> Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
-    | _                       -> Printf.sprintf "[%s]" (deep_info x)
+    | _                          -> Printf.sprintf "[%s]" (deep_info x)
 
   let error_binop op a b =
     let s0 = "#0:" ^ (type_info a) in
@@ -292,31 +292,31 @@ module Make
       | DR (ap, _, _, _, ai), F _bp                 -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
       | Arr _ap, DR (bp, _, _, _, bi)               -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
       | DR (ap, _, _, _, ai), Arr _bp               -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
-      | DF (ap, at, ai), DR (bp, _, _, _, bi)      -> (
+      | DF (ap, at, ai), DR (bp, _, _, _, bi)       -> (
           match cmp_tag ai bi with
           | 1  -> let cp = fd ap b in DF (cp, df_da cp ap at, ai)
           | -1 -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
           | _  -> failwith "error: forward and reverse clash at the same level"
         )
-      | DR (ap, _, _, _, ai), DF (bp, bt, bi)      -> (
+      | DR (ap, _, _, _, ai), DF (bp, bt, bi)       -> (
           match cmp_tag ai bi with
           | -1 -> let cp = fd a bp in DF (cp, df_db cp bp bt, bi)
           | 1  -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
           | _  -> failwith "error: forward and reverse clash at the same level"
         )
-      | DF (ap, at, ai), DF (bp, bt, bi)           -> (
+      | DF (ap, at, ai), DF (bp, bt, bi)            -> (
           match cmp_tag ai bi with
           | 0 -> let cp = fd ap bp in DF (cp, (df_dab cp ap at bp bt), ai)
           | 1 -> let cp = fd ap b  in DF (cp, (df_da cp ap at), ai)
           | _ -> let cp = fd a bp  in DF (cp, (df_db cp bp bt), bi)
         )
-      | DR (ap, _, _, _, ai), DR (bp, _, _, _, bi) -> (
+      | DR (ap, _, _, _, ai), DR (bp, _, _, _, bi)  -> (
           match cmp_tag ai bi with
           | 0 -> let cp = fd ap bp in DR (cp, ref (zero cp), r_d_d a b, ref 0, ai)
           | 1 -> let cp = fd ap b  in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
           | _ -> let cp = fd a bp  in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
         )
-      | a, b                                       -> ff a b
+      | a, b                                        -> ff a b
 
     and ( + ) a b = add a b
     and add a b =
@@ -1611,7 +1611,7 @@ module Make
               | Get_Slice_D (a, i)         -> push ((set_slice i (zero a) !aa, a) :: t)
               | Set_Slice_D_D (a, b, i)    -> push ((set_slice i !aa (zero b), a) :: (get_slice i !aa, b) :: t)
               | Set_Slice_D_C (a, b, i)    -> push ((set_slice i !aa (zero b), a) :: t)
-              | Set_Slice_C_D (_a, b, i)    -> push ((get_slice i !aa, b) :: t)
+              | Set_Slice_C_D (_a, b, i)   -> push ((get_slice i !aa, b) :: t)
               | Sum_D a                    -> push ((!aa, a) :: t)
               | Sum__D (a, i)              -> let s = shape a in let reps = Array.(make (length s) 1) in reps.(i) <- s.(i); push ((repeat !aa reps, a) :: t)
               | Sum___D (a, i)             -> let s = shape a in let reps = Array.(make (length s) 1) in Array.iter (fun j -> reps.(j) <- s.(j)) i; push ((repeat !aa reps, a) :: t)
@@ -1626,8 +1626,8 @@ module Make
               | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
               | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) * !aa * dpt), a) :: t)
               | Add_Row_D_D (a, b, i)      -> push ((!aa, a) :: (get_row !aa i, b) :: t)
-              | Add_Row_D_C (a, _b, _i)      -> push ((!aa, a) :: t)
-              | Add_Row_C_D (_a, b, i)      -> push ((get_row !aa i, b) :: t)
+              | Add_Row_D_C (a, _b, _i)    -> push ((!aa, a) :: t)
+              | Add_Row_C_D (_a, b, i)     -> push ((get_row !aa i, b) :: t)
               | Get_Row_D (a, i)           -> (adjref a) := add_row (adjval a) !aa i; push ((zero a, a) :: t)
               | Of_Rows_D a                -> push (t |> List.append (a |> Array.to_list |> List.mapi (fun i v -> (get_row !aa i, v))))
               | Conv1D_D_D (a, b, s)       -> push ((conv1d_backward_input a b s !aa, a) :: (conv1d_backward_kernel a b s !aa, b) :: t)

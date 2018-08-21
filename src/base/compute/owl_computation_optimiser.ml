@@ -27,109 +27,109 @@ module Make
     if is_valid x = false then (
       (
         match (get_operator x) with
-        | Noop                                        -> pattern_003 x
-        | Var                                         -> ()
-        | Const                                       -> pattern_000 x
-        | Empty _shape                                 -> pattern_000 x
-        | Zeros _shape                                 -> pattern_000 x
-        | Ones _shape                                  -> pattern_000 x
-        | Create _shape                                -> pattern_000 x
-        | Sequential _shape                            -> pattern_000 x
-        | Uniform _shape                               -> pattern_000 x
-        | Gaussian _shape                              -> pattern_000 x
-        | Bernoulli _shape                             -> pattern_000 x
-        | Init (_shape, _f)                             -> pattern_000 x
-        | Get _i                                       -> pattern_000 x
-        | Set _i                                       -> pattern_000 x
-        | GetSlice _slice                              -> pattern_000 x
-        | SetSlice _slice                              -> pattern_000 x
-        | Copy                                        -> pattern_018 x
-        | Reset                                       -> pattern_000 x
-        | Reshape _shape                               -> pattern_022 x
-        | Reverse                                     -> pattern_000 x
-        | Tile _repeats                                -> pattern_000 x
-        | Repeat _repeats                              -> pattern_023 x
-        | Concatenate _axis                            -> pattern_000 x
-        | Split (_axis, _parts)                         -> pattern_000 x
-        | Draw (_axis, _n)                              -> pattern_000 x
-        | Map _f                                       -> pattern_000 x
-        | Fold (_axis,_f)                              -> pattern_000 x
-        | Scan (_axis,_f)                              -> pattern_000 x
-        | OneHot _depth                                -> pattern_000 x
-        | Abs                                         -> pattern_000 x
-        | Neg                                         -> pattern_000 x
-        | Floor                                       -> pattern_000 x
-        | Ceil                                        -> pattern_000 x
-        | Round                                       -> pattern_000 x
-        | Sqr                                         -> pattern_000 x
-        | Sqrt                                        -> pattern_000 x
-        | Log                                         -> pattern_000 x
-        | Log2                                        -> pattern_000 x
-        | Log10                                       -> pattern_000 x
-        | Exp                                         -> pattern_000 x
-        | Sin                                         -> pattern_000 x
-        | Cos                                         -> pattern_000 x
-        | Tan                                         -> pattern_000 x
-        | Sinh                                        -> pattern_000 x
-        | Cosh                                        -> pattern_000 x
-        | Tanh                                        -> pattern_000 x
-        | Asin                                        -> pattern_000 x
-        | Acos                                        -> pattern_000 x
-        | Atan                                        -> pattern_000 x
-        | Asinh                                       -> pattern_000 x
-        | Acosh                                       -> pattern_000 x
-        | Atanh                                       -> pattern_000 x
-        | Min _axis                                    -> pattern_000 x
-        | Max _axis                                    -> pattern_000 x
-        | Sum _axis                                    -> pattern_000 x
-        | SumReduce _axis                              -> pattern_024 x
-        | Signum                                      -> pattern_000 x
-        | Sigmoid                                     -> pattern_000 x
-        | Relu                                        -> pattern_000 x
-        | Min'                                        -> pattern_000 x
-        | Max'                                        -> pattern_000 x
-        | Sum'                                        -> pattern_000 x
-        | L1norm'                                     -> pattern_000 x
-        | L2norm'                                     -> pattern_000 x
-        | L2NormSqr'                                  -> pattern_000 x
-        | ClipByValue                                 -> pattern_000 x
-        | ClipByL2norm                                -> pattern_000 x
-        | Pow                                         -> pattern_000 x
-        | ScalarPow                                   -> pattern_000 x
-        | PowScalar                                   -> pattern_000 x
-        | Atan2                                       -> pattern_000 x
-        | ScalarAtan2                                 -> pattern_000 x
-        | Atan2Scalar                                 -> pattern_000 x
-        | Add                                         -> pattern_001 x
-        | Sub                                         -> pattern_000 x
-        | Mul                                         -> pattern_019 x
-        | Div                                         -> pattern_007 x
-        | AddScalar                                   -> pattern_015 x
-        | SubScalar                                   -> pattern_000 x
-        | MulScalar                                   -> pattern_000 x
-        | DivScalar                                   -> pattern_000 x
-        | ScalarAdd                                   -> pattern_000 x
-        | ScalarSub                                   -> pattern_000 x
-        | ScalarMul                                   -> pattern_014 x
-        | ScalarDiv                                   -> pattern_017 x
-        | EltEqual                                    -> pattern_000 x
-        | EltNotEqual                                 -> pattern_000 x
-        | EltLess                                     -> pattern_000 x
-        | EltGreater                                  -> pattern_000 x
-        | EltLessEqual                                -> pattern_000 x
-        | EltGreaterEqual                             -> pattern_000 x
-        | EltEqualScalar                              -> pattern_000 x
-        | EltNotEqualScalar                           -> pattern_000 x
-        | EltLessScalar                               -> pattern_000 x
-        | EltGreaterScalar                            -> pattern_000 x
-        | EltLessEqualScalar                          -> pattern_000 x
-        | EltGreaterEqualScalar                       -> pattern_000 x
-        | Conv1d (_padding, _stride)                    -> pattern_000 x
-        | Conv2d (_padding, _stride)                    -> pattern_000 x
-        | Conv3d (_padding, _stride)                    -> pattern_000 x
-        | TransposeConv1d (_padding, _stride)           -> pattern_000 x
-        | TransposeConv2d (_padding, _stride)           -> pattern_000 x
-        | TransposeConv3d (_padding, _stride)           -> pattern_000 x
+        | Noop                                           -> pattern_003 x
+        | Var                                            -> ()
+        | Const                                          -> pattern_000 x
+        | Empty _shape                                   -> pattern_000 x
+        | Zeros _shape                                   -> pattern_000 x
+        | Ones _shape                                    -> pattern_000 x
+        | Create _shape                                  -> pattern_000 x
+        | Sequential _shape                              -> pattern_000 x
+        | Uniform _shape                                 -> pattern_000 x
+        | Gaussian _shape                                -> pattern_000 x
+        | Bernoulli _shape                               -> pattern_000 x
+        | Init (_shape, _f)                              -> pattern_000 x
+        | Get _i                                         -> pattern_000 x
+        | Set _i                                         -> pattern_000 x
+        | GetSlice _slice                                -> pattern_000 x
+        | SetSlice _slice                                -> pattern_000 x
+        | Copy                                           -> pattern_018 x
+        | Reset                                          -> pattern_000 x
+        | Reshape _shape                                 -> pattern_022 x
+        | Reverse                                        -> pattern_000 x
+        | Tile _repeats                                  -> pattern_000 x
+        | Repeat _repeats                                -> pattern_023 x
+        | Concatenate _axis                              -> pattern_000 x
+        | Split (_axis, _parts)                          -> pattern_000 x
+        | Draw (_axis, _n)                               -> pattern_000 x
+        | Map _f                                         -> pattern_000 x
+        | Fold (_axis,_f)                                -> pattern_000 x
+        | Scan (_axis,_f)                                -> pattern_000 x
+        | OneHot _depth                                  -> pattern_000 x
+        | Abs                                            -> pattern_000 x
+        | Neg                                            -> pattern_000 x
+        | Floor                                          -> pattern_000 x
+        | Ceil                                           -> pattern_000 x
+        | Round                                          -> pattern_000 x
+        | Sqr                                            -> pattern_000 x
+        | Sqrt                                           -> pattern_000 x
+        | Log                                            -> pattern_000 x
+        | Log2                                           -> pattern_000 x
+        | Log10                                          -> pattern_000 x
+        | Exp                                            -> pattern_000 x
+        | Sin                                            -> pattern_000 x
+        | Cos                                            -> pattern_000 x
+        | Tan                                            -> pattern_000 x
+        | Sinh                                           -> pattern_000 x
+        | Cosh                                           -> pattern_000 x
+        | Tanh                                           -> pattern_000 x
+        | Asin                                           -> pattern_000 x
+        | Acos                                           -> pattern_000 x
+        | Atan                                           -> pattern_000 x
+        | Asinh                                          -> pattern_000 x
+        | Acosh                                          -> pattern_000 x
+        | Atanh                                          -> pattern_000 x
+        | Min _axis                                      -> pattern_000 x
+        | Max _axis                                      -> pattern_000 x
+        | Sum _axis                                      -> pattern_000 x
+        | SumReduce _axis                                -> pattern_024 x
+        | Signum                                         -> pattern_000 x
+        | Sigmoid                                        -> pattern_000 x
+        | Relu                                           -> pattern_000 x
+        | Min'                                           -> pattern_000 x
+        | Max'                                           -> pattern_000 x
+        | Sum'                                           -> pattern_000 x
+        | L1norm'                                        -> pattern_000 x
+        | L2norm'                                        -> pattern_000 x
+        | L2NormSqr'                                     -> pattern_000 x
+        | ClipByValue                                    -> pattern_000 x
+        | ClipByL2norm                                   -> pattern_000 x
+        | Pow                                            -> pattern_000 x
+        | ScalarPow                                      -> pattern_000 x
+        | PowScalar                                      -> pattern_000 x
+        | Atan2                                          -> pattern_000 x
+        | ScalarAtan2                                    -> pattern_000 x
+        | Atan2Scalar                                    -> pattern_000 x
+        | Add                                            -> pattern_001 x
+        | Sub                                            -> pattern_000 x
+        | Mul                                            -> pattern_019 x
+        | Div                                            -> pattern_007 x
+        | AddScalar                                      -> pattern_015 x
+        | SubScalar                                      -> pattern_000 x
+        | MulScalar                                      -> pattern_000 x
+        | DivScalar                                      -> pattern_000 x
+        | ScalarAdd                                      -> pattern_000 x
+        | ScalarSub                                      -> pattern_000 x
+        | ScalarMul                                      -> pattern_014 x
+        | ScalarDiv                                      -> pattern_017 x
+        | EltEqual                                       -> pattern_000 x
+        | EltNotEqual                                    -> pattern_000 x
+        | EltLess                                        -> pattern_000 x
+        | EltGreater                                     -> pattern_000 x
+        | EltLessEqual                                   -> pattern_000 x
+        | EltGreaterEqual                                -> pattern_000 x
+        | EltEqualScalar                                 -> pattern_000 x
+        | EltNotEqualScalar                              -> pattern_000 x
+        | EltLessScalar                                  -> pattern_000 x
+        | EltGreaterScalar                               -> pattern_000 x
+        | EltLessEqualScalar                             -> pattern_000 x
+        | EltGreaterEqualScalar                          -> pattern_000 x
+        | Conv1d (_padding, _stride)                     -> pattern_000 x
+        | Conv2d (_padding, _stride)                     -> pattern_000 x
+        | Conv3d (_padding, _stride)                     -> pattern_000 x
+        | TransposeConv1d (_padding, _stride)            -> pattern_000 x
+        | TransposeConv2d (_padding, _stride)            -> pattern_000 x
+        | TransposeConv3d (_padding, _stride)            -> pattern_000 x
         | DilatedConv1d (_padding, _stride, _rate)       -> pattern_000 x
         | DilatedConv2d (_padding, _stride, _rate)       -> pattern_000 x
         | DilatedConv3d (_padding, _stride, _rate)       -> pattern_000 x
@@ -139,74 +139,74 @@ module Make
         | AvgPool1d (_padding, _kernel, _stride)         -> pattern_000 x
         | AvgPool2d (_padding, _kernel, _stride)         -> pattern_000 x
         | AvgPool3d (_padding, _kernel, _stride)         -> pattern_000 x
-        | Conv1dBackwardInput _stride                  -> pattern_000 x
-        | Conv1dBackwardKernel _stride                 -> pattern_000 x
-        | Conv2dBackwardInput _stride                  -> pattern_000 x
-        | Conv2dBackwardKernel _stride                 -> pattern_000 x
-        | Conv3dBackwardInput _stride                  -> pattern_000 x
-        | Conv3dBackwardKernel _stride                 -> pattern_000 x
-        | TransposeConv1dBackwardInput _stride         -> pattern_000 x
-        | TransposeConv1dBackwardKernel _stride        -> pattern_000 x
-        | TransposeConv2dBackwardInput _stride         -> pattern_000 x
-        | TransposeConv2dBackwardKernel _stride        -> pattern_000 x
-        | TransposeConv3dBackwardInput _stride         -> pattern_000 x
-        | TransposeConv3dBackwardKernel _stride        -> pattern_000 x
-        | DilatedConv1dBackwardInput (_stride, _rate)   -> pattern_000 x
-        | DilatedConv1dBackwardKernel (_stride, _rate)  -> pattern_000 x
-        | DilatedConv2dBackwardInput (_stride, _rate)   -> pattern_000 x
-        | DilatedConv2dBackwardKernel (_stride, _rate)  -> pattern_000 x
-        | DilatedConv3dBackwardInput (_stride, _rate)   -> pattern_000 x
-        | DilatedConv3dBackwardKernel (_stride, _rate)  -> pattern_000 x
+        | Conv1dBackwardInput _stride                    -> pattern_000 x
+        | Conv1dBackwardKernel _stride                   -> pattern_000 x
+        | Conv2dBackwardInput _stride                    -> pattern_000 x
+        | Conv2dBackwardKernel _stride                   -> pattern_000 x
+        | Conv3dBackwardInput _stride                    -> pattern_000 x
+        | Conv3dBackwardKernel _stride                   -> pattern_000 x
+        | TransposeConv1dBackwardInput _stride           -> pattern_000 x
+        | TransposeConv1dBackwardKernel _stride          -> pattern_000 x
+        | TransposeConv2dBackwardInput _stride           -> pattern_000 x
+        | TransposeConv2dBackwardKernel _stride          -> pattern_000 x
+        | TransposeConv3dBackwardInput _stride           -> pattern_000 x
+        | TransposeConv3dBackwardKernel _stride          -> pattern_000 x
+        | DilatedConv1dBackwardInput (_stride, _rate)    -> pattern_000 x
+        | DilatedConv1dBackwardKernel (_stride, _rate)   -> pattern_000 x
+        | DilatedConv2dBackwardInput (_stride, _rate)    -> pattern_000 x
+        | DilatedConv2dBackwardKernel (_stride, _rate)   -> pattern_000 x
+        | DilatedConv3dBackwardInput (_stride, _rate)    -> pattern_000 x
+        | DilatedConv3dBackwardKernel (_stride, _rate)   -> pattern_000 x
         | MaxPool1dBackward (_padding, _kernel, _stride) -> pattern_000 x
         | MaxPool2dBackward (_padding, _kernel, _stride) -> pattern_000 x
         | MaxPool3dBackward (_padding, _kernel, _stride) -> pattern_000 x
         | AvgPool1dBackward (_padding, _kernel, _stride) -> pattern_000 x
         | AvgPool2dBackward (_padding, _kernel, _stride) -> pattern_000 x
         | AvgPool3dBackward (_padding, _kernel, _stride) -> pattern_000 x
-        | Row                                         -> pattern_000 x
-        | Rows _i                                      -> pattern_000 x
-        | CopyRowTo                                   -> pattern_000 x
-        | CopyColTo                                   -> pattern_000 x
-        | Dot (_transa, _transb, _alpha, _beta)           -> pattern_005 x
-        | Inv                                         -> pattern_000 x
-        | Trace                                       -> pattern_000 x
-        | Transpose _axis                              -> pattern_000 x
-        | ToRows                                      -> pattern_000 x
-        | OfRows                                      -> pattern_000 x
-        | Scalar_Add                                  -> pattern_010 x
-        | Scalar_Sub                                  -> pattern_010 x
-        | Scalar_Mul                                  -> pattern_010 x
-        | Scalar_Div                                  -> pattern_010 x
-        | Scalar_Pow                                  -> pattern_010 x
-        | Scalar_Atan2                                -> pattern_010 x
-        | Scalar_Abs                                  -> pattern_012 x
-        | Scalar_Neg                                  -> pattern_012 x
-        | Scalar_Sqr                                  -> pattern_012 x
-        | Scalar_Sqrt                                 -> pattern_012 x
-        | Scalar_Exp                                  -> pattern_012 x
-        | Scalar_Log                                  -> pattern_012 x
-        | Scalar_Log2                                 -> pattern_012 x
-        | Scalar_Log10                                -> pattern_012 x
-        | Scalar_Signum                               -> pattern_012 x
-        | Scalar_Floor                                -> pattern_012 x
-        | Scalar_Ceil                                 -> pattern_012 x
-        | Scalar_Round                                -> pattern_012 x
-        | Scalar_Sin                                  -> pattern_012 x
-        | Scalar_Cos                                  -> pattern_012 x
-        | Scalar_Tan                                  -> pattern_012 x
-        | Scalar_Sinh                                 -> pattern_012 x
-        | Scalar_Cosh                                 -> pattern_012 x
-        | Scalar_Tanh                                 -> pattern_012 x
-        | Scalar_Asin                                 -> pattern_012 x
-        | Scalar_Acos                                 -> pattern_012 x
-        | Scalar_Atan                                 -> pattern_012 x
-        | Scalar_Asinh                                -> pattern_012 x
-        | Scalar_Acosh                                -> pattern_012 x
-        | Scalar_Atanh                                -> pattern_012 x
-        | Scalar_Relu                                 -> pattern_012 x
-        | Scalar_Sigmoid                              -> pattern_012 x
-        | Fused_Adagrad (_rate, _eps)                   -> pattern_000 x
-        | _                                           -> failwith "Owl_computation_optimiser:_optimise_term"
+        | Row                                            -> pattern_000 x
+        | Rows _i                                        -> pattern_000 x
+        | CopyRowTo                                      -> pattern_000 x
+        | CopyColTo                                      -> pattern_000 x
+        | Dot (_transa, _transb, _alpha, _beta)          -> pattern_005 x
+        | Inv                                            -> pattern_000 x
+        | Trace                                          -> pattern_000 x
+        | Transpose _axis                                -> pattern_000 x
+        | ToRows                                         -> pattern_000 x
+        | OfRows                                         -> pattern_000 x
+        | Scalar_Add                                     -> pattern_010 x
+        | Scalar_Sub                                     -> pattern_010 x
+        | Scalar_Mul                                     -> pattern_010 x
+        | Scalar_Div                                     -> pattern_010 x
+        | Scalar_Pow                                     -> pattern_010 x
+        | Scalar_Atan2                                   -> pattern_010 x
+        | Scalar_Abs                                     -> pattern_012 x
+        | Scalar_Neg                                     -> pattern_012 x
+        | Scalar_Sqr                                     -> pattern_012 x
+        | Scalar_Sqrt                                    -> pattern_012 x
+        | Scalar_Exp                                     -> pattern_012 x
+        | Scalar_Log                                     -> pattern_012 x
+        | Scalar_Log2                                    -> pattern_012 x
+        | Scalar_Log10                                   -> pattern_012 x
+        | Scalar_Signum                                  -> pattern_012 x
+        | Scalar_Floor                                   -> pattern_012 x
+        | Scalar_Ceil                                    -> pattern_012 x
+        | Scalar_Round                                   -> pattern_012 x
+        | Scalar_Sin                                     -> pattern_012 x
+        | Scalar_Cos                                     -> pattern_012 x
+        | Scalar_Tan                                     -> pattern_012 x
+        | Scalar_Sinh                                    -> pattern_012 x
+        | Scalar_Cosh                                    -> pattern_012 x
+        | Scalar_Tanh                                    -> pattern_012 x
+        | Scalar_Asin                                    -> pattern_012 x
+        | Scalar_Acos                                    -> pattern_012 x
+        | Scalar_Atan                                    -> pattern_012 x
+        | Scalar_Asinh                                   -> pattern_012 x
+        | Scalar_Acosh                                   -> pattern_012 x
+        | Scalar_Atanh                                   -> pattern_012 x
+        | Scalar_Relu                                    -> pattern_012 x
+        | Scalar_Sigmoid                                 -> pattern_012 x
+        | Fused_Adagrad (_rate, _eps)                    -> pattern_000 x
+        | _                                              -> failwith "Owl_computation_optimiser:_optimise_term"
       );
       validate x
     )

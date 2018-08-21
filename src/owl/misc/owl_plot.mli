@@ -27,7 +27,6 @@ type legend_position = North | South | West | East | NorthWest | NorthEast | Sou
 type axis = X | Y | Z | XY | XZ | YZ | XYZ
 (** axis type *)
 
-(** specification of a figure *)
 type spec =
   | RGB         of int * int * int
   | LineStyle   of int
@@ -44,6 +43,7 @@ type spec =
   | Curtain
   | Faceted
   | Axis        of axis
+(** specification of a figure *)
 
 
 (** {6 Config functions} *)
