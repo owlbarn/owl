@@ -48,11 +48,13 @@ val uniform : ?a:elt -> ?b:elt -> int -> int -> mat
 
 val gaussian : ?mu:elt -> ?sigma:elt -> int -> int -> mat
 
-val linspace : elt -> elt -> int -> mat [@@warning "-32"]
+val logspace : ?base:float -> elt -> elt -> int -> mat
 
-val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat [@@warning "-32"]
+val linspace : elt -> elt -> int -> mat
 
-val meshup : mat -> mat -> mat * mat [@@warning "-32"]
+val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat
+
+val meshup : mat -> mat -> mat * mat
 
 val bernoulli : ?p:float -> int -> int -> mat
 
@@ -86,14 +88,6 @@ val vector_zeros : int -> mat
 val vector_ones : int -> mat
 
 val vector_uniform : int -> mat
-
-val linspace : elt -> elt -> int -> mat
-
-val logspace : ?base:float -> elt -> elt -> int -> mat
-
-val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat
-
-val meshup : mat -> mat -> mat * mat
 
 
 (** {6 Obtain the basic properties of a matrix} *)
