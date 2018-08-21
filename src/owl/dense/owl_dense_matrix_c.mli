@@ -456,11 +456,11 @@ val mean : ?axis:int -> mat -> mat
 
 val mean': mat -> elt
 
-val var : ?axis:int -> mat -> mat [@@warning "-32"]
+val var : ?axis:int -> mat -> mat
 
 val var': mat -> elt
 
-val std : ?axis:int -> mat -> mat [@@warning "-32"]
+val std : ?axis:int -> mat -> mat
 
 val std': mat -> elt
 
@@ -571,10 +571,6 @@ val modf : mat -> mat * mat
 val angle : mat -> mat
 
 val proj : mat -> mat
-
-val var : ?axis:int -> mat -> mat
-
-val std : ?axis:int -> mat -> mat
 
 val mat2gray : ?amin:elt -> ?amax:elt -> mat -> mat
 
