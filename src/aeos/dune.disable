@@ -1,15 +1,13 @@
-(jbuild_version 1)
-
-(library (
+(library
   (name owl_aeos)
   (public_name owl-aeos)
   (wrapped false)
   (flags (:standard -safe-string))
-  (c_names (
+  (c_names
     owl_aeos_tuner_sin_stub
     owl_aeos_tuner_cos_stub
-  ))
-  (libraries (
+  )
+  (libraries
     owl-base
-  ))
-))
+  )
+)
