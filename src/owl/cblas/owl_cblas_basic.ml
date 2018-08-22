@@ -3,8 +3,6 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-[@@@warning "-6"]
-
 (** Please refer to: Intel Math Kernel Library implements the BLAS
   url: https://software.intel.com/en-us/mkl-developer-reference-c
  *)
@@ -56,19 +54,19 @@ let rotmg
       let d1 = allocate float d1 in
       let d2 = allocate float d2 in
       let b1 = allocate float b1 in
-      let p' = Bigarray.(Array1.create Float32 C_layout 5) in
-      let p  = bigarray_start Ctypes_static.Array1 p' in
-      C.srotmg ~d1 ~d2 ~b1 ~b2 ~p;
-      !@d1, !@d2, !@b1, p'
+      let p  = Bigarray.(Array1.create Float32 C_layout 5) in
+      let _p = bigarray_start Ctypes_static.Array1 p in
+      C.srotmg ~d1 ~d2 ~b1 ~b2 ~p:_p;
+      !@d1, !@d2, !@b1, p
     )
   | Bigarray.Float64 -> (
       let d1 = allocate double d1 in
       let d2 = allocate double d2 in
       let b1 = allocate double b1 in
-      let p' = Bigarray.(Array1.create Float64 C_layout 5) in
-      let p  = bigarray_start Ctypes_static.Array1 p' in
-      C.drotmg ~d1 ~d2 ~b1 ~b2 ~p;
-      !@d1, !@d2, !@b1, p'
+      let p  = Bigarray.(Array1.create Float64 C_layout 5) in
+      let _p = bigarray_start Ctypes_static.Array1 p in
+      C.drotmg ~d1 ~d2 ~b1 ~b2 ~p:_p;
+      !@d1, !@d2, !@b1, p
     )
   | _                -> failwith "owl_cblas:rotmg"
 
@@ -110,10 +108,10 @@ let swap
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _ = match Bigarray.Array1.kind x with
-    | Bigarray.Float32   -> C.sswap n _x incx _y incy
-    | Bigarray.Float64   -> C.dswap n _x incx _y incy
-    | Bigarray.Complex32 -> C.cswap n _x incx _y incy
-    | Bigarray.Complex64 -> C.zswap n _x incx _y incy
+    | Bigarray.Float32   -> C.sswap ~n ~x:_x ~incx ~y:_y ~incy
+    | Bigarray.Float64   -> C.dswap ~n ~x:_x ~incx ~y:_y ~incy
+    | Bigarray.Complex32 -> C.cswap ~n ~x:_x ~incx ~y:_y ~incy
+    | Bigarray.Complex64 -> C.zswap ~n ~x:_x ~incx ~y:_y ~incy
     | _                  -> failwith "owl_cblas:swap"
   in ()
 
@@ -125,10 +123,10 @@ let scal
   = fun n a x incx ->
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _ = match Bigarray.Array1.kind x with
-    | Bigarray.Float32   -> C.sscal n a _x incx
-    | Bigarray.Float64   -> C.dscal n a _x incx
-    | Bigarray.Complex32 -> C.cscal n (allocate complex32 a) _x incx
-    | Bigarray.Complex64 -> C.zscal n (allocate complex64 a) _x incx
+    | Bigarray.Float32   -> C.sscal ~n ~alpha:a ~x:_x ~incx
+    | Bigarray.Float64   -> C.dscal ~n ~alpha:a ~x:_x ~incx
+    | Bigarray.Complex32 -> C.cscal ~n ~alpha:(allocate complex32 a) ~x:_x ~incx
+    | Bigarray.Complex64 -> C.zscal ~n ~alpha:(allocate complex64 a) ~x:_x ~incx
     | _                  -> failwith "owl_cblas:scal"
   in ()
 
@@ -137,8 +135,8 @@ let cszd_scal
   = fun n a x incx ->
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _ = match Bigarray.Array1.kind x with
-    | Bigarray.Complex32 -> C.csscal n a _x incx
-    | Bigarray.Complex64 -> C.zdscal n a _x incx
+    | Bigarray.Complex32 -> C.csscal ~n ~alpha:a ~x:_x ~incx
+    | Bigarray.Complex64 -> C.zdscal ~n ~alpha:a ~x:_x ~incx
   in ()
 
 
@@ -150,10 +148,10 @@ let copy
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _ = match Bigarray.Array1.kind x with
-    | Bigarray.Float32   -> C.scopy n _x incx _y incy
-    | Bigarray.Float64   -> C.dcopy n _x incx _y incy
-    | Bigarray.Complex32 -> C.ccopy n _x incx _y incy
-    | Bigarray.Complex64 -> C.zcopy n _x incx _y incy
+    | Bigarray.Float32   -> C.scopy ~n ~x:_x ~incx ~y:_y ~incy
+    | Bigarray.Float64   -> C.dcopy ~n ~x:_x ~incx ~y:_y ~incy
+    | Bigarray.Complex32 -> C.ccopy ~n ~x:_x ~incx ~y:_y ~incy
+    | Bigarray.Complex64 -> C.zcopy ~n ~x:_x ~incx ~y:_y ~incy
     | _                  -> failwith "owl_cblas:copy"
   in ()
 
@@ -166,10 +164,10 @@ let axpy
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _ = match Bigarray.Array1.kind x with
-    | Bigarray.Float32   -> C.saxpy n a _x incx _y incy
-    | Bigarray.Float64   -> C.daxpy n a _x incx _y incy
-    | Bigarray.Complex32 -> C.caxpy n (allocate complex32 a) _x incx _y incy
-    | Bigarray.Complex64 -> C.zaxpy n (allocate complex64 a) _x incx _y incy
+    | Bigarray.Float32   -> C.saxpy ~n ~alpha:a ~x:_x ~incx ~y:_y ~incy
+    | Bigarray.Float64   -> C.daxpy ~n ~alpha:a ~x:_x ~incx ~y:_y ~incy
+    | Bigarray.Complex32 -> C.caxpy ~n ~alpha:(allocate complex32 a) ~x:_x ~incx ~y:_y ~incy
+    | Bigarray.Complex64 -> C.zaxpy ~n ~alpha:(allocate complex64 a) ~x:_x ~incx ~y:_y ~incy
     | _                  -> failwith "owl_cblas:axpy"
   in ()
 
@@ -182,18 +180,18 @@ let dot
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _y = bigarray_start Ctypes_static.Array1 y in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32   -> C.sdot n _x incx _y incy
-  | Bigarray.Float64   -> C.ddot n _x incx _y incy
+  | Bigarray.Float32   -> C.sdot ~n ~x:_x ~incx ~y:_y ~incy
+  | Bigarray.Float64   -> C.ddot ~n ~x:_x ~incx ~y:_y ~incy
   | Bigarray.Complex32 -> (
       let _z = allocate complex32 Complex.zero in
-      if conj = true then C.cdotc n _x incx _y incy _z
-      else C.cdotu n _x incx _y incy _z;
+      if conj = true then C.cdotc ~n ~x:_x ~incx ~y:_y ~incy ~dotc:_z
+      else C.cdotu ~n ~x:_x ~incx ~y:_y ~incy ~dotu:_z;
       !@_z
     )
   | Bigarray.Complex64 -> (
       let _z = allocate complex32 Complex.zero in
-      if conj = true then C.zdotc n _x incx _y incy _z
-      else C.zdotu n _x incx _y incy _z;
+      if conj = true then C.zdotc ~n ~x:_x ~incx ~y:_y ~incy ~dotc:_z
+      else C.zdotu ~n ~x:_x ~incx ~y:_y ~incy ~dotu:_z;
       !@_z
     )
   | _                  -> failwith "owl_cblas:dot"
@@ -204,12 +202,12 @@ let dot
 let sdsdot n a x incx y incy =
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _y = bigarray_start Ctypes_static.Array1 y in
-  C.sdsdot n a _x incx _y incy
+  C.sdsdot ~n ~alpha:a ~x:_x ~incx ~y:_y ~incy
 
 let dsdot n x incx y incy =
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _y = bigarray_start Ctypes_static.Array1 y in
-  C.dsdot n _x incx _y incy
+  C.dsdot ~n ~x:_x ~incx ~y:_y ~incy
 
 
 (* Computes the Euclidean norm of a vector. *)
@@ -219,10 +217,10 @@ let nrm2
   = fun n x incx ->
   let _x = bigarray_start Ctypes_static.Array1 x in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32   -> C.snrm2 n _x incx
-  | Bigarray.Float64   -> C.dnrm2 n _x incx
-  | Bigarray.Complex32 -> C.scnrm2 n _x incx
-  | Bigarray.Complex64 -> C.dznrm2 n _x incx
+  | Bigarray.Float32   -> C.snrm2 ~n ~x:_x ~incx
+  | Bigarray.Float64   -> C.dnrm2 ~n ~x:_x ~incx
+  | Bigarray.Complex32 -> C.scnrm2 ~n ~x:_x ~incx
+  | Bigarray.Complex64 -> C.dznrm2 ~n ~x:_x ~incx
   | _                  -> failwith "owl_cblas:nrm2"
 
 
@@ -233,10 +231,10 @@ let asum
   = fun n x incx ->
   let _x = bigarray_start Ctypes_static.Array1 x in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32   -> C.sasum n _x incx
-  | Bigarray.Float64   -> C.sasum n _x incx
-  | Bigarray.Complex32 -> C.scasum n _x incx
-  | Bigarray.Complex64 -> C.dzasum n _x incx
+  | Bigarray.Float32   -> C.sasum ~n ~x:_x ~incx
+  | Bigarray.Float64   -> C.sasum ~n ~x:_x ~incx
+  | Bigarray.Complex32 -> C.scasum ~n ~x:_x ~incx
+  | Bigarray.Complex64 -> C.dzasum ~n ~x:_x ~incx
   | _                  -> failwith "owl_cblas:asum"
 
 
@@ -247,10 +245,10 @@ let amax
   = fun n x incx ->
   let _x = bigarray_start Ctypes_static.Array1 x in
   let i = match Bigarray.Array1.kind x with
-    | Bigarray.Float32   -> C.isamax n _x incx
-    | Bigarray.Float64   -> C.idamax n _x incx
-    | Bigarray.Complex32 -> C.icamax n _x incx
-    | Bigarray.Complex64 -> C.izamax n _x incx
+    | Bigarray.Float32   -> C.isamax ~n ~x:_x ~incx
+    | Bigarray.Float64   -> C.idamax ~n ~x:_x ~incx
+    | Bigarray.Complex32 -> C.icamax ~n ~x:_x ~incx
+    | Bigarray.Complex64 -> C.izamax ~n ~x:_x ~incx
     | _                  -> failwith "owl_cblas:amax"
   in
   Unsigned.Size_t.to_int i
@@ -270,10 +268,11 @@ let gemv
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32   -> C.sgemv _layout _trans m n alpha _a lda _x incx beta _y incy
-  | Bigarray.Float64   -> C.dgemv _layout _trans m n alpha _a lda _x incx beta _y incy
-  | Bigarray.Complex32 -> C.cgemv _layout _trans m n (allocate complex32 alpha) _a lda _x incx (allocate complex32 beta) _y incy
-  | Bigarray.Complex64 -> C.zgemv _layout _trans m n (allocate complex64 alpha) _a lda _x incx (allocate complex64 beta) _y incy
+  | Bigarray.Float32   -> 
+    C.sgemv ~order:_layout ~transa:_trans ~m ~n ~alpha ~a:_a ~lda ~x:_x ~incx ~beta ~y:_y ~incy
+  | Bigarray.Float64   -> C.dgemv ~order:_layout ~transa:_trans ~m ~n ~alpha ~a:_a ~lda ~x:_x ~incx ~beta ~y:_y ~incy
+  | Bigarray.Complex32 -> C.cgemv ~order:_layout ~transa:_trans ~m ~n ~alpha:(allocate complex32 alpha) ~a:_a ~lda ~x:_x ~incx ~beta:(allocate complex32 beta) ~y:_y ~incy
+  | Bigarray.Complex64 -> C.zgemv ~order:_layout ~transa:_trans ~m ~n ~alpha:(allocate complex64 alpha) ~a:_a ~lda ~x:_x ~incx ~beta:(allocate complex64 beta) ~y:_y ~incy
   | _                  -> failwith "owl_cblas:gemv"
 
 
@@ -288,10 +287,10 @@ let gbmv
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32   -> C.sgbmv _layout _trans m n kl ku alpha _a lda _x incx beta _y incy
-  | Bigarray.Float64   -> C.dgbmv _layout _trans m n kl ku alpha _a lda _x incx beta _y incy
-  | Bigarray.Complex32 -> C.cgbmv _layout _trans m n kl ku (allocate complex32 alpha) _a lda _x incx (allocate complex32 beta) _y incy
-  | Bigarray.Complex64 -> C.cgbmv _layout _trans m n kl ku (allocate complex64 alpha) _a lda _x incx (allocate complex64 beta) _y incy
+  | Bigarray.Float32   -> C.sgbmv ~order:_layout ~transa:_trans ~m ~n ~kl ~ku ~alpha ~a:_a ~lda ~x:_x ~incx ~beta ~y:_y ~incy
+  | Bigarray.Float64   -> C.dgbmv ~order:_layout ~transa:_trans ~m ~n ~kl ~ku ~alpha ~a:_a ~lda ~x:_x ~incx ~beta ~y:_y ~incy
+  | Bigarray.Complex32 -> C.cgbmv ~order:_layout ~transa:_trans ~m ~n ~kl ~ku ~alpha:(allocate complex32 alpha) ~a:_a ~lda ~x:_x ~incx ~beta:(allocate complex32 beta) ~y:_y ~incy
+  | Bigarray.Complex64 -> C.cgbmv ~order:_layout ~transa:_trans ~m ~n ~kl ~ku ~alpha:(allocate complex64 alpha) ~a:_a ~lda ~x:_x ~incx ~beta:(allocate complex64 beta) ~y:_y ~incy
   | _                  -> failwith "owl_cblas:gbmv"
 
 
@@ -307,10 +306,10 @@ let trmv
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32   -> C.strmv _layout _uplo _trans _diag n _a lda _x incx
-  | Bigarray.Float64   -> C.dtrmv _layout _uplo _trans _diag n _a lda _x incx
-  | Bigarray.Complex32 -> C.ctrmv _layout _uplo _trans _diag n _a lda _x incx
-  | Bigarray.Complex64 -> C.ztrmv _layout _uplo _trans _diag n _a lda _x incx
+  | Bigarray.Float32   -> C.strmv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~a:_a ~lda ~x:_x ~incx
+  | Bigarray.Float64   -> C.dtrmv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~a:_a ~lda ~x:_x ~incx
+  | Bigarray.Complex32 -> C.ctrmv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~a:_a ~lda ~x:_x ~incx
+  | Bigarray.Complex64 -> C.ztrmv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~a:_a ~lda ~x:_x ~incx
   | _                  -> failwith "owl_cblas:trmv"
 
 
@@ -326,10 +325,10 @@ let tbmv
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32   -> C.stbmv _layout _uplo _trans _diag n k _a lda _x incx
-  | Bigarray.Float64   -> C.dtbmv _layout _uplo _trans _diag n k _a lda _x incx
-  | Bigarray.Complex32 -> C.ctbmv _layout _uplo _trans _diag n k _a lda _x incx
-  | Bigarray.Complex64 -> C.ztbmv _layout _uplo _trans _diag n k _a lda _x incx
+  | Bigarray.Float32   -> C.stbmv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~k ~a:_a ~lda ~x:_x ~incx
+  | Bigarray.Float64   -> C.dtbmv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~k ~a:_a ~lda ~x:_x ~incx
+  | Bigarray.Complex32 -> C.ctbmv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~k ~a:_a ~lda ~x:_x ~incx
+  | Bigarray.Complex64 -> C.ztbmv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~k ~a:_a ~lda ~x:_x ~incx
   | _                  -> failwith "owl_cblas:tbmv"
 
 
@@ -345,10 +344,10 @@ let tpmv
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _ap = bigarray_start Ctypes_static.Array1 ap in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32   -> C.stpmv _layout _uplo _trans _diag n _ap _x incx
-  | Bigarray.Float64   -> C.dtpmv _layout _uplo _trans _diag n _ap _x incx
-  | Bigarray.Complex32 -> C.ctpmv _layout _uplo _trans _diag n _ap _x incx
-  | Bigarray.Complex64 -> C.ztpmv _layout _uplo _trans _diag n _ap _x incx
+  | Bigarray.Float32   -> C.stpmv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~ap:_ap ~x:_x ~incx
+  | Bigarray.Float64   -> C.dtpmv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~ap:_ap ~x:_x ~incx
+  | Bigarray.Complex32 -> C.ctpmv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~ap:_ap ~x:_x ~incx
+  | Bigarray.Complex64 -> C.ztpmv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~ap:_ap ~x:_x ~incx
   | _                  -> failwith "owl_cblas:tpmv"
 
 
@@ -364,10 +363,10 @@ let trsv
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32   -> C.strsv _layout _uplo _trans _diag n _a lda _x incx
-  | Bigarray.Float64   -> C.dtrsv _layout _uplo _trans _diag n _a lda _x incx
-  | Bigarray.Complex32 -> C.ctrsv _layout _uplo _trans _diag n _a lda _x incx
-  | Bigarray.Complex64 -> C.ztrsv _layout _uplo _trans _diag n _a lda _x incx
+  | Bigarray.Float32   -> C.strsv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~a:_a ~lda ~x:_x ~incx
+  | Bigarray.Float64   -> C.dtrsv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~a:_a ~lda ~x:_x ~incx
+  | Bigarray.Complex32 -> C.ctrsv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~a:_a ~lda ~x:_x ~incx
+  | Bigarray.Complex64 -> C.ztrsv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~a:_a ~lda ~x:_x ~incx
   | _                  -> failwith "owl_cblas:trsv"
 
 
@@ -383,10 +382,10 @@ let tbsv
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32   -> C.stbsv _layout _uplo _trans _diag n k _a lda _x incx
-  | Bigarray.Float64   -> C.dtbsv _layout _uplo _trans _diag n k _a lda _x incx
-  | Bigarray.Complex32 -> C.ctbsv _layout _uplo _trans _diag n k _a lda _x incx
-  | Bigarray.Complex64 -> C.ztbsv _layout _uplo _trans _diag n k _a lda _x incx
+  | Bigarray.Float32   -> C.stbsv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~k ~a:_a ~lda ~x:_x ~incx
+  | Bigarray.Float64   -> C.dtbsv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~k ~a:_a ~lda ~x:_x ~incx
+  | Bigarray.Complex32 -> C.ctbsv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~k ~a:_a ~lda ~x:_x ~incx
+  | Bigarray.Complex64 -> C.ztbsv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~k ~a:_a ~lda ~x:_x ~incx
   | _                  -> failwith "owl_cblas:tbsv"
 
 
@@ -402,10 +401,10 @@ let tpsv
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _ap = bigarray_start Ctypes_static.Array1 ap in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32   -> C.stpsv _layout _uplo _trans _diag n _ap _x incx
-  | Bigarray.Float64   -> C.dtpsv _layout _uplo _trans _diag n _ap _x incx
-  | Bigarray.Complex32 -> C.ctpsv _layout _uplo _trans _diag n _ap _x incx
-  | Bigarray.Complex64 -> C.ztpsv _layout _uplo _trans _diag n _ap _x incx
+  | Bigarray.Float32   -> C.stpsv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~ap:_ap ~x:_x ~incx
+  | Bigarray.Float64   -> C.dtpsv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~ap:_ap ~x:_x ~incx
+  | Bigarray.Complex32 -> C.ctpsv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~ap:_ap ~x:_x ~incx
+  | Bigarray.Complex64 -> C.ztpsv ~order:_layout ~uplo:_uplo ~transa:_trans ~diag:_diag ~n ~ap:_ap ~x:_x ~incx
   | _                  -> failwith "owl_cblas:tpsv"
 
 
@@ -420,8 +419,8 @@ let symv
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32 -> C.ssymv _layout _uplo n alpha _a lda _x incx beta _y incy
-  | Bigarray.Float64 -> C.dsymv _layout _uplo n alpha _a lda _x incx beta _y incy
+  | Bigarray.Float32 -> C.ssymv ~order:_layout ~uplo:_uplo ~n ~alpha ~a:_a ~lda ~x:_x ~incx ~beta ~y:_y ~incy
+  | Bigarray.Float64 -> C.dsymv ~order:_layout ~uplo:_uplo ~n ~alpha ~a:_a ~lda ~x:_x ~incx ~beta ~y:_y ~incy
 
 
 (* Computes a matrix-vector product using a symmetric band matrix. *)
@@ -435,8 +434,8 @@ let sbmv
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32 -> C.ssbmv _layout _uplo n k alpha _a lda _x incx beta _y incy
-  | Bigarray.Float64 -> C.dsbmv _layout _uplo n k alpha _a lda _x incx beta _y incy
+  | Bigarray.Float32 -> C.ssbmv ~order:_layout ~uplo:_uplo ~n ~k ~alpha ~a:_a ~lda ~x:_x ~incx ~beta ~y:_y ~incy
+  | Bigarray.Float64 -> C.dsbmv ~order:_layout ~uplo:_uplo ~n ~k ~alpha ~a:_a ~lda ~x:_x ~incx ~beta ~y:_y ~incy
 
 
 (* Computes a matrix-vector product using a symmetric packed matrix. *)
@@ -450,8 +449,8 @@ let spmv
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _ap = bigarray_start Ctypes_static.Array1 ap in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32 -> C.sspmv _layout _uplo n alpha _ap _x incx beta _y incy
-  | Bigarray.Float64 -> C.dspmv _layout _uplo n alpha _ap _x incx beta _y incy
+  | Bigarray.Float32 -> C.sspmv ~order:_layout ~uplo:_uplo ~n ~alpha ~ap:_ap ~x:_x ~incx ~beta ~y:_y ~incy
+  | Bigarray.Float64 -> C.dspmv ~order:_layout ~uplo:_uplo ~n ~alpha ~ap:_ap ~x:_x ~incx ~beta ~y:_y ~incy
 
 
 (* Performs a rank-1 update of a general matrix. *)
@@ -464,14 +463,14 @@ let ger
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32   -> C.sger _layout m n alpha _x incx _y incy _a lda
-  | Bigarray.Float64   -> C.dger _layout m n alpha _x incx _y incy _a lda
+  | Bigarray.Float32   -> C.sger ~order:_layout ~m ~n ~alpha ~x:_x ~incx ~y:_y ~incy ~a:_a ~lda
+  | Bigarray.Float64   -> C.dger ~order:_layout ~m ~n ~alpha ~x:_x ~incx ~y:_y ~incy ~a:_a ~lda
   | Bigarray.Complex32 ->
-      if conj = true then C.cgerc _layout m n (allocate complex32 alpha) _x incx _y incy _a lda
-      else C.cgeru _layout m n (allocate complex32 alpha) _x incx _y incy _a lda
+    if conj = true then C.cgerc ~order:_layout ~m ~n ~alpha:(allocate complex32 alpha) ~x:_x ~incx ~y:_y ~incy ~a:_a ~lda
+      else C.cgeru ~order:_layout ~m ~n ~alpha:(allocate complex32 alpha) ~x:_x ~incx ~y:_y ~incy ~a:_a ~lda
   | Bigarray.Complex64 ->
-      if conj = true then C.zgerc _layout m n (allocate complex64 alpha) _x incx _y incy _a lda
-      else C.zgeru _layout m n (allocate complex64 alpha) _x incx _y incy _a lda
+      if conj = true then C.zgerc ~order:_layout ~m ~n ~alpha:(allocate complex64 alpha) ~x:_x ~incx ~y:_y ~incy ~a:_a ~lda
+      else C.zgeru ~order:_layout ~m ~n ~alpha:(allocate complex64 alpha) ~x:_x ~incx ~y:_y ~incy ~a:_a ~lda
   | _                  -> failwith "owl_cblas:ger"
 
 
@@ -485,8 +484,8 @@ let syr
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32 -> C.ssyr _layout _uplo n alpha _x incx _a lda
-  | Bigarray.Float64 -> C.dsyr _layout _uplo n alpha _x incx _a lda
+  | Bigarray.Float32 -> C.ssyr ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~a:_a ~lda
+  | Bigarray.Float64 -> C.dsyr ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~a:_a ~lda
 
 
 (* Performs a rank-1 update of a symmetric packed matrix. *)
@@ -499,8 +498,8 @@ let spr
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _ap = bigarray_start Ctypes_static.Array1 ap in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32 -> C.sspr _layout _uplo n alpha _x incx _ap
-  | Bigarray.Float64 -> C.dspr _layout _uplo n alpha _x incx _ap
+  | Bigarray.Float32 -> C.sspr ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~ap:_ap
+  | Bigarray.Float64 -> C.dspr ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~ap:_ap
 
 
 (* Performs a rank-2 update of symmetric matrix. *)
@@ -514,8 +513,8 @@ let syr2
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32 -> C.ssyr2 _layout _uplo n alpha _x incx _y incy _a lda
-  | Bigarray.Float64 -> C.dsyr2 _layout _uplo n alpha _x incx _y incy _a lda
+  | Bigarray.Float32 -> C.ssyr2 ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~y:_y ~incy ~a:_a ~lda
+  | Bigarray.Float64 -> C.dsyr2 ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~y:_y ~incy ~a:_a ~lda
 
 
 (* Performs a rank-2 update of a symmetric packed matrix. *)
@@ -529,8 +528,8 @@ let spr2
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Float32 -> C.sspr2 _layout _uplo n alpha _x incx _y incy _a
-  | Bigarray.Float64 -> C.dspr2 _layout _uplo n alpha _x incx _y incy _a
+  | Bigarray.Float32 -> C.sspr2 ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~y:_y ~incy ~a:_a
+  | Bigarray.Float64 -> C.dspr2 ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~y:_y ~incy ~a:_a
 
 
 (* Computes a matrix-vector product using a Hermitian matrix. *)
@@ -546,8 +545,8 @@ let hemv
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Complex32 -> C.chemv _layout _uplo n _alpha _a lda _x incx _beta _y incy
-  | Bigarray.Complex64 -> C.zhemv _layout _uplo n _alpha _a lda _x incx _beta _y incy
+  | Bigarray.Complex32 -> C.chemv ~order:_layout ~uplo:_uplo ~n ~alpha:_alpha ~a:_a ~lda ~x:_x ~incx ~beta:_beta ~y:_y ~incy
+  | Bigarray.Complex64 -> C.zhemv ~order:_layout ~uplo:_uplo ~n ~alpha:_alpha ~a:_a ~lda ~x:_x ~incx ~beta:_beta ~y:_y ~incy
 
 
 (* Computes a matrix-vector product using a Hermitian band matrix. *)
@@ -563,8 +562,8 @@ let hbmv
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Complex32 -> C.chbmv _layout _uplo n k _alpha _a lda _x incx _beta _y incy
-  | Bigarray.Complex64 -> C.zhbmv _layout _uplo n k _alpha _a lda _x incx _beta _y incy
+  | Bigarray.Complex32 -> C.chbmv ~order:_layout ~uplo:_uplo ~n ~k ~alpha:_alpha  ~a:_a ~lda ~x:_x ~incx ~beta:_beta ~y:_y ~incy
+  | Bigarray.Complex64 -> C.zhbmv ~order:_layout ~uplo:_uplo ~n ~k ~alpha:_alpha  ~a:_a ~lda ~x:_x ~incx ~beta:_beta ~y:_y ~incy
 
 
 (* Computes a matrix-vector product using a Hermitian packed matrix. *)
@@ -580,8 +579,8 @@ let hpmv
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _ap = bigarray_start Ctypes_static.Array1 ap in
   match Bigarray.Array1.kind x with
-  | Bigarray.Complex32 -> C.chpmv _layout _uplo n _alpha _ap _x incx _beta _y incy
-  | Bigarray.Complex64 -> C.zhpmv _layout _uplo n _alpha _ap _x incx _beta _y incy
+  | Bigarray.Complex32 -> C.chpmv ~order:_layout ~uplo:_uplo ~n ~alpha:_alpha ~ap:_ap ~x:_x ~incx ~beta:_beta ~y:_y ~incy
+  | Bigarray.Complex64 -> C.zhpmv ~order:_layout ~uplo:_uplo  ~n ~alpha:_alpha ~ap:_ap ~x:_x ~incx ~beta:_beta ~y:_y ~incy
 
 
 (* Performs a rank-1 update of a Hermitian matrix. *)
@@ -594,8 +593,8 @@ let her
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Complex32 -> C.cher _layout _uplo n alpha _x incx _a lda
-  | Bigarray.Complex64 -> C.zher _layout _uplo n alpha _x incx _a lda
+  | Bigarray.Complex32 -> C.cher ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~a:_a ~lda
+  | Bigarray.Complex64 -> C.zher  ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~a:_a ~lda
 
 
 (* Performs a rank-1 update of a Hermitian packed matrix. *)
@@ -608,8 +607,8 @@ let hpr
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Complex32 -> C.chpr _layout _uplo n alpha _x incx _a
-  | Bigarray.Complex64 -> C.zhpr _layout _uplo n alpha _x incx _a
+  | Bigarray.Complex32 -> C.chpr ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~a:_a
+  | Bigarray.Complex64 -> C.zhpr ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~a:_a
 
 
 (* Performs a rank-2 update of a Hermitian matrix. *)
@@ -624,8 +623,9 @@ let her2
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _a = bigarray_start Ctypes_static.Array1 a in
   match Bigarray.Array1.kind x with
-  | Bigarray.Complex32 -> C.cher2 _layout _uplo n _alpha _x incx _y incy _a lda
-  | Bigarray.Complex64 -> C.zher2 _layout _uplo n _alpha _x incx _y incy _a lda
+  | Bigarray.Complex32 -> C.cher2 ~order:_layout ~uplo:_uplo ~n ~alpha:_alpha ~x:_x ~incx ~y:_y ~incy ~a:_a ~lda
+  | Bigarray.Complex64 -> C.zher2 ~order:_layout ~uplo:_uplo ~n ~alpha:_alpha ~x:_x ~incx ~y:_y ~incy ~a:_a ~lda
+
 
 
 (* Performs a rank-2 update of a Hermitian packed matrix. *)
@@ -640,8 +640,8 @@ let hpr2
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _ap = bigarray_start Ctypes_static.Array1 ap in
   match Bigarray.Array1.kind x with
-  | Bigarray.Complex32 -> C.chpr2 _layout _uplo n _alpha _x incx _y incy _ap
-  | Bigarray.Complex64 -> C.zhpr2 _layout _uplo n _alpha _x incx _y incy _ap
+  | Bigarray.Complex32 -> C.chpr2 ~order:_layout ~uplo:_uplo ~n ~alpha:_alpha ~x:_x ~incx ~y:_y ~incy ~ap:_ap
+  | Bigarray.Complex64 -> C.zhpr2 ~order:_layout ~uplo:_uplo ~n ~alpha:_alpha ~x:_x ~incx ~y:_y ~incy ~ap:_ap
 
 
 (* Level 3 BLAS *)
@@ -659,10 +659,10 @@ let gemm
   let _b = bigarray_start Ctypes_static.Array1 b in
   let _c = bigarray_start Ctypes_static.Array1 c in
   match Bigarray.Array1.kind a with
-  | Bigarray.Float32   -> C.sgemm _layout _transa _transb m n k alpha _a lda _b ldb beta _c ldc
-  | Bigarray.Float64   -> C.dgemm _layout _transa _transb m n k alpha _a lda _b ldb beta _c ldc
-  | Bigarray.Complex32 -> C.cgemm _layout _transa _transb m n k (allocate complex32 alpha) _a lda _b ldb (allocate complex32 beta) _c ldc
-  | Bigarray.Complex64 -> C.zgemm _layout _transa _transb m n k (allocate complex64 alpha) _a lda _b ldb (allocate complex64 beta) _c ldc
+  | Bigarray.Float32   -> C.sgemm ~order:_layout ~transa:_transa ~transb:_transb ~m ~n ~k ~alpha ~a:_a ~lda ~b:_b ~ldb ~beta ~c:_c ~ldc
+  | Bigarray.Float64   -> C.dgemm  ~order:_layout ~transa:_transa ~transb:_transb ~m ~n ~k ~alpha ~a:_a ~lda ~b:_b ~ldb ~beta ~c:_c ~ldc
+  | Bigarray.Complex32 -> C.cgemm ~order:_layout ~transa:_transa ~transb:_transb ~m ~n ~k ~alpha:(allocate complex32 alpha) ~a:_a ~lda ~b:_b ~ldb ~beta:(allocate complex32 alpha) ~c:_c ~ldc
+  | Bigarray.Complex64 -> C.zgemm ~order:_layout ~transa:_transa ~transb:_transb ~m ~n ~k ~alpha:(allocate complex64 alpha) ~a:_a ~lda ~b:_b ~ldb ~beta:(allocate complex64 alpha) ~c:_c ~ldc
   | _                  -> failwith "owl_cblas:gemm"
 
 
@@ -678,10 +678,10 @@ let symm
   let _b = bigarray_start Ctypes_static.Array1 b in
   let _c = bigarray_start Ctypes_static.Array1 c in
   match Bigarray.Array1.kind a with
-  | Bigarray.Float32   -> C.ssymm _layout _side _uplo m n alpha _a lda _b ldb beta _c ldc
-  | Bigarray.Float64   -> C.dsymm _layout _side _uplo m n alpha _a lda _b ldb beta _c ldc
-  | Bigarray.Complex32 -> C.csymm _layout _side _uplo m n (allocate complex32 alpha) _a lda _b ldb (allocate complex32 beta) _c ldc
-  | Bigarray.Complex64 -> C.zsymm _layout _side _uplo m n (allocate complex64 alpha) _a lda _b ldb (allocate complex64 beta) _c ldc
+  | Bigarray.Float32   -> C.ssymm ~order:_layout ~side:_side ~uplo:_uplo ~m ~n ~alpha ~a:_a ~lda ~b:_b ~ldb ~beta ~c:_c ~ldc
+  | Bigarray.Float64   -> C.dsymm ~order:_layout ~side:_side ~uplo:_uplo ~m ~n ~alpha ~a:_a ~lda ~b:_b ~ldb ~beta ~c:_c ~ldc
+  | Bigarray.Complex32 -> C.csymm ~order:_layout ~side:_side ~uplo:_uplo ~m ~n ~alpha:(allocate complex32 alpha) ~a:_a ~lda ~b:_b ~ldb ~beta:(allocate complex32 beta) ~c:_c ~ldc
+  | Bigarray.Complex64 -> C.zsymm ~order:_layout ~side:_side ~uplo:_uplo ~m ~n ~alpha:(allocate complex64 alpha) ~a:_a ~lda ~b:_b ~ldb ~beta:(allocate complex64 beta) ~c:_c ~ldc
   | _                  -> failwith "owl_cblas:symm"
 
 
@@ -696,10 +696,10 @@ let syrk
   let _a = bigarray_start Ctypes_static.Array1 a in
   let _c = bigarray_start Ctypes_static.Array1 c in
   match Bigarray.Array1.kind a with
-  | Bigarray.Float32   -> C.ssyrk _layout _uplo _trans n k alpha _a lda beta _c ldc
-  | Bigarray.Float64   -> C.dsyrk _layout _uplo _trans n k alpha _a lda beta _c ldc
-  | Bigarray.Complex32 -> C.csyrk _layout _uplo _trans n k (allocate complex32 alpha) _a lda (allocate complex32 beta) _c ldc
-  | Bigarray.Complex64 -> C.zsyrk _layout _uplo _trans n k (allocate complex64 alpha) _a lda (allocate complex64 beta) _c ldc
+  | Bigarray.Float32   -> C.ssyrk ~order:_layout ~uplo:_uplo ~trans:_trans ~n ~k ~alpha ~a:_a ~lda ~beta ~c:_c ~ldc
+  | Bigarray.Float64   -> C.dsyrk ~order:_layout ~uplo:_uplo ~trans:_trans ~n ~k ~alpha ~a:_a ~lda ~beta ~c:_c ~ldc
+  | Bigarray.Complex32 -> C.csyrk ~order:_layout ~uplo:_uplo ~trans:_trans ~n ~k ~alpha:(allocate complex32 alpha) ~a:_a ~lda ~beta:(allocate complex32 beta) ~c:_c ~ldc
+  | Bigarray.Complex64 -> C.zsyrk ~order:_layout ~uplo:_uplo ~trans:_trans ~n ~k ~alpha:(allocate complex64 alpha) ~a:_a ~lda ~beta:(allocate complex64 beta) ~c:_c ~ldc
   | _                  -> failwith "owl_cblas:syrk"
 
 
@@ -715,10 +715,10 @@ let syr2k
   let _b = bigarray_start Ctypes_static.Array1 b in
   let _c = bigarray_start Ctypes_static.Array1 c in
   match Bigarray.Array1.kind a with
-  | Bigarray.Float32   -> C.ssyr2k _layout _uplo _trans n k alpha _a lda _b ldb beta _c ldc
-  | Bigarray.Float64   -> C.dsyr2k _layout _uplo _trans n k alpha _a lda _b ldb beta _c ldc
-  | Bigarray.Complex32 -> C.csyr2k _layout _uplo _trans n k (allocate complex32 alpha) _a lda _b ldb (allocate complex32 beta) _c ldc
-  | Bigarray.Complex64 -> C.zsyr2k _layout _uplo _trans n k (allocate complex64 alpha) _a lda _b ldb (allocate complex64 beta) _c ldc
+  | Bigarray.Float32   -> C.ssyr2k ~order:_layout ~uplo:_uplo ~trans:_trans ~n ~k ~alpha ~a:_a ~lda ~b:_b ~ldb ~beta ~c:_c ~ldc
+  | Bigarray.Float64   -> C.dsyr2k ~order:_layout ~uplo:_uplo ~trans:_trans ~n ~k ~alpha ~a:_a ~lda ~b:_b ~ldb ~beta ~c:_c ~ldc
+  | Bigarray.Complex32 -> C.csyr2k ~order:_layout ~uplo:_uplo ~trans:_trans ~n ~k ~alpha:(allocate complex32 alpha) ~a:_a ~lda ~b:_b ~ldb ~beta:(allocate complex32 beta) ~c:_c ~ldc
+  | Bigarray.Complex64 -> C.zsyr2k ~order:_layout ~uplo:_uplo ~trans:_trans ~n ~k ~alpha:(allocate complex64 alpha) ~a:_a ~lda ~b:_b ~ldb ~beta:(allocate complex64 beta) ~c:_c ~ldc
   | _                  -> failwith "owl_cblas:syr2k"
 
 
@@ -735,10 +735,10 @@ let trmm
   let _a = bigarray_start Ctypes_static.Array1 a in
   let _b = bigarray_start Ctypes_static.Array1 b in
   match Bigarray.Array1.kind a with
-  | Bigarray.Float32   -> C.strmm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
-  | Bigarray.Float64   -> C.dtrmm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
-  | Bigarray.Complex32 -> C.ctrmm _layout _side _uplo _transa _diag m n (allocate complex32 alpha) _a lda _b ldb
-  | Bigarray.Complex64 -> C.ztrmm _layout _side _uplo _transa _diag m n (allocate complex64 alpha) _a lda _b ldb
+  | Bigarray.Float32   -> C.strmm ~order:_layout ~side:_side ~uplo:_uplo ~transa:_transa ~diag:_diag ~m ~n ~alpha ~a:_a ~lda ~b:_b ~ldb
+  | Bigarray.Float64   -> C.dtrmm  ~order:_layout ~side:_side ~uplo:_uplo ~transa:_transa ~diag:_diag ~m ~n ~alpha ~a:_a ~lda ~b:_b ~ldb
+  | Bigarray.Complex32 -> C.ctrmm ~order:_layout ~side:_side ~uplo:_uplo ~transa:_transa ~diag:_diag ~m ~n ~alpha:(allocate complex32 alpha) ~a:_a ~lda ~b:_b ~ldb
+  | Bigarray.Complex64 -> C.ztrmm  ~order:_layout ~side:_side ~uplo:_uplo ~transa:_transa ~diag:_diag ~m ~n ~alpha:(allocate complex64 alpha) ~a:_a ~lda ~b:_b ~ldb
   | _                  -> failwith "owl_cblas:trmm"
 
 
@@ -755,10 +755,10 @@ let trsm
   let _a = bigarray_start Ctypes_static.Array1 a in
   let _b = bigarray_start Ctypes_static.Array1 b in
   match Bigarray.Array1.kind a with
-  | Bigarray.Float32   -> C.strsm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
-  | Bigarray.Float64   -> C.dtrsm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
-  | Bigarray.Complex32 -> C.ctrsm _layout _side _uplo _transa _diag m n (allocate complex32 alpha) _a lda _b ldb
-  | Bigarray.Complex64 -> C.ztrsm _layout _side _uplo _transa _diag m n (allocate complex64 alpha) _a lda _b ldb
+  | Bigarray.Float32   -> C.strsm ~order:_layout ~side:_side ~uplo:_uplo ~transa:_transa ~diag:_diag ~m ~n ~alpha ~a:_a ~lda ~b:_b ~ldb
+  | Bigarray.Float64   -> C.dtrsm ~order:_layout ~side:_side ~uplo:_uplo ~transa:_transa ~diag:_diag ~m ~n ~alpha ~a:_a ~lda ~b:_b ~ldb
+ | Bigarray.Complex32 -> C.ctrsm ~order:_layout ~side:_side ~uplo:_uplo ~transa:_transa ~diag:_diag ~m ~n ~alpha:(allocate complex32 alpha) ~a:_a ~lda ~b:_b ~ldb
+  | Bigarray.Complex64 -> C.ztrsm ~order:_layout ~side:_side ~uplo:_uplo ~transa:_transa ~diag:_diag ~m ~n ~alpha:(allocate complex64 alpha) ~a:_a ~lda ~b:_b ~ldb
   | _                  -> failwith "owl_cblas:trsm"
 
 
@@ -774,8 +774,8 @@ let hemm
   let _b = bigarray_start Ctypes_static.Array1 b in
   let _c = bigarray_start Ctypes_static.Array1 c in
   match Bigarray.Array1.kind a with
-  | Bigarray.Complex32 -> C.chemm _layout _side _uplo m n (allocate complex32 alpha) _a lda _b ldb (allocate complex32 beta) _c ldc
-  | Bigarray.Complex64 -> C.zhemm _layout _side _uplo m n (allocate complex64 alpha) _a lda _b ldb (allocate complex64 beta) _c ldc
+  | Bigarray.Complex32 -> C.chemm ~order:_layout ~side:_side ~uplo:_uplo ~m ~n ~alpha:(allocate complex32 alpha) ~a:_a ~lda ~b:_b ~ldb ~beta:(allocate complex32 beta) ~c:_c ~ldc
+  | Bigarray.Complex64 -> C.zhemm ~order:_layout ~side:_side ~uplo:_uplo ~m ~n ~alpha:(allocate complex64 alpha) ~a:_a ~lda ~b:_b ~ldb ~beta:(allocate complex64 beta) ~c:_c ~ldc
 
 
 (* Performs a Hermitian rank-k update. *)
@@ -789,8 +789,8 @@ let herk
   let _a = bigarray_start Ctypes_static.Array1 a in
   let _c = bigarray_start Ctypes_static.Array1 c in
   match Bigarray.Array1.kind a with
-  | Bigarray.Complex32 -> C.cherk _layout _uplo _trans n k alpha _a lda beta _c ldc
-  | Bigarray.Complex64 -> C.zherk _layout _uplo _trans n k alpha _a lda beta _c ldc
+  | Bigarray.Complex32 -> C.cherk ~order:_layout ~uplo:_uplo ~trans:_trans ~n ~k ~alpha ~a:_a ~lda ~beta ~c:_c ~ldc
+  | Bigarray.Complex64 -> C.zherk ~order:_layout ~uplo:_uplo ~trans:_trans ~n ~k ~alpha ~a:_a ~lda ~beta ~c:_c ~ldc
 
 
 (* Performs a Hermitian rank-2k update. *)
@@ -806,5 +806,5 @@ let her2k
   let _b = bigarray_start Ctypes_static.Array1 b in
   let _c = bigarray_start Ctypes_static.Array1 c in
   match Bigarray.Array1.kind a with
-  | Bigarray.Complex32 -> C.cher2k _layout _uplo _trans n k (allocate complex32 alpha) _a lda _b ldb beta _c ldc
-  | Bigarray.Complex64 -> C.zher2k _layout _uplo _trans n k (allocate complex64 alpha) _a lda _b ldb beta _c ldc
+  | Bigarray.Complex32 -> C.cher2k ~order:_layout ~uplo:_uplo ~trans:_trans ~n ~k ~alpha:(allocate complex32 alpha) ~a:_a ~lda ~b:_b ~ldb ~beta ~c:_c ~ldc
+  | Bigarray.Complex64 -> C.zher2k ~order:_layout ~uplo:_uplo ~trans:_trans ~n ~k ~alpha:(allocate complex64 alpha) ~a:_a ~lda ~b:_b ~ldb ~beta ~c:_c ~ldc

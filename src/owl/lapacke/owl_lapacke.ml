@@ -3,8 +3,6 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-[@@@warning "-6-34"]
-
 (** LAPACKE interface: high-level interface between Owl and LAPACKE *)
 
 (** Please refer to the documentation of Intel Math Kernel Library on the
@@ -17,30 +15,35 @@ open Ctypes
 
 open Bigarray
 
+
+
 module L = Owl_lapacke_generated
+
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 
-type s_t= (float, Bigarray.float32_elt) t
-type d_t = (float, Bigarray.float64_elt) t
-type c_t = (Complex.t, Bigarray.complex32_elt) t
-type z_t = (Complex.t, Bigarray.complex64_elt) t
+type _s_t = (float, Bigarray.float32_elt) t
+type _d_t = (float, Bigarray.float64_elt) t
+type _c_t = (Complex.t, Bigarray.complex32_elt) t
+type _z_t = (Complex.t, Bigarray.complex64_elt) t
+
 type lapacke_layout = RowMajor | ColMajor
 let lapacke_layout : type a. a layout -> int = function
   | C_layout       -> 101
   | Fortran_layout -> 102
 
 type lapacke_transpose = NoTrans | Trans | ConjTrans
-let lapacke_transpose = function NoTrans -> 'N' | Trans -> 'T' | ConjTrans -> 'C'
+let lapacke_transpose = function
+    NoTrans -> 'N' | Trans -> 'T' | ConjTrans -> 'C'
 
 type lapacke_uplo = Upper | Lower
-let lapacke_uplo = function Upper -> 121 | Lower -> 122 [@@warning "-32"]
+let _lapacke_uplo = function Upper -> 121 | Lower -> 122
 
 type lapacke_diag = NonUnit | Unit
-let lapacke_diag = function NonUnit -> 131 | Unit -> 132 [@@warning "-32"]
+let _lapacke_diag = function NonUnit -> 131 | Unit -> 132
 
 type lapacke_side = Left | Right
-let lapacke_side = function Left -> 141 | Right -> 142 [@@warning "-32"]
+let _lapacke_side = function Left -> 141 | Right -> 142
 
 let check_lapack_error ret =
   if ret = 0 then ()
@@ -49,7 +52,7 @@ let check_lapack_error ret =
   else
     failwith (Printf.sprintf "LAPACKE: %i" ret)
 
-(* calculate the leading dimension of a matrix *)
+(* calculate the leading dimension of a ~matrix *)
 let _stride : type a b c. (a, b, c) Genarray.t -> int = fun x ->
   match (Genarray.layout x) with
   | C_layout       -> (Genarray.dims x).(1)
@@ -60,7 +63,7 @@ let _row_num x = (Genarray.dims x).(0)
 let _col_num x = (Genarray.dims x).(1)
 
 
-let gbtrf
+let _gbtrf
   : type a b. kl:int -> ku:int -> m:int -> ab:(a, b) t -> (a, b) t * (int32, int32_elt) t
   = fun ~kl ~ku ~m ~ab ->
   let n = Owl_dense_matrix_generic.col_num ab in
@@ -77,15 +80,15 @@ let gbtrf
   let ldab = _stride ab in
 
   let ret = match _kind with
-    | Float32   -> L.sgbtrf layout m n kl ku _ab ldab _ipiv
-    | Float64   -> L.dgbtrf layout m n kl ku _ab ldab _ipiv
-    | Complex32 -> L.cgbtrf layout m n kl ku _ab ldab _ipiv
-    | Complex64 -> L.zgbtrf layout m n kl ku _ab ldab _ipiv
+    | Float32   -> L.sgbtrf ~layout ~m ~n ~kl ~ku ~ab:_ab ~ldab ~ipiv:_ipiv
+    | Float64   -> L.dgbtrf ~layout ~m ~n ~kl ~ku ~ab:_ab ~ldab ~ipiv:_ipiv
+    | Complex32 -> L.cgbtrf ~layout ~m ~n ~kl ~ku ~ab:_ab ~ldab ~ipiv:_ipiv
+    | Complex64 -> L.zgbtrf ~layout ~m ~n ~kl ~ku ~ab:_ab ~ldab ~ipiv:_ipiv
     | _         -> failwith "lapacke:gbtrf"
   in
   check_lapack_error ret;
   ab, ipiv
-        [@@warning "-32"]
+
 
 let gbtrs
   : type a b. trans:lapacke_transpose -> kl:int -> ku:int -> n:int
@@ -106,10 +109,15 @@ let gbtrs
     let ldb = _stride b in
 
     let ret = match _kind with
-      | Float32   -> L.sgbtrs layout trans n kl ku nrhs _ab ldab _ipiv _b ldb
-      | Float64   -> L.dgbtrs layout trans n kl ku nrhs _ab ldab _ipiv _b ldb
-      | Complex32 -> L.cgbtrs layout trans n kl ku nrhs _ab ldab _ipiv _b ldb
-      | Complex64 -> L.zgbtrs layout trans n kl ku nrhs _ab ldab _ipiv _b ldb
+      | Float32   -> L.sgbtrs ~layout ~trans ~n ~kl ~ku ~nrhs ~ab:_ab ~ldab
+                       ~ipiv:_ipiv ~b:_b ~ldb
+      | Float64   -> L.dgbtrs ~layout ~trans ~n ~kl ~ku ~nrhs ~ab:_ab ~ldab
+                       ~ipiv:_ipiv ~b:_b ~ldb
+      | Complex32 -> L.cgbtrs ~layout ~trans ~n ~kl ~ku ~nrhs ~ab:_ab ~ldab
+                       ~ipiv:_ipiv ~b:_b ~ldb
+      | Complex64 -> L.zgbtrs ~layout ~trans ~n ~kl ~ku ~nrhs ~ab:_ab ~ldab
+                       ~ipiv:_ipiv ~b:_b ~ldb
+
       | _         -> failwith "lapacke:gbtrs"
     in
     check_lapack_error ret
@@ -137,28 +145,32 @@ let gebal
     | Float32   -> (
         let scale' = Genarray.create float32 _layout [|1;n|] in
         let _scale = bigarray_start Ctypes_static.Genarray scale' in
-        let r = L.sgebal layout job n _a lda _ilo _ihi _scale in
+        let r = L.sgebal ~layout ~job ~n ~a:_a ~lda ~ilo:_ilo ~ihi:_ihi
+            ~scale:_scale in
         scale := scale';
         r
       )
     | Float64   -> (
         let scale' = Genarray.create float64 _layout [|1;n|] in
         let _scale = bigarray_start Ctypes_static.Genarray scale' in
-        let r = L.dgebal layout job n _a lda _ilo _ihi _scale in
+        let r = L.dgebal ~layout ~job ~n ~a:_a ~lda ~ilo:_ilo ~ihi:_ihi
+            ~scale:_scale in
         scale := scale';
         r
       )
     | Complex32 -> (
         let scale' = Genarray.create float32 _layout [|1;n|] in
         let _scale = bigarray_start Ctypes_static.Genarray scale' in
-        let r = L.cgebal layout job n _a lda _ilo _ihi _scale in
+        let r = L.cgebal ~layout ~job ~n ~a:_a ~lda ~ilo:_ilo ~ihi:_ihi
+            ~scale:_scale in
         scale := Owl_dense_matrix_generic.cast_s2c scale';
         r
       )
     | Complex64 -> (
         let scale' = Genarray.create float64 _layout [|1;n|] in
         let _scale = bigarray_start Ctypes_static.Genarray scale' in
-        let r = L.zgebal layout job n _a lda _ilo _ihi _scale in
+        let r = L.zgebal ~layout ~job ~n ~a:_a ~lda ~ilo:_ilo ~ihi:_ihi
+            ~scale:_scale in
         scale := Owl_dense_matrix_generic.cast_d2z scale';
         r
       )
@@ -172,7 +184,8 @@ let gebal
 
 (* TODO: need a solution for scale parameter *)
 let gebak
-  : type a b. job:char -> side:char -> ilo:int -> ihi:int -> scale:(float ptr) -> v:(a, b) t -> unit
+  : type a b. job:char -> side:char
+  -> ilo:int -> ihi:int -> scale:(float ptr) -> v:(a, b) t -> unit
   = fun ~job ~side ~ilo ~ihi ~scale ~v ->
   assert (side = 'L' || side = 'R');
   assert (job = 'N' || job = 'P' || job = 'S' || job = 'B');
@@ -187,17 +200,22 @@ let gebak
   let ldv = _stride v in
 
   let ret = match _kind with
-    | Float32   -> L.sgebak layout job side n ilo ihi scale m _v ldv
-    | Float64   -> L.dgebak layout job side n ilo ihi scale m _v ldv
-    | Complex32 -> L.cgebak layout job side n ilo ihi scale m _v ldv
-    | Complex64 -> L.zgebak layout job side n ilo ihi scale m _v ldv
+    | Float32   -> L.sgebak ~layout ~job ~side ~n ~ilo ~ihi ~scale ~m
+                     ~v:_v ~ldv
+    | Float64   -> L.dgebak ~layout ~job ~side ~n ~ilo ~ihi ~scale ~m
+                     ~v:_v ~ldv
+    | Complex32 -> L.cgebak ~layout ~job ~side ~n ~ilo ~ihi ~scale ~m
+                     ~v:_v ~ldv
+    | Complex64 -> L.zgebak ~layout ~job ~side ~n ~ilo ~ihi ~scale ~m
+                     ~v:_v ~ldv
     | _         -> failwith "lapacke:gebak"
   in
   check_lapack_error ret
 
 
 let gebrd
-  : type a b. a:(a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (a, b) t
+  : type a b.
+    a:(a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (a, b) t
   = fun ~a ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
@@ -221,7 +239,7 @@ let gebrd
         let _d = bigarray_start Ctypes_static.Genarray d' in
         let e' = Genarray.create float32 _layout [|1;k|] in
         let _e = bigarray_start Ctypes_static.Genarray e' in
-        let r = L.sgebrd layout m n _a lda _d _e _tauq _taup in
+        let r = L.sgebrd ~layout ~m ~n ~a:_a ~lda ~d:_d ~e:_e ~tauq:_tauq ~taup:_taup in
         d := d';
         e := e';
         r
@@ -231,7 +249,7 @@ let gebrd
         let _d = bigarray_start Ctypes_static.Genarray d' in
         let e' = Genarray.create float64 _layout [|1;k|] in
         let _e = bigarray_start Ctypes_static.Genarray e' in
-        let r = L.dgebrd layout m n _a lda _d _e _tauq _taup in
+        let r = L.dgebrd ~layout ~m ~n ~a:_a ~lda ~d:_d ~e:_e ~tauq:_tauq ~taup:_taup in
         d := d';
         e := e';
         r
@@ -241,7 +259,7 @@ let gebrd
         let _d = bigarray_start Ctypes_static.Genarray d' in
         let e' = Genarray.create float32 _layout [|1;k|] in
         let _e = bigarray_start Ctypes_static.Genarray e' in
-        let r = L.cgebrd layout m n _a lda _d _e _tauq _taup in
+        let r = L.cgebrd ~layout ~m ~n ~a:_a ~lda ~d:_d ~e:_e ~tauq:_tauq ~taup:_taup in
         d := Owl_dense_matrix_generic.cast_s2c d';
         e := Owl_dense_matrix_generic.cast_s2c e';
         r
@@ -251,7 +269,7 @@ let gebrd
         let _d = bigarray_start Ctypes_static.Genarray d' in
         let e' = Genarray.create float64 _layout [|1;k|] in
         let _e = bigarray_start Ctypes_static.Genarray e' in
-        let r = L.zgebrd layout m n _a lda _d _e _tauq _taup in
+        let r = L.zgebrd ~layout ~m ~n ~a:_a ~lda ~d:_d ~e:_e ~tauq:_tauq ~taup:_taup in
         d := Owl_dense_matrix_generic.cast_d2z d';
         e := Owl_dense_matrix_generic.cast_d2z e';
         r
@@ -278,10 +296,10 @@ let gelqf
   let lda = _stride a in
 
   let ret = match _kind with
-    | Float32   -> L.sgelqf layout m n _a lda _tau
-    | Float64   -> L.dgelqf layout m n _a lda _tau
-    | Complex32 -> L.cgelqf layout m n _a lda _tau
-    | Complex64 -> L.zgelqf layout m n _a lda _tau
+    | Float32   -> L.sgelqf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Float64   -> L.dgelqf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Complex32 -> L.cgelqf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Complex64 -> L.zgelqf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
     | _         -> failwith "lapacke:gelqf"
   in
   check_lapack_error ret;
@@ -304,10 +322,10 @@ let geqlf
   let lda = _stride a in
 
   let ret = match _kind with
-    | Float32   -> L.sgeqlf layout m n _a lda _tau
-    | Float64   -> L.dgeqlf layout m n _a lda _tau
-    | Complex32 -> L.cgeqlf layout m n _a lda _tau
-    | Complex64 -> L.zgeqlf layout m n _a lda _tau
+    | Float32   -> L.sgeqlf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Float64   -> L.dgeqlf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Complex32 -> L.cgeqlf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Complex64 -> L.zgeqlf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
     | _         -> failwith "lapacke:geqlf"
   in
   check_lapack_error ret;
@@ -330,10 +348,10 @@ let geqrf
   let lda = _stride a in
 
   let ret = match _kind with
-    | Float32   -> L.sgeqrf layout m n _a lda _tau
-    | Float64   -> L.dgeqrf layout m n _a lda _tau
-    | Complex32 -> L.cgeqrf layout m n _a lda _tau
-    | Complex64 -> L.zgeqrf layout m n _a lda _tau
+    | Float32   -> L.sgeqrf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Float64   -> L.dgeqrf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Complex32 -> L.cgeqrf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Complex64 -> L.zgeqrf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
     | _         -> failwith "lapacke:geqrf"
   in
   check_lapack_error ret;
@@ -356,10 +374,10 @@ let gerqf
   let lda = _stride a in
 
   let ret = match _kind with
-    | Float32   -> L.sgerqf layout m n _a lda _tau
-    | Float64   -> L.dgerqf layout m n _a lda _tau
-    | Complex32 -> L.cgerqf layout m n _a lda _tau
-    | Complex64 -> L.zgerqf layout m n _a lda _tau
+    | Float32   -> L.sgerqf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Float64   -> L.dgerqf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Complex32 -> L.cgerqf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Complex64 -> L.zgerqf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
     | _         -> failwith "lapacke:gerqf"
   in
   check_lapack_error ret;
@@ -394,10 +412,10 @@ let geqp3
   let lda = _stride a in
 
   let ret = match _kind with
-    | Float32   -> L.sgeqp3 layout m n _a lda _jpvt _tau
-    | Float64   -> L.dgeqp3 layout m n _a lda _jpvt _tau
-    | Complex32 -> L.cgeqp3 layout m n _a lda _jpvt _tau
-    | Complex64 -> L.zgeqp3 layout m n _a lda _jpvt _tau
+    | Float32   -> L.sgeqp3 ~layout ~m ~n ~a:_a ~lda ~jpvt:_jpvt ~tau:_tau
+    | Float64   -> L.dgeqp3 ~layout ~m ~n ~a:_a ~lda ~jpvt:_jpvt ~tau:_tau
+    | Complex32 -> L.cgeqp3 ~layout ~m ~n ~a:_a ~lda ~jpvt:_jpvt ~tau:_tau
+    | Complex64 -> L.zgeqp3 ~layout ~m ~n ~a:_a ~lda ~jpvt:_jpvt ~tau:_tau
     | _         -> failwith "lapacke:geqp3"
   in
   check_lapack_error ret;
@@ -416,10 +434,10 @@ let geqrt
   let layout = lapacke_layout _layout in
 
   let _a = bigarray_start Ctypes_static.Genarray a in
-  (* FIXME: there might be something wrong with the lapacke interface. The
+  (* FIXME: there ~might be something wrong with the lapacke interface. The
     behaviour of this function is not consistent with what has been documented
     on Intel's MKL website. I.e., if we allocate [nb x minmn] space for t, it
-    is likely there will be memory fault. The lapacke code turns out to use
+    is likely there will be ~memory fault. The lapacke code turns out to use
     [minmn x minmn] space actually.
   *)
   let t = Genarray.create _kind _layout [|minmn; minmn|] in
@@ -428,12 +446,12 @@ let geqrt
   let ldt = Pervasives.max 1 (_stride t) in
 
   let ret = match _kind with
-    | Float32   -> L.sgeqrt layout m n nb _a lda _t ldt
+    | Float32   -> L.sgeqrt ~layout ~m ~n ~nb ~a:_a ~lda ~t:_t ~ldt
     | Float64   -> (
         Genarray.fill t 0.7;
-        L.dgeqrt layout m n nb _a lda _t ldt)
-    | Complex32 -> L.cgeqrt layout m n nb _a lda _t ldt
-    | Complex64 -> L.zgeqrt layout m n nb _a lda _t ldt
+        L.dgeqrt ~layout ~m ~n ~nb ~a:_a ~lda ~t:_t ~ldt )
+    | Complex32 -> L.cgeqrt ~layout ~m ~n ~nb ~a:_a ~lda ~t:_t ~ldt
+    | Complex64 -> L.zgeqrt ~layout ~m ~n ~nb ~a:_a ~lda ~t:_t ~ldt
     | _         -> failwith "lapacke:geqrt"
   in
   check_lapack_error ret;
@@ -459,10 +477,10 @@ let geqrt3
   let ldt = Pervasives.max 1 (_stride t) in
 
   let ret = match _kind with
-    | Float32   -> L.sgeqrt3 layout m n _a lda _t ldt
-    | Float64   -> L.dgeqrt3 layout m n _a lda _t ldt
-    | Complex32 -> L.cgeqrt3 layout m n _a lda _t ldt
-    | Complex64 -> L.zgeqrt3 layout m n _a lda _t ldt
+    | Float32   -> L.sgeqrt3 ~layout ~m ~n ~a:_a ~lda ~t:_t ~ldt
+    | Float64   -> L.dgeqrt3 ~layout ~m ~n ~a:_a ~lda ~t:_t ~ldt
+    | Complex32 -> L.cgeqrt3 ~layout ~m ~n ~a:_a ~lda ~t:_t ~ldt
+    | Complex64 -> L.zgeqrt3 ~layout ~m ~n ~a:_a ~lda ~t:_t ~ldt
     | _         -> failwith "lapacke:geqrt3"
   in
   check_lapack_error ret;
@@ -485,10 +503,10 @@ let getrf
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Float32   -> L.sgetrf layout m n _a lda _ipiv
-    | Float64   -> L.dgetrf layout m n _a lda _ipiv
-    | Complex32 -> L.cgetrf layout m n _a lda _ipiv
-    | Complex64 -> L.zgetrf layout m n _a lda _ipiv
+    | Float32   -> L.sgetrf ~layout ~m ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Float64   -> L.dgetrf ~layout ~m ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex32 -> L.cgetrf ~layout ~m ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex64 -> L.zgetrf ~layout ~m ~n ~a:_a ~lda ~ipiv:_ipiv
     | _         -> failwith "lapacke:getrf"
   in
   check_lapack_error ret;
@@ -511,10 +529,10 @@ let tzrzf
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Float32   -> L.stzrzf layout m n _a lda _tau
-    | Float64   -> L.dtzrzf layout m n _a lda _tau
-    | Complex32 -> L.ctzrzf layout m n _a lda _tau
-    | Complex64 -> L.ztzrzf layout m n _a lda _tau
+    | Float32   -> L.stzrzf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Float64   -> L.dtzrzf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Complex32 -> L.ctzrzf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
+    | Complex64 -> L.ztzrzf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
     | _         -> failwith "lapacke:tzrzf"
   in
   check_lapack_error ret;
@@ -543,8 +561,10 @@ let ormrz
   let ldc = Pervasives.max 1 (_stride c) in
 
   let ret = match _kind with
-    | Float32   -> L.sormrz layout side trans m n k l _a lda _tau _c ldc
-    | Float64   -> L.dormrz layout side trans m n k l _a lda _tau _c ldc
+    | Float32   -> L.sormrz ~layout ~side ~trans ~m ~n ~k ~l ~a:_a ~lda
+                     ~tau:_tau ~c:_c ~ldc
+    | Float64   -> L.dormrz ~layout ~side ~trans ~m ~n ~k ~l ~a:_a ~lda
+                     ~tau:_tau ~c:_c ~ldc
   in
   check_lapack_error ret;
   c
@@ -581,10 +601,10 @@ let gels
   let ldb = Pervasives.max 1 (_stride b) in
 
   let ret = match _kind with
-    | Float32   -> L.sgels layout trans m n nrhs _a lda _b ldb
-    | Float64   -> L.dgels layout trans m n nrhs _a lda _b ldb
-    | Complex32 -> L.cgels layout trans m n nrhs _a lda _b ldb
-    | Complex64 -> L.zgels layout trans m n nrhs _a lda _b ldb
+    | Float32   -> L.sgels ~layout ~trans ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
+    | Float64   -> L.dgels ~layout ~trans ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
+    | Complex32 -> L.cgels ~layout ~trans ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
+    | Complex64 -> L.zgels ~layout ~trans ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
     | _         -> failwith "lapacke:gels"
   in
   check_lapack_error ret;
@@ -635,10 +655,10 @@ let gesv
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
 
   let ret = match _kind with
-    | Float32   -> L.sgesv layout n nrhs _a lda _ipiv _b ldb
-    | Float64   -> L.dgesv layout n nrhs _a lda _ipiv _b ldb
-    | Complex32 -> L.cgesv layout n nrhs _a lda _ipiv _b ldb
-    | Complex64 -> L.zgesv layout n nrhs _a lda _ipiv _b ldb
+    | Float32   -> L.sgesv ~layout ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Float64   -> L.dgesv ~layout ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Complex32 -> L.cgesv ~layout ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Complex64 -> L.zgesv ~layout ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
     | _         -> failwith "lapacke:gesv"
   in
   check_lapack_error ret;
@@ -666,10 +686,10 @@ let getrs
   let ldb = Pervasives.max 1 (_stride b) in
 
   let ret = match _kind with
-    | Float32   -> L.sgetrs layout trans n nrhs _a lda _ipiv _b ldb
-    | Float64   -> L.dgetrs layout trans n nrhs _a lda _ipiv _b ldb
-    | Complex32 -> L.cgetrs layout trans n nrhs _a lda _ipiv _b ldb
-    | Complex64 -> L.zgetrs layout trans n nrhs _a lda _ipiv _b ldb
+    | Float32   -> L.sgetrs ~layout ~trans ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Float64   -> L.dgetrs ~layout ~trans ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Complex32 -> L.cgetrs ~layout ~trans ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Complex64 -> L.zgetrs ~layout ~trans ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
     | _         -> failwith "lapacke:getrs"
   in
   check_lapack_error ret;
@@ -692,10 +712,10 @@ let getri
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Float32   -> L.sgetri layout n _a lda _ipiv
-    | Float64   -> L.dgetri layout n _a lda _ipiv
-    | Complex32 -> L.cgetri layout n _a lda _ipiv
-    | Complex64 -> L.zgetri layout n _a lda _ipiv
+    | Float32   -> L.sgetri ~layout ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Float64   -> L.dgetri ~layout ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex32 -> L.cgetri ~layout ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex64 -> L.zgetri ~layout ~n ~a:_a ~lda ~ipiv:_ipiv
     | _         -> failwith "lapacke:getri"
   in
   check_lapack_error ret;
@@ -752,7 +772,7 @@ let gesvx
         let _r = bigarray_start Ctypes_static.Genarray r in
         let _c = bigarray_start Ctypes_static.Genarray c in
 
-        let ret = L.sgesvx layout fact trans n nrhs _a lda _af ldaf _ipiv _equed _r _c _b ldb _x ldx _rcond _ferr _berr _rpivot in
+        let ret = L.sgesvx ~layout ~fact ~trans ~n ~nrhs ~a:_a ~lda ~af:_af ~ldaf ~ipiv:_ipiv ~equed:_equed ~r:_r ~c:_c ~b:_b ~ldb ~x:_x ~ldx ~rcond:_rcond ~ferr:_ferr ~berr:_berr ~rpivot:_rpivot in
         r_ref := r;
         c_ref := c;
         rcond := rcond';
@@ -774,7 +794,7 @@ let gesvx
         let _r = bigarray_start Ctypes_static.Genarray r in
         let _c = bigarray_start Ctypes_static.Genarray c in
 
-        let ret = L.dgesvx layout fact trans n nrhs _a lda _af ldaf _ipiv _equed _r _c _b ldb _x ldx _rcond _ferr _berr _rpivot in
+        let ret = L.dgesvx ~layout ~fact ~trans ~n ~nrhs ~a:_a ~lda ~af:_af ~ldaf ~ipiv:_ipiv ~equed:_equed ~r:_r ~c:_c ~b:_b ~ldb ~x:_x ~ldx ~rcond:_rcond ~ferr:_ferr ~berr:_berr ~rpivot:_rpivot in
         r_ref := r;
         c_ref := c;
         rcond := rcond';
@@ -798,7 +818,7 @@ let gesvx
         let _r = bigarray_start Ctypes_static.Genarray r' in
         let _c = bigarray_start Ctypes_static.Genarray c' in
 
-        let ret = L.cgesvx layout fact trans n nrhs _a lda _af ldaf _ipiv _equed _r _c _b ldb _x ldx _rcond _ferr _berr _rpivot in
+        let ret = L.cgesvx ~layout ~fact ~trans ~n ~nrhs ~a:_a ~lda ~af:_af ~ldaf ~ipiv:_ipiv ~equed:_equed ~r:_r ~c:_c ~b:_b ~ldb ~x:_x ~ldx ~rcond:_rcond ~ferr:_ferr ~berr:_berr ~rpivot:_rpivot in
         r_ref := Owl_dense_matrix_generic.cast_s2c r';
         c_ref := Owl_dense_matrix_generic.cast_s2c c';
         rcond := Owl_dense_matrix_generic.cast_s2c rcond';
@@ -823,7 +843,7 @@ let gesvx
         let _r = bigarray_start Ctypes_static.Genarray r' in
         let _c = bigarray_start Ctypes_static.Genarray c' in
 
-        let ret = L.zgesvx layout fact trans n nrhs _a lda _af ldaf _ipiv _equed _r _c _b ldb _x ldx _rcond _ferr _berr _rpivot in
+        let ret = L.zgesvx ~layout ~fact ~trans ~n ~nrhs ~a:_a ~lda ~af:_af ~ldaf ~ipiv:_ipiv ~equed:_equed ~r:_r ~c:_c ~b:_b ~ldb ~x:_x ~ldx ~rcond:_rcond ~ferr:_ferr ~berr:_berr ~rpivot:_rpivot in
         r_ref := Owl_dense_matrix_generic.cast_d2z r';
         c_ref := Owl_dense_matrix_generic.cast_d2z c';
         rcond := Owl_dense_matrix_generic.cast_d2z rcond';
@@ -868,22 +888,22 @@ let gelsd
     | Float32   -> (
         let s = Genarray.create float32 _layout [|1; minmn|] in
         let _s = bigarray_start Ctypes_static.Genarray s in
-        L.sgelsd layout m n nrhs _a lda _b ldb _s rcond _rank
+        L.sgelsd ~layout ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb ~s:_s ~rcond ~rank:_rank
       )
     | Float64   -> (
         let s = Genarray.create float64 _layout [|1; minmn|] in
         let _s = bigarray_start Ctypes_static.Genarray s in
-        L.dgelsd layout m n nrhs _a lda _b ldb _s rcond _rank
+        L.dgelsd ~layout ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb ~s:_s ~rcond ~rank:_rank
       )
     | Complex32 -> (
         let s = Genarray.create float32 _layout [|1; minmn|] in
         let _s = bigarray_start Ctypes_static.Genarray s in
-        L.cgelsd layout m n nrhs _a lda _b ldb _s rcond _rank
+        L.cgelsd ~layout ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb ~s:_s ~rcond ~rank:_rank
       )
     | Complex64 -> (
         let s = Genarray.create float64 _layout [|1; minmn|] in
         let _s = bigarray_start Ctypes_static.Genarray s in
-        L.zgelsd layout m n nrhs _a lda _b ldb _s rcond _rank
+        L.zgelsd ~layout ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb ~s:_s ~rcond ~rank:_rank
       )
     | _         -> failwith "lapacke:gelsd"
   in
@@ -919,10 +939,10 @@ let gelsy
   let _jpvt = bigarray_start Ctypes_static.Genarray jpvt in
 
   let ret = match _kind with
-    | Float32   -> L.sgelsy layout m n nrhs _a lda _b ldb _jpvt rcond _rank
-    | Float64   -> L.dgelsy layout m n nrhs _a lda _b ldb _jpvt rcond _rank
-    | Complex32 -> L.cgelsy layout m n nrhs _a lda _b ldb _jpvt rcond _rank
-    | Complex64 -> L.zgelsy layout m n nrhs _a lda _b ldb _jpvt rcond _rank
+    | Float32   -> L.sgelsy ~layout ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb ~jpvt:_jpvt ~rcond ~rank:_rank
+    | Float64   -> L.dgelsy ~layout ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb ~jpvt:_jpvt ~rcond ~rank:_rank
+    | Complex32 -> L.cgelsy ~layout ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb ~jpvt:_jpvt ~rcond ~rank:_rank
+    | Complex64 -> L.zgelsy ~layout ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb ~jpvt:_jpvt ~rcond ~rank:_rank
     | _         -> failwith "lapacke:gelsy"
   in
   check_lapack_error ret;
@@ -954,10 +974,10 @@ let gglse
   let ldb = Pervasives.max 1 (_stride b) in
 
   let ret = match _kind with
-    | Float32   -> L.sgglse layout m n p _a lda _b ldb _c _d _x
-    | Float64   -> L.dgglse layout m n p _a lda _b ldb _c _d _x
-    | Complex32 -> L.cgglse layout m n p _a lda _b ldb _c _d _x
-    | Complex64 -> L.zgglse layout m n p _a lda _b ldb _c _d _x
+    | Float32   -> L.sgglse ~layout ~m ~n ~p ~a:_a ~lda ~b:_b ~ldb ~c:_c ~d:_d ~x:_x
+    | Float64   -> L.dgglse ~layout ~m ~n ~p ~a:_a ~lda ~b:_b ~ldb ~c:_c ~d:_d ~x:_x
+    | Complex32 -> L.cgglse ~layout ~m ~n ~p ~a:_a ~lda ~b:_b ~ldb ~c:_c ~d:_d ~x:_x
+    | Complex64 -> L.zgglse ~layout ~m ~n ~p ~a:_a ~lda ~b:_b ~ldb ~c:_c ~d:_d ~x:_x
     | _         -> failwith "lapacke:gglse"
   in
   check_lapack_error ret;
@@ -1004,7 +1024,7 @@ let geev
         let wi' = Genarray.create _kind _layout [|1;n|] in
         let _wr = bigarray_start Ctypes_static.Genarray wr' in
         let _wi = bigarray_start Ctypes_static.Genarray wi' in
-        let r = L.sgeev layout jobvl jobvr n _a lda _wr _wi _vl ldvl _vr ldvr in
+        let r = L.sgeev ~layout ~jobvl ~jobvr ~n ~a:_a ~lda ~wr:_wr ~wi:_wi ~vl:_vl ~ldvl ~vr:_vr ~ldvr in
         wr := wr';
         wi := wi';
         r
@@ -1014,7 +1034,7 @@ let geev
         let wi' = Genarray.create _kind _layout [|1;n|] in
         let _wr = bigarray_start Ctypes_static.Genarray wr' in
         let _wi = bigarray_start Ctypes_static.Genarray wi' in
-        let r = L.dgeev layout jobvl jobvr n _a lda _wr _wi _vl ldvl _vr ldvr in
+        let r = L.dgeev ~layout ~jobvl ~jobvr ~n ~a:_a ~lda ~wr:_wr ~wi:_wi ~vl:_vl ~ldvl ~vr:_vr ~ldvr in
         wr := wr';
         wi := wi';
         r
@@ -1022,7 +1042,7 @@ let geev
     | Complex32 -> (
         let w' = Genarray.create _kind _layout [|1;n|] in
         let _w = bigarray_start Ctypes_static.Genarray w' in
-        let r = L.cgeev layout jobvl jobvr n _a lda _w _vl ldvl _vr ldvr in
+        let r = L.cgeev ~layout ~jobvl ~jobvr ~n ~a:_a ~lda ~w:_w ~vl:_vl ~ldvl ~vr:_vr ~ldvr in
         wr := w';
         wi := w';
         r
@@ -1030,7 +1050,7 @@ let geev
     | Complex64 -> (
         let w' = Genarray.create _kind _layout [|1;n|] in
         let _w = bigarray_start Ctypes_static.Genarray w' in
-        let r = L.cgeev layout jobvl jobvr n _a lda _w _vl ldvl _vr ldvr in
+        let r = L.cgeev ~layout ~jobvl ~jobvr ~n ~a:_a ~lda ~w:_w ~vl:_vl ~ldvl ~vr:_vr ~ldvr in
         wr := w';
         wi := w';
         r
@@ -1079,28 +1099,28 @@ let gesdd
     | Float32   -> (
         let s' = Genarray.create float32 _layout [|1; minmn|] in
         let _s = bigarray_start Ctypes_static.Genarray s' in
-        let r = L.sgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
+        let r = L.sgesdd ~layout ~jobz ~m ~n ~a:_a ~lda ~s:_s ~u:_u ~ldu ~vt:_vt ~ldvt in
         s := s';
         r
       )
     | Float64   -> (
         let s' = Genarray.create float64 _layout [|1; minmn|] in
         let _s = bigarray_start Ctypes_static.Genarray s' in
-        let r = L.dgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
+        let r = L.dgesdd ~layout ~jobz ~m ~n ~a:_a ~lda ~s:_s ~u:_u ~ldu ~vt:_vt ~ldvt in
         s := s';
         r
       )
     | Complex32 -> (
         let s' = Genarray.create float32 _layout [|1; minmn|] in
         let _s = bigarray_start Ctypes_static.Genarray s' in
-        let r = L.cgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
+        let r = L.cgesdd ~layout ~jobz ~m ~n ~a:_a ~lda ~s:_s ~u:_u ~ldu ~vt:_vt ~ldvt in
         s := Owl_dense_matrix_generic.cast_s2c s';
         r
       )
     | Complex64 -> (
         let s' = Genarray.create float64 _layout [|1; minmn|] in
         let _s = bigarray_start Ctypes_static.Genarray s' in
-        let r = L.zgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
+        let r = L.zgesdd ~layout ~jobz ~m ~n ~a:_a ~lda ~s:_s ~u:_u ~ldu ~vt:_vt ~ldvt in
         s := Owl_dense_matrix_generic.cast_d2z s';
         r
       )
@@ -1155,7 +1175,7 @@ let gesvd
         let superb = Genarray.create float32 _layout [|minmn - 1|]
           |> bigarray_start Ctypes_static.Genarray
         in
-        let r = L.sgesvd layout jobu jobvt m n _a lda _s _u ldu _vt ldvt superb in
+        let r = L.sgesvd ~layout ~jobu ~jobvt ~m ~n ~a:_a ~lda ~s:_s ~u:_u ~ldu ~vt:_vt ~ldvt ~superb in
         s := s';
         r
       )
@@ -1165,7 +1185,7 @@ let gesvd
         let superb = Genarray.create float64 _layout [|minmn - 1|]
           |> bigarray_start Ctypes_static.Genarray
         in
-        let r = L.dgesvd layout jobu jobvt m n _a lda _s _u ldu _vt ldvt superb in
+        let r = L.dgesvd ~layout ~jobu ~jobvt ~m ~n ~a:_a ~lda ~s:_s ~u:_u ~ldu ~vt:_vt ~ldvt ~superb in
         s := s';
         r
       )
@@ -1175,7 +1195,7 @@ let gesvd
         let superb = Genarray.create float32 _layout [|minmn - 1|]
           |> bigarray_start Ctypes_static.Genarray
         in
-        let r = L.cgesvd layout jobu jobvt m n _a lda _s _u ldu _vt ldvt superb in
+        let r = L.cgesvd ~layout ~jobu ~jobvt ~m ~n ~a:_a ~lda ~s:_s ~u:_u ~ldu ~vt:_vt ~ldvt ~superb in
         s := Owl_dense_matrix_generic.cast_s2c s';
         r
       )
@@ -1185,7 +1205,7 @@ let gesvd
         let superb = Genarray.create float64 _layout [|minmn - 1|]
           |> bigarray_start Ctypes_static.Genarray
         in
-        let r = L.zgesvd layout jobu jobvt m n _a lda _s _u ldu _vt ldvt superb in
+        let r = L.zgesvd ~layout ~jobu ~jobvt ~m ~n ~a:_a ~lda ~s:_s ~u:_u ~ldu ~vt:_vt ~ldvt ~superb in
         s := Owl_dense_matrix_generic.cast_d2z s';
         r
       )
@@ -1251,7 +1271,7 @@ let ggsvd3
         let beta' = Genarray.create float32 _layout [|1;n|] in
         let _alpha = bigarray_start Ctypes_static.Genarray alpha' in
         let _beta = bigarray_start Ctypes_static.Genarray beta' in
-        let r = L.sggsvd3 layout jobu jobv jobq m n p _k _l _a lda _b ldb _alpha _beta _u ldu _v ldv _q ldq _iwork in
+        let r = L.sggsvd3 ~layout ~jobu ~jobv ~jobq ~m ~n ~p ~k:_k ~l:_l ~a:_a~lda ~b:_b ~ldb ~alpha:_alpha ~beta:_beta ~u:_u ~ldu ~v:_v ~ldv  ~q:_q ~ldq ~iwork:_iwork in
         alpha := alpha';
         beta := beta';
         r
@@ -1261,7 +1281,7 @@ let ggsvd3
         let beta' = Genarray.create float64 _layout [|1;n|] in
         let _alpha = bigarray_start Ctypes_static.Genarray alpha' in
         let _beta = bigarray_start Ctypes_static.Genarray beta' in
-        let r = L.dggsvd3 layout jobu jobv jobq m n p _k _l _a lda _b ldb _alpha _beta _u ldu _v ldv _q ldq _iwork in
+        let r = L.dggsvd3 ~layout ~jobu ~jobv ~jobq ~m ~n ~p ~k:_k ~l:_l ~a:_a~lda ~b:_b ~ldb ~alpha:_alpha ~beta:_beta ~u:_u ~ldu ~v:_v ~ldv  ~q:_q ~ldq ~iwork:_iwork in
         alpha := alpha';
         beta := beta';
         r
@@ -1271,7 +1291,7 @@ let ggsvd3
         let beta' = Genarray.create float32 _layout [|1;n|] in
         let _alpha = bigarray_start Ctypes_static.Genarray alpha' in
         let _beta = bigarray_start Ctypes_static.Genarray beta' in
-        let r = L.cggsvd3 layout jobu jobv jobq m n p _k _l _a lda _b ldb _alpha _beta _u ldu _v ldv _q ldq _iwork in
+        let r = L.cggsvd3 ~layout ~jobu ~jobv ~jobq ~m ~n ~p ~k:_k ~l:_l ~a:_a~lda ~b:_b ~ldb ~alpha:_alpha ~beta:_beta ~u:_u ~ldu ~v:_v ~ldv ~q:_q ~ldq ~iwork:_iwork in
         alpha := Owl_dense_matrix_generic.cast_s2c alpha';
         beta := Owl_dense_matrix_generic.cast_s2c beta';
         r
@@ -1281,7 +1301,7 @@ let ggsvd3
         let beta' = Genarray.create float64 _layout [|1;n|] in
         let _alpha = bigarray_start Ctypes_static.Genarray alpha' in
         let _beta = bigarray_start Ctypes_static.Genarray beta' in
-        let r = L.zggsvd3 layout jobu jobv jobq m n p _k _l _a lda _b ldb _alpha _beta _u ldu _v ldv _q ldq _iwork in
+        let r = L.zggsvd3 ~layout ~jobu ~jobv ~jobq ~m ~n ~p ~k:_k ~l:_l ~a:_a~lda ~b:_b ~ldb ~alpha:_alpha ~beta:_beta ~u:_u ~ldu ~v:_v ~ldv ~q:_q ~ldq ~iwork:_iwork in
         alpha := Owl_dense_matrix_generic.cast_d2z alpha';
         beta := Owl_dense_matrix_generic.cast_d2z beta';
         r
@@ -1363,7 +1383,7 @@ let geevx
         let rcondv' = Genarray.create _kind _layout [|1;n|] in
         let _rcondv = bigarray_start Ctypes_static.Genarray rcondv' in
         let _abnrm = Ctypes.(allocate float 0.) in
-        let r = L.sgeevx layout balanc jobvl jobvr sense n _a lda _wr _wi _vl ldvl _vr ldvr _ilo _ihi _scale _abnrm _rconde _rcondv in
+        let r = L.sgeevx ~layout ~balanc ~jobvl ~jobvr ~sense ~n ~a:_a ~lda ~wr:_wr ~wi:_wi ~vl:_vl ~ldvl ~vr:_vr ~ldvr ~ilo:_ilo ~ihi:_ihi ~scale:_scale ~abnrm:_abnrm ~rconde:_rconde ~rcondv:_rcondv in
         wr := wr';
         wi := wi';
         scale := scale';
@@ -1384,7 +1404,7 @@ let geevx
         let rcondv' = Genarray.create _kind _layout [|1;n|] in
         let _rcondv = bigarray_start Ctypes_static.Genarray rcondv' in
         let _abnrm = Ctypes.(allocate double 0.) in
-        let r = L.dgeevx layout balanc jobvl jobvr sense n _a lda _wr _wi _vl ldvl _vr ldvr _ilo _ihi _scale _abnrm _rconde _rcondv in
+        let r = L.dgeevx ~layout ~balanc ~jobvl ~jobvr ~sense ~n ~a:_a ~lda ~wr:_wr ~wi:_wi ~vl:_vl ~ldvl ~vr:_vr ~ldvr ~ilo:_ilo ~ihi:_ihi ~scale:_scale ~abnrm:_abnrm ~rconde:_rconde ~rcondv:_rcondv in
         wr := wr';
         wi := wi';
         scale := scale';
@@ -1403,7 +1423,7 @@ let geevx
         let rcondv' = Genarray.create float32 _layout [|1;n|] in
         let _rcondv = bigarray_start Ctypes_static.Genarray rcondv' in
         let _abnrm = Ctypes.(allocate float 0.) in
-        let r = L.cgeevx layout balanc jobvl jobvr sense n _a lda _w _vl ldvl _vr ldvr _ilo _ihi _scale _abnrm _rconde _rcondv in
+        let r = L.cgeevx ~layout ~balanc ~jobvl ~jobvr ~sense ~n ~a:_a ~lda ~w:_w ~vl:_vl ~ldvl ~vr:_vr ~ldvr ~ilo:_ilo ~ihi:_ihi ~scale:_scale ~abnrm:_abnrm ~rconde:_rconde ~rcondv:_rcondv in
         wr := w';
         wi := w';
         scale := Owl_dense_matrix_generic.cast_s2c scale';
@@ -1422,8 +1442,8 @@ let geevx
         let rcondv' = Genarray.create float64 _layout [|1;n|] in
         let _rcondv = bigarray_start Ctypes_static.Genarray rcondv' in
         let _abnrm = Ctypes.(allocate double 0.) in
-        let r = L.zgeevx layout balanc jobvl jobvr sense n _a lda _w _vl ldvl _vr ldvr _ilo _ihi _scale _abnrm _rconde _rcondv in
-        wr := w';
+        let r = L.zgeevx ~layout ~balanc ~jobvl ~jobvr ~sense ~n ~a:_a ~lda ~w:_w ~vl:_vl ~ldvl ~vr:_vr ~ldvr ~ilo:_ilo ~ihi:_ihi ~scale:_scale ~abnrm:_abnrm ~rconde:_rconde ~rcondv:_rcondv in
+       wr := w';
         wi := w';
         scale := Owl_dense_matrix_generic.cast_d2z scale';
         abnrm := !@_abnrm;
@@ -1434,7 +1454,7 @@ let geevx
     | _         -> failwith "lapacke:geevx"
   in
   check_lapack_error ret;
-  (* return all the results modified in-place *)
+  (* return all the results ~modified in-place *)
   let ilo = Int32.to_int !@_ilo in
   let ihi = Int32.to_int !@_ihi in
   a, !wr, !wi, vl, vr, ilo, ihi, !scale, !abnrm, !rconde, !rcondv
@@ -1485,7 +1505,7 @@ let ggev
         let _alphar = bigarray_start Ctypes_static.Genarray alphar' in
         let alphai' = Genarray.create _kind _layout [|1;n|] in
         let _alphai = bigarray_start Ctypes_static.Genarray alphai' in
-        let r = L.sggev layout jobvl jobvr n _a lda _b ldb _alphar _alphai _beta _vl ldvl _vr ldvr in
+        let r = L.sggev ~layout ~jobvl ~jobvr ~n ~a:_a ~lda ~b:_b ~ldb ~alphar:_alphar ~alphai:_alphai ~beta:_beta ~vl:_vl ~ldvl ~vr:_vr ~ldvr in
         alphar := alphar';
         alphai := alphai';
         r
@@ -1495,23 +1515,23 @@ let ggev
         let _alphar = bigarray_start Ctypes_static.Genarray alphar' in
         let alphai' = Genarray.create _kind _layout [|1;n|] in
         let _alphai = bigarray_start Ctypes_static.Genarray alphai' in
-        let r = L.dggev layout jobvl jobvr n _a lda _b ldb _alphar _alphai _beta _vl ldvl _vr ldvr in
+        let r = L.dggev ~layout ~jobvl ~jobvr ~n ~a:_a ~lda ~b:_b ~ldb ~alphar:_alphar ~alphai:_alphai ~beta:_beta ~vl:_vl ~ldvl ~vr:_vr ~ldvr in
         alphar := alphar';
         alphai := alphai';
         r
       )
     | Complex32 -> (
         let alpha' = Genarray.create _kind _layout [|1;n|] in
-        let _alpha = bigarray_start Ctypes_static.Genarray alpha' in
-        let r = L.cggev layout jobvl jobvr n _a lda _b ldb _alpha _beta _vl ldvl _vr ldvr in
+        let alpha = bigarray_start Ctypes_static.Genarray alpha' in
+        let r = L.cggev ~layout ~jobvl ~jobvr ~n ~a:_a ~lda ~b:_b ~ldb ~alpha ~beta:_beta ~vl:_vl ~ldvl ~vr:_vr ~ldvr in
         alphar := alpha';
         alphai := alpha';
         r
       )
     | Complex64 -> (
         let alpha' = Genarray.create _kind _layout [|1;n|] in
-        let _alpha = bigarray_start Ctypes_static.Genarray alpha' in
-        let r = L.cggev layout jobvl jobvr n _a lda _b ldb _alpha _beta _vl ldvl _vr ldvr in
+        let alpha = bigarray_start Ctypes_static.Genarray alpha' in
+        let r = L.cggev ~layout ~jobvl ~jobvr ~n ~a:_a ~lda ~b:_b ~ldb ~alpha ~beta:_beta ~vl:_vl ~ldvl ~vr:_vr ~ldvr in
         alphar := alpha';
         alphai := alpha';
         r
@@ -1545,10 +1565,10 @@ let gtsv
   let _du = bigarray_start Ctypes_static.Genarray du in
 
   let ret = match _kind with
-    | Float32   -> L.sgtsv layout n nrhs _dl _d _du _b ldb
-    | Float64   -> L.dgtsv layout n nrhs _dl _d _du _b ldb
-    | Complex32 -> L.cgtsv layout n nrhs _dl _d _du _b ldb
-    | Complex64 -> L.zgtsv layout n nrhs _dl _d _du _b ldb
+    | Float32   -> L.sgtsv ~layout ~n ~nrhs ~dl:_dl ~d:_d ~du:_du ~b:_b ~ldb
+    | Float64   -> L.dgtsv ~layout ~n ~nrhs ~dl:_dl ~d:_d ~du:_du ~b:_b ~ldb
+    | Complex32 -> L.cgtsv  ~layout ~n ~nrhs ~dl:_dl ~d:_d ~du:_du ~b:_b ~ldb
+    | Complex64 -> L.zgtsv  ~layout ~n ~nrhs ~dl:_dl ~d:_d ~du:_du ~b:_b ~ldb
     | _         -> failwith "lapacke:gtsv"
   in
   check_lapack_error ret;
@@ -1575,10 +1595,11 @@ let gttrf
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
 
   let ret = match _kind with
-    | Float32   -> L.sgttrf n _dl _d _du _du2 _ipiv
-    | Float64   -> L.dgttrf n _dl _d _du _du2 _ipiv
-    | Complex32 -> L.cgttrf n _dl _d _du _du2 _ipiv
-    | Complex64 -> L.zgttrf n _dl _d _du _du2 _ipiv
+    | Float32   -> L.sgttrf ~n ~dl:_dl ~d:_d ~du:_du ~du2:_du2 ~ipiv:_ipiv
+    | Float64   -> L.dgttrf ~n ~dl:_dl ~d:_d ~du:_du ~du2:_du2 ~ipiv:_ipiv
+    | Complex32 -> L.cgttrf ~n ~dl:_dl ~d:_d ~du:_du ~du2:_du2 ~ipiv:_ipiv
+    | Complex64 -> L.zgttrf ~n ~dl:_dl ~d:_d ~du:_du ~du2:_du2 ~ipiv:_ipiv
+
     | _         -> failwith "lapacke:gttrf"
   in
   check_lapack_error ret;
@@ -1588,7 +1609,7 @@ let gttrf
 let gttrs
   : type a b. trans:char -> dl:(a, b) t -> d:(a, b) t -> du:(a, b) t
   -> du2:(a, b) t -> ipiv:(int32, int32_elt) t -> b:(a, b) t -> (a, b) t
-  = fun ~trans ~dl ~d ~du ~du2 ~ipiv ~b ->
+  = fun ~trans ~dl ~d ~du ~du2 ~ipiv:_ ~b ->
   assert (trans = 'N' || trans = 'T' || trans = 'C');
 
   let n = Owl_dense_matrix_generic.numel d in
@@ -1612,15 +1633,19 @@ let gttrs
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
 
   let ret = match _kind with
-    | Float32   -> L.sgttrs layout trans n nrhs _dl _d _du _du2 _ipiv _b ldb
-    | Float64   -> L.dgttrs layout trans n nrhs _dl _d _du _du2 _ipiv _b ldb
-    | Complex32 -> L.cgttrs layout trans n nrhs _dl _d _du _du2 _ipiv _b ldb
-    | Complex64 -> L.zgttrs layout trans n nrhs _dl _d _du _du2 _ipiv _b ldb
-    | _         -> failwith "lapacke:gttrs"
+    | Float32 ->
+      L.sgttrs ~layout ~trans ~n ~nrhs ~dl:_dl ~d:_d ~du:_du ~du2:_du2 ~ipiv:_ipiv ~b:_b ~ldb
+    | Float64 ->
+      L.dgttrs ~layout ~trans ~n ~nrhs ~dl:_dl ~d:_d ~du:_du ~du2:_du2 ~ipiv:_ipiv ~b:_b ~ldb
+    | Complex32 ->
+      L.cgttrs ~layout ~trans ~n ~nrhs ~dl:_dl ~d:_d ~du:_du ~du2:_du2 ~ipiv:_ipiv ~b:_b ~ldb
+     | Complex64 ->
+      L.zgttrs ~layout ~trans ~n ~nrhs ~dl:_dl ~d:_d ~du:_du ~du2:_du2 ~ipiv:_ipiv ~b:_b ~ldb
+     | _         -> failwith "lapacke:gttrs"
   in
   check_lapack_error ret;
   b
-    [@@warning "-27"]
+
 
 let orglq
   : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t
@@ -1643,8 +1668,8 @@ let orglq
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
   let ret = match _kind with
-    | Float32   -> L.sorglq layout minmn n k _a lda _tau
-    | Float64   -> L.dorglq layout minmn n k _a lda _tau
+    | Float32   -> L.sorglq ~layout ~m:minmn ~n ~k ~a:_a ~lda ~tau:_tau
+    | Float64   -> L.dorglq ~layout ~m:minmn ~n ~k ~a:_a ~lda ~tau:_tau
   in
   check_lapack_error ret;
   (* extract the first leading rows if necessary *)
@@ -1674,8 +1699,8 @@ let unglq
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
   let ret = match _kind with
-    | Complex32 -> L.cunglq layout minmn n k _a lda _tau
-    | Complex64 -> L.zunglq layout minmn n k _a lda _tau
+    | Complex32 -> L.cunglq ~layout ~m:minmn ~n ~k ~a:_a ~lda ~tau:_tau
+    | Complex64 -> L.zunglq ~layout ~m:minmn ~n ~k ~a:_a ~lda ~tau:_tau
   in
   check_lapack_error ret;
   (* extract the first leading rows if necessary *)
@@ -1705,8 +1730,8 @@ let orgqr
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
   let ret = match _kind with
-    | Float32   -> L.sorgqr layout m minmn k _a lda _tau
-    | Float64   -> L.dorgqr layout m minmn k _a lda _tau
+    | Float32   -> L.sorgqr ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
+    | Float64   -> L.dorgqr ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
   in
   check_lapack_error ret;
   (* extract the first leading columns if necessary *)
@@ -1736,8 +1761,8 @@ let ungqr
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
   let ret = match _kind with
-    | Complex32   -> L.cungqr layout m minmn k _a lda _tau
-    | Complex64   -> L.zungqr layout m minmn k _a lda _tau
+    | Complex32   -> L.cungqr ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
+    | Complex64   -> L.zungqr ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
   in
   check_lapack_error ret;
   (* extract the first leading columns if necessary *)
@@ -1767,8 +1792,8 @@ let orgql
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
   let ret = match _kind with
-    | Float32   -> L.sorgql layout m minmn k _a lda _tau
-    | Float64   -> L.dorgql layout m minmn k _a lda _tau
+    | Float32   -> L.sorgql ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
+    | Float64   -> L.dorgql ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
   in
   check_lapack_error ret;
   (* extract the first leading columns if necessary *)
@@ -1798,8 +1823,8 @@ let orgrq
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
   let ret = match _kind with
-    | Float32   -> L.sorgrq layout m minmn k _a lda _tau
-    | Float64   -> L.dorgrq layout m minmn k _a lda _tau
+    | Float32   -> L.sorgrq ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
+    | Float64   -> L.dorgrq ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
   in
   check_lapack_error ret;
   (* extract the first leading columns if necessary *)
@@ -1835,8 +1860,8 @@ let ormlq
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
   let ret = match _kind with
-    | Float32   -> L.sormlq layout side trans m n k _a lda _tau _c ldc
-    | Float64   -> L.dormlq layout side trans m n k _a lda _tau _c ldc
+    | Float32   -> L.sormlq ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
+    | Float64   -> L.dormlq ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
   in
   check_lapack_error ret;
   c
@@ -1869,8 +1894,8 @@ let ormqr
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
   let ret = match _kind with
-    | Float32   -> L.sormqr layout side trans m n k _a lda _tau _c ldc
-    | Float64   -> L.dormqr layout side trans m n k _a lda _tau _c ldc
+    | Float32   -> L.sormqr ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
+    | Float64   -> L.dormqr ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
   in
   check_lapack_error ret;
   c
@@ -1903,8 +1928,8 @@ let ormql
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
   let ret = match _kind with
-    | Float32   -> L.sormql layout side trans m n k _a lda _tau _c ldc
-    | Float64   -> L.dormql layout side trans m n k _a lda _tau _c ldc
+    | Float32   -> L.sormql ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
+    | Float64   -> L.dormql ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
   in
   check_lapack_error ret;
   c
@@ -1937,8 +1962,8 @@ let ormrq
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
   let ret = match _kind with
-    | Float32   -> L.sormrq layout side trans m n k _a lda _tau _c ldc
-    | Float64   -> L.dormrq layout side trans m n k _a lda _tau _c ldc
+    | Float32   -> L.sormrq ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
+    | Float64   -> L.dormrq ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
   in
   check_lapack_error ret;
   c
@@ -1972,10 +1997,10 @@ let gemqrt
   let _c = bigarray_start Ctypes_static.Genarray c in
 
   let ret = match _kind with
-    | Float32   -> L.sgemqrt layout side trans m n k nb _v ldv _t ldt _c ldc
-    | Float64   -> L.dgemqrt layout side trans m n k nb _v ldv _t ldt _c ldc
-    | Complex32 -> L.cgemqrt layout side trans m n k nb _v ldv _t ldt _c ldc
-    | Complex64 -> L.zgemqrt layout side trans m n k nb _v ldv _t ldt _c ldc
+    | Float32   -> L.sgemqrt ~layout ~side ~trans ~m ~n ~k ~nb  ~v:_v ~ldv  ~t:_t ~ldt  ~c:_c ~ldc
+    | Float64   -> L.dgemqrt ~layout ~side ~trans ~m ~n ~k ~nb  ~v:_v ~ldv  ~t:_t ~ldt  ~c:_c ~ldc
+    | Complex32 -> L.cgemqrt ~layout ~side ~trans ~m ~n ~k ~nb  ~v:_v ~ldv  ~t:_t ~ldt  ~c:_c ~ldc
+    | Complex64 -> L.zgemqrt ~layout ~side ~trans ~m ~n ~k ~nb  ~v:_v ~ldv  ~t:_t ~ldt  ~c:_c ~ldc
     | _         -> failwith "lapacke:gemqrt"
   in
   check_lapack_error ret;
@@ -2001,10 +2026,10 @@ let posv
   let _b = bigarray_start Ctypes_static.Genarray b in
 
   let ret = match _kind with
-    | Float32   -> L.sposv layout uplo n nrhs _a lda _b ldb
-    | Float64   -> L.dposv layout uplo n nrhs _a lda _b ldb
-    | Complex32 -> L.cposv layout uplo n nrhs _a lda _b ldb
-    | Complex64 -> L.zposv layout uplo n nrhs _a lda _b ldb
+    | Float32   -> L.sposv ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
+    | Float64   -> L.dposv ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
+    | Complex32 -> L.cposv ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
+    | Complex64 -> L.zposv ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
     | _         -> failwith "lapacke:posv"
   in
   check_lapack_error ret;
@@ -2027,10 +2052,10 @@ let potrf
   let _a = bigarray_start Ctypes_static.Genarray a in
 
   let ret = match _kind with
-    | Float32   -> L.spotrf layout uplo n _a lda
-    | Float64   -> L.dpotrf layout uplo n _a lda
-    | Complex32 -> L.cpotrf layout uplo n _a lda
-    | Complex64 -> L.zpotrf layout uplo n _a lda
+    | Float32   -> L.spotrf ~layout ~uplo ~n ~a:_a ~lda
+    | Float64   -> L.dpotrf ~layout ~uplo ~n ~a:_a ~lda
+    | Complex32 -> L.cpotrf ~layout ~uplo ~n ~a:_a ~lda
+    | Complex64 -> L.zpotrf ~layout ~uplo ~n ~a:_a ~lda
     | _         -> failwith "lapacke:potrf"
   in
   check_lapack_error ret;
@@ -2053,10 +2078,10 @@ let potri
   let _a = bigarray_start Ctypes_static.Genarray a in
 
   let ret = match _kind with
-    | Float32   -> L.spotri layout uplo n _a lda
-    | Float64   -> L.dpotri layout uplo n _a lda
-    | Complex32 -> L.cpotri layout uplo n _a lda
-    | Complex64 -> L.zpotri layout uplo n _a lda
+    | Float32   -> L.spotri ~layout ~uplo ~n ~a:_a ~lda
+    | Float64   -> L.dpotri ~layout ~uplo ~n ~a:_a ~lda
+    | Complex32 -> L.cpotri ~layout ~uplo ~n ~a:_a ~lda
+    | Complex64 -> L.zpotri ~layout ~uplo ~n ~a:_a ~lda
     | _         -> failwith "lapacke:potri"
   in
   check_lapack_error ret;
@@ -2082,10 +2107,10 @@ let potrs
   let _b = bigarray_start Ctypes_static.Genarray b in
 
   let ret = match _kind with
-    | Float32   -> L.spotrs layout uplo n nrhs _a lda _b ldb
-    | Float64   -> L.dpotrs layout uplo n nrhs _a lda _b ldb
-    | Complex32 -> L.cpotrs layout uplo n nrhs _a lda _b ldb
-    | Complex64 -> L.zpotrs layout uplo n nrhs _a lda _b ldb
+    | Float32   -> L.spotrs ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
+    | Float64   -> L.dpotrs ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
+    | Complex32 -> L.cpotrs ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
+    | Complex64 -> L.zpotrs ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
     | _         -> failwith "lapacke:potrs"
   in
   check_lapack_error ret;
@@ -2111,10 +2136,10 @@ let pstrf
   let _rank = Ctypes.(allocate int32_t 0l) in
 
   let ret = match _kind with
-    | Float32   -> L.spstrf layout uplo n _a lda _piv _rank tol
-    | Float64   -> L.dpstrf layout uplo n _a lda _piv _rank tol
-    | Complex32 -> L.cpstrf layout uplo n _a lda _piv _rank Complex.(tol.re)
-    | Complex64 -> L.zpstrf layout uplo n _a lda _piv _rank Complex.(tol.re)
+    | Float32   -> L.spstrf ~layout ~uplo ~n ~a:_a ~lda ~piv:_piv ~rank:_rank ~tol
+    | Float64   -> L.dpstrf ~layout ~uplo ~n ~a:_a ~lda ~piv:_piv ~rank:_rank ~tol
+    | Complex32 -> L.cpstrf ~layout ~uplo ~n ~a:_a ~lda ~piv:_piv ~rank:_rank ~tol:Complex.(tol.re)
+    | Complex64 -> L.zpstrf ~layout ~uplo ~n ~a:_a ~lda ~piv:_piv ~rank:_rank ~tol:Complex.(tol.re)
     | _         -> failwith "lapacke:pstrf"
   in
   check_lapack_error ret;
@@ -2143,21 +2168,21 @@ let ptsv
   let ret = match _kind with
     | Float32   -> (
         let _d = bigarray_start Ctypes_static.Genarray d in
-        L.sptsv layout n nrhs _d _e _b ldb
+        L.sptsv ~layout ~n ~nrhs ~d:_d ~e:_e ~b:_b ~ldb
       )
     | Float64   -> (
         let _d = bigarray_start Ctypes_static.Genarray d in
-        L.dptsv layout n nrhs _d _e _b ldb
+        L.dptsv ~layout ~n ~nrhs ~d:_d ~e:_e ~b:_b ~ldb
       )
     | Complex32 -> (
         let d' = Owl_dense_matrix_c.re d in
         let _d = bigarray_start Ctypes_static.Genarray d' in
-        L.cptsv layout n nrhs _d _e _b ldb
+        L.cptsv ~layout ~n ~nrhs ~d:_d ~e:_e ~b:_b ~ldb
       )
     | Complex64 -> (
         let d' = Owl_dense_matrix_z.re d in
         let _d = bigarray_start Ctypes_static.Genarray d' in
-        L.zptsv layout n nrhs _d _e _b ldb
+        L.zptsv ~layout ~n ~nrhs ~d:_d ~e:_e ~b:_b ~ldb
       )
     | _         -> failwith "lapacke:ptsv"
   in
@@ -2177,22 +2202,22 @@ let pttrf
   (* NOTE: only use the real part of d *)
   let ret = match _kind with
     | Float32   -> (
-        let _d = bigarray_start Ctypes_static.Genarray d in
-        L.spttrf n _d _e
+        let d = bigarray_start Ctypes_static.Genarray d in
+        L.spttrf ~n ~d ~e:_e
       )
     | Float64   -> (
-        let _d = bigarray_start Ctypes_static.Genarray d in
-        L.dpttrf n _d _e
+        let d = bigarray_start Ctypes_static.Genarray d in
+        L.dpttrf ~n ~d ~e:_e
       )
     | Complex32 -> (
         let d' = Owl_dense_matrix_c.re d in
-        let _d = bigarray_start Ctypes_static.Genarray d' in
-        L.cpttrf n _d _e
+        let d = bigarray_start Ctypes_static.Genarray d' in
+        L.cpttrf ~n ~d ~e:_e
       )
     | Complex64 -> (
         let d' = Owl_dense_matrix_z.re d in
-        let _d = bigarray_start Ctypes_static.Genarray d' in
-        L.zpttrf n _d _e
+        let d = bigarray_start Ctypes_static.Genarray d' in
+        L.zpttrf ~n ~d ~e:_e
       )
     | _         -> failwith "lapacke:pttrf"
   in
@@ -2203,7 +2228,7 @@ let pttrf
 let pttrs
 : type a b. ?uplo:char -> d:(a, b) t -> e:(a, b) t -> b:(a, b) t -> (a, b) t
 = fun ?uplo ~d ~e ~b ->
-  (* NOTE: uplo is only for complex flavour *)
+  (* NOTE: ~uplo is only for complex flavour *)
   let uplo = match uplo with
     | Some uplo -> uplo
     | None      -> 'U'
@@ -2228,21 +2253,21 @@ let pttrs
   let ret = match _kind with
     | Float32   -> (
         let _d = bigarray_start Ctypes_static.Genarray d in
-        L.spttrs layout n nrhs _d _e _b ldb
+        L.spttrs ~layout ~n ~nrhs ~d:_d ~e:_e ~b:_b ~ldb
       )
     | Float64   -> (
         let _d = bigarray_start Ctypes_static.Genarray d in
-        L.dpttrs layout n nrhs _d _e _b ldb
+        L.dpttrs ~layout ~n ~nrhs ~d:_d ~e:_e ~b:_b ~ldb
       )
     | Complex32 -> (
         let d' = Owl_dense_matrix_c.re d in
         let _d = bigarray_start Ctypes_static.Genarray d' in
-        L.cpttrs layout uplo n nrhs _d _e _b ldb
+        L.cpttrs ~layout ~uplo ~n ~nrhs ~d:_d ~e:_e ~b:_b ~ldb
       )
     | Complex64 -> (
         let d' = Owl_dense_matrix_z.re d in
         let _d = bigarray_start Ctypes_static.Genarray d' in
-        L.zpttrs layout uplo n nrhs _d _e _b ldb
+        L.zpttrs ~layout ~uplo ~n ~nrhs ~d:_d ~e:_e ~b:_b ~ldb
       )
     | _         -> failwith "lapacke:pttrs"
   in
@@ -2267,10 +2292,10 @@ let trtri
   let _a = bigarray_start Ctypes_static.Genarray a in
 
   let ret = match _kind with
-    | Float32   -> L.strtri layout uplo diag n _a lda
-    | Float64   -> L.dtrtri layout uplo diag n _a lda
-    | Complex32 -> L.ctrtri layout uplo diag n _a lda
-    | Complex64 -> L.ztrtri layout uplo diag n _a lda
+    | Float32   -> L.strtri ~layout ~uplo ~diag ~n ~a:_a ~lda
+    | Float64   -> L.dtrtri ~layout ~uplo ~diag ~n ~a:_a ~lda
+    | Complex32 -> L.ctrtri ~layout ~uplo ~diag ~n ~a:_a ~lda
+    | Complex64 -> L.ztrtri ~layout ~uplo ~diag ~n ~a:_a ~lda
     | _         -> failwith "lapacke:trtri"
   in
   check_lapack_error ret;
@@ -2300,10 +2325,10 @@ let trtrs
   let _b = bigarray_start Ctypes_static.Genarray b in
 
   let ret = match _kind with
-    | Float32   -> L.strtrs layout uplo trans diag n nrhs _a lda _b ldb
-    | Float64   -> L.dtrtrs layout uplo trans diag n nrhs _a lda _b ldb
-    | Complex32 -> L.ctrtrs layout uplo trans diag n nrhs _a lda _b ldb
-    | Complex64 -> L.ztrtrs layout uplo trans diag n nrhs _a lda _b ldb
+    | Float32   -> L.strtrs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
+    | Float64   -> L.dtrtrs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
+    | Complex32 -> L.ctrtrs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
+    | Complex64 -> L.ztrtrs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
     | _         -> failwith "lapacke:trtrs"
   in
   check_lapack_error ret;
@@ -2331,25 +2356,25 @@ let trcon
   let ret = match _kind with
     | Float32   -> (
         let _rcond = Ctypes.(allocate float 0.) in
-        let r = L.strcon layout norm uplo diag n _a lda _rcond in
+        let r = L.strcon ~layout ~norm ~uplo ~diag ~n ~a:_a ~lda ~rcond:_rcond in
         rcond := !@_rcond;
         r
       )
     | Float64   -> (
         let _rcond = Ctypes.(allocate double 0.) in
-        let r = L.dtrcon layout norm uplo diag n _a lda _rcond in
+        let r = L.dtrcon ~layout ~norm ~uplo ~diag ~n ~a:_a ~lda ~rcond:_rcond in
         rcond := !@_rcond;
         r
       )
     | Complex32 -> (
         let _rcond = Ctypes.(allocate float 0.) in
-        let r = L.ctrcon layout norm uplo diag n _a lda _rcond in
+        let r = L.ctrcon ~layout ~norm ~uplo ~diag ~n ~a:_a ~lda ~rcond:_rcond in
         rcond := !@_rcond;
         r
       )
     | Complex64 -> (
         let _rcond = Ctypes.(allocate double 0.) in
-        let r = L.ztrcon layout norm uplo diag n _a lda _rcond in
+        let r = L.ztrcon ~layout ~norm ~uplo ~diag ~n ~a:_a ~lda ~rcond:_rcond in
         rcond := !@_rcond;
         r
       )
@@ -2373,8 +2398,8 @@ let trevc
   let _layout = Genarray.layout t in
   let layout = lapacke_layout _layout in
 
-  (* NOTE: I might allocate too much memory for vl and vr, please refer to Intel
-    MKL documentation for more detailed memory allocation strategy. Fix later.
+  (* NOTE: I ~might allocate too ~much ~memory for vl and vr, please refer to Intel
+    MKL documentation for ~more detailed ~memory allocation strategy. Fix later.
     url: https://software.intel.com/en-us/mkl-developer-reference-c-trevc
   *)
   let vl = Genarray.create _kind _layout [|n;n|] in
@@ -2390,10 +2415,10 @@ let trevc
   let _select = bigarray_start Ctypes_static.Genarray select in
 
   let ret = match _kind with
-    | Float32   -> L.strevc layout side howmny _select n _t ldt _vl ldvl _vr ldvr mm _m
-    | Float64   -> L.dtrevc layout side howmny _select n _t ldt _vl ldvl _vr ldvr mm _m
-    | Complex32 -> L.ctrevc layout side howmny _select n _t ldt _vl ldvl _vr ldvr mm _m
-    | Complex64 -> L.ztrevc layout side howmny _select n _t ldt _vl ldvl _vr ldvr mm _m
+    | Float32   -> L.strevc ~layout ~side ~howmny ~select:_select ~n ~t:_t ~ldt  ~vl:_vl ~ldvl ~vr:_vr ~ldvr ~mm ~m:_m
+    | Float64   -> L.dtrevc ~layout ~side ~howmny ~select:_select ~n ~t:_t ~ldt  ~vl:_vl ~ldvl ~vr:_vr ~ldvr ~mm ~m:_m
+    | Complex32 -> L.ctrevc ~layout ~side ~howmny ~select:_select ~n ~t:_t ~ldt  ~vl:_vl ~ldvl ~vr:_vr ~ldvr ~mm ~m:_m
+    | Complex64 -> L.ztrevc ~layout ~side ~howmny ~select:_select ~n ~t:_t ~ldt  ~vl:_vl ~ldvl ~vr:_vr ~ldvr ~mm ~m:_m
     | _         -> failwith "lapacke:trevc"
   in
   check_lapack_error ret;
@@ -2450,7 +2475,7 @@ let trrfs
         let _ferr = bigarray_start Ctypes_static.Genarray ferr' in
         let berr' = Genarray.create _kind _layout [|1;nrhs|] in
         let _berr = bigarray_start Ctypes_static.Genarray berr' in
-        let r = L.strrfs layout uplo trans diag n nrhs _a lda _b ldb _x ldx _ferr _berr in
+        let r = L.strrfs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb ~x:_x ~ldx ~ferr:_ferr ~berr:_berr in
         ferr := ferr';
         berr := berr';
         r
@@ -2460,7 +2485,7 @@ let trrfs
         let _ferr = bigarray_start Ctypes_static.Genarray ferr' in
         let berr' = Genarray.create _kind _layout [|1;nrhs|] in
         let _berr = bigarray_start Ctypes_static.Genarray berr' in
-        let r = L.dtrrfs layout uplo trans diag n nrhs _a lda _b ldb _x ldx _ferr _berr in
+        let r = L.dtrrfs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb ~x:_x ~ldx ~ferr:_ferr ~berr:_berr in
         ferr := ferr';
         berr := berr';
         r
@@ -2470,7 +2495,7 @@ let trrfs
         let _ferr = bigarray_start Ctypes_static.Genarray ferr' in
         let berr' = Genarray.create float32 _layout [|1;nrhs|] in
         let _berr = bigarray_start Ctypes_static.Genarray berr' in
-        let r = L.ctrrfs layout uplo trans diag n nrhs _a lda _b ldb _x ldx _ferr _berr in
+        let r = L.ctrrfs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb ~x:_x ~ldx ~ferr:_ferr ~berr:_berr in
         ferr := Owl_dense_matrix_generic.cast_s2c ferr';
         berr := Owl_dense_matrix_generic.cast_s2c berr';
         r
@@ -2480,7 +2505,7 @@ let trrfs
         let _ferr = bigarray_start Ctypes_static.Genarray ferr' in
         let berr' = Genarray.create float64 _layout [|1;nrhs|] in
         let _berr = bigarray_start Ctypes_static.Genarray berr' in
-        let r = L.ctrrfs layout uplo trans diag n nrhs _a lda _b ldb _x ldx _ferr _berr in
+        let r = L.ctrrfs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb ~x:_x ~ldx ~ferr:_ferr ~berr:_berr in
         ferr := Owl_dense_matrix_generic.cast_d2z ferr';
         berr := Owl_dense_matrix_generic.cast_d2z berr';
         r
@@ -2514,8 +2539,8 @@ let stev
   let _z = bigarray_start Ctypes_static.Genarray z in
 
   let ret = match _kind with
-    | Float32   -> L.sstev layout jobz n _d _e _z ldz
-    | Float64   -> L.dstev layout jobz n _d _e _z ldz
+    | Float32   -> L.sstev ~layout ~jobz ~n ~d:_d ~e:_e ~z:_z ~ldz
+    | Float64   -> L.dstev ~layout ~jobz ~n ~d:_d ~e:_e ~z:_z ~ldz
   in
   check_lapack_error ret;
   d, z
@@ -2548,8 +2573,12 @@ let stebz
   let _isplit = bigarray_start Ctypes_static.Genarray isplit in
 
   let ret = match _kind with
-    | Float32   -> L.sstebz range order n vl vu il iu abstol _d _e _m _nsplit _w _iblock _isplit
-    | Float64   -> L.dstebz range order n vl vu il iu abstol _d _e _m _nsplit _w _iblock _isplit
+    | Float32   ->
+      L.sstebz ~range ~order ~n ~vl ~vu ~il ~iu ~abstol ~d:_d ~e:_e ~m:_m
+        ~nsplit:_nsplit ~w:_w ~iblock:_iblock ~isplit:_isplit
+    | Float64   ->
+      L.dstebz ~range ~order ~n ~vl ~vu ~il ~iu ~abstol ~d:_d ~e:_e ~m:_m
+        ~nsplit:_nsplit ~w:_w ~iblock:_iblock ~isplit:_isplit
   in
   check_lapack_error ret;
   let m = Int32.to_int !@_m in
@@ -2573,7 +2602,7 @@ let stegr
   let _layout = Genarray.layout d in
   let layout = lapacke_layout _layout in
 
-  let abstol = 1. in  (* note that abstol is unused. *)
+  let abstol = 1. in  (* note that ~abstol is unused. *)
   let e = Owl_dense_matrix_generic.resize e [|1; n|] in
   let ldz = match jobz with 'N' -> 1 | _ -> n in
   let z = match range with
@@ -2593,28 +2622,32 @@ let stegr
     | Float32   -> (
         let w' = Genarray.create float32 _layout [|1;n|] in
         let _w = bigarray_start Ctypes_static.Genarray w' in
-        let r = L.sstegr layout jobz range n _d _e vl vu il iu abstol _m _w _z ldz _isuppz in
+        let r = L.sstegr ~layout ~jobz ~range ~n ~d:_d ~e:_e ~vl ~vu ~il ~iu
+            ~abstol ~m:_m ~w:_w ~z:_z ~ldz ~isuppz:_isuppz in
         w := w';
         r
       )
     | Float64   -> (
         let w' = Genarray.create float64 _layout [|1;n|] in
         let _w = bigarray_start Ctypes_static.Genarray w' in
-        let r = L.dstegr layout jobz range n _d _e vl vu il iu abstol _m _w _z ldz _isuppz in
+        let r = L.dstegr ~layout ~jobz ~range ~n ~d:_d ~e:_e ~vl ~vu ~il ~iu
+            ~abstol ~m:_m ~w:_w ~z:_z ~ldz ~isuppz:_isuppz in
         w := w';
         r
       )
     | Complex32 -> (
         let w' = Genarray.create float32 _layout [|1;n|] in
         let _w = bigarray_start Ctypes_static.Genarray w' in
-        let r = L.cstegr layout jobz range n _d _e vl vu il iu abstol _m _w _z ldz _isuppz in
+        let r =  L.cstegr ~layout ~jobz ~range ~n ~d:_d ~e:_e ~vl ~vu ~il ~iu
+            ~abstol ~m:_m ~w:_w ~z:_z ~ldz ~isuppz:_isuppz in
         w := Owl_dense_matrix_generic.cast_s2c w';
         r
       )
     | Complex64 -> (
         let w' = Genarray.create float64 _layout [|1;n|] in
         let _w = bigarray_start Ctypes_static.Genarray w' in
-        let r = L.zstegr layout jobz range n _d _e vl vu il iu abstol _m _w _z ldz _isuppz in
+        let r = L.zstegr ~layout ~jobz ~range ~n ~d:_d ~e:_e ~vl ~vu ~il ~iu
+            ~abstol ~m:_m ~w:_w ~z:_z ~ldz ~isuppz:_isuppz in
         w := Owl_dense_matrix_generic.cast_d2z w';
         r
       )
@@ -2638,7 +2671,7 @@ let stein
   : type a b. kind:(a, b) kind -> d:(float, b) t -> e:(float, b) t
   -> w:(float, b) t -> iblock:(int32, int32_elt) t -> isplit:(int32, int32_elt) t
   -> (a, b) t * (int32, int32_elt) t
-  = fun ~kind ~d ~e ~w ~iblock ~isplit ->
+  = fun ~kind ~d ~e ~w ~iblock:_ ~isplit:_ ->
   let n = Owl_dense_matrix_generic.numel d in
   let n_e = Owl_dense_matrix_generic.numel e in
   assert (n_e = n - 1);
@@ -2650,7 +2683,7 @@ let stein
 
   let e = Owl_dense_matrix_generic.resize e [|1; n|] in
   let ldz = Pervasives.max 1 m in
-  let z = Genarray.create _kind _layout [|n; m|] in
+  let z = Genarray.create _kind _layout [|n; |] in
   let ifailv = Genarray.create int32 _layout [|1; m|] in
   (* TODO: cases where inputs are invalid, refer to julia implementation *)
   let iblock = Genarray.create int32 _layout [|1;n|] in
@@ -2665,15 +2698,15 @@ let stein
   let _ifailv = bigarray_start Ctypes_static.Genarray ifailv in
 
   let ret = match _kind with
-    | Float32   -> L.sstein layout n _d _e m _w _iblock _isplit _z ldz _ifailv
-    | Float64   -> L.dstein layout n _d _e m _w _iblock _isplit _z ldz _ifailv
-    | Complex32 -> L.cstein layout n _d _e m _w _iblock _isplit _z ldz _ifailv
-    | Complex64 -> L.zstein layout n _d _e m _w _iblock _isplit _z ldz _ifailv
+    | Float32   -> L.sstein ~layout ~n ~d:_d ~e:_e ~m ~w:_w ~iblock:_iblock ~isplit:_isplit ~z:_z ~ldz ~ifailv:_ifailv
+    | Float64   -> L.dstein ~layout ~n ~d:_d ~e:_e ~m ~w:_w ~iblock:_iblock ~isplit:_isplit ~z:_z ~ldz ~ifailv:_ifailv
+    | Complex32 -> L.cstein ~layout ~n ~d:_d ~e:_e ~m ~w:_w ~iblock:_iblock ~isplit:_isplit ~z:_z ~ldz ~ifailv:_ifailv
+    | Complex64 -> L.zstein ~layout ~n ~d:_d ~e:_e ~m ~w:_w ~iblock:_iblock ~isplit:_isplit ~z:_z ~ldz ~ifailv:_ifailv
     | _         -> failwith "lapacke:stein"
   in
   check_lapack_error ret;
   z, ifailv
-       [@@warning "-27"]
+
 
 let syconv
   : type a b. uplo:char -> way:char -> a:(a, b) t -> ipiv:(int32, int32_elt) t
@@ -2696,10 +2729,10 @@ let syconv
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Float32   -> L.ssyconv layout uplo way n _a lda _ipiv _e
-    | Float64   -> L.dsyconv layout uplo way n _a lda _ipiv _e
-    | Complex32 -> L.csyconv layout uplo way n _a lda _ipiv _e
-    | Complex64 -> L.zsyconv layout uplo way n _a lda _ipiv _e
+    | Float32   -> L.ssyconv ~layout ~uplo ~way ~n ~a:_a ~lda ~ipiv:_ipiv ~e:_e
+    | Float64   -> L.dsyconv ~layout ~uplo ~way ~n ~a:_a ~lda ~ipiv:_ipiv ~e:_e
+    | Complex32 -> L.csyconv ~layout ~uplo ~way ~n ~a:_a ~lda ~ipiv:_ipiv ~e:_e
+    | Complex64 -> L.zsyconv ~layout ~uplo ~way ~n ~a:_a ~lda ~ipiv:_ipiv ~e:_e
     | _         -> failwith "lapacke:syconv"
   in
   check_lapack_error ret;
@@ -2729,10 +2762,10 @@ let sysv
   let ldb = Pervasives.max 1 (_stride b) in
 
   let ret = match _kind with
-    | Float32   -> L.ssysv layout uplo n nrhs _a lda _ipiv _b ldb
-    | Float64   -> L.dsysv layout uplo n nrhs _a lda _ipiv _b ldb
-    | Complex32 -> L.csysv layout uplo n nrhs _a lda _ipiv _b ldb
-    | Complex64 -> L.zsysv layout uplo n nrhs _a lda _ipiv _b ldb
+    | Float32   -> L.ssysv ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Float64   -> L.dsysv ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Complex32 -> L.csysv ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Complex64 -> L.zsysv ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
     | _         -> failwith "lapacke:sysv"
   in
   check_lapack_error ret;
@@ -2757,10 +2790,10 @@ let sytrf
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Float32   -> L.ssytrf layout uplo n _a lda _ipiv
-    | Float64   -> L.dsytrf layout uplo n _a lda _ipiv
-    | Complex32 -> L.csytrf layout uplo n _a lda _ipiv
-    | Complex64 -> L.zsytrf layout uplo n _a lda _ipiv
+    | Float32   -> L.ssytrf ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Float64   -> L.dsytrf ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex32 -> L.csytrf ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex64 -> L.zsytrf ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
     | _         -> failwith "lapacke:sytrf"
   in
   check_lapack_error ret;
@@ -2785,10 +2818,10 @@ let sytrf_rook
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Float32   -> L.ssytrf_rook layout uplo n _a lda _ipiv
-    | Float64   -> L.dsytrf_rook layout uplo n _a lda _ipiv
-    | Complex32 -> L.csytrf_rook layout uplo n _a lda _ipiv
-    | Complex64 -> L.zsytrf_rook layout uplo n _a lda _ipiv
+    | Float32   -> L.ssytrf_rook ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Float64   -> L.dsytrf_rook ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex32 -> L.csytrf_rook ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex64 -> L.zsytrf_rook ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
     | _         -> failwith "lapacke:sytrf_rook"
   in
   check_lapack_error ret;
@@ -2813,10 +2846,10 @@ let sytri
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Float32   -> L.ssytri layout uplo n _a lda _ipiv
-    | Float64   -> L.dsytri layout uplo n _a lda _ipiv
-    | Complex32 -> L.csytri layout uplo n _a lda _ipiv
-    | Complex64 -> L.zsytri layout uplo n _a lda _ipiv
+    | Float32   -> L.ssytri ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Float64   -> L.dsytri ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex32 -> L.csytri ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex64 -> L.zsytri ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
     | _         -> failwith "lapacke:sytri"
   in
   check_lapack_error ret;
@@ -2843,10 +2876,10 @@ let sytrs
   let ldb = Pervasives.max 1 (_stride b) in
 
   let ret = match _kind with
-    | Float32   -> L.ssytrs layout uplo n nrhs _a lda _ipiv _b ldb
-    | Float64   -> L.dsytrs layout uplo n nrhs _a lda _ipiv _b ldb
-    | Complex32 -> L.csytrs layout uplo n nrhs _a lda _ipiv _b ldb
-    | Complex64 -> L.zsytrs layout uplo n nrhs _a lda _ipiv _b ldb
+    | Float32   -> L.ssytrs ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Float64   -> L.dsytrs ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Complex32 -> L.csytrs ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Complex64 -> L.zsytrs ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
     | _         -> failwith "lapacke:sytrs"
   in
   check_lapack_error ret;
@@ -2876,8 +2909,10 @@ let hesv
   let ldb = Pervasives.max 1 (_stride b) in
 
   let ret = match _kind with
-    | Complex32 -> L.chesv layout uplo n nrhs _a lda _ipiv _b ldb
-    | Complex64 -> L.zhesv layout uplo n nrhs _a lda _ipiv _b ldb
+    | Complex32 -> L.chesv ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv
+                     ~b:_b ~ldb
+    | Complex64 -> L.zhesv ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv
+                     ~b:_b ~ldb
   in
   check_lapack_error ret;
   b, a, ipiv
@@ -2901,8 +2936,8 @@ let hetrf
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Complex32 -> L.chetrf layout uplo n _a lda _ipiv
-    | Complex64 -> L.zhetrf layout uplo n _a lda _ipiv
+    | Complex32 -> L.chetrf ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex64 -> L.zhetrf ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
     | _         -> failwith "lapacke:hetrf"
   in
   check_lapack_error ret;
@@ -2927,8 +2962,8 @@ let hetrf_rook
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Complex32 -> L.chetrf_rook layout uplo n _a lda _ipiv
-    | Complex64 -> L.zhetrf_rook layout uplo n _a lda _ipiv
+    | Complex32 -> L.chetrf_rook ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex64 -> L.zhetrf_rook ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
     | _         -> failwith "lapacke:hetrf_rook"
   in
   check_lapack_error ret;
@@ -2953,8 +2988,8 @@ let hetri
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Complex32 -> L.chetri layout uplo n _a lda _ipiv
-    | Complex64 -> L.zhetri layout uplo n _a lda _ipiv
+    | Complex32 -> L.chetri ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
+    | Complex64 -> L.zhetri ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
   in
   check_lapack_error ret;
   a
@@ -2982,8 +3017,10 @@ let hetrs
   let ldb = Pervasives.max 1 (_stride b) in
 
   let ret = match _kind with
-    | Complex32 -> L.chetrs layout uplo n nrhs _a lda _ipiv _b ldb
-    | Complex64 -> L.zhetrs layout uplo n nrhs _a lda _ipiv _b ldb
+    | Complex32 ->
+      L.chetrs ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
+    | Complex64 ->
+      L.zhetrs ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
   in
   check_lapack_error ret;
   b
@@ -3008,8 +3045,8 @@ let syev
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Float32   -> L.ssyev layout jobz uplo n _a lda _w
-    | Float64   -> L.dsyev layout jobz uplo n _a lda _w
+    | Float32   -> L.ssyev ~layout ~jobz ~uplo ~n ~a:_a ~lda ~w:_w
+    | Float64   -> L.dsyev ~layout ~jobz ~uplo ~n ~a:_a ~lda ~w:_w
   in
   check_lapack_error ret;
 
@@ -3020,7 +3057,8 @@ let syev
 
 let syevr
   : type a. jobz:char -> range:char -> uplo:char -> a:(float, a) t -> vl:float
-  -> vu:float -> il:int -> iu:int -> abstol:float -> (float, a) t * (float, a) t
+  -> vu:float -> il:int -> iu:int
+  -> abstol:float -> (float, a) t * (float, a) t
   = fun ~jobz ~range ~uplo ~a ~vl ~vu ~il ~iu ~abstol ->
   assert (jobz = 'N' || jobz = 'V');
   assert (range = 'A' || range = 'V' && range = 'I');
@@ -3054,8 +3092,12 @@ let syevr
   let _isuppz = bigarray_start Ctypes_static.Genarray isuppz in
 
   let ret = match _kind with
-    | Float32   -> L.ssyevr layout jobz range uplo n _a lda vl vu il iu abstol _m _w _z ldz _isuppz
-    | Float64   -> L.dsyevr layout jobz range uplo n _a lda vl vu il iu abstol _m _w _z ldz _isuppz
+    | Float32   ->
+      L.ssyevr ~layout ~jobz ~range ~uplo ~n ~a:_a ~lda ~vl ~vu ~il ~iu ~abstol
+        ~m:_m ~w:_w ~z:_z ~ldz ~isuppz:_isuppz
+    | Float64   ->
+      L.dsyevr ~layout ~jobz ~range ~uplo ~n ~a:_a ~lda ~vl ~vu ~il ~iu ~abstol
+        ~m:_m ~w:_w ~z:_z ~ldz ~isuppz:_isuppz
   in
   check_lapack_error ret;
 
@@ -3066,8 +3108,8 @@ let syevr
   | _   -> w, Genarray.create _kind _layout [|0;0|]
 
 
-let sygvd
-  : type a. ityp:int -> jobz:char -> uplo:char -> a:(float, a) t -> b:(float, a) t
+let sygvd : type a. ityp:int -> jobz:char ->
+  uplo:char -> a:(float, a) t -> b:(float, a) t
   -> (float, a) t * (float, a) t * (float, a) t
   = fun ~ityp ~jobz ~uplo ~a ~b ->
   assert (ityp > 0 && ityp < 4);
@@ -3091,8 +3133,10 @@ let sygvd
   let _b = bigarray_start Ctypes_static.Genarray b in
 
   let ret = match _kind with
-    | Float32   -> L.ssygvd layout ityp jobz uplo n _a lda _b ldb _w
-    | Float64   -> L.dsygvd layout ityp jobz uplo n _a lda _b ldb _w
+    | Float32   ->
+      L.ssygvd ~layout ~ityp ~jobz ~uplo ~n ~a:_a ~lda ~b:_b ~ldb ~w:_w
+    | Float64   ->
+      L.dsygvd ~layout ~ityp ~jobz ~uplo ~n ~a:_a ~lda ~b:_b ~ldb ~w:_w
   in
   check_lapack_error ret;
   w, a, b
@@ -3129,10 +3173,18 @@ let bdsqr
   let _c = bigarray_start Ctypes_static.Genarray c in
 
   let ret = match _kind with
-    | Float32   -> L.sbdsqr layout uplo n ncvt nru ncc _d _e _vt ldvt _u ldu _c ldc
-    | Float64   -> L.dbdsqr layout uplo n ncvt nru ncc _d _e _vt ldvt _u ldu _c ldc
-    | Complex32 -> L.cbdsqr layout uplo n ncvt nru ncc _d _e _vt ldvt _u ldu _c ldc
-    | Complex64 -> L.zbdsqr layout uplo n ncvt nru ncc _d _e _vt ldvt _u ldu _c ldc
+    | Float32   ->
+      L.sbdsqr ~layout ~uplo ~n ~ncvt ~nru ~ncc ~d:_d ~e:_e ~vt:_vt ~ldvt
+        ~u:_u ~ldu ~c:_c ~ldc
+    | Float64   ->
+      L.dbdsqr ~layout ~uplo ~n ~ncvt ~nru ~ncc ~d:_d ~e:_e ~vt:_vt ~ldvt
+        ~u:_u ~ldu ~c:_c ~ldc
+    | Complex32 ->
+      L.cbdsqr ~layout ~uplo ~n ~ncvt ~nru ~ncc ~d:_d ~e:_e ~vt:_vt ~ldvt
+        ~u:_u ~ldu ~c:_c ~ldc
+    | Complex64 ->
+      L.zbdsqr ~layout ~uplo ~n ~ncvt ~nru ~ncc ~d:_d ~e:_e ~vt:_vt ~ldvt
+        ~u:_u ~ldu ~c:_c ~ldc
     | _         -> failwith "lapacke:bdsqr"
   in
   check_lapack_error ret;
@@ -3141,7 +3193,8 @@ let bdsqr
 
 let bdsdc
   : type a. uplo:char -> compq:char -> d:(float, a) t -> e:(float, a) t
-  -> (float, a) t * (float, a) t * (float, a) t * (float, a) t * (float, a) t * (int32, int32_elt) t
+  -> (float, a) t * (float, a) t * (float, a) t *
+     (float, a) t * (float, a) t * (int32, int32_elt) t
   = fun ~uplo ~compq ~d ~e ->
   assert (uplo = 'U' || uplo = 'L');
   assert (compq = 'N' || compq = 'P' || compq = 'I');
@@ -3188,8 +3241,12 @@ let bdsdc
   let _iq = bigarray_start Ctypes_static.Genarray iq in
 
   let ret = match _kind with
-    | Float32   -> L.sbdsdc layout uplo compq n _d _e _u ldu _vt ldvt _q _iq
-    | Float64   -> L.dbdsdc layout uplo compq n _d _e _u ldu _vt ldvt _q _iq
+    | Float32   ->
+      L.sbdsdc ~layout ~uplo ~compq ~n ~d:_d ~e:_e ~u:_u ~ldu
+        ~vt:_vt ~ldvt ~q:_q ~iq:_iq
+    | Float64   ->
+      L.dbdsdc ~layout ~uplo ~compq ~n ~d:_d ~e:_e ~u:_u ~ldu
+        ~vt:_vt ~ldvt ~q:_q ~iq:_iq
   in
   check_lapack_error ret;
   d, e, u, vt, q, iq
@@ -3214,25 +3271,25 @@ let gecon
   let ret = match _kind with
     | Float32   -> (
         let _rcond = Ctypes.(allocate float 0.) in
-        let r = L.sgecon layout norm n _a lda anorm _rcond in
+        let r = L.sgecon ~layout ~norm ~n ~a:_a ~lda ~anorm ~rcond:_rcond in
         rcond := !@_rcond;
         r
       )
     | Float64   -> (
         let _rcond = Ctypes.(allocate double 0.) in
-        let r = L.dgecon layout norm n _a lda anorm _rcond in
+        let r = L.dgecon ~layout ~norm ~n ~a:_a ~lda ~anorm ~rcond:_rcond in
         rcond := !@_rcond;
         r
       )
     | Complex32 -> (
         let _rcond = Ctypes.(allocate float 0.) in
-        let r = L.cgecon layout norm n _a lda anorm _rcond in
+        let r = L.cgecon ~layout ~norm ~n ~a:_a ~lda ~anorm ~rcond:_rcond in
         rcond := !@_rcond;
         r
       )
     | Complex64 -> (
         let _rcond = Ctypes.(allocate double 0.) in
-        let r = L.zgecon layout norm n _a lda anorm _rcond in
+        let r = L.zgecon ~layout ~norm ~n ~a:_a ~lda ~anorm ~rcond:_rcond in
         rcond := !@_rcond;
         r
       )
@@ -3258,18 +3315,18 @@ let gehrd
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Float32   -> L.sgehrd layout n ilo ihi _a lda _tau
-    | Float64   -> L.dgehrd layout n ilo ihi _a lda _tau
-    | Complex32 -> L.cgehrd layout n ilo ihi _a lda _tau
-    | Complex64 -> L.zgehrd layout n ilo ihi _a lda _tau
+    | Float32   -> L.sgehrd ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
+    | Float64   -> L.dgehrd ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
+    | Complex32 -> L.cgehrd ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
+    | Complex64 -> L.zgehrd ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
     | _         -> failwith "lapacke:gehrd"
   in
   check_lapack_error ret;
   a, tau
 
 
-let orghr
-  : type a. ilo:int -> ihi:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t
+let orghr : type a. ilo:int -> ihi:int ->
+  a:(float, a) t -> tau:(float, a) t -> (float, a) t
   = fun ~ilo ~ihi ~a ~tau ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
@@ -3285,15 +3342,15 @@ let orghr
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Float32   -> L.sorghr layout n ilo ihi _a lda _tau
-    | Float64   -> L.dorghr layout n ilo ihi _a lda _tau
+    | Float32   -> L.sorghr ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
+    | Float64   -> L.dorghr ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
   in
   check_lapack_error ret;
   a
 
 
-let unghr
-  : type a. ilo:int -> ihi:int -> a:(Complex.t, a) t -> tau:(Complex.t, a) t -> (Complex.t, a) t
+let unghr : type a. ilo:int -> ihi:int ->
+  a:(Complex.t, a) t -> tau:(Complex.t, a) t -> (Complex.t, a) t
   = fun ~ilo ~ihi ~a ~tau ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
@@ -3309,15 +3366,15 @@ let unghr
   let lda = Pervasives.max 1 (_stride a) in
 
   let ret = match _kind with
-    | Complex32 -> L.cunghr layout n ilo ihi _a lda _tau
-    | Complex64 -> L.zunghr layout n ilo ihi _a lda _tau
+    | Complex32 -> L.cunghr ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
+    | Complex64 -> L.zunghr ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
   in
   check_lapack_error ret;
   a
 
 
-let gees
-  : type a b. jobvs:char -> a:(a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t
+let gees : type a b.
+  jobvs:char -> a:(a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t
   = fun ~jobvs ~a ->
   let sort = 'N' in
   assert (jobvs = 'N' || jobvs = 'V');
@@ -3350,7 +3407,8 @@ let gees
         let _wr = bigarray_start Ctypes_static.Genarray wr' in
         let wi' = Genarray.create _kind _layout [|1;n|] in
         let _wi = bigarray_start Ctypes_static.Genarray wi' in
-        let r = L.sgees layout jobvs sort _select n _a lda _sdim _wr _wi _vs ldvs in
+        let r = L.sgees ~layout ~jobvs ~sort ~select:_select ~n ~a:_a ~lda
+            ~sdim:_sdim ~wr:_wr ~wi:_wi ~vs:_vs ~ldvs in
         wr := wr';
         wi := wi';
         r
@@ -3360,7 +3418,8 @@ let gees
         let _wr = bigarray_start Ctypes_static.Genarray wr' in
         let wi' = Genarray.create _kind _layout [|1;n|] in
         let _wi = bigarray_start Ctypes_static.Genarray wi' in
-        let r = L.dgees layout jobvs sort _select n _a lda _sdim _wr _wi _vs ldvs in
+        let r = L.dgees ~layout ~jobvs ~sort ~select:_select ~n ~a:_a ~lda
+            ~sdim:_sdim ~wr:_wr ~wi:_wi ~vs:_vs ~ldvs in
         wr := wr';
         wi := wi';
         r
@@ -3368,7 +3427,8 @@ let gees
     | Complex32 -> (
         let w' = Genarray.create _kind _layout [|1;n|] in
         let _w = bigarray_start Ctypes_static.Genarray w' in
-        let r = L.cgees layout jobvs sort _select n _a lda _sdim _w _vs ldvs in
+        let r = L.cgees ~layout ~jobvs ~sort ~select:_select ~n
+            ~a:_a ~lda ~sdim:_sdim ~w:_w ~vs:_vs ~ldvs in
         wr := w';
         wi := w';
         r
@@ -3376,7 +3436,8 @@ let gees
     | Complex64 -> (
         let w' = Genarray.create _kind _layout [|1;n|] in
         let _w = bigarray_start Ctypes_static.Genarray w' in
-        let r = L.zgees layout jobvs sort _select n _a lda _sdim _w _vs ldvs in
+        let r = L.zgees ~layout ~jobvs ~sort ~select:_select ~n
+            ~a:_a ~lda ~sdim:_sdim ~w:_w ~vs:_vs ~ldvs in
         wr := w';
         wi := w';
         r
@@ -3436,7 +3497,10 @@ let gges
         let _alphar = bigarray_start Ctypes_static.Genarray alphar' in
         let alphai' = Genarray.create _kind _layout [|1;n|] in
         let _alphai = bigarray_start Ctypes_static.Genarray alphai' in
-        let r = L.sgges layout jobvsl jobvsr sort _selctg n _a lda _b ldb _sdim _alphar _alphai _beta _vsl ldvsl _vsr ldvsr in
+        let r = L.sgges
+            ~layout ~jobvsl ~jobvsr ~sort ~selctg:_selctg ~n ~a:_a ~lda ~b:_b
+            ~ldb ~sdim:_sdim ~alphar:_alphar ~alphai:_alphai ~beta:_beta
+            ~vsl:_vsl ~ldvsl ~vsr:_vsr ~ldvsr in
         alphar := alphar';
         alphai := alphai';
         r
@@ -3446,23 +3510,29 @@ let gges
         let _alphar = bigarray_start Ctypes_static.Genarray alphar' in
         let alphai' = Genarray.create _kind _layout [|1;n|] in
         let _alphai = bigarray_start Ctypes_static.Genarray alphai' in
-        let r = L.dgges layout jobvsl jobvsr sort _selctg n _a lda _b ldb _sdim _alphar _alphai _beta _vsl ldvsl _vsr ldvsr in
+        let r = L.dgges ~layout ~jobvsl ~jobvsr ~sort ~selctg:_selctg ~n ~a:_a
+            ~lda ~b:_b ~ldb ~sdim:_sdim ~alphar:_alphar ~alphai:_alphai
+            ~beta:_beta ~vsl:_vsl ~ldvsl ~vsr:_vsr ~ldvsr in
         alphar := alphar';
         alphai := alphai';
         r
       )
     | Complex32 -> (
         let alpha' = Genarray.create _kind _layout [|1;n|] in
-        let _alpha = bigarray_start Ctypes_static.Genarray alpha' in
-        let r = L.cgges layout jobvsl jobvsr sort _selctg n _a lda _b ldb _sdim _alpha _beta _vsl ldvsl _vsr ldvsr in
+        let alpha = bigarray_start Ctypes_static.Genarray alpha' in
+        let r = L.cgges ~layout ~jobvsl ~jobvsr ~sort ~selctg:_selctg ~n ~a:_a
+            ~lda ~b:_b ~ldb ~sdim:_sdim ~alpha ~beta:_beta ~vsl:_vsl ~ldvsl
+            ~vsr:_vsr ~ldvsr in
         alphar := alpha';
         alphai := alpha';
         r
       )
     | Complex64 -> (
         let alpha' = Genarray.create _kind _layout [|1;n|] in
-        let _alpha = bigarray_start Ctypes_static.Genarray alpha' in
-        let r = L.zgges layout jobvsl jobvsr sort _selctg n _a lda _b ldb _sdim _alpha _beta _vsl ldvsl _vsr ldvsr in
+        let alpha = bigarray_start Ctypes_static.Genarray alpha' in
+        let r = L.zgges ~layout ~jobvsl ~jobvsr ~sort ~selctg:_selctg ~n ~a:_a
+            ~lda ~b:_b ~ldb ~sdim:_sdim ~alpha ~beta:_beta ~vsl:_vsl ~ldvsl
+            ~vsr:_vsr ~ldvsr in
         alphar := alpha';
         alphai := alpha';
         r
@@ -3497,18 +3567,22 @@ let trexc
   let _ilst = Ctypes.(allocate int32_t (Int32.of_int ilst)) in
 
   let ret = match _kind with
-    | Float32   -> L.strexc layout compq n _t ldt _q ldq _ifst _ilst
-    | Float64   -> L.dtrexc layout compq n _t ldt _q ldq _ifst _ilst
-    | Complex32 -> L.ctrexc layout compq n _t ldt _q ldq ifst ilst
-    | Complex64 -> L.ztrexc layout compq n _t ldt _q ldq ifst ilst
+    | Float32   -> L.strexc ~layout ~compq ~n ~t:_t ~ldt
+                     ~q:_q ~ldq ~ifst:_ifst ~ilst:_ilst
+    | Float64   -> L.dtrexc ~layout ~compq ~n ~t:_t ~ldt
+                     ~q:_q ~ldq ~ifst:_ifst ~ilst:_ilst
+    | Complex32 -> L.ctrexc ~layout ~compq ~n ~t:_t ~ldt
+                     ~q:_q ~ldq ~ifst ~ilst
+    | Complex64 -> L.ztrexc ~layout ~compq ~n ~t:_t ~ldt
+                     ~q:_q ~ldq ~ifst ~ilst
     | _         -> failwith "lapacke:trexc"
   in
   check_lapack_error ret;
   t, q
 
 
-let trsen
-  : type a b. job:char -> compq:char -> select:(int32, int32_elt) t -> t:(a, b) t
+let trsen : type a b.
+  job:char -> compq:char -> select:(int32, int32_elt) t -> t:(a, b) t
   -> q:(a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t
   = fun ~job ~compq ~select ~t ~q ->
   assert (job = 'N' || job = 'E' || job = 'V' || job = 'B');
@@ -3538,7 +3612,8 @@ let trsen
         let _wi = bigarray_start Ctypes_static.Genarray wi' in
         let _s = Ctypes.(allocate float 0.) in
         let _sep = Ctypes.(allocate float 0.) in
-        let r = L.strsen layout job compq _select n _t ldt _q ldq _wr _wi _m _s _sep in
+        let r = L.strsen ~layout ~job ~compq ~select:_select ~n
+            ~t:_t ~ldt ~q:_q ~ldq ~wr:_wr ~wi:_wi ~m:_m ~s:_s ~sep:_sep in
         wr := wr';
         wi := wi';
         r
@@ -3550,7 +3625,8 @@ let trsen
         let _wi = bigarray_start Ctypes_static.Genarray wi' in
         let _s = Ctypes.(allocate double 0.) in
         let _sep = Ctypes.(allocate double 0.) in
-        let r = L.dtrsen layout job compq _select n _t ldt _q ldq _wr _wi _m _s _sep in
+        let r = L.dtrsen ~layout ~job ~compq ~select:_select ~n ~t:_t ~ldt
+            ~q:_q ~ldq ~wr:_wr ~wi:_wi ~m:_m ~s:_s ~sep:_sep in
         wr := wr';
         wi := wi';
         r
@@ -3560,7 +3636,8 @@ let trsen
         let _w = bigarray_start Ctypes_static.Genarray w' in
         let _s = Ctypes.(allocate float 0.) in
         let _sep = Ctypes.(allocate float 0.) in
-        let r = L.ctrsen layout job compq _select n _t ldt _q ldq _w _m _s _sep in
+        let r = L.ctrsen ~layout ~job ~compq ~select:_select ~n ~t:_t ~ldt
+            ~q:_q ~ldq  ~w:_w ~m:_m ~s:_s ~sep:_sep in
         wr := w';
         wi := w';
         r
@@ -3570,7 +3647,8 @@ let trsen
         let _w = bigarray_start Ctypes_static.Genarray w' in
         let _s = Ctypes.(allocate float 0.) in
         let _sep = Ctypes.(allocate float 0.) in
-        let r = L.ztrsen layout job compq _select n _t ldt _q ldq _w _m _s _sep in
+        let r = L.ztrsen ~layout ~job ~compq ~select:_select ~n ~t:_t ~ldt
+            ~q:_q ~ldq  ~w:_w ~m:_m ~s:_s ~sep:_sep in
         wr := w';
         wi := w';
         r
@@ -3583,7 +3661,8 @@ let trsen
 
 
 let tgsen
-  : type a b. select:(int32, int32_elt) t -> a:(a, b) t -> b:(a, b) t -> q:(a, b) t -> z:(a, b) t
+  : type a b. select:(int32, int32_elt) t ->
+  a:(a, b) t -> b:(a, b) t -> q:(a, b) t -> z:(a, b) t
   -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (a, b) t * (a, b) t * (a, b) t
   = fun ~select ~a ~b ~q ~z ->
   (* set these values by default *)
@@ -3644,7 +3723,9 @@ let tgsen
         let _pr = Ctypes.(allocate float 0.) in
         let dif = Genarray.create float32 _layout [|1;2|] in
         let _dif = bigarray_start Ctypes_static.Genarray dif in
-        let r = L.stgsen layout ijob wantq wantz _select n _a lda _b ldb _alphar _alphai _beta _q ldq _z ldz _m _pl _pr _dif in
+        let r = L.stgsen ~layout ~ijob ~wantq ~wantz ~select:_select ~n
+            ~a:_a ~lda ~b:_b ~ldb ~alphar:_alphar ~alphai:_alphai ~beta:_beta
+            ~q:_q ~ldq ~z:_z ~ldz ~m:_m ~pl:_pl ~pr:_pr ~dif:_dif in
         alphar := alphar';
         alphai := alphai';
         r
@@ -3658,31 +3739,37 @@ let tgsen
         let _pr = Ctypes.(allocate double 0.) in
         let dif = Genarray.create float64 _layout [|1;2|] in
         let _dif = bigarray_start Ctypes_static.Genarray dif in
-        let r = L.dtgsen layout ijob wantq wantz _select n _a lda _b ldb _alphar _alphai _beta _q ldq _z ldz _m _pl _pr _dif in
+        let r = L.dtgsen ~layout ~ijob ~wantq ~wantz ~select:_select ~n
+            ~a:_a ~lda ~b:_b ~ldb ~alphar:_alphar ~alphai:_alphai ~beta:_beta
+            ~q:_q ~ldq ~z:_z ~ldz  ~m:_m ~pl:_pl ~pr:_pr ~dif:_dif in
         alphar := alphar';
         alphai := alphai';
         r
       )
     | Complex32 -> (
         let alpha' = Genarray.create _kind _layout [|1;n|] in
-        let _alpha = bigarray_start Ctypes_static.Genarray alpha' in
+        let alpha = bigarray_start Ctypes_static.Genarray alpha' in
         let _pl = Ctypes.(allocate float 0.) in
         let _pr = Ctypes.(allocate float 0.) in
         let dif = Genarray.create float32 _layout [|1;2|] in
         let _dif = bigarray_start Ctypes_static.Genarray dif in
-        let r = L.ctgsen layout ijob wantq wantz _select n _a lda _b ldb _alpha _beta _q ldq _z ldz _m _pl _pr _dif in
+        let r = L.ctgsen ~layout ~ijob ~wantq ~wantz ~select:_select ~n
+            ~a:_a ~lda ~b:_b ~ldb ~alpha ~beta:_beta ~q:_q ~ldq ~z:_z ~ldz
+            ~m:_m ~pl:_pl ~pr:_pr ~dif:_dif in
         alphar := alpha';
         alphai := alpha';
         r
       )
     | Complex64 -> (
         let alpha' = Genarray.create _kind _layout [|1;n|] in
-        let _alpha = bigarray_start Ctypes_static.Genarray alpha' in
+        let alpha = bigarray_start Ctypes_static.Genarray alpha' in
         let _pl = Ctypes.(allocate double 0.) in
         let _pr = Ctypes.(allocate double 0.) in
         let dif = Genarray.create float64 _layout [|1;2|] in
         let _dif = bigarray_start Ctypes_static.Genarray dif in
-        let r = L.ztgsen layout ijob wantq wantz _select n _a lda _b ldb _alpha _beta _q ldq _z ldz _m _pl _pr _dif in
+        let r = L.ztgsen ~layout ~ijob ~wantq ~wantz ~select:_select ~n
+            ~a:_a ~lda ~b:_b ~ldb ~alpha ~beta:_beta ~q:_q ~ldq ~z:_z ~ldz
+            ~m:_m ~pl:_pl ~pr:_pr ~dif:_dif in
         alphar := alpha';
         alphai := alpha';
         r
@@ -3726,25 +3813,29 @@ let trsyl
   let ret = match _kind with
     | Float32   -> (
         let _scale = Ctypes.(allocate float 0.) in
-        let r = L.strsyl layout trana tranb isgn m n _a lda _b ldb _c ldc _scale in
+        let r = L.strsyl ~layout ~trana ~tranb ~isgn ~m ~n ~a:_a ~lda
+            ~b:_b ~ldb ~c:_c ~ldc ~scale:_scale in
         scale := !@_scale;
         r
       )
     | Float64   -> (
         let _scale = Ctypes.(allocate double 0.) in
-        let r = L.dtrsyl layout trana tranb isgn m n _a lda _b ldb _c ldc _scale in
+        let r = L.dtrsyl ~layout ~trana ~tranb ~isgn ~m ~n ~a:_a ~lda
+            ~b:_b ~ldb ~c:_c ~ldc ~scale:_scale in
         scale := !@_scale;
         r
       )
     | Complex32 -> (
         let _scale = Ctypes.(allocate float 0.) in
-        let r = L.ctrsyl layout trana tranb isgn m n _a lda _b ldb _c ldc _scale in
+        let r = L.ctrsyl ~layout ~trana ~tranb ~isgn ~m ~n ~a:_a
+            ~lda ~b:_b ~ldb ~c:_c ~ldc ~scale:_scale in
         scale := !@_scale;
         r
       )
     | Complex64 -> (
         let _scale = Ctypes.(allocate double 0.) in
-        let r = L.ztrsyl layout trana tranb isgn m n _a lda _b ldb _c ldc _scale in
+        let r = L.ztrsyl ~layout ~trana ~tranb ~isgn ~m ~n ~a:_a
+            ~lda ~b:_b ~ldb ~c:_c ~ldc ~scale:_scale in
         scale := !@_scale;
         r
       )
