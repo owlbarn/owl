@@ -296,7 +296,7 @@ module Buffer : sig
   val enqueue_write : ?blocking:bool -> ?wait_for:cl_event list -> cl_command_queue -> cl_mem -> int -> int -> unit Ctypes.ptr -> cl_event
   (** Enqueue a write operation on the given memory object to a command queue. *)
 
-  val enqueue_map : ?blocking:bool -> ?wait_for:Owl_opencl_generated.cl_event list -> ?flags:int list -> cl_command_queue -> cl_mem -> int -> int -> 'a -> cl_event * unit Ctypes.ptr
+  val enqueue_map : ?blocking:bool -> ?wait_for:Owl_opencl_generated.cl_event list -> ?flags:int list -> cl_command_queue -> cl_mem -> int -> int -> cl_event * unit Ctypes.ptr
   (** Enqueue a map operation on the given memory object to a command queue. *)
 
   val enqueue_unmap : ?wait_for:cl_event list -> cl_command_queue -> cl_mem -> unit Ctypes.ptr -> cl_event

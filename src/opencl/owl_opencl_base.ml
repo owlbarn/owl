@@ -28,7 +28,7 @@ module Platform = struct
     let _n = allocate uint32_t uint32_0 in
     clGetPlatformIDs uint32_0 cl_platform_id_ptr_null _n |> cl_check_err;
     let n = Unsigned.UInt32.to_int !@_n in
-    let _platforms = allocate_n cl_platform_id n in
+    let _platforms = allocate_n cl_platform_id ~count:n in
     clGetPlatformIDs !@_n _platforms magic_null |> cl_check_err;
     Array.init n (fun i -> !@(_platforms +@ i))
 
@@ -42,7 +42,7 @@ module Platform = struct
     let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
     clGetPlatformInfo platform param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
     (* null terminated string, so minus 1 *)
-    string_from_ptr param_value (_param_value_size - 1)
+    string_from_ptr param_value ~length:(_param_value_size - 1)
 
 
   let get_info platform = {
@@ -104,7 +104,7 @@ module Device = struct
     clGetDeviceIDs platform dev_typ uint32_0 cl_device_id_ptr_null _num_devices |> cl_check_err;
 
     let num_devices = Unsigned.UInt32.to_int !@_num_devices in
-    let _devices = allocate_n cl_device_id num_devices in
+    let _devices = allocate_n cl_device_id ~count:num_devices in
     clGetDeviceIDs platform dev_typ !@_num_devices _devices magic_null |> cl_check_err;
     Array.init num_devices (fun i -> !@(_devices +@ i))
 
@@ -121,30 +121,30 @@ module Device = struct
 
 
   let get_info device = {
-      name                  = ( let p, l = get_device_info device cl_DEVICE_NAME in string_from_ptr p (l - 1) );
-      profile               = ( let p, l = get_device_info device cl_DEVICE_PROFILE in string_from_ptr p (l - 1) );
-      vendor                = ( let p, l = get_device_info device cl_DEVICE_VENDOR in string_from_ptr p (l - 1) );
-      version               = ( let p, l = get_device_info device cl_DEVICE_VERSION in string_from_ptr p (l - 1) );
-      driver_version        = ( let p, l = get_device_info device cl_DRIVER_VERSION in string_from_ptr p (l - 1) );
-      opencl_c_version      = ( let p, l = get_device_info device cl_DEVICE_OPENCL_C_VERSION in string_from_ptr p (l - 1) );
-      build_in_kernels      = ( let p, l = get_device_info device cl_DEVICE_BUILT_IN_KERNELS in string_from_ptr p (l - 1) );
-      typ                   = ( let p, l = get_device_info device cl_DEVICE_TYPE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      address_bits          = ( let p, l = get_device_info device cl_DEVICE_ADDRESS_BITS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      available             = ( let p, l = get_device_info device cl_DEVICE_AVAILABLE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int |> ( = ) 1);
-      compiler_available    = ( let p, l = get_device_info device cl_DEVICE_COMPILER_AVAILABLE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int |> ( = ) 1);
-      linker_available      = ( let p, l = get_device_info device cl_DEVICE_LINKER_AVAILABLE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int |> ( = ) 1);
-      global_mem_cache_size = ( let p, l = get_device_info device cl_DEVICE_GLOBAL_MEM_CACHE_SIZE in !@(char_ptr_to_ulong_ptr p) |> Unsigned.ULong.to_int);
-      global_mem_size       = ( let p, l = get_device_info device cl_DEVICE_GLOBAL_MEM_SIZE in !@(char_ptr_to_ulong_ptr p) |> Unsigned.ULong.to_int);
-      max_clock_frequency   = ( let p, l = get_device_info device cl_DEVICE_MAX_CLOCK_FREQUENCY in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      max_compute_units     = ( let p, l = get_device_info device cl_DEVICE_MAX_COMPUTE_UNITS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      max_work_group_size   = ( let p, l = get_device_info device cl_DEVICE_MAX_WORK_GROUP_SIZE in !@(char_ptr_to_size_t_ptr p) |> Unsigned.Size_t.to_int );
-      max_parameter_size    = ( let p, l = get_device_info device cl_DEVICE_MAX_PARAMETER_SIZE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      max_samplers          = ( let p, l = get_device_info device cl_DEVICE_MAX_SAMPLERS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      reference_count       = ( let p, l = get_device_info device cl_DEVICE_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      double_fp_config      = ( let p, l = get_device_info device cl_DEVICE_DOUBLE_FP_CONFIG in !@(char_ptr_to_ulong_ptr p) |> Unsigned.ULong.to_int);
-      extensions            = ( let p, l = get_device_info device cl_DEVICE_EXTENSIONS in string_from_ptr p (l - 1) );
-      parent_device         = ( let p, l = get_device_info device cl_DEVICE_PARENT_DEVICE in !@(char_ptr_to_cl_device_id_ptr p) );
-      platform              = ( let p, l = get_device_info device cl_DEVICE_PLATFORM in !@(char_ptr_to_cl_platform_id_ptr p) );
+      name                  = ( let p, l = get_device_info device cl_DEVICE_NAME in string_from_ptr p ~length:(l - 1) );
+      profile               = ( let p, l = get_device_info device cl_DEVICE_PROFILE in string_from_ptr p ~length:(l - 1) );
+      vendor                = ( let p, l = get_device_info device cl_DEVICE_VENDOR in string_from_ptr p ~length:(l - 1) );
+      version               = ( let p, l = get_device_info device cl_DEVICE_VERSION in string_from_ptr p ~length:(l - 1) );
+      driver_version        = ( let p, l = get_device_info device cl_DRIVER_VERSION in string_from_ptr p ~length:(l - 1) );
+      opencl_c_version      = ( let p, l = get_device_info device cl_DEVICE_OPENCL_C_VERSION in string_from_ptr p ~length:(l - 1) );
+      build_in_kernels      = ( let p, l = get_device_info device cl_DEVICE_BUILT_IN_KERNELS in string_from_ptr p ~length:(l - 1) );
+      typ                   = ( let p, _ = get_device_info device cl_DEVICE_TYPE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      address_bits          = ( let p, _ = get_device_info device cl_DEVICE_ADDRESS_BITS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      available             = ( let p, _ = get_device_info device cl_DEVICE_AVAILABLE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int |> ( = ) 1);
+      compiler_available    = ( let p, _ = get_device_info device cl_DEVICE_COMPILER_AVAILABLE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int |> ( = ) 1);
+      linker_available      = ( let p, _ = get_device_info device cl_DEVICE_LINKER_AVAILABLE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int |> ( = ) 1);
+      global_mem_cache_size = ( let p, _ = get_device_info device cl_DEVICE_GLOBAL_MEM_CACHE_SIZE in !@(char_ptr_to_ulong_ptr p) |> Unsigned.ULong.to_int);
+      global_mem_size       = ( let p, _ = get_device_info device cl_DEVICE_GLOBAL_MEM_SIZE in !@(char_ptr_to_ulong_ptr p) |> Unsigned.ULong.to_int);
+      max_clock_frequency   = ( let p, _ = get_device_info device cl_DEVICE_MAX_CLOCK_FREQUENCY in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      max_compute_units     = ( let p, _ = get_device_info device cl_DEVICE_MAX_COMPUTE_UNITS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      max_work_group_size   = ( let p, _ = get_device_info device cl_DEVICE_MAX_WORK_GROUP_SIZE in !@(char_ptr_to_size_t_ptr p) |> Unsigned.Size_t.to_int );
+      max_parameter_size    = ( let p, _ = get_device_info device cl_DEVICE_MAX_PARAMETER_SIZE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      max_samplers          = ( let p, _ = get_device_info device cl_DEVICE_MAX_SAMPLERS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      reference_count       = ( let p, _ = get_device_info device cl_DEVICE_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      double_fp_config      = ( let p, _ = get_device_info device cl_DEVICE_DOUBLE_FP_CONFIG in !@(char_ptr_to_ulong_ptr p) |> Unsigned.ULong.to_int);
+      extensions            = ( let p, l = get_device_info device cl_DEVICE_EXTENSIONS in string_from_ptr p ~length:(l - 1) );
+      parent_device         = ( let p, _ = get_device_info device cl_DEVICE_PARENT_DEVICE in !@(char_ptr_to_cl_device_id_ptr p) );
+      platform              = ( let p, _ = get_device_info device cl_DEVICE_PLATFORM in !@(char_ptr_to_cl_platform_id_ptr p) );
   }
 
 
@@ -200,9 +200,9 @@ module Context = struct
 
 
   let get_info ctx =
-    let reference_count = ( let p, l = get_context_info ctx cl_CONTEXT_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
-    let num_devices     = ( let p, l = get_context_info ctx cl_CONTEXT_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
-    let devices         = ( let p, l = get_context_info ctx cl_CONTEXT_DEVICES in let _devices = char_ptr_to_cl_device_id_ptr p in Array.init num_devices (fun i -> !@(_devices +@ i)) ) in
+    let reference_count = ( let p, _ = get_context_info ctx cl_CONTEXT_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
+    let num_devices     = ( let p, _ = get_context_info ctx cl_CONTEXT_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
+    let devices         = ( let p, _ = get_context_info ctx cl_CONTEXT_DEVICES in let _devices = char_ptr_to_cl_device_id_ptr p in Array.init num_devices (fun i -> !@(_devices +@ i)) ) in
     {
       reference_count;
       num_devices = num_devices;
@@ -278,17 +278,17 @@ module Program = struct
 
   let get_info program =
     (* TODO: many information is only available after the program is built, need to check null *)
-    let num_devices = ( let p, l = get_program_info program cl_PROGRAM_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
+    let num_devices = ( let p, _ = get_program_info program cl_PROGRAM_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
     {
-      reference_count = ( let p, l = get_program_info program cl_PROGRAM_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      context         = ( let p, l = get_program_info program cl_PROGRAM_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
+      reference_count = ( let p, _ = get_program_info program cl_PROGRAM_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      context         = ( let p, _ = get_program_info program cl_PROGRAM_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
       num_devices     = num_devices;
-      devices         = ( let p, l = get_program_info program cl_PROGRAM_DEVICES in let _devices = char_ptr_to_cl_device_id_ptr p in Array.init num_devices (fun i -> !@(_devices +@ i)) );
-      source          = ( let p, l = get_program_info program cl_PROGRAM_SOURCE in string_from_ptr p (l - 1) );
+      devices         = ( let p, _ = get_program_info program cl_PROGRAM_DEVICES in let _devices = char_ptr_to_cl_device_id_ptr p in Array.init num_devices (fun i -> !@(_devices +@ i)) );
+      source          = ( let p, l = get_program_info program cl_PROGRAM_SOURCE in string_from_ptr p ~length:(l - 1) );
       binary_sizes    = [||]; (* TODO: not implemented yet *)
       binaries        = [||]; (* TODO: not implemented yet *)
-      num_kernels     = ( let p, l = get_program_info program cl_PROGRAM_NUM_KERNELS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      kernel_names    = ( let p, l = get_program_info program cl_PROGRAM_KERNEL_NAMES in (string_from_ptr p (l - 1)) |> Str.split (Str.regexp ";") |> Array.of_list );
+      num_kernels     = ( let p, _ = get_program_info program cl_PROGRAM_NUM_KERNELS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      kernel_names    = ( let p, l = get_program_info program cl_PROGRAM_KERNEL_NAMES in (string_from_ptr p ~length:(l - 1)) |> Str.split (Str.regexp ";") |> Array.of_list );
     }
 
 
@@ -313,7 +313,7 @@ module Program = struct
     program
 
 
-  let create_with_binary () = raise Owl_exception.NOT_IMPLEMENTED
+  let _create_with_binary () = raise Owl_exception.NOT_IMPLEMENTED
 
 
   let build ?(options="") program devices =
@@ -325,10 +325,10 @@ module Program = struct
     clBuildProgram program _num_devices _devices _options magic_null magic_null |> cl_check_err
 
 
-  let compile () = raise Owl_exception.NOT_IMPLEMENTED
+  let _compile () = raise Owl_exception.NOT_IMPLEMENTED
 
 
-  let link () = raise Owl_exception.NOT_IMPLEMENTED
+  let _link () = raise Owl_exception.NOT_IMPLEMENTED
 
 
   let to_string x =
@@ -382,19 +382,19 @@ module Kernel = struct
 
   (* TODO: change work_group_info into Hashtbl *)
   let get_info kernel =
-    let program = ( let p, l = get_kernel_info kernel cl_KERNEL_PROGRAM in !@(char_ptr_to_cl_program_ptr p) ) in
+    let program = ( let p, _ = get_kernel_info kernel cl_KERNEL_PROGRAM in !@(char_ptr_to_cl_program_ptr p) ) in
     let work_group_size = Program.(get_info program).devices |> Array.map (fun device ->
-      let p, l = get_work_group_info kernel device cl_KERNEL_WORK_GROUP_SIZE in
+      let p, _ = get_work_group_info kernel device cl_KERNEL_WORK_GROUP_SIZE in
       let sz = !@(char_ptr_to_size_t_ptr p) |> Unsigned.Size_t.to_int in
       device, sz
     )
     in
     {
-      function_name   = ( let p, l = get_kernel_info kernel cl_KERNEL_FUNCTION_NAME in string_from_ptr p (l - 1) );
-      num_args        = ( let p, l = get_kernel_info kernel cl_KERNEL_NUM_ARGS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      attributes      = ( let p, l = get_kernel_info kernel cl_KERNEL_ATTRIBUTES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      reference_count = ( let p, l = get_kernel_info kernel cl_KERNEL_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      context         = ( let p, l = get_kernel_info kernel cl_KERNEL_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
+      function_name   = ( let p, l = get_kernel_info kernel cl_KERNEL_FUNCTION_NAME in string_from_ptr p ~length:(l - 1) );
+      num_args        = ( let p, _ = get_kernel_info kernel cl_KERNEL_NUM_ARGS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      attributes      = ( let p, _ = get_kernel_info kernel cl_KERNEL_ATTRIBUTES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      reference_count = ( let p, _ = get_kernel_info kernel cl_KERNEL_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      context         = ( let p, _ = get_kernel_info kernel cl_KERNEL_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
       program         = program;
       work_group_size = work_group_size;
     }
@@ -415,7 +415,7 @@ module Kernel = struct
     kernel
 
 
-  let create_in_program program kernels = raise Owl_exception.NOT_IMPLEMENTED
+  let _create_in_program _program _kernels = raise Owl_exception.NOT_IMPLEMENTED
 
 
   let set_arg kernel arg_idx arg_size arg_val =
@@ -499,10 +499,10 @@ module CommandQueue = struct
 
 
   let get_info cmdq = {
-    context          = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
-    device           = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_DEVICE in !@(char_ptr_to_cl_device_id_ptr p) );
-    reference_count  = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-    queue_properties = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_PROPERTIES in !@(char_ptr_to_ulong_ptr p) );
+    context          = ( let p, _ = get_commandqueue_info cmdq cl_QUEUE_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
+    device           = ( let p, _ = get_commandqueue_info cmdq cl_QUEUE_DEVICE in !@(char_ptr_to_cl_device_id_ptr p) );
+    reference_count  = ( let p, _ = get_commandqueue_info cmdq cl_QUEUE_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    queue_properties = ( let p, _ = get_commandqueue_info cmdq cl_QUEUE_PROPERTIES in !@(char_ptr_to_ulong_ptr p) );
   }
 
 
@@ -584,7 +584,7 @@ module Event = struct
     param_value, _param_value_size
 
 
-  let get_profiling_info event param_name =
+  let _get_profiling_info event param_name =
     let param_name = Unsigned.UInt32.of_int param_name in
     let param_value_size_ret = allocate size_t size_0 in
     clGetEventProfilingInfo event param_name size_0 null param_value_size_ret |> cl_check_err;
@@ -597,11 +597,11 @@ module Event = struct
 
   (* TODO: extend to profiling info *)
   let get_info event = {
-    command_type             = ( let p, l = get_event_info event cl_EVENT_COMMAND_TYPE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-    reference_count          = ( let p, l = get_event_info event cl_EVENT_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-    command_execution_status = ( let p, l = get_event_info event cl_EVENT_COMMAND_EXECUTION_STATUS in !@(char_ptr_to_int32_ptr p) |> Int32.to_int );
-    command_queue            = ( let p, l = get_event_info event cl_EVENT_COMMAND_QUEUE in !@(char_ptr_to_cl_command_queue_ptr p) );
-    context                  = ( let p, l = get_event_info event cl_EVENT_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
+    command_type             = ( let p, _ = get_event_info event cl_EVENT_COMMAND_TYPE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    reference_count          = ( let p, _ = get_event_info event cl_EVENT_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    command_execution_status = ( let p, _ = get_event_info event cl_EVENT_COMMAND_EXECUTION_STATUS in !@(char_ptr_to_int32_ptr p) |> Int32.to_int );
+    command_queue            = ( let p, _ = get_event_info event cl_EVENT_COMMAND_QUEUE in !@(char_ptr_to_cl_command_queue_ptr p) );
+    context                  = ( let p, _ = get_event_info event cl_EVENT_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
   }
 
 
@@ -622,7 +622,7 @@ module Event = struct
   let set_status event status = clSetUserEventStatus event (Int32.of_int status) |> cl_check_err
 
 
-  let set_callback () = raise Owl_exception.NOT_IMPLEMENTED
+  let _set_callback () = raise Owl_exception.NOT_IMPLEMENTED
 
 
   let wait_for event_list =
@@ -670,9 +670,9 @@ module Buffer = struct
 
 
   let get_info buf = {
-    typ              = ( let p, l = get_buffer_info buf cl_MEM_TYPE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-    size             = ( let p, l = get_buffer_info buf cl_MEM_SIZE in !@(char_ptr_to_size_t_ptr p) |> Unsigned.Size_t.to_int );
-    reference_count  = ( let p, l = get_buffer_info buf cl_MEM_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    typ              = ( let p, _ = get_buffer_info buf cl_MEM_TYPE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    size             = ( let p, _ = get_buffer_info buf cl_MEM_SIZE in !@(char_ptr_to_size_t_ptr p) |> Unsigned.Size_t.to_int );
+    reference_count  = ( let p, _ = get_buffer_info buf cl_MEM_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
   }
 
 
@@ -703,7 +703,7 @@ module Buffer = struct
     buf
 
 
-  let create_sub () = raise Owl_exception.NOT_IMPLEMENTED
+  let _create_sub () = raise Owl_exception.NOT_IMPLEMENTED
 
 
   let enqueue_read ?(blocking=true) ?(wait_for=[]) cmdq src ofs len dst =
@@ -746,7 +746,7 @@ module Buffer = struct
     !@event
 
 
-  let enqueue_map ?(blocking=true) ?(wait_for=[]) ?(flags=[]) cmdq src ofs len dst =
+  let enqueue_map ?(blocking=true) ?(wait_for=[]) ?(flags=[]) cmdq src ofs len =
     let ofs = Unsigned.Size_t.of_int ofs in
     let len = Unsigned.Size_t.of_int len in
     let flags = List.fold_left ( lor ) 0 flags |> Unsigned.ULong.of_int in

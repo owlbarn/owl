@@ -106,7 +106,7 @@ let get_input_kind x i =
   input_i.outval.(i) |> unpack_arr |> Owl_dense_ndarray_generic.kind
 
 
-let get_val_mem_ptr x i =
+let get_val_mem_ptr x _i =
   let x_val = x.outval.(0) in
   let x_mem = x.outmem.(0) in
   let x_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem x_mem in
@@ -167,7 +167,7 @@ let map_arr_eval param fun_name x =
   let kernel = Owl_opencl_context.(ba_kernel kind fun_name program) in
 
   let src, dst = allocate_from_inputs ctx x in
-  let a_val, a_mem, a_ptr = src.(0) in
+  let a_val, _, a_ptr = src.(0) in
   let b_val, b_mem, b_ptr = dst.(0) in
   let _size = a_val |> unpack_arr |> Owl_dense_ndarray_generic.numel in
   let wait_for = get_input_event x in
@@ -210,7 +210,7 @@ let map_arr_scalar_eval param fun_name x =
   let kernel = Owl_opencl_context.(ba_kernel kind fun_name program) in
 
   let src, dst = allocate_from_arr ctx x.input.(0) in
-  let a_val, a_mem, a_ptr = src in
+  let a_val, _, a_ptr = src in
   let b_val, b_mem, b_ptr = dst in
 
   let c_val = x.input.(1).outval.(0) |> unpack_flt in
@@ -255,9 +255,9 @@ let reduce_eval param fun_name x =
   let num_groups = 64 in
   let group_size = 64 in
   let wait_for = get_input_event x in
-  let a_val, a_mem, a_ptr = get_val_mem_ptr x.input.(0) 0 in
-  let event, b_val, b_mem, b_ptr = _reduce_eval param fun_name wait_for (num_groups * 2) group_size (unpack_arr a_val) a_ptr in
-  let event, b_val, b_mem, b_ptr = _reduce_eval param fun_name [event] 1 group_size b_val b_ptr in
+  let a_val, _, a_ptr = get_val_mem_ptr x.input.(0) 0 in
+  let event, b_val, _, b_ptr = _reduce_eval param fun_name wait_for (num_groups * 2) group_size (unpack_arr a_val) a_ptr in
+  let event, b_val, b_mem, _ = _reduce_eval param fun_name [event] 1 group_size b_val b_ptr in
   x.outval <- [|F32 b_val|];
   x.outmem <- [|b_mem|];
   x.events <- [|event|]

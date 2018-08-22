@@ -149,7 +149,6 @@ let eval ?(param=[||]) ?(ctx=default) ?(dev_id=0) ?(work_dim=1) ?(work_size=[||]
   let cmdq = get_cmdq ctx dev in
   let kernel = make_kernel ctx fun_name in
   let opencl_ctx = ctx.context in
-  let work_dim = 1 in
   let work_sz = ref (Array.to_list work_size) in
 
   (* set up parameters *)

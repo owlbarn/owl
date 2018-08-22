@@ -7,8 +7,6 @@ open Owl_graph
 
 open Owl_opencl_base
 
-open Owl_opencl_generated
-
 
 (* Functor of making an OpenCL engine to execute a computation graph. *)
 
@@ -52,7 +50,7 @@ module Make
 
 
   let cpu_to_gpu_copy param x_val =
-    let ctx, cmdq, _ = param in
+    let _, cmdq, _ = param in
     let cpu_ptr = Device.get_cpu_ptr x_val in
     let gpu_mem = Device.get_gpu_mem x_val in
     let size = size_in_bytes x_val in
@@ -60,7 +58,7 @@ module Make
 
 
   let gpu_to_cpu_copy param x_val =
-    let ctx, cmdq, _ = param in
+    let _, cmdq, _ = param in
     let cpu_ptr = Device.get_cpu_ptr x_val in
     let gpu_mem = Device.get_gpu_mem x_val in
     let size = size_in_bytes x_val in
@@ -84,32 +82,32 @@ module Make
         | Noop                                        -> _eval_map_xx x
         | Var                                         -> _eval_map_00 x param
         | Const                                       -> _eval_map_00 x param
-        | Empty shape                                 -> _eval_map_00 x param
-        | Zeros shape                                 -> _eval_map_01 x param
-        | Ones shape                                  -> _eval_map_01 x param
-        | Create shape                                -> _eval_map_01 x param
-        | Sequential shape                            -> _eval_map_01 x param
-        | Uniform shape                               -> _eval_map_02 x param
-        | Gaussian shape                              -> _eval_map_02 x param
-        | Bernoulli shape                             -> _eval_map_02 x param
-        | Init (shape, f)                             -> failwith "Init"
-        | Get i                                       -> _eval_map_xx x
-        | Set i                                       -> failwith "Set"
-        | GetSlice slice                              -> _eval_map_xx x
-        | SetSlice slice                              -> failwith "SetSlice"
+        | Empty _shape                                 -> _eval_map_00 x param
+        | Zeros _shape                                 -> _eval_map_01 x param
+        | Ones _shape                                  -> _eval_map_01 x param
+        | Create _shape                                -> _eval_map_01 x param
+        | Sequential _shape                            -> _eval_map_01 x param
+        | Uniform _shape                               -> _eval_map_02 x param
+        | Gaussian _shape                              -> _eval_map_02 x param
+        | Bernoulli _shape                             -> _eval_map_02 x param
+        | Init (_shape, _f)                             -> failwith "Init"
+        | Get _i                                       -> _eval_map_xx x
+        | Set _i                                       -> failwith "Set"
+        | GetSlice _slice                              -> _eval_map_xx x
+        | SetSlice _slice                              -> failwith "SetSlice"
         | Copy                                        -> _eval_map_xx x
         | Reset                                       -> failwith "Reset"
-        | Reshape shape                               -> _eval_map_xx x
+        | Reshape _shape                               -> _eval_map_xx x
         | Reverse                                     -> _eval_map_xx x
-        | Tile repeats                                -> _eval_map_xx x
-        | Repeat repeats                              -> _eval_map_xx x
-        | Concatenate axis                            -> _eval_map_xx x
-        | Split (axis, parts)                         -> failwith "Split"
-        | Draw (axis, n)                              -> failwith "Draw"
-        | Map f                                       -> failwith "Map"
-        | Fold (axis, f)                              -> failwith "Fold"
-        | Scan (axis, f)                              -> failwith "Scan"
-        | OneHot depth                                -> _eval_map_xx x
+        | Tile _repeats                                -> _eval_map_xx x
+        | Repeat _repeats                              -> _eval_map_xx x
+        | Concatenate _axis                            -> _eval_map_xx x
+        | Split (_axis, _parts)                         -> failwith "Split"
+        | Draw (_axis, _n)                              -> failwith "Draw"
+        | Map _f                                       -> failwith "Map"
+        | Fold (_axis, _f)                              -> failwith "Fold"
+        | Scan (_axis, _f)                              -> failwith "Scan"
+        | OneHot _depth                                -> _eval_map_xx x
         | Abs                                         -> _eval_map_01 x param
         | Neg                                         -> _eval_map_01 x param
         | Floor                                       -> _eval_map_01 x param
@@ -133,10 +131,10 @@ module Make
         | Asinh                                       -> _eval_map_01 x param
         | Acosh                                       -> _eval_map_01 x param
         | Atanh                                       -> _eval_map_01 x param
-        | Min axis                                    -> _eval_map_01 x param
-        | Max axis                                    -> _eval_map_01 x param
-        | Sum axis                                    -> _eval_map_01 x param
-        | SumReduce axis                              -> _eval_map_xx x
+        | Min _axis                                    -> _eval_map_01 x param
+        | Max _axis                                    -> _eval_map_01 x param
+        | Sum _axis                                    -> _eval_map_01 x param
+        | SumReduce _axis                              -> _eval_map_xx x
         | Signum                                      -> _eval_map_01 x param
         | Sigmoid                                     -> _eval_map_01 x param
         | Relu                                        -> _eval_map_01 x param
@@ -182,38 +180,38 @@ module Make
         | EltGreaterScalar                            -> _eval_map_01 x param
         | EltLessEqualScalar                          -> _eval_map_01 x param
         | EltGreaterEqualScalar                       -> _eval_map_01 x param
-        | Conv1d (padding, stride)                    -> _eval_map_xx x
-        | Conv2d (padding, stride)                    -> _eval_map_xx x
-        | Conv3d (padding, stride)                    -> _eval_map_xx x
-        | TransposeConv2d (padding, stride)           -> _eval_map_xx x
-        | MaxPool1d (padding, kernel, stride)         -> _eval_map_xx x
-        | MaxPool2d (padding, kernel, stride)         -> _eval_map_xx x
-        | MaxPool3d (padding, kernel, stride)         -> _eval_map_xx x
-        | AvgPool1d (padding, kernel, stride)         -> _eval_map_xx x
-        | AvgPool2d (padding, kernel, stride)         -> _eval_map_xx x
-        | AvgPool3d (padding, kernel, stride)         -> _eval_map_xx x
-        | Conv1dBackwardInput stride                  -> _eval_map_xx x
-        | Conv1dBackwardKernel stride                 -> _eval_map_xx x
-        | Conv2dBackwardInput stride                  -> _eval_map_xx x
-        | Conv2dBackwardKernel stride                 -> _eval_map_xx x
-        | Conv3dBackwardInput stride                  -> _eval_map_xx x
-        | Conv3dBackwardKernel stride                 -> _eval_map_xx x
-        | TransposeConv2dBackwardInput stride         -> _eval_map_xx x
-        | TransposeConv2dBackwardKernel stride        -> _eval_map_xx x
-        | MaxPool1dBackward (padding, kernel, stride) -> _eval_map_xx x
-        | MaxPool2dBackward (padding, kernel, stride) -> _eval_map_xx x
-        | MaxPool3dBackward (padding, kernel, stride) -> _eval_map_xx x
-        | AvgPool1dBackward (padding, kernel, stride) -> _eval_map_xx x
-        | AvgPool2dBackward (padding, kernel, stride) -> _eval_map_xx x
-        | AvgPool3dBackward (padding, kernel, stride) -> _eval_map_xx x
+        | Conv1d (_padding, _stride)                    -> _eval_map_xx x
+        | Conv2d (_padding, _stride)                    -> _eval_map_xx x
+        | Conv3d (_padding, _stride)                    -> _eval_map_xx x
+        | TransposeConv2d (_padding, _stride)           -> _eval_map_xx x
+        | MaxPool1d (_padding, _kernel, _stride)         -> _eval_map_xx x
+        | MaxPool2d (_padding, _kernel, _stride)         -> _eval_map_xx x
+        | MaxPool3d (_padding, _kernel, _stride)         -> _eval_map_xx x
+        | AvgPool1d (_padding, _kernel, _stride)         -> _eval_map_xx x
+        | AvgPool2d (_padding, _kernel, _stride)         -> _eval_map_xx x
+        | AvgPool3d (_padding, _kernel, _stride)         -> _eval_map_xx x
+        | Conv1dBackwardInput _stride                  -> _eval_map_xx x
+        | Conv1dBackwardKernel _stride                 -> _eval_map_xx x
+        | Conv2dBackwardInput _stride                  -> _eval_map_xx x
+        | Conv2dBackwardKernel _stride                 -> _eval_map_xx x
+        | Conv3dBackwardInput _stride                  -> _eval_map_xx x
+        | Conv3dBackwardKernel _stride                 -> _eval_map_xx x
+        | TransposeConv2dBackwardInput _stride         -> _eval_map_xx x
+        | TransposeConv2dBackwardKernel _stride        -> _eval_map_xx x
+        | MaxPool1dBackward (_padding, _kernel, _stride) -> _eval_map_xx x
+        | MaxPool2dBackward (_padding, _kernel, _stride) -> _eval_map_xx x
+        | MaxPool3dBackward (_padding, _kernel, _stride) -> _eval_map_xx x
+        | AvgPool1dBackward (_padding, _kernel, _stride) -> _eval_map_xx x
+        | AvgPool2dBackward (_padding, _kernel, _stride) -> _eval_map_xx x
+        | AvgPool3dBackward (_padding, _kernel, _stride) -> _eval_map_xx x
         | Row                                         -> failwith "Row"
-        | Rows i                                      -> failwith "Rows"
+        | Rows _i                                      -> failwith "Rows"
         | CopyRowTo                                   -> failwith "CopyRowTo"
         | CopyColTo                                   -> failwith "CopyColTo"
-        | Dot (transa, transb, alpha, beta)           -> _eval_map_xx x
+        | Dot (_transa, _transb, _alpha, _beta)           -> _eval_map_xx x
         | Inv                                         -> _eval_map_xx x
         | Trace                                       -> _eval_map_xx x
-        | Transpose axis                              -> _eval_map_xx x
+        | Transpose _axis                              -> _eval_map_xx x
         | ToRows                                      -> failwith "ToRows"
         | OfRows                                      -> failwith "OfRows"
         | Scalar_Add                                  -> _eval_map_01 x param
@@ -248,7 +246,7 @@ module Make
         | Scalar_Atanh                                -> _eval_map_01 x param
         | Scalar_Relu                                 -> _eval_map_01 x param
         | Scalar_Sigmoid                              -> _eval_map_01 x param
-        | Fused_Adagrad (rate, eps)                   -> _eval_map_xx x
+        | Fused_Adagrad (_rate, _eps)                   -> _eval_map_xx x
         | _                                           -> failwith "owl_opencl_engine:_eval_term"
 
         with exn -> (
@@ -260,7 +258,7 @@ module Make
 
 
   (* dummy map *)
-  and _eval_map_xx x = ()
+  and _eval_map_xx _ = ()
 
 
   (* varibles and consts, copy cpu -> gpu *)
@@ -275,7 +273,7 @@ module Make
   and _eval_map_01 x param =
     Array.iter (fun parent -> _eval_term parent param) (parents x);
 
-    let ctx, cmdq, program = param in
+    let _, cmdq, _ = param in
     let kernel = (get_value x).(0).kernel.(0) in
     let items = [ node_numel x ] in
     let wait_for = aggregate_events (parents x) |> Array.to_list in
@@ -287,7 +285,7 @@ module Make
   and _eval_map_02 x param =
     Array.iter (fun parent -> _eval_term parent param) (parents x);
 
-    let ctx, cmdq, program = param in
+    let _, cmdq, _ = param in
     let kernel = (get_value x).(0).kernel.(0) in
 
     let numpu = Owl_opencl_hardware.processing_units () in

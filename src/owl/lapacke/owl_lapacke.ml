@@ -16,16 +16,11 @@ open Ctypes
 open Bigarray
 
 
-
 module L = Owl_lapacke_generated
 
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 
-type _s_t = (float, Bigarray.float32_elt) t
-type _d_t = (float, Bigarray.float64_elt) t
-type _c_t = (Complex.t, Bigarray.complex32_elt) t
-type _z_t = (Complex.t, Bigarray.complex64_elt) t
 
 type lapacke_layout = RowMajor | ColMajor
 let lapacke_layout : type a. a layout -> int = function
@@ -3843,14 +3838,6 @@ let trsyl
   in
   check_lapack_error ret;
   c, !scale
-
-
-
-
-
-
-
-
 
 
 

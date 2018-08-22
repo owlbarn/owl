@@ -116,32 +116,32 @@ module Make
         | Noop                                        -> _init_xx x param
         | Var                                         -> _init_00 x param
         | Const                                       -> _init_00 x param
-        | Empty shape                                 -> _init_00 x param
-        | Zeros shape                                 -> _init_10 x param "zeros"
-        | Ones shape                                  -> _init_10 x param "ones"
-        | Create shape                                -> _init_10 x param "create"
-        | Sequential shape                            -> _init_10 x param "sequential"
-        | Uniform shape                               -> _init_20 x param "uniform"
-        | Gaussian shape                              -> _init_20 x param "gaussian"
-        | Bernoulli shape                             -> _init_20 x param "bernoulli"
-        | Init (shape, f)                             -> failwith "Init"
-        | Get i                                       -> _init_xx x param
-        | Set i                                       -> failwith "Set"
-        | GetSlice slice                              -> _init_xx x param
-        | SetSlice slice                              -> failwith "SetSlice"
+        | Empty _shape                                 -> _init_00 x param
+        | Zeros _shape                                 -> _init_10 x param "zeros"
+        | Ones _shape                                  -> _init_10 x param "ones"
+        | Create _shape                                -> _init_10 x param "create"
+        | Sequential _shape                            -> _init_10 x param "sequential"
+        | Uniform _shape                               -> _init_20 x param "uniform"
+        | Gaussian _shape                              -> _init_20 x param "gaussian"
+        | Bernoulli _shape                             -> _init_20 x param "bernoulli"
+        | Init (_shape, _f)                             -> failwith "Init"
+        | Get _i                                       -> _init_xx x param
+        | Set _i                                       -> failwith "Set"
+        | GetSlice _slice                              -> _init_xx x param
+        | SetSlice _slice                              -> failwith "SetSlice"
         | Copy                                        -> _init_xx x param
         | Reset                                       -> failwith "Reset"
-        | Reshape shape                               -> _init_xx x param
+        | Reshape _shape                               -> _init_xx x param
         | Reverse                                     -> _init_xx x param
-        | Tile repeats                                -> _init_xx x param
-        | Repeat repeats                              -> _init_xx x param
-        | Concatenate axis                            -> _init_xx x param
-        | Split (axis, parts)                         -> failwith "Split"
-        | Draw (axis, n)                              -> failwith "Draw"
-        | Map f                                       -> failwith "Map"
-        | Fold (axis, f)                              -> failwith "Fold"
-        | Scan (axis, f)                              -> failwith "Scan"
-        | OneHot depth                                -> _init_xx x param
+        | Tile _repeats                                -> _init_xx x param
+        | Repeat _repeats                              -> _init_xx x param
+        | Concatenate _axis                            -> _init_xx x param
+        | Split (_axis, _parts)                         -> failwith "Split"
+        | Draw (_axis, _n)                              -> failwith "Draw"
+        | Map _f                                       -> failwith "Map"
+        | Fold (_axis, _f)                              -> failwith "Fold"
+        | Scan (_axis, _f)                              -> failwith "Scan"
+        | OneHot _depth                                -> _init_xx x param
         | Abs                                         -> _init_01 x param "abs"
         | Neg                                         -> _init_01 x param "neg"
         | Floor                                       -> _init_01 x param "floor"
@@ -168,7 +168,7 @@ module Make
         | Min axis                                    -> _init_05 x param "min_along" axis
         | Max axis                                    -> _init_05 x param "max_along" axis
         | Sum axis                                    -> _init_05 x param "sum_along" axis
-        | SumReduce axis                              -> _init_xx x param
+        | SumReduce _axis                              -> _init_xx x param
         | Signum                                      -> _init_01 x param "signum"
         | Sigmoid                                     -> _init_01 x param "sigmoid"
         | Relu                                        -> _init_01 x param "relu"
@@ -214,38 +214,38 @@ module Make
         | EltGreaterScalar                            -> _init_03 x param "elt_greater_scalar"
         | EltLessEqualScalar                          -> _init_03 x param "elt_less_equal_scalar"
         | EltGreaterEqualScalar                       -> _init_03 x param "elt_greater_equal_scalar"
-        | Conv1d (padding, stride)                    -> _init_xx x param
-        | Conv2d (padding, stride)                    -> _init_xx x param
-        | Conv3d (padding, stride)                    -> _init_xx x param
-        | TransposeConv2d (padding, stride)           -> _init_xx x param
-        | MaxPool1d (padding, kernel, stride)         -> _init_xx x param
-        | MaxPool2d (padding, kernel, stride)         -> _init_xx x param
-        | MaxPool3d (padding, kernel, stride)         -> _init_xx x param
-        | AvgPool1d (padding, kernel, stride)         -> _init_xx x param
-        | AvgPool2d (padding, kernel, stride)         -> _init_xx x param
-        | AvgPool3d (padding, kernel, stride)         -> _init_xx x param
-        | Conv1dBackwardInput stride                  -> _init_xx x param
-        | Conv1dBackwardKernel stride                 -> _init_xx x param
-        | Conv2dBackwardInput stride                  -> _init_xx x param
-        | Conv2dBackwardKernel stride                 -> _init_xx x param
-        | Conv3dBackwardInput stride                  -> _init_xx x param
-        | Conv3dBackwardKernel stride                 -> _init_xx x param
-        | TransposeConv2dBackwardInput stride         -> _init_xx x param
-        | TransposeConv2dBackwardKernel stride        -> _init_xx x param
-        | MaxPool1dBackward (padding, kernel, stride) -> _init_xx x param
-        | MaxPool2dBackward (padding, kernel, stride) -> _init_xx x param
-        | MaxPool3dBackward (padding, kernel, stride) -> _init_xx x param
-        | AvgPool1dBackward (padding, kernel, stride) -> _init_xx x param
-        | AvgPool2dBackward (padding, kernel, stride) -> _init_xx x param
-        | AvgPool3dBackward (padding, kernel, stride) -> _init_xx x param
+        | Conv1d (_padding, _stride)                    -> _init_xx x param
+        | Conv2d (_padding, _stride)                    -> _init_xx x param
+        | Conv3d (_padding, _stride)                    -> _init_xx x param
+        | TransposeConv2d (_padding, _stride)           -> _init_xx x param
+        | MaxPool1d (_padding, _kernel, _stride)         -> _init_xx x param
+        | MaxPool2d (_padding, _kernel, _stride)         -> _init_xx x param
+        | MaxPool3d (_padding, _kernel, _stride)         -> _init_xx x param
+        | AvgPool1d (_padding, _kernel, _stride)         -> _init_xx x param
+        | AvgPool2d (_padding, _kernel, _stride)         -> _init_xx x param
+        | AvgPool3d (_padding, _kernel, _stride)         -> _init_xx x param
+        | Conv1dBackwardInput _stride                  -> _init_xx x param
+        | Conv1dBackwardKernel _stride                 -> _init_xx x param
+        | Conv2dBackwardInput _stride                  -> _init_xx x param
+        | Conv2dBackwardKernel _stride                 -> _init_xx x param
+        | Conv3dBackwardInput _stride                  -> _init_xx x param
+        | Conv3dBackwardKernel _stride                 -> _init_xx x param
+        | TransposeConv2dBackwardInput _stride         -> _init_xx x param
+        | TransposeConv2dBackwardKernel _stride        -> _init_xx x param
+        | MaxPool1dBackward (_padding, _kernel, _stride) -> _init_xx x param
+        | MaxPool2dBackward (_padding, _kernel, _stride) -> _init_xx x param
+        | MaxPool3dBackward (_padding, _kernel, _stride) -> _init_xx x param
+        | AvgPool1dBackward (_padding, _kernel, _stride) -> _init_xx x param
+        | AvgPool2dBackward (_padding, _kernel, _stride) -> _init_xx x param
+        | AvgPool3dBackward (_padding, _kernel, _stride) -> _init_xx x param
         | Row                                         -> failwith "Row"
-        | Rows i                                      -> failwith "Rows"
+        | Rows _i                                      -> failwith "Rows"
         | CopyRowTo                                   -> failwith "CopyRowTo"
         | CopyColTo                                   -> failwith "CopyColTo"
-        | Dot (transa, transb, alpha, beta)           -> _init_xx x param
+        | Dot (_transa, _transb, _alpha, _beta)           -> _init_xx x param
         | Inv                                         -> _init_xx x param
         | Trace                                       -> _init_xx x param
-        | Transpose axis                              -> _init_xx x param
+        | Transpose _axis                              -> _init_xx x param
         | ToRows                                      -> failwith "ToRows"
         | OfRows                                      -> failwith "OfRows"
         | Scalar_Add                                  -> _init_03 x param "add"
@@ -280,7 +280,7 @@ module Make
         | Scalar_Atanh                                -> _init_01 x param "atanh"
         | Scalar_Relu                                 -> _init_01 x param "relu"
         | Scalar_Sigmoid                              -> _init_01 x param "sigmoid"
-        | Fused_Adagrad (rate, eps)                   -> _init_xx x param
+        | Fused_Adagrad (_rate, _eps)                   -> _init_xx x param
         | _                                           -> failwith "owl_opencl_engine:_eval_term"
 
         with exn -> (
@@ -289,12 +289,12 @@ module Make
         )
 
 
-  and _init_xx x param = ()
+  and _init_xx _ _ = ()
 
 
   (* varibles, consts, creation *)
   and _init_00 x param =
-    let ctx, cmdq, program = param in
+    let ctx, _, _ = param in
     allocate_from_parent_0 ctx x
 
 
@@ -303,7 +303,7 @@ module Make
     let parent = (parents x).(0) in
     _init_term parent param;
 
-    let ctx, cmdq, program = param in
+    let ctx, _, program = param in
     allocate_from_parent_1 ctx x parent;
     let a_ptr = Device.get_gpu_ptr (get_value parent).(0) in
     let b_ptr = Device.get_gpu_ptr (get_value x).(0) in
@@ -337,7 +337,7 @@ module Make
     _init_term parent_0 param;
     _init_term parent_1 param;
 
-    let ctx, cmdq, program = param in
+    let ctx, _, program = param in
     allocate_from_parent_2 ctx x parent_0 parent_1;
     let a_ptr = Device.get_gpu_ptr (get_value parent_0).(0) in
     let b_ptr = Device.get_gpu_ptr (get_value parent_1).(0) in
@@ -356,7 +356,7 @@ module Make
     _init_term parent_0 param;
     _init_term parent_1 param;
 
-    let ctx, cmdq, program = param in
+    let ctx, _, program = param in
     allocate_from_parent_2 ctx x parent_0 parent_1;
     let parent_0_val = (get_value parent_0).(0) in
     let parent_1_val = (get_value parent_1).(0) in
@@ -396,7 +396,7 @@ module Make
     let parent = (parents x).(0) in
     _init_term parent param;
 
-    let ctx, cmdq, program = param in
+    let ctx, _, program = param in
     allocate_from_parent_0 ctx x;
     let a_ptr = Device.get_gpu_ptr (get_value parent).(0) in
     let b_ptr = Device.get_gpu_ptr (get_value x).(0) in
@@ -424,7 +424,7 @@ module Make
     ) (parents x)
     in
 
-    let ctx, cmdq, program = param in
+    let ctx, _, program = param in
     allocate_from_parent_0 ctx x;
     let kernel = make_kernel x program fun_name in
     let args_val = Array.append parents_val [| (get_value x).(0) |] in
@@ -442,7 +442,7 @@ module Make
     ) (parents x)
     in
 
-    let ctx, cmdq, program = param in
+    let ctx, _, program = param in
     allocate_from_parent_0 ctx x;
 
     let numpu = Owl_opencl_hardware.processing_units () in

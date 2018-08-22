@@ -1,5 +1,3 @@
-(jbuild_version 1)
-
 (copy_files# types/*)
 (copy_files# kernel/*)
 (copy_files# compute/*)
@@ -9,34 +7,35 @@
 (copy_files# prng/clrng/Random123/*.clh)
 (copy_files# prng/clrng/Random123/features/*)
 
-(library (
+
+(library
   (name owl_opencl)
   (public_name owl-opencl)
   (wrapped false)
-  (c_names (
+  (c_names
     clRNG
     private
     philox432
     owl_opencl_prng_philox_stub
     owl_opencl_generated_stub
-  ))
-  (c_flags (
+  )
+  (c_flags
     -g -O3 -Ofast
-  ))
-  (c_library_flags (
+  )
+  (c_library_flags
     -framework opencl
-  ))
+  )
   (flags (:standard))
-  (libraries (
+  (libraries
     ctypes
     ctypes.stubs
     owl
-  ))
-))
+  )
+)
 
 
 (rule
- ((targets (owl_opencl_kernel_impl.ml))
-  (deps    (config/make_kernel.exe))
-  (action  (run ${<} -ocamlc ${OCAMLC}))
-))
+  (targets owl_opencl_kernel_impl.ml)
+  (deps    config/make_kernel.exe)
+  (action  (run %{deps}))
+)

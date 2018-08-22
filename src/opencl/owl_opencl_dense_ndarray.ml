@@ -152,7 +152,7 @@ let scalar_atan2pi a x = map_arr_scalar "scalar_atan2pi" x a
 
 let to_ndarray
   : type a b . (a, b) Bigarray.kind -> t -> (a, b) Owl_dense_ndarray_generic.t
-  = fun k x ->
+  = fun _k x ->
   eval x |> ignore;
   let y = unpack_trace x in
   (y.outval.(0) |> unpack_arr)
