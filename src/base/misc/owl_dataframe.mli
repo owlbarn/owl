@@ -173,6 +173,12 @@ val reset : t -> unit
 ``reset x`` resets the dataframe ``x`` by setting all the time series to empty.
  *)
 
+val unique : t -> string -> series
+(**
+``unique x`` removes the duplicates from the dataset and only returns the
+unique ones.
+ *)
+
 val sort : ?inc:bool -> t -> string -> t
 (**
 ``sort ~inc x head`` sorts the entries in the dataframe ``x`` according to the

@@ -172,6 +172,14 @@ let insert_ith_elt i e = function
   | Any_Series      -> Any_Series
 
 
+let get_ith_elt i = function
+  | Bool_Series c   -> Bool c.(i)
+  | Int_Series c    -> Int c.(i)
+  | Float_Series c  -> Float c.(i)
+  | String_Series c -> String c.(i)
+  | Any_Series      -> Any
+
+
 let elt_to_str = function
   | Bool a   -> string_of_bool a
   | Int a    -> string_of_int a
@@ -194,6 +202,15 @@ let str_to_elt_fun = function
   | "f" -> fun a -> if a = "" then Float nan else Float (float_of_string a)
   | "s" -> fun a -> String a
   | _   -> failwith "str_to_elt_fun: unsupported type"
+
+
+let elt_array_to_series typ x =
+  match typ with
+  | Bool_Series _   -> pack_bool_series (Array.map unpack_bool x)
+  | Int_Series _    -> pack_int_series (Array.map unpack_int x)
+  | Float_Series _  -> pack_float_series (Array.map unpack_float x)
+  | String_Series _ -> pack_string_series (Array.map unpack_string x)
+  | Any_Series      -> Any_Series
 
 
 let make ?data head_names =
@@ -596,6 +613,25 @@ let sort ?(inc=true) x head =
   ) indices;
   y
 
+
+let unique x head =
+  let series = get_col_by_name x head in
+  let s_size = length_series series in
+  let h_size = max 64 (s_size / 2) in
+  let htbl = Hashtbl.create h_size in
+  let stack = Owl_utils_stack.make () in
+  for i = 0 to s_size - 1 do
+    let k = get_ith_elt i series in
+    if Hashtbl.mem htbl k = false then (
+      Hashtbl.add htbl k None;
+      Owl_utils_stack.push stack k
+    )
+  done;
+  let elt_array = Owl_utils_stack.to_array stack in
+  elt_array_to_series series elt_array
+
+
+(* I/O functions *)
 
 let guess_separator lines =
   let sep = [|','; ' '; '\t'; ';'; ':'; '|'|] in
