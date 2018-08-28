@@ -1,6 +1,12 @@
 (*
  * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *
+ * Core optimization algorithms and API ported from Hype
+ * (http://hypelib.github.io/Hype/), copyright (c) 2015-2018 National
+ * University of Ireland Maynooth (Barak A. Pearlmutter <barak@pearlmutter.net>,
+ * 2015-2016 National University of Ireland Maynooth (Atilim Gunes Baydin),
+ * 2016-2018 University of Oxford (Atilim Gunes Baydin <gunes@robots.ox.ac.uk>)
  *)
 
 (**

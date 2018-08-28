@@ -1,6 +1,14 @@
 (*
  * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
+
+ * Core nested automatic differentiation algorithm and differentiation API
+ * ported from DiffSharp (http://diffsharp.github.io), copyright (c) 2014-2016
+ * National University of Ireland Maynooth (Atilim Gunes Baydin), 2014-2018
+ * National University of Ireland Maynooth (Barak A. Pearlmutter
+ * <barak@pearlmutter.net>), 2016-2018 University of Oxford (Atilim Gunes
+ * Baydin <gunes@robots.ox.ac.uk>), 2017-2018 Microsoft Research Cambridge
+ * (Don Syme <dsyme@microsoft.com>
  *)
 
 open Owl_types

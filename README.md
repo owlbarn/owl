@@ -676,3 +676,10 @@ Just pull the image and dig into code saved in `/root/owl`, then have fun!
 **Acknowledgement: Funded in part by EPSRC project - Contrive (EP/N028422/1).** Please refer to the [full acknowledgement](https://github.com/owlbarn/owl/blob/master/ACKNOWLEDGEMENT.md) for more details.
 
 **Contribution Agreement:** Contributions must comply with the [Developer's Certificate of Origin](https://developercertificate.org/), which means you need to sign off your commits. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+
+## Credits
+
+Owl is partially based on several open-source projects which contribute a significant amount of original novelty. Here is an incomplete list of such projects. Please do contact me in case you any project should be included but missing in the list.
+
+* [DiffSharp](http://diffsharp.github.io/DiffSharp/), [Atilim Gunes Baydin](http://www.cs.nuim.ie/~gunes/), [Barak A. Pearlmutter](http://www.bcl.hamilton.ie/~barak/), and et al., [[techreport]](https://arxiv.org/abs/1502.05767). Code ported to Algodiff and Optimise modules.
