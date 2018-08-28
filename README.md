@@ -682,4 +682,4 @@ Just pull the image and dig into code saved in `/root/owl`, then have fun!
 
 Owl is partially based on several open-source projects which contribute a significant amount of original novelty. Here is an incomplete list of such projects. Please do contact me in case you any project should be included but missing in the list.
 
-* [DiffSharp](http://diffsharp.github.io/DiffSharp/), [Atilim Gunes Baydin](http://www.cs.nuim.ie/~gunes/), [Barak A. Pearlmutter](http://www.bcl.hamilton.ie/~barak/), and et al., [[techreport]](https://arxiv.org/abs/1502.05767). Code ported to Algodiff and Optimise modules.
+* [DiffSharp](http://diffsharp.github.io/DiffSharp/) and [Hype](http://hypelib.github.io/Hype/), by [Atilim Gunes Baydin](http://www.cs.nuim.ie/~gunes/), [Barak A. Pearlmutter](http://www.bcl.hamilton.ie/~barak/), and et al., [[techreport]](https://arxiv.org/abs/1502.05767). Code ported to Algodiff and Optimise modules.
