@@ -32,8 +32,6 @@ Because Owl is always under active development, there might be a lag between the
 
 - The plot module is built on top of [Hezekiah M. Carty](https://github.com/hcarty)'s project: [ocaml-plplot](https://github.com/hcarty/ocaml-plplot).
 
-- [Francois BERENGER](https://github.com/UnixJunkie) implemented a light and neat logging module which Owl borrows many ideas. The older version of Owl directly used Francois' library.
-
 - Many functions rely on [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) and its [OCaml binding](https://github.com/ryanrhymes/eigen). The binding also contains some functions (e.g., convolution functions) from Google's [Tensorflow](https://www.tensorflow.org/).
 
 - [Jérémie Dimino](https://github.com/diml) and many others built the powerful [building system](https://github.com/ocaml/dune) and convenient [toplevel](https://github.com/diml/utop) for OCaml.
