@@ -631,6 +631,19 @@ let unique x head =
   elt_array_to_series series elt_array
 
 
+(* FIXME: not finished ... *)
+let _join ?on ?how x =
+  let on = match on with
+    | Some a -> head_to_id x a
+    | None   -> 0
+  in
+  let how = match how with
+    | Some a -> a
+    | None   -> `Inner
+  in
+  on, how
+
+
 (* I/O functions *)
 
 let guess_separator lines =
