@@ -27,7 +27,7 @@ let _color_to_str = function
 
 let _level = ref INFO
 
-let _output = ref stderr
+let _output = ref stdout
 
 let _colorful = ref true
 
