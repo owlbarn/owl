@@ -250,7 +250,7 @@ let train ?state ?params ?(init_model=true) nn x y =
     | Some p -> p
     | None   -> Params.default ()
   in
-  Optimise.S.minimise_network ?state p (forward nn) (backward nn) (update nn) (save nn) (Arr x) (Arr y)
+  Optimise.minimise_network ?state p (forward nn) (backward nn) (update nn) (save nn) (Arr x) (Arr y)
 
 let test_model nn x y =
   Dense.Matrix.S.iter2_rows (fun u v ->
