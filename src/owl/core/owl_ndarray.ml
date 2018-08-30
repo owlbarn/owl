@@ -12,6 +12,8 @@ include Owl_ndarray_conv
 
 include Owl_ndarray_pool
 
+include Owl_ndarray_upsampling
+
 include Owl_ndarray_contract
 
 include Owl_ndarray_transpose

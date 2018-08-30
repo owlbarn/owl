@@ -4815,6 +4815,82 @@ let avg_pool1d_backward_ ~out padding input kernel stride output' =
   avg_pool2d_backward_ ~out padding input kernel stride output'
 
 
+let upsampling2d input size =
+  assert (num_dims input = 4);
+  assert (Array.length size = 2);
+
+  (* let _kind = kind input in
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let in_cols = input_shp.(1) in
+  let in_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let col_scale = size.(0) in
+  let row_scale = size.(1) in
+  let output_cols = in_cols * col_scale in
+  let output_rows = in_rows * row_scale in
+
+  let input_cri = in_cols * in_rows * in_channel in
+  let input_ri  = in_rows * in_channel in
+  let output_cri = output_cols * output_rows * in_channel in
+  let output_ri  = output_rows * in_channel in
+
+  let output = empty _kind [|batches; output_cols; output_rows; in_channel|] in
+
+  for b = 0 to batches - 1 do
+    for c = 0 to output_cols - 1 do
+      let in_c = Pervasives.floor ((float_of_int c) /. (float_of_int col_scale)) |> int_of_float in
+      let in_c = min in_c (in_cols - 1) in
+      for r = 0 to output_rows - 1 do
+        let in_r = Pervasives.floor ((float_of_int r) /. (float_of_int row_scale)) |> int_of_float in
+        let in_r = min in_r (in_rows - 1) in
+        _owl_copy _kind in_channel
+          ~ofsx:(b * input_cri + in_c * input_ri + in_r * in_channel)
+          ~ofsy:(b * output_cri + c * output_ri + r * in_channel)
+          ~incx:1 ~incy:1
+          input output
+      done
+    done
+  done;
+  output *)
+
+  repeat input [|1; size.(0); size.(1); 1|]
+
+
+let upsampling2d_backward input size output =
+  assert (num_dims input = 4);
+  assert (Array.length size = 2);
+
+  let _kind = kind input in
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let col_scale = size.(0) in
+  let row_scale = size.(1) in
+
+  let output_shp = shape output in
+  let output_cols = input_cols * col_scale in
+  let output_rows = input_rows * row_scale in
+  assert (output_cols = output_shp.(1));
+  assert (output_rows = output_shp.(2));
+
+  let input' = zeros _kind input_shp in
+
+  _owl_spatial_upsampling_backward _kind
+    input' output
+    batches input_cols input_rows in_channel
+    output_cols output_rows
+    col_scale row_scale;
+
+  input'
+
+
 let _diff a x =
   let _stride = strides x in
   let _slicez = slice_size x in

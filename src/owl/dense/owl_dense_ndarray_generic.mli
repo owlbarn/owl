@@ -1906,6 +1906,9 @@ val avg_pool3d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a
 val max_pool2d_argmax : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t * (int64, int64_elt) t
 (** TODO *)
 
+val upsampling2d : ('a, 'b) t -> int array -> ('a, 'b) t
+(** TODO *)
+
 val conv1d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
 
@@ -1978,6 +1981,8 @@ val avg_pool2d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a
 val avg_pool3d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
 
+val upsampling2d_backward : ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** TODO *)
 
 (** {6 Helper functions }  *)
 
