@@ -27,8 +27,8 @@ let draw_line x0 y0 p =
   let y' = Mat.empty 1 c in
   for i = 0 to c - 1 do
     let x = a +. (float_of_int i *. (b -. a) /. float_of_int c) in
-    let y = (p.{0,0} *. x +. p.{2,0}) /. (p.{1,0} *. (-1.)) in
-    x'.{0,i} <- x; y'.{0,i} <- y
+    let y = (Mat.get p 0 0 *. x +. Mat.get p 2 0) /. (Mat.get p 1 0 *. (-1.)) in
+    Mat.set x' 0 i x; Mat.set y' 0 i y
   done;
   let h = Plot.create "plot_svm.png" in
   Plot.(plot ~h ~spec:[ RGB (100,100,100) ] x' y');
@@ -42,4 +42,4 @@ let _ =
   let r = Regression.D.svm ~i:true x y in
   let p = Mat.(r.(0) @= r.(1)) in
   draw_line (Mat.col x 0) (Mat.col x 1) p;
-  Mat.pp_dsmat Mat.(r.(0) @= r.(1))
+  Owl_pretty.print_dsnda Mat.(r.(0) @= r.(1))
