@@ -11,14 +11,14 @@ let test_01 a =
   let x = M.var_arr "x" in
   M.assign_arr x a;
   let y = M.sin x in
-  M.eval_arr ~dev_id:1 [|y|];
+  M.eval_arr ~dev_id:0 [|y|];
   M.unpack_arr y
 
 
 let test_02 a =
   let x = M.uniform [|100; 100|] in
   let y = M.cos x in
-  M.eval_arr ~dev_id:1 [|y|];
+  M.eval_arr ~dev_id:0 [|y|];
   M.unpack_arr y
 
 
@@ -26,7 +26,7 @@ let test_05 a =
   let x = M.var_arr "x" in
   M.assign_arr x (Dense.Ndarray.S.ones [|10; 10|]);
   let y = M.cos x in
-  M.eval_arr ~dev_id:1 [|y|];
+  M.eval_arr ~dev_id:0 [|y|];
   M.unpack_arr y
 
 
@@ -36,7 +36,7 @@ let test_06 a =
   M.assign_arr x (Dense.Ndarray.S.ones [|10; 10|]);
   M.assign_arr y (Dense.Ndarray.S.ones [|10; 10|]);
   let z = M.(add (cos x) y) in
-  M.eval_arr ~dev_id:1 [|z|];
+  M.eval_arr ~dev_id:0 [|z|];
   M.unpack_arr z
 
 
@@ -46,7 +46,7 @@ let test_03 a =
   M.assign_arr x (Dense.Ndarray.S.ones [|100; 100|]);
   M.assign_arr y (Dense.Ndarray.S.ones [|1; 100|]);
   let z = M.add x y in
-  M.eval_arr ~dev_id:1 [|z|];
+  M.eval_arr ~dev_id:0 [|z|];
   M.unpack_arr z
 
 
