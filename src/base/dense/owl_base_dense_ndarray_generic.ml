@@ -3701,6 +3701,54 @@ let dilated_conv1d_backward_kernel input kernel stride rate output' =
   reshape kernel' kernel_shp
 
 
+let upsampling2d input size =
+  assert (num_dims input = 4);
+  assert (Array.length size = 2);
+  repeat input [|1; size.(0); size.(1); 1|]
+
+
+let upsampling2d_backward input size output =
+  assert (num_dims input = 4);
+  assert (Array.length size = 2);
+
+  let _kind = kind input in
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let col_scale = size.(0) in
+  let row_scale = size.(1) in
+
+  let output_shp = shape output in
+  let output_cols = input_cols * col_scale in
+  let output_rows = input_rows * row_scale in
+  assert (output_cols = output_shp.(1));
+  assert (output_rows = output_shp.(2));
+
+  let input' = zeros _kind input_shp in
+
+  for b = 0 to batches - 1 do
+    for c = 0 to output_cols - 1 do
+      let in_c = Pervasives.floor ((float_of_int c) /. (float_of_int col_scale)) |> int_of_float in
+      let in_c = Pervasives.min in_c (input_cols - 1) in
+      for r = 0 to output_rows - 1 do
+        let in_r = Pervasives.floor ((float_of_int r) /. (float_of_int row_scale)) |> int_of_float in
+        let in_r = Pervasives.min in_r (input_rows - 1) in
+        for i = 0 to in_channel - 1 do
+          let in_val = get input' [|b; in_c; in_r; i|] in
+          let out_val = get output [|b; c; r; i|] in
+          set input' [|b; in_c; in_r; i|] (in_val +. out_val)
+        done
+      done
+    done
+  done;
+
+  input'
+
+
 (* matrix functions *)
 
 let _remove_unit_dims dims =
