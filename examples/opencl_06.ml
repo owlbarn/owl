@@ -9,14 +9,14 @@ module M = Owl_computation_opencl_engine.Make (Dense.Ndarray.S);;
 
 let test_01 a =
   let x = M.uniform [|100; 100|] in
-  M.eval_arr ~dev_id:1 [|x|];
+  M.eval_arr ~dev_id:0 [|x|];
   M.unpack_arr x
 
 
 let test_02 a =
   let x = M.uniform [|100; 100|] in
   let y = M.cos x in
-  M.eval_arr ~dev_id:1 [|y|];
+  M.eval_arr ~dev_id:0 [|y|];
   M.unpack_arr y
 
 
@@ -25,7 +25,7 @@ let test_03 a =
   let x = M.uniform [|2000; 2000|] in
   let f () =
     M.(arr_to_node x |> invalidate);
-    M.eval_arr ~dev_id:1 [|x|]
+    M.eval_arr ~dev_id:0 [|x|]
   in
   Owl_log.info "PRNG uniform ...";
   Owl_log.info "PRNG #1: %.g ms" (Utils.time f);
@@ -41,7 +41,7 @@ let test_04 a =
   let x = M.var_arr "x" in
   M.assign_arr x a;
   let y = M.min ~axis:1 x in
-  M.eval_arr ~dev_id:1 [|y|];
+  M.eval_arr ~dev_id:0 [|y|];
   M.unpack_arr y
 
 
@@ -52,7 +52,7 @@ let test_05 a =
   let y = M.sum ~axis:0 x in
   let f () =
     M.(arr_to_node y |> invalidate);
-    M.eval_arr ~dev_id:1 [|y|]
+    M.eval_arr ~dev_id:0 [|y|]
   in
   Owl_log.info "PRNG #1: %.g ms" (Utils.time f);
   Owl_log.info "PRNG #2: %.g ms" (Utils.time f);
@@ -68,7 +68,7 @@ let test_06 a =
   let x = M.gaussian ~mu [|2000; 2000|] in
   let f () =
     M.(arr_to_node x |> invalidate);
-    M.eval_arr ~dev_id:1 [|x|]
+    M.eval_arr ~dev_id:0 [|x|]
   in
   Owl_log.info "PRNG gaussian ...";
   Owl_log.info "PRNG #1: %.g ms" (Utils.time f);

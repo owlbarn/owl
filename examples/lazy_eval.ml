@@ -16,8 +16,7 @@ let lazy_eval x () =
 
 (* an exmaple for eager evaluation *)
 let eager_eval x () =
-  Arr.(add x x |> log |> sin |> neg |> cos |> abs |> sinh |> round |> atan)
-
+  ignore Arr.(add x x |> log |> sin |> neg |> cos |> abs |> sinh |> round |> atan)
 
 (* test incremental compuation by changing part of inputs *)
 let incremental x =
@@ -32,25 +31,18 @@ let incremental x =
   M.assign_elt b 7.;
   Printf.printf "Incremental#2:\t%.3f ms\n" (Utils.time (fun () -> M.eval_arr [| c |]))
 
-
-(* print out the computation trace on terminal *)
-let print_trace a =
-  let x = M.var_arr "x" in
-  let y = M.var_arr "y" in
-  let z = M.(add x y |> sin |> abs |> log) in
-  M.assign_arr x a;
-  M.assign_arr y a;
-  M.eval_arr [| z |];
-  M.to_trace [| M.arr_to_node z |] |> print_endline
-
-
 (* generate computation graph, you need to install graphviz *)
-let print_graph () =
+let print_graph input =
   let x = M.var_arr "x" in
   let y = M.var_arr "y" in
   let z = M.(add x y |> dot x |> sin |> abs |> sum' |> add_scalar x |> log |> atan2 y |> neg |> relu) in
   print_endline "visualise computation graph to dot file ...";
-  M.nodes_to_dot [| M.arr_to_node z |] |> Owl_io.write_file "plot_lazy.dot";
+  let inputs = [|M.arr_to_node x; M.arr_to_node y|] in
+  let outputs = [|M.arr_to_node z|] in
+  let graph = M.make_graph inputs  outputs "graph" in
+  M.assign_arr x input;
+  M.assign_arr y input;
+  M.graph_to_dot graph |> Owl_io.write_file "plot_lazy.dot";
   Sys.command "dot -Tpdf plot_lazy.dot -o plot_lazy.pdf"
 
 
@@ -59,5 +51,4 @@ let _ =
   Printf.printf "Lazy eval:\t%.3f ms\n" (Utils.time (lazy_eval x));
   Printf.printf "Eager eval:\t%.3f ms\n" (Utils.time (eager_eval x));
   incremental x;
-  print_trace x;
-  print_graph ()
+  print_graph x

@@ -20,6 +20,6 @@ let loop_gpu a =
 
 let _ =
   let a = Dense.Ndarray.S.uniform [|2000; 2000|] in
-  let f () = loop_gpu a in
+  let f () = ignore @@ loop_gpu a in
   let t = Utils.time f in
   Owl_log.info "loop_gpu takes %g ms" t
