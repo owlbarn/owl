@@ -156,6 +156,7 @@ module Make
     | AvgPool1d                     of padding * int array * int array
     | AvgPool2d                     of padding * int array * int array
     | AvgPool3d                     of padding * int array * int array
+    | UpSampling2d                  of int array
     | Conv1dBackwardInput           of int array
     | Conv1dBackwardKernel          of int array
     | Conv2dBackwardInput           of int array
@@ -180,6 +181,7 @@ module Make
     | AvgPool1dBackward             of padding * int array * int array
     | AvgPool2dBackward             of padding * int array * int array
     | AvgPool3dBackward             of padding * int array * int array
+    | UpSampling2dBackward          of int array
     | RowNum
     | ColNum
     | Row

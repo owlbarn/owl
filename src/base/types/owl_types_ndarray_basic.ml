@@ -230,6 +230,8 @@ module type Sig = sig
 
   val avg_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
 
+  val upsampling2d : arr -> int array -> arr
+
   val conv1d_backward_input : arr -> arr -> int array -> arr -> arr
 
   val conv1d_backward_kernel : arr -> arr -> int array -> arr -> arr
@@ -277,6 +279,8 @@ module type Sig = sig
   val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
   val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+  val upsampling2d_backward : arr -> int array -> arr -> arr
 
 
   (* matrix functions *)
