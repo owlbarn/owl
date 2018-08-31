@@ -427,6 +427,13 @@ module Make
     add_node ?act_typ nn [|input_node|] n
 
 
+  let upsampling2d ?name ?act_typ size input_node =
+    let neuron = UpSampling2D (UpSampling2D.create size) in
+    let nn = get_network input_node in
+    let n = make_node ?name [||] [||] neuron None nn in
+    add_node ?act_typ nn [|input_node|] n
+
+
   let dropout ?name rate input_node =
     let neuron = Dropout (Dropout.create rate) in
     let nn = get_network input_node in

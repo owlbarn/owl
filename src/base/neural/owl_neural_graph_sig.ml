@@ -322,6 +322,14 @@ Arguments:
 ``global_avg_poo2d`` global average pooling operation for spatial data.
   *)
 
+  val upsampling2d : ?name:string -> ?act_typ:Activation.typ -> int array -> node -> node
+  (**
+``upsampling2d ~act_typ size node`` adds a upsampling operation for spatial data to ``node``.
+
+Arguments:
+  * ``size``: array of two integers; the upsampling factors for rows and columns.
+  *)
+
   val dropout : ?name:string -> float -> node -> node
   (**
 ``dropout rate node`` applies Dropout to the input to prevent overfitting.
