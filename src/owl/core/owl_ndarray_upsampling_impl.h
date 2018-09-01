@@ -33,20 +33,25 @@ CAMLprim value FUN_NATIVE (spatial_backward) (
 
   memset(input_ptr, 0, batches * input_cri * sizeof(TYPE));
 
-  INIT;
-
   for (int b = 0; b < batches; b++) {
+    int input_idx_b  = b * input_cri;
+    int output_idx_b = b * output_cri;
+
     for (int c = 0; c < output_cols; c++) {
       int in_c = c / col_scale;
       in_c = in_c < (input_cols - 1) ? in_c : input_cols - 1;
+      int input_idx_bc  = input_idx_b + in_c * input_ri;
+      int output_idx_bc = output_idx_b + c * output_ri;
+
       for (int r = 0; r < output_rows; r++) {
         int in_r = r / row_scale;
         in_r = in_r < (input_rows - 1) ? in_r : input_rows - 1;
+        int input_idx_bcr  = input_idx_bc + in_r * in_channel;
+        int output_idx_bcr = output_idx_bc + r * in_channel;
+
         for (int i = 0; i < in_channel; i++) {
-          int input_idx = b * input_cri + in_c * input_ri +
-            in_r * in_channel + i;
-          int output_idx = b * output_cri + c * output_ri +
-            r * in_channel + i;
+          int input_idx  = input_idx_bcr + i;
+          int output_idx = output_idx_bcr + i;
           *(input_ptr + input_idx) += *(output_ptr + output_idx);
         }
       }

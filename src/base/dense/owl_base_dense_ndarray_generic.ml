@@ -3732,10 +3732,10 @@ let upsampling2d_backward input size output =
 
   for b = 0 to batches - 1 do
     for c = 0 to output_cols - 1 do
-      let in_c = Pervasives.floor ((float_of_int c) /. (float_of_int col_scale)) |> int_of_float in
+      let in_c = c / col_scale in
       let in_c = Pervasives.min in_c (input_cols - 1) in
       for r = 0 to output_rows - 1 do
-        let in_r = Pervasives.floor ((float_of_int r) /. (float_of_int row_scale)) |> int_of_float in
+        let in_r = r / row_scale in
         let in_r = Pervasives.min in_r (input_rows - 1) in
         for i = 0 to in_channel - 1 do
           let in_val = get input' [|b; in_c; in_r; i|] in
