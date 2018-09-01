@@ -371,6 +371,9 @@ module type Sig = sig
   val avg_pool3d : ?padding:Owl_types.padding -> arr -> int array -> int array -> arr
   (** TODO *)
 
+  val upsampling2d : arr -> int array -> arr
+  (** TODO *)
+
   val conv1d_backward_input : arr -> arr -> int array -> arr -> arr
   (** TODO *)
 
@@ -441,6 +444,9 @@ module type Sig = sig
   (** TODO *)
 
   val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
+  (** TODO *)
+
+  val upsampling2d_backward : arr -> int array -> arr -> arr
   (** TODO *)
 
   val row_num : arr -> int

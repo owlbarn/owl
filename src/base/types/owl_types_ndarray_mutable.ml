@@ -281,6 +281,8 @@ module type Sig = sig
 
   val avg_pool3d_ : out:arr -> ?padding:padding -> arr -> int array -> int array -> unit
 
+  val upsampling2d_ : out:arr -> arr -> int array -> unit
+
   val conv1d_backward_input_ : out:arr -> arr -> arr -> int array -> arr -> unit
 
   val conv1d_backward_kernel_ : out:arr -> arr -> arr -> int array -> arr -> unit
@@ -328,6 +330,8 @@ module type Sig = sig
   val avg_pool2d_backward_ : out:arr -> padding -> arr -> int array -> int array -> arr -> unit
 
   val avg_pool3d_backward_ : out:arr -> padding -> arr -> int array -> int array -> arr -> unit
+
+  val upsampling2d_backward_ : out:arr -> arr -> int array -> arr -> unit
 
   val fused_adagrad_ : ?out:arr -> rate:float -> eps:float -> arr -> unit
 

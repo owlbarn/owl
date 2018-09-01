@@ -212,6 +212,7 @@ module Make
         | AvgPool1d (_padding, _kernel, _stride)         -> _init_00 x
         | AvgPool2d (_padding, _kernel, _stride)         -> _init_00 x
         | AvgPool3d (_padding, _kernel, _stride)         -> _init_00 x
+        | UpSampling2d _size                             -> _init_00 x
         | Conv1dBackwardInput _stride                    -> _init_00 x
         | Conv1dBackwardKernel _stride                   -> _init_00 x
         | Conv2dBackwardInput _stride                    -> _init_00 x
@@ -226,6 +227,7 @@ module Make
         | AvgPool1dBackward (_padding, _kernel, _stride) -> _init_00 x
         | AvgPool2dBackward (_padding, _kernel, _stride) -> _init_00 x
         | AvgPool3dBackward (_padding, _kernel, _stride) -> _init_00 x
+        | UpSampling2dBackward _size                     -> _init_00 x
         | Row                                            -> failwith "Row"
         | Rows _i                                        -> failwith "Rows"
         | CopyRowTo                                      -> failwith "CopyRowTo"

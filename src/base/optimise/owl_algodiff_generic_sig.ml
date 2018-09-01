@@ -239,6 +239,9 @@ module type Sig = sig
     val avg_pool3d : padding -> t -> int array -> int array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val upsampling2d : t -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val reshape : t -> int array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

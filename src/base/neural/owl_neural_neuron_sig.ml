@@ -1271,7 +1271,34 @@ module UpSampling1D : sig  end
 
   (** {6 UpSampling2D neuron} *)
 
-module UpSampling2D : sig  end
+module UpSampling2D : sig
+
+  type neuron_typ = {
+    mutable size      : int array;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+  (** Neuron type definition. *)
+
+  val create : int array -> neuron_typ
+  (** Create the neuron. *)
+
+  val connect : int array -> neuron_typ -> unit
+  (** Connect this neuron to others in a neural network. *)
+
+  val copy : neuron_typ -> neuron_typ
+  (** Make a deep copy of the neuron and its parameters. *)
+
+  val run : t -> neuron_typ -> t
+  (** Execute the computation in this neuron. *)
+
+  val to_string : neuron_typ -> string
+  (** Convert the neuron to its string representation. The string is often a summary of the parameters defined in the neuron. *)
+
+  val to_name : unit -> string
+  (** Return the name of the neuron. *)
+
+end
 
 
   (** {6 UpSampling3D neuron} *)
@@ -1850,6 +1877,7 @@ type neuron =
   | GlobalMaxPool2D of GlobalMaxPool2D.neuron_typ
   | GlobalAvgPool1D of GlobalAvgPool1D.neuron_typ
   | GlobalAvgPool2D of GlobalAvgPool2D.neuron_typ
+  | UpSampling2D    of UpSampling2D.neuron_typ
   | Dropout         of Dropout.neuron_typ
   | Reshape         of Reshape.neuron_typ
   | Flatten         of Flatten.neuron_typ

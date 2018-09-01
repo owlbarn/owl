@@ -2119,8 +2119,40 @@ module Make
   end
 
 
-  (* TODO: definition of UpSampling2D neuron *)
+  (* definition of UpSampling2D neuron *)
   module UpSampling2D = struct
+
+    type neuron_typ = {
+      mutable size      : int array;
+      mutable in_shape  : int array;
+      mutable out_shape : int array;
+    }
+
+    let create size = {
+      size;
+      in_shape  = [|0;0;0|];
+      out_shape = [|0;0;0|];
+    }
+
+    let connect out_shape l =
+      assert Array.(length out_shape = length l.in_shape);
+      l.in_shape.(0) <- out_shape.(0);
+      l.in_shape.(1) <- out_shape.(1);
+      l.in_shape.(2) <- out_shape.(2);
+      l.out_shape.(0) <- l.in_shape.(0) * l.size.(0);
+      l.out_shape.(1) <- l.in_shape.(1) * l.size.(1);
+      l.out_shape.(2) <- out_shape.(2)
+
+    let copy l = create l.size
+
+    let run x l = Maths.(upsampling2d x l.size)
+
+    let to_string l =
+      Printf.sprintf "    UpSampling2D : tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
+      Printf.sprintf "    size         : [%i; %i]\n" l.size.(0) l.size.(1) ^
+      ""
+
+    let to_name () = "upsampling2d"
 
   end
 
@@ -2881,6 +2913,7 @@ module Make
     | GlobalMaxPool2D of GlobalMaxPool2D.neuron_typ
     | GlobalAvgPool1D of GlobalAvgPool1D.neuron_typ
     | GlobalAvgPool2D of GlobalAvgPool2D.neuron_typ
+    | UpSampling2D    of UpSampling2D.neuron_typ
     | Dropout         of Dropout.neuron_typ
     | Reshape         of Reshape.neuron_typ
     | Flatten         of Flatten.neuron_typ
@@ -2924,6 +2957,7 @@ module Make
     | GlobalMaxPool2D l -> GlobalMaxPool2D.(l.in_shape, l.out_shape)
     | GlobalAvgPool1D l -> GlobalAvgPool1D.(l.in_shape, l.out_shape)
     | GlobalAvgPool2D l -> GlobalAvgPool2D.(l.in_shape, l.out_shape)
+    | UpSampling2D l    -> UpSampling2D.(l.in_shape, l.out_shape)
     | Dropout l         -> Dropout.(l.in_shape, l.out_shape)
     | Reshape l         -> Reshape.(l.in_shape, l.out_shape)
     | Flatten l         -> Flatten.(l.in_shape, l.out_shape)
@@ -2973,6 +3007,7 @@ module Make
     | GlobalMaxPool2D l -> GlobalMaxPool2D.connect out_shapes.(0) l
     | GlobalAvgPool1D l -> GlobalAvgPool1D.connect out_shapes.(0) l
     | GlobalAvgPool2D l -> GlobalAvgPool2D.connect out_shapes.(0) l
+    | UpSampling2D l    -> UpSampling2D.connect out_shapes.(0) l
     | Dropout l         -> Dropout.connect out_shapes.(0) l
     | Reshape l         -> Reshape.connect out_shapes.(0) l
     | Flatten l         -> Flatten.connect out_shapes.(0) l
@@ -3163,6 +3198,7 @@ module Make
     | GlobalMaxPool2D l -> GlobalMaxPool2D GlobalMaxPool2D.(copy l)
     | GlobalAvgPool1D l -> GlobalAvgPool1D GlobalAvgPool1D.(copy l)
     | GlobalAvgPool2D l -> GlobalAvgPool2D GlobalAvgPool2D.(copy l)
+    | UpSampling2D l    -> UpSampling2D UpSampling2D.(copy l)
     | Dropout l         -> Dropout Dropout.(copy l)
     | Reshape l         -> Reshape Reshape.(copy l)
     | Flatten l         -> Flatten Flatten.(copy l)
@@ -3206,6 +3242,7 @@ module Make
     | GlobalMaxPool2D l -> GlobalMaxPool2D.run a.(0) l
     | GlobalAvgPool1D l -> GlobalAvgPool1D.run a.(0) l
     | GlobalAvgPool2D l -> GlobalAvgPool2D.run a.(0) l
+    | UpSampling2D l    -> UpSampling2D.run a.(0) l
     | Dropout l         -> Dropout.run a.(0) l
     | Reshape l         -> Reshape.run a.(0) l
     | Flatten l         -> Flatten.run a.(0) l
@@ -3249,6 +3286,7 @@ module Make
     | GlobalMaxPool2D l -> GlobalMaxPool2D.to_string l
     | GlobalAvgPool1D l -> GlobalAvgPool1D.to_string l
     | GlobalAvgPool2D l -> GlobalAvgPool2D.to_string l
+    | UpSampling2D l    -> UpSampling2D.to_string l
     | Dropout l         -> Dropout.to_string l
     | Reshape l         -> Reshape.to_string l
     | Flatten l         -> Flatten.to_string l
@@ -3292,6 +3330,7 @@ module Make
     | GlobalMaxPool2D _ -> GlobalMaxPool2D.to_name ()
     | GlobalAvgPool1D _ -> GlobalAvgPool1D.to_name ()
     | GlobalAvgPool2D _ -> GlobalAvgPool2D.to_name ()
+    | UpSampling2D _    -> UpSampling2D.to_name ()
     | Dropout _         -> Dropout.to_name ()
     | Reshape _         -> Reshape.to_name ()
     | Flatten _         -> Flatten.to_name ()

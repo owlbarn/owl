@@ -229,6 +229,13 @@ module Make
     | _, _                    -> [| None |]
 
 
+  let _infer_shape_29 input_shapes size =
+    let input_shape = input_shapes.(0).(0) in
+    match input_shape with
+    | Some input -> [| Some Owl_utils_infer_shape.(upsampling2d input size) |]
+    | _          -> [| None |]
+
+
   let infer_shape operator args =
     let input_shapes = Array.map (fun a -> (Owl_graph.attr a).shape) args in
     match operator with
@@ -335,6 +342,7 @@ module Make
     | AvgPool1d (padding, kernel, stride)            -> _infer_shape_15 input_shapes padding kernel stride
     | AvgPool2d (padding, kernel, stride)            -> _infer_shape_21 input_shapes padding kernel stride
     | AvgPool3d (padding, kernel, stride)            -> _infer_shape_17 input_shapes padding kernel stride
+    | UpSampling2d size                              -> _infer_shape_29 input_shapes size
     | Conv1dBackwardInput _stride                    -> _infer_shape_01 input_shapes
     | Conv1dBackwardKernel _stride                   -> _infer_shape_02 input_shapes
     | Conv2dBackwardInput _stride                    -> _infer_shape_01 input_shapes
@@ -359,6 +367,7 @@ module Make
     | AvgPool1dBackward (_padding, _kernel, _stride) -> _infer_shape_01 input_shapes
     | AvgPool2dBackward (_padding, _kernel, _stride) -> _infer_shape_01 input_shapes
     | AvgPool3dBackward (_padding, _kernel, _stride) -> _infer_shape_01 input_shapes
+    | UpSampling2dBackward _size                     -> _infer_shape_01 input_shapes
     | Row                                            -> _infer_shape_09 input_shapes 0 1
     | Rows i                                         -> _infer_shape_09 input_shapes 0 Array.(length i)
     | Dot (_transa, _transb, _alpha, _beta)          -> _infer_shape_19 input_shapes

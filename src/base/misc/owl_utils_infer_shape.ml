@@ -457,6 +457,18 @@ let pool2d input_shape padding kernel_shape stride_shape =
   [|batches; output_cols; output_rows; in_channel|]
 
 
+let upsampling2d input_shape size =
+  let batches = input_shape.(0) in
+  let input_cols = input_shape.(1) in
+  let input_rows = input_shape.(2) in
+  let in_channel = input_shape.(3) in
+
+  let col_size = size.(0) in
+  let row_size = size.(1) in
+
+  [|batches; input_cols * col_size; input_rows * row_size; in_channel|]
+
+
 let transpose input_shape axis =
   Array.map (fun j -> input_shape.(j)) axis
 

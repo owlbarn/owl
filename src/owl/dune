@@ -24,7 +24,7 @@
  (public_name owl)
  (wrapped false)
  (c_names
-  
+
   ;; Core
   owl_cblas_generated_stub
   owl_core_utils
@@ -41,14 +41,15 @@
   owl_ndarray_slide_stub
   owl_ndarray_sort_stub
   owl_ndarray_transpose_stub
+  owl_ndarray_upsampling_stub
   owl_ndarray_utils_stub
   owl_slicing_basic_stub
   owl_slicing_fancy_stub
-  
+
   ;; FFTPACK
   owl_fftpack_float32
   owl_fftpack_float64
-  
+
   ;; stats
   SFMT
   owl_stats_dist_beta
