@@ -139,7 +139,7 @@ module Make
         | AvgPool1d (_padding, _kernel, _stride)         -> pattern_000 x
         | AvgPool2d (_padding, _kernel, _stride)         -> pattern_000 x
         | AvgPool3d (_padding, _kernel, _stride)         -> pattern_000 x
-        | UpSampling2d (_size)                           -> pattern_000 x
+        | UpSampling2d _size                             -> pattern_000 x
         | Conv1dBackwardInput _stride                    -> pattern_000 x
         | Conv1dBackwardKernel _stride                   -> pattern_000 x
         | Conv2dBackwardInput _stride                    -> pattern_000 x
@@ -164,7 +164,7 @@ module Make
         | AvgPool1dBackward (_padding, _kernel, _stride) -> pattern_000 x
         | AvgPool2dBackward (_padding, _kernel, _stride) -> pattern_000 x
         | AvgPool3dBackward (_padding, _kernel, _stride) -> pattern_000 x
-        | UpSampling2dBackward (_size)                   -> pattern_000 x
+        | UpSampling2dBackward _size                     -> pattern_000 x
         | Row                                            -> pattern_000 x
         | Rows _i                                        -> pattern_000 x
         | CopyRowTo                                      -> pattern_000 x

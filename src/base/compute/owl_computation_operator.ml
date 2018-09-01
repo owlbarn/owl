@@ -347,7 +347,7 @@ module Make
     make_then_connect (AvgPool3d (padding, kernel, stride)) [|arr_to_node input|] |> node_to_arr
 
   let upsampling2d input size =
-    make_then_connect (UpSampling2d (size)) [|arr_to_node input|] |> node_to_arr
+    make_then_connect (UpSampling2d size) [|arr_to_node input|] |> node_to_arr
 
   let conv1d_backward_input input kernel stride output' =
     make_then_connect (Conv1dBackwardInput stride) [|arr_to_node input; arr_to_node kernel; arr_to_node output'|] |> node_to_arr
@@ -422,7 +422,7 @@ module Make
     make_then_connect (AvgPool3dBackward (padding, kernel, stride)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let upsampling2d_backward input size output' =
-    make_then_connect (UpSampling2dBackward (size)) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
+    make_then_connect (UpSampling2dBackward size) [|arr_to_node input; arr_to_node output'|] |> node_to_arr
 
   let row_num x =
     let s = shape x in
