@@ -148,6 +148,7 @@ module Make
         | AvgPool1d (padding, kernel, stride)           -> _eval_map_01 x (fun ~out x -> A.avg_pool1d_ ~out ~padding x.(0) kernel stride)
         | AvgPool2d (padding, kernel, stride)           -> _eval_map_01 x (fun ~out x -> A.avg_pool2d_ ~out ~padding x.(0) kernel stride)
         | AvgPool3d (padding, kernel, stride)           -> _eval_map_01 x (fun ~out x -> A.avg_pool3d_ ~out ~padding x.(0) kernel stride)
+        | UpSampling2d size                             -> _eval_map_01 x (fun ~out x -> A.upsampling2d_ ~out x.(0) size)
         | Conv1dBackwardInput stride                    -> _eval_map_01 x (fun ~out x -> A.conv1d_backward_input_ ~out x.(0) x.(1) stride x.(2))
         | Conv1dBackwardKernel stride                   -> _eval_map_01 x (fun ~out x -> A.conv1d_backward_kernel_ ~out x.(0) x.(1) stride x.(2))
         | Conv2dBackwardInput stride                    -> _eval_map_01 x (fun ~out x -> A.conv2d_backward_input_ ~out x.(0) x.(1) stride x.(2))
@@ -172,6 +173,7 @@ module Make
         | AvgPool1dBackward (padding, kernel, stride)   -> _eval_map_01 x (fun ~out x -> A.avg_pool1d_backward_ ~out padding x.(0) kernel stride x.(1))
         | AvgPool2dBackward (padding, kernel, stride)   -> _eval_map_01 x (fun ~out x -> A.avg_pool2d_backward_ ~out padding x.(0) kernel stride x.(1))
         | AvgPool3dBackward (padding, kernel, stride)   -> _eval_map_01 x (fun ~out x -> A.avg_pool3d_backward_ ~out padding x.(0) kernel stride x.(1))
+        | UpSampling2dBackward size                     -> _eval_map_01 x (fun ~out x -> A.upsampling2d_backward_ ~out x.(0) size x.(1))
         | Row                                           -> failwith "Row"
         | Rows _i                                       -> failwith "Rows"
         | CopyRowTo                                     -> failwith "CopyRowTo"
