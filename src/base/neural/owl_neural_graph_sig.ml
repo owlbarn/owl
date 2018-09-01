@@ -327,7 +327,7 @@ Arguments:
 ``upsampling2d ~act_typ size node`` adds a upsampling operation for spatial data to ``node``.
 
 Arguments:
-  * ``size``: array of two integers; the upsampling factors for rows and columns.
+  * ``size``: array of two integers, namely the upsampling factors for columns and rows.
   *)
 
   val dropout : ?name:string -> float -> node -> node

@@ -1,6 +1,6 @@
 (*
  * OWL - OCaml Scientific and Engineering Computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 open Bigarray
@@ -30,4 +30,3 @@ let _owl_spatial_upsampling_backward : type a b . (a, b) kind -> (a, b) owl_arr 
   | Complex32 -> owl_complex32_ndarray_upsampling_spatial_backward
   | Complex64 -> owl_complex64_ndarray_upsampling_spatial_backward
   | _         -> failwith "_owl_upsampling_spatial_backward: unsupported operation"
-

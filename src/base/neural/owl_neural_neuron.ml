@@ -2149,7 +2149,7 @@ module Make
 
     let to_string l =
       Printf.sprintf "    UpSampling2D : tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
-      Printf.sprintf "    size       : [%i; %i]\n" l.size.(0) l.size.(1) ^
+      Printf.sprintf "    size         : [%i; %i]\n" l.size.(0) l.size.(1) ^
       ""
 
     let to_name () = "upsampling2d"
