@@ -3,10 +3,10 @@ sudo: false
 services: docker
 
 install:
-  - wget https://raw.githubusercontent.com/mor1/ocaml-ci-scripts/tree/quieten-git-pull/.travis-docker.sh
+  - wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-docker.sh
 
 script:
-  - bash ./.travis-docker.sh
+  - bash -ex .travis-docker.sh
 
 env:
   global:
