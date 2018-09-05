@@ -332,7 +332,9 @@ type histogram = {
 let (.%()) = Array.unsafe_get and (.%()<-) = Array.unsafe_set
 (*let (.%()) = Array.get and (.%()<-) = Array.set*)
 
+
 let fcmp = (compare :> float -> _ -> _)
+
 
 (* fast direct binning for uniform bins *)
 
@@ -346,6 +348,7 @@ let setup_uniform_binning n x =
     if i = n then n - 1 else i in
   bmin, bmax, db, bins, get_bin
 
+
 let hist_uniform n x =
   let _bmin, _bmax, _db, bins, get_bin = setup_uniform_binning n x in
   let c = Array.make n 0 in
@@ -353,6 +356,7 @@ let hist_uniform n x =
       let i = get_bin y in
       c.%(i) <- c.%(i) + 1);
   bins, c
+
 
 let hist_weighted_uniform n w x =
   if Array.(length x <> length w) then
@@ -366,6 +370,7 @@ let hist_weighted_uniform n w x =
       wc.%(i) <- wc.%(i) +. w.%(j));
   (bins, c), Some wc
 
+
 (* nonuniform binning with binary search *)
 
 let setup_nonuniform_binning bins =
@@ -376,6 +381,7 @@ let setup_nonuniform_binning bins =
     if i = n && fcmp y bins.(n) = 0 then i - 1 else i in
   n, get_bin
 
+
 let hist_nonuniform bins x =
   let n, get_bin = setup_nonuniform_binning bins in
   let c = Array.make n 0 in
@@ -385,6 +391,7 @@ let hist_nonuniform bins x =
        * compatible with -unsafe compiler option. *)
       if 0 <= i && i < n then c.(i) <- c.(i) + 1);
   bins, c
+
 
 let hist_weighted_nonuniform bins w x =
   if Array.(length x <> length w) then
@@ -399,12 +406,14 @@ let hist_weighted_nonuniform bins w x =
          wc.(i) <- wc.(i) +. w.(j)));
   (bins, c), Some wc
 
+
 (* binning of sorted arrays by accumulating bin by bin *)
 
 let make_uniform_bins_from_sorted n x =
   let bmin, bmax = minmax x in
   let db = (bmax -. bmin) /. float_of_int n in
   Array.init (n + 1) (fun i -> bmin +. float_of_int i *. db)
+
 
 (* find start of upward iteration *)
 let init_sorted bins x =
@@ -421,6 +430,7 @@ let init_sorted bins x =
   assert (0 <= i && i <= n);
   assert (0 <= j && j < m);
   n, m, ref i, ref j
+
 
 let hist_sorted bins x =
   let n, m, bin_i, x_j = init_sorted bins x in
@@ -440,6 +450,7 @@ let hist_sorted bins x =
     incr x_j
   done;
   bins, c
+
 
 let hist_weighted_sorted bins w x =
   if Array.(length x <> length w) then
@@ -462,6 +473,7 @@ let hist_weighted_sorted bins w x =
     incr x_j
   done;
   (bins, c), Some wc
+
 
 let hist_to_string { bins; counts; weighted_counts; normalised_counts; density } =
   let n_counts = Array.fold_left (+) 0 counts in
@@ -494,6 +506,7 @@ let histogram
   {bins; counts; weighted_counts;
    normalised_counts=None; density=None}
 
+
 let histogram_sorted
     (bins:[`N of int|`Bins of float array])
     ?weights x =
@@ -506,6 +519,7 @@ let histogram_sorted
   {bins; counts; weighted_counts;
    normalised_counts=None; density=None}
 
+
 let normalise ({counts; weighted_counts; _} as h) =
   let nc = match weighted_counts with
     | None ->
@@ -515,6 +529,7 @@ let normalise ({counts; weighted_counts; _} as h) =
         let total = Array.fold_left (+.) 0. wcounts in
         Array.map (fun wc -> wc /. total) wcounts in
   {h with normalised_counts=Some nc}
+
 
 let normalise_density ({bins; counts; weighted_counts; _} as h) =
   let ds = match weighted_counts with
@@ -528,9 +543,46 @@ let normalise_density ({bins; counts; weighted_counts; _} as h) =
             wc /. (bins.(i+1) -. bins.(i)) /. total) wcounts in
   {h with density=Some ds}
 
+
 let pp_hist formatter hist =
   Format.open_box 0;
   Format.fprintf formatter "%s" (hist_to_string hist);
   Format.close_box ()
+
+
+
+let quantile x p =
+  let y = sort ~inc:true x in
+  let n = Array.length y in
+  let index = p *. (float_of_int (n - 1)) in
+  let lhs = int_of_float index in
+  let delta = index -. (float_of_int lhs) in
+
+  if n = 0 then 0.
+  else (
+    if lhs = n - 1 then y.(lhs)
+    else (1. -. delta) *. y.(lhs) +. delta *. y.(lhs + 1)
+  )
+
+
+let percentile x p = quantile x (p /. 100.)
+
+
+let median x = percentile x 50.
+
+
+let first_quartile x = percentile x 25.
+
+
+let third_quartile x = percentile x 75.
+
+
+let tukey_fences ?(k=1.5) arr =
+  let first_quartile = first_quartile arr in
+  let third_quartile = third_quartile arr in
+  let offset = k *. (third_quartile -. first_quartile) in
+  first_quartile -. offset, third_quartile +. offset
+
+
 
 (* ends here *)

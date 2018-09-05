@@ -90,6 +90,21 @@ val argsort : ?inc:bool -> float array -> int array
 val rank : ?ties_strategy:[ `Average | `Min | `Max ] -> float array -> float array
 (** Refer to :doc:`owl_stats`. *)
 
+val percentile : float array -> float -> float
+(** Refer to :doc:`owl_stats`. *)
+
+val quantile : float array -> float -> float
+(** Refer to :doc:`owl_stats`. *)
+
+val first_quartile : float array -> float
+(** Refer to :doc:`owl_stats`. *)
+
+val third_quartile : float array -> float
+(** Refer to :doc:`owl_stats`. *)
+
+val median : float array -> float
+(** Refer to :doc:`owl_stats`. *)
+
 type histogram = {
   bins              : float array;
   counts            : int array;
@@ -103,8 +118,7 @@ val histogram : [ `Bins of float array | `N of int ] -> ?weights:float array ->
   float array -> histogram
 (** Refer to :doc:`owl_stats`. *)
 
-val histogram_sorted : [ `Bins of float array | `N of int ] -> ?weights:float array
-  -> float array -> histogram
+val histogram_sorted : [ `Bins of float array | `N of int ] -> ?weights:float array -> float array -> histogram
 (** Refer to :doc:`owl_stats`. *)
 
 val normalise : histogram -> histogram
@@ -115,6 +129,10 @@ val normalise_density : histogram -> histogram
 
 val pp_hist: Format.formatter -> histogram -> unit
 (** Refer to :doc:`owl_stats`. *)
+
+val tukey_fences : ?k:float -> float array -> float * float
+(** Refer to :doc:`owl_stats`. *)
+
 
 (** {6 Random variables} *)
 
