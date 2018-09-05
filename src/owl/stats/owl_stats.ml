@@ -761,5 +761,12 @@ let gibbs_sampling f p n =
   done; s
 
 
+let tukey_fences ?(k=1.5) arr =
+  let first_quartile = first_quartile arr in
+  let third_quartile = third_quartile arr in
+  let offset = k *. (third_quartile -. first_quartile) in
+  first_quartile -. offset, third_quartile +. offset
+
+
 
 (* ends here *)

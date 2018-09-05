@@ -1019,5 +1019,15 @@ val dirichlet_pdf : float array -> alpha:float array -> float
 val dirichlet_logpdf : float array -> alpha:float array -> float
 (** TODO *)
 
+val tukey_fences : ?k:float -> float array -> float * float
+(**
+``tukey_fences ?k x`` returns a tuple of the lower and upper boundaries for
+values that are not outliers. ``k`` defaults to the standard coefficient of ``1.5``.
+For first and third quartiles ``Q1`` and `Q3`, the range is computed as follows:
+
+.. math::
+  (Q1 - k*(Q3-Q1), Q3 + k*(Q3-Q1))
+*)
+
 
 (* ends here *)
