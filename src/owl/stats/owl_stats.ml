@@ -767,4 +767,6 @@ let tukey_fences ?(k=1.5) arr =
   let offset = k *. (third_quartile -. first_quartile) in
   first_quartile -. offset, third_quartile +. offset
 
+
+
 (* ends here *)
