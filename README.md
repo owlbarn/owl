@@ -93,7 +93,7 @@ git clone https://github.com/owlbarn/owl.git
 Second, you need to figure out the missing dependencies and install them.
 
 ```bash
-jbuilder external-lib-deps --missing @install
+dune external-lib-deps --missing @install
 ```
 
 Last, this is perhaps the most classic step.
