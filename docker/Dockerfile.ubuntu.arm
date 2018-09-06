@@ -23,7 +23,7 @@ RUN wget https://github.com/ocaml/opam/releases/download/$VER/opam-full-$VER.tar
 
 RUN yes | opam init && eval $(opam config env) && opam switch create 4.06.0
 
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes plplot alcotest utop base stdio configurator
+RUN opam install -y oasis dune ocaml-compiler-libs ctypes plplot alcotest utop base stdio configurator
 
 #################### SET UP ENV VARS #######################
 
