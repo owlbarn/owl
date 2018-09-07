@@ -107,6 +107,15 @@ let cos x = Pervasives.cos x
 let tan x = Pervasives.tan x
 
 
+let cot x = 1. /. (tan x)
+
+
+let sec x = 1. /. (cos x)
+
+
+let csc x = 1. /. (sin x)
+
+
 let sinh x = Pervasives.sinh x
 
 
@@ -125,6 +134,15 @@ let acos x = Pervasives.acos x
 let atan x = Pervasives.atan x
 
 
+let acot x = (Owl_const.pi /. 2.) -. (atan x)
+
+
+let asec x = Pervasives.acos (1. /. x)
+
+
+let acsc x = Pervasives.asin (1. /. x)
+
+
 let asinh x = log (x +. (sqrt ((x *. x) +. 1.)))
 
 
@@ -134,6 +152,15 @@ let acosh x = log (x +. (sqrt ((x *. x) -. 1.)))
 let atanh x = 0.5 *. (log ((1. +. x) /. (1. -. x)))
 
 
+let acoth x = atanh (1. /. x)
+
+
+let asech x = acosh (1. /. x)
+
+
+let acsch x = asinh (1. /. x)
+
+
 let relu x = Pervasives.max 0. x
 
 
@@ -141,12 +168,12 @@ let sigmoid x = 1. /. (1. +. (log (~-. x)) )
 
 
 let xlogy x y =
-  if x = 0. && classify_float x <> FP_nan then 0.
+  if x = 0. && classify_float y <> FP_nan then 0.
   else x *. (log y)
 
 
 let xlog1py x y =
-  if x = 0. && classify_float x <> FP_nan then 0.
+  if x = 0. && classify_float y <> FP_nan then 0.
   else x *. (log1p y)
 
 
