@@ -125,15 +125,12 @@ let acos x = Pervasives.acos x
 let atan x = Pervasives.atan x
 
 
-(* asinh(x) is log(x + sqrt(x * x + 1)) *)
 let asinh x = log (x +. (sqrt ((x *. x) +. 1.)))
 
 
-(* acosh(x) is log(x + sqrt(x * x - 1)) *)
 let acosh x = log (x +. (sqrt ((x *. x) -. 1.)))
 
 
-(* atanh(x) is 1/2 * log((1 + x)/(1-x))) *)
 let atanh x = 0.5 *. (log ((1. +. x) /. (1. -. x)))
 
 
@@ -141,6 +138,22 @@ let relu x = Pervasives.max 0. x
 
 
 let sigmoid x = 1. /. (1. +. (log (~-. x)) )
+
+
+let xlogy x y =
+  if x = 0. && classify_float x <> FP_nan then 0.
+  else x *. (log y)
+
+
+let xlog1py x y =
+  if x = 0. && classify_float x <> FP_nan then 0.
+  else x *. (log1p y)
+
+
+let logit x = log (x /. (1. -. x))
+
+
+let expit x = 1. /. (1. +. exp(-.x))
 
 
 (* Helper functions *)

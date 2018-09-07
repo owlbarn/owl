@@ -137,6 +137,18 @@ val acosh : float -> float
 val atanh : float -> float
 (** ``atanh x`` *)
 
+val xlogy : float -> float -> float
+(** ``xlogy(x, y)`` *)
+
+val xlog1py : float -> float -> float
+(** ``xlog1py(x, y)`` *)
+
+val logit : float -> float
+(** ``logit(x)`` *)
+
+val expit : float -> float
+(** ``expit(x)`` *)
+
 
 (** {6 Helper functions} *)
 

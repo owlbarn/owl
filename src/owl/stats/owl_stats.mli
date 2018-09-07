@@ -177,8 +177,7 @@ Returns a histogram including the ``n+1`` bin boundaries, ``n`` counts and
 weighted counts if applicable, but without normalisation.
 *)
 
-val histogram_sorted : [ `Bins of float array | `N of int ] -> ?weights:float array
-  -> float array -> histogram
+val histogram_sorted : [ `Bins of float array | `N of int ] -> ?weights:float array -> float array -> histogram
 (**
 ``histogram_sorted bins x`` is like ``histogram`` but assumes that ``x`` is sorted
 already. This increases efficiency if there are less bins than data. Undefined
