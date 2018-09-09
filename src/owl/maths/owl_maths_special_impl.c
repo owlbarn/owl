@@ -37,6 +37,26 @@ double logit(double x) {
 }
 
 
+double log1mexp(double x) {
+  if (-x > OWL_LOGE2)
+    return log1p(-exp(x));
+  else
+    return log(-expm1(x));
+}
+
+
+double log1pexp(double x) {
+  if (x <= -37.)
+    return exp(x);
+  else if (x <= 18.)
+    return log1p(exp(x));
+  else if (x <= 33.3)
+    return x + exp(-x);
+  else
+    return x;
+}
+
+
 double logabs(double x) {
   return log(fabs (x));
 }

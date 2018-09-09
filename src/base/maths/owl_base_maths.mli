@@ -176,6 +176,12 @@ val logit : float -> float
 val expit : float -> float
 (** ``expit(x)`` *)
 
+val log1mexp : float -> float
+(** ``log1mexp(x)`` *)
+
+val log1pexp : float -> float
+(** ``log1pexp(x)`` *)
+
 
 (** {6 Helper functions} *)
 

@@ -183,6 +183,22 @@ let logit x = log (x /. (1. -. x))
 let expit x = 1. /. (1. +. exp(-.x))
 
 
+let log1mexp x =
+  if -.x > log 2. then log1p (-.(exp x))
+  else log (-.(expm1 x))
+
+
+let log1pexp x =
+  if x <= -37. then
+    exp x
+  else if x <= 18. then
+    log1p (exp x)
+  else if x <= 33.3 then
+    x +. exp(-.x)
+  else
+    x
+
+
 (* Helper functions *)
 
 let is_nan x = FP_nan = classify_float x

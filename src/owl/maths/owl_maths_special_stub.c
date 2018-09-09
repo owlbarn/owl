@@ -413,6 +413,20 @@ value owl_stub_sf_expit(value vX) {
 }
 
 
+value owl_stub_sf_log1mexp(value vX) {
+  double x = Double_val(vX);
+  double y = log1mexp(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_log1pexp(value vX) {
+  double x = Double_val(vX);
+  double y = log1pexp(x);
+  return caml_copy_double(y);
+}
+
+
 value owl_stub_sf_logabs(value vX) {
   double x = Double_val(vX);
   double y = logabs(x);
