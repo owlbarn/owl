@@ -43,12 +43,12 @@ double laplace_ppf(double q, double loc, double scale) {
 }
 
 double laplace_sf(double x, double loc, double scale) {
-  double y = (x - loc) / scale;
-  return (y < 0) ? (1 - exp(y) / 2) : (exp(-y) / 2);
+  return exp(laplace_logsf(x, loc, scale));
 }
 
 double laplace_logsf(double x, double loc, double scale) {
-  return log(laplace_sf(x, loc, scale));
+  double y = (x - loc) / scale;
+  return (y < 0) ? log1p(-exp(y) / 2) : -y - OWL_LOGE2;
 }
 
 double laplace_isf(double q, double loc, double scale) {

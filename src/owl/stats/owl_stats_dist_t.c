@@ -19,16 +19,13 @@ double t_rvs(double df, double loc, double scale) {
 }
 
 double t_pdf(double x, double df, double loc, double scale) {
-  double y = (x - loc) / scale;
-  double p = exp(lgam((df + 1) / 2) - lgam(df / 2));
-  p /= scale * sqrt(OWL_PI * df) * pow(1 + y * y / df, (df + 1) / 2);
-  return p;
+  return exp(t_logpdf(x, df, loc, scale));
 }
 
 double t_logpdf(double x, double df, double loc, double scale) {
   double y = (x - loc) / scale;
   double lp = lgam((df + 1) / 2) - lgam(df / 2);
-  lp -= log(scale) + 0.5 * log(OWL_PI * df) + log(1 + y * y / df) * (df + 1) / 2;
+  lp -= log(scale) + 0.5 * log(OWL_PI * df) + xlog1py((df + 1) / 2, y * y / df);
   return lp;
 }
 

@@ -37,24 +37,23 @@ long binomial_rvs (double p, long n) {
 
 
 double binomial_pdf (long k, double p, long n) {
-  if (k > n)
-    return 0;
-  else {
-    if (p == 0)
-      return (k == 0) ? 1 : 0;
-    else if (p == 1)
-      return (k == n) ? 1 : 0;
-    else {
-      double ln_cnk = sf_log_combination (n, k);
-      double pp = ln_cnk + k * log (p) + (n - k) * log1p (-p);
-      return exp (pp);
-    }
-  }
+  return exp (binomial_logpdf (k, p, n));
 }
 
 
 double binomial_logpdf (long k, double p, long n) {
-  return log (binomial_pdf (k, p, n));
+  if (k > n)
+    return OWL_NEGINF;
+  else {
+    if (p == 0)
+      return (k == 0) ? 0. : OWL_NEGINF;
+    else if (p == 1)
+      return (k == n) ? 0. : OWL_NEGINF;
+    else {
+      double ln_cnk = sf_log_combination (n, k);
+      return ln_cnk + k * log (p) + (n - k) * log1p (-p);
+    }
+  }
 }
 
 
@@ -70,7 +69,13 @@ double binomial_cdf (long k, double p, long n) {
 
 
 double binomial_logcdf (long k, double p, long n) {
-  return log (binomial_cdf (k, p, n));
+  if (k >= n)
+    return 0.;
+  else {
+    double a = (double) k + 1.;
+    double b = (double) n - k;
+    return beta_logsf(p, a, b);
+  }
 }
 
 

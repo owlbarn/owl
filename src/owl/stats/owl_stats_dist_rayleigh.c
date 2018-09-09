@@ -15,16 +15,16 @@ double rayleigh_rvs(double sigma) {
 }
 
 double rayleigh_pdf(double x, double sigma) {
-  if (x < 0)
-    return 0;
-  else {
-    double y = x / sigma;
-    return (y / sigma) * exp(-y * y / 2) ;
-  }
+  return exp(rayleigh_logpdf(x, sigma));
 }
 
 double rayleigh_logpdf(double x, double sigma) {
-  return log(rayleigh_pdf(x, sigma));
+  if (x < 0)
+    return OWL_NEGINF;
+  else {
+    double y = x / sigma;
+    return log(y) - log(sigma) - y * y / 2;
+  }
 }
 
 double rayleigh_cdf(double x, double sigma) {
@@ -33,7 +33,8 @@ double rayleigh_cdf(double x, double sigma) {
 }
 
 double rayleigh_logcdf(double x, double sigma) {
-  return log(rayleigh_cdf(x, sigma));
+  double y = x / sigma;
+  return log1mexp(-y * y / 2);
 }
 
 double rayleigh_ppf(double q, double sigma) {

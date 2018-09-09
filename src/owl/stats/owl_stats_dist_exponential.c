@@ -21,7 +21,7 @@ double exponential_cdf(double x, double lambda) {
 }
 
 double exponential_logcdf(double x, double lambda) {
-  return log(-expm1(-lambda * x));
+  return log1mexp(-lambda * x);
 }
 
 double exponential_ppf(double q, double lambda) {

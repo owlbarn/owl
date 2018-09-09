@@ -28,7 +28,8 @@ double gaussian_cdf(double x, double mu, double sigma) {
 }
 
 double gaussian_logcdf(double x, double mu, double sigma) {
-  return log(gaussian_cdf(x, mu, sigma));
+  double y = (x - mu) / sigma;
+  return log_ndtr(y);
 }
 
 double gaussian_ppf(double q, double mu, double sigma) {
@@ -42,7 +43,7 @@ double gaussian_sf(double x, double mu, double sigma) {
 
 double gaussian_logsf(double x, double mu, double sigma) {
   double y = x - mu;
-  return log(gaussian_cdf(-y, 0., sigma));
+  return gaussian_logcdf(-y, 0., sigma);
 }
 
 double gaussian_isf(double q, double mu, double sigma) {
@@ -50,5 +51,5 @@ double gaussian_isf(double q, double mu, double sigma) {
 }
 
 double gaussian_entropy(double sigma) {
-  return 0.5 * (log(2 * OWL_PI) + 1) + log(sigma);
+  return 0.5 * (log(OWL_2PI) + 1) + log(sigma);
 }

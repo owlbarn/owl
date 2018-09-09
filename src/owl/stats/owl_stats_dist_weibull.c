@@ -13,18 +13,20 @@ double weibull_rvs(double shape, double scale) {
 }
 
 double weibull_pdf(double x, double shape, double scale) {
-  if (x < 0)
-    return 0 ;
-  else if (x == 0)
-    return (shape == 1) ? (1 / scale) : 0;
-  else if (shape == 1)
-    return exp(-x / scale) / scale;
-  else
-    return (shape / scale) * exp(-pow (x / scale, shape) + (shape - 1) * log(x / scale));
+  return exp(weibull_logpdf(x, shape, scale));
 }
 
 double weibull_logpdf(double x, double shape, double scale) {
-  return log(weibull_pdf(x, shape, scale));
+  if (x < 0)
+    return OWL_NEGINF;
+  else if (x == 0)
+    return (shape == 1) ? -log(scale) : OWL_NEGINF;
+  else if (shape == 1)
+    return (-x / scale) - log(scale);
+  else {
+    x /= scale;
+    return log(shape) - log(scale) - pow(x, shape) + xlogy(shape - 1, x);
+  }
 }
 
 double weibull_cdf(double x, double shape, double scale) {
@@ -32,7 +34,7 @@ double weibull_cdf(double x, double shape, double scale) {
 }
 
 double weibull_logcdf(double x, double shape, double scale) {
-  return log(weibull_cdf(x, shape, scale));
+  return log1mexp(-pow(x / scale, shape));
 }
 
 double weibull_ppf(double p, double shape, double scale) {
