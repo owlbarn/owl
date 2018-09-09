@@ -154,6 +154,10 @@ let logit x = Owl_maths_special.logit x
 
 let expit x = Owl_maths_special.expit x
 
+let log1mexp x = Owl_maths_special.log1mexp x
+
+let log1pexp x = Owl_maths_special.log1pexp x
+
 let airy x =
   let ai = Ctypes.(allocate double 0.) in
   let aip = Ctypes.(allocate double 0.) in

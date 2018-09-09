@@ -219,6 +219,12 @@ val logit : float -> float
 val expit : float -> float
 (** ``expit(x)`` returns :math:`1/(1+\exp(-x))`. *)
 
+val log1mexp : float -> float
+(** ``log1mexp(x)`` returns :math:`log(1-exp(x))`. *)
+
+val log1pexp : float -> float
+(** ``log1pexp(x)`` returns :math:`log(1+exp(x))`. *)
+
 
 (** {6 Airy functions} *)
 

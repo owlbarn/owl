@@ -183,6 +183,10 @@ extern double expit(double x);
 
 extern double logit(double x);
 
+extern double log1mexp(double x);
+
+extern double log1pexp(double x);
+
 extern double logabs(double x);
 
 extern double sinc(double x);
