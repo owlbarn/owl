@@ -13,18 +13,18 @@ double chi2_rvs(double df) {
 }
 
 double chi2_pdf(double x, double df) {
-  if (x < 0)
-    return 0 ;
-  else {
-    if(df == 2.0)
-      return exp(-x / 2) / 2;
-    else
-      return exp((df / 2 - 1) * log (x / 2) - x / 2 - lgam(df / 2)) / 2;
-    }
+  return exp(chi2_logpdf(x, df));
 }
 
 double chi2_logpdf(double x, double df) {
-  return log(chi2_pdf(x, df));
+  if (x < 0)
+    return OWL_NEGINF;
+  else {
+    if (df == 2.0)
+      return -x / 2 - OWL_LOGE2;
+    else
+      return xlogy(df / 2 - 1, x / 2) - x / 2 - lgam (df / 2) - OWL_LOGE2;
+  }
 }
 
 double chi2_cdf(double x, double df) {

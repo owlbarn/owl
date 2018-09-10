@@ -29,7 +29,7 @@ double logistic_cdf(double x, double loc, double scale) {
 
 double logistic_logcdf(double x, double loc, double scale) {
   double y = (x - loc) / scale;
-  return log(expit(y));
+  return -log1pexp(-y);
 }
 
 double logistic_ppf(double q, double loc, double scale) {
@@ -43,7 +43,7 @@ double logistic_sf(double x, double loc, double scale) {
 
 double logistic_logsf(double x, double loc, double scale) {
   double y = (x - loc) / scale;
-  return log(expit(-y));
+  return -log1pexp(y);
 }
 
 double logistic_isf(double q, double loc, double scale) {

@@ -53,18 +53,18 @@ double gamma_rvs(double shape, double scale) {
 }
 
 double gamma_pdf(double x, double shape, double scale) {
-  if (x < 0)
-    return 0;
-  else if (x == 0)
-    return (shape == 1 ? 1 / scale : 0);
-  else if (shape == 1)
-    return exp(-x / scale) / scale;
-  else
-    return exp((shape - 1) * log(x/scale) - x/scale - lgam(shape)) / scale;
+  return exp(gamma_logpdf(x, shape, scale));
 }
 
 double gamma_logpdf(double x, double shape, double scale) {
-  return log(gamma_pdf(x, shape, scale));
+  if (x < 0)
+    return OWL_NEGINF;
+  else if (x == 0)
+    return (shape == 1 ? -log(scale) : OWL_NEGINF);
+  else if (shape == 1)
+    return -x / scale - log(scale);
+  else
+    return xlogy(shape - 1, x / scale) - x / scale - lgam(shape) - log(scale);
 }
 
 double gamma_cdf(double x, double shape, double scale) {

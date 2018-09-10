@@ -5,6 +5,7 @@
 
 #include "owl_maths.h"
 #include "owl_stats.h"
+#include "owl_cdflib.h"
 
 /** Beta distribution **/
 
@@ -43,26 +44,16 @@ double beta_rvs(double a, double b)
 }
 
 double beta_pdf(double x, double a, double b) {
-  if (x < 0 || x > 1)
-    return 0;
-  else {
-    double gab = lgam(a + b);
-    double ga = lgam(a);
-    double gb = lgam(b);
-
-    if (x == 0.0 || x == 1.0) {
-      if (a > 1.0 && b > 1.0)
-        return 0.0;
-      else
-       return exp(gab - ga - gb) * pow(x, a - 1) * pow(1 - x, b - 1);
-    }
-    else
-      return exp(gab - ga - gb + log(x) * (a - 1)  + log1p(-x) * (b - 1));
-    }
+  return exp(beta_logpdf(x, a, b));
 }
 
 double beta_logpdf(double x, double a, double b) {
-  return log(beta_pdf(x, a, b));
+  if (x < 0 || x > 1)
+    return OWL_NEGINF;
+  else {
+    double bl = betaln(&a, &b);
+    return xlogy(a - 1, x) + xlog1py(b - 1, -x) - bl;
+  }
 }
 
 double beta_cdf(double x, double a, double b) {
@@ -82,7 +73,7 @@ double beta_sf(double x, double a, double b) {
 }
 
 double beta_logsf(double x, double a, double b) {
-  return log(1 - beta_cdf(x, a, b));
+  return log1p(-beta_cdf(x, a, b));
 }
 
 double beta_isf(double q, double a, double b) {

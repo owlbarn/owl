@@ -53,12 +53,12 @@ double vonmises_rvs(double mu, double kappa) {
 }
 
 double vonmises_pdf(double x, double mu, double kappa) {
-  x = x - mu;
-  return exp(kappa * cos(x)) / (2 * OWL_PI * i0(kappa));
+  return exp(vonmises_logpdf(x, mu, kappa));
 }
 
 double vonmises_logpdf(double x, double mu, double kappa) {
-  return log(vonmises_pdf(x, mu, kappa));
+  x = x - mu;
+  return kappa * cos(x) - log(OWL_2PI * i0(kappa));
 }
 
 double vonmises_entropy(double kappa) {
@@ -122,5 +122,5 @@ double vonmises_sf(double x, double mu, double kappa) {
 }
 
 double vonmises_logsf(double x, double mu, double kappa) {
-  return log(vonmises_sf(x, mu, kappa));
+  return log1p(-vonmises_cdf(x, mu, kappa));
 }

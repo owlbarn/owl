@@ -21,8 +21,7 @@ double wald_rvs(double mu, double lambda) {
 }
 
 double wald_pdf(double x, double mu, double lambda) {
-  double y = (x - mu) / mu;
-  return sqrt(lambda) / sqrt(OWL_2PI * x * x * x) * exp(-lambda * y * y / (2 * x));
+  return exp(wald_logpdf(x, mu, lambda));
 }
 
 double wald_logpdf(double x, double mu, double lambda) {
@@ -51,7 +50,7 @@ double wald_sf(double x, double mu, double lambda) {
 }
 
 double wald_logsf(double x, double mu, double lambda) {
-  return log(1 - wald_cdf(x, mu, lambda));
+  return log1p(-wald_cdf(x, mu, lambda));
 }
 
 double wald_isf(double q, double mu, double lambda) {
