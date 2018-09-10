@@ -89,6 +89,9 @@ module To_test = struct
           |> M.normalise_density in
     h.normalised_counts, h.density
 
+  let tukey_fences x =
+    M.tukey_fences x
+
 end
 
 
@@ -106,6 +109,7 @@ module Data = struct
   let w2 = Array.append w1 [|0.2|]
   let bin2 = [| -.1.; 0.; sqrt 0.5; 3.|]
   let bin2_inf = [| -.infinity; 0.; sqrt 0.5; infinity|]
+  let with_outliers = [|-10000.0;0.0;1.0;2.0;10000.0|]
 end
 
 
@@ -394,6 +398,12 @@ let hist_bins_normalise_binf () =
      Some [|0.; 2./.6./.sqrt 0.5; 0.|])
     (To_test.hist_normalise Data.bin2_inf Data.x2)
 
+let tukey_fences () =
+  Alcotest.(check (pair (float 0.0) (float 0.0)))
+    "tukey fences test with data containing outliers"
+    (-3.0, 5.0)
+    (To_test.tukey_fences Data.with_outliers)
+
 (* The tests *)
 let test_set = [
   "mannwhitneyu_test_left_side_asym" , `Slow, mannwhitneyu_test_left_side_asym;
@@ -437,6 +447,7 @@ let test_set = [
   "hist_bins_normalise", `Slow, hist_bins_normalise;
   "hist_bins_normalise_weights", `Slow, hist_bins_normalise_weights;
   "hist_bins_normalise_binf", `Slow, hist_bins_normalise_binf;
+  "tukey_fences", `Slow, tukey_fences;
 ]
 
 
