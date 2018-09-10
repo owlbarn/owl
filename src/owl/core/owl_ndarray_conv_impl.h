@@ -5,6 +5,7 @@
 
 #ifdef OWL_ENABLE_TEMPLATE
 
+#include <time.h>
 
 /*
  * im2col implementation
@@ -46,9 +47,10 @@ CAMLprim value FUN_NATIVE (spatial_im2col) (
   const int output_cr  = output_rows * output_cols;
   const int output_crb = output_rows * output_cols * batches;
   const int kernel_cri = kernel_cols * kernel_rows * in_channel;
+  const int kernel_ri  = kernel_rows * in_channel;
 
-  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
-  if (inpt2d == NULL) exit(1);
+  /* TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  if (inpt2d == NULL) exit(1); */
 
   memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
 
@@ -62,9 +64,9 @@ CAMLprim value FUN_NATIVE (spatial_im2col) (
     if (pc < 0) pc = 0;
   }
 
-  #ifdef _OPENMP
+  /* #ifdef _OPENMP
     #pragma omp parallel for schedule(static)
-  #endif /* _OPENMP */
+  #endif
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
     int cr = i % output_cr;
@@ -91,14 +93,101 @@ CAMLprim value FUN_NATIVE (spatial_im2col) (
         }
       }
     }
-  }
+  } */
 
-  GEMM(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+  clock_t start = clock(), diff;
+
+  /* GEMM(CblasRowMajor, CblasNoTrans, CblasNoTrans,
     output_crb, out_channel, kernel_cri, ALPHA,
     inpt2d, kernel_cri, kernel_ptr, out_channel,
-    BETA, output_ptr, out_channel);
+    BETA, output_ptr, out_channel); */
 
-  free(inpt2d);
+  /* int mc = 8;
+  int kc = 648;
+  int nc = 3; */
+
+  int mc = 20;//49;
+  int kc = 4;//9;
+  int nc = 1;
+
+  TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
+  TYPE *temp_kn = (TYPE *) calloc(nc * kc, sizeof(TYPE));
+  TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
+
+  // TYPE *inp2 = inpt2d;
+  TYPE *ken2 = kernel_ptr;
+  TYPE *out2 = output_ptr;
+  for (int m = 0; m < output_crb; m+=mc) {
+    int actual_mc = fminf(m + mc, output_crb) - m;
+    for (int k = 0; k < kernel_cri; k+=kc) {
+      // fill in the input block
+      //memcpy(temp_mk, inp2, mc * kc * sizeof(TYPE));
+      int actual_kc = fminf(k + kc, kernel_cri) - k;
+
+      int cmk = 0;
+      for (int im = 0; im < actual_mc; im++) {
+        int bt = (m + im) / output_cr;
+        int cr = (m + im) % output_cr;
+        int c = cr / output_rows;
+        int r = cr % output_rows;
+
+        for (int ik = 0; ik < actual_kc; ik++) {
+          int kc  = (k + ik) / kernel_ri;
+          int kri = (k + ik) % kernel_ri;
+          int kr  = kri / in_channel;
+          int ki  = kri % in_channel;
+
+          int input_col = kc + c;
+          int input_row = kr + r;
+          int input_index = bt * input_cri + input_col * input_ri
+            + input_row * in_channel + ki;
+          fprintf(stderr, "%d ", input_index);
+          temp_mk[cmk++] = input_ptr[input_index];
+        }
+      }
+      fprintf(stderr, "end of input index \n");
+
+      for (int n = 0; n < out_channel; n+=nc) {
+        // memcpy(temp_kn, ken2, nc * kc * sizeof(TYPE));
+        int actual_nc = fminf(n + nc, out_channel) - n;
+        int cnk = 0;
+        for (int ik = 0; ik < actual_kc; ik++) {
+          for (int in = 0; in < actual_nc; in++) {
+            // temp_kn[ik][in] = kernel_ptr[k][n];
+            int index_kn = (k + ik) * out_channel + n + in;
+            fprintf(stderr, "%d ", index_kn);
+            temp_kn[cnk++] = kernel_ptr[index_kn];
+          }
+        }
+        fprintf(stderr, "end of kernel index\n");
+
+        GEMM(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+          mc, nc, kc, ALPHA,
+          temp_mk, kc, temp_kn, nc,
+          BETA, temp_mn, out_channel);
+        //memcpy(out2, temp_mn, mc * nc * sizeof(TYPE));
+        for (int csize = 0; csize < mc * nc; csize++) {
+          out2[csize] += temp_mn[csize];
+        }
+        //out2 += nc;
+      } // end of n
+    } // end of k
+    // out2 += mc * nc;
+  }
+
+  int counter = 0;
+  for (int c = 0; c < output_cols; c++) {
+    for (int r = 0; r < output_rows; r++) {
+      fprintf(stderr, "%.0f ", output_ptr[counter++]);
+    }
+    fprintf(stderr, "\n");
+  }
+
+  diff = clock() - start;
+  int msec = diff * 1000 / CLOCKS_PER_SEC;
+  fprintf(stderr, "Time taken for gemm: %d milliseconds\n", msec);
+
+  //free(inpt2d);
 
   return Val_unit;
 }
