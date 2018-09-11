@@ -389,9 +389,17 @@ Arguments:
   val lambda : ?name:string -> ?act_typ:Activation.typ -> (t -> t) -> node -> node
   (**
 ``lambda func node`` wraps arbitrary expression as a Node object.
-
 Arguments:
   * ``func``: The function to be evaluated. Takes input tensor as first argument.
+  *)
+
+  val lambda_array : ?name:string -> ?act_typ:Activation.typ -> int array -> (t array -> t) -> node array -> node
+  (**
+``lambda_array target_shape func node`` wraps arbitrary expression as a Node object.
+
+Arguments:
+  * ``target_shape``: the shape of the tensor returned by ``func``.
+  * ``func``: The function to be evaluated. Takes input tensor array as first argument.
   *)
 
   val add : ?name:string -> ?act_typ:Activation.typ -> node array -> node
