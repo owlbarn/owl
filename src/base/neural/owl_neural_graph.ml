@@ -490,6 +490,13 @@ module Make
     add_node ?act_typ nn [|input_node|] n
 
 
+  let lambda_array ?name ?act_typ out_shape lambda input_node =
+    let neuron = LambdaArray (LambdaArray.create out_shape lambda) in
+    let nn = get_network input_node.(0) in
+    let n = make_node ?name [||] [||] neuron None nn in
+    add_node ?act_typ nn input_node n
+
+
   let add ?name ?act_typ input_node =
     let neuron = Add (Add.create ()) in
     let nn = get_network input_node.(0) in
