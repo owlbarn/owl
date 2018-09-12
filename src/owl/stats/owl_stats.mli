@@ -100,6 +100,11 @@ val first_quartile : float array -> float
 val third_quartile : float array -> float
 (** ``third_quartile x`` returns the third quartile of ``x``, i.e. 75 percentiles. *)
 
+val interquartile : float array -> float
+(** ``interquartile x`` returns the interquartile range of ``x``
+    which is defined as the first quartile subtracted from the third quartile.
+*)
+
 val median : float array -> float
 (** ``median x`` returns the median of ``x``. *)
 
@@ -1029,5 +1034,28 @@ val dirichlet_logpdf : float array -> alpha:float array -> float
 (** TODO *)
 
 
+module KDE : sig
+  (** Bandwidth selection rules. *)
+  type bandwidth = [
+    | `Silverman  (** Use {e rule-of-thumb} for choosing the bandwidth.
+                      It defaults to
+                      [0.9 * min(SD, IQR / 1.34) * n^-0.2]. *)
+    | `Scott      (** Same as [`Silverman], but with a factor, equal to
+                      [1.06]. *)
+  ]
+
+  type kernel = [`Gaussian]
+
+  (** {e O(n * points)} Simple kernel density estimator. Returns an array
+      of uniformly spaced points from the sample range at which the
+      density function was estimated, and the estimates at these points. *)
+  val estimate_pdf
+    :  ?kernel:kernel
+    -> ?bandwidth:bandwidth
+    -> ?n_points:int
+    -> float array
+    -> (float array * float array)
+
+end
 
 (* ends here *)

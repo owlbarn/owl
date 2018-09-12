@@ -81,7 +81,6 @@ let kurtosis ?mean ?sd x =
 (* TODO: move to C code *)
 let central_moment = Owl_base_stats.central_moment
 
-
 let corrcoef x0 x1 =
   assert Array.(length x0 = length x1);
   Owl_stats_extend.corrcoef x0 x1
@@ -231,6 +230,7 @@ let first_quartile x = percentile x 25.
 
 let third_quartile x = percentile x 75.
 
+let interquartile = Owl_base_stats.interquartile
 
 let z_score ~mu ~sigma x = Array.map (fun y -> (y -. mu) /. sigma) x
 
@@ -768,5 +768,6 @@ let tukey_fences ?(k=1.5) arr =
   first_quartile -. offset, third_quartile +. offset
 
 
+module KDE = Owl_base_stats.KDE
 
 (* ends here *)
