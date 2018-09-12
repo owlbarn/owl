@@ -133,6 +133,8 @@ val pp_hist: Format.formatter -> histogram -> unit
 val tukey_fences : ?k:float -> float array -> float * float
 (** Refer to :doc:`owl_stats`. *)
 
+val interquartile : float array -> float
+(** Refer to :doc:`owl_stats. *)
 
 (** {6 Random variables} *)
 
@@ -163,5 +165,23 @@ val gumbel1_rvs : a:float -> b:float -> float
 val gumbel2_rvs : a:float -> b:float -> float
 (** Refer to :doc:`owl_stats`. *)
 
+module KDE : sig
+  (** Refer to :doc:`owl_stats`. *)
+  type bandwidth = [
+    | `Silverman
+    | `Scott
+  ]
 
+  (** Refer to :doc:`owl_stats`. *)
+  type kernel = [`Gaussian]
+
+  (** Refer to :doc:`owl_stats`. *)
+  val estimate_pdf
+    :  ?kernel:kernel
+    -> ?bandwidth:bandwidth
+    -> ?n_points:int
+    -> float array
+    -> (float array * float array)
+
+end
 (* ends here *)
