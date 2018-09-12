@@ -586,14 +586,6 @@ let tukey_fences ?(k=1.5) arr =
   first_quartile -. offset, third_quartile +. offset
 
 
-module KDE = struct
-type bandwidth = [
-  | `Silverman
-  | `Scott
-]
-
-type kernel = [`Gaussian]
-
 let build_kernel = function
   | `Gaussian ->
     fun h p v ->
@@ -613,27 +605,28 @@ let build_points n_points h kernel vs =
     done; points
   end
 
-let estimate_pdf ?(kernel=`Gaussian) ?(bandwidth=`Scott) ?(n_points=512) vs =
-  if Array.length vs < 2
-  then invalid_arg "estimate_pdf: sample should have multiple elements";
+let gaussian_kde ?(bandwidth=`Scott) ?(n_points=512) vs =
+  if Array.length vs < 2 then
+    invalid_arg "estimate_pdf: sample should have multiple elements";
 
   let n = float_of_int (Array.length vs) in
   let s = min [|(std vs); (interquartile vs /. 0.34)|] in
   let h = match bandwidth with
-    | `Silverman  -> 0.90 *. s *. (n ** -0.2)
-    | `Scott      -> 1.06 *. s *. (n ** -0.2)
+    | `Silverman -> 0.90 *. s *. (n ** -0.2)
+    | `Scott     -> 1.06 *. s *. (n ** -0.2)
   in
 
+  let kernel = `Gaussian in
   let points = build_points n_points h kernel vs in
   let k      = build_kernel kernel in
   let f      = 1. /. (h *. n) in
-  let pdf    = Array.make n_points 0. in begin
-    for i = 0 to n_points - 1 do
-      let p = Array.unsafe_get points i in
-      Array.unsafe_set pdf i
-        (f *. Array.fold_left (fun acc v -> acc +. k h p v) 0. vs)
-    done; (points, pdf)
-  end
-end
+  let pdf    = Array.make n_points 0. in
+  for i = 0 to n_points - 1 do
+    let p = Array.unsafe_get points i in
+    Array.unsafe_set pdf i
+      (f *. Array.fold_left (fun acc v -> acc +. k h p v) 0. vs)
+  done;
+  (points, pdf)
+
 
 (* ends here *)

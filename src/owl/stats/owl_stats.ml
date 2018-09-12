@@ -768,6 +768,8 @@ let tukey_fences ?(k=1.5) arr =
   first_quartile -. offset, third_quartile +. offset
 
 
-module KDE = Owl_base_stats.KDE
+let gaussian_kde = Owl_base_stats.gaussian_kde
+
+
 
 (* ends here *)

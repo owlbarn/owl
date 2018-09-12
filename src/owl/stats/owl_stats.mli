@@ -225,12 +225,27 @@ val normlise_pdf : float array -> float array
 val tukey_fences : ?k:float -> float array -> float * float
 (**
 ``tukey_fences ?k x`` returns a tuple of the lower and upper boundaries for
-values that are not outliers. ``k`` defaults to the standard coefficient of ``1.5``.
-For first and third quartiles ``Q1`` and `Q3`, the range is computed as follows:
+values that are not outliers. ``k`` defaults to the standard coefficient of
+``1.5``. For first and third quartiles ``Q1`` and `Q3`, the range is computed
+as follows:
 
 .. math::
   (Q1 - k*(Q3-Q1), Q3 + k*(Q3-Q1))
 *)
+
+val gaussian_kde : ?bandwidth:[ `Silverman | `Scott ] -> ?n_points:int -> float array -> (float array * float array)
+(**
+``gaussian_kde x`` is a simple Gaussian kernel density estimator for
+`O(n * points)`.  The function returns an array tuple ``(a, b)` where ``a`` is
+a uniformly spaced points from the sample range at which the density function
+was estimated, and ``b`` is the estimates at these points.
+
+Bandwidth selection rules is as follows:
+  * Silverman: Use `rule-of-thumb` for choosing the bandwidth. It defaults to [0.9 * min(SD, IQR / 1.34) * n^-0.2].
+  * Scott: Same as Silverman, but with a factor, equal to [1.06].
+
+The default bandwidth value is ``Scott``.
+ *)
 
 
 (** {6 MCMC: Markov Chain Monte Carlo} *)
@@ -1034,28 +1049,5 @@ val dirichlet_logpdf : float array -> alpha:float array -> float
 (** TODO *)
 
 
-module KDE : sig
-  (** Bandwidth selection rules. *)
-  type bandwidth = [
-    | `Silverman  (** Use {e rule-of-thumb} for choosing the bandwidth.
-                      It defaults to
-                      [0.9 * min(SD, IQR / 1.34) * n^-0.2]. *)
-    | `Scott      (** Same as [`Silverman], but with a factor, equal to
-                      [1.06]. *)
-  ]
-
-  type kernel = [`Gaussian]
-
-  (** {e O(n * points)} Simple kernel density estimator. Returns an array
-      of uniformly spaced points from the sample range at which the
-      density function was estimated, and the estimates at these points. *)
-  val estimate_pdf
-    :  ?kernel:kernel
-    -> ?bandwidth:bandwidth
-    -> ?n_points:int
-    -> float array
-    -> (float array * float array)
-
-end
 
 (* ends here *)

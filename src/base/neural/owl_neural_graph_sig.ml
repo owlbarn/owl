@@ -389,6 +389,7 @@ Arguments:
   val lambda : ?name:string -> ?act_typ:Activation.typ -> (t -> t) -> node -> node
   (**
 ``lambda func node`` wraps arbitrary expression as a Node object.
+
 Arguments:
   * ``func``: The function to be evaluated. Takes input tensor as first argument.
   *)
