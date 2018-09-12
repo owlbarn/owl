@@ -235,14 +235,15 @@ as follows:
 
 val gaussian_kde : ?bandwidth:[ `Silverman | `Scott ] -> ?n_points:int -> float array -> (float array * float array)
 (**
-``gaussian_kde x`` is a simple Gaussian kernel density estimator for
-`O(n * points)`.  The function returns an array tuple ``(a, b)` where ``a`` is
-a uniformly spaced points from the sample range at which the density function
-was estimated, and ``b`` is the estimates at these points.
+``gaussian_kde x`` is a Gaussian kernel density estimator. The estimation of
+the pdf runs in `O(sample_size * n_points)`, and returns an array tuple
+``(a, b)`` where ``a`` is a uniformly spaced points from the sample range at
+which the density function was estimated, and ``b`` is the estimates at these
+points.
 
 Bandwidth selection rules is as follows:
-  * Silverman: Use `rule-of-thumb` for choosing the bandwidth. It defaults to [0.9 * min(SD, IQR / 1.34) * n^-0.2].
-  * Scott: Same as Silverman, but with a factor, equal to [1.06].
+  * Silverman: use `rule-of-thumb` for choosing the bandwidth. It defaults to [0.9 * min(SD, IQR / 1.34) * n^-0.2].
+  * Scott: same as Silverman, but with a factor, equal to [1.06].
 
 The default bandwidth value is ``Scott``.
  *)
