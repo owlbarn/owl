@@ -576,8 +576,10 @@ let first_quartile x = percentile x 25.
 
 let third_quartile x = percentile x 75.
 
+
 let interquartile x =
     third_quartile x -. first_quartile x
+
 
 let tukey_fences ?(k=1.5) arr =
   let first_quartile = first_quartile arr in
@@ -594,16 +596,19 @@ let build_kernel = function
 
 let build_points n_points h kernel vs =
   let (min, max) = minmax vs in
-  let (a, b)     = match kernel with
+  let (a, b) = match kernel with
     | `Gaussian -> (min -. 3. *. h, max +. 3. *. h)
   in
 
-  let points = Array.make n_points 0.
-  and step   = (b -. a) /. float_of_int n_points in begin
-    for i = 0 to n_points - 1 do
-      Array.unsafe_set points i (a +. (float_of_int i) *. step)
-    done; points
-  end
+  let points = Array.make n_points 0. in
+  let step = (b -. a) /. float_of_int n_points in
+
+  for i = 0 to n_points - 1 do
+    Array.unsafe_set points i (a +. (float_of_int i) *. step)
+  done;
+
+  points
+
 
 let gaussian_kde ?(bandwidth=`Scott) ?(n_points=512) vs =
   if Array.length vs < 2 then
@@ -621,12 +626,15 @@ let gaussian_kde ?(bandwidth=`Scott) ?(n_points=512) vs =
   let k      = build_kernel kernel in
   let f      = 1. /. (h *. n) in
   let pdf    = Array.make n_points 0. in
+
   for i = 0 to n_points - 1 do
     let p = Array.unsafe_get points i in
     Array.unsafe_set pdf i
       (f *. Array.fold_left (fun acc v -> acc +. k h p v) 0. vs)
   done;
+
   (points, pdf)
+
 
 
 (* ends here *)
