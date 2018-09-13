@@ -317,8 +317,7 @@ val min : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 val max : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val sum : ?axis:int -> (float, 'b) t -> (float, 'b) t
+val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val sum' : ('a, 'b) t -> 'a
@@ -327,23 +326,19 @@ val sum' : ('a, 'b) t -> 'a
 val sum_reduce : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
 val min' : ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
 val max' : ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val abs : (float, 'b) t -> (float, 'b) t
+val abs : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val conj : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val neg : (float, 'b) t -> (float, 'b) t
+val neg : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val reci : (float, 'b) t -> (float, 'b) t
@@ -352,44 +347,37 @@ val reci : (float, 'b) t -> (float, 'b) t
 val signum : (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val sqr : (float, 'b) t -> (float, 'b) t
+val sqr : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val sqrt : (float, 'b) t -> (float, 'b) t
+val sqrt : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val cbrt : (float, 'b) t -> (float, 'b) t
+val cbrt : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val exp : (float, 'b) t -> (float, 'b) t
+val exp : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val exp2 : (float, 'b) t -> (float, 'b) t
+val exp2 : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val exp10 : (float, 'b) t -> (float, 'b) t
+val exp10 : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val expm1 : (float, 'b) t -> (float, 'b) t
+val expm1 : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val log : (float, 'b) t -> (float, 'b) t
+val log : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val log2 : (float, 'b) t -> (float, 'b) t
+val log2 : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val log10 : (float, 'b) t -> (float, 'b) t
+val log10 : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val log1p : (float, 'b) t -> (float, 'b) t
+val log1p : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
@@ -529,16 +517,13 @@ val scalar_mul : 'a -> ('a, 'b) t -> ('a, 'b) t
 val scalar_div : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val pow : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val scalar_pow : float -> (float, 'b) t -> (float, 'b) t
+val scalar_pow : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val pow_scalar : (float, 'b) t -> float -> (float, 'b) t
+val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t

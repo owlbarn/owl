@@ -164,6 +164,46 @@ let _log_elt : type a b. (a, b) kind -> (a -> a) = function
   | _         -> failwith "_log_elt: unsupported operation"
 
 
+let _log2_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> fun x -> Pervasives.log x /. Owl_const.loge2
+  | Float64   -> fun x -> Pervasives.log x /. Owl_const.loge2
+  | Complex32 -> fun x -> Complex.(div (log x) (log {re = 2.; im = 0.}))
+  | Complex64 -> fun x -> Complex.(div (log x) (log {re = 2.; im = 0.}))
+  | _         -> failwith "_log2_elt: unsupported operation"
+
+
+let _log10_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Pervasives.log10
+  | Float64   -> Pervasives.log10
+  | Complex32 -> fun x -> Complex.(div (log x) (log {re = 10.; im = 0.}))
+  | Complex64 -> fun x -> Complex.(div (log x) (log {re = 10.; im = 0.}))
+  | _         -> failwith "_log10_elt: unsupported operation"
+
+
+let _log1p_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Pervasives.log1p
+  | Float64   -> Pervasives.log1p
+  | Complex32 -> fun x -> Complex.(log (add x one))
+  | Complex64 -> fun x -> Complex.(log (add x one))
+  | _         -> failwith "_log1p_elt: unsupported operation"
+
+
+let _exp_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Pervasives.exp
+  | Float64   -> Pervasives.exp
+  | Complex32 -> Complex.exp
+  | Complex64 -> Complex.exp
+  | _         -> failwith "_exp_elt: unsupported operation"
+
+
+let _expm1_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Pervasives.expm1
+  | Float64   -> Pervasives.expm1
+  | Complex32 -> fun x -> Complex.(sub (exp x) one)
+  | Complex64 -> fun x -> Complex.(sub (exp x) one)
+  | _         -> failwith "_expm1_elt: unsupported operation"
+
+
 let _re_elt : type a b. (a, b) kind -> (a -> float) = function
   | Float32   -> fun x -> x
   | Float64   -> fun x -> x
@@ -178,6 +218,14 @@ let _im_elt : type a b. (a, b) kind -> (a -> float) = function
   | Complex32 -> fun x -> Complex.(x.im)
   | Complex64 -> fun x -> Complex.(x.im)
   | _         -> failwith "_im_elt: unsupported operation"
+
+
+let _sqr_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> fun x -> x *. x
+  | Float64   -> fun x -> x *. x
+  | Complex32 -> fun x -> Complex.mul x x
+  | Complex64 -> fun x -> Complex.mul x x
+  | _         -> failwith "_sqr_elt: unsupported operation"
 
 
 let _sqrt_elt : type a b. (a, b) kind -> (a -> a) = function

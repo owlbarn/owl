@@ -67,7 +67,7 @@ let expm1 x = Pervasives.expm1 x
 let log x = Pervasives.log x
 
 
-let log2 x = (log x) /. (log 2.)
+let log2 x = (log x) /. Owl_const.loge2
 
 
 let log10 x = Pervasives.log10 x

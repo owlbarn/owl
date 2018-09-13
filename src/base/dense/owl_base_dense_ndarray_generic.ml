@@ -753,12 +753,17 @@ let repeat x reps =
 
 (* mathematical functions *)
 
-let abs x = map Scalar.abs x
+let abs x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._abs_elt _kind in
+  map _func x
 
 
 let abs_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._abs_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.abs out
+  map_ _func out
 
 
 let conj x =
@@ -779,10 +784,15 @@ let neg_ ?out x =
   map_ Scalar.neg out
 
 
-let neg x = map Scalar.neg x
+let neg x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._neg_elt _kind in
+  map _func x
 
 
 let neg_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._neg_elt _kind in
   let out = match out with Some o -> o | None -> x in
   map_ Scalar.neg out
 
@@ -850,92 +860,153 @@ let erfc _x = raise Owl_exception.NOT_IMPLEMENTED
 let erfc_ ?_out _x = raise Owl_exception.NOT_IMPLEMENTED
 
 
-let sqr x = map Scalar.sqr x
+let sqr x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._sqr_elt _kind in
+  map _func x
 
 
 let sqr_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._sqr_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.sqr out
+  map_ _func out
 
 
-let sqrt x = map Scalar.sqrt x
+let sqrt x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._sqrt_elt _kind in
+  map _func x
 
 
 let sqrt_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._sqrt_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.sqrt out
+  map_ _func out
 
 
-let cbrt x = map Scalar.cbrt x
+let cbrt x =
+  let _kind = kind x in
+  let b = Owl_base_dense_common._float_typ_elt _kind (1. /. 3.) in
+  let _func = fun a -> Owl_base_dense_common._pow_elt _kind a b in
+  map _func x
 
 
 let cbrt_ ?out x =
+  let _kind = kind x in
+  let b = Owl_base_dense_common._float_typ_elt _kind (1. /. 3.) in
+  let _func = fun a -> Owl_base_dense_common._pow_elt _kind a b in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.cbrt out
+  map_ _func out
 
 
-let log x = map Scalar.log x
+let log x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._log_elt _kind in
+  map _func x
 
 
 let log_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._log_elt _kind in
   let out = match out with Some o -> o | None -> x in
   map_ Scalar.log out
 
 
-let log2 x = map Scalar.log2 x
+let log2 x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._log2_elt _kind in
+  map _func x
 
 
 let log2_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._log2_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.log2 out
+  map_ _func out
 
 
-let log10 x = map Scalar.log10 x
+let log10 x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._log10_elt _kind in
+  map _func x
 
 
 let log10_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._log10_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.log10 out
+  map_ _func out
 
 
-let log1p x = map Scalar.log1p x
+let log1p x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._log1p_elt _kind in
+  map _func x
 
 
 let log1p_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._log1p_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.log1p out
+  map_ _func out
 
 
-let exp x = map Scalar.exp x
+let exp x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._exp_elt _kind in
+  map _func x
 
 
 let exp_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._exp_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.exp out
+  map_ _func out
 
 
-let exp2 x = map Scalar.exp2 x
+let exp2 x =
+  let _kind = kind x in
+  let a = Owl_base_dense_common._float_typ_elt _kind 2. in
+  let _func = Owl_base_dense_common._pow_elt _kind a in
+  map _func x
 
 
 let exp2_ ?out x =
+  let _kind = kind x in
+  let a = Owl_base_dense_common._float_typ_elt _kind 2. in
+  let _func = Owl_base_dense_common._pow_elt _kind a in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.exp2 out
+  map_ _func out
 
 
-let exp10 x = map Scalar.exp10 x
+let exp10 x =
+  let _kind = kind x in
+  let a = Owl_base_dense_common._float_typ_elt _kind 10. in
+  let _func = Owl_base_dense_common._pow_elt _kind a in
+  map _func x
 
 
 let exp10_ ?out x =
+  let _kind = kind x in
+  let a = Owl_base_dense_common._float_typ_elt _kind 10. in
+  let _func = Owl_base_dense_common._pow_elt _kind a in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.exp10 out
+  map_ _func out
 
 
-let expm1 x = map Scalar.expm1 x
+let expm1 x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._expm1_elt _kind in
+  map _func x
 
 
 let expm1_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._expm1_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.expm1 out
+  map_ _func out
 
 
 let sin x = map Scalar.sin x
@@ -1407,12 +1478,16 @@ let hypot_ ?out x y =
   |> ignore
 
 
-let pow x y = _broadcasted_op x y ( ** )
+let pow x y =
+  let _kind = kind x in
+  let _op = Owl_base_dense_common._pow_elt _kind in
+  _broadcasted_op x y _op
 
 
 let pow_ ?out x y =
+  let _kind = kind x in
+  let _op = Owl_base_dense_common._pow_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  let _op = Owl_base_dense_common._div_elt (kind x) in
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
@@ -1603,7 +1678,7 @@ let scalar_pow_ ?out a x =
 
 
 let scalar_atan2 a x =
-  let _op =Scalar.atan2 in
+  let _op = Scalar.atan2 in
   map (fun y -> _op a y) x
 
 
