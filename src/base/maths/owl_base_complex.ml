@@ -342,12 +342,13 @@ let of_tuple x =
 let to_tuple x = x.re, x.im
 
 
-let is_nan x = x.re = nan || x.im = nan
+let is_nan x = Owl_base_maths.(is_nan x.re || is_nan x.im)
 
 
-let is_inf x =
-  x.re = infinity || x.re = neg_infinity ||
-  x.im = infinity || x.im = neg_infinity
+let is_inf x = Owl_base_maths.(is_inf x.re || is_inf x.im)
+
+
+let is_normal x = Owl_base_maths.(is_normal x.re && is_normal x.im)
 
 
 

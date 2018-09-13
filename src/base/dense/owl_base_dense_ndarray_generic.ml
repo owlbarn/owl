@@ -2132,33 +2132,22 @@ let is_nonnegative varr =
   (not_exists negative_fun varr)
 
 
-let is_normal varr =
-  let not_normal_fun = (
-    fun x -> match Pervasives.classify_float x with
-      | FP_subnormal -> true
-      | FP_infinite -> true
-      | FP_nan -> true
-      | _ -> false
-  ) in
-  (not_exists not_normal_fun varr)
+let is_normal x =
+  let _kind = kind x in
+  let is_normal_fun = Owl_base_dense_common._is_normal_elt _kind in
+  for_all is_normal_fun x
 
 
-let not_nan varr =
-  let is_nan_fun = (
-    fun x -> match Pervasives.classify_float x with
-      | FP_nan -> true
-      | _ -> false
-  ) in
-  (not_exists is_nan_fun varr)
+let not_nan x =
+  let _kind = kind x in
+  let is_nan_fun = Owl_base_dense_common._is_nan_elt _kind in
+  not_exists is_nan_fun x
 
 
-let not_inf varr =
-  let is_inf_fun = (
-    fun x -> match Pervasives.classify_float x with
-      | FP_infinite -> true
-      | _ -> false
-  ) in
-  (not_exists is_inf_fun varr)
+let not_inf x =
+  let _kind = kind x in
+  let is_inf_fun = Owl_base_dense_common._is_inf_elt _kind in
+  not_exists is_inf_fun x
 
 
 (* Neural network related functions *)

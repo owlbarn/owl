@@ -386,6 +386,30 @@ let _conj_elt : type a b. (a, b) kind -> (a -> a) = function
   | _         -> failwith "_conj_elt: unsupported operation"
 
 
+let _is_nan_elt : type a b. (a, b) kind -> (a -> bool) = function
+  | Float32   -> Owl_base_maths.is_nan
+  | Float64   -> Owl_base_maths.is_nan
+  | Complex32 -> Owl_base_complex.is_nan
+  | Complex64 -> Owl_base_complex.is_nan
+  | _         -> failwith "_is_nan_elt: unsupported operation"
+
+
+let _is_inf_elt : type a b. (a, b) kind -> (a -> bool) = function
+  | Float32   -> Owl_base_maths.is_inf
+  | Float64   -> Owl_base_maths.is_inf
+  | Complex32 -> Owl_base_complex.is_inf
+  | Complex64 -> Owl_base_complex.is_inf
+  | _         -> failwith "_is_inf_elt: unsupported operation"
+
+
+let _is_normal_elt : type a b. (a, b) kind -> (a -> bool) = function
+  | Float32   -> Owl_base_maths.is_normal
+  | Float64   -> Owl_base_maths.is_normal
+  | Complex32 -> Owl_base_complex.is_normal
+  | Complex64 -> Owl_base_complex.is_normal
+  | _         -> failwith "_is_normal_elt: unsupported operation"
+
+
 let _float_typ_elt : type a b. (a, b) kind -> (float -> a) = function
   | Float32        -> fun a -> a
   | Float64        -> fun a -> a

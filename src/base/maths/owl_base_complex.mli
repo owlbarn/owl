@@ -230,3 +230,6 @@ val is_nan : t -> bool
 
 val is_inf : t -> bool
 (** ``is_inf x`` returns ``true`` if either ``x.re`` or ``x.im`` is ``infinity`` or ``neg_infinity``. *)
+
+val is_normal : t -> bool
+(** ``is_normal x`` returns ``true`` if both ``x.re`` and ``x.im`` are ``normal``. *)

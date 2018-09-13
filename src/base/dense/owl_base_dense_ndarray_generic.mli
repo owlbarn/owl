@@ -196,16 +196,13 @@ val is_nonpositive : ('a, 'b) t -> bool
 val is_nonnegative : ('a, 'b) t -> bool
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val is_normal : (float, 'b) t -> bool
+val is_normal : ('a, 'b) t -> bool
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val not_nan : (float, 'b) t -> bool
+val not_nan : ('a, 'b) t -> bool
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val not_inf : (float, 'b) t -> bool
+val not_inf : ('a, 'b) t -> bool
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val equal : ('a, 'b) t -> ('a, 'b) t -> bool
