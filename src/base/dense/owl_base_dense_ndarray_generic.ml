@@ -779,11 +779,6 @@ let conj_ ?out x =
   map _func out
 
 
-let neg_ ?out x =
-  let out = match out with Some o -> o | None -> x in
-  map_ Scalar.neg out
-
-
 let neg x =
   let _kind = kind x in
   let _func = Owl_base_dense_common._neg_elt _kind in
@@ -794,15 +789,20 @@ let neg_ ?out x =
   let _kind = kind x in
   let _func = Owl_base_dense_common._neg_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.neg out
+  map_ _func out
 
 
-let reci x = map Scalar.reci x
+let reci x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._inv_elt _kind in
+  map _func x
 
 
 let reci_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._inv_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.reci out
+  map_ _func out
 
 
 let floor x = map Scalar.floor x
@@ -968,30 +968,26 @@ let exp_ ?out x =
 
 let exp2 x =
   let _kind = kind x in
-  let a = Owl_base_dense_common._float_typ_elt _kind 2. in
-  let _func = Owl_base_dense_common._pow_elt _kind a in
+  let _func = Owl_base_dense_common._exp2_elt _kind in
   map _func x
 
 
 let exp2_ ?out x =
   let _kind = kind x in
-  let a = Owl_base_dense_common._float_typ_elt _kind 2. in
-  let _func = Owl_base_dense_common._pow_elt _kind a in
+  let _func = Owl_base_dense_common._exp2_elt _kind in
   let out = match out with Some o -> o | None -> x in
   map_ _func out
 
 
 let exp10 x =
   let _kind = kind x in
-  let a = Owl_base_dense_common._float_typ_elt _kind 10. in
-  let _func = Owl_base_dense_common._pow_elt _kind a in
+  let _func = Owl_base_dense_common._exp10_elt _kind in
   map _func x
 
 
 let exp10_ ?out x =
   let _kind = kind x in
-  let a = Owl_base_dense_common._float_typ_elt _kind 10. in
-  let _func = Owl_base_dense_common._pow_elt _kind a in
+  let _func = Owl_base_dense_common._exp10_elt _kind in
   let out = match out with Some o -> o | None -> x in
   map_ _func out
 
@@ -1009,100 +1005,160 @@ let expm1_ ?out x =
   map_ _func out
 
 
-let sin x = map Scalar.sin x
+let sin x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._sin_elt _kind in
+  map _func x
 
 
 let sin_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._sin_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.sin out
+  map_ _func out
 
 
-let cos x = map Scalar.cos x
+let cos x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._cos_elt _kind in
+  map _func x
 
 
 let cos_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._cos_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.cos out
+  map_ _func out
 
 
-let tan x = map Scalar.tan x
+let tan x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._tan_elt _kind in
+  map _func x
 
 
 let tan_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._tan_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.tan out
+  map_ _func out
 
 
-let sinh x = map Scalar.sinh x
+let sinh x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._sinh_elt _kind in
+  map _func x
 
 
 let sinh_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._sinh_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.sinh out
+  map_ _func out
 
 
-let cosh x = map Scalar.cosh x
+let cosh x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._cosh_elt _kind in
+  map _func x
 
 
 let cosh_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._cosh_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.cosh out
+  map_ _func out
 
 
-let tanh x = map Scalar.tanh x
+let tanh x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._tanh_elt _kind in
+  map _func x
 
 
 let tanh_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._tanh_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.tanh out
+  map_ _func out
 
 
-let asin x = map Scalar.asin x
+let asin x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._asin_elt _kind in
+  map _func x
 
 
 let asin_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._asin_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.asin out
+  map_ _func out
 
 
-let acos x = map Scalar.acos x
+let acos x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._acos_elt _kind in
+  map _func x
 
 
 let acos_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._acos_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.acos out
+  map_ _func out
 
 
-let atan x = map Scalar.atan x
+let atan x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._atan_elt _kind in
+  map _func x
 
 
 let atan_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._atan_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.atan out
+  map_ _func out
 
 
-let asinh x = map Scalar.asinh x
+let asinh x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._asinh_elt _kind in
+  map _func x
 
 
 let asinh_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._asinh_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.asinh out
+  map_ _func out
 
 
-let acosh x = map Scalar.acosh x
+let acosh x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._acosh_elt _kind in
+  map _func x
 
 
 let acosh_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._acosh_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.acosh out
+  map_ _func out
 
 
-let atanh x = map Scalar.atanh x
+let atanh x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._atanh_elt _kind in
+  map _func x
 
 
 let atanh_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._atanh_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.atanh out
+  map_ _func out
 
 
 let sum_slices ?(axis=0) varr =

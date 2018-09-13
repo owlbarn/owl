@@ -45,7 +45,25 @@ val sqrt : t -> t
 val exp : t -> t
 (** TODO *)
 
+val exp2 : t -> t
+(** TODO *)
+
+val exp10 : t -> t
+(** TODO *)
+
+val expm1 : t -> t
+(** TODO *)
+
 val log : t -> t
+(** TODO *)
+
+val log2 : t -> t
+(** TODO *)
+
+val log10 : t -> t
+(** TODO *)
+
+val log1p : t -> t
 (** TODO *)
 
 val sin : t -> t

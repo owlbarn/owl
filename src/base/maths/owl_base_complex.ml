@@ -13,6 +13,15 @@ let abs = norm
 let abs2 = norm2
 
 
+let exp2 x = pow {re = 2.; im = 0.} x
+
+
+let exp10 x = pow {re = 10.; im = 0.} x
+
+
+let expm1 x = sub (exp x) one
+
+
 let logabs x =
   let r = abs_float x.re in
   let i = abs_float x.im in
@@ -21,6 +30,15 @@ let logabs x =
     else i, r /. i
   in
   Pervasives.(log m) +. 0.5 *. (log1p (u *. u))
+
+
+let log2 x = div (log x) (log {re = 2.; im = 0.})
+
+
+let log10 x = div (log x) (log {re = 10.; im = 0.})
+
+
+let log1p x = log (add x one)
 
 
 let add_re x a = { re = x.re +. a; im = x.im }

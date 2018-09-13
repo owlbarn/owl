@@ -165,42 +165,58 @@ let _log_elt : type a b. (a, b) kind -> (a -> a) = function
 
 
 let _log2_elt : type a b. (a, b) kind -> (a -> a) = function
-  | Float32   -> fun x -> Pervasives.log x /. Owl_const.loge2
-  | Float64   -> fun x -> Pervasives.log x /. Owl_const.loge2
-  | Complex32 -> fun x -> Complex.(div (log x) (log {re = 2.; im = 0.}))
-  | Complex64 -> fun x -> Complex.(div (log x) (log {re = 2.; im = 0.}))
+  | Float32   -> Owl_base_maths.log2
+  | Float64   -> Owl_base_maths.log2
+  | Complex32 -> Owl_base_complex.log2
+  | Complex64 -> Owl_base_complex.log2
   | _         -> failwith "_log2_elt: unsupported operation"
 
 
 let _log10_elt : type a b. (a, b) kind -> (a -> a) = function
-  | Float32   -> Pervasives.log10
-  | Float64   -> Pervasives.log10
-  | Complex32 -> fun x -> Complex.(div (log x) (log {re = 10.; im = 0.}))
-  | Complex64 -> fun x -> Complex.(div (log x) (log {re = 10.; im = 0.}))
+  | Float32   -> Owl_base_maths.log10
+  | Float64   -> Owl_base_maths.log10
+  | Complex32 -> Owl_base_complex.log10
+  | Complex64 -> Owl_base_complex.log10
   | _         -> failwith "_log10_elt: unsupported operation"
 
 
 let _log1p_elt : type a b. (a, b) kind -> (a -> a) = function
-  | Float32   -> Pervasives.log1p
-  | Float64   -> Pervasives.log1p
-  | Complex32 -> fun x -> Complex.(log (add x one))
-  | Complex64 -> fun x -> Complex.(log (add x one))
+  | Float32   -> Owl_base_maths.log1p
+  | Float64   -> Owl_base_maths.log1p
+  | Complex32 -> Owl_base_complex.log1p
+  | Complex64 -> Owl_base_complex.log1p
   | _         -> failwith "_log1p_elt: unsupported operation"
 
 
 let _exp_elt : type a b. (a, b) kind -> (a -> a) = function
-  | Float32   -> Pervasives.exp
-  | Float64   -> Pervasives.exp
-  | Complex32 -> Complex.exp
-  | Complex64 -> Complex.exp
+  | Float32   -> Owl_base_maths.exp
+  | Float64   -> Owl_base_maths.exp
+  | Complex32 -> Owl_base_complex.exp
+  | Complex64 -> Owl_base_complex.exp
   | _         -> failwith "_exp_elt: unsupported operation"
 
 
+let _exp2_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.exp2
+  | Float64   -> Owl_base_maths.exp2
+  | Complex32 -> Owl_base_complex.exp2
+  | Complex64 -> Owl_base_complex.exp2
+  | _         -> failwith "_exp2_elt: unsupported operation"
+
+
+let _exp10_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.exp10
+  | Float64   -> Owl_base_maths.exp10
+  | Complex32 -> Owl_base_complex.exp10
+  | Complex64 -> Owl_base_complex.exp10
+  | _         -> failwith "_exp10_elt: unsupported operation"
+
+
 let _expm1_elt : type a b. (a, b) kind -> (a -> a) = function
-  | Float32   -> Pervasives.expm1
-  | Float64   -> Pervasives.expm1
-  | Complex32 -> fun x -> Complex.(sub (exp x) one)
-  | Complex64 -> fun x -> Complex.(sub (exp x) one)
+  | Float32   -> Owl_base_maths.expm1
+  | Float64   -> Owl_base_maths.expm1
+  | Complex32 -> Owl_base_complex.expm1
+  | Complex64 -> Owl_base_complex.expm1
   | _         -> failwith "_expm1_elt: unsupported operation"
 
 
@@ -256,6 +272,102 @@ let _pow_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Complex32 -> Complex.pow
   | Complex64 -> Complex.pow
   | _         -> failwith "_power_scalar_elt: unsupported operation"
+
+
+let _sin_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.sin
+  | Float64   -> Owl_base_maths.sin
+  | Complex32 -> Owl_base_complex.sin
+  | Complex64 -> Owl_base_complex.sin
+  | _         -> failwith "_sin_elt: unsupported operation"
+
+
+let _cos_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.cos
+  | Float64   -> Owl_base_maths.cos
+  | Complex32 -> Owl_base_complex.cos
+  | Complex64 -> Owl_base_complex.cos
+  | _         -> failwith "_cos_elt: unsupported operation"
+
+
+let _tan_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.tan
+  | Float64   -> Owl_base_maths.tan
+  | Complex32 -> Owl_base_complex.tan
+  | Complex64 -> Owl_base_complex.tan
+  | _         -> failwith "_tan_elt: unsupported operation"
+
+
+let _asin_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.asin
+  | Float64   -> Owl_base_maths.asin
+  | Complex32 -> Owl_base_complex.asin
+  | Complex64 -> Owl_base_complex.asin
+  | _         -> failwith "_asin_elt: unsupported operation"
+
+
+let _acos_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.acos
+  | Float64   -> Owl_base_maths.acos
+  | Complex32 -> Owl_base_complex.acos
+  | Complex64 -> Owl_base_complex.acos
+  | _         -> failwith "_acos_elt: unsupported operation"
+
+
+let _atan_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.atan
+  | Float64   -> Owl_base_maths.atan
+  | Complex32 -> Owl_base_complex.atan
+  | Complex64 -> Owl_base_complex.atan
+  | _         -> failwith "_atan_elt: unsupported operation"
+
+
+let _sinh_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.sinh
+  | Float64   -> Owl_base_maths.sinh
+  | Complex32 -> Owl_base_complex.sinh
+  | Complex64 -> Owl_base_complex.sinh
+  | _         -> failwith "_sinh_elt: unsupported operation"
+
+
+let _cosh_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.cosh
+  | Float64   -> Owl_base_maths.cosh
+  | Complex32 -> Owl_base_complex.cosh
+  | Complex64 -> Owl_base_complex.cosh
+  | _         -> failwith "_cosh_elt: unsupported operation"
+
+
+let _tanh_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.tanh
+  | Float64   -> Owl_base_maths.tanh
+  | Complex32 -> Owl_base_complex.tanh
+  | Complex64 -> Owl_base_complex.tanh
+  | _         -> failwith "_tanh_elt: unsupported operation"
+
+
+let _asinh_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.asinh
+  | Float64   -> Owl_base_maths.asinh
+  | Complex32 -> Owl_base_complex.asinh
+  | Complex64 -> Owl_base_complex.asinh
+  | _         -> failwith "_asinh_elt: unsupported operation"
+
+
+let _acosh_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.acosh
+  | Float64   -> Owl_base_maths.acosh
+  | Complex32 -> Owl_base_complex.acosh
+  | Complex64 -> Owl_base_complex.acosh
+  | _         -> failwith "_acosh_elt: unsupported operation"
+
+
+let _atanh_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.atanh
+  | Float64   -> Owl_base_maths.atanh
+  | Complex32 -> Owl_base_complex.atanh
+  | Complex64 -> Owl_base_complex.atanh
+  | _         -> failwith "_atanh_elt: unsupported operation"
 
 
 let _scale_elt : type a b. (a, b) kind -> (float -> a -> a) = function
