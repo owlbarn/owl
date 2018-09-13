@@ -15,6 +15,7 @@ env:
     - PINS="owl-base:."
     - PRE_INSTALL_HOOK="cd /home/opam/opam-repository && git pull origin master && opam update -uy"
   matrix:
+    # wait for a genius to fix these distro
     #- DISTRO=alpine
     #- DISTRO=centos-7
     #- DISTRO=fedora-25

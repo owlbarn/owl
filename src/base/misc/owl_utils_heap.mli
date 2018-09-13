@@ -6,11 +6,7 @@
 
 (** {6 Type definition} *)
 
-type 'a t = {
-  mutable used : int;
-  mutable data : 'a array;
-  cmp : 'a -> 'a -> int;
-}
+type 'a t
 (** Type of a min heap. *)
 
 

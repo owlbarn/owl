@@ -6,11 +6,7 @@
 
 (** {6 Type definition} *)
 
-type 'a t = {
-  mutable used : int;
-  mutable size : int;
-  mutable data : 'a array;
-}
+type 'a t
 (** Type of a stack. *)
 
 
