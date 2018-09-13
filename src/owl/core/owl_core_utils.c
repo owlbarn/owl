@@ -326,7 +326,7 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
     m = (m % mc == 0) ? mc : (mc - mr * (mc - (m % mc)) / (mr * (m / mc + 1)));
   }
 
-  fprintf(stderr, "calculated: k = %d, m = %d, n = %d\n", k, m, n);
+  // fprintf(stderr, "calculated: k = %d, m = %d, n = %d\n", k, m, n);
 
   *kp = k; *mp = m; *np = n;
   return;

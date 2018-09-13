@@ -11,12 +11,27 @@ open Owl_core_types
  * convolution eigen-like implementation
  *)
 
- external owl_float32_ndarray_conv_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
-   "stub_float32_ndarray_conv_spatial_bytecode"
-   "stub_float32_ndarray_conv_spatial_native"
+external owl_float32_ndarray_conv_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float32_ndarray_conv_spatial_bytecode"
+  "stub_float32_ndarray_conv_spatial_native"
+
+external owl_float64_ndarray_conv_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_float64_ndarray_conv_spatial_bytecode"
+  "stub_float64_ndarray_conv_spatial_native"
+
+external owl_complex32_ndarray_conv_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex32_ndarray_conv_spatial_bytecode"
+  "stub_complex32_ndarray_conv_spatial_native"
+
+external owl_complex64_ndarray_conv_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+  "stub_complex64_ndarray_conv_spatial_bytecode"
+  "stub_complex64_ndarray_conv_spatial_native"
 
 let _owl_spatial_conv_eigen : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
   | Float32   -> owl_float32_ndarray_conv_spatial
+  | Float64   -> owl_float64_ndarray_conv_spatial
+  | Complex32 -> owl_complex32_ndarray_conv_spatial
+  | Complex64 -> owl_complex64_ndarray_conv_spatial
   | _         -> failwith "_owl_spatial_conv_eigen: unsupported operation"
 
 (*

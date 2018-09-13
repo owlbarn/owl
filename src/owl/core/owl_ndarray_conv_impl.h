@@ -50,9 +50,6 @@ CAMLprim value FUN_NATIVE (spatial) (
   const int kernel_cri = kernel_cols * kernel_rows * in_channel;
   const int kernel_ri  = kernel_rows * in_channel;
 
-  /* TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
-  if (inpt2d == NULL) exit(1); */
-
   memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
 
   INIT;
@@ -65,16 +62,11 @@ CAMLprim value FUN_NATIVE (spatial) (
     if (pc < 0) pc = 0;
   }
 
-  clock_t start = clock(), diff;
+  clock_t start, diff = 0;
 
-  /* int mc = 8;
-  int kc = 648;
-  int nc = 3; */
-
-  int mc = output_crb; //20;
-  int kc = kernel_cri; //4;
-  int nc = out_channel; //1;
-
+  int mc = output_crb;
+  int kc = kernel_cri;
+  int nc = out_channel;
   compute_block_sizes(&mc, &kc, &nc, sizeof(TYPE));
 
   TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
@@ -84,31 +76,29 @@ CAMLprim value FUN_NATIVE (spatial) (
   TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
   if (temp_mn == NULL) exit(1);
 
-  // TYPE *inp2 = inpt2d;
-  TYPE *ken2 = kernel_ptr;
-  TYPE *outm = output_ptr;
-
-  for (int m = 0; m < output_crb; m+=mc) {
+  for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
-    for (int k = 0; k < kernel_cri; k+=kc) {
+    for (int k = 0; k < kernel_cri; k += kc) {
       memset(temp_mk, 0, mc * kc * sizeof(TYPE));
 
       int actual_kc = fminf(k + kc, kernel_cri) - k;
       int cmk = 0;
+
+      start = clock();
       for (int im = 0; im < actual_mc; im++) {
         int bt = (m + im) / output_cr;
-        int cr = (m + im) % output_cr;
+        int cr = (m + im) - bt * output_cr;
         int c = cr / output_rows;
-        int r = cr % output_rows;
+        int r = cr - c * output_rows;
 
         const int cstart = c * col_stride - pc;
         const int rstart = r * row_stride - pr;
 
         for (int ik = 0; ik < actual_kc; ik++) {
           int kc  = (k + ik) / kernel_ri;
-          int kri = (k + ik) % kernel_ri;
+          int kri = (k + ik) - kc * kernel_ri;
           int kr  = kri / in_channel;
-          int ki  = kri % in_channel;
+          int ki  = kri - kr * in_channel;
 
           int input_col = kc + cstart;
           int input_row = kr + rstart;
@@ -122,16 +112,14 @@ CAMLprim value FUN_NATIVE (spatial) (
           cmk++;
         }
       }
+      diff += clock() - start;
       //fprintf(stderr, "end of input index \n");
 
       int index_kn = 0;
-      temp_kn[0] = 1;
 
-      TYPE *outn = outm;
       for (int n = 0; n < out_channel; n += nc) {
         int actual_nc = fminf(n + nc, out_channel) - n;
         int cnk = 0;
-        //memset(temp_kn, 0, kc * nc * sizeof(TYPE));
         for (int ik = 0; ik < actual_kc; ik++) {
           for (int jn = 0; jn < actual_nc; jn++) {
             int index_kn = (k + ik) * out_channel + n + jn;
@@ -149,11 +137,6 @@ CAMLprim value FUN_NATIVE (spatial) (
           temp_mk, actual_kc, temp_kn, actual_nc,
           BETA, temp_mn, actual_nc);
 
-        /* for (int csize = 0; csize < actual_mc * actual_nc; csize++) {
-          //fprintf(stderr, "%.0f (%d) ", temp_mn[csize], (outn - output_ptr) + csize);
-          outn[csize] += temp_mn[csize];
-          fprintf(stderr, "\n");
-        } */
         int cmn = 0;
         for (int ix = 0; ix < actual_mc; ix++) {
           for (int iy = 0; iy < actual_nc; iy++) {
@@ -162,27 +145,13 @@ CAMLprim value FUN_NATIVE (spatial) (
             output_ptr[index_mn] += temp_mn[cmn++];
           }
         }
-        //fprintf(stderr, "\n");
-
-        // outn += actual_nc * actual_mc;
       } // end of n
+
     } // end of k
-    outm += actual_mc * out_channel;
   }
 
-  /* int counter = 0;
-  for (int c = 0; c < output_crb; c++) {
-    for (int r = 0; r < out_channel; r++) {
-      fprintf(stderr, "%.0f ", output_ptr[counter++]);
-    }
-    fprintf(stderr, "\n");
-  } */
-
-  diff = clock() - start;
   int msec = diff * 1000 / CLOCKS_PER_SEC;
   fprintf(stderr, "Time taken for gemm: %d milliseconds\n", msec);
-
-  //free(inpt2d);
 
   free(temp_mk);
   free(temp_kn);
