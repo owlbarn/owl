@@ -469,48 +469,57 @@ let of_array kind arr dims =
   varr
 
 
-let uniform kind ?a ?b dims =
-  let a = match a with Some a -> a | None -> 0. in
-  let b = match b with Some b -> b | None -> 1. in
-  let uniform_gen_fun = (fun _ -> Owl_base_stats.uniform_rvs ~a ~b) in
-  let x = empty kind dims in
-  map_ uniform_gen_fun x;
+let uniform k ?a ?b dims =
+  let a = match a with Some a -> a | None -> Owl_const.zero k in
+  let b = match b with Some b -> b | None -> Owl_const.one k in
+  let uniform_fun = Owl_base_dense_common._uniform_elt k a b in
+  let x = empty k dims in
+  map_ uniform_fun x;
   x
 
 
 let uniform_ ?a ?b ~out =
-  let a = match a with Some a -> a | None -> 0. in
-  let b = match b with Some b -> b | None -> 1. in
-  let uniform_gen_fun = (fun _ -> Owl_base_stats.uniform_rvs ~a ~b) in
-  map_ uniform_gen_fun out
+  let k = kind out in
+  let a = match a with Some a -> a | None -> Owl_const.zero k in
+  let b = match b with Some b -> b | None -> Owl_const.one k in
+  let uniform_fun = Owl_base_dense_common._uniform_elt k a b in
+  map_ uniform_fun out
 
 
-let bernoulli kind ?(p=0.5) dims =
-  let bernoulli_gen_fun = (fun _ -> Owl_base_stats.bernoulli_rvs ~p) in
-  let x = empty kind dims in
-  map_ bernoulli_gen_fun x;
+let bernoulli k ?(p=0.5) dims =
+  let bernoulli_fun = fun _ ->
+    let a = Owl_base_stats.bernoulli_rvs ~p in
+    Owl_base_dense_common._float_typ_elt k a
+  in
+  let x = empty k dims in
+  map_ bernoulli_fun x;
   x
 
 
 let bernoulli_ ?(p=0.5) ~out =
-  let bernoulli_gen_fun = (fun _ -> Owl_base_stats.bernoulli_rvs ~p) in
-  map_ bernoulli_gen_fun out
+  let k = kind out in
+  let bernoulli_fun = fun _ ->
+    let a = Owl_base_stats.bernoulli_rvs ~p in
+    Owl_base_dense_common._float_typ_elt k a
+  in
+  map_ bernoulli_fun out
 
 
-let gaussian kind ?mu ?sigma dims =
-  let mu = match mu with Some a -> a | None -> 0. in
-  let sigma = match sigma with Some a -> a | None -> 1. in
-  let gaussian_gen_fun = (fun _ -> Owl_base_stats.gaussian_rvs ~mu ~sigma) in
-  let x = empty kind dims in
-  map_ gaussian_gen_fun x;
+let gaussian k ?mu ?sigma dims =
+  let mu = match mu with Some a -> a | None -> Owl_const.zero k in
+  let sigma = match sigma with Some a -> a | None -> Owl_const.one k in
+  let gaussian_fun = Owl_base_dense_common._gaussian_elt k mu sigma in
+  let x = empty k dims in
+  map_ gaussian_fun x;
   x
 
 
 let gaussian_ ?mu ?sigma ~out =
-  let mu = match mu with Some a -> a | None -> 0. in
-  let sigma = match sigma with Some a -> a | None -> 1. in
-  let gaussian_gen_fun = (fun _ -> Owl_base_stats.gaussian_rvs ~mu ~sigma) in
-  map_ gaussian_gen_fun out
+  let k = kind out in
+  let mu = match mu with Some a -> a | None -> Owl_const.zero k in
+  let sigma = match sigma with Some a -> a | None -> Owl_const.one k in
+  let gaussian_fun = Owl_base_dense_common._gaussian_elt k mu sigma in
+  map_ gaussian_fun out
 
 
 let print ?max_row ?max_col ?header ?fmt x =

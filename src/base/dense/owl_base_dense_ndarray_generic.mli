@@ -49,20 +49,16 @@ val zeros : ('a, 'b) kind -> int array -> ('a, 'b) t
 val ones : ('a, 'b) kind -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val uniform : (float, 'b) kind -> ?a:float -> ?b:float -> int array -> (float, 'b) t
+val uniform : ('a, 'b) kind -> ?a:'a -> ?b:'a -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val gaussian : (float, 'b) kind -> ?mu:float -> ?sigma:float -> int array -> (float, 'b) t
+val gaussian : ('a, 'b) kind -> ?mu:'a -> ?sigma:'a -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val sequential : (float, 'b) kind -> ?a:float -> ?step:float -> int array -> (float, 'b) t
+val sequential : ('a, 'b) kind -> ?a:'a -> ?step:'a -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a  (except p) *)
-val bernoulli : (float, 'b) kind -> ?p:float -> int array -> (float, 'b) t
+val bernoulli : ('a, 'b) kind -> ?p:float -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 
@@ -101,8 +97,7 @@ val get_slice : int list list -> ('a, 'b) t -> ('a, 'b) t
 val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val reset : (float, 'b) t -> unit
+val reset : ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val copy : ('a, 'b) t -> ('a, 'b) t
