@@ -11,11 +11,6 @@
  * im2col implementation
  */
 
-void compute_block_sizes(int& k, int& m, int& n) {
-  int l1 = 9 * 1024;
-  int l2 = 32 * 1024;
-  int l3 = 512 * 1024;
-}
 
 CAMLprim value FUN_NATIVE (spatial) (
   value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
@@ -76,9 +71,11 @@ CAMLprim value FUN_NATIVE (spatial) (
   int kc = 648;
   int nc = 3; */
 
-  int mc = 20;//49;
-  int kc = 4;//9;
-  int nc = 1;
+  int mc = output_crb; //20;
+  int kc = kernel_cri; //4;
+  int nc = out_channel; //1;
+
+  compute_block_sizes(&mc, &kc, &nc, sizeof(TYPE));
 
   TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
   if (temp_mk == NULL) exit(1);

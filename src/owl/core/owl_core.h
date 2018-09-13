@@ -176,6 +176,7 @@ extern int int32_cmp_r (const void * a, const void * b, const void * z);
 
 extern int int64_cmp_r (const void * a, const void * b, const void * z);
 
+extern void compute_block_sizes(int * k, int * m, int * n, int size);
 
 // copy two double type numbers, for interfacing to foreign functions
 OWL_INLINE value cp_two_doubles(double d0, double d1) {

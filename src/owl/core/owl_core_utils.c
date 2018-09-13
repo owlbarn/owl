@@ -4,7 +4,7 @@
  */
 
 #include "owl_core.h"
-
+#include <assert.h>
 
 // compare two numbers (real & complex & int)
 
@@ -197,4 +197,137 @@ void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int *offset) {
     int64_t start = *(slice + 3 * i);
     *(offset + i) *= start < 0 ? 0 : start;
   }
+}
+
+#define CPUID(abcd,func,id) __asm__ __volatile__ ("xchg{q}\t{%%}rbx, %q1; cpuid; xchg{q}\t{%%}rbx, %q1": "=a" (abcd[0]), "=&r" (abcd[1]), "=c" (abcd[2]), "=d" (abcd[3]) : "0" (func), "2" (id));
+
+inline void query_cache_sizes_intel_direct(int* l1p, int* l2p, int* l3p) {
+  int abcd[4];
+  int l1, l2, l3;
+  l1 = l2 = l3 = 0;
+  int cache_id = 0;
+  int cache_type = 0;
+  do {
+    abcd[0] = abcd[1] = abcd[2] = abcd[3] = 0;
+    CPUID(abcd, 0x4, cache_id);
+    cache_type = (abcd[0] & 0x0F) >> 0;
+    if(cache_type == 1 || cache_type == 3) // data or unified cache
+    {
+      int cache_level = (abcd[0] & 0xE0) >> 5;  // A[7:5]
+      int ways        = (abcd[1] & 0xFFC00000) >> 22; // B[31:22]
+      int partitions  = (abcd[1] & 0x003FF000) >> 12; // B[21:12]
+      int line_size   = (abcd[1] & 0x00000FFF) >>  0; // B[11:0]
+      int sets        = (abcd[2]);                    // C[31:0]
+
+      int cache_size = (ways+1) * (partitions+1) * (line_size+1) * (sets+1);
+
+      switch(cache_level)
+      {
+        case 1: l1 = cache_size; break;
+        case 2: l2 = cache_size; break;
+        case 3: l3 = cache_size; break;
+        default: break;
+      }
+    }
+    cache_id++;
+  } while(cache_type > 0 && cache_id < 16);
+
+  *l1p = l1; *l2p = l2; *l3p = l3;
+  return;
+}
+
+inline void query_cache_sizes_intel(int* l1, int* l2, int* l3, int max_std_funcs) {
+  // if(max_std_funcs >= 4)
+  query_cache_sizes_intel_direct(l1, l2, l3);
+  // else
+    //queryCacheSizes_intel_codes(l1, l2, l3);
+}
+
+inline void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
+  int abcd[4];
+  const int GenuineIntel[] = {0x756e6547, 0x49656e69, 0x6c65746e};
+  CPUID(abcd,0x0,0);
+  int max_std_funcs = abcd[1];
+  //if(cpuid_is_vendor(abcd,GenuineIntel))
+  query_cache_sizes_intel(l1p, l2p, l3p, max_std_funcs);
+
+  fprintf(stderr, "L1/L2/L3 size: %d, %d, %d\n", *l1p, *l2p, *l3p);
+  return;
+}
+
+
+void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
+
+  int l1 = 9 * 1024;
+  int l2 = 32 * 1024;
+  int l3 = 512 * 1024;
+
+  query_cache_sizes(&l1, &l2, &l3);
+
+  l1 = 9 * 1024;
+  l2 = 32 * 1024;
+  l3 = 512 * 1024;
+
+  int k = *kp;
+  int m = *mp;
+  int n = *np;
+
+  if (fmax(k, fmax(m, n)) < 48) {
+    return;
+  }
+
+  int nr = 4;
+  int mr = 2 * sizeof(void*); // Depends on env
+  int k_peeling = 8;
+  int k_div = (mr + nr) * typesize;
+  int k_sub = mr * nr * typesize;
+
+  const int max_kc = fmax(((l1 - k_sub) / k_div) & (~(k_peeling - 1)), 1);
+  const int old_k = k;
+
+  if (k > max_kc) {
+    k = (k % max_kc) == 0 ? max_kc
+      : max_kc - k_peeling * ((max_kc - 1 - (k % max_kc)) / (k_peeling * (k / max_kc + 1)));
+    assert (old_k / k == old_k / max_kc);
+  }
+
+  int max_nc;
+  const int actual_l2 = l3; // l3 for debug; 1572864 for other cases
+  const int lhs_bytes = m * k * typesize;
+  const int rest_l1 = l1 - k_sub - lhs_bytes;
+  if (rest_l1 >= nr * typesize) {
+    max_nc = rest_l1 / (k * typesize);
+  } else {
+    max_nc = (3 * actual_l2) / (4 * max_kc * typesize);
+  }
+
+  int nc = (int) (fmin(actual_l2 / (2 * k * typesize), max_nc)) & (~(nr - 1));
+  if (n > nc) {
+    n = (n % nc == 0) ? nc : (nc - nr * (nc - (n % nc)) / (nr * (n / nc + 1)));
+  } else if (old_k == k) {
+    int problem_size = k * n * typesize;
+    int actual_lm = actual_l2;
+    int max_mc = m;
+
+    if (problem_size < 1024) {
+      actual_lm = l1;
+    } else if (l3 != 0 && problem_size <= 32768) {
+      actual_lm = l2;
+      max_mc = fmin(576, max_mc);
+    }
+    int mc = fmin(actual_lm / (3 * k * typesize), max_mc);
+    if (mc > mr) {
+      mc -= mc % mr;
+    }
+    else if (mc == 0) {
+      *kp = k; *mp = m; *np = n;
+      return;
+    }
+    m = (m % mc == 0) ? mc : (mc - mr * (mc - (m % mc)) / (mr * (m / mc + 1)));
+  }
+
+  fprintf(stderr, "calculated: k = %d, m = %d, n = %d\n", k, m, n);
+
+  *kp = k; *mp = m; *np = n;
+  return;
 }
