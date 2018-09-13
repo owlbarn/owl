@@ -11,6 +11,8 @@ include Owl_utils_ndarray
 
 module Stack = Owl_utils_stack
 
+module Heap = Owl_utils_heap
+
 module Array = Owl_utils_array
 
 

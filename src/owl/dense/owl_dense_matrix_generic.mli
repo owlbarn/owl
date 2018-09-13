@@ -556,14 +556,14 @@ by setting their values to zeros.
 val top : ('a, 'b) t -> int -> int array array
 (**
 ``top x n`` returns the indices of ``n`` greatest values of ``x``. The indices are
-arranged according to the corresponding elelment values, from the greatest one
+arranged according to the corresponding element values, from the greatest one
 to the smallest one.
  *)
 
 val bottom : ('a, 'b) t -> int -> int array array
 (**
 ``bottom x n`` returns the indices of ``n`` smallest values of ``x``. The indices
-are arranged according to the corresponding elelment values, from the smallest
+are arranged according to the corresponding element values, from the smallest
 one to the greatest one.
  *)
 

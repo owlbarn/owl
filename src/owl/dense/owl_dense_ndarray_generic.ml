@@ -5327,52 +5327,59 @@ let vecnorm' ?p x =
   get y [|0|]
 
 
-(* this function is used for searching top/bottom values in [x] *)
-let _search_close_to_extreme x n neg_ext cmp_fun =
-  let m = numel x in
-  let n = Pervasives.min n m in
-  let vls = Array.make n neg_ext in
-  let idx = Array.make n max_int in
-  let y = flatten x |> array1_of_genarray in
-  let l = n - 1 in
+(* This function is used for searching the indices of top values in [x]
+ * according to the comparison function cmp_fun. cmp_fun a b should return a
+ * negative value if a < b, 0 if a = b and a positive value if a > b.
+ * If sorted is true, then the indices are returned in decreasing order of
+ * their corresponding element. *)
+let _search_top_elements ?(sorted=true) x n cmp_fun =
+  if n <= 0 then [||]
+  else (
+    let m = numel x in
+    let n = Pervasives.min n m in
+    let y = flatten x |> array1_of_genarray in
+    let cmp_ids i j = cmp_fun y.{i} y.{j} in
+    let heap = Owl_utils.Heap.make_int ~initial_size:n cmp_ids in
 
-  let _insert vls idx x p =
-    for q = l downto 0 do
-      if cmp_fun x vls.(q) then (
-        if q < l then (
-          vls.(q+1) <- vls.(q);
-          idx.(q+1) <- idx.(q);
-        );
-        vls.(q) <- x;
-        idx.(q) <- p;
-      )
-    done
-  in
+    for i = 0 to n - 1 do
+      Owl_utils.Heap.push heap i;
+    done;
+    for i = n to m - 1 do
+      if cmp_ids i (Owl_utils.Heap.peek heap) > 0 then (
+        let _ = Owl_utils.Heap.pop heap in
+        Owl_utils.Heap.push heap i
+      );
+    done;
 
-  for i = 0 to m - 1 do
-    if cmp_fun y.{i} vls.(l) then _insert vls idx y.{i} i
-  done;
-
-  let k = num_dims x in
-  let s = strides x in
-  Array.map (fun i ->
-    let j = Array.make k 0 in
-    Owl_utils.index_1d_nd i j s;
-    j
-  ) idx
-
+    (* slightly more efficient if the final array does not have to be sorted *)
+    let k = num_dims x in
+    let s = strides x in
+    if sorted then
+      let result = Array.make n [||] in
+      for i = n - 1 downto 0 do
+        result.(i) <- Array.make k 0;
+        Owl_utils.index_1d_nd (Owl_utils.Heap.pop heap) result.(i) s;
+      done;
+      result
+    else
+      Array.map (fun i ->
+          let j = Array.make k 0 in
+          Owl_utils.index_1d_nd i j s;
+          j
+        ) (Owl_utils.Heap.to_array heap)
+  )
 
 (* FIXME:
   the (<) and (>) functions needs to be changed for complex numbers, since
   Pervasives module may have different way to compare complex numbers.
  *)
-let top x n = _search_close_to_extreme x n (Owl_const.neg_inf (kind x)) ( > )
+let top x n = _search_top_elements x n Pervasives.compare
 
-let bottom x n = _search_close_to_extreme x n (Owl_const.pos_inf (kind x)) ( < )
+let bottom x n = _search_top_elements x n (fun a b -> -Pervasives.compare a b)
 
 
 
-(* fucntions which modify the data in-place, not so pure *)
+(* functions which modify the data in-place, not so pure *)
 
 let add_ ?out x y =
   let out = match out with Some o -> o | None -> x in

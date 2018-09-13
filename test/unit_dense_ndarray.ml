@@ -342,6 +342,30 @@ module To_test = struct
     let z = M.argsort x in
     M.(y = z)
 
+  let top_1 () =
+    let arr = M.init Float64 [|50|] (fun i -> float i) in
+    let tops = M.top arr 50 in
+    tops = Array.init 50 (fun i -> [|49 - i|])
+
+  let top_2 () =
+    let arr = M.init Float64 [||] (fun _ -> 0.) in
+    let tops = M.top arr 0 in
+    tops = [||]
+
+  let top_3 () =
+    let arr = M.of_array Float32 [|5.;7.;4.;2.;6.;8.;9.;1.;3.|] [|3;3|] in
+    let tops = M.top arr 4 in
+    tops = [|[|2;0|]; [|1;2|]; [|0;1|]; [|1;1|]|]
+
+  let bottom_1 () =
+    let arr = M.of_array Float32 [|5.;7.;4.;2.;6.;8.;9.;1.;3.|] [|3;3|] in
+    let bottoms = M.bottom arr 5 in
+    bottoms = [|[|2;1|]; [|1;0|]; [|2;2|]; [|0;2|]; [|0;0|]|]
+
+  let bottom_2 () =
+    let arr = M.of_array Float64 [|1.;2.;3.;1000.;4.|] [|5|] in
+    let bottoms = M.bottom arr 4 in
+    bottoms = [|[|0|]; [|1|]; [|2|]; [|4|]|]
 
 end
 
@@ -566,6 +590,21 @@ let argsort_1 () =
 let argsort_2 () =
   Alcotest.(check bool) "argsort_2" true (To_test.argsort_2 ())
 
+let top_1 () =
+  Alcotest.(check bool) "top_1" true (To_test.top_1 ())
+
+let top_2 () =
+  Alcotest.(check bool) "top_2" true (To_test.top_2 ())
+
+let top_3 () =
+  Alcotest.(check bool) "top_3" true (To_test.top_3 ())
+
+let bottom_1 () =
+  Alcotest.(check bool) "bottom_1" true (To_test.bottom_1 ())
+
+let bottom_2 () =
+  Alcotest.(check bool) "bottom_2" true (To_test.bottom_2 ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -640,4 +679,9 @@ let test_set = [
   "sort", `Slow, sort;
   "argsort_1", `Slow, argsort_1;
   "argsort_2", `Slow, argsort_2;
+  "top_1", `Slow, top_1;
+  "top_2", `Slow, top_2;
+  "top_3", `Slow, top_3;
+  "bottom_1", `Slow, bottom_1;
+  "bottom_2", `Slow, bottom_2;
 ]
