@@ -52,14 +52,14 @@ double exponpow_rvs (const double a, const double b) {
 
 
 double exponpow_pdf (const double x, const double a, const double b) {
-  double l = lgam (1 + 1 / b);
-  double p = (1 / (2 * a)) * exp (-pow (fabs (x / a), b) - l);
-  return p;
+  return exp (exponpow_logpdf (x, a, b));
 }
 
 
 double exponpow_logpdf (const double x, const double a, const double b) {
-  return log (exponpow_pdf (x, a, b));
+  double l = lgam (1 + 1 / b);
+  double p = -log (2 * a) - pow (fabs (x / a), b) - l;
+  return p;
 }
 
 

@@ -15,11 +15,11 @@ double gumbel1_rvs(double a, double b) {
 }
 
 double gumbel1_pdf(double x, double a, double b) {
-  return a * b *  exp(-(b * exp(-a * x) + a * x));
+  return exp(gumbel1_logpdf(x, a, b));
 }
 
 double gumbel1_logpdf(double x, double a, double b) {
-  return log(gumbel1_pdf(x, a, b));
+  return log(a) + log(b) - (b * exp(-a * x) + a * x);
 }
 
 double gumbel1_cdf(double x, double a, double b) {

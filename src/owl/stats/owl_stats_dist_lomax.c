@@ -9,15 +9,15 @@
 /** Lomax distribution, i.e. Pareto Type II distribution **/
 
 double lomax_rvs(double shape, double scale) {
-  return scale * (exp(std_exponential_rvs() / shape) - 1.);
+  return scale * (expm1(std_exponential_rvs() / shape));
 }
 
 double lomax_pdf(double x, double shape, double scale) {
-  return (x < scale) ? 0 : ( (shape / scale) / pow(x / scale, shape + 1) );
+  return (x < scale) ? 0 : exp(lomax_logpdf(x, shape, scale));
 }
 
 double lomax_logpdf(double x, double shape, double scale) {
-  return log(lomax_pdf(x, shape, scale));
+  return (x < scale) ? OWL_NEGINF : log(shape / scale) - xlogy(shape + 1, x / scale);
 }
 
 double lomax_cdf(double x, double shape, double scale) {
@@ -25,7 +25,7 @@ double lomax_cdf(double x, double shape, double scale) {
 }
 
 double lomax_logcdf(double x, double shape, double scale) {
-  return log(lomax_cdf(x, shape, scale));
+  return (x < scale) ? OWL_NEGINF : log1p(-pow(scale / x, shape));
 }
 
 double lomax_ppf(double p, double shape, double scale) {
@@ -42,7 +42,7 @@ double lomax_sf(double x, double shape, double scale) {
 }
 
 double lomax_logsf(double x, double shape, double scale) {
-  return log(lomax_sf(x, shape, scale));
+  return (x < scale) ? 0 : xlogy(shape, scale / x);
 }
 
 double lomax_isf(double q, double shape, double scale) {

@@ -15,22 +15,22 @@ double gumbel2_rvs(double a, double b) {
 }
 
 double gumbel2_pdf(double x, double a, double b) {
-  if (x <= 0)
-    return 0;
-  else
-    return b * a * pow(x, -(a + 1)) * exp (-b * pow(x, -a));
+  return exp(gumbel2_logpdf(x, a, b));
 }
 
 double gumbel2_logpdf(double x, double a, double b) {
-  return log(gumbel2_pdf(x, a, b));
+  if (x <= 0)
+    return OWL_NEGINF;
+  else
+    return log(b) + log(a) - xlogy(a + 1, x) - b * pow(x, -a);
 }
 
 double gumbel2_cdf(double x, double a, double b) {
-  return (x == 0) ? 0 : exp(-b / pow(x, a));
+  return exp(gumbel2_logcdf(x, a, b));
 }
 
 double gumbel2_logcdf(double x, double a, double b) {
-  return log(gumbel2_cdf(x, a, b));
+  return (x == 0) ? OWL_NEGINF : -b / pow(x, a);
 }
 
 double gumbel2_ppf(double p, double a, double b) {

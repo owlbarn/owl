@@ -100,6 +100,11 @@ val first_quartile : float array -> float
 val third_quartile : float array -> float
 (** ``third_quartile x`` returns the third quartile of ``x``, i.e. 75 percentiles. *)
 
+val interquartile : float array -> float
+(** ``interquartile x`` returns the interquartile range of ``x``
+    which is defined as the first quartile subtracted from the third quartile.
+*)
+
 val median : float array -> float
 (** ``median x`` returns the median of ``x``. *)
 
@@ -177,8 +182,7 @@ Returns a histogram including the ``n+1`` bin boundaries, ``n`` counts and
 weighted counts if applicable, but without normalisation.
 *)
 
-val histogram_sorted : [ `Bins of float array | `N of int ] -> ?weights:float array
-  -> float array -> histogram
+val histogram_sorted : [ `Bins of float array | `N of int ] -> ?weights:float array -> float array -> histogram
 (**
 ``histogram_sorted bins x`` is like ``histogram`` but assumes that ``x`` is sorted
 already. This increases efficiency if there are less bins than data. Undefined
@@ -221,12 +225,28 @@ val normlise_pdf : float array -> float array
 val tukey_fences : ?k:float -> float array -> float * float
 (**
 ``tukey_fences ?k x`` returns a tuple of the lower and upper boundaries for
-values that are not outliers. ``k`` defaults to the standard coefficient of ``1.5``.
-For first and third quartiles ``Q1`` and `Q3`, the range is computed as follows:
+values that are not outliers. ``k`` defaults to the standard coefficient of
+``1.5``. For first and third quartiles ``Q1`` and `Q3`, the range is computed
+as follows:
 
 .. math::
   (Q1 - k*(Q3-Q1), Q3 + k*(Q3-Q1))
 *)
+
+val gaussian_kde : ?bandwidth:[ `Silverman | `Scott ] -> ?n_points:int -> float array -> (float array * float array)
+(**
+``gaussian_kde x`` is a Gaussian kernel density estimator. The estimation of
+the pdf runs in `O(sample_size * n_points)`, and returns an array tuple
+``(a, b)`` where ``a`` is a uniformly spaced points from the sample range at
+which the density function was estimated, and ``b`` is the estimates at these
+points.
+
+Bandwidth selection rules is as follows:
+  * Silverman: use `rule-of-thumb` for choosing the bandwidth. It defaults to [0.9 * min(SD, IQR / 1.34) * n^-0.2].
+  * Scott: same as Silverman, but with a factor, equal to [1.06].
+
+The default bandwidth value is ``Scott``.
+ *)
 
 
 (** {6 MCMC: Markov Chain Monte Carlo} *)

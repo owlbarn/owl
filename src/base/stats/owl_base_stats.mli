@@ -102,6 +102,9 @@ val first_quartile : float array -> float
 val third_quartile : float array -> float
 (** Refer to :doc:`owl_stats`. *)
 
+val interquartile : float array -> float
+(** Refer to :doc:`owl_stats`. *)
+
 val median : float array -> float
 (** Refer to :doc:`owl_stats`. *)
 
@@ -131,6 +134,9 @@ val pp_hist: Format.formatter -> histogram -> unit
 (** Refer to :doc:`owl_stats`. *)
 
 val tukey_fences : ?k:float -> float array -> float * float
+(** Refer to :doc:`owl_stats`. *)
+
+val gaussian_kde : ?bandwidth:[ `Silverman | `Scott ] -> ?n_points:int -> float array -> (float array * float array)
 (** Refer to :doc:`owl_stats`. *)
 
 

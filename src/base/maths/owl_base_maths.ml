@@ -67,7 +67,7 @@ let expm1 x = Pervasives.expm1 x
 let log x = Pervasives.log x
 
 
-let log2 x = (log x) /. (log 2.)
+let log2 x = (log x) /. Owl_const.loge2
 
 
 let log10 x = Pervasives.log10 x
@@ -107,6 +107,15 @@ let cos x = Pervasives.cos x
 let tan x = Pervasives.tan x
 
 
+let cot x = 1. /. (tan x)
+
+
+let sec x = 1. /. (cos x)
+
+
+let csc x = 1. /. (sin x)
+
+
 let sinh x = Pervasives.sinh x
 
 
@@ -125,22 +134,69 @@ let acos x = Pervasives.acos x
 let atan x = Pervasives.atan x
 
 
-(* asinh(x) is log(x + sqrt(x * x + 1)) *)
+let acot x = (Owl_const.pi /. 2.) -. (atan x)
+
+
+let asec x = Pervasives.acos (1. /. x)
+
+
+let acsc x = Pervasives.asin (1. /. x)
+
+
 let asinh x = log (x +. (sqrt ((x *. x) +. 1.)))
 
 
-(* acosh(x) is log(x + sqrt(x * x - 1)) *)
 let acosh x = log (x +. (sqrt ((x *. x) -. 1.)))
 
 
-(* atanh(x) is 1/2 * log((1 + x)/(1-x))) *)
 let atanh x = 0.5 *. (log ((1. +. x) /. (1. -. x)))
+
+
+let acoth x = atanh (1. /. x)
+
+
+let asech x = acosh (1. /. x)
+
+
+let acsch x = asinh (1. /. x)
 
 
 let relu x = Pervasives.max 0. x
 
 
 let sigmoid x = 1. /. (1. +. (log (~-. x)) )
+
+
+let xlogy x y =
+  if x = 0. && classify_float y <> FP_nan then 0.
+  else x *. (log y)
+
+
+let xlog1py x y =
+  if x = 0. && classify_float y <> FP_nan then 0.
+  else x *. (log1p y)
+
+
+let logit x = log (x /. (1. -. x))
+
+
+let expit x = 1. /. (1. +. exp(-.x))
+
+
+let log1mexp x =
+  if -.x > log 2. then log1p (-.(exp x))
+  else log (-.(expm1 x))
+
+
+let log1pexp x =
+  if x <= -37. then
+    exp x
+  else if x <= 18. then
+    log1p (exp x)
+  else if x <= 33.3 then
+    x +. exp(-.x)
+  else
+    x
 
 
 (* Helper functions *)

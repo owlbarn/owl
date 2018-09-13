@@ -21,6 +21,7 @@ let _max_val_elt : type a b. (a, b) kind -> a = function
   | Int64          -> Int64.max_int
   | _              -> failwith "_max_val_elt: unsupported operation"
 
+
 let _min_val_elt : type a b. (a, b) kind -> a = function
   | Float32        -> Owl_const.min_float32
   | Float64        -> Owl_const.min_float64
@@ -33,6 +34,7 @@ let _min_val_elt : type a b. (a, b) kind -> a = function
   | Int32          -> Int32.min_int
   | Int64          -> Int64.min_int
   | _              -> failwith "_max_val_elt: unsupported operation"
+
 
 let _max_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32        -> Pervasives.max
@@ -47,6 +49,7 @@ let _max_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Complex64      -> failwith "_max_elt: unsupported operation"
   | _              -> failwith "_max_elt: unsupported operation"
 
+
 let _min_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32        -> Pervasives.min
   | Float64        -> Pervasives.min
@@ -59,6 +62,7 @@ let _min_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Complex32      -> failwith "_min_elt: unsupported operation"
   | Complex64      -> failwith "_min_elt: unsupported operation"
   | _              -> failwith "_min_elt: unsupported operation"
+
 
 let _add_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32        -> ( +. )
@@ -73,6 +77,7 @@ let _add_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Int64          -> Int64.add
   | _              -> failwith "_add_elt: unsupported operation"
 
+
 let _sub_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32        -> ( -. )
   | Float64        -> ( -. )
@@ -85,6 +90,7 @@ let _sub_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Int32          -> Int32.sub
   | Int64          -> Int64.sub
   | _              -> failwith "_sub_elt: unsupported operation"
+
 
 let _mul_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32        -> ( *. )
@@ -99,6 +105,7 @@ let _mul_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Int64          -> Int64.mul
   | _              -> failwith "_mul_elt: unsupported operation"
 
+
 let _div_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32        -> ( /. )
   | Float64        -> ( /. )
@@ -112,12 +119,14 @@ let _div_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Int64          -> Int64.div
   | _              -> failwith "_div: unsupported operation"
 
+
 let _inv_elt : type a b. (a, b) kind -> (a -> a) = function
   | Float32   -> fun x -> 1. /. x
   | Float64   -> fun x -> 1. /. x
   | Complex32 -> Complex.inv
   | Complex64 -> Complex.inv
   | _         -> failwith "_inv_elt: unsupported operation"
+
 
 let _neg_elt : type a b. (a, b) kind -> (a -> a) = function
   | Float32        -> fun x -> (-.x)
@@ -132,6 +141,7 @@ let _neg_elt : type a b. (a, b) kind -> (a -> a) = function
   | Int64          -> Int64.neg
   | _              -> failwith "_inv_elt: unsupported operation"
 
+
 let _abs_elt : type a b. (a, b) kind -> (a -> a) = function
   | Float32        -> abs_float
   | Float64        -> abs_float
@@ -145,12 +155,54 @@ let _abs_elt : type a b. (a, b) kind -> (a -> a) = function
   | Int64          -> Int64.abs
   | _              -> failwith "_abs_elt: unsupported operation"
 
+
 let _log_elt : type a b. (a, b) kind -> (a -> a) = function
   | Float32   -> Pervasives.log
   | Float64   -> Pervasives.log
   | Complex32 -> Complex.log
   | Complex64 -> Complex.log
   | _         -> failwith "_log_elt: unsupported operation"
+
+
+let _log2_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> fun x -> Pervasives.log x /. Owl_const.loge2
+  | Float64   -> fun x -> Pervasives.log x /. Owl_const.loge2
+  | Complex32 -> fun x -> Complex.(div (log x) (log {re = 2.; im = 0.}))
+  | Complex64 -> fun x -> Complex.(div (log x) (log {re = 2.; im = 0.}))
+  | _         -> failwith "_log2_elt: unsupported operation"
+
+
+let _log10_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Pervasives.log10
+  | Float64   -> Pervasives.log10
+  | Complex32 -> fun x -> Complex.(div (log x) (log {re = 10.; im = 0.}))
+  | Complex64 -> fun x -> Complex.(div (log x) (log {re = 10.; im = 0.}))
+  | _         -> failwith "_log10_elt: unsupported operation"
+
+
+let _log1p_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Pervasives.log1p
+  | Float64   -> Pervasives.log1p
+  | Complex32 -> fun x -> Complex.(log (add x one))
+  | Complex64 -> fun x -> Complex.(log (add x one))
+  | _         -> failwith "_log1p_elt: unsupported operation"
+
+
+let _exp_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Pervasives.exp
+  | Float64   -> Pervasives.exp
+  | Complex32 -> Complex.exp
+  | Complex64 -> Complex.exp
+  | _         -> failwith "_exp_elt: unsupported operation"
+
+
+let _expm1_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Pervasives.expm1
+  | Float64   -> Pervasives.expm1
+  | Complex32 -> fun x -> Complex.(sub (exp x) one)
+  | Complex64 -> fun x -> Complex.(sub (exp x) one)
+  | _         -> failwith "_expm1_elt: unsupported operation"
+
 
 let _re_elt : type a b. (a, b) kind -> (a -> float) = function
   | Float32   -> fun x -> x
@@ -159,12 +211,30 @@ let _re_elt : type a b. (a, b) kind -> (a -> float) = function
   | Complex64 -> fun x -> Complex.(x.re)
   | _         -> failwith "_re_elt: unsupported operation"
 
+
+let _im_elt : type a b. (a, b) kind -> (a -> float) = function
+  | Float32   -> fun _ -> 0.
+  | Float64   -> fun _ -> 0.
+  | Complex32 -> fun x -> Complex.(x.im)
+  | Complex64 -> fun x -> Complex.(x.im)
+  | _         -> failwith "_im_elt: unsupported operation"
+
+
+let _sqr_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> fun x -> x *. x
+  | Float64   -> fun x -> x *. x
+  | Complex32 -> fun x -> Complex.mul x x
+  | Complex64 -> fun x -> Complex.mul x x
+  | _         -> failwith "_sqr_elt: unsupported operation"
+
+
 let _sqrt_elt : type a b. (a, b) kind -> (a -> a) = function
   | Float32   -> Pervasives.sqrt
   | Float64   -> Pervasives.sqrt
   | Complex32 -> Complex.sqrt
   | Complex64 -> Complex.sqrt
   | _         -> failwith "_sqrt_elt: unsupported operation"
+
 
 let _mean_elt : type a b. (a, b) kind -> (a -> int -> a) = function
   | Float32        -> fun x n -> x /. (float_of_int n)
@@ -179,12 +249,14 @@ let _mean_elt : type a b. (a, b) kind -> (a -> int -> a) = function
   | Int64          -> fun x n -> Int64.(div x (of_int n))
   | _              -> failwith "_mean_elt: unsupported operation"
 
+
 let _pow_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( ** )
   | Float64   -> ( ** )
   | Complex32 -> Complex.pow
   | Complex64 -> Complex.pow
   | _         -> failwith "_power_scalar_elt: unsupported operation"
+
 
 let _scale_elt : type a b. (a, b) kind -> (float -> a -> a) = function
   | Float32   -> fun a b -> a *. b
@@ -193,12 +265,14 @@ let _scale_elt : type a b. (a, b) kind -> (float -> a -> a) = function
   | Complex64 -> fun a b -> Complex.({re = a *. b.re; im = a *. b.im})
   | _         -> failwith "_scale_elt: unsupported operation"
 
+
 let _conj_elt : type a b. (a, b) kind -> (a -> a) = function
   | Float32   -> fun x -> x
   | Float64   -> fun x -> x
   | Complex32 -> fun x -> Complex.({re = x.re; im = -.x.im})
   | Complex64 -> fun x -> Complex.({re = x.re; im = -.x.im})
   | _         -> failwith "_conj_elt: unsupported operation"
+
 
 let _float_typ_elt : type a b. (a, b) kind -> (float -> a) = function
   | Float32        -> fun a -> a
@@ -212,6 +286,41 @@ let _float_typ_elt : type a b. (a, b) kind -> (float -> a) = function
   | Int32          -> fun a -> int_of_float a |> Int32.of_int
   | Int64          -> fun a -> int_of_float a |> Int64.of_int
   | _              -> failwith "_float_typ_elt: unsupported operation"
+
+
+let _uniform_elt : type a b. (a, b) kind -> a -> a -> (a -> a) =
+  fun k a b -> match k with
+  | Float32   -> fun _ -> Owl_base_stats.uniform_rvs ~a ~b
+  | Float64   -> fun _ -> Owl_base_stats.uniform_rvs ~a ~b
+  | Complex32 -> fun _ -> (
+      let re = Complex.(Owl_base_stats.uniform_rvs ~a:a.re ~b:b.re) in
+      let im = Complex.(Owl_base_stats.uniform_rvs ~a:a.im ~b:b.im) in
+      Complex.({re; im})
+    )
+  | Complex64 -> fun _ -> (
+      let re = Complex.(Owl_base_stats.uniform_rvs ~a:a.re ~b:b.re) in
+      let im = Complex.(Owl_base_stats.uniform_rvs ~a:a.im ~b:b.im) in
+      Complex.({re; im})
+    )
+  | _         -> failwith "_uniform_elt: unsupported operation"
+
+
+let _gaussian_elt : type a b. (a, b) kind -> a -> a -> (a -> a) =
+  fun k mu sigma -> match k with
+  | Float32   -> fun _ -> Owl_base_stats.gaussian_rvs ~mu ~sigma
+  | Float64   -> fun _ -> Owl_base_stats.gaussian_rvs ~mu ~sigma
+  | Complex32 -> fun _ -> (
+      let re = Complex.(Owl_base_stats.gaussian_rvs ~mu:mu.re ~sigma:sigma.re) in
+      let im = Complex.(Owl_base_stats.gaussian_rvs ~mu:mu.im ~sigma:sigma.im) in
+      Complex.({re; im})
+    )
+  | Complex64 -> fun _ -> (
+      let re = Complex.(Owl_base_stats.gaussian_rvs ~mu:mu.re ~sigma:sigma.re) in
+      let im = Complex.(Owl_base_stats.gaussian_rvs ~mu:mu.im ~sigma:sigma.im) in
+      Complex.({re; im})
+    )
+  | _         -> failwith "_gaussian_elt: unsupported operation"
+
 
 
 (* ends here *)

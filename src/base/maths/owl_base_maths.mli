@@ -110,6 +110,15 @@ val cos : float -> float
 val tan : float -> float
 (** ``tan x`` *)
 
+val cot : float -> float
+(** ``cot x`` *)
+
+val sec : float -> float
+(** ``sec x`` *)
+
+val csc : float -> float
+(** ``csc x`` *)
+
 val asin : float -> float
 (** ``asin x`` *)
 
@@ -118,6 +127,15 @@ val acos : float -> float
 
 val atan : float -> float
 (** ``atan x`` *)
+
+val acot : float -> float
+(** ``cot x`` *)
+
+val asec : float -> float
+(** ``sec x`` *)
+
+val acsc : float -> float
+(** ``csc x`` *)
 
 val sinh : float -> float
 (** ``sinh x`` *)
@@ -136,6 +154,33 @@ val acosh : float -> float
 
 val atanh : float -> float
 (** ``atanh x`` *)
+
+val acoth : float -> float
+(** ``coth x`` *)
+
+val asech : float -> float
+(** ``sech x`` *)
+
+val acsch : float -> float
+(** ``csch x`` *)
+
+val xlogy : float -> float -> float
+(** ``xlogy(x, y)`` *)
+
+val xlog1py : float -> float -> float
+(** ``xlog1py(x, y)`` *)
+
+val logit : float -> float
+(** ``logit(x)`` *)
+
+val expit : float -> float
+(** ``expit(x)`` *)
+
+val log1mexp : float -> float
+(** ``log1mexp(x)`` *)
+
+val log1pexp : float -> float
+(** ``log1pexp(x)`` *)
 
 
 (** {6 Helper functions} *)
