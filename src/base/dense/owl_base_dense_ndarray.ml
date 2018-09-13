@@ -9,7 +9,7 @@
 module Operator = struct
   include Owl_operator.Make_Basic (Owl_base_dense_ndarray_generic)
   (* include Owl_operator.Make_Extend (Owl_base_dense_ndarray_generic) *)
-  (* include Owl_operator.Make_Ndarray (Owl_base_dense_ndarray_generic) *)
+  include Owl_operator.Make_Ndarray (Owl_base_dense_ndarray_generic)
 end
 
 
@@ -33,17 +33,13 @@ module D = struct
 end
 
 
-(** TODO
-
 module C = struct
-  include Owl_dense_ndarray_c
+  include Owl_base_dense_ndarray_c
   include Operator
 end
 
 
 module Z = struct
-  include Owl_dense_ndarray_z
+  include Owl_base_dense_ndarray_z
   include Operator
 end
-
-*)
