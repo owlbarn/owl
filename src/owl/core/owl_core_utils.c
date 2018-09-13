@@ -251,7 +251,7 @@ inline void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
   //if(cpuid_is_vendor(abcd,GenuineIntel))
   query_cache_sizes_intel(l1p, l2p, l3p, max_std_funcs);
 
-  fprintf(stderr, "L1/L2/L3 size: %d, %d, %d\n", *l1p, *l2p, *l3p);
+  //fprintf(stderr, "L1/L2/L3 size: %d, %d, %d\n", *l1p, *l2p, *l3p);
   return;
 }
 

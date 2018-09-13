@@ -79,22 +79,22 @@ CAMLprim value FUN_NATIVE (spatial) (
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
     for (int k = 0; k < kernel_cri; k += kc) {
-      memset(temp_mk, 0, mc * kc * sizeof(TYPE));
 
+      memset(temp_mk, 0, mc * kc * sizeof(TYPE));
       int actual_kc = fminf(k + kc, kernel_cri) - k;
       int cmk = 0;
 
-      start = clock();
-      for (int im = 0; im < actual_mc; im++) {
-        int bt = (m + im) / output_cr;
-        int cr = (m + im) - bt * output_cr;
+      //start = clock();
+      for (int im = 0; im < actual_mc; im += 1) {
+        int b  = (m + im) / output_cr;
+        int cr = (m + im) - b * output_cr;
         int c = cr / output_rows;
         int r = cr - c * output_rows;
 
         const int cstart = c * col_stride - pc;
         const int rstart = r * row_stride - pr;
 
-        for (int ik = 0; ik < actual_kc; ik++) {
+        for (int ik = 0; ik < actual_kc; ik+=1) {
           int kc  = (k + ik) / kernel_ri;
           int kri = (k + ik) - kc * kernel_ri;
           int kr  = kri / in_channel;
@@ -104,7 +104,7 @@ CAMLprim value FUN_NATIVE (spatial) (
           int input_row = kr + rstart;
           if (input_col < input_cols && input_col >= 0 &&
             input_row < input_rows && input_row >= 0) {
-              int input_index = bt * input_cri + input_col * input_ri
+              int input_index = b * input_cri + input_col * input_ri
                 + input_row * in_channel + ki;
               //printf(stderr, "%d ", input_index);
               temp_mk[cmk] = input_ptr[input_index];
@@ -112,11 +112,11 @@ CAMLprim value FUN_NATIVE (spatial) (
           cmk++;
         }
       }
-      diff += clock() - start;
+
+      //diff += clock() - start;
       //fprintf(stderr, "end of input index \n");
 
       int index_kn = 0;
-
       for (int n = 0; n < out_channel; n += nc) {
         int actual_nc = fminf(n + nc, out_channel) - n;
         int cnk = 0;
@@ -126,11 +126,6 @@ CAMLprim value FUN_NATIVE (spatial) (
             temp_kn[cnk++] = kernel_ptr[index_kn];
           }
         }
-        //fprintf(stderr, "end of kernel index\n");
-
-        // not correct:
-        //memcpy(temp_kn, kernel_ptr + index_kn, actual_kc * actual_nc * sizeof(TYPE));
-        //index_kn += actual_kc * actual_nc;
 
         GEMM(CblasRowMajor, CblasNoTrans, CblasNoTrans,
           actual_mc, actual_nc, actual_kc, ALPHA,
@@ -141,17 +136,16 @@ CAMLprim value FUN_NATIVE (spatial) (
         for (int ix = 0; ix < actual_mc; ix++) {
           for (int iy = 0; iy < actual_nc; iy++) {
             int index_mn = (ix + m) * out_channel + (iy + n);
-            //fprintf(stderr, "%d ", index_mn);
             output_ptr[index_mn] += temp_mn[cmn++];
           }
         }
+
       } // end of n
-
     } // end of k
-  }
+  } // end of m
 
-  int msec = diff * 1000 / CLOCKS_PER_SEC;
-  fprintf(stderr, "Time taken for gemm: %d milliseconds\n", msec);
+  //int msec = diff * 1000 / CLOCKS_PER_SEC;
+  //fprintf(stderr, "Time taken for gemm: %d milliseconds\n", msec);
 
   free(temp_mk);
   free(temp_kn);
@@ -168,6 +162,140 @@ CAMLprim value FUN_BYTE (spatial) (value * argv, int argn) {
     argv[15], argv[16]
   );
 }
+
+
+CAMLprim value FUN_NATIVE (spatial_backward_input) (
+  value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
+  value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
+  value vKernel_cols, value vKernel_rows,
+  value vOutput_cols, value vOutput_rows, value vOut_channel,
+  value vRow_stride,  value vCol_stride,
+  value vRow_in_stride, value vCol_in_stride
+) {
+  struct caml_ba_array *IN = Caml_ba_array_val(vInput_ptr);
+  struct caml_ba_array *KE = Caml_ba_array_val(vKernel_ptr);
+  struct caml_ba_array *OU = Caml_ba_array_val(vOutput_ptr);
+  TYPE *input_ptr  = (TYPE *) IN->data;
+  TYPE *kernel_ptr = (TYPE *) KE->data;
+  TYPE *output_ptr = (TYPE *) OU->data;
+
+  int batches       = Long_val(vBatches);
+  int input_cols    = Long_val(vInput_cols);
+  int input_rows    = Long_val(vInput_rows);
+  int in_channel    = Long_val(vIn_channel);
+  int kernel_cols   = Long_val(vKernel_cols);
+  int kernel_rows   = Long_val(vKernel_rows);
+  int output_cols   = Long_val(vOutput_cols);
+  int output_rows   = Long_val(vOutput_rows);
+  int out_channel   = Long_val(vOut_channel);
+  int row_stride    = Long_val(vRow_stride);
+  int col_stride    = Long_val(vCol_stride);
+  int row_in_stride = Long_val(vRow_in_stride);
+  int col_in_stride = Long_val(vCol_in_stride);
+
+  const int input_cri  = in_channel  * input_rows  * input_cols;
+  const int input_ri   = in_channel  * input_rows;
+  const int output_ri  = out_channel * output_rows;
+  const int output_cr  = output_rows * output_cols;
+  const int output_crb = output_rows * output_cols * batches;
+  const int kernel_cri = kernel_cols * kernel_rows * in_channel;
+  const int kernel_ri  = kernel_rows * in_channel;
+
+  int mc = output_crb;
+  int kc = kernel_cri;
+  int nc = out_channel;
+  compute_block_sizes(&mc, &kc, &nc, sizeof(TYPE));
+
+  TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
+  if (temp_mk == NULL) exit(1);
+  TYPE *temp_kn = (TYPE *) calloc(nc * kc, sizeof(TYPE));
+  if (temp_kn == NULL) exit(1);
+  TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
+  if (temp_mn == NULL) exit(1);
+
+  memset(input_ptr, 0, batches * input_cri * sizeof(TYPE));
+
+  INIT;
+
+  int pr = (row_stride * ( output_rows - 1) + kernel_rows - input_rows) / 2;
+  int pc = (col_stride * ( output_cols - 1) + kernel_cols - input_cols) / 2;
+  if (pr < 0) pr = 0;
+  if (pc < 0) pc = 0;
+
+  for (int m = 0; m < output_crb; m += mc) {
+    int actual_mc = fminf(m + mc, output_crb) - m;
+    for (int k = 0; k < kernel_cri; k += kc) {
+      int actual_kc = fminf(k + kc, kernel_cri) - k;
+      int index_kn = 0;
+      for (int n = 0; n < out_channel; n += nc) {
+        int actual_nc = fminf(n + nc, out_channel) - n;
+        int cnk = 0;
+        for (int ik = 0; ik < actual_kc; ik++) {
+          for (int jn = 0; jn < actual_nc; jn++) {
+            int index_kn = (k + ik) * out_channel + n + jn;
+            temp_kn[cnk++] = kernel_ptr[index_kn];
+          }
+        }
+
+        int cmn = 0;
+        for (int ix = 0; ix < actual_mc; ix++) {
+          for (int iy = 0; iy < actual_nc; iy++) {
+            int index_mn = (ix + m) * out_channel + (iy + n);
+            temp_mn[cmn++] = output_ptr[index_mn];
+          }
+        }
+
+        GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
+          actual_mc, actual_kc, actual_nc, ALPHA,
+          temp_mn, actual_nc, temp_kn, actual_nc,
+          BETA, temp_mk, actual_kc);
+
+        int cmk = 0;
+        for (int im = 0; im < actual_mc; im += 1) {
+          int b  = (m + im) / output_cr;
+          int cr = (m + im) - b * output_cr;
+          int c = cr / output_rows;
+          int r = cr - c * output_rows;
+
+          const int cstart = c * col_stride - pc;
+          const int rstart = r * row_stride - pr;
+
+          for (int ik = 0; ik < actual_kc; ik+=1) {
+            int kc  = (k + ik) / kernel_ri;
+            int kri = (k + ik) - kc * kernel_ri;
+            int kr  = kri / in_channel;
+            int ki  = kri - kr * in_channel;
+
+            int input_col = kc + cstart;
+            int input_row = kr + rstart;
+            if (input_col < input_cols && input_col >= 0 &&
+              input_row < input_rows && input_row >= 0) {
+                int input_index = b * input_cri + input_col * input_ri
+                  + input_row * in_channel + ki;
+                input_ptr[input_index] += temp_mk[cmk];
+            }
+            cmk++;
+          }
+        }
+      }
+    }
+  }
+
+  free(temp_mk);
+  free(temp_kn);
+  free(temp_mn);
+
+  return Val_unit;
+}
+
+
+CAMLprim value FUN_BYTE (spatial_backward_input) (value * argv, int argn) {
+  return FUN_NATIVE (spatial_backward_input) (
+    argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
+    argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15]
+  );
+}
+
 
 CAMLprim value FUN_NATIVE (spatial_im2col) (
   value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
