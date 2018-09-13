@@ -13,6 +13,9 @@ type 'a t = {
 }
 (** Type of a min heap. *)
 
+
+(** {6 Basic functions} *)
+
 val make : ('a -> 'a -> int) -> 'a t
 (**
 ``make cmp`` creates an empty min heap, using ``cmp`` as a comparison function.
