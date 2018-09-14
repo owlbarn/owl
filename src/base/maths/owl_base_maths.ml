@@ -202,6 +202,28 @@ let log1pexp x =
     x
 
 
+let erf x =
+  let a =  0.254829592 in
+  let b = -0.284496736 in
+  let c =  1.421413741 in
+  let d = -1.453152027 in
+  let e =  1.061405429 in
+  let p =  0.327591100 in
+
+  let sign = signum x in
+  let x = abs x in
+
+  let t = 1. /. (1. +. p *. x) in
+  let y = 1. -. (((((e *. t +. d) *. t) +. c) *. t +. b) *. t +. a) *.t *. (exp (-.x *. x)) in
+  sign *. y
+
+
+let erfc x = 1. -. erf x
+
+
+let erfcx x = (exp (x *. x)) *. (erfc x)
+
+
 (* Helper functions *)
 
 let is_nan x = FP_nan = classify_float x
