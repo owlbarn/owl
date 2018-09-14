@@ -164,24 +164,25 @@ let ones kind dims = create kind dims (Owl_const.one kind)
 let ones_ ~out = Genarray.(fill out (Owl_const.one (kind out)))
 
 
-let shape varr = Genarray.dims varr
+let shape x = Genarray.dims x
 
 
-let num_dims varr = Array.length (shape varr)
+let nth_dim x i = Genarray.nth_dim x i
 
 
-let numel varr =
-  let v_shape = shape varr in
-  Array.fold_left ( * ) 1 v_shape
+let num_dims x = Array.length (shape x)
 
 
-let kind varr = Genarray.kind varr
+let numel x = Owl_utils.numel x
 
 
-let get varr index = (Genarray.get varr index)
+let kind x = Genarray.kind x
 
 
-let set varr index value = (Genarray.set varr index value)
+let get x index = (Genarray.get x index)
+
+
+let set x index value = (Genarray.set x index value)
 
 
 (*TODO: optimise, test *)
@@ -240,6 +241,9 @@ let reshape x d =
 
 (* Return the array as a contiguous block, without copying *)
 let flatten x = reshape x [|(numel x)|]
+
+
+let fill x a = Genarray.fill x a
 
 
 let copy x =
@@ -303,6 +307,19 @@ let init kind dims f =
     Array1.unsafe_set varr_flat i (f i)
   done;
   varr
+
+
+let init_nd k d f =
+  let x = empty k d in
+  let y = array1_of_genarray (flatten x) in
+  let n = numel x in
+  let s = Owl_utils.calc_stride d in
+  let j = Array.copy s in
+  for i = 0 to n - 1 do
+    Owl_utils.index_1d_nd i j s;
+    Array1.unsafe_set y i (f j)
+  done;
+  x
 
 
 (* Map a NDarray from elements x -> f(x), by copying the array *)

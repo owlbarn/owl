@@ -10,9 +10,9 @@ open Owl_types_common
 
 (* types and constants *)
 
-type arr = (float, float32_elt, c_layout) Genarray.t
+type arr = (Complex.t, complex64_elt, c_layout) Genarray.t
 
-type elt = float
+type elt = Complex.t
 
 val number : number
 
@@ -137,15 +137,7 @@ val max : ?axis:int -> arr -> arr
 
 val sum : ?axis:int -> arr -> arr
 
-val sum_slices : ?axis:int -> arr -> arr
-
 val sum_reduce : ?axis:int array -> arr -> arr
-
-val signum : arr -> arr
-
-val sigmoid : arr -> arr
-
-val relu : arr -> arr
 
 val min' : arr -> elt
 
@@ -153,27 +145,11 @@ val max' : arr -> elt
 
 val sum' : arr -> elt
 
-val l1norm' : arr -> elt
-
-val l2norm' : arr -> elt
-
-val l2norm_sqr' : arr -> elt
-
-val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
-
-val clip_by_l2norm : elt -> arr -> arr
-
 val pow : arr -> arr -> arr
 
 val scalar_pow : elt -> arr -> arr
 
 val pow_scalar : arr -> elt -> arr
-
-val atan2 : arr -> arr -> arr
-
-val scalar_atan2 : elt -> arr -> arr
-
-val atan2_scalar : arr -> elt -> arr
 
 val add : arr -> arr -> arr
 
@@ -297,132 +273,9 @@ val elt_less_equal_scalar : arr -> elt -> arr
 
 val elt_greater_equal_scalar : arr -> elt -> arr
 
-val approx_equal : ?eps:float -> arr -> arr -> bool
 
-val approx_equal_scalar : ?eps:float -> arr -> float -> bool
-
-val approx_elt_equal : ?eps:float -> arr -> arr -> arr
-
-val approx_elt_equal_scalar : ?eps:float -> arr -> float -> arr
-
-
-(* Neural network related functions *)
-
-val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
-
-val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
-
-val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
-
-val dilated_conv1d : ?padding:padding -> arr -> arr -> int array -> int array -> arr
-
-val dilated_conv2d : ?padding:padding -> arr -> arr -> int array -> int array -> arr
-
-val dilated_conv3d : ?padding:padding -> arr -> arr -> int array -> int array -> arr
-
-val transpose_conv1d : ?padding:padding -> arr -> arr -> int array -> arr
-
-val transpose_conv2d : ?padding:padding -> arr -> arr -> int array -> arr
-
-val transpose_conv3d : ?padding:padding -> arr -> arr -> int array -> arr
-
-val max_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
-
-val max_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
-
-val max_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
-
-val avg_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
-
-val avg_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
-
-val avg_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
-
-val upsampling2d : arr -> int array -> arr
-
-val conv1d_backward_input : arr -> arr -> int array -> arr -> arr
-
-val conv1d_backward_kernel : arr -> arr -> int array -> arr -> arr
-
-val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
-
-val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
-
-val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
-
-val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
-
-val dilated_conv1d_backward_input : arr -> arr -> int array -> int array -> arr -> arr
-
-val dilated_conv1d_backward_kernel : arr -> arr -> int array -> int array -> arr -> arr
-
-val dilated_conv2d_backward_input : arr -> arr -> int array -> int array -> arr -> arr
-
-val dilated_conv2d_backward_kernel : arr -> arr -> int array -> int array -> arr -> arr
-
-val dilated_conv3d_backward_input : arr -> arr -> int array -> int array -> arr -> arr
-
-val dilated_conv3d_backward_kernel : arr -> arr -> int array -> int array -> arr -> arr
-
-val transpose_conv1d_backward_input : arr -> arr -> int array -> arr -> arr
-
-val transpose_conv1d_backward_kernel : arr -> arr -> int array -> arr -> arr
-
-val transpose_conv2d_backward_input : arr -> arr -> int array -> arr -> arr
-
-val transpose_conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
-
-val transpose_conv3d_backward_input : arr -> arr -> int array -> arr -> arr
-
-val transpose_conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
-
-val max_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
-
-val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
-
-val max_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
-
-val avg_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
-
-val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
-
-val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
-
-val upsampling2d_backward : arr -> int array -> arr -> arr
-
-(* matrix functions *)
-
-val row_num : arr -> int
-
-val col_num : arr -> int
-
-val row : arr -> int -> arr
-
-val rows : arr -> int array -> arr
-
-val copy_row_to : arr -> arr -> int -> unit
-
-val copy_col_to : arr -> arr -> int -> unit
-
-val dot : arr -> arr -> arr
-
-val inv : arr -> arr
-
-val trace : arr -> elt
-
-val transpose : ?axis:int array -> arr -> arr
-
-val to_rows : arr -> arr array
-
-val of_rows : arr array -> arr
+(** {6 Helper functions}  *)
 
 val of_array : elt array -> int array -> arr
 
 val of_arrays : elt array array -> arr
-
-
-(** {6 Helper functions}  *)
-
-val float_to_elt : float -> elt
-
-val elt_to_float : elt -> float

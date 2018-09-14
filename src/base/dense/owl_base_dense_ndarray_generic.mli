@@ -43,6 +43,9 @@ val create : ('a, 'b) kind -> int array -> 'a -> ('a, 'b) t
 val init : ('a, 'b) kind -> int array -> (int -> 'a) -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val init_nd : ('a, 'b) kind -> int array -> (int array -> 'a) -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val zeros : ('a, 'b) kind -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
@@ -68,6 +71,9 @@ val shape : ('a, 'b) t -> int array
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val num_dims : ('a, 'b) t -> int
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val nth_dim : ('a, 'b) t -> int -> int
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val numel : ('a, 'b) t -> int
@@ -98,6 +104,9 @@ val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val reset : ('a, 'b) t -> unit
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val fill : ('a, 'b) t -> 'a -> unit
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val copy : ('a, 'b) t -> ('a, 'b) t
