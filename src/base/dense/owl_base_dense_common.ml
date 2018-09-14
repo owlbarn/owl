@@ -386,6 +386,46 @@ let _conj_elt : type a b. (a, b) kind -> (a -> a) = function
   | _         -> failwith "_conj_elt: unsupported operation"
 
 
+let _ceil_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.ceil
+  | Float64   -> Owl_base_maths.ceil
+  | Complex32 -> Owl_base_complex.ceil
+  | Complex64 -> Owl_base_complex.ceil
+  | _         -> failwith "_ceil_elt: unsupported operation"
+
+
+let _floor_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.floor
+  | Float64   -> Owl_base_maths.floor
+  | Complex32 -> Owl_base_complex.floor
+  | Complex64 -> Owl_base_complex.floor
+  | _         -> failwith "_floor_elt: unsupported operation"
+
+
+let _round_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.round
+  | Float64   -> Owl_base_maths.round
+  | Complex32 -> Owl_base_complex.round
+  | Complex64 -> Owl_base_complex.round
+  | _         -> failwith "_round_elt: unsupported operation"
+
+
+let _trunc_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.trunc
+  | Float64   -> Owl_base_maths.trunc
+  | Complex32 -> Owl_base_complex.trunc
+  | Complex64 -> Owl_base_complex.trunc
+  | _         -> failwith "_trunc_elt: unsupported operation"
+
+
+let _fix_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Owl_base_maths.fix
+  | Float64   -> Owl_base_maths.fix
+  | Complex32 -> Owl_base_complex.fix
+  | Complex64 -> Owl_base_complex.fix
+  | _         -> failwith "_fix_elt: unsupported operation"
+
+
 let _is_nan_elt : type a b. (a, b) kind -> (a -> bool) = function
   | Float32   -> Owl_base_maths.is_nan
   | Float64   -> Owl_base_maths.is_nan

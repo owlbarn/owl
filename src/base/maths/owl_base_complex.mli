@@ -144,6 +144,21 @@ val arg : t -> float
 val phase : t -> float
 (** ``phase x`` returns the phase of a complex number ``x``. *)
 
+val floor : t -> t
+(** ``floor x`` *)
+
+val ceil : t -> t
+(** ``ceil x`` *)
+
+val round : t -> t
+(** ``round x`` *)
+
+val trunc : t -> t
+(** ``trunc x`` *)
+
+val fix : t -> t
+(** ``fix x`` *)
+
 
 (** {6 Binary functions} *)
 

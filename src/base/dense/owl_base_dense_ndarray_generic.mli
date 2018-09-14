@@ -413,22 +413,19 @@ val acosh : ('a, 'b) t -> ('a, 'b) t
 val atanh : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val floor : (float, 'b) t -> (float, 'b) t
+val floor : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val ceil : (float, 'b) t -> (float, 'b) t
+val ceil : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val round : (float, 'b) t -> (float, 'b) t
+val round : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val trunc : (float, 'b) t -> (float, 'b) t
+val trunc : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val fix : (float, 'b) t -> (float, 'b) t
+val fix : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val erf : (float, 'b) t -> (float, 'b) t

@@ -805,47 +805,69 @@ let reci_ ?out x =
   map_ _func out
 
 
-let floor x = map Scalar.floor x
+let floor x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._floor_elt _kind in
+  map _func x
 
 
 let floor_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._floor_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.floor out
+  map_ _func out
 
 
-let ceil x = map Scalar.ceil x
+let ceil x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._ceil_elt _kind in
+  map _func x
 
 
 let ceil_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._ceil_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.ceil out
+  map_ _func out
 
 
-let round x = map Scalar.round x
+let round x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._round_elt _kind in
+  map _func x
 
 
 let round_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._round_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.round out
+  map_ _func out
 
 
-let trunc x = map (fun a -> Pervasives.truncate a |> float_of_int) x
+let trunc x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._trunc_elt _kind in
+  map _func x
 
 
 let trunc_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._trunc_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ (fun a -> Pervasives.truncate a |> float_of_int) out
+  map_ _func out
 
 
 let fix x =
-  let open Pervasives in
-  map (fun a -> if a < 0. then ceil a else floor a) x
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._fix_elt _kind in
+  map _func x
 
 
 let fix_ ?out x =
-  let open Pervasives in
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._fix_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ (fun a -> if a < 0. then ceil a else floor a) out
+  map_ _func out
 
 
 let erf _x = raise Owl_exception.NOT_IMPLEMENTED

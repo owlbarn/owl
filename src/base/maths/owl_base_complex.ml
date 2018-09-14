@@ -299,6 +299,21 @@ let rect r phi =
   { re; im }
 
 
+let ceil x = { re = ceil x.re;  im = ceil x.im }
+
+
+let floor x = { re = floor x.re;  im = floor x.im }
+
+
+let round x = { re = Owl_base_maths.round x.re;  im = Owl_base_maths.round x.im }
+
+
+let trunc x = { re = modf x.re |> snd;  im = modf x.im |> snd }
+
+
+let fix x = { re = Owl_base_maths.fix x.re;  im = Owl_base_maths.fix x.im }
+
+
 (* Comparison functions *)
 
 let equal x y = (x.re = y.re) && (x.im = y.im)

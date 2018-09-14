@@ -50,6 +50,9 @@ val round : float -> float
 val trunc : float -> float
 (** ``trunc x`` *)
 
+val fix : float -> float
+(** ``fix x`` *)
+
 val sqr : float -> float
 (** ``sqr x`` *)
 

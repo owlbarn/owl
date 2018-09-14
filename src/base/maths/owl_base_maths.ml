@@ -95,7 +95,10 @@ let ceil x = Pervasives.ceil x
 let round x = floor (x +. 0.5)
 
 
-let trunc x = Pervasives.float_of_int (Pervasives.truncate x)
+let trunc x = modf x |> snd
+
+
+let fix x = if x < 0. then ceil x else floor x
 
 
 let sin x = Pervasives.sin x
