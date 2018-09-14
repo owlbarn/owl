@@ -84,7 +84,10 @@ CAMLprim value FUN_NATIVE (spatial) (
       int actual_kc = fminf(k + kc, kernel_cri) - k;
       int cmk = 0;
 
-      //start = clock();
+      start = clock();
+
+#ifndef AVX_PSIZE_NO
+
       for (int im = 0; im < actual_mc; im += 1) {
         int b  = (m + im) / output_cr;
         int cr = (m + im) - b * output_cr;
@@ -113,8 +116,54 @@ CAMLprim value FUN_NATIVE (spatial) (
         }
       }
 
-      //diff += clock() - start;
-      //fprintf(stderr, "end of input index \n");
+#else
+
+      for (int im = 0; im < actual_mc; im += 1) {
+        int b  = (m + im) / output_cr;
+        int cr = (m + im) - b * output_cr;
+        int c = cr / output_rows;
+        int r = cr - c * output_rows;
+
+        const int cstart = c * col_stride - pc;
+        const int rstart = r * row_stride - pr;
+
+        for (int ik = 0; ik < actual_kc; ik += AVX_PSIZE) {
+          int kc  = (k + ik) / kernel_ri;
+          int kri = (k + ik) - kc * kernel_ri;
+          int kr  = kri / in_channel;
+          int ki  = kri - kr * in_channel;
+
+          int input_col = kc + cstart;
+          int input_row = kr + rstart;
+
+          TYPE foo[AVX_PSIZE];
+          if (input_col < input_cols && input_col >= 0 &&
+            input_row < input_rows && input_row >= 0) {
+              int input_index = b * input_cri + input_col * input_ri
+                + input_row * in_channel + ki;
+              // printf(stderr, "%d ", input_index);
+              // temp_mk[cmk] = input_ptr[input_index];
+
+              /* for (int ixx = 0; ixx < 4; ixx++) {
+                foo[ifoo++] = input_ptr[input_index];
+              }
+              __m128 bar = _mm_set_ps(foo[3], foo[2], foo[1], foo[0]);
+              _mm_store_ps(temp_mk + cmk, bar); */
+
+              int ifoo = 0;
+              for (int ixx = 0; ixx < 8; ixx++) {
+	               foo[ifoo++] = input_ptr[input_index];
+              }
+              __m256 bar = _mm256_setr_ps(foo[7], foo[6], foo[5], foo[4], foo[3], foo[2], foo[1], foo[0]);
+              _mm256_store_ps(temp_mk + cmk, bar);
+          }
+          cmk+=8;
+        }
+      }
+
+#endif
+
+      diff += clock() - start;
 
       int index_kn = 0;
       for (int n = 0; n < out_channel; n += nc) {
@@ -144,8 +193,8 @@ CAMLprim value FUN_NATIVE (spatial) (
     } // end of k
   } // end of m
 
-  //int msec = diff * 1000 / CLOCKS_PER_SEC;
-  //fprintf(stderr, "Time taken for gemm: %d milliseconds\n", msec);
+  int msec = diff * 1000 / CLOCKS_PER_SEC;
+  fprintf(stderr, "Time taken for gemm: %d milliseconds\n", msec);
 
   free(temp_mk);
   free(temp_kn);

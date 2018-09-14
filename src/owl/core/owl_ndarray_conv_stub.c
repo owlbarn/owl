@@ -6,7 +6,8 @@
 #include "owl_core.h"
 #include "cblas.h"
 #include <string.h>
-
+#include <xmmintrin.h>
+#include <immintrin.h>
 
 #define OWL_ENABLE_TEMPLATE
 
@@ -17,6 +18,7 @@
 #define FUN_BYTE(dim) stub_float32_ndarray_conv ## _ ## dim  ## _ ## bytecode
 #define TYPE float
 #define INIT
+#define AVX_PSIZE 8
 #define ALPHA 1.
 #define BETA 0.
 #define GEMM cblas_sgemm
@@ -26,6 +28,7 @@
 #undef BETA
 #undef ALPHA
 #undef INIT
+#undef AVX_PSIZE
 #undef TYPE
 #undef FUN_BYTE
 #undef FUN_NATIVE
