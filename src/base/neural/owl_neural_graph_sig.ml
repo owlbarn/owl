@@ -28,30 +28,37 @@ module type Sig = sig
     mutable train   : bool;
   }
   and network = {
-    mutable nnid : string;
-    mutable size : int;
-    mutable root : node option;
-    mutable topo : node array;
+    mutable nnid    : string;
+    mutable size    : int;
+    mutable roots   : node array;
+    mutable outputs : node array;
+    mutable topo    : node array;
   }
   (** Type definition of a node and a neural network. *)
 
 
-  (** {6 Manipuate networks} *)
+  (** {6 Manipulate networks} *)
 
-  val make_network : ?nnid:string -> int -> node option -> node array -> network
+  val make_network : ?nnid:string -> int -> node array -> node array -> network
   (** Create an empty neural network. *)
 
   val make_node : ?name:string -> ?train:bool -> node array -> node array -> neuron -> t option -> network -> node
   (** Create a node in a neural network. *)
 
-  val get_root : network -> node
-  (** Get the root of the neural network. *)
+  val get_roots : network -> node array
+  (** Get the roots of the neural network. *)
+
+  val get_outputs : network -> node array
+  (** Get the outputs of the neural network. *)
 
   val get_node : network -> string -> node
   (** Get a node in a network with the given name. *)
 
   val get_network : ?name:string -> node -> network
   (** Get the neural network of a given node associated with. *)
+
+  val outputs : ?name:string -> node array -> network
+  (** Get the neural network associated with the given output nodes. *)
 
   val get_network_name : network -> string
   (** ``get_network_name n`` returns the name of the network ``n``. *)
@@ -72,7 +79,10 @@ module type Sig = sig
   (** Add a node to the given network. *)
 
   val input_shape : network -> int array
-  (** Get input shape of a network (without batch dimension), i.e. shape of input neruon. *)
+  (** Get input shape of a network (without batch dimension), i.e. shape of input neuron. *)
+
+  val input_shapes : network -> int array array
+  (** Get input shapes of a network (without batch dimension), i.e. shape of input neurons. *)
 
 
   (** {6 Interface to optimisation engine} *)
@@ -87,7 +97,7 @@ module type Sig = sig
   (** Tag the neurons, used by ``Algodiff`` module. *)
 
   val mkpar : network -> t array array
-  (** Collect the paramters of neurons, used by ``Optimise`` module. *)
+  (** Collect the parameters of neurons, used by ``Optimise`` module. *)
 
   val mkpri : network -> t array array
   (** Collect the primal values of neurons, used by ``Optimise`` module. *)
@@ -96,7 +106,7 @@ module type Sig = sig
   (** Collect the adjacent values of neurons, used by ``Optimise`` module. *)
 
   val update : network -> t array array -> unit
-  (** Update the paramters of neurons, used by ``Optimise`` module. *)
+  (** Update the parameters of neurons, used by ``Optimise`` module. *)
 
   val run : t -> network -> t
   (** Execute the computations in all the neurons in a network with the given input. *)
@@ -113,6 +123,8 @@ module type Sig = sig
   val model : network -> A.arr -> A.arr
   (** Make a deep copy of the given network, excluding the neurons marked with ``training = true``. *)
 
+  val model_inputs : network -> A.arr array -> A.arr array
+  (** Make a deep copy of the given network, excluding the neurons marked with ``training = true``. *)
 
   (** {6 Create Neurons} *)
 
@@ -122,6 +134,14 @@ module type Sig = sig
 
 Arguments:
   * ``shape``: shape of input data.
+  *)
+
+val inputs : ?names:string array -> int array array -> node array
+  (**
+``input shapes`` creates an array of input nodes for input data.
+
+Arguments:
+  * ``shapes``: array of shapes of input data.
   *)
 
   val activation : ?name:string -> Activation.typ -> node -> node
