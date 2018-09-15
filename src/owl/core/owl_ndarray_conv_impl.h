@@ -69,6 +69,7 @@ CAMLprim value FUN_NATIVE (spatial) (
   int nc = out_channel;
   compute_block_sizes(&kc, &nc, &mc, sizeof(TYPE));
 
+  fprintf(stderr, "input: [%d, %d, %d, %d]; kernel: [%d, %d, %d, %d]\n", batches, input_cols, input_rows, in_channel, kernel_cols, kernel_rows, in_channel, out_channel);
   fprintf(stderr, "calculated block size: kc = %d, mc = %d, nc = %d\n", kc, mc, nc);
 
   TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
@@ -401,8 +402,6 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
   TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
   if (temp_mn == NULL) exit(1);
 
-  memset(kernel_ptr, 0, kernel_cols * kernel_rio * sizeof(TYPE));
-
   int pr = (row_stride * ( output_rows - 1) + kernel_rows - input_rows) / 2;
   int pc = (col_stride * ( output_cols - 1) + kernel_cols - input_cols) / 2;
   if (pr < 0) pr = 0;
@@ -457,15 +456,18 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
         GEMM(CblasRowMajor, CblasTrans, CblasNoTrans,
           actual_nc, actual_kc, actual_mc, ALPHA,
           temp_mn, actual_nc, temp_mk, actual_kc,
-          BETA, temp_mk, actual_kc);
+          BETA, temp_kn, actual_kc);
 
         int cnk = 0;
         for (int ik = 0; ik < actual_kc; ik++) {
           for (int jn = 0; jn < actual_nc; jn++) {
             int index_kn = (k + ik) * out_channel + n + jn;
             kernel_ptr[index_kn] = temp_kn[cnk++];
+            //kernel_ptr[cnk++] = temp_kn[cnk++];
+            //fprintf(stderr, "%.0f ", kernel_ptr[index_kn]);
           }
         }
+        //fprintf(stderr, " end of temp_kn\n");
       }
     }
   }
