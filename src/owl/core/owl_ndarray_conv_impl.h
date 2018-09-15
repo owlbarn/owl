@@ -8,7 +8,7 @@
 #include <time.h>
 
 /*
- * im2col implementation
+ * eigen implementation
  */
 
 
@@ -67,7 +67,9 @@ CAMLprim value FUN_NATIVE (spatial) (
   int mc = output_crb;
   int kc = kernel_cri;
   int nc = out_channel;
-  compute_block_sizes(&mc, &kc, &nc, sizeof(TYPE));
+  compute_block_sizes(&kc, &nc, &mc, sizeof(TYPE));
+
+  fprintf(stderr, "calculated block size: kc = %d, mc = %d, nc = %d\n", kc, mc, nc);
 
   TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
   if (temp_mk == NULL) exit(1);
@@ -84,7 +86,7 @@ CAMLprim value FUN_NATIVE (spatial) (
       int actual_kc = fminf(k + kc, kernel_cri) - k;
       int cmk = 0;
 
-      start = clock();
+      // start = clock();
 
 #ifndef AVX_PSIZE_NO
 
@@ -163,7 +165,7 @@ CAMLprim value FUN_NATIVE (spatial) (
 
 #endif
 
-      diff += clock() - start;
+      // diff += clock() - start;
 
       for (int n = 0; n < out_channel; n += nc) {
         int actual_nc = fminf(n + nc, out_channel) - n;
@@ -192,8 +194,8 @@ CAMLprim value FUN_NATIVE (spatial) (
     } // end of k
   } // end of m
 
-  int msec = diff * 1000 / CLOCKS_PER_SEC;
-  fprintf(stderr, "Time taken for gemm: %d milliseconds\n", msec);
+  // int msec = diff * 1000 / CLOCKS_PER_SEC;
+  // fprintf(stderr, "Time taken for gemm: %d milliseconds\n", msec);
 
   free(temp_mk);
   free(temp_kn);
@@ -253,6 +255,8 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
   int kc = kernel_cri;
   int nc = out_channel;
   compute_block_sizes(&mc, &kc, &nc, sizeof(TYPE));
+
+  fprintf(stderr, "calculated block size (bi): kc = %d, mc = %d, nc = %d\n", kc, mc, nc);
 
   TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
   if (temp_mk == NULL) exit(1);

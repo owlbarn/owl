@@ -182,21 +182,21 @@ external owl_complex64_ndarray_conv_cuboid_backward_input_im2col : ('a, 'b) owl_
   "stub_complex64_ndarray_conv_cuboid_backward_input_im2col_native"
 
 
-let _owl_spatial_conv : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
+let _owl_spatial_conv_im2col : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
   | Float32   -> owl_float32_ndarray_conv_spatial_im2col
   | Float64   -> owl_float64_ndarray_conv_spatial_im2col
   | Complex32 -> owl_complex32_ndarray_conv_spatial_im2col
   | Complex64 -> owl_complex64_ndarray_conv_spatial_im2col
   | _         -> failwith "_owl_spatial_conv_im2col: unsupported operation"
 
-let _owl_spatial_conv_backward_input : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
+let _owl_spatial_conv_backward_input_im2col : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
   | Float32   -> owl_float32_ndarray_conv_spatial_backward_input_im2col
   | Float64   -> owl_float64_ndarray_conv_spatial_backward_input_im2col
   | Complex32 -> owl_complex32_ndarray_conv_spatial_backward_input_im2col
   | Complex64 -> owl_complex64_ndarray_conv_spatial_backward_input_im2col
   | _         -> failwith "_owl_spatial_conv_backward_input_im2col: unsupported operation"
 
-let _owl_spatial_conv_backward_kernel : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
+let _owl_spatial_conv_backward_kernel_im2col : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
   | Float32   -> owl_float32_ndarray_conv_spatial_backward_kernel_im2col
   | Float64   -> owl_float64_ndarray_conv_spatial_backward_kernel_im2col
   | Complex32 -> owl_complex32_ndarray_conv_spatial_backward_kernel_im2col

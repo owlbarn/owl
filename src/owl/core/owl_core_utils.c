@@ -199,6 +199,10 @@ void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int *offset) {
   }
 }
 
+/*
+ * calculate the cache sizes and block sizes for convolution operations.
+ */
+
 #define CPUID(abcd,func,id) __asm__ __volatile__ ("xchg{q}\t{%%}rbx, %q1; cpuid; xchg{q}\t{%%}rbx, %q1": "=a" (abcd[0]), "=&r" (abcd[1]), "=c" (abcd[2]), "=d" (abcd[3]) : "0" (func), "2" (id));
 
 inline void query_cache_sizes_intel_direct(int* l1p, int* l2p, int* l3p) {
@@ -221,8 +225,7 @@ inline void query_cache_sizes_intel_direct(int* l1p, int* l2p, int* l3p) {
 
       int cache_size = (ways+1) * (partitions+1) * (line_size+1) * (sets+1);
 
-      switch(cache_level)
-      {
+      switch(cache_level) {
         case 1: l1 = cache_size; break;
         case 2: l2 = cache_size; break;
         case 3: l3 = cache_size; break;
@@ -251,7 +254,7 @@ inline void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
   //if(cpuid_is_vendor(abcd,GenuineIntel))
   query_cache_sizes_intel(l1p, l2p, l3p, max_std_funcs);
 
-  //fprintf(stderr, "L1/L2/L3 size: %d, %d, %d\n", *l1p, *l2p, *l3p);
+
   return;
 }
 
@@ -264,9 +267,10 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
 
   query_cache_sizes(&l1, &l2, &l3);
 
-  l1 = 9 * 1024;
+  /* l1 = 9 * 1024;
   l2 = 32 * 1024;
-  l3 = 512 * 1024;
+  l3 = 512 * 1024; */
+  fprintf(stderr, "input size: 1st = %d, 2nd = %d, 3rd = %d\n", *kp, *mp, *np);
 
   int k = *kp;
   int m = *mp;
@@ -277,7 +281,8 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
   }
 
   int nr = 4;
-  int mr = 2 * sizeof(void*); // Depends on env
+  int num_reg = 16; // Depends on avx/sse
+  int mr = num_reg / (2 * nr) * typesize;
   int k_peeling = 8;
   int k_div = (mr + nr) * typesize;
   int k_sub = mr * nr * typesize;
@@ -291,17 +296,22 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
     assert (old_k / k == old_k / max_kc);
   }
 
+  fprintf(stderr, "fuck0\n");
+
   int max_nc;
-  const int actual_l2 = l3; // l3 for debug; 1572864 for other cases
+  const int actual_l2 = 1572864; // l3 for debug; 1572864 for other cases
   const int lhs_bytes = m * k * typesize;
   const int rest_l1 = l1 - k_sub - lhs_bytes;
-  if (rest_l1 >= nr * typesize) {
+  if (rest_l1 >= nr * k * typesize) {
     max_nc = rest_l1 / (k * typesize);
   } else {
     max_nc = (3 * actual_l2) / (4 * max_kc * typesize);
   }
 
+  fprintf(stderr, "fuck1: actual_l2: %d, max_nc: %d\n", actual_l2, max_nc);
+
   int nc = (int) (fmin(actual_l2 / (2 * k * typesize), max_nc)) & (~(nr - 1));
+  fprintf(stderr, "fuck1.5: n = %d, nr = %d, nc = %d\n", n, nr, nc);
   if (n > nc) {
     n = (n % nc == 0) ? nc : (nc - nr * (nc - (n % nc)) / (nr * (n / nc + 1)));
   } else if (old_k == k) {
@@ -325,8 +335,6 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
     }
     m = (m % mc == 0) ? mc : (mc - mr * (mc - (m % mc)) / (mr * (m / mc + 1)));
   }
-
-  // fprintf(stderr, "calculated: k = %d, m = %d, n = %d\n", k, m, n);
 
   *kp = k; *mp = m; *np = n;
   return;
