@@ -296,10 +296,8 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
     assert (old_k / k == old_k / max_kc);
   }
 
-  fprintf(stderr, "fuck0\n");
-
   int max_nc;
-  const int actual_l2 = 1572864; // l3 for debug; 1572864 for other cases
+  const int actual_l2 = l3; // l3 for debug; 1572864 for other cases
   const int lhs_bytes = m * k * typesize;
   const int rest_l1 = l1 - k_sub - lhs_bytes;
   if (rest_l1 >= nr * k * typesize) {
@@ -308,10 +306,10 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
     max_nc = (3 * actual_l2) / (4 * max_kc * typesize);
   }
 
-  fprintf(stderr, "fuck1: actual_l2: %d, max_nc: %d\n", actual_l2, max_nc);
+  // fprintf(stderr, "fuck1: actual_l2: %d, max_nc: %d\n", actual_l2, max_nc);
 
   int nc = (int) (fmin(actual_l2 / (2 * k * typesize), max_nc)) & (~(nr - 1));
-  fprintf(stderr, "fuck1.5: n = %d, nr = %d, nc = %d\n", n, nr, nc);
+  // fprintf(stderr, "fuck1.5: n = %d, nr = %d, nc = %d\n", n, nr, nc);
   if (n > nc) {
     n = (n % nc == 0) ? nc : (nc - nr * (nc - (n % nc)) / (nr * (n / nc + 1)));
   } else if (old_k == k) {

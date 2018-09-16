@@ -8,6 +8,25 @@ open Bigarray
 open Owl_core_types
 
 (*
+ * eigen interface
+ *)
+
+let _eigen_spatial_conv : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
+  | Float32   -> Eigen.Tensor.S.spatial_conv
+  | Float64   -> Eigen.Tensor.D.spatial_conv
+  | _         -> failwith "_eigen_spatial_conv: unsupported operation"
+
+let _eigen_spatial_conv_backward_input : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
+  | Float32   -> Eigen.Tensor.S.spatial_conv_backward_input
+  | Float64   -> Eigen.Tensor.D.spatial_conv_backward_input
+  | _         -> failwith "_eigen_spatial_conv_backward_input: unsupported operation"
+
+let _eigen_spatial_conv_backward_kernel : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
+  | Float32   -> Eigen.Tensor.S.spatial_conv_backward_kernel
+  | Float64   -> Eigen.Tensor.D.spatial_conv_backward_kernel
+  | _         -> failwith "_eigen_spatial_conv_backward_kernel: unsupported operation"
+
+(*
  * convolution eigen-like implementation
  *)
 
