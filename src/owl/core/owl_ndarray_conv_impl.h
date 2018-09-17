@@ -48,6 +48,7 @@ CAMLprim value FUN_NATIVE (spatial) (
   const int output_cr  = output_rows * output_cols;
   const int output_crb = output_rows * output_cols * batches;
   const int kernel_cri = kernel_cols * kernel_rows * in_channel;
+  const int kernel_cr  = kernel_cols * kernel_rows;
   const int kernel_ri  = kernel_rows * in_channel;
 
   memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
@@ -89,7 +90,7 @@ CAMLprim value FUN_NATIVE (spatial) (
 
       // start = clock();
 
-#ifndef AVX_PSIZE_PO
+#ifndef AVX_PSIZE_DEBUG
 
       for (int im = 0; im < actual_mc; im += 1) {
         int b  = (m + im) / output_cr;
@@ -139,28 +140,82 @@ CAMLprim value FUN_NATIVE (spatial) (
           int input_col = kc + cstart;
           int input_row = kr + rstart;
 
-          TYPE foo[AVX_PSIZE];
-          if (input_col < input_cols && input_col >= 0 &&
+          //TYPE foo[AVX_PSIZE];
+          int input_index = b * input_cri + input_col * input_ri
+            + input_row * in_channel + ki;
+
+          if (in_channel % AVX_PSIZE == 0) {
+            for (int ixx = 0; ixx < AVX_PSIZE; ixx++) {
+              if (input_col < input_cols && input_col >= 0 &&
+                input_row < input_rows && input_row >= 0) {
+                temp_mk[cmk + ixx] = input_ptr[input_index + ixx];
+              } else {
+                temp_mk[cmk + ixx] = 0;
+              }
+            }
+          } else {
+            const int cr_set[2] = {ik / in_channel, (ik + AVX_PSIZE - 1) / in_channel };
+            const int r_set[2] = {cr_set[0] / kernel_cols, cr_set[1] / kernel_cols};
+            const int rows[2]  = {r + r_set[0], r + r_set[1]};
+
+            if (rows[0] == rows[1]) {
+              const int c_set[2] = {
+                cr_set[0] - r_set[0] * kernel_cols,
+                cr_set[1] - r_set[1] * kernel_cols};
+              const int cols[2] = {c + c_set[0], c + c_set[1]};
+
+              if (cols[0] >= 0 && cols[1] < input_cols) {
+                for (int ixx = 0; ixx < AVX_PSIZE; ixx++) {
+                  temp_mk[cmk + ixx] = input_ptr[input_index + ixx];
+                }
+              } else {
+                for (int ixx = 0; ixx < AVX_PSIZE; ixx++) {
+                  temp_mk[cmk + ixx] = 0;
+                }
+              }
+            } else {
+              const int idx_base = b * input_cri;
+              for (int ikk = 0; ikk < AVX_PSIZE; ikk += 1) {
+                ik++;
+                int kc  = (k + ik) / kernel_ri;
+                int kri = (k + ik) - kc * kernel_ri;
+                int kr  = kri / in_channel;
+                int ki  = kri - kr * in_channel;
+
+                int input_col = kc + cstart;
+                int input_row = kr + rstart;
+                if (input_col < input_cols && input_col >= 0 &&
+                  input_row < input_rows && input_row >= 0) {
+                    int input_index = idx_base + input_col * input_ri
+                      + input_row * in_channel + ki;
+                    temp_mk[cmk + ikk] = input_ptr[input_index];
+                }
+              }
+            }
+          }
+
+
+          /* if (input_col < input_cols && input_col >= 0 &&
             input_row < input_rows && input_row >= 0) {
             int input_index = b * input_cri + input_col * input_ri
               + input_row * in_channel + ki;
               // printf(stderr, "%d ", input_index);
               // temp_mk[cmk] = input_ptr[input_index];
 
-              /* for (int ixx = 0; ixx < 4; ixx++) {
+              for (int ixx = 0; ixx < 4; ixx++) {
                 foo[ifoo++] = input_ptr[input_index];
               }
               __m128 bar = _mm_set_ps(foo[3], foo[2], foo[1], foo[0]);
-              _mm_store_ps(temp_mk + cmk, bar); */
+              _mm_store_ps(temp_mk + cmk, bar);
 
             int ifoo = 0;
             for (int ixx = 0; ixx < 8; ixx++) {
 	            foo[ifoo++] = input_ptr[input_index];
             }
-            __m256 bar = _mm256_setr_ps(foo[7], foo[6], foo[5], foo[4], foo[3], foo[2], foo[1], foo[0]);
-            _mm256_store_ps(temp_mk + cmk, bar);
-          }
-          cmk+=8;
+            // __m256 bar = _mm256_setr_ps(foo[7], foo[6], foo[5], foo[4], foo[3], foo[2], foo[1], foo[0]);
+            // _mm256_store_ps(temp_mk + cmk, bar);
+          } */
+          cmk += AVX_PSIZE;
         }
       }
 
