@@ -50,6 +50,9 @@ val round : float -> float
 val trunc : float -> float
 (** ``trunc x`` *)
 
+val fix : float -> float
+(** ``fix x`` *)
+
 val sqr : float -> float
 (** ``sqr x`` *)
 
@@ -181,6 +184,18 @@ val log1mexp : float -> float
 
 val log1pexp : float -> float
 (** ``log1pexp(x)`` *)
+
+
+(** {6 Error functions} *)
+
+val erf : float -> float
+(** ``erf(x)`` *)
+
+val erfc : float -> float
+(** ``erfc(x)`` *)
+
+val erfcx : float -> float
+(** ``erfcx(x)`` *)
 
 
 (** {6 Helper functions} *)

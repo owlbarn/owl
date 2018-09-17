@@ -43,6 +43,9 @@ val create : ('a, 'b) kind -> int array -> 'a -> ('a, 'b) t
 val init : ('a, 'b) kind -> int array -> (int -> 'a) -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val init_nd : ('a, 'b) kind -> int array -> (int array -> 'a) -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val zeros : ('a, 'b) kind -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
@@ -68,6 +71,9 @@ val shape : ('a, 'b) t -> int array
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val num_dims : ('a, 'b) t -> int
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val nth_dim : ('a, 'b) t -> int -> int
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val numel : ('a, 'b) t -> int
@@ -98,6 +104,9 @@ val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val reset : ('a, 'b) t -> unit
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val fill : ('a, 'b) t -> 'a -> unit
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val copy : ('a, 'b) t -> ('a, 'b) t
@@ -196,16 +205,13 @@ val is_nonpositive : ('a, 'b) t -> bool
 val is_nonnegative : ('a, 'b) t -> bool
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val is_normal : (float, 'b) t -> bool
+val is_normal : ('a, 'b) t -> bool
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val not_nan : (float, 'b) t -> bool
+val not_nan : ('a, 'b) t -> bool
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val not_inf : (float, 'b) t -> bool
+val not_inf : ('a, 'b) t -> bool
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val equal : ('a, 'b) t -> ('a, 'b) t -> bool
@@ -341,7 +347,7 @@ val conj : ('a, 'b) t -> ('a, 'b) t
 val neg : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val reci : (float, 'b) t -> (float, 'b) t
+val reci : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val signum : (float, 'a) t -> (float, 'a) t
@@ -380,70 +386,55 @@ val log10 : ('a, 'b) t -> ('a, 'b) t
 val log1p : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val sin : (float, 'b) t -> (float, 'b) t
+val sin : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val cos : (float, 'b) t -> (float, 'b) t
+val cos : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val tan : (float, 'b) t -> (float, 'b) t
+val tan : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val asin : (float, 'b) t -> (float, 'b) t
+val asin : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val acos : (float, 'b) t -> (float, 'b) t
+val acos : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val atan : (float, 'b) t -> (float, 'b) t
+val atan : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val sinh : (float, 'b) t -> (float, 'b) t
+val sinh : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val cosh : (float, 'b) t -> (float, 'b) t
+val cosh : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val tanh : (float, 'b) t -> (float, 'b) t
+val tanh : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val asinh : (float, 'b) t -> (float, 'b) t
+val asinh : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val acosh : (float, 'b) t -> (float, 'b) t
+val acosh : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val atanh : (float, 'b) t -> (float, 'b) t
+val atanh : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val floor : (float, 'b) t -> (float, 'b) t
+val floor : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val ceil : (float, 'b) t -> (float, 'b) t
+val ceil : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val round : (float, 'b) t -> (float, 'b) t
+val round : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val trunc : (float, 'b) t -> (float, 'b) t
+val trunc : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val fix : (float, 'b) t -> (float, 'b) t
+val fix : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val erf : (float, 'b) t -> (float, 'b) t

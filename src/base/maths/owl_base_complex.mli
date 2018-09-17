@@ -45,7 +45,25 @@ val sqrt : t -> t
 val exp : t -> t
 (** TODO *)
 
+val exp2 : t -> t
+(** TODO *)
+
+val exp10 : t -> t
+(** TODO *)
+
+val expm1 : t -> t
+(** TODO *)
+
 val log : t -> t
+(** TODO *)
+
+val log2 : t -> t
+(** TODO *)
+
+val log10 : t -> t
+(** TODO *)
+
+val log1p : t -> t
 (** TODO *)
 
 val sin : t -> t
@@ -125,6 +143,21 @@ val arg : t -> float
 
 val phase : t -> float
 (** ``phase x`` returns the phase of a complex number ``x``. *)
+
+val floor : t -> t
+(** ``floor x`` *)
+
+val ceil : t -> t
+(** ``ceil x`` *)
+
+val round : t -> t
+(** ``round x`` *)
+
+val trunc : t -> t
+(** ``trunc x`` *)
+
+val fix : t -> t
+(** ``fix x`` *)
 
 
 (** {6 Binary functions} *)
@@ -212,3 +245,6 @@ val is_nan : t -> bool
 
 val is_inf : t -> bool
 (** ``is_inf x`` returns ``true`` if either ``x.re`` or ``x.im`` is ``infinity`` or ``neg_infinity``. *)
+
+val is_normal : t -> bool
+(** ``is_normal x`` returns ``true`` if both ``x.re`` and ``x.im`` are ``normal``. *)

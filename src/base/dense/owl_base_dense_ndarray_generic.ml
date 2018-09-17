@@ -164,24 +164,25 @@ let ones kind dims = create kind dims (Owl_const.one kind)
 let ones_ ~out = Genarray.(fill out (Owl_const.one (kind out)))
 
 
-let shape varr = Genarray.dims varr
+let shape x = Genarray.dims x
 
 
-let num_dims varr = Array.length (shape varr)
+let nth_dim x i = Genarray.nth_dim x i
 
 
-let numel varr =
-  let v_shape = shape varr in
-  Array.fold_left ( * ) 1 v_shape
+let num_dims x = Array.length (shape x)
 
 
-let kind varr = Genarray.kind varr
+let numel x = Owl_utils.numel x
 
 
-let get varr index = (Genarray.get varr index)
+let kind x = Genarray.kind x
 
 
-let set varr index value = (Genarray.set varr index value)
+let get x index = (Genarray.get x index)
+
+
+let set x index value = (Genarray.set x index value)
 
 
 (*TODO: optimise, test *)
@@ -240,6 +241,9 @@ let reshape x d =
 
 (* Return the array as a contiguous block, without copying *)
 let flatten x = reshape x [|(numel x)|]
+
+
+let fill x a = Genarray.fill x a
 
 
 let copy x =
@@ -303,6 +307,19 @@ let init kind dims f =
     Array1.unsafe_set varr_flat i (f i)
   done;
   varr
+
+
+let init_nd k d f =
+  let x = empty k d in
+  let y = array1_of_genarray (flatten x) in
+  let n = numel x in
+  let s = Owl_utils.calc_stride d in
+  let j = Array.copy s in
+  for i = 0 to n - 1 do
+    Owl_utils.index_1d_nd i j s;
+    Array1.unsafe_set y i (f j)
+  done;
+  x
 
 
 (* Map a NDarray from elements x -> f(x), by copying the array *)
@@ -779,11 +796,6 @@ let conj_ ?out x =
   map _func out
 
 
-let neg_ ?out x =
-  let out = match out with Some o -> o | None -> x in
-  map_ Scalar.neg out
-
-
 let neg x =
   let _kind = kind x in
   let _func = Owl_base_dense_common._neg_elt _kind in
@@ -794,58 +806,85 @@ let neg_ ?out x =
   let _kind = kind x in
   let _func = Owl_base_dense_common._neg_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.neg out
+  map_ _func out
 
 
-let reci x = map Scalar.reci x
+let reci x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._inv_elt _kind in
+  map _func x
 
 
 let reci_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._inv_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.reci out
+  map_ _func out
 
 
-let floor x = map Scalar.floor x
+let floor x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._floor_elt _kind in
+  map _func x
 
 
 let floor_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._floor_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.floor out
+  map_ _func out
 
 
-let ceil x = map Scalar.ceil x
+let ceil x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._ceil_elt _kind in
+  map _func x
 
 
 let ceil_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._ceil_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.ceil out
+  map_ _func out
 
 
-let round x = map Scalar.round x
+let round x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._round_elt _kind in
+  map _func x
 
 
 let round_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._round_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.round out
+  map_ _func out
 
 
-let trunc x = map (fun a -> Pervasives.truncate a |> float_of_int) x
+let trunc x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._trunc_elt _kind in
+  map _func x
 
 
 let trunc_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._trunc_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ (fun a -> Pervasives.truncate a |> float_of_int) out
+  map_ _func out
 
 
 let fix x =
-  let open Pervasives in
-  map (fun a -> if a < 0. then ceil a else floor a) x
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._fix_elt _kind in
+  map _func x
 
 
 let fix_ ?out x =
-  let open Pervasives in
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._fix_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ (fun a -> if a < 0. then ceil a else floor a) out
+  map_ _func out
 
 
 let erf _x = raise Owl_exception.NOT_IMPLEMENTED
@@ -968,30 +1007,26 @@ let exp_ ?out x =
 
 let exp2 x =
   let _kind = kind x in
-  let a = Owl_base_dense_common._float_typ_elt _kind 2. in
-  let _func = Owl_base_dense_common._pow_elt _kind a in
+  let _func = Owl_base_dense_common._exp2_elt _kind in
   map _func x
 
 
 let exp2_ ?out x =
   let _kind = kind x in
-  let a = Owl_base_dense_common._float_typ_elt _kind 2. in
-  let _func = Owl_base_dense_common._pow_elt _kind a in
+  let _func = Owl_base_dense_common._exp2_elt _kind in
   let out = match out with Some o -> o | None -> x in
   map_ _func out
 
 
 let exp10 x =
   let _kind = kind x in
-  let a = Owl_base_dense_common._float_typ_elt _kind 10. in
-  let _func = Owl_base_dense_common._pow_elt _kind a in
+  let _func = Owl_base_dense_common._exp10_elt _kind in
   map _func x
 
 
 let exp10_ ?out x =
   let _kind = kind x in
-  let a = Owl_base_dense_common._float_typ_elt _kind 10. in
-  let _func = Owl_base_dense_common._pow_elt _kind a in
+  let _func = Owl_base_dense_common._exp10_elt _kind in
   let out = match out with Some o -> o | None -> x in
   map_ _func out
 
@@ -1009,100 +1044,160 @@ let expm1_ ?out x =
   map_ _func out
 
 
-let sin x = map Scalar.sin x
+let sin x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._sin_elt _kind in
+  map _func x
 
 
 let sin_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._sin_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.sin out
+  map_ _func out
 
 
-let cos x = map Scalar.cos x
+let cos x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._cos_elt _kind in
+  map _func x
 
 
 let cos_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._cos_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.cos out
+  map_ _func out
 
 
-let tan x = map Scalar.tan x
+let tan x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._tan_elt _kind in
+  map _func x
 
 
 let tan_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._tan_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.tan out
+  map_ _func out
 
 
-let sinh x = map Scalar.sinh x
+let sinh x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._sinh_elt _kind in
+  map _func x
 
 
 let sinh_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._sinh_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.sinh out
+  map_ _func out
 
 
-let cosh x = map Scalar.cosh x
+let cosh x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._cosh_elt _kind in
+  map _func x
 
 
 let cosh_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._cosh_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.cosh out
+  map_ _func out
 
 
-let tanh x = map Scalar.tanh x
+let tanh x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._tanh_elt _kind in
+  map _func x
 
 
 let tanh_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._tanh_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.tanh out
+  map_ _func out
 
 
-let asin x = map Scalar.asin x
+let asin x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._asin_elt _kind in
+  map _func x
 
 
 let asin_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._asin_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.asin out
+  map_ _func out
 
 
-let acos x = map Scalar.acos x
+let acos x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._acos_elt _kind in
+  map _func x
 
 
 let acos_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._acos_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.acos out
+  map_ _func out
 
 
-let atan x = map Scalar.atan x
+let atan x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._atan_elt _kind in
+  map _func x
 
 
 let atan_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._atan_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.atan out
+  map_ _func out
 
 
-let asinh x = map Scalar.asinh x
+let asinh x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._asinh_elt _kind in
+  map _func x
 
 
 let asinh_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._asinh_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.asinh out
+  map_ _func out
 
 
-let acosh x = map Scalar.acosh x
+let acosh x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._acosh_elt _kind in
+  map _func x
 
 
 let acosh_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._acosh_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.acosh out
+  map_ _func out
 
 
-let atanh x = map Scalar.atanh x
+let atanh x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._atanh_elt _kind in
+  map _func x
 
 
 let atanh_ ?out x =
+  let _kind = kind x in
+  let _func = Owl_base_dense_common._atanh_elt _kind in
   let out = match out with Some o -> o | None -> x in
-  map_ Scalar.atanh out
+  map_ _func out
 
 
 let sum_slices ?(axis=0) varr =
@@ -2076,33 +2171,22 @@ let is_nonnegative varr =
   (not_exists negative_fun varr)
 
 
-let is_normal varr =
-  let not_normal_fun = (
-    fun x -> match Pervasives.classify_float x with
-      | FP_subnormal -> true
-      | FP_infinite -> true
-      | FP_nan -> true
-      | _ -> false
-  ) in
-  (not_exists not_normal_fun varr)
+let is_normal x =
+  let _kind = kind x in
+  let is_normal_fun = Owl_base_dense_common._is_normal_elt _kind in
+  for_all is_normal_fun x
 
 
-let not_nan varr =
-  let is_nan_fun = (
-    fun x -> match Pervasives.classify_float x with
-      | FP_nan -> true
-      | _ -> false
-  ) in
-  (not_exists is_nan_fun varr)
+let not_nan x =
+  let _kind = kind x in
+  let is_nan_fun = Owl_base_dense_common._is_nan_elt _kind in
+  not_exists is_nan_fun x
 
 
-let not_inf varr =
-  let is_inf_fun = (
-    fun x -> match Pervasives.classify_float x with
-      | FP_infinite -> true
-      | _ -> false
-  ) in
-  (not_exists is_inf_fun varr)
+let not_inf x =
+  let _kind = kind x in
+  let is_inf_fun = Owl_base_dense_common._is_inf_elt _kind in
+  not_exists is_inf_fun x
 
 
 (* Neural network related functions *)

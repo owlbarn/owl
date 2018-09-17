@@ -34,21 +34,22 @@ module Make
     mutable train   : bool;       (* specify if a node is only for training *)
   }
   and network = {
-    mutable nnid : string;        (* name of the graph network *)
-    mutable size : int;           (* size of the graph network *)
-    mutable root : node option;   (* root of the graph network, i.e. input *)
-    mutable topo : node array;    (* nodes sorted in topological order *)
+    mutable nnid    : string;      (* name of the graph network *)
+    mutable size    : int;         (* size of the graph network *)
+    mutable roots   : node array;  (* roots of the graph network, i.e. inputs *)
+    mutable outputs : node array;  (* outputs of the graph network *)
+    mutable topo    : node array;  (* nodes sorted in topological order *)
   }
 
 
   (* functions to manipulate the network *)
 
-  let make_network ?nnid size root topo =
+  let make_network ?nnid size roots topo =
     let nnid = match nnid with
       | Some s -> s
       | None   -> "Graphical network"
     in
-    { nnid; size; root; topo; }
+    { nnid; size; roots; topo; outputs = [||]}
 
 
   let make_node ?name ?(train=false) prev next neuron output network =
@@ -67,10 +68,13 @@ module Make
     }
 
 
-  let get_root nn =
-    match nn.root with
-    | Some n -> n
-    | None   -> failwith "Owl_neural_graph:get_root"
+  let get_roots nn =
+    match nn.roots with
+    | [||] -> failwith "Owl_neural_graph:get_roots"
+    | x   -> x
+
+
+  let get_outputs nn = nn.outputs
 
 
   let get_node nn name =
@@ -85,7 +89,22 @@ module Make
       | None   -> Random.int 65535 |> string_of_int
     in
     n.network.nnid <- name;
+    (* if run and run_inputs are merged, the next line is necessary. *)
+    n.network.outputs <- [|n|];
     n.network
+
+
+  let outputs ?name nodes =
+    assert (Array.length nodes > 0);
+    let name = match name with
+      | Some s -> s
+      | None   -> Random.int 65535 |> string_of_int
+    in
+    (* assumes that all the outputs are part of the same network *)
+    let nn = nodes.(0).network in
+    nn.nnid <- name;
+    nn.outputs <- nodes;
+    nn
 
 
   let get_network_name n = n.nnid
@@ -94,7 +113,11 @@ module Make
   let set_network_name n name = n.nnid <- name
 
 
-  let input_shape n = (get_root n).neuron |> Neuron.get_in_shape
+  let input_shape n = (get_roots n).(0).neuron |> Neuron.get_in_shape
+
+
+  let input_shapes n = Array.map (fun r -> r.neuron |> Neuron.get_in_shape)
+                         (get_roots n)
 
 
   (* collect the outputs of a given set of nodes *)
@@ -168,6 +191,25 @@ module Make
   let update nn us = Array.iter2 (fun n u -> update n.neuron u) nn.topo us
 
 
+  let run_inputs inputs nn =
+    assert Array.(length inputs = length (get_roots nn));
+    Array.iter (fun n ->
+      (* collect the inputs from parents' output *)
+      let input = match n.neuron with
+        | Input _ ->
+           let index = Owl_utils.Array.index_of
+                         (Array.map (fun r -> r.name) (get_roots nn)) n.name in
+           [|inputs.(index)|]
+        | _       -> collect_output n.prev
+      in
+      (* process the current neuron, save output *)
+      let output = run input n.neuron in
+      n.output <- Some output
+    ) nn.topo;
+    (* collect the final outputs *)
+    collect_output nn.outputs
+
+
   let run x nn =
     Array.iter (fun n ->
       (* collect the inputs from parents' output *)
@@ -191,7 +233,7 @@ module Make
 
 
   let copy nn =
-    let nn' = make_network ~nnid:nn.nnid nn.size None [||] in
+    let nn' = make_network ~nnid:nn.nnid nn.size [||] [||] in
     (* first iteration to copy the neurons *)
     nn'.topo <- Array.map (fun node ->
       let neuron' = copy node.neuron in
@@ -203,8 +245,9 @@ module Make
       node'.next <- Array.map (fun n -> get_node nn' n.name) node.next;
       connect_to_parents node'.prev node'
     ) nn.topo nn'.topo;
-    (* set root to finalise the structure *)
-    nn'.root <- Some (get_node nn' (get_root nn).name);
+    (* set roots and outputs to finalise the structure *)
+    nn'.roots <- Array.map (fun n -> get_node nn' n.name) (get_roots nn);
+    nn'.outputs <- Array.map (fun n -> get_node nn' n.name) (get_outputs nn);
     nn'
 
 
@@ -241,15 +284,37 @@ module Make
     inference
 
 
-  (* functions to create functional nodes *)
+  let model_inputs nn =
+    let nn = copy nn in
+    _remove_training_nodes nn;
+    let inference inputs =
+      let outputs = run_inputs (Array.map (fun x -> Arr x) inputs) nn in
+      Array.map unpack_arr outputs
+    in
+    inference
 
+
+  (* functions to create functional nodes *)
 
   let input ?name inputs =
     let neuron = Input (Input.create inputs) in
-    let nn = make_network 0 None [||] in
+    let nn = make_network 0 [||] [||] in
     let n = make_node ?name [||] [||] neuron None nn in
-    nn.root <- Some n;
+    nn.roots <- [|n|];
     add_node nn [||] n
+
+
+  let inputs ?names input_shapes =
+    let names = match names with
+      | Some x -> assert Array.(length x = length input_shapes);
+                  Array.map (fun name -> Some name) x
+      | None   -> Array.(make (length input_shapes) None) in
+    let neurons = Array.map (fun s -> Input (Input.create s)) input_shapes in
+    let nn = make_network 0 [||] [||] in
+    let ns = Array.map2 (fun n name -> make_node ?name [||] [||] n None nn)
+               neurons names in
+    nn.roots <- ns;
+    Array.map (fun n -> add_node nn [||] n) ns
 
 
   let activation ?name act_typ input_node =

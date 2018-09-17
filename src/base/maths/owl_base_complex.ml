@@ -13,6 +13,15 @@ let abs = norm
 let abs2 = norm2
 
 
+let exp2 x = pow {re = 2.; im = 0.} x
+
+
+let exp10 x = pow {re = 10.; im = 0.} x
+
+
+let expm1 x = sub (exp x) one
+
+
 let logabs x =
   let r = abs_float x.re in
   let i = abs_float x.im in
@@ -21,6 +30,15 @@ let logabs x =
     else i, r /. i
   in
   Pervasives.(log m) +. 0.5 *. (log1p (u *. u))
+
+
+let log2 x = div (log x) (log {re = 2.; im = 0.})
+
+
+let log10 x = div (log x) (log {re = 10.; im = 0.})
+
+
+let log1p x = log (add x one)
 
 
 let add_re x a = { re = x.re +. a; im = x.im }
@@ -281,6 +299,21 @@ let rect r phi =
   { re; im }
 
 
+let ceil x = { re = ceil x.re;  im = ceil x.im }
+
+
+let floor x = { re = floor x.re;  im = floor x.im }
+
+
+let round x = { re = Owl_base_maths.round x.re;  im = Owl_base_maths.round x.im }
+
+
+let trunc x = { re = modf x.re |> snd;  im = modf x.im |> snd }
+
+
+let fix x = { re = Owl_base_maths.fix x.re;  im = Owl_base_maths.fix x.im }
+
+
 (* Comparison functions *)
 
 let equal x y = (x.re = y.re) && (x.im = y.im)
@@ -324,12 +357,13 @@ let of_tuple x =
 let to_tuple x = x.re, x.im
 
 
-let is_nan x = x.re = nan || x.im = nan
+let is_nan x = Owl_base_maths.(is_nan x.re || is_nan x.im)
 
 
-let is_inf x =
-  x.re = infinity || x.re = neg_infinity ||
-  x.im = infinity || x.im = neg_infinity
+let is_inf x = Owl_base_maths.(is_inf x.re || is_inf x.im)
+
+
+let is_normal x = Owl_base_maths.(is_normal x.re && is_normal x.im)
 
 
 

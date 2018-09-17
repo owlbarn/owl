@@ -29,6 +29,8 @@ val create : int array -> elt -> arr
 
 val init : int array -> (int -> elt) -> arr
 
+val init_nd : int array -> (int array -> elt) -> arr
+
 val sequential : ?a:elt -> ?step:elt -> int array -> arr
 
 val uniform : ?a:elt -> ?b:elt -> int array -> arr
@@ -202,154 +204,106 @@ val fma : arr -> arr -> arr -> arr
 
 (** {6 Iterate array elements}  *)
 
-val iteri : (int -> float -> unit) -> arr -> unit
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
+val iteri : (int -> elt -> unit) -> arr -> unit
 
-val iter : (float -> unit) -> arr -> unit
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
+val iter : (elt -> unit) -> arr -> unit
 
-val mapi : (int -> float -> float) -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
+val mapi : (int -> elt -> elt) -> arr -> arr
 
-val map : (float -> float) -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
+val map : (elt -> elt) -> arr -> arr
 
-val filteri : (int -> float -> bool) -> arr -> int array
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
+val filteri : (int -> elt -> bool) -> arr -> int array
 
-val filter : (float -> bool) -> arr -> int array
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
+val filter : (elt -> bool) -> arr -> int array
 
-val foldi : ?axis:int -> (int -> float -> float -> float) -> float -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
+val foldi : ?axis:int -> (int -> elt -> elt -> elt) -> elt -> arr -> arr
 
-val fold : ?axis:int -> (float -> float -> float) -> float -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
+val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> arr -> arr
 
-val scani : ?axis:int -> (int -> float -> float -> float) -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
+val scani : ?axis:int -> (int -> elt -> elt -> elt) -> arr -> arr
 
-val scan : ?axis:int -> (float -> float -> float) -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
+val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
+
 
 (** {6 Examination & Comparison}  *)
 
 val exists : (elt -> bool) -> arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val not_exists : (elt -> bool) -> arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val for_all : (elt -> bool) -> arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val is_zero : arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val is_positive : arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val is_negative : arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val is_nonpositive : arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val is_nonnegative : arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val is_normal : arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val not_nan : arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val not_inf : arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val equal : arr -> arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val not_equal : arr -> arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val greater : arr -> arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val less : arr -> arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val greater_equal : arr -> arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val less_equal : arr -> arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val elt_equal : arr -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val elt_not_equal : arr -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val elt_less : arr -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val elt_greater : arr -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val elt_less_equal : arr -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val elt_greater_equal : arr -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val equal_scalar : arr -> elt -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val not_equal_scalar : arr -> elt -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val less_scalar : arr -> elt -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val greater_scalar : arr -> elt -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val less_equal_scalar : arr -> elt -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val greater_equal_scalar : arr -> elt -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val elt_equal_scalar : arr -> elt -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val elt_not_equal_scalar : arr -> elt -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val elt_less_scalar : arr -> elt -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val elt_greater_scalar : arr -> elt -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val elt_less_equal_scalar : arr -> elt -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val elt_greater_equal_scalar : arr -> elt -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val approx_equal : ?eps:float -> arr -> arr -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val approx_equal_scalar : ?eps:float -> arr -> float -> bool
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val approx_elt_equal : ?eps:float -> arr -> arr -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val approx_elt_equal_scalar : ?eps:float -> arr -> float -> arr
-(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 
 (* Neural network related functions *)
