@@ -69,8 +69,8 @@ CAMLprim value FUN_NATIVE (spatial) (
   int nc = out_channel;
   compute_block_sizes(&kc, &nc, &mc, sizeof(TYPE));
 
-  fprintf(stderr, "input: [%d, %d, %d, %d]; kernel: [%d, %d, %d, %d]\n", batches, input_cols, input_rows, in_channel, kernel_cols, kernel_rows, in_channel, out_channel);
-  fprintf(stderr, "calculated block size: kc = %d, mc = %d, nc = %d\n", kc, mc, nc);
+  //fprintf(stderr, "input: [%d, %d, %d, %d]; kernel: [%d, %d, %d, %d]\n", batches, input_cols, input_rows, in_channel, kernel_cols, kernel_rows, in_channel, out_channel);
+  //fprintf(stderr, "calculated block size: kc = %d, mc = %d, nc = %d\n", kc, mc, nc);
 
   TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
   if (temp_mk == NULL) exit(1);
@@ -89,7 +89,7 @@ CAMLprim value FUN_NATIVE (spatial) (
 
       // start = clock();
 
-#ifndef AVX_PSIZE_NO
+#ifndef AVX_PSIZE_PO
 
       for (int im = 0; im < actual_mc; im += 1) {
         int b  = (m + im) / output_cr;
@@ -99,8 +99,9 @@ CAMLprim value FUN_NATIVE (spatial) (
 
         const int cstart = c * col_stride - pc;
         const int rstart = r * row_stride - pr;
+        const int idx_base = b * input_cri;
 
-        for (int ik = 0; ik < actual_kc; ik+=1) {
+        for (int ik = 0; ik < actual_kc; ik += 1) {
           int kc  = (k + ik) / kernel_ri;
           int kri = (k + ik) - kc * kernel_ri;
           int kr  = kri / in_channel;
@@ -110,9 +111,8 @@ CAMLprim value FUN_NATIVE (spatial) (
           int input_row = kr + rstart;
           if (input_col < input_cols && input_col >= 0 &&
             input_row < input_rows && input_row >= 0) {
-              int input_index = b * input_cri + input_col * input_ri
+              int input_index = idx_base + input_col * input_ri
                 + input_row * in_channel + ki;
-              //printf(stderr, "%d ", input_index);
               temp_mk[cmk] = input_ptr[input_index];
           }
           cmk++;
@@ -142,8 +142,8 @@ CAMLprim value FUN_NATIVE (spatial) (
           TYPE foo[AVX_PSIZE];
           if (input_col < input_cols && input_col >= 0 &&
             input_row < input_rows && input_row >= 0) {
-              int input_index = b * input_cri + input_col * input_ri
-                + input_row * in_channel + ki;
+            int input_index = b * input_cri + input_col * input_ri
+              + input_row * in_channel + ki;
               // printf(stderr, "%d ", input_index);
               // temp_mk[cmk] = input_ptr[input_index];
 
@@ -153,12 +153,12 @@ CAMLprim value FUN_NATIVE (spatial) (
               __m128 bar = _mm_set_ps(foo[3], foo[2], foo[1], foo[0]);
               _mm_store_ps(temp_mk + cmk, bar); */
 
-              int ifoo = 0;
-              for (int ixx = 0; ixx < 8; ixx++) {
-	               foo[ifoo++] = input_ptr[input_index];
-              }
-              __m256 bar = _mm256_setr_ps(foo[7], foo[6], foo[5], foo[4], foo[3], foo[2], foo[1], foo[0]);
-              _mm256_store_ps(temp_mk + cmk, bar);
+            int ifoo = 0;
+            for (int ixx = 0; ixx < 8; ixx++) {
+	            foo[ifoo++] = input_ptr[input_index];
+            }
+            __m256 bar = _mm256_setr_ps(foo[7], foo[6], foo[5], foo[4], foo[3], foo[2], foo[1], foo[0]);
+            _mm256_store_ps(temp_mk + cmk, bar);
           }
           cmk+=8;
         }
@@ -167,13 +167,15 @@ CAMLprim value FUN_NATIVE (spatial) (
 #endif
 
       // diff += clock() - start;
-
+      int idx_kn_base = k * out_channel;
       for (int n = 0; n < out_channel; n += nc) {
         int actual_nc = fminf(n + nc, out_channel) - n;
+        idx_kn_base += n;
+
         int cnk = 0;
         for (int ik = 0; ik < actual_kc; ik++) {
           for (int jn = 0; jn < actual_nc; jn++) {
-            int index_kn = (k + ik) * out_channel + n + jn;
+            int index_kn = idx_kn_base + ik * out_channel + jn;
             temp_kn[cnk++] = kernel_ptr[index_kn];
           }
         }
@@ -275,16 +277,21 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
 
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
+    int idx_mn_base = m * out_channel;
+
     for (int k = 0; k < kernel_cri; k += kc) {
       int actual_kc = fminf(k + kc, kernel_cri) - k;
+      int idx_kn_base = k * out_channel;
 
       for (int n = 0; n < out_channel; n += nc) {
         int actual_nc = fminf(n + nc, out_channel) - n;
+        idx_kn_base += n;
+        idx_mn_base += n;
 
         int cnk = 0;
         for (int ik = 0; ik < actual_kc; ik++) {
           for (int jn = 0; jn < actual_nc; jn++) {
-            int index_kn = (k + ik) * out_channel + n + jn;
+            int index_kn = idx_kn_base + ik * out_channel + jn;
             temp_kn[cnk++] = kernel_ptr[index_kn];
           }
         }
@@ -292,7 +299,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
         int cmn = 0;
         for (int ix = 0; ix < actual_mc; ix++) {
           for (int iy = 0; iy < actual_nc; iy++) {
-            int index_mn = (ix + m) * out_channel + (iy + n);
+            int index_mn = idx_mn_base + ix * out_channel + iy;
             temp_mn[cmn++] = output_ptr[index_mn];
           }
         }
@@ -311,6 +318,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
 
           const int cstart = c * col_stride - pc;
           const int rstart = r * row_stride - pr;
+          int idx_mk_base = b * input_cri;
 
           for (int ik = 0; ik < actual_kc; ik+=1) {
             int kc  = (k + ik) / kernel_ri;
@@ -322,7 +330,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
             int input_row = kr + rstart;
             if (input_col < input_cols && input_col >= 0 &&
               input_row < input_rows && input_row >= 0) {
-                int input_index = b * input_cri + input_col * input_ri
+                int input_index = idx_mk_base + input_col * input_ri
                   + input_row * in_channel + ki;
                 input_ptr[input_index] += temp_mk[cmk];
             }
@@ -409,9 +417,11 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
 
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
+    int idx_mn_base = m * out_channel;
+
     for (int k = 0; k < kernel_cri; k += kc) {
       int actual_kc = fminf(k + kc, kernel_cri) - k;
-
+      int idx_kn_base = k * out_channel;
       memset(temp_mk, 0, mc * kc * sizeof(TYPE));
 
       int cmk = 0;
@@ -423,8 +433,9 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
 
         const int cstart = c * col_stride - pc;
         const int rstart = r * row_stride - pr;
+        const int idx_mk_base = b * input_cri;
 
-        for (int ik = 0; ik < actual_kc; ik+=1) {
+        for (int ik = 0; ik < actual_kc; ik += 1) {
           int kc  = (k + ik) / kernel_ri;
           int kri = (k + ik) - kc * kernel_ri;
           int kr  = kri / in_channel;
@@ -434,9 +445,9 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
           int input_row = kr + rstart;
           if (input_col < input_cols && input_col >= 0 &&
             input_row < input_rows && input_row >= 0) {
-              int input_index = b * input_cri + input_col * input_ri
-                + input_row * in_channel + ki;
-              temp_mk[cmk] = input_ptr[input_index];
+            int input_index = idx_mk_base + input_col * input_ri
+              + input_row * in_channel + ki;
+            temp_mk[cmk] = input_ptr[input_index];
           }
           cmk++;
         }
@@ -444,11 +455,13 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
 
       for (int n = 0; n < out_channel; n += nc) {
         int actual_nc = fminf(n + nc, out_channel) - n;
+        idx_mn_base += n;
+        idx_kn_base += n;
 
         int cmn = 0;
         for (int ix = 0; ix < actual_mc; ix++) {
           for (int iy = 0; iy < actual_nc; iy++) {
-            int index_mn = (ix + m) * out_channel + (iy + n);
+            int index_mn = idx_mn_base + ix * out_channel + iy;
             temp_mn[cmn++] = output_ptr[index_mn];
           }
         }
@@ -463,7 +476,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
         int cnk = 0;
         for (int jn = 0; jn < actual_nc; jn++) {
           for (int ik = 0; ik < actual_kc; ik++) {
-            int index_kn = (k + ik) * out_channel + (n + jn);
+            int index_kn = idx_kn_base + ik * out_channel + jn;
             kernel_ptr[index_kn] = temp_kn[cnk++];
           }
         }
