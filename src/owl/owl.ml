@@ -77,13 +77,9 @@ module Lapacke = Owl_lapacke
 
 (* shortcuts to 64-bit precision modules *)
 
-module Arr = struct
-  include Owl_dense.Ndarray.D
-end
+module Arr = Owl_dense.Ndarray.D
 
-module Mat = struct
-  include Owl_dense.Matrix.D
-end
+module Mat = Owl_dense.Matrix.D
 
 
 (* initialise owl's working environment *)

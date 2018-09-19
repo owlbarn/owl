@@ -60,6 +60,4 @@ module Z = struct
 end
 
 
-module Any = struct
-  include Owl_dense_ndarray_a
-end
+module Any = Owl_dense_ndarray_a

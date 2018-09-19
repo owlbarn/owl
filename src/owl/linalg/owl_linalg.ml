@@ -6,38 +6,18 @@
 (** Linear algebra: module aliases *)
 
 
-module Generic = struct
-
-  include Owl_linalg_generic
-
-end
+module Generic = Owl_linalg_generic
 
 
-module S = struct
-
-  include Owl_linalg_s
-
-end
+module S = Owl_linalg_s
 
 
-module D = struct
-
-  include Owl_linalg_d
-
-end
+module D = Owl_linalg_d
 
 
-module C = struct
+module C = Owl_linalg_c
 
-  include Owl_linalg_c
-
-end
-
-module Z = struct
-
-  include Owl_linalg_z
-
-end
+module Z = Owl_linalg_z
 
 
 (* ends here *)

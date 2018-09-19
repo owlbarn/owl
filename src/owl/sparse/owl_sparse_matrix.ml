@@ -42,6 +42,4 @@ module Z = struct
 end
 
 
-module DOK = struct
-  include Owl_sparse_dok_matrix
-end
+module DOK = Owl_sparse_dok_matrix

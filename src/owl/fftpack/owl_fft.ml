@@ -4,22 +4,10 @@
  *)
 
 
-module Generic = struct
-
-  include Owl_fft_generic
-
-end
+module Generic = Owl_fft_generic
 
 
-module S = struct
-
-  include Owl_fft_s
-
-end
+module S = Owl_fft_s
 
 
-module D = struct
-
-  include Owl_fft_d
-
-end
+module D = Owl_fft_d

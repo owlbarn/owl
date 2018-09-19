@@ -15,12 +15,8 @@ include Owl_ext_binop
 
 module Dense = struct
 
-  module Ndarray = struct
-    include Owl_ext_dense_ndarray
-  end
+  module Ndarray = Owl_ext_dense_ndarray
 
-  module Matrix = struct
-    include Owl_ext_dense_matrix
-  end
+  module Matrix = Owl_ext_dense_matrix
 
 end
