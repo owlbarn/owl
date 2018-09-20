@@ -521,7 +521,7 @@ along the low dimension (by setting ``false``). The default value is ``false``.
 
 val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 (**
-``pad ~v p x`` pads a ndarray ``x`` with a constant value ``v``. The padding index ``p`` is a list of list of 2 integers. These two integers denote padding width at both edges of one dimension of ``x``.
+``pad ~v p x`` pads a ndarray ``x`` with a constant value ``v``. The padding index ``p`` is a list of lists of 2 integers. These two integers denote padding width at both edges of one dimension of ``x``.
  *)
 
 val dropout : ?rate:float -> ('a, 'b) t -> ('a, 'b) t
