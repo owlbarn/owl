@@ -2202,9 +2202,9 @@ module Make
 
     let to_string l =
       Printf.sprintf "    Padding2D : tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
-      Printf.sprintf "    padding2d : [|%s; %s|]\n"
-        (Owl_utils_array.to_string string_of_int l.padding.(0))
-        (Owl_utils_array.to_string string_of_int l.padding.(1))
+      Printf.sprintf "    padding   : [| [|%s|]; [|%s|] |]\n"
+        (Owl_utils_array.to_string ~sep:";" string_of_int l.padding.(0))
+        (Owl_utils_array.to_string ~sep:";" string_of_int l.padding.(1))
 
     let to_name () = "padding2d"
 
