@@ -1397,13 +1397,13 @@ module Make
       let r a = PAD_D (a, p) in
       op_d_d a ff fd df r
 
-    (* TODO: sources required for the backward op *)
+    (* TODO: sources required to confirm this backward op *)
     (* o:outut'; p: padding index *)
     and pad_backward o p =
       (* assume p is full legal index for pad operation *)
-      let o = unpack_arr o in
+      let o  = unpack_arr o in
       let os = A.shape o in
-      let q = Owl_utils.llss2aarr p in
+      let q  = Owl_utils.llss2aarr p in
       Array.iteri (fun i x ->
         x.(1) <- Pervasives.(os.(i) - 1 - x.(1));
       ) q;

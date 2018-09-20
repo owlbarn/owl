@@ -2109,9 +2109,8 @@ val tile_ : out:('a, 'b) t -> ('a, 'b) t -> int array -> unit
 
 val pad_ : out:('a, 'b) t -> ?v:'a -> int list list -> ('a, 'b) t -> unit
 (**
-``pad_ x`` is similar to ``pad`` but output is written to ``x``
+``pad_ ~out ?v p x`` is similar to ``pad ?v p x`` but the output is written to ``out``.
  *)
-
 
 val sum_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
 (** TODO *)

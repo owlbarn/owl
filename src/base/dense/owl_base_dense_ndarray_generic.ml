@@ -611,7 +611,7 @@ let draw ?(axis=0) varr count =
 let _expand_padding_index d s =
   let ls = Array.length s in
   let ld = Array.length d in
-  let d = Owl_utils.Array.pad `Right [|0;0|] (ls - ld) d in
+  let d  = Owl_utils.Array.pad `Right [|0;0|] (ls - ld) d in
   Array.map (function
     | [||]  -> [|0;0|]
     | [|x|] -> [|x;x|]
@@ -632,8 +632,6 @@ let rec _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1 =
   else (
     let j0 = Owl_utils.index_nd_1d i0 l0 in
     let j1 = Owl_utils.index_nd_1d i1 l1 in
-    (* _owl_copy (kind x0) ls.(d0) ~ofsx:j0 ~incx:1 ~ofsy:j1 ~incy:1 x0 x1 *)
-    Printf.fprintf stderr "sub:: %d, %d, (%d)\n" j0 j1 ls.(d0);
     let subx = Genarray.sub_left x0 j0 ls.(d0) in
     let suby = Genarray.sub_left x1 j1 ls.(d0) in
     Genarray.blit subx suby
@@ -645,7 +643,7 @@ let _highest_padding_dimension p =
   let d = ref l in
   (try for i = l downto 0 do
     d := i;
-    if p.(i) <> [|0;0|] then failwith "stop"
+    if p.(i) <> [|0;0|] then failwith "pad:highest_padding_dimension"
   done with _exn -> ());
   !d
 
@@ -663,17 +661,12 @@ let pad ?v d x =
   let s' = Owl_utils_array.fold_right ( * ) s1 1 in
   let y' = create k [|s'|] v in
   let ls = Owl_utils.calc_slice s0 in
-  Printf.fprintf stderr "ls: %s\n" (Owl_utils_array.to_string string_of_int ls);
   let l0 = Owl_utils.calc_stride s0 in
-  Printf.fprintf stderr "l0: %s\n" (Owl_utils_array.to_string string_of_int l0);
   let l1 = Owl_utils.calc_stride s1 in
-  Printf.fprintf stderr "s1: %s\n" (Owl_utils_array.to_string string_of_int s1);
   let i0 = Array.make (num_dims x) 0 in
   let i1 = Array.map (fun a -> a.(0)) p1 in
-  Printf.fprintf stderr "i1: %s\n" (Owl_utils_array.to_string string_of_int i1);
   let d0 = 0 in
   let d1 = _highest_padding_dimension p1 in
-  Printf.fprintf stderr "d1: %d\n" d1;
   _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x' y';
   reshape y' s1
 

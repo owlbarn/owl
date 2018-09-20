@@ -3035,7 +3035,7 @@ module Make
     | GlobalAvgPool1D l -> GlobalAvgPool1D.(l.in_shape, l.out_shape)
     | GlobalAvgPool2D l -> GlobalAvgPool2D.(l.in_shape, l.out_shape)
     | UpSampling2D l    -> UpSampling2D.(l.in_shape, l.out_shape)
-    | Padding2D l   -> Padding2D.(l.in_shape, l.out_shape)
+    | Padding2D l       -> Padding2D.(l.in_shape, l.out_shape)
     | Dropout l         -> Dropout.(l.in_shape, l.out_shape)
     | Reshape l         -> Reshape.(l.in_shape, l.out_shape)
     | Flatten l         -> Flatten.(l.in_shape, l.out_shape)
