@@ -62,6 +62,8 @@ module Make
         | Fold (_axis, _f)                              -> failwith "Fold"
         | Scan (_axis, _f)                              -> failwith "Scan"
         | OneHot depth                                  -> _eval_map_01 x (fun ~out x -> A.one_hot_ ~out depth x.(0))
+        | Delay f                                       -> _eval_map_08 x f
+        | DelayArray (_shape, f)                        -> _eval_map_00 x f
         | Abs                                           -> _eval_map_01 x (fun ~out x -> A.abs_ ~out x.(0))
         | Neg                                           -> _eval_map_01 x (fun ~out x -> A.neg_ ~out x.(0))
         | Floor                                         -> _eval_map_01 x (fun ~out x -> A.floor_ ~out x.(0))
@@ -312,6 +314,14 @@ module Make
     let elt_args = Owl_utils_array.filter is_elt x_parents |> Array.map (fun v -> (get_value v).(0) |> value_to_elt) in
     let out = value_to_arr (get_value x).(0) in
     f ~out arr_args elt_args
+
+
+  (* f is pure, for [arr -> arr] *)
+  and _eval_map_08 x f =
+    let x_parent = (parents x).(0) in
+    _eval_term x_parent;
+    let a = (get_value x_parent).(0) |> value_to_arr |> f in
+    set_value x [|arr_to_value a|]
 
 
 end

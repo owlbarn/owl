@@ -229,6 +229,9 @@ module Make
   let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
 
 
+  let forward_inputs nn x = mktag (tag ()) nn; run_inputs x nn, mkpar nn
+
+
   let backward nn y = reverse_prop (_f 1.) y; mkpri nn, mkadj nn
 
 

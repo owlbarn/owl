@@ -25,7 +25,7 @@ module type Sig = sig
   and attr = {
     mutable op     : op;                        (* operation stored in this node *)
     mutable freeze : bool;                      (* whether or not a node can link to other nodes *)
-    mutable reuse  : bool;                      (* whether others can resuse the allocated memory *)
+    mutable reuse  : bool;                      (* whether others can reuse the allocated memory *)
     mutable state  : state;                     (* state to show whether re-evaluation is needed *)
     mutable shape  : (int array option) array;  (* shape of the output values stored in the node *)
     mutable value  : value array;               (* output values of the node *)
@@ -69,6 +69,8 @@ module type Sig = sig
     | Fold                          of int * (elt -> elt -> elt)
     | Scan                          of int * (elt -> elt -> elt)
     | OneHot                        of int
+    | Delay                         of (A.arr -> A.arr)
+    | DelayArray                    of int array * (A.arr array -> A.arr)
     | Abs
     | Neg
     | Floor

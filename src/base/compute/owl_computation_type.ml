@@ -70,6 +70,8 @@ module Make
     | Fold                          of int * (elt -> elt -> elt)
     | Scan                          of int * (elt -> elt -> elt)
     | OneHot                        of int
+    | Delay                         of (A.arr -> A.arr)
+    | DelayArray                    of int array * (A.arr array -> A.arr)
     | Abs
     | Neg
     | Floor

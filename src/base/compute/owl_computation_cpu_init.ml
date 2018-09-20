@@ -92,6 +92,20 @@ module Make
     else
       make_value_from None x
 
+  let allocate_from_parent_arr x parents =
+    let parents_val = Array.map
+                        (fun par -> value_to_arr (get_value par).(0)) parents in
+    let shp_x = node_shape x in
+    (* an imperative version could be slightly more efficient? *)
+    let id_shaped_par, _ = Owl_utils.Array.filter2_split
+                             (fun par par_val -> A.shape par_val = shp_x
+                                                 && refnum par = 1
+                                                 && get_reuse par)
+                             parents parents_val in
+    if Array.length id_shaped_par > 0 then
+      make_value_from (Some id_shaped_par.(0)) x
+    else
+      make_value_from None x
 
   (* core initialisation function *)
 
@@ -131,6 +145,8 @@ module Make
         | Fold (_axis, _f)                               -> _init_00 x
         | Scan (_axis, _f)                               -> _init_00 x
         | OneHot _depth                                  -> _init_00 x
+        | Delay _f                                       -> _init_01 x
+        | DelayArray (_shape, _f)                        -> _init_06 x
         | Abs                                            -> _init_01 x
         | Neg                                            -> _init_01 x
         | Floor                                          -> _init_01 x
@@ -307,6 +323,10 @@ module Make
 
   and _init_05 x = Array.iter _init_term (parents x)
 
+
+  and _init_06 x =
+    let par = Array.map (fun p -> _init_term p; p) (parents x) in
+    allocate_from_parent_arr x par
 
 end
 

@@ -57,6 +57,8 @@ module Make
         | Fold (_axis,_f)                                -> pattern_000 x
         | Scan (_axis,_f)                                -> pattern_000 x
         | OneHot _depth                                  -> pattern_000 x
+        | Delay _f                                       -> pattern_000 x
+        | DelayArray (_shape, _f)                        -> pattern_000 x
         | Abs                                            -> pattern_000 x
         | Neg                                            -> pattern_000 x
         | Floor                                          -> pattern_000 x

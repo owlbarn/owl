@@ -11,7 +11,7 @@ open Owl_types
 module Make (A : Ndarray_Mutable) = struct
 
   module A = A
-  
+
   type device = {
     device_type : device_type;
     initialised : bool;

@@ -52,6 +52,8 @@ module Make
     | Fold (_axis, _f)                               -> "Fold"
     | Scan (_axis, _f)                               -> "Scan"
     | OneHot depth                                   -> Printf.sprintf "OneHot d:%i" depth
+    | Delay _f                                       -> "Delay"
+    | DelayArray (_shape, _f)                        -> "DelayArray"
     | Abs                                            -> "Abs"
     | Neg                                            -> "Neg"
     | Floor                                          -> "Floor"
