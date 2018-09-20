@@ -79,6 +79,8 @@ val split : ?axis:int -> int array -> arr -> arr array
 
 val draw : ?axis:int -> arr -> int -> arr * int array
 
+val pad : ?v:elt -> int list list -> arr -> arr
+
 val one_hot : int -> arr -> arr
 
 val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit

@@ -2169,8 +2169,44 @@ module Make
   end
 
 
-  (* TODO: definition of Padding2D neuron *)
+  (* definition of Padding2D neuron *)
   module Padding2D = struct
+
+    type neuron_typ = {
+      mutable padding   : int array array;
+      mutable in_shape  : int array;
+      mutable out_shape : int array;
+    }
+
+    let create padding = {
+      padding;
+      in_shape  = [|0;0;0|];
+      out_shape = [|0;0;0|];
+    }
+
+    let connect out_shape l =
+      assert Array.(length out_shape = length l.in_shape);
+      l.in_shape.(0)  <- out_shape.(0);
+      l.in_shape.(1)  <- out_shape.(1);
+      l.in_shape.(2)  <- out_shape.(2);
+      l.out_shape.(0) <- l.in_shape.(0) + l.padding.(0).(0) + l.padding.(0).(1);
+      l.out_shape.(1) <- l.in_shape.(1) * l.padding.(1).(0) + l.padding.(1).(1);
+      l.out_shape.(2) <- out_shape.(2)
+
+    let copy l = create l.padding
+
+    let run x l =
+      let p = [[0;0]; [l.padding.(0).(0); l.padding.(0).(1)];
+        [l.padding.(1).(0); l.padding.(1).(1)]; [0;0]] in
+      Maths.(pad p x)
+
+    let to_string l =
+      Printf.sprintf "    Padding2D : tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
+      Printf.sprintf "    padding2d : [|%s; %s|]\n"
+        (Owl_utils_array.to_string string_of_int l.padding.(0))
+        (Owl_utils_array.to_string string_of_int l.padding.(1))
+
+    let to_name () = "padding2d"
 
   end
 
@@ -2953,6 +2989,7 @@ module Make
     | GlobalAvgPool1D of GlobalAvgPool1D.neuron_typ
     | GlobalAvgPool2D of GlobalAvgPool2D.neuron_typ
     | UpSampling2D    of UpSampling2D.neuron_typ
+    | Padding2D       of Padding2D.neuron_typ
     | Dropout         of Dropout.neuron_typ
     | Reshape         of Reshape.neuron_typ
     | Flatten         of Flatten.neuron_typ
@@ -2998,6 +3035,7 @@ module Make
     | GlobalAvgPool1D l -> GlobalAvgPool1D.(l.in_shape, l.out_shape)
     | GlobalAvgPool2D l -> GlobalAvgPool2D.(l.in_shape, l.out_shape)
     | UpSampling2D l    -> UpSampling2D.(l.in_shape, l.out_shape)
+    | Padding2D l   -> Padding2D.(l.in_shape, l.out_shape)
     | Dropout l         -> Dropout.(l.in_shape, l.out_shape)
     | Reshape l         -> Reshape.(l.in_shape, l.out_shape)
     | Flatten l         -> Flatten.(l.in_shape, l.out_shape)
@@ -3049,6 +3087,7 @@ module Make
     | GlobalAvgPool1D l -> GlobalAvgPool1D.connect out_shapes.(0) l
     | GlobalAvgPool2D l -> GlobalAvgPool2D.connect out_shapes.(0) l
     | UpSampling2D l    -> UpSampling2D.connect out_shapes.(0) l
+    | Padding2D l       -> Padding2D.connect out_shapes.(0) l
     | Dropout l         -> Dropout.connect out_shapes.(0) l
     | Reshape l         -> Reshape.connect out_shapes.(0) l
     | Flatten l         -> Flatten.connect out_shapes.(0) l
@@ -3241,6 +3280,7 @@ module Make
     | GlobalAvgPool1D l -> GlobalAvgPool1D GlobalAvgPool1D.(copy l)
     | GlobalAvgPool2D l -> GlobalAvgPool2D GlobalAvgPool2D.(copy l)
     | UpSampling2D l    -> UpSampling2D UpSampling2D.(copy l)
+    | Padding2D l       -> Padding2D Padding2D.(copy l)
     | Dropout l         -> Dropout Dropout.(copy l)
     | Reshape l         -> Reshape Reshape.(copy l)
     | Flatten l         -> Flatten Flatten.(copy l)
@@ -3286,6 +3326,7 @@ module Make
     | GlobalAvgPool1D l -> GlobalAvgPool1D.run a.(0) l
     | GlobalAvgPool2D l -> GlobalAvgPool2D.run a.(0) l
     | UpSampling2D l    -> UpSampling2D.run a.(0) l
+    | Padding2D l       -> Padding2D.run a.(0) l
     | Dropout l         -> Dropout.run a.(0) l
     | Reshape l         -> Reshape.run a.(0) l
     | Flatten l         -> Flatten.run a.(0) l
@@ -3331,6 +3372,7 @@ module Make
     | GlobalAvgPool1D l -> GlobalAvgPool1D.to_string l
     | GlobalAvgPool2D l -> GlobalAvgPool2D.to_string l
     | UpSampling2D l    -> UpSampling2D.to_string l
+    | Padding2D l       -> Padding2D.to_string l
     | Dropout l         -> Dropout.to_string l
     | Reshape l         -> Reshape.to_string l
     | Flatten l         -> Flatten.to_string l
@@ -3376,6 +3418,7 @@ module Make
     | GlobalAvgPool1D _ -> GlobalAvgPool1D.to_name ()
     | GlobalAvgPool2D _ -> GlobalAvgPool2D.to_name ()
     | UpSampling2D _    -> UpSampling2D.to_name ()
+    | Padding2D _       -> Padding2D.to_name ()
     | Dropout _         -> Dropout.to_name ()
     | Reshape _         -> Reshape.to_name ()
     | Flatten _         -> Flatten.to_name ()

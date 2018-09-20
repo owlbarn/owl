@@ -165,6 +165,7 @@ module Make
     | AvgPool2dBackward (_padding, _kernel, _stride) -> "AvgPool2dBackward"
     | AvgPool3dBackward (_padding, _kernel, _stride) -> "AvgPool3dBackward"
     | UpSampling2dBackward _size                     -> "UpSampling2dBackward"
+    | Pad (_v, _padding)                             -> "Pad"
     | RowNum                                         -> "RowNum"
     | ColNum                                         -> "ColNum"
     | Row                                            -> "Row"

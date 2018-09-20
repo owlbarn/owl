@@ -62,6 +62,7 @@ module Make
     | Reverse
     | Tile                          of int array
     | Repeat                        of int array
+    | Pad                           of elt * int list list
     | Concatenate                   of int
     | Split                         of int * int array
     | Draw                          of int * int

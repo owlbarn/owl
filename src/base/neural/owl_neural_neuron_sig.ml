@@ -1313,7 +1313,34 @@ module Padding1D : sig  end
 
   (** {6 Padding2D neuron} *)
 
-module Padding2D : sig  end
+module Padding2D : sig
+  type neuron_typ = {
+    (* array of 2 arrays of 2 ints *)
+    mutable padding   : int array array;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+  (** Neuron type definition. *)
+
+  val create : int array array -> neuron_typ
+  (** Create the neuron. *)
+
+  val connect : int array -> neuron_typ -> unit
+  (** Connect this neuron to others in a neural network. *)
+
+  val copy : neuron_typ -> neuron_typ
+  (** Make a deep copy of the neuron and its parameters. *)
+
+  val run : t -> neuron_typ -> t
+  (** Execute the computation in this neuron. *)
+
+  val to_string : neuron_typ -> string
+  (** Convert the neuron to its string representation. The string is often a summary of the parameters defined in the neuron. *)
+
+  val to_name : unit -> string
+  (** Return the name of the neuron. *)
+
+end
 
 
   (** {6 Padding3D neuron} *)
@@ -1910,6 +1937,7 @@ type neuron =
   | GlobalAvgPool1D of GlobalAvgPool1D.neuron_typ
   | GlobalAvgPool2D of GlobalAvgPool2D.neuron_typ
   | UpSampling2D    of UpSampling2D.neuron_typ
+  | Padding2D       of Padding2D.neuron_typ
   | Dropout         of Dropout.neuron_typ
   | Reshape         of Reshape.neuron_typ
   | Flatten         of Flatten.neuron_typ

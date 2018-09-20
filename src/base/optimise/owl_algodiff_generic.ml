@@ -140,6 +140,7 @@ module Make
     | Avgpool2D_D    of t * padding * int array * int array
     | Avgpool3D_D    of t * padding * int array * int array
     | UpSampling2D_D of t * int array
+    | PAD_D          of t * int list list
 
 
   (* generate global tags *)
@@ -1385,6 +1386,30 @@ module Make
       A.upsampling2d_backward a s o
       |> pack_arr
 
+    (* v: padded value; p:padding index; a:input *)
+    and pad ?v p a =
+      let ff = function
+        | Arr a -> Arr A.(pad ?v p a)
+        | _     -> error_uniop "pad" a
+      in
+      let fd = pad p in
+      let df _cp _ap _at = failwith "pad:df" in
+      let r a = PAD_D (a, p) in
+      op_d_d a ff fd df r
+
+    (* TODO: sources required for the backward op *)
+    (* o:outut'; p: padding index *)
+    and pad_backward o p =
+      (* assume p is full legal index for pad operation *)
+      let o = unpack_arr o in
+      let os = A.shape o in
+      let q = Owl_utils.llss2aarr p in
+      Array.iteri (fun i x ->
+        x.(1) <- Pervasives.(os.(i) - 1 - x.(1));
+      ) q;
+      let q = Owl_utils.aarr2llss q in
+      A.(get_slice q o) |> pack_arr
+
     and dropout ?(rate=0.5) a =
       let p = A.float_to_elt (1. -. rate) in
       let b = match (primal' a) with
@@ -1541,6 +1566,7 @@ module Make
               | Avgpool2D_D (a, _, _, _)   -> reset (a :: t)
               | Avgpool3D_D (a, _, _, _)   -> reset (a :: t)
               | UpSampling2D_D (a, _)      -> reset (a :: t)
+              | PAD_D (a, _)               -> reset (a :: t)
               | Concat_D_D (a, b, _)       -> reset (a :: b :: t)
               | Concat_D_C (a, _, _)       -> reset (a :: t)
               | Concat_C_D (_, b, _)       -> reset (b :: t)
@@ -1693,6 +1719,7 @@ module Make
               | Avgpool2D_D (a, p, d, s)   -> push ((avg_pool2d_backward p (primal a) d s !aa, a) :: t)
               | Avgpool3D_D (a, p, d, s)   -> push ((avg_pool3d_backward p (primal a) d s !aa, a) :: t)
               | UpSampling2D_D (a, s)      -> push ((upsampling2d_backward (primal a) s !aa, a) :: t)
+              | PAD_D (a, p)               -> push ((pad_backward !aa p, a) :: t)
               | Concat_D_D (a, b, i)       -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: (s.(1) ,b) :: t)
               | Concat_D_C (a, b, i)       -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: t)
               | Concat_C_D (a, b, i)       -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(1) ,b) :: t)
@@ -2053,6 +2080,7 @@ module Make
                   | Avgpool2D_D (a, _p, _d, _s)  -> "Avgpool2D_D", [ a ]
                   | Avgpool3D_D (a, _p, _d, _s)  -> "Avgpool3D_D", [ a ]
                   | UpSampling2D_D (a, _s)       -> "UpSampling2D_D", [ a ]
+                  | PAD_D (a, _p)                -> "PAD_D", [ a ]
                   | Concat_D_D (a, b, _i)        -> "Concat_D_D", [a; b]
                   | Concat_D_C (a, b, _i)        -> "Concat_D_C", [a; b]
                   | Concat_C_D (a, b, _i)        -> "Concat_C_D", [a; b]

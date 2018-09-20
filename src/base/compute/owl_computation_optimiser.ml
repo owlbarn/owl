@@ -49,6 +49,7 @@ module Make
         | Reverse                                        -> pattern_000 x
         | Tile _repeats                                  -> pattern_000 x
         | Repeat _repeats                                -> pattern_023 x
+        | Pad (_v, _padding)                             -> pattern_000 x
         | Concatenate _axis                              -> pattern_000 x
         | Split (_axis, _parts)                          -> pattern_000 x
         | Draw (_axis, _n)                               -> pattern_000 x

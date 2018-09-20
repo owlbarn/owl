@@ -242,6 +242,9 @@ module type Sig = sig
     val upsampling2d : t -> int array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val pad : ?v:A.elt -> int list list -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val reshape : t -> int array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

@@ -78,6 +78,8 @@ module type Sig = sig
 
   val one_hot : int -> arr -> arr
 
+  val pad : ?v:elt -> int list list -> arr -> arr
+
   val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
 
 

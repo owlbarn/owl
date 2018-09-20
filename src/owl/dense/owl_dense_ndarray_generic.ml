@@ -1934,6 +1934,26 @@ let pad ?v d x =
   y
 
 
+let pad_ ~out ?v d x =
+  let k = kind x in
+  let v = match v with
+    | Some v -> v
+    | None   -> Owl_const.zero k
+  in
+  let s0 = shape x in
+  let p1 = _expand_padding_index (Owl_utils.llss2aarr d) s0 in
+  let s1 = shape out in
+  fill out v;
+  (* prepare variables for block copying *)
+  let ls = Owl_utils.calc_slice s0 in
+  let l0 = Owl_utils.calc_stride s0 in
+  let l1 = Owl_utils.calc_stride s1 in
+  let i0 = Array.make (num_dims x) 0 in
+  let i1 = Array.map (fun a -> a.(0)) p1 in
+  let d0 = 0 in
+  let d1 = _highest_padding_dimension p1 in
+  _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x out
+
 
 (* NOTE
   The following functions (i.e., conv2d* and conv3d* and etc.) are for neural

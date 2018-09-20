@@ -133,6 +133,9 @@ val tile : ('a, 'b) t -> int array -> ('a, 'b) t
 val repeat : ('a, 'b) t -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
@@ -789,6 +792,9 @@ val repeat_ : out:('a, 'b) t -> ('a, 'b) t -> int array -> unit
 (** TODO *)
 
 val tile_ : out:('a, 'b) t -> ('a, 'b) t -> int array -> unit
+(** TODO *)
+
+val pad_ : out:('a, 'b) t  -> ?v:'a -> int list list -> ('a, 'b) t -> unit
 (** TODO *)
 
 val sum_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit

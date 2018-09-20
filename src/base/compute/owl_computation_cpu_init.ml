@@ -123,6 +123,7 @@ module Make
         | Reverse                                        -> _init_01 x
         | Tile _repeats                                  -> _init_00 x
         | Repeat _repeats                                -> _init_00 x
+        | Pad (_v, _padding)                             -> _init_00 x
         | Concatenate _axis                              -> _init_00 x
         | Split (_axis, _parts)                          -> failwith "Split"
         | Draw (_axis, _n)                               -> failwith "Draw"
