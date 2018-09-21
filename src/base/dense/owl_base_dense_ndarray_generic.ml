@@ -595,7 +595,7 @@ let split ?(axis=0) parts varr =
   (Array.map (fun def -> get_slice def varr) slices_defs)
 
 
-(*TODO : ensure this is desired behaviour *)
+(* TODO : ensure this is desired behaviour *)
 (* Similar to draw rows for matrices *)
 let draw ?(axis=0) varr count =
   let dims = shape varr in
@@ -606,6 +606,69 @@ let draw ?(axis=0) varr count =
         (fun i -> if i = axis then (Array.to_list indices) else []))
      varr,
    indices)
+
+
+let _expand_padding_index d s =
+  let ls = Array.length s in
+  let ld = Array.length d in
+  let d  = Owl_utils.Array.pad `Right [|0;0|] (ls - ld) d in
+  Array.map (function
+    | [||]  -> [|0;0|]
+    | [|x|] -> [|x;x|]
+    | x     -> x
+  ) d
+
+
+let rec _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1 =
+  if d0 < d1 then (
+    for i = 0 to s0.(d0) - 1 do
+      i0.(d0) <- i;
+      i1.(d0) <- i + p1.(d0).(0);
+      _copy_to_padding p1 ls l0 l1 i0 i1 (d0 + 1) d1 s0 s1 x0 x1;
+      i0.(d0) <- 0;
+      i1.(d0) <- p1.(d0).(0);
+    done
+  )
+  else (
+    let j0 = Owl_utils.index_nd_1d i0 l0 in
+    let j1 = Owl_utils.index_nd_1d i1 l1 in
+    let subx = Genarray.sub_left x0 j0 ls.(d0) in
+    let suby = Genarray.sub_left x1 j1 ls.(d0) in
+    Genarray.blit subx suby
+  )
+
+
+let _highest_padding_dimension p =
+  let l = Array.length p - 1 in
+  let d = ref l in
+  (try for i = l downto 0 do
+    d := i;
+    if p.(i) <> [|0;0|] then failwith "pad:highest_padding_dimension"
+  done with _exn -> ());
+  !d
+
+
+let pad ?v d x =
+  let k = kind x in
+  let v = match v with
+    | Some v -> v
+    | None   -> Owl_const.zero k
+  in
+  let s0 = shape x in
+  let x' = flatten x in
+  let p1 = _expand_padding_index (Owl_utils.llss2aarr d) s0 in
+  let s1 = Array.map2 (fun m n -> m + n.(0) + n.(1)) s0 p1 in
+  let s' = Owl_utils_array.fold_right ( * ) s1 1 in
+  let y' = create k [|s'|] v in
+  let ls = Owl_utils.calc_slice s0 in
+  let l0 = Owl_utils.calc_stride s0 in
+  let l1 = Owl_utils.calc_stride s1 in
+  let i0 = Array.make (num_dims x) 0 in
+  let i1 = Array.map (fun a -> a.(0)) p1 in
+  let d0 = 0 in
+  let d1 = _highest_padding_dimension p1 in
+  _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x' y';
+  reshape y' s1
 
 
 (* TODO: optimise? *)

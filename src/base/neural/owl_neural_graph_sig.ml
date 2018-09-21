@@ -350,6 +350,14 @@ Arguments:
   * ``size``: array of two integers, namely the upsampling factors for columns and rows.
   *)
 
+  val padding2d : ?name:string -> ?act_typ:Activation.typ -> int array array -> node -> node
+  (**
+``padding2d ~act_typ padding node`` adds rows and columns of zeros at the top, bottom, left and right side of an image tensor.
+
+Arguments:
+  * ``padding``: array of 2 arrays of 2 integers, interpreted as  [| [|top_pad; bottom_pad|]; [|left_pad; right_pad|]|].
+  *)
+
   val dropout : ?name:string -> float -> node -> node
   (**
 ``dropout rate node`` applies Dropout to the input to prevent overfitting.

@@ -54,6 +54,7 @@ module Make
         | Reverse                                       -> _eval_map_01 x (fun ~out x -> A.reverse_ ~out x.(0))
         | Tile repeats                                  -> _eval_map_01 x (fun ~out x -> A.tile_ ~out x.(0) repeats)
         | Repeat repeats                                -> _eval_map_01 x (fun ~out x -> A.repeat_ ~out x.(0) repeats)
+        | Pad (v, padding)                              -> _eval_map_01 x (fun ~out x -> A.pad_ ~out ~v:(unpack_elt v) padding x.(0))
         | Concatenate axis                              -> _eval_map_00 x A.(concatenate ~axis)
         | Split (_axis, _parts)                         -> failwith "Split"
         | Draw (_axis, _n)                              -> failwith "Draw"

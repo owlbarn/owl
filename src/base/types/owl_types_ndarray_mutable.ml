@@ -41,6 +41,8 @@ module type Sig = sig
 
   val tile_ : out:arr -> arr -> int array -> unit
 
+  val pad_ : out:arr -> ?v:elt -> int list list -> arr -> unit
+
   val hypot : arr -> arr -> arr
 
   val fmod : arr -> arr -> arr

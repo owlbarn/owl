@@ -367,6 +367,15 @@ module To_test = struct
     let bottoms = M.bottom arr 4 in
     bottoms = [|[|0|]; [|1|]; [|2|]; [|4|]|]
 
+  let pad () =
+    let arr = M.sequential Float32 [|3; 3; 1|] in
+    let pads = M.pad [[1]; [0;2]; []] arr in
+    let expected = [|
+      0.; 0.; 0.; 0.; 0.; 0.; 1.; 2.; 0.; 0.; 3.; 4.; 5.; 0.; 0.; 6.; 7.; 8.;
+      0.; 0.; 0.; 0.; 0.; 0.; 0.|] in
+    let expected = M.of_array Float32 expected [|5; 5; 1|] in
+    M.(pads = expected)
+
 end
 
 (* the tests *)
@@ -605,6 +614,9 @@ let bottom_1 () =
 let bottom_2 () =
   Alcotest.(check bool) "bottom_2" true (To_test.bottom_2 ())
 
+let pad () =
+  Alcotest.(check bool) "pad" true (To_test.pad ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -684,4 +696,5 @@ let test_set = [
   "top_3", `Slow, top_3;
   "bottom_1", `Slow, bottom_1;
   "bottom_2", `Slow, bottom_2;
+  "pad", `Slow, pad;
 ]

@@ -236,6 +236,14 @@ module Make
     | _          -> [| None |]
 
 
+  let _infer_shape_30 input_shapes pad =
+    let input_shape = input_shapes.(0).(0) in
+    let pad = Owl_utils.llss2aarr pad in
+    match input_shape with
+    | Some input -> [| Some (Array.map2 (fun m n -> m + n.(0) + n.(1)) input pad) |]
+    | _          -> [| None |]
+
+
   let infer_shape operator args =
     let input_shapes = Array.map (fun a -> (Owl_graph.attr a).shape) args in
     match operator with
@@ -248,6 +256,7 @@ module Make
     | Reverse                                        -> _infer_shape_01 input_shapes
     | Tile repeats                                   -> _infer_shape_05 input_shapes repeats
     | Repeat repeats                                 -> _infer_shape_06 input_shapes repeats
+    | Pad (_v, padding)                              -> _infer_shape_30 input_shapes padding
     | Concatenate axis                               -> _infer_shape_07 input_shapes axis
     | Split (axis, parts)                            -> _infer_shape_08 input_shapes axis parts
     | Draw (axis, n)                                 -> _infer_shape_09 input_shapes axis n

@@ -86,6 +86,9 @@ module type Sig = sig
   val repeat : arr -> int array -> arr
   (** TODO *)
 
+  val pad : ?v:elt -> int list list -> arr -> arr
+  (** TODO *)
+
   val concatenate : ?axis:int -> arr array -> arr
   (** TODO *)
 

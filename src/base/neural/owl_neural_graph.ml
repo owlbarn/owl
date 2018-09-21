@@ -499,6 +499,13 @@ module Make
     add_node ?act_typ nn [|input_node|] n
 
 
+  let padding2d ?name ?act_typ padding input_node =
+    let neuron = Padding2D (Padding2D.create padding) in
+    let nn = get_network input_node in
+    let n = make_node ?name [||] [||] neuron None nn in
+    add_node ?act_typ nn [|input_node|] n
+
+
   let dropout ?name rate input_node =
     let neuron = Dropout (Dropout.create rate) in
     let nn = get_network input_node in

@@ -123,6 +123,13 @@ module Make
   let repeat x repeats =
     make_then_connect (Repeat repeats) [|arr_to_node x|] |> node_to_arr
 
+  let pad ?v padding x =
+    let v = match v with
+      | Some v -> v
+      | None   -> const_elt "pad_v" (A.float_to_elt 0.)
+    in
+    make_then_connect (Pad (v, padding)) [|arr_to_node x|] |> node_to_arr
+
   let concatenate ?(axis=0) xs =
     make_then_connect (Concatenate axis) (Array.map arr_to_node xs) |> node_to_arr
 

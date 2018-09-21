@@ -680,6 +680,8 @@ val repeat_ : out:arr -> arr -> int array -> unit
 
 val tile_ : out:arr -> arr -> int array -> unit
 
+val pad_ : out:arr -> ?v:elt -> int list list -> arr -> unit
+
 val sum_ : out:arr -> axis:int -> arr -> unit
 
 val min_ : out:arr -> axis:int -> arr -> unit
