@@ -268,7 +268,7 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
   int l1, l2, l3;
   query_cache_sizes(&l1, &l2, &l3);
   //fprintf(stderr, "l1/l2/l3 size: %d, %d, %d\n", l1, l2, l3);
-  //fprintf(stderr, "input size: 1st = %d, 2nd = %d, 3rd = %d\n", *kp, *mp, *np);
+  //fprintf(stderr, "input size: k = %d, m = %d, n = %d\n", *kp, *mp, *np);
 
   int k = *kp;
   int m = *mp;
@@ -295,7 +295,7 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
   }
 
   int max_nc;
-  const int actual_l2 = l3; // l3 for debug; 1572864 for other cases
+  const int actual_l2 = 1572864; // l3 for debug; 1572864 for other cases
   const int lhs_bytes = m * k * typesize;
   const int rest_l1 = l1 - k_sub - lhs_bytes;
   if (rest_l1 >= nr * k * typesize) {
@@ -306,7 +306,7 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
 
   int nc = (int) (fmin(actual_l2 / (2 * k * typesize), max_nc)) & (~(nr - 1));
   if (n > nc) {
-    n = (n % nc == 0) ? nc : (nc - nr * (nc - (n % nc)) / (nr * (n / nc + 1)));
+    n = (n % nc == 0) ? nc : (nc - nr * ((nc - (n % nc)) / (nr * (n / nc + 1))));
   } else if (old_k == k) {
     int problem_size = k * n * typesize;
     int actual_lm = actual_l2;
@@ -326,7 +326,7 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
       *kp = k; *mp = m; *np = n;
       return;
     }
-    m = (m % mc == 0) ? mc : (mc - mr * (mc - (m % mc)) / (mr * (m / mc + 1)));
+    m = (m % mc == 0) ? mc : (mc - mr * ((mc - (m % mc)) / (mr * (m / mc + 1))));
   }
 
   *kp = k; *mp = m; *np = n;
