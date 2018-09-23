@@ -265,6 +265,8 @@ module Make
     | Scan (_axis, _f)                               -> _infer_shape_01 input_shapes
     | OneHot depth                                   -> _infer_shape_22 input_shapes depth
     | Abs                                            -> _infer_shape_01 input_shapes
+    | Delay _f                                       -> _infer_shape_01 input_shapes
+    | DelayArray (shape, _f)                         -> [| Some shape |]
     | Neg                                            -> _infer_shape_01 input_shapes
     | Floor                                          -> _infer_shape_01 input_shapes
     | Ceil                                           -> _infer_shape_01 input_shapes

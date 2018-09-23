@@ -358,6 +358,49 @@ module Make
     Optimise.minimise_compiled_network ?state params eval update save x y
 
 
+  (* Multi-input/output version of ``model``. *)
+  let model_inputs ?(optimise=true) ?(batch_size=1) network =
+    (* TOFIX: the next line creates useless Copy nodes for constant values,
+     * because Copy is an operation in CG *)
+    let network = Graph.copy network in
+    let network_name = Graph.get_network_name network in
+    Owl_log.info "compile network %s into static graph ..." network_name;
+
+    let input_shapes = Graph.input_shapes network in
+    let inputs = Array.mapi (fun i sh ->
+                     Engine.var_arr ("input_" ^ string_of_int i)
+                       ~shape:(Array.append [|batch_size|] sh)
+                     |> pack_arr) input_shapes
+    in
+    let outputs, _ = Graph.forward_inputs network inputs in
+
+    let _to_nodes = Array.map (fun v -> unpack_arr v |> Engine.arr_to_node) in
+    let i, o = _to_nodes inputs, _to_nodes outputs in
+    let cgraph = Engine.make_graph ~input:i ~output:o network_name in
+
+    if optimise then (
+      Engine.optimise cgraph
+    );
+
+    (fun xt' ->
+      let xt = Array.map (fun x -> Algodiff.unpack_arr x) inputs in
+      let xt' = Array.map (fun x' -> Algodiff.unpack_arr x') xt' in
+      Engine.eval_arr xt';
+      let xt' = Array.map (fun x' -> Engine.unpack_arr x') xt' in
+      Array.iter2 (fun x x' -> Engine.unsafe_assign_arr x x') xt xt';
+      Engine.eval_graph cgraph;
+      outputs
+    )
+
+
+  (* ``model network`` transforms the network into a computation graph and
+  optimises it. Returns a function that takes the input of the network as an
+  argument and returns the output. *)
+  let model ?optimise ?batch_size network =
+    let eval = model_inputs ?optimise ?batch_size network in
+    fun xt' -> (eval [|xt'|]).(0)
+
+
 end
 
 (* Make functor ends *)

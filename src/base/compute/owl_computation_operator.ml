@@ -151,6 +151,13 @@ module Make
   let one_hot depth x =
     make_then_connect (OneHot depth) [|arr_to_node x|] |> node_to_arr
 
+  let delay f x =
+    make_then_connect (Delay f) [|arr_to_node x|] |> node_to_arr
+
+  let delay_array shape f x =
+    make_then_connect ~shape:[|Some shape|] (DelayArray (shape, f))
+      (Array.map arr_to_node x) |> node_to_arr
+
   let print ?max_row ?max_col ?header ?fmt x = ()  [@@warning "-27"]
 
 

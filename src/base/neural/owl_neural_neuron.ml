@@ -2190,7 +2190,7 @@ module Make
       l.in_shape.(1)  <- out_shape.(1);
       l.in_shape.(2)  <- out_shape.(2);
       l.out_shape.(0) <- l.in_shape.(0) + l.padding.(0).(0) + l.padding.(0).(1);
-      l.out_shape.(1) <- l.in_shape.(1) * l.padding.(1).(0) + l.padding.(1).(1);
+      l.out_shape.(1) <- l.in_shape.(1) + l.padding.(1).(0) + l.padding.(1).(1);
       l.out_shape.(2) <- out_shape.(2)
 
     let copy l = create l.padding

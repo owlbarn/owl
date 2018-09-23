@@ -114,6 +114,9 @@ module type Sig = sig
   val forward : network -> t -> t * t array array
   (** Run the forward pass of a network. *)
 
+  val forward_inputs : network -> t array -> t array * t array array
+  (** Run the forward pass of a network (multi-input/output version). *)
+
   val backward : network -> t -> t array array * t array array
   (** Run the backward pass of a network. *)
 
@@ -130,7 +133,8 @@ module type Sig = sig
 
   val input : ?name:string -> int array -> node
   (**
-``input shape`` creates an input node for input data.
+``input shape`` creates an input node for input data. Note that if your network
+has multiple inputs, you should use ``inputs`` instead.
 
 Arguments:
   * ``shape``: shape of input data.
