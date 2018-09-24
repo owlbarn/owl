@@ -6,165 +6,14 @@
 #ifdef OWL_ENABLE_TEMPLATE
 
 #include <time.h>
+#include <xmmintrin.h>
+#include <immintrin.h>
 
 /*
  * eigen implementation
  */
 
 CAMLprim value FUN_NATIVE (spatial) (
-  value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
-  value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
-  value vKernel_cols, value vKernel_rows,
-  value vOutput_cols, value vOutput_rows, value vOut_channel,
-  value vRow_stride,  value vCol_stride,
-  value vPadding, value vRow_in_stride, value vCol_in_stride
-) {
-  struct caml_ba_array *IN = Caml_ba_array_val(vInput_ptr);
-  struct caml_ba_array *KE = Caml_ba_array_val(vKernel_ptr);
-  struct caml_ba_array *OU = Caml_ba_array_val(vOutput_ptr);
-  TYPE *input_ptr  = (TYPE *) IN->data;
-  TYPE *kernel_ptr = (TYPE *) KE->data;
-  TYPE *output_ptr = (TYPE *) OU->data;
-
-  int batches       = Long_val(vBatches);
-  int input_cols    = Long_val(vInput_cols);
-  int input_rows    = Long_val(vInput_rows);
-  int in_channel    = Long_val(vIn_channel);
-  int kernel_cols   = Long_val(vKernel_cols);
-  int kernel_rows   = Long_val(vKernel_rows);
-  int output_cols   = Long_val(vOutput_cols);
-  int output_rows   = Long_val(vOutput_rows);
-  int out_channel   = Long_val(vOut_channel);
-  int row_stride    = Long_val(vRow_stride);
-  int col_stride    = Long_val(vCol_stride);
-  int padding       = Long_val(vPadding);
-  int row_in_stride = Long_val(vRow_in_stride);
-  int col_in_stride = Long_val(vCol_in_stride);
-
-  const int input_cri  = in_channel  * input_rows  * input_cols;
-  const int input_ri   = in_channel  * input_rows;
-  const int output_cri = out_channel * output_rows * output_cols;
-  const int output_cr  = output_rows * output_cols;
-  const int output_crb = output_rows * output_cols * batches;
-  const int kernel_cri = kernel_cols * kernel_rows * in_channel;
-  const int kernel_cr  = kernel_cols * kernel_rows;
-  const int kernel_ri  = kernel_rows * in_channel;
-
-  memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
-
-  INIT;
-
-  int pr = 0, pc = 0;
-  if (padding != 1) {
-    pr = (row_stride * ( output_rows - 1) + kernel_rows - input_rows) / 2;
-    pc = (col_stride * ( output_cols - 1) + kernel_cols - input_cols) / 2;
-    if (pr < 0) pr = 0;
-    if (pc < 0) pc = 0;
-  }
-
-  clock_t start, diff = 0;
-
-  int kc = kernel_cri;
-  int nc = output_crb;
-  int mc = out_channel;
-  fprintf(stderr, "input size: k = %d, m = %d, n = %d ()\n", kc, mc, nc);
-  compute_block_sizes(&kc, &mc, &nc, sizeof(TYPE));
-
-  fprintf(stderr, "input: [%d, %d, %d, %d]; kernel: [%d, %d, %d, %d]\n", batches, input_cols, input_rows, in_channel, kernel_cols, kernel_rows, in_channel, out_channel);
-  fprintf(stderr, "calculated block size: kc = %d, mc = %d, nc = %d\n", kc, mc, nc);
-
-  TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
-  if (temp_mk == NULL) exit(1);
-  TYPE *temp_kn = (TYPE *) calloc(nc * kc, sizeof(TYPE));
-  if (temp_kn == NULL) exit(1);
-  TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
-  if (temp_mn == NULL) exit(1);
-
-  // start = clock();
-
-  for (int m = 0; m < out_channel; m += mc) {
-    int actual_mc = fminf(m + mc, out_channel) - m;
-    for (int k = 0; k < kernel_cri; k += kc) {
-
-      memset(temp_mk, 0, mc * kc * sizeof(TYPE));
-      int actual_kc = fminf(k + kc, kernel_cri) - k;
-
-      int cmk = 0;
-      int idx_km_base = k * out_channel;
-      for (int ik = 0; ik < actual_kc; ik++) {
-        for (int im = 0; im < actual_mc; im++) {
-          int index_km = idx_km_base + ik * out_channel + im;
-          temp_mk[cmk++] = kernel_ptr[index_km];
-        }
-      }
-
-      idx_km_base += m;
-
-      for (int n = 0; n < output_crb; n += nc) {
-        int actual_nc = fminf(n + nc, output_crb) - n;
-
-
-        for (int in = 0; in < actual_nc; in += 1) {
-          int b  = (n + in) / output_cr;
-          int cr = (n + in) - b * output_cr;
-          int c = cr / output_rows;
-          int r = cr - c * output_rows;
-
-          const int cstart = c * col_stride - pc;
-          const int rstart = r * row_stride - pr;
-          const int idx_base = b * input_cri;
-
-          int cnk = 0;
-          for (int ik = 0; ik < actual_kc; ik += 1) {
-            int kc  = (k + ik) / kernel_ri;
-            int kri = (k + ik) - kc * kernel_ri;
-            int kr  = kri / in_channel;
-            int ki  = kri - kr * in_channel;
-
-            int input_col = kc + cstart;
-            int input_row = kr + rstart;
-
-            if (input_col < input_cols && input_col >= 0 &&
-              input_row < input_rows && input_row >= 0) {
-              int input_index = idx_base + input_col * input_ri
-                + input_row * in_channel + ki;
-              temp_kn[cnk] = input_ptr[input_index];
-            }
-            cnk++;
-          }
-        }
-
-        GEMM(CblasRowMajor, CblasNoTrans, CblasNoTrans,
-          actual_mc, actual_nc, actual_kc, ALPHA,
-          temp_mk, actual_kc, temp_kn, actual_nc,
-          BETA, temp_mn, actual_nc);
-
-        /* int cmn = 0;
-        for (int ix = 0; ix < actual_mc; ix++) {
-          for (int iy = 0; iy < actual_nc; iy++) {
-            int index_mn = (ix + m) * out_channel + (iy + n);
-            output_ptr[index_mn] += temp_mn[cmn++];
-          }
-        } */
-
-      } // end of n
-    } // end of k
-  } // end of m
-
-  // diff += clock() - start;
-
-  // int msec = diff * 1000 / CLOCKS_PER_SEC;
-  // fprintf(stderr, "Time taken for gemm: %d milliseconds\n", msec);
-
-  free(temp_mk);
-  free(temp_kn);
-  free(temp_mn);
-
-  return Val_unit;
-}
-
-
-/* CAMLprim value FUN_NATIVE (spatial) (
   value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
   value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
   value vKernel_cols, value vKernel_rows,
@@ -239,9 +88,148 @@ CAMLprim value FUN_NATIVE (spatial) (
       memset(temp_mk, 0, mc * kc * sizeof(TYPE));
       int actual_kc = fminf(k + kc, kernel_cri) - k;
       int cmk = 0;
-
       // start = clock();
+#ifdef AVX_PSIZE
 
+      int peeled_kc = (actual_kc / AVX_PSIZE) * AVX_PSIZE;
+
+      for (int im = 0; im < actual_mc; im += 1) {
+        int b  = (m + im) / output_cr;
+        int cr = (m + im) - b * output_cr;
+        int c = cr / output_rows;
+        int r = cr - c * output_rows;
+
+        const int cstart = c * col_stride - pc;
+        const int rstart = r * row_stride - pr;
+        const int idx_base = b * input_cri;
+
+        int ik = 0;
+
+        for (; ik < peeled_kc; ik += AVX_PSIZE) {
+
+          // Case 1: if in_channel % AVX_PSIZE == 0)
+          if (in_channel % AVX_PSIZE == 0){
+            int kc  = (k + ik) / kernel_ri;
+            int kri = (k + ik) - kc * kernel_ri;
+            int kr  = kri / in_channel;
+            int ki  = kri - kr * in_channel;
+
+            int input_col = kc + cstart;
+            int input_row = kr + rstart;
+
+            if (input_col < input_cols && input_col >= 0 &&
+              input_row < input_rows && input_row >= 0) {
+              int input_index = idx_base + input_col * input_ri
+                + input_row * in_channel + ki;
+
+              __m256 v = _mm256_set_ps(
+                input_ptr[input_index + 7],
+                input_ptr[input_index + 6],
+                input_ptr[input_index + 5],
+                input_ptr[input_index + 4],
+                input_ptr[input_index + 3],
+                input_ptr[input_index + 2],
+                input_ptr[input_index + 1],
+                input_ptr[input_index + 0]
+                );
+              _mm256_store_ps(temp_mk + cmk, v);
+            }
+            cmk += AVX_PSIZE;
+          }
+          else {
+
+          // Case 2:
+          const int cr_set[2] = {(k + ik) / in_channel,
+            (k + ik + AVX_PSIZE - 1) / in_channel};
+
+          const int c_set[2] = {cr_set[0] / kernel_rows,
+            cr_set[1] / kernel_rows};
+          const int cols[2]  = {cstart + c_set[0], cstart + c_set[1]};
+
+          fprintf(stderr, "cols[0]: %d, cols[0]: %d\n",  cols[0], cols[1]);
+
+          if (cols[0] >= input_cols || cols[1] < 0) {
+            cmk += AVX_PSIZE;
+          }
+
+
+          else if (cols[0] == cols[1]) {
+            const int r_set[2] = {cr_set[0] - c_set[0] * kernel_rows,
+              cr_set[1] - c_set[1] * kernel_rows};
+            const int rows[2]  = {rstart + r_set[0], rstart + r_set[1]};
+
+            fprintf(stderr, "rows[0]: %d, rows[0]: %d\n",  rows[0], rows[1]);
+
+            if (rows[0] >= 0 && rows[1] < input_rows) {
+              int ki = k + ik - cr_set[0] * in_channel;
+              int input_index = idx_base + cols[0] * input_ri
+                + rows[0] * in_channel + ki;
+              fprintf(stderr, "input idx %d = %d + %d + %d + %d\n", idx_base,
+                cols[0] * input_ri, rows[0] * in_channel, ki);
+
+              __m256 v = _mm256_set_ps(
+                input_ptr[input_index + 7],
+                input_ptr[input_index + 6],
+                input_ptr[input_index + 5],
+                input_ptr[input_index + 4],
+                input_ptr[input_index + 3],
+                input_ptr[input_index + 2],
+                input_ptr[input_index + 1],
+                input_ptr[input_index + 0]
+                );
+              _mm256_store_ps(temp_mk + cmk, v);
+            }
+            cmk += AVX_PSIZE;
+          }
+
+          // Case 3: the default/slow way
+          else {
+            TYPE vidx[AVX_PSIZE] = {0., 0., 0., 0., 0., 0., 0., 0.};
+            for (int ifoo = 0; ifoo < AVX_PSIZE; ifoo++) {
+              int kc  = (k + ifoo + ik) / kernel_ri;
+              int kri = (k + ifoo + ik) - kc * kernel_ri;
+              int kr  = kri / in_channel;
+              int ki  = kri - kr * in_channel;
+
+              int input_col = kc + cstart;
+              int input_row = kr + rstart;
+              if (input_col < input_cols && input_col >= 0 &&
+                input_row < input_rows && input_row >= 0) {
+                  int input_index = idx_base + input_col * input_ri
+                    + input_row * in_channel + ki;
+                  vidx[ifoo] = input_ptr[input_index];
+              }
+
+              __m256 v = _mm256_set_ps(
+                vidx[7], vidx[6], vidx[5], vidx[4],
+                vidx[3], vidx[2], vidx[1], vidx[0]
+                );
+              _mm256_store_ps(temp_mk + cmk, v);
+            }
+            cmk += AVX_PSIZE;
+          } // end of default case
+        }
+        }
+
+        // Then compute the nonstandard tail
+        for (; ik < actual_kc; ik++) {
+          int kc  = (k + ik) / kernel_ri;
+          int kri = (k + ik) - kc * kernel_ri;
+          int kr  = kri / in_channel;
+          int ki  = kri - kr * in_channel;
+
+          int input_col = kc + cstart;
+          int input_row = kr + rstart;
+          if (input_col < input_cols && input_col >= 0 &&
+            input_row < input_rows && input_row >= 0) {
+              int input_index = idx_base + input_col * input_ri
+                + input_row * in_channel + ki;
+              temp_mk[cmk] = input_ptr[input_index];
+          }
+          cmk++;
+        }
+      }
+#else
       for (int im = 0; im < actual_mc; im += 1) {
         int b  = (m + im) / output_cr;
         int cr = (m + im) - b * output_cr;
@@ -269,7 +257,7 @@ CAMLprim value FUN_NATIVE (spatial) (
           cmk++;
         }
       }
-
+#endif
       // diff += clock() - start;
       int idx_kn_base = k * out_channel;
       for (int n = 0; n < out_channel; n += nc) {
@@ -309,7 +297,7 @@ CAMLprim value FUN_NATIVE (spatial) (
   free(temp_mn);
 
   return Val_unit;
-} */
+}
 
 
 CAMLprim value FUN_BYTE (spatial) (value * argv, int argn) {
