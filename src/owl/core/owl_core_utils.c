@@ -203,20 +203,6 @@ void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int *offset) {
  * calculate the cache sizes and block sizes for convolution operations.
  */
 
-#if defined(__x86_64__) || defined(_M_X64) || defined(__amd64)
-  #define EIGEN_ARCH_x86_64 1
-#else
-  #define EIGEN_ARCH_x86_64 0
-#endif
-
-
-#if defined(__PIC__)
-  #define CPUID(abcd,func,id) __asm__ __volatile__ ("xchg{q}\t{%%}rbx, %q1; cpuid; xchg{q}\t{%%}rbx, %q1": "=a" (abcd[0]), "=&r" (abcd[1]), "=c" (abcd[2]), "=d" (abcd[3]) : "0" (func), "2" (id));
-#else
-  #define CPUID(abcd,func,id) __asm__ __volatile__ ("cpuid": "=a" (abcd[0]), "=b" (abcd[1]), "=c" (abcd[2]), "=d" (abcd[3]) : "0" (func), "2" (id) );
-#endif
-
-
 inline void query_cache_sizes_intel_direct(int* l1p, int* l2p, int* l3p) {
   int abcd[4];
   int l1, l2, l3;
@@ -251,7 +237,7 @@ inline void query_cache_sizes_intel_direct(int* l1p, int* l2p, int* l3p) {
 
 
 inline void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
-  if (EIGEN_ARCH_x86_64) {
+  if (OWL_ARCH_x86_64) {
     int abcd[4];
     CPUID(abcd, 0x0, 0);
     query_cache_sizes_intel_direct(l1p, l2p, l3p);

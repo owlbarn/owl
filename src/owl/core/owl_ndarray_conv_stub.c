@@ -18,7 +18,9 @@
 #define FUN_BYTE(dim) stub_float32_ndarray_conv ## _ ## dim  ## _ ## bytecode
 #define TYPE float
 #define INIT
-#define AVX_PSIZE 8
+#if defined(__AVX__)
+  #define AVX_PSIZE 8
+#endif
 #define ALPHA 1.
 #define BETA 0.
 #define GEMM cblas_sgemm
@@ -27,8 +29,8 @@
 #undef GEMM
 #undef BETA
 #undef ALPHA
-#undef INIT
 #undef AVX_PSIZE
+#undef INIT
 #undef TYPE
 #undef FUN_BYTE
 #undef FUN_NATIVE
@@ -38,6 +40,9 @@
 #define FUN_BYTE(dim) stub_float64_ndarray_conv ## _ ## dim  ## _ ## bytecode
 #define TYPE double
 #define INIT
+#if defined(__AVX__)
+  #define AVX_PSIZE 4
+#endif
 #define ALPHA 1.
 #define BETA 0.
 #define GEMM cblas_dgemm
@@ -45,6 +50,7 @@
 #undef GEMM
 #undef BETA
 #undef ALPHA
+#undef AVX_PSIZE
 #undef INIT
 #undef TYPE
 #undef FUN_BYTE
