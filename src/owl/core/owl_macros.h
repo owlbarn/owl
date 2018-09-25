@@ -17,6 +17,7 @@
 #include <caml/signals.h>
 #include <caml/threads.h>
 #include <immintrin.h>
+#include <assert.h>
 
 
 // Define the structure for complex numbers

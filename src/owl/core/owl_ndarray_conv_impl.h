@@ -3,9 +3,264 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
+#ifndef OWL_CORE_CONV_IMPL
+#define OWL_CORE_CONV_IMPL
+
+/*
+ * Calculate the cache sizes and block sizes for convolution operations.
+ * Code heavily inspired by Eigen.
+ */
+
+OWL_INLINE void query_cache_sizes_intel_direct(int* l1p, int* l2p, int* l3p) {
+  int abcd[4];
+  int l1, l2, l3;
+  l1 = l2 = l3 = 0;
+  int cache_id = 0;
+  int cache_type = 0;
+  do {
+    abcd[0] = abcd[1] = abcd[2] = abcd[3] = 0;
+    CPUID(abcd, 0x4, cache_id);
+    cache_type = (abcd[0] & 0x0F) >> 0;
+    if(cache_type == 1 || cache_type == 3) { // data or unified cache
+      int cache_level = (abcd[0] & 0xE0) >> 5;  // A[7:5]
+      int ways        = (abcd[1] & 0xFFC00000) >> 22; // B[31:22]
+      int partitions  = (abcd[1] & 0x003FF000) >> 12; // B[21:12]
+      int line_size   = (abcd[1] & 0x00000FFF) >>  0; // B[11:0]
+      int sets        = (abcd[2]);                    // C[31:0]
+
+      int cache_size = (ways + 1) * (partitions + 1) * (line_size + 1) * (sets + 1);
+      switch(cache_level) {
+        case 1: l1 = cache_size; break;
+        case 2: l2 = cache_size; break;
+        case 3: l3 = cache_size; break;
+        default: break;
+      }
+    }
+    cache_id++;
+  } while(cache_type > 0 && cache_id < 16);
+
+  *l1p = l1; *l2p = l2; *l3p = l3;
+  return;
+}
+
+
+OWL_INLINE void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
+  if (OWL_ARCH_x86_64) {
+    int abcd[4];
+    CPUID(abcd, 0x0, 0);
+    query_cache_sizes_intel_direct(l1p, l2p, l3p);
+  } else {
+    // conservative estimation
+    *l1p = 9 * 1024;
+    *l2p = 32 * 1024;
+    *l3p = 512 * 1024;
+  }
+}
+
+
+void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
+  int l1, l2, l3;
+  query_cache_sizes(&l1, &l2, &l3);
+  //fprintf(stderr, "l1/l2/l3 size: %d, %d, %d\n", l1, l2, l3);
+  //fprintf(stderr, "input size: k = %d, m = %d, n = %d\n", *kp, *mp, *np);
+
+  int k = *kp;
+  int m = *mp;
+  int n = *np;
+
+  if (fmax(k, fmax(m, n)) < 48) {
+    return;
+  }
+
+  int nr = 4;
+  int num_reg = 16; // Depends on avx/sse
+  int mr = num_reg / (2 * nr) * typesize;
+  int k_peeling = 8;
+  int k_div = (mr + nr) * typesize;
+  int k_sub = mr * nr * typesize;
+
+  const int max_kc = fmax(((l1 - k_sub) / k_div) & (~(k_peeling - 1)), 1);
+  const int old_k = k;
+
+  if (k > max_kc) {
+    k = (k % max_kc) == 0 ? max_kc
+      : max_kc - k_peeling * ((max_kc - 1 - (k % max_kc)) / (k_peeling * (k / max_kc + 1)));
+    assert (old_k / k == old_k / max_kc);
+  }
+
+  int max_nc;
+  const int actual_l2 = 1572864; // l3 for debug; 1572864 for other cases
+  const int lhs_bytes = m * k * typesize;
+  const int rest_l1 = l1 - k_sub - lhs_bytes;
+  if (rest_l1 >= nr * k * typesize) {
+    max_nc = rest_l1 / (k * typesize);
+  } else {
+    max_nc = (3 * actual_l2) / (4 * max_kc * typesize);
+  }
+
+  int nc = (int) (fmin(actual_l2 / (2 * k * typesize), max_nc)) & (~(nr - 1));
+  if (n > nc) {
+    n = (n % nc == 0) ? nc : (nc - nr * ((nc - (n % nc)) / (nr * (n / nc + 1))));
+  } else if (old_k == k) {
+    int problem_size = k * n * typesize;
+    int actual_lm = actual_l2;
+    int max_mc = m;
+
+    if (problem_size < 1024) {
+      actual_lm = l1;
+    } else if (l3 != 0 && problem_size <= 32768) {
+      actual_lm = l2;
+      max_mc = fmin(576, max_mc);
+    }
+    int mc = fmin(actual_lm / (3 * k * typesize), max_mc);
+    if (mc > mr) {
+      mc -= mc % mr;
+    }
+    else if (mc == 0) {
+      *kp = k; *mp = m; *np = n;
+      return;
+    }
+    m = (m % mc == 0) ? mc : (mc - mr * ((mc - (m % mc)) / (mr * (m / mc + 1))));
+  }
+
+  *kp = k; *mp = m; *np = n;
+  return;
+}
+
+
+/*
+void load_sub_matrix (
+  float* input_ptr, float* output_ptr, int* cmk_ptr,
+  int peeled_kc, int k, int kernel_ri, int in_channel, int idex_base,
+  int c_start, int r_start, int input_cols, int input_rows, int avx_size) {
+
+} */
+
+
+#endif
+
 #ifdef OWL_ENABLE_TEMPLATE
 
 #include <time.h>
+
+/*
+ * Load submatrices
+ */
+
+
+#ifdef AVX_PSIZE
+
+void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
+  TYPE* input_ptr, TYPE* output_ptr, int* cmk_ptr, int peeled_kc,
+  int k, int kernel_ri, int input_ri, int in_channel, int idx_base,
+  int cstart, int rstart, int input_cols, int input_rows
+) {
+
+  for (int ik = 0; ik < peeled_kc; ik += AVX_PSIZE) {
+    int kc  = (k + ik) / kernel_ri;
+    int kri = (k + ik) - kc * kernel_ri;
+    int kr  = kri / in_channel;
+    int ki  = kri - kr * in_channel;
+
+    int input_col = kc + cstart;
+    int input_row = kr + rstart;
+
+    if (input_col < input_cols && input_col >= 0 &&
+      input_row < input_rows && input_row >= 0) {
+      int input_index = idx_base + input_col * input_ri
+        + input_row * in_channel + ki;
+      __m256 v = AVX_SET(input_ptr, input_index);
+      AVX_STORE(output_ptr + (*cmk_ptr), v);
+    }
+    *cmk_ptr += AVX_PSIZE;
+  }
+  return;
+}
+
+void ACX_FUN_LOAD (load_sub_matrix, spatial) (
+  TYPE* input_ptr, TYPE* output_ptr, int* cmk_ptr, int peeled_kc, int actual_kc,
+  int k, int kernel_ri, int input_ri, int in_channel, int idx_base,
+  int cstart, int rstart, int input_cols, int input_rows,
+  int kernel_rows
+){
+  int ik = 0;
+  for (; ik < peeled_kc; ik += AVX_PSIZE) {
+    const int cr_set[2] = {(k + ik) / in_channel,
+      (k + ik + AVX_PSIZE - 1) / in_channel};
+    const int c_set[2] = {cr_set[0] / kernel_rows,
+      cr_set[1] / kernel_rows};
+    const int cols[2]  = {cstart + c_set[0], cstart + c_set[1]};
+
+    if (cols[0] >= input_cols || cols[1] < 0) {
+      *cmk_ptr += AVX_PSIZE;
+      continue;
+    }
+    else if (cols[0] == cols[1]) {
+      const int r_set[2] = {cr_set[0] - c_set[0] * kernel_rows,
+        cr_set[1] - c_set[1] * kernel_rows};
+      const int rows[2]  = {rstart + r_set[0], rstart + r_set[1]};
+
+      if (rows[0] >= input_rows || rows[1] < 0) {
+        *cmk_ptr += AVX_PSIZE;
+        continue;
+      }
+      else if (rows[0] >= 0 && rows[1] < input_rows) {
+        int ki = k + ik - cr_set[0] * in_channel;
+        int input_index = idx_base + cols[0] * input_ri
+          + rows[0] * in_channel + ki;
+
+        __m256 v = AVX_SET(input_ptr, input_index);
+        AVX_STORE(output_ptr + (*cmk_ptr), v);
+
+        *cmk_ptr += AVX_PSIZE;
+        continue;
+      }
+    }
+
+    // the default/slow way
+    TYPE vidx[AVX_PSIZE] = {0};
+    for (int ifoo = 0; ifoo < AVX_PSIZE; ifoo++) {
+      int kc  = (k + ifoo + ik) / kernel_ri;
+      int kri = (k + ifoo + ik) - kc * kernel_ri;
+      int kr  = kri / in_channel;
+      int ki  = kri - kr * in_channel;
+
+      int input_col = kc + cstart;
+      int input_row = kr + rstart;
+      if (input_col < input_cols && input_col >= 0 &&
+        input_row < input_rows && input_row >= 0) {
+          int input_index = idx_base + input_col * input_ri
+            + input_row * in_channel + ki;
+          vidx[ifoo] = input_ptr[input_index];
+      }
+    }
+
+    __m256 v = AVX_SET(vidx, 0);
+    AVX_STORE(output_ptr + (*cmk_ptr), v);
+    *cmk_ptr += AVX_PSIZE;
+  }
+
+  for (; ik < actual_kc; ik++) {
+    int kc  = (k + ik) / kernel_ri;
+    int kri = (k + ik) - kc * kernel_ri;
+    int kr  = kri / in_channel;
+    int ki  = kri - kr * in_channel;
+
+    int input_col = kc + cstart;
+    int input_row = kr + rstart;
+    if (input_col < input_cols && input_col >= 0 &&
+      input_row < input_rows && input_row >= 0) {
+        int input_index = idx_base + input_col * input_ri
+          + input_row * in_channel + ki;
+        output_ptr[*cmk_ptr] = input_ptr[input_index];
+    }
+    *cmk_ptr += 1;
+  }
+
+  return;
+}
+
+#endif
 
 /*
  * eigen implementation
@@ -85,10 +340,10 @@ CAMLprim value FUN_NATIVE (spatial) (
 
       memset(temp_mk, 0, mc * kc * sizeof(TYPE));
       int actual_kc = fminf(k + kc, kernel_cri) - k;
-
 #ifdef AVX_PSIZE
       int peeled_kc = (actual_kc / AVX_PSIZE) * AVX_PSIZE;
-//#endif
+#endif
+
       int cmk = 0;
       for (int im = 0; im < actual_mc; im += 1) {
         int b  = (m + im) / output_cr;
@@ -100,167 +355,20 @@ CAMLprim value FUN_NATIVE (spatial) (
         const int rstart = r * row_stride - pr;
         const int idx_base = b * input_cri;
 
-        int ik = 0;
-        // case 1
+#ifdef AVX_PSIZE
         if (in_channel % AVX_PSIZE == 0) {
-          for (; ik < peeled_kc; ik += AVX_PSIZE) {
-            int kc  = (k + ik) / kernel_ri;
-            int kri = (k + ik) - kc * kernel_ri;
-            int kr  = kri / in_channel;
-            int ki  = kri - kr * in_channel;
-
-            int input_col = kc + cstart;
-            int input_row = kr + rstart;
-
-            if (input_col < input_cols && input_col >= 0 &&
-              input_row < input_rows && input_row >= 0) {
-              int input_index = idx_base + input_col * input_ri
-                + input_row * in_channel + ki;
-
-              if (AVX_PSIZE == 8) {
-                __m256 v = _mm256_set_ps(
-                  input_ptr[input_index + 7],
-                  input_ptr[input_index + 6],
-                  input_ptr[input_index + 5],
-                  input_ptr[input_index + 4],
-                  input_ptr[input_index + 3],
-                  input_ptr[input_index + 2],
-                  input_ptr[input_index + 1],
-                  input_ptr[input_index + 0]
-                );
-                _mm256_store_ps(temp_mk + cmk, v);
-              } else if (AVX_PSIZE == 4) {
-                __m256 v = _mm256_set_pd(
-                  input_ptr[input_index + 3],
-                  input_ptr[input_index + 2],
-                  input_ptr[input_index + 1],
-                  input_ptr[input_index + 0]
-                );
-                _mm256_store_pd(temp_mk + cmk, v);
-              }
-
-            }
-            cmk += AVX_PSIZE;
-          }
+          ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
+            input_ptr, temp_mk, &cmk, peeled_kc,
+            k, kernel_ri, input_ri, in_channel, idx_base,
+            cstart, rstart, input_cols, input_rows);
         }
-
         else {
-          for (; ik < peeled_kc; ik += AVX_PSIZE) {
-            // Case 2:
-            const int cr_set[2] = {(k + ik) / in_channel,
-              (k + ik + AVX_PSIZE - 1) / in_channel};
-            const int c_set[2] = {cr_set[0] / kernel_rows,
-              cr_set[1] / kernel_rows};
-            const int cols[2]  = {cstart + c_set[0], cstart + c_set[1]};
-
-            if (cols[0] >= input_cols || cols[1] < 0) {
-              cmk += AVX_PSIZE;
-              continue;
-            }
-            else if (cols[0] == cols[1]) {
-              const int r_set[2] = {cr_set[0] - c_set[0] * kernel_rows,
-                cr_set[1] - c_set[1] * kernel_rows};
-              const int rows[2]  = {rstart + r_set[0], rstart + r_set[1]};
-
-              if (rows[0] >= input_rows || rows[1] < 0) {
-                cmk += AVX_PSIZE;
-                continue;
-              }
-              else if (rows[0] >= 0 && rows[1] < input_rows) {
-                int ki = k + ik - cr_set[0] * in_channel;
-                int input_index = idx_base + cols[0] * input_ri
-                  + rows[0] * in_channel + ki;
-
-                if (AVX_PSIZE == 8) {
-                  __m256 v = _mm256_set_ps(
-                    input_ptr[input_index + 7],
-                    input_ptr[input_index + 6],
-                    input_ptr[input_index + 5],
-                    input_ptr[input_index + 4],
-                    input_ptr[input_index + 3],
-                    input_ptr[input_index + 2],
-                    input_ptr[input_index + 1],
-                    input_ptr[input_index + 0]
-                  );
-                  _mm256_store_ps(temp_mk + cmk, v);
-                } else if (AVX_PSIZE == 4) {
-                  __m256 v = _mm256_set_pd(
-                    input_ptr[input_index + 3],
-                    input_ptr[input_index + 2],
-                    input_ptr[input_index + 1],
-                    input_ptr[input_index + 0]
-                  );
-                  _mm256_store_pd(temp_mk + cmk, v);
-                }
-
-                cmk += AVX_PSIZE;
-                continue;
-              }
-            }
-
-            // Case 3: the default/slow way
-            TYPE vidx[AVX_PSIZE] = {0};
-            for (int ifoo = 0; ifoo < AVX_PSIZE; ifoo++) {
-              int kc  = (k + ifoo + ik) / kernel_ri;
-              int kri = (k + ifoo + ik) - kc * kernel_ri;
-              int kr  = kri / in_channel;
-              int ki  = kri - kr * in_channel;
-
-              int input_col = kc + cstart;
-              int input_row = kr + rstart;
-              if (input_col < input_cols && input_col >= 0 &&
-                input_row < input_rows && input_row >= 0) {
-                  int input_index = idx_base + input_col * input_ri
-                    + input_row * in_channel + ki;
-                  vidx[ifoo] = input_ptr[input_index];
-              }
-            }
-
-            if (AVX_PSIZE == 8) {
-              __m256 v = _mm256_set_ps(
-                vidx[7], vidx[6], vidx[5], vidx[4],
-                vidx[3], vidx[2], vidx[1], vidx[0]
-              );
-              _mm256_store_ps(temp_mk + cmk, v);
-            } else if (AVX_PSIZE == 4) {
-              __m256 v = _mm256_set_pd(
-                vidx[3], vidx[2], vidx[1], vidx[0]
-              );
-              _mm256_store_pd(temp_mk + cmk, v);
-            }
-            cmk += AVX_PSIZE;
-          }
+          ACX_FUN_LOAD (load_sub_matrix, spatial) (
+            input_ptr, temp_mk, &cmk, peeled_kc, actual_kc,
+            k, kernel_ri, input_ri, in_channel, idx_base,
+            cstart, rstart, input_cols, input_rows, kernel_rows);
         }
-
-        // Then compute the nonstandard tail
-        for (; ik < actual_kc; ik++) {
-          int kc  = (k + ik) / kernel_ri;
-          int kri = (k + ik) - kc * kernel_ri;
-          int kr  = kri / in_channel;
-          int ki  = kri - kr * in_channel;
-
-          int input_col = kc + cstart;
-          int input_row = kr + rstart;
-          if (input_col < input_cols && input_col >= 0 &&
-            input_row < input_rows && input_row >= 0) {
-              int input_index = idx_base + input_col * input_ri
-                + input_row * in_channel + ki;
-              temp_mk[cmk] = input_ptr[input_index];
-          }
-          cmk++;
-        }
-      }
 #else
-      for (int im = 0; im < actual_mc; im += 1) {
-        int b  = (m + im) / output_cr;
-        int cr = (m + im) - b * output_cr;
-        int c = cr / output_rows;
-        int r = cr - c * output_rows;
-
-        const int cstart = c * col_stride - pc;
-        const int rstart = r * row_stride - pr;
-        const int idx_base = b * input_cri;
-
         for (int ik = 0; ik < actual_kc; ik += 1) {
           int kc  = (k + ik) / kernel_ri;
           int kri = (k + ik) - kc * kernel_ri;
@@ -277,8 +385,10 @@ CAMLprim value FUN_NATIVE (spatial) (
           }
           cmk++;
         }
-      }
 #endif
+
+      }
+
       // diff += clock() - start;
       int idx_kn_base = k * out_channel;
       for (int n = 0; n < out_channel; n += nc) {
