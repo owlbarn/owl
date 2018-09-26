@@ -127,33 +127,20 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
   return;
 }
 
-
-/*
-void load_sub_matrix (
-  float* input_ptr, float* output_ptr, int* cmk_ptr,
-  int peeled_kc, int k, int kernel_ri, int in_channel, int idex_base,
-  int c_start, int r_start, int input_cols, int input_rows, int avx_size) {
-
-} */
-
-
 #endif
 
 #ifdef OWL_ENABLE_TEMPLATE
 
-#include <time.h>
-
 /*
  * Load submatrices
  */
-
 
 #ifdef AVX_PSIZE
 
 void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
   TYPE* input_ptr, TYPE* output_ptr, int* cmk_ptr, int peeled_kc,
   int k, int kernel_ri, int input_ri, int in_channel, int idx_base,
-  int cstart, int rstart, int input_cols, int input_rows
+  int cstart, int rstart, int input_cols, int input_rows, short reverse_mode
 ) {
 
   for (int ik = 0; ik < peeled_kc; ik += AVX_PSIZE) {
@@ -169,8 +156,17 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
       input_row < input_rows && input_row >= 0) {
       int input_index = idx_base + input_col * input_ri
         + input_row * in_channel + ki;
-      __m256 v = AVX_SET(input_ptr, input_index);
-      AVX_STORE(output_ptr + (*cmk_ptr), v);
+
+      if (reverse_mode == 0) {
+        AVX_TYPE v = AVX_LOAD(input_ptr + input_index);
+        AVX_STORE(output_ptr + (*cmk_ptr), v);
+      }
+      else {
+        AVX_TYPE v1 = AVX_LOAD(output_ptr + (*cmk_ptr));
+        AVX_TYPE v2 = AVX_LOAD(input_ptr + input_index);
+        AVX_TYPE v  = AVX_ADD(v1, v2);
+        AVX_STORE(input_ptr + input_index, v);
+      }
     }
     *cmk_ptr += AVX_PSIZE;
   }
@@ -181,7 +177,7 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
   TYPE* input_ptr, TYPE* output_ptr, int* cmk_ptr, int peeled_kc, int actual_kc,
   int k, int kernel_ri, int input_ri, int in_channel, int idx_base,
   int cstart, int rstart, int input_cols, int input_rows,
-  int kernel_rows
+  int kernel_rows, short reverse_mode
 ){
   int ik = 0;
   for (; ik < peeled_kc; ik += AVX_PSIZE) {
@@ -209,8 +205,16 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
         int input_index = idx_base + cols[0] * input_ri
           + rows[0] * in_channel + ki;
 
-        __m256 v = AVX_SET(input_ptr, input_index);
-        AVX_STORE(output_ptr + (*cmk_ptr), v);
+        if (reverse_mode == 0) {
+          AVX_TYPE v = AVX_LOAD(input_ptr + input_index);
+          AVX_STORE(output_ptr + (*cmk_ptr), v);
+        }
+        else {
+          AVX_TYPE v1 = AVX_LOAD(output_ptr + (*cmk_ptr));
+          AVX_TYPE v2 = AVX_LOAD(input_ptr + input_index);
+          AVX_TYPE v  = AVX_ADD(v1, v2);
+          AVX_STORE(input_ptr + input_index, v);
+        }
 
         *cmk_ptr += AVX_PSIZE;
         continue;
@@ -218,10 +222,9 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
     }
 
     // the default/slow way
-    TYPE vidx[AVX_PSIZE] = {0};
-    for (int ifoo = 0; ifoo < AVX_PSIZE; ifoo++) {
-      int kc  = (k + ifoo + ik) / kernel_ri;
-      int kri = (k + ifoo + ik) - kc * kernel_ri;
+    for (int ip = 0; ip < AVX_PSIZE; ip++) {
+      int kc  = (k + ik + ip) / kernel_ri;
+      int kri = (k + ik + ip) - kc * kernel_ri;
       int kr  = kri / in_channel;
       int ki  = kri - kr * in_channel;
 
@@ -229,15 +232,15 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
       int input_row = kr + rstart;
       if (input_col < input_cols && input_col >= 0 &&
         input_row < input_rows && input_row >= 0) {
-          int input_index = idx_base + input_col * input_ri
-            + input_row * in_channel + ki;
-          vidx[ifoo] = input_ptr[input_index];
+        int input_index = idx_base + input_col * input_ri
+          + input_row * in_channel + ki;
+        if (reverse_mode == 0)
+          output_ptr[*cmk_ptr] = input_ptr[input_index];
+        else
+          input_ptr[input_index] += output_ptr[*cmk_ptr];
       }
+      *cmk_ptr += 1;
     }
-
-    __m256 v = AVX_SET(vidx, 0);
-    AVX_STORE(output_ptr + (*cmk_ptr), v);
-    *cmk_ptr += AVX_PSIZE;
   }
 
   for (; ik < actual_kc; ik++) {
@@ -250,9 +253,12 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
     int input_row = kr + rstart;
     if (input_col < input_cols && input_col >= 0 &&
       input_row < input_rows && input_row >= 0) {
-        int input_index = idx_base + input_col * input_ri
-          + input_row * in_channel + ki;
+      int input_index = idx_base + input_col * input_ri
+        + input_row * in_channel + ki;
+      if (reverse_mode == 0)
         output_ptr[*cmk_ptr] = input_ptr[input_index];
+      else
+        input_ptr[input_index] += output_ptr[*cmk_ptr];
     }
     *cmk_ptr += 1;
   }
@@ -317,15 +323,10 @@ CAMLprim value FUN_NATIVE (spatial) (
     if (pc < 0) pc = 0;
   }
 
-  clock_t start, diff = 0;
-
   int mc = output_crb;
   int kc = kernel_cri;
   int nc = out_channel;
   compute_block_sizes(&kc, &nc, &mc, sizeof(TYPE));
-
-  //fprintf(stderr, "input: [%d, %d, %d, %d]; kernel: [%d, %d, %d, %d]\n", batches, input_cols, input_rows, in_channel, kernel_cols, kernel_rows, in_channel, out_channel);
-  //fprintf(stderr, "calculated block size: kc = %d, mc = %d, nc = %d\n", kc, mc, nc);
 
   TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
   if (temp_mk == NULL) exit(1);
@@ -360,13 +361,13 @@ CAMLprim value FUN_NATIVE (spatial) (
           ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
             input_ptr, temp_mk, &cmk, peeled_kc,
             k, kernel_ri, input_ri, in_channel, idx_base,
-            cstart, rstart, input_cols, input_rows);
+            cstart, rstart, input_cols, input_rows, 0);
         }
         else {
           ACX_FUN_LOAD (load_sub_matrix, spatial) (
             input_ptr, temp_mk, &cmk, peeled_kc, actual_kc,
             k, kernel_ri, input_ri, in_channel, idx_base,
-            cstart, rstart, input_cols, input_rows, kernel_rows);
+            cstart, rstart, input_cols, input_rows, kernel_rows, 0);
         }
 #else
         for (int ik = 0; ik < actual_kc; ik += 1) {
@@ -379,9 +380,9 @@ CAMLprim value FUN_NATIVE (spatial) (
           int input_row = kr + rstart;
           if (input_col < input_cols && input_col >= 0 &&
             input_row < input_rows && input_row >= 0) {
-              int input_index = idx_base + input_col * input_ri
-                + input_row * in_channel + ki;
-              temp_mk[cmk] = input_ptr[input_index];
+            int input_index = idx_base + input_col * input_ri
+              + input_row * in_channel + ki;
+            temp_mk[cmk] = input_ptr[input_index];
           }
           cmk++;
         }
@@ -389,7 +390,6 @@ CAMLprim value FUN_NATIVE (spatial) (
 
       }
 
-      // diff += clock() - start;
       int idx_kn_base = k * out_channel;
       for (int n = 0; n < out_channel; n += nc) {
         int actual_nc = fminf(n + nc, out_channel) - n;
@@ -416,12 +416,9 @@ CAMLprim value FUN_NATIVE (spatial) (
           }
         }
 
-      } // end of n
-    } // end of k
-  } // end of m
-
-  // int msec = diff * 1000 / CLOCKS_PER_SEC;
-  // fprintf(stderr, "Time taken for gemm: %d milliseconds\n", msec);
+      }
+    }
+  }
 
   free(temp_mk);
   free(temp_kn);
@@ -505,6 +502,9 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
     for (int k = 0; k < kernel_cri; k += kc) {
       int actual_kc = fminf(k + kc, kernel_cri) - k;
       int idx_kn_base = k * out_channel;
+#ifdef AVX_PSIZE
+      int peeled_kc = (actual_kc / AVX_PSIZE) * AVX_PSIZE;
+#endif
 
       for (int n = 0; n < out_channel; n += nc) {
         int actual_nc = fminf(n + nc, out_channel) - n;
@@ -543,6 +543,20 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
           const int rstart = r * row_stride - pr;
           int idx_mk_base = b * input_cri;
 
+#ifdef AVX_PSIZE
+        if (in_channel % AVX_PSIZE == 0) {
+          ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
+            input_ptr, temp_mk, &cmk, peeled_kc,
+            k, kernel_ri, input_ri, in_channel, idx_mk_base,
+            cstart, rstart, input_cols, input_rows, 1);
+        }
+        else {
+          ACX_FUN_LOAD (load_sub_matrix, spatial) (
+            input_ptr, temp_mk, &cmk, peeled_kc, actual_kc,
+            k, kernel_ri, input_ri, in_channel, idx_mk_base,
+            cstart, rstart, input_cols, input_rows, kernel_rows, 1);
+        }
+#else
           for (int ik = 0; ik < actual_kc; ik+=1) {
             int kc  = (k + ik) / kernel_ri;
             int kri = (k + ik) - kc * kernel_ri;
@@ -559,6 +573,8 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
             }
             cmk++;
           }
+#endif
+
         }
       }
     }
@@ -646,6 +662,9 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
       int actual_kc = fminf(k + kc, kernel_cri) - k;
       int idx_kn_base = k * out_channel;
       memset(temp_mk, 0, mc * kc * sizeof(TYPE));
+#ifdef AVX_PSIZE
+      int peeled_kc = (actual_kc / AVX_PSIZE) * AVX_PSIZE;
+#endif
 
       int cmk = 0;
       for (int im = 0; im < actual_mc; im += 1) {
@@ -658,6 +677,20 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
         const int rstart = r * row_stride - pr;
         const int idx_mk_base = b * input_cri;
 
+#ifdef AVX_PSIZE
+        if (in_channel % AVX_PSIZE == 0) {
+          ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
+            input_ptr, temp_mk, &cmk, peeled_kc,
+            k, kernel_ri, input_ri, in_channel, idx_mk_base,
+            cstart, rstart, input_cols, input_rows, 0);
+        }
+        else {
+          ACX_FUN_LOAD (load_sub_matrix, spatial) (
+            input_ptr, temp_mk, &cmk, peeled_kc, actual_kc,
+            k, kernel_ri, input_ri, in_channel, idx_mk_base,
+            cstart, rstart, input_cols, input_rows, kernel_rows, 0);
+        }
+#else
         for (int ik = 0; ik < actual_kc; ik += 1) {
           int kc  = (k + ik) / kernel_ri;
           int kri = (k + ik) - kc * kernel_ri;
@@ -674,6 +707,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
           }
           cmk++;
         }
+#endif
       }
 
       for (int n = 0; n < out_channel; n += nc) {
