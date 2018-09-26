@@ -10,14 +10,17 @@ module UT = Owl_utils
   x is the row-based data points and c is the number of clusters.
  *)
 
-let kmeans x c =
+let kmeans ?(verbosity=false) x c =
   let open MX in
   let cpts0 = fst (draw_rows x c) in
   let cpts1 = zeros c (col_num x) in
   let assignment = Array.make (row_num x) (0, max_float) in
   let _ =
     try for counter = 1 to 100 do
-      Owl_log.info "iteration %i ..." counter; flush stdout;
+      if verbosity then begin
+        Owl_log.info "iteration %i ..." counter;
+        flush stdout;
+      end;
       iteri_rows (fun i v ->
         iteri_rows (fun j u ->
           let e = sum' (pow_scalar (sub v u) 2.) in
