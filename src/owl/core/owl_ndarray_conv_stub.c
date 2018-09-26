@@ -6,8 +6,7 @@
 #include "owl_core.h"
 #include "cblas.h"
 #include <string.h>
-#include <xmmintrin.h>
-#include <immintrin.h>
+#include <assert.h>
 
 #define OWL_ENABLE_TEMPLATE
 
@@ -22,7 +21,7 @@
 #define BETA 0.
 #define GEMM cblas_sgemm
 #define UTIL
-#if defined(__AVX__)
+#ifdef OWL_AVX
   #define AVX_PSIZE 8
   #define AVX_TYPE __m256
   #define ACX_FUN_LOAD(prefix, dim) prefix ## _ ## float32 ## _ ## dim
@@ -38,7 +37,7 @@
 #undef TYPE
 #undef FUN_BYTE
 #undef FUN_NATIVE
-#if defined(__AVX__)
+#ifdef OWL_AVX
   #undef AVX_PSIZE
   #undef AVX_TYPE
   #undef ACX_FUN_LOAD
@@ -51,7 +50,7 @@
 #define FUN_BYTE(dim) stub_float64_ndarray_conv ## _ ## dim  ## _ ## bytecode
 #define TYPE double
 #define INIT
-#if defined(__AVX__)
+#ifdef OWL_AVX
   #define AVX_PSIZE 4
   #define AVX_TYPE __m256d
   #define ACX_FUN_LOAD(prefix, dim) prefix ## _ ## float64 ## _ ## dim
@@ -70,7 +69,7 @@
 #undef TYPE
 #undef FUN_BYTE
 #undef FUN_NATIVE
-#if defined(__AVX__)
+#ifdef OWL_AVX
   #undef AVX_PSIZE
   #undef AVX_TYPE
   #undef ACX_FUN_LOAD

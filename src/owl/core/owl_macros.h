@@ -16,9 +16,11 @@
 #include <caml/bigarray.h>
 #include <caml/signals.h>
 #include <caml/threads.h>
-#include <immintrin.h>
-#include <assert.h>
 
+#if defined(__AVX__)
+  #define  OWL_AVX
+  #include <immintrin.h>
+#endif
 
 // Define the structure for complex numbers
 

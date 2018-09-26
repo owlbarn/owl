@@ -331,8 +331,9 @@ CAMLprim value FUN_NATIVE (spatial) (
   if (temp_kn == NULL) exit(1);
   TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
   if (temp_mn == NULL) exit(1);
-
+#ifdef AVX_PSIZE
   int fast_flag = (in_channel % AVX_PSIZE == 0);
+#endif
 
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
@@ -494,7 +495,9 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
   if (pr < 0) pr = 0;
   if (pc < 0) pc = 0;
 
+#ifdef AVX_PSIZE
   int fast_flag = (in_channel % AVX_PSIZE == 0);
+#endif
 
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
@@ -655,7 +658,9 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
   if (pr < 0) pr = 0;
   if (pc < 0) pc = 0;
 
+#ifdef AVX_PSIZE
   int fast_flag = (in_channel % AVX_PSIZE == 0);
+#endif
 
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
