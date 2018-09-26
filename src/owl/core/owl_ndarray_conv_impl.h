@@ -45,14 +45,13 @@ OWL_INLINE void query_cache_sizes_intel_direct(int* l1p, int* l2p, int* l3p) {
 
 
 OWL_INLINE void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
-  if (OWL_ARCH_x86_64) {
+  if (OWL_ARCH_i386 ||  OWL_ARCH_x86_64) {
     int abcd[4];
     CPUID(abcd, 0x0, 0);
     query_cache_sizes_intel_direct(l1p, l2p, l3p);
   } else {
-    // conservative estimation
-    *l1p = 9 * 1024;
-    *l2p = 32 * 1024;
+    *l1p = 16 * 1024;
+    *l2p = 512 * 1024;
     *l3p = 512 * 1024;
   }
 }
@@ -61,8 +60,6 @@ OWL_INLINE void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
 void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
   int l1, l2, l3;
   query_cache_sizes(&l1, &l2, &l3);
-  //fprintf(stderr, "l1/l2/l3 size: %d, %d, %d\n", l1, l2, l3);
-  //fprintf(stderr, "input size: k = %d, m = %d, n = %d\n", *kp, *mp, *np);
 
   int k = *kp;
   int m = *mp;
@@ -89,7 +86,7 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
   }
 
   int max_nc;
-  const int actual_l2 = 1572864; // l3 for debug; 1572864 for other cases
+  const int actual_l2 = 1572864; // l3 for debug; otherwise 1572864
   const int lhs_bytes = m * k * typesize;
   const int rest_l1 = l1 - k_sub - lhs_bytes;
   if (rest_l1 >= nr * k * typesize) {
@@ -335,6 +332,8 @@ CAMLprim value FUN_NATIVE (spatial) (
   TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
   if (temp_mn == NULL) exit(1);
 
+  int fast_flag = (in_channel % AVX_PSIZE == 0);
+
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
     for (int k = 0; k < kernel_cri; k += kc) {
@@ -357,7 +356,7 @@ CAMLprim value FUN_NATIVE (spatial) (
         const int idx_base = b * input_cri;
 
 #ifdef AVX_PSIZE
-        if (in_channel % AVX_PSIZE == 0) {
+        if (fast_flag) {
           ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
             input_ptr, temp_mk, &cmk, peeled_kc,
             k, kernel_ri, input_ri, in_channel, idx_base,
@@ -495,6 +494,8 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
   if (pr < 0) pr = 0;
   if (pc < 0) pc = 0;
 
+  int fast_flag = (in_channel % AVX_PSIZE == 0);
+
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
     int idx_mn_base = m * out_channel;
@@ -544,7 +545,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
           int idx_mk_base = b * input_cri;
 
 #ifdef AVX_PSIZE
-        if (in_channel % AVX_PSIZE == 0) {
+        if (fast_flag) {
           ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
             input_ptr, temp_mk, &cmk, peeled_kc,
             k, kernel_ri, input_ri, in_channel, idx_mk_base,
@@ -654,6 +655,8 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
   if (pr < 0) pr = 0;
   if (pc < 0) pc = 0;
 
+  int fast_flag = (in_channel % AVX_PSIZE == 0);
+
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
     int idx_mn_base = m * out_channel;
@@ -678,7 +681,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
         const int idx_mk_base = b * input_cri;
 
 #ifdef AVX_PSIZE
-        if (in_channel % AVX_PSIZE == 0) {
+        if (fast_flag) {
           ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
             input_ptr, temp_mk, &cmk, peeled_kc,
             k, kernel_ri, input_ri, in_channel, idx_mk_base,
