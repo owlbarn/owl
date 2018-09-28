@@ -11,22 +11,23 @@
  * Code heavily inspired by Eigen.
  */
 
-OWL_INLINE void query_cache_sizes_intel_direct(int* l1p, int* l2p, int* l3p) {
-  int abcd[4];
-  int l1, l2, l3;
-  l1 = l2 = l3 = 0;
+#define IM2COL_THRESHOLD 512 * 1024
+
+OWL_INLINE void query_cache_sizes_intel(int* l1p, int* l2p, int* l3p) {
+  int cpuinfo[4];
+  int l1 = 0, l2 = 0, l3 = 0;
   int cache_id = 0;
   int cache_type = 0;
   do {
-    abcd[0] = abcd[1] = abcd[2] = abcd[3] = 0;
-    CPUID(abcd, 0x4, cache_id);
-    cache_type = (abcd[0] & 0x0F) >> 0;
-    if(cache_type == 1 || cache_type == 3) { // data or unified cache
-      int cache_level = (abcd[0] & 0xE0) >> 5;  // A[7:5]
-      int ways        = (abcd[1] & 0xFFC00000) >> 22; // B[31:22]
-      int partitions  = (abcd[1] & 0x003FF000) >> 12; // B[21:12]
-      int line_size   = (abcd[1] & 0x00000FFF) >>  0; // B[11:0]
-      int sets        = (abcd[2]);                    // C[31:0]
+    cpuinfo[0] = cpuinfo[1] = cpuinfo[2] = cpuinfo[3] = 0;
+    CPUID(cpuinfo, 0x4, cache_id);
+    cache_type = (cpuinfo[0] & 0x0F) >> 0;
+    if(cache_type == 1 || cache_type == 3) {
+      int cache_level = (cpuinfo[0] & 0xE0) >> 5;
+      int ways        = (cpuinfo[1] & 0xFFC00000) >> 22;
+      int partitions  = (cpuinfo[1] & 0x003FF000) >> 12;
+      int line_size   = (cpuinfo[1] & 0x00000FFF) >>  0;
+      int sets        = (cpuinfo[2]);
 
       int cache_size = (ways + 1) * (partitions + 1) * (line_size + 1) * (sets + 1);
       switch(cache_level) {
@@ -45,10 +46,17 @@ OWL_INLINE void query_cache_sizes_intel_direct(int* l1p, int* l2p, int* l3p) {
 
 
 OWL_INLINE void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
-  if (OWL_ARCH_i386 ||  OWL_ARCH_x86_64) {
-    int abcd[4];
-    CPUID(abcd, 0x0, 0);
-    query_cache_sizes_intel_direct(l1p, l2p, l3p);
+  if (OWL_ARCH_i386 || OWL_ARCH_x86_64) {
+    int cpuinfo[4];
+    CPUID(cpuinfo, 0x0, 0);
+    int highest_func = cpuinfo[1];
+    if (highest_func >= 4)
+      query_cache_sizes_intel(l1p, l2p, l3p);
+    else {
+      *l1p = 32 * 1024;
+      *l2p = 256 * 1024;
+      *l3p = 2048 * 1024;
+    }
   } else {
     *l1p = 16 * 1024;
     *l2p = 512 * 1024;
@@ -65,23 +73,23 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
   int m = *mp;
   int n = *np;
 
-  if (fmax(k, fmax(m, n)) < 48) {
+  if (fmaxf(k, fmaxf(m, n)) < 50) {
     return;
   }
 
   int nr = 4;
-  int num_reg = 16; // Depends on avx/sse
+  int num_reg = 16;
   int mr = num_reg / (2 * nr) * typesize;
-  int k_peeling = 8;
+  int k_strip = 8;
   int k_div = (mr + nr) * typesize;
   int k_sub = mr * nr * typesize;
 
-  const int max_kc = fmax(((l1 - k_sub) / k_div) & (~(k_peeling - 1)), 1);
+  const int max_kc = fmaxf(((l1 - k_sub) / k_div) & (~(k_strip - 1)), 1);
   const int old_k = k;
 
   if (k > max_kc) {
     k = (k % max_kc) == 0 ? max_kc
-      : max_kc - k_peeling * ((max_kc - 1 - (k % max_kc)) / (k_peeling * (k / max_kc + 1)));
+      : max_kc - k_strip * ((max_kc - 1 - (k % max_kc)) / (k_strip * (k / max_kc + 1)));
     assert (old_k / k == old_k / max_kc);
   }
 
@@ -95,21 +103,21 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
     max_nc = (3 * actual_l2) / (4 * max_kc * typesize);
   }
 
-  int nc = (int) (fmin(actual_l2 / (2 * k * typesize), max_nc)) & (~(nr - 1));
+  int nc = (int) (fminf(actual_l2 / (2 * k * typesize), max_nc)) & (~(nr - 1));
   if (n > nc) {
     n = (n % nc == 0) ? nc : (nc - nr * ((nc - (n % nc)) / (nr * (n / nc + 1))));
   } else if (old_k == k) {
-    int problem_size = k * n * typesize;
+    int kn_size = k * n * typesize;
     int actual_lm = actual_l2;
     int max_mc = m;
 
-    if (problem_size < 1024) {
+    if (kn_size < 1024) {
       actual_lm = l1;
-    } else if (l3 != 0 && problem_size <= 32768) {
+    } else if (l3 != 0 && kn_size <= 32768) {
       actual_lm = l2;
-      max_mc = fmin(576, max_mc);
+      max_mc = fminf(576, max_mc);
     }
-    int mc = fmin(actual_lm / (3 * k * typesize), max_mc);
+    int mc = fminf(actual_lm / (3 * k * typesize), max_mc);
     if (mc > mr) {
       mc -= mc % mr;
     }
@@ -135,7 +143,7 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
 #ifdef AVX_PSIZE
 
 void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
-  TYPE* input_ptr, TYPE* output_ptr, int* cmk_ptr, int peeled_kc, int k,
+  TYPE* input_ptr, TYPE* output_ptr, int* cmk_ptr, int kc_strip, int k,
   int kernel_ri, int input_ri, int in_channel, int idx_base, int cstart,
   int rstart, int input_cols, int input_rows, int kernel_cols, int kernel_rows,
   short reverse_mode
@@ -147,12 +155,12 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
   int ic_start  = kri - row_start * in_channel;
   int col_end, row_end, ic_end, input_col, input_row;
 
-  col_end = fmin(peeled_kc / kernel_ri + col_start, kernel_cols);
+  col_end = fminf(kc_strip / kernel_ri + col_start, kernel_cols);
   for (int c = col_start; c < col_end; c++) {
     input_col = c + cstart;
 
     row_start = (c == col_start) ? row_start : 0;
-    row_end   = fmin((peeled_kc - c * kernel_ri) / in_channel + row_start,
+    row_end   = fminf((kc_strip - c * kernel_ri) / in_channel + row_start,
       kernel_rows);
     for (int r = row_start; r < row_end; r++) {
       input_row = r + rstart;
@@ -160,7 +168,7 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
         && input_row < input_rows && input_row >= 0;
 
       ic_start = ((c == col_start) && (r == row_start)) ? ic_start : 0;
-      ic_end   = fmin(peeled_kc - c * kernel_ri - r * in_channel + ic_start,
+      ic_end   = fminf(kc_strip - c * kernel_ri - r * in_channel + ic_start,
           in_channel);
       for (int ic = ic_start; ic < ic_end; ic += AVX_PSIZE) {
         if (flag) {
@@ -185,13 +193,13 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
 }
 
 void ACX_FUN_LOAD (load_sub_matrix, spatial) (
-  TYPE* input_ptr, TYPE* output_ptr, int* cmk_ptr, int peeled_kc, int actual_kc,
+  TYPE* input_ptr, TYPE* output_ptr, int* cmk_ptr, int kc_strip, int actual_kc,
   int k, int kernel_ri, int input_ri, int in_channel, int idx_base,
   int cstart, int rstart, int input_cols, int input_rows,
   int kernel_rows, short reverse_mode
 ){
   int ik = 0;
-  for (; ik < peeled_kc; ik += AVX_PSIZE) {
+  for (; ik < kc_strip; ik += AVX_PSIZE) {
     const int cr_set[2] = {(k + ik) / in_channel,
       (k + ik + AVX_PSIZE - 1) / in_channel};
     const int c_set[2] = {cr_set[0] / kernel_rows,
@@ -334,6 +342,48 @@ CAMLprim value FUN_NATIVE (spatial) (
     if (pc < 0) pc = 0;
   }
 
+  if (kernel_cri * output_crb < IM2COL_THRESHOLD) {
+    TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+    if (inpt2d == NULL) exit(1);
+
+    for (int i = 0; i < output_crb; ++i) {
+      int bt = i / output_cr;
+      int cr = i % output_cr;
+      int c = cr / output_rows;
+      int r = cr % output_rows;
+
+      const int cstart = c * col_stride - pc;
+      const int rstart = r * row_stride - pr;
+      const int cend = cstart + kernel_cols;
+      const int rend = rstart + kernel_rows;
+      const int input_idx_base = bt * input_cri;
+
+      int cnt = 0;
+      for (int a = cstart; a < cend; ++a) {
+        for (int b = rstart; b < rend; ++b) {
+          for (int h = 0; h < in_channel; ++h) {
+            if (a < input_cols && a >= 0 &&
+                b < input_rows && b >= 0) {
+              int input_idx =
+                 input_idx_base + a * input_ri + b * in_channel + h;
+              inpt2d[i * kernel_cri + cnt] = input_ptr[input_idx];
+            }
+            ++cnt;
+          }
+        }
+      }
+    }
+
+    GEMM(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+      output_crb, out_channel, kernel_cri, ALPHA,
+      inpt2d, kernel_cri, kernel_ptr, out_channel,
+      BETA, output_ptr, out_channel);
+
+    free(inpt2d);
+
+    return Val_unit;
+  }
+
   int mc = output_crb;
   int kc = kernel_cri;
   int nc = out_channel;
@@ -356,7 +406,7 @@ CAMLprim value FUN_NATIVE (spatial) (
       memset(temp_mk, 0, mc * kc * sizeof(TYPE));
       int actual_kc = fminf(k + kc, kernel_cri) - k;
 #ifdef AVX_PSIZE
-      int peeled_kc = (actual_kc / AVX_PSIZE) * AVX_PSIZE;
+      int kc_strip = (actual_kc / AVX_PSIZE) * AVX_PSIZE;
 #endif
 
       int cmk = 0;
@@ -373,13 +423,13 @@ CAMLprim value FUN_NATIVE (spatial) (
 #ifdef AVX_PSIZE
         if (fast_flag) {
           ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
-            input_ptr, temp_mk, &cmk, peeled_kc, k, kernel_ri, input_ri,
+            input_ptr, temp_mk, &cmk, kc_strip, k, kernel_ri, input_ri,
             in_channel, idx_base, cstart, rstart, input_cols, input_rows,
             kernel_cols, kernel_rows, 0);
         }
         else {
           ACX_FUN_LOAD (load_sub_matrix, spatial) (
-            input_ptr, temp_mk, &cmk, peeled_kc, actual_kc,
+            input_ptr, temp_mk, &cmk, kc_strip, actual_kc,
             k, kernel_ri, input_ri, in_channel, idx_base,
             cstart, rstart, input_cols, input_rows, kernel_rows, 0);
         }
@@ -488,6 +538,56 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
   const int kernel_cri = kernel_cols * kernel_rows * in_channel;
   const int kernel_ri  = kernel_rows * in_channel;
 
+  int pr = (row_stride * ( output_rows - 1) + kernel_rows - input_rows) / 2;
+  int pc = (col_stride * ( output_cols - 1) + kernel_cols - input_cols) / 2;
+  if (pr < 0) pr = 0;
+  if (pc < 0) pc = 0;
+
+  memset(input_ptr, 0, batches * input_cri * sizeof(TYPE));
+  INIT;
+
+  if (kernel_cri * output_crb < IM2COL_THRESHOLD) {
+    TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+    if (inpt2d == NULL) exit(1);
+
+    GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
+      output_crb, kernel_cri, out_channel, ALPHA,
+      output_ptr, out_channel, kernel_ptr, out_channel,
+      BETA, inpt2d, kernel_cri);
+
+    for (int i = 0; i < output_crb; ++i) {
+      int bt = i / output_cr;
+      int cr = i % output_cr;
+      int c = cr / output_rows;
+      int r = cr % output_rows;
+
+      const int cstart = c * col_stride - pc;
+      const int rstart = r * row_stride - pr;
+      const int cend = cstart + kernel_cols;
+      const int rend = rstart + kernel_rows;
+      const int input_idx_base = bt * input_cri;
+
+      int cnt = 0;
+      for (int a = cstart; a < cend; ++a) {
+        for (int b = rstart; b < rend; ++b) {
+          for (int h = 0; h < in_channel; ++h) {
+            if (a < input_cols && a >= 0 &&
+                b < input_rows && b >= 0) {
+              int input_idx =
+                 input_idx_base + a * input_ri + b * in_channel + h;
+              input_ptr[input_idx] += inpt2d[i * kernel_cri + cnt];
+            }
+            ++cnt;
+          }
+        }
+      }
+    }
+
+    free(inpt2d);
+
+    return Val_unit;
+  }
+
   int mc = output_crb;
   int kc = kernel_cri;
   int nc = out_channel;
@@ -499,15 +599,6 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
   if (temp_kn == NULL) exit(1);
   TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
   if (temp_mn == NULL) exit(1);
-
-  memset(input_ptr, 0, batches * input_cri * sizeof(TYPE));
-
-  INIT;
-
-  int pr = (row_stride * ( output_rows - 1) + kernel_rows - input_rows) / 2;
-  int pc = (col_stride * ( output_cols - 1) + kernel_cols - input_cols) / 2;
-  if (pr < 0) pr = 0;
-  if (pc < 0) pc = 0;
 
 #ifdef AVX_PSIZE
   int fast_flag = (in_channel % AVX_PSIZE == 0);
@@ -521,7 +612,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
       int actual_kc = fminf(k + kc, kernel_cri) - k;
       int idx_kn_base = k * out_channel;
 #ifdef AVX_PSIZE
-      int peeled_kc = (actual_kc / AVX_PSIZE) * AVX_PSIZE;
+      int kc_strip = (actual_kc / AVX_PSIZE) * AVX_PSIZE;
 #endif
 
       for (int n = 0; n < out_channel; n += nc) {
@@ -564,13 +655,13 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
 #ifdef AVX_PSIZE
         if (fast_flag) {
           ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
-            input_ptr, temp_mk, &cmk, peeled_kc, k, kernel_ri, input_ri,
+            input_ptr, temp_mk, &cmk, kc_strip, k, kernel_ri, input_ri,
             in_channel, idx_mk_base, cstart, rstart, input_cols, input_rows,
             kernel_cols, kernel_rows, 1);
         }
         else {
           ACX_FUN_LOAD (load_sub_matrix, spatial) (
-            input_ptr, temp_mk, &cmk, peeled_kc, actual_kc,
+            input_ptr, temp_mk, &cmk, kc_strip, actual_kc,
             k, kernel_ri, input_ri, in_channel, idx_mk_base,
             cstart, rstart, input_cols, input_rows, kernel_rows, 1);
         }
@@ -651,14 +742,70 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
   const int kernel_cri = kernel_cols * kernel_rows * in_channel;
   const int kernel_ri  = kernel_rows * in_channel;
 
+  int pr = (row_stride * ( output_rows - 1) + kernel_rows - input_rows) / 2;
+  int pc = (col_stride * ( output_cols - 1) + kernel_cols - input_cols) / 2;
+  if (pr < 0) pr = 0;
+  if (pc < 0) pc = 0;
+
+  memset(kernel_ptr, 0, kernel_cols * kernel_rio * sizeof(TYPE));
   INIT;
+
+  if (kernel_cri * output_crb < IM2COL_THRESHOLD) {
+    TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+    if (inpt2d == NULL) exit(1);
+    TYPE *kern2d = (TYPE *) calloc(kernel_cri * out_channel, sizeof(TYPE));
+    if (kern2d == NULL) exit(1);
+
+    for (int i = 0; i < output_crb; ++i) {
+      int bt = i / output_cr;
+      int cr = i % output_cr;
+      int c = cr / output_rows;
+      int r = cr % output_rows;
+
+      const int cstart = c * col_stride - pc;
+      const int rstart = r * row_stride - pr;
+      const int cend = cstart + kernel_cols;
+      const int rend = rstart + kernel_rows;
+      const int input_idx_base = bt * input_cri;
+
+      int cnt = 0;
+      for (int a = cstart; a < cend; ++a) {
+        for (int b = rstart; b < rend; ++b) {
+          for (int h = 0; h < in_channel; ++h) {
+            if (a < input_cols && a >= 0 &&
+                b < input_rows && b >= 0) {
+              int input_idx =
+                 input_idx_base + a * input_ri + b * in_channel + h;
+              inpt2d[i * kernel_cri + cnt] = input_ptr[input_idx];
+            }
+            ++cnt;
+          }
+        }
+      }
+    }
+
+    GEMM(CblasRowMajor, CblasTrans, CblasNoTrans,
+      out_channel, kernel_cri, output_crb, ALPHA,
+      output_ptr, out_channel, inpt2d, kernel_cri,
+      BETA, kern2d, kernel_cri);
+
+    int cnt = 0;
+    for (int j = 0; j < kernel_cri; ++j) {
+      for (int i = 0; i < out_channel; ++i) {
+        kernel_ptr[cnt++] = kern2d[i * kernel_cri + j];
+      }
+    }
+
+    free(inpt2d);
+    free(kern2d);
+
+    return Val_unit;
+  }
 
   int mc = output_crb;
   int kc = kernel_cri;
   int nc = out_channel;
   compute_block_sizes(&mc, &kc, &nc, sizeof(TYPE));
-
-  memset(kernel_ptr, 0, kernel_cols * kernel_rio * sizeof(TYPE));
 
   TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
   if (temp_mk == NULL) exit(1);
@@ -666,11 +813,6 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
   if (temp_kn == NULL) exit(1);
   TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
   if (temp_mn == NULL) exit(1);
-
-  int pr = (row_stride * ( output_rows - 1) + kernel_rows - input_rows) / 2;
-  int pc = (col_stride * ( output_cols - 1) + kernel_cols - input_cols) / 2;
-  if (pr < 0) pr = 0;
-  if (pc < 0) pc = 0;
 
 #ifdef AVX_PSIZE
   int fast_flag = (in_channel % AVX_PSIZE == 0);
@@ -685,7 +827,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
       int idx_kn_base = k * out_channel;
       memset(temp_mk, 0, mc * kc * sizeof(TYPE));
 #ifdef AVX_PSIZE
-      int peeled_kc = (actual_kc / AVX_PSIZE) * AVX_PSIZE;
+      int kc_strip = (actual_kc / AVX_PSIZE) * AVX_PSIZE;
 #endif
 
       int cmk = 0;
@@ -702,13 +844,13 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
 #ifdef AVX_PSIZE
         if (fast_flag) {
           ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
-            input_ptr, temp_mk, &cmk, peeled_kc, k, kernel_ri, input_ri,
+            input_ptr, temp_mk, &cmk, kc_strip, k, kernel_ri, input_ri,
             in_channel, idx_mk_base, cstart, rstart, input_cols, input_rows,
             kernel_cols, kernel_rows, 0);
         }
         else {
           ACX_FUN_LOAD (load_sub_matrix, spatial) (
-            input_ptr, temp_mk, &cmk, peeled_kc, actual_kc,
+            input_ptr, temp_mk, &cmk, kc_strip, actual_kc,
             k, kernel_ri, input_ri, in_channel, idx_mk_base,
             cstart, rstart, input_cols, input_rows, kernel_rows, 0);
         }
