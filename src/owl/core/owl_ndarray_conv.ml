@@ -27,7 +27,7 @@ let _eigen_spatial_conv_backward_kernel : type a b . (a, b) kind -> (a, b) owl_a
   | _         -> failwith "_eigen_spatial_conv_backward_kernel: unsupported operation"
 
 (*
- * convolution eigen-like implementation
+ * GEBP convolution implementation
  *)
 
 external owl_float32_ndarray_conv_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =

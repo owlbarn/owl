@@ -46,6 +46,7 @@
   #undef AVX_ADD
 #endif
 
+
 #define FUN_NATIVE(dim) stub_float64_ndarray_conv ## _ ## dim  ## _ ## native
 #define FUN_BYTE(dim) stub_float64_ndarray_conv ## _ ## dim  ## _ ## bytecode
 #define TYPE double
