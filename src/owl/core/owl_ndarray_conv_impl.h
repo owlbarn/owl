@@ -13,6 +13,7 @@
 
 #define IM2COL_THRESHOLD 512 * 1024
 
+
 OWL_INLINE void query_cache_sizes_intel(int* l1p, int* l2p, int* l3p) {
   int cpuinfo[4];
   int l1 = 0, l2 = 0, l3 = 0;
@@ -22,6 +23,7 @@ OWL_INLINE void query_cache_sizes_intel(int* l1p, int* l2p, int* l3p) {
     cpuinfo[0] = cpuinfo[1] = cpuinfo[2] = cpuinfo[3] = 0;
     CPUID(cpuinfo, 0x4, cache_id);
     cache_type = (cpuinfo[0] & 0x0F) >> 0;
+
     if(cache_type == 1 || cache_type == 3) {
       int cache_level = (cpuinfo[0] & 0xE0) >> 5;
       int ways        = (cpuinfo[1] & 0xFFC00000) >> 22;
@@ -132,12 +134,14 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
   return;
 }
 
-#endif
+#endif /* OWL_CORE_CONV_IMPL */
+
 
 #ifdef OWL_ENABLE_TEMPLATE
 
 /*
- * Load submatrices
+ * Fill in temporary input matrix from input tensor with vectorisation.
+ * Currently only support AVX instruciton set.
  */
 
 #ifdef AVX_PSIZE
@@ -148,13 +152,13 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
   int rstart, int input_cols, int input_rows, int kernel_cols, int kernel_rows,
   short reverse_mode
 ) {
-
   int col_start = k / kernel_ri;
   int kri = k - col_start * kernel_ri;
   int row_start = kri / in_channel;
   int ic_start  = kri - row_start * in_channel;
   int col_end, row_end, ic_end, input_col, input_row;
 
+  // iterate along col, row, and in_channel dimensions of a kernel
   col_end = fminf(kc_strip / kernel_ri + col_start, kernel_cols);
   for (int c = col_start; c < col_end; c++) {
     input_col = c + cstart;
@@ -192,6 +196,7 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
   return;
 }
 
+
 void ACX_FUN_LOAD (load_sub_matrix, spatial) (
   TYPE* input_ptr, TYPE* output_ptr, int* cmk_ptr, int kc_strip, int actual_kc,
   int k, int kernel_ri, int input_ri, int in_channel, int idx_base,
@@ -199,13 +204,16 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
   int kernel_rows, short reverse_mode
 ){
   int ik = 0;
-  for (; ik < kc_strip; ik += AVX_PSIZE) {
+  // first, load ``kc_strip`` numbers with a step of AVX_PSIZE;
+  // assume ``kc_strip % AVX_PSIZE == 0``
+  for ( ; ik < kc_strip; ik += AVX_PSIZE) {
     const int cr_set[2] = {(k + ik) / in_channel,
       (k + ik + AVX_PSIZE - 1) / in_channel};
     const int c_set[2] = {cr_set[0] / kernel_rows,
       cr_set[1] / kernel_rows};
     const int cols[2]  = {cstart + c_set[0], cstart + c_set[1]};
 
+    // out of bounds; set the next AVX_PSIZE numbers to 0
     if (cols[0] >= input_cols || cols[1] < 0) {
       *cmk_ptr += AVX_PSIZE;
       continue;
@@ -215,10 +223,12 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
         cr_set[1] - c_set[1] * kernel_rows};
       const int rows[2]  = {rstart + r_set[0], rstart + r_set[1]};
 
+      // out of bounds; set the next AVX_PSIZE numbers to 0
       if (rows[0] >= input_rows || rows[1] < 0) {
         *cmk_ptr += AVX_PSIZE;
         continue;
       }
+      // next AVX_PSIZE numbers can be loaded consecutively
       else if (rows[0] >= 0 && rows[1] < input_rows) {
         int ki = k + ik - cr_set[0] * in_channel;
         int input_index = idx_base + cols[0] * input_ri
@@ -240,7 +250,7 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
       }
     }
 
-    // the default/slow way
+    // previous special cases do not apply; calculate input index one by one
     for (int ip = 0; ip < AVX_PSIZE; ip++) {
       int kc  = (k + ik + ip) / kernel_ri;
       int kri = (k + ik + ip) - kc * kernel_ri;
@@ -262,6 +272,7 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
     }
   }
 
+  // second, load the rest ``actual_kc - kc_strip`` numbers
   for (; ik < actual_kc; ik++) {
     int kc  = (k + ik) / kernel_ri;
     int kri = (k + ik) - kc * kernel_ri;
@@ -285,10 +296,11 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
   return;
 }
 
-#endif
+#endif /* AVX_PSIZE */
+
 
 /*
- * eigen implementation
+ * GEBP-based implementation
  */
 
 CAMLprim value FUN_NATIVE (spatial) (
@@ -331,7 +343,6 @@ CAMLprim value FUN_NATIVE (spatial) (
   const int kernel_ri  = kernel_rows * in_channel;
 
   memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
-
   INIT;
 
   int pr = 0, pc = 0;
@@ -342,6 +353,7 @@ CAMLprim value FUN_NATIVE (spatial) (
     if (pc < 0) pc = 0;
   }
 
+  // if generated input matrix is small enough, `im2col` is faster
   if (kernel_cri * output_crb < IM2COL_THRESHOLD) {
     TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
     if (inpt2d == NULL) exit(1);
@@ -399,16 +411,17 @@ CAMLprim value FUN_NATIVE (spatial) (
   int fast_flag = (in_channel % AVX_PSIZE == 0);
 #endif
 
+  // iterate along each column of the generated input matrix
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
     for (int k = 0; k < kernel_cri; k += kc) {
-
       memset(temp_mk, 0, mc * kc * sizeof(TYPE));
       int actual_kc = fminf(k + kc, kernel_cri) - k;
 #ifdef AVX_PSIZE
       int kc_strip = (actual_kc / AVX_PSIZE) * AVX_PSIZE;
 #endif
 
+      // iterate along each row of the generated input matrix
       int cmk = 0;
       for (int im = 0; im < actual_mc; im += 1) {
         int b  = (m + im) / output_cr;
@@ -420,6 +433,7 @@ CAMLprim value FUN_NATIVE (spatial) (
         const int rstart = r * row_stride - pr;
         const int idx_base = b * input_cri;
 
+        // fill in the input matrix
 #ifdef AVX_PSIZE
         if (fast_flag) {
           ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
@@ -451,7 +465,6 @@ CAMLprim value FUN_NATIVE (spatial) (
           cmk++;
         }
 #endif
-
       }
 
       int idx_kn_base = k * out_channel;
@@ -459,6 +472,7 @@ CAMLprim value FUN_NATIVE (spatial) (
         int actual_nc = fminf(n + nc, out_channel) - n;
         idx_kn_base += n;
 
+        // fill in the kernel matrix
         int cnk = 0;
         for (int ik = 0; ik < actual_kc; ik++) {
           for (int jn = 0; jn < actual_nc; jn++) {
@@ -479,7 +493,6 @@ CAMLprim value FUN_NATIVE (spatial) (
             output_ptr[index_mn] += temp_mn[cmn++];
           }
         }
-
       }
     }
   }
@@ -683,7 +696,6 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
             cmk++;
           }
 #endif
-
         }
       }
     }
@@ -703,6 +715,7 @@ CAMLprim value FUN_BYTE (spatial_backward_input) (value * argv, int argn) {
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15]
   );
 }
+
 
 CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
   value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
@@ -919,6 +932,11 @@ CAMLprim value FUN_BYTE (spatial_backward_kernel) (value * argv, int argn) {
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15]
   );
 }
+
+
+/*
+ * im2col implementation
+ */
 
 
 CAMLprim value FUN_NATIVE (spatial_im2col) (
