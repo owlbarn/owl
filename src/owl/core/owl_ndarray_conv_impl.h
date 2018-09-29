@@ -11,8 +11,7 @@
  * Code heavily inspired by Eigen.
  */
 
-#define IM2COL_THRESHOLD 1
-//512 * 1024
+#define IM2COL_THRESHOLD 512 * 1024
 
 
 OWL_INLINE void query_cache_sizes_intel(int* l1p, int* l2p, int* l3p) {
