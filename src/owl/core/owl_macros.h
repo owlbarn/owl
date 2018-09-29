@@ -22,6 +22,7 @@
   #include <immintrin.h>
 #endif
 
+
 // Define the structure for complex numbers
 
 typedef struct { float r, i; } complex_float;
@@ -84,7 +85,6 @@ typedef struct { double r, i; } complex_double;
 #else
   #define OWL_ARCH_x86_64 0
 #endif
-
 
 #if defined(__PIC__) && OWL_ARCH_i386
 #define CPUID(cpuinfo,func,id) \
