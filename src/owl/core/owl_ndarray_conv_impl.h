@@ -11,7 +11,7 @@
  * Code heavily inspired by Eigen.
  */
 
-#define IM2COL_THRESHOLD 512 * 1024
+#define IM2COL_THRESHOLD 1//512 * 1024
 
 
 OWL_INLINE void query_cache_sizes_intel(int* l1p, int* l2p, int* l3p) {
@@ -168,14 +168,14 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
         + input_row * in_channel + ki;
 
       if (reverse_mode == 0) {
-        AVX_TYPE v = AVX_LOAD(input_ptr + input_index);
-        AVX_STORE(output_ptr + (*cmk_ptr), v);
+        AVX_TYPE v = AVX_LOADA(input_ptr + input_index);
+        AVX_STOREA(output_ptr + (*cmk_ptr), v);
       }
       else {
-        AVX_TYPE v1 = AVX_LOAD(output_ptr + (*cmk_ptr));
-        AVX_TYPE v2 = AVX_LOAD(input_ptr + input_index);
+        AVX_TYPE v1 = AVX_LOADA(output_ptr + (*cmk_ptr));
+        AVX_TYPE v2 = AVX_LOADA(input_ptr + input_index);
         AVX_TYPE v  = AVX_ADD(v1, v2);
-        AVX_STORE(input_ptr + input_index, v);
+        AVX_STOREA(input_ptr + input_index, v);
       }
     }
     *cmk_ptr += AVX_PSIZE;
@@ -222,14 +222,14 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
           + rows[0] * in_channel + ki;
 
         if (reverse_mode == 0) {
-          AVX_TYPE v = AVX_LOAD(input_ptr + input_index);
-          AVX_STORE(output_ptr + (*cmk_ptr), v);
+          AVX_TYPE v = AVX_LOADU(input_ptr + input_index);
+          AVX_STOREU(output_ptr + (*cmk_ptr), v);
         }
         else {
-          AVX_TYPE v1 = AVX_LOAD(output_ptr + (*cmk_ptr));
-          AVX_TYPE v2 = AVX_LOAD(input_ptr + input_index);
+          AVX_TYPE v1 = AVX_LOADU(output_ptr + (*cmk_ptr));
+          AVX_TYPE v2 = AVX_LOADU(input_ptr + input_index);
           AVX_TYPE v  = AVX_ADD(v1, v2);
-          AVX_STORE(input_ptr + input_index, v);
+          AVX_STOREU(input_ptr + input_index, v);
         }
 
         *cmk_ptr += AVX_PSIZE;
@@ -452,6 +452,15 @@ CAMLprim value FUN_NATIVE (spatial) (
         }
 #endif
       }
+
+      /* int cfxxk = 0;
+      for (size_t ifoo = 0; ifoo < actual_mc; ifoo++) {
+        for (size_t ibar = 0; ibar < actual_kc; ibar++) {
+          fprintf(stderr, "%.0f ", temp_mk[cfxxk++]);
+        }
+        fprintf(stderr, "\n");
+      }
+      fprintf(stderr, "\n"); */
 
       int idx_kn_base = k * out_channel;
       for (int n = 0; n < out_channel; n += nc) {
