@@ -12,6 +12,7 @@
  */
 
 #define IM2COL_THRESHOLD 1//512 * 1024
+#define ALIGN_SIZE 32 // for AVX
 
 
 OWL_INLINE void query_cache_sizes_intel(int* l1p, int* l2p, int* l3p) {
@@ -151,8 +152,8 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
   int kernel_ri, int input_ri, int in_channel, int idx_base, int cstart,
   int rstart, int input_cols, int input_rows, short reverse_mode
 ) {
-  // if in_channel % AVX_PSIZE == 0, the input matrix can always be loaded
-  // consecutively by a step of AVX_PSIZ
+   // Assume output_ptr is aligned; if in_channel % AVX_PSIZE == 0, the input
+   // matrix can always be loaded consecutively by a step of AVX_PSIZ.
   for (int ik = 0; ik < kc_strip; ik += AVX_PSIZE) {
     int kc  = (k + ik) / kernel_ri;
     int kri = (k + ik) - kc * kernel_ri;
@@ -168,14 +169,14 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
         + input_row * in_channel + ki;
 
       if (reverse_mode == 0) {
-        AVX_TYPE v = AVX_LOADA(input_ptr + input_index);
+        AVX_TYPE v = AVX_LOADU(input_ptr + input_index);
         AVX_STOREA(output_ptr + (*cmk_ptr), v);
       }
       else {
         AVX_TYPE v1 = AVX_LOADA(output_ptr + (*cmk_ptr));
-        AVX_TYPE v2 = AVX_LOADA(input_ptr + input_index);
+        AVX_TYPE v2 = AVX_LOADU(input_ptr + input_index);
         AVX_TYPE v  = AVX_ADD(v1, v2);
-        AVX_STOREA(input_ptr + input_index, v);
+        AVX_STOREU(input_ptr + input_index, v);
       }
     }
     *cmk_ptr += AVX_PSIZE;
@@ -388,15 +389,19 @@ CAMLprim value FUN_NATIVE (spatial) (
   int nc = out_channel;
   compute_block_sizes(&kc, &nc, &mc, sizeof(TYPE));
 
+#ifdef AVX_PSIZE
+  int fast_flag = (in_channel % AVX_PSIZE == 0);
+  TYPE *temp_mk = NULL;
+  if (posix_memalign((void**) &temp_mk, ALIGN_SIZE, mc * kc * sizeof(TYPE)))
+    exit(1);
+#else
   TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
   if (temp_mk == NULL) exit(1);
+#endif
   TYPE *temp_kn = (TYPE *) calloc(nc * kc, sizeof(TYPE));
   if (temp_kn == NULL) exit(1);
   TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
   if (temp_mn == NULL) exit(1);
-#ifdef AVX_PSIZE
-  int fast_flag = (in_channel % AVX_PSIZE == 0);
-#endif
 
   // iterate along each column of the generated input matrix
   for (int m = 0; m < output_crb; m += mc) {
@@ -452,15 +457,6 @@ CAMLprim value FUN_NATIVE (spatial) (
         }
 #endif
       }
-
-      /* int cfxxk = 0;
-      for (size_t ifoo = 0; ifoo < actual_mc; ifoo++) {
-        for (size_t ibar = 0; ibar < actual_kc; ibar++) {
-          fprintf(stderr, "%.0f ", temp_mk[cfxxk++]);
-        }
-        fprintf(stderr, "\n");
-      }
-      fprintf(stderr, "\n"); */
 
       int idx_kn_base = k * out_channel;
       for (int n = 0; n < out_channel; n += nc) {
@@ -601,16 +597,19 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
   int nc = out_channel;
   compute_block_sizes(&mc, &kc, &nc, sizeof(TYPE));
 
+#ifdef AVX_PSIZE
+  int fast_flag = (in_channel % AVX_PSIZE == 0);
+  TYPE *temp_mk = NULL;
+  if (posix_memalign((void**) &temp_mk, ALIGN_SIZE, mc * kc * sizeof(TYPE)))
+    exit(1);
+#else
   TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
   if (temp_mk == NULL) exit(1);
+#endif
   TYPE *temp_kn = (TYPE *) calloc(nc * kc, sizeof(TYPE));
   if (temp_kn == NULL) exit(1);
   TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
   if (temp_mn == NULL) exit(1);
-
-#ifdef AVX_PSIZE
-  int fast_flag = (in_channel % AVX_PSIZE == 0);
-#endif
 
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
@@ -814,16 +813,19 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
   int nc = out_channel;
   compute_block_sizes(&mc, &kc, &nc, sizeof(TYPE));
 
+#ifdef AVX_PSIZE
+  int fast_flag = (in_channel % AVX_PSIZE == 0);
+  TYPE *temp_mk = NULL;
+  if (posix_memalign((void**) &temp_mk, ALIGN_SIZE, mc * kc * sizeof(TYPE)))
+    exit(1);
+#else
   TYPE *temp_mk = (TYPE *) calloc(mc * kc, sizeof(TYPE));
   if (temp_mk == NULL) exit(1);
+#endif
   TYPE *temp_kn = (TYPE *) calloc(nc * kc, sizeof(TYPE));
   if (temp_kn == NULL) exit(1);
   TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
   if (temp_mn == NULL) exit(1);
-
-#ifdef AVX_PSIZE
-  int fast_flag = (in_channel % AVX_PSIZE == 0);
-#endif
 
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
