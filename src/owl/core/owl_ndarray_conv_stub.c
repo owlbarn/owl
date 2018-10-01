@@ -7,6 +7,7 @@
 #include "cblas.h"
 #include <string.h>
 
+
 #define OWL_ENABLE_TEMPLATE
 
 //////////////////// function templates starts ////////////////////
