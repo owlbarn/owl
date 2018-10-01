@@ -2719,7 +2719,7 @@ module Make
       l'
 
     (* Reference: https://arxiv.org/abs/1502.03167.
-       Implementaton in Keras: https://bit.ly/2vBsvgI.*)
+       Implementation in Keras: https://bit.ly/2vBsvgI.*)
     let run x l =
       if l.training = true then (
         let a = _f (float_of_int ((Arr.numel x) / (shape x).(l.axis))) in

@@ -17,6 +17,11 @@
 #include <caml/signals.h>
 #include <caml/threads.h>
 
+#if defined(__AVX__)
+  #define OWL_AVX
+  #include <immintrin.h>
+#endif
+
 
 // Define the structure for complex numbers
 
@@ -65,6 +70,32 @@ typedef struct { double r, i; } complex_double;
     *bi++ = t;                        \
   } while (--i > 0);                  \
 }
+
+
+// CPUID macros
+
+#if defined(__i386__) || defined(_M_IX86) || defined(_X86_) || defined(__i386)
+  #define OWL_ARCH_i386 1
+#else
+  #define OWL_ARCH_i386 0
+#endif
+
+#if defined(__x86_64__) || defined(_M_X64) || defined(__amd64)
+  #define OWL_ARCH_x86_64 1
+#else
+  #define OWL_ARCH_x86_64 0
+#endif
+
+#if defined(__PIC__) && OWL_ARCH_i386
+  #define CPUID(cpuinfo,func,id) \
+    __asm__ __volatile__ ("xchgl %%ebx, %k1; cpuid; xchgl %%ebx,%k1": "=a" (cpuinfo[0]), "=&r" (cpuinfo[1]), "=c" (cpuinfo[2]), "=d" (cpuinfo[3]) : "a" (func), "c" (id));
+#elif defined(__PIC__) && OWL_ARCH_x86_64
+  #define CPUID(cpuinfo,func,id) \
+    __asm__ __volatile__ ("xchg{q}\t{%%}rbx, %q1; cpuid; xchg{q}\t{%%}rbx, %q1": "=a" (cpuinfo[0]), "=&r" (cpuinfo[1]), "=c" (cpuinfo[2]), "=d" (cpuinfo[3]) : "0" (func), "2" (id));
+#else
+  #define CPUID(cpuinfo,func,id) \
+    __asm__ __volatile__ ("cpuid": "=a" (cpuinfo[0]), "=b" (cpuinfo[1]), "=c" (cpuinfo[2]), "=d" (cpuinfo[3]) : "0" (func), "2" (id) );
+#endif
 
 
 //  Other
