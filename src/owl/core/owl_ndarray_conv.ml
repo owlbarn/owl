@@ -7,24 +7,6 @@ open Bigarray
 
 open Owl_core_types
 
-(*
- * eigen interface
- *)
-
-let _eigen_spatial_conv : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
-  | Float32   -> Eigen.Tensor.S.spatial_conv
-  | Float64   -> Eigen.Tensor.D.spatial_conv
-  | _         -> failwith "_eigen_spatial_conv: unsupported operation"
-
-let _eigen_spatial_conv_backward_input : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
-  | Float32   -> Eigen.Tensor.S.spatial_conv_backward_input
-  | Float64   -> Eigen.Tensor.D.spatial_conv_backward_input
-  | _         -> failwith "_eigen_spatial_conv_backward_input: unsupported operation"
-
-let _eigen_spatial_conv_backward_kernel : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
-  | Float32   -> Eigen.Tensor.S.spatial_conv_backward_kernel
-  | Float64   -> Eigen.Tensor.D.spatial_conv_backward_kernel
-  | _         -> failwith "_eigen_spatial_conv_backward_kernel: unsupported operation"
 
 (*
  * GEBP convolution implementation
@@ -83,7 +65,7 @@ let _owl_spatial_conv : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
   | Float64   -> owl_float64_ndarray_conv_spatial
   | Complex32 -> owl_complex32_ndarray_conv_spatial
   | Complex64 -> owl_complex64_ndarray_conv_spatial
-  | _         -> failwith "_owl_spatial_conv_eigen: unsupported operation"
+  | _         -> failwith "_owl_spatial_conv: unsupported operation"
 
 let _owl_spatial_conv_backward_input : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
   | Float32   -> owl_float32_ndarray_conv_spatial_backward_input
@@ -97,7 +79,7 @@ let _owl_spatial_conv_backward_kernel : type a b . (a, b) kind -> (a, b) owl_arr
   | Float64   -> owl_float64_ndarray_conv_spatial_backward_kernel
   | Complex32 -> owl_complex32_ndarray_conv_spatial_backward_kernel
   | Complex64 -> owl_complex64_ndarray_conv_spatial_backward_kernel
-  | _         -> failwith "_owl_spatial_conv_backward_kernel_im2col: unsupported operation"
+  | _         -> failwith "_owl_spatial_conv_backward_kernel: unsupported operation"
 
 
 (*

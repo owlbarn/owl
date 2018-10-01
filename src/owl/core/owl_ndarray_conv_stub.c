@@ -26,10 +26,10 @@
   #define AVX_TYPE __m256
   #define ACX_FUN_LOAD(prefix, dim) prefix ## _ ## float32 ## _ ## dim
   #define AVX_STOREA _mm256_store_ps
-  #define AVX_LOADA _mm256_load_ps
   #define AVX_STOREU _mm256_storeu_ps
-  #define AVX_LOADU _mm256_loadu_ps
-  #define AVX_ADD _mm256_add_ps
+  #define AVX_LOADA  _mm256_load_ps
+  #define AVX_LOADU  _mm256_loadu_ps
+  #define AVX_ADD    _mm256_add_ps
 #endif
 #include "owl_ndarray_conv_impl.h"
 #undef GEMM
@@ -44,8 +44,8 @@
   #undef AVX_TYPE
   #undef ACX_FUN_LOAD
   #undef AVX_STOREA
-  #undef AVX_LOADA
   #undef AVX_STOREU
+  #undef AVX_LOADA
   #undef AVX_LOADU
   #undef AVX_ADD
 #endif
@@ -60,10 +60,10 @@
   #define AVX_TYPE __m256d
   #define ACX_FUN_LOAD(prefix, dim) prefix ## _ ## float64 ## _ ## dim
   #define AVX_STOREA _mm256_store_pd
-  #define AVX_LOADA  _mm256_load_pd
   #define AVX_STOREU _mm256_storeu_pd
-  #define AVX_LOADU _mm256_loadu_pd
-  #define AVX_ADD _mm256_add_pd
+  #define AVX_LOADA  _mm256_load_pd
+  #define AVX_LOADU  _mm256_loadu_pd
+  #define AVX_ADD    _mm256_add_pd
 #endif
 #define ALPHA 1.
 #define BETA 0.
@@ -81,8 +81,8 @@
   #undef AVX_TYPE
   #undef ACX_FUN_LOAD
   #undef AVX_STOREA
-  #undef AVX_LOADA
   #undef AVX_STOREU
+  #undef AVX_LOADA
   #undef AVX_LOADU
   #undef AVX_ADD
 #endif

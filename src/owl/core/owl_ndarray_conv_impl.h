@@ -11,8 +11,8 @@
  * Code heavily inspired by Eigen.
  */
 
-#define IM2COL_THRESHOLD 1//512 * 1024
-#define ALIGN_SIZE 32 // for AVX
+#define IM2COL_THRESHOLD 512 * 1024
+#define ALIGN_SIZE 32 // for AVX address alignment
 
 
 OWL_INLINE void query_cache_sizes_intel(int* l1p, int* l2p, int* l3p) {
@@ -68,9 +68,13 @@ OWL_INLINE void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
 }
 
 
+// The effect of calculating block size according to cache sizes is yet to be
+// proved here since we use OpenBLAS GEMM directly; also, note that we
+// calculate `InputMatrix x KernelMatrix`, not the other way around.
 void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
   int l1, l2, l3;
   query_cache_sizes(&l1, &l2, &l3);
+  // set the cache sizes to small numbers when debugging
 
   int k = *kp;
   int m = *mp;
@@ -140,19 +144,19 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
 
 #ifdef OWL_ENABLE_TEMPLATE
 
+#ifdef AVX_PSIZE
+
 /*
  * Fill in temporary input matrix from input tensor with vectorisation.
  * Currently only support AVX instruciton set.
  */
-
-#ifdef AVX_PSIZE
 
 void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
   TYPE* input_ptr, TYPE* output_ptr, int* cmk_ptr, int kc_strip, int k,
   int kernel_ri, int input_ri, int in_channel, int idx_base, int cstart,
   int rstart, int input_cols, int input_rows, short reverse_mode
 ) {
-   // Assume output_ptr is aligned; if in_channel % AVX_PSIZE == 0, the input
+   // assume output_ptr is aligned; if in_channel % AVX_PSIZE == 0, the input
    // matrix can always be loaded consecutively by a step of AVX_PSIZ.
   for (int ik = 0; ik < kc_strip; ik += AVX_PSIZE) {
     int kc  = (k + ik) / kernel_ri;
@@ -167,7 +171,6 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
       input_row < input_rows && input_row >= 0) {
       int input_index = idx_base + input_col * input_ri
         + input_row * in_channel + ki;
-
       if (reverse_mode == 0) {
         AVX_TYPE v = AVX_LOADU(input_ptr + input_index);
         AVX_STOREA(output_ptr + (*cmk_ptr), v);
@@ -179,6 +182,7 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
         AVX_STOREU(input_ptr + input_index, v);
       }
     }
+
     *cmk_ptr += AVX_PSIZE;
   }
   return;
@@ -236,6 +240,7 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
         *cmk_ptr += AVX_PSIZE;
         continue;
       }
+
     }
 
     // previous special cases do not apply; calculate input index one by one
@@ -288,7 +293,7 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
 
 
 /*
- * GEBP-based implementation
+ * GEBP-based implementation. See Goto et.al [08] for detail.
  */
 
 CAMLprim value FUN_NATIVE (spatial) (
@@ -403,7 +408,6 @@ CAMLprim value FUN_NATIVE (spatial) (
   TYPE *temp_mn = (TYPE *) calloc(mc * nc, sizeof(TYPE));
   if (temp_mn == NULL) exit(1);
 
-  // iterate along each column of the generated input matrix
   for (int m = 0; m < output_crb; m += mc) {
     int actual_mc = fminf(m + mc, output_crb) - m;
     for (int k = 0; k < kernel_cri; k += kc) {
@@ -413,7 +417,8 @@ CAMLprim value FUN_NATIVE (spatial) (
       int kc_strip = (actual_kc / AVX_PSIZE) * AVX_PSIZE;
 #endif
 
-      // iterate along each row of the generated input matrix
+      // iterate along each row of the generated input matrix; processing four
+      // rows in parallel with the help of e.g. OpenMP should be possible
       int cmk = 0;
       for (int im = 0; im < actual_mc; im += 1) {
         int b  = (m + im) / output_cr;
@@ -425,7 +430,7 @@ CAMLprim value FUN_NATIVE (spatial) (
         const int rstart = r * row_stride - pr;
         const int idx_base = b * input_cri;
 
-        // fill in the input matrix
+        // fill in the sub input matrix
 #ifdef AVX_PSIZE
         if (fast_flag) {
           ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
@@ -660,19 +665,19 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
           int idx_mk_base = b * input_cri;
 
 #ifdef AVX_PSIZE
-        if (fast_flag) {
-          ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
-            input_ptr, temp_mk, &cmk, kc_strip, k, kernel_ri, input_ri,
-            in_channel, idx_mk_base, cstart, rstart, input_cols, input_rows, 1);
-        }
-        else {
-          ACX_FUN_LOAD (load_sub_matrix, spatial) (
-            input_ptr, temp_mk, &cmk, kc_strip, actual_kc,
-            k, kernel_ri, input_ri, in_channel, idx_mk_base,
-            cstart, rstart, input_cols, input_rows, kernel_rows, 1);
-        }
+          if (fast_flag) {
+            ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
+              input_ptr, temp_mk, &cmk, kc_strip, k, kernel_ri, input_ri,
+              in_channel, idx_mk_base, cstart, rstart, input_cols, input_rows, 1);
+          }
+          else {
+            ACX_FUN_LOAD (load_sub_matrix, spatial) (
+              input_ptr, temp_mk, &cmk, kc_strip, actual_kc,
+              k, kernel_ri, input_ri, in_channel, idx_mk_base,
+              cstart, rstart, input_cols, input_rows, kernel_rows, 1);
+          }
 #else
-          for (int ik = 0; ik < actual_kc; ik+=1) {
+          for (int ik = 0; ik < actual_kc; ik += 1) {
             int kc  = (k + ik) / kernel_ri;
             int kri = (k + ik) - kc * kernel_ri;
             int kr  = kri / in_channel;
