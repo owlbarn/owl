@@ -8,7 +8,7 @@
 
 /*
  * Calculate the cache sizes and block sizes for convolution operations.
- * Code heavily inspired by Eigen.
+ * Code heavily inspired by Eigen (http://eigen.tuxfamily.org/).
  */
 
 #define IM2COL_THRESHOLD 512 * 1024
