@@ -97,7 +97,7 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
   if (k > max_kc) {
     k = (k % max_kc) == 0 ? max_kc
       : max_kc - k_strip * ((max_kc - 1 - (k % max_kc)) / (k_strip * (k / max_kc + 1)));
-    assert (old_k / k == old_k / max_kc);
+    //assert (old_k / k == old_k / max_kc);
   }
 
   int max_nc;
@@ -157,7 +157,7 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
   int rstart, int input_cols, int input_rows, short reverse_mode
 ) {
    // assume output_ptr is aligned; if in_channel % AVX_PSIZE == 0, the input
-   // matrix can always be loaded consecutively by a step of AVX_PSIZ.
+   // matrix can always be loaded consecutively by a step of AVX_PSIZ
   for (int ik = 0; ik < kc_strip; ik += AVX_PSIZE) {
     int kc  = (k + ik) / kernel_ri;
     int kri = (k + ik) - kc * kernel_ri;

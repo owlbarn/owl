@@ -6,7 +6,6 @@
 #include "owl_core.h"
 #include "cblas.h"
 #include <string.h>
-#include <assert.h>
 
 #define OWL_ENABLE_TEMPLATE
 
@@ -20,7 +19,6 @@
 #define ALPHA 1.
 #define BETA 0.
 #define GEMM cblas_sgemm
-#define UTIL
 #ifdef OWL_AVX
   #define AVX_PSIZE 8
   #define AVX_TYPE __m256

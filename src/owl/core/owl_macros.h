@@ -18,7 +18,7 @@
 #include <caml/threads.h>
 
 #if defined(__AVX__)
-  #define  OWL_AVX
+  #define OWL_AVX
   #include <immintrin.h>
 #endif
 
