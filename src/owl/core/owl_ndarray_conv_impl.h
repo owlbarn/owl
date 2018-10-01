@@ -157,7 +157,7 @@ void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (
   int rstart, int input_cols, int input_rows, short reverse_mode
 ) {
    // assume output_ptr is aligned; if in_channel % AVX_PSIZE == 0, the input
-   // matrix can always be loaded consecutively by a step of AVX_PSIZ
+   // matrix can always be loaded consecutively by a step of AVX_PSIZE
   for (int ik = 0; ik < kc_strip; ik += AVX_PSIZE) {
     int kc  = (k + ik) / kernel_ri;
     int kri = (k + ik) - kc * kernel_ri;
@@ -196,8 +196,8 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
   int kernel_rows, short reverse_mode
 ){
   int ik = 0;
-  // first, load ``kc_strip`` numbers with a step of AVX_PSIZE;
-  // assume ``kc_strip % AVX_PSIZE == 0``
+  // first, load `kc_strip` numbers with a step of AVX_PSIZE;
+  // assume `kc_strip % AVX_PSIZE == 0`
   for ( ; ik < kc_strip; ik += AVX_PSIZE) {
     const int cr_set[2] = {(k + ik) / in_channel,
       (k + ik + AVX_PSIZE - 1) / in_channel};
@@ -265,7 +265,7 @@ void ACX_FUN_LOAD (load_sub_matrix, spatial) (
     }
   }
 
-  // second, load the rest ``actual_kc - kc_strip`` numbers
+  // second, load the rest `actual_kc - kc_strip` numbers
   for (; ik < actual_kc; ik++) {
     int kc  = (k + ik) / kernel_ri;
     int kri = (k + ik) - kc * kernel_ri;
