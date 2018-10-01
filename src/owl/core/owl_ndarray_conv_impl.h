@@ -346,7 +346,7 @@ CAMLprim value FUN_NATIVE (spatial) (
     if (pc < 0) pc = 0;
   }
 
-  // if generated input matrix is small enough, `im2col` is faster
+  // if generated input matrix is small enough, use im2col implementation
   if (kernel_cri * output_crb < IM2COL_THRESHOLD) {
     TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
     if (inpt2d == NULL) exit(1);

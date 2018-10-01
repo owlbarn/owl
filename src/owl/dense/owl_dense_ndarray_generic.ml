@@ -5976,7 +5976,7 @@ let copy_col_to v x i =
   copy_area_to v r1 x r2
 
 
-(* NOTE: same implementaton code as that in Owl_linalg_generic *)
+(* NOTE: same implementation code as that in Owl_linalg_generic *)
 let dot x1 x2 =
   let m, k = _matrix_shape x1 in
   let l, n = _matrix_shape x2 in
