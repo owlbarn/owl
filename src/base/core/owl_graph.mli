@@ -11,6 +11,9 @@
 type order = BFS | DFS
 (** Order to traverse a graph, BFS or DFS. *)
 
+type traversal = PreOrder | PostOrder
+(** Order of the function evaluation. *)
+
 type dir = Ancestor | Descendant
 (** Iteration direction, i.e. ancestors or descendants *)
 
@@ -142,10 +145,10 @@ original graph.
 
 (** {6 Iterators} *)
 
-val iter_ancestors : ?order:order -> ('a node -> unit) -> 'a node array -> unit
+val iter_ancestors : ?order:order -> ?traversal:traversal -> ('a node -> unit) -> 'a node array -> unit
 (** Iterate the ancestors of a given node. *)
 
-val iter_descendants : ?order:order -> ('a node -> unit) -> 'a node array -> unit
+val iter_descendants : ?order:order -> ?traversal:traversal -> ('a node -> unit) -> 'a node array -> unit
 (** Iterate the descendants of a given node. *)
 
 val filter_ancestors : ('a node -> bool) -> 'a node array -> 'a node array
@@ -176,7 +179,10 @@ val fold_out_edges : ('b -> 'a node -> 'a node -> 'b) -> 'b -> 'a node array -> 
 (** {6 Helper functions} *)
 
 val topo_sort : 'a node array -> 'a node array
-(* BFS topological sort of a given graph. *)
+(**
+Topological sort of a given graph using a DFS order. Assumes that the graph is
+acyclic.
+ *)
 
 val pp_node : Format.formatter -> 'a node -> unit
 (** Pretty print a given node. *)

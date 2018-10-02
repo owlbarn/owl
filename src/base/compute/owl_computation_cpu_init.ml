@@ -92,11 +92,11 @@ module Make
     else
       make_value_from None x
 
+
   let allocate_from_parent_arr x parents =
     let parents_val = Array.map
                         (fun par -> value_to_arr (get_value par).(0)) parents in
     let shp_x = node_shape x in
-    (* an imperative version could be slightly more efficient? *)
     let id_shaped_par, _ = Owl_utils.Array.filter2_split
                              (fun par par_val -> A.shape par_val = shp_x
                                                  && refnum par = 1
@@ -106,6 +106,7 @@ module Make
       make_value_from (Some id_shaped_par.(0)) x
     else
       make_value_from None x
+
 
   (* core initialisation function *)
 
