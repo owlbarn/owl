@@ -115,14 +115,14 @@ module type Sig = sig
 ``delay f x`` returns ``f x``. It allows to use a function that is not tracked
 by the computation graph and delay its evaluation. The output must have the
 same shape as the input.
-   *)
+  *)
 
   val delay_array : int array -> (Device.A.arr array -> Device.A.arr) ->
                     arr array -> arr
-(**
+  (**
 ``delay_array out_shape f x`` works in the same way as ``delay`` but is applied
 on an array of ndarrays. Needs the shape of the output as an argument.
- *)
+  *)
 
   val print : ?max_row:'a -> ?max_col:'b -> ?header:'c -> ?fmt:'d -> 'e -> unit
   (** TODO *)
