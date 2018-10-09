@@ -20,7 +20,7 @@ let make () = {
 
 let tune t =
   Owl_log.info "AEOS: tuning cos ...";
-  ignore t
+  
   (* Call C stub function to do measurement, then regression *)
 
 
