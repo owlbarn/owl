@@ -1726,7 +1726,7 @@ module Normalisation : sig
   (** Tag the neuron, used by ``Algodiff`` module. *)
 
   val mkpar : neuron_typ -> t array
-  (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+  (** Assemble all the trainable parameters in an array, used by ``Optimise`` module. *)
 
   val mkpri : neuron_typ -> t array
   (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
@@ -1735,7 +1735,19 @@ module Normalisation : sig
   (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
 
   val update : neuron_typ -> t array -> unit
-  (** Update parameters in a neuron, used by ``Optimise`` module. *)
+  (** Update trainable parameters of the neuron, used by ``Optimise`` module. *)
+
+  val non_trainable_par : neuron_typ -> t array
+  (** Assemble all the non-trainable parameters in an array. *)
+
+  val update_non_trainable : neuron_typ -> t array -> unit
+  (** Update non-trainable parameters of the neuron. *)
+
+  val set_parameters : neuron_typ -> t array -> unit
+  (** Update all parameters of the neuron. *)
+
+  val get_parameters : neuron_typ -> t array
+  (** Assemble all parameters of the neuron. *)
 
   val copy : neuron_typ -> neuron_typ
   (** Make a deep copy of the neuron and its parameters. *)
@@ -1978,16 +1990,22 @@ val mktag : int -> neuron -> unit
 (** Tag the neuron, used by ``Algodiff`` module. *)
 
 val mkpar : neuron -> t array
-(** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+(** Assemble all the trainable parameters in an array, used by ``Optimise`` module. *)
 
 val mkpri : neuron -> t array
-(** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+(** Assemble all the primal values in an array, used by ``Optimise`` module. *)
 
 val mkadj : neuron -> t array
 (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
 
 val update : neuron -> t array -> unit
-(** Update parameters in a neuron, used by ``Optimise`` module. *)
+(** Update trainable parameters in a neuron, used by ``Optimise`` module. *)
+
+val get_parameters : neuron -> t array
+(** Assemble all the parameters of the given neuron in an array. *)
+
+val set_parameters : neuron -> t array -> unit
+(** Update all parameters of a neuron. *)
 
 val copy : neuron -> neuron
 (** Make a deep copy of the neuron and its parameters. *)
