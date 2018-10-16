@@ -16,8 +16,8 @@ let copyright =
 let c_header_file fname tuners =
   let define_str = tuners
     |> Array.map (function
-      | Sin t -> Owl_aeos_tuner_sin.(Printf.sprintf "#define %s %s" t.c_macro (to_string t))
-      | Cos t -> Owl_aeos_tuner_cos.(Printf.sprintf "#define %s %s" t.c_macro (to_string t))
+      | Sin t -> Owl_aeos_tuner_sin.to_string t
+      | Cos t -> Owl_aeos_tuner_cos.to_string t
     )
     |> Array.fold_left (fun acc s ->
       Printf.sprintf "%s\n\n%s" acc s

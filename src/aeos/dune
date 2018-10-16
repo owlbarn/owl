@@ -8,6 +8,6 @@
     owl_aeos_tuner_cos_stub
   )
   (libraries
-    owl-base
+    owl owl-base
   )
 )

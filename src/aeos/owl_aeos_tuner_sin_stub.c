@@ -5,11 +5,16 @@
 
 int dummy_137 = 0;
 
-CAMLprim value FUN4(value vN, value vX, value vY)
-{
+#include <owl_macros.h>
+
+#define FUN4 float32_sin
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (sinf(X))
+
+CAMLprim value FUN4(value vN, value vX, value vY) {
   CAMLparam3(vN, vX, vY);
   int N = Long_val(vN);
-  INIT;
 
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   NUMBER *X_data = (NUMBER *) X->data;
@@ -28,7 +33,7 @@ CAMLprim value FUN4(value vN, value vX, value vY)
 
   while (start_x != stop_x) {
     NUMBER x = *start_x;
-    *start_y = (MAPFN(x));
+    *start_y = MAPFN(x);
 
     start_x += 1;
     start_y += 1;

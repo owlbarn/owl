@@ -20,8 +20,10 @@ let make () = {
 
 let tune t =
   Owl_log.info "AEOS: tuning cos ...";
-  
+  Printf.fprintf stderr "%s\n" t.c_macro
+
   (* Call C stub function to do measurement, then regression *)
 
 
-let to_string t = string_of_int t.params
+let to_string t =
+  Printf.sprintf "#define %s %s" t.c_macro (string_of_int t.params)
