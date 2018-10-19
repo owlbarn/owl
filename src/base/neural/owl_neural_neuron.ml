@@ -2713,18 +2713,16 @@ module Make
       l.beta <- u.(0) |> primal';
       l.gamma <- u.(1) |> primal'
 
-    let non_trainable_par l = [|l.mu; l.var|]
+    let load_weights l u =
+      l.beta <- u.(0) |> primal';
+      l.gamma <- u.(1) |> primal';
+      l.mu <- u.(2) |> primal';
+      l.var <- u.(3) |> primal'
 
-    let update_non_trainable l u =
-      l.mu <- u.(0) |> primal';
-      l.var <- u.(1) |> primal'
-
-    let set_parameters l u =
-      update l [|u.(0); u.(1)|];
-      update_non_trainable l [|u.(2); u.(3)|]
-
-    let get_parameters l =
-      Owl_utils.Array.(mkpar l @ non_trainable_par l)
+    let save_weights l =
+      let trainable = [|l.beta; l.gamma|] in
+      let non_trainable = [|l.mu; l.var|] in
+      Owl_utils.Array.(trainable @ non_trainable)
 
     let copy l =
       let l' = create ~training:l.training ~decay:(unpack_flt l.decay) ~mu:(unpack_arr l.mu) ~var:(unpack_arr l.var) l.axis in
@@ -3266,13 +3264,13 @@ module Make
     | _                 -> () (* activation, etc. *)
 
 
-  let get_parameters l = match l with
-    | Normalisation l -> Normalisation.get_parameters l
+  let save_weights l = match l with
+    | Normalisation l -> Normalisation.save_weights l
     | _               -> mkpar l
 
 
-  let set_parameters l u = match l with
-    | Normalisation l -> Normalisation.set_parameters l u
+  let load_weights l u = match l with
+    | Normalisation l -> Normalisation.load_weights l u
     | _               -> update l u
 
 

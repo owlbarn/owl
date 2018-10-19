@@ -651,7 +651,7 @@ module Make
   let save_weights nn f =
     let h = Hashtbl.create nn.size in
     Array.iter (fun n ->
-      let ws = Neuron.get_parameters n.neuron in
+      let ws = Neuron.save_weights n.neuron in
       Hashtbl.add h n.name ws
     ) nn.topo;
     Owl_io.marshal_to_file h f
@@ -661,7 +661,7 @@ module Make
     let h = Owl_io.marshal_from_file f in
     Array.iter (fun n ->
       let ws = Hashtbl.find h n.name in
-      Neuron.set_parameters n.neuron ws
+      Neuron.load_weights n.neuron ws
     ) nn.topo
 
 

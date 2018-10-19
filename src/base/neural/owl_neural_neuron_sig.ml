@@ -1737,17 +1737,11 @@ module Normalisation : sig
   val update : neuron_typ -> t array -> unit
   (** Update trainable parameters of the neuron, used by ``Optimise`` module. *)
 
-  val non_trainable_par : neuron_typ -> t array
-  (** Assemble all the non-trainable parameters in an array. *)
+  val load_weights : neuron_typ -> t array -> unit
+  (** Load both trainable and non-trainable parameters into the neuron. *)
 
-  val update_non_trainable : neuron_typ -> t array -> unit
-  (** Update non-trainable parameters of the neuron. *)
-
-  val set_parameters : neuron_typ -> t array -> unit
-  (** Update all parameters of the neuron. *)
-
-  val get_parameters : neuron_typ -> t array
-  (** Assemble all parameters of the neuron. *)
+  val save_weights : neuron_typ -> t array
+  (** Assemble both trainable and non-trainable parameters of the neuron. *)
 
   val copy : neuron_typ -> neuron_typ
   (** Make a deep copy of the neuron and its parameters. *)
@@ -2001,11 +1995,11 @@ val mkadj : neuron -> t array
 val update : neuron -> t array -> unit
 (** Update trainable parameters in a neuron, used by ``Optimise`` module. *)
 
-val get_parameters : neuron -> t array
-(** Assemble all the parameters of the given neuron in an array. *)
+val load_weights : neuron -> t array -> unit
+(** Load both trainable and non-trainable parameters into the neuron. *)
 
-val set_parameters : neuron -> t array -> unit
-(** Update all parameters of a neuron. *)
+val save_weights : neuron -> t array
+(** Assemble both trainable and non-trainable parameters of the neuron. *)
 
 val copy : neuron -> neuron
 (** Make a deep copy of the neuron and its parameters. *)
