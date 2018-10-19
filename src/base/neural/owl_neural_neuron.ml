@@ -2713,6 +2713,19 @@ module Make
       l.beta <- u.(0) |> primal';
       l.gamma <- u.(1) |> primal'
 
+    let non_trainable_par l = [|l.mu; l.var|]
+
+    let update_non_trainable l u =
+      l.mu <- u.(0) |> primal';
+      l.var <- u.(1) |> primal'
+
+    let set_parameters l u =
+      update l [|u.(0); u.(1)|];
+      update_non_trainable l [|u.(2); u.(3)|]
+
+    let get_parameters l =
+      Owl_utils.Array.(mkpar l @ non_trainable_par l)
+
     let copy l =
       let l' = create ~training:l.training ~decay:(unpack_flt l.decay) ~mu:(unpack_arr l.mu) ~var:(unpack_arr l.var) l.axis in
       mkpri l |> Array.map copy_primal' |> update l';
@@ -3251,6 +3264,16 @@ module Make
     | FullyConnected l  -> FullyConnected.update l u
     | Normalisation l   -> Normalisation.update l u
     | _                 -> () (* activation, etc. *)
+
+
+  let get_parameters l = match l with
+    | Normalisation l -> Normalisation.get_parameters l
+    | _               -> mkpar l
+
+
+  let set_parameters l u = match l with
+    | Normalisation l -> Normalisation.set_parameters l u
+    | _               -> update l u
 
 
   let copy = function
