@@ -18,7 +18,9 @@ let baseline_sin : type a b. (a, b) kind -> (a, b) owl_arr_op09 = fun k l x y ->
   | Float32   -> baseline_float32_sin l x y
   | _         -> failwith "sin_baseline: unsupported operation"
 
-let sizes = [|10; 100; 1000; 10000; 100000; 500000; 1000000|]
+let n = 200
+let start = 1000
+let step = 3000
 
 
 type t = {
@@ -39,27 +41,26 @@ let tune t =
   Owl_log.info "AEOS: tune sin ...";
   (* Call C stub function to do measurement, then regression *)
 
-  (*
-   * 1. choose two different functions: current impl; non-omp version (impl the latter in stub.c file?)
-   * 2. eval them at specified sizes: val1 = [|...|]; val2 = [|.....|]
-   * 3. Lialg.intersect (val1, val2)
-  *)
+  let sizes = Array.make n 0. in
+  let val1  = Array.make n 0. in
+  let val2  = Array.make n 0. in
 
-  let val1 = Array.make (Array.length sizes) 0. in
-  let val2 = Array.make (Array.length sizes) 0. in
-
-  Array.iteri (fun i sz ->
+  let sz = ref start in
+  for i = 0 to n - 1 do
     let v1, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_single_op Owl_ndarray._owl_sin sz) "sin" in
+      (Owl_aeos_utils.eval_single_op Owl_ndarray._owl_sin !sz) "sin" in
     let v2, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_single_op baseline_sin sz) "sin_baseline" in
+      (Owl_aeos_utils.eval_single_op baseline_sin !sz) "sin_baseline" in
     val1.(i) <- v1;
-    val2.(i) <- v2
-  ) sizes;
+    val2.(i) <- v2;
 
+    sizes.(i) <- float_of_int !sz;
+    sz := !sz + step
+  done;
   t.measure.(0) <- val1;
   t.measure.(1) <- val2;
-  t.params <- Owl_aeos_utils.regression t.measure;
+
+  t.params <- Owl_aeos_utils.regression ~p:true t.measure sizes;
   ()
 
 let to_string t =
