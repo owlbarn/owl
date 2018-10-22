@@ -7,8 +7,7 @@ module M = Dense.Matrix.S
 
 (* C function interface *)
 
-external baseline_float32_sum : int -> ('a, 'b) owl_arr -> 'a = "float32_sum"
-
+external baseline_float32_sum : int -> ('a, 'b) owl_arr -> 'a = "bl_float32_sum"
 
 let step_measure xs base_f f msg =
   let n   = Array.length xs in

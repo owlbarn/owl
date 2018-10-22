@@ -3,9 +3,10 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-#include <owl_macros.h>
+#include "owl_aeos_macros.h"
+#include <stdio.h>
 
-#define FUN5 float32_sum
+#define BASE_FUN5 bl_float32_sum
 #define INIT float r = 0.
 #define NUMBER float
 #define ACCFN(A,X) (A += X)

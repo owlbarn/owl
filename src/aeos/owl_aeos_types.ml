@@ -29,3 +29,13 @@ end *)
 type tuner =
   | Sin of Sin.t
 *)
+
+(* open Owl_aeos_types *)
+open Owl_aeos_tuner_map
+open Owl_aeos_tuner_fold
+
+type tuner =
+  | Sin of Sin.t
+  | Cos of Cos.t
+  | Add of Add.t
+  | Sum of Sum.t

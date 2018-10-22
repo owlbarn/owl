@@ -3,16 +3,14 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(* open Owl_aeos_types *)
-open Owl_aeos_tuner_map
-open Owl_aeos_tuner_fold
+ open Owl_aeos_tuner_map
+ open Owl_aeos_tuner_fold
 
-type tuner =
-  | Sin of Sin.t
-  | Cos of Cos.t
-  | Add of Add.t
-  | Sum of Sum.t
-
+ type tuner =
+   | Sin of Sin.t
+   | Cos of Cos.t
+   | Add of Add.t
+   | Sum of Sum.t
 
 let tuning = function
   | Sin x -> Sin.tune x
