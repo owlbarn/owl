@@ -51,6 +51,14 @@ module Make
       Printf.sprintf "s:%s" (shape_to_str shape)
 
 
+  let _block_colour b_id =
+    (* lazy attempt to generate distinguishable colours *)
+    let h = float ((b_id * 283) mod 360) /. 360. in
+    let s = 0.4 in
+    let v = 1. in
+    Printf.sprintf "%.3f %.1f %.0f" h s v
+
+
   let graph_to_dot graph =
     let edge_s = fold_in_edges (fun a u v ->
         Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)
@@ -58,8 +66,14 @@ module Make
     in
     let node_s = fold_ancestors (fun a n ->
       let svs = shape_or_value n in
-      Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; %s }\" ];\n"
-        a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) svs
+      let b_id = get_block_id n in
+      Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; %s; b:%i }\""
+        a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) svs b_id ^
+        (if is_reusable n && b_id <> -1 then
+           let col = _block_colour b_id in
+           Printf.sprintf "style=filled fillcolor=\"%s\"" col
+         else "") ^
+          "];\n"
     ) "" graph.output
     in
     Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
@@ -157,21 +171,21 @@ module Make
   (* manipulate input and output pairs *)
 
   let get_node_arr_val x =
-    let value = (attr x).value in
+    let value = get_value x in
     assert (Array.length value > 0);
     value_to_arr value.(0)
 
 
   let get_node_elt_val x =
-    let value = (attr x).value in
+    let value = get_value x in
     assert (Array.length value > 0);
     value_to_elt value.(0)
 
 
-  let set_node_arr_val x v = (attr x).value <- [| v |]
+  let set_node_arr_val x v = set_value x [| v |]
 
 
-  let set_node_elt_val x v = (attr x).value <- [| v |]
+  let set_node_elt_val x v = set_value x [| v |]
 
 
   let is_iopair_safe i o =
@@ -224,7 +238,7 @@ module Make
 
 
   let init_inputs f graph =
-    Array.iter (fun v -> (attr v).value <- [| f v |]) graph.input
+    Array.iter (fun v -> set_value v [| f v |]) graph.input
 
 
   let optimise graph = optimise_nodes graph.output

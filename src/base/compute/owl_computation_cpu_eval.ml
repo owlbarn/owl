@@ -19,9 +19,16 @@ module Make
 
   (* utility functions *)
 
-  let update_validity x =
-    validate x;
-    Array.iter invalidate (get_vnode x)
+  let invalidate_opt x_option =
+    match x_option with
+    | Some x -> invalidate x
+    | None   -> ()
+
+
+  let update_validity x b =
+    invalidate_opt (get_active_node b);
+    set_active_node b x;
+    validate x
 
 
   (* core evaluation function *)
@@ -30,8 +37,8 @@ module Make
     Owl_log.debug "eval %s ..." (node_to_str x);
 
     if is_valid x = false then
-      let _ = try
-        match (get_operator x) with
+      let () = try
+        match get_operator x with
         | Noop                                          -> _eval_map_00 x (fun x -> x.(0))
         | Var                                           -> check_assigned x
         | Const                                         -> check_assigned x
@@ -227,7 +234,7 @@ module Make
           raise exn
         )
       in
-      update_validity x
+      Array.iter (fun b -> update_validity x b) (get_block x)
 
 
   (* [f] is pure, for [arr array -> arr] *)
@@ -241,7 +248,7 @@ module Make
     set_value x [|arr_to_value out|]
 
 
-  (* [f] is inpure, for [arr array -> arr] *)
+  (* [f] is impure, for [arr array -> arr] *)
   and _eval_map_01 x f =
     let inputs = Array.map (fun parent ->
       _eval_term parent;
@@ -274,7 +281,7 @@ module Make
     set_value x [|elt_to_value out|]
 
 
-  (* [f] is inpure, for [arr -> elt -> arr] *)
+  (* [f] is impure, for [arr -> elt -> arr] *)
   and _eval_map_04 x f =
     let x_parent_0 = (parents x).(0) in
     let x_parent_1 = (parents x).(1) in
@@ -286,7 +293,7 @@ module Make
     f ~out a b
 
 
-  (* [f] is inpure, for [elt -> arr -> arr] *)
+  (* [f] is impure, for [elt -> arr -> arr] *)
   and _eval_map_05 x f =
     let x_parent_0 = (parents x).(0) in
     let x_parent_1 = (parents x).(1) in
@@ -306,7 +313,7 @@ module Make
     set_value x [|elt_to_value a|]
 
 
-  (* [f] is inpure, for [arr array -> elt array -> arr] *)
+  (* [f] is impure, for [arr array -> elt array -> arr] *)
   and _eval_map_07 x f =
     let x_parents = parents x in
     Array.iter _eval_term x_parents;

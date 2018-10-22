@@ -31,6 +31,8 @@ module type Sig = sig
 
   val set_slice_ : out:arr -> int list list -> arr -> arr -> unit
 
+  val sub_left : arr -> int -> int -> arr
+
   val reshape_ : out:arr -> arr -> unit
 
   val reverse_ : out:arr -> arr -> unit

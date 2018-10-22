@@ -14,7 +14,7 @@ module type Sig = sig
   type device
   (** TODO *)
 
-  type value
+  type value = ArrVal of A.arr | EltVal of A.elt
   (** TODO *)
 
 

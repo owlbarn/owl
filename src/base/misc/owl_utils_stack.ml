@@ -31,13 +31,13 @@ let push s x =
 
 let pop s = match s.used with
   | 0 -> None
-  | i -> s.used <- i - 1; Some s.data.(i)
+  | i -> s.used <- i - 1; Some s.data.(s.used)
 
 let peek s = match s.used with
   | 0 -> None
-  | i -> Some s.data.(i)
+  | i -> Some s.data.(i - 1)
 
-let is_empty s = s.size = 0
+let is_empty s = s.used = 0
 
 let mem s x = Array.mem x s.data
 

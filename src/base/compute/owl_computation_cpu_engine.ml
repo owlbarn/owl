@@ -25,8 +25,9 @@ module Make_Nested
 
   (* core interface *)
 
+  (* ! Make sure the order of evaluation of init and eval is always the same. *)
   let eval_gen nodes =
-    Array.iter CG_Init._init_term nodes;
+    CG_Init._init_terms nodes;
     Array.iter CG_Eval._eval_term nodes
 
 
