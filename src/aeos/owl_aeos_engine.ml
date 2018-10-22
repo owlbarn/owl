@@ -12,4 +12,4 @@ let eval tuners =
 *)
 
 let eval tuners =
-  Array.iter Owl_aeos_tuner_map.tuning tuners
+  Array.iter Owl_aeos_tuners.tuning tuners

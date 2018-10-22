@@ -130,15 +130,3 @@ module Add = struct
     Printf.sprintf "#define %s %s" t.c_macro (string_of_int t.params)
 
 end
-
-
-type tuner =
-  | Sin of Sin.t
-  | Cos of Cos.t
-  | Add of Add.t
-
-
-let tuning = function
-  | Sin x -> Sin.tune x
-  | Cos x -> Cos.tune x
-  | Add x -> Add.tune x

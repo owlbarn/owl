@@ -43,6 +43,11 @@ let eval_single_op f sz () =
   f (Owl_utils.numel x) x y |> ignore
 
 
+let eval_fold_op f sz () =
+  let x = N.uniform sz in
+  f (Owl_utils.numel x) x |> ignore
+
+
 let plot x y k b =
   let h = Plot.create "line_plot.png" in
   let x = Dense.Matrix.Generic.cast_s2d x in
@@ -80,6 +85,25 @@ let make_step_array start step n =
   done;
   x
 
+
 let array_to_mat a =
   let a = Array.map float_of_int a in
   M.of_array a (Array.length a) 1
+
+
+let make_step_fold ?(dims=4) start step n =
+  let u = Array.make dims start in
+  let x = Array.make n u in
+  for i = 0 to n - 1 do
+    x.(i) <- Array.make dims (start + i * step)
+  done;
+  x
+
+
+let fold_arr_to_mat a =
+  let n = Array.length a in
+  let s = Array.make n 0. in
+  Array.iteri (fun i x ->
+    s.(i) <- Array.fold_left ( * ) 1 x |> float_of_int
+  ) a;
+  M.of_array s n 1
