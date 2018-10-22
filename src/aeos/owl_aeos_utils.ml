@@ -38,7 +38,7 @@ let timing fn msg =
 let eval_single_op f sz () =
   let x = N.uniform [|sz|] in
   let y = N.copy x in
-  f Bigarray.Float32 (Owl_utils.numel x) x y |> ignore
+  f (Owl_utils.numel x) x y |> ignore
 
 
 let plot x y k b =
@@ -62,3 +62,17 @@ let regression ?(p=false) x y =
   let rt = Owl_maths_root.fzero g 0. 1000000. in
   Owl_log.info "Crosspoint: %f.\n" rt;
   int_of_float rt
+
+
+(* utils *)
+
+let make_step_array start step n =
+  let x = Array.make n 0 in
+  for i = 0 to n - 1 do
+    x.(i) <- start + i * step
+  done;
+  x
+
+let array_to_mat a =
+  let a = Array.map float_of_int a in
+  M.of_array a (Array.length a) 1

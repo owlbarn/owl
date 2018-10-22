@@ -4,7 +4,7 @@
  *)
 
 (* open Owl_aeos_types *)
-open Owl_aeos_tuner_sin
+open Owl_aeos_tuner_map
 
 let copyright =
 "/*
@@ -16,7 +16,8 @@ let copyright =
 let c_header_file fname tuners =
   let define_str = tuners
     |> Array.map (function
-      | Sin t -> Owl_aeos_tuner_sin.Sin.to_string t
+      | Sin t -> Sin.to_string t
+      | Cos t -> Cos.to_string t
     )
     |> Array.fold_left (fun acc s ->
       Printf.sprintf "%s\n\n%s" acc s

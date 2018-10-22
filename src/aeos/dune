@@ -4,8 +4,7 @@
   (wrapped false)
   (flags (:standard -safe-string))
   (c_names
-    owl_aeos_tuner_sin_stub
-    owl_aeos_tuner_cos_stub
+    owl_aeos_tuner_map_stub
   )
   (libraries
     owl owl-base

@@ -8,8 +8,9 @@
 
 (* open Owl_aeos_types *)
 
-open Owl_aeos_tuner_sin
+open Owl_aeos_tuner_map
 
 let all = [|
-  Sin (Owl_aeos_tuner_sin.Sin.make ())
+  Sin (Sin.make ());
+  Cos (Cos.make ())
 |]
