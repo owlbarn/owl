@@ -52,24 +52,13 @@ let plot x y k b =
   Plot.output h
 
 
-let regression ?(p=false) ys x =
-  let y1 = ys.(0) in
-  let y2 = ys.(1) in
-  let n = Array.length y1 in
-  assert (n = Array.length y2);
-
-  let x  = M.of_array x  n 1 in
-  let y1 = M.of_array y1 n 1 in
-  let y2 = M.of_array y2 n 1 in
-  let b, k = L.linreg x M.(y1 - y2) in
-
+let regression ?(p=false) x y =
+  let b, k = L.linreg x y in
   if p = true then (
     Printf.fprintf stderr "k: %.3f, b: %.3f\n" k b;
-    plot x M.(y1 - y2) k b
+    plot x y k b
   );
-
   let g x = x *. k +. b in
   let rt = Owl_maths_root.fzero g 0. 1000000. in
   Owl_log.info "Crosspoint: %f.\n" rt;
-
   int_of_float rt

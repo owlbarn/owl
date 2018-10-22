@@ -5,63 +5,85 @@
 
 open Owl
 open Owl_core_types
-
-module N = Dense.Ndarray.S
-
 open Bigarray
 
-external baseline_float32_sin : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_sin"
+module N = Dense.Ndarray.S
+module M = Dense.Matrix.S
 
+(* C function interface *)
+
+external baseline_float32_sin : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_sin"
 
 let baseline_sin : type a b. (a, b) kind -> (a, b) owl_arr_op09 = fun k l x y ->
   match k with
   | Float32   -> baseline_float32_sin l x y
   | _         -> failwith "sin_baseline: unsupported operation"
 
-let n = 200
-let start = 1000
-let step = 3000
+(* measurement method for arr -> arr type functions *)
 
+let step_measure xs base_f f msg =
+  let n = Array.length xs in
+  let y1  = Array.make n 0. in
+  let y2  = Array.make n 0. in
 
-type t = {
-  mutable c_macro : string;
-  mutable measure : float array array;
-  mutable params  : int;
-}
-
-
-let make () = {
-  c_macro = "OWL_OMP_THRESHOLD_SIN"; (* [| OWL_OMP_THRESHOLD_SIN |] *)
-  measure = [| [||]; [||] |];
-  params  = max_int;
-}
-
-
-let tune t =
-  Owl_log.info "AEOS: tune sin ...";
-  (* Call C stub function to do measurement, then regression *)
-
-  let sizes = Array.make n 0. in
-  let val1  = Array.make n 0. in
-  let val2  = Array.make n 0. in
-
-  let sz = ref start in
   for i = 0 to n - 1 do
+    let x = xs.(i) in
     let v1, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_single_op Owl_ndarray._owl_sin !sz) "sin" in
+      (Owl_aeos_utils.eval_single_op f x) msg in
     let v2, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_single_op baseline_sin !sz) "sin_baseline" in
-    val1.(i) <- v1;
-    val2.(i) <- v2;
-
-    sizes.(i) <- float_of_int !sz;
-    sz := !sz + step
+      (Owl_aeos_utils.eval_single_op base_f x) (msg ^ "-baseline") in
+    y1.(i) <- v1;
+    y2.(i) <- v2;
   done;
-  t.measure.(0) <- val1;
-  t.measure.(1) <- val2;
+  let y1 = M.of_array y1 n 1 in
+  let y2 = M.of_array y2 n 1 in
+  M.(y1 - y2)
 
-  t.params <- Owl_aeos_utils.regression ~p:true t.measure sizes;
-  ()
+(* utils function *)
 
-let to_string t =
-  Printf.sprintf "#define %s %s" t.c_macro (string_of_int t.params)
+let make_step_array start step n =
+  let x = Array.make n 0 in
+  for i = 0 to n - 1 do
+    x.(i) <- start + i * step
+  done;
+  x
+
+let array_to_mat a =
+  let a = Array.map float_of_int a in
+  M.of_array a (Array.length a) 1
+
+
+(* Sin tuning module *)
+module Sin = struct
+
+  type t = {
+    mutable c_macro : string;
+    mutable params  : int;
+    mutable x       : int array;
+  }
+
+  let make () = {
+    c_macro = "OWL_OMP_THRESHOLD_SIN"; (* [| OWL_OMP_THRESHOLD_SIN |] *)
+    params  = max_int;
+    x = make_step_array 1000 10000 50
+  }
+
+  let tune t =
+    Owl_log.info "AEOS: tune sin ...";
+    let y = step_measure t.x Owl_ndarray._owl_sin baseline_sin "sin" in
+    let x = array_to_mat t.x in
+    t.params <- Owl_aeos_utils.regression ~p:true x y;
+    ()
+
+  let to_string t =
+    Printf.sprintf "#define %s %s" t.c_macro (string_of_int t.params)
+
+end
+
+
+type tuner =
+  | Sin of Sin.t
+
+
+let tuning = function
+  | Sin x -> Sin.tune x
