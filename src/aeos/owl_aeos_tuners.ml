@@ -12,5 +12,6 @@ open Owl_aeos_tuner_map
 
 let all = [|
   Sin (Sin.make ());
-  Cos (Cos.make ())
+  Cos (Cos.make ());
+  Add (Add.make ())
 |]

@@ -16,3 +16,10 @@
 #define NUMBER1 float
 #define MAPFN(X) (cosf(X))
 #include "owl_aeos_tuner_map_impl.h"
+
+#define FUN15 float32_add
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 float
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_aeos_tuner_map_impl.h"

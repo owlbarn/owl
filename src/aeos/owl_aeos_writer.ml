@@ -18,6 +18,7 @@ let c_header_file fname tuners =
     |> Array.map (function
       | Sin t -> Sin.to_string t
       | Cos t -> Cos.to_string t
+      | Add t -> Add.to_string t
     )
     |> Array.fold_left (fun acc s ->
       Printf.sprintf "%s\n\n%s" acc s

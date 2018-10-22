@@ -19,15 +19,7 @@ external baseline_float32_sin : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> u
 
 external baseline_float32_cos : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_cos"
 
-let baseline_sin : type a b. (a, b) kind -> (a, b) owl_arr_op09 = fun k l x y ->
-  match k with
-  | Float32   -> baseline_float32_sin l x y
-  | _         -> failwith "sin_baseline: unsupported operation"
-
-let baseline_cos : type a b. (a, b) kind -> (a, b) owl_arr_op09 = fun k l x y ->
-  match k with
-  | Float32   -> baseline_float32_cos l x y
-  | _         -> failwith "cos_baseline: unsupported operation"
+external baseline_float32_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_add"
 
 (* measurement method for arr -> arr type functions *)
 
@@ -110,12 +102,43 @@ module Cos = struct
 
 end
 
+(* Add tuning module *)
+module Add = struct
+
+  type t = {
+    mutable c_macro : string;
+    mutable params  : int;
+    mutable x       : int array;
+    mutable fs      : (float, float32_elt) Owl_core_types.owl_arr_op03 array
+  }
+
+  let make () = {
+    c_macro = "OWL_OMP_THRESHOLD_ADD";
+    params  = max_int;
+    x = Owl_aeos_utils.make_step_array 1000 10000 100;
+    fs = [| (Owl_ndarray._owl_add Float32); baseline_float32_add |]
+  }
+
+  let tune t =
+    Owl_log.info "AEOS: tune add ...";
+    let y = step_measure t.x t.fs.(0) t.fs.(1) "add" in
+    let x = Owl_aeos_utils.array_to_mat t.x in
+    t.params <- Owl_aeos_utils.regression ~p:true x y;
+    ()
+
+  let to_string t =
+    Printf.sprintf "#define %s %s" t.c_macro (string_of_int t.params)
+
+end
+
 
 type tuner =
   | Sin of Sin.t
   | Cos of Cos.t
+  | Add of Add.t
 
 
 let tuning = function
   | Sin x -> Sin.tune x
   | Cos x -> Cos.tune x
+  | Add x -> Add.tune x

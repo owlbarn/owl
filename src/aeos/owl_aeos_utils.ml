@@ -8,6 +8,8 @@ module N = Dense.Ndarray.S
 module M = Dense.Matrix.S
 module L = Linalg.S
 
+let default_threshold = 100000
+
 (* timing utils *)
 
 let c = 30 (* repeat times *)
@@ -53,15 +55,20 @@ let plot x y k b =
 
 
 let regression ?(p=false) x y =
-  let b, k = L.linreg x y in
-  if p = true then (
-    Printf.fprintf stderr "k: %.3f, b: %.3f\n" k b;
-    plot x y k b
-  );
-  let g x = x *. k +. b in
-  let rt = Owl_maths_root.fzero g 0. 1000000. in
-  Owl_log.info "Crosspoint: %f.\n" rt;
-  int_of_float rt
+  try
+    let b, k = L.linreg x y in
+    if p = true then (
+      Printf.fprintf stderr "k: %.3f, b: %.3f\n" k b;
+      plot x y k b
+    );
+    let g x = x *. k +. b in
+    let rt = Owl_maths_root.fzero g 0. 1000000. in
+    Owl_log.info "Crosspoint: %f.\n" rt;
+    int_of_float rt
+  with
+  | Assert_failure (err_msg, _, _) ->
+    Owl_log.warn "%s" (err_msg ^ " ; using default value");
+    default_threshold
 
 
 (* utils *)
