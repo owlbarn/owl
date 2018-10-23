@@ -14,6 +14,8 @@ type 'a node = {
 
 type order = BFS | DFS
 
+type traversal = PreOrder | PostOrder
+
 type dir = Ancestor | Descendant
 
 
@@ -124,42 +126,66 @@ let replace_parent parent_0 parent_1 =
 
 
 (* depth-first search from [x]; [f : node -> unit] is applied to each node;
-  [next node -> node array] returns the next set of nodes to iterate;
+   [next node -> node array] returns the next set of nodes to iterate;
 *)
-let dfs_iter f x next =
+let dfs_iter traversal f x next =
   let h = Hashtbl.create 512 in
   let rec _dfs_iter y =
-    Array.iter (fun z ->
-      if Hashtbl.mem h z.id = false then (
-        f z;
-        Hashtbl.add h z.id None;
-        _dfs_iter (next z);
-      )
-    ) y
+    if not (Hashtbl.mem h y.id) then (
+      Hashtbl.add h y.id None;
+      update y;
+    )
+  and relax y =
+    Array.iter (fun z -> _dfs_iter z) (next y)
+  and update y = match traversal with
+    | PreOrder -> f y; relax y
+    | PostOrder -> relax y; f y
   in
-  _dfs_iter x
+  Array.iter _dfs_iter x
 
 
-(* TODO: BFS iterator *)
-let bfs_iter _f _next _x = failwith "owl_graph:bfs_iter"
+(* breadth-first search from [x]; [f : node -> unit] is applied to each node;
+   [next node -> node array] returns the next set of nodes to iterate.
+*)
+let bfs_iter traversal f x next =
+  let h = Hashtbl.create 512 in
+  let q = Queue.create () in
+  let relax y =
+    Array.iter
+      (fun z -> if not (Hashtbl.mem h z.id) then (
+                  Hashtbl.add h z.id None;
+                  Queue.push z q))
+      (next y)
+  in
+  let update = match traversal with
+    | PreOrder -> (fun y -> f y; relax y)
+    | PostOrder -> (fun y -> relax y; f y)
+  in
+
+  Array.iter (fun y -> Queue.push y q) x;
+  Array.iter (fun y -> Hashtbl.add h y.id None) x;
+  while not (Queue.is_empty q) do
+    let y = Queue.pop q in
+    update y;
+  done
 
 
-let iter_ancestors ?(order=DFS) f x =
+let iter_ancestors ?(order=DFS) ?(traversal=PreOrder) f x =
   match order with
-  | BFS -> bfs_iter f x parents
-  | DFS -> dfs_iter f x parents
+  | BFS -> bfs_iter traversal f x parents
+  | DFS -> dfs_iter traversal f x parents
 
 
-let iter_descendants ?(order=DFS) f x =
+let iter_descendants ?(order=DFS) ?(traversal=PreOrder) f x =
   match order with
-  | BFS -> bfs_iter f x children
-  | DFS -> dfs_iter f x children
+  | BFS -> bfs_iter traversal f x children
+  | DFS -> dfs_iter traversal f x children
 
 
-let _iter ?(dir=Ancestor) ?order f x =
+let _iter ?(dir=Ancestor) ?order ?traversal f x =
   match dir with
-  | Ancestor   -> iter_ancestors ?order f x
-  | Descendant -> iter_descendants ?order f x
+  | Ancestor   -> iter_ancestors ?order ?traversal f x
+  | Descendant -> iter_descendants ?order ?traversal f x
 
 
 let filter_ancestors f x =
@@ -277,20 +303,10 @@ let to_string from_root x =
 
 
 let topo_sort nodes =
-  let h = Hashtbl.create 512 in
-  let s = Owl_utils_stack.make () in
-  let rec _bfs_iter nodes =
-    Array.iter (fun u ->
-      _bfs_iter (parents u);
-      if Hashtbl.mem h u.id = false then (
-        Hashtbl.add h u.id u;
-        Owl_utils_stack.push s u
-      )
-    ) nodes
-  in
-  _bfs_iter nodes;
+  let s = Owl_utils.Stack.make () in
+  let f u = Owl_utils.Stack.push s u in
+  iter_ancestors ~order:DFS ~traversal:PostOrder f nodes;
   Owl_utils_stack.to_array s
-
 
 
 (* ends here *)

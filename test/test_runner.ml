@@ -5,6 +5,7 @@ let () =
     "stats_rvs",            Unit_stats_rvs.test_set;
     "stats",                Unit_stats.test_set;
     "maths",                Unit_maths.test_set;
+    "graph",                Unit_graph.test_set;
     "algodiff diff",        Unit_algodiff_diff.test_set;
     "algodiff grad",        Unit_algodiff_grad.test_set;
     "dense matrix",         Unit_dense_matrix.test_set;

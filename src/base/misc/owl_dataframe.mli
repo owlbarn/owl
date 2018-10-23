@@ -9,7 +9,12 @@
 type t
 (** Abstract dataframe type. *)
 
-type series
+type series =
+  | Bool_Series   of bool array
+  | Int_Series    of int array
+  | Float_Series  of float array
+  | String_Series of string array
+  | Any_Series
 (** Abstract series type. *)
 
 type elt =

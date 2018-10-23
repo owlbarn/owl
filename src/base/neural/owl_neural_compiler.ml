@@ -362,6 +362,7 @@ module Make
   let model_inputs ?(optimise=true) ?(batch_size=1) network =
     (* TOFIX: the next line creates useless Copy nodes for constant values,
      * because Copy is an operation in CG *)
+    (* compile network into static graph *)
     let network = Graph.copy network in
     let network_name = Graph.get_network_name network in
     Owl_log.info "compile network %s into static graph ..." network_name;
@@ -378,11 +379,12 @@ module Make
     let i, o = _to_nodes inputs, _to_nodes outputs in
     let cgraph = Engine.make_graph ~input:i ~output:o network_name in
 
+    (* optimise graph structure *)
     if optimise then (
       Engine.optimise cgraph
     );
 
-    (fun xt' ->
+    let eval xt' =
       let xt = Array.map (fun x -> Algodiff.unpack_arr x) inputs in
       let xt' = Array.map (fun x' -> Algodiff.unpack_arr x') xt' in
       Engine.eval_arr xt';
@@ -390,8 +392,52 @@ module Make
       Array.iter2 (fun x x' -> Engine.unsafe_assign_arr x x') xt xt';
       Engine.eval_graph cgraph;
       outputs
-    )
+    in
 
+    let results xt =
+      let n = Optimise.Utils.sample_num xt.(0) in
+      let chunk_size i =
+        let a = i * batch_size in
+        let b = (min n (a + batch_size)) - 1 in
+        let c = b - a + 1 in
+        a, b, c
+      in
+      let get_chunk a b x =
+        match x with
+        | Arr x ->
+           let res = A.get_slice [[a; b]] x in
+           Arr res
+        | _     -> failwith ("Owl_neural_compiler.model_inputs: get_chunk: " ^
+                               (type_info x))
+      in
+      let iterate i =
+        (* perform the computation on one batch *)
+        let a, b, c = chunk_size i in
+        let xt = Array.map (get_chunk a b) xt in
+        let result = Array.map
+                       (fun x ->
+                         let x =
+                           let y = Algodiff.unpack_arr x in
+                           if c <> batch_size then A.get_slice [[0; c - 1]] y
+                           else y
+                         in
+                         A.copy x
+                       ) (eval xt)
+        in
+        Engine.eval_arr result;
+        result
+      in
+      let nb_iterations = (n - 1) / batch_size + 1 in
+      (* compute results for each batch *)
+      let result = Array.init nb_iterations (fun i -> iterate i) in
+      (* put the results back together *)
+      let slice i = Array.init nb_iterations (fun j -> result.(j).(i)) in
+      let result = Array.init (Array.length result.(0))
+                     (fun i -> A.concatenate (slice i)) in
+      Engine.eval_arr result;
+      Array.map Algodiff.pack_arr result
+    in
+    results
 
   (* ``model network`` transforms the network into a computation graph and
   optimises it. Returns a function that takes the input of the network as an

@@ -1726,7 +1726,7 @@ module Normalisation : sig
   (** Tag the neuron, used by ``Algodiff`` module. *)
 
   val mkpar : neuron_typ -> t array
-  (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+  (** Assemble all the trainable parameters in an array, used by ``Optimise`` module. *)
 
   val mkpri : neuron_typ -> t array
   (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
@@ -1735,7 +1735,13 @@ module Normalisation : sig
   (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
 
   val update : neuron_typ -> t array -> unit
-  (** Update parameters in a neuron, used by ``Optimise`` module. *)
+  (** Update trainable parameters of the neuron, used by ``Optimise`` module. *)
+
+  val load_weights : neuron_typ -> t array -> unit
+  (** Load both trainable and non-trainable parameters into the neuron. *)
+
+  val save_weights : neuron_typ -> t array
+  (** Assemble both trainable and non-trainable parameters of the neuron. *)
 
   val copy : neuron_typ -> neuron_typ
   (** Make a deep copy of the neuron and its parameters. *)
@@ -1978,16 +1984,22 @@ val mktag : int -> neuron -> unit
 (** Tag the neuron, used by ``Algodiff`` module. *)
 
 val mkpar : neuron -> t array
-(** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+(** Assemble all the trainable parameters in an array, used by ``Optimise`` module. *)
 
 val mkpri : neuron -> t array
-(** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+(** Assemble all the primal values in an array, used by ``Optimise`` module. *)
 
 val mkadj : neuron -> t array
 (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
 
 val update : neuron -> t array -> unit
-(** Update parameters in a neuron, used by ``Optimise`` module. *)
+(** Update trainable parameters in a neuron, used by ``Optimise`` module. *)
+
+val load_weights : neuron -> t array -> unit
+(** Load both trainable and non-trainable parameters into the neuron. *)
+
+val save_weights : neuron -> t array
+(** Assemble both trainable and non-trainable parameters of the neuron. *)
 
 val copy : neuron -> neuron
 (** Make a deep copy of the neuron and its parameters. *)

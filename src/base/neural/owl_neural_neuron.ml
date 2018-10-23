@@ -2713,6 +2713,17 @@ module Make
       l.beta <- u.(0) |> primal';
       l.gamma <- u.(1) |> primal'
 
+    let load_weights l u =
+      l.beta <- u.(0) |> primal';
+      l.gamma <- u.(1) |> primal';
+      l.mu <- u.(2) |> primal';
+      l.var <- u.(3) |> primal'
+
+    let save_weights l =
+      let trainable = [|l.beta; l.gamma|] in
+      let non_trainable = [|l.mu; l.var|] in
+      Owl_utils.Array.(trainable @ non_trainable)
+
     let copy l =
       let l' = create ~training:l.training ~decay:(unpack_flt l.decay) ~mu:(unpack_arr l.mu) ~var:(unpack_arr l.var) l.axis in
       mkpri l |> Array.map copy_primal' |> update l';
@@ -3251,6 +3262,16 @@ module Make
     | FullyConnected l  -> FullyConnected.update l u
     | Normalisation l   -> Normalisation.update l u
     | _                 -> () (* activation, etc. *)
+
+
+  let save_weights l = match l with
+    | Normalisation l -> Normalisation.save_weights l
+    | _               -> mkpar l
+
+
+  let load_weights l u = match l with
+    | Normalisation l -> Normalisation.load_weights l u
+    | _               -> update l u
 
 
   let copy = function

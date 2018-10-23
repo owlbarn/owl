@@ -316,7 +316,7 @@ module Make
     f ~out arr_args elt_args
 
 
-  (* f is pure, for [arr -> arr] *)
+  (* [f] is pure, for [arr -> arr] *)
   and _eval_map_08 x f =
     let x_parent = (parents x).(0) in
     _eval_term x_parent;

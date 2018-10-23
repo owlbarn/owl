@@ -38,7 +38,7 @@ let test network =
   let imgs, _, labels = Dataset.load_mnist_test_data () in
   let m = Dense.Matrix.S.row_num imgs in
   let imgs = Dense.Ndarray.S.reshape imgs [|m;28;28;1|] in
-  let eval = CGCompiler.model ~batch_size:m network in
+  let eval = CGCompiler.model ~batch_size:100 network in
 
   let mat2num x = Dense.Matrix.S.of_array (
       x |> Dense.Matrix.Generic.max_rows
