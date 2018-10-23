@@ -213,7 +213,7 @@ module Make
 
   let update_iopair graph =
     Array.iteri (fun idx (i, o) ->
-      if is_arr i = true then (
+      if is_node_arr i = true then (
         let o_val = get_node_arr_val o in
         let i_arr = node_to_arr i in
         (* make sure the original data will never be modified. *)

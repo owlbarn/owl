@@ -143,10 +143,10 @@ module type Sig = sig
   val is_const : attr Owl_graph.node -> bool
   (** TODO *)
 
-  val is_arr : attr Owl_graph.node -> bool
+  val is_node_arr : attr Owl_graph.node -> bool
   (** TODO *)
 
-  val is_elt : attr Owl_graph.node -> bool
+  val is_node_elt : attr Owl_graph.node -> bool
   (** TODO *)
 
   val is_assigned : attr Owl_graph.node -> bool

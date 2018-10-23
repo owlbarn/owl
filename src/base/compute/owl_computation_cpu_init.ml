@@ -215,7 +215,7 @@ module Make
         let pre_par, post_par = split_parents x in
         Array.iter update_parent pre_par;
         (* do not bother sharing the memory of single elements *)
-        if is_reusable x && not (is_elt x) then (
+        if is_reusable x && not (is_node_elt x) then (
           Hashtbl.add refs (id x) (refnum x);
           allocate x
         )

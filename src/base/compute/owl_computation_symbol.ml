@@ -306,9 +306,8 @@ module Make
   (* This is meant for nodes that are not reusable: memory is not reshaped. *)
   let make_value_block memory x =
     let block_id = new_block_id () in
-    let size = match memory with
-      | EltVal _ -> 1
-      | ArrVal x -> A.numel x in
+    let size = if is_elt memory then 1
+               else A.numel (value_to_arr memory) in
     let block = { size; block_id; active = Some x; memory; nodes = [ x ]; } in
     (attr x).value <- [| memory |];
     (attr x).block <- Some [| block |]
@@ -409,19 +408,19 @@ module Make
 
 
   let set_value x v =
-    match v.(0) with
-    | ArrVal vv ->
-       (match get_block_opt x with
-        | Some _ ->
-           let xv = value_to_arr (attr x).value.(0) in
-           A.copy_ ~out:xv vv
-        | None    -> make_value_block v.(0) x
-       )
-    | EltVal _ ->
-       (match get_block_opt x with
-        | Some bs -> (attr x).value <- v; bs.(0).memory <- v.(0)
-        | None    -> make_value_block v.(0) x
-       )
+    if is_arr v.(0) then (
+      match get_block_opt x with
+      | Some _ ->
+         let xv = value_to_arr (attr x).value.(0) in
+         let vv = value_to_arr v.(0) in
+         A.copy_ ~out:xv vv
+      | None   -> make_value_block v.(0) x
+    )
+    else (
+      match get_block_opt x with
+      | Some bs -> (attr x).value <- v; bs.(0).memory <- v.(0)
+      | None    -> make_value_block v.(0) x
+    )
 
 
   let get_value x = (attr x).value
@@ -464,14 +463,14 @@ module Make
   let is_const x = (attr x).op = Const
 
 
-  let is_arr x =
+  let is_node_arr x =
     match (attr x).shape.(0) with
     | Some [||] -> false
     | Some _    -> true
     | _         -> failwith "Owl_computation_symbol:is_arr"
 
 
-  let is_elt x =
+  let is_node_elt x =
     match (attr x).shape.(0) with
     | Some [||] -> true
     | Some _    -> false

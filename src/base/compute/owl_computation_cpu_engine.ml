@@ -28,7 +28,7 @@ module Make_Nested
   (* ! Make sure the order of evaluation of init and eval is always the same. *)
   let eval_gen nodes =
     CG_Init._init_terms nodes;
-    Array.iter CG_Eval._eval_term nodes
+    CG_Eval._eval_terms nodes
 
 
   let eval_elt xs = Array.map elt_to_node xs |> eval_gen

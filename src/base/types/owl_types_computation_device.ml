@@ -14,7 +14,7 @@ module type Sig = sig
   type device
   (** TODO *)
 
-  type value = ArrVal of A.arr | EltVal of A.elt
+  type value
   (** TODO *)
 
 
@@ -36,6 +36,12 @@ module type Sig = sig
   (** TODO *)
 
   val value_to_float : value -> float
+  (** TODO *)
+
+  val is_arr : value -> bool
+  (** TODO *)
+
+  val is_elt : value -> bool
   (** TODO *)
 
 
