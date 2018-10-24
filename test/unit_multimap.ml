@@ -1,9 +1,9 @@
 (** Unit test for Owl_utils_multimap module *)
 
 module Multimap = Owl_utils_multimap.Make(struct
-                      type t = int
-                      let compare : int -> int -> int = compare
-                    end)
+                    type t = int
+                    let compare : int -> int -> int = compare
+                  end)
 
 
 (* a module with functions to test *)
