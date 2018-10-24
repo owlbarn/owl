@@ -17,10 +17,10 @@ module Make
   open Graph.Optimiser.Operator.Symbol.Shape.Type
 
   module MultiMap = Owl_utils_multimap.Make(
-                        struct
-                          type t = int
-                          let compare : int -> int -> int = compare
-                        end)
+                      struct
+                        type t = int
+                        let compare : int -> int -> int = compare
+                      end)
 
 
   (* utility functions *)
