@@ -24,6 +24,7 @@ let remove_outlier arr =
 
 let timing fn msg =
   let times = Owl.Utils.Stack.make () in
+  fn () |> ignore;
   for _ = 1 to c do
     let t = Owl_utils.time fn in
     Owl.Utils.Stack.push times t
@@ -37,16 +38,27 @@ let timing fn msg =
   m_time, s_time
 
 
-let eval_single_op f sz () =
+let eval_map_unary f sz () =
   let x = N.uniform [|sz|] in
   let y = N.copy x in
   f (Owl_utils.numel x) x y |> ignore
 
 
-let eval_fold_op f sz () =
+let eval_map_binary f sz () =
+  let x1 = N.uniform [|sz|] in
+  let x2 = N.uniform [|sz|] in
+  let y = N.copy x1 in
+  f (Owl_utils.numel x1) x1 x2 y |> ignore
+
+let eval_fold f sz () =
   let x = N.uniform sz in
   f (Owl_utils.numel x) x |> ignore
 
+let eval_fold_along f xs a () =
+  let x = N.uniform xs in
+  let m, n, o, ys = Owl_utils.reduce_params a x in
+  let y = N.uniform ys in
+  f m n o x y |> ignore
 
 let plot x y k b =
   let h = Plot.create "line_plot.png" in

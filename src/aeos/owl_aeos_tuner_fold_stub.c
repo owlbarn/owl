@@ -12,3 +12,9 @@
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (caml_copy_double(X))
 #include "owl_aeos_tuner_fold_impl.h"
+
+#define BASE_FUN26 bl_float32_prod_along
+#define NUMBER float
+#define NUMBER1 float
+#define ACCFN(X,Y) *Y *= *X
+#include "owl_aeos_tuner_fold_impl.h"

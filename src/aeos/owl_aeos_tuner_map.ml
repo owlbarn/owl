@@ -23,24 +23,44 @@ external baseline_float32_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (
 
 (* measurement method for arr -> arr type functions *)
 
-let step_measure xs base_f f msg =
+let step_measure_map_unary xs base_f f msg =
   let n = Array.length xs in
-  let y1  = Array.make n 0. in
-  let y2  = Array.make n 0. in
+  let y1 = Array.make n 0. in
+  let y2 = Array.make n 0. in
 
   for i = 0 to n - 1 do
     let x = xs.(i) in
     let v1, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_single_op f x) msg in
+      (Owl_aeos_utils.eval_map_unary f x) msg in
     let v2, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_single_op base_f x) (msg ^ "-baseline") in
+      (Owl_aeos_utils.eval_map_unary base_f x) (msg ^ "-baseline") in
     y1.(i) <- v1;
     y2.(i) <- v2;
   done;
+
   let y1 = M.of_array y1 n 1 in
   let y2 = M.of_array y2 n 1 in
   M.(y1 - y2)
 
+
+let step_measure_map_binary xs base_f f msg =
+  let n = Array.length xs in
+  let y1 = Array.make n 0. in
+  let y2 = Array.make n 0. in
+
+  for i = 0 to n - 1 do
+    let x = xs.(i) in
+    let v1, _ = Owl_aeos_utils.timing
+      (Owl_aeos_utils.eval_map_binary f x) msg in
+    let v2, _ = Owl_aeos_utils.timing
+      (Owl_aeos_utils.eval_map_binary base_f x) (msg ^ "-baseline") in
+    y1.(i) <- v1;
+    y2.(i) <- v2;
+  done;
+
+  let y1 = M.of_array y1 n 1 in
+  let y2 = M.of_array y2 n 1 in
+  M.(y1 - y2)
 
 
 (* Sin tuning module *)
@@ -62,7 +82,7 @@ module Sin = struct
 
   let tune t =
     Owl_log.info "AEOS: tune sin ...";
-    let y = step_measure t.x t.fs.(0) t.fs.(1) "sin" in
+    let y = step_measure_map_unary t.x t.fs.(0) t.fs.(1) "sin" in
     let x = Owl_aeos_utils.array_to_mat t.x in
     t.params <- Owl_aeos_utils.regression ~p:true x y;
     ()
@@ -92,7 +112,7 @@ module Cos = struct
 
   let tune t =
     Owl_log.info "AEOS: tune cos ...";
-    let y = step_measure t.x t.fs.(0) t.fs.(1) "cos" in
+    let y = step_measure_map_unary t.x t.fs.(0) t.fs.(1) "cos" in
     let x = Owl_aeos_utils.array_to_mat t.x in
     t.params <- Owl_aeos_utils.regression ~p:true x y;
     ()
@@ -121,7 +141,7 @@ module Add = struct
 
   let tune t =
     Owl_log.info "AEOS: tune add ...";
-    let y = step_measure t.x t.fs.(0) t.fs.(1) "add" in
+    let y = step_measure_map_binary t.x t.fs.(0) t.fs.(1) "add" in
     let x = Owl_aeos_utils.array_to_mat t.x in
     t.params <- Owl_aeos_utils.regression ~p:true x y;
     ()
