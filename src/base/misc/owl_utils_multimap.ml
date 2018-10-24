@@ -78,9 +78,11 @@ module Make (Ord : Map.OrderedType) = struct
 
   let find_first_opt f map =
     match Map.find_first_opt f map with
-    | Some (k, s) -> (match Stack.peek s with
-                      | Some v -> Some (k, v)
-                      | None   -> _fail "find_first_opt")
+    | Some (k, s) -> (
+        match Stack.peek s with
+        | Some v -> Some (k, v)
+        | None   -> _fail "find_first_opt"
+      )
     | None        -> None
 
 
