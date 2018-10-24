@@ -14,320 +14,295 @@ module Make
 
   open Graph.Optimiser.Operator.Symbol
 
-  open Graph.Optimiser.Operator.Symbol.Shape.Type.Device
+  open Graph.Optimiser.Operator.Symbol.Shape.Type
+
+  module MultiMap = Owl_utils_multimap.Make(
+                      struct
+                        type t = int
+                        let compare : int -> int -> int = compare
+                      end)
 
 
   (* utility functions *)
 
-  let is_initialised x =
-    let x_val = get_value x in
-    if is_elt x then false
-    else Array.length x_val > 0
+  let is_broadcastable x =
+    match get_operator x with
+    | Pow             -> true
+    | Atan2           -> true
+    | Hypot           -> true
+    | Min2            -> true
+    | Max2            -> true
+    | Add             -> true
+    | Sub             -> true
+    | Mul             -> true
+    | Div             -> true
+    | FMA             -> true
+    | EltEqual        -> true
+    | EltNotEqual     -> true
+    | EltLess         -> true
+    | EltGreater      -> true
+    | EltLessEqual    -> true
+    | EltGreaterEqual -> true
+    | _               -> false
 
 
-  let make_value_from src dst =
-    let dst_shp = node_shape dst in
-    match src with
-    | Some src -> (
-        (* inherit memory from the src node *)
-        let src_val = value_to_arr (get_value src).(0) in
-        let dst_val = arr_to_value (A.reshape src_val dst_shp) in
-        set_value dst [| dst_val |];
-        set_vnode dst [| src |]
-      )
-    | None     -> (
-        (* allocate new memory for dst node *)
-        let dst_val = arr_to_value (A.zeros dst_shp) in
-        set_value dst [| dst_val |];
-        set_vnode dst [| |]
-      )
+  (* written to be as safe as possible, but can probably set to true more
+   * operations. *)
+  let can_overwrite_parents x =
+    match get_operator x with
+    | Create _shape                                  -> false
+    | Sequential _shape                              -> false
+    | Uniform _shape                                 -> false
+    | Gaussian _shape                                -> false
+    | Bernoulli _shape                               -> false
+    | GetSlice _slice                                -> false
+    | Tile _repeats                                  -> false
+    | Repeat _repeats                                -> false
+    | Pad (_v, _padding)                             -> false
+    | Concatenate _axis                              -> false
+    | Map _f                                         -> false
+    | Fold (_axis, _f)                               -> false
+    | Scan (_axis, _f)                               -> false
+    | OneHot _depth                                  -> false
+    | Min _axis                                      -> false
+    | Max _axis                                      -> false
+    | Sum _axis                                      -> false
+    | SumReduce _axis                                -> false
+    | Pow                                            -> false (* Broadcasting *)
+    | Atan2                                          -> false (* Broadcasting *)
+    | Hypot                                          -> false (* Broadcasting *)
+    | Min2                                           -> false (* Broadcasting *)
+    | Max2                                           -> false (* Broadcasting *)
+    | Add                                            -> false (* Broadcasting *)
+    | Sub                                            -> false (* Broadcasting *)
+    | Mul                                            -> false (* Broadcasting *)
+    | Div                                            -> false (* Broadcasting *)
+    | FMA                                            -> false (* Broadcasting *)
+    | EltEqual                                       -> false (* Broadcasting *)
+    | EltNotEqual                                    -> false (* Broadcasting *)
+    | EltLess                                        -> false (* Broadcasting *)
+    | EltGreater                                     -> false (* Broadcasting *)
+    | EltLessEqual                                   -> false (* Broadcasting *)
+    | EltGreaterEqual                                -> false (* Broadcasting *)
+    | Conv1d (_padding, _stride)                     -> false
+    | Conv2d (_padding, _stride)                     -> false
+    | Conv3d (_padding, _stride)                     -> false
+    | TransposeConv2d (_padding, _stride)            -> false
+    | MaxPool1d (_padding, _kernel, _stride)         -> false
+    | MaxPool2d (_padding, _kernel, _stride)         -> false
+    | MaxPool3d (_padding, _kernel, _stride)         -> false
+    | AvgPool1d (_padding, _kernel, _stride)         -> false
+    | AvgPool2d (_padding, _kernel, _stride)         -> false
+    | AvgPool3d (_padding, _kernel, _stride)         -> false
+    | UpSampling2d _size                             -> false
+    | Conv1dBackwardInput _stride                    -> false
+    | Conv1dBackwardKernel _stride                   -> false
+    | Conv2dBackwardInput _stride                    -> false
+    | Conv2dBackwardKernel _stride                   -> false
+    | Conv3dBackwardInput _stride                    -> false
+    | Conv3dBackwardKernel _stride                   -> false
+    | TransposeConv2dBackwardInput _stride           -> false
+    | TransposeConv2dBackwardKernel _stride          -> false
+    | MaxPool1dBackward (_padding, _kernel, _stride) -> false
+    | MaxPool2dBackward (_padding, _kernel, _stride) -> false
+    | MaxPool3dBackward (_padding, _kernel, _stride) -> false
+    | AvgPool1dBackward (_padding, _kernel, _stride) -> false
+    | AvgPool2dBackward (_padding, _kernel, _stride) -> false
+    | AvgPool3dBackward (_padding, _kernel, _stride) -> false
+    | UpSampling2dBackward _size                     -> false
+    | Dot (_transa, _transb, _alpha, _beta)          -> false
+    | Inv                                            -> false
+    | Transpose _axis                                -> false
+    | _                                              -> true
 
 
-  (* functions of allocating memory space *)
-
-  let allocate_from_parent_0 x = make_value_from None x
-
-
-  let allocate_from_parent_1 x parent =
-    if refnum parent = 1 && get_reuse parent then
-      make_value_from (Some parent) x
-    else
-      make_value_from None x
-
-
-  let allocate_from_parent_2 x parent_0 parent_1 =
-    let parent_0_val = value_to_arr (get_value parent_0).(0) in
-    let parent_1_val = value_to_arr (get_value parent_1).(0) in
-
-    let shp_0 = A.shape parent_0_val in
-    let shp_1 = A.shape parent_1_val in
-    let shp_0, shp_1 = Owl_utils_array.align `Left 1 shp_0 shp_1 in
-    let shp_x = Owl_utils_infer_shape.broadcast1 shp_0 shp_1 in
-
-    if shp_0 = shp_x && refnum parent_0 = 1 && get_reuse parent_0 then
-      make_value_from (Some parent_0) x
-    else if shp_1 = shp_x && refnum parent_1 = 1 && get_reuse parent_1 then
-      make_value_from (Some parent_1) x
-    else
-      make_value_from None x
+  (* return a partition of the parents in two arrays: the parents that the node
+   * can safely overwrite during its computation and the others. *)
+  let split_parents x =
+    let par = Owl_utils.Array.unique (parents x) in
+    (* Broadcastable operations can only overwrite the parents that have the
+     * same shape *)
+    if is_broadcastable x then
+      let sx = node_shape x in
+      Owl_utils.Array.filter (fun p -> node_shape p = sx) par,
+      Owl_utils.Array.filter (fun p -> node_shape p <> sx) par
+    else if can_overwrite_parents x then par, [||]
+    else [||], par
 
 
-  let allocate_from_parent_3 x parent_0 parent_1 parent_2 =
-    let parent_0_val = value_to_arr (get_value parent_0).(0) in
-    let parent_1_val = value_to_arr (get_value parent_1).(0) in
-    let parent_2_val = value_to_arr (get_value parent_2).(0) in
+  (* Core initialisation function. Inspired by
+   * https://mxnet.incubator.apache.org/architecture/note_memory.html. *)
+  let _init_terms nodes =
+    (* hashtable: node -> its number of references left to use *)
+    let refs = Hashtbl.create 256 in
+    (* number of elements -> id of a reusable block of corresponding size *)
+    let reusable = ref MultiMap.empty in
+    (* node id -> id of a block that was assigned to it *)
+    let node_to_block = Hashtbl.create 256 in
+    (* block id -> its size *)
+    let block_to_size = Hashtbl.create 16 in
+    (* node id -> the corresponding node *)
+    let id_to_node = Hashtbl.create 256 in
 
-    let shp_0 = A.shape parent_0_val in
-    let shp_1 = A.shape parent_1_val in
-    let shp_2 = A.shape parent_2_val in
-    let shp_0, shp_1, shp_2 = Owl_utils_array.align3 `Left 1 shp_0 shp_1 shp_2 in
-    let shp_x = Owl_utils_infer_shape.broadcast2 shp_0 shp_1 shp_2 in
+    (* already has a block or is already associated to a block id during the
+     * execution of the algorithm *)
+    let is_initialised x =
+      is_assigned x || Hashtbl.mem node_to_block (id x)
+    in
 
-    if shp_0 = shp_x && refnum parent_0 = 1 && get_reuse parent_0 then
-      make_value_from (Some parent_0) x
-    else if shp_1 = shp_x && refnum parent_1 = 1 && get_reuse parent_1 then
-      make_value_from (Some parent_1) x
-    else if shp_2 = shp_x && refnum parent_2 = 1 && get_reuse parent_2 then
-      make_value_from (Some parent_2) x
-    else
-      make_value_from None x
-
-
-  let allocate_from_parent_arr x parents =
-    let parents_val = Array.map
-                        (fun par -> value_to_arr (get_value par).(0)) parents in
-    let shp_x = node_shape x in
-    let id_shaped_par, _ = Owl_utils.Array.filter2_split
-                             (fun par par_val -> A.shape par_val = shp_x
-                                                 && refnum par = 1
-                                                 && get_reuse par)
-                             parents parents_val in
-    if Array.length id_shaped_par > 0 then
-      make_value_from (Some id_shaped_par.(0)) x
-    else
-      make_value_from None x
-
-
-  (* core initialisation function *)
-
-  let rec _init_term x =
-    Owl_log.debug "init %s ..." (node_to_str x);
-
-    if is_initialised x = false then
-      try
-        match (get_operator x) with
-        | Noop                                           -> _init_05 x
-        | Var                                            -> _init_05 x
-        | Const                                          -> _init_05 x
-        | Empty _shape                                   -> _init_00 x
-        | Zeros _shape                                   -> _init_00 x
-        | Ones _shape                                    -> _init_00 x
-        | Create _shape                                  -> _init_00 x
-        | Sequential _shape                              -> _init_00 x
-        | Uniform _shape                                 -> _init_00 x
-        | Gaussian _shape                                -> _init_00 x
-        | Bernoulli _shape                               -> _init_00 x
-        | Init (_shape, _f)                              -> _init_00 x
-        | Get _i                                         -> _init_05 x
-        | Set _i                                         -> failwith "Set"
-        | GetSlice _slice                                -> _init_00 x
-        | SetSlice _slice                                -> _init_01 x
-        | Copy                                           -> _init_01 x
-        | Reset                                          -> _init_01 x
-        | Reshape _shape                                 -> _init_01 x
-        | Reverse                                        -> _init_01 x
-        | Tile _repeats                                  -> _init_00 x
-        | Repeat _repeats                                -> _init_00 x
-        | Pad (_v, _padding)                             -> _init_00 x
-        | Concatenate _axis                              -> _init_00 x
-        | Split (_axis, _parts)                          -> failwith "Split"
-        | Draw (_axis, _n)                               -> failwith "Draw"
-        | Map _f                                         -> _init_00 x
-        | Fold (_axis, _f)                               -> _init_00 x
-        | Scan (_axis, _f)                               -> _init_00 x
-        | OneHot _depth                                  -> _init_00 x
-        | Delay _f                                       -> _init_01 x
-        | DelayArray (_shape, _f)                        -> _init_06 x
-        | Abs                                            -> _init_01 x
-        | Neg                                            -> _init_01 x
-        | Floor                                          -> _init_01 x
-        | Ceil                                           -> _init_01 x
-        | Round                                          -> _init_01 x
-        | Sqr                                            -> _init_01 x
-        | Sqrt                                           -> _init_01 x
-        | Log                                            -> _init_01 x
-        | Log2                                           -> _init_01 x
-        | Log10                                          -> _init_01 x
-        | Exp                                            -> _init_01 x
-        | Sin                                            -> _init_01 x
-        | Cos                                            -> _init_01 x
-        | Tan                                            -> _init_01 x
-        | Sinh                                           -> _init_01 x
-        | Cosh                                           -> _init_01 x
-        | Tanh                                           -> _init_01 x
-        | Asin                                           -> _init_01 x
-        | Acos                                           -> _init_01 x
-        | Atan                                           -> _init_01 x
-        | Asinh                                          -> _init_01 x
-        | Acosh                                          -> _init_01 x
-        | Atanh                                          -> _init_01 x
-        | Min _axis                                      -> _init_00 x
-        | Max _axis                                      -> _init_00 x
-        | Sum _axis                                      -> _init_00 x
-        | SumReduce _axis                                -> _init_00 x
-        | Signum                                         -> _init_01 x
-        | Sigmoid                                        -> _init_01 x
-        | Relu                                           -> _init_01 x
-        | Min'                                           -> _init_05 x
-        | Max'                                           -> _init_05 x
-        | Sum'                                           -> _init_05 x
-        | L1norm'                                        -> _init_05 x
-        | L2norm'                                        -> _init_05 x
-        | L2NormSqr'                                     -> _init_05 x
-        | ClipByValue                                    -> _init_01 x
-        | ClipByL2norm                                   -> _init_01 x
-        | Pow                                            -> _init_02 x
-        | ScalarPow                                      -> _init_04 x
-        | PowScalar                                      -> _init_01 x
-        | Atan2                                          -> _init_02 x
-        | ScalarAtan2                                    -> _init_04 x
-        | Atan2Scalar                                    -> _init_01 x
-        | Hypot                                          -> _init_02 x
-        | Min2                                           -> _init_02 x
-        | Max2                                           -> _init_02 x
-        | Add                                            -> _init_02 x
-        | Sub                                            -> _init_02 x
-        | Mul                                            -> _init_02 x
-        | Div                                            -> _init_02 x
-        | AddScalar                                      -> _init_01 x
-        | SubScalar                                      -> _init_01 x
-        | MulScalar                                      -> _init_01 x
-        | DivScalar                                      -> _init_01 x
-        | ScalarAdd                                      -> _init_04 x
-        | ScalarSub                                      -> _init_04 x
-        | ScalarMul                                      -> _init_04 x
-        | ScalarDiv                                      -> _init_04 x
-        | FMA                                            -> _init_03 x
-        | EltEqual                                       -> _init_02 x
-        | EltNotEqual                                    -> _init_02 x
-        | EltLess                                        -> _init_02 x
-        | EltGreater                                     -> _init_02 x
-        | EltLessEqual                                   -> _init_02 x
-        | EltGreaterEqual                                -> _init_02 x
-        | EltEqualScalar                                 -> _init_01 x
-        | EltNotEqualScalar                              -> _init_01 x
-        | EltLessScalar                                  -> _init_01 x
-        | EltGreaterScalar                               -> _init_01 x
-        | EltLessEqualScalar                             -> _init_01 x
-        | EltGreaterEqualScalar                          -> _init_01 x
-        | Conv1d (_padding, _stride)                     -> _init_00 x
-        | Conv2d (_padding, _stride)                     -> _init_00 x
-        | Conv3d (_padding, _stride)                     -> _init_00 x
-        | TransposeConv2d (_padding, _stride)            -> _init_00 x
-        | MaxPool1d (_padding, _kernel, _stride)         -> _init_00 x
-        | MaxPool2d (_padding, _kernel, _stride)         -> _init_00 x
-        | MaxPool3d (_padding, _kernel, _stride)         -> _init_00 x
-        | AvgPool1d (_padding, _kernel, _stride)         -> _init_00 x
-        | AvgPool2d (_padding, _kernel, _stride)         -> _init_00 x
-        | AvgPool3d (_padding, _kernel, _stride)         -> _init_00 x
-        | UpSampling2d _size                             -> _init_00 x
-        | Conv1dBackwardInput _stride                    -> _init_00 x
-        | Conv1dBackwardKernel _stride                   -> _init_00 x
-        | Conv2dBackwardInput _stride                    -> _init_00 x
-        | Conv2dBackwardKernel _stride                   -> _init_00 x
-        | Conv3dBackwardInput _stride                    -> _init_00 x
-        | Conv3dBackwardKernel _stride                   -> _init_00 x
-        | TransposeConv2dBackwardInput _stride           -> _init_00 x
-        | TransposeConv2dBackwardKernel _stride          -> _init_00 x
-        | MaxPool1dBackward (_padding, _kernel, _stride) -> _init_00 x
-        | MaxPool2dBackward (_padding, _kernel, _stride) -> _init_00 x
-        | MaxPool3dBackward (_padding, _kernel, _stride) -> _init_00 x
-        | AvgPool1dBackward (_padding, _kernel, _stride) -> _init_00 x
-        | AvgPool2dBackward (_padding, _kernel, _stride) -> _init_00 x
-        | AvgPool3dBackward (_padding, _kernel, _stride) -> _init_00 x
-        | UpSampling2dBackward _size                     -> _init_00 x
-        | Row                                            -> failwith "Row"
-        | Rows _i                                        -> failwith "Rows"
-        | CopyRowTo                                      -> failwith "CopyRowTo"
-        | CopyColTo                                      -> failwith "CopyColTo"
-        | Dot (_transa, _transb, _alpha, _beta)          -> _init_00 x
-        | Inv                                            -> _init_00 x
-        | Trace                                          -> _init_05 x
-        | Transpose _axis                                -> _init_00 x
-        | ToRows                                         -> failwith "ToRows"
-        | OfRows                                         -> failwith "OfRows"
-        | Scalar_Add                                     -> _init_05 x
-        | Scalar_Sub                                     -> _init_05 x
-        | Scalar_Mul                                     -> _init_05 x
-        | Scalar_Div                                     -> _init_05 x
-        | Scalar_Pow                                     -> _init_05 x
-        | Scalar_Atan2                                   -> _init_05 x
-        | Scalar_Abs                                     -> _init_05 x
-        | Scalar_Neg                                     -> _init_05 x
-        | Scalar_Sqr                                     -> _init_05 x
-        | Scalar_Sqrt                                    -> _init_05 x
-        | Scalar_Exp                                     -> _init_05 x
-        | Scalar_Log                                     -> _init_05 x
-        | Scalar_Log2                                    -> _init_05 x
-        | Scalar_Log10                                   -> _init_05 x
-        | Scalar_Signum                                  -> _init_05 x
-        | Scalar_Floor                                   -> _init_05 x
-        | Scalar_Ceil                                    -> _init_05 x
-        | Scalar_Round                                   -> _init_05 x
-        | Scalar_Sin                                     -> _init_05 x
-        | Scalar_Cos                                     -> _init_05 x
-        | Scalar_Tan                                     -> _init_05 x
-        | Scalar_Sinh                                    -> _init_05 x
-        | Scalar_Cosh                                    -> _init_05 x
-        | Scalar_Tanh                                    -> _init_05 x
-        | Scalar_Asin                                    -> _init_05 x
-        | Scalar_Acos                                    -> _init_05 x
-        | Scalar_Atan                                    -> _init_05 x
-        | Scalar_Asinh                                   -> _init_05 x
-        | Scalar_Acosh                                   -> _init_05 x
-        | Scalar_Atanh                                   -> _init_05 x
-        | Scalar_Relu                                    -> _init_05 x
-        | Scalar_Sigmoid                                 -> _init_05 x
-        | Fused_Adagrad (_rate, _eps)                    -> _init_01 x
-        | _                                              -> failwith "owl_computation_init:"
-
-        with exn -> (
-          Owl_log.error "initialising %s" (node_to_str x);
-          raise exn
+    (* Notifies a node that it has been used by one of its children.
+     * If no more children have to use the node, assumes that the memory of the
+     * node can be reused by another node. *)
+    let update_parent p =
+      let id_p = id p in
+      if not (is_assigned p) && Hashtbl.mem refs id_p then (
+        let num = Hashtbl.find refs id_p in
+        assert (num > 0);
+        if num - 1 = 0 then (* can be reused *) (
+          Hashtbl.remove refs id_p;
+          let block_id = Hashtbl.find node_to_block id_p in
+          let block_size = Hashtbl.find block_to_size block_id in
+          reusable := MultiMap.add block_size block_id !reusable
         )
+        else Hashtbl.replace refs id_p (num - 1)
+      )
+    in
+
+    (* Heuristic: return the smallest block that is greater than [numel].
+     * If no such block exists, return the biggest one and make it bigger.
+     * Time complexity: [O(log b)] where [b] is the size of [reusable]. *)
+    let best_block_to_reuse numel =
+      if MultiMap.is_empty !reusable then None
+      else (
+        let to_reuse = MultiMap.find_first_opt (fun k -> k >= numel) !reusable in
+        let size, b_id = match to_reuse with
+          | Some x -> x
+          | None   -> MultiMap.max_binding !reusable
+        in
+        reusable := MultiMap.remove size !reusable;
+        if size < numel then (
+          Hashtbl.replace block_to_size b_id numel
+        );
+        Some b_id
+      )
+    in
+
+    (* Links node [x] to a new block. *)
+    let allocate_new x =
+      let numel_x = node_numel x in
+      let b_id = new_block_id () in
+      Hashtbl.add node_to_block (id x) b_id;
+      Hashtbl.add block_to_size b_id numel_x
+    in
+
+    (* Links the node [x] to the best reusable block if such a block exists.
+     * Otherwise, links [x] to a new block. *)
+    let allocate x =
+      let numel_x = node_numel x in
+      let block_id_to_reuse = best_block_to_reuse numel_x in
+      match block_id_to_reuse with
+      | Some b_id -> Hashtbl.add node_to_block (id x) b_id
+      | None      -> allocate_new x
+    in
+
+    (* assume the parents of an initialised node are always initialised *)
+    let rec init x =
+      Owl_log.debug "init %s ..." (node_to_str x);
+
+      if not (is_initialised x) then (
+        Hashtbl.add id_to_node (id x) x;
+        Array.iter init (parents x);
+        let pre_par, post_par = split_parents x in
+        Array.iter update_parent pre_par;
+        (* do not bother sharing the memory of single elements *)
+        if get_reuse x && not (is_node_elt x) then (
+          Hashtbl.add refs (id x) (refnum x);
+          allocate x
+        )
+        else (
+          (* a node that cannot be reused cannot reuse either *)
+          allocate_new x
+        );
+        Array.iter update_parent post_par;
+      )
+    in
+    (* link all the nodes to a block id and all the blocks to a size *)
+    Array.iter init nodes;
+
+    (* create the blocks and initialise the relevant attributes of the nodes *)
+    let id_to_block = Hashtbl.create 16 in
+    Hashtbl.iter
+      (fun x_id b_id ->
+        let x = Hashtbl.find id_to_node x_id in
+        if Hashtbl.mem id_to_block b_id then (
+          let block = Hashtbl.find id_to_block b_id in
+          add_node_to_block x block
+        )
+        else (
+          let size = Hashtbl.find block_to_size b_id in
+          let block = make_empty_block ~block_id:b_id size in
+          Hashtbl.add id_to_block b_id block;
+          add_node_to_block x block
+        )
+      ) node_to_block
 
 
-  and _init_00 x =
-    Array.iter _init_term (parents x);
-    allocate_from_parent_0 x
+  (* display some statistics about the number of blocks and the number of
+   * allocated elements *)
+  let init_stats nodes =
+    let total_elt = ref 0 in
+    let shared_elt = ref 0 in
+    let non_shared_elt = ref 0 in
+    let total_nodes = ref 0 in
+    let reusable_nodes = ref 0 in
+    let non_reusable_nodes = ref 0 in
+    let blocks_seen = Hashtbl.create 256 in
+    let reusable_blocks = ref 0 in
+    let alloc_reusable = ref 0 in
+    let update_stats x =
+      let numel_x = node_numel x in
+      total_nodes := !total_nodes + 1;
+      total_elt := !total_elt + numel_x;
+      if get_reuse x then (
+        reusable_nodes := !reusable_nodes + 1;
+        shared_elt := !shared_elt + numel_x
+      )
+      else (
+        non_reusable_nodes := !non_reusable_nodes + 1;
+        non_shared_elt := !non_shared_elt + numel_x
+      );
 
+      let block_x = (get_block x).(0) in
 
-  and _init_01 x =
-    let par = Array.map (fun p -> _init_term p; p) (parents x) in
-    allocate_from_parent_1 x par.(0)
+      if not (Hashtbl.mem blocks_seen block_x) then (
+        Hashtbl.add blocks_seen block_x None;
+        if get_reuse x then (
+          reusable_blocks := !reusable_blocks + 1;
+          alloc_reusable := !alloc_reusable + block_x.size
+        )
+      )
+    in
 
+    Owl_graph.iter_ancestors update_stats nodes;
 
-  and _init_02 x =
-    let par = Array.map (fun p -> _init_term p; p) (parents x) in
-    allocate_from_parent_2 x par.(0) par.(1)
+    let b = Buffer.create 170 in
+    Buffer.add_string b "*** INITIALISATION STATISTICS ***\n";
+    Buffer.add_string b
+      (Printf.sprintf "  %d nodes, %d elements\n" !total_nodes !total_elt);
+    Buffer.add_string b
+      (Printf.sprintf "  %d reusable nodes, %d elements\n"
+         !reusable_nodes !shared_elt);
+    Buffer.add_string b
+      (Printf.sprintf "  %d non-reusable nodes, %d elements\n"
+         !non_reusable_nodes !non_shared_elt);
+    Buffer.add_string b
+      (Printf.sprintf "  %d shared blocks, %d elements\n"
+         !reusable_blocks !alloc_reusable);
+    Buffer.add_string b
+      (Printf.sprintf "  TOTAL NUMBER OF ALLOCATED ELEMENTS: %d\n"
+         (!alloc_reusable + !non_shared_elt));
+    Owl_log.info "%s" (Buffer.contents b)
 
-
-  and _init_03 x =
-    let par = Array.map (fun p -> _init_term p; p) (parents x) in
-    allocate_from_parent_3 x par.(0) par.(1) par.(2)
-
-
-  and _init_04 x =
-    let par = Array.map (fun p -> _init_term p; p) (parents x) in
-    allocate_from_parent_1 x par.(1)
-
-
-  and _init_05 x = Array.iter _init_term (parents x)
-
-
-  and _init_06 x =
-    let par = Array.map (fun p -> _init_term p; p) (parents x) in
-    allocate_from_parent_arr x par
 
 end
 

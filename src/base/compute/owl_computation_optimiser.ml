@@ -259,8 +259,8 @@ module Make
     let parent = (parents x).(0) in
     _optimise_term parent;
     let op = get_operator x in
-    let resuable = get_reuse x in
-    if op = Noop && resuable then (
+    let reusable = get_reuse x in
+    if op = Noop && reusable then (
       let x_children = children x in
       let parent_children = children parent in
       let merged_children = Owl_utils_array.merge x_children parent_children in

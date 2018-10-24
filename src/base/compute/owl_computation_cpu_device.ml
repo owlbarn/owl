@@ -45,4 +45,14 @@ module Make (A : Ndarray_Mutable) = struct
   let value_to_float x = A.elt_to_float (value_to_elt x)
 
 
+  let is_arr = function
+    | ArrVal _ -> true
+    | EltVal _ -> false
+
+
+  let is_elt = function
+    | ArrVal _ -> false
+    | EltVal _ -> true
+
+
 end

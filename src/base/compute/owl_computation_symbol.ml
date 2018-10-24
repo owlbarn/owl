@@ -19,7 +19,6 @@ module Make
 
   open Shape.Type.Device
 
-
   (* string representation of symbols *)
 
   let op_to_str = function
@@ -239,7 +238,7 @@ module Make
   let node_numel x = Array.fold_left ( * ) 1 (node_shape x)
 
 
-  let is_shape_unkown x =
+  let is_shape_unknown x =
     let x_shape = (attr x).shape in
     match x_shape.(0) with
     | Some _ -> true
@@ -248,7 +247,7 @@ module Make
 
   let infer_shape_graph xs =
     iter_descendants (fun x ->
-      if is_shape_unkown x = false then (
+      if is_shape_unknown x = false then (
         let x_attr = attr x in
         let x_parents = parents x in
         x_attr.shape <- infer_shape x_attr.op x_parents
@@ -260,7 +259,7 @@ module Make
     assert (Array.length shp > 0);
     let s = match shp.(0) with
       | Some s -> Owl_utils_array.to_string string_of_int s
-      | None   -> "unkown"
+      | None   -> "unknown"
     in
     Printf.sprintf "[%s]" s
 
@@ -287,14 +286,46 @@ module Make
   let elt_to_node = function Elt x -> x
 
 
+  let new_block_id =
+    let _global_block_id = ref 0 in
+    (fun () ->
+      _global_block_id := !_global_block_id + 1;
+      !_global_block_id)
+
+
+  (* Meant for reusable nodes. *)
+  let make_empty_block ?block_id size =
+    let block_id = match block_id with
+      | Some block_id -> block_id
+      | None          -> new_block_id ()
+    in
+    (* allocate a one-dimensional array *)
+    let memory = arr_to_value (A.empty [|size|]) in
+    { size; block_id; active = None; memory; nodes = []; }
+
+
+  (* This is meant for nodes that are not reusable: memory is not reshaped. *)
+  let make_value_block memory x =
+    let block_id = new_block_id () in
+    let size = if is_elt memory then 1
+               else A.numel (value_to_arr memory) in
+    let block = { size; block_id; active = Some x; memory; nodes = [ x ]; } in
+    (attr x).value <- [| memory |];
+    (attr x).block <- Some [| block |]
+
+
   let make_node ?name ?value ?shape ?freeze ?reuse ?state op =
-    let value = match value with Some v -> v | None -> [| |] in
     let shape = match shape with Some s -> s | None -> [| None |] in
     let state = match state with Some s -> s | None -> Invalid in
     let reuse = match reuse with Some s -> s | None -> true in
     let freeze = match freeze with Some s -> s | None -> false in
-    let vnode = [| (* used by the computation engine only *) |] in
-    Owl_graph.node ?name { op; freeze; reuse; state; shape; value; vnode }
+    let value = match value with Some v -> v | None -> [| |] in
+    let attr = { op; freeze; reuse; state; shape; value; block = None; } in
+    let node = Owl_graph.node ?name attr in
+    if value <> [| |] then (
+      make_value_block value.(0) node
+    );
+    node
 
 
   let make_then_connect ?shape op parents =
@@ -338,7 +369,59 @@ module Make
     |> node_to_elt
 
 
-  let set_value x v = (attr x).value <- v
+  let get_nodes_using_block b = b.nodes
+
+
+  let _get_value_block b = b.memory
+
+
+  let get_block_opt x = (attr x).block
+
+
+  let get_block x = match get_block_opt x with
+    | Some b -> b
+    | None   -> failwith "Symbol:get_block_exn: block not assigned"
+
+
+  let _set_block x b = (attr x).block <- Some b
+
+
+  let add_node_to_block x block =
+    let dst_shp = node_shape x in
+    let dst_numel = node_numel x in
+    let src_val = value_to_arr (_get_value_block block) in
+    (* allocate the first [dst_numel] elements for the memory of the node *)
+    let dst_val = arr_to_value (A.reshape (A.sub_left src_val 0 dst_numel) dst_shp) in
+    block.nodes <- x :: block.nodes;
+    _set_block x [| block |];
+    (attr x).value <- [| dst_val |]
+
+
+  let get_active_node b = b.active
+
+
+  let set_active_node b x = b.active <- Some x
+
+
+  let get_block_id x = match get_block_opt x with
+    | Some bs -> bs.(0).block_id
+    | None    -> -1
+
+
+  let set_value x v =
+    if is_arr v.(0) then (
+      match get_block_opt x with
+      | Some _ ->
+          let xv = value_to_arr (attr x).value.(0) in
+          let vv = value_to_arr v.(0) in
+          A.copy_ ~out:xv vv
+      | None   -> make_value_block v.(0) x
+    )
+    else (
+      match get_block_opt x with
+      | Some bs -> (attr x).value <- v; bs.(0).memory <- v.(0)
+      | None    -> make_value_block v.(0) x
+    )
 
 
   let get_value x = (attr x).value
@@ -361,13 +444,19 @@ module Make
   let get_reuse x = (attr x).reuse
 
 
-  let set_vnode x v = (attr x).vnode <- v
+  let is_shared x = match get_block_opt x with
+    | Some bs -> (
+        match get_nodes_using_block bs.(0) with
+        | _ :: _ :: _ -> true (* at least 2 elements *)
+        | _           -> false
+      )
+    | None    -> false
 
 
-  let get_vnode x = (attr x).vnode
-
-
-  let is_inherited x = Array.length (get_vnode x) > 0
+  (* contains itself *)
+  let get_shared_nodes x = match get_block_opt x with
+    | Some bs -> Array.of_list (get_nodes_using_block bs.(0))
+    | None    -> [| x |]
 
 
   let is_var x = (attr x).op = Var
@@ -376,14 +465,15 @@ module Make
   let is_const x = (attr x).op = Const
 
 
-  let is_arr x =
+  (* TODO: change it to rely on the operator. *)
+  let is_node_arr x =
     match (attr x).shape.(0) with
     | Some [||] -> false
     | Some _    -> true
     | _         -> failwith "Owl_computation_symbol:is_arr"
 
 
-  let is_elt x =
+  let is_node_elt x =
     match (attr x).shape.(0) with
     | Some [||] -> true
     | Some _    -> false
@@ -391,17 +481,15 @@ module Make
 
 
   let is_assigned x =
-    let value = (attr x).value in
-    let valen = Array.length value in
-    valen > 0
+    match get_block_opt x with
+    | Some _ -> true
+    | None   -> false
 
 
   let check_assigned x =
-    let value = (attr x).value in
-    let valen = Array.length value in
-    if valen = 0 then (
+    if not (is_assigned x) then (
       Owl_log.error "value not assigned: %s" (node_to_str x);
-      assert (valen > 0)
+      failwith "owl_computation_symbol:check_assigned"
     )
 
 
@@ -433,7 +521,7 @@ module Make
 
 
   let unpack_arr x =
-    let value = (arr_to_node x |> attr).value in
+    let value = arr_to_node x |> get_value in
     let valen = Array.length value in
     if valen = 0 then (
       Owl_log.error "not evaluated: %s" (arr_to_node x |> node_to_str);
@@ -446,7 +534,7 @@ module Make
 
 
   let unpack_elt x =
-    let value = (elt_to_node x |> attr).value in
+    let value = elt_to_node x |> get_value in
     let valen = Array.length value in
     if valen = 0 then (
       Owl_log.error "not evaluated: %s" (elt_to_node x |> node_to_str);

@@ -668,7 +668,7 @@ module Make
   (* training functions *)
 
   (* generic minimisation functions
-     forward: fucntion to run the forward pass
+     forward: function to run the forward pass
      backward: function to run the backward pass
      update: function to update the weights according to the gradient
      save: function to save the model for checkpoint
