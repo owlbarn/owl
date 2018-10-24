@@ -297,7 +297,8 @@ module Make
   let make_empty_block ?block_id size =
     let block_id = match block_id with
       | Some block_id -> block_id
-      | None          -> new_block_id () in
+      | None          -> new_block_id ()
+    in
     (* allocate a one-dimensional array *)
     let memory = arr_to_value (A.empty [|size|]) in
     { size; block_id; active = None; memory; nodes = []; }
@@ -411,9 +412,9 @@ module Make
     if is_arr v.(0) then (
       match get_block_opt x with
       | Some _ ->
-         let xv = value_to_arr (attr x).value.(0) in
-         let vv = value_to_arr v.(0) in
-         A.copy_ ~out:xv vv
+          let xv = value_to_arr (attr x).value.(0) in
+          let vv = value_to_arr v.(0) in
+          A.copy_ ~out:xv vv
       | None   -> make_value_block v.(0) x
     )
     else (
@@ -444,10 +445,11 @@ module Make
 
 
   let is_shared x = match get_block_opt x with
-    | Some bs -> (match get_nodes_using_block bs.(0) with
-                  | _ :: _ :: _ -> true (* at least 2 elements *)
-                  | _           -> false
-                 )
+    | Some bs -> (
+        match get_nodes_using_block bs.(0) with
+        | _ :: _ :: _ -> true (* at least 2 elements *)
+        | _           -> false
+      )
     | None    -> false
 
 
