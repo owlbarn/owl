@@ -21,6 +21,7 @@ module Make
 
   let invalidate_opt = function Some x -> invalidate x | None -> ()
 
+
   let update_validity x b =
     invalidate_opt (get_active_node b);
     set_active_node b x;
