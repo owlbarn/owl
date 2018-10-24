@@ -19,11 +19,7 @@ module Make
 
   (* utility functions *)
 
-  let invalidate_opt x_option =
-    match x_option with
-    | Some x -> invalidate x
-    | None   -> ()
-
+  let invalidate_opt = function Some x -> invalidate x | None -> ()
 
   let update_validity x b =
     invalidate_opt (get_active_node b);
