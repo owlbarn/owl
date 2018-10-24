@@ -250,15 +250,15 @@ module Make
   (* display some statistics about the number of blocks and the number of
    * allocated elements *)
   let init_stats nodes =
-    let total_elt = ref 0
-    and shared_elt = ref 0
-    and non_shared_elt = ref 0 in
-    let total_nodes = ref 0
-    and reusable_nodes = ref 0
-    and non_reusable_nodes = ref 0 in
+    let total_elt = ref 0 in
+    let shared_elt = ref 0 in
+    let non_shared_elt = ref 0 in
+    let total_nodes = ref 0 in
+    let reusable_nodes = ref 0 in
+    let non_reusable_nodes = ref 0 in
     let blocks_seen = Hashtbl.create 256 in
-    let reusable_blocks = ref 0
-    and alloc_reusable = ref 0 in
+    let reusable_blocks = ref 0 in
+    let alloc_reusable = ref 0 in
     let update_stats x =
       let numel_x = node_numel x in
       total_nodes := !total_nodes + 1;
