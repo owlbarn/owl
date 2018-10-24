@@ -69,7 +69,7 @@ module Make
       let b_id = get_block_id n in
       Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; %s; b:%i }\""
         a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) svs b_id ^
-        (if is_reusable n && b_id <> -1 then
+        (if get_reuse n && b_id <> -1 then
            let col = _block_colour b_id in
            Printf.sprintf "style=filled fillcolor=\"%s\"" col
          else "") ^

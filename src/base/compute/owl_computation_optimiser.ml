@@ -259,7 +259,7 @@ module Make
     let parent = (parents x).(0) in
     _optimise_term parent;
     let op = get_operator x in
-    let reusable = is_reusable x in
+    let reusable = get_reuse x in
     if op = Noop && reusable then (
       let x_children = children x in
       let parent_children = children parent in

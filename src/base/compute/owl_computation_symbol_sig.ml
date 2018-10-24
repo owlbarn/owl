@@ -125,7 +125,7 @@ module type Sig = sig
   val set_reuse : attr Owl_graph.node -> bool -> unit
   (** TODO *)
 
-  val is_reusable : attr Owl_graph.node -> bool
+  val get_reuse : attr Owl_graph.node -> bool
   (** TODO *)
 
   val is_shared : attr Owl_graph.node -> bool

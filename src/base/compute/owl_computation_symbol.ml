@@ -441,7 +441,7 @@ module Make
       (attr x).reuse <- reuse
 
 
-  let is_reusable x = (attr x).reuse
+  let get_reuse x = (attr x).reuse
 
 
   let is_shared x = match get_block_opt x with
@@ -465,6 +465,7 @@ module Make
   let is_const x = (attr x).op = Const
 
 
+  (* TODO: change it to rely on the operator. *)
   let is_node_arr x =
     match (attr x).shape.(0) with
     | Some [||] -> false

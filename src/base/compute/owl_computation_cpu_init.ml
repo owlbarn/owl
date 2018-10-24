@@ -215,7 +215,7 @@ module Make
         let pre_par, post_par = split_parents x in
         Array.iter update_parent pre_par;
         (* do not bother sharing the memory of single elements *)
-        if is_reusable x && not (is_node_elt x) then (
+        if get_reuse x && not (is_node_elt x) then (
           Hashtbl.add refs (id x) (refnum x);
           allocate x
         )
@@ -263,7 +263,7 @@ module Make
       let numel_x = node_numel x in
       total_nodes := !total_nodes + 1;
       total_elt := !total_elt + numel_x;
-      if is_reusable x then (
+      if get_reuse x then (
         reusable_nodes := !reusable_nodes + 1;
         shared_elt := !shared_elt + numel_x
       )
@@ -276,7 +276,7 @@ module Make
 
       if not (Hashtbl.mem blocks_seen block_x) then (
         Hashtbl.add blocks_seen block_x None;
-        if is_reusable x then (
+        if get_reuse x then (
           reusable_blocks := !reusable_blocks + 1;
           alloc_reusable := !alloc_reusable + block_x.size
         )
