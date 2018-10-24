@@ -232,7 +232,7 @@ module Make
             raise exn
           )
         in
-        Array.iter (fun b -> update_validity x b) (get_block x)
+        Array.iter (update_validity x) (get_block x)
     in
     Array.iter eval nodes
 
