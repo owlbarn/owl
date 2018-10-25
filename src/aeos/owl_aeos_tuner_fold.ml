@@ -29,7 +29,7 @@ let step_measure_fold xs base_f f msg =
 
   let y1 = M.of_array y1 n 1 in
   let y2 = M.of_array y2 n 1 in
-  M.(y1 - y2)
+  M.(y2 - y1)
 
 
 let step_measure_fold_along xs a base_f f msg =
@@ -49,7 +49,7 @@ let step_measure_fold_along xs a base_f f msg =
 
   let y1 = M.of_array y1 n 1 in
   let y2 = M.of_array y2 n 1 in
-  M.(y1 - y2)
+  M.(y2 - y1)
 
 
 (* Sum tuning module *)
@@ -65,7 +65,7 @@ module Sum = struct
   let make () = {
     c_macro = "OWL_OMP_THRESHOLD_SUM";
     params  = max_int;
-    x = Owl_aeos_utils.make_step_fold 10 5 10;
+    x = Owl_aeos_utils.make_step_fold 10 2 10;
     fs = [| (Owl_ndarray._owl_sum Float32); baseline_float32_sum |]
   }
 

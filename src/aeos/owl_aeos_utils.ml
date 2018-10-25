@@ -23,10 +23,10 @@ let remove_outlier arr =
 
 
 let timing fn msg =
+  Gc.compact ();
   let times = Owl.Utils.Stack.make () in
-  fn () |> ignore;
   for _ = 1 to c do
-    let t = Owl_utils.time fn in
+    let t = fn () in
     Owl.Utils.Stack.push times t
   done;
   let times = Owl.Utils.Stack.to_array times in
@@ -37,31 +37,40 @@ let timing fn msg =
   flush stdout;
   m_time, s_time
 
+(* eval functions; returns runtime of [f] *)
 
 let eval_map_unary f sz () =
   let x = N.uniform [|sz|] in
   let y = N.copy x in
-  f (Owl_utils.numel x) x y |> ignore
+  let h () = f (Owl_utils.numel x) x y |> ignore in
+  Owl_utils.time h
 
 
 let eval_map_binary f sz () =
   let x1 = N.uniform [|sz|] in
   let x2 = N.uniform [|sz|] in
-  let y = N.copy x1 in
-  f (Owl_utils.numel x1) x1 x2 y |> ignore
+  let y  = N.copy x1 in
+  let h () = f (Owl_utils.numel x1) x1 x2 y |> ignore in
+  Owl_utils.time h
+
 
 let eval_fold f sz () =
   let x = N.uniform sz in
-  f (Owl_utils.numel x) x |> ignore
+  let h () = f (Owl_utils.numel x) x |> ignore in
+  Owl_utils.time h
+
 
 let eval_fold_along f xs a () =
   let x = N.uniform xs in
   let m, n, o, ys = Owl_utils.reduce_params a x in
   let y = N.uniform ys in
-  f m n o x y |> ignore
+  let h () = f m n o x y |> ignore in
+  Owl_utils.time h
 
-let plot x y k b =
-  let h = Plot.create "line_plot.png" in
+(* utils *)
+
+let plot x y k b m =
+  let h = Plot.create (Printf.sprintf "line_plot_%s.png" m) in
   let x = Dense.Matrix.Generic.cast_s2d x in
   let y = Dense.Matrix.Generic.cast_s2d y in
 
@@ -71,12 +80,12 @@ let plot x y k b =
   Plot.output h
 
 
-let regression ?(p=false) x y =
+let regression ?(p=false) ?(m="") x y  =
   try
     let b, k = L.linreg x y in
     if p = true then (
       Printf.fprintf stderr "k: %.3f, b: %.3f\n" k b;
-      plot x y k b
+      plot x y k b m
     );
     let g x = x *. k +. b in
     let rt = Owl_maths_root.fzero g 0. 1000000. in

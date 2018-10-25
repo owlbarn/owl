@@ -39,6 +39,8 @@ CAMLprim value BASE_FUN4(value vN, value vX, value vY) {
 
 #endif /* BASE_FUN4 */
 
+#include <stdio.h>
+
 #ifdef BASE_FUN15
 
 CAMLprim value BASE_FUN15(value vN, value vX, value vY, value vZ)
@@ -66,12 +68,9 @@ CAMLprim value BASE_FUN15(value vN, value vX, value vY, value vZ)
   start_y = Y_data;
   start_z = Z_data;
 
-  while (start_x != stop_x) {
-    MAPFN(start_x, start_y, start_z);
-    start_x += 1;
-    start_y += 1;
-    start_z += 1;
-  };
+  for (int i = 0; i < N; i++) {
+    MAPFN((start_x + i), (start_y + i), (start_z + i));
+  }
 
   caml_acquire_runtime_system();  /* Disallow other threads */
 
