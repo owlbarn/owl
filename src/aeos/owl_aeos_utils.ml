@@ -40,15 +40,15 @@ let timing fn msg =
 (* eval functions; returns runtime of [f] *)
 
 let eval_map_unary f sz () =
-  let x = N.uniform [|sz|] in
+  let x = N.uniform sz in
   let y = N.copy x in
   let h () = f (Owl_utils.numel x) x y |> ignore in
   Owl_utils.time h
 
 
 let eval_map_binary f sz () =
-  let x1 = N.uniform [|sz|] in
-  let x2 = N.uniform [|sz|] in
+  let x1 = N.uniform sz in
+  let x2 = N.uniform sz in
   let y  = N.copy x1 in
   let h () = f (Owl_utils.numel x1) x1 x2 y |> ignore in
   Owl_utils.time h
@@ -99,16 +99,15 @@ let regression ?(p=false) ?(m="") x y  =
 
 (* utils *)
 
-let make_step_array start step n =
-  let x = Array.make n 0 in
+let generate_sizes_map start step n =
+  let x = Array.make n [|0|] in
   for i = 0 to n - 1 do
-    x.(i) <- start + i * step
+    x.(i) <- [| start + i * step |]
   done;
   x
 
-
-let array_to_mat a =
-  let a = Array.map float_of_int a in
+let size2mat_map xs =
+  let a = Array.map (fun x -> float_of_int x.(0)) xs in
   M.of_array a (Array.length a) 1
 
 

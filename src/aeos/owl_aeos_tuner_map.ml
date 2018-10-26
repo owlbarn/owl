@@ -4,7 +4,7 @@
  *)
 
 open Owl
-open Owl_core_types
+open Owl_aeos_types
 open Bigarray
 
 module N = Dense.Ndarray.S
@@ -12,9 +12,63 @@ module M = Dense.Matrix.S
 
 (* C function interface *)
 
+external baseline_float32_reci : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_reci"
+
+external baseline_float32_abs : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_abs"
+
+external baseline_float32_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_abs2"
+
+external baseline_float32_signum : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_signum"
+
+external baseline_float32_sqrt : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_sqrt"
+
+external baseline_float32_cbrt : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_cbrt"
+
+external baseline_float32_exp : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_exp"
+
+external baseline_float32_expm1 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_expm1"
+
+external baseline_float32_log : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_log"
+
+external baseline_float32_log1p : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_log1p"
+
 external baseline_float32_sin : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_sin"
 
 external baseline_float32_cos : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_cos"
+
+external baseline_float32_tan : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_tan"
+
+external baseline_float32_asin : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_asin"
+
+external baseline_float32_acos : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_acos"
+
+external baseline_float32_atan : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_atan"
+
+external baseline_float32_sinh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_sinh"
+
+external baseline_float32_cosh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_cosh"
+
+external baseline_float32_tanh: int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_tanh"
+
+external baseline_float32_asinh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_asinh"
+
+external baseline_float32_acosh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_acosh"
+
+external baseline_float32_atanh: int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_atanh"
+
+external baseline_float32_erf : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_erf"
+
+external baseline_float32_erfc : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_erfc"
+
+external baseline_float32_logistic : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_logistic"
+
+external baseline_float32_relu : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_relu"
+
+external baseline_float32_softplus : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_softplus"
+
+external baseline_float32_softsign : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_softsign"
+
+external baseline_float32_sigmoid : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_sigmoid"
 
 external baseline_float32_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_add"
 
@@ -68,25 +122,26 @@ let step_measure_map_binary xs f base_f msg =
 module Sin = struct
 
   type t = {
+    mutable name    : string;
     mutable c_macro : string;
     mutable params  : int;
-    mutable x       : int array;
-    mutable fs      : (float, float32_elt) Owl_core_types.owl_arr_op09 array
+    mutable x       : int array array;
+    mutable fs      : fun_map1 array
   }
 
   let make () = {
+    name = "sin";
     c_macro = "OWL_OMP_THRESHOLD_SIN";
     params  = max_int;
-    x = Owl_aeos_utils.make_step_array 1000 1000 50;
+    x = Owl_aeos_utils.generate_sizes_map 1000 1000 50;
     fs = [| (Owl_ndarray._owl_sin Float32); baseline_float32_sin |]
   }
 
   let tune t =
-    let op = "sin" in
-    Owl_log.info "AEOS: tune %s ..." op;
-    let y = step_measure_map_unary t.x t.fs.(0) t.fs.(1) op in
-    let x = Owl_aeos_utils.array_to_mat t.x in
-    t.params <- Owl_aeos_utils.regression ~p:true ~m:op x y;
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let y = step_measure_map_unary t.x t.fs.(0) t.fs.(1) t.name in
+    let x = Owl_aeos_utils.size2mat_map t.x in
+    t.params <- Owl_aeos_utils.regression ~p:true ~m:t.name x y;
     ()
 
   let to_string t =
@@ -99,25 +154,26 @@ end
 module Cos = struct
 
   type t = {
+    mutable name    : string;
     mutable c_macro : string;
     mutable params  : int;
-    mutable x       : int array;
-    mutable fs      : (float, float32_elt) Owl_core_types.owl_arr_op09 array
+    mutable x       : int array array;
+    mutable fs      : fun_map1 array
   }
 
   let make () = {
+    name = "cos";
     c_macro = "OWL_OMP_THRESHOLD_COS";
-    params  = max_int;
-    x = Owl_aeos_utils.make_step_array 1000 1000 60;
+    params = max_int;
+    x = Owl_aeos_utils.generate_sizes_map 1000 1000 50;
     fs = [| (Owl_ndarray._owl_cos Float32); baseline_float32_cos |]
   }
 
   let tune t =
-    let op = "cos" in
-    Owl_log.info "AEOS: tune %s ..." op;
-    let y = step_measure_map_unary t.x t.fs.(0) t.fs.(1) op in
-    let x = Owl_aeos_utils.array_to_mat t.x in
-    t.params <- Owl_aeos_utils.regression ~p:true ~m:op x y;
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let y = step_measure_map_unary t.x t.fs.(0) t.fs.(1) t.name in
+    let x = Owl_aeos_utils.size2mat_map t.x in
+    t.params <- Owl_aeos_utils.regression ~p:true ~m:t.name x y;
     ()
 
   let to_string t =
@@ -129,25 +185,26 @@ end
 module Add = struct
 
   type t = {
+    mutable name    : string;
     mutable c_macro : string;
     mutable params  : int;
-    mutable x       : int array;
-    mutable fs      : (float, float32_elt) Owl_core_types.owl_arr_op03 array
+    mutable x       : int array array;
+    mutable fs      : fun_map2 array
   }
 
   let make () = {
+    name = "add";
     c_macro = "OWL_OMP_THRESHOLD_ADD";
     params  = max_int;
-    x = Owl_aeos_utils.make_step_array 1000 20000 50;
+    x = Owl_aeos_utils.generate_sizes_map 1000 20000 50;
     fs = [| (Owl_ndarray._owl_add Float32); baseline_float32_add |]
   }
 
   let tune t =
-    let op = "add" in
-    Owl_log.info "AEOS: tune %s ..." op;
-    let y = step_measure_map_binary t.x t.fs.(0) t.fs.(1) op in
-    let x = Owl_aeos_utils.array_to_mat t.x in
-    t.params <- Owl_aeos_utils.regression ~p:true ~m:op x y;
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let y = step_measure_map_binary t.x t.fs.(0) t.fs.(1) t.name in
+    let x = Owl_aeos_utils.size2mat_map t.x in
+    t.params <- Owl_aeos_utils.regression ~p:true ~m:t.name x y;
     ()
 
   let to_string t =
@@ -159,25 +216,26 @@ end
 module Div = struct
 
   type t = {
+    mutable name    : string;
     mutable c_macro : string;
     mutable params  : int;
-    mutable x       : int array;
-    mutable fs      : (float, float32_elt) Owl_core_types.owl_arr_op03 array
+    mutable x       : int array array;
+    mutable fs      : fun_map2 array
   }
 
   let make () = {
+    name = "div";
     c_macro = "OWL_OMP_THRESHOLD_DIV";
     params  = max_int;
-    x = Owl_aeos_utils.make_step_array 1000 20000 50;
+    x = Owl_aeos_utils.generate_sizes_map 1000 20000 50;
     fs = [| (Owl_ndarray._owl_div Float32); baseline_float32_div |]
   }
 
   let tune t =
-    let op = "div" in
-    Owl_log.info "AEOS: tune %s ..." op;
-    let y = step_measure_map_binary t.x t.fs.(0) t.fs.(1) op in
-    let x = Owl_aeos_utils.array_to_mat t.x in
-    t.params <- Owl_aeos_utils.regression ~p:true ~m:op x y;
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let y = step_measure_map_binary t.x t.fs.(0) t.fs.(1) t.name in
+    let x = Owl_aeos_utils.size2mat_map t.x in
+    t.params <- Owl_aeos_utils.regression ~p:true ~m:t.name x y;
     ()
 
   let to_string t =
@@ -189,25 +247,26 @@ end
 module Atan2 = struct
 
   type t = {
+    mutable name    : string;
     mutable c_macro : string;
     mutable params  : int;
-    mutable x       : int array;
-    mutable fs      : (float, float32_elt) Owl_core_types.owl_arr_op03 array
+    mutable x       : int array array;
+    mutable fs      : fun_map2 array
   }
 
   let make () = {
+    name = "atan2";
     c_macro = "OWL_OMP_THRESHOLD_ATAN2";
     params  = max_int;
-    x = Owl_aeos_utils.make_step_array 1000 1000 50;
-    fs = [| (Owl_ndarray._owl_atan2 Float32); baseline_float32_atan2 |]
+    x = Owl_aeos_utils.generate_sizes_map 1000 1000 50;
+    fs = [|(Owl_ndarray._owl_atan2 Float32); baseline_float32_atan2|]
   }
 
   let tune t =
-    let op = "atan2" in
-    Owl_log.info "AEOS: tune %s ..." op;
-    let y = step_measure_map_binary t.x t.fs.(0) t.fs.(1) op in
-    let x = Owl_aeos_utils.array_to_mat t.x in
-    t.params <- Owl_aeos_utils.regression ~p:true ~m:op x y;
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let y = step_measure_map_binary t.x t.fs.(0) t.fs.(1) t.name in
+    let x = Owl_aeos_utils.size2mat_map t.x in
+    t.params <- Owl_aeos_utils.regression ~p:true ~m:t.name x y;
     ()
 
   let to_string t =
