@@ -4,7 +4,6 @@
  *)
 
 open Owl
-open Owl_aeos_types
 open Bigarray
 
 module N = Dense.Ndarray.S
@@ -122,30 +121,38 @@ let step_measure_map_binary xs f base_f msg =
 module Sin = struct
 
   type t = {
-    mutable name    : string;
-    mutable c_macro : string;
-    mutable params  : int;
-    mutable x       : int array array;
-    mutable fs      : fun_map1 array
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
   }
 
   let make () = {
-    name = "sin";
-    c_macro = "OWL_OMP_THRESHOLD_SIN";
-    params  = max_int;
-    x = Owl_aeos_utils.generate_sizes_map 1000 1000 50;
-    fs = [| (Owl_ndarray._owl_sin Float32); baseline_float32_sin |]
+    name  = "sin";
+    param = "OWL_OMP_THRESHOLD_SIN";
+    value = max_int;
+    input = Owl_aeos_utils.generate_sizes_map 1000 1000 30;
+    y = M.zeros 1 1
   }
 
   let tune t =
     Owl_log.info "AEOS: tune %s ..." t.name;
-    let y = step_measure_map_unary t.x t.fs.(0) t.fs.(1) t.name in
-    let x = Owl_aeos_utils.size2mat_map t.x in
-    t.params <- Owl_aeos_utils.regression ~p:true ~m:t.name x y;
-    ()
+    let f1 = Owl_ndarray._owl_sin Float32 in
+    let f2 = baseline_float32_sin in
+    t.y <- step_measure_map_unary t.input f1 f2 t.name;
+    let x = Owl_aeos_utils.size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = Owl_aeos_utils.size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f t.y in
+    Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
-    Printf.sprintf "#define %s %s" t.c_macro (string_of_int t.params)
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
 
@@ -154,61 +161,77 @@ end
 module Cos = struct
 
   type t = {
-    mutable name    : string;
-    mutable c_macro : string;
-    mutable params  : int;
-    mutable x       : int array array;
-    mutable fs      : fun_map1 array
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
   }
 
   let make () = {
-    name = "cos";
-    c_macro = "OWL_OMP_THRESHOLD_COS";
-    params = max_int;
-    x = Owl_aeos_utils.generate_sizes_map 1000 1000 50;
-    fs = [| (Owl_ndarray._owl_cos Float32); baseline_float32_cos |]
+    name  = "cos";
+    param = "OWL_OMP_THRESHOLD_COS";
+    value = max_int;
+    input = Owl_aeos_utils.generate_sizes_map 1000 1000 30;
+    y = M.zeros 1 1
   }
 
   let tune t =
     Owl_log.info "AEOS: tune %s ..." t.name;
-    let y = step_measure_map_unary t.x t.fs.(0) t.fs.(1) t.name in
-    let x = Owl_aeos_utils.size2mat_map t.x in
-    t.params <- Owl_aeos_utils.regression ~p:true ~m:t.name x y;
-    ()
+    let f1 = Owl_ndarray._owl_cos Float32 in
+    let f2 = baseline_float32_cos in
+    t.y <- step_measure_map_unary t.input f1 f2 t.name;
+    let x = Owl_aeos_utils.size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = Owl_aeos_utils.size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f t.y in
+    Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
-    Printf.sprintf "#define %s %s" t.c_macro (string_of_int t.params)
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
 
-(* Add tuning module *)
+
 module Add = struct
 
   type t = {
-    mutable name    : string;
-    mutable c_macro : string;
-    mutable params  : int;
-    mutable x       : int array array;
-    mutable fs      : fun_map2 array
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
   }
 
   let make () = {
-    name = "add";
-    c_macro = "OWL_OMP_THRESHOLD_ADD";
-    params  = max_int;
-    x = Owl_aeos_utils.generate_sizes_map 1000 20000 50;
-    fs = [| (Owl_ndarray._owl_add Float32); baseline_float32_add |]
+    name  = "add";
+    param = "OWL_OMP_THRESHOLD_ADD";
+    value = max_int;
+    input = Owl_aeos_utils.generate_sizes_map 1000 20000 50;
+    y = M.zeros 1 1
   }
 
   let tune t =
     Owl_log.info "AEOS: tune %s ..." t.name;
-    let y = step_measure_map_binary t.x t.fs.(0) t.fs.(1) t.name in
-    let x = Owl_aeos_utils.size2mat_map t.x in
-    t.params <- Owl_aeos_utils.regression ~p:true ~m:t.name x y;
-    ()
+    let f1 = Owl_ndarray._owl_add Float32 in
+    let f2 = baseline_float32_add in
+    t.y <- step_measure_map_binary t.input f1 f2 t.name;
+    let x = Owl_aeos_utils.size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = Owl_aeos_utils.size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f t.y in
+    Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
-    Printf.sprintf "#define %s %s" t.c_macro (string_of_int t.params)
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
 
@@ -216,30 +239,38 @@ end
 module Div = struct
 
   type t = {
-    mutable name    : string;
-    mutable c_macro : string;
-    mutable params  : int;
-    mutable x       : int array array;
-    mutable fs      : fun_map2 array
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
   }
 
   let make () = {
-    name = "div";
-    c_macro = "OWL_OMP_THRESHOLD_DIV";
-    params  = max_int;
-    x = Owl_aeos_utils.generate_sizes_map 1000 20000 50;
-    fs = [| (Owl_ndarray._owl_div Float32); baseline_float32_div |]
+    name  = "div";
+    param = "OWL_OMP_THRESHOLD_DIV";
+    value = max_int;
+    input = Owl_aeos_utils.generate_sizes_map 1000 20000 50;
+    y = M.zeros 1 1
   }
 
   let tune t =
     Owl_log.info "AEOS: tune %s ..." t.name;
-    let y = step_measure_map_binary t.x t.fs.(0) t.fs.(1) t.name in
-    let x = Owl_aeos_utils.size2mat_map t.x in
-    t.params <- Owl_aeos_utils.regression ~p:true ~m:t.name x y;
-    ()
+    let f1 = Owl_ndarray._owl_div Float32 in
+    let f2 = baseline_float32_div in
+    t.y <- step_measure_map_binary t.input f1 f2 t.name;
+    let x = Owl_aeos_utils.size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = Owl_aeos_utils.size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f t.y in
+    Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
-    Printf.sprintf "#define %s %s" t.c_macro (string_of_int t.params)
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
 
@@ -247,29 +278,37 @@ end
 module Atan2 = struct
 
   type t = {
-    mutable name    : string;
-    mutable c_macro : string;
-    mutable params  : int;
-    mutable x       : int array array;
-    mutable fs      : fun_map2 array
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
   }
 
   let make () = {
-    name = "atan2";
-    c_macro = "OWL_OMP_THRESHOLD_ATAN2";
-    params  = max_int;
-    x = Owl_aeos_utils.generate_sizes_map 1000 1000 50;
-    fs = [|(Owl_ndarray._owl_atan2 Float32); baseline_float32_atan2|]
+    name  = "atan2";
+    param = "OWL_OMP_THRESHOLD_ATAN2";
+    value = max_int;
+    input = Owl_aeos_utils.generate_sizes_map 1000 1000 50;
+    y = M.zeros 1 1
   }
 
   let tune t =
     Owl_log.info "AEOS: tune %s ..." t.name;
-    let y = step_measure_map_binary t.x t.fs.(0) t.fs.(1) t.name in
-    let x = Owl_aeos_utils.size2mat_map t.x in
-    t.params <- Owl_aeos_utils.regression ~p:true ~m:t.name x y;
-    ()
+    let f1 = Owl_ndarray._owl_atan2 Float32 in
+    let f2 = baseline_float32_atan2 in
+    t.y <- step_measure_map_binary t.input f1 f2 t.name;
+    let x = Owl_aeos_utils.size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = Owl_aeos_utils.size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f t.y in
+    Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
-    Printf.sprintf "#define %s %s" t.c_macro (string_of_int t.params)
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end

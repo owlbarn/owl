@@ -69,33 +69,30 @@ let eval_fold_along f xs a () =
 
 (* utils *)
 
-let plot x y k b m =
-  let h = Plot.create (Printf.sprintf "line_plot_%s.png" m) in
-  let x = Dense.Matrix.Generic.cast_s2d x in
-  let y = Dense.Matrix.Generic.cast_s2d y in
+let linear_reg x y =
+  let b, k = L.linreg x y in
+  Owl_log.info "Linear Regression: k: %.2f, b: %.2f\n" k b;
+  let g x = x *. k +. b in
+  g
 
-  let y' = Mat.(x *$ k +$ b) in
-  Plot.scatter ~h x y;
-  Plot.plot ~h ~spec:[ RGB (0,255,0) ] x y';
-  Plot.output h
-
-
-let regression ?(p=false) ?(m="") x y  =
+let find_root ?(l=0.) ?(u=1000000.) f =
   try
-    let b, k = L.linreg x y in
-    if p = true then (
-      Printf.fprintf stderr "k: %.3f, b: %.3f\n" k b;
-      plot x y k b m
-    );
-    let g x = x *. k +. b in
-    let rt = Owl_maths_root.fzero g 0. 1000000. in
-    Owl_log.info "Crosspoint: %f.\n" rt;
-    int_of_float rt
+    let r = Owl_maths_root.fzero f l u in
+    Owl_log.info "Crosspoint: %f.\n" r;
+    int_of_float r
   with
   | Assert_failure (err_msg, _, _) ->
     Owl_log.warn "%s" (err_msg ^ " ; using default value");
     default_threshold
 
+let plot x y y' m =
+  let h = Plot.create (Printf.sprintf "line_plot_%s.png" m) in
+  let x = Dense.Matrix.Generic.cast_s2d x in
+  let y = Dense.Matrix.Generic.cast_s2d y in
+  let y' = Dense.Matrix.Generic.cast_s2d y' in
+  Plot.scatter ~h x y;
+  Plot.plot ~h ~spec:[ RGB (0,255,0) ] x y';
+  Plot.output h
 
 (* utils *)
 
@@ -106,12 +103,8 @@ let generate_sizes_map start step n =
   done;
   x
 
-let size2mat_map xs =
-  let a = Array.map (fun x -> float_of_int x.(0)) xs in
-  M.of_array a (Array.length a) 1
 
-
-let make_step_fold ?(dims=4) start step n =
+let generate_sizes_fold ?(dims=4) start step n =
   let u = Array.make dims start in
   let x = Array.make n u in
   for i = 0 to n - 1 do
@@ -120,7 +113,12 @@ let make_step_fold ?(dims=4) start step n =
   x
 
 
-let fold_arr_to_mat a =
+let size2mat_map xs =
+  let a = Array.map (fun x -> float_of_int x.(0)) xs in
+  M.of_array a (Array.length a) 1
+
+
+let size2mat_fold a =
   let n = Array.length a in
   let s = Array.make n 0. in
   Array.iteri (fun i x ->

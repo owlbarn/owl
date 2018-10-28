@@ -22,7 +22,7 @@ let step_measure_fold xs base_f f msg =
     let v1, _ = Owl_aeos_utils.timing
       (Owl_aeos_utils.eval_fold f x) msg in
     let v2, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_fold base_f x) (msg ^ "-baseline") in
+      (Owl_aeos_utils.eval_fold base_f x) (msg ^ "-bm") in
     y1.(i) <- v1;
     y2.(i) <- v2;
   done;
@@ -42,7 +42,7 @@ let step_measure_fold_along xs a base_f f msg =
     let v1, _ = Owl_aeos_utils.timing
       (Owl_aeos_utils.eval_fold_along f x a) msg in
     let v2, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_fold_along base_f x a) (msg ^ "-baseline") in
+      (Owl_aeos_utils.eval_fold_along base_f x a) (msg ^ "-bm") in
     y1.(i) <- v1;
     y2.(i) <- v2;
   done;
@@ -52,32 +52,41 @@ let step_measure_fold_along xs a base_f f msg =
   M.(y2 - y1)
 
 
-(* Sum tuning module *)
 module Sum = struct
 
   type t = {
-    mutable c_macro : string;
-    mutable params  : int;
-    mutable x       : int array array;
-    mutable fs      : (float, float32_elt) Owl_core_types.owl_arr_op04 array
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
   }
 
   let make () = {
-    c_macro = "OWL_OMP_THRESHOLD_SUM";
-    params  = max_int;
-    x = Owl_aeos_utils.make_step_fold 10 2 10;
-    fs = [| (Owl_ndarray._owl_sum Float32); baseline_float32_sum |]
+    name  = "sum";
+    param = "OWL_OMP_THRESHOLD_SUM";
+    value = max_int;
+    input = Owl_aeos_utils.generate_sizes_fold 10 2 10;
+    y = M.zeros 1 1
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune sum ...";
-    let y = step_measure_fold t.x t.fs.(0) t.fs.(1) "sum" in
-    let x = Owl_aeos_utils.fold_arr_to_mat t.x in
-    t.params <- Owl_aeos_utils.regression ~p:true x y;
-    ()
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let f1 = Owl_ndarray._owl_sum Float32 in
+    let f2 = baseline_float32_sum in
+    t.y <- step_measure_fold t.input f1 f2 t.name;
+    let x = Owl_aeos_utils.size2mat_fold t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = Owl_aeos_utils.size2mat_fold t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f t.y in
+    Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
-    Printf.sprintf "#define %s %s" t.c_macro (string_of_int t.params)
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
 
@@ -85,27 +94,37 @@ end
 module Prod_along = struct
 
   type t = {
-    mutable c_macro : string;
-    mutable params  : int;
-    mutable x       : int array array;
-    mutable fs      : (float, float32_elt) Owl_core_types.owl_arr_op21 array
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
   }
 
   let make () = {
-    c_macro = "OWL_OMP_THRESHOLD_PROD_ALONG";
-    params  = max_int;
-    x = Owl_aeos_utils.make_step_fold 10 5 10;
-    fs = [| (Owl_ndarray._owl_prod_along Float32); baseline_float32_prod_along |]
+    name  = "sum";
+    param = "OWL_OMP_THRESHOLD_SUM";
+    value = max_int;
+    input = Owl_aeos_utils.generate_sizes_fold 10 2 10;
+    y = M.zeros 1 1
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune prod_along ...";
-    let y = step_measure_fold_along t.x 0 t.fs.(0) t.fs.(1) "prod_along" in
-    let x = Owl_aeos_utils.fold_arr_to_mat t.x in
-    t.params <- Owl_aeos_utils.regression ~p:true x y;
-    ()
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let f1 = Owl_ndarray._owl_prod_along Float32 in
+    let f2 = baseline_float32_prod_along in
+    t.y <- step_measure_fold_along t.input 0 f1 f2 t.name;
+    let x = Owl_aeos_utils.size2mat_fold t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = Owl_aeos_utils.size2mat_fold t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f t.y in
+    Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
-    Printf.sprintf "#define %s %s" t.c_macro (string_of_int t.params)
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
