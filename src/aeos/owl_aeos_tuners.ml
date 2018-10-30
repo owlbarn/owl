@@ -13,15 +13,17 @@
    | Div of Div.t
    | Atan2 of Atan2.t
    | Sum of Sum.t
+   | Prod of Prod.t
 
 
 let tuning = function
-  | Sin x -> Sin.tune x
-  | Cos x -> Cos.tune x
-  | Add x -> Add.tune x
-  | Div x -> Div.tune x
+  | Sin x   -> Sin.tune x
+  | Cos x   -> Cos.tune x
+  | Add x   -> Add.tune x
+  | Div x   -> Div.tune x
   | Atan2 x -> Atan2.tune x
-  | Sum x -> Sum.tune x
+  | Sum x   -> Sum.tune x
+  | Prod x  -> Prod.tune x
 
 
 let to_string = function
@@ -31,6 +33,17 @@ let to_string = function
   | Div x -> Div.to_string x
   | Atan2 x -> Atan2.to_string x
   | Sum x -> Sum.to_string x
+  | Prod x -> Prod.to_string x
+
+
+let plot = function
+  | Sin x -> Sin.plot x
+  | Cos x -> Cos.plot x
+  | Add x -> Add.plot x
+  | Div x -> Div.plot x
+  | Atan2 x -> Atan2.plot x
+  | Sum x -> Sum.plot x
+  | Prod x -> Prod.plot x
 
 
 let all = [|

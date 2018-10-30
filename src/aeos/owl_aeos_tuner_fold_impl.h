@@ -18,10 +18,8 @@ CAMLprim value BASE_FUN5(value vN, value vX)
 
   caml_release_runtime_system();  /* Allow other threads */
 
-  #pragma omp parallel for reduction(+ : r)
+  start_x = X_data;
   for (int i = 0; i < N; i++) {
-    //int tid = omp_get_thread_num();
-    //fprintf(stderr, "Plus rom omp thread %d for fun5 \n", tid);
     ACCFN(r, start_x[i]);
   }
 

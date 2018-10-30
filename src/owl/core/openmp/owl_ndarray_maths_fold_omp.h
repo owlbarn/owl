@@ -21,14 +21,14 @@ CAMLprim value FUN5(value vN, value vX)
   INIT;
 
   caml_release_runtime_system();  /* Allow other threads */
-
   start_x = X_data;
-  stop_x = start_x + N;
 
-  while (start_x != stop_x) {
-    ACCFN(r, (*start_x));
-    start_x += 1;
-  };
+#ifdef OMP_OP
+  #pragma omp parallel for reduction(OMP_OP : r)
+#endif
+  for (int i = 0; i < N; i++) {
+    ACCFN(r, start_x[i]);
+  }
 
   caml_acquire_runtime_system();  /* Disallow other threads */
 
@@ -380,6 +380,7 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 #undef BFCHKFN
 #undef AFCHKFN
 #undef COPYNUM
+#undef OMP_OP
 #undef ACCFN
 #undef INIT
 #undef FUN5
