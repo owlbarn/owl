@@ -25,3 +25,41 @@
 #define NUMBER1 float
 #define ACCFN(X,Y) *Y *= *X
 #include "owl_aeos_tuner_fold_impl.h"
+
+/* BASE_FUN20 */
+
+#define BASE_FUN20 bl_float32_cumsum
+#define BASE_FUN20_IMPL bl_float32_cumsum_impl
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = *X + *Y
+#include "owl_aeos_tuner_fold_impl.h"
+
+#define BASE_FUN20 bl_float32_cumprod
+#define BASE_FUN20_IMPL bl_float32_cumprod_impl
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = *X * *Y
+#include "owl_aeos_tuner_fold_impl.h"
+
+// cummin
+#define BASE_FUN20 bl_float32_cummax
+#define BASE_FUN20_IMPL bl_float32_cummax_impl
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = fmaxf(*X,*Y)
+#include "owl_aeos_tuner_fold_impl.h"
+
+#define BASE_FUN20 bl_float32_repeat
+#define BASE_FUN20_IMPL bl_float32_repeat_impl
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = *X
+#include "owl_aeos_tuner_fold_impl.h"
+
+#define BASE_FUN20 bl_float32_diff
+#define BASE_FUN20_IMPL bl_float32_diff_impl
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = *X - *(X - ofsx)
+#include "owl_aeos_tuner_fold_impl.h"

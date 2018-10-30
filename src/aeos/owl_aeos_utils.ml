@@ -37,35 +37,23 @@ let timing fn msg =
   flush stdout;
   m_time, s_time
 
-(* eval functions; returns runtime of [f] *)
 
-let eval_map_unary f sz () =
-  let x = N.uniform sz in
-  let y = N.copy x in
-  let h () = f (Owl_utils.numel x) x y |> ignore in
-  Owl_utils.time h
+let step_measure xs ef eg msg =
+  let n = Array.length xs in
+  let y1 = Array.make n 0. in
+  let y2 = Array.make n 0. in
 
+  for i = 0 to n - 1 do
+    let x = xs.(i) in
+    let v1, _ = timing (ef x) msg in
+    let v2, _ = timing (eg x) (msg ^ "-baseline") in
+    y1.(i) <- v1;
+    y2.(i) <- v2;
+  done;
 
-let eval_map_binary f sz () =
-  let x1 = N.uniform sz in
-  let x2 = N.uniform sz in
-  let y  = N.copy x1 in
-  let h () = f (Owl_utils.numel x1) x1 x2 y |> ignore in
-  Owl_utils.time h
-
-
-let eval_fold f sz () =
-  let x = N.uniform sz in
-  let h () = f (Owl_utils.numel x) x |> ignore in
-  Owl_utils.time h
-
-
-let eval_fold_along f xs a () =
-  let x = N.uniform xs in
-  let m, n, o, ys = Owl_utils.reduce_params a x in
-  let y = N.uniform ys in
-  let h () = f m n o x y |> ignore in
-  Owl_utils.time h
+  let y1 = M.of_array y1 n 1 in
+  let y2 = M.of_array y2 n 1 in
+  M.(y2 - y1)
 
 (* utils *)
 
@@ -93,35 +81,3 @@ let plot x y y' m =
   Plot.scatter ~h x y;
   Plot.plot ~h ~spec:[ RGB (0,255,0) ] x y';
   Plot.output h
-
-(* utils *)
-
-let generate_sizes_map start step n =
-  let x = Array.make n [|0|] in
-  for i = 0 to n - 1 do
-    x.(i) <- [| start + i * step |]
-  done;
-  x
-
-
-let generate_sizes_fold ?(dims=4) start step n =
-  let u = Array.make dims start in
-  let x = Array.make n u in
-  for i = 0 to n - 1 do
-    x.(i) <- Array.make dims (start + i * step)
-  done;
-  x
-
-
-let size2mat_map xs =
-  let a = Array.map (fun x -> float_of_int x.(0)) xs in
-  M.of_array a (Array.length a) 1
-
-
-let size2mat_fold a =
-  let n = Array.length a in
-  let s = Array.make n 0. in
-  Array.iteri (fun i x ->
-    s.(i) <- Array.fold_left ( * ) 1 x |> float_of_int
-  ) a;
-  M.of_array s n 1

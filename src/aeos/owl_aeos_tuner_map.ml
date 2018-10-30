@@ -4,143 +4,52 @@
  *)
 
 open Owl
-open Bigarray
+open Owl_aeos_c_interface
 
 module N = Dense.Ndarray.S
 module M = Dense.Matrix.S
 
-(* C function interface *)
 
-external baseline_float32_reci : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_reci"
+let generate_sizes_map start step n =
+  let x = Array.make n [|0|] in
+  for i = 0 to n - 1 do
+    x.(i) <- [| start + i * step |]
+  done;
+  x
 
-external baseline_float32_abs : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_abs"
-
-external baseline_float32_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_abs2"
-
-external baseline_float32_signum : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_signum"
-
-external baseline_float32_sqrt : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_sqrt"
-
-external baseline_float32_cbrt : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_cbrt"
-
-external baseline_float32_exp : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_exp"
-
-external baseline_float32_expm1 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_expm1"
-
-external baseline_float32_log : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_log"
-
-external baseline_float32_log1p : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_log1p"
-
-external baseline_float32_sin : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_sin"
-
-external baseline_float32_cos : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_cos"
-
-external baseline_float32_tan : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_tan"
-
-external baseline_float32_asin : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_asin"
-
-external baseline_float32_acos : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_acos"
-
-external baseline_float32_atan : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_atan"
-
-external baseline_float32_sinh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_sinh"
-
-external baseline_float32_cosh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_cosh"
-
-external baseline_float32_tanh: int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_tanh"
-
-external baseline_float32_asinh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_asinh"
-
-external baseline_float32_acosh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_acosh"
-
-external baseline_float32_atanh: int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_atanh"
-
-external baseline_float32_erf : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_erf"
-
-external baseline_float32_erfc : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_erfc"
-
-external baseline_float32_logistic : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_logistic"
-
-external baseline_float32_relu : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_relu"
-
-external baseline_float32_softplus : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_softplus"
-
-external baseline_float32_softsign : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_softsign"
-
-external baseline_float32_sigmoid : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_sigmoid"
-
-external baseline_float32_approx_elt_equal : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_approx_elt_equal"
-
-external baseline_float32_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_add"
-
-external baseline_float32_mul : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_mul"
-
-external baseline_float32_div : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_div"
-
-external baseline_float32_pow : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_pow"
-
-external baseline_float32_hypot : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_hypot"
-
-external baseline_float32_atan2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_atan2"
-
-external baseline_float32_max : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_max"
-
-external baseline_float32_fmod : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_fmod"
+let size2mat_map xs =
+  let a = Array.map (fun x -> float_of_int x.(0)) xs in
+  M.of_array a (Array.length a) 1
 
 
-external baseline_float32__cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_cumsum" "bl_float32_cumsum_impl"
+let eval_map_unary f sz () =
+  let x = N.uniform sz in
+  let y = N.copy x in
+  let h () = f (Owl_utils.numel x) x y |> ignore in
+  Owl_utils.time h
 
-external baseline_float32__cumprod : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_cumprod" "bl_float32_cumprod_impl"
 
-external baseline_float32__cummax : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_cummax" "bl_float32_cummax_impl"
+let eval_map_binary f sz () =
+  let x1 = N.uniform sz in
+  let x2 = N.uniform sz in
+  let y  = N.copy x1 in
+  let h () = f (Owl_utils.numel x1) x1 x2 y |> ignore in
+  Owl_utils.time h
 
-external baseline_float32__repeat : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_repeat" "bl_float32_repeat_impl"
-
-external baseline_float32__diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_diff" "bl_float32_diff_impl"
-
-(* measurement method for arr -> arr type functions *)
 
 let step_measure_map_unary xs f base_f msg =
-  let n = Array.length xs in
-  let y1 = Array.make n 0. in
-  let y2 = Array.make n 0. in
-
-  for i = 0 to n - 1 do
-    let x = xs.(i) in
-    let v1, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_map_unary f x) msg in
-    let v2, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_map_unary base_f x) (msg ^ "-baseline") in
-    y1.(i) <- v1;
-    y2.(i) <- v2;
-  done;
-
-  let y1 = M.of_array y1 n 1 in
-  let y2 = M.of_array y2 n 1 in
-  M.(y2 - y1)
+  let ef = eval_map_unary f in
+  let eg = eval_map_unary base_f in
+  Owl_aeos_utils.step_measure xs ef eg msg
 
 
 let step_measure_map_binary xs f base_f msg =
-  let n = Array.length xs in
-  let y1 = Array.make n 0. in
-  let y2 = Array.make n 0. in
+  let ef = eval_map_binary f in
+  let eg = eval_map_binary base_f in
+  Owl_aeos_utils.step_measure xs ef eg msg
 
-  for i = 0 to n - 1 do
-    let x = xs.(i) in
-    let v1, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_map_binary f x) msg in
-    let v2, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_map_binary base_f x) (msg ^ "-baseline") in
-    y1.(i) <- v1;
-    y2.(i) <- v2;
-  done;
+(* Unary operations *)
 
-  let y1 = M.of_array y1 n 1 in
-  let y2 = M.of_array y2 n 1 in
-  M.(y2 - y1)
-
-
-(* Sin tuning module *)
 module Sin = struct
 
   type t = {
@@ -155,7 +64,7 @@ module Sin = struct
     name  = "sin";
     param = "OWL_OMP_THRESHOLD_SIN";
     value = max_int;
-    input = Owl_aeos_utils.generate_sizes_map 1000 1000 30;
+    input = generate_sizes_map 1000 1000 30;
     y = M.zeros 1 1
   }
 
@@ -164,12 +73,12 @@ module Sin = struct
     let f1 = Owl_ndarray._owl_sin Float32 in
     let f2 = baseline_float32_sin in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = Owl_aeos_utils.size2mat_map t.input in
+    let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f
 
   let plot t =
-    let x = Owl_aeos_utils.size2mat_map t.input in
+    let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f t.y in
     Owl_aeos_utils.plot x t.y y' t.name
@@ -180,7 +89,6 @@ module Sin = struct
 end
 
 
-(* Cos tuning module *)
 module Cos = struct
 
   type t = {
@@ -195,7 +103,7 @@ module Cos = struct
     name  = "cos";
     param = "OWL_OMP_THRESHOLD_COS";
     value = max_int;
-    input = Owl_aeos_utils.generate_sizes_map 1000 1000 30;
+    input = generate_sizes_map 1000 1000 30;
     y = M.zeros 1 1
   }
 
@@ -204,12 +112,12 @@ module Cos = struct
     let f1 = Owl_ndarray._owl_cos Float32 in
     let f2 = baseline_float32_cos in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = Owl_aeos_utils.size2mat_map t.input in
+    let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f
 
   let plot t =
-    let x = Owl_aeos_utils.size2mat_map t.input in
+    let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f t.y in
     Owl_aeos_utils.plot x t.y y' t.name
@@ -219,6 +127,85 @@ module Cos = struct
 
 end
 
+
+module Reci = struct
+
+  type t = {
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
+  }
+
+  let make () = {
+    name  = "reci";
+    param = "OWL_OMP_THRESHOLD_RECI";
+    value = max_int;
+    input = generate_sizes_map 1000 10000 30;
+    y = M.zeros 1 1
+  }
+
+  let tune t =
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let f1 = Owl_ndarray._owl_reci Float32 in
+    let f2 = baseline_float32_reci in
+    t.y <- step_measure_map_unary t.input f1 f2 t.name;
+    let x = size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f t.y in
+    Owl_aeos_utils.plot x t.y y' t.name
+
+  let to_string t =
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
+
+end
+
+
+module Exp = struct
+
+  type t = {
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
+  }
+
+  let make () = {
+    name  = "exp";
+    param = "OWL_OMP_THRESHOLD_EXP";
+    value = max_int;
+    input = generate_sizes_map 1000 1000 30;
+    y = M.zeros 1 1
+  }
+
+  let tune t =
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let f1 = Owl_ndarray._owl_exp Float32 in
+    let f2 = baseline_float32_exp in
+    t.y <- step_measure_map_unary t.input f1 f2 t.name;
+    let x = size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f t.y in
+    Owl_aeos_utils.plot x t.y y' t.name
+
+  let to_string t =
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
+
+end
+
+(* Binary operations *)
 
 module Add = struct
 
@@ -234,7 +221,7 @@ module Add = struct
     name  = "add";
     param = "OWL_OMP_THRESHOLD_ADD";
     value = max_int;
-    input = Owl_aeos_utils.generate_sizes_map 1000 20000 50;
+    input = generate_sizes_map 1000 20000 50;
     y = M.zeros 1 1
   }
 
@@ -243,12 +230,12 @@ module Add = struct
     let f1 = Owl_ndarray._owl_add Float32 in
     let f2 = baseline_float32_add in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
-    let x = Owl_aeos_utils.size2mat_map t.input in
+    let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f
 
   let plot t =
-    let x = Owl_aeos_utils.size2mat_map t.input in
+    let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f t.y in
     Owl_aeos_utils.plot x t.y y' t.name
@@ -273,7 +260,7 @@ module Div = struct
     name  = "div";
     param = "OWL_OMP_THRESHOLD_DIV";
     value = max_int;
-    input = Owl_aeos_utils.generate_sizes_map 1000 20000 50;
+    input = generate_sizes_map 1000 20000 50;
     y = M.zeros 1 1
   }
 
@@ -282,12 +269,12 @@ module Div = struct
     let f1 = Owl_ndarray._owl_div Float32 in
     let f2 = baseline_float32_div in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
-    let x = Owl_aeos_utils.size2mat_map t.input in
+    let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f
 
   let plot t =
-    let x = Owl_aeos_utils.size2mat_map t.input in
+    let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f t.y in
     Owl_aeos_utils.plot x t.y y' t.name
@@ -312,7 +299,7 @@ module Atan2 = struct
     name  = "atan2";
     param = "OWL_OMP_THRESHOLD_ATAN2";
     value = max_int;
-    input = Owl_aeos_utils.generate_sizes_map 1000 1000 50;
+    input = generate_sizes_map 1000 1000 50;
     y = M.zeros 1 1
   }
 
@@ -321,12 +308,12 @@ module Atan2 = struct
     let f1 = Owl_ndarray._owl_atan2 Float32 in
     let f2 = baseline_float32_atan2 in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
-    let x = Owl_aeos_utils.size2mat_map t.input in
+    let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f
 
   let plot t =
-    let x = Owl_aeos_utils.size2mat_map t.input in
+    let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f t.y in
     Owl_aeos_utils.plot x t.y y' t.name
@@ -335,3 +322,45 @@ module Atan2 = struct
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
+
+
+module Fmod = struct
+
+  type t = {
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
+  }
+
+  let make () = {
+    name  = "fmod";
+    param = "OWL_OMP_THRESHOLD_FMOD";
+    value = max_int;
+    input = generate_sizes_map 1000 2000 50;
+    y = M.zeros 1 1
+  }
+
+  let tune t =
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let f1 = Owl_ndarray._owl_fmod Float32 in
+    let f2 = baseline_float32_fmod in
+    t.y <- step_measure_map_binary t.input f1 f2 t.name;
+    let x = size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = size2mat_map t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f t.y in
+    Owl_aeos_utils.plot x t.y y' t.name
+
+  let to_string t =
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
+
+end
+
+
+(* Operation to map x to y with explicit offset, step size, number of ops *)

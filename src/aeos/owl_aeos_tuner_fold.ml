@@ -1,58 +1,64 @@
 open Owl
-open Owl_core_types
-open Bigarray
+open Owl_aeos_c_interface
 
 module N = Dense.Ndarray.S
 module M = Dense.Matrix.S
 
-(* C function interface *)
-
-external baseline_float32_sum : int -> ('a, 'b) owl_arr -> 'a = "bl_float32_sum"
-
-external baseline_float32_prod : int -> ('a, 'b) owl_arr -> 'a = "bl_float32_prod"
-
-external baseline_float32_prod_along : int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_prod_along"
-
-
-let step_measure_fold xs base_f f msg =
-  let n   = Array.length xs in
-  let y1  = Array.make n 0. in
-  let y2  = Array.make n 0. in
-
+let generate_sizes_fold ?(dims=4) start step n =
+  let u = Array.make dims start in
+  let x = Array.make n u in
   for i = 0 to n - 1 do
-    let x = xs.(i) in
-    let v1, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_fold f x) msg in
-    let v2, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_fold base_f x) (msg ^ "-baseline") in
-    y1.(i) <- v1;
-    y2.(i) <- v2;
+    x.(i) <- Array.make dims (start + i * step)
   done;
+  x
 
-  let y1 = M.of_array y1 n 1 in
-  let y2 = M.of_array y2 n 1 in
-  M.(y2 - y1)
+let size2mat_fold a =
+  let n = Array.length a in
+  let s = Array.make n 0. in
+  Array.iteri (fun i x ->
+    s.(i) <- Array.fold_left ( * ) 1 x |> float_of_int
+  ) a;
+  M.of_array s n 1
 
 
-let step_measure_fold_along xs a base_f f msg =
-  let n   = Array.length xs in
-  let y1  = Array.make n 0. in
-  let y2  = Array.make n 0. in
+let eval_fold f sz () =
+  let x = N.uniform sz in
+  let h () = f (Owl_utils.numel x) x |> ignore in
+  Owl_utils.time h
 
-  for i = 0 to n - 1 do
-    let x = xs.(i) in
-    let v1, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_fold_along f x a) msg in
-    let v2, _ = Owl_aeos_utils.timing
-      (Owl_aeos_utils.eval_fold_along base_f x a) (msg ^ "-baseline") in
-    y1.(i) <- v1;
-    y2.(i) <- v2;
-  done;
 
-  let y1 = M.of_array y1 n 1 in
-  let y2 = M.of_array y2 n 1 in
-  M.(y2 - y1)
+let eval_fold_arr f sz () =
+  let x = N.uniform sz in
+  let h () = f ~axis:0 x |> ignore in
+  Owl_utils.time h
 
+
+let step_measure_fold xs f base_f msg =
+  let ef = eval_fold f in
+  let eg = eval_fold base_f in
+  Owl_aeos_utils.step_measure xs ef eg msg
+
+
+let step_measure_fold_arr xs f base_f msg =
+  let ef = eval_fold_arr f in
+  let eg = eval_fold_arr base_f in
+  Owl_aeos_utils.step_measure xs ef eg msg
+
+(*
+let eval_fold_along f a xs () =
+  let x = N.uniform xs in
+  let m, n, o, ys = Owl_utils.reduce_params a x in
+  let y = N.uniform ys in
+  let h () = f m n o x y |> ignore in
+  Owl_utils.time h
+
+let step_measure_fold_along xs f base_f msg =
+  let ef = eval_fold_along f 0 in
+  let eg = eval_fold_along base_f 0 in
+  Owl_aeos_utils.step_measure xs ef eg msg
+*)
+
+(* Reduction on all elements *)
 
 module Sum = struct
 
@@ -68,7 +74,7 @@ module Sum = struct
     name  = "sum";
     param = "OWL_OMP_THRESHOLD_SUM";
     value = max_int;
-    input = Owl_aeos_utils.generate_sizes_fold 10 4 20;
+    input = generate_sizes_fold 10 4 20;
     y = M.zeros 1 1
   }
 
@@ -77,12 +83,12 @@ module Sum = struct
     let f1 = Owl_ndarray._owl_sum Float32 in
     let f2 = baseline_float32_sum in
     t.y <- step_measure_fold t.input f1 f2 t.name;
-    let x = Owl_aeos_utils.size2mat_fold t.input in
+    let x = size2mat_fold t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f
 
   let plot t =
-    let x = Owl_aeos_utils.size2mat_fold t.input in
+    let x = size2mat_fold t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f t.y in
     Owl_aeos_utils.plot x t.y y' t.name
@@ -107,7 +113,7 @@ module Prod = struct
     name  = "prod";
     param = "OWL_OMP_THRESHOLD_PROD";
     value = max_int;
-    input = Owl_aeos_utils.generate_sizes_fold 10 4 20;
+    input = generate_sizes_fold 10 4 20;
     y = M.zeros 1 1
   }
 
@@ -116,12 +122,12 @@ module Prod = struct
     let f1 = Owl_ndarray._owl_prod Float32 in
     let f2 = baseline_float32_prod in
     t.y <- step_measure_fold t.input f1 f2 t.name;
-    let x = Owl_aeos_utils.size2mat_fold t.input in
+    let x = size2mat_fold t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f
 
   let plot t =
-    let x = Owl_aeos_utils.size2mat_fold t.input in
+    let x = size2mat_fold t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f t.y in
     Owl_aeos_utils.plot x t.y y' t.name
@@ -132,6 +138,84 @@ module Prod = struct
 end
 
 
+module Cumsum = struct
+
+  type t = {
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
+  }
+
+  let make () = {
+    name  = "cumsum";
+    param = "OWL_OMP_THRESHOLD_CUMSUM";
+    value = max_int;
+    input = generate_sizes_fold 10 4 20;
+    y = M.zeros 1 1
+  }
+
+  let tune t =
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let f1 = fun ~axis x -> N.cumsum ~axis x in
+    let f2 = baseline_cumsum in
+    t.y <- step_measure_fold_arr t.input f1 f2 t.name;
+    let x = size2mat_fold t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = size2mat_fold t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f t.y in
+    Owl_aeos_utils.plot x t.y y' t.name
+
+  let to_string t =
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
+
+end
+
+
+module Cumprod = struct
+
+  type t = {
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
+  }
+
+  let make () = {
+    name  = "cumprod";
+    param = "OWL_OMP_THRESHOLD_CUMPROD";
+    value = max_int;
+    input = generate_sizes_fold 10 4 20;
+    y = M.zeros 1 1
+  }
+
+  let tune t =
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let f1 = fun ~axis x -> N.cumprod ~axis x in
+    let f2 = baseline_cumprod in
+    t.y <- step_measure_fold_arr t.input f1 f2 t.name;
+    let x = size2mat_fold t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = size2mat_fold t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f t.y in
+    Owl_aeos_utils.plot x t.y y' t.name
+
+  let to_string t =
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
+
+end
+
+(*
 module Prod_along = struct
 
   type t = {
@@ -146,7 +230,7 @@ module Prod_along = struct
     name  = "sum";
     param = "OWL_OMP_THRESHOLD_PROD_ALONG";
     value = max_int;
-    input = Owl_aeos_utils.generate_sizes_fold 10 2 10;
+    input = generate_sizes_fold 10 2 10;
     y = M.zeros 1 1
   }
 
@@ -155,12 +239,12 @@ module Prod_along = struct
     let f1 = Owl_ndarray._owl_prod_along Float32 in
     let f2 = baseline_float32_prod_along in
     t.y <- step_measure_fold_along t.input 0 f1 f2 t.name;
-    let x = Owl_aeos_utils.size2mat_fold t.input in
+    let x = size2mat_fold t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f
 
   let plot t =
-    let x = Owl_aeos_utils.size2mat_fold t.input in
+    let x = size2mat_fold t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f t.y in
     Owl_aeos_utils.plot x t.y y' t.name
@@ -169,3 +253,4 @@ module Prod_along = struct
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
+*)
