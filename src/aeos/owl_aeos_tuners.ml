@@ -68,10 +68,16 @@ let plot = function
 
 
 let all = [|
-  Sin   (Sin.make ());
-  Cos   (Cos.make ());
-  Add   (Add.make ());
-  Atan2 (Atan2.make ());
-  Div   (Div.make ());
-  Sum   (Sum.make ());
+  Reci    (Reci.make ());
+  Exp     (Exp.make ());
+  Sin     (Sin.make ());
+  Cos     (Cos.make ());
+  Add     (Add.make ());
+  Div     (Div.make ());
+  Atan2   (Atan2.make ());
+  Fmod    (Fmod.make ());
+  Sum     (Sum.make ());
+  Prod    (Prod.make ());
+  Cumsum  (Cumsum.make ());
+  Cumprod (Cumprod.make ());
 |]

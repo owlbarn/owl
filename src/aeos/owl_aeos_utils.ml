@@ -10,8 +10,6 @@ module L = Linalg.S
 
 let default_threshold = 100000
 
-(* timing utils *)
-
 let c = 30 (* repeat times *)
 
 let remove_outlier arr =
@@ -55,7 +53,6 @@ let step_measure xs ef eg msg =
   let y2 = M.of_array y2 n 1 in
   M.(y2 - y1)
 
-(* utils *)
 
 let linear_reg x y =
   let b, k = L.linreg x y in
@@ -63,15 +60,18 @@ let linear_reg x y =
   let g x = x *. k +. b in
   g
 
-let find_root ?(l=0.) ?(u=1000000.) f =
+
+let find_root ?(l=(-10000.)) ?(u=1000000.) f =
   try
     let r = Owl_maths_root.fzero f l u in
+    let r = if (r > 0.) then r else 0. in
     Owl_log.info "Crosspoint: %f.\n" r;
     int_of_float r
   with
   | Assert_failure (err_msg, _, _) ->
     Owl_log.warn "%s" (err_msg ^ " ; using default value");
     default_threshold
+
 
 let plot x y y' m =
   let h = Plot.create (Printf.sprintf "line_plot_%s.png" m) in

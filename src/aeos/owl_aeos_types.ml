@@ -4,36 +4,7 @@
  *)
 
 (*
-type tunner =
-  | Sin of Owl_aeos_tuner_sin.t
-  | Cos of Owl_aeos_tuner_cos.t
-*)
-
-(* module Sin : sig
-
-  type t = {
-    mutable c_macro : string;
-    mutable params  : int;
-    mutable x       : int array;
-  }
-
-  val make : unit -> t
-
-  val tune : t -> unit
-
-  val to_string : t -> string
-
-end *)
-
-(*
-type tuner =
-  | Sin of Sin.t
-*)
-
-(* open Owl_aeos_types *)
-
-(* open Owl_aeos_tuner_map
-open Owl_aeos_tuner_fold
+open Bigarray
 
 type tuner =
   | Sin of Sin.t
@@ -41,9 +12,6 @@ type tuner =
   | Add of Add.t
   | Sum of Sum.t
 
-open Bigarray
-
 type fun_map1 = (float, float32_elt) Owl_core_types.owl_arr_op09
 type fun_map2 = (float, float32_elt) Owl_core_types.owl_arr_op03
-
 *)

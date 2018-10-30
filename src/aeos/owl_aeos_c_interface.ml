@@ -11,57 +11,57 @@ external baseline_float32_abs : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> u
 
 external baseline_float32_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_abs2"
 
-external baseline_float32_signum : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_signum"
+external baseline_float32_signum : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_signum"
 
-external baseline_float32_sqrt : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_sqrt"
+external baseline_float32_sqrt : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_sqrt"
 
-external baseline_float32_cbrt : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_cbrt"
+external baseline_float32_cbrt : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_cbrt"
 
-external baseline_float32_exp : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_exp"
+external baseline_float32_exp : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_exp"
 
-external baseline_float32_expm1 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_expm1"
+external baseline_float32_expm1 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_expm1"
 
-external baseline_float32_log : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_log"
+external baseline_float32_log : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_log"
 
-external baseline_float32_log1p : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_log1p"
+external baseline_float32_log1p : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_log1p"
 
 external baseline_float32_sin : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_sin"
 
 external baseline_float32_cos : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_cos"
 
-external baseline_float32_tan : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_tan"
+external baseline_float32_tan : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_tan"
 
 external baseline_float32_asin : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_asin"
 
 external baseline_float32_acos : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_acos"
 
-external baseline_float32_atan : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_atan"
+external baseline_float32_atan : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_atan"
 
 external baseline_float32_sinh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_sinh"
 
 external baseline_float32_cosh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_cosh"
 
-external baseline_float32_tanh: int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_tanh"
+external baseline_float32_tanh: int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_tanh"
 
 external baseline_float32_asinh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_asinh"
 
 external baseline_float32_acosh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_acosh"
 
-external baseline_float32_atanh: int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_atanh"
+external baseline_float32_atanh: int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_atanh"
 
-external baseline_float32_erf : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_erf"
+external baseline_float32_erf : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_erf"
 
-external baseline_float32_erfc : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_erfc"
+external baseline_float32_erfc : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_erfc"
 
-external baseline_float32_logistic : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_logistic"
+external baseline_float32_logistic : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_logistic"
 
-external baseline_float32_relu : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_relu"
+external baseline_float32_relu : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_relu"
 
-external baseline_float32_softplus : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_softplus"
+external baseline_float32_softplus : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_softplus"
 
-external baseline_float32_softsign : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_softsign"
+external baseline_float32_softsign : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_softsign"
 
-external baseline_float32_sigmoid : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_owl_sigmoid"
+external baseline_float32_sigmoid : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_sigmoid"
 
 (* Binary Map *)
 
@@ -120,7 +120,6 @@ let cumulative_op ?(axis=(-1)) _cumop x y =
   let ofsx = 0 in
   let ofsy = _stride.(a) in
   _cumop m n x ofsx incx_m incx_n y ofsy incy_m incy_n
-
 
 let cumulative_wrapper cumop ~axis x =
   let x = N.copy x in

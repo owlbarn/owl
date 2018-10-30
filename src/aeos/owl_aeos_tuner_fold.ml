@@ -90,7 +90,7 @@ module Sum = struct
   let plot t =
     let x = size2mat_fold t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
@@ -113,7 +113,7 @@ module Prod = struct
     name  = "prod";
     param = "OWL_OMP_THRESHOLD_PROD";
     value = max_int;
-    input = generate_sizes_fold 10 4 20;
+    input = generate_sizes_fold 10 2 20;
     y = M.zeros 1 1
   }
 
@@ -129,7 +129,7 @@ module Prod = struct
   let plot t =
     let x = size2mat_fold t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
@@ -152,7 +152,7 @@ module Cumsum = struct
     name  = "cumsum";
     param = "OWL_OMP_THRESHOLD_CUMSUM";
     value = max_int;
-    input = generate_sizes_fold 10 4 20;
+    input = generate_sizes_fold 10 2 10;
     y = M.zeros 1 1
   }
 
@@ -168,7 +168,7 @@ module Cumsum = struct
   let plot t =
     let x = size2mat_fold t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
@@ -191,13 +191,13 @@ module Cumprod = struct
     name  = "cumprod";
     param = "OWL_OMP_THRESHOLD_CUMPROD";
     value = max_int;
-    input = generate_sizes_fold 10 4 20;
+    input = generate_sizes_fold 10 2 10;
     y = M.zeros 1 1
   }
 
   let tune t =
     Owl_log.info "AEOS: tune %s ..." t.name;
-    let f1 = fun ~axis x -> N.cumprod ~axis x in
+    let f1 = fun ~axis x -> N.cumprod_ ~axis x in
     let f2 = baseline_cumprod in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
     let x = size2mat_fold t.input in
@@ -207,7 +207,7 @@ module Cumprod = struct
   let plot t =
     let x = size2mat_fold t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
@@ -246,7 +246,7 @@ module Prod_along = struct
   let plot t =
     let x = size2mat_fold t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =

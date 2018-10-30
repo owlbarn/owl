@@ -80,7 +80,7 @@ module Sin = struct
   let plot t =
     let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
@@ -119,7 +119,7 @@ module Cos = struct
   let plot t =
     let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
@@ -158,7 +158,7 @@ module Reci = struct
   let plot t =
     let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
@@ -197,7 +197,7 @@ module Exp = struct
   let plot t =
     let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
@@ -237,7 +237,7 @@ module Add = struct
   let plot t =
     let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
@@ -276,7 +276,7 @@ module Div = struct
   let plot t =
     let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
@@ -315,7 +315,7 @@ module Atan2 = struct
   let plot t =
     let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =
@@ -354,7 +354,7 @@ module Fmod = struct
   let plot t =
     let x = size2mat_map t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f t.y in
+    let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
   let to_string t =

@@ -157,6 +157,7 @@ CAMLprim value BASE_FUN20(value *argv, int __unused_argn) {
 #undef INIT
 #undef ACCFN
 #undef NUMBER
+#undef MAPFN
 #undef COPYNUM
 #undef BASE_FUN5
 #undef BASE_FUN26
