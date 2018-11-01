@@ -2,6 +2,6 @@
  (name configure)
  (libraries
   base
-  configurator
+  dune.configurator
   stdio
   ))

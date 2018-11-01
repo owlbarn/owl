@@ -21,7 +21,6 @@ depends: [
   "base" {build}
   "base-bigarray"
   "conf-openblas" {>= "0.2.0"}
-  "configurator" {build}
   "ctypes"
   "dune" {build}
   "eigen" {>= "0.0.3"}

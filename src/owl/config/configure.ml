@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module C = Configurator
+module C = Configurator.V1
 
 
 let write_sexp fn sexp =
