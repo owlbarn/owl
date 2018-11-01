@@ -433,11 +433,12 @@ module Make
       (* put the results back together *)
       let slice i = Array.init nb_iterations (fun j -> result.(j).(i)) in
       let result = Array.init (Array.length result.(0))
-                     (fun i -> A.concatenate (slice i)) in
+                     (fun i -> A.concatenate ~axis:0 (slice i)) in
       Engine.eval_arr result;
       Array.map Algodiff.pack_arr result
     in
     results
+
 
   (* ``model network`` transforms the network into a computation graph and
   optimises it. Returns a function that takes the input of the network as an

@@ -32,7 +32,7 @@ module type Sig = sig
   val node_numel : attr Owl_graph.node -> int
   (** TODO *)
 
-  val is_shape_unkown : attr Owl_graph.node -> bool
+  val is_shape_unknown : attr Owl_graph.node -> bool
   (** TODO *)
 
   val infer_shape_graph : attr Owl_graph.node array -> unit
@@ -74,6 +74,42 @@ module type Sig = sig
   val const_elt : string -> A.elt -> elt
   (** TODO *)
 
+  val new_block_id : unit -> int
+  (** ``new_block_id ()`` returns an unused block id. *)
+
+  val make_empty_block : ?block_id:int -> int -> block
+  (** ``make_empty_block s`` returns an empty block of memory of size ``s``. *)
+
+  val make_value_block : value -> attr Owl_graph.node -> unit
+  (**
+  ``make_value_block value node`` creates a block of memory initialised with
+  ``value`` and links the new block to ``node``.
+   *)
+
+  val get_block : attr Owl_graph.node -> block array
+  (**
+  ``get_block node`` returns the memory block allocated to ``node``.
+  If no block is allocated, throws an exception.
+   *)
+
+  val add_node_to_block : attr Owl_graph.node -> block -> unit
+  (**
+  Link a node to a reusable block and initialises its memory on the memory of
+  the block.
+   *)
+
+  val get_active_node : block -> (attr Owl_graph.node) option
+  (** Return the node that is currently using the memory of the block. *)
+
+  val set_active_node : block -> attr Owl_graph.node -> unit
+  (** Update the node that is currently using the block of memory. *)
+
+  val get_block_id : attr Owl_graph.node -> int
+  (**
+  ``get_block_id node`` returns the id of the block assigned to ``node``. If
+  ``node`` has not been assigned yet, returns ``-1``.
+   *)
+
   val set_value : attr Owl_graph.node -> value array -> unit
   (** TODO *)
 
@@ -92,14 +128,14 @@ module type Sig = sig
   val get_reuse : attr Owl_graph.node -> bool
   (** TODO *)
 
-  val set_vnode : attr Owl_graph.node -> t array -> unit
+  val is_shared : attr Owl_graph.node -> bool
   (** TODO *)
 
-  val get_vnode : attr Owl_graph.node -> t array
-  (** TODO *)
-
-  val is_inherited : attr Owl_graph.node -> bool
-  (** TODO *)
+  val get_shared_nodes : attr Owl_graph.node -> (attr Owl_graph.node) array
+  (**
+  ``get_shared_nodes node`` returns the nodes sharing the same block of memory
+  as ``node``.
+   *)
 
   val is_var : attr Owl_graph.node -> bool
   (** TODO *)
@@ -107,17 +143,23 @@ module type Sig = sig
   val is_const : attr Owl_graph.node -> bool
   (** TODO *)
 
-  val is_arr : attr Owl_graph.node -> bool
+  val is_node_arr : attr Owl_graph.node -> bool
   (** TODO *)
 
-  val is_elt : attr Owl_graph.node -> bool
+  val is_node_elt : attr Owl_graph.node -> bool
   (** TODO *)
 
   val is_assigned : attr Owl_graph.node -> bool
-  (** TODO *)
+  (**
+  ``is_assigned node`` checks if a block of memory has been assigned to
+  ``node``.
+   *)
 
   val check_assigned : attr Owl_graph.node -> unit
-  (** TODO *)
+  (**
+  ``check_assigned node`` throws an exception if ``node`` has not been
+  assigned to a block.
+   *)
 
   val is_valid : attr Owl_graph.node -> bool
   (** TODO *)

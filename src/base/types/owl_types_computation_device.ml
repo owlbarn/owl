@@ -38,5 +38,11 @@ module type Sig = sig
   val value_to_float : value -> float
   (** TODO *)
 
+  val is_arr : value -> bool
+  (** TODO *)
+
+  val is_elt : value -> bool
+  (** TODO *)
+
 
 end
