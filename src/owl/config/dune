@@ -1,7 +1,7 @@
 (executable
  (name configure)
  (libraries
-  base
   dune.configurator
+  sexplib
   stdio
   ))
