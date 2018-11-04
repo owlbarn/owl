@@ -163,3 +163,4 @@ CAMLprim value BASE_FUN20(value *argv, int __unused_argn) {
 #undef BASE_FUN26
 #undef BASE_FUN20
 #undef BASE_FUN20_IMPL
+#undef OMP_OP

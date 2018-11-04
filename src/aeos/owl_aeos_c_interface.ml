@@ -13,6 +13,8 @@ external baseline_float32_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 
 
 external baseline_float32_signum : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_signum"
 
+external baseline_float32_sqr : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_sqr"
+
 external baseline_float32_sqrt : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_sqrt"
 
 external baseline_float32_cbrt : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_cbrt"
@@ -79,7 +81,7 @@ external baseline_float32_hypot : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr ->
 
 external baseline_float32_atan2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_atan2"
 
-external baseline_float32_max : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_max"
+external baseline_float32_max2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_max2"
 
 external baseline_float32_fmod : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_fmod"
 
@@ -88,10 +90,6 @@ external baseline_float32_fmod : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 
 external baseline_float32_sum : int -> ('a, 'b) owl_arr -> 'a = "bl_float32_sum"
 
 external baseline_float32_prod : int -> ('a, 'b) owl_arr -> 'a = "bl_float32_prod"
-
-(* Fold along *)
-
-external baseline_float32_prod_along : int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_prod_along"
 
 (* Accumulate *)
 
@@ -104,6 +102,10 @@ external _baseline_float32_cummax : int -> int -> ('a, 'b) owl_arr -> int -> int
 external _baseline_float32_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_repeat" "bl_float32_repeat_impl"
 
 external _baseline_float32_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_diff" "bl_float32_diff_impl"
+
+(* Fold along *)
+
+external baseline_float32_prod_along : int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_prod_along"
 
 
 let cumulative_op ?(axis=(-1)) _cumop x y =

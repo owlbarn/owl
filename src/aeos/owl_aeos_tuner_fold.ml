@@ -215,8 +215,8 @@ module Cumprod = struct
 
 end
 
-(*
-module Prod_along = struct
+
+module Cummax = struct
 
   type t = {
     mutable name  : string;
@@ -227,8 +227,8 @@ module Prod_along = struct
   }
 
   let make () = {
-    name  = "sum";
-    param = "OWL_OMP_THRESHOLD_PROD_ALONG";
+    name  = "cummax";
+    param = "OWL_OMP_THRESHOLD_CUMMAX";
     value = max_int;
     input = generate_sizes_fold 10 2 10;
     y = M.zeros 1 1
@@ -236,9 +236,9 @@ module Prod_along = struct
 
   let tune t =
     Owl_log.info "AEOS: tune %s ..." t.name;
-    let f1 = Owl_ndarray._owl_prod_along Float32 in
-    let f2 = baseline_float32_prod_along in
-    t.y <- step_measure_fold_along t.input 0 f1 f2 t.name;
+    let f1 = fun ~axis x -> N.cummax ~axis x in
+    let f2 = baseline_cummax in
+    t.y <- step_measure_fold_arr t.input f1 f2 t.name;
     let x = size2mat_fold t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f
@@ -253,4 +253,41 @@ module Prod_along = struct
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
-*)
+
+module Diff = struct
+
+  type t = {
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
+  }
+
+  let make () = {
+    name  = "diff";
+    param = "OWL_OMP_THRESHOLD_DIFF";
+    value = max_int;
+    input = generate_sizes_fold 10 2 10;
+    y = M.zeros 1 1
+  }
+
+  let tune t =
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let f1 = fun ~axis x -> N.diff ~axis x in
+    let f2 = baseline_diff in
+    t.y <- step_measure_fold_arr t.input f1 f2 t.name;
+    let x = size2mat_fold t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f
+
+  let plot t =
+    let x = size2mat_fold t.input in
+    let f = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f x in
+    Owl_aeos_utils.plot x t.y y' t.name
+
+  let to_string t =
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
+
+end
