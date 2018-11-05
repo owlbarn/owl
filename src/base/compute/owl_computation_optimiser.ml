@@ -551,10 +551,8 @@ module Make
   and pattern_018 x =
     let a = (parents x).(0) in
     _optimise_term a;
-    if refnum a = 1 then (
-      set_operator x Noop;
-      pattern_003 x
-    )
+    set_operator x Noop;
+    pattern_003 x
 
 
   (* Mul pattern *)
