@@ -291,16 +291,16 @@ module Make
       (Printf.sprintf "  %d nodes, %d elements\n" !total_nodes !total_elt);
     Buffer.add_string b
       (Printf.sprintf "  %d reusable nodes, %d elements\n"
-         !reusable_nodes !shared_elt);
+        !reusable_nodes !shared_elt);
     Buffer.add_string b
       (Printf.sprintf "  %d non-reusable nodes, %d elements\n"
-         !non_reusable_nodes !non_shared_elt);
+        !non_reusable_nodes !non_shared_elt);
     Buffer.add_string b
       (Printf.sprintf "  %d shared blocks, %d elements\n"
-         !reusable_blocks !alloc_reusable);
+        !reusable_blocks !alloc_reusable);
     Buffer.add_string b
       (Printf.sprintf "  TOTAL NUMBER OF ALLOCATED ELEMENTS: %d\n"
-         (!alloc_reusable + !non_shared_elt));
+        (!alloc_reusable + !non_shared_elt));
     Owl_log.info "%s" (Buffer.contents b)
 
 

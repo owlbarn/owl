@@ -154,11 +154,12 @@ let bfs_iter traversal f x next =
   let h = Hashtbl.create 512 in
   let q = Queue.create () in
   let relax y =
-    Array.iter
-      (fun z -> if not (Hashtbl.mem h z.id) then (
-                  Hashtbl.add h z.id None;
-                  Queue.push z q))
-      (next y)
+    Array.iter (fun z ->
+      if not (Hashtbl.mem h z.id) then (
+        Hashtbl.add h z.id None;
+        Queue.push z q
+      )
+    ) (next y)
   in
   let update y = f y; relax y in
 
@@ -166,7 +167,7 @@ let bfs_iter traversal f x next =
   Array.iter (fun y -> Hashtbl.add h y.id None) x;
   while not (Queue.is_empty q) do
     let y = Queue.pop q in
-    update y;
+    update y
   done
 
 
