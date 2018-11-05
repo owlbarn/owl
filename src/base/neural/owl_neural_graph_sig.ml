@@ -111,6 +111,9 @@ module type Sig = sig
   val run : t -> network -> t
   (** Execute the computations in all the neurons in a network with the given input. *)
 
+  val run_inputs : t array -> network -> t array
+  (** Execute the computations in all the neurons in a network with the given inputs. *)
+
   val forward : network -> t -> t * t array array
   (** Run the forward pass of a network. *)
 
