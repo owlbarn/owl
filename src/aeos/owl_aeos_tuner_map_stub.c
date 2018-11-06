@@ -187,16 +187,16 @@
 
 /* BASE_FUN15 */
 
-// elt_equal, elt_not_equal, elt_less, elt_greater,
+// share with: approx_elt_equal, elt_not_equal, elt_less, elt_greater,
 // elt_less_equal, elt_greater_equal
-#define BASE_FUN15 bl_float32_approx_elt_equal
+#define BASE_FUN15 bl_float32_elt_equal
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (fabsf(*X - *Y) < *Z)
+#define MAPFN(X,Y,Z) *Z = (*X == *Y)
 #include "owl_aeos_tuner_map_impl.h"
 
-//sub
+// share with sub
 #define BASE_FUN15 bl_float32_add
 #define NUMBER float
 #define NUMBER1 float
@@ -239,7 +239,7 @@
 #define MAPFN(X,Y,Z) *Z = atan2f(*X,*Y)
 #include "owl_aeos_tuner_map_impl.h"
 
-//min2
+// share with min2
 #define BASE_FUN15 bl_float32_max2
 #define NUMBER float
 #define NUMBER1 float
@@ -247,7 +247,7 @@
 #define MAPFN(X,Y,Z) *Z = fminf(*X,*Y)
 #include "owl_aeos_tuner_map_impl.h"
 
-//fmod_scalar
+// share with fmod_scalar
 #define BASE_FUN15 bl_float32_fmod
 #define NUMBER float
 #define NUMBER1 float

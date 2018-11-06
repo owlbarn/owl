@@ -1222,7 +1222,7 @@ end
 
 (* Binary operations *)
 
-module Approx_elt_equal = struct
+module Elt_equal = struct
 
   type t = {
     mutable name  : string;
@@ -1233,17 +1233,17 @@ module Approx_elt_equal = struct
   }
 
   let make () = {
-    name  = "approx_elt_equal";
-    param = "OWL_OMP_THRESHOLD_APPROX_ELT_EQUAL";
+    name  = "elt_equal";
+    param = "OWL_OMP_THRESHOLD_ELT_EQUAL";
     value = max_int;
-    input = generate_sizes 1000 20000 50;
+    input = generate_sizes 10000 20000 50;
     y = M.zeros 1 1
   }
 
   let tune t =
     Owl_log.info "AEOS: tune %s ..." t.name;
-    let f1 = Owl_ndarray._owl_approx_elt_equal Float32 in
-    let f2 = baseline_float32_approx_elt_equal in
+    let f1 = Owl_ndarray._owl_elt_equal Float32 in
+    let f2 = baseline_float32_elt_equal in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2mat t.input in
     let f = Owl_aeos_utils.linear_reg x t.y in

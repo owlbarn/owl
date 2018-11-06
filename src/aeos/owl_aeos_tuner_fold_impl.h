@@ -144,6 +144,7 @@ CAMLprim value BASE_FUN20_IMPL(
   CAMLreturn(Val_unit);
 }
 
+
 CAMLprim value BASE_FUN20(value *argv, int __unused_argn) {
   return BASE_FUN20_IMPL(
     argv[0], argv[1], argv[2], argv[3], argv[4],
@@ -163,4 +164,3 @@ CAMLprim value BASE_FUN20(value *argv, int __unused_argn) {
 #undef BASE_FUN26
 #undef BASE_FUN20
 #undef BASE_FUN20_IMPL
-#undef OMP_OP
