@@ -8,7 +8,7 @@ module N = Dense.Ndarray.S
 module M = Dense.Matrix.S
 module L = Linalg.S
 
-let default_threshold = 100000
+let default_threshold = 0
 
 let c = 30 (* repeat times *)
 
@@ -58,15 +58,18 @@ let linear_reg x y =
   let b, k = L.linreg x y in
   Owl_log.info "Linear Regression: k: %.2f, b: %.2f\n" k b;
   let g x = x *. k +. b in
-  g
+  g, (if k > 0. then 1 else -1)
 
 
-let find_root ?(l=(-10000.)) ?(u=1000000.) f =
+let find_root ?(l=(-10000.)) ?(u=1000000.) f sign =
   try
-    let r = Owl_maths_root.fzero f l u in
-    let r = if (r > 0.) then r else 0. in
-    Owl_log.info "Crosspoint: %f.\n" r;
-    int_of_float r
+    if sign < 0 then max_int
+    else (
+      let r = Owl_maths_root.fzero f l u in
+      let r = if (r > 0.) then r else 0. in
+      Owl_log.info "Crosspoint: %f.\n" r;
+      int_of_float r
+    )
   with
   | Assert_failure (err_msg, _, _) ->
     Owl_log.warn "%s" (err_msg ^ " ; using default value");

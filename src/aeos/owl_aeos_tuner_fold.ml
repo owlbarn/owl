@@ -84,12 +84,12 @@ module Sum = struct
     let f2 = baseline_float32_sum in
     t.y <- step_measure_fold t.input f1 f2 t.name;
     let x = size2mat_fold t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat_fold t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -123,12 +123,12 @@ module Prod = struct
     let f2 = baseline_float32_prod in
     t.y <- step_measure_fold t.input f1 f2 t.name;
     let x = size2mat_fold t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat_fold t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -162,12 +162,12 @@ module Cumsum = struct
     let f2 = baseline_cumsum in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
     let x = size2mat_fold t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat_fold t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -201,12 +201,12 @@ module Cumprod = struct
     let f2 = baseline_cumprod in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
     let x = size2mat_fold t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat_fold t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -240,12 +240,12 @@ module Cummax = struct
     let f2 = baseline_cummax in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
     let x = size2mat_fold t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat_fold t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -278,12 +278,12 @@ module Diff = struct
     let f2 = baseline_diff in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
     let x = size2mat_fold t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat_fold t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 

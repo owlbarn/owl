@@ -74,12 +74,12 @@ module Reci = struct
     let f2 = baseline_float32_reci in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -113,12 +113,12 @@ module Abs = struct
     let f2 = baseline_float32_abs in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -152,12 +152,12 @@ module Abs2 = struct
     let f2 = baseline_float32_abs2 in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -191,12 +191,12 @@ module Signum = struct
     let f2 = baseline_float32_signum in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -230,12 +230,12 @@ module Sqr = struct
     let f2 = baseline_float32_sqr in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -269,12 +269,12 @@ module Sqrt = struct
     let f2 = baseline_float32_sqrt in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -308,12 +308,12 @@ module Cbrt = struct
     let f2 = baseline_float32_cbrt in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -347,12 +347,12 @@ module Exp = struct
     let f2 = baseline_float32_exp in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -386,12 +386,12 @@ module Expm1 = struct
     let f2 = baseline_float32_expm1 in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -425,12 +425,12 @@ module Log = struct
     let f2 = baseline_float32_log in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -464,12 +464,12 @@ module Log1p = struct
     let f2 = baseline_float32_log1p in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -503,12 +503,12 @@ module Sin = struct
     let f2 = baseline_float32_sin in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -542,12 +542,12 @@ module Cos = struct
     let f2 = baseline_float32_cos in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -581,12 +581,12 @@ module Tan = struct
     let f2 = baseline_float32_tan in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -620,12 +620,12 @@ module Asin = struct
     let f2 = baseline_float32_asin in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -659,12 +659,12 @@ module Acos = struct
     let f2 = baseline_float32_acos in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -698,12 +698,12 @@ module Atan = struct
     let f2 = baseline_float32_atan in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -737,12 +737,12 @@ module Sinh = struct
     let f2 = baseline_float32_sinh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -776,12 +776,12 @@ module Cosh = struct
     let f2 = baseline_float32_cosh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -815,12 +815,12 @@ module Tanh = struct
     let f2 = baseline_float32_tanh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -854,12 +854,12 @@ module Asinh = struct
     let f2 = baseline_float32_asinh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -893,12 +893,12 @@ module Acosh = struct
     let f2 = baseline_float32_acosh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -932,12 +932,12 @@ module Atanh = struct
     let f2 = baseline_float32_atanh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -971,12 +971,12 @@ module Erf = struct
     let f2 = baseline_float32_erf in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1010,12 +1010,12 @@ module Erfc = struct
     let f2 = baseline_float32_erfc in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1049,12 +1049,12 @@ module Logistic = struct
     let f2 = baseline_float32_logistic in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1088,12 +1088,12 @@ module Relu = struct
     let f2 = baseline_float32_relu in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1127,12 +1127,12 @@ module Softplus = struct
     let f2 = baseline_float32_softplus in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1166,12 +1166,12 @@ module Softsign = struct
     let f2 = baseline_float32_softsign in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1205,12 +1205,12 @@ module Sigmoid = struct
     let f2 = baseline_float32_sigmoid in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1246,12 +1246,12 @@ module Elt_equal = struct
     let f2 = baseline_float32_elt_equal in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1285,12 +1285,12 @@ module Add = struct
     let f2 = baseline_float32_add in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1324,12 +1324,12 @@ module Mul = struct
     let f2 = baseline_float32_mul in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1363,12 +1363,12 @@ module Div = struct
     let f2 = baseline_float32_div in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1402,12 +1402,12 @@ module Pow = struct
     let f2 = baseline_float32_pow in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1441,12 +1441,12 @@ module Hypot = struct
     let f2 = baseline_float32_hypot in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1480,12 +1480,12 @@ module Atan2 = struct
     let f2 = baseline_float32_atan2 in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1519,12 +1519,12 @@ module Max2 = struct
     let f2 = baseline_float32_max2 in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
@@ -1558,12 +1558,12 @@ module Fmod = struct
     let f2 = baseline_float32_fmod in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
 
   let plot t =
     let x = size2mat t.input in
-    let f = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = M.map f x in
     Owl_aeos_utils.plot x t.y y' t.name
 
