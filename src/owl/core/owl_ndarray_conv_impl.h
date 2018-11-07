@@ -558,7 +558,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
 
   int mat_size = kernel_cri * output_crb;
   if (mat_size / kernel_cri == output_crb && mat_size < IM2COL_THRESHOLD) {
-    TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+    TYPE *inpt2d = (TYPE *) calloc(mat_size, sizeof(TYPE));
     if (inpt2d == NULL) exit(1);
 
     GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
@@ -765,7 +765,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
 
   int mat_size = kernel_cri * output_crb;
   if (mat_size / kernel_cri == output_crb && mat_size < IM2COL_THRESHOLD) {
-    TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+    TYPE *inpt2d = (TYPE *) calloc(mat_size, sizeof(TYPE));
     if (inpt2d == NULL) exit(1);
     TYPE *kern2d = (TYPE *) calloc(kernel_cri * out_channel, sizeof(TYPE));
     if (kern2d == NULL) exit(1);
