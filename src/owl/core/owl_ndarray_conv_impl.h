@@ -347,8 +347,9 @@ CAMLprim value FUN_NATIVE (spatial) (
   }
 
   // if generated input matrix is small enough, use im2col implementation
-  if (kernel_cri * output_crb < IM2COL_THRESHOLD) {
-    TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  int mat_size = kernel_cri * output_crb;
+  if (mat_size / kernel_cri == output_crb && mat_size < IM2COL_THRESHOLD) {
+    TYPE *inpt2d = (TYPE *) calloc(mat_size, sizeof(TYPE));
     if (inpt2d == NULL) exit(1);
 
     for (int i = 0; i < output_crb; ++i) {
@@ -555,8 +556,9 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
   memset(input_ptr, 0, batches * input_cri * sizeof(TYPE));
   INIT;
 
-  if (kernel_cri * output_crb < IM2COL_THRESHOLD) {
-    TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  int mat_size = kernel_cri * output_crb;
+  if (mat_size / kernel_cri == output_crb && mat_size < IM2COL_THRESHOLD) {
+    TYPE *inpt2d = (TYPE *) calloc(mat_size, sizeof(TYPE));
     if (inpt2d == NULL) exit(1);
 
     GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
@@ -761,8 +763,9 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
   memset(kernel_ptr, 0, kernel_cols * kernel_rio * sizeof(TYPE));
   INIT;
 
-  if (kernel_cri * output_crb < IM2COL_THRESHOLD) {
-    TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  int mat_size = kernel_cri * output_crb;
+  if (mat_size / kernel_cri == output_crb && mat_size < IM2COL_THRESHOLD) {
+    TYPE *inpt2d = (TYPE *) calloc(mat_size, sizeof(TYPE));
     if (inpt2d == NULL) exit(1);
     TYPE *kern2d = (TYPE *) calloc(kernel_cri * out_channel, sizeof(TYPE));
     if (kern2d == NULL) exit(1);
