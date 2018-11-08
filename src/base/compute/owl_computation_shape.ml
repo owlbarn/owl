@@ -267,6 +267,7 @@ module Make
     | Abs                                            -> _infer_shape_01 input_shapes
     | Delay _f                                       -> _infer_shape_01 input_shapes
     | DelayArray (shape, _f)                         -> [| Some shape |]
+    | LazyPrint (_max_row, _max_col, _header, _fmt)  -> _infer_shape_01 input_shapes
     | Neg                                            -> _infer_shape_01 input_shapes
     | Floor                                          -> _infer_shape_01 input_shapes
     | Ceil                                           -> _infer_shape_01 input_shapes

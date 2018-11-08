@@ -69,6 +69,7 @@ module Make
           | OneHot depth                                  -> _eval_map_01 x (fun ~out x -> A.one_hot_ ~out depth x.(0))
           | Delay f                                       -> _eval_map_08 x f
           | DelayArray (_shape, f)                        -> _eval_map_00 x f
+          | LazyPrint (max_col, max_row, header, fmt)     -> _eval_map_00 x (fun x -> A.print ?max_col ?max_row ?header ?fmt x.(0); x.(0))
           | Abs                                           -> _eval_map_01 x (fun ~out x -> A.abs_ ~out x.(0))
           | Neg                                           -> _eval_map_01 x (fun ~out x -> A.neg_ ~out x.(0))
           | Floor                                         -> _eval_map_01 x (fun ~out x -> A.floor_ ~out x.(0))

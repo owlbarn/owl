@@ -53,6 +53,7 @@ module Make
     | OneHot depth                                   -> Printf.sprintf "OneHot d:%i" depth
     | Delay _f                                       -> "Delay"
     | DelayArray (_shape, _f)                        -> "DelayArray"
+    | LazyPrint (_max_row, _max_col, _header, _fmt)  -> "LazyPrint"
     | Abs                                            -> "Abs"
     | Neg                                            -> "Neg"
     | Floor                                          -> "Floor"

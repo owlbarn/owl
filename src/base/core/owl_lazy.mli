@@ -203,6 +203,9 @@ module Make (A : Ndarray_Mutable) : sig
   val one_hot : int -> arr -> arr
   (** TODO *)
 
+  val lazy_print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(A.elt -> string) -> arr -> arr
+  (** TODO *)
+
   val print : ?max_row:'a -> ?max_col:'b -> ?header:'c -> ?fmt:'d -> 'e -> unit
   (** TODO *)
 
