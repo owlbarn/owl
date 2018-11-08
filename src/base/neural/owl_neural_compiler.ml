@@ -360,10 +360,6 @@ module Make
 
   (* Multi-input/output version of ``model``. *)
   let model_inputs ?(optimise=true) ?(batch_size=1) network =
-    (* TOFIX: the next line creates useless Copy nodes for constant values,
-     * because Copy is an operation in CG *)
-    (* compile network into static graph *)
-    let network = Graph.copy network in
     let network_name = Graph.get_network_name network in
     Owl_log.info "compile network %s into static graph ..." network_name;
 
@@ -373,7 +369,7 @@ module Make
                        ~shape:(Array.append [|batch_size|] sh)
                      |> pack_arr) input_shapes
     in
-    let outputs, _ = Graph.forward_inputs network inputs in
+    let outputs = Graph.run_inputs inputs network in
 
     let _to_nodes = Array.map (fun v -> unpack_arr v |> Engine.arr_to_node) in
     let i, o = _to_nodes inputs, _to_nodes outputs in

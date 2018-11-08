@@ -60,23 +60,25 @@ module Make
 
 
   let graph_to_dot graph =
-    let edge_s = fold_in_edges (fun a u v ->
-        Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)
-    ) "" graph.output
-    in
-    let node_s = fold_ancestors (fun a n ->
+    let b = Buffer.create 512 in
+    Buffer.add_string b "digraph CG {\nnode [shape=record];\n";
+    iter_in_edges (fun u v ->
+      Buffer.add_string b (Printf.sprintf "%i -> %i;\n" (id u) (id v))
+    ) graph.output;
+    iter_ancestors (fun n ->
       let svs = shape_or_value n in
       let b_id = get_block_id n in
-      Printf.sprintf "%s%i [ label=\"{{#%i | { %s | %s }} | r:%i; %s; b:%i }\""
-        a (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) svs b_id ^
-        (if get_reuse n && b_id <> -1 then
-           let col = _block_colour b_id in
-           Printf.sprintf "style=filled fillcolor=\"%s\"" col
-         else "") ^
-          "];\n"
-    ) "" graph.output
-    in
-    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
+      Buffer.add_string b
+        (Printf.sprintf "%i [ label=\"{{#%i | { %s | %s }} | r:%i; %s; b:%i }\""
+           (id n) (id n) (name n) (op_to_str (attr n).op) (refnum n) svs b_id);
+      if get_reuse n && b_id <> -1 then (
+        let col = _block_colour b_id in
+        Buffer.add_string b (Printf.sprintf "style=filled fillcolor=\"%s\"" col)
+      );
+      Buffer.add_string b "];\n"
+    ) graph.output;
+    Buffer.add_char b '}';
+    Buffer.contents b
 
 
   let graph_to_trace graph =

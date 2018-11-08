@@ -3,11 +3,11 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module C = Configurator
+module C = Configurator.V1
 
 
 let write_sexp fn sexp =
-  Stdio.Out_channel.write_all fn ~data:(Base.Sexp.to_string sexp)
+  Stdio.Out_channel.write_all fn ~data:(Sexplib.Sexp.to_string sexp)
 
 
 let get_os_type c =
@@ -153,7 +153,7 @@ let () =
     (* assemble default config *)
     let conf : C.Pkg_config.package_conf = { cflags; libs } in
 
-    write_sexp "c_flags.sexp" Base.(sexp_of_list sexp_of_string conf.cflags);
-    write_sexp "c_library_flags.sexp" Base.(sexp_of_list sexp_of_string conf.libs);
-    write_sexp "ocaml_flags.sexp" Base.(sexp_of_list sexp_of_string ocaml_flags);
+    write_sexp "c_flags.sexp" Sexplib.Std.(sexp_of_list sexp_of_string conf.cflags);
+    write_sexp "c_library_flags.sexp" Sexplib.Std.(sexp_of_list sexp_of_string conf.libs);
+    write_sexp "ocaml_flags.sexp" Sexplib.Std.(sexp_of_list sexp_of_string ocaml_flags);
   )

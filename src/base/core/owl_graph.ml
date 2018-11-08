@@ -148,25 +148,26 @@ let dfs_iter traversal f x next =
    [next node -> node array] returns the next set of nodes to iterate.
 *)
 let bfs_iter traversal f x next =
+  match traversal with
+  | PostOrder -> Owl_log.warn "PostOrder BFS not implemented. PreOrder is used."
+  | PreOrder  -> ();
   let h = Hashtbl.create 512 in
   let q = Queue.create () in
   let relax y =
-    Array.iter
-      (fun z -> if not (Hashtbl.mem h z.id) then (
-                  Hashtbl.add h z.id None;
-                  Queue.push z q))
-      (next y)
+    Array.iter (fun z ->
+      if not (Hashtbl.mem h z.id) then (
+        Hashtbl.add h z.id None;
+        Queue.push z q
+      )
+    ) (next y)
   in
-  let update = match traversal with
-    | PreOrder -> (fun y -> f y; relax y)
-    | PostOrder -> (fun y -> relax y; f y)
-  in
+  let update y = f y; relax y in
 
   Array.iter (fun y -> Queue.push y q) x;
   Array.iter (fun y -> Hashtbl.add h y.id None) x;
   while not (Queue.is_empty q) do
     let y = Queue.pop q in
-    update y;
+    update y
   done
 
 
