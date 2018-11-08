@@ -6,6 +6,7 @@
 #include "owl_core.h"
 #include "owl_stats.h"
 #include "owl_core_engine.h"
+#include "owl_aeos_parameter.h"
 
 
 // some helper functions
@@ -2661,12 +2662,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (1. / X)
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_RECI
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_reci
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (1. / X)
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_RECI
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_reci
@@ -2717,12 +2720,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (fabsf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ABS
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_abs
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (fabs(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ABS
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_abs
@@ -2743,12 +2748,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (X * X)
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ABS2
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_abs2
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (X * X)
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ABS2
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_abs2
@@ -2769,12 +2776,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) ((X > 0.0) ? 1.0 : (X < 0.0) ? -1.0 : X)
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SIGNUM
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_signum
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) ((X > 0.0) ? 1.0 : (X < 0.0) ? -1.0 : X)
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SIGNUM
 #include OWL_NDARRAY_MATHS_MAP
 
 // sqr
@@ -2783,12 +2792,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (X * X)
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SQR
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_sqr
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (X * X)
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SQR
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_sqr
@@ -2809,12 +2820,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (sqrtf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SQRT
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_sqrt
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (sqrt(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SQRT
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_sqrt
@@ -2835,12 +2848,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (cbrtf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_CBRT
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_cbrt
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (cbrt(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_CBRT
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_cbrt
@@ -2863,12 +2878,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (expf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_EXP
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_exp
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (exp(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_EXP
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_exp
@@ -2889,12 +2906,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (exp2f(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_EXP
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_exp2
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (exp2(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_EXP
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_exp2
@@ -2915,12 +2934,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (exp10(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_EXP
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_exp10
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (exp10(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_EXP
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_exp10
@@ -2941,12 +2962,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (expm1f(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_EXPM1
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_expm1
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (expm1(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_EXPM1
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_expm1
@@ -2967,12 +2990,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (logf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_LOG
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_log
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (log(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_LOG
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_log
@@ -2993,12 +3018,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (log10f(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_LOG
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_log10
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (log10(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_LOG
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_log10
@@ -3021,12 +3048,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (log2f(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_LOG
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_log2
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (log2(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_LOG
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_log2
@@ -3049,12 +3078,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (log1pf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_LOG1P
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_log1p
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (log1p(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_LOG1P
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_log1p
@@ -3075,12 +3106,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (sinf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SIN
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_sin
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (sin(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SIN
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_sin
@@ -3101,12 +3134,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (cosf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_COS
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_cos
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (cos(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_COS
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_cos
@@ -3127,12 +3162,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (tanf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_TAN
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_tan
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (tan(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_TAN
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_tan
@@ -3153,12 +3190,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (asinf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ASIN
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_asin
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (asin(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ASIN
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_asin
@@ -3179,12 +3218,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (acosf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ACOS
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_acos
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (acos(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ACOS
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_acos
@@ -3205,12 +3246,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (atanf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ATAN
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_atan
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (atan(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ATAN
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_atan
@@ -3231,12 +3274,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (sinhf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SINH
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_sinh
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (sinh(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SINH
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_sinh
@@ -3257,12 +3302,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (coshf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_COSH
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_cosh
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (cosh(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_COSH
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_cosh
@@ -3283,12 +3330,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (tanhf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_TANH
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_tanh
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (tanh(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_TANH
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_tanh
@@ -3309,12 +3358,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (asinhf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ASINH
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_asinh
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (asinh(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ASINH
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_asinh
@@ -3335,12 +3386,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (acoshf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ACOSH
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_acosh
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (acosh(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ACOSH
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_acosh
@@ -3361,12 +3414,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (atanhf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ATANH
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_atanh
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (atanh(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ATANH
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 complex32_atanh
@@ -3517,12 +3572,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (erff(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ERF
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_erf
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (erf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ERF
 #include OWL_NDARRAY_MATHS_MAP
 
 // erfc
@@ -3531,12 +3588,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (erfcf(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ERFC
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_erfc
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (erfc(X))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_ERFC
 #include OWL_NDARRAY_MATHS_MAP
 
 // logistic
@@ -3545,12 +3604,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (1 / (1 + expf(-X)))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_LOGISTIC
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_logistic
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (1 / (1 + exp(-X)))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_LOGISTIC
 #include OWL_NDARRAY_MATHS_MAP
 
 // elu
@@ -3575,12 +3636,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (fmaxf(X,0))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_RELU
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_relu
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (fmax(X,0))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_RELU
 #include OWL_NDARRAY_MATHS_MAP
 
 // leaky_relu
@@ -3605,12 +3668,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (log1pf(expf(X)))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SOFTPLUS
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_softplus
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (log1p(exp(X)))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SOFTPLUS
 #include OWL_NDARRAY_MATHS_MAP
 
 // softsign
@@ -3619,12 +3684,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (X / (1 + fabsf(X)))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SOFTSIGN
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_softsign
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (X / (1 + fabs(X)))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SOFTSIGN
 #include OWL_NDARRAY_MATHS_MAP
 
 // sigmoid
@@ -3633,12 +3700,14 @@
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (1 / (1 + expf(-X)))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SIGMOID
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN4 float64_sigmoid
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (1 / (1 + exp(-X)))
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SIGMOID
 #include OWL_NDARRAY_MATHS_MAP
 
 // log_sum_exp

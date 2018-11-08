@@ -998,7 +998,7 @@ module Erfc = struct
 
   let make () = {
     name  = "atanh";
-    param = "OWL_OMP_THRESHOLD_Erfc";
+    param = "OWL_OMP_THRESHOLD_ERFC";
     value = max_int;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
@@ -1076,7 +1076,7 @@ module Relu = struct
 
   let make () = {
     name  = "Relu";
-    param = "OWL_OMP_THRESHOLD_Relu";
+    param = "OWL_OMP_THRESHOLD_RELU";
     value = max_int;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
@@ -1193,7 +1193,7 @@ module Sigmoid = struct
 
   let make () = {
     name  = "softplus";
-    param = "OWL_OMP_THRESHOLD_Sigmoid";
+    param = "OWL_OMP_THRESHOLD_SIGMOID";
     value = max_int;
     input = generate_sizes 1000 10000 30;
     y = M.zeros 1 1

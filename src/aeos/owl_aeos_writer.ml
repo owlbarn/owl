@@ -22,3 +22,7 @@ let c_header_file fname tuners =
   in
   let header_file_str = Printf.sprintf "%s%s" copyright define_str in
   Owl_io.write_file fname header_file_str
+
+let write_default = ()
+
+let write_partial = ()

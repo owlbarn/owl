@@ -222,7 +222,6 @@ let all = [|
   Softplus  (Softplus.make ());
   Softsign  (Softsign.make ());
   Sigmoid   (Sigmoid.make ());
-
   Add       (Add.make ());
   Div       (Div.make ());
   Atan2     (Atan2.make ());
