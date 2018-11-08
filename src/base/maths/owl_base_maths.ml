@@ -278,6 +278,51 @@ let is_int x = modf x |> fst |> ( = ) 0.
 let is_sqr x = float_of_int x |> sqrt |> is_int
 
 
+let _binary_exp a b m f id =
+  let r = ref id in
+  let a = ref a in
+  let b = ref b in
+  while !a > 0 do
+    if !a land 1 = 1 then
+      r := f !r !b m;
+    a := !a lsr 1;
+    if !a > 0 then
+      b := f !b !b m;
+  done;
+  !r
+
+
+let mulmod a b m =
+  assert (a >= 0);
+  assert (b >= 0);
+  assert (m >= 1);
+
+  let a = a mod m in
+  let b = b mod m in
+
+  if a = 0 || b = 0 then
+    0
+  else if b < max_int / a then
+    (a * b) mod m
+  else (
+    let _muladd a b m =
+      let c = m - b in
+      if a >= c then a - c
+      else m - c + a
+    in
+    _binary_exp a b m _muladd 0
+  )
+
+
+let powmod a b m =
+  assert (a >= 0);
+  assert (b >= 0);
+  assert (m >= 1);
+
+  if m = 1 && b = 0 then 0
+  else _binary_exp b (a mod m) m mulmod 1
+
+
 let fermat_fact x =
   assert (is_odd x = true);
   let x = float_of_int x in

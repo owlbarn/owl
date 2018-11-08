@@ -599,6 +599,12 @@ val is_int : float -> bool
 val is_sqr : int -> bool
 (** ``is_sqr x`` checks if ``x`` is the square of an integer. *)
 
+val mulmod : int -> int -> int -> int
+(** ``mulmod a b m`` computes (a*b) mod m. *)
+
+val powmod : int -> int -> int -> int
+(** ``powmod a b m`` computes (a^b) mod m. *)
+
 val fermat_fact : int -> int * int
 (**
 ``fermat_fact x`` performs Fermat factorisation over ``x``, i.e. into two

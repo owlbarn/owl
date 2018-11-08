@@ -153,6 +153,22 @@ module To_test = struct
     let z = Array.map2 (fun a b -> a -. b) y z in
     Array.for_all (fun a -> a < 1e-8) z
 
+  let test_mulmod () =
+    let i = max_int in
+    let x = [|(0, 1, 2); (1, 2, 1); (2, 1, 2); (2, 2, 3); (4, 5, 3); (1847, 5516, 15268); (4549, 9581, 2679); (i - 1, i - 1, 2); (i - 1, i - 1, 10); (i - 1, i - 1, i)|] in
+    let y = [|0; 0; 0; 1; 2; 4296; 1997; 0; 4; 1|] in
+    let b = Array.map (fun (a, b, m) -> M.mulmod a b m) x in
+    let t = Array.map2 (=) b y in
+    Array.for_all (fun a -> a = true) t
+
+  let test_powmod () =
+    let i = max_int in
+    let x = [|(0, 0, 1); (0, 0, 2); (0, 2, 2); (1, 2, 1); (2, 1, 2); (5, 3, 3); (1847, 5516, 15268); (4549, 9581, 2679); (i - 1, i - 1, 2); (i - 1, i - 1, 10); (i - 1, i - 1, i)|] in
+    let y = [|0; 1; 0; 0; 0; 2; 4973; 1513; 0; 4; 1|] in
+    let b = Array.map (fun (a, b, m) -> M.powmod a b m) x in
+    let t = Array.map2 (=) b y in
+    Array.for_all (fun a -> a = true) t
+
 end
 
 
@@ -278,6 +294,12 @@ let test_log_fact () =
 let test_combination () =
   Alcotest.(check bool) "test combination" true (To_test.test_combination ())
 
+let test_mulmod () =
+  Alcotest.(check bool) "test mulmod" true (To_test.test_mulmod ())
+
+let test_powmod () =
+  Alcotest.(check bool) "test powmod" true (To_test.test_powmod ())
+
 let test_set = [
   "test j0", `Slow, test_j0;
   "test j1", `Slow, test_j1;
@@ -319,4 +341,6 @@ let test_set = [
   "test fact", `Slow, test_fact;
   "test log_fact", `Slow, test_log_fact;
   "test combination", `Slow, test_combination;
+  "test mulmod", `Slow, test_mulmod;
+  "test powmod", `Slow, test_powmod;
 ]

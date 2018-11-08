@@ -622,3 +622,21 @@ value owl_stub_sf_expm1(value vX) {
   double y = expm1(x);
   return caml_copy_double(y);
 }
+
+
+value owl_stub_mulmod(value vA, value vB, value vM) {
+  long a = Long_val(vA);
+  long b = Long_val(vB);
+  long m = Long_val(vM);
+  long r = mulmod(a, b, m);
+  return Val_long(r);
+}
+
+
+value owl_stub_powmod(value vA, value vB, value vM) {
+  long a = Long_val(vA);
+  long b = Long_val(vB);
+  long m = Long_val(vM);
+  long r = powmod(a, b, m);
+  return Val_long(r);
+}
