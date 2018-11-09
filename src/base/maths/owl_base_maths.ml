@@ -337,26 +337,46 @@ let fermat_fact x =
   fac0, fac1
 
 
-(* TODO: not finished yet ... *)
-let is_prime _x = failwith "not implemented yet"
-(*
-  let _detect_composite a d n s =
-    if mod_float (a ** d) n == 1. then false
+let is_prime x =
+  let _possible_prime s d n a =
+    let p = ref (powmod a d n) in
+    if !p = 1 || !p = n - 1 then true
     else (
-      let r = ref true in
+      let r = ref false in
       let _ =
         try (
-          for i = 0 to s - 1 do
-            let i = float_of_int i in
-            let c = mod_float (a ** ((2. ** i) *. d)) n in
-            if c = n -. 1. then raise Owl_exception.FOUND
+          for _ = 0 to s - 1 do
+            p := mulmod !p !p n;
+            if !p = n - 1 then raise Owl_exception.FOUND
           done
         )
-        with exn -> r := false
+        with _ -> r := true
       in
       !r
     )
   in
-
-  true
-*)
+  let _factor_powtwo n =
+    let i, r = ref 0, ref n in
+    while !r land 1 = 0 do
+      r := !r lsr 1;
+      i := !i + 1;
+    done;
+    !i, !r
+  in
+  if x < 30 then
+    Array.mem x [|2; 3; 5; 7; 11; 13; 17; 19; 23; 29|]
+  else if x mod 2 = 0 || x mod 3 = 0 then
+    false
+  else (
+    let bases =
+      (* bases from https://miller-rabin.appspot.com *)
+      if x <= 1073741823 then (* 2^30 - 1 *)
+        [|2; 7; 61|]
+      else
+        [|2; 325; 9375; 28178; 450775; 9780504; 6 * 299210837|]
+    in
+    let s, d = _factor_powtwo (x - 1) in
+    Array.for_all (fun b ->
+      b mod x = 0 || _possible_prime s d x (b mod x)
+    ) bases
+  )

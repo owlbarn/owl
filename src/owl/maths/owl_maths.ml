@@ -342,6 +342,8 @@ let mulmod a b m = Owl_maths_special.mulmod a b m
 
 let powmod a b m = Owl_maths_special.powmod a b m
 
+let is_prime = Owl_base_maths.is_prime
+
 let fermat_fact = Owl_base_maths.fermat_fact
 
 let nextafter = Owl_maths_special.nextafter

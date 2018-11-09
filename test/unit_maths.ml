@@ -169,6 +169,13 @@ module To_test = struct
     let t = Array.map2 (=) b y in
     Array.for_all (fun a -> a = true) t
 
+  let test_is_prime () =
+    let x = [|-1; 0; 1; 2; 3; 4; 8191; 12345; 524287; 780865231; 1073741789|] in
+    let y = [|false; false; false; true; true; false; true; false; true; false; true|] in
+    let r = Array.map M.is_prime x in
+    let t = Array.map2 (=) r y in
+    Array.for_all (fun a -> a = true) t
+
 end
 
 
@@ -300,6 +307,9 @@ let test_mulmod () =
 let test_powmod () =
   Alcotest.(check bool) "test powmod" true (To_test.test_powmod ())
 
+let test_is_prime () =
+  Alcotest.(check bool) "test is_prime" true (To_test.test_is_prime ())
+
 let test_set = [
   "test j0", `Slow, test_j0;
   "test j1", `Slow, test_j1;
@@ -343,4 +353,5 @@ let test_set = [
   "test combination", `Slow, test_combination;
   "test mulmod", `Slow, test_mulmod;
   "test powmod", `Slow, test_powmod;
+  "test is_prime", `Slow, test_is_prime;
 ]
