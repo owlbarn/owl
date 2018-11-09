@@ -20,12 +20,6 @@
 #define COPYNUM(X) (caml_copy_double(X))
 #include "owl_aeos_tuner_fold_impl.h"
 
-#define BASE_FUN26 bl_float32_prod_along
-#define NUMBER float
-#define NUMBER1 float
-#define ACCFN(X,Y) *Y *= *X
-#include "owl_aeos_tuner_fold_impl.h"
-
 /* BASE_FUN20 */
 
 #define BASE_FUN20 bl_float32_cumsum

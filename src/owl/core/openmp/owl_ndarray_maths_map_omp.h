@@ -394,7 +394,7 @@ CAMLprim value FUN20_IMPL(
   start_x_m = X_data + ofsx;
   start_y_m = Y_data + ofsy;
 
-  if (N >= OWL_OMP_THRESHOLD_DEFAULT) {
+  if (N >= OWL_OMP_THRESHOLD) {
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < M; i++) {
       start_x_n = start_x_m + i * incx_m;
@@ -820,6 +820,7 @@ CAMLprim value FUN29(value vN, value vA, value vB, value vX, value vY)
 #undef MAPFN2
 #undef MAPFN3
 #undef INIT
+#undef OWL_OMP_THRESHOLD
 #undef FUN4
 #undef FUN12
 #undef FUN13

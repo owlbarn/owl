@@ -1,8 +1,15 @@
+(*
+ * OWL - OCaml Scientific and Engineering Computing
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
+
 open Owl
 open Owl_aeos_c_interface
 
 module N = Dense.Ndarray.S
 module M = Dense.Matrix.S
+
+let default_threshold = 1000
 
 let generate_sizes_fold ?(dims=4) start step n =
   let u = Array.make dims start in
@@ -73,7 +80,7 @@ module Sum = struct
   let make () = {
     name  = "sum";
     param = "OWL_OMP_THRESHOLD_SUM";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes_fold 10 4 20;
     y = M.zeros 1 1
   }
@@ -112,7 +119,7 @@ module Prod = struct
   let make () = {
     name  = "prod";
     param = "OWL_OMP_THRESHOLD_PROD";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes_fold 10 2 20;
     y = M.zeros 1 1
   }
@@ -151,7 +158,7 @@ module Cumsum = struct
   let make () = {
     name  = "cumsum";
     param = "OWL_OMP_THRESHOLD_CUMSUM";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes_fold 10 2 10;
     y = M.zeros 1 1
   }
@@ -190,7 +197,7 @@ module Cumprod = struct
   let make () = {
     name  = "cumprod";
     param = "OWL_OMP_THRESHOLD_CUMPROD";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes_fold 10 2 10;
     y = M.zeros 1 1
   }
@@ -229,7 +236,7 @@ module Cummax = struct
   let make () = {
     name  = "cummax";
     param = "OWL_OMP_THRESHOLD_CUMMAX";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes_fold 10 2 10;
     y = M.zeros 1 1
   }
@@ -267,7 +274,7 @@ module Diff = struct
   let make () = {
     name  = "diff";
     param = "OWL_OMP_THRESHOLD_DIFF";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes_fold 10 2 10;
     y = M.zeros 1 1
   }

@@ -99,50 +99,51 @@ let tuning = function
   | Cumprod x   -> Cumprod.tune x
 
 
-let to_string = function
-  | Reci x      -> Reci.to_string x
-  | Abs x       -> Abs.to_string x
-  | Abs2 x      -> Abs2.to_string x
-  | Signum x    -> Signum.to_string x
-  | Sqr x       -> Sqr.to_string x
-  | Sqrt x      -> Sqrt.to_string x
-  | Cbrt x      -> Cbrt.to_string x
-  | Exp x       -> Exp.to_string x
-  | Expm1 x     -> Expm1.to_string x
-  | Log x       -> Log.to_string x
-  | Log1p x     -> Log1p.to_string x
-  | Sin x       -> Sin.to_string x
-  | Cos x       -> Cos.to_string x
-  | Tan x       -> Tan.to_string x
-  | Asin x      -> Asin.to_string x
-  | Acos x      -> Acos.to_string x
-  | Atan x      -> Atan.to_string x
-  | Sinh x      -> Sinh.to_string x
-  | Cosh x      -> Cosh.to_string x
-  | Tanh x      -> Tanh.to_string x
-  | Asinh x     -> Asinh.to_string x
-  | Acosh x     -> Acosh.to_string x
-  | Atanh x     -> Atanh.to_string x
-  | Erf x       -> Erf.to_string x
-  | Erfc x      -> Erfc.to_string x
-  | Logistic x  -> Logistic.to_string x
-  | Relu x      -> Relu.to_string x
-  | Softplus x  -> Softplus.to_string x
-  | Softsign x  -> Softsign.to_string x
-  | Sigmoid x   -> Sigmoid.to_string x
-  | Elt_equal x -> Elt_equal.to_string x
-  | Add x       -> Add.to_string x
-  | Mul x       -> Mul.to_string x
-  | Div x       -> Div.to_string x
-  | Pow x       -> Pow.to_string x
-  | Hypot x     -> Hypot.to_string x
-  | Atan2 x     -> Atan2.to_string x
-  | Max2 x      -> Max2.to_string x
-  | Fmod x      -> Fmod.to_string x
-  | Sum x       -> Sum.to_string x
-  | Prod x      -> Prod.to_string x
-  | Cumsum x    -> Cumsum.to_string x
-  | Cumprod x   -> Cumprod.to_string x
+let to_string_array = function
+  | Reci x      -> [|Reci.to_string x|]
+  | Abs x       -> [|Abs.to_string x|]
+  | Abs2 x      -> [|Abs2.to_string x|]
+  | Signum x    -> [|Signum.to_string x|]
+  | Sqr x       -> [|Sqr.to_string x|]
+  | Sqrt x      -> [|Sqrt.to_string x|]
+  | Cbrt x      -> [|Cbrt.to_string x|]
+  | Exp x       -> [|Exp.to_string x|]
+  | Expm1 x     -> [|Expm1.to_string x|]
+  | Log x       -> [|Log.to_string x|]
+  | Log1p x     -> [|Log1p.to_string x|]
+  | Sin x       -> [|Sin.to_string x|]
+  | Cos x       -> [|Cos.to_string x|]
+  | Tan x       -> [|Tan.to_string x|]
+  | Asin x      -> [|Asin.to_string x|]
+  | Acos x      -> [|Acos.to_string x|]
+  | Atan x      -> [|Atan.to_string x|]
+  | Sinh x      -> [|Sinh.to_string x|]
+  | Cosh x      -> [|Cosh.to_string x|]
+  | Tanh x      -> [|Tanh.to_string x|]
+  | Asinh x     -> [|Asinh.to_string x|]
+  | Acosh x     -> [|Acosh.to_string x|]
+  | Atanh x     -> [|Atanh.to_string x|]
+  | Erf x       -> [|Erf.to_string x|]
+  | Erfc x      -> [|Erfc.to_string x|]
+  | Logistic x  -> [|Logistic.to_string x|]
+  | Relu x      -> [|Relu.to_string x|]
+  | Softplus x  -> [|Softplus.to_string x|]
+  | Softsign x  -> [|Softsign.to_string x|]
+  | Sigmoid x   -> [|Sigmoid.to_string x|]
+  | Elt_equal x -> [|Elt_equal.to_string x|]
+  | Add x       -> [|Add.to_string x|]
+  | Mul x       -> [|Mul.to_string x|]
+  | Div x       -> [|Div.to_string x|]
+  | Pow x       -> [|Pow.to_string x|]
+  | Hypot x     -> [|Hypot.to_string x|]
+  | Atan2 x     -> [|Atan2.to_string x|]
+  | Max2 x      -> [|Max2.to_string x|]
+  | Fmod x      -> [|Fmod.to_string x|]
+  | Sum x       -> [|Sum.to_string x|]
+  | Prod x      -> [|Prod.to_string x|]
+  | Cumsum x    -> [|Cumsum.to_string x|]
+  | Cumprod x   -> [|Cumprod.to_string x|]
+  (*| Conv x  -> Conv.to_string_array x *)
 
 
 let plot = function
@@ -189,6 +190,52 @@ let plot = function
   | Prod x      -> Prod.plot x
   | Cumsum x    -> Cumsum.plot x
   | Cumprod x   -> Cumprod.plot x
+
+
+let get_params = function
+  | Reci x      -> [|x.param|]
+  | Abs x       -> [|x.param|]
+  | Abs2 x      -> [|x.param|]
+  | Signum x    -> [|x.param|]
+  | Sqr x       -> [|x.param|]
+  | Sqrt x      -> [|x.param|]
+  | Cbrt x      -> [|x.param|]
+  | Exp x       -> [|x.param|]
+  | Expm1 x     -> [|x.param|]
+  | Log x       -> [|x.param|]
+  | Log1p x     -> [|x.param|]
+  | Sin x       -> [|x.param|]
+  | Cos x       -> [|x.param|]
+  | Tan x       -> [|x.param|]
+  | Asin x      -> [|x.param|]
+  | Acos x      -> [|x.param|]
+  | Atan x      -> [|x.param|]
+  | Sinh x      -> [|x.param|]
+  | Cosh x      -> [|x.param|]
+  | Tanh x      -> [|x.param|]
+  | Asinh x     -> [|x.param|]
+  | Acosh x     -> [|x.param|]
+  | Atanh x     -> [|x.param|]
+  | Erf x       -> [|x.param|]
+  | Erfc x      -> [|x.param|]
+  | Logistic x  -> [|x.param|]
+  | Relu x      -> [|x.param|]
+  | Softplus x  -> [|x.param|]
+  | Softsign x  -> [|x.param|]
+  | Sigmoid x   -> [|x.param|]
+  | Elt_equal x -> [|x.param|]
+  | Add x       -> [|x.param|]
+  | Mul x       -> [|x.param|]
+  | Div x       -> [|x.param|]
+  | Pow x       -> [|x.param|]
+  | Hypot x     -> [|x.param|]
+  | Atan2 x     -> [|x.param|]
+  | Max2 x      -> [|x.param|]
+  | Fmod x      -> [|x.param|]
+  | Sum x       -> [|x.param|]
+  | Prod x      -> [|x.param|]
+  | Cumsum x    -> [|x.param|]
+  | Cumprod x   -> [|x.param|]
 
 
 let all = [|

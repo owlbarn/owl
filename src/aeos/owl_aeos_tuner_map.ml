@@ -9,6 +9,7 @@ open Owl_aeos_c_interface
 module N = Dense.Ndarray.S
 module M = Dense.Matrix.S
 
+let default_threshold = 1000
 
 let generate_sizes start step n =
   let x = Array.make n [|0|] in
@@ -63,7 +64,7 @@ module Reci = struct
   let make () = {
     name  = "reci";
     param = "OWL_OMP_THRESHOLD_RECI";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 10000 30;
     y = M.zeros 1 1
   }
@@ -102,7 +103,7 @@ module Abs = struct
   let make () = {
     name  = "abs";
     param = "OWL_OMP_THRESHOLD_ABS";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 10000 30;
     y = M.zeros 1 1
   }
@@ -141,7 +142,7 @@ module Abs2 = struct
   let make () = {
     name  = "abs2";
     param = "OWL_OMP_THRESHOLD_ABS2";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 10000 30;
     y = M.zeros 1 1
   }
@@ -180,7 +181,7 @@ module Signum = struct
   let make () = {
     name  = "signum";
     param = "OWL_OMP_THRESHOLD_SIGNUM";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 10000 30;
     y = M.zeros 1 1
   }
@@ -219,7 +220,7 @@ module Sqr = struct
   let make () = {
     name  = "sqr";
     param = "OWL_OMP_THRESHOLD_SQR";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 10000 30;
     y = M.zeros 1 1
   }
@@ -258,7 +259,7 @@ module Sqrt = struct
   let make () = {
     name  = "sqrt";
     param = "OWL_OMP_THRESHOLD_SQRT";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 10000 30;
     y = M.zeros 1 1
   }
@@ -297,7 +298,7 @@ module Cbrt = struct
   let make () = {
     name  = "cbrt";
     param = "OWL_OMP_THRESHOLD_CBRT";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -336,7 +337,7 @@ module Exp = struct
   let make () = {
     name  = "exp";
     param = "OWL_OMP_THRESHOLD_EXP";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -375,7 +376,7 @@ module Expm1 = struct
   let make () = {
     name  = "expm1";
     param = "OWL_OMP_THRESHOLD_EXPM1";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -414,7 +415,7 @@ module Log = struct
   let make () = {
     name  = "log";
     param = "OWL_OMP_THRESHOLD_LOG";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -453,7 +454,7 @@ module Log1p = struct
   let make () = {
     name  = "log1p";
     param = "OWL_OMP_THRESHOLD_LOG1P";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -492,7 +493,7 @@ module Sin = struct
   let make () = {
     name  = "sin";
     param = "OWL_OMP_THRESHOLD_SIN";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -531,7 +532,7 @@ module Cos = struct
   let make () = {
     name  = "cos";
     param = "OWL_OMP_THRESHOLD_COS";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -570,7 +571,7 @@ module Tan = struct
   let make () = {
     name  = "tan";
     param = "OWL_OMP_THRESHOLD_TAN";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -609,7 +610,7 @@ module Asin = struct
   let make () = {
     name  = "asin";
     param = "OWL_OMP_THRESHOLD_ASIN";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -648,7 +649,7 @@ module Acos = struct
   let make () = {
     name  = "acos";
     param = "OWL_OMP_THRESHOLD_ACOS";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -687,7 +688,7 @@ module Atan = struct
   let make () = {
     name  = "atan";
     param = "OWL_OMP_THRESHOLD_ATAN";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -726,7 +727,7 @@ module Sinh = struct
   let make () = {
     name  = "sinh";
     param = "OWL_OMP_THRESHOLD_SINH";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -765,7 +766,7 @@ module Cosh = struct
   let make () = {
     name  = "cosh";
     param = "OWL_OMP_THRESHOLD_COSH";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -804,7 +805,7 @@ module Tanh = struct
   let make () = {
     name  = "tanh";
     param = "OWL_OMP_THRESHOLD_TANH";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -843,7 +844,7 @@ module Asinh = struct
   let make () = {
     name  = "asinh";
     param = "OWL_OMP_THRESHOLD_ASINH";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -882,7 +883,7 @@ module Acosh = struct
   let make () = {
     name  = "acosh";
     param = "OWL_OMP_THRESHOLD_ACOSH";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -921,7 +922,7 @@ module Atanh = struct
   let make () = {
     name  = "atanh";
     param = "OWL_OMP_THRESHOLD_ATANH";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -960,7 +961,7 @@ module Erf = struct
   let make () = {
     name  = "erf";
     param = "OWL_OMP_THRESHOLD_ERF";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -999,7 +1000,7 @@ module Erfc = struct
   let make () = {
     name  = "atanh";
     param = "OWL_OMP_THRESHOLD_ERFC";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -1038,7 +1039,7 @@ module Logistic = struct
   let make () = {
     name  = "logistic";
     param = "OWL_OMP_THRESHOLD_LOGISTIC";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -1077,7 +1078,7 @@ module Relu = struct
   let make () = {
     name  = "Relu";
     param = "OWL_OMP_THRESHOLD_RELU";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 30;
     y = M.zeros 1 1
   }
@@ -1116,7 +1117,7 @@ module Softplus = struct
   let make () = {
     name  = "softplus";
     param = "OWL_OMP_THRESHOLD_SOFTPLUS";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 10000 30;
     y = M.zeros 1 1
   }
@@ -1155,7 +1156,7 @@ module Softsign = struct
   let make () = {
     name  = "softsign";
     param = "OWL_OMP_THRESHOLD_SOFTSIGN";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 10000 30;
     y = M.zeros 1 1
   }
@@ -1194,7 +1195,7 @@ module Sigmoid = struct
   let make () = {
     name  = "softplus";
     param = "OWL_OMP_THRESHOLD_SIGMOID";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 10000 30;
     y = M.zeros 1 1
   }
@@ -1235,7 +1236,7 @@ module Elt_equal = struct
   let make () = {
     name  = "elt_equal";
     param = "OWL_OMP_THRESHOLD_ELT_EQUAL";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 10000 20000 50;
     y = M.zeros 1 1
   }
@@ -1274,7 +1275,7 @@ module Add = struct
   let make () = {
     name  = "add";
     param = "OWL_OMP_THRESHOLD_ADD";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 20000 50;
     y = M.zeros 1 1
   }
@@ -1313,7 +1314,7 @@ module Mul = struct
   let make () = {
     name  = "mul";
     param = "OWL_OMP_THRESHOLD_MUL";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 10000 50;
     y = M.zeros 1 1
   }
@@ -1352,7 +1353,7 @@ module Div = struct
   let make () = {
     name  = "div";
     param = "OWL_OMP_THRESHOLD_DIV";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 20000 50;
     y = M.zeros 1 1
   }
@@ -1391,7 +1392,7 @@ module Pow = struct
   let make () = {
     name  = "pow";
     param = "OWL_OMP_THRESHOLD_POW";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 20000 50;
     y = M.zeros 1 1
   }
@@ -1430,7 +1431,7 @@ module Hypot = struct
   let make () = {
     name  = "hypot";
     param = "OWL_OMP_THRESHOLD_Hypot";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 50;
     y = M.zeros 1 1
   }
@@ -1469,7 +1470,7 @@ module Atan2 = struct
   let make () = {
     name  = "atan2";
     param = "OWL_OMP_THRESHOLD_ATAN2";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 1000 50;
     y = M.zeros 1 1
   }
@@ -1508,7 +1509,7 @@ module Max2 = struct
   let make () = {
     name  = "max2";
     param = "OWL_OMP_THRESHOLD_MAX2";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 10000 50;
     y = M.zeros 1 1
   }
@@ -1547,7 +1548,7 @@ module Fmod = struct
   let make () = {
     name  = "fmod";
     param = "OWL_OMP_THRESHOLD_FMOD";
-    value = max_int;
+    value = default_threshold;
     input = generate_sizes 1000 2000 50;
     y = M.zeros 1 1
   }

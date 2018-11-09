@@ -103,10 +103,6 @@ external _baseline_float32_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int
 
 external _baseline_float32_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_diff" "bl_float32_diff_impl"
 
-(* Fold along *)
-
-external baseline_float32_prod_along : int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_prod_along"
-
 
 let cumulative_op ?(axis=(-1)) _cumop x y =
   let d = N.num_dims x in

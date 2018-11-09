@@ -8,24 +8,20 @@
 
 let fname = "OWLROOT/src/owl/core/owl_aeos_paramter.h" (* is this the correct place ? *)
 
-(* tune_all *)
+let tune_default fname =
+  let tuners = Owl_aeos_tuners.all in
+  Owl_aeos_writer.write_full fname tuners
+
+
 let tune_all fname =
   let tuners = Owl_aeos_tuners.all in
   Owl_aeos_engine.eval tuners;
-  Owl_aeos_writer.c_header_file fname tuners
+  Owl_aeos_writer.write_full fname tuners
 
-(*
-let tune ts =
-  Owl_aeos_engine.eval ts;
+
+let tune fname tuners =
+  Owl_aeos_engine.eval tuners;
   Owl_aeos_writer.write_partial fname tuners
-
-
-let set_default = ()
-
-*)
-
-(* how to only tune part of the paramter:
- start_tuning [|Sin; Cos|]; and cover only THRD_SIN and THRD_COS *)
 
 (* put all existing tunable threasholds in this module *)
 

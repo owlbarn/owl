@@ -2,6 +2,7 @@
  * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
+
 open Owl
 
 module N = Dense.Ndarray.S
@@ -84,3 +85,16 @@ let plot x y y' m =
   Plot.scatter ~h x y;
   Plot.plot ~h ~spec:[ RGB (0,255,0) ] x y';
   Plot.output h
+
+
+let replace_lines_in_file fname keyword replace =
+  let lines = Owl_io.read_file fname in
+  Array.iteri (fun i l ->
+    let r = Str.regexp keyword in
+    try
+      let _ = Str.search_forward r l 0 in
+      Array.set lines i replace
+    with Not_found -> ()
+  ) lines;
+  let line_str = lines |> Array.to_list |> String.concat "\n" in
+  Owl_io.write_file fname line_str
