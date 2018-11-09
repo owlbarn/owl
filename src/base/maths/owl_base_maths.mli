@@ -247,8 +247,8 @@ val powmod : int -> int -> int -> int
 val is_prime : int -> bool
 (**
 ``is_prime x`` returns ``true`` if ``x`` is a prime number. The function is
-deterministic for numbers below 341550071728321, then becomes probabilistic
-for those above. The function uses Rabin–Miller primality test.
+deterministic for all numbers representable by an int. The function uses the
+Rabin–Miller primality test.
 *)
 
 val fermat_fact : int -> int * int
