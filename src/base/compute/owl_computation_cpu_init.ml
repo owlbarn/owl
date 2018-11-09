@@ -25,109 +25,226 @@ module Make
 
   (* utility functions *)
 
-  let is_broadcastable x =
-    match get_operator x with
-    | Pow             -> true
-    | Atan2           -> true
-    | Hypot           -> true
-    | Min2            -> true
-    | Max2            -> true
-    | Add             -> true
-    | Sub             -> true
-    | Mul             -> true
-    | Div             -> true
-    | FMA             -> true
-    | EltEqual        -> true
-    | EltNotEqual     -> true
-    | EltLess         -> true
-    | EltGreater      -> true
-    | EltLessEqual    -> true
-    | EltGreaterEqual -> true
-    | _               -> false
+  (* cannot overwrite parents *)
+  let split_00 p = [||], p
 
 
-  (* written to be as safe as possible, but can probably set to true more
-   * operations. *)
-  let can_overwrite_parents x =
-    match get_operator x with
-    | Create _shape                                  -> false
-    | Sequential _shape                              -> false
-    | Uniform _shape                                 -> false
-    | Gaussian _shape                                -> false
-    | Bernoulli _shape                               -> false
-    | GetSlice _slice                                -> false
-    | Tile _repeats                                  -> false
-    | Repeat _repeats                                -> false
-    | Pad (_v, _padding)                             -> false
-    | Concatenate _axis                              -> false
-    | Map _f                                         -> false
-    | Fold (_axis, _f)                               -> false
-    | Scan (_axis, _f)                               -> false
-    | OneHot _depth                                  -> false
-    | Min _axis                                      -> false
-    | Max _axis                                      -> false
-    | Sum _axis                                      -> false
-    | SumReduce _axis                                -> false
-    | Pow                                            -> false (* Broadcasting *)
-    | Atan2                                          -> false (* Broadcasting *)
-    | Hypot                                          -> false (* Broadcasting *)
-    | Min2                                           -> false (* Broadcasting *)
-    | Max2                                           -> false (* Broadcasting *)
-    | Add                                            -> false (* Broadcasting *)
-    | Sub                                            -> false (* Broadcasting *)
-    | Mul                                            -> false (* Broadcasting *)
-    | Div                                            -> false (* Broadcasting *)
-    | FMA                                            -> false (* Broadcasting *)
-    | EltEqual                                       -> false (* Broadcasting *)
-    | EltNotEqual                                    -> false (* Broadcasting *)
-    | EltLess                                        -> false (* Broadcasting *)
-    | EltGreater                                     -> false (* Broadcasting *)
-    | EltLessEqual                                   -> false (* Broadcasting *)
-    | EltGreaterEqual                                -> false (* Broadcasting *)
-    | Conv1d (_padding, _stride)                     -> false
-    | Conv2d (_padding, _stride)                     -> false
-    | Conv3d (_padding, _stride)                     -> false
-    | TransposeConv2d (_padding, _stride)            -> false
-    | MaxPool1d (_padding, _kernel, _stride)         -> false
-    | MaxPool2d (_padding, _kernel, _stride)         -> false
-    | MaxPool3d (_padding, _kernel, _stride)         -> false
-    | AvgPool1d (_padding, _kernel, _stride)         -> false
-    | AvgPool2d (_padding, _kernel, _stride)         -> false
-    | AvgPool3d (_padding, _kernel, _stride)         -> false
-    | UpSampling2d _size                             -> false
-    | Conv1dBackwardInput _stride                    -> false
-    | Conv1dBackwardKernel _stride                   -> false
-    | Conv2dBackwardInput _stride                    -> false
-    | Conv2dBackwardKernel _stride                   -> false
-    | Conv3dBackwardInput _stride                    -> false
-    | Conv3dBackwardKernel _stride                   -> false
-    | TransposeConv2dBackwardInput _stride           -> false
-    | TransposeConv2dBackwardKernel _stride          -> false
-    | MaxPool1dBackward (_padding, _kernel, _stride) -> false
-    | MaxPool2dBackward (_padding, _kernel, _stride) -> false
-    | MaxPool3dBackward (_padding, _kernel, _stride) -> false
-    | AvgPool1dBackward (_padding, _kernel, _stride) -> false
-    | AvgPool2dBackward (_padding, _kernel, _stride) -> false
-    | AvgPool3dBackward (_padding, _kernel, _stride) -> false
-    | UpSampling2dBackward _size                     -> false
-    | Dot (_transa, _transb, _alpha, _beta)          -> false
-    | Inv                                            -> false
-    | Transpose _axis                                -> false
-    | _                                              -> true
+  (* can overwrite parents *)
+  let split_01 p = p, [||]
+
+
+  (* broadcasting nodes can overwrite their parents iff they have the same
+   * shape *)
+  let split_02 x p =
+    let shape_x = node_shape x in
+    Owl_utils.Array.filter (fun p -> node_shape p = shape_x) p,
+    Owl_utils.Array.filter (fun p -> node_shape p <> shape_x) p
+
+
+  (* concatenate: can overwrite first parent if axis = 0 *)
+  let split_03 p axis =
+    if axis = 0 then [|p.(0)|], Array.sub p 1 (Array.length p - 1)
+    else split_00 p
 
 
   (* return a partition of the parents in two arrays: the parents that the node
-   * can safely overwrite during its computation and the others. *)
+   * can safely overwrite during its computation and the others.
+   * Written to be safe, but can probably make it more fine-grained for some
+   * operations. *)
   let split_parents x =
-    let par = Owl_utils.Array.unique (parents x) in
-    (* Broadcastable operations can only overwrite the parents that have the
-     * same shape *)
-    if is_broadcastable x then
-      let sx = node_shape x in
-      Owl_utils.Array.filter (fun p -> node_shape p = sx) par,
-      Owl_utils.Array.filter (fun p -> node_shape p <> sx) par
-    else if can_overwrite_parents x then par, [||]
-    else [||], par
+    let p = Owl_utils.Array.unique (parents x) in
+    match get_operator x with
+    | Noop                                           -> split_01 p
+    | Var                                            -> split_01 p
+    | Const                                          -> split_01 p
+    | Empty _shape                                   -> split_01 p
+    | Zeros _shape                                   -> split_01 p
+    | Ones _shape                                    -> split_01 p
+    | Create _shape                                  -> split_00 p
+    | Sequential _shape                              -> split_00 p
+    | Uniform _shape                                 -> split_00 p
+    | Gaussian _shape                                -> split_00 p
+    | Bernoulli _shape                               -> split_00 p
+    | Init (_shape, _f)                              -> split_01 p
+    | Get _i                                         -> split_01 p
+    | Set _i                                         -> split_01 p
+    | GetSlice _slice                                -> split_00 p (* ? *)
+    | SetSlice _slice                                -> split_00 p (* ? *)
+    | Copy                                           -> split_01 p
+    | Reset                                          -> split_01 p
+    | Reshape _shape                                 -> split_01 p
+    | Reverse                                        -> split_00 p
+    | Tile _repeats                                  -> split_00 p
+    | Repeat _repeats                                -> split_00 p (* ? *)
+    | Pad (_v, _padding)                             -> split_00 p
+    | Concatenate axis                               -> split_03 p axis
+    | Split (_axis, _parts)                          -> failwith "Split"
+    | Draw (_axis, _n)                               -> failwith "Draw"
+    | Map _f                                         -> split_01 p
+    | Fold (_axis, _f)                               -> split_00 p (* ? *)
+    | Scan (_axis, _f)                               -> split_00 p (* ? *)
+    | OneHot _depth                                  -> split_00 p (* ? *)
+    | Delay _f                                       -> split_01 p
+    | DelayArray (_shape, _f)                        -> split_01 p
+    | LazyPrint (_max_row, _max_col, _header, _fmt)  -> split_01 p
+    | Abs                                            -> split_01 p
+    | Neg                                            -> split_01 p
+    | Floor                                          -> split_01 p
+    | Ceil                                           -> split_01 p
+    | Round                                          -> split_01 p
+    | Sqr                                            -> split_01 p
+    | Sqrt                                           -> split_01 p
+    | Log                                            -> split_01 p
+    | Log2                                           -> split_01 p
+    | Log10                                          -> split_01 p
+    | Exp                                            -> split_01 p
+    | Sin                                            -> split_01 p
+    | Cos                                            -> split_01 p
+    | Tan                                            -> split_01 p
+    | Sinh                                           -> split_01 p
+    | Cosh                                           -> split_01 p
+    | Tanh                                           -> split_01 p
+    | Asin                                           -> split_01 p
+    | Acos                                           -> split_01 p
+    | Atan                                           -> split_01 p
+    | Asinh                                          -> split_01 p
+    | Acosh                                          -> split_01 p
+    | Atanh                                          -> split_01 p
+    | Min _axis                                      -> split_00 p (* ? *)
+    | Max _axis                                      -> split_00 p (* ? *)
+    | Sum _axis                                      -> split_00 p (* ? *)
+    | SumReduce _axis                                -> split_00 p (* ? *)
+    | Signum                                         -> split_01 p
+    | Sigmoid                                        -> split_01 p
+    | Relu                                           -> split_01 p
+    | Min'                                           -> split_01 p
+    | Max'                                           -> split_01 p
+    | Sum'                                           -> split_01 p
+    | L1norm'                                        -> split_01 p
+    | L2norm'                                        -> split_01 p
+    | L2NormSqr'                                     -> split_01 p
+    | ClipByValue                                    -> split_01 p
+    | ClipByL2norm                                   -> split_01 p
+    | Pow                                            -> split_02 x p
+    | ScalarPow                                      -> split_01 p
+    | PowScalar                                      -> split_01 p
+    | Atan2                                          -> split_02 x p
+    | ScalarAtan2                                    -> split_01 p
+    | Atan2Scalar                                    -> split_01 p
+    | Hypot                                          -> split_02 x p
+    | Min2                                           -> split_02 x p
+    | Max2                                           -> split_02 x p
+    | Add                                            -> split_02 x p
+    | Sub                                            -> split_02 x p
+    | Mul                                            -> split_02 x p
+    | Div                                            -> split_02 x p
+    | AddScalar                                      -> split_01 p
+    | SubScalar                                      -> split_01 p
+    | MulScalar                                      -> split_01 p
+    | DivScalar                                      -> split_01 p
+    | ScalarAdd                                      -> split_01 p
+    | ScalarSub                                      -> split_01 p
+    | ScalarMul                                      -> split_01 p
+    | ScalarDiv                                      -> split_01 p
+    | FMA                                            -> split_02 x p
+    | EltEqual                                       -> split_02 x p
+    | EltNotEqual                                    -> split_02 x p
+    | EltLess                                        -> split_02 x p
+    | EltGreater                                     -> split_02 x p
+    | EltLessEqual                                   -> split_02 x p
+    | EltGreaterEqual                                -> split_02 x p
+    | EltEqualScalar                                 -> split_01 p
+    | EltNotEqualScalar                              -> split_01 p
+    | EltLessScalar                                  -> split_01 p
+    | EltGreaterScalar                               -> split_01 p
+    | EltLessEqualScalar                             -> split_01 p
+    | EltGreaterEqualScalar                          -> split_01 p
+    | Conv1d (_padding, _stride)                     -> split_00 p (* condition on pad, ker and str for conv ops? *)
+    | Conv2d (_padding, _stride)                     -> split_00 p
+    | Conv3d (_padding, _stride)                     -> split_00 p
+    | TransposeConv1d (_padding, _stride)            -> split_00 p
+    | TransposeConv2d (_padding, _stride)            -> split_00 p
+    | TransposeConv3d (_padding, _stride)            -> split_00 p
+    | DilatedConv1d (_padding, _stride, _rate)       -> split_00 p
+    | DilatedConv2d (_padding, _stride, _rate)       -> split_00 p
+    | DilatedConv3d (_padding, _stride, _rate)       -> split_00 p
+    | MaxPool1d (_padding, _kernel, _stride)         -> split_00 p (* pool ops? depends on pad? *)
+    | MaxPool2d (_padding, _kernel, _stride)         -> split_00 p
+    | MaxPool3d (_padding, _kernel, _stride)         -> split_00 p
+    | AvgPool1d (_padding, _kernel, _stride)         -> split_00 p
+    | AvgPool2d (_padding, _kernel, _stride)         -> split_00 p
+    | AvgPool3d (_padding, _kernel, _stride)         -> split_00 p
+    | UpSampling2d _size                             -> split_00 p
+    | Conv1dBackwardInput _stride                    -> split_00 p
+    | Conv1dBackwardKernel _stride                   -> split_00 p
+    | Conv2dBackwardInput _stride                    -> split_00 p
+    | Conv2dBackwardKernel _stride                   -> split_00 p
+    | Conv3dBackwardInput _stride                    -> split_00 p
+    | Conv3dBackwardKernel _stride                   -> split_00 p
+    | TransposeConv1dBackwardInput _stride           -> split_00 p
+    | TransposeConv1dBackwardKernel _stride          -> split_00 p
+    | TransposeConv2dBackwardInput _stride           -> split_00 p
+    | TransposeConv2dBackwardKernel _stride          -> split_00 p
+    | TransposeConv3dBackwardInput _stride           -> split_00 p
+    | TransposeConv3dBackwardKernel _stride          -> split_00 p
+    | DilatedConv1dBackwardInput (_stride, _rate)    -> split_00 p
+    | DilatedConv1dBackwardKernel (_stride, _rate)   -> split_00 p
+    | DilatedConv2dBackwardInput (_stride, _rate)    -> split_00 p
+    | DilatedConv2dBackwardKernel (_stride, _rate)   -> split_00 p
+    | DilatedConv3dBackwardInput (_stride, _rate)    -> split_00 p
+    | DilatedConv3dBackwardKernel (_stride, _rate)   -> split_00 p
+    | MaxPool1dBackward (_padding, _kernel, _stride) -> split_00 p
+    | MaxPool2dBackward (_padding, _kernel, _stride) -> split_00 p
+    | MaxPool3dBackward (_padding, _kernel, _stride) -> split_00 p
+    | AvgPool1dBackward (_padding, _kernel, _stride) -> split_00 p
+    | AvgPool2dBackward (_padding, _kernel, _stride) -> split_00 p
+    | AvgPool3dBackward (_padding, _kernel, _stride) -> split_00 p
+    | UpSampling2dBackward _size                     -> split_00 p
+    | RowNum                                         -> split_01 p
+    | ColNum                                         -> split_01 p
+    | Row                                            -> failwith "Row"
+    | Rows _i                                        -> failwith "Rows"
+    | CopyRowTo                                      -> failwith "CopyRowTo"
+    | CopyColTo                                      -> failwith "CopyColTo"
+    | Dot (_transa, _transb, _alpha, _beta)          -> split_00 p
+    | Inv                                            -> split_00 p
+    | Trace                                          -> split_01 p
+    | Transpose _axis                                -> split_00 p
+    | ToRows                                         -> failwith "ToRows"
+    | OfRows                                         -> failwith "OfRows"
+    | Scalar_Add                                     -> split_01 p
+    | Scalar_Sub                                     -> split_01 p
+    | Scalar_Mul                                     -> split_01 p
+    | Scalar_Div                                     -> split_01 p
+    | Scalar_Pow                                     -> split_01 p
+    | Scalar_Atan2                                   -> split_01 p
+    | Scalar_Abs                                     -> split_01 p
+    | Scalar_Neg                                     -> split_01 p
+    | Scalar_Sqr                                     -> split_01 p
+    | Scalar_Sqrt                                    -> split_01 p
+    | Scalar_Exp                                     -> split_01 p
+    | Scalar_Log                                     -> split_01 p
+    | Scalar_Log2                                    -> split_01 p
+    | Scalar_Log10                                   -> split_01 p
+    | Scalar_Signum                                  -> split_01 p
+    | Scalar_Floor                                   -> split_01 p
+    | Scalar_Ceil                                    -> split_01 p
+    | Scalar_Round                                   -> split_01 p
+    | Scalar_Sin                                     -> split_01 p
+    | Scalar_Cos                                     -> split_01 p
+    | Scalar_Tan                                     -> split_01 p
+    | Scalar_Sinh                                    -> split_01 p
+    | Scalar_Cosh                                    -> split_01 p
+    | Scalar_Tanh                                    -> split_01 p
+    | Scalar_Asin                                    -> split_01 p
+    | Scalar_Acos                                    -> split_01 p
+    | Scalar_Atan                                    -> split_01 p
+    | Scalar_Asinh                                   -> split_01 p
+    | Scalar_Acosh                                   -> split_01 p
+    | Scalar_Atanh                                   -> split_01 p
+    | Scalar_Relu                                    -> split_01 p
+    | Scalar_Sigmoid                                 -> split_01 p
+    | Fused_Adagrad (_rate, _eps)                    -> split_00 p (* ? *)
 
 
   (* Core initialisation function. Inspired by
