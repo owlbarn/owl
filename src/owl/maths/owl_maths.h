@@ -207,6 +207,10 @@ extern double sf_combination(int n, int m);
 
 extern double sf_log_combination(int n, int m);
 
+extern long mulmod(long a, long b, long m);
+
+extern long powmod(long a, long b, long m);
+
 
 #ifdef __cplusplus
 }

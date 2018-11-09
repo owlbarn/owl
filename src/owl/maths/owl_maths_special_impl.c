@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
+#include <limits.h>
 #include "owl_maths.h"
 
 /*
@@ -74,4 +75,58 @@ double erfinv(double x) {
 
 double erfcinv(double x) {
   return -ndtri(0.5 * x) / sqrt(2);
+}
+
+
+long mulmod(long a, long b, long m) {
+  if (a >= m) a %= m;
+  if (b >= m) b %= m;
+
+  if (a == 0 || b == 0)
+    return 0;
+
+  // check if a * b overflows
+  if (b < LONG_MAX / a) {
+    long c = a * b;
+    return c < m ? c : c % m;
+  }
+
+  long r = 0;
+  while (b) {
+    if (b & 1) {
+      // r = (r + a) % m
+      if (m - r > a)
+        r += a;
+      else
+        r += a - m;
+    }
+
+    // a = (a + a) % m;
+    if (m - a > a)
+      a += a;
+    else
+      a += a - m;
+
+    b >>= 1;
+  }
+
+  return r;
+}
+
+
+long powmod(long a, long b, long m) {
+  if (m == 1 && b == 0)
+    return 0;
+
+  if (a >= m) a %= m;
+
+  long r = 1;
+  while (b) {
+    if (b & 1)
+      r = mulmod(r, a, m);
+    if (b >>= 1)
+      a = mulmod(a, a, m);
+  }
+
+  return r;
 }

@@ -200,6 +200,13 @@ external combination : int -> int -> float = "owl_stub_sf_combination"
 external log_combination : int -> int -> float = "owl_stub_sf_log_combination"
 
 
+(* Modular arithmetic *)
+
+external mulmod : int -> int -> int -> int = "owl_stub_mulmod"
+
+external powmod : int -> int -> int -> int = "owl_stub_powmod"
+
+
 (* Other helper functions *)
 
 external nextafter : float -> float -> float = "stub_sf_nextafter"
