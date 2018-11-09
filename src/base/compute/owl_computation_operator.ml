@@ -158,6 +158,9 @@ module Make
     make_then_connect ~shape:[|Some shape|] (DelayArray (shape, f))
       (Array.map arr_to_node x) |> node_to_arr
 
+  let lazy_print ?max_row ?max_col ?header ?fmt x =
+    make_then_connect (LazyPrint (max_row, max_col, header, fmt)) [|arr_to_node x|] |> node_to_arr
+
   let print ?max_row ?max_col ?header ?fmt x = ()  [@@warning "-27"]
 
 

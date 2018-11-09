@@ -59,6 +59,7 @@ module Make
         | OneHot _depth                                  -> pattern_000 x
         | Delay _f                                       -> pattern_000 x
         | DelayArray (_shape, _f)                        -> pattern_000 x
+        | LazyPrint (_max_row, _max_col, _header, _fmt)  -> pattern_000 x
         | Abs                                            -> pattern_000 x
         | Neg                                            -> pattern_000 x
         | Floor                                          -> pattern_000 x
