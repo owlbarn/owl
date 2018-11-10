@@ -1,4 +1,11 @@
-### 0.4.1 (in progress)
+### 0.4.2 (2018-11-10)
+
+* Optimise computation graph module.
+* Add some core math functions.
+* Fix bugs and improve performance.
+
+
+### 0.4.1 (2018-11-01)
 
 * Improve the APIs of Dataframe module.
 * Add more functions in Utils module.
