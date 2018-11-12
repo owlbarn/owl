@@ -127,5 +127,5 @@ let cumulative_wrapper cumop ~axis x =
 let baseline_cumsum  = cumulative_wrapper _baseline_float32_cumsum
 let baseline_cumprod = cumulative_wrapper _baseline_float32_cumprod
 let baseline_cummax  = cumulative_wrapper _baseline_float32_cummax
-let baseline_repeat  = cumulative_wrapper _baseline_float32_repeat
+let baseline_repeat  = cumulative_wrapper _baseline_float32_repeat 
 let baseline_diff    = cumulative_wrapper _baseline_float32_diff

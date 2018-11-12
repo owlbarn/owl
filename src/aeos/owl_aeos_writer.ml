@@ -30,6 +30,9 @@ let write_full fname tuners =
 
 
 let write_partial fname tuners =
+  if (Sys.file_exists fname = false) then (
+    write_full fname Owl_aeos_tuners.all
+  );
   let kv = ref [] in
   Array.iter (fun t ->
     let key = get_params t in

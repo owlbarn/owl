@@ -298,3 +298,42 @@ module Diff = struct
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
+
+
+module Repeat = struct
+
+  type t = {
+    mutable name  : string;
+    mutable param : string;
+    mutable value : int;
+    mutable input : int array array;
+    mutable y     : M.mat
+  }
+
+  let make () = {
+    name  = "repeat";
+    param = "OWL_OMP_THRESHOLD_REPEAT";
+    value = default_threshold;
+    input = generate_sizes_fold 10 2 10;
+    y = M.zeros 1 1
+  }
+
+  let tune t =
+    Owl_log.info "AEOS: tune %s ..." t.name;
+    let f1 = fun ~axis x -> N.repeat x [|axis|] in
+    let f2 = baseline_repeat in
+    t.y <- step_measure_fold_arr t.input f1 f2 t.name;
+    let x = size2mat_fold t.input in
+    let f, sign = Owl_aeos_utils.linear_reg x t.y in
+    t.value <- Owl_aeos_utils.find_root f sign
+
+  let plot t =
+    let x = size2mat_fold t.input in
+    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let y' = M.map f x in
+    Owl_aeos_utils.plot x t.y y' t.name
+
+  let to_string t =
+    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
+
+end

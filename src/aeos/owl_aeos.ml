@@ -6,7 +6,6 @@
 
 (** AEOS: Automatic Empirical Optimisation of Software *)
 
-let fname = "OWLROOT/src/owl/core/owl_aeos_paramter.h" (* is this the correct place ? *)
 
 let tune_default fname =
   let tuners = Owl_aeos_tuners.all in
@@ -30,3 +29,7 @@ let tune fname tuners =
 (* add support for swap operations *)
 
 (*map : 4, 12, 14, 15, 17, 19, 20, 29 -- not need to cover all. Currently should be fine. *)
+
+let () =
+  let fname = Sys.argv.(1) in
+  Owl_aeos.tune_all fname
