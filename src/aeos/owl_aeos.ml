@@ -29,7 +29,3 @@ let tune fname tuners =
 (* add support for swap operations *)
 
 (*map : 4, 12, 14, 15, 17, 19, 20, 29 -- not need to cover all. Currently should be fine. *)
-
-let () =
-  let fname = Sys.argv.(1) in
-  Owl_aeos.tune_all fname

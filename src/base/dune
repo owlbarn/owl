@@ -13,7 +13,7 @@
  (name owl_base)
  (public_name owl-base)
  (wrapped false)
- 
+
  (flags (:standard -safe-string))
  (libraries bigarray)
  )
