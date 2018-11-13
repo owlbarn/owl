@@ -4195,6 +4195,9 @@ let inv varr =
     end
 
 
+let qr _x = raise Owl_exception.NOT_IMPLEMENTED
+
+
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
 let load _k f = Owl_io.marshal_from_file f
 

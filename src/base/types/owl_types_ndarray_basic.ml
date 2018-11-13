@@ -303,6 +303,8 @@ module type Sig = sig
 
   val inv : arr -> arr
 
+  val qr : arr -> arr * arr
+
   val trace : arr -> elt
 
   val transpose : ?axis:int array -> arr -> arr
