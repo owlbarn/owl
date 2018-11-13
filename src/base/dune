@@ -9,7 +9,7 @@
 (copy_files# linalg/*)
 (copy_files# misc/*)
 
-(library 
+(library
  (name owl_base)
  (public_name owl-base)
  (wrapped false)

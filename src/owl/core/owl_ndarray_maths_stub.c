@@ -6,7 +6,6 @@
 #include "owl_core.h"
 #include "owl_stats.h"
 #include "owl_core_engine.h"
-#include "owl_aeos_parameter.h"
 
 
 // some helper functions
