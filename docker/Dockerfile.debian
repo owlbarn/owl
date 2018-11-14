@@ -9,10 +9,10 @@ USER opam
 
 ##################### PREREQUISITES ########################
 
-RUN sudo apt-get update
+RUN sudo apt-get -y update
 RUN sudo apt-get -y install git wget unzip aspcud m4 pkg-config gfortran
 RUN sudo apt-get -y install camlp4-extra libshp-dev libplplot-dev
-RUN sudo apt-get -y install libopenblas-dev liblapacke-dev
+#RUN sudo apt-get -y install libopenblas-dev liblapacke-dev
 
 RUN opam update && opam switch create 4.06.0 && eval $(opam config env)
 RUN opam install -y oasis dune ocaml-compiler-libs ctypes utop plplot base stdio configurator alcotest sexplib
@@ -21,6 +21,12 @@ RUN opam install -y oasis dune ocaml-compiler-libs ctypes utop plplot base stdio
 
 ENV PATH /home/opam/.opam/4.06.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 ENV CAML_LD_LIBRARY_PATH /home/opam/.opam/4.06.0/lib/stublibs
+
+#################### INSTALL OPENBLAS ######################
+
+ENV OPENBLASPATH /home/opam/OpenBLAS
+RUN cd /home/opam && git clone https://github.com/xianyi/OpenBLAS.git
+RUN cd $OPENBLASPATH && sudo make && sudo make install && sudo make clean
 
 ################# INSTALL EIGEN LIBRARY ####################
 
@@ -39,6 +45,8 @@ RUN sudo cp $EIGENPATH/_build/include/libeigen.a /usr/local/lib/
 
 ENV OWLPATH /home/opam/owl
 RUN cd /home/opam && git clone https://github.com/owlbarn/owl.git
+RUN sed -i -- 's:/usr/local/opt/openblas/lib:/opt/OpenBLAS/lib:g' $OWLPATH/src/owl/config/configure.ml
+RUN sed -i -- 's/\"-llapacke\" :: ls/ls/g' $OWLPATH/src/owl/config/configure.ml  # FIXME: hacking
 RUN make -C $OWLPATH && make -C $OWLPATH install && make -C $OWLPATH clean
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
