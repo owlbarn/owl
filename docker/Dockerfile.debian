@@ -42,12 +42,14 @@ RUN cd $EIGENPATH \
     && make oasis && make && make install 
 RUN sudo cp $EIGENPATH/_build/include/libeigen.a /usr/local/lib/
 
+
 ####################   INSTALL OWL  #######################
 
 ENV OWLPATH /home/opam/owl
 RUN cd /home/opam && git clone https://github.com/owlbarn/owl.git
 RUN sed -i -- 's/\"-llapacke\" :: ls/ls/g' $OWLPATH/src/owl/config/configure.ml  # FIXME: hacking
-RUN make -C $OWLPATH && make -C $OWLPATH install && make -C $OWLPATH clean
+RUN cd $OWLPATH && make && make install
+
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
