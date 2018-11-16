@@ -48,10 +48,42 @@ OWL_INLINE void query_cache_sizes_intel(int* l1p, int* l2p, int* l3p) {
 }
 
 
+OWL_INLINE void query_cache_sizes_amd(int* l1p, int* l2p, int* l3p) {
+  int cpuinfo[4];
+  int l1 = 0, l2 = 0, l3 = 0;
+  cpuinfo[0] = cpuinfo[1] = cpuinfo[2] = cpuinfo[3] = 0;
+  CPUID(cpuinfo, 0x80000005, 0);
+  l1 = (cpuinfo[2] >> 24) * 1024;
+  cpuinfo[0] = cpuinfo[1] = cpuinfo[2] = cpuinfo[3] = 0;
+  CPUID(cpuinfo, 0x80000006, 0);
+  l2 = (cpuinfo[2] >> 16) * 1024;
+  l3 = ((cpuinfo[3] & 0xFFFC000) >> 18) * 512 * 1024;
+  *l1p = l1; *l2p = l2; *l3p = l3;
+  return;
+}
+
+
+OWL_INLINE int cpu_is_amd(int* cpuinfo) {
+  int amd1[] = {0x68747541, 0x69746e65, 0x444d4163};
+  int amd2[] = {0x69444d41, 0x74656273, 0x21726574};
+  int is_amd1 = cpuinfo[1] == amd1[0] && cpuinfo[3] == amd1[1]
+    && cpuinfo[2] == amd1[2];
+  int is_amd2 = cpuinfo[1] == amd2[0] && cpuinfo[3] == amd2[1]
+    && cpuinfo[2] == amd2[2];
+  return (is_amd1 || is_amd2);
+}
+
+
 OWL_INLINE void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
   if (OWL_ARCH_i386 || OWL_ARCH_x86_64) {
     int cpuinfo[4];
     CPUID(cpuinfo, 0x0, 0);
+
+    if (cpu_is_amd(cpuinfo)) {
+      query_cache_sizes_amd(l1p, l2p, l3p);
+      return;
+    }
+
     int highest_func = cpuinfo[1];
     if (highest_func >= 4)
       query_cache_sizes_intel(l1p, l2p, l3p);
