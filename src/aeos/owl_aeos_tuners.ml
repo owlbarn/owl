@@ -49,11 +49,11 @@ type tuner =
   | Fmod      of Fmod.t
   | Sum       of Sum.t
   | Prod      of Prod.t
-  | Cumsum    of Cumsum.t
+  (*| Cumsum    of Cumsum.t
   | Cumprod   of Cumprod.t
   | Cummax    of Cummax.t
   | Diff      of Diff.t
-  | Repeat    of Repeat.t
+  | Repeat    of Repeat.t *)
 
 
 let tuning = function
@@ -98,11 +98,11 @@ let tuning = function
   | Fmod x      -> Fmod.tune x
   | Sum x       -> Sum.tune x
   | Prod x      -> Prod.tune x
-  | Cumsum x    -> Cumsum.tune x
+  (*| Cumsum x    -> Cumsum.tune x
   | Cumprod x   -> Cumprod.tune x
   | Cummax x    -> Cummax.tune x
   | Diff x      -> Diff.tune x
-  | Repeat x    -> Repeat.tune x
+  | Repeat x    -> Repeat.tune x *)
 
 
 let to_string_array = function
@@ -147,12 +147,11 @@ let to_string_array = function
   | Fmod x      -> [|Fmod.to_string x|]
   | Sum x       -> [|Sum.to_string x|]
   | Prod x      -> [|Prod.to_string x|]
-  | Cumsum x    -> [|Cumsum.to_string x|]
+  (* | Cumsum x    -> [|Cumsum.to_string x|]
   | Cumprod x   -> [|Cumprod.to_string x|]
   | Cummax x    -> [|Cummax.to_string x|]
   | Diff x      -> [|Diff.to_string x|]
-  | Repeat x    -> [|Repeat.to_string x|]
-  (*| Conv x  -> Conv.to_string_array x *)
+  | Repeat x    -> [|Repeat.to_string x|] *)
 
 
 let plot = function
@@ -197,11 +196,11 @@ let plot = function
   | Fmod x      -> Fmod.plot x
   | Sum x       -> Sum.plot x
   | Prod x      -> Prod.plot x
-  | Cumsum x    -> Cumsum.plot x
+  (* | Cumsum x    -> Cumsum.plot x
   | Cumprod x   -> Cumprod.plot x
   | Cummax x    -> Cummax.plot x
   | Diff x      -> Diff.plot x
-  | Repeat x    -> Repeat.plot x
+  | Repeat x    -> Repeat.plot x *)
 
 
 let get_params = function
@@ -246,11 +245,11 @@ let get_params = function
   | Fmod x      -> [|x.param|]
   | Sum x       -> [|x.param|]
   | Prod x      -> [|x.param|]
-  | Cumsum x    -> [|x.param|]
+  (* | Cumsum x    -> [|x.param|]
   | Cumprod x   -> [|x.param|]
   | Cummax x    -> [|x.param|]
   | Diff x      -> [|x.param|]
-  | Repeat x    -> [|x.param|]
+  | Repeat x    -> [|x.param|] *)
 
 
 let all = [|
@@ -290,9 +289,9 @@ let all = [|
   Fmod      (Fmod.make ());
   Sum       (Sum.make ());
   Prod      (Prod.make ());
-  Cumsum    (Cumsum.make ());
+  (* Cumsum    (Cumsum.make ());
   Cumprod   (Cumprod.make ());
   Cummax    (Cummax.make ());
   Diff      (Diff.make ());
-  Repeat    (Repeat.make ());
+  Repeat    (Repeat.make ()); *)
 |]

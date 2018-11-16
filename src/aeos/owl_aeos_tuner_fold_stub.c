@@ -4,7 +4,7 @@
  */
 
 #include "owl_aeos_macros.h"
-#include <stdio.h>
+//#include <stdio.h>
 
 #define BASE_FUN5 bl_float32_sum
 #define INIT float r = 0.

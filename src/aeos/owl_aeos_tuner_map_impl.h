@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-#ifdef BASE_FUN4
+#ifdef FUN4
 
 CAMLprim value BASE_FUN4(value vN, value vX, value vY) {
   CAMLparam3(vN, vX, vY);
@@ -37,7 +37,38 @@ CAMLprim value BASE_FUN4(value vN, value vX, value vY) {
   CAMLreturn(Val_unit);
 }
 
-#endif /* BASE_FUN4 */
+
+CAMLprim value OMP_FUN4(value vN, value vX, value vY) {
+  CAMLparam3(vN, vX, vY);
+  int N = Long_val(vN);
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *X_data = (NUMBER *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  NUMBER1 *Y_data = (NUMBER1 *) Y->data;
+
+  NUMBER *start_x, *stop_x;
+  NUMBER1 *start_y;
+
+  caml_release_runtime_system();  /* Allow other threads */
+
+  start_x = X_data;
+  stop_x = start_x + N;
+  start_y = Y_data;
+
+  #pragma omp parallel for schedule(static)
+  for (int i = 0; i < N; i++) {
+    NUMBER x = *(start_x + i);
+    *(start_y + i) = (MAPFN(x));
+  }
+
+  caml_acquire_runtime_system();  /* Disallow other threads */
+
+  CAMLreturn(Val_unit);
+}
+
+#endif /* FUN4 */
 
 
 #ifdef BASE_FUN15
@@ -76,8 +107,43 @@ CAMLprim value BASE_FUN15(value vN, value vX, value vY, value vZ)
   CAMLreturn(Val_unit);
 }
 
-#endif /* BASE_FUN15 */
 
+CAMLprim value OMP_FUN15(value vN, value vX, value vY, value vZ)
+{
+  CAMLparam4(vN, vX, vY, vZ);
+  int N = Long_val(vN);
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *X_data = (NUMBER *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  NUMBER1 *Y_data = (NUMBER1 *) Y->data;
+
+  struct caml_ba_array *Z = Caml_ba_array_val(vZ);
+  NUMBER2 *Z_data = (NUMBER2 *) Z->data;
+
+  NUMBER *start_x, *stop_x;
+  NUMBER1 *start_y;
+  NUMBER2 *start_z;
+
+  caml_release_runtime_system();  /* Allow other threads */
+
+  start_x = X_data;
+  stop_x = start_x + N;
+  start_y = Y_data;
+  start_z = Z_data;
+
+  #pragma omp parallel for schedule(static)
+  for (int i = 0; i < N; i++) {
+    MAPFN((start_x + i), (start_y + i), (start_z + i));
+  }
+
+  caml_acquire_runtime_system();  /* Disallow other threads */
+
+  CAMLreturn(Val_unit);
+}
+
+#endif /* FUN15 */
 
 
 
@@ -85,5 +151,9 @@ CAMLprim value BASE_FUN15(value vN, value vX, value vY, value vZ)
 #undef NUMBER1
 #undef NUMBER2
 #undef MAPFN
+#undef FUN4
+#undef FUN15
+#undef OMP_FUN4
+#undef OMP_FUN15
 #undef BASE_FUN4
 #undef BASE_FUN15

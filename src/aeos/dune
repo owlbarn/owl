@@ -10,7 +10,6 @@
   )
   (c_flags (-g -O3 -Ofast -march=native -mfpmath=sse -funroll-loops -ffast-math -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing -Wno-logical-op-parentheses -Xpreprocessor -fopenmp))
   (c_library_flags (-lopenblas -lm -lomp -L/usr/local/lib/openblas/lib -framework Accelerate))
-  (libraries owl owl-base)
 )
 
 (executable

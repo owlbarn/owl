@@ -144,7 +144,7 @@ module Prod = struct
 
 end
 
-
+(*
 module Cumsum = struct
 
   type t = {
@@ -337,3 +337,4 @@ module Repeat = struct
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
+*)

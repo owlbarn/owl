@@ -1,7 +1,4 @@
-open Owl
-open Owl_core_types
-
-module N = Dense.Ndarray.S
+open Owl_aeos_types
 
 (* Unary Map *)
 
@@ -65,6 +62,66 @@ external baseline_float32_softsign : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr
 
 external baseline_float32_sigmoid : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_sigmoid"
 
+external openmp_float32_reci : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_reci"
+
+external openmp_float32_abs : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_abs"
+
+external openmp_float32_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_abs2"
+
+external openmp_float32_signum : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_signum"
+
+external openmp_float32_sqr : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_sqr"
+
+external openmp_float32_sqrt : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_sqrt"
+
+external openmp_float32_cbrt : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_cbrt"
+
+external openmp_float32_exp : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_exp"
+
+external openmp_float32_expm1 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_expm1"
+
+external openmp_float32_log : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_log"
+
+external openmp_float32_log1p : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_log1p"
+
+external openmp_float32_sin : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_sin"
+
+external openmp_float32_cos : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_cos"
+
+external openmp_float32_tan : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_tan"
+
+external openmp_float32_asin : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_asin"
+
+external openmp_float32_acos : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_acos"
+
+external openmp_float32_atan : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_atan"
+
+external openmp_float32_sinh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_sinh"
+
+external openmp_float32_cosh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_cosh"
+
+external openmp_float32_tanh: int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_tanh"
+
+external openmp_float32_asinh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_asinh"
+
+external openmp_float32_acosh : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_acosh"
+
+external openmp_float32_atanh: int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_atanh"
+
+external openmp_float32_erf : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_erf"
+
+external openmp_float32_erfc : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_erfc"
+
+external openmp_float32_logistic : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_logistic"
+
+external openmp_float32_relu : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_relu"
+
+external openmp_float32_softplus : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_softplus"
+
+external openmp_float32_softsign : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_softsign"
+
+external openmp_float32_sigmoid : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_sigmoid"
+
 (* Binary Map *)
 
 external baseline_float32_elt_equal : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_elt_equal"
@@ -85,6 +142,24 @@ external baseline_float32_max2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 
 
 external baseline_float32_fmod : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "bl_float32_fmod"
 
+external openmp_float32_elt_equal : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_elt_equal"
+
+external openmp_float32_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_add"
+
+external openmp_float32_mul : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_mul"
+
+external openmp_float32_div : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_div"
+
+external openmp_float32_pow : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_pow"
+
+external openmp_float32_hypot : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_hypot"
+
+external openmp_float32_atan2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_atan2"
+
+external openmp_float32_max2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_max2"
+
+external openmp_float32_fmod : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_fmod"
+
 (* Fold *)
 
 external baseline_float32_sum : int -> ('a, 'b) owl_arr -> 'a = "bl_float32_sum"
@@ -103,7 +178,7 @@ external _baseline_float32_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int
 
 external _baseline_float32_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_diff" "bl_float32_diff_impl"
 
-
+(*
 let cumulative_op ?(axis=(-1)) _cumop x y =
   let d = N.num_dims x in
   let a = Owl_utils.adjust_index axis d in
@@ -127,5 +202,6 @@ let cumulative_wrapper cumop ~axis x =
 let baseline_cumsum  = cumulative_wrapper _baseline_float32_cumsum
 let baseline_cumprod = cumulative_wrapper _baseline_float32_cumprod
 let baseline_cummax  = cumulative_wrapper _baseline_float32_cummax
-let baseline_repeat  = cumulative_wrapper _baseline_float32_repeat 
+let baseline_repeat  = cumulative_wrapper _baseline_float32_repeat
 let baseline_diff    = cumulative_wrapper _baseline_float32_diff
+*)

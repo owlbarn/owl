@@ -50,8 +50,6 @@ CAMLprim value BASE_FUN20_IMPL(
   int incy_m = Long_val(vINCY_M);
   int incy_n = Long_val(vINCY_N);
 
-  //INIT;
-
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   NUMBER *X_data = (NUMBER *) X->data;
 
