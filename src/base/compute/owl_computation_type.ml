@@ -83,6 +83,7 @@ module Make
     | OneHot                        of int
     | Delay                         of (A.arr -> A.arr)
     | DelayArray                    of int array * (A.arr array -> A.arr)
+    | LazyPrint                     of int option * int option * bool option * (A.elt -> string) option
     | Abs
     | Neg
     | Floor
@@ -241,6 +242,7 @@ module Make
     | Scalar_Relu
     | Scalar_Sigmoid
     | Fused_Adagrad                 of float * float
+
 
 
 end

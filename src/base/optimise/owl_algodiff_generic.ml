@@ -893,6 +893,8 @@ module Make
       let r a = Inv_D a in
       op_d_d a ff fd df r
 
+    and qr _a = failwith "todo: guillaume"
+
     and softplus x = log ((pack_flt 1.) + exp x)
 
     and softsign x = x / ((pack_flt 1.) + abs x)

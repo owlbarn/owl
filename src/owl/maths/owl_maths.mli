@@ -599,6 +599,19 @@ val is_int : float -> bool
 val is_sqr : int -> bool
 (** ``is_sqr x`` checks if ``x`` is the square of an integer. *)
 
+val mulmod : int -> int -> int -> int
+(** ``mulmod a b m`` computes (a*b) mod m. *)
+
+val powmod : int -> int -> int -> int
+(** ``powmod a b m`` computes (a^b) mod m. *)
+
+val is_prime : int -> bool
+(**
+``is_prime x`` returns ``true`` if ``x`` is a prime number. The function is
+deterministic for all numbers representable by an int. The function uses the
+Rabin–Miller primality test.
+*)
+
 val fermat_fact : int -> int * int
 (**
 ``fermat_fact x`` performs Fermat factorisation over ``x``, i.e. into two

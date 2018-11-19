@@ -158,6 +158,9 @@ module Make
     make_then_connect ~shape:[|Some shape|] (DelayArray (shape, f))
       (Array.map arr_to_node x) |> node_to_arr
 
+  let lazy_print ?max_row ?max_col ?header ?fmt x =
+    make_then_connect (LazyPrint (max_row, max_col, header, fmt)) [|arr_to_node x|] |> node_to_arr
+
   let print ?max_row ?max_col ?header ?fmt x = ()  [@@warning "-27"]
 
 
@@ -457,6 +460,8 @@ module Make
   let copy_col_to x _y _j = make_then_connect CopyColTo [|arr_to_node x|] |> ignore
 
   let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
+
+  let qr _x = raise Owl_exception.NOT_IMPLEMENTED 
 
   let trace x = make_then_connect Trace [|arr_to_node x|] |> node_to_elt
 
