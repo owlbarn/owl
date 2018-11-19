@@ -4,7 +4,7 @@
  *)
 
 open Owl_aeos_tuner_map
-(* open Owl_aeos_tuner_fold *)
+open Owl_aeos_tuner_fold
 
 
 type tuner =
@@ -47,9 +47,9 @@ type tuner =
   | Atan2     of Atan2.t
   | Max2      of Max2.t
   | Fmod      of Fmod.t
-  (* | Sum       of Sum.t
+  | Sum       of Sum.t
   | Prod      of Prod.t
-  | Cumsum    of Cumsum.t
+  (* | Cumsum    of Cumsum.t
   | Cumprod   of Cumprod.t
   | Cummax    of Cummax.t
   | Diff      of Diff.t
@@ -96,9 +96,9 @@ let tuning = function
   | Atan2 x     -> Atan2.tune x
   | Max2 x      -> Max2.tune x
   | Fmod x      -> Fmod.tune x
-  (* | Sum x       -> Sum.tune x
+  | Sum x       -> Sum.tune x
   | Prod x      -> Prod.tune x
-  | Cumsum x    -> Cumsum.tune x
+  (* | Cumsum x    -> Cumsum.tune x
   | Cumprod x   -> Cumprod.tune x
   | Cummax x    -> Cummax.tune x
   | Diff x      -> Diff.tune x
@@ -145,9 +145,9 @@ let to_string_array = function
   | Atan2 x     -> [|Atan2.to_string x|]
   | Max2 x      -> [|Max2.to_string x|]
   | Fmod x      -> [|Fmod.to_string x|]
-  (* | Sum x       -> [|Sum.to_string x|]
+  | Sum x       -> [|Sum.to_string x|]
   | Prod x      -> [|Prod.to_string x|]
-  | Cumsum x    -> [|Cumsum.to_string x|]
+  (*| Cumsum x    -> [|Cumsum.to_string x|]
   | Cumprod x   -> [|Cumprod.to_string x|]
   | Cummax x    -> [|Cummax.to_string x|]
   | Diff x      -> [|Diff.to_string x|]
@@ -194,9 +194,9 @@ let save_data = function
   | Atan2 x     -> Atan2.save_data x
   | Max2 x      -> Max2.save_data x
   | Fmod x      -> Fmod.save_data x
-  (* | Sum x       -> Sum.save_data x
+  | Sum x       -> Sum.save_data x
   | Prod x      -> Prod.save_data x
-  | Cumsum x    -> Cumsum.save_data x
+  (*| Cumsum x    -> Cumsum.save_data x
   | Cumprod x   -> Cumprod.save_data x
   | Cummax x    -> Cummax.save_data x
   | Diff x      -> Diff.save_data x
@@ -243,9 +243,9 @@ let get_params = function
   | Atan2 x     -> [|x.param|]
   | Max2 x      -> [|x.param|]
   | Fmod x      -> [|x.param|]
-  (* | Sum x       -> [|x.param|]
+  | Sum x       -> [|x.param|]
   | Prod x      -> [|x.param|]
-  | Cumsum x    -> [|x.param|]
+  (*| Cumsum x    -> [|x.param|]
   | Cumprod x   -> [|x.param|]
   | Cummax x    -> [|x.param|]
   | Diff x      -> [|x.param|]
@@ -287,9 +287,9 @@ let all = [|
   Div       (Div.make ());
   Atan2     (Atan2.make ());
   Fmod      (Fmod.make ());
-  (* Sum       (Sum.make ());
+  Sum       (Sum.make ());
   Prod      (Prod.make ());
-  Cumsum    (Cumsum.make ());
+  (* Cumsum    (Cumsum.make ());
   Cumprod   (Cumprod.make ());
   Cummax    (Cummax.make ());
   Diff      (Diff.make ());

@@ -6,14 +6,20 @@
 #include "owl_aeos_macros.h"
 //#include <stdio.h>
 
+#define FUN5
 #define BASE_FUN5 bl_float32_sum
+#define OMP_FUN5 omp_float32_sum
+#define OMP_OP +
 #define INIT float r = 0.
 #define NUMBER float
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (caml_copy_double(X))
 #include "owl_aeos_tuner_fold_impl.h"
 
+#define FUN6
 #define BASE_FUN5 bl_float32_prod
+#define OMP_FUN5 omp_float32_prod
+#define OMP_OP *
 #define INIT float r = 0.
 #define NUMBER float
 #define ACCFN(A,X) (A *= X)
