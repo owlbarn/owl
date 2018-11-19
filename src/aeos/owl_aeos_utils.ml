@@ -128,6 +128,16 @@ let default_threshold = 0
 
 let c = 30 (* repeat times *)
 
+(* calculate the number of elements in an ndarray *)
+let numel x = Array.fold_right (fun c a -> c * a) (Genarray.dims x) 1
+
+(** measure the time spent in a function in millisecond *)
+let time f =
+  let t = Unix.gettimeofday () in
+  f ();
+  (Unix.gettimeofday () -. t) *. 1000.
+
+
 let remove_outlier arr =
   let first_perc = percentile arr 25. in
   let third_perc = percentile arr 75. in
@@ -234,7 +244,7 @@ let to_csv x y y' m =
 
 
 let replace_lines_in_file fname keyword replace =
-  let lines = Owl_io.read_file fname in
+  let lines = read_file fname in
   Array.iteri (fun i l ->
     let r = Str.regexp keyword in
     try
@@ -243,4 +253,4 @@ let replace_lines_in_file fname keyword replace =
     with Not_found -> ()
   ) lines;
   let line_str = lines |> Array.to_list |> String.concat "\n" in
-  Owl_io.write_file fname line_str
+  write_file fname line_str

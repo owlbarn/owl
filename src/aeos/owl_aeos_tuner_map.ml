@@ -23,16 +23,16 @@ let size2arr xs =
 let eval_map_unary f sz () =
   let x = Owl_aeos_utils.ones sz in
   let y = Owl_aeos_utils.ones sz in
-  let h () = f (Owl_utils.numel x) x y |> ignore in
-  Owl_utils.time h
+  let h () = f (Owl_aeos_utils.numel x) x y |> ignore in
+  Owl_aeos_utils.time h
 
 
 let eval_map_binary f sz () =
   let x1 = Owl_aeos_utils.ones sz in
   let x2 = Owl_aeos_utils.ones sz in
   let y  = Owl_aeos_utils.ones sz in
-  let h () = f (Owl_utils.numel x1) x1 x2 y |> ignore in
-  Owl_utils.time h
+  let h () = f (Owl_aeos_utils.numel x1) x1 x2 y |> ignore in
+  Owl_aeos_utils.time h
 
 
 let step_measure_map_unary xs f base_f msg =

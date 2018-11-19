@@ -28,14 +28,14 @@ let size2arr_fold a =
 
 let eval_fold f sz () =
   let x = Owl_aeos_utils.ones sz in
-  let h () = f (Owl_utils.numel x) x |> ignore in
-  Owl_utils.time h
+  let h () = f (Owl_aeos_utils.numel x) x |> ignore in
+  Owl_aeos_utils.time h
 
 
 let eval_fold_arr f sz () =
   let x = Owl_aeos_utils.ones sz in
   let h () = f ~axis:0 x |> ignore in
-  Owl_utils.time h
+  Owl_aeos_utils.time h
 
 
 let step_measure_fold xs f base_f msg =
@@ -71,7 +71,7 @@ module Sum = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = openmp_float32_sum in
     let f2 = baseline_float32_sum in
     t.y <- step_measure_fold t.input f1 f2 t.name;
@@ -110,7 +110,7 @@ module Prod = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = openmp_float32_prod in
     let f2 = baseline_float32_prod in
     t.y <- step_measure_fold t.input f1 f2 t.name;
@@ -150,7 +150,7 @@ module Cumsum = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = fun ~axis x -> N.cumsum ~axis x in
     let f2 = baseline_cumsum in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
@@ -189,7 +189,7 @@ module Cumprod = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = fun ~axis x -> N.cumprod_ ~axis x in
     let f2 = baseline_cumprod in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
@@ -228,7 +228,7 @@ module Cummax = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = fun ~axis x -> N.cummax ~axis x in
     let f2 = baseline_cummax in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
@@ -266,7 +266,7 @@ module Diff = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = fun ~axis x -> N.diff ~axis x in
     let f2 = baseline_diff in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
@@ -305,7 +305,7 @@ module Repeat = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = fun ~axis x -> N.repeat x [|axis|] in
     let f2 = baseline_repeat in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;

@@ -26,7 +26,7 @@ let write_full fname tuners =
     |> fun_join_str
   in
   let header_file_str = Printf.sprintf "%s%s" copyright define_str in
-  Owl_io.write_file fname header_file_str
+  Owl_aeos_utils.write_file fname header_file_str
 
 
 let write_partial fname tuners =
