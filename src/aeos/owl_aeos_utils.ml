@@ -6,11 +6,8 @@
 open Owl
 
 module M = Dense.Matrix.S
-module L = Linalg.S
 
 (* require math/stats methods *)
-
-let log = Printf.fprintf stderr
 
 let fzero_bisec ?(max_iter=1000) ?(xtol=1e-6) f a b =
   let fa = f a in
@@ -87,23 +84,34 @@ let std ?mean x = sqrt (var ?mean x)
 
 (* END *)
 
-let write_file ?(_flag=Open_creat) f s =
+let write_file f s =
   let h = open_out f in
   Printf.fprintf h "%s" s;
+  close_out h
+
+let write_csv ?(sep='\t') x fname =
+  let h = open_out fname in
+  Array.iter (fun row ->
+    let s = Array.fold_left (fun acc elt ->
+      Printf.sprintf "%s%s%c" acc elt sep
+    ) "" row
+    in
+    Printf.fprintf h "%s\n" s
+  ) x;
   close_out h
 
 let read_file ?(trim=true) f =
   let h = open_in f in
   let s = ref [""] in
-  try
-    while true do
+  (
+    try while true do
       let l = match trim with
         | true  -> input_line h |> String.trim
         | false -> input_line h
       in
       s := List.append !s [l]
-    done
-  with End_of_file -> ();
+    done with End_of_file -> ()
+  );
   close_in h;
   Array.of_list !s
 
@@ -129,7 +137,7 @@ let timing fn msg =
   let times = remove_outlier(times) in
   let m_time = mean times in
   let s_time = std times in
-  log "| %s :\t mean = %.3f \t std = %.3f \n" msg m_time s_time;
+  Printf.fprintf stderr "| %s :\t mean = %.3f \t std = %.3f \n" msg m_time s_time;
   flush stdout;
   m_time, s_time
 
@@ -146,10 +154,7 @@ let step_measure xs ef eg msg =
     y1.(i) <- v1;
     y2.(i) <- v2;
   done;
-
-  let y1 = M.of_array y1 n 1 in
-  let y2 = M.of_array y2 n 1 in
-  M.(y2 - y1)
+  Array.map2 (fun a b ->  a -. b) y2 y1
 
 
 let linreg x y =
@@ -173,9 +178,9 @@ let linreg x y =
 
 let linear_reg x y =
   let b, k = linreg x y in
-  log "Linear Regression: k: %.2f, b: %.2f\n" k b;
+  Printf.fprintf stderr "Linear Regression: k: %.2f, b: %.2f\n" k b;
   let g x = x *. k +. b in
-  g, (if k > 0. then 1 else -1)
+  g, (if k > 0. then true else false)
 
   (* let p = M.get (M.cov ~a:x ~b:y) 0 1 in
   let q = M.get (M.var ~axis:0 x) 0 0 in
@@ -186,29 +191,38 @@ let linear_reg x y =
   a, b *)
 
 
-let find_root ?(l=(-10000.)) ?(u=1000000.) f sign =
+let find_root ?(l=(-10000.)) ?(u=1000000.) f pos_slope =
   try
-    if sign < 0 then max_int
+    if pos_slope = false then max_int
     else (
       let r = fzero_bisec f l u in
       let r = if (r > 0.) then r else 0. in
-      log "Crosspoint: %f.\n" r;
+      Printf.fprintf stderr "Crosspoint: %f.\n" r;
       int_of_float r
     )
   with
   | Assert_failure (err_msg, _, _) ->
-    log "%s" (err_msg ^ " ; using default value");
+    Printf.fprintf stderr "%s" (err_msg ^ " ; using default value");
     default_threshold
 
-
+(*
 let plot x y y' m =
-  let h = Plot.create (log "line_plot_%s.png" m) in
+  let h = Plot.create (Printf.sprintf "line_plot_%s.png" m) in
   let x = Dense.Matrix.Generic.cast_s2d x in
   let y = Dense.Matrix.Generic.cast_s2d y in
   let y' = Dense.Matrix.Generic.cast_s2d y' in
   Plot.scatter ~h x y;
   Plot.plot ~h ~spec:[ RGB (0,255,0) ] x y';
   Plot.output h
+*)
+
+let to_csv x y y' m =
+  let f = Printf.sprintf "line_data_%s.csv" m in
+  let to_str = Array.map string_of_float in
+  let x = to_str x in
+  let y = to_str y in
+  let y' = to_str y' in
+  write_csv [|x; y; y'|] f
 
 
 let replace_lines_in_file fname keyword replace =

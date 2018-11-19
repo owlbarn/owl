@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(*
 open Owl
 open Owl_aeos_c_interface
 
@@ -143,6 +144,8 @@ module Prod = struct
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
+
+*)
 
 (*
 module Cumsum = struct

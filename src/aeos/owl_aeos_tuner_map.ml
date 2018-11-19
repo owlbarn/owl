@@ -19,8 +19,7 @@ let generate_sizes start step n =
   x
 
 let size2mat xs =
-  let a = Array.map (fun x -> float_of_int x.(0)) xs in
-  M.of_array a (Array.length a) 1
+  Array.map (fun x -> float_of_int x.(0)) xs
 
 
 let eval_map_unary f sz () =
@@ -58,7 +57,7 @@ module Reci = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -66,7 +65,7 @@ module Reci = struct
     param = "OWL_OMP_THRESHOLD_RECI";
     value = default_threshold;
     input = generate_sizes 1000 10000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -78,11 +77,11 @@ module Reci = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -97,7 +96,7 @@ module Abs = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -105,7 +104,7 @@ module Abs = struct
     param = "OWL_OMP_THRESHOLD_ABS";
     value = default_threshold;
     input = generate_sizes 1000 10000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -117,11 +116,11 @@ module Abs = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -136,7 +135,7 @@ module Abs2 = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -144,7 +143,7 @@ module Abs2 = struct
     param = "OWL_OMP_THRESHOLD_ABS2";
     value = default_threshold;
     input = generate_sizes 1000 10000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -156,11 +155,11 @@ module Abs2 = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -175,7 +174,7 @@ module Signum = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -183,7 +182,7 @@ module Signum = struct
     param = "OWL_OMP_THRESHOLD_SIGNUM";
     value = default_threshold;
     input = generate_sizes 1000 10000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -195,11 +194,11 @@ module Signum = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -214,7 +213,7 @@ module Sqr = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -222,7 +221,7 @@ module Sqr = struct
     param = "OWL_OMP_THRESHOLD_SQR";
     value = default_threshold;
     input = generate_sizes 1000 10000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -234,11 +233,11 @@ module Sqr = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -253,7 +252,7 @@ module Sqrt = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -261,7 +260,7 @@ module Sqrt = struct
     param = "OWL_OMP_THRESHOLD_SQRT";
     value = default_threshold;
     input = generate_sizes 1000 10000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -273,11 +272,11 @@ module Sqrt = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -292,7 +291,7 @@ module Cbrt = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -300,7 +299,7 @@ module Cbrt = struct
     param = "OWL_OMP_THRESHOLD_CBRT";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -312,11 +311,11 @@ module Cbrt = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -331,7 +330,7 @@ module Exp = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -339,7 +338,7 @@ module Exp = struct
     param = "OWL_OMP_THRESHOLD_EXP";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -351,11 +350,11 @@ module Exp = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -370,7 +369,7 @@ module Expm1 = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -378,7 +377,7 @@ module Expm1 = struct
     param = "OWL_OMP_THRESHOLD_EXPM1";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -390,11 +389,11 @@ module Expm1 = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -409,7 +408,7 @@ module Log = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -417,7 +416,7 @@ module Log = struct
     param = "OWL_OMP_THRESHOLD_LOG";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -429,11 +428,11 @@ module Log = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -448,7 +447,7 @@ module Log1p = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -456,7 +455,7 @@ module Log1p = struct
     param = "OWL_OMP_THRESHOLD_LOG1P";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -468,11 +467,11 @@ module Log1p = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -487,7 +486,7 @@ module Sin = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -495,7 +494,7 @@ module Sin = struct
     param = "OWL_OMP_THRESHOLD_SIN";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -507,11 +506,11 @@ module Sin = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -526,7 +525,7 @@ module Cos = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -534,7 +533,7 @@ module Cos = struct
     param = "OWL_OMP_THRESHOLD_COS";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -546,11 +545,11 @@ module Cos = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -565,7 +564,7 @@ module Tan = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -573,7 +572,7 @@ module Tan = struct
     param = "OWL_OMP_THRESHOLD_TAN";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -585,11 +584,11 @@ module Tan = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -604,7 +603,7 @@ module Asin = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -612,7 +611,7 @@ module Asin = struct
     param = "OWL_OMP_THRESHOLD_ASIN";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -624,11 +623,11 @@ module Asin = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -643,7 +642,7 @@ module Acos = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -651,7 +650,7 @@ module Acos = struct
     param = "OWL_OMP_THRESHOLD_ACOS";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -663,11 +662,11 @@ module Acos = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -682,7 +681,7 @@ module Atan = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -690,7 +689,7 @@ module Atan = struct
     param = "OWL_OMP_THRESHOLD_ATAN";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -702,11 +701,11 @@ module Atan = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -721,7 +720,7 @@ module Sinh = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -729,7 +728,7 @@ module Sinh = struct
     param = "OWL_OMP_THRESHOLD_SINH";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -741,11 +740,11 @@ module Sinh = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -760,7 +759,7 @@ module Cosh = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -768,7 +767,7 @@ module Cosh = struct
     param = "OWL_OMP_THRESHOLD_COSH";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -780,11 +779,11 @@ module Cosh = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -799,7 +798,7 @@ module Tanh = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -807,7 +806,7 @@ module Tanh = struct
     param = "OWL_OMP_THRESHOLD_TANH";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -819,11 +818,11 @@ module Tanh = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -838,7 +837,7 @@ module Asinh = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -846,7 +845,7 @@ module Asinh = struct
     param = "OWL_OMP_THRESHOLD_ASINH";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -858,11 +857,11 @@ module Asinh = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -877,7 +876,7 @@ module Acosh = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -885,7 +884,7 @@ module Acosh = struct
     param = "OWL_OMP_THRESHOLD_ACOSH";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -897,11 +896,11 @@ module Acosh = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -916,7 +915,7 @@ module Atanh = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -924,7 +923,7 @@ module Atanh = struct
     param = "OWL_OMP_THRESHOLD_ATANH";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -936,11 +935,11 @@ module Atanh = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -955,7 +954,7 @@ module Erf = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -963,7 +962,7 @@ module Erf = struct
     param = "OWL_OMP_THRESHOLD_ERF";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -975,11 +974,11 @@ module Erf = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -994,7 +993,7 @@ module Erfc = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1002,7 +1001,7 @@ module Erfc = struct
     param = "OWL_OMP_THRESHOLD_ERFC";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1014,11 +1013,11 @@ module Erfc = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1033,7 +1032,7 @@ module Logistic = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1041,7 +1040,7 @@ module Logistic = struct
     param = "OWL_OMP_THRESHOLD_LOGISTIC";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1053,11 +1052,11 @@ module Logistic = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1072,7 +1071,7 @@ module Relu = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1080,7 +1079,7 @@ module Relu = struct
     param = "OWL_OMP_THRESHOLD_RELU";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1092,11 +1091,11 @@ module Relu = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1111,7 +1110,7 @@ module Softplus = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1119,7 +1118,7 @@ module Softplus = struct
     param = "OWL_OMP_THRESHOLD_SOFTPLUS";
     value = default_threshold;
     input = generate_sizes 1000 10000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1131,11 +1130,11 @@ module Softplus = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1150,7 +1149,7 @@ module Softsign = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1158,7 +1157,7 @@ module Softsign = struct
     param = "OWL_OMP_THRESHOLD_SOFTSIGN";
     value = default_threshold;
     input = generate_sizes 1000 10000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1170,11 +1169,11 @@ module Softsign = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1189,7 +1188,7 @@ module Sigmoid = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1197,7 +1196,7 @@ module Sigmoid = struct
     param = "OWL_OMP_THRESHOLD_SIGMOID";
     value = default_threshold;
     input = generate_sizes 1000 10000 30;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1209,11 +1208,11 @@ module Sigmoid = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1230,7 +1229,7 @@ module Elt_equal = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1238,7 +1237,7 @@ module Elt_equal = struct
     param = "OWL_OMP_THRESHOLD_ELT_EQUAL";
     value = default_threshold;
     input = generate_sizes 10000 20000 50;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1250,11 +1249,11 @@ module Elt_equal = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1269,7 +1268,7 @@ module Add = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1277,7 +1276,7 @@ module Add = struct
     param = "OWL_OMP_THRESHOLD_ADD";
     value = default_threshold;
     input = generate_sizes 1000 20000 50;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1289,11 +1288,11 @@ module Add = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1308,7 +1307,7 @@ module Mul = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1316,7 +1315,7 @@ module Mul = struct
     param = "OWL_OMP_THRESHOLD_MUL";
     value = default_threshold;
     input = generate_sizes 1000 10000 50;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1328,11 +1327,11 @@ module Mul = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1347,7 +1346,7 @@ module Div = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1355,7 +1354,7 @@ module Div = struct
     param = "OWL_OMP_THRESHOLD_DIV";
     value = default_threshold;
     input = generate_sizes 1000 20000 50;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1367,11 +1366,11 @@ module Div = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1386,7 +1385,7 @@ module Pow = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1394,7 +1393,7 @@ module Pow = struct
     param = "OWL_OMP_THRESHOLD_POW";
     value = default_threshold;
     input = generate_sizes 1000 20000 50;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1406,11 +1405,11 @@ module Pow = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1425,7 +1424,7 @@ module Hypot = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1433,7 +1432,7 @@ module Hypot = struct
     param = "OWL_OMP_THRESHOLD_Hypot";
     value = default_threshold;
     input = generate_sizes 1000 1000 50;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1445,11 +1444,11 @@ module Hypot = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1464,7 +1463,7 @@ module Atan2 = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1472,7 +1471,7 @@ module Atan2 = struct
     param = "OWL_OMP_THRESHOLD_ATAN2";
     value = default_threshold;
     input = generate_sizes 1000 1000 50;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1484,11 +1483,11 @@ module Atan2 = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1503,7 +1502,7 @@ module Max2 = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1511,7 +1510,7 @@ module Max2 = struct
     param = "OWL_OMP_THRESHOLD_MAX2";
     value = default_threshold;
     input = generate_sizes 1000 10000 50;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1523,11 +1522,11 @@ module Max2 = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1542,7 +1541,7 @@ module Fmod = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
@@ -1550,7 +1549,7 @@ module Fmod = struct
     param = "OWL_OMP_THRESHOLD_FMOD";
     value = default_threshold;
     input = generate_sizes 1000 2000 50;
-    y = M.zeros 1 1
+    y = [|0.|]
   }
 
   let tune t =
@@ -1562,11 +1561,11 @@ module Fmod = struct
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
-  let plot t =
+  let save_data t =
     let x = size2mat t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+    let y' = Array.map f x in
+    Owl_aeos_utils.to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)

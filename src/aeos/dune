@@ -3,6 +3,7 @@
   (public_name owl-aeos)
   (wrapped false)
   (flags (:standard -safe-string))
+  (libraries owl)
   (modules (:standard \ owl_aeos_gen))
   (c_names
     owl_aeos_tuner_map_stub
