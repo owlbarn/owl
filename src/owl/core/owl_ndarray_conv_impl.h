@@ -15,9 +15,6 @@
 #define ALIGN_SIZE 32 // for AVX address alignment
 
 
-void query_cache_sizes(int* l1p, int* l2p, int* l3p);
-
-
 // The effect of calculating block size according to cache sizes is yet to be
 // proved here since we use OpenBLAS GEMM directly; also, note that we
 // calculate `InputMatrix x KernelMatrix`, not the other way around.

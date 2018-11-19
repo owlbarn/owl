@@ -177,6 +177,11 @@ extern int int32_cmp_r (const void * a, const void * b, const void * z);
 extern int int64_cmp_r (const void * a, const void * b, const void * z);
 
 
+// acquire CPU cache sizes
+
+extern void query_cache_sizes(int* l1p, int* l2p, int* l3p);
+
+
 // copy two double type numbers, for interfacing to foreign functions
 OWL_INLINE value cp_two_doubles(double d0, double d1) {
   value res = caml_alloc_small(2 * Double_wosize, Double_array_tag);
