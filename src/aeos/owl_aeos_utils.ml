@@ -3,11 +3,20 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl
-
-module M = Dense.Matrix.S
+open Bigarray
 
 (* require math/stats methods *)
+
+let empty kind dimension = Genarray.create kind c_layout dimension
+
+let fill x a = Genarray.fill x a
+
+let create dimension a =
+  let x = empty Float32 dimension in
+  let _ = fill x a in
+  x
+
+let ones dimension = create dimension 1.
 
 let fzero_bisec ?(max_iter=1000) ?(xtol=1e-6) f a b =
   let fa = f a in
@@ -130,14 +139,14 @@ let remove_outlier arr =
 let timing fn msg =
   Gc.compact ();
   let times = Array.make c 0. in
-  for i = 1 to c do
+  for i = 0 to c  - 1 do
     let t = fn () in
     Array.set times i t
   done;
   let times = remove_outlier(times) in
   let m_time = mean times in
   let s_time = std times in
-  Printf.fprintf stderr "| %s :\t mean = %.3f \t std = %.3f \n" msg m_time s_time;
+  Owl_aeos_log.info"| %s :\t mean = %.3f \t std = %.3f \n" msg m_time s_time;
   flush stdout;
   m_time, s_time
 
@@ -146,7 +155,6 @@ let step_measure xs ef eg msg =
   let n = Array.length xs in
   let y1 = Array.make n 0. in
   let y2 = Array.make n 0. in
-
   for i = 0 to n - 1 do
     let x = xs.(i) in
     let v1, _ = timing (ef x) msg in
@@ -178,7 +186,7 @@ let linreg x y =
 
 let linear_reg x y =
   let b, k = linreg x y in
-  Printf.fprintf stderr "Linear Regression: k: %.2f, b: %.2f\n" k b;
+  Owl_aeos_log.info"Linear Regression: k: %.2f, b: %.2f\n" k b;
   let g x = x *. k +. b in
   g, (if k > 0. then true else false)
 
@@ -197,12 +205,12 @@ let find_root ?(l=(-10000.)) ?(u=1000000.) f pos_slope =
     else (
       let r = fzero_bisec f l u in
       let r = if (r > 0.) then r else 0. in
-      Printf.fprintf stderr "Crosspoint: %f.\n" r;
+      Owl_aeos_log.info"Crosspoint: %f.\n" r;
       int_of_float r
     )
   with
   | Assert_failure (err_msg, _, _) ->
-    Printf.fprintf stderr "%s" (err_msg ^ " ; using default value");
+    Owl_aeos_log.info"%s" (err_msg ^ " ; using default value");
     default_threshold
 
 (*

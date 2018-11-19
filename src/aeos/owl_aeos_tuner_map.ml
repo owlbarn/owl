@@ -3,13 +3,10 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl
 open Owl_aeos_c_interface
 
-module N = Dense.Ndarray.S
-module M = Dense.Matrix.S
-
 let default_threshold = 1000
+
 
 let generate_sizes start step n =
   let x = Array.make n [|0|] in
@@ -18,21 +15,22 @@ let generate_sizes start step n =
   done;
   x
 
-let size2mat xs =
+
+let size2arr xs =
   Array.map (fun x -> float_of_int x.(0)) xs
 
 
 let eval_map_unary f sz () =
-  let x = N.uniform sz in
-  let y = N.copy x in
+  let x = Owl_aeos_utils.ones sz in
+  let y = Owl_aeos_utils.ones sz in
   let h () = f (Owl_utils.numel x) x y |> ignore in
   Owl_utils.time h
 
 
 let eval_map_binary f sz () =
-  let x1 = N.uniform sz in
-  let x2 = N.uniform sz in
-  let y  = N.copy x1 in
+  let x1 = Owl_aeos_utils.ones sz in
+  let x2 = Owl_aeos_utils.ones sz in
+  let y  = Owl_aeos_utils.ones sz in
   let h () = f (Owl_utils.numel x1) x1 x2 y |> ignore in
   Owl_utils.time h
 
@@ -47,6 +45,7 @@ let step_measure_map_binary xs f base_f msg =
   let ef = eval_map_binary f in
   let eg = eval_map_binary base_f in
   Owl_aeos_utils.step_measure xs ef eg msg
+
 
 (* Unary operations *)
 
@@ -69,16 +68,16 @@ module Reci = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_reci Float32 in
     let f2 = baseline_float32_reci in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -108,16 +107,16 @@ module Abs = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_abs Float32 in
     let f2 = baseline_float32_abs in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -147,16 +146,16 @@ module Abs2 = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_abs2 Float32 in
     let f2 = baseline_float32_abs2 in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -186,16 +185,16 @@ module Signum = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_signum Float32 in
     let f2 = baseline_float32_signum in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -225,16 +224,16 @@ module Sqr = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_sqr Float32 in
     let f2 = baseline_float32_sqr in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -259,21 +258,21 @@ module Sqrt = struct
     name  = "sqrt";
     param = "OWL_OMP_THRESHOLD_SQRT";
     value = default_threshold;
-    input = generate_sizes 1000 10000 30;
+    input = generate_sizes 1000 1000 20;
     y = [|0.|]
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_sqrt Float32 in
     let f2 = baseline_float32_sqrt in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -298,21 +297,21 @@ module Cbrt = struct
     name  = "cbrt";
     param = "OWL_OMP_THRESHOLD_CBRT";
     value = default_threshold;
-    input = generate_sizes 1000 1000 30;
+    input = generate_sizes 1000 1000 20;
     y = [|0.|]
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_cbrt Float32 in
     let f2 = baseline_float32_cbrt in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -342,16 +341,16 @@ module Exp = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_exp Float32 in
     let f2 = baseline_float32_exp in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -381,16 +380,16 @@ module Expm1 = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_expm1 Float32 in
     let f2 = baseline_float32_expm1 in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -420,16 +419,16 @@ module Log = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_log Float32 in
     let f2 = baseline_float32_log in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -459,16 +458,16 @@ module Log1p = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_log1p Float32 in
     let f2 = baseline_float32_log1p in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -498,16 +497,16 @@ module Sin = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_sin Float32 in
     let f2 = baseline_float32_sin in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -537,16 +536,16 @@ module Cos = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_cos Float32 in
     let f2 = baseline_float32_cos in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -576,16 +575,16 @@ module Tan = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_tan Float32 in
     let f2 = baseline_float32_tan in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -615,16 +614,16 @@ module Asin = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_asin Float32 in
     let f2 = baseline_float32_asin in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -654,16 +653,16 @@ module Acos = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_acos Float32 in
     let f2 = baseline_float32_acos in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -693,16 +692,16 @@ module Atan = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_atan Float32 in
     let f2 = baseline_float32_atan in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -732,16 +731,16 @@ module Sinh = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_sinh Float32 in
     let f2 = baseline_float32_sinh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -771,16 +770,16 @@ module Cosh = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_cosh Float32 in
     let f2 = baseline_float32_cosh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -810,16 +809,16 @@ module Tanh = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_tanh Float32 in
     let f2 = baseline_float32_tanh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -849,16 +848,16 @@ module Asinh = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_asinh Float32 in
     let f2 = baseline_float32_asinh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -888,16 +887,16 @@ module Acosh = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_acosh Float32 in
     let f2 = baseline_float32_acosh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -927,16 +926,16 @@ module Atanh = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_atanh Float32 in
     let f2 = baseline_float32_atanh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -966,16 +965,16 @@ module Erf = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_erf Float32 in
     let f2 = baseline_float32_erf in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1005,16 +1004,16 @@ module Erfc = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_erfc Float32 in
     let f2 = baseline_float32_erfc in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1044,16 +1043,16 @@ module Logistic = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_logistic Float32 in
     let f2 = baseline_float32_logistic in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1083,16 +1082,16 @@ module Relu = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_relu Float32 in
     let f2 = baseline_float32_relu in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1122,16 +1121,16 @@ module Softplus = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_softplus Float32 in
     let f2 = baseline_float32_softplus in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1161,16 +1160,16 @@ module Softsign = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_softsign Float32 in
     let f2 = baseline_float32_softsign in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1200,16 +1199,16 @@ module Sigmoid = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_sigmoid Float32 in
     let f2 = baseline_float32_sigmoid in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1241,16 +1240,16 @@ module Elt_equal = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_elt_equal Float32 in
     let f2 = baseline_float32_elt_equal in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1280,16 +1279,16 @@ module Add = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_add Float32 in
     let f2 = baseline_float32_add in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1319,16 +1318,16 @@ module Mul = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_mul Float32 in
     let f2 = baseline_float32_mul in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1358,16 +1357,16 @@ module Div = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_div Float32 in
     let f2 = baseline_float32_div in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1397,16 +1396,16 @@ module Pow = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_pow Float32 in
     let f2 = baseline_float32_pow in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1436,16 +1435,16 @@ module Hypot = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_hypot Float32 in
     let f2 = baseline_float32_hypot in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1475,16 +1474,16 @@ module Atan2 = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_atan2 Float32 in
     let f2 = baseline_float32_atan2 in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1514,16 +1513,16 @@ module Max2 = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_max2 Float32 in
     let f2 = baseline_float32_max2 in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
@@ -1553,16 +1552,16 @@ module Fmod = struct
   }
 
   let tune t =
-    Owl_log.info "AEOS: tune %s ..." t.name;
+    Owl_aeos_log.info "AEOS: tune %s ..." t.name;
     let f1 = Owl_ndarray._owl_fmod Float32 in
     let f2 = baseline_float32_fmod in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, sign = Owl_aeos_utils.linear_reg x t.y in
     t.value <- Owl_aeos_utils.find_root f sign
 
   let save_data t =
-    let x = size2mat t.input in
+    let x = size2arr t.input in
     let f, _ = Owl_aeos_utils.linear_reg x t.y in
     let y' = Array.map f x in
     Owl_aeos_utils.to_csv x t.y y' t.name
