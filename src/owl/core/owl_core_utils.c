@@ -201,7 +201,10 @@ void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int *offset) {
 
 
 /*
- * find the L1/L2/L3 cache sizes of CPU.
+ * calculate the L1/L2/L3 cache sizes of CPU. Default values are used if
+ * vendors are not supported.
+ * 
+ * Code heavily inspired by Eigen (http://eigen.tuxfamily.org/).
  */
 
 

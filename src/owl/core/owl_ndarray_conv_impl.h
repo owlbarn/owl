@@ -7,7 +7,7 @@
 #define OWL_CORE_CONV_IMPL
 
 /*
- * Calculate the cache sizes and block sizes for convolution operations.
+ * Calculate the block sizes for convolution operations.
  * Code heavily inspired by Eigen (http://eigen.tuxfamily.org/).
  */
 
