@@ -15,7 +15,6 @@ build: [
 depends: [
   "dune" {build}
   "ocaml-compiler-libs"
-  "owl"
 ]
 
 available: [ ocaml-version >= "4.06.0" ]

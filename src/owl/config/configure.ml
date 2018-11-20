@@ -39,6 +39,7 @@ let get_default_cflags _c = [
   "-march=native"; "-mfpmath=sse"; "-funroll-loops"; "-ffast-math";
   (* Configure Mersenne Twister RNG *)
   "-DSFMT_MEXP=19937"; "-msse2"; "-fno-strict-aliasing";
+  "-Wno-tautological-constant-out-of-range-compare";
 ]
 
 
