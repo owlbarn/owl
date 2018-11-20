@@ -1076,7 +1076,7 @@ module Relu = struct
   }
 
   let make () = {
-    name  = "Relu";
+    name  = "relu";
     param = "OWL_OMP_THRESHOLD_RELU";
     value = default_threshold;
     input = generate_sizes 1000 1000 30;

@@ -218,11 +218,13 @@ let default_threshold = 0
 
 let find_root ?(l=(-10000.)) ?(u=1000000.) f pos_slope =
   try
-    if pos_slope = false then max_int - 1
-    else (
+    if pos_slope = false then (
+      Owl_aeos_log.info "Non-openmp version is more efficient; using max_int for threshold";
+      max_int - 1
+    ) else (
       let r = fzero_bisec f l u in
       let r = if (r > 0.) then r else 0. in
-      Owl_aeos_log.debug "Crosspoint: %f.\n" r;
+      Owl_aeos_log.info "Threshold: %f" r;
       int_of_float r
     )
   with

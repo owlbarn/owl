@@ -2223,6 +2223,7 @@
 #define INIT float r = 0.
 #define NUMBER float
 #define OMP_OP +
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SUM
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (caml_copy_double(X))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2231,6 +2232,7 @@
 #define INIT double r = 0.
 #define NUMBER double
 #define OMP_OP +
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SUM
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (caml_copy_double(X))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2238,6 +2240,7 @@
 #define FUN5 complex32_sum
 #define INIT complex_float r = { 0.0, 0.0 }
 #define NUMBER complex_float
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SUM
 #define ACCFN(A,X) A.r += X.r; A.i += X.i
 #define COPYNUM(X) (cp_two_doubles(X.r, X.i))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2245,6 +2248,7 @@
 #define FUN5 complex64_sum
 #define INIT complex_double r = { 0.0, 0.0 }
 #define NUMBER complex_double
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SUM
 #define ACCFN(A,X) A.r += X.r; A.i += X.i
 #define COPYNUM(X) (cp_two_doubles(X.r, X.i))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2253,6 +2257,7 @@
 #define INIT int r = 0
 #define NUMBER int8_t
 #define OMP_OP +
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SUM
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2261,6 +2266,7 @@
 #define INIT int r = 0
 #define NUMBER uint8_t
 #define OMP_OP +
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SUM
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2269,6 +2275,7 @@
 #define INIT int r = 0
 #define NUMBER int16_t
 #define OMP_OP +
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SUM
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2277,6 +2284,7 @@
 #define INIT int r = 0
 #define NUMBER uint16_t
 #define OMP_OP +
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SUM
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2285,6 +2293,7 @@
 #define INIT int r = 0
 #define NUMBER int32_t
 #define OMP_OP +
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SUM
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (caml_copy_int32(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2293,6 +2302,7 @@
 #define INIT int r = 0
 #define NUMBER int64_t
 #define OMP_OP +
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_SUM
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (caml_copy_int64(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2437,6 +2447,7 @@
 #define INIT float r = 1.
 #define NUMBER float
 #define OMP_OP *
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_PROD
 #define ACCFN(A,X) (A = A * X)
 #define COPYNUM(X) (caml_copy_double(X))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2445,6 +2456,7 @@
 #define INIT double r = 1.
 #define NUMBER double
 #define OMP_OP *
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_PROD
 #define ACCFN(A,X) (A = A * X)
 #define COPYNUM(X) (caml_copy_double(X))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2452,6 +2464,7 @@
 #define FUN5 complex32_prod
 #define INIT complex_float r = { 1.0, 0.0 }
 #define NUMBER complex_float
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_PROD
 #define ACCFN(A,X) A.r = A.r * X.r - A.i * X.i; A.i = A.r * X.i + A.i * X.r
 #define COPYNUM(X) (cp_two_doubles(X.r, X.i))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2459,6 +2472,7 @@
 #define FUN5 complex64_prod
 #define INIT complex_double r = { 1.0, 0.0 }
 #define NUMBER complex_double
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_PROD
 #define ACCFN(A,X) A.r = A.r * X.r - A.i * X.i; A.i = A.r * X.i + A.i * X.r
 #define COPYNUM(X) (cp_two_doubles(X.r, X.i))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2467,6 +2481,7 @@
 #define INIT int r = 0
 #define NUMBER int8_t
 #define OMP_OP *
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_PROD
 #define ACCFN(A,X) (A *= X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2475,6 +2490,7 @@
 #define INIT int r = 0
 #define NUMBER uint8_t
 #define OMP_OP *
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_PROD
 #define ACCFN(A,X) (A *= X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2483,6 +2499,7 @@
 #define INIT int r = 0
 #define NUMBER int16_t
 #define OMP_OP *
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_PROD
 #define ACCFN(A,X) (A *= X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2491,6 +2508,7 @@
 #define INIT int r = 0
 #define NUMBER uint16_t
 #define OMP_OP *
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_PROD
 #define ACCFN(A,X) (A *= X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2499,6 +2517,7 @@
 #define INIT int r = 0
 #define NUMBER int32_t
 #define OMP_OP *
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_PROD
 #define ACCFN(A,X) (A *= X)
 #define COPYNUM(X) (caml_copy_int32(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2507,6 +2526,7 @@
 #define INIT int r = 0
 #define NUMBER int64_t
 #define OMP_OP *
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_PROD
 #define ACCFN(A,X) (A *= X)
 #define COPYNUM(X) (caml_copy_int64(r))
 #include OWL_NDARRAY_MATHS_FOLD

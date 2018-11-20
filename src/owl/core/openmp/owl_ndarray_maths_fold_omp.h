@@ -25,11 +25,22 @@ CAMLprim value FUN5(value vN, value vX)
   start_x = X_data;
 
 #ifdef OMP_OP
-  #pragma omp parallel for reduction(OMP_OP : r)
-#endif
+  if (N >= OWL_OMP_THRESHOLD) {
+    #pragma omp parallel for reduction(OMP_OP : r)
+    for (int i = 0; i < N; i++) {
+      ACCFN(r, start_x[i]);
+    }
+  }
+  else {
+    for (int i = 0; i < N; i++) {
+      ACCFN(r, start_x[i]);
+    }
+  }
+#else
   for (int i = 0; i < N; i++) {
     ACCFN(r, start_x[i]);
   }
+#endif
 
   caml_acquire_runtime_system();  /* Disallow other threads */
 
@@ -382,6 +393,7 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 #undef AFCHKFN
 #undef COPYNUM
 #undef OMP_OP
+#undef OWL_OMP_THRESHOLD
 #undef ACCFN
 #undef INIT
 #undef FUN5
