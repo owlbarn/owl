@@ -21,6 +21,7 @@ CAMLprim value FUN5(value vN, value vX)
   INIT;
 
   caml_release_runtime_system();  /* Allow other threads */
+
   start_x = X_data;
 
 #ifdef OMP_OP
