@@ -156,7 +156,7 @@ let timing fn msg =
   let times = remove_outlier(times) in
   let m_time = mean times in
   let s_time = std times in
-  Owl_aeos_log.info"| %s :\t mean = %.3f \t std = %.3f \n" msg m_time s_time;
+  Owl_aeos_log.debug "| %s :\t mean = %.3f \t std = %.3f \n" msg m_time s_time;
   flush stdout;
   m_time, s_time
 
@@ -196,17 +196,9 @@ let linreg x y =
 
 let linear_reg x y =
   let b, k = linreg x y in
-  Owl_aeos_log.info"Linear Regression: k: %.2f, b: %.2f\n" k b;
+  Owl_aeos_log.debug "Linear Regression: k: %.2f, b: %.2f\n" k b;
   let g x = x *. k +. b in
   g, (if k > 0. then true else false)
-
-  (* let p = M.get (M.cov ~a:x ~b:y) 0 1 in
-  let q = M.get (M.var ~axis:0 x) 0 0 in
-
-  let b = ( /. ) p q in
-  let c = ( *. ) b (M.mean' x) in
-  let a = ( -. ) (M.mean' y) c in
-  a, b *)
 
 
 let find_root ?(l=(-10000.)) ?(u=1000000.) f pos_slope =
@@ -215,24 +207,14 @@ let find_root ?(l=(-10000.)) ?(u=1000000.) f pos_slope =
     else (
       let r = fzero_bisec f l u in
       let r = if (r > 0.) then r else 0. in
-      Owl_aeos_log.info"Crosspoint: %f.\n" r;
+      Owl_aeos_log.debug "Crosspoint: %f.\n" r;
       int_of_float r
     )
   with
   | Assert_failure (err_msg, _, _) ->
-    Owl_aeos_log.info"%s" (err_msg ^ " ; using default value");
+    Owl_aeos_log.debug "%s" (err_msg ^ " ; using default value");
     default_threshold
 
-(*
-let plot x y y' m =
-  let h = Plot.create (Printf.sprintf "line_plot_%s.png" m) in
-  let x = Dense.Matrix.Generic.cast_s2d x in
-  let y = Dense.Matrix.Generic.cast_s2d y in
-  let y' = Dense.Matrix.Generic.cast_s2d y' in
-  Plot.scatter ~h x y;
-  Plot.plot ~h ~spec:[ RGB (0,255,0) ] x y';
-  Plot.output h
-*)
 
 let to_csv x y y' m =
   let f = Printf.sprintf "line_data_%s.csv" m in

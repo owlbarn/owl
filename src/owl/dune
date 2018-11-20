@@ -179,13 +179,14 @@
  (targets c_flags.sexp
           c_library_flags.sexp
           ocaml_flags.sexp
-          Owl_aeos_params_generated.h
+          owl_aeos_params_generated.h
           )
-  (deps    :deps config/configure.exe :deps ../aeos/owl_aeos_gen.exe)
+  (deps   (:deps-conf config/configure.exe)
+          (:deps-aeos ../aeos/owl_aeos_gen.exe))
   (action
    (setenv ENABLE_EXPMODE 0 ;; turn on experiment features like flto
            (setenv ENABLE_DEVMODE 0 ;; turn on all the warnings in development
                    (setenv ENABLE_OPENMP  0 ;; turn on OpenMP support in core module
-                           (run %{deps})
+                           (progn (run %{deps-conf}) (run %{deps-aeos}))
                            ))))
 )

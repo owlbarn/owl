@@ -16,7 +16,7 @@
 #define COPYNUM(X) (caml_copy_double(X))
 #include "owl_aeos_tuner_fold_impl.h"
 
-#define FUN6
+#define FUN5
 #define BASE_FUN5 bl_float32_prod
 #define OMP_FUN5 omp_float32_prod
 #define OMP_OP *

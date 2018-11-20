@@ -8,11 +8,13 @@
 
 
 let tune_default fname =
+  Owl_aeos_log.info "Using default parameters...\n";
   let tuners = Owl_aeos_tuners.all in
   Owl_aeos_writer.write_full fname tuners
 
 
 let tune_all fname =
+  Owl_aeos_log.info "Start tuning parameters...\n";
   let tuners = Owl_aeos_tuners.all in
   Owl_aeos_engine.eval tuners;
   Owl_aeos_writer.write_full fname tuners
@@ -23,8 +25,6 @@ let tune fname tuners =
   Owl_aeos_writer.write_partial fname tuners
 
 (* put all existing tunable threasholds in this module *)
-
-(* do we really need omp for fold_plus and fold_mul? (FUN5) *)
 
 (* add support for swap operations *)
 
