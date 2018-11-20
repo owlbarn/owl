@@ -187,6 +187,7 @@
    (setenv ENABLE_EXPMODE 0 ;; turn on experiment features like flto
            (setenv ENABLE_DEVMODE 0 ;; turn on all the warnings in development
                    (setenv ENABLE_OPENMP  0 ;; turn on OpenMP support in core module
-                           (progn (run %{deps-conf}) (run %{deps-aeos}))
+                           (progn (run %{deps-conf})
+                                  (run %{deps-aeos}))
                            ))))
 )

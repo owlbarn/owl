@@ -4,8 +4,10 @@
  *)
 
 open Owl_aeos_c_interface
+open Owl_aeos_utils
 
-let default_threshold = 1000
+
+let default_threshold = 5000
 
 
 let generate_sizes start step n =
@@ -21,30 +23,30 @@ let size2arr xs =
 
 
 let eval_map_unary f sz () =
-  let x = Owl_aeos_utils.ones sz in
-  let y = Owl_aeos_utils.ones sz in
-  let h () = f (Owl_aeos_utils.numel x) x y |> ignore in
-  Owl_aeos_utils.time h
+  let x = ones sz in
+  let y = ones sz in
+  let h () = f (numel x) x y |> ignore in
+  time h
 
 
 let eval_map_binary f sz () =
-  let x1 = Owl_aeos_utils.ones sz in
-  let x2 = Owl_aeos_utils.ones sz in
-  let y  = Owl_aeos_utils.ones sz in
-  let h () = f (Owl_aeos_utils.numel x1) x1 x2 y |> ignore in
-  Owl_aeos_utils.time h
+  let x1 = ones sz in
+  let x2 = ones sz in
+  let y  = ones sz in
+  let h () = f (numel x1) x1 x2 y |> ignore in
+  time h
 
 
 let step_measure_map_unary xs f base_f msg =
   let ef = eval_map_unary f in
   let eg = eval_map_unary base_f in
-  Owl_aeos_utils.step_measure xs ef eg msg
+  step_measure xs ef eg msg
 
 
 let step_measure_map_binary xs f base_f msg =
   let ef = eval_map_binary f in
   let eg = eval_map_binary base_f in
-  Owl_aeos_utils.step_measure xs ef eg msg
+  step_measure xs ef eg msg
 
 
 (* Unary operations *)
@@ -73,14 +75,14 @@ module Reci = struct
     let f2 = baseline_float32_reci in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -112,14 +114,14 @@ module Abs = struct
     let f2 = baseline_float32_abs in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -151,14 +153,14 @@ module Abs2 = struct
     let f2 = baseline_float32_abs2 in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -190,14 +192,14 @@ module Signum = struct
     let f2 = baseline_float32_signum in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -229,14 +231,14 @@ module Sqr = struct
     let f2 = baseline_float32_sqr in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -268,14 +270,14 @@ module Sqrt = struct
     let f2 = baseline_float32_sqrt in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -307,14 +309,14 @@ module Cbrt = struct
     let f2 = baseline_float32_cbrt in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -346,14 +348,14 @@ module Exp = struct
     let f2 = baseline_float32_exp in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -385,14 +387,14 @@ module Expm1 = struct
     let f2 = baseline_float32_expm1 in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -424,14 +426,14 @@ module Log = struct
     let f2 = baseline_float32_log in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -463,14 +465,14 @@ module Log1p = struct
     let f2 = baseline_float32_log1p in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -502,14 +504,14 @@ module Sin = struct
     let f2 = baseline_float32_sin in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -541,14 +543,14 @@ module Cos = struct
     let f2 = baseline_float32_cos in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -580,14 +582,14 @@ module Tan = struct
     let f2 = baseline_float32_tan in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -619,14 +621,14 @@ module Asin = struct
     let f2 = baseline_float32_asin in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -658,14 +660,14 @@ module Acos = struct
     let f2 = baseline_float32_acos in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -697,14 +699,14 @@ module Atan = struct
     let f2 = baseline_float32_atan in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -736,14 +738,14 @@ module Sinh = struct
     let f2 = baseline_float32_sinh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -775,14 +777,14 @@ module Cosh = struct
     let f2 = baseline_float32_cosh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -814,14 +816,14 @@ module Tanh = struct
     let f2 = baseline_float32_tanh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -853,14 +855,14 @@ module Asinh = struct
     let f2 = baseline_float32_asinh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -892,14 +894,14 @@ module Acosh = struct
     let f2 = baseline_float32_acosh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -931,14 +933,14 @@ module Atanh = struct
     let f2 = baseline_float32_atanh in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -970,14 +972,14 @@ module Erf = struct
     let f2 = baseline_float32_erf in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1009,14 +1011,14 @@ module Erfc = struct
     let f2 = baseline_float32_erfc in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1048,14 +1050,14 @@ module Logistic = struct
     let f2 = baseline_float32_logistic in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1087,14 +1089,14 @@ module Relu = struct
     let f2 = baseline_float32_relu in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1126,14 +1128,14 @@ module Softplus = struct
     let f2 = baseline_float32_softplus in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1165,14 +1167,14 @@ module Softsign = struct
     let f2 = baseline_float32_softsign in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1204,14 +1206,14 @@ module Sigmoid = struct
     let f2 = baseline_float32_sigmoid in
     t.y <- step_measure_map_unary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1245,14 +1247,14 @@ module Elt_equal = struct
     let f2 = baseline_float32_elt_equal in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1284,14 +1286,14 @@ module Add = struct
     let f2 = baseline_float32_add in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1323,14 +1325,14 @@ module Mul = struct
     let f2 = baseline_float32_mul in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1362,14 +1364,14 @@ module Div = struct
     let f2 = baseline_float32_div in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1401,14 +1403,14 @@ module Pow = struct
     let f2 = baseline_float32_pow in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1440,14 +1442,14 @@ module Hypot = struct
     let f2 = baseline_float32_hypot in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1479,14 +1481,14 @@ module Atan2 = struct
     let f2 = baseline_float32_atan2 in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1518,14 +1520,14 @@ module Max2 = struct
     let f2 = baseline_float32_max2 in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -1557,14 +1559,14 @@ module Fmod = struct
     let f2 = baseline_float32_fmod in
     t.y <- step_measure_map_binary t.input f1 f2 t.name;
     let x = size2arr t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)

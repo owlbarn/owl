@@ -4,8 +4,9 @@
  *)
 
 open Owl_aeos_c_interface
+open Owl_aeos_utils
 
-let default_threshold = 1000
+let default_threshold = 10000
 
 
 let generate_sizes_fold ?(dims=4) start step n =
@@ -27,27 +28,27 @@ let size2arr_fold a =
 
 
 let eval_fold f sz () =
-  let x = Owl_aeos_utils.ones sz in
-  let h () = f (Owl_aeos_utils.numel x) x |> ignore in
-  Owl_aeos_utils.time h
+  let x = ones sz in
+  let h () = f (numel x) x |> ignore in
+  time h
 
 
 let eval_fold_arr f sz () =
-  let x = Owl_aeos_utils.ones sz in
+  let x = ones sz in
   let h () = f ~axis:0 x |> ignore in
-  Owl_aeos_utils.time h
+  time h
 
 
 let step_measure_fold xs f base_f msg =
   let ef = eval_fold f in
   let eg = eval_fold base_f in
-  Owl_aeos_utils.step_measure xs ef eg msg
+  step_measure xs ef eg msg
 
 
 let step_measure_fold_arr xs f base_f msg =
   let ef = eval_fold_arr f in
   let eg = eval_fold_arr base_f in
-  Owl_aeos_utils.step_measure xs ef eg msg
+  step_measure xs ef eg msg
 
 
 (* Reduction on all elements *)
@@ -76,14 +77,14 @@ module Sum = struct
     let f2 = baseline_float32_sum in
     t.y <- step_measure_fold t.input f1 f2 t.name;
     let x = size2arr_fold t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr_fold t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -115,14 +116,14 @@ module Prod = struct
     let f2 = baseline_float32_prod in
     t.y <- step_measure_fold t.input f1 f2 t.name;
     let x = size2arr_fold t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
   let save_data t =
     let x = size2arr_fold t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
+    let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
-    Owl_aeos_utils.to_csv x t.y y' t.name
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -130,7 +131,6 @@ module Prod = struct
 end
 
 
-(*
 module Cumsum = struct
 
   type t = {
@@ -138,31 +138,31 @@ module Cumsum = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
     name  = "cumsum";
     param = "OWL_OMP_THRESHOLD_CUMSUM";
     value = default_threshold;
-    input = generate_sizes_fold 10 2 10;
-    y = M.zeros 1 1
+    input = generate_sizes_fold 10 2 15;
+    y = [|0.|]
   }
 
   let tune t =
     Owl_aeos_log.info "AEOS: tune %s ..." t.name;
-    let f1 = fun ~axis x -> N.cumsum ~axis x in
+    let f1 = openmp_cumsum in
     let f2 = baseline_cumsum in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
-    let x = size2mat_fold t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let x = size2arr_fold t.input in
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
-  let plot t =
-    let x = size2mat_fold t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+  let save_data t =
+    let x = size2arr_fold t.input in
+    let f, _ = linear_reg x t.y in
+    let y' = Array.map f x in
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -177,31 +177,31 @@ module Cumprod = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
     name  = "cumprod";
     param = "OWL_OMP_THRESHOLD_CUMPROD";
     value = default_threshold;
-    input = generate_sizes_fold 10 2 10;
-    y = M.zeros 1 1
+    input = generate_sizes_fold 10 2 15;
+    y = [|0.|]
   }
 
   let tune t =
     Owl_aeos_log.info "AEOS: tune %s ..." t.name;
-    let f1 = fun ~axis x -> N.cumprod_ ~axis x in
+    let f1 = openmp_cumprod in
     let f2 = baseline_cumprod in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
-    let x = size2mat_fold t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let x = size2arr_fold t.input in
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
-  let plot t =
-    let x = size2mat_fold t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+  let save_data t =
+    let x = size2arr_fold t.input in
+    let f, _ = linear_reg x t.y in
+    let y' = Array.map f x in
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -216,36 +216,37 @@ module Cummax = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
     name  = "cummax";
     param = "OWL_OMP_THRESHOLD_CUMMAX";
     value = default_threshold;
-    input = generate_sizes_fold 10 2 10;
-    y = M.zeros 1 1
+    input = generate_sizes_fold 10 2 15;
+    y = [|0.|]
   }
 
   let tune t =
     Owl_aeos_log.info "AEOS: tune %s ..." t.name;
-    let f1 = fun ~axis x -> N.cummax ~axis x in
+    let f1 = openmp_cummax in
     let f2 = baseline_cummax in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
-    let x = size2mat_fold t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let x = size2arr_fold t.input in
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
-  let plot t =
-    let x = size2mat_fold t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+  let save_data t =
+    let x = size2arr_fold t.input in
+    let f, _ = linear_reg x t.y in
+    let y' = Array.map f x in
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
+
 
 module Diff = struct
 
@@ -254,31 +255,31 @@ module Diff = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
     name  = "diff";
     param = "OWL_OMP_THRESHOLD_DIFF";
     value = default_threshold;
-    input = generate_sizes_fold 10 2 10;
-    y = M.zeros 1 1
+    input = generate_sizes_fold 10 2 15;
+    y = [|0.|]
   }
 
   let tune t =
     Owl_aeos_log.info "AEOS: tune %s ..." t.name;
-    let f1 = fun ~axis x -> N.diff ~axis x in
+    let f1 = openmp_diff in
     let f2 = baseline_diff in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
-    let x = size2mat_fold t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let x = size2arr_fold t.input in
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
-  let plot t =
-    let x = size2mat_fold t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+  let save_data t =
+    let x = size2arr_fold t.input in
+    let f, _ = linear_reg x t.y in
+    let y' = Array.map f x in
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
@@ -293,34 +294,33 @@ module Repeat = struct
     mutable param : string;
     mutable value : int;
     mutable input : int array array;
-    mutable y     : M.mat
+    mutable y     : float array
   }
 
   let make () = {
     name  = "repeat";
     param = "OWL_OMP_THRESHOLD_REPEAT";
     value = default_threshold;
-    input = generate_sizes_fold 10 2 10;
-    y = M.zeros 1 1
+    input = generate_sizes_fold 10 2 15;
+    y = [|0.|]
   }
 
   let tune t =
     Owl_aeos_log.info "AEOS: tune %s ..." t.name;
-    let f1 = fun ~axis x -> N.repeat x [|axis|] in
+    let f1 = openmp_repeat in
     let f2 = baseline_repeat in
     t.y <- step_measure_fold_arr t.input f1 f2 t.name;
-    let x = size2mat_fold t.input in
-    let f, sign = Owl_aeos_utils.linear_reg x t.y in
-    t.value <- Owl_aeos_utils.find_root f sign
+    let x = size2arr_fold t.input in
+    let f, sign = linear_reg x t.y in
+    t.value <- find_root f sign
 
-  let plot t =
-    let x = size2mat_fold t.input in
-    let f, _ = Owl_aeos_utils.linear_reg x t.y in
-    let y' = M.map f x in
-    Owl_aeos_utils.plot x t.y y' t.name
+  let save_data t =
+    let x = size2arr_fold t.input in
+    let f, _ = linear_reg x t.y in
+    let y' = Array.map f x in
+    to_csv x t.y y' t.name
 
   let to_string t =
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
-*)

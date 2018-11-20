@@ -182,30 +182,57 @@ external _baseline_float32_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int
 
 external _baseline_float32_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_diff" "bl_float32_diff_impl"
 
-(*
-let cumulative_op ?(axis=(-1)) _cumop x y =
-  let d = N.num_dims x in
-  let a = Owl_utils.adjust_index axis d in
-  let _stride = N.strides x in
-  let _slicez = N.slice_size x in
-  let m = (N.numel x) / _slicez.(a) in
-  let n = _slicez.(a) - _stride.(a) in
-  let incx_m = _slicez.(a) in
+
+external _baseline_float32_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_cumsum" "bl_float32_cumsum_impl"
+
+external _baseline_float32_cumprod : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_cumprod" "bl_float32_cumprod_impl"
+
+external _baseline_float32_cummax : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_cummax" "bl_float32_cummax_impl"
+
+external _baseline_float32_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_repeat" "bl_float32_repeat_impl"
+
+external _baseline_float32_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "bl_float32_diff" "bl_float32_diff_impl"
+
+external _openmp_float32_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "omp_float32_cumsum" "omp_float32_cumsum_impl"
+
+external _openmp_float32_cumprod : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "omp_float32_cumprod" "omp_float32_cumprod_impl"
+
+external _openmp_float32_cummax : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "omp_float32_cummax" "omp_float32_cummax_impl"
+
+external _openmp_float32_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "omp_float32_repeat" "omp_float32_repeat_impl"
+
+external _openmp_float32_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "omp_float32_diff" "omp_float32_diff_impl"
+
+
+let cumulative_op ?(axis=(-1)) cumop x y =
+  let d = Owl_aeos_utils.num_dims x in
+  let a = Owl_aeos_utils.adjust_index axis d in
+  let stride = Owl_aeos_utils.strides x in
+  let slicez = Owl_aeos_utils.slice_size x in
+  let m = (Owl_aeos_utils.numel x) / slicez.(a) in
+  let n = slicez.(a) - stride.(a) in
+  let incx_m = slicez.(a) in
   let incx_n = 1 in
-  let incy_m = _slicez.(a) in
+  let incy_m = slicez.(a) in
   let incy_n = 1 in
   let ofsx = 0 in
-  let ofsy = _stride.(a) in
-  _cumop m n x ofsx incx_m incx_n y ofsy incy_m incy_n
+  let ofsy = stride.(a) in
+  cumop m n x ofsx incx_m incx_n y ofsy incy_m incy_n
 
 let cumulative_wrapper cumop ~axis x =
-  let x = N.copy x in
-  cumulative_op ~axis cumop x x;
-  x
+  let shp = Owl_aeos_utils.shape x in
+  let y = Owl_aeos_utils.ones shp in
+  cumulative_op ~axis cumop x y;
+  y
 
 let baseline_cumsum  = cumulative_wrapper _baseline_float32_cumsum
 let baseline_cumprod = cumulative_wrapper _baseline_float32_cumprod
 let baseline_cummax  = cumulative_wrapper _baseline_float32_cummax
 let baseline_repeat  = cumulative_wrapper _baseline_float32_repeat
 let baseline_diff    = cumulative_wrapper _baseline_float32_diff
-*)
+
+let openmp_cumsum  = cumulative_wrapper _openmp_float32_cumsum
+let openmp_cumprod = cumulative_wrapper _openmp_float32_cumprod
+let openmp_cummax  = cumulative_wrapper _openmp_float32_cummax
+let openmp_repeat  = cumulative_wrapper _openmp_float32_repeat
+let openmp_diff    = cumulative_wrapper _openmp_float32_diff

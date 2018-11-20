@@ -5,7 +5,10 @@
 
 
 let () =
-  let fname = "owl_aeos_params_generated.h" in
+  let prefix = "owl_aeos_params_generated" in
+  let fname_tune = prefix ^ ".h" in
+  let fname_default = prefix ^ ".h" in
   let enable_openmp = Sys.getenv "ENABLE_OPENMP" in
-  if enable_openmp = "0" then Owl_aeos.tune_default fname
-  else Owl_aeos.tune_all fname
+  if enable_openmp = "0" then (
+    Owl_aeos.tune_default fname_default
+  ) else Owl_aeos.tune_all fname_tune
