@@ -23,9 +23,3 @@ let tune_all fname =
 let tune fname tuners =
   Owl_aeos_engine.eval tuners;
   Owl_aeos_writer.write_partial fname tuners
-
-(* put all existing tunable threasholds in this module *)
-
-(* add support for swap operations *)
-
-(*map : 4, 12, 14, 15, 17, 19, 20, 29 -- not need to cover all. Currently should be fine. *)

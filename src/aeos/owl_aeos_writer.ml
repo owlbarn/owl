@@ -3,16 +3,20 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 open Owl_aeos_tuners
 
 
-let copyright =
+let header =
 "/*
  * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
- */"
+ */
 
+#ifndef OWL_AEOS_PARAMS_H
+#define OWL_AEOS_PARAMS_H
+"
+
+let footer = "\n\n#endif /* OWL_AEOS_PARAMS_H */"
 
 let write_full fname tuners =
   let fun_join_str =
@@ -25,7 +29,7 @@ let write_full fname tuners =
     |> Array.map fun_join_str
     |> fun_join_str
   in
-  let header_file_str = Printf.sprintf "%s%s" copyright define_str in
+  let header_file_str = Printf.sprintf "%s%s%s" header define_str footer in
   Owl_aeos_utils.write_file fname header_file_str
 
 
