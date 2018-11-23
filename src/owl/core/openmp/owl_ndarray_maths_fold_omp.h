@@ -5,9 +5,14 @@
 
 #ifdef OWL_ENABLE_TEMPLATE
 
+#include "owl_core_engine.h"
+#include "owl_omp_parameters.h"
 
 // function to accumulate all the elements in x
 #ifdef FUN5
+
+#undef OWL_OMP_THRESHOLD
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_FUN(FUN5)
 
 CAMLprim value FUN5(value vN, value vX)
 {

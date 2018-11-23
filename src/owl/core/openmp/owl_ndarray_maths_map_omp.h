@@ -9,9 +9,14 @@
 #define INIT // so define an empty string as default.
 #endif
 
+#include "owl_core_engine.h"
+#include "owl_omp_parameters.h"
 
 // function to perform mapping of elements from x to y
 #ifdef FUN4
+
+#undef OWL_OMP_THRESHOLD
+#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_FUN(FUN4)
 
 CAMLprim value FUN4(value vN, value vX, value vY)
 {
@@ -33,7 +38,20 @@ CAMLprim value FUN4(value vN, value vX, value vY)
   stop_x = start_x + N;
   start_y = Y_data;
 
+
+//#if FUN4 == F32SIN
+//#if float32_sin == float32_cos
+/* #if MAPFN(10) == sinf(10)
+  fprintf(stderr, "CNM!\n");
+  int OWL_OMP_THRESHOLD_FUCK = 10;
+#else
+  fprintf(stderr, "cao!\n");
+  int OWL_OMP_THRESHOLD_FUCK = 1000;
+#endif
+  fprintf(stderr, "THRD is %d\n", OWL_OMP_THRESHOLD_FUCK); */
+
   if (N >= OWL_OMP_THRESHOLD) {
+    fprintf(stderr, "shit! omp sin32!\n");
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < N; i++) {
       NUMBER x = *(start_x + i);
@@ -41,6 +59,7 @@ CAMLprim value FUN4(value vN, value vX, value vY)
     }
   }
   else {
+    fprintf(stderr, "fuck you non-omp sin32!\n");
     while (start_x != stop_x) {
       NUMBER x = *start_x;
       *start_y = (MAPFN(x));
@@ -394,7 +413,7 @@ CAMLprim value FUN20_IMPL(
   start_x_m = X_data + ofsx;
   start_y_m = Y_data + ofsy;
 
-  if (N >= OWL_OMP_THRESHOLD) {
+  if (N >= OWL_OMP_THRESHOLD_DEFAULT) {
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < M; i++) {
       start_x_n = start_x_m + i * incx_m;
@@ -820,7 +839,6 @@ CAMLprim value FUN29(value vN, value vA, value vB, value vX, value vY)
 #undef MAPFN2
 #undef MAPFN3
 #undef INIT
-#undef OWL_OMP_THRESHOLD
 #undef FUN4
 #undef FUN12
 #undef FUN13
@@ -844,6 +862,6 @@ CAMLprim value FUN29(value vN, value vA, value vB, value vX, value vY)
 #undef FUN28
 #undef FUN28_IMPL
 #undef FUN29
-
+#undef OWL_OMP_THRESHOLD
 
 #endif /* OWL_ENABLE_TEMPLATE */

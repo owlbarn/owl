@@ -289,9 +289,9 @@ let all = [|
   Fmod      (Fmod.make ());
   Sum       (Sum.make ());
   Prod      (Prod.make ());
-  Cumsum    (Cumsum.make ());
+  (* Cumsum    (Cumsum.make ());
   Cumprod   (Cumprod.make ());
   Cummax    (Cummax.make ());
   Diff      (Diff.make ());
-  Repeat    (Repeat.make ());
+  Repeat    (Repeat.make ()); *)
 |]
