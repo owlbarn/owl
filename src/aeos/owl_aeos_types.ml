@@ -3,7 +3,6 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Bigarray
 
-type tunner =
-  | Sin of Owl_aeos_tuner_sin.t
-  | Cos of Owl_aeos_tuner_cos.t
+type ('a, 'b) owl_arr = ('a, 'b, c_layout) Genarray.t

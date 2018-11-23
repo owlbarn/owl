@@ -12,7 +12,7 @@ void FUNCTION (c, swap_rows) (TYPE *x, int m, int n, int i, int j) {
     TYPE * src = x + n * i;
     TYPE * dst = x + n * j;
 
-    if (n >= OWL_OPENMP_THRESHOLD) {
+    if (n >= OWL_OMP_THRESHOLD_DEFAULT) {
       #pragma omp parallel for schedule(static)
       for (int k = 0; k < n; k++) {
         TYPE t = *(src + k);
@@ -53,7 +53,7 @@ void FUNCTION (c, swap_cols) (TYPE *x, int m, int n, int i, int j) {
     TYPE * src = x + i;
     TYPE * dst = x + j;
 
-    if (m >= OWL_OPENMP_THRESHOLD) {
+    if (m >= OWL_OMP_THRESHOLD_DEFAULT) {
       #pragma omp parallel for schedule(static)
       for (int k = 0; k < m; k++) {
         int base = k * n;
@@ -96,7 +96,7 @@ void FUNCTION (c, transpose) (TYPE *x, TYPE *y, int m, int n) {
   int ofsx = 0;
   int ofsy = 0;
 
-  if (m >= OWL_OPENMP_THRESHOLD / 100) {
+  if (m >= OWL_OMP_THRESHOLD_DEFAULT / 100) {
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < m; i++) {
       for (int j = 0; j < n; j++) {
@@ -136,7 +136,7 @@ void FUNCTION (c, ctranspose) (TYPE *x, TYPE *y, int m, int n) {
   int ofsx = 0;
   int ofsy = 0;
 
-  if (m >= OWL_OPENMP_THRESHOLD / 100) {
+  if (m >= OWL_OMP_THRESHOLD_DEFAULT / 100) {
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < m; i++) {
       for (int j = 0; j < n; j++) {

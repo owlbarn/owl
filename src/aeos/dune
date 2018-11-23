@@ -1,0 +1,19 @@
+(library
+  (name owl_aeos)
+  (public_name owl-aeos)
+  (wrapped false)
+  (flags (:standard -safe-string))
+  (modules (:standard \ owl_aeos_gen))
+  (c_names
+    owl_aeos_tuner_map_stub
+    owl_aeos_tuner_fold_stub
+  )
+  (libraries str unix bigarray)
+  (c_flags (-g -O3 -Ofast -march=native -mfpmath=sse -funroll-loops -ffast-math -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing -Wno-logical-op-parentheses -Xpreprocessor -fopenmp))
+  (c_library_flags (-lm -lomp -framework Accelerate))
+)
+
+(executable
+ (name owl_aeos_gen)
+ (modules owl_aeos_gen)
+ (libraries owl-aeos))
