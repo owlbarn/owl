@@ -5,6 +5,7 @@
 
 #ifdef OWL_ENABLE_TEMPLATE
 
+
 // function to accumulate all the elements in x
 #ifdef FUN5
 

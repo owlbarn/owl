@@ -10,12 +10,10 @@
   )
   (libraries str unix bigarray)
   (c_flags (-g -O3 -Ofast -march=native -mfpmath=sse -funroll-loops -ffast-math -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing -Wno-logical-op-parentheses -Xpreprocessor -fopenmp))
-  (c_library_flags (-lopenblas -lm -lomp -L/usr/local/opt/openblas/lib -framework Accelerate))
+  (c_library_flags (-lm -lomp -framework Accelerate))
 )
 
 (executable
  (name owl_aeos_gen)
  (modules owl_aeos_gen)
  (libraries owl-aeos))
-
-; TODO: make c_flags and c_library_flags more flexible ?

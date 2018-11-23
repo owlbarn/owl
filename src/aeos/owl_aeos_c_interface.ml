@@ -165,15 +165,6 @@ external openmp_float32_max2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('
 
 external openmp_float32_fmod : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "omp_float32_fmod"
 
-(* Fold *)
-
-external baseline_float32_sum : int -> ('a, 'b) owl_arr -> 'a = "bl_float32_sum"
-
-external baseline_float32_prod : int -> ('a, 'b) owl_arr -> 'a = "bl_float32_prod"
-
-external openmp_float32_sum : int -> ('a, 'b) owl_arr -> 'a = "omp_float32_sum"
-
-external openmp_float32_prod : int -> ('a, 'b) owl_arr -> 'a = "omp_float32_prod"
 
 (* Accumulate *)
 

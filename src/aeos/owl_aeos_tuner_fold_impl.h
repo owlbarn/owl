@@ -3,60 +3,6 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-#ifdef FUN5
-
-CAMLprim value BASE_FUN5(value vN, value vX)
-{
-  CAMLparam2(vN, vX);
-  int N = Long_val(vN);
-
-  struct caml_ba_array *X = Caml_ba_array_val(vX);
-  NUMBER *X_data = (NUMBER *) X->data;
-
-  NUMBER *start_x, *stop_x;
-  INIT;
-
-  caml_release_runtime_system();  /* Allow other threads */
-
-  start_x = X_data;
-  for (int i = 0; i < N; i++) {
-    ACCFN(r, start_x[i]);
-  }
-
-  caml_acquire_runtime_system();  /* Disallow other threads */
-
-  CAMLreturn(COPYNUM(r));
-}
-
-
-CAMLprim value OMP_FUN5(value vN, value vX)
-{
-  CAMLparam2(vN, vX);
-  int N = Long_val(vN);
-
-  struct caml_ba_array *X = Caml_ba_array_val(vX);
-  NUMBER *X_data = (NUMBER *) X->data;
-
-  NUMBER *start_x, *stop_x;
-  INIT;
-
-  caml_release_runtime_system();  /* Allow other threads */
-  start_x = X_data;
-
-#ifdef OMP_OP
-  #pragma omp parallel for reduction(OMP_OP : r)
-#endif
-  for (int i = 0; i < N; i++) {
-    ACCFN(r, start_x[i]);
-  }
-
-  caml_acquire_runtime_system();  /* Disallow other threads */
-
-  CAMLreturn(COPYNUM(r));
-}
-
-#endif /* FUN5 */
-
 
 #ifdef BASE_FUN20
 
@@ -189,12 +135,8 @@ CAMLprim value OMP_FUN20(value *argv, int __unused_argn) {
 #undef NUMBER
 #undef MAPFN
 #undef COPYNUM
-#undef OMP_OP
-#undef FUN5
 #undef FUN20
-#undef BASE_FUN5
 #undef BASE_FUN20
 #undef BASE_FUN20_IMPL
-#undef OMP_FUN5
 #undef OMP_FUN20
 #undef OMP_FUN20_IMPL

@@ -6,29 +6,6 @@
 #include "owl_aeos_macros.h"
 
 
-/* FUN5 */
-
-#define FUN5
-#define BASE_FUN5 bl_float32_sum
-#define OMP_FUN5 omp_float32_sum
-#define OMP_OP +
-#define INIT float r = 0.
-#define NUMBER float
-#define ACCFN(A,X) (A += X)
-#define COPYNUM(X) (caml_copy_double(X))
-#include "owl_aeos_tuner_fold_impl.h"
-
-#define FUN5
-#define BASE_FUN5 bl_float32_prod
-#define OMP_FUN5 omp_float32_prod
-#define OMP_OP *
-#define INIT float r = 0.
-#define NUMBER float
-#define ACCFN(A,X) (A *= X)
-#define COPYNUM(X) (caml_copy_double(X))
-#include "owl_aeos_tuner_fold_impl.h"
-
-
 /* FUN20 */
 
 #define FUN20
@@ -51,7 +28,6 @@
 #define MAPFN(X,Y) *Y = *X * *Y
 #include "owl_aeos_tuner_fold_impl.h"
 
-// share with cummin
 #define FUN20
 #define BASE_FUN20 bl_float32_cummax
 #define BASE_FUN20_IMPL bl_float32_cummax_impl

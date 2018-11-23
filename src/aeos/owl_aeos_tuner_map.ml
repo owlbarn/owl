@@ -1572,6 +1572,3 @@ module Fmod = struct
     Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
 end
-
-
-(* Operation to map x to y with explicit offset, step size, number of ops *)

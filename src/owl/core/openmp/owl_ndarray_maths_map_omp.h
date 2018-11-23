@@ -39,7 +39,6 @@ CAMLprim value FUN4(value vN, value vX, value vY)
   start_y = Y_data;
 
   if (N >= OWL_OMP_THRESHOLD) {
-    fprintf(stderr, "shit! omp sin32!\n");
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < N; i++) {
       NUMBER x = *(start_x + i);
@@ -47,7 +46,6 @@ CAMLprim value FUN4(value vN, value vX, value vY)
     }
   }
   else {
-    fprintf(stderr, "fuck you non-omp sin32!\n");
     while (start_x != stop_x) {
       NUMBER x = *start_x;
       *start_y = (MAPFN(x));
