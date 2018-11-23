@@ -2222,7 +2222,6 @@
 #define FUN5 float32_sum
 #define INIT float r = 0.
 #define NUMBER float
-#define OMP_OP +
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (caml_copy_double(X))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2230,7 +2229,6 @@
 #define FUN5 float64_sum
 #define INIT double r = 0.
 #define NUMBER double
-#define OMP_OP +
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (caml_copy_double(X))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2252,7 +2250,6 @@
 #define FUN5 int8_sum
 #define INIT int r = 0
 #define NUMBER int8_t
-#define OMP_OP +
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2260,7 +2257,6 @@
 #define FUN5 uint8_sum
 #define INIT int r = 0
 #define NUMBER uint8_t
-#define OMP_OP +
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2268,7 +2264,6 @@
 #define FUN5 int16_sum
 #define INIT int r = 0
 #define NUMBER int16_t
-#define OMP_OP +
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2276,7 +2271,6 @@
 #define FUN5 uint16_sum
 #define INIT int r = 0
 #define NUMBER uint16_t
-#define OMP_OP +
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2284,7 +2278,6 @@
 #define FUN5 int32_sum
 #define INIT int r = 0
 #define NUMBER int32_t
-#define OMP_OP +
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (caml_copy_int32(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2292,7 +2285,6 @@
 #define FUN5 int64_sum
 #define INIT int r = 0
 #define NUMBER int64_t
-#define OMP_OP +
 #define ACCFN(A,X) (A += X)
 #define COPYNUM(X) (caml_copy_int64(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2436,7 +2428,6 @@
 #define FUN5 float32_prod
 #define INIT float r = 1.
 #define NUMBER float
-#define OMP_OP *
 #define ACCFN(A,X) (A = A * X)
 #define COPYNUM(X) (caml_copy_double(X))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2444,7 +2435,6 @@
 #define FUN5 float64_prod
 #define INIT double r = 1.
 #define NUMBER double
-#define OMP_OP *
 #define ACCFN(A,X) (A = A * X)
 #define COPYNUM(X) (caml_copy_double(X))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2466,7 +2456,6 @@
 #define FUN5 int8_prod
 #define INIT int r = 0
 #define NUMBER int8_t
-#define OMP_OP *
 #define ACCFN(A,X) (A *= X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2474,7 +2463,6 @@
 #define FUN5 uint8_prod
 #define INIT int r = 0
 #define NUMBER uint8_t
-#define OMP_OP *
 #define ACCFN(A,X) (A *= X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2482,7 +2470,6 @@
 #define FUN5 int16_prod
 #define INIT int r = 0
 #define NUMBER int16_t
-#define OMP_OP *
 #define ACCFN(A,X) (A *= X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2490,7 +2477,6 @@
 #define FUN5 uint16_prod
 #define INIT int r = 0
 #define NUMBER uint16_t
-#define OMP_OP *
 #define ACCFN(A,X) (A *= X)
 #define COPYNUM(X) (Val_int(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2498,7 +2484,6 @@
 #define FUN5 int32_prod
 #define INIT int r = 0
 #define NUMBER int32_t
-#define OMP_OP *
 #define ACCFN(A,X) (A *= X)
 #define COPYNUM(X) (caml_copy_int32(r))
 #include OWL_NDARRAY_MATHS_FOLD
@@ -2506,7 +2491,6 @@
 #define FUN5 int64_prod
 #define INIT int r = 0
 #define NUMBER int64_t
-#define OMP_OP *
 #define ACCFN(A,X) (A *= X)
 #define COPYNUM(X) (caml_copy_int64(r))
 #include OWL_NDARRAY_MATHS_FOLD

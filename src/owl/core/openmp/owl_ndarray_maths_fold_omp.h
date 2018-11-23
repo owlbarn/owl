@@ -5,14 +5,8 @@
 
 #ifdef OWL_ENABLE_TEMPLATE
 
-#include "owl_core_engine.h"
-#include "owl_omp_parameters.h"
-
 // function to accumulate all the elements in x
 #ifdef FUN5
-
-#undef OWL_OMP_THRESHOLD
-#define OWL_OMP_THRESHOLD OWL_OMP_THRESHOLD_FUN(FUN5)
 
 CAMLprim value FUN5(value vN, value vX)
 {
@@ -28,24 +22,12 @@ CAMLprim value FUN5(value vN, value vX)
   caml_release_runtime_system();  /* Allow other threads */
 
   start_x = X_data;
+  stop_x = start_x + N;
 
-#ifdef OMP_OP
-  if (N >= OWL_OMP_THRESHOLD) {
-    #pragma omp parallel for reduction(OMP_OP : r)
-    for (int i = 0; i < N; i++) {
-      ACCFN(r, start_x[i]);
-    }
-  }
-  else {
-    for (int i = 0; i < N; i++) {
-      ACCFN(r, start_x[i]);
-    }
-  }
-#else
-  for (int i = 0; i < N; i++) {
-    ACCFN(r, start_x[i]);
-  }
-#endif
+  while (start_x != stop_x) {
+    ACCFN(r, (*start_x));
+    start_x += 1;
+  };
 
   caml_acquire_runtime_system();  /* Disallow other threads */
 
@@ -397,8 +379,6 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 #undef BFCHKFN
 #undef AFCHKFN
 #undef COPYNUM
-#undef OMP_OP
-#undef OWL_OMP_THRESHOLD
 #undef ACCFN
 #undef INIT
 #undef FUN5

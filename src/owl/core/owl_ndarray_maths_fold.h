@@ -390,7 +390,6 @@ CAMLprim value FUN30(value vX, value vY, value vN, value vXshape, value vFrd)
 #undef FUN23
 #undef FUN26
 #undef FUN30
-#undef OMP_OP
 
 
 #endif /* OWL_ENABLE_TEMPLATE */

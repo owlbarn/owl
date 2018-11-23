@@ -38,18 +38,6 @@ CAMLprim value FUN4(value vN, value vX, value vY)
   stop_x = start_x + N;
   start_y = Y_data;
 
-
-//#if FUN4 == F32SIN
-//#if float32_sin == float32_cos
-/* #if MAPFN(10) == sinf(10)
-  fprintf(stderr, "CNM!\n");
-  int OWL_OMP_THRESHOLD_FUCK = 10;
-#else
-  fprintf(stderr, "cao!\n");
-  int OWL_OMP_THRESHOLD_FUCK = 1000;
-#endif
-  fprintf(stderr, "THRD is %d\n", OWL_OMP_THRESHOLD_FUCK); */
-
   if (N >= OWL_OMP_THRESHOLD) {
     fprintf(stderr, "shit! omp sin32!\n");
     #pragma omp parallel for schedule(static)
@@ -863,5 +851,6 @@ CAMLprim value FUN29(value vN, value vA, value vB, value vX, value vY)
 #undef FUN28_IMPL
 #undef FUN29
 #undef OWL_OMP_THRESHOLD
+
 
 #endif /* OWL_ENABLE_TEMPLATE */

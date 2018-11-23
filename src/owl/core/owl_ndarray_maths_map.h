@@ -751,7 +751,6 @@ CAMLprim value FUN29(value vN, value vA, value vB, value vX, value vY)
 #undef MAPFN2
 #undef MAPFN3
 #undef INIT
-#undef OWL_OMP_THRESHOLD
 #undef FUN4
 #undef FUN12
 #undef FUN13
