@@ -83,10 +83,12 @@ let get_gcc_path _c =
 
 
 let get_openblas_path _c =
-  let p0 = "/usr/local/lib/openblas/lib" in
+  let p0 = "/usr/local/opt/openblas/lib" in
   let p1 = "/opt/OpenBLAS/lib/" in
+  let p2 = "/usr/local/lib/openblas/lib" in
   if Sys.file_exists p0 then ["-L" ^ p0]
   else if Sys.file_exists p1 then ["-L" ^ p1]
+  else if Sys.file_exists p2 then ["-L" ^ p2]
   else []
 
 
