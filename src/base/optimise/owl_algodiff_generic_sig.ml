@@ -81,7 +81,7 @@ module type Sig = sig
     val inv : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-    val qr : t -> t * t
+    val qr : t -> t 
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val neg : t -> t
