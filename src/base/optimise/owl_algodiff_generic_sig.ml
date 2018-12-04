@@ -20,6 +20,7 @@ module type Sig = sig
   type t =
     | F   of A.elt                                  (* constructor of float numbers *)
     | Arr of A.arr                                  (* constructor of ndarrays *)
+    | Pair of t * t
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
   (** Abstract number type *)
