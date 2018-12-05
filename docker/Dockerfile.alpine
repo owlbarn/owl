@@ -1,10 +1,10 @@
 ############################################################
 # Dockerfile to build Owl docker image
-# Based on ryanrhymes/owl master branch
+# Based on owlbarn/owl master branch
 # By Liang Wang <liang.wang@cl.cam.ac.uk>
 ############################################################
 
-FROM ocaml/opam2:alpine-3.6-ocaml-4.06.0
+FROM ocaml/opam2:alpine-3.8
 USER opam
 
 
@@ -12,7 +12,8 @@ USER opam
 
 RUN sudo apk update
 RUN sudo apk add m4 wget unzip aspcud openblas-dev
-RUN opam install -y oasis dune ocaml-compiler-libs ctypes alcotest utop base stdio configurator
+RUN opam update && opam switch create 4.06.0 && eval $(opam config env)
+RUN opam install -y oasis dune ocaml-compiler-libs ctypes alcotest utop base stdio configurator sexplib
 
 
 #################### SET UP ENV VARS #######################
@@ -37,17 +38,20 @@ RUN sed -i -- 's/-Wno-extern-c-compat -Wno-c++11-long-long -Wno-invalid-partial-
     && sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile \
     && sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis
 
-RUN cd $EIGENPATH && sudo make oasis && sudo make && sudo make install && sudo make clean
+RUN cd $EIGENPATH && make oasis && make && make install
+RUN sudo cp $EIGENPATH/_build/include/libeigen.a /usr/local/lib
 
 
 ####################   INSTALL OWL  #######################
 
 ENV OWLPATH /home/opam/owl
-RUN cd /home/opam && git clone https://github.com/ryanrhymes/owl.git
+RUN cd /home/opam && git clone https://github.com/owlbarn/owl.git
 
 RUN rm -f $OWLPATH/src/owl/misc/owl_plot.* \
-    && sed -i '/plplot/d' $OWLPATH/src/owl/jbuild \
+    && sed -i '/plplot/d' $OWLPATH/src/owl/dune \
     && sed -i '/module Plot = Owl_plot/d' $OWLPATH/src/owl/owl.ml
+
+RUN sed -i -- 's/\"-llapacke" :://g' $OWLPATH/src/owl/config/configure.ml # FIXME: hacking
 
 RUN cd $OWLPATH && make && make install
 
