@@ -903,7 +903,7 @@ module Make
         | _     -> error_uniop "qr" a
       in
       let fd a = qr a in
-      let df cp _ap at = (* forward mode *) failwith "todo: calvin" in
+      let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
       let r a = QR_D a in
       op_d_d a ff fd df r 
 
@@ -1701,12 +1701,11 @@ module Make
                   let qbar, rbar = match !aa with
                     | Pair (qbar, rbar) -> qbar, rbar 
                     | _ -> error_uniop "qr" a in
-                  let rinv = inv r in
-                  let rinvt = transpose rinv in
                   let qt = transpose q and qbart = transpose qbar in
                   let rt = transpose r and rbart = transpose rbar in
+                  let rinvt = r *@ (inv (rt *@ r)) in (* transpose of the left moore-penrose pseudoinverse *)
                   let m = row_num q in 
-                  let pl = Array.init m (fun i -> Array.init m (fun j -> if i <= j then (pack_flt 1.) else (pack_flt 0.) ) |> of_rows) |> of_rows in
+                  let pl = Array.init m (fun i -> Array.init m (fun j -> if i > j then (pack_flt 1.) else (pack_flt 0.) ) |> of_rows) |> of_rows in
                   let middle =  ( (r*@rbart) - (rbar*@rt) + (qt*@qbar) - (qbart*@q) ) * pl in
 
                   let abar = (q*@(rbar + (middle*@rinvt))) + ((qbar - (q*@(qt*@qbar)))*@rinvt) in
