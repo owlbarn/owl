@@ -1,10 +1,10 @@
 ############################################################
 # Dockerfile to build Owl docker image
-# Based on ryanrhymes/owl master branch
+# Based on owlbarn/owl master branch
 # By Liang Wang <liang.wang@cl.cam.ac.uk>
 ############################################################
 
-FROM ocaml/opam2:opensuse-42.3-ocaml-4.06.0
+FROM ocaml/opam2:opensuse-42.3
 USER opam
 
 
@@ -14,8 +14,8 @@ RUN sudo zypper -n update
 RUN sudo zypper -n in git wget unzip m4 pkg-config gcc-fortran
 RUN sudo sudo zypper ref && sudo zypper -n in openblas-devel && sudo update-alternatives --config libblas.so.3
 
-RUN opam update && opam switch 4.06.0 && eval $(opam config env)
-RUN opam install -y oasis dune ocaml-compiler-libs ctypes utop eigen base stdio configurator alcotest
+RUN opam update && opam switch create 4.06.0 && eval $(opam config env)
+RUN opam install -y oasis dune ocaml-compiler-libs ctypes utop eigen base stdio configurator alcotest sexplib
 
 
 #################### SET UP ENV VARS #######################
@@ -27,13 +27,15 @@ ENV CAML_LD_LIBRARY_PATH /home/opam/.opam/4.06.0/lib/stublibs
 ################## INSTALL OWL LIBRARY #####################
 
 ENV OWLPATH /home/opam/owl
-RUN cd /home/opam && git clone https://github.com/ryanrhymes/owl.git
+RUN cd /home/opam && git clone https://github.com/owlbarn/owl.git
 
 RUN rm -f $OWLPATH/src/owl/misc/owl_plot.* \
-    && sed -i '/plplot/d' $OWLPATH/src/owl/jbuild \
+    && sed -i '/plplot/d' $OWLPATH/src/owl/dune \
     && sed -i '/module Plot = Owl_plot/d' $OWLPATH/src/owl/owl.ml
 
-RUN sed -i -- 's:/usr/local/opt/openblas/lib:/usr/lib/x86_64-linux-gnu/:g' $OWLPATH/src/owl/config/configure.ml  # FIXME: hacking
+RUN sed -i -- 's:/usr/local/opt/openblas/lib:/usr/lib/x86_64-linux-gnu/:g' $OWLPATH/src/owl/config/configure.ml \
+    && sed -i -- 's/\"-llapacke\" :://g' $OWLPATH/src/owl/config/configure.ml # FIXME: hacking
+
 RUN make -C $OWLPATH && make -C $OWLPATH install && make -C $OWLPATH clean
 
 

@@ -9,8 +9,16 @@
     owl_aeos_tuner_fold_stub
   )
   (libraries str unix bigarray)
-  (c_flags (-g -O3 -Ofast -march=native -mfpmath=sse -funroll-loops -ffast-math -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing -Wno-logical-op-parentheses -Xpreprocessor -fopenmp))
-  (c_library_flags (-lm -lomp -framework Accelerate))
+  (c_flags (:include aeos_c_flags.sexp))
+  (c_library_flags (:include aeos_c_library_flags.sexp))
+)
+
+(rule
+ (targets aeos_c_flags.sexp
+          aeos_c_library_flags.sexp
+          )
+  (deps   (:deps config/configure.exe))
+  (action (run %{deps}))
 )
 
 (executable
