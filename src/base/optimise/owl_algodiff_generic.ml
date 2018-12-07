@@ -99,6 +99,8 @@ module Make
     | Relu_D         of t
     | Inv_D          of t
     | QR_D           of t
+    | Diag_D         of int * t
+    | Trace_D        of t
     | Add_Row_D_D    of t * t * int
     | Add_Row_D_C    of t * t * int
     | Add_Row_C_D    of t * t * int
@@ -960,16 +962,26 @@ module Make
         DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai)
       | _                  -> error_uniop "of_rows a.(0)" a.(0)
 
-   and diag ?(k=0) a = 
-       let ff = function
+    and diag ?(k=0) a = 
+      let ff = function
         | Arr a    -> Arr A.(diag ~k a |> copy)
         | _        -> error_uniop "diag" a
       in
       let fd a = diag ~k a in
       let df _cp _ap at = diag ~k at in
-      let r a = Relu_D a in
+      let r a = Diag_D (k, a) in
       op_d_d a ff fd df r
-       
+
+    and trace a = 
+      let ff = function
+        | Arr a     -> F A.(trace a)
+        | _         -> error_uniop "trace" a 
+      in
+      let fd a = trace a in
+      let df _cp _ap at = trace at in
+      let r a = Trace_D a in
+      op_d_d a ff fd df r
+
     (* NOTE: these fucntions are for neural network. There are many restrictions
        at the moment. E.g. they do not support higher-order derivatives, and some
        do not support forward mode, so use them when you know what you are doing.
@@ -1551,6 +1563,8 @@ module Make
                 | Relu_D a                   -> reset (a :: t)
                 | Inv_D a                    -> reset (a :: t)
                 | QR_D a                     -> reset (a :: t)
+                | Diag_D (_, a)              -> reset (a :: t)
+                | Trace_D a                  -> reset (a :: t)
                 | Add_Row_D_D (a, b, _)      -> reset (a :: b :: t)
                 | Add_Row_D_C (a, _, _)      -> reset (a :: t)
                 | Add_Row_C_D (_, b, _)      -> reset (b :: t)
@@ -1720,6 +1734,21 @@ module Make
 
                   let abar = (q*@(rbar + (middle*@rinvt))) + ((qbar - (q*@(qt*@qbar)))*@rinvt) in
                   push ((abar, a) :: t)
+                | Diag_D (k, a)                -> 
+                  let m = col_num a in 
+                  let l = Pervasives.(m - k) in
+                  let rec accu i a_ = 
+                    if i < l then accu (succ i) (set_item a_ i Pervasives.(k + i) (get_item !aa 0 i)) 
+                    else a_ in
+                  let abar = accu 0 (zero a) in 
+                  push ((abar, a) :: t)
+                | Trace_D a                    -> 
+                  let m = col_num a in 
+                  let rec accu i a_ = 
+                    if i < m then accu (succ i) (set_item a_ i i !aa )
+                    else a_ in
+                  let abar = accu 0 a in
+                  push ((abar,a) :: t)
                 | Add_Row_D_D (a, b, i)      -> push ((!aa, a) :: (get_row !aa i, b) :: t)
                 | Add_Row_D_C (a, _b, _i)    -> push ((!aa, a) :: t)
                 | Add_Row_C_D (_a, b, i)     -> push ((get_row !aa i, b) :: t)
@@ -2082,6 +2111,8 @@ module Make
                 | Relu_D a                     -> "Relu_D", [ a ]
                 | Inv_D a                      -> "Inv_D", [ a ]
                 | QR_D a                       -> "QR_D", [ a ]
+                | Diag_D (_, a)                -> "Diag_D", [ a ] 
+                | Trace_D a                    -> "Trace_D", [ a ] 
                 | Add_Row_D_D (a, b, _i)       -> "Add_Row_D_D", [a; b]
                 | Add_Row_D_C (a, b, _i)       -> "Add_Row_D_C", [a; b]
                 | Add_Row_C_D (a, b, _i)       -> "Add_Row_C_D", [a; b]

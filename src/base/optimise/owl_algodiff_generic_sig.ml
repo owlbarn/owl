@@ -265,6 +265,10 @@ module type Sig = sig
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val diag : ?k:int -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val trace : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
   end
 
