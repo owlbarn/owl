@@ -264,6 +264,8 @@ module type Sig = sig
     val set_slice : int list list -> t -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val diag : ?k:int -> t -> t
+
   end
 
 

@@ -305,6 +305,8 @@ module type Sig = sig
 
   val qr : arr -> arr * arr
 
+  val diag : ?k:int -> arr -> arr
+
   val trace : arr -> elt
 
   val transpose : ?axis:int array -> arr -> arr

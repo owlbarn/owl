@@ -960,6 +960,16 @@ module Make
         DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai)
       | _                  -> error_uniop "of_rows a.(0)" a.(0)
 
+   and diag ?(k=0) a = 
+       let ff = function
+        | Arr a    -> Arr A.(diag ~k a |> copy)
+        | _        -> error_uniop "diag" a
+      in
+      let fd a = diag ~k a in
+      let df _cp _ap at = diag ~k at in
+      let r a = Relu_D a in
+      op_d_d a ff fd df r
+       
     (* NOTE: these fucntions are for neural network. There are many restrictions
        at the moment. E.g. they do not support higher-order derivatives, and some
        do not support forward mode, so use them when you know what you are doing.
