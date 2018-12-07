@@ -100,6 +100,8 @@ module Make
     | Inv_D          of t
     | QR_D           of t
     | Diag_D         of int * t
+    | Tril_D         of int * t
+    | Triu_D         of int * t
     | Trace_D        of t
     | Add_Row_D_D    of t * t * int
     | Add_Row_D_C    of t * t * int
@@ -982,6 +984,26 @@ module Make
       let r a = Trace_D a in
       op_d_d a ff fd df r
 
+    and triu ?(k=0) a = 
+      let ff = function
+        | Arr a    -> Arr A.(triu ~k a |> copy)
+        | _        -> error_uniop "triu" a
+      in
+      let fd a = triu ~k a in
+      let df _cp _ap at = triu ~k at in
+      let r a = Triu_D (k, a) in
+      op_d_d a ff fd df r
+
+    and tril ?(k=0) a = 
+      let ff = function
+        | Arr a    -> Arr A.(tril ~k a |> copy)
+        | _        -> error_uniop "tril" a
+      in
+      let fd a = tril ~k a in
+      let df _cp _ap _at = tril ~k a in
+      let r a = Tril_D (k, a) in
+      op_d_d a ff fd df r
+
     (* NOTE: these fucntions are for neural network. There are many restrictions
        at the moment. E.g. they do not support higher-order derivatives, and some
        do not support forward mode, so use them when you know what you are doing.
@@ -1564,6 +1586,8 @@ module Make
                 | Inv_D a                    -> reset (a :: t)
                 | QR_D a                     -> reset (a :: t)
                 | Diag_D (_, a)              -> reset (a :: t)
+                | Triu_D (_, a)              -> reset (a :: t)
+                | Tril_D (_, a)              -> reset (a :: t)
                 | Trace_D a                  -> reset (a :: t)
                 | Add_Row_D_D (a, b, _)      -> reset (a :: b :: t)
                 | Add_Row_D_C (a, _, _)      -> reset (a :: t)
@@ -1734,7 +1758,7 @@ module Make
 
                   let abar = (q*@(rbar + (middle*@rinvt))) + ((qbar - (q*@(qt*@qbar)))*@rinvt) in
                   push ((abar, a) :: t)
-                | Diag_D (k, a)                -> 
+                | Diag_D (k, a) -> 
                   let m = col_num a in 
                   let l = Pervasives.(m - k) in
                   let rec accu i a_ = 
@@ -1742,7 +1766,9 @@ module Make
                     else a_ in
                   let abar = accu 0 (zero a) in 
                   push ((abar, a) :: t)
-                | Trace_D a                    -> 
+                | Triu_D (k, a)              -> push ((tril ~k:(pred k) !aa, a) :: t)
+                | Tril_D (k, a)              -> push ((triu ~k:(succ k) !aa, a) :: t)
+                | Trace_D a                  -> 
                   let m = col_num a in 
                   let rec accu i a_ = 
                     if i < m then accu (succ i) (set_item a_ i i !aa )
@@ -2112,6 +2138,8 @@ module Make
                 | Inv_D a                      -> "Inv_D", [ a ]
                 | QR_D a                       -> "QR_D", [ a ]
                 | Diag_D (_, a)                -> "Diag_D", [ a ] 
+                | Tril_D (_, a)                -> "Tril_D", [ a ] 
+                | Triu_D (_, a)                -> "Triu_D", [ a ] 
                 | Trace_D a                    -> "Trace_D", [ a ] 
                 | Add_Row_D_D (a, b, _i)       -> "Add_Row_D_D", [a; b]
                 | Add_Row_D_C (a, b, _i)       -> "Add_Row_D_C", [a; b]

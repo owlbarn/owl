@@ -500,6 +500,12 @@ as an identity node. For information about the optional parameters, refer to the
   val diag: ?k:int -> arr -> arr
   (** TODO *)
 
+  val triu: ?k:int -> arr -> arr
+  (** TODO *)
+
+  val tril: ?k:int -> arr -> arr
+  (** TODO *)
+
   val trace : arr -> elt
   (** TODO *)
 

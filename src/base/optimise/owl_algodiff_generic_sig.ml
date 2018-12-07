@@ -270,6 +270,12 @@ module type Sig = sig
     val trace : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val triu: ?k:int -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val tril: ?k:int -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
   end
 
 

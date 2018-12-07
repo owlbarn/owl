@@ -465,6 +465,10 @@ module Make
   
   let diag ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
 
+  let tril?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
+
+  let triu?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
+
   let trace x = make_then_connect Trace [|arr_to_node x|] |> node_to_elt
 
   let dot x y =
