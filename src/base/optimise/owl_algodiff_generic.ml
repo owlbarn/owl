@@ -1747,7 +1747,7 @@ module Make
                   let rec accu i a_ = 
                     if i < m then accu (succ i) (set_item a_ i i !aa )
                     else a_ in
-                  let abar = accu 0 a in
+                  let abar = accu 0 (zero a) in
                   push ((abar,a) :: t)
                 | Add_Row_D_D (a, b, i)      -> push ((!aa, a) :: (get_row !aa i, b) :: t)
                 | Add_Row_D_C (a, _b, _i)    -> push ((!aa, a) :: t)
