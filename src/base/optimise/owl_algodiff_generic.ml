@@ -974,9 +974,9 @@ module Make
         | _                  -> error_binop "lyapunov" a q
       in
       let fd a q = lyapunov a q in
-      let df_da _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
-      let df_dq _cp _qp _qt = raise Owl_exception.NOT_IMPLEMENTED in
-      let df_daq _cp _ap _at _qp _qt = raise Owl_exception.NOT_IMPLEMENTED in
+      let df_da cp ap at = lyapunov ap (neg ( (at *@ cp)  + (cp *@ (transpose at)) ) ) in
+      let df_dq _cp _qp qt = lyapunov a (neg qt)  in
+      let df_daq cp ap at _qp qt = (lyapunov ap (neg ( (at *@ cp)  + (cp *@ (transpose at)) ) )) + (lyapunov ap (neg qt)) in
       let r_d_d a q = Lyapunov_D_D (a, q) in
       let r_d_c a q = Lyapunov_D_C (a, q) in
       let r_c_d a q = Lyapunov_C_D (a, q) in
