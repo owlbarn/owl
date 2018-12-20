@@ -719,6 +719,18 @@ val inv : (float, 'b) t -> (float, 'b) t
 val qr : (float, 'b) t -> (float, 'b) t * (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
+val lyapunov : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val diag: ?k:int -> (float, 'b) t -> (float, 'b) t 
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val tril: ?k:int -> (float, 'b) t -> (float, 'b) t 
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val triu: ?k:int -> (float, 'b) t -> (float, 'b) t 
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
 val trace : (float, 'b) t -> float
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 

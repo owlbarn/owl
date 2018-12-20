@@ -305,6 +305,8 @@ module type Sig = sig
 
   val qr : arr -> arr * arr
 
+  val lyapunov: arr -> arr -> arr
+
   val diag : ?k:int -> arr -> arr
 
   val triu: ?k:int -> arr -> arr

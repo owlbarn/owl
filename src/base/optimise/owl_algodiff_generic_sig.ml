@@ -83,6 +83,9 @@ module type Sig = sig
 
     val qr : t -> t 
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    
+    val lyapunov : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val neg : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)

@@ -24,15 +24,11 @@ module Generic = struct
 
   let mpow = Owl_linalg_generic.mpow
 
-  let diag ?(k=0) x = Owl_dense_ndarray_generic.diag ~k x
-
-  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
-
-  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
-
   let qr x =
     let q, r, _ = Owl_linalg_generic.qr ~thin:true ~pivot:false x in
     (q,r)
+
+  let lyapunov = Owl_linalg_generic.lyapunov 
 
 end
 
@@ -48,10 +44,6 @@ module S = struct
   let mpow = Owl_linalg_s.mpow
 
   let diag ?(k=0) x = Owl_dense_ndarray_generic.diag ~k x
-
-  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
-
-  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
 
   let qr x =
     let q, r, _ = Owl_linalg_s.qr ~thin:true ~pivot:false x in
@@ -72,10 +64,6 @@ module D = struct
 
   let diag ?(k=0) x = Owl_dense_ndarray_generic.diag ~k x
 
-  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
-
-  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
-
   let qr x =
     let q, r, _ = Owl_linalg_d.qr ~thin:true ~pivot:false x in
     (q,r)
@@ -92,12 +80,6 @@ module C = struct
   let inv = Owl_linalg_c.inv
 
   let mpow = Owl_linalg_c.mpow
-
-  let diag ?(k=0) x = Owl_dense_ndarray_generic.diag ~k x
-
-  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
-
-  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
 
   let qr x =
     let q, r, _ = Owl_linalg_c.qr ~thin:true ~pivot:false x in
@@ -116,14 +98,10 @@ module Z = struct
 
   let mpow = Owl_linalg_z.mpow
 
-  let diag ?(k=0) x = Owl_dense_ndarray_generic.diag ~k x
-
-  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
-
-  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
-
   let qr x =
     let q, r, _ = Owl_linalg_z.qr ~thin:true ~pivot:false x in
     (q,r)
+
+  let lyapunov = Owl_linalg_z.lyapunov 
 
 end

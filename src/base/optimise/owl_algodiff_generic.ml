@@ -99,6 +99,9 @@ module Make
     | Relu_D         of t
     | Inv_D          of t
     | QR_D           of t
+    | Lyapunov_D_D   of t * t
+    | Lyapunov_C_D   of t * t
+    | Lyapunov_D_C   of t * t
     | Diag_D         of int * t
     | Tril_D         of int * t
     | Triu_D         of int * t
@@ -911,6 +914,22 @@ module Make
       let r a = QR_D a in
       op_d_d a ff fd df r 
 
+    and lyapunov a q =
+      let ff a q =
+        match a, q with
+        | Arr a, Arr q       -> Arr A.(lyapunov a q)
+        | _                  -> error_binop "lyapunov" a q
+      in
+      let fd a q = lyapunov a q in
+      let df_da _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
+      let df_dq _cp _qp _qt = raise Owl_exception.NOT_IMPLEMENTED in
+      let df_daq _cp _ap _at _qp _qt = raise Owl_exception.NOT_IMPLEMENTED in
+      let r_d_d a q = Lyapunov_D_D (a, q) in
+      let r_d_c a q = Lyapunov_D_C (a, q) in
+      let r_c_d a q = Lyapunov_C_D (a, q) in
+      op_d_d_d a q ff fd df_da df_dq df_daq r_d_d r_d_c r_c_d
+
+
     and softplus x = log ((pack_flt 1.) + exp x)
 
     and softsign x = x / ((pack_flt 1.) + abs x)
@@ -1585,6 +1604,9 @@ module Make
                 | Relu_D a                   -> reset (a :: t)
                 | Inv_D a                    -> reset (a :: t)
                 | QR_D a                     -> reset (a :: t)
+                | Lyapunov_D_D (a, q)        -> reset (a :: q :: t)
+                | Lyapunov_D_C (a, _q)       -> reset (a :: t)
+                | Lyapunov_C_D (_a, q)       -> reset (q :: t)
                 | Diag_D (_, a)              -> reset (a :: t)
                 | Triu_D (_, a)              -> reset (a :: t)
                 | Tril_D (_, a)              -> reset (a :: t)
@@ -1758,6 +1780,9 @@ module Make
 
                   let abar = (q*@(rbar + (middle*@rinvt))) + ((qbar - (q*@(qt*@qbar)))*@rinvt) in
                   push ((abar, a) :: t)
+                | Lyapunov_D_D (_a, _q)       -> raise Owl_exception.NOT_IMPLEMENTED  
+                | Lyapunov_C_D (_a, _q)       -> raise Owl_exception.NOT_IMPLEMENTED   
+                | Lyapunov_D_C (_a, _q)       -> raise Owl_exception.NOT_IMPLEMENTED   
                 | Diag_D (k, a) -> 
                   let m = col_num a in 
                   let l = Pervasives.(m - k) in
@@ -2137,6 +2162,9 @@ module Make
                 | Relu_D a                     -> "Relu_D", [ a ]
                 | Inv_D a                      -> "Inv_D", [ a ]
                 | QR_D a                       -> "QR_D", [ a ]
+                | Lyapunov_D_D (a, q)          -> "Lyapunov_D_D", [ a; q ]
+                | Lyapunov_C_D (a, q)          -> "Lyapunov_C_D", [ a; q ]
+                | Lyapunov_D_C (a, q)          -> "Lyapunov_D_C", [ a; q ]
                 | Diag_D (_, a)                -> "Diag_D", [ a ] 
                 | Tril_D (_, a)                -> "Tril_D", [ a ] 
                 | Triu_D (_, a)                -> "Triu_D", [ a ] 

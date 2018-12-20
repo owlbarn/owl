@@ -497,6 +497,9 @@ as an identity node. For information about the optional parameters, refer to the
   val qr : arr -> arr * arr
   (** TODO *)
 
+  val lyapunov : arr -> arr -> arr
+  (** TODO *)
+  
   val diag: ?k:int -> arr -> arr
   (** TODO *)
 
