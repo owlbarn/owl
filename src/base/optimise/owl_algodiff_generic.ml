@@ -894,6 +894,46 @@ module Make
       let r a = Relu_D a in
       op_d_d a ff fd df r
 
+    and diag ?(k=0) a = 
+      let ff = function
+        | Arr a    -> Arr A.(diag ~k a |> copy)
+        | _        -> error_uniop "diag" a
+      in
+      let fd a = diag ~k a in
+      let df _cp _ap at = diag ~k at in
+      let r a = Diag_D (k, a) in
+      op_d_d a ff fd df r
+
+    and trace a = 
+      let ff = function
+        | Arr a     -> F A.(trace a)
+        | _         -> error_uniop "trace" a 
+      in
+      let fd a = trace a in
+      let df _cp _ap at = trace at in
+      let r a = Trace_D a in
+      op_d_d a ff fd df r
+
+    and triu ?(k=0) a = 
+      let ff = function
+        | Arr a    -> Arr A.(triu ~k a |> copy)
+        | _        -> error_uniop "triu" a
+      in
+      let fd a = triu ~k a in
+      let df _cp _ap at = triu ~k at in
+      let r a = Triu_D (k, a) in
+      op_d_d a ff fd df r
+
+    and tril ?(k=0) a = 
+      let ff = function
+        | Arr a    -> Arr A.(tril ~k a |> copy)
+        | _        -> error_uniop "tril" a
+      in
+      let fd a = tril ~k a in
+      let df _cp _ap _at = tril ~k a in
+      let r a = Tril_D (k, a) in
+      op_d_d a ff fd df r
+
     and inv a =
       let ff = function
         | Arr a    -> Arr A.(inv a)
@@ -914,6 +954,19 @@ module Make
       let r a = QR_D a in
       op_d_d a ff fd df r 
 
+    and qr_backward a aa ap = 
+      let q, r = match ap with
+        | Pair (q, r) -> q, r
+        | _ -> error_uniop "qr" a in
+      let qbar, rbar = match aa with
+        | Pair (qbar, rbar) -> qbar, rbar 
+        | _ -> error_uniop "qr" a in
+      let qt = transpose q and qbart = transpose qbar in
+      let rt = transpose r and rbart = transpose rbar in
+      let rinvt = r *@ (inv (rt *@ r)) in (* transpose of the left moore-penrose pseudoinverse *)
+      let middle = tril ~k:(-1) ( (r*@rbart) - (rbar*@rt) + (qt*@qbar) - (qbart*@q) ) in
+      (q*@(rbar + (middle*@rinvt))) + ((qbar - (q*@(qt*@qbar)))*@rinvt) 
+
     and lyapunov a q =
       let ff a q =
         match a, q with
@@ -929,6 +982,13 @@ module Make
       let r_c_d a q = Lyapunov_C_D (a, q) in
       op_d_d_d a q ff fd df_da df_dq df_daq r_d_d r_d_c r_c_d
 
+    and lyapunov_backward_a a aa ap = (pack_flt 2.) * (lyapunov (transpose a) (neg aa)) *@ ap
+
+    and lyapunov_backward_q a aa = lyapunov (transpose a) aa 
+
+    and lyapunov_backward_aq a aa ap = 
+      let s = lyapunov (transpose a) (neg aa) in
+      s, (pack_flt 2.) * s *@ ap
 
     and softplus x = log ((pack_flt 1.) + exp x)
 
@@ -982,46 +1042,6 @@ module Make
         let cp = ap |> Array.map (fun x -> x |> unpack_arr) |> A.of_rows |> pack_arr in
         DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai)
       | _                  -> error_uniop "of_rows a.(0)" a.(0)
-
-    and diag ?(k=0) a = 
-      let ff = function
-        | Arr a    -> Arr A.(diag ~k a |> copy)
-        | _        -> error_uniop "diag" a
-      in
-      let fd a = diag ~k a in
-      let df _cp _ap at = diag ~k at in
-      let r a = Diag_D (k, a) in
-      op_d_d a ff fd df r
-
-    and trace a = 
-      let ff = function
-        | Arr a     -> F A.(trace a)
-        | _         -> error_uniop "trace" a 
-      in
-      let fd a = trace a in
-      let df _cp _ap at = trace at in
-      let r a = Trace_D a in
-      op_d_d a ff fd df r
-
-    and triu ?(k=0) a = 
-      let ff = function
-        | Arr a    -> Arr A.(triu ~k a |> copy)
-        | _        -> error_uniop "triu" a
-      in
-      let fd a = triu ~k a in
-      let df _cp _ap at = triu ~k at in
-      let r a = Triu_D (k, a) in
-      op_d_d a ff fd df r
-
-    and tril ?(k=0) a = 
-      let ff = function
-        | Arr a    -> Arr A.(tril ~k a |> copy)
-        | _        -> error_uniop "tril" a
-      in
-      let fd a = tril ~k a in
-      let df _cp _ap _at = tril ~k a in
-      let r a = Tril_D (k, a) in
-      op_d_d a ff fd df r
 
     (* NOTE: these fucntions are for neural network. There are many restrictions
        at the moment. E.g. they do not support higher-order derivatives, and some
@@ -1605,8 +1625,8 @@ module Make
                 | Inv_D a                    -> reset (a :: t)
                 | QR_D a                     -> reset (a :: t)
                 | Lyapunov_D_D (a, q)        -> reset (a :: q :: t)
-                | Lyapunov_D_C (a, _q)       -> reset (a :: t)
-                | Lyapunov_C_D (_a, q)       -> reset (q :: t)
+                | Lyapunov_D_C (a, _)        -> reset (a :: t)
+                | Lyapunov_C_D (_, q)        -> reset (q :: t)
                 | Diag_D (_, a)              -> reset (a :: t)
                 | Triu_D (_, a)              -> reset (a :: t)
                 | Tril_D (_, a)              -> reset (a :: t)
@@ -1764,25 +1784,10 @@ module Make
                 | Sigmoid_D a                -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
                 | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
                 | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) * !aa * dpt), a) :: t)
-                | QR_D a                     -> 
-                  let q, r = match ap with
-                    | Pair (q, r) -> q, r
-                    | _ -> error_uniop "qr" a in
-                  let qbar, rbar = match !aa with
-                    | Pair (qbar, rbar) -> qbar, rbar 
-                    | _ -> error_uniop "qr" a in
-                  let qt = transpose q and qbart = transpose qbar in
-                  let rt = transpose r and rbart = transpose rbar in
-                  let rinvt = r *@ (inv (rt *@ r)) in (* transpose of the left moore-penrose pseudoinverse *)
-                  let m = row_num q in 
-                  let pl = Array.init m (fun i -> Array.init m (fun j -> if i > j then (pack_flt 1.) else (pack_flt 0.) ) |> of_rows) |> of_rows in
-                  let middle =  ( (r*@rbart) - (rbar*@rt) + (qt*@qbar) - (qbart*@q) ) * pl in
-
-                  let abar = (q*@(rbar + (middle*@rinvt))) + ((qbar - (q*@(qt*@qbar)))*@rinvt) in
-                  push ((abar, a) :: t)
-                | Lyapunov_D_D (_a, _q)       -> raise Owl_exception.NOT_IMPLEMENTED  
-                | Lyapunov_C_D (_a, _q)       -> raise Owl_exception.NOT_IMPLEMENTED   
-                | Lyapunov_D_C (_a, _q)       -> raise Owl_exception.NOT_IMPLEMENTED   
+                | QR_D a                     -> push ((qr_backward a !aa ap, a) :: t) 
+                | Lyapunov_D_D (a, _)        -> let abar, qbar = lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t) 
+                | Lyapunov_D_C (a, _)        -> push (((lyapunov_backward_a a !aa ap), a) :: t)
+                | Lyapunov_C_D (a, _)        -> push (((lyapunov_backward_q a !aa), a) :: t)
                 | Diag_D (k, a) -> 
                   let m = col_num a in 
                   let l = Pervasives.(m - k) in
