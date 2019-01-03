@@ -173,7 +173,7 @@
   owl-base
   plplot
   )
- )
+)
 
 (rule
  (targets c_flags.sexp
