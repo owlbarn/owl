@@ -771,5 +771,10 @@ let tukey_fences ?(k=1.5) arr =
 let gaussian_kde = Owl_base_stats.gaussian_kde
 
 
+let _ =
+  (* init the internal state of PRNG *)
+  Owl_stats_prng.self_init ()
+
+
 
 (* ends here *)
