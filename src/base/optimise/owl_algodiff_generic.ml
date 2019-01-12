@@ -1680,7 +1680,7 @@ module Make
               | L2NormS_D a                -> push (((!aa * (pack_flt 2.) * (primal a)), a) :: t)
               | Sigmoid_D a                -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
               | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
-              | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) * !aa * dpt), a) :: t)
+              | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) *@ !aa *@ dpt), a) :: t)
               | Add_Row_D_D (a, b, i)      -> push ((!aa, a) :: (get_row !aa i, b) :: t)
               | Add_Row_D_C (a, _b, _i)    -> push ((!aa, a) :: t)
               | Add_Row_C_D (_a, b, i)     -> push ((get_row !aa i, b) :: t)
