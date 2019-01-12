@@ -1783,7 +1783,7 @@ module Make
                 | L2NormS_D a                -> push (((!aa * (pack_flt 2.) * (primal a)), a) :: t)
                 | Sigmoid_D a                -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
                 | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
-                | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) * !aa * dpt), a) :: t)
+                | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) *@ !aa *@ dpt), a) :: t)
                 | QR_D a                     -> push ((qr_backward a !aa ap, a) :: t) 
                 | Lyapunov_D_D (a, _)        -> let abar, qbar = lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t) 
                 | Lyapunov_D_C (a, _)        -> push (((lyapunov_backward_a a !aa ap), a) :: t)
@@ -1796,8 +1796,8 @@ module Make
                     else a_ in
                   let abar = accu 0 (zero a) in 
                   push ((abar, a) :: t)
-                | Triu_D (k, a)              -> push ((tril ~k:(pred k) !aa, a) :: t)
-                | Tril_D (k, a)              -> push ((triu ~k:(succ k) !aa, a) :: t)
+                | Triu_D (k, a)              -> push ((triu ~k !aa, a) :: t)
+                | Tril_D (k, a)              -> push ((tril ~k !aa, a) :: t)
                 | Trace_D a                  -> 
                   let m = col_num a in 
                   let rec accu i a_ = 
