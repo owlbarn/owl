@@ -98,7 +98,7 @@ module Make
     | Sigmoid_D      of t
     | Relu_D         of t
     | Inv_D          of t
-    | QR_D           of t
+    | QR_D           of (t * t * t ref * t ref)
     | Lyapunov_D_D   of t * t
     | Lyapunov_C_D   of t * t
     | Lyapunov_D_C   of t * t
@@ -299,9 +299,22 @@ module Make
 
     and op_d_d a ff fd df r =
       match a with
-      | DF (ap, at, ai)      -> let cp = fd ap in DF (cp, (df cp ap at), ai)
-      | DR (ap, _, _, _, ai) -> let cp = fd ap in DR (cp, ref (zero cp), r a, ref 0, ai)
+      | DF (ap, at, ai) -> let cp = fd ap in DF (cp, (df cp ap at), ai)
+      | DR (ap, _, _, _, ai) -> let cp = ff ap in DR (cp, ref (zero cp), r a, ref 0, ai)
       | ap                   -> ff ap
+
+    and op_d_op_d_d a ff fd df r =
+      match a with
+      | DF (ap, at, ai) -> let cp = fd ap in DF (cp, (df cp ap at), ai)
+      | DR (ap, _, _, _, ai) -> begin
+          let cp = fd ap in match cp with 
+          | Pair (o1, o2) -> 
+            let aa1 = ref (zero o1)  in 
+            let aa2 = ref (zero o2)  in 
+            Pair ( DR (o1, aa1, r (a, cp, aa1, aa2), ref 0, ai) , DR (o2, aa2, r (a, cp, aa1, aa2), ref 0, ai) ) 
+          |  _ -> failwith "error: this should be a function with one input and two outputs" 
+        end
+      | ap -> ff ap
 
     and op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d =
       match a, b with
@@ -951,20 +964,17 @@ module Make
       in
       let fd a = qr a in
       let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
-      let r a = QR_D a in
-      op_d_d a ff fd df r 
+      let r (a, o, aa1, aa2) = QR_D (a, o, aa1, aa2)  in 
+      op_d_op_d_d a ff fd df r 
 
-    and qr_backward a aa ap = 
+    and qr_backward ap qbar rbar = 
       let q, r = match ap with
         | Pair (q, r) -> q, r
-        | _ -> error_uniop "qr" a in
-      let qbar, rbar = match aa with
-        | Pair (qbar, rbar) -> qbar, rbar 
-        | _ -> error_uniop "qr" a in
+        | _ -> error_uniop "qr" ap in
       let qt = transpose q and qbart = transpose qbar in
       let rt = transpose r and rbart = transpose rbar in
       let rinvt = r *@ (inv (rt *@ r)) in (* transpose of the left moore-penrose pseudoinverse *)
-      let middle = tril ~k:(-1) ( (r*@rbart) - (rbar*@rt) + (qt*@qbar) - (qbart*@q) ) in
+      let middle = tril ( (r*@rbart) - (rbar*@rt) + (qt*@qbar) - (qbart*@q) ) in
       (q*@(rbar + (middle*@rinvt))) + ((qbar - (q*@(qt*@qbar)))*@rinvt) 
 
     and lyapunov a q =
@@ -1623,7 +1633,7 @@ module Make
                 | Sigmoid_D a                -> reset (a :: t)
                 | Relu_D a                   -> reset (a :: t)
                 | Inv_D a                    -> reset (a :: t)
-                | QR_D a                     -> reset (a :: t)
+                | QR_D (a, _, _, _)          -> reset (a :: t)
                 | Lyapunov_D_D (a, q)        -> reset (a :: q :: t)
                 | Lyapunov_D_C (a, _)        -> reset (a :: t)
                 | Lyapunov_C_D (_, q)        -> reset (q :: t)
@@ -1784,7 +1794,7 @@ module Make
                 | Sigmoid_D a                -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
                 | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
                 | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) *@ !aa *@ dpt), a) :: t)
-                | QR_D a                     -> push ((qr_backward a !aa ap, a) :: t) 
+                | QR_D (a, o, aa1, aa2)      -> push ((qr_backward o !aa1 !aa2, a) :: t) 
                 | Lyapunov_D_D (a, _)        -> let abar, qbar = lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t) 
                 | Lyapunov_D_C (a, _)        -> push (((lyapunov_backward_a a !aa ap), a) :: t)
                 | Lyapunov_C_D (a, _)        -> push (((lyapunov_backward_q a !aa), a) :: t)
@@ -2166,7 +2176,7 @@ module Make
                 | Sigmoid_D a                  -> "Sigmoid_D", [ a ]
                 | Relu_D a                     -> "Relu_D", [ a ]
                 | Inv_D a                      -> "Inv_D", [ a ]
-                | QR_D a                       -> "QR_D", [ a ]
+                | QR_D (a, _, _, _)            -> "QR_D", [ a ]
                 | Lyapunov_D_D (a, q)          -> "Lyapunov_D_D", [ a; q ]
                 | Lyapunov_C_D (a, q)          -> "Lyapunov_C_D", [ a; q ]
                 | Lyapunov_D_C (a, q)          -> "Lyapunov_D_C", [ a; q ]
@@ -2221,8 +2231,8 @@ module Make
               )
             | F _a                     -> Printf.sprintf "Const", []
             | Arr _a                   -> Printf.sprintf "Const", []
-            | Pair (_,_)                   -> Printf.sprintf "Const", []
-            | DF (_, _, _)            -> Printf.sprintf "DF", []
+            | Pair (_,_)               -> Printf.sprintf "Const", []
+            | DF (_, _, _)             -> Printf.sprintf "DF", []
           in
           (* check if the node has been visited before *)
           Hashtbl.add nodes hd (!index, op, prev);
