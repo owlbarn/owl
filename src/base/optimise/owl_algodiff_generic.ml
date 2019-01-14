@@ -308,7 +308,7 @@ module Make
       | DF (ap, at, ai) -> let cp = fd ap in DF (cp, (df cp ap at), ai)
       | DR (ap, _, _, _, ai) -> begin
           let cp = fd ap in match cp with 
-          | Pair (o1, o2) -> 
+          | Pair (cp1, cp2) -> 
             let aa1 = ref (zero cp1)  in 
             let aa2 = ref (zero cp2)  in 
             let i = ref 0 in 
@@ -316,7 +316,7 @@ module Make
                In reverse_reset, i keeps track of the number of times cp1 and cp2 has been 
                called such that in reverse_push, we do not update the adjoint of ap before 
                we've fully updated both aa1 and aa2 *)
-            Pair ( DR (o1, aa1, r (a, cp, aa1, aa2, i), ref 0, ai) , DR (o2, aa2, r (a, cp, aa1, aa2, i), ref 0, ai) ) 
+            Pair ( DR (cp1, aa1, r (a, cp, aa1, aa2, i), ref 0, ai) , DR (cp2, aa2, r (a, cp, aa1, aa2, i), ref 0, ai) ) 
           |  _ -> failwith "error: this should be a function with one input and two outputs" 
         end
       | ap -> ff ap
