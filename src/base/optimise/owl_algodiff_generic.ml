@@ -25,11 +25,11 @@ module Make
   (* type definitions *)
 
   type t =
-    | F   of A.elt
-    | Arr of A.arr
-    | Pair of t * t  (* to allow for computations that return more than one thing, e.g. QR *)
-    | DF  of t * t * int                            (* primal, tangent, tag *)
-    | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
+    | F    of A.elt
+    | Arr  of A.arr
+    | Pair of t * t                                  (* to allow for computations that return more than one thing, e.g. QR *)
+    | DF   of t * t * int                            (* primal, tangent, tag *)
+    | DR   of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
   and trace_op =
     | Noop
     | Add_D_D        of t * t
@@ -166,10 +166,10 @@ module Make
     else 0
 
   let rec reset_zero = function
-    | F _    -> F A.(float_to_elt 0.)
-    | Arr ap -> A.reset ap; Arr ap
+    | F _           -> F A.(float_to_elt 0.)
+    | Arr ap        -> A.reset ap; Arr ap
     | Pair (ap, bp) -> Pair (reset_zero ap, reset_zero bp)
-    | _      -> failwith "error: reset_zero"
+    | _             -> failwith "error: reset_zero"
 
   let primal = function
     | DF (ap, _, _)       -> ap
@@ -182,11 +182,11 @@ module Make
     | ap                  -> ap
 
   let rec zero = function
-    | F _                     -> F A.(float_to_elt 0.)
-    | Arr ap                  -> Arr A.(zeros (shape ap))
-    | Pair (a, b)             -> Pair (zero a, zero b)
-    | DF (ap, _, _)           -> ap |> primal' |> zero
-    | DR (ap, _, _, _, _)     -> ap |> primal' |> zero
+    | F _                 -> F A.(float_to_elt 0.)
+    | Arr ap              -> Arr A.(zeros (shape ap))
+    | Pair (a, b)         -> Pair (zero a, zero b)
+    | DF (ap, _, _)       -> ap |> primal' |> zero
+    | DR (ap, _, _, _, _) -> ap |> primal' |> zero
 
   let tangent = function
     | DF (_, at, _) -> at
@@ -299,26 +299,27 @@ module Make
 
     and op_d_d a ff fd df r =
       match a with
-      | DF (ap, at, ai) -> let cp = fd ap in DF (cp, (df cp ap at), ai)
+      | DF (ap, at, ai)      -> let cp = fd ap in DF (cp, (df cp ap at), ai)
       | DR (ap, _, _, _, ai) -> let cp = ff ap in DR (cp, ref (zero cp), r a, ref 0, ai)
       | ap                   -> ff ap
 
     and op_d_op_d_d a ff fd df r =
       match a with
-      | DF (ap, at, ai) -> let cp = fd ap in DF (cp, (df cp ap at), ai)
-      | DR (ap, _, _, _, ai) -> begin
-          let cp = fd ap in match cp with 
-          | Pair (cp1, cp2) -> 
-            let aa1 = ref (zero cp1)  in 
-            let aa2 = ref (zero cp2)  in 
-            let i = ref 0 in 
-            (* i: int reference
-               In reverse_reset, i keeps track of the number of times cp1 and cp2 has been 
-               called such that in reverse_push, we do not update the adjoint of ap before 
-               we've fully updated both aa1 and aa2 *)
-            Pair ( DR (cp1, aa1, r (a, cp, aa1, aa2, i), ref 0, ai) , DR (cp2, aa2, r (a, cp, aa1, aa2, i), ref 0, ai) ) 
-          |  _ -> failwith "error: this should be a function with one input and two outputs" 
-        end
+      | DF (ap, at, ai)      -> let cp = fd ap in DF (cp, (df cp ap at), ai)
+      | DR (ap, _, _, _, ai) -> (
+          let cp = fd ap in
+            match cp with
+            | Pair (cp1, cp2)  ->
+              let aa1 = ref (zero cp1)  in
+              let aa2 = ref (zero cp2)  in
+              let i = ref 0 in
+              (* i: int reference
+                 In reverse_reset, i keeps track of the number of times cp1 and cp2 has been
+                 called such that in reverse_push, we do not update the adjoint of ap before
+                 we've fully updated both aa1 and aa2 *)
+              Pair ( DR (cp1, aa1, r (a, cp, aa1, aa2, i), ref 0, ai) , DR (cp2, aa2, r (a, cp, aa1, aa2, i), ref 0, ai) )
+            |  _               -> failwith "error: this should be a function with one input and two outputs"
+        )
       | ap -> ff ap
 
     and op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d =
@@ -912,7 +913,7 @@ module Make
       let r a = Relu_D a in
       op_d_d a ff fd df r
 
-    and diag ?(k=0) a = 
+    and diag ?(k=0) a =
       let ff = function
         | Arr a    -> Arr A.(diag ~k a |> copy)
         | _        -> error_uniop "diag" a
@@ -922,17 +923,17 @@ module Make
       let r a = Diag_D (k, a) in
       op_d_d a ff fd df r
 
-    and trace a = 
+    and trace a =
       let ff = function
         | Arr a     -> F A.(trace a)
-        | _         -> error_uniop "trace" a 
+        | _         -> error_uniop "trace" a
       in
       let fd a = trace a in
       let df _cp _ap at = trace at in
       let r a = Trace_D a in
       op_d_d a ff fd df r
 
-    and triu ?(k=0) a = 
+    and triu ?(k=0) a =
       let ff = function
         | Arr a    -> Arr A.(triu ~k a |> copy)
         | _        -> error_uniop "triu" a
@@ -942,7 +943,7 @@ module Make
       let r a = Triu_D (k, a) in
       op_d_d a ff fd df r
 
-    and tril ?(k=0) a = 
+    and tril ?(k=0) a =
       let ff = function
         | Arr a    -> Arr A.(tril ~k a |> copy)
         | _        -> error_uniop "tril" a
@@ -962,26 +963,26 @@ module Make
       let r a = Inv_D a in
       op_d_d a ff fd df r
 
-    and qr a = 
+    and qr a =
       let ff = function
         | Arr a -> let q, r = A.(qr a) in Pair (Arr q, Arr r)
         | _     -> error_uniop "qr" a
       in
       let fd a = qr a in
       let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
-      let r (a, o, aa1, aa2, i) = QR_D (a, o, aa1, aa2, i)  in 
-      op_d_op_d_d a ff fd df r 
+      let r (a, o, aa1, aa2, i) = QR_D (a, o, aa1, aa2, i)  in
+      op_d_op_d_d a ff fd df r
 
-    and qr_backward ap qbar rbar = 
+    and qr_backward ap qbar rbar =
       let q, r = match ap with
         | Pair (q, r) -> q, r
-        | _ -> error_uniop "qr" ap in
+        | _           -> error_uniop "qr" ap in
       let qt = transpose q and qbart = transpose qbar in
       let rt = transpose r and rbart = transpose rbar in
       (*let rinvt = r *@ (inv (rt *@ r)) in (* transpose of the left moore-penrose pseudoinverse *)*)
       let rinvt = transpose (inv r) in
       let middle = tril ~k:(-1) ( (r*@rbart) - (rbar*@rt) + (qt*@qbar) - (qbart*@q) ) in
-      (q*@(rbar + (middle*@rinvt))) + ((qbar - (q*@(qt*@qbar)))*@rinvt) 
+      (q*@(rbar + (middle*@rinvt))) + ((qbar - (q*@(qt*@qbar)))*@rinvt)
 
     and lyapunov a q =
       let ff a q =
@@ -1000,9 +1001,9 @@ module Make
 
     and lyapunov_backward_a a aa ap = (pack_flt 2.) * (lyapunov (transpose a) (neg aa)) *@ ap
 
-    and lyapunov_backward_q a aa = lyapunov (transpose a) aa 
+    and lyapunov_backward_q a aa = lyapunov (transpose a) aa
 
-    and lyapunov_backward_aq a aa ap = 
+    and lyapunov_backward_aq a aa ap =
       let s = lyapunov (transpose a) (neg aa) in
       s, (pack_flt 2.) * s *@ ap
 
@@ -1800,27 +1801,27 @@ module Make
                 | Sigmoid_D a                -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
                 | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
                 | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) *@ !aa *@ dpt), a) :: t)
-                | QR_D (a, o, aa1, aa2, i)   -> if (!i=1) then push ((qr_backward o !aa1 !aa2, a) :: t) else begin i:= pred !i; push t end 
-                | Lyapunov_D_D (a, _)        -> let abar, qbar = lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t) 
+                | QR_D (a, o, aa1, aa2, i)   -> if (!i=1) then push ((qr_backward o !aa1 !aa2, a) :: t) else begin i:= pred !i; push t end
+                | Lyapunov_D_D (a, _)        -> let abar, qbar = lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t)
                 | Lyapunov_D_C (a, _)        -> push (((lyapunov_backward_a a !aa ap), a) :: t)
                 | Lyapunov_C_D (a, _)        -> push (((lyapunov_backward_q a !aa), a) :: t)
-                | Diag_D (k, a) -> 
-                  let m = col_num a in 
-                  let l = Pervasives.(m - k) in
-                  let rec accu i a_ = 
-                    if i < l then accu (succ i) (set_item a_ i Pervasives.(k + i) (get_item !aa 0 i)) 
-                    else a_ in
-                  let abar = accu 0 (zero a) in 
-                  push ((abar, a) :: t)
+                | Diag_D (k, a)              ->
+                    let m = col_num a in
+                    let l = Pervasives.(m - k) in
+                    let rec accu i a_ =
+                      if i < l then accu (succ i) (set_item a_ i Pervasives.(k + i) (get_item !aa 0 i))
+                      else a_ in
+                    let abar = accu 0 (zero a) in
+                    push ((abar, a) :: t)
                 | Triu_D (k, a)              -> push ((triu ~k !aa, a) :: t)
                 | Tril_D (k, a)              -> push ((tril ~k !aa, a) :: t)
-                | Trace_D a                  -> 
-                  let m = col_num a in 
-                  let rec accu i a_ = 
-                    if i < m then accu (succ i) (set_item a_ i i !aa )
-                    else a_ in
-                  let abar = accu 0 (zero a) in
-                  push ((abar,a) :: t)
+                | Trace_D a                  ->
+                    let m = col_num a in
+                    let rec accu i a_ =
+                      if i < m then accu (succ i) (set_item a_ i i !aa )
+                      else a_ in
+                    let abar = accu 0 (zero a) in
+                    push ((abar,a) :: t)
                 | Add_Row_D_D (a, b, i)      -> push ((!aa, a) :: (get_row !aa i, b) :: t)
                 | Add_Row_D_C (a, _b, _i)    -> push ((!aa, a) :: t)
                 | Add_Row_C_D (_a, b, i)     -> push ((get_row !aa i, b) :: t)
@@ -2186,10 +2187,10 @@ module Make
                 | Lyapunov_D_D (a, q)          -> "Lyapunov_D_D", [ a; q ]
                 | Lyapunov_C_D (a, q)          -> "Lyapunov_C_D", [ a; q ]
                 | Lyapunov_D_C (a, q)          -> "Lyapunov_D_C", [ a; q ]
-                | Diag_D (_, a)                -> "Diag_D", [ a ] 
-                | Tril_D (_, a)                -> "Tril_D", [ a ] 
-                | Triu_D (_, a)                -> "Triu_D", [ a ] 
-                | Trace_D a                    -> "Trace_D", [ a ] 
+                | Diag_D (_, a)                -> "Diag_D", [ a ]
+                | Tril_D (_, a)                -> "Tril_D", [ a ]
+                | Triu_D (_, a)                -> "Triu_D", [ a ]
+                | Trace_D a                    -> "Trace_D", [ a ]
                 | Add_Row_D_D (a, b, _i)       -> "Add_Row_D_D", [a; b]
                 | Add_Row_D_C (a, b, _i)       -> "Add_Row_D_C", [a; b]
                 | Add_Row_C_D (a, b, _i)       -> "Add_Row_C_D", [a; b]
