@@ -309,9 +309,13 @@ module Make
       | DR (ap, _, _, _, ai) -> begin
           let cp = fd ap in match cp with 
           | Pair (o1, o2) -> 
-            let aa1 = ref (zero o1)  in 
-            let aa2 = ref (zero o2)  in 
-            let i = ref 0 in
+            let aa1 = ref (zero cp1)  in 
+            let aa2 = ref (zero cp2)  in 
+            let i = ref 0 in 
+            (* i: int reference
+               In reverse_reset, i keeps track of the number of times cp1 and cp2 has been 
+               called such that in reverse_push, we do not update the adjoint of ap before 
+               we've fully updated both aa1 and aa2 *)
             Pair ( DR (o1, aa1, r (a, cp, aa1, aa2, i), ref 0, ai) , DR (o2, aa2, r (a, cp, aa1, aa2, i), ref 0, ai) ) 
           |  _ -> failwith "error: this should be a function with one input and two outputs" 
         end
@@ -1635,7 +1639,7 @@ module Make
                 | Sigmoid_D a                -> reset (a :: t)
                 | Relu_D a                   -> reset (a :: t)
                 | Inv_D a                    -> reset (a :: t)
-                | QR_D (a, _, _, _, i)       -> i:= succ !i; if (pred !i=0) then reset t else reset (a :: t)
+                | QR_D (a, _, _, _, i)       -> i:= succ !i; if (!i=1) then reset t else reset (a :: t)
                 | Lyapunov_D_D (a, q)        -> reset (a :: q :: t)
                 | Lyapunov_D_C (a, _)        -> reset (a :: t)
                 | Lyapunov_C_D (_, q)        -> reset (q :: t)
@@ -1796,7 +1800,7 @@ module Make
                 | Sigmoid_D a                -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
                 | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
                 | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) *@ !aa *@ dpt), a) :: t)
-                | QR_D (a, o, aa1, aa2, i)   -> if not (!i=1) then begin i:= pred !i; push t end else push ((qr_backward o !aa1 !aa2, a) :: t) 
+                | QR_D (a, o, aa1, aa2, i)   -> if (!i=1) then push ((qr_backward o !aa1 !aa2, a) :: t) else begin i:= pred !i; push t end 
                 | Lyapunov_D_D (a, _)        -> let abar, qbar = lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t) 
                 | Lyapunov_D_C (a, _)        -> push (((lyapunov_backward_a a !aa ap), a) :: t)
                 | Lyapunov_C_D (a, _)        -> push (((lyapunov_backward_q a !aa), a) :: t)
@@ -2288,7 +2292,6 @@ module Make
     _traverse_trace nodes
     |> _convert_dot_output
     |> Printf.sprintf "digraph CG {\nnode [shape=record];\n%s}"
-
 
   let pp_num formatter x = Format.fprintf formatter "%s" (type_info x)
 
