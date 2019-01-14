@@ -94,7 +94,7 @@ let get_openblas_path _c =
 
 let get_accelerate_libs c =
   match get_os_type c with
-  | "macosx"    -> [ "-framework"; "Accelerate" ]
+  | "macosx"    -> [ (* disable "-framework"; "Accelerate" ] *) ]
   | "mingw64"   -> [ "-DWIN32" ]
   | _           -> []
 
