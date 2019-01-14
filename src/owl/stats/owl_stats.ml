@@ -1,6 +1,6 @@
 (*
  * OWL - OCaml Scientific and Engineering Computing
- * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 [@@@warning "-32"]
@@ -769,6 +769,11 @@ let tukey_fences ?(k=1.5) arr =
 
 
 let gaussian_kde = Owl_base_stats.gaussian_kde
+
+
+let _ =
+  (* init the internal state of PRNG *)
+  Owl_stats_prng.self_init ()
 
 
 

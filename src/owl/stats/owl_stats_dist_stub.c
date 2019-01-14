@@ -1,6 +1,6 @@
 /*
  * OWL - OCaml Scientific and Engineering Computing
- * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
 // C stub for owl_stats_dist_ functions

@@ -1,6 +1,6 @@
 (*
  * OWL - OCaml Scientific and Engineering Computing
- * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 (** Complex dense matrix module: this module supports operations on dense

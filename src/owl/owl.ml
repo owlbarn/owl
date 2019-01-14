@@ -1,6 +1,6 @@
 (*
  * OWL - OCaml Scientific and Engineering Computing
- * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 include Owl_types
@@ -89,8 +89,6 @@ end
 (* initialise owl's working environment *)
 
 let _ =
-  (* init the internal state of PRNG *)
-  Owl_stats_prng.self_init ();
   (* set up owl's folder *)
   let home = Sys.getenv "HOME" ^ "/.owl" in
   let dir_dataset = home ^ "/dataset" in

@@ -1,6 +1,6 @@
 (*
  * OWL - OCaml Scientific and Engineering Computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 (** Tensor operations implementation in Owl's Ndarray *)
