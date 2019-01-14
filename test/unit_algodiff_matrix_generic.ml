@@ -32,7 +32,7 @@ module Make
     let dx = Maths.( (F eps) * d) in
     Maths.( ((f (x + dx)) - (f (x - dx))) / (F (2. *. eps)) )
 
-  let check_grads ?threshold:(th=1E-6) rs = 
+  let check_grads ?threshold:(th=1E-5) rs = 
     let n_d = Array.length rs in
     let r_fds = Array.map snd rs in
     let rms = (Array.fold_left (fun acc r_fd -> acc +. (r_fd *. r_fd ) ) 0. r_fds) /. (float n_d) |> sqrt in
@@ -68,18 +68,17 @@ module Make
     let tril  () = test_func Maths.tril
     let triu  () = test_func Maths.triu
     let inv   () = test_func Maths.inv
-    let qr_q  () = 
+    let qr  () = 
       let f x =
-        let q, _ = match (Maths.qr x) with
-          | Pair (q, r) -> q, r
+        match (Maths.qr x) with
+          | Pair (q, r) -> Maths.(q + r)
           | _ -> assert false  in
-        q in test_func f
-    let qr_r  () = 
-      let f x =
-        let _, r = match (Maths.qr x) with
-          | Pair (q, r) -> q, r
-          | _ -> assert false  in
-        r in test_func f
+        test_func f
+
+    let lyapunov () = 
+      let q = Arr Owl.Mat.(neg (eye n)) in
+      let f x = Maths.lyapunov x q in
+      test_func f 
 
   end
 
@@ -111,11 +110,7 @@ module Make
 
   let inv () = alco_fun "inv" To_test.inv
 
-  let qr_q () = alco_fun "qr_q" To_test.qr_q
-
-  let qr_r () = alco_fun "qr_r" To_test.qr_r
-
-
+  let qr () = alco_fun "qr" To_test.qr
 
 
   let test_set = [ 
@@ -131,8 +126,7 @@ module Make
     "tril",  `Slow,   tril;
     "triu",  `Slow,   triu;
     "inv",   `Slow,   inv;
-    "qr_q",  `Slow,   qr_q;
-    "qr_r",  `Slow,   qr_r;
+    "qr",  `Slow,   qr;
   ]
 
 end
