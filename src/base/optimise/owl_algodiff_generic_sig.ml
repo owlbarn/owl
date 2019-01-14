@@ -20,6 +20,7 @@ module type Sig = sig
   type t =
     | F   of A.elt                                  (* constructor of float numbers *)
     | Arr of A.arr                                  (* constructor of ndarrays *)
+    | Pair of t * t
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
   (** Abstract number type *)
@@ -80,7 +81,10 @@ module type Sig = sig
     val inv : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-    val qr : t -> t * t
+    val qr : t -> t 
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    
+    val lyapunov : t -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val neg : t -> t
@@ -261,6 +265,18 @@ module type Sig = sig
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val set_slice : int list list -> t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val diag : ?k:int -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val trace : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val triu: ?k:int -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val tril: ?k:int -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
   end

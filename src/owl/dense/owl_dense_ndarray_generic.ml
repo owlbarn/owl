@@ -6048,6 +6048,8 @@ let diag ?(k=0) x =
   y
 
 
+
+
 let trace x = sum' (diag x)
 
 

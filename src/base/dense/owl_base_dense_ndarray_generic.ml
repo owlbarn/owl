@@ -4194,9 +4194,15 @@ let inv varr =
       result_varr
     end
 
-
 let qr _x = raise Owl_exception.NOT_IMPLEMENTED
 
+let lyapunov _a _q = raise Owl_exception.NOT_IMPLEMENTED
+
+let diag ?(k=0) _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+
+let tril ?(k=0) _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+
+let triu ?(k=0) _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
 let load _k f = Owl_io.marshal_from_file f

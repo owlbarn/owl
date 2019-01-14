@@ -462,6 +462,14 @@ module Make
   let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
 
   let qr _x = raise Owl_exception.NOT_IMPLEMENTED 
+  
+  let lyapunov _a _q = raise Owl_exception.NOT_IMPLEMENTED 
+  
+  let diag ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
+
+  let tril?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
+
+  let triu?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
 
   let trace x = make_then_connect Trace [|arr_to_node x|] |> node_to_elt
 

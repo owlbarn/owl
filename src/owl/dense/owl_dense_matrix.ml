@@ -28,6 +28,8 @@ module Generic = struct
     let q, r, _ = Owl_linalg_generic.qr ~thin:true ~pivot:false x in
     (q,r)
 
+  let lyapunov = Owl_linalg_generic.lyapunov 
+
 end
 
 
@@ -40,6 +42,8 @@ module S = struct
   let inv = Owl_linalg_s.inv
 
   let mpow = Owl_linalg_s.mpow
+
+  let diag ?(k=0) x = Owl_dense_ndarray_generic.diag ~k x
 
   let qr x =
     let q, r, _ = Owl_linalg_s.qr ~thin:true ~pivot:false x in
@@ -57,6 +61,8 @@ module D = struct
   let inv = Owl_linalg_d.inv
 
   let mpow = Owl_linalg_d.mpow
+
+  let diag ?(k=0) x = Owl_dense_ndarray_generic.diag ~k x
 
   let qr x =
     let q, r, _ = Owl_linalg_d.qr ~thin:true ~pivot:false x in
@@ -89,11 +95,13 @@ module Z = struct
   (* inject function aliases *)
 
   let inv = Owl_linalg_z.inv
-  
+
   let mpow = Owl_linalg_z.mpow
 
   let qr x =
     let q, r, _ = Owl_linalg_z.qr ~thin:true ~pivot:false x in
     (q,r)
+
+  let lyapunov = Owl_linalg_z.lyapunov 
 
 end
