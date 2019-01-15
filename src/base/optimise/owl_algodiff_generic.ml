@@ -27,9 +27,9 @@ module Make
   type t =
     | F    of A.elt
     | Arr  of A.arr
-    | Pair of t * t                                  (* to allow for computations that return more than one thing, e.g. QR *)
-    | DF   of t * t * int                            (* primal, tangent, tag *)
-    | DR   of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
+    | Pair of t * t                                               (* to allow for computations that return more than one thing, e.g. QR *)
+    | DF   of t * t * int                                         (* primal, tangent, tag *)
+    | DR   of t * t ref * trace_op * int ref * int * int ref      (* primal, adjoint, op, fanout, tag, tracker *)
   and trace_op =
     | Noop
     | Add_D_D        of t * t
@@ -98,7 +98,7 @@ module Make
     | Sigmoid_D      of t
     | Relu_D         of t
     | Inv_D          of t
-    | QR_D           of (t * t * t ref * t ref * int ref)
+    | QR_D           of (t * t * t ref * t ref)
     | Lyapunov_D_D   of t * t
     | Lyapunov_C_D   of t * t
     | Lyapunov_D_C   of t * t
@@ -173,12 +173,12 @@ module Make
 
   let primal = function
     | DF (ap, _, _)       -> ap
-    | DR (ap, _, _, _, _) -> ap
+    | DR (ap, _, _, _, _, _) -> ap
     | ap                  -> ap
 
   let rec primal' = function
     | DF (ap, _, _)       -> primal' ap
-    | DR (ap, _, _, _, _) -> primal' ap
+    | DR (ap, _, _, _, _, _) -> primal' ap
     | ap                  -> ap
 
   let rec zero = function
@@ -186,7 +186,7 @@ module Make
     | Arr ap              -> Arr A.(zeros (shape ap))
     | Pair (a, b)         -> Pair (zero a, zero b)
     | DF (ap, _, _)       -> ap |> primal' |> zero
-    | DR (ap, _, _, _, _) -> ap |> primal' |> zero
+    | DR (ap, _, _, _, _, _) -> ap |> primal' |> zero
 
   let tangent = function
     | DF (_, at, _) -> at
@@ -195,12 +195,12 @@ module Make
 
   let adjref = function
     | DF _                -> failwith "error: no adjref for DF"
-    | DR (_, at, _, _, _) -> at
+    | DR (_, at, _, _, _, _) -> at
     | ap                  -> ref (zero ap)
 
   let adjval = function
     | DF _                -> failwith "error: no adjval for DF"
-    | DR (_, at, _, _, _) -> !at
+    | DR (_, at, _, _, _, _) -> !at
     | ap                  -> zero ap
 
   let shape x =
@@ -278,7 +278,7 @@ module Make
   let type_info x = match x with
     | F _a                       -> Printf.sprintf "[%s]" (deep_info x)
     | DF (ap, _at, ai)           -> Printf.sprintf "[DF tag:%i ap:%s]" ai (deep_info ap)
-    | DR (ap, _at, _ao, _af, ai) -> Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
+    | DR (ap, _at, _ao, _af, ai, _) -> Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
     | _                          -> Printf.sprintf "[%s]" (deep_info x)
 
   let error_binop op a b =
@@ -300,63 +300,64 @@ module Make
     and op_d_d a ff fd df r =
       match a with
       | DF (ap, at, ai)      -> let cp = fd ap in DF (cp, (df cp ap at), ai)
-      | DR (ap, _, _, _, ai) -> let cp = ff ap in DR (cp, ref (zero cp), r a, ref 0, ai)
+      | DR (ap, _, _, _, ai, _) -> let cp = ff ap in DR (cp, ref (zero cp), r a, ref 0, ai, ref 0)
       | ap                   -> ff ap
 
     and op_d_op_d_d a ff fd df r =
       match a with
       | DF (ap, at, ai)      -> let cp = fd ap in DF (cp, (df cp ap at), ai)
-      | DR (ap, _, _, _, ai) -> (
+      | DR (ap, _, _, _, ai, _) -> (
           let cp = fd ap in
-            match cp with
-            | Pair (cp1, cp2)  ->
-              let aa1 = ref (zero cp1)  in
-              let aa2 = ref (zero cp2)  in
-              let i = ref 0 in
-              (* i: int reference
-                 In reverse_reset, i keeps track of the number of times cp1 and cp2 has been
-                 called such that in reverse_push, we do not update the adjoint of ap before
-                 we've fully updated both aa1 and aa2 *)
-              Pair ( DR (cp1, aa1, r (a, cp, aa1, aa2, i), ref 0, ai) , DR (cp2, aa2, r (a, cp, aa1, aa2, i), ref 0, ai) )
-            |  _               -> failwith "error: this should be a function with one input and two outputs"
+          match cp with
+          | Pair (cp1, cp2)  ->
+            let aa1 = ref (zero cp1)  in
+            let aa2 = ref (zero cp2)  in
+            let i = ref 0 in
+            (* i: int reference
+               In reverse_reset, i keeps track of the number of times cp1 and cp2 has been
+               called such that in reverse_push, we do not update the adjoint of ap before
+               we've fully updated both aa1 and aa2 *)
+            Pair ( DR (cp1, aa1, r (a, cp, aa1, aa2), ref 0, ai, i) , 
+                   DR (cp2, aa2, r (a, cp, aa1, aa2), ref 0, ai, i) )
+          |  _               -> failwith "error: this should be a function with one input and two outputs"
         )
       | ap -> ff ap
 
     and op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d =
       match a, b with
-      | F _ap, DF (bp, bt, bi)                      -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
-      | DF (ap, at, ai), F _bp                      -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
-      | Arr _ap, DF (bp, bt, bi)                    -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
-      | DF (ap, at, ai), Arr _bp                    -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
-      | F _ap, DR (bp, _, _, _, bi)                 -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
-      | DR (ap, _, _, _, ai), F _bp                 -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
-      | Arr _ap, DR (bp, _, _, _, bi)               -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
-      | DR (ap, _, _, _, ai), Arr _bp               -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
-      | DF (ap, at, ai), DR (bp, _, _, _, bi)       -> (
+      | F _ap, DF (bp, bt, bi)                            -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
+      | DF (ap, at, ai), F _bp                            -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
+      | Arr _ap, DF (bp, bt, bi)                          -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
+      | DF (ap, at, ai), Arr _bp                          -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
+      | F _ap, DR (bp, _, _, _, bi, _)                    -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi, ref 0)
+      | DR (ap, _, _, _, ai, _), F _bp                    -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai, ref 0)
+      | Arr _ap, DR (bp, _, _, _, bi, _)                  -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi, ref 0)
+      | DR (ap, _, _, _, ai, _), Arr _bp                  -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai, ref 0)
+      | DF (ap, at, ai), DR (bp, _, _, _, bi, _)          -> (
           match cmp_tag ai bi with
           | 1  -> let cp = fd ap b in DF (cp, df_da cp ap at, ai)
-          | -1 -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
+          | -1 -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi, ref 0)
           | _  -> failwith "error: forward and reverse clash at the same level"
         )
-      | DR (ap, _, _, _, ai), DF (bp, bt, bi)       -> (
+      | DR (ap, _, _, _, ai, _), DF (bp, bt, bi)          -> (
           match cmp_tag ai bi with
           | -1 -> let cp = fd a bp in DF (cp, df_db cp bp bt, bi)
-          | 1  -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
+          | 1  -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai, ref 0)
           | _  -> failwith "error: forward and reverse clash at the same level"
         )
-      | DF (ap, at, ai), DF (bp, bt, bi)            -> (
+      | DF (ap, at, ai), DF (bp, bt, bi)                  -> (
           match cmp_tag ai bi with
           | 0 -> let cp = fd ap bp in DF (cp, (df_dab cp ap at bp bt), ai)
           | 1 -> let cp = fd ap b  in DF (cp, (df_da cp ap at), ai)
           | _ -> let cp = fd a bp  in DF (cp, (df_db cp bp bt), bi)
         )
-      | DR (ap, _, _, _, ai), DR (bp, _, _, _, bi)  -> (
+      | DR (ap, _, _, _, ai, _), DR (bp, _, _, _, bi, _)  -> (
           match cmp_tag ai bi with
-          | 0 -> let cp = fd ap bp in DR (cp, ref (zero cp), r_d_d a b, ref 0, ai)
-          | 1 -> let cp = fd ap b  in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
-          | _ -> let cp = fd a bp  in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
+          | 0 -> let cp = fd ap bp in DR (cp, ref (zero cp), r_d_d a b, ref 0, ai, ref 0)
+          | 1 -> let cp = fd ap b  in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai, ref 0)
+          | _ -> let cp = fd a bp  in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi, ref 0)
         )
-      | a, b                                        -> ff a b
+      | a, b                                              -> ff a b
 
     and ( + ) a b = add a b
     and add a b =
@@ -741,10 +742,10 @@ module Make
 
     and get_item a i j =
       match a with
-      | Arr ap               -> F (A.get ap [|i;j|])
-      | DF (ap, at, ai)      -> DF (get_item ap i j, get_item at i j, ai)
-      | DR (ap, _, _, _, ai) -> DR (get_item ap i j, ref (pack_flt 0.), Get_Item (a, i, j), ref 0, ai)
-      | _                    -> error_uniop "get_item" a
+      | Arr ap                  -> F (A.get ap [|i;j|])
+      | DF (ap, at, ai)         -> DF (get_item ap i j, get_item at i j, ai)
+      | DR (ap, _, _, _, ai, _) -> DR (get_item ap i j, ref (pack_flt 0.), Get_Item (a, i, j), ref 0, ai, ref 0)
+      | _                       -> error_uniop "get_item" a
 
     and set_item a i j b =
       let ff a b = match a, b with
@@ -970,7 +971,7 @@ module Make
       in
       let fd a = qr a in
       let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
-      let r (a, o, aa1, aa2, i) = QR_D (a, o, aa1, aa2, i)  in
+      let r (a, o, aa1, aa2) = QR_D (a, o, aa1, aa2)  in
       op_d_op_d_d a ff fd df r
 
     and qr_backward ap qbar rbar =
@@ -1054,10 +1055,10 @@ module Make
         let ap = a |> Array.map (fun x -> x |> primal |> unpack_arr) |> A.of_rows |> pack_arr in
         let at = a |> Array.map (fun x -> x |> adjval |> unpack_arr) |> A.of_rows |> pack_arr in
         DF (ap, at, ai)
-      | DR (_, _, _, _, ai) ->
+      | DR (_, _, _, _, ai, _) ->
         let ap = a |> Array.map (fun x -> x |> primal) in
         let cp = ap |> Array.map (fun x -> x |> unpack_arr) |> A.of_rows |> pack_arr in
-        DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai)
+        DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai, ref 0)
       | _                  -> error_uniop "of_rows a.(0)" a.(0)
 
     (* NOTE: these fucntions are for neural network. There are many restrictions
@@ -1568,10 +1569,11 @@ module Make
       | [] -> ()
       | x :: t -> (
           match x with
-          | DR (_ap, aa, ao, af, _ai) -> (
+          | DR (_ap, aa, ao, af, _ai, tracker) -> (
               aa := reset_zero !aa;
               af := !af + 1;
-              if !af = 1 then (
+              tracker:= succ !tracker; 
+              if (!af = 1) && (!tracker=1) then (
                 match ao with
                 | Noop                       -> reset t
                 | Add_D_D (a, b)             -> reset (a :: b :: t)
@@ -1640,7 +1642,7 @@ module Make
                 | Sigmoid_D a                -> reset (a :: t)
                 | Relu_D a                   -> reset (a :: t)
                 | Inv_D a                    -> reset (a :: t)
-                | QR_D (a, _, _, _, i)       -> i:= succ !i; if (!i=1) then reset t else reset (a :: t)
+                | QR_D (a, _, _, _)          -> reset (a :: t)
                 | Lyapunov_D_D (a, q)        -> reset (a :: q :: t)
                 | Lyapunov_D_C (a, _)        -> reset (a :: t)
                 | Lyapunov_C_D (_, q)        -> reset (q :: t)
@@ -1728,11 +1730,11 @@ module Make
       | []          -> ()
       | (v, x) :: t -> (
           match x with
-          | DR (ap, aa, ao, af, _ai) -> (
+          | DR (ap, aa, ao, af, _ai, tracker) -> (
               let v = _shrink !aa v in
               aa := Maths.(!aa + v);
               af := Pervasives.(!af - 1);
-              if !af = 0 then (
+              if (!af = 0) && (!tracker=1) then (
                 match ao with
                 | Noop                       -> push t
                 | Add_D_D (a, b)             -> push ((!aa, a) :: (!aa, b) :: t)
@@ -1801,27 +1803,27 @@ module Make
                 | Sigmoid_D a                -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
                 | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
                 | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) *@ !aa *@ dpt), a) :: t)
-                | QR_D (a, o, aa1, aa2, i)   -> if (!i=1) then push ((qr_backward o !aa1 !aa2, a) :: t) else begin i:= pred !i; push t end
+                | QR_D (a, o, aa1, aa2)      -> push ((qr_backward o !aa1 !aa2, a) :: t) 
                 | Lyapunov_D_D (a, _)        -> let abar, qbar = lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t)
                 | Lyapunov_D_C (a, _)        -> push (((lyapunov_backward_a a !aa ap), a) :: t)
                 | Lyapunov_C_D (a, _)        -> push (((lyapunov_backward_q a !aa), a) :: t)
                 | Diag_D (k, a)              ->
-                    let m = col_num a in
-                    let l = Pervasives.(m - k) in
-                    let rec accu i a_ =
-                      if i < l then accu (succ i) (set_item a_ i Pervasives.(k + i) (get_item !aa 0 i))
-                      else a_ in
-                    let abar = accu 0 (zero a) in
-                    push ((abar, a) :: t)
+                  let m = col_num a in
+                  let l = Pervasives.(m - k) in
+                  let rec accu i a_ =
+                    if i < l then accu (succ i) (set_item a_ i Pervasives.(k + i) (get_item !aa 0 i))
+                    else a_ in
+                  let abar = accu 0 (zero a) in
+                  push ((abar, a) :: t)
                 | Triu_D (k, a)              -> push ((triu ~k !aa, a) :: t)
                 | Tril_D (k, a)              -> push ((tril ~k !aa, a) :: t)
                 | Trace_D a                  ->
-                    let m = col_num a in
-                    let rec accu i a_ =
-                      if i < m then accu (succ i) (set_item a_ i i !aa )
-                      else a_ in
-                    let abar = accu 0 (zero a) in
-                    push ((abar,a) :: t)
+                  let m = col_num a in
+                  let rec accu i a_ =
+                    if i < m then accu (succ i) (set_item a_ i i !aa )
+                    else a_ in
+                  let abar = accu 0 (zero a) in
+                  push ((abar,a) :: t)
                 | Add_Row_D_D (a, b, i)      -> push ((!aa, a) :: (get_row !aa i, b) :: t)
                 | Add_Row_D_C (a, _b, _i)    -> push ((!aa, a) :: t)
                 | Add_Row_C_D (_a, b, i)     -> push ((get_row !aa i, b) :: t)
@@ -1867,7 +1869,7 @@ module Make
                 | Concat_D_C (a, b, i)       -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: t)
                 | Concat_C_D (a, b, i)       -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(1) ,b) :: t)
               )
-              else push t
+              else begin tracker := pred !tracker; push t end
             )
           | _ -> push t
         )
@@ -1883,7 +1885,7 @@ module Make
 
   let make_forward p t i = DF (p, t, i)
 
-  let make_reverse p i = DR (p, ref (zero p), Noop, ref 0, i)
+  let make_reverse p i = DR (p, ref (zero p), Noop, ref 0, i, ref 0)
 
   (* derivative of f (scalar -> scalr) at x, forward ad *)
   let diff' f x =
@@ -2114,7 +2116,7 @@ module Make
         if Hashtbl.mem nodes hd = false then (
           let op, prev =
             match hd with
-            | DR (_ap, _aa, ao, _af, _ai) -> (
+            | DR (_ap, _aa, ao, _af, _ai, _) -> (
                 match ao with
                 | Noop                         -> "Noop", []
                 | Add_D_D (a, b)               -> "Add_D_D", [a; b]
@@ -2183,7 +2185,7 @@ module Make
                 | Sigmoid_D a                  -> "Sigmoid_D", [ a ]
                 | Relu_D a                     -> "Relu_D", [ a ]
                 | Inv_D a                      -> "Inv_D", [ a ]
-                | QR_D (a, _, _, _, _)         -> "QR_D", [ a ]
+                | QR_D (a, _, _, _)            -> "QR_D", [ a ]
                 | Lyapunov_D_D (a, q)          -> "Lyapunov_D_D", [ a; q ]
                 | Lyapunov_C_D (a, q)          -> "Lyapunov_C_D", [ a; q ]
                 | Lyapunov_D_C (a, q)          -> "Lyapunov_D_C", [ a; q ]
