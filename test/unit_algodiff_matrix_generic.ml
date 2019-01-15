@@ -75,6 +75,12 @@ module Make
           | _ -> assert false  in
         test_func f
 
+    let split () =
+      let f x = 
+        let a = Maths.split 0 [| 1; 1; 1|] x |> extract_ar in
+        Maths.(a.(0) + a.(1) * a.(2)) in
+      test_func f
+
     let lyapunov () =
       let q = Arr Owl.Mat.(neg (eye n)) in
       let f x = Maths.lyapunov x q in
@@ -111,6 +117,8 @@ module Make
   let inv () = alco_fun "inv" To_test.inv
 
   let qr () = alco_fun "qr" To_test.qr
+      
+  let split () = alco_fun "split" To_test.split
 
 
   let test_set = [
@@ -127,6 +135,7 @@ module Make
     "triu",  `Slow,   triu;
     "inv",   `Slow,   inv;
     "qr",    `Slow,   qr;
+    "split", `Slow,   split;
   ]
 
 end
