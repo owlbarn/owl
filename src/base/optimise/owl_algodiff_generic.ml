@@ -27,8 +27,6 @@ module Make
   type t =
     | F     of A.elt
     | Arr   of A.arr
-    | Pair  of t * t                                               (* to allow for computations that return more two outputs, e.g. QR *)
-    | AR    of t array                                             (* to allow for computations that return an array of outputs *)
     | DF    of t * t * int                                         (* primal, tangent, tag *)
     | DR    of t * t ref * trace_op * int ref * int * int ref      (* primal, adjoint, op, fanout, tag, tracker *)
   and trace_op =
@@ -167,36 +165,24 @@ module Make
     else if ai < bi then -1
     else 0
 
-  let extract_ar = function
-    | AR a          -> a
-    | _             -> assert false
-
-  let rec reset_zero = function
+  let reset_zero = function
     | F _           -> F A.(float_to_elt 0.)
     | Arr ap        -> A.reset ap; Arr ap
-    | Pair (ap, bp) -> Pair (reset_zero ap, reset_zero bp)
-    | AR a          -> AR (Array.map reset_zero a)
     | _             -> failwith "error: reset_zero"
 
-  let rec primal = function
+  let primal = function
     | DF (ap, _, _)       -> ap
     | DR (ap, _, _, _, _, _) -> ap
-    | Pair (a, b)            -> Pair(primal a, primal b)
-    | AR a -> AR (Array.map primal a)
     | ap                  -> ap
 
   let rec primal' = function
     | DF (ap, _, _)       -> primal' ap
     | DR (ap, _, _, _, _, _) -> primal' ap
-    | Pair (a, b)            -> Pair(primal' a, primal' b)
-    | AR a -> AR (Array.map primal' a)
     | ap                  -> ap
 
   let rec zero = function
     | F _                 -> F A.(float_to_elt 0.)
     | Arr ap              -> Arr A.(zeros (shape ap))
-    | Pair (a, b)         -> Pair (zero a, zero b)
-    | AR a                -> AR (Array.map zero a)
     | DF (ap, _, _)       -> ap |> primal' |> zero
     | DR (ap, _, _, _, _, _) -> ap |> primal' |> zero
 
@@ -317,36 +303,31 @@ module Make
 
     and pair_op_d_d a ff fd df r =
       match a with
-      | DF (ap, at, ai)      -> let cp = fd ap in DF (cp, (df cp ap at), ai)
+      | DF (ap, at, ai)      -> let cp1, cp2 = fd ap in DF (cp1, (df cp1 ap at), ai), DF (cp2, (df cp2 ap at), ai)
       | DR (ap, _, _, _, ai, _) -> (
-          let cp = fd ap in
-          match cp with
-          | Pair (cp1, cp2)  ->
-            let aa1 = ref (zero cp1)  in
-            let aa2 = ref (zero cp2)  in
-            let cp1_ref = ref cp1 in
-            let cp2_ref = ref cp2 in
-            let tracker = ref 0 in
-            (* tracker: int reference
-               In reverse_reset, i keeps track of the number of times cp1 and cp2 has been
-               called such that in reverse_push, we do not update the adjoint of ap before
-               we've fully updated both aa1 and aa2 *)
-            Pair ( DR (cp1, aa1, r (a, (cp1_ref,cp2_ref), (aa1, aa2)), ref 0, ai, tracker) , 
-                   DR (cp2, aa2, r (a, (cp1_ref,cp2_ref), (aa1, aa2)), ref 0, ai, tracker) )
-          |  _               -> failwith "error: this should be a function with one input and two outputs"
+          let (cp1, cp2) = fd ap in
+          let aa1 = ref (zero cp1)  in
+          let aa2 = ref (zero cp2)  in
+          let cp1_ref = ref cp1 in
+          let cp2_ref = ref cp2 in
+          let tracker = ref 0 in
+          (* tracker: int reference
+             In reverse_reset, i keeps track of the number of times cp1 and cp2 has been
+             called such that in reverse_push, we do not update the adjoint of ap before
+             we've fully updated both aa1 and aa2 *)
+          ( DR (cp1, aa1, r (a, (cp1_ref,cp2_ref), (aa1, aa2)), ref 0, ai, tracker) , 
+            DR (cp2, aa2, r (a, (cp1_ref,cp2_ref), (aa1, aa2)), ref 0, ai, tracker) )
         )
       | ap -> ff ap
 
-    and ar_op_d_d a ff fd df r =
+    and array_op_d_d a ff fd df r =
       match a with
-      | DF (ap, at, ai)      -> let cp = fd ap in DF (cp, (df cp ap at), ai)
+      | DF (ap, at, ai)      -> let cp_arr = fd ap in Array.map (fun cp -> DF (cp, (df cp ap at), ai) ) cp_arr
       | DR (ap, _, _, _, ai, _) -> (
-          let cp = fd ap in match cp with
-          | AR cp_arr ->
-            let tracker = ref 0 in
-            let aa_arr = Array.map (fun cp -> ref (zero cp)) cp_arr in
-            AR (Array.map2 (fun cp aa -> DR (cp, aa, r (a, cp_arr, aa_arr), ref 0, ai, tracker) ) cp_arr aa_arr)
-          |  _               -> failwith "error: this should be a function with one input and two outputs"
+          let cp_arr = fd ap in 
+          let tracker = ref 0 in
+          let aa_arr = Array.map (fun cp -> ref (zero cp)) cp_arr in
+          Array.map2 (fun cp aa -> DR (cp, aa, r (a, cp_arr, aa_arr), ref 0, ai, tracker) ) cp_arr aa_arr
         )
       | ap -> ff ap
 
@@ -993,7 +974,7 @@ module Make
 
     and qr a =
       let ff = function
-        | Arr a -> let q, r = A.(qr a) in Pair (Arr q, Arr r)
+        | Arr a -> let q, r = A.(qr a) in (Arr q, Arr r)
         | _     -> error_uniop "qr" a
       in
       let fd a = qr a in
@@ -1573,15 +1554,15 @@ module Make
       let r_c_d a b = Concat_C_D (a, b, axis) in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    and split axis parts a =
+    and split ~axis parts a =
       let ff a =
         match a with
-        | Arr a -> AR (A.(split ~axis parts a) |> Array.map (fun x -> Arr x))
+        | Arr a -> A.(split ~axis parts a) |> Array.map (fun x -> Arr x)
         | _     -> error_uniop "split" a in
-      let fd a = split axis parts a in
+      let fd a = split ~axis parts a in
       let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
       let r (a, _cp_arr, aa_arr) = Split_D (a, axis, aa_arr) in
-      ar_op_d_d a ff fd df r
+      array_op_d_d a ff fd df r
 
     and concatenate axis a = 
       let ff a = 
@@ -1899,9 +1880,9 @@ module Make
                 | Avgpool3D_D (a, p, d, s)   -> push ((avg_pool3d_backward p (primal a) d s !aa, a) :: t)
                 | UpSampling2D_D (a, s)      -> push ((upsampling2d_backward (primal a) s !aa, a) :: t)
                 | PAD_D (a, p)               -> push ((pad_backward !aa p, a) :: t)
-                | Concat_D_D (a, b, i)       -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa |> extract_ar in push ((s.(0) ,a) :: (s.(1) ,b) :: t)
-                | Concat_D_C (a, b, i)       -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa |> extract_ar in push ((s.(0) ,a) :: t)
-                | Concat_C_D (a, b, i)       -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa |> extract_ar in push ((s.(1) ,b) :: t)
+                | Concat_D_D (a, b, i)       -> let s = split ~axis:i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: (s.(1) ,b) :: t)
+                | Concat_D_C (a, b, i)       -> let s = split ~axis:i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: t)
+                | Concat_C_D (a, b, i)       -> let s = split ~axis:i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(1) ,b) :: t)
                 | Split_D (a, axis, aa_arr)  -> push ((concatenate axis (Array.map (fun aa -> !aa) aa_arr), a) :: t)
               )
               else begin tracker := pred !tracker; push t end
@@ -2276,8 +2257,6 @@ module Make
               )
             | F _a                     -> Printf.sprintf "Const", []
             | Arr _a                   -> Printf.sprintf "Const", []
-            | Pair (_,_)               -> Printf.sprintf "Const", []
-            | AR _a                    -> Printf.sprintf "Const", []
             | DF (_, _, _)             -> Printf.sprintf "DF", []
           in
           (* check if the node has been visited before *)
