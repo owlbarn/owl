@@ -2303,9 +2303,7 @@ module Make
     in
     network ^ attrs
 
-
   let to_trace nodes = _traverse_trace nodes |> _convert_terminal_output
-
 
   let to_dot nodes =
     _traverse_trace nodes
@@ -2313,6 +2311,47 @@ module Make
     |> Printf.sprintf "digraph CG {\nnode [shape=record];\n%s}"
 
   let pp_num formatter x = Format.fprintf formatter "%s" (type_info x)
+
+  module FDGrad_test (P: sig 
+      val n: int 
+      val n_xs: int 
+      val threshold: float 
+      val eps: float end) = struct 
+
+    include P
+    let xs = Array.init n_xs (fun _ -> Mat.gaussian n n)
+             |> Array.map (fun a -> Maths.(transpose a *@ a))
+    let ds =
+      Array.init (n * n) (fun j ->
+          Arr (A.init [|n; n|] (fun i -> if i=j then A.(float_to_elt 1.) else A.(float_to_elt 0.))))
+
+    let g ~f x = (grad f) x
+    let fd_g ~f x d =
+      let dx = Maths.( (F A.(float_to_elt eps)) * d) in
+      Maths.( ((f (x + dx)) - (f (x - dx))) / (F (A.(float_to_elt (2. *. eps)))))
+
+    let check_grads ~threshold rs =
+      let n_d = Array.length rs in
+      let r_fds = Array.map snd rs in
+      let rms = (Array.fold_left (fun acc r_fd -> acc +. (r_fd *. r_fd ) ) 0. r_fds) /. (float n_d) |> sqrt in
+      let max_err = rs |> Array.map (fun (r_ad, r_fd) -> abs_float (r_ad -. r_fd) /. (rms +. 1E-9) ) |> (Array.fold_left max (-1.)) in
+      max_err, max_err < threshold
+
+    let test_func ?threshold:(threshold=threshold) f  =
+      let f x = Maths.(sum' (f x)) in
+      Array.map (fun x ->
+          let _, check =
+            Array.map (fun d ->
+                let r_ad = Maths.(sum' ( (g ~f x) * d )) |> unpack_flt in
+                let r_fd = (fd_g ~f x d)  |> unpack_flt in
+                r_ad, r_fd
+              ) ds
+            |> check_grads ~threshold in
+          check
+        ) xs 
+      |> (Array.fold_left (fun (a, c) b -> a && b, (if b then (succ c) else c) ) (true, 0) )
+  end
+
 
 end
 

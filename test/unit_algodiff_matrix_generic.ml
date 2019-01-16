@@ -15,47 +15,11 @@ module Make
   module AlgoM = Owl.Algodiff.D
   open AlgoM
 
+  module GT = FDGrad_test (struct let n = 3 let n_xs = 20 let threshold = 2E-5 let eps = 1E-5 end) 
 
-  let n = 3 (* size of matrix n x n*)
-  let n_xs = 1
-
-  let eps = 1E-5
-  let xs = Array.init n_xs (fun _ -> Mat.gaussian n n)
-           |> Array.map (fun a -> Maths.(transpose a *@ a))
-
-  let ds =
-    Array.init (n * n) (fun j ->
-        Arr (M.init n n (fun i -> if i=j then 1. else 0.)))
-
-  let g ~f x = (grad f) x
-  let fd_g ~f x d =
-    let dx = Maths.( (F eps) * d) in
-    Maths.( ((f (x + dx)) - (f (x - dx))) / (F (2. *. eps)) )
-
-  let check_grads ?threshold:(th=1E-5) rs =
-    let n_d = Array.length rs in
-    let r_fds = Array.map snd rs in
-    let rms = (Array.fold_left (fun acc r_fd -> acc +. (r_fd *. r_fd ) ) 0. r_fds) /. (float n_d) |> sqrt in
-    let max_err = rs |> Array.map (fun (r_ad, r_fd) -> abs_float (r_ad -. r_fd) /. (rms +. 1E-9) ) |> (Array.fold_left max (-1.)) in
-    max_err, max_err < th
-
-  let test_func f  =
-    let f x = Maths.(sum' (f x)) in
-    Array.map (fun x ->
-        let max_err, check =
-          Array.map (fun d ->
-              let r_ad = Maths.(sum' ( (g ~f x) * d )) |> unpack_flt in
-              let r_fd = (fd_g ~f x d)  |> unpack_flt in
-              r_ad, r_fd
-            ) ds
-          |> check_grads in
-        check
-      ) xs 
-    |> (Array.fold_left (fun (a, c) b -> a && b, (if b then (succ c) else c) ) (true, 0) )
-
+  open GT
 
   module To_test = struct
-
     let sin   () = test_func Maths.sin
     let cos   () = test_func Maths.cos
     let tan   () = test_func Maths.tan
