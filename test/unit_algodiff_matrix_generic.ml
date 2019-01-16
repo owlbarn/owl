@@ -15,47 +15,11 @@ module Make
   module AlgoM = Owl.Algodiff.D
   open AlgoM
 
+  module GT = FDGrad_test (struct let n = 3 let n_xs = 20 let threshold = 2E-5 let eps = 1E-5 end) 
 
-  let n = 3 (* size of matrix n x n*)
-  let n_xs = 1
-
-  let eps = 1E-5
-  let xs = Array.init n_xs (fun _ -> Mat.gaussian n n)
-           |> Array.map (fun a -> Maths.(transpose a *@ a))
-
-  let ds =
-    Array.init (n * n) (fun j ->
-        Arr (M.init n n (fun i -> if i=j then 1. else 0.)))
-
-  let g ~f x = (grad f) x
-  let fd_g ~f x d =
-    let dx = Maths.( (F eps) * d) in
-    Maths.( ((f (x + dx)) - (f (x - dx))) / (F (2. *. eps)) )
-
-  let check_grads ?threshold:(th=1E-5) rs =
-    let n_d = Array.length rs in
-    let r_fds = Array.map snd rs in
-    let rms = (Array.fold_left (fun acc r_fd -> acc +. (r_fd *. r_fd ) ) 0. r_fds) /. (float n_d) |> sqrt in
-    let max_err = rs |> Array.map (fun (r_ad, r_fd) -> abs_float (r_ad -. r_fd) /. (rms +. 1E-9) ) |> (Array.fold_left max (-1.)) in
-    max_err, max_err < th
-
-  let test_func f  =
-    let f x = Maths.(sum' (f x)) in
-    Array.map (fun x ->
-      let max_err, check =
-        Array.map (fun d ->
-          let r_ad = Maths.(sum' ( (g ~f x) * d )) |> unpack_flt in
-            let r_fd = (fd_g ~f x d)  |> unpack_flt in
-            r_ad, r_fd
-          ) ds
-        |> check_grads in
-      check
-    ) xs 
-    |> (Array.fold_left (fun (a, c) b -> a && b, (if b then (succ c) else c) ) (true, 0) )
-
+  open GT
 
   module To_test = struct
-
     let sin   () = test_func Maths.sin
     let cos   () = test_func Maths.cos
     let tan   () = test_func Maths.tan
@@ -69,15 +33,23 @@ module Make
     let triu  () = test_func Maths.triu
     let inv   () = test_func Maths.inv
     let qr  () =
-      let f x =
-        match (Maths.qr x) with
-          | Pair (q, r) -> Maths.(q + r)
-          | _ -> assert false  in
-        test_func f
+      let f x = 
+        let q, r = Maths.qr x in
+        Maths.(q + r)
+      in test_func f
+
+    let split () =
+      let f x = 
+        let a = Maths.split 0 [| 1; 1; 1|] x in
+        Maths.(a.(0) + a.(1) * a.(2)) in
+      test_func f
 
     let lyapunov () =
-      let q = Arr Owl.Mat.(neg (eye n)) in
-      let f x = Maths.lyapunov x q in
+      let f x = 
+        let q = Arr Owl.Mat.((gaussian n n)) in
+        let q = Maths.(q + x) in
+        let q = Maths.(neg (transpose q *@ q)) in
+        Maths.lyapunov x q in
       test_func f
 
   end
@@ -112,6 +84,8 @@ module Make
 
   let qr () = alco_fun "qr" To_test.qr
 
+  let split () = alco_fun "split" To_test.split
+
 
   let test_set = [
     "sin",   `Slow,   sin;
@@ -127,6 +101,7 @@ module Make
     "triu",  `Slow,   triu;
     "inv",   `Slow,   inv;
     "qr",    `Slow,   qr;
+    "split", `Slow,   split;
   ]
 
 end

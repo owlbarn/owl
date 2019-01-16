@@ -18,11 +18,10 @@ module type Sig = sig
   (** Trace type *)
 
   type t =
-    | F    of A.elt                                  (* constructor of float numbers *)
-    | Arr  of A.arr                                  (* constructor of ndarrays *)
-    | Pair of t * t                                  (* functions with multiple outputs *)
-    | DF   of t * t * int                            (* primal, tangent, tag *)
-    | DR   of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
+    | F    of A.elt                                           (* constructor of float numbers *)
+    | Arr  of A.arr                                           (* constructor of ndarrays *)
+    | DF   of t * t * int                                     (* primal, tangent, tag *)
+    | DR   of t * t ref * trace_op * int ref * int * int ref  (* primal, adjoint, op, fanout, tag *)
   (** Abstract number type *)
 
 
@@ -81,7 +80,7 @@ module type Sig = sig
     val inv : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-    val qr : t -> t
+    val qr : t -> t * t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val lyapunov : t -> t -> t
