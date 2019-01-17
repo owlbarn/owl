@@ -551,18 +551,22 @@ let pp_hist formatter hist =
 
 
 
-let quantile x p =
+let quantile x =
   let y = sort ~inc:true x in
   let n = Array.length y in
-  let index = p *. (float_of_int (n - 1)) in
-  let lhs = int_of_float index in
-  let delta = index -. (float_of_int lhs) in
+  fun p ->
+    if p < 0. || p > 1. then
+      raise (Invalid_argument "Owl_base_stats.quantile: expected float between 0 and 1")
+    else
+      let index = p *. (float_of_int (n - 1)) in
+      let lhs = int_of_float index in
+      let delta = index -. (float_of_int lhs) in
 
-  if n = 0 then 0.
-  else (
-    if lhs = n - 1 then y.(lhs)
-    else (1. -. delta) *. y.(lhs) +. delta *. y.(lhs + 1)
-  )
+      if n = 0 then 0.
+      else (
+        if lhs = n - 1 then y.(lhs)
+        else (1. -. delta) *. y.(lhs) +. delta *. y.(lhs + 1)
+      )
 
 
 let percentile x p = quantile x (p /. 100.)
