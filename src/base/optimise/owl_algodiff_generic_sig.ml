@@ -80,6 +80,9 @@ module type Sig = sig
     val inv : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val chol : ?upper:bool -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val qr : t -> t * t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

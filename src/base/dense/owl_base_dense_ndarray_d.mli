@@ -411,6 +411,8 @@ val dot : arr -> arr -> arr
 val inv : arr -> arr
 
 val qr : arr -> arr * arr
+                
+val chol : ?upper:bool -> arr -> arr 
 
 val lyapunov : arr -> arr -> arr
 

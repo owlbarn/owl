@@ -4196,6 +4196,8 @@ let inv varr =
 
 let qr _x = raise Owl_exception.NOT_IMPLEMENTED
 
+let chol ?(upper=true) _x = upper |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+
 let lyapunov _a _q = raise Owl_exception.NOT_IMPLEMENTED
 
 let diag ?(k=0) _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED

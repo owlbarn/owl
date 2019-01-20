@@ -45,6 +45,8 @@ module S = struct
 
   let inv = Owl_linalg_s.inv
 
+  let chol = Owl_linalg_s.chol 
+
   let mpow = Owl_linalg_s.mpow
 
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
@@ -68,6 +70,8 @@ module D = struct
   (* inject function aliases *)
 
   let inv = Owl_linalg_d.inv
+              
+  let chol = Owl_linalg_d.chol 
 
   let mpow = Owl_linalg_d.mpow
 

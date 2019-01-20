@@ -32,6 +32,11 @@ module Make
     let tril  () = test_func Maths.tril
     let triu  () = test_func Maths.triu
     let inv   () = test_func Maths.inv
+    let chol  () = 
+      let f x = 
+        let s = Maths.(transpose x *@ x) in
+        Maths.( (chol ~upper:true s) + (chol ~upper:false s))
+      in test_func f 
     let qr  () =
       let f x = 
         let q, r = Maths.qr x in
@@ -81,6 +86,8 @@ module Make
   let triu () = alco_fun "triu" To_test.triu
 
   let inv () = alco_fun "inv" To_test.inv
+      
+  let chol () = alco_fun "chol" To_test.chol
 
   let qr () = alco_fun "qr" To_test.qr
 
@@ -100,6 +107,7 @@ module Make
     "tril",  `Slow,   tril;
     "triu",  `Slow,   triu;
     "inv",   `Slow,   inv;
+    "chol",  `Slow,   chol;
     "qr",    `Slow,   qr;
     "split", `Slow,   split;
   ]

@@ -494,6 +494,9 @@ as an identity node. For information about the optional parameters, refer to the
   val inv : arr -> arr
   (** TODO *)
 
+  val chol: ?upper:bool -> arr -> arr
+  (** TODO *)
+
   val qr : arr -> arr * arr
   (** TODO *)
 

@@ -461,6 +461,8 @@ module Make
 
   let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
 
+  let chol ?(upper=true) _x = upper |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+
   let qr _x = raise Owl_exception.NOT_IMPLEMENTED 
   
   let lyapunov _a _q = raise Owl_exception.NOT_IMPLEMENTED 

@@ -97,6 +97,7 @@ module Make
     | Sigmoid_D      of t
     | Relu_D         of t
     | Inv_D          of t
+    | Chol_D         of t * bool
     | QR_D           of (t * (t ref * t ref) * (t ref * t ref))
     | Lyapunov_D_D   of t * t
     | Lyapunov_C_D   of t * t
@@ -264,7 +265,6 @@ module Make
     match (primal x) with
     | Arr x -> x
     | _     -> failwith "error: AD.unpack_arr"
-
 
   (* functions to report errors, help in debugging *)
 
@@ -972,6 +972,39 @@ module Make
       let r a = Inv_D a in
       op_d_d a ff fd df r
 
+    and copyltu x = (tril x) + (transpose (tril ~k:(-1) x))
+
+    and copyutl x = (triu x) + (transpose (triu ~k:1 x))
+
+    and chol ?(upper=true) a =
+      let ff = function
+        | Arr a    -> Arr A.(chol ~upper a)
+        | _        -> error_uniop "chol" a
+      in
+      let fd a = chol ~upper a in
+      let df cp _ap at = _chol_forward cp at upper in
+      let r a = Chol_D (a, upper) in
+      op_d_d a ff fd df r
+
+    and _chol_forward cp at upper = 
+      let inv_cp = inv cp in
+      let tr_inv_cp = transpose inv_cp in
+      if upper then
+        let x = inv_cp *@ (transpose at) *@ tr_inv_cp in 
+        let m = (pack_flt 0.5) * (tril (triu x)) in
+        (transpose cp) *@ m + (triu ~k:(1) x)
+      else
+        let x = tr_inv_cp *@ at *@ inv_cp in
+        let m = (pack_flt 0.5) * (tril (triu x)) in
+        cp *@ (m + (tril ~k:(-1) x))
+
+    and _chol_backward o aa upper = 
+      let inv_o = inv o in
+      let tr_inv_o = transpose inv_o in
+      if upper then (pack_flt 0.5) * inv_o *@ (copyutl (o *@ (transpose aa))) *@ tr_inv_o
+      else (pack_flt 0.5) * tr_inv_o *@ (copyltu ((transpose o) *@ aa)) *@ inv_o
+
+
     and qr a =
       let ff = function
         | Arr a -> let q, r = A.(qr a) in (Arr q, Arr r)
@@ -982,7 +1015,7 @@ module Make
       let r (a, (cp1, cp2), (aa1, aa2)) = QR_D (a, (cp1, cp2), (aa1, aa2))  in
       pair_op_d_d a ff fd df r
 
-    and qr_backward (o1, o2) (aa1, aa2) =
+    and _qr_backward (o1, o2) (aa1, aa2) =
       let q = !o1 and r = !o2 and qbar = !aa1 and rbar = !aa2 in
       let qt = transpose q and qbart = transpose qbar in
       let rt = transpose r and rbart = transpose rbar in
@@ -1006,11 +1039,11 @@ module Make
       let r_c_d a q = Lyapunov_C_D (a, q) in
       op_d_d_d a q ff fd df_da df_dq df_daq r_d_d r_d_c r_c_d
 
-    and lyapunov_backward_a a aa ap = (pack_flt 2.) * (lyapunov (transpose a) (neg aa)) *@ ap
+    and _lyapunov_backward_a a aa ap = (pack_flt 2.) * (lyapunov (transpose a) (neg aa)) *@ ap
 
-    and lyapunov_backward_q a aa = lyapunov (transpose a) aa
+    and _lyapunov_backward_q a aa = lyapunov (transpose a) aa
 
-    and lyapunov_backward_aq a aa ap =
+    and _lyapunov_backward_aq a aa ap =
       let s = lyapunov (transpose a) (neg aa) in
       s, (pack_flt 2.) * s *@ ap
 
@@ -1656,6 +1689,7 @@ module Make
                 | Sigmoid_D a                -> reset (a :: t)
                 | Relu_D a                   -> reset (a :: t)
                 | Inv_D a                    -> reset (a :: t)
+                | Chol_D (a, _)              -> reset (a :: t)
                 | QR_D (a, _, _)             -> reset (a :: t)
                 | Lyapunov_D_D (a, q)        -> reset (a :: q :: t)
                 | Lyapunov_D_C (a, _)        -> reset (a :: t)
@@ -1818,10 +1852,11 @@ module Make
                 | Sigmoid_D a                -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
                 | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
                 | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) *@ !aa *@ dpt), a) :: t)
-                | QR_D (a, o, aa)            -> push ((qr_backward o aa, a) :: t) 
-                | Lyapunov_D_D (a, _)        -> let abar, qbar = lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t)
-                | Lyapunov_D_C (a, _)        -> push (((lyapunov_backward_a a !aa ap), a) :: t)
-                | Lyapunov_C_D (a, _)        -> push (((lyapunov_backward_q a !aa), a) :: t)
+                | Chol_D (a, upper)          -> push ((_chol_backward a !aa upper, a) :: t)
+                | QR_D (a, o, aa)            -> push ((_qr_backward o aa, a) :: t) 
+                | Lyapunov_D_D (a, _)        -> let abar, qbar = _lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t)
+                | Lyapunov_D_C (a, _)        -> push (((_lyapunov_backward_a a !aa ap), a) :: t)
+                | Lyapunov_C_D (a, _)        -> push (((_lyapunov_backward_q a !aa), a) :: t)
                 | Diag_D (k, a)              ->
                   let m = col_num a in
                   let l = Pervasives.(m - k) in
@@ -2201,6 +2236,7 @@ module Make
                 | Sigmoid_D a                  -> "Sigmoid_D", [ a ]
                 | Relu_D a                     -> "Relu_D", [ a ]
                 | Inv_D a                      -> "Inv_D", [ a ]
+                | Chol_D (a, _)                -> "Chol_D", [ a ]
                 | QR_D (a, _, _)               -> "QR_D", [ a ]
                 | Lyapunov_D_D (a, q)          -> "Lyapunov_D_D", [ a; q ]
                 | Lyapunov_C_D (a, q)          -> "Lyapunov_C_D", [ a; q ]
