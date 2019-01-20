@@ -2361,7 +2361,6 @@ module Make
       Array.init (n * n) (fun j ->
           Arr (A.init [|n; n|] (fun i -> if i=j then A.(float_to_elt 1.) else A.(float_to_elt 0.))))
 
-    let g ~f x = (grad f) x
     let fd_g ~f x d =
       let dx = Maths.( (F A.(float_to_elt eps)) * d) in
       Maths.( ((f (x + dx)) - (f (x - dx))) / (F (A.(float_to_elt (2. *. eps)))))
@@ -2373,19 +2372,23 @@ module Make
       let max_err = rs |> Array.map (fun (r_ad, r_fd) -> abs_float (r_ad -. r_fd) /. (rms +. 1E-9) ) |> (Array.fold_left max (-1.)) in
       max_err, max_err < threshold
 
-    let test_func ?threshold:(threshold=threshold) f  =
+    let test_func ?threshold:(threshold=threshold) ?(verbose=false) f  =
       let f x = Maths.(sum' (f x)) in
-      Array.map (fun x ->
-          let _, check =
-            Array.map (fun d ->
-                let r_ad = Maths.(sum' ( (g ~f x) * d )) |> unpack_flt in
-                let r_fd = (fd_g ~f x d)  |> unpack_flt in
-                r_ad, r_fd
-              ) ds
-            |> check_grads ~threshold in
-          check
-        ) xs 
-      |> (Array.fold_left (fun (a, c) b -> a && b, (if b then (succ c) else c) ) (true, 0) )
+      let g = grad f in
+      let check, n_passed = 
+        Array.map (fun x ->
+            let _, check =
+              Array.map (fun d ->
+                  let r_ad = Maths.(sum' ( (g x) * d )) |> unpack_flt in
+                  let r_fd = (fd_g ~f x d)  |> unpack_flt in
+                  r_ad, r_fd
+                ) ds
+              |> check_grads ~threshold in
+            check
+          ) xs 
+        |> (Array.fold_left (fun (a, c) b -> a && b, (if b then (succ c) else c) ) (true, 0) ) in
+      if verbose then Printf.printf "reverse gradient passed %i/%i random samples tested." n_passed n_xs;
+      check, n_passed
   end
 
 

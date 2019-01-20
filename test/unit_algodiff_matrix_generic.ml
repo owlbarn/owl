@@ -15,14 +15,16 @@ module Make
   module AlgoM = Owl.Algodiff.D
   open AlgoM
 
-  module GT = FDGrad_test (struct let n = 3 let n_xs = 20 let threshold = 2E-5 let eps = 1E-5 end) 
+  module GT = FDGrad_test (struct let n = 3 let n_xs = 20 let threshold = 1E-6 let eps = 1E-4 end) 
 
   open GT
 
   module To_test = struct
     let sin   () = test_func Maths.sin
     let cos   () = test_func Maths.cos
-    let tan   () = test_func Maths.tan
+    let tan   () = 
+      let f x = Maths.((tan x) * (cos x) * (cos x))  
+      in test_func f
     let sinh  () = test_func Maths.sinh
     let cosh  () = test_func Maths.cosh
     let exp   () = test_func Maths.exp
@@ -31,18 +33,21 @@ module Make
     let trace () = test_func Maths.trace
     let tril  () = test_func Maths.tril
     let triu  () = test_func Maths.triu
-    let inv   () = test_func Maths.inv
-    let chol  () = 
+    let inv   () = 
+      let e = Arr (Owl.Mat.eye n) in
       let f x = 
-        let s = Maths.(transpose x *@ x) in
-        Maths.( (chol ~upper:true s) + (chol ~upper:false s))
-      in test_func f 
+        Maths.(inv (x + e)) in
+      test_func f
     let qr  () =
       let f x = 
         let q, r = Maths.qr x in
         Maths.(q + r)
       in test_func f
-
+    let chol  () = 
+      let f x = 
+        let s = Maths.(transpose x *@ x) in
+        Maths.( (chol ~upper:true s) + (chol ~upper:false s))
+      in test_func f 
     let split () =
       let f x = 
         let a = Maths.split 0 [| 1; 1; 1|] x in
