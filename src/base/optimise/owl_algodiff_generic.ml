@@ -990,20 +990,19 @@ module Make
       let inv_cp = inv cp in
       let tr_inv_cp = transpose inv_cp in
       if upper then
-        let x = inv_cp *@ (transpose at) *@ tr_inv_cp in 
+        let x = tr_inv_cp *@ (transpose at) *@ inv_cp in 
         let m = (pack_flt 0.5) * (tril (triu x)) in
-        (transpose cp) *@ m + (triu ~k:(1) x)
+        (transpose cp) *@ (m + (triu ~k:(1) x))
       else
-        let x = tr_inv_cp *@ at *@ inv_cp in
+        let x = inv_cp *@ at *@ tr_inv_cp in
         let m = (pack_flt 0.5) * (tril (triu x)) in
         cp *@ (m + (tril ~k:(-1) x))
 
     and _chol_backward o aa upper = 
       let inv_o = inv o in
       let tr_inv_o = transpose inv_o in
-      if upper then (pack_flt 0.5) * inv_o *@ (copyutl (o *@ (transpose aa))) *@ tr_inv_o
+      if upper then (pack_flt 0.5) * inv_o *@ (copyutl (aa *@ (transpose o))) *@ tr_inv_o
       else (pack_flt 0.5) * tr_inv_o *@ (copyltu ((transpose o) *@ aa)) *@ inv_o
-
 
     and qr a =
       let ff = function
@@ -1852,7 +1851,7 @@ module Make
                 | Sigmoid_D a                -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
                 | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
                 | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) *@ !aa *@ dpt), a) :: t)
-                | Chol_D (a, upper)          -> push ((_chol_backward a !aa upper, a) :: t)
+                | Chol_D (a, upper)          -> push ((_chol_backward ap !aa upper, a) :: t)
                 | QR_D (a, o, aa)            -> push ((_qr_backward o aa, a) :: t) 
                 | Lyapunov_D_D (a, _)        -> let abar, qbar = _lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t)
                 | Lyapunov_D_C (a, _)        -> push (((_lyapunov_backward_a a !aa ap), a) :: t)
