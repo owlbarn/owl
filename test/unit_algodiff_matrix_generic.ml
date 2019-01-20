@@ -15,7 +15,7 @@ module Make
   module AlgoM = Owl.Algodiff.D
   open AlgoM
 
-  module GT = FDGrad_test (struct let n = 3 let n_xs = 20 let threshold = 1E-5 let eps = 1E-5 end) 
+  module GT = FDGrad_test (struct let n = 3 let n_xs = 20 let threshold = 1E-6 let eps = 1E-5 end) 
 
   open GT
 
@@ -47,10 +47,12 @@ module Make
       in test_func f
 
     let svd () = 
-      let f x =                   
-        let x = Maths.((transpose x) *@ x) in
-        let u, s, vt = Maths.svd x in
-        Maths.(u + (sum' s) * (l2norm_sqr' vt))
+      let f =                   
+        let y = Mat.gaussian 20 n in 
+        fun x -> 
+          let x = Maths.(y *@ x) in
+          let u, s, vt = Maths.svd x in
+          Maths.(u + (sum' s) * (l2norm_sqr' vt))
       in test_func f
 
     let chol  () = 
@@ -66,11 +68,12 @@ module Make
       test_func f
 
     let lyapunov () =
-      let f x = 
+      let f = 
         let q = Arr Owl.Mat.((gaussian n n)) in
-        let q = Maths.(q + x) in
-        let q = Maths.(neg (transpose q *@ q)) in
-        Maths.lyapunov x q in
+        fun x -> 
+          let q = Maths.(q + x) in
+          let q = Maths.(neg (transpose q *@ q)) in
+          Maths.lyapunov x q in
       test_func f
 
   end
@@ -102,7 +105,7 @@ module Make
   let triu () = alco_fun "triu" To_test.triu
 
   let inv () = alco_fun "inv" To_test.inv
-      
+
   let chol () = alco_fun "chol" To_test.chol
 
   let qr () = alco_fun "qr" To_test.qr
