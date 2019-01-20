@@ -47,6 +47,9 @@ module type Sig = sig
   val init : int array -> (int -> elt) -> arr
   (** TODO *)
 
+  val init_nd : int array -> (int array -> elt) -> arr
+  (** TODO *)
+
   val shape : arr -> int array
   (** TODO *)
 
@@ -112,24 +115,24 @@ module type Sig = sig
 
   val delay : (Device.A.arr -> Device.A.arr) -> arr -> arr
   (**
-``delay f x`` returns ``f x``. It allows to use a function that is not tracked
-by the computation graph and delay its evaluation. The output must have the
-same shape as the input.
-   *)
+     ``delay f x`` returns ``f x``. It allows to use a function that is not tracked
+     by the computation graph and delay its evaluation. The output must have the
+     same shape as the input.
+  *)
 
   val delay_array : int array -> (Device.A.arr array -> Device.A.arr) ->
-                    arr array -> arr
+    arr array -> arr
   (**
-``delay_array out_shape f x`` works in the same way as ``delay`` but is applied
-on an array of ndarrays. Needs the shape of the output as an argument.
-   *)
+     ``delay_array out_shape f x`` works in the same way as ``delay`` but is applied
+     on an array of ndarrays. Needs the shape of the output as an argument.
+  *)
 
   val lazy_print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(Device.A.elt -> string) -> arr -> arr
   (**
-``lazy_print x`` prints the output of ``x`` when it is evaluated. Is implemented
-as an identity node. For information about the optional parameters, refer to the
-``print`` function of the ``Ndarray`` module.
-   *)
+     ``lazy_print x`` prints the output of ``x`` when it is evaluated. Is implemented
+     as an identity node. For information about the optional parameters, refer to the
+     ``print`` function of the ``Ndarray`` module.
+  *)
 
   val print : ?max_row:'a -> ?max_col:'b -> ?header:'c -> ?fmt:'d -> 'e -> unit
   (** TODO *)
@@ -500,10 +503,16 @@ as an identity node. For information about the optional parameters, refer to the
   val qr : arr -> arr * arr
   (** TODO *)
 
+  val svd : ?thin:bool -> arr -> arr * arr * arr
+  (** TODO *)
+
   val lyapunov : arr -> arr -> arr
   (** TODO *)
-  
+
   val diag: ?k:int -> arr -> arr
+  (** TODO *)
+
+  val diagm: ?k:int -> arr -> arr
   (** TODO *)
 
   val triu: ?k:int -> arr -> arr
@@ -538,100 +547,100 @@ as an identity node. For information about the optional parameters, refer to the
 
   module Scalar : sig
     val add : elt -> elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val sub : elt -> elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val mul : elt -> elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val div : elt -> elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val pow : elt -> elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val atan2 : elt -> elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val abs : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val neg : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val sqr : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val sqrt : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val exp : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val log : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val log2 : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val log10 : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val signum : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val floor : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val ceil : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val round : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val sin : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val cos : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val tan : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val sinh : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val cosh : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val tanh : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val asin : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val acos : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val atan : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val asinh : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val acosh : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val atanh : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val relu : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
     val sigmoid : elt -> elt
-  (** TODO *)
+    (** TODO *)
 
   end
 

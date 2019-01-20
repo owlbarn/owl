@@ -410,6 +410,8 @@ val dot : arr -> arr -> arr
 
 val inv : arr -> arr
 
+val svd : ?thin:bool -> arr -> arr * arr * arr
+
 val qr : arr -> arr * arr
                 
 val chol : ?upper:bool -> arr -> arr 
@@ -417,6 +419,8 @@ val chol : ?upper:bool -> arr -> arr
 val lyapunov : arr -> arr -> arr
 
 val diag: ?k:int -> arr -> arr 
+
+val diagm: ?k:int -> arr -> arr 
 
 val triu: ?k:int -> arr -> arr 
 

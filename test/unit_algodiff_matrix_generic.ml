@@ -46,6 +46,13 @@ module Make
         Maths.(q + r)
       in test_func f
 
+    let svd () = 
+      let f x =                   
+        let x = Maths.((transpose x) *@ x) in
+        let u, s, vt = Maths.svd x in
+        Maths.(u + (sum' s) * (l2norm_sqr' vt))
+      in test_func f
+
     let chol  () = 
       let f x = 
         let s = Maths.(transpose x *@ x) in
@@ -100,6 +107,8 @@ module Make
 
   let qr () = alco_fun "qr" To_test.qr
 
+  let svd () = alco_fun "svd" To_test.svd
+
   let split () = alco_fun "split" To_test.split
 
 
@@ -119,6 +128,7 @@ module Make
     "chol",  `Slow,   chol;
     "qr",    `Slow,   qr;
     "split", `Slow,   split;
+    "svd",   `Slow,   svd;
   ]
 
 end
