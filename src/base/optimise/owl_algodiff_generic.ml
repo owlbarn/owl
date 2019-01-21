@@ -97,7 +97,9 @@ module Make
     | Sigmoid_D      of t
     | Relu_D         of t
     | Inv_D          of t
+    | Chol_D         of t * bool
     | QR_D           of (t * (t ref * t ref) * (t ref * t ref))
+    | Svd_D           of (t * (t ref * t ref * t ref) * (t ref * t ref * t ref) * bool)
     | Lyapunov_D_D   of t * t
     | Lyapunov_C_D   of t * t
     | Lyapunov_D_C   of t * t
@@ -265,7 +267,6 @@ module Make
     | Arr x -> x
     | _     -> failwith "error: AD.unpack_arr"
 
-
   (* functions to report errors, help in debugging *)
 
   let deep_info x = match primal' x with
@@ -317,6 +318,24 @@ module Make
              we've fully updated both aa1 and aa2 *)
           ( DR (cp1, aa1, r (a, (cp1_ref,cp2_ref), (aa1, aa2)), ref 0, ai, tracker) , 
             DR (cp2, aa2, r (a, (cp1_ref,cp2_ref), (aa1, aa2)), ref 0, ai, tracker) )
+        )
+      | ap -> ff ap
+
+    and triple_op_d_d a ff fd df r =
+      match a with
+      | DF (ap, at, ai)      -> let cp1, cp2, cp3 = fd ap in DF (cp1, (df cp1 ap at), ai), DF (cp2, (df cp2 ap at), ai), DF (cp3, (df cp3 ap at), ai) 
+      | DR (ap, _, _, _, ai, _) -> (
+          let (cp1, cp2, cp3) = fd ap in
+          let aa1 = ref (zero cp1)  in
+          let aa2 = ref (zero cp2)  in
+          let aa3 = ref (zero cp3)  in
+          let cp1_ref = ref cp1 in
+          let cp2_ref = ref cp2 in
+          let cp3_ref = ref cp3 in
+          let tracker = ref 0 in
+          ( DR (cp1, aa1, r (a, (cp1_ref,cp2_ref,cp3_ref), (aa1, aa2, aa3)), ref 0, ai, tracker) , 
+            DR (cp2, aa2, r (a, (cp1_ref,cp2_ref,cp3_ref), (aa1, aa2, aa3)), ref 0, ai, tracker) ,
+            DR (cp3, aa3, r (a, (cp1_ref,cp2_ref,cp3_ref), (aa1, aa2, aa3)), ref 0, ai, tracker) )
         )
       | ap -> ff ap
 
@@ -932,6 +951,10 @@ module Make
       let r a = Diag_D (k, a) in
       op_d_d a ff fd df r
 
+    and diagm ?(k=0) a = match a with
+      | Arr a      -> Arr A.(diagm ~k a |> copy)
+      | _          -> error_uniop "diagm" a
+
     and trace a =
       let ff = function
         | Arr a     -> F A.(trace a)
@@ -972,6 +995,38 @@ module Make
       let r a = Inv_D a in
       op_d_d a ff fd df r
 
+    and copyltu x = (tril x) + (transpose (tril ~k:(-1) x))
+
+    and copyutl x = (triu x) + (transpose (triu ~k:1 x))
+
+    and chol ?(upper=true) a =
+      let ff = function
+        | Arr a    -> Arr A.(chol ~upper a)
+        | _        -> error_uniop "chol" a
+      in
+      let fd a = chol ~upper a in
+      let df cp _ap at = _chol_forward cp at upper in
+      let r a = Chol_D (a, upper) in
+      op_d_d a ff fd df r
+
+    and _chol_forward cp at upper = 
+      let inv_cp = inv cp in
+      let tr_inv_cp = transpose inv_cp in
+      if upper then
+        let x = tr_inv_cp *@ (transpose at) *@ inv_cp in 
+        let m = (pack_flt 0.5) * (tril (triu x)) in
+        (transpose cp) *@ (m + (triu ~k:(1) x))
+      else
+        let x = inv_cp *@ at *@ tr_inv_cp in
+        let m = (pack_flt 0.5) * (tril (triu x)) in
+        cp *@ (m + (tril ~k:(-1) x))
+
+    and _chol_backward o aa upper = 
+      let inv_o = inv o in
+      let tr_inv_o = transpose inv_o in
+      if upper then (pack_flt 0.5) * inv_o *@ (copyutl (aa *@ (transpose o))) *@ tr_inv_o
+      else (pack_flt 0.5) * tr_inv_o *@ (copyltu ((transpose o) *@ aa)) *@ inv_o
+
     and qr a =
       let ff = function
         | Arr a -> let q, r = A.(qr a) in (Arr q, Arr r)
@@ -982,7 +1037,7 @@ module Make
       let r (a, (cp1, cp2), (aa1, aa2)) = QR_D (a, (cp1, cp2), (aa1, aa2))  in
       pair_op_d_d a ff fd df r
 
-    and qr_backward (o1, o2) (aa1, aa2) =
+    and _qr_backward (o1, o2) (aa1, aa2) =
       let q = !o1 and r = !o2 and qbar = !aa1 and rbar = !aa2 in
       let qt = transpose q and qbart = transpose qbar in
       let rt = transpose r and rbart = transpose rbar in
@@ -990,6 +1045,43 @@ module Make
       let rinvt = transpose (inv r) in
       let middle = tril ~k:(-1) ( (r*@rbart) - (rbar*@rt) + (qt*@qbar) - (qbart*@q) ) in
       (q*@(rbar + (middle*@rinvt))) + ((qbar - (q*@(qt*@qbar)))*@rinvt)
+
+    and svd ?(thin=true) a =
+      let ff = function
+        | Arr a -> let u, s, vt = A.(svd ~thin a) in (Arr u, Arr s, Arr vt)
+        | _     -> error_uniop "svd" a
+      in
+      let fd a = svd ~thin a in
+      let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
+      let r (a, (cp1, cp2, cp3), (aa1, aa2, aa3)) = Svd_D (a, (cp1, cp2, cp3), (aa1, aa2, aa3), thin)  in
+      triple_op_d_d a ff fd df r
+
+    and _svd_backward (o1, o2, o3) (aa1, aa2, aa3) thin =
+      let (u, s, vt) = (!o1, !o2, !o3) and (ubar, sbar, vbart) = (!aa1, !aa2, !aa3) in
+      let ut = transpose u and v = transpose vt in
+      let ubart = transpose ubar and vbar = transpose vbart in
+      let eye n = A.(ones [|1; n|]) |> pack_arr |> diagm in
+      let e_m = eye (row_num u) in
+      let e_n = eye (row_num v) in
+      let k = row_num vt in
+      let f = 
+        let s2 = sqr s in
+        pack_arr A.(init_nd [|k; k|] (fun idx -> 
+            let i = idx.(0) and j = idx.(1) in
+            if i=j then float_to_elt 0. 
+            else begin
+              let s2_i = get_item s2 0 i |> unpack_flt in
+              let s2_j = get_item s2 0 j |> unpack_flt in
+              (1. /. ( s2_j -. s2_i)) |> float_to_elt
+            end )) in
+      let inv_s = (pack_flt 1.) / s in
+      if thin then 
+        begin 
+          ((u * sbar) *@ vt  +
+           ((u *@ (f * (ut *@ ubar - ubart *@ u)) * s) + ((e_m - (u *@ ut)) *@ ubar * inv_s)) *@ vt +
+           u *@ (((transpose s) * (f * (vt *@ vbar - vbart *@ v))) *@ vt + ((transpose inv_s) * vbart *@ (e_n - v *@ vt)))) 
+        end
+      else raise Owl_exception.NOT_IMPLEMENTED
 
     and lyapunov a q =
       let ff a q =
@@ -1006,11 +1098,11 @@ module Make
       let r_c_d a q = Lyapunov_C_D (a, q) in
       op_d_d_d a q ff fd df_da df_dq df_daq r_d_d r_d_c r_c_d
 
-    and lyapunov_backward_a a aa ap = (pack_flt 2.) * (lyapunov (transpose a) (neg aa)) *@ ap
+    and _lyapunov_backward_a a aa ap = (pack_flt 2.) * (lyapunov (transpose a) (neg aa)) *@ ap
 
-    and lyapunov_backward_q a aa = lyapunov (transpose a) aa
+    and _lyapunov_backward_q a aa = lyapunov (transpose a) aa
 
-    and lyapunov_backward_aq a aa ap =
+    and _lyapunov_backward_aq a aa ap =
       let s = lyapunov (transpose a) (neg aa) in
       s, (pack_flt 2.) * s *@ ap
 
@@ -1656,7 +1748,9 @@ module Make
                 | Sigmoid_D a                -> reset (a :: t)
                 | Relu_D a                   -> reset (a :: t)
                 | Inv_D a                    -> reset (a :: t)
+                | Chol_D (a, _)              -> reset (a :: t)
                 | QR_D (a, _, _)             -> reset (a :: t)
+                | Svd_D (a, _, _, _)         -> reset (a :: t)
                 | Lyapunov_D_D (a, q)        -> reset (a :: q :: t)
                 | Lyapunov_D_C (a, _)        -> reset (a :: t)
                 | Lyapunov_C_D (_, q)        -> reset (q :: t)
@@ -1818,10 +1912,12 @@ module Make
                 | Sigmoid_D a                -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
                 | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
                 | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) *@ !aa *@ dpt), a) :: t)
-                | QR_D (a, o, aa)            -> push ((qr_backward o aa, a) :: t) 
-                | Lyapunov_D_D (a, _)        -> let abar, qbar = lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t)
-                | Lyapunov_D_C (a, _)        -> push (((lyapunov_backward_a a !aa ap), a) :: t)
-                | Lyapunov_C_D (a, _)        -> push (((lyapunov_backward_q a !aa), a) :: t)
+                | Chol_D (a, upper)          -> push ((_chol_backward ap !aa upper, a) :: t)
+                | QR_D (a, o, aa)            -> push ((_qr_backward o aa, a) :: t) 
+                | Svd_D (a, o, aa, thin)     -> push ((_svd_backward o aa thin,a) :: t)
+                | Lyapunov_D_D (a, _)        -> let abar, qbar = _lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t)
+                | Lyapunov_D_C (a, _)        -> push (((_lyapunov_backward_a a !aa ap), a) :: t)
+                | Lyapunov_C_D (a, _)        -> push (((_lyapunov_backward_q a !aa), a) :: t)
                 | Diag_D (k, a)              ->
                   let m = col_num a in
                   let l = Pervasives.(m - k) in
@@ -2201,7 +2297,9 @@ module Make
                 | Sigmoid_D a                  -> "Sigmoid_D", [ a ]
                 | Relu_D a                     -> "Relu_D", [ a ]
                 | Inv_D a                      -> "Inv_D", [ a ]
+                | Chol_D (a, _)                -> "Chol_D", [ a ]
                 | QR_D (a, _, _)               -> "QR_D", [ a ]
+                | Svd_D (a, _, _, _)           -> "Svd_D", [ a ]
                 | Lyapunov_D_D (a, q)          -> "Lyapunov_D_D", [ a; q ]
                 | Lyapunov_C_D (a, q)          -> "Lyapunov_C_D", [ a; q ]
                 | Lyapunov_D_C (a, q)          -> "Lyapunov_D_C", [ a; q ]
@@ -2325,7 +2423,6 @@ module Make
       Array.init (n * n) (fun j ->
           Arr (A.init [|n; n|] (fun i -> if i=j then A.(float_to_elt 1.) else A.(float_to_elt 0.))))
 
-    let g ~f x = (grad f) x
     let fd_g ~f x d =
       let dx = Maths.( (F A.(float_to_elt eps)) * d) in
       Maths.( ((f (x + dx)) - (f (x - dx))) / (F (A.(float_to_elt (2. *. eps)))))
@@ -2337,19 +2434,23 @@ module Make
       let max_err = rs |> Array.map (fun (r_ad, r_fd) -> abs_float (r_ad -. r_fd) /. (rms +. 1E-9) ) |> (Array.fold_left max (-1.)) in
       max_err, max_err < threshold
 
-    let test_func ?threshold:(threshold=threshold) f  =
+    let test_func ?threshold:(threshold=threshold) ?(verbose=false) f  =
       let f x = Maths.(sum' (f x)) in
-      Array.map (fun x ->
-          let _, check =
-            Array.map (fun d ->
-                let r_ad = Maths.(sum' ( (g ~f x) * d )) |> unpack_flt in
-                let r_fd = (fd_g ~f x d)  |> unpack_flt in
-                r_ad, r_fd
-              ) ds
-            |> check_grads ~threshold in
-          check
-        ) xs 
-      |> (Array.fold_left (fun (a, c) b -> a && b, (if b then (succ c) else c) ) (true, 0) )
+      let g = grad f in
+      let check, n_passed = 
+        Array.map (fun x ->
+            let _, check =
+              Array.map (fun d ->
+                  let r_ad = Maths.(sum' ( (g x) * d )) |> unpack_flt in
+                  let r_fd = (fd_g ~f x d)  |> unpack_flt in
+                  r_ad, r_fd
+                ) ds
+              |> check_grads ~threshold in
+            check
+          ) xs 
+        |> (Array.fold_left (fun (a, c) b -> a && b, (if b then (succ c) else c) ) (true, 0) ) in
+      if verbose then Printf.printf "reverse gradient passed %i/%i random samples tested." n_passed n_xs;
+      check, n_passed
   end
 
 

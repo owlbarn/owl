@@ -38,6 +38,8 @@ module type Sig = sig
 
   val init : int array -> (int -> elt) -> arr
 
+  val init_nd : int array -> (int array -> elt) -> arr
+
   val shape : arr -> int array
 
   val numel : arr -> int
@@ -303,11 +305,17 @@ module type Sig = sig
 
   val inv : arr -> arr
 
+  val chol : ?upper:bool -> arr -> arr
+
+  val svd : ?thin:bool -> arr -> arr * arr * arr
+
   val qr : arr -> arr * arr
 
   val lyapunov: arr -> arr -> arr
 
   val diag : ?k:int -> arr -> arr
+
+  val diagm : ?k:int -> arr -> arr
 
   val triu: ?k:int -> arr -> arr
 

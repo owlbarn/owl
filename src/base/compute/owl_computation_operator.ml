@@ -84,6 +84,8 @@ module Make
   let init shape f =
     make_node ~shape:[|Some shape|] (Init (shape, f)) |> node_to_arr
 
+  let init_nd _shape _f = raise Owl_exception.NOT_IMPLEMENTED 
+
   let shape x = arr_to_node x |> node_shape
 
   let numel x = Array.fold_left ( * ) 1 (shape x)
@@ -461,11 +463,17 @@ module Make
 
   let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
 
+  let chol ?(upper=true) _x = upper |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+
+  let svd ?(thin=true) _x = thin |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+
   let qr _x = raise Owl_exception.NOT_IMPLEMENTED 
   
   let lyapunov _a _q = raise Owl_exception.NOT_IMPLEMENTED 
   
   let diag ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
+
+  let diagm ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
 
   let tril?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
 

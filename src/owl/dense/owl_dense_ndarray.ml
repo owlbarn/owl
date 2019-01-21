@@ -20,7 +20,7 @@ module Generic = struct
   (* inject function aliases *)
 
   let inv = Owl_linalg_generic.inv
-
+              
   let mpow = Owl_linalg_generic.mpow
 
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
@@ -45,7 +45,13 @@ module S = struct
 
   let inv = Owl_linalg_s.inv
 
+  let svd ?(thin=true) = Owl_linalg_s.svd ~thin
+
+  let chol = Owl_linalg_s.chol 
+
   let mpow = Owl_linalg_s.mpow
+
+  let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x 
 
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
 
@@ -69,7 +75,13 @@ module D = struct
 
   let inv = Owl_linalg_d.inv
 
+  let svd ?(thin=true) = Owl_linalg_d.svd ~thin
+              
+  let chol = Owl_linalg_d.chol 
+
   let mpow = Owl_linalg_d.mpow
+
+  let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x 
 
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
 

@@ -716,13 +716,23 @@ val dot : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
 val inv : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
+(* TODO: change float to 'a *)
+val chol : ?upper:bool -> (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
 val qr : (float, 'b) t -> (float, 'b) t * (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val svd : ?thin:bool -> (float, 'b) t -> (float, 'b) t * (float, 'b) t * (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val lyapunov : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val diag: ?k:int -> (float, 'b) t -> (float, 'b) t 
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val diagm: ?k:int -> (float, 'b) t -> (float, 'b) t 
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val tril: ?k:int -> (float, 'b) t -> (float, 'b) t 
