@@ -295,9 +295,9 @@ val complement : 'a array -> 'a array -> 'a array
 
 val balance_last : float -> float array -> float array
 (**
-``balance_last mass x`` performs the following function. Let ``k`` be the
+``balance_last mass x`` performs the following function. Let ``l`` be the
 length of ``x``, if ``i < l - 1``, then ``x.(i) = x.(i)``, otherwise
-``x.(l - 1) = mass - \sum x.(i)``.
+``x.(l - 1) = mass - \sum_{i < l - 1} x.(i)``.
  *)
 
 val index_of : 'a array -> 'a -> int
