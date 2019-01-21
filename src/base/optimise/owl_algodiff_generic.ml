@@ -1928,13 +1928,16 @@ module Make
                   push ((abar, a) :: t)
                 | Triu_D (k, a)              -> push ((triu ~k !aa, a) :: t)
                 | Tril_D (k, a)              -> push ((tril ~k !aa, a) :: t)
-                | Trace_D a                  ->
+                | Trace_D a                  -> 
                   let m = col_num a in
-                  let rec accu i a_ =
-                    if i < m then accu (succ i) (set_item a_ i i !aa )
-                    else a_ in
-                  let abar = accu 0 (zero a) in
+                  let abar = !aa * (diagm (pack_arr A.(ones [|1;m|]))) in
                   push ((abar,a) :: t)
+                  (*let m = col_num a in*)
+                  (*let rec accu i a_ =*)
+                    (*if i < m then accu (succ i) (set_item a_ i i !aa )*)
+                    (*else a_ in*)
+                  (*let abar = accu 0 (zero a) in*)
+                  (*push ((abar,a) :: t)*)
                 | Add_Row_D_D (a, b, i)      -> push ((!aa, a) :: (get_row !aa i, b) :: t)
                 | Add_Row_D_C (a, _b, _i)    -> push ((!aa, a) :: t)
                 | Add_Row_C_D (_a, b, i)     -> push ((get_row !aa i, b) :: t)
@@ -2449,7 +2452,7 @@ module Make
             check
           ) xs 
         |> (Array.fold_left (fun (a, c) b -> a && b, (if b then (succ c) else c) ) (true, 0) ) in
-      if verbose then Printf.printf "reverse gradient passed %i/%i random samples tested." n_passed n_xs;
+      if verbose then Printf.printf "reverse gradient passed %i/%i random samples tested.\n%!" n_passed n_xs;
       check, n_passed
   end
 
