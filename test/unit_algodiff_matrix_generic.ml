@@ -15,9 +15,17 @@ module Make
   module AlgoM = Owl.Algodiff.D
   open AlgoM
 
-  module GT = FDGrad_test (struct let n = 3 let n_xs = 20 let threshold = 1E-6 let eps = 1E-5 end) 
 
-  open GT
+  let n = 3
+  let n_samples = 20
+  let threshold = 1E-6 
+  let eps = 1E-5 
+
+  module FD = FDGrad_test 
+
+  let samples, directions = FD.generate_test_samples (n, n) n_samples
+
+  let test_func f = FD.check_grad ~threshold ~eps ~directions ~f samples
 
   module To_test = struct
     let sin   () = test_func Maths.sin
@@ -80,7 +88,7 @@ module Make
 
   let alco_fun s f =
     let check, c = f () in
-    Alcotest.(check bool) (sprintf "%s: %i/%i passed" s c n_xs) true check
+    Alcotest.(check bool) (sprintf "%s: %i/%i passed" s c n_samples) true check
 
   let sin () = alco_fun "sin" To_test.sin
 
