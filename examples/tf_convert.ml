@@ -1,4 +1,5 @@
-(*
+#!/usr/bin/env owl
+
 open Owl
 open Owl_converter
 
@@ -19,4 +20,3 @@ let _ =
   let g = G.make_graph ~input ~output "graph_01" in
   let s = T.convert g in
   T.Utils.pbtxt_to_pb "test_cgraph.meta" s
-*)

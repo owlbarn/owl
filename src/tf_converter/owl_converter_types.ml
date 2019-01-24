@@ -35,14 +35,15 @@ type attrvalue =
 type attrdef = {
   name           : string;
   typ            : string;
-  default_value  : attrvalue;
-  allowed_values : attrvalue;
-  has_minimum    : bool;
-  minimum        : int
+  default_value  : attrvalue option;
+  allowed_values : attrvalue option;
+  has_minimum    : bool option;
+  minimum        : int option;
 }
 
 
 type op = {
+  name      : string;
   input_arg : argdef array;
   output_arg: argdef array;
   attr      : attrdef array;
@@ -51,8 +52,9 @@ type op = {
 
 
 type metainfo = {
-  stripped_op_list   : op array;
-  tensorflow_version : string
+  mutable stripped_op_list   : op array;
+  mutable tensorflow_version : string;
+  mutable op_names           : string array (* internal use *)
 }
 
 
@@ -62,11 +64,15 @@ type attr_pair = {
 }
 
 type node = {
-  name  : string;
-  op    : string;
-  input : string array;
-  attr  : attr_pair array
-  (* device: "/device:CPU:0" *)
+  name      : string;
+  op        : string;
+  input     : string array;
+  attr      : attr_pair array;
+  device    : string option
+}
+
+type graphdef = {
+  mutable nodes : node array
 }
 
 
@@ -95,7 +101,7 @@ type collection_pair = {
 
 type metagraph = {
   mutable meta_info : metainfo;
-  mutable graph_def : node array;
+  mutable graph_def : graphdef;
   mutable saver_def : saver;
   mutable collections : collection_pair array
 }

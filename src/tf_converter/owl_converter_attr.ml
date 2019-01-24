@@ -1,14 +1,14 @@
 open Owl_converter_types
 
-let make_attrdef () = {
-  name = "EmptyAttr";
-  typ  = "string";
-  default_value  = ATTR_String "nil";
-  allowed_values = ATTR_AttrLst [| ATTR_String "nil" |];
-  has_minimum = false;
-  minimum = 0
-}
+let make_attrdef ?(typ="DT_EMPTY") name =
+  { name = name;
+    typ  = typ;
+    default_value = Some (ATTR_String "nil");
+    allowed_values = Some (ATTR_AttrLst [| ATTR_String "nil" |]);
+    has_minimum = None;
+    minimum = None
+  }
 
 
-let make_attr_pair () =
-  {key = "empty_attr"; value = ATTR_String "nil"; }
+let make_attr_pair ?(value=ATTR_String "nil") key =
+  { key = key; value = value }
