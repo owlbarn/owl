@@ -2,13 +2,112 @@ open Owl_converter_types
 open Owl_converter_attr
 open Owl_converter_utils
 
+(*
+
+Should DT_TYPE be part of the def?
+
+
+type dim = {
+  size : int;
+  name : string
+}
+
+type tensor = {
+  dtype : string; (* datatype actually *)
+  tensor_shape : dim array;
+  float_val : float;
+  string_val : string;
+}
+
+
+type attrvalue =
+  | ATTR_String  of string
+  | ATTR_Int     of int
+  | ATTR_Float   of float
+  | ATTR_Bool    of bool
+  | ATTR_Tensor  of tensor
+  | ATTR_AttrLst of attrvalue array
+
+
+type attr_pair = {
+  key   : string;
+  value : attrvalue
+}
+
+type node = {
+  name      : string;
+  op        : string;
+  input     : string array;
+  attr      : attr_pair array;
+  device    : string option
+}
+
+type graphdef = {
+  mutable nodes : node array
+}
+*)
+
+let default_tensor = {
+  dtype = "DT_FLOAT";
+  tensor_shape = [|{size = 1; name="h"}; {size = 1; name="w"}|];
+  float_val  = Some [|1.|];
+  string_val = None
+}
+
+
+let database : (string, attr_pair array option) Hashtbl.t =
+  let h = Hashtbl.create 10 in
+
+  (* for dot in Owl *)
+  let k = "MatMul" in
+  let v = [|
+    (make_attr_pair ~value:(ATTR_Bool false) "transpose_a");
+    (make_attr_pair ~value:(ATTR_Bool false) "transpose_b")
+  |]
+  in
+  Hashtbl.add h k (Some v);
+
+  (* for AddScalar *)
+  let k = "Add" in
+  Hashtbl.add h k None;
+
+  let k = "Sub" in
+  Hashtbl.add h k None;
+
+  (* for Const *)
+  let k = "Const" in
+  let v = [|
+    (make_attr_pair ~value:(ATTR_String "DT_FLOAT") "dtype");
+    (make_attr_pair ~value:(ATTR_Float 0.) "value")
+  |]
+  in
+  Hashtbl.add h k (Some v);
+
+  (* for ScalarMul *)
+  let k = "Mul" in
+  let v = [|
+    (make_attr_pair ~value:(ATTR_Tensor default_tensor) "x");
+    (make_attr_pair ~value:(ATTR_Tensor default_tensor) "x")
+  |]
+  in
+  Hashtbl.add h k (Some v);
+
+  h
+
+
+let get_node_attr op_name =
+  try
+    Hashtbl.find database op_name
+  with Not_found -> None
+
+
 module Make
   (G : Owl_computation_graph_sig.Sig)
   = struct
 
   open G.Optimiser.Operator
 
-  (* make_nodedef is the CORE operation here!!! *)
+
   let make_nodedef node =
     let name = Owl_graph.name node in
     let attr : Symbol.Shape.Type.attr  = Owl_graph.attr node in
@@ -17,13 +116,13 @@ module Make
       Owl_graph.name n
     ) (Owl_graph.parents node)
     in
-    let attr = [| make_attr_pair "EmptyKey" |] in
+    let attr_pair_array = get_node_attr op_name in
     let device = Some "cpu:0" in
     {
       name   = name;
       op     = op_name;
       input  = input;
-      attr   = attr;
+      attr   = attr_pair_array;
       device = device;
     }
 
@@ -37,7 +136,7 @@ module Make
         name  = "";
         op    = "Noop";
         input = [|""|];
-        attr  = [| make_attr_pair "EmptyATTRKV"|];
+        attr  = Some [| make_attr_pair "EmptyATTRKV"|];
         device = None
       }
     in

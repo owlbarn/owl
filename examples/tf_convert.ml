@@ -30,7 +30,7 @@ let input  = [|
 let g = G.make_graph ~input ~output "graph_01"
 
 (* evaluate graph *)
-let x_val = N. 3|]
+let x_val = N.ones [|3; 3|]
 let y_val = 3.
 let _ = G.assign_arr (unpack_arr x) x_val
 let _ = G.assign_elt (unpack_elt y) y_val

@@ -18,8 +18,8 @@ type dim = {
 type tensor = {
   dtype : string; (* datatype actually *)
   tensor_shape : dim array;
-  float_val : float;
-  string_val : string;
+  float_val : float array option;
+  string_val : string array option;
 }
 
 
@@ -64,11 +64,11 @@ type attr_pair = {
 }
 
 type node = {
-  name      : string;
-  op        : string;
-  input     : string array;
-  attr      : attr_pair array;
-  device    : string option
+  mutable name      : string;
+  mutable op        : string;
+  mutable input     : string array;
+  mutable attr      : attr_pair array option;
+  mutable device    : string option
 }
 
 type graphdef = {
