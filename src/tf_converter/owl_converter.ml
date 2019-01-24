@@ -36,8 +36,7 @@ module Make
 
     let metadef  = Metadef.create () in
     let graphdef = Graphdef.create () in
-
-    let outputs = G.get_outputs graph in
+    let outputs  = G.get_outputs graph in
 
     iter_ancestors (fun node ->
       let attr : Symbol.Shape.Type.attr = Owl_graph.attr node in

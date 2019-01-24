@@ -1,29 +1,22 @@
 type argdef = {
   name : string;
   type_attr : string; (* "DT_BFLOAT16" | "DT_HALF" | ... *)
-  (* typ  : string;
-  num_attr  : string;
-  type_list_attr : string;
-  is_ref : bool *)
 }
 
-type dim = {
+(* type dim = {
   size : int;
   name : string
 }
+*)
 
-(* https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/framework/attr_value.proto*)
-
+(* might need to fall back to dim array latter *)
+type shape = int array
 
 type tensor = {
   dtype        : string; (* datatype actually *)
-  tensor_shape : dim array;
+  tensor_shape : shape;
   float_val    : float array option;
   string_val   : string array option;
-}
-
-type shape = {
-  shape : dim array
 }
 
 
@@ -33,6 +26,7 @@ type attrvalue =
   | ATTR_Float   of float
   | ATTR_Bool    of bool
   | ATTR_Tensor  of tensor
+  | ATTR_Shape   of shape
   | ATTR_List    of attrvalue array
   (*ATTR_Shape*)
 

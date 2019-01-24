@@ -15,8 +15,8 @@ let make_attr_pair ?(value=ATTR_String "nil") key =
   { key = key; value = value }
 
 
-let dim_to_string (dim : dim) =
-  Printf.sprintf "dim {\nname: %s\nsize: %d}\n" dim.name dim.size
+let dim_to_string dim =
+  Printf.sprintf "dim {\nsize: %d}\n" dim
 
 let tensor_to_string v =
   let dtype_str = v.dtype in
@@ -42,11 +42,14 @@ let tensor_to_string v =
 
 let rec attrvalue_to_string attrv =
   match attrv with
-  | ATTR_Int v -> Printf.sprintf "int {\n%d}\n" v
+  | ATTR_Int v    -> Printf.sprintf "int {\n%d}\n" v
   | ATTR_String v -> Printf.sprintf "string {\n%s}\n" v
-  | ATTR_Bool v -> Printf.sprintf "bool {\n%b}\n" v
-  | ATTR_Float v -> Printf.sprintf "float {\n%f}\n" v
+  | ATTR_Bool v   -> Printf.sprintf "bool {\n%b}\n" v
+  | ATTR_Float v  -> Printf.sprintf "float {\n%f}\n" v
   | ATTR_Tensor v -> Printf.sprintf "tensor {\n%s}\n" (tensor_to_string v)
-  | ATTR_List v ->
+  | ATTR_Shape v  ->
+    let shp_str = apply_and_combine_string dim_to_string v in
+    Printf.sprintf "shape {\n%s}\n" shp_str
+  | ATTR_List v   ->
     let list_str = apply_and_combine_string attrvalue_to_string v in
     Printf.sprintf "list {\n%s}\n" list_str

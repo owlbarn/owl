@@ -4,52 +4,13 @@ open Owl_converter_utils
 
 (*
 
-Should DT_TYPE be part of the def?
-
-
-type dim = {
-  size : int;
-  name : string
-}
-
-type tensor = {
-  dtype : string; (* datatype actually *)
-  tensor_shape : dim array;
-  float_val : float;
-  string_val : string;
-}
-
-
-type attrvalue =
-  | ATTR_String  of string
-  | ATTR_Int     of int
-  | ATTR_Float   of float
-  | ATTR_Bool    of bool
-  | ATTR_Tensor  of tensor
-  | ATTR_AttrLst of attrvalue array
-
-
-type attr_pair = {
-  key   : string;
-  value : attrvalue
-}
-
-type node = {
-  name      : string;
-  op        : string;
-  input     : string array;
-  attr      : attr_pair array;
-  device    : string option
-}
-
-type graphdef = {
-  mutable nodes : node array
-}
+Should DT_TYPE be part of the def? not now.
 *)
+
 
 let default_tensor = {
   dtype = "DT_FLOAT";
-  tensor_shape = [|{size = 1; name="h"}; {size = 1; name="w"}|];
+  tensor_shape = [|1; 1|];
   float_val  = Some [|1.|];
   string_val = None
 }
@@ -107,22 +68,42 @@ module Make
 
   open G.Optimiser.Operator
 
+  let preprocess_cgraph _owl_graph = ()
 
-  let make_nodedef node =
+  let get_extra_attr (cgrah_attr : Symbol.Shape.Type.attr) =
+    let shape : (int array option) array = cgrah_attr.shape in
+    let output_shape = Array.map (fun s ->
+      match s with
+      | Some s -> ATTR_Shape s
+      | None   -> ATTR_Shape [||]
+    ) shape
+    in
+    let output_shape = ATTR_List output_shape in
+    let output_attr  = make_attr_pair ~value:output_shape "_output_shape" in
+    let type_attr    = make_attr_pair ~value:(ATTR_String "DT_FLOAT") "dtype" in
+    [|output_attr; type_attr|]
+
+
+  let make_nodedef (node : Symbol.Shape.Type.attr Owl_graph.node) =
     let name = Owl_graph.name node in
-    let attr : Symbol.Shape.Type.attr  = Owl_graph.attr node in
+    let attr = Owl_graph.attr node in
     let op_name = Symbol.op_to_str attr.op in
     let input = Array.map (fun n ->
       Owl_graph.name n
     ) (Owl_graph.parents node)
     in
     let attr_pair_array = get_node_attr op_name in
+    let extra_attrs = get_extra_attr attr in
+    let new_attrs = match attr_pair_array with
+    | Some a -> Array.append a extra_attrs
+    | None   -> extra_attrs
+    in
     let device = Some "cpu:0" in
     {
       name   = name;
       op     = op_name;
       input  = input;
-      attr   = attr_pair_array;
+      attr   = Some new_attrs;
       device = device;
     }
 
@@ -143,20 +124,7 @@ module Make
     { nodes = [|node|] }
 
 
-  let add_node_attr n attr_array =
-    let new_attr = match n.attr with
-    | Some a -> Array.append a attr_array
-    | None   -> attr_array
-    in
-    n.attr <- Some new_attr
-
-
   let node_to_string (n : nodedef) =
-    let output_shape = ATTR_String "dummy_shape" in
-    let output_attr  = make_attr_pair ~value:output_shape "_output_shape" in
-    let type_attr    = make_attr_pair ~value:(ATTR_String "DT_FLOAT") "dtype" in
-    add_node_attr n [|output_attr; type_attr|];
-
     let attr_str = match n.attr with
     | Some attrs ->
         apply_and_combine_string (fun a ->
@@ -165,9 +133,9 @@ module Make
         ) attrs
     | None       -> ""
     in
-
     Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"\n%s\n}\n"
       n.name n.op attr_str
+
 
   let to_string graphdef =
     let node_arr = Array.map (fun n ->
@@ -175,6 +143,6 @@ module Make
     ) graphdef.nodes
     in
     let nodes_str = array_to_string (fun s -> s) node_arr in
-    Printf.sprintf "graph_def {%s}" nodes_str
+    Printf.sprintf "graph_def {\n%s}\n" nodes_str
 
 end
