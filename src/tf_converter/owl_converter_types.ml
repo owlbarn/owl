@@ -16,10 +16,14 @@ type dim = {
 
 
 type tensor = {
-  dtype : string; (* datatype actually *)
+  dtype        : string; (* datatype actually *)
   tensor_shape : dim array;
-  float_val : float array option;
-  string_val : string array option;
+  float_val    : float array option;
+  string_val   : string array option;
+}
+
+type shape = {
+  shape : dim array
 }
 
 
@@ -29,7 +33,8 @@ type attrvalue =
   | ATTR_Float   of float
   | ATTR_Bool    of bool
   | ATTR_Tensor  of tensor
-  | ATTR_AttrLst of attrvalue array
+  | ATTR_List    of attrvalue array
+  (*ATTR_Shape*)
 
 
 type attrdef = {
@@ -63,7 +68,7 @@ type attr_pair = {
   value : attrvalue
 }
 
-type node = {
+type nodedef = {
   mutable name      : string;
   mutable op        : string;
   mutable input     : string array;
@@ -72,7 +77,7 @@ type node = {
 }
 
 type graphdef = {
-  mutable nodes : node array
+  mutable nodes : nodedef array
 }
 
 

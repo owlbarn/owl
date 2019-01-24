@@ -143,7 +143,31 @@ module Make
     { nodes = [|node|] }
 
 
-  let node_to_string n = n.name
+  let add_node_attr n attr_array =
+    let new_attr = match n.attr with
+    | Some a -> Array.append a attr_array
+    | None   -> attr_array
+    in
+    n.attr <- Some new_attr
+
+
+  let node_to_string (n : nodedef) =
+    let output_shape = ATTR_String "dummy_shape" in
+    let output_attr  = make_attr_pair ~value:output_shape "_output_shape" in
+    let type_attr    = make_attr_pair ~value:(ATTR_String "DT_FLOAT") "dtype" in
+    add_node_attr n [|output_attr; type_attr|];
+
+    let attr_str = match n.attr with
+    | Some attrs ->
+        apply_and_combine_string (fun a ->
+          let value_str = attrvalue_to_string a.value in
+          Printf.sprintf "attr {\nkey: \"%s\"\nvalue: {%s}}" a.key value_str
+        ) attrs
+    | None       -> ""
+    in
+
+    Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"\n%s\n}\n"
+      n.name n.op attr_str
 
   let to_string graphdef =
     let node_arr = Array.map (fun n ->

@@ -1,4 +1,6 @@
 
-let array_to_string ?(prefix="") ?(suffix="") ?(sep=",") elt_to_str x =
-  let s = Array.to_list x |> List.map elt_to_str |> String.concat sep in
-  Printf.sprintf "%s%s%s" prefix s suffix
+let array_to_string = Owl_utils_array.to_string
+
+let apply_and_combine_string fn x =
+  let arr = Array.map fn x in
+  Owl_utils_array.to_string ~sep:" " (fun x -> x) arr
