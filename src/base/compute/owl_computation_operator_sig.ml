@@ -542,6 +542,8 @@ module type Sig = sig
   val of_arrays : 'a -> 'b
   (** TODO *)
 
+  val to_arrays : arr -> elt array array
+  (** TODO *)
 
   (** {6 Scalar functions} *)
 

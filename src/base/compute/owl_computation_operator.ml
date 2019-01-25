@@ -507,6 +507,8 @@ module Make
   let of_array _x _shape = raise Owl_exception.NOT_IMPLEMENTED
 
   let of_arrays _x = raise Owl_exception.NOT_IMPLEMENTED
+      
+  let to_arrays _x = raise Owl_exception.NOT_IMPLEMENTED
 
 
   (** Scalar maths *)

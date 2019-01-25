@@ -99,7 +99,7 @@ module Make
     | Inv_D          of t
     | Chol_D         of t * bool
     | QR_D           of (t * (t ref * t ref) * (t ref * t ref))
-    | Svd_D           of (t * (t ref * t ref * t ref) * (t ref * t ref * t ref) * bool)
+    | Svd_D          of (t * (t ref * t ref * t ref) * (t ref * t ref * t ref) * bool)
     | Lyapunov_D_D   of t * t
     | Lyapunov_C_D   of t * t
     | Lyapunov_D_C   of t * t
@@ -112,6 +112,7 @@ module Make
     | Add_Row_C_D    of t * t * int
     | Get_Row_D      of t * int
     | Of_Rows_D      of t array
+    | Of_Arrays_D    of t array array * (int * int) list 
     | Concat_D_D     of t * t * int
     | Concat_D_C     of t * t * int
     | Concat_C_D     of t * t * int
@@ -1151,13 +1152,49 @@ module Make
       | Arr _               -> Array.map unpack_arr a |> A.of_rows |> pack_arr
       | DF (_, _, ai)       ->
         let ap = a |> Array.map (fun x -> x |> primal |> unpack_arr) |> A.of_rows |> pack_arr in
-        let at = a |> Array.map (fun x -> x |> adjval |> unpack_arr) |> A.of_rows |> pack_arr in
+        let at = a |> Array.map (fun x -> x |> tangent |> unpack_arr) |> A.of_rows |> pack_arr in
         DF (ap, at, ai)
       | DR (_, _, _, _, ai, _) ->
         let ap = a |> Array.map (fun x -> x |> primal) in
         let cp = ap |> Array.map (fun x -> x |> unpack_arr) |> A.of_rows |> pack_arr in
         DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai, ref 0)
       | _                  -> error_uniop "of_rows a.(0)" a.(0)
+
+    and of_arrays ~mode a = match mode with 
+      | `c -> Array.map (Array.map unpack_elt) a |> A.of_arrays |> pack_arr
+      | `r ->  begin
+          let idxs = ref [] in 
+          let ai_ref = ref 0 in
+          let cp = 
+            a |> Array.mapi (fun i xs -> 
+                Array.mapi (fun j x -> match x with
+                    | F _ -> unpack_elt x
+                    | DR (_, _, _, _, ai, _) ->  
+                      ai_ref := ai; 
+                      idxs := (i, j)::!idxs;
+                      unpack_elt x
+                    | _ -> error_uniop "of_arrays" x)
+                  xs ) 
+            |> A.of_arrays |> pack_arr in
+          DR (cp, ref (zero cp), Of_Arrays_D (a, List.rev !idxs), ref 0, !ai_ref, ref 0)
+        end
+      | `t -> begin
+          let ai_ref = ref 0 in
+          let cp = a |> Array.map (Array.map (fun x -> x |> primal |> unpack_elt)) |> A.of_arrays |> pack_arr in
+          let at = a |> Array.map (Array.map (fun x -> match x with
+              | F _ -> unpack_elt x 
+              | DF (_ap, at, ai) -> 
+                ai_ref := ai;
+                unpack_elt at
+              | _ -> error_uniop "of_arrays" x) 
+            ) |> A.of_arrays |> pack_arr in
+          DF (cp, at, !ai_ref)
+        end
+
+
+
+    and to_arrays a =  Array.init (row_num a) (fun i -> Array.init (col_num a) (fun j -> get_item a i j))
+
 
     (* NOTE: these fucntions are for neural network. There are many restrictions
        at the moment. E.g. they do not support higher-order derivatives, and some
@@ -1763,6 +1800,7 @@ module Make
                 | Add_Row_C_D (_, b, _)      -> reset (b :: t)
                 | Get_Row_D (a, _)           -> reset (a :: t)
                 | Of_Rows_D a                -> reset (List.append (Array.to_list a) t)
+                | Of_Arrays_D (a, idxs)      -> reset (List.(append (map (fun (i,j) -> a.(i).(j)) idxs) t))
                 | Conv1D_D_D (a, b, _)       -> reset (a :: b :: t)
                 | Conv1D_D_C (a, _, _)       -> reset (a :: t)
                 | Conv1D_C_D (_, b, _)       -> reset (b :: t)
@@ -1943,6 +1981,9 @@ module Make
                 | Add_Row_C_D (_a, b, i)     -> push ((get_row !aa i, b) :: t)
                 | Get_Row_D (a, i)           -> (adjref a) := add_row (adjval a) !aa i; push ((zero a, a) :: t)
                 | Of_Rows_D a                -> push (t |> List.append (a |> Array.to_list |> List.mapi (fun i v -> (get_row !aa i, v))))
+                | Of_Arrays_D (a, idxs)      -> 
+                  let aa_arrays = to_arrays !aa in
+                  push (t |> List.append (idxs |> List.map (fun (i,j) -> (aa_arrays.(i).(j), a.(i).(j)))))
                 | Conv1D_D_D (a, b, s)       -> push ((conv1d_backward_input a b s !aa, a) :: (conv1d_backward_kernel a b s !aa, b) :: t)
                 | Conv1D_D_C (a, b, s)       -> push ((conv1d_backward_input a b s !aa, a) :: t)
                 | Conv1D_C_D (a, b, s)       -> push ((conv1d_backward_kernel a b s !aa, b) :: t)
@@ -2315,6 +2356,7 @@ module Make
                 | Add_Row_C_D (a, b, _i)       -> "Add_Row_C_D", [a; b]
                 | Get_Row_D (a, _i)            -> "Get_Row_D", [ a ]
                 | Of_Rows_D a                  -> "Of_Rows_D", (Array.to_list a)
+                | Of_Arrays_D (a, idxs)       -> "Of_Arrays_D", List.map (fun (i,j) -> a.(i).(j)) idxs
                 | Conv1D_D_D (a, b, _s)        -> "Conv1D_D_D", [a; b]
                 | Conv1D_D_C (a, b, _s)        -> "Conv1D_D_C", [a; b]
                 | Conv1D_C_D (a, b, _s)        -> "Conv1D_C_D", [a; b]

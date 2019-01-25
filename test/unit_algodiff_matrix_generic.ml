@@ -75,6 +75,19 @@ module Make
         Maths.(a.(0) + a.(1) * a.(2)) in
       test_func f
 
+    let of_arrays () = 
+      let f x = 
+        let y = Array.init n (fun i -> Array.init n (fun j -> if i=0 then (F 3.) else Maths.get_item x i j)) 
+          |> Maths.of_arrays ~mode:`r in
+        Maths.(x * sin y)  in
+      test_func f
+
+    let to_arrays () = 
+      let f x =
+        let a = Maths.to_arrays x in
+        Maths.(a.(0).(1) * cos a.(1).(0)) in
+      test_func f
+
     let lyapunov () =
       let f = 
         let q = Arr Owl.Mat.((gaussian n n)) in
@@ -122,24 +135,30 @@ module Make
 
   let split () = alco_fun "split" To_test.split
 
+  let of_arrays () = alco_fun "of_arrays" To_test.of_arrays
+
+  let to_arrays () = alco_fun "to_arrays" To_test.to_arrays
+
 
   let test_set = [
-    "sin",   `Slow,   sin;
-    "cos",   `Slow,   cos;
-    "tan",   `Slow,   tan;
-    "sinh",  `Slow,   sinh;
-    "cosh",  `Slow,   cosh;
-    "tanh",  `Slow,   tanh;
-    "exp",   `Slow,   exp;
-    "diag",  `Slow,   diag;
-    "trace", `Slow,   trace;
-    "tril",  `Slow,   tril;
-    "triu",  `Slow,   triu;
-    "inv",   `Slow,   inv;
-    "chol",  `Slow,   chol;
-    "qr",    `Slow,   qr;
-    "split", `Slow,   split;
-    "svd",   `Slow,   svd;
+    "sin",         `Slow,     sin;
+    "cos",         `Slow,     cos;
+    "tan",         `Slow,     tan;
+    "sinh",        `Slow,     sinh;
+    "cosh",        `Slow,     cosh;
+    "tanh",        `Slow,     tanh;
+    "exp",         `Slow,     exp;
+    "diag",        `Slow,     diag;
+    "trace",       `Slow,     trace;
+    "tril",        `Slow,     tril;
+    "triu",        `Slow,     triu;
+    "inv",         `Slow,     inv;
+    "chol",        `Slow,     chol;
+    "qr",          `Slow,     qr;
+    "split",       `Slow,     split;
+    "svd",         `Slow,     svd;
+    "of_arrays",   `Slow,     of_arrays;
+    "to_arrays",   `Slow,     to_arrays;
   ]
 
 end
