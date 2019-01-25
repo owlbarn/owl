@@ -1,22 +1,8 @@
-type argdef = {
-  name : string;
-  type_attr : string; (* "DT_BFLOAT16" | "DT_HALF" | ... *)
-}
+(* many properties are ignored for simplicity *)
 
-(* type dim = {
-  size : int;
-  name : string
-}
-*)
-
-(* might need to fall back to dim array latter *)
-type shape = int array
-
-type tensor = {
-  dtype        : string; (* datatype actually *)
-  tensor_shape : shape;
-  float_val    : float array option;
-  string_val   : string array option;
+type tensordef = {
+  dtype        : string;
+  tensor_shape : int array;
 }
 
 
@@ -25,64 +11,59 @@ type attrvalue =
   | ATTR_Int     of int
   | ATTR_Float   of float
   | ATTR_Bool    of bool
-  | ATTR_Tensor  of tensor
-  | ATTR_Shape   of shape
+  | ATTR_Tensor  of tensordef
+  | ATTR_Shape   of int array
   | ATTR_List    of attrvalue array
-  (*ATTR_Shape*)
 
 
-type attrdef = {
-  name           : string;
-  typ            : string;
-  default_value  : attrvalue option;
-  allowed_values : attrvalue option;
-  has_minimum    : bool option;
-  minimum        : int option;
+type opattr = {
+  mutable name : string;
+  mutable typ  : string;
 }
 
 
-type op = {
-  name      : string;
-  input_arg : argdef array;
-  output_arg: argdef array;
-  attr      : attrdef array;
-  (* some other *)
+type argdef = {
+  name : string;
+  type_attr : string; (* "DT_BFLOAT16" | "DT_HALF" | ... *)
 }
 
 
-type metainfo = {
-  mutable stripped_op_list   : op array;
+type opdef = {
+  name       : string;
+  input_arg  : argdef array;
+  output_arg : argdef array;
+  attr       : opattr array;
+}
+
+
+type metadef = {
+  mutable stripped_op_list   : opdef array;
   mutable tensorflow_version : string;
   mutable op_names           : string array (* internal use *)
 }
 
 
-type attr_pair = {
-  key   : string;
-  value : attrvalue
-}
-
 type nodedef = {
   mutable name      : string;
-  mutable op        : string;
+  mutable op_name   : string;
   mutable input     : string array;
-  mutable attr      : attr_pair array option;
+  mutable node_attr : (string * attrvalue) array option;
   mutable device    : string option
 }
+
 
 type graphdef = {
   mutable nodes : nodedef array
 }
 
 
-type saver = {
+type saverdef = {
 	filename_tensor_name          : string;
 	save_tensor_name              : string;
 	restore_op_name               : string;
 	max_to_keep                   : int;
 	sharded                       : bool;
 	keep_checkpoint_every_n_hours : float
-	(* version : "V2" *)
 }
 
 
@@ -92,15 +73,9 @@ type collection =
   | Floatlist  of float array
 
 
-type collection_pair = {
-  col_key: string;
-  col_value: collection
-}
-
-
 type metagraph = {
-  mutable meta_info : metainfo;
+  mutable meta_def  : metadef;
   mutable graph_def : graphdef;
-  mutable saver_def : saver;
-  mutable collections : collection_pair array
+  mutable saver_def : saverdef;
+  mutable coll_def  : (string * collection) array
 }

@@ -17,18 +17,18 @@ module Make
   (* val convert : G.graph -> metagraph *)
 
   let make_meta_graph () = {
-    meta_info   = Metadef.create ();
+    meta_def    = Metadef.create ();
     graph_def   = Graphdef.create ();
     saver_def   = Saverdef.create ();
-    collections = Colldef.create ()
+    coll_def    = Colldef.create ()
     }
 
 
   let to_string m =
-    (Metadef.to_string  m.meta_info) ^
+    (Metadef.to_string  m.meta_def) ^
     (Graphdef.to_string m.graph_def) ^
     (Saverdef.to_string m.saver_def) ^
-    (Colldef.to_string  m.collections)
+    (Colldef.to_string  m.coll_def)
 
 
   (* the core step *)
@@ -63,10 +63,10 @@ module Make
     let meta, graph, saver, collections = parse_cgraph graph in
 
     let tf_graph = make_meta_graph () in
-    tf_graph.meta_info   <- meta;
-    tf_graph.graph_def   <- graph;
-    tf_graph.saver_def   <- saver;
-    tf_graph.collections <- collections;
+    tf_graph.meta_def  <- meta;
+    tf_graph.graph_def <- graph;
+    tf_graph.saver_def <- saver;
+    tf_graph.coll_def  <- collections;
 
     let pb_txt = to_string tf_graph in
     pb_txt

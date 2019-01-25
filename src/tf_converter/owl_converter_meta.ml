@@ -1,5 +1,13 @@
+(*
+ * OWL - OCaml Scientific and Engineering Computing
+ * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
+
+
 open Owl_converter_types
 open Owl_converter_attr
+
+module D = Owl_converter_db
 
 module Make
   (G : Owl_computation_graph_sig.Sig)
@@ -7,22 +15,18 @@ module Make
 
   open G.Optimiser.Operator
 
-  let make_arg type_attr name =
-    {name = name; type_attr = type_attr}
-
-
   let make_op input_arg output_arg attr name =
     let input_arg  = match input_arg with
     | Some arg -> arg
-    | None     -> [| make_arg "DT_EMPTY" "NilArg" |]
+    | None     -> [| make_argdef "DT_EMPTY" "NilArg" |]
     in
     let output_arg  = match output_arg with
     | Some arg -> arg
-    | None     -> [| make_arg "DT_EMPTY" "NilArg" |]
+    | None     -> [| make_argdef "DT_EMPTY" "NilArg" |]
     in
     let attr = match attr with
     | Some attr -> attr
-    | None      -> [| make_attrdef "NilAttrdef" |]
+    | None      -> [| make_opattr "NilAttrdef" "NilAttr"|]
     in
     { name = name;
       input_arg = input_arg;
@@ -31,19 +35,13 @@ module Make
     }
 
 
-  let kv_store : (string, (argdef array * argdef array * attrdef array)) Hashtbl.t =
-      let h = Hashtbl.create 20 in
-      Hashtbl.add h "Dot"
-        ( [|make_arg "DT_Float" "a"|],
-          [|make_arg "DT_Float" "x"|],
-          [|make_attrdef "NilAttrdef" |] );
-      h
-
   let opdef_from_attr (attr : Symbol.Shape.Type.attr) =
     let name = Symbol.op_to_str attr.op in
-    (* suppose args and attrs of an op are fixed *)
-    let input_arg, output_arg, attr = Hashtbl.find kv_store name in
-    make_op (Some input_arg) (Some output_arg) (Some attr) name
+    let input_arg, output_arg, attr = match (D.get_op_attr name) with
+    | Some (a, b, c) -> (Some a), (Some b), (Some c)
+    | None           -> None, None, None
+    in
+    make_op input_arg output_arg attr name
 
 
   let mem_op meta op_name =
@@ -65,7 +63,7 @@ module Make
       op_names = [||]
     }
 
-  let to_string (meta : metainfo) =
+  let to_string meta =
     Printf.sprintf "meta_info_def { %s }" meta.tensorflow_version
 
 end

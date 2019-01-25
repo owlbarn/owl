@@ -1,17 +1,25 @@
+(*
+ * OWL - OCaml Scientific and Engineering Computing
+ * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
+
+
 open Owl_converter_types
 open Owl_converter_utils
 
-let create () =
-  let value = Nodelist [|"node1"; "node2"|] in
-  [| { col_key = "empty_collection"; col_value = value } |]
+let create () = [| |]
 
 
-let col_to_string collection = collection.col_key
+let col_to_string collection =
+  match collection with
+  | Nodelist c  -> c.(0)
+  | Byteslist c -> Bytes.to_string c.(0)
+  | Floatlist c -> string_of_float c.(0)
 
-let to_string (collections : collection_pair array) =
-  let collection_arr = Array.map (fun c ->
+
+let to_string collections =
+  let coll_str = map_then_combine_string (fun (_, c) ->
     col_to_string c
   ) collections
   in
-  let collection_str = array_to_string (fun s -> s) collection_arr in
-  Printf.sprintf "collection_def {%s}" collection_str
+  Printf.sprintf "collection_def {%s}" coll_str
