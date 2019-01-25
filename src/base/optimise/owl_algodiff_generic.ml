@@ -298,13 +298,13 @@ module Make
 
     and op_d_d a ff fd df r =
       match a with
-      | DF (ap, at, ai)      -> let cp = fd ap in DF (cp, (df cp ap at), ai)
+      | DF (ap, at, ai)         -> let cp = fd ap in DF (cp, (df cp ap at), ai)
       | DR (ap, _, _, _, ai, _) -> let cp = ff ap in DR (cp, ref (zero cp), r a, ref 0, ai, ref 0)
-      | ap                   -> ff ap
+      | ap                      -> ff ap
 
     and pair_op_d_d a ff fd df r =
       match a with
-      | DF (ap, at, ai)      -> let cp1, cp2 = fd ap in DF (cp1, (df cp1 ap at), ai), DF (cp2, (df cp2 ap at), ai)
+      | DF (ap, at, ai)         -> let cp1, cp2 = fd ap in DF (cp1, (df cp1 ap at), ai), DF (cp2, (df cp2 ap at), ai)
       | DR (ap, _, _, _, ai, _) -> (
           let (cp1, cp2) = fd ap in
           let aa1 = ref (zero cp1)  in
@@ -316,14 +316,14 @@ module Make
              In reverse_reset, i keeps track of the number of times cp1 and cp2 has been
              called such that in reverse_push, we do not update the adjoint of ap before
              we've fully updated both aa1 and aa2 *)
-          ( DR (cp1, aa1, r (a, (cp1_ref,cp2_ref), (aa1, aa2)), ref 0, ai, tracker) , 
+          ( DR (cp1, aa1, r (a, (cp1_ref,cp2_ref), (aa1, aa2)), ref 0, ai, tracker) ,
             DR (cp2, aa2, r (a, (cp1_ref,cp2_ref), (aa1, aa2)), ref 0, ai, tracker) )
         )
-      | ap -> ff ap
+      | ap                      -> ff ap
 
     and triple_op_d_d a ff fd df r =
       match a with
-      | DF (ap, at, ai)      -> let cp1, cp2, cp3 = fd ap in DF (cp1, (df cp1 ap at), ai), DF (cp2, (df cp2 ap at), ai), DF (cp3, (df cp3 ap at), ai) 
+      | DF (ap, at, ai)         -> let cp1, cp2, cp3 = fd ap in DF (cp1, (df cp1 ap at), ai), DF (cp2, (df cp2 ap at), ai), DF (cp3, (df cp3 ap at), ai)
       | DR (ap, _, _, _, ai, _) -> (
           let (cp1, cp2, cp3) = fd ap in
           let aa1 = ref (zero cp1)  in
@@ -333,22 +333,22 @@ module Make
           let cp2_ref = ref cp2 in
           let cp3_ref = ref cp3 in
           let tracker = ref 0 in
-          ( DR (cp1, aa1, r (a, (cp1_ref,cp2_ref,cp3_ref), (aa1, aa2, aa3)), ref 0, ai, tracker) , 
+          ( DR (cp1, aa1, r (a, (cp1_ref,cp2_ref,cp3_ref), (aa1, aa2, aa3)), ref 0, ai, tracker) ,
             DR (cp2, aa2, r (a, (cp1_ref,cp2_ref,cp3_ref), (aa1, aa2, aa3)), ref 0, ai, tracker) ,
             DR (cp3, aa3, r (a, (cp1_ref,cp2_ref,cp3_ref), (aa1, aa2, aa3)), ref 0, ai, tracker) )
         )
-      | ap -> ff ap
+      | ap                      -> ff ap
 
     and array_op_d_d a ff fd df r =
       match a with
-      | DF (ap, at, ai)      -> let cp_arr = fd ap in Array.map (fun cp -> DF (cp, (df cp ap at), ai) ) cp_arr
+      | DF (ap, at, ai)         -> let cp_arr = fd ap in Array.map (fun cp -> DF (cp, (df cp ap at), ai) ) cp_arr
       | DR (ap, _, _, _, ai, _) -> (
-          let cp_arr = fd ap in 
+          let cp_arr = fd ap in
           let tracker = ref 0 in
           let aa_arr = Array.map (fun cp -> ref (zero cp)) cp_arr in
           Array.map2 (fun cp aa -> DR (cp, aa, r (a, cp_arr, aa_arr), ref 0, ai, tracker) ) cp_arr aa_arr
         )
-      | ap -> ff ap
+      | ap                      -> ff ap
 
     and op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d =
       match a, b with
@@ -1009,11 +1009,11 @@ module Make
       let r a = Chol_D (a, upper) in
       op_d_d a ff fd df r
 
-    and _chol_forward cp at upper = 
+    and _chol_forward cp at upper =
       let inv_cp = inv cp in
       let tr_inv_cp = transpose inv_cp in
       if upper then
-        let x = tr_inv_cp *@ (transpose at) *@ inv_cp in 
+        let x = tr_inv_cp *@ (transpose at) *@ inv_cp in
         let m = (pack_flt 0.5) * (tril (triu x)) in
         (transpose cp) *@ (m + (triu ~k:(1) x))
       else
@@ -1021,7 +1021,7 @@ module Make
         let m = (pack_flt 0.5) * (tril (triu x)) in
         cp *@ (m + (tril ~k:(-1) x))
 
-    and _chol_backward o aa upper = 
+    and _chol_backward o aa upper =
       let inv_o = inv o in
       let tr_inv_o = transpose inv_o in
       if upper then (pack_flt 0.5) * inv_o *@ (copyutl (aa *@ (transpose o))) *@ tr_inv_o
@@ -1064,22 +1064,22 @@ module Make
       let e_m = eye (row_num u) in
       let e_n = eye (row_num v) in
       let k = row_num vt in
-      let f = 
+      let f =
         let s2 = sqr s in
-        pack_arr A.(init_nd [|k; k|] (fun idx -> 
+        pack_arr A.(init_nd [|k; k|] (fun idx ->
             let i = idx.(0) and j = idx.(1) in
-            if i=j then float_to_elt 0. 
+            if i=j then float_to_elt 0.
             else begin
               let s2_i = get_item s2 0 i |> unpack_flt in
               let s2_j = get_item s2 0 j |> unpack_flt in
               (1. /. ( s2_j -. s2_i)) |> float_to_elt
             end )) in
       let inv_s = (pack_flt 1.) / s in
-      if thin then 
-        begin 
+      if thin then
+        begin
           ((u * sbar) *@ vt  +
            ((u *@ (f * (ut *@ ubar - ubart *@ u)) * s) + ((e_m - (u *@ ut)) *@ ubar * inv_s)) *@ vt +
-           u *@ (((transpose s) * (f * (vt *@ vbar - vbart *@ v))) *@ vt + ((transpose inv_s) * vbart *@ (e_n - v *@ vt)))) 
+           u *@ (((transpose s) * (f * (vt *@ vbar - vbart *@ v))) *@ vt + ((transpose inv_s) * vbart *@ (e_n - v *@ vt))))
         end
       else raise Owl_exception.NOT_IMPLEMENTED
 
@@ -1656,8 +1656,8 @@ module Make
       let r (a, _cp_arr, aa_arr) = Split_D (a, axis, aa_arr) in
       array_op_d_d a ff fd df r
 
-    and concatenate axis a = 
-      let ff a = 
+    and concatenate axis a =
+      let ff a =
         match a.(0) with
         | Arr _ -> a |> Array.map (fun x -> x |> unpack_arr ) |> A.concatenate ~axis |> pack_arr
         | _     -> error_uniop "concatenate" a.(0) in
@@ -1678,7 +1678,7 @@ module Make
           | DR (_ap, aa, ao, af, _ai, tracker) -> (
               aa := reset_zero !aa;
               af := !af + 1;
-              tracker:= succ !tracker; 
+              tracker:= succ !tracker;
               if (!af = 1) && (!tracker=1) then (
                 match ao with
                 | Noop                       -> reset t
@@ -1913,7 +1913,7 @@ module Make
                 | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
                 | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) *@ !aa *@ dpt), a) :: t)
                 | Chol_D (a, upper)          -> push ((_chol_backward ap !aa upper, a) :: t)
-                | QR_D (a, o, aa)            -> push ((_qr_backward o aa, a) :: t) 
+                | QR_D (a, o, aa)            -> push ((_qr_backward o aa, a) :: t)
                 | Svd_D (a, o, aa, thin)     -> push ((_svd_backward o aa thin,a) :: t)
                 | Lyapunov_D_D (a, _)        -> let abar, qbar = _lyapunov_backward_aq a !aa ap in push ( (abar, a) :: (qbar, a) :: t)
                 | Lyapunov_D_C (a, _)        -> push (((_lyapunov_backward_a a !aa ap), a) :: t)
@@ -1928,7 +1928,7 @@ module Make
                   push ((abar, a) :: t)
                 | Triu_D (k, a)              -> push ((triu ~k !aa, a) :: t)
                 | Tril_D (k, a)              -> push ((tril ~k !aa, a) :: t)
-                | Trace_D a                  -> 
+                | Trace_D a                  ->
                   let m = col_num a in
                   let abar = !aa * (diagm (pack_arr A.(ones [|1;m|]))) in
                   push ((abar,a) :: t)
@@ -2413,12 +2413,14 @@ module Make
 
   let pp_num formatter x = Format.fprintf formatter "%s" (type_info x)
 
+
+  (* Finite difference gradient test *)
   module FDGrad_test = struct
 
-    let generate_directions (dim1, dim2) = 
+    let generate_directions (dim1, dim2) =
       let n_directions = dim1 * dim2 in
       Array.init n_directions (fun j ->
-          Arr (A.init [|dim1; dim2|] (fun i -> if i=j then A.(float_to_elt 1.) else A.(float_to_elt 0.)))) 
+          Arr (A.init [|dim1; dim2|] (fun i -> if i=j then A.(float_to_elt 1.) else A.(float_to_elt 0.))))
 
     let generate_test_samples (dim1, dim2) n_samples =
       List.init n_samples (fun _ -> Mat.gaussian dim1 dim2),
@@ -2430,12 +2432,12 @@ module Make
 
 
     let check_grad ~threshold ?(verbose=false) ?(eps=1E-5) ~f =
-      let compare rs= 
+      let compare rs=
         let n_d = Array.length rs in
         let r_fds = Array.map snd rs in
         let rms = (Array.fold_left (fun acc r_fd -> acc +. (r_fd *. r_fd ) ) 0. r_fds) /. (float n_d) |> sqrt in
-        let max_err = rs 
-                      |> Array.map (fun (r_ad, r_fd) -> abs_float (r_ad -. r_fd) /. (rms +. 1E-9) ) 
+        let max_err = rs
+                      |> Array.map (fun (r_ad, r_fd) -> abs_float (r_ad -. r_fd) /. (rms +. 1E-9) )
                       |> (Array.fold_left max (-1.)) in
         max_err < threshold, max_err in
       let f x = Maths.(sum' (f x)) in
@@ -2444,26 +2446,28 @@ module Make
         let rec __check acc = function
           | [] -> acc
           | hd :: tl ->
-            let check, max_err = 
+            let check, max_err =
               Array.map (fun d ->
                   let r_ad = Maths.(sum' ( (g hd) * d )) |> unpack_flt in
                   let r_fd = (finite_difference_grad ~f ~eps hd d)  |> unpack_flt in
                   r_ad, r_fd
-                ) directions 
+                ) directions
               |> compare in
             __check ((check, max_err)::acc) tl in
         let n_samples = List.length samples in
-        let check, max_err, n_passed = 
-          __check [] samples 
-          |> List.fold_left (fun (check_old, max_err_old, acc) (check, max_err) -> 
-              (check_old && check, 
+        let check, max_err, n_passed =
+          __check [] samples
+          |> List.fold_left (fun (check_old, max_err_old, acc) (check, max_err) ->
+              (check_old && check,
                max max_err_old max_err,
                (if check then (succ acc) else acc))
-            ) (true, -1., 0) in 
+            ) (true, -1., 0) in
         if verbose then Printf.printf "adjoints passed: %i/%i | max_err: %f.\n%!" n_passed n_samples max_err;
         check, n_passed
 
   end
+
+
 end
 
 
