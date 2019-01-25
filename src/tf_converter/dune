@@ -2,9 +2,5 @@
   (name owl_converter)
   (public_name owl-converter)
   (modes byte)
-  (libraries
-    ocaml-compiler-libs.toplevel
-    owl
-    owl-base
-  )
+  (libraries owl-base)
 )

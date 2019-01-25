@@ -60,8 +60,8 @@ let rec attrvalue_to_string attrv =
   | ATTR_Float v  -> Printf.sprintf "float {\n%f}\n" v
   | ATTR_Tensor v -> Printf.sprintf "tensor {\n%s}\n" (tensor_to_string v)
   | ATTR_Shape v  ->
-    let shp_str = map_then_combine_string dim_to_string v in
-    Printf.sprintf "shape {\n%s}\n" shp_str
+      let shp_str = map_then_combine_string dim_to_string v in
+      Printf.sprintf "shape {\n%s}\n" shp_str
   | ATTR_List v   ->
-    let list_str = map_then_combine_string attrvalue_to_string v in
-    Printf.sprintf "list {\n%s}\n" list_str
+      let list_str = map_then_combine_string attrvalue_to_string v in
+      Printf.sprintf "list {\n%s}\n" list_str

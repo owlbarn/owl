@@ -55,11 +55,11 @@ module Make
     in
     let device = Some "cpu:0" in
     {
-      name    = name;
-      op_name = op_name;
-      input   = input;
+      name      = name;
+      op_name   = op_name;
+      input     = input;
       node_attr = Some new_attrs;
-      device  = device;
+      device    = device;
     }
 
 

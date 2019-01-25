@@ -20,7 +20,8 @@ let op_database : (string, (argdef array * argdef array * opattr array)) Hashtbl
 let get_op_attr op_name =
   try
     Some (Hashtbl.find op_database op_name)
-  with Not_found -> None
+  with
+    Not_found -> None
 
 
 let default_tensor = make_tensordef "Nil" [|1|]
@@ -69,4 +70,5 @@ let node_database : (string, (string * attrvalue) array option) Hashtbl.t =
 let get_node_attr op_name =
   try
     Hashtbl.find node_database op_name
-  with Not_found -> None
+  with
+    Not_found -> None

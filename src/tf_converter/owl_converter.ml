@@ -16,11 +16,12 @@ module Make
 
   (* val convert : G.graph -> metagraph *)
 
-  let make_meta_graph () = {
-    meta_def    = Metadef.create ();
-    graph_def   = Graphdef.create ();
-    saver_def   = Saverdef.create ();
-    coll_def    = Colldef.create ()
+  let make_meta_graph () =
+    {
+      meta_def  = Metadef.create ();
+      graph_def = Graphdef.create ();
+      saver_def = Saverdef.create ();
+      coll_def  = Colldef.create ()
     }
 
 
