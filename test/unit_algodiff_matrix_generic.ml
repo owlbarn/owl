@@ -45,7 +45,7 @@ module Make
     let inv   () = 
       let e = Arr (Owl.Mat.eye n) in
       let f x = 
-        let x = Maths.(transpose x *@ x) in
+        let x = Maths.(transpose x *@ x) in 
         Maths.(inv (x + e)) in
       test_func f
 
@@ -53,7 +53,7 @@ module Make
       let e = Arr (Owl.Mat.eye n) in
       let f x = 
         let x = Maths.(transpose x *@ x) in
-        Maths.(logdet (x + (F 2.) * e)) in
+        Maths.(logdet (x + e)) in
       test_func f
 
     let qr  () =
