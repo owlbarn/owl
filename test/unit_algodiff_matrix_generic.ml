@@ -49,6 +49,13 @@ module Make
         Maths.(inv (x + e)) in
       test_func f
 
+    let logdet () = 
+      let e = Arr (Owl.Mat.eye n) in
+      let f x = 
+        let x = Maths.(transpose x *@ x) in
+        Maths.(logdet (x + (F 2.) * e)) in
+      test_func f
+
     let qr  () =
       let f x = 
         let q, r = Maths.qr x in
@@ -143,6 +150,8 @@ module Make
   let triu () = alco_fun "triu" To_test.triu
 
   let inv () = alco_fun "inv" To_test.inv
+      
+  let logdet () = alco_fun "logdet" To_test.logdet
 
   let chol () = alco_fun "chol" To_test.chol
 
@@ -173,6 +182,7 @@ module Make
     "tril",            `Slow,     tril;
     "triu",            `Slow,     triu;
     "inv",             `Slow,     inv;
+    "logdet",          `Slow,     logdet;
     "chol",            `Slow,     chol;
     "qr",              `Slow,     qr;
     "split",           `Slow,     split;

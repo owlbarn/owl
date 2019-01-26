@@ -497,6 +497,9 @@ module type Sig = sig
   val inv : arr -> arr
   (** TODO *)
 
+  val logdet: arr -> elt
+  (** TODO *)
+
   val chol: ?upper:bool -> arr -> arr
   (** TODO *)
 

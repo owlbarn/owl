@@ -463,6 +463,8 @@ module Make
 
   let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
 
+  let logdet _x = raise Owl_exception.NOT_IMPLEMENTED
+
   let chol ?(upper=true) _x = upper |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
   let svd ?(thin=true) _x = thin |> ignore; raise Owl_exception.NOT_IMPLEMENTED

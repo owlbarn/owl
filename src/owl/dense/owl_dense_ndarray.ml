@@ -45,6 +45,8 @@ module S = struct
 
   let inv = Owl_linalg_s.inv
 
+  let logdet = Owl_linalg_s.logdet
+
   let svd ?(thin=true) = Owl_linalg_s.svd ~thin
 
   let chol = Owl_linalg_s.chol 
@@ -74,6 +76,8 @@ module D = struct
   (* inject function aliases *)
 
   let inv = Owl_linalg_d.inv
+
+  let logdet = Owl_linalg_d.logdet
 
   let svd ?(thin=true) = Owl_linalg_d.svd ~thin
               

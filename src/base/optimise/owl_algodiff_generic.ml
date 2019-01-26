@@ -97,6 +97,7 @@ module Make
     | Sigmoid_D      of t
     | Relu_D         of t
     | Inv_D          of t
+    | Logdet_D       of t
     | Chol_D         of t * bool
     | QR_D           of (t * (t ref * t ref) * (t ref * t ref))
     | Svd_D          of (t * (t ref * t ref * t ref) * (t ref * t ref * t ref) * bool)
@@ -997,6 +998,15 @@ module Make
       let r a = Inv_D a in
       op_d_d a ff fd df r
 
+    and logdet a = 
+      let ff = function
+        | Arr a     -> F A.(logdet a)
+        | _         -> error_uniop "logdet" a in
+      let fd a = logdet a in
+      let df _cp ap at = (transpose (inv ap)) * at in
+      let r a = Logdet_D a in
+      op_d_d a ff fd df r
+
     and copyltu x = (tril x) + (transpose (tril ~k:(-1) x))
 
     and copyutl x = (triu x) + (transpose (triu ~k:1 x))
@@ -1811,6 +1821,7 @@ module Make
                 | Sigmoid_D a                -> reset (a :: t)
                 | Relu_D a                   -> reset (a :: t)
                 | Inv_D a                    -> reset (a :: t)
+                | Logdet_D a                 -> reset (a :: t)
                 | Chol_D (a, _)              -> reset (a :: t)
                 | QR_D (a, _, _)             -> reset (a :: t)
                 | Svd_D (a, _, _, _)         -> reset (a :: t)
@@ -1977,6 +1988,7 @@ module Make
                 | Sigmoid_D a                -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
                 | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
                 | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) *@ !aa *@ dpt), a) :: t)
+                | Logdet_D a                 -> push ((!aa * (transpose (inv (primal a))), a) :: t)
                 | Chol_D (a, upper)          -> push ((_chol_backward ap !aa upper, a) :: t)
                 | QR_D (a, o, aa)            -> push ((_qr_backward o aa, a) :: t)
                 | Svd_D (a, o, aa, thin)     -> push ((_svd_backward o aa thin,a) :: t)
@@ -2371,6 +2383,7 @@ module Make
                 | Sigmoid_D a                  -> "Sigmoid_D", [ a ]
                 | Relu_D a                     -> "Relu_D", [ a ]
                 | Inv_D a                      -> "Inv_D", [ a ]
+                | Logdet_D a                   -> "Inv_D", [ a ]
                 | Chol_D (a, _)                -> "Chol_D", [ a ]
                 | QR_D (a, _, _)               -> "QR_D", [ a ]
                 | Svd_D (a, _, _, _)           -> "Svd_D", [ a ]
