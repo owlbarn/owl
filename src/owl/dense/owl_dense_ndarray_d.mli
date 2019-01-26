@@ -965,6 +965,8 @@ val dot : arr -> arr -> arr
 
 val trace : arr -> elt
 
+val diag : ?k:int -> arr -> arr
+
 val to_rows : arr -> arr array
 
 val of_rows : arr array -> arr

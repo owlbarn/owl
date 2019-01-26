@@ -214,9 +214,13 @@ let ecdf x =
   !y, !f
 
 
-let quantile x p =
-  assert (p >= 0. && p <= 1.);
-  Owl_stats_extend.quantile (sort ~inc:true x) p
+let quantile x =
+  let x = sort ~inc:true x in
+  fun p ->
+    if p < 0. || p > 1. then
+      raise (Invalid_argument "Owl_stats.quantile: expected float between 0 and 1")
+    else
+      Owl_stats_extend.quantile x p
 
 
 let percentile x p = quantile x (p /. 100.)

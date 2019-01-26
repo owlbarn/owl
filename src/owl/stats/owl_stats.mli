@@ -90,9 +90,14 @@ val percentile : float array -> float -> float
  *)
 
 val quantile : float array -> float -> float
-(** ``quantile x p`` returns the ``p`` quantile of the data ``x``. ``p`` is between
-0. and 1. ``x`` does not need to be sorted beforehand.
- *)
+(** ``quantile x p`` returns the ``p`` quantile of the data
+    ``x``. ``x`` does not need to be sorted beforehand. When computing
+    several quantiles on the same data, it is more efficient to
+    "pre-apply" the function, as in ``let f = quantile x in List.map f
+    [ 0.1 ; 0.5 ]``, in which case the data is sorted only once.
+
+    @raise Invalid_argument if ``p`` is not between 0 and 1.
+*)
 
 val first_quartile : float array -> float
 (** ``first_quartile x`` returns the first quartile of ``x``, i.e. 25 percentiles. *)

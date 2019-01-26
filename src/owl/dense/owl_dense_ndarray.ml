@@ -20,12 +20,18 @@ module Generic = struct
   (* inject function aliases *)
 
   let inv = Owl_linalg_generic.inv
-
+              
   let mpow = Owl_linalg_generic.mpow
+
+  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
+
+  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
 
   let qr x =
     let q, r, _ = Owl_linalg_generic.qr ~thin:true ~pivot:false x in
     (q,r)
+  
+  let lyapunov a q = Owl_linalg_generic.lyapunov a q
 
 end
 
@@ -39,11 +45,23 @@ module S = struct
 
   let inv = Owl_linalg_s.inv
 
+  let svd ?(thin=true) = Owl_linalg_s.svd ~thin
+
+  let chol = Owl_linalg_s.chol 
+
   let mpow = Owl_linalg_s.mpow
+
+  let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x 
+
+  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
+
+  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
 
   let qr x =
     let q, r, _ = Owl_linalg_s.qr ~thin:true ~pivot:false x in
     (q,r)
+
+  let lyapunov = Owl_linalg_s.lyapunov
 
 end
 
@@ -57,12 +75,23 @@ module D = struct
 
   let inv = Owl_linalg_d.inv
 
+  let svd ?(thin=true) = Owl_linalg_d.svd ~thin
+              
+  let chol = Owl_linalg_d.chol 
+
   let mpow = Owl_linalg_d.mpow
+
+  let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x 
+
+  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
+
+  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
 
   let qr x =
     let q, r, _ = Owl_linalg_d.qr ~thin:true ~pivot:false x in
     (q,r)
 
+  let lyapunov = Owl_linalg_d.lyapunov
 end
 
 
@@ -76,10 +105,15 @@ module C = struct
 
   let mpow = Owl_linalg_c.mpow
 
+  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
+
+  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
+
   let qr x =
     let q, r, _ = Owl_linalg_c.qr ~thin:true ~pivot:false x in
     (q,r)
 
+  let lyapunov = Owl_linalg_c.lyapunov
 end
 
 
@@ -90,12 +124,18 @@ module Z = struct
   (* inject function aliases *)
 
   let inv = Owl_linalg_z.inv
-  
+
   let mpow = Owl_linalg_z.mpow
+
+  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
+
+  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
 
   let qr x =
     let q, r, _ = Owl_linalg_z.qr ~thin:true ~pivot:false x in
     (q,r)
+
+  let lyapunov = Owl_linalg_z.lyapunov 
 
 end
 

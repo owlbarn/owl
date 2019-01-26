@@ -92,6 +92,9 @@ module To_test = struct
   let tukey_fences x =
     M.tukey_fences x
 
+  let quantiles ~p x =
+    let f = M.quantile x in
+    Some (Array.map f p)
 end
 
 
@@ -404,6 +407,15 @@ let tukey_fences () =
     (-3.0, 5.0)
     (To_test.tukey_fences Data.with_outliers)
 
+let quantiles () =
+  (* reference computed with R 3.4.4*)
+  Alcotest.(check fao)
+    "quantiles calculation"
+    (Some [|0.106500;0.190700;0.376750;0.767625;0.978800|])
+    (To_test.quantiles
+       ~p:[|0.;0.25;0.5;0.75;1.|]
+       [| 0.1182 ; 0.8388 ; 0.4569 ; 0.1902 ; 0.8652 ; 0.2966 ; 0.9788 ; 0.5541 ; 0.1065 ; 0.1922 |])
+
 (* The tests *)
 let test_set = [
   "mannwhitneyu_test_left_side_asym" , `Slow, mannwhitneyu_test_left_side_asym;
@@ -448,6 +460,7 @@ let test_set = [
   "hist_bins_normalise_weights", `Slow, hist_bins_normalise_weights;
   "hist_bins_normalise_binf", `Slow, hist_bins_normalise_binf;
   "tukey_fences", `Slow, tukey_fences;
+  "quantiles", `Slow, quantiles;
 ]
 
 
