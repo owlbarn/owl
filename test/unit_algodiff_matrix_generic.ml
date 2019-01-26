@@ -88,7 +88,7 @@ module Make
         let y1 = Mat.gaussian 10 n in
         let y2 = Mat.gaussian 15 n in
         fun x ->
-          let y = Maths.concatenate ~axis:0 ~mode:`r [|y1; x; y2|] in
+          let y = Maths.concatenate ~axis:0 [|y1; x; y2|] in
           Maths.(y *@ x) in
       test_func f
 
@@ -96,7 +96,7 @@ module Make
     let of_arrays () = 
       let f x = 
         let y = Array.init n (fun i -> Array.init n (fun j -> if i=0 then (F 3.) else Maths.get_item x i j)) 
-                |> Maths.of_arrays ~mode:`r in
+                |> Maths.of_arrays in
         Maths.(x * sin y)  in
       test_func f
 
@@ -108,7 +108,7 @@ module Make
 
     let init_2d () = 
       let f x = 
-        let y = Maths.init_2d n n ~mode:`r (fun i j -> if i=0 then (F 3.) else Maths.get_item x i j) in
+        let y = Maths.init_2d n n (fun i j -> if i=0 then (F 3.) else Maths.get_item x i j) in
         Maths.(y *@ x) in
       test_func f
 

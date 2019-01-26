@@ -1171,37 +1171,38 @@ module Make
         DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai, ref 0)
       | _                  -> error_uniop "of_rows a.(0)" a.(0)
 
-    and of_arrays ~mode a = match mode with 
-      | `c -> Array.map (Array.map unpack_elt) a |> A.of_arrays |> pack_arr
-      | `r ->  begin
-          let idxs = ref [] in 
-          let ai_ref = ref 0 in
-          let cp = 
-            a |> Array.mapi (fun i xs -> 
-                Array.mapi (fun j x -> match x with
-                    | F _ -> unpack_elt x
-                    | DR (_, _, _, _, ai, _) ->  
-                      ai_ref := ai; 
-                      idxs := (i, j)::!idxs;
-                      unpack_elt x
-                    | _ -> error_uniop "of_arrays" x)
-                  xs ) 
-            |> A.of_arrays |> pack_arr in
-          DR (cp, ref (zero cp), Of_Arrays_D (a, List.rev !idxs), ref 0, !ai_ref, ref 0)
-        end
-      | `t -> begin
-          let ai_ref = ref 0 in
-          let cp = a |> Array.map (Array.map (fun x -> x |> primal |> unpack_elt)) |> A.of_arrays |> pack_arr in
-          let at = a |> Array.map (Array.map (fun x -> match x with
-              | F _ -> unpack_elt x 
-              | DF (_ap, at, ai) -> 
-                ai_ref := ai;
-                unpack_elt at
-              | _ -> error_uniop "of_arrays" x) 
-            ) |> A.of_arrays |> pack_arr in
-          DF (cp, at, !ai_ref)
-        end
-
+    and of_arrays a = 
+      (* mode: 0 constant, 1 reverse, 2 tangent *)
+      let mode = ref 0 in
+      let idxs = ref [] in 
+      let ai_ref = ref 0 in
+      let cp = 
+        Array.mapi (fun i xs -> 
+            Array.mapi (fun j x -> 
+                match x, !mode with 
+                | F _, _ -> unpack_elt x
+                | DR (_, _, _, _, ai, _), 0 ->  
+                  ai_ref := ai; mode := 1; idxs := (i, j)::!idxs;
+                  unpack_elt x
+                | DR (_, _, _, _, ai, _), 1 ->  
+                  ai_ref := ai; idxs := (i, j)::!idxs; 
+                  unpack_elt x
+                | DF (_, _, ai), 0 ->  
+                  ai_ref := ai; mode := 1; idxs := (i, j)::!idxs; 
+                  unpack_elt x
+                | DF (_, _, ai), 2 ->  
+                  ai_ref := ai; mode := 2; 
+                  unpack_elt x
+                | _, _ ->  error_uniop "of_arrays: inconsistent array" x 
+              ) xs ) a
+        |> A.of_arrays |> pack_arr in
+      match !mode with
+      | 0 ->  cp
+      | 1 ->  DR (cp, ref (zero cp), Of_Arrays_D (a, List.rev !idxs), ref 0, !ai_ref, ref 0)
+      | 2 ->  
+        let at = a |> Array.map (Array.map (fun x -> x |> tangent |> unpack_elt)) |> A.of_arrays |> pack_arr in
+        DF (cp, at, !ai_ref)
+      | _ -> error_uniop "of_arrays" a.(0).(0)
 
 
     and to_arrays a =  Array.init (row_num a) (fun i -> Array.init (col_num a) (fun j -> get_item a i j))
@@ -1704,38 +1705,36 @@ module Make
       let r (a, _cp_arr, aa_arr) = Split_D (a, axis, aa_arr) in
       array_op_d_d a ff fd df r
 
-    and concatenate ~axis ~mode a = match mode with 
-      | `c -> a |> (Array.map unpack_arr) |> A.concatenate ~axis |> pack_arr
-      | `r ->  begin
-          let idxs = ref [] in 
-          let ai_ref = ref 0 in
-          let cp = a 
-                   |> Array.mapi (fun i x -> match x with
-                       | Arr _ -> unpack_arr x
-                       | DR (_, _, _, _, ai, _) ->  
-                         ai_ref := ai; 
-                         idxs := i::!idxs;
-                         unpack_arr x
-                       | _ -> error_uniop "concatenate" x)
-                   |> A.concatenate ~axis |> pack_arr in
-          DR (cp, ref (zero cp), Concatenate_D (a, axis, List.rev !idxs), ref 0, !ai_ref, ref 0)
-        end
-      | `t -> begin
-          let ai_ref = ref 0 in
-          let cp = a |> Array.map (fun x -> x |> primal |> unpack_arr) |> A.concatenate ~axis |> pack_arr in
-          let at = a 
-                   |> Array.map (fun x -> match x with
-                       | Arr _ -> unpack_arr x 
-                       | DF (_ap, at, ai) -> 
-                         ai_ref := ai;
-                         unpack_arr at
-                       | _ -> error_uniop "concatenate" x) 
-                   |> A.concatenate ~axis |> pack_arr in
-          DF (cp, at, !ai_ref)
-        end
+    and concatenate ~axis a = 
+      (* mode: 0 constant, 1 reverse, 2 tangent *)
+      let mode = ref 0 in
+      let idxs = ref [] in 
+      let ai_ref = ref 0 in
+      let cp = 
+        Array.mapi (fun i x -> match x, !mode with
+            | Arr _, _ -> unpack_arr x
+            | DR (_, _, _, _, ai, _), 0 ->  
+              ai_ref := ai; idxs := i::!idxs; mode := 1;
+              unpack_arr x
+            | DR (_, _, _, _, ai, _), 1 ->  
+              ai_ref := ai; idxs := i::!idxs; 
+              unpack_arr x
+            | DF (_, _, ai), 0 ->  
+              ai_ref := ai; unpack_arr x
+            | DF (_, _, ai), 2 ->  
+              ai_ref := ai; unpack_arr x
+            | _ -> error_uniop "concatenate: inconsistent array" x
+          ) a
+        |> A.concatenate ~axis |> pack_arr in
+      match !mode with
+      | 0 -> cp
+      | 1 -> DR (cp, ref (zero cp), Concatenate_D (a, axis, List.rev !idxs), ref 0, !ai_ref, ref 0)
+      | 2 -> 
+        let at = a |> Array.map (fun x -> x |> tangent |> unpack_arr) |> A.concatenate ~axis |> pack_arr in
+        DF (cp, at, !ai_ref)
+      | _ -> error_uniop "concatenate" a.(0)
 
-    and init_2d ~mode n_rows n_cols f = Array.init n_rows (fun i -> Array.init n_cols (fun j -> f i j)) |> of_arrays ~mode
-
+    and init_2d n_rows n_cols f = Array.init n_rows (fun i -> Array.init n_cols (fun j -> f i j)) |> of_arrays 
 
   end
 
@@ -2062,7 +2061,7 @@ module Make
                 | Concat_D_D (a, b, i)       -> let s = split ~axis:i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: (s.(1) ,b) :: t)
                 | Concat_D_C (a, b, i)       -> let s = split ~axis:i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: t)
                 | Concat_C_D (a, b, i)       -> let s = split ~axis:i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(1) ,b) :: t)
-                | Split_D (a, axis, aa_arr)  -> push ((concatenate ~mode:`c ~axis (Array.map (fun aa -> !aa) aa_arr), a) :: t)
+                | Split_D (a, axis, aa_arr)  -> push ((concatenate ~axis (Array.map (fun aa -> !aa) aa_arr), a) :: t)
                 | Concatenate_D (a, axis, idx)     -> 
                   let aa_arr = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !aa in
                   push (t |> List.(append (map (fun i -> aa_arr.(i), a.(i)) idx)))
@@ -2255,8 +2254,6 @@ module Make
     let map_by_row f x = x |> Maths.to_rows |> Array.map f |> Maths.of_rows
 
     let print x = A.print (unpack_arr x)
-
-    let of_arrays x = A.of_arrays x |> pack_arr
 
   end
 
