@@ -124,17 +124,18 @@ let logdet x =
 
   let _add_op = Owl_base_dense_common._add_elt _kind in
   let _log_op = Owl_base_dense_common._log_elt _kind in
-  let _neg_op = Owl_base_dense_common._neg_elt _kind in
+  let _abs_op = Owl_base_dense_common._abs_elt _kind in
 
   for i = 0 to m - 1 do
-    d := _add_op !d (_log_op (M.get a i i));
+    let e = M.get a i i in
+    d := _add_op !d (_log_op (_abs_op e));
     (* NOTE: +1 to adjust to Fortran index *)
-    if (M.get ipiv 0 i) <> Int32.of_int (i + 1) then
+    if (M.get ipiv 0 i) <> Int32.of_int (i + 1) && e > (Owl_const.zero _kind) then
       c := !c + 1
   done;
 
   match Owl_maths.is_odd !c with
-  | true  -> Owl_base_dense_common._neg_elt _kind !d
+  | true  -> failwith "logdet: det is negative"
   | false -> !d
 
 
