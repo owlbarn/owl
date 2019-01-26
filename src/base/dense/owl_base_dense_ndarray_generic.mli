@@ -716,6 +716,9 @@ val dot : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
 val inv : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
+val logdet : (float, 'b) t -> float
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
 (* TODO: change float to 'a *)
 val chol : ?upper:bool -> (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)

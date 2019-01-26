@@ -497,6 +497,9 @@ module type Sig = sig
   val inv : arr -> arr
   (** TODO *)
 
+  val logdet: arr -> elt
+  (** TODO *)
+
   val chol: ?upper:bool -> arr -> arr
   (** TODO *)
 
@@ -542,6 +545,8 @@ module type Sig = sig
   val of_arrays : 'a -> 'b
   (** TODO *)
 
+  val to_arrays : arr -> elt array array
+  (** TODO *)
 
   (** {6 Scalar functions} *)
 
