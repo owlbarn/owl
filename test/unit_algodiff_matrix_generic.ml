@@ -45,6 +45,7 @@ module Make
     let inv   () = 
       let e = Arr (Owl.Mat.eye n) in
       let f x = 
+        let x = Maths.(transpose x *@ x) in
         Maths.(inv (x + e)) in
       test_func f
 
@@ -75,10 +76,20 @@ module Make
         Maths.(a.(0) + a.(1) * a.(2)) in
       test_func f
 
+    let concatenate () = 
+      let f =
+        let y1 = Mat.gaussian 10 n in
+        let y2 = Mat.gaussian 15 n in
+        fun x ->
+          let y = Maths.concatenate ~axis:0 ~mode:`r [|y1; x; y2|] in
+          Maths.(y *@ x) in
+      test_func f
+
+
     let of_arrays () = 
       let f x = 
         let y = Array.init n (fun i -> Array.init n (fun j -> if i=0 then (F 3.) else Maths.get_item x i j)) 
-          |> Maths.of_arrays ~mode:`r in
+                |> Maths.of_arrays ~mode:`r in
         Maths.(x * sin y)  in
       test_func f
 
@@ -135,30 +146,33 @@ module Make
 
   let split () = alco_fun "split" To_test.split
 
+  let concatenate () = alco_fun "concatenate" To_test.concatenate
+
   let of_arrays () = alco_fun "of_arrays" To_test.of_arrays
 
   let to_arrays () = alco_fun "to_arrays" To_test.to_arrays
 
 
   let test_set = [
-    "sin",         `Slow,     sin;
-    "cos",         `Slow,     cos;
-    "tan",         `Slow,     tan;
-    "sinh",        `Slow,     sinh;
-    "cosh",        `Slow,     cosh;
-    "tanh",        `Slow,     tanh;
-    "exp",         `Slow,     exp;
-    "diag",        `Slow,     diag;
-    "trace",       `Slow,     trace;
-    "tril",        `Slow,     tril;
-    "triu",        `Slow,     triu;
-    "inv",         `Slow,     inv;
-    "chol",        `Slow,     chol;
-    "qr",          `Slow,     qr;
-    "split",       `Slow,     split;
-    "svd",         `Slow,     svd;
-    "of_arrays",   `Slow,     of_arrays;
-    "to_arrays",   `Slow,     to_arrays;
+    "sin",             `Slow,     sin;
+    "cos",             `Slow,     cos;
+    "tan",             `Slow,     tan;
+    "sinh",            `Slow,     sinh;
+    "cosh",            `Slow,     cosh;
+    "tanh",            `Slow,     tanh;
+    "exp",             `Slow,     exp;
+    "diag",            `Slow,     diag;
+    "trace",           `Slow,     trace;
+    "tril",            `Slow,     tril;
+    "triu",            `Slow,     triu;
+    "inv",             `Slow,     inv;
+    "chol",            `Slow,     chol;
+    "qr",              `Slow,     qr;
+    "split",           `Slow,     split;
+    "concatenate",     `Slow,     concatenate;
+    "svd",             `Slow,     svd;
+    "of_arrays",       `Slow,     of_arrays;
+    "to_arrays",       `Slow,     to_arrays;
   ]
 
 end

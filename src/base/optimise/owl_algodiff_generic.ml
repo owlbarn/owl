@@ -117,6 +117,7 @@ module Make
     | Concat_D_C     of t * t * int
     | Concat_C_D     of t * t * int
     | Split_D        of t * int * t ref array
+    | Concatenate_D  of t array * int * int list
     | Conv1D_D_D     of t * t * int array
     | Conv1D_D_C     of t * t * int array
     | Conv1D_C_D     of t * t * int array
@@ -1693,13 +1694,35 @@ module Make
       let r (a, _cp_arr, aa_arr) = Split_D (a, axis, aa_arr) in
       array_op_d_d a ff fd df r
 
-    and concatenate axis a =
-      let ff a =
-        match a.(0) with
-        | Arr _ -> a |> Array.map (fun x -> x |> unpack_arr ) |> A.concatenate ~axis |> pack_arr
-        | _     -> error_uniop "concatenate" a.(0) in
-      ff a
-
+    and concatenate ~axis ~mode a = match mode with 
+      | `c -> a |> (Array.map unpack_arr) |> A.concatenate ~axis |> pack_arr
+      | `r ->  begin
+          let idxs = ref [] in 
+          let ai_ref = ref 0 in
+          let cp = a 
+                   |> Array.mapi (fun i x -> match x with
+                       | Arr _ -> unpack_arr x
+                       | DR (_, _, _, _, ai, _) ->  
+                         ai_ref := ai; 
+                         idxs := i::!idxs;
+                         unpack_arr x
+                       | _ -> error_uniop "concatenate" x)
+                   |> A.concatenate ~axis |> pack_arr in
+          DR (cp, ref (zero cp), Concatenate_D (a, axis, List.rev !idxs), ref 0, !ai_ref, ref 0)
+        end
+      | `t -> begin
+          let ai_ref = ref 0 in
+          let cp = a |> Array.map (fun x -> x |> primal |> unpack_arr) |> A.concatenate ~axis |> pack_arr in
+          let at = a 
+                   |> Array.map (fun x -> match x with
+                       | Arr _ -> unpack_arr x 
+                       | DF (_ap, at, ai) -> 
+                         ai_ref := ai;
+                         unpack_arr at
+                       | _ -> error_uniop "concatenate" x) 
+                   |> A.concatenate ~axis |> pack_arr in
+          DF (cp, at, !ai_ref)
+        end
 
   end
 
@@ -1840,7 +1863,8 @@ module Make
                 | Concat_D_D (a, b, _)       -> reset (a :: b :: t)
                 | Concat_D_C (a, _, _)       -> reset (a :: t)
                 | Concat_C_D (_, b, _)       -> reset (b :: t)
-                | Split_D (a, _, _)       -> reset (a :: t)
+                | Split_D (a, _, _)          -> reset (a :: t)
+                | Concatenate_D (a, _, idx)  -> reset (List.append List.(map (fun i -> a.(i)) idx) t)
               )
               else reset t
             )
@@ -2023,7 +2047,10 @@ module Make
                 | Concat_D_D (a, b, i)       -> let s = split ~axis:i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: (s.(1) ,b) :: t)
                 | Concat_D_C (a, b, i)       -> let s = split ~axis:i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: t)
                 | Concat_C_D (a, b, i)       -> let s = split ~axis:i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(1) ,b) :: t)
-                | Split_D (a, axis, aa_arr)  -> push ((concatenate axis (Array.map (fun aa -> !aa) aa_arr), a) :: t)
+                | Split_D (a, axis, aa_arr)  -> push ((concatenate ~mode:`c ~axis (Array.map (fun aa -> !aa) aa_arr), a) :: t)
+                | Concatenate_D (a, axis, idx)     -> 
+                  let aa_arr = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !aa in
+                  push (t |> List.(append (map (fun i -> aa_arr.(i), a.(i)) idx)))
               )
               else begin tracker := pred !tracker; push t end
             )
@@ -2269,10 +2296,10 @@ module Make
       match tlist with
       | []       -> ()
       | hd :: tl ->
-        if Hashtbl.mem nodes hd = false then (
+        if Hashtbl.mem nodes hd = false then begin
           let op, prev =
             match hd with
-            | DR (_ap, _aa, ao, _af, _ai, _) -> (
+            | DR (_ap, _aa, ao, _af, _ai, _) -> begin
                 match ao with
                 | Noop                         -> "Noop", []
                 | Add_D_D (a, b)               -> "Add_D_D", [a; b]
@@ -2356,7 +2383,7 @@ module Make
                 | Add_Row_C_D (a, b, _i)       -> "Add_Row_C_D", [a; b]
                 | Get_Row_D (a, _i)            -> "Get_Row_D", [ a ]
                 | Of_Rows_D a                  -> "Of_Rows_D", (Array.to_list a)
-                | Of_Arrays_D (a, idxs)       -> "Of_Arrays_D", List.map (fun (i,j) -> a.(i).(j)) idxs
+                | Of_Arrays_D (a, idxs)        -> "Of_Arrays_D", List.map (fun (i,j) -> a.(i).(j)) idxs
                 | Conv1D_D_D (a, b, _s)        -> "Conv1D_D_D", [a; b]
                 | Conv1D_D_C (a, b, _s)        -> "Conv1D_D_C", [a; b]
                 | Conv1D_C_D (a, b, _s)        -> "Conv1D_C_D", [a; b]
@@ -2397,7 +2424,8 @@ module Make
                 | Concat_D_C (a, b, _i)        -> "Concat_D_C", [a; b]
                 | Concat_C_D (a, b, _i)        -> "Concat_C_D", [a; b]
                 | Split_D (a, _, _)            -> "Split_D", [ a ]
-              )
+                | Concatenate_D (a, _, idx)    -> "Concatenate_D", List.(map (fun i -> a.(i)) idx)
+              end
             | F _a                     -> Printf.sprintf "Const", []
             | Arr _a                   -> Printf.sprintf "Const", []
             | DF (_, _, _)             -> Printf.sprintf "DF", []
@@ -2406,7 +2434,7 @@ module Make
           Hashtbl.add nodes hd (!index, op, prev);
           index := !index + 1;
           push (prev @ tl);
-        )
+        end
         else push tl
     in
     (* iterate the graph then return the hash table *)
