@@ -2255,6 +2255,8 @@ module Make
 
     let print x = A.print (unpack_arr x)
 
+    let of_arrays x = A.of_arrays x |> pack_arr
+
   end
 
 
