@@ -1724,6 +1724,9 @@ module Make
           DF (cp, at, !ai_ref)
         end
 
+    and init_2d ~mode n_rows n_cols f = Array.init n_rows (fun i -> Array.init n_cols (fun j -> f i j)) |> of_arrays ~mode
+
+
   end
 
 
@@ -2534,10 +2537,7 @@ module Make
             ) (true, -1., 0) in
         if verbose then Printf.printf "adjoints passed: %i/%i | max_err: %f.\n%!" n_passed n_samples max_err;
         check, n_passed
-
   end
-
-
 end
 
 

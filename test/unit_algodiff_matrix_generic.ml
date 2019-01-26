@@ -99,6 +99,12 @@ module Make
         Maths.(a.(0).(1) * cos a.(1).(0)) in
       test_func f
 
+    let init_2d () = 
+      let f x = 
+        let y = Maths.init_2d n n ~mode:`r (fun i j -> if i=0 then (F 3.) else Maths.get_item x i j) in
+        Maths.(y *@ x) in
+      test_func f
+
     let lyapunov () =
       let f = 
         let q = Arr Owl.Mat.((gaussian n n)) in
@@ -152,6 +158,7 @@ module Make
 
   let to_arrays () = alco_fun "to_arrays" To_test.to_arrays
 
+  let init_2d () = alco_fun "init_2d" To_test.init_2d
 
   let test_set = [
     "sin",             `Slow,     sin;
@@ -173,6 +180,7 @@ module Make
     "svd",             `Slow,     svd;
     "of_arrays",       `Slow,     of_arrays;
     "to_arrays",       `Slow,     to_arrays;
+    "init_2d",         `Slow,     init_2d;
   ]
 
 end
