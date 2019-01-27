@@ -1,0 +1,6 @@
+(library
+  (name owl_converter)
+  (public_name owl-converter)
+  (modes byte)
+  (libraries owl-base)
+)
