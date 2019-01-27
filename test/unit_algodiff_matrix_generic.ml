@@ -38,6 +38,9 @@ module Make
     let exp   () = test_func Maths.exp
     let tanh  () = test_func Maths.tanh
     let diag  () = test_func Maths.diag
+    let diagm () = 
+      let f x = Maths.(diagm (get_row x 0)) in
+      test_func f
     let trace () = test_func Maths.trace
     let tril  () = test_func Maths.tril
     let triu  () = test_func Maths.triu
@@ -143,6 +146,8 @@ module Make
 
   let diag () = alco_fun "diag" To_test.diag
 
+  let diagm () = alco_fun "diagm" To_test.diagm
+
   let trace () = alco_fun "trace" To_test.trace
 
   let tril () = alco_fun "tril" To_test.tril
@@ -150,7 +155,7 @@ module Make
   let triu () = alco_fun "triu" To_test.triu
 
   let inv () = alco_fun "inv" To_test.inv
-      
+
   let logdet () = alco_fun "logdet" To_test.logdet
 
   let chol () = alco_fun "chol" To_test.chol
@@ -178,6 +183,7 @@ module Make
     "tanh",            `Slow,     tanh;
     "exp",             `Slow,     exp;
     "diag",            `Slow,     diag;
+    "diagm",           `Slow,     diagm;
     "trace",           `Slow,     trace;
     "tril",            `Slow,     tril;
     "triu",            `Slow,     triu;
