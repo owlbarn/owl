@@ -5,31 +5,28 @@
 
 
 open Owl_converter_types
-open Owl_converter_attr
-
-module D = Owl_converter_db
+open Owl_converter_utils
+(* open Owl_converter_attr *)
 
 module Make
   (G : Owl_computation_graph_sig.Sig)
   = struct
 
-  open G.Optimiser.Operator
-
   let make_op input_arg output_arg attr name =
     let input_arg  =
       match input_arg with
       | Some arg -> arg
-      | None     -> [| make_argdef "DT_EMPTY" "NilArg" |]
+      | None     -> [||]
     in
     let output_arg  =
       match output_arg with
       | Some arg -> arg
-      | None     -> [| make_argdef "DT_EMPTY" "NilArg" |]
+      | None     -> [||]
     in
     let attr =
       match attr with
       | Some attr -> attr
-      | None      -> [| make_opattr "NilAttrdef" "NilAttr"|]
+      | None      -> [||]
     in
     {
       name = name;
@@ -39,13 +36,9 @@ module Make
     }
 
 
-  let opdef_from_attr (attr : Symbol.Shape.Type.attr) =
-    let name = Symbol.op_to_str attr.op in
-    let input_arg, output_arg, attr =
-      match (D.get_op_attr name) with
-      | Some (a, b, c) -> (Some a), (Some b), (Some c)
-      | None           -> None, None, None
-    in
+  (* A large "match" should be here for looking up operations *)
+  let get_tfop name =
+    let input_arg, output_arg, attr = None, None, None in
     make_op input_arg output_arg attr name
 
 
@@ -58,7 +51,7 @@ module Make
     meta.op_names <- Array.append meta.op_names [|op.name|]
 
 
-  let post_process _metadef = ()
+  let is_var tfnode = tfnode.op_name = "VariableV2"
 
 
   let create () =
@@ -70,8 +63,13 @@ module Make
     }
 
 
-  let to_string meta =
-    Printf.sprintf "meta_info_def { %s }" meta.tensorflow_version
+  let tfop_to_string _tfop = ""
 
+
+  let to_string meta =
+    let tfop_str = map_then_combine_string
+      tfop_to_string meta.stripped_op_list
+    in
+    Printf.sprintf "meta_info_def {\n%s\n%s\n}" tfop_str meta.tensorflow_version
 
 end

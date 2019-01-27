@@ -305,6 +305,8 @@ module type Sig = sig
 
   val inv : arr -> arr
 
+  val logdet: arr -> elt
+
   val chol : ?upper:bool -> arr -> arr
 
   val svd : ?thin:bool -> arr -> arr * arr * arr

@@ -97,9 +97,10 @@ module Make
     | Sigmoid_D      of t
     | Relu_D         of t
     | Inv_D          of t
+    | Logdet_D       of t
     | Chol_D         of t * bool
     | QR_D           of (t * (t ref * t ref) * (t ref * t ref))
-    | Svd_D           of (t * (t ref * t ref * t ref) * (t ref * t ref * t ref) * bool)
+    | Svd_D          of (t * (t ref * t ref * t ref) * (t ref * t ref * t ref) * bool)
     | Lyapunov_D_D   of t * t
     | Lyapunov_C_D   of t * t
     | Lyapunov_D_C   of t * t
@@ -112,10 +113,12 @@ module Make
     | Add_Row_C_D    of t * t * int
     | Get_Row_D      of t * int
     | Of_Rows_D      of t array
+    | Of_Arrays_D    of t array array * (int * int) list 
     | Concat_D_D     of t * t * int
     | Concat_D_C     of t * t * int
     | Concat_C_D     of t * t * int
     | Split_D        of t * int * t ref array
+    | Concatenate_D  of t array * int * int list
     | Conv1D_D_D     of t * t * int array
     | Conv1D_D_C     of t * t * int array
     | Conv1D_C_D     of t * t * int array
@@ -995,6 +998,15 @@ module Make
       let r a = Inv_D a in
       op_d_d a ff fd df r
 
+    and logdet a = 
+      let ff = function
+        | Arr a     -> F A.(logdet a)
+        | _         -> error_uniop "logdet" a in
+      let fd a = logdet a in
+      let df _cp ap at = (transpose (inv ap)) * at in
+      let r a = Logdet_D a in
+      op_d_d a ff fd df r
+
     and copyltu x = (tril x) + (transpose (tril ~k:(-1) x))
 
     and copyutl x = (triu x) + (transpose (triu ~k:1 x))
@@ -1151,13 +1163,50 @@ module Make
       | Arr _               -> Array.map unpack_arr a |> A.of_rows |> pack_arr
       | DF (_, _, ai)       ->
         let ap = a |> Array.map (fun x -> x |> primal |> unpack_arr) |> A.of_rows |> pack_arr in
-        let at = a |> Array.map (fun x -> x |> adjval |> unpack_arr) |> A.of_rows |> pack_arr in
+        let at = a |> Array.map (fun x -> x |> tangent |> unpack_arr) |> A.of_rows |> pack_arr in
         DF (ap, at, ai)
       | DR (_, _, _, _, ai, _) ->
         let ap = a |> Array.map (fun x -> x |> primal) in
         let cp = ap |> Array.map (fun x -> x |> unpack_arr) |> A.of_rows |> pack_arr in
         DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai, ref 0)
       | _                  -> error_uniop "of_rows a.(0)" a.(0)
+
+    and of_arrays a = 
+      (* mode: 0 constant, 1 reverse, 2 tangent *)
+      let mode = ref 0 in
+      let idxs = ref [] in 
+      let ai_ref = ref 0 in
+      let cp = 
+        Array.mapi (fun i xs -> 
+            Array.mapi (fun j x -> 
+                match x, !mode with 
+                | F _, _ -> unpack_elt x
+                | DR (_, _, _, _, ai, _), 0 ->  
+                  ai_ref := ai; mode := 1; idxs := (i, j)::!idxs;
+                  unpack_elt x
+                | DR (_, _, _, _, ai, _), 1 ->  
+                  ai_ref := ai; idxs := (i, j)::!idxs; 
+                  unpack_elt x
+                | DF (_, _, ai), 0 ->  
+                  ai_ref := ai; mode := 1; idxs := (i, j)::!idxs; 
+                  unpack_elt x
+                | DF (_, _, ai), 2 ->  
+                  ai_ref := ai; mode := 2; 
+                  unpack_elt x
+                | _, _ ->  error_uniop "of_arrays: inconsistent array" x 
+              ) xs ) a
+        |> A.of_arrays |> pack_arr in
+      match !mode with
+      | 0 ->  cp
+      | 1 ->  DR (cp, ref (zero cp), Of_Arrays_D (a, List.rev !idxs), ref 0, !ai_ref, ref 0)
+      | 2 ->  
+        let at = a |> Array.map (Array.map (fun x -> x |> tangent |> unpack_elt)) |> A.of_arrays |> pack_arr in
+        DF (cp, at, !ai_ref)
+      | _ -> error_uniop "of_arrays" a.(0).(0)
+
+
+    and to_arrays a =  Array.init (row_num a) (fun i -> Array.init (col_num a) (fun j -> get_item a i j))
+
 
     (* NOTE: these fucntions are for neural network. There are many restrictions
        at the moment. E.g. they do not support higher-order derivatives, and some
@@ -1656,13 +1705,36 @@ module Make
       let r (a, _cp_arr, aa_arr) = Split_D (a, axis, aa_arr) in
       array_op_d_d a ff fd df r
 
-    and concatenate axis a =
-      let ff a =
-        match a.(0) with
-        | Arr _ -> a |> Array.map (fun x -> x |> unpack_arr ) |> A.concatenate ~axis |> pack_arr
-        | _     -> error_uniop "concatenate" a.(0) in
-      ff a
+    and concatenate ~axis a = 
+      (* mode: 0 constant, 1 reverse, 2 tangent *)
+      let mode = ref 0 in
+      let idxs = ref [] in 
+      let ai_ref = ref 0 in
+      let cp = 
+        Array.mapi (fun i x -> match x, !mode with
+            | Arr _, _ -> unpack_arr x
+            | DR (_, _, _, _, ai, _), 0 ->  
+              ai_ref := ai; idxs := i::!idxs; mode := 1;
+              unpack_arr x
+            | DR (_, _, _, _, ai, _), 1 ->  
+              ai_ref := ai; idxs := i::!idxs; 
+              unpack_arr x
+            | DF (_, _, ai), 0 ->  
+              ai_ref := ai; unpack_arr x
+            | DF (_, _, ai), 2 ->  
+              ai_ref := ai; unpack_arr x
+            | _ -> error_uniop "concatenate: inconsistent array" x
+          ) a
+        |> A.concatenate ~axis |> pack_arr in
+      match !mode with
+      | 0 -> cp
+      | 1 -> DR (cp, ref (zero cp), Concatenate_D (a, axis, List.rev !idxs), ref 0, !ai_ref, ref 0)
+      | 2 -> 
+        let at = a |> Array.map (fun x -> x |> tangent |> unpack_arr) |> A.concatenate ~axis |> pack_arr in
+        DF (cp, at, !ai_ref)
+      | _ -> error_uniop "concatenate" a.(0)
 
+    and init_2d n_rows n_cols f = Array.init n_rows (fun i -> Array.init n_cols (fun j -> f i j)) |> of_arrays 
 
   end
 
@@ -1748,6 +1820,7 @@ module Make
                 | Sigmoid_D a                -> reset (a :: t)
                 | Relu_D a                   -> reset (a :: t)
                 | Inv_D a                    -> reset (a :: t)
+                | Logdet_D a                 -> reset (a :: t)
                 | Chol_D (a, _)              -> reset (a :: t)
                 | QR_D (a, _, _)             -> reset (a :: t)
                 | Svd_D (a, _, _, _)         -> reset (a :: t)
@@ -1763,6 +1836,7 @@ module Make
                 | Add_Row_C_D (_, b, _)      -> reset (b :: t)
                 | Get_Row_D (a, _)           -> reset (a :: t)
                 | Of_Rows_D a                -> reset (List.append (Array.to_list a) t)
+                | Of_Arrays_D (a, idxs)      -> reset (List.(append (map (fun (i,j) -> a.(i).(j)) idxs) t))
                 | Conv1D_D_D (a, b, _)       -> reset (a :: b :: t)
                 | Conv1D_D_C (a, _, _)       -> reset (a :: t)
                 | Conv1D_C_D (_, b, _)       -> reset (b :: t)
@@ -1802,7 +1876,8 @@ module Make
                 | Concat_D_D (a, b, _)       -> reset (a :: b :: t)
                 | Concat_D_C (a, _, _)       -> reset (a :: t)
                 | Concat_C_D (_, b, _)       -> reset (b :: t)
-                | Split_D (a, _, _)       -> reset (a :: t)
+                | Split_D (a, _, _)          -> reset (a :: t)
+                | Concatenate_D (a, _, idx)  -> reset (List.append List.(map (fun i -> a.(i)) idx) t)
               )
               else reset t
             )
@@ -1912,6 +1987,7 @@ module Make
                 | Sigmoid_D a                -> push (((!aa * ap * ((pack_flt 1.) - ap)), a) :: t)
                 | Relu_D a                   -> push (((!aa * ((signum (primal a) + (pack_flt 1.)) / (pack_flt 2.))), a) :: t)
                 | Inv_D a                    -> let dpt = transpose ap in push ((((neg dpt) *@ !aa *@ dpt), a) :: t)
+                | Logdet_D a                 -> push ((!aa * (transpose (inv (primal a))), a) :: t)
                 | Chol_D (a, upper)          -> push ((_chol_backward ap !aa upper, a) :: t)
                 | QR_D (a, o, aa)            -> push ((_qr_backward o aa, a) :: t)
                 | Svd_D (a, o, aa, thin)     -> push ((_svd_backward o aa thin,a) :: t)
@@ -1943,6 +2019,9 @@ module Make
                 | Add_Row_C_D (_a, b, i)     -> push ((get_row !aa i, b) :: t)
                 | Get_Row_D (a, i)           -> (adjref a) := add_row (adjval a) !aa i; push ((zero a, a) :: t)
                 | Of_Rows_D a                -> push (t |> List.append (a |> Array.to_list |> List.mapi (fun i v -> (get_row !aa i, v))))
+                | Of_Arrays_D (a, idxs)      -> 
+                  let aa_arrays = to_arrays !aa in
+                  push (t |> List.append (idxs |> List.map (fun (i,j) -> (aa_arrays.(i).(j), a.(i).(j)))))
                 | Conv1D_D_D (a, b, s)       -> push ((conv1d_backward_input a b s !aa, a) :: (conv1d_backward_kernel a b s !aa, b) :: t)
                 | Conv1D_D_C (a, b, s)       -> push ((conv1d_backward_input a b s !aa, a) :: t)
                 | Conv1D_C_D (a, b, s)       -> push ((conv1d_backward_kernel a b s !aa, b) :: t)
@@ -1982,7 +2061,10 @@ module Make
                 | Concat_D_D (a, b, i)       -> let s = split ~axis:i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: (s.(1) ,b) :: t)
                 | Concat_D_C (a, b, i)       -> let s = split ~axis:i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: t)
                 | Concat_C_D (a, b, i)       -> let s = split ~axis:i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(1) ,b) :: t)
-                | Split_D (a, axis, aa_arr)  -> push ((concatenate axis (Array.map (fun aa -> !aa) aa_arr), a) :: t)
+                | Split_D (a, axis, aa_arr)  -> push ((concatenate ~axis (Array.map (fun aa -> !aa) aa_arr), a) :: t)
+                | Concatenate_D (a, axis, idx)     -> 
+                  let aa_arr = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !aa in
+                  push (t |> List.(append (map (fun i -> aa_arr.(i), a.(i)) idx)))
               )
               else begin tracker := pred !tracker; push t end
             )
@@ -2228,10 +2310,10 @@ module Make
       match tlist with
       | []       -> ()
       | hd :: tl ->
-        if Hashtbl.mem nodes hd = false then (
+        if Hashtbl.mem nodes hd = false then begin
           let op, prev =
             match hd with
-            | DR (_ap, _aa, ao, _af, _ai, _) -> (
+            | DR (_ap, _aa, ao, _af, _ai, _) -> begin
                 match ao with
                 | Noop                         -> "Noop", []
                 | Add_D_D (a, b)               -> "Add_D_D", [a; b]
@@ -2300,6 +2382,7 @@ module Make
                 | Sigmoid_D a                  -> "Sigmoid_D", [ a ]
                 | Relu_D a                     -> "Relu_D", [ a ]
                 | Inv_D a                      -> "Inv_D", [ a ]
+                | Logdet_D a                   -> "Inv_D", [ a ]
                 | Chol_D (a, _)                -> "Chol_D", [ a ]
                 | QR_D (a, _, _)               -> "QR_D", [ a ]
                 | Svd_D (a, _, _, _)           -> "Svd_D", [ a ]
@@ -2315,6 +2398,7 @@ module Make
                 | Add_Row_C_D (a, b, _i)       -> "Add_Row_C_D", [a; b]
                 | Get_Row_D (a, _i)            -> "Get_Row_D", [ a ]
                 | Of_Rows_D a                  -> "Of_Rows_D", (Array.to_list a)
+                | Of_Arrays_D (a, idxs)        -> "Of_Arrays_D", List.map (fun (i,j) -> a.(i).(j)) idxs
                 | Conv1D_D_D (a, b, _s)        -> "Conv1D_D_D", [a; b]
                 | Conv1D_D_C (a, b, _s)        -> "Conv1D_D_C", [a; b]
                 | Conv1D_C_D (a, b, _s)        -> "Conv1D_C_D", [a; b]
@@ -2355,7 +2439,8 @@ module Make
                 | Concat_D_C (a, b, _i)        -> "Concat_D_C", [a; b]
                 | Concat_C_D (a, b, _i)        -> "Concat_C_D", [a; b]
                 | Split_D (a, _, _)            -> "Split_D", [ a ]
-              )
+                | Concatenate_D (a, _, idx)    -> "Concatenate_D", List.(map (fun i -> a.(i)) idx)
+              end
             | F _a                     -> Printf.sprintf "Const", []
             | Arr _a                   -> Printf.sprintf "Const", []
             | DF (_, _, _)             -> Printf.sprintf "DF", []
@@ -2364,7 +2449,7 @@ module Make
           Hashtbl.add nodes hd (!index, op, prev);
           index := !index + 1;
           push (prev @ tl);
-        )
+        end
         else push tl
     in
     (* iterate the graph then return the hash table *)
@@ -2464,10 +2549,7 @@ module Make
             ) (true, -1., 0) in
         if verbose then Printf.printf "adjoints passed: %i/%i | max_err: %f.\n%!" n_passed n_samples max_err;
         check, n_passed
-
   end
-
-
 end
 
 

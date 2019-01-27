@@ -410,6 +410,8 @@ val dot : arr -> arr -> arr
 
 val inv : arr -> arr
 
+val logdet : arr -> elt
+
 val svd: ?thin:bool -> arr -> arr * arr * arr
 
 val chol : ?upper:bool -> arr -> arr 

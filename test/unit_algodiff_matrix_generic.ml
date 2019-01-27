@@ -45,7 +45,15 @@ module Make
     let inv   () = 
       let e = Arr (Owl.Mat.eye n) in
       let f x = 
+        let x = Maths.(transpose x *@ x) in 
         Maths.(inv (x + e)) in
+      test_func f
+
+    let logdet () = 
+      let e = Arr (Owl.Mat.eye n) in
+      let f x = 
+        let x = Maths.(transpose x *@ x) in
+        Maths.(logdet (x + e)) in
       test_func f
 
     let qr  () =
@@ -73,6 +81,35 @@ module Make
       let f x = 
         let a = Maths.split 0 [| 1; 1; 1|] x in
         Maths.(a.(0) + a.(1) * a.(2)) in
+      test_func f
+
+    let concatenate () = 
+      let f =
+        let y1 = Mat.gaussian 10 n in
+        let y2 = Mat.gaussian 15 n in
+        fun x ->
+          let y = Maths.concatenate ~axis:0 [|y1; x; y2|] in
+          Maths.(y *@ x) in
+      test_func f
+
+
+    let of_arrays () = 
+      let f x = 
+        let y = Array.init n (fun i -> Array.init n (fun j -> if i=0 then (F 3.) else Maths.get_item x i j)) 
+                |> Maths.of_arrays in
+        Maths.(x * sin y)  in
+      test_func f
+
+    let to_arrays () = 
+      let f x =
+        let a = Maths.to_arrays x in
+        Maths.(a.(0).(1) * cos a.(1).(0)) in
+      test_func f
+
+    let init_2d () = 
+      let f x = 
+        let y = Maths.init_2d n n (fun i j -> if i=0 then (F 3.) else Maths.get_item x i j) in
+        Maths.(y *@ x) in
       test_func f
 
     let lyapunov () =
@@ -113,6 +150,8 @@ module Make
   let triu () = alco_fun "triu" To_test.triu
 
   let inv () = alco_fun "inv" To_test.inv
+      
+  let logdet () = alco_fun "logdet" To_test.logdet
 
   let chol () = alco_fun "chol" To_test.chol
 
@@ -122,24 +161,36 @@ module Make
 
   let split () = alco_fun "split" To_test.split
 
+  let concatenate () = alco_fun "concatenate" To_test.concatenate
+
+  let of_arrays () = alco_fun "of_arrays" To_test.of_arrays
+
+  let to_arrays () = alco_fun "to_arrays" To_test.to_arrays
+
+  let init_2d () = alco_fun "init_2d" To_test.init_2d
 
   let test_set = [
-    "sin",   `Slow,   sin;
-    "cos",   `Slow,   cos;
-    "tan",   `Slow,   tan;
-    "sinh",  `Slow,   sinh;
-    "cosh",  `Slow,   cosh;
-    "tanh",  `Slow,   tanh;
-    "exp",   `Slow,   exp;
-    "diag",  `Slow,   diag;
-    "trace", `Slow,   trace;
-    "tril",  `Slow,   tril;
-    "triu",  `Slow,   triu;
-    "inv",   `Slow,   inv;
-    "chol",  `Slow,   chol;
-    "qr",    `Slow,   qr;
-    "split", `Slow,   split;
-    "svd",   `Slow,   svd;
+    "sin",             `Slow,     sin;
+    "cos",             `Slow,     cos;
+    "tan",             `Slow,     tan;
+    "sinh",            `Slow,     sinh;
+    "cosh",            `Slow,     cosh;
+    "tanh",            `Slow,     tanh;
+    "exp",             `Slow,     exp;
+    "diag",            `Slow,     diag;
+    "trace",           `Slow,     trace;
+    "tril",            `Slow,     tril;
+    "triu",            `Slow,     triu;
+    "inv",             `Slow,     inv;
+    "logdet",          `Slow,     logdet;
+    "chol",            `Slow,     chol;
+    "qr",              `Slow,     qr;
+    "split",           `Slow,     split;
+    "concatenate",     `Slow,     concatenate;
+    "svd",             `Slow,     svd;
+    "of_arrays",       `Slow,     of_arrays;
+    "to_arrays",       `Slow,     to_arrays;
+    "init_2d",         `Slow,     init_2d;
   ]
 
 end
