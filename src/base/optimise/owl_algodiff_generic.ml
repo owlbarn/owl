@@ -1010,7 +1010,7 @@ module Make
         | Arr a     -> F A.(logdet a)
         | _         -> error_uniop "logdet" a in
       let fd a = logdet a in
-      let df _cp ap at = (transpose (inv ap)) * at in
+      let df _cp ap at = trace ((transpose (inv ap)) *@ at) in
       let r a = Logdet_D a in
       op_d_d a ff fd df r
 
