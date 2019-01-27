@@ -20,19 +20,21 @@ module OwlDot = struct
   }
 
 
-  let create name inputs out_shp trans_a trans_b = {
-    name    = name;
-    op_name = "Matmul";
-    inputs  = inputs;
-    out_shp = out_shp;
-    trans_a = trans_a;
-    trans_b = trans_b;
-    dtype   = "DT_FLOAT"
-  }
+  let create name inputs out_shp trans_a trans_b =
+    {
+      name    = name;
+      op_name = "Matmul";
+      inputs  = inputs;
+      out_shp = out_shp;
+      trans_a = trans_a;
+      trans_b = trans_b;
+      dtype   = "DT_FLOAT" (* Data Type fixed to float; wrong *)
+    }
 
 
   let make_tfnodes n =
-    let out_shp = match n.out_shp with
+    let out_shp =
+      match n.out_shp with
       | Some o -> o
       | None   -> [||]
     in
@@ -42,13 +44,15 @@ module OwlDot = struct
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape out_shp)|]))
     |] in
-    let tfnode = {
-      name      = n.name;
-      op_name   = n.op_name;
-      input     = n.inputs;
-      node_attr = node_attr;
-      device    = "CPU:0"
-    } in
+    let tfnode =
+      {
+        name      = n.name;
+        op_name   = n.op_name;
+        input     = n.inputs;
+        node_attr = node_attr;
+        device    = "CPU:0"
+      }
+    in
     ([|tfnode|], (n.name, n.name))
 
 end
@@ -65,17 +69,19 @@ module OwlAddScalar = struct
   }
 
 
-  let create name inputs out_shp = {
-    name    = name;
-    op_name = "Add";
-    inputs  = inputs;
-    out_shp = out_shp;
-    dtype   = "DT_FLOAT"
-  }
+  let create name inputs out_shp =
+    {
+      name    = name;
+      op_name = "Add";
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT"
+    }
 
 
   let make_tfnodes n =
-    let out_shp = match n.out_shp with
+    let out_shp =
+      match n.out_shp with
       | Some o -> o
       | None   -> [||]
     in
@@ -83,13 +89,15 @@ module OwlAddScalar = struct
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape out_shp)|]))
     |] in
-    let tfnode = {
-      name      = n.name;
-      op_name   = n.op_name;
-      input     = n.inputs;
-      node_attr = node_attr;
-      device    = "CPU:0"
-    } in
+    let tfnode =
+      {
+        name      = n.name;
+        op_name   = n.op_name;
+        input     = n.inputs;
+        node_attr = node_attr;
+        device    = "CPU:0"
+      }
+    in
     ([|tfnode|], (n.name, n.name))
 
 end
@@ -106,17 +114,19 @@ module OwlScalarMul = struct
   }
 
 
-  let create name inputs out_shp = {
-    name    = name;
-    op_name = "Mul";
-    inputs  = inputs;
-    out_shp = out_shp;
-    dtype   = "DT_FLOAT"
-  }
+  let create name inputs out_shp =
+    {
+      name    = name;
+      op_name = "Mul";
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT"
+    }
 
 
   let make_tfnodes n =
-    let out_shp = match n.out_shp with
+    let out_shp =
+      match n.out_shp with
       | Some o -> o
       | None   -> [||]
     in
@@ -124,13 +134,15 @@ module OwlScalarMul = struct
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape out_shp)|]))
     |] in
-    let tfnode = {
-      name      = n.name;
-      op_name   = n.op_name;
-      input     = n.inputs;
-      node_attr = node_attr;
-      device    = "CPU:0"
-    } in
+    let tfnode =
+      {
+        name      = n.name;
+        op_name   = n.op_name;
+        input     = n.inputs;
+        node_attr = node_attr;
+        device    = "CPU:0"
+      }
+    in
     ([|tfnode|], (n.name, n.name))
 
 end
@@ -148,18 +160,20 @@ module OwlOnes = struct
   }
 
 
-  let create name inputs out_shp shape = {
-    name    = name;
-    op_name = "Ones";
-    inputs  = inputs;
-    out_shp = out_shp;
-    shape   = shape;
-    dtype   = "DT_FLOAT"
-  }
+  let create name inputs out_shp shape =
+    {
+      name    = name;
+      op_name = "Ones";
+      inputs  = inputs;
+      out_shp = out_shp;
+      shape   = shape;
+      dtype   = "DT_FLOAT"
+    }
 
 
   let make_tfnodes n =
-    let out_shp = match n.out_shp with
+    let out_shp =
+      match n.out_shp with
       | Some o -> o
       | None   -> [||]
     in
@@ -168,13 +182,15 @@ module OwlOnes = struct
       ("_output_shape", (ATTR_List [|(ATTR_Shape out_shp)|]));
       ("shape", (ATTR_Shape n.shape));
     |] in
-    let tfnode = {
-      name      = n.name;
-      op_name   = n.op_name;
-      input     = n.inputs;
-      node_attr = node_attr;
-      device    = "CPU:0"
-    } in
+    let tfnode =
+      {
+        name      = n.name;
+        op_name   = n.op_name;
+        input     = n.inputs;
+        node_attr = node_attr;
+        device    = "CPU:0"
+      }
+    in
     ([|tfnode|], (n.name, n.name))
 
 end
@@ -192,18 +208,20 @@ module OwlConst = struct
   }
 
 
-  let create name inputs out_shp = {
-    name    = name;
-    op_name = "Ones";
-    inputs  = inputs;
-    out_shp = out_shp;
-    value   = "dummy";
-    dtype   = "DT_FLOAT"
-  }
+  let create name inputs out_shp =
+    {
+      name    = name;
+      op_name = "Const";
+      inputs  = inputs;
+      out_shp = out_shp;
+      value   = "dummy";
+      dtype   = "DT_FLOAT"
+    }
 
 
   let make_tfnodes n =
-    let out_shp = match n.out_shp with
+    let out_shp =
+      match n.out_shp with
       | Some o -> o
       | None   -> [||]
     in
@@ -212,18 +230,23 @@ module OwlConst = struct
       ("_output_shape", (ATTR_List [|(ATTR_Shape out_shp)|]));
       ("value", (ATTR_String n.value));
     |] in
-    let tfnode = {
-      name      = n.name;
-      op_name   = n.op_name;
-      input     = n.inputs;
-      node_attr = node_attr;
-      device    = "CPU:0"
-    } in
+    let tfnode =
+      {
+        name      = n.name;
+        op_name   = n.op_name;
+        input     = n.inputs;
+        node_attr = node_attr;
+        device    = "CPU:0"
+      }
+    in
     ([|tfnode|], (n.name, n.name))
 
 end
 
 
+(* Note: You DEFINITLY need to add more nodes and update the nodes
+ * name in Var!!! Here is just a compilable template.
+ *)
 module OwlVar = struct
 
   type node_typ = {
@@ -235,17 +258,19 @@ module OwlVar = struct
   }
 
 
-  let create name inputs out_shp = {
-    name    = name;
-    op_name = "Ones";
-    inputs  = inputs;
-    out_shp = out_shp;
-    dtype   = "DT_FLOAT"
-  }
+  let create name inputs out_shp =
+    {
+      name    = name;
+      op_name = "VariableV2";
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT"
+    }
 
 
   let make_tfnodes n =
-    let out_shp = match n.out_shp with
+    let out_shp =
+      match n.out_shp with
       | Some o -> o
       | None   -> [||]
     in
@@ -253,17 +278,16 @@ module OwlVar = struct
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape out_shp)|]));
     |] in
-    let tfnode = {
-      name      = n.name;
-      op_name   = n.op_name;
-      input     = n.inputs;
-      node_attr = node_attr;
-      device    = "CPU:0"
-    } in
+    let tfnode =
+      {
+        name      = n.name;
+        op_name   = n.op_name;
+        input     = n.inputs;
+        node_attr = node_attr;
+        device    = "CPU:0"
+      }
+    in
     ([|tfnode|], (n.name, n.name))
-    (* Note: You DEFINITLY has to add more nodes and update the nodes
-     * name here in Var!!!
-     *)
 
 end
 
@@ -275,6 +299,10 @@ type owl_node =
   | OwlOnes      of OwlOnes.node_typ
   | OwlConst     of OwlConst.node_typ
   | OwlVar       of OwlVar.node_typ
+
+  (*
+  To add: Assign, SaverV2, RestoreV2, Identity, NoOp.
+  *)
 
 
 let make_tfnodes = function

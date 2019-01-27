@@ -5,13 +5,12 @@
 
 
 open Owl_converter_types
+open Owl_converter_utils
 (* open Owl_converter_attr *)
 
 module Make
   (G : Owl_computation_graph_sig.Sig)
   = struct
-
-  open G.Optimiser.Operator
 
   let make_op input_arg output_arg attr name =
     let input_arg  =
@@ -37,8 +36,8 @@ module Make
     }
 
 
-  let opdef_from_attr (attr : Symbol.Shape.Type.attr) =
-    let name = Symbol.op_to_str attr.op in
+  (* A large "match" should be here for looking up operations *)
+  let get_tfop name =
     let input_arg, output_arg, attr = None, None, None in
     make_op input_arg output_arg attr name
 
@@ -52,7 +51,7 @@ module Make
     meta.op_names <- Array.append meta.op_names [|op.name|]
 
 
-  let post_process _metadef = ()
+  let is_var tfnode = tfnode.op_name = "VariableV2"
 
 
   let create () =
@@ -64,28 +63,13 @@ module Make
     }
 
 
-  let to_string meta =
-    Printf.sprintf "meta_info_def { %s }" meta.tensorflow_version
+  let tfop_to_string _tfop = ""
 
+
+  let to_string meta =
+    let tfop_str = map_then_combine_string
+      tfop_to_string meta.stripped_op_list
+    in
+    Printf.sprintf "meta_info_def {\n%s\n%s\n}" tfop_str meta.tensorflow_version
 
 end
-
-
-
-(*
-let op_database : (string, (argdef array * argdef array * opattr array)) Hashtbl.t =
-  let h = Hashtbl.create 20 in
-  Hashtbl.add h "Dot"
-    ( [|make_argdef "DT_Float" "a"|],
-      [|make_argdef "DT_Float" "x"|],
-      [|make_opattr "NilAttrdef" "Nil"|]);
-  h
-
-
-let get_op_attr op_name =
-  try
-    Some (Hashtbl.find op_database op_name)
-  with
-    Not_found -> None
-
-*)

@@ -10,10 +10,26 @@ open Owl_converter_utils
 let default_coll = Nodelist [|""|]
 
 
-let create num = Array.make num ("", default_coll)
+let create namelist =
+  let h = Hashtbl.create 10 in
+  Array.iter (fun n ->
+    Hashtbl.add h n default_coll
+  ) namelist;
+  h
 
 
 let get_coll = Array.get
+
+
+let update h coll_name var =
+  let c = Hashtbl.find h coll_name in
+  let new_val =
+    match c with
+    | Nodelist c -> Nodelist (Array.append c [|var|])
+    | _          -> failwith "unsupported"
+  in
+  Hashtbl.replace h coll_name new_val
+  (* How can var be of multiple types here? *)
 
 
 (* TODO: The seprator are actually not whitespace here. *)
@@ -37,6 +53,7 @@ let coll_to_string collection =
 
 
 let to_string collections =
+  let collections = htbl_to_arr collections in
   let coll_str = map_then_combine_string (fun (_, c) ->
     col_to_string c
   ) collections

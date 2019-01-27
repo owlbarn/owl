@@ -18,10 +18,11 @@ module Make
   open G.Optimiser.Operator
 
 
-  let create () = {
-    nodes   = [||];
-    nametbl = (Hashtbl.create 20)
-  }
+  let create () =
+    {
+      nodes   = [||];
+      nametbl = (Hashtbl.create 20)
+    }
 
 
   let add_tfnodes tfgraph tfnodes name_update =
@@ -37,7 +38,7 @@ module Make
       Owl_graph.name n
     ) (Owl_graph.parents node)
     in
-    let out_shp = attr.shape.(0) in
+    let out_shp = attr.shape.(0) in (* only uses the first output *)
     match attr.op with
     | Dot (a, b, _, _) -> OwlDot (OwlDot.create name inputs out_shp a b)
     | AddScalar        -> OwlAddScalar (OwlAddScalar.create name inputs out_shp)

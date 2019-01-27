@@ -7,3 +7,9 @@
 let map_then_combine_string ?(sep=",") fn x =
   let mapped = Array.map fn x in
   Owl_utils_array.to_string ~sep (fun x -> x) mapped
+
+
+let htbl_to_arr htbl =
+  Hashtbl.fold (fun k v acc ->
+    Array.append acc [| (k,v) |]
+  ) htbl [||]

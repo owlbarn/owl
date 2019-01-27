@@ -24,7 +24,7 @@ module Make
       tfmeta  = TFmeta.create  ();
       tfgraph = TFgraph.create ();
       tfsaver = TFsaver.create ();
-      tfcolls = TFcolls.create 2
+      tfcolls = TFcolls.create [|""|]
     }
 
 
@@ -35,10 +35,10 @@ module Make
     (TFcolls.to_string m.tfcolls)
 
 
-  (* we need to specify rules about naming of model and output node(s) *)
+  (* Need to specify rules about naming of model and output node(s) *)
   let parse_cgraph (graph : G.graph) =
 
-    (* 1st iteration : owl_cgraph *)
+    (* 1st iteration : on owl_cgraph *)
     let tfgraph = TFgraph.create () in
     let outputs = G.get_outputs graph in
     iter_ancestors (fun node ->
@@ -50,40 +50,27 @@ module Make
     (* 2nd iteration : change tf_nodes's input nodes' names
      * according to tfgraph.nametbl *)
 
+    (*TODO*)
 
-    (* 3nd iteration : tf_cgraph *)
+    (* 3nd iteration : on tf_cgraph; surely can be combined with the 2nd iter *)
     let tfmeta  = TFmeta.create () in
     let tfsaver = TFsaver.create () in
+    TFsaver.add_savernodes tfsaver tfgraph;
+    let tfcolls = TFcolls.create [|"var"; "var_train"|] in
 
-    let tfcolls = TFcolls.create 2 in
-    let _tfcoll_var = TFcolls.get_coll tfcolls 0 in
-    let _tfcoll_var_train = TFcolls.get_coll tfcolls 1 in
-
-    (*
-    initialise saver nodes to tfsaver {
-      saverv2 and three nodes; control_dep and const;
-      restore and three nodes;
-      a restore_all node;
-    }
-
-    Array.iter ( fun tfnode ->
+    Array.iter (fun tfnode ->
       let opname = tfnode.op_name in
-      if not (TFmeta.mem_op tfmeta op_name) then (
-        let op_attr =
-        let tfop = TFmeta.opdef_from_attr op_attr in
-        Metadef.add_op tfmeta opdef
+      if not (TFmeta.mem_op tfmeta opname) then (
+        let tfop = TFmeta.get_tfop opname in
+        TFmeta.add_op tfmeta tfop
+      );
+      if (TFmeta.is_var tfnode) then (
+        TFsaver.add_link tfsaver tfgraph tfnode.name;
+        TFcolls.update tfcolls "var" tfnode.name;
+        TFcolls.update tfcolls "var_train" tfnode.name (* simply take all variables as trainable *)
       )
-
-      if tfnode is variable:
-        connect it to saver node
-        create an assign node to tfgraph
-          and connect to this varv2, restorev2, and restore_all
-        add variable to collections
-
     ) tfgraph.nodes;
 
-    let tfcoll_result = TFcoll.create ()
-    add the output nodes to tfcoll_result *)
     tfmeta, tfgraph, tfsaver, tfcolls
 
 

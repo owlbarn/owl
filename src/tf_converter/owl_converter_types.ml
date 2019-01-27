@@ -61,7 +61,7 @@ type tfnode = {
 
 
 type tfgraph = {
-  mutable nodes    : tfnode array;
+  mutable nodes   : tfnode array;
   mutable nametbl : (string, string) Hashtbl.t
 }
 
@@ -82,9 +82,12 @@ type tfcollection =
   | Floatlist  of float array
 
 
+type tfcolls = (string, tfcollection) Hashtbl.t
+
+
 type tf_cgraph = {
   mutable tfmeta  : tfmeta;
   mutable tfgraph : tfgraph;
   mutable tfsaver : tfsaver;
-  mutable tfcolls : (string * tfcollection) array
+  mutable tfcolls : tfcolls
 }
