@@ -1,84 +1,100 @@
+(*
+ * OWL - OCaml Scientific and Engineering Computing
+ * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
+
+
 open Owl_converter_types
 open Owl_graph
 
-module Saverdef = Owl_converter_saver
-module Colldef  = Owl_converter_collection
+module TFsaver = Owl_converter_saver
+module TFcolls = Owl_converter_collection
 
 
 module Make
   (G : Owl_computation_graph_sig.Sig)
   = struct
 
-  open G.Optimiser.Operator
+  module TFmeta  = Owl_converter_meta.Make (G)
+  module TFgraph = Owl_converter_graph.Make (G)
 
-  module Metadef  = Owl_converter_meta.Make (G)
-  module Graphdef = Owl_converter_graph.Make (G)
 
-  (* val convert : G.graph -> metagraph *)
-
-  let make_meta_graph () =
+  let make_tf_cgraph () =
     {
-      meta_def  = Metadef.create ();
-      graph_def = Graphdef.create ();
-      saver_def = Saverdef.create ();
-      coll_def  = Colldef.create ()
+      tfmeta  = TFmeta.create  ();
+      tfgraph = TFgraph.create ();
+      tfsaver = TFsaver.create ();
+      tfcolls = TFcolls.create 2
     }
 
 
   let to_string m =
-    (Metadef.to_string  m.meta_def) ^
-    (Graphdef.to_string m.graph_def) ^
-    (Saverdef.to_string m.saver_def) ^
-    (Colldef.to_string  m.coll_def)
+    (TFmeta.to_string  m.tfmeta)  ^
+    (TFgraph.to_string m.tfgraph) ^
+    (TFsaver.to_string m.tfsaver) ^
+    (TFcolls.to_string m.tfcolls)
 
 
-  (* the core step *)
+  (* we need to specify rules about naming of model and output node(s) *)
   let parse_cgraph (graph : G.graph) =
 
-    let metadef  = Metadef.create () in
-    let graphdef = Graphdef.create () in
-    let outputs  = G.get_outputs graph in
-
+    (* 1st iteration : owl_cgraph *)
+    let tfgraph = TFgraph.create () in
+    let outputs = G.get_outputs graph in
     iter_ancestors (fun node ->
-      let attr : Symbol.Shape.Type.attr = Owl_graph.attr node in
-      let op = attr.op in
-      let op_str = Symbol.op_to_str op in
-
-      if not (Metadef.mem_op metadef op_str) then (
-        let opdef = Metadef.opdef_from_attr attr in
-        Metadef.add_op metadef opdef
-      );
-
-      let nodedef = Graphdef.make_nodedef node in
-      Graphdef.add_nodedef graphdef nodedef
-
+      let tfnode, name_update = TFgraph.make_tfnodes node in
+      (* name_update : string * string; meaning, whoever uses me as his input, now change it to one of my subnodes .*)
+      TFgraph.add_tfnodes tfgraph tfnode name_update
     ) outputs;
 
-    let saverdef = Saverdef.create () in
-    let colldef  = Colldef.create () in
+    (* 2nd iteration : change tf_nodes's input nodes' names
+     * according to tfgraph.nametbl *)
 
-    metadef, graphdef, saverdef, colldef
+
+    (* 3nd iteration : tf_cgraph *)
+    let tfmeta  = TFmeta.create () in
+    let tfsaver = TFsaver.create () in
+
+    let tfcolls = TFcolls.create 2 in
+    let _tfcoll_var = TFcolls.get_coll tfcolls 0 in
+    let _tfcoll_var_train = TFcolls.get_coll tfcolls 1 in
+
+    (*
+    initialise saver nodes to tfsaver {
+      saverv2 and three nodes; control_dep and const;
+      restore and three nodes;
+      a restore_all node;
+    }
+
+    Array.iter ( fun tfnode ->
+      let opname = tfnode.op_name in
+      if not (TFmeta.mem_op tfmeta op_name) then (
+        let op_attr =
+        let tfop = TFmeta.opdef_from_attr op_attr in
+        Metadef.add_op tfmeta opdef
+      )
+
+      if tfnode is variable:
+        connect it to saver node
+        create an assign node to tfgraph
+          and connect to this varv2, restorev2, and restore_all
+        add variable to collections
+
+    ) tfgraph.nodes;
+
+    let tfcoll_result = TFcoll.create ()
+    add the output nodes to tfcoll_result *)
+    tfmeta, tfgraph, tfsaver, tfcolls
 
 
   let convert graph =
-    let meta, graph, saver, collections = parse_cgraph graph in
-
-    let tf_graph = make_meta_graph () in
-    tf_graph.meta_def  <- meta;
-    tf_graph.graph_def <- graph;
-    tf_graph.saver_def <- saver;
-    tf_graph.coll_def  <- collections;
-
-    let pb_txt = to_string tf_graph in
+    let tfmeta, tfgraph, tfsaver, tfcolls = parse_cgraph graph in
+    let tf_cgraph = make_tf_cgraph () in
+    tf_cgraph.tfmeta  <- tfmeta;
+    tf_cgraph.tfgraph <- tfgraph;
+    tf_cgraph.tfsaver <- tfsaver;
+    tf_cgraph.tfcolls <- tfcolls;
+    let pb_txt = to_string tf_cgraph in
     pb_txt
 
 end
-
-
-(*
-- code format
-- variable names are not informative and consistent
-- collection_pair is useless
-- used array_to_string from owl
-- current code is still too simple to see problems
-*)

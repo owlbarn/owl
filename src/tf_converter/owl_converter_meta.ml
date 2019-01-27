@@ -5,9 +5,7 @@
 
 
 open Owl_converter_types
-open Owl_converter_attr
-
-module D = Owl_converter_db
+(* open Owl_converter_attr *)
 
 module Make
   (G : Owl_computation_graph_sig.Sig)
@@ -19,17 +17,17 @@ module Make
     let input_arg  =
       match input_arg with
       | Some arg -> arg
-      | None     -> [| make_argdef "DT_EMPTY" "NilArg" |]
+      | None     -> [||]
     in
     let output_arg  =
       match output_arg with
       | Some arg -> arg
-      | None     -> [| make_argdef "DT_EMPTY" "NilArg" |]
+      | None     -> [||]
     in
     let attr =
       match attr with
       | Some attr -> attr
-      | None      -> [| make_opattr "NilAttrdef" "NilAttr"|]
+      | None      -> [||]
     in
     {
       name = name;
@@ -41,11 +39,7 @@ module Make
 
   let opdef_from_attr (attr : Symbol.Shape.Type.attr) =
     let name = Symbol.op_to_str attr.op in
-    let input_arg, output_arg, attr =
-      match (D.get_op_attr name) with
-      | Some (a, b, c) -> (Some a), (Some b), (Some c)
-      | None           -> None, None, None
-    in
+    let input_arg, output_arg, attr = None, None, None in
     make_op input_arg output_arg attr name
 
 
@@ -75,3 +69,23 @@ module Make
 
 
 end
+
+
+
+(*
+let op_database : (string, (argdef array * argdef array * opattr array)) Hashtbl.t =
+  let h = Hashtbl.create 20 in
+  Hashtbl.add h "Dot"
+    ( [|make_argdef "DT_Float" "a"|],
+      [|make_argdef "DT_Float" "x"|],
+      [|make_opattr "NilAttrdef" "Nil"|]);
+  h
+
+
+let get_op_attr op_name =
+  try
+    Some (Hashtbl.find op_database op_name)
+  with
+    Not_found -> None
+
+*)

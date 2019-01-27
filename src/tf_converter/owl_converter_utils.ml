@@ -1,6 +1,9 @@
+(*
+ * OWL - OCaml Scientific and Engineering Computing
+ * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
 
-let array_to_string = Owl_utils_array.to_string
 
-let map_then_combine_string fn x =
-  let arr = Array.map fn x in
-  Owl_utils_array.to_string ~sep:" " (fun x -> x) arr
+let map_then_combine_string ?(sep=",") fn x =
+  let mapped = Array.map fn x in
+  Owl_utils_array.to_string ~sep (fun x -> x) mapped
