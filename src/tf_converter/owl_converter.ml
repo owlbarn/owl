@@ -7,7 +7,6 @@
 open Owl_converter_types
 open Owl_graph
 
-module TFsaver = Owl_converter_saver
 module TFcolls = Owl_converter_collection
 
 
@@ -17,7 +16,7 @@ module Make
 
   module TFmeta  = Owl_converter_meta.Make (G)
   module TFgraph = Owl_converter_graph.Make (G)
-
+  module TFsaver = Owl_converter_saver.Make (G)
 
   let make_tf_cgraph () =
     {

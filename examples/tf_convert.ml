@@ -14,7 +14,7 @@ include Owl_algodiff_generic.Make (G)
 
 let f x y =
   let weight = Mat.ones 3 3 in
-  Maths.( (pack_flt 2.) * (x *@ weight + y) - (pack_flt 1.))
+  Maths.( (pack_flt 2.) * (x *@ weight + y) + (pack_flt 1.))
 
 let x = G.var_arr "x" |> pack_arr
 let y = G.var_elt "y" |> pack_elt
