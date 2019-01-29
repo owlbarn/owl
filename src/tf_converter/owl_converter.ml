@@ -60,7 +60,7 @@ module Make
     Array.iter (fun tfnode ->
       let opname = tfnode.op_name in
       if not (TFmeta.mem_op tfmeta opname) then (
-        let tfop = TFmeta.get_tfop opname in
+        let tfop = TFmeta.get_op opname in
         TFmeta.add_op tfmeta tfop
       );
       if (TFmeta.is_var tfnode) then (
