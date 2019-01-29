@@ -12,4 +12,4 @@ let map_then_combine_string ?(sep=",") fn x =
 let htbl_to_arr htbl =
   Hashtbl.fold (fun k v acc ->
     Array.append acc [| (k,v) |]
-  ) htbl [||]
+  ) htbl [| |]

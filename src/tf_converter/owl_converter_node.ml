@@ -38,7 +38,8 @@ module OwlDot = struct
       ("transpose_b", (ATTR_Bool n.trans_b));
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
-    |] in
+    |]
+    in
     let tfnode =
       {
         name      = n.name;
@@ -81,7 +82,8 @@ module OwlAddScalar = struct
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
-    |] in
+    |]
+    in
     let tfnode =
       {
         name      = n.name;
@@ -124,7 +126,8 @@ module OwlScalarMul = struct
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
-    |] in
+    |]
+    in
     let tfnode =
       {
         name      = n.name;
@@ -170,7 +173,8 @@ module OwlOnes = struct
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("shape", (ATTR_Shape n.shape));
-    |] in
+    |]
+    in
     let tfnode =
       {
         name      = n.name;
@@ -214,7 +218,8 @@ module OwlConst = struct
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("value", n.value);
-    |] in
+    |]
+    in
     let tfnode =
       {
         name      = n.name;
@@ -311,7 +316,8 @@ module Assign = struct
       ("_class", (ATTR_List [|ATTR_String ("loc:@" ^ n.value)|]));
       ("use_locking", (ATTR_Bool n.use_locking));
       ("validate_shape", (ATTR_Bool n.validate_shape));
-    |] in
+    |]
+    in
     let tfnode =
       {
         name      = n.name;
@@ -357,7 +363,8 @@ module Identity = struct
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("_class", ATTR_List [|ATTR_String ("loc:@" ^ n.cls)|]);
-    |] in
+    |]
+    in
     let tfnode =
       {
         name      = n.name;
@@ -387,10 +394,10 @@ module Save = struct
 
   let create ?(dtype="DT_STRING") name inputs =
     {
-      name = name;
+      name    = name;
       op_name = "SaveV2";
-      inputs = inputs;
-      dtype = dtype
+      inputs  = inputs;
+      dtype   = dtype
     }
 
 
@@ -424,10 +431,10 @@ module Restore = struct
 
   let create name inputs dtype =
     {
-      name = name;
+      name    = name;
       op_name = "RestoreV2";
-      inputs = inputs;
-      dtype = dtype
+      inputs  = inputs;
+      dtype   = dtype
     }
 
 
@@ -460,9 +467,9 @@ module Noop = struct
 
   let create name inputs =
     {
-      name = name;
+      name    = name;
       op_name = "NoOp";
-      inputs = inputs;
+      inputs  = inputs;
     }
 
 
