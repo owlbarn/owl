@@ -23,8 +23,15 @@ let make_tfop_attr name typ =
   }
 
 
-let make_argdef type_attr name =
-  { name = name; type_attr = type_attr }
+let make_argdef ?typ_attr ?num_attr
+  ?typ_attr_list ?is_ref name =
+  {
+    name          = name;
+    typ_attr      = typ_attr;
+    num_attr      = num_attr;
+    typ_attr_list = typ_attr_list;
+    is_ref        = is_ref;
+  }
 
 
 let dim_to_string dim =

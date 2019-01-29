@@ -7,6 +7,8 @@
 open Owl_converter_types
 open Owl_converter_utils
 
+module OpDef = Owl_converter_tfopdef
+
 
 module Make
   (G : Owl_computation_graph_sig.Sig)
@@ -36,10 +38,7 @@ module Make
     }
 
 
-  (* A large "match" should be here for looking up operations *)
-  let get_tfop name =
-    let input_arg, output_arg, attr = None, None, None in
-    make_op input_arg output_arg attr name
+  let get_tfop = OpDef.get_tfop
 
 
   let mem_op meta op_name =
@@ -55,9 +54,8 @@ module Make
 
 
   let create () =
-    let emty_op = make_op None None None "Noop" in
     {
-      stripped_op_list = [|emty_op|];
+      stripped_op_list = [||];
       tensorflow_version = "1.12.0";
       op_names = [||]
     }

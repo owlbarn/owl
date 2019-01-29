@@ -4,12 +4,10 @@
  *)
 
 
-(* many properties are ignored for simplicity *)
-
 type dtype =
-  DT_STRING | DT_FLOAT32 | DT_FLOAT64   |
-  DT_INT32  | DT_INT64   | DT_COMPLEX32 |
-  DT_COMPLEX64
+  DT_HALF | DT_FLOAT | DT_DOUBLE | DT_UINT8 |
+  DT_INT8 | DT_INT16 | DT_INT32  | DT_INT64 |
+  DT_COMPLEX64 | DT_COMPLEX128   | DT_STRING
 
 
 type tftensor = {
@@ -33,14 +31,18 @@ type tfattrvalue =
 
 
 type tfop_attr = {
-  mutable name : string;
-  mutable typ  : string;
+  name : string;
+  typ  : string;
+  (* allowed_values *)
 }
 
 
 type argdef = {
-  name      : string;
-  type_attr : string; (* "DT_BFLOAT16" | "DT_HALF" | ... *)
+  name          : string;
+  typ_attr      : string option;
+  num_attr      : string option;
+  typ_attr_list : string array option;
+  is_ref        : bool option;
 }
 
 
