@@ -256,6 +256,7 @@ module OwlVar = struct
     }
 
 
+  (* Var should return more nodes: Assign and Identity; connect them *)
   let make_tfnodes n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
@@ -277,25 +278,56 @@ module OwlVar = struct
 
 end
 
-(*
+
 module Assign = struct
 
   type node_typ = {
-    mutable name    : string;
-    mutable op_name : string;
-    mutable inputs  : string array;
-    mutable out_shp : int array option;
-    mutable dtype   : string;
-
-    mutable ref     : tensor;
-    mutable value   : tensor;
-    mutable use_locking : bool;
+    mutable name           : string;
+    mutable out_shp        : int array;
+    mutable dtype          : string;
+    mutable refv           : string;
+    mutable value          : string;
+    mutable use_locking    : bool;
     mutable validate_shape : bool;
-    mutable cls     : string;
   }
 
+
+  let create name refv value out_shp dtype =
+    {
+      name = name;
+      out_shp = out_shp;
+      dtype = dtype;
+      refv = refv;
+      value = value;
+      use_locking = true;
+      validate_shape = true;
+    }
+
+
+  let make_tfnodes n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_class", (ATTR_List [|ATTR_String ("loc:@" ^ n.value)|]));
+      ("use_locking", (ATTR_Bool n.use_locking));
+      ("validate_shape", (ATTR_Bool n.validate_shape));
+    |] in
+    let tfnode =
+      {
+        name      = n.name;
+        op_name   = "Assign";
+        input     = [|n.refv; n.value|];
+        node_attr = node_attr;
+        device    = "CPU:0"
+      }
+    in
+    ([|tfnode|], (n.name, n.name))
+
+
+  let get_name n = n.name
+
 end
-*)
+
 
 module Identity = struct
 
@@ -459,7 +491,7 @@ type owl_node =
   | OwlOnes      of OwlOnes.node_typ
   | OwlConst     of OwlConst.node_typ
   | OwlVar       of OwlVar.node_typ
-  (* | Assign       of Assign.node_typ *)
+  | Assign       of Assign.node_typ
   | Identity     of Identity.node_typ
   | Save         of Save.node_typ
   | Restore      of Restore.node_typ
@@ -473,7 +505,7 @@ let make_tfnodes = function
   | OwlOnes      n -> OwlOnes.make_tfnodes n
   | OwlConst     n -> OwlConst.make_tfnodes n
   | OwlVar       n -> OwlVar.make_tfnodes n
-  (* | Assign       n -> Assign.make_tfnodes n *)
+  | Assign       n -> Assign.make_tfnodes n
   | Identity     n -> Identity.make_tfnodes n
   | Save         n -> Save.make_tfnodes n
   | Restore      n -> Restore.make_tfnodes n
@@ -487,20 +519,8 @@ let get_name = function
   | OwlOnes      n -> OwlOnes.get_name n
   | OwlConst     n -> OwlConst.get_name n
   | OwlVar       n -> OwlVar.get_name n
-  (* | Assign       n -> Assign.get_name n *)
+  | Assign       n -> Assign.get_name n
   | Identity     n -> Identity.get_name n
   | Save         n -> Save.get_name n
   | Restore      n -> Restore.get_name n
   | Noop         n -> Noop.get_name n
-
-
-let update_name _n = ()
-
-
-let update_inputs _n = ()
-
-
-let update_attr _n = ()
-
-
-let update_device _n = ()

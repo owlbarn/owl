@@ -7,7 +7,9 @@
 (* many properties are ignored for simplicity *)
 
 type dtype =
-  DT_STRING | DT_FLOAT32 | DT_FLOAT64 | DT_INT32 | DT_INT64 | DT_COMPLEX32 | DT_COMPLEX64
+  DT_STRING | DT_FLOAT32 | DT_FLOAT64   |
+  DT_INT32  | DT_INT64   | DT_COMPLEX32 |
+  DT_COMPLEX64
 
 
 type tftensor = {

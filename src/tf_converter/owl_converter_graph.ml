@@ -59,6 +59,31 @@ module Make
     make_tfnodes owl_node
 
 
+  (* an ugly impl. *)
+  let get_tfnode tfgraph name =
+    let nodes = Array.to_list tfgraph.nodes in
+    let ns = List.filter (fun n -> n.name = name) nodes in
+    List.hd ns
+
+
+  let get_tfnode_input (tfnode : tfnode) = tfnode.input
+
+
+  let set_tfnode_input (tfnode : tfnode) input = tfnode.input <- input
+
+
+  let get_tfnode_tfattr (tfnode : tfnode) = tfnode.node_attr
+
+
+  let set_tfnode_tfattr (tfnode : tfnode) attr = tfnode.node_attr <- attr
+
+
+  let get_tfnode_device (tfnode : tfnode) = tfnode.device
+
+
+  let set_tfnode_device (tfnode : tfnode) device = tfnode.device <- device
+
+
   (* for debugging *)
   let tfnodes_to_dot _nodes = ()
 
@@ -66,11 +91,15 @@ module Make
   let tfnode_to_string n =
     let attr_str = map_then_combine_string (fun (k, v) ->
       let value_str = tfattrvalue_to_string v in
-      Printf.sprintf "attr {\nkey: \"%s\"\nvalue: {%s}}" k value_str
+      Printf.sprintf "attr {\nkey: \"%s\"\nvalue: {%s}}\n" k value_str
     ) n.node_attr
     in
-    Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"\n%s\n}\n"
-      n.name n.op_name attr_str
+    let inputs_str = map_then_combine_string (fun v ->
+      Printf.sprintf "input : %s\n" v
+    ) n.input
+    in
+    Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"\n%s\n%s\n}\n"
+      n.name n.op_name inputs_str attr_str
 
 
   let to_string graphdef =
