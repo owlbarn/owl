@@ -24,7 +24,7 @@ let make_tfop_attr name typ =
 
 
 let make_argdef type_attr name =
-  {name = name; type_attr = type_attr}
+  { name = name; type_attr = type_attr }
 
 
 let dim_to_string dim =
@@ -33,7 +33,7 @@ let dim_to_string dim =
 
 let tensor_to_string v =
   let dtype_str = v.dtype in
-  let tshp_str  = map_then_combine_string dim_to_string v.tensor_shape in
+  let tshp_str = map_then_combine_string dim_to_string v.tensor_shape in
   let result_str = dtype_str ^ tshp_str in
   Printf.sprintf "tensor {\n%s\n}" result_str
 

@@ -64,7 +64,8 @@ module Make
       [|(get_name save_const); ("^" ^ (get_name save))|]
       "DT_STRING"
       tfsaver.filename_tensor_name
-    ) in
+    )
+    in
 
     let restore_tensor_name = make_tftensor
       ~string_val:(Some "") "DT_STRING" [|1|] in
@@ -75,7 +76,8 @@ module Make
     let restore_shape = make_tftensor
       ~string_val:(Some "") "DT_STRING" [|1|] in
     let restore_shape = OwlConst (OwlConst.create restore_shape_slices
-      [|1|] (ATTR_Tensor restore_shape)) in
+      [|1|] (ATTR_Tensor restore_shape))
+    in
 
     let restore = Restore (Restore.create restore_name
       [|(get_name save_const);
@@ -86,7 +88,10 @@ module Make
 
     let restore_all = Noop (Noop.create tfsaver.restore_op_name [||]) in
 
-    let nodes = [|save_const; save_tensor_name; save_shape; save; control_dep; restore_tensor_name; restore_shape; restore; restore_all|] in
+    let nodes = [|
+      save_const; save_tensor_name; save_shape; save; control_dep;
+      restore_tensor_name; restore_shape; restore; restore_all
+    |] in
 
     Array.iter (fun n ->
       let n, p = make_tfnodes n in

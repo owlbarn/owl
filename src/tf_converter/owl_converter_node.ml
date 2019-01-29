@@ -38,7 +38,12 @@ module OwlDot = struct
       ("transpose_b", (ATTR_Bool n.trans_b));
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+<<<<<<< HEAD
     |] in
+=======
+    |]
+    in
+>>>>>>> upstream/graphdef
     let tfnode =
       {
         name      = n.name;
@@ -81,7 +86,12 @@ module OwlAddScalar = struct
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+<<<<<<< HEAD
     |] in
+=======
+    |]
+    in
+>>>>>>> upstream/graphdef
     let tfnode =
       {
         name      = n.name;
@@ -124,7 +134,12 @@ module OwlScalarMul = struct
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+<<<<<<< HEAD
     |] in
+=======
+    |]
+    in
+>>>>>>> upstream/graphdef
     let tfnode =
       {
         name      = n.name;
@@ -170,7 +185,8 @@ module OwlOnes = struct
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("shape", (ATTR_Shape n.shape));
-    |] in
+    |]
+    in
     let tfnode =
       {
         name      = n.name;
@@ -214,7 +230,12 @@ module OwlConst = struct
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("value", n.value);
+<<<<<<< HEAD
     |] in
+=======
+    |]
+    in
+>>>>>>> upstream/graphdef
     let tfnode =
       {
         name      = n.name;
@@ -257,6 +278,7 @@ module OwlVar = struct
 
 
   (* Var should return more nodes: Assign and Identity; connect them *)
+<<<<<<< HEAD
   let make_tfnodes n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
@@ -357,6 +379,12 @@ module Identity = struct
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("_class", ATTR_List [|ATTR_String ("loc:@" ^ n.cls)|]);
+=======
+  let make_tfnodes n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+>>>>>>> upstream/graphdef
     |] in
     let tfnode =
       {
@@ -375,6 +403,107 @@ module Identity = struct
 end
 
 
+<<<<<<< HEAD
+=======
+module Assign = struct
+
+  type node_typ = {
+    mutable name           : string;
+    mutable out_shp        : int array;
+    mutable dtype          : string;
+    mutable refv           : string;
+    mutable value          : string;
+    mutable use_locking    : bool;
+    mutable validate_shape : bool;
+  }
+
+
+  let create name refv value out_shp dtype =
+    {
+      name = name;
+      out_shp = out_shp;
+      dtype = dtype;
+      refv = refv;
+      value = value;
+      use_locking = true;
+      validate_shape = true;
+    }
+
+
+  let make_tfnodes n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_class", (ATTR_List [|ATTR_String ("loc:@" ^ n.value)|]));
+      ("use_locking", (ATTR_Bool n.use_locking));
+      ("validate_shape", (ATTR_Bool n.validate_shape));
+    |]
+    in
+    let tfnode =
+      {
+        name      = n.name;
+        op_name   = "Assign";
+        input     = [|n.refv; n.value|];
+        node_attr = node_attr;
+        device    = "CPU:0"
+      }
+    in
+    ([|tfnode|], (n.name, n.name))
+
+
+  let get_name n = n.name
+
+end
+
+
+module Identity = struct
+
+  type node_typ = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable cls     : string;
+  }
+
+
+  let create name inputs dtype cls =
+    {
+      name    = name;
+      op_name = "Identity";
+      inputs  = inputs;
+      out_shp = [||];
+      dtype   = dtype;
+      cls     = cls;
+    }
+
+
+  let make_tfnodes n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_class", ATTR_List [|ATTR_String ("loc:@" ^ n.cls)|]);
+    |]
+    in
+    let tfnode =
+      {
+        name      = n.name;
+        op_name   = n.op_name;
+        input     = n.inputs;
+        node_attr = node_attr;
+        device    = "CPU:0"
+      }
+    in
+    ([|tfnode|], (n.name, n.name))
+
+
+  let get_name n = n.name
+
+end
+
+
+>>>>>>> upstream/graphdef
 module Save = struct
 
   type node_typ = {
@@ -387,10 +516,17 @@ module Save = struct
 
   let create ?(dtype="DT_STRING") name inputs =
     {
+<<<<<<< HEAD
       name = name;
       op_name = "SaveV2";
       inputs = inputs;
       dtype = dtype
+=======
+      name    = name;
+      op_name = "SaveV2";
+      inputs  = inputs;
+      dtype   = dtype
+>>>>>>> upstream/graphdef
     }
 
 
@@ -424,10 +560,17 @@ module Restore = struct
 
   let create name inputs dtype =
     {
+<<<<<<< HEAD
       name = name;
       op_name = "RestoreV2";
       inputs = inputs;
       dtype = dtype
+=======
+      name    = name;
+      op_name = "RestoreV2";
+      inputs  = inputs;
+      dtype   = dtype
+>>>>>>> upstream/graphdef
     }
 
 
@@ -460,9 +603,15 @@ module Noop = struct
 
   let create name inputs =
     {
+<<<<<<< HEAD
       name = name;
       op_name = "NoOp";
       inputs = inputs;
+=======
+      name    = name;
+      op_name = "NoOp";
+      inputs  = inputs;
+>>>>>>> upstream/graphdef
     }
 
 

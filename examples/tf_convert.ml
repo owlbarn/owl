@@ -1,4 +1,5 @@
 #!/usr/bin/env owl
+#require "owl-converter"
 
 open Owl
 open Owl_converter
@@ -42,5 +43,7 @@ let _ = N.print (G.value_to_arr v.(0))
 let _dot = G.graph_to_dot g
 
 (* output to tensorflow pbtxt *)
-let pbtxt = T.convert g
+let _ =
+  let pbtxt = T.convert g in
+  print_endline pbtxt
 (* let _ = T.Utils.pbtxt_to_pb "test_cgraph.meta" s *)
