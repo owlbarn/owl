@@ -6,13 +6,22 @@
 
 (* many properties are ignored for simplicity *)
 
+type dtype =
+  DT_STRING | DT_FLOAT32 | DT_FLOAT64   |
+  DT_INT32  | DT_INT64   | DT_COMPLEX32 |
+  DT_COMPLEX64
+
+
 type tftensor = {
   dtype        : string;
   tensor_shape : int array;
+  string_val   : string option;
+  float_val    : float option;
 }
 
 
 type tfattrvalue =
+  | ATTR_Nil
   | ATTR_Int     of int
   | ATTR_Bool    of bool
   | ATTR_Type    of string

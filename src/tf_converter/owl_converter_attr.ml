@@ -7,10 +7,12 @@
 open Owl_converter_types
 open Owl_converter_utils
 
-let make_tftensor dtype shape =
+let make_tftensor ?(string_val=None) ?(float_val=None) dtype shape =
   {
     dtype        = dtype;
-    tensor_shape = shape
+    tensor_shape = shape;
+    string_val   = string_val;
+    float_val    = float_val
   }
 
 
@@ -38,6 +40,7 @@ let tensor_to_string v =
 
 let rec tfattrvalue_to_string attrv =
   match attrv with
+  | ATTR_Nil      -> ""
   | ATTR_Int v    -> Printf.sprintf "int {\n%d}\n" v
   | ATTR_String v -> Printf.sprintf "string {\n%s}\n" v
   | ATTR_Bool v   -> Printf.sprintf "bool {\n%b}\n" v

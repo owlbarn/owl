@@ -6,7 +6,7 @@
 
 open Owl_converter_types
 open Owl_converter_utils
-(* open Owl_converter_attr *)
+
 
 module Make
   (G : Owl_computation_graph_sig.Sig)
