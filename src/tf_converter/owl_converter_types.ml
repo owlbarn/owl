@@ -33,15 +33,20 @@ type tfattrvalue =
 type tfop_attr = {
   name : string;
   typ  : string;
-  (* allowed_values *)
+  (* allowed_values : tfattrvalue
+   * default_value :  tfattrvalue
+   * has_minimum : bool;
+   * minimum : int
+   *)
 }
 
 
 type argdef = {
   name          : string;
+  typ           : string option;
   typ_attr      : string option;
   num_attr      : string option;
-  typ_attr_list : string array option;
+  typ_list_attr : string option;
   is_ref        : bool option;
 }
 
@@ -51,6 +56,10 @@ type tfop = {
   input_arg  : argdef array;
   output_arg : argdef array;
   attr       : tfop_attr array;
+  (* allows_uninitialized_input : bool
+   * is_commutative : bool
+   * is_stateful : bool
+   *)
 }
 
 

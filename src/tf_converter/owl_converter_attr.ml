@@ -23,13 +23,14 @@ let make_tfop_attr name typ =
   }
 
 
-let make_argdef ?typ_attr ?num_attr
-  ?typ_attr_list ?is_ref name =
+let make_argdef ?typ ?typ_attr ?num_attr
+  ?typ_list_attr ?is_ref name =
   {
     name          = name;
+    typ           = typ;
     typ_attr      = typ_attr;
     num_attr      = num_attr;
-    typ_attr_list = typ_attr_list;
+    typ_list_attr = typ_list_attr;
     is_ref        = is_ref;
   }
 

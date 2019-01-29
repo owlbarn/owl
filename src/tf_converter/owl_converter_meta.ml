@@ -14,30 +14,6 @@ module Make
   (G : Owl_computation_graph_sig.Sig)
   = struct
 
-  let make_op input_arg output_arg attr name =
-    let input_arg  =
-      match input_arg with
-      | Some arg -> arg
-      | None     -> [||]
-    in
-    let output_arg  =
-      match output_arg with
-      | Some arg -> arg
-      | None     -> [||]
-    in
-    let attr =
-      match attr with
-      | Some attr -> attr
-      | None      -> [||]
-    in
-    {
-      name = name;
-      input_arg = input_arg;
-      output_arg = output_arg;
-      attr = attr
-    }
-
-
   let get_tfop = OpDef.get_tfop
 
 
