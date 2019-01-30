@@ -966,24 +966,6 @@ type tfnode =
   | TFRestore     of TFRestore.t
   | TFNoop        of TFNoop.t
 
-(*
-let make_nodedef = function
-  | OwlDot       n -> OwlDot.make_nodedef n
-  | OwlAddScalar n -> OwlAddScalar.make_nodedef n
-  | OwlScalarMul n -> OwlScalarMul.make_nodedef n
-  | OwlRelu      n -> OwlRelu.make_nodedef n
-  | OwlConv2d    n -> OwlConv2d.make_nodedef n
-  | OwlMaxPool2d n -> OwlMaxPool2d.make_nodedef n
-  | OwlOnes      n -> OwlOnes.make_nodedef n
-  | OwlConst     n -> OwlConst.make_nodedef n
-  | OwlVar       n -> OwlVar.make_nodedef n
-  | Assign       n -> Assign.make_nodedef n
-  | Identity     n -> Identity.make_nodedef n
-  | Save         n -> Save.make_nodedef n
-  | Restore      n -> Restore.make_nodedef n
-  | Noop         n -> Noop.make_nodedef n
-*)
-
 
 let to_pbtxt = function
   | TFMatMul      n -> TFMatMul.to_pbtxt n
