@@ -17,6 +17,8 @@ module Make
 
   open G.Optimiser.Operator
 
+  module Device = G.Optimiser.Operator.Symbol.Shape.Type.Device
+
 
   let create () =
     {
@@ -44,14 +46,31 @@ module Make
       | Some s -> s
       | None   -> [||]
     in
+    let v = (attr.value).(0) in
+    let value =
+      if (Device.is_arr v) then (
+        let arr = Device.value_to_arr v in
+        let shp = Device.A.shape arr in
+        let float_val = [|0.|] in (* should be G.A.to_array arr *)
+        let tensor = make_tftensor ~float_val "DT_FLOAT" shp in
+        ATTR_Tensor tensor
+      ) else if (Device.is_elt v) then (
+        ATTR_Float (Device.value_to_float v)
+      ) else (
+        ATTR_Nil
+      )
+    in
     match attr.op with
-    | Dot (a, b, _, _) -> OwlDot (OwlDot.create name inputs out_shp a b)
-    | AddScalar        -> OwlAddScalar (OwlAddScalar.create name inputs out_shp)
-    | ScalarMul        -> OwlScalarMul (OwlScalarMul.create name inputs out_shp)
-    | Ones shape       -> OwlOnes (OwlOnes.create name inputs out_shp shape)
-    | Var              -> OwlVar (OwlVar.create name inputs out_shp)
-    | Const            -> OwlConst (OwlConst.create name out_shp ATTR_Nil)
-    | _                -> failwith "unsupported operation"
+    | Dot (a, b, _, _)    -> OwlDot (OwlDot.create name inputs out_shp a b)
+    | AddScalar           -> OwlAddScalar (OwlAddScalar.create name inputs out_shp)
+    | ScalarMul           -> OwlScalarMul (OwlScalarMul.create name inputs out_shp)
+    | Relu                -> OwlRelu (OwlRelu.create name inputs out_shp)
+    | Conv2d (p, s)       -> OwlConv2d (OwlConv2d.create name inputs out_shp p s)
+    | MaxPool2d (p, s, k) -> OwlMaxPool2d (OwlMaxPool2d.create name inputs out_shp p s k)
+    | Var                 -> OwlVar (OwlVar.create name out_shp)
+    | Ones shape          -> OwlOnes (OwlOnes.create name inputs out_shp shape)
+    | Const               -> OwlConst (OwlConst.create name out_shp value)
+    | _                   -> failwith "unsupported operation"
 
 
   let make_tfnodes (node : Symbol.Shape.Type.attr Owl_graph.node) =

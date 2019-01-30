@@ -28,7 +28,7 @@ module OwlDot = struct
       out_shp = out_shp;
       trans_a = trans_a;
       trans_b = trans_b;
-      dtype   = "DT_FLOAT" (* Data Type fixed to float; wrong *)
+      dtype   = "DT_FLOAT"
     }
 
 
@@ -245,28 +245,179 @@ module OwlVar = struct
   type node_typ = {
     mutable name    : string;
     mutable op_name : string;
-    mutable inputs  : string array;
     mutable out_shp : int array;
     mutable dtype   : string;
+  }
+
+
+  let create name out_shp =
+    {
+      name    = name;
+      op_name = "Placeholder";
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT"
+    }
+
+
+  let make_tfnodes n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("shape", (ATTR_Shape n.out_shp));
+      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+    |] in
+    let tfnode =
+      {
+        name      = n.name;
+        op_name   = n.op_name;
+        input     = [||];
+        node_attr = node_attr;
+        device    = "CPU:0"
+      }
+    in
+    ([|tfnode|], (n.name, n.name))
+
+
+  let get_name n = n.name
+
+end
+
+
+module OwlRelu = struct
+
+  type node_typ = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
   }
 
 
   let create name inputs out_shp =
     {
       name    = name;
-      op_name = "VariableV2";
+      op_name = "Relu";
       inputs  = inputs;
       out_shp = out_shp;
-      dtype   = "DT_FLOAT"
     }
 
 
-  (* Var should return more nodes: Assign and Identity; connect them *)
   let make_tfnodes n =
     let node_attr = [|
-      ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
-    |] in
+    |]
+    in
+    let tfnode =
+      {
+        name      = n.name;
+        op_name   = n.op_name;
+        input     = n.inputs;
+        node_attr = node_attr;
+        device    = "CPU:0"
+      }
+    in
+    ([|tfnode|], (n.name, n.name))
+
+
+  let get_name n = n.name
+
+end
+
+
+module OwlConv2d = struct
+
+  type node_typ = {
+    mutable name     : string;
+    mutable op_name  : string;
+    mutable inputs   : string array;
+    mutable out_shp  : int array;
+    mutable strides  : int array;
+    mutable padding  : string;
+    mutable dilation : int array;
+  }
+
+
+  let create name inputs out_shp padding strides =
+    let padding =
+      match padding with
+      | Owl_types_common.SAME  -> "Same"
+      | Owl_types_common.VALID -> "Valid"
+    in
+    {
+      name     = name;
+      op_name  = "Conv2D";
+      inputs   = inputs;
+      out_shp  = out_shp;
+      strides  = strides;
+      padding  = padding;
+      dilation = [|1;1;1;1|];
+    }
+
+
+  let make_tfnodes n =
+    let node_attr = [|
+      ("strides", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.strides)));
+      ("dilation", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.dilation)));
+      ("padding", (ATTR_String n.padding));
+      ("T", (ATTR_Type "DT_FLOAT"));
+      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |]
+    in
+    let tfnode =
+      {
+        name      = n.name;
+        op_name   = n.op_name;
+        input     = n.inputs;
+        node_attr = node_attr;
+        device    = "CPU:0"
+      }
+    in
+    ([|tfnode|], (n.name, n.name))
+
+
+  let get_name n = n.name
+
+end
+
+
+module OwlMaxPool2d = struct
+
+  type node_typ = {
+    mutable name     : string;
+    mutable op_name  : string;
+    mutable inputs   : string array;
+    mutable out_shp  : int array;
+    mutable strides  : int array;
+    mutable padding  : string;
+    mutable ksize    : int array;
+  }
+
+
+  let create name inputs out_shp padding strides ksize =
+    let padding =
+      match padding with
+      | Owl_types_common.SAME  -> "Same"
+      | Owl_types_common.VALID -> "Valid"
+    in
+    {
+      name     = name;
+      op_name  = "MaxPool";
+      inputs   = inputs;
+      out_shp  = out_shp;
+      strides  = strides;
+      padding  = padding;
+      ksize    = ksize;
+    }
+
+
+  let make_tfnodes n =
+    let node_attr = [|
+      ("strides", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.strides)));
+      ("ksize", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.ksize)));
+      ("padding", (ATTR_String n.padding));
+      ("T", (ATTR_Type "DT_FLOAT"));
+      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |]
+    in
     let tfnode =
       {
         name      = n.name;
@@ -495,6 +646,9 @@ type owl_node =
   | OwlDot       of OwlDot.node_typ
   | OwlAddScalar of OwlAddScalar.node_typ
   | OwlScalarMul of OwlScalarMul.node_typ
+  | OwlRelu      of OwlRelu.node_typ
+  | OwlConv2d    of OwlConv2d.node_typ
+  | OwlMaxPool2d of OwlMaxPool2d.node_typ
   | OwlOnes      of OwlOnes.node_typ
   | OwlConst     of OwlConst.node_typ
   | OwlVar       of OwlVar.node_typ
@@ -509,6 +663,9 @@ let make_tfnodes = function
   | OwlDot       n -> OwlDot.make_tfnodes n
   | OwlAddScalar n -> OwlAddScalar.make_tfnodes n
   | OwlScalarMul n -> OwlScalarMul.make_tfnodes n
+  | OwlRelu      n -> OwlRelu.make_tfnodes n
+  | OwlConv2d    n -> OwlConv2d.make_tfnodes n
+  | OwlMaxPool2d n -> OwlMaxPool2d.make_tfnodes n
   | OwlOnes      n -> OwlOnes.make_tfnodes n
   | OwlConst     n -> OwlConst.make_tfnodes n
   | OwlVar       n -> OwlVar.make_tfnodes n
@@ -523,6 +680,9 @@ let get_name = function
   | OwlDot       n -> OwlDot.get_name n
   | OwlAddScalar n -> OwlAddScalar.get_name n
   | OwlScalarMul n -> OwlScalarMul.get_name n
+  | OwlRelu      n -> OwlRelu.get_name n
+  | OwlConv2d    n -> OwlConv2d.get_name n
+  | OwlMaxPool2d n -> OwlMaxPool2d.get_name n
   | OwlOnes      n -> OwlOnes.get_name n
   | OwlConst     n -> OwlConst.get_name n
   | OwlVar       n -> OwlVar.get_name n

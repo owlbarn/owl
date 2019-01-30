@@ -37,19 +37,19 @@ module Make
   let add_savernodes tfsaver tfgraph =
 
     let filename_tensor_name = make_tftensor
-      ~string_val:(Some ckpt_file_name) "DT_STRING" [|1|] in
+      ~string_val:[|ckpt_file_name|] "DT_STRING" [|1|] in
     let save_const = OwlConst (OwlConst.create tfsaver.filename_tensor_name
       [|1|] (ATTR_Tensor filename_tensor_name))
     in
 
     let save_tensor_name = make_tftensor
-      ~string_val:(Some "") "DT_STRING" [|1|] in
+      ~string_val:[|""|] "DT_STRING" [|1|] in
     let save_tensor_name = OwlConst (OwlConst.create save_tensor_names
       [|1|] (ATTR_Tensor save_tensor_name))
     in
 
     let save_shape = make_tftensor
-      ~string_val:(Some "") "DT_STRING" [|1|] in
+      ~string_val:[|""|] "DT_STRING" [|1|] in
     let save_shape = OwlConst (OwlConst.create save_shape_slices
       [|1|] (ATTR_Tensor save_shape))
     in
@@ -68,13 +68,13 @@ module Make
     in
 
     let restore_tensor_name = make_tftensor
-      ~string_val:(Some "") "DT_STRING" [|1|] in
+      ~string_val:[|""|] "DT_STRING" [|1|] in
     let restore_tensor_name = OwlConst (OwlConst.create restore_tensor_names
       [|1|] (ATTR_Tensor restore_tensor_name))
     in
 
     let restore_shape = make_tftensor
-      ~string_val:(Some "") "DT_STRING" [|1|] in
+      ~string_val:[|""|] "DT_STRING" [|1|] in
     let restore_shape = OwlConst (OwlConst.create restore_shape_slices
       [|1|] (ATTR_Tensor restore_shape))
     in

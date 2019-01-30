@@ -7,7 +7,7 @@
 open Owl_converter_types
 open Owl_converter_utils
 
-let make_tftensor ?(string_val=None) ?(float_val=None) dtype shape =
+let make_tftensor ?string_val ?float_val dtype shape =
   {
     dtype        = dtype;
     tensor_shape = shape;

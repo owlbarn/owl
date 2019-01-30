@@ -13,8 +13,8 @@ type dtype =
 type tftensor = {
   dtype        : string;
   tensor_shape : int array;
-  string_val   : string option;
-  float_val    : float option;
+  string_val   : string array option;
+  float_val    : float array option;
 }
 
 
