@@ -6,9 +6,9 @@
 
 open Owl_converter_types
 open Owl_converter_attr
-open Owl_converter_utils
 open Owl_converter_node
-(* open Owl_computation_type *)
+
+module U = Owl_converter_utils
 
 
 module Make
@@ -19,6 +19,11 @@ module Make
 
   module Device = G.Optimiser.Operator.Symbol.Shape.Type.Device
 
+  type tfgraph = {
+    mutable nodes   : tfnode array;
+    mutable nametbl : (string, string) Hashtbl.t
+  }
+
 
   let create () =
     {
@@ -27,13 +32,13 @@ module Make
     }
 
 
-  let add_tfnodes tfgraph tfnodes name_update =
-    tfgraph.nodes <- Array.append tfgraph.nodes tfnodes;
-    let n_old, n_new = name_update in
-    Hashtbl.add tfgraph.nametbl n_old n_new
-
-
-  let make_owlnode node =
+  (* The logic of how one owl node turned into multiple tfnodes is implemented
+   * here.
+   * Currently return node array and "name_update" : string * string; meaning,
+   * whoever uses me as his input, now change it to one of my subnodes. Need to
+   * think about how the input relation be updated later.
+   *)
+  let make_tfnodes node =
     let name = Owl_graph.name node in
     let attr : Symbol.Shape.Type.attr = Owl_graph.attr node in
     let inputs = Array.map (fun n ->
@@ -61,69 +66,36 @@ module Make
       )
     in
     match attr.op with
-    | Dot (a, b, _, _)    -> OwlDot (OwlDot.create name inputs out_shp a b)
-    | AddScalar           -> OwlAddScalar (OwlAddScalar.create name inputs out_shp)
-    | ScalarMul           -> OwlScalarMul (OwlScalarMul.create name inputs out_shp)
-    | Relu                -> OwlRelu (OwlRelu.create name inputs out_shp)
-    | Conv2d (p, s)       -> OwlConv2d (OwlConv2d.create name inputs out_shp p s)
-    | MaxPool2d (p, s, k) -> OwlMaxPool2d (OwlMaxPool2d.create name inputs out_shp p s k)
-    | Var                 -> OwlVar (OwlVar.create name out_shp)
-    | Ones shape          -> OwlOnes (OwlOnes.create name inputs out_shp shape)
-    | Const               -> OwlConst (OwlConst.create name out_shp value)
+    | Dot (a, b, _, _)    -> [| TFMatMul (TFMatMul.create name inputs out_shp a b) |], ("", "")
+    | AddScalar           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
+    | ScalarMul           -> [| TFMul (TFMul.create name inputs out_shp) |], ("", "")
+    | Relu                -> [| TFRelu (TFRelu.create name inputs out_shp) |], ("", "")
+    | Conv2d (p, s)       -> [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
+    | MaxPool2d (p, s, k) -> [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
+    | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
+    | Const               -> [| TFConst (TFConst.create name out_shp value) |], ("", "")
     | _                   -> failwith "unsupported operation"
 
 
-  let make_tfnodes (node : Symbol.Shape.Type.attr Owl_graph.node) =
-    let owl_node = make_owlnode node in
-    make_tfnodes owl_node
+  let add_tfnodes tfgraph tfnodes name_update =
+    tfgraph.nodes <- Array.append tfgraph.nodes tfnodes;
+    let n_old, n_new = name_update in
+    Hashtbl.add tfgraph.nametbl n_old n_new
 
 
-  (* an ugly impl. *)
   let get_tfnode tfgraph name =
     let nodes = Array.to_list tfgraph.nodes in
-    let ns = List.filter (fun n -> n.name = name) nodes in
+    let ns = List.filter (fun n -> (get_name n) = name) nodes in
     List.hd ns
 
 
-  let get_tfnode_input (tfnode : tfnode) = tfnode.input
-
-
-  let set_tfnode_input (tfnode : tfnode) input = tfnode.input <- input
-
-
-  let get_tfnode_tfattr (tfnode : tfnode) = tfnode.node_attr
-
-
-  let set_tfnode_tfattr (tfnode : tfnode) attr = tfnode.node_attr <- attr
-
-
-  let get_tfnode_device (tfnode : tfnode) = tfnode.device
-
-
-  let set_tfnode_device (tfnode : tfnode) device = tfnode.device <- device
-
-
   (* for debugging *)
-  let tfnodes_to_dot _nodes = ()
-
-
-  let tfnode_to_string n =
-    let attr_str = map_then_combine_string (fun (k, v) ->
-      let value_str = tfattrvalue_to_string v in
-      Printf.sprintf "attr {\nkey: \"%s\"\nvalue: {%s}}\n" k value_str
-    ) n.node_attr
-    in
-    let inputs_str = map_then_combine_string (fun v ->
-      Printf.sprintf "input : %s\n" v
-    ) n.input
-    in
-    Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"\n%s\n%s\n}\n"
-      n.name n.op_name inputs_str attr_str
+  let to_dot _nodes = ()
 
 
   let to_string graphdef =
-    let node_str = map_then_combine_string (fun n ->
-      tfnode_to_string n
+    let node_str = U.map_then_combine_string (fun n ->
+      to_pbtxt n
     ) graphdef.nodes
     in
     Printf.sprintf "graph_def {\n%s}\n" node_str

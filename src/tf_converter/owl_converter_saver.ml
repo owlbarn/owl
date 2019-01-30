@@ -16,6 +16,7 @@ let save_shape_slices = "save/SaveV2/shape_and_slices"
 let restore_tensor_names = "save/RestoreV2/tensor_names"
 let restore_shape_slices= "save/RestoreV2/shape_and_slices"
 
+
 module Make
   (G : Owl_computation_graph_sig.Sig)
   = struct
@@ -38,28 +39,28 @@ module Make
 
     let filename_tensor_name = make_tftensor
       ~string_val:[|ckpt_file_name|] "DT_STRING" [|1|] in
-    let save_const = OwlConst (OwlConst.create tfsaver.filename_tensor_name
+    let save_const = TFConst (TFConst.create tfsaver.filename_tensor_name
       [|1|] (ATTR_Tensor filename_tensor_name))
     in
 
     let save_tensor_name = make_tftensor
       ~string_val:[|""|] "DT_STRING" [|1|] in
-    let save_tensor_name = OwlConst (OwlConst.create save_tensor_names
+    let save_tensor_name = TFConst (TFConst.create save_tensor_names
       [|1|] (ATTR_Tensor save_tensor_name))
     in
 
     let save_shape = make_tftensor
       ~string_val:[|""|] "DT_STRING" [|1|] in
-    let save_shape = OwlConst (OwlConst.create save_shape_slices
+    let save_shape = TFConst (TFConst.create save_shape_slices
       [|1|] (ATTR_Tensor save_shape))
     in
 
-    let save = Save (Save.create save_name
+    let save = TFSave (TFSave.create save_name
       [|(get_name save_const);
         (get_name save_tensor_name);
         (get_name save_shape)|])
     in
-    let control_dep = Identity (Identity.create
+    let control_dep = TFIdentity (TFIdentity.create
       tfsaver.save_tensor_name
       [|(get_name save_const); ("^" ^ (get_name save))|]
       "DT_STRING"
@@ -69,24 +70,24 @@ module Make
 
     let restore_tensor_name = make_tftensor
       ~string_val:[|""|] "DT_STRING" [|1|] in
-    let restore_tensor_name = OwlConst (OwlConst.create restore_tensor_names
+    let restore_tensor_name = TFConst (TFConst.create restore_tensor_names
       [|1|] (ATTR_Tensor restore_tensor_name))
     in
 
     let restore_shape = make_tftensor
       ~string_val:[|""|] "DT_STRING" [|1|] in
-    let restore_shape = OwlConst (OwlConst.create restore_shape_slices
+    let restore_shape = TFConst (TFConst.create restore_shape_slices
       [|1|] (ATTR_Tensor restore_shape))
     in
 
-    let restore = Restore (Restore.create restore_name
+    let restore = TFRestore (TFRestore.create restore_name
       [|(get_name save_const);
         (get_name restore_tensor_name);
         (get_name restore_shape)|]
       "DT_FLOAT")
     in
 
-    let restore_all = Noop (Noop.create tfsaver.restore_op_name [||]) in
+    let restore_all = TFNoop (TFNoop.create tfsaver.restore_op_name [||]) in
 
     let nodes = [|
       save_const; save_tensor_name; save_shape; save; control_dep;
@@ -94,8 +95,7 @@ module Make
     |] in
 
     Array.iter (fun n ->
-      let n, p = make_tfnodes n in
-      TFgraph.add_tfnodes tfgraph n p
+      TFgraph.add_tfnodes tfgraph [|n|] ("", "")
     ) nodes
 
 
@@ -104,20 +104,19 @@ module Make
     let name = var_name ^ "/Assign" in
     (* let out_shp = get_outputshape var_name ! *)
     let out_shp = [||] in
-    let assign_node = Assign (Assign.create name var_name
+    let assign_node = TFAssign (TFAssign.create name var_name
       tfsaver.restore_op_name out_shp "DT_FLOAT")
     in
 
     let restore_all = TFgraph.get_tfnode tfgraph tfsaver.restore_op_name in
-    let inp = TFgraph.get_tfnode_input restore_all in
-    TFgraph.set_tfnode_input restore_all (Array.append inp [|name|]);
+    let inp = get_inputs restore_all in
+    set_inputs restore_all (Array.append inp [|name|]);
 
     let save = TFgraph.get_tfnode tfgraph save_name in
-    let inp = TFgraph.get_tfnode_input save in
-    TFgraph.set_tfnode_input save (Array.append inp [|var_name|]);
+    let inp = get_inputs save in
+    set_inputs save (Array.append inp [|var_name|]);
 
-    let n, p = make_tfnodes assign_node in
-    TFgraph.add_tfnodes tfgraph n p
+    TFgraph.add_tfnodes tfgraph [|assign_node|] ("", "")
 
 
   let to_string saver =
@@ -131,6 +130,5 @@ module Make
       (Printf.sprintf "version: V2\n")
     in
     Printf.sprintf "saver_def {\n%s}\n" saver_str
-
 
 end

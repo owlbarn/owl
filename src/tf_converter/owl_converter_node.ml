@@ -5,11 +5,76 @@
 
 
 open Owl_converter_types
+open Owl_converter_attr
+
+module U = Owl_converter_utils
 
 
-module OwlDot = struct
+type nodedef = {
+  mutable name      : string;
+  mutable op_name   : string;
+  mutable input     : string array;
+  mutable node_attr : (string * tfattrvalue) array;
+  mutable device    : string
+  (* mutable out_shp   : int array option; *)
+}
 
-  type node_typ = {
+
+let nodedef_to_pbtxt n =
+  let attr_str = U.map_then_combine_string (fun (k, v) ->
+    let value_str = tfattrvalue_to_string v in
+    Printf.sprintf "attr {\nkey: \"%s\"\nvalue: {%s}}\n" k value_str
+  ) n.node_attr
+  in
+  let inputs_str = U.map_then_combine_string (fun v ->
+    Printf.sprintf "input : %s\n" v
+  ) n.input
+  in
+  Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"\n%s\n%s\n}\n"
+    n.name n.op_name inputs_str attr_str
+
+
+let make_opdef ?input_arg ?output_arg ?attr name =
+  let input_arg  =
+    match input_arg with
+    | Some arg -> arg
+    | None     -> [||]
+  in
+  let output_arg  =
+    match output_arg with
+    | Some arg -> arg
+    | None     -> [||]
+  in
+  let attr =
+    match attr with
+    | Some attr -> attr
+    | None      -> [||]
+  in
+  {
+    name = name;
+    input_arg = input_arg;
+    output_arg = output_arg;
+    attr = attr
+  }
+
+
+let nil_def = make_opdef "Nil"
+
+
+let opdef_to_string op =
+  let input_arg_arr = U.map_then_combine_string ~sep:"\n"
+    (argdef_to_string "input_arg") op.input_arg in
+  let output_arg_arr = U.map_then_combine_string ~sep:"\n"
+    (argdef_to_string "output_arg") op.output_arg in
+  let attr_string = U.map_then_combine_string ~sep:"\n"
+    tfop_attr_to_string op.attr in
+  Printf.sprintf "op {\nname: %s\n%s%s%s}\n" op.name
+    input_arg_arr output_arg_arr attr_string
+
+
+module TFMatMul = struct
+
+  type t = {
     mutable name    : string;
     mutable op_name : string;
     mutable inputs  : string array;
@@ -18,6 +83,25 @@ module OwlDot = struct
     mutable trans_b : bool;
     mutable dtype   : string;
   }
+
+
+  let opdef =
+    let input_arg = [|
+      make_argdef ~typ_attr:"T" "a";
+      make_argdef ~typ_attr:"T" "b";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_attr:"T" "product";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "T" "type";
+      make_tfop_attr "transpose_a" "bool";
+      make_tfop_attr "transpose_b" "bool";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr "MatMul"
 
 
   let create name inputs out_shp trans_a trans_b =
@@ -32,7 +116,7 @@ module OwlDot = struct
     }
 
 
-  let make_tfnodes n =
+  let make_nodedef n =
     let node_attr = [|
       ("transpose_a", (ATTR_Bool n.trans_a));
       ("transpose_b", (ATTR_Bool n.trans_b));
@@ -40,32 +124,59 @@ module OwlDot = struct
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = n.inputs;
-        node_attr = node_attr;
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
 end
 
 
-module OwlAddScalar = struct
+module TFAdd = struct
 
-  type node_typ = {
+  type t = {
     mutable name    : string;
     mutable op_name : string;
     mutable inputs  : string array;
     mutable out_shp : int array;
     mutable dtype   : string;
   }
+
+
+  let opdef =
+    let input_arg = [|
+      make_argdef ~typ_attr:"T" "x";
+      make_argdef ~typ_attr:"T" "y";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_attr:"T" "z";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "T" "type"
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr "Add"
 
 
   let create name inputs out_shp =
@@ -78,38 +189,65 @@ module OwlAddScalar = struct
     }
 
 
-  let make_tfnodes n =
+  let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = n.inputs;
-        node_attr = node_attr;
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
 end
 
 
-module OwlScalarMul = struct
+module TFMul = struct
 
-  type node_typ = {
+  type t = {
     mutable name    : string;
     mutable op_name : string;
     mutable inputs  : string array;
     mutable out_shp : int array;
     mutable dtype   : string;
   }
+
+
+  let opdef =
+    let input_arg = [|
+      make_argdef ~typ_attr:"T" "x";
+      make_argdef ~typ_attr:"T" "y";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_attr:"T" "z";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "T" "type";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr "Mul"
 
 
   let create name inputs out_shp =
@@ -122,85 +260,61 @@ module OwlScalarMul = struct
     }
 
 
-  let make_tfnodes n =
+  let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = n.inputs;
-        node_attr = node_attr;
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
-
-
-  let get_name n = n.name
-
-end
-
-
-module OwlOnes = struct
-
-  type node_typ = {
-    mutable name    : string;
-    mutable op_name : string;
-    mutable inputs  : string array;
-    mutable out_shp : int array;
-    mutable shape   : int array;
-    mutable dtype   : string;
-  }
-
-
-  let create name inputs out_shp shape =
     {
-      name    = name;
-      op_name = "Ones";
-      inputs  = inputs;
-      out_shp = out_shp;
-      shape   = shape;
-      dtype   = "DT_FLOAT"
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = "CPU:0"
     }
 
 
-  let make_tfnodes n =
-    let node_attr = [|
-      ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
-      ("shape", (ATTR_Shape n.shape));
-    |]
-    in
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = n.inputs;
-        node_attr = node_attr;
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
 end
 
 
-module OwlConst = struct
+module TFConst = struct
 
-  type node_typ = {
+  type t = {
     mutable name    : string;
     mutable op_name : string;
     mutable out_shp : int array;
     mutable value   : tfattrvalue;
     mutable dtype   : string;
   }
+
+
+  let opdef =
+    let output_arg = [|
+      make_argdef ~typ_attr:"dtype" "output"
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "value" "tensor";
+      make_tfop_attr "dtype" "type";
+    |]
+    in
+    make_opdef ~output_arg ~attr "Const"
 
 
   let create name out_shp value =
@@ -213,41 +327,62 @@ module OwlConst = struct
     }
 
 
-  let make_tfnodes n =
+  let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("value", n.value);
     |]
     in
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = [||];
-        node_attr = node_attr;
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = [||];
+      node_attr = node_attr;
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs _n = [||]
+
+
+  let set_inputs _n _i = ()
+
 end
 
 
-(* Note: You DEFINITLY need to add more nodes and update the nodes
- * name in Var!!! Here is just a compilable template.
- *)
-module OwlVar = struct
 
-  type node_typ = {
+module TFPlaceholder = struct
+
+  type t = {
     mutable name    : string;
     mutable op_name : string;
     mutable out_shp : int array;
     mutable dtype   : string;
   }
+
+
+  let opdef =
+    let output_arg = [|
+      make_argdef ~typ_attr:"dtype" "type";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "dtype" "type";
+      make_tfop_attr "shape" "shape";
+    |]
+    in
+    make_opdef ~output_arg ~attr "Placeholder"
 
 
   let create name out_shp =
@@ -259,37 +394,51 @@ module OwlVar = struct
     }
 
 
-  let make_tfnodes n =
+  let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
       ("shape", (ATTR_Shape n.out_shp));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
     |] in
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = [||];
-        node_attr = node_attr;
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = [||];
+      node_attr = node_attr;
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs _n = [||]
+
+
+  let set_inputs _n _i = ()
+
 end
 
 
-module OwlRelu = struct
+module TFRelu = struct
 
-  type node_typ = {
+  type t = {
     mutable name    : string;
     mutable op_name : string;
     mutable inputs  : string array;
     mutable out_shp : int array;
   }
+
+
+  (* To update *)
+  let opdef = nil_def
 
 
   let create name inputs out_shp =
@@ -301,31 +450,41 @@ module OwlRelu = struct
     }
 
 
-  let make_tfnodes n =
+  let make_nodedef n =
     let node_attr = [|
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
     |]
     in
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = n.inputs;
-        node_attr = node_attr;
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
 end
 
 
-module OwlConv2d = struct
+module TFConv2D = struct
 
-  type node_typ = {
+  type t = {
     mutable name     : string;
     mutable op_name  : string;
     mutable inputs   : string array;
@@ -334,6 +493,10 @@ module OwlConv2d = struct
     mutable padding  : string;
     mutable dilation : int array;
   }
+
+
+  (* To update *)
+  let opdef = nil_def
 
 
   let create name inputs out_shp padding strides =
@@ -353,7 +516,7 @@ module OwlConv2d = struct
     }
 
 
-  let make_tfnodes n =
+  let make_nodedef n =
     let node_attr = [|
       ("strides", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.strides)));
       ("dilation", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.dilation)));
@@ -362,26 +525,36 @@ module OwlConv2d = struct
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = n.inputs;
-        node_attr = node_attr;
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
 end
 
 
-module OwlMaxPool2d = struct
+module TFMaxPool = struct
 
-  type node_typ = {
+  type t = {
     mutable name     : string;
     mutable op_name  : string;
     mutable inputs   : string array;
@@ -390,6 +563,9 @@ module OwlMaxPool2d = struct
     mutable padding  : string;
     mutable ksize    : int array;
   }
+
+  (* To update *)
+  let opdef = nil_def
 
 
   let create name inputs out_shp padding strides ksize =
@@ -409,7 +585,7 @@ module OwlMaxPool2d = struct
     }
 
 
-  let make_tfnodes n =
+  let make_nodedef n =
     let node_attr = [|
       ("strides", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.strides)));
       ("ksize", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.ksize)));
@@ -418,27 +594,38 @@ module OwlMaxPool2d = struct
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = n.inputs;
-        node_attr = node_attr;
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
 end
 
 
-module Assign = struct
+module TFAssign = struct
 
-  type node_typ = {
+  type t = {
     mutable name           : string;
+    mutable op_name        : string;
     mutable out_shp        : int array;
     mutable dtype          : string;
     mutable refv           : string;
@@ -448,19 +635,39 @@ module Assign = struct
   }
 
 
+  let opdef =
+    let input_arg = [|
+      make_argdef ~typ_attr:"T" ~is_ref:true "ref";
+      make_argdef ~typ_attr:"T" "value";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_attr:"T" ~is_ref:true "output_ref";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "T" "type";
+      make_tfop_attr "validate_shape" "bool";
+      make_tfop_attr "use_locking" "bool";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr "Assign"
+
+
   let create name refv value out_shp dtype =
     {
-      name = name;
-      out_shp = out_shp;
-      dtype = dtype;
-      refv = refv;
-      value = value;
-      use_locking = true;
+      name           = name;
+      op_name        = "Assign";
+      out_shp        = out_shp;
+      dtype          = dtype;
+      refv           = refv;
+      value          = value;
+      use_locking    = true;
       validate_shape = true;
     }
 
 
-  let make_tfnodes n =
+  let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
@@ -469,26 +676,36 @@ module Assign = struct
       ("validate_shape", (ATTR_Bool n.validate_shape));
     |]
     in
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = "Assign";
-        input     = [|n.refv; n.value|];
-        node_attr = node_attr;
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+    {
+      name      = n.name;
+      op_name   = "Assign";
+      input     = [|n.refv; n.value|];
+      node_attr = node_attr;
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs _n = [||]
+
+
+  let set_inputs _n _i = ()
+
 end
 
 
-module Identity = struct
+module TFIdentity = struct
 
-  type node_typ = {
+  type t = {
     mutable name    : string;
     mutable op_name : string;
     mutable inputs  : string array;
@@ -496,6 +713,22 @@ module Identity = struct
     mutable dtype   : string;
     mutable cls     : string;
   }
+
+
+  let opdef =
+    let input_arg = [|
+      make_argdef ~typ_attr:"T" "input";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_attr:"T" "output";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "T" "type";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr "Identity"
 
 
   let create name inputs dtype cls =
@@ -509,38 +742,63 @@ module Identity = struct
     }
 
 
-  let make_tfnodes n =
+  let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("_class", ATTR_List [|ATTR_String ("loc:@" ^ n.cls)|]);
     |]
     in
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = n.inputs;
-        node_attr = node_attr;
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
 end
 
 
-module Save = struct
+module TFSave = struct
 
-  type node_typ = {
+  type t = {
     mutable name    : string;
     mutable op_name : string;
     mutable inputs  : string array;
     mutable dtype   : string;
   }
+
+
+  let opdef =
+    let input_arg = [|
+      make_argdef ~typ:"DT_STRING" "prefix";
+      make_argdef ~typ:"DT_STRING" "tensor_names";
+      make_argdef ~typ:"DT_STRING" "shape_and_slices";
+      make_argdef ~typ_list_attr:"dtypes" "tensors";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "dtypes" "list(type)"; (* has_minimum : true *)
+    |]
+    in
+    make_opdef ~input_arg ~attr "SaveV2"
 
 
   let create ?(dtype="DT_STRING") name inputs =
@@ -552,32 +810,60 @@ module Save = struct
     }
 
 
-  let make_tfnodes n =
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = n.inputs;
-        node_attr = [|("T", ATTR_Type n.dtype)|];
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+  let make_nodedef n =
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = n.inputs;
+      node_attr = [|("T", ATTR_Type n.dtype)|];
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
 end
 
 
-module Restore = struct
+module TFRestore = struct
 
-  type node_typ = {
+  type t = {
     mutable name    : string;
     mutable op_name : string;
     mutable inputs  : string array;
     mutable dtype   : string;
   }
+
+
+  let opdef =
+    let input_arg = [|
+      make_argdef ~typ:"DT_STRING" "prefix";
+      make_argdef ~typ:"DT_STRING" "tensor_names";
+      make_argdef ~typ:"DT_STRING" "shape_and_slices";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_list_attr:"dtypes" "tensors";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "dtypes" "list(type)"; (* has_minimum : true *)
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr "RestoreV2"
 
 
   let create name inputs dtype =
@@ -589,31 +875,44 @@ module Restore = struct
     }
 
 
-  let make_tfnodes n =
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = n.inputs;
-        node_attr = [|("T", ATTR_Type n.dtype)|];
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+  let make_nodedef n =
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = n.inputs;
+      node_attr = [|("T", ATTR_Type n.dtype)|];
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
 end
 
 
-module Noop = struct
+module TFNoop = struct
 
-  type node_typ = {
+  type t = {
     mutable name    : string;
     mutable op_name : string;
     mutable inputs  : string array;
   }
+
+
+  let opdef = make_opdef "NoOp"
 
 
   let create name inputs =
@@ -624,70 +923,160 @@ module Noop = struct
     }
 
 
-  let make_tfnodes n =
-    let tfnode =
-      {
-        name      = n.name;
-        op_name   = n.op_name;
-        input     = n.inputs;
-        node_attr = [|("noop", ATTR_Nil)|];
-        device    = "CPU:0"
-      }
-    in
-    ([|tfnode|], (n.name, n.name))
+  let make_nodedef n =
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = n.inputs;
+      node_attr = [|("noop", ATTR_Nil)|];
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
 
 
   let get_name n = n.name
 
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
 end
 
 
-type owl_node =
-  | OwlDot       of OwlDot.node_typ
-  | OwlAddScalar of OwlAddScalar.node_typ
-  | OwlScalarMul of OwlScalarMul.node_typ
-  | OwlRelu      of OwlRelu.node_typ
-  | OwlConv2d    of OwlConv2d.node_typ
-  | OwlMaxPool2d of OwlMaxPool2d.node_typ
-  | OwlOnes      of OwlOnes.node_typ
-  | OwlConst     of OwlConst.node_typ
-  | OwlVar       of OwlVar.node_typ
-  | Assign       of Assign.node_typ
-  | Identity     of Identity.node_typ
-  | Save         of Save.node_typ
-  | Restore      of Restore.node_typ
-  | Noop         of Noop.node_typ
+type tfnode =
+  | TFMatMul      of TFMatMul.t
+  | TFAdd         of TFAdd.t
+  | TFMul         of TFMul.t
+  | TFRelu        of TFRelu.t
+  | TFConv2D      of TFConv2D.t
+  | TFMaxPool     of TFMaxPool.t
+  | TFConst       of TFConst.t
+  | TFPlaceholder of TFPlaceholder.t
+  | TFAssign      of TFAssign.t
+  | TFIdentity    of TFIdentity.t
+  | TFSave        of TFSave.t
+  | TFRestore     of TFRestore.t
+  | TFNoop        of TFNoop.t
+
+(*
+let make_nodedef = function
+  | OwlDot       n -> OwlDot.make_nodedef n
+  | OwlAddScalar n -> OwlAddScalar.make_nodedef n
+  | OwlScalarMul n -> OwlScalarMul.make_nodedef n
+  | OwlRelu      n -> OwlRelu.make_nodedef n
+  | OwlConv2d    n -> OwlConv2d.make_nodedef n
+  | OwlMaxPool2d n -> OwlMaxPool2d.make_nodedef n
+  | OwlOnes      n -> OwlOnes.make_nodedef n
+  | OwlConst     n -> OwlConst.make_nodedef n
+  | OwlVar       n -> OwlVar.make_nodedef n
+  | Assign       n -> Assign.make_nodedef n
+  | Identity     n -> Identity.make_nodedef n
+  | Save         n -> Save.make_nodedef n
+  | Restore      n -> Restore.make_nodedef n
+  | Noop         n -> Noop.make_nodedef n
+*)
 
 
-let make_tfnodes = function
-  | OwlDot       n -> OwlDot.make_tfnodes n
-  | OwlAddScalar n -> OwlAddScalar.make_tfnodes n
-  | OwlScalarMul n -> OwlScalarMul.make_tfnodes n
-  | OwlRelu      n -> OwlRelu.make_tfnodes n
-  | OwlConv2d    n -> OwlConv2d.make_tfnodes n
-  | OwlMaxPool2d n -> OwlMaxPool2d.make_tfnodes n
-  | OwlOnes      n -> OwlOnes.make_tfnodes n
-  | OwlConst     n -> OwlConst.make_tfnodes n
-  | OwlVar       n -> OwlVar.make_tfnodes n
-  | Assign       n -> Assign.make_tfnodes n
-  | Identity     n -> Identity.make_tfnodes n
-  | Save         n -> Save.make_tfnodes n
-  | Restore      n -> Restore.make_tfnodes n
-  | Noop         n -> Noop.make_tfnodes n
+let to_pbtxt = function
+  | TFMatMul      n -> TFMatMul.to_pbtxt n
+  | TFAdd         n -> TFAdd.to_pbtxt n
+  | TFMul         n -> TFMul.to_pbtxt n
+  | TFRelu        n -> TFRelu.to_pbtxt n
+  | TFConv2D      n -> TFConv2D.to_pbtxt n
+  | TFMaxPool     n -> TFMaxPool.to_pbtxt n
+  | TFConst       n -> TFConst.to_pbtxt n
+  | TFPlaceholder n -> TFPlaceholder.to_pbtxt n
+  | TFAssign      n -> TFAssign.to_pbtxt n
+  | TFIdentity    n -> TFIdentity.to_pbtxt n
+  | TFSave        n -> TFSave.to_pbtxt n
+  | TFRestore     n -> TFRestore.to_pbtxt n
+  | TFNoop        n -> TFNoop.to_pbtxt n
 
 
 let get_name = function
-  | OwlDot       n -> OwlDot.get_name n
-  | OwlAddScalar n -> OwlAddScalar.get_name n
-  | OwlScalarMul n -> OwlScalarMul.get_name n
-  | OwlRelu      n -> OwlRelu.get_name n
-  | OwlConv2d    n -> OwlConv2d.get_name n
-  | OwlMaxPool2d n -> OwlMaxPool2d.get_name n
-  | OwlOnes      n -> OwlOnes.get_name n
-  | OwlConst     n -> OwlConst.get_name n
-  | OwlVar       n -> OwlVar.get_name n
-  | Assign       n -> Assign.get_name n
-  | Identity     n -> Identity.get_name n
-  | Save         n -> Save.get_name n
-  | Restore      n -> Restore.get_name n
-  | Noop         n -> Noop.get_name n
+  | TFMatMul      n -> TFMatMul.get_name n
+  | TFAdd         n -> TFAdd.get_name n
+  | TFMul         n -> TFMul.get_name n
+  | TFRelu        n -> TFRelu.get_name n
+  | TFConv2D      n -> TFConv2D.get_name n
+  | TFMaxPool     n -> TFMaxPool.get_name n
+  | TFConst       n -> TFConst.get_name n
+  | TFPlaceholder n -> TFPlaceholder.get_name n
+  | TFAssign      n -> TFAssign.get_name n
+  | TFIdentity    n -> TFIdentity.get_name n
+  | TFSave        n -> TFSave.get_name n
+  | TFRestore     n -> TFRestore.get_name n
+  | TFNoop        n -> TFNoop.get_name n
+
+
+let get_op_name = function
+  | TFMatMul      n -> TFMatMul.get_op_name n
+  | TFAdd         n -> TFAdd.get_op_name n
+  | TFMul         n -> TFMul.get_op_name n
+  | TFRelu        n -> TFRelu.get_op_name n
+  | TFConv2D      n -> TFConv2D.get_op_name n
+  | TFMaxPool     n -> TFMaxPool.get_op_name n
+  | TFConst       n -> TFConst.get_op_name n
+  | TFPlaceholder n -> TFPlaceholder.get_op_name n
+  | TFAssign      n -> TFAssign.get_op_name n
+  | TFIdentity    n -> TFIdentity.get_op_name n
+  | TFSave        n -> TFSave.get_op_name n
+  | TFRestore     n -> TFRestore.get_op_name n
+  | TFNoop        n -> TFNoop.get_op_name n
+
+
+let get_opdef = function
+  | TFMatMul      _ -> TFMatMul.opdef
+  | TFAdd         _ -> TFAdd.opdef
+  | TFMul         _ -> TFMul.opdef
+  | TFRelu        _ -> TFRelu.opdef
+  | TFConv2D      _ -> TFConv2D.opdef
+  | TFMaxPool     _ -> TFMaxPool.opdef
+  | TFConst       _ -> TFConst.opdef
+  | TFPlaceholder _ -> TFPlaceholder.opdef
+  | TFAssign      _ -> TFAssign.opdef
+  | TFIdentity    _ -> TFIdentity.opdef
+  | TFSave        _ -> TFSave.opdef
+  | TFRestore     _ -> TFRestore.opdef
+  | TFNoop        _ -> TFNoop.opdef
+
+
+
+let get_inputs = function
+  | TFMatMul      n -> TFMatMul.get_inputs n
+  | TFAdd         n -> TFAdd.get_inputs n
+  | TFMul         n -> TFMul.get_inputs n
+  | TFRelu        n -> TFRelu.get_inputs n
+  | TFConv2D      n -> TFConv2D.get_inputs n
+  | TFMaxPool     n -> TFMaxPool.get_inputs n
+  | TFConst       n -> TFConst.get_inputs n
+  | TFPlaceholder n -> TFPlaceholder.get_inputs n
+  | TFAssign      n -> TFAssign.get_inputs n
+  | TFIdentity    n -> TFIdentity.get_inputs n
+  | TFSave        n -> TFSave.get_inputs n
+  | TFRestore     n -> TFRestore.get_inputs n
+  | TFNoop        n -> TFNoop.get_inputs n
+
+
+let set_inputs = function
+  | TFMatMul      n -> TFMatMul.set_inputs n
+  | TFAdd         n -> TFAdd.set_inputs n
+  | TFMul         n -> TFMul.set_inputs n
+  | TFRelu        n -> TFRelu.set_inputs n
+  | TFConv2D      n -> TFConv2D.set_inputs n
+  | TFMaxPool     n -> TFMaxPool.set_inputs n
+  | TFConst       n -> TFConst.set_inputs n
+  | TFPlaceholder n -> TFPlaceholder.set_inputs n
+  | TFAssign      n -> TFAssign.set_inputs n
+  | TFIdentity    n -> TFIdentity.set_inputs n
+  | TFSave        n -> TFSave.set_inputs n
+  | TFRestore     n -> TFRestore.set_inputs n
+  | TFNoop        n -> TFNoop.set_inputs n

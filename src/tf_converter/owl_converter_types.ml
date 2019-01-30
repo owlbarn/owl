@@ -70,22 +70,6 @@ type tfmeta = {
 }
 
 
-type tfnode = {
-  mutable name      : string;
-  mutable op_name   : string;
-  mutable input     : string array;
-  mutable node_attr : (string * tfattrvalue) array;
-  (* mutable out_shp   : int array option; *)
-  mutable device    : string
-}
-
-
-type tfgraph = {
-  mutable nodes   : tfnode array;
-  mutable nametbl : (string, string) Hashtbl.t
-}
-
-
 type tfsaver = {
 	filename_tensor_name          : string;
 	save_tensor_name              : string;
@@ -105,9 +89,11 @@ type tfcollection =
 type tfcolls = (string, tfcollection) Hashtbl.t
 
 
+(*
 type tf_cgraph = {
   mutable tfmeta  : tfmeta;
   mutable tfgraph : tfgraph;
   mutable tfsaver : tfsaver;
   mutable tfcolls : tfcolls
 }
+*)
