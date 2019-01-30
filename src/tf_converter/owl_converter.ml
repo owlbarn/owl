@@ -8,6 +8,7 @@ open Owl_converter_types
 open Owl_graph
 
 module TFcolls = Owl_converter_collection
+module TFnode  = Owl_converter_node
 
 
 module Make
@@ -17,6 +18,13 @@ module Make
   module TFmeta  = Owl_converter_meta.Make (G)
   module TFgraph = Owl_converter_graph.Make (G)
   module TFsaver = Owl_converter_saver.Make (G)
+
+  type tf_cgraph = {
+    mutable tfmeta  : tfmeta;
+    mutable tfgraph : TFgraph.tfgraph;
+    mutable tfsaver : tfsaver;
+    mutable tfcolls : tfcolls
+  }
 
   let make_tf_cgraph () =
     {
@@ -42,7 +50,6 @@ module Make
     let outputs = G.get_outputs graph in
     iter_ancestors (fun node ->
       let tfnode, name_update = TFgraph.make_tfnodes node in
-      (* name_update : string * string; meaning, whoever uses me as his input, now change it to one of my subnodes .*)
       TFgraph.add_tfnodes tfgraph tfnode name_update
     ) outputs;
 
@@ -58,15 +65,15 @@ module Make
     let tfcolls = TFcolls.create [|"var"; "var_train"|] in
 
     Array.iter (fun tfnode ->
-      let opname = tfnode.op_name in
-      if not (TFmeta.mem_op tfmeta opname) then (
-        let tfop = TFmeta.get_tfop opname in
-        TFmeta.add_op tfmeta tfop
+      let opname = TFnode.get_op_name tfnode in
+      if not (TFmeta.mem_opdef tfmeta opname) then (
+        let tfop = TFnode.get_opdef tfnode in
+        TFmeta.add_opdef tfmeta tfop
       );
       if (TFmeta.is_var tfnode) then (
-        TFsaver.add_link tfsaver tfgraph tfnode.name;
-        TFcolls.update tfcolls "var" tfnode.name;
-        TFcolls.update tfcolls "var_train" tfnode.name (* simply take all variables as trainable *)
+        TFsaver.add_link tfsaver tfgraph (TFnode.get_name tfnode);
+        TFcolls.update tfcolls "var" (TFnode.get_name tfnode);
+        TFcolls.update tfcolls "var_train" (TFnode.get_name tfnode) (* simply take all variables as trainable *)
       )
     ) tfgraph.nodes;
 

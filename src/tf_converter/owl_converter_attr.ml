@@ -7,7 +7,7 @@
 open Owl_converter_types
 open Owl_converter_utils
 
-let make_tftensor ?(string_val=None) ?(float_val=None) dtype shape =
+let make_tftensor ?string_val ?float_val dtype shape =
   {
     dtype        = dtype;
     tensor_shape = shape;
@@ -23,8 +23,41 @@ let make_tfop_attr name typ =
   }
 
 
-let make_argdef type_attr name =
-  { name = name; type_attr = type_attr }
+let make_argdef ?typ ?typ_attr ?num_attr
+  ?typ_list_attr ?is_ref name =
+  {
+    name          = name;
+    typ           = typ;
+    typ_attr      = typ_attr;
+    num_attr      = num_attr;
+    typ_list_attr = typ_list_attr;
+    is_ref        = is_ref;
+  }
+
+
+let argdef_to_string name argdef =
+  let get_str x label =
+    match x with
+    | Some s -> Printf.sprintf "%s: %s\n" label s
+    | None   -> ""
+  in
+  let typ = get_str argdef.typ "type" in
+  let typ_attr = get_str argdef.typ_attr "type_attr" in
+  let num_attr = get_str argdef.num_attr "number_attr" in
+  let typ_list_attr = get_str argdef.typ_list_attr "type_list_attr" in
+  let is_ref =
+    match argdef.is_ref with
+    | Some b -> Printf.sprintf "is_ref: %b\n" b
+    | None   -> ""
+  in
+  Printf.sprintf "%s{\nname: %s\n%s%s%s%s%s}\n" name argdef.name
+    typ typ_attr num_attr typ_list_attr is_ref
+
+
+let tfop_attr_to_string (attr : tfop_attr) =
+  let name_str = Printf.sprintf "name: \"%s\"\n" attr.name in
+  let type_str = Printf.sprintf "type: \"%s\"\n" attr.typ in
+  Printf.sprintf "attr {\n%s%s}\n" name_str type_str
 
 
 let dim_to_string dim =

@@ -4,19 +4,17 @@
  *)
 
 
-(* many properties are ignored for simplicity *)
-
 type dtype =
-  DT_STRING | DT_FLOAT32 | DT_FLOAT64   |
-  DT_INT32  | DT_INT64   | DT_COMPLEX32 |
-  DT_COMPLEX64
+  DT_HALF | DT_FLOAT | DT_DOUBLE | DT_UINT8 |
+  DT_INT8 | DT_INT16 | DT_INT32  | DT_INT64 |
+  DT_COMPLEX64 | DT_COMPLEX128   | DT_STRING
 
 
 type tftensor = {
   dtype        : string;
   tensor_shape : int array;
-  string_val   : string option;
-  float_val    : float option;
+  string_val   : string array option;
+  float_val    : float array option;
 }
 
 
@@ -33,14 +31,23 @@ type tfattrvalue =
 
 
 type tfop_attr = {
-  mutable name : string;
-  mutable typ  : string;
+  name : string;
+  typ  : string;
+  (* allowed_values : tfattrvalue
+   * default_value :  tfattrvalue
+   * has_minimum : bool;
+   * minimum : int
+   *)
 }
 
 
 type argdef = {
-  name      : string;
-  type_attr : string; (* "DT_BFLOAT16" | "DT_HALF" | ... *)
+  name          : string;
+  typ           : string option;
+  typ_attr      : string option;
+  num_attr      : string option;
+  typ_list_attr : string option;
+  is_ref        : bool option;
 }
 
 
@@ -49,6 +56,10 @@ type tfop = {
   input_arg  : argdef array;
   output_arg : argdef array;
   attr       : tfop_attr array;
+  (* allows_uninitialized_input : bool
+   * is_commutative : bool
+   * is_stateful : bool
+   *)
 }
 
 
@@ -56,22 +67,6 @@ type tfmeta = {
   mutable stripped_op_list   : tfop array;
   mutable tensorflow_version : string;
   mutable op_names           : string array (* internal use *)
-}
-
-
-type tfnode = {
-  mutable name      : string;
-  mutable op_name   : string;
-  mutable input     : string array;
-  mutable node_attr : (string * tfattrvalue) array;
-  (* mutable out_shp   : int array option; *)
-  mutable device    : string
-}
-
-
-type tfgraph = {
-  mutable nodes   : tfnode array;
-  mutable nametbl : (string, string) Hashtbl.t
 }
 
 
@@ -94,9 +89,11 @@ type tfcollection =
 type tfcolls = (string, tfcollection) Hashtbl.t
 
 
+(*
 type tf_cgraph = {
   mutable tfmeta  : tfmeta;
   mutable tfgraph : tfgraph;
   mutable tfsaver : tfsaver;
   mutable tfcolls : tfcolls
 }
+*)
