@@ -1,0 +1,6 @@
+(library
+  (name owl_tensorflow)
+  (public_name owl-tensorflow)
+  (modes byte)
+  (libraries owl-base)
+)

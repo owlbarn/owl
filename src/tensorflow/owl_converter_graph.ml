@@ -67,8 +67,18 @@ module Make
     in
     match attr.op with
     | Dot (a, b, _, _)    -> [| TFMatMul (TFMatMul.create name inputs out_shp a b) |], ("", "")
+    | Add                 -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
+    | ScalarAdd           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
     | AddScalar           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
+    | Sub                 -> [| TFSub (TFSub.create name inputs out_shp) |], ("", "")
+    | ScalarSub           -> [| TFSub (TFSub.create name inputs out_shp) |], ("", "")
+    | SubScalar           -> [| TFSub (TFSub.create name inputs out_shp) |], ("", "")
+    | Mul                 -> [| TFMul (TFMul.create name inputs out_shp) |], ("", "")
+    | MulScalar           -> [| TFMul (TFMul.create name inputs out_shp) |], ("", "")
     | ScalarMul           -> [| TFMul (TFMul.create name inputs out_shp) |], ("", "")
+    | Div                 -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
+    | DivScalar           -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
+    | ScalarDiv           -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
     | Relu                -> [| TFRelu (TFRelu.create name inputs out_shp) |], ("", "")
     | Conv2d (p, s)       -> [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
     | MaxPool2d (p, s, k) -> [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")

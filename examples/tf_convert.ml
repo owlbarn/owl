@@ -1,5 +1,5 @@
 #!/usr/bin/env owl
-#require "owl-converter"
+#require "owl-tensorflow"
 
 open Owl
 open Owl_converter

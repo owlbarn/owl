@@ -222,6 +222,77 @@ module TFAdd = struct
 end
 
 
+module TFSub = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+  }
+
+
+  let opdef =
+    let input_arg = [|
+      make_argdef ~typ_attr:"T" "x";
+      make_argdef ~typ_attr:"T" "y";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_attr:"T" "z";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "T" "type"
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr "Sub"
+
+
+  let create name inputs out_shp =
+    {
+      name    = name;
+      op_name = "Sub";
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT"
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |]
+    in
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+end
+
+
 module TFMul = struct
 
   type t = {
@@ -254,6 +325,77 @@ module TFMul = struct
     {
       name    = name;
       op_name = "Mul";
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT"
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |]
+    in
+    {
+      name      = n.name;
+      op_name   = n.op_name;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = "CPU:0"
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_op_name n = n.op_name
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+end
+
+
+module TFDiv = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+  }
+
+
+  let opdef =
+    let input_arg = [|
+      make_argdef ~typ_attr:"T" "x";
+      make_argdef ~typ_attr:"T" "y";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_attr:"T" "z";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "T" "type"
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr "Div"
+
+
+  let create name inputs out_shp =
+    {
+      name    = name;
+      op_name = "Div";
       inputs  = inputs;
       out_shp = out_shp;
       dtype   = "DT_FLOAT"
@@ -954,7 +1096,9 @@ end
 type tfnode =
   | TFMatMul      of TFMatMul.t
   | TFAdd         of TFAdd.t
+  | TFSub         of TFSub.t
   | TFMul         of TFMul.t
+  | TFDiv         of TFDiv.t
   | TFRelu        of TFRelu.t
   | TFConv2D      of TFConv2D.t
   | TFMaxPool     of TFMaxPool.t
@@ -970,7 +1114,9 @@ type tfnode =
 let to_pbtxt = function
   | TFMatMul      n -> TFMatMul.to_pbtxt n
   | TFAdd         n -> TFAdd.to_pbtxt n
+  | TFSub         n -> TFSub.to_pbtxt n
   | TFMul         n -> TFMul.to_pbtxt n
+  | TFDiv         n -> TFDiv.to_pbtxt n
   | TFRelu        n -> TFRelu.to_pbtxt n
   | TFConv2D      n -> TFConv2D.to_pbtxt n
   | TFMaxPool     n -> TFMaxPool.to_pbtxt n
@@ -986,7 +1132,9 @@ let to_pbtxt = function
 let get_name = function
   | TFMatMul      n -> TFMatMul.get_name n
   | TFAdd         n -> TFAdd.get_name n
+  | TFSub         n -> TFSub.get_name n
   | TFMul         n -> TFMul.get_name n
+  | TFDiv         n -> TFDiv.get_name n
   | TFRelu        n -> TFRelu.get_name n
   | TFConv2D      n -> TFConv2D.get_name n
   | TFMaxPool     n -> TFMaxPool.get_name n
@@ -1002,7 +1150,9 @@ let get_name = function
 let get_op_name = function
   | TFMatMul      n -> TFMatMul.get_op_name n
   | TFAdd         n -> TFAdd.get_op_name n
+  | TFSub         n -> TFSub.get_op_name n
   | TFMul         n -> TFMul.get_op_name n
+  | TFDiv         n -> TFDiv.get_op_name n
   | TFRelu        n -> TFRelu.get_op_name n
   | TFConv2D      n -> TFConv2D.get_op_name n
   | TFMaxPool     n -> TFMaxPool.get_op_name n
@@ -1018,7 +1168,9 @@ let get_op_name = function
 let get_opdef = function
   | TFMatMul      _ -> TFMatMul.opdef
   | TFAdd         _ -> TFAdd.opdef
+  | TFSub         _ -> TFSub.opdef
   | TFMul         _ -> TFMul.opdef
+  | TFDiv         _ -> TFDiv.opdef
   | TFRelu        _ -> TFRelu.opdef
   | TFConv2D      _ -> TFConv2D.opdef
   | TFMaxPool     _ -> TFMaxPool.opdef
@@ -1035,7 +1187,9 @@ let get_opdef = function
 let get_inputs = function
   | TFMatMul      n -> TFMatMul.get_inputs n
   | TFAdd         n -> TFAdd.get_inputs n
+  | TFSub         n -> TFSub.get_inputs n
   | TFMul         n -> TFMul.get_inputs n
+  | TFDiv         n -> TFDiv.get_inputs n
   | TFRelu        n -> TFRelu.get_inputs n
   | TFConv2D      n -> TFConv2D.get_inputs n
   | TFMaxPool     n -> TFMaxPool.get_inputs n
@@ -1051,7 +1205,9 @@ let get_inputs = function
 let set_inputs = function
   | TFMatMul      n -> TFMatMul.set_inputs n
   | TFAdd         n -> TFAdd.set_inputs n
+  | TFSub         n -> TFSub.set_inputs n
   | TFMul         n -> TFMul.set_inputs n
+  | TFDiv         n -> TFDiv.set_inputs n
   | TFRelu        n -> TFRelu.set_inputs n
   | TFConv2D      n -> TFConv2D.set_inputs n
   | TFMaxPool     n -> TFMaxPool.set_inputs n
