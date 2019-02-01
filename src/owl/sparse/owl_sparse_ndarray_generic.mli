@@ -188,7 +188,7 @@ val of_array : ('a, 'b) kind -> int array -> (int array * 'a) array -> ('a, 'b) 
 val print : ('a, 'b) t -> unit
 (** TODO *)
 
-val pp_spnda : ('a, 'b) t -> unit
+val pp_spnda : ('a, 'b) t -> unit [@@ocaml.toplevel_printer]
 (** TODO *)
 
 val save : ('a, 'b) t -> string -> unit

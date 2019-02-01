@@ -130,7 +130,7 @@ val normalise : histogram -> histogram
 val normalise_density : histogram -> histogram
 (** Refer to :doc:`owl_stats`. *)
 
-val pp_hist: Format.formatter -> histogram -> unit
+val pp_hist: Format.formatter -> histogram -> unit [@@ocaml.toplevel_printer]
 (** Refer to :doc:`owl_stats`. *)
 
 val tukey_fences : ?k:float -> float array -> float * float
