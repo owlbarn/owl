@@ -21,13 +21,13 @@ type nodedef = {
 
 
 let nodedef_to_pbtxt n =
-  let attr_str = U.map_then_combine_string (fun (k, v) ->
+  let attr_str = U.map_then_combine_string ~sep:"" (fun (k, v) ->
     let value_str = tfattrvalue_to_string v in
-    Printf.sprintf "attr {\nkey: \"%s\"\nvalue: {%s}}\n" k value_str
+    Printf.sprintf "attr {\nkey: \"%s\"\nvalue: {\n%s}\n}\n" k value_str
   ) n.node_attr
   in
-  let inputs_str = U.map_then_combine_string (fun v ->
-    Printf.sprintf "input : %s\n" v
+  let inputs_str = U.map_then_combine_string ~sep:"\n" (fun v ->
+    Printf.sprintf "input : %s" v
   ) n.input
   in
   Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"\n%s\n%s\n}\n"
@@ -61,7 +61,7 @@ let make_opdef ?input_arg ?output_arg ?attr name =
 let nil_def = make_opdef "Nil"
 
 
-let opdef_to_string op =
+let opdef_to_pbtxt op =
   let input_arg_arr = U.map_then_combine_string ~sep:"\n"
     (argdef_to_string "input_arg") op.input_arg in
   let output_arg_arr = U.map_then_combine_string ~sep:"\n"
@@ -538,7 +538,7 @@ module TFPlaceholder = struct
 
   let make_nodedef n =
     let node_attr = [|
-      ("T", (ATTR_Type n.dtype));
+      ("dtype", (ATTR_Type n.dtype));
       ("shape", (ATTR_Shape n.out_shp));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
     |] in

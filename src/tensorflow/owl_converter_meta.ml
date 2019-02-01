@@ -35,8 +35,8 @@ module Make
 
   let to_string meta =
     let tfop_str = map_then_combine_string ~sep:"\n"
-      ND.opdef_to_string meta.stripped_op_list
+      ND.opdef_to_pbtxt meta.stripped_op_list
     in
-    Printf.sprintf "meta_info_def {\nstripped_op_list{\n%s}\ntensorflow_version: %s\n}\n" tfop_str meta.tensorflow_version
+    Printf.sprintf "meta_info_def {\nstripped_op_list{\n%s}\ntensorflow_version: \"%s\"\n}\n" tfop_str meta.tensorflow_version
 
 end
