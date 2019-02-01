@@ -71,6 +71,7 @@ module Make
     let assign = TFAssign (TFAssign.create aname vname iname out_shp "DT_FLOAT") in
 
     (* RULE: only one node is named init in the whole graph *)
+    (* TODO: How can I get another node from the graph? I.E. gloabal view for each node; or at least some nodes. This is an important decision to make. *)
     (* let init = get_tfnode "init" in
     let init_inputs = get_inputs init in
     set_inputs init (Array.append init_inputs [|aname|]); *)

@@ -35,13 +35,17 @@ let make_argdef ?typ ?typ_attr ?num_attr
   }
 
 
-let argdef_to_string name argdef =
-  let get_str x label =
+let argdef_to_string  name argdef =
+  let get_str ?(quote=true) x label =
+    let formatter =
+      if (quote = true) then (Printf.sprintf "%s: \"%s\"\n")
+      else (Printf.sprintf "%s: %s\n")
+    in
     match x with
-    | Some s -> Printf.sprintf "%s: %s\n" label s
+    | Some s -> formatter label s
     | None   -> ""
   in
-  let typ = get_str argdef.typ "type" in
+  let typ = get_str argdef.typ ~quote:false "type" in
   let typ_attr = get_str argdef.typ_attr "type_attr" in
   let num_attr = get_str argdef.num_attr "number_attr" in
   let typ_list_attr = get_str argdef.typ_list_attr "type_list_attr" in

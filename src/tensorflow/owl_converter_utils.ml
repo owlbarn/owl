@@ -4,7 +4,7 @@
  *)
 
 
-let map_then_combine_string ?(sep=",") fn x =
+let map_then_combine_string ?(sep=" ") fn x =
   let mapped = Array.map fn x in
   Owl_utils_array.to_string ~sep (fun x -> x) mapped
 
