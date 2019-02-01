@@ -63,3 +63,8 @@ release:
 	dune-release opam pkg -p owl-zoo
 	dune-release opam pkg -p owl-top
 	dune-release opam submit -p $(PKGS)
+
+.PHONY: push
+push:
+	git commit -am "coding ..." && \
+	git push origin `git branch | grep \* | cut -d ' ' -f2`

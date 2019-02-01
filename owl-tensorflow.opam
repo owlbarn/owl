@@ -14,8 +14,6 @@ build: [
 
 depends: [
   "dune" {build}
-  "ocaml-compiler-libs"
-  "owl"
   "owl-base"
 ]
 
