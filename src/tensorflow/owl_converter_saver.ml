@@ -63,6 +63,7 @@ module Make
     let control_dep = TFIdentity (TFIdentity.create
       tfsaver.save_tensor_name
       [|(get_name save_const); ("^" ^ (get_name save))|]
+      [||] (* tmp *)
       "DT_STRING"
       tfsaver.filename_tensor_name
     )

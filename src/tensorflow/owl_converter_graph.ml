@@ -32,6 +32,53 @@ module Make
     }
 
 
+  let add_tfnodes tfgraph tfnodes name_update =
+    tfgraph.nodes <- Array.append tfgraph.nodes tfnodes;
+    let n_old, n_new = name_update in
+    Hashtbl.add tfgraph.nametbl n_old n_new
+
+
+  let get_tfnode tfgraph name =
+    let nodes = Array.to_list tfgraph.nodes in
+    let ns = List.filter (fun n -> (get_name n) = name) nodes in
+    List.hd ns
+
+
+  (* Rule: the output node that every one should connect to is put in the first element of returned array. *)
+  let _make_initialisers (op : Symbol.Shape.Type.op) name =
+    match op with
+    | Ones shp ->
+      let tvalue = make_tftensor ~float_val:[|1.|] "DT_FLOAT" shp in
+      [| TFConst (TFConst.create name shp (ATTR_Tensor tvalue)) |]
+    | _ -> failwith "Initialiser not implemented."
+
+
+  (* TODO: increase name id in order rather than randomly *)
+  let make_variable_nodes op name out_shp =
+
+    let initialisers = _make_initialisers op name in
+    let iname = (get_name initialisers.(0)) in
+
+    let vname = Printf.sprintf "%s/(%s)-%d" name name (Random.int 100) in
+    let var = TFVariable (TFVariable.create vname out_shp "DT_FLOAT") in
+
+    let rname = name ^ "/read" ^ (Random.int 100 |> string_of_int) in
+    let read = TFIdentity (TFIdentity.create rname [|rname|]
+      out_shp "DT_FLOAT" name)
+    in
+
+    let aname = name ^ "/Assign" ^ (Random.int 100 |> string_of_int) in
+    let assign = TFAssign (TFAssign.create aname vname iname out_shp "DT_FLOAT") in
+
+    (* RULE: only one node is named init in the whole graph *)
+    (* let init = get_tfnode "init" in
+    let init_inputs = get_inputs init in
+    set_inputs init (Array.append init_inputs [|aname|]); *)
+
+    (Array.append [|var; read; assign|] initialisers),
+    (name, aname)
+
+
   (* The logic of how one owl node turned into multiple tfnodes is implemented
    * here.
    * Currently return node array and "name_update" : string * string; meaning,
@@ -51,6 +98,7 @@ module Make
       | Some s -> s
       | None   -> [||]
     in
+    (* "value" only used by const node? *)
     let v = (attr.value).(0) in
     let value =
       if (Device.is_arr v) then (
@@ -84,19 +132,8 @@ module Make
     | MaxPool2d (p, s, k) -> [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
     | Const               -> [| TFConst (TFConst.create name out_shp value) |], ("", "")
+    | Ones _              -> make_variable_nodes attr.op name out_shp
     | _                   -> failwith "unsupported operation"
-
-
-  let add_tfnodes tfgraph tfnodes name_update =
-    tfgraph.nodes <- Array.append tfgraph.nodes tfnodes;
-    let n_old, n_new = name_update in
-    Hashtbl.add tfgraph.nametbl n_old n_new
-
-
-  let get_tfnode tfgraph name =
-    let nodes = Array.to_list tfgraph.nodes in
-    let ns = List.filter (fun n -> (get_name n) = name) nodes in
-    List.hd ns
 
 
   (* for debugging *)
