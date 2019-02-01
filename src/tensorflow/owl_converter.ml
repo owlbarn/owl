@@ -47,13 +47,12 @@ module Make
 
     let outputs = G.get_outputs graph in
 
-    (* 0th iteration: name each node *)
+    (* 0th iterations: name each node *)
+    (* assumes all of a nodes' children are properly named *)
     iter_ancestors (fun node ->
       let id = Owl_graph.id node in
-      Owl_graph.set_name node (Printf.sprintf "owlnode%d" id)
+      Owl_graph.set_name node (Printf.sprintf "owlnode%d" id);
     ) outputs;
-
-    (* build a Hashtbl: the inputs of each node *)
 
     (* 1st iteration : on owl_cgraph *)
     let tfgraph = TFgraph.create () in
@@ -64,8 +63,17 @@ module Make
 
     (* 2nd iteration : change tf_nodes's input nodes' names
      * according to tfgraph.nametbl *)
+    Array.iter (fun tfnode ->
+      let inputs = TFnode.get_inputs tfnode in
+      Array.iteri (fun i x ->
+        try (
+          let replace = Hashtbl.find tfgraph.nametbl x in
+          inputs.(i) <- replace
+        ) with Not_found -> ()
+      ) inputs;
+      TFnode.set_inputs tfnode inputs
+    ) tfgraph.nodes;
 
-    (*TODO: update previous hashtbl *)
 
     (* 3nd iteration : on tf_cgraph; surely can be combined with the 2nd iter *)
     let tfmeta  = TFmeta.create () in
