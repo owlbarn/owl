@@ -43,15 +43,12 @@ let get_default_cflags _c = [
 ]
 
 
-let get_default_libs c =
-  let ls = [
+let get_default_libs _c =
+  [
     "-lopenblas";
     "-lm";
-  ] in
-  get_os_type c |> function
-  | ("linux"|"linux_elf") -> "-llapacke" :: ls
-  | (""|"macosx"|"mingw64") -> ls
-  | s -> failwith ("get_default_libs: unknown system "^s)
+  ]
+
 
 let get_expmode_cflags _c =
   let enable_expmode = Sys.getenv "ENABLE_EXPMODE" |> int_of_string in
