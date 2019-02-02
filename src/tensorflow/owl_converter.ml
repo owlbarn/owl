@@ -47,8 +47,8 @@ module Make
 
     let outputs = G.get_outputs graph in
 
-    (* 0th iterations: name each node *)
-    (* assumes all of a nodes' children are properly named *)
+    (* 0th iterations: name each node
+     * assumes all of a nodes' children are properly named *)
     iter_ancestors (fun node ->
       let id = Owl_graph.id node in
       Owl_graph.set_name node (Printf.sprintf "owlnode%d" id);
@@ -90,7 +90,8 @@ module Make
       if (TFmeta.is_var tfnode) then (
         TFsaver.add_link tfsaver tfgraph (TFnode.get_name tfnode);
         TFcolls.update tfcolls "var" (TFnode.get_name tfnode);
-        TFcolls.update tfcolls "var_train" (TFnode.get_name tfnode) (* simply take all variables as trainable *)
+        (* NOTE: simply take all variables as trainable, right assumption? *)
+        TFcolls.update tfcolls "var_train" (TFnode.get_name tfnode)
       )
     ) tfgraph.nodes;
 

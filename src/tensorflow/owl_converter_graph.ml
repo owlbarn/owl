@@ -8,8 +8,6 @@ open Owl_converter_types
 open Owl_converter_attr
 open Owl_converter_node
 
-module U = Owl_converter_utils
-
 
 module Make
   (G : Owl_computation_graph_sig.Sig)
@@ -142,7 +140,7 @@ module Make
 
 
   let to_string graphdef =
-    let node_str = U.map_then_combine_string (fun n ->
+    let node_str = Owl_converter_utils.map_then_combine_string (fun n ->
       to_pbtxt n
     ) graphdef.nodes
     in

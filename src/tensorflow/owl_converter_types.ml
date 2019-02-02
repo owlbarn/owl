@@ -81,9 +81,9 @@ type tfsaver = {
 
 
 type tfcollection =
-  | Nodelist   of string array
-  | Byteslist  of bytes array
-  | Floatlist  of float array
+  | Nodelist  of string array
+  | Byteslist of bytes array
+  | Floatlist of float array
 
 
 type tfcolls = (string, tfcollection) Hashtbl.t
