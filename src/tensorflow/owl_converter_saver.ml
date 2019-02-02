@@ -12,7 +12,7 @@ open Owl_converter_node
 (* Listed here only for setting some rules for naming; should not be exposed globally. *)
 let ckpt_file_name = "owl_model"
 let save_name = "save/SaveV2"
-let restore_name = "save/SaveV2"
+let restore_name = "save/RestoreV2"
 let save_tensor_names = "save/SaveV2/tensor_names"
 let save_shape_slices = "save/SaveV2/shape_and_slices"
 let restore_tensor_names = "save/RestoreV2/tensor_names"
@@ -40,7 +40,7 @@ module Make
   let add_savernodes tfsaver tfgraph =
 
     let filename_tensor_name = make_tftensor
-      ~string_val:[|ckpt_file_name|] "DT_STRING" [|1|] in
+      ~string_val:[|ckpt_file_name|] "DT_STRING" [||] in
     let save_const = TFConst (TFConst.create tfsaver.filename_tensor_name
       [|1|] (ATTR_Tensor filename_tensor_name))
     in

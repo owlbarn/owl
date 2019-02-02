@@ -70,7 +70,7 @@ let dim_to_string dim =
 
 let tensor_to_string v =
   let dtype_str = v.dtype in
-  let tshp_str = map_then_combine_string dim_to_string v.tensor_shape in
+  let tshp_str = map_then_combine_string ~sep:"" dim_to_string v.tensor_shape in
   let strval_str =
     match v.string_val with
     | Some s -> Printf.sprintf "string_val: \"%s\"\n" s.(0)
@@ -78,7 +78,7 @@ let tensor_to_string v =
   in
   let fltval_str =
     match v.float_val with
-    | Some f -> Printf.sprintf "float_val: \"%f\"\n" f.(0)
+    | Some f -> Printf.sprintf "float_val: %f\n" f.(0)
     | None   -> ""
   in
   Printf.sprintf "dtype: %s\ntensor_shape:{\n%s}\n%s%s" dtype_str tshp_str strval_str fltval_str
@@ -87,14 +87,14 @@ let tensor_to_string v =
 let rec tfattrvalue_to_string attrv =
   match attrv with
   | ATTR_Nil      -> ""
-  | ATTR_Int v    -> Printf.sprintf "int {\n%d}\n" v
-  | ATTR_String v -> Printf.sprintf "string {\n%s}\n" v
-  | ATTR_Bool v   -> Printf.sprintf "bool {\n%b}\n" v
-  | ATTR_Float v  -> Printf.sprintf "float {\n%f}\n" v
+  | ATTR_Int v    -> Printf.sprintf "i: %d\n" v
+  | ATTR_String v -> Printf.sprintf "s: \"%s\"\n" v
+  | ATTR_Bool v   -> Printf.sprintf "b: %b\n" v
+  | ATTR_Float v  -> Printf.sprintf "f: %f\n" v
   | ATTR_Tensor v -> Printf.sprintf "tensor {\n%s}\n" (tensor_to_string v)
   | ATTR_Type v   -> Printf.sprintf "type: %s\n" v
   | ATTR_Shape v  ->
-      let shp_str = map_then_combine_string dim_to_string v in
+      let shp_str = map_then_combine_string ~sep:"" dim_to_string v in
       Printf.sprintf "shape {\n%s}\n" shp_str
   | ATTR_List v   ->
       let list_str = map_then_combine_string tfattrvalue_to_string v in

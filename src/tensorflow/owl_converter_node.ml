@@ -28,11 +28,11 @@ let nodedef_to_pbtxt n =
 
   let inputs_str =
     Owl_converter_utils.map_then_combine_string ~sep:"\n" (fun v ->
-      Printf.sprintf "input : %s" v
+      Printf.sprintf "input: \"%s\"" v
     ) n.input
   in
 
-  Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"\n%s\n%s\n}\n"
+  Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"%s\n%s}\n"
     n.name n.op_name inputs_str attr_str
 
 
@@ -474,7 +474,7 @@ module TFConst = struct
 
   let make_nodedef n =
     let node_attr = [|
-      ("T", (ATTR_Type n.dtype));
+      ("dtype", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("value", n.value);
     |]
@@ -960,7 +960,7 @@ module TFSave = struct
       name      = n.name;
       op_name   = opname;
       input     = n.inputs;
-      node_attr = [|("T", ATTR_Type n.dtype)|];
+      node_attr = [|("dtypes", ATTR_Type n.dtype)|];
       device    = "CPU:0"
     }
 
@@ -1025,7 +1025,7 @@ module TFRestore = struct
       name      = n.name;
       op_name   = opname;
       input     = n.inputs;
-      node_attr = [|("T", ATTR_Type n.dtype)|];
+      node_attr = [|("dtypes", ATTR_Type n.dtype)|];
       device    = "CPU:0"
     }
 
@@ -1073,7 +1073,7 @@ module TFNoop = struct
       name      = n.name;
       op_name   = opname;
       input     = n.inputs;
-      node_attr = [|("noop", ATTR_Nil)|];
+      node_attr = [||];
       device    = "CPU:0"
     }
 

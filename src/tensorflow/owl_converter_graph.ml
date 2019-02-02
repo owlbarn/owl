@@ -107,7 +107,9 @@ module Make
         let tensor = make_tftensor ~float_val "DT_FLOAT" shp in
         ATTR_Tensor tensor
       ) else if (Device.is_elt v) then (
-        ATTR_Float (Device.value_to_float v)
+        let float_val = [| (Device.value_to_float v) |] in
+        let tensor = make_tftensor ~float_val "DT_FLOAT" [||] in
+        ATTR_Tensor tensor
       ) else (
         ATTR_Nil
       )
@@ -140,7 +142,7 @@ module Make
 
 
   let to_string graphdef =
-    let node_str = Owl_converter_utils.map_then_combine_string (fun n ->
+    let node_str = Owl_converter_utils.map_then_combine_string ~sep:"\n" (fun n ->
       to_pbtxt n
     ) graphdef.nodes
     in
