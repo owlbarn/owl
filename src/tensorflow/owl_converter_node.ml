@@ -32,7 +32,7 @@ let nodedef_to_pbtxt n =
     ) n.input
   in
 
-  Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"%s\n%s}\n"
+  Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"\n%s\n%s}\n"
     n.name n.op_name inputs_str attr_str
 
 
@@ -145,6 +145,9 @@ module TFMatMul = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs n = n.inputs
 
 
@@ -212,6 +215,9 @@ module TFAdd = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
 
 
   let get_inputs n = n.inputs
@@ -285,6 +291,9 @@ module TFSub = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs n = n.inputs
 
 
@@ -354,6 +363,9 @@ module TFMul = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
 
 
   let get_inputs n = n.inputs
@@ -427,6 +439,9 @@ module TFDiv = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs n = n.inputs
 
 
@@ -495,6 +510,9 @@ module TFConst = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs _n = [||]
 
 
@@ -560,6 +578,9 @@ module TFPlaceholder = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs _n = [||]
 
 
@@ -613,6 +634,9 @@ module TFRelu = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
 
 
   let get_inputs n = n.inputs
@@ -685,6 +709,9 @@ module TFConv2D = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs n = n.inputs
 
 
@@ -755,6 +782,9 @@ module TFMaxPool = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs n = n.inputs
 
 
@@ -799,7 +829,7 @@ module TFAssign = struct
     make_opdef ~input_arg ~output_arg ~attr "Assign"
 
 
-  let create name refv value out_shp dtype =
+  let create ~refv ~value name out_shp dtype =
     {
       name           = name;
       op_name        = opname;
@@ -835,6 +865,9 @@ module TFAssign = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
 
 
   let get_inputs _n = [||]
@@ -913,6 +946,9 @@ module TFIdentity = struct
   let get_inputs n = n.inputs
 
 
+  let get_output_shape n = n.out_shp
+
+
   let set_inputs n i = n.inputs <- i
 
 end
@@ -970,6 +1006,9 @@ module TFSave = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape _ = [||]
 
 
   let get_inputs n = n.inputs
@@ -1037,6 +1076,9 @@ module TFRestore = struct
   let get_name n = n.name
 
 
+  let get_output_shape _ = [||]
+
+
   let get_inputs n = n.inputs
 
 
@@ -1083,6 +1125,9 @@ module TFNoop = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape _ = [||]
 
 
   let get_inputs n = n.inputs
@@ -1160,6 +1205,9 @@ module TFVariable = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
 
 
   let get_inputs _n = [||]
@@ -1266,6 +1314,24 @@ let get_opdef = function
   | TFNoop        _ -> TFNoop.opdef
 
 
+let get_output_shape = function
+  | TFMatMul      n -> TFMatMul.get_output_shape n
+  | TFAdd         n -> TFAdd.get_output_shape n
+  | TFSub         n -> TFSub.get_output_shape n
+  | TFMul         n -> TFMul.get_output_shape n
+  | TFDiv         n -> TFDiv.get_output_shape n
+  | TFRelu        n -> TFRelu.get_output_shape n
+  | TFConv2D      n -> TFConv2D.get_output_shape n
+  | TFMaxPool     n -> TFMaxPool.get_output_shape n
+  | TFConst       n -> TFConst.get_output_shape n
+  | TFPlaceholder n -> TFPlaceholder.get_output_shape n
+  | TFAssign      n -> TFAssign.get_output_shape n
+  | TFIdentity    n -> TFIdentity.get_output_shape n
+  | TFSave        n -> TFSave.get_output_shape n
+  | TFRestore     n -> TFRestore.get_output_shape n
+  | TFVariable    n -> TFVariable.get_output_shape n
+  | TFNoop        n -> TFNoop.get_output_shape n
+
 
 let get_inputs = function
   | TFMatMul      n -> TFMatMul.get_inputs n
@@ -1302,4 +1368,4 @@ let set_inputs = function
   | TFSave        n -> TFSave.set_inputs n
   | TFRestore     n -> TFRestore.set_inputs n
   | TFNoop        n -> TFNoop.set_inputs n
-  | _               -> fun _i -> ()
+  | _               -> fun _ -> ()

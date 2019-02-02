@@ -33,11 +33,11 @@ module Make
     }
 
 
-  let to_string m =
-    (TFmeta.to_string  m.tfmeta)  ^
-    (TFgraph.to_string m.tfgraph) ^
-    (TFsaver.to_string m.tfsaver) ^
-    (TFcolls.to_string m.tfcolls)
+  let to_pbtxt m =
+    (TFmeta.to_pbtxt  m.tfmeta)  ^
+    (TFgraph.to_pbtxt m.tfgraph) ^
+    (TFsaver.to_pbtxt m.tfsaver) ^
+    (TFcolls.to_pbtxt m.tfcolls)
 
 
   (* Need to specify rules about naming of model and output node(s) *)
@@ -77,7 +77,7 @@ module Make
     let tfmeta  = TFmeta.create () in
     let tfsaver = TFsaver.create () in
     TFsaver.add_savernodes tfsaver tfgraph;
-    let tfcolls = TFcolls.create [|"var"; "var_train"|] in
+    let tfcolls = TFcolls.create [|"var"; "var_train"; "result"|] in
 
     Array.iter (fun tfnode ->
       let opname = Owl_converter_node.get_op_name tfnode in
@@ -86,16 +86,31 @@ module Make
         TFmeta.add_opdef tfmeta tfop
       );
       if (TFmeta.is_var tfnode) then (
-        TFsaver.add_link tfsaver tfgraph (Owl_converter_node.get_name tfnode);
-        TFcolls.update tfcolls "var" (Owl_converter_node.get_name tfnode);
-        (* NOTE: temporarily take all variables as trainable -- WRONG assumption! *)
-        TFcolls.update tfcolls "var_train" (Owl_converter_node.get_name tfnode)
+        TFsaver.add_link tfsaver tfgraph tfnode;
+        (* How the strings are serialised here is not clear yet. Need to find out.*)
+        (* TFcolls.update tfcolls "var" (Owl_converter_node.get_name tfnode);
+        TFcolls.update tfcolls "var_train" (Owl_converter_node.get_name tfnode) *)
       )
     ) tfgraph.nodes;
+
+    (* NOTE: how to decide the id of the node?!! *)
+    (* also, need to specify it's update_string/update_byte/.... *)
+    let output_names = Array.map (fun n ->
+      (Owl_graph.name n) ^ ":1" (* therefore, temporary hack on id *)
+    ) outputs
+    in
+    TFcolls.update_nodelist tfcolls "result" output_names;
 
     tfmeta, tfgraph, tfsaver, tfcolls
 
 
+  (* Things not yet considered:
+   * - "unknown rank" of shape of RestoreV2 node; may need to change def
+   * - track id of each node (foobar:0)
+   * - how to construct collections bytelist
+   * - the "device" attr needs to be printed out for save/restore nodes
+   * - some seemingly unimportant attr of nodes like "default_value"
+   *)
   let convert graph =
     let tfmeta, tfgraph, tfsaver, tfcolls = parse_cgraph graph in
     let tf_cgraph = make_tf_cgraph () in
@@ -103,7 +118,7 @@ module Make
     tf_cgraph.tfgraph <- tfgraph;
     tf_cgraph.tfsaver <- tfsaver;
     tf_cgraph.tfcolls <- tfcolls;
-    let pb_txt = to_string tf_cgraph in
+    let pb_txt = to_pbtxt tf_cgraph in
     pb_txt
 
 end

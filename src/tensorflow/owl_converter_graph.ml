@@ -19,14 +19,16 @@ module Make
 
   type tfgraph = {
     mutable nodes   : tfnode array;
+    mutable version : string;
     mutable nametbl : (string, string) Hashtbl.t
   }
 
 
   let create () =
     {
-      nodes   = [||];
-      nametbl = (Hashtbl.create 20)
+      nodes    = [||];
+      version  = "27";
+      nametbl  = (Hashtbl.create 20)
     }
 
 
@@ -36,6 +38,7 @@ module Make
     Hashtbl.add tfgraph.nametbl n_old n_new
 
 
+  (* a bad implementation *)  
   let get_tfnode tfgraph name =
     let nodes = Array.to_list tfgraph.nodes in
     let ns = List.filter (fun n -> (get_name n) = name) nodes in
@@ -57,7 +60,7 @@ module Make
     let initialisers = _make_initialisers op name in
     let iname = (get_name initialisers.(0)) in
 
-    let vname = Printf.sprintf "%s/(%s)-%d" name name (Random.int 100) in
+    let vname = Printf.sprintf "%s/%s" name name in
     let var = TFVariable (TFVariable.create vname out_shp "DT_FLOAT") in
 
     let rname = name ^ "/read" ^ (Random.int 100 |> string_of_int) in
@@ -66,7 +69,9 @@ module Make
     in
 
     let aname = name ^ "/Assign" ^ (Random.int 100 |> string_of_int) in
-    let assign = TFAssign (TFAssign.create aname vname iname out_shp "DT_FLOAT") in
+    let assign = TFAssign (TFAssign.create ~refv:vname
+      ~value:iname aname out_shp "DT_FLOAT")
+    in
 
     (* RULE: only one node is named init in the whole graph *)
     (* TODO: How can I get another node from the graph? I.E. gloabal view for each node; or at least some nodes. This is an important decision to make. *)
@@ -141,11 +146,12 @@ module Make
   let to_dot _nodes = ()
 
 
-  let to_string graphdef =
+  let to_pbtxt graphdef =
     let node_str = Owl_converter_utils.map_then_combine_string ~sep:"\n" (fun n ->
       to_pbtxt n
     ) graphdef.nodes
     in
-    Printf.sprintf "graph_def {\n%s}\n" node_str
+    let version_str = Printf.sprintf "versions {\nproducer: %s\n}\n" graphdef.version in
+    Printf.sprintf "graph_def {\n%s%s}\n" node_str version_str
 
 end

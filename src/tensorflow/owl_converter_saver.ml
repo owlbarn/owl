@@ -102,31 +102,35 @@ module Make
     ) nodes
 
 
-  let add_link tfsaver tfgraph var_name =
+  let add_link tfsaver tfgraph tfnode =
     (* note this name... you need different id *)
-    let name = var_name ^ "/Assign" in
-    (* let out_shp = get_outputshape var_name ! *)
-    let out_shp = [||] in
-    let assign_node = TFAssign (TFAssign.create name var_name
-      tfsaver.restore_op_name out_shp "DT_FLOAT")
+    let nname = get_name tfnode in
+    let out_shp = get_output_shape tfnode in
+    let name = nname ^ "/Assign" in
+    let assign_node = TFAssign (TFAssign.create ~refv:nname
+      ~value:restore_name name out_shp "DT_FLOAT")
     in
 
     let restore_all = TFgraph.get_tfnode tfgraph tfsaver.restore_op_name in
     let inp = get_inputs restore_all in
-    set_inputs restore_all (Array.append inp [|name|]);
+    set_inputs restore_all (Array.append inp [|("^" ^ name)|]);
 
-    let save = TFgraph.get_tfnode tfgraph save_name in
-    let inp = get_inputs save in
-    set_inputs save (Array.append inp [|var_name|]);
+    let snames = TFgraph.get_tfnode tfgraph save_tensor_names in
+    let inp = get_inputs snames in
+    set_inputs snames (Array.append inp [|name|]);
+
+    let rnames = TFgraph.get_tfnode tfgraph restore_tensor_names in
+    let inp = get_inputs rnames in
+    set_inputs rnames (Array.append inp [|nname|]);
 
     TFgraph.add_tfnodes tfgraph [|assign_node|] ("", "")
 
 
-  let to_string saver =
+  let to_pbtxt saver =
     let saver_str =
-      (Printf.sprintf "filename_tensor_name : %s\n" saver.filename_tensor_name) ^
-      (Printf.sprintf "save_tensor_name : %s\n" saver.save_tensor_name) ^
-      (Printf.sprintf "restore_op_name : %s\n" saver.restore_op_name) ^
+      (Printf.sprintf "filename_tensor_name : \"%s\"\n" saver.filename_tensor_name) ^
+      (Printf.sprintf "save_tensor_name : \"%s\"\n" saver.save_tensor_name) ^
+      (Printf.sprintf "restore_op_name : \"%s\"\n" saver.restore_op_name) ^
       (Printf.sprintf "max_to_keep : %d\n" saver.max_to_keep) ^
       (Printf.sprintf "sharded: %b\n" saver.sharded) ^
       (Printf.sprintf "keep_checkpoint_every_n_hours: %f\n" saver.keep_checkpoint_every_n_hours) ^

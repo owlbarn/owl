@@ -32,7 +32,7 @@ module Make
   let is_var tfnode = (Owl_converter_node.get_op_name tfnode) = "VariableV2"
 
 
-  let to_string meta =
+  let to_pbtxt meta =
     let tfop_str = map_then_combine_string ~sep:"\n"
       Owl_converter_node.opdef_to_pbtxt meta.stripped_op_list
     in
