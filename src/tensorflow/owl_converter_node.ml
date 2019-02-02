@@ -7,8 +7,6 @@
 open Owl_converter_types
 open Owl_converter_attr
 
-module U = Owl_converter_utils
-
 
 type nodedef = {
   mutable name      : string;
@@ -21,15 +19,19 @@ type nodedef = {
 
 
 let nodedef_to_pbtxt n =
-  let attr_str = U.map_then_combine_string ~sep:"" (fun (k, v) ->
-    let value_str = tfattrvalue_to_string v in
-    Printf.sprintf "attr {\nkey: \"%s\"\nvalue: {\n%s}\n}\n" k value_str
-  ) n.node_attr
+  let attr_str =
+    Owl_converter_utils.map_then_combine_string ~sep:"" (fun (k, v) ->
+      let value_str = tfattrvalue_to_string v in
+      Printf.sprintf "attr {\nkey: \"%s\"\nvalue: {\n%s}\n}\n" k value_str
+    ) n.node_attr
   in
-  let inputs_str = U.map_then_combine_string ~sep:"\n" (fun v ->
-    Printf.sprintf "input : %s" v
-  ) n.input
+
+  let inputs_str =
+    Owl_converter_utils.map_then_combine_string ~sep:"\n" (fun v ->
+      Printf.sprintf "input : %s" v
+    ) n.input
   in
+
   Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"\n%s\n%s\n}\n"
     n.name n.op_name inputs_str attr_str
 
@@ -62,11 +64,11 @@ let nil_def = make_opdef "Nil"
 
 
 let opdef_to_pbtxt op =
-  let input_arg_arr = U.map_then_combine_string ~sep:"\n"
+  let input_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:"\n"
     (argdef_to_string "input_arg") op.input_arg in
-  let output_arg_arr = U.map_then_combine_string ~sep:"\n"
+  let output_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:"\n"
     (argdef_to_string "output_arg") op.output_arg in
-  let attr_string = U.map_then_combine_string ~sep:"\n"
+  let attr_string = Owl_converter_utils.map_then_combine_string ~sep:"\n"
     tfop_attr_to_string op.attr in
   Printf.sprintf "op {\nname: %s\n%s%s%s}\n" op.name
     input_arg_arr output_arg_arr attr_string

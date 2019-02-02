@@ -15,9 +15,9 @@ module Make
 
   let create () =
     {
-      stripped_op_list = [||];
+      stripped_op_list   = [||];
       tensorflow_version = "1.12.0"; (* get from tensorflow  *)
-      op_names = [||]
+      op_names           = [||]
     }
 
 
