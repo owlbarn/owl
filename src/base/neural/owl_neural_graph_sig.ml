@@ -487,7 +487,7 @@ Arguments:
   val to_string : network -> string
   (** Convert a neural network to its string representation. *)
 
-  val pp_network : Format.formatter -> network -> unit
+  val pp_network : Format.formatter -> network -> unit [@@ocaml.toplevel_printer]
   (** Pretty printing function a neural network. *)
 
   val print : network -> unit

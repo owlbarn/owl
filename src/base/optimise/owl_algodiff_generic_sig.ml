@@ -536,7 +536,7 @@ file format which you can use other tools further visualisation, such as
 Graphviz.
    *)
 
-  val pp_num : Format.formatter -> t -> unit
+  val pp_num : Format.formatter -> t -> unit [@@ocaml.toplevel_printer]
   (** ``pp_num t`` pretty prints the abstract number used in ``Algodiff``. *)
 
 
