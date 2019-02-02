@@ -8,6 +8,8 @@ open Owl_converter_types
 open Owl_converter_attr
 open Owl_converter_node
 
+
+(* Listed here only for setting some rules for naming; should not be exposed globally. *)
 let ckpt_file_name = "owl_model"
 let save_name = "save/SaveV2"
 let restore_name = "save/SaveV2"
