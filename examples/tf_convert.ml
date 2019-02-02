@@ -2,6 +2,7 @@
 #require "owl-tensorflow"
 
 open Owl
+open Owl_tensorflow
 open Owl_converter
 
 module N = Dense.Ndarray.S

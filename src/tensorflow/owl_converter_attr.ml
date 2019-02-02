@@ -35,13 +35,17 @@ let make_argdef ?typ ?typ_attr ?num_attr
   }
 
 
-let argdef_to_string name argdef =
-  let get_str x label =
+let argdef_to_string  name argdef =
+  let get_str ?(quote=true) x label =
+    let formatter =
+      if (quote = true) then (Printf.sprintf "%s: \"%s\"\n")
+      else (Printf.sprintf "%s: %s\n")
+    in
     match x with
-    | Some s -> Printf.sprintf "%s: %s\n" label s
+    | Some s -> formatter label s
     | None   -> ""
   in
-  let typ = get_str argdef.typ "type" in
+  let typ = get_str argdef.typ ~quote:false "type" in
   let typ_attr = get_str argdef.typ_attr "type_attr" in
   let num_attr = get_str argdef.num_attr "number_attr" in
   let typ_list_attr = get_str argdef.typ_list_attr "type_list_attr" in
@@ -61,14 +65,23 @@ let tfop_attr_to_string (attr : tfop_attr) =
 
 
 let dim_to_string dim =
-  Printf.sprintf "dim {\nsize: %d}\n" dim
+  Printf.sprintf "dim {\nsize: %d\n}\n" dim
 
 
 let tensor_to_string v =
   let dtype_str = v.dtype in
   let tshp_str = map_then_combine_string dim_to_string v.tensor_shape in
-  let result_str = dtype_str ^ tshp_str in
-  Printf.sprintf "tensor {\n%s\n}" result_str
+  let strval_str =
+    match v.string_val with
+    | Some s -> Printf.sprintf "string_val: \"%s\"\n" s.(0)
+    | None   -> ""
+  in
+  let fltval_str =
+    match v.float_val with
+    | Some f -> Printf.sprintf "float_val: \"%f\"\n" f.(0)
+    | None   -> ""
+  in
+  Printf.sprintf "dtype: %s\ntensor_shape:{\n%s}\n%s%s" dtype_str tshp_str strval_str fltval_str
 
 
 let rec tfattrvalue_to_string attrv =
@@ -79,7 +92,7 @@ let rec tfattrvalue_to_string attrv =
   | ATTR_Bool v   -> Printf.sprintf "bool {\n%b}\n" v
   | ATTR_Float v  -> Printf.sprintf "float {\n%f}\n" v
   | ATTR_Tensor v -> Printf.sprintf "tensor {\n%s}\n" (tensor_to_string v)
-  | ATTR_Type v   -> Printf.sprintf "type {\n%s}\n" v
+  | ATTR_Type v   -> Printf.sprintf "type: %s\n" v
   | ATTR_Shape v  ->
       let shp_str = map_then_combine_string dim_to_string v in
       Printf.sprintf "shape {\n%s}\n" shp_str
