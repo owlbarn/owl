@@ -64,7 +64,7 @@ module Make
     let var = TFVariable (TFVariable.create vname out_shp "DT_FLOAT") in
 
     let rname = name ^ "/read" ^ (Random.int 100 |> string_of_int) in
-    let read = TFIdentity (TFIdentity.create rname [|rname|]
+    let read = TFIdentity (TFIdentity.create rname [|vname|]
       out_shp "DT_FLOAT" name)
     in
 
@@ -137,7 +137,7 @@ module Make
     | Conv2d (p, s)       -> [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
     | MaxPool2d (p, s, k) -> [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
-    | Const               -> [| TFConst (TFConst.create name out_shp value) |], ("", "")
+    | Const               -> [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
     | Ones _              -> make_variable_nodes attr.op name out_shp
     | _                   -> failwith "unsupported operation"
 

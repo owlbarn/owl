@@ -64,11 +64,11 @@ let nil_def = make_opdef "Nil"
 
 
 let opdef_to_pbtxt op =
-  let input_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:"\n"
+  let input_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:""
     (argdef_to_string "input_arg") op.input_arg in
-  let output_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:"\n"
+  let output_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:""
     (argdef_to_string "output_arg") op.output_arg in
-  let attr_string = Owl_converter_utils.map_then_combine_string ~sep:"\n"
+  let attr_string = Owl_converter_utils.map_then_combine_string ~sep:""
     tfop_attr_to_string op.attr in
   Printf.sprintf "op {\nname: \"%s\"\n%s%s%s}\n" op.name
     input_arg_arr output_arg_arr attr_string
@@ -478,10 +478,6 @@ module TFConst = struct
 
 
   let create ?(dtype="DT_STRING") name out_shp value =
-    (*let dtype =
-      match dtype with
-      | Some t -> t
-      | None   -> expr2 *)
     {
       name    = name;
       op_name = opname;
@@ -995,7 +991,7 @@ module TFSave = struct
     make_opdef ~input_arg ~attr opname
 
 
-  let create ?(dtype="DT_STRING") name inputs =
+  let create name inputs dtype =
     {
       name    = name;
       op_name = opname;
