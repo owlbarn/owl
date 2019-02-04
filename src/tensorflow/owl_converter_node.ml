@@ -28,11 +28,11 @@ let nodedef_to_pbtxt n =
 
   let inputs_str =
     Owl_converter_utils.map_then_combine_string ~sep:"\n" (fun v ->
-      Printf.sprintf "input : %s" v
+      Printf.sprintf "input: \"%s\"" v
     ) n.input
   in
 
-  Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"\n%s\n%s\n}\n"
+  Printf.sprintf "node {\nname: \"%s\"\nop: \"%s\"\n%s\n%s}\n"
     n.name n.op_name inputs_str attr_str
 
 
@@ -64,13 +64,13 @@ let nil_def = make_opdef "Nil"
 
 
 let opdef_to_pbtxt op =
-  let input_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:"\n"
+  let input_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:""
     (argdef_to_string "input_arg") op.input_arg in
-  let output_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:"\n"
+  let output_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:""
     (argdef_to_string "output_arg") op.output_arg in
-  let attr_string = Owl_converter_utils.map_then_combine_string ~sep:"\n"
+  let attr_string = Owl_converter_utils.map_then_combine_string ~sep:""
     tfop_attr_to_string op.attr in
-  Printf.sprintf "op {\nname: %s\n%s%s%s}\n" op.name
+  Printf.sprintf "op {\nname: \"%s\"\n%s%s%s}\n" op.name
     input_arg_arr output_arg_arr attr_string
 
 
@@ -145,6 +145,9 @@ module TFMatMul = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs n = n.inputs
 
 
@@ -212,6 +215,9 @@ module TFAdd = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
 
 
   let get_inputs n = n.inputs
@@ -285,6 +291,9 @@ module TFSub = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs n = n.inputs
 
 
@@ -354,6 +363,9 @@ module TFMul = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
 
 
   let get_inputs n = n.inputs
@@ -427,6 +439,9 @@ module TFDiv = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs n = n.inputs
 
 
@@ -462,19 +477,19 @@ module TFConst = struct
     make_opdef ~output_arg ~attr opname
 
 
-  let create name out_shp value =
+  let create ?(dtype="DT_STRING") name out_shp value =
     {
       name    = name;
       op_name = opname;
       out_shp = out_shp;
       value   = value;
-      dtype   = "DT_STRING"
+      dtype   = dtype
     }
 
 
   let make_nodedef n =
     let node_attr = [|
-      ("T", (ATTR_Type n.dtype));
+      ("dtype", (ATTR_Type n.dtype));
       ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("value", n.value);
     |]
@@ -495,10 +510,22 @@ module TFConst = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs _n = [||]
 
 
   let set_inputs _n _i = ()
+
+
+  (* NOTE: for now, we only need to get the "value" attribute of tfconst node;
+   * to generalise it to all attributes of all nodes, though, it tricky.
+   *)
+  let get_const_value n = n.value
+
+
+  let set_const_value n v = n.value <- v
 
 end
 
@@ -560,6 +587,9 @@ module TFPlaceholder = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs _n = [||]
 
 
@@ -613,6 +643,9 @@ module TFRelu = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
 
 
   let get_inputs n = n.inputs
@@ -685,6 +718,9 @@ module TFConv2D = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs n = n.inputs
 
 
@@ -755,6 +791,9 @@ module TFMaxPool = struct
   let get_name n = n.name
 
 
+  let get_output_shape n = n.out_shp
+
+
   let get_inputs n = n.inputs
 
 
@@ -799,7 +838,7 @@ module TFAssign = struct
     make_opdef ~input_arg ~output_arg ~attr "Assign"
 
 
-  let create name refv value out_shp dtype =
+  let create ~refv ~value name out_shp dtype =
     {
       name           = name;
       op_name        = opname;
@@ -835,6 +874,9 @@ module TFAssign = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
 
 
   let get_inputs _n = [||]
@@ -913,6 +955,9 @@ module TFIdentity = struct
   let get_inputs n = n.inputs
 
 
+  let get_output_shape n = n.out_shp
+
+
   let set_inputs n i = n.inputs <- i
 
 end
@@ -946,7 +991,7 @@ module TFSave = struct
     make_opdef ~input_arg ~attr opname
 
 
-  let create ?(dtype="DT_STRING") name inputs =
+  let create name inputs dtype =
     {
       name    = name;
       op_name = opname;
@@ -960,7 +1005,7 @@ module TFSave = struct
       name      = n.name;
       op_name   = opname;
       input     = n.inputs;
-      node_attr = [|("T", ATTR_Type n.dtype)|];
+      node_attr = [|("dtypes", ATTR_List [|ATTR_Type n.dtype|])|];
       device    = "CPU:0"
     }
 
@@ -970,6 +1015,9 @@ module TFSave = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape _ = [||]
 
 
   let get_inputs n = n.inputs
@@ -1025,7 +1073,7 @@ module TFRestore = struct
       name      = n.name;
       op_name   = opname;
       input     = n.inputs;
-      node_attr = [|("T", ATTR_Type n.dtype)|];
+      node_attr = [|("dtypes", ATTR_List [|ATTR_Type n.dtype|])|];
       device    = "CPU:0"
     }
 
@@ -1035,6 +1083,9 @@ module TFRestore = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape _ = [||]
 
 
   let get_inputs n = n.inputs
@@ -1073,7 +1124,7 @@ module TFNoop = struct
       name      = n.name;
       op_name   = opname;
       input     = n.inputs;
-      node_attr = [|("noop", ATTR_Nil)|];
+      node_attr = [||];
       device    = "CPU:0"
     }
 
@@ -1083,6 +1134,9 @@ module TFNoop = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape _ = [||]
 
 
   let get_inputs n = n.inputs
@@ -1160,6 +1214,9 @@ module TFVariable = struct
 
 
   let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
 
 
   let get_inputs _n = [||]
@@ -1266,6 +1323,24 @@ let get_opdef = function
   | TFNoop        _ -> TFNoop.opdef
 
 
+let get_output_shape = function
+  | TFMatMul      n -> TFMatMul.get_output_shape n
+  | TFAdd         n -> TFAdd.get_output_shape n
+  | TFSub         n -> TFSub.get_output_shape n
+  | TFMul         n -> TFMul.get_output_shape n
+  | TFDiv         n -> TFDiv.get_output_shape n
+  | TFRelu        n -> TFRelu.get_output_shape n
+  | TFConv2D      n -> TFConv2D.get_output_shape n
+  | TFMaxPool     n -> TFMaxPool.get_output_shape n
+  | TFConst       n -> TFConst.get_output_shape n
+  | TFPlaceholder n -> TFPlaceholder.get_output_shape n
+  | TFAssign      n -> TFAssign.get_output_shape n
+  | TFIdentity    n -> TFIdentity.get_output_shape n
+  | TFSave        n -> TFSave.get_output_shape n
+  | TFRestore     n -> TFRestore.get_output_shape n
+  | TFVariable    n -> TFVariable.get_output_shape n
+  | TFNoop        n -> TFNoop.get_output_shape n
+
 
 let get_inputs = function
   | TFMatMul      n -> TFMatMul.get_inputs n
@@ -1302,4 +1377,14 @@ let set_inputs = function
   | TFSave        n -> TFSave.set_inputs n
   | TFRestore     n -> TFRestore.set_inputs n
   | TFNoop        n -> TFNoop.set_inputs n
-  | _               -> fun _i -> ()
+  | _               -> fun _ -> ()
+
+
+let get_value = function
+  | TFConst n -> TFConst.get_const_value n
+  | _         -> failwith "unsupported operation"
+
+
+let set_value = function
+  | TFConst n -> TFConst.set_const_value n
+  | _         -> failwith "unsupported operation"

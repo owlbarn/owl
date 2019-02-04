@@ -35,7 +35,7 @@ let make_argdef ?typ ?typ_attr ?num_attr
   }
 
 
-let argdef_to_string  name argdef =
+let argdef_to_string name argdef =
   let get_str ?(quote=true) x label =
     let formatter =
       if (quote = true) then (Printf.sprintf "%s: \"%s\"\n")
@@ -54,7 +54,7 @@ let argdef_to_string  name argdef =
     | Some b -> Printf.sprintf "is_ref: %b\n" b
     | None   -> ""
   in
-  Printf.sprintf "%s{\nname: %s\n%s%s%s%s%s}\n" name argdef.name
+  Printf.sprintf "%s{\nname: \"%s\"\n%s%s%s%s%s}\n" name argdef.name
     typ typ_attr num_attr typ_list_attr is_ref
 
 
@@ -70,15 +70,16 @@ let dim_to_string dim =
 
 let tensor_to_string v =
   let dtype_str = v.dtype in
-  let tshp_str = map_then_combine_string dim_to_string v.tensor_shape in
+  let tshp_str = map_then_combine_string ~sep:"" dim_to_string v.tensor_shape in
   let strval_str =
     match v.string_val with
-    | Some s -> Printf.sprintf "string_val: \"%s\"\n" s.(0)
+    (* correct seprator? *)
+    | Some s -> Printf.sprintf "string_val: \"%s\"\n" (Owl_utils_array.to_string ~sep:"," (fun n -> n) s)
     | None   -> ""
   in
   let fltval_str =
     match v.float_val with
-    | Some f -> Printf.sprintf "float_val: \"%f\"\n" f.(0)
+    | Some f -> Printf.sprintf "float_val: %f\n" f.(0)
     | None   -> ""
   in
   Printf.sprintf "dtype: %s\ntensor_shape:{\n%s}\n%s%s" dtype_str tshp_str strval_str fltval_str
@@ -87,14 +88,14 @@ let tensor_to_string v =
 let rec tfattrvalue_to_string attrv =
   match attrv with
   | ATTR_Nil      -> ""
-  | ATTR_Int v    -> Printf.sprintf "int {\n%d}\n" v
-  | ATTR_String v -> Printf.sprintf "string {\n%s}\n" v
-  | ATTR_Bool v   -> Printf.sprintf "bool {\n%b}\n" v
-  | ATTR_Float v  -> Printf.sprintf "float {\n%f}\n" v
+  | ATTR_Int v    -> Printf.sprintf "i: %d\n" v
+  | ATTR_String v -> Printf.sprintf "s: \"%s\"\n" v
+  | ATTR_Bool v   -> Printf.sprintf "b: %b\n" v
+  | ATTR_Float v  -> Printf.sprintf "f: %f\n" v
   | ATTR_Tensor v -> Printf.sprintf "tensor {\n%s}\n" (tensor_to_string v)
   | ATTR_Type v   -> Printf.sprintf "type: %s\n" v
   | ATTR_Shape v  ->
-      let shp_str = map_then_combine_string dim_to_string v in
+      let shp_str = map_then_combine_string ~sep:"" dim_to_string v in
       Printf.sprintf "shape {\n%s}\n" shp_str
   | ATTR_List v   ->
       let list_str = map_then_combine_string tfattrvalue_to_string v in

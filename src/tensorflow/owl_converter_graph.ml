@@ -19,14 +19,16 @@ module Make
 
   type tfgraph = {
     mutable nodes   : tfnode array;
+    mutable version : string;
     mutable nametbl : (string, string) Hashtbl.t
   }
 
 
   let create () =
     {
-      nodes   = [||];
-      nametbl = (Hashtbl.create 20)
+      nodes    = [||];
+      version  = "27";
+      nametbl  = (Hashtbl.create 20)
     }
 
 
@@ -36,6 +38,7 @@ module Make
     Hashtbl.add tfgraph.nametbl n_old n_new
 
 
+  (* a bad implementation *)
   let get_tfnode tfgraph name =
     let nodes = Array.to_list tfgraph.nodes in
     let ns = List.filter (fun n -> (get_name n) = name) nodes in
@@ -47,7 +50,7 @@ module Make
     match op with
     | Ones shp ->
       let tvalue = make_tftensor ~float_val:[|1.|] "DT_FLOAT" shp in
-      [| TFConst (TFConst.create name shp (ATTR_Tensor tvalue)) |]
+      [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name shp (ATTR_Tensor tvalue)) |]
     | _ -> failwith "Initialiser not implemented."
 
 
@@ -57,18 +60,20 @@ module Make
     let initialisers = _make_initialisers op name in
     let iname = (get_name initialisers.(0)) in
 
-    let vname = Printf.sprintf "%s/(%s)-%d" name name (Random.int 100) in
+    let vname = Printf.sprintf "%s/%s" name name in
     let var = TFVariable (TFVariable.create vname out_shp "DT_FLOAT") in
 
     let rname = name ^ "/read" ^ (Random.int 100 |> string_of_int) in
-    let read = TFIdentity (TFIdentity.create rname [|rname|]
+    let read = TFIdentity (TFIdentity.create rname [|vname|]
       out_shp "DT_FLOAT" name)
     in
 
     let aname = name ^ "/Assign" ^ (Random.int 100 |> string_of_int) in
-    let assign = TFAssign (TFAssign.create aname vname iname out_shp "DT_FLOAT") in
+    let assign = TFAssign (TFAssign.create ~refv:vname
+      ~value:iname aname out_shp "DT_FLOAT")
+    in
 
-    (* RULE: only one node is named init in the whole graph *)
+    (* RULE: only one node is named "init" in the whole graph *)
     (* TODO: How can I get another node from the graph? I.E. gloabal view for each node; or at least some nodes. This is an important decision to make. *)
     (* let init = get_tfnode "init" in
     let init_inputs = get_inputs init in
@@ -107,7 +112,9 @@ module Make
         let tensor = make_tftensor ~float_val "DT_FLOAT" shp in
         ATTR_Tensor tensor
       ) else if (Device.is_elt v) then (
-        ATTR_Float (Device.value_to_float v)
+        let float_val = [| (Device.value_to_float v) |] in
+        let tensor = make_tftensor ~float_val "DT_FLOAT" [||] in
+        ATTR_Tensor tensor
       ) else (
         ATTR_Nil
       )
@@ -130,7 +137,7 @@ module Make
     | Conv2d (p, s)       -> [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
     | MaxPool2d (p, s, k) -> [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
-    | Const               -> [| TFConst (TFConst.create name out_shp value) |], ("", "")
+    | Const               -> [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
     | Ones _              -> make_variable_nodes attr.op name out_shp
     | _                   -> failwith "unsupported operation"
 
@@ -139,11 +146,12 @@ module Make
   let to_dot _nodes = ()
 
 
-  let to_string graphdef =
-    let node_str = Owl_converter_utils.map_then_combine_string (fun n ->
+  let to_pbtxt graphdef =
+    let node_str = Owl_converter_utils.map_then_combine_string ~sep:"\n" (fun n ->
       to_pbtxt n
     ) graphdef.nodes
     in
-    Printf.sprintf "graph_def {\n%s}\n" node_str
+    let version_str = Printf.sprintf "versions {\nproducer: %s\n}\n" graphdef.version in
+    Printf.sprintf "graph_def {\n%s%s}\n" node_str version_str
 
 end
