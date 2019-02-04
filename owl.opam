@@ -28,6 +28,7 @@ depends: [
   "owl-base"
   "plplot"
   "stdio" {build}
+  "sexplib" {build}
 ]
 
 available: [ ocaml-version >= "4.06.0" ]
