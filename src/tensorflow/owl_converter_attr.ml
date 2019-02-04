@@ -35,7 +35,7 @@ let make_argdef ?typ ?typ_attr ?num_attr
   }
 
 
-let argdef_to_string  name argdef =
+let argdef_to_string name argdef =
   let get_str ?(quote=true) x label =
     let formatter =
       if (quote = true) then (Printf.sprintf "%s: \"%s\"\n")
@@ -54,7 +54,7 @@ let argdef_to_string  name argdef =
     | Some b -> Printf.sprintf "is_ref: %b\n" b
     | None   -> ""
   in
-  Printf.sprintf "%s{\nname: %s\n%s%s%s%s%s}\n" name argdef.name
+  Printf.sprintf "%s{\nname: \"%s\"\n%s%s%s%s%s}\n" name argdef.name
     typ typ_attr num_attr typ_list_attr is_ref
 
 
@@ -73,7 +73,8 @@ let tensor_to_string v =
   let tshp_str = map_then_combine_string ~sep:"" dim_to_string v.tensor_shape in
   let strval_str =
     match v.string_val with
-    | Some s -> Printf.sprintf "string_val: \"%s\"\n" s.(0)
+    (* correct seprator? *)
+    | Some s -> Printf.sprintf "string_val: \"%s\"\n" (Owl_utils_array.to_string ~sep:"," (fun n -> n) s)
     | None   -> ""
   in
   let fltval_str =

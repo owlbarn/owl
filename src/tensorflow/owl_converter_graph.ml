@@ -38,7 +38,7 @@ module Make
     Hashtbl.add tfgraph.nametbl n_old n_new
 
 
-  (* a bad implementation *)  
+  (* a bad implementation *)
   let get_tfnode tfgraph name =
     let nodes = Array.to_list tfgraph.nodes in
     let ns = List.filter (fun n -> (get_name n) = name) nodes in
@@ -50,7 +50,7 @@ module Make
     match op with
     | Ones shp ->
       let tvalue = make_tftensor ~float_val:[|1.|] "DT_FLOAT" shp in
-      [| TFConst (TFConst.create name shp (ATTR_Tensor tvalue)) |]
+      [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name shp (ATTR_Tensor tvalue)) |]
     | _ -> failwith "Initialiser not implemented."
 
 
@@ -73,7 +73,7 @@ module Make
       ~value:iname aname out_shp "DT_FLOAT")
     in
 
-    (* RULE: only one node is named init in the whole graph *)
+    (* RULE: only one node is named "init" in the whole graph *)
     (* TODO: How can I get another node from the graph? I.E. gloabal view for each node; or at least some nodes. This is an important decision to make. *)
     (* let init = get_tfnode "init" in
     let init_inputs = get_inputs init in

@@ -29,7 +29,7 @@ module Make
       tfmeta  = TFmeta.create  ();
       tfgraph = TFgraph.create ();
       tfsaver = TFsaver.create ();
-      tfcolls = TFcolls.create [|""|]
+      tfcolls = TFcolls.create ();
     }
 
 
@@ -77,7 +77,11 @@ module Make
     let tfmeta  = TFmeta.create () in
     let tfsaver = TFsaver.create () in
     TFsaver.add_savernodes tfsaver tfgraph;
-    let tfcolls = TFcolls.create [|"var"; "var_train"; "result"|] in
+
+    let tfcolls = TFcolls.create () in
+    TFcolls.add_byteslist tfcolls "var";
+    TFcolls.add_byteslist tfcolls "var_train";
+    TFcolls.add_nodelist tfcolls "result";
 
     Array.iter (fun tfnode ->
       let opname = Owl_converter_node.get_op_name tfnode in
@@ -96,7 +100,7 @@ module Make
     (* NOTE: how to decide the id of the node?!! *)
     (* also, need to specify it's update_string/update_byte/.... *)
     let output_names = Array.map (fun n ->
-      (Owl_graph.name n) ^ ":1" (* therefore, temporary hack on id *)
+      (Owl_graph.name n) ^ ":0" (* therefore, temporary hack on id *)
     ) outputs
     in
     TFcolls.update_nodelist tfcolls "result" output_names;

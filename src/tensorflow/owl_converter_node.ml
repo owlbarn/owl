@@ -70,7 +70,7 @@ let opdef_to_pbtxt op =
     (argdef_to_string "output_arg") op.output_arg in
   let attr_string = Owl_converter_utils.map_then_combine_string ~sep:"\n"
     tfop_attr_to_string op.attr in
-  Printf.sprintf "op {\nname: %s\n%s%s%s}\n" op.name
+  Printf.sprintf "op {\nname: \"%s\"\n%s%s%s}\n" op.name
     input_arg_arr output_arg_arr attr_string
 
 
@@ -477,13 +477,17 @@ module TFConst = struct
     make_opdef ~output_arg ~attr opname
 
 
-  let create name out_shp value =
+  let create ?(dtype="DT_STRING") name out_shp value =
+    (*let dtype =
+      match dtype with
+      | Some t -> t
+      | None   -> expr2 *)
     {
       name    = name;
       op_name = opname;
       out_shp = out_shp;
       value   = value;
-      dtype   = "DT_STRING"
+      dtype   = dtype
     }
 
 
@@ -517,6 +521,15 @@ module TFConst = struct
 
 
   let set_inputs _n _i = ()
+
+
+  (* NOTE: for now, we only need to get the "value" attribute of tfconst node;
+   * to generalise it to all attributes of all nodes, though, it tricky.
+   *)
+  let get_const_value n = n.value
+
+
+  let set_const_value n v = n.value <- v
 
 end
 
@@ -996,7 +1009,7 @@ module TFSave = struct
       name      = n.name;
       op_name   = opname;
       input     = n.inputs;
-      node_attr = [|("dtypes", ATTR_Type n.dtype)|];
+      node_attr = [|("dtypes", ATTR_List [|ATTR_Type n.dtype|])|];
       device    = "CPU:0"
     }
 
@@ -1064,7 +1077,7 @@ module TFRestore = struct
       name      = n.name;
       op_name   = opname;
       input     = n.inputs;
-      node_attr = [|("dtypes", ATTR_Type n.dtype)|];
+      node_attr = [|("dtypes", ATTR_List [|ATTR_Type n.dtype|])|];
       device    = "CPU:0"
     }
 
@@ -1369,3 +1382,13 @@ let set_inputs = function
   | TFRestore     n -> TFRestore.set_inputs n
   | TFNoop        n -> TFNoop.set_inputs n
   | _               -> fun _ -> ()
+
+
+let get_value = function
+  | TFConst n -> TFConst.get_const_value n
+  | _         -> failwith "unsupported operation"
+
+
+let set_value = function
+  | TFConst n -> TFConst.set_const_value n
+  | _         -> failwith "unsupported operation"

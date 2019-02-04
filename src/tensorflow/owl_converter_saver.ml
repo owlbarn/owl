@@ -46,15 +46,15 @@ module Make
     in
 
     let save_tensor_name = make_tftensor
-      ~string_val:[|""|] "DT_STRING" [|1|] in
+      ~string_val:[||] "DT_STRING" [|0|] in
     let save_tensor_name = TFConst (TFConst.create save_tensor_names
-      [|1|] (ATTR_Tensor save_tensor_name))
+      [|0|] (ATTR_Tensor save_tensor_name))
     in
 
     let save_shape = make_tftensor
-      ~string_val:[|""|] "DT_STRING" [|1|] in
+      ~string_val:[||] "DT_STRING" [|0|] in
     let save_shape = TFConst (TFConst.create save_shape_slices
-      [|1|] (ATTR_Tensor save_shape))
+      [|0|] (ATTR_Tensor save_shape))
     in
 
     let save = TFSave (TFSave.create save_name
@@ -72,15 +72,15 @@ module Make
     in
 
     let restore_tensor_name = make_tftensor
-      ~string_val:[|""|] "DT_STRING" [|1|] in
+      ~string_val:[||] "DT_STRING" [|0|] in
     let restore_tensor_name = TFConst (TFConst.create restore_tensor_names
-      [|1|] (ATTR_Tensor restore_tensor_name))
+      [|0|] (ATTR_Tensor restore_tensor_name))
     in
 
     let restore_shape = make_tftensor
-      ~string_val:[|""|] "DT_STRING" [|1|] in
+      ~string_val:[||] "DT_STRING" [|0|] in
     let restore_shape = TFConst (TFConst.create restore_shape_slices
-      [|1|] (ATTR_Tensor restore_shape))
+      [|0|] (ATTR_Tensor restore_shape))
     in
 
     let restore = TFRestore (TFRestore.create restore_name
@@ -102,6 +102,24 @@ module Make
     ) nodes
 
 
+  (* This update process is horribly complex *)
+  let _add_const_string_value tfgraph node_name added =
+    let node = TFgraph.get_tfnode tfgraph node_name in
+    let const_val = get_value node in
+    let string_val =
+      match const_val with
+      | ATTR_Tensor t -> t.string_val
+      | _             -> failwith "incorrect value type"
+    in
+    let string_val =
+      match string_val with
+      | Some a -> Array.append a added
+      | None   -> added
+    in
+    let new_tensor = make_tftensor ~string_val "DT_STRING" [|(Array.length string_val)|] in
+    set_value node (ATTR_Tensor new_tensor)
+
+
   let add_link tfsaver tfgraph tfnode =
     (* note this name... you need different id *)
     let nname = get_name tfnode in
@@ -115,13 +133,10 @@ module Make
     let inp = get_inputs restore_all in
     set_inputs restore_all (Array.append inp [|("^" ^ name)|]);
 
-    let snames = TFgraph.get_tfnode tfgraph save_tensor_names in
-    let inp = get_inputs snames in
-    set_inputs snames (Array.append inp [|name|]);
-
-    let rnames = TFgraph.get_tfnode tfgraph restore_tensor_names in
-    let inp = get_inputs rnames in
-    set_inputs rnames (Array.append inp [|nname|]);
+    _add_const_string_value tfgraph save_tensor_names [|nname|];
+    _add_const_string_value tfgraph save_shape_slices [|""|];
+    _add_const_string_value tfgraph restore_tensor_names [|nname|];
+    _add_const_string_value tfgraph restore_shape_slices [|""|];
 
     TFgraph.add_tfnodes tfgraph [|assign_node|] ("", "")
 
