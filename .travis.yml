@@ -10,7 +10,7 @@ script:
 
 env:
   global:
-    - OCAML_VERSION=4.06
+    - OCAML_VERSION=4.06 OPAM_VERSION=1.2.2
     - PACKAGE="owl"
     - PINS="owl-base:."
     - PRE_INSTALL_HOOK="cd /home/opam/opam-repository && git pull origin master && opam update -uy"
