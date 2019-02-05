@@ -21,7 +21,7 @@ type nodedef = {
 let nodedef_to_pbtxt n =
   let attr_str =
     Owl_converter_utils.map_then_combine_string ~sep:"" (fun (k, v) ->
-      let value_str = tfattrvalue_to_string v in
+      let value_str = tfattrvalue_to_pbtxt v in
       Printf.sprintf "attr {\nkey: \"%s\"\nvalue: {\n%s}\n}\n" k value_str
     ) n.node_attr
   in
@@ -65,11 +65,11 @@ let nil_def = make_opdef "Nil"
 
 let opdef_to_pbtxt op =
   let input_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:""
-    (argdef_to_string "input_arg") op.input_arg in
+    (argdef_to_pbtxt "input_arg") op.input_arg in
   let output_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:""
-    (argdef_to_string "output_arg") op.output_arg in
+    (argdef_to_pbtxt "output_arg") op.output_arg in
   let attr_string = Owl_converter_utils.map_then_combine_string ~sep:""
-    tfop_attr_to_string op.attr in
+    tfop_attr_to_pbtxt op.attr in
   Printf.sprintf "op {\nname: \"%s\"\n%s%s%s}\n" op.name
     input_arg_arr output_arg_arr attr_string
 
