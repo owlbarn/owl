@@ -21,14 +21,15 @@ type tftensor = {
 
 type tfattrvalue =
   | ATTR_Nil
-  | ATTR_Int     of int
-  | ATTR_Bool    of bool
-  | ATTR_Type    of string
-  | ATTR_Float   of float
-  | ATTR_Shape   of int array
-  | ATTR_String  of string
-  | ATTR_Tensor  of tftensor
-  | ATTR_List    of tfattrvalue array
+  | ATTR_Int      of int
+  | ATTR_Bool     of bool
+  | ATTR_Type     of string
+  | ATTR_Float    of float
+  | ATTR_Shape    of int array
+  | ATTR_String   of string
+  | ATTR_Tensor   of tftensor
+  | ATTR_List     of tfattrvalue array
+  | ATTR_Namelist of {name : string; attr: (string * tfattrvalue) array}
 
 
 type tfop_attr = {

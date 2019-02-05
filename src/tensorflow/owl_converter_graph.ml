@@ -38,14 +38,13 @@ module Make
     Hashtbl.add tfgraph.nametbl n_old n_new
 
 
-  (* a bad implementation *)
+  (* a bad implementation; maybe change to Hashtbl later? *)
   let get_tfnode tfgraph name =
     let nodes = Array.to_list tfgraph.nodes in
     let ns = List.filter (fun n -> (get_name n) = name) nodes in
     List.hd ns
 
 
-  (* Rule: the output node that every one should connect to is put in the first element of returned array. *)
   let _make_initialisers (op : Symbol.Shape.Type.op) name =
     match op with
     | Ones shp ->
@@ -54,7 +53,6 @@ module Make
     | _ -> failwith "Initialiser not implemented."
 
 
-  (* TODO: increase name id in order rather than randomly *)
   let make_variable_nodes op name out_shp =
 
     let initialisers = _make_initialisers op name in
@@ -63,22 +61,20 @@ module Make
     let vname = Printf.sprintf "%s/%s" name name in
     let var = TFVariable (TFVariable.create vname out_shp "DT_FLOAT") in
 
-    let rname = name ^ "/read" ^ (Random.int 100 |> string_of_int) in
+    let rname = name ^ "/read" in
     let read = TFIdentity (TFIdentity.create rname [|vname|]
       out_shp "DT_FLOAT" name)
     in
 
-    let aname = name ^ "/Assign" ^ (Random.int 100 |> string_of_int) in
+    let aname = name ^ "/assign" in
     let assign = TFAssign (TFAssign.create ~refv:vname
       ~value:iname aname out_shp "DT_FLOAT")
     in
 
-    (* RULE: only one node is named "init" in the whole graph *)
     (* TODO: How can I get another node from the graph? I.E. gloabal view for each node; or at least some nodes. This is an important decision to make. *)
     (* let init = get_tfnode "init" in
     let init_inputs = get_inputs init in
     set_inputs init (Array.append init_inputs [|aname|]); *)
-
     (Array.append [|var; read; assign|] initialisers),
     (name, aname)
 
@@ -142,12 +138,8 @@ module Make
     | _                   -> failwith "unsupported operation"
 
 
-  (* for debugging *)
-  let to_dot _nodes = ()
-
-
   let to_pbtxt graphdef =
-    let node_str = Owl_converter_utils.map_then_combine_string ~sep:"\n" (fun n ->
+    let node_str = Owl_utils_array.to_string ~sep:"\n" (fun n ->
       to_pbtxt n
     ) graphdef.nodes
     in

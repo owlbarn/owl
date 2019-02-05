@@ -10,11 +10,17 @@ open Owl_converter_utils
 
 let create () = Hashtbl.create 10
 
-(* Create a single type is wrong. *)
+
 let add_byteslist coll name = Hashtbl.add coll name (Byteslist [||])
 
 
+let update_bytelist = ()
+
+
 let add_floatlist coll name = Hashtbl.add coll name (Floatlist [||])
+
+
+let update_floatlist = ()
 
 
 let add_nodelist coll name = Hashtbl.add coll name (Nodelist [||])
@@ -30,18 +36,20 @@ let update_nodelist h coll_name vars =
   Hashtbl.replace h coll_name new_val
 
 
-(* TODO: The seprator are actually not whitespace here. *)
 let col_to_pbtxt coll_val =
   match coll_val with
   | Nodelist c  ->
-      let s = Owl_utils_array.to_string ~sep:"" (fun x -> x) c in
-      Printf.sprintf "node_list {\nvalue: \"%s\"\n}\n" s
+      let f x = Printf.sprintf "value: \"%s\"\n" x in
+      let s = Owl_utils_array.to_string ~sep:"" f c in
+      Printf.sprintf "node_list {%s}\n" s
   | Byteslist c ->
-      let s = Owl_utils_array.to_string ~sep:"" Bytes.to_string c in
-      Printf.sprintf "bytes_list {\nvalue: \"%s\"\n}\n" s
+      let f x = Printf.sprintf "value: \"%s\"\n" (Bytes.to_string x) in
+      let s = Owl_utils_array.to_string ~sep:"" f c in
+      Printf.sprintf "bytes_list {\n%s}\n" s
   | Floatlist c ->
-      let s = Owl_utils_array.to_string ~sep:"" string_of_float c in
-      Printf.sprintf "float_list {\nvalue: %s\n}\n" s
+      let f x = Printf.sprintf "value: \"%f\"\n" x in
+      let s = Owl_utils_array.to_string ~sep:"" f c in
+      Printf.sprintf "float_list {\n%s}\n" s
 
 
 let coll_to_pbtxt collection =
@@ -52,7 +60,7 @@ let coll_to_pbtxt collection =
 
 let to_pbtxt collections =
   let collections = htbl_to_arr collections in
-  let coll_str = map_then_combine_string ~sep:"" (fun (k, c) ->
+  let coll_str = map_then_combine_string (fun (k, c) ->
     let val_str = col_to_pbtxt c in
     Printf.sprintf "collection_def {\nkey: \"%s\"\nvalue {\n%s}\n}\n" k val_str
   ) collections
