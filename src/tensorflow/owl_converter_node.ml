@@ -20,14 +20,14 @@ type nodedef = {
 
 let nodedef_to_pbtxt n =
   let attr_str =
-    Owl_converter_utils.map_then_combine_string ~sep:"" (fun (k, v) ->
+    Owl_utils_array.to_string ~sep:"" (fun (k, v) ->
       let value_str = tfattrvalue_to_pbtxt v in
       Printf.sprintf "attr {\nkey: \"%s\"\nvalue: {\n%s}\n}\n" k value_str
     ) n.node_attr
   in
 
   let inputs_str =
-    Owl_converter_utils.map_then_combine_string ~sep:"\n" (fun v ->
+    Owl_utils_array.to_string ~sep:"\n" (fun v ->
       Printf.sprintf "input: \"%s\"" v
     ) n.input
   in
@@ -64,11 +64,11 @@ let nil_def = make_opdef "Nil"
 
 
 let opdef_to_pbtxt op =
-  let input_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:""
+  let input_arg_arr = Owl_utils_array.to_string ~sep:""
     (argdef_to_pbtxt "input_arg") op.input_arg in
-  let output_arg_arr = Owl_converter_utils.map_then_combine_string ~sep:""
+  let output_arg_arr = Owl_utils_array.to_string ~sep:""
     (argdef_to_pbtxt "output_arg") op.output_arg in
-  let attr_string = Owl_converter_utils.map_then_combine_string ~sep:""
+  let attr_string = Owl_utils_array.to_string ~sep:""
     tfop_attr_to_pbtxt op.attr in
   Printf.sprintf "op {\nname: \"%s\"\n%s%s%s}\n" op.name
     input_arg_arr output_arg_arr attr_string
@@ -84,6 +84,7 @@ module TFMatMul = struct
     mutable trans_a : bool;
     mutable trans_b : bool;
     mutable dtype   : string;
+    mutable device  : string;
   }
 
 
@@ -109,7 +110,7 @@ module TFMatMul = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create name inputs out_shp trans_a trans_b =
+  let create ?(device="") name inputs out_shp trans_a trans_b =
     {
       name    = name;
       op_name = opname;
@@ -117,7 +118,8 @@ module TFMatMul = struct
       out_shp = out_shp;
       trans_a = trans_a;
       trans_b = trans_b;
-      dtype   = "DT_FLOAT"
+      dtype   = "DT_FLOAT";
+      device  = device;
     }
 
 
@@ -134,7 +136,7 @@ module TFMatMul = struct
       op_name   = opname;
       input     = n.inputs;
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -153,6 +155,12 @@ module TFMatMul = struct
 
   let set_inputs n i = n.inputs <- i
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -164,6 +172,7 @@ module TFAdd = struct
     mutable inputs  : string array;
     mutable out_shp : int array;
     mutable dtype   : string;
+    mutable device  : string;
   }
 
   let opname = "Add"
@@ -185,13 +194,14 @@ module TFAdd = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create name inputs out_shp =
+  let create ?(device="") name inputs out_shp =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
       out_shp = out_shp;
-      dtype   = "DT_FLOAT"
+      dtype   = "DT_FLOAT";
+      device  = device
     }
 
 
@@ -206,7 +216,7 @@ module TFAdd = struct
       op_name   = opname;
       input     = n.inputs;
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device;
     }
 
 
@@ -225,6 +235,12 @@ module TFAdd = struct
 
   let set_inputs n i = n.inputs <- i
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -236,6 +252,7 @@ module TFSub = struct
     mutable inputs  : string array;
     mutable out_shp : int array;
     mutable dtype   : string;
+    mutable device  : string;
   }
 
 
@@ -259,12 +276,13 @@ module TFSub = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create name inputs out_shp =
+  let create ?(device="") name inputs out_shp =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
       out_shp = out_shp;
+      device  = device;
       dtype   = "DT_FLOAT"
     }
 
@@ -280,7 +298,7 @@ module TFSub = struct
       op_name   = opname;
       input     = n.inputs;
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -299,6 +317,12 @@ module TFSub = struct
 
   let set_inputs n i = n.inputs <- i
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -310,6 +334,7 @@ module TFMul = struct
     mutable inputs  : string array;
     mutable out_shp : int array;
     mutable dtype   : string;
+    mutable device  : string;
   }
 
 
@@ -333,12 +358,13 @@ module TFMul = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create name inputs out_shp =
+  let create ?(device="") name inputs out_shp =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
       out_shp = out_shp;
+      device  = device;
       dtype   = "DT_FLOAT"
     }
 
@@ -354,7 +380,7 @@ module TFMul = struct
       op_name   = opname;
       input     = n.inputs;
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -373,6 +399,12 @@ module TFMul = struct
 
   let set_inputs n i = n.inputs <- i
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -384,6 +416,7 @@ module TFDiv = struct
     mutable inputs  : string array;
     mutable out_shp : int array;
     mutable dtype   : string;
+    mutable device  : string;
   }
 
 
@@ -407,12 +440,13 @@ module TFDiv = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create name inputs out_shp =
+  let create ?(device="") name inputs out_shp =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
       out_shp = out_shp;
+      device  = device;
       dtype   = "DT_FLOAT"
     }
 
@@ -428,7 +462,7 @@ module TFDiv = struct
       op_name   = opname;
       input     = n.inputs;
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -447,6 +481,12 @@ module TFDiv = struct
 
   let set_inputs n i = n.inputs <- i
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -458,6 +498,7 @@ module TFConst = struct
     mutable out_shp : int array;
     mutable value   : tfattrvalue;
     mutable dtype   : string;
+    mutable device  : string;
   }
 
 
@@ -477,12 +518,13 @@ module TFConst = struct
     make_opdef ~output_arg ~attr opname
 
 
-  let create ?(dtype="DT_STRING") name out_shp value =
+  let create ?(dtype="DT_STRING") ?(device="") name out_shp value =
     {
       name    = name;
       op_name = opname;
       out_shp = out_shp;
       value   = value;
+      device  = device;
       dtype   = dtype
     }
 
@@ -499,7 +541,7 @@ module TFConst = struct
       op_name   = opname;
       input     = [||];
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -527,6 +569,12 @@ module TFConst = struct
 
   let set_const_value n v = n.value <- v
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -537,6 +585,7 @@ module TFPlaceholder = struct
     mutable op_name : string;
     mutable out_shp : int array;
     mutable dtype   : string;
+    mutable device  : string;
   }
 
 
@@ -556,11 +605,12 @@ module TFPlaceholder = struct
     make_opdef ~output_arg ~attr opname
 
 
-  let create name out_shp =
+  let create ?(device="") name out_shp =
     {
       name    = name;
       op_name = opname;
       out_shp = out_shp;
+      device  = device;
       dtype   = "DT_FLOAT"
     }
 
@@ -576,7 +626,7 @@ module TFPlaceholder = struct
       op_name   = opname;
       input     = [||];
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -595,6 +645,12 @@ module TFPlaceholder = struct
 
   let set_inputs _n _i = ()
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -605,6 +661,7 @@ module TFRelu = struct
     mutable op_name : string;
     mutable inputs  : string array;
     mutable out_shp : int array;
+    mutable device  : string;
   }
 
 
@@ -615,12 +672,13 @@ module TFRelu = struct
   let opdef = nil_def
 
 
-  let create name inputs out_shp =
+  let create ?(device="") name inputs out_shp =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
       out_shp = out_shp;
+      device  = device;
     }
 
 
@@ -634,7 +692,7 @@ module TFRelu = struct
       op_name   = opname;
       input     = n.inputs;
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -653,6 +711,12 @@ module TFRelu = struct
 
   let set_inputs n i = n.inputs <- i
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -666,6 +730,8 @@ module TFConv2D = struct
     mutable strides  : int array;
     mutable padding  : string;
     mutable dilation : int array;
+    mutable dtype    : string;
+    mutable device   : string;
   }
 
 
@@ -676,7 +742,7 @@ module TFConv2D = struct
   let opdef = nil_def
 
 
-  let create name inputs out_shp padding strides =
+  let create ?(device="") name inputs out_shp padding strides =
     let padding =
       match padding with
       | Owl_types_common.SAME  -> "Same"
@@ -690,6 +756,8 @@ module TFConv2D = struct
       strides  = strides;
       padding  = padding;
       dilation = [|1;1;1;1|];
+      dtype    = "DT_FLOAT";
+      device   = device;
     }
 
 
@@ -707,7 +775,7 @@ module TFConv2D = struct
       op_name   = opname;
       input     = n.inputs;
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -726,6 +794,12 @@ module TFConv2D = struct
 
   let set_inputs n i = n.inputs <- i
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -739,6 +813,7 @@ module TFMaxPool = struct
     mutable strides  : int array;
     mutable padding  : string;
     mutable ksize    : int array;
+    mutable device   : string;
   }
 
 
@@ -749,7 +824,7 @@ module TFMaxPool = struct
   let opdef = nil_def
 
 
-  let create name inputs out_shp padding strides ksize =
+  let create ?(device="") name inputs out_shp padding strides ksize =
     let padding =
       match padding with
       | Owl_types_common.SAME  -> "Same"
@@ -763,6 +838,7 @@ module TFMaxPool = struct
       strides  = strides;
       padding  = padding;
       ksize    = ksize;
+      device   = device;
     }
 
 
@@ -780,7 +856,7 @@ module TFMaxPool = struct
       op_name   = opname;
       input     = n.inputs;
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -799,6 +875,12 @@ module TFMaxPool = struct
 
   let set_inputs n i = n.inputs <- i
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -813,6 +895,7 @@ module TFAssign = struct
     mutable value          : string;
     mutable use_locking    : bool;
     mutable validate_shape : bool;
+    mutable device         : string;
   }
 
 
@@ -838,7 +921,7 @@ module TFAssign = struct
     make_opdef ~input_arg ~output_arg ~attr "Assign"
 
 
-  let create ~refv ~value name out_shp dtype =
+  let create ?(device="") ~refv ~value name out_shp dtype =
     {
       name           = name;
       op_name        = opname;
@@ -848,6 +931,7 @@ module TFAssign = struct
       value          = value;
       use_locking    = true;
       validate_shape = true;
+      device         = device;
     }
 
 
@@ -865,7 +949,7 @@ module TFAssign = struct
       op_name   = opname;
       input     = [|n.refv; n.value|];
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -884,6 +968,12 @@ module TFAssign = struct
 
   let set_inputs _n _i = ()
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -896,6 +986,7 @@ module TFIdentity = struct
     mutable out_shp : int array;
     mutable dtype   : string;
     mutable cls     : string;
+    mutable device  : string;
   }
 
 
@@ -918,7 +1009,7 @@ module TFIdentity = struct
     make_opdef ~input_arg ~output_arg ~attr "Identity"
 
 
-  let create name inputs out_shp dtype cls =
+  let create ?(device="") name inputs out_shp dtype cls =
     {
       name    = name;
       op_name = opname;
@@ -926,6 +1017,7 @@ module TFIdentity = struct
       out_shp = out_shp;
       dtype   = dtype;
       cls     = cls;
+      device  = device;
     }
 
 
@@ -941,7 +1033,7 @@ module TFIdentity = struct
       op_name   = opname;
       input     = n.inputs;
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -960,6 +1052,12 @@ module TFIdentity = struct
 
   let set_inputs n i = n.inputs <- i
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -970,6 +1068,7 @@ module TFSave = struct
     mutable op_name : string;
     mutable inputs  : string array;
     mutable dtype   : string;
+    mutable device  : string;
   }
 
 
@@ -991,12 +1090,13 @@ module TFSave = struct
     make_opdef ~input_arg ~attr opname
 
 
-  let create name inputs dtype =
+  let create ?(device="") name inputs dtype =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
-      dtype   = dtype
+      dtype   = dtype;
+      device  = device;
     }
 
 
@@ -1006,7 +1106,7 @@ module TFSave = struct
       op_name   = opname;
       input     = n.inputs;
       node_attr = [|("dtypes", ATTR_List [|ATTR_Type n.dtype|])|];
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -1025,6 +1125,12 @@ module TFSave = struct
 
   let set_inputs n i = n.inputs <- i
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
 end
 
 
@@ -1035,6 +1141,7 @@ module TFRestore = struct
     mutable op_name : string;
     mutable inputs  : string array;
     mutable dtype   : string;
+    mutable device  : string;
   }
 
 
@@ -1059,12 +1166,13 @@ module TFRestore = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create name inputs dtype =
+  let create ?(device="") name inputs dtype =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
-      dtype   = dtype
+      dtype   = dtype;
+      device  = device;
     }
 
 
@@ -1074,7 +1182,7 @@ module TFRestore = struct
       op_name   = opname;
       input     = n.inputs;
       node_attr = [|("dtypes", ATTR_List [|ATTR_Type n.dtype|])|];
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -1092,6 +1200,12 @@ module TFRestore = struct
 
 
   let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
 
 end
 
@@ -1102,6 +1216,7 @@ module TFNoop = struct
     mutable name    : string;
     mutable op_name : string;
     mutable inputs  : string array;
+    mutable device  : string;
   }
 
 
@@ -1111,11 +1226,12 @@ module TFNoop = struct
   let opdef = make_opdef opname
 
 
-  let create name inputs =
+  let create ?(device="") name inputs =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
+      device  = device;
     }
 
 
@@ -1125,7 +1241,7 @@ module TFNoop = struct
       op_name   = opname;
       input     = n.inputs;
       node_attr = [||];
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -1143,6 +1259,12 @@ module TFNoop = struct
 
 
   let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
 
 end
 
@@ -1157,6 +1279,7 @@ module TFVariable = struct
     mutable out_shp        : int array;
     mutable shared_name    : string;
     mutable container      : string; (* should be of type ATTR_kv *)
+    mutable device         : string;
   }
 
 
@@ -1179,7 +1302,7 @@ module TFVariable = struct
     make_opdef ~output_arg ~attr opname
 
 
-  let create name out_shp dtype =
+  let create ?(device="") name out_shp dtype =
     {
       name           = name;
       op_name        = opname;
@@ -1188,6 +1311,7 @@ module TFVariable = struct
       out_shp        = out_shp;
       container      = ""; (* tmp *)
       shared_name    = ""; (* tmp *)
+      device         = device;
     }
 
 
@@ -1205,7 +1329,7 @@ module TFVariable = struct
       op_name   = opname;
       input     = [||];
       node_attr = node_attr;
-      device    = "CPU:0"
+      device    = n.device
     }
 
 
@@ -1224,6 +1348,11 @@ module TFVariable = struct
 
   let set_inputs _n _i = ()
 
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
 
 end
 
@@ -1378,6 +1507,44 @@ let set_inputs = function
   | TFRestore     n -> TFRestore.set_inputs n
   | TFNoop        n -> TFNoop.set_inputs n
   | _               -> fun _ -> ()
+
+
+let get_device = function
+  | TFMatMul      n -> TFMatMul.get_device n
+  | TFAdd         n -> TFAdd.get_device n
+  | TFSub         n -> TFSub.get_device n
+  | TFMul         n -> TFMul.get_device n
+  | TFDiv         n -> TFDiv.get_device n
+  | TFRelu        n -> TFRelu.get_device n
+  | TFConv2D      n -> TFConv2D.get_device n
+  | TFMaxPool     n -> TFMaxPool.get_device n
+  | TFConst       n -> TFConst.get_device n
+  | TFPlaceholder n -> TFPlaceholder.get_device n
+  | TFAssign      n -> TFAssign.get_device n
+  | TFIdentity    n -> TFIdentity.get_device n
+  | TFSave        n -> TFSave.get_device n
+  | TFRestore     n -> TFRestore.get_device n
+  | TFVariable    n -> TFVariable.get_device n
+  | TFNoop        n -> TFNoop.get_device n
+
+
+let set_device = function
+  | TFMatMul      n -> TFMatMul.set_device n
+  | TFAdd         n -> TFAdd.set_device n
+  | TFSub         n -> TFSub.set_device n
+  | TFMul         n -> TFMul.set_device n
+  | TFDiv         n -> TFDiv.set_device n
+  | TFRelu        n -> TFRelu.set_device n
+  | TFConv2D      n -> TFConv2D.set_device n
+  | TFMaxPool     n -> TFMaxPool.set_device n
+  | TFConst       n -> TFConst.set_device n
+  | TFPlaceholder n -> TFPlaceholder.set_device n
+  | TFAssign      n -> TFAssign.set_device n
+  | TFIdentity    n -> TFIdentity.set_device n
+  | TFSave        n -> TFSave.set_device n
+  | TFRestore     n -> TFRestore.set_device n
+  | TFVariable    n -> TFVariable.set_device n
+  | TFNoop        n -> TFNoop.set_device n
 
 
 let get_value = function

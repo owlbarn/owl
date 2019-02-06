@@ -69,9 +69,13 @@ let dim_to_pbtxt dim =
   Printf.sprintf "dim {\nsize: %d\n}\n" dim
 
 
+(* TODO: incorprate the unknown_rank situation;
+ * empty shape should be printed as is.
+ *)
 let shape_to_pbtxt shape =
-  if (shape = [||]) then "unknown_rank: true\n"
-  else map_then_combine_string dim_to_pbtxt shape
+  (* if (shape = [||]) then "unknown_rank: true\n"
+  else map_then_combine_string dim_to_pbtxt shape *)
+  Owl_utils_array.to_string ~sep:"" dim_to_pbtxt shape
 
 
 let tensor_to_pbtxt v =

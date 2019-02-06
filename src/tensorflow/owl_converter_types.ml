@@ -15,7 +15,7 @@ type tftensor = {
   tensor_shape : int array;
   string_val   : string array option;
   float_val    : float array option;
-  (* double_val, int_val, ...*)
+  (* double_val, int_val, ... but only one of these fields should be used. *)
 }
 
 
@@ -89,13 +89,3 @@ type tfcollection =
 
 
 type tfcolls = (string, tfcollection) Hashtbl.t
-
-
-(*
-type tf_cgraph = {
-  mutable tfmeta  : tfmeta;
-  mutable tfgraph : tfgraph;
-  mutable tfsaver : tfsaver;
-  mutable tfcolls : tfcolls
-}
-*)

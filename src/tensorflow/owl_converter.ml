@@ -45,8 +45,7 @@ module Make
   let parse_cgraph (graph : G.graph) =
     let outputs = G.get_outputs graph in
 
-    (* 0th iterations: name each node
-     * assumes all of a node's children are properly named *)
+    (* 0th iterations: name each node *)
     iter_ancestors (fun node ->
       let id = Owl_graph.id node in
       Owl_graph.set_name node (Printf.sprintf "owlnode%d" id);
@@ -91,14 +90,12 @@ module Make
       );
       if (TFmeta.is_var tfnode) then (
         TFsaver.add_link tfsaver tfgraph tfnode;
-        (* How the strings are serialised here is not clear yet. Need to find out.*)
         (* TFcolls.update tfcolls "var" (Owl_converter_node.get_name tfnode);
         TFcolls.update tfcolls "var_train" (Owl_converter_node.get_name tfnode) *)
       )
     ) tfgraph.nodes;
 
     let output_names = Array.map (fun n ->
-      (* assume all nodes have different names *)
       (Owl_graph.name n) ^ ":0"
     ) outputs
     in
@@ -108,10 +105,11 @@ module Make
 
 
   (* Things not yet considered:
-   * - "unknown rank" of shape of RestoreV2 node; may need to change def
    * - how to construct collections bytelist
    * - the "device" attr needs to be printed out for save/restore nodes
-   * - some seemingly unimportant attr of nodes like "default_value" are emitted.
+   * - data type fixed to DT_FLOAT
+   * - some seemingly unimportant attr of nodes like "default_value" are emitted. Add when required.
+   * - all those random length of Hashtbl.
    *)
   let convert graph =
     let tf_cgraph = make_tf_cgraph () in

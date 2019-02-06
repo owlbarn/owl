@@ -24,6 +24,9 @@ module Make
   }
 
 
+  (* Graph version is NOT tensorflow version;
+   * defined by TF_GRAPH_DEF_VERSION in core/public/version.h
+   *)
   let create () =
     {
       nodes    = [||];
@@ -66,7 +69,7 @@ module Make
       out_shp "DT_FLOAT" name)
     in
 
-    let aname = name ^ "/assign" in
+    let aname = name ^ "/Assign" in
     let assign = TFAssign (TFAssign.create ~refv:vname
       ~value:iname aname out_shp "DT_FLOAT")
     in
@@ -82,8 +85,10 @@ module Make
   (* The logic of how one owl node turned into multiple tfnodes is implemented
    * here.
    * Currently return node array and "name_update" : string * string; meaning,
-   * whoever uses me as his input, now change it to one of my subnodes. Need to
-   * think about how the input relation be updated later.
+   * whoever uses me as his input, now change it to one of my subnodes.
+   * About the `attr.shape.(0)` and `(attr.value).(0)` below, currently only
+   * `draw` operation in owl CGraph returns two outputs, so I'll stick with
+   * this tmp solution for now.
    *)
   let make_tfnodes node =
     let name = Owl_graph.name node in
@@ -92,13 +97,14 @@ module Make
       Owl_graph.name n
     ) (Owl_graph.parents node)
     in
-    let out_shp = attr.shape.(0) in (* tmp: only uses the first output *)
+     (* tmp: only uses the first output *)
+    let out_shp = attr.shape.(0) in
     let out_shp =
       match out_shp with
       | Some s -> s
       | None   -> [||]
     in
-    (* "value" only used by const node? *)
+    (* "value" field only used by const node? Leave it here for now. *)
     let v = (attr.value).(0) in
     let value =
       if (Device.is_arr v) then (
