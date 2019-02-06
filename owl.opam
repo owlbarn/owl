@@ -24,7 +24,7 @@ depends: [
   "conf-openblas" {>= "0.2.0"}
   "ctypes"
   "dune" {build}
-  "eigen" {>= "0.0.3"}
+  "eigen" {>= "0.1.0"}
   "owl-base"
   "plplot"
   "stdio" {build}
