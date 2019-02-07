@@ -48,14 +48,57 @@ module Make
     List.hd ns
 
 
+  (* TODO: add "class"; find the correct serialisation *)
+  let _make_uniform_initialiser name shp =
+    (* shape node *)
+    let tensor_content = shp
+      |> Owl_utils_array.to_string string_of_int
+      |> Bytes.of_string
+    in
+    let tvalue = make_tftensor ~tensor_content "DT_INT32" [|Array.length shp|] in
+    let sname = name ^ "/shape" in
+    let shape = TFConst (TFConst.create ~dtype:"DT_INT32" sname shp (ATTR_Tensor tvalue)) in
+
+    (* RandomUniform node *)
+    let ru_name = name in
+    let ru = TFRandomUniform (TFRandomUniform.create ru_name [|sname|] shp 0 0) in
+
+    (* max const *)
+    let mc_name = name ^ "/max" in
+    let mc_tensor = ATTR_Tensor (make_tftensor
+      ~float_val:[|0.0852802842855|] "DT_FLOAT" [||])
+    in
+    let mc = TFConst (TFConst.create ~dtype:"DT_FLOAT" mc_name [||] mc_tensor) in
+
+    (* min const *)
+    let mic_name = name ^ "/min" in
+    let mic_tensor = ATTR_Tensor (make_tftensor
+      ~float_val:[|-0.0852802842855|] "DT_FLOAT" [||])
+    in
+    let mic = TFConst (TFConst.create ~dtype:"DT_FLOAT" mic_name [||] mic_tensor) in
+
+    (* sub *)
+    let sub_name = name ^ "/sub" in
+    let sub = TFSub (TFSub.create sub_name [|mc_name; mic_name|] [||]) in
+
+    (* mul *)
+    let mul_name = name ^ "/mul" in
+    let mul = TFMul (TFMul.create mul_name [|ru_name; sub_name|] shp) in
+
+    (* add *)
+    let add_name = name ^ "/add" in
+    let add = TFAdd (TFAdd.create add_name [|mul_name; mic_name|] shp) in
+
+    [|add; mul; ru; shape; sub; mc; mic|]
+
+
   let _make_initialisers (op : Symbol.Shape.Type.op) name =
     match op with
     | Ones shp    ->
       let tvalue = make_tftensor ~float_val:[|1.|] "DT_FLOAT" shp in
       [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name shp (ATTR_Tensor tvalue)) |]
-    | Uniform shp -> 
-      let
-    | _ -> failwith "Initialiser not implemented."
+    | Uniform shp -> _make_uniform_initialiser name shp
+    | _           -> failwith "Initialiser not implemented."
 
 
   let make_variable_nodes op name out_shp =
@@ -196,6 +239,7 @@ module Make
     | Const               -> [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
     | Reshape s           -> make_reshape_nodes name inputs s
     | Ones _              -> make_variable_nodes attr.op name out_shp
+    | Uniform _           -> make_variable_nodes attr.op name out_shp
     | Get i               -> make_stridedslice_nodes i name inputs out_shp
     | _                   -> failwith "unsupported operation"
 

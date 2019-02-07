@@ -1698,235 +1698,333 @@ module TFReshape = struct
 end
 
 
+module TFRandomUniform = struct
+
+  type t = {
+    mutable name             : string;
+    mutable op_name          : string;
+    mutable inputs           : string array;
+    mutable out_shp          : int array;
+    mutable dtype            : string;
+    mutable device           : string;
+    mutable seed1            : int;
+    mutable seed2            : int;
+  }
+
+
+  let opname = "RandomUniform"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ:"T" "shape"  |] in
+    let output_arg = [| make_argdef ~typ:"dtype" "output" |] in
+    let attr = [|
+      make_tfop_attr "seed" "int";
+      make_tfop_attr "seed2" "int";
+      make_tfop_attr "dtype" "type";
+      make_tfop_attr "T" "type";
+      (* is_stateful = true *)
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+
+  let create ?(dtype="DT_FLOAT") ?(device="") name inputs out_shp s1 s2 =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = dtype;
+      device  = device;
+      seed1   = s1;
+      seed2   = s2;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type "DT_INT32"));
+      ("_class", (ATTR_List [| ATTR_String "loc@" |])); (* tmp *)
+      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("dtype", ATTR_Type n.dtype);
+      ("seed", ATTR_Int n.seed1);
+      ("seed2", ATTR_Int n.seed2);
+    |]
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
 
 type tfnode =
-  | TFNeg          of TFNeg.t
-  | TFMatMul       of TFMatMul.t
-  | TFAdd          of TFAdd.t
-  | TFSub          of TFSub.t
-  | TFMul          of TFMul.t
-  | TFDiv          of TFDiv.t
-  | TFRelu         of TFRelu.t
-  | TFConv2D       of TFConv2D.t
-  | TFMaxPool      of TFMaxPool.t
-  | TFConst        of TFConst.t
-  | TFPlaceholder  of TFPlaceholder.t
-  | TFAssign       of TFAssign.t
-  | TFIdentity     of TFIdentity.t
-  | TFSave         of TFSave.t
-  | TFRestore      of TFRestore.t
-  | TFVariable     of TFVariable.t
-  | TFSum          of TFSum.t
-  | TFStridedSlice of TFStridedSlice.t
-  | TFReshape      of TFReshape.t
-  | TFNoop         of TFNoop.t
+  | TFNeg           of TFNeg.t
+  | TFMatMul        of TFMatMul.t
+  | TFAdd           of TFAdd.t
+  | TFSub           of TFSub.t
+  | TFMul           of TFMul.t
+  | TFDiv           of TFDiv.t
+  | TFRelu          of TFRelu.t
+  | TFConv2D        of TFConv2D.t
+  | TFMaxPool       of TFMaxPool.t
+  | TFConst         of TFConst.t
+  | TFPlaceholder   of TFPlaceholder.t
+  | TFAssign        of TFAssign.t
+  | TFIdentity      of TFIdentity.t
+  | TFSave          of TFSave.t
+  | TFRestore       of TFRestore.t
+  | TFVariable      of TFVariable.t
+  | TFSum           of TFSum.t
+  | TFStridedSlice  of TFStridedSlice.t
+  | TFReshape       of TFReshape.t
+  | TFRandomUniform of TFRandomUniform.t
+  | TFNoop          of TFNoop.t
 
 
 let to_pbtxt = function
-  | TFNeg          n -> TFNeg.to_pbtxt n
-  | TFMatMul       n -> TFMatMul.to_pbtxt n
-  | TFAdd          n -> TFAdd.to_pbtxt n
-  | TFSub          n -> TFSub.to_pbtxt n
-  | TFMul          n -> TFMul.to_pbtxt n
-  | TFDiv          n -> TFDiv.to_pbtxt n
-  | TFRelu         n -> TFRelu.to_pbtxt n
-  | TFConv2D       n -> TFConv2D.to_pbtxt n
-  | TFMaxPool      n -> TFMaxPool.to_pbtxt n
-  | TFConst        n -> TFConst.to_pbtxt n
-  | TFPlaceholder  n -> TFPlaceholder.to_pbtxt n
-  | TFAssign       n -> TFAssign.to_pbtxt n
-  | TFIdentity     n -> TFIdentity.to_pbtxt n
-  | TFSave         n -> TFSave.to_pbtxt n
-  | TFRestore      n -> TFRestore.to_pbtxt n
-  | TFVariable     n -> TFVariable.to_pbtxt n
-  | TFSum          n -> TFSum.to_pbtxt n
-  | TFStridedSlice n -> TFStridedSlice.to_pbtxt n
-  | TFReshape      n -> TFReshape.to_pbtxt n
-  | TFNoop         n -> TFNoop.to_pbtxt n
+  | TFNeg           n -> TFNeg.to_pbtxt n
+  | TFMatMul        n -> TFMatMul.to_pbtxt n
+  | TFAdd           n -> TFAdd.to_pbtxt n
+  | TFSub           n -> TFSub.to_pbtxt n
+  | TFMul           n -> TFMul.to_pbtxt n
+  | TFDiv           n -> TFDiv.to_pbtxt n
+  | TFRelu          n -> TFRelu.to_pbtxt n
+  | TFConv2D        n -> TFConv2D.to_pbtxt n
+  | TFMaxPool       n -> TFMaxPool.to_pbtxt n
+  | TFConst         n -> TFConst.to_pbtxt n
+  | TFPlaceholder   n -> TFPlaceholder.to_pbtxt n
+  | TFAssign        n -> TFAssign.to_pbtxt n
+  | TFIdentity      n -> TFIdentity.to_pbtxt n
+  | TFSave          n -> TFSave.to_pbtxt n
+  | TFRestore       n -> TFRestore.to_pbtxt n
+  | TFVariable      n -> TFVariable.to_pbtxt n
+  | TFSum           n -> TFSum.to_pbtxt n
+  | TFStridedSlice  n -> TFStridedSlice.to_pbtxt n
+  | TFReshape       n -> TFReshape.to_pbtxt n
+  | TFRandomUniform n -> TFRandomUniform.to_pbtxt n
+  | TFNoop          n -> TFNoop.to_pbtxt n
 
 
 let get_name = function
-  | TFNeg          n -> TFNeg.get_name n
-  | TFMatMul       n -> TFMatMul.get_name n
-  | TFAdd          n -> TFAdd.get_name n
-  | TFSub          n -> TFSub.get_name n
-  | TFMul          n -> TFMul.get_name n
-  | TFDiv          n -> TFDiv.get_name n
-  | TFRelu         n -> TFRelu.get_name n
-  | TFConv2D       n -> TFConv2D.get_name n
-  | TFMaxPool      n -> TFMaxPool.get_name n
-  | TFConst        n -> TFConst.get_name n
-  | TFPlaceholder  n -> TFPlaceholder.get_name n
-  | TFAssign       n -> TFAssign.get_name n
-  | TFIdentity     n -> TFIdentity.get_name n
-  | TFSave         n -> TFSave.get_name n
-  | TFRestore      n -> TFRestore.get_name n
-  | TFVariable     n -> TFVariable.get_name n
-  | TFSum          n -> TFSum.get_name n
-  | TFStridedSlice n -> TFStridedSlice.get_name n
-  | TFReshape      n -> TFReshape.get_name n
-  | TFNoop         n -> TFNoop.get_name n
+  | TFNeg           n -> TFNeg.get_name n
+  | TFMatMul        n -> TFMatMul.get_name n
+  | TFAdd           n -> TFAdd.get_name n
+  | TFSub           n -> TFSub.get_name n
+  | TFMul           n -> TFMul.get_name n
+  | TFDiv           n -> TFDiv.get_name n
+  | TFRelu          n -> TFRelu.get_name n
+  | TFConv2D        n -> TFConv2D.get_name n
+  | TFMaxPool       n -> TFMaxPool.get_name n
+  | TFConst         n -> TFConst.get_name n
+  | TFPlaceholder   n -> TFPlaceholder.get_name n
+  | TFAssign        n -> TFAssign.get_name n
+  | TFIdentity      n -> TFIdentity.get_name n
+  | TFSave          n -> TFSave.get_name n
+  | TFRestore       n -> TFRestore.get_name n
+  | TFVariable      n -> TFVariable.get_name n
+  | TFSum           n -> TFSum.get_name n
+  | TFStridedSlice  n -> TFStridedSlice.get_name n
+  | TFReshape       n -> TFReshape.get_name n
+  | TFRandomUniform n -> TFRandomUniform.get_name n
+  | TFNoop          n -> TFNoop.get_name n
 
 
 let get_op_name = function
-  | TFNeg          _ -> TFNeg.opname
-  | TFMatMul       _ -> TFMatMul.opname
-  | TFAdd          _ -> TFAdd.opname
-  | TFSub          _ -> TFSub.opname
-  | TFMul          _ -> TFMul.opname
-  | TFDiv          _ -> TFDiv.opname
-  | TFRelu         _ -> TFRelu.opname
-  | TFConv2D       _ -> TFConv2D.opname
-  | TFMaxPool      _ -> TFMaxPool.opname
-  | TFConst        _ -> TFConst.opname
-  | TFPlaceholder  _ -> TFPlaceholder.opname
-  | TFAssign       _ -> TFAssign.opname
-  | TFIdentity     _ -> TFIdentity.opname
-  | TFSave         _ -> TFSave.opname
-  | TFRestore      _ -> TFRestore.opname
-  | TFVariable     _ -> TFVariable.opname
-  | TFSum          _ -> TFSum.opname
-  | TFStridedSlice _ -> TFStridedSlice.opname
-  | TFReshape      _ -> TFReshape.opname
-  | TFNoop         _ -> TFNoop.opname
+  | TFNeg           _ -> TFNeg.opname
+  | TFMatMul        _ -> TFMatMul.opname
+  | TFAdd           _ -> TFAdd.opname
+  | TFSub           _ -> TFSub.opname
+  | TFMul           _ -> TFMul.opname
+  | TFDiv           _ -> TFDiv.opname
+  | TFRelu          _ -> TFRelu.opname
+  | TFConv2D        _ -> TFConv2D.opname
+  | TFMaxPool       _ -> TFMaxPool.opname
+  | TFConst         _ -> TFConst.opname
+  | TFPlaceholder   _ -> TFPlaceholder.opname
+  | TFAssign        _ -> TFAssign.opname
+  | TFIdentity      _ -> TFIdentity.opname
+  | TFSave          _ -> TFSave.opname
+  | TFRestore       _ -> TFRestore.opname
+  | TFVariable      _ -> TFVariable.opname
+  | TFSum           _ -> TFSum.opname
+  | TFStridedSlice  _ -> TFStridedSlice.opname
+  | TFReshape       _ -> TFReshape.opname
+  | TFRandomUniform _ -> TFRandomUniform.opname
+  | TFNoop          _ -> TFNoop.opname
 
 
 let get_opdef = function
-  | TFNeg          _ -> TFNeg.opdef
-  | TFMatMul       _ -> TFMatMul.opdef
-  | TFAdd          _ -> TFAdd.opdef
-  | TFSub          _ -> TFSub.opdef
-  | TFMul          _ -> TFMul.opdef
-  | TFDiv          _ -> TFDiv.opdef
-  | TFRelu         _ -> TFRelu.opdef
-  | TFConv2D       _ -> TFConv2D.opdef
-  | TFMaxPool      _ -> TFMaxPool.opdef
-  | TFConst        _ -> TFConst.opdef
-  | TFPlaceholder  _ -> TFPlaceholder.opdef
-  | TFAssign       _ -> TFAssign.opdef
-  | TFIdentity     _ -> TFIdentity.opdef
-  | TFSave         _ -> TFSave.opdef
-  | TFRestore      _ -> TFRestore.opdef
-  | TFVariable     _ -> TFVariable.opdef
-  | TFSum          _ -> TFSum.opdef
-  | TFStridedSlice _ -> TFStridedSlice.opdef
-  | TFReshape      _ -> TFReshape.opdef
-  | TFNoop         _ -> TFNoop.opdef
+  | TFNeg           _ -> TFNeg.opdef
+  | TFMatMul        _ -> TFMatMul.opdef
+  | TFAdd           _ -> TFAdd.opdef
+  | TFSub           _ -> TFSub.opdef
+  | TFMul           _ -> TFMul.opdef
+  | TFDiv           _ -> TFDiv.opdef
+  | TFRelu          _ -> TFRelu.opdef
+  | TFConv2D        _ -> TFConv2D.opdef
+  | TFMaxPool       _ -> TFMaxPool.opdef
+  | TFConst         _ -> TFConst.opdef
+  | TFPlaceholder   _ -> TFPlaceholder.opdef
+  | TFAssign        _ -> TFAssign.opdef
+  | TFIdentity      _ -> TFIdentity.opdef
+  | TFSave          _ -> TFSave.opdef
+  | TFRestore       _ -> TFRestore.opdef
+  | TFVariable      _ -> TFVariable.opdef
+  | TFSum           _ -> TFSum.opdef
+  | TFStridedSlice  _ -> TFStridedSlice.opdef
+  | TFReshape       _ -> TFReshape.opdef
+  | TFRandomUniform _ -> TFRandomUniform.opdef
+  | TFNoop          _ -> TFNoop.opdef
 
 
 let get_output_shape = function
-  | TFNeg          n -> TFNeg.get_output_shape n
-  | TFMatMul       n -> TFMatMul.get_output_shape n
-  | TFAdd          n -> TFAdd.get_output_shape n
-  | TFSub          n -> TFSub.get_output_shape n
-  | TFMul          n -> TFMul.get_output_shape n
-  | TFDiv          n -> TFDiv.get_output_shape n
-  | TFRelu         n -> TFRelu.get_output_shape n
-  | TFConv2D       n -> TFConv2D.get_output_shape n
-  | TFMaxPool      n -> TFMaxPool.get_output_shape n
-  | TFConst        n -> TFConst.get_output_shape n
-  | TFPlaceholder  n -> TFPlaceholder.get_output_shape n
-  | TFAssign       n -> TFAssign.get_output_shape n
-  | TFIdentity     n -> TFIdentity.get_output_shape n
-  | TFSave         n -> TFSave.get_output_shape n
-  | TFRestore      n -> TFRestore.get_output_shape n
-  | TFVariable     n -> TFVariable.get_output_shape n
-  | TFSum          n -> TFSum.get_output_shape n
-  | TFStridedSlice n -> TFStridedSlice.get_output_shape n
-  | TFReshape      n -> TFReshape.get_output_shape n
-  | TFNoop         n -> TFNoop.get_output_shape n
+  | TFNeg           n -> TFNeg.get_output_shape n
+  | TFMatMul        n -> TFMatMul.get_output_shape n
+  | TFAdd           n -> TFAdd.get_output_shape n
+  | TFSub           n -> TFSub.get_output_shape n
+  | TFMul           n -> TFMul.get_output_shape n
+  | TFDiv           n -> TFDiv.get_output_shape n
+  | TFRelu          n -> TFRelu.get_output_shape n
+  | TFConv2D        n -> TFConv2D.get_output_shape n
+  | TFMaxPool       n -> TFMaxPool.get_output_shape n
+  | TFConst         n -> TFConst.get_output_shape n
+  | TFPlaceholder   n -> TFPlaceholder.get_output_shape n
+  | TFAssign        n -> TFAssign.get_output_shape n
+  | TFIdentity      n -> TFIdentity.get_output_shape n
+  | TFSave          n -> TFSave.get_output_shape n
+  | TFRestore       n -> TFRestore.get_output_shape n
+  | TFVariable      n -> TFVariable.get_output_shape n
+  | TFSum           n -> TFSum.get_output_shape n
+  | TFStridedSlice  n -> TFStridedSlice.get_output_shape n
+  | TFReshape       n -> TFReshape.get_output_shape n
+  | TFRandomUniform n -> TFRandomUniform.get_output_shape n
+  | TFNoop          n -> TFNoop.get_output_shape n
 
 
 let get_inputs = function
-  | TFNeg          n -> TFNeg.get_inputs n
-  | TFMatMul       n -> TFMatMul.get_inputs n
-  | TFAdd          n -> TFAdd.get_inputs n
-  | TFSub          n -> TFSub.get_inputs n
-  | TFMul          n -> TFMul.get_inputs n
-  | TFDiv          n -> TFDiv.get_inputs n
-  | TFRelu         n -> TFRelu.get_inputs n
-  | TFConv2D       n -> TFConv2D.get_inputs n
-  | TFMaxPool      n -> TFMaxPool.get_inputs n
-  | TFConst        n -> TFConst.get_inputs n
-  | TFPlaceholder  n -> TFPlaceholder.get_inputs n
-  | TFAssign       n -> TFAssign.get_inputs n
-  | TFIdentity     n -> TFIdentity.get_inputs n
-  | TFSave         n -> TFSave.get_inputs n
-  | TFRestore      n -> TFRestore.get_inputs n
-  | TFNoop         n -> TFNoop.get_inputs n
-  | TFSum          n -> TFSum.get_inputs n
-  | TFStridedSlice n -> TFStridedSlice.get_inputs n
-  | TFReshape      n -> TFReshape.get_inputs n
-  | _                -> [||]
+  | TFNeg           n -> TFNeg.get_inputs n
+  | TFMatMul        n -> TFMatMul.get_inputs n
+  | TFAdd           n -> TFAdd.get_inputs n
+  | TFSub           n -> TFSub.get_inputs n
+  | TFMul           n -> TFMul.get_inputs n
+  | TFDiv           n -> TFDiv.get_inputs n
+  | TFRelu          n -> TFRelu.get_inputs n
+  | TFConv2D        n -> TFConv2D.get_inputs n
+  | TFMaxPool       n -> TFMaxPool.get_inputs n
+  | TFConst         n -> TFConst.get_inputs n
+  | TFPlaceholder   n -> TFPlaceholder.get_inputs n
+  | TFAssign        n -> TFAssign.get_inputs n
+  | TFIdentity      n -> TFIdentity.get_inputs n
+  | TFSave          n -> TFSave.get_inputs n
+  | TFRestore       n -> TFRestore.get_inputs n
+  | TFNoop          n -> TFNoop.get_inputs n
+  | TFSum           n -> TFSum.get_inputs n
+  | TFStridedSlice  n -> TFStridedSlice.get_inputs n
+  | TFReshape       n -> TFReshape.get_inputs n
+  | TFRandomUniform n -> TFRandomUniform.get_inputs n
+  | _                 -> [||]
 
 
 let set_inputs = function
-  | TFNeg          n -> TFNeg.set_inputs n
-  | TFMatMul       n -> TFMatMul.set_inputs n
-  | TFAdd          n -> TFAdd.set_inputs n
-  | TFSub          n -> TFSub.set_inputs n
-  | TFMul          n -> TFMul.set_inputs n
-  | TFDiv          n -> TFDiv.set_inputs n
-  | TFRelu         n -> TFRelu.set_inputs n
-  | TFConv2D       n -> TFConv2D.set_inputs n
-  | TFMaxPool      n -> TFMaxPool.set_inputs n
-  | TFConst        n -> TFConst.set_inputs n
-  | TFPlaceholder  n -> TFPlaceholder.set_inputs n
-  | TFAssign       n -> TFAssign.set_inputs n
-  | TFIdentity     n -> TFIdentity.set_inputs n
-  | TFSave         n -> TFSave.set_inputs n
-  | TFRestore      n -> TFRestore.set_inputs n
-  | TFNoop         n -> TFNoop.set_inputs n
-  | TFSum          n -> TFSum.set_inputs n
-  | TFStridedSlice n -> TFStridedSlice.set_inputs n
-  | TFReshape      n -> TFReshape.set_inputs n
-  | _                -> fun _ -> ()
+  | TFNeg           n -> TFNeg.set_inputs n
+  | TFMatMul        n -> TFMatMul.set_inputs n
+  | TFAdd           n -> TFAdd.set_inputs n
+  | TFSub           n -> TFSub.set_inputs n
+  | TFMul           n -> TFMul.set_inputs n
+  | TFDiv           n -> TFDiv.set_inputs n
+  | TFRelu          n -> TFRelu.set_inputs n
+  | TFConv2D        n -> TFConv2D.set_inputs n
+  | TFMaxPool       n -> TFMaxPool.set_inputs n
+  | TFConst         n -> TFConst.set_inputs n
+  | TFPlaceholder   n -> TFPlaceholder.set_inputs n
+  | TFAssign        n -> TFAssign.set_inputs n
+  | TFIdentity      n -> TFIdentity.set_inputs n
+  | TFSave          n -> TFSave.set_inputs n
+  | TFRestore       n -> TFRestore.set_inputs n
+  | TFNoop          n -> TFNoop.set_inputs n
+  | TFSum           n -> TFSum.set_inputs n
+  | TFStridedSlice  n -> TFStridedSlice.set_inputs n
+  | TFReshape       n -> TFReshape.set_inputs n
+  | TFRandomUniform n -> TFRandomUniform.set_inputs n
+  | _                 -> fun _ -> ()
 
 
 let get_device = function
-  | TFNeg          n -> TFNeg.get_device n
-  | TFMatMul       n -> TFMatMul.get_device n
-  | TFAdd          n -> TFAdd.get_device n
-  | TFSub          n -> TFSub.get_device n
-  | TFMul          n -> TFMul.get_device n
-  | TFDiv          n -> TFDiv.get_device n
-  | TFRelu         n -> TFRelu.get_device n
-  | TFConv2D       n -> TFConv2D.get_device n
-  | TFMaxPool      n -> TFMaxPool.get_device n
-  | TFConst        n -> TFConst.get_device n
-  | TFPlaceholder  n -> TFPlaceholder.get_device n
-  | TFAssign       n -> TFAssign.get_device n
-  | TFIdentity     n -> TFIdentity.get_device n
-  | TFSave         n -> TFSave.get_device n
-  | TFRestore      n -> TFRestore.get_device n
-  | TFVariable     n -> TFVariable.get_device n
-  | TFSum          n -> TFSum.get_device n
-  | TFStridedSlice n -> TFStridedSlice.get_device n
-  | TFReshape      n -> TFReshape.get_device n
-  | TFNoop         n -> TFNoop.get_device n
+  | TFNeg           n -> TFNeg.get_device n
+  | TFMatMul        n -> TFMatMul.get_device n
+  | TFAdd           n -> TFAdd.get_device n
+  | TFSub           n -> TFSub.get_device n
+  | TFMul           n -> TFMul.get_device n
+  | TFDiv           n -> TFDiv.get_device n
+  | TFRelu          n -> TFRelu.get_device n
+  | TFConv2D        n -> TFConv2D.get_device n
+  | TFMaxPool       n -> TFMaxPool.get_device n
+  | TFConst         n -> TFConst.get_device n
+  | TFPlaceholder   n -> TFPlaceholder.get_device n
+  | TFAssign        n -> TFAssign.get_device n
+  | TFIdentity      n -> TFIdentity.get_device n
+  | TFSave          n -> TFSave.get_device n
+  | TFRestore       n -> TFRestore.get_device n
+  | TFVariable      n -> TFVariable.get_device n
+  | TFSum           n -> TFSum.get_device n
+  | TFStridedSlice  n -> TFStridedSlice.get_device n
+  | TFReshape       n -> TFReshape.get_device n
+  | TFRandomUniform n -> TFRandomUniform.get_device n
+  | TFNoop          n -> TFNoop.get_device n
 
 
 let set_device = function
-  | TFNeg          n -> TFNeg.set_device n
-  | TFMatMul       n -> TFMatMul.set_device n
-  | TFAdd          n -> TFAdd.set_device n
-  | TFSub          n -> TFSub.set_device n
-  | TFMul          n -> TFMul.set_device n
-  | TFDiv          n -> TFDiv.set_device n
-  | TFRelu         n -> TFRelu.set_device n
-  | TFConv2D       n -> TFConv2D.set_device n
-  | TFMaxPool      n -> TFMaxPool.set_device n
-  | TFConst        n -> TFConst.set_device n
-  | TFPlaceholder  n -> TFPlaceholder.set_device n
-  | TFAssign       n -> TFAssign.set_device n
-  | TFIdentity     n -> TFIdentity.set_device n
-  | TFSave         n -> TFSave.set_device n
-  | TFRestore      n -> TFRestore.set_device n
-  | TFVariable     n -> TFVariable.set_device n
-  | TFSum          n -> TFSum.set_device n
-  | TFStridedSlice n -> TFStridedSlice.set_device  n
-  | TFReshape      n -> TFReshape.set_device n
-  | TFNoop         n -> TFNoop.set_device n
+  | TFNeg           n -> TFNeg.set_device n
+  | TFMatMul        n -> TFMatMul.set_device n
+  | TFAdd           n -> TFAdd.set_device n
+  | TFSub           n -> TFSub.set_device n
+  | TFMul           n -> TFMul.set_device n
+  | TFDiv           n -> TFDiv.set_device n
+  | TFRelu          n -> TFRelu.set_device n
+  | TFConv2D        n -> TFConv2D.set_device n
+  | TFMaxPool       n -> TFMaxPool.set_device n
+  | TFConst         n -> TFConst.set_device n
+  | TFPlaceholder   n -> TFPlaceholder.set_device n
+  | TFAssign        n -> TFAssign.set_device n
+  | TFIdentity      n -> TFIdentity.set_device n
+  | TFSave          n -> TFSave.set_device n
+  | TFRestore       n -> TFRestore.set_device n
+  | TFVariable      n -> TFVariable.set_device n
+  | TFSum           n -> TFSum.set_device n
+  | TFStridedSlice  n -> TFStridedSlice.set_device  n
+  | TFReshape       n -> TFReshape.set_device n
+  | TFRandomUniform n -> TFRandomUniform.set_device n
+  | TFNoop          n -> TFNoop.set_device n
 
 
 let get_value = function

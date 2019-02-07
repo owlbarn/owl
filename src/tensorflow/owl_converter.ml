@@ -110,6 +110,7 @@ module Make
    * - data type fixed to DT_FLOAT
    * - some seemingly unimportant attr of nodes like "default_value" are emitted. Add when required.
    * - all those random length of Hashtbl.
+   * - dtype  / T / type etc. is not clear
    *)
   let convert graph =
     let tf_cgraph = make_tf_cgraph () in
