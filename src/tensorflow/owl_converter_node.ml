@@ -74,6 +74,79 @@ let opdef_to_pbtxt op =
     input_arg_arr output_arg_arr attr_string
 
 
+module TFNeg = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+  }
+
+
+  let opname = "Neg"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |]
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+
 module TFMatMul = struct
 
   type t = {
@@ -1545,8 +1618,89 @@ module TFStridedSlice = struct
 end
 
 
+module TFReshape = struct
+
+  type t = {
+    mutable name             : string;
+    mutable op_name          : string;
+    mutable inputs           : string array;
+    mutable out_shp          : int array;
+    mutable dtype            : string;
+    mutable device           : string;
+  }
+
+
+  let opname = "Reshape"
+
+
+  let opdef =
+    let input_arg  = [|
+      make_argdef ~typ:"T" "tensor";
+      make_argdef ~typ:"Tshape" "shape";
+    |] in
+    let output_arg = [| make_argdef ~typ:"T" "output" |] in
+    let attr = [|
+      make_tfop_attr "T" "type";
+      make_tfop_attr "Tshape" "type";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(dtype="DT_FLOAT") ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = dtype;
+      device  = device;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type "DT_FLOAT"));
+      ("Tshape", (ATTR_Type "DT_INT32"));
+      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+    |]
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
 
 type tfnode =
+  | TFNeg          of TFNeg.t
   | TFMatMul       of TFMatMul.t
   | TFAdd          of TFAdd.t
   | TFSub          of TFSub.t
@@ -1564,10 +1718,12 @@ type tfnode =
   | TFVariable     of TFVariable.t
   | TFSum          of TFSum.t
   | TFStridedSlice of TFStridedSlice.t
+  | TFReshape      of TFReshape.t
   | TFNoop         of TFNoop.t
 
 
 let to_pbtxt = function
+  | TFNeg          n -> TFNeg.to_pbtxt n
   | TFMatMul       n -> TFMatMul.to_pbtxt n
   | TFAdd          n -> TFAdd.to_pbtxt n
   | TFSub          n -> TFSub.to_pbtxt n
@@ -1585,10 +1741,12 @@ let to_pbtxt = function
   | TFVariable     n -> TFVariable.to_pbtxt n
   | TFSum          n -> TFSum.to_pbtxt n
   | TFStridedSlice n -> TFStridedSlice.to_pbtxt n
+  | TFReshape      n -> TFReshape.to_pbtxt n
   | TFNoop         n -> TFNoop.to_pbtxt n
 
 
 let get_name = function
+  | TFNeg          n -> TFNeg.get_name n
   | TFMatMul       n -> TFMatMul.get_name n
   | TFAdd          n -> TFAdd.get_name n
   | TFSub          n -> TFSub.get_name n
@@ -1606,10 +1764,12 @@ let get_name = function
   | TFVariable     n -> TFVariable.get_name n
   | TFSum          n -> TFSum.get_name n
   | TFStridedSlice n -> TFStridedSlice.get_name n
+  | TFReshape      n -> TFReshape.get_name n
   | TFNoop         n -> TFNoop.get_name n
 
 
 let get_op_name = function
+  | TFNeg          _ -> TFNeg.opname
   | TFMatMul       _ -> TFMatMul.opname
   | TFAdd          _ -> TFAdd.opname
   | TFSub          _ -> TFSub.opname
@@ -1627,10 +1787,12 @@ let get_op_name = function
   | TFVariable     _ -> TFVariable.opname
   | TFSum          _ -> TFSum.opname
   | TFStridedSlice _ -> TFStridedSlice.opname
+  | TFReshape      _ -> TFReshape.opname
   | TFNoop         _ -> TFNoop.opname
 
 
 let get_opdef = function
+  | TFNeg          _ -> TFNeg.opdef
   | TFMatMul       _ -> TFMatMul.opdef
   | TFAdd          _ -> TFAdd.opdef
   | TFSub          _ -> TFSub.opdef
@@ -1648,10 +1810,12 @@ let get_opdef = function
   | TFVariable     _ -> TFVariable.opdef
   | TFSum          _ -> TFSum.opdef
   | TFStridedSlice _ -> TFStridedSlice.opdef
+  | TFReshape      _ -> TFReshape.opdef
   | TFNoop         _ -> TFNoop.opdef
 
 
 let get_output_shape = function
+  | TFNeg          n -> TFNeg.get_output_shape n
   | TFMatMul       n -> TFMatMul.get_output_shape n
   | TFAdd          n -> TFAdd.get_output_shape n
   | TFSub          n -> TFSub.get_output_shape n
@@ -1669,10 +1833,12 @@ let get_output_shape = function
   | TFVariable     n -> TFVariable.get_output_shape n
   | TFSum          n -> TFSum.get_output_shape n
   | TFStridedSlice n -> TFStridedSlice.get_output_shape n
+  | TFReshape      n -> TFReshape.get_output_shape n
   | TFNoop         n -> TFNoop.get_output_shape n
 
 
 let get_inputs = function
+  | TFNeg          n -> TFNeg.get_inputs n
   | TFMatMul       n -> TFMatMul.get_inputs n
   | TFAdd          n -> TFAdd.get_inputs n
   | TFSub          n -> TFSub.get_inputs n
@@ -1690,10 +1856,12 @@ let get_inputs = function
   | TFNoop         n -> TFNoop.get_inputs n
   | TFSum          n -> TFSum.get_inputs n
   | TFStridedSlice n -> TFStridedSlice.get_inputs n
+  | TFReshape      n -> TFReshape.get_inputs n
   | _                -> [||]
 
 
 let set_inputs = function
+  | TFNeg          n -> TFNeg.set_inputs n
   | TFMatMul       n -> TFMatMul.set_inputs n
   | TFAdd          n -> TFAdd.set_inputs n
   | TFSub          n -> TFSub.set_inputs n
@@ -1711,10 +1879,12 @@ let set_inputs = function
   | TFNoop         n -> TFNoop.set_inputs n
   | TFSum          n -> TFSum.set_inputs n
   | TFStridedSlice n -> TFStridedSlice.set_inputs n
+  | TFReshape      n -> TFReshape.set_inputs n
   | _                -> fun _ -> ()
 
 
 let get_device = function
+  | TFNeg          n -> TFNeg.get_device n
   | TFMatMul       n -> TFMatMul.get_device n
   | TFAdd          n -> TFAdd.get_device n
   | TFSub          n -> TFSub.get_device n
@@ -1732,10 +1902,12 @@ let get_device = function
   | TFVariable     n -> TFVariable.get_device n
   | TFSum          n -> TFSum.get_device n
   | TFStridedSlice n -> TFStridedSlice.get_device n
+  | TFReshape      n -> TFReshape.get_device n
   | TFNoop         n -> TFNoop.get_device n
 
 
 let set_device = function
+  | TFNeg          n -> TFNeg.set_device n
   | TFMatMul       n -> TFMatMul.set_device n
   | TFAdd          n -> TFAdd.set_device n
   | TFSub          n -> TFSub.set_device n
@@ -1753,6 +1925,7 @@ let set_device = function
   | TFVariable     n -> TFVariable.set_device n
   | TFSum          n -> TFSum.set_device n
   | TFStridedSlice n -> TFStridedSlice.set_device  n
+  | TFReshape      n -> TFReshape.set_device n
   | TFNoop         n -> TFNoop.set_device n
 
 

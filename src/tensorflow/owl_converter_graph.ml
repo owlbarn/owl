@@ -50,9 +50,11 @@ module Make
 
   let _make_initialisers (op : Symbol.Shape.Type.op) name =
     match op with
-    | Ones shp ->
+    | Ones shp    ->
       let tvalue = make_tftensor ~float_val:[|1.|] "DT_FLOAT" shp in
       [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name shp (ATTR_Tensor tvalue)) |]
+    | Uniform shp -> 
+      let
     | _ -> failwith "Initialiser not implemented."
 
 
@@ -113,6 +115,23 @@ module Make
     [|ss; stack0; stack1; stack2|], ("", "")
 
 
+  let make_reshape_nodes name inputs shp =
+    let dummy_tensor_content = shp
+      |> Owl_utils_array.to_string string_of_int
+      |> Bytes.of_string
+    in
+    let stensor = ATTR_Tensor (make_tftensor
+      ~tensor_content:dummy_tensor_content
+      "DT_INT32" shp)
+    in
+    let sname = name ^ "/shape" in
+    let snode = TFConst (TFConst.create ~dtype:"DT_INT32" sname shp stensor) in
+
+    let inputs = Array.append inputs [|sname|] in
+    let rnode = TFReshape (TFReshape.create name inputs shp) in
+    [|rnode; snode|], ("", "")
+
+
   (* The logic of how one owl node turned into multiple tfnodes is implemented
    * here.
    * Currently return node array and "name_update" : string * string; meaning,
@@ -153,6 +172,7 @@ module Make
       )
     in
     match attr.op with
+    | Neg                 -> [| TFNeg (TFNeg.create name inputs out_shp)|], ("", "")
     | Dot (a, b, _, _)    -> [| TFMatMul (TFMatMul.create name inputs out_shp a b) |], ("", "")
     | Add                 -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
     | ScalarAdd           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
@@ -174,6 +194,7 @@ module Make
     | Sum'                -> [| TFSum (TFSum.create name inputs out_shp) |], ("", "")
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
     | Const               -> [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
+    | Reshape s           -> make_reshape_nodes name inputs s
     | Ones _              -> make_variable_nodes attr.op name out_shp
     | Get i               -> make_stridedslice_nodes i name inputs out_shp
     | _                   -> failwith "unsupported operation"
