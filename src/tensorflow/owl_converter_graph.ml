@@ -82,6 +82,37 @@ module Make
     (name, aname)
 
 
+  (* TODO *)
+  let make_sum_nodes = ()
+
+
+  (* NOTE: out_shp and shape are not the same thing *)
+  let _make_stack_for_stridedslice ?(_content=None) name shp_len =
+    let dummy_tensor_content = Bytes.create 1 in (* tmp *)
+    let shp = [| shp_len |] in
+    let stensor = ATTR_Tensor (make_tftensor
+      ~tensor_content:dummy_tensor_content
+      "DT_INT32" shp)
+    in
+    TFConst (TFConst.create ~dtype:"DT_INT32" name shp stensor)
+
+
+  (* TODO: the computation details are tmp and wrong *)
+  let make_stridedslice_nodes _index name inputs out_shp =
+    let shp_len = Array.length out_shp - 1 in
+    let name0 = name ^ "/stack_0" in
+    let name1 = name ^ "/stack_1" in
+    let name2 = name ^ "/stack_2" in
+    let stack0 = _make_stack_for_stridedslice name0 shp_len in
+    let stack1 = _make_stack_for_stridedslice name1 shp_len in
+    let stack2 = _make_stack_for_stridedslice name2 shp_len in
+
+    let inputs = Array.append inputs [|name0; name1; name2|] in
+    let ss = TFStridedSlice (TFStridedSlice.create name inputs out_shp
+      0 0 0 0 0) in (* tmp: dummy numbers!!! *)
+    [|ss; stack0; stack1; stack2|], ("", "")
+
+
   (* The logic of how one owl node turned into multiple tfnodes is implemented
    * here.
    * Currently return node array and "name_update" : string * string; meaning,
@@ -138,9 +169,13 @@ module Make
     | Relu                -> [| TFRelu (TFRelu.create name inputs out_shp) |], ("", "")
     | Conv2d (p, s)       -> [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
     | MaxPool2d (p, s, k) -> [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
+    | Sum a               -> [| TFSum (TFSum.create name ~axis:[|a|] inputs out_shp) |], ("", "")
+    | SumReduce a         -> [| TFSum (TFSum.create name ~axis:a inputs out_shp) |], ("", "")
+    | Sum'                -> [| TFSum (TFSum.create name inputs out_shp) |], ("", "")
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
     | Const               -> [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
     | Ones _              -> make_variable_nodes attr.op name out_shp
+    | Get i               -> make_stridedslice_nodes i name inputs out_shp
     | _                   -> failwith "unsupported operation"
 
 

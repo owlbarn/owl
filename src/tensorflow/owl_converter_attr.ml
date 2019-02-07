@@ -8,12 +8,13 @@ open Owl_converter_types
 open Owl_converter_utils
 
 
-let make_tftensor ?string_val ?float_val dtype shape =
+let make_tftensor ?tensor_content ?string_val ?float_val dtype shape =
   {
-    dtype        = dtype;
-    tensor_shape = shape;
-    string_val   = string_val;
-    float_val    = float_val
+    dtype          = dtype;
+    tensor_shape   = shape;
+    tensor_content = tensor_content;
+    string_val     = string_val;
+    float_val      = float_val
   }
 
 

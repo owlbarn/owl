@@ -11,10 +11,11 @@ type dtype =
 
 
 type tftensor = {
-  dtype        : string;
-  tensor_shape : int array;
-  string_val   : string array option;
-  float_val    : float array option;
+  dtype          : string;
+  tensor_shape   : int array;
+  string_val     : string array option;
+  float_val      : float array option;
+  tensor_content : bytes option;
   (* double_val, int_val, ... but only one of these fields should be used. *)
 }
 
