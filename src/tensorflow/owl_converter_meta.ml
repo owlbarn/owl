@@ -5,17 +5,20 @@
 
 
 open Owl_converter_types
-open Owl_converter_utils
 
 
 module Make
   (G : Owl_computation_graph_sig.Sig)
   = struct
 
+
+  (* get version from tensorflow itself, probably by running command
+   * `python -c 'import tensorflow as tf; print(tf.__version__)'`
+   *)
   let create () =
     {
       stripped_op_list   = [||];
-      tensorflow_version = "1.12.0"; (* get from tensorflow  *)
+      tensorflow_version = "1.12.0";
       op_names           = [||]
     }
 
@@ -33,7 +36,7 @@ module Make
 
 
   let to_pbtxt meta =
-    let tfop_str = map_then_combine_string ~sep:"\n"
+    let tfop_str = Owl_utils_array.to_string ~sep:"\n"
       Owl_converter_node.opdef_to_pbtxt meta.stripped_op_list
     in
     Printf.sprintf "meta_info_def {\nstripped_op_list{\n%s}\ntensorflow_version: \"%s\"\n}\n" tfop_str meta.tensorflow_version

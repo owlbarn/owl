@@ -57,7 +57,6 @@ module Make
       [|0|] (ATTR_Tensor save_shape))
     in
 
-    (* note the dtype *)
     let save = TFSave (TFSave.create save_name
       [|(get_name save_const);
         (get_name save_tensor_name);
@@ -67,9 +66,7 @@ module Make
     let control_dep = TFIdentity (TFIdentity.create
       tfsaver.save_tensor_name
       [|(get_name save_const); ("^" ^ (get_name save))|]
-      [||] (* tmp *)
-      "DT_STRING"
-      tfsaver.filename_tensor_name
+      [||] "DT_STRING" tfsaver.filename_tensor_name
     )
     in
 
@@ -85,7 +82,6 @@ module Make
       [|0|] (ATTR_Tensor restore_shape))
     in
 
-    (* note the dtype *)
     let restore = TFRestore (TFRestore.create restore_name
       [|(get_name save_const);
         (get_name restore_tensor_name);
@@ -123,6 +119,19 @@ module Make
     set_value node (ATTR_Tensor new_tensor)
 
 
+  let _get_const_string_value tfgraph node_name =
+    let node = TFgraph.get_tfnode tfgraph node_name in
+    let const_val = get_value node in
+    let string_val =
+      match const_val with
+      | ATTR_Tensor t -> t.string_val
+      | _             -> failwith "incorrect value type"
+    in
+    match string_val with
+    | Some a -> a
+    | None   -> [||]
+
+
   let _add_input tfgraph node_name added =
     let node = TFgraph.get_tfnode tfgraph node_name in
     let inputs = get_inputs node in
@@ -132,7 +141,10 @@ module Make
   let add_link tfsaver tfgraph tfnode =
     let nname = get_name tfnode in
     let out_shp = get_output_shape tfnode in
-    let name = nname ^ "/Assign" in
+
+    let id = _get_const_string_value tfgraph save_tensor_names
+      |> Array.length in
+    let name = Printf.sprintf "%s/Assign_%d" nname id in
     let assign_node = TFAssign (TFAssign.create ~refv:nname
       ~value:restore_name name out_shp "DT_FLOAT")
     in

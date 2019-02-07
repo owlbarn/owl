@@ -8,12 +8,13 @@ open Owl_converter_types
 open Owl_converter_utils
 
 
-let make_tftensor ?string_val ?float_val dtype shape =
+let make_tftensor ?tensor_content ?string_val ?float_val dtype shape =
   {
-    dtype        = dtype;
-    tensor_shape = shape;
-    string_val   = string_val;
-    float_val    = float_val
+    dtype          = dtype;
+    tensor_shape   = shape;
+    tensor_content = tensor_content;
+    string_val     = string_val;
+    float_val      = float_val
   }
 
 
@@ -69,9 +70,13 @@ let dim_to_pbtxt dim =
   Printf.sprintf "dim {\nsize: %d\n}\n" dim
 
 
+(* TODO: incorprate the unknown_rank situation;
+ * empty shape should be printed as is.
+ *)
 let shape_to_pbtxt shape =
-  if (shape = [||]) then "unknown_rank: true\n"
-  else map_then_combine_string dim_to_pbtxt shape
+  (* if (shape = [||]) then "unknown_rank: true\n"
+  else map_then_combine_string dim_to_pbtxt shape *)
+  Owl_utils_array.to_string ~sep:"" dim_to_pbtxt shape
 
 
 let tensor_to_pbtxt v =

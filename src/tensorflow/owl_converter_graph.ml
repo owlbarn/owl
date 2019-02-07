@@ -24,6 +24,9 @@ module Make
   }
 
 
+  (* Graph version is NOT tensorflow version;
+   * defined by TF_GRAPH_DEF_VERSION in core/public/version.h
+   *)
   let create () =
     {
       nodes    = [||];
@@ -47,9 +50,11 @@ module Make
 
   let _make_initialisers (op : Symbol.Shape.Type.op) name =
     match op with
-    | Ones shp ->
+    | Ones shp    ->
       let tvalue = make_tftensor ~float_val:[|1.|] "DT_FLOAT" shp in
       [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name shp (ATTR_Tensor tvalue)) |]
+    | Uniform shp -> 
+      let
     | _ -> failwith "Initialiser not implemented."
 
 
@@ -66,7 +71,7 @@ module Make
       out_shp "DT_FLOAT" name)
     in
 
-    let aname = name ^ "/assign" in
+    let aname = name ^ "/Assign" in
     let assign = TFAssign (TFAssign.create ~refv:vname
       ~value:iname aname out_shp "DT_FLOAT")
     in
@@ -79,11 +84,61 @@ module Make
     (name, aname)
 
 
+  (* TODO *)
+  let make_sum_nodes = ()
+
+
+  (* NOTE: out_shp and shape are not the same thing *)
+  let _make_stack_for_stridedslice ?(_content=None) name shp_len =
+    let dummy_tensor_content = Bytes.create 1 in (* tmp *)
+    let shp = [| shp_len |] in
+    let stensor = ATTR_Tensor (make_tftensor
+      ~tensor_content:dummy_tensor_content
+      "DT_INT32" shp)
+    in
+    TFConst (TFConst.create ~dtype:"DT_INT32" name shp stensor)
+
+
+  (* TODO: the computation details are tmp and wrong *)
+  let make_stridedslice_nodes _index name inputs out_shp =
+    let shp_len = Array.length out_shp - 1 in
+    let name0 = name ^ "/stack_0" in
+    let name1 = name ^ "/stack_1" in
+    let name2 = name ^ "/stack_2" in
+    let stack0 = _make_stack_for_stridedslice name0 shp_len in
+    let stack1 = _make_stack_for_stridedslice name1 shp_len in
+    let stack2 = _make_stack_for_stridedslice name2 shp_len in
+
+    let inputs = Array.append inputs [|name0; name1; name2|] in
+    let ss = TFStridedSlice (TFStridedSlice.create name inputs out_shp
+      0 0 0 0 0) in (* tmp: dummy numbers!!! *)
+    [|ss; stack0; stack1; stack2|], ("", "")
+
+
+  let make_reshape_nodes name inputs shp =
+    let dummy_tensor_content = shp
+      |> Owl_utils_array.to_string string_of_int
+      |> Bytes.of_string
+    in
+    let stensor = ATTR_Tensor (make_tftensor
+      ~tensor_content:dummy_tensor_content
+      "DT_INT32" shp)
+    in
+    let sname = name ^ "/shape" in
+    let snode = TFConst (TFConst.create ~dtype:"DT_INT32" sname shp stensor) in
+
+    let inputs = Array.append inputs [|sname|] in
+    let rnode = TFReshape (TFReshape.create name inputs shp) in
+    [|rnode; snode|], ("", "")
+
+
   (* The logic of how one owl node turned into multiple tfnodes is implemented
    * here.
    * Currently return node array and "name_update" : string * string; meaning,
-   * whoever uses me as his input, now change it to one of my subnodes. Need to
-   * think about how the input relation be updated later.
+   * whoever uses me as his input, now change it to one of my subnodes.
+   * About the `attr.shape.(0)` and `(attr.value).(0)` below, currently only
+   * `draw` operation in owl CGraph returns two outputs, so I'll stick with
+   * this tmp solution for now.
    *)
   let make_tfnodes node =
     let name = Owl_graph.name node in
@@ -92,13 +147,14 @@ module Make
       Owl_graph.name n
     ) (Owl_graph.parents node)
     in
-    let out_shp = attr.shape.(0) in (* tmp: only uses the first output *)
+     (* tmp: only uses the first output *)
+    let out_shp = attr.shape.(0) in
     let out_shp =
       match out_shp with
       | Some s -> s
       | None   -> [||]
     in
-    (* "value" only used by const node? *)
+    (* "value" field only used by const node? Leave it here for now. *)
     let v = (attr.value).(0) in
     let value =
       if (Device.is_arr v) then (
@@ -116,6 +172,7 @@ module Make
       )
     in
     match attr.op with
+    | Neg                 -> [| TFNeg (TFNeg.create name inputs out_shp)|], ("", "")
     | Dot (a, b, _, _)    -> [| TFMatMul (TFMatMul.create name inputs out_shp a b) |], ("", "")
     | Add                 -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
     | ScalarAdd           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
@@ -132,9 +189,14 @@ module Make
     | Relu                -> [| TFRelu (TFRelu.create name inputs out_shp) |], ("", "")
     | Conv2d (p, s)       -> [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
     | MaxPool2d (p, s, k) -> [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
+    | Sum a               -> [| TFSum (TFSum.create name ~axis:[|a|] inputs out_shp) |], ("", "")
+    | SumReduce a         -> [| TFSum (TFSum.create name ~axis:a inputs out_shp) |], ("", "")
+    | Sum'                -> [| TFSum (TFSum.create name inputs out_shp) |], ("", "")
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
     | Const               -> [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
+    | Reshape s           -> make_reshape_nodes name inputs s
     | Ones _              -> make_variable_nodes attr.op name out_shp
+    | Get i               -> make_stridedslice_nodes i name inputs out_shp
     | _                   -> failwith "unsupported operation"
 
 
