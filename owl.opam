@@ -26,6 +26,7 @@ depends: [
   "dune" {build}
   "eigen" {>= "0.1.0"}
   "owl-base"
+  "owl-aeos"
   "plplot"
   "stdio" {build}
   "sexplib" {build}
