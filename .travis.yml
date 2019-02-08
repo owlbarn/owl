@@ -11,8 +11,10 @@ script:
 env:
   global:
     - OCAML_VERSION=4.06
-    - PACKAGE="owl"
     - PINS="owl-base:. owl-aeos:. owl-top:. owl-zoo:. owl:."
-    - PRE_INSTALL_HOOK="cd /home/opam/opam-repository && git pull origin master && opam update -uy"
-  matrix:
     - DISTRO=debian-stable
+    # This shouldn't be necessary in the recent travis-docker scripts
+    #- PRE_INSTALL_HOOK="cd /home/opam/opam-repository && git pull origin master && opam update -uy"
+  matrix:
+    - PACKAGE="owl-base"
+    - PACKAGE="owl"
