@@ -97,7 +97,10 @@ module Make
     | Ones shp    ->
       let tvalue = make_tftensor ~float_val:[|1.|] "DT_FLOAT" shp in
       [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name shp (ATTR_Tensor tvalue)) |]
-    | Uniform shp -> _make_uniform_initialiser name shp
+    | Zeros shp   ->
+      let tvalue = make_tftensor ~float_val:[|0.|] "DT_FLOAT" shp in
+      [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name shp (ATTR_Tensor tvalue)) |]
+    | Uniform shp -> _make_uniform_initialiser (name ^ "/random_uniform") shp
     | _           -> failwith "Initialiser not implemented."
 
 
@@ -106,7 +109,7 @@ module Make
     let initialisers = _make_initialisers op name in
     let iname = (get_name initialisers.(0)) in
 
-    let vname = Printf.sprintf "%s/%s" name name in
+    let vname = Printf.sprintf "%s/variable" name in
     let var = TFVariable (TFVariable.create vname out_shp "DT_FLOAT") in
 
     let rname = name ^ "/read" in
@@ -114,7 +117,7 @@ module Make
       out_shp "DT_FLOAT" name)
     in
 
-    let aname = name ^ "/Assign" in
+    let aname = name ^ "/assign" in
     let assign = TFAssign (TFAssign.create ~refv:vname
       ~value:iname aname out_shp "DT_FLOAT")
     in
@@ -197,9 +200,10 @@ module Make
       | Some s -> s
       | None   -> [||]
     in
-    (* "value" field only used by const node? Leave it here for now. *)
-    let v = (attr.value).(0) in
-    let value =
+
+    (* "value" field only used by const node? Leave it here for now. Could be empty. *)
+    let value = if (Array.length attr.value > 0) then (
+      let v = (attr.value).(0) in
       if (Device.is_arr v) then (
         let arr = Device.value_to_arr v in
         let shp = Device.A.shape arr in
@@ -213,6 +217,7 @@ module Make
       ) else (
         ATTR_Nil
       )
+    ) else ATTR_Nil
     in
     match attr.op with
     | Neg                 -> [| TFNeg (TFNeg.create name inputs out_shp)|], ("", "")
@@ -239,9 +244,10 @@ module Make
     | Const               -> [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
     | Reshape s           -> make_reshape_nodes name inputs s
     | Ones _              -> make_variable_nodes attr.op name out_shp
+    | Zeros _             -> make_variable_nodes attr.op name out_shp
     | Uniform _           -> make_variable_nodes attr.op name out_shp
     | Get i               -> make_stridedslice_nodes i name inputs out_shp
-    | _                   -> failwith "unsupported operation"
+    | _                   -> let err = Printf.sprintf "unsupported operation: %s" (Symbol.op_to_str attr.op) in failwith err
 
 
   let to_pbtxt graphdef =

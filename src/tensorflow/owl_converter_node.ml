@@ -110,7 +110,7 @@ module TFNeg = struct
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
     {
@@ -201,7 +201,7 @@ module TFMatMul = struct
       ("transpose_a", (ATTR_Bool n.trans_a));
       ("transpose_b", (ATTR_Bool n.trans_b));
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
     {
@@ -281,7 +281,7 @@ module TFAdd = struct
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
     {
@@ -363,7 +363,7 @@ module TFSub = struct
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
     {
@@ -445,7 +445,7 @@ module TFMul = struct
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
     {
@@ -527,7 +527,7 @@ module TFDiv = struct
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
     {
@@ -605,7 +605,7 @@ module TFConst = struct
   let make_nodedef n =
     let node_attr = [|
       ("dtype", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("value", n.value);
     |]
     in
@@ -692,7 +692,7 @@ module TFPlaceholder = struct
     let node_attr = [|
       ("dtype", (ATTR_Type n.dtype));
       ("shape", (ATTR_Shape n.out_shp));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
     |] in
     {
       name      = n.name;
@@ -742,7 +742,20 @@ module TFRelu = struct
 
 
   (* To update *)
-  let opdef = nil_def
+  let opdef =
+    let input_arg  = [|
+      make_argdef ~typ_attr:"T" "features";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_attr:"T" "activations";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "T" "type";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr opname
 
 
   let create ?(device="") name inputs out_shp =
@@ -757,7 +770,8 @@ module TFRelu = struct
 
   let make_nodedef n =
     let node_attr = [|
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("T", ATTR_Type "DT_FLOAT");
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
     |]
     in
     {
@@ -796,15 +810,16 @@ end
 module TFConv2D = struct
 
   type t = {
-    mutable name     : string;
-    mutable op_name  : string;
-    mutable inputs   : string array;
-    mutable out_shp  : int array;
-    mutable strides  : int array;
-    mutable padding  : string;
-    mutable dilation : int array;
-    mutable dtype    : string;
-    mutable device   : string;
+    mutable name        : string;
+    mutable op_name     : string;
+    mutable inputs      : string array;
+    mutable out_shp     : int array;
+    mutable strides     : int array;
+    mutable padding     : string;
+    mutable dilation    : int array;
+    mutable data_format : string;
+    mutable dtype       : string;
+    mutable device      : string;
   }
 
 
@@ -812,25 +827,44 @@ module TFConv2D = struct
 
 
   (* To update *)
-  let opdef = nil_def
+  let opdef =
+    let input_arg  = [|
+      make_argdef ~typ_attr:"T" "input";
+      make_argdef ~typ_attr:"T" "filter";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_attr:"T" "output";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "T" "type";
+      make_tfop_attr "strides" "list(int)";
+      make_tfop_attr "padding" "string";
+      make_tfop_attr "dilation" "list(int)";
+      make_tfop_attr "data_format" "string";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr opname
 
 
   let create ?(device="") name inputs out_shp padding strides =
     let padding =
       match padding with
-      | Owl_types_common.SAME  -> "Same"
-      | Owl_types_common.VALID -> "Valid"
+      | Owl_types_common.SAME  -> "SAME"
+      | Owl_types_common.VALID -> "VALID"
     in
     {
-      name     = name;
-      op_name  = opname;
-      inputs   = inputs;
-      out_shp  = out_shp;
-      strides  = strides;
-      padding  = padding;
-      dilation = [|1;1;1;1|];
-      dtype    = "DT_FLOAT";
-      device   = device;
+      name        = name;
+      op_name     = opname;
+      inputs      = inputs;
+      out_shp     = out_shp;
+      strides     = strides;
+      padding     = padding;
+      dilation    = [|1;1;1;1|];
+      data_format = "NHWC";
+      dtype       = "DT_FLOAT";
+      device      = device;
     }
 
 
@@ -839,8 +873,9 @@ module TFConv2D = struct
       ("strides", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.strides)));
       ("dilation", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.dilation)));
       ("padding", (ATTR_String n.padding));
+      ("data_format", (ATTR_String n.data_format));
       ("T", (ATTR_Type "DT_FLOAT"));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
     {
@@ -921,7 +956,7 @@ module TFMaxPool = struct
       ("ksize", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.ksize)));
       ("padding", (ATTR_String n.padding));
       ("T", (ATTR_Type "DT_FLOAT"));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
     |]
     in
     {
@@ -1011,7 +1046,7 @@ module TFAssign = struct
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("_class", (ATTR_List [|ATTR_String ("loc:@" ^ n.value)|]));
       ("use_locking", (ATTR_Bool n.use_locking));
       ("validate_shape", (ATTR_Bool n.validate_shape));
@@ -1097,7 +1132,7 @@ module TFIdentity = struct
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("_class", ATTR_List [|ATTR_String ("loc:@" ^ n.cls)|]);
     |]
     in
@@ -1392,7 +1427,7 @@ module TFVariable = struct
     let node_attr = [|
       ("shape", (ATTR_Shape n.shape));
       ("dtype", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("container", (ATTR_String n.container));
       ("shared_name", (ATTR_String n.shared_name));
     |]
@@ -1479,7 +1514,7 @@ module TFSum = struct
       ("T", (ATTR_Type "DT_FLOAT"));
       ("Tidx", (ATTR_Type "DT_INT32"));
       ("keepdims", (ATTR_Bool false));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
     |]
     in
     {
@@ -1577,7 +1612,7 @@ module TFStridedSlice = struct
     let node_attr = [|
       ("T", (ATTR_Type "DT_FLOAT"));
       ("Index", (ATTR_Type "DT_INT32"));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("begin_mask", ATTR_Int n.begin_mask);
       ("end_mask", ATTR_Int n.end_mask);
       ("ellipsis_mask", ATTR_Int n.ellipsis_mask);
@@ -1662,7 +1697,7 @@ module TFReshape = struct
     let node_attr = [|
       ("T", (ATTR_Type "DT_FLOAT"));
       ("Tshape", (ATTR_Type "DT_INT32"));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
     |]
     in
     {
@@ -1716,8 +1751,8 @@ module TFRandomUniform = struct
 
 
   let opdef =
-    let input_arg  = [| make_argdef ~typ:"T" "shape"  |] in
-    let output_arg = [| make_argdef ~typ:"dtype" "output" |] in
+    let input_arg  = [| make_argdef ~typ_attr:"T" "shape"  |] in
+    let output_arg = [| make_argdef ~typ_attr:"dtype" "output" |] in
     let attr = [|
       make_tfop_attr "seed" "int";
       make_tfop_attr "seed2" "int";
@@ -1747,7 +1782,7 @@ module TFRandomUniform = struct
     let node_attr = [|
       ("T", (ATTR_Type "DT_INT32"));
       ("_class", (ATTR_List [| ATTR_String "loc@" |])); (* tmp *)
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("dtype", ATTR_Type n.dtype);
       ("seed", ATTR_Int n.seed1);
       ("seed2", ATTR_Int n.seed2);
