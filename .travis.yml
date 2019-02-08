@@ -11,5 +11,4 @@ env:
     - PINS="owl-base:. owl-aeos:. owl-top:. owl-zoo:. owl:."
     - DISTRO=debian-stable
   matrix:
-    - PACKAGE="owl-base"
     - PACKAGE="owl"
