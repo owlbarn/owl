@@ -4,8 +4,9 @@
  * Copyright (c) 2019-2019 Jianxin Zhao <jianxin.zhao@cl.cam.ac.uk>
  *)
 
-let map_then_combine_string ?(sep=" ") fn x =
-  Array.map fn x |> Owl_utils_array.to_string ~sep (fun x -> x)
+(* ...actually a useless wrapper *)
+let map_then_combine_string ?(sep="") fn x =
+  Owl_utils_array.to_string ~sep fn x
 
 
 let htbl_to_arr htbl =

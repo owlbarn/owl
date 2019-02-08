@@ -8,12 +8,14 @@
 open Owl_converter_types
 open Owl_converter_utils
 
-let make_tftensor ?string_val ?float_val dtype shape =
+
+let make_tftensor ?tensor_content ?string_val ?float_val dtype shape =
   {
-    dtype        = dtype;
-    tensor_shape = shape;
-    string_val   = string_val;
-    float_val    = float_val
+    dtype          = dtype;
+    tensor_shape   = shape;
+    tensor_content = tensor_content;
+    string_val     = string_val;
+    float_val      = float_val
   }
 
 
@@ -36,7 +38,7 @@ let make_argdef ?typ ?typ_attr ?num_attr
   }
 
 
-let argdef_to_string name argdef =
+let argdef_to_pbtxt name argdef =
   let get_str ?(quote=true) x label =
     let formatter =
       if (quote = true) then (Printf.sprintf "%s: \"%s\"\n")
@@ -59,45 +61,56 @@ let argdef_to_string name argdef =
     typ typ_attr num_attr typ_list_attr is_ref
 
 
-let tfop_attr_to_string (attr : tfop_attr) =
+let tfop_attr_to_pbtxt (attr : tfop_attr) =
   let name_str = Printf.sprintf "name: \"%s\"\n" attr.name in
   let type_str = Printf.sprintf "type: \"%s\"\n" attr.typ in
   Printf.sprintf "attr {\n%s%s}\n" name_str type_str
 
 
-let dim_to_string dim =
+let dim_to_pbtxt dim =
   Printf.sprintf "dim {\nsize: %d\n}\n" dim
 
 
-let tensor_to_string v =
+(* TODO: incorprate the unknown_rank situation;
+ * empty shape should be printed as is.
+ *)
+let shape_to_pbtxt shape =
+  (* if (shape = [||]) then "unknown_rank: true\n"
+  else map_then_combine_string dim_to_pbtxt shape *)
+  Owl_utils_array.to_string ~sep:"" dim_to_pbtxt shape
+
+
+let tensor_to_pbtxt v =
   let dtype_str = v.dtype in
-  let tshp_str = map_then_combine_string ~sep:"" dim_to_string v.tensor_shape in
+  let tshp_str = shape_to_pbtxt v.tensor_shape in
   let strval_str =
     match v.string_val with
-    (* correct seprator? *)
-    | Some s -> Printf.sprintf "string_val: \"%s\"\n" (Owl_utils_array.to_string ~sep:"," (fun n -> n) s)
+    | Some s ->
+      let f x = Printf.sprintf "string_val: \"%s\"\n" x in
+      map_then_combine_string f s
     | None   -> ""
   in
   let fltval_str =
     match v.float_val with
-    | Some f -> Printf.sprintf "float_val: %f\n" f.(0)
+    | Some n ->
+      let f x = Printf.sprintf "float_val: %f\n" x in
+      map_then_combine_string f n
     | None   -> ""
   in
   Printf.sprintf "dtype: %s\ntensor_shape:{\n%s}\n%s%s" dtype_str tshp_str strval_str fltval_str
 
 
-let rec tfattrvalue_to_string attrv =
+let rec tfattrvalue_to_pbtxt attrv =
   match attrv with
-  | ATTR_Nil      -> ""
-  | ATTR_Int v    -> Printf.sprintf "i: %d\n" v
-  | ATTR_String v -> Printf.sprintf "s: \"%s\"\n" v
-  | ATTR_Bool v   -> Printf.sprintf "b: %b\n" v
-  | ATTR_Float v  -> Printf.sprintf "f: %f\n" v
-  | ATTR_Tensor v -> Printf.sprintf "tensor {\n%s}\n" (tensor_to_string v)
-  | ATTR_Type v   -> Printf.sprintf "type: %s\n" v
-  | ATTR_Shape v  ->
-      let shp_str = map_then_combine_string ~sep:"" dim_to_string v in
-      Printf.sprintf "shape {\n%s}\n" shp_str
-  | ATTR_List v   ->
-      let list_str = map_then_combine_string tfattrvalue_to_string v in
+  | ATTR_Nil        -> ""
+  | ATTR_Int v      -> Printf.sprintf "i: %d\n" v
+  | ATTR_String v   -> Printf.sprintf "s: \"%s\"\n" v
+  | ATTR_Bool v     -> Printf.sprintf "b: %b\n" v
+  | ATTR_Float v    -> Printf.sprintf "f: %f\n" v
+  | ATTR_Tensor v   -> Printf.sprintf "tensor {\n%s}\n" (tensor_to_pbtxt v)
+  | ATTR_Type v     -> Printf.sprintf "type: %s\n" v
+  | ATTR_Shape v    -> Printf.sprintf "shape {\n%s}\n" (shape_to_pbtxt v)
+  | ATTR_List v     ->
+      let list_str = map_then_combine_string tfattrvalue_to_pbtxt v in
       Printf.sprintf "list {\n%s}\n" list_str
+  | ATTR_Namelist _ -> failwith "not implemented yet"

@@ -25,6 +25,9 @@ module Make
   }
 
 
+  (* Graph version is NOT tensorflow version;
+   * defined by TF_GRAPH_DEF_VERSION in core/public/version.h
+   *)
   let create () =
     {
       nodes    = [||];
@@ -39,23 +42,23 @@ module Make
     Hashtbl.add tfgraph.nametbl n_old n_new
 
 
-  (* a bad implementation *)
+  (* a bad implementation; maybe change to Hashtbl later? *)
   let get_tfnode tfgraph name =
     let nodes = Array.to_list tfgraph.nodes in
     let ns = List.filter (fun n -> (get_name n) = name) nodes in
     List.hd ns
 
 
-  (* Rule: the output node that every one should connect to is put in the first element of returned array. *)
   let _make_initialisers (op : Symbol.Shape.Type.op) name =
     match op with
-    | Ones shp ->
+    | Ones shp    ->
       let tvalue = make_tftensor ~float_val:[|1.|] "DT_FLOAT" shp in
       [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name shp (ATTR_Tensor tvalue)) |]
+    | Uniform shp -> 
+      let
     | _ -> failwith "Initialiser not implemented."
 
 
-  (* TODO: increase name id in order rather than randomly *)
   let make_variable_nodes op name out_shp =
 
     let initialisers = _make_initialisers op name in
@@ -64,31 +67,79 @@ module Make
     let vname = Printf.sprintf "%s/%s" name name in
     let var = TFVariable (TFVariable.create vname out_shp "DT_FLOAT") in
 
-    let rname = name ^ "/read" ^ (Random.int 100 |> string_of_int) in
+    let rname = name ^ "/read" in
     let read = TFIdentity (TFIdentity.create rname [|vname|]
       out_shp "DT_FLOAT" name)
     in
 
-    let aname = name ^ "/Assign" ^ (Random.int 100 |> string_of_int) in
+    let aname = name ^ "/Assign" in
     let assign = TFAssign (TFAssign.create ~refv:vname
       ~value:iname aname out_shp "DT_FLOAT")
     in
 
-    (* RULE: only one node is named "init" in the whole graph *)
     (* TODO: How can I get another node from the graph? I.E. gloabal view for each node; or at least some nodes. This is an important decision to make. *)
     (* let init = get_tfnode "init" in
     let init_inputs = get_inputs init in
     set_inputs init (Array.append init_inputs [|aname|]); *)
-
     (Array.append [|var; read; assign|] initialisers),
     (name, aname)
+
+
+  (* TODO *)
+  let make_sum_nodes = ()
+
+
+  (* NOTE: out_shp and shape are not the same thing *)
+  let _make_stack_for_stridedslice ?(_content=None) name shp_len =
+    let dummy_tensor_content = Bytes.create 1 in (* tmp *)
+    let shp = [| shp_len |] in
+    let stensor = ATTR_Tensor (make_tftensor
+      ~tensor_content:dummy_tensor_content
+      "DT_INT32" shp)
+    in
+    TFConst (TFConst.create ~dtype:"DT_INT32" name shp stensor)
+
+
+  (* TODO: the computation details are tmp and wrong *)
+  let make_stridedslice_nodes _index name inputs out_shp =
+    let shp_len = Array.length out_shp - 1 in
+    let name0 = name ^ "/stack_0" in
+    let name1 = name ^ "/stack_1" in
+    let name2 = name ^ "/stack_2" in
+    let stack0 = _make_stack_for_stridedslice name0 shp_len in
+    let stack1 = _make_stack_for_stridedslice name1 shp_len in
+    let stack2 = _make_stack_for_stridedslice name2 shp_len in
+
+    let inputs = Array.append inputs [|name0; name1; name2|] in
+    let ss = TFStridedSlice (TFStridedSlice.create name inputs out_shp
+      0 0 0 0 0) in (* tmp: dummy numbers!!! *)
+    [|ss; stack0; stack1; stack2|], ("", "")
+
+
+  let make_reshape_nodes name inputs shp =
+    let dummy_tensor_content = shp
+      |> Owl_utils_array.to_string string_of_int
+      |> Bytes.of_string
+    in
+    let stensor = ATTR_Tensor (make_tftensor
+      ~tensor_content:dummy_tensor_content
+      "DT_INT32" shp)
+    in
+    let sname = name ^ "/shape" in
+    let snode = TFConst (TFConst.create ~dtype:"DT_INT32" sname shp stensor) in
+
+    let inputs = Array.append inputs [|sname|] in
+    let rnode = TFReshape (TFReshape.create name inputs shp) in
+    [|rnode; snode|], ("", "")
 
 
   (* The logic of how one owl node turned into multiple tfnodes is implemented
    * here.
    * Currently return node array and "name_update" : string * string; meaning,
-   * whoever uses me as his input, now change it to one of my subnodes. Need to
-   * think about how the input relation be updated later.
+   * whoever uses me as his input, now change it to one of my subnodes.
+   * About the `attr.shape.(0)` and `(attr.value).(0)` below, currently only
+   * `draw` operation in owl CGraph returns two outputs, so I'll stick with
+   * this tmp solution for now.
    *)
   let make_tfnodes node =
     let name = Owl_graph.name node in
@@ -97,13 +148,14 @@ module Make
       Owl_graph.name n
     ) (Owl_graph.parents node)
     in
-    let out_shp = attr.shape.(0) in (* tmp: only uses the first output *)
+     (* tmp: only uses the first output *)
+    let out_shp = attr.shape.(0) in
     let out_shp =
       match out_shp with
       | Some s -> s
       | None   -> [||]
     in
-    (* "value" only used by const node? *)
+    (* "value" field only used by const node? Leave it here for now. *)
     let v = (attr.value).(0) in
     let value =
       if (Device.is_arr v) then (
@@ -121,6 +173,7 @@ module Make
       )
     in
     match attr.op with
+    | Neg                 -> [| TFNeg (TFNeg.create name inputs out_shp)|], ("", "")
     | Dot (a, b, _, _)    -> [| TFMatMul (TFMatMul.create name inputs out_shp a b) |], ("", "")
     | Add                 -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
     | ScalarAdd           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
@@ -137,18 +190,19 @@ module Make
     | Relu                -> [| TFRelu (TFRelu.create name inputs out_shp) |], ("", "")
     | Conv2d (p, s)       -> [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
     | MaxPool2d (p, s, k) -> [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
+    | Sum a               -> [| TFSum (TFSum.create name ~axis:[|a|] inputs out_shp) |], ("", "")
+    | SumReduce a         -> [| TFSum (TFSum.create name ~axis:a inputs out_shp) |], ("", "")
+    | Sum'                -> [| TFSum (TFSum.create name inputs out_shp) |], ("", "")
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
     | Const               -> [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
+    | Reshape s           -> make_reshape_nodes name inputs s
     | Ones _              -> make_variable_nodes attr.op name out_shp
+    | Get i               -> make_stridedslice_nodes i name inputs out_shp
     | _                   -> failwith "unsupported operation"
 
 
-  (* for debugging *)
-  let to_dot _nodes = ()
-
-
   let to_pbtxt graphdef =
-    let node_str = Owl_converter_utils.map_then_combine_string ~sep:"\n" (fun n ->
+    let node_str = Owl_utils_array.to_string ~sep:"\n" (fun n ->
       to_pbtxt n
     ) graphdef.nodes
     in
