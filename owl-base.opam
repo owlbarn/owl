@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2"
 maintainer: "Liang Wang <ryanrhymes@gmail.com>"
 authors: [ "Liang Wang" ]
 license: "MIT"
@@ -11,12 +11,12 @@ description: "Owl is an OCaml scientific library."
 build: [
   [ "dune" "subst" ] {pinned}
   [ "dune" "build" "-p" name "-j" jobs ]
+  [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
 ]
 
 depends: [
+  "ocaml" {>= "4.06.0"}
   "alcotest" {test}
   "base-bigarray"
   "dune" {build}
 ]
-
-available: [ ocaml-version >= "4.06.0" ]
