@@ -24,4 +24,4 @@
 (executable
  (name owl_aeos_gen)
  (modules owl_aeos_gen)
- (libraries owl-aeos))
+ (libraries owl_aeos))
