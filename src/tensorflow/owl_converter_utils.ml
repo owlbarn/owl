@@ -1,8 +1,8 @@
 (*
  * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2019-2019 Jianxin Zhao <jianxin.zhao@cl.cam.ac.uk>
  *)
-
 
 let map_then_combine_string ?(sep=" ") fn x =
   Array.map fn x |> Owl_utils_array.to_string ~sep (fun x -> x)
