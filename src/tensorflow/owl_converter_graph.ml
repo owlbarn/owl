@@ -57,7 +57,7 @@ module Make
     in
     let tvalue = make_tftensor ~tensor_content "DT_INT32" [|Array.length shp|] in
     let sname = name ^ "/shape" in
-    let shape = TFConst (TFConst.create ~dtype:"DT_INT32" sname shp (ATTR_Tensor tvalue)) in
+    let shape = TFConst (TFConst.create ~dtype:"DT_INT32" sname [|Array.length shp|] (ATTR_Tensor tvalue)) in
 
     (* RandomUniform node *)
     let ru_name = name in
@@ -113,8 +113,8 @@ module Make
     let var = TFVariable (TFVariable.create vname out_shp "DT_FLOAT") in
 
     let rname = name ^ "/read" in
-    let read = TFIdentity (TFIdentity.create rname [|vname|]
-      out_shp "DT_FLOAT" name)
+    let read = TFIdentity (TFIdentity.create ~cls:[|vname|] rname [|vname|]
+      out_shp "DT_FLOAT")
     in
 
     let aname = name ^ "/assign" in
@@ -235,8 +235,12 @@ module Make
     | DivScalar           -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
     | ScalarDiv           -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
     | Relu                -> [| TFRelu (TFRelu.create name inputs out_shp) |], ("", "")
-    | Conv2d (p, s)       -> [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
-    | MaxPool2d (p, s, k) -> [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
+    | Conv2d (p, s)       ->
+      let s = [|1; s.(0); s.(1); 1|] in
+      [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
+    | MaxPool2d (p, s, k) ->
+      let s = [|1; s.(0); s.(1); 1|] in
+      [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
     | Sum a               -> [| TFSum (TFSum.create name ~axis:[|a|] inputs out_shp) |], ("", "")
     | SumReduce a         -> [| TFSum (TFSum.create name ~axis:a inputs out_shp) |], ("", "")
     | Sum'                -> [| TFSum (TFSum.create name inputs out_shp) |], ("", "")

@@ -42,7 +42,7 @@ module Make
     let filename_tensor_name = make_tftensor
       ~string_val:[|ckpt_file_name|] "DT_STRING" [||] in
     let save_const = TFConst (TFConst.create tfsaver.filename_tensor_name
-      [|1|] (ATTR_Tensor filename_tensor_name))
+      [||] (ATTR_Tensor filename_tensor_name))
     in
 
     let save_tensor_name = make_tftensor
@@ -61,12 +61,13 @@ module Make
       [|(get_name save_const);
         (get_name save_tensor_name);
         (get_name save_shape)|]
-      "DT_FLOAT")
+      [||])
     in
     let control_dep = TFIdentity (TFIdentity.create
+      ~cls:[|tfsaver.filename_tensor_name|]
       tfsaver.save_tensor_name
       [|(get_name save_const); ("^" ^ (get_name save))|]
-      [||] "DT_STRING" tfsaver.filename_tensor_name
+      [||] "DT_STRING"
     )
     in
 
@@ -86,7 +87,7 @@ module Make
       [|(get_name save_const);
         (get_name restore_tensor_name);
         (get_name restore_shape)|]
-      "DT_FLOAT")
+      [||])
     in
 
     let restore_all = TFNoop (TFNoop.create tfsaver.restore_op_name [||]) in
@@ -104,6 +105,12 @@ module Make
   (* This update process is horribly complex *)
   let _add_const_string_value tfgraph node_name added =
     let node = TFgraph.get_tfnode tfgraph node_name in
+
+    (* update output_shape *)
+    let out_shp = get_output_shape node in
+    set_output_shape node [|out_shp.(0) + 1|];
+
+    (* update value *)
     let const_val = get_value node in
     let string_val =
       match const_val with
@@ -135,7 +142,13 @@ module Make
   let _add_input tfgraph node_name added =
     let node = TFgraph.get_tfnode tfgraph node_name in
     let inputs = get_inputs node in
-    set_inputs node (Array.append inputs added )
+    set_inputs node (Array.append inputs added)
+
+
+  let _add_dtypes tfgraph node_name added =
+    let node = TFgraph.get_tfnode tfgraph node_name in
+    let dtypes = get_dtypes node in
+    set_dtypes node (Array.append dtypes added)
 
 
   let add_link tfsaver tfgraph tfnode =
@@ -151,6 +164,9 @@ module Make
 
     _add_input tfgraph save_name [|nname|];
     _add_input tfgraph tfsaver.restore_op_name [|("^" ^ name)|];
+
+    _add_dtypes tfgraph save_name [|"DT_FLOAT"|];
+    _add_dtypes tfgraph restore_name [|"DT_FLOAT"|];
 
     _add_const_string_value tfgraph save_tensor_names [|nname|];
     _add_const_string_value tfgraph save_shape_slices [|""|];
