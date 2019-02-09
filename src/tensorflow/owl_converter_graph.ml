@@ -168,10 +168,11 @@ module Make
     in
     let stensor = ATTR_Tensor (make_tftensor
       ~tensor_content:dummy_tensor_content
-      "DT_INT32" shp)
+      "DT_INT32" [|Array.length shp|])
     in
     let sname = name ^ "/shape" in
-    let snode = TFConst (TFConst.create ~dtype:"DT_INT32" sname shp stensor) in
+    let snode = TFConst (TFConst.create ~dtype:"DT_INT32" sname
+      [|Array.length shp|] stensor) in
 
     let inputs = Array.append inputs [|sname|] in
     let rnode = TFReshape (TFReshape.create name inputs shp) in
@@ -240,6 +241,7 @@ module Make
       [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
     | MaxPool2d (p, s, k) ->
       let s = [|1; s.(0); s.(1); 1|] in
+      let k = [|1; k.(0); k.(1); 1|] in
       [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
     | Sum a               -> [| TFSum (TFSum.create name ~axis:[|a|] inputs out_shp) |], ("", "")
     | SumReduce a         -> [| TFSum (TFSum.create name ~axis:a inputs out_shp) |], ("", "")

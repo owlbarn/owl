@@ -47,8 +47,12 @@ module Make
 
     (* 0th iterations: name each node *)
     iter_ancestors (fun node ->
-      let id = Owl_graph.id node in
-      Owl_graph.set_name node (Printf.sprintf "owlnode%d" id);
+      let name = Owl_graph.name node in
+      let name = if (name <> "") then name else (
+        let id = Owl_graph.id node in
+        Printf.sprintf "owlnode%d" id
+      ) in
+      Owl_graph.set_name node name;
     ) outputs;
 
     (* 1st iteration : on owl_cgraph *)

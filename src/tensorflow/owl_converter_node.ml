@@ -983,15 +983,25 @@ module TFMaxPool = struct
   let opname = "MaxPool"
 
 
-  (* To update *)
-  let opdef = nil_def
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "input" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "output" |] in
+    let attr = [|
+      make_tfop_attr "T" "type";
+      make_tfop_attr "strides" "list(int)";
+      make_tfop_attr "ksize" "list(int)";
+      make_tfop_attr "padding" "string";
+      make_tfop_attr "data_format" "string";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr opname
 
 
   let create ?(cls=[||]) ?(device="") name inputs out_shp padding strides ksize =
     let padding =
       match padding with
-      | Owl_types_common.SAME  -> "Same"
-      | Owl_types_common.VALID -> "Valid"
+      | Owl_types_common.SAME  -> "SAME"
+      | Owl_types_common.VALID -> "VALID"
     in
     {
       name    = name;
@@ -1780,10 +1790,10 @@ module TFReshape = struct
 
   let opdef =
     let input_arg  = [|
-      make_argdef ~typ:"T" "tensor";
-      make_argdef ~typ:"Tshape" "shape";
+      make_argdef ~typ_attr:"T" "tensor";
+      make_argdef ~typ_attr:"Tshape" "shape";
     |] in
-    let output_arg = [| make_argdef ~typ:"T" "output" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "output" |] in
     let attr = [|
       make_tfop_attr "T" "type";
       make_tfop_attr "Tshape" "type";
