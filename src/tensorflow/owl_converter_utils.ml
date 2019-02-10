@@ -28,7 +28,9 @@ let syscall cmd =
   Buffer.contents buf
 
 
-(* TODO: still have issues; rewrite to more formal method. Ref: https://goo.gl/ipu2gZ *)
+(* TODO: still have issues; rewrite to more formal method. Ref: https://goo.gl/ipu2gZ
+ * https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/framework/tensor_util_test.py
+ *)
 let serialise_tensor_content dtype lst_str =
   (* format of lst_str: 5,5,1,32; dtype: int32/float32/... *)
   let cmd = Printf.sprintf "python -c 'import numpy as np; x = np.array([%s], dtype=np.%s); print(repr(x.tostring()))'" lst_str dtype in
