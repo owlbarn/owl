@@ -184,7 +184,7 @@ Topological sort of a given graph using a DFS order. Assumes that the graph is
 acyclic.
  *)
 
-val pp_node : Format.formatter -> 'a node -> unit
+val pp_node : Format.formatter -> 'a node -> unit [@@ocaml.toplevel_printer]
 (** Pretty print a given node. *)
 
 val to_string : bool -> 'a node array -> string
