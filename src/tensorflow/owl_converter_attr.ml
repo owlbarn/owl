@@ -97,7 +97,12 @@ let tensor_to_pbtxt v =
       map_then_combine_string f n
     | None   -> ""
   in
-  Printf.sprintf "dtype: %s\ntensor_shape:{\n%s}\n%s%s" dtype_str tshp_str strval_str fltval_str
+  let tensor_content_str =
+    match v.tensor_content with
+    | Some c -> Printf.sprintf "tensor_content: \"%s\"\n" (Bytes.to_string c)
+    | None   -> ""
+  in
+  Printf.sprintf "dtype: %s\ntensor_shape:{\n%s}\n%s%s%s" dtype_str tshp_str strval_str fltval_str tensor_content_str
 
 
 let rec tfattrvalue_to_pbtxt attrv =

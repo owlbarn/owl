@@ -48,15 +48,19 @@ module Make
 
     (* 0th iterations: name each node *)
     iter_ancestors (fun node ->
-      let id = Owl_graph.id node in
-      Owl_graph.set_name node (Printf.sprintf "owlnode%d" id);
+      let name = Owl_graph.name node in
+      let name = if (name <> "") then name else (
+        let id = Owl_graph.id node in
+        Printf.sprintf "owlnode%d" id
+      ) in
+      Owl_graph.set_name node name;
     ) outputs;
 
     (* 1st iteration : on owl_cgraph *)
     let tfgraph = TFgraph.create () in
     iter_ancestors (fun node ->
       let tfnodes, name_update = TFgraph.make_tfnodes node in
-      TFgraph.add_tfnodes tfgraph tfnodes name_update
+      TFgraph.add_tfnodes tfgraph tfnodes name_update;
     ) outputs;
 
     (* 2nd iteration : change tf_nodes's input nodes' names
@@ -111,6 +115,7 @@ module Make
    * - data type fixed to DT_FLOAT
    * - some seemingly unimportant attr of nodes like "default_value" are emitted. Add when required.
    * - all those random length of Hashtbl.
+   * - dtype  / T / type etc. is not clear
    *)
   let convert graph =
     let tf_cgraph = make_tf_cgraph () in

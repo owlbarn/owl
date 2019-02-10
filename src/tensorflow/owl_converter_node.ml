@@ -84,6 +84,7 @@ module TFNeg = struct
     mutable out_shp : int array;
     mutable dtype   : string;
     mutable device  : string;
+    mutable cls     : string array;
   }
 
 
@@ -97,7 +98,7 @@ module TFNeg = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(device="") name inputs out_shp =
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
     {
       name    = name;
       op_name = opname;
@@ -105,14 +106,18 @@ module TFNeg = struct
       out_shp = out_shp;
       dtype   = "DT_FLOAT";
       device  = device;
+      cls     = cls;
     }
 
 
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
-    |]
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -159,6 +164,7 @@ module TFMatMul = struct
     mutable trans_b : bool;
     mutable dtype   : string;
     mutable device  : string;
+    mutable cls     : string array;
   }
 
 
@@ -184,7 +190,7 @@ module TFMatMul = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(device="") name inputs out_shp trans_a trans_b =
+  let create ?(cls=[||]) ?(device="") name inputs out_shp trans_a trans_b =
     {
       name    = name;
       op_name = opname;
@@ -194,6 +200,7 @@ module TFMatMul = struct
       trans_b = trans_b;
       dtype   = "DT_FLOAT";
       device  = device;
+      cls     = cls;
     }
 
 
@@ -202,8 +209,11 @@ module TFMatMul = struct
       ("transpose_a", (ATTR_Bool n.trans_a));
       ("transpose_b", (ATTR_Bool n.trans_b));
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
-    |]
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -247,6 +257,7 @@ module TFAdd = struct
     mutable out_shp : int array;
     mutable dtype   : string;
     mutable device  : string;
+    mutable cls     : string array;
   }
 
   let opname = "Add"
@@ -268,22 +279,26 @@ module TFAdd = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(device="") name inputs out_shp =
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
       out_shp = out_shp;
       dtype   = "DT_FLOAT";
-      device  = device
+      device  = device;
+      cls     = cls;
     }
 
 
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
-    |]
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -327,6 +342,7 @@ module TFSub = struct
     mutable out_shp : int array;
     mutable dtype   : string;
     mutable device  : string;
+    mutable cls     : string array;
   }
 
 
@@ -350,22 +366,26 @@ module TFSub = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(device="") name inputs out_shp =
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
       out_shp = out_shp;
       device  = device;
-      dtype   = "DT_FLOAT"
+      dtype   = "DT_FLOAT";
+      cls     = cls;
     }
 
 
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
-    |]
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -409,6 +429,7 @@ module TFMul = struct
     mutable out_shp : int array;
     mutable dtype   : string;
     mutable device  : string;
+    mutable cls     : string array;
   }
 
 
@@ -432,22 +453,26 @@ module TFMul = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(device="") name inputs out_shp =
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
       out_shp = out_shp;
       device  = device;
-      dtype   = "DT_FLOAT"
+      dtype   = "DT_FLOAT";
+      cls     = cls;
     }
 
 
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
-    |]
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -491,6 +516,7 @@ module TFDiv = struct
     mutable out_shp : int array;
     mutable dtype   : string;
     mutable device  : string;
+    mutable cls     : string array;
   }
 
 
@@ -514,22 +540,26 @@ module TFDiv = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(device="") name inputs out_shp =
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
       out_shp = out_shp;
       device  = device;
-      dtype   = "DT_FLOAT"
+      dtype   = "DT_FLOAT";
+      cls     = cls;
     }
 
 
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
-    |]
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -573,6 +603,7 @@ module TFConst = struct
     mutable value   : tfattrvalue;
     mutable dtype   : string;
     mutable device  : string;
+    mutable cls     : string array;
   }
 
 
@@ -592,23 +623,27 @@ module TFConst = struct
     make_opdef ~output_arg ~attr opname
 
 
-  let create ?(dtype="DT_STRING") ?(device="") name out_shp value =
+  let create ?(cls=[||]) ?(dtype="DT_STRING") ?(device="") name out_shp value =
     {
       name    = name;
       op_name = opname;
       out_shp = out_shp;
       value   = value;
       device  = device;
-      dtype   = dtype
+      dtype   = dtype;
+      cls     = cls;
     }
 
 
   let make_nodedef n =
     let node_attr = [|
       ("dtype", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("value", n.value);
-    |]
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -627,6 +662,9 @@ module TFConst = struct
 
 
   let get_output_shape n = n.out_shp
+
+
+  let set_output_shape n s = n.out_shp <- s
 
 
   let get_inputs _n = [||]
@@ -660,6 +698,7 @@ module TFPlaceholder = struct
     mutable out_shp : int array;
     mutable dtype   : string;
     mutable device  : string;
+    mutable cls     : string array;
   }
 
 
@@ -679,13 +718,14 @@ module TFPlaceholder = struct
     make_opdef ~output_arg ~attr opname
 
 
-  let create ?(device="") name out_shp =
+  let create ?(cls=[||]) ?(device="") name out_shp =
     {
       name    = name;
       op_name = opname;
       out_shp = out_shp;
       device  = device;
-      dtype   = "DT_FLOAT"
+      dtype   = "DT_FLOAT";
+      cls     = cls;
     }
 
 
@@ -693,8 +733,12 @@ module TFPlaceholder = struct
     let node_attr = [|
       ("dtype", (ATTR_Type n.dtype));
       ("shape", (ATTR_Shape n.out_shp));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
     |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
     {
       name      = n.name;
       op_name   = opname;
@@ -736,6 +780,7 @@ module TFRelu = struct
     mutable inputs  : string array;
     mutable out_shp : int array;
     mutable device  : string;
+    mutable cls     : string array;
   }
 
 
@@ -743,23 +788,41 @@ module TFRelu = struct
 
 
   (* To update *)
-  let opdef = nil_def
+  let opdef =
+    let input_arg  = [|
+      make_argdef ~typ_attr:"T" "features";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_attr:"T" "activations";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "T" "type";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(device="") name inputs out_shp =
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
       out_shp = out_shp;
       device  = device;
+      cls     = cls;
     }
 
 
   let make_nodedef n =
     let node_attr = [|
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
-    |]
+      ("T", ATTR_Type "DT_FLOAT");
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -797,15 +860,17 @@ end
 module TFConv2D = struct
 
   type t = {
-    mutable name     : string;
-    mutable op_name  : string;
-    mutable inputs   : string array;
-    mutable out_shp  : int array;
-    mutable strides  : int array;
-    mutable padding  : string;
-    mutable dilation : int array;
-    mutable dtype    : string;
-    mutable device   : string;
+    mutable name        : string;
+    mutable op_name     : string;
+    mutable inputs      : string array;
+    mutable out_shp     : int array;
+    mutable strides     : int array;
+    mutable padding     : string;
+    mutable dilations   : int array;
+    mutable data_format : string;
+    mutable dtype       : string;
+    mutable device      : string;
+    mutable cls         : string array;
   }
 
 
@@ -813,36 +878,60 @@ module TFConv2D = struct
 
 
   (* To update *)
-  let opdef = nil_def
+  let opdef =
+    let input_arg  = [|
+      make_argdef ~typ_attr:"T" "input";
+      make_argdef ~typ_attr:"T" "filter";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_attr:"T" "output";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "T" "type";
+      make_tfop_attr "strides" "list(int)";
+      make_tfop_attr "padding" "string";
+      make_tfop_attr "dilations" "list(int)";
+      make_tfop_attr "data_format" "string";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(device="") name inputs out_shp padding strides =
+  let create ?(cls=[||]) ?(device="") name inputs out_shp padding strides =
     let padding =
       match padding with
-      | Owl_types_common.SAME  -> "Same"
-      | Owl_types_common.VALID -> "Valid"
+      | Owl_types_common.SAME  -> "SAME"
+      | Owl_types_common.VALID -> "VALID"
     in
     {
-      name     = name;
-      op_name  = opname;
-      inputs   = inputs;
-      out_shp  = out_shp;
-      strides  = strides;
-      padding  = padding;
-      dilation = [|1;1;1;1|];
-      dtype    = "DT_FLOAT";
-      device   = device;
+      name        = name;
+      op_name     = opname;
+      inputs      = inputs;
+      out_shp     = out_shp;
+      strides     = strides;
+      padding     = padding;
+      dilations   = [|1;1;1;1|];
+      data_format = "NHWC";
+      dtype       = "DT_FLOAT";
+      device      = device;
+      cls         = cls;
     }
 
 
   let make_nodedef n =
     let node_attr = [|
       ("strides", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.strides)));
-      ("dilation", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.dilation)));
+      ("dilations", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.dilations)));
       ("padding", (ATTR_String n.padding));
+      ("data_format", (ATTR_String n.data_format));
       ("T", (ATTR_Type "DT_FLOAT"));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
-    |]
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -888,31 +977,43 @@ module TFMaxPool = struct
     mutable padding  : string;
     mutable ksize    : int array;
     mutable device   : string;
+    mutable cls      : string array;
   }
 
 
   let opname = "MaxPool"
 
 
-  (* To update *)
-  let opdef = nil_def
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "input" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "output" |] in
+    let attr = [|
+      make_tfop_attr "T" "type";
+      make_tfop_attr "strides" "list(int)";
+      make_tfop_attr "ksize" "list(int)";
+      make_tfop_attr "padding" "string";
+      make_tfop_attr "data_format" "string";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(device="") name inputs out_shp padding strides ksize =
+  let create ?(cls=[||]) ?(device="") name inputs out_shp padding strides ksize =
     let padding =
       match padding with
-      | Owl_types_common.SAME  -> "Same"
-      | Owl_types_common.VALID -> "Valid"
+      | Owl_types_common.SAME  -> "SAME"
+      | Owl_types_common.VALID -> "VALID"
     in
     {
-      name     = name;
-      op_name  = opname;
-      inputs   = inputs;
-      out_shp  = out_shp;
-      strides  = strides;
-      padding  = padding;
-      ksize    = ksize;
-      device   = device;
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      strides = strides;
+      padding = padding;
+      ksize   = ksize;
+      device  = device;
+      cls     = cls;
     }
 
 
@@ -922,8 +1023,11 @@ module TFMaxPool = struct
       ("ksize", (ATTR_List (Array.map (fun n -> ATTR_Int n) n.ksize)));
       ("padding", (ATTR_String n.padding));
       ("T", (ATTR_Type "DT_FLOAT"));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
-    |]
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -970,6 +1074,7 @@ module TFAssign = struct
     mutable use_locking    : bool;
     mutable validate_shape : bool;
     mutable device         : string;
+    mutable cls            : string array;
   }
 
 
@@ -995,7 +1100,7 @@ module TFAssign = struct
     make_opdef ~input_arg ~output_arg ~attr "Assign"
 
 
-  let create ?(device="") ~refv ~value name out_shp dtype =
+  let create ?(cls=[||]) ?(device="") ~refv ~value name out_shp dtype =
     {
       name           = name;
       op_name        = opname;
@@ -1006,17 +1111,21 @@ module TFAssign = struct
       use_locking    = true;
       validate_shape = true;
       device         = device;
+      cls            = cls;
     }
 
 
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
-      ("_class", (ATTR_List [|ATTR_String ("loc:@" ^ n.value)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      (* ("_class", (ATTR_List [|ATTR_String ("loc:@" ^ n.value)|])); *)
       ("use_locking", (ATTR_Bool n.use_locking));
       ("validate_shape", (ATTR_Bool n.validate_shape));
-    |]
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -1059,8 +1168,8 @@ module TFIdentity = struct
     mutable inputs  : string array;
     mutable out_shp : int array;
     mutable dtype   : string;
-    mutable cls     : string;
     mutable device  : string;
+    mutable cls     : string array;
   }
 
 
@@ -1083,24 +1192,26 @@ module TFIdentity = struct
     make_opdef ~input_arg ~output_arg ~attr "Identity"
 
 
-  let create ?(device="") name inputs out_shp dtype cls =
+  let create ?(cls=[||]) ?(device="") name inputs out_shp dtype =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
       out_shp = out_shp;
       dtype   = dtype;
-      cls     = cls;
       device  = device;
+      cls     = cls;
     }
 
 
   let make_nodedef n =
     let node_attr = [|
       ("T", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
-      ("_class", ATTR_List [|ATTR_String ("loc:@" ^ n.cls)|]);
-    |]
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -1141,8 +1252,9 @@ module TFSave = struct
     mutable name    : string;
     mutable op_name : string;
     mutable inputs  : string array;
-    mutable dtype   : string;
+    mutable dtypes  : string array;
     mutable device  : string;
+    mutable cls     : string array;
   }
 
 
@@ -1164,22 +1276,29 @@ module TFSave = struct
     make_opdef ~input_arg ~attr opname
 
 
-  let create ?(device="") name inputs dtype =
+  let create ?(cls=[||]) ?(device="") name inputs dtypes =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
-      dtype   = dtype;
+      dtypes  = dtypes;
       device  = device;
+      cls     = cls;
     }
 
 
   let make_nodedef n =
+    let dtypes = Array.map (fun x -> ATTR_Type x) n.dtypes in
+    let node_attr = [|("dtypes", ATTR_List dtypes)|] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
     {
       name      = n.name;
       op_name   = opname;
       input     = n.inputs;
-      node_attr = [|("dtypes", ATTR_List [|ATTR_Type n.dtype|])|];
+      node_attr = node_attr;
       device    = n.device
     }
 
@@ -1205,6 +1324,12 @@ module TFSave = struct
 
   let set_device n d = n.device <- d
 
+
+  let get_dtypes n = n.dtypes
+
+
+  let set_dtypes n t = n.dtypes <- t
+
 end
 
 
@@ -1214,8 +1339,9 @@ module TFRestore = struct
     mutable name    : string;
     mutable op_name : string;
     mutable inputs  : string array;
-    mutable dtype   : string;
+    mutable dtypes  : string array;
     mutable device  : string;
+    mutable cls     : string array;
   }
 
 
@@ -1240,22 +1366,29 @@ module TFRestore = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(device="") name inputs dtype =
+  let create ?(cls=[||]) ?(device="") name inputs dtypes =
     {
       name    = name;
       op_name = opname;
       inputs  = inputs;
-      dtype   = dtype;
+      dtypes  = dtypes;
       device  = device;
+      cls     = cls;
     }
 
 
   let make_nodedef n =
+    let dtypes = Array.map (fun x -> ATTR_Type x) n.dtypes in
+    let node_attr = [|("dtypes", ATTR_List dtypes)|] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
     {
       name      = n.name;
       op_name   = opname;
       input     = n.inputs;
-      node_attr = [|("dtypes", ATTR_List [|ATTR_Type n.dtype|])|];
+      node_attr = node_attr;
       device    = n.device
     }
 
@@ -1280,6 +1413,12 @@ module TFRestore = struct
 
 
   let set_device n d = n.device <- d
+
+
+  let get_dtypes n = n.dtypes
+
+
+  let set_dtypes n t = n.dtypes <- t
 
 end
 
@@ -1354,6 +1493,7 @@ module TFVariable = struct
     mutable shared_name    : string;
     mutable container      : string; (* should be of type ATTR_kv *)
     mutable device         : string;
+    mutable cls            : string array;
   }
 
 
@@ -1376,16 +1516,17 @@ module TFVariable = struct
     make_opdef ~output_arg ~attr opname
 
 
-  let create ?(device="") name out_shp dtype =
+  let create ?(cls=[||]) ?(device="") name out_shp dtype =
     {
-      name           = name;
-      op_name        = opname;
-      shape          = out_shp;
-      dtype          = dtype;
-      out_shp        = out_shp;
-      container      = ""; (* tmp *)
-      shared_name    = ""; (* tmp *)
-      device         = device;
+      name        = name;
+      op_name     = opname;
+      shape       = out_shp;
+      dtype       = dtype;
+      out_shp     = out_shp;
+      container   = ""; (* tmp *)
+      shared_name = ""; (* tmp *)
+      device      = device;
+      cls         = cls;
     }
 
 
@@ -1393,10 +1534,13 @@ module TFVariable = struct
     let node_attr = [|
       ("shape", (ATTR_Shape n.shape));
       ("dtype", (ATTR_Type n.dtype));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("container", (ATTR_String n.container));
       ("shared_name", (ATTR_String n.shared_name));
-    |]
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -1442,6 +1586,7 @@ module TFSum = struct
     mutable device         : string;
     mutable axis           : int array option;
     mutable keepdims       : bool; (*keep_dims is depleted *)
+    mutable cls            : string array;
   }
 
 
@@ -1462,16 +1607,17 @@ module TFSum = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
   (* how to print the axis when it's set to None? Think more about it using example. *)
-  let create ?(dtype="DT_FLOAT") ?(device="") ?axis name inputs out_shp =
+  let create ?(cls=[||]) ?(dtype="DT_FLOAT") ?(device="") ?axis name inputs out_shp =
     {
-      name           = name;
-      op_name        = opname;
-      inputs         = inputs;
-      out_shp        = out_shp;
-      dtype          = dtype;
-      device         = device;
-      axis           = axis;
-      keepdims       = true (* owl behaviour *)
+      name     = name;
+      op_name  = opname;
+      inputs   = inputs;
+      out_shp  = out_shp;
+      dtype    = dtype;
+      device   = device;
+      axis     = axis;
+      keepdims = true; (* owl behaviour *)
+      cls      = cls;
     }
 
 
@@ -1480,8 +1626,11 @@ module TFSum = struct
       ("T", (ATTR_Type "DT_FLOAT"));
       ("Tidx", (ATTR_Type "DT_INT32"));
       ("keepdims", (ATTR_Bool false));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
-    |]
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -1531,6 +1680,7 @@ module TFStridedSlice = struct
     mutable ellipsis_mask    : int;
     mutable new_axis_mask    : int;
     mutable shrink_axis_mask : int;
+    mutable cls              : string array;
   }
 
 
@@ -1558,7 +1708,7 @@ module TFStridedSlice = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(dtype="DT_FLOAT") ?(device="") name inputs out_shp bm em elm nam sam =
+  let create ?(cls=[||]) ?(dtype="DT_FLOAT") ?(device="") name inputs out_shp bm em elm nam sam =
     {
       name             = name;
       op_name          = opname;
@@ -1571,6 +1721,7 @@ module TFStridedSlice = struct
       ellipsis_mask    = elm;
       new_axis_mask    = nam;
       shrink_axis_mask = sam;
+      cls              = cls;
     }
 
 
@@ -1578,13 +1729,16 @@ module TFStridedSlice = struct
     let node_attr = [|
       ("T", (ATTR_Type "DT_FLOAT"));
       ("Index", (ATTR_Type "DT_INT32"));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
       ("begin_mask", ATTR_Int n.begin_mask);
       ("end_mask", ATTR_Int n.end_mask);
       ("ellipsis_mask", ATTR_Int n.ellipsis_mask);
       ("new_axis_mask", ATTR_Int n.new_axis_mask);
       ("shrink_axis_mask", ATTR_Int n.shrink_axis_mask);
-    |]
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -1622,12 +1776,13 @@ end
 module TFReshape = struct
 
   type t = {
-    mutable name             : string;
-    mutable op_name          : string;
-    mutable inputs           : string array;
-    mutable out_shp          : int array;
-    mutable dtype            : string;
-    mutable device           : string;
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
   }
 
 
@@ -1636,10 +1791,10 @@ module TFReshape = struct
 
   let opdef =
     let input_arg  = [|
-      make_argdef ~typ:"T" "tensor";
-      make_argdef ~typ:"Tshape" "shape";
+      make_argdef ~typ_attr:"T" "tensor";
+      make_argdef ~typ_attr:"Tshape" "shape";
     |] in
-    let output_arg = [| make_argdef ~typ:"T" "output" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "output" |] in
     let attr = [|
       make_tfop_attr "T" "type";
       make_tfop_attr "Tshape" "type";
@@ -1648,7 +1803,7 @@ module TFReshape = struct
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(dtype="DT_FLOAT") ?(device="") name inputs out_shp =
+  let create ?(cls=[||]) ?(dtype="DT_FLOAT") ?(device="") name inputs out_shp =
     {
       name    = name;
       op_name = opname;
@@ -1656,6 +1811,7 @@ module TFReshape = struct
       out_shp = out_shp;
       dtype   = dtype;
       device  = device;
+      cls     = cls;
     }
 
 
@@ -1663,8 +1819,104 @@ module TFReshape = struct
     let node_attr = [|
       ("T", (ATTR_Type "DT_FLOAT"));
       ("Tshape", (ATTR_Type "DT_INT32"));
-      ("_output_shape", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+module TFRandomUniform = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable seed1   : int;
+    mutable seed2   : int;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "RandomUniform"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "shape"  |] in
+    let output_arg = [| make_argdef ~typ_attr:"dtype" "output" |] in
+    let attr = [|
+      make_tfop_attr "seed" "int";
+      make_tfop_attr "seed2" "int";
+      make_tfop_attr "dtype" "type";
+      make_tfop_attr "T" "type";
+      (* is_stateful = true *)
     |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+
+  let create ?(cls=[||]) ?(dtype="DT_FLOAT") ?(device="") name inputs out_shp s1 s2 =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = dtype;
+      device  = device;
+      seed1   = s1;
+      seed2   = s2;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type "DT_INT32"));
+      ("_class", (ATTR_List [| ATTR_String "loc@" |])); (* tmp *)
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      ("dtype", ATTR_Type n.dtype);
+      ("seed", ATTR_Int n.seed1);
+      ("seed2", ATTR_Int n.seed2);
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
     in
     {
       name      = n.name;
@@ -1701,240 +1953,267 @@ end
 
 
 type tfnode =
-  | TFNeg          of TFNeg.t
-  | TFMatMul       of TFMatMul.t
-  | TFAdd          of TFAdd.t
-  | TFSub          of TFSub.t
-  | TFMul          of TFMul.t
-  | TFDiv          of TFDiv.t
-  | TFRelu         of TFRelu.t
-  | TFConv2D       of TFConv2D.t
-  | TFMaxPool      of TFMaxPool.t
-  | TFConst        of TFConst.t
-  | TFPlaceholder  of TFPlaceholder.t
-  | TFAssign       of TFAssign.t
-  | TFIdentity     of TFIdentity.t
-  | TFSave         of TFSave.t
-  | TFRestore      of TFRestore.t
-  | TFVariable     of TFVariable.t
-  | TFSum          of TFSum.t
-  | TFStridedSlice of TFStridedSlice.t
-  | TFReshape      of TFReshape.t
-  | TFNoop         of TFNoop.t
+  | TFNeg           of TFNeg.t
+  | TFMatMul        of TFMatMul.t
+  | TFAdd           of TFAdd.t
+  | TFSub           of TFSub.t
+  | TFMul           of TFMul.t
+  | TFDiv           of TFDiv.t
+  | TFRelu          of TFRelu.t
+  | TFConv2D        of TFConv2D.t
+  | TFMaxPool       of TFMaxPool.t
+  | TFConst         of TFConst.t
+  | TFPlaceholder   of TFPlaceholder.t
+  | TFAssign        of TFAssign.t
+  | TFIdentity      of TFIdentity.t
+  | TFSave          of TFSave.t
+  | TFRestore       of TFRestore.t
+  | TFVariable      of TFVariable.t
+  | TFSum           of TFSum.t
+  | TFStridedSlice  of TFStridedSlice.t
+  | TFReshape       of TFReshape.t
+  | TFRandomUniform of TFRandomUniform.t
+  | TFNoop          of TFNoop.t
 
 
 let to_pbtxt = function
-  | TFNeg          n -> TFNeg.to_pbtxt n
-  | TFMatMul       n -> TFMatMul.to_pbtxt n
-  | TFAdd          n -> TFAdd.to_pbtxt n
-  | TFSub          n -> TFSub.to_pbtxt n
-  | TFMul          n -> TFMul.to_pbtxt n
-  | TFDiv          n -> TFDiv.to_pbtxt n
-  | TFRelu         n -> TFRelu.to_pbtxt n
-  | TFConv2D       n -> TFConv2D.to_pbtxt n
-  | TFMaxPool      n -> TFMaxPool.to_pbtxt n
-  | TFConst        n -> TFConst.to_pbtxt n
-  | TFPlaceholder  n -> TFPlaceholder.to_pbtxt n
-  | TFAssign       n -> TFAssign.to_pbtxt n
-  | TFIdentity     n -> TFIdentity.to_pbtxt n
-  | TFSave         n -> TFSave.to_pbtxt n
-  | TFRestore      n -> TFRestore.to_pbtxt n
-  | TFVariable     n -> TFVariable.to_pbtxt n
-  | TFSum          n -> TFSum.to_pbtxt n
-  | TFStridedSlice n -> TFStridedSlice.to_pbtxt n
-  | TFReshape      n -> TFReshape.to_pbtxt n
-  | TFNoop         n -> TFNoop.to_pbtxt n
+  | TFNeg           n -> TFNeg.to_pbtxt n
+  | TFMatMul        n -> TFMatMul.to_pbtxt n
+  | TFAdd           n -> TFAdd.to_pbtxt n
+  | TFSub           n -> TFSub.to_pbtxt n
+  | TFMul           n -> TFMul.to_pbtxt n
+  | TFDiv           n -> TFDiv.to_pbtxt n
+  | TFRelu          n -> TFRelu.to_pbtxt n
+  | TFConv2D        n -> TFConv2D.to_pbtxt n
+  | TFMaxPool       n -> TFMaxPool.to_pbtxt n
+  | TFConst         n -> TFConst.to_pbtxt n
+  | TFPlaceholder   n -> TFPlaceholder.to_pbtxt n
+  | TFAssign        n -> TFAssign.to_pbtxt n
+  | TFIdentity      n -> TFIdentity.to_pbtxt n
+  | TFSave          n -> TFSave.to_pbtxt n
+  | TFRestore       n -> TFRestore.to_pbtxt n
+  | TFVariable      n -> TFVariable.to_pbtxt n
+  | TFSum           n -> TFSum.to_pbtxt n
+  | TFStridedSlice  n -> TFStridedSlice.to_pbtxt n
+  | TFReshape       n -> TFReshape.to_pbtxt n
+  | TFRandomUniform n -> TFRandomUniform.to_pbtxt n
+  | TFNoop          n -> TFNoop.to_pbtxt n
 
 
 let get_name = function
-  | TFNeg          n -> TFNeg.get_name n
-  | TFMatMul       n -> TFMatMul.get_name n
-  | TFAdd          n -> TFAdd.get_name n
-  | TFSub          n -> TFSub.get_name n
-  | TFMul          n -> TFMul.get_name n
-  | TFDiv          n -> TFDiv.get_name n
-  | TFRelu         n -> TFRelu.get_name n
-  | TFConv2D       n -> TFConv2D.get_name n
-  | TFMaxPool      n -> TFMaxPool.get_name n
-  | TFConst        n -> TFConst.get_name n
-  | TFPlaceholder  n -> TFPlaceholder.get_name n
-  | TFAssign       n -> TFAssign.get_name n
-  | TFIdentity     n -> TFIdentity.get_name n
-  | TFSave         n -> TFSave.get_name n
-  | TFRestore      n -> TFRestore.get_name n
-  | TFVariable     n -> TFVariable.get_name n
-  | TFSum          n -> TFSum.get_name n
-  | TFStridedSlice n -> TFStridedSlice.get_name n
-  | TFReshape      n -> TFReshape.get_name n
-  | TFNoop         n -> TFNoop.get_name n
+  | TFNeg           n -> TFNeg.get_name n
+  | TFMatMul        n -> TFMatMul.get_name n
+  | TFAdd           n -> TFAdd.get_name n
+  | TFSub           n -> TFSub.get_name n
+  | TFMul           n -> TFMul.get_name n
+  | TFDiv           n -> TFDiv.get_name n
+  | TFRelu          n -> TFRelu.get_name n
+  | TFConv2D        n -> TFConv2D.get_name n
+  | TFMaxPool       n -> TFMaxPool.get_name n
+  | TFConst         n -> TFConst.get_name n
+  | TFPlaceholder   n -> TFPlaceholder.get_name n
+  | TFAssign        n -> TFAssign.get_name n
+  | TFIdentity      n -> TFIdentity.get_name n
+  | TFSave          n -> TFSave.get_name n
+  | TFRestore       n -> TFRestore.get_name n
+  | TFVariable      n -> TFVariable.get_name n
+  | TFSum           n -> TFSum.get_name n
+  | TFStridedSlice  n -> TFStridedSlice.get_name n
+  | TFReshape       n -> TFReshape.get_name n
+  | TFRandomUniform n -> TFRandomUniform.get_name n
+  | TFNoop          n -> TFNoop.get_name n
 
 
 let get_op_name = function
-  | TFNeg          _ -> TFNeg.opname
-  | TFMatMul       _ -> TFMatMul.opname
-  | TFAdd          _ -> TFAdd.opname
-  | TFSub          _ -> TFSub.opname
-  | TFMul          _ -> TFMul.opname
-  | TFDiv          _ -> TFDiv.opname
-  | TFRelu         _ -> TFRelu.opname
-  | TFConv2D       _ -> TFConv2D.opname
-  | TFMaxPool      _ -> TFMaxPool.opname
-  | TFConst        _ -> TFConst.opname
-  | TFPlaceholder  _ -> TFPlaceholder.opname
-  | TFAssign       _ -> TFAssign.opname
-  | TFIdentity     _ -> TFIdentity.opname
-  | TFSave         _ -> TFSave.opname
-  | TFRestore      _ -> TFRestore.opname
-  | TFVariable     _ -> TFVariable.opname
-  | TFSum          _ -> TFSum.opname
-  | TFStridedSlice _ -> TFStridedSlice.opname
-  | TFReshape      _ -> TFReshape.opname
-  | TFNoop         _ -> TFNoop.opname
+  | TFNeg           _ -> TFNeg.opname
+  | TFMatMul        _ -> TFMatMul.opname
+  | TFAdd           _ -> TFAdd.opname
+  | TFSub           _ -> TFSub.opname
+  | TFMul           _ -> TFMul.opname
+  | TFDiv           _ -> TFDiv.opname
+  | TFRelu          _ -> TFRelu.opname
+  | TFConv2D        _ -> TFConv2D.opname
+  | TFMaxPool       _ -> TFMaxPool.opname
+  | TFConst         _ -> TFConst.opname
+  | TFPlaceholder   _ -> TFPlaceholder.opname
+  | TFAssign        _ -> TFAssign.opname
+  | TFIdentity      _ -> TFIdentity.opname
+  | TFSave          _ -> TFSave.opname
+  | TFRestore       _ -> TFRestore.opname
+  | TFVariable      _ -> TFVariable.opname
+  | TFSum           _ -> TFSum.opname
+  | TFStridedSlice  _ -> TFStridedSlice.opname
+  | TFReshape       _ -> TFReshape.opname
+  | TFRandomUniform _ -> TFRandomUniform.opname
+  | TFNoop          _ -> TFNoop.opname
 
 
 let get_opdef = function
-  | TFNeg          _ -> TFNeg.opdef
-  | TFMatMul       _ -> TFMatMul.opdef
-  | TFAdd          _ -> TFAdd.opdef
-  | TFSub          _ -> TFSub.opdef
-  | TFMul          _ -> TFMul.opdef
-  | TFDiv          _ -> TFDiv.opdef
-  | TFRelu         _ -> TFRelu.opdef
-  | TFConv2D       _ -> TFConv2D.opdef
-  | TFMaxPool      _ -> TFMaxPool.opdef
-  | TFConst        _ -> TFConst.opdef
-  | TFPlaceholder  _ -> TFPlaceholder.opdef
-  | TFAssign       _ -> TFAssign.opdef
-  | TFIdentity     _ -> TFIdentity.opdef
-  | TFSave         _ -> TFSave.opdef
-  | TFRestore      _ -> TFRestore.opdef
-  | TFVariable     _ -> TFVariable.opdef
-  | TFSum          _ -> TFSum.opdef
-  | TFStridedSlice _ -> TFStridedSlice.opdef
-  | TFReshape      _ -> TFReshape.opdef
-  | TFNoop         _ -> TFNoop.opdef
+  | TFNeg           _ -> TFNeg.opdef
+  | TFMatMul        _ -> TFMatMul.opdef
+  | TFAdd           _ -> TFAdd.opdef
+  | TFSub           _ -> TFSub.opdef
+  | TFMul           _ -> TFMul.opdef
+  | TFDiv           _ -> TFDiv.opdef
+  | TFRelu          _ -> TFRelu.opdef
+  | TFConv2D        _ -> TFConv2D.opdef
+  | TFMaxPool       _ -> TFMaxPool.opdef
+  | TFConst         _ -> TFConst.opdef
+  | TFPlaceholder   _ -> TFPlaceholder.opdef
+  | TFAssign        _ -> TFAssign.opdef
+  | TFIdentity      _ -> TFIdentity.opdef
+  | TFSave          _ -> TFSave.opdef
+  | TFRestore       _ -> TFRestore.opdef
+  | TFVariable      _ -> TFVariable.opdef
+  | TFSum           _ -> TFSum.opdef
+  | TFStridedSlice  _ -> TFStridedSlice.opdef
+  | TFReshape       _ -> TFReshape.opdef
+  | TFRandomUniform _ -> TFRandomUniform.opdef
+  | TFNoop          _ -> TFNoop.opdef
 
 
 let get_output_shape = function
-  | TFNeg          n -> TFNeg.get_output_shape n
-  | TFMatMul       n -> TFMatMul.get_output_shape n
-  | TFAdd          n -> TFAdd.get_output_shape n
-  | TFSub          n -> TFSub.get_output_shape n
-  | TFMul          n -> TFMul.get_output_shape n
-  | TFDiv          n -> TFDiv.get_output_shape n
-  | TFRelu         n -> TFRelu.get_output_shape n
-  | TFConv2D       n -> TFConv2D.get_output_shape n
-  | TFMaxPool      n -> TFMaxPool.get_output_shape n
-  | TFConst        n -> TFConst.get_output_shape n
-  | TFPlaceholder  n -> TFPlaceholder.get_output_shape n
-  | TFAssign       n -> TFAssign.get_output_shape n
-  | TFIdentity     n -> TFIdentity.get_output_shape n
-  | TFSave         n -> TFSave.get_output_shape n
-  | TFRestore      n -> TFRestore.get_output_shape n
-  | TFVariable     n -> TFVariable.get_output_shape n
-  | TFSum          n -> TFSum.get_output_shape n
-  | TFStridedSlice n -> TFStridedSlice.get_output_shape n
-  | TFReshape      n -> TFReshape.get_output_shape n
-  | TFNoop         n -> TFNoop.get_output_shape n
+  | TFNeg           n -> TFNeg.get_output_shape n
+  | TFMatMul        n -> TFMatMul.get_output_shape n
+  | TFAdd           n -> TFAdd.get_output_shape n
+  | TFSub           n -> TFSub.get_output_shape n
+  | TFMul           n -> TFMul.get_output_shape n
+  | TFDiv           n -> TFDiv.get_output_shape n
+  | TFRelu          n -> TFRelu.get_output_shape n
+  | TFConv2D        n -> TFConv2D.get_output_shape n
+  | TFMaxPool       n -> TFMaxPool.get_output_shape n
+  | TFConst         n -> TFConst.get_output_shape n
+  | TFPlaceholder   n -> TFPlaceholder.get_output_shape n
+  | TFAssign        n -> TFAssign.get_output_shape n
+  | TFIdentity      n -> TFIdentity.get_output_shape n
+  | TFSave          n -> TFSave.get_output_shape n
+  | TFRestore       n -> TFRestore.get_output_shape n
+  | TFVariable      n -> TFVariable.get_output_shape n
+  | TFSum           n -> TFSum.get_output_shape n
+  | TFStridedSlice  n -> TFStridedSlice.get_output_shape n
+  | TFReshape       n -> TFReshape.get_output_shape n
+  | TFRandomUniform n -> TFRandomUniform.get_output_shape n
+  | TFNoop          n -> TFNoop.get_output_shape n
+
+
+let set_output_shape = function
+  | TFConst         n -> TFConst.set_output_shape n
+  | _                 -> failwith "unsupported operation: set_output_shape"
 
 
 let get_inputs = function
-  | TFNeg          n -> TFNeg.get_inputs n
-  | TFMatMul       n -> TFMatMul.get_inputs n
-  | TFAdd          n -> TFAdd.get_inputs n
-  | TFSub          n -> TFSub.get_inputs n
-  | TFMul          n -> TFMul.get_inputs n
-  | TFDiv          n -> TFDiv.get_inputs n
-  | TFRelu         n -> TFRelu.get_inputs n
-  | TFConv2D       n -> TFConv2D.get_inputs n
-  | TFMaxPool      n -> TFMaxPool.get_inputs n
-  | TFConst        n -> TFConst.get_inputs n
-  | TFPlaceholder  n -> TFPlaceholder.get_inputs n
-  | TFAssign       n -> TFAssign.get_inputs n
-  | TFIdentity     n -> TFIdentity.get_inputs n
-  | TFSave         n -> TFSave.get_inputs n
-  | TFRestore      n -> TFRestore.get_inputs n
-  | TFNoop         n -> TFNoop.get_inputs n
-  | TFSum          n -> TFSum.get_inputs n
-  | TFStridedSlice n -> TFStridedSlice.get_inputs n
-  | TFReshape      n -> TFReshape.get_inputs n
-  | _                -> [||]
+  | TFNeg           n -> TFNeg.get_inputs n
+  | TFMatMul        n -> TFMatMul.get_inputs n
+  | TFAdd           n -> TFAdd.get_inputs n
+  | TFSub           n -> TFSub.get_inputs n
+  | TFMul           n -> TFMul.get_inputs n
+  | TFDiv           n -> TFDiv.get_inputs n
+  | TFRelu          n -> TFRelu.get_inputs n
+  | TFConv2D        n -> TFConv2D.get_inputs n
+  | TFMaxPool       n -> TFMaxPool.get_inputs n
+  | TFConst         n -> TFConst.get_inputs n
+  | TFPlaceholder   n -> TFPlaceholder.get_inputs n
+  | TFAssign        n -> TFAssign.get_inputs n
+  | TFIdentity      n -> TFIdentity.get_inputs n
+  | TFSave          n -> TFSave.get_inputs n
+  | TFRestore       n -> TFRestore.get_inputs n
+  | TFNoop          n -> TFNoop.get_inputs n
+  | TFSum           n -> TFSum.get_inputs n
+  | TFStridedSlice  n -> TFStridedSlice.get_inputs n
+  | TFReshape       n -> TFReshape.get_inputs n
+  | TFRandomUniform n -> TFRandomUniform.get_inputs n
+  | _                 -> [||]
 
 
 let set_inputs = function
-  | TFNeg          n -> TFNeg.set_inputs n
-  | TFMatMul       n -> TFMatMul.set_inputs n
-  | TFAdd          n -> TFAdd.set_inputs n
-  | TFSub          n -> TFSub.set_inputs n
-  | TFMul          n -> TFMul.set_inputs n
-  | TFDiv          n -> TFDiv.set_inputs n
-  | TFRelu         n -> TFRelu.set_inputs n
-  | TFConv2D       n -> TFConv2D.set_inputs n
-  | TFMaxPool      n -> TFMaxPool.set_inputs n
-  | TFConst        n -> TFConst.set_inputs n
-  | TFPlaceholder  n -> TFPlaceholder.set_inputs n
-  | TFAssign       n -> TFAssign.set_inputs n
-  | TFIdentity     n -> TFIdentity.set_inputs n
-  | TFSave         n -> TFSave.set_inputs n
-  | TFRestore      n -> TFRestore.set_inputs n
-  | TFNoop         n -> TFNoop.set_inputs n
-  | TFSum          n -> TFSum.set_inputs n
-  | TFStridedSlice n -> TFStridedSlice.set_inputs n
-  | TFReshape      n -> TFReshape.set_inputs n
-  | _                -> fun _ -> ()
+  | TFNeg           n -> TFNeg.set_inputs n
+  | TFMatMul        n -> TFMatMul.set_inputs n
+  | TFAdd           n -> TFAdd.set_inputs n
+  | TFSub           n -> TFSub.set_inputs n
+  | TFMul           n -> TFMul.set_inputs n
+  | TFDiv           n -> TFDiv.set_inputs n
+  | TFRelu          n -> TFRelu.set_inputs n
+  | TFConv2D        n -> TFConv2D.set_inputs n
+  | TFMaxPool       n -> TFMaxPool.set_inputs n
+  | TFConst         n -> TFConst.set_inputs n
+  | TFPlaceholder   n -> TFPlaceholder.set_inputs n
+  | TFAssign        n -> TFAssign.set_inputs n
+  | TFIdentity      n -> TFIdentity.set_inputs n
+  | TFSave          n -> TFSave.set_inputs n
+  | TFRestore       n -> TFRestore.set_inputs n
+  | TFNoop          n -> TFNoop.set_inputs n
+  | TFSum           n -> TFSum.set_inputs n
+  | TFStridedSlice  n -> TFStridedSlice.set_inputs n
+  | TFReshape       n -> TFReshape.set_inputs n
+  | TFRandomUniform n -> TFRandomUniform.set_inputs n
+  | _                 -> fun _ -> ()
 
 
 let get_device = function
-  | TFNeg          n -> TFNeg.get_device n
-  | TFMatMul       n -> TFMatMul.get_device n
-  | TFAdd          n -> TFAdd.get_device n
-  | TFSub          n -> TFSub.get_device n
-  | TFMul          n -> TFMul.get_device n
-  | TFDiv          n -> TFDiv.get_device n
-  | TFRelu         n -> TFRelu.get_device n
-  | TFConv2D       n -> TFConv2D.get_device n
-  | TFMaxPool      n -> TFMaxPool.get_device n
-  | TFConst        n -> TFConst.get_device n
-  | TFPlaceholder  n -> TFPlaceholder.get_device n
-  | TFAssign       n -> TFAssign.get_device n
-  | TFIdentity     n -> TFIdentity.get_device n
-  | TFSave         n -> TFSave.get_device n
-  | TFRestore      n -> TFRestore.get_device n
-  | TFVariable     n -> TFVariable.get_device n
-  | TFSum          n -> TFSum.get_device n
-  | TFStridedSlice n -> TFStridedSlice.get_device n
-  | TFReshape      n -> TFReshape.get_device n
-  | TFNoop         n -> TFNoop.get_device n
+  | TFNeg           n -> TFNeg.get_device n
+  | TFMatMul        n -> TFMatMul.get_device n
+  | TFAdd           n -> TFAdd.get_device n
+  | TFSub           n -> TFSub.get_device n
+  | TFMul           n -> TFMul.get_device n
+  | TFDiv           n -> TFDiv.get_device n
+  | TFRelu          n -> TFRelu.get_device n
+  | TFConv2D        n -> TFConv2D.get_device n
+  | TFMaxPool       n -> TFMaxPool.get_device n
+  | TFConst         n -> TFConst.get_device n
+  | TFPlaceholder   n -> TFPlaceholder.get_device n
+  | TFAssign        n -> TFAssign.get_device n
+  | TFIdentity      n -> TFIdentity.get_device n
+  | TFSave          n -> TFSave.get_device n
+  | TFRestore       n -> TFRestore.get_device n
+  | TFVariable      n -> TFVariable.get_device n
+  | TFSum           n -> TFSum.get_device n
+  | TFStridedSlice  n -> TFStridedSlice.get_device n
+  | TFReshape       n -> TFReshape.get_device n
+  | TFRandomUniform n -> TFRandomUniform.get_device n
+  | TFNoop          n -> TFNoop.get_device n
 
 
 let set_device = function
-  | TFNeg          n -> TFNeg.set_device n
-  | TFMatMul       n -> TFMatMul.set_device n
-  | TFAdd          n -> TFAdd.set_device n
-  | TFSub          n -> TFSub.set_device n
-  | TFMul          n -> TFMul.set_device n
-  | TFDiv          n -> TFDiv.set_device n
-  | TFRelu         n -> TFRelu.set_device n
-  | TFConv2D       n -> TFConv2D.set_device n
-  | TFMaxPool      n -> TFMaxPool.set_device n
-  | TFConst        n -> TFConst.set_device n
-  | TFPlaceholder  n -> TFPlaceholder.set_device n
-  | TFAssign       n -> TFAssign.set_device n
-  | TFIdentity     n -> TFIdentity.set_device n
-  | TFSave         n -> TFSave.set_device n
-  | TFRestore      n -> TFRestore.set_device n
-  | TFVariable     n -> TFVariable.set_device n
-  | TFSum          n -> TFSum.set_device n
-  | TFStridedSlice n -> TFStridedSlice.set_device  n
-  | TFReshape      n -> TFReshape.set_device n
-  | TFNoop         n -> TFNoop.set_device n
+  | TFNeg           n -> TFNeg.set_device n
+  | TFMatMul        n -> TFMatMul.set_device n
+  | TFAdd           n -> TFAdd.set_device n
+  | TFSub           n -> TFSub.set_device n
+  | TFMul           n -> TFMul.set_device n
+  | TFDiv           n -> TFDiv.set_device n
+  | TFRelu          n -> TFRelu.set_device n
+  | TFConv2D        n -> TFConv2D.set_device n
+  | TFMaxPool       n -> TFMaxPool.set_device n
+  | TFConst         n -> TFConst.set_device n
+  | TFPlaceholder   n -> TFPlaceholder.set_device n
+  | TFAssign        n -> TFAssign.set_device n
+  | TFIdentity      n -> TFIdentity.set_device n
+  | TFSave          n -> TFSave.set_device n
+  | TFRestore       n -> TFRestore.set_device n
+  | TFVariable      n -> TFVariable.set_device n
+  | TFSum           n -> TFSum.set_device n
+  | TFStridedSlice  n -> TFStridedSlice.set_device  n
+  | TFReshape       n -> TFReshape.set_device n
+  | TFRandomUniform n -> TFRandomUniform.set_device n
+  | TFNoop          n -> TFNoop.set_device n
 
 
 let get_value = function
   | TFConst n -> TFConst.get_const_value n
-  | _         -> failwith "unsupported operation"
+  | _         -> failwith "unsupported operation: get_value"
 
 
 let set_value = function
   | TFConst n -> TFConst.set_const_value n
-  | _         -> failwith "unsupported operation"
+  | _         -> failwith "unsupported operation: set_value"
+
+
+let get_dtypes = function
+  | TFSave    n -> TFSave.get_dtypes n
+  | TFRestore n -> TFRestore.get_dtypes n
+  | _           -> failwith "unsupported operation: get_dtypes"
+
+
+let set_dtypes = function
+  | TFSave    n -> TFSave.set_dtypes n
+  | TFRestore n -> TFRestore.set_dtypes n
+  | _           -> failwith "unsupported operation: set_dtypes"

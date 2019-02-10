@@ -49,14 +49,58 @@ module Make
     List.hd ns
 
 
+  let _make_uniform_initialiser name shp =
+    let shp_str = Owl_utils_array.to_string ~sep:"," string_of_int shp in
+    let tensor_content = Owl_converter_utils.serialise_tensor_content
+      "int32" shp_str |> Bytes.of_string
+    in
+    let tvalue = make_tftensor ~tensor_content "DT_INT32" [|Array.length shp|] in
+    let sname = name ^ "/shape" in
+    let shape = TFConst (TFConst.create ~dtype:"DT_INT32" sname [|Array.length shp|] (ATTR_Tensor tvalue)) in
+
+    (* RandomUniform node *)
+    let ru_name = name in
+    let ru = TFRandomUniform (TFRandomUniform.create ru_name [|sname|] shp 0 0) in
+
+    (* max const *)
+    let mc_name = name ^ "/max" in
+    let mc_tensor = ATTR_Tensor (make_tftensor
+      ~float_val:[|0.0852802842855|] "DT_FLOAT" [||])
+    in
+    let mc = TFConst (TFConst.create ~dtype:"DT_FLOAT" mc_name [||] mc_tensor) in
+
+    (* min const *)
+    let mic_name = name ^ "/min" in
+    let mic_tensor = ATTR_Tensor (make_tftensor
+      ~float_val:[|-0.0852802842855|] "DT_FLOAT" [||])
+    in
+    let mic = TFConst (TFConst.create ~dtype:"DT_FLOAT" mic_name [||] mic_tensor) in
+
+    (* sub *)
+    let sub_name = name ^ "/sub" in
+    let sub = TFSub (TFSub.create sub_name [|mc_name; mic_name|] [||]) in
+
+    (* mul *)
+    let mul_name = name ^ "/mul" in
+    let mul = TFMul (TFMul.create mul_name [|ru_name; sub_name|] shp) in
+
+    (* add *)
+    let add_name = name ^ "/add" in
+    let add = TFAdd (TFAdd.create add_name [|mul_name; mic_name|] shp) in
+
+    [|add; mul; ru; shape; sub; mc; mic|]
+
+
   let _make_initialisers (op : Symbol.Shape.Type.op) name =
     match op with
     | Ones shp    ->
       let tvalue = make_tftensor ~float_val:[|1.|] "DT_FLOAT" shp in
       [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name shp (ATTR_Tensor tvalue)) |]
-    | Uniform shp -> 
-      let
-    | _ -> failwith "Initialiser not implemented."
+    | Zeros shp   ->
+      let tvalue = make_tftensor ~float_val:[|0.|] "DT_FLOAT" shp in
+      [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name shp (ATTR_Tensor tvalue)) |]
+    | Uniform shp -> _make_uniform_initialiser (name ^ "/random_uniform") shp
+    | _           -> failwith "Initialiser not implemented."
 
 
   let make_variable_nodes op name out_shp =
@@ -64,15 +108,15 @@ module Make
     let initialisers = _make_initialisers op name in
     let iname = (get_name initialisers.(0)) in
 
-    let vname = Printf.sprintf "%s/%s" name name in
+    let vname = Printf.sprintf "%s/variable" name in
     let var = TFVariable (TFVariable.create vname out_shp "DT_FLOAT") in
 
     let rname = name ^ "/read" in
-    let read = TFIdentity (TFIdentity.create rname [|vname|]
-      out_shp "DT_FLOAT" name)
+    let read = TFIdentity (TFIdentity.create ~cls:[|vname|] rname [|vname|]
+      out_shp "DT_FLOAT")
     in
 
-    let aname = name ^ "/Assign" in
+    let aname = name ^ "/assign" in
     let assign = TFAssign (TFAssign.create ~refv:vname
       ~value:iname aname out_shp "DT_FLOAT")
     in
@@ -123,10 +167,11 @@ module Make
     in
     let stensor = ATTR_Tensor (make_tftensor
       ~tensor_content:dummy_tensor_content
-      "DT_INT32" shp)
+      "DT_INT32" [|Array.length shp|])
     in
     let sname = name ^ "/shape" in
-    let snode = TFConst (TFConst.create ~dtype:"DT_INT32" sname shp stensor) in
+    let snode = TFConst (TFConst.create ~dtype:"DT_INT32" sname
+      [|Array.length shp|] stensor) in
 
     let inputs = Array.append inputs [|sname|] in
     let rnode = TFReshape (TFReshape.create name inputs shp) in
@@ -155,9 +200,10 @@ module Make
       | Some s -> s
       | None   -> [||]
     in
-    (* "value" field only used by const node? Leave it here for now. *)
-    let v = (attr.value).(0) in
-    let value =
+
+    (* "value" field only used by const node? Leave it here for now. Could be empty. *)
+    let value = if (Array.length attr.value > 0) then (
+      let v = (attr.value).(0) in
       if (Device.is_arr v) then (
         let arr = Device.value_to_arr v in
         let shp = Device.A.shape arr in
@@ -171,6 +217,7 @@ module Make
       ) else (
         ATTR_Nil
       )
+    ) else ATTR_Nil
     in
     match attr.op with
     | Neg                 -> [| TFNeg (TFNeg.create name inputs out_shp)|], ("", "")
@@ -188,8 +235,13 @@ module Make
     | DivScalar           -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
     | ScalarDiv           -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
     | Relu                -> [| TFRelu (TFRelu.create name inputs out_shp) |], ("", "")
-    | Conv2d (p, s)       -> [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
-    | MaxPool2d (p, s, k) -> [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
+    | Conv2d (p, s)       ->
+      let s = [|1; s.(0); s.(1); 1|] in
+      [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
+    | MaxPool2d (p, s, k) ->
+      let s = [|1; s.(0); s.(1); 1|] in
+      let k = [|1; k.(0); k.(1); 1|] in
+      [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
     | Sum a               -> [| TFSum (TFSum.create name ~axis:[|a|] inputs out_shp) |], ("", "")
     | SumReduce a         -> [| TFSum (TFSum.create name ~axis:a inputs out_shp) |], ("", "")
     | Sum'                -> [| TFSum (TFSum.create name inputs out_shp) |], ("", "")
@@ -197,8 +249,10 @@ module Make
     | Const               -> [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
     | Reshape s           -> make_reshape_nodes name inputs s
     | Ones _              -> make_variable_nodes attr.op name out_shp
+    | Zeros _             -> make_variable_nodes attr.op name out_shp
+    | Uniform _           -> make_variable_nodes attr.op name out_shp
     | Get i               -> make_stridedslice_nodes i name inputs out_shp
-    | _                   -> failwith "unsupported operation"
+    | _                   -> let err = Printf.sprintf "unsupported operation: %s" (Symbol.op_to_str attr.op) in failwith err
 
 
   let to_pbtxt graphdef =
