@@ -48,12 +48,10 @@ module Make
     List.hd ns
 
 
-  (* TODO: add "class"; find the correct serialisation *)
   let _make_uniform_initialiser name shp =
-    (* shape node *)
-    let tensor_content = shp
-      |> Owl_utils_array.to_string string_of_int
-      |> Bytes.of_string
+    let shp_str = Owl_utils_array.to_string ~sep:"," string_of_int shp in
+    let tensor_content = Owl_converter_utils.serialise_tensor_content
+      "int32" shp_str |> Bytes.of_string
     in
     let tvalue = make_tftensor ~tensor_content "DT_INT32" [|Array.length shp|] in
     let sname = name ^ "/shape" in
