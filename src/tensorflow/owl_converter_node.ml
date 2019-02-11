@@ -1833,7 +1833,7 @@ module TFSum = struct
     mutable out_shp        : int array;
     mutable dtype          : string;
     mutable device         : string;
-    mutable keepdims       : bool; (*keep_dims is deprecated *)
+    mutable keepdims       : bool; (* keep_dims is deprecated *)
     mutable cls            : string array;
   }
 
@@ -1843,19 +1843,20 @@ module TFSum = struct
 
   let opdef =
     let input_arg  = [|
-      make_argdef ~typ:"T" "input";
-      make_argdef ~typ:"Tidx" "reduction_indices"
+      make_argdef ~typ_attr:"T" "input";
+      make_argdef ~typ_attr:"Tidx" "reduction_indices"
     |] in
-    let output_arg = [| make_argdef ~typ:"T" "output" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "output" |] in
     let attr = [|
-      make_tfop_attr "keepdims" "bool";
+      make_tfop_attr "keep_dims" "bool";
+      make_tfop_attr "Tidx" "type";
       make_tfop_attr "T" "type";
     |]
     in
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(cls=[||]) ?(dtype="DT_FLOAT") ?(device="") name inputs out_shp =
+  let create ?(cls=[||]) ?(dtype="DT_FLOAT") ?(device="") ?(keepdims=true) name inputs out_shp =
     {
       name     = name;
       op_name  = opname;
@@ -1863,7 +1864,7 @@ module TFSum = struct
       out_shp  = out_shp;
       dtype    = dtype;
       device   = device;
-      keepdims = true; (* owl behaviour *)
+      keepdims = keepdims;
       cls      = cls;
     }
 
@@ -1872,7 +1873,7 @@ module TFSum = struct
     let node_attr = [|
       ("T", (ATTR_Type "DT_FLOAT"));
       ("Tidx", (ATTR_Type "DT_INT32"));
-      ("keepdims", (ATTR_Bool false));
+      ("keep_dims", (ATTR_Bool n.keepdims));
       ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
     |] in
     let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
@@ -1921,8 +1922,9 @@ module TFMax = struct
     mutable out_shp        : int array;
     mutable dtype          : string;
     mutable device         : string;
-    mutable keepdims       : bool; (*keep_dims is deprecated *)
+    mutable keepdims       : bool;
     mutable cls            : string array;
+    (* NOTE: keep_dims is deprecated, so should be careful with versions *)
   }
 
 
@@ -1931,19 +1933,20 @@ module TFMax = struct
 
   let opdef =
     let input_arg  = [|
-      make_argdef ~typ:"T" "input";
-      make_argdef ~typ:"Tidx" "reduction_indices"
+      make_argdef ~typ_attr:"T" "input";
+      make_argdef ~typ_attr:"Tidx" "reduction_indices"
     |] in
-    let output_arg = [| make_argdef ~typ:"T" "output" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "output" |] in
     let attr = [|
-      make_tfop_attr "keepdims" "bool";
+      make_tfop_attr "keep_dims" "bool";
+      make_tfop_attr "Tidx" "type";
       make_tfop_attr "T" "type";
     |]
     in
     make_opdef ~input_arg ~output_arg ~attr opname
 
 
-  let create ?(cls=[||]) ?(dtype="DT_FLOAT") ?(device="") name inputs out_shp =
+  let create ?(cls=[||]) ?(dtype="DT_FLOAT") ?(device="") ?(keepdims=true) name inputs out_shp =
     {
       name     = name;
       op_name  = opname;
@@ -1951,7 +1954,7 @@ module TFMax = struct
       out_shp  = out_shp;
       dtype    = dtype;
       device   = device;
-      keepdims = true; (* owl behaviour *)
+      keepdims = keepdims;
       cls      = cls;
     }
 
@@ -1960,7 +1963,7 @@ module TFMax = struct
     let node_attr = [|
       ("T", (ATTR_Type "DT_FLOAT"));
       ("Tidx", (ATTR_Type "DT_INT32"));
-      ("keepdims", (ATTR_Bool false));
+      ("keep_dims", (ATTR_Bool n.keepdims));
       ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
     |] in
     let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
@@ -2024,12 +2027,12 @@ module TFStridedSlice = struct
 
   let opdef =
     let input_arg  = [|
-      make_argdef ~typ:"T" "input";
-      make_argdef ~typ:"Index" "begin";
-      make_argdef ~typ:"Index" "end";
-      make_argdef ~typ:"Index" "strides";
+      make_argdef ~typ_attr:"T" "input";
+      make_argdef ~typ_attr:"Index" "begin";
+      make_argdef ~typ_attr:"Index" "end";
+      make_argdef ~typ_attr:"Index" "strides";
     |] in
-    let output_arg = [| make_argdef ~typ:"T" "output" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "output" |] in
     let attr = [|
       make_tfop_attr "T" "type";
       make_tfop_attr "Index" "type";

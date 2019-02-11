@@ -47,9 +47,29 @@ module Make
     let nodes = Array.to_list tfgraph.nodes in
     let ns = List.filter (fun n -> (get_name n) = name) nodes in
     match ns with
-    | h :: t -> h
-    | []     -> failwith "empty tfgraph"
-  
+    | h :: _ -> h
+    | []     -> failwith (Printf.sprintf "cannot get node %s from graph" name)
+
+
+  (* "value" field only used by const node? Leave it here for now. Could be empty. *)
+  let get_const_value (attr : Symbol.Shape.Type.attr) =
+    if (Array.length attr.value > 0) then (
+      let v = (attr.value).(0) in
+      if (Device.is_arr v) then (
+        let arr = Device.value_to_arr v in
+        let shp = Device.A.shape arr in
+        let float_val = [|0.|] in (* should be G.A.to_array arr *)
+        let tensor = make_tftensor ~float_val "DT_FLOAT" shp in
+        ATTR_Tensor tensor
+      ) else if (Device.is_elt v) then (
+        let float_val = [| (Device.value_to_float v) |] in
+        let tensor = make_tftensor ~float_val "DT_FLOAT" [||] in
+        ATTR_Tensor tensor
+      ) else (
+        ATTR_Nil
+      )
+    ) else ATTR_Nil
+
 
   let _make_uniform_initialiser name shp =
     let shp_str = Owl_utils_array.to_string ~sep:"," string_of_int shp in
@@ -146,17 +166,17 @@ module Make
     anode, aname
 
 
-  let make_sum_nodes name inputs shp axes =
+  let make_sum_nodes name inputs shp axes keepdims =
     let anode, aname = _make_axis_const name axes in
     let inputs = Array.append inputs [|aname|] in
-    let rnode = TFSum (TFSum.create name inputs shp) in
+    let rnode = TFSum (TFSum.create ~keepdims name inputs shp) in
     [|rnode; anode|], ("", "")
 
 
-  let make_max_nodes name inputs shp axes =
+  let make_max_nodes name inputs shp axes keepdims =
     let anode, aname = _make_axis_const name axes in
     let inputs = Array.append inputs [|aname|] in
-    let rnode = TFMax (TFMax.create name inputs shp) in
+    let rnode = TFMax (TFMax.create ~keepdims name inputs shp) in
     [|rnode; anode|], ("", "")
 
 
@@ -220,6 +240,14 @@ module Make
     [|rnode; snode|], ("", "")
 
 
+  let _get_input_shape owlnode =
+    let inode = (Owl_graph.parents owlnode).(0) in
+    let iattr : Symbol.Shape.Type.attr = Owl_graph.attr inode in
+    match iattr.shape.(0) with
+    | Some s -> s
+    | None   -> failwith "Owlnode output shape cannot be None"
+
+
   (* The logic of how one owl node turned into multiple tfnodes is implemented
    * here.
    * Currently return node array and "name_update" : string * string; meaning,
@@ -227,8 +255,12 @@ module Make
    * About the `attr.shape.(0)` and `(attr.value).(0)` below, currently only
    * `draw` operation in owl CGraph returns two outputs, so I'll stick with
    * this tmp solution for now.
+   *
+   * NOTE: Another thing is that, even if tfgraph is taken in as a paramter,
+   * that still doesn't ensure a node have global access -- in Sum's case, it
+   * needs access to its parents, which are not put into tfgraph yet.
    *)
-  let make_tfnodes tfgraph node =
+  let make_tfnodes _tfgraph node =
     let name = Owl_graph.name node in
     let attr : Symbol.Shape.Type.attr = Owl_graph.attr node in
     let inputs = Array.map (fun n ->
@@ -242,25 +274,6 @@ module Make
       | Some s -> s
       | None   -> [||]
     in
-
-    (* "value" field only used by const node? Leave it here for now. Could be empty. *)
-    let value = if (Array.length attr.value > 0) then (
-      let v = (attr.value).(0) in
-      if (Device.is_arr v) then (
-        let arr = Device.value_to_arr v in
-        let shp = Device.A.shape arr in
-        let float_val = [|0.|] in (* should be G.A.to_array arr *)
-        let tensor = make_tftensor ~float_val "DT_FLOAT" shp in
-        ATTR_Tensor tensor
-      ) else if (Device.is_elt v) then (
-        let float_val = [| (Device.value_to_float v) |] in
-        let tensor = make_tftensor ~float_val "DT_FLOAT" [||] in
-        ATTR_Tensor tensor
-      ) else (
-        ATTR_Nil
-      )
-    ) else ATTR_Nil
-    in
     match attr.op with
     | Neg                 -> [| TFNeg (TFNeg.create name inputs out_shp)|], ("", "")
     | Scalar_Neg          -> [| TFNeg (TFNeg.create name inputs out_shp)|], ("", "")
@@ -269,7 +282,7 @@ module Make
     | Log2                -> make_log_nodes name inputs out_shp 2
     | Log10               -> make_log_nodes name inputs out_shp 10
     | Dot (a, b, _, _)    -> [| TFMatMul (TFMatMul.create name inputs out_shp a b) |], ("", "")
-    | Add                 -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "") (* TODO: actually, it will be translated to TFBiasAdd *)
+    | Add                 -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "") (* TODO: actually, it will be translated to TFBiasAdd in DNN example; need to investigate if any condition is included. *)
     | ScalarAdd           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
     | AddScalar           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
     | Sub                 -> [| TFSub (TFSub.create name inputs out_shp) |], ("", "")
@@ -294,19 +307,21 @@ module Make
       let s = [|1; s.(0); s.(1); 1|] in
       let k = [|1; k.(0); k.(1); 1|] in
       [| TFAvgPool (TFAvgPool.create name inputs out_shp p s k) |], ("", "")
-    | Sum a               -> make_sum_nodes name inputs out_shp [|a|]
-    | SumReduce a         -> make_sum_nodes name inputs out_shp a
+    | Sum a               -> make_sum_nodes name inputs out_shp [|a|] true
+    | SumReduce a         -> make_sum_nodes name inputs out_shp a true
     | Sum'                ->
-      let input_shape = get_tfnode tfgraph inputs.(0) |> get_output_shape in
+      let input_shape = _get_input_shape node in
       let axes = Owl_utils_array.range 0 (Array.length input_shape - 1) in
-      make_sum_nodes name inputs out_shp axes
-    | Max a               -> make_max_nodes name inputs out_shp [|a|]
+      make_sum_nodes name inputs out_shp axes false
+    | Max a               -> make_max_nodes name inputs out_shp [|a|] true
     | Max'                ->
-      let input_shape = get_tfnode tfgraph inputs.(0) |> get_output_shape in
+      let input_shape = _get_input_shape node in
       let axes = Owl_utils_array.range 0 (Array.length input_shape - 1) in
-      make_max_nodes name inputs out_shp axes
+      make_max_nodes name inputs out_shp axes false
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
-    | Const               -> [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
+    | Const               ->
+      let value = get_const_value attr in
+      [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
     | Reshape s           -> make_reshape_nodes name inputs s
     | Ones _              -> make_variable_nodes attr.op name out_shp
     | Zeros _             -> make_variable_nodes attr.op name out_shp
