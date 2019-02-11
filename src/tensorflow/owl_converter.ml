@@ -109,7 +109,6 @@ module Make
 
 
   (* Things not yet considered:
-   * - how to construct collections bytelist
    * - the "device" attr needs to be printed out for save/restore nodes
    * - data type fixed to DT_FLOAT
    * - some seemingly unimportant attr of nodes like "default_value" are emitted. Add when required.

@@ -46,8 +46,10 @@ module Make
   let get_tfnode tfgraph name =
     let nodes = Array.to_list tfgraph.nodes in
     let ns = List.filter (fun n -> (get_name n) = name) nodes in
-    List.hd ns
-
+    match ns with
+    | h :: t -> h
+    | []     -> failwith "empty tfgraph"
+  
 
   let _make_uniform_initialiser name shp =
     let shp_str = Owl_utils_array.to_string ~sep:"," string_of_int shp in
@@ -120,8 +122,6 @@ module Make
     let assign = TFAssign (TFAssign.create ~refv:vname
       ~value:iname aname out_shp "DT_FLOAT")
     in
-
-    (* TODO: How can I get another node from the graph? I.E. gloabal view for each node; or at least some nodes. This is an important decision to make. *)
     (* let init = get_tfnode "init" in
     let init_inputs = get_inputs init in
     set_inputs init (Array.append init_inputs [|aname|]); *)
@@ -129,7 +129,7 @@ module Make
     (name, aname)
 
 
-  let make_sum_nodes name inputs shp axes =
+  let _make_axis_const name axes =
     let aname = name ^ "/reduction_indices" in
     let anode = if (Array.length axes <= 1) then (
       let atensor = ATTR_Tensor (make_tftensor ~int_val:axes "DT_INT32" [||]) in
@@ -143,9 +143,37 @@ module Make
       TFConst (TFConst.create ~dtype:"DT_INT32" aname
         [|Array.length axes|] atensor)
     ) in
+    anode, aname
+
+
+  let make_sum_nodes name inputs shp axes =
+    let anode, aname = _make_axis_const name axes in
     let inputs = Array.append inputs [|aname|] in
     let rnode = TFSum (TFSum.create name inputs shp) in
     [|rnode; anode|], ("", "")
+
+
+  let make_max_nodes name inputs shp axes =
+    let anode, aname = _make_axis_const name axes in
+    let inputs = Array.append inputs [|aname|] in
+    let rnode = TFMax (TFMax.create name inputs shp) in
+    [|rnode; anode|], ("", "")
+
+
+  let make_log_nodes name inputs shp base =
+    let cname = name ^ "/log_base" in
+    let ctensor = ATTR_Tensor (make_tftensor ~int_val:[|base|] "DT_INT32" [||]) in
+    let cnode = TFConst (TFConst.create ~dtype:"DT_INT32" cname [||] ctensor) in
+
+    let lname2 = name ^ "/log_2" in
+    let lnode2 = TFLog (TFLog.create lname2 [|cname|] [||]) in
+    let lname1 = name ^ "/log_1" in
+    let lnode1 = TFLog (TFLog.create lname1 inputs shp) in
+
+    let dname = name ^ "/div" in
+    let dnode = TFDiv (TFDiv.create dname [|lname1; lname2|] shp) in
+
+    [|dnode; lnode1; lnode2; cnode|], (name, dname)
 
 
   (* NOTE: out_shp and shape are not the same thing *)
@@ -235,8 +263,13 @@ module Make
     in
     match attr.op with
     | Neg                 -> [| TFNeg (TFNeg.create name inputs out_shp)|], ("", "")
+    | Scalar_Neg          -> [| TFNeg (TFNeg.create name inputs out_shp)|], ("", "")
+    | Exp                 -> [| TFExp (TFExp.create name inputs out_shp)|], ("", "")
+    | Log                 -> [| TFLog (TFLog.create name inputs out_shp)|], ("", "")
+    | Log2                -> make_log_nodes name inputs out_shp 2
+    | Log10               -> make_log_nodes name inputs out_shp 10
     | Dot (a, b, _, _)    -> [| TFMatMul (TFMatMul.create name inputs out_shp a b) |], ("", "")
-    | Add                 -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
+    | Add                 -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "") (* TODO: actually, it will be translated to TFBiasAdd *)
     | ScalarAdd           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
     | AddScalar           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
     | Sub                 -> [| TFSub (TFSub.create name inputs out_shp) |], ("", "")
@@ -248,6 +281,7 @@ module Make
     | Div                 -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
     | DivScalar           -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
     | ScalarDiv           -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
+    | Scalar_Div          -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
     | Relu                -> [| TFRelu (TFRelu.create name inputs out_shp) |], ("", "")
     | Conv2d (p, s)       ->
       let s = [|1; s.(0); s.(1); 1|] in
@@ -256,12 +290,21 @@ module Make
       let s = [|1; s.(0); s.(1); 1|] in
       let k = [|1; k.(0); k.(1); 1|] in
       [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
+    | AvgPool2d (p, s, k) ->
+      let s = [|1; s.(0); s.(1); 1|] in
+      let k = [|1; k.(0); k.(1); 1|] in
+      [| TFAvgPool (TFAvgPool.create name inputs out_shp p s k) |], ("", "")
     | Sum a               -> make_sum_nodes name inputs out_shp [|a|]
     | SumReduce a         -> make_sum_nodes name inputs out_shp a
     | Sum'                ->
       let input_shape = get_tfnode tfgraph inputs.(0) |> get_output_shape in
       let axes = Owl_utils_array.range 0 (Array.length input_shape - 1) in
       make_sum_nodes name inputs out_shp axes
+    | Max a               -> make_max_nodes name inputs out_shp [|a|]
+    | Max'                ->
+      let input_shape = get_tfnode tfgraph inputs.(0) |> get_output_shape in
+      let axes = Owl_utils_array.range 0 (Array.length input_shape - 1) in
+      make_max_nodes name inputs out_shp axes
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
     | Const               -> [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
     | Reshape s           -> make_reshape_nodes name inputs s
