@@ -129,8 +129,23 @@ module Make
     (name, aname)
 
 
-  (* TODO *)
-  let make_sum_nodes = ()
+  let make_sum_nodes name inputs shp axes =
+    let aname = name ^ "/reduction_indices" in
+    let anode = if (Array.length axes <= 1) then (
+      let atensor = ATTR_Tensor (make_tftensor ~int_val:axes "DT_INT32" [||]) in
+      TFConst (TFConst.create ~dtype:"DT_INT32" aname [||] atensor)
+    ) else (
+      let axes_str = Owl_utils_array.to_string ~sep:"," string_of_int axes in
+      let tensor_content = Owl_converter_utils.serialise_tensor_content
+        "int32" axes_str |> Bytes.of_string in
+      let atensor = ATTR_Tensor (make_tftensor ~tensor_content
+        "DT_INT32" [|Array.length axes|]) in
+      TFConst (TFConst.create ~dtype:"DT_INT32" aname
+        [|Array.length axes|] atensor)
+    ) in
+    let inputs = Array.append inputs [|aname|] in
+    let rnode = TFSum (TFSum.create name inputs shp) in
+    [|rnode; anode|], ("", "")
 
 
   (* NOTE: out_shp and shape are not the same thing *)
@@ -185,7 +200,7 @@ module Make
    * `draw` operation in owl CGraph returns two outputs, so I'll stick with
    * this tmp solution for now.
    *)
-  let make_tfnodes node =
+  let make_tfnodes tfgraph node =
     let name = Owl_graph.name node in
     let attr : Symbol.Shape.Type.attr = Owl_graph.attr node in
     let inputs = Array.map (fun n ->
@@ -241,9 +256,12 @@ module Make
       let s = [|1; s.(0); s.(1); 1|] in
       let k = [|1; k.(0); k.(1); 1|] in
       [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
-    | Sum a               -> [| TFSum (TFSum.create name ~axis:[|a|] inputs out_shp) |], ("", "")
-    | SumReduce a         -> [| TFSum (TFSum.create name ~axis:a inputs out_shp) |], ("", "")
-    | Sum'                -> [| TFSum (TFSum.create name inputs out_shp) |], ("", "")
+    | Sum a               -> make_sum_nodes name inputs out_shp [|a|]
+    | SumReduce a         -> make_sum_nodes name inputs out_shp a
+    | Sum'                ->
+      let input_shape = get_tfnode tfgraph inputs.(0) |> get_output_shape in
+      let axes = Owl_utils_array.range 0 (Array.length input_shape - 1) in
+      make_sum_nodes name inputs out_shp axes
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
     | Const               -> [| TFConst (TFConst.create ~dtype:"DT_FLOAT" name out_shp value) |], ("", "")
     | Reshape s           -> make_reshape_nodes name inputs s
@@ -252,6 +270,12 @@ module Make
     | Uniform _           -> make_variable_nodes attr.op name out_shp
     | Get i               -> make_stridedslice_nodes i name inputs out_shp
     | _                   -> let err = Printf.sprintf "unsupported operation: %s" (Symbol.op_to_str attr.op) in failwith err
+
+
+  (* not a very good name... *)
+  let expand_tfgraph tfgraph owlnode =
+    let tfnodes, name_update = make_tfnodes tfgraph owlnode in
+    add_tfnodes tfgraph tfnodes name_update
 
 
   let to_pbtxt graphdef =

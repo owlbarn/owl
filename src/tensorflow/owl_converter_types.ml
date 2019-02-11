@@ -16,6 +16,7 @@ type tftensor = {
   tensor_shape   : int array;
   string_val     : string array option;
   float_val      : float array option;
+  int_val        : int array option;
   tensor_content : bytes option;
   (* double_val, int_val, ... but only one of these fields should be used. *)
 }

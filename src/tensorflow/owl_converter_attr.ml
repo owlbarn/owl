@@ -8,13 +8,14 @@
 open Owl_converter_types
 
 
-let make_tftensor ?tensor_content ?string_val ?float_val dtype shape =
+let make_tftensor ?tensor_content ?string_val ?float_val ?int_val dtype shape =
   {
     dtype          = dtype;
     tensor_shape   = shape;
     tensor_content = tensor_content;
     string_val     = string_val;
-    float_val      = float_val
+    float_val      = float_val;
+    int_val        = int_val
   }
 
 
@@ -94,12 +95,19 @@ let tensor_to_pbtxt v =
       Owl_utils_array.to_string ~sep:"" f n
     | None   -> ""
   in
+  let intval_str =
+    match v.int_val with
+    | Some n ->
+      let f x = Printf.sprintf "int_val: %d\n" x in
+      Owl_utils_array.to_string ~sep:"" f n
+    | None   -> ""
+  in
   let tensor_content_str =
     match v.tensor_content with
     | Some c -> Printf.sprintf "tensor_content: \"%s\"\n" (Bytes.to_string c)
     | None   -> ""
   in
-  Printf.sprintf "dtype: %s\ntensor_shape:{\n%s}\n%s%s%s" dtype_str tshp_str strval_str fltval_str tensor_content_str
+  Printf.sprintf "dtype: %s\ntensor_shape:{\n%s}\n%s%s%s%s" dtype_str tshp_str strval_str fltval_str intval_str tensor_content_str
 
 
 let rec tfattrvalue_to_pbtxt attrv =

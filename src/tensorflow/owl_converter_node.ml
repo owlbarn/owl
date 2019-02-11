@@ -1584,7 +1584,6 @@ module TFSum = struct
     mutable out_shp        : int array;
     mutable dtype          : string;
     mutable device         : string;
-    mutable axis           : int array option;
     mutable keepdims       : bool; (*keep_dims is depleted *)
     mutable cls            : string array;
   }
@@ -1606,8 +1605,8 @@ module TFSum = struct
     in
     make_opdef ~input_arg ~output_arg ~attr opname
 
-  (* how to print the axis when it's set to None? Think more about it using example. *)
-  let create ?(cls=[||]) ?(dtype="DT_FLOAT") ?(device="") ?axis name inputs out_shp =
+
+  let create ?(cls=[||]) ?(dtype="DT_FLOAT") ?(device="") name inputs out_shp =
     {
       name     = name;
       op_name  = opname;
@@ -1615,7 +1614,6 @@ module TFSum = struct
       out_shp  = out_shp;
       dtype    = dtype;
       device   = device;
-      axis     = axis;
       keepdims = true; (* owl behaviour *)
       cls      = cls;
     }

@@ -59,8 +59,7 @@ module Make
     (* 1st iteration : on owl_cgraph *)
     let tfgraph = TFgraph.create () in
     iter_ancestors (fun node ->
-      let tfnodes, name_update = TFgraph.make_tfnodes node in
-      TFgraph.add_tfnodes tfgraph tfnodes name_update;
+      TFgraph.expand_tfgraph tfgraph node
     ) outputs;
 
     (* 2nd iteration : change tf_nodes's input nodes' names
