@@ -6,7 +6,6 @@
 
 
 open Owl_converter_types
-open Owl_converter_utils
 
 
 let make_tftensor ?tensor_content ?string_val ?float_val dtype shape =
@@ -75,8 +74,6 @@ let dim_to_pbtxt dim =
  * empty shape should be printed as is.
  *)
 let shape_to_pbtxt shape =
-  (* if (shape = [||]) then "unknown_rank: true\n"
-  else map_then_combine_string dim_to_pbtxt shape *)
   Owl_utils_array.to_string ~sep:"" dim_to_pbtxt shape
 
 
@@ -87,14 +84,14 @@ let tensor_to_pbtxt v =
     match v.string_val with
     | Some s ->
       let f x = Printf.sprintf "string_val: \"%s\"\n" x in
-      map_then_combine_string f s
+      Owl_utils_array.to_string ~sep:"" f s
     | None   -> ""
   in
   let fltval_str =
     match v.float_val with
     | Some n ->
       let f x = Printf.sprintf "float_val: %f\n" x in
-      map_then_combine_string f n
+      Owl_utils_array.to_string ~sep:"" f n
     | None   -> ""
   in
   let tensor_content_str =
@@ -116,6 +113,6 @@ let rec tfattrvalue_to_pbtxt attrv =
   | ATTR_Type v     -> Printf.sprintf "type: %s\n" v
   | ATTR_Shape v    -> Printf.sprintf "shape {\n%s}\n" (shape_to_pbtxt v)
   | ATTR_List v     ->
-      let list_str = map_then_combine_string tfattrvalue_to_pbtxt v in
+      let list_str = Owl_utils_array.to_string ~sep:"" tfattrvalue_to_pbtxt v in
       Printf.sprintf "list {\n%s}\n" list_str
   | ATTR_Namelist _ -> failwith "not implemented yet"

@@ -4,11 +4,6 @@
  * Copyright (c) 2019-2019 Jianxin Zhao <jianxin.zhao@cl.cam.ac.uk>
  *)
 
-(* ...actually a useless wrapper *)
-let map_then_combine_string ?(sep="") fn x =
-  Owl_utils_array.to_string ~sep fn x
-
-
 let htbl_to_arr htbl =
   Hashtbl.fold (fun k v acc ->
     Array.append acc [| (k,v) |]
@@ -29,8 +24,8 @@ let syscall cmd =
   Buffer.contents buf
 
 
-(* TODO: still have issues; rewrite to more formal method. Ref: https://goo.gl/ipu2gZ
- * https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/framework/tensor_util_test.py
+(* TODO: rewrite to more formal method.
+ * Ref: https://goo.gl/ipu2gZ, https://goo.gl/ZtyGNj
  *)
 let serialise_tensor_content dtype lst_str =
   (* format of lst_str: 5,5,1,32; dtype: int32/float32/... *)

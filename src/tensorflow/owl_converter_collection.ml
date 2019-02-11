@@ -61,7 +61,7 @@ let coll_to_pbtxt collection =
 
 let to_pbtxt collections =
   let collections = htbl_to_arr collections in
-  let coll_str = map_then_combine_string (fun (k, c) ->
+  let coll_str = Owl_utils_array.to_string ~sep:"" (fun (k, c) ->
     let val_str = col_to_pbtxt c in
     Printf.sprintf "collection_def {\nkey: \"%s\"\nvalue {\n%s}\n}\n" k val_str
   ) collections

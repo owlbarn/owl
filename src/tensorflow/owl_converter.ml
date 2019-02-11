@@ -127,4 +127,8 @@ module Make
     let pb_txt = to_pbtxt tf_cgraph in
     pb_txt
 
+
+  (* TODO: call python cmd and convert pbtxt directy to pb file *)
+  let _convert_pb = ()
+
 end
