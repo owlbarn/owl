@@ -136,5 +136,5 @@ val save_txt : t -> string -> unit
 val to_string : t -> string
 (** ``to_string v`` returns the summary information of a vocabulary. *)
 
-val pp_vocab : Format.formatter -> t -> unit
+val pp_vocab : Format.formatter -> t -> unit [@@ocaml.toplevel_printer]
 (** Pretty printer for vocabulary type. *)

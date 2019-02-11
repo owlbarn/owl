@@ -8,7 +8,7 @@
 
 (** {6 Ndarray pretty printer} *)
 
-val pp_dsnda : Format.formatter -> ('a, 'b, 'c) Bigarray.Genarray.t -> unit
+val pp_dsnda : Format.formatter -> ('a, 'b, 'c) Bigarray.Genarray.t -> unit [@@ocaml.toplevel_printer]
 (** ``pp_dsnda`` is the pretty printer for n-dimensional arrays. *)
 
 val dsnda_to_string :  ?header:bool -> ?max_row:int -> ?max_col:int -> ?elt_to_str_fun:('a -> string) -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t -> string
@@ -25,7 +25,7 @@ the headers. [fmt] is the function to format every element into string.
 
 (** {6 Dataframe pretty printer} *)
 
-val pp_dataframe : Format.formatter -> Owl_dataframe.t -> unit
+val pp_dataframe : Format.formatter -> Owl_dataframe.t -> unit [@@ocaml.toplevel_printer]
 (** ``pp_dataframe`` is the pretty printer for dataframe. *)
 
 val dataframe_to_string : ?header:bool -> ?names:string array -> ?max_row:int -> ?max_col:int -> ?elt_to_str_fun:(Owl_dataframe.elt -> string) -> Owl_dataframe.t -> string

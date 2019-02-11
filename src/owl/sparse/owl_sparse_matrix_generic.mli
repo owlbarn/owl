@@ -556,7 +556,7 @@ val print : ('a, 'b) t -> unit
 ``print x`` pretty prints matrix ``x`` without headings.
  *)
 
-val pp_spmat : ('a, 'b) t -> unit
+val pp_spmat : ('a, 'b) t -> unit [@@ocaml.toplevel_printer]
 (**
 ``pp_spmat x`` pretty prints matrix ``x`` with headings. Toplevel uses this
 function to print out the matrices.

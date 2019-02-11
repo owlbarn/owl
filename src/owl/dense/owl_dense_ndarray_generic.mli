@@ -1032,7 +1032,7 @@ and ``max_col`` specify the maximum number of rows and columns to display.
 function to format every element into string.
  *)
 
-val pp_dsnda : Format.formatter -> ('a, 'b) t -> unit
+val pp_dsnda : Format.formatter -> ('a, 'b) t -> unit [@@ocaml.toplevel_printer]
 (**
 ``pp_dsnda x`` prints ``x`` in OCaml toplevel. If the ndarray is too long,
 ``pp_dsnda`` only prints out parts of the ndarray.
