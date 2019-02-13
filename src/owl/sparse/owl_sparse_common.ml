@@ -4,7 +4,7 @@
  *)
 
 open Bigarray
-open Eigen.Types
+open Eigen_types
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
