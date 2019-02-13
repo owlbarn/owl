@@ -45,6 +45,6 @@ let _dot = G.graph_to_dot g
 
 (* output to tensorflow pbtxt *)
 let _ =
-  let pbtxt = T.convert g in
+  let pbtxt = T.convert_to_pbtxt g in
   print_endline pbtxt
 (* let _ = T.Utils.pbtxt_to_pb "test_cgraph.meta" s *)

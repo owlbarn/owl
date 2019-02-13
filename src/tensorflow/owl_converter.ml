@@ -122,11 +122,12 @@ module Make
     tf_cgraph.tfgraph <- tfgraph;
     tf_cgraph.tfsaver <- tfsaver;
     tf_cgraph.tfcolls <- tfcolls;
-    let pb_txt = to_pbtxt tf_cgraph in
-    pb_txt
+    tf_cgraph
 
 
-  (* TODO: call python cmd and convert pbtxt directy to pb file *)
-  let _convert_pb = ()
+  let convert_to_pbtxt graph = convert graph |> to_pbtxt
+
+
+  let _convert_to_pb = ()
 
 end
