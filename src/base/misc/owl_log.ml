@@ -52,16 +52,6 @@ let _level_to_str = function
   | FATAL -> _shall_paint Magenta "FATAL"
 
 let make_prefix lvl =
-  let ts = Unix.gettimeofday() in
-  let tm = Unix.localtime ts in
-  Printf.sprintf "%04d-%02d-%02d %02d:%02d:%02d.%03d %s : "
-    (tm.Unix.tm_year + 1900)
-    (tm.Unix.tm_mon + 1)
-    tm.Unix.tm_mday
-    tm.Unix.tm_hour
-    tm.Unix.tm_min
-    tm.Unix.tm_sec
-    (modf ts |> fst |> ( *. ) 1000. |> int_of_float)
     (_level_to_str lvl)
 
 let _log lvl fmt =

@@ -46,20 +46,13 @@ let iteri_lines_of_file ?(verbose=true) f fname =
   let i = ref 0 in
   let h = open_in fname in
   (
-    let t0 = Unix.gettimeofday () in
-    let t1 = ref (Unix.gettimeofday ()) in
     try while true do
       f !i (input_line h);
       i := !i + 1;
       (* output summary if in verbose mode *)
       if verbose = true then (
-        let t2 = Unix.gettimeofday () in
-        if t2 -. !t1 > 5. then (
-          t1 := t2;
-          let speed = float_of_int !i /. (t2 -. t0) |> int_of_float in
-          Owl_log.info "processed %i, avg. %i docs/s" !i speed
+          Owl_log.info "processed %i" !i
         )
-      )
     done with End_of_file -> ()
   );
   close_in h
@@ -79,22 +72,13 @@ let iteri_lines_of_marshal ?(verbose=true) f fname =
   let i = ref 0 in
   let h = open_in fname in
   (
-    let t1 = ref (Unix.gettimeofday ()) in
-    let i1 = ref 0 in
-
     try while true do
       f !i (Marshal.from_channel h);
       i := !i + 1;
       (* output summary if in verbose mode *)
       if verbose = true then (
-        let t2 = Unix.gettimeofday () in
-        if t2 -. !t1 > 5. then (
-          let speed = float_of_int (!i - !i1) /. (t2 -. !t1) |> int_of_float in
-          i1 := !i;
-          t1 := t2;
-          Owl_log.info "processed %i, avg. %i docs/s" !i speed
+          Owl_log.info "processed %i" !i
         )
-      )
     done with End_of_file -> ()
   );
   close_in h

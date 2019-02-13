@@ -210,10 +210,7 @@ let format_time t =
 
 (** measure the time spent in a function in millisecond *)
 let time f =
-  let t = Unix.gettimeofday () in
-  f ();
-  (Unix.gettimeofday () -. t) *. 1000.
-
+  0.
 
 (** TODO: return the the distance between [1.0] and the next larger representable
   floating-point value. *)
