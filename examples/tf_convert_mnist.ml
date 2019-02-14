@@ -43,7 +43,7 @@ let visualise_mnist () =
 
 let to_pbtxt fname =
   let cgraph_forward = make_cgraph () in
-  let pbtxt = T.convert cgraph_forward in
+  let pbtxt = T.convert_to_pbtxt cgraph_forward in
   Owl_io.write_file fname pbtxt
 
 

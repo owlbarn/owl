@@ -180,6 +180,13 @@ module Make
     [|rnode; anode|], ("", "")
 
 
+  let make_min_nodes name inputs shp axes keepdims =
+    let anode, aname = _make_axis_const name axes in
+    let inputs = Array.append inputs [|aname|] in
+    let rnode = TFMin (TFMin.create ~keepdims name inputs shp) in
+    [|rnode; anode|], ("", "")
+
+
   let make_log_nodes name inputs shp base =
     let cname = name ^ "/log_base" in
     let ctensor = ATTR_Tensor (make_tftensor ~int_val:[|base|] "DT_INT32" [||]) in
@@ -275,12 +282,48 @@ module Make
       | None   -> [||]
     in
     match attr.op with
+    | Abs                 -> [| TFAbs (TFAbs.create name inputs out_shp)|], ("", "")
+    | Scalar_Abs          -> [| TFAbs (TFAbs.create name inputs out_shp)|], ("", "")
     | Neg                 -> [| TFNeg (TFNeg.create name inputs out_shp)|], ("", "")
     | Scalar_Neg          -> [| TFNeg (TFNeg.create name inputs out_shp)|], ("", "")
     | Exp                 -> [| TFExp (TFExp.create name inputs out_shp)|], ("", "")
+    | Scalar_Exp          -> [| TFExp (TFExp.create name inputs out_shp)|], ("", "")
     | Log                 -> [| TFLog (TFLog.create name inputs out_shp)|], ("", "")
     | Log2                -> make_log_nodes name inputs out_shp 2
     | Log10               -> make_log_nodes name inputs out_shp 10
+    | Scalar_Log          -> [| TFLog (TFLog.create name inputs out_shp)|], ("", "")
+    | Scalar_Log2         -> make_log_nodes name inputs out_shp 2
+    | Scalar_Log10        -> make_log_nodes name inputs out_shp 10
+    | Sqr                 -> [| TFSquare (TFSquare.create name inputs out_shp)|], ("", "")
+    | Scalar_Sqr          -> [| TFSquare (TFSquare.create name inputs out_shp)|], ("", "")
+    | Sqrt                -> [| TFSqrt (TFSqrt.create name inputs out_shp)|], ("", "")
+    | Scalar_Sqrt         -> [| TFSqrt (TFSqrt.create name inputs out_shp)|], ("", "")
+    | Sin                 -> [| TFSin (TFSin.create name inputs out_shp)|], ("", "")
+    | Cos                 -> [| TFCos (TFCos.create name inputs out_shp)|], ("", "")
+    | Tan                 -> [| TFTan (TFTan.create name inputs out_shp)|], ("", "")
+    | Sinh                -> [| TFSinh (TFSinh.create name inputs out_shp)|], ("", "")
+    | Cosh                -> [| TFCosh (TFCosh.create name inputs out_shp)|], ("", "")
+    | Tanh                -> [| TFTanh (TFTanh.create name inputs out_shp)|], ("", "")
+    | Asin                -> [| TFAsin (TFAsin.create name inputs out_shp)|], ("", "")
+    | Acos                -> [| TFAcos (TFAcos.create name inputs out_shp)|], ("", "")
+    | Atan                -> [| TFAtan (TFAtan.create name inputs out_shp)|], ("", "")
+    | Asinh               -> [| TFAsinh (TFAsinh.create name inputs out_shp)|], ("", "")
+    | Acosh               -> [| TFCosh (TFCosh.create name inputs out_shp)|], ("", "")
+    | Atanh               -> [| TFAtanh (TFAtanh.create name inputs out_shp)|], ("", "")
+    | Scalar_Sin          -> [| TFSin (TFSin.create name inputs out_shp)|], ("", "")
+    | Scalar_Cos          -> [| TFCos (TFCos.create name inputs out_shp)|], ("", "")
+    | Scalar_Tan          -> [| TFTan (TFTan.create name inputs out_shp)|], ("", "")
+    | Scalar_Sinh         -> [| TFSinh (TFSinh.create name inputs out_shp)|], ("", "")
+    | Scalar_Cosh         -> [| TFCosh (TFCosh.create name inputs out_shp)|], ("", "")
+    | Scalar_Tanh         -> [| TFTanh (TFTanh.create name inputs out_shp)|], ("", "")
+    | Scalar_Asin         -> [| TFAsin (TFAsin.create name inputs out_shp)|], ("", "")
+    | Scalar_Acos         -> [| TFAcos (TFAcos.create name inputs out_shp)|], ("", "")
+    | Scalar_Atan         -> [| TFAtan (TFAtan.create name inputs out_shp)|], ("", "")
+    | Scalar_Asinh        -> [| TFAsinh (TFAsinh.create name inputs out_shp)|], ("", "")
+    | Scalar_Acosh        -> [| TFCosh (TFCosh.create name inputs out_shp)|], ("", "")
+    | Scalar_Atanh        -> [| TFAtanh (TFAtanh.create name inputs out_shp)|], ("", "")
+    | Sigmoid             -> [| TFSigmoid (TFSigmoid.create name inputs out_shp)|], ("", "")
+    | Scalar_Sigmoid      -> [| TFSigmoid (TFSigmoid.create name inputs out_shp)|], ("", "")
     | Dot (a, b, _, _)    -> [| TFMatMul (TFMatMul.create name inputs out_shp a b) |], ("", "")
     | Add                 -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "") (* TODO: actually, it will be translated to TFBiasAdd in DNN example; need to investigate if any condition is included. *)
     | ScalarAdd           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
@@ -295,10 +338,21 @@ module Make
     | DivScalar           -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
     | ScalarDiv           -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
     | Scalar_Div          -> [| TFDiv (TFDiv.create name inputs out_shp) |], ("", "")
+    | Pow                 -> [| TFPow (TFPow.create name inputs out_shp) |], ("", "")
+    | Scalar_Pow          -> [| TFPow (TFPow.create name inputs out_shp) |], ("", "")
     | Relu                -> [| TFRelu (TFRelu.create name inputs out_shp) |], ("", "")
+    | Scalar_Relu         -> [| TFRelu (TFRelu.create name inputs out_shp) |], ("", "")
     | Conv2d (p, s)       ->
       let s = [|1; s.(0); s.(1); 1|] in
       [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
+    | MaxPool1d (p, s, k) ->
+      let s = [|1; s.(0); 1|] in
+      let k = [|1; k.(0); 1|] in
+      [| TFMaxPool (TFMaxPool.create name inputs out_shp p s k) |], ("", "")
+    | AvgPool1d (p, s, k) ->
+      let s = [|1; s.(0); 1|] in
+      let k = [|1; k.(0); 1|] in
+      [| TFAvgPool (TFAvgPool.create name inputs out_shp p s k) |], ("", "")
     | MaxPool2d (p, s, k) ->
       let s = [|1; s.(0); s.(1); 1|] in
       let k = [|1; k.(0); k.(1); 1|] in
@@ -318,6 +372,11 @@ module Make
       let input_shape = _get_input_shape node in
       let axes = Owl_utils_array.range 0 (Array.length input_shape - 1) in
       make_max_nodes name inputs out_shp axes false
+    | Min a               -> make_min_nodes name inputs out_shp [|a|] true
+    | Min'                ->
+      let input_shape = _get_input_shape node in
+      let axes = Owl_utils_array.range 0 (Array.length input_shape - 1) in
+      make_min_nodes name inputs out_shp axes false
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
     | Const               ->
       let value = get_const_value attr in
