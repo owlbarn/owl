@@ -281,6 +281,10 @@ module Make
     | Log                 -> [| TFLog (TFLog.create name inputs out_shp)|], ("", "")
     | Log2                -> make_log_nodes name inputs out_shp 2
     | Log10               -> make_log_nodes name inputs out_shp 10
+    | Sqr                 -> [| TFSquare (TFSquare.create name inputs out_shp)|], ("", "")
+    | Sinh                -> [| TFSinh (TFSinh.create name inputs out_shp)|], ("", "")
+    | Cosh                -> [| TFCosh (TFCosh.create name inputs out_shp)|], ("", "")
+    | Tanh                -> [| TFTanh (TFTanh.create name inputs out_shp)|], ("", "")
     | Dot (a, b, _, _)    -> [| TFMatMul (TFMatMul.create name inputs out_shp a b) |], ("", "")
     | Add                 -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "") (* TODO: actually, it will be translated to TFBiasAdd in DNN example; need to investigate if any condition is included. *)
     | ScalarAdd           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
