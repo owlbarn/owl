@@ -750,6 +750,35 @@ let lyapunov a c =
   M.mul_scalar_ z (Owl_base_dense_common._float_typ_elt (M.kind c) (1. /. s));
   z
 
+let _discrete_lyapunov_direct a q = 
+  let n = M.row_num q in
+  let lhs = M.kron a M.(ctranspose a) in
+  let lhs = M.((eye (kind a) (row_num lhs)) - lhs) in
+  let tr_lhs = M.ctranspose lhs in
+  M.(reshape ((inv (tr_lhs *@ lhs)) *@ tr_lhs *@ (reshape q [|-1;1|]))
+       [|n; n|])
+
+(* bilinear transform reference
+ * https://old.control.ee.ethz.ch/info/people/mansour/pdf/168--1993-Schur-Cohn,%20Nour%20Eldin-Markov%20Matrices%20and%20the%20Controllability%20Gramians--.pdf *)
+let _discrete_lyapunov_bilinear a q = 
+  let a = M.ctranspose a in
+  let n = M.row_num a in
+  let identity = M.(eye (kind a) n) in
+  let inv_al = inv M.(a - identity) in
+  let a' = M.(inv_al *@ (a + identity)) in
+  let q' = M.(inv_al *@ q *@ (transpose inv_al)) in
+  M.mul_scalar_ q' (Owl_base_dense_common._float_typ_elt (M.kind a) 2. );
+  lyapunov a' M.(neg q')
+
+let discrete_lyapunov ?bilinear a q = 
+  let solve = match bilinear with
+    | None -> 
+      if M.(row_num a) <= 10 then _discrete_lyapunov_direct
+      else _discrete_lyapunov_bilinear
+    | Some true -> _discrete_lyapunov_bilinear
+    | Some false -> _discrete_lyapunov_direct in
+  solve a q
+
 
 let care a b q r =
   let g = M.(b *@ (inv r) *@ (transpose b)) in
@@ -835,89 +864,89 @@ let expm_eig
     let vi = inv v in
     let u = M.(exp w |> diagm) in
     M.( dot (dot v u) vi )
-[@@warning "-32"]
+  [@@warning "-32"]
 
-let expm x =
-  Owl_exception.(check (is_square x) NOT_SQUARE);
-  (* trivial case *)
-  if M.shape x = (1, 1) then M.exp x
-  else (
-    (* TODO: use gebal to balance to improve accuracy, refer to Julia's impl *)
-    let xe = M.(eye (kind x) (row_num x)) in
-    let norm_x = norm ~p:1. x in
-    (* for small norm, use lower order Padé-approximation *)
-    if norm_x <= 2.097847961257068 then (
-      let c = Array.map (Owl_base_dense_common._float_typ_elt (M.kind x)) (
-          if norm_x > 0.9504178996162932 then
-            [|17643225600.; 8821612800.; 2075673600.; 302702400.; 30270240.; 2162160.; 110880.; 3960.; 90.; 1.|]
-          else if norm_x > 0.2539398330063230 then
-            [|17297280.; 8648640.; 1995840.; 277200.; 25200.; 1512.; 56.; 1.|]
-          else if norm_x > 0.01495585217958292 then
-            [|30240.; 15120.; 3360.; 420.; 30.; 1.|]
-          else
-            [|120.; 60.; 12.; 1.|]
-        ) in
-
-      let x2 = M.dot x x in
-      let p = ref M.(copy xe) in
-      let u = M.mul_scalar !p c.(1) in
-      let v = M.mul_scalar !p c.(0) in
-
-      for i = 1 to Array.(length c / 2 - 1) do
-        let j = 2 * i in
-        let k = j + 1 in
-        p := M.dot !p x2;
-        M.(add_ ~out:u u (mul_scalar !p c.(k)));
-        M.(add_ ~out:v v (mul_scalar !p c.(j)));
-      done;
-
-      let u = M.dot x u in
-      let a = M.sub v u in
-      let b = M.add v u in
-      Owl_lapacke.gesv a b |> ignore;
-      b
-    )
-    (* for larger norm, Padé-13 approximation *)
+  let expm x =
+    Owl_exception.(check (is_square x) NOT_SQUARE);
+    (* trivial case *)
+    if M.shape x = (1, 1) then M.exp x
     else (
-      let s = Owl_maths.log2 (norm_x /. 5.4) in
-      let t = ceil s in
-      let x =
-        if s > 0. then
-          Owl_base_dense_common._float_typ_elt (M.kind x) (2. ** t)
-          |> M.div_scalar x
-        else x
-      in
+      (* TODO: use gebal to balance to improve accuracy, refer to Julia's impl *)
+      let xe = M.(eye (kind x) (row_num x)) in
+      let norm_x = norm ~p:1. x in
+      (* for small norm, use lower order Padé-approximation *)
+      if norm_x <= 2.097847961257068 then (
+        let c = Array.map (Owl_base_dense_common._float_typ_elt (M.kind x)) (
+            if norm_x > 0.9504178996162932 then
+              [|17643225600.; 8821612800.; 2075673600.; 302702400.; 30270240.; 2162160.; 110880.; 3960.; 90.; 1.|]
+            else if norm_x > 0.2539398330063230 then
+              [|17297280.; 8648640.; 1995840.; 277200.; 25200.; 1512.; 56.; 1.|]
+            else if norm_x > 0.01495585217958292 then
+              [|30240.; 15120.; 3360.; 420.; 30.; 1.|]
+            else
+              [|120.; 60.; 12.; 1.|]
+          ) in
 
-      let c = Array.map (Owl_base_dense_common._float_typ_elt (M.kind x))
-          [|64764752532480000.; 32382376266240000.; 7771770303897600.;
-            1187353796428800.;  129060195264000.;   10559470521600.;
-            670442572800.;      33522128640.;       1323241920.;
-            40840800.;          960960.;            16380.;
-            182.;               1.|]
-      in
+        let x2 = M.dot x x in
+        let p = ref M.(copy xe) in
+        let u = M.mul_scalar !p c.(1) in
+        let v = M.mul_scalar !p c.(0) in
 
-      let x2 = M.dot x x in
-      let x4 = M.dot x2 x2 in
-      let x6 = M.dot x2 x4 in
-      let u = M.( x *@ (x6 *@ (x6 *$ c.(13) + x4 *$ c.(11) + x2 *$ c.(9)) +
-                        x6 *$ c.(7) + x4 *$ c.(5) + x2 *$ c.(3) + xe *$ c.(1)) ) in
-      let v = M.( x6 *@ (x6 *$ c.(12) + x4 *$ c.(10) + x2 *$ c.(8)) +
-                  x6 *$ c.(6) + x4 *$ c.(4) + x2 *$ c.(2) + xe *$ c.(0) ) in
-
-      let a = M.sub v u in
-      let b = M.add v u in
-      Owl_lapacke.gesv a b |> ignore;
-
-      let x = ref b in
-      if s > 0. then (
-        for _i = 1 to int_of_float t do
-          x := M.dot !x !x
+        for i = 1 to Array.(length c / 2 - 1) do
+          let j = 2 * i in
+          let k = j + 1 in
+          p := M.dot !p x2;
+          M.(add_ ~out:u u (mul_scalar !p c.(k)));
+          M.(add_ ~out:v v (mul_scalar !p c.(j)));
         done;
-      );
 
-      !x
+        let u = M.dot x u in
+        let a = M.sub v u in
+        let b = M.add v u in
+        Owl_lapacke.gesv a b |> ignore;
+        b
+      )
+      (* for larger norm, Padé-13 approximation *)
+      else (
+        let s = Owl_maths.log2 (norm_x /. 5.4) in
+        let t = ceil s in
+        let x =
+          if s > 0. then
+            Owl_base_dense_common._float_typ_elt (M.kind x) (2. ** t)
+            |> M.div_scalar x
+          else x
+        in
+
+        let c = Array.map (Owl_base_dense_common._float_typ_elt (M.kind x))
+            [|64764752532480000.; 32382376266240000.; 7771770303897600.;
+              1187353796428800.;  129060195264000.;   10559470521600.;
+              670442572800.;      33522128640.;       1323241920.;
+              40840800.;          960960.;            16380.;
+              182.;               1.|]
+        in
+
+        let x2 = M.dot x x in
+        let x4 = M.dot x2 x2 in
+        let x6 = M.dot x2 x4 in
+        let u = M.( x *@ (x6 *@ (x6 *$ c.(13) + x4 *$ c.(11) + x2 *$ c.(9)) +
+                          x6 *$ c.(7) + x4 *$ c.(5) + x2 *$ c.(3) + xe *$ c.(1)) ) in
+        let v = M.( x6 *@ (x6 *$ c.(12) + x4 *$ c.(10) + x2 *$ c.(8)) +
+                    x6 *$ c.(6) + x4 *$ c.(4) + x2 *$ c.(2) + xe *$ c.(0) ) in
+
+        let a = M.sub v u in
+        let b = M.add v u in
+        Owl_lapacke.gesv a b |> ignore;
+
+        let x = ref b in
+        if s > 0. then (
+          for _i = 1 to int_of_float t do
+            x := M.dot !x !x
+          done;
+        );
+
+        !x
+      )
     )
-  )
 
 
 let _sinm :

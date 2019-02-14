@@ -417,6 +417,23 @@ Returns:
   * ``x`` : ``m x n`` matrix X.
  *)
 
+val discrete_lyapunov : ?bilinear:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``discrete_lyapunov a q`` solves a discrete-time Lyapunov equation in the following form.
+
+.. math::
+  X - AXA^H = Q
+
+Parameters:
+  * ``a`` : ``m x m`` matrix A.
+  * ``q`` : ``n x n`` matrix Q.
+
+Returns:
+  * ``x`` : ``m x n`` matrix X.
+ *)
+
+
+
 val care : (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (**
 ``care a b q r`` solves the continuous-time algebraic Riccati equation system
