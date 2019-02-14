@@ -752,16 +752,13 @@ let lyapunov a c =
 
 let _discrete_lyapunov_direct a q = 
   let n = M.row_num q in
-  let lhs = M.kron a M.(ctranspose a) in
+  let lhs = M.kron a M.(conj a) in
   let lhs = M.((eye (kind a) (row_num lhs)) - lhs) in
-  let tr_lhs = M.ctranspose lhs in
-  M.(reshape ((inv (tr_lhs *@ lhs)) *@ tr_lhs *@ (reshape q [|-1;1|]))
-       [|n; n|])
+  M.reshape (linsolve lhs M.(reshape q [|-1;1|])) [|n; n|]
 
 (* bilinear transform reference
  * https://old.control.ee.ethz.ch/info/people/mansour/pdf/168--1993-Schur-Cohn,%20Nour%20Eldin-Markov%20Matrices%20and%20the%20Controllability%20Gramians--.pdf *)
 let _discrete_lyapunov_bilinear a q = 
-  let a = M.ctranspose a in
   let n = M.row_num a in
   let identity = M.(eye (kind a) n) in
   let inv_al = inv M.(a - identity) in
