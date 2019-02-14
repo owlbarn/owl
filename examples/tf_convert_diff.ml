@@ -1,4 +1,5 @@
-(* #!/usr/bin/env owl *)
+#!/usr/bin/env owl
+
 #require "owl-tensorflow"
 
 open Owl
@@ -15,25 +16,31 @@ include Owl_algodiff_generic.Make (G)
 let f0 x = Maths.(tanh x)
 let f1 = diff f0
 let f2 = diff f1
-(*let f3 = diff f2
-let f4 = diff f3 *)
+let f3 = diff f2
+let f4 = diff f3
 
 let x = G.var_arr ~shape:[|100|] "x" |> pack_arr
-
 let y0 = f0 x
 let y1 = f1 x
 let y2 = f2 x
+let y3 = f3 x
+let y4 = f4 x
 
 let output = [|
   unpack_arr y0 |> G.arr_to_node;
   unpack_arr y1 |> G.arr_to_node;
   unpack_arr y2 |> G.arr_to_node;
+  unpack_arr y3 |> G.arr_to_node;
+  unpack_arr y4 |> G.arr_to_node;
 |]
 
 let input  = [|
   unpack_arr x  |> G.arr_to_node
 |]
 
-let g = G.make_graph ~input ~output "graph_01"
+let g = G.make_graph ~input ~output "graph_diff"
 
-let dot = G.graph_to_dot g
+
+let _ =
+  let pbtxt = T.(convert g |> to_pbtxt) in
+  Owl_io.write_file "tf_convert_diff.pbtxt" pbtxt

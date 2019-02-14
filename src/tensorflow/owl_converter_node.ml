@@ -75,6 +75,83 @@ let opdef_to_pbtxt op =
     input_arg_arr output_arg_arr attr_string
 
 
+module TFAbs = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "Abs"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
 module TFNeg = struct
 
   type t = {
@@ -383,6 +460,314 @@ module TFSquare = struct
 end
 
 
+module TFSqrt = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "Sqrt"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+module TFSin = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "Sin"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+module TFCos = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "Cos"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+module TFTan = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "Tan"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
 module TFSinh = struct
 
   type t = {
@@ -551,6 +936,545 @@ module TFTanh = struct
 
 
   let opname = "Tanh"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+module TFAsin = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "Asin"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+module TFAcos = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "Acos"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+module TFAtan = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "ATan"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+module TFAsinh = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "Asinh"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+module TFAcosh = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "Acosh"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+module TFAtanh = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "Atanh"
+
+
+  let opdef =
+    let input_arg  = [| make_argdef ~typ_attr:"T" "x" |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "y" |] in
+    let attr = [| make_tfop_attr "T" "type" |] in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+module TFSigmoid = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+
+  let opname = "Sigmoid"
 
 
   let opdef =
@@ -1028,6 +1952,91 @@ module TFDiv = struct
       input     = n.inputs;
       node_attr = node_attr;
       device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
+module TFPow = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable dtype   : string;
+    mutable device  : string;
+    mutable cls     : string array;
+  }
+
+  let opname = "Pow"
+
+  let opdef =
+    let input_arg = [|
+      make_argdef ~typ_attr:"T" "x";
+      make_argdef ~typ_attr:"T" "y";
+    |]
+    in
+    let output_arg = [|
+      make_argdef ~typ_attr:"T" "z";
+    |]
+    in
+    let attr = [|
+      make_tfop_attr "T" "type"
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      dtype   = "DT_FLOAT";
+      device  = device;
+      cls     = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type n.dtype));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]))
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device;
     }
 
 
@@ -2311,6 +3320,96 @@ module TFMax = struct
 end
 
 
+module TFMin = struct
+
+  type t = {
+    mutable name           : string;
+    mutable op_name        : string;
+    mutable inputs         : string array;
+    mutable out_shp        : int array;
+    mutable dtype          : string;
+    mutable device         : string;
+    mutable keepdims       : bool;
+    mutable cls            : string array;
+    (* NOTE: keep_dims is deprecated, so should be careful with versions *)
+  }
+
+
+  let opname = "Min"
+
+
+  let opdef =
+    let input_arg  = [|
+      make_argdef ~typ_attr:"T" "input";
+      make_argdef ~typ_attr:"Tidx" "reduction_indices"
+    |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "output" |] in
+    let attr = [|
+      make_tfop_attr "keep_dims" "bool";
+      make_tfop_attr "Tidx" "type";
+      make_tfop_attr "T" "type";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(dtype="DT_FLOAT") ?(device="") ?(keepdims=true) name inputs out_shp =
+    {
+      name     = name;
+      op_name  = opname;
+      inputs   = inputs;
+      out_shp  = out_shp;
+      dtype    = dtype;
+      device   = device;
+      keepdims = keepdims;
+      cls      = cls;
+    }
+
+
+  let make_nodedef n =
+    let node_attr = [|
+      ("T", (ATTR_Type "DT_FLOAT"));
+      ("Tidx", (ATTR_Type "DT_INT32"));
+      ("keep_dims", (ATTR_Bool n.keepdims));
+      ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+    |] in
+    let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+    let node_attr = if (cls_attr = [||]) then node_attr else
+      (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+    in
+    {
+      name      = n.name;
+      op_name   = opname;
+      input     = n.inputs;
+      node_attr = node_attr;
+      device    = n.device
+    }
+
+
+  let to_pbtxt n =
+    make_nodedef n |> nodedef_to_pbtxt
+
+
+  let get_name n = n.name
+
+
+  let get_output_shape n = n.out_shp
+
+
+  let get_inputs n = n.inputs
+
+
+  let set_inputs n i = n.inputs <- i
+
+
+  let get_device n = n.device
+
+
+  let set_device n d = n.device <- d
+
+end
+
+
 (* OP: tf.Tensor.__getitem__. TO BE TESTED.*)
 module TFStridedSlice = struct
 
@@ -2597,20 +3696,32 @@ module TFRandomUniform = struct
 end
 
 
-
 type tfnode =
+  | TFAbs           of TFAbs.t
   | TFNeg           of TFNeg.t
   | TFExp           of TFExp.t
   | TFLog           of TFLog.t
   | TFSquare        of TFSquare.t
+  | TFSqrt          of TFSqrt.t
+  | TFSin           of TFSin.t
+  | TFCos           of TFCos.t
+  | TFTan           of TFTan.t
   | TFSinh          of TFSinh.t
   | TFCosh          of TFCosh.t
   | TFTanh          of TFTanh.t
+  | TFAsin          of TFAsin.t
+  | TFAcos          of TFAcos.t
+  | TFAtan          of TFAtan.t
+  | TFAsinh         of TFAsinh.t
+  | TFAcosh         of TFAcosh.t
+  | TFAtanh         of TFAtanh.t
+  | TFSigmoid       of TFSigmoid.t
   | TFMatMul        of TFMatMul.t
   | TFAdd           of TFAdd.t
   | TFSub           of TFSub.t
   | TFMul           of TFMul.t
   | TFDiv           of TFDiv.t
+  | TFPow           of TFPow.t
   | TFRelu          of TFRelu.t
   | TFConv2D        of TFConv2D.t
   | TFMaxPool       of TFMaxPool.t
@@ -2624,6 +3735,7 @@ type tfnode =
   | TFVariable      of TFVariable.t
   | TFSum           of TFSum.t
   | TFMax           of TFMax.t
+  | TFMin           of TFMin.t
   | TFStridedSlice  of TFStridedSlice.t
   | TFReshape       of TFReshape.t
   | TFRandomUniform of TFRandomUniform.t
@@ -2631,18 +3743,31 @@ type tfnode =
 
 
 let to_pbtxt = function
+  | TFAbs           n -> TFAbs.to_pbtxt n
   | TFNeg           n -> TFNeg.to_pbtxt n
   | TFExp           n -> TFExp.to_pbtxt n
   | TFLog           n -> TFLog.to_pbtxt n
   | TFSquare        n -> TFSquare.to_pbtxt n
+  | TFSqrt          n -> TFSqrt.to_pbtxt n
+  | TFSin           n -> TFSin.to_pbtxt n
+  | TFCos           n -> TFCos.to_pbtxt n
+  | TFTan           n -> TFTan.to_pbtxt n
   | TFSinh          n -> TFSinh.to_pbtxt n
   | TFCosh          n -> TFCosh.to_pbtxt n
   | TFTanh          n -> TFTanh.to_pbtxt n
+  | TFAsin          n -> TFAsin.to_pbtxt n
+  | TFAcos          n -> TFAcos.to_pbtxt n
+  | TFAtan          n -> TFAtan.to_pbtxt n
+  | TFAsinh         n -> TFAsinh.to_pbtxt n
+  | TFAcosh         n -> TFAcosh.to_pbtxt n
+  | TFAtanh         n -> TFAtanh.to_pbtxt n
+  | TFSigmoid       n -> TFSigmoid.to_pbtxt n
   | TFMatMul        n -> TFMatMul.to_pbtxt n
   | TFAdd           n -> TFAdd.to_pbtxt n
   | TFSub           n -> TFSub.to_pbtxt n
   | TFMul           n -> TFMul.to_pbtxt n
   | TFDiv           n -> TFDiv.to_pbtxt n
+  | TFPow           n -> TFPow.to_pbtxt n
   | TFRelu          n -> TFRelu.to_pbtxt n
   | TFConv2D        n -> TFConv2D.to_pbtxt n
   | TFMaxPool       n -> TFMaxPool.to_pbtxt n
@@ -2656,6 +3781,7 @@ let to_pbtxt = function
   | TFVariable      n -> TFVariable.to_pbtxt n
   | TFSum           n -> TFSum.to_pbtxt n
   | TFMax           n -> TFMax.to_pbtxt n
+  | TFMin           n -> TFMin.to_pbtxt n
   | TFStridedSlice  n -> TFStridedSlice.to_pbtxt n
   | TFReshape       n -> TFReshape.to_pbtxt n
   | TFRandomUniform n -> TFRandomUniform.to_pbtxt n
@@ -2663,18 +3789,31 @@ let to_pbtxt = function
 
 
 let get_name = function
+  | TFAbs           n -> TFAbs.get_name n
   | TFNeg           n -> TFNeg.get_name n
   | TFExp           n -> TFExp.get_name n
   | TFLog           n -> TFLog.get_name n
   | TFSquare        n -> TFSquare.get_name n
+  | TFSqrt          n -> TFSqrt.get_name n
+  | TFSin           n -> TFSin.get_name n
+  | TFCos           n -> TFCos.get_name n
+  | TFTan           n -> TFTan.get_name n
   | TFSinh          n -> TFSinh.get_name n
   | TFCosh          n -> TFCosh.get_name n
   | TFTanh          n -> TFTanh.get_name n
+  | TFAsin          n -> TFAsin.get_name n
+  | TFAcos          n -> TFAcos.get_name n
+  | TFAtan          n -> TFAtan.get_name n
+  | TFAsinh         n -> TFAsinh.get_name n
+  | TFAcosh         n -> TFAcosh.get_name n
+  | TFAtanh         n -> TFAtanh.get_name n
+  | TFSigmoid       n -> TFSigmoid.get_name n
   | TFMatMul        n -> TFMatMul.get_name n
   | TFAdd           n -> TFAdd.get_name n
   | TFSub           n -> TFSub.get_name n
   | TFMul           n -> TFMul.get_name n
   | TFDiv           n -> TFDiv.get_name n
+  | TFPow           n -> TFPow.get_name n
   | TFRelu          n -> TFRelu.get_name n
   | TFConv2D        n -> TFConv2D.get_name n
   | TFMaxPool       n -> TFMaxPool.get_name n
@@ -2688,6 +3827,7 @@ let get_name = function
   | TFVariable      n -> TFVariable.get_name n
   | TFSum           n -> TFSum.get_name n
   | TFMax           n -> TFMax.get_name n
+  | TFMin           n -> TFMin.get_name n
   | TFStridedSlice  n -> TFStridedSlice.get_name n
   | TFReshape       n -> TFReshape.get_name n
   | TFRandomUniform n -> TFRandomUniform.get_name n
@@ -2695,18 +3835,31 @@ let get_name = function
 
 
 let get_op_name = function
+  | TFAbs           _ -> TFAbs.opname
   | TFNeg           _ -> TFNeg.opname
   | TFExp           _ -> TFExp.opname
   | TFLog           _ -> TFLog.opname
   | TFSquare        _ -> TFSquare.opname
+  | TFSqrt          _ -> TFSqrt.opname
+  | TFSin           _ -> TFSin.opname
+  | TFCos           _ -> TFCos.opname
+  | TFTan           _ -> TFTan.opname
   | TFSinh          _ -> TFSinh.opname
   | TFCosh          _ -> TFCosh.opname
   | TFTanh          _ -> TFTanh.opname
+  | TFAsin          _ -> TFAsin.opname
+  | TFAcos          _ -> TFAcos.opname
+  | TFAtan          _ -> TFAtan.opname
+  | TFAsinh         _ -> TFAsinh.opname
+  | TFAcosh         _ -> TFAcosh.opname
+  | TFAtanh         _ -> TFAtanh.opname
+  | TFSigmoid       _ -> TFSigmoid.opname
   | TFMatMul        _ -> TFMatMul.opname
   | TFAdd           _ -> TFAdd.opname
   | TFSub           _ -> TFSub.opname
   | TFMul           _ -> TFMul.opname
   | TFDiv           _ -> TFDiv.opname
+  | TFPow           _ -> TFPow.opname
   | TFRelu          _ -> TFRelu.opname
   | TFConv2D        _ -> TFConv2D.opname
   | TFMaxPool       _ -> TFMaxPool.opname
@@ -2720,6 +3873,7 @@ let get_op_name = function
   | TFVariable      _ -> TFVariable.opname
   | TFSum           _ -> TFSum.opname
   | TFMax           _ -> TFMax.opname
+  | TFMin           _ -> TFMin.opname
   | TFStridedSlice  _ -> TFStridedSlice.opname
   | TFReshape       _ -> TFReshape.opname
   | TFRandomUniform _ -> TFRandomUniform.opname
@@ -2727,18 +3881,31 @@ let get_op_name = function
 
 
 let get_opdef = function
+  | TFAbs           _ -> TFAbs.opdef
   | TFNeg           _ -> TFNeg.opdef
   | TFExp           _ -> TFExp.opdef
   | TFLog           _ -> TFLog.opdef
   | TFSquare        _ -> TFSquare.opdef
+  | TFSqrt          _ -> TFSqrt.opdef
+  | TFSin           _ -> TFSin.opdef
+  | TFCos           _ -> TFCos.opdef
+  | TFTan           _ -> TFTan.opdef
   | TFSinh          _ -> TFSinh.opdef
   | TFCosh          _ -> TFCosh.opdef
   | TFTanh          _ -> TFTanh.opdef
+  | TFAsin          _ -> TFAsin.opdef
+  | TFAcos          _ -> TFAcos.opdef
+  | TFAtan          _ -> TFAtan.opdef
+  | TFAsinh         _ -> TFAsinh.opdef
+  | TFAcosh         _ -> TFAcosh.opdef
+  | TFAtanh         _ -> TFAtanh.opdef
+  | TFSigmoid       _ -> TFSigmoid.opdef
   | TFMatMul        _ -> TFMatMul.opdef
   | TFAdd           _ -> TFAdd.opdef
   | TFSub           _ -> TFSub.opdef
   | TFMul           _ -> TFMul.opdef
   | TFDiv           _ -> TFDiv.opdef
+  | TFPow           _ -> TFPow.opdef
   | TFRelu          _ -> TFRelu.opdef
   | TFConv2D        _ -> TFConv2D.opdef
   | TFMaxPool       _ -> TFMaxPool.opdef
@@ -2752,6 +3919,7 @@ let get_opdef = function
   | TFVariable      _ -> TFVariable.opdef
   | TFSum           _ -> TFSum.opdef
   | TFMax           _ -> TFMax.opdef
+  | TFMin           _ -> TFMin.opdef
   | TFStridedSlice  _ -> TFStridedSlice.opdef
   | TFReshape       _ -> TFReshape.opdef
   | TFRandomUniform _ -> TFRandomUniform.opdef
@@ -2759,18 +3927,31 @@ let get_opdef = function
 
 
 let get_output_shape = function
+  | TFAbs           n -> TFAbs.get_output_shape n
   | TFNeg           n -> TFNeg.get_output_shape n
   | TFExp           n -> TFExp.get_output_shape n
   | TFLog           n -> TFLog.get_output_shape n
   | TFSquare        n -> TFSquare.get_output_shape n
+  | TFSqrt          n -> TFSqrt.get_output_shape n
+  | TFSin           n -> TFSin.get_output_shape n
+  | TFCos           n -> TFCos.get_output_shape n
+  | TFTan           n -> TFTan.get_output_shape n
   | TFSinh          n -> TFSinh.get_output_shape n
   | TFCosh          n -> TFCosh.get_output_shape n
   | TFTanh          n -> TFTanh.get_output_shape n
+  | TFAsin          n -> TFAsin.get_output_shape n
+  | TFAcos          n -> TFAcos.get_output_shape n
+  | TFAtan          n -> TFAtan.get_output_shape n
+  | TFAsinh         n -> TFAsinh.get_output_shape n
+  | TFAcosh         n -> TFAcosh.get_output_shape n
+  | TFAtanh         n -> TFAtanh.get_output_shape n
+  | TFSigmoid       n -> TFSigmoid.get_output_shape n
   | TFMatMul        n -> TFMatMul.get_output_shape n
   | TFAdd           n -> TFAdd.get_output_shape n
   | TFSub           n -> TFSub.get_output_shape n
   | TFMul           n -> TFMul.get_output_shape n
   | TFDiv           n -> TFDiv.get_output_shape n
+  | TFPow           n -> TFPow.get_output_shape n
   | TFRelu          n -> TFRelu.get_output_shape n
   | TFConv2D        n -> TFConv2D.get_output_shape n
   | TFMaxPool       n -> TFMaxPool.get_output_shape n
@@ -2784,6 +3965,7 @@ let get_output_shape = function
   | TFVariable      n -> TFVariable.get_output_shape n
   | TFSum           n -> TFSum.get_output_shape n
   | TFMax           n -> TFMax.get_output_shape n
+  | TFMin           n -> TFMin.get_output_shape n
   | TFStridedSlice  n -> TFStridedSlice.get_output_shape n
   | TFReshape       n -> TFReshape.get_output_shape n
   | TFRandomUniform n -> TFRandomUniform.get_output_shape n
@@ -2796,18 +3978,31 @@ let set_output_shape = function
 
 
 let get_inputs = function
+  | TFAbs           n -> TFAbs.get_inputs n
   | TFNeg           n -> TFNeg.get_inputs n
   | TFExp           n -> TFExp.get_inputs n
   | TFLog           n -> TFLog.get_inputs n
   | TFSquare        n -> TFSquare.get_inputs n
+  | TFSqrt          n -> TFSqrt.get_inputs n
+  | TFSin           n -> TFSin.get_inputs n
+  | TFCos           n -> TFCos.get_inputs n
+  | TFTan           n -> TFTan.get_inputs n
   | TFSinh          n -> TFSinh.get_inputs n
   | TFCosh          n -> TFCosh.get_inputs n
   | TFTanh          n -> TFTanh.get_inputs n
+  | TFAsin          n -> TFAsin.get_inputs n
+  | TFAcos          n -> TFAcos.get_inputs n
+  | TFAtan          n -> TFAtan.get_inputs n
+  | TFAsinh         n -> TFAsinh.get_inputs n
+  | TFAcosh         n -> TFAcosh.get_inputs n
+  | TFAtanh         n -> TFAtanh.get_inputs n
+  | TFSigmoid       n -> TFSigmoid.get_inputs n
   | TFMatMul        n -> TFMatMul.get_inputs n
   | TFAdd           n -> TFAdd.get_inputs n
   | TFSub           n -> TFSub.get_inputs n
   | TFMul           n -> TFMul.get_inputs n
   | TFDiv           n -> TFDiv.get_inputs n
+  | TFPow           n -> TFPow.get_inputs n
   | TFRelu          n -> TFRelu.get_inputs n
   | TFConv2D        n -> TFConv2D.get_inputs n
   | TFMaxPool       n -> TFMaxPool.get_inputs n
@@ -2821,6 +4016,7 @@ let get_inputs = function
   | TFNoop          n -> TFNoop.get_inputs n
   | TFSum           n -> TFSum.get_inputs n
   | TFMax           n -> TFMax.get_inputs n
+  | TFMin           n -> TFMin.get_inputs n
   | TFStridedSlice  n -> TFStridedSlice.get_inputs n
   | TFReshape       n -> TFReshape.get_inputs n
   | TFRandomUniform n -> TFRandomUniform.get_inputs n
@@ -2828,18 +4024,31 @@ let get_inputs = function
 
 
 let set_inputs = function
+  | TFAbs           n -> TFAbs.set_inputs n
   | TFNeg           n -> TFNeg.set_inputs n
   | TFExp           n -> TFExp.set_inputs n
   | TFLog           n -> TFLog.set_inputs n
   | TFSquare        n -> TFSquare.set_inputs n
+  | TFSqrt          n -> TFSqrt.set_inputs n
+  | TFSin           n -> TFSin.set_inputs n
+  | TFCos           n -> TFCos.set_inputs n
+  | TFTan           n -> TFTan.set_inputs n
   | TFSinh          n -> TFSinh.set_inputs n
   | TFCosh          n -> TFCosh.set_inputs n
   | TFTanh          n -> TFTanh.set_inputs n
+  | TFAsin          n -> TFAsin.set_inputs n
+  | TFAcos          n -> TFAcos.set_inputs n
+  | TFAtan          n -> TFAtan.set_inputs n
+  | TFAsinh         n -> TFAsinh.set_inputs n
+  | TFAcosh         n -> TFAcosh.set_inputs n
+  | TFAtanh         n -> TFAtanh.set_inputs n
+  | TFSigmoid       n -> TFSigmoid.set_inputs n
   | TFMatMul        n -> TFMatMul.set_inputs n
   | TFAdd           n -> TFAdd.set_inputs n
   | TFSub           n -> TFSub.set_inputs n
   | TFMul           n -> TFMul.set_inputs n
   | TFDiv           n -> TFDiv.set_inputs n
+  | TFPow           n -> TFPow.set_inputs n
   | TFRelu          n -> TFRelu.set_inputs n
   | TFConv2D        n -> TFConv2D.set_inputs n
   | TFMaxPool       n -> TFMaxPool.set_inputs n
@@ -2853,6 +4062,7 @@ let set_inputs = function
   | TFNoop          n -> TFNoop.set_inputs n
   | TFSum           n -> TFSum.set_inputs n
   | TFMax           n -> TFMax.set_inputs n
+  | TFMin           n -> TFMin.set_inputs n
   | TFStridedSlice  n -> TFStridedSlice.set_inputs n
   | TFReshape       n -> TFReshape.set_inputs n
   | TFRandomUniform n -> TFRandomUniform.set_inputs n
@@ -2860,18 +4070,31 @@ let set_inputs = function
 
 
 let get_device = function
+  | TFAbs           n -> TFAbs.get_device n
   | TFNeg           n -> TFNeg.get_device n
   | TFExp           n -> TFExp.get_device n
   | TFLog           n -> TFLog.get_device n
   | TFSquare        n -> TFSquare.get_device n
+  | TFSqrt          n -> TFSqrt.get_device n
+  | TFSin           n -> TFSin.get_device n
+  | TFCos           n -> TFCos.get_device n
+  | TFTan           n -> TFTan.get_device n
   | TFSinh          n -> TFSinh.get_device n
   | TFCosh          n -> TFCosh.get_device n
   | TFTanh          n -> TFTanh.get_device n
+  | TFAsin          n -> TFAsin.get_device n
+  | TFAcos          n -> TFAcos.get_device n
+  | TFAtan          n -> TFAtan.get_device n
+  | TFAsinh         n -> TFAsinh.get_device n
+  | TFAcosh         n -> TFAcosh.get_device n
+  | TFAtanh         n -> TFAtanh.get_device n
+  | TFSigmoid       n -> TFSigmoid.get_device n
   | TFMatMul        n -> TFMatMul.get_device n
   | TFAdd           n -> TFAdd.get_device n
   | TFSub           n -> TFSub.get_device n
   | TFMul           n -> TFMul.get_device n
   | TFDiv           n -> TFDiv.get_device n
+  | TFPow           n -> TFPow.get_device n
   | TFRelu          n -> TFRelu.get_device n
   | TFConv2D        n -> TFConv2D.get_device n
   | TFMaxPool       n -> TFMaxPool.get_device n
@@ -2885,6 +4108,7 @@ let get_device = function
   | TFVariable      n -> TFVariable.get_device n
   | TFSum           n -> TFSum.get_device n
   | TFMax           n -> TFMax.get_device n
+  | TFMin           n -> TFMin.get_device n
   | TFStridedSlice  n -> TFStridedSlice.get_device n
   | TFReshape       n -> TFReshape.get_device n
   | TFRandomUniform n -> TFRandomUniform.get_device n
@@ -2892,18 +4116,31 @@ let get_device = function
 
 
 let set_device = function
+  | TFAbs           n -> TFAbs.set_device n
   | TFNeg           n -> TFNeg.set_device n
   | TFExp           n -> TFExp.set_device n
   | TFLog           n -> TFLog.set_device n
   | TFSquare        n -> TFSquare.set_device n
+  | TFSqrt          n -> TFSqrt.set_device n
+  | TFSin           n -> TFSin.set_device n
+  | TFCos           n -> TFCos.set_device n
+  | TFTan           n -> TFTan.set_device n
   | TFSinh          n -> TFSinh.set_device n
   | TFCosh          n -> TFCosh.set_device n
   | TFTanh          n -> TFTanh.set_device n
+  | TFAsin          n -> TFAsin.set_device n
+  | TFAcos          n -> TFAcos.set_device n
+  | TFAtan          n -> TFAtan.set_device n
+  | TFAsinh         n -> TFAsinh.set_device n
+  | TFAcosh         n -> TFAcosh.set_device n
+  | TFAtanh         n -> TFAtanh.set_device n
+  | TFSigmoid       n -> TFSigmoid.set_device n
   | TFMatMul        n -> TFMatMul.set_device n
   | TFAdd           n -> TFAdd.set_device n
   | TFSub           n -> TFSub.set_device n
   | TFMul           n -> TFMul.set_device n
   | TFDiv           n -> TFDiv.set_device n
+  | TFPow           n -> TFPow.set_device n
   | TFRelu          n -> TFRelu.set_device n
   | TFConv2D        n -> TFConv2D.set_device n
   | TFMaxPool       n -> TFMaxPool.set_device n
@@ -2917,6 +4154,7 @@ let set_device = function
   | TFVariable      n -> TFVariable.set_device n
   | TFSum           n -> TFSum.set_device n
   | TFMax           n -> TFMax.set_device n
+  | TFMin           n -> TFMin.set_device n
   | TFStridedSlice  n -> TFStridedSlice.set_device  n
   | TFReshape       n -> TFReshape.set_device n
   | TFRandomUniform n -> TFRandomUniform.set_device n

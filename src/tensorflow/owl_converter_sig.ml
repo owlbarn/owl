@@ -19,6 +19,6 @@ module type Sig = sig
 
   val convert : TFgraph.G.graph -> tf_cgraph
 
-  val convert_to_pbtxt : TFgraph.G.graph ->  string
+  val to_pbtxt : tf_cgraph ->  string
 
 end

@@ -36,13 +36,6 @@ module Make
     }
 
 
-  let to_pbtxt m =
-    (TFmeta.to_pbtxt  m.tfmeta)  ^
-    (TFgraph.to_pbtxt m.tfgraph) ^
-    (TFsaver.to_pbtxt m.tfsaver) ^
-    (TFcolls.to_pbtxt m.tfcolls)
-
-
   let parse_cgraph (graph : G.graph) =
     let outputs = G.get_outputs graph in
 
@@ -86,6 +79,7 @@ module Make
     TFcolls.add_byteslist tfcolls "var_train";
     TFcolls.add_nodelist  tfcolls "result";
 
+    let variable_counter = ref 0 in
     Array.iter (fun tfnode ->
       let opname = Owl_converter_node.get_op_name tfnode in
       if not (TFmeta.mem_opdef tfmeta opname) then (
@@ -93,11 +87,20 @@ module Make
         TFmeta.add_opdef tfmeta tfop
       );
       if (TFmeta.is_var tfnode) then (
+        variable_counter := !variable_counter + 1;
         TFsaver.add_link tfsaver tfgraph tfnode;
         (* TFcolls.update tfcolls "var" (Owl_converter_node.get_name tfnode);
         TFcolls.update tfcolls "var_train" (Owl_converter_node.get_name tfnode) *)
       )
     ) tfgraph.nodes;
+
+    (* a tmp solution if no variable included in the graph *)
+    if (!variable_counter = 0) then (
+      let op = G.Optimiser.Operator.Symbol.Shape.Type.Ones [||] in
+      let tfnodes, update = TFgraph.make_variable_nodes op "dummpy_var" [||] in
+      TFgraph.add_tfnodes tfgraph tfnodes update;
+      TFsaver.add_link tfsaver tfgraph tfnodes.(0);
+    );
 
     let output_names = Array.map (fun n ->
       (Owl_graph.name n) ^ ":0"
@@ -125,9 +128,13 @@ module Make
     tf_cgraph
 
 
-  let convert_to_pbtxt graph = convert graph |> to_pbtxt
+  let to_pbtxt g =
+    (TFmeta.to_pbtxt  g.tfmeta)  ^
+    (TFgraph.to_pbtxt g.tfgraph) ^
+    (TFsaver.to_pbtxt g.tfsaver) ^
+    (TFcolls.to_pbtxt g.tfcolls)
 
 
-  let _convert_to_pb = ()
+  let _to_pb = ()
 
 end

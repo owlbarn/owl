@@ -11,7 +11,6 @@ module T = Owl_converter.Make (G)
 
 include Owl_algodiff_generic.Make (G)
 
-
 (* construct computation in AD *)
 
 let f x y =
@@ -37,14 +36,8 @@ let y_val = 3.
 let _ = G.assign_arr (unpack_arr x) x_val
 let _ = G.assign_elt (unpack_elt y) y_val
 let _ = G.eval_graph g
-let v = G.get_value output.(0)
-let _ = N.print (G.value_to_arr v.(0))
-
-(* output to dot *)
-let _dot = G.graph_to_dot g
 
 (* output to tensorflow pbtxt *)
 let _ =
-  let pbtxt = T.convert_to_pbtxt g in
-  print_endline pbtxt
-(* let _ = T.Utils.pbtxt_to_pb "test_cgraph.meta" s *)
+  let pbtxt = T.(convert g |> to_pbtxt) in
+  Owl_io.write_file "test_cgraph.pbtxt" pbtxt
