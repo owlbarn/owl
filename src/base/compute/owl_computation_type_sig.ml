@@ -81,6 +81,7 @@ module type Sig = sig
     | Fold                          of int * (elt -> elt -> elt)
     | Scan                          of int * (elt -> elt -> elt)
     | OneHot                        of int
+    | OfArray                       of int array
     | Delay                         of (A.arr -> A.arr)
     | DelayArray                    of int array * (A.arr array -> A.arr)
     | LazyPrint                     of int option * int option * bool option * (A.elt -> string) option

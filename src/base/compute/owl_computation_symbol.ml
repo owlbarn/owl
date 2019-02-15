@@ -50,6 +50,7 @@ module Make
     | Map _f                                         -> "Map"
     | Fold (_axis, _f)                               -> "Fold"
     | Scan (_axis, _f)                               -> "Scan"
+    | OfArray _s                                     -> "OfArray"
     | OneHot depth                                   -> Printf.sprintf "OneHot d:%i" depth
     | Delay _f                                       -> "Delay"
     | DelayArray (_shape, _f)                        -> "DelayArray"

@@ -67,6 +67,7 @@ module Make
           | Fold (_axis, _f)                              -> failwith "Fold"
           | Scan (_axis, _f)                              -> failwith "Scan"
           | OneHot depth                                  -> _eval_map_01 x (fun ~out x -> A.one_hot_ ~out depth x.(0))
+          | OfArray s                                     -> _eval_map_09 x (fun x -> A.of_array x s)
           | Delay f                                       -> _eval_map_08 x f
           | DelayArray (_shape, f)                        -> _eval_map_00 x f
           | LazyPrint (max_col, max_row, header, fmt)     -> _eval_map_00 x (fun x -> A.print ?max_col ?max_row ?header ?fmt x.(0); x.(0))
@@ -259,7 +260,7 @@ module Make
     f ~out inputs
 
 
-  (* [f] is inpure, for [elt array -> arr] *)
+  (* [f] is impure, for [elt array -> arr] *)
   and _eval_map_02 x f =
     _eval_terms (parents x);
     let inputs = Array.map (fun parent ->
@@ -328,6 +329,16 @@ module Make
     let a = (get_value x_parent).(0) |> value_to_arr |> f in
     set_value x [|arr_to_value a|]
 
+
+  (* [f] is pure, for [elt array -> arr] *)
+  and _eval_map_09 x f =
+    _eval_terms (parents x);
+    let inputs = Array.map (fun parent ->
+      value_to_elt (get_value parent).(0)
+    ) (parents x)
+    in
+    let out = f inputs in
+    set_value x [|arr_to_value out|]
 
 end
 
