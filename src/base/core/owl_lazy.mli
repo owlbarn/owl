@@ -536,7 +536,7 @@ module Make (A : Ndarray_Mutable) : sig
   val of_array : elt array -> int array -> arr
   (** TODO *)
 
-  val of_arrays : 'a -> 'b
+  val of_arrays : elt array array -> arr
   (** TODO *)
 
 
