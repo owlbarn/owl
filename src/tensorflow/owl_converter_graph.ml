@@ -255,6 +255,33 @@ module Make
     | None   -> failwith "Owlnode output shape cannot be None"
 
 
+  (* Be aware of those operation that does not have same input and output shapes. Also, the l2norm here is NOT tf.math.l2_normalize. *)
+  let make_l2norm_sqr_nodes name inputs inp_shp out_shp axes keepdims =
+    let sqrname = name ^ "/square" in
+    let sqrnode = TFSquare (TFSquare.create sqrname inputs inp_shp) in
+
+    let sumname = name ^ "/sum" in
+    let sumnodes, (_, uname) = make_sum_nodes sumname [|sqrname|] out_shp axes keepdims in
+    (Array.append sumnodes [|sqrnode|]), (name, uname)
+
+
+  let make_l2norm_nodes name inputs inp_shp out_shp axes keepdims =
+    let sqrnodes, (_, uname) = make_l2norm_sqr_nodes name inputs
+      inp_shp out_shp axes keepdims in
+    let sname = name ^ "/sqrt" in
+    let snode = TFSqrt (TFSqrt.create sname [|uname|] out_shp) in
+    (Array.append [|snode|] sqrnodes), (name, sname)
+
+
+  let make_l1norm_nodes name inputs inp_shp out_shp axes keepdims =
+    let aname = name ^ "/abs" in
+    let anode = TFAbs (TFAbs.create aname inputs inp_shp) in
+
+    let sumname = name ^ "/sum" in
+    let sumnodes, (_, uname) = make_sum_nodes sumname [|aname|] out_shp axes keepdims in
+    (Array.append sumnodes [|anode|]), (name, uname)
+
+
   (* The logic of how one owl node turned into multiple tfnodes is implemented
    * here.
    * Currently return node array and "name_update" : string * string; meaning,
@@ -342,6 +369,18 @@ module Make
     | Scalar_Pow          -> [| TFPow (TFPow.create name inputs out_shp) |], ("", "")
     | Relu                -> [| TFRelu (TFRelu.create name inputs out_shp) |], ("", "")
     | Scalar_Relu         -> [| TFRelu (TFRelu.create name inputs out_shp) |], ("", "")
+    | L2NormSqr'          ->
+      let input_shp = _get_input_shape node in
+      let axes = Owl_utils_array.range 0 (Array.length input_shp - 1) in
+      make_l2norm_sqr_nodes name inputs input_shp out_shp axes false
+    | L2norm'             ->
+      let input_shp = _get_input_shape node in
+      let axes = Owl_utils_array.range 0 (Array.length input_shp - 1) in
+      make_l2norm_nodes name inputs input_shp out_shp axes false
+    | L1norm'             ->
+      let input_shp = _get_input_shape node in
+      let axes = Owl_utils_array.range 0 (Array.length input_shp - 1) in
+      make_l1norm_nodes name inputs input_shp out_shp axes false
     | Conv2d (p, s)       ->
       let s = [|1; s.(0); s.(1); 1|] in
       [| TFConv2D (TFConv2D.create name inputs out_shp p s) |], ("", "")
