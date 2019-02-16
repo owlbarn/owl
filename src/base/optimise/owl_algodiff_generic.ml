@@ -105,6 +105,7 @@ module Make
     | Lyapunov_C_D   of t * t
     | Lyapunov_D_C   of t * t
     | Diag_D         of int * t
+    | Diagm_D        of int * t
     | Tril_D         of int * t
     | Triu_D         of int * t
     | Trace_D        of t
@@ -954,9 +955,15 @@ module Make
       let r a = Diag_D (k, a) in
       op_d_d a ff fd df r
 
-    and diagm ?(k=0) a = match a with
+    and diagm ?(k=0) a = 
+      let ff = function
       | Arr a      -> Arr A.(diagm ~k a |> copy)
       | _          -> error_uniop "diagm" a
+      in
+      let fd a = diagm ~k a in
+      let df _cp _ap at  = diagm ~k at in
+      let r a = Diagm_D (k, a) in
+      op_d_d a ff fd df r
 
     and trace a =
       let ff = function
@@ -1003,7 +1010,7 @@ module Make
         | Arr a     -> F A.(logdet a)
         | _         -> error_uniop "logdet" a in
       let fd a = logdet a in
-      let df _cp ap at = (transpose (inv ap)) * at in
+      let df _cp ap at = trace ((transpose (inv ap)) *@ at) in
       let r a = Logdet_D a in
       op_d_d a ff fd df r
 
@@ -1828,6 +1835,7 @@ module Make
                 | Lyapunov_D_C (a, _)        -> reset (a :: t)
                 | Lyapunov_C_D (_, q)        -> reset (q :: t)
                 | Diag_D (_, a)              -> reset (a :: t)
+                | Diagm_D (_, a)             -> reset (a :: t)
                 | Triu_D (_, a)              -> reset (a :: t)
                 | Tril_D (_, a)              -> reset (a :: t)
                 | Trace_D a                  -> reset (a :: t)
@@ -2002,6 +2010,7 @@ module Make
                     else a_ in
                   let abar = accu 0 (zero a) in
                   push ((abar, a) :: t)
+                | Diagm_D (k, a)             -> push ((diag ~k !aa, a) :: t)
                 | Triu_D (k, a)              -> push ((triu ~k !aa, a) :: t)
                 | Tril_D (k, a)              -> push ((tril ~k !aa, a) :: t)
                 | Trace_D a                  ->
@@ -2390,6 +2399,7 @@ module Make
                 | Lyapunov_C_D (a, q)          -> "Lyapunov_C_D", [ a; q ]
                 | Lyapunov_D_C (a, q)          -> "Lyapunov_D_C", [ a; q ]
                 | Diag_D (_, a)                -> "Diag_D", [ a ]
+                | Diagm_D (_, a)               -> "Diagm_D", [ a ]
                 | Tril_D (_, a)                -> "Tril_D", [ a ]
                 | Triu_D (_, a)                -> "Triu_D", [ a ]
                 | Trace_D a                    -> "Trace_D", [ a ]

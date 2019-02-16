@@ -102,10 +102,10 @@ let det x =
   for i = 0 to m - 1 do
     d := _mul_op !d (M.get a i i);
     (* NOTE: +1 to adjust to Fortran index *)
-    if (M.get ipiv 0 i) <> Int32.of_int (i + 1) then
-      c := !c + 1
+    if (M.get ipiv 0 i) <> Int32.of_int (i + 1) then begin
+      c := !c + 1;
+    end
   done;
-
   match Owl_maths.is_odd !c with
   | true  -> Owl_base_dense_common._neg_elt (M.kind x) !d
   | false -> !d
@@ -130,10 +130,11 @@ let logdet x =
     let e = M.get a i i in
     d := _add_op !d (_log_op (_abs_op e));
     (* NOTE: +1 to adjust to Fortran index *)
-    if (M.get ipiv 0 i) <> Int32.of_int (i + 1) && e > (Owl_const.zero _kind) then
-      c := !c + 1
+    let p = (M.get ipiv 0 i) <> Int32.of_int (i + 1) in
+    let q = e < (Owl_const.zero _kind) in 
+    (* implement xor *) 
+    if (p && not q) || (not p && q) then c := !c + 1
   done;
-
   match Owl_maths.is_odd !c with
   | true  -> failwith "logdet: det is negative"
   | false -> !d
@@ -145,12 +146,12 @@ let logdet x =
 let _get_qr_q
   : type a b. (a, b) kind -> (a, b) t -> (a, b) t -> (a, b) t
   = fun k a tau ->
-  match k with
-  | Float32   -> Owl_lapacke.orgqr a tau
-  | Float64   -> Owl_lapacke.orgqr a tau
-  | Complex32 -> Owl_lapacke.ungqr a tau
-  | Complex64 -> Owl_lapacke.ungqr a tau
-  | _         -> failwith "owl_linalg:_get_qr_q"
+    match k with
+    | Float32   -> Owl_lapacke.orgqr a tau
+    | Float64   -> Owl_lapacke.orgqr a tau
+    | Complex32 -> Owl_lapacke.ungqr a tau
+    | Complex64 -> Owl_lapacke.ungqr a tau
+    | _         -> failwith "owl_linalg:_get_qr_q"
 
 
 let qr ?(thin=true) ?(pivot=false) x =
@@ -172,11 +173,11 @@ let qr ?(thin=true) ?(pivot=false) x =
   let a = match thin with
     | true  -> a
     | false ->
-        if m <= n then a
-        else (
-          let a' = M.zeros (M.kind x) m (m - n) in
-          M.concat_horizontal a a'
-        )
+      if m <= n then a
+      else (
+        let a' = M.zeros (M.kind x) m (m - n) in
+        M.concat_horizontal a a'
+      )
   in
   let q = _get_qr_q (M.kind x) a tau in
   q, r, jpvt
@@ -197,12 +198,12 @@ let qrfact ?(pivot=false) x =
 let _get_lq_q
   : type a b. (a, b) kind -> (a, b) t -> (a, b) t -> (a, b) t
   = fun k a tau ->
-  match k with
-  | Float32   -> Owl_lapacke.orglq a tau
-  | Float64   -> Owl_lapacke.orglq a tau
-  | Complex32 -> Owl_lapacke.unglq a tau
-  | Complex64 -> Owl_lapacke.unglq a tau
-  | _         -> failwith "owl_linalg:_get_lq_q"
+    match k with
+    | Float32   -> Owl_lapacke.orglq a tau
+    | Float64   -> Owl_lapacke.orglq a tau
+    | Complex32 -> Owl_lapacke.unglq a tau
+    | Complex64 -> Owl_lapacke.unglq a tau
+    | _         -> failwith "owl_linalg:_get_lq_q"
 
 
 let lq ?(thin=true) x =
@@ -212,16 +213,16 @@ let lq ?(thin=true) x =
   let a, tau = Owl_lapacke.gelqf x in
   let l = match thin with
     | true  ->
-        if m < n then
-          M.get_slice [[]; [0; minmn-1]] (M.tril a)
-        else M.tril a
+      if m < n then
+        M.get_slice [[]; [0; minmn-1]] (M.tril a)
+      else M.tril a
     | false -> M.tril a
   in
   let a = match thin with
     | true  -> a
     | false ->
-        if m >= n then a
-        else M.resize ~head:true a [|n; n|]
+      if m >= n then a
+      else M.resize ~head:true a [|n; n|]
   in
   let q = _get_lq_q (M.kind x) a tau in
   l, q
@@ -287,15 +288,15 @@ let rank ?tol x =
   let ztol = Complex.({re = tol; im = neg_infinity}) in
   let _count : type a b. (a, b) kind -> (a, b) t -> int =
     fun _kind sv -> match _kind with
-    | Float32   -> M.elt_greater_scalar sv dtol |> M.sum' |> int_of_float
-    | Float64   -> M.elt_greater_scalar sv dtol |> M.sum' |> int_of_float
-    | Complex32 ->
+      | Float32   -> M.elt_greater_scalar sv dtol |> M.sum' |> int_of_float
+      | Float64   -> M.elt_greater_scalar sv dtol |> M.sum' |> int_of_float
+      | Complex32 ->
         let a = M.elt_greater_scalar sv ztol |> M.sum' in
         int_of_float Complex.(a.re)
-    | Complex64 ->
+      | Complex64 ->
         let a = M.elt_greater_scalar sv ztol |> M.sum' in
         int_of_float Complex.(a.re)
-    | _         -> failwith "owl_linalg:rank"
+      | _         -> failwith "owl_linalg:rank"
   in
   _count (M.kind sv) sv
 
@@ -315,23 +316,23 @@ let chol ?(upper=true) x =
 let _magic_complex
   : type a b c d. (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
   = fun otyp re im ->
-  let ityp = M.kind re in
-  match ityp, otyp with
-  | Float32, Complex32   -> M.complex float32 complex32 re im
-  | Float64, Complex64   -> M.complex float64 complex64 re im
-  | Complex32, Complex32 -> re
-  | Complex64, Complex64 -> re
-  | _                    -> failwith "owl_linalg_generic:_magic_complex"
+    let ityp = M.kind re in
+    match ityp, otyp with
+    | Float32, Complex32   -> M.complex float32 complex32 re im
+    | Float64, Complex64   -> M.complex float64 complex64 re im
+    | Complex32, Complex32 -> re
+    | Complex64, Complex64 -> re
+    | _                    -> failwith "owl_linalg_generic:_magic_complex"
 
 
 let schur
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x ->
-  assert (is_square x);
-  let x = M.copy x in
-  let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
-  let w = _magic_complex otyp wr wi in
-  t, z, w
+    assert (is_square x);
+    let x = M.copy x in
+    let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
+    let w = _magic_complex otyp wr wi in
+    t, z, w
 
 
 let schur_tz x =
@@ -344,12 +345,12 @@ let schur_tz x =
 let ordschur
   : type a b c d. otyp:(c, d) kind -> select:(int32, int32_elt) t -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp ~select t q ->
-  let t = M.copy t in
-  let q = M.copy q in
-  M.iter (fun a -> assert (a = 0l || a = 1l)) select;
-  let ts, zs, wr, wi = Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q in
-  let ws = _magic_complex otyp wr wi in
-  ts, zs, ws
+    let t = M.copy t in
+    let q = M.copy q in
+    M.iter (fun a -> assert (a = 0l || a = 1l)) select;
+    let ts, zs, wr, wi = Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q in
+    let ws = _magic_complex otyp wr wi in
+    ts, zs, ws
 
 
 
@@ -358,42 +359,42 @@ let ordschur
 let qz
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x y ->
-  assert (is_square x);
-  assert (is_square y);
-  let a = M.copy x in
-  let b = M.copy y in
-  let s, t, ar, ai, bt, q, z = Owl_lapacke.gges ~jobvsl:'V' ~jobvsr:'V' ~a ~b in
-  let alpha = _magic_complex otyp ar ai in
-  let beta = M.cast otyp bt in
-  let e = M.(alpha / beta) in
-  s, t, q, z, e
+    assert (is_square x);
+    assert (is_square y);
+    let a = M.copy x in
+    let b = M.copy y in
+    let s, t, ar, ai, bt, q, z = Owl_lapacke.gges ~jobvsl:'V' ~jobvsr:'V' ~a ~b in
+    let alpha = _magic_complex otyp ar ai in
+    let beta = M.cast otyp bt in
+    let e = M.(alpha / beta) in
+    s, t, q, z, e
 
 
 let ordqz
   : type a b c d. otyp:(c, d) kind -> select:(int32, int32_elt) t -> (a, b) t -> (a, b) t -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp ~select a b q z ->
-  let a = M.copy a in
-  let b = M.copy b in
-  let q = M.copy q in
-  let z = M.copy z in
-  let a, b, ar, ai, bt, q, z = Owl_lapacke.tgsen ~select ~a ~b ~q ~z in
-  let alpha = _magic_complex otyp ar ai in
-  let beta = M.cast otyp bt in
-  let e = M.(alpha / beta) in
-  a, b, q, z, e
+    let a = M.copy a in
+    let b = M.copy b in
+    let q = M.copy q in
+    let z = M.copy z in
+    let a, b, ar, ai, bt, q, z = Owl_lapacke.tgsen ~select ~a ~b ~q ~z in
+    let alpha = _magic_complex otyp ar ai in
+    let beta = M.cast otyp bt in
+    let e = M.(alpha / beta) in
+    a, b, q, z, e
 
 
 let qzvals
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
   = fun ~otyp x y ->
-  assert (is_square x);
-  assert (is_square y);
-  let a = M.copy x in
-  let b = M.copy y in
-  let ar, ai, bt, _, _ = Owl_lapacke.ggev ~jobvl:'N' ~jobvr:'N' ~a ~b in
-  let alpha = _magic_complex otyp ar ai in
-  let beta = M.cast otyp bt in
-  M.(alpha / beta)
+    assert (is_square x);
+    assert (is_square y);
+    let a = M.copy x in
+    let b = M.copy y in
+    let ar, ai, bt, _, _ = Owl_lapacke.ggev ~jobvl:'N' ~jobvr:'N' ~a ~b in
+    let alpha = _magic_complex otyp ar ai in
+    let beta = M.cast otyp bt in
+    M.(alpha / beta)
 
 
 (* TODO: RQ Decomposition *)
@@ -407,93 +408,93 @@ let rq _x = () [@@warning "-32"]
 let eig
   : type a b c d. ?permute:bool -> ?scale:bool -> otyp:(a, b) kind -> (c, d) t -> (a, b) t * (a, b) t
   = fun ?(permute=true) ?(scale=true) ~otyp x ->
-  let x = M.copy x in
-  let balanc = match permute, scale with
-    | true, true   -> 'B'
-    | true, false  -> 'P'
-    | false, true  -> 'S'
-    | false, false -> 'N'
-  in
-  let _a, wr, wi, _, vr, _, _, _, _, _, _ =
-    Owl_lapacke.geevx ~balanc ~jobvl:'N' ~jobvr:'V' ~sense:'N' ~a:x
-  in
+    let x = M.copy x in
+    let balanc = match permute, scale with
+      | true, true   -> 'B'
+      | true, false  -> 'P'
+      | false, true  -> 'S'
+      | false, false -> 'N'
+    in
+    let _a, wr, wi, _, vr, _, _, _, _, _, _ =
+      Owl_lapacke.geevx ~balanc ~jobvl:'N' ~jobvr:'V' ~sense:'N' ~a:x
+    in
 
-  (* TODO: optimise the performance by writing in c *)
-  (* construct eigen vectors from real wr and wi *)
-  let _construct_v
-    : type a b. (float, a) kind -> (Complex.t, b) kind -> (float, a) t -> (float, a) t -> (float, a) t -> (Complex.t, b) t -> unit
-    = fun k0 k1 wr wi vr v ->
-    let _a0 = Owl_const.zero (M.kind wi) in
-    let _, n = M.shape v in
-    let j = ref 0 in
+    (* TODO: optimise the performance by writing in c *)
+    (* construct eigen vectors from real wr and wi *)
+    let _construct_v
+      : type a b. (float, a) kind -> (Complex.t, b) kind -> (float, a) t -> (float, a) t -> (float, a) t -> (Complex.t, b) t -> unit
+      = fun k0 k1 wr wi vr v ->
+        let _a0 = Owl_const.zero (M.kind wi) in
+        let _, n = M.shape v in
+        let j = ref 0 in
 
-    while !j < n do
-      if (M.get wi 0 !j) = _a0 then (
-        for k = 0 to n - 1 do
-          M.set v k !j Complex.({re = M.get vr k !j; im = 0.})
-        done
-      )
-      else (
-        for k = 0 to n - 1 do
-          M.set v k !j Complex.( {re = M.get vr k !j; im = M.get vr k (!j+1)} );
-          M.set v k (!j+1) Complex.( {re = M.get vr k !j; im = 0. -. (M.get vr k (!j+1))} );
+        while !j < n do
+          if (M.get wi 0 !j) = _a0 then (
+            for k = 0 to n - 1 do
+              M.set v k !j Complex.({re = M.get vr k !j; im = 0.})
+            done
+          )
+          else (
+            for k = 0 to n - 1 do
+              M.set v k !j Complex.( {re = M.get vr k !j; im = M.get vr k (!j+1)} );
+              M.set v k (!j+1) Complex.( {re = M.get vr k !j; im = 0. -. (M.get vr k (!j+1))} );
+            done;
+            j := !j + 1
+          );
+          j := !j + 1
         done;
-        j := !j + 1
-      );
-      j := !j + 1
-    done;
-  in
+    in
 
-  (* process eigen vectors *)
-  let m, n = M.shape vr in
-  let v = match (M.kind x) with
-    | Float32   -> (
-        let v = M.empty complex32 m n in
-        _construct_v float32 complex32 wr wi vr v;
-        Obj.magic v
-      )
-    | Float64   -> (
-        let v = M.empty complex64 m n in
-        _construct_v float64 complex64 wr wi vr v;
-        Obj.magic v
-      )
-    | Complex32 -> Obj.magic vr
-    | Complex64 -> Obj.magic vr
-    | _         -> failwith "owl_linalg_generic:eig"
-  in
-  (* process eigen values *)
-  let w = match (M.kind x) with
-    | Float32   -> M.complex float32 complex32 wr wi |> Obj.magic
-    | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
-    | Complex32 -> Obj.magic wr
-    | Complex64 -> Obj.magic wr
-    | _         -> failwith "owl_linalg_generic:eigvals"
-  in
-  v, w
-       [@@warning "-27"]
+    (* process eigen vectors *)
+    let m, n = M.shape vr in
+    let v = match (M.kind x) with
+      | Float32   -> (
+          let v = M.empty complex32 m n in
+          _construct_v float32 complex32 wr wi vr v;
+          Obj.magic v
+        )
+      | Float64   -> (
+          let v = M.empty complex64 m n in
+          _construct_v float64 complex64 wr wi vr v;
+          Obj.magic v
+        )
+      | Complex32 -> Obj.magic vr
+      | Complex64 -> Obj.magic vr
+      | _         -> failwith "owl_linalg_generic:eig"
+    in
+    (* process eigen values *)
+    let w = match (M.kind x) with
+      | Float32   -> M.complex float32 complex32 wr wi |> Obj.magic
+      | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
+      | Complex32 -> Obj.magic wr
+      | Complex64 -> Obj.magic wr
+      | _         -> failwith "owl_linalg_generic:eigvals"
+    in
+    v, w
+[@@warning "-27"]
 
 let eigvals
   : type a b c d. ?permute:bool -> ?scale:bool -> otyp:(a, b) kind -> (c, d) t -> (a, b) t
   = fun ?(permute=true) ?(scale=true) ~otyp x ->
-  let x = M.copy x in
-  let balanc = match permute, scale with
-    | true, true   -> 'B'
-    | true, false  -> 'P'
-    | false, true  -> 'S'
-    | false, false -> 'N'
-  in
-  let _, wr, wi, _, _, _, _, _, _, _, _ =
-    Owl_lapacke.geevx ~balanc ~jobvl:'N' ~jobvr:'N' ~sense:'N' ~a:x
-  in
-  let w = match (M.kind x) with
-    | Float32   -> M.complex float32 complex32 wr wi |> Obj.magic
-    | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
-    | Complex32 -> Obj.magic wr
-    | Complex64 -> Obj.magic wr
-    | _         -> failwith "owl_linalg_generic:eigvals"
-  in
-  w
-    [@@warning "-27"]
+    let x = M.copy x in
+    let balanc = match permute, scale with
+      | true, true   -> 'B'
+      | true, false  -> 'P'
+      | false, true  -> 'S'
+      | false, false -> 'N'
+    in
+    let _, wr, wi, _, _, _, _, _, _, _, _ =
+      Owl_lapacke.geevx ~balanc ~jobvl:'N' ~jobvr:'N' ~sense:'N' ~a:x
+    in
+    let w = match (M.kind x) with
+      | Float32   -> M.complex float32 complex32 wr wi |> Obj.magic
+      | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
+      | Complex32 -> Obj.magic wr
+      | Complex64 -> Obj.magic wr
+      | _         -> failwith "owl_linalg_generic:eigvals"
+    in
+    w
+[@@warning "-27"]
 
 (* Hessenberg form of matrix *)
 
@@ -501,12 +502,12 @@ let eigvals
 let _get_hess_q
   : type a b. (a, b) kind -> int -> int -> (a, b) t -> (a, b) t -> (a, b) t
   = fun k ilo ihi a tau ->
-  match k with
-  | Float32   -> Owl_lapacke.orghr ilo ihi a tau
-  | Float64   -> Owl_lapacke.orghr ilo ihi a tau
-  | Complex32 -> Owl_lapacke.unghr ilo ihi a tau
-  | Complex64 -> Owl_lapacke.unghr ilo ihi a tau
-  | _         -> failwith "owl_linalg:_get_hess_q"
+    match k with
+    | Float32   -> Owl_lapacke.orghr ilo ihi a tau
+    | Float64   -> Owl_lapacke.orghr ilo ihi a tau
+    | Complex32 -> Owl_lapacke.unghr ilo ihi a tau
+    | Complex64 -> Owl_lapacke.unghr ilo ihi a tau
+    | _         -> failwith "owl_linalg:_get_hess_q"
 
 
 let hess x =
@@ -661,16 +662,16 @@ let null x =
 let _get_trans_code
   : type a b. (a, b) kind -> char
   = function
-  | Float32   -> 'T'
-  | Float64   -> 'T'
-  | Complex32 -> 'C'
-  | Complex64 -> 'C'
-  | _         -> failwith "owl_linalg_generic:_get_trans_code"
+    | Float32   -> 'T'
+    | Float64   -> 'T'
+    | Complex32 -> 'C'
+    | Complex64 -> 'C'
+    | _         -> failwith "owl_linalg_generic:_get_trans_code"
 
 
 (* TODO: add opt parameter to specify the matrix properties so that we can
-  choose the best solver for better performance.
- *)
+   choose the best solver for better performance.
+*)
 let linsolve ?(trans=false) a b =
   let ma, na = M.shape a in
   let mb, _nb = M.shape b in
@@ -749,6 +750,32 @@ let lyapunov a c =
   M.mul_scalar_ z (Owl_base_dense_common._float_typ_elt (M.kind c) (1. /. s));
   z
 
+let _discrete_lyapunov_direct a q = 
+  let n = M.row_num q in
+  let lhs = M.kron a M.(conj a) in
+  let lhs = M.((eye (kind a) (row_num lhs)) - lhs) in
+  M.reshape (linsolve lhs M.(reshape q [|-1;1|])) [|n; n|]
+
+(* bilinear transform reference
+ * https://old.control.ee.ethz.ch/info/people/mansour/pdf/168--1993-Schur-Cohn,%20Nour%20Eldin-Markov%20Matrices%20and%20the%20Controllability%20Gramians--.pdf *)
+let _discrete_lyapunov_bilinear a q = 
+  let n = M.row_num a in
+  let identity = M.(eye (kind a) n) in
+  let inv_al = inv M.(a - identity) in
+  let a' = M.(inv_al *@ (a + identity)) in
+  let q' = M.(inv_al *@ q *@ (transpose inv_al)) in
+  M.mul_scalar_ q' (Owl_base_dense_common._float_typ_elt (M.kind a) 2. );
+  lyapunov a' M.(neg q')
+
+let discrete_lyapunov ?bilinear a q = 
+  let solve = match bilinear with
+    | None -> 
+      if M.(row_num a) <= 10 then _discrete_lyapunov_direct
+      else _discrete_lyapunov_bilinear
+    | Some true -> _discrete_lyapunov_bilinear
+    | Some false -> _discrete_lyapunov_direct in
+  solve a q
+
 
 let care a b q r =
   let g = M.(b *@ (inv r) *@ (transpose b)) in
@@ -775,8 +802,8 @@ let dare a b q r =
   let t, u, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:z in
   let select = M.(zeros int32 (row_num wr) (col_num wr)) in
   M.iter2i_2d (fun i j re im ->
-    if Complex.(norm {re; im}) <= 1. then M.set select i j 1l
-  ) wr wi;
+      if Complex.(norm {re; im}) <= 1. then M.set select i j 1l
+    ) wr wi;
   ignore (Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q:u);
 
   let m, n = M.shape u in
@@ -829,123 +856,123 @@ let mpow x r =
 let expm_eig
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (c, d) t
   = fun ~otyp x ->
-  Owl_exception.(check (is_square x) NOT_SQUARE);
-  let v, w = eig ~otyp x in
-  let vi = inv v in
-  let u = M.(exp w |> diagm) in
-  M.( dot (dot v u) vi )
-    [@@warning "-32"]
+    Owl_exception.(check (is_square x) NOT_SQUARE);
+    let v, w = eig ~otyp x in
+    let vi = inv v in
+    let u = M.(exp w |> diagm) in
+    M.( dot (dot v u) vi )
+  [@@warning "-32"]
 
-let expm x =
-  Owl_exception.(check (is_square x) NOT_SQUARE);
-  (* trivial case *)
-  if M.shape x = (1, 1) then M.exp x
-  else (
-    (* TODO: use gebal to balance to improve accuracy, refer to Julia's impl *)
-    let xe = M.(eye (kind x) (row_num x)) in
-    let norm_x = norm ~p:1. x in
-    (* for small norm, use lower order Padé-approximation *)
-    if norm_x <= 2.097847961257068 then (
-      let c = Array.map (Owl_base_dense_common._float_typ_elt (M.kind x)) (
-        if norm_x > 0.9504178996162932 then
-          [|17643225600.; 8821612800.; 2075673600.; 302702400.; 30270240.; 2162160.; 110880.; 3960.; 90.; 1.|]
-        else if norm_x > 0.2539398330063230 then
-          [|17297280.; 8648640.; 1995840.; 277200.; 25200.; 1512.; 56.; 1.|]
-        else if norm_x > 0.01495585217958292 then
-          [|30240.; 15120.; 3360.; 420.; 30.; 1.|]
-        else
-          [|120.; 60.; 12.; 1.|]
-      ) in
-
-      let x2 = M.dot x x in
-      let p = ref M.(copy xe) in
-      let u = M.mul_scalar !p c.(1) in
-      let v = M.mul_scalar !p c.(0) in
-
-      for i = 1 to Array.(length c / 2 - 1) do
-        let j = 2 * i in
-        let k = j + 1 in
-        p := M.dot !p x2;
-        M.(add_ ~out:u u (mul_scalar !p c.(k)));
-        M.(add_ ~out:v v (mul_scalar !p c.(j)));
-      done;
-
-      let u = M.dot x u in
-      let a = M.sub v u in
-      let b = M.add v u in
-      Owl_lapacke.gesv a b |> ignore;
-      b
-    )
-    (* for larger norm, Padé-13 approximation *)
+  let expm x =
+    Owl_exception.(check (is_square x) NOT_SQUARE);
+    (* trivial case *)
+    if M.shape x = (1, 1) then M.exp x
     else (
-      let s = Owl_maths.log2 (norm_x /. 5.4) in
-      let t = ceil s in
-      let x =
-        if s > 0. then
-          Owl_base_dense_common._float_typ_elt (M.kind x) (2. ** t)
-          |> M.div_scalar x
-        else x
-      in
+      (* TODO: use gebal to balance to improve accuracy, refer to Julia's impl *)
+      let xe = M.(eye (kind x) (row_num x)) in
+      let norm_x = norm ~p:1. x in
+      (* for small norm, use lower order Padé-approximation *)
+      if norm_x <= 2.097847961257068 then (
+        let c = Array.map (Owl_base_dense_common._float_typ_elt (M.kind x)) (
+            if norm_x > 0.9504178996162932 then
+              [|17643225600.; 8821612800.; 2075673600.; 302702400.; 30270240.; 2162160.; 110880.; 3960.; 90.; 1.|]
+            else if norm_x > 0.2539398330063230 then
+              [|17297280.; 8648640.; 1995840.; 277200.; 25200.; 1512.; 56.; 1.|]
+            else if norm_x > 0.01495585217958292 then
+              [|30240.; 15120.; 3360.; 420.; 30.; 1.|]
+            else
+              [|120.; 60.; 12.; 1.|]
+          ) in
 
-      let c = Array.map (Owl_base_dense_common._float_typ_elt (M.kind x))
-        [|64764752532480000.; 32382376266240000.; 7771770303897600.;
-          1187353796428800.;  129060195264000.;   10559470521600.;
-          670442572800.;      33522128640.;       1323241920.;
-          40840800.;          960960.;            16380.;
-          182.;               1.|]
-      in
+        let x2 = M.dot x x in
+        let p = ref M.(copy xe) in
+        let u = M.mul_scalar !p c.(1) in
+        let v = M.mul_scalar !p c.(0) in
 
-      let x2 = M.dot x x in
-      let x4 = M.dot x2 x2 in
-      let x6 = M.dot x2 x4 in
-      let u = M.( x *@ (x6 *@ (x6 *$ c.(13) + x4 *$ c.(11) + x2 *$ c.(9)) +
-                  x6 *$ c.(7) + x4 *$ c.(5) + x2 *$ c.(3) + xe *$ c.(1)) ) in
-      let v = M.( x6 *@ (x6 *$ c.(12) + x4 *$ c.(10) + x2 *$ c.(8)) +
-                  x6 *$ c.(6) + x4 *$ c.(4) + x2 *$ c.(2) + xe *$ c.(0) ) in
-
-      let a = M.sub v u in
-      let b = M.add v u in
-      Owl_lapacke.gesv a b |> ignore;
-
-      let x = ref b in
-      if s > 0. then (
-        for _i = 1 to int_of_float t do
-          x := M.dot !x !x
+        for i = 1 to Array.(length c / 2 - 1) do
+          let j = 2 * i in
+          let k = j + 1 in
+          p := M.dot !p x2;
+          M.(add_ ~out:u u (mul_scalar !p c.(k)));
+          M.(add_ ~out:v v (mul_scalar !p c.(j)));
         done;
-      );
 
-      !x
+        let u = M.dot x u in
+        let a = M.sub v u in
+        let b = M.add v u in
+        Owl_lapacke.gesv a b |> ignore;
+        b
+      )
+      (* for larger norm, Padé-13 approximation *)
+      else (
+        let s = Owl_maths.log2 (norm_x /. 5.4) in
+        let t = ceil s in
+        let x =
+          if s > 0. then
+            Owl_base_dense_common._float_typ_elt (M.kind x) (2. ** t)
+            |> M.div_scalar x
+          else x
+        in
+
+        let c = Array.map (Owl_base_dense_common._float_typ_elt (M.kind x))
+            [|64764752532480000.; 32382376266240000.; 7771770303897600.;
+              1187353796428800.;  129060195264000.;   10559470521600.;
+              670442572800.;      33522128640.;       1323241920.;
+              40840800.;          960960.;            16380.;
+              182.;               1.|]
+        in
+
+        let x2 = M.dot x x in
+        let x4 = M.dot x2 x2 in
+        let x6 = M.dot x2 x4 in
+        let u = M.( x *@ (x6 *@ (x6 *$ c.(13) + x4 *$ c.(11) + x2 *$ c.(9)) +
+                          x6 *$ c.(7) + x4 *$ c.(5) + x2 *$ c.(3) + xe *$ c.(1)) ) in
+        let v = M.( x6 *@ (x6 *$ c.(12) + x4 *$ c.(10) + x2 *$ c.(8)) +
+                    x6 *$ c.(6) + x4 *$ c.(4) + x2 *$ c.(2) + xe *$ c.(0) ) in
+
+        let a = M.sub v u in
+        let b = M.add v u in
+        Owl_lapacke.gesv a b |> ignore;
+
+        let x = ref b in
+        if s > 0. then (
+          for _i = 1 to int_of_float t do
+            x := M.dot !x !x
+          done;
+        );
+
+        !x
+      )
     )
-  )
 
 
 let _sinm :
   type a b. (a, b) kind -> (a, b) t -> (a, b) t
   = fun k x ->
-  match k with
-  | Float32   -> (
-      let a = Complex.({re=0.; im=1.}) in
-      let x = M.cast_s2c x in
-      M.(expm (a $* x) |> im_c2s)
-    )
-  | Float64   -> (
-      let a = Complex.({re=0.; im=1.}) in
-      let x = M.cast_d2z x in
-      M.(expm (a $* x) |> im_z2d)
-    )
-  | Complex32 -> (
-      let a = Complex.({re=0.; im=(-0.5)}) in
-      let b = Complex.({re=0.; im=1.}) in
-      let c = Complex.({re=0.; im=(-1.)}) in
-      M.(a $* (expm (b $* x) - expm (c $* x)))
-    )
-  | Complex64 -> (
-      let a = Complex.({re=0.; im=(-0.5)}) in
-      let b = Complex.({re=0.; im=1.}) in
-      let c = Complex.({re=0.; im=(-1.)}) in
-      M.(a $* (expm (b $* x) - expm (c $* x)))
-    )
-  | _        -> failwith "_sinm: unsupported operation"
+    match k with
+    | Float32   -> (
+        let a = Complex.({re=0.; im=1.}) in
+        let x = M.cast_s2c x in
+        M.(expm (a $* x) |> im_c2s)
+      )
+    | Float64   -> (
+        let a = Complex.({re=0.; im=1.}) in
+        let x = M.cast_d2z x in
+        M.(expm (a $* x) |> im_z2d)
+      )
+    | Complex32 -> (
+        let a = Complex.({re=0.; im=(-0.5)}) in
+        let b = Complex.({re=0.; im=1.}) in
+        let c = Complex.({re=0.; im=(-1.)}) in
+        M.(a $* (expm (b $* x) - expm (c $* x)))
+      )
+    | Complex64 -> (
+        let a = Complex.({re=0.; im=(-0.5)}) in
+        let b = Complex.({re=0.; im=1.}) in
+        let c = Complex.({re=0.; im=(-1.)}) in
+        M.(a $* (expm (b $* x) - expm (c $* x)))
+      )
+    | _        -> failwith "_sinm: unsupported operation"
 
 
 let sinm x = _sinm (M.kind x) x
@@ -954,30 +981,30 @@ let sinm x = _sinm (M.kind x) x
 let _cosm :
   type a b. (a, b) kind -> (a, b) t -> (a, b) t
   = fun k x ->
-  match k with
-  | Float32   -> (
-      let a = Complex.({re=0.; im=1.}) in
-      let x = M.cast_s2c x in
-      M.(expm (a $* x) |> re_c2s)
-    )
-  | Float64   -> (
-      let a = Complex.({re=0.; im=1.}) in
-      let x = M.cast_d2z x in
-      M.(expm (a $* x) |> re_z2d)
-    )
-  | Complex32 -> (
-      let a = Complex.({re=0.5; im=0.}) in
-      let b = Complex.({re=0.; im=1.}) in
-      let c = Complex.({re=0.; im=(-1.)}) in
-      M.(a $* (expm (b $* x) + expm (c $* x)))
-    )
-  | Complex64 -> (
-      let a = Complex.({re=0.5; im=0.}) in
-      let b = Complex.({re=0.; im=1.}) in
-      let c = Complex.({re=0.; im=(-1.)}) in
-      M.(a $* (expm (b $* x) + expm (c $* x)))
-    )
-  | _        -> failwith "_cosm: unsupported operation"
+    match k with
+    | Float32   -> (
+        let a = Complex.({re=0.; im=1.}) in
+        let x = M.cast_s2c x in
+        M.(expm (a $* x) |> re_c2s)
+      )
+    | Float64   -> (
+        let a = Complex.({re=0.; im=1.}) in
+        let x = M.cast_d2z x in
+        M.(expm (a $* x) |> re_z2d)
+      )
+    | Complex32 -> (
+        let a = Complex.({re=0.5; im=0.}) in
+        let b = Complex.({re=0.; im=1.}) in
+        let c = Complex.({re=0.; im=(-1.)}) in
+        M.(a $* (expm (b $* x) + expm (c $* x)))
+      )
+    | Complex64 -> (
+        let a = Complex.({re=0.5; im=0.}) in
+        let b = Complex.({re=0.; im=1.}) in
+        let c = Complex.({re=0.; im=(-1.)}) in
+        M.(a $* (expm (b $* x) + expm (c $* x)))
+      )
+    | _        -> failwith "_cosm: unsupported operation"
 
 
 let cosm x = _cosm (M.kind x) x
@@ -986,38 +1013,38 @@ let cosm x = _cosm (M.kind x) x
 let _sincosm :
   type a b. (a, b) kind -> (a, b) t -> (a, b) t * (a, b) t
   = fun k x ->
-  match k with
-  | Float32   -> (
-      let a = Complex.({re=0.; im=1.}) in
-      let x = M.cast_s2c x in
-      let y = M.(expm (a $* x)) in
-      M.(im_c2s y, re_c2s y)
-    )
-  | Float64   -> (
-      let a = Complex.({re=0.; im=1.}) in
-      let x = M.cast_d2z x in
-      let y = M.(expm (a $* x)) in
-      M.(im_z2d y, re_z2d y)
-    )
-  | Complex32 -> (
-      let b = Complex.({re=0.; im=1.}) in
-      let c = Complex.({re=0.; im=(-1.)}) in
-      let x = M.(expm (b $* x)) in
-      let y = M.(expm (c $* x)) in
-      let _sin = M.( Complex.({re=0.; im=(-0.5)}) $* (x - y) ) in
-      let _cos = M.( Complex.({re=0.5; im=0.}) $* (x + y)) in
-      _sin, _cos
-    )
-  | Complex64 -> (
-      let b = Complex.({re=0.; im=1.}) in
-      let c = Complex.({re=0.; im=(-1.)}) in
-      let x = M.(expm (b $* x)) in
-      let y = M.(expm (c $* x)) in
-      let _sin = M.( Complex.({re=0.; im=(-0.5)}) $* (x - y) ) in
-      let _cos = M.( Complex.({re=0.5; im=0.}) $* (x + y)) in
-      _sin, _cos
-    )
-  | _        -> failwith "_sincosm: unsupported operation"
+    match k with
+    | Float32   -> (
+        let a = Complex.({re=0.; im=1.}) in
+        let x = M.cast_s2c x in
+        let y = M.(expm (a $* x)) in
+        M.(im_c2s y, re_c2s y)
+      )
+    | Float64   -> (
+        let a = Complex.({re=0.; im=1.}) in
+        let x = M.cast_d2z x in
+        let y = M.(expm (a $* x)) in
+        M.(im_z2d y, re_z2d y)
+      )
+    | Complex32 -> (
+        let b = Complex.({re=0.; im=1.}) in
+        let c = Complex.({re=0.; im=(-1.)}) in
+        let x = M.(expm (b $* x)) in
+        let y = M.(expm (c $* x)) in
+        let _sin = M.( Complex.({re=0.; im=(-0.5)}) $* (x - y) ) in
+        let _cos = M.( Complex.({re=0.5; im=0.}) $* (x + y)) in
+        _sin, _cos
+      )
+    | Complex64 -> (
+        let b = Complex.({re=0.; im=1.}) in
+        let c = Complex.({re=0.; im=(-1.)}) in
+        let x = M.(expm (b $* x)) in
+        let y = M.(expm (c $* x)) in
+        let _sin = M.( Complex.({re=0.; im=(-0.5)}) $* (x - y) ) in
+        let _cos = M.( Complex.({re=0.5; im=0.}) $* (x + y)) in
+        _sin, _cos
+      )
+    | _        -> failwith "_sincosm: unsupported operation"
 
 
 let sincosm x = _sincosm (M.kind x) x

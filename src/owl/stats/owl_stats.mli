@@ -208,7 +208,7 @@ one. If bins are infinitely wide, their density is 0 and the sum over width
 times density of all finite bins is the total weight in the finite bins. The
 result is stored in the ``density`` field. *)
 
-val pp_hist: Format.formatter -> histogram -> unit
+val pp_hist: Format.formatter -> histogram -> unit [@@ocaml.toplevel_printer]
 (** Pretty-print summary information on a histogram record *)
 
 val ecdf : float array -> float array * float array
