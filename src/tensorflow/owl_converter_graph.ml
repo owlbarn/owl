@@ -261,8 +261,9 @@ module Make
     let sqrnode = TFSquare (TFSquare.create sqrname inputs inp_shp) in
 
     let sumname = name ^ "/sum" in
-    let sumnodes, (_, uname) = make_sum_nodes sumname [|sqrname|] out_shp axes keepdims in
-    (Array.append sumnodes [|sqrnode|]), (name, uname)
+    let sumnodes, _ = make_sum_nodes sumname [|sqrname|] out_shp axes keepdims in
+    (* TODO: this does not look like a good systen design -- I acutally need to know how make_sum_nodes works *)
+    (Array.append sumnodes [|sqrnode|]), (name, sumname)
 
 
   let make_l2norm_nodes name inputs inp_shp out_shp axes keepdims =
@@ -278,8 +279,8 @@ module Make
     let anode = TFAbs (TFAbs.create aname inputs inp_shp) in
 
     let sumname = name ^ "/sum" in
-    let sumnodes, (_, uname) = make_sum_nodes sumname [|aname|] out_shp axes keepdims in
-    (Array.append sumnodes [|anode|]), (name, uname)
+    let sumnodes, _ = make_sum_nodes sumname [|aname|] out_shp axes keepdims in
+    (Array.append sumnodes [|anode|]), (name, sumname)
 
 
   (* The logic of how one owl node turned into multiple tfnodes is implemented
@@ -354,6 +355,7 @@ module Make
     | Dot (a, b, _, _)    -> [| TFMatMul (TFMatMul.create name inputs out_shp a b) |], ("", "")
     | Add                 -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "") (* TODO: actually, it will be translated to TFBiasAdd in DNN example; need to investigate if any condition is included. *)
     | ScalarAdd           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
+    | Scalar_Add          -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "") (* what's the difference? *)
     | AddScalar           -> [| TFAdd (TFAdd.create name inputs out_shp) |], ("", "")
     | Sub                 -> [| TFSub (TFSub.create name inputs out_shp) |], ("", "")
     | ScalarSub           -> [| TFSub (TFSub.create name inputs out_shp) |], ("", "")
@@ -416,6 +418,7 @@ module Make
       let input_shape = _get_input_shape node in
       let axes = Owl_utils_array.range 0 (Array.length input_shape - 1) in
       make_min_nodes name inputs out_shp axes false
+    | OfArray _shp        -> [| TFPack (TFPack.create name inputs out_shp 0)|], ("", "")  (* Only support 1-dim array for now; may need to find a more proper tensorlfow operation *)
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
     | Const               ->
       let value = get_const_value attr in

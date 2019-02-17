@@ -3572,6 +3572,94 @@ module TFMin = struct
 end
 
 
+module TFPack = struct
+
+  type t = {
+    mutable name    : string;
+    mutable op_name : string;
+    mutable inputs  : string array;
+    mutable out_shp : int array;
+    mutable device  : string;
+    mutable cls     : string array;
+    mutable n       : int;
+    mutable axis    : int;
+  }
+
+
+  (* Kepp the name to old version for now *)
+  let opname = "Pack"
+
+
+  let opdef =
+    let input_arg  = [|
+      make_argdef ~typ_attr:"T" ~num_attr:"N" "values";
+    |] in
+    let output_arg = [| make_argdef ~typ_attr:"T" "output" |] in
+    let attr = [|
+      make_tfop_attr "T" "type";
+      make_tfop_attr "N" "int"; (* N.minimum = 1 *)
+      make_tfop_attr "axis" "int";
+    |]
+    in
+    make_opdef ~input_arg ~output_arg ~attr opname
+
+
+  let create ?(cls=[||]) ?(device="") name inputs out_shp axis =
+    {
+      name    = name;
+      op_name = opname;
+      inputs  = inputs;
+      out_shp = out_shp;
+      device  = device;
+      cls     = cls;
+      n       = Array.length inputs;
+      axis    = axis;
+    }
+
+
+    let make_nodedef n =
+      let node_attr = [|
+        ("N", (ATTR_Int n.n));
+        ("T", (ATTR_Type "DT_FLOAT"));
+        ("_output_shapes", (ATTR_List [|(ATTR_Shape n.out_shp)|]));
+      |] in
+      let cls_attr = Array.map (fun c -> ATTR_String ("loc:@" ^ c)) n.cls in
+      let node_attr = if (cls_attr = [||]) then node_attr else
+        (Array.append node_attr [| ("_class", ATTR_List cls_attr) |])
+      in
+      {
+        name      = n.name;
+        op_name   = opname;
+        input     = n.inputs;
+        node_attr = node_attr;
+        device    = n.device
+      }
+
+
+    let to_pbtxt n =
+      make_nodedef n |> nodedef_to_pbtxt
+
+
+    let get_name n = n.name
+
+
+    let get_output_shape n = n.out_shp
+
+
+    let get_inputs n = n.inputs
+
+
+    let set_inputs n i = n.inputs <- i
+
+
+    let get_device n = n.device
+
+
+    let set_device n d = n.device <- d
+
+end
+
+
 (* OP: tf.Tensor.__getitem__. TO BE TESTED.*)
 module TFStridedSlice = struct
 
@@ -3900,6 +3988,7 @@ type tfnode =
   | TFSum           of TFSum.t
   | TFMax           of TFMax.t
   | TFMin           of TFMin.t
+  | TFPack          of TFPack.t
   | TFStridedSlice  of TFStridedSlice.t
   | TFReshape       of TFReshape.t
   | TFRandomUniform of TFRandomUniform.t
@@ -3948,6 +4037,7 @@ let to_pbtxt = function
   | TFSum           n -> TFSum.to_pbtxt n
   | TFMax           n -> TFMax.to_pbtxt n
   | TFMin           n -> TFMin.to_pbtxt n
+  | TFPack          n -> TFPack.to_pbtxt n
   | TFStridedSlice  n -> TFStridedSlice.to_pbtxt n
   | TFReshape       n -> TFReshape.to_pbtxt n
   | TFRandomUniform n -> TFRandomUniform.to_pbtxt n
@@ -3996,6 +4086,7 @@ let get_name = function
   | TFSum           n -> TFSum.get_name n
   | TFMax           n -> TFMax.get_name n
   | TFMin           n -> TFMin.get_name n
+  | TFPack          n -> TFPack.get_name n
   | TFStridedSlice  n -> TFStridedSlice.get_name n
   | TFReshape       n -> TFReshape.get_name n
   | TFRandomUniform n -> TFRandomUniform.get_name n
@@ -4044,6 +4135,7 @@ let get_op_name = function
   | TFSum           _ -> TFSum.opname
   | TFMax           _ -> TFMax.opname
   | TFMin           _ -> TFMin.opname
+  | TFPack          _ -> TFPack.opname
   | TFStridedSlice  _ -> TFStridedSlice.opname
   | TFReshape       _ -> TFReshape.opname
   | TFRandomUniform _ -> TFRandomUniform.opname
@@ -4092,6 +4184,7 @@ let get_opdef = function
   | TFSum           _ -> TFSum.opdef
   | TFMax           _ -> TFMax.opdef
   | TFMin           _ -> TFMin.opdef
+  | TFPack          _ -> TFPack.opdef
   | TFStridedSlice  _ -> TFStridedSlice.opdef
   | TFReshape       _ -> TFReshape.opdef
   | TFRandomUniform _ -> TFRandomUniform.opdef
@@ -4140,6 +4233,7 @@ let get_output_shape = function
   | TFSum           n -> TFSum.get_output_shape n
   | TFMax           n -> TFMax.get_output_shape n
   | TFMin           n -> TFMin.get_output_shape n
+  | TFPack          n -> TFPack.get_output_shape n
   | TFStridedSlice  n -> TFStridedSlice.get_output_shape n
   | TFReshape       n -> TFReshape.get_output_shape n
   | TFRandomUniform n -> TFRandomUniform.get_output_shape n
@@ -4193,6 +4287,7 @@ let get_inputs = function
   | TFSum           n -> TFSum.get_inputs n
   | TFMax           n -> TFMax.get_inputs n
   | TFMin           n -> TFMin.get_inputs n
+  | TFPack          n -> TFPack.get_inputs n
   | TFStridedSlice  n -> TFStridedSlice.get_inputs n
   | TFReshape       n -> TFReshape.get_inputs n
   | TFRandomUniform n -> TFRandomUniform.get_inputs n
@@ -4241,6 +4336,7 @@ let set_inputs = function
   | TFSum           n -> TFSum.set_inputs n
   | TFMax           n -> TFMax.set_inputs n
   | TFMin           n -> TFMin.set_inputs n
+  | TFPack          n -> TFPack.set_inputs n
   | TFStridedSlice  n -> TFStridedSlice.set_inputs n
   | TFReshape       n -> TFReshape.set_inputs n
   | TFRandomUniform n -> TFRandomUniform.set_inputs n
@@ -4289,6 +4385,7 @@ let get_device = function
   | TFSum           n -> TFSum.get_device n
   | TFMax           n -> TFMax.get_device n
   | TFMin           n -> TFMin.get_device n
+  | TFPack          n -> TFPack.get_device n
   | TFStridedSlice  n -> TFStridedSlice.get_device n
   | TFReshape       n -> TFReshape.get_device n
   | TFRandomUniform n -> TFRandomUniform.get_device n
@@ -4337,6 +4434,7 @@ let set_device = function
   | TFSum           n -> TFSum.set_device n
   | TFMax           n -> TFMax.set_device n
   | TFMin           n -> TFMin.set_device n
+  | TFPack          n -> TFPack.set_device n
   | TFStridedSlice  n -> TFStridedSlice.set_device  n
   | TFReshape       n -> TFReshape.set_device n
   | TFRandomUniform n -> TFRandomUniform.set_device n

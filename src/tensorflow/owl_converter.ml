@@ -44,6 +44,8 @@ module Make
       let name = Owl_graph.name node in
       let name = if (name <> "") then name else (
         let id = Owl_graph.id node in
+        (* let op = G.Optimiser.Operator.Symbol.(get_operator node |> op_to_str) in
+        Owl_log.info "op: %s" op; *)
         Printf.sprintf "owlnode%d" id
       ) in
       Owl_graph.set_name node name;
