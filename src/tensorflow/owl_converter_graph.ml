@@ -74,7 +74,7 @@ module Make
   let _make_uniform_initialiser name shp =
     let shp_str = Owl_utils_array.to_string ~sep:"," string_of_int shp in
     let tensor_content = Owl_converter_utils.serialise_tensor_content
-      "int32" shp_str |> Bytes.of_string
+      "int32" shp_str
     in
     let tvalue = make_tftensor ~tensor_content "DT_INT32" [|Array.length shp|] in
     let sname = name ^ "/shape" in
@@ -157,7 +157,7 @@ module Make
     ) else (
       let axes_str = Owl_utils_array.to_string ~sep:"," string_of_int axes in
       let tensor_content = Owl_converter_utils.serialise_tensor_content
-        "int32" axes_str |> Bytes.of_string in
+        "int32" axes_str in
       let atensor = ATTR_Tensor (make_tftensor ~tensor_content
         "DT_INT32" [|Array.length axes|]) in
       TFConst (TFConst.create ~dtype:"DT_INT32" aname
@@ -203,37 +203,34 @@ module Make
     [|dnode; lnode1; lnode2; cnode|], (name, dname)
 
 
-  (* NOTE: out_shp and shape are not the same thing *)
-  let _make_stack_for_stridedslice ?(_content=None) name shp_len =
-    let dummy_tensor_content = Bytes.create 1 in (* tmp *)
-    let shp = [| shp_len |] in
-    let stensor = ATTR_Tensor (make_tftensor
-      ~tensor_content:dummy_tensor_content
-      "DT_INT32" shp)
+  let _make_stack_for_stridedslice name arr =
+    let tensor_content = Owl_converter_utils.serialise_tensor_content "int32"
+      (Owl_utils_array.to_string ~sep:"," string_of_int arr)
     in
+    let shp = [| Array.length arr |] in
+    let stensor = ATTR_Tensor (make_tftensor ~tensor_content "DT_INT32" shp) in
     TFConst (TFConst.create ~dtype:"DT_INT32" name shp stensor)
 
 
-  (* TODO: the computation details are tmp and wrong *)
-  let make_stridedslice_nodes _index name inputs out_shp =
-    let shp_len = Array.length out_shp - 1 in
+  (* TODO: shrink for get operation *)
+  let make_stridedslice_nodes name inputs out_shp begins ends strides shrink =
     let name0 = name ^ "/stack_0" in
     let name1 = name ^ "/stack_1" in
     let name2 = name ^ "/stack_2" in
-    let stack0 = _make_stack_for_stridedslice name0 shp_len in
-    let stack1 = _make_stack_for_stridedslice name1 shp_len in
-    let stack2 = _make_stack_for_stridedslice name2 shp_len in
+    let stack0 = _make_stack_for_stridedslice name0 begins in
+    let stack1 = _make_stack_for_stridedslice name1 ends in
+    let stack2 = _make_stack_for_stridedslice name2 strides in
 
     let inputs = Array.append inputs [|name0; name1; name2|] in
     let ss = TFStridedSlice (TFStridedSlice.create name inputs out_shp
-      0 0 0 0 0) in (* tmp: dummy numbers!!! *)
+      0 0 0 0 shrink) in (* tmp: dummy numbers *)
     [|ss; stack0; stack1; stack2|], ("", "")
 
 
   let make_reshape_nodes name inputs shp =
     let shp_str = Owl_utils_array.to_string ~sep:"," string_of_int shp in
     let tensor_content = Owl_converter_utils.serialise_tensor_content
-      "int32" shp_str |> Bytes.of_string
+      "int32" shp_str
     in
     let stensor = ATTR_Tensor (make_tftensor ~tensor_content
       "DT_INT32" [|Array.length shp|])
@@ -281,6 +278,27 @@ module Make
     let sumname = name ^ "/sum" in
     let sumnodes, _ = make_sum_nodes sumname [|aname|] out_shp axes keepdims in
     (Array.append sumnodes [|anode|]), (name, sumname)
+
+
+  let make_ofarray_2d_nodes name inputs out_shp shp =
+    if (Array.length shp = 1) then (
+      [| TFPack (TFPack.create name inputs out_shp 0) |], ("", "")
+    ) else if (Array.length shp = 2) then (
+      let a = shp.(0) in
+      let b = shp.(1) in
+      let nodes = Array.make a (TFNoop (TFNoop.create "" [||])) in
+      let names = Array.make a "" in
+      for i = 0 to a - 1 do
+        let nname = Printf.sprintf "%s-%d" name i in
+        let ninpt = Array.sub inputs (i * b) b in
+        nodes.(i) <- TFPack (TFPack.create nname ninpt [|out_shp.(1)|] 0);
+        names.(i) <- nname
+      done;
+      let nnode2d = TFPack (TFPack.create name names out_shp 1) in
+      (Array.append [|nnode2d|] nodes), ("", "")
+    ) else (
+      failwith "OfArray: dimensions larger than 2 is not supported yet"
+    )
 
 
   (* The logic of how one owl node turned into multiple tfnodes is implemented
@@ -418,7 +436,8 @@ module Make
       let input_shape = _get_input_shape node in
       let axes = Owl_utils_array.range 0 (Array.length input_shape - 1) in
       make_min_nodes name inputs out_shp axes false
-    | OfArray _shp        -> [| TFPack (TFPack.create name inputs out_shp 0)|], ("", "")  (* Only support 1-dim array for now; may need to find a more proper tensorlfow operation *)
+    | OfArray shp         -> make_ofarray_2d_nodes name inputs out_shp shp
+    (* Only support 1-dim array for now; may need to find a more proper tensorlfow operation *)
     | Var                 -> [| TFPlaceholder (TFPlaceholder.create name out_shp) |], ("", "")
     | Const               ->
       let value = get_const_value attr in
@@ -427,7 +446,14 @@ module Make
     | Ones _              -> make_variable_nodes attr.op name out_shp
     | Zeros _             -> make_variable_nodes attr.op name out_shp
     | Uniform _           -> make_variable_nodes attr.op name out_shp
-    | Get i               -> make_stridedslice_nodes i name inputs out_shp
+    | Get i               -> (* get op should return a shrinked float value *)
+      let b = i in let e = i in
+      let s = Array.(make (length i) 0) in
+      make_stridedslice_nodes name inputs out_shp b e s 0
+    | GetSlice i          -> (* be carefull when index contains less item than the full length *)
+      let input_shp = _get_input_shape node in
+      let b, e, s = Owl_converter_utils.get_slice_param i input_shp in
+      make_stridedslice_nodes name inputs out_shp b e s 0
     | _                   -> let err = Printf.sprintf "unsupported operation: %s" (Symbol.op_to_str attr.op) in failwith err
 
 

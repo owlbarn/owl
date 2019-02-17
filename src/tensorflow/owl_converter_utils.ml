@@ -33,4 +33,28 @@ let serialise_tensor_content dtype lst_str =
   let str = syscall cmd in
   let len = String.length str in
   assert (len > 3);
-  String.sub str 1 (len - 3)
+  String.sub str 1 (len - 3) |> Bytes.of_string
+
+
+let get_slice_param (idx : int list list) full_shp =
+  let b = Array.make (List.length idx) 0 in
+  let e = Array.make (List.length idx) 0 in
+  (* not fancy slicing, so keep stride s to zeros for now *)
+  let s = Array.make (List.length idx) 0 in
+  List.iteri (fun i lst ->
+    let arr = Array.of_list lst in
+    let len = Array.length arr in
+    if (len = 0) then (
+      b.(i) <- 0;
+      e.(i) <- full_shp.(i)
+    ) else if (len = 1) then (
+      b.(i) <- arr.(0);
+      e.(i) <- full_shp.(i);
+    ) else if (len = 2) then (
+      b.(i) <- arr.(0);
+      e.(i) <- arr.(0);
+    ) else if (len > 2) then (
+      failwith "Converter: slicing index format error"
+    )
+  ) idx;
+  b, e, s
