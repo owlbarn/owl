@@ -11,8 +11,6 @@ let get_os_type c =
 
 
 let get_ocaml_default_flags _c = [
-  ":standard";
-  "-safe-string";
 ]
 
 
