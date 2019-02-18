@@ -83,12 +83,13 @@ def eval(meta_file):
 
     # get inputs
     # x = graph.get_tensor_by_name('x:0')
+    # x_shp = sess.run(tf.shape(x))
 
     # get outputs
     # result = tf.get_collection('result')[0]
 
     # create input data
-    # x_data  = np.ones((2,3))
+    # x_data  = np.ones(x_shp)
 
     # execute cgraph
     # y = sess.run(result, feed_dict={x:x_data})
