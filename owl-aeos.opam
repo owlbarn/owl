@@ -19,5 +19,4 @@ depends: [
   "dune" {build}
   "ocaml-compiler-libs"
   "stdio" {build}
-  "sexplib" {build}
 ]

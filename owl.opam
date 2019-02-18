@@ -34,5 +34,4 @@ depends: [
   "owl-aeos"
   "plplot"
   "stdio" {build}
-  "sexplib" {build}
 ]
