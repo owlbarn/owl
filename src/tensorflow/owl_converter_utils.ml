@@ -39,22 +39,76 @@ let serialise_tensor_content dtype lst_str =
 let get_slice_param (idx : int list list) full_shp =
   let b = Array.make (List.length idx) 0 in
   let e = Array.make (List.length idx) 0 in
-  (* not fancy slicing, so keep stride s to zeros for now *)
-  let s = Array.make (List.length idx) 0 in
+  (* not fancy slicing, so keep stride s to ones for now *)
+  let s = Array.make (List.length idx) 1 in
   List.iteri (fun i lst ->
     let arr = Array.of_list lst in
     let len = Array.length arr in
     if (len = 0) then (
       b.(i) <- 0;
-      e.(i) <- full_shp.(i)
+      e.(i) <- full_shp.(i) + 1;
     ) else if (len = 1) then (
       b.(i) <- arr.(0);
-      e.(i) <- full_shp.(i);
+      e.(i) <- arr.(0) + 1;
     ) else if (len = 2) then (
       b.(i) <- arr.(0);
-      e.(i) <- arr.(0);
+      e.(i) <- arr.(1) + 1;
     ) else if (len > 2) then (
       failwith "Converter: slicing index format error"
     )
   ) idx;
   b, e, s
+
+
+(* A very rudimentary template *)
+let generate_py_templated prefix =
+  let s = Printf.sprintf "#!/usr/bin/env python
+
+from __future__ import print_function
+
+import numpy as np
+import os
+import tensorflow as tf
+from google.protobuf import text_format
+from tensorflow.python.framework import graph_io
+
+
+def eval(meta_file):
+  with tf.Graph().as_default():
+    sess = tf.Session()
+    saver = tf.train.import_meta_graph(meta_file)
+    graph = tf.get_default_graph()
+    init = tf.global_variables_initializer()
+    sess.run(init)
+
+    # get inputs
+    # x = graph.get_tensor_by_name('x:0')
+
+    # get outputs
+    # result = tf.get_collection('result')[0]
+
+    # create input data
+    # x_data  = np.ones((2,3))
+
+    # execute cgraph
+    # y = sess.run(result, feed_dict={x:x_data})
+
+    # return result
+    # print(y)
+
+
+filename = '%s'
+with open(filename + '.pbtxt', 'r') as f:
+    metagraph_def = tf.MetaGraphDef()
+    file_content = f.read()
+    text_format.Merge(file_content,metagraph_def)
+    graph_io.write_graph(metagraph_def,
+        os.path.dirname(filename),
+        os.path.basename(filename) + '.pb',
+        as_text=False)
+
+
+y = eval(filename + '.pb')
+" prefix
+  in
+  Owl_io.write_file (prefix ^ ".py") s

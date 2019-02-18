@@ -446,10 +446,12 @@ module Make
     | Ones _              -> make_variable_nodes attr.op name out_shp
     | Zeros _             -> make_variable_nodes attr.op name out_shp
     | Uniform _           -> make_variable_nodes attr.op name out_shp
-    | Get i               -> (* get op should return a shrinked float value *)
+    | Get i               ->
       let b = i in let e = i in
-      let s = Array.(make (length i) 0) in
-      make_stridedslice_nodes name inputs out_shp b e s 0
+      let len = Array.length i in
+      let s = Array.make len 1 in
+      let shinrk_mask = (2. ** (float_of_int len) |> int_of_float) - 1 in
+      make_stridedslice_nodes name inputs out_shp b e s shinrk_mask
     | GetSlice i          -> (* be carefull when index contains less item than the full length *)
       let input_shp = _get_input_shape node in
       let b, e, s = Owl_converter_utils.get_slice_param i input_shp in
