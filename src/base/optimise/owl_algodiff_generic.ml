@@ -1136,7 +1136,7 @@ module Make
         | Arr a, Arr q       -> Arr A.(discrete_lyapunov ~solver a q)
         | _                  -> error_binop "discrete_lyapunov" a q
       in
-      let fd a q = discrete_lyapunov a q in
+      let fd a q = discrete_lyapunov ~solver a q in
       let df_da cp ap at = discrete_lyapunov ap ((ap *@ cp *@ (transpose at))  + (at *@ cp *@ (transpose a)))  in
       let df_dq _cp _qp qt = discrete_lyapunov a qt  in
       let df_daq cp ap at _qp qt =
@@ -2034,12 +2034,12 @@ module Make
                 | Chol_D (a, upper)             -> push ((_chol_backward ap !aa upper, a) :: t)
                 | QR_D (a, o, aa)               -> push ((_qr_backward o aa, a) :: t)
                 | Svd_D (a, o, aa, thin)        -> push ((_svd_backward o aa thin,a) :: t)
-                | Lyapunov_D_D (a, q)           -> let abar, qbar = _lyapunov_backward_aq a !aa ap in push ((abar, a) :: (qbar, q) :: t)
-                | Lyapunov_D_C (a, _)           -> push (((_lyapunov_backward_a a !aa ap), a) :: t)
-                | Lyapunov_C_D (a, q)           -> push (((_lyapunov_backward_q a !aa), q) :: t)
-                | Discrete_Lyapunov_D_D (a, q)  -> let abar, qbar = _discrete_lyapunov_backward_aq a !aa ap in push ((abar, a) :: (qbar, q) :: t)
-                | Discrete_Lyapunov_D_C (a, _)  -> push (((_discrete_lyapunov_backward_a a !aa ap), a) :: t)
-                | Discrete_Lyapunov_C_D (a, q)  -> push (((_discrete_lyapunov_backward_q a !aa), q) :: t)
+                | Lyapunov_D_D (a, q)           -> let abar, qbar = _lyapunov_backward_aq (primal a) !aa ap in push ((abar, a) :: (qbar, q) :: t)
+                | Lyapunov_D_C (a, _)           -> push (((_lyapunov_backward_a (primal a) !aa ap), a) :: t)
+                | Lyapunov_C_D (a, q)           -> push (((_lyapunov_backward_q (primal a) !aa), q) :: t)
+                | Discrete_Lyapunov_D_D (a, q)  -> let abar, qbar = _discrete_lyapunov_backward_aq (primal a) !aa ap in push ((abar, a) :: (qbar, q) :: t)
+                | Discrete_Lyapunov_D_C (a, _)  -> push (((_discrete_lyapunov_backward_a (primal a) !aa ap), a) :: t)
+                | Discrete_Lyapunov_C_D (a, q)  -> push (((_discrete_lyapunov_backward_q (primal a) !aa), q) :: t)
                 | Diag_D (k, a)                 ->
                   let m = col_num a in
                   let l = Pervasives.(m - k) in
