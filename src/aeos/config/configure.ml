@@ -5,11 +5,6 @@
 
 module C = Configurator.V1
 
-
-let write_sexp fn sexp =
-  Stdio.Out_channel.write_all fn ~data:(Sexplib.Sexp.to_string sexp)
-
-
 let get_os_type c =
   let sys = C.ocaml_config_var c "system" in
   match sys with Some s -> s | None -> ""
@@ -61,6 +56,6 @@ let () =
     (* assemble default config *)
     let conf : C.Pkg_config.package_conf = { cflags; libs } in
 
-    write_sexp "aeos_c_flags.sexp" Sexplib.Std.(sexp_of_list sexp_of_string conf.cflags);
-    write_sexp "aeos_c_library_flags.sexp" Sexplib.Std.(sexp_of_list sexp_of_string conf.libs);
+    C.Flags.write_sexp "aeos_c_flags.sexp" conf.cflags;
+    C.Flags.write_sexp "aeos_c_library_flags.sexp" conf.libs
   )

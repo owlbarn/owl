@@ -99,7 +99,6 @@ val lyapunov : mat -> mat -> mat
 
 val discrete_lyapunov : ?solver:[`default | `direct | `bilinear] -> mat -> mat -> mat
 
-
 (** {6 Low-level factorisation functions} *)
 
 val lufact : mat -> mat * int32_mat
