@@ -20,3 +20,7 @@ depends: [
   "ocaml-compiler-libs"
   "stdio" {build}
 ]
+
+depexts: [
+  ["libopenmp"] {os = "macos" & os-distribution = "homebrew"}
+]
