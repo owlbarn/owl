@@ -512,6 +512,9 @@ module type Sig = sig
   val lyapunov : arr -> arr -> arr
   (** TODO *)
 
+  val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> arr -> arr -> arr
+  (** TODO *)
+
   val diag: ?k:int -> arr -> arr
   (** TODO *)
 

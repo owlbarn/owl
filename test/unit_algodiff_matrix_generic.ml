@@ -18,7 +18,7 @@ module Make
 
   let n = 3
   let n_samples = 20
-  let threshold = 1E-6 
+  let threshold = 1E-5 
   let eps = 1E-5 
 
   module FD = FDGrad_test 
@@ -76,8 +76,10 @@ module Make
 
     let chol  () = 
       let f x = 
+        let identity = Arr (Owl.Mat.eye n) in
         let s = Maths.(transpose x *@ x) in
-        Maths.( (chol ~upper:true s) + (chol ~upper:false s))
+        let s = Maths.(s + (F 0.001) * identity) in
+        Maths.(inv (chol ~upper:false s)) 
       in test_func f 
 
     let split () =
@@ -116,13 +118,25 @@ module Make
       test_func f
 
     let lyapunov () =
+      let r = Mat.gaussian n n in
+      let identity = Arr Owl.Mat.(eye n) in
       let f = 
-        let q = Arr Owl.Mat.((gaussian n n)) in
         fun x -> 
-          let q = Maths.(q + x) in
-          let q = Maths.(neg (transpose q *@ q)) in
-          Maths.lyapunov x q in
+          let a = Maths.(r + x) in
+          let q = Maths.(x + (transpose x) + identity) in
+          Maths.lyapunov a Maths.(neg q) in
       test_func f
+
+    let discrete_lyapunov () =
+      let r = Mat.gaussian n n in
+      let identity = Arr Owl.Mat.(eye n) in
+      let f = 
+        fun x -> 
+          let a = Maths.(r + x) in
+          let q = Maths.(x + (transpose x) + identity) in
+          Maths.discrete_lyapunov a q in
+      test_func f
+
 
   end
 
@@ -174,29 +188,35 @@ module Make
 
   let init_2d () = alco_fun "init_2d" To_test.init_2d
 
+  let lyapunov () = alco_fun "lyapunov" To_test.lyapunov
+
+  let discrete_lyapunov () = alco_fun "discrete_lyapunov" To_test.discrete_lyapunov
+
   let test_set = [
-    "sin",             `Slow,     sin;
-    "cos",             `Slow,     cos;
-    "tan",             `Slow,     tan;
-    "sinh",            `Slow,     sinh;
-    "cosh",            `Slow,     cosh;
-    "tanh",            `Slow,     tanh;
-    "exp",             `Slow,     exp;
-    "diag",            `Slow,     diag;
-    "diagm",           `Slow,     diagm;
-    "trace",           `Slow,     trace;
-    "tril",            `Slow,     tril;
-    "triu",            `Slow,     triu;
-    "inv",             `Slow,     inv;
-    "logdet",          `Slow,     logdet;
-    "chol",            `Slow,     chol;
-    "qr",              `Slow,     qr;
-    "split",           `Slow,     split;
-    "concatenate",     `Slow,     concatenate;
-    "svd",             `Slow,     svd;
-    "of_arrays",       `Slow,     of_arrays;
-    "to_arrays",       `Slow,     to_arrays;
-    "init_2d",         `Slow,     init_2d;
+    "sin",                      `Slow,     sin;
+    "cos",                      `Slow,     cos;
+    "tan",                      `Slow,     tan;
+    "sinh",                     `Slow,     sinh;
+    "cosh",                     `Slow,     cosh;
+    "tanh",                     `Slow,     tanh;
+    "exp",                      `Slow,     exp;
+    "diag",                     `Slow,     diag;
+    "diagm",                    `Slow,     diagm;
+    "trace",                    `Slow,     trace;
+    "tril",                     `Slow,     tril;
+    "triu",                     `Slow,     triu;
+    "inv",                      `Slow,     inv;
+    "logdet",                   `Slow,     logdet;
+    "chol",                     `Slow,     chol;
+    "qr",                       `Slow,     qr;
+    "split",                    `Slow,     split;
+    "concatenate",              `Slow,     concatenate;
+    "svd",                      `Slow,     svd;
+    "of_arrays",                `Slow,     of_arrays;
+    "to_arrays",                `Slow,     to_arrays;
+    "init_2d",                  `Slow,     init_2d;
+    "lyapunov",                 `Slow,     lyapunov;
+    "discrete_lyapunov",        `Slow,     discrete_lyapunov;
   ]
 
 end
