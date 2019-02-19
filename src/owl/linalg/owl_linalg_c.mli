@@ -97,8 +97,7 @@ val sylvester : mat -> mat -> mat -> mat
 
 val lyapunov : mat -> mat -> mat
 
-val discrete_lyapunov : ?bilinear:bool -> mat -> mat -> mat
-
+val discrete_lyapunov : ?solver:[`default | `direct | `bilinear] -> mat -> mat -> mat
 
 (** {6 Low-level factorisation functions} *)
 
