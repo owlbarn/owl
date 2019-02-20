@@ -84,7 +84,7 @@ module Make
   let init shape f =
     make_node ~shape:[|Some shape|] (Init (shape, f)) |> node_to_arr
 
-  let init_nd _shape _f = raise Owl_exception.NOT_IMPLEMENTED 
+  let init_nd _shape _f = raise Owl_exception.NOT_IMPLEMENTED
 
   let shape x = arr_to_node x |> node_shape
 
@@ -469,19 +469,19 @@ module Make
 
   let svd ?(thin=true) _x = thin |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
-  let qr _x = raise Owl_exception.NOT_IMPLEMENTED 
-  
-  let lyapunov _a _q = raise Owl_exception.NOT_IMPLEMENTED 
+  let qr _x = raise Owl_exception.NOT_IMPLEMENTED
 
-  let discrete_lyapunov ?(solver=`default) _a _q = solver |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
-  
-  let diag ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
+  let lyapunov _a _q = raise Owl_exception.NOT_IMPLEMENTED
 
-  let diagm ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
+  let discrete_lyapunov ?(solver=`default) _a _q = solver |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
-  let tril?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
+  let diag ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
-  let triu?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED 
+  let diagm ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+
+  let tril ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+
+  let triu ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
   let trace x = make_then_connect Trace [|arr_to_node x|] |> node_to_elt
 
@@ -508,10 +508,18 @@ module Make
 
   let of_rows xs = make_then_connect OfRows (Array.map arr_to_node xs) |> node_to_arr
 
-  let of_array _x _shape = raise Owl_exception.NOT_IMPLEMENTED
+  let of_array x shape =
+    let parents = Array.map elt_to_node x in
+    make_then_connect (OfArray shape) parents |> node_to_arr
 
-  let of_arrays _x = raise Owl_exception.NOT_IMPLEMENTED
-      
+  let of_arrays x =
+    let shape = [| Array.length x; Array.length x.(0) |] in
+    let parents = List.map (fun y ->
+      Array.map elt_to_node y
+    ) (Array.to_list x) |> Array.concat
+    in
+    make_then_connect (OfArray shape) parents |> node_to_arr
+
   let to_arrays _x = raise Owl_exception.NOT_IMPLEMENTED
 
 

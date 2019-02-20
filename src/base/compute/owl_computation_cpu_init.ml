@@ -84,6 +84,7 @@ module Make
     | Fold (_axis, _f)                               -> split_00 p (* ? *)
     | Scan (_axis, _f)                               -> split_00 p (* ? *)
     | OneHot _depth                                  -> split_00 p (* ? *)
+    | OfArray _s                                     -> split_00 p (* ? *)
     | Delay _f                                       -> split_01 p
     | DelayArray (_shape, _f)                        -> split_01 p
     | LazyPrint (_max_row, _max_col, _header, _fmt)  -> split_01 p
