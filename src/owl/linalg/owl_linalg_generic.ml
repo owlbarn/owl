@@ -767,13 +767,13 @@ let _discrete_lyapunov_bilinear a q =
   M.mul_scalar_ q' (Owl_base_dense_common._float_typ_elt (M.kind a) 2. );
   lyapunov a' M.(neg q')
 
-let discrete_lyapunov ?bilinear a q = 
-  let solve = match bilinear with
-    | None -> 
+let discrete_lyapunov ?(solver=`default) a q = 
+  let solve = match solver with
+    | `default -> 
       if M.(row_num a) <= 10 then _discrete_lyapunov_direct
       else _discrete_lyapunov_bilinear
-    | Some true -> _discrete_lyapunov_bilinear
-    | Some false -> _discrete_lyapunov_direct in
+    | `bilinear -> _discrete_lyapunov_bilinear
+    | `direct   -> _discrete_lyapunov_direct in
   solve a q
 
 

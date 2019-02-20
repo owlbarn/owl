@@ -417,7 +417,7 @@ Returns:
   * ``x`` : ``m x n`` matrix X.
  *)
 
-val discrete_lyapunov : ?bilinear:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``discrete_lyapunov a q`` solves a discrete-time Lyapunov equation in the following form.
 

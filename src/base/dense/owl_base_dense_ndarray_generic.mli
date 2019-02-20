@@ -732,6 +732,9 @@ val svd : ?thin:bool -> (float, 'b) t -> (float, 'b) t * (float, 'b) t * (float,
 val lyapunov : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
+val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
 val diag: ?k:int -> (float, 'b) t -> (float, 'b) t 
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 

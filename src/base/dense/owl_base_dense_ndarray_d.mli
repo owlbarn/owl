@@ -420,6 +420,8 @@ val chol : ?upper:bool -> arr -> arr
 
 val lyapunov : arr -> arr -> arr
 
+val discrete_lyapunov : ?solver:[`default | `direct | `bilinear] -> arr -> arr -> arr
+
 val diag: ?k:int -> arr -> arr 
 
 val diagm: ?k:int -> arr -> arr 
