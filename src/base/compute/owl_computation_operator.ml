@@ -477,10 +477,6 @@ module Make
 
   let diag ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
-  let lyapunov _a _q = raise Owl_exception.NOT_IMPLEMENTED
-
-  let diag ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
-
   let diagm ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
   let tril ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
