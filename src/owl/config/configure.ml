@@ -5,6 +5,45 @@
 
 module C = Configurator.V1
 
+(* Adapted from lapacke_DGELS_colmajor example *)
+let test_lapacke_working_code = {|
+#include <stdio.h>
+#include <lapacke.h>
+
+void print_matrix_colmajor( char* desc, lapack_int m, lapack_int n, double* mat, lapack_int ldm ) {
+  lapack_int i, j;
+  printf( "\n %s\n", desc );
+
+  for( i = 0; i < m; i++ ) {
+    for( j = 0; j < n; j++ ) printf( " %6.2f", mat[i+j*ldm] );
+    printf( "\n" );
+  }
+}
+
+int main (int argc, const char * argv[])
+{
+  /* Locals */
+  double A[5][3] = {{1,2,3},{4,5,1},{3,5,2},{4,1,4},{2,5,3}};
+  double b[5][2] = {{-10,12},{14,16},{18,-3},{14,12},{16,16}};
+  lapack_int info,m,n,lda,ldb,nrhs;
+
+  /* Initialization */
+  m = 5;
+  n = 3;
+  nrhs = 2;
+  lda = 5;
+  ldb = 5;
+
+  /* Solve least squares problem*/
+  info = LAPACKE_dgels(LAPACK_COL_MAJOR,'N',m,n,nrhs,*A,lda,*b,ldb);
+
+  /* Print Solution */
+  print_matrix_colmajor( "Solution", n, nrhs, *b, ldb );
+  printf( "\n" );
+  exit( info );
+}
+|}
+
 let get_os_type c =
   let sys = C.ocaml_config_var c "system" in
   match sys with Some s -> s | None -> ""
@@ -126,11 +165,20 @@ let () =
         Base.Option.value ~default:openblas_default
           (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"openblas")
       in
+      let lapacke_flag =
+        let needs_lapacke_flag =
+          C.c_test c test_lapacke_working_code
+            ~c_flags:openblas_conf.cflags ~link_flags:openblas_conf.libs
+          |> not
+        in
+        if needs_lapacke_flag then ["-llapacke"] else []
+      in
       (* configure link options *)
       let libs =
         []
         @ default_libs
         @ openblas_conf.libs
+        @ lapacke_flag
         @ default_gcc_path
         @ get_accelerate_libs c
         @ get_openmp_libs c
