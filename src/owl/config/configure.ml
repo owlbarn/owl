@@ -23,7 +23,7 @@ let get_ocaml_devmode_flags _c =
   else failwith "Error: ENABLE_DEVMODE only accepts 0/1."
 
 
-let get_default_cflags _c = [
+let default_cflags = [
   (* Basic optimisation *)
   "-g"; "-O3"; "-Ofast";
   (* FIXME: experimental switches *)
@@ -36,9 +36,8 @@ let get_default_cflags _c = [
 ]
 
 
-let get_default_libs _c =
+let default_libs =
   [
-    "-lopenblas";
     "-lm";
   ]
 
@@ -66,20 +65,23 @@ let get_devmode_cflags _c =
   else failwith "Error: ENABLE_DEVMODE only accepts 0/1."
 
 
-let get_gcc_path _c =
+let default_gcc_path =
   let p0 = "/usr/local/lib/gcc/7" in
   if Sys.file_exists p0 then ["-L" ^ p0]
   else []
 
 
-let get_openblas_path _c =
+let openblas_default : C.Pkg_config.package_conf =
   let p0 = "/usr/local/opt/openblas/lib" in
   let p1 = "/opt/OpenBLAS/lib/" in
   let p2 = "/usr/local/lib/openblas/lib" in
-  if Sys.file_exists p0 then ["-L" ^ p0]
-  else if Sys.file_exists p1 then ["-L" ^ p1]
-  else if Sys.file_exists p2 then ["-L" ^ p2]
-  else []
+  let libs = if Sys.file_exists p0 then ["-L" ^ p0]
+    else if Sys.file_exists p1 then ["-L" ^ p1]
+    else if Sys.file_exists p2 then ["-L" ^ p2]
+    else []
+  in
+  let cflags = ["-lopenblas"] in
+  C.Pkg_config.{cflags; libs}
 
 
 let get_accelerate_libs c =
@@ -119,34 +121,42 @@ let get_openmp_libs c =
 
 let () =
   C.main ~name:"owl" (fun c ->
+      let openblas_conf =
+        let open Base.Option.Monad_infix in
+        Base.Option.value ~default:openblas_default
+          (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"openblas")
+      in
+      (* configure link options *)
+      let libs =
+        []
+        @ default_libs
+        @ openblas_conf.libs
+        @ default_gcc_path
+        @ get_accelerate_libs c
+        @ get_openmp_libs c
+      in
 
-    (* configure link options *)
-    let libs = []
-      @ get_default_libs c
-      @ get_gcc_path c
-      @ get_openblas_path c
-      @ get_accelerate_libs c
-      @ get_openmp_libs c
-    in
+      (* configure compile options *)
+      let cflags =
+        []
+        @ default_cflags
+        @ openblas_conf.cflags
+        @ get_devmode_cflags c
+        @ get_expmode_cflags c
+        @ get_openmp_cflags c
+      in
 
-    (* configure compile options *)
-    let cflags = []
-      @ get_default_cflags c
-      @ get_devmode_cflags c
-      @ get_expmode_cflags c
-      @ get_openmp_cflags c
-    in
+      (* configure ocaml options *)
+      let ocaml_flags =
+        []
+        @ get_ocaml_default_flags c
+        @ get_ocaml_devmode_flags c
+      in
 
-    (* configure ocaml options *)
-    let ocaml_flags = []
-      @ get_ocaml_default_flags c
-      @ get_ocaml_devmode_flags c
-    in
+      (* assemble default config *)
+      let conf : C.Pkg_config.package_conf = { cflags; libs } in
 
-    (* assemble default config *)
-    let conf : C.Pkg_config.package_conf = { cflags; libs } in
-
-    C.Flags.write_sexp "c_flags.sexp" conf.cflags;
-    C.Flags.write_sexp "c_library_flags.sexp" conf.libs;
-    C.Flags.write_sexp "ocaml_flags.sexp" ocaml_flags;
-  )
+      C.Flags.write_sexp "c_flags.sexp" conf.cflags;
+      C.Flags.write_sexp "c_library_flags.sexp" conf.libs;
+      C.Flags.write_sexp "ocaml_flags.sexp" ocaml_flags;
+    )
