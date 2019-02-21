@@ -1,6 +1,5 @@
 (library
   (name owl_aeos)
-  (public_name owl-aeos)
   (wrapped false)
   (flags (:standard -safe-string))
   (modules (:standard \ owl_aeos_gen))
@@ -14,14 +13,14 @@
 )
 
 (rule
- (targets aeos_c_flags.sexp
-          aeos_c_library_flags.sexp
-          )
-  (deps   (:deps config/configure.exe))
-  (action (run %{deps}))
+  (targets aeos_c_flags.sexp
+           aeos_c_library_flags.sexp
+           )
+  (deps    (:deps config/configure.exe))
+  (action  (run %{deps}))
 )
 
 (executable
- (name owl_aeos_gen)
- (modules owl_aeos_gen)
- (libraries owl-aeos))
+  (name owl_aeos_gen)
+  (modules owl_aeos_gen)
+  (libraries owl_aeos))

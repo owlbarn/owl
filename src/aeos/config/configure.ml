@@ -19,11 +19,12 @@ let get_default_cflags _c = [
 
 let get_openmp_cflags c =
   match get_os_type c with
-  | "linux"     -> [ "-fopenmp" ]
-  | "linux_elf" -> [ "-fopenmp" ]
-  | "macosx"    -> [ "-Xpreprocessor"; "-fopenmp" ]
-  | "mingw64"   -> [ "-fopenmp" ]
-  | _           -> []
+  | "linux"        -> [ "-fopenmp" ]
+  | "linux_elf"    -> [ "-fopenmp" ]
+  | "linux_eabihf" -> [ "-fopenmp" ]
+  | "macosx"       -> [ "-Xpreprocessor"; "-fopenmp" ]
+  | "mingw64"      -> [ "-fopenmp" ]
+  | _              -> []
 
 
 let get_default_libs () = ["-lm";]
@@ -31,11 +32,12 @@ let get_default_libs () = ["-lm";]
 
 let get_openmp_libs c =
   match get_os_type c with
-  | "linux"     -> [ "-lgomp" ]
-  | "linux_elf" -> [ "-lgomp" ]
-  | "macosx"    -> [ "-lomp" ]
-  | "mingw64"   -> [ "-lgomp" ]
-  | _           -> []
+  | "linux"        -> [ "-lgomp" ]
+  | "linux_elf"    -> [ "-lgomp" ]
+  | "linux_eabihf" -> [ "-lgomp" ]
+  | "macosx"       -> [ "-lomp"  ]
+  | "mingw64"      -> [ "-lgomp" ]
+  | _              -> []
 
 
 let () =
