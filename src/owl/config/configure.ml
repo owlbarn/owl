@@ -165,7 +165,7 @@ let () =
         Base.Option.value ~default:openblas_default
           (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"openblas")
       in
-      let lapacke_flag =
+      let lapacke_lib =
         let needs_lapacke_flag =
           C.c_test c test_lapacke_working_code
             ~c_flags:openblas_conf.cflags ~link_flags:openblas_conf.libs
@@ -176,9 +176,9 @@ let () =
       (* configure link options *)
       let libs =
         []
-        @ default_libs
         @ openblas_conf.libs
-        @ lapacke_flag
+        @ lapacke_lib
+        @ default_libs
         @ default_gcc_path
         @ get_accelerate_libs c
         @ get_openmp_libs c
