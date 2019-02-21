@@ -43,8 +43,6 @@ module Regression = Owl_regression
 
 module Neural = Owl_neural
 
-module Plot = Owl_plot
-
 module Fft = Owl_fft
 
 module Cluster = Owl_cluster
