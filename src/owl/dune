@@ -171,7 +171,6 @@
   ctypes.stubs
   eigen
   owl-base
-  plplot
   )
 )
 
