@@ -176,8 +176,8 @@ let () =
       (* configure link options *)
       let libs =
         []
-        @ openblas_conf.libs
         @ lapacke_lib
+        @ openblas_conf.libs
         @ default_libs
         @ default_gcc_path
         @ get_accelerate_libs c
@@ -187,8 +187,8 @@ let () =
       (* configure compile options *)
       let cflags =
         []
-        @ default_cflags
         @ openblas_conf.cflags
+        @ default_cflags
         @ get_devmode_cflags c
         @ get_expmode_cflags c
         @ get_openmp_cflags c
