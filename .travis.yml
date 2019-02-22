@@ -12,9 +12,10 @@ env:
 
 matrix:
   include:
-  - os: osx
-    osx_image: xcode10.1
-    env: OCAML_VERSION=4.07
+  # we need to use a custom setup instead of docker for osx, postponed
+  # - os: osx
+  #   osx_image: xcode10.1
+  #   env: OCAML_VERSION=4.07
   - os: linux
     env: OCAML_VERSION=4.06 DISTRO=debian-stable
   - os: linux
