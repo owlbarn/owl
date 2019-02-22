@@ -7,8 +7,19 @@ script: bash -ex ./.travis-docker.sh
 
 env:
   global:
-    - OCAML_VERSION=4.06
-    - PINS="owl-base:. owl-aeos:. owl-top:. owl-zoo:. owl:."
-    - DISTRO=debian-stable
-  matrix:
     - PACKAGE="owl"
+    - PINS="owl-base:. owl-aeos:. owl-top:. owl-zoo:. owl:."
+
+matrix:
+  include:
+  - os: osx
+    osx_image: xcode10.1
+    env: OCAML_VERSION=4.07
+  - os: linux
+    env: OCAML_VERSION=4.06 DISTRO=debian-stable
+  - os: linux
+    env: OCAML_VERSION=4.07 DISTRO=debian-stable
+  - os: linux
+    env: OCAML_VERSION=4.06 DISTRO=fedora
+  - os: linux
+    env: OCAML_VERSION=4.07 DISTRO=ubuntu
