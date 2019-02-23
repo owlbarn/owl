@@ -8,8 +8,8 @@ open Owl_types
 (* Functor of making Lazy module of different number types *)
 
 module Make
-  (Symbol : Owl_computation_symbol_sig.Sig)
-  = struct
+    (Symbol : Owl_computation_symbol_sig.Sig)
+= struct
 
   module Symbol = Symbol
 
@@ -512,11 +512,15 @@ module Make
     let parents = Array.map elt_to_node x in
     make_then_connect (OfArray shape) parents |> node_to_arr
 
+  let of_cols _xs = raise Owl_exception.NOT_IMPLEMENTED
+
+  let to_cols _xs = raise Owl_exception.NOT_IMPLEMENTED
+
   let of_arrays x =
     let shape = [| Array.length x; Array.length x.(0) |] in
     let parents = List.map (fun y ->
-      Array.map elt_to_node y
-    ) (Array.to_list x) |> Array.concat
+        Array.map elt_to_node y
+      ) (Array.to_list x) |> Array.concat
     in
     make_then_connect (OfArray shape) parents |> node_to_arr
 
