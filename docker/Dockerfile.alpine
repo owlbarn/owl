@@ -13,7 +13,7 @@ USER opam
 RUN sudo apk update
 RUN sudo apk add m4 wget unzip aspcud openblas-dev
 RUN opam update && opam switch create 4.06.0 && eval $(opam config env)
-RUN opam install -y oasis dune ocaml-compiler-libs ctypes alcotest utop base stdio configurator sexplib
+RUN opam install -y oasis dune ocaml-compiler-libs ctypes alcotest utop eigen base stdio configurator sexplib
 
 
 #################### SET UP ENV VARS #######################
@@ -26,20 +26,6 @@ RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit \
     && bash -c 'echo -e "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> /home/opam/.profile' \
     && opam config env >> /home/opam/.profile \
     && bash -c "source /home/opam/.profile"
-
-
-####################  INSTALL EIGEN  #######################
-
-ENV EIGENPATH /home/opam/eigen
-RUN cd /home/opam/ && git clone https://github.com/ryanrhymes/eigen.git
-
-RUN sed -i -- 's/-Wno-extern-c-compat -Wno-c++11-long-long -Wno-invalid-partial-specialization/-Wno-ignored-attributes/g' $EIGENPATH/lib/Makefile \
-    && sed -i -- 's/typedef int64_t INDEX;/#include <stdint.h>\ntypedef int64_t INDEX;/g' $EIGENPATH/lib/eigen_dsmat.h $EIGENPATH/lib/eigen_spmat.h \
-    && sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile \
-    && sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis
-
-RUN cd $EIGENPATH && make oasis && make && make install
-RUN sudo cp $EIGENPATH/_build/include/libeigen.a /usr/local/lib
 
 
 ####################   INSTALL OWL  #######################

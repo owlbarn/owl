@@ -23,23 +23,12 @@ RUN wget https://github.com/ocaml/opam/releases/download/$VER/opam-full-$VER.tar
 
 RUN yes | opam init && eval $(opam config env) && opam switch create 4.06.0
 
-RUN opam install -y oasis dune ocaml-compiler-libs ctypes plplot alcotest utop base stdio configurator
+RUN opam install -y oasis dune ocaml-compiler-libs ctypes plplot alcotest utop eigen base stdio configurator
 
 #################### SET UP ENV VARS #######################
 
 ENV PATH /root/.opam/4.06.0/bin:/usr/local/sbin/:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 ENV CAML_LD_LIBRARY_PATH /root/.opam/4.06.0/lib/stublibs
-
-
-####################  INSTALL EIGEN  #######################
-
-ENV EIGENPATH /root/eigen
-RUN cd /root && git clone https://github.com/ryanrhymes/eigen.git
-RUN sed -i -- 's/-march=native -mfpmath=sse/-march=native/g' $EIGENPATH/_oasis $EIGENPATH/lib/Makefile \
-    && sed -i -- 's/ar rvs/gcc-ar rvs/g' /root/eigen/lib/Makefile
-RUN eval $(opam config env) \
-    && make -C $EIGENPATH oasis \
-    && make -C $EIGENPATH && make -C $EIGENPATH install
 
 
 ####################   INSTALL OWL  #######################

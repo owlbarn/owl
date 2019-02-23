@@ -14,7 +14,7 @@ RUN sudo apt-get -y install m4 wget unzip aspcud libshp-dev libplplot-dev gfortr
 RUN sudo apt-get -y install pkg-config git camlp4-extra
 
 RUN opam update && opam switch create 4.06.0 && eval $(opam config env)
-RUN opam install -y oasis dune ocaml-compiler-libs ctypes utop plplot base stdio configurator alcotest sexplib
+RUN opam install -y oasis dune ocaml-compiler-libs ctypes utop eigen plplot base stdio configurator alcotest sexplib
 
 
 #################### SET UP ENV VARS #######################
@@ -29,20 +29,6 @@ ENV LD_LIBRARY_PATH /usr/lib/:/usr/local/lib:/home/opam/.opam/4.06.0/lib/:/home/
 ENV OPENBLASPATH /home/opam/OpenBLAS
 RUN cd /home/opam && git clone https://github.com/xianyi/OpenBLAS.git
 RUN cd $OPENBLASPATH && sudo make && sudo make install && sudo make clean
-
-
-################# INSTALL EIGEN LIBRARY ####################
-
-ENV EIGENPATH /home/opam/eigen
-RUN cd /home/opam/ && git clone https://github.com/owlbarn/eigen.git
-
-RUN sed -i -- 's/-Wno-extern-c-compat -Wno-c++11-long-long -Wno-invalid-partial-specialization/-Wno-ignored-attributes/g' $EIGENPATH/lib/Makefile \
-    && sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile \
-    && sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis 
-
-RUN cd $EIGENPATH \
-    && make oasis && make && make install 
-RUN sudo cp $EIGENPATH/_build/include/libeigen.a /usr/local/lib/
 
 
 ####################   INSTALL OWL  #######################
