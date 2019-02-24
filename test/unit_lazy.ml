@@ -4,7 +4,7 @@ open Owl
 
 module M = Owl.Lazy.Make (Arr)
 
-let tol = 5.0*.Float.epsilon
+let tol = 5.0*.epsilon_float
 let cmp a b = Arr.(l1norm' (a - b)) < tol
 
 (* some test input *)
