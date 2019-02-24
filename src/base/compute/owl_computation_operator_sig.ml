@@ -542,6 +542,12 @@ module type Sig = sig
   val of_rows : arr array -> arr
   (** TODO *)
 
+  val to_cols : arr -> 'a array
+  (** TODO *)
+
+  val of_cols : arr array -> arr
+  (** TODO *)
+
   val of_array : elt array -> int array -> arr
   (** TODO *)
 
