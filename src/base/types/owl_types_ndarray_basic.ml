@@ -333,6 +333,10 @@ module type Sig = sig
 
   val of_rows : arr array -> arr
 
+  val to_cols : arr -> arr array
+
+  val of_cols : arr array -> arr
+
   val of_array : elt array -> int array -> arr
 
   val of_arrays : elt array array -> arr
