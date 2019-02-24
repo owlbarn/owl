@@ -4,6 +4,9 @@ open Owl
 
 module M = Owl.Lazy.Make (Arr)
 
+let tol = 5.0*.Float.epsilon
+let cmp a b = Arr.(l1norm' (a - b)) < tol
+
 (* some test input *)
 let x0 = Arr.zeros [|3; 4|]
 let x1 = Arr.ones [|3; 4|]
@@ -21,7 +24,7 @@ module To_test = struct
     M.eval_arr [|y|];
     let a = M.unpack_arr y in
     let b = Arr.abs x3 in
-    Arr.(a = b)
+    cmp a b
 
   let fun01 () =
     let x = M.var_arr "" in
@@ -30,7 +33,7 @@ module To_test = struct
     M.eval_arr [|y|];
     let a = M.unpack_arr y in
     let b = x3 |> Arr.sin |> Arr.cos in
-    Arr.(a = b)
+    cmp a b
 
   let fun02 () =
     let x = M.var_arr "" in
@@ -39,7 +42,7 @@ module To_test = struct
     M.eval_arr [|y|];
     let a = M.unpack_arr y in
     let b = x3 |> Arr.cosh |> Arr.tanh in
-    Arr.(a = b)
+    cmp a b
 
   let fun03 () =
     let x = M.var_arr "" in
@@ -50,7 +53,7 @@ module To_test = struct
     M.eval_arr [|z|];
     let a = M.unpack_arr z in
     let b = Arr.add x2 x3 in
-    Arr.(a = b)
+    cmp a b
 
   let fun04 () =
     let x = M.var_arr "" in
@@ -61,7 +64,7 @@ module To_test = struct
     M.eval_arr [|z|];
     let a = M.unpack_arr z in
     let b = Arr.sub x2 x3 in
-    Arr.(a = b)
+    cmp a b
 
   let fun05 () =
     let x = M.var_arr "" in
@@ -72,7 +75,7 @@ module To_test = struct
     M.eval_arr [|z|];
     let a = M.unpack_arr z in
     let b = Arr.mul x2 x3 in
-    Arr.(a = b)
+    cmp a b
 
   let fun06 () =
     let x = M.var_arr "" in
@@ -83,7 +86,7 @@ module To_test = struct
     M.eval_arr [|z|];
     let a = M.unpack_arr z in
     let b = Arr.div x2 x3 in
-    Arr.(a = b)
+    cmp a b
 
   let fun07 () =
     let x = M.var_arr "" in
@@ -94,7 +97,7 @@ module To_test = struct
     M.eval_arr [|z|];
     let a = M.unpack_arr z in
     let b = Arr.pow x2 x3 in
-    Arr.(a = b)
+    cmp a b
 
   let fun08 () =
     let x = M.var_arr "" in
@@ -105,7 +108,7 @@ module To_test = struct
     M.eval_arr [|z|];
     let a = M.unpack_arr z in
     let b = Arr.atan2 x2 x3 in
-    Arr.(a = b)
+    cmp a b
 
   let fun09 () =
     let x = M.var_arr "" in
@@ -116,7 +119,7 @@ module To_test = struct
     M.eval_arr [|z|];
     let a = M.unpack_arr z in
     let b = Arr.hypot x2 x3 in
-    Arr.(a = b)
+    cmp a b
 
   let fun10 () =
     let x = M.var_arr "" in
@@ -127,7 +130,7 @@ module To_test = struct
     M.eval_arr [|z|];
     let a = M.unpack_arr z in
     let b = Arr.min2 x2 x3 in
-    Arr.(a = b)
+    cmp a b
 
   let fun11 () =
     let x = M.var_arr "" in
@@ -138,7 +141,7 @@ module To_test = struct
     M.eval_arr [|z|];
     let a = M.unpack_arr z in
     let b = Arr.max2 x2 x3 in
-    Arr.(a = b)
+    cmp a b
 
   let fun12 () =
     let x = M.var_arr "" in
@@ -149,7 +152,7 @@ module To_test = struct
     M.eval_arr [|z|];
     let a = M.unpack_arr z in
     let b = Arr.max2 x2 x3 in
-    Arr.(a = b)
+    cmp a b
 
   let fun13 () =
     let x = M.var_arr "" in
@@ -158,7 +161,7 @@ module To_test = struct
     M.eval_arr [|y|];
     let a = M.unpack_arr y in
     let b = Arr.dot x4 x4 in
-    Arr.(a = b)
+    cmp a b
 
 end
 
