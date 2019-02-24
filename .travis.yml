@@ -8,7 +8,7 @@ script: bash -ex ./.travis-docker.sh
 env:
   global:
     - PACKAGE="owl"
-    - PINS="owl-base:. owl-aeos:. owl-top:. owl-zoo:. owl:."
+    - PINS="owl-aeos:. owl-base:. owl-plplot:. owl-top:. owl-zoo:. owl:."
 
 matrix:
   include:
@@ -20,8 +20,13 @@ matrix:
     env: OCAML_VERSION=4.06 DISTRO=debian-stable
   - os: linux
     env: OCAML_VERSION=4.07 DISTRO=debian-stable
-  # apparently conf-openblas is broken for Fedora
-  # - os: linux
-  #   env: OCAML_VERSION=4.06 DISTRO=fedora
+  - os: linux
+    env: OCAML_VERSION=4.06 DISTRO=fedora
   - os: linux
     env: OCAML_VERSION=4.07 DISTRO=ubuntu
+
+  fast_finish: true
+  allow_failures:
+    - env: OCAML_VERSION=4.06 DISTRO=fedora
+    - env: OCAML_VERSION=4.07 DISTRO=ubuntu
+
