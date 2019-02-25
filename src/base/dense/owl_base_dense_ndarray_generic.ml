@@ -4104,6 +4104,7 @@ let to_rows varr =
   let m = dims.(0) in
   (Array.init m (fun i -> (Genarray.slice_left varr [|i|])))
 
+let to_cols _harr = raise Owl_exception.NOT_IMPLEMENTED
 
 let of_rows rows =
   let m = Array.length rows in
@@ -4117,6 +4118,7 @@ let of_rows rows =
     varr
   end
 
+let of_cols _cols = raise Owl_exception.NOT_IMPLEMENTED
 
 let of_arrays kind arrays =
   let m = Array.length arrays in
