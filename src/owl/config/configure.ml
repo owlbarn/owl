@@ -188,8 +188,8 @@ or re-compile owl by prefixing the command with (or exporting)
 PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/path/to/openblas/lib/pkgconfig
 
 If this does not work please raise and issue in the owl repository, adding
-some details on how your openblas have been installed and where is located,
-as well as the above values for cflags and libs.
+some details on how your openblas has been installed and the output of
+`src/owl/config/configure.exe --verbose`.
         |}
           Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.cflags)
           Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.libs);
