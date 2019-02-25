@@ -5,6 +5,12 @@
 
 module C = Configurator.V1
 
+let igetenv v =
+  let v' = try Sys.getenv v |> int_of_string with Not_found -> 0 in
+  if v' < 0 || v' > 1 then raise @@
+    Invalid_argument (Printf.sprintf "Invalid value for env variable %s: got %d" v v');
+  v'
+
 (* Adapted from lapacke_DGELS_colmajor example *)
 let test_lapacke_working_code = {|
 #include <stdio.h>
@@ -44,6 +50,10 @@ int main (int argc, const char * argv[])
 }
 |}
 
+let test_linking = {|
+int main() { return 0; }
+|}
+
 let get_os_type c =
   let sys = C.ocaml_config_var c "system" in
   match sys with Some s -> s | None -> ""
@@ -54,7 +64,7 @@ let get_ocaml_default_flags _c = [
 
 
 let get_ocaml_devmode_flags _c =
-  let enable_devmode = Sys.getenv "ENABLE_DEVMODE" |> int_of_string in
+  let enable_devmode = igetenv "ENABLE_DEVMODE" in
   if enable_devmode = 0 then []
   else if enable_devmode = 1 then [
     "-w"; "-32-27-6-37-3";
@@ -82,7 +92,7 @@ let default_libs =
 
 
 let get_expmode_cflags _c =
-  let enable_expmode = Sys.getenv "ENABLE_EXPMODE" |> int_of_string in
+  let enable_expmode = igetenv "ENABLE_EXPMODE" in
   if enable_expmode = 0 then []
   else if enable_expmode = 1 then [
     "-flto";
@@ -91,7 +101,7 @@ let get_expmode_cflags _c =
 
 
 let get_devmode_cflags _c =
-  let enable_devmode = Sys.getenv "ENABLE_DEVMODE" |> int_of_string in
+  let enable_devmode = igetenv "ENABLE_DEVMODE" in
   if enable_devmode = 0 then [
     "-Wno-logical-op-parentheses"
   ]
@@ -131,7 +141,7 @@ let get_accelerate_libs c =
 
 
 let get_openmp_cflags c =
-  let enable_openmp = Sys.getenv "ENABLE_OPENMP" |> int_of_string in
+  let enable_openmp = igetenv "ENABLE_OPENMP" in
   if enable_openmp = 0 then []
   else if enable_openmp = 1 then (
     match get_os_type c with
@@ -145,7 +155,7 @@ let get_openmp_cflags c =
 
 
 let get_openmp_libs c =
-  let enable_openmp = Sys.getenv "ENABLE_OPENMP" |> int_of_string in
+  let enable_openmp = igetenv "ENABLE_OPENMP" in
   if enable_openmp = 0 then []
   else if enable_openmp = 1 then (
     match get_os_type c with
@@ -165,10 +175,30 @@ let () =
         Base.Option.value ~default:openblas_default
           (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"openblas")
       in
+      if not @@ C.c_test c test_linking
+          ~c_flags:openblas_conf.cflags ~link_flags:openblas_conf.libs
+      then begin
+        Printf.printf {|
+Unable to link against openblas: the current values for cflags and libs
+are respectively %s and %s.
+
+Usually this is due to missing paths for pkg-config. Try to re-install
+or re-compile owl by prefixing the command with (or exporting)
+
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/path/to/openblas/lib/pkgconfig
+
+If this does not work please open an issue in the owl repository, adding
+some details on how your openblas has been installed and the output of
+`src/owl/config/configure.exe --verbose`.
+        |}
+          Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.cflags)
+          Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.libs);
+        failwith "Unable to link against openblas."
+      end;
       let lapacke_lib =
         let needs_lapacke_flag =
           C.c_test c test_lapacke_working_code
-            ~c_flags:openblas_conf.cflags ~link_flags:openblas_conf.libs
+            ~c_flags:openblas_conf.cflags ~link_flags:(openblas_conf.libs @ ["-lm"])
           |> not
         in
         if needs_lapacke_flag then ["-llapacke"] else []

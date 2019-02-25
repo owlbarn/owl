@@ -28,7 +28,7 @@ depends: [
   "base-bigarray"
   "conf-openblas" {>= "0.2.0"}
   "ctypes"
-  "dune" {build}
+  "dune" {build & >= "1.2.1"}
   "eigen" {>= "0.1.0"}
   "owl-base"
   "owl-aeos"
