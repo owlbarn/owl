@@ -856,3 +856,7 @@ val elt_greater_scalar_ : ?out:mat -> mat -> elt -> unit
 val elt_less_equal_scalar_ : ?out:mat -> mat -> elt -> unit
 
 val elt_greater_equal_scalar_ : ?out:mat -> mat -> elt -> unit
+
+
+(* gamma functions *)
+val lgamma : mat -> mat 

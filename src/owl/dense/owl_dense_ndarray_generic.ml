@@ -6325,6 +6325,15 @@ let contract2 index_pairs x y =
   z
 
 
+(* Special functions *)
+
+(* Gamma functions *)
+let lgamma x =
+  let y = copy x in
+  _owl_lgamma (kind x) (numel y) x y;
+  y
+
+
 (* Helper functions *)
 
 let float_to_elt x = x

@@ -6,13 +6,14 @@
 #include "owl_core.h"
 #include "owl_stats.h"
 #include "owl_core_engine.h"
+#include "owl_cephes.h"
 
 
 // some helper functions
 
 #define LN10 2.302585092994045684017991454684364208  /* log_e 10 */
 #define exp10f(X) expf(LN10 * X)
-#define exp10(X) exp(LN10 * X)
+// #define exp10(X) exp(LN10 * X)
 
 
 #define OWL_ENABLE_TEMPLATE
@@ -6954,6 +6955,21 @@
 #define NUMBER double
 #define MAPFN(X,Y) Y = a / sqrt (X + eps);
 #include OWL_NDARRAY_MATHS_MAP
+
+
+//  gamma functions
+#define FUN4 float32_lgamma
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (lgamma(X))
+#include OWL_NDARRAY_MATHS_MAP
+ 
+#define FUN4 float64_lgamma
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (lgam(X))
+#include OWL_NDARRAY_MATHS_MAP
+
 
 
 //////////////////// function templates ends ////////////////////

@@ -987,6 +987,8 @@ val draw_rows2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
 
 val draw_cols2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
 
+(* Gamma functions *)
+val lgamma : arr -> arr
 
 (** {6 Helper functions}  *)
 

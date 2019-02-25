@@ -2785,6 +2785,14 @@ val draw_cols2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 
+(* Gamma functions *)
+val lgamma : ('a, 'b) t -> ('a, 'b) t
+(**
+``lgamma x`` computes the loggamma of the elements in ``x`` and returns the result
+in a new ndarray.
+ *)
+ 
+
 (** {6 Helper functions}  *)
 
 val float_to_elt : 'a -> 'a

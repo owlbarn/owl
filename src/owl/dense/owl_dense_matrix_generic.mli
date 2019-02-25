@@ -2545,3 +2545,13 @@ val elt_greater_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 ``elt_greater_equal_scalar_ x a`` is simiar to ``elt_greater_equal_scalar``
 function but the output is written to ``x``.
  *)
+
+
+(* Gamma functions *)
+val lgamma : ('a, 'b) t-> ('a, 'b) t
+(**
+``lgamma x`` computes the loggamma of the elements in ``x`` and returns the result in
+a new matrix.
+ *)
+
+
