@@ -187,7 +187,7 @@ or re-compile owl by prefixing the command with (or exporting)
 
 PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/path/to/openblas/lib/pkgconfig
 
-If this does not work please raise and issue in the owl repository, adding
+If this does not work please open an issue in the owl repository, adding
 some details on how your openblas has been installed and the output of
 `src/owl/config/configure.exe --verbose`.
         |}
