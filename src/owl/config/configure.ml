@@ -44,6 +44,10 @@ int main (int argc, const char * argv[])
 }
 |}
 
+let test_linking = {|
+int main() { return 0; }
+|}
+
 let get_os_type c =
   let sys = C.ocaml_config_var c "system" in
   match sys with Some s -> s | None -> ""
@@ -165,6 +169,26 @@ let () =
         Base.Option.value ~default:openblas_default
           (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"openblas")
       in
+      if not @@ C.c_test c test_linking
+          ~c_flags:openblas_conf.cflags ~link_flags:openblas_conf.libs
+      then begin
+        Printf.printf {|
+Unable to link against openblas: the current values for cflags and libs
+are respectively %s and %s.
+
+Usually this is due to missing paths for pkg-config. Try to re-install
+or re-compile owl by prefixing the command with (or exporting)
+
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/path/to/openblas/lib/pkgconfig
+
+If this does not work please raise and issue in the owl repository, adding
+some details on how your openblas have been installed and where is located,
+as well as the above values for cflags and libs.
+        |}
+          Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.cflags)
+          Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.libs);
+        failwith "Unable to link against openblas."
+      end;
       let lapacke_lib =
         let needs_lapacke_flag =
           C.c_test c test_lapacke_working_code
