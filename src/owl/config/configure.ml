@@ -192,7 +192,7 @@ as well as the above values for cflags and libs.
       let lapacke_lib =
         let needs_lapacke_flag =
           C.c_test c test_lapacke_working_code
-            ~c_flags:openblas_conf.cflags ~link_flags:openblas_conf.libs
+            ~c_flags:openblas_conf.cflags ~link_flags:(openblas_conf.libs @ ["-lm"])
           |> not
         in
         if needs_lapacke_flag then ["-llapacke"] else []
