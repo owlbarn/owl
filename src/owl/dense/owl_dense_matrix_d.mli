@@ -591,6 +591,7 @@ val std : ?axis:int -> mat -> mat
 
 val mat2gray : ?amin:elt -> ?amax:elt -> mat -> mat
 
+val lgamma : mat -> mat 
 
 (** {6 Binary mathematical operations } *)
 
@@ -857,6 +858,4 @@ val elt_less_equal_scalar_ : ?out:mat -> mat -> elt -> unit
 
 val elt_greater_equal_scalar_ : ?out:mat -> mat -> elt -> unit
 
-(* gamma functions *)
-val lgamma : mat -> mat 
 

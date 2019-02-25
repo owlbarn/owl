@@ -965,6 +965,12 @@ let l2norm' x =
 
 let log_sum_exp' x = _owl_log_sum_exp (kind x) (numel x) x
 
+(* gamma functions *)
+let lgamma x =
+  let y = copy x in
+  _owl_lgamma (kind x) (numel y) x y;
+  y
+
 let scalar_pow a x =
   let x = copy x in
   _owl_scalar_pow (kind x) (numel x) x x a;
@@ -6325,13 +6331,6 @@ let contract2 index_pairs x y =
   z
 
 
-(* Special functions *)
-
-(* Gamma functions *)
-let lgamma x =
-  let y = copy x in
-  _owl_lgamma (kind x) (numel y) x y;
-  y
 
 
 (* Helper functions *)

@@ -471,6 +471,7 @@ val cummax : ?axis:int -> arr -> arr
 
 val diff : ?axis:int -> ?n:int -> arr -> arr
 
+val lgamma : arr -> arr
 
 (** {6 Binary mathematical operations } *)
 
@@ -986,9 +987,6 @@ val draw_cols : ?replacement:bool -> arr -> int -> arr * int array
 val draw_rows2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
 
 val draw_cols2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
-
-(* Gamma functions *)
-val lgamma : arr -> arr
 
 (** {6 Helper functions}  *)
 

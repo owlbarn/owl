@@ -1603,6 +1603,12 @@ val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
 ``proj x`` computes the projection on Riemann sphere of all elelments in ``x``.
  *)
 
+val lgamma : ('a, 'b) t -> ('a, 'b) t
+(**
+``lgamma x`` computes the loggamma of the elements in ``x`` and returns the result
+in a new ndarray.
+ *)
+ 
 
 (** {6 Binary math operators}  *)
 
@@ -2785,13 +2791,7 @@ val draw_cols2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 
-(* Gamma functions *)
-val lgamma : ('a, 'b) t -> ('a, 'b) t
-(**
-``lgamma x`` computes the loggamma of the elements in ``x`` and returns the result
-in a new ndarray.
- *)
- 
+
 
 (** {6 Helper functions}  *)
 
