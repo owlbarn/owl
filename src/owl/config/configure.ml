@@ -129,8 +129,12 @@ let openblas_default : C.Pkg_config.package_conf =
     else if Sys.file_exists p2 then ["-L" ^ p2]
     else []
   in
+  let p0 = "/usr/include/openblas" in
+  let cflags = if Sys.file_exists p0 then ["-I" ^ p0]
+    else []
+  in
   let libs = libs @ ["-lopenblas"] in
-  C.Pkg_config.{cflags=[]; libs}
+  C.Pkg_config.{cflags; libs}
 
 
 let get_accelerate_libs c =
