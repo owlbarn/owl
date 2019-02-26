@@ -3638,6 +3638,19 @@
 #define NUMBER1 double
 #include OWL_NDARRAY_MATHS_FOLD
 
+//  gamma functions
+#define FUN4 float32_lgamma
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (lgammaf(X))
+#include OWL_NDARRAY_MATHS_MAP
+ 
+#define FUN4 float64_lgamma
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (lgam(X))
+#include OWL_NDARRAY_MATHS_MAP
+ 
 
 ////// binary math operator //////
 
@@ -6957,18 +6970,6 @@
 #include OWL_NDARRAY_MATHS_MAP
 
 
-//  gamma functions
-#define FUN4 float32_lgamma
-#define NUMBER float
-#define NUMBER1 float
-#define MAPFN(X) (lgamma(X))
-#include OWL_NDARRAY_MATHS_MAP
- 
-#define FUN4 float64_lgamma
-#define NUMBER double
-#define NUMBER1 double
-#define MAPFN(X) (lgam(X))
-#include OWL_NDARRAY_MATHS_MAP
 
 
 
