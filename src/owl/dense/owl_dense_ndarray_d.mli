@@ -471,6 +471,7 @@ val cummax : ?axis:int -> arr -> arr
 
 val diff : ?axis:int -> ?n:int -> arr -> arr
 
+val lgamma : arr -> arr
 
 (** {6 Binary mathematical operations } *)
 
@@ -1278,9 +1279,12 @@ val rayleigh_logsf : sigma:arr -> arr -> arr
 
 val rayleigh_isf : sigma:arr -> arr -> arr
 
+ 
 
 (** {6 Helper functions}  *)
 
 val float_to_elt : float -> elt
 
 val elt_to_float : elt -> float
+
+

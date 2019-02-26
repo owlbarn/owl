@@ -2769,4 +2769,17 @@ let _owl_fused_adagrad : type a b. (a, b) kind -> (a, b) owl_arr_op33 = function
   | _         -> failwith "_owl_fused_adagrad: unsupported operation"
 
 
+(* special functions *)
+
+(* gamma functions *)
+external owl_float32_lgamma : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_lgamma"
+external owl_float64_lgamma : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_lgamma"
+
+let _owl_lgamma : type a b. (a, b) kind -> (a, b) owl_arr_op09 = fun k l x y ->
+  match k with
+  | Float32   -> owl_float32_lgamma l x y
+  | Float64   -> owl_float64_lgamma l x y
+  | _         -> failwith "_owl_lgamma: unsupported operation"
+ 
+
 (* ends here *)
