@@ -54,15 +54,17 @@ let () =
   C.main ~name:"aeos" (fun c ->
 
       (* configure link options *)
-      let libs = []
-                 @ get_default_libs ()
-                 @ get_openmp_libs c
+      let libs =
+        []
+        @ get_default_libs ()
+        @ get_openmp_libs c
       in
 
       (* configure compile options *)
-      let cflags = []
-                   @ get_default_cflags c
-                   @ get_openmp_cflags c
+      let cflags = 
+        []
+        @ get_default_cflags c
+        @ get_openmp_cflags c
       in
 
       (* assemble default config *)
