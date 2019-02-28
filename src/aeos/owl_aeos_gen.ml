@@ -11,7 +11,7 @@ let () =
     Invalid_argument (Printf.sprintf "Invalid value for env variable %s: got %d" v v');
   v' = 1
   in
-  let enable_openmp = bgetenv "ENABLE_OPENMP" in
+  let enable_openmp = bgetenv "OWL_ENABLE_OPENMP" in
 
   if not (Sys.file_exists fname &&
     (Unix.stat fname).st_size > 0) then (

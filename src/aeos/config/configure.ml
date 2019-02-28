@@ -24,7 +24,7 @@ let get_default_cflags _c = [
 
 
 let get_openmp_cflags c =
-  let enable_openmp = bgetenv "ENABLE_OPENMP" in
+  let enable_openmp = bgetenv "OWL_ENABLE_OPENMP" in
   if not enable_openmp then []
   else
     match get_os_type c with
@@ -39,7 +39,7 @@ let get_default_libs () = ["-lm";]
 
 
 let get_openmp_libs c =
-  let enable_openmp = bgetenv "ENABLE_OPENMP" in
+  let enable_openmp = bgetenv "OWL_ENABLE_OPENMP" in
   if not enable_openmp then []
   else
     match get_os_type c with

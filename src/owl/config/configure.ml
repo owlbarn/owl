@@ -64,7 +64,7 @@ let get_ocaml_default_flags _c = [
 
 
 let get_ocaml_devmode_flags _c =
-  let enable_devmode = bgetenv "ENABLE_DEVMODE" in
+  let enable_devmode = bgetenv "OWL_ENABLE_DEVMODE" in
   if not enable_devmode then []
   else [
     "-w"; "-32-27-6-37-3";
@@ -91,7 +91,7 @@ let default_libs =
 
 
 let get_expmode_cflags _c =
-  let enable_expmode = bgetenv "ENABLE_EXPMODE" in
+  let enable_expmode = bgetenv "OWL_ENABLE_EXPMODE" in
   if not enable_expmode then []
   else [
     "-flto";
@@ -99,7 +99,7 @@ let get_expmode_cflags _c =
 
 
 let get_devmode_cflags _c =
-  let enable_devmode = bgetenv "ENABLE_DEVMODE" in
+  let enable_devmode = bgetenv "OWL_ENABLE_DEVMODE" in
   if not enable_devmode then [
     "-Wno-logical-op-parentheses"
   ]
@@ -142,7 +142,7 @@ let get_accelerate_libs c =
 
 
 let get_openmp_cflags c =
-  let enable_openmp = bgetenv "ENABLE_OPENMP" in
+  let enable_openmp = bgetenv "OWL_ENABLE_OPENMP" in
   if not enable_openmp then []
   else match get_os_type c with
     | "linux"     -> [ "-fopenmp" ]
@@ -152,7 +152,7 @@ let get_openmp_cflags c =
     | _           -> []
 
 let get_openmp_libs c =
-  let enable_openmp = bgetenv "ENABLE_OPENMP" in
+  let enable_openmp = bgetenv "OWL_ENABLE_OPENMP" in
   if not enable_openmp then []
   else
     match get_os_type c with
