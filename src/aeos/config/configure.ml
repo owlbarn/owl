@@ -5,12 +5,20 @@
 
 module C = Configurator.V1
 
+
+let igetenv v =
+  let v' = try Sys.getenv v |> int_of_string with Not_found -> 0 in
+  if v' < 0 || v' > 1 then raise @@
+    Invalid_argument (Printf.sprintf "Invalid value for env variable %s: got %d" v v');
+  v'
+
+
 let get_os_type c =
   let sys = C.ocaml_config_var c "system" in
   match sys with Some s -> s | None -> ""
 
 
-let get_default_cflags _c = [
+let default_cflags = [
   "-g"; "-O3"; "-Ofast";
   "-march=native"; "-funroll-loops"; "-ffast-math";
   "-DSFMT_MEXP=19937"; "-fno-strict-aliasing";
@@ -18,26 +26,36 @@ let get_default_cflags _c = [
 
 
 let get_openmp_cflags c =
-  match get_os_type c with
-  | "linux"        -> [ "-fopenmp" ]
-  | "linux_elf"    -> [ "-fopenmp" ]
-  | "linux_eabihf" -> [ "-fopenmp" ]
-  | "macosx"       -> [ "-Xpreprocessor"; "-fopenmp" ]
-  | "mingw64"      -> [ "-fopenmp" ]
-  | _              -> []
+  let enable_openmp = igetenv "ENABLE_OPENMP" in
+  if enable_openmp = 0 then []
+  else if enable_openmp = 1 then (
+    match get_os_type c with
+    | "linux"        -> [ "-fopenmp" ]
+    | "linux_elf"    -> [ "-fopenmp" ]
+    | "linux_eabihf" -> [ "-fopenmp" ]
+    | "macosx"       -> [ "-Xpreprocessor"; "-fopenmp" ]
+    | "mingw64"      -> [ "-fopenmp" ]
+    | _              -> []
+  )
+  else failwith "Error: ENABLE_OPENMP only accepts 0/1."
 
 
-let get_default_libs () = ["-lm";]
+let default_libs = ["-lm";]
 
 
 let get_openmp_libs c =
-  match get_os_type c with
-  | "linux"        -> [ "-lgomp" ]
-  | "linux_elf"    -> [ "-lgomp" ]
-  | "linux_eabihf" -> [ "-lgomp" ]
-  | "macosx"       -> [ "-lomp"  ]
-  | "mingw64"      -> [ "-lgomp" ]
-  | _              -> []
+  let enable_openmp = igetenv "ENABLE_OPENMP" in
+  if enable_openmp = 0 then []
+  else if enable_openmp = 1 then (
+    match get_os_type c with
+    | "linux"        -> [ "-lgomp" ]
+    | "linux_elf"    -> [ "-lgomp" ]
+    | "linux_eabihf" -> [ "-lgomp" ]
+    | "macosx"       -> [ "-lomp"  ]
+    | "mingw64"      -> [ "-lgomp" ]
+    | _              -> []
+  )
+  else failwith "Error: ENABLE_OPENMP only accepts 0/1."
 
 
 let () =
@@ -45,13 +63,13 @@ let () =
 
     (* configure link options *)
     let libs = []
-      @ get_default_libs ()
+      @ default_libs
       @ get_openmp_libs c
     in
 
     (* configure compile options *)
     let cflags = []
-      @ get_default_cflags c
+      @ default_cflags
       @ get_openmp_cflags c
     in
 
