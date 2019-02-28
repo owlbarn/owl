@@ -1,6 +1,15 @@
 (copy_files# ext/*)
 (copy_files# core/*)
-(copy_files# core/openmp/*)
+
+; copy core/openmp/* with the exception of dummy file
+(copy_files# core/openmp/owl_core_engine.h)
+(copy_files# core/openmp/owl_matrix_swap_impl_omp.h)
+(copy_files# core/openmp/owl_ndarray_maths_cmp_omp.h)
+(copy_files# core/openmp/owl_ndarray_maths_fold_omp.h)
+(copy_files# core/openmp/owl_ndarray_maths_map_omp.h)
+(copy_files# core/openmp/owl_omp_parameters.h)
+(copy_files# core/openmp/owl_slicing_basic_impl_omp.h)
+
 (copy_files# dense/*)
 (copy_files# sparse/*)
 (copy_files# maths/*)
@@ -178,12 +187,15 @@
   (targets c_flags.sexp
            c_library_flags.sexp
            ocaml_flags.sexp
+           owl_aeos_params_generated.h
            )
-  (deps    (:deps-conf config/configure.exe))
+  (deps    (:deps-conf config/configure.exe)
+           (:deps-aeos ../aeos/owl_aeos_gen.exe))
   (action
    (setenv ENABLE_EXPMODE 0 ;; turn on experiment features like flto
    (setenv ENABLE_DEVMODE 0 ;; turn on all the warnings in development
-   (setenv ENABLE_OPENMP  0 ;; turn on OpenMP support in core module
-   (run %{deps-conf})
+   (setenv ENABLE_OPENMP  1 ;; turn on OpenMP support in core module
+   (progn  (run %{deps-conf})
+           (run %{deps-aeos}))
   ))))
 )
