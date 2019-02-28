@@ -1,6 +1,5 @@
 (library
   (name owl_aeos)
-  (public_name owl-aeos)
   (wrapped false)
   (flags (:standard -safe-string))
   (modules (:standard \ owl_aeos_gen))
@@ -24,4 +23,4 @@
 (executable
  (name owl_aeos_gen)
  (modules owl_aeos_gen)
- (libraries owl-aeos))
+ (libraries owl_aeos))
