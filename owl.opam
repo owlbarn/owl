@@ -31,6 +31,5 @@ depends: [
   "dune" {build & >= "1.2.1"}
   "eigen" {>= "0.1.0"}
   "owl-base"
-  "owl-aeos"
   "stdio" {build}
 ]
