@@ -1250,6 +1250,16 @@ let _owl_atanh : type a b. (a, b) kind -> (a, b) owl_arr_op09 = fun k l x y ->
   | Complex64 -> owl_complex64_atanh l x y
   | _         -> failwith "_owl_atanh: unsupported operation"
 
+(* gamma functions *)
+external owl_float32_lgamma : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_lgamma"
+external owl_float64_lgamma : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_lgamma"
+
+let _owl_lgamma : type a b. (a, b) kind -> (a, b) owl_arr_op09 = fun k l x y ->
+  match k with
+  | Float32   -> owl_float32_lgamma l x y
+  | Float64   -> owl_float64_lgamma l x y
+  | _         -> failwith "_owl_lgamma: unsupported operation"
+ 
 external owl_float32_floor : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_floor"
 external owl_float64_floor : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_floor"
 external owl_complex32_floor : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex32_floor"
@@ -2767,6 +2777,8 @@ let _owl_fused_adagrad : type a b. (a, b) kind -> (a, b) owl_arr_op33 = function
   | Float32   -> owl_float32_fused_adagrad
   | Float64   -> owl_float64_fused_adagrad
   | _         -> failwith "_owl_fused_adagrad: unsupported operation"
+
+
 
 
 (* ends here *)

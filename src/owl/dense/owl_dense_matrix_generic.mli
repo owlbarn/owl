@@ -1789,6 +1789,11 @@ The elements in ``x`` are clipped by ``amin`` and ``amax``, and they will be bet
 ``0.`` and ``1.`` after conversion to represents the intensity.
  *)
 
+val lgamma : ('a, 'b) t-> ('a, 'b) t
+(**
+``lgamma x`` computes the loggamma of the elements in ``x`` and returns the result in
+a new matrix.
+ *)
 
 (** {6 Binary math operators}  *)
 
@@ -2545,3 +2550,7 @@ val elt_greater_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 ``elt_greater_equal_scalar_ x a`` is simiar to ``elt_greater_equal_scalar``
 function but the output is written to ``x``.
  *)
+
+
+
+

@@ -965,6 +965,12 @@ let l2norm' x =
 
 let log_sum_exp' x = _owl_log_sum_exp (kind x) (numel x) x
 
+(* gamma functions *)
+let lgamma x =
+  let y = copy x in
+  _owl_lgamma (kind x) (numel y) x y;
+  y
+
 let scalar_pow a x =
   let x = copy x in
   _owl_scalar_pow (kind x) (numel x) x x a;
@@ -6323,6 +6329,8 @@ let contract2 index_pairs x y =
   let ndims = Array.length loop0 |> Int64.of_int in
   Owl_ndarray._ndarray_contract_two (kind x) x y z incx1 incy1 incz1 loop1 ndims;
   z
+
+
 
 
 (* Helper functions *)

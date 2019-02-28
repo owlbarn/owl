@@ -27,6 +27,5 @@ matrix:
 
   fast_finish: true
   allow_failures:
-    - env: OCAML_VERSION=4.06 DISTRO=fedora
     - env: OCAML_VERSION=4.07 DISTRO=ubuntu
 
