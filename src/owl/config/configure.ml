@@ -5,11 +5,11 @@
 
 module C = Configurator.V1
 
-let igetenv v =
+let bgetenv v =
   let v' = try Sys.getenv v |> int_of_string with Not_found -> 0 in
   if v' < 0 || v' > 1 then raise @@
     Invalid_argument (Printf.sprintf "Invalid value for env variable %s: got %d" v v');
-  v'
+  v' = 1
 
 (* Adapted from lapacke_DGELS_colmajor example *)
 let test_lapacke_working_code = {|
@@ -64,12 +64,11 @@ let get_ocaml_default_flags _c = [
 
 
 let get_ocaml_devmode_flags _c =
-  let enable_devmode = igetenv "ENABLE_DEVMODE" in
-  if enable_devmode = 0 then []
-  else if enable_devmode = 1 then [
+  let enable_devmode = bgetenv "ENABLE_DEVMODE" in
+  if not enable_devmode then []
+  else [
     "-w"; "-32-27-6-37-3";
   ]
-  else failwith "Error: ENABLE_DEVMODE only accepts 0/1."
 
 
 let default_cflags = [
@@ -92,26 +91,24 @@ let default_libs =
 
 
 let get_expmode_cflags _c =
-  let enable_expmode = igetenv "ENABLE_EXPMODE" in
-  if enable_expmode = 0 then []
-  else if enable_expmode = 1 then [
+  let enable_expmode = bgetenv "ENABLE_EXPMODE" in
+  if not enable_expmode then []
+  else [
     "-flto";
   ]
-  else failwith "Error: ENABLE_EXPMODE only accepts 0/1."
 
 
 let get_devmode_cflags _c =
-  let enable_devmode = igetenv "ENABLE_DEVMODE" in
-  if enable_devmode = 0 then [
+  let enable_devmode = bgetenv "ENABLE_DEVMODE" in
+  if not enable_devmode then [
     "-Wno-logical-op-parentheses"
   ]
-  else if enable_devmode = 1 then [
+  else [
     "-Wall";
     "-pedantic";
     "-Wextra";
     "-Wunused";
   ]
-  else failwith "Error: ENABLE_DEVMODE only accepts 0/1."
 
 
 let default_gcc_path =
@@ -145,32 +142,25 @@ let get_accelerate_libs c =
 
 
 let get_openmp_cflags c =
-  let enable_openmp = igetenv "ENABLE_OPENMP" in
-  if enable_openmp = 0 then []
-  else if enable_openmp = 1 then (
-    match get_os_type c with
+  let enable_openmp = bgetenv "ENABLE_OPENMP" in
+  if not enable_openmp then []
+  else match get_os_type c with
     | "linux"     -> [ "-fopenmp" ]
     | "linux_elf" -> [ "-fopenmp" ]
     | "macosx"    -> [ "-Xpreprocessor"; "-fopenmp" ]
     | "mingw64"   -> [ "-fopenmp" ]
     | _           -> []
-  )
-  else failwith "Error: ENABLE_OPENMP only accepts 0/1."
-
 
 let get_openmp_libs c =
-  let enable_openmp = igetenv "ENABLE_OPENMP" in
-  if enable_openmp = 0 then []
-  else if enable_openmp = 1 then (
+  let enable_openmp = bgetenv "ENABLE_OPENMP" in
+  if not enable_openmp then []
+  else
     match get_os_type c with
     | "linux"     -> [ "-lgomp" ]
     | "linux_elf" -> [ "-lgomp" ]
     | "macosx"    -> [ "-lomp" ]
     | "mingw64"   -> [ "-lgomp" ]
     | _           -> []
-  )
-  else failwith "Error: ENABLE_OPENMP only accepts 0/1."
-
 
 let () =
   C.main ~name:"owl" (fun c ->

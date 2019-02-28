@@ -5,13 +5,13 @@
 
 let () =
   let fname = "owl_aeos_params_generated.h" in
-  let igetenv v =
+  let bgetenv v =
   let v' = try Sys.getenv v |> int_of_string with Not_found -> 0 in
   if v' < 0 || v' > 1 then raise @@
     Invalid_argument (Printf.sprintf "Invalid value for env variable %s: got %d" v v');
   v' = 1
   in
-  let enable_openmp = igetenv "ENABLE_OPENMP" in
+  let enable_openmp = bgetenv "ENABLE_OPENMP" in
 
   if not (Sys.file_exists fname &&
     (Unix.stat fname).st_size > 0) then (
