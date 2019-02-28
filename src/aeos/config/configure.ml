@@ -28,7 +28,7 @@ let default_cflags = [
 let get_openmp_cflags c =
   let enable_openmp = igetenv "ENABLE_OPENMP" in
   if enable_openmp = 0 then []
-  else if enable_openmp = 1 then (
+  else
     match get_os_type c with
     | "linux"        -> [ "-fopenmp" ]
     | "linux_elf"    -> [ "-fopenmp" ]
@@ -36,8 +36,6 @@ let get_openmp_cflags c =
     | "macosx"       -> [ "-Xpreprocessor"; "-fopenmp" ]
     | "mingw64"      -> [ "-fopenmp" ]
     | _              -> []
-  )
-  else failwith "Error: ENABLE_OPENMP only accepts 0/1."
 
 
 let default_libs = ["-lm";]
@@ -46,7 +44,7 @@ let default_libs = ["-lm";]
 let get_openmp_libs c =
   let enable_openmp = igetenv "ENABLE_OPENMP" in
   if enable_openmp = 0 then []
-  else if enable_openmp = 1 then (
+  else
     match get_os_type c with
     | "linux"        -> [ "-lgomp" ]
     | "linux_elf"    -> [ "-lgomp" ]
@@ -54,8 +52,6 @@ let get_openmp_libs c =
     | "macosx"       -> [ "-lomp"  ]
     | "mingw64"      -> [ "-lgomp" ]
     | _              -> []
-  )
-  else failwith "Error: ENABLE_OPENMP only accepts 0/1."
 
 
 let () =
