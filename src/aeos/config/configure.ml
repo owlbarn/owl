@@ -16,11 +16,17 @@ let get_os_type c =
   match sys with Some s -> s | None -> ""
 
 
-let get_default_cflags _c = [
-  "-g"; "-O3"; "-Ofast";
-  "-march=native"; "-funroll-loops"; "-ffast-math";
-  "-DSFMT_MEXP=19937"; "-fno-strict-aliasing";
-]
+let get_default_cflags = 
+  try
+    Sys.getenv "OWL_AEOS_CFLAGS" |> String.trim
+    |> String.split_on_char ' '
+    |> List.filter (fun s -> String.trim s <> "")
+  with Not_found ->
+    [
+      "-g"; "-O3"; "-Ofast";
+      "-march=native"; "-funroll-loops"; "-ffast-math";
+      "-DSFMT_MEXP=19937"; "-fno-strict-aliasing";
+    ]
 
 
 let get_openmp_cflags c =
@@ -63,7 +69,7 @@ let () =
       (* configure compile options *)
       let cflags = 
         []
-        @ get_default_cflags c
+        @ get_default_cflags
         @ get_openmp_cflags c
       in
 

@@ -71,17 +71,23 @@ let get_ocaml_devmode_flags _c =
   ]
 
 
-let default_cflags = [
-  (* Basic optimisation *)
-  "-g"; "-O3"; "-Ofast";
-  (* FIXME: experimental switches *)
-  (* "-mavx2"; "-mfma"; "-ffp-contract=fast"; *)
-  (* Experimental switches, -ffast-math may break IEEE754 semantics*)
-  "-march=native"; "-mfpmath=sse"; "-funroll-loops"; "-ffast-math";
-  (* Configure Mersenne Twister RNG *)
-  "-DSFMT_MEXP=19937"; "-msse2"; "-fno-strict-aliasing";
-  "-Wno-tautological-constant-out-of-range-compare";
-]
+let default_cflags = 
+  try
+    Sys.getenv "OWL_CFLAGS" |> String.trim
+    |> String.split_on_char ' '
+    |> List.filter (fun s -> String.trim s <> "")
+  with Not_found ->
+    [
+      (* Basic optimisation *)
+      "-g"; "-O3"; "-Ofast";
+      (* FIXME: experimental switches *)
+      (* "-mavx2"; "-mfma"; "-ffp-contract=fast"; *)
+      (* Experimental switches, -ffast-math may break IEEE754 semantics*)
+      "-march=native"; "-mfpmath=sse"; "-funroll-loops"; "-ffast-math";
+      (* Configure Mersenne Twister RNG *)
+      "-DSFMT_MEXP=19937"; "-msse2"; "-fno-strict-aliasing";
+      "-Wno-tautological-constant-out-of-range-compare";
+    ]
 
 
 let default_libs =
