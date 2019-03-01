@@ -183,10 +183,7 @@
   (deps   (:deps-conf config/configure.exe)
           (:deps-aeos ../aeos/owl_aeos_gen.exe))
   (action
-   ;(setenv OWL_ENABLE_EXPMODE 0 ;; turn on experiment features like flto
-   ;(setenv OWL_ENABLE_DEVMODE 0 ;; turn on all the warnings in development
-   ;(setenv OWL_ENABLE_OPENMP 0  ;; turn on OpenMP support in core module
    (progn (run %{deps-conf})
    (run %{deps-aeos}))
-  );)))
+  )
 )
