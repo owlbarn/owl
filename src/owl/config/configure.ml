@@ -5,11 +5,11 @@
 
 module C = Configurator.V1
 
-let igetenv v =
+let bgetenv v =
   let v' = try Sys.getenv v |> int_of_string with Not_found -> 0 in
   if v' < 0 || v' > 1 then raise @@
     Invalid_argument (Printf.sprintf "Invalid value for env variable %s: got %d" v v');
-  v'
+  v' = 1
 
 (* Adapted from lapacke_DGELS_colmajor example *)
 let test_lapacke_working_code = {|
@@ -64,12 +64,11 @@ let get_ocaml_default_flags _c = [
 
 
 let get_ocaml_devmode_flags _c =
-  let enable_devmode = igetenv "ENABLE_DEVMODE" in
-  if enable_devmode = 0 then []
-  else if enable_devmode = 1 then [
+  let enable_devmode = bgetenv "OWL_ENABLE_DEVMODE" in
+  if not enable_devmode then []
+  else [
     "-w"; "-32-27-6-37-3";
   ]
-  else failwith "Error: ENABLE_DEVMODE only accepts 0/1."
 
 
 let default_cflags = [
@@ -92,26 +91,24 @@ let default_libs =
 
 
 let get_expmode_cflags _c =
-  let enable_expmode = igetenv "ENABLE_EXPMODE" in
-  if enable_expmode = 0 then []
-  else if enable_expmode = 1 then [
+  let enable_expmode = bgetenv "OWL_ENABLE_EXPMODE" in
+  if not enable_expmode then []
+  else [
     "-flto";
   ]
-  else failwith "Error: ENABLE_EXPMODE only accepts 0/1."
 
 
 let get_devmode_cflags _c =
-  let enable_devmode = igetenv "ENABLE_DEVMODE" in
-  if enable_devmode = 0 then [
+  let enable_devmode = bgetenv "OWL_ENABLE_DEVMODE" in
+  if not enable_devmode then [
     "-Wno-logical-op-parentheses"
   ]
-  else if enable_devmode = 1 then [
+  else [
     "-Wall";
     "-pedantic";
     "-Wextra";
     "-Wunused";
   ]
-  else failwith "Error: ENABLE_DEVMODE only accepts 0/1."
 
 
 let default_gcc_path =
@@ -144,33 +141,38 @@ let get_accelerate_libs c =
   | _           -> []
 
 
-let get_openmp_cflags c =
-  let enable_openmp = igetenv "ENABLE_OPENMP" in
-  if enable_openmp = 0 then []
-  else if enable_openmp = 1 then (
-    match get_os_type c with
-    | "linux"     -> [ "-fopenmp" ]
-    | "linux_elf" -> [ "-fopenmp" ]
-    | "macosx"    -> [ "-Xpreprocessor"; "-fopenmp" ]
-    | "mingw64"   -> [ "-fopenmp" ]
-    | _           -> []
-  )
-  else failwith "Error: ENABLE_OPENMP only accepts 0/1."
+let get_openmp_config c =
+  let enable_openmp = bgetenv "OWL_ENABLE_OPENMP" in
+  if not enable_openmp then C.Pkg_config.{cflags=[]; libs=[]}
+  else 
+    let cflags, libs =
+      match get_os_type c with
+      | "linux"     -> [ "-fopenmp" ], [ "-lgomp" ]
+      | "linux_elf" -> [ "-fopenmp" ], [ "-lgomp" ]
+      | "macosx"    -> [ "-Xpreprocessor"; "-fopenmp" ], [ "-lomp" ]
+      | "mingw64"   -> [ "-fopenmp" ], [ "-lgomp" ]
+      | _           -> [], []
+    in
+    if not @@ C.c_test c test_linking ~c_flags:cflags ~link_flags:libs
+    then begin
+      Printf.printf {|
+You have set OWL_ENABLE_OPENMP = 1 however I am unable to link
+against openmp: the current values for cflags and libs are respectively
+%s and %s.
 
+You can disable openmp/aeos by unsetting OWL_ENABLE_OPEN or by setting
+it to 0.
+If you are compiling owl manually, make sure you first run `make clean`
+or `dune clean` before rebuilding the project with a modified flag.
 
-let get_openmp_libs c =
-  let enable_openmp = igetenv "ENABLE_OPENMP" in
-  if enable_openmp = 0 then []
-  else if enable_openmp = 1 then (
-    match get_os_type c with
-    | "linux"     -> [ "-lgomp" ]
-    | "linux_elf" -> [ "-lgomp" ]
-    | "macosx"    -> [ "-lomp" ]
-    | "mingw64"   -> [ "-lgomp" ]
-    | _           -> []
-  )
-  else failwith "Error: ENABLE_OPENMP only accepts 0/1."
-
+If you think this is our mistake please open an issue reporting
+the output of `src/owl/config/configure.exe --verbose`.
+|}
+        Base.(string_of_sexp @@ sexp_of_list sexp_of_string cflags)
+        Base.(string_of_sexp @@ sexp_of_list sexp_of_string libs);
+      failwith "Unable to link against openmp"
+    end;
+    C.Pkg_config.{cflags; libs}
 
 let () =
   C.main ~name:"owl" (fun c ->
@@ -194,7 +196,7 @@ PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/path/to/openblas/lib/pkgconfig
 If this does not work please open an issue in the owl repository, adding
 some details on how your openblas has been installed and the output of
 `src/owl/config/configure.exe --verbose`.
-        |}
+|}
           Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.cflags)
           Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.libs);
         failwith "Unable to link against openblas."
@@ -207,6 +209,7 @@ some details on how your openblas has been installed and the output of
         in
         if needs_lapacke_flag then ["-llapacke"] else []
       in
+      let openmp_config = get_openmp_config c in
       (* configure link options *)
       let libs =
         []
@@ -215,7 +218,7 @@ some details on how your openblas has been installed and the output of
         @ default_libs
         @ default_gcc_path
         @ get_accelerate_libs c
-        @ get_openmp_libs c
+        @ openmp_config.libs
       in
 
       (* configure compile options *)
@@ -225,7 +228,7 @@ some details on how your openblas has been installed and the output of
         @ default_cflags
         @ get_devmode_cflags c
         @ get_expmode_cflags c
-        @ get_openmp_cflags c
+        @ openmp_config.cflags
       in
 
       (* configure ocaml options *)
