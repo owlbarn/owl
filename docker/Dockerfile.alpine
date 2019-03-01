@@ -4,7 +4,7 @@
 # By Liang Wang <liang.wang@cl.cam.ac.uk>
 ############################################################
 
-FROM ocaml/opam2:alpine-3.8
+FROM ocaml/opam2:alpine
 USER opam
 
 
@@ -13,7 +13,7 @@ USER opam
 RUN sudo apk update
 RUN sudo apk add m4 wget unzip aspcud openblas-dev
 RUN opam update && opam switch create 4.06.0 && eval $(opam config env)
-RUN opam install -y oasis dune ocaml-compiler-libs ctypes alcotest utop base stdio configurator sexplib
+RUN opam install -y dune ocaml-compiler-libs ctypes alcotest utop stdio configurator sexplib
 
 
 #################### SET UP ENV VARS #######################
@@ -31,15 +31,12 @@ RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit \
 ####################  INSTALL EIGEN  #######################
 
 ENV EIGENPATH /home/opam/eigen
-RUN cd /home/opam/ && git clone https://github.com/ryanrhymes/eigen.git
+RUN cd /home/opam/ && git clone https://github.com/owlbarn/eigen.git
 
-RUN sed -i -- 's/-Wno-extern-c-compat -Wno-c++11-long-long -Wno-invalid-partial-specialization/-Wno-ignored-attributes/g' $EIGENPATH/lib/Makefile \
-    && sed -i -- 's/typedef int64_t INDEX;/#include <stdint.h>\ntypedef int64_t INDEX;/g' $EIGENPATH/lib/eigen_dsmat.h $EIGENPATH/lib/eigen_spmat.h \
-    && sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile \
-    && sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis
+RUN sed -i -- 's/-Wno-extern-c-compat -Wno-c++11-long-long -Wno-invalid-partial-specialization/-Wno-ignored-attributes/g' $EIGENPATH/eigen_cpp/lib/Makefile \
+    && sed -i -- 's/typedef int64_t INDEX;/#include <stdint.h>\ntypedef int64_t INDEX;/g' $EIGENPATH/eigen_cpp/lib/eigen_dsmat.h $EIGENPATH/eigen_cpp/lib/eigen_spmat.h
 
-RUN cd $EIGENPATH && make oasis && make && make install
-RUN sudo cp $EIGENPATH/_build/include/libeigen.a /usr/local/lib
+RUN cd $EIGENPATH && make && make install
 
 
 ####################   INSTALL OWL  #######################
@@ -47,11 +44,8 @@ RUN sudo cp $EIGENPATH/_build/include/libeigen.a /usr/local/lib
 ENV OWLPATH /home/opam/owl
 RUN cd /home/opam && git clone https://github.com/owlbarn/owl.git
 
-RUN rm -f $OWLPATH/src/owl/misc/owl_plot.* \
-    && sed -i '/plplot/d' $OWLPATH/src/owl/dune \
-    && sed -i '/module Plot = Owl_plot/d' $OWLPATH/src/owl/owl.ml
-
-RUN sed -i -- 's/\"-llapacke" :://g' $OWLPATH/src/owl/config/configure.ml # FIXME: hacking
+RUN rm -rf $OWLPATH/src/plplot \
+    && rm -f $OWLPATH/owl-plplot.opam
 
 RUN cd $OWLPATH && make && make install
 
