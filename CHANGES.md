@@ -1,3 +1,12 @@
+### 0.5.0 (in progress)
+
+* Improve building and installation.
+* Fix bugs and improve performance.
+* Add more functions to Algodiff.
+* Split plot module out as sub library.
+* Split Tfgraph module out as sub library.
+
+
 ### 0.4.2 (2018-11-10)
 
 * Optimise computation graph module.
