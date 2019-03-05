@@ -1,4 +1,4 @@
-opam-version: "2"
+opam-version: "2.0"
 maintainer: "Liang Wang <ryanrhymes@gmail.com>"
 authors: [ "Liang Wang" ]
 license: "MIT"
@@ -23,13 +23,13 @@ build: [
 
 depends: [
   "ocaml" {>= "4.06.0"}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "base" {build}
   "base-bigarray"
   "conf-openblas" {>= "0.2.0"}
   "ctypes"
   "dune" {build & >= "1.2.1"}
   "eigen" {>= "0.1.0"}
-  "owl-base"
+  "owl-base" {>= "0.5.0"}
   "stdio" {build}
 ]
