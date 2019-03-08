@@ -7,11 +7,11 @@
 FROM ocaml/opam2:alpine
 USER opam
 
-
 ##################### PREREQUISITES ########################
 
 RUN sudo apk update
 RUN sudo apk add m4 wget unzip aspcud openblas-dev
+RUN cd /home/opam/opam-repository && git pull origin master
 RUN opam update && opam switch create 4.06.0 && eval $(opam config env)
 
 #################### SET UP ENV VARS #######################
@@ -24,9 +24,6 @@ RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit \
     && bash -c 'echo -e "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> /home/opam/.profile' \
     && opam config env >> /home/opam/.profile \
     && bash -c "source /home/opam/.profile"
-
-RUN cd $EIGENPATH && make && make install
-
 
 ####################   INSTALL OWL  #######################
 
