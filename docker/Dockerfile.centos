@@ -15,7 +15,6 @@ RUN sudo yum -y install git wget unzip m4 pkg-config gcc-gfortran epel-release
 RUN sudo yum -y install openblas-devel plplot-devel
 
 RUN opam update && opam switch create 4.06.0 && eval $(opam config env)
-RUN opam install -y dune ocaml-compiler-libs ctypes utop stdio configurator alcotest sexplib plplot
 
 
 #################### SET UP ENV VARS #######################
@@ -23,21 +22,11 @@ RUN opam install -y dune ocaml-compiler-libs ctypes utop stdio configurator alco
 ENV PATH /home/opam/.opam/4.06.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 ENV CAML_LD_LIBRARY_PATH /home/opam/.opam/4.06.0/lib/stublibs
 
-################# INSTALL EIGEN LIBRARY ####################
-
-ENV EIGENPATH /home/opam/eigen
-RUN cd /home/opam/ && git clone https://github.com/owlbarn/eigen.git
-
-RUN sed -i -- 's/-Wno-extern-c-compat -Wno-c++11-long-long -Wno-invalid-partial-specialization/-Wno-ignored-attributes/g' $EIGENPATH/eigen_cpp/lib/Makefile
-
-RUN cd $EIGENPATH && make && make install
 
 ################## INSTALL OWL LIBRARY #####################
 
 ENV OWLPATH /home/opam/owl
-RUN cd /home/opam && git clone https://github.com/owlbarn/owl.git
-
-RUN make -C $OWLPATH && make -C $OWLPATH install
+RUN opam install owl owl-plplot
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
