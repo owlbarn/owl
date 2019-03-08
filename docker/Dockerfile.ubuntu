@@ -25,6 +25,7 @@ RUN cd $OPENBLASPATH && sudo make && sudo make install && sudo make clean
 
 ENV OWLPATH /home/opam/owl
 ENV PKG_CONFIG_PATH /opt/OpenBLAS/lib/pkgconfig:$PKG_CONFIG_PATH
+RUN CFLAGS="-I/opt/OpenBLAS/include -L/opt/OpenBLAS/lib" opam install conf-openblas -y
 RUN opam install owl owl-plplot -y
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
