@@ -13,8 +13,6 @@ USER opam
 RUN sudo apk update
 RUN sudo apk add m4 wget unzip aspcud openblas-dev
 RUN opam update && opam switch create 4.06.0 && eval $(opam config env)
-RUN opam install -y dune ocaml-compiler-libs ctypes alcotest utop stdio configurator sexplib
-
 
 #################### SET UP ENV VARS #######################
 
@@ -27,28 +25,13 @@ RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit \
     && opam config env >> /home/opam/.profile \
     && bash -c "source /home/opam/.profile"
 
-
-####################  INSTALL EIGEN  #######################
-
-ENV EIGENPATH /home/opam/eigen
-RUN cd /home/opam/ && git clone https://github.com/owlbarn/eigen.git
-
-RUN sed -i -- 's/-Wno-extern-c-compat -Wno-c++11-long-long -Wno-invalid-partial-specialization/-Wno-ignored-attributes/g' $EIGENPATH/eigen_cpp/lib/Makefile \
-    && sed -i -- 's/typedef int64_t INDEX;/#include <stdint.h>\ntypedef int64_t INDEX;/g' $EIGENPATH/eigen_cpp/lib/eigen_dsmat.h $EIGENPATH/eigen_cpp/lib/eigen_spmat.h
-
 RUN cd $EIGENPATH && make && make install
 
 
 ####################   INSTALL OWL  #######################
 
 ENV OWLPATH /home/opam/owl
-RUN cd /home/opam && git clone https://github.com/owlbarn/owl.git
-
-RUN rm -rf $OWLPATH/src/plplot \
-    && rm -f $OWLPATH/owl-plplot.opam
-
-RUN cd $OWLPATH && make && make install
-
+RUN opam install owl
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
