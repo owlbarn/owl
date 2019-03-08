@@ -28,7 +28,6 @@ RUN yes | opam init && eval $(opam config env) && opam switch create 4.06.0
 ENV PATH /root/.opam/4.06.0/bin:/usr/local/sbin/:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 ENV CAML_LD_LIBRARY_PATH /root/.opam/4.06.0/lib/stublibs
 
-
 ####################  INSTALL EIGEN  #######################
 
 ####################   INSTALL OWL  #######################
@@ -37,8 +36,7 @@ ENV OWLPATH /root/owl
 ENV OWL_CFLAGS "-g -O3 -Ofast -march=native -funroll-loops -ffast-math -DSFMT_MEXP=19937 -fno-strict-aliasing -Wno-tautological-constant-out-of-range-compare"
 ENV EIGENCPP_OPTFLAGS "-Ofast -march=native -funroll-loops -ffast-math"
 ENV EIGEN_FLAGS "-O3 -Ofast -march=native -funroll-loops -ffast-math"
-opam install owl owl-plplot
-
+RUN opam install owl owl-plplot
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
