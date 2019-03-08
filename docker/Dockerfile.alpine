@@ -12,13 +12,9 @@ USER opam
 RUN sudo apk update
 RUN sudo apk add m4 wget unzip aspcud openblas-dev
 RUN cd /home/opam/opam-repository && git pull origin master
-RUN opam update && opam switch create 4.06.0 && eval $(opam config env)
+RUN opam update
 
 #################### SET UP ENV VARS #######################
-
-ENV PATH /home/opam/.opam/4.06.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
-ENV CAML_LD_LIBRARY_PATH /home/opam/.opam/4.06.0/lib/stublibs
-ENV LD_LIBRARY_PATH /usr/lib/:/usr/local/lib:/home/opam/.opam/4.06.0/lib/:/home/opam/.opam/4.06.0/lib/stublibs/
 
 RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit \
     && bash -c 'echo -e "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> /home/opam/.profile' \
@@ -28,7 +24,7 @@ RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit \
 ####################   INSTALL OWL  #######################
 
 ENV OWLPATH /home/opam/owl
-RUN opam install owl
+RUN opam install owl -y
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 

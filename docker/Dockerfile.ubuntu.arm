@@ -15,20 +15,13 @@ RUN apt-get -y install git build-essential ocaml wget unzip aspcud m4 pkg-config
 RUN apt-get -y install libshp-dev libplplot-dev
 RUN apt-get -y install libopenblas-dev liblapacke-dev
 
-ENV VER=2.0.0-rc
+ENV VER=2.0.3
 RUN wget https://github.com/ocaml/opam/releases/download/$VER/opam-full-$VER.tar.gz \
     && tar -xvf opam-full-$VER.tar.gz \
     && cd opam-full-$VER \
     && ./configure && make lib-ext && make && make install
 
-RUN yes | opam init && eval $(opam config env) && opam switch create 4.06.0
-
-#################### SET UP ENV VARS #######################
-
-ENV PATH /root/.opam/4.06.0/bin:/usr/local/sbin/:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
-ENV CAML_LD_LIBRARY_PATH /root/.opam/4.06.0/lib/stublibs
-
-####################  INSTALL EIGEN  #######################
+RUN opam init && eval $(opam config env)
 
 ####################   INSTALL OWL  #######################
 
@@ -36,7 +29,7 @@ ENV OWLPATH /root/owl
 ENV OWL_CFLAGS "-g -O3 -Ofast -march=native -funroll-loops -ffast-math -DSFMT_MEXP=19937 -fno-strict-aliasing -Wno-tautological-constant-out-of-range-compare"
 ENV EIGENCPP_OPTFLAGS "-Ofast -march=native -funroll-loops -ffast-math"
 ENV EIGEN_FLAGS "-O3 -Ofast -march=native -funroll-loops -ffast-math"
-RUN opam install owl owl-plplot
+RUN opam install owl owl-plplot -y
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
