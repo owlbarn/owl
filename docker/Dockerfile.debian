@@ -13,9 +13,8 @@ RUN sudo apt-get -y update
 RUN sudo apt-get -y install m4 wget unzip aspcud libshp-dev libplplot-dev gfortran
 RUN sudo apt-get -y install pkg-config git camlp4-extra
 RUN sudo apt-get -y install libopenblas-dev liblapacke-dev
-
+RUN cd /home/opam/opam-repository && git pull origin master
 RUN opam update && opam switch create 4.06.0 && eval $(opam config env)
-
 
 #################### SET UP ENV VARS #######################
 
@@ -27,7 +26,6 @@ ENV LD_LIBRARY_PATH /usr/lib/:/usr/local/lib:/home/opam/.opam/4.06.0/lib/:/home/
 
 ENV OWLPATH /home/opam/owl
 RUN opam install owl owl-plplot
-
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
