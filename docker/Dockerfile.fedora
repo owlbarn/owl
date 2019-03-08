@@ -12,8 +12,8 @@ USER opam
 RUN sudo yum update -y
 RUN sudo yum -y install git wget unzip m4 pkg-config gcc-gfortran
 RUN sudo dnf -y install openblas-devel plplot-devel
-RUN cd /home/opam/opam-repository && git pull origin master
-RUN opam update
+RUN cd /home/opam/opam-repository && git pull --quiet origin master
+RUN opam update -q
 
 ################## INSTALL OWL LIBRARY #####################
 

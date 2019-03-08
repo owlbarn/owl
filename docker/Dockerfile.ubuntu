@@ -12,8 +12,8 @@ USER opam
 RUN sudo apt-get -y update
 RUN sudo apt-get -y install m4 wget unzip aspcud libshp-dev libplplot-dev gfortran
 RUN sudo apt-get -y install pkg-config git
-RUN cd /home/opam/opam-repository && git pull origin master
-RUN opam update
+RUN cd /home/opam/opam-repository && git pull --quiet origin master
+RUN opam update -q
 
 #################### INSTALL OPENBLAS ######################
 

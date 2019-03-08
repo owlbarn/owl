@@ -13,8 +13,8 @@ RUN sudo zypper -n update
 RUN sudo zypper -n in git wget unzip m4 pkg-config gcc-fortran
 RUN sudo zypper ref && sudo zypper -n in openblas-devel && sudo update-alternatives --config libblas.so.3
 RUN sudo zypper -n in plplot-devel
-RUN cd /home/opam/opam-repository && git pull origin master
-RUN opam update
+RUN cd /home/opam/opam-repository && git pull --quiet origin master
+RUN opam update -q
 
 ################## INSTALL OWL LIBRARY #####################
 
