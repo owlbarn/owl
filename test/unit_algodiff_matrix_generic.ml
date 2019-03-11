@@ -18,7 +18,7 @@ module Make
 
   let n = 3
   let n_samples = 20
-  let threshold = 1E-4 
+  let threshold = 1E-6 
   let eps = 1E-5 
 
   module FD = FDGrad_test 
@@ -122,8 +122,10 @@ module Make
       let identity = Arr Owl.Mat.(eye n) in
       let f = 
         fun x -> 
-          let a = Maths.(r + x - identity) in
           let q = Maths.((F 0.5) * (x + (transpose x) + identity)) in
+          let s = Maths.(r - (transpose r)) in
+          let p = Maths.((r + x) *@ (transpose (r + x)) + identity) in
+          let a = Maths.((s - (F 0.5) * q) *@ (inv p)) in
           Maths.lyapunov a Maths.(neg q) in
       test_func f
 
@@ -132,8 +134,11 @@ module Make
       let identity = Arr Owl.Mat.(eye n) in
       let f = 
         fun x -> 
-          let a = Maths.(r + x - identity) in
           let q = Maths.((F 0.5) * (x + (transpose x) + identity)) in
+          let s = Maths.(r - (transpose r)) in
+          let p = Maths.((r + x) *@ (transpose (r + x)) + identity) in
+          let a = Maths.((s - (F 0.5) * q) *@ (inv p)) in 
+          let a = Maths.(a - identity) in
           Maths.discrete_lyapunov a q in
       test_func f
 
