@@ -34,3 +34,9 @@ before compilation:
 
 If you are not using `opam`, you should run `make clean` before recompiling
 the library after having changed any of those environment variables.
+
+For examples of use of this feature, you can refer to the `Docker.ubuntu`
+and `Docker.ubuntu.arm` docker files, or to the snippet in
+https://github.com/owlbarn/owl/issues/394#issuecomment-471364916
+(which also shows how to use it within `esy`).
+
