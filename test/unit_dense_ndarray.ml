@@ -45,6 +45,7 @@ let x3 = M.sequential Float64 ~a:1. [|6|]
 
 let x4 = M.ones Float64 [|2;3;4|]
 
+let x5 = M.of_arrays Float64 [|[|2.;-1.;3.5|];[|0.4;0.6;0.2|]|]
 
 (* a module with functions to test *)
 module To_test = struct
@@ -101,6 +102,23 @@ module To_test = struct
 
   let sum' () = M.sum' x0 = 6.
 
+  let median' () = M.median' x5 = 0.5
+
+  (* [|[|2.;-1.;3.5|];[|0.4;0.6;0.2|]|] *)
+  let median () =
+    let x1 = M.median ~axis:0 x5 in
+    let y1 = M.of_arrays Float64 [|[|1.2;-0.2;1.85|]|] in
+    let x2 = M.median ~axis:1 x5 in
+    let y2 = M.of_arrays Float64 [|[|2.|];[|0.4|]|] in 
+    (M.equal x1 y1) && (M.equal x2 y2)
+
+  let sort1 () = 
+    let x1 = M.sort1 ~axis:0 x5 in
+    let y1 = M.of_arrays Float64 [|[|0.4;-1.;0.2|];[|2.;0.6;3.5|]|] in
+    let x2 = M.sort1 ~axis:1 x5 in
+    let y2 = M.of_arrays Float64 [|[|-1.;2.;3.5|];[|0.2;0.4;0.6|]|] in
+    (M.equal x1 y1) && (M.equal x2 y2)
+    
   let sum_reduce () =
     M.sum_reduce ~axis:[|0;2|] x4 = M.of_array Float64 [|8.;8.;8.|] [|1;3;1|]
 
@@ -440,6 +458,15 @@ let neg () =
 let sum' () =
   Alcotest.(check bool) "sum'" true (To_test.sum' ())
 
+let median' () =
+  Alcotest.(check bool) "median'" true (To_test.median' ())
+
+let median () =
+  Alcotest.(check bool) "median" true (To_test.median ())
+  
+let sort1 () =
+  Alcotest.(check bool) "sort1" true (To_test.sort1 ())
+
 let sum_reduce () =
   Alcotest.(check bool) "sum_reduce" true (To_test.sum_reduce ())
 
@@ -638,6 +665,9 @@ let test_set = [
   "abs", `Slow, abs;
   "neg", `Slow, neg;
   "sum'", `Slow, sum';
+  "median'", `Slow, median';
+  "median", `Slow, median;
+  "sort1", `Slow, sort1;
   "sum_reduce", `Slow, sum_reduce;
   "min'", `Slow, min';
   "max'", `Slow, max';

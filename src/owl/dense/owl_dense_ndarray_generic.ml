@@ -466,6 +466,21 @@ let strides x = x |> shape |> Owl_utils.calc_stride
 
 let slice_size x = x |> shape |> Owl_utils.calc_slice
 
+let sort1 ?axis x =
+  let y = copy x in
+  let _kind = kind y in
+  match axis with
+  | Some a -> (
+      let d = Genarray.num_dims y in
+      let a = Owl_utils.adjust_index a d in
+      let n = numel y in
+      let _strides = strides y in
+      let s = _strides.(a) in
+      let o = (Genarray.dims y).(a) in
+      _owl_sort_along _kind n s o y;
+      y
+    )
+  | None   -> sort x
 
 let ind = Owl_utils.ind
 
@@ -5241,6 +5256,35 @@ let mean ?axis x =
     )
   | None   -> mean' x |> create _kind [|1|]
 
+  
+let median' x = 
+  let _kind = kind x in
+  let _srt = sort x in
+  let _numel = numel x in
+  let _rsht = reshape _srt [|1;_numel|] in
+  if _numel mod 2 = 0 then
+    let s = _add_elt _kind (get _rsht [|0;_numel/2-1|]) (get _rsht [|0;_numel/2|]) in
+    let y = _float_typ_elt _kind 2.0 in 
+    _div_elt _kind s y
+  else (get _rsht [|0;_numel/2|])
+
+let median ?axis x =
+  let _kind = kind x in
+  let x1 = copy x in
+  match axis with
+  | Some a -> (
+      let d = Genarray.num_dims x1 in
+      let a = Owl_utils.adjust_index a d in
+      let _shape = shape x1 in
+      _shape.(a) <- 1;      
+      let y = zeros _kind _shape in
+      let n = numel x in
+      let s = (strides x1).(a) in
+      let o = (Genarray.dims x1).(a) in
+      _owl_median_along _kind n s o x1 y;
+      y
+    )
+  | None   -> median' x |> create _kind [|1|]
 
 let var' x =
   let _kind = kind x in

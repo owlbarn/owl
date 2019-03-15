@@ -155,6 +155,8 @@ val bottom : arr -> int -> int array array
 
 val sort : arr -> arr
 
+val sort1 : ?axis:int -> arr -> arr
+
 val argsort : arr -> (int64, int64_elt, c_layout) Genarray.t
 
 val draw : ?axis:int -> arr -> int -> arr * int array
@@ -352,6 +354,10 @@ val prod : ?axis:int -> arr -> arr
 val mean : ?axis:int -> arr -> arr
 
 val mean': arr -> elt
+
+val median': arr -> elt
+
+val median: ?axis:int -> arr -> arr
 
 val var : ?axis:int -> arr -> arr
 
