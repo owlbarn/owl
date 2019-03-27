@@ -544,6 +544,13 @@ indices are arranged according to the corresponding element values, from the
 smallest one to the greatest one.
  *)
 
+val sort1 : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(**
+``sort1 ~axis x`` performs quicksort of the elements along specific ``axis`` in ``x``. A new copy is returned
+as result, the original ``x`` remains intact. 
+ *)
+
+
 val sort : ('a, 'b) t -> ('a, 'b) t
 (**
 ``sort x`` performs quicksort of the elelments in ``x``. A new copy is returned
@@ -1109,6 +1116,16 @@ val mean' : ('a, 'b) t -> 'a
 (**
 ``mean' x`` calculates the mean of all the elements in ``x``.
  *)
+
+val median : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(**
+``median ~axis x`` calculates the median along specified ``axis`` of ``x``.
+*)
+
+val median' : ('a, 'b) t -> 'a
+(**
+``median x`` calculates the median of a flattened version of ``x``.
+*)
 
 val var : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**

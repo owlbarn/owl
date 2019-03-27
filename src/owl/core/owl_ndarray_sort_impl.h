@@ -9,6 +9,8 @@
 
 #include <assert.h>
 
+#define FIND_MEDIAN(arr, n) ((n) % 2 == 1)? *(arr + (n)/2) : (*(arr + (n)/2-1) + *(arr + (n)/2))/2.0
+
 #define SWAPINIT(a, es) swaptype = ((char *)a - (char *)0) % sizeof(long) || \
   es % sizeof(long) ? 2 : es == sizeof(long)? 0 : 1;
 
@@ -160,6 +162,86 @@ CAMLprim value FUNCTION (stub, argsort) (value vN, value vX, value vY)
 
   caml_acquire_runtime_system();  /* Disallow other threads */
 
+  CAMLreturn(Val_unit);
+}
+
+// function specifically for sorting along a specified axis.
+// N: total number of elements, S: stride size at axis a, O: number of elements at axis a.
+CAMLprim value FUNCTION (stub, sort_along) (value vN, value vS, value vO, value vX) 
+{
+  CAMLparam4(vN, vS, vO, vX);
+  int N = Long_val(vN);
+  int S = Long_val(vS);
+  int O = Long_val(vO);
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  TYPE *X_data = (TYPE *) X->data;
+
+  caml_release_runtime_system();  /* Allow other threads */
+  
+  TYPE  *start_x = X_data;
+  int i, j;
+  if(S > 1) {
+    TYPE* tmp = (TYPE*)malloc(O * sizeof(TYPE));
+    for(i = 0;i < S;i ++) {
+      for(j = 0;j < O;j ++) {
+        *(tmp + j) = *(start_x + i + j * S);
+      }
+      qsort(tmp, O, sizeof(TYPE), CMPFN1); 
+      for(j = 0;j < O;j ++) {
+        *(start_x + i + j * S) = *(tmp + j);
+      }
+    }
+    free(tmp);
+  } else if(S == 1) { 
+    for(i = 0;i < N/O;i++) {
+      qsort(start_x + i * O, O, sizeof(TYPE), CMPFN1);
+    }
+  }
+  caml_acquire_runtime_system();  /* Disallow other threads */
+  
+  CAMLreturn(Val_unit);
+}
+
+
+// function specifically for finding median along a specified axis
+// N: total number of elements, S: stride size at axis a, O: number of elements at axis a.
+CAMLprim value FUNCTION (stub, median_along) (value vN, value vS, value vO, value vX, value vY) 
+{
+  CAMLparam5(vN, vS, vO, vX, vY);
+  int N = Long_val(vN);
+  int S = Long_val(vS);
+  int O = Long_val(vO);
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  TYPE *X_data = (TYPE *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  TYPE *Y_data = (TYPE *) Y->data;
+
+  caml_release_runtime_system();  /* Allow other threads */
+  
+  TYPE  *start_x = X_data;
+  TYPE  *start_y = Y_data;
+  int i, j;
+  if(S > 1) {
+    TYPE* tmp = (TYPE*)malloc(O * sizeof(TYPE));
+    for(i = 0;i < S;i ++) {
+      for(j = 0;j < O;j ++) {
+        *(tmp + j) = *(start_x + i + j * S);
+      }
+      qsort(tmp, O, sizeof(TYPE), CMPFN1);
+      *(start_y + i) = FIND_MEDIAN(tmp, O);
+    }
+    free(tmp);
+  } else if(S == 1) { 
+    for(i = 0;i < N/O;i++) {
+      qsort(start_x + i * O, O, sizeof(TYPE), CMPFN1);
+      *(start_y + i) = FIND_MEDIAN(start_x + i * O, O);
+    }
+  }
+  caml_acquire_runtime_system();  /* Disallow other threads */
+  
   CAMLreturn(Val_unit);
 }
 
