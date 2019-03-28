@@ -182,6 +182,11 @@ the output of `src/owl/config/configure.exe --verbose`.
 
 let () =
   C.main ~name:"owl" (fun c ->
+      let cblas_conf =
+        let default = { C.Pkg_config.cflags = [] ; libs = [] } in
+        let open Base.Option.Monad_infix in
+        Base.Option.value ~default
+          (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"cblas") in
       let openblas_conf =
         let open Base.Option.Monad_infix in
         Base.Option.value ~default:openblas_default
@@ -221,6 +226,7 @@ some details on how your openblas has been installed and the output of
         []
         @ lapacke_lib
         @ openblas_conf.libs
+        @ cblas_conf.libs
         @ default_libs
         @ default_gcc_path
         @ get_accelerate_libs c
@@ -231,6 +237,7 @@ some details on how your openblas has been installed and the output of
       let cflags =
         []
         @ openblas_conf.cflags
+        @ cblas_conf.cflags
         @ default_cflags
         @ get_devmode_cflags c
         @ get_expmode_cflags c
