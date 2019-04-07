@@ -4200,6 +4200,8 @@ let logdet _x = raise Owl_exception.NOT_IMPLEMENTED
 
 let qr _x = raise Owl_exception.NOT_IMPLEMENTED
 
+let lq _x = raise Owl_exception.NOT_IMPLEMENTED
+
 let chol ?(upper=true) _x = upper |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
 let svd ?(thin=true) _x = thin |> ignore; raise Owl_exception.NOT_IMPLEMENTED

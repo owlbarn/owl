@@ -100,6 +100,7 @@ module Make
     | Logdet_D       of t
     | Chol_D         of t * bool
     | QR_D           of (t * (t ref * t ref) * (t ref * t ref))
+    | LQ_D           of (t * (t ref * t ref) * (t ref * t ref))
     | Svd_D          of (t * (t ref * t ref * t ref) * (t ref * t ref * t ref) * bool)
     | Lyapunov_D_D   of t * t
     | Lyapunov_C_D   of t * t
@@ -1071,6 +1072,21 @@ module Make
       let middle = tril ~k:(-1) ( (r*@rbart) - (rbar*@rt) + (qt*@qbar) - (qbart*@q) ) in
       (q*@(rbar + (middle*@rinvt))) + ((qbar - (q*@(qt*@qbar)))*@rinvt)
 
+     and lq a =
+      let ff = function
+        | Arr a -> let l, q = A.(lq a) in (Arr l, Arr q)
+        | _     -> error_uniop "lq" a
+      in
+      let fd a = lq a in
+      let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
+      let r (a, (cp1, cp2), (aa1, aa2)) = LQ_D (a, (cp1, cp2), (aa1, aa2))  in
+      pair_op_d_d a ff fd df r
+
+    and _lq_backward (o1, o2) (aa1, aa2) =
+      let l = !o1 and q = !o2 and lbar = !aa1 and qbar = !aa2 in
+      let m = (transpose l) *@ lbar - qbar *@ (transpose q) in
+      linsolve ~trans:true l (qbar + ((copyltu m) *@ q)) 
+     
     and svd ?(thin=true) a =
       let ff = function
         | Arr a -> let u, s, vt = A.(svd ~thin a) in (Arr u, Arr s, Arr vt)
@@ -1883,6 +1899,7 @@ module Make
                 | Logdet_D a                    -> reset (a :: t)
                 | Chol_D (a, _)                 -> reset (a :: t)
                 | QR_D (a, _, _)                -> reset (a :: t)
+                | LQ_D (a, _, _)                -> reset (a :: t)
                 | Svd_D (a, _, _, _)            -> reset (a :: t)
                 | Lyapunov_D_D (a, q)           -> reset (a :: q :: t)
                 | Lyapunov_D_C (a, _)           -> reset (a :: t)
@@ -2057,6 +2074,7 @@ module Make
                 | Logdet_D a                    -> push ((!aa * (transpose (inv (primal a))), a) :: t)
                 | Chol_D (a, upper)             -> push ((_chol_backward ap !aa upper, a) :: t)
                 | QR_D (a, o, aa)               -> push ((_qr_backward o aa, a) :: t)
+                | LQ_D (a, o, aa)               -> push ((_lq_backward o aa, a) :: t)
                 | Svd_D (a, o, aa, thin)        -> push ((_svd_backward o aa thin,a) :: t)
                 | Lyapunov_D_D (a, q)           -> let abar, qbar = _lyapunov_backward_aq (primal a) !aa ap in push ((abar, a) :: (qbar, q) :: t)
                 | Lyapunov_D_C (a, _)           -> push (((_lyapunov_backward_a (primal a) !aa ap), a) :: t)
@@ -2469,6 +2487,7 @@ module Make
                 | Logdet_D a                   -> "Inv_D", [ a ]
                 | Chol_D (a, _)                -> "Chol_D", [ a ]
                 | QR_D (a, _, _)               -> "QR_D", [ a ]
+                | LQ_D (a, _, _)               -> "LQ_D", [ a ]
                 | Svd_D (a, _, _, _)           -> "Svd_D", [ a ]
                 | Lyapunov_D_D (a, q)          -> "Lyapunov_D_D", [ a; q ]
                 | Lyapunov_C_D (a, q)          -> "Lyapunov_C_D", [ a; q ]

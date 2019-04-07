@@ -65,6 +65,12 @@ module Make
         Maths.(q + r)
       in test_func f
 
+    let lq  () =
+      let f x = 
+        let l, q = Maths.lq x in
+        Maths.(l + q)
+      in test_func f
+
     let svd () = 
       let f =                   
         let y = Mat.gaussian 20 n in 
@@ -149,7 +155,7 @@ module Make
         let a1 = Maths.(r1 + b) in
         let a2 = Maths.(r2 + b) in
         let x1 = Maths.linsolve ~trans:true a1 b in
-        let x2 = Maths.linsolve ~trans:false b a2 in
+        let x2 = Maths.linsolve ~trans:false a2 b in
         Maths.(x1 + x2) in
       test_func f
   end
@@ -190,6 +196,8 @@ module Make
 
   let qr () = alco_fun "qr" To_test.qr
 
+  let lq () = alco_fun "lq" To_test.lq
+
   let svd () = alco_fun "svd" To_test.svd
 
   let split () = alco_fun "split" To_test.split
@@ -225,6 +233,7 @@ module Make
     "logdet",                   `Slow,     logdet;
     "chol",                     `Slow,     chol;
     "qr",                       `Slow,     qr;
+    "lq",                       `Slow,     lq;
     "split",                    `Slow,     split;
     "concatenate",              `Slow,     concatenate;
     "svd",                      `Slow,     svd;

@@ -506,6 +506,9 @@ module type Sig = sig
   val qr : arr -> arr * arr
   (** TODO *)
 
+  val lq : arr -> arr * arr
+  (** TODO *)
+
   val svd : ?thin:bool -> arr -> arr * arr * arr
   (** TODO *)
 

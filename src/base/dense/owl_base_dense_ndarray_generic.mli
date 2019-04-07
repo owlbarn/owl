@@ -726,6 +726,9 @@ val chol : ?upper:bool -> (float, 'b) t -> (float, 'b) t
 val qr : (float, 'b) t -> (float, 'b) t * (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
+val lq : (float, 'b) t -> (float, 'b) t * (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
 val svd : ?thin:bool -> (float, 'b) t -> (float, 'b) t * (float, 'b) t * (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 

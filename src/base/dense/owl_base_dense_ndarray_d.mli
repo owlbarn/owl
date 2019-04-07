@@ -415,6 +415,8 @@ val logdet : arr -> elt
 val svd : ?thin:bool -> arr -> arr * arr * arr
 
 val qr : arr -> arr * arr
+
+val lq : arr -> arr * arr
                 
 val chol : ?upper:bool -> arr -> arr 
 
