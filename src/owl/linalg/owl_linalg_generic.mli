@@ -353,6 +353,23 @@ negligible elements, ``M.col_num x`` is the nullity of ``a``, and
 
  *)
 
+val triangular_solve : upper:bool -> ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``triangular_linsolve a b -> x`` solves a linear system of equations ``a * x = b`` 
+   where ``a`` is either an upper or a lower triangular matrix. This function uses
+   cblas ``trsm`` under the hood.
+
+.. math::
+  AX = B
+
+By default, ``trans = false`` indicates no transpose. If ``trans = true``, then
+function will solve ``A^T * x = b`` for real matrices; ``A^H * x = b`` for
+complex matrices.
+
+.. math::
+  A^H X = B
+*)
+ 
 val linsolve : ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``linsolve a b -> x`` solves a linear system of equations ``a * x = b`` in the

@@ -89,6 +89,8 @@ val eigvals : ?permute:bool -> ?scale:bool -> mat -> complex_mat
 
 val null : mat -> mat
 
+val triangular_solve: upper:bool -> ?trans:bool -> mat -> mat -> mat
+
 val linsolve : ?trans:bool -> mat -> mat -> mat
 
 val linreg : mat -> mat -> elt * elt

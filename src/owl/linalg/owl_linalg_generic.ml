@@ -668,7 +668,32 @@ let _get_trans_code
     | Complex64 -> 'C'
     | _         -> failwith "owl_linalg_generic:_get_trans_code"
 
-
+let triangular_solve  
+    : type c d. upper:bool -> ?trans:bool -> (c, d) t -> (c, d) t -> (c, d) t
+    = fun ~upper ?(trans=false) a b ->
+    let b = M.copy b in
+    let ma, _na = M.shape a in
+    let mb, nb = M.shape b in
+    assert (ma = mb && ma = _na);
+    let _a = M.flatten a |> Bigarray.array1_of_genarray in
+    let _b = M.flatten b |> Bigarray.array1_of_genarray in
+    let k = M.kind a in
+    let alpha = Owl_const.one k in
+    let transa = 
+      if trans then match k with
+        | Float32     -> Owl_cblas_basic.CblasTrans  
+        | Float64     -> Owl_cblas_basic.CblasTrans 
+        | Complex32   -> Owl_cblas_basic.CblasConjTrans 
+        | Complex64   -> Owl_cblas_basic.CblasConjTrans
+        | _           -> failwith "owl_linalg:triangular_solve"
+      else Owl_cblas_basic.CblasNoTrans in
+    let layout = Owl_cblas_basic.CblasRowMajor in
+    let side = Owl_cblas_basic.CblasLeft in
+    let uplo = if upper then Owl_cblas_basic.CblasUpper else Owl_cblas_basic.CblasLower in
+    let diag = Owl_cblas_basic.CblasNonUnit in
+    Owl_cblas_basic.trsm layout side uplo transa diag mb nb alpha _a ma _b nb;
+    b
+ 
 (* TODO: add opt parameter to specify the matrix properties so that we can
    choose the best solver for better performance.
 *)
