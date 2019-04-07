@@ -91,7 +91,7 @@ val null : mat -> mat
 
 val triangular_solve: upper:bool -> ?trans:bool -> mat -> mat -> mat
 
-val linsolve : ?trans:bool -> mat -> mat -> mat
+val linsolve : ?trans:bool -> ?typ:[`n | `u | `l] -> mat -> mat -> mat
 
 val linreg : mat -> mat -> elt * elt
 

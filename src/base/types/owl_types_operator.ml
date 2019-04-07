@@ -172,7 +172,7 @@ module type LinalgSig = sig
 
   val mpow : ('a, 'b) t -> float -> ('a, 'b) t
 
-  val linsolve : ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+  val linsolve : ?trans:bool -> ?typ:[`n | `u | `l] -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 end
 

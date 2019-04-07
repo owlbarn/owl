@@ -697,26 +697,32 @@ let triangular_solve
 (* TODO: add opt parameter to specify the matrix properties so that we can
    choose the best solver for better performance.
 *)
-let linsolve ?(trans=false) a b =
+let linsolve ?(trans=false) ?(typ=`n) a b =
   let ma, na = M.shape a in
   let mb, _nb = M.shape b in
   assert (ma = mb);
-  let a = M.copy a in
-  let b = M.copy b in
-
-  let trans = match trans with
+  let trans_ = match trans with
     | true  -> _get_trans_code (M.kind a)
     | false -> 'N'
   in
-
-  match ma = na with
-  | true  -> (
-      let a, ipiv = lufact a in
-      let x = Owl_lapacke.getrs trans a ipiv b in
+  if ma = na then (
+    match typ with
+    (* normal *)
+    | `n -> 
+      let a = M.copy a in
+      let b = M.copy b in
+      let a, ipiv = lufact a in 
+      let x = Owl_lapacke.getrs trans_ a ipiv b in
       x
-    )
-  | false -> (
-      let _, x, _ = Owl_lapacke.gels trans a b in
+    (* upper triangular *)
+    | `u -> triangular_solve ~trans ~upper:true a b 
+    (* lower triangular *)
+    | `l -> triangular_solve ~trans ~upper:false a b 
+  )
+  else (
+      let a = M.copy a in
+      let b = M.copy b in
+      let _, x, _ = Owl_lapacke.gels trans_ a b in
       x
     )
 
