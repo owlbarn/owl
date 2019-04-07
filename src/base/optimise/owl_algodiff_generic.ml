@@ -107,6 +107,9 @@ module Make
     | Discrete_Lyapunov_D_D   of t * t
     | Discrete_Lyapunov_C_D   of t * t
     | Discrete_Lyapunov_D_C   of t * t
+    | Linsolve_D_D   of bool * t * t
+    | Linsolve_C_D   of bool * t * t
+    | Linsolve_D_C   of bool * t * t
     | Diag_D         of int * t
     | Diagm_D        of int * t
     | Tril_D         of int * t
@@ -1157,6 +1160,24 @@ module Make
       let s = discrete_lyapunov (transpose a) aa in
       (pack_flt 2.) * s *@ a *@ ap, s
 
+    and ( /@ ) a b = linsolve ~trans:false a b 
+    and linsolve ?(trans=false) a b =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> Arr A.(linsolve ~trans a b)
+        | _            -> error_binop "linsolve" a b
+      in
+      let fd a b = linsolve ~trans a b in
+      let df_da cp ap at = 
+        linsolve ~trans ap (if trans then neg (transpose at) *@ cp else neg at *@ cp) in
+      let df_db _cp _bp bt = linsolve ~trans a bt in
+      let df_dab cp ap at _bp bt = 
+        linsolve ~trans ap (if trans then bt - (transpose at) *@ cp else bt - at *@ cp) in
+      let r_d_d a b = Linsolve_D_D (trans, a, b) in
+      let r_d_c a b = Linsolve_D_C (trans, a, b) in
+      let r_c_d a b = Linsolve_C_D (trans, a, b) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+     
     and softplus x = log ((pack_flt 1.) + exp x)
 
     and softsign x = x / ((pack_flt 1.) + abs x)
@@ -1869,6 +1890,9 @@ module Make
                 | Discrete_Lyapunov_D_D (a, q)  -> reset (a :: q :: t)
                 | Discrete_Lyapunov_C_D (_, q)  -> reset (q :: t)
                 | Discrete_Lyapunov_D_C (a, _)  -> reset (a :: t)
+                | Linsolve_D_D (_, a, b)        -> reset (a :: b :: t)
+                | Linsolve_C_D (_, _, b)        -> reset (b :: t)
+                | Linsolve_D_C (_, a, _)        -> reset (a :: t)
                 | Diag_D (_, a)                 -> reset (a :: t)
                 | Diagm_D (_, a)                -> reset (a :: t)
                 | Triu_D (_, a)                 -> reset (a :: t)
@@ -2040,6 +2064,19 @@ module Make
                 | Discrete_Lyapunov_D_D (a, q)  -> let abar, qbar = _discrete_lyapunov_backward_aq (primal a) !aa ap in push ((abar, a) :: (qbar, q) :: t)
                 | Discrete_Lyapunov_D_C (a, _)  -> push (((_discrete_lyapunov_backward_a (primal a) !aa ap), a) :: t)
                 | Discrete_Lyapunov_C_D (a, q)  -> push (((_discrete_lyapunov_backward_q (primal a) !aa), q) :: t)
+                | Linsolve_D_D (trans, a, b)    -> 
+                  let bbar = linsolve ~trans:(not trans) (primal a) !aa in
+                  let abar = 
+                    let abar = neg bbar *@ (transpose ap) in
+                    if trans then transpose abar else abar in
+                  push ((abar, a) :: (bbar, b) :: t)
+                | Linsolve_D_C (trans, a, _)    -> 
+                  let bbar = linsolve ~trans:(not trans) (primal a) !aa in
+                  let abar = 
+                    let abar = neg bbar *@ (transpose ap) in
+                    if trans then transpose abar else abar in
+                  push ((abar, a) :: t)
+                | Linsolve_C_D (trans, a, b)    -> push ((linsolve ~trans:(not trans) (primal a) !aa, b) :: t)
                 | Diag_D (k, a)                 ->
                   let m = col_num a in
                   let l = Pervasives.(m - k) in
@@ -2439,6 +2476,9 @@ module Make
                 | Discrete_Lyapunov_D_D (a, q) -> "Discrete_Lyapunov_D_D", [ a; q ]
                 | Discrete_Lyapunov_C_D (a, q) -> "Discrete_Lyapunov_C_D", [ a; q ]
                 | Discrete_Lyapunov_D_C (a, q) -> "Discrete_Lyapunov_D_C", [ a; q ]
+                | Linsolve_D_D (_, a, b)       -> "Linsolve_D_D", [ a; b ]
+                | Linsolve_C_D (_, a, b)       -> "Linsolve_C_D", [ a; b ]
+                | Linsolve_D_C (_, a, b)       -> "Linsolve_D_C", [ a; b ]
                 | Diag_D (_, a)                -> "Diag_D", [ a ]
                 | Diagm_D (_, a)               -> "Diagm_D", [ a ]
                 | Tril_D (_, a)                -> "Tril_D", [ a ]

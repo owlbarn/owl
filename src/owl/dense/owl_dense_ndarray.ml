@@ -35,6 +35,8 @@ module Generic = struct
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_generic.discrete_lyapunov ~solver a q
 
+  let linsolve ?(trans=false) a b = Owl_linalg_generic.linsolve ~trans a b
+
 end
 
 
@@ -69,6 +71,8 @@ module S = struct
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_s.discrete_lyapunov ~solver a q
 
+  let linsolve ?(trans=false) a b = Owl_linalg_s.linsolve ~trans a b
+
 end
 
 
@@ -102,6 +106,8 @@ module D = struct
   let lyapunov = Owl_linalg_d.lyapunov
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_d.discrete_lyapunov ~solver a q
+
+  let linsolve ?(trans=false) a b = Owl_linalg_d.linsolve ~trans a b
 end
 
 
@@ -127,6 +133,7 @@ module C = struct
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_c.discrete_lyapunov ~solver a q
 
+  let linsolve ?(trans=false) a b = Owl_linalg_c.linsolve ~trans a b
 end
 
 
@@ -152,6 +159,7 @@ module Z = struct
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_z.discrete_lyapunov ~solver a q
 
+  let linsolve ?(trans=false) a b = Owl_linalg_z.linsolve ~trans a b
 end
 
 

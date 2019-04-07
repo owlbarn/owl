@@ -735,6 +735,9 @@ val lyapunov : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
 val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> (float, 'b) t -> (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
+val linsolve: ?trans:bool -> (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
 val diag: ?k:int -> (float, 'b) t -> (float, 'b) t 
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 

@@ -515,6 +515,9 @@ module type Sig = sig
   val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> arr -> arr -> arr
   (** TODO *)
 
+  val linsolve : ?trans:bool -> arr -> arr -> arr
+  (** TODO *)
+
   val diag: ?k:int -> arr -> arr
   (** TODO *)
 

@@ -92,6 +92,12 @@ module type Sig = sig
     val lyapunov : t -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val linsolve : ?trans:bool -> t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val neg : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

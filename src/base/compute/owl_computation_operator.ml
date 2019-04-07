@@ -475,6 +475,8 @@ module Make
 
   let discrete_lyapunov ?(solver=`default) _a _q = solver |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
+  let linsolve ?trans _a _b = trans |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+
   let diag ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
   let diagm ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED

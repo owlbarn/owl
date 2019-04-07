@@ -142,7 +142,16 @@ module Make
           Maths.discrete_lyapunov a q in
       test_func f
 
-
+    let linsolve () = 
+      let r1 = Mat.gaussian n n in
+      let r2 = Mat.gaussian n n in
+      let f b = 
+        let a1 = Maths.(r1 + b) in
+        let a2 = Maths.(r2 + b) in
+        let x1 = Maths.linsolve ~trans:true a1 b in
+        let x2 = Maths.linsolve ~trans:false b a2 in
+        Maths.(x1 + x2) in
+      test_func f
   end
 
   let alco_fun s f =
@@ -197,6 +206,8 @@ module Make
 
   let discrete_lyapunov () = alco_fun "discrete_lyapunov" To_test.discrete_lyapunov
 
+  let linsolve () = alco_fun "linsolve" To_test.linsolve
+
   let test_set = [
     "sin",                      `Slow,     sin;
     "cos",                      `Slow,     cos;
@@ -222,6 +233,7 @@ module Make
     "init_2d",                  `Slow,     init_2d;
     "lyapunov",                 `Slow,     lyapunov;
     "discrete_lyapunov",        `Slow,     discrete_lyapunov;
+    "linsolve",                 `Slow,     linsolve;
   ]
 
 end
