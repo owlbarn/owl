@@ -65,6 +65,12 @@ module Make
         Maths.(q + r)
       in test_func f
 
+    let lq  () =
+      let f x = 
+        let l, q = Maths.lq x in
+        Maths.(l + q)
+      in test_func f
+
     let svd () = 
       let f =                   
         let y = Mat.gaussian 20 n in 
@@ -142,7 +148,16 @@ module Make
           Maths.discrete_lyapunov a q in
       test_func f
 
-
+    let linsolve () = 
+      let r1 = Mat.gaussian n n in
+      let r2 = Mat.gaussian n n in
+      let f b = 
+        let a1 = Maths.(r1 + b) in
+        let a2 = Maths.(r2 + b) in
+        let x1 = Maths.linsolve ~trans:true a1 b in
+        let x2 = Maths.linsolve ~trans:false a2 b in
+        Maths.(x1 + x2) in
+      test_func f
   end
 
   let alco_fun s f =
@@ -181,6 +196,8 @@ module Make
 
   let qr () = alco_fun "qr" To_test.qr
 
+  let lq () = alco_fun "lq" To_test.lq
+
   let svd () = alco_fun "svd" To_test.svd
 
   let split () = alco_fun "split" To_test.split
@@ -196,6 +213,8 @@ module Make
   let lyapunov () = alco_fun "lyapunov" To_test.lyapunov
 
   let discrete_lyapunov () = alco_fun "discrete_lyapunov" To_test.discrete_lyapunov
+
+  let linsolve () = alco_fun "linsolve" To_test.linsolve
 
   let test_set = [
     "sin",                      `Slow,     sin;
@@ -214,6 +233,7 @@ module Make
     "logdet",                   `Slow,     logdet;
     "chol",                     `Slow,     chol;
     "qr",                       `Slow,     qr;
+    "lq",                       `Slow,     lq;
     "split",                    `Slow,     split;
     "concatenate",              `Slow,     concatenate;
     "svd",                      `Slow,     svd;
@@ -222,6 +242,7 @@ module Make
     "init_2d",                  `Slow,     init_2d;
     "lyapunov",                 `Slow,     lyapunov;
     "discrete_lyapunov",        `Slow,     discrete_lyapunov;
+    "linsolve",                 `Slow,     linsolve;
   ]
 
 end

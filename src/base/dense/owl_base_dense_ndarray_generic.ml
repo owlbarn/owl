@@ -4200,6 +4200,8 @@ let logdet _x = raise Owl_exception.NOT_IMPLEMENTED
 
 let qr _x = raise Owl_exception.NOT_IMPLEMENTED
 
+let lq _x = raise Owl_exception.NOT_IMPLEMENTED
+
 let chol ?(upper=true) _x = upper |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
 let svd ?(thin=true) _x = thin |> ignore; raise Owl_exception.NOT_IMPLEMENTED
@@ -4207,6 +4209,8 @@ let svd ?(thin=true) _x = thin |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 let lyapunov _a _q = raise Owl_exception.NOT_IMPLEMENTED
 
 let discrete_lyapunov ?(solver=`default) _a _q = solver |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+
+let linsolve ?(trans=false) _a _b = trans |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
 let diag ?(k=0) _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 

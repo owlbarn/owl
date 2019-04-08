@@ -506,6 +506,9 @@ module type Sig = sig
   val qr : arr -> arr * arr
   (** TODO *)
 
+  val lq : arr -> arr * arr
+  (** TODO *)
+
   val svd : ?thin:bool -> arr -> arr * arr * arr
   (** TODO *)
 
@@ -513,6 +516,9 @@ module type Sig = sig
   (** TODO *)
 
   val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> arr -> arr -> arr
+  (** TODO *)
+
+  val linsolve : ?trans:bool -> arr -> arr -> arr
   (** TODO *)
 
   val diag: ?k:int -> arr -> arr

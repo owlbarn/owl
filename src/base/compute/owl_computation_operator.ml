@@ -471,9 +471,13 @@ module Make
 
   let qr _x = raise Owl_exception.NOT_IMPLEMENTED
 
+  let lq _x = raise Owl_exception.NOT_IMPLEMENTED
+
   let lyapunov _a _q = raise Owl_exception.NOT_IMPLEMENTED
 
   let discrete_lyapunov ?(solver=`default) _a _q = solver |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+
+  let linsolve ?trans _a _b = trans |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 
   let diag ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
 

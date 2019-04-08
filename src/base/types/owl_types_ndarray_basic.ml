@@ -313,9 +313,13 @@ module type Sig = sig
 
   val qr : arr -> arr * arr
 
+  val lq : arr -> arr * arr
+
   val lyapunov: arr -> arr -> arr
 
   val discrete_lyapunov: ?solver:[`default | `bilinear | `direct] -> arr -> arr -> arr
+
+  val linsolve: ?trans:bool -> arr -> arr -> arr
 
   val diag : ?k:int -> arr -> arr
 
