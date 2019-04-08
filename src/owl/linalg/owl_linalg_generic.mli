@@ -353,12 +353,30 @@ negligible elements, ``M.col_num x`` is the nullity of ``a``, and
 
  *)
 
-val linsolve : ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+val triangular_solve : upper:bool -> ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``triangular_linsolve a b -> x`` solves a linear system of equations ``a * x = b`` 
+   where ``a`` is either a upper or a lower triangular matrix. This function uses
+   cblas ``trsm`` under the hood.
+
+.. math::
+  AX = B
+
+By default, ``trans = false`` indicates no transpose. If ``trans = true``, then
+function will solve ``A^T * x = b`` for real matrices; ``A^H * x = b`` for
+complex matrices.
+
+.. math::
+  A^H X = B
+*)
+ 
+val linsolve : ?trans:bool -> ?typ:[`n | `u | `l] -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``linsolve a b -> x`` solves a linear system of equations ``a * x = b`` in the
-following form. The function uses LU factorisation with partial pivoting when
+following form. By default, ``typ=`n`` and the function use LU factorisation with partial pivoting when
 ``a`` is square and QR factorisation with column pivoting otherwise. The number
 of rows of ``a`` must equal the number of rows of ``b``.
+If ``a`` is a upper(lower) triangular matrix, the function calls the ``solve_triangular`` function when ``typ=`u``(``typ=`l``). 
 
 .. math::
   AX = B
