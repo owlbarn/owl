@@ -1048,10 +1048,14 @@ module Make
         cp *@ (m + (tril ~k:(-1) x))
 
     and _chol_backward o aa upper =
-      let inv_o = inv o in
-      let tr_inv_o = transpose inv_o in
-      if upper then (pack_flt 0.5) * inv_o *@ (copyutl (aa *@ (transpose o))) *@ tr_inv_o
-      else (pack_flt 0.5) * tr_inv_o *@ (copyltu ((transpose o) *@ aa)) *@ inv_o
+      if upper then 
+        let x = linsolve ~typ:`u o (copyutl (aa *@ (transpose o))) in
+        let x = linsolve ~typ:`u o (transpose x) in
+        (pack_flt 0.5) * (transpose x)
+      else 
+        let x = linsolve ~trans:true ~typ:`l o (copyltu ((transpose o) *@ aa))  in 
+        let x = linsolve ~trans:true ~typ:`l o (transpose x) in
+        (pack_flt 0.5) * (transpose x)
 
     and qr a =
       let ff = function
