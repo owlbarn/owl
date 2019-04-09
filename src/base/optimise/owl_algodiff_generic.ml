@@ -2313,6 +2313,8 @@ module Make
 
     let zeros m n = A.zeros [|m;n|] |> pack_arr
 
+    let eye n = A.eye n |> pack_arr
+
     let ones m n = A.ones [|m;n|] |> pack_arr
 
     let uniform ?a ?b m n = A.uniform ?a ?b [|m;n|] |> pack_arr

@@ -61,6 +61,8 @@ module S = struct
 
   let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x 
 
+  let eye n = Owl_dense_matrix_s.eye n
+
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
 
   let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
@@ -99,6 +101,8 @@ module D = struct
 
   let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x 
 
+  let eye n = Owl_dense_matrix_d.eye n
+
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
 
   let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
@@ -127,6 +131,8 @@ module C = struct
 
   let mpow = Owl_linalg_c.mpow
 
+  let eye n = Owl_dense_matrix_c.eye n
+
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
 
   let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
@@ -154,6 +160,8 @@ module Z = struct
   let inv = Owl_linalg_z.inv
 
   let mpow = Owl_linalg_z.mpow
+
+  let eye n = Owl_dense_matrix_z.eye n
 
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
 

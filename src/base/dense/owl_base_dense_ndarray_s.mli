@@ -25,6 +25,8 @@ val zeros : int array -> arr
 
 val ones : int array -> arr
 
+val eye : int -> arr
+
 val create : int array -> elt -> arr
 
 val init : int array -> (int -> elt) -> arr

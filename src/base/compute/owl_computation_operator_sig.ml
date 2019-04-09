@@ -29,6 +29,9 @@ module type Sig = sig
   val ones : int array -> arr
   (** TODO *)
 
+  val eye : int -> arr
+  (** TODO *)
+
   val create : int array -> elt -> arr
   (** TODO *)
 

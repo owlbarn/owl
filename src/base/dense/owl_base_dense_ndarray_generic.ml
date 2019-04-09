@@ -164,6 +164,9 @@ let ones kind dims = create kind dims (Owl_const.one kind)
 let ones_ ~out = Genarray.(fill out (Owl_const.one (kind out)))
 
 
+let eye _kind _n = raise Owl_exception.NOT_IMPLEMENTED
+
+
 let shape x = Genarray.dims x
 
 

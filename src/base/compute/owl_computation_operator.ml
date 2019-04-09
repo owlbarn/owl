@@ -34,6 +34,8 @@ module Make
   let ones shape =
     make_node ~shape:[|Some shape|] (Ones shape) |> node_to_arr
 
+  let eye _n = raise Owl_exception.NOT_IMPLEMENTED 
+
   let create shape v =
     make_then_connect ~shape:[|Some shape|] (Create shape) [|elt_to_node v|] |> node_to_arr
 

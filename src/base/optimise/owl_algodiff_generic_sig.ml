@@ -309,6 +309,8 @@ module type Sig = sig
 
     val zeros : int -> int -> t
 
+    val eye : int -> t
+
     val ones : int -> int -> t
 
     val uniform : ?a:A.elt -> ?b:A.elt -> int -> int -> t
