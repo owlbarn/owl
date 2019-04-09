@@ -1069,13 +1069,9 @@ module Make
 
     and _qr_backward (o1, o2) (aa1, aa2) =
       let q = !o1 and r = !o2 and qbar = !aa1 and rbar = !aa2 in
-      let qt = transpose q and qbart = transpose qbar in
-      let rt = transpose r and rbart = transpose rbar in
-      (*let rinvt = r *@ (inv (rt *@ r)) in (* transpose of the left moore-penrose pseudoinverse *)*)
-      let rinvt = transpose (inv r) in
-      let middle = tril ~k:(-1) ( (r*@rbart) - (rbar*@rt) + (qt*@qbar) - (qbart*@q) ) in
-      (q*@(rbar + (middle*@rinvt))) + ((qbar - (q*@(qt*@qbar)))*@rinvt)
-
+      let m = rbar *@ (transpose r) - (transpose q) *@ qbar in
+      linsolve r (transpose (qbar + q *@ (copyutl m))) |> transpose
+      
      and lq a =
       let ff = function
         | Arr a -> let l, q = A.(lq a) in (Arr l, Arr q)
