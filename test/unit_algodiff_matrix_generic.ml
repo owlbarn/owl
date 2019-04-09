@@ -149,15 +149,28 @@ module Make
       test_func f
 
     let linsolve () = 
-      let r1 = Mat.gaussian n n in
-      let r2 = Mat.gaussian n n in
-      let f b = 
-        let a1 = Maths.(r1 + b) in
-        let a2 = Maths.(r2 + b) in
-        let x1 = Maths.linsolve ~trans:true a1 b in
-        let x2 = Maths.linsolve ~trans:false a2 b in
-        Maths.(x1 + x2) in
+      let x = Mat.gaussian n n in
+      let f a = 
+        let b = Maths.(a *@ x) in
+        let x = Maths.(linsolve a b) in
+        let at = Maths.(linsolve ~trans:true x (transpose b)) in
+        Maths.(a + at + x) in
       test_func f
+
+    let linsolve_triangular () = 
+      let x = Mat.gaussian n n in
+      let f a = 
+        let a_l = Maths.tril a in
+        let a_u = Maths.triu a in
+        let b_l = Maths.(a_l *@ x) in
+        let b_u = Maths.(a_u *@ x) in
+        let x_l = Maths.(linsolve ~typ:`l a_l b_l) in
+        let x_u = Maths.(linsolve ~typ:`u a_u b_u) in
+        let atl = Maths.(linsolve ~trans:true x_l (transpose b_l)) in
+        let atu = Maths.(linsolve ~trans:true x_u (transpose b_u)) in
+        Maths.(atl *@ atu) in
+      test_func f
+     
   end
 
   let alco_fun s f =
@@ -216,6 +229,8 @@ module Make
 
   let linsolve () = alco_fun "linsolve" To_test.linsolve
 
+  let linsolve_triangular () = alco_fun "linsolve_triangular" To_test.linsolve_triangular
+
   let test_set = [
     "sin",                      `Slow,     sin;
     "cos",                      `Slow,     cos;
@@ -243,6 +258,7 @@ module Make
     "lyapunov",                 `Slow,     lyapunov;
     "discrete_lyapunov",        `Slow,     discrete_lyapunov;
     "linsolve",                 `Slow,     linsolve;
+    "linsolve_triangular",      `Slow,     linsolve_triangular;
   ]
 
 end
