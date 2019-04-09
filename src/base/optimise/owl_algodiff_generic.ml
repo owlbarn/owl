@@ -1198,11 +1198,11 @@ module Make
 
     and _linsolve_backward_a trans typ cp bbar = 
         let abar = neg bbar *@ (transpose cp) in
-        let abar = match typ with 
+        let abar = if trans then transpose abar else abar in
+        match typ with 
           | `n -> abar
           | `u -> triu abar
-          | `l -> tril abar in
-        if trans then transpose abar else abar 
+          | `l -> tril abar 
 
     and softplus x = log ((pack_flt 1.) + exp x)
 

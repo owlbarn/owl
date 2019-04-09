@@ -161,11 +161,15 @@ module Make
       let x = Mat.gaussian n n in
       let f a = 
         let a_l = Maths.tril a in
+        let p_l = Maths.(a_l *@ (transpose a_l)) in
         let a_u = Maths.triu a in
-        let b_l = Maths.(a_l *@ x) in
-        let b_u = Maths.(a_u *@ x) in
-        let x_l = Maths.(linsolve ~typ:`l a_l b_l) in
-        let x_u = Maths.(linsolve ~typ:`u a_u b_u) in
+        let p_u = Maths.(transpose a_u *@ a_u) in
+        let b_l = Maths.(p_l *@ x) in
+        let b_u = Maths.(p_u *@ x) in
+        let x_l = Maths.(linsolve ~typ:`l a_l b_l) 
+                |> Maths.(linsolve ~typ:`l ~trans:true a_l) in
+        let x_u = Maths.(linsolve ~typ:`u ~trans:true a_u b_u) 
+                |> Maths.(linsolve ~typ:`u a_u) in
         let atl = Maths.(linsolve ~trans:true x_l (transpose b_l)) in
         let atu = Maths.(linsolve ~trans:true x_u (transpose b_u)) in
         Maths.(atl *@ atu) in
