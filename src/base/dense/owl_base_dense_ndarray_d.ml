@@ -29,6 +29,9 @@ let init_nd dims f = M.init_nd Float64 dims f
 let zeros dims = M.zeros Float64 dims
 
 
+let eye n = M.eye Float64 n
+
+
 let ones dims = M.ones Float64 dims
 
 

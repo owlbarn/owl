@@ -52,6 +52,9 @@ val zeros : ('a, 'b) kind -> int array -> ('a, 'b) t
 val ones : ('a, 'b) kind -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val eye : ('a, 'b) kind -> int -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val uniform : ('a, 'b) kind -> ?a:'a -> ?b:'a -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
@@ -738,7 +741,7 @@ val lyapunov : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
 val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> (float, 'b) t -> (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val linsolve: ?trans:bool -> (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+val linsolve: ?trans:bool -> ?typ:[`n | `u | `l] -> (float, 'b) t -> (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val diag: ?k:int -> (float, 'b) t -> (float, 'b) t 

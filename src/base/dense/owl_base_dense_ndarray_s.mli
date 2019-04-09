@@ -25,6 +25,8 @@ val zeros : int array -> arr
 
 val ones : int array -> arr
 
+val eye : int -> arr
+
 val create : int array -> elt -> arr
 
 val init : int array -> (int -> elt) -> arr
@@ -424,7 +426,7 @@ val lyapunov : arr -> arr -> arr
 
 val discrete_lyapunov : ?solver:[`default | `direct | `bilinear] -> arr -> arr -> arr
 
-val linsolve: ?trans:bool  -> arr -> arr -> arr
+val linsolve: ?trans:bool -> ?typ:[`n | `u | `l] -> arr -> arr -> arr
 
 val diag : ?k:int -> arr -> arr
 

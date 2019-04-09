@@ -29,6 +29,9 @@ module type Sig = sig
   val ones : int array -> arr
   (** TODO *)
 
+  val eye : int -> arr
+  (** TODO *)
+
   val create : int array -> elt -> arr
   (** TODO *)
 
@@ -518,7 +521,7 @@ module type Sig = sig
   val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> arr -> arr -> arr
   (** TODO *)
 
-  val linsolve : ?trans:bool -> arr -> arr -> arr
+  val linsolve : ?trans:bool -> ?typ:[`n | `u | `l] -> arr -> arr -> arr
   (** TODO *)
 
   val diag: ?k:int -> arr -> arr

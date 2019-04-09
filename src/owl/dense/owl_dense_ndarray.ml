@@ -37,7 +37,7 @@ module Generic = struct
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_generic.discrete_lyapunov ~solver a q
 
-  let linsolve ?(trans=false) a b = Owl_linalg_generic.linsolve ~trans a b
+  let linsolve ?(trans=false) ?(typ=`n) a b = Owl_linalg_generic.linsolve ~trans ~typ a b
 
 end
 
@@ -61,6 +61,8 @@ module S = struct
 
   let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x 
 
+  let eye n = Owl_dense_matrix_s.eye n
+
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
 
   let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
@@ -75,7 +77,7 @@ module S = struct
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_s.discrete_lyapunov ~solver a q
 
-  let linsolve ?(trans=false) a b = Owl_linalg_s.linsolve ~trans a b
+  let linsolve ?(trans=false) ?(typ=`n) a b = Owl_linalg_s.linsolve ~trans ~typ a b
 
 end
 
@@ -99,6 +101,8 @@ module D = struct
 
   let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x 
 
+  let eye n = Owl_dense_matrix_d.eye n
+
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
 
   let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
@@ -113,7 +117,7 @@ module D = struct
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_d.discrete_lyapunov ~solver a q
 
-  let linsolve ?(trans=false) a b = Owl_linalg_d.linsolve ~trans a b
+  let linsolve ?(trans=false) ?(typ=`n) a b = Owl_linalg_d.linsolve ~trans ~typ a b
 end
 
 
@@ -126,6 +130,8 @@ module C = struct
   let inv = Owl_linalg_c.inv
 
   let mpow = Owl_linalg_c.mpow
+
+  let eye n = Owl_dense_matrix_c.eye n
 
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
 
@@ -141,7 +147,7 @@ module C = struct
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_c.discrete_lyapunov ~solver a q
 
-  let linsolve ?(trans=false) a b = Owl_linalg_c.linsolve ~trans a b
+  let linsolve ?(trans=false) ?(typ=`n) a b = Owl_linalg_c.linsolve ~trans ~typ a b
 end
 
 
@@ -154,6 +160,8 @@ module Z = struct
   let inv = Owl_linalg_z.inv
 
   let mpow = Owl_linalg_z.mpow
+
+  let eye n = Owl_dense_matrix_z.eye n
 
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
 
@@ -169,7 +177,7 @@ module Z = struct
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_z.discrete_lyapunov ~solver a q
 
-  let linsolve ?(trans=false) a b = Owl_linalg_z.linsolve ~trans a b
+  let linsolve ?(trans=false) ?(typ=`n) a b = Owl_linalg_z.linsolve ~trans ~typ a b
 end
 
 
