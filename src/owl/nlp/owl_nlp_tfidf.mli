@@ -39,7 +39,7 @@ val vocab_len : t -> int
 (** Return the size of the vocabulary contained in the TFIDF model. *)
 
 val get_handle : t -> in_channel
-(** Geht the file handle associated with TFIDF model. *)
+(** Get the file handle associated with TFIDF model. *)
 
 val doc_count_of : t -> string -> float
 (** ``doc_count_of tfidf w`` calculate document frequency for a given word ``w``. *)
