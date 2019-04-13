@@ -492,11 +492,10 @@ from ``n`` trials. The probabilty mass function is as follows.
 .. math::
   P(x) = \frac{n!}{{x_1}! \cdot\cdot\cdot {x_k}!} p_{1}^{x_1} \cdot\cdot\cdot p_{k}^{x_k}
 
-``p`` is the probabilty mass of ``k`` categories. If the elements in ``p`` do
-not sum to 1, the last element of the ``p`` array is not used and is replaced
-with the remaining probability left over from the earlier elements.
+``p`` is the probabilty mass of ``k`` categories. The elements in ``p`` should
+all be positive (result is undefined in that case), but they don't need to sum
+to 1. For implementation details, refer to :cite:`davis1993computer`.
 
-For implemantation, refer to :cite:`davis1993computer`.
  *)
 
 val multinomial_pdf : int array -> p:float array -> float

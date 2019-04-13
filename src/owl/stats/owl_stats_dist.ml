@@ -378,8 +378,7 @@ let multinomial_rvs n ~p =
   let k = Array.length p in
   let _p = Genarray.create float64 c_layout [|k|] in
   let _s = Genarray.create int32 c_layout [|k|] in
-  Owl_utils.Array.balance_last 1. p |>
-  Array.iteri (fun i a -> Genarray.set _p [|i|] a);
+  Array.iteri (fun i a -> Genarray.set _p [|i|] a) p;
   _multinomial_rvs ~k ~n ~p:_p _s;
   Array.init k (fun i -> Genarray.get _s [|i|] |> Int32.to_int)
 
@@ -390,8 +389,7 @@ let multinomial_pdf x ~p =
   assert (k = Array.length p);
   let _p = Genarray.create float64 c_layout [|k|] in
   let _s = Genarray.create int32 c_layout [|k|] in
-  Owl_utils.Array.balance_last 1. p |>
-  Array.iteri (fun i a -> Genarray.set _p [|i|] a);
+  Array.iteri (fun i a -> Genarray.set _p [|i|] a) p;
   Array.iteri (fun i a -> Genarray.set _s [|i|] (Int32.of_int a)) x;
   _multinomial_pdf ~k ~p:_p _s
 
@@ -402,8 +400,7 @@ let multinomial_logpdf x ~p =
   assert (k = Array.length p);
   let _p = Genarray.create float64 c_layout [|k|] in
   let _s = Genarray.create int32 c_layout [|k|] in
-  Owl_utils.Array.balance_last 1. p |>
-  Array.iteri (fun i a -> Genarray.set _p [|i|] a);
+  Array.iteri (fun i a -> Genarray.set _p [|i|] a) p;
   Array.iteri (fun i a -> Genarray.set _s [|i|] (Int32.of_int a)) x;
   _multinomial_logpdf ~k ~p:_p _s
 
