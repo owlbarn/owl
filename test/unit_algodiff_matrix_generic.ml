@@ -90,7 +90,7 @@ module Make
 
     let split () =
       let f x =
-        let a = Maths.split 0 [| 1; 1; 1|] x in
+        let a = Maths.split ~axis:0 [| 1; 1; 1|] x in
         Maths.(a.(0) + a.(1) * a.(2)) in
       test_func f
 

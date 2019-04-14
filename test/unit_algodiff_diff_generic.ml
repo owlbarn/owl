@@ -18,7 +18,7 @@ module Make
 
   let approx_equal a b = Pervasives.abs_float (a -. b) < eps
 
-  let approx_equal_arr a b =
+  let approx_equal_arr ?(eps = eps) a b =
     let r = ref true in
     M.(sub a b |> abs)
     |> M.map (fun c -> if c >= eps then r := false; c)
@@ -90,13 +90,13 @@ module Make
 
         x : float **)
 
-    let check_derivative_array ?eps:(eps=0.) f df x_arr =
+    let check_derivative_array ?(eps = 0.) f df x_arr =
       M.print x_arr;
       let df_arr   = M.map (fun x -> df x) x_arr in
       M.print df_arr;
       let diff_arr = M.map (fun x -> diff f (F x) |> unpack_flt) x_arr in
       M.print diff_arr;
-      approx_equal_arr df_arr diff_arr
+      approx_equal_arr ~eps df_arr diff_arr
       (** check_derivative_array ?eps f df x_arr returns true if the absolute delta
           between the *algodiff* derivative calculation and the provided df at every
           value in the float array x_arr is smaller than epsilon
@@ -174,10 +174,10 @@ module Make
 
   (* Simple powers/multiples of x *)
   let constant () =
-    check_derivative "f(x) = 1" (fun x -> Maths.(F 1.)) (fun x -> 0.) xs
+    check_derivative "f(x) = 1" (fun _ -> F 1.) (fun _ -> 0.) xs
 
   let linear () =
-    check_derivative "f(x) = x" (fun x -> Maths.(x)) (fun x -> 1.) xs
+    check_derivative "f(x) = x" (fun x -> x) (fun _ -> 1.) xs
 
   let square () =
     check_derivative "f(x) = x^2" (fun x -> Maths.(x * x)) (fun x -> 2.*.x) xs
@@ -186,16 +186,16 @@ module Make
     check_derivative "f(x) = x^3" (fun x -> Maths.(x * x * x )) (fun x -> 3.*.x*.x) xs
 
   let sum_x_x () =
-    check_derivative "f(x) = x + x" (fun x -> Maths.(x + x)) (fun x -> 2.) xs
+    check_derivative "f(x) = x + x" (fun x -> Maths.(x + x)) (fun _ -> 2.) xs
 
   let diff_2x_x () =
-    check_derivative "f(x) = 2x - x" (fun x -> Maths.((F 2.) * x - x)) (fun x -> 1.) xs
+    check_derivative "f(x) = 2x - x" (fun x -> Maths.((F 2.) * x - x)) (fun _ -> 1.) xs
 
   let div_x_x () =
-    check_derivative "f(x) = x / x" (fun x -> Maths.(x / x)) (fun x -> 0.) xs_nonzero
+    check_derivative "f(x) = x / x" (fun x -> Maths.(x / x)) (fun _ -> 0.) xs_nonzero
 
   let div_x2_x () =
-    check_derivative "f(x) = x^2 / x" (fun x -> Maths.((x * x) / x)) (fun x -> 1.) xs_nonzero
+    check_derivative "f(x) = x^2 / x" (fun x -> Maths.((x * x) / x)) (fun _ -> 1.) xs_nonzero
 
   let pow_x_2_5 () =
     check_derivative "f(x) = x^(2.5)" (fun x -> Maths.(x ** (F 2.5))) (fun x -> 2.5 *. (x**1.5)) xs_positive
@@ -224,7 +224,7 @@ module Make
   let neg_x () =
     check_derivative "f(x) = -x"
       (fun x -> Maths.(neg x))
-      (fun x -> (-1.))
+      (fun _ -> -1.)
       xs
 
   let abs_x2 () =
@@ -244,28 +244,28 @@ module Make
     (* sign(f) is not differentiable when f is zero, but otherwise its derivative is zero; hence d/dx(sign(f(x)) === 0 *)
     check_derivative "f(x) = signum(x^2-1)"
       (fun x -> Maths.(signum (x*x -(F 1.))))
-      (fun x -> 0.)
+      (fun _ -> 0.)
       xs
 
   let floor_x2_m_1 () =
     (* floor(f) is not differentiable when f is an integer, but otherwise its derivative is zero; hence d/dx === 0 *)
     check_derivative "f(x) = floor(x^2-1)"
       (fun x -> Maths.(floor (x*x - (F 1.))))
-      (fun x -> 0.)
+      (fun _ -> 0.)
       xs
 
   let ceil_x2_m_1 () =
     (* ceil(f) is not differentiable when f is an integer, but otherwise its derivative is zero; hence d/dx === 0 *)
     check_derivative "f(x) = ceil(x^2-1)"
       (fun x -> Maths.(ceil (x*x - (F 1.))))
-      (fun x -> 0.)
+      (fun _ -> 0.)
       xs
 
   let round_x2_m_1 () =
     (* round(f) is not differentiable when f is an integer, but otherwise its derivative is zero; hence d/dx === 0 *)
     check_derivative "f(x) = round(x^2-1)"
       (fun x -> Maths.(round (x*x - (F 1.))))
-      (fun x -> 0.)
+      (fun _ -> 0.)
       xs
 
   (* sqr, sqrt, log, log2, log10, exp *)

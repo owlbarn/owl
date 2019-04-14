@@ -137,39 +137,39 @@ module Make
   (* grad_tests_poly provide tests for constants, x, y, +, -, *, /, ** *)
   let grad_tests_poly = [
     ( "one", ("1",
-              (fun v -> Maths.(F 1.)),
-              [| (fun v -> 0.);
-                 (fun v -> 0.);
+              (fun _ -> F 1.),
+              [| (fun _ -> 0.);
+                 (fun _ -> 0.);
               |],
               vs ));
     ( "x", ("x",
-            (fun v -> Maths.(Mat.get v 0 0)),
-            [| (fun v -> 1.);
-               (fun v -> 0.);
+            (fun v -> Mat.get v 0 0),
+            [| (fun _ -> 1.);
+               (fun _ -> 0.);
             |],
             vs ));
     ( "x_p_y", ("x+y",
                 (fun v -> Maths.((Mat.get v 0 0) + (Mat.get v 0 1))),
-                [| (fun v -> 1.);
-                   (fun v -> 1.);
+                [| (fun _ -> 1.);
+                   (fun _ -> 1.);
                 |],
                 vs ));
     ( "x_m_y", ("x-y",
                 (fun v -> Maths.((Mat.get v 0 0) - (Mat.get v 0 1))),
-                [| (fun v -> 1.);
-                   (fun v -> (-1.));
+                [| (fun _ -> 1.);
+                   (fun _ -> -1.);
                 |],
                 vs ));
     ( "x_x", ("x * x",
               (fun v -> Maths.((Mat.get v 0 0) * (Mat.get v 0 0))),
               [| (fun v -> 2. *. (v.(0)));
-                 (fun v -> 0.);
+                 (fun _ -> 0.);
               |],
               vs ));
     ( "x_div_x", ("x / x",
                   (fun v -> Maths.((Mat.get v 0 0) / (Mat.get v 0 0))),
-                  [| (fun v -> 0.);
-                     (fun v -> 0.);
+                  [| (fun _ -> 0.);
+                     (fun _ -> 0.);
                   |],
                   vs_x_nonzero ));
     ( "y_div_x", ("y / x",
@@ -181,7 +181,7 @@ module Make
     ( "xsq_p_y", ("x^2 + y",
                   (fun v -> Maths.((Mat.get v 0 0)**(F 2.) + (Mat.get v 0 1))),
                   [| (fun v -> 2. *. (v.(0)));
-                     (fun v -> 1.);
+                     (fun _ -> 1.);
                   |],
                   vs ));
     ( "xy", ("xy",
@@ -239,13 +239,13 @@ module Make
                   vs_diff ));
     ( "neg_y", ("-y)",
                 (fun v -> Maths.(neg (Mat.get v 0 1))),
-                [| (fun v -> 0.);
-                   (fun v -> (-1.));
+                [| (fun _ -> 0.);
+                   (fun _ -> -1.);
                 |],
                 vs ));
     ( "abs_y2", ("abs(y^2)",
                  (fun v -> Maths.(abs ((Mat.get v 0 1) ** (F 2.)))),
-                 [| (fun v -> 0.);
+                 [| (fun _ -> 0.);
                     (fun v -> 2. *. v.(1));
                  |],
                  vs ));
@@ -257,26 +257,26 @@ module Make
                       vs_sq_diff ));
     ( "sign_x2_m_y2", ("sign(x^2-y^2)",
                        (fun v -> Maths.(signum (((Mat.get v 0 0) ** (F 2.)) - (Mat.get v 0 1) ** (F 2.)))),
-                       [| (fun v -> 0.);
-                          (fun v -> 0.);
+                       [| (fun _ -> 0.);
+                          (fun _ -> 0.);
                        |],
                        vs ));
     ( "floor_x2_m_y2", ("floor(x^2-y^2)",
                         (fun v -> Maths.(floor (((Mat.get v 0 0) ** (F 2.)) - (Mat.get v 0 1) ** (F 2.)))),
-                        [| (fun v -> 0.);
-                           (fun v -> 0.);
+                        [| (fun _ -> 0.);
+                           (fun _ -> 0.);
                         |],
                         vs ));
     ( "ceil_x2_m_y2", ("ceil(x^2-y^2)",
                        (fun v -> Maths.(ceil (((Mat.get v 0 0) ** (F 2.)) - (Mat.get v 0 1) ** (F 2.)))),
-                       [| (fun v -> 0.);
-                          (fun v -> 0.);
+                       [| (fun _ -> 0.);
+                          (fun _ -> 0.);
                        |],
                        vs ));
     ( "round_x2_m_y2", ("round(x^2-y^2)",
                         (fun v -> Maths.(round (((Mat.get v 0 0) ** (F 2.)) - (Mat.get v 0 1) ** (F 2.)))),
-                        [| (fun v -> 0.);
-                           (fun v -> 0.);
+                        [| (fun _ -> 0.);
+                           (fun _ -> 0.);
                         |],
                         vs ));
   ]
@@ -328,12 +328,12 @@ module Make
     ( "sin_x", ("sin(x)",
                 (fun v -> Maths.(sin (Mat.get v 0 0))),
                 [| (fun v -> cos v.(0));
-                   (fun v -> 0.);
+                   (fun _ -> 0.);
                 |],
                 vs ));
     ( "cos_y", ("cos(y)",
                 (fun v -> Maths.(cos (Mat.get v 0 1))),
-                [| (fun v -> 0.);
+                [| (fun _ -> 0.);
                    (fun v -> (-1.) *. sin v.(1));
                 |],
                 vs ));
@@ -364,18 +364,18 @@ module Make
     ( "asin_x", ("asin(x)",
                  (fun v -> Maths.(asin (Mat.get v 0 0))),
                  [| (fun v -> 1. /. (sqrt ( 1. -. v.(0) ** 2.)));
-                    (fun v -> 0.);
+                    (fun _ -> 0.);
                  |],
                  vs_x_abs_lt_one ));
     ( "acos_y", ("acos(y)",
                  (fun v -> Maths.(acos (Mat.get v 0 1))),
-                 [| (fun v -> 0.);
+                 [| (fun _ -> 0.);
                     (fun v -> (-1.) /. (sqrt ( 1. -. v.(1) ** 2.)));
                  |],
                  vs_y_abs_lt_one ));
     ( "atan_y", ("atan(y)",
                  (fun v -> Maths.(atan (Mat.get v 0 1))),
-                 [| (fun v -> 0.);
+                 [| (fun _ -> 0.);
                     (fun v -> 1. /. ( 1. +. v.(1)**2.));
                  |],
                  vs ));
@@ -392,12 +392,12 @@ module Make
     ( "sinh_x", ("sinh(x)",
                  (fun v -> Maths.(sinh (Mat.get v 0 0))),
                  [| (fun v -> cosh v.(0));
-                    (fun v -> 0.);
+                    (fun _ -> 0.);
                  |],
                  vs ));
     ( "cosh_y", ("cosh(y)",
                  (fun v -> Maths.(cosh (Mat.get v 0 1))),
-                 [| (fun v -> 0.);
+                 [| (fun _ -> 0.);
                     (fun v -> (1.) *. sinh v.(1));
                  |],
                  vs ));
@@ -428,18 +428,18 @@ module Make
     ( "asinh_x", ("asinh(x)",
                   (fun v -> Maths.(asinh (Mat.get v 0 0))),
                   [| (fun v -> 1. /. (sqrt ( 1. +. v.(0) ** 2.)));
-                     (fun v -> 0.);
+                     (fun _ -> 0.);
                   |],
                   vs ));
     ( "acosh_y", ("acos(y)",
                   (fun v -> Maths.(acosh (Mat.get v 0 1))),
-                  [| (fun v -> 0.);
+                  [| (fun _ -> 0.);
                      (fun v -> 1. /. (sqrt ( (-1.) +. v.(1) ** 2.)));
                   |],
                   vs_y_gt_one ));
     ( "atanh_y", ("atan(y)",
                   (fun v -> Maths.(atanh (Mat.get v 0 1))),
-                  [| (fun v -> 0.);
+                  [| (fun _ -> 0.);
                      (fun v -> 1. /. ( 1. -. v.(1) ** 2.));
                   |],
                   vs_y_abs_lt_one ));

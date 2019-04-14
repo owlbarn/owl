@@ -291,12 +291,12 @@ struct
 
   (*f interp_cdf *)
   let interp_cdf t x =
-    let (li, ri, ni) = search_for_x t x in
+    let (li, _, _) = search_for_x t x in
     Cubic.f t.cubics.(li) x
 
   (*f interp_pdf *)
   let interp_pdf t x =
-    let (li, ri, ni) = search_for_x t x in
+    let (li, _, _) = search_for_x t x in
     Cubic.df t.cubics.(li) x
 
   (*f plot_comparison - plot comparison of CDF/PDF distributions
@@ -491,7 +491,7 @@ module BinaryTest = struct
     in
     let (_,(_,_,chi2,n)) = iter number_ones_in_block (0,0,0.,0) in
     let chi2 = chi2 *. (float m) /. p in
-    let p = 1. -. (M.chi2_cdf chi2 (float n)) in
+    let p = 1. -. (M.chi2_cdf chi2 ~df:(float n)) in
     let hypothesis = make_hypothesis (p < significance) p chi2 in
     make_test_hypothesis (sfmt "Block frequency of %d run lengths of size %d" n m) "Chi^2" hypothesis
 
@@ -552,7 +552,7 @@ module BinaryTest = struct
       )
     in
     let chi2 = sum_chi2 0. 0 in
-    let p = 1. -. (M.chi2_cdf chi2 (float (num_pats-1))) in
+    let p = 1. -. (M.chi2_cdf chi2 ~df:(float (num_pats-1))) in
     let hypothesis = make_hypothesis (p < significance) p chi2 in
     make_test_hypothesis (sfmt "Occurrences of %d-bit patterns in run length of size %d" m n) "Chi^2" hypothesis
 
@@ -577,7 +577,7 @@ module BinaryTest = struct
     let run_results = accum_n [] accum n in
     let num_passing = List.fold_left (fun a i -> if (is_fail i) then a else (a +. 1.)) 0. run_results in
     let chi2 = (num_passing -. 0.99 *. (float n))**2. /. (0.99 *. (float n)) in
-    let p = 1. -. (M.chi2_cdf chi2 1.) in
+    let p = 1. -. (M.chi2_cdf chi2 ~df:1.) in
     let hypothesis = make_hypothesis (p < significance) p num_passing in
     make_test_hypothesis (sfmt "%d iterations of '%s'" n ((List.hd run_results).test_name)) "Num passing" hypothesis
 

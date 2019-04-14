@@ -32,7 +32,7 @@ module To_test = struct
 
   let get x = M.get x 1 2
 
-  let set x =
+  let set () =
     let x = M.empty Float64 3 4 in
     M.set x 2 1 5.;
     M.get x 2 1
@@ -40,22 +40,22 @@ module To_test = struct
   let row0 () =
     let x = M.row x2 1 in
     let y = M.of_arrays Float64 [| [|4.;5.;6.;7.|] |] in
-    M.(x = y)
+    M.equal x y
 
   let row1 () =
     let x = M.row x2 (-2) in
     let y = M.of_arrays Float64 [| [|4.;5.;6.;7.|] |] in
-    M.(x = y)
+    M.equal x y
 
   let col0 () =
     let x = M.col x2 1 in
     let y = M.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |] in
-    M.(x = y)
+    M.equal x y
 
   let col1 () =
     let x = M.col x2 (-3) in
     let y = M.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |] in
-    M.(x = y)
+    M.equal x y
 
   let trace x = M.trace x
 
@@ -144,13 +144,13 @@ module To_test = struct
   let min_i () =
     let m, n = 3, 4 in
     let x = M.sequential Float64 m n in
-    let a, i = M.min_i x in
+    let _,i = M.min_i x in
     i = [|0; 0|]
 
   let max_i () =
     let m, n = 3, 4 in
     let x = M.sequential Float64 m n in
-    let a, i = M.max_i x in
+    let _, i = M.max_i x in
     i = [|m - 1; n - 1|]
 
   let map () =
@@ -220,14 +220,14 @@ module To_test = struct
     let b = M.of_arrays Float64 [| [|1.|] |] in
     let x = M.of_arrays Float64 [| [|0.;1.|] |] in
     let y = M.concat_horizontal a b in
-    M.(x = y)
+    M.equal x y
 
   let concat_02 () =
     let a = M.of_arrays Float64 [| [|0.|] |] in
     let b = M.of_arrays Float64 [| [|1.|] |] in
     let x = M.of_arrays Float64 [| [|0.|]; [|1.|] |] in
     let y = M.concat_vertical a b in
-    M.(x = y)
+    M.equal x y
 
   let concat_03 () =
     let a = M.of_arrays Float64 [| [|0.|] |] in
@@ -235,7 +235,7 @@ module To_test = struct
     let c = M.of_arrays Float64 [| [|2.;3.|] |] in
     let x = M.of_arrays Float64 [| [|0.;1.|]; [|2.;3.|] |] in
     let y = M.concat_vh [| [|a; b|]; [|c|] |] in
-    M.(x = y)
+    M.equal x y
 
 end
 
@@ -257,7 +257,7 @@ let get () =
   Alcotest.(check (float eps)) "get" 6. (To_test.get x2)
 
 let set () =
-  Alcotest.(check (float eps)) "set" 5. (To_test.set x2)
+  Alcotest.(check (float eps)) "set" 5. (To_test.set ())
 
 let fill () =
   Alcotest.(check matrix) "fill" x1 (To_test.fill ())
@@ -343,19 +343,19 @@ let add_scalar () =
 let mul_scalar () =
   Alcotest.(check bool) "mul_scalar" true (To_test.mul_scalar ())
 
-let min' x =
+let min' () =
   Alcotest.(check (float eps)) "min" 1. (To_test.min' x2)
 
-let max' x =
+let max' () =
   Alcotest.(check (float eps)) "max" 12. (To_test.max' x2)
 
-let min_i x =
+let min_i () =
   Alcotest.(check bool) "min_i" true (To_test.min_i ())
 
-let max_i x =
+let max_i () =
   Alcotest.(check bool) "max_i" true (To_test.max_i ())
 
-let map x =
+let map () =
   Alcotest.(check bool) "map" true (To_test.map ())
 
 let fold () =
