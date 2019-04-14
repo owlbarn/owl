@@ -27,7 +27,7 @@ module Make
 
 
   (* a module with functions to test *)
-  
+
   module To_test = struct
 
     let dumb () = true

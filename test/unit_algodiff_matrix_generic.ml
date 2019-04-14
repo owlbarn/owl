@@ -18,10 +18,10 @@ module Make
 
   let n = 3
   let n_samples = 20
-  let threshold = 1E-6 
-  let eps = 1E-5 
+  let threshold = 1E-6
+  let eps = 1E-5
 
-  module FD = FDGrad_test 
+  module FD = FDGrad_test
 
   let samples, directions = FD.generate_test_samples (n, n) n_samples
 
@@ -30,71 +30,71 @@ module Make
   module To_test = struct
     let sin   () = test_func Maths.sin
     let cos   () = test_func Maths.cos
-    let tan   () = 
-      let f x = Maths.((tan x) * (cos x) * (cos x))  
+    let tan   () =
+      let f x = Maths.((tan x) * (cos x) * (cos x))
       in test_func f
     let sinh  () = test_func Maths.sinh
     let cosh  () = test_func Maths.cosh
     let exp   () = test_func Maths.exp
     let tanh  () = test_func Maths.tanh
     let diag  () = test_func Maths.diag
-    let diagm () = 
+    let diagm () =
       let f x = Maths.(diagm (get_row x 0)) in
       test_func f
     let trace () = test_func Maths.trace
     let tril  () = test_func Maths.tril
     let triu  () = test_func Maths.triu
 
-    let inv   () = 
+    let inv   () =
       let e = Arr (Owl.Mat.eye n) in
-      let f x = 
-        let x = Maths.(transpose x *@ x) in 
+      let f x =
+        let x = Maths.(transpose x *@ x) in
         Maths.(inv (x + e)) in
       test_func f
 
-    let logdet () = 
+    let logdet () =
       let e = Arr (Owl.Mat.eye n) in
-      let f x = 
+      let f x =
         let x = Maths.(transpose x *@ x) in
         Maths.(logdet (x + e)) in
       test_func f
 
     let qr  () =
-      let f x = 
+      let f x =
         let q, r = Maths.qr x in
         Maths.(q + r)
       in test_func f
 
     let lq  () =
-      let f x = 
+      let f x =
         let l, q = Maths.lq x in
         Maths.(l + q)
       in test_func f
 
-    let svd () = 
-      let f =                   
-        let y = Mat.gaussian 20 n in 
-        fun x -> 
+    let svd () =
+      let f =
+        let y = Mat.gaussian 20 n in
+        fun x ->
           let x = Maths.(y *@ x) in
           let u, s, vt = Maths.svd x in
           Maths.(u + (sum' s) * (l2norm_sqr' vt))
       in test_func f
 
-    let chol  () = 
-      let f x = 
+    let chol  () =
+      let f x =
         let identity = Arr (Owl.Mat.eye n) in
         let s = Maths.(transpose x *@ x) in
         let s = Maths.(s + (F 0.001) * identity) in
-        Maths.(inv (chol ~upper:false s)) 
-      in test_func f 
+        Maths.(inv (chol ~upper:false s))
+      in test_func f
 
     let split () =
-      let f x = 
+      let f x =
         let a = Maths.split 0 [| 1; 1; 1|] x in
         Maths.(a.(0) + a.(1) * a.(2)) in
       test_func f
 
-    let concatenate () = 
+    let concatenate () =
       let f =
         let y1 = Mat.gaussian 10 n in
         let y2 = Mat.gaussian 15 n in
@@ -104,21 +104,21 @@ module Make
       test_func f
 
 
-    let of_arrays () = 
-      let f x = 
-        let y = Array.init n (fun i -> Array.init n (fun j -> if i=0 then (F 3.) else Maths.get_item x i j)) 
+    let of_arrays () =
+      let f x =
+        let y = Array.init n (fun i -> Array.init n (fun j -> if i=0 then (F 3.) else Maths.get_item x i j))
                 |> Maths.of_arrays in
         Maths.(x * sin y)  in
       test_func f
 
-    let to_arrays () = 
+    let to_arrays () =
       let f x =
         let a = Maths.to_arrays x in
         Maths.(a.(0).(1) * cos a.(1).(0)) in
       test_func f
 
-    let init_2d () = 
-      let f x = 
+    let init_2d () =
+      let f x =
         let y = Maths.init_2d n n (fun i j -> if i=0 then (F 3.) else Maths.get_item x i j) in
         Maths.(y *@ x) in
       test_func f
@@ -126,8 +126,8 @@ module Make
     let lyapunov () =
       let r = Mat.gaussian n n in
       let identity = Arr Owl.Mat.(eye n) in
-      let f = 
-        fun x -> 
+      let f =
+        fun x ->
           let q = Maths.((F 0.5) * (x + (transpose x) + identity)) in
           let s = Maths.(r - (transpose r)) in
           let p = Maths.((r + x) *@ (transpose (r + x)) + identity) in
@@ -138,43 +138,43 @@ module Make
     let discrete_lyapunov () =
       let r = Mat.gaussian n n in
       let identity = Arr Owl.Mat.(eye n) in
-      let f = 
-        fun x -> 
+      let f =
+        fun x ->
           let q = Maths.((F 0.5) * (x + (transpose x) + identity)) in
           let s = Maths.(r - (transpose r)) in
           let p = Maths.((r + x) *@ (transpose (r + x)) + identity) in
-          let a = Maths.((s - (F 0.5) * q) *@ (inv p)) in 
+          let a = Maths.((s - (F 0.5) * q) *@ (inv p)) in
           let a = Maths.(a - identity) in
           Maths.discrete_lyapunov a q in
       test_func f
 
-    let linsolve () = 
+    let linsolve () =
       let x = Mat.gaussian n n in
-      let f a = 
+      let f a =
         let b = Maths.(a *@ x) in
         let x = Maths.(linsolve a b) in
         let at = Maths.(linsolve ~trans:true x (transpose b)) in
         Maths.(a + at + x) in
       test_func f
 
-    let linsolve_triangular () = 
+    let linsolve_triangular () =
       let x = Mat.gaussian n n in
-      let f a = 
+      let f a =
         let a_l = Maths.tril a in
         let p_l = Maths.(a_l *@ (transpose a_l)) in
         let a_u = Maths.triu a in
         let p_u = Maths.(transpose a_u *@ a_u) in
         let b_l = Maths.(p_l *@ x) in
         let b_u = Maths.(p_u *@ x) in
-        let x_l = Maths.(linsolve ~typ:`l a_l b_l) 
+        let x_l = Maths.(linsolve ~typ:`l a_l b_l)
                 |> Maths.(linsolve ~typ:`l ~trans:true a_l) in
-        let x_u = Maths.(linsolve ~typ:`u ~trans:true a_u b_u) 
+        let x_u = Maths.(linsolve ~typ:`u ~trans:true a_u b_u)
                 |> Maths.(linsolve ~typ:`u a_u) in
         let atl = Maths.(linsolve ~trans:true x_l (transpose b_l)) in
         let atu = Maths.(linsolve ~trans:true x_u (transpose b_u)) in
         Maths.(atl *@ atu) in
       test_func f
-     
+
   end
 
   let alco_fun s f =
