@@ -142,7 +142,7 @@ let print_info () =
     "  owl -download [gist-id] [ver-id]\tdownload code snippet from gist; download the latest version if ver-id not specified\n" ^
     "  owl -remove [gist-id]\t\t\tremove a cached gist\n" ^
     "  owl -update [gist-ids]\t\tupdate (all if not specified) gists\n" ^
-    "  owl -run [gist-name] [args]\t\trun a self-contained gist. Accept optional argments.\n" ^
+    "  owl -run [gist-name] [args]\t\trun a self-contained gist. Accept optional arguments.\n" ^
     "  owl -info [gist-name]\t\t\tshow the basic information of a gist\n" ^
     "  owl -list [gist-id]\t\t\tlist all cached versions of a gist; all the cached gists if not specified\n" ^
     "  owl -help\t\t\t\tprint out help information\n"
