@@ -1,7 +1,6 @@
 (** Unit test for Owl_dense_ndarray_generic module *)
 
 open Bigarray
-open Owl_types
 
 module M = Owl_dense_ndarray_generic
 
@@ -12,7 +11,7 @@ let approx_equal a b = Pervasives.(abs_float (a -. b) < eps)
 
 
 (* make testable *)
-let ndarray = Alcotest.testable (fun p (x : (float, float64_elt) M.t) -> ()) M.equal
+let ndarray = Alcotest.testable (fun _p (_x : (float, float64_elt) M.t) -> ()) M.equal
 
 (* some test input *)
 let x0 = M.zeros Float64 [|2;2;3|]
@@ -302,26 +301,26 @@ module To_test = struct
     let y = M.sequential Float64 ~a:25. [|1;3;4|] in
     let z = M.sequential Float64 ~a:1. [|3;3;4|] in
     let a = M.concatenate ~axis:0 [|x; y|] in
-    M.(a = z)
+    M.equal a z
 
   let concatenate_02 () =
     let x = M.of_array Float64 [|0.;2.|] [|2; 1|] in
     let y = M.of_array Float64 [|1.;3.|] [|2; 1|] in
     let z = M.sequential Float64 ~a:0. [|2;2|] in
     let a = M.concatenate ~axis:1 [|x; y|] in
-    M.(a = z)
+    M.equal a z
 
   let diff_1 () =
     let x = M.sequential Float64 [|3;3|] in
     let y = M.create Float64 [|2;3|] 3. in
     let z = M.diff ~axis:0 x in
-    M.(y = z)
+    M.equal y z
 
   let diff_2 () =
     let x = M.sequential Float64 [|3;3|] in
     let y = M.ones Float64 [|3;2|] in
     let z = M.diff ~axis:1 x in
-    M.(y = z)
+    M.equal y z
 
   let one_hot_1 () =
     let idx = M.of_array Float64 [|3.;2.;1.|] [|3|] in
@@ -330,7 +329,7 @@ module To_test = struct
     M.set y [|0;3|] 1.;
     M.set y [|1;2|] 1.;
     M.set y [|2;1|] 1.;
-    M.(x = y)
+    M.equal x y
 
   let one_hot_2 () =
     let idx = M.of_array Float64 [|3.;2.;0.;1.|] [|2;2|] in
@@ -340,25 +339,25 @@ module To_test = struct
     M.set y [|0;1;2|] 1.;
     M.set y [|1;0;0|] 1.;
     M.set y [|1;1;1|] 1.;
-    M.(x = y)
+    M.equal x y
 
   let sort () =
     let x = M.of_array Float64 [|3.;2.;0.;1.|] [|2;2|] in
     let y = M.of_array Float64 [|0.;1.;2.;3.|] [|2;2|] in
     let z = M.sort x in
-    M.(y = z)
+    M.equal y z
 
   let argsort_1 () =
     let x = M.of_array Float64 [|2.;3.;0.;1.|] [|4|] in
     let y = M.of_array Int64 [|2L;3L;0L;1L|] [|4|] in
     let z = M.argsort x in
-    M.(y = z)
+    M.equal y z
 
   let argsort_2 () =
     let x = M.of_array Float64 [|3.;2.;0.;1.|] [|2;2|] in
     let y = M.of_array Int64 [|2L;3L;1L;0L|] [|2;2|] in
     let z = M.argsort x in
-    M.(y = z)
+    M.equal y z
 
   let top_1 () =
     let arr = M.init Float64 [|50|] (fun i -> float i) in
@@ -392,7 +391,7 @@ module To_test = struct
       0.; 0.; 0.; 0.; 0.; 0.; 1.; 2.; 0.; 0.; 3.; 4.; 5.; 0.; 0.; 6.; 7.; 8.;
       0.; 0.; 0.; 0.; 0.; 0.; 0.|] in
     let expected = M.of_array Float32 expected [|5; 5; 1|] in
-    M.(pads = expected)
+    M.equal pads expected
 
 end
 

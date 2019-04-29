@@ -7,7 +7,7 @@ module M = Owl_sparse_matrix_generic
 let eps = 1e-16
 
 (* make testable *)
-let matrix = Alcotest.testable (fun p x -> ()) M.equal
+let matrix = Alcotest.testable (fun _p _x -> ()) M.equal
 
 (* some test input *)
 let x0 = M.zeros Float64 3 4
@@ -38,7 +38,7 @@ module To_test = struct
 
   let get x = M.get x 1 2
 
-  let set x =
+  let set () =
     let x = M.zeros Float64 3 4 in
     M.set x 2 1 5.;
     M.get x 2 1
@@ -131,13 +131,13 @@ module To_test = struct
   let fold x = M.fold (+.) 0. x
 
   let foldi () =
-    let a = M.foldi (fun i j c a ->
+    let a = M.foldi (fun i _ c a ->
       if i <> 0 then c +. a else c
     ) 0. x2
     in a = 60.
 
   let foldi_nz () =
-    let a = M.foldi_nz (fun i j c a ->
+    let a = M.foldi_nz (fun i _ c a ->
       if i <> 2 then c +. a else c
     ) 0. x2
     in a = 28.
@@ -197,7 +197,7 @@ let get () =
   Alcotest.(check (float eps)) "get" 6. (To_test.get x2)
 
 let set () =
-  Alcotest.(check (float eps)) "set" 5. (To_test.set x2)
+  Alcotest.(check (float eps)) "set" 5. (To_test.set ())
 
 let fill () =
   Alcotest.(check matrix) "fill" x1 (To_test.fill ())
@@ -271,13 +271,13 @@ let add_scalar () =
 let mul_scalar () =
   Alcotest.(check bool) "mul_scalar" true (To_test.mul_scalar ())
 
-let min x =
+let min () =
   Alcotest.(check bool) "min" true (To_test.min ())
 
-let max x =
+let max () =
   Alcotest.(check bool) "max" true (To_test.max ())
 
-let map x =
+let map () =
   Alcotest.(check bool) "map" true (To_test.map ())
 
 let fold () =

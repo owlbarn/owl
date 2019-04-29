@@ -6,7 +6,7 @@ open Owl_types
 (** Functor to generate test module *)
 
 module Make
-  (N : Ndarray_Algodiff with type elt = float) 
+  (N : Ndarray_Algodiff with type elt = float)
   = struct
 
 
@@ -150,7 +150,7 @@ module Make
         [|1;3;1;1|] [|2;2|] VALID expected
 
     (* conv2D2x2KernelStride2Same *)
-    let fun08 () =
+    let fun09 () =
       let expected = [|1.; 2.; 2.; 3.; 4.; 6.|] in
       verify_value test_conv2d_back_input [|1;2;3;1|]
         [|2;2;1;1|] [|2;2|] SAME expected
@@ -307,6 +307,10 @@ module Make
   let fun_cbi08 () =
     Alcotest.(check bool) "fun_conv2d_back_input_08" true
       (To_test_conv2d_back_input.fun08 ())
+
+  let fun_cbi09 () =
+    Alcotest.(check bool) "fun_conv2d_back_input_09" true
+      (To_test_conv2d_back_input.fun09 ())
 
   (* tests for conv2d kernel backward operation *)
 
