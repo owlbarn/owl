@@ -6,6 +6,11 @@
 open Owl_zoo_cmd
 
 
+let raise_info_and_exit () =
+  Owl_log.info "Please input the gist id.";
+  exit(0)
+
+
 (* main entrance of the program *)
 
 let main args =
@@ -17,19 +22,30 @@ let main args =
 
   if Array.length args < 2 then
     start_toplevel ()
-  else if args.(1) = "-upload" then
+  else if args.(1) = "-upload" then (
+    if Array.length args = 2 then raise_info_and_exit ();
     upload_gist args.(2) |> ignore
+  )
   else if args.(1) = "-download" then
     if Array.length args <= 3 then
       download_gist args.(2)
     else
       download_gist ~vid:(args.(3)) args.(2)
-  else if args.(1) = "-remove" then
+  else if args.(1) = "-remove" then (
+    if Array.length args = 2 then raise_info_and_exit ();
     remove_gist args.(2)
-  else if args.(1) = "-info" then
+  )
+  else if args.(1) = "-info" then (
+    if Array.length args = 2 then raise_info_and_exit ();
     show_info args.(2)
-  else if args.(1) = "-run" then
-    run_gist args.(2)
+  )
+  else if args.(1) = "-run" then (
+    if Array.length args = 2 then raise_info_and_exit ();
+    let len = Array.length args - 2 in
+    (* use gist name as the first argument *)
+    let arg = Array.sub args 2 len in
+    run_gist args.(2) arg
+  )
   else if args.(1) = "-list" then
     if Array.length args >= 3 then
       list_gist args.(2)

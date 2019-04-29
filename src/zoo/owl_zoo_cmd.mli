@@ -36,8 +36,8 @@ val preprocess : string -> string
 val run : string array -> string -> unit
 (** ``run args script`` executes the zoo script with the given arguments. *)
 
-val run_gist : string -> unit
-(** ``run_gist gist-id`` runs a zoo gist with the given ``gist-id``. *)
+val run_gist : string -> string array -> unit
+(** ``run_gist gist-id`` runs a zoo gist with the given ``gist-id`` and parameters. *)
 
 
 (** {6 Helper functions} *)
