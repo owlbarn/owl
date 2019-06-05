@@ -53,10 +53,10 @@ let test_poly () =
     |> Mat.concatenate ~axis:1
   in
   let y' = Mat.(z *@ p) in
-  let h = Plot.create "plot_regression.png" in
-  Plot.(scatter ~h ~spec:[ RGB (100,100,50) ] x y);
-  Plot.(scatter ~h ~spec:[ Marker "+" ] x y');
-  Plot.output h
+  let h = Owl_plplot.Plot.create "plot_regression.png" in
+  Owl_plplot.Plot.(scatter ~h ~spec:[ RGB (100,100,50) ] x y);
+  Owl_plplot.Plot.(scatter ~h ~spec:[ Marker "+" ] x y');
+  Owl_plplot.Plot.output h
 
 
 let _ =
