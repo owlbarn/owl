@@ -29,14 +29,14 @@ let draw_line p =
   for i = 0 to c - 1 do
     let x = a +. (float_of_int i *. (b -. a) /. float_of_int c) in
     let y = (p.{0,0} *. x +. p.{2,0}) /. (p.{1,0} *. (-1.)) in
-    z.{i,0} <- x; z.{i,1} <- y
+    MX.set z i 0 x; MX.set z i 1 y
   done;
   MX.save_txt z "test_log.model.tmp"
 
 let test_log x y =
   let p = LL.logistic ~i:true x y in
   let x = MX.(concat_horizontal x (ones (row_num x) 1)) in
-  let y' = MX.(sigmoid (x *@ p)) in
+  let y' = MX.(sigmoid (dot x p)) in
   let y' = MX.map (fun x -> if x > 0.5 then 1. else 0.) y' in
   let e = MX.(mean (abs (y - y'))) in
   let _ = Owl_log.info "accuracy: %.4f" (1. -. e) in p

@@ -310,7 +310,7 @@ module Make
     and op_d_d a ff fd df r =
       match a with
       | DF (ap, at, ai)         -> let cp = fd ap in DF (cp, (df cp ap at), ai)
-      | DR (ap, _, _, _, ai, _) -> let cp = ff ap in DR (cp, ref (zero cp), r a, ref 0, ai, ref 0)
+      | DR (ap, _, _, _, ai, _) -> let cp = fd ap in DR (cp, ref (zero cp), r a, ref 0, ai, ref 0)
       | ap                      -> ff ap
 
     and pair_op_d_d a ff fd df r =
