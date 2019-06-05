@@ -910,7 +910,7 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    let run x l = Maths.((conv1d ~padding:l.padding x l.w l.stride) + l.b)
+    let run x l = Maths.((NN.conv1d ~padding:l.padding x l.w l.stride) + l.b)
 
     let to_string l =
       let ws = Arr.shape l.w in
@@ -1001,7 +1001,7 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    let run x l = Maths.((dilated_conv1d ~padding:l.padding x l.w l.stride l.rate) + l.b)
+    let run x l = Maths.((NN.dilated_conv1d ~padding:l.padding x l.w l.stride l.rate) + l.b)
 
     let to_string l =
       let ws = Arr.shape l.w in
@@ -1090,7 +1090,7 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    let run x l = Maths.((transpose_conv1d ~padding:l.padding x l.w l.stride) + l.b)
+    let run x l = Maths.((NN.transpose_conv1d ~padding:l.padding x l.w l.stride) + l.b)
 
     let to_string l =
       let ws = Arr.shape l.w in
@@ -1181,7 +1181,7 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    let run x l = Maths.((conv2d ~padding:l.padding x l.w l.stride) + l.b)
+    let run x l = Maths.((NN.conv2d ~padding:l.padding x l.w l.stride) + l.b)
 
     let to_string l =
       let ws = Arr.shape l.w in
@@ -1276,7 +1276,7 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    let run x l = Maths.((dilated_conv2d ~padding:l.padding x l.w l.stride l.rate) + l.b)
+    let run x l = Maths.((NN.dilated_conv2d ~padding:l.padding x l.w l.stride l.rate) + l.b)
 
     let to_string l =
       let ws = Arr.shape l.w in
@@ -1368,7 +1368,7 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    let run x l = Maths.((transpose_conv2d ~padding:l.padding x l.w l.stride) + l.b)
+    let run x l = Maths.((NN.transpose_conv2d ~padding:l.padding x l.w l.stride) + l.b)
 
     let to_string l =
       let ws = Arr.shape l.w in
@@ -1462,7 +1462,7 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    let run x l = Maths.((conv3d ~padding:l.padding x l.w l.stride) + l.b)
+    let run x l = Maths.((NN.conv3d ~padding:l.padding x l.w l.stride) + l.b)
 
     let to_string l =
       let ws = Arr.shape l.w in
@@ -1561,7 +1561,7 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    let run x l = Maths.((dilated_conv3d ~padding:l.padding x l.w l.stride l.rate) + l.b)
+    let run x l = Maths.((NN.dilated_conv3d ~padding:l.padding x l.w l.stride l.rate) + l.b)
 
     let to_string l =
       let ws = Arr.shape l.w in
@@ -1656,7 +1656,7 @@ module Make
       mkpri l |> Array.map copy_primal' |> update l';
       l'
 
-    let run x l = Maths.((transpose_conv3d ~padding:l.padding x l.w l.stride) + l.b)
+    let run x l = Maths.((NN.transpose_conv3d ~padding:l.padding x l.w l.stride) + l.b)
 
     let to_string l =
       let ws = Arr.shape l.w in
@@ -1788,7 +1788,7 @@ module Make
 
     let copy l = create l.padding l.kernel l.stride
 
-    let run x l = Maths.(max_pool1d l.padding x l.kernel l.stride)
+    let run x l = NN.max_pool1d l.padding x l.kernel l.stride
 
     let to_string l =
       let padding_s = match l.padding with
@@ -1839,7 +1839,7 @@ module Make
 
     let copy l = create l.padding l.kernel l.stride
 
-    let run x l = Maths.(max_pool2d l.padding x l.kernel l.stride)
+    let run x l = (NN.max_pool2d l.padding x l.kernel l.stride)
 
     let to_string l =
       let padding_s = match l.padding with
@@ -1888,7 +1888,7 @@ module Make
 
     let copy l = create l.padding l.kernel l.stride
 
-    let run x l = Maths.(avg_pool1d l.padding x l.kernel l.stride)
+    let run x l = (NN.avg_pool1d l.padding x l.kernel l.stride)
 
     let to_string l =
       let padding_s = match l.padding with
@@ -1939,7 +1939,7 @@ module Make
 
     let copy l = create l.padding l.kernel l.stride
 
-    let run x l = Maths.(avg_pool2d l.padding x l.kernel l.stride)
+    let run x l = (NN.avg_pool2d l.padding x l.kernel l.stride)
 
     let to_string l =
       let padding_s = match l.padding with
@@ -1980,7 +1980,7 @@ module Make
 
     let run x l =
       let kernel = [|l.in_shape.(0)|] in
-      let a = Maths.max_pool1d VALID x kernel [|1|] in
+      let a = NN.max_pool1d VALID x kernel [|1|] in
       let s = Arr.shape a in
       let b, o = s.(0), s.(2) in
       Arr.reshape a [|b; o|]
@@ -2018,7 +2018,7 @@ module Make
 
     let run x l =
       let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
-      let a = Maths.max_pool2d VALID x kernel [|1;1|] in
+      let a = NN.max_pool2d VALID x kernel [|1;1|] in
       let s = Arr.shape a in
       let b, o = s.(0), s.(3) in
       Arr.reshape a [|b; o|]
@@ -2055,7 +2055,7 @@ module Make
 
     let run x l =
       let kernel = [|l.in_shape.(0)|] in
-      let a = Maths.avg_pool1d VALID x kernel [|1|] in
+      let a = NN.avg_pool1d VALID x kernel [|1|] in
       let s = Arr.shape a in
       let b, o = s.(0), s.(2) in
       Arr.reshape a [|b; o|]
@@ -2093,7 +2093,7 @@ module Make
 
     let run x l =
       let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
-      let a = Maths.avg_pool2d VALID x kernel [|1;1|] in
+      let a = NN.avg_pool2d VALID x kernel [|1;1|] in
       let s = Arr.shape a in
       let b, o = s.(0), s.(3) in
       Arr.reshape a [|b; o|]
@@ -2139,7 +2139,7 @@ module Make
 
     let copy l = create l.size
 
-    let run x l = Maths.(upsampling2d x l.size)
+    let run x l = NN.(upsampling2d x l.size)
 
     let to_string l =
       Printf.sprintf "    UpSampling2D : tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
@@ -2192,7 +2192,7 @@ module Make
     let run x l =
       let p = [[0;0]; [l.padding.(0).(0); l.padding.(0).(1)];
         [l.padding.(1).(0); l.padding.(1).(1)]; [0;0]] in
-      Maths.(pad p x)
+      NN.(pad p x)
 
     let to_string l =
       Printf.sprintf "    Padding2D : tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
@@ -2308,7 +2308,7 @@ module Make
 
     let run x l =
       let a = _f (1. /. (1. -. l.rate)) in
-      let b = Maths.(dropout ~rate:l.rate x) in
+      let b = NN.(dropout ~rate:l.rate x) in
       Maths.(a * b)
 
     let to_string l =
