@@ -1,263 +1,24 @@
 module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
   open Core
+  module Builder = Owl_algodiff_ops_builder.Make_Ops_Builder (Core)
+  open Builder
 
   module Maths = struct
-    let rec noop _ = ()
+    let rec noop = ()
 
+    (* single input single output operations *)
     and neg a =
-      let ff = function
-        | F a -> F A.Scalar.(neg a)
-        | Arr a -> Arr A.(neg a)
-        | _ -> error_uniop "neg" a
-      in
-      let fd a = neg a in
-      let df _cp _ap at = pack_flt 0. - at in
-      let r a =
-        let reverse _ap aa t = (neg !aa, a) :: t in
-        let input t = a :: t in
-        let label = "Neg_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
+      build_siso
+        (module struct
+          let label = "neg"
+          let ff_f a = F A.Scalar.(neg a)
+          let ff_arr a = Arr A.(neg a)
+          let df _cp _ap at = pack_flt 0. - at
+          let dr _ap aa = neg aa
+        end
+        : Siso)
+        a
 
-
-    and ( + ) a b = add a b
-
-    and add a b =
-      let ff a b =
-        match a, b with
-        | F a, F b -> F A.Scalar.(add a b)
-        | F a, Arr b -> Arr A.(scalar_add a b)
-        | Arr a, F b -> Arr A.(add_scalar a b)
-        | Arr a, Arr b -> Arr A.(add a b)
-        | _ -> error_binop "( + )" a b
-      in
-      let fd a b = a + b in
-      let df_da _cp _ap at = at in
-      let df_db _cp _bp bt = bt in
-      let df_dab _cp _ap at _bp bt = at + bt in
-      let r_d_d a b =
-        let reverse _ap aa t = (!aa, a) :: (!aa, b) :: t in
-        let input t = a :: b :: t in
-        let label = "Add_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t = (!aa, a) :: t in
-        let input t = a :: t in
-        let label = "Add_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t = (!aa, b) :: t in
-        let input t = b :: t in
-        let label = "Add_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
-
-    and ( - ) a b = sub a b
-
-    and sub a b =
-      let ff a b =
-        match a, b with
-        | F a, F b -> F A.Scalar.(sub a b)
-        | F a, Arr b -> Arr A.(scalar_sub a b)
-        | Arr a, F b -> Arr A.(sub_scalar a b)
-        | Arr a, Arr b -> Arr A.(sub a b)
-        | _ -> error_binop "( - )" a b
-      in
-      let fd a b = a - b in
-      let df_da _cp _ap at = at in
-      let df_db _cp _bp bt = neg bt in
-      let df_dab _cp _ap at _bp bt = at - bt in
-      let r_d_d a b =
-        let reverse _ap aa t = (!aa, a) :: (neg !aa, b) :: t in
-        let input t = a :: b :: t in
-        let label = "Sub_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t = (!aa, a) :: t in
-        let input t = a :: t in
-        let label = "Sub_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t = (neg !aa, b) :: t in
-        let input t = b :: t in
-        let label = "Sub_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
-
-    and ( * ) a b = mul a b
-
-    and mul a b =
-      let ff a b =
-        match a, b with
-        | F a, F b -> F A.Scalar.(mul a b)
-        | F a, Arr b -> Arr A.(scalar_mul a b)
-        | Arr a, F b -> Arr A.(mul_scalar a b)
-        | Arr a, Arr b -> Arr A.(mul a b)
-        | _ -> error_binop "( * )" a b
-      in
-      let fd a b = a * b in
-      let df_da _cp _ap at = at * b in
-      let df_db _cp _bp bt = a * bt in
-      let df_dab _cp ap at bp bt = (ap * bt) + (at * bp) in
-      let r_d_d a b =
-        let reverse _ap aa t = (!aa * primal b, a) :: (!aa * primal a, b) :: t in
-        let input t = a :: b :: t in
-        let label = "Mul_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t = (!aa * primal b, a) :: t in
-        let input t = a :: t in
-        let label = "Mul_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t = (!aa * primal a, b) :: t in
-        let input t = b :: t in
-        let label = "Mul_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
-
-    and ( / ) a b = div a b
-
-    and div a b =
-      let ff a b =
-        match a, b with
-        | F a, F b -> F A.Scalar.(div a b)
-        | F a, Arr b -> Arr A.(scalar_div a b)
-        | Arr a, F b -> Arr A.(div_scalar a b)
-        | Arr a, Arr b -> Arr A.(div a b)
-        | _ -> error_binop "( / )" a b
-      in
-      let fd a b = a / b in
-      let df_da _cp _ap at = at / b in
-      let df_db cp bp bt = neg bt * cp / bp in
-      let df_dab cp _ap at bp bt = (at - (bt * cp)) / bp in
-      let r_d_d a b =
-        let reverse _ap aa t =
-          (!aa / primal b, a) :: (!aa * (neg (primal a) / (primal b * primal b)), b) :: t
-        in
-        let input t = a :: b :: t in
-        let label = "Div_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t = (!aa / primal b, a) :: t in
-        let input t = a :: t in
-        let label = "Div_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t =
-          (!aa * (neg (primal a) / (primal b * primal b)), b) :: t
-        in
-        let input t = b :: t in
-        let label = "Div_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
-
-    and ( ** ) a b = pow a b
-
-    and pow a b =
-      let ff a b =
-        match a, b with
-        | F a, F b -> F A.Scalar.(pow a b)
-        | F a, Arr b -> Arr A.(scalar_pow a b)
-        | Arr a, F b -> Arr A.(pow_scalar a b)
-        | Arr a, Arr b -> Arr A.(pow a b)
-        | _ -> error_binop "( ** )" a b
-      in
-      let fd a b = a ** b in
-      let df_da _cp ap at = at * (ap ** (b - pack_flt 1.)) * b in
-      let df_db cp _bp bt = bt * cp * log a in
-      let df_dab _cp ap at bp bt =
-        (ap ** (bp - pack_flt 1.)) * ((at * bp) + (ap * bt * log ap))
-      in
-      let r_d_d a b =
-        let reverse _ap aa t =
-          (!aa * (primal a ** (primal b - pack_flt 1.)) * primal b, a)
-          :: (!aa * (primal a ** primal b) * log (primal a), b)
-          :: t
-        in
-        let input t = a :: b :: t in
-        let label = "Pow_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t =
-          (!aa * (primal a ** (primal b - pack_flt 1.)) * primal b, a) :: t
-        in
-        let input t = a :: t in
-        let label = "Pow_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t = (!aa * (primal a ** primal b) * log (primal a), b) :: t in
-        let input t = b :: t in
-        let label = "Pow_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
-
-    and atan2 a b =
-      let ff a b =
-        match a, b with
-        | F a, F b -> F A.Scalar.(atan2 a b)
-        | F a, Arr b -> Arr A.(scalar_atan2 a b)
-        | Arr a, F b -> Arr A.(atan2_scalar a b)
-        | Arr a, Arr b -> Arr A.(atan2 a b)
-        | _ -> error_binop "atan2" a b
-      in
-      let fd a b = atan2 a b in
-      let df_da _cp ap at = at * b / (sqr ap + sqr b) in
-      let df_db _cp bp bt = neg bt * a / (sqr a + sqr bp) in
-      let df_dab _cp ap at bp bt = ((at * bp) - (bt * ap)) / (sqr ap + sqr bp) in
-      let r_d_d a b =
-        let reverse _ap aa t =
-          let d = sqr (primal a) + sqr (primal b) in
-          (!aa * primal b / d, a) :: (!aa * neg (primal a) / d, b) :: t
-        in
-        let input t = a :: b :: t in
-        let label = "Atan2_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t =
-          let d = sqr (primal a) + sqr (primal b) in
-          (!aa * primal b / d, a) :: t
-        in
-        let input t = a :: t in
-        let label = "Atan2_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t =
-          let d = sqr (primal a) + sqr (primal b) in
-          (!aa * neg (primal a) / d, b) :: t
-        in
-        let input t = b :: t in
-        let label = "Atan2_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
-
-    and min2 a b = (a + b - abs (a - b)) / pack_flt 2.
-    and max2 a b = (a + b + abs (b - a)) / pack_flt 2.
 
     and abs a =
       let ff = function
@@ -649,6 +410,203 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
       in
       op_s_s a ff fd df r
 
+
+    (* pair inputs single output operations *)
+    and ( + ) a b = add a b
+
+    and add a b =
+      build_piso
+        (module struct
+          let label = "add"
+          let ff_aa a b = F A.Scalar.(add a b)
+          let ff_ab a b = Arr A.(scalar_add a b)
+          let ff_ba a b = Arr A.(add_scalar a b)
+          let ff_bb a b = Arr A.(add a b)
+          let df_da _cp _ap at = at
+          let df_db _cp _bp bt = bt
+          let df_dab _cp _ap at _bp bt = at + bt
+          let dr_ab _ap aa = aa, aa
+          let dr_a _ap aa = aa
+          let dr_b _ap aa = aa
+        end
+        : Piso)
+        a
+        b
+
+
+    and ( - ) a b = sub a b
+
+    and sub a b =
+      build_piso
+        (module struct
+          let label = "sub"
+          let ff_aa a b = F A.Scalar.(sub a b)
+          let ff_ab a b = Arr A.(scalar_sub a b)
+          let ff_ba a b = Arr A.(sub_scalar a b)
+          let ff_bb a b = Arr A.(sub a b)
+          let df_da _cp _ap at = at
+          let df_db _cp _bp bt = bt
+          let df_dab _cp _ap at _bp bt = at - bt
+          let dr_ab _ap aa = aa, neg aa
+          let dr_a _ap aa = aa
+          let dr_b _ap aa = neg aa
+        end
+        : Piso)
+        a
+        b
+
+
+    and ( * ) a b = mul a b
+
+    and mul a b =
+      build_piso
+        (module struct
+          let label = "mul"
+          let ff_aa a b = F A.Scalar.(mul a b)
+          let ff_ab a b = Arr A.(scalar_mul a b)
+          let ff_ba a b = Arr A.(mul_scalar a b)
+          let ff_bb a b = Arr A.(mul a b)
+          let df_da _cp _ap at = at * b
+          let df_db _cp _bp bt = a * bt
+          let df_dab _cp ap at bp bt = (ap * bt) + (at * bp)
+          let dr_ab _cp aa = aa * primal b, aa * primal a
+          let dr_a _ap aa = aa * primal b
+          let dr_b _ap aa = aa * primal a
+        end
+        : Piso)
+        a
+        b
+
+
+    and ( / ) a b = div a b
+
+    and div a b =
+      let ff a b =
+        match a, b with
+        | F a, F b -> F A.Scalar.(div a b)
+        | F a, Arr b -> Arr A.(scalar_div a b)
+        | Arr a, F b -> Arr A.(div_scalar a b)
+        | Arr a, Arr b -> Arr A.(div a b)
+        | _ -> error_binop "( / )" a b
+      in
+      let fd a b = a / b in
+      let df_da _cp _ap at = at / b in
+      let df_db cp bp bt = neg bt * cp / bp in
+      let df_dab cp _ap at bp bt = (at - (bt * cp)) / bp in
+      let r_d_d a b =
+        let reverse _ap aa t =
+          (!aa / primal b, a) :: (!aa * (neg (primal a) / (primal b * primal b)), b) :: t
+        in
+        let input t = a :: b :: t in
+        let label = "Div_D_D", [ a; b ] in
+        reverse, input, label
+      in
+      let r_d_c a b =
+        let reverse _ap aa t = (!aa / primal b, a) :: t in
+        let input t = a :: t in
+        let label = "Div_D_C", [ a; b ] in
+        reverse, input, label
+      in
+      let r_c_d a b =
+        let reverse _ap aa t =
+          (!aa * (neg (primal a) / (primal b * primal b)), b) :: t
+        in
+        let input t = b :: t in
+        let label = "Div_C_D", [ a; b ] in
+        reverse, input, label
+      in
+      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+
+    and ( ** ) a b = pow a b
+
+    and pow a b =
+      let ff a b =
+        match a, b with
+        | F a, F b -> F A.Scalar.(pow a b)
+        | F a, Arr b -> Arr A.(scalar_pow a b)
+        | Arr a, F b -> Arr A.(pow_scalar a b)
+        | Arr a, Arr b -> Arr A.(pow a b)
+        | _ -> error_binop "( ** )" a b
+      in
+      let fd a b = a ** b in
+      let df_da _cp ap at = at * (ap ** (b - pack_flt 1.)) * b in
+      let df_db cp _bp bt = bt * cp * log a in
+      let df_dab _cp ap at bp bt =
+        (ap ** (bp - pack_flt 1.)) * ((at * bp) + (ap * bt * log ap))
+      in
+      let r_d_d a b =
+        let reverse _ap aa t =
+          (!aa * (primal a ** (primal b - pack_flt 1.)) * primal b, a)
+          :: (!aa * (primal a ** primal b) * log (primal a), b)
+          :: t
+        in
+        let input t = a :: b :: t in
+        let label = "Pow_D_D", [ a; b ] in
+        reverse, input, label
+      in
+      let r_d_c a b =
+        let reverse _ap aa t =
+          (!aa * (primal a ** (primal b - pack_flt 1.)) * primal b, a) :: t
+        in
+        let input t = a :: t in
+        let label = "Pow_D_C", [ a; b ] in
+        reverse, input, label
+      in
+      let r_c_d a b =
+        let reverse _ap aa t = (!aa * (primal a ** primal b) * log (primal a), b) :: t in
+        let input t = b :: t in
+        let label = "Pow_C_D", [ a; b ] in
+        reverse, input, label
+      in
+      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+
+    and atan2 a b =
+      let ff a b =
+        match a, b with
+        | F a, F b -> F A.Scalar.(atan2 a b)
+        | F a, Arr b -> Arr A.(scalar_atan2 a b)
+        | Arr a, F b -> Arr A.(atan2_scalar a b)
+        | Arr a, Arr b -> Arr A.(atan2 a b)
+        | _ -> error_binop "atan2" a b
+      in
+      let fd a b = atan2 a b in
+      let df_da _cp ap at = at * b / (sqr ap + sqr b) in
+      let df_db _cp bp bt = neg bt * a / (sqr a + sqr bp) in
+      let df_dab _cp ap at bp bt = ((at * bp) - (bt * ap)) / (sqr ap + sqr bp) in
+      let r_d_d a b =
+        let reverse _ap aa t =
+          let d = sqr (primal a) + sqr (primal b) in
+          (!aa * primal b / d, a) :: (!aa * neg (primal a) / d, b) :: t
+        in
+        let input t = a :: b :: t in
+        let label = "Atan2_D_D", [ a; b ] in
+        reverse, input, label
+      in
+      let r_d_c a b =
+        let reverse _ap aa t =
+          let d = sqr (primal a) + sqr (primal b) in
+          (!aa * primal b / d, a) :: t
+        in
+        let input t = a :: t in
+        let label = "Atan2_D_C", [ a; b ] in
+        reverse, input, label
+      in
+      let r_c_d a b =
+        let reverse _ap aa t =
+          let d = sqr (primal a) + sqr (primal b) in
+          (!aa * neg (primal a) / d, b) :: t
+        in
+        let input t = b :: t in
+        let label = "Atan2_C_D", [ a; b ] in
+        reverse, input, label
+      in
+      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+
+    and min2 a b = (a + b - abs (a - b)) / pack_flt 2.
+    and max2 a b = (a + b + abs (b - a)) / pack_flt 2.
 
     and get_item a i j =
       match a with
@@ -1432,19 +1390,16 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           pack_flt 0.5 * transpose x)
       in
       fun ?(upper = true) a ->
-        let ff = function
-          | Arr a -> Arr A.(chol ~upper a)
-          | _ -> error_uniop "chol" a
-        in
-        let fd a = chol ~upper a in
-        let df cp _ap at = _chol_forward cp at upper in
-        let r a =
-          let reverse ap aa t = (_chol_backward ap !aa upper, a) :: t in
-          let input t = a :: t in
-          let label = "Chol_D", [ a ] in
-          reverse, input, label
-        in
-        op_s_s a ff fd df r
+        build_siso
+          (module struct
+            let label = "chol"
+            let ff_f a = error_uniop "chol" (pack_elt a)
+            let ff_arr a = Arr A.(chol ~upper a)
+            let df cp _ap at = _chol_forward cp at upper
+            let dr ap aa = _chol_backward ap aa upper
+          end
+          : Siso)
+          a
 
 
     and qr =
