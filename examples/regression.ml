@@ -2,7 +2,6 @@
 (* Test Regression module *)
 
 open Owl
-open Owl_base
 
 let generate_data () =
   let x = Mat.uniform 1000 3 in
