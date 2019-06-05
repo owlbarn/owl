@@ -23,6 +23,3 @@ setup.log
 .merlin
 !pkg/.merlin
 *.install
-
-# vscode workspace
-*.code-workspace

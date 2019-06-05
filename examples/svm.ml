@@ -2,6 +2,7 @@
 (* This example demonstrates SVM regression. *)
 
 open Owl
+open Owl_plplot
 
 let generate_data () =
   let open Mat in
