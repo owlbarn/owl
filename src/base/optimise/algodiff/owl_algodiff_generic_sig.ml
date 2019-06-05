@@ -81,27 +81,6 @@ module type Sig = sig
     val inv : t -> t
 
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val chol : ?upper:bool -> t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val qr : t -> t * t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val lq : t -> t * t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val svd : ?thin:bool -> t -> t * t * t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val lyapunov : t -> t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val discrete_lyapunov : ?solver:[ `default | `bilinear | `direct ] -> t -> t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val linsolve : ?trans:bool -> ?typ:[ `n | `u | `l ] -> t -> t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
     val neg : t -> t
 
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -213,6 +192,64 @@ module type Sig = sig
     val softmax : ?axis:int -> t -> t
 
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val reshape : t -> int array -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val flatten : t -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val concat : int -> t -> t -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val get_slice : int list list -> t -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val set_slice : int list list -> t -> t -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val diag : ?k:int -> t -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val diagm : ?k:int -> t -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val trace : t -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val triu : ?k:int -> t -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val tril : ?k:int -> t -> t
+  end
+
+  module Linalg : sig
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val inv : t -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val chol : ?upper:bool -> t -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val qr : t -> t * t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val lq : t -> t * t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val svd : ?thin:bool -> t -> t * t * t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val lyapunov : t -> t -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val discrete_lyapunov : ?solver:[ `default | `bilinear | `direct ] -> t -> t -> t
+
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+    val linsolve : ?trans:bool -> ?typ:[ `n | `u | `l ] -> t -> t -> t
+  end
+
+  module NN : sig
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
     val dropout : ?rate:float -> t -> t
 
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -265,36 +302,6 @@ module type Sig = sig
 
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
     val pad : ?v:A.elt -> int list list -> t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val reshape : t -> int array -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val flatten : t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val concat : int -> t -> t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val get_slice : int list list -> t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val set_slice : int list list -> t -> t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val diag : ?k:int -> t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val diagm : ?k:int -> t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val trace : t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val triu : ?k:int -> t -> t
-
-    (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val tril : ?k:int -> t -> t
   end
 
   (* Simple wrappers of matrix and ndarray module, so you don't have to pack and unpack
