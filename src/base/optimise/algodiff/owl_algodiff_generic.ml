@@ -11,7 +11,7 @@
  * (Don Syme <dsyme@microsoft.com>
  *)
 
-open Owl_types
+(*open Owl_types*)
 
 (* Functor of making AD module of different precisions *)
 
@@ -39,6 +39,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     _global_tag := !_global_tag + 1;
     !_global_tag
 
+
   (* hepler functions of the core AD component *)
 
   let cmp_tag ai bi = if ai > bi then 1 else if ai < bi then -1 else 0
@@ -50,12 +51,18 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       Arr ap
     | _ -> failwith "error: reset_zero"
 
-  let primal = function DF (ap, _, _) -> ap | DR (ap, _, _, _, _, _) -> ap | ap -> ap
+
+  let primal = function
+    | DF (ap, _, _) -> ap
+    | DR (ap, _, _, _, _, _) -> ap
+    | ap -> ap
+
 
   let rec primal' = function
     | DF (ap, _, _) -> primal' ap
     | DR (ap, _, _, _, _, _) -> primal' ap
     | ap -> ap
+
 
   let rec zero = function
     | F _ -> F A.(float_to_elt 0.)
@@ -63,83 +70,128 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     | DF (ap, _, _) -> ap |> primal' |> zero
     | DR (ap, _, _, _, _, _) -> ap |> primal' |> zero
 
+
   let tangent = function
     | DF (_, at, _) -> at
     | DR _ -> failwith "error: no tangent for DR"
     | ap -> zero ap
+
 
   let adjref = function
     | DF _ -> failwith "error: no adjref for DF"
     | DR (_, at, _, _, _, _) -> at
     | ap -> ref (zero ap)
 
+
   let adjval = function
     | DF _ -> failwith "error: no adjval for DF"
     | DR (_, at, _, _, _, _) -> !at
     | ap -> zero ap
 
-  let shape x = match primal' x with Arr ap -> A.shape ap | _ -> failwith "error: AD.shape"
+
+  let shape x =
+    match primal' x with
+    | Arr ap -> A.shape ap
+    | _ -> failwith "error: AD.shape"
+
+
   let row_num x = (shape x).(0)
   let col_num x = (shape x).(1)
-  let numel x = match primal' x with Arr x -> A.numel x | _ -> failwith "error: AD.numel"
+
+  let numel x =
+    match primal' x with
+    | Arr x -> A.numel x
+    | _ -> failwith "error: AD.numel"
+
 
   let clip_by_value ~amin ~amax x =
     match primal' x with
     | Arr x -> Arr A.(clip_by_value ~amin ~amax x)
     | _ -> failwith "error: AD.clip_by_value"
 
+
   let clip_by_l2norm a x =
     match primal' x with
     | Arr x -> Arr A.(clip_by_l2norm a x)
     | _ -> failwith "error: AD.clip_by_l2norm"
 
+
   let copy_primal' x =
-    match primal' x with Arr ap -> Arr A.(copy ap) | _ -> failwith "error: AD.copy"
+    match primal' x with
+    | Arr ap -> Arr A.(copy ap)
+    | _ -> failwith "error: AD.copy"
+
 
   let tile x reps =
-    match primal' x with Arr x -> Arr A.(tile x reps) | _ -> failwith "error: AD.tile"
+    match primal' x with
+    | Arr x -> Arr A.(tile x reps)
+    | _ -> failwith "error: AD.tile"
+
 
   let repeat x reps =
-    match primal' x with Arr x -> Arr A.(repeat x reps) | _ -> failwith "error: AD.repeat"
+    match primal' x with
+    | Arr x -> Arr A.(repeat x reps)
+    | _ -> failwith "error: AD.repeat"
+
 
   (* packing and unpacking functions *)
 
   let pack_elt x = F x
-  let unpack_elt x = match primal x with F x -> x | _ -> failwith "error: AD.unpack_elt"
+
+  let unpack_elt x =
+    match primal x with
+    | F x -> x
+    | _ -> failwith "error: AD.unpack_elt"
+
+
   let pack_flt x = F A.(float_to_elt x)
   let _f x = F A.(float_to_elt x)
 
   (* shorcut for type conversion *)
 
   let unpack_flt x =
-    match primal x with F x -> A.elt_to_float x | _ -> failwith "error: AD.unpack_flt"
+    match primal x with
+    | F x -> A.elt_to_float x
+    | _ -> failwith "error: AD.unpack_flt"
+
 
   let pack_arr x = Arr x
-  let unpack_arr x = match primal x with Arr x -> x | _ -> failwith "error: AD.unpack_arr"
+
+  let unpack_arr x =
+    match primal x with
+    | Arr x -> x
+    | _ -> failwith "error: AD.unpack_arr"
+
 
   (* functions to report errors, help in debugging *)
 
   let deep_info x =
     match primal' x with
     | F a -> Printf.sprintf "F(%g)" A.(elt_to_float a)
-    | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils_array.to_string string_of_int)
+    | Arr a ->
+      Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils_array.to_string string_of_int)
     | _ -> "you should not have reached here!"
+
 
   let type_info x =
     match x with
     | F _a -> Printf.sprintf "[%s]" (deep_info x)
     | DF (ap, _at, ai) -> Printf.sprintf "[DF tag:%i ap:%s]" ai (deep_info ap)
-    | DR (ap, _at, _ao, _af, ai, _) -> Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
+    | DR (ap, _at, _ao, _af, ai, _) ->
+      Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
     | _ -> Printf.sprintf "[%s]" (deep_info x)
+
 
   let error_binop op a b =
     let s0 = "#0:" ^ type_info a in
     let s1 = "#1:" ^ type_info b in
     failwith (op ^ " : " ^ s0 ^ ", " ^ s1)
 
+
   let error_uniop op a =
     let s = type_info a in
     failwith (op ^ " : " ^ s)
+
 
   (* overload operators *)
 
@@ -156,6 +208,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         DR (cp, ref (zero cp), r a, ref 0, ai, ref 0)
       | ap -> ff ap
 
+
     and pair_op_d_d a ff fd df r =
       match a with
       | DF (ap, at, ai) ->
@@ -168,13 +221,13 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         let cp1_ref = ref cp1 in
         let cp2_ref = ref cp2 in
         let tracker = ref 0 in
-        (* tracker: int reference
-             In reverse_reset, i keeps track of the number of times cp1 and cp2 has been
-             called such that in reverse_push, we do not update the adjoint of ap before
-             we've fully updated both aa1 and aa2 *)
+        (* tracker: int reference In reverse_reset, i keeps track of the number of times
+           cp1 and cp2 has been called such that in reverse_push, we do not update the
+           adjoint of ap before we've fully updated both aa1 and aa2 *)
         ( DR (cp1, aa1, r (a, (cp1_ref, cp2_ref), (aa1, aa2)), ref 0, ai, tracker)
         , DR (cp2, aa2, r (a, (cp1_ref, cp2_ref), (aa1, aa2)), ref 0, ai, tracker) )
       | ap -> ff ap
+
 
     and triple_op_d_d a ff fd df r =
       match a with
@@ -190,10 +243,29 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         let cp2_ref = ref cp2 in
         let cp3_ref = ref cp3 in
         let tracker = ref 0 in
-        ( DR (cp1, aa1, r (a, (cp1_ref, cp2_ref, cp3_ref), (aa1, aa2, aa3)), ref 0, ai, tracker)
-        , DR (cp2, aa2, r (a, (cp1_ref, cp2_ref, cp3_ref), (aa1, aa2, aa3)), ref 0, ai, tracker)
-        , DR (cp3, aa3, r (a, (cp1_ref, cp2_ref, cp3_ref), (aa1, aa2, aa3)), ref 0, ai, tracker) )
+        ( DR
+            ( cp1
+            , aa1
+            , r (a, (cp1_ref, cp2_ref, cp3_ref), (aa1, aa2, aa3))
+            , ref 0
+            , ai
+            , tracker )
+        , DR
+            ( cp2
+            , aa2
+            , r (a, (cp1_ref, cp2_ref, cp3_ref), (aa1, aa2, aa3))
+            , ref 0
+            , ai
+            , tracker )
+        , DR
+            ( cp3
+            , aa3
+            , r (a, (cp1_ref, cp2_ref, cp3_ref), (aa1, aa2, aa3))
+            , ref 0
+            , ai
+            , tracker ) )
       | ap -> ff ap
+
 
     and array_op_d_d a ff fd df r =
       match a with
@@ -209,6 +281,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           cp_arr
           aa_arr
       | ap -> ff ap
+
 
     and op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d =
       match a, b with
@@ -278,6 +351,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           DR (cp, ref (zero cp), r_c_d a b, ref 0, bi, ref 0))
       | a, b -> ff a b
 
+
     and neg a =
       let ff = function
         | F a -> F A.Scalar.(neg a)
@@ -289,10 +363,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (neg !aa, a) :: t in
         let input t = a :: t in
-        let label = "Neg_D", [a] in
+        let label = "Neg_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and ( + ) a b = add a b
 
@@ -312,22 +387,23 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r_d_d a b =
         let reverse _ap aa t = (!aa, a) :: (!aa, b) :: t in
         let input t = a :: b :: t in
-        let label = "Add_D_D", [a; b] in
+        let label = "Add_D_D", [ a; b ] in
         reverse, input, label
       in
-      let r_d_c a _b =
+      let r_d_c a b =
         let reverse _ap aa t = (!aa, a) :: t in
         let input t = a :: t in
-        let label = "Add_D_C", [a] in
+        let label = "Add_D_C", [ a; b ] in
         reverse, input, label
       in
-      let r_c_d _a b =
+      let r_c_d a b =
         let reverse _ap aa t = (!aa, b) :: t in
         let input t = b :: t in
-        let label = "Add_C_D", [b] in
+        let label = "Add_C_D", [ a; b ] in
         reverse, input, label
       in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
 
     and ( - ) a b = sub a b
 
@@ -347,22 +423,23 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r_d_d a b =
         let reverse _ap aa t = (!aa, a) :: (neg !aa, b) :: t in
         let input t = a :: b :: t in
-        let label = "Sub_D_D", [a; b] in
+        let label = "Sub_D_D", [ a; b ] in
         reverse, input, label
       in
-      let r_d_c a _b =
+      let r_d_c a b =
         let reverse _ap aa t = (!aa, a) :: t in
         let input t = a :: t in
-        let label = "Sub_D_C", [a] in
+        let label = "Sub_D_C", [ a; b ] in
         reverse, input, label
       in
-      let r_c_d _a b =
+      let r_c_d a b =
         let reverse _ap aa t = (neg !aa, b) :: t in
         let input t = b :: t in
-        let label = "Sub_C_D", [b] in
+        let label = "Sub_C_D", [ a; b ] in
         reverse, input, label
       in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
 
     and ( * ) a b = mul a b
 
@@ -382,22 +459,23 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r_d_d a b =
         let reverse _ap aa t = (!aa * primal b, a) :: (!aa * primal a, b) :: t in
         let input t = a :: b :: t in
-        let label = "Mul_D_D", [a; b] in
+        let label = "Mul_D_D", [ a; b ] in
         reverse, input, label
       in
       let r_d_c a b =
         let reverse _ap aa t = (!aa * primal b, a) :: t in
         let input t = a :: t in
-        let label = "Mul_D_C", [a] in
+        let label = "Mul_D_C", [ a; b ] in
         reverse, input, label
       in
       let r_c_d a b =
         let reverse _ap aa t = (!aa * primal a, b) :: t in
         let input t = b :: t in
-        let label = "Mul_C_D", [b] in
+        let label = "Mul_C_D", [ a; b ] in
         reverse, input, label
       in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
 
     and ( / ) a b = div a b
 
@@ -419,22 +497,25 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           (!aa / primal b, a) :: (!aa * (neg (primal a) / (primal b * primal b)), b) :: t
         in
         let input t = a :: b :: t in
-        let label = "Div_D_D", [a; b] in
+        let label = "Div_D_D", [ a; b ] in
         reverse, input, label
       in
       let r_d_c a b =
         let reverse _ap aa t = (!aa / primal b, a) :: t in
         let input t = a :: t in
-        let label = "Div_D_C", [a] in
+        let label = "Div_D_C", [ a; b ] in
         reverse, input, label
       in
       let r_c_d a b =
-        let reverse _ap aa t = (!aa * (neg (primal a) / (primal b * primal b)), b) :: t in
+        let reverse _ap aa t =
+          (!aa * (neg (primal a) / (primal b * primal b)), b) :: t
+        in
         let input t = b :: t in
-        let label = "Div_C_D", [b] in
+        let label = "Div_C_D", [ a; b ] in
         reverse, input, label
       in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
 
     and ( ** ) a b = pow a b
 
@@ -450,7 +531,9 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let fd a b = a ** b in
       let df_da _cp ap at = at * (ap ** (b - pack_flt 1.)) * b in
       let df_db cp _bp bt = bt * cp * log a in
-      let df_dab _cp ap at bp bt = (ap ** (bp - pack_flt 1.)) * ((at * bp) + (ap * bt * log ap)) in
+      let df_dab _cp ap at bp bt =
+        (ap ** (bp - pack_flt 1.)) * ((at * bp) + (ap * bt * log ap))
+      in
       let r_d_d a b =
         let reverse _ap aa t =
           (!aa * (primal a ** (primal b - pack_flt 1.)) * primal b, a)
@@ -458,22 +541,25 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           :: t
         in
         let input t = a :: b :: t in
-        let label = "Pow_D_D", [a; b] in
+        let label = "Pow_D_D", [ a; b ] in
         reverse, input, label
       in
       let r_d_c a b =
-        let reverse _ap aa t = (!aa * (primal a ** (primal b - pack_flt 1.)) * primal b, a) :: t in
+        let reverse _ap aa t =
+          (!aa * (primal a ** (primal b - pack_flt 1.)) * primal b, a) :: t
+        in
         let input t = a :: t in
-        let label = "Pow_D_C", [a] in
+        let label = "Pow_D_C", [ a; b ] in
         reverse, input, label
       in
       let r_c_d a b =
         let reverse _ap aa t = (!aa * (primal a ** primal b) * log (primal a), b) :: t in
         let input t = b :: t in
-        let label = "Pow_C_D", [b] in
+        let label = "Pow_C_D", [ a; b ] in
         reverse, input, label
       in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
 
     and atan2 a b =
       let ff a b =
@@ -494,7 +580,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           (!aa * primal b / d, a) :: (!aa * neg (primal a) / d, b) :: t
         in
         let input t = a :: b :: t in
-        let label = "Atan2_D_D", [a; b] in
+        let label = "Atan2_D_D", [ a; b ] in
         reverse, input, label
       in
       let r_d_c a b =
@@ -503,7 +589,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           (!aa * primal b / d, a) :: t
         in
         let input t = a :: t in
-        let label = "Atan2_D_C", [a] in
+        let label = "Atan2_D_C", [ a; b ] in
         reverse, input, label
       in
       let r_c_d a b =
@@ -512,10 +598,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           (!aa * neg (primal a) / d, b) :: t
         in
         let input t = b :: t in
-        let label = "Atan2_C_D", [b] in
+        let label = "Atan2_C_D", [ a; b ] in
         reverse, input, label
       in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
 
     and min2 a b = (a + b - abs (a - b)) / pack_flt 2.
     and max2 a b = (a + b + abs (b - a)) / pack_flt 2.
@@ -531,10 +618,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa * signum (primal a), a) :: t in
         let input t = a :: t in
-        let label = "Abs_D", [a] in
+        let label = "Abs_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and signum a =
       let ff = function
@@ -547,10 +635,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap _aa t = (zero a, a) :: t in
         let input t = a :: t in
-        let label = "Signum_D", [a] in
+        let label = "Signum_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and floor a =
       let ff = function
@@ -563,10 +652,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap _aa t = (zero a, a) :: t in
         let input t = a :: t in
-        let label = "Floor_D", [a] in
+        let label = "Floor_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and ceil a =
       let ff = function
@@ -579,10 +669,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap _aa t = (zero a, a) :: t in
         let input t = a :: t in
-        let label = "Ceil_D", [a] in
+        let label = "Ceil_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and round a =
       let ff = function
@@ -595,10 +686,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap _aa t = (zero a, a) :: t in
         let input t = a :: t in
-        let label = "Round_D", [a] in
+        let label = "Round_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and sqr a =
       let ff = function
@@ -611,10 +703,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa * primal a * pack_flt 2., a) :: t in
         let input t = a :: t in
-        let label = "Sqr_D", [a] in
+        let label = "Sqr_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and sqrt a =
       let ff = function
@@ -627,10 +720,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse ap aa t = (!aa / (pack_flt 2. * ap), a) :: t in
         let input t = a :: t in
-        let label = "Sqrt_D", [a] in
+        let label = "Sqrt_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and log a =
       let ff = function
@@ -643,10 +737,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa / primal a, a) :: t in
         let input t = a :: t in
-        let label = "Log_D", [a] in
+        let label = "Log_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and log2 a =
       let ff = function
@@ -659,10 +754,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa / (primal a * pack_flt Owl_const.log2e), a) :: t in
         let input t = a :: t in
-        let label = "Log2_D", [a] in
+        let label = "Log2_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and log10 a =
       let ff = function
@@ -675,10 +771,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa / (primal a * pack_flt Owl_const.log10e), a) :: t in
         let input t = a :: t in
-        let label = "Log10_D", [a] in
+        let label = "Log10_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and exp a =
       let ff = function
@@ -691,10 +788,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse ap aa t = (!aa * ap, a) :: t in
         let input t = a :: t in
-        let label = "Exp_D", [a] in
+        let label = "Exp_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and sin a =
       let ff = function
@@ -707,10 +805,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa * cos (primal a), a) :: t in
         let input t = a :: t in
-        let label = "Sin_D", [a] in
+        let label = "Sin_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and cos a =
       let ff = function
@@ -723,10 +822,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa * neg (sin (primal a)), a) :: t in
         let input t = a :: t in
-        let label = "Cos_D", [a] in
+        let label = "Cos_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and tan a =
       let ff = function
@@ -739,10 +839,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa / sqr (cos (primal a)), a) :: t in
         let input t = a :: t in
-        let label = "Tan_D", [a] in
+        let label = "Tan_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and sinh a =
       let ff = function
@@ -755,10 +856,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa * cosh (primal a), a) :: t in
         let input t = a :: t in
-        let label = "Sinh_D", [a] in
+        let label = "Sinh_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and cosh a =
       let ff = function
@@ -771,10 +873,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa * sinh (primal a), a) :: t in
         let input t = a :: t in
-        let label = "Cosh_D", [a] in
+        let label = "Cosh_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and tanh a =
       let ff = function
@@ -787,10 +890,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa / sqr (cosh (primal a)), a) :: t in
         let input t = a :: t in
-        let label = "Tanh_D", [a] in
+        let label = "Tanh_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and asin a =
       let ff = function
@@ -803,10 +907,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa / sqrt (pack_flt 1. - sqr (primal a)), a) :: t in
         let input t = a :: t in
-        let label = "Asin_D", [a] in
+        let label = "Asin_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and acos a =
       let ff = function
@@ -819,10 +924,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (neg !aa / sqrt (pack_flt 1. - sqr (primal a)), a) :: t in
         let input t = a :: t in
-        let label = "Acos_D", [a] in
+        let label = "Acos_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and atan a =
       let ff = function
@@ -835,10 +941,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa / (pack_flt 1. + sqr (primal a)), a) :: t in
         let input t = a :: t in
-        let label = "Atan_D", [a] in
+        let label = "Atan_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and asinh a =
       let ff = function
@@ -851,10 +958,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa / sqrt (sqr (primal a) + pack_flt 1.), a) :: t in
         let input t = a :: t in
-        let label = "Asinh_D", [a] in
+        let label = "Asinh_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and acosh a =
       let ff = function
@@ -867,10 +975,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa / sqrt (sqr (primal a) - pack_flt 1.), a) :: t in
         let input t = a :: t in
-        let label = "Acosh_D", [a] in
+        let label = "Acosh_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and atanh a =
       let ff = function
@@ -883,28 +992,30 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa / (pack_flt 1. - sqr (primal a)), a) :: t in
         let input t = a :: t in
-        let label = "Atanh_D", [a] in
+        let label = "Atanh_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
 
+
     and get_item a i j =
       match a with
-      | Arr ap -> F (A.get ap [|i; j|])
+      | Arr ap -> F (A.get ap [| i; j |])
       | DF (ap, at, ai) -> DF (get_item ap i j, get_item at i j, ai)
       | DR (ap, _, _, _, ai, _) ->
         let reverse _ap aa t = (set_item (zero a) i j (sum' !aa), a) :: t in
         let input t = a :: t in
-        let label = "Get_Item", [a] in
+        let label = "Get_Item", [ a ] in
         DR (get_item ap i j, ref (pack_flt 0.), (reverse, input, label), ref 0, ai, ref 0)
       | _ -> error_uniop "get_item" a
+
 
     and set_item a i j b =
       let ff a b =
         match a, b with
         | Arr a, F b ->
           let aa = A.copy a in
-          A.set aa [|i; j|] b;
+          A.set aa [| i; j |] b;
           Arr aa
         | _ -> error_uniop "set_item" a
       in
@@ -913,31 +1024,34 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let df_db _cp _bp bt = add_item (zero a) i j bt in
       let df_dab _cp _ap at _bp bt = set_item at i j bt in
       let r_d_d a b =
-        let reverse _ap aa t = (set_item !aa i j (pack_flt 0.), a) :: (get_item !aa i j, b) :: t in
+        let reverse _ap aa t =
+          (set_item !aa i j (pack_flt 0.), a) :: (get_item !aa i j, b) :: t
+        in
         let input t = a :: b :: t in
-        let label = "SetI_D_D", [a; b] in
+        let label = "SetI_D_D", [ a; b ] in
         reverse, input, label
       in
-      let r_d_c a _b =
+      let r_d_c a b =
         let reverse _ap aa t = (set_item !aa i j (pack_flt 0.), a) :: t in
         let input t = a :: t in
-        let label = "SetI_D_C", [a] in
+        let label = "SetI_D_C", [ a; b ] in
         reverse, input, label
       in
-      let r_c_d _a b =
+      let r_c_d a b =
         let reverse _ap aa t = (get_item !aa i j, b) :: t in
         let input t = b :: t in
-        let label = "SetI_C_D", [b] in
+        let label = "SetI_C_D", [ a; b ] in
         reverse, input, label
       in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
 
     and add_item a i j b =
       let ff a b =
         match a, b with
         | Arr a, F b ->
           let aa = A.copy a in
-          A.set aa [|i; j|] A.Scalar.(add (A.get aa [|i; j|]) b);
+          A.set aa [| i; j |] A.Scalar.(add (A.get aa [| i; j |]) b);
           Arr aa
         | _ -> error_binop "add_item" a b
       in
@@ -948,34 +1062,39 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r_d_d a b =
         let reverse _ap aa t = (!aa, a) :: (get_item !aa i j, b) :: t in
         let input t = a :: b :: t in
-        let label = "AddI_D_D", [a; b] in
+        let label = "AddI_D_D", [ a; b ] in
         reverse, input, label
       in
-      let r_d_c a _b =
+      let r_d_c a b =
         let reverse _ap aa t = (!aa, a) :: t in
         let input t = a :: t in
-        let label = "AddI_D_C", [a] in
+        let label = "AddI_D_C", [ a; b ] in
         reverse, input, label
       in
-      let r_c_d _a b =
+      let r_c_d a b =
         let reverse _ap aa t = (get_item !aa i j, b) :: t in
         let input t = b :: t in
-        let label = "AddI_C_D", [b] in
+        let label = "AddI_C_D", [ a; b ] in
         reverse, input, label
       in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
+
     and get_slice i a =
-      let ff = function Arr a -> Arr A.(get_slice i a) | _ -> error_uniop "slice" a in
+      let ff = function
+        | Arr a -> Arr A.(get_slice i a)
+        | _ -> error_uniop "slice" a
+      in
       let fd a = get_slice i a in
       let df _cp _ap at = get_slice i at in
       let r a =
         let reverse _ap aa t = (set_slice i (zero a) !aa, a) :: t in
         let input t = a :: t in
-        let label = "Get_Slice_D", [a] in
+        let label = "Get_Slice_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and set_slice i a b =
       let ff a b =
@@ -991,39 +1110,51 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let df_db _cp _bp bt = set_slice i (zero a) bt in
       let df_dab _cp _ap at _bp bt = set_slice i at bt in
       let r_d_d a b =
-        let reverse _ap aa t = (set_slice i !aa (zero b), a) :: (get_slice i !aa, b) :: t in
+        let reverse _ap aa t =
+          (set_slice i !aa (zero b), a) :: (get_slice i !aa, b) :: t
+        in
         let input t = a :: b :: t in
-        let label = "Set_Slice_D_D", [a; b] in
+        let label = "Set_Slice_D_D", [ a; b ] in
         reverse, input, label
       in
-      let r_d_c a _b =
+      let r_d_c a b =
         let reverse _ap aa t = (set_slice i !aa (zero b), a) :: t in
         let input t = a :: t in
-        let label = "Set_Slice_D_C", [a] in
+        let label = "Set_Slice_D_C", [ a; b ] in
         reverse, input, label
       in
-      let r_c_d _a b =
+      let r_c_d a b =
         let reverse _ap aa t = (get_slice i !aa, b) :: t in
         let input t = b :: t in
-        let label = "Set_Slice_C_D", [b] in
+        let label = "Set_Slice_C_D", [ a; b ] in
         reverse, input, label
       in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
+
     and sum' a =
-      let ff = function F a -> F a | Arr a -> F A.(sum' a) | _ -> error_uniop "sum" a in
+      let ff = function
+        | F a -> F a
+        | Arr a -> F A.(sum' a)
+        | _ -> error_uniop "sum" a
+      in
       let fd a = sum' a in
       let df _cp _ap at = sum' at in
       let r a =
         let reverse _ap aa t = (!aa, a) :: t in
         let input t = a :: t in
-        let label = "Sum_D", [a] in
+        let label = "Sum_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
 
+
     and sum ?(axis = -1) a =
-      let ff = function F a -> F a | Arr a -> Arr A.(sum ~axis a) | _ -> error_uniop "sum" a in
+      let ff = function
+        | F a -> F a
+        | Arr a -> Arr A.(sum ~axis a)
+        | _ -> error_uniop "sum" a
+      in
       let fd a = sum ~axis a in
       let df _cp _ap at = sum ~axis at in
       let r a =
@@ -1034,12 +1165,13 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           (repeat !aa reps, a) :: t
         in
         let input t = a :: t in
-        let label = "Sum_D", [a] in
+        let label = "Sum_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
 
-    and sum_reduce ?(axis = [|0|]) a =
+
+    and sum_reduce ?(axis = [| 0 |]) a =
       let ff = function
         | F a -> F a
         | Arr x -> Arr A.(sum_reduce ~axis x)
@@ -1055,17 +1187,20 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           (repeat !aa reps, a) :: t
         in
         let input t = a :: t in
-        let label = "Sum__D", [a] in
+        let label = "Sum__D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and mean a = sum' a / F (numel a |> float_of_int |> A.float_to_elt)
     and ( *@ ) a b = dot a b
 
     and dot a b =
       let ff a b =
-        match a, b with Arr a, Arr b -> Arr A.(dot a b) | _ -> error_binop "( *@ )" a b
+        match a, b with
+        | Arr a, Arr b -> Arr A.(dot a b)
+        | _ -> error_binop "( *@ )" a b
       in
       let fd a b = a *@ b in
       let df_da _cp _ap at = at *@ b in
@@ -1076,58 +1211,71 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           (dot !aa (transpose (primal b)), a) :: (dot (transpose (primal a)) !aa, b) :: t
         in
         let input t = a :: b :: t in
-        let label = "Dot_D_D", [a; b] in
+        let label = "Dot_D_D", [ a; b ] in
         reverse, input, label
       in
-      let r_d_c a _b =
+      let r_d_c a b =
         let reverse _ap aa t = (dot !aa (transpose (primal b)), a) :: t in
         let input t = a :: t in
-        let label = "Dot_D_C", [a] in
+        let label = "Dot_D_C", [ a; b ] in
         reverse, input, label
       in
-      let r_c_d _a b =
+      let r_c_d a b =
         let reverse _ap aa t = (dot (transpose (primal a)) !aa, b) :: t in
         let input t = b :: t in
-        let label = "Dot_C_D", [b] in
+        let label = "Dot_C_D", [ a; b ] in
         reverse, input, label
       in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
+
     and transpose a =
-      let ff = function Arr a -> Arr A.(transpose a) | _ -> error_uniop "transpose" a in
+      let ff = function
+        | Arr a -> Arr A.(transpose a)
+        | _ -> error_uniop "transpose" a
+      in
       let fd a = transpose a in
       let df _cp _ap at = transpose at in
       let r a =
         let reverse _ap aa t = (transpose !aa, a) :: t in
         let input t = a :: t in
-        let label = "Trans_D", [a] in
+        let label = "Trans_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
 
+
     and l1norm' a =
-      let ff = function Arr a -> F A.(l1norm' a) | _ -> error_uniop "l1norm'" a in
+      let ff = function
+        | Arr a -> F A.(l1norm' a)
+        | _ -> error_uniop "l1norm'" a
+      in
       let fd a = l1norm' a in
       let df _cp ap at = at * signum ap in
       let r a =
         let reverse _ap aa t = (!aa * signum (primal a), a) :: t in
         let input t = a :: t in
-        let label = "L1Norm_D", [a] in
+        let label = "L1Norm_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
 
+
     and l2norm' a =
-      let ff = function Arr a -> F A.(l2norm' a) | _ -> error_uniop "l2norm'" a in
+      let ff = function
+        | Arr a -> F A.(l2norm' a)
+        | _ -> error_uniop "l2norm'" a
+      in
       let fd a = l2norm' a in
       let df cp ap at = ap * at / cp in
       let r a =
         let reverse ap aa t = (!aa / ap * primal a, a) :: t in
         let input t = a :: t in
-        let label = "L2Norm_D", [a] in
+        let label = "L2Norm_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and l2norm_sqr' a =
       let ff = function
@@ -1140,10 +1288,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse _ap aa t = (!aa * pack_flt 2. * primal a, a) :: t in
         let input t = a :: t in
-        let label = "L2NormS_D", [a] in
+        let label = "L2NormS_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and sigmoid a =
       let ff = function
@@ -1156,10 +1305,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r a =
         let reverse ap aa t = (!aa * ap * (pack_flt 1. - ap), a) :: t in
         let input t = a :: t in
-        let label = "Sigmoid_D", [a] in
+        let label = "Sigmoid_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and relu a =
       let ff = function
@@ -1170,15 +1320,21 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let fd a = relu a in
       let df _cp ap at = at * (pack_flt 1. + signum ap) / pack_flt 2. in
       let r a =
-        let reverse ap aa t = (!aa * ((signum (primal a) + pack_flt 1.) / pack_flt 2.), a) :: t in
+        let reverse _ap aa t =
+          (!aa * ((signum (primal a) + pack_flt 1.) / pack_flt 2.), a) :: t
+        in
         let input t = a :: t in
-        let label = "Relu_D", [a] in
+        let label = "Relu_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
 
+
     and diag ?(k = 0) a =
-      let ff = function Arr a -> Arr A.(diag ~k a |> copy) | _ -> error_uniop "diag" a in
+      let ff = function
+        | Arr a -> Arr A.(diag ~k a |> copy)
+        | _ -> error_uniop "diag" a
+      in
       let fd a = diag ~k a in
       let df _cp _ap at = diag ~k at in
       let r a =
@@ -1194,65 +1350,85 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           (abar, a) :: t
         in
         let input t = a :: t in
-        let label = "Diag_D", [a] in
+        let label = "Diag_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
 
+
     and diagm ?(k = 0) a =
-      let ff = function Arr a -> Arr A.(diagm ~k a |> copy) | _ -> error_uniop "diagm" a in
+      let ff = function
+        | Arr a -> Arr A.(diagm ~k a |> copy)
+        | _ -> error_uniop "diagm" a
+      in
       let fd a = diagm ~k a in
       let df _cp _ap at = diagm ~k at in
       let r a =
         let reverse _ap aa t = (diag ~k !aa, a) :: t in
         let input t = a :: t in
-        let label = "Diagm_D", [a] in
+        let label = "Diagm_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
 
+
     and trace a =
-      let ff = function Arr a -> F A.(trace a) | _ -> error_uniop "trace" a in
+      let ff = function
+        | Arr a -> F A.(trace a)
+        | _ -> error_uniop "trace" a
+      in
       let fd a = trace a in
       let df _cp _ap at = trace at in
       let r a =
         let reverse _ap aa t =
           let m = col_num a in
-          let abar = !aa * diagm (pack_arr A.(ones [|1; m|])) in
+          let abar = !aa * diagm (pack_arr A.(ones [| 1; m |])) in
           (abar, a) :: t
         in
         let input t = a :: t in
-        let label = "Trace_D", [a] in
+        let label = "Trace_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
 
+
     and triu ?(k = 0) a =
-      let ff = function Arr a -> Arr A.(triu ~k a |> copy) | _ -> error_uniop "triu" a in
+      let ff = function
+        | Arr a -> Arr A.(triu ~k a |> copy)
+        | _ -> error_uniop "triu" a
+      in
       let fd a = triu ~k a in
       let df _cp _ap at = triu ~k at in
       let r a =
         let reverse _ap aa t = (triu ~k !aa, a) :: t in
         let input t = a :: t in
-        let label = "Triu_D", [a] in
+        let label = "Triu_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
 
+
     and tril ?(k = 0) a =
-      let ff = function Arr a -> Arr A.(tril ~k a |> copy) | _ -> error_uniop "tril" a in
+      let ff = function
+        | Arr a -> Arr A.(tril ~k a |> copy)
+        | _ -> error_uniop "tril" a
+      in
       let fd a = tril ~k a in
       let df _cp _ap _at = tril ~k a in
       let r a =
         let reverse _ap aa t = (tril ~k !aa, a) :: t in
         let input t = a :: t in
-        let label = "Tril_D", [a] in
+        let label = "Tril_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
 
+
     and inv a =
-      let ff = function Arr a -> Arr A.(inv a) | _ -> error_uniop "inv" a in
+      let ff = function
+        | Arr a -> Arr A.(inv a)
+        | _ -> error_uniop "inv" a
+      in
       let fd a = inv a in
       let df cp _ap at = neg cp * at * cp in
       let r a =
@@ -1261,63 +1437,73 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           (neg dpt *@ !aa *@ dpt, a) :: t
         in
         let input t = a :: t in
-        let label = "Inv_D", [a] in
+        let label = "Inv_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
 
+
     and logdet a =
-      let ff = function Arr a -> F A.(logdet a) | _ -> error_uniop "logdet" a in
+      let ff = function
+        | Arr a -> F A.(logdet a)
+        | _ -> error_uniop "logdet" a
+      in
       let fd a = logdet a in
       let df _cp ap at = trace (transpose (inv ap) *@ at) in
       let r a =
         let reverse _ap aa t = (!aa * transpose (inv (primal a)), a) :: t in
         let input t = a :: t in
-        let label = "Logdet_D", [a] in
+        let label = "Logdet_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and copyltu x = tril x + transpose (tril ~k:(-1) x)
     and copyutl x = triu x + transpose (triu ~k:1 x)
 
-    and chol ?(upper = true) a =
+    and chol =
       let _chol_forward cp at upper =
         let inv_cp = inv cp in
         let tr_inv_cp = transpose inv_cp in
         if upper
-        then
+        then (
           let x = tr_inv_cp *@ transpose at *@ inv_cp in
           let m = pack_flt 0.5 * tril (triu x) in
-          transpose cp *@ (m + triu ~k:1 x)
-        else
+          transpose cp *@ (m + triu ~k:1 x))
+        else (
           let x = inv_cp *@ at *@ tr_inv_cp in
           let m = pack_flt 0.5 * tril (triu x) in
-          cp *@ (m + tril ~k:(-1) x)
+          cp *@ (m + tril ~k:(-1) x))
       in
       let _chol_backward o aa upper =
         if upper
-        then
+        then (
           let x = linsolve ~typ:`u o (copyutl (aa *@ transpose o)) in
           let x = linsolve ~typ:`u o (transpose x) in
-          pack_flt 0.5 * transpose x
-        else
+          pack_flt 0.5 * transpose x)
+        else (
           let x = linsolve ~trans:true ~typ:`l o (copyltu (transpose o *@ aa)) in
           let x = linsolve ~trans:true ~typ:`l o (transpose x) in
-          pack_flt 0.5 * transpose x
+          pack_flt 0.5 * transpose x)
       in
-      let ff = function Arr a -> Arr A.(chol ~upper a) | _ -> error_uniop "chol" a in
-      let fd a = chol ~upper a in
-      let df cp _ap at = _chol_forward cp at upper in
-      let r a =
-        let reverse ap aa t = (_chol_backward ap !aa upper, a) :: t in
-        let input t = a :: t in
-        let label = "Chol_D", [a] in
-        reverse, input, label
-      in
-      op_d_d a ff fd df r
+      fun ?(upper = true) a ->
+        let ff = function
+          | Arr a -> Arr A.(chol ~upper a)
+          | _ -> error_uniop "chol" a
+        in
+        let fd a = chol ~upper a in
+        let df cp _ap at = _chol_forward cp at upper in
+        let r a =
+          let reverse ap aa t = (_chol_backward ap !aa upper, a) :: t in
+          let input t = a :: t in
+          let label = "Chol_D", [ a ] in
+          reverse, input, label
+        in
+        op_d_d a ff fd df r
 
-    and qr a =
+
+    and qr =
       let _qr_backward (o1, o2) (aa1, aa2) =
         let q = !o1
         and r = !o2
@@ -1326,23 +1512,25 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         let m = (rbar *@ transpose r) - (transpose q *@ qbar) in
         linsolve r (transpose (qbar + (q *@ copyutl m))) |> transpose
       in
-      let ff = function
-        | Arr a ->
-          let q, r = A.(qr a) in
-          Arr q, Arr r
-        | _ -> error_uniop "qr" a
-      in
-      let fd a = qr a in
-      let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
-      let r (a, o, aa) =
-        let reverse _ap _aa t = (_qr_backward o aa, a) :: t in
-        let input t = a :: t in
-        let label = "QR_D", [a] in
-        reverse, input, label
-      in
-      pair_op_d_d a ff fd df r
+      fun a ->
+        let ff = function
+          | Arr a ->
+            let q, r = A.(qr a) in
+            Arr q, Arr r
+          | _ -> error_uniop "qr" a
+        in
+        let fd a = qr a in
+        let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
+        let r (a, o, aa) =
+          let reverse _ap _aa t = (_qr_backward o aa, a) :: t in
+          let input t = a :: t in
+          let label = "QR_D", [ a ] in
+          reverse, input, label
+        in
+        pair_op_d_d a ff fd df r
 
-    and lq a =
+
+    and lq =
       let _lq_backward (o1, o2) (aa1, aa2) =
         let l = !o1
         and q = !o2
@@ -1351,23 +1539,25 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         let m = (transpose l *@ lbar) - (qbar *@ transpose q) in
         linsolve ~trans:true ~typ:`l l (qbar + (copyltu m *@ q))
       in
-      let ff = function
-        | Arr a ->
-          let l, q = A.(lq a) in
-          Arr l, Arr q
-        | _ -> error_uniop "lq" a
-      in
-      let fd a = lq a in
-      let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
-      let r (a, o, aa) =
-        let reverse _ap _aa t = (_lq_backward o aa, a) :: t in
-        let input t = a :: t in
-        let label = "LQ_D", [a] in
-        reverse, input, label
-      in
-      pair_op_d_d a ff fd df r
+      fun a ->
+        let ff = function
+          | Arr a ->
+            let l, q = A.(lq a) in
+            Arr l, Arr q
+          | _ -> error_uniop "lq" a
+        in
+        let fd a = lq a in
+        let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
+        let r (a, o, aa) =
+          let reverse _ap _aa t = (_lq_backward o aa, a) :: t in
+          let input t = a :: t in
+          let label = "LQ_D", [ a ] in
+          reverse, input, label
+        in
+        pair_op_d_d a ff fd df r
 
-    and svd ?(thin = true) a =
+
+    and svd =
       let _svd_backward (o1, o2, o3) (aa1, aa2, aa3) thin =
         let u, s, vt = !o1, !o2, !o3
         and ubar, sbar, vbart = !aa1, !aa2, !aa3 in
@@ -1375,7 +1565,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         and v = transpose vt in
         let ubart = transpose ubar
         and vbar = transpose vbart in
-        let eye n = A.(ones [|1; n|]) |> pack_arr |> diagm in
+        let eye n = A.(ones [| 1; n |]) |> pack_arr |> diagm in
         let e_m = eye (row_num u) in
         let e_n = eye (row_num v) in
         let k = row_num vt in
@@ -1383,44 +1573,47 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           let s2 = sqr s in
           pack_arr
             A.(
-              init_nd [|k; k|] (fun idx ->
+              init_nd [| k; k |] (fun idx ->
                   let i = idx.(0)
                   and j = idx.(1) in
                   if i = j
                   then float_to_elt 0.
-                  else
+                  else (
                     let s2_i = get_item s2 0 i |> unpack_flt in
                     let s2_j = get_item s2 0 j |> unpack_flt in
-                    1. /. (s2_j -. s2_i) |> float_to_elt ))
+                    1. /. (s2_j -. s2_i) |> float_to_elt)))
         in
         let inv_s = pack_flt 1. / s in
         if thin
         then
           (u * sbar *@ vt)
-          + ( ((u *@ (f * ((ut *@ ubar) - (ubart *@ u))) * s) + ((e_m - (u *@ ut)) *@ ubar * inv_s))
-            *@ vt )
-          + ( u
-            *@ ( (transpose s * (f * ((vt *@ vbar) - (vbart *@ v))) *@ vt)
-               + (transpose inv_s * vbart *@ (e_n - (v *@ vt))) ) )
+          + (((u *@ (f * ((ut *@ ubar) - (ubart *@ u))) * s)
+             + ((e_m - (u *@ ut)) *@ ubar * inv_s))
+            *@ vt)
+          + (u
+            *@ ((transpose s * (f * ((vt *@ vbar) - (vbart *@ v))) *@ vt)
+               + (transpose inv_s * vbart *@ (e_n - (v *@ vt)))))
         else raise Owl_exception.NOT_IMPLEMENTED
       in
-      let ff = function
-        | Arr a ->
-          let u, s, vt = A.(svd ~thin a) in
-          Arr u, Arr s, Arr vt
-        | _ -> error_uniop "svd" a
-      in
-      let fd a = svd ~thin a in
-      let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
-      let r (a, o, aa) =
-        let reverse _ap _aa t = (_svd_backward o aa thin, a) :: t in
-        let input t = a :: t in
-        let label = "SVD_D", [a] in
-        reverse, input, label
-      in
-      triple_op_d_d a ff fd df r
+      fun ?(thin = true) a ->
+        let ff = function
+          | Arr a ->
+            let u, s, vt = A.(svd ~thin a) in
+            Arr u, Arr s, Arr vt
+          | _ -> error_uniop "svd" a
+        in
+        let fd a = svd ~thin a in
+        let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
+        let r (a, o, aa) =
+          let reverse _ap _aa t = (_svd_backward o aa thin, a) :: t in
+          let input t = a :: t in
+          let label = "SVD_D", [ a ] in
+          reverse, input, label
+        in
+        triple_op_d_d a ff fd df r
 
-    and lyapunov a q =
+
+    and lyapunov =
       let _lyapunov_backward_a a aa ap =
         let s = lyapunov (transpose a) (neg aa) in
         pack_flt 2. * s *@ ap
@@ -1430,39 +1623,43 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         let s = lyapunov (transpose a) (neg aa) in
         pack_flt 2. * s *@ ap, neg s
       in
-      let ff a q =
-        match a, q with Arr a, Arr q -> Arr A.(lyapunov a q) | _ -> error_binop "lyapunov" a q
-      in
-      let fd a q = lyapunov a q in
-      let df_da cp ap at = lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at))) in
-      let df_dq _cp _qp qt = lyapunov a (neg qt) in
-      let df_daq cp ap at _qp qt =
-        lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at))) + lyapunov ap (neg qt)
-      in
-      let r_d_d a b =
-        let reverse ap aa t =
-          let abar, qbar = _lyapunov_backward_aq (primal a) !aa ap in
-          (abar, a) :: (qbar, q) :: t
+      fun a q ->
+        let ff a q =
+          match a, q with
+          | Arr a, Arr q -> Arr A.(lyapunov a q)
+          | _ -> error_binop "lyapunov" a q
         in
-        let input t = a :: b :: t in
-        let label = "Lyapunov_D_D", [a; b] in
-        reverse, input, label
-      in
-      let r_d_c a _b =
-        let reverse ap aa t = (_lyapunov_backward_a (primal a) !aa ap, a) :: t in
-        let input t = a :: t in
-        let label = "Lyapunov_D_C", [a] in
-        reverse, input, label
-      in
-      let r_c_d _a b =
-        let reverse _ap aa t = (_lyapunov_backward_q (primal a) !aa, q) :: t in
-        let input t = b :: t in
-        let label = "Lyapunov_C_D", [b] in
-        reverse, input, label
-      in
-      op_d_d_d a q ff fd df_da df_dq df_daq r_d_d r_d_c r_c_d
+        let fd a q = lyapunov a q in
+        let df_da cp ap at = lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at))) in
+        let df_dq _cp _qp qt = lyapunov a (neg qt) in
+        let df_daq cp ap at _qp qt =
+          lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at))) + lyapunov ap (neg qt)
+        in
+        let r_d_d a b =
+          let reverse ap aa t =
+            let abar, qbar = _lyapunov_backward_aq (primal a) !aa ap in
+            (abar, a) :: (qbar, q) :: t
+          in
+          let input t = a :: b :: t in
+          let label = "Lyapunov_D_D", [ a; b ] in
+          reverse, input, label
+        in
+        let r_d_c a b =
+          let reverse ap aa t = (_lyapunov_backward_a (primal a) !aa ap, a) :: t in
+          let input t = a :: t in
+          let label = "Lyapunov_D_C", [ a; b ] in
+          reverse, input, label
+        in
+        let r_c_d a b =
+          let reverse _ap aa t = (_lyapunov_backward_q (primal a) !aa, q) :: t in
+          let input t = b :: t in
+          let label = "Lyapunov_C_D", [ a; b ] in
+          reverse, input, label
+        in
+        op_d_d_d a q ff fd df_da df_dq df_daq r_d_d r_d_c r_c_d
 
-    and discrete_lyapunov ?(solver = `default) a q =
+
+    and discrete_lyapunov =
       let _discrete_lyapunov_backward_a a aa ap =
         let s = discrete_lyapunov (transpose a) aa in
         pack_flt 2. * s *@ a *@ ap
@@ -1472,94 +1669,108 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         let s = discrete_lyapunov (transpose a) aa in
         pack_flt 2. * s *@ a *@ ap, s
       in
-      let ff a q =
-        match a, q with
-        | Arr a, Arr q -> Arr A.(discrete_lyapunov ~solver a q)
-        | _ -> error_binop "discrete_lyapunov" a q
-      in
-      let fd a q = discrete_lyapunov ~solver a q in
-      let df_da cp ap at =
-        discrete_lyapunov ap ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose a))
-      in
-      let df_dq _cp _qp qt = discrete_lyapunov a qt in
-      let df_daq cp ap at _qp qt =
-        discrete_lyapunov ap ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose a))
-        + discrete_lyapunov ap qt
-      in
-      let r_d_d a b =
-        let reverse ap aa t =
-          let abar, qbar = _discrete_lyapunov_backward_aq (primal a) !aa ap in
-          (abar, a) :: (qbar, q) :: t
+      fun ?(solver = `default) a q ->
+        let ff a q =
+          match a, q with
+          | Arr a, Arr q -> Arr A.(discrete_lyapunov ~solver a q)
+          | _ -> error_binop "discrete_lyapunov" a q
         in
-        let input t = a :: b :: t in
-        let label = "Discrete_Lyapunov_D_D", [a; b] in
-        reverse, input, label
-      in
-      let r_d_c a _b =
-        let reverse ap aa t = (_discrete_lyapunov_backward_a (primal a) !aa ap, a) :: t in
-        let input t = a :: t in
-        let label = "Discrete_Lyapunov_D_C", [a] in
-        reverse, input, label
-      in
-      let r_c_d _a b =
-        let reverse _ap aa t = (_discrete_lyapunov_backward_q (primal a) !aa, q) :: t in
-        let input t = b :: t in
-        let label = "Discrete_Lyapunov_C_D", [b] in
-        reverse, input, label
-      in
-      op_d_d_d a q ff fd df_da df_dq df_daq r_d_d r_d_c r_c_d
+        let fd a q = discrete_lyapunov ~solver a q in
+        let df_da cp ap at =
+          discrete_lyapunov ap ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose a))
+        in
+        let df_dq _cp _qp qt = discrete_lyapunov a qt in
+        let df_daq cp ap at _qp qt =
+          discrete_lyapunov ap ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose a))
+          + discrete_lyapunov ap qt
+        in
+        let r_d_d a b =
+          let reverse ap aa t =
+            let abar, qbar = _discrete_lyapunov_backward_aq (primal a) !aa ap in
+            (abar, a) :: (qbar, q) :: t
+          in
+          let input t = a :: b :: t in
+          let label = "Discrete_Lyapunov_D_D", [ a; b ] in
+          reverse, input, label
+        in
+        let r_d_c a b =
+          let reverse ap aa t =
+            (_discrete_lyapunov_backward_a (primal a) !aa ap, a) :: t
+          in
+          let input t = a :: t in
+          let label = "Discrete_Lyapunov_D_C", [ a; b ] in
+          reverse, input, label
+        in
+        let r_c_d a b =
+          let reverse _ap aa t =
+            (_discrete_lyapunov_backward_q (primal a) !aa, q) :: t
+          in
+          let input t = b :: t in
+          let label = "Discrete_Lyapunov_C_D", [ a; b ] in
+          reverse, input, label
+        in
+        op_d_d_d a q ff fd df_da df_dq df_daq r_d_d r_d_c r_c_d
+
 
     and ( /@ ) a b = linsolve ~trans:false ~typ:`n a b
 
-    and linsolve ?(trans = false) ?(typ = `n) a b =
+    and linsolve =
       let _linsolve_backward_b trans typ a cbar =
         linsolve ~trans:(not trans) ~typ (primal a) cbar
       in
       let _linsolve_backward_a trans typ cp bbar =
         let abar = neg bbar *@ transpose cp in
         let abar = if trans then transpose abar else abar in
-        match typ with `n -> abar | `u -> triu abar | `l -> tril abar
+        match typ with
+        | `n -> abar
+        | `u -> triu abar
+        | `l -> tril abar
       in
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b -> Arr A.(linsolve ~trans ~typ a b)
-        | _ -> error_binop "linsolve" a b
-      in
-      let fd a b = linsolve ~trans ~typ a b in
-      let df_da cp ap at =
-        linsolve ~trans ap (if trans then neg (transpose at) *@ cp else neg at *@ cp)
-      in
-      let df_db _cp _bp bt = linsolve ~trans a bt in
-      let df_dab cp ap at _bp bt =
-        linsolve ~trans ap (if trans then bt - (transpose at *@ cp) else bt - (at *@ cp))
-      in
-      let r_d_d a b =
-        let reverse ap aa t =
-          let bbar = _linsolve_backward_b trans typ a !aa in
-          let abar = _linsolve_backward_a trans typ ap bbar in
-          (abar, a) :: (bbar, b) :: t
+      fun ?(trans = false) ?(typ = `n) a b ->
+        let ff a b =
+          match a, b with
+          | Arr a, Arr b -> Arr A.(linsolve ~trans ~typ a b)
+          | _ -> error_binop "linsolve" a b
         in
-        let input t = a :: b :: t in
-        let label = "Linsolve_D_D", [a; b] in
-        reverse, input, label
-      in
-      let r_d_c a _b =
-        let reverse ap aa t =
-          let bbar = _linsolve_backward_b trans typ a !aa in
-          let abar = _linsolve_backward_a trans typ ap bbar in
-          (abar, a) :: t
+        let fd a b = linsolve ~trans ~typ a b in
+        let df_da cp ap at =
+          linsolve ~trans ap (if trans then neg (transpose at) *@ cp else neg at *@ cp)
         in
-        let input t = a :: t in
-        let label = "Linsolve_D_C", [a] in
-        reverse, input, label
-      in
-      let r_c_d _a b =
-        let reverse _ap aa t = (_linsolve_backward_b trans typ a !aa, b) :: t in
-        let input t = b :: t in
-        let label = "Linsolve_C_D", [b] in
-        reverse, input, label
-      in
-      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+        let df_db _cp _bp bt = linsolve ~trans a bt in
+        let df_dab cp ap at _bp bt =
+          linsolve
+            ~trans
+            ap
+            (if trans then bt - (transpose at *@ cp) else bt - (at *@ cp))
+        in
+        let r_d_d a b =
+          let reverse ap aa t =
+            let bbar = _linsolve_backward_b trans typ a !aa in
+            let abar = _linsolve_backward_a trans typ ap bbar in
+            (abar, a) :: (bbar, b) :: t
+          in
+          let input t = a :: b :: t in
+          let label = "Linsolve_D_D", [ a; b ] in
+          reverse, input, label
+        in
+        let r_d_c a b =
+          let reverse ap aa t =
+            let bbar = _linsolve_backward_b trans typ a !aa in
+            let abar = _linsolve_backward_a trans typ ap bbar in
+            (abar, a) :: t
+          in
+          let input t = a :: t in
+          let label = "Linsolve_D_C", [ a; b ] in
+          reverse, input, label
+        in
+        let r_c_d a b =
+          let reverse _ap aa t = (_linsolve_backward_b trans typ a !aa, b) :: t in
+          let input t = b :: t in
+          let label = "Linsolve_C_D", [ a; b ] in
+          reverse, input, label
+        in
+        op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
 
     and softplus x = log (pack_flt 1. + exp x)
     and softsign x = x / (pack_flt 1. + abs x)
@@ -1569,6 +1780,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let y = exp (x - c) in
       let a = sum ~axis y in
       y / a
+
 
     and cross_entropy x y = x * log y |> sum' |> neg
 
@@ -1588,25 +1800,29 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let r_d_d a b =
         let reverse _ap aa t = (!aa, a) :: (get_row !aa i, b) :: t in
         let input t = a :: b :: t in
-        let label = "Add_Row_D_D", [a; b] in
+        let label = "Add_Row_D_D", [ a; b ] in
         reverse, input, label
       in
-      let r_d_c a _b =
+      let r_d_c a b =
         let reverse _ap aa t = (!aa, a) :: t in
         let input t = a :: t in
-        let label = "Add_Row_D_C", [a] in
+        let label = "Add_Row_D_C", [ a; b ] in
         reverse, input, label
       in
-      let r_c_d _a b =
+      let r_c_d a b =
         let reverse _ap aa t = (get_row !aa i, b) :: t in
         let input t = b :: t in
-        let label = "Add_Row_C_D", [b] in
+        let label = "Add_Row_C_D", [ a; b ] in
         reverse, input, label
       in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
+
     and get_row a i =
-      let ff = function Arr a -> Arr A.(row a i |> copy) | _ -> error_uniop "get_row" a in
+      let ff = function
+        | Arr a -> Arr A.(row a i |> copy)
+        | _ -> error_uniop "get_row" a
+      in
       let fd a = get_row a i in
       let df _cp _ap at = get_row at i in
       let r a =
@@ -1615,10 +1831,11 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           (zero a, a) :: t
         in
         let input t = a :: t in
-        let label = "Get_Row_D", [a] in
+        let label = "Get_Row_D", [ a ] in
         reverse, input, label
       in
       op_d_d a ff fd df r
+
 
     and to_rows a = Array.init (row_num a) (fun i -> get_row a i)
 
@@ -1627,8 +1844,12 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       match a.(0) with
       | Arr _ -> Array.map unpack_arr a |> A.of_rows |> pack_arr
       | DF (_, _, ai) ->
-        let ap = a |> Array.map (fun x -> x |> primal |> unpack_arr) |> A.of_rows |> pack_arr in
-        let at = a |> Array.map (fun x -> x |> tangent |> unpack_arr) |> A.of_rows |> pack_arr in
+        let ap =
+          a |> Array.map (fun x -> x |> primal |> unpack_arr) |> A.of_rows |> pack_arr
+        in
+        let at =
+          a |> Array.map (fun x -> x |> tangent |> unpack_arr) |> A.of_rows |> pack_arr
+        in
         DF (ap, at, ai)
       | DR (_, _, _, _, ai, _) ->
         let ap = a |> Array.map (fun x -> x |> primal) in
@@ -1640,6 +1861,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         let label = "Of_Rows_D", Array.to_list a in
         DR (cp, ref (zero cp), (reverse, input, label), ref 0, ai, ref 0)
       | _ -> error_uniop "of_rows a.(0)" a.(0)
+
 
     and of_arrays a =
       (* mode: 0 constant, 1 reverse, 2 tangent *)
@@ -1671,15 +1893,23 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
                   ai_ref := ai;
                   mode := 2;
                   unpack_elt x
-                | _, _ -> error_uniop "of_arrays: inconsistent array" x )
-              xs )
+                | _, _ -> error_uniop "of_arrays: inconsistent array" x)
+              xs)
           a
         |> A.of_arrays
         |> pack_arr
       in
       match !mode with
       | 0 -> cp
-      | 1 -> DR (cp, ref (zero cp), Of_Arrays_D (a, List.rev !idxs), ref 0, !ai_ref, ref 0)
+      | 1 ->
+        let idxs = List.rev !idxs in
+        let reverse _ap aa t =
+          let aa_arrays = to_arrays !aa in
+          t |> List.append (idxs |> List.map (fun (i, j) -> aa_arrays.(i).(j), a.(i).(j)))
+        in
+        let input t = List.(append (map (fun (i, j) -> a.(i).(j)) idxs) t) in
+        let label = "Of_Arrays_D", List.map (fun (i, j) -> a.(i).(j)) idxs in
+        DR (cp, ref (zero cp), (reverse, input, label), ref 0, !ai_ref, ref 0)
       | 2 ->
         let at =
           a
@@ -1690,436 +1920,702 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         DF (cp, at, !ai_ref)
       | _ -> error_uniop "of_arrays" a.(0).(0)
 
+
     and to_arrays a =
       Array.init (row_num a) (fun i -> Array.init (col_num a) (fun j -> get_item a i j))
 
-    (* NOTE: these fucntions are for neural network. There are many restrictions
-       at the moment. E.g. they do not support higher-order derivatives, and some
-       do not support forward mode, so use them when you know what you are doing.
-    *)
-    
-    (* a:input; b:kernel; s:stride *)
-    and conv1d ?padding a b s =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b -> Arr A.(conv1d ?padding a b s)
-        | _ -> error_binop "conv1d" a b
-      in
-      let fd a b = conv1d ?padding a b s in
-      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da _cp _ap _at = failwith "conv1d:df_da" in
-      let df_db _cp _bp _bt = failwith "conv1d:df_db" in
-      let df_dab _cp _ap _at _bp _bt = failwith "conv1d:df_dab" in
-      let r_d_d a b = Conv1D_D_D (a, b, s) in
-      let r_d_c a b = Conv1D_D_C (a, b, s) in
-      let r_c_d a b = Conv1D_C_D (a, b, s) in
-      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    (* a:input; b:kernel; s:stride; o:output' *)
-    and conv1d_backward_input a b s o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.conv1d_backward_input a b s o |> pack_arr
-
-    (* a:input; b:kernel; s:stride; o:output' *)
-    and conv1d_backward_kernel a b s o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.conv1d_backward_kernel a b s o |> pack_arr
+    (* NOTE: these fucntions are for neural network. There are many restrictions at the
+       moment. E.g. they do not support higher-order derivatives, and some do not support
+       forward mode, so use them when you know what you are doing. *)
 
     (* a:input; b:kernel; s:stride *)
-    and conv2d ?padding a b s =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b -> Arr A.(conv2d ?padding a b s)
-        | _ -> error_binop "conv2d" a b
+    and conv1d =
+      (* a:input; b:kernel; s:stride; o:output' *)
+      let conv1d_backward_input a b s o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.conv1d_backward_input a b s o |> pack_arr
       in
-      let fd a b = conv2d ?padding a b s in
-      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da _cp _ap at = at in
-      let df_db _cp _bp bt = bt in
-      let df_dab _cp _ap at _bp bt = at + bt in
-      let r_d_d a b = Conv2D_D_D (a, b, s) in
-      let r_d_c a b = Conv2D_D_C (a, b, s) in
-      let r_c_d a b = Conv2D_C_D (a, b, s) in
-      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      (* a:input; b:kernel; s:stride; o:output' *)
+      let conv1d_backward_kernel a b s o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.conv1d_backward_kernel a b s o |> pack_arr
+      in
+      fun ?padding a b s ->
+        let ff a b =
+          match a, b with
+          | Arr a, Arr b -> Arr A.(conv1d ?padding a b s)
+          | _ -> error_binop "conv1d" a b
+        in
+        let fd a b = conv1d ?padding a b s in
+        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+        let df_da _cp _ap _at = failwith "conv1d:df_da" in
+        let df_db _cp _bp _bt = failwith "conv1d:df_db" in
+        let df_dab _cp _ap _at _bp _bt = failwith "conv1d:df_dab" in
+        let r_d_d a b =
+          let reverse _ap aa t =
+            (conv1d_backward_input a b s !aa, a)
+            :: (conv1d_backward_kernel a b s !aa, b)
+            :: t
+          in
+          let input t = a :: b :: t in
+          let label = "Conv1D_D_D", [ a; b ] in
+          reverse, input, label
+        in
+        let r_d_c a b =
+          let reverse _ap aa t = (conv1d_backward_input a b s !aa, a) :: t in
+          let input t = a :: t in
+          let label = "Conv1D_D_C", [ a; b ] in
+          reverse, input, label
+        in
+        let r_c_d a b =
+          let reverse _ap aa t = (conv1d_backward_kernel a b s !aa, b) :: t in
+          let input t = b :: t in
+          let label = "Conv1D_C_D", [ a; b ] in
+          reverse, input, label
+        in
+        op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    (* a:input; b:kernel; s:stride; o:output' *)
-    and conv2d_backward_input a b s o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.conv2d_backward_input a b s o |> pack_arr
-
-    (* a:input; b:kernel; s:stride; o:output' *)
-    and conv2d_backward_kernel a b s o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.conv2d_backward_kernel a b s o |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
-    and conv3d ?padding a b s =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b -> Arr A.(conv3d ?padding a b s)
-        | _ -> error_binop "conv3d" a b
+    and conv2d =
+      (* a:input; b:kernel; s:stride; o:output' *)
+      let conv2d_backward_input a b s o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.conv2d_backward_input a b s o |> pack_arr
       in
-      let fd a b = conv3d ?padding a b s in
-      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da _cp _ap at = at in
-      let df_db _cp _bp bt = bt in
-      let df_dab _cp _ap at _bp bt = at + bt in
-      let r_d_d a b = Conv3D_D_D (a, b, s) in
-      let r_d_c a b = Conv3D_D_C (a, b, s) in
-      let r_c_d a b = Conv3D_C_D (a, b, s) in
-      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      (* a:input; b:kernel; s:stride; o:output' *)
+      let conv2d_backward_kernel a b s o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.conv2d_backward_kernel a b s o |> pack_arr
+      in
+      fun ?padding a b s ->
+        let ff a b =
+          match a, b with
+          | Arr a, Arr b -> Arr A.(conv2d ?padding a b s)
+          | _ -> error_binop "conv2d" a b
+        in
+        let fd a b = conv2d ?padding a b s in
+        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+        let df_da _cp _ap at = at in
+        let df_db _cp _bp bt = bt in
+        let df_dab _cp _ap at _bp bt = at + bt in
+        let r_d_d a b =
+          let reverse _ap aa t =
+            (conv2d_backward_input a b s !aa, a)
+            :: (conv2d_backward_kernel a b s !aa, b)
+            :: t
+          in
+          let input t = a :: b :: t in
+          let label = "Conv2D_D_D", [ a; b ] in
+          reverse, input, label
+        in
+        let r_d_c a b =
+          let reverse _ap aa t = (conv2d_backward_input a b s !aa, a) :: t in
+          let input t = a :: t in
+          let label = "Conv2D_D_C", [ a; b ] in
+          reverse, input, label
+        in
+        let r_c_d a b =
+          let reverse _ap aa t = (conv2d_backward_kernel a b s !aa, b) :: t in
+          let input t = b :: t in
+          let label = "Conv2D_C_D", [ a; b ] in
+          reverse, input, label
+        in
+        op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    (* a:input; b:kernel; s:stride; o:output' *)
-    and conv3d_backward_input a b s o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.conv3d_backward_input a b s o |> pack_arr
 
-    (* a:input; b:kernel; s:stride; o:output' *)
-    and conv3d_backward_kernel a b s o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.conv3d_backward_kernel a b s o |> pack_arr
+    (* a:input; b:kernel; s:stride *)
+    and conv3d =
+      (* a:input; b:kernel; s:stride; o:output' *)
+      let conv3d_backward_input a b s o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.conv3d_backward_input a b s o |> pack_arr
+      (* a:input; b:kernel; s:stride; o:output' *)
+      and conv3d_backward_kernel a b s o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.conv3d_backward_kernel a b s o |> pack_arr
+      in
+      fun ?padding a b s ->
+        let ff a b =
+          match a, b with
+          | Arr a, Arr b -> Arr A.(conv3d ?padding a b s)
+          | _ -> error_binop "conv3d" a b
+        in
+        let fd a b = conv3d ?padding a b s in
+        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+        let df_da _cp _ap at = at in
+        let df_db _cp _bp bt = bt in
+        let df_dab _cp _ap at _bp bt = at + bt in
+        let r_d_d a b =
+          let reverse _ap aa t =
+            (conv3d_backward_input a b s !aa, a)
+            :: (conv3d_backward_kernel a b s !aa, b)
+            :: t
+          in
+          let input t = a :: b :: t in
+          let label = "Conv3D_D_D", [ a; b ] in
+          reverse, input, label
+        in
+        let r_d_c a b =
+          let reverse _ap aa t = (conv3d_backward_input a b s !aa, a) :: t in
+          let input t = a :: t in
+          let label = "Conv3D_D_C", [ a; b ] in
+          reverse, input, label
+        in
+        let r_c_d a b =
+          let reverse _ap aa t = (conv3d_backward_kernel a b s !aa, b) :: t in
+          let input t = b :: t in
+          let label = "Conv3D_C_D", [ a; b ] in
+          reverse, input, label
+        in
+        op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
 
     (* a:input; b:kernel; s:stride; r:rate *)
-    and dilated_conv1d ?padding a b s r =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b -> Arr A.(dilated_conv1d ?padding a b s r)
-        | _ -> error_binop "dilated_conv1d" a b
+    and dilated_conv1d =
+      (* a:input; b:kernel; o:output'; s:stride; r:rate *)
+      let dilated_conv1d_backward_input a b s r o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.dilated_conv1d_backward_input a b s r o |> pack_arr
+      (* a:input; b:kernel; o:output'; s:stride; r:rate *)
+      and dilated_conv1d_backward_kernel a b s r o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.dilated_conv1d_backward_kernel a b s r o |> pack_arr
       in
-      let fd a b = dilated_conv1d ?padding a b s r in
-      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da _cp _ap at = at in
-      let df_db _cp _bp bt = bt in
-      let df_dab _cp _ap at _bp bt = at + bt in
-      let r_d_d a b = Di_Conv1D_D_D (a, b, s, r) in
-      let r_d_c a b = Di_Conv1D_D_C (a, b, s, r) in
-      let r_c_d a b = Di_Conv1D_C_D (a, b, s, r) in
-      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      fun ?padding a b s r ->
+        let ff a b =
+          match a, b with
+          | Arr a, Arr b -> Arr A.(dilated_conv1d ?padding a b s r)
+          | _ -> error_binop "dilated_conv1d" a b
+        in
+        let fd a b = dilated_conv1d ?padding a b s r in
+        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+        let df_da _cp _ap at = at in
+        let df_db _cp _bp bt = bt in
+        let df_dab _cp _ap at _bp bt = at + bt in
+        let r_d_d a b =
+          let reverse _ap aa t =
+            (dilated_conv1d_backward_input a b s r !aa, a)
+            :: (dilated_conv1d_backward_kernel a b s r !aa, b)
+            :: t
+          in
+          let input t = a :: b :: t in
+          let label = "Di_Conv1D_D_D", [ a; b ] in
+          reverse, input, label
+        in
+        let r_d_c a b =
+          let reverse _ap aa t = (dilated_conv1d_backward_input a b s r !aa, a) :: t in
+          let input t = a :: t in
+          let label = "Di_Conv1D_D_C", [ a; b ] in
+          reverse, input, label
+        in
+        let r_c_d a b =
+          let reverse _ap aa t = (dilated_conv1d_backward_kernel a b s r !aa, b) :: t in
+          let input t = b :: t in
+          let label = "Di_Conv1D_C_D", [ a; b ] in
+          reverse, input, label
+        in
+        op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    (* a:input; b:kernel; o:output'; s:stride; r:rate *)
-    and dilated_conv1d_backward_input a b s r o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.dilated_conv1d_backward_input a b s r o |> pack_arr
-
-    (* a:input; b:kernel; o:output'; s:stride; r:rate *)
-    and dilated_conv1d_backward_kernel a b s r o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.dilated_conv1d_backward_kernel a b s r o |> pack_arr
 
     (* a:input; b:kernel; s:stride; r:rate *)
-    and dilated_conv2d ?padding a b s r =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b -> Arr A.(dilated_conv2d ?padding a b s r)
-        | _ -> error_binop "dilated_conv2d" a b
+    and dilated_conv2d =
+      (* a:input; b:kernel; o:output'; s:stride; r:rate *)
+      let dilated_conv2d_backward_input a b s r o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.dilated_conv2d_backward_input a b s r o |> pack_arr
+      (* a:input; b:kernel; o:output'; s:stride; r:rate *)
+      and dilated_conv2d_backward_kernel a b s r o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.dilated_conv2d_backward_kernel a b s r o |> pack_arr
       in
-      let fd a b = dilated_conv2d ?padding a b s r in
-      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da _cp _ap at = at in
-      let df_db _cp _bp bt = bt in
-      let df_dab _cp _ap at _bp bt = at + bt in
-      let r_d_d a b = Di_Conv2D_D_D (a, b, s, r) in
-      let r_d_c a b = Di_Conv2D_D_C (a, b, s, r) in
-      let r_c_d a b = Di_Conv2D_C_D (a, b, s, r) in
-      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      fun ?padding a b s r ->
+        let ff a b =
+          match a, b with
+          | Arr a, Arr b -> Arr A.(dilated_conv2d ?padding a b s r)
+          | _ -> error_binop "dilated_conv2d" a b
+        in
+        let fd a b = dilated_conv2d ?padding a b s r in
+        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+        let df_da _cp _ap at = at in
+        let df_db _cp _bp bt = bt in
+        let df_dab _cp _ap at _bp bt = at + bt in
+        let r_d_d a b =
+          let reverse _ap aa t =
+            (dilated_conv2d_backward_input a b s r !aa, a)
+            :: (dilated_conv2d_backward_kernel a b s r !aa, b)
+            :: t
+          in
+          let input t = a :: b :: t in
+          let label = "Di_Conv2D_D_D", [ a; b ] in
+          reverse, input, label
+        in
+        let r_d_c a b =
+          let reverse _ap aa t = (dilated_conv2d_backward_input a b s r !aa, a) :: t in
+          let input t = a :: t in
+          let label = "Di_Conv2D_D_C", [ a; b ] in
+          reverse, input, label
+        in
+        let r_c_d a b =
+          let reverse _ap aa t = (dilated_conv2d_backward_kernel a b s r !aa, b) :: t in
+          let input t = b :: t in
+          let label = "Di_Conv2D_C_D", [ a; b ] in
+          reverse, input, label
+        in
+        op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    (* a:input; b:kernel; o:output'; s:stride; r:rate *)
-    and dilated_conv2d_backward_input a b s r o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.dilated_conv2d_backward_input a b s r o |> pack_arr
-
-    (* a:input; b:kernel; o:output'; s:stride; r:rate *)
-    and dilated_conv2d_backward_kernel a b s r o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.dilated_conv2d_backward_kernel a b s r o |> pack_arr
 
     (* a:input; b:kernel; s:stride; r:rate *)
-    and dilated_conv3d ?padding a b s r =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b -> Arr A.(dilated_conv3d ?padding a b s r)
-        | _ -> error_binop "dilated_conv3d" a b
+    and dilated_conv3d =
+      (* a:input; b:kernel; o:output'; s:stride; r:rate *)
+      let dilated_conv3d_backward_input a b s r o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.dilated_conv3d_backward_input a b s r o |> pack_arr
+      (* a:input; b:kernel; o:output'; s:stride; r:rate *)
+      and dilated_conv3d_backward_kernel a b s r o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.dilated_conv3d_backward_kernel a b s r o |> pack_arr
       in
-      let fd a b = dilated_conv3d ?padding a b s r in
-      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da _cp _ap at = at in
-      let df_db _cp _bp bt = bt in
-      let df_dab _cp _ap at _bp bt = at + bt in
-      let r_d_d a b = Di_Conv3D_D_D (a, b, s, r) in
-      let r_d_c a b = Di_Conv3D_D_C (a, b, s, r) in
-      let r_c_d a b = Di_Conv3D_C_D (a, b, s, r) in
-      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      fun ?padding a b s r ->
+        let ff a b =
+          match a, b with
+          | Arr a, Arr b -> Arr A.(dilated_conv3d ?padding a b s r)
+          | _ -> error_binop "dilated_conv3d" a b
+        in
+        let fd a b = dilated_conv3d ?padding a b s r in
+        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+        let df_da _cp _ap at = at in
+        let df_db _cp _bp bt = bt in
+        let df_dab _cp _ap at _bp bt = at + bt in
+        let r_d_d a b =
+          let reverse _ap aa t =
+            (dilated_conv3d_backward_input a b s r !aa, a)
+            :: (dilated_conv3d_backward_kernel a b s r !aa, b)
+            :: t
+          in
+          let input t = a :: b :: t in
+          let label = "Di_Conv3D_D_D", [ a; b ] in
+          reverse, input, label
+        in
+        let r_d_c a b =
+          let reverse _ap aa t = (dilated_conv3d_backward_input a b s r !aa, a) :: t in
+          let input t = a :: t in
+          let label = "Di_Conv3D_D_C", [ a; b ] in
+          reverse, input, label
+        in
+        let r_c_d a b =
+          let reverse _ap aa t = (dilated_conv3d_backward_kernel a b s r !aa, b) :: t in
+          let input t = b :: t in
+          let label = "Di_Conv3D_C_D", [ a; b ] in
+          reverse, input, label
+        in
+        op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    (* a:input; b:kernel; o:output'; s:stride; r:rate *)
-    and dilated_conv3d_backward_input a b s r o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.dilated_conv3d_backward_input a b s r o |> pack_arr
-
-    (* a:input; b:kernel; o:output'; s:stride; r:rate *)
-    and dilated_conv3d_backward_kernel a b s r o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.dilated_conv3d_backward_kernel a b s r o |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
-    and transpose_conv1d ?padding a b s =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b -> Arr A.(transpose_conv1d ?padding a b s)
-        | _ -> error_binop "transpose_conv1d" a b
+    and transpose_conv1d =
+      (* a:input; b:kernel; s:stride; o:output' *)
+      let transpose_conv1d_backward_input a b s o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.transpose_conv1d_backward_input a b s o |> pack_arr
+      (* a:input; b:kernel; s:stride; o:output' *)
+      and transpose_conv1d_backward_kernel a b s o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.transpose_conv1d_backward_kernel a b s o |> pack_arr
       in
-      let fd a b = transpose_conv1d ?padding a b s in
-      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da _cp _ap at = at in
-      let df_db _cp _bp bt = bt in
-      let df_dab _cp _ap at _bp bt = at + bt in
-      let r_d_d a b = Tr_Conv1D_D_D (a, b, s) in
-      let r_d_c a b = Tr_Conv1D_D_C (a, b, s) in
-      let r_c_d a b = Tr_Conv1D_C_D (a, b, s) in
-      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      fun ?padding a b s ->
+        let ff a b =
+          match a, b with
+          | Arr a, Arr b -> Arr A.(transpose_conv1d ?padding a b s)
+          | _ -> error_binop "transpose_conv1d" a b
+        in
+        let fd a b = transpose_conv1d ?padding a b s in
+        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+        let df_da _cp _ap at = at in
+        let df_db _cp _bp bt = bt in
+        let df_dab _cp _ap at _bp bt = at + bt in
+        let r_d_d a b =
+          let reverse _ap aa t =
+            (transpose_conv1d_backward_input a b s !aa, a)
+            :: (transpose_conv1d_backward_kernel a b s !aa, b)
+            :: t
+          in
+          let input t = a :: b :: t in
+          let label = "Tr_Conv1D_D_D", [ a; b ] in
+          reverse, input, label
+        in
+        let r_d_c a b =
+          let reverse _ap aa t = (transpose_conv1d_backward_input a b s !aa, a) :: t in
+          let input t = a :: t in
+          let label = "Tr_Conv1D_D_C", [ a; b ] in
+          reverse, input, label
+        in
+        let r_c_d a b =
+          let reverse _ap aa t = (transpose_conv1d_backward_kernel a b s !aa, b) :: t in
+          let input t = b :: t in
+          let label = "Tr_Conv1D_C_D", [ a; b ] in
+          reverse, input, label
+        in
+        op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    (* a:input; b:kernel; s:stride; o:output' *)
-    and transpose_conv1d_backward_input a b s o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.transpose_conv1d_backward_input a b s o |> pack_arr
-
-    (* a:input; b:kernel; s:stride; o:output' *)
-    and transpose_conv1d_backward_kernel a b s o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.transpose_conv1d_backward_kernel a b s o |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
-    and transpose_conv2d ?padding a b s =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b -> Arr A.(transpose_conv2d ?padding a b s)
-        | _ -> error_binop "transpose_conv2d" a b
+    and transpose_conv2d =
+      (* a:input; b:kernel; s:stride; o:output' *)
+      let transpose_conv2d_backward_input a b s o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.transpose_conv2d_backward_input a b s o |> pack_arr
+      (* a:input; b:kernel; s:stride; o:output' *)
+      and transpose_conv2d_backward_kernel a b s o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.transpose_conv2d_backward_kernel a b s o |> pack_arr
       in
-      let fd a b = transpose_conv2d ?padding a b s in
-      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da _cp _ap at = at in
-      let df_db _cp _bp bt = bt in
-      let df_dab _cp _ap at _bp bt = at + bt in
-      let r_d_d a b = Tr_Conv2D_D_D (a, b, s) in
-      let r_d_c a b = Tr_Conv2D_D_C (a, b, s) in
-      let r_c_d a b = Tr_Conv2D_C_D (a, b, s) in
-      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      fun ?padding a b s ->
+        let ff a b =
+          match a, b with
+          | Arr a, Arr b -> Arr A.(transpose_conv2d ?padding a b s)
+          | _ -> error_binop "transpose_conv2d" a b
+        in
+        let fd a b = transpose_conv2d ?padding a b s in
+        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+        let df_da _cp _ap at = at in
+        let df_db _cp _bp bt = bt in
+        let df_dab _cp _ap at _bp bt = at + bt in
+        let r_d_d a b =
+          let reverse _ap aa t =
+            (transpose_conv2d_backward_input a b s !aa, a)
+            :: (transpose_conv2d_backward_kernel a b s !aa, b)
+            :: t
+          in
+          let input t = a :: b :: t in
+          let label = "Tr_Conv2D_D_D", [ a; b ] in
+          reverse, input, label
+        in
+        let r_d_c a b =
+          let reverse _ap aa t = (transpose_conv2d_backward_input a b s !aa, a) :: t in
+          let input t = a :: t in
+          let label = "Tr_Conv2D_D_C", [ a; b ] in
+          reverse, input, label
+        in
+        let r_c_d a b =
+          let reverse _ap aa t = (transpose_conv2d_backward_kernel a b s !aa, b) :: t in
+          let input t = b :: t in
+          let label = "Tr_Conv2D_C_D", [ a; b ] in
+          reverse, input, label
+        in
+        op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    (* a:input; b:kernel; s:stride; o:output' *)
-    and transpose_conv2d_backward_input a b s o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.transpose_conv2d_backward_input a b s o |> pack_arr
-
-    (* a:input; b:kernel; s:stride; o:output' *)
-    and transpose_conv2d_backward_kernel a b s o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.transpose_conv2d_backward_kernel a b s o |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
-    and transpose_conv3d ?padding a b s =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b -> Arr A.(transpose_conv3d ?padding a b s)
-        | _ -> error_binop "transpose_conv3d" a b
+    and transpose_conv3d =
+      (* a:input; b:kernel; s:stride; o:output' *)
+      let transpose_conv3d_backward_input a b s o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.transpose_conv3d_backward_input a b s o |> pack_arr
+      (* a:input; b:kernel; s:stride; o:output' *)
+      and transpose_conv3d_backward_kernel a b s o =
+        let a = unpack_arr a in
+        let b = unpack_arr b in
+        let o = unpack_arr o in
+        A.transpose_conv3d_backward_kernel a b s o |> pack_arr
       in
-      let fd a b = transpose_conv3d ?padding a b s in
-      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-      let df_da _cp _ap at = at in
-      let df_db _cp _bp bt = bt in
-      let df_dab _cp _ap at _bp bt = at + bt in
-      let r_d_d a b = Tr_Conv3D_D_D (a, b, s) in
-      let r_d_c a b = Tr_Conv3D_D_C (a, b, s) in
-      let r_c_d a b = Tr_Conv3D_C_D (a, b, s) in
-      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      fun ?padding a b s ->
+        let ff a b =
+          match a, b with
+          | Arr a, Arr b -> Arr A.(transpose_conv3d ?padding a b s)
+          | _ -> error_binop "transpose_conv3d" a b
+        in
+        let fd a b = transpose_conv3d ?padding a b s in
+        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+        let df_da _cp _ap at = at in
+        let df_db _cp _bp bt = bt in
+        let df_dab _cp _ap at _bp bt = at + bt in
+        let r_d_d a b =
+          let reverse _ap aa t =
+            (transpose_conv3d_backward_input a b s !aa, a)
+            :: (transpose_conv3d_backward_kernel a b s !aa, b)
+            :: t
+          in
+          let input t = a :: b :: t in
+          let label = "Tr_Conv3D_D_D", [ a; b ] in
+          reverse, input, label
+        in
+        let r_d_c a b =
+          let reverse _ap aa t = (transpose_conv3d_backward_input a b s !aa, a) :: t in
+          let input t = a :: t in
+          let label = "Tr_Conv3D_D_C", [ a; b ] in
+          reverse, input, label
+        in
+        let r_c_d a b =
+          let reverse _ap aa t = (transpose_conv3d_backward_kernel a b s !aa, b) :: t in
+          let input t = b :: t in
+          let label = "Tr_Conv3D_C_D", [ a; b ] in
+          reverse, input, label
+        in
+        op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    (* a:input; b:kernel; s:stride; o:output' *)
-    and transpose_conv3d_backward_input a b s o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.transpose_conv3d_backward_input a b s o |> pack_arr
-
-    (* a:input; b:kernel; s:stride; o:output' *)
-    and transpose_conv3d_backward_kernel a b s o =
-      let a = unpack_arr a in
-      let b = unpack_arr b in
-      let o = unpack_arr o in
-      A.transpose_conv3d_backward_kernel a b s o |> pack_arr
 
     and reshape a s =
-      let ff = function Arr a -> Arr A.(reshape a s) | _ -> error_uniop "reshape" a in
+      let ff = function
+        | Arr a -> Arr A.(reshape a s)
+        | _ -> error_uniop "reshape" a
+      in
       let fd a = reshape a s in
       let df _cp _ap at = reshape at s in
-      let r a = Reshape_D a in
+      let r a =
+        let reverse _ap aa t = (reshape !aa (shape (primal a)), a) :: t in
+        let input t = a :: t in
+        let label = "Reshape_D", [ a ] in
+        reverse, input, label
+      in
       op_d_d a ff fd df r
 
-    and flatten a = reshape a [|1; numel a|]
+
+    and flatten a = reshape a [| 1; numel a |]
 
     (* a:input; b:kernel; s:stride *)
-    and max_pool1d padding a b s =
-      let ff = function
-        | Arr a -> Arr A.(max_pool1d ~padding a b s)
-        | _ -> error_uniop "max_pool1d" a
+    and max_pool1d =
+      (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
+      let max_pool1d_backward p a b s o =
+        let a = unpack_arr a in
+        let o = unpack_arr o in
+        A.max_pool1d_backward p a b s o |> pack_arr
       in
-      let fd a = max_pool1d padding a b s in
-      let df _cp _ap _at = failwith "max_pool1d:df" in
-      let r a = Maxpool1D_D (a, padding, b, s) in
-      op_d_d a ff fd df r
+      fun padding a b s ->
+        let ff = function
+          | Arr a -> Arr A.(max_pool1d ~padding a b s)
+          | _ -> error_uniop "max_pool1d" a
+        in
+        let fd a = max_pool1d padding a b s in
+        let df _cp _ap _at = failwith "max_pool1d:df" in
+        let r a =
+          let reverse _ap aa t =
+            (max_pool1d_backward padding (primal a) b s !aa, a) :: t
+          in
+          let input t = a :: t in
+          let label = "Maxpool1D_D", [ a ] in
+          reverse, input, label
+        in
+        op_d_d a ff fd df r
 
-    (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
-    and max_pool1d_backward p a b s o =
-      let a = unpack_arr a in
-      let o = unpack_arr o in
-      A.max_pool1d_backward p a b s o |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
-    and max_pool2d padding a b s =
-      let ff = function
-        | Arr a -> Arr A.(max_pool2d ~padding a b s)
-        | _ -> error_uniop "max_pool2d" a
+    and max_pool2d =
+      (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
+      let max_pool2d_backward p a b s o =
+        let a = unpack_arr a in
+        let o = unpack_arr o in
+        A.max_pool2d_backward p a b s o |> pack_arr
       in
-      let fd a = max_pool2d padding a b s in
-      let df _cp _ap _at = failwith "max_pool2d:df" in
-      let r a = Maxpool2D_D (a, padding, b, s) in
-      op_d_d a ff fd df r
+      fun padding a b s ->
+        let ff = function
+          | Arr a -> Arr A.(max_pool2d ~padding a b s)
+          | _ -> error_uniop "max_pool2d" a
+        in
+        let fd a = max_pool2d padding a b s in
+        let df _cp _ap _at = failwith "max_pool2d:df" in
+        let r a =
+          let reverse _ap aa t =
+            (max_pool2d_backward padding (primal a) b s !aa, a) :: t
+          in
+          let input t = a :: t in
+          let label = "Maxpool2D_D", [ a ] in
+          reverse, input, label
+        in
+        op_d_d a ff fd df r
 
-    (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
-    and max_pool2d_backward p a b s o =
-      let a = unpack_arr a in
-      let o = unpack_arr o in
-      A.max_pool2d_backward p a b s o |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
-    and max_pool3d padding a b s =
-      let ff = function
-        | Arr a -> Arr A.(max_pool3d ~padding a b s)
-        | _ -> error_uniop "max_pool3d" a
+    and max_pool3d =
+      (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
+      let max_pool3d_backward p a b s o =
+        let a = unpack_arr a in
+        let o = unpack_arr o in
+        A.max_pool3d_backward p a b s o |> pack_arr
       in
-      let fd a = max_pool3d padding a b s in
-      let df _cp _ap _at = failwith "max_pool3d:df" in
-      let r a = Maxpool3D_D (a, padding, b, s) in
-      op_d_d a ff fd df r
+      fun padding a b s ->
+        let ff = function
+          | Arr a -> Arr A.(max_pool3d ~padding a b s)
+          | _ -> error_uniop "max_pool3d" a
+        in
+        let fd a = max_pool3d padding a b s in
+        let df _cp _ap _at = failwith "max_pool3d:df" in
+        let r a =
+          let reverse _ap aa t =
+            (max_pool3d_backward padding (primal a) b s !aa, a) :: t
+          in
+          let input t = a :: t in
+          let label = "Maxpool3D_D", [ a ] in
+          reverse, input, label
+        in
+        op_d_d a ff fd df r
 
-    (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
-    and max_pool3d_backward p a b s o =
-      let a = unpack_arr a in
-      let o = unpack_arr o in
-      A.max_pool3d_backward p a b s o |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
-    and avg_pool1d padding a b s =
-      let ff = function
-        | Arr a -> Arr A.(avg_pool1d ~padding a b s)
-        | _ -> error_uniop "avg_pool1d" a
+    and avg_pool1d =
+      (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
+      let avg_pool1d_backward p a b s o =
+        let a = unpack_arr a in
+        let o = unpack_arr o in
+        A.avg_pool1d_backward p a b s o |> pack_arr
       in
-      let fd a = avg_pool1d padding a b s in
-      let df _cp _ap _at = failwith "avg_pool1d:df" in
-      let r a = Avgpool1D_D (a, padding, b, s) in
-      op_d_d a ff fd df r
+      fun padding a b s ->
+        let ff = function
+          | Arr a -> Arr A.(avg_pool1d ~padding a b s)
+          | _ -> error_uniop "avg_pool1d" a
+        in
+        let fd a = avg_pool1d padding a b s in
+        let df _cp _ap _at = failwith "avg_pool1d:df" in
+        let r a =
+          let reverse _ap aa t =
+            (avg_pool1d_backward padding (primal a) b s !aa, a) :: t
+          in
+          let input t = a :: t in
+          let label = "Avgpool1D_D", [ a ] in
+          reverse, input, label
+        in
+        op_d_d a ff fd df r
 
-    (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
-    and avg_pool1d_backward p a b s o =
-      let a = unpack_arr a in
-      let o = unpack_arr o in
-      A.avg_pool1d_backward p a b s o |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
-    and avg_pool2d padding a b s =
-      let ff = function
-        | Arr a -> Arr A.(avg_pool2d ~padding a b s)
-        | _ -> error_uniop "avg_pool2d" a
+    and avg_pool2d =
+      (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
+      let avg_pool2d_backward p a b s o =
+        let a = unpack_arr a in
+        let o = unpack_arr o in
+        A.avg_pool2d_backward p a b s o |> pack_arr
       in
-      let fd a = avg_pool2d padding a b s in
-      let df _cp _ap _at = failwith "avg_pool2d:df" in
-      let r a = Avgpool2D_D (a, padding, b, s) in
-      op_d_d a ff fd df r
+      fun padding a b s ->
+        let ff = function
+          | Arr a -> Arr A.(avg_pool2d ~padding a b s)
+          | _ -> error_uniop "avg_pool2d" a
+        in
+        let fd a = avg_pool2d padding a b s in
+        let df _cp _ap _at = failwith "avg_pool2d:df" in
+        let r a =
+          let reverse _ap aa t =
+            (avg_pool2d_backward padding (primal a) b s !aa, a) :: t
+          in
+          let input t = a :: t in
+          let label = "Avgpool2D_D", [ a ] in
+          reverse, input, label
+        in
+        op_d_d a ff fd df r
 
-    (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
-    and avg_pool2d_backward p a b s o =
-      let a = unpack_arr a in
-      let o = unpack_arr o in
-      A.avg_pool2d_backward p a b s o |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
-    and avg_pool3d padding a b s =
-      let ff = function
-        | Arr a -> Arr A.(avg_pool3d ~padding a b s)
-        | _ -> error_uniop "avg_pool3d" a
+    and avg_pool3d =
+      (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
+      let avg_pool3d_backward p a b s o =
+        let a = unpack_arr a in
+        let o = unpack_arr o in
+        A.avg_pool3d_backward p a b s o |> pack_arr
       in
-      let fd a = avg_pool3d padding a b s in
-      let df _cp _ap _at = failwith "avg_pool3d:df" in
-      let r a = Avgpool3D_D (a, padding, b, s) in
-      op_d_d a ff fd df r
+      fun padding a b s ->
+        let ff = function
+          | Arr a -> Arr A.(avg_pool3d ~padding a b s)
+          | _ -> error_uniop "avg_pool3d" a
+        in
+        let fd a = avg_pool3d padding a b s in
+        let df _cp _ap _at = failwith "avg_pool3d:df" in
+        let r a =
+          let reverse _ap aa t =
+            (avg_pool3d_backward padding (primal a) b s !aa, a) :: t
+          in
+          let input t = a :: t in
+          let label = "Avgpool3D_D", [ a ] in
+          reverse, input, label
+        in
+        op_d_d a ff fd df r
 
-    (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
-    and avg_pool3d_backward p a b s o =
-      let a = unpack_arr a in
-      let o = unpack_arr o in
-      A.avg_pool3d_backward p a b s o |> pack_arr
 
     (* a:input; s:size *)
-    and upsampling2d a s =
-      let ff = function Arr a -> Arr A.(upsampling2d a s) | _ -> error_uniop "upsampling2d" a in
-      let fd a = upsampling2d a s in
-      let df _cp _ap _at = failwith "upsampling2d:df" in
-      let r a = UpSampling2D_D (a, s) in
-      op_d_d a ff fd df r
+    and upsampling2d =
+      (* a:input; s:size; o:output' *)
+      let upsampling2d_backward a s o =
+        let a = unpack_arr a in
+        let o = unpack_arr o in
+        A.upsampling2d_backward a s o |> pack_arr
+      in
+      fun a s ->
+        let ff = function
+          | Arr a -> Arr A.(upsampling2d a s)
+          | _ -> error_uniop "upsampling2d" a
+        in
+        let fd a = upsampling2d a s in
+        let df _cp _ap _at = failwith "upsampling2d:df" in
+        let r a =
+          let reverse _ap aa t = (upsampling2d_backward (primal a) s !aa, a) :: t in
+          let input t = a :: t in
+          let label = "UpSampling2D_D", [ a ] in
+          reverse, input, label
+        in
+        op_d_d a ff fd df r
 
-    (* a:input; s:size; o:output' *)
-    and upsampling2d_backward a s o =
-      let a = unpack_arr a in
-      let o = unpack_arr o in
-      A.upsampling2d_backward a s o |> pack_arr
 
     (* v: padded value; p:padding index; a:input *)
-    and pad ?v p a =
-      let ff = function Arr a -> Arr A.(pad ?v p a) | _ -> error_uniop "pad" a in
-      let fd = pad p in
-      let df _cp _ap _at = failwith "pad:df" in
-      let r a = PAD_D (a, p) in
-      op_d_d a ff fd df r
+    and pad =
+      (* TODO: sources required to confirm this backward op *)
+      (* o:outut'; p: padding index *)
+      let pad_backward o p =
+        (* assume p is full legal index for pad operation *)
+        let o = unpack_arr o in
+        let os = A.shape o in
+        let q = Owl_utils.llss2aarr p in
+        Array.iteri (fun i x -> x.(1) <- Pervasives.(os.(i) - 1 - x.(1))) q;
+        let q = Owl_utils.aarr2llss q in
+        A.(get_slice q o) |> pack_arr
+      in
+      fun ?v p a ->
+        let ff = function
+          | Arr a -> Arr A.(pad ?v p a)
+          | _ -> error_uniop "pad" a
+        in
+        let fd = pad p in
+        let df _cp _ap _at = failwith "pad:df" in
+        let r a =
+          let reverse _ap aa t = (pad_backward !aa p, a) :: t in
+          let input t = a :: t in
+          let label = "PAD_D", [ a ] in
+          reverse, input, label
+        in
+        op_d_d a ff fd df r
 
-    (* TODO: sources required to confirm this backward op *)
-    (* o:outut'; p: padding index *)
-    and pad_backward o p =
-      (* assume p is full legal index for pad operation *)
-      let o = unpack_arr o in
-      let os = A.shape o in
-      let q = Owl_utils.llss2aarr p in
-      Array.iteri (fun i x -> x.(1) <- Pervasives.(os.(i) - 1 - x.(1))) q;
-      let q = Owl_utils.aarr2llss q in
-      A.(get_slice q o) |> pack_arr
 
     and dropout ?(rate = 0.5) a =
       let p = A.float_to_elt (1. -. rate) in
@@ -2130,20 +2626,46 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       in
       a * b
 
+
     and concat axis a b =
       let ff a b =
         match a, b with
-        | Arr a, Arr b -> Arr A.(concatenate ~axis [|a; b|])
+        | Arr a, Arr b -> Arr A.(concatenate ~axis [| a; b |])
         | _ -> error_binop "concat" a b
       in
       let fd a b = concat axis a b in
       let df_da _cp _ap at = concat axis at (zero b) in
       let df_db _cp _bp bt = concat axis (zero a) bt in
       let df_dab _cp _ap at _bp bt = concat axis at bt in
-      let r_d_d a b = Concat_D_D (a, b, axis) in
-      let r_d_c a b = Concat_D_C (a, b, axis) in
-      let r_c_d a b = Concat_C_D (a, b, axis) in
+      let r_d_d a b =
+        let reverse _ap aa t =
+          let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !aa in
+          (s.(0), a) :: (s.(1), b) :: t
+        in
+        let input t = a :: b :: t in
+        let label = "Concat_D_D", [ a; b ] in
+        reverse, input, label
+      in
+      let r_d_c a b =
+        let reverse _ap aa t =
+          let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !aa in
+          (s.(0), a) :: t
+        in
+        let input t = a :: t in
+        let label = "Concat_D_C", [ a; b ] in
+        reverse, input, label
+      in
+      let r_c_d a b =
+        let reverse _ap aa t =
+          let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !aa in
+          (s.(1), b) :: t
+        in
+        let input t = b :: t in
+        let label = "Concat_C_D", [ a; b ] in
+        reverse, input, label
+      in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
 
     and split ~axis parts a =
       let ff a =
@@ -2153,8 +2675,16 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       in
       let fd a = split ~axis parts a in
       let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
-      let r (a, _cp_arr, aa_arr) = Split_D (a, axis, aa_arr) in
+      let r (a, _cp_arr, aa_arr) =
+        let reverse _ap _aa t =
+          (concatenate ~axis (Array.map (fun aa -> !aa) aa_arr), a) :: t
+        in
+        let input t = a :: t in
+        let label = "Split_D", [ a ] in
+        reverse, input, label
+      in
       array_op_d_d a ff fd df r
+
 
     and concatenate ~axis a =
       (* mode: 0 constant, 1 reverse, 2 tangent *)
@@ -2181,20 +2711,32 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
             | DF (_, _, ai), 2 ->
               ai_ref := ai;
               unpack_arr x
-            | _ -> error_uniop "concatenate: inconsistent array" x )
+            | _ -> error_uniop "concatenate: inconsistent array" x)
           a
         |> A.concatenate ~axis
         |> pack_arr
       in
       match !mode with
       | 0 -> cp
-      | 1 -> DR (cp, ref (zero cp), Concatenate_D (a, axis, List.rev !idxs), ref 0, !ai_ref, ref 0)
+      | 1 ->
+        let idxs = List.rev !idxs in
+        let reverse _ap aa t =
+          let aa_arr = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !aa in
+          t |> List.(append (map (fun i -> aa_arr.(i), a.(i)) idxs))
+        in
+        let input t = List.append List.(map (fun i -> a.(i)) idxs) t in
+        let label = "Concatenate_D", List.(map (fun i -> a.(i)) idxs) in
+        DR (cp, ref (zero cp), (reverse, input, label), ref 0, !ai_ref, ref 0)
       | 2 ->
         let at =
-          a |> Array.map (fun x -> x |> tangent |> unpack_arr) |> A.concatenate ~axis |> pack_arr
+          a
+          |> Array.map (fun x -> x |> tangent |> unpack_arr)
+          |> A.concatenate ~axis
+          |> pack_arr
         in
         DF (cp, at, !ai_ref)
       | _ -> error_uniop "concatenate" a.(0)
+
 
     and init_2d n_rows n_cols f =
       Array.init n_rows (fun i -> Array.init n_cols (fun j -> f i j)) |> of_arrays
@@ -2215,12 +2757,13 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           if !af = 1 && !tracker = 1 then reset (input t) else reset t
         | _ -> reset t)
     in
-    reset [x]
+    reset [ x ]
 
-  (* check adjoint a and its update v, ensure rank a >= rank v. This function
-     fixes the inconsistent shapes between a and v by performing the inverse
-     operation of the previous broadcasting function. Note that padding is on
-     the left due to the expand function called in broadcasting. *)
+
+  (* check adjoint a and its update v, ensure rank a >= rank v. This function fixes the
+     inconsistent shapes between a and v by performing the inverse operation of the
+     previous broadcasting function. Note that padding is on the left due to the expand
+     function called in broadcasting. *)
   let _shrink a v =
     match a, v with
     | F _, Arr v -> F (A.sum' v)
@@ -2228,15 +2771,15 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let shp_a = A.shape a in
       let shp_v = A.shape v in
       if shp_a <> shp_v
-      then
+      then (
         let shp_a, shp_v = Owl_utils_array.align `Left 1 shp_a shp_v in
         let axis = Owl_utils_array.filter2_i ( <> ) shp_a shp_v in
-        Arr (A.sum_reduce ~axis v)
+        Arr (A.sum_reduce ~axis v))
       else Arr v
     | _a, v -> v
 
+
   let reverse_push v x =
-    let open Maths in
     let rec push xs =
       match xs with
       | [] -> ()
@@ -2250,14 +2793,16 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           then push (reverse ap aa t)
           else (
             tracker := pred !tracker;
-            push t )
+            push t)
         | _ -> push t)
     in
-    push [v, x]
+    push [ v, x ]
+
 
   let reverse_prop v x =
     reverse_reset x;
     reverse_push v x
+
 
   (* convenient wrappers *)
 
@@ -2269,11 +2814,13 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     let label = "Noop", [] in
     DR (p, ref (zero p), (reverse, input, label), ref 0, i, ref 0)
 
+
   (* derivative of f (scalar -> scalr) at x, forward ad *)
   let diff' f x =
     let x = make_forward x (pack_flt 1.) (tag ()) in
     let y = f x in
     primal y, tangent y
+
 
   (* derivative of f (scalar -> scalar) at x, forward ad *)
   let diff f x = diff' f x |> snd
@@ -2286,6 +2833,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     reverse_push (pack_flt 1.) y;
     primal y, x |> adjval
 
+
   (* gradient of f (vector -> scalar) at x, reverse ad *)
   let grad f x = grad' f x |> snd
 
@@ -2294,6 +2842,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     let x = make_forward x v (tag ()) in
     let y = f x in
     primal y, tangent y
+
 
   (* jacobian vector product of f (vector -> vector) at x along v, forward ad *)
   let jacobianv f x v = jacobianv' f x v |> snd
@@ -2306,33 +2855,38 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     reverse_push v y;
     primal y, x |> adjval |> primal
 
+
   (* transposed jacobian vector product of f (vector -> vector) at x along v, backward ad *)
   let jacobianTv f x v = jacobianTv' f x v |> snd
 
-  (* jacobian of f (vector -> vector) at x, both x and y are row vectors, also return the original value *)
+  (* jacobian of f (vector -> vector) at x, both x and y are row vectors, also return the
+     original value *)
   let jacobian' f x =
     let y = f x |> primal in
     let m = col_num y in
     let n = col_num x in
-    let z = A.empty [|m; n|] in
+    let z = A.empty [| m; n |] in
     (match m > n with
     | true ->
       Array.init n (fun i ->
-          let v = A.zeros [|1; n|] in
-          A.(set v [|0; i|] (float_to_elt 1.));
-          jacobianv f x (Arr v) )
+          let v = A.zeros [| 1; n |] in
+          A.(set v [| 0; i |] (float_to_elt 1.));
+          jacobianv f x (Arr v))
       |> Array.iteri (fun i v ->
              match v with
              | Arr v -> A.copy_col_to (A.transpose v) z i
-             | _ -> failwith "error: jacobian" )
+             | _ -> failwith "error: jacobian")
     | false ->
       Array.init m (fun i ->
-          let v = A.zeros [|1; m|] in
-          A.(set v [|0; i|] (float_to_elt 1.));
-          jacobianTv f x (Arr v) )
+          let v = A.zeros [| 1; m |] in
+          A.(set v [| 0; i |] (float_to_elt 1.));
+          jacobianTv f x (Arr v))
       |> Array.iteri (fun i v ->
-             match v with Arr v -> A.copy_row_to v z i | _ -> failwith "error: jacobian" ));
+             match v with
+             | Arr v -> A.copy_row_to v z i
+             | _ -> failwith "error: jacobian"));
     y, Arr z
+
 
   (* jacobian of f *)
   let jacobian f x = jacobian' f x |> snd
@@ -2345,6 +2899,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     let g, h = gradhessian f x in
     f x, g, h
 
+
   (* hessian of f *)
   let hessian f x = (f |> grad |> jacobian) x
 
@@ -2356,20 +2911,24 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     let gv, hv = grad' (fun y -> jacobianv f y v) x in
     f x, gv, hv
 
+
   (* gradient-vector product and hessian-vector product *)
   let gradhessianv f x v =
     let _, gv, hv = gradhessianv' f x v in
     gv, hv
+
 
   (* original value and hessian-vector product *)
   let hessianv' f x v =
     let fv, _, hv = gradhessianv' f x v in
     fv, hv
 
+
   (* hessian-vector *)
   let hessianv f x v =
     let _, _, hv = gradhessianv' f x v in
     hv
+
 
   (* laplacian of f *)
   let laplacian f x = F (hessian f x |> unpack_arr |> A.trace)
@@ -2378,18 +2937,19 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   (* Wrapper for the Mat module *)
 
   module Mat = struct
-    let empty m n = A.empty [|m; n|] |> pack_arr
-    let zeros m n = A.zeros [|m; n|] |> pack_arr
+    let empty m n = A.empty [| m; n |] |> pack_arr
+    let zeros m n = A.zeros [| m; n |] |> pack_arr
     let eye n = A.eye n |> pack_arr
-    let ones m n = A.ones [|m; n|] |> pack_arr
-    let uniform ?a ?b m n = A.uniform ?a ?b [|m; n|] |> pack_arr
-    let gaussian ?mu ?sigma m n = A.gaussian ?mu ?sigma [|m; n|] |> pack_arr
+    let ones m n = A.ones [| m; n |] |> pack_arr
+    let uniform ?a ?b m n = A.uniform ?a ?b [| m; n |] |> pack_arr
+    let gaussian ?mu ?sigma m n = A.gaussian ?mu ?sigma [| m; n |] |> pack_arr
     let reset x = x |> unpack_arr |> A.reset
-    let reshape m n x = Maths.reshape x [|m; n|]
+    let reshape m n x = Maths.reshape x [| m; n |]
 
     let shape x =
       let s = A.shape (unpack_arr x) in
       s.(0), s.(1)
+
 
     let row_num x = (unpack_arr x |> A.shape).(0)
     let col_num x = (unpack_arr x |> A.shape).(1)
@@ -2436,10 +2996,9 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     let dot x y = Maths.dot x y
   end
 
-  (* _traverse_trace and its related functions are used to convert the
-     computation graph generated in backward mode into human-readable format.
-     You can make your own convert function to generate needed format.
-  *)
+  (* _traverse_trace and its related functions are used to convert the computation graph
+     generated in backward mode into human-readable format. You can make your own convert
+     function to generate needed format. *)
   let _traverse_trace x =
     (* init variables for tracking nodes and indices *)
     let nodes = Hashtbl.create 512 in
@@ -2461,12 +3020,13 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           (* check if the node has been visited before *)
           Hashtbl.add nodes hd (!index, op, prev);
           index := !index + 1;
-          push (prev @ tl) )
+          push (prev @ tl))
         else push tl
     in
     (* iterate the graph then return the hash table *)
     push x;
     nodes
+
 
   (* convert graph to terminal output *)
   let _convert_terminal_output nodes =
@@ -2486,11 +3046,12 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
                   u_ts
                   v_id
                   v_op
-                  v_ts )
+                  v_ts)
             ""
-            v_prev )
+            v_prev)
       nodes
       ""
+
 
   (* convert graph to dot file output *)
   let _convert_dot_output nodes =
@@ -2501,9 +3062,9 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           ^ List.fold_left
               (fun s1 u ->
                 let u_id, _u_op, _ = Hashtbl.find nodes u in
-                s1 ^ Printf.sprintf "\t%i -> %i;\n" u_id v_id )
+                s1 ^ Printf.sprintf "\t%i -> %i;\n" u_id v_id)
               ""
-              v_prev )
+              v_prev)
         nodes
         ""
     in
@@ -2521,12 +3082,17 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
                 (deep_info v)
           else
             s0
-            ^ Printf.sprintf "%i [ label=\"#%i | { %s | %s }\" ];\n" v_id v_id v_op (deep_info v)
-          )
+            ^ Printf.sprintf
+                "%i [ label=\"#%i | { %s | %s }\" ];\n"
+                v_id
+                v_id
+                v_op
+                (deep_info v))
         nodes
         ""
     in
     network ^ attrs
+
 
   let to_trace nodes = _traverse_trace nodes |> _convert_terminal_output
 
@@ -2534,6 +3100,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     _traverse_trace nodes
     |> _convert_dot_output
     |> Printf.sprintf "digraph CG {\nnode [shape=record];\n%s}"
+
 
   let pp_num formatter x = Format.fprintf formatter "%s" (type_info x)
 
@@ -2543,22 +3110,27 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       let n_directions = dim1 * dim2 in
       Array.init n_directions (fun j ->
           Arr
-            (A.init [|dim1; dim2|] (fun i ->
-                 if i = j then A.(float_to_elt 1.) else A.(float_to_elt 0.) )) )
+            (A.init [| dim1; dim2 |] (fun i ->
+                 if i = j then A.(float_to_elt 1.) else A.(float_to_elt 0.))))
+
 
     let generate_test_samples (dim1, dim2) n_samples =
-      List.init n_samples (fun _ -> Mat.gaussian dim1 dim2), generate_directions (dim1, dim2)
+      ( List.init n_samples (fun _ -> Mat.gaussian dim1 dim2)
+      , generate_directions (dim1, dim2) )
+
 
     let finite_difference_grad ~f ?(eps = 1E-5) x d =
       let dx = Maths.(F A.(float_to_elt eps) * d) in
       Maths.((f (x + dx) - f (x - dx)) / F A.(float_to_elt (2. *. eps)))
+
 
     let check_grad ~threshold ?(verbose = false) ?(eps = 1E-5) ~f =
       let compare rs =
         let n_d = Array.length rs in
         let r_fds = Array.map snd rs in
         let rms =
-          Array.fold_left (fun acc r_fd -> acc +. (r_fd *. r_fd)) 0. r_fds /. float n_d |> sqrt
+          Array.fold_left (fun acc r_fd -> acc +. (r_fd *. r_fd)) 0. r_fds /. float n_d
+          |> sqrt
         in
         let max_err =
           rs
@@ -2578,7 +3150,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
                 (fun d ->
                   let r_ad = Maths.(sum' (g hd * d)) |> unpack_flt in
                   let r_fd = finite_difference_grad ~f ~eps hd d |> unpack_flt in
-                  r_ad, r_fd )
+                  r_ad, r_fd)
                 directions
               |> compare
             in
@@ -2589,11 +3161,18 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
           __check [] samples
           |> List.fold_left
                (fun (check_old, max_err_old, acc) (check, max_err) ->
-                 check_old && check, max max_err_old max_err, if check then succ acc else acc )
+                 ( check_old && check
+                 , max max_err_old max_err
+                 , if check then succ acc else acc ))
                (true, -1., 0)
         in
         if verbose
-        then Printf.printf "adjoints passed: %i/%i | max_err: %f.\n%!" n_passed n_samples max_err;
+        then
+          Printf.printf
+            "adjoints passed: %i/%i | max_err: %f.\n%!"
+            n_passed
+            n_samples
+            max_err;
         check, n_passed
   end
 end
