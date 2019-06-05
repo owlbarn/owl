@@ -22,15 +22,18 @@ let generate_data () =
   let _ = save_txt x2 "test_log.data2.tmp" in
   x, y
 
+
 let test_log x y =
-  let p = Regression.D.logistic ~i:true x y in
+  let p' = Regression.D.logistic ~i:true x y in
+  let p = Mat.(p'.(0) @= p'.(1)) in
   let x = Mat.(concat_horizontal x (ones (row_num x) 1)) in
-  let y' = Mat.(sigmoid (x *@ (p.(0) @= p.(1)))) in
+  let y' = Mat.(sigmoid (x *@ p)) in
   let y' = Mat.map (fun x -> if x > 0.5 then 1. else 0.) y' in
   let e = Mat.((mean' (abs (y - y')))) in
-  let _ = Owl_log.info "accuracy: %.4f" (1. -. e) in ()
+  let _ = Owl_log.info "accuracy: %.4f" (1. -. e) in p
 
 let _ =
   let _ = Random.self_init () in
   let x, y = generate_data () in
-  test_log x y 
+  let p = test_log x y in
+  Owl_pretty.print_dsnda p ;;
