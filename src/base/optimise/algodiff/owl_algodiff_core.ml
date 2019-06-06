@@ -174,25 +174,25 @@ module Make (Types : Owl_algodiff_types_sig.Sig) = struct
       DF (cp1, df cp1 ap at, ai), DF (cp2, df cp2 ap at, ai)
     | DR (ap, _, _, _, ai, _) ->
       let cp1, cp2 = fd ap in
-      let aa1_ref = ref (zero cp1) in
-      let aa2_ref = ref (zero cp2) in
+      let ca1_ref = ref (zero cp1) in
+      let ca2_ref = ref (zero cp2) in
       let cp1_ref = ref cp1 in
       let cp2_ref = ref cp2 in
       let tracker = ref 0 in
       (* tracker: int reference In reverse_reset, i keeps track of the number of times
          cp1 and cp2 has been called such that in reverse_push, we do not update the
-         adjoint of ap before we've fully updated both aa1 and aa2 *)
+         adjoint of ap before we've fully updated both ca1 and ca2 *)
       ( DR
           ( cp1
-          , aa1_ref
-          , r (a, (cp1_ref, cp2_ref), (aa1_ref, aa2_ref))
+          , ca1_ref
+          , r (a, (cp1_ref, cp2_ref), (ca1_ref, ca2_ref))
           , ref 0
           , ai
           , tracker )
       , DR
           ( cp2
-          , aa2_ref
-          , r (a, (cp1_ref, cp2_ref), (aa1_ref, aa2_ref))
+          , ca2_ref
+          , r (a, (cp1_ref, cp2_ref), (ca1_ref, ca2_ref))
           , ref 0
           , ai
           , tracker ) )
@@ -207,31 +207,31 @@ module Make (Types : Owl_algodiff_types_sig.Sig) = struct
       DF (cp1, df cp1 ap at, ai), DF (cp2, df cp2 ap at, ai), DF (cp3, df cp3 ap at, ai)
     | DR (ap, _, _, _, ai, _) ->
       let cp1, cp2, cp3 = fd ap in
-      let aa1_ref = ref (zero cp1) in
-      let aa2_ref = ref (zero cp2) in
-      let aa3_ref = ref (zero cp3) in
+      let ca1_ref = ref (zero cp1) in
+      let ca2_ref = ref (zero cp2) in
+      let ca3_ref = ref (zero cp3) in
       let cp1_ref = ref cp1 in
       let cp2_ref = ref cp2 in
       let cp3_ref = ref cp3 in
       let tracker = ref 0 in
       ( DR
           ( cp1
-          , aa1_ref
-          , r (a, (cp1_ref, cp2_ref, cp3_ref), (aa1_ref, aa2_ref, aa3_ref))
+          , ca1_ref
+          , r (a, (cp1_ref, cp2_ref, cp3_ref), (ca1_ref, ca2_ref, ca3_ref))
           , ref 0
           , ai
           , tracker )
       , DR
           ( cp2
-          , aa2_ref
-          , r (a, (cp1_ref, cp2_ref, cp3_ref), (aa1_ref, aa2_ref, aa3_ref))
+          , ca2_ref
+          , r (a, (cp1_ref, cp2_ref, cp3_ref), (ca1_ref, ca2_ref, ca3_ref))
           , ref 0
           , ai
           , tracker )
       , DR
           ( cp3
-          , aa3_ref
-          , r (a, (cp1_ref, cp2_ref, cp3_ref), (aa1_ref, aa2_ref, aa3_ref))
+          , ca3_ref
+          , r (a, (cp1_ref, cp2_ref, cp3_ref), (ca1_ref, ca2_ref, ca3_ref))
           , ref 0
           , ai
           , tracker ) )
@@ -248,12 +248,12 @@ module Make (Types : Owl_algodiff_types_sig.Sig) = struct
       let cp_arr = fd ap in
       let cp_arr_ref = Array.map (fun cp -> ref cp) cp_arr in
       let tracker = ref 0 in
-      let aa_ref_arr = Array.map (fun cp -> ref (zero cp)) cp_arr in
+      let ca_ref_arr = Array.map (fun cp -> ref (zero cp)) cp_arr in
       Array.map2
-        (fun cp aa_ref ->
-          DR (cp, aa_ref, r (a, cp_arr_ref, aa_ref_arr), ref 0, ai, tracker))
+        (fun cp ca_ref ->
+          DR (cp, ca_ref, r (a, cp_arr_ref, ca_ref_arr), ref 0, ai, tracker))
         cp_arr
-        aa_ref_arr
+        ca_ref_arr
     | ap -> ff ap
 
 

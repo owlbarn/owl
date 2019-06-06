@@ -46,7 +46,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   let make_forward p t i = DF (p, t, i)
 
   let make_reverse p i =
-    let adjoint _ap _aa t = t in
+    let adjoint _cp _ca t = t in
     let register t = t in
     let label = "Noop", [] in
     DR (p, ref (zero p), (adjoint, register, label), ref 0, i, ref 0)
