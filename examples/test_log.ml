@@ -24,7 +24,7 @@ let generate_data () =
 
 
 let test_log x y =
-  let p' = Regression.D.logistic ~i:true x y in
+  let p' = Owl.Regression.D.logistic ~i:true x y in
   let p = MX.(p'.(0) @= p'.(1)) in
   let x = MX.(concat_horizontal x (ones (row_num x) 1)) in
   let y' = MX.(sigmoid (x *@ p)) in
