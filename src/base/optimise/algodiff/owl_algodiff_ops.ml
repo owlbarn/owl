@@ -14,402 +14,554 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let ff_f a = F A.Scalar.(neg a)
           let ff_arr a = Arr A.(neg a)
           let df _cp _ap at = pack_flt 0. - at
-          let dr _ap aa = neg aa
+          let dr _ap aa = neg !aa
         end
         : Siso)
         a
 
-
     and abs a =
-      let ff = function
-        | F a -> F A.Scalar.(abs a)
-        | Arr a -> Arr A.(abs a)
-        | _ -> error_uniop "abs" a
-      in
-      let fd a = abs a in
-      let df _cp ap at = at * signum ap in
-      let r a =
-        let reverse _ap aa t = (!aa * signum (primal a), a) :: t in
-        let input t = a :: t in
-        let label = "Abs_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "abs"
+          let ff_f a = F A.Scalar.(abs a)
+          let ff_arr a = Arr A.(abs a)
+          let df _cp ap at = at * signum ap
+          let dr _ap aa = !aa * signum (primal a)
+        end
+        : Siso)
+        a
 
     and signum a =
-      let ff = function
-        | F a -> F A.Scalar.(signum a)
-        | Arr a -> Arr A.(signum a)
-        | _ -> error_uniop "signum" a
-      in
-      let fd a = signum a in
-      let df _cp ap _at = zero ap in
-      let r a =
-        let reverse _ap _aa t = (zero a, a) :: t in
-        let input t = a :: t in
-        let label = "Signum_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "signum"
+          let ff_f a = F A.Scalar.(signum a)
+          let ff_arr a = Arr A.(signum a)
+          let df _cp ap _at = zero ap
+          let dr _ap _aa = zero a
+        end
+        : Siso)
+        a
 
     and floor a =
-      let ff = function
-        | F a -> F A.Scalar.(floor a)
-        | Arr a -> Arr A.(floor a)
-        | _ -> error_uniop "floor" a
-      in
-      let fd a = floor a in
-      let df _cp ap _at = zero ap in
-      let r a =
-        let reverse _ap _aa t = (zero a, a) :: t in
-        let input t = a :: t in
-        let label = "Floor_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "floor"
+          let ff_f a = F A.Scalar.(floor a)
+          let ff_arr a = Arr A.(floor a)
+          let df _cp ap _at = zero ap
+          let dr _ap _aa = zero a
+        end
+        : Siso)
+        a
 
     and ceil a =
-      let ff = function
-        | F a -> F A.Scalar.(ceil a)
-        | Arr a -> Arr A.(ceil a)
-        | _ -> error_uniop "ceil" a
-      in
-      let fd a = ceil a in
-      let df _cp ap _at = zero ap in
-      let r a =
-        let reverse _ap _aa t = (zero a, a) :: t in
-        let input t = a :: t in
-        let label = "Ceil_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "ceil"
+          let ff_f a = F A.Scalar.(ceil a)
+          let ff_arr a = Arr A.(ceil a)
+          let df _cp ap _at = zero ap
+          let dr _ap _aa = zero a
+        end
+        : Siso)
+        a
 
     and round a =
-      let ff = function
-        | F a -> F A.Scalar.(round a)
-        | Arr a -> Arr A.(round a)
-        | _ -> error_uniop "round" a
-      in
-      let fd a = round a in
-      let df _cp ap _at = zero ap in
-      let r a =
-        let reverse _ap _aa t = (zero a, a) :: t in
-        let input t = a :: t in
-        let label = "Round_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "round"
+          let ff_f a = F A.Scalar.(round a)
+          let ff_arr a = Arr A.(round a)
+          let df _cp ap _at = zero ap
+          let dr _ap _aa = zero a
+        end
+        : Siso)
+        a
 
     and sqr a =
-      let ff = function
-        | F a -> F A.Scalar.(sqr a)
-        | Arr a -> Arr A.(sqr a)
-        | _ -> error_uniop "sqr" a
-      in
-      let fd a = sqr a in
-      let df _cp ap at = pack_flt 2. * at * ap in
-      let r a =
-        let reverse _ap aa t = (!aa * primal a * pack_flt 2., a) :: t in
-        let input t = a :: t in
-        let label = "Sqr_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "sqr"
+          let ff_f a = F A.Scalar.(sqr a)
+          let ff_arr a = Arr A.(sqr a)
+          let df _cp ap at = pack_flt 2. * at * ap
+          let dr _ap aa = !aa * primal a * pack_flt 2.
+        end
+        : Siso)
+        a
 
     and sqrt a =
-      let ff = function
-        | F a -> F A.Scalar.(sqrt a)
-        | Arr a -> Arr A.(sqrt a)
-        | _ -> error_uniop "sqrt" a
-      in
-      let fd a = sqrt a in
-      let df cp _ap at = at / (pack_flt 2. * cp) in
-      let r a =
-        let reverse ap aa t = (!aa / (pack_flt 2. * ap), a) :: t in
-        let input t = a :: t in
-        let label = "Sqrt_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "sqrt"
+          let ff_f a = F A.Scalar.(sqrt a)
+          let ff_arr a = Arr A.(sqrt a)
+          let df cp _ap at = at / (pack_flt 2. * cp)
+          let dr ap aa = !aa / (pack_flt 2. * ap)
+        end
+        : Siso)
+        a
 
     and log a =
-      let ff = function
-        | F a -> F A.Scalar.(log a)
-        | Arr a -> Arr A.(log a)
-        | _ -> error_uniop "log" a
-      in
-      let fd a = log a in
-      let df _cp ap at = at / ap in
-      let r a =
-        let reverse _ap aa t = (!aa / primal a, a) :: t in
-        let input t = a :: t in
-        let label = "Log_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "log"
+          let ff_f a = F A.Scalar.(log a)
+          let ff_arr a = Arr A.(log a)
+          let df _cp ap at = at / ap
+          let dr _ap aa = !aa / primal a
+        end
+        : Siso)
+        a
 
     and log2 a =
-      let ff = function
-        | F a -> F A.Scalar.(log2 a)
-        | Arr a -> Arr A.(log2 a)
-        | _ -> error_uniop "log2" a
-      in
-      let fd a = log2 a in
-      let df _cp ap at = at / (ap * pack_flt Owl_const.log2e) in
-      let r a =
-        let reverse _ap aa t = (!aa / (primal a * pack_flt Owl_const.log2e), a) :: t in
-        let input t = a :: t in
-        let label = "Log2_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "log2"
+          let ff_f a = F A.Scalar.(log2 a)
+          let ff_arr a = Arr A.(log2 a)
+          let df _cp ap at = at / (ap * pack_flt Owl_const.log2e)
+          let dr _ap aa = !aa / (primal a * pack_flt Owl_const.log2e)
+        end
+        : Siso)
+        a
 
     and log10 a =
-      let ff = function
-        | F a -> F A.Scalar.(log10 a)
-        | Arr a -> Arr A.(log10 a)
-        | _ -> error_uniop "log10" a
-      in
-      let fd a = log10 a in
-      let df _cp ap at = at / (ap * pack_flt Owl_const.log10e) in
-      let r a =
-        let reverse _ap aa t = (!aa / (primal a * pack_flt Owl_const.log10e), a) :: t in
-        let input t = a :: t in
-        let label = "Log10_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "log10"
+          let ff_f a = F A.Scalar.(log10 a)
+          let ff_arr a = Arr A.(log10 a)
+          let df _cp ap at = at / (ap * pack_flt Owl_const.log10e)
+          let dr _ap aa = !aa / (primal a * pack_flt Owl_const.log10e)
+        end
+        : Siso)
+        a
 
     and exp a =
-      let ff = function
-        | F a -> F A.Scalar.(exp a)
-        | Arr a -> Arr A.(exp a)
-        | _ -> error_uniop "exp" a
-      in
-      let fd a = exp a in
-      let df cp _ap at = at * cp in
-      let r a =
-        let reverse ap aa t = (!aa * ap, a) :: t in
-        let input t = a :: t in
-        let label = "Exp_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "exp"
+          let ff_f a = F A.Scalar.(exp a)
+          let ff_arr a = Arr A.(exp a)
+          let df cp _ap at = at * cp
+          let dr ap aa = !aa * ap
+        end
+        : Siso)
+        a
 
     and sin a =
-      let ff = function
-        | F a -> F A.Scalar.(sin a)
-        | Arr a -> Arr A.(sin a)
-        | _ -> error_uniop "sin" a
-      in
-      let fd a = sin a in
-      let df _cp ap at = at * cos ap in
-      let r a =
-        let reverse _ap aa t = (!aa * cos (primal a), a) :: t in
-        let input t = a :: t in
-        let label = "Sin_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "sin"
+          let ff_f a = F A.Scalar.(sin a)
+          let ff_arr a = Arr A.(sin a)
+          let df _cp ap at = at * cos ap
+          let dr _ap aa = !aa * cos (primal a)
+        end
+        : Siso)
+        a
 
     and cos a =
-      let ff = function
-        | F a -> F A.Scalar.(cos a)
-        | Arr a -> Arr A.(cos a)
-        | _ -> error_uniop "cos" a
-      in
-      let fd a = cos a in
-      let df _cp ap at = neg (at * sin ap) in
-      let r a =
-        let reverse _ap aa t = (!aa * neg (sin (primal a)), a) :: t in
-        let input t = a :: t in
-        let label = "Cos_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "cos"
+          let ff_f a = F A.Scalar.(cos a)
+          let ff_arr a = Arr A.(cos a)
+          let df _cp ap at = neg (at * sin ap)
+          let dr _ap aa = !aa * neg (sin (primal a))
+        end
+        : Siso)
+        a
 
     and tan a =
-      let ff = function
-        | F a -> F A.Scalar.(tan a)
-        | Arr a -> Arr A.(tan a)
-        | _ -> error_uniop "tan" a
-      in
-      let fd a = tan a in
-      let df _cp ap at = at / sqr (cos ap) in
-      let r a =
-        let reverse _ap aa t = (!aa / sqr (cos (primal a)), a) :: t in
-        let input t = a :: t in
-        let label = "Tan_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "tan"
+          let ff_f a = F A.Scalar.(tan a)
+          let ff_arr a = Arr A.(tan a)
+          let df _cp ap at = at / sqr (cos ap)
+          let dr _ap aa = !aa / sqr (cos (primal a))
+        end
+        : Siso)
+        a
 
     and sinh a =
-      let ff = function
-        | F a -> F A.Scalar.(sinh a)
-        | Arr a -> Arr A.(sinh a)
-        | _ -> error_uniop "sinh" a
-      in
-      let fd a = sinh a in
-      let df _cp ap at = at * cosh ap in
-      let r a =
-        let reverse _ap aa t = (!aa * cosh (primal a), a) :: t in
-        let input t = a :: t in
-        let label = "Sinh_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "sinh"
+          let ff_f a = F A.Scalar.(sinh a)
+          let ff_arr a = Arr A.(sinh a)
+          let df _cp ap at = at * cosh ap
+          let dr _ap aa = !aa * cosh (primal a)
+        end
+        : Siso)
+        a
 
     and cosh a =
-      let ff = function
-        | F a -> F A.Scalar.(cosh a)
-        | Arr a -> Arr A.(cosh a)
-        | _ -> error_uniop "cosh" a
-      in
-      let fd a = cosh a in
-      let df _cp ap at = at * sinh ap in
-      let r a =
-        let reverse _ap aa t = (!aa * sinh (primal a), a) :: t in
-        let input t = a :: t in
-        let label = "Cosh_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "cosh"
+          let ff_f a = F A.Scalar.(cosh a)
+          let ff_arr a = Arr A.(cosh a)
+          let df _cp ap at = at * sinh ap
+          let dr _ap aa = !aa * sinh (primal a)
+        end
+        : Siso)
+        a
 
     and tanh a =
-      let ff = function
-        | F a -> F A.Scalar.(tanh a)
-        | Arr a -> Arr A.(tanh a)
-        | _ -> error_uniop "tanh" a
-      in
-      let fd a = tanh a in
-      let df _cp ap at = at / sqr (cosh ap) in
-      let r a =
-        let reverse _ap aa t = (!aa / sqr (cosh (primal a)), a) :: t in
-        let input t = a :: t in
-        let label = "Tanh_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "tanh"
+          let ff_f a = F A.Scalar.(tanh a)
+          let ff_arr a = Arr A.(tanh a)
+          let df _cp ap at = at / sqr (cosh ap)
+          let dr _ap aa = !aa / sqr (cosh (primal a))
+        end
+        : Siso)
+        a
 
     and asin a =
-      let ff = function
-        | F a -> F A.Scalar.(asin a)
-        | Arr a -> Arr A.(asin a)
-        | _ -> error_uniop "asin" a
-      in
-      let fd a = asin a in
-      let df _cp ap at = at / sqrt (pack_flt 1. - sqr ap) in
-      let r a =
-        let reverse _ap aa t = (!aa / sqrt (pack_flt 1. - sqr (primal a)), a) :: t in
-        let input t = a :: t in
-        let label = "Asin_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "asin"
+          let ff_f a = F A.Scalar.(asin a)
+          let ff_arr a = Arr A.(asin a)
+          let df _cp ap at = at / sqrt (pack_flt 1. - sqr ap)
+          let dr _ap aa = !aa / sqrt (pack_flt 1. - sqr (primal a))
+        end
+        : Siso)
+        a
 
     and acos a =
-      let ff = function
-        | F a -> F A.Scalar.(acos a)
-        | Arr a -> Arr A.(acos a)
-        | _ -> error_uniop "acos" a
-      in
-      let fd a = acos a in
-      let df _cp ap at = neg at / sqrt (pack_flt 1. - sqr ap) in
-      let r a =
-        let reverse _ap aa t = (neg !aa / sqrt (pack_flt 1. - sqr (primal a)), a) :: t in
-        let input t = a :: t in
-        let label = "Acos_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "acos"
+          let ff_f a = F A.Scalar.(acos a)
+          let ff_arr a = Arr A.(acos a)
+          let df _cp ap at = neg at / sqrt (pack_flt 1. - sqr ap)
+          let dr _ap aa = neg !aa / sqrt (pack_flt 1. - sqr (primal a))
+        end
+        : Siso)
+        a
 
     and atan a =
-      let ff = function
-        | F a -> F A.Scalar.(atan a)
-        | Arr a -> Arr A.(atan a)
-        | _ -> error_uniop "atan" a
-      in
-      let fd a = atan a in
-      let df _cp ap at = at / (pack_flt 1. + sqr ap) in
-      let r a =
-        let reverse _ap aa t = (!aa / (pack_flt 1. + sqr (primal a)), a) :: t in
-        let input t = a :: t in
-        let label = "Atan_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "atan"
+          let ff_f a = F A.Scalar.(atan a)
+          let ff_arr a = Arr A.(atan a)
+          let df _cp ap at = at / (pack_flt 1. + sqr ap)
+          let dr _ap aa = !aa / (pack_flt 1. + sqr (primal a))
+        end
+        : Siso)
+        a
 
     and asinh a =
-      let ff = function
-        | F a -> F A.Scalar.(asinh a)
-        | Arr a -> Arr A.(asinh a)
-        | _ -> error_uniop "asinh" a
-      in
-      let fd a = asinh a in
-      let df _cp ap at = at / sqrt (sqr ap + pack_flt 1.) in
-      let r a =
-        let reverse _ap aa t = (!aa / sqrt (sqr (primal a) + pack_flt 1.), a) :: t in
-        let input t = a :: t in
-        let label = "Asinh_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "asinh"
+          let ff_f a = F A.Scalar.(asinh a)
+          let ff_arr a = Arr A.(asinh a)
+          let df _cp ap at = at / sqrt (sqr ap + pack_flt 1.)
+          let dr _ap aa = !aa / sqrt (sqr (primal a) + pack_flt 1.)
+        end
+        : Siso)
+        a
 
     and acosh a =
-      let ff = function
-        | F a -> F A.Scalar.(acosh a)
-        | Arr a -> Arr A.(acosh a)
-        | _ -> error_uniop "acosh" a
-      in
-      let fd a = acosh a in
-      let df _cp ap at = at / sqrt (sqr ap - pack_flt 1.) in
-      let r a =
-        let reverse _ap aa t = (!aa / sqrt (sqr (primal a) - pack_flt 1.), a) :: t in
-        let input t = a :: t in
-        let label = "Acosh_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "acosh"
+          let ff_f a = F A.Scalar.(acosh a)
+          let ff_arr a = Arr A.(acosh a)
+          let df _cp ap at = at / sqrt (sqr ap - pack_flt 1.)
+          let dr _ap aa = !aa / sqrt (sqr (primal a) - pack_flt 1.)
+        end
+        : Siso)
+        a
 
     and atanh a =
-      let ff = function
-        | F a -> F A.Scalar.(atanh a)
-        | Arr a -> Arr A.(atanh a)
-        | _ -> error_uniop "atanh" a
-      in
-      let fd a = atanh a in
-      let df _cp ap at = at / (pack_flt 1. - sqr ap) in
-      let r a =
-        let reverse _ap aa t = (!aa / (pack_flt 1. - sqr (primal a)), a) :: t in
-        let input t = a :: t in
-        let label = "Atanh_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
+      build_siso
+        (module struct
+          let label = "atanh"
+          let ff_f a = F A.Scalar.(atanh a)
+          let ff_arr a = Arr A.(atanh a)
+          let df _cp ap at = at / (pack_flt 1. - sqr ap)
+          let dr _ap aa = !aa / (pack_flt 1. - sqr (primal a))
+        end
+        : Siso)
+        a
 
+    and get_slice i a =
+      build_siso
+        (module struct
+          let label = "get_slice"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = Arr A.(get_slice i a)
+          let df _cp _ap at = get_slice i at
+          let dr _ap aa = set_slice i (zero a) !aa
+        end
+        : Siso)
+        a
+
+    and sum' a =
+      build_siso
+        (module struct
+          let label = "sum'"
+          let ff_f a = F a
+          let ff_arr a = F A.(sum' a)
+          let df _cp _ap at = sum' at
+          let dr _ap aa = !aa
+        end
+        : Siso)
+        a
+
+    and sum ?(axis = -1) a =
+      build_siso
+        (module struct
+          let label = "sum axis"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = Arr A.(sum ~axis a)
+          let df _cp _ap at = sum ~axis at
+
+          let dr _ap aa =
+            let s = shape a in
+            let reps = Array.(make (length s) 1) in
+            reps.(axis) <- s.(axis);
+            repeat !aa reps
+        end
+        : Siso)
+        a
+
+    and sum_reduce ?(axis = [|0|]) a =
+      build_siso
+        (module struct
+          let label = "sum_reduce"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = Arr A.(sum_reduce ~axis a)
+          let df _cp _ap at = sum_reduce ~axis at
+
+          let dr _ap aa =
+            let s = shape a in
+            let reps = Array.(make (length s) 1) in
+            Array.iter (fun j -> reps.(j) <- s.(j)) axis;
+            repeat !aa reps
+        end
+        : Siso)
+        a
+
+    and mean a = sum' a / F (numel a |> float_of_int |> A.float_to_elt)
+
+    and transpose a =
+      build_siso
+        (module struct
+          let label = "transpose"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = Arr A.(transpose a)
+          let df _cp _ap at = transpose at
+          let dr _ap aa = transpose !aa
+        end
+        : Siso)
+        a
+
+    and l1norm' a =
+      build_siso
+        (module struct
+          let label = "l1norm'"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = F A.(l1norm' a)
+          let df _cp ap at = at * signum ap
+          let dr _ap aa = !aa * signum (primal a)
+        end
+        : Siso)
+        a
+
+    and l2norm' a =
+      build_siso
+        (module struct
+          let label = "l2norm'"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = F A.(l2norm' a)
+          let df cp ap at = ap * at / cp
+          let dr ap aa = !aa / ap * primal a
+        end
+        : Siso)
+        a
+
+    and l2norm_sqr' a =
+      build_siso
+        (module struct
+          let label = "l2norm_sqr'"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = F A.(l2norm_sqr' a)
+          let df _cp ap at = pack_flt 2. * (ap * at)
+          let dr _ap aa = !aa * pack_flt 2. * primal a
+        end
+        : Siso)
+        a
+
+    and sigmoid a =
+      build_siso
+        (module struct
+          let label = "sigmoid"
+          let ff_f a = F A.Scalar.(sigmoid a)
+          let ff_arr a = Arr A.(sigmoid a)
+          let df cp _ap at = at * cp * (pack_flt 1. - cp)
+          let dr ap aa = !aa * ap * (pack_flt 1. - ap)
+        end
+        : Siso)
+        a
+
+    and relu a =
+      build_siso
+        (module struct
+          let label = "relu"
+          let ff_f a = F A.Scalar.(relu a)
+          let ff_arr a = Arr A.(relu a)
+          let df _cp ap at = at * (pack_flt 1. + signum ap) / pack_flt 2.
+          let dr _ap aa = !aa * ((signum (primal a) + pack_flt 1.) / pack_flt 2.)
+        end
+        : Siso)
+        a
+
+    and diag ?(k = 0) a =
+      build_siso
+        (module struct
+          let label = "diag"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = Arr A.(diag ~k a |> copy)
+          let df _cp _ap at = diag ~k at
+
+          let dr _ap aa =
+            let m = col_num a in
+            let l = Pervasives.(m - k) in
+            let rec accu i a_ =
+              if i < l
+              then accu (succ i) (set_item a_ i Pervasives.(k + i) (get_item !aa 0 i))
+              else a_
+            in
+            accu 0 (zero a)
+        end
+        : Siso)
+        a
+
+    and diagm ?(k = 0) a =
+      build_siso
+        (module struct
+          let label = "diagm"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = Arr A.(diagm ~k a |> copy)
+          let df _cp _ap at = diagm ~k at
+          let dr _ap aa = diag ~k !aa
+        end
+        : Siso)
+        a
+
+    and trace a =
+      build_siso
+        (module struct
+          let label = "trace"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = F A.(trace a)
+          let df _cp _ap at = trace at
+
+          let dr _ap aa =
+            let m = col_num a in
+            !aa * diagm (pack_arr A.(ones [|1; m|]))
+        end
+        : Siso)
+        a
+
+    and triu ?(k = 0) a =
+      build_siso
+        (module struct
+          let label = "triu"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = Arr A.(triu ~k a)
+          let df _cp _ap at = triu ~k at
+          let dr _ap aa = triu ~k !aa
+        end
+        : Siso)
+        a
+
+    and tril ?(k = 0) a =
+      build_siso
+        (module struct
+          let label = "tril"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = Arr A.(tril ~k a)
+          let df _cp _ap at = tril ~k at
+          let dr _ap aa = tril ~k !aa
+        end
+        : Siso)
+        a
+
+    and inv a =
+      build_siso
+        (module struct
+          let label = "inv"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = Arr A.(inv a)
+          let df cp _ap at = neg cp *@ at *@ cp
+
+          let dr ap aa =
+            let dpt = transpose ap in
+            neg dpt *@ !aa *@ dpt
+        end
+        : Siso)
+        a
+
+    and softplus x = log (pack_flt 1. + exp x)
+    and softsign x = x / (pack_flt 1. + abs x)
+
+    and softmax ?(axis = -1) x =
+      let c = Arr A.(max ~axis (unpack_arr x)) in
+      let y = exp (x - c) in
+      let a = sum ~axis y in
+      y / a
+
+    and reshape a s =
+      build_siso
+        (module struct
+          let label = "reshape"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = Arr A.(reshape a s)
+          let df _cp _ap at = reshape at s
+          let dr _ap aa = reshape !aa (shape (primal a))
+        end
+        : Siso)
+        a
+
+    and flatten a = reshape a [|1; numel a|]
+
+    and get_item a i j =
+      match a with
+      | Arr ap -> F (A.get ap [|i; j|])
+      | DF (ap, at, ai) -> DF (get_item ap i j, get_item at i j, ai)
+      | DR (ap, _, _, _, ai, _) ->
+        let reverse _ap aa t = (set_item (zero a) i j (sum' !aa), a) :: t in
+        let input t = a :: t in
+        let label = "Get_Item", [a] in
+        DR (get_item ap i j, ref (pack_flt 0.), (reverse, input, label), ref 0, ai, ref 0)
+      | _ -> error_uniop "get_item" a
+
+    and get_row a i =
+      build_siso
+        (module struct
+          let label = "get_row"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = Arr A.(row a i |> copy)
+          let df _cp _ap at = get_row at i
+
+          let dr _cp aa =
+            adjref a := add_row (adjval a) !aa i;
+            zero a
+        end
+        : Siso)
+        a
 
     (* pair inputs single output operations *)
     and ( + ) a b = add a b
@@ -433,7 +585,6 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         a
         b
 
-
     and ( - ) a b = sub a b
 
     and sub a b =
@@ -455,7 +606,6 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         a
         b
 
-
     and ( * ) a b = mul a b
 
     and mul a b =
@@ -470,653 +620,236 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let df_db _cp _bp bt = a * bt
           let df_dab _cp ap at bp bt = (ap * bt) + (at * bp)
           let dr_ab _cp aa = aa * primal b, aa * primal a
-          let dr_a _ap aa = aa * primal b
-          let dr_b _ap aa = aa * primal a
+          let dr_a _ap aa = aa * b
+          let dr_b _ap aa = aa * a
         end
         : Piso)
         a
         b
 
-
     and ( / ) a b = div a b
 
     and div a b =
-      let ff a b =
-        match a, b with
-        | F a, F b -> F A.Scalar.(div a b)
-        | F a, Arr b -> Arr A.(scalar_div a b)
-        | Arr a, F b -> Arr A.(div_scalar a b)
-        | Arr a, Arr b -> Arr A.(div a b)
-        | _ -> error_binop "( / )" a b
-      in
-      let fd a b = a / b in
-      let df_da _cp _ap at = at / b in
-      let df_db cp bp bt = neg bt * cp / bp in
-      let df_dab cp _ap at bp bt = (at - (bt * cp)) / bp in
-      let r_d_d a b =
-        let reverse _ap aa t =
-          (!aa / primal b, a) :: (!aa * (neg (primal a) / (primal b * primal b)), b) :: t
-        in
-        let input t = a :: b :: t in
-        let label = "Div_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t = (!aa / primal b, a) :: t in
-        let input t = a :: t in
-        let label = "Div_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t =
-          (!aa * (neg (primal a) / (primal b * primal b)), b) :: t
-        in
-        let input t = b :: t in
-        let label = "Div_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
+      build_piso
+        (module struct
+          let label = "div"
+          let ff_aa a b = F A.Scalar.(div a b)
+          let ff_ab a b = Arr A.(scalar_div a b)
+          let ff_ba a b = Arr A.(div_scalar a b)
+          let ff_bb a b = Arr A.(div a b)
+          let df_da _cp _ap at = at / b
+          let df_db cp bp bt = neg bt * cp / bp
+          let df_dab cp _ap at bp bt = (at - (bt * cp)) / bp
+          let dr_ab _cp aa = aa / primal b, aa * (neg (primal a) / (primal b * primal b))
+          let dr_a _ap aa = aa / b
+          let dr_b _ap aa = aa * (neg a / (primal b * primal b))
+        end
+        : Piso)
+        a
+        b
 
     and ( ** ) a b = pow a b
 
     and pow a b =
-      let ff a b =
-        match a, b with
-        | F a, F b -> F A.Scalar.(pow a b)
-        | F a, Arr b -> Arr A.(scalar_pow a b)
-        | Arr a, F b -> Arr A.(pow_scalar a b)
-        | Arr a, Arr b -> Arr A.(pow a b)
-        | _ -> error_binop "( ** )" a b
-      in
-      let fd a b = a ** b in
-      let df_da _cp ap at = at * (ap ** (b - pack_flt 1.)) * b in
-      let df_db cp _bp bt = bt * cp * log a in
-      let df_dab _cp ap at bp bt =
-        (ap ** (bp - pack_flt 1.)) * ((at * bp) + (ap * bt * log ap))
-      in
-      let r_d_d a b =
-        let reverse _ap aa t =
-          (!aa * (primal a ** (primal b - pack_flt 1.)) * primal b, a)
-          :: (!aa * (primal a ** primal b) * log (primal a), b)
-          :: t
-        in
-        let input t = a :: b :: t in
-        let label = "Pow_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t =
-          (!aa * (primal a ** (primal b - pack_flt 1.)) * primal b, a) :: t
-        in
-        let input t = a :: t in
-        let label = "Pow_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t = (!aa * (primal a ** primal b) * log (primal a), b) :: t in
-        let input t = b :: t in
-        let label = "Pow_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      build_piso
+        (module struct
+          let label = "pow"
+          let ff_aa a b = F A.Scalar.(pow a b)
+          let ff_ab a b = Arr A.(scalar_pow a b)
+          let ff_ba a b = Arr A.(pow_scalar a b)
+          let ff_bb a b = Arr A.(pow a b)
+          let df_da _cp ap at = at * (ap ** (b - pack_flt 1.)) * b
+          let df_db cp _bp bt = bt * cp * log a
+          let df_dab _cp ap at bp bt = (ap ** (bp - pack_flt 1.)) * ((at * bp) + (ap * bt * log ap))
 
+          let dr_ab _cp aa =
+            ( aa * (primal a ** (primal b - pack_flt 1.)) * primal b
+            , aa * (primal a ** primal b) * log (primal a) )
+
+          let dr_a _ap aa = aa * (primal a ** (primal b - pack_flt 1.)) * primal b
+          let dr_b _ap aa = aa * (primal a ** primal b) * log (primal a)
+        end
+        : Piso)
+        a
+        b
 
     and atan2 a b =
-      let ff a b =
-        match a, b with
-        | F a, F b -> F A.Scalar.(atan2 a b)
-        | F a, Arr b -> Arr A.(scalar_atan2 a b)
-        | Arr a, F b -> Arr A.(atan2_scalar a b)
-        | Arr a, Arr b -> Arr A.(atan2 a b)
-        | _ -> error_binop "atan2" a b
-      in
-      let fd a b = atan2 a b in
-      let df_da _cp ap at = at * b / (sqr ap + sqr b) in
-      let df_db _cp bp bt = neg bt * a / (sqr a + sqr bp) in
-      let df_dab _cp ap at bp bt = ((at * bp) - (bt * ap)) / (sqr ap + sqr bp) in
-      let r_d_d a b =
-        let reverse _ap aa t =
-          let d = sqr (primal a) + sqr (primal b) in
-          (!aa * primal b / d, a) :: (!aa * neg (primal a) / d, b) :: t
-        in
-        let input t = a :: b :: t in
-        let label = "Atan2_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t =
-          let d = sqr (primal a) + sqr (primal b) in
-          (!aa * primal b / d, a) :: t
-        in
-        let input t = a :: t in
-        let label = "Atan2_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t =
-          let d = sqr (primal a) + sqr (primal b) in
-          (!aa * neg (primal a) / d, b) :: t
-        in
-        let input t = b :: t in
-        let label = "Atan2_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      build_piso
+        (module struct
+          let label = "atan2"
+          let ff_aa a b = F A.Scalar.(atan2 a b)
+          let ff_ab a b = Arr A.(scalar_atan2 a b)
+          let ff_ba a b = Arr A.(atan2_scalar a b)
+          let ff_bb a b = Arr A.(atan2 a b)
+          let df_da _cp ap at = at * b / (sqr ap + sqr b)
+          let df_db _cp bp bt = neg bt * a / (sqr a + sqr bp)
+          let df_dab _cp ap at bp bt = ((at * bp) - (bt * ap)) / (sqr ap + sqr bp)
 
+          let dr_ab _cp aa =
+            let d = sqr (primal a) + sqr (primal b) in
+            aa * primal b / d, aa * neg (primal a) / d
+
+          let dr_a _ap aa =
+            let d = sqr (primal a) + sqr (primal b) in
+            aa * primal b / d
+
+          let dr_b _ap aa =
+            let d = sqr (primal a) + sqr (primal b) in
+            aa * neg (primal a) / d
+        end
+        : Piso)
+        a
+        b
 
     and min2 a b = (a + b - abs (a - b)) / pack_flt 2.
     and max2 a b = (a + b + abs (b - a)) / pack_flt 2.
 
-    and get_item a i j =
-      match a with
-      | Arr ap -> F (A.get ap [| i; j |])
-      | DF (ap, at, ai) -> DF (get_item ap i j, get_item at i j, ai)
-      | DR (ap, _, _, _, ai, _) ->
-        let reverse _ap aa t = (set_item (zero a) i j (sum' !aa), a) :: t in
-        let input t = a :: t in
-        let label = "Get_Item", [ a ] in
-        DR (get_item ap i j, ref (pack_flt 0.), (reverse, input, label), ref 0, ai, ref 0)
-      | _ -> error_uniop "get_item" a
-
-
     and set_item a i j b =
-      let ff a b =
-        match a, b with
-        | Arr a, F b ->
-          let aa = A.copy a in
-          A.set aa [| i; j |] b;
-          Arr aa
-        | _ -> error_uniop "set_item" a
-      in
-      let fd a b = set_item a i j b in
-      let df_da _cp _ap at = set_item at i j (pack_flt 0.) in
-      let df_db _cp _bp bt = add_item (zero a) i j bt in
-      let df_dab _cp _ap at _bp bt = set_item at i j bt in
-      let r_d_d a b =
-        let reverse _ap aa t =
-          (set_item !aa i j (pack_flt 0.), a) :: (get_item !aa i j, b) :: t
-        in
-        let input t = a :: b :: t in
-        let label = "SetI_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t = (set_item !aa i j (pack_flt 0.), a) :: t in
-        let input t = a :: t in
-        let label = "SetI_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t = (get_item !aa i j, b) :: t in
-        let input t = b :: t in
-        let label = "SetI_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      build_piso
+        (module struct
+          let label = "set_item"
+          let ff_aa a _b = error_uniop label (pack_elt a)
+          let ff_ab a _b = error_uniop label (pack_elt a)
 
+          let ff_ba a b =
+            let aa = A.copy a in
+            A.set aa [|i; j|] b;
+            Arr aa
+
+          let ff_bb a _b = error_uniop label (pack_arr a)
+          let df_da _cp _ap at = set_item at i j (pack_flt 0.)
+          let df_db _cp _bp bt = add_item (zero a) i j bt
+          let df_dab _cp _ap at _bp bt = set_item at i j bt
+          let dr_ab _cp aa = set_item aa i j (pack_flt 0.), get_item aa i j
+          let dr_a _ap aa = set_item aa i j (pack_flt 0.)
+          let dr_b _ap aa = get_item aa i j
+        end
+        : Piso)
+        a
+        b
 
     and add_item a i j b =
-      let ff a b =
-        match a, b with
-        | Arr a, F b ->
-          let aa = A.copy a in
-          A.set aa [| i; j |] A.Scalar.(add (A.get aa [| i; j |]) b);
-          Arr aa
-        | _ -> error_binop "add_item" a b
-      in
-      let fd a b = add_item a i j b in
-      let df_da _cp _ap at = at in
-      let df_db _cp _bp bt = add_item (zero a) i j bt in
-      let df_dab _cp _ap at _bp bt = add_item at i j bt in
-      let r_d_d a b =
-        let reverse _ap aa t = (!aa, a) :: (get_item !aa i j, b) :: t in
-        let input t = a :: b :: t in
-        let label = "AddI_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t = (!aa, a) :: t in
-        let input t = a :: t in
-        let label = "AddI_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t = (get_item !aa i j, b) :: t in
-        let input t = b :: t in
-        let label = "AddI_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      build_piso
+        (module struct
+          let label = "add_item"
+          let ff_aa a _b = error_uniop label (pack_elt a)
+          let ff_ab a _b = error_uniop label (pack_elt a)
 
+          let ff_ba a b =
+            let aa = A.copy a in
+            A.set aa [|i; j|] A.Scalar.(add (A.get aa [|i; j|]) b);
+            Arr aa
 
-    and get_slice i a =
-      let ff = function
-        | Arr a -> Arr A.(get_slice i a)
-        | _ -> error_uniop "slice" a
-      in
-      let fd a = get_slice i a in
-      let df _cp _ap at = get_slice i at in
-      let r a =
-        let reverse _ap aa t = (set_slice i (zero a) !aa, a) :: t in
-        let input t = a :: t in
-        let label = "Get_Slice_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+          let ff_bb a _b = error_uniop label (pack_arr a)
+          let df_da _cp _ap at = at
+          let df_db _cp _bp bt = add_item (zero a) i j bt
+          let df_dab _cp _ap at _bp bt = add_item at i j bt
+          let dr_ab _cp aa = aa, get_item aa i j
+          let dr_a _ap aa = aa
+          let dr_b _ap aa = get_item aa i j
+        end
+        : Piso)
+        a
+        b
 
     and set_slice i a b =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b ->
-          let a = A.copy a in
-          A.(set_slice i a b);
-          Arr a
-        | _ -> error_binop "set_slice" a b
-      in
-      let fd a b = set_slice i a b in
-      let df_da _cp _ap at = set_slice i at (zero b) in
-      let df_db _cp _bp bt = set_slice i (zero a) bt in
-      let df_dab _cp _ap at _bp bt = set_slice i at bt in
-      let r_d_d a b =
-        let reverse _ap aa t =
-          (set_slice i !aa (zero b), a) :: (get_slice i !aa, b) :: t
-        in
-        let input t = a :: b :: t in
-        let label = "Set_Slice_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t = (set_slice i !aa (zero b), a) :: t in
-        let input t = a :: t in
-        let label = "Set_Slice_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t = (get_slice i !aa, b) :: t in
-        let input t = b :: t in
-        let label = "Set_Slice_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      build_piso
+        (module struct
+          let label = "set_slice"
+          let ff_aa a _b = error_uniop label (pack_elt a)
+          let ff_ab a _b = error_uniop label (pack_elt a)
+          let ff_ba _a b = error_uniop label (pack_elt b)
 
+          let ff_bb a b =
+            let a = A.copy a in
+            A.(set_slice i a b);
+            Arr a
 
-    and sum' a =
-      let ff = function
-        | F a -> F a
-        | Arr a -> F A.(sum' a)
-        | _ -> error_uniop "sum" a
-      in
-      let fd a = sum' a in
-      let df _cp _ap at = sum' at in
-      let r a =
-        let reverse _ap aa t = (!aa, a) :: t in
-        let input t = a :: t in
-        let label = "Sum_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
+          let df_da _cp _ap at = set_slice i at (zero b)
+          let df_db _cp _bp bt = set_slice i (zero a) bt
+          let df_dab _cp _ap at _bp bt = set_slice i at bt
+          let dr_ab _cp aa = set_slice i aa (zero b), get_slice i aa
+          let dr_a _ap aa = set_slice i aa (zero b)
+          let dr_b _ap aa = get_slice i aa
+        end
+        : Piso)
+        a
+        b
 
-
-    and sum ?(axis = -1) a =
-      let ff = function
-        | F a -> F a
-        | Arr a -> Arr A.(sum ~axis a)
-        | _ -> error_uniop "sum" a
-      in
-      let fd a = sum ~axis a in
-      let df _cp _ap at = sum ~axis at in
-      let r a =
-        let reverse _ap aa t =
-          let s = shape a in
-          let reps = Array.(make (length s) 1) in
-          reps.(axis) <- s.(axis);
-          (repeat !aa reps, a) :: t
-        in
-        let input t = a :: t in
-        let label = "Sum_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and sum_reduce ?(axis = [| 0 |]) a =
-      let ff = function
-        | F a -> F a
-        | Arr x -> Arr A.(sum_reduce ~axis x)
-        | _ -> error_uniop "sum_reduce" a
-      in
-      let fd a = sum_reduce ~axis a in
-      let df _cp _ap at = sum_reduce ~axis at in
-      let r a =
-        let reverse _ap aa t =
-          let s = shape a in
-          let reps = Array.(make (length s) 1) in
-          Array.iter (fun j -> reps.(j) <- s.(j)) axis;
-          (repeat !aa reps, a) :: t
-        in
-        let input t = a :: t in
-        let label = "Sum__D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and mean a = sum' a / F (numel a |> float_of_int |> A.float_to_elt)
     and ( *@ ) a b = dot a b
 
     and dot a b =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b -> Arr A.(dot a b)
-        | _ -> error_binop "( *@ )" a b
-      in
-      let fd a b = a *@ b in
-      let df_da _cp _ap at = at *@ b in
-      let df_db _cp _bp bt = a *@ bt in
-      let df_dab _cp ap at bp bt = (ap *@ bt) + (at *@ bp) in
-      let r_d_d a b =
-        let reverse _ap aa t =
-          (dot !aa (transpose (primal b)), a) :: (dot (transpose (primal a)) !aa, b) :: t
-        in
-        let input t = a :: b :: t in
-        let label = "Dot_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t = (dot !aa (transpose (primal b)), a) :: t in
-        let input t = a :: t in
-        let label = "Dot_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t = (dot (transpose (primal a)) !aa, b) :: t in
-        let input t = b :: t in
-        let label = "Dot_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
-
-    and transpose a =
-      let ff = function
-        | Arr a -> Arr A.(transpose a)
-        | _ -> error_uniop "transpose" a
-      in
-      let fd a = transpose a in
-      let df _cp _ap at = transpose at in
-      let r a =
-        let reverse _ap aa t = (transpose !aa, a) :: t in
-        let input t = a :: t in
-        let label = "Trans_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and l1norm' a =
-      let ff = function
-        | Arr a -> F A.(l1norm' a)
-        | _ -> error_uniop "l1norm'" a
-      in
-      let fd a = l1norm' a in
-      let df _cp ap at = at * signum ap in
-      let r a =
-        let reverse _ap aa t = (!aa * signum (primal a), a) :: t in
-        let input t = a :: t in
-        let label = "L1Norm_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and l2norm' a =
-      let ff = function
-        | Arr a -> F A.(l2norm' a)
-        | _ -> error_uniop "l2norm'" a
-      in
-      let fd a = l2norm' a in
-      let df cp ap at = ap * at / cp in
-      let r a =
-        let reverse ap aa t = (!aa / ap * primal a, a) :: t in
-        let input t = a :: t in
-        let label = "L2Norm_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and l2norm_sqr' a =
-      let ff = function
-        | F a -> F A.Scalar.(sqr a)
-        | Arr a -> F A.(l2norm_sqr' a)
-        | _ -> error_uniop "l2norm_sqr'" a
-      in
-      let fd a = l2norm_sqr' a in
-      let df _cp ap at = pack_flt 2. * (ap * at) in
-      let r a =
-        let reverse _ap aa t = (!aa * pack_flt 2. * primal a, a) :: t in
-        let input t = a :: t in
-        let label = "L2NormS_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and sigmoid a =
-      let ff = function
-        | F a -> F A.Scalar.(sigmoid a)
-        | Arr a -> Arr A.(sigmoid a)
-        | _ -> error_uniop "sigmoid" a
-      in
-      let fd a = sigmoid a in
-      let df cp _ap at = at * cp * (pack_flt 1. - cp) in
-      let r a =
-        let reverse ap aa t = (!aa * ap * (pack_flt 1. - ap), a) :: t in
-        let input t = a :: t in
-        let label = "Sigmoid_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and relu a =
-      let ff = function
-        | F a -> F A.Scalar.(relu a)
-        | Arr a -> Arr A.(relu a)
-        | _ -> error_uniop "relu" a
-      in
-      let fd a = relu a in
-      let df _cp ap at = at * (pack_flt 1. + signum ap) / pack_flt 2. in
-      let r a =
-        let reverse _ap aa t =
-          (!aa * ((signum (primal a) + pack_flt 1.) / pack_flt 2.), a) :: t
-        in
-        let input t = a :: t in
-        let label = "Relu_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and diag ?(k = 0) a =
-      let ff = function
-        | Arr a -> Arr A.(diag ~k a |> copy)
-        | _ -> error_uniop "diag" a
-      in
-      let fd a = diag ~k a in
-      let df _cp _ap at = diag ~k at in
-      let r a =
-        let reverse _ap aa t =
-          let m = col_num a in
-          let l = Pervasives.(m - k) in
-          let rec accu i a_ =
-            if i < l
-            then accu (succ i) (set_item a_ i Pervasives.(k + i) (get_item !aa 0 i))
-            else a_
-          in
-          let abar = accu 0 (zero a) in
-          (abar, a) :: t
-        in
-        let input t = a :: t in
-        let label = "Diag_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and diagm ?(k = 0) a =
-      let ff = function
-        | Arr a -> Arr A.(diagm ~k a |> copy)
-        | _ -> error_uniop "diagm" a
-      in
-      let fd a = diagm ~k a in
-      let df _cp _ap at = diagm ~k at in
-      let r a =
-        let reverse _ap aa t = (diag ~k !aa, a) :: t in
-        let input t = a :: t in
-        let label = "Diagm_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and trace a =
-      let ff = function
-        | Arr a -> F A.(trace a)
-        | _ -> error_uniop "trace" a
-      in
-      let fd a = trace a in
-      let df _cp _ap at = trace at in
-      let r a =
-        let reverse _ap aa t =
-          let m = col_num a in
-          let abar = !aa * diagm (pack_arr A.(ones [| 1; m |])) in
-          (abar, a) :: t
-        in
-        let input t = a :: t in
-        let label = "Trace_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and triu ?(k = 0) a =
-      let ff = function
-        | Arr a -> Arr A.(triu ~k a |> copy)
-        | _ -> error_uniop "triu" a
-      in
-      let fd a = triu ~k a in
-      let df _cp _ap at = triu ~k at in
-      let r a =
-        let reverse _ap aa t = (triu ~k !aa, a) :: t in
-        let input t = a :: t in
-        let label = "Triu_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and tril ?(k = 0) a =
-      let ff = function
-        | Arr a -> Arr A.(tril ~k a |> copy)
-        | _ -> error_uniop "tril" a
-      in
-      let fd a = tril ~k a in
-      let df _cp _ap _at = tril ~k a in
-      let r a =
-        let reverse _ap aa t = (tril ~k !aa, a) :: t in
-        let input t = a :: t in
-        let label = "Tril_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and inv a =
-      let ff = function
-        | Arr a -> Arr A.(inv a)
-        | _ -> error_uniop "inv" a
-      in
-      let fd a = inv a in
-      let df cp _ap at = neg cp * at * cp in
-      let r a =
-        let reverse ap aa t =
-          let dpt = transpose ap in
-          (neg dpt *@ !aa *@ dpt, a) :: t
-        in
-        let input t = a :: t in
-        let label = "Inv_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and softplus x = log (pack_flt 1. + exp x)
-    and softsign x = x / (pack_flt 1. + abs x)
-
-    and softmax ?(axis = -1) x =
-      let c = Arr A.(max ~axis (unpack_arr x)) in
-      let y = exp (x - c) in
-      let a = sum ~axis y in
-      y / a
-
+      build_piso
+        (module struct
+          let label = "dot"
+          let ff_aa a _b = error_uniop label (pack_elt a)
+          let ff_ab a _b = error_uniop label (pack_elt a)
+          let ff_ba _a b = error_uniop label (pack_elt b)
+          let ff_bb a b = Arr A.(dot a b)
+          let df_da _cp _ap at = at *@ b
+          let df_db _cp _bp bt = a *@ bt
+          let df_dab _cp ap at bp bt = (ap *@ bt) + (at *@ bp)
+          let dr_ab _cp aa = dot aa (transpose (primal b)), dot (transpose (primal a)) aa
+          let dr_a _ap aa = dot aa (transpose (primal b))
+          let dr_b _ap aa = dot (transpose (primal a)) aa
+        end
+        : Piso)
+        a
+        b
 
     and cross_entropy x y = x * log y |> sum' |> neg
 
     and add_row a b i =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b ->
-          A.(
-            copy_row_to (add (row a i) b) a i;
-            Arr a)
-        | _ -> error_binop "add_row" a b
-      in
-      let fd a b = add_row a b i in
-      let df_da _cp _ap at = at in
-      let df_db _cp _bp bt = add_row (zero a) bt i in
-      let df_dab _cp _ap at _bp bt = add_row at bt i in
-      let r_d_d a b =
-        let reverse _ap aa t = (!aa, a) :: (get_row !aa i, b) :: t in
-        let input t = a :: b :: t in
-        let label = "Add_Row_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t = (!aa, a) :: t in
-        let input t = a :: t in
-        let label = "Add_Row_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t = (get_row !aa i, b) :: t in
-        let input t = b :: t in
-        let label = "Add_Row_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      build_piso
+        (module struct
+          let label = "add_row"
+          let ff_aa a _b = error_uniop label (pack_elt a)
+          let ff_ab a _b = error_uniop label (pack_elt a)
+          let ff_ba _a b = error_uniop label (pack_elt b)
 
+          let ff_bb a b =
+            A.(
+              copy_row_to (add (row a i) b) a i;
+              Arr a)
 
-    and get_row a i =
-      let ff = function
-        | Arr a -> Arr A.(row a i |> copy)
-        | _ -> error_uniop "get_row" a
-      in
-      let fd a = get_row a i in
-      let df _cp _ap at = get_row at i in
-      let r a =
-        let reverse _ap aa t =
-          adjref a := add_row (adjval a) !aa i;
-          (zero a, a) :: t
-        in
-        let input t = a :: t in
-        let label = "Get_Row_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
+          let df_da _cp _ap at = at
+          let df_db _cp _bp bt = add_row (zero a) bt i
+          let df_dab _cp _ap at _bp bt = add_row at bt i
+          let dr_ab _cp aa = aa, get_row aa i
+          let dr_a _ap aa = aa
+          let dr_b _ap aa = get_row aa i
+        end
+        : Piso)
+        a
+        b
 
+    and concat axis a b =
+      build_piso
+        (module struct
+          let label = "concat"
+          let ff_aa a _b = error_uniop label (pack_elt a)
+          let ff_ab a _b = error_uniop label (pack_elt a)
+          let ff_ba _a b = error_uniop label (pack_elt b)
+          let ff_bb a b = Arr A.(concatenate ~axis [|a; b|])
+          let df_da _cp _ap at = concat axis at (zero b)
+          let df_db _cp _bp bt = concat axis (zero a) bt
+          let df_dab _cp _ap at _bp bt = concat axis at bt
+
+          let dr_ab _cp aa =
+            let s = split ~axis [|(shape a).(axis); (shape b).(axis)|] aa in
+            s.(0), s.(1)
+
+          let dr_a _ap aa =
+            let s = split ~axis [|(shape a).(axis); (shape b).(axis)|] aa in
+            s.(0)
+
+          let dr_b _ap aa =
+            let s = split ~axis [|(shape a).(axis); (shape b).(axis)|] aa in
+            s.(1)
+        end
+        : Piso)
+        a
+        b
 
     and to_rows a = Array.init (row_num a) (fun i -> get_row a i)
 
@@ -1125,12 +858,8 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
       match a.(0) with
       | Arr _ -> Array.map unpack_arr a |> A.of_rows |> pack_arr
       | DF (_, _, ai) ->
-        let ap =
-          a |> Array.map (fun x -> x |> primal |> unpack_arr) |> A.of_rows |> pack_arr
-        in
-        let at =
-          a |> Array.map (fun x -> x |> tangent |> unpack_arr) |> A.of_rows |> pack_arr
-        in
+        let ap = a |> Array.map (fun x -> x |> primal |> unpack_arr) |> A.of_rows |> pack_arr in
+        let at = a |> Array.map (fun x -> x |> tangent |> unpack_arr) |> A.of_rows |> pack_arr in
         DF (ap, at, ai)
       | DR (_, _, _, _, ai, _) ->
         let ap = a |> Array.map (fun x -> x |> primal) in
@@ -1142,7 +871,6 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         let label = "Of_Rows_D", Array.to_list a in
         DR (cp, ref (zero cp), (reverse, input, label), ref 0, ai, ref 0)
       | _ -> error_uniop "of_rows a.(0)" a.(0)
-
 
     and of_arrays a =
       (* mode: 0 constant, 1 reverse, 2 tangent *)
@@ -1174,8 +902,8 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
                   ai_ref := ai;
                   mode := 2;
                   unpack_elt x
-                | _, _ -> error_uniop "of_arrays: inconsistent array" x)
-              xs)
+                | _, _ -> error_uniop "of_arrays: inconsistent array" x )
+              xs )
           a
         |> A.of_arrays
         |> pack_arr
@@ -1201,68 +929,8 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         DF (cp, at, !ai_ref)
       | _ -> error_uniop "of_arrays" a.(0).(0)
 
-
     and to_arrays a =
       Array.init (row_num a) (fun i -> Array.init (col_num a) (fun j -> get_item a i j))
-
-
-    and reshape a s =
-      let ff = function
-        | Arr a -> Arr A.(reshape a s)
-        | _ -> error_uniop "reshape" a
-      in
-      let fd a = reshape a s in
-      let df _cp _ap at = reshape at s in
-      let r a =
-        let reverse _ap aa t = (reshape !aa (shape (primal a)), a) :: t in
-        let input t = a :: t in
-        let label = "Reshape_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
-
-    and flatten a = reshape a [| 1; numel a |]
-
-    and concat axis a b =
-      let ff a b =
-        match a, b with
-        | Arr a, Arr b -> Arr A.(concatenate ~axis [| a; b |])
-        | _ -> error_binop "concat" a b
-      in
-      let fd a b = concat axis a b in
-      let df_da _cp _ap at = concat axis at (zero b) in
-      let df_db _cp _bp bt = concat axis (zero a) bt in
-      let df_dab _cp _ap at _bp bt = concat axis at bt in
-      let r_d_d a b =
-        let reverse _ap aa t =
-          let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !aa in
-          (s.(0), a) :: (s.(1), b) :: t
-        in
-        let input t = a :: b :: t in
-        let label = "Concat_D_D", [ a; b ] in
-        reverse, input, label
-      in
-      let r_d_c a b =
-        let reverse _ap aa t =
-          let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !aa in
-          (s.(0), a) :: t
-        in
-        let input t = a :: t in
-        let label = "Concat_D_C", [ a; b ] in
-        reverse, input, label
-      in
-      let r_c_d a b =
-        let reverse _ap aa t =
-          let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !aa in
-          (s.(1), b) :: t
-        in
-        let input t = b :: t in
-        let label = "Concat_C_D", [ a; b ] in
-        reverse, input, label
-      in
-      op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
 
     and split ~axis parts a =
       let ff a =
@@ -1273,15 +941,12 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
       let fd a = split ~axis parts a in
       let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
       let r (a, _cp_arr, aa_arr) =
-        let reverse _ap _aa t =
-          (concatenate ~axis (Array.map (fun aa -> !aa) aa_arr), a) :: t
-        in
+        let reverse _ap _aa t = (concatenate ~axis (Array.map (fun aa -> !aa) aa_arr), a) :: t in
         let input t = a :: t in
-        let label = "Split_D", [ a ] in
+        let label = "Split_D", [a] in
         reverse, input, label
       in
       op_s_m a ff fd df r
-
 
     and concatenate ~axis a =
       (* mode: 0 constant, 1 reverse, 2 tangent *)
@@ -1308,7 +973,7 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             | DF (_, _, ai), 2 ->
               ai_ref := ai;
               unpack_arr x
-            | _ -> error_uniop "concatenate: inconsistent array" x)
+            | _ -> error_uniop "concatenate: inconsistent array" x )
           a
         |> A.concatenate ~axis
         |> pack_arr
@@ -1326,14 +991,10 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         DR (cp, ref (zero cp), (reverse, input, label), ref 0, !ai_ref, ref 0)
       | 2 ->
         let at =
-          a
-          |> Array.map (fun x -> x |> tangent |> unpack_arr)
-          |> A.concatenate ~axis
-          |> pack_arr
+          a |> Array.map (fun x -> x |> tangent |> unpack_arr) |> A.concatenate ~axis |> pack_arr
         in
         DF (cp, at, !ai_ref)
       | _ -> error_uniop "concatenate" a.(0)
-
 
     and init_2d n_rows n_cols f =
       Array.init n_rows (fun i -> Array.init n_cols (fun j -> f i j)) |> of_arrays
@@ -1342,24 +1003,22 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
   module Linalg = struct
     open Maths
 
+    (* single input single output *)
+
     let rec noop _ = ()
     and inv = Maths.inv
 
     and logdet a =
-      let ff = function
-        | Arr a -> F A.(logdet a)
-        | _ -> error_uniop "logdet" a
-      in
-      let fd a = logdet a in
-      let df _cp ap at = trace (transpose (inv ap) *@ at) in
-      let r a =
-        let reverse _ap aa t = (!aa * transpose (inv (primal a)), a) :: t in
-        let input t = a :: t in
-        let label = "Logdet_D", [ a ] in
-        reverse, input, label
-      in
-      op_s_s a ff fd df r
-
+      build_siso
+        (module struct
+          let label = "logdet"
+          let ff_f a = error_uniop label (pack_elt a)
+          let ff_arr a = F A.(logdet a)
+          let df _cp ap at = trace (transpose (inv ap) *@ at)
+          let dr _ap aa = !aa * transpose (inv (primal a))
+        end
+        : Siso)
+        a
 
     and copyltu x = tril x + transpose (tril ~k:(-1) x)
     and copyutl x = triu x + transpose (triu ~k:1 x)
@@ -1369,25 +1028,25 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         let inv_cp = inv cp in
         let tr_inv_cp = transpose inv_cp in
         if upper
-        then (
+        then
           let x = tr_inv_cp *@ transpose at *@ inv_cp in
           let m = pack_flt 0.5 * tril (triu x) in
-          transpose cp *@ (m + triu ~k:1 x))
-        else (
+          transpose cp *@ (m + triu ~k:1 x)
+        else
           let x = inv_cp *@ at *@ tr_inv_cp in
           let m = pack_flt 0.5 * tril (triu x) in
-          cp *@ (m + tril ~k:(-1) x))
+          cp *@ (m + tril ~k:(-1) x)
       in
       let _chol_backward o aa upper =
         if upper
-        then (
+        then
           let x = linsolve ~typ:`u o (copyutl (aa *@ transpose o)) in
           let x = linsolve ~typ:`u o (transpose x) in
-          pack_flt 0.5 * transpose x)
-        else (
+          pack_flt 0.5 * transpose x
+        else
           let x = linsolve ~trans:true ~typ:`l o (copyltu (transpose o *@ aa)) in
           let x = linsolve ~trans:true ~typ:`l o (transpose x) in
-          pack_flt 0.5 * transpose x)
+          pack_flt 0.5 * transpose x
       in
       fun ?(upper = true) a ->
         build_siso
@@ -1396,12 +1055,12 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             let ff_f a = error_uniop "chol" (pack_elt a)
             let ff_arr a = Arr A.(chol ~upper a)
             let df cp _ap at = _chol_forward cp at upper
-            let dr ap aa = _chol_backward ap aa upper
+            let dr ap aa = _chol_backward ap !aa upper
           end
           : Siso)
           a
 
-
+    (* single input pair outputs *)
     and qr =
       let _qr_backward (o1, o2) (aa1, aa2) =
         let q = !o1
@@ -1412,22 +1071,20 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         linsolve r (transpose (qbar + (q *@ copyutl m))) |> transpose
       in
       fun a ->
-        let ff = function
-          | Arr a ->
-            let q, r = A.(qr a) in
-            Arr q, Arr r
-          | _ -> error_uniop "qr" a
-        in
-        let fd a = qr a in
-        let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
-        let r (a, o, aa) =
-          let reverse _ap _aa t = (_qr_backward o aa, a) :: t in
-          let input t = a :: t in
-          let label = "QR_D", [ a ] in
-          reverse, input, label
-        in
-        op_s_p a ff fd df r
+        build_sipo
+          (module struct
+            let label = "qr"
+            let ff_f _ = error_uniop "qr" a
 
+            let ff_arr a =
+              let q, r = A.(qr a) in
+              Arr q, Arr r
+
+            let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED
+            let dr _ap o aa = _qr_backward o aa
+          end
+          : Sipo)
+          a
 
     and lq =
       let _lq_backward (o1, o2) (aa1, aa2) =
@@ -1439,23 +1096,22 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         linsolve ~trans:true ~typ:`l l (qbar + (copyltu m *@ q))
       in
       fun a ->
-        let ff = function
-          | Arr a ->
-            let l, q = A.(lq a) in
-            Arr l, Arr q
-          | _ -> error_uniop "lq" a
-        in
-        let fd a = lq a in
-        let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
-        let r (a, o, aa) =
-          let reverse _ap _aa t = (_lq_backward o aa, a) :: t in
-          let input t = a :: t in
-          let label = "LQ_D", [ a ] in
-          reverse, input, label
-        in
-        op_s_p a ff fd df r
+        build_sipo
+          (module struct
+            let label = "lq"
+            let ff_f _ = error_uniop "lq" a
 
+            let ff_arr a =
+              let l, q = A.(lq a) in
+              Arr l, Arr q
 
+            let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED
+            let dr _ap o aa = _lq_backward o aa
+          end
+          : Sipo)
+          a
+
+    (* single input triple outputs *)
     and svd =
       let _svd_backward (o1, o2, o3) (aa1, aa2, aa3) thin =
         let u, s, vt = !o1, !o2, !o3
@@ -1464,7 +1120,7 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         and v = transpose vt in
         let ubart = transpose ubar
         and vbar = transpose vbart in
-        let eye n = A.(ones [| 1; n |]) |> pack_arr |> diagm in
+        let eye n = A.(ones [|1; n|]) |> pack_arr |> diagm in
         let e_m = eye (row_num u) in
         let e_n = eye (row_num v) in
         let k = row_num vt in
@@ -1472,46 +1128,44 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let s2 = sqr s in
           pack_arr
             A.(
-              init_nd [| k; k |] (fun idx ->
+              init_nd [|k; k|] (fun idx ->
                   let i = idx.(0)
                   and j = idx.(1) in
                   if i = j
                   then float_to_elt 0.
-                  else (
+                  else
                     let s2_i = get_item s2 0 i |> unpack_flt in
                     let s2_j = get_item s2 0 j |> unpack_flt in
-                    1. /. (s2_j -. s2_i) |> float_to_elt)))
+                    1. /. (s2_j -. s2_i) |> float_to_elt ))
         in
         let inv_s = pack_flt 1. / s in
         if thin
         then
           (u * sbar *@ vt)
-          + (((u *@ (f * ((ut *@ ubar) - (ubart *@ u))) * s)
-             + ((e_m - (u *@ ut)) *@ ubar * inv_s))
-            *@ vt)
-          + (u
-            *@ ((transpose s * (f * ((vt *@ vbar) - (vbart *@ v))) *@ vt)
-               + (transpose inv_s * vbart *@ (e_n - (v *@ vt)))))
+          + ( ((u *@ (f * ((ut *@ ubar) - (ubart *@ u))) * s) + ((e_m - (u *@ ut)) *@ ubar * inv_s))
+            *@ vt )
+          + ( u
+            *@ ( (transpose s * (f * ((vt *@ vbar) - (vbart *@ v))) *@ vt)
+               + (transpose inv_s * vbart *@ (e_n - (v *@ vt))) ) )
         else raise Owl_exception.NOT_IMPLEMENTED
       in
       fun ?(thin = true) a ->
-        let ff = function
-          | Arr a ->
-            let u, s, vt = A.(svd ~thin a) in
-            Arr u, Arr s, Arr vt
-          | _ -> error_uniop "svd" a
-        in
-        let fd a = svd ~thin a in
-        let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
-        let r (a, o, aa) =
-          let reverse _ap _aa t = (_svd_backward o aa thin, a) :: t in
-          let input t = a :: t in
-          let label = "SVD_D", [ a ] in
-          reverse, input, label
-        in
-        op_s_t a ff fd df r
+        build_sito
+          (module struct
+            let label = "svd"
+            let ff_f _ = error_uniop "svd" a
 
+            let ff_arr a =
+              let u, s, vt = A.(svd ~thin a) in
+              Arr u, Arr s, Arr vt
 
+            let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED
+            let dr _ap o aa = _svd_backward o aa thin
+          end
+          : Sito)
+          a
+
+    (* pair outputs single input *)
     and lyapunov =
       let _lyapunov_backward_a a aa ap =
         let s = lyapunov (transpose a) (neg aa) in
@@ -1523,40 +1177,29 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         pack_flt 2. * s *@ ap, neg s
       in
       fun a q ->
-        let ff a q =
-          match a, q with
-          | Arr a, Arr q -> Arr A.(lyapunov a q)
-          | _ -> error_binop "lyapunov" a q
-        in
-        let fd a q = lyapunov a q in
-        let df_da cp ap at = lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at))) in
-        let df_dq _cp _qp qt = lyapunov a (neg qt) in
-        let df_daq cp ap at _qp qt =
-          lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at))) + lyapunov ap (neg qt)
-        in
-        let r_d_d a b =
-          let reverse ap aa t =
-            let abar, qbar = _lyapunov_backward_aq (primal a) !aa ap in
-            (abar, a) :: (qbar, q) :: t
-          in
-          let input t = a :: b :: t in
-          let label = "Lyapunov_D_D", [ a; b ] in
-          reverse, input, label
-        in
-        let r_d_c a b =
-          let reverse ap aa t = (_lyapunov_backward_a (primal a) !aa ap, a) :: t in
-          let input t = a :: t in
-          let label = "Lyapunov_D_C", [ a; b ] in
-          reverse, input, label
-        in
-        let r_c_d a b =
-          let reverse _ap aa t = (_lyapunov_backward_q (primal a) !aa, q) :: t in
-          let input t = b :: t in
-          let label = "Lyapunov_C_D", [ a; b ] in
-          reverse, input, label
-        in
-        op_p_s a q ff fd df_da df_dq df_daq r_d_d r_d_c r_c_d
+        build_piso
+          (module struct
+            let label = "lyapunov"
+            let ff_aa a _q = error_uniop label (pack_elt a)
+            let ff_ab a _q = error_uniop label (pack_elt a)
+            let ff_ba _a q = error_uniop label (pack_elt q)
+            let ff_bb a q = Arr A.(lyapunov a q)
+            let df_da cp ap at = lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at)))
+            let df_db _cp _qp qt = lyapunov a (neg qt)
 
+            let df_dab cp ap at _qp qt =
+              lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at))) + lyapunov ap (neg qt)
+
+            let dr_ab ap aa =
+              let abar, qbar = _lyapunov_backward_aq (primal a) aa ap in
+              abar, qbar
+
+            let dr_a ap aa = _lyapunov_backward_a (primal a) aa ap
+            let dr_b _ap aa = _lyapunov_backward_q (primal a) aa
+          end
+          : Piso)
+          a
+          q
 
     and discrete_lyapunov =
       let _discrete_lyapunov_backward_a a aa ap =
@@ -1569,47 +1212,33 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         pack_flt 2. * s *@ a *@ ap, s
       in
       fun ?(solver = `default) a q ->
-        let ff a q =
-          match a, q with
-          | Arr a, Arr q -> Arr A.(discrete_lyapunov ~solver a q)
-          | _ -> error_binop "discrete_lyapunov" a q
-        in
-        let fd a q = discrete_lyapunov ~solver a q in
-        let df_da cp ap at =
-          discrete_lyapunov ap ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose a))
-        in
-        let df_dq _cp _qp qt = discrete_lyapunov a qt in
-        let df_daq cp ap at _qp qt =
-          discrete_lyapunov ap ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose a))
-          + discrete_lyapunov ap qt
-        in
-        let r_d_d a b =
-          let reverse ap aa t =
-            let abar, qbar = _discrete_lyapunov_backward_aq (primal a) !aa ap in
-            (abar, a) :: (qbar, q) :: t
-          in
-          let input t = a :: b :: t in
-          let label = "Discrete_Lyapunov_D_D", [ a; b ] in
-          reverse, input, label
-        in
-        let r_d_c a b =
-          let reverse ap aa t =
-            (_discrete_lyapunov_backward_a (primal a) !aa ap, a) :: t
-          in
-          let input t = a :: t in
-          let label = "Discrete_Lyapunov_D_C", [ a; b ] in
-          reverse, input, label
-        in
-        let r_c_d a b =
-          let reverse _ap aa t =
-            (_discrete_lyapunov_backward_q (primal a) !aa, q) :: t
-          in
-          let input t = b :: t in
-          let label = "Discrete_Lyapunov_C_D", [ a; b ] in
-          reverse, input, label
-        in
-        op_p_s a q ff fd df_da df_dq df_daq r_d_d r_d_c r_c_d
+        build_piso
+          (module struct
+            let label = "discrete_lyapunov"
+            let ff_aa a _q = error_uniop label (pack_elt a)
+            let ff_ab a _q = error_uniop label (pack_elt a)
+            let ff_ba _a q = error_uniop label (pack_elt q)
+            let ff_bb a q = Arr A.(discrete_lyapunov ~solver a q)
 
+            let df_da cp ap at =
+              discrete_lyapunov ap ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose a))
+
+            let df_db _cp _qp qt = discrete_lyapunov a qt
+
+            let df_dab cp ap at _qp qt =
+              discrete_lyapunov ap ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose a))
+              + discrete_lyapunov ap qt
+
+            let dr_ab ap aa =
+              let abar, qbar = _discrete_lyapunov_backward_aq (primal a) aa ap in
+              abar, qbar
+
+            let dr_a ap aa = _discrete_lyapunov_backward_a (primal a) aa ap
+            let dr_b _ap aa = _discrete_lyapunov_backward_q (primal a) aa
+          end
+          : Piso)
+          a
+          q
 
     and ( /@ ) a b = linsolve ~trans:false ~typ:`n a b
 
@@ -1620,55 +1249,40 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
       let _linsolve_backward_a trans typ cp bbar =
         let abar = neg bbar *@ transpose cp in
         let abar = if trans then transpose abar else abar in
-        match typ with
-        | `n -> abar
-        | `u -> triu abar
-        | `l -> tril abar
+        match typ with `n -> abar | `u -> triu abar | `l -> tril abar
       in
-      fun ?(trans = false) ?(typ = `n) a b ->
-        let ff a b =
-          match a, b with
-          | Arr a, Arr b -> Arr A.(linsolve ~trans ~typ a b)
-          | _ -> error_binop "linsolve" a b
-        in
-        let fd a b = linsolve ~trans ~typ a b in
-        let df_da cp ap at =
-          linsolve ~trans ap (if trans then neg (transpose at) *@ cp else neg at *@ cp)
-        in
-        let df_db _cp _bp bt = linsolve ~trans a bt in
-        let df_dab cp ap at _bp bt =
-          linsolve
-            ~trans
-            ap
-            (if trans then bt - (transpose at *@ cp) else bt - (at *@ cp))
-        in
-        let r_d_d a b =
-          let reverse ap aa t =
-            let bbar = _linsolve_backward_b trans typ a !aa in
-            let abar = _linsolve_backward_a trans typ ap bbar in
-            (abar, a) :: (bbar, b) :: t
-          in
-          let input t = a :: b :: t in
-          let label = "Linsolve_D_D", [ a; b ] in
-          reverse, input, label
-        in
-        let r_d_c a b =
-          let reverse ap aa t =
-            let bbar = _linsolve_backward_b trans typ a !aa in
-            let abar = _linsolve_backward_a trans typ ap bbar in
-            (abar, a) :: t
-          in
-          let input t = a :: t in
-          let label = "Linsolve_D_C", [ a; b ] in
-          reverse, input, label
-        in
-        let r_c_d a b =
-          let reverse _ap aa t = (_linsolve_backward_b trans typ a !aa, b) :: t in
-          let input t = b :: t in
-          let label = "Linsolve_C_D", [ a; b ] in
-          reverse, input, label
-        in
-        op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+      fun ?(trans = false) ?(typ = `n) a q ->
+        build_piso
+          (module struct
+            let label = "linsolve"
+            let ff_aa a _q = error_uniop label (pack_elt a)
+            let ff_ab a _q = error_uniop label (pack_elt a)
+            let ff_ba _a q = error_uniop label (pack_elt q)
+            let ff_bb a q = Arr A.(linsolve ~trans ~typ a q)
+
+            let df_da cp ap at =
+              linsolve ~trans ap (if trans then neg (transpose at) *@ cp else neg at *@ cp)
+
+            let df_db _cp _bp bt = linsolve ~trans a bt
+
+            let df_dab cp ap at _bp bt =
+              linsolve ~trans ap (if trans then bt - (transpose at *@ cp) else bt - (at *@ cp))
+
+            let dr_ab ap aa =
+              let bbar = _linsolve_backward_b trans typ a aa in
+              let abar = _linsolve_backward_a trans typ ap bbar in
+              abar, bbar
+
+            let dr_a ap aa =
+              let bbar = _linsolve_backward_b trans typ a aa in
+              let abar = _linsolve_backward_a trans typ ap bbar in
+              abar
+
+            let dr_b _ap aa = _linsolve_backward_b trans typ a aa
+          end
+          : Piso)
+          a
+          q
   end
 
   (* neural network module: for specialised neural network operations *)
@@ -1679,9 +1293,7 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
        moment. E.g. they do not support higher-order derivatives, and some do not support
        forward mode, so use them when you know what you are doing. *)
 
-    let rec noop _ = ()
-
-    and dropout ?(rate = 0.5) a =
+    let dropout ?(rate = 0.5) a =
       let p = A.float_to_elt (1. -. rate) in
       let b =
         match primal' a with
@@ -1689,7 +1301,6 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         | _ -> error_uniop "dropout" a
       in
       a * b
-
 
     (* a:input; b:kernel; s:stride *)
     and conv1d =
@@ -1708,40 +1319,23 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.conv1d_backward_kernel a b s o |> pack_arr
       in
       fun ?padding a b s ->
-        let ff a b =
-          match a, b with
-          | Arr a, Arr b -> Arr A.(conv1d ?padding a b s)
-          | _ -> error_binop "conv1d" a b
-        in
-        let fd a b = conv1d ?padding a b s in
-        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-        let df_da _cp _ap at = at in
-        let df_db _cp _bp bt = bt in
-        let df_dab _cp _ap at _bp bt = at + bt in
-        let r_d_d a b =
-          let reverse _ap aa t =
-            (conv1d_backward_input a b s !aa, a)
-            :: (conv1d_backward_kernel a b s !aa, b)
-            :: t
-          in
-          let input t = a :: b :: t in
-          let label = "Conv1D_D_D", [ a; b ] in
-          reverse, input, label
-        in
-        let r_d_c a b =
-          let reverse _ap aa t = (conv1d_backward_input a b s !aa, a) :: t in
-          let input t = a :: t in
-          let label = "Conv1D_D_C", [ a; b ] in
-          reverse, input, label
-        in
-        let r_c_d a b =
-          let reverse _ap aa t = (conv1d_backward_kernel a b s !aa, b) :: t in
-          let input t = b :: t in
-          let label = "Conv1D_C_D", [ a; b ] in
-          reverse, input, label
-        in
-        op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
+        build_piso
+          (module struct
+            let label = "conv1d"
+            let ff_aa a _b = error_uniop label (pack_elt a)
+            let ff_ab a _b = error_uniop label (pack_elt a)
+            let ff_ba _a b = error_uniop label (pack_elt b)
+            let ff_bb a b = Arr A.(conv1d ?padding a b s)
+            let df_da _cp _ap at = at
+            let df_db _cp _bp bt = bt
+            let df_dab _cp _ap at _bp bt = at + bt
+            let dr_ab _ap aa = conv1d_backward_input a b s aa, conv1d_backward_kernel a b s aa
+            let dr_a _ap aa = conv1d_backward_input a b s aa
+            let dr_b _ap aa = conv1d_backward_kernel a b s aa
+          end
+          : Piso)
+          a
+          b
 
     (* a:input; b:kernel; s:stride *)
     and conv2d =
@@ -1760,40 +1354,23 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.conv2d_backward_kernel a b s o |> pack_arr
       in
       fun ?padding a b s ->
-        let ff a b =
-          match a, b with
-          | Arr a, Arr b -> Arr A.(conv2d ?padding a b s)
-          | _ -> error_binop "conv2d" a b
-        in
-        let fd a b = conv2d ?padding a b s in
-        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-        let df_da _cp _ap at = at in
-        let df_db _cp _bp bt = bt in
-        let df_dab _cp _ap at _bp bt = at + bt in
-        let r_d_d a b =
-          let reverse _ap aa t =
-            (conv2d_backward_input a b s !aa, a)
-            :: (conv2d_backward_kernel a b s !aa, b)
-            :: t
-          in
-          let input t = a :: b :: t in
-          let label = "Conv2D_D_D", [ a; b ] in
-          reverse, input, label
-        in
-        let r_d_c a b =
-          let reverse _ap aa t = (conv2d_backward_input a b s !aa, a) :: t in
-          let input t = a :: t in
-          let label = "Conv2D_D_C", [ a; b ] in
-          reverse, input, label
-        in
-        let r_c_d a b =
-          let reverse _ap aa t = (conv2d_backward_kernel a b s !aa, b) :: t in
-          let input t = b :: t in
-          let label = "Conv2D_C_D", [ a; b ] in
-          reverse, input, label
-        in
-        op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
+        build_piso
+          (module struct
+            let label = "conv2d"
+            let ff_aa a _b = error_uniop label (pack_elt a)
+            let ff_ab a _b = error_uniop label (pack_elt a)
+            let ff_ba _a b = error_uniop label (pack_elt b)
+            let ff_bb a b = Arr A.(conv2d ?padding a b s)
+            let df_da _cp _ap at = at
+            let df_db _cp _bp bt = bt
+            let df_dab _cp _ap at _bp bt = at + bt
+            let dr_ab _ap aa = conv2d_backward_input a b s aa, conv2d_backward_kernel a b s aa
+            let dr_a _ap aa = conv2d_backward_input a b s aa
+            let dr_b _ap aa = conv2d_backward_kernel a b s aa
+          end
+          : Piso)
+          a
+          b
 
     (* a:input; b:kernel; s:stride *)
     and conv3d =
@@ -1811,40 +1388,23 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.conv3d_backward_kernel a b s o |> pack_arr
       in
       fun ?padding a b s ->
-        let ff a b =
-          match a, b with
-          | Arr a, Arr b -> Arr A.(conv3d ?padding a b s)
-          | _ -> error_binop "conv3d" a b
-        in
-        let fd a b = conv3d ?padding a b s in
-        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-        let df_da _cp _ap at = at in
-        let df_db _cp _bp bt = bt in
-        let df_dab _cp _ap at _bp bt = at + bt in
-        let r_d_d a b =
-          let reverse _ap aa t =
-            (conv3d_backward_input a b s !aa, a)
-            :: (conv3d_backward_kernel a b s !aa, b)
-            :: t
-          in
-          let input t = a :: b :: t in
-          let label = "Conv3D_D_D", [ a; b ] in
-          reverse, input, label
-        in
-        let r_d_c a b =
-          let reverse _ap aa t = (conv3d_backward_input a b s !aa, a) :: t in
-          let input t = a :: t in
-          let label = "Conv3D_D_C", [ a; b ] in
-          reverse, input, label
-        in
-        let r_c_d a b =
-          let reverse _ap aa t = (conv3d_backward_kernel a b s !aa, b) :: t in
-          let input t = b :: t in
-          let label = "Conv3D_C_D", [ a; b ] in
-          reverse, input, label
-        in
-        op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
+        build_piso
+          (module struct
+            let label = "conv3d"
+            let ff_aa a _b = error_uniop label (pack_elt a)
+            let ff_ab a _b = error_uniop label (pack_elt a)
+            let ff_ba _a b = error_uniop label (pack_elt b)
+            let ff_bb a b = Arr A.(conv3d ?padding a b s)
+            let df_da _cp _ap at = at
+            let df_db _cp _bp bt = bt
+            let df_dab _cp _ap at _bp bt = at + bt
+            let dr_ab _ap aa = conv3d_backward_input a b s aa, conv3d_backward_kernel a b s aa
+            let dr_a _ap aa = conv3d_backward_input a b s aa
+            let dr_b _ap aa = conv3d_backward_kernel a b s aa
+          end
+          : Piso)
+          a
+          b
 
     (* a:input; b:kernel; s:stride; r:rate *)
     and dilated_conv1d =
@@ -1862,40 +1422,26 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.dilated_conv1d_backward_kernel a b s r o |> pack_arr
       in
       fun ?padding a b s r ->
-        let ff a b =
-          match a, b with
-          | Arr a, Arr b -> Arr A.(dilated_conv1d ?padding a b s r)
-          | _ -> error_binop "dilated_conv1d" a b
-        in
-        let fd a b = dilated_conv1d ?padding a b s r in
-        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-        let df_da _cp _ap at = at in
-        let df_db _cp _bp bt = bt in
-        let df_dab _cp _ap at _bp bt = at + bt in
-        let r_d_d a b =
-          let reverse _ap aa t =
-            (dilated_conv1d_backward_input a b s r !aa, a)
-            :: (dilated_conv1d_backward_kernel a b s r !aa, b)
-            :: t
-          in
-          let input t = a :: b :: t in
-          let label = "Di_Conv1D_D_D", [ a; b ] in
-          reverse, input, label
-        in
-        let r_d_c a b =
-          let reverse _ap aa t = (dilated_conv1d_backward_input a b s r !aa, a) :: t in
-          let input t = a :: t in
-          let label = "Di_Conv1D_D_C", [ a; b ] in
-          reverse, input, label
-        in
-        let r_c_d a b =
-          let reverse _ap aa t = (dilated_conv1d_backward_kernel a b s r !aa, b) :: t in
-          let input t = b :: t in
-          let label = "Di_Conv1D_C_D", [ a; b ] in
-          reverse, input, label
-        in
-        op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+        build_piso
+          (module struct
+            let label = "dilated_conv1d"
+            let ff_aa a _b = error_uniop label (pack_elt a)
+            let ff_ab a _b = error_uniop label (pack_elt a)
+            let ff_ba _a b = error_uniop label (pack_elt b)
+            let ff_bb a b = Arr A.(dilated_conv1d ?padding a b s r)
+            let df_da _cp _ap at = at
+            let df_db _cp _bp bt = bt
+            let df_dab _cp _ap at _bp bt = at + bt
 
+            let dr_ab _ap aa =
+              dilated_conv1d_backward_input a b s r aa, dilated_conv1d_backward_kernel a b s r aa
+
+            let dr_a _ap aa = dilated_conv1d_backward_input a b s r aa
+            let dr_b _ap aa = dilated_conv1d_backward_kernel a b s r aa
+          end
+          : Piso)
+          a
+          b
 
     (* a:input; b:kernel; s:stride; r:rate *)
     and dilated_conv2d =
@@ -1913,40 +1459,26 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.dilated_conv2d_backward_kernel a b s r o |> pack_arr
       in
       fun ?padding a b s r ->
-        let ff a b =
-          match a, b with
-          | Arr a, Arr b -> Arr A.(dilated_conv2d ?padding a b s r)
-          | _ -> error_binop "dilated_conv2d" a b
-        in
-        let fd a b = dilated_conv2d ?padding a b s r in
-        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-        let df_da _cp _ap at = at in
-        let df_db _cp _bp bt = bt in
-        let df_dab _cp _ap at _bp bt = at + bt in
-        let r_d_d a b =
-          let reverse _ap aa t =
-            (dilated_conv2d_backward_input a b s r !aa, a)
-            :: (dilated_conv2d_backward_kernel a b s r !aa, b)
-            :: t
-          in
-          let input t = a :: b :: t in
-          let label = "Di_Conv2D_D_D", [ a; b ] in
-          reverse, input, label
-        in
-        let r_d_c a b =
-          let reverse _ap aa t = (dilated_conv2d_backward_input a b s r !aa, a) :: t in
-          let input t = a :: t in
-          let label = "Di_Conv2D_D_C", [ a; b ] in
-          reverse, input, label
-        in
-        let r_c_d a b =
-          let reverse _ap aa t = (dilated_conv2d_backward_kernel a b s r !aa, b) :: t in
-          let input t = b :: t in
-          let label = "Di_Conv2D_C_D", [ a; b ] in
-          reverse, input, label
-        in
-        op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+        build_piso
+          (module struct
+            let label = "dilated_conv2d"
+            let ff_aa a _b = error_uniop label (pack_elt a)
+            let ff_ab a _b = error_uniop label (pack_elt a)
+            let ff_ba _a b = error_uniop label (pack_elt b)
+            let ff_bb a b = Arr A.(dilated_conv2d ?padding a b s r)
+            let df_da _cp _ap at = at
+            let df_db _cp _bp bt = bt
+            let df_dab _cp _ap at _bp bt = at + bt
 
+            let dr_ab _ap aa =
+              dilated_conv2d_backward_input a b s r aa, dilated_conv2d_backward_kernel a b s r aa
+
+            let dr_a _ap aa = dilated_conv2d_backward_input a b s r aa
+            let dr_b _ap aa = dilated_conv2d_backward_kernel a b s r aa
+          end
+          : Piso)
+          a
+          b
 
     (* a:input; b:kernel; s:stride; r:rate *)
     and dilated_conv3d =
@@ -1964,40 +1496,26 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.dilated_conv3d_backward_kernel a b s r o |> pack_arr
       in
       fun ?padding a b s r ->
-        let ff a b =
-          match a, b with
-          | Arr a, Arr b -> Arr A.(dilated_conv3d ?padding a b s r)
-          | _ -> error_binop "dilated_conv3d" a b
-        in
-        let fd a b = dilated_conv3d ?padding a b s r in
-        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-        let df_da _cp _ap at = at in
-        let df_db _cp _bp bt = bt in
-        let df_dab _cp _ap at _bp bt = at + bt in
-        let r_d_d a b =
-          let reverse _ap aa t =
-            (dilated_conv3d_backward_input a b s r !aa, a)
-            :: (dilated_conv3d_backward_kernel a b s r !aa, b)
-            :: t
-          in
-          let input t = a :: b :: t in
-          let label = "Di_Conv3D_D_D", [ a; b ] in
-          reverse, input, label
-        in
-        let r_d_c a b =
-          let reverse _ap aa t = (dilated_conv3d_backward_input a b s r !aa, a) :: t in
-          let input t = a :: t in
-          let label = "Di_Conv3D_D_C", [ a; b ] in
-          reverse, input, label
-        in
-        let r_c_d a b =
-          let reverse _ap aa t = (dilated_conv3d_backward_kernel a b s r !aa, b) :: t in
-          let input t = b :: t in
-          let label = "Di_Conv3D_C_D", [ a; b ] in
-          reverse, input, label
-        in
-        op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+        build_piso
+          (module struct
+            let label = "dilated_conv3d"
+            let ff_aa a _b = error_uniop label (pack_elt a)
+            let ff_ab a _b = error_uniop label (pack_elt a)
+            let ff_ba _a b = error_uniop label (pack_elt b)
+            let ff_bb a b = Arr A.(dilated_conv3d ?padding a b s r)
+            let df_da _cp _ap at = at
+            let df_db _cp _bp bt = bt
+            let df_dab _cp _ap at _bp bt = at + bt
 
+            let dr_ab _ap aa =
+              dilated_conv3d_backward_input a b s r aa, dilated_conv3d_backward_kernel a b s r aa
+
+            let dr_a _ap aa = dilated_conv3d_backward_input a b s r aa
+            let dr_b _ap aa = dilated_conv3d_backward_kernel a b s r aa
+          end
+          : Piso)
+          a
+          b
 
     (* a:input; b:kernel; s:stride *)
     and transpose_conv1d =
@@ -2015,40 +1533,26 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.transpose_conv1d_backward_kernel a b s o |> pack_arr
       in
       fun ?padding a b s ->
-        let ff a b =
-          match a, b with
-          | Arr a, Arr b -> Arr A.(transpose_conv1d ?padding a b s)
-          | _ -> error_binop "transpose_conv1d" a b
-        in
-        let fd a b = transpose_conv1d ?padding a b s in
-        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-        let df_da _cp _ap at = at in
-        let df_db _cp _bp bt = bt in
-        let df_dab _cp _ap at _bp bt = at + bt in
-        let r_d_d a b =
-          let reverse _ap aa t =
-            (transpose_conv1d_backward_input a b s !aa, a)
-            :: (transpose_conv1d_backward_kernel a b s !aa, b)
-            :: t
-          in
-          let input t = a :: b :: t in
-          let label = "Tr_Conv1D_D_D", [ a; b ] in
-          reverse, input, label
-        in
-        let r_d_c a b =
-          let reverse _ap aa t = (transpose_conv1d_backward_input a b s !aa, a) :: t in
-          let input t = a :: t in
-          let label = "Tr_Conv1D_D_C", [ a; b ] in
-          reverse, input, label
-        in
-        let r_c_d a b =
-          let reverse _ap aa t = (transpose_conv1d_backward_kernel a b s !aa, b) :: t in
-          let input t = b :: t in
-          let label = "Tr_Conv1D_C_D", [ a; b ] in
-          reverse, input, label
-        in
-        op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+        build_piso
+          (module struct
+            let label = "transpose_conv1d"
+            let ff_aa a _b = error_uniop label (pack_elt a)
+            let ff_ab a _b = error_uniop label (pack_elt a)
+            let ff_ba _a b = error_uniop label (pack_elt b)
+            let ff_bb a b = Arr A.(transpose_conv1d ?padding a b s)
+            let df_da _cp _ap at = at
+            let df_db _cp _bp bt = bt
+            let df_dab _cp _ap at _bp bt = at + bt
 
+            let dr_ab _ap aa =
+              transpose_conv1d_backward_input a b s aa, transpose_conv1d_backward_kernel a b s aa
+
+            let dr_a _ap aa = transpose_conv1d_backward_input a b s aa
+            let dr_b _ap aa = transpose_conv1d_backward_kernel a b s aa
+          end
+          : Piso)
+          a
+          b
 
     (* a:input; b:kernel; s:stride *)
     and transpose_conv2d =
@@ -2066,40 +1570,26 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.transpose_conv2d_backward_kernel a b s o |> pack_arr
       in
       fun ?padding a b s ->
-        let ff a b =
-          match a, b with
-          | Arr a, Arr b -> Arr A.(transpose_conv2d ?padding a b s)
-          | _ -> error_binop "transpose_conv2d" a b
-        in
-        let fd a b = transpose_conv2d ?padding a b s in
-        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-        let df_da _cp _ap at = at in
-        let df_db _cp _bp bt = bt in
-        let df_dab _cp _ap at _bp bt = at + bt in
-        let r_d_d a b =
-          let reverse _ap aa t =
-            (transpose_conv2d_backward_input a b s !aa, a)
-            :: (transpose_conv2d_backward_kernel a b s !aa, b)
-            :: t
-          in
-          let input t = a :: b :: t in
-          let label = "Tr_Conv2D_D_D", [ a; b ] in
-          reverse, input, label
-        in
-        let r_d_c a b =
-          let reverse _ap aa t = (transpose_conv2d_backward_input a b s !aa, a) :: t in
-          let input t = a :: t in
-          let label = "Tr_Conv2D_D_C", [ a; b ] in
-          reverse, input, label
-        in
-        let r_c_d a b =
-          let reverse _ap aa t = (transpose_conv2d_backward_kernel a b s !aa, b) :: t in
-          let input t = b :: t in
-          let label = "Tr_Conv2D_C_D", [ a; b ] in
-          reverse, input, label
-        in
-        op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+        build_piso
+          (module struct
+            let label = "transpose_conv2d"
+            let ff_aa a _b = error_uniop label (pack_elt a)
+            let ff_ab a _b = error_uniop label (pack_elt a)
+            let ff_ba _a b = error_uniop label (pack_elt b)
+            let ff_bb a b = Arr A.(transpose_conv2d ?padding a b s)
+            let df_da _cp _ap at = at
+            let df_db _cp _bp bt = bt
+            let df_dab _cp _ap at _bp bt = at + bt
 
+            let dr_ab _ap aa =
+              transpose_conv2d_backward_input a b s aa, transpose_conv2d_backward_kernel a b s aa
+
+            let dr_a _ap aa = transpose_conv2d_backward_input a b s aa
+            let dr_b _ap aa = transpose_conv2d_backward_kernel a b s aa
+          end
+          : Piso)
+          a
+          b
 
     (* a:input; b:kernel; s:stride *)
     and transpose_conv3d =
@@ -2117,40 +1607,26 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.transpose_conv3d_backward_kernel a b s o |> pack_arr
       in
       fun ?padding a b s ->
-        let ff a b =
-          match a, b with
-          | Arr a, Arr b -> Arr A.(transpose_conv3d ?padding a b s)
-          | _ -> error_binop "transpose_conv3d" a b
-        in
-        let fd a b = transpose_conv3d ?padding a b s in
-        (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
-        let df_da _cp _ap at = at in
-        let df_db _cp _bp bt = bt in
-        let df_dab _cp _ap at _bp bt = at + bt in
-        let r_d_d a b =
-          let reverse _ap aa t =
-            (transpose_conv3d_backward_input a b s !aa, a)
-            :: (transpose_conv3d_backward_kernel a b s !aa, b)
-            :: t
-          in
-          let input t = a :: b :: t in
-          let label = "Tr_Conv3D_D_D", [ a; b ] in
-          reverse, input, label
-        in
-        let r_d_c a b =
-          let reverse _ap aa t = (transpose_conv3d_backward_input a b s !aa, a) :: t in
-          let input t = a :: t in
-          let label = "Tr_Conv3D_D_C", [ a; b ] in
-          reverse, input, label
-        in
-        let r_c_d a b =
-          let reverse _ap aa t = (transpose_conv3d_backward_kernel a b s !aa, b) :: t in
-          let input t = b :: t in
-          let label = "Tr_Conv3D_C_D", [ a; b ] in
-          reverse, input, label
-        in
-        op_p_s a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+        build_piso
+          (module struct
+            let label = "transpose_conv3d"
+            let ff_aa a _b = error_uniop label (pack_elt a)
+            let ff_ab a _b = error_uniop label (pack_elt a)
+            let ff_ba _a b = error_uniop label (pack_elt b)
+            let ff_bb a b = Arr A.(transpose_conv3d ?padding a b s)
+            let df_da _cp _ap at = at
+            let df_db _cp _bp bt = bt
+            let df_dab _cp _ap at _bp bt = at + bt
 
+            let dr_ab _ap aa =
+              transpose_conv3d_backward_input a b s aa, transpose_conv3d_backward_kernel a b s aa
+
+            let dr_a _ap aa = transpose_conv3d_backward_input a b s aa
+            let dr_b _ap aa = transpose_conv3d_backward_kernel a b s aa
+          end
+          : Piso)
+          a
+          b
 
     (* a:input; b:kernel; s:stride *)
     and max_pool1d =
@@ -2161,22 +1637,16 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.max_pool1d_backward p a b s o |> pack_arr
       in
       fun padding a b s ->
-        let ff = function
-          | Arr a -> Arr A.(max_pool1d ~padding a b s)
-          | _ -> error_uniop "max_pool1d" a
-        in
-        let fd a = max_pool1d padding a b s in
-        let df _cp _ap _at = failwith "max_pool1d:df" in
-        let r a =
-          let reverse _ap aa t =
-            (max_pool1d_backward padding (primal a) b s !aa, a) :: t
-          in
-          let input t = a :: t in
-          let label = "Maxpool1D_D", [ a ] in
-          reverse, input, label
-        in
-        op_s_s a ff fd df r
-
+        build_siso
+          (module struct
+            let label = "max_pool1d"
+            let ff_f a = error_uniop label (pack_elt a)
+            let ff_arr a = Arr A.(max_pool1d ~padding a b s)
+            let df _cp _ap _at = failwith "max_pool1d:df"
+            let dr _ap aa = max_pool1d_backward padding (primal a) b s !aa
+          end
+          : Siso)
+          a
 
     (* a:input; b:kernel; s:stride *)
     and max_pool2d =
@@ -2187,22 +1657,16 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.max_pool2d_backward p a b s o |> pack_arr
       in
       fun padding a b s ->
-        let ff = function
-          | Arr a -> Arr A.(max_pool2d ~padding a b s)
-          | _ -> error_uniop "max_pool2d" a
-        in
-        let fd a = max_pool2d padding a b s in
-        let df _cp _ap _at = failwith "max_pool2d:df" in
-        let r a =
-          let reverse _ap aa t =
-            (max_pool2d_backward padding (primal a) b s !aa, a) :: t
-          in
-          let input t = a :: t in
-          let label = "Maxpool2D_D", [ a ] in
-          reverse, input, label
-        in
-        op_s_s a ff fd df r
-
+        build_siso
+          (module struct
+            let label = "max_pool2d"
+            let ff_f a = error_uniop label (pack_elt a)
+            let ff_arr a = Arr A.(max_pool2d ~padding a b s)
+            let df _cp _ap _at = failwith "max_pool2d:df"
+            let dr _ap aa = max_pool2d_backward padding (primal a) b s !aa
+          end
+          : Siso)
+          a
 
     (* a:input; b:kernel; s:stride *)
     and max_pool3d =
@@ -2213,22 +1677,16 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.max_pool3d_backward p a b s o |> pack_arr
       in
       fun padding a b s ->
-        let ff = function
-          | Arr a -> Arr A.(max_pool3d ~padding a b s)
-          | _ -> error_uniop "max_pool3d" a
-        in
-        let fd a = max_pool3d padding a b s in
-        let df _cp _ap _at = failwith "max_pool3d:df" in
-        let r a =
-          let reverse _ap aa t =
-            (max_pool3d_backward padding (primal a) b s !aa, a) :: t
-          in
-          let input t = a :: t in
-          let label = "Maxpool3D_D", [ a ] in
-          reverse, input, label
-        in
-        op_s_s a ff fd df r
-
+        build_siso
+          (module struct
+            let label = "max_pool3d"
+            let ff_f a = error_uniop label (pack_elt a)
+            let ff_arr a = Arr A.(max_pool3d ~padding a b s)
+            let df _cp _ap _at = failwith "max_pool3d:df"
+            let dr _ap aa = max_pool3d_backward padding (primal a) b s !aa
+          end
+          : Siso)
+          a
 
     (* a:input; b:kernel; s:stride *)
     and avg_pool1d =
@@ -2239,22 +1697,16 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.avg_pool1d_backward p a b s o |> pack_arr
       in
       fun padding a b s ->
-        let ff = function
-          | Arr a -> Arr A.(avg_pool1d ~padding a b s)
-          | _ -> error_uniop "avg_pool1d" a
-        in
-        let fd a = avg_pool1d padding a b s in
-        let df _cp _ap _at = failwith "avg_pool1d:df" in
-        let r a =
-          let reverse _ap aa t =
-            (avg_pool1d_backward padding (primal a) b s !aa, a) :: t
-          in
-          let input t = a :: t in
-          let label = "Avgpool1D_D", [ a ] in
-          reverse, input, label
-        in
-        op_s_s a ff fd df r
-
+        build_siso
+          (module struct
+            let label = "avg_pool1d"
+            let ff_f a = error_uniop label (pack_elt a)
+            let ff_arr a = Arr A.(avg_pool1d ~padding a b s)
+            let df _cp _ap _at = failwith "avg_pool1d:df"
+            let dr _ap aa = avg_pool1d_backward padding (primal a) b s !aa
+          end
+          : Siso)
+          a
 
     (* a:input; b:kernel; s:stride *)
     and avg_pool2d =
@@ -2265,22 +1717,16 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.avg_pool2d_backward p a b s o |> pack_arr
       in
       fun padding a b s ->
-        let ff = function
-          | Arr a -> Arr A.(avg_pool2d ~padding a b s)
-          | _ -> error_uniop "avg_pool2d" a
-        in
-        let fd a = avg_pool2d padding a b s in
-        let df _cp _ap _at = failwith "avg_pool2d:df" in
-        let r a =
-          let reverse _ap aa t =
-            (avg_pool2d_backward padding (primal a) b s !aa, a) :: t
-          in
-          let input t = a :: t in
-          let label = "Avgpool2D_D", [ a ] in
-          reverse, input, label
-        in
-        op_s_s a ff fd df r
-
+        build_siso
+          (module struct
+            let label = "avg_pool2d"
+            let ff_f a = error_uniop label (pack_elt a)
+            let ff_arr a = Arr A.(avg_pool2d ~padding a b s)
+            let df _cp _ap _at = failwith "avg_pool2d:df"
+            let dr _ap aa = avg_pool2d_backward padding (primal a) b s !aa
+          end
+          : Siso)
+          a
 
     (* a:input; b:kernel; s:stride *)
     and avg_pool3d =
@@ -2291,22 +1737,16 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.avg_pool3d_backward p a b s o |> pack_arr
       in
       fun padding a b s ->
-        let ff = function
-          | Arr a -> Arr A.(avg_pool3d ~padding a b s)
-          | _ -> error_uniop "avg_pool3d" a
-        in
-        let fd a = avg_pool3d padding a b s in
-        let df _cp _ap _at = failwith "avg_pool3d:df" in
-        let r a =
-          let reverse _ap aa t =
-            (avg_pool3d_backward padding (primal a) b s !aa, a) :: t
-          in
-          let input t = a :: t in
-          let label = "Avgpool3D_D", [ a ] in
-          reverse, input, label
-        in
-        op_s_s a ff fd df r
-
+        build_siso
+          (module struct
+            let label = "avg_pool3d"
+            let ff_f a = error_uniop label (pack_elt a)
+            let ff_arr a = Arr A.(avg_pool3d ~padding a b s)
+            let df _cp _ap _at = failwith "avg_pool3d:df"
+            let dr _ap aa = avg_pool3d_backward padding (primal a) b s !aa
+          end
+          : Siso)
+          a
 
     (* a:input; s:size *)
     and upsampling2d =
@@ -2317,20 +1757,16 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.upsampling2d_backward a s o |> pack_arr
       in
       fun a s ->
-        let ff = function
-          | Arr a -> Arr A.(upsampling2d a s)
-          | _ -> error_uniop "upsampling2d" a
-        in
-        let fd a = upsampling2d a s in
-        let df _cp _ap _at = failwith "upsampling2d:df" in
-        let r a =
-          let reverse _ap aa t = (upsampling2d_backward (primal a) s !aa, a) :: t in
-          let input t = a :: t in
-          let label = "UpSampling2D_D", [ a ] in
-          reverse, input, label
-        in
-        op_s_s a ff fd df r
-
+        build_siso
+          (module struct
+            let label = "upsampling2d"
+            let ff_f a = error_uniop label (pack_elt a)
+            let ff_arr a = Arr A.(upsampling2d a s)
+            let df _cp _ap _at = failwith "upsampling2d:df"
+            let dr _ap aa = upsampling2d_backward (primal a) s !aa
+          end
+          : Siso)
+          a
 
     (* v: padded value; p:padding index; a:input *)
     and pad =
@@ -2346,35 +1782,31 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         A.(get_slice q o) |> pack_arr
       in
       fun ?v p a ->
-        let ff = function
-          | Arr a -> Arr A.(pad ?v p a)
-          | _ -> error_uniop "pad" a
-        in
-        let fd = pad p in
-        let df _cp _ap _at = failwith "pad:df" in
-        let r a =
-          let reverse _ap aa t = (pad_backward !aa p, a) :: t in
-          let input t = a :: t in
-          let label = "PAD_D", [ a ] in
-          reverse, input, label
-        in
-        op_s_s a ff fd df r
+        build_siso
+          (module struct
+            let label = "pad"
+            let ff_f a = error_uniop label (pack_elt a)
+            let ff_arr a = Arr A.(pad ?v p a)
+            let df _cp _ap _at = failwith "pad:df"
+            let dr _ap aa = pad_backward !aa p
+          end
+          : Siso)
+          a
   end
 
   module Mat = struct
-    let empty m n = A.empty [| m; n |] |> pack_arr
-    let zeros m n = A.zeros [| m; n |] |> pack_arr
+    let empty m n = A.empty [|m; n|] |> pack_arr
+    let zeros m n = A.zeros [|m; n|] |> pack_arr
     let eye n = A.eye n |> pack_arr
-    let ones m n = A.ones [| m; n |] |> pack_arr
-    let uniform ?a ?b m n = A.uniform ?a ?b [| m; n |] |> pack_arr
-    let gaussian ?mu ?sigma m n = A.gaussian ?mu ?sigma [| m; n |] |> pack_arr
+    let ones m n = A.ones [|m; n|] |> pack_arr
+    let uniform ?a ?b m n = A.uniform ?a ?b [|m; n|] |> pack_arr
+    let gaussian ?mu ?sigma m n = A.gaussian ?mu ?sigma [|m; n|] |> pack_arr
     let reset x = x |> unpack_arr |> A.reset
-    let reshape m n x = Maths.reshape x [| m; n |]
+    let reshape m n x = Maths.reshape x [|m; n|]
 
     let shape x =
       let s = A.shape (unpack_arr x) in
       s.(0), s.(1)
-
 
     let row_num x = (unpack_arr x |> A.shape).(0)
     let col_num x = (unpack_arr x |> A.shape).(1)
