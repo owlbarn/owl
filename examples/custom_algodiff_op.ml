@@ -20,7 +20,7 @@ open Algodiff.D
  * *)
 
 
-let custom_cos a =
+let custom_cos =
   let open Algodiff.D.Ops.Builder in
       build_siso
         (module struct
@@ -28,10 +28,9 @@ let custom_cos a =
           let ff_f a = F A.Scalar.(cos a)
           let ff_arr a = Arr A.(cos a)
           let df _cp ap at = Maths.(neg (at * sin ap))
-          let dr _cp ca = Maths.(!ca * neg (sin (primal a)))
+          let dr a _cp ca = Maths.(!ca * neg (sin (primal a)))
         end
         : Siso)
-        a
      
 let _ =
   let input = Mat.uniform 1 2 in
