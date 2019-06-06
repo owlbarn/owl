@@ -5,7 +5,7 @@
  *)
 
 open Owl
-open Owl_base
+
 open Algodiff.S
 
 type layer = {
