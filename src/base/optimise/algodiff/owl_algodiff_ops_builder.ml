@@ -144,19 +144,19 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           (abar, a) :: (bbar, b) :: t
         in
         let register t = a :: b :: t in
-        let label = S.label, [ a; b ] in
+        let label = S.label ^ "_d_d", [ a; b ] in
         adjoint, register, label
       in
       let r_d_c a b =
         let adjoint cp ca_ref t = (S.dr_a cp ca_ref, a) :: t in
         let register t = a :: t in
-        let label = S.label, [ a; b ] in
+        let label = S.label ^ "_d_c", [ a; b ] in
         adjoint, register, label
       in
       let r_c_d a b =
         let adjoint cp ca_ref t = (S.dr_b cp ca_ref, b) :: t in
         let register t = b :: t in
-        let label = S.label, [ a; b ] in
+        let label = S.label ^ "_c_d", [ a; b ] in
         adjoint, register, label
       in
       op_piso a b ff fd S.df_da S.df_db S.df_dab r_d_d r_d_c r_c_d
