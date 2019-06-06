@@ -21,7 +21,7 @@ module Make
   let threshold = 1E-6
   let eps = 1E-5
 
-  module FD = FDGrad_test
+  module FD = Owl_algodiff_grad_check.Make (AlgoM)
 
   let samples, directions = FD.generate_test_samples (n, n) n_samples
 
@@ -56,18 +56,18 @@ module Make
       let e = Arr (Owl.Mat.eye n) in
       let f x =
         let x = Maths.(transpose x *@ x) in
-        Maths.(logdet (x + e)) in
+        Linalg.logdet Maths.(x + e) in
       test_func f
 
     let qr  () =
       let f x =
-        let q, r = Maths.qr x in
+        let q, r = Linalg.qr x in
         Maths.(q + r)
       in test_func f
 
     let lq  () =
       let f x =
-        let l, q = Maths.lq x in
+        let l, q = Linalg.lq x in
         Maths.(l + q)
       in test_func f
 
@@ -76,7 +76,7 @@ module Make
         let y = Mat.gaussian 20 n in
         fun x ->
           let x = Maths.(y *@ x) in
-          let u, s, vt = Maths.svd x in
+          let u, s, vt = Linalg.svd x in
           Maths.(u + (sum' s) * (l2norm_sqr' vt))
       in test_func f
 
@@ -85,7 +85,7 @@ module Make
         let identity = Arr (Owl.Mat.eye n) in
         let s = Maths.(transpose x *@ x) in
         let s = Maths.(s + (F 0.001) * identity) in
-        Maths.(inv (chol ~upper:false s))
+        Maths.(inv (Linalg.chol ~upper:false s))
       in test_func f
 
     let split () =
@@ -119,7 +119,7 @@ module Make
 
     let init_2d () =
       let f x =
-        let y = Maths.init_2d n n (fun i j -> if i=0 then (F 3.) else Maths.get_item x i j) in
+        let y = Mat.init_2d n n (fun i j -> if i=0 then (F 3.) else Maths.get_item x i j) in
         Maths.(y *@ x) in
       test_func f
 
@@ -132,7 +132,7 @@ module Make
           let s = Maths.(r - (transpose r)) in
           let p = Maths.((r + x) *@ (transpose (r + x)) + identity) in
           let a = Maths.((s - (F 0.5) * q) *@ (inv p)) in
-          Maths.lyapunov a Maths.(neg q) in
+          Linalg.lyapunov a Maths.(neg q) in
       test_func f
 
     let discrete_lyapunov () =
@@ -145,15 +145,15 @@ module Make
           let p = Maths.((r + x) *@ (transpose (r + x)) + identity) in
           let a = Maths.((s - (F 0.5) * q) *@ (inv p)) in
           let a = Maths.(a - identity) in
-          Maths.discrete_lyapunov a q in
+          Linalg.discrete_lyapunov a q in
       test_func f
 
     let linsolve () =
       let x = Mat.gaussian n n in
       let f a =
         let b = Maths.(a *@ x) in
-        let x = Maths.(linsolve a b) in
-        let at = Maths.(linsolve ~trans:true x (transpose b)) in
+        let x = Linalg.(linsolve a b) in
+        let at = Linalg.(linsolve ~trans:true x (Maths.transpose b)) in
         Maths.(a + at + x) in
       test_func f
 
@@ -166,12 +166,12 @@ module Make
         let p_u = Maths.(transpose a_u *@ a_u) in
         let b_l = Maths.(p_l *@ x) in
         let b_u = Maths.(p_u *@ x) in
-        let x_l = Maths.(linsolve ~typ:`l a_l b_l)
-                |> Maths.(linsolve ~typ:`l ~trans:true a_l) in
-        let x_u = Maths.(linsolve ~typ:`u ~trans:true a_u b_u)
-                |> Maths.(linsolve ~typ:`u a_u) in
-        let atl = Maths.(linsolve ~trans:true x_l (transpose b_l)) in
-        let atu = Maths.(linsolve ~trans:true x_u (transpose b_u)) in
+        let x_l = Linalg.linsolve ~typ:`l a_l b_l
+                |> Linalg.(linsolve ~typ:`l ~trans:true a_l) in
+        let x_u = Linalg.(linsolve ~typ:`u ~trans:true a_u b_u)
+                |> Linalg.(linsolve ~typ:`u a_u) in
+        let atl = Linalg.(linsolve ~trans:true x_l (Maths.transpose b_l)) in
+        let atu = Linalg.(linsolve ~trans:true x_u (Maths.transpose b_u)) in
         Maths.(atl *@ atu) in
       test_func f
 
