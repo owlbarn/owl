@@ -1,4 +1,4 @@
-module Make_Graph_Convert (Core : Owl_algodiff_core_sig.Sig) = struct
+module Make (Core : Owl_algodiff_core_sig.Sig) = struct
   open Core
 
   (* _traverse_trace and its related functions are used to convert the computation graph

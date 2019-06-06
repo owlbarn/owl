@@ -21,7 +21,7 @@ module Make
   let threshold = 1E-6
   let eps = 1E-5
 
-  module FD = FDGrad_test
+  module FD = Owl_algodiff_grad_check.Make (AlgoM)
 
   let samples, directions = FD.generate_test_samples (n, n) n_samples
 
@@ -119,7 +119,7 @@ module Make
 
     let init_2d () =
       let f x =
-        let y = Maths.init_2d n n (fun i j -> if i=0 then (F 3.) else Maths.get_item x i j) in
+        let y = Mat.init_2d n n (fun i j -> if i=0 then (F 3.) else Maths.get_item x i j) in
         Maths.(y *@ x) in
       test_func f
 

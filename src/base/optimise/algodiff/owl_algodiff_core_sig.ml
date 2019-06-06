@@ -40,52 +40,47 @@ module type Sig = sig
   val error_uniop : string -> t -> 'a
 
   (* single input single output operation *)
-  val op_s_s
-    :  t
-    -> (t -> t)
-    -> (t -> t)
+  val op_siso :
+    t -> (t -> t) -> (t -> t) -> (t -> t -> t -> t) -> (t -> op) -> t
+
+  (* single input pair outputs operation *)
+  val op_sipo :
+       t
+    -> (t -> t * t)
+    -> (t -> t * t)
     -> (t -> t -> t -> t)
-    -> (t -> reverse * inputs * label)
-    -> t
+    -> (t * (t ref * t ref) * (t ref * t ref) -> op)
+    -> t * t
+
+  (* single input triple outputs operation *)
+  val op_sito :
+       t
+    -> (t -> t * t * t)
+    -> (t -> t * t * t)
+    -> (t -> t -> t -> t)
+    -> (t * (t ref * t ref * t ref) * (t ref * t ref * t ref) -> op)
+    -> t * t * t
+
+  (* single input array outputs operation *)
+  val op_siao :
+       t
+    -> (t -> t array)
+    -> (t -> t array)
+    -> (t -> t -> t -> t)
+    -> (t * t ref array * t ref array -> op)
+    -> t array
 
   (* pair inputs single output operation *)
-  val op_p_s
-    :  t
+  val op_piso :
+       t
     -> t
     -> (t -> t -> t)
     -> (t -> t -> t)
     -> (t -> t -> t -> t)
     -> (t -> t -> t -> t)
     -> (t -> t -> t -> t -> t -> t)
-    -> (t -> t -> reverse * inputs * label)
-    -> (t -> t -> reverse * inputs * label)
-    -> (t -> t -> reverse * inputs * label)
+    -> (t -> t -> op)
+    -> (t -> t -> op)
+    -> (t -> t -> op)
     -> t
-
-  (* single input pair outputs operation *)
-  val op_s_p
-    :  t
-    -> (t -> t * t)
-    -> (t -> t * t)
-    -> (t -> t -> t -> t)
-    -> (t * (t ref * t ref) * (t ref * t ref) -> reverse * inputs * label)
-    -> t * t
-
-  (* single input triple outputs operation *)
-  val op_s_t
-    :  t
-    -> (t -> t * t * t)
-    -> (t -> t * t * t)
-    -> (t -> t -> t -> t)
-    -> (t * (t ref * t ref * t ref) * (t ref * t ref * t ref) -> reverse * inputs * label)
-    -> t * t * t
-
-  (* single input array outputs operation *)
-  val op_s_m
-    :  t
-    -> (t -> t array)
-    -> (t -> t array)
-    -> (t -> t -> t -> t)
-    -> (t * t array * t ref array -> reverse * inputs * label)
-    -> t array
 end

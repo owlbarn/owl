@@ -1,6 +1,6 @@
-module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
+module Make (Core : Owl_algodiff_core_sig.Sig) = struct
   open Core
-  module Builder = Owl_algodiff_ops_builder.Make_Ops_Builder (Core)
+  module Builder = Owl_algodiff_ops_builder.Make (Core)
   open Builder
 
   module Maths = struct
@@ -577,9 +577,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let df_da _cp _ap at = at
           let df_db _cp _bp bt = bt
           let df_dab _cp _ap at _bp bt = at + bt
-          let dr_ab _ap aa = aa, aa
-          let dr_a _ap aa = aa
-          let dr_b _ap aa = aa
+          let dr_ab _cp aa = !aa, !aa
+          let dr_a _cp aa = !aa
+          let dr_b _cp aa = !aa
         end
         : Piso)
         a
@@ -598,9 +598,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let df_da _cp _ap at = at
           let df_db _cp _bp bt = bt
           let df_dab _cp _ap at _bp bt = at - bt
-          let dr_ab _ap aa = aa, neg aa
-          let dr_a _ap aa = aa
-          let dr_b _ap aa = neg aa
+          let dr_ab _cp aa = !aa, neg !aa
+          let dr_a _cp aa = !aa
+          let dr_b _cp aa = neg !aa
         end
         : Piso)
         a
@@ -619,9 +619,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let df_da _cp _ap at = at * b
           let df_db _cp _bp bt = a * bt
           let df_dab _cp ap at bp bt = (ap * bt) + (at * bp)
-          let dr_ab _cp aa = aa * primal b, aa * primal a
-          let dr_a _ap aa = aa * b
-          let dr_b _ap aa = aa * a
+          let dr_ab _cp aa = !aa * primal b, !aa * primal a
+          let dr_a _cp aa = !aa * b
+          let dr_b _cp aa = !aa * a
         end
         : Piso)
         a
@@ -640,9 +640,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let df_da _cp _ap at = at / b
           let df_db cp bp bt = neg bt * cp / bp
           let df_dab cp _ap at bp bt = (at - (bt * cp)) / bp
-          let dr_ab _cp aa = aa / primal b, aa * (neg (primal a) / (primal b * primal b))
-          let dr_a _ap aa = aa / b
-          let dr_b _ap aa = aa * (neg a / (primal b * primal b))
+          let dr_ab _cp aa = !aa / primal b, !aa * (neg (primal a) / (primal b * primal b))
+          let dr_a _cp aa = !aa / b
+          let dr_b _cp aa = !aa * (neg a / (primal b * primal b))
         end
         : Piso)
         a
@@ -663,11 +663,11 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let df_dab _cp ap at bp bt = (ap ** (bp - pack_flt 1.)) * ((at * bp) + (ap * bt * log ap))
 
           let dr_ab _cp aa =
-            ( aa * (primal a ** (primal b - pack_flt 1.)) * primal b
-            , aa * (primal a ** primal b) * log (primal a) )
+            ( !aa * (primal a ** (primal b - pack_flt 1.)) * primal b
+            , !aa * (primal a ** primal b) * log (primal a) )
 
-          let dr_a _ap aa = aa * (primal a ** (primal b - pack_flt 1.)) * primal b
-          let dr_b _ap aa = aa * (primal a ** primal b) * log (primal a)
+          let dr_a _cp aa = !aa * (primal a ** (primal b - pack_flt 1.)) * primal b
+          let dr_b _cp aa = !aa * (primal a ** primal b) * log (primal a)
         end
         : Piso)
         a
@@ -687,15 +687,15 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
 
           let dr_ab _cp aa =
             let d = sqr (primal a) + sqr (primal b) in
-            aa * primal b / d, aa * neg (primal a) / d
+            !aa * primal b / d, !aa * neg (primal a) / d
 
-          let dr_a _ap aa =
+          let dr_a _cp aa =
             let d = sqr (primal a) + sqr (primal b) in
-            aa * primal b / d
+            !aa * primal b / d
 
-          let dr_b _ap aa =
+          let dr_b _cp aa =
             let d = sqr (primal a) + sqr (primal b) in
-            aa * neg (primal a) / d
+            !aa * neg (primal a) / d
         end
         : Piso)
         a
@@ -720,9 +720,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let df_da _cp _ap at = set_item at i j (pack_flt 0.)
           let df_db _cp _bp bt = add_item (zero a) i j bt
           let df_dab _cp _ap at _bp bt = set_item at i j bt
-          let dr_ab _cp aa = set_item aa i j (pack_flt 0.), get_item aa i j
-          let dr_a _ap aa = set_item aa i j (pack_flt 0.)
-          let dr_b _ap aa = get_item aa i j
+          let dr_ab _cp aa = set_item !aa i j (pack_flt 0.), get_item !aa i j
+          let dr_a _cp aa = set_item !aa i j (pack_flt 0.)
+          let dr_b _cp aa = get_item !aa i j
         end
         : Piso)
         a
@@ -744,9 +744,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let df_da _cp _ap at = at
           let df_db _cp _bp bt = add_item (zero a) i j bt
           let df_dab _cp _ap at _bp bt = add_item at i j bt
-          let dr_ab _cp aa = aa, get_item aa i j
-          let dr_a _ap aa = aa
-          let dr_b _ap aa = get_item aa i j
+          let dr_ab _cp aa = !aa, get_item !aa i j
+          let dr_a _cp aa = !aa
+          let dr_b _cp aa = get_item !aa i j
         end
         : Piso)
         a
@@ -768,9 +768,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let df_da _cp _ap at = set_slice i at (zero b)
           let df_db _cp _bp bt = set_slice i (zero a) bt
           let df_dab _cp _ap at _bp bt = set_slice i at bt
-          let dr_ab _cp aa = set_slice i aa (zero b), get_slice i aa
-          let dr_a _ap aa = set_slice i aa (zero b)
-          let dr_b _ap aa = get_slice i aa
+          let dr_ab _cp aa = set_slice i !aa (zero b), get_slice i !aa
+          let dr_a _cp aa = set_slice i !aa (zero b)
+          let dr_b _cp aa = get_slice i !aa
         end
         : Piso)
         a
@@ -789,9 +789,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let df_da _cp _ap at = at *@ b
           let df_db _cp _bp bt = a *@ bt
           let df_dab _cp ap at bp bt = (ap *@ bt) + (at *@ bp)
-          let dr_ab _cp aa = dot aa (transpose (primal b)), dot (transpose (primal a)) aa
-          let dr_a _ap aa = dot aa (transpose (primal b))
-          let dr_b _ap aa = dot (transpose (primal a)) aa
+          let dr_ab _cp aa = dot !aa (transpose (primal b)), dot (transpose (primal a)) !aa
+          let dr_a _cp aa = dot !aa (transpose (primal b))
+          let dr_b _cp aa = dot (transpose (primal a)) !aa
         end
         : Piso)
         a
@@ -815,9 +815,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let df_da _cp _ap at = at
           let df_db _cp _bp bt = add_row (zero a) bt i
           let df_dab _cp _ap at _bp bt = add_row at bt i
-          let dr_ab _cp aa = aa, get_row aa i
-          let dr_a _ap aa = aa
-          let dr_b _ap aa = get_row aa i
+          let dr_ab _cp aa = !aa, get_row !aa i
+          let dr_a _cp aa = !aa
+          let dr_b _cp aa = get_row !aa i
         end
         : Piso)
         a
@@ -836,15 +836,15 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
           let df_dab _cp _ap at _bp bt = concat axis at bt
 
           let dr_ab _cp aa =
-            let s = split ~axis [|(shape a).(axis); (shape b).(axis)|] aa in
+            let s = split ~axis [|(shape a).(axis); (shape b).(axis)|] !aa in
             s.(0), s.(1)
 
-          let dr_a _ap aa =
-            let s = split ~axis [|(shape a).(axis); (shape b).(axis)|] aa in
+          let dr_a _cp aa =
+            let s = split ~axis [|(shape a).(axis); (shape b).(axis)|] !aa in
             s.(0)
 
-          let dr_b _ap aa =
-            let s = split ~axis [|(shape a).(axis); (shape b).(axis)|] aa in
+          let dr_b _cp aa =
+            let s = split ~axis [|(shape a).(axis); (shape b).(axis)|] !aa in
             s.(1)
         end
         : Piso)
@@ -933,20 +933,18 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
       Array.init (row_num a) (fun i -> Array.init (col_num a) (fun j -> get_item a i j))
 
     and split ~axis parts a =
-      let ff a =
-        match a with
-        | Arr a -> A.(split ~axis parts a) |> Array.map (fun x -> Arr x)
-        | _ -> error_uniop "split" a
-      in
-      let fd a = split ~axis parts a in
-      let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED in
-      let r (a, _cp_arr, aa_arr) =
-        let reverse _ap _aa t = (concatenate ~axis (Array.map (fun aa -> !aa) aa_arr), a) :: t in
-        let input t = a :: t in
-        let label = "Split_D", [a] in
-        reverse, input, label
-      in
-      op_s_m a ff fd df r
+      build_siao
+        (module struct
+          let label = "split"
+          let ff_f a = error_uniop "label" (pack_elt a)
+          let ff_arr a = A.(split ~axis parts a) |> Array.map (fun x -> Arr x)
+          let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED
+
+          let dr _cp _cp_ref_arr aa_ref_arr =
+            concatenate ~axis (Array.map (fun aa -> !aa) aa_ref_arr)
+        end
+        : Siao)
+        a
 
     and concatenate ~axis a =
       (* mode: 0 constant, 1 reverse, 2 tangent *)
@@ -995,9 +993,6 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
         in
         DF (cp, at, !ai_ref)
       | _ -> error_uniop "concatenate" a.(0)
-
-    and init_2d n_rows n_cols f =
-      Array.init n_rows (fun i -> Array.init n_cols (fun j -> f i j)) |> of_arrays
   end
 
   module Linalg = struct
@@ -1062,9 +1057,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
 
     (* single input pair outputs *)
     and qr =
-      let _qr_backward (o1, o2) (aa1, aa2) =
-        let q = !o1
-        and r = !o2
+      let _qr_backward (cp1, cp2) (aa1, aa2) =
+        let q = !cp1
+        and r = !cp2
         and qbar = !aa1
         and rbar = !aa2 in
         let m = (rbar *@ transpose r) - (transpose q *@ qbar) in
@@ -1081,7 +1076,7 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
               Arr q, Arr r
 
             let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED
-            let dr _ap o aa = _qr_backward o aa
+            let dr _cp cp_ref aa_ref = _qr_backward cp_ref aa_ref
           end
           : Sipo)
           a
@@ -1190,12 +1185,12 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             let df_dab cp ap at _qp qt =
               lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at))) + lyapunov ap (neg qt)
 
-            let dr_ab ap aa =
-              let abar, qbar = _lyapunov_backward_aq (primal a) aa ap in
+            let dr_ab cp aa =
+              let abar, qbar = _lyapunov_backward_aq (primal a) !aa cp in
               abar, qbar
 
-            let dr_a ap aa = _lyapunov_backward_a (primal a) aa ap
-            let dr_b _ap aa = _lyapunov_backward_q (primal a) aa
+            let dr_a cp aa = _lyapunov_backward_a (primal a) !aa cp
+            let dr_b _cp aa = _lyapunov_backward_q (primal a) !aa
           end
           : Piso)
           a
@@ -1229,12 +1224,12 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
               discrete_lyapunov ap ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose a))
               + discrete_lyapunov ap qt
 
-            let dr_ab ap aa =
-              let abar, qbar = _discrete_lyapunov_backward_aq (primal a) aa ap in
+            let dr_ab cp aa =
+              let abar, qbar = _discrete_lyapunov_backward_aq (primal a) !aa cp in
               abar, qbar
 
-            let dr_a ap aa = _discrete_lyapunov_backward_a (primal a) aa ap
-            let dr_b _ap aa = _discrete_lyapunov_backward_q (primal a) aa
+            let dr_a cp aa = _discrete_lyapunov_backward_a (primal a) !aa cp
+            let dr_b _cp aa = _discrete_lyapunov_backward_q (primal a) !aa
           end
           : Piso)
           a
@@ -1268,17 +1263,17 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             let df_dab cp ap at _bp bt =
               linsolve ~trans ap (if trans then bt - (transpose at *@ cp) else bt - (at *@ cp))
 
-            let dr_ab ap aa =
-              let bbar = _linsolve_backward_b trans typ a aa in
-              let abar = _linsolve_backward_a trans typ ap bbar in
+            let dr_ab cp aa =
+              let bbar = _linsolve_backward_b trans typ a !aa in
+              let abar = _linsolve_backward_a trans typ cp bbar in
               abar, bbar
 
-            let dr_a ap aa =
-              let bbar = _linsolve_backward_b trans typ a aa in
-              let abar = _linsolve_backward_a trans typ ap bbar in
+            let dr_a cp aa =
+              let bbar = _linsolve_backward_b trans typ a !aa in
+              let abar = _linsolve_backward_a trans typ cp bbar in
               abar
 
-            let dr_b _ap aa = _linsolve_backward_b trans typ a aa
+            let dr_b _cp aa = _linsolve_backward_b trans typ a !aa
           end
           : Piso)
           a
@@ -1329,9 +1324,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             let df_da _cp _ap at = at
             let df_db _cp _bp bt = bt
             let df_dab _cp _ap at _bp bt = at + bt
-            let dr_ab _ap aa = conv1d_backward_input a b s aa, conv1d_backward_kernel a b s aa
-            let dr_a _ap aa = conv1d_backward_input a b s aa
-            let dr_b _ap aa = conv1d_backward_kernel a b s aa
+            let dr_ab _cp aa = conv1d_backward_input a b s !aa, conv1d_backward_kernel a b s !aa
+            let dr_a _cp aa = conv1d_backward_input a b s !aa
+            let dr_b _cp aa = conv1d_backward_kernel a b s !aa
           end
           : Piso)
           a
@@ -1364,9 +1359,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             let df_da _cp _ap at = at
             let df_db _cp _bp bt = bt
             let df_dab _cp _ap at _bp bt = at + bt
-            let dr_ab _ap aa = conv2d_backward_input a b s aa, conv2d_backward_kernel a b s aa
-            let dr_a _ap aa = conv2d_backward_input a b s aa
-            let dr_b _ap aa = conv2d_backward_kernel a b s aa
+            let dr_ab _cp aa = conv2d_backward_input a b s !aa, conv2d_backward_kernel a b s !aa
+            let dr_a _cp aa = conv2d_backward_input a b s !aa
+            let dr_b _cp aa = conv2d_backward_kernel a b s !aa
           end
           : Piso)
           a
@@ -1398,9 +1393,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             let df_da _cp _ap at = at
             let df_db _cp _bp bt = bt
             let df_dab _cp _ap at _bp bt = at + bt
-            let dr_ab _ap aa = conv3d_backward_input a b s aa, conv3d_backward_kernel a b s aa
-            let dr_a _ap aa = conv3d_backward_input a b s aa
-            let dr_b _ap aa = conv3d_backward_kernel a b s aa
+            let dr_ab _cp aa = conv3d_backward_input a b s !aa, conv3d_backward_kernel a b s !aa
+            let dr_a _cp aa = conv3d_backward_input a b s !aa
+            let dr_b _cp aa = conv3d_backward_kernel a b s !aa
           end
           : Piso)
           a
@@ -1433,11 +1428,11 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             let df_db _cp _bp bt = bt
             let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab _ap aa =
-              dilated_conv1d_backward_input a b s r aa, dilated_conv1d_backward_kernel a b s r aa
+            let dr_ab _cp aa =
+              dilated_conv1d_backward_input a b s r !aa, dilated_conv1d_backward_kernel a b s r !aa
 
-            let dr_a _ap aa = dilated_conv1d_backward_input a b s r aa
-            let dr_b _ap aa = dilated_conv1d_backward_kernel a b s r aa
+            let dr_a _cp aa = dilated_conv1d_backward_input a b s r !aa
+            let dr_b _cp aa = dilated_conv1d_backward_kernel a b s r !aa
           end
           : Piso)
           a
@@ -1470,11 +1465,11 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             let df_db _cp _bp bt = bt
             let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab _ap aa =
-              dilated_conv2d_backward_input a b s r aa, dilated_conv2d_backward_kernel a b s r aa
+            let dr_ab _cp aa =
+              dilated_conv2d_backward_input a b s r !aa, dilated_conv2d_backward_kernel a b s r !aa
 
-            let dr_a _ap aa = dilated_conv2d_backward_input a b s r aa
-            let dr_b _ap aa = dilated_conv2d_backward_kernel a b s r aa
+            let dr_a _cp aa = dilated_conv2d_backward_input a b s r !aa
+            let dr_b _cp aa = dilated_conv2d_backward_kernel a b s r !aa
           end
           : Piso)
           a
@@ -1507,11 +1502,11 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             let df_db _cp _bp bt = bt
             let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab _ap aa =
-              dilated_conv3d_backward_input a b s r aa, dilated_conv3d_backward_kernel a b s r aa
+            let dr_ab _cp aa =
+              dilated_conv3d_backward_input a b s r !aa, dilated_conv3d_backward_kernel a b s r !aa
 
-            let dr_a _ap aa = dilated_conv3d_backward_input a b s r aa
-            let dr_b _ap aa = dilated_conv3d_backward_kernel a b s r aa
+            let dr_a _cp aa = dilated_conv3d_backward_input a b s r !aa
+            let dr_b _cp aa = dilated_conv3d_backward_kernel a b s r !aa
           end
           : Piso)
           a
@@ -1544,11 +1539,11 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             let df_db _cp _bp bt = bt
             let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab _ap aa =
-              transpose_conv1d_backward_input a b s aa, transpose_conv1d_backward_kernel a b s aa
+            let dr_ab _cp aa =
+              transpose_conv1d_backward_input a b s !aa, transpose_conv1d_backward_kernel a b s !aa
 
-            let dr_a _ap aa = transpose_conv1d_backward_input a b s aa
-            let dr_b _ap aa = transpose_conv1d_backward_kernel a b s aa
+            let dr_a _cp aa = transpose_conv1d_backward_input a b s !aa
+            let dr_b _cp aa = transpose_conv1d_backward_kernel a b s !aa
           end
           : Piso)
           a
@@ -1581,11 +1576,11 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             let df_db _cp _bp bt = bt
             let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab _ap aa =
-              transpose_conv2d_backward_input a b s aa, transpose_conv2d_backward_kernel a b s aa
+            let dr_ab _cp aa =
+              transpose_conv2d_backward_input a b s !aa, transpose_conv2d_backward_kernel a b s !aa
 
-            let dr_a _ap aa = transpose_conv2d_backward_input a b s aa
-            let dr_b _ap aa = transpose_conv2d_backward_kernel a b s aa
+            let dr_a _cp aa = transpose_conv2d_backward_input a b s !aa
+            let dr_b _cp aa = transpose_conv2d_backward_kernel a b s !aa
           end
           : Piso)
           a
@@ -1618,11 +1613,11 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
             let df_db _cp _bp bt = bt
             let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab _ap aa =
-              transpose_conv3d_backward_input a b s aa, transpose_conv3d_backward_kernel a b s aa
+            let dr_ab _cp aa =
+              transpose_conv3d_backward_input a b s !aa, transpose_conv3d_backward_kernel a b s !aa
 
-            let dr_a _ap aa = transpose_conv3d_backward_input a b s aa
-            let dr_b _ap aa = transpose_conv3d_backward_kernel a b s aa
+            let dr_a _cp aa = transpose_conv3d_backward_input a b s !aa
+            let dr_b _cp aa = transpose_conv3d_backward_kernel a b s !aa
           end
           : Piso)
           a
@@ -1829,6 +1824,9 @@ module Make_Ops (Core : Owl_algodiff_core_sig.Sig) = struct
     let map_by_row f x = x |> Maths.to_rows |> Array.map f |> Maths.of_rows
     let print x = A.print (unpack_arr x)
     let of_arrays x = A.of_arrays x |> pack_arr
+
+    let init_2d n_rows n_cols f =
+      Array.init n_rows (fun i -> Array.init n_cols (fun j -> f i j)) |> Maths.of_arrays
   end
 
   module Arr = struct

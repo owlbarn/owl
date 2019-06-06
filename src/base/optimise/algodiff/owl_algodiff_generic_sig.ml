@@ -16,13 +16,15 @@ module type Sig = sig
     (* primal, tangent, tag *)
     | DF of t * t * int
     (* primal, adjoint, op, fanout, tag, tracker *)
-    | DR of t * t ref * (reverse * inputs * label) * int ref * int * int ref
+    | DR of t * t ref * op * int ref * int * int ref
 
-  and reverse = t -> t ref -> (t * t) list -> (t * t) list
+  and adjoint = t -> t ref -> (t * t) list -> (t * t) list
 
-  and inputs = t list -> t list
+  and register = t list -> t list
 
   and label = string * t list
+
+  and op = adjoint * register * label
 
   (** Abstract number type *)
 
