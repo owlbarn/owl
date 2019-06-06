@@ -40,3 +40,18 @@ and `Docker.ubuntu.arm` docker files, or to the snippet in
 https://github.com/owlbarn/owl/issues/394#issuecomment-471364916
 (which also shows how to use it within `esy`).
 
+## Contributing
+
+### Style guide
+
+We use [`ocamlformat`](https://github.com/ocaml-ppx/ocamlformat) to format out code. Our preferred ocamlformat setup is specified in `.ocamlformat`.
+With dune, it is super simple to reformat the entire code base. Once you have [`ocamlformat`](https://github.com/ocaml-ppx/ocamlformat) installed, 
+all you have to do in the project directory is 
+
+```sh 
+dune build @fmt
+dune promote
+```
+
+ 
+
