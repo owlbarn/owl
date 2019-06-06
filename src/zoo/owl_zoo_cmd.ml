@@ -21,7 +21,6 @@ let preprocess script =
     "#use \"topfind\"\n" ^
     "#require \"owl\"\n" ^
     "#require \"owl-zoo\"\n" ^
-    "#require \"owl-plplot\"\n" ^
     "let load_file = Owl_zoo_cmd.load_file;;\n" ^
     Printf.sprintf "#use \"%s\"\n" script
   in

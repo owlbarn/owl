@@ -12,8 +12,6 @@ let visualise_01 () =
   let x = G.var_elt "x" |> pack_elt in
   let y = G.var_elt "y" |> pack_elt in
   let z = f x y in
-  (* let s = [| unpack_elt z |> G.elt_to_node |] |> G.nodes_to_dot in *)
-  (* by analogy to examples/lazy_eval.ml *)
   let inputs = [| unpack_elt x |> G.elt_to_node; unpack_elt y |> G.elt_to_node |] in
   let outputs = [| unpack_elt z |> G.elt_to_node |] in
   let graph = G.make_graph inputs outputs "graph" in
@@ -26,7 +24,6 @@ let visualise_02 () =
   let x = G.var_elt "x" |> pack_elt in
   let y = G.var_elt "y" |> pack_elt in
   let z = (grad (f x)) y in
-  (* let s = [| unpack_arr z |> G.arr_to_node |] |> G.nodes_to_dot in *)
   let inputs = [| unpack_elt x |> G.elt_to_node; unpack_elt y |> G.elt_to_node |] in
   let outputs = [| unpack_elt z |> G.elt_to_node |] in
   let s = G.make_graph inputs outputs "graph" |> G.graph_to_dot in
@@ -52,7 +49,7 @@ let visualise_03 () =
   let s1 = G.make_graph i1 [| x' |] "graph" |> G.graph_to_dot in
   let i2 = [| unpack_arr y |> G.arr_to_node |] in
   let s2 = G.make_graph i2 [| y' |] "graph" |> G.graph_to_dot in
-  let s3 = G.make_graph i0 [| x' ; y' |] "graph" |> G.graph_to_dot in
+  let s3 = G.make_graph i0 [| x'; y' |] "graph" |> G.graph_to_dot in
   Owl_io.write_file "cgraph_03_backward_x.dot" s1;
   Sys.command "dot -Tpdf cgraph_03_backward_x.dot -o cgraph_03_backward_x.pdf" |> ignore;
   Owl_io.write_file "cgraph_03_backward_y.dot" s2;

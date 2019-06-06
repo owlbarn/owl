@@ -1,10 +1,10 @@
 #!/usr/bin/env owl
 (* stochastic gradient decent algorithm *)
 
-open Owl
+module MX = Owl.Dense.Matrix.D
 
 let generate_data () =
-  let open Mat in
+  let open MX in
   let c = 500 in
   let x1 = (gaussian c 2 *$ 2.) in
   let a, b = float_of_int (Random.int 5), float_of_int (Random.int 5) in
@@ -25,15 +25,15 @@ let generate_data () =
 
 let test_log x y =
   let p' = Regression.D.logistic ~i:true x y in
-  let p = Mat.(p'.(0) @= p'.(1)) in
-  let x = Mat.(concat_horizontal x (ones (row_num x) 1)) in
-  let y' = Mat.(sigmoid (x *@ p)) in
-  let y' = Mat.map (fun x -> if x > 0.5 then 1. else 0.) y' in
-  let e = Mat.((mean' (abs (y - y')))) in
+  let p = MX.(p'.(0) @= p'.(1)) in
+  let x = MX.(concat_horizontal x (ones (row_num x) 1)) in
+  let y' = MX.(sigmoid (x *@ p)) in
+  let y' = MX.map (fun x -> if x > 0.5 then 1. else 0.) y' in
+  let e = MX.((mean' (abs (y - y')))) in
   let _ = Owl_log.info "accuracy: %.4f" (1. -. e) in p
 
 let _ =
   let _ = Random.self_init () in
   let x, y = generate_data () in
   let p = test_log x y in
-  Owl_pretty.print_dsnda p ;;
+  Owl_pretty.print_dsnda p
