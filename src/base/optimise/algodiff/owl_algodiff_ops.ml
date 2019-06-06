@@ -146,7 +146,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let ff_f a = F A.Scalar.(exp a)
           let ff_arr a = Arr A.(exp a)
           let df cp _ap at = at * cp
-          let dr ap aa = !aa * ap
+          let dr cp aa = !aa * cp
         end
         : Siso)
         a
@@ -158,7 +158,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let ff_f a = F A.Scalar.(sin a)
           let ff_arr a = Arr A.(sin a)
           let df _cp ap at = at * cos ap
-          let dr _ap aa = !aa * cos (primal a)
+          let dr _cp aa = !aa * cos (primal a)
         end
         : Siso)
         a
@@ -170,7 +170,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let ff_f a = F A.Scalar.(cos a)
           let ff_arr a = Arr A.(cos a)
           let df _cp ap at = neg (at * sin ap)
-          let dr _ap aa = !aa * neg (sin (primal a))
+          let dr _cp aa = !aa * neg (sin (primal a))
         end
         : Siso)
         a
