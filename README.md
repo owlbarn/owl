@@ -33,7 +33,7 @@ before compilation:
   OWL_AEOS_CFLAGS="-g -O3 -Ofast -march=native -funroll-loops -ffast-math -DSFMT_MEXP=19937 -fno-strict-aliasing"
   ```
 
-- `OWL_LAPACKE_LINKING_FLAG_DISABLE=1` disables the `-llapacke` flag in the
+- `OWL_DISABLE_LAPACKE_LINKING_FLAG=1` disables the `-llapacke` flag in the
   linking options. This is useful when you have lapacke installed on
   non-standard localtion.
 

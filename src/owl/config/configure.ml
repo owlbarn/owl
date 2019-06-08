@@ -214,9 +214,9 @@ some details on how your openblas has been installed and the output of
       end;
 
       let lapacke_lib =
-        let linking_flag_disable = bgetenv "OWL_LAPACKE_LINKING_FLAG_DISABLE" in
+        let disable_linking_flag = bgetenv "OWL_DISABLE_LAPACKE_LINKING_FLAG" in
         let needs_lapacke_flag =
-          if linking_flag_disable then false
+          if disable_linking_flag then false
           else (
             C.c_test c test_lapacke_working_code
               ~c_flags:openblas_conf.cflags ~link_flags:(openblas_conf.libs @ ["-lm"])
