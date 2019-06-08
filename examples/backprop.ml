@@ -5,6 +5,7 @@
  *)
 
 open Owl
+
 open Algodiff.S
 
 type layer = {
