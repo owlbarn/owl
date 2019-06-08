@@ -74,7 +74,10 @@ let copy_ ~out src =
     let k = kind src in
     let n = numel src in
     let m = numel out in
-    assert (m = n);
+
+    if (m != n) then
+      raise (Owl_exception.DIFFERENT_SIZE (m, n));
+
     _owl_copy k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 src out
   )
 
@@ -114,7 +117,10 @@ let fill x a = Genarray.fill x a
 
 let reshape x d =
   let minus_one = Owl_utils.Array.count d (-1) in
-  assert (minus_one <= 1);
+
+  if not (minus_one <= 1) then
+    raise Owl_exception.INVALID_ARGUMENT;
+
   if minus_one = 0 then reshape x d
   else (
     let n = numel x in
@@ -185,9 +191,12 @@ let repeat x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
     failwith "repeat: repetition must be >= 1";
+
   let _kind = kind x in
   let x_dims = num_dims x in
-  assert (Array.length reps = x_dims);
+
+  if not (Array.length reps = x_dims) then
+    raise Owl_exception.INVALID_ARGUMENT;
 
   (* case 1: all repeats equal to 1 *)
   if (Array.for_all ((=) 1) reps) = true then
@@ -227,9 +236,12 @@ let repeat_ ~out x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
     failwith "repeat: repetition must be >= 1";
+
   let _kind = kind x in
   let x_dims = num_dims x in
-  assert (Array.length reps = x_dims);
+
+  if not (Array.length reps = x_dims) then
+    raise Owl_exception.INVALID_ARGUMENT;
 
   (* case 1: all repeats equal to 1 *)
   if (Array.for_all ((=) 1) reps) = true then
@@ -370,7 +382,9 @@ let concatenate ?(axis=0) xs =
     step_sz.(i) <- (Owl_utils.calc_slice shape1).(axis);
     acc_dim := !acc_dim + shape1.(axis);
     shape1.(axis) <- 0;
-    assert (shape0 = shape1);
+
+    if not (shape0 = shape1) then
+      raise (Owl_exception.DIFFERENT_SHAPE (shape0, shape1));
   ) shapes;
   (* allocalte space for new array *)
   let _kind = kind xs.(0) in
@@ -1174,14 +1188,14 @@ let logspace k ?(base=Owl_const.e) a b n =
 
 
 let bernoulli k ?(p=0.5) d =
-  assert (p >= 0. && p <= 1.);
+  Owl_exception.check (p >= 0. && p <= 1.) Owl_exception.INVALID_ARGUMENT;
   let x = empty k d in
   (_owl_bernoulli k) (numel x) x p 0;
   x
 
 
 let bernoulli_ ?(p=0.5) ~out =
-  assert (p >= 0. && p <= 1.);
+  Owl_exception.check (p >= 0. && p <= 1.) Owl_exception.INVALID_ARGUMENT;
   let k = kind out in
   (_owl_bernoulli k) (numel out) out p 0
 
@@ -1235,7 +1249,7 @@ let sequential_ ?a ?step ~out =
 
 
 let dropout ?(rate=0.5) x =
-  assert (rate >= 0. && rate <= 1.);
+  Owl_exception.check (rate >= 0. && rate <= 1.) Owl_exception.INVALID_ARGUMENT;
   let x = copy x in
   _owl_dropout (kind x) (numel x) x rate 0;
   x
@@ -1266,7 +1280,11 @@ let iter f x =
 
 
 let iter2i f x y =
-  assert (same_shape x y);
+  let x_shape = shape x in
+  let y_shape = shape y in
+  let exn = Owl_exception.DIFFERENT_SHAPE (x_shape, y_shape) in
+  Owl_exception.check (same_shape x y) exn;
+
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   for i = 0 to (Array1.dim x') - 1 do
@@ -1277,7 +1295,11 @@ let iter2i f x y =
 
 
 let iter2 f x y =
-  assert (same_shape x y);
+  let x_shape = shape x in
+  let y_shape = shape y in
+  let exn = Owl_exception.DIFFERENT_SHAPE (x_shape, y_shape) in
+  Owl_exception.check (same_shape x y) exn;
+
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   for i = 0 to (Array1.dim x') - 1 do
@@ -1308,7 +1330,11 @@ let map f x =
 
 
 let map2i f x y =
-  assert (same_shape x y);
+  let x_shape = shape x in
+  let y_shape = shape y in
+  let exn = Owl_exception.DIFFERENT_SHAPE (x_shape, y_shape) in
+  Owl_exception.check (same_shape x y) exn;
+
   let z = copy x in
   let y' = flatten y |> array1_of_genarray in
   let z' = flatten z |> array1_of_genarray in
@@ -1321,7 +1347,11 @@ let map2i f x y =
 
 
 let map2 f x y =
-  assert (same_shape x y);
+  let x_shape = shape x in
+  let y_shape = shape y in
+  let exn = Owl_exception.DIFFERENT_SHAPE (x_shape, y_shape) in
+  Owl_exception.check (same_shape x y) exn;
+
   let z = copy x in
   let y' = flatten y |> array1_of_genarray in
   let z' = flatten z |> array1_of_genarray in
@@ -1340,12 +1370,18 @@ let mapi_nd f x = mapi (fun i a -> f (Owl_utils.ind x i) a) x
 
 
 let iter2i_nd f x y =
-  assert (same_shape x y);
+  let x_shape = shape x in
+  let y_shape = shape y in
+  let exn = Owl_exception.DIFFERENT_SHAPE (x_shape, y_shape) in
+  Owl_exception.check (same_shape x y) exn;
   iter2i (fun i a b -> f (Owl_utils.ind x i) a b) x y
 
 
 let map2i_nd f x y =
-  assert (same_shape x y);
+  let x_shape = shape x in
+  let y_shape = shape y in
+  let exn = Owl_exception.DIFFERENT_SHAPE (x_shape, y_shape) in
+  Owl_exception.check (same_shape x y) exn;
   map2i (fun i a b -> f (Owl_utils.ind x i) a b) x y
 
 
@@ -1616,7 +1652,7 @@ let rotate x degree =
 
 let get_index x axis =
   let d = num_dims x in
-  assert (Array.length axis = d);
+  Owl_exception.check (Array.length axis = d) Owl_exception.INVALID_ARGUMENT;
   let n = Array.length axis.(0) in
   let indices = Array.make_matrix n d 0 in
   Array.iteri (fun j a ->
@@ -1627,7 +1663,7 @@ let get_index x axis =
 
 let set_index x axis a =
   let d = num_dims x in
-  assert (Array.length axis = d);
+  Owl_exception.check (Array.length axis = d) Owl_exception.INVALID_ARGUMENT;
   let n = Array.length axis.(0) in
   let indices = Array.make_matrix n d 0 in
   Array.iteri (fun j a ->
@@ -1781,7 +1817,7 @@ let load _k f = Owl_io.marshal_from_file f
 
 let of_array k x d =
   let n = Array.fold_left (fun a b -> a * b) 1 d in
-  assert (Array.length x = n);
+  Owl_exception.check (Array.length x = n) Owl_exception.INVALID_ARGUMENT;
   let y = Array1.of_array k C_layout x |> genarray_of_array1 in
   reshape y d
 
@@ -1793,7 +1829,11 @@ let to_array x =
 let complex
   : type a b c d. (a, b) kind -> (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
   = fun real_kind complex_kind re im ->
-  assert (shape re = shape im);
+  let s0 = shape re in
+  let s1 = shape im in
+  let exn = Owl_exception.DIFFERENT_SHAPE (s0, s1) in
+  Owl_exception.check (s0 = s1) exn;
+
   let x = empty complex_kind (shape re) in
   _owl_to_complex real_kind complex_kind (numel re) re im x;
   x
@@ -1801,7 +1841,11 @@ let complex
 let polar
   : type a b c d. (a, b) kind -> (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
   = fun real_kind complex_kind rho theta ->
-  assert (shape rho = shape theta);
+  let s0 = shape rho in
+  let s1 = shape theta in
+  let exn = Owl_exception.DIFFERENT_SHAPE (s0, s1) in
+  Owl_exception.check (s0 = s1) exn;
+
   let x = empty complex_kind (shape rho) in
   _owl_polar real_kind complex_kind (numel rho) rho theta x;
   x
@@ -5256,15 +5300,15 @@ let mean ?axis x =
     )
   | None   -> mean' x |> create _kind [|1|]
 
-  
-let median' x = 
+
+let median' x =
   let _kind = kind x in
   let _srt = sort x in
   let _numel = numel x in
   let _rsht = reshape _srt [|1;_numel|] in
   if _numel mod 2 = 0 then
     let s = _add_elt _kind (get _rsht [|0;_numel/2-1|]) (get _rsht [|0;_numel/2|]) in
-    let y = _float_typ_elt _kind 2.0 in 
+    let y = _float_typ_elt _kind 2.0 in
     _div_elt _kind s y
   else (get _rsht [|0;_numel/2|])
 
@@ -5276,7 +5320,7 @@ let median ?axis x =
       let d = Genarray.num_dims x1 in
       let a = Owl_utils.adjust_index a d in
       let _shape = shape x1 in
-      _shape.(a) <- 1;      
+      _shape.(a) <- 1;
       let y = zeros _kind _shape in
       let n = numel x in
       let s = (strides x1).(a) in

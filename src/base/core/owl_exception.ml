@@ -18,9 +18,13 @@ exception EMPTY_ARRAY
 
 exception TEST_FAIL
 
+exception INVALID_ARGUMENT
+
 exception NOT_SQUARE of int array
 
 exception DIFFERENT_SHAPE of (int array * int array)
+
+exception DIFFERENT_SIZE of (int * int)
 
 exception NOT_BROADCASTABLE
 
@@ -49,6 +53,9 @@ let different_shape sx sy =
   Printf.sprintf "[ %s ] and [ %s ] are different shapes." s0 s1
 
 
+let different_size m n = Printf.sprintf "%i is not equal to %i." m n
+
+
 let not_implemented s = Printf.sprintf "%s is not implemented." s
 
 
@@ -59,6 +66,7 @@ let not_square x =
 
 let to_string = function
   | DIFFERENT_SHAPE (sx, sy) -> different_shape sx sy
+  | DIFFERENT_SIZE (m, n)    -> different_size m n
   | NOT_IMPLEMENTED s        -> not_implemented s
   | NOT_SQUARE x             -> not_square x
   | _                        -> "unknown exception"
