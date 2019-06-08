@@ -6293,14 +6293,17 @@ let copy_area x r =
 
 let _matrix_shape x =
   let s = shape x in
-  if not (Array.length s = 2) then
-    failwith "passed in parameter must be a matrix";
+  let p = (Array.length s = 2) in
+  let exn = Owl_exception.NOT_MATRIX s in
+  Owl_exception.check p exn;
   s.(0), s.(1)
 
 
 let row_num x =
-  if not (num_dims x = 2) then
-    failwith "passed in parameter must be a matrix";
+  let s = shape x in
+  let p = (Array.length s = 2) in
+  let exn = Owl_exception.NOT_MATRIX s in
+  Owl_exception.check p exn;
   (shape x).(0)
 
 

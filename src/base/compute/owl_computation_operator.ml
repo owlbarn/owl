@@ -115,7 +115,8 @@ module Make
   let reshape x shape =
     let n_old = numel x in
     let n_new = Array.fold_left ( * ) 1 shape in
-    assert (n_old = n_new);
+    let exn = Owl_exception.DIFFERENT_SIZE (n_old, n_new) in
+    Owl_exception.check (n_old = n_new) exn;
     make_then_connect (Reshape shape) [|arr_to_node x|] |> node_to_arr
 
   let reverse x =
@@ -447,12 +448,14 @@ module Make
 
   let row_num x =
     let s = shape x in
-    assert (Array.length s = 2);
+    let exn = Owl_exception.NOT_MATRIX s in
+    Owl_exception.check (Array.length s = 2) exn;
     s.(0)
 
   let col_num x =
     let s = shape x in
-    assert (Array.length s = 2);
+    let exn = Owl_exception.NOT_MATRIX s in
+    Owl_exception.check (Array.length s = 2) exn;
     s.(1)
 
   let row x _i = make_then_connect Row [|arr_to_node x|] |> node_to_arr

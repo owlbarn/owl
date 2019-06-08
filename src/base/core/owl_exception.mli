@@ -50,6 +50,9 @@ exception INVALID_ARGUMENT
 exception NOT_SQUARE of int array
 (** Fails if a matrix is not square. *)
 
+exception NOT_MATRIX of int array
+(** Fails if the input is not a matrix. *)
+
 exception DIFFERENT_SHAPE of (int array * int array)
 (** Fail if two ndarrays have different shape. *)
 

@@ -22,6 +22,8 @@ exception INVALID_ARGUMENT
 
 exception NOT_SQUARE of int array
 
+exception NOT_MATRIX of int array
+
 exception DIFFERENT_SHAPE of (int array * int array)
 
 exception DIFFERENT_SIZE of (int * int)
