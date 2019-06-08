@@ -71,7 +71,7 @@ let get_ocaml_devmode_flags _c =
   ]
 
 
-let default_cflags = 
+let default_cflags =
   try
     Sys.getenv "OWL_CFLAGS" |> String.trim
     |> String.split_on_char ' '
@@ -150,7 +150,7 @@ let get_accelerate_libs c =
 let get_openmp_config c =
   let enable_openmp = bgetenv "OWL_ENABLE_OPENMP" in
   if not enable_openmp then C.Pkg_config.{cflags=[]; libs=[]}
-  else 
+  else
     let cflags, libs =
       match get_os_type c with
       | "linux"     -> [ "-fopenmp" ], [ "-lgomp" ]
@@ -212,15 +212,21 @@ some details on how your openblas has been installed and the output of
           Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.libs);
         failwith "Unable to link against openblas."
       end;
+
       let lapacke_lib =
+        let linking_flag_disable = bgetenv "OWL_LAPACKE_LINKING_FLAG_DISABLE" in
         let needs_lapacke_flag =
-          C.c_test c test_lapacke_working_code
-            ~c_flags:openblas_conf.cflags ~link_flags:(openblas_conf.libs @ ["-lm"])
-          |> not
+          if linking_flag_disable then false
+          else (
+            C.c_test c test_lapacke_working_code
+              ~c_flags:openblas_conf.cflags ~link_flags:(openblas_conf.libs @ ["-lm"])
+            |> not
+          )
         in
         if needs_lapacke_flag then ["-llapacke"] else []
       in
       let openmp_config = get_openmp_config c in
+
       (* configure link options *)
       let libs =
         []
