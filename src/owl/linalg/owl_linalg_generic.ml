@@ -131,8 +131,8 @@ let logdet x =
     d := _add_op !d (_log_op (_abs_op e));
     (* NOTE: +1 to adjust to Fortran index *)
     let p = (M.get ipiv 0 i) <> Int32.of_int (i + 1) in
-    let q = e < (Owl_const.zero _kind) in 
-    (* implement xor *) 
+    let q = e < (Owl_const.zero _kind) in
+    (* implement xor *)
     if (p && not q) || (not p && q) then c := !c + 1
   done;
   match Owl_maths.is_odd !c with
@@ -668,7 +668,7 @@ let _get_trans_code
     | Complex64 -> 'C'
     | _         -> failwith "owl_linalg_generic:_get_trans_code"
 
-let triangular_solve  
+let triangular_solve
     : type c d. upper:bool -> ?trans:bool -> (c, d) t -> (c, d) t -> (c, d) t
     = fun ~upper ?(trans=false) a b ->
     let b = M.copy b in
@@ -679,11 +679,11 @@ let triangular_solve
     let _b = M.flatten b |> Bigarray.array1_of_genarray in
     let k = M.kind a in
     let alpha = Owl_const.one k in
-    let transa = 
+    let transa =
       if trans then match k with
-        | Float32     -> Owl_cblas_basic.CblasTrans  
-        | Float64     -> Owl_cblas_basic.CblasTrans 
-        | Complex32   -> Owl_cblas_basic.CblasConjTrans 
+        | Float32     -> Owl_cblas_basic.CblasTrans
+        | Float64     -> Owl_cblas_basic.CblasTrans
+        | Complex32   -> Owl_cblas_basic.CblasConjTrans
         | Complex64   -> Owl_cblas_basic.CblasConjTrans
         | _           -> failwith "owl_linalg:triangular_solve"
       else Owl_cblas_basic.CblasNoTrans in
@@ -693,7 +693,7 @@ let triangular_solve
     let diag = Owl_cblas_basic.CblasNonUnit in
     Owl_cblas_basic.trsm layout side uplo transa diag mb nb alpha _a ma _b nb;
     b
- 
+
 (* TODO: add opt parameter to specify the matrix properties so that we can
    choose the best solver for better performance.
 *)
@@ -708,16 +708,16 @@ let linsolve ?(trans=false) ?(typ=`n) a b =
   if ma = na then (
     match typ with
     (* normal *)
-    | `n -> 
+    | `n ->
       let a = M.copy a in
       let b = M.copy b in
-      let a, ipiv = lufact a in 
+      let a, ipiv = lufact a in
       let x = Owl_lapacke.getrs trans_ a ipiv b in
       x
     (* upper triangular *)
-    | `u -> triangular_solve ~trans ~upper:true a b 
+    | `u -> triangular_solve ~trans ~upper:true a b
     (* lower triangular *)
-    | `l -> triangular_solve ~trans ~upper:false a b 
+    | `l -> triangular_solve ~trans ~upper:false a b
   )
   else (
       let a = M.copy a in
@@ -781,7 +781,7 @@ let lyapunov a c =
   M.mul_scalar_ z (Owl_base_dense_common._float_typ_elt (M.kind c) (1. /. s));
   z
 
-let _discrete_lyapunov_direct a q = 
+let _discrete_lyapunov_direct a q =
   let n = M.row_num q in
   let lhs = M.kron a M.(conj a) in
   let lhs = M.((eye (kind a) (row_num lhs)) - lhs) in
@@ -789,7 +789,7 @@ let _discrete_lyapunov_direct a q =
 
 (* bilinear transform reference
  * https://old.control.ee.ethz.ch/info/people/mansour/pdf/168--1993-Schur-Cohn,%20Nour%20Eldin-Markov%20Matrices%20and%20the%20Controllability%20Gramians--.pdf *)
-let _discrete_lyapunov_bilinear a q = 
+let _discrete_lyapunov_bilinear a q =
   let n = M.row_num a in
   let identity = M.(eye (kind a) n) in
   let inv_al = inv M.(a - identity) in
@@ -798,9 +798,9 @@ let _discrete_lyapunov_bilinear a q =
   M.mul_scalar_ q' (Owl_base_dense_common._float_typ_elt (M.kind a) 2. );
   lyapunov a' M.(neg q')
 
-let discrete_lyapunov ?(solver=`default) a q = 
+let discrete_lyapunov ?(solver=`default) a q =
   let solve = match solver with
-    | `default -> 
+    | `default ->
       if M.(row_num a) <= 10 then _discrete_lyapunov_direct
       else _discrete_lyapunov_bilinear
     | `bilinear -> _discrete_lyapunov_bilinear
@@ -887,7 +887,8 @@ let mpow x r =
 let expm_eig
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (c, d) t
   = fun ~otyp x ->
-    Owl_exception.(check (is_square x) NOT_SQUARE);
+    let (d0, d1) = M.shape x in
+    Owl_exception.(check (is_square x) (NOT_SQUARE [|d0;d1|]));
     let v, w = eig ~otyp x in
     let vi = inv v in
     let u = M.(exp w |> diagm) in
@@ -895,7 +896,8 @@ let expm_eig
   [@@warning "-32"]
 
   let expm x =
-    Owl_exception.(check (is_square x) NOT_SQUARE);
+    let (d0, d1) = M.shape x in
+    Owl_exception.(check (is_square x) (NOT_SQUARE [|d0;d1|]));
     (* trivial case *)
     if M.shape x = (1, 1) then M.exp x
     else (

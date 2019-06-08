@@ -313,7 +313,8 @@ module Program = struct
     program
 
 
-  let _create_with_binary () = raise Owl_exception.NOT_IMPLEMENTED
+  let _create_with_binary () =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_opencl_base._create_with_binary")
 
 
   let build ?(options="") program devices =
@@ -325,10 +326,12 @@ module Program = struct
     clBuildProgram program _num_devices _devices _options magic_null magic_null |> cl_check_err
 
 
-  let _compile () = raise Owl_exception.NOT_IMPLEMENTED
+  let _compile () =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_opencl_base._compile")
 
 
-  let _link () = raise Owl_exception.NOT_IMPLEMENTED
+  let _link () =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_opencl_base._link")
 
 
   let to_string x =
@@ -415,7 +418,8 @@ module Kernel = struct
     kernel
 
 
-  let _create_in_program _program _kernels = raise Owl_exception.NOT_IMPLEMENTED
+  let _create_in_program _program _kernels =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_opencl_base._create_in_program")
 
 
   let set_arg kernel arg_idx arg_size arg_val =
@@ -622,7 +626,8 @@ module Event = struct
   let set_status event status = clSetUserEventStatus event (Int32.of_int status) |> cl_check_err
 
 
-  let _set_callback () = raise Owl_exception.NOT_IMPLEMENTED
+  let _set_callback () =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_opencl_base._set_callback")
 
 
   let wait_for event_list =
@@ -703,7 +708,8 @@ module Buffer = struct
     buf
 
 
-  let _create_sub () = raise Owl_exception.NOT_IMPLEMENTED
+  let _create_sub () =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_opencl_base._create_sub")
 
 
   let enqueue_read ?(blocking=true) ?(wait_for=[]) cmdq src ofs len dst =

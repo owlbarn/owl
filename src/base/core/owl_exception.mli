@@ -18,10 +18,15 @@ Returns:
   * ``unit``
  *)
 
+val to_string : exn -> string
+(** ``to_string e`` converts an exception into a string containing more
+detailed information for debugging the code.
+ *)
+
 
 (** {6 Exception definition} *)
 
-exception NOT_IMPLEMENTED
+exception NOT_IMPLEMENTED of string
 (** Exception of not implemented yet. *)
 
 exception NOT_SUPPORTED
@@ -39,10 +44,10 @@ exception EMPTY_ARRAY
 exception TEST_FAIL
 (** Unit Test fails. *)
 
-exception NOT_SQUARE
+exception NOT_SQUARE of int array
 (** Fails if a matrix is not square. *)
 
-exception DIFFERENT_SHAPE
+exception DIFFERENT_SHAPE of (int array * int array)
 (** Fail if two ndarrays have different shape. *)
 
 exception NOT_BROADCASTABLE

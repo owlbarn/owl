@@ -1026,7 +1026,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let label = "split"
           let ff_f a = error_uniop "label" (pack_elt a)
           let ff_arr a = A.(split ~axis parts a) |> Array.map (fun x -> Arr x)
-          let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED
+          let df _cp _ap _at = raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.split")
 
           let dr _a _cp _cp_ref_arr ca_ref_arr =
             concatenate ~axis (Array.map (fun ca -> !ca) ca_ref_arr)
@@ -1169,8 +1169,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               let q, r = A.(qr a) in
               Arr q, Arr r
 
-
-            let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED
+            let df _cp _ap _at = raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.qr")
             let dr _a _cp cp_ref ca_ref = _qr_backward cp_ref ca_ref
           end
           : Sipo)
@@ -1197,7 +1196,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               Arr l, Arr q
 
 
-            let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED
+            let df _cp _ap _at = raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.lq")
             let dr _a _cp o ca = _lq_backward o ca
           end
           : Sipo)
@@ -1232,8 +1231,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                     1. /. (s2_j -. s2_i) |> float_to_elt)))
         in
         let inv_s = pack_flt 1. / s in
-        if thin
-        then
+        if thin then
           (u * sbar *@ vt)
           + (((u *@ (f * ((ut *@ ubar) - (ubart *@ u))) * s)
              + ((e_m - (u *@ ut)) *@ ubar * inv_s))
@@ -1241,7 +1239,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           + (u
             *@ ((transpose s * (f * ((vt *@ vbar) - (vbart *@ v))) *@ vt)
                + (transpose inv_s * vbart *@ (e_n - (v *@ vt)))))
-        else raise Owl_exception.NOT_IMPLEMENTED
+        else
+          raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.svd")
       in
       fun ?(thin = true) a ->
         build_sito
@@ -1254,7 +1253,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               Arr u, Arr s, Arr vt
 
 
-            let df _cp _ap _at = raise Owl_exception.NOT_IMPLEMENTED
+            let df _cp _ap _at = raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.svd")
             let dr _a _cp o ca = _svd_backward o ca thin
           end
           : Sito)
