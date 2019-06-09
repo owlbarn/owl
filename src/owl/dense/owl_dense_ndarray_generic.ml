@@ -1188,14 +1188,16 @@ let logspace k ?(base=Owl_const.e) a b n =
 
 
 let bernoulli k ?(p=0.5) d =
-  Owl_exception.check (p >= 0. && p <= 1.) Owl_exception.INVALID_ARGUMENT;
+  let exn = Owl_exception.INVALID_PROBABILITY p in
+  Owl_exception.check (p >= 0. && p <= 1.) exn;
   let x = empty k d in
   (_owl_bernoulli k) (numel x) x p 0;
   x
 
 
 let bernoulli_ ?(p=0.5) ~out =
-  Owl_exception.check (p >= 0. && p <= 1.) Owl_exception.INVALID_ARGUMENT;
+  let exn = Owl_exception.INVALID_PROBABILITY p in
+  Owl_exception.check (p >= 0. && p <= 1.) exn;
   let k = kind out in
   (_owl_bernoulli k) (numel out) out p 0
 
@@ -1249,7 +1251,8 @@ let sequential_ ?a ?step ~out =
 
 
 let dropout ?(rate=0.5) x =
-  Owl_exception.check (rate >= 0. && rate <= 1.) Owl_exception.INVALID_ARGUMENT;
+  let exn = Owl_exception.INVALID_PROBABILITY rate in
+  Owl_exception.check (rate >= 0. && rate <= 1.) exn;
   let x = copy x in
   _owl_dropout (kind x) (numel x) x rate 0;
   x
