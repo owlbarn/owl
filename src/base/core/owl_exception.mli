@@ -7,7 +7,8 @@
 (** {6 Core function} *)
 
 val check : bool -> exn -> unit
-(** ``check p e`` raises the exception ``e`` if the predicate ``p`` is
+(**
+``check p e`` raises the exception ``e`` if the predicate ``p`` is
 ``false``, otherwise returns ``unit``.
 
 Parameters:
@@ -19,9 +20,13 @@ Returns:
  *)
 
 val to_string : exn -> string
-(** ``to_string e`` converts an exception into a string containing more
+(**
+``to_string e`` converts an exception into a string containing more
 detailed information for debugging the code.
  *)
+
+val pp_exception : Format.formatter -> exn -> unit [@@ocaml.toplevel_printer]
+(** ``pp_exception`` is the pretty printer for Owl exceptions. *)
 
 
 (** {6 Exception definition} *)
@@ -46,6 +51,9 @@ exception TEST_FAIL
 
 exception INVALID_ARGUMENT
 (** Input arugments are invalid. *)
+
+exception INVALID_PROBABILITY of float
+(** Invalide probability value, not within [0,1] range. *)
 
 exception NOT_SQUARE of int array
 (** Fails if a matrix is not square. *)

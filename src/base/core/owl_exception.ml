@@ -20,6 +20,8 @@ exception TEST_FAIL
 
 exception INVALID_ARGUMENT
 
+exception INVALID_PROBABILITY of float
+
 exception NOT_SQUARE of int array
 
 exception NOT_MATRIX of int array
@@ -50,25 +52,43 @@ let check p e =
 
 
 let different_shape sx sy =
+  let prefix = "Owl_exception.DIFFERENT_SHAPE:" in
   let s0 = Array.to_list sx |> List.map string_of_int |> String.concat "," in
   let s1 = Array.to_list sy |> List.map string_of_int |> String.concat "," in
-  Printf.sprintf "[ %s ] and [ %s ] are different shapes." s0 s1
+  Printf.sprintf "%s [ %s ] and [ %s ] are different shapes." prefix s0 s1
 
 
-let different_size m n = Printf.sprintf "%i is not equal to %i." m n
+let different_size m n =
+  let prefix = "Owl_exception.DIFFERENT_SIZE:" in
+  Printf.sprintf "%s %i is not equal to %i." prefix m n
 
 
-let not_implemented s = Printf.sprintf "%s is not implemented." s
+let invalid_probability p =
+  let prefix = "Owl_exception.INVALID_PROBABILITY:" in
+  Printf.sprintf "%s %g is not a valid probability, it should be within [0,1]." prefix p
+
+
+let not_implemented s =
+  let prefix = "Owl_exception.NOT_IMPLEMENTED:" in
+  Printf.sprintf "%s %s is not implemented." prefix s
 
 
 let not_square x =
+  let prefix = "Owl_exception.NOT_SQUARE:" in
   let s = Array.to_list x |> List.map string_of_int |> String.concat "," in
-  Printf.sprintf "[ %s ] is not square." s
+  Printf.sprintf "%s [ %s ] is not square." prefix s
 
 
 let to_string = function
   | DIFFERENT_SHAPE (sx, sy) -> different_shape sx sy
   | DIFFERENT_SIZE (m, n)    -> different_size m n
+  | INVALID_PROBABILITY p    -> invalid_probability p
   | NOT_IMPLEMENTED s        -> not_implemented s
   | NOT_SQUARE x             -> not_square x
-  | _                        -> "unknown exception"
+  | other                    -> Printexc.to_string other
+
+
+let pp_exception formatter x =
+  Format.open_box 0;
+  Format.fprintf formatter "%s" (to_string x);
+  Format.close_box ()
