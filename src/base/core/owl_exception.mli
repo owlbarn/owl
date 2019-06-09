@@ -58,6 +58,9 @@ exception INVALID_PROBABILITY of float
 exception LINALG_MATRIX_DOT_SHAPE of (int * int * int * int)
 (** Invalid matrix shapes for matrix dot product. *)
 
+exception NON_NEGATIVE_INT of int
+(** Fails if the input is negative. *)
+
 exception NOT_SQUARE of int array
 (** Fails if a matrix is not square. *)
 

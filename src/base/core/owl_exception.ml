@@ -28,6 +28,8 @@ exception NOT_SQUARE of int array
 
 exception NOT_MATRIX of int array
 
+exception NON_NEGATIVE_INT of int
+
 exception DIFFERENT_SHAPE of (int array * int array)
 
 exception DIFFERENT_SIZE of (int * int)
@@ -76,6 +78,11 @@ let linalg_matrix_dot_shape combined_shape =
   Printf.sprintf "%s x[%i,%i] *@ y[%i,%i] is invalid." prefix xm xn ym yn
 
 
+let non_negative_int i =
+  let prefix = "Owl_exception.NON_NEGATIVE_INT:" in
+  Printf.sprintf "%s input should be non-negative, but %i is negative." prefix i
+
+
 let not_implemented s =
   let prefix = "Owl_exception.NOT_IMPLEMENTED:" in
   Printf.sprintf "%s %s is not implemented." prefix s
@@ -92,6 +99,7 @@ let to_string = function
   | DIFFERENT_SIZE (m, n)     -> different_size m n
   | INVALID_PROBABILITY p     -> invalid_probability p
   | LINALG_MATRIX_DOT_SHAPE s -> linalg_matrix_dot_shape s
+  | NON_NEGATIVE_INT i        -> non_negative_int i
   | NOT_IMPLEMENTED s         -> not_implemented s
   | NOT_SQUARE x              -> not_square x
   | other                     -> Printexc.to_string other

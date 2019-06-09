@@ -293,8 +293,8 @@ let _binary_exp a b m f id =
 
 
 let mulmod a b m =
-  assert (a >= 0);
-  assert (b >= 0);
+  Owl_exception.(check (a >= 0) (NON_NEGATIVE_INT a));
+  Owl_exception.(check (b >= 0) (NON_NEGATIVE_INT b));
   assert (m >= 1);
 
   let a = a mod m in
@@ -315,8 +315,8 @@ let mulmod a b m =
 
 
 let powmod a b m =
-  assert (a >= 0);
-  assert (b >= 0);
+  Owl_exception.(check (a >= 0) (NON_NEGATIVE_INT a));
+  Owl_exception.(check (b >= 0) (NON_NEGATIVE_INT b));
   assert (m >= 1);
 
   if m = 1 && b = 0 then 0

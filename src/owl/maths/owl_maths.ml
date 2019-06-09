@@ -256,19 +256,19 @@ let gammainccinv a x = Owl_maths_special.gammainccinv a x
 let psi x = Owl_maths_special.psi x
 
 let fact x =
-  assert (x >= 0);
+  Owl_exception.(check (x >= 0) (NON_NEGATIVE_INT x));
   Owl_maths_special.fact x
 
 let log_fact x =
-  assert (x >= 0);
+  Owl_exception.(check (x >= 0) (NON_NEGATIVE_INT x));
   Owl_maths_special.log_fact x
 
 let doublefact x =
-  assert (x >= 0);
+  Owl_exception.(check (x >= 0) (NON_NEGATIVE_INT x));
   Owl_maths_special.doublefact x
 
 let log_doublefact x =
-  assert (x >= 0);
+  Owl_exception.(check (x >= 0) (NON_NEGATIVE_INT x));
   Owl_maths_special.log_doublefact x
 
 let beta a b = Owl_maths_special.beta a b
