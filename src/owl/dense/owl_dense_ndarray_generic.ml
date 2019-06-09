@@ -383,8 +383,8 @@ let concatenate ?(axis=0) xs =
     acc_dim := !acc_dim + shape1.(axis);
     shape1.(axis) <- 0;
 
-    if not (shape0 = shape1) then
-      raise (Owl_exception.DIFFERENT_SHAPE (shape0, shape1));
+    let exn = Owl_exception.DIFFERENT_SHAPE (shape0, shape1) in
+    Owl_exception.check (shape0 = shape1) exn
   ) shapes;
   (* allocalte space for new array *)
   let _kind = kind xs.(0) in
@@ -1286,7 +1286,7 @@ let iter2i f x y =
   let x_shape = shape x in
   let y_shape = shape y in
   let exn = Owl_exception.DIFFERENT_SHAPE (x_shape, y_shape) in
-  Owl_exception.check (same_shape x y) exn;
+  Owl_exception.check (x_shape = y_shape) exn;
 
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
@@ -1301,7 +1301,7 @@ let iter2 f x y =
   let x_shape = shape x in
   let y_shape = shape y in
   let exn = Owl_exception.DIFFERENT_SHAPE (x_shape, y_shape) in
-  Owl_exception.check (same_shape x y) exn;
+  Owl_exception.check (x_shape = y_shape) exn;
 
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
@@ -1336,7 +1336,7 @@ let map2i f x y =
   let x_shape = shape x in
   let y_shape = shape y in
   let exn = Owl_exception.DIFFERENT_SHAPE (x_shape, y_shape) in
-  Owl_exception.check (same_shape x y) exn;
+  Owl_exception.check (x_shape = y_shape) exn;
 
   let z = copy x in
   let y' = flatten y |> array1_of_genarray in
@@ -1353,7 +1353,7 @@ let map2 f x y =
   let x_shape = shape x in
   let y_shape = shape y in
   let exn = Owl_exception.DIFFERENT_SHAPE (x_shape, y_shape) in
-  Owl_exception.check (same_shape x y) exn;
+  Owl_exception.check (x_shape = y_shape) exn;
 
   let z = copy x in
   let y' = flatten y |> array1_of_genarray in
@@ -1376,7 +1376,7 @@ let iter2i_nd f x y =
   let x_shape = shape x in
   let y_shape = shape y in
   let exn = Owl_exception.DIFFERENT_SHAPE (x_shape, y_shape) in
-  Owl_exception.check (same_shape x y) exn;
+  Owl_exception.check (x_shape = y_shape) exn;
   iter2i (fun i a b -> f (Owl_utils.ind x i) a b) x y
 
 
@@ -1384,7 +1384,7 @@ let map2i_nd f x y =
   let x_shape = shape x in
   let y_shape = shape y in
   let exn = Owl_exception.DIFFERENT_SHAPE (x_shape, y_shape) in
-  Owl_exception.check (same_shape x y) exn;
+  Owl_exception.check (x_shape = y_shape) exn;
   map2i (fun i a b -> f (Owl_utils.ind x i) a b) x y
 
 

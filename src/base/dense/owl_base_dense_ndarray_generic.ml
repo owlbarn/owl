@@ -1560,7 +1560,9 @@ let add_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -1576,7 +1578,9 @@ let sub_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -1592,7 +1596,9 @@ let mul_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -1608,7 +1614,9 @@ let div_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -1621,7 +1629,9 @@ let atan2_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op x y (Scalar.atan2)
   |> ignore
 
@@ -1634,7 +1644,9 @@ let hypot_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op x y (Scalar.hypot)
   |> ignore
 
@@ -1652,7 +1664,9 @@ let pow_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -1665,7 +1679,9 @@ let fmod_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op x y (Scalar.fmod)
   |> ignore
 
@@ -1681,7 +1697,9 @@ let min2_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -1697,7 +1715,9 @@ let max2_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 

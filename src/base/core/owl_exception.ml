@@ -70,8 +70,8 @@ let invalid_probability p =
   Printf.sprintf "%s %g is not a valid probability, it should be within [0,1]." prefix p
 
 
-let linalg_matrix_dot_shape s =
-  let (xm, xn, ym, yn) = s in
+let linalg_matrix_dot_shape combined_shape =
+  let (xm, xn, ym, yn) = combined_shape in
   let prefix = "Owl_exception.LINALG_MATRIX_DOT_SHAPE:" in
   Printf.sprintf "%s x[%i,%i] *@ y[%i,%i] is invalid." prefix xm xn ym yn
 
@@ -84,7 +84,7 @@ let not_implemented s =
 let not_square x =
   let prefix = "Owl_exception.NOT_SQUARE:" in
   let s = Array.to_list x |> List.map string_of_int |> String.concat "," in
-  Printf.sprintf "%s [ %s ] is not square." prefix s
+  Printf.sprintf "%s matrix [ %s ] is not square." prefix s
 
 
 let to_string = function

@@ -92,7 +92,7 @@ let inv x =
 let det x =
   let x = M.copy x in
   let m, n = M.shape x in
-  assert (m = n);
+  Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));
 
   let a, ipiv = Owl_lapacke.getrf ~a:x in
   let d = ref (Owl_const.one (M.kind x)) in
@@ -115,7 +115,7 @@ let det x =
 let logdet x =
   let x = M.copy x in
   let m, n = M.shape x in
-  assert (m = n);
+  Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));
 
   let _kind = M.kind x in
   let a, ipiv = Owl_lapacke.getrf ~a:x in
@@ -328,7 +328,8 @@ let _magic_complex
 let schur
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x ->
-    assert (is_square x);
+    let m, n = M.shape x in
+    Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));
     let x = M.copy x in
     let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
     let w = _magic_complex otyp wr wi in
@@ -336,7 +337,8 @@ let schur
 
 
 let schur_tz x =
-  assert (is_square x);
+  let m, n = M.shape x in
+  Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));
   let a = M.copy x in
   let t, z, _, _ = Owl_lapacke.gees ~jobvs:'V' ~a in
   t, z
@@ -359,8 +361,11 @@ let ordschur
 let qz
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x y ->
-    assert (is_square x);
-    assert (is_square y);
+    let m, n = M.shape x in
+    Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));
+    let u, v = M.shape y in
+    Owl_exception.(check (u = v) (NOT_SQUARE [|u;v|]));
+
     let a = M.copy x in
     let b = M.copy y in
     let s, t, ar, ai, bt, q, z = Owl_lapacke.gges ~jobvsl:'V' ~jobvsr:'V' ~a ~b in
@@ -387,8 +392,11 @@ let ordqz
 let qzvals
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
   = fun ~otyp x y ->
-    assert (is_square x);
-    assert (is_square y);
+    let m, n = M.shape x in
+    Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));
+    let u, v = M.shape y in
+    Owl_exception.(check (u = v) (NOT_SQUARE [|u;v|]));
+
     let a = M.copy x in
     let b = M.copy y in
     let ar, ai, bt, _, _ = Owl_lapacke.ggev ~jobvl:'N' ~jobvr:'N' ~a ~b in
@@ -627,7 +635,8 @@ let cond ?(p=2.) x =
     if maxv = 0. then infinity else maxv /. minv
   )
   else if p = 1. || p = infinity then (
-    assert (M.row_num x = M.col_num x);
+    let m, n = M.shape x in
+    Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));
     let x = M.copy x in
     let a, _ipiv = lufact x in
     let anorm = norm ~p x in
@@ -867,7 +876,8 @@ let peakflops ?(n=2000) () =
 let mpow x r =
   let frac_part, _ = Pervasives.modf r in
   if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
-  let m, n = M.shape x in assert (m = n);
+  let m, n = M.shape x in
+  Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));
   (* integer matrix powers using floats: *)
   let rec _mpow acc s =
     if s = 1. then acc
@@ -887,8 +897,8 @@ let mpow x r =
 let expm_eig
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (c, d) t
   = fun ~otyp x ->
-    let (d0, d1) = M.shape x in
-    Owl_exception.(check (is_square x) (NOT_SQUARE [|d0;d1|]));
+    let m, n = M.shape x in
+    Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));
     let v, w = eig ~otyp x in
     let vi = inv v in
     let u = M.(exp w |> diagm) in
@@ -896,8 +906,8 @@ let expm_eig
   [@@warning "-32"]
 
   let expm x =
-    let (d0, d1) = M.shape x in
-    Owl_exception.(check (is_square x) (NOT_SQUARE [|d0;d1|]));
+    let m, n = M.shape x in
+    Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));
     (* trivial case *)
     if M.shape x = (1, 1) then M.exp x
     else (
