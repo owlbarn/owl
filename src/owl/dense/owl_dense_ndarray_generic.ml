@@ -6344,10 +6344,12 @@ let copy_col_to v x i =
 
 
 (* NOTE: same implementation code as that in Owl_linalg_generic *)
+
 let dot x1 x2 =
   let m, k = _matrix_shape x1 in
   let l, n = _matrix_shape x2 in
-  Owl_exception.check (k = l) Owl_exception.INVALID_ARGUMENT;
+  let exn = Owl_exception.LINALG_MATRIX_DOT_SHAPE (m, k, l, n) in
+  Owl_exception.check (k = l) exn;
 
   let _kind = kind x1 in
   let alpha = Owl_const.one _kind in

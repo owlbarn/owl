@@ -22,6 +22,8 @@ exception INVALID_ARGUMENT
 
 exception INVALID_PROBABILITY of float
 
+exception LINALG_MATRIX_DOT_SHAPE of (int * int * int * int)
+
 exception NOT_SQUARE of int array
 
 exception NOT_MATRIX of int array
@@ -68,6 +70,12 @@ let invalid_probability p =
   Printf.sprintf "%s %g is not a valid probability, it should be within [0,1]." prefix p
 
 
+let linalg_matrix_dot_shape s =
+  let (xm, xn, ym, yn) = s in
+  let prefix = "Owl_exception.LINALG_MATRIX_DOT_SHAPE:" in
+  Printf.sprintf "%s x[%i,%i] *@ y[%i,%i] is invalid." prefix xm xn ym yn
+
+
 let not_implemented s =
   let prefix = "Owl_exception.NOT_IMPLEMENTED:" in
   Printf.sprintf "%s %s is not implemented." prefix s
@@ -80,12 +88,13 @@ let not_square x =
 
 
 let to_string = function
-  | DIFFERENT_SHAPE (sx, sy) -> different_shape sx sy
-  | DIFFERENT_SIZE (m, n)    -> different_size m n
-  | INVALID_PROBABILITY p    -> invalid_probability p
-  | NOT_IMPLEMENTED s        -> not_implemented s
-  | NOT_SQUARE x             -> not_square x
-  | other                    -> Printexc.to_string other
+  | DIFFERENT_SHAPE (sx, sy)  -> different_shape sx sy
+  | DIFFERENT_SIZE (m, n)     -> different_size m n
+  | INVALID_PROBABILITY p     -> invalid_probability p
+  | LINALG_MATRIX_DOT_SHAPE s -> linalg_matrix_dot_shape s
+  | NOT_IMPLEMENTED s         -> not_implemented s
+  | NOT_SQUARE x              -> not_square x
+  | other                     -> Printexc.to_string other
 
 
 let pp_exception formatter x =

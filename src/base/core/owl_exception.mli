@@ -55,6 +55,9 @@ exception INVALID_ARGUMENT
 exception INVALID_PROBABILITY of float
 (** Invalide probability value, not within [0,1] range. *)
 
+exception LINALG_MATRIX_DOT_SHAPE of (int * int * int * int)
+(** Invalid matrix shapes for matrix dot product. *)
+
 exception NOT_SQUARE of int array
 (** Fails if a matrix is not square. *)
 
