@@ -118,8 +118,8 @@ let fill x a = Genarray.fill x a
 let reshape x d =
   let minus_one = Owl_utils.Array.count d (-1) in
 
-  if not (minus_one <= 1) then
-    raise Owl_exception.INVALID_ARGUMENT;
+  let s = "only one index can have value -1" in
+  Owl_exception.(check (minus_one <= 1) (INVALID_ARGUMENT s));
 
   if minus_one = 0 then reshape x d
   else (
@@ -194,9 +194,11 @@ let repeat x reps =
 
   let _kind = kind x in
   let x_dims = num_dims x in
+  let reps_len = Array.length reps in
 
-  if not (Array.length reps = x_dims) then
-    raise Owl_exception.INVALID_ARGUMENT;
+  let s = Printf.sprintf "x dimension = %i, reps length = %i" x_dims reps_len in
+  Owl_exception.(check (reps_len = x_dims) (INVALID_ARGUMENT s));
+
 
   (* case 1: all repeats equal to 1 *)
   if (Array.for_all ((=) 1) reps) = true then
@@ -239,9 +241,10 @@ let repeat_ ~out x reps =
 
   let _kind = kind x in
   let x_dims = num_dims x in
+  let reps_len = Array.length reps in
 
-  if not (Array.length reps = x_dims) then
-    raise Owl_exception.INVALID_ARGUMENT;
+  let s = Printf.sprintf "x dimension = %i, reps length = %i" x_dims reps_len in
+  Owl_exception.(check (reps_len = x_dims) (INVALID_ARGUMENT s));
 
   (* case 1: all repeats equal to 1 *)
   if (Array.for_all ((=) 1) reps) = true then
@@ -1569,7 +1572,8 @@ let flip ?(axis=0) x =
 
 
 let rotate x degree =
-  Owl_exception.check (degree mod 90 = 0) Owl_exception.INVALID_ARGUMENT;
+  let s = Printf.sprintf "degree = %i" degree in
+  Owl_exception.(check (degree mod 90 = 0) (INVALID_ARGUMENT s));
 
   let k = (degree mod 360) / 90 in
   let _kind = kind x in
@@ -1656,7 +1660,8 @@ let rotate x degree =
 
 let get_index x axis =
   let d = num_dims x in
-  Owl_exception.check (Array.length axis = d) Owl_exception.INVALID_ARGUMENT;
+  let s = Printf.sprintf "x dimension = %i" d in
+  Owl_exception.(check (Array.length axis = d) (INVALID_ARGUMENT s));
   let n = Array.length axis.(0) in
   let indices = Array.make_matrix n d 0 in
   Array.iteri (fun j a ->
@@ -1667,7 +1672,8 @@ let get_index x axis =
 
 let set_index x axis a =
   let d = num_dims x in
-  Owl_exception.check (Array.length axis = d) Owl_exception.INVALID_ARGUMENT;
+  let s = Printf.sprintf "x dimension = %i" d in
+  Owl_exception.(check (Array.length axis = d) (INVALID_ARGUMENT s));
   let n = Array.length axis.(0) in
   let indices = Array.make_matrix n d 0 in
   Array.iteri (fun j a ->
@@ -1821,7 +1827,8 @@ let load _k f = Owl_io.marshal_from_file f
 
 let of_array k x d =
   let n = Array.fold_left (fun a b -> a * b) 1 d in
-  Owl_exception.check (Array.length x = n) Owl_exception.INVALID_ARGUMENT;
+  let s = Printf.sprintf "x size = %i, output size = %i" (Array.length x) n in
+  Owl_exception.(check (Array.length x = n) (INVALID_ARGUMENT s));
   let y = Array1.of_array k C_layout x |> genarray_of_array1 in
   reshape y d
 
@@ -2042,7 +2049,7 @@ let conv2d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (num_dims kernel = 4) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2055,7 +2062,7 @@ let conv2d ?(padding=SAME) input kernel stride =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p3 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2081,7 +2088,7 @@ let conv2d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (num_dims kernel = 4) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2094,7 +2101,7 @@ let conv2d_ ~out ?(padding=SAME) input kernel stride =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p3 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2118,7 +2125,7 @@ let conv2d_backward_input input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2131,14 +2138,14 @@ let conv2d_backward_input input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2160,7 +2167,7 @@ let conv2d_backward_input_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2173,14 +2180,14 @@ let conv2d_backward_input_ ~out input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2199,7 +2206,7 @@ let conv2d_backward_kernel input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2212,14 +2219,14 @@ let conv2d_backward_kernel input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2241,7 +2248,7 @@ let conv2d_backward_kernel_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2254,14 +2261,14 @@ let conv2d_backward_kernel_ ~out input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2284,7 +2291,7 @@ let conv3d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (num_dims kernel = 5) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2299,7 +2306,7 @@ let conv3d ?(padding=SAME) input kernel stride =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p3 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2326,7 +2333,7 @@ let conv3d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (num_dims kernel = 5) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2341,7 +2348,7 @@ let conv3d_ ~out ?(padding=SAME) input kernel stride =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p3 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2366,7 +2373,7 @@ let conv3d_backward_input input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2381,7 +2388,7 @@ let conv3d_backward_input input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -2389,7 +2396,7 @@ let conv3d_backward_input input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2412,7 +2419,7 @@ let conv3d_backward_input_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2427,7 +2434,7 @@ let conv3d_backward_input_ ~out input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -2435,7 +2442,7 @@ let conv3d_backward_input_ ~out input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2455,7 +2462,7 @@ let conv3d_backward_kernel input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2470,7 +2477,7 @@ let conv3d_backward_kernel input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -2478,7 +2485,7 @@ let conv3d_backward_kernel input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2501,7 +2508,7 @@ let conv3d_backward_kernel_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2516,7 +2523,7 @@ let conv3d_backward_kernel_ ~out input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -2524,7 +2531,7 @@ let conv3d_backward_kernel_ ~out input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2548,7 +2555,7 @@ let conv1d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (num_dims kernel = 3) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2560,7 +2567,7 @@ let conv1d ?(padding=SAME) input kernel stride =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p3 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
@@ -2578,7 +2585,7 @@ let conv1d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (num_dims kernel = 3) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2590,7 +2597,7 @@ let conv1d_ ~out ?(padding=SAME) input kernel stride =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p3 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
@@ -2606,7 +2613,7 @@ let conv1d_backward_input input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2619,7 +2626,7 @@ let conv1d_backward_input input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -2628,7 +2635,7 @@ let conv1d_backward_input input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -2646,7 +2653,7 @@ let conv1d_backward_input_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2659,7 +2666,7 @@ let conv1d_backward_input_ ~out input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -2668,7 +2675,7 @@ let conv1d_backward_input_ ~out input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -2686,7 +2693,7 @@ let conv1d_backward_kernel input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2699,7 +2706,7 @@ let conv1d_backward_kernel input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -2708,7 +2715,7 @@ let conv1d_backward_kernel input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -2726,7 +2733,7 @@ let conv1d_backward_kernel_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2739,7 +2746,7 @@ let conv1d_backward_kernel_ ~out input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -2748,7 +2755,7 @@ let conv1d_backward_kernel_ ~out input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -2772,7 +2779,7 @@ let dilated_conv2d ?(padding=SAME) input kernel stride rate =
   let p1 = (num_dims kernel = 4) in
   let p2 = (Array.length stride = 2) in
   let p3 = (Array.length rate = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2785,7 +2792,7 @@ let dilated_conv2d ?(padding=SAME) input kernel stride rate =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2815,7 +2822,7 @@ let dilated_conv2d_ ~out ?(padding=SAME) input kernel stride rate =
   let p1 = (num_dims kernel = 4) in
   let p2 = (Array.length stride = 2) in
   let p3 = (Array.length rate = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2828,7 +2835,7 @@ let dilated_conv2d_ ~out ?(padding=SAME) input kernel stride rate =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2857,7 +2864,7 @@ let dilated_conv2d_backward_input input kernel stride rate output' =
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
   let p4 = (Array.length rate = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2870,14 +2877,14 @@ let dilated_conv2d_backward_input input kernel stride rate output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p5 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p5 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p6 && p7) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2900,7 +2907,7 @@ let dilated_conv2d_backward_input_ ~out input kernel stride rate output' =
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
   let p4 = (Array.length rate = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2913,14 +2920,14 @@ let dilated_conv2d_backward_input_ ~out input kernel stride rate output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p5 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p5 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p6 && p7) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2940,7 +2947,7 @@ let dilated_conv2d_backward_kernel input kernel stride rate output' =
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
   let p4 = (Array.length rate = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2953,14 +2960,14 @@ let dilated_conv2d_backward_kernel input kernel stride rate output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p5 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p5 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p6 && p7) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2983,7 +2990,7 @@ let dilated_conv2d_backward_kernel_ ~out input kernel stride rate output' =
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
   let p4 = (Array.length rate = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2996,14 +3003,14 @@ let dilated_conv2d_backward_kernel_ ~out input kernel stride rate output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p5 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p5 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p6 && p7) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3028,7 +3035,7 @@ let dilated_conv3d ?(padding=SAME) input kernel stride rate =
   let p1 = (num_dims kernel = 5) in
   let p2 = (Array.length stride = 3) in
   let p3 = (Array.length rate = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3043,7 +3050,7 @@ let dilated_conv3d ?(padding=SAME) input kernel stride rate =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3080,7 +3087,7 @@ let dilated_conv3d_ ~out ?(padding=SAME) input kernel stride rate =
   let p1 = (num_dims kernel = 5) in
   let p2 = (Array.length stride = 3) in
   let p3 = (Array.length rate = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3095,7 +3102,7 @@ let dilated_conv3d_ ~out ?(padding=SAME) input kernel stride rate =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3131,7 +3138,7 @@ let dilated_conv3d_backward_input input kernel stride rate output' =
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
   let p4 = (Array.length rate = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3146,7 +3153,7 @@ let dilated_conv3d_backward_input input kernel stride rate output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p5 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p5 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3154,7 +3161,7 @@ let dilated_conv3d_backward_input input kernel stride rate output' =
   let output_dpts =  output_shp.(3) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p6 && p7) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3183,7 +3190,7 @@ let dilated_conv3d_backward_input_ ~out input kernel stride rate output' =
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
   let p4 = (Array.length rate = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3198,7 +3205,7 @@ let dilated_conv3d_backward_input_ ~out input kernel stride rate output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p5 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p5 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3206,7 +3213,7 @@ let dilated_conv3d_backward_input_ ~out input kernel stride rate output' =
   let output_dpts =  output_shp.(3) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p6 && p7) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3232,7 +3239,7 @@ let dilated_conv3d_backward_kernel input kernel stride rate output' =
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
   let p4 = (Array.length rate = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3247,7 +3254,7 @@ let dilated_conv3d_backward_kernel input kernel stride rate output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p5 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p5 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3255,7 +3262,7 @@ let dilated_conv3d_backward_kernel input kernel stride rate output' =
   let output_dpts =  output_shp.(3) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p6 && p7) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3284,7 +3291,7 @@ let dilated_conv3d_backward_kernel_ ~out input kernel stride rate output' =
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
   let p4 = (Array.length rate = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3299,7 +3306,7 @@ let dilated_conv3d_backward_kernel_ ~out input kernel stride rate output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p5 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p5 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3307,7 +3314,7 @@ let dilated_conv3d_backward_kernel_ ~out input kernel stride rate output' =
   let output_dpts =  output_shp.(3) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p6 && p7) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3337,7 +3344,7 @@ let dilated_conv1d ?(padding=SAME) input kernel stride rate =
   let p0 = (num_dims input = 3) in
   let p1 = (num_dims kernel = 3) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3349,7 +3356,7 @@ let dilated_conv1d ?(padding=SAME) input kernel stride rate =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p3 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
@@ -3367,7 +3374,7 @@ let dilated_conv1d_ ~out ?(padding=SAME) input kernel stride rate =
   let p0 = (num_dims input = 3) in
   let p1 = (num_dims kernel = 3) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3379,7 +3386,7 @@ let dilated_conv1d_ ~out ?(padding=SAME) input kernel stride rate =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p3 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
@@ -3395,7 +3402,7 @@ let dilated_conv1d_backward_input input kernel stride rate output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3408,7 +3415,7 @@ let dilated_conv1d_backward_input input kernel stride rate output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -3417,7 +3424,7 @@ let dilated_conv1d_backward_input input kernel stride rate output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -3435,7 +3442,7 @@ let dilated_conv1d_backward_input_ ~out input kernel stride rate output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3448,7 +3455,7 @@ let dilated_conv1d_backward_input_ ~out input kernel stride rate output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -3457,7 +3464,7 @@ let dilated_conv1d_backward_input_ ~out input kernel stride rate output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -3475,7 +3482,7 @@ let dilated_conv1d_backward_kernel input kernel stride rate output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3488,7 +3495,7 @@ let dilated_conv1d_backward_kernel input kernel stride rate output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -3497,7 +3504,7 @@ let dilated_conv1d_backward_kernel input kernel stride rate output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -3515,7 +3522,7 @@ let dilated_conv1d_backward_kernel_ ~out input kernel stride rate output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3528,7 +3535,7 @@ let dilated_conv1d_backward_kernel_ ~out input kernel stride rate output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -3537,7 +3544,7 @@ let dilated_conv1d_backward_kernel_ ~out input kernel stride rate output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -3559,7 +3566,7 @@ let transpose_conv2d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (num_dims kernel = 4) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3572,7 +3579,7 @@ let transpose_conv2d ?(padding=SAME) input kernel stride =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p3 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3596,7 +3603,7 @@ let transpose_conv2d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (num_dims kernel = 4) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3609,7 +3616,7 @@ let transpose_conv2d_ ~out ?(padding=SAME) input kernel stride =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p3 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3632,7 +3639,7 @@ let transpose_conv2d_backward_kernel input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3645,14 +3652,14 @@ let transpose_conv2d_backward_kernel input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3674,7 +3681,7 @@ let transpose_conv2d_backward_kernel_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3687,14 +3694,14 @@ let transpose_conv2d_backward_kernel_ ~out input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3713,7 +3720,7 @@ let transpose_conv2d_backward_input input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3726,14 +3733,14 @@ let transpose_conv2d_backward_input input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3756,7 +3763,7 @@ let transpose_conv2d_backward_input_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3769,14 +3776,14 @@ let transpose_conv2d_backward_input_ ~out input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3800,7 +3807,7 @@ let transpose_conv3d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (num_dims kernel = 5) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3815,7 +3822,7 @@ let transpose_conv3d ?(padding=SAME) input kernel stride =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p3 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3840,7 +3847,7 @@ let transpose_conv3d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (num_dims kernel = 5) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3855,7 +3862,7 @@ let transpose_conv3d_ ~out ?(padding=SAME) input kernel stride =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p3 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3879,7 +3886,7 @@ let transpose_conv3d_backward_input input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3894,7 +3901,7 @@ let transpose_conv3d_backward_input input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3902,7 +3909,7 @@ let transpose_conv3d_backward_input input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3926,7 +3933,7 @@ let transpose_conv3d_backward_input_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3941,7 +3948,7 @@ let transpose_conv3d_backward_input_ ~out input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3949,7 +3956,7 @@ let transpose_conv3d_backward_input_ ~out input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3970,7 +3977,7 @@ let transpose_conv3d_backward_kernel input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3985,7 +3992,7 @@ let transpose_conv3d_backward_kernel input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3993,7 +4000,7 @@ let transpose_conv3d_backward_kernel input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -4016,7 +4023,7 @@ let transpose_conv3d_backward_kernel_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4031,7 +4038,7 @@ let transpose_conv3d_backward_kernel_ ~out input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -4039,7 +4046,7 @@ let transpose_conv3d_backward_kernel_ ~out input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -4057,7 +4064,7 @@ let transpose_conv1d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (num_dims kernel = 3) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4069,7 +4076,7 @@ let transpose_conv1d ?(padding=SAME) input kernel stride =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p3 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
@@ -4087,7 +4094,7 @@ let transpose_conv1d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (num_dims kernel = 3) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4099,7 +4106,7 @@ let transpose_conv1d_ ~out ?(padding=SAME) input kernel stride =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p3 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p3 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
@@ -4115,7 +4122,7 @@ let transpose_conv1d_backward_input input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4128,7 +4135,7 @@ let transpose_conv1d_backward_input input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -4137,7 +4144,7 @@ let transpose_conv1d_backward_input input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -4155,7 +4162,7 @@ let transpose_conv1d_backward_input_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4168,7 +4175,7 @@ let transpose_conv1d_backward_input_ ~out input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -4177,7 +4184,7 @@ let transpose_conv1d_backward_input_ ~out input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -4195,7 +4202,7 @@ let transpose_conv1d_backward_kernel input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4208,7 +4215,7 @@ let transpose_conv1d_backward_kernel input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -4217,7 +4224,7 @@ let transpose_conv1d_backward_kernel input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -4235,7 +4242,7 @@ let transpose_conv1d_backward_kernel_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4248,7 +4255,7 @@ let transpose_conv1d_backward_kernel_ ~out input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -4257,7 +4264,7 @@ let transpose_conv1d_backward_kernel_ ~out input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -4279,7 +4286,7 @@ let max_pool2d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4314,7 +4321,7 @@ let max_pool2d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4351,7 +4358,7 @@ let max_pool1d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4376,7 +4383,7 @@ let max_pool1d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4398,7 +4405,7 @@ let avg_pool2d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4433,7 +4440,7 @@ let avg_pool2d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4465,7 +4472,7 @@ let avg_pool1d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4490,7 +4497,7 @@ let avg_pool1d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4517,7 +4524,7 @@ let max_pool3d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4555,7 +4562,7 @@ let max_pool3d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4590,7 +4597,7 @@ let avg_pool3d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4628,7 +4635,7 @@ let avg_pool3d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4663,7 +4670,7 @@ let max_pool2d_argmax ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4700,7 +4707,7 @@ let max_pool3d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4738,7 +4745,7 @@ let max_pool3d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4774,7 +4781,7 @@ let max_pool2d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4809,7 +4816,7 @@ let max_pool2d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4842,7 +4849,7 @@ let max_pool1d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4873,7 +4880,7 @@ let max_pool1d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4904,7 +4911,7 @@ let avg_pool3d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4942,7 +4949,7 @@ let avg_pool3d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4978,7 +4985,7 @@ let avg_pool2d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5013,7 +5020,7 @@ let avg_pool2d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5046,7 +5053,7 @@ let avg_pool1d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5077,7 +5084,7 @@ let avg_pool1d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5106,21 +5113,21 @@ let avg_pool1d_backward_ ~out padding input kernel stride output' =
 let upsampling2d input size =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length size = 2) in
-  Owl_exception.check (p0 && p1) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1) Owl_exception.CONV_INVALID_ARGUMENT;
   repeat input [|1; size.(0); size.(1); 1|]
 
 
 let upsampling2d_ ~out input size =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length size = 2) in
-  Owl_exception.check (p0 && p1) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1) Owl_exception.CONV_INVALID_ARGUMENT;
   repeat_ ~out input [|1; size.(0); size.(1); 1|]
 
 
 let upsampling2d_backward input size output =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length size = 2) in
-  Owl_exception.check (p0 && p1) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let _kind = kind input in
 
@@ -5138,7 +5145,7 @@ let upsampling2d_backward input size output =
   let output_rows = input_rows * row_scale in
   let p2 = (output_cols = output_shp.(1)) in
   let p3 = (output_rows = output_shp.(2)) in
-  Owl_exception.check (p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let input' = zeros _kind input_shp in
 
@@ -5154,7 +5161,7 @@ let upsampling2d_backward input size output =
 let upsampling2d_backward_ ~out input size output =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length size = 2) in
-  Owl_exception.check (p0 && p1) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p0 && p1) Owl_exception.CONV_INVALID_ARGUMENT;
 
   let _kind = kind input in
 
@@ -5172,7 +5179,7 @@ let upsampling2d_backward_ ~out input size output =
   let output_rows = input_rows * row_scale in
   let p2 = (output_cols = output_shp.(1)) in
   let p3 = (output_rows = output_shp.(2)) in
-  Owl_exception.check (p2 && p3) Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.check (p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
 
   _owl_spatial_upsampling_backward _kind
     out output
@@ -5204,7 +5211,9 @@ let _diff a x =
 let diff ?(axis=(-1)) ?(n=1) x =
   let d = num_dims x in
   let a = Owl_utils.adjust_index axis d in
-  Owl_exception.check (n < nth_dim x a) Owl_exception.INVALID_ARGUMENT;
+
+  let s = Printf.sprintf "n = %i, axis = %i" n axis in
+  Owl_exception.(check (n < nth_dim x a) (INVALID_ARGUMENT s));
 
   let y = ref x in
   for _i = 1 to n do
@@ -5288,7 +5297,8 @@ let modf x =
 
 let sub_ndarray parts x =
   let n = Array.fold_left (+) 0 parts in
-  Owl_exception.check (n = (shape x).(0)) Owl_exception.INVALID_ARGUMENT;
+  let s = Printf.sprintf "n = %i, (shape x).(0) = %i" (shape x).(0) n in
+  Owl_exception.(check (n = (shape x).(0)) (INVALID_ARGUMENT s));
 
   let m = Array.length parts in
   let ofs = ref (-parts.(0)) in
@@ -5307,7 +5317,9 @@ let split ?(axis=0) parts x =
   let a = Owl_utils.adjust_index axis _d in
   let p0 = (a < x_dim) in
   let p1 = (_d = x_shp.(a)) in
-  Owl_exception.check (p0 && p1) Owl_exception.INVALID_ARGUMENT;
+
+  let s = Printf.sprintf "parts = %s" (Owl_utils_array.to_string string_of_int parts) in
+  Owl_exception.(check (p0 && p1) (INVALID_ARGUMENT s));
 
   let _pos = ref 0 in
   let slices = Array.map (fun d ->
@@ -5321,7 +5333,8 @@ let split ?(axis=0) parts x =
 
 
 let split_vh parts x =
-  Owl_exception.check (num_dims x >= 2) Owl_exception.INVALID_ARGUMENT;
+  let s = Printf.sprintf "x dimension = %i" (num_dims x) in
+  Owl_exception.(check (num_dims x >= 2) (INVALID_ARGUMENT s));
   let parts_a0 = Array.map (fun p -> fst p.(0)) parts in
   Array.mapi (fun i part ->
     let parts_a1 = Array.map snd parts.(i) in
@@ -6196,7 +6209,7 @@ let cross_entropy' x y =
 
 let dropout_ ?out ?(rate=0.5) x =
   let p = (rate >= 0. && rate <= 1.) in
-  Owl_exception.check p Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.(check p (INVALID_PROBABILITY rate));
   let out = match out with Some o -> o | None -> x in
   if not (out == x) then copy_ ~out x;
   _owl_dropout (kind x) (numel x) out rate 0
@@ -6279,7 +6292,8 @@ let same_area r1 r2 = r1 = r2
 
 let copy_area_to x1 r1 x2 r2 =
   let p = equal_area r1 r2 in
-  Owl_exception.check p Owl_exception.INVALID_ARGUMENT;
+  let s = "two areas are not equal." in
+  Owl_exception.(check p (INVALID_ARGUMENT s));
 
   for i = 0 to r1.c - r1.a do
     for j = 0 to r1.d - r1.b do
@@ -6556,7 +6570,9 @@ let slide ?(axis=(-1)) ?(ofs=0) ?(step=1) ~window x =
   let sx = shape x in
   let p0 = (a < d) in
   let p1 = (ofs + window <= sx.(a)) in
-  Owl_exception.check (p0 && p1) Owl_exception.INVALID_ARGUMENT;
+
+  let s = Printf.sprintf "axis = %i, ofs = %i, step = %i, window = %i" axis ofs step window in
+  Owl_exception.(check (p0 && p1) (INVALID_ARGUMENT s));
 
   let _stride = strides x in
   let _slicez = slice_size x in
@@ -6598,7 +6614,9 @@ let contract1 index_pairs x =
   let d = num_dims x in
   let p0 = (d > 1) in
   let p1 = (_contract1_check_indices index_pairs x) in
-  Owl_exception.check (p0 && p1) Owl_exception.INVALID_ARGUMENT;
+
+  let s = Printf.sprintf "num_dims x = %i" d in
+  Owl_exception.(check (p0 && p1) (INVALID_ARGUMENT s));
 
   let permut_1 = Owl_utils.Array.of_tuples index_pairs in
   let permut_0 = Owl_utils.Array.(complement (range 0 (d - 1)) permut_1) in
@@ -6637,7 +6655,7 @@ let _contract2_check_indices idx x y =
 
 let contract2 index_pairs x y =
   let p0 = (_contract2_check_indices index_pairs x y) in
-  Owl_exception.check p0 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.(check p0 (INVALID_ARGUMENT "invalid"));
 
   let dx = num_dims x in
   let permut_x1 = Owl_utils.Array.map fst index_pairs in
@@ -6658,7 +6676,7 @@ let contract2 index_pairs x y =
   let inner_nx = Array.length permut_x1 in
   let inner_ny = Array.length permut_y1 in
   let p1 = (inner_nx = inner_ny) in
-  Owl_exception.check p1 Owl_exception.INVALID_ARGUMENT;
+  Owl_exception.(check p1 (INVALID_ARGUMENT "invalid"));
 
   let shpz_x = Array.sub shpx 0 outer_nx in
   let shpz_y = Array.sub shpy 0 outer_ny in

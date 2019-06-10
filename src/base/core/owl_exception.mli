@@ -31,6 +31,9 @@ val pp_exception : Format.formatter -> exn -> unit [@@ocaml.toplevel_printer]
 
 (** {6 Exception definition} *)
 
+exception CONV_INVALID_ARGUMENT
+(** Input arugments of convolution operations are invalid. *)
+
 exception NOT_IMPLEMENTED of string
 (** Exception of not implemented yet. *)
 
@@ -49,7 +52,7 @@ exception EMPTY_ARRAY
 exception TEST_FAIL
 (** Unit Test fails. *)
 
-exception INVALID_ARGUMENT
+exception INVALID_ARGUMENT of string
 (** Input arugments are invalid. *)
 
 exception INVALID_PROBABILITY of float

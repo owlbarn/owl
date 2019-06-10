@@ -6,6 +6,8 @@
 
 (* Exception definition *)
 
+exception CONV_INVALID_ARGUMENT
+
 exception NOT_IMPLEMENTED of string
 
 exception NOT_SUPPORTED
@@ -18,7 +20,7 @@ exception EMPTY_ARRAY
 
 exception TEST_FAIL
 
-exception INVALID_ARGUMENT
+exception INVALID_ARGUMENT of string
 
 exception INVALID_PROBABILITY of float
 
@@ -67,6 +69,11 @@ let different_size m n =
   Printf.sprintf "%s %i is not equal to %i." prefix m n
 
 
+let invalid_argument s =
+  let prefix = "Owl_exception.INVALID_ARGUMENT:" in
+  Printf.sprintf "%s %s" prefix s
+
+
 let invalid_probability p =
   let prefix = "Owl_exception.INVALID_PROBABILITY:" in
   Printf.sprintf "%s %g is not a valid probability, it should be within [0,1]." prefix p
@@ -97,6 +104,7 @@ let not_square x =
 let to_string = function
   | DIFFERENT_SHAPE (sx, sy)  -> different_shape sx sy
   | DIFFERENT_SIZE (m, n)     -> different_size m n
+  | INVALID_ARGUMENT s        -> invalid_argument s
   | INVALID_PROBABILITY p     -> invalid_probability p
   | LINALG_MATRIX_DOT_SHAPE s -> linalg_matrix_dot_shape s
   | NON_NEGATIVE_INT i        -> non_negative_int i
