@@ -295,7 +295,8 @@ let _binary_exp a b m f id =
 let mulmod a b m =
   Owl_exception.(check (a >= 0) (NON_NEGATIVE_INT a));
   Owl_exception.(check (b >= 0) (NON_NEGATIVE_INT b));
-  assert (m >= 1);
+  let s = Printf.sprintf "m = %i but it should be >= 1." m in
+  Owl_exception.(check (m >= 1) (INVALID_ARGUMENT s));
 
   let a = a mod m in
   let b = b mod m in
@@ -317,14 +318,17 @@ let mulmod a b m =
 let powmod a b m =
   Owl_exception.(check (a >= 0) (NON_NEGATIVE_INT a));
   Owl_exception.(check (b >= 0) (NON_NEGATIVE_INT b));
-  assert (m >= 1);
+  let s = Printf.sprintf "m = %i but it should be >= 1." m in
+  Owl_exception.(check (m >= 1) (INVALID_ARGUMENT s));
 
   if m = 1 && b = 0 then 0
   else _binary_exp b (a mod m) m mulmod 1
 
 
 let fermat_fact x =
-  assert (is_odd x = true);
+  let s = "x should be an odd number" in
+  Owl_exception.(check (is_odd x = true) (INVALID_ARGUMENT s));
+
   let x = float_of_int x in
   let y = ref (ceil (sqrt x)) in
   let z = ref (!y *. !y -. x) in
