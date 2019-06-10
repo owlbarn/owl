@@ -124,7 +124,7 @@ let tril ?(k=0) x =
 let symmetric ?(upper=true) x =
   let _kind = kind x in
   let m, n = shape x in
-  assert (m = n);
+  Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));
   let y = copy x in
 
   let ofs = ref 0 in
@@ -165,7 +165,7 @@ let bidiagonal ?(upper=true) dv ev =
 
 let hermitian ?(upper=true) x =
   let m, n = shape x in
-  assert (m = n);
+  Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));
 
   let y = copy x in
   let _y = flatten y |> Bigarray.array1_of_genarray in
@@ -742,7 +742,12 @@ let hadamard k n =
 
 
 let magic k n =
-  assert (n >= 3);
+  let error () =
+    let s = Printf.sprintf "magic requires n >= 3, whereas input n = %i" n in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (n >= 3) error;
+
   let a0 = Owl_const.zero k in
   let a1 = Owl_const.one k in
 
