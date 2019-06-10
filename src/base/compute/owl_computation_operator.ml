@@ -34,7 +34,7 @@ module Make
   let ones shape =
     make_node ~shape:[|Some shape|] (Ones shape) |> node_to_arr
 
-  let eye _n = raise Owl_exception.NOT_IMPLEMENTED 
+  let eye _n = raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.eye")
 
   let create shape v =
     make_then_connect ~shape:[|Some shape|] (Create shape) [|elt_to_node v|] |> node_to_arr
@@ -86,7 +86,7 @@ module Make
   let init shape f =
     make_node ~shape:[|Some shape|] (Init (shape, f)) |> node_to_arr
 
-  let init_nd _shape _f = raise Owl_exception.NOT_IMPLEMENTED
+  let init_nd _shape _f = raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.init_nd")
 
   let shape x = arr_to_node x |> node_shape
 
@@ -115,7 +115,8 @@ module Make
   let reshape x shape =
     let n_old = numel x in
     let n_new = Array.fold_left ( * ) 1 shape in
-    assert (n_old = n_new);
+    let exn = Owl_exception.DIFFERENT_SIZE (n_old, n_new) in
+    Owl_exception.check (n_old = n_new) exn;
     make_then_connect (Reshape shape) [|arr_to_node x|] |> node_to_arr
 
   let reverse x =
@@ -447,12 +448,14 @@ module Make
 
   let row_num x =
     let s = shape x in
-    assert (Array.length s = 2);
+    let exn = Owl_exception.NOT_MATRIX s in
+    Owl_exception.check (Array.length s = 2) exn;
     s.(0)
 
   let col_num x =
     let s = shape x in
-    assert (Array.length s = 2);
+    let exn = Owl_exception.NOT_MATRIX s in
+    Owl_exception.check (Array.length s = 2) exn;
     s.(1)
 
   let row x _i = make_then_connect Row [|arr_to_node x|] |> node_to_arr
@@ -465,29 +468,49 @@ module Make
 
   let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
 
-  let logdet _x = raise Owl_exception.NOT_IMPLEMENTED
+  let logdet _x =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.logdet")
 
-  let chol ?(upper=true) _x = upper |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+  let chol ?(upper=true) _x =
+    upper |> ignore;
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.chol")
 
-  let svd ?(thin=true) _x = thin |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+  let svd ?(thin=true) _x =
+    thin |> ignore;
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.svd")
 
-  let qr _x = raise Owl_exception.NOT_IMPLEMENTED
+  let qr _x =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.qr")
 
-  let lq _x = raise Owl_exception.NOT_IMPLEMENTED
+  let lq _x =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.lq")
 
-  let lyapunov _a _q = raise Owl_exception.NOT_IMPLEMENTED
+  let lyapunov _a _q =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.lyapunov")
 
-  let discrete_lyapunov ?(solver=`default) _a _q = solver |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+  let discrete_lyapunov ?(solver=`default) _a _q =
+    solver |> ignore;
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.discrete_lyapunov")
 
-  let linsolve ?trans ?(typ=`n) _a _b = trans |> ignore; typ |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+  let linsolve ?trans ?(typ=`n) _a _b =
+    trans |> ignore; typ |> ignore;
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.linsolve")
 
-  let diag ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+  let diag ?k _x =
+    k |> ignore;
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.diag")
 
-  let diagm ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+  let diagm ?k _x =
+    k |> ignore;
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.diagm")
 
-  let tril ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+  let tril ?k _x =
+    k |> ignore;
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.tril")
 
-  let triu ?k _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+  let triu ?k _x =
+    k |> ignore;
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.triu")
 
   let trace x = make_then_connect Trace [|arr_to_node x|] |> node_to_elt
 
@@ -518,9 +541,11 @@ module Make
     let parents = Array.map elt_to_node x in
     make_then_connect (OfArray shape) parents |> node_to_arr
 
-  let of_cols _xs = raise Owl_exception.NOT_IMPLEMENTED
+  let of_cols _xs =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.of_cols")
 
-  let to_cols _xs = raise Owl_exception.NOT_IMPLEMENTED
+  let to_cols _xs =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.to_cols")
 
   let of_arrays x =
     let shape = [| Array.length x; Array.length x.(0) |] in
@@ -530,7 +555,8 @@ module Make
     in
     make_then_connect (OfArray shape) parents |> node_to_arr
 
-  let to_arrays _x = raise Owl_exception.NOT_IMPLEMENTED
+  let to_arrays _x =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.to_arrays")
 
 
   (** Scalar maths *)

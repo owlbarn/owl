@@ -363,7 +363,8 @@ let get_cols x idx = Array.map (get_col x) idx
 
 
 (* TODO *)
-let _get_row_assoc _x _idx = raise Owl_exception.NOT_IMPLEMENTED
+let _get_row_assoc _x _idx =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_dataframe._get_row_assoc")
 
 
 let get_col_by_name x name =
@@ -555,7 +556,8 @@ let get_slice slice x =
 
 
 (* TODO *)
-let _set_slice _x = raise Owl_exception.NOT_IMPLEMENTED
+let _set_slice _x =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_dataframe._set_slice")
 
 
 let get_slice_by_name slice x =
@@ -578,7 +580,8 @@ let get_slice_by_name slice x =
 
 
 (* TODO *)
-let _set_slice_by_name _x = raise Owl_exception.NOT_IMPLEMENTED
+let _set_slice_by_name _x =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_dataframe._set_slice_by_name")
 
 
 let head n x =
@@ -806,7 +809,8 @@ let ( .$( ) ) x slice = get_slice_by_name slice x
 
 
 (* TODO *)
-let [@warning "-32"] ( .$( )<- ) _x _idx _a = raise Owl_exception.NOT_IMPLEMENTED
+let [@warning "-32"] ( .$( )<- ) _x _idx _a =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_dataframe.( .$( )<- )")
 
 
 

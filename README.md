@@ -8,6 +8,7 @@ Helsinki-based software consulting company.
 
 Visit the project website at [ocaml.xyz](http://ocaml.xyz)
 
+
 ## Optional features
 
 You can enable optional features by setting the following variables to `1`
@@ -32,6 +33,10 @@ before compilation:
   OWL_AEOS_CFLAGS="-g -O3 -Ofast -march=native -funroll-loops -ffast-math -DSFMT_MEXP=19937 -fno-strict-aliasing"
   ```
 
+- `OWL_DISABLE_LAPACKE_LINKING_FLAG=1` disables the `-llapacke` flag in the
+  linking options. This is useful when you have lapacke installed on
+  non-standard localtion.
+
 If you are not using `opam`, you should run `make clean` before recompiling
 the library after having changed any of those environment variables.
 
@@ -39,4 +44,3 @@ For examples of use of this feature, you can refer to the `Docker.ubuntu`
 and `Docker.ubuntu.arm` docker files, or to the snippet in
 https://github.com/owlbarn/owl/issues/394#issuecomment-471364916
 (which also shows how to use it within `esy`).
-

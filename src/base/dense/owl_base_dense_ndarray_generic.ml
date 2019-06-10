@@ -164,7 +164,7 @@ let ones kind dims = create kind dims (Owl_const.one kind)
 let ones_ ~out = Genarray.(fill out (Owl_const.one (kind out)))
 
 
-let eye _kind _n = raise Owl_exception.NOT_IMPLEMENTED
+let eye _kind _n = raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.eye")
 
 
 let shape x = Genarray.dims x
@@ -953,16 +953,16 @@ let fix_ ?out x =
   map_ _func out
 
 
-let erf _x = raise Owl_exception.NOT_IMPLEMENTED
+let erf _x = raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.erf")
 
 
-let erf_ ?_out _x = raise Owl_exception.NOT_IMPLEMENTED
+let erf_ ?_out _x = raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.erf_")
 
 
-let erfc _x = raise Owl_exception.NOT_IMPLEMENTED
+let erfc _x = raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.erfc")
 
 
-let erfc_ ?_out _x = raise Owl_exception.NOT_IMPLEMENTED
+let erfc_ ?_out _x = raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.erfc_")
 
 
 let sqr x =
@@ -1560,7 +1560,9 @@ let add_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -1576,7 +1578,9 @@ let sub_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -1592,7 +1596,9 @@ let mul_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -1608,7 +1614,9 @@ let div_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -1621,7 +1629,9 @@ let atan2_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op x y (Scalar.atan2)
   |> ignore
 
@@ -1634,7 +1644,9 @@ let hypot_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op x y (Scalar.hypot)
   |> ignore
 
@@ -1652,7 +1664,9 @@ let pow_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -1665,7 +1679,9 @@ let fmod_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op x y (Scalar.fmod)
   |> ignore
 
@@ -1681,7 +1697,9 @@ let min2_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -1697,7 +1715,9 @@ let max2_ ?out x y =
   let sx = shape x in
   let sy = shape y in
   let so = Owl_utils_infer_shape.broadcast1 sx sy in
-  assert (shape out = so);
+  let st = shape out in
+  let exn = Owl_exception.DIFFERENT_SHAPE (so, st) in
+  Owl_exception.check (so = st) exn;
   _broadcasted_op ~out x y _op
   |> ignore
 
@@ -4107,7 +4127,7 @@ let to_rows varr =
   let m = dims.(0) in
   (Array.init m (fun i -> (Genarray.slice_left varr [|i|])))
 
-let to_cols _harr = raise Owl_exception.NOT_IMPLEMENTED
+let to_cols _harr = raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.to_cols")
 
 let of_rows rows =
   let m = Array.length rows in
@@ -4121,7 +4141,7 @@ let of_rows rows =
     varr
   end
 
-let of_cols _cols = raise Owl_exception.NOT_IMPLEMENTED
+let of_cols _cols = raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.of_cols")
 
 let of_arrays kind arrays =
   let m = Array.length arrays in
@@ -4199,29 +4219,49 @@ let inv varr =
       result_varr
     end
 
-let logdet _x = raise Owl_exception.NOT_IMPLEMENTED
+let logdet _x =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.logdet")
 
-let qr _x = raise Owl_exception.NOT_IMPLEMENTED
+let qr _x =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.qr")
 
-let lq _x = raise Owl_exception.NOT_IMPLEMENTED
+let lq _x =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.lq")
 
-let chol ?(upper=true) _x = upper |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+let chol ?(upper=true) _x =
+  upper |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.chol")
 
-let svd ?(thin=true) _x = thin |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+let svd ?(thin=true) _x =
+  thin |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.svd")
 
-let lyapunov _a _q = raise Owl_exception.NOT_IMPLEMENTED
+let lyapunov _a _q =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.lyapunov")
 
-let discrete_lyapunov ?(solver=`default) _a _q = solver |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+let discrete_lyapunov ?(solver=`default) _a _q =
+  solver |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.discrete_lyapunov")
 
-let linsolve ?(trans=false) ?(typ=`n) _a _b = trans |> ignore; typ |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+let linsolve ?(trans=false) ?(typ=`n) _a _b =
+  trans |> ignore; typ |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.linsolve")
 
-let diag ?(k=0) _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+let diag ?(k=0) _x =
+  k |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.diag")
 
-let diagm ?(k=0) _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+let diagm ?(k=0) _x =
+  k |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.diagm")
 
-let tril ?(k=0) _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+let tril ?(k=0) _x =
+  k |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.tril")
 
-let triu ?(k=0) _x = k |> ignore; raise Owl_exception.NOT_IMPLEMENTED
+let triu ?(k=0) _x =
+  k |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.triu")
 
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
 let load _k f = Owl_io.marshal_from_file f

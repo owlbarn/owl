@@ -138,7 +138,8 @@ let head n fname =
 
 
 (* TODO *)
-let _tail _n _fname = raise Owl_exception.NOT_IMPLEMENTED
+let _tail _n _fname =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_io._tail")
 
 
 let read_csv ?(sep='\t') fname =

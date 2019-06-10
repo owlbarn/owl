@@ -231,7 +231,8 @@ module Make
 
   let node_shape x =
     let x_shape = (attr x).shape in
-    assert (Array.length x_shape > 0);
+    let p = (Array.length x_shape > 0) in
+    Owl_exception.check p Owl_exception.INVALID_ARGUMENT;
     match x_shape.(0) with
     | Some s -> s
     | None   -> failwith "Owl_computation_symbol:node_shape"
@@ -258,7 +259,8 @@ module Make
 
 
   let shape_to_str shp =
-    assert (Array.length shp > 0);
+    let p = (Array.length shp > 0) in
+    Owl_exception.check p Owl_exception.INVALID_ARGUMENT;
     let s = match shp.(0) with
       | Some s -> Owl_utils_array.to_string string_of_int s
       | None   -> "unknown"
@@ -527,7 +529,7 @@ module Make
     let valen = Array.length value in
     if valen = 0 then (
       Owl_log.error "not evaluated: %s" (arr_to_node x |> node_to_str);
-      assert (valen > 0)
+      Owl_exception.check (valen > 0) Owl_exception.INVALID_ARGUMENT;
     );
     value_to_arr value.(0)
 
@@ -540,7 +542,7 @@ module Make
     let valen = Array.length value in
     if valen = 0 then (
       Owl_log.error "not evaluated: %s" (elt_to_node x |> node_to_str);
-      assert (valen > 0)
+      Owl_exception.check (valen > 0) Owl_exception.INVALID_ARGUMENT;
     );
     value_to_elt value.(0)
 
