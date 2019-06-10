@@ -19,6 +19,19 @@ Returns:
   * ``unit``
  *)
 
+val verify : bool -> (unit -> exn) -> unit
+(**
+``verify p f`` calls the function ``f`` which further raises an exception
+if the predicate ``p`` is ``false``, otherwise returns ``unit``.
+
+Parameters:
+  * ``p``: predicate to check.
+  * ``f``: function to raise the exception.
+
+Returns:
+  * ``unit``
+ *)
+
 val to_string : exn -> string
 (**
 ``to_string e`` converts an exception into a string containing more

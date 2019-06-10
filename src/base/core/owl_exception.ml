@@ -57,6 +57,10 @@ let check p e =
   if p = false then raise e
 
 
+let verify p f =
+  if p = false then raise (f ())
+
+
 let different_shape sx sy =
   let prefix = "Owl_exception.DIFFERENT_SHAPE:" in
   let s0 = Array.to_list sx |> List.map string_of_int |> String.concat "," in
