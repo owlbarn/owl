@@ -8,7 +8,13 @@
 
 let polint xs ys x =
   let n = Array.length xs in
-  assert Array.(length ys = n);
+  let m = Array.length ys in
+  let error () =
+    let s = Printf.sprintf "polint requires that xs and ys have the same length, but xs length is %i whereas ys length is %i" n m in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (m = n) error;
+
   let c = Array.copy ys in
   let d = Array.copy ys in
   let ns = ref 0 in
@@ -53,7 +59,13 @@ let polint xs ys x =
 (* TODO: not tested yet *)
 let ratint xs ys x =
   let n = Array.length xs in
-  assert Array.(length ys = n);
+  let m = Array.length ys in
+  let error () =
+    let s = Printf.sprintf "ratint requires that xs and ys have the same length, but xs length is %i whereas ys length is %i" n m in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (m = n) error;
+
   let c = Array.copy ys in
   let d = Array.copy ys in
 

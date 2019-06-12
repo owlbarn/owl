@@ -293,9 +293,12 @@ let _binary_exp a b m f id =
 
 
 let mulmod a b m =
-  Owl_exception.(check (a >= 0) (NON_NEGATIVE_INT a));
-  Owl_exception.(check (b >= 0) (NON_NEGATIVE_INT b));
-  assert (m >= 1);
+  let error () =
+    let s = Printf.sprintf "mulmod requires a >= 0, b >= 0, m >= 1; however the inputs are a = %i, b = %i, m = %i" a b m in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  let predicate = (a >= 0) && (b >= 0) && (m >= 1) in
+  Owl_exception.verify predicate error;
 
   let a = a mod m in
   let b = b mod m in
@@ -315,16 +318,21 @@ let mulmod a b m =
 
 
 let powmod a b m =
-  Owl_exception.(check (a >= 0) (NON_NEGATIVE_INT a));
-  Owl_exception.(check (b >= 0) (NON_NEGATIVE_INT b));
-  assert (m >= 1);
+  let error () =
+    let s = Printf.sprintf "powmod requires a >= 0, b >= 0, m >= 1; however the inputs are a = %i, b = %i, m = %i" a b m in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  let predicate = (a >= 0) && (b >= 0) && (m >= 1) in
+  Owl_exception.verify predicate error;
 
   if m = 1 && b = 0 then 0
   else _binary_exp b (a mod m) m mulmod 1
 
 
 let fermat_fact x =
-  assert (is_odd x = true);
+  let s = "the input of fermat_fact should be an odd number" in
+  Owl_exception.(check (is_odd x = true) (INVALID_ARGUMENT s));
+
   let x = float_of_int x in
   let y = ref (ceil (sqrt x)) in
   let z = ref (!y *. !y -. x) in

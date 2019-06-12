@@ -19,6 +19,19 @@ Returns:
   * ``unit``
  *)
 
+val verify : bool -> (unit -> exn) -> unit
+(**
+``verify p f`` calls the function ``f`` which further raises an exception
+if the predicate ``p`` is ``false``, otherwise returns ``unit``.
+
+Parameters:
+  * ``p``: predicate to check.
+  * ``f``: function to raise the exception.
+
+Returns:
+  * ``unit``
+ *)
+
 val to_string : exn -> string
 (**
 ``to_string e`` converts an exception into a string containing more
@@ -30,6 +43,9 @@ val pp_exception : Format.formatter -> exn -> unit [@@ocaml.toplevel_printer]
 
 
 (** {6 Exception definition} *)
+
+exception CONV_INVALID_ARGUMENT
+(** Input arugments of convolution operations are invalid. *)
 
 exception NOT_IMPLEMENTED of string
 (** Exception of not implemented yet. *)
@@ -49,7 +65,7 @@ exception EMPTY_ARRAY
 exception TEST_FAIL
 (** Unit Test fails. *)
 
-exception INVALID_ARGUMENT
+exception INVALID_ARGUMENT of string
 (** Input arugments are invalid. *)
 
 exception INVALID_PROBABILITY of float
