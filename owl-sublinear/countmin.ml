@@ -38,9 +38,7 @@ module Countmin_table_sig = struct
   end
 end
 
-
-(* Functor to make the CountMin sketch using different underlying tables *)
-
+(* Functor to make the CountMin sketch using a specified underlying table *)
 module Make (T : Countmin_table_sig.Sig) = struct
   (* the type of sketches *)
   type sketch = 
@@ -79,16 +77,15 @@ module Make (T : Countmin_table_sig.Sig) = struct
   (* get the current estimate of the count of x in sketch s *)
   let count s x = 
     let foldfn prv (i, ai, bi) =
-      let cur = T.get i ((hash31 x ai bi) mod s.w) s.tbl in
-      min cur prv in
+      T.get i ((hash31 x ai bi) mod s.w) s.tbl |> min prv in
     Array.fold_left foldfn max_int s.hash_fns
 end
 
 module Countmin_native = Make(Countmin_table_sig.Native_table)
 module Countmin_owl = Make(Countmin_table_sig.Owl_table)
 
-(* simple test - add a bunch of elements to the sketch then count them *)
-let testfn eps del =
+(* simple test - add a bunch of elements with skewed distribution to the sketch then count them *)
+let simple_test_countmin eps del =
   let module CM = Countmin_native in
   let s = CM.init eps del in
   for x = 1 to 30 do
@@ -100,3 +97,31 @@ let testfn eps del =
   for x = 1 to 30 do
     CM.count s x |> Printf.printf "count of %2d : %5d \n" x
   done
+
+(* Test the Countmin sketch by putting n samples from the function distr
+ * into a sketch and into the hashtable-based naive frequency counter, then
+ * comparing their outputs *)
+let test_countmin_hashtbl distr eps del n =
+  let module CM = Countmin_native in 
+  let ht_count t x = 
+    match Hashtbl.find_opt t x with
+    | Some c -> c
+    | None -> 0 in
+  let ht_incr t x = Hashtbl.replace t x ((ht_count t x) + 1) in
+  let s = CM.init eps del in
+  let t = Hashtbl.create n in
+  for i = 1 to n do
+    let v = distr () in
+    CM.incr s v ; ht_incr t v
+  done;
+  let foldfn v ct lst = (v, ct, CM.count s v) :: lst in
+  let outputs = Hashtbl.fold foldfn t [] |> List.sort (fun (a,_,_) (b,_,_) -> a - b) in
+  let diffs = List.map (fun (_, tct, sct) -> (float_of_int (sct - tct)) /. (float_of_int tct)) outputs
+    |> Array.of_list in
+  let diffs_mat = 
+    Owl.Mat.init_2d (Array.length diffs) 1 (fun i _ -> diffs.(i)) in
+  let open Owl_plplot in
+  let h = Plot.create "diffs.png" in
+  Plot.histogram ~h ~bin:20 (diffs_mat) ;
+  Plot.output h ;
+  outputs, diffs
