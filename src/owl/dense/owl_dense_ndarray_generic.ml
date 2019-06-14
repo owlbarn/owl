@@ -2702,7 +2702,7 @@ let conv3d_backward_input_ ~out input kernel stride output' =
     let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
     let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
     let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
-    let s8 = Printf.sprintf "conv3d_backward_input: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    let s8 = Printf.sprintf "conv3d_backward_input_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
     Owl_exception.INVALID_ARGUMENT s8
   in
   Owl_exception.verify (p5 && p6) error;
@@ -4492,7 +4492,7 @@ let dilated_conv1d_backward_kernel_ ~out input kernel stride rate output' =
     let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
     let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
     let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
-    let s4 = Printf.sprintf "dilated_conv1d_backward_kernel: %s; %s; %s; %s." s0 s1 s2 s3 in
+    let s4 = Printf.sprintf "dilated_conv1d_backward_kernel_: %s; %s; %s; %s." s0 s1 s2 s3 in
     Owl_exception.INVALID_ARGUMENT s4
   in
   Owl_exception.verify (p0 && p1 && p2 && p3) error;
@@ -5348,7 +5348,7 @@ let transpose_conv3d_backward_kernel_ ~out input kernel stride output' =
     let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
     let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
     let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
-    let s5 = Printf.sprintf "transpose_conv3d_backward_kernel: %s, %s, %s." s1 s3 s4 in
+    let s5 = Printf.sprintf "transpose_conv3d_backward_kernel_: %s, %s, %s." s1 s3 s4 in
     Owl_exception.INVALID_ARGUMENT s5
   in
   Owl_exception.verify p4 error;
@@ -6862,8 +6862,8 @@ let upsampling2d_backward input size output =
   let error () =
     let s1 = Owl_utils_array.to_string string_of_int output_shp in
     let s2 = Printf.sprintf "output shape is [%s]" s1 in
-    let s3 = Printf.sprintf "scaled output cols is %i; should be equal to the 2nd dimension of output shape" output_cols in
-    let s4 = Printf.sprintf "scaled output rows is %i; should be equal to the 3rd dimension of output shape" output_rows in
+    let s3 = Printf.sprintf "scaled output cols is %i, should be equal to the 2nd dimension of output shape" output_cols in
+    let s4 = Printf.sprintf "scaled output rows is %i, should be equal to the 3rd dimension of output shape" output_rows in
     let s5 = Printf.sprintf "upsampling2d_backward: %s; %s; %s." s2 s3 s4 in
     Owl_exception.INVALID_ARGUMENT s5
   in
@@ -6912,8 +6912,8 @@ let upsampling2d_backward_ ~out input size output =
   let error () =
     let s1 = Owl_utils_array.to_string string_of_int output_shp in
     let s2 = Printf.sprintf "output shape is [%s]" s1 in
-    let s3 = Printf.sprintf "scaled output cols is %i; should be equal to the 2nd dimension of output shape" output_cols in
-    let s4 = Printf.sprintf "scaled output rows is %i; should be equal to the 3rd dimension of output shape" output_rows in
+    let s3 = Printf.sprintf "scaled output cols is %i, should be equal to the 2nd dimension of output shape" output_cols in
+    let s4 = Printf.sprintf "scaled output rows is %i, should be equal to the 3rd dimension of output shape" output_rows in
     let s5 = Printf.sprintf "upsampling2d_backward_: %s; %s; %s." s2 s3 s4 in
     Owl_exception.INVALID_ARGUMENT s5
   in
