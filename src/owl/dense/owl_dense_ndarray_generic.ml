@@ -5776,7 +5776,15 @@ let max_pool2d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool2d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5811,7 +5819,15 @@ let max_pool2d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool2d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5848,7 +5864,15 @@ let max_pool1d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool1d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5873,7 +5897,15 @@ let max_pool1d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool1d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5895,7 +5927,15 @@ let avg_pool2d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool2d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5930,7 +5970,15 @@ let avg_pool2d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool2d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5962,7 +6010,15 @@ let avg_pool1d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool1d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5987,7 +6043,15 @@ let avg_pool1d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool1d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6014,7 +6078,15 @@ let max_pool3d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool3d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6052,7 +6124,15 @@ let max_pool3d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool3d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6087,7 +6167,15 @@ let avg_pool3d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool3d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6125,7 +6213,15 @@ let avg_pool3d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool3d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6160,7 +6256,15 @@ let max_pool2d_argmax ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool2d_argmax: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6197,7 +6301,15 @@ let max_pool3d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool3d_backward: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6235,7 +6347,15 @@ let max_pool3d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool3d_backward_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6271,7 +6391,15 @@ let max_pool2d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool2d_backward: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6306,7 +6434,15 @@ let max_pool2d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool2d_backward_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6339,7 +6475,15 @@ let max_pool1d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool1d_backward: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6370,7 +6514,15 @@ let max_pool1d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool1d_backward_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6401,7 +6553,15 @@ let avg_pool3d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool3d_backward: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6439,7 +6599,15 @@ let avg_pool3d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool3d_backward_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6475,7 +6643,15 @@ let avg_pool2d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool2d_backward: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6510,7 +6686,15 @@ let avg_pool2d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool2d_backward_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6543,7 +6727,15 @@ let avg_pool1d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool1d_backward: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6574,7 +6766,15 @@ let avg_pool1d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool1d_backward_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -6603,21 +6803,44 @@ let avg_pool1d_backward_ ~out padding input kernel stride output' =
 let upsampling2d input size =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length size = 2) in
-  Owl_exception.check (p0 && p1) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "size dimension = %i (should be 2)" (Array.length size) in
+    let s2 = Printf.sprintf "upsampling2d: %s; %s." s0 s1 in
+    Owl_exception.INVALID_ARGUMENT s2
+  in
+  Owl_exception.verify (p0 && p1) error;
+
   repeat input [|1; size.(0); size.(1); 1|]
 
 
 let upsampling2d_ ~out input size =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length size = 2) in
-  Owl_exception.check (p0 && p1) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "size dimension = %i (should be 2)" (Array.length size) in
+    let s2 = Printf.sprintf "upsampling2d_: %s; %s." s0 s1 in
+    Owl_exception.INVALID_ARGUMENT s2
+  in
+  Owl_exception.verify (p0 && p1) error;
+
   repeat_ ~out input [|1; size.(0); size.(1); 1|]
 
 
 let upsampling2d_backward input size output =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length size = 2) in
-  Owl_exception.check (p0 && p1) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "size dimension = %i (should be 2)" (Array.length size) in
+    let s2 = Printf.sprintf "upsampling2d_backward: %s; %s." s0 s1 in
+    Owl_exception.INVALID_ARGUMENT s2
+  in
+  Owl_exception.verify (p0 && p1) error;
 
   let _kind = kind input in
 
@@ -6635,7 +6858,16 @@ let upsampling2d_backward input size output =
   let output_rows = input_rows * row_scale in
   let p2 = (output_cols = output_shp.(1)) in
   let p3 = (output_rows = output_shp.(2)) in
-  Owl_exception.check (p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Printf.sprintf "output shape is [%s]" s1 in
+    let s3 = Printf.sprintf "scaled output cols is %i; should be equal to the 2nd dimension of output shape" output_cols in
+    let s4 = Printf.sprintf "scaled output rows is %i; should be equal to the 3rd dimension of output shape" output_rows in
+    let s5 = Printf.sprintf "upsampling2d_backward: %s; %s; %s." s2 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify (p2 && p3) error;
 
   let input' = zeros _kind input_shp in
 
@@ -6651,7 +6883,14 @@ let upsampling2d_backward input size output =
 let upsampling2d_backward_ ~out input size output =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length size = 2) in
-  Owl_exception.check (p0 && p1) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "size dimension = %i (should be 2)" (Array.length size) in
+    let s2 = Printf.sprintf "upsampling2d_backward_: %s; %s." s0 s1 in
+    Owl_exception.INVALID_ARGUMENT s2
+  in
+  Owl_exception.verify (p0 && p1) error;
 
   let _kind = kind input in
 
@@ -6669,7 +6908,16 @@ let upsampling2d_backward_ ~out input size output =
   let output_rows = input_rows * row_scale in
   let p2 = (output_cols = output_shp.(1)) in
   let p3 = (output_rows = output_shp.(2)) in
-  Owl_exception.check (p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Printf.sprintf "output shape is [%s]" s1 in
+    let s3 = Printf.sprintf "scaled output cols is %i; should be equal to the 2nd dimension of output shape" output_cols in
+    let s4 = Printf.sprintf "scaled output rows is %i; should be equal to the 3rd dimension of output shape" output_rows in
+    let s5 = Printf.sprintf "upsampling2d_backward_: %s; %s; %s." s2 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify (p2 && p3) error;
 
   _owl_spatial_upsampling_backward _kind
     out output
