@@ -2076,9 +2076,9 @@ let conv2d ?(padding=SAME) input kernel stride =
     let s1 = Printf.sprintf "input shape is [%s]" s0 in
     let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
     let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
-    let s4 = Printf.sprintf "the 4th dimension of input shape should equal to the 3rd dimension of kernel shape" in
-    let s6 = Printf.sprintf "conv2d: %s, %s, %s." s1 s3 s4 in
-    Owl_exception.INVALID_ARGUMENT s6
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv2d: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
   in
   Owl_exception.verify p3 error;
 
@@ -2106,7 +2106,15 @@ let conv2d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (num_dims kernel = 4) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "conv2d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2119,7 +2127,17 @@ let conv2d_ ~out ?(padding=SAME) input kernel stride =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p3 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv2d_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2143,7 +2161,16 @@ let conv2d_backward_input input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 4)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s4 = Printf.sprintf "conv2d_backward_input: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2156,14 +2183,37 @@ let conv2d_backward_input input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv2d_backward_input: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 4th dimension of kernel shape should be equal to the 4th dimension of output' shape" in
+    let s8 = Printf.sprintf "conv2d_backward_input: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2185,7 +2235,16 @@ let conv2d_backward_input_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 4)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s4 = Printf.sprintf "conv2d_backward_input_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2198,14 +2257,37 @@ let conv2d_backward_input_ ~out input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s6 = Printf.sprintf "conv2d_backward_input_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s6
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 4th dimension of kernel shape should be equal to the 4th dimension of output' shape" in
+    let s8 = Printf.sprintf "conv2d_backward_input_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2224,7 +2306,16 @@ let conv2d_backward_kernel input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 4)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s4 = Printf.sprintf "conv2d_backward_kernel: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2237,14 +2328,37 @@ let conv2d_backward_kernel input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv2d_backward_kernel: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 4th dimension of kernel shape should be equal to the 4th dimension of output' shape" in
+    let s8 = Printf.sprintf "conv2d_backward_kernel: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2266,7 +2380,16 @@ let conv2d_backward_kernel_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 4)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s4 = Printf.sprintf "conv2d_backward_kernel_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2279,14 +2402,37 @@ let conv2d_backward_kernel_ ~out input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv2d_backward_kernel_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 4th dimension of kernel shape should be equal to the 4th dimension of output' shape" in
+    let s8 = Printf.sprintf "conv2d_backward_kernel_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2309,7 +2455,15 @@ let conv3d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (num_dims kernel = 5) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "conv3d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2324,7 +2478,17 @@ let conv3d ?(padding=SAME) input kernel stride =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p3 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv3d: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2351,7 +2515,15 @@ let conv3d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (num_dims kernel = 5) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "conv3d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2366,7 +2538,17 @@ let conv3d_ ~out ?(padding=SAME) input kernel stride =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p3 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv3d_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2391,7 +2573,16 @@ let conv3d_backward_input input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 5)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s4 = Printf.sprintf "conv3d_backward_input: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2406,7 +2597,17 @@ let conv3d_backward_input input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv3d_backward_input: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -2414,7 +2615,20 @@ let conv3d_backward_input input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
+    let s8 = Printf.sprintf "conv3d_backward_input: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2437,7 +2651,15 @@ let conv3d_backward_input_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 5)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s4 = Printf.sprintf "conv3d_backward_input_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2452,7 +2674,17 @@ let conv3d_backward_input_ ~out input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv3d_backward_input_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -2460,7 +2692,20 @@ let conv3d_backward_input_ ~out input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
+    let s8 = Printf.sprintf "conv3d_backward_input_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2480,7 +2725,16 @@ let conv3d_backward_kernel input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 5)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s4 = Printf.sprintf "conv3d_backward_kernel: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2495,7 +2749,17 @@ let conv3d_backward_kernel input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv2d_backward_kernel: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -2503,7 +2767,20 @@ let conv3d_backward_kernel input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
+    let s8 = Printf.sprintf "conv2d_backward_kernel: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2526,7 +2803,16 @@ let conv3d_backward_kernel_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 5)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s4 = Printf.sprintf "conv3d_backward_kernel_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2541,7 +2827,17 @@ let conv3d_backward_kernel_ ~out input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv2d_backward_kernel_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -2549,7 +2845,20 @@ let conv3d_backward_kernel_ ~out input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
+    let s8 = Printf.sprintf "conv2d_backward_kernel_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2573,7 +2882,15 @@ let conv1d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (num_dims kernel = 3) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "conv1d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2585,7 +2902,17 @@ let conv1d ?(padding=SAME) input kernel stride =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p3 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3rd dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv1d: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
@@ -2603,7 +2930,15 @@ let conv1d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (num_dims kernel = 3) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "conv1d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2615,7 +2950,17 @@ let conv1d_ ~out ?(padding=SAME) input kernel stride =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p3 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3rd dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv1d_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
@@ -2631,7 +2976,16 @@ let conv1d_backward_input input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s4 = Printf.sprintf "conv1d_backward_input: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2644,7 +2998,17 @@ let conv1d_backward_input input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3th dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv1d_backward_input: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -2653,7 +3017,20 @@ let conv1d_backward_input input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output'_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 3rd dimension of kernel shape should be equal to the 3rd dimension of output' shape" in
+    let s8 = Printf.sprintf "conv1d_backward_input: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -2671,7 +3048,16 @@ let conv1d_backward_input_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s4 = Printf.sprintf "conv1d_backward_input_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2684,7 +3070,17 @@ let conv1d_backward_input_ ~out input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3th dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv1d_backward_input_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -2693,7 +3089,20 @@ let conv1d_backward_input_ ~out input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output'_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 3rd dimension of kernel shape should be equal to the 3rd dimension of output' shape" in
+    let s8 = Printf.sprintf "conv1d_backward_input_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -2711,7 +3120,16 @@ let conv1d_backward_kernel input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s4 = Printf.sprintf "conv1d_backward_kernel: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2724,7 +3142,17 @@ let conv1d_backward_kernel input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3th dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv1d_backward_kernel: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -2733,7 +3161,20 @@ let conv1d_backward_kernel input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output'_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 3rd dimension of kernel shape should be equal to the 3rd dimension of output' shape" in
+    let s8 = Printf.sprintf "conv1d_backward_kernel: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -2751,7 +3192,16 @@ let conv1d_backward_kernel_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s4 = Printf.sprintf "conv1d_backward_kernel_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2764,7 +3214,17 @@ let conv1d_backward_kernel_ ~out input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3th dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "conv1d_backward_kernel_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -2773,7 +3233,20 @@ let conv1d_backward_kernel_ ~out input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output'_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 3rd dimension of kernel shape should be equal to the 3rd dimension of output' shape" in
+    let s8 = Printf.sprintf "conv1d_backward_kernel_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -2797,7 +3270,16 @@ let dilated_conv2d ?(padding=SAME) input kernel stride rate =
   let p1 = (num_dims kernel = 4) in
   let p2 = (Array.length stride = 2) in
   let p3 = (Array.length rate = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "rate dimension = %i (should be 2)" (Array.length rate) in
+    let s4 = Printf.sprintf "dilated_conv2d: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2810,7 +3292,17 @@ let dilated_conv2d ?(padding=SAME) input kernel stride rate =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv2d: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2840,7 +3332,16 @@ let dilated_conv2d_ ~out ?(padding=SAME) input kernel stride rate =
   let p1 = (num_dims kernel = 4) in
   let p2 = (Array.length stride = 2) in
   let p3 = (Array.length rate = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "rate dimension = %i (should be 2)" (Array.length rate) in
+    let s4 = Printf.sprintf "dilated_conv2d_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2853,7 +3354,17 @@ let dilated_conv2d_ ~out ?(padding=SAME) input kernel stride rate =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv2d_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2882,7 +3393,17 @@ let dilated_conv2d_backward_input input kernel stride rate output' =
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
   let p4 = (Array.length rate = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 4)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s4 = Printf.sprintf "rate dimension = %i (should be 2)" (Array.length rate) in
+    let s5 = Printf.sprintf "dilated_conv2d_backward_input: %s; %s; %s; %s; %s." s0 s1 s2 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3 && p4) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2895,14 +3416,37 @@ let dilated_conv2d_backward_input input kernel stride rate output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p5 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv2d_backward_input: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p5 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 4th dimension of kernel shape should be equal to the 4th dimension of output' shape" in
+    let s8 = Printf.sprintf "dilated_conv2d_backward_input: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p6 && p7) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2925,7 +3469,17 @@ let dilated_conv2d_backward_input_ ~out input kernel stride rate output' =
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
   let p4 = (Array.length rate = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 4)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s4 = Printf.sprintf "rate dimension = %i (should be 2)" (Array.length rate) in
+    let s5 = Printf.sprintf "dilated_conv2d_backward_input_: %s; %s; %s; %s; %s." s0 s1 s2 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3 && p4) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2938,14 +3492,37 @@ let dilated_conv2d_backward_input_ ~out input kernel stride rate output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p5 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv2d_backward_input_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p5 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 4th dimension of kernel shape should be equal to the 4th dimension of output' shape" in
+    let s8 = Printf.sprintf "dilated_conv2d_backward_input_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p6 && p7) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -2965,7 +3542,17 @@ let dilated_conv2d_backward_kernel input kernel stride rate output' =
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
   let p4 = (Array.length rate = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 4)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s4 = Printf.sprintf "rate dimension = %i (should be 2)" (Array.length rate) in
+    let s5 = Printf.sprintf "dilated_conv2d_backward_kernel: %s; %s; %s; %s; %s." s0 s1 s2 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3 && p4) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -2978,14 +3565,37 @@ let dilated_conv2d_backward_kernel input kernel stride rate output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p5 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv2d_backward_kernel: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p5 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 4th dimension of kernel shape should be equal to the 4th dimension of output' shape" in
+    let s8 = Printf.sprintf "dilated_conv2d_backward_kernel: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p6 && p7) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3008,7 +3618,17 @@ let dilated_conv2d_backward_kernel_ ~out input kernel stride rate output' =
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
   let p4 = (Array.length rate = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 4)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s4 = Printf.sprintf "rate dimension = %i (should be 2)" (Array.length rate) in
+    let s5 = Printf.sprintf "dilated_conv2d_backward_kernel_: %s; %s; %s; %s; %s." s0 s1 s2 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3 && p4) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3021,14 +3641,38 @@ let dilated_conv2d_backward_kernel_ ~out input kernel stride rate output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p5 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv2d_backward_kernel_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p5 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 4th dimension of kernel shape should be equal to the 4th dimension of output' shape" in
+    let s8 = Printf.sprintf "dilated_conv2d_backward_kernel_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p6 && p7) error;
+
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3053,7 +3697,16 @@ let dilated_conv3d ?(padding=SAME) input kernel stride rate =
   let p1 = (num_dims kernel = 5) in
   let p2 = (Array.length stride = 3) in
   let p3 = (Array.length rate = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "rate dimension = %i (should be 3)" (Array.length rate) in
+    let s4 = Printf.sprintf "dilated_conv3d: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3068,7 +3721,17 @@ let dilated_conv3d ?(padding=SAME) input kernel stride rate =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv3d: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3105,7 +3768,16 @@ let dilated_conv3d_ ~out ?(padding=SAME) input kernel stride rate =
   let p1 = (num_dims kernel = 5) in
   let p2 = (Array.length stride = 3) in
   let p3 = (Array.length rate = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "rate dimension = %i (should be 3)" (Array.length rate) in
+    let s4 = Printf.sprintf "dilated_conv3d_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3120,7 +3792,17 @@ let dilated_conv3d_ ~out ?(padding=SAME) input kernel stride rate =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv3d_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3156,7 +3838,17 @@ let dilated_conv3d_backward_input input kernel stride rate output' =
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
   let p4 = (Array.length rate = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 5)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s4 = Printf.sprintf "rate dimension = %i (should be 3)" (Array.length rate) in
+    let s5 = Printf.sprintf "dilated_conv3d_backward_input: %s; %s; %s; %s; %s." s0 s1 s2 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3 && p4) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3171,7 +3863,17 @@ let dilated_conv3d_backward_input input kernel stride rate output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p5 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv3d_backward_input: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p5 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3179,7 +3881,20 @@ let dilated_conv3d_backward_input input kernel stride rate output' =
   let output_dpts =  output_shp.(3) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
+    let s8 = Printf.sprintf "dilated_conv3d_backward_input: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p6 && p7) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3208,7 +3923,17 @@ let dilated_conv3d_backward_input_ ~out input kernel stride rate output' =
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
   let p4 = (Array.length rate = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 5)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s4 = Printf.sprintf "rate dimension = %i (should be 3)" (Array.length rate) in
+    let s5 = Printf.sprintf "dilated_conv3d_backward_input_: %s; %s; %s; %s; %s." s0 s1 s2 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3 && p4) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3223,7 +3948,17 @@ let dilated_conv3d_backward_input_ ~out input kernel stride rate output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p5 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv3d_backward_input_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p5 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3231,7 +3966,20 @@ let dilated_conv3d_backward_input_ ~out input kernel stride rate output' =
   let output_dpts =  output_shp.(3) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
+    let s8 = Printf.sprintf "dilated_conv3d_backward_input_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p6 && p7) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3257,7 +4005,17 @@ let dilated_conv3d_backward_kernel input kernel stride rate output' =
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
   let p4 = (Array.length rate = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 5)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s4 = Printf.sprintf "rate dimension = %i (should be 3)" (Array.length rate) in
+    let s5 = Printf.sprintf "dilated_conv3d_backward_kernel: %s; %s; %s; %s; %s." s0 s1 s2 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3 && p4) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3272,7 +4030,17 @@ let dilated_conv3d_backward_kernel input kernel stride rate output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p5 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv3d_backward_kernel: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p5 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3280,7 +4048,20 @@ let dilated_conv3d_backward_kernel input kernel stride rate output' =
   let output_dpts =  output_shp.(3) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
+    let s8 = Printf.sprintf "dilated_conv3d_backward_kernel: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p6 && p7) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3309,7 +4090,17 @@ let dilated_conv3d_backward_kernel_ ~out input kernel stride rate output' =
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
   let p4 = (Array.length rate = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3 && p4) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 5)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s4 = Printf.sprintf "rate dimension = %i (should be 3)" (Array.length rate) in
+    let s5 = Printf.sprintf "dilated_conv3d_backward_kernel_: %s; %s; %s; %s; %s." s0 s1 s2 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3 && p4) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3324,7 +4115,17 @@ let dilated_conv3d_backward_kernel_ ~out input kernel stride rate output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p5 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p5 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv3d_backward_kernel_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p5 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3332,7 +4133,20 @@ let dilated_conv3d_backward_kernel_ ~out input kernel stride rate output' =
   let output_dpts =  output_shp.(3) in
   let p6 = (batches = output_shp.(0)) in
   let p7 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p6 && p7) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
+    let s8 = Printf.sprintf "dilated_conv3d_backward_kernel_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p6 && p7) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3362,7 +4176,15 @@ let dilated_conv1d ?(padding=SAME) input kernel stride rate =
   let p0 = (num_dims input = 3) in
   let p1 = (num_dims kernel = 3) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "dilated_conv1d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3374,7 +4196,17 @@ let dilated_conv1d ?(padding=SAME) input kernel stride rate =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p3 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3rd dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv1d: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
@@ -3392,7 +4224,15 @@ let dilated_conv1d_ ~out ?(padding=SAME) input kernel stride rate =
   let p0 = (num_dims input = 3) in
   let p1 = (num_dims kernel = 3) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "dilated_conv1d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3404,7 +4244,17 @@ let dilated_conv1d_ ~out ?(padding=SAME) input kernel stride rate =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p3 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3rd dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv1d_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
@@ -3420,7 +4270,16 @@ let dilated_conv1d_backward_input input kernel stride rate output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s4 = Printf.sprintf "dilated_conv1d_backward_input: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3433,7 +4292,17 @@ let dilated_conv1d_backward_input input kernel stride rate output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3th dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv1d_backward_input: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -3442,7 +4311,20 @@ let dilated_conv1d_backward_input input kernel stride rate output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output'_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 3rd dimension of kernel shape should be equal to the 3rd dimension of output' shape" in
+    let s8 = Printf.sprintf "dilated_conv1d_backward_input: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -3460,7 +4342,16 @@ let dilated_conv1d_backward_input_ ~out input kernel stride rate output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s4 = Printf.sprintf "dilated_conv1d_backward_input_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3473,7 +4364,17 @@ let dilated_conv1d_backward_input_ ~out input kernel stride rate output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3th dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv1d_backward_input_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -3482,7 +4383,20 @@ let dilated_conv1d_backward_input_ ~out input kernel stride rate output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output'_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 3rd dimension of kernel shape should be equal to the 3rd dimension of output' shape" in
+    let s8 = Printf.sprintf "dilated_conv1d_backward_input_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -3500,7 +4414,16 @@ let dilated_conv1d_backward_kernel input kernel stride rate output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s4 = Printf.sprintf "dilated_conv1d_backward_kernel: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3513,7 +4436,17 @@ let dilated_conv1d_backward_kernel input kernel stride rate output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3th dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv1d_backward_kernel: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -3522,7 +4455,20 @@ let dilated_conv1d_backward_kernel input kernel stride rate output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output'_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 3rd dimension of kernel shape should be equal to the 3rd dimension of output' shape" in
+    let s8 = Printf.sprintf "dilated_conv1d_backward_kernel: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -3540,7 +4486,16 @@ let dilated_conv1d_backward_kernel_ ~out input kernel stride rate output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s4 = Printf.sprintf "dilated_conv1d_backward_kernel_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3553,7 +4508,18 @@ let dilated_conv1d_backward_kernel_ ~out input kernel stride rate output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3th dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "dilated_conv1d_backward_kernel_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
+
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -3562,7 +4528,20 @@ let dilated_conv1d_backward_kernel_ ~out input kernel stride rate output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output'_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 3rd dimension of kernel shape should be equal to the 3rd dimension of output' shape" in
+    let s8 = Printf.sprintf "dilated_conv1d_backward_kernel_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -3584,7 +4563,15 @@ let transpose_conv2d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (num_dims kernel = 4) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "transpose_conv2d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3597,7 +4584,17 @@ let transpose_conv2d ?(padding=SAME) input kernel stride =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p3 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv2d: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3621,7 +4618,15 @@ let transpose_conv2d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (num_dims kernel = 4) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "transpose_conv2d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3634,7 +4639,17 @@ let transpose_conv2d_ ~out ?(padding=SAME) input kernel stride =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p3 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv2d_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3657,7 +4672,16 @@ let transpose_conv2d_backward_kernel input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 4)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s4 = Printf.sprintf "transpose_conv2d_backward_kernel: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3670,14 +4694,37 @@ let transpose_conv2d_backward_kernel input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv2d_backward_kernel: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 4th dimension of kernel shape should be equal to the 4th dimension of output' shape" in
+    let s8 = Printf.sprintf "transpose_conv2d_backward_kernel: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3699,7 +4746,16 @@ let transpose_conv2d_backward_kernel_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 4)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s4 = Printf.sprintf "transpose_conv2d_backward_kernel_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3712,14 +4768,37 @@ let transpose_conv2d_backward_kernel_ ~out input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv2d_backward_kernel_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 4th dimension of kernel shape should be equal to the 4th dimension of output' shape" in
+    let s8 = Printf.sprintf "transpose_conv2d_backward_kernel_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3738,7 +4817,16 @@ let transpose_conv2d_backward_input input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 4)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s4 = Printf.sprintf "transpose_conv2d_backward_input: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3751,14 +4839,37 @@ let transpose_conv2d_backward_input input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv2d_backward_input: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 4th dimension of kernel shape should be equal to the 4th dimension of output' shape" in
+    let s8 = Printf.sprintf "transpose_conv2d_backward_input: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3781,7 +4892,16 @@ let transpose_conv2d_backward_input_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 4) in
   let p2 = (num_dims output' = 4) in
   let p3 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 4)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 4)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s4 = Printf.sprintf "transpose_conv2d_backward_input_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3794,14 +4914,37 @@ let transpose_conv2d_backward_input_ ~out input kernel stride output' =
   let kernel_rows = kernel_shp.(1) in
   let out_channel = kernel_shp.(3) in
   let p4 = (in_channel = kernel_shp.(2)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 4th dimension of input shape should be equal to the 3rd dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv2d_backward_input_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(3)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 4th dimension of kernel shape should be equal to the 4th dimension of output' shape" in
+    let s8 = Printf.sprintf "transpose_conv2d_backward_input_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3825,7 +4968,15 @@ let transpose_conv3d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (num_dims kernel = 5) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "transpose_conv3d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3840,7 +4991,17 @@ let transpose_conv3d ?(padding=SAME) input kernel stride =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p3 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv3d: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3865,7 +5026,15 @@ let transpose_conv3d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (num_dims kernel = 5) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "transpose_conv3d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3880,7 +5049,17 @@ let transpose_conv3d_ ~out ?(padding=SAME) input kernel stride =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p3 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv3d_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3904,7 +5083,16 @@ let transpose_conv3d_backward_input input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 5)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s4 = Printf.sprintf "transpose_conv3d_backward_input: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3919,7 +5107,17 @@ let transpose_conv3d_backward_input input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv3d_backward_input: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3927,7 +5125,20 @@ let transpose_conv3d_backward_input input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
+    let s8 = Printf.sprintf "transpose_conv3d_backward_input: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3951,7 +5162,16 @@ let transpose_conv3d_backward_input_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 5)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s4 = Printf.sprintf "transpose_conv3d_backward_input_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -3966,7 +5186,17 @@ let transpose_conv3d_backward_input_ ~out input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv3d_backward_input_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -3974,7 +5204,20 @@ let transpose_conv3d_backward_input_ ~out input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
+    let s8 = Printf.sprintf "transpose_conv3d_backward_input_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -3995,7 +5238,16 @@ let transpose_conv3d_backward_kernel input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 5)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s4 = Printf.sprintf "transpose_conv3d_backward_kernel: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4010,7 +5262,17 @@ let transpose_conv3d_backward_kernel input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv3d_backward_kernel: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -4018,7 +5280,20 @@ let transpose_conv3d_backward_kernel input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
+    let s8 = Printf.sprintf "transpose_conv3d_backward_kernel: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -4041,7 +5316,17 @@ let transpose_conv3d_backward_kernel_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 5) in
   let p2 = (num_dims output' = 5) in
   let p3 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 5)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 5)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s4 = Printf.sprintf "transpose_conv3d_backward_kernel_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
+
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4056,7 +5341,17 @@ let transpose_conv3d_backward_kernel_ ~out input kernel stride output' =
   let kernel_dpts = kernel_shp.(2) in
   let out_channel = kernel_shp.(4) in
   let p4 = (in_channel = kernel_shp.(3)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 5th dimension of input shape should be equal to the 4th dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv3d_backward_kernel_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
@@ -4064,7 +5359,20 @@ let transpose_conv3d_backward_kernel_ ~out input kernel stride output' =
   let output_dpts =  output_shp.(3) in
   let p5 = (batches = output_shp.(0)) in
   let p6 = (out_channel = output_shp.(4)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 5th dimension of kernel shape should be equal to the 5th dimension of output' shape" in
+    let s8 = Printf.sprintf "transpose_conv3d_backward_kernel_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -4082,7 +5390,15 @@ let transpose_conv1d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (num_dims kernel = 3) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "transpose_conv1d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4094,7 +5410,17 @@ let transpose_conv1d ?(padding=SAME) input kernel stride =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p3 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3rd dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv1d: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
@@ -4112,7 +5438,15 @@ let transpose_conv1d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (num_dims kernel = 3) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "transpose_conv1d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4124,7 +5458,17 @@ let transpose_conv1d_ ~out ?(padding=SAME) input kernel stride =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p3 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p3 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3rd dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv1d_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p3 error;
 
   let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
@@ -4140,7 +5484,16 @@ let transpose_conv1d_backward_input input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s4 = Printf.sprintf "transpose_conv1d_backward_input: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4153,7 +5506,17 @@ let transpose_conv1d_backward_input input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3th dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv1d_backward_input: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -4162,7 +5525,20 @@ let transpose_conv1d_backward_input input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output'_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 3rd dimension of kernel shape should be equal to the 3rd dimension of output' shape" in
+    let s8 = Printf.sprintf "transpose_conv1d_backward_input: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -4180,7 +5556,16 @@ let transpose_conv1d_backward_input_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s4 = Printf.sprintf "transpose_conv1d_backward_input_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4193,7 +5578,17 @@ let transpose_conv1d_backward_input_ ~out input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3th dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv1d_backward_input_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -4202,7 +5597,20 @@ let transpose_conv1d_backward_input_ ~out input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output'_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 3rd dimension of kernel shape should be equal to the 3rd dimension of output' shape" in
+    let s8 = Printf.sprintf "transpose_conv1d_backward_input_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -4220,7 +5628,16 @@ let transpose_conv1d_backward_kernel input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s4 = Printf.sprintf "transpose_conv1d_backward_kernel: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4233,7 +5650,17 @@ let transpose_conv1d_backward_kernel input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3th dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv1d_backward_kernel: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -4242,7 +5669,20 @@ let transpose_conv1d_backward_kernel input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output'_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 3rd dimension of kernel shape should be equal to the 3rd dimension of output' shape" in
+    let s8 = Printf.sprintf "transpose_conv1d_backward_kernel: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -4260,7 +5700,16 @@ let transpose_conv1d_backward_kernel_ ~out input kernel stride output' =
   let p1 = (num_dims kernel = 3) in
   let p2 = (num_dims output' = 3) in
   let p3 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (num_dims kernel) in
+    let s2 = Printf.sprintf "output' dimension = %i (should be 3)" (num_dims output') in
+    let s3 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s4 = Printf.sprintf "transpose_conv1d_backward_kernel_: %s; %s; %s; %s." s0 s1 s2 s3 in
+    Owl_exception.INVALID_ARGUMENT s4
+  in
+  Owl_exception.verify (p0 && p1 && p2 && p3) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4273,7 +5722,17 @@ let transpose_conv1d_backward_kernel_ ~out input kernel stride output' =
   let kernel_cols = kernel_shp.(0) in
   let out_channel = kernel_shp.(2) in
   let p4 = (in_channel = kernel_shp.(1)) in
-  Owl_exception.check p4 Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Printf.sprintf "input shape is [%s]" s0 in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s4 = Printf.sprintf "the 3th dimension of input shape should be equal to the 2nd dimension of kernel shape" in
+    let s5 = Printf.sprintf "transpose_conv1d_backward_kernel_: %s, %s, %s." s1 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify p4 error;
 
   let kernel_rows = 1 in
   let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
@@ -4282,7 +5741,20 @@ let transpose_conv1d_backward_kernel_ ~out input kernel stride output' =
   let output_cols = output'_shp.(1) in
   let p5 = (batches = output'_shp.(0)) in
   let p6 = (out_channel = output'_shp.(2)) in
-  Owl_exception.check (p5 && p6) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Owl_utils_array.to_string string_of_int input_shp in
+    let s1 = Owl_utils_array.to_string string_of_int output'_shp in
+    let s2 = Owl_utils_array.to_string string_of_int kernel_shp in
+    let s3 = Printf.sprintf "input shape is [%s]" s0 in
+    let s4 = Printf.sprintf "output' shape is [%s]" s1 in
+    let s5 = Printf.sprintf "kernel shape is [%s]" s2 in
+    let s6 = Printf.sprintf "the 1st dimension of input shape should be equal to the 1st dimension of output' shape" in
+    let s7 = Printf.sprintf "the 3rd dimension of kernel shape should be equal to the 3rd dimension of output' shape" in
+    let s8 = Printf.sprintf "transpose_conv1d_backward_kernel_: %s; %s; %s; %s; %s." s3 s4 s5 s6 s7 in
+    Owl_exception.INVALID_ARGUMENT s8
+  in
+  Owl_exception.verify (p5 && p6) error;
 
   let output_rows = 1 in
   let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
@@ -4304,7 +5776,15 @@ let max_pool2d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool2d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4339,7 +5819,15 @@ let max_pool2d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool2d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4376,7 +5864,15 @@ let max_pool1d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool1d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4401,7 +5897,15 @@ let max_pool1d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool1d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4423,7 +5927,15 @@ let avg_pool2d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool2d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4458,7 +5970,15 @@ let avg_pool2d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool2d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4490,7 +6010,15 @@ let avg_pool1d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool1d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4515,7 +6043,15 @@ let avg_pool1d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool1d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4542,7 +6078,15 @@ let max_pool3d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool3d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4580,7 +6124,15 @@ let max_pool3d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool3d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4615,7 +6167,15 @@ let avg_pool3d ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool3d: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4653,7 +6213,15 @@ let avg_pool3d_ ~out ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool3d_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4688,7 +6256,15 @@ let max_pool2d_argmax ?(padding=SAME) input kernel stride =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool2d_argmax: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4725,7 +6301,15 @@ let max_pool3d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool3d_backward: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4763,7 +6347,15 @@ let max_pool3d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool3d_backward_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4799,7 +6391,15 @@ let max_pool2d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool2d_backward: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4834,7 +6434,15 @@ let max_pool2d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool2d_backward_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4867,7 +6475,15 @@ let max_pool1d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool1d_backward: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4898,7 +6514,15 @@ let max_pool1d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "max_pool1d_backward_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4929,7 +6553,15 @@ let avg_pool3d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool3d_backward: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -4967,7 +6599,15 @@ let avg_pool3d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 5) in
   let p1 = (Array.length kernel = 3) in
   let p2 = (Array.length stride = 3) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 5)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 3)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 3)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool3d_backward_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5003,7 +6643,15 @@ let avg_pool2d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool2d_backward: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5038,7 +6686,15 @@ let avg_pool2d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length kernel = 2) in
   let p2 = (Array.length stride = 2) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 2)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 2)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool2d_backward_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5071,7 +6727,15 @@ let avg_pool1d_backward padding input kernel stride output' =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool1d_backward: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5102,7 +6766,15 @@ let avg_pool1d_backward_ ~out padding input kernel stride output' =
   let p0 = (num_dims input = 3) in
   let p1 = (Array.length kernel = 1) in
   let p2 = (Array.length stride = 1) in
-  Owl_exception.check (p0 && p1 && p2) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 3)" (num_dims input) in
+    let s1 = Printf.sprintf "kernel dimension = %i (should be 1)" (Array.length kernel) in
+    let s2 = Printf.sprintf "stride dimension = %i (should be 1)" (Array.length stride) in
+    let s3 = Printf.sprintf "avg_pool1d_backward_: %s; %s; %s." s0 s1 s2 in
+    Owl_exception.INVALID_ARGUMENT s3
+  in
+  Owl_exception.verify (p0 && p1 && p2) error;
 
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -5131,21 +6803,44 @@ let avg_pool1d_backward_ ~out padding input kernel stride output' =
 let upsampling2d input size =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length size = 2) in
-  Owl_exception.check (p0 && p1) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "size dimension = %i (should be 2)" (Array.length size) in
+    let s2 = Printf.sprintf "upsampling2d: %s; %s." s0 s1 in
+    Owl_exception.INVALID_ARGUMENT s2
+  in
+  Owl_exception.verify (p0 && p1) error;
+
   repeat input [|1; size.(0); size.(1); 1|]
 
 
 let upsampling2d_ ~out input size =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length size = 2) in
-  Owl_exception.check (p0 && p1) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "size dimension = %i (should be 2)" (Array.length size) in
+    let s2 = Printf.sprintf "upsampling2d_: %s; %s." s0 s1 in
+    Owl_exception.INVALID_ARGUMENT s2
+  in
+  Owl_exception.verify (p0 && p1) error;
+
   repeat_ ~out input [|1; size.(0); size.(1); 1|]
 
 
 let upsampling2d_backward input size output =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length size = 2) in
-  Owl_exception.check (p0 && p1) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "size dimension = %i (should be 2)" (Array.length size) in
+    let s2 = Printf.sprintf "upsampling2d_backward: %s; %s." s0 s1 in
+    Owl_exception.INVALID_ARGUMENT s2
+  in
+  Owl_exception.verify (p0 && p1) error;
 
   let _kind = kind input in
 
@@ -5163,7 +6858,16 @@ let upsampling2d_backward input size output =
   let output_rows = input_rows * row_scale in
   let p2 = (output_cols = output_shp.(1)) in
   let p3 = (output_rows = output_shp.(2)) in
-  Owl_exception.check (p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Printf.sprintf "output shape is [%s]" s1 in
+    let s3 = Printf.sprintf "scaled output cols is %i, should be equal to the 2nd dimension of output shape" output_cols in
+    let s4 = Printf.sprintf "scaled output rows is %i, should be equal to the 3rd dimension of output shape" output_rows in
+    let s5 = Printf.sprintf "upsampling2d_backward: %s; %s; %s." s2 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify (p2 && p3) error;
 
   let input' = zeros _kind input_shp in
 
@@ -5179,7 +6883,14 @@ let upsampling2d_backward input size output =
 let upsampling2d_backward_ ~out input size output =
   let p0 = (num_dims input = 4) in
   let p1 = (Array.length size = 2) in
-  Owl_exception.check (p0 && p1) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s0 = Printf.sprintf "input dimension = %i (should be 4)" (num_dims input) in
+    let s1 = Printf.sprintf "size dimension = %i (should be 2)" (Array.length size) in
+    let s2 = Printf.sprintf "upsampling2d_backward_: %s; %s." s0 s1 in
+    Owl_exception.INVALID_ARGUMENT s2
+  in
+  Owl_exception.verify (p0 && p1) error;
 
   let _kind = kind input in
 
@@ -5197,7 +6908,16 @@ let upsampling2d_backward_ ~out input size output =
   let output_rows = input_rows * row_scale in
   let p2 = (output_cols = output_shp.(1)) in
   let p3 = (output_rows = output_shp.(2)) in
-  Owl_exception.check (p2 && p3) Owl_exception.CONV_INVALID_ARGUMENT;
+
+  let error () =
+    let s1 = Owl_utils_array.to_string string_of_int output_shp in
+    let s2 = Printf.sprintf "output shape is [%s]" s1 in
+    let s3 = Printf.sprintf "scaled output cols is %i, should be equal to the 2nd dimension of output shape" output_cols in
+    let s4 = Printf.sprintf "scaled output rows is %i, should be equal to the 3rd dimension of output shape" output_rows in
+    let s5 = Printf.sprintf "upsampling2d_backward_: %s; %s; %s." s2 s3 s4 in
+    Owl_exception.INVALID_ARGUMENT s5
+  in
+  Owl_exception.verify (p2 && p3) error;
 
   _owl_spatial_upsampling_backward _kind
     out output
