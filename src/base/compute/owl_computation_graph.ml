@@ -128,7 +128,9 @@ module Make
 
   let make_graph ~input ~output name =
     (* check all the inputs must be variables *)
-    assert (Array.for_all is_var input);
+    let all_vars = Array.for_all is_var input in
+    let exn = Owl_exception.INVALID_ARGUMENT "inputs must be variables" in
+    Owl_exception.(check all_vars exn);
     (* set outputs' memory as not reusable *)
     Array.iter (fun x -> set_reuse x false) output;
     (* create hash table to store input/output names *)
@@ -146,7 +148,12 @@ module Make
       if Hashtbl.mem htbl x_name = true then (
         Owl_log.warn "nodes are both input and output: %s" (node_to_str x);
         let saved_node = Hashtbl.find htbl x_name in
-        assert (saved_node == x);
+
+        let error () =
+          let s = Printf.sprintf "node name %s is not unique" x_name in
+          Owl_exception.INVALID_ARGUMENT s
+        in
+        Owl_exception.(verify (saved_node == x) error)
       )
       else
         Hashtbl.add htbl x_name x
@@ -174,13 +181,15 @@ module Make
 
   let get_node_arr_val x =
     let value = get_value x in
-    assert (Array.length value > 0);
+    let exn = Owl_exception.INVALID_ARGUMENT "input values do not exist." in
+    Owl_exception.check (Array.length value > 0) exn;
     value_to_arr value.(0)
 
 
   let get_node_elt_val x =
     let value = get_value x in
-    assert (Array.length value > 0);
+    let exn = Owl_exception.INVALID_ARGUMENT "input values do not exist." in
+    Owl_exception.check (Array.length value > 0) exn;
     value_to_elt value.(0)
 
 
@@ -206,7 +215,16 @@ module Make
 
 
   let make_iopair graph input output =
-    assert (Array.length input = Array.length output);
+    let input_len = Array.length input in
+    let output_len = Array.length output in
+    let is_equal = (input_len = output_len) in
+
+    let error () =
+      let s = Printf.sprintf "input (%i) and output (%i) must have equal length." input_len output_len in
+      Owl_exception.INVALID_ARGUMENT s
+    in
+    Owl_exception.verify is_equal error;
+
     let iopair = Array.map2 (fun i o -> (i, o)) input output in
     let iosafe = Array.map2 (fun i o -> is_iopair_safe i o) input output in
     graph.iopair <- iopair;
