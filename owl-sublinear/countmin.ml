@@ -38,8 +38,15 @@ module Countmin_table_sig = struct
   end
 end
 
+module type Countmin_sig = sig
+  type sketch
+  val init : float -> float -> sketch
+  val incr : sketch -> int -> unit
+  val count : sketch -> int -> int
+end
+
 (* Functor to make the CountMin sketch using a specified underlying table *)
-module Make (T : Countmin_table_sig.Sig) = struct
+module Make (T : Countmin_table_sig.Sig) : Countmin_sig = struct
   (* the type of sketches *)
   type sketch = 
     {tbl : T.t ; 
@@ -84,6 +91,51 @@ end
 module Countmin_native = Make(Countmin_table_sig.Native_table)
 module Countmin_owl = Make(Countmin_table_sig.Owl_table)
 
+(* Priority queue implementation for finding heavy hitters.  From
+ * http://caml.inria.fr/pub/docs/manual-ocaml/moduleexamples.html.
+ * Changed priority type to float and added function to get all 
+ * elements in sorted order *)
+module PrioQueue = struct
+  type priority = float
+  type 'a queue = Empty | Node of priority * 'a * 'a queue * 'a queue
+  exception Queue_is_empty
+
+  let empty = Empty
+
+  let rec insert queue prio elt =
+    match queue with
+    | Empty -> Node(prio, elt, Empty, Empty)
+    | Node(p, e, left, right) ->
+        if prio <= p
+        then Node(prio, elt, insert right p e, left)
+        else Node(p, e, insert right prio elt, left)
+  
+  let rec remove_top = function
+    | Empty -> raise Queue_is_empty
+    | Node(prio, elt, left, Empty) -> left
+    | Node(prio, elt, Empty, right) -> right
+    | Node(prio, elt, (Node(lprio, lelt, _, _) as left),
+                      (Node(rprio, relt, _, _) as right)) ->
+        if lprio <= rprio
+        then Node(lprio, lelt, remove_top left, right)
+        else Node(rprio, relt, left, remove_top right)
+  
+  (* get the min element of the queue, its priority, and the rest of the queue *)
+  let extract = function
+    | Empty -> raise Queue_is_empty
+    | Node(prio, elt, _, _) as queue -> (prio, elt, remove_top queue)
+
+  (* return a list of the elements in descending order of priority (note max first) *)
+  let to_sorted_list = 
+    let rec aux acc queue = 
+      try
+        let prio, elt, rest = extract queue in
+        aux ((elt, prio) :: acc) rest
+      with 
+      | Queue_is_empty -> acc
+    in aux []
+end
+
 (* simple test - add a bunch of elements with skewed distribution to the sketch then count them *)
 let simple_test_countmin eps del =
   let module CM = Countmin_native in
@@ -98,7 +150,7 @@ let simple_test_countmin eps del =
     CM.count s x |> Printf.printf "count of %2d : %5d \n" x
   done
 
-(* Test the Countmin sketch by putting n samples from the function distr
+(* Test the countmin sketch by putting n samples from the function distr
  * into a sketch and into the hashtable-based naive frequency counter, then
  * comparing their outputs *)
 let test_countmin_hashtbl distr eps del n =
@@ -115,13 +167,12 @@ let test_countmin_hashtbl distr eps del n =
     CM.incr s v ; ht_incr t v
   done;
   let foldfn v ct lst = (v, ct, CM.count s v) :: lst in
-  let outputs = Hashtbl.fold foldfn t [] |> List.sort (fun (a,_,_) (b,_,_) -> a - b) in
-  let diffs = List.map (fun (_, tct, sct) -> (float_of_int (sct - tct)) /. (float_of_int tct)) outputs
-    |> Array.of_list in
+  let outputs = Hashtbl.fold foldfn t [] |> List.sort (fun (_,a,_) (_,b,_) -> a - b) |> Array.of_list in
+  let diffs = Array.map (fun (_, tct, sct) -> (float_of_int (sct - tct)) /. (float_of_int tct)) outputs in
   let diffs_mat = 
     Owl.Mat.init_2d (Array.length diffs) 1 (fun i _ -> diffs.(i)) in
   let open Owl_plplot in
   let h = Plot.create "diffs.png" in
-  Plot.histogram ~h ~bin:20 (diffs_mat) ;
+  Plot.histogram ~h ~bin:200 (diffs_mat) ;
   Plot.output h ;
   outputs, diffs
