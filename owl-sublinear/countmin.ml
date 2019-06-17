@@ -92,23 +92,21 @@ module Countmin_native = Make(Countmin_table_sig.Native_table)
 module Countmin_owl = Make(Countmin_table_sig.Owl_table)
 
 (* Priority queue implementation for finding heavy hitters.  From
- * http://caml.inria.fr/pub/docs/manual-ocaml/moduleexamples.html.
- * Changed priority type to float and added function to get all 
- * elements in sorted order *)
+ * http://caml.inria.fr/pub/docs/manual-ocaml/moduleexamples.html 
+ * with small additions and edits *)
 module PrioQueue = struct
-  type priority = float
+  type priority = int
   type 'a queue = Empty | Node of priority * 'a * 'a queue * 'a queue
   exception Queue_is_empty
 
   let empty = Empty
 
-  let rec insert queue prio elt =
-    match queue with
+  let rec insert prio elt = function
     | Empty -> Node(prio, elt, Empty, Empty)
     | Node(p, e, left, right) ->
-        if prio <= p
-        then Node(prio, elt, insert right p e, left)
-        else Node(p, e, insert right prio elt, left)
+      if prio <= p
+      then Node(prio, elt, insert p e right, left)
+      else Node(p, e, insert prio elt right, left)
   
   let rec remove_top = function
     | Empty -> raise Queue_is_empty
@@ -116,14 +114,21 @@ module PrioQueue = struct
     | Node(prio, elt, Empty, right) -> right
     | Node(prio, elt, (Node(lprio, lelt, _, _) as left),
                       (Node(rprio, relt, _, _) as right)) ->
-        if lprio <= rprio
-        then Node(lprio, lelt, remove_top left, right)
-        else Node(rprio, relt, left, remove_top right)
+      if lprio <= rprio
+      then Node(lprio, lelt, remove_top left, right)
+      else Node(rprio, relt, left, remove_top right)
   
   (* get the min element of the queue, its priority, and the rest of the queue *)
   let extract = function
     | Empty -> raise Queue_is_empty
     | Node(prio, elt, _, _) as queue -> (prio, elt, remove_top queue)
+
+  (* find and delete all instances of element v in the queue.  Asymptotically O(n) *)
+  let rec find_and_remove v = function
+    | Empty -> Empty
+    | Node (prio, elt, left, right) as queue ->
+      if v = elt then remove_top queue
+      else Node (prio, elt, find_and_remove v left, find_and_remove v right)
 
   (* return a list of the elements in descending order of priority (note max first) *)
   let to_sorted_list = 
@@ -134,6 +139,45 @@ module PrioQueue = struct
       with 
       | Queue_is_empty -> acc
     in aux []
+  
+  (* get the lowest-priority element and its priority *)
+  let peek = function
+  | Empty -> raise Queue_is_empty
+  | Node(prio, elt, _, _) -> (elt, prio)
+end
+
+(* functor to make an online heavy hitters sketch based on CountMin *)
+module HeavyHitters (CM : Countmin_sig) = struct
+  type t = {sketch : CM.sketch ; 
+            queue : int PrioQueue.queue ;
+            size : int ;
+            k : float}
+
+  (* Initialize a heavy-hitters sketch with threshold k, approximation ratio epsilon,
+   * and failure probability delta.  *)
+  let init k epsilon delta = 
+    {sketch = CM.init epsilon delta ; 
+     queue = PrioQueue.empty ; 
+     size = 0 ;
+     k = k}
+  
+  let add h v =
+    CM.incr h.sketch v;
+    let size = h.size + 1 in
+    let v_count = CM.count h.sketch v in
+    let threshold = (float_of_int size) /. h.k in
+    let queue = 
+      if (v_count |> float_of_int) > threshold then
+        h.queue |> PrioQueue.find_and_remove v |> PrioQueue.insert v_count v
+      else h.queue in
+    let rec clean_queue threshold queue = 
+      if PrioQueue.peek queue |> snd |> float_of_int < threshold then
+        clean_queue threshold (PrioQueue.remove_top queue)
+      else queue
+    in
+    {h with queue = clean_queue threshold queue ; size = size}
+
+  let get h = PrioQueue.to_sorted_list h.queue
 end
 
 (* simple test - add a bunch of elements with skewed distribution to the sketch then count them *)
