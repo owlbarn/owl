@@ -49,14 +49,26 @@ let count x a =
 (* insert an array y into x starting at the position pos in x *)
 let insert x y pos =
   let n = Array.length x in
-  assert (pos >= 0 && pos < n);
+
+  let error () =
+    let s = Printf.sprintf "insert requires 0 <= pos < n, but pos = %i and n = %i" pos n in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (pos >= 0 && pos < n) error;
+
   Array.(sub x 0 pos @ y @ sub x pos (n - pos))
 
 
 (* remove the element at position pos *)
 let remove x pos =
   let n = Array.length x in
-  assert (pos >= 0 && pos < n);
+
+  let error () =
+    let s = Printf.sprintf "remove requires 0 <= pos < n, but pos = %i and n = %i" pos n in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (pos >= 0 && pos < n) error;
+
   let x0 = Array.sub x 0 pos in
   let x1 = Array.sub x (pos + 1) (n - pos - 1) in
   x0 @ x1
@@ -65,7 +77,13 @@ let remove x pos =
 (* replace a subarray starting from ofs of length len in x with y *)
 let replace ofs len x y =
   let n = Array.length x in
-  assert (ofs + len <= n);
+
+  let error () =
+    let s = Printf.sprintf "replaec requires ofs + len <= n, but ofs = %i, len = %i, and n = %i" ofs len n in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (ofs + len <= n) error;
+
   let x0 = Array.sub x 0 ofs in
   let x1 = Array.sub x (ofs + len) (n - ofs - len) in
   x0 @ y @ x1
@@ -183,7 +201,10 @@ let map2i_split2 f x y =
 let filter2i f x y =
   let x_len = Array.length x in
   let y_len = Array.length y in
-  assert (x_len = y_len);
+
+  let exn = Owl_exception.DIFFERENT_SIZE (x_len, y_len) in
+  Owl_exception.check (x_len = y_len) exn;
+
   if x_len = 0 then [||]
   else (
     let r = Owl_utils_stack.make () in
@@ -200,7 +221,10 @@ let filter2 f x y = filter2i (fun _ a b -> f a b) x y
 let filter2i_i f x y =
   let len_x = Array.length x in
   let len_y = Array.length y in
-  assert (len_x = len_y);
+
+  let exn = Owl_exception.DIFFERENT_SIZE (len_x, len_y) in
+  Owl_exception.check (len_x = len_y) exn;
+
   if len_x = 0 then [||]
   else (
     let r = Owl_utils_stack.make () in

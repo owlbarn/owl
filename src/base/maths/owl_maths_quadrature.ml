@@ -7,7 +7,11 @@
 
 
 let trapzd f a b n =
-  assert (n > 0 && a <= b);
+  let error () =
+    let s = Printf.sprintf "trapzd requires n > 0 and a <= b whereas n = %i, a = %g, b = %g" n a b in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (n > 0 && a <= b) error;
 
   if n = 1 then (
     0.5 *. (b -. a) *. (f a +. f b)
