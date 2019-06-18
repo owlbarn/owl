@@ -9,12 +9,13 @@ open Owl_types
 
 let remote_data_path () = "https://github.com/ryanrhymes/owl_dataset/raw/master/"
 
-let local_data_path () =
-  let d = Sys.getenv "HOME" ^ "/.owl/dataset/" in
-  if Sys.file_exists d = false then (
-    Owl_log.info "create %s" d;
-    Unix.mkdir d 0o755;
-  );
+let local_data_path () : string =
+  let home = Sys.getenv "HOME" ^ "/.owl" in
+  let d = home ^ "/dataset" in
+  Owl_log.info "create %s if not present" d;
+  (* Note: use of Sys.file_exist is racy *)
+  (try Unix.mkdir home 0o755 with Unix. Unix_error(EEXIST, _, _) -> ());
+  (try Unix.mkdir d 0o755 with Unix. Unix_error(EEXIST, _, _) -> ());
   d
 
 let download_data fname =
