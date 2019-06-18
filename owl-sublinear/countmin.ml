@@ -101,6 +101,8 @@ module PrioQueue = struct
 
   let empty = Empty
 
+  let isempty = ( = ) empty
+
   let rec insert prio elt = function
     | Empty -> Node(prio, elt, Empty, Empty)
     | Node(p, e, left, right) ->
@@ -169,7 +171,8 @@ module MakeHeavyHitters (CM : Countmin_sig) = struct
     if (v_count |> float_of_int) > threshold then
       h.queue := !(h.queue) |> PrioQueue.find_and_remove v |> PrioQueue.insert v_count v;
     let rec clean_queue threshold queue = 
-      if PrioQueue.peek queue |> snd |> float_of_int < threshold then
+      if not (PrioQueue.isempty queue) 
+         && (PrioQueue.peek queue |> snd |> float_of_int < threshold) then
         try 
           clean_queue threshold (PrioQueue.remove_top queue)
         with PrioQueue.Queue_is_empty -> PrioQueue.empty
@@ -239,7 +242,7 @@ let test_heavy_hitters distr k eps del n =
   done;
   let hh_sketch = HH.get h in
   let foldfn v ct acc = if (float_of_int ct) > ((float_of_int n) /. k) then (v, ct) :: acc else acc in 
-  let hh_hashtbl = Hashtbl.fold foldfn t [] |>  List.sort (fun (_,a) (_,b) -> a - b) in
+  let hh_hashtbl = Hashtbl.fold foldfn t [] |>  List.sort (fun (_,a) (_,b) -> b - a) in
   hh_sketch, hh_hashtbl
 
 let unif_test a b = fun _ -> Owl.Stats.uniform_int_rvs ~a:a ~b:b
