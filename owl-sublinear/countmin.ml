@@ -104,15 +104,15 @@ module PrioQueue = struct
   let isempty = ( = ) empty
 
   let rec insert prio elt = function
-    | Empty -> Node(prio, elt, Empty, Empty)
+    | Empty                   -> Node(prio, elt, Empty, Empty)
     | Node(p, e, left, right) ->
       if prio <= p
       then Node(prio, elt, insert p e right, left)
       else Node(p, e, insert prio elt right, left)
   
   let rec remove_top = function
-    | Empty -> raise Queue_is_empty
-    | Node(prio, elt, left, Empty) -> left
+    | Empty                         -> raise Queue_is_empty
+    | Node(prio, elt, left, Empty)  -> left
     | Node(prio, elt, Empty, right) -> right
     | Node(prio, elt, (Node(lprio, lelt, _, _) as left),
                       (Node(rprio, relt, _, _) as right)) ->
@@ -122,12 +122,12 @@ module PrioQueue = struct
   
   (* get the min element of the queue, its priority, and the rest of the queue *)
   let extract = function
-    | Empty -> raise Queue_is_empty
+    | Empty                          -> raise Queue_is_empty
     | Node(prio, elt, _, _) as queue -> (prio, elt, remove_top queue)
 
   (* find and delete all instances of element v in the queue.  Asymptotically O(n) *)
   let rec find_and_remove v = function
-    | Empty -> Empty
+    | Empty                                  -> Empty
     | Node (prio, elt, left, right) as queue ->
       if v = elt then remove_top queue
       else Node (prio, elt, find_and_remove v left, find_and_remove v right)
@@ -144,7 +144,7 @@ module PrioQueue = struct
   
   (* get the lowest-priority element and its priority *)
   let peek = function
-  | Empty -> raise Queue_is_empty
+  | Empty                 -> raise Queue_is_empty
   | Node(prio, elt, _, _) -> (elt, prio)
 end
 
@@ -200,16 +200,22 @@ let simple_test_countmin eps del =
     CM.count s x |> Printf.printf "count of %2d : %5d \n" x
   done
 
+(* utilities for hashtable-based frequency table *)
+let ht_count t x = 
+  match Hashtbl.find_opt t x with
+  | Some c -> c
+  | None   -> 0 
+let ht_incr t x = Hashtbl.replace t x ((ht_count t x) + 1) 
+
+(* distribution sampling functions for testing *)
+let unif_test a b = fun _ -> Owl.Stats.uniform_int_rvs ~a:a ~b:b
+let binom_test n p = fun _ -> Owl.Stats.binomial_rvs ~n:n ~p:p
+
 (* Test the countmin sketch by putting n samples from the function distr
  * into a sketch and into the hashtable-based naive frequency counter, then
- * comparing their outputs *)
+ * comparing their outputs in a plot *)
 let test_countmin_hashtbl distr eps del n =
   let module CM = Countmin_native in 
-  let ht_count t x = 
-    match Hashtbl.find_opt t x with
-    | Some c -> c
-    | None -> 0 in
-  let ht_incr t x = Hashtbl.replace t x ((ht_count t x) + 1) in
   let s = CM.init eps del in
   let t = Hashtbl.create n in
   for i = 1 to n do
@@ -227,6 +233,9 @@ let test_countmin_hashtbl distr eps del n =
   Plot.output h ;
   outputs, diffs
 
+(* Test the k-heavy-hitters sketch by inserting n samples from the function distr
+ * into the sketch and a hashtable-based naive frequency counter, then outputing
+ * the lists of heavy hitters for comparison *)
 let test_heavy_hitters distr k eps del n = 
   let module HH = HH_native in 
   let ht_count t x = 
@@ -245,5 +254,3 @@ let test_heavy_hitters distr k eps del n =
   let hh_hashtbl = Hashtbl.fold foldfn t [] |>  List.sort (fun (_,a) (_,b) -> b - a) in
   hh_sketch, hh_hashtbl
 
-let unif_test a b = fun _ -> Owl.Stats.uniform_int_rvs ~a:a ~b:b
-let binom_test n p = fun _ -> Owl.Stats.binomial_rvs ~n:n ~p:p
