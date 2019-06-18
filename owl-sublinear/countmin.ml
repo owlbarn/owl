@@ -1,5 +1,5 @@
 (* TODO separate this into a different file *)
-module Countmin_table_sig = struct 
+module Countmin_table = struct 
   (* A module type for the tables used to implement the CountMin sketch. *)
   module type Sig = sig 
     (* the underlying table *)
@@ -46,7 +46,7 @@ module type Countmin_sig = sig
 end
 
 (* Functor to make the CountMin sketch using a specified underlying table *)
-module Make (T : Countmin_table_sig.Sig) : Countmin_sig = struct
+module Make (T : Countmin_table.Sig) : Countmin_sig = struct
   (* the type of sketches *)
   type sketch = 
     {tbl : T.t ; 
@@ -88,8 +88,8 @@ module Make (T : Countmin_table_sig.Sig) : Countmin_sig = struct
     Array.fold_left foldfn max_int s.hash_fns
 end
 
-module Countmin_native = Make(Countmin_table_sig.Native_table)
-module Countmin_owl = Make(Countmin_table_sig.Owl_table)
+module Countmin_native = Make(Countmin_table.Native_table)
+module Countmin_owl = Make(Countmin_table.Owl_table)
 
 (* Priority queue implementation for finding heavy hitters.  From
  * http://caml.inria.fr/pub/docs/manual-ocaml/moduleexamples.html 
@@ -147,38 +147,41 @@ module PrioQueue = struct
 end
 
 (* functor to make an online heavy hitters sketch based on CountMin *)
-module HeavyHitters (CM : Countmin_sig) = struct
+module MakeHeavyHitters (CM : Countmin_sig) = struct
   type t = {sketch : CM.sketch ; 
-            queue : int PrioQueue.queue ;
-            size : int ;
+            queue : int PrioQueue.queue ref ;
+            size : int ref;
             k : float}
 
   (* Initialize a heavy-hitters sketch with threshold k, approximation ratio epsilon,
    * and failure probability delta.  *)
   let init k epsilon delta = 
     {sketch = CM.init epsilon delta ; 
-     queue = PrioQueue.empty ; 
-     size = 0 ;
+     queue = ref PrioQueue.empty ; 
+     size = ref 0 ;
      k = k}
   
   let add h v =
     CM.incr h.sketch v;
-    let size = h.size + 1 in
+    h.size := !(h.size) + 1;
     let v_count = CM.count h.sketch v in
-    let threshold = (float_of_int size) /. h.k in
-    let queue = 
-      if (v_count |> float_of_int) > threshold then
-        h.queue |> PrioQueue.find_and_remove v |> PrioQueue.insert v_count v
-      else h.queue in
+    let threshold = (float_of_int !(h.size)) /. h.k in
+    if (v_count |> float_of_int) > threshold then
+      h.queue := !(h.queue) |> PrioQueue.find_and_remove v |> PrioQueue.insert v_count v;
     let rec clean_queue threshold queue = 
       if PrioQueue.peek queue |> snd |> float_of_int < threshold then
-        clean_queue threshold (PrioQueue.remove_top queue)
+        try 
+          clean_queue threshold (PrioQueue.remove_top queue)
+        with PrioQueue.Queue_is_empty -> PrioQueue.empty
       else queue
-    in
-    {h with queue = clean_queue threshold queue ; size = size}
+    in 
+    h.queue := clean_queue threshold !(h.queue)
 
-  let get h = PrioQueue.to_sorted_list h.queue
+  let get h = PrioQueue.to_sorted_list !(h.queue)
 end
+
+module HH_native = MakeHeavyHitters(Countmin_native)
+module HH_owl = MakeHeavyHitters(Countmin_owl)
 
 (* simple test - add a bunch of elements with skewed distribution to the sketch then count them *)
 let simple_test_countmin eps del =
@@ -210,7 +213,7 @@ let test_countmin_hashtbl distr eps del n =
     let v = distr () in
     CM.incr s v ; ht_incr t v
   done;
-  let foldfn v ct lst = (v, ct, CM.count s v) :: lst in
+  let foldfn v ct acc = (v, ct, CM.count s v) :: acc in
   let outputs = Hashtbl.fold foldfn t [] |> List.sort (fun (_,a,_) (_,b,_) -> a - b) |> Array.of_list in
   let diffs = Array.map (fun (_, tct, sct) -> (float_of_int (sct - tct)) /. (float_of_int tct)) outputs in
   let diffs_mat = 
@@ -220,3 +223,24 @@ let test_countmin_hashtbl distr eps del n =
   Plot.histogram ~h ~bin:200 (diffs_mat) ;
   Plot.output h ;
   outputs, diffs
+
+let test_heavy_hitters distr k eps del n = 
+  let module HH = HH_native in 
+  let ht_count t x = 
+    match Hashtbl.find_opt t x with
+    | Some c -> c
+    | None -> 0 in
+  let ht_incr t x = Hashtbl.replace t x ((ht_count t x) + 1) in
+  let h = HH.init k eps del in
+  let t = Hashtbl.create n in
+  for i = 1 to n do
+    let v = distr () in
+    HH.add h v ; ht_incr t v
+  done;
+  let hh_sketch = HH.get h in
+  let foldfn v ct acc = if (float_of_int ct) > ((float_of_int n) /. k) then (v, ct) :: acc else acc in 
+  let hh_hashtbl = Hashtbl.fold foldfn t [] |>  List.sort (fun (_,a) (_,b) -> a - b) in
+  hh_sketch, hh_hashtbl
+
+let unif_test a b = fun _ -> Owl.Stats.uniform_int_rvs ~a:a ~b:b
+let binom_test n p = fun _ -> Owl.Stats.binomial_rvs ~n:n ~p:p
