@@ -72,3 +72,5 @@ let test_heavy_hitters distr k eps del n =
   in
   let hh_hashtbl = Hashtbl.fold foldfn t [] |> List.sort (fun (_, a) (_, b) -> b - a) in
   hh_sketch, hh_hashtbl
+
+
