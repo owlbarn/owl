@@ -2,27 +2,30 @@
  * Given a threshold k, this sketch will return all elements inserted into it
  * which appear at least n/k times among the n elements inserted into it. *)
 module Make (CM : Owl_countmin_sketch.Sig) = struct
-  module PQPair = struct 
-    type elt = int
-    type t = elt * int 
-    let compare (_,p0) (_,p1) = Pervasives.compare p0 p1
-  end
-  module PQSet = Set.Make(PQPair)
-
-  type t =
-    { sketch : CM.sketch
-    ; mutable queue : PQSet.t
+  type ('a, 'b) inner =
+    { s : (module Set.S with type elt = 'a * int and type t = 'b)
+    ; sketch : 'a CM.sketch
+    ; mutable queue : 'b
     ; mutable size : int
     ; k : float
     }
+  
+  type 'a t = E : ('a, 'b) inner -> 'a t
 
   (* Initialize a heavy-hitters sketch with threshold k, approximation ratio epsilon,
    * and failure probability delta.  *)
-  let init k epsilon delta =
-    { sketch = CM.init epsilon delta; queue = PQSet.empty; size = 0; k }
+  let init ~k ~epsilon ~delta (type a) =
+    let module PQPair = struct 
+      type t = a * int 
+      let compare (_,p0) (_,p1) = Pervasives.compare p0 p1
+    end
+    in 
+    let module S = Set.Make(PQPair) in
+    E {s = (module S); sketch = CM.init ~epsilon ~delta; queue = S.empty; size = 0; k }
 
   (* Add value v to sketch h in-place. *)
-  let add h v =
+  let add (type a) (E h : a t) v =
+    let module PQSet = (val h.s) in
     CM.incr h.sketch v;
     h.size <- h.size + 1;
     let v_count = CM.count h.sketch v in
@@ -41,7 +44,9 @@ module Make (CM : Owl_countmin_sketch.Sig) = struct
 
   (* Return all heavy-hitters among the data thus far added, sorted in decreasing order
    * of frequency. *)
-  let get h = PQSet.elements h.queue |> List.rev
+  let get (type a) (E h : a t) = 
+    let module PQSet = (val h.s) in 
+    PQSet.elements h.queue |> List.rev
 end
 
 module Native = Make (Owl_countmin_sketch.Native)

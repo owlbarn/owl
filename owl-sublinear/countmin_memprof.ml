@@ -1,24 +1,8 @@
-(* simple test - add a bunch of elements with skewed distribution to the sketch then count them *)
-let simple_test_countmin eps del =
-  let module CM = Owl_base.Countmin_sketch.Native in
-  let s = CM.init eps del in
-  for x = 1 to 30 do
-    Printf.printf "expected count of %2d : %5d \n" x (10000 / x);
-    for i = 1 to 10000 / x do
-      CM.incr s x
-    done
-  done;
-  for x = 1 to 30 do
-    CM.count s x |> Printf.printf "count of %2d : %5d \n" x
-  done
-
-
 (* utilities for hashtable-based frequency table *)
 let ht_count t x =
   match Hashtbl.find_opt t x with
   | Some c -> c
   | None -> 0
-
 
 let ht_incr t x = Hashtbl.replace t x (ht_count t x + 1)
 
@@ -26,76 +10,73 @@ let ht_incr t x = Hashtbl.replace t x (ht_count t x + 1)
 let unif_test a b _ = Owl.Stats.uniform_int_rvs ~a ~b
 let binom_test n p _ = Owl.Stats.binomial_rvs ~n ~p
 
-(* Test the countmin sketch by putting n samples from the function distr
- * into a sketch and into the hashtable-based naive frequency counter, then
- * comparing their outputs in a plot *)
-let test_countmin_hashtbl distr eps del n =
-  let module CM = Owl_base.Countmin_sketch.Native in
-  let s = CM.init eps del in
-  let t = Hashtbl.create n in
-  for i = 1 to n do
-    let v = distr () in
-    CM.incr s v;
-    ht_incr t v
-  done;
-  let foldfn v ct acc = (v, ct, CM.count s v) :: acc in
-  let outputs =
-    Hashtbl.fold foldfn t []
-    |> List.sort (fun (_, a, _) (_, b, _) -> a - b)
-    |> Array.of_list
-  in
-  let diffs =
-    Array.map (fun (_, tct, sct) -> float_of_int (sct - tct) /. float_of_int tct) outputs
-  in
-  let diffs_mat = Owl.Mat.init_2d (Array.length diffs) 1 (fun i _ -> diffs.(i)) in
-  let open Owl_plplot in
-  let h = Plot.create "diffs.png" in
-  Plot.histogram ~h ~bin:200 diffs_mat;
-  Plot.output h;
-  outputs, diffs
-
-(* Test the k-heavy-hitters sketch by inserting n samples from the function distr
- * into the sketch and a hashtable-based naive frequency counter, then outputting
- * the lists of heavy hitters for comparison *)
-let test_heavy_hitters distr k eps del n =
-  let module HH = Owl_base.HeavyHitters_sketch.Native in
-  let h = HH.init k eps del in
-  let t = Hashtbl.create n in
-  for i = 1 to n do
-    let v = distr () in
-    HH.add h v;
-    ht_incr t v
-  done;
-  let hh_sketch = HH.get h in
-  let foldfn v ct acc =
-    if float_of_int ct > float_of_int n /. k then (v, ct) :: acc else acc
-  in
-  let hh_hashtbl = Hashtbl.fold foldfn t [] |> List.sort (fun (_, a) (_, b) -> b - a) in
-  hh_sketch, hh_hashtbl
+module CM = Owl_base.Countmin_sketch.Owl
 
 (* Check the memory usage of the countmin sketch. We do not expect any allocation to
  * take place after the INITIALIZE line. *)
 let test_countmin_memory_usage distr eps del n oc =
   let open Printf in
-  let module CM = Owl_base.Countmin_sketch.Native in
   fprintf oc "PARAMS: eps = %f, del = %f, n = %d\n" eps del n;
   fprintf oc "BEGIN: live_words = %d\n" (Gc.(stat ()).live_words);
   let s = CM.init eps del in
   fprintf oc "INITIALIZE: live_words = %d\n" (Gc.(stat ()).live_words);
   for i = 1 to n do
     CM.incr s (distr ());
-    if i mod 1000 = 0 then
+    if i mod (n / 10) = 0 then
       fprintf oc "INCR %d: live_words = %d\n" i (Gc.(stat ()).live_words);
   done;
   for i = 1 to n do
-    let v = distr () in
-    let cv = CM.count s v in
-    if i mod 1000 = 0 then
-      fprintf oc "COUNT %d %d: live_words = %d\n" v cv (Gc.(stat ()).live_words);
+    ignore (CM.count s (distr ()));
+    if i mod (n / 10) = 0 then
+      fprintf oc "COUNT %d: live_words = %d\n" i (Gc.(stat ()).live_words);
   done;
   fprintf oc "COMPLETE: live_words = %d\n" (Gc.(stat ()).live_words)
 
-let oc = open_out "countmin_memory_usage_native.log" ;;
-test_countmin_memory_usage (binom_test 100 0.4) 0.0001 0.01 20000 oc ;;
-close_out oc ;;
+let time f x =
+  let t0 = Unix.gettimeofday () in
+  let ans = f x in
+  let t = (Unix.gettimeofday ()) -. t0 in
+  ans, t
 
+let test_countmin_performance distr eps del n oc =
+  let open Printf in
+  fprintf oc "BEGIN TIME PROFILING--------------\n";
+  fprintf oc "PARAMS: eps = %f, del = %f, n = %d\n" eps del n;
+  let s, t_init = time (fun _ -> CM.init ~epsilon:eps ~delta:del) () in
+  fprintf oc "init time = %f\n" t_init;
+  let incrfn () = for i = 1 to n do CM.incr s (distr ()) done in
+  let _, t_incr = time incrfn () in
+  fprintf oc "time to incr %d elements = %f (average time per add = %f)\n" 
+    n t_incr (t_incr /. (float_of_int n));
+  let countfn () = for i = 1 to n do ignore (CM.count s (distr ())) done in
+  let _, t_count = time countfn () in
+  fprintf oc "time to count %d elements = %f (average time per count = %f)\n" 
+    n t_count (t_count /. (float_of_int n));
+  fprintf oc "\n\nBEGIN MEMORY PROFILING--------------\n";
+  test_countmin_memory_usage distr eps del n oc
+
+let test_heavyhitters_performance distr k eps del n oc =
+  let module HH = Owl_base.HeavyHitters_sketch.Native in
+  let open Printf in
+  fprintf oc "BEGIN TIME PROFILING--------------\n";
+  fprintf oc "PARAMS: k = %f, eps = %f, del = %f, n = %d\n" k eps del n;
+  let h, t_init = time (fun _ -> HH.init ~k ~epsilon:eps ~delta:del) () in
+  fprintf oc "init time = %f\n" t_init;
+  let incrfn () = for i = 1 to n do HH.add h (distr ()) done in
+  let _, t_incr = time incrfn () in
+  fprintf oc "time to add %d elements = %f (average time per add = %f)\n" 
+    n t_incr (t_incr /. (float_of_int n));
+  let getfn () = for i = 1 to n do ignore (HH.get h) done in
+  let _, t_get = time getfn () in
+  fprintf oc "time to get heavy hitters %d times = %f (average time per count = %f)\n" 
+    n t_get (t_get /. (float_of_int n));
+  fprintf oc "\n\nBEGIN MEMORY PROFILING--------------\n"
+  (* test_countmin_memory_usage distr eps del n oc *)
+
+(* let oc = open_out "countmin_performance_owl.log" ;;
+test_countmin_performance (binom_test 100 0.4) 0.0001 0.01 1000000 oc ;;
+close_out oc ;; *)
+
+let oc = open_out "heavyhitters_performance_native.log" ;;
+test_heavyhitters_performance (binom_test 100 0.4) 10.0 0.0001 0.01 1000000 oc ;;
+close_out oc ;;

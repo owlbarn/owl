@@ -1,15 +1,15 @@
 module type Sig = sig
-  type sketch
+  type 'a sketch
 
-  val init : float -> float -> sketch
-  val incr : sketch -> int -> unit
-  val count : sketch -> int -> int
+  val init : epsilon:float -> delta:float -> 'a sketch
+  val incr : 'a sketch -> 'a -> unit
+  val count : 'a sketch -> 'a -> int
 end
 
 (* Functor to make the CountMin sketch using a specified underlying table *)
 module Make (T : Owl_countmin_table.Sig) : Sig = struct
   (* the type of sketches *)
-  type sketch =
+  type 'a sketch =
     { tbl : T.t
     ; w : int
     ; hash_fns : (int * int * int) array
@@ -34,7 +34,7 @@ module Make (T : Owl_countmin_table.Sig) : Sig = struct
 
   (* Initialize a sketch with approximation ratio 1 + epsilon 
    * and failure probability delta *)
-  let init epsilon delta =
+  let init ~epsilon ~delta =
     (* set l = log (1/delta) and w = 1/epsilon *)
     init_lw
       Owl_base_maths.(1. /. delta |> log2 |> ceil |> int_of_float)
@@ -43,13 +43,15 @@ module Make (T : Owl_countmin_table.Sig) : Sig = struct
 
   (* increment the count of x in sketch s *)
   let incr s x =
-    let iterfn (i, ai, bi) = T.incr i (hash31 x ai bi mod s.w) s.tbl in
+    let xh = Hashtbl.hash x in
+    let iterfn (i, ai, bi) = T.incr i (hash31 xh ai bi mod s.w) s.tbl in
     Array.iter iterfn s.hash_fns
 
 
   (* get the current estimate of the count of x in sketch s *)
   let count s x =
-    let foldfn prv (i, ai, bi) = T.get i (hash31 x ai bi mod s.w) s.tbl |> min prv in
+    let xh = Hashtbl.hash x in
+    let foldfn prv (i, ai, bi) = T.get i (hash31 xh ai bi mod s.w) s.tbl |> min prv in
     Array.fold_left foldfn max_int s.hash_fns
 end
 
