@@ -22,13 +22,13 @@ module Native : Sig = struct
   let get i j t = t.(i).(j)
 end
 
-module M = Owl_base_dense_ndarray_d
+module D = Owl_base_dense_ndarray_d
 
 (* Implementation of the CountMin sketch table using Owl ndarrays *)
 module Owl : Sig = struct
-  type t = M.arr
+  type t = D.arr
 
-  let init l w = M.zeros [| l; w |]
-  let incr i j t = M.set t [| i; j |] (M.get t [| i; j |] +. 1.)
-  let get i j t = M.get t [| i; j |] |> int_of_float
+  let init l w = D.zeros [| l; w |]
+  let incr i j t = D.set t [| i; j |] (D.get t [| i; j |] +. 1.)
+  let get i j t = D.get t [| i; j |] |> int_of_float
 end

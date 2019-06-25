@@ -73,7 +73,29 @@ let test_heavy_hitters distr k eps del n =
   let hh_hashtbl = Hashtbl.fold foldfn t [] |> List.sort (fun (_, a) (_, b) -> b - a) in
   hh_sketch, hh_hashtbl
 
+(* Check the memory usage of the countmin sketch. We do not expect any allocation to
+ * take place after the INITIALIZE line. *)
+let test_countmin_memory_usage distr eps del n oc =
+  let open Printf in
+  let module CM = Owl_base.Countmin_sketch.Native in
+  fprintf oc "PARAMS: eps = %f, del = %f, n = %d\n" eps del n;
+  fprintf oc "BEGIN: live_words = %d\n" (Gc.(stat ()).live_words);
+  let s = CM.init eps del in
+  fprintf oc "INITIALIZE: live_words = %d\n" (Gc.(stat ()).live_words);
+  for i = 1 to n do
+    CM.incr s (distr ());
+    if i mod 1000 = 0 then
+      fprintf oc "INCR %d: live_words = %d\n" i (Gc.(stat ()).live_words);
+  done;
+  for i = 1 to n do
+    let v = distr () in
+    let cv = CM.count s v in
+    if i mod 1000 = 0 then
+      fprintf oc "COUNT %d %d: live_words = %d\n" v cv (Gc.(stat ()).live_words);
+  done;
+  fprintf oc "COMPLETE: live_words = %d\n" (Gc.(stat ()).live_words)
 
-let _ = test_countmin_hashtbl (binom_test 100 0.4) 0.001 0.01 100000
-
+let oc = open_out "countmin_memory_usage_native.log" ;;
+test_countmin_memory_usage (binom_test 100 0.4) 0.0001 0.01 20000 oc ;;
+close_out oc ;;
 
