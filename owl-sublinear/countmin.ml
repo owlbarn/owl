@@ -1,7 +1,7 @@
 (* simple test - add a bunch of elements with skewed distribution to the sketch then count them *)
 let simple_test_countmin eps del =
   let module CM = Owl_base.Countmin_sketch.Native in
-  let s = CM.init eps del in
+  let s = CM.init ~epsilon:eps ~delta:del in
   for x = 1 to 30 do
     Printf.printf "expected count of %2d : %5d \n" x (10000 / x);
     for i = 1 to 10000 / x do
@@ -31,7 +31,7 @@ let binom_test n p _ = Owl.Stats.binomial_rvs ~n ~p
  * comparing their outputs in a plot *)
 let test_countmin_hashtbl distr eps del n =
   let module CM = Owl_base.Countmin_sketch.Native in
-  let s = CM.init eps del in
+  let s = CM.init ~epsilon:eps ~delta:del in
   let t = Hashtbl.create n in
   for i = 1 to n do
     let v = distr () in
@@ -59,7 +59,7 @@ let test_countmin_hashtbl distr eps del n =
  * the lists of heavy hitters for comparison *)
 let test_heavy_hitters distr k eps del n =
   let module HH = Owl_base.HeavyHitters_sketch.Native in
-  let h = HH.init k eps del in
+  let h = HH.init ~k ~epsilon:eps ~delta:del in
   let t = Hashtbl.create n in
   for i = 1 to n do
     let v = distr () in

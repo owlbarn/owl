@@ -10,73 +10,97 @@ let ht_incr t x = Hashtbl.replace t x (ht_count t x + 1)
 let unif_test a b _ = Owl.Stats.uniform_int_rvs ~a ~b
 let binom_test n p _ = Owl.Stats.binomial_rvs ~n ~p
 
-module CM = Owl_base.Countmin_sketch.Owl
-
-(* Check the memory usage of the countmin sketch. We do not expect any allocation to
- * take place after the INITIALIZE line. *)
-let test_countmin_memory_usage distr eps del n oc =
-  let open Printf in
-  fprintf oc "PARAMS: eps = %f, del = %f, n = %d\n" eps del n;
-  fprintf oc "BEGIN: live_words = %d\n" (Gc.(stat ()).live_words);
-  let s = CM.init eps del in
-  fprintf oc "INITIALIZE: live_words = %d\n" (Gc.(stat ()).live_words);
-  for i = 1 to n do
-    CM.incr s (distr ());
-    if i mod (n / 10) = 0 then
-      fprintf oc "INCR %d: live_words = %d\n" i (Gc.(stat ()).live_words);
-  done;
-  for i = 1 to n do
-    ignore (CM.count s (distr ()));
-    if i mod (n / 10) = 0 then
-      fprintf oc "COUNT %d: live_words = %d\n" i (Gc.(stat ()).live_words);
-  done;
-  fprintf oc "COMPLETE: live_words = %d\n" (Gc.(stat ()).live_words)
-
+(* time one run of function f on input x *)
 let time f x =
+  Gc.compact ();
   let t0 = Unix.gettimeofday () in
   let ans = f x in
   let t = (Unix.gettimeofday ()) -. t0 in
   ans, t
 
+(* time n iterations of operation op with input from inp *)
+let time_n n op inp = 
+  let ttime = ref 0. in
+  for i = 1 to n do
+    Gc.compact ();
+    let inpv = inp () in
+    let t0 = Unix.gettimeofday () in
+    let _ = op inpv in
+    let t1 = Unix.gettimeofday () in
+    ttime := !ttime +. (t1 -. t0)
+  done;
+  !ttime
+
+module CM = Owl_base.Countmin_sketch.Native
+module HH = Owl_base.HeavyHitters_sketch.Native
+
+let test_countmin_memory_usage distr eps del n oc =
+  let open Printf in
+  fprintf oc "PARAMS: eps = %f, del = %f, n = %d\n" eps del n; flush oc;
+  fprintf oc "BEGIN: live_words = %d\n" (Gc.(stat ()).live_words); flush oc;
+  let s = CM.init ~epsilon:eps ~delta:del in
+  fprintf oc "INITIALIZE: live_words = %d\n" (Gc.(stat ()).live_words); flush oc;
+  for i = 1 to n do
+    CM.incr s (distr ());
+    if i mod (n / 10) = 0 then
+      fprintf oc "INCR %d: live_words = %d\n" i (Gc.(stat ()).live_words); flush oc;
+  done;
+  for i = 1 to n do
+    ignore (CM.count s (distr ()));
+    if i mod (n / 10) = 0 then
+      fprintf oc "COUNT %d: live_words = %d\n" i (Gc.(stat ()).live_words); flush oc;
+  done;
+  fprintf oc "COMPLETE: live_words = %d\n" (Gc.(stat ()).live_words); flush oc
+
 let test_countmin_performance distr eps del n oc =
   let open Printf in
-  fprintf oc "BEGIN TIME PROFILING--------------\n";
-  fprintf oc "PARAMS: eps = %f, del = %f, n = %d\n" eps del n;
+  fprintf oc "BEGIN TIME PROFILING--------------\n"; flush oc;
+  fprintf oc "PARAMS: eps = %f, del = %f, n = %d\n" eps del n; flush oc;
   let s, t_init = time (fun _ -> CM.init ~epsilon:eps ~delta:del) () in
-  fprintf oc "init time = %f\n" t_init;
-  let incrfn () = for i = 1 to n do CM.incr s (distr ()) done in
-  let _, t_incr = time incrfn () in
+  fprintf oc "init time = %f\n" t_init; flush oc;
+  let t_incr = time_n n (fun v -> CM.incr s v) distr in
   fprintf oc "time to incr %d elements = %f (average time per add = %f)\n" 
-    n t_incr (t_incr /. (float_of_int n));
-  let countfn () = for i = 1 to n do ignore (CM.count s (distr ())) done in
-  let _, t_count = time countfn () in
+    n t_incr (t_incr /. (float_of_int n)); flush oc;
+  let t_count = time_n n (fun v -> CM.count s v) distr in
   fprintf oc "time to count %d elements = %f (average time per count = %f)\n" 
-    n t_count (t_count /. (float_of_int n));
-  fprintf oc "\n\nBEGIN MEMORY PROFILING--------------\n";
+    n t_count (t_count /. (float_of_int n)); flush oc;
+  fprintf oc "\n\nBEGIN MEMORY PROFILING--------------\n"; flush oc;
   test_countmin_memory_usage distr eps del n oc
 
-let test_heavyhitters_performance distr k eps del n oc =
-  let module HH = Owl_base.HeavyHitters_sketch.Native in
-  let open Printf in
-  fprintf oc "BEGIN TIME PROFILING--------------\n";
-  fprintf oc "PARAMS: k = %f, eps = %f, del = %f, n = %d\n" k eps del n;
-  let h, t_init = time (fun _ -> HH.init ~k ~epsilon:eps ~delta:del) () in
-  fprintf oc "init time = %f\n" t_init;
-  let incrfn () = for i = 1 to n do HH.add h (distr ()) done in
-  let _, t_incr = time incrfn () in
-  fprintf oc "time to add %d elements = %f (average time per add = %f)\n" 
-    n t_incr (t_incr /. (float_of_int n));
-  let getfn () = for i = 1 to n do ignore (HH.get h) done in
-  let _, t_get = time getfn () in
-  fprintf oc "time to get heavy hitters %d times = %f (average time per count = %f)\n" 
-    n t_get (t_get /. (float_of_int n));
-  fprintf oc "\n\nBEGIN MEMORY PROFILING--------------\n"
-  (* test_countmin_memory_usage distr eps del n oc *)
 
-(* let oc = open_out "countmin_performance_owl.log" ;;
-test_countmin_performance (binom_test 100 0.4) 0.0001 0.01 1000000 oc ;;
-close_out oc ;; *)
+let test_heavyhitters_memory_usage distr k eps del n oc =
+  let open Printf in
+  fprintf oc "PARAMS: eps = %f, del = %f, n = %d\n" eps del n; flush oc;
+  fprintf oc "BEGIN: live_words = %d\n" (Gc.(stat ()).live_words); flush oc;
+  let h = HH.init ~k ~epsilon:eps ~delta:del in
+  fprintf oc "INITIALIZE: live_words = %d\n" (Gc.(stat ()).live_words); flush oc;
+  for i = 1 to n do
+    HH.add h (distr ());
+    if i mod (n / 10) = 0 then
+      fprintf oc "ADD %d: live_words = %d\n" i (Gc.(stat ()).live_words); flush oc;
+  done;
+  ignore (HH.get h);
+  fprintf oc "GET: live_words = %d\n" (Gc.(stat ()).live_words); flush oc
+
+let test_heavyhitters_performance distr k eps del n oc =
+  let open Printf in
+  fprintf oc "BEGIN TIME PROFILING--------------\n"; flush oc;
+  fprintf oc "PARAMS: k = %f, eps = %f, del = %f, n = %d\n" k eps del n; flush oc;
+  let h, t_init = time (fun _ -> HH.init ~k ~epsilon:eps ~delta:del) () in
+  fprintf oc "init time = %f\n" t_init; flush oc;
+  let t_incr = time_n n (fun v -> HH.add h v) distr in
+  fprintf oc "time to add %d elements = %f (average time per add = %f)\n" 
+    n t_incr (t_incr /. (float_of_int n)); flush oc;
+  let t_get = time_n n (fun _ -> HH.get h) (fun () -> ()) in
+  fprintf oc "time to get heavy hitters %d times = %f (average time per count = %f)\n" 
+    n t_get (t_get /. (float_of_int n)); flush oc;
+  fprintf oc "\n\nBEGIN MEMORY PROFILING--------------\n"; flush oc;
+  test_heavyhitters_memory_usage distr k eps del n oc
+
+let oc = open_out "countmin_performance_native.log" ;;
+test_countmin_performance (binom_test 100 0.4) 0.0001 0.01 100000 oc ;;
+close_out oc ;;
 
 let oc = open_out "heavyhitters_performance_native.log" ;;
-test_heavyhitters_performance (binom_test 100 0.4) 10.0 0.0001 0.01 1000000 oc ;;
+test_heavyhitters_performance (binom_test 100 0.4) 10.0 0.0001 0.01 100000 oc ;;
 close_out oc ;;
