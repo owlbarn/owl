@@ -1,7 +1,8 @@
 (* functor to make an online heavy hitters sketch based on CountMin.
  * Given a threshold k, this sketch will return all elements inserted into it
  * which appear at least n/k times among the n elements inserted into it. *)
-module Make (CM : Owl_countmin_sketch.Sig) = struct
+module Make (CM : Owl_countmin_sketch_sig.Sig) : Owl_heavyhitters_sketch_sig.Sig = struct
+  (* type system magic based on https://www.reddit.com/r/ocaml/comments/4j090g/how_to_define_a_polymorphic_set_module_based_on/ *)
   type ('a, 'b) inner =
     { s : (module Set.S with type elt = 'a * int and type t = 'b)
     ; sketch : 'a CM.sketch
@@ -12,8 +13,6 @@ module Make (CM : Owl_countmin_sketch.Sig) = struct
   
   type 'a t = E : ('a, 'b) inner -> 'a t
 
-  (* Initialize a heavy-hitters sketch with threshold k, approximation ratio epsilon,
-   * and failure probability delta.  *)
   let init ~k ~epsilon ~delta (type a) =
     let module PQPair = struct 
       type t = a * int 
@@ -23,7 +22,6 @@ module Make (CM : Owl_countmin_sketch.Sig) = struct
     let module S = Set.Make(PQPair) in
     E {s = (module S); sketch = CM.init ~epsilon ~delta; queue = S.empty; size = 0; k }
 
-  (* Add value v to sketch h in-place. *)
   let add (type a) (E h : a t) v =
     let module PQSet = (val h.s) in
     CM.incr h.sketch v;
@@ -42,8 +40,6 @@ module Make (CM : Owl_countmin_sketch.Sig) = struct
     in
     h.queue <- clean_queue h.queue
 
-  (* Return all heavy-hitters among the data thus far added, sorted in decreasing order
-   * of frequency. *)
   let get (type a) (E h : a t) = 
     let module PQSet = (val h.s) in 
     PQSet.elements h.queue |> List.rev
