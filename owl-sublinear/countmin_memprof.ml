@@ -37,20 +37,25 @@ module HH = Owl_base.HeavyHitters_sketch.Native
 let test_countmin_memory_usage distr eps del n oc =
   let open Printf in
   fprintf oc "PARAMS: eps = %f, del = %f, n = %d\n" eps del n; flush oc;
-  fprintf oc "BEGIN: live_words = %d\n" (Gc.(stat ()).live_words); flush oc;
+  let init_lws = Gc.(stat ()).live_words in
+  fprintf oc "BEGIN: live_words = %d\n" init_lws; flush oc;
   let s = CM.init ~epsilon:eps ~delta:del in
-  fprintf oc "INITIALIZE: live_words = %d\n" (Gc.(stat ()).live_words); flush oc;
+  let cur_lws = (Gc.(stat ()).live_words) in
+  fprintf oc "INITIALIZE: live_words = %d, additional = %d\n" cur_lws (cur_lws - init_lws); flush oc;
   for i = 1 to n do
     CM.incr s (distr ());
     if i mod (n / 10) = 0 then
-      fprintf oc "INCR %d: live_words = %d\n" i (Gc.(stat ()).live_words); flush oc;
+      let cur_lws = (Gc.(stat ()).live_words) in
+      fprintf oc "INCR %d: live_words = %d, additional = %d\n" i cur_lws (cur_lws - init_lws); flush oc;
   done;
   for i = 1 to n do
     ignore (CM.count s (distr ()));
     if i mod (n / 10) = 0 then
-      fprintf oc "COUNT %d: live_words = %d\n" i (Gc.(stat ()).live_words); flush oc;
+      let cur_lws = (Gc.(stat ()).live_words) in
+      fprintf oc "COUNT %d: live_words = %d, additional = %d\n" i cur_lws (cur_lws - init_lws); flush oc;
   done;
-  fprintf oc "COMPLETE: live_words = %d\n" (Gc.(stat ()).live_words); flush oc
+  let cur_lws = (Gc.(stat ()).live_words) in
+  fprintf oc "COMPLETE: live_words = %d, additional = %d\n" cur_lws (cur_lws - init_lws); flush oc
 
 let test_countmin_performance distr eps del n oc =
   let open Printf in
@@ -71,16 +76,20 @@ let test_countmin_performance distr eps del n oc =
 let test_heavyhitters_memory_usage distr k eps del n oc =
   let open Printf in
   fprintf oc "PARAMS: eps = %f, del = %f, n = %d\n" eps del n; flush oc;
-  fprintf oc "BEGIN: live_words = %d\n" (Gc.(stat ()).live_words); flush oc;
+  let init_lws = Gc.(stat ()).live_words in
+  fprintf oc "BEGIN: live_words = %d\n" init_lws; flush oc;
   let h = HH.init ~k ~epsilon:eps ~delta:del in
-  fprintf oc "INITIALIZE: live_words = %d\n" (Gc.(stat ()).live_words); flush oc;
+  let cur_lws = (Gc.(stat ()).live_words) in
+  fprintf oc "INITIALIZE: live_words = %d, additional = %d\n" cur_lws (cur_lws - init_lws); flush oc;
   for i = 1 to n do
     HH.add h (distr ());
     if i mod (n / 10) = 0 then
-      fprintf oc "ADD %d: live_words = %d\n" i (Gc.(stat ()).live_words); flush oc;
+      let cur_lws = (Gc.(stat ()).live_words) in
+      fprintf oc "INCR %d: live_words = %d, additional = %d\n" i cur_lws (cur_lws - init_lws); flush oc;
   done;
   ignore (HH.get h);
-  fprintf oc "GET: live_words = %d\n" (Gc.(stat ()).live_words); flush oc
+  let cur_lws = (Gc.(stat ()).live_words) in
+  fprintf oc "GET: live_words = %d, additional = %d\n" cur_lws (cur_lws - init_lws); flush oc
 
 let test_heavyhitters_performance distr k eps del n oc =
   let open Printf in
@@ -98,9 +107,9 @@ let test_heavyhitters_performance distr k eps del n oc =
   test_heavyhitters_memory_usage distr k eps del n oc
 
 let oc = open_out "countmin_performance_native.log" ;;
-test_countmin_performance (binom_test 100 0.4) 0.0001 0.01 100000 oc ;;
+test_countmin_performance (binom_test 100 0.4) 0.001 0.01 100000 oc ;;
 close_out oc ;;
 
 let oc = open_out "heavyhitters_performance_native.log" ;;
-test_heavyhitters_performance (binom_test 100 0.4) 10.0 0.0001 0.01 100000 oc ;;
+test_heavyhitters_performance (binom_test 100 0.4) 10.0 0.001 0.01 100000 oc ;;
 close_out oc ;;
