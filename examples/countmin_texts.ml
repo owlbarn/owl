@@ -1,7 +1,11 @@
 #!/usr/bin/env owl
-(* Get the most common words in the news.txt corpus at
- * https://github.com/ryanrhymes/owl_dataset using a 
- * count-min sketch *)
+(* This example demonstrates the use of the HeavyHitters sketch,
+ * which is based on the Count-Min sketch in Owl_base library.  
+ * This example finds the words which appear with relative frequency
+ * at least 1% in the news.txt corpus at https://github.com/ryanrhymes/owl_dataset.
+ * WARNING: This example will download the file news.txt.gz (96.5MB) onto
+ * your machine and expand it into news.txt (340.3MB).
+ *)
 
 module HH = Owl_base.HeavyHitters_sketch.Native
 
