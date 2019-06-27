@@ -10,19 +10,18 @@
  * Refer to http://dimacs.rutgers.edu/~graham/pubs/papers/cm-full.pdf 
  * section 5.2 (page 12) for more details. *)
 
-module type Sig =
-  sig
-    (* The type of heavy-hitters sketches *)
-    type 'a t 
+module type Sig = sig
+  (* The type of heavy-hitters sketches *)
+  type 'a t
 
-    (* `init k epsilon delta` initializes a sketch with threshold k, 
+  (* `init k epsilon delta` initializes a sketch with threshold k, 
      * approximation factor epsilon, and failure probability delta. *)
-    val init : k:float -> epsilon:float -> delta:float -> 'a t
-   
-    (* `add h x` adds value `x` to sketch `h` in-place. *)
-    val add : 'a t -> 'a -> unit
-    
-    (* `get h` returns a list of all heavy-hitters in sketch `h`, as a 
+  val init : k:float -> epsilon:float -> delta:float -> 'a t
+
+  (* `add h x` adds value `x` to sketch `h` in-place. *)
+  val add : 'a t -> 'a -> unit
+
+  (* `get h` returns a list of all heavy-hitters in sketch `h`, as a 
      * (value, frequency) pair, sorted in decreasing order of frequency. *)
-    val get : 'a t -> ('a * int) list
-  end
+  val get : 'a t -> ('a * int) list
+end

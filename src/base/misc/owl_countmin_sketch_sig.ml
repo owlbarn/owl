@@ -10,17 +10,16 @@
  * for more details. *)
 
 module type Sig = sig
-  
   (* The type of Count-Min sketches *)
   type 'a sketch
 
   (* `init epsilon delta` initializes a sketch with approximation
    * ratio (1 + epsilon) and failure probability delta *)
   val init : epsilon:float -> delta:float -> 'a sketch
-  
+
   (* `incr s x` increments the frequency count of `x` in sketch `s` in-place *)
   val incr : 'a sketch -> 'a -> unit
-  
+
   (* `count s x` returns the estimated frequency of element `x` in `s` *)
   val count : 'a sketch -> 'a -> int
 end
