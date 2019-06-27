@@ -739,7 +739,12 @@ let linsolve ?(trans=false) ?(typ=`n) a b =
 let linreg x y =
   let nx = M.numel x in
   let ny = M.numel y in
-  assert (nx = ny);
+
+  let error () =
+    let s = Printf.sprintf "x length is %i, and y length is %i. However, they must be the same." nx ny in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (nx = ny) error;
 
   let x = M.reshape x [|nx; 1|] in
   let y = M.reshape y [|ny; 1|] in

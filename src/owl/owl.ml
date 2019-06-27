@@ -82,22 +82,3 @@ end
 module Mat = struct
   include Owl_dense.Matrix.D
 end
-
-
-(* initialise owl's working environment *)
-
-let _ =
-  (* set up owl's folder *)
-  let home = Sys.getenv "HOME" ^ "/.owl" in
-  let dir_dataset = home ^ "/dataset" in
-  let dir_zoo = home ^ "/zoo" in
-  if Sys.file_exists home = false then
-    Unix.mkdir home 0o755;
-  if Sys.file_exists dir_dataset = false then
-    Unix.mkdir dir_dataset 0o755;
-  if Sys.file_exists dir_zoo = false then
-    Unix.mkdir dir_zoo 0o755
-
-
-
-(* ends here *)

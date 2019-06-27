@@ -20,7 +20,12 @@ type solver =
 let bisec ?(max_iter=1000) ?(xtol=1e-6) f a b =
   let fa = f a in
   let fb = f b in
-  assert (fa *. fb < 0.);
+
+  let error () =
+    let s = Printf.sprintf "f(a) *. f(b) = %g *. %g should be negative." fa fb in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (fa *. fb < 0.) error;
 
   if fa = 0. then a
   else if fb = 0. then b
@@ -47,7 +52,12 @@ let bisec ?(max_iter=1000) ?(xtol=1e-6) f a b =
 let false_pos ?(max_iter=1000) ?(xtol=1e-6) f a b =
   let fa = f a in
   let fb = f b in
-  assert (fa *. fb < 0.);
+
+  let error () =
+    let s = Printf.sprintf "f(a) *. f(b) = %g *. %g should be negative." fa fb in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (fa *. fb < 0.) error;
 
   if fa = 0. then a
   else if fb = 0. then b
@@ -85,7 +95,12 @@ let false_pos ?(max_iter=1000) ?(xtol=1e-6) f a b =
 let ridder ?(max_iter=1000) ?(xtol=1e-6) f a b =
   let fa = f a in
   let fb = f b in
-  assert (fa *. fb < 0.);
+
+  let error () =
+    let s = Printf.sprintf "f(a) *. f(b) = %g *. %g should be negative." fa fb in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (fa *. fb < 0.) error;
 
   if fa = 0. then a
   else if fb = 0. then b
@@ -134,7 +149,12 @@ let ridder ?(max_iter=1000) ?(xtol=1e-6) f a b =
 let brent ?(max_iter=1000) ?(xtol=1e-6) f a b =
   let fa = f a in
   let fb = f b in
-  assert (fa *. fb < 0.);
+
+  let error () =
+    let s = Printf.sprintf "f(a) *. f(b) = %g *. %g should be negative." fa fb in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (fa *. fb < 0.) error;
 
   if fa = 0. then a
   else if fb = 0. then b
@@ -231,7 +251,12 @@ let fzero ?(solver=Brent) ?(max_iter=1000) ?(xtol=1e-6) f a b =
 
 
 let bracket_expand ?(rate=1.6) ?(max_iter=100) f a b =
-  assert (a < b);
+  let error () =
+    let s = Printf.sprintf "bracket_expand requries a < b, but a = %g and b = %g" a b in
+    Owl_exception.INVALID_ARGUMENT s
+  in
+  Owl_exception.verify (a < b) error;
+
   let xa = ref a in
   let xb = ref b in
   let fa = ref (f a) in

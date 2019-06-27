@@ -17,6 +17,15 @@ let main args =
   (* initialise logger *)
   Owl_log.set_color true;
   Owl_log.(set_level DEBUG);
+
+  (* initialise owl zoo working environment *)
+  (* set up owl's folder *)
+  let home = Sys.getenv "HOME" ^ "/.owl" in
+  let dir_zoo = home ^ "/zoo" in
+  (* Note: use of Sys.file_exist is racy *)
+  (try Unix.mkdir home 0o755 with Unix.Unix_error(Unix.EEXIST, _, _) -> ());
+  (try Unix.mkdir dir_zoo 0o755 with Unix.Unix_error(Unix.EEXIST, _, _) -> ());
+
   (* add zoo directive *)
   Owl_zoo_dir.add_dir_zoo ();
 
