@@ -54,7 +54,7 @@ inline double exponential_rvs (double lambda) {
 // init the internal state for exponential prng
 void std_exponential_rvs_init ( ) {
   double de = 7.697117470131487;
-  const double m2 = 2147483648.0;
+  const double m2 = 4294967296.0;
   double te = 7.697117470131487;
   const double ve = 3.949659822581572E-03;
 
