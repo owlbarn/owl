@@ -107,7 +107,7 @@ let test_heavyhitters_performance distr k eps del n oc =
   test_heavyhitters_memory_usage distr k eps del n oc
 
 let oc = open_out "countmin_performance_native.log" ;;
-test_countmin_performance (binom_test 100 0.4) 0.001 0.01 100000 oc ;;
+test_countmin_performance (binom_test 100 0.4) 0.001 0.001 100000 oc ;;
 close_out oc ;;
 
 let oc = open_out "heavyhitters_performance_native.log" ;;
