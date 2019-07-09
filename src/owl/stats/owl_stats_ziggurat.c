@@ -47,7 +47,7 @@ inline double std_exponential_rvs ( ) {
 
 
 inline double exponential_rvs (double lambda) {
-  return (lambda * std_exponential_rvs());
+  return (std_exponential_rvs() / lambda);
 }
 
 
