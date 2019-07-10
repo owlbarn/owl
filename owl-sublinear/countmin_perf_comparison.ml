@@ -77,10 +77,8 @@ let plot_comparison epsilon delta true_freqs sketch =
   Plot.histogram ~h ~bin:200 diffs_mat;
   Plot.output h
 
-(* profile a sketch with parameters epsilon and delta on
- * input data against the true frequency profile true_freqs,
- * returning the maximum memory usage and mean estimate error *)
-let full_profile epsilon delta get_data true_freqs l1_norm =
+
+let fill_sketch epsilon delta get_data =
   Gc.compact () ;
   let init_lws = Gc.(stat ()).live_words in
   let s = CM.init ~epsilon ~delta in
@@ -94,33 +92,47 @@ let full_profile epsilon delta get_data true_freqs l1_norm =
     | None -> ()
   in
   addloop ();
-  let freq_diffs =
-    let mapfn (v, ct) = 
-      let ct = float_of_int ct in
-      let ect = CM.count s v |> float_of_int in
-      (ect -. ct) /. ct
-    in
-    List.rev_map mapfn true_freqs 
+  s, !max_lws
+
+let get_error_stats epsilon delta ?phi l1_norm s true_freqs =
+  let true_freqs_to_diffs ?divisor acc (v, ct) =
+    let ct = float_of_int ct in
+    let div = match divisor with Some d -> d | None -> ct in
+    let ect = CM.count s v |> float_of_int in
+    let ans = (ect -. ct) /. div in
+    match phi with
+    | Some p -> if ct > (p *. l1_norm) then ans :: acc else acc
+    | None -> ans :: acc
   in
-  plot_comparison epsilon delta true_freqs s;
-  let avg_diff = (List.fold_left (+.) 0. freq_diffs) /. 
-                  (List.length freq_diffs |> float_of_int) in
-  let sorted_arr = freq_diffs 
-                   |> List.sort compare 
-                   |> Array.of_list in
-  let len = Array.length sorted_arr in
-  let median_diff = (sorted_arr.((len-1)/2) +. sorted_arr.(len/2)) /. 2. in 
-  let l1_diffs =  
-    let mapfn (v, ct) = 
-      let ct = float_of_int ct in
-      let ect = CM.count s v |> float_of_int in
-      (ect -. ct) /. l1_norm
-    in
-    List.rev_map mapfn true_freqs 
+  let avg lst = 
+    let len = List.length lst in
+    if len > 0 then (List.fold_left (+.) 0. lst) /. (len |> float_of_int) else 0. in
+  let freq_diffs = List.fold_left true_freqs_to_diffs [] true_freqs in
+  let avg_diff = avg freq_diffs in
+  let sorted_arr = freq_diffs |> List.sort compare |> Array.of_list in
+  let median_diff = 
+    let len = Array.length sorted_arr in
+    if len > 0 then (sorted_arr.((len-1)/2) +. sorted_arr.(len/2)) /. 2. else 0. in 
+  let l1_diffs = List.fold_left (true_freqs_to_diffs ~divisor:l1_norm) [] true_freqs in
+  let avg_l1_diff = avg l1_diffs in
+  let phi_out = match phi with Some p -> p | None -> 0. in
+  epsilon, delta, phi_out, avg_diff, median_diff, avg_l1_diff
+
+(* profile a sketch with parameters epsilon and delta on
+ * input data against the true frequency profile true_freqs,
+ * returning the maximum memory usage and measures of estimate error.
+ * If parameter phi is given, it outputs error measures for only those
+ * elements whose relative frequency is greater than phi; if it is not
+ * given, then it outputs error measures for all elements. *)
+let full_profile epsilon delta ?phis get_data true_freqs l1_norm =
+  let s, max_lws = fill_sketch epsilon delta get_data in
+  (* plot_comparison epsilon delta true_freqs s; *)
+  let stats_lst = 
+    match phis with
+    | Some lst -> List.map (fun phi -> get_error_stats epsilon delta ~phi l1_norm s true_freqs) lst
+    | None -> [get_error_stats epsilon delta l1_norm s true_freqs]
   in
-  let avg_l1_diff = (List.fold_left (+.) 0. l1_diffs) /. 
-                    (List.length freq_diffs |> float_of_int) in
-  !max_lws, avg_diff, median_diff, avg_l1_diff
+  max_lws, stats_lst
 
 
 let get_inch_news_txt () = 
@@ -142,20 +154,24 @@ let _ =
   Owl.Log.set_level WARN;
   let epsvals = [0.01; 0.001; 0.0001; 0.00001] in
   let del = Sys.argv.(1) |> float_of_string in
-  let outf = open_out ("logs/perfcomp_logdel" ^ string_of_int (int_of_float (log10 del)) ^ ".log") in
+  let phis = [0.1; 0.05; 0.01; 0.005; 0.001] in
+  let outf = open_out ("logs/perfcomp_phi_logdel" ^ string_of_int (int_of_float (log10 del)) ^ ".log") in
   let lws_ht, true_freqs, l1_norm = 
     let inch = get_inch_news_txt () in
     get_true_freqs (fun () -> get_data_news_txt inch)
   in
-  Printf.fprintf outf "lws_ht = %d, l1_norm = %d\n" lws_ht l1_norm; flush outf;
+  (* Printf.fprintf outf "lws_ht = %d, l1_norm = %d\n" lws_ht l1_norm; flush outf; *)
   let iterfn eps =
-    let lws_cm, avg_diff, median_diff, avg_l1_diff = 
+    let lws_cm, stats_lst = 
       let inch = get_inch_news_txt () in
-      full_profile eps del (fun () -> get_data_news_txt inch) true_freqs (float_of_int l1_norm)
+      full_profile eps del ~phis (fun () -> get_data_news_txt inch) true_freqs (float_of_int l1_norm)
     in
-    Printf.fprintf outf 
-      "eps = %f, del = %f, lws_cm = %d, avg_diff = %f, median_diff = %f, avg_l1_diff = %f\n" 
-      eps del lws_cm avg_diff median_diff avg_l1_diff; flush outf
+    let printfn (epsilon, delta, phi, avg_diff, median_diff, avg_l1_diff) = 
+      Printf.fprintf outf 
+        "eps = %f, del = %f, phi = %f, lws_cm = %d, avg_diff = %f, median_diff = %f, avg_l1_diff = %f\n" 
+        eps del phi lws_cm avg_diff median_diff avg_l1_diff; flush outf
+    in
+    List.iter printfn stats_lst
   in
   List.iter iterfn epsvals
 
