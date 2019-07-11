@@ -32,7 +32,7 @@ let fill_sketch inch k epsilon delta =
 
 let get_heavy_hitters () =
   let inch = get_corpus () in
-  let h = fill_sketch inch 100. 0.001 0.01 in
+  let h = fill_sketch inch 100. 0.001 0.001 in
   HH.get h |> List.iter (fun (x,c) -> Printf.printf "%s: %d\n" x c)
 
 let _ = get_heavy_hitters ()
