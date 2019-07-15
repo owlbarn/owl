@@ -29,8 +29,4 @@ module Owl : Sig = struct
   let init l w = Owl_base_dense_ndarray_s.zeros [| l; w |]
   let incr i j t = Owl_base_dense_ndarray_s.(set t [| i; j |] (get t [| i; j |] +. 1.))
   let get i j t = Owl_base_dense_ndarray_s.get t [| i; j |] |> int_of_float
-<<<<<<< HEAD
 end
-=======
-end
->>>>>>> c858d29f49cac42c60c8067d7ef99b5f66b5ca40
