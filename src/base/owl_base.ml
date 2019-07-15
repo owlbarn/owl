@@ -40,5 +40,11 @@ module Utils = Owl_utils
 module Computation = Owl_computation
 
 
+module Countmin_sketch = Owl_countmin_sketch
+
+
+module HeavyHitters_sketch = Owl_heavyhitters_sketch
+
+
 (* initialise base library *)
 let _ = Owl_base_stats_prng.self_init ()
