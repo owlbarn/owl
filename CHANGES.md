@@ -1,3 +1,22 @@
+### 0.6.0 (2019-07-17)
+
+* Add unsafe network save (#429)
+* Sketch Count-Min and Heavy-Hitters
+* Various ugfixes
+* Owl_io.marshal_to_file: use to_channel
+* Do not create .owl folder when loading owl library
+* Re-design of exceptions and replace asserts with verify
+* Add OWL_DISABLE_LAPACKE_LINKING_FLAG
+* Reorganise Algodiff module
+* Add parameter support to Zoo
+* Two new features in algodiff: eye and linsolve (triangular option) + improved stability of qr and chol
+* Implemented solve triangular
+* Added linsolve and lq reverse-mode differentiation
+* Fix build on archlinux (pkg-config cblas)
+* Add median and sort along in ndarray
+* Improve stability of lyapunov gradient tests
+
+
 ### 0.5.0 (2019-03-05)
 
 * Improve building and installation.
