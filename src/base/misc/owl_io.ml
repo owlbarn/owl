@@ -110,9 +110,9 @@ let mapi_lines_of_marshal f fname =
 
 
 (* save a marshalled object to a file *)
-let marshal_to_file x f =
+let marshal_to_file ?(flags=[]) x f =
   let h = open_out f in
-  Marshal.to_channel h x [];
+  Marshal.to_channel h x flags;
   close_out h
 
 

@@ -642,7 +642,13 @@ module Make
   let print nn = pp_network Format.std_formatter nn
 
 
-  let save nn f = Owl_io.marshal_to_file (copy nn) f
+  let save ?(unsafe=false) nn f =
+    if unsafe = true then (
+      Owl_log.warn "Unsafely saved network can only be loaded back in exactly the same version of OCaml and Owl.";
+      Owl_io.marshal_to_file ~flags:[Marshal.Closures] (copy nn) f
+    ) else (
+      Owl_io.marshal_to_file (copy nn) f
+    )
 
 
   let load f : network = Owl_io.marshal_from_file f

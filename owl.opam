@@ -30,6 +30,6 @@ depends: [
   "ctypes"
   "dune" {build & >= "1.2.1"}
   "eigen" {>= "0.1.0"}
-  "owl-base" {>= "0.5.0"}
+  "owl-base" {>= version}
   "stdio" {build}
 ]

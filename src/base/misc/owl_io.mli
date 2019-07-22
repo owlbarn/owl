@@ -18,7 +18,7 @@ val write_file : ?_flag:open_flag -> string -> string -> unit
 val marshal_from_file : string -> 'a
 (** TODO *)
 
-val marshal_to_file : 'a -> string -> unit
+val marshal_to_file : ?flags:Marshal.extern_flags list -> 'a -> string -> unit
 (** TODO *)
 
 val read_csv : ?sep:char -> string -> string array array

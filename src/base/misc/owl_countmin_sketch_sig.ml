@@ -5,24 +5,36 @@
  * - Estimated frequency >= True frequency
  * - With probability at least 1 - delta:
  *      Estimated frequency - True frequency < epsilon * L
- * where L is the L1 norm of the data entered, equal to the total number of 
+ * where L is the L1 norm of the data entered, equal to the total number of
  * times `incr` has been called.
  * Space usage will be O((1/epsilon) log (1/delta)) and the time to complete
  * `incr` or `count` will be O(log(1/delta)).
  * Refer to http://dimacs.rutgers.edu/~graham/pubs/papers/cm-full.pdf
  * for more details. *)
 
+
 module type Sig = sig
-  (* The type of Count-Min sketches *)
+
+
+  (** {6 Type definition} *)
+
   type 'a sketch
+  (** The type of Count-Min sketches *)
 
-  (* `init epsilon delta` initializes a sketch with approximation
-   * ratio (1 + epsilon) and failure probability delta *)
+
+  (** {6 Core functions} *)
+
   val init : epsilon:float -> delta:float -> 'a sketch
+  (**
+``init epsilon delta`` initializes a sketch with approximation ratio
+``(1 + epsilon)`` and failure probability ``delta``.
+  *)
 
-  (* `incr s x` increments the frequency count of `x` in sketch `s` in-place *)
   val incr : 'a sketch -> 'a -> unit
+  (** ``incr s x`` increments the frequency count of ``x`` in sketch ``s`` in-place. *)
 
-  (* `count s x` returns the estimated frequency of element `x` in `s` *)
   val count : 'a sketch -> 'a -> int
+  (** ``count s x`` returns the estimated frequency of element ``x`` in ``s``. *)
+
+
 end

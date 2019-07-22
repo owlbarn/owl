@@ -493,8 +493,9 @@ Arguments:
   val print : network -> unit
   (** Print the string representation of a neural network to the standard output. *)
 
-  val save : network -> string -> unit
-  (** Serialise a network and save it to the a file with the given name. *)
+  val save : ?unsafe:bool -> network -> string -> unit
+  (** Serialise a network and save it to the a file with the given name.
+  Set the unsafe flag to true if network contains Lambda layer. *)
 
   val load : string -> network
   (** Load the neural network from a file with the given name. *)
