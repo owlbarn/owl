@@ -208,8 +208,8 @@ If this does not work please open an issue in the owl repository, adding
 some details on how your openblas has been installed and the output of
 `src/owl/config/configure.exe --verbose`.
 |}
-          Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.cflags)
-          Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.libs);
+          Base.(Sexp.to_string @@ sexp_of_list sexp_of_string openblas_conf.cflags)
+          Base.(Sexp.to_string @@ sexp_of_list sexp_of_string openblas_conf.libs);
         failwith "Unable to link against openblas."
       end;
 
