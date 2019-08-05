@@ -31,31 +31,42 @@ let time_n n op inp =
   done;
   !ttime
 
-module CM = Owl_base.Countmin_sketch.Native
-module HH = Owl_base.HeavyHitters_sketch.Native
+module CM = Owl_base.Countmin_sketch.Owl
+module HH = Owl_base.HeavyHitters_sketch.Owl
 
 let test_countmin_memory_usage distr eps del n oc =
   let open Printf in
+  let module OG = Ocaml_getrusage in
   fprintf oc "PARAMS: eps = %f, del = %f, n = %d\n" eps del n; flush oc;
   let init_lws = Gc.(stat ()).live_words in
-  fprintf oc "BEGIN: live_words = %d\n" init_lws; flush oc;
+  let init_rss = OG.(getrusage ()).ru_maxrss in
+  fprintf oc "BEGIN: live_words = %d, maxrss = %d\n" init_lws init_rss; flush oc;
   let s = CM.init ~epsilon:eps ~delta:del in
   let cur_lws = (Gc.(stat ()).live_words) in
-  fprintf oc "INITIALIZE: live_words = %d, additional = %d\n" cur_lws (cur_lws - init_lws); flush oc;
+  let cur_rss = OG.(getrusage ()).ru_maxrss in
+  fprintf oc "INITIALIZE: live_words = %d, additional = %d, maxrss = %d, additional = %d\n" 
+    cur_lws (cur_lws - init_lws) cur_rss (cur_rss - init_rss); flush oc;
   for i = 1 to n do
     CM.incr s (distr ());
     if i mod (n / 10) = 0 then
       let cur_lws = (Gc.(stat ()).live_words) in
-      fprintf oc "INCR %d: live_words = %d, additional = %d\n" i cur_lws (cur_lws - init_lws); flush oc;
+      let cur_rss = OG.(getrusage ()).ru_maxrss in
+      fprintf oc "INCR %d: live_words = %d, additional = %d, maxrss = %d, additional = %d\n" 
+        i cur_lws (cur_lws - init_lws) cur_rss (cur_rss - init_rss); flush oc;
   done;
   for i = 1 to n do
     ignore (CM.count s (distr ()));
     if i mod (n / 10) = 0 then
       let cur_lws = (Gc.(stat ()).live_words) in
-      fprintf oc "COUNT %d: live_words = %d, additional = %d\n" i cur_lws (cur_lws - init_lws); flush oc;
+      let cur_rss = OG.(getrusage ()).ru_maxrss in
+      fprintf oc "COUNT %d: live_words = %d, additional = %d, maxrss = %d, additional = %d\n" 
+        i cur_lws (cur_lws - init_lws) cur_rss (cur_rss - init_rss); flush oc;
   done;
   let cur_lws = (Gc.(stat ()).live_words) in
-  fprintf oc "COMPLETE: live_words = %d, additional = %d\n" cur_lws (cur_lws - init_lws); flush oc
+  let cur_rss = OG.(getrusage ()).ru_maxrss in
+  fprintf oc "COMPLETE: live_words = %d, additional = %d, maxrss = %d, additional = %d\n" 
+    cur_lws (cur_lws - init_lws) cur_rss (cur_rss - init_rss); flush oc
+
 
 let test_countmin_performance distr eps del n oc =
   let open Printf in
@@ -75,21 +86,29 @@ let test_countmin_performance distr eps del n oc =
 
 let test_heavyhitters_memory_usage distr k eps del n oc =
   let open Printf in
+  let module OG = Ocaml_getrusage in
   fprintf oc "PARAMS: eps = %f, del = %f, n = %d\n" eps del n; flush oc;
   let init_lws = Gc.(stat ()).live_words in
-  fprintf oc "BEGIN: live_words = %d\n" init_lws; flush oc;
+  let init_rss = OG.(getrusage ()).ru_maxrss in
+  fprintf oc "BEGIN: live_words = %d, maxrss = %d\n" init_lws init_rss; flush oc;
   let h = HH.init ~k ~epsilon:eps ~delta:del in
   let cur_lws = (Gc.(stat ()).live_words) in
-  fprintf oc "INITIALIZE: live_words = %d, additional = %d\n" cur_lws (cur_lws - init_lws); flush oc;
+  let cur_rss = OG.(getrusage ()).ru_maxrss in
+  fprintf oc "INITIALIZE: live_words = %d, additional = %d, maxrss = %d, additional = %d\n" 
+    cur_lws (cur_lws - init_lws) cur_rss (cur_rss - init_rss); flush oc;
   for i = 1 to n do
     HH.add h (distr ());
     if i mod (n / 10) = 0 then
       let cur_lws = (Gc.(stat ()).live_words) in
-      fprintf oc "INCR %d: live_words = %d, additional = %d\n" i cur_lws (cur_lws - init_lws); flush oc;
+      let cur_rss = OG.(getrusage ()).ru_maxrss in
+      fprintf oc "INCR %d: live_words = %d, additional = %d, maxrss = %d, additional = %d\n" 
+        i cur_lws (cur_lws - init_lws) cur_rss (cur_rss - init_rss); flush oc;
   done;
   ignore (HH.get h);
   let cur_lws = (Gc.(stat ()).live_words) in
-  fprintf oc "GET: live_words = %d, additional = %d\n" cur_lws (cur_lws - init_lws); flush oc
+  let cur_rss = OG.(getrusage ()).ru_maxrss in
+  fprintf oc "GET: live_words = %d, additional = %d, maxrss = %d, additional = %d\n" 
+    cur_lws (cur_lws - init_lws) cur_rss (cur_rss - init_rss); flush oc
 
 let test_heavyhitters_performance distr k eps del n oc =
   let open Printf in
@@ -106,10 +125,10 @@ let test_heavyhitters_performance distr k eps del n oc =
   fprintf oc "\n\nBEGIN MEMORY PROFILING--------------\n"; flush oc;
   test_heavyhitters_memory_usage distr k eps del n oc
 
-let oc = open_out "countmin_performance_native.log" ;;
+let oc = open_out "countmin_performance_owl.log" ;;
 test_countmin_performance (binom_test 100 0.4) 0.001 0.001 100000 oc ;;
 close_out oc ;;
 
-let oc = open_out "heavyhitters_performance_native.log" ;;
+let oc = open_out "heavyhitters_performance_owl.log" ;;
 test_heavyhitters_performance (binom_test 100 0.4) 10.0 0.001 0.01 100000 oc ;;
 close_out oc ;;
