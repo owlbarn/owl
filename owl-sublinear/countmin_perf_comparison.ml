@@ -168,7 +168,7 @@ let _ =
     in
     let printfn (epsilon, delta, phi, avg_diff, median_diff, avg_l1_diff) = 
       Printf.fprintf outf 
-        "eps = %f, del = %f, phi = %f, lws_cm = %d, avg_diff = %f, median_diff = %f, avg_l1_diff = %f\n" 
+        "eps = %1.8f, del = %1.8f, phi = %f, lws_cm = %d, avg_diff = %f, median_diff = %f, avg_l1_diff = %f\n" 
         eps del phi lws_cm avg_diff median_diff avg_l1_diff; flush outf
     in
     List.iter printfn stats_lst

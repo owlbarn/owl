@@ -17,7 +17,7 @@
 |] *)
 
 let read_data () = 
-  let inch = Scanf.Scanning.open_in "logs/perfcomp_phi.log" in
+  let inch = Scanf.Scanning.open_in "logs/perfcomp.log" in
   let data = 
     let rec read_parse_line acc = 
       try
@@ -77,7 +77,7 @@ let make_plot data h title r g b =
 let plot_tradeoffs () =
   let open Owl_plplot.Plot in
   let data = read_data () in
-  let h = Owl_plplot.Plot.create ~m:2 ~n:3 ("plots/tradeoff.pdf") in
+  let h = Owl_plplot.Plot.create ~m:2 ~n:3 ("plots/tradeoff_moredels.pdf") in
   make_plot data h "all" 255 0 0; output h
 
 let data_by_phis data phis =
