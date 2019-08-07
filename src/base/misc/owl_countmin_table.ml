@@ -33,11 +33,11 @@ module type Sig = sig
   ``clone t`` returns a new table with the same contents as ``t``.
   *)
 
-  val merge : t -> t -> t option
+  val merge : t -> t -> t
   (**
   ``merge t1 t2`` merges tables ``t1`` and ``t2`` element-wise.  If ``t1`` and ``t2``
-  have the same dimensions, ``Some t`` is returned where each element of ``t`` is the 
-  sum of the corresponding elements from ``t1`` and ``t2``.  Otherwise, returns ``None``.
+  have the same dimensions, returns a new table whose elements are the sums of corresponding
+  elements from ``t1`` and ``t2``.  If dimensions do not match, raises ``INVALID_ARGUMENT``.
   *)
 end
 
@@ -50,9 +50,9 @@ module Native : Sig = struct
   let get i j t = t.(i).(j)
   let clone = Array.map (Array.map (fun x -> x))
   let merge t1 t2 = 
-    try
-      Some (Array.map2 (Array.map2 (+)) t1 t2)
-    with Invalid_argument _ -> None
+    try Array.map2 (Array.map2 (+)) t1 t2
+    with Invalid_argument _ -> 
+      raise (Owl_exception.INVALID_ARGUMENT "Cannot merge countmin tables of different dimensions")
 end
 
 (* Implementation of the CountMin sketch table using Owl ndarrays *)
@@ -65,5 +65,7 @@ module Owl : Sig = struct
   let clone t = Owl_base_dense_ndarray_s.copy t
   let merge t1 t2 = 
     let open Owl_base_dense_ndarray_s in
-    if shape t1 = shape t2 then Some (add t1 t2) else None
+    if shape t1 = shape t2 then add t1 t2 
+    else 
+      raise (Owl_exception.INVALID_ARGUMENT "Cannot merge countmin tables of different dimensions")
 end
