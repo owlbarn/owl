@@ -57,8 +57,8 @@ let calc_transpose_conv2d_output_shape
 let calc_conv2d_padding
   input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
   =
-  let pad_along_height = Pervasives.max ((output_rows - 1) * row_stride + kernel_rows - input_rows) 0 in
-  let pad_along_width = Pervasives.max ((output_cols - 1) * col_stride + kernel_cols - input_cols) 0 in
+  let pad_along_height = Stdlib.max ((output_rows - 1) * row_stride + kernel_rows - input_rows) 0 in
+  let pad_along_width = Stdlib.max ((output_cols - 1) * col_stride + kernel_cols - input_cols) 0 in
   let pad_top = pad_along_height / 2 in
   let pad_bottom = pad_along_height - pad_top in
   let pad_left = pad_along_width / 2 in
@@ -142,9 +142,9 @@ let calc_conv3d_padding
     output_cols output_rows output_depth
     row_stride col_stride depth_stride
   =
-  let pad_along_height = Pervasives.max ((output_rows - 1) * row_stride + kernel_rows - input_rows) 0 in
-  let pad_along_width = Pervasives.max ((output_cols - 1) * col_stride + kernel_cols - input_cols) 0 in
-  let pad_along_depth = Pervasives.max ((output_depth - 1) * depth_stride + kernel_depth - input_depth) 0 in
+  let pad_along_height = Stdlib.max ((output_rows - 1) * row_stride + kernel_rows - input_rows) 0 in
+  let pad_along_width = Stdlib.max ((output_cols - 1) * col_stride + kernel_cols - input_cols) 0 in
+  let pad_along_depth = Stdlib.max ((output_depth - 1) * depth_stride + kernel_depth - input_depth) 0 in
   let pad_top = pad_along_height / 2 in
   let pad_bottom = pad_along_height - pad_top in
   let pad_left = pad_along_width / 2 in

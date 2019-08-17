@@ -21,12 +21,12 @@ let kmeans x c =
       iteri_rows (fun i v ->
         iteri_rows (fun j u ->
           let e = sum' (pow_scalar (sub v u) 2.) in
-          if Pervasives.(e < snd assignment.(i)) then
+          if Stdlib.(e < snd assignment.(i)) then
             assignment.(i) <- (j, e)
         ) cpts0
       ) x;
       iteri_rows (fun j _u ->
-        let l = UT.Array.filteri_v (fun i y -> Pervasives.(fst y = j), i) assignment in
+        let l = UT.Array.filteri_v (fun i y -> Stdlib.(fst y = j), i) assignment in
         let z = mean_rows (rows x l) in
         let _ = copy_row_to z cpts1 j in ()
       ) cpts0;

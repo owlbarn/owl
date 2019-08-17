@@ -48,7 +48,7 @@ module Make
         )
         (* for no specific assumptions *)
         else (
-          let i_o = _prod s |> float_of_int |> Pervasives.sqrt in
+          let i_o = _prod s |> float_of_int |> Stdlib.sqrt in
           i_o, i_o
         )
       in
@@ -2819,7 +2819,7 @@ module Make
 
     let run x l =
       let s = shape x in
-      let sigma = Pervasives.sqrt (l.rate /. (1. -. l.rate)) in
+      let sigma = Stdlib.sqrt (l.rate /. (1. -. l.rate)) in
       let a = match (primal' x) with
         | Arr _ -> Arr.gaussian ~sigma:(A.float_to_elt sigma) s
         | _     -> failwith "owl_neural_neuron:gaussiandropout:run"

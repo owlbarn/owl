@@ -122,7 +122,7 @@ let calc_slice_shape axis =
     | L_ x -> Array.length x
     | R_ x ->
         let a, b, c = x.(0), x.(1), x.(2) in
-        Pervasives.(abs ((b - a) / c)) + 1
+        Stdlib.(abs ((b - a) / c)) + 1
   ) axis
 
 

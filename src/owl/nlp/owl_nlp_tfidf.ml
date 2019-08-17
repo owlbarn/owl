@@ -166,7 +166,7 @@ let _build_with norm sort tf_fun df_fun m =
     in
     (* check if we need to sort term id in increasing order *)
     let _ = match sort with
-      | true  -> Array.sort (fun a b -> Pervasives.compare (fst a) (fst b)) tfs
+      | true  -> Array.sort (fun a b -> Stdlib.compare (fst a) (fst b)) tfs
       | false -> ()
     in
 
@@ -281,7 +281,7 @@ let doc_to_vec k m x =
 let all_pairwise_distance typ m x =
   let dist_fun = Owl_nlp_similarity.distance typ in
   let l = mapi (fun i y -> i, dist_fun x y) m in
-  Array.sort (fun a b -> Pervasives.compare (snd a) (snd b)) l;
+  Array.sort (fun a b -> Stdlib.compare (snd a) (snd b)) l;
   l
 
 (* k-nearest neighbour, very slow due to linear search *)

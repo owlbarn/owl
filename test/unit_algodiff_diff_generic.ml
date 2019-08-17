@@ -16,7 +16,7 @@ module Make
 
   let eps = 1e-14
 
-  let approx_equal a b = Pervasives.abs_float (a -. b) < eps
+  let approx_equal a b = Stdlib.abs_float (a -. b) < eps
 
   let approx_equal_arr ?(eps = eps) a b =
     let r = ref true in

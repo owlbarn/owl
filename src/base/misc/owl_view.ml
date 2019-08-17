@@ -5,7 +5,7 @@
 
 open Owl_types
 
-module S = Pervasives
+module S = Stdlib
 
 
 (* Functor of making a View module of given Ndarray module *)

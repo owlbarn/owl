@@ -205,7 +205,7 @@ module Make
     let branching = ref 0 in
     let _ =
       try Owl_graph.iter_descendants (fun v ->
-        branching := Pervasives.max !branching (refnum v);
+        branching := Stdlib.max !branching (refnum v);
         if v == o then pass_by_o := true;
         assert (not (!branching > 1 && !pass_by_o));
       ) [|i|]

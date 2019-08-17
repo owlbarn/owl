@@ -81,7 +81,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         | DR (cp, aa, (adjoint, _, _), af, _ai, tracker) ->
           let v = _shrink !aa v in
           aa := _reverse_add !aa v;
-          (af := Pervasives.(!af - 1));
+          (af := Stdlib.(!af - 1));
           if !af = 0 && !tracker = 1
           then push (adjoint cp aa t)
           else (

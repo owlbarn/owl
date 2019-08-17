@@ -171,6 +171,7 @@
   ctypes.stubs
   eigen
   owl-base
+  stdlib-shims
   )
 )
 
