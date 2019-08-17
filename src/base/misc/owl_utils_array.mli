@@ -81,13 +81,13 @@ val memq : 'a -> 'a array -> bool
 val min_i : ?cmp:('a -> 'a -> int) -> 'a array -> int
 (**
 ``min_i x`` returns the index of minimum value in array ``x``. If ``cmp`` is
-not passed in then ``Pervasives.compare`` is used as default value.
+not passed in then ``Stdlib.compare`` is used as default value.
 *)
 
 val max_i : ?cmp:('a -> 'a -> int) -> 'a array -> int
 (**
 ``max_i x`` returns the index of minimum value in array ``x``. If ``cmp`` is
-not passed in then ``Pervasives.compare`` is used as default value.
+not passed in then ``Stdlib.compare`` is used as default value.
  *)
 
 val argsort : ?cmp:('a -> 'a -> int) -> 'a array -> int array

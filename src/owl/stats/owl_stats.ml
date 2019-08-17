@@ -544,10 +544,10 @@ let var_test ?(alpha=0.05) ?(side=BothSide) ~variance x =
 
 let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
   let cdf ?(max_prob=1.) k n1 n2 t =
-    let left = Pervasives.max 0 (t - n2) in
+    let left = Stdlib.max 0 (t - n2) in
     let right = match max_prob with
       | 1. -> k
-      | _ -> Pervasives.min n1 t
+      | _ -> Stdlib.min n1 t
     in
     let eps = 0.000000001 in
     Owl_utils.range_fold left right
@@ -604,7 +604,7 @@ let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
     let sd = sqrt(t *. n1 *. n2 *. (n1 +. n2 +. 1.0) /. 12.0) in
     let mean = n1 *. n2 /. 2.0 in
     let bigu = match side with
-      | BothSide -> Pervasives.max u1 u2
+      | BothSide -> Stdlib.max u1 u2
       | RightSide -> u2
       | LeftSide -> u1
     in
@@ -618,7 +618,7 @@ let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
   in
   let exact _v =
     let bigu = match side with
-      | BothSide -> Pervasives.min u1 u2
+      | BothSide -> Stdlib.min u1 u2
       | RightSide -> u1
       | LeftSide -> u2
     in
@@ -647,7 +647,7 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
   let rm = Array.map2 (fun a b -> (if a < 0.0 then 1. else 0.) *. b) d rankval in
   let rp = Array.fold_left (+.) 0. rp in
   let rm = Array.fold_left (+.) 0. rm in
-  let t = Pervasives.min rp rm in
+  let t = Stdlib.min rp rm in
   let asymptotic _v =
     let mn = n *. (n +. 1.) *. 0.25 in
     let se = n *. (n +. 1.) *. (2. *. n +. 1.) in

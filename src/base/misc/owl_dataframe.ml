@@ -133,26 +133,26 @@ let slice_series slice = function
 
 
 let argsort_series = function
-  | Bool_Series c   -> Owl_utils_array.argsort ~cmp:Pervasives.compare c
-  | Int_Series c    -> Owl_utils_array.argsort ~cmp:Pervasives.compare c
-  | Float_Series c  -> Owl_utils_array.argsort ~cmp:Pervasives.compare c
-  | String_Series c -> Owl_utils_array.argsort ~cmp:Pervasives.compare c
+  | Bool_Series c   -> Owl_utils_array.argsort ~cmp:Stdlib.compare c
+  | Int_Series c    -> Owl_utils_array.argsort ~cmp:Stdlib.compare c
+  | Float_Series c  -> Owl_utils_array.argsort ~cmp:Stdlib.compare c
+  | String_Series c -> Owl_utils_array.argsort ~cmp:Stdlib.compare c
   | Any_Series      -> [||]
 
 
 let min_series = function
-  | Bool_Series c   -> Owl_utils_array.min_i ~cmp:Pervasives.compare c
-  | Int_Series c    -> Owl_utils_array.min_i ~cmp:Pervasives.compare c
-  | Float_Series c  -> Owl_utils_array.min_i ~cmp:Pervasives.compare c
-  | String_Series c -> Owl_utils_array.min_i ~cmp:Pervasives.compare c
+  | Bool_Series c   -> Owl_utils_array.min_i ~cmp:Stdlib.compare c
+  | Int_Series c    -> Owl_utils_array.min_i ~cmp:Stdlib.compare c
+  | Float_Series c  -> Owl_utils_array.min_i ~cmp:Stdlib.compare c
+  | String_Series c -> Owl_utils_array.min_i ~cmp:Stdlib.compare c
   | Any_Series      -> -1
 
 
 let max_series = function
-  | Bool_Series c   -> Owl_utils_array.max_i ~cmp:Pervasives.compare c
-  | Int_Series c    -> Owl_utils_array.max_i ~cmp:Pervasives.compare c
-  | Float_Series c  -> Owl_utils_array.max_i ~cmp:Pervasives.compare c
-  | String_Series c -> Owl_utils_array.max_i ~cmp:Pervasives.compare c
+  | Bool_Series c   -> Owl_utils_array.max_i ~cmp:Stdlib.compare c
+  | Int_Series c    -> Owl_utils_array.max_i ~cmp:Stdlib.compare c
+  | Float_Series c  -> Owl_utils_array.max_i ~cmp:Stdlib.compare c
+  | String_Series c -> Owl_utils_array.max_i ~cmp:Stdlib.compare c
   | Any_Series      -> -1
 
 

@@ -62,7 +62,7 @@ let select_ev keyword ev =
 let lu x =
   let x = M.copy x in
   let m, n = M.shape x in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
 
   let a, ipiv = Owl_lapacke.getrf ~a:x in
   let l = M.tril a in
@@ -157,7 +157,7 @@ let _get_qr_q
 let qr ?(thin=true) ?(pivot=false) x =
   let x = M.copy x in
   let m, n = M.shape x in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let a, tau, jpvt = match pivot with
     | true  -> Owl_lapacke.geqp3 x
     | false -> (
@@ -209,7 +209,7 @@ let _get_lq_q
 let lq ?(thin=true) x =
   let x = M.copy x in
   let m, n = M.shape x in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let a, tau = Owl_lapacke.gelqf x in
   let l = match thin with
     | true  ->
@@ -277,7 +277,7 @@ let gsvdvals x y =
 let rank ?tol x =
   let sv = svdvals x in
   let m, n = M.shape x in
-  let maxmn = Pervasives.max m n in
+  let maxmn = Stdlib.max m n in
   (* by default using float32 eps *)
   let eps = Owl_utils.eps Float32 in
   let tol = match tol with
@@ -661,7 +661,7 @@ let null x =
     let _, s, vt = svd ~thin:false x in
     let s = _abs (M.kind s) s in
     let maxsv = M.max' s in
-    let maxmn = Pervasives.max m n |> float_of_int in
+    let maxmn = Stdlib.max m n |> float_of_int in
     let i = M.elt_greater_scalar s (maxmn *. maxsv *. eps) |> M.sum' |> int_of_float in
     let vt = M.resize ~head:false vt [|M.row_num vt - i; M.col_num vt|] in
     M.transpose vt
@@ -763,7 +763,7 @@ let pinv ?tol x =
   (* by default using float32 eps *)
   let eps = Owl_utils.eps Float32 in
   let m, n = M.shape x in
-  let a = float_of_int (Pervasives.max m n) in
+  let a = float_of_int (Stdlib.max m n) in
   let b = _minmax_real (M.kind x) s |> snd in
   let t = match tol with
     | Some tol -> tol
@@ -879,7 +879,7 @@ let peakflops ?(n=2000) () =
 
 
 let mpow x r =
-  let frac_part, _ = Pervasives.modf r in
+  let frac_part, _ = Stdlib.modf r in
   if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
   let m, n = M.shape x in
   Owl_exception.(check (m = n) (NOT_SQUARE [|m;n|]));

@@ -476,10 +476,10 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
           let dr a _cp ca =
             let m = col_num a in
-            let l = Pervasives.(m - k) in
+            let l = Stdlib.(m - k) in
             let rec accu i a_ =
               if i < l
-              then accu (succ i) (set_item a_ i Pervasives.(k + i) (get_item !ca 0 i))
+              then accu (succ i) (set_item a_ i Stdlib.(k + i) (get_item !ca 0 i))
               else a_
             in
             accu 0 (zero a)
@@ -1938,7 +1938,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let o = unpack_arr o in
         let os = A.shape o in
         let q = Owl_utils.llss2aarr p in
-        Array.iteri (fun i x -> x.(1) <- Pervasives.(os.(i) - 1 - x.(1))) q;
+        Array.iteri (fun i x -> x.(1) <- Stdlib.(os.(i) - 1 - x.(1))) q;
         let q = Owl_utils.aarr2llss q in
         A.(get_slice q o) |> pack_arr
       in

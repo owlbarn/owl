@@ -7,7 +7,7 @@ module M = Owl_dense_ndarray_generic
 (* define the test error *)
 let eps = 5e-10
 
-let approx_equal a b = Pervasives.(abs_float (a -. b) < eps)
+let approx_equal a b = Stdlib.(abs_float (a -. b) < eps)
 
 
 (* make testable *)

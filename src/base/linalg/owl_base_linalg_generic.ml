@@ -13,7 +13,7 @@ module M = Owl_base_dense_ndarray_generic
 let is_triu x =
   let shp = M.shape x in
   let m, n = shp.(0), shp.(1) in
-  let k = Pervasives.min m n in
+  let k = Stdlib.min m n in
   let _a0 = Owl_const.zero (M.kind x) in
   try
     for i = 0 to k - 1 do
@@ -28,7 +28,7 @@ let is_triu x =
 let is_tril x =
   let shp = M.shape x in
   let m, n = shp.(0), shp.(1) in
-  let k = Pervasives.min m n in
+  let k = Stdlib.min m n in
   let _a0 = Owl_const.zero (M.kind x) in
   try
     for i = 0 to k - 1 do

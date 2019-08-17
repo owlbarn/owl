@@ -47,8 +47,8 @@ let inner_product x y =
  *)
 let inner_product_fast x y =
   (*
-  Array.sort (fun a b -> Pervasives.compare (fst a) (fst b)) x;
-  Array.sort (fun a b -> Pervasives.compare (fst a) (fst b)) y;
+  Array.sort (fun a b -> Stdlib.compare (fst a) (fst b)) x;
+  Array.sort (fun a b -> Stdlib.compare (fst a) (fst b)) y;
   *)
   let xi = ref 0 in
   let yi = ref 0 in

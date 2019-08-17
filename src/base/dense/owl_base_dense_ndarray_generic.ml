@@ -24,7 +24,7 @@ let _prepend_dims dims desired_len =
 
 
 let _get_broadcasted_dims dims_a dims_b =
-  let len_c = Pervasives.max (Array.length dims_a) (Array.length dims_b) in
+  let len_c = Stdlib.max (Array.length dims_a) (Array.length dims_b) in
   let ext_dims_a = _prepend_dims dims_a len_c in
   let ext_dims_b = _prepend_dims dims_b len_c in
   let dims_c = Array.make len_c 0 in
@@ -37,7 +37,7 @@ let _get_broadcasted_dims dims_a dims_b =
     else
       if val_a != 1 && val_b != 1
       then raise (Invalid_argument "The arrays cannot be broadcast into the same shape")
-      else dims_c.(i) <- (Pervasives.max val_a val_b)
+      else dims_c.(i) <- (Stdlib.max val_a val_b)
   done;
   (ext_dims_a, ext_dims_b, dims_c)
 
@@ -112,8 +112,8 @@ let _enumerate_slice_def dim ?(step) start stop =
     | None   -> if (start <= stop) then 1 else -1
   in
   assert (((start <= stop) && (step > 0)) || ((start > stop) && (step < 0)));
-  let step_abs = Pervasives.abs step in
-  let len = ((Pervasives.abs (stop - start)) + step_abs) / step_abs in
+  let step_abs = Stdlib.abs step in
+  let len = ((Stdlib.abs (stop - start)) + step_abs) / step_abs in
   (Array.init len (fun i -> start + i * step))
 
 
@@ -561,7 +561,7 @@ let print ?max_row ?max_col ?header ?fmt x =
 let tile varr reps =
   (* First ensure len(reps) = num_dims(varr) *)
   let dims = shape varr in
-  let result_rank = Pervasives.max (Array.length dims) (Array.length reps) in
+  let result_rank = Stdlib.max (Array.length dims) (Array.length reps) in
   let dims = _prepend_dims dims result_rank in
   let reps = _prepend_dims reps result_rank in
   let varr = reshape varr dims in
@@ -574,7 +574,7 @@ let tile varr reps =
 
   while not !should_stop do
     for i = 0 to result_rank - 1 do
-      original_ind.(i) <- (Pervasives.(mod) result_ind.(i) dims.(i))
+      original_ind.(i) <- (Stdlib.(mod) result_ind.(i) dims.(i))
     done;
     Genarray.set result_varr result_ind (Genarray.get varr original_ind);
     if not (_next_index result_ind result_dims) then
@@ -1880,8 +1880,8 @@ let scalar_fmod_ ?out a x =
   map_ (fun y -> _op a y) out
 
 
-let clip_by_value ?(amin=Pervasives.min_float) ?(amax=Pervasives.max_float) x =
-  let _op = (fun y -> Pervasives.min amax (Pervasives.max amin y)) in
+let clip_by_value ?(amin=Stdlib.min_float) ?(amax=Stdlib.max_float) x =
+  let _op = (fun y -> Stdlib.min amax (Stdlib.max amin y)) in
   map _op x
 
 
@@ -1945,27 +1945,27 @@ let approx_equal ?eps varr_a varr_b =
 
 
 let equal x y =
-  (_compare_util_shortcircuit x y Pervasives.(=))
+  (_compare_util_shortcircuit x y Stdlib.(=))
 
 
 let not_equal x y =
-  (_compare_util_shortcircuit x y Pervasives.(<>))
+  (_compare_util_shortcircuit x y Stdlib.(<>))
 
 
 let less x y =
-  (_compare_util_shortcircuit x y Pervasives.(<))
+  (_compare_util_shortcircuit x y Stdlib.(<))
 
 
 let greater x y =
-  (_compare_util_shortcircuit x y Pervasives.(>))
+  (_compare_util_shortcircuit x y Stdlib.(>))
 
 
 let less_equal x y =
-  (_compare_util_shortcircuit x y Pervasives.(<=))
+  (_compare_util_shortcircuit x y Stdlib.(<=))
 
 
 let greater_equal x y =
-  (_compare_util_shortcircuit x y Pervasives.(>=))
+  (_compare_util_shortcircuit x y Stdlib.(>=))
 
 
 (** Return true if for all elements of a comp_fun (xa, bb) == true, false otherwise.
@@ -1995,27 +1995,27 @@ let approx_equal_scalar ?eps varr_a b =
 
 
 let equal_scalar x a =
-  (_compare_util_shortcircuit_scalar x a Pervasives.(=))
+  (_compare_util_shortcircuit_scalar x a Stdlib.(=))
 
 
 let not_equal_scalar x a =
-  (_compare_util_shortcircuit_scalar x a Pervasives.(<>))
+  (_compare_util_shortcircuit_scalar x a Stdlib.(<>))
 
 
 let less_scalar x a =
-  (_compare_util_shortcircuit_scalar x a Pervasives.(<))
+  (_compare_util_shortcircuit_scalar x a Stdlib.(<))
 
 
 let greater_scalar x a =
-  (_compare_util_shortcircuit_scalar x a Pervasives.(>))
+  (_compare_util_shortcircuit_scalar x a Stdlib.(>))
 
 
 let less_equal_scalar varr_a b =
-  (_compare_util_shortcircuit_scalar varr_a b Pervasives.(<=))
+  (_compare_util_shortcircuit_scalar varr_a b Stdlib.(<=))
 
 
 let greater_equal_scalar x a =
-  (_compare_util_shortcircuit_scalar x a Pervasives.(>=))
+  (_compare_util_shortcircuit_scalar x a Stdlib.(>=))
 
 
 (* Broadcasted operation, return an array with values of 1
@@ -2028,13 +2028,13 @@ let _make_elt_compare_fun kind cmp_fun =
 
 
 let elt_equal x y =
-  let _func = _make_elt_compare_fun (kind x) Pervasives.(=) in
+  let _func = _make_elt_compare_fun (kind x) Stdlib.(=) in
   _broadcasted_op x y _func
 
 
 let elt_equal_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  let _func = _make_elt_compare_fun (kind x) Pervasives.(=) in
+  let _func = _make_elt_compare_fun (kind x) Stdlib.(=) in
   _broadcasted_op ~out x y _func
 
 
@@ -2049,57 +2049,57 @@ let approx_elt_equal ?eps x y =
 
 
 let elt_not_equal x y =
-  let _func = _make_elt_compare_fun (kind x) Pervasives.(<>) in
+  let _func = _make_elt_compare_fun (kind x) Stdlib.(<>) in
   _broadcasted_op x y _func
 
 
 let elt_not_equal_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  let _func = _make_elt_compare_fun (kind x) Pervasives.(<>) in
+  let _func = _make_elt_compare_fun (kind x) Stdlib.(<>) in
   _broadcasted_op ~out x y _func
 
 
 let elt_less x y =
-  let _func = _make_elt_compare_fun (kind x) Pervasives.(<) in
+  let _func = _make_elt_compare_fun (kind x) Stdlib.(<) in
   _broadcasted_op x y _func
 
 
 let elt_less_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  let _func = _make_elt_compare_fun (kind x) Pervasives.(<) in
+  let _func = _make_elt_compare_fun (kind x) Stdlib.(<) in
   _broadcasted_op ~out x y _func
 
 
 let elt_greater x y =
-  let _func = _make_elt_compare_fun (kind x) Pervasives.(>) in
+  let _func = _make_elt_compare_fun (kind x) Stdlib.(>) in
   _broadcasted_op x y _func
 
 
 let elt_greater_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  let _func = _make_elt_compare_fun (kind x) Pervasives.(>) in
+  let _func = _make_elt_compare_fun (kind x) Stdlib.(>) in
   _broadcasted_op ~out x y _func
 
 
 let elt_less_equal x y =
-  let _func = _make_elt_compare_fun (kind x) Pervasives.(<=) in
+  let _func = _make_elt_compare_fun (kind x) Stdlib.(<=) in
   _broadcasted_op x y _func
 
 
 let elt_less_equal_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  let _func = _make_elt_compare_fun (kind x) Pervasives.(<=) in
+  let _func = _make_elt_compare_fun (kind x) Stdlib.(<=) in
   _broadcasted_op ~out x y _func
 
 
 let elt_greater_equal x y =
-  let _func = _make_elt_compare_fun (kind x) Pervasives.(>=) in
+  let _func = _make_elt_compare_fun (kind x) Stdlib.(>=) in
   _broadcasted_op x y _func
 
 
 let elt_greater_equal_ ?out x y =
   let out = match out with Some o -> o | None -> x in
-  let _func = _make_elt_compare_fun (kind x) Pervasives.(>=) in
+  let _func = _make_elt_compare_fun (kind x) Stdlib.(>=) in
   _broadcasted_op ~out x y _func
 
 
@@ -2677,9 +2677,9 @@ let _pool3d ?(padding=SAME) input kernel stride
 *)
 let max_pool2d ?(padding=SAME) input kernel stride =
   let max_pool = ref 0. in
-  let init_pool_fun = (fun () -> max_pool := Pervasives.min_float) in
+  let init_pool_fun = (fun () -> max_pool := Stdlib.min_float) in
   let add_val_pool_fun =
-    (fun v -> max_pool := Pervasives.max !max_pool v)
+    (fun v -> max_pool := Stdlib.max !max_pool v)
   in
   let end_pool_fun = (fun () -> !max_pool) in
   (_pool2d ~padding:padding input kernel stride
@@ -2732,9 +2732,9 @@ output: [batch; output_column; output_row; output_dpts; input_channel]
 *)
 let max_pool3d ?(padding=SAME) input kernel stride =
   let max_pool = ref 0. in
-  let init_pool_fun = (fun () -> max_pool := Pervasives.min_float) in
+  let init_pool_fun = (fun () -> max_pool := Stdlib.min_float) in
   let add_val_pool_fun =
-    (fun v -> max_pool := Pervasives.max !max_pool v)
+    (fun v -> max_pool := Stdlib.max !max_pool v)
   in
   let end_pool_fun = (fun () -> !max_pool) in
   (_pool3d ~padding:padding input kernel stride
@@ -2879,8 +2879,8 @@ let conv2d_backward_input input kernel stride output' =
 
             for di = 0 to kernel_cols - 1 do
               for dj = 0 to kernel_rows - 1 do
-                if ( ((Pervasives.(mod) (in_i + pad_left - di) col_stride) = 0) &&
-                     ((Pervasives.(mod) (in_j + pad_top - dj) row_stride) = 0) )
+                if ( ((Stdlib.(mod) (in_i + pad_left - di) col_stride) = 0) &&
+                     ((Stdlib.(mod) (in_j + pad_top - dj) row_stride) = 0) )
                 then
                   begin
                     let out_col = (in_i + pad_left - di) / col_stride in
@@ -3599,9 +3599,9 @@ let conv3d_backward_input input kernel stride output' =
               for di = 0 to kernel_cols - 1 do
                 for dj = 0 to kernel_rows - 1 do
                   for d_dpt = 0 to kernel_dpts - 1 do
-                    if ( ((Pervasives.(mod) (in_i + pad_left - di) col_stride) = 0) &&
-                         ((Pervasives.(mod) (in_j + pad_top - dj) row_stride) = 0) &&
-                         ((Pervasives.(mod) (in_dpt + pad_shallow - d_dpt) dpt_stride) = 0))
+                    if ( ((Stdlib.(mod) (in_i + pad_left - di) col_stride) = 0) &&
+                         ((Stdlib.(mod) (in_j + pad_top - dj) row_stride) = 0) &&
+                         ((Stdlib.(mod) (in_dpt + pad_shallow - d_dpt) dpt_stride) = 0))
                     then
                       begin
                         let out_col = (in_i + pad_left - di) / col_stride in
@@ -3984,9 +3984,9 @@ let _pool2d_backward _padding input kernel stride output'
 (* calculate the gradient of max_pool2d *)
 let max_pool2d_backward padding input kernel stride output' =
   let max_pool = ref 0. in
-  let init_pool_fun = (fun () -> max_pool := Pervasives.min_float) in
+  let init_pool_fun = (fun () -> max_pool := Stdlib.min_float) in
   let add_val_pool_fun =
-    (fun v -> max_pool := Pervasives.max !max_pool v)
+    (fun v -> max_pool := Stdlib.max !max_pool v)
   in
   let end_pool_fun = (fun () -> !max_pool) in
   let compute_grad_fun = (fun input_val input_grad output_val output_grad ->
@@ -4128,9 +4128,9 @@ let _pool3d_backward _padding input kernel stride output'
 (* calculate the gradient of max_pool3d *)
 let max_pool3d_backward padding input kernel stride output' =
   let max_pool = ref 0. in
-  let init_pool_fun = (fun () -> max_pool := Pervasives.min_float) in
+  let init_pool_fun = (fun () -> max_pool := Stdlib.min_float) in
   let add_val_pool_fun =
-    (fun v -> max_pool := Pervasives.max !max_pool v)
+    (fun v -> max_pool := Stdlib.max !max_pool v)
   in
   let end_pool_fun = (fun () -> !max_pool) in
   let compute_grad_fun = (fun input_val input_grad output_val output_grad ->
@@ -4726,10 +4726,10 @@ let upsampling2d_backward input size output =
   for b = 0 to batches - 1 do
     for c = 0 to output_cols - 1 do
       let in_c = c / col_scale in
-      let in_c = Pervasives.min in_c (input_cols - 1) in
+      let in_c = Stdlib.min in_c (input_cols - 1) in
       for r = 0 to output_rows - 1 do
         let in_r = r / row_scale in
-        let in_r = Pervasives.min in_r (input_rows - 1) in
+        let in_r = Stdlib.min in_r (input_rows - 1) in
         for i = 0 to in_channel - 1 do
           let in_val = get input' [|b; in_c; in_r; i|] in
           let out_val = get output [|b; c; r; i|] in
@@ -5013,7 +5013,7 @@ let max_rows varr =
   let result = Array.make r (0., 0, 0) in
   begin
     for i = 0 to r - 1 do
-      let best = ref Pervasives.min_float in
+      let best = ref Stdlib.min_float in
       let best_pos = ref ~- 1 in
       for j = 0 to c - 1 do
         let x = get varr [|i; j|] in

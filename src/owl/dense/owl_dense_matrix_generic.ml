@@ -66,7 +66,7 @@ let logspace k ?base a b n =
 
 
 let diagm ?(k=0) v =
-  let open Pervasives in
+  let open Stdlib in
   let n = numel v in
   let u = reshape v [|n|] in
   let x = zeros (kind v) (n + abs k) (n + abs k) in
@@ -86,9 +86,9 @@ let triu ?(k=0) x =
   let m, n = shape x in
   let y = zeros _kind m n in
 
-  let ofs = ref (Pervasives.(min n (max 0 k))) in
-  let len = ref (Pervasives.(max 0 (min n (n - k)))) in
-  let loops = Pervasives.(max 0 (min m (n - k))) in
+  let ofs = ref (Stdlib.(min n (max 0 k))) in
+  let len = ref (Stdlib.(max 0 (min n (n - k)))) in
+  let loops = Stdlib.(max 0 (min m (n - k))) in
 
   for i = 0 to loops - 1 do
     _owl_copy _kind !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 x y;
@@ -107,8 +107,8 @@ let tril ?(k=0) x =
   let m, n = shape x in
   let y = zeros _kind m n in
 
-  let row_i = Pervasives.(min m (abs (min 0 k))) in
-  let len = ref (Pervasives.(min n ((max 0 k) + 1))) in
+  let row_i = Stdlib.(min m (abs (min 0 k))) in
+  let len = ref (Stdlib.(min n ((max 0 k) + 1))) in
   let ofs = ref (row_i * n) in
 
   for _i = row_i to m - 1 do
@@ -209,7 +209,7 @@ let toeplitz ?c r =
   let _kind = kind r in
   let x = empty _kind m n in
   let ofs = ref 0 in
-  let loops = Pervasives.min m n in
+  let loops = Stdlib.min m n in
 
   for i = 0 to loops - 1 do
     _owl_copy _kind (n - i) ~ofsx:0 ~incx:1 ~ofsy:!ofs ~incy:1 r x;
@@ -230,7 +230,7 @@ let hankel ?r c =
   let _kind = kind r in
   let x = empty _kind m n in
   let ofs = ref ( (m - 1) * n ) in
-  let loops = Pervasives.min m n in
+  let loops = Stdlib.min m n in
 
   for i = 0 to loops - 1 do
     _owl_copy _kind (n - i) ~ofsx:0 ~incx:1 ~ofsy:!ofs ~incy:1 r x;
@@ -542,7 +542,7 @@ let mean' x = _mean_elt (kind x) (sum' x) (numel x)
 
 let add_diag x a =
   let m, n = shape x in
-  let m = Pervasives.min m n in
+  let m = Stdlib.min m n in
   let y = copy x in
   let _op = _add_elt (kind x) in
   for i = 0 to m - 1 do
@@ -721,7 +721,7 @@ let hadamard k n =
     _make_hadamard cp_op neg_op n n 1 x;
     x
   )
-  else if Owl_maths.is_pow2 (n / 12) && Pervasives.(n mod 12) = 0 then (
+  else if Owl_maths.is_pow2 (n / 12) && Stdlib.(n mod 12) = 0 then (
     let y = _float_array_to_k k _hadamard_12 in
     let y = of_array k y 12 12 in
     let _area = area 0 0 11 11 in
@@ -729,7 +729,7 @@ let hadamard k n =
     _make_hadamard cp_op neg_op n n 12 x;
     x
   )
-  else if Owl_maths.is_pow2 (n / 20) && Pervasives.(n mod 20) = 0 then (
+  else if Owl_maths.is_pow2 (n / 20) && Stdlib.(n mod 20) = 0 then (
     let y = _float_array_to_k k _hadamard_20 in
     let y = of_array k y 20 20 in
     let _area = area 0 0 19 19 in
@@ -879,7 +879,7 @@ let cov ?b ~a =
   let c = dot a' a in
 
   let n = row_num a - 1
-    |> Pervasives.max 1
+    |> Stdlib.max 1
     |> float_of_int
     |> _float_typ_elt (kind a)
   in

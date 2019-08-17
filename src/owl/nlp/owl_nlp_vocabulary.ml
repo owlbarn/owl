@@ -76,7 +76,7 @@ let _trim_percent_w2f lo hi h =
     all_freq.(!i) <- freq;
     i := !i + 1;
   ) h;
-  Array.sort Pervasives.compare all_freq;
+  Array.sort Stdlib.compare all_freq;
   let l0 = float_of_int n *. lo |> int_of_float in
   let h0 = float_of_int n *. hi |> int_of_float in
   let lo = all_freq.(l0) in
@@ -230,8 +230,8 @@ let sort_freq ?(inc=true) d =
     i := !i + 1;
   ) d.i2f;
   let f = match inc with
-    | true  -> fun a b -> Pervasives.compare (snd a) (snd b)
-    | false -> fun a b -> Pervasives.compare (snd b) (snd a)
+    | true  -> fun a b -> Stdlib.compare (snd a) (snd b)
+    | false -> fun a b -> Stdlib.compare (snd b) (snd a)
   in
   Array.sort f all_freq;
   all_freq

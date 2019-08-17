@@ -62,7 +62,7 @@ let _gbtrf
   : type a b. kl:int -> ku:int -> m:int -> ab:(a, b) t -> (a, b) t * (int32, int32_elt) t
   = fun ~kl ~ku ~m ~ab ->
   let n = Owl_dense_matrix_generic.col_num ab in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let _kind = Genarray.kind ab in
   let _layout = Genarray.layout ab in
   let layout = lapacke_layout _layout in
@@ -214,7 +214,7 @@ let gebrd
   = fun ~a ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let k = Pervasives.min m n in
+  let k = Stdlib.min m n in
   let _kind = Genarray.kind a in
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
@@ -280,7 +280,7 @@ let gelqf
   = fun ~a ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let k = Pervasives.min m n in
+  let k = Stdlib.min m n in
   let _kind = Genarray.kind a in
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
@@ -306,7 +306,7 @@ let geqlf
   = fun ~a ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let k = Pervasives.min m n in
+  let k = Stdlib.min m n in
   let _kind = Genarray.kind a in
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
@@ -332,7 +332,7 @@ let geqrf
   = fun ~a ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let k = Pervasives.min m n in
+  let k = Stdlib.min m n in
   let _kind = Genarray.kind a in
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
@@ -358,7 +358,7 @@ let gerqf
   = fun ~a ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let k = Pervasives.min m n in
+  let k = Stdlib.min m n in
   let _kind = Genarray.kind a in
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
@@ -385,7 +385,7 @@ let geqp3
   = fun ?jpvt ~a ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let k = Pervasives.min m n in
+  let k = Stdlib.min m n in
   let _kind = Genarray.kind a in
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
@@ -422,7 +422,7 @@ let geqrt
   = fun ~nb ~a ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   assert (nb <= minmn);
   let _kind = Genarray.kind a in
   let _layout = Genarray.layout a in
@@ -437,8 +437,8 @@ let geqrt
   *)
   let t = Genarray.create _kind _layout [|minmn; minmn|] in
   let _t = bigarray_start Ctypes_static.Genarray t in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldt = Pervasives.max 1 (_stride t) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldt = Stdlib.max 1 (_stride t) in
 
   let ret = match _kind with
     | Float32   -> L.sgeqrt ~layout ~m ~n ~nb ~a:_a ~lda ~t:_t ~ldt
@@ -468,8 +468,8 @@ let geqrt3
   let _a = bigarray_start Ctypes_static.Genarray a in
   let t = Genarray.create _kind _layout [|n;n|] in
   let _t = bigarray_start Ctypes_static.Genarray t in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldt = Pervasives.max 1 (_stride t) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldt = Stdlib.max 1 (_stride t) in
 
   let ret = match _kind with
     | Float32   -> L.sgeqrt3 ~layout ~m ~n ~a:_a ~lda ~t:_t ~ldt
@@ -487,7 +487,7 @@ let getrf
   = fun ~a ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let _kind = Genarray.kind a in
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
@@ -495,7 +495,7 @@ let getrf
   let ipiv = Genarray.create int32 _layout [|1; minmn|] in
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Float32   -> L.sgetrf ~layout ~m ~n ~a:_a ~lda ~ipiv:_ipiv
@@ -521,7 +521,7 @@ let tzrzf
   let tau = Genarray.create _kind _layout [|1; m|] in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Float32   -> L.stzrzf ~layout ~m ~n ~a:_a ~lda ~tau:_tau
@@ -552,8 +552,8 @@ let ormrz
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _c = bigarray_start Ctypes_static.Genarray c in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldc = Pervasives.max 1 (_stride c) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldc = Stdlib.max 1 (_stride c) in
 
   let ret = match _kind with
     | Float32   -> L.sormrz ~layout ~side ~trans ~m ~n ~k ~l ~a:_a ~lda
@@ -583,7 +583,7 @@ let gels
   else
     assert (mb = n);
 
-  let l = Pervasives.max m n in
+  let l = Stdlib.max m n in
   let b = match mb < l with
     | true  -> Owl_dense_matrix_generic.resize b [|l; nb|]
     | false -> b
@@ -592,8 +592,8 @@ let gels
   let nrhs = nb in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
 
   let ret = match _kind with
     | Float32   -> L.sgels ~layout ~trans ~m ~n ~nrhs ~a:_a ~lda ~b:_b ~ldb
@@ -604,7 +604,7 @@ let gels
   in
   check_lapack_error ret;
 
-  let k = Pervasives.min m n in
+  let k = Stdlib.min m n in
   let a' = Owl_dense_matrix_generic.get_slice [[0;k-1]; [0;k-1]] a in
   let f = match m < n with
     | true  -> Owl_dense_matrix_generic.tril a'
@@ -644,8 +644,8 @@ let gesv
   let nrhs = nb in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
   let ipiv = Genarray.create int32 _layout [|1;n|] in
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
 
@@ -677,8 +677,8 @@ let getrs
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
 
   let ret = match _kind with
     | Float32   -> L.sgetrs ~layout ~trans ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
@@ -704,7 +704,7 @@ let getri
 
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Float32   -> L.sgetri ~layout ~n ~a:_a ~lda ~ipiv:_ipiv
@@ -734,9 +734,9 @@ let gesvx
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
-  let ldaf = Pervasives.max 1 (_stride af) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
+  let ldaf = Stdlib.max 1 (_stride af) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
   let _af = bigarray_start Ctypes_static.Genarray af in
@@ -744,7 +744,7 @@ let gesvx
   let _equed = Ctypes.(allocate char equed) in
   let x = Genarray.create _kind _layout [|n;nrhs|] in
   let _x = bigarray_start Ctypes_static.Genarray x in
-  let ldx = Pervasives.max 1 (_stride x) in
+  let ldx = Stdlib.max 1 (_stride x) in
 
   let r_ref = ref (Genarray.create _kind _layout [|0;0|]) in
   let c_ref = ref (Genarray.create _kind _layout [|0;0|]) in
@@ -861,7 +861,7 @@ let gelsd
   = fun ~a ~b ~rcond ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let mb = Owl_dense_matrix_generic.row_num b in
   let nrhs = Owl_dense_matrix_generic.col_num b in
   assert (mb = m);
@@ -873,8 +873,8 @@ let gelsd
     | true  -> Owl_dense_matrix_generic.resize b [|n; nrhs|]
     | false -> b
   in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
   let _rank = Ctypes.(allocate int32_t 0l) in
@@ -923,8 +923,8 @@ let gelsy
     | true  -> Owl_dense_matrix_generic.resize b [|n; nrhs|]
     | false -> b
   in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
   let _rank = Ctypes.(allocate int32_t 0l) in
@@ -965,8 +965,8 @@ let gglse
   let _b = bigarray_start Ctypes_static.Genarray b in
   let _c = bigarray_start Ctypes_static.Genarray c in
   let _d = bigarray_start Ctypes_static.Genarray d in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
 
   let ret = match _kind with
     | Float32   -> L.sgglse ~layout ~m ~n ~p ~a:_a ~lda ~b:_b ~ldb ~c:_c ~d:_d ~x:_x
@@ -1006,9 +1006,9 @@ let geev
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _vl = bigarray_start Ctypes_static.Genarray vl in
   let _vr = bigarray_start Ctypes_static.Genarray vr in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldvl = Pervasives.max 1 (_stride vl) in
-  let ldvr = Pervasives.max 1 (_stride vr) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldvl = Stdlib.max 1 (_stride vl) in
+  let ldvr = Stdlib.max 1 (_stride vr) in
 
   let wr = ref (Genarray.create _kind _layout [|0;0|]) in
   let wi = ref (Genarray.create _kind _layout [|0;0|]) in
@@ -1063,7 +1063,7 @@ let gesdd
 
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let _kind = Genarray.kind a in
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
@@ -1083,9 +1083,9 @@ let gesdd
     | 'O' -> Genarray.create _kind _layout [|n; if m >=n then n else 0|]
     | _   -> Genarray.create _kind _layout [|0;n|]
   in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldu = Pervasives.max 1 (_stride u) in
-  let ldvt = Pervasives.max 1 (_stride vt) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldu = Stdlib.max 1 (_stride u) in
+  let ldvt = Stdlib.max 1 (_stride vt) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _u = bigarray_start Ctypes_static.Genarray u in
   let _vt = bigarray_start Ctypes_static.Genarray vt in
@@ -1137,7 +1137,7 @@ let gesvd
 
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let _kind = Genarray.kind a in
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
@@ -1156,9 +1156,9 @@ let gesvd
     | 'S' -> Genarray.create _kind _layout [|minmn;n|]
     | _   -> Genarray.create _kind _layout [|0;n|]
   in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldu = Pervasives.max 1 (_stride u) in
-  let ldvt = Pervasives.max 1 (_stride vt) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldu = Stdlib.max 1 (_stride u) in
+  let ldvt = Stdlib.max 1 (_stride vt) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _u = bigarray_start Ctypes_static.Genarray u in
   let _vt = bigarray_start Ctypes_static.Genarray vt in
@@ -1226,11 +1226,11 @@ let ggsvd3
   let n = Owl_dense_matrix_generic.col_num a in
   let p = Owl_dense_matrix_generic.row_num b in
   assert (n = Owl_dense_matrix_generic.col_num b);
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
-  let ldu = Pervasives.max 1 m in
-  let ldv = Pervasives.max 1 p in
-  let ldq = Pervasives.max 1 n in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
+  let ldu = Stdlib.max 1 m in
+  let ldv = Stdlib.max 1 p in
+  let ldq = Stdlib.max 1 n in
   let _kind = Genarray.kind a in
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
@@ -1348,12 +1348,12 @@ let geevx
     | 'V' -> Genarray.create _kind _layout [|n;n|]
     | _   -> Genarray.create _kind _layout [|0;n|]
   in
-  let ldvl = Pervasives.max 1 (_stride vl) in
-  let ldvr = Pervasives.max 1 (_stride vr) in
+  let ldvl = Stdlib.max 1 (_stride vl) in
+  let ldvr = Stdlib.max 1 (_stride vr) in
 
   let _ilo = Ctypes.(allocate int32_t 0l) in
   let _ihi = Ctypes.(allocate int32_t 0l) in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _vl = bigarray_start Ctypes_static.Genarray vl in
   let _vr = bigarray_start Ctypes_static.Genarray vr in
@@ -1491,8 +1491,8 @@ let ggev
   let _vl = bigarray_start Ctypes_static.Genarray vl in
   let _vr = bigarray_start Ctypes_static.Genarray vr in
   let _beta = bigarray_start Ctypes_static.Genarray beta in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
 
   let ret = match _kind with
     | Float32   -> (
@@ -1553,7 +1553,7 @@ let gtsv
   let _layout = Genarray.layout b in
   let layout = lapacke_layout _layout in
 
-  let ldb = Pervasives.max 1 (_stride b) in
+  let ldb = Stdlib.max 1 (_stride b) in
   let _b = bigarray_start Ctypes_static.Genarray b in
   let _d = bigarray_start Ctypes_static.Genarray d in
   let _dl = bigarray_start Ctypes_static.Genarray dl in
@@ -1619,7 +1619,7 @@ let gttrs
   let layout = lapacke_layout _layout in
 
   let ipiv = Genarray.create int32 _layout [|1;n|] in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let ldb = Stdlib.max 1 (_stride b) in
   let _b = bigarray_start Ctypes_static.Genarray b in
   let _d = bigarray_start Ctypes_static.Genarray d in
   let _dl = bigarray_start Ctypes_static.Genarray dl in
@@ -1647,7 +1647,7 @@ let orglq
   = fun ?k ~a ~tau ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let k = match k with
     | Some k -> k
     | None   -> Owl_dense_matrix_generic.numel tau
@@ -1658,7 +1658,7 @@ let orglq
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
@@ -1678,7 +1678,7 @@ let unglq
   = fun ?k ~a ~tau ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let k = match k with
     | Some k -> k
     | None   -> Owl_dense_matrix_generic.numel tau
@@ -1689,7 +1689,7 @@ let unglq
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
@@ -1709,7 +1709,7 @@ let orgqr
   = fun ?k ~a ~tau ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let k = match k with
     | Some k -> k
     | None   -> Owl_dense_matrix_generic.numel tau
@@ -1720,7 +1720,7 @@ let orgqr
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
@@ -1740,7 +1740,7 @@ let ungqr
   = fun ?k ~a ~tau ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let k = match k with
     | Some k -> k
     | None   -> Owl_dense_matrix_generic.numel tau
@@ -1751,7 +1751,7 @@ let ungqr
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
@@ -1771,7 +1771,7 @@ let orgql
   = fun ?k ~a ~tau ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let k = match k with
     | Some k -> k
     | None   -> Owl_dense_matrix_generic.numel tau
@@ -1782,7 +1782,7 @@ let orgql
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
@@ -1802,7 +1802,7 @@ let orgrq
   = fun ?k ~a ~tau ->
   let m = Owl_dense_matrix_generic.row_num a in
   let n = Owl_dense_matrix_generic.col_num a in
-  let minmn = Pervasives.min m n in
+  let minmn = Stdlib.min m n in
   let k = match k with
     | Some k -> k
     | None   -> Owl_dense_matrix_generic.numel tau
@@ -1813,7 +1813,7 @@ let orgrq
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
 
@@ -1848,8 +1848,8 @@ let ormlq
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldc = Pervasives.max 1 (_stride c) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldc = Stdlib.max 1 (_stride c) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _c = bigarray_start Ctypes_static.Genarray c in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
@@ -1882,8 +1882,8 @@ let ormqr
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldc = Pervasives.max 1 (_stride c) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldc = Stdlib.max 1 (_stride c) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _c = bigarray_start Ctypes_static.Genarray c in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
@@ -1916,8 +1916,8 @@ let ormql
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldc = Pervasives.max 1 (_stride c) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldc = Stdlib.max 1 (_stride c) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _c = bigarray_start Ctypes_static.Genarray c in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
@@ -1950,8 +1950,8 @@ let ormrq
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldc = Pervasives.max 1 (_stride c) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldc = Stdlib.max 1 (_stride c) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _c = bigarray_start Ctypes_static.Genarray c in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
@@ -1975,7 +1975,7 @@ let gemqrt
   let nb = Owl_dense_matrix_generic.row_num t in
   let k = Owl_dense_matrix_generic.col_num t in
   let mv = Owl_dense_matrix_generic.row_num v in
-  let ldv = Pervasives.max 1 (_stride v) in
+  let ldv = Stdlib.max 1 (_stride v) in
   assert (k >= nb);
   if side = 'L' then
     assert (mv = m && ldv = k && k <= m)
@@ -1985,8 +1985,8 @@ let gemqrt
   let _layout = Genarray.layout c in
   let layout = lapacke_layout _layout in
 
-  let ldt = Pervasives.max 1 (_stride t) in
-  let ldc = Pervasives.max 1 (_stride c) in
+  let ldt = Stdlib.max 1 (_stride t) in
+  let ldc = Stdlib.max 1 (_stride c) in
   let _v = bigarray_start Ctypes_static.Genarray v in
   let _t = bigarray_start Ctypes_static.Genarray t in
   let _c = bigarray_start Ctypes_static.Genarray c in
@@ -2015,8 +2015,8 @@ let posv
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
 
@@ -2043,7 +2043,7 @@ let potrf
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
 
   let ret = match _kind with
@@ -2069,7 +2069,7 @@ let potri
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
 
   let ret = match _kind with
@@ -2096,8 +2096,8 @@ let potrs
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
 
@@ -2124,7 +2124,7 @@ let pstrf
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let piv = Genarray.create int32 _layout [|1;n|] in
   let _piv = bigarray_start Ctypes_static.Genarray piv in
@@ -2155,7 +2155,7 @@ let ptsv
   let _layout = Genarray.layout d in
   let layout = lapacke_layout _layout in
 
-  let ldb = Pervasives.max 1 (_stride b) in
+  let ldb = Stdlib.max 1 (_stride b) in
   let _e = bigarray_start Ctypes_static.Genarray e in
   let _b = bigarray_start Ctypes_static.Genarray b in
 
@@ -2240,7 +2240,7 @@ let pttrs
   let _layout = Genarray.layout d in
   let layout = lapacke_layout _layout in
 
-  let ldb = Pervasives.max 1 (_stride b) in
+  let ldb = Stdlib.max 1 (_stride b) in
   let _e = bigarray_start Ctypes_static.Genarray e in
   let _b = bigarray_start Ctypes_static.Genarray b in
 
@@ -2283,7 +2283,7 @@ let trtri
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
 
   let ret = match _kind with
@@ -2314,8 +2314,8 @@ let trtrs
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
 
@@ -2344,7 +2344,7 @@ let trcon
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let rcond = ref 0. in
 
@@ -2454,9 +2454,9 @@ let trrfs
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
-  let ldx = Pervasives.max 1 (_stride x) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
+  let ldx = Stdlib.max 1 (_stride x) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
   let _x = bigarray_start Ctypes_static.Genarray x in
@@ -2528,7 +2528,7 @@ let stev
     | 'V' -> Genarray.create _kind _layout [|n;n|]
     | _   -> Genarray.create _kind _layout [|0;n|]
   in
-  let ldz = Pervasives.max 1 (_stride z) in
+  let ldz = Stdlib.max 1 (_stride z) in
   let _d = bigarray_start Ctypes_static.Genarray d in
   let _e = bigarray_start Ctypes_static.Genarray e in
   let _z = bigarray_start Ctypes_static.Genarray z in
@@ -2677,7 +2677,7 @@ let stein
   let layout = lapacke_layout _layout in
 
   let e = Owl_dense_matrix_generic.resize e [|1; n|] in
-  let ldz = Pervasives.max 1 m in
+  let ldz = Stdlib.max 1 m in
   let z = Genarray.create _kind _layout [|n; |] in
   let ifailv = Genarray.create int32 _layout [|1; m|] in
   (* TODO: cases where inputs are invalid, refer to julia implementation *)
@@ -2721,7 +2721,7 @@ let syconv
   let _e = bigarray_start Ctypes_static.Genarray e in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Float32   -> L.ssyconv ~layout ~uplo ~way ~n ~a:_a ~lda ~ipiv:_ipiv ~e:_e
@@ -2753,8 +2753,8 @@ let sysv
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
 
   let ret = match _kind with
     | Float32   -> L.ssysv ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
@@ -2782,7 +2782,7 @@ let sytrf
   let ipiv = Genarray.create int32 _layout [|1;n|] in
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Float32   -> L.ssytrf ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
@@ -2810,7 +2810,7 @@ let sytrf_rook
   let ipiv = Genarray.create int32 _layout [|1;n|] in
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Float32   -> L.ssytrf_rook ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
@@ -2838,7 +2838,7 @@ let sytri
   let ipiv = Genarray.create int32 _layout [|1;n|] in
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Float32   -> L.ssytri ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
@@ -2867,8 +2867,8 @@ let sytrs
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
 
   let ret = match _kind with
     | Float32   -> L.ssytrs ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv ~b:_b ~ldb
@@ -2900,8 +2900,8 @@ let hesv
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
 
   let ret = match _kind with
     | Complex32 -> L.chesv ~layout ~uplo ~n ~nrhs ~a:_a ~lda ~ipiv:_ipiv
@@ -2928,7 +2928,7 @@ let hetrf
   let ipiv = Genarray.create int32 _layout [|1;n|] in
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Complex32 -> L.chetrf ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
@@ -2954,7 +2954,7 @@ let hetrf_rook
   let ipiv = Genarray.create int32 _layout [|1;n|] in
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Complex32 -> L.chetrf_rook ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
@@ -2980,7 +2980,7 @@ let hetri
 
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Complex32 -> L.chetri ~layout ~uplo ~n ~a:_a ~lda ~ipiv:_ipiv
@@ -3008,8 +3008,8 @@ let hetrs
   let _ipiv = bigarray_start Ctypes_static.Genarray ipiv in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
 
   let ret = match _kind with
     | Complex32 ->
@@ -3037,7 +3037,7 @@ let syev
   let w = Genarray.create _kind _layout [|1;n|] in
   let _w = bigarray_start Ctypes_static.Genarray w in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Float32   -> L.ssyev ~layout ~jobz ~uplo ~n ~a:_a ~lda ~w:_w
@@ -3071,9 +3071,9 @@ let syevr
     | 'V' -> assert (vu <= vl)
     | _   -> ()
   in
-  let lda = Pervasives.max 1 n in
+  let lda = Stdlib.max 1 n in
   let ldz = match jobz with
-    | 'V' -> Pervasives.max 1 m
+    | 'V' -> Stdlib.max 1 m
     | _   -> 1
   in
   let z = Genarray.create _kind _layout [|n;ldz|] in
@@ -3120,8 +3120,8 @@ let sygvd : type a. ityp:int -> jobz:char ->
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
   let w = Genarray.create _kind _layout [|1;n|] in
   let _w = bigarray_start Ctypes_static.Genarray w in
   let _a = bigarray_start Ctypes_static.Genarray a in
@@ -3155,9 +3155,9 @@ let bdsqr
   let _layout = Genarray.layout vt in
   let layout = lapacke_layout _layout in
 
-  let ldvt = Pervasives.max 1 (_stride vt) in
-  let ldu = Pervasives.max 1 (_stride u) in
-  let ldc = Pervasives.max 1 ncc in
+  let ldvt = Stdlib.max 1 (_stride vt) in
+  let ldu = Stdlib.max 1 (_stride u) in
+  let ldc = Stdlib.max 1 ncc in
   assert (ldvt >= ncvt);
   assert (ldu >= n);
   assert (ldc >= ncc);
@@ -3212,7 +3212,7 @@ let bdsdc
       let smlsiz = 100. in
       let n = float_of_int n in
       let ldq = Owl_maths.(n *. (11. +. 2. *. smlsiz +. 8. *. round (log ((n /. (smlsiz +. 1.))) /. (log 2.)))) in
-      Genarray.create _kind _layout [|1; (Pervasives.max 0 (int_of_float ldq))|]
+      Genarray.create _kind _layout [|1; (Stdlib.max 0 (int_of_float ldq))|]
       )
     | _   -> Genarray.create _kind _layout [|0;n|]
   in
@@ -3221,12 +3221,12 @@ let bdsdc
       let smlsiz = 100. in
       let n = float_of_int n in
       let ldiq = Owl_maths.(n *. (3. +. 3. *. round (log (n /. (smlsiz +. 1.)) /. (log 2.)))) in
-      Genarray.create int32 _layout [|1; (Pervasives.max 0 (int_of_float ldiq))|]
+      Genarray.create int32 _layout [|1; (Stdlib.max 0 (int_of_float ldiq))|]
       )
     | _   -> Genarray.create int32 _layout [|0; n|]
   in
-  let ldu = Pervasives.max 1 (_stride u) in
-  let ldvt = Pervasives.max 1 (_stride vt) in
+  let ldu = Stdlib.max 1 (_stride u) in
+  let ldvt = Stdlib.max 1 (_stride vt) in
 
   let _d = bigarray_start Ctypes_static.Genarray d in
   let _e = bigarray_start Ctypes_static.Genarray e in
@@ -3259,7 +3259,7 @@ let gecon
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let rcond = ref 0. in
 
@@ -3304,10 +3304,10 @@ let gehrd
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let tau = Genarray.create _kind _layout [|1; (Pervasives.max 1 (n - 1))|] in
+  let tau = Genarray.create _kind _layout [|1; (Stdlib.max 1 (n - 1))|] in
   let _tau = bigarray_start Ctypes_static.Genarray tau in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Float32   -> L.sgehrd ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
@@ -3334,7 +3334,7 @@ let orghr : type a. ilo:int -> ihi:int ->
 
   let _tau = bigarray_start Ctypes_static.Genarray tau in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Float32   -> L.sorghr ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
@@ -3358,7 +3358,7 @@ let unghr : type a. ilo:int -> ihi:int ->
 
   let _tau = bigarray_start Ctypes_static.Genarray tau in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Complex32 -> L.cunghr ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
@@ -3386,7 +3386,7 @@ let gees : type a b.
     | 'V' -> Genarray.create _kind _layout [|n;n|]
     | _   -> Genarray.create _kind _layout [|0;n|]
   in
-  let ldvs = Pervasives.max 1 (_stride vs) in
+  let ldvs = Stdlib.max 1 (_stride vs) in
   let wr = ref (Genarray.create _kind _layout [|0;0|]) in
   let wi = ref (Genarray.create _kind _layout [|0;0|]) in
 
@@ -3394,7 +3394,7 @@ let gees : type a b.
   let _sdim = Ctypes.(allocate int32_t 0l) in
   let _vs = bigarray_start Ctypes_static.Genarray vs in
   let _a = bigarray_start Ctypes_static.Genarray a in
-  let lda = Pervasives.max 1 (_stride a) in
+  let lda = Stdlib.max 1 (_stride a) in
 
   let ret = match _kind with
     | Float32   -> (
@@ -3470,14 +3470,14 @@ let gges
     | 'V' -> Genarray.create _kind _layout [|n;n|]
     | _   -> Genarray.create _kind _layout [|0;n|]
   in
-  let ldvsl = Pervasives.max 1 (_stride vsl) in
-  let ldvsr = Pervasives.max 1 (_stride vsr) in
+  let ldvsl = Stdlib.max 1 (_stride vsl) in
+  let ldvsr = Stdlib.max 1 (_stride vsr) in
   let alphar = ref (Genarray.create _kind _layout [|0;0|]) in
   let alphai = ref (Genarray.create _kind _layout [|0;0|]) in
   let beta = Genarray.create _kind _layout [|1;n|] in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
   let _vsl = bigarray_start Ctypes_static.Genarray vsl in
@@ -3554,8 +3554,8 @@ let trexc
   let _layout = Genarray.layout t in
   let layout = lapacke_layout _layout in
 
-  let ldt = Pervasives.max 1 (_stride t) in
-  let ldq = Pervasives.max 1 (_stride q) in
+  let ldt = Stdlib.max 1 (_stride t) in
+  let ldq = Stdlib.max 1 (_stride q) in
   let _t = bigarray_start Ctypes_static.Genarray t in
   let _q = bigarray_start Ctypes_static.Genarray q in
   let _ifst = Ctypes.(allocate int32_t (Int32.of_int ifst)) in
@@ -3590,8 +3590,8 @@ let trsen : type a b.
   let _layout = Genarray.layout t in
   let layout = lapacke_layout _layout in
 
-  let ldt = Pervasives.max 1 (_stride t) in
-  let ldq = Pervasives.max 1 (_stride q) in
+  let ldt = Stdlib.max 1 (_stride t) in
+  let ldq = Stdlib.max 1 (_stride q) in
   let _t = bigarray_start Ctypes_static.Genarray t in
   let _q = bigarray_start Ctypes_static.Genarray q in
   let wr = ref (Genarray.create _kind _layout [|0;0|]) in
@@ -3687,10 +3687,10 @@ let tgsen
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
-  let ldq = Pervasives.max 1 (_stride q) in
-  let ldz = Pervasives.max 1 (_stride z) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
+  let ldq = Stdlib.max 1 (_stride q) in
+  let ldz = Stdlib.max 1 (_stride z) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
   let _q = bigarray_start Ctypes_static.Genarray q in
@@ -3797,9 +3797,9 @@ let trsyl
   let _layout = Genarray.layout a in
   let layout = lapacke_layout _layout in
 
-  let lda = Pervasives.max 1 (_stride a) in
-  let ldb = Pervasives.max 1 (_stride b) in
-  let ldc = Pervasives.max 1 (_stride c) in
+  let lda = Stdlib.max 1 (_stride a) in
+  let ldb = Stdlib.max 1 (_stride b) in
+  let ldc = Stdlib.max 1 (_stride c) in
   let _a = bigarray_start Ctypes_static.Genarray a in
   let _b = bigarray_start Ctypes_static.Genarray b in
   let _c = bigarray_start Ctypes_static.Genarray c in

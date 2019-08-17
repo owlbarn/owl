@@ -19,16 +19,16 @@ let div x y = x /. y
 let pow x y = x ** y
 
 
-let fmod x y = Pervasives.mod_float x y
+let fmod x y = Stdlib.mod_float x y
 
 
-let atan2 x y = Pervasives.atan2 x y
+let atan2 x y = Stdlib.atan2 x y
 
 
-let hypot x y = Pervasives.hypot x y
+let hypot x y = Stdlib.hypot x y
 
 
-let abs x = Pervasives.abs_float x
+let abs x = Stdlib.abs_float x
 
 
 let neg x = ~-. x
@@ -46,13 +46,13 @@ let softplus x = log (1. +. exp x)
 let sqr x = x *. x
 
 
-let sqrt x = Pervasives.sqrt x
+let sqrt x = Stdlib.sqrt x
 
 
 let cbrt x = x ** 0.33333333333333333333
 
 
-let exp x = Pervasives.exp x
+let exp x = Stdlib.exp x
 
 
 let exp2 x = 2. ** x
@@ -61,19 +61,19 @@ let exp2 x = 2. ** x
 let exp10 x = 10. ** x
 
 
-let expm1 x = Pervasives.expm1 x
+let expm1 x = Stdlib.expm1 x
 
 
-let log x = Pervasives.log x
+let log x = Stdlib.log x
 
 
 let log2 x = (log x) /. Owl_const.loge2
 
 
-let log10 x = Pervasives.log10 x
+let log10 x = Stdlib.log10 x
 
 
-let log1p x = Pervasives.log1p x
+let log1p x = Stdlib.log1p x
 
 
 let signum x =
@@ -86,10 +86,10 @@ let signum x =
   )
 
 
-let floor x = Pervasives.floor x
+let floor x = Stdlib.floor x
 
 
-let ceil x = Pervasives.ceil x
+let ceil x = Stdlib.ceil x
 
 
 let round x = floor (x +. 0.5)
@@ -101,13 +101,13 @@ let trunc x = modf x |> snd
 let fix x = if x < 0. then ceil x else floor x
 
 
-let sin x = Pervasives.sin x
+let sin x = Stdlib.sin x
 
 
-let cos x = Pervasives.cos x
+let cos x = Stdlib.cos x
 
 
-let tan x = Pervasives.tan x
+let tan x = Stdlib.tan x
 
 
 let cot x = 1. /. (tan x)
@@ -119,31 +119,31 @@ let sec x = 1. /. (cos x)
 let csc x = 1. /. (sin x)
 
 
-let sinh x = Pervasives.sinh x
+let sinh x = Stdlib.sinh x
 
 
-let cosh x = Pervasives.cosh x
+let cosh x = Stdlib.cosh x
 
 
-let tanh x = Pervasives.tanh x
+let tanh x = Stdlib.tanh x
 
 
-let asin x = Pervasives.asin x
+let asin x = Stdlib.asin x
 
 
-let acos x = Pervasives.acos x
+let acos x = Stdlib.acos x
 
 
-let atan x = Pervasives.atan x
+let atan x = Stdlib.atan x
 
 
 let acot x = (Owl_const.pi /. 2.) -. (atan x)
 
 
-let asec x = Pervasives.acos (1. /. x)
+let asec x = Stdlib.acos (1. /. x)
 
 
-let acsc x = Pervasives.asin (1. /. x)
+let acsc x = Stdlib.asin (1. /. x)
 
 
 let asinh x = log (x +. (sqrt ((x *. x) +. 1.)))
@@ -164,7 +164,7 @@ let asech x = acosh (1. /. x)
 let acsch x = asinh (1. /. x)
 
 
-let relu x = Pervasives.max 0. x
+let relu x = Stdlib.max 0. x
 
 
 let sigmoid x = 1. /. (1. +. (log (~-. x)) )
@@ -238,7 +238,7 @@ let is_normal x = FP_normal = classify_float x
 let is_subnormal x = FP_subnormal = classify_float x
 
 
-let is_odd x = ((Pervasives.abs x) mod 2) = 1
+let is_odd x = ((Stdlib.abs x) mod 2) = 1
 
 
 let is_even x = (x mod 2) = 0

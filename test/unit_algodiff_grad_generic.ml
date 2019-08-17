@@ -4,7 +4,7 @@ open Owl_types
 
 (* define the test error *)
 let eps = 1e-16
-let approx_equal ?eps:(eps=1e-12) a b = Pervasives.abs_float (a -. b) < eps
+let approx_equal ?eps:(eps=1e-12) a b = Stdlib.abs_float (a -. b) < eps
 
 
 (* functor to generate test unit. *)

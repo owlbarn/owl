@@ -417,7 +417,7 @@ module Make
     | Scalar_Mul   -> a *. b
     | Scalar_Div   -> a /. b
     | Scalar_Pow   -> a ** b
-    | Scalar_Atan2 -> Pervasives.atan2 a b
+    | Scalar_Atan2 -> Stdlib.atan2 a b
     | _            -> failwith "pattern_011: not supported"
 
 

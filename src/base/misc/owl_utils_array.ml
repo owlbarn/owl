@@ -476,7 +476,7 @@ let reverse x =
 (* sort then fill the holes *)
 let sort_fill ?min ?max ?fill x =
   let x = copy x in
-  Array.sort Pervasives.compare x;
+  Array.sort Stdlib.compare x;
 
   let n = Array.length x in
   let min = match min with Some a -> a | None -> x.(0) in
@@ -489,7 +489,7 @@ let sort_fill ?min ?max ?fill x =
   y
 
 
-let argsort ?(cmp=Pervasives.compare) x =
+let argsort ?(cmp=Stdlib.compare) x =
   let cmp_fun a b = cmp (fst a) (fst b) in
   let n = Array.length x in
   let y = Array.init n (fun i -> (x.(i),i)) in
@@ -498,7 +498,7 @@ let argsort ?(cmp=Pervasives.compare) x =
 
 
 
-let min_i ?(cmp=Pervasives.compare) x =
+let min_i ?(cmp=Stdlib.compare) x =
   assert (Array.length x > 0);
   let idx = ref 0 in
   let acc = ref x.(0) in
@@ -511,7 +511,7 @@ let min_i ?(cmp=Pervasives.compare) x =
   !idx
 
 
-let max_i ?(cmp=Pervasives.compare) x =
+let max_i ?(cmp=Stdlib.compare) x =
   assert (Array.length x > 0);
   let idx = ref 0 in
   let acc = ref x.(0) in
