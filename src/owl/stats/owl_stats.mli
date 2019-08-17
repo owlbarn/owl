@@ -493,9 +493,9 @@ from ``n`` trials. The probabilty mass function is as follows.
   P(x) = \frac{n!}{{x_1}! \cdot\cdot\cdot {x_k}!} p_{1}^{x_1} \cdot\cdot\cdot p_{k}^{x_k}
 
 ``p`` is the probabilty mass of ``k`` categories. The elements in ``p`` should
-all be positive (result is undefined in that case), but they don't need to sum
-to 1. For implementation details, refer to :cite:`davis1993computer`.
-
+all be positive (result is undefined if there are negative values), but they 
+don't need to sum to 1: the result is the same whether or not ``p`` is normalized. 
+For implementation details, refer to :cite:`davis1993computer`.
  *)
 
 val multinomial_pdf : int array -> p:float array -> float
