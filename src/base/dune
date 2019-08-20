@@ -16,5 +16,5 @@
  (wrapped false)
 
  (flags (:standard -safe-string))
- (libraries bigarray)
+ (libraries bigarray stdlib-shims)
  )

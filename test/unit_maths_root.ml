@@ -6,7 +6,7 @@ module M = Owl_maths_root
 (* define the test error *)
 let eps = 1e-6
 
-let approx_equal a b = Pervasives.(abs_float (a -. b) < eps)
+let approx_equal a b = Stdlib.(abs_float (a -. b) < eps)
 
 
 (* a module with functions to test *)

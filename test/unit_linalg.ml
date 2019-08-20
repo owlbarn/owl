@@ -8,7 +8,7 @@ module M = Owl.Linalg.D
 
 let approx_equal a b =
   let eps = 1e-6 in
-  Pervasives.(abs_float (a -. b) < eps)
+  Stdlib.(abs_float (a -. b) < eps)
 
 
 (* some test input *)

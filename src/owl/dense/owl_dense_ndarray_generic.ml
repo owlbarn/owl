@@ -7299,7 +7299,7 @@ let var' x =
   let y = sub_scalar x mu in
   _owl_sqr _kind (numel y) y y;
   let y = sum' y in
-  let n = (numel x) - 1 |> Pervasives.max 1 |> float_of_int |> _float_typ_elt _kind in
+  let n = (numel x) - 1 |> Stdlib.max 1 |> float_of_int |> _float_typ_elt _kind in
   _div_elt _kind y n
 
 
@@ -7312,7 +7312,7 @@ let var ?axis x =
       let y = sub x mu in
       _owl_sqr _kind (numel y) y y;
       let y = sum ~axis:a y in
-      let n = (shape x).(a) - 1 |> Pervasives.max 1 |> float_of_int |> _float_typ_elt _kind in
+      let n = (shape x).(a) - 1 |> Stdlib.max 1 |> float_of_int |> _float_typ_elt _kind in
       _owl_div_scalar _kind (numel y) y y n;
       y
     )
@@ -7325,7 +7325,7 @@ let std' x =
   let y = sub_scalar x mu in
   _owl_sqr _kind (numel y) y y;
   let y = sum' y in
-  let n = (numel x) - 1 |> Pervasives.max 1 |> float_of_int |> _float_typ_elt _kind in
+  let n = (numel x) - 1 |> Stdlib.max 1 |> float_of_int |> _float_typ_elt _kind in
   _div_elt _kind y n |> _sqrt_elt _kind
 
 
@@ -7338,7 +7338,7 @@ let std ?axis x =
       let y = sub x mu in
       _owl_sqr _kind (numel y) y y;
       let y = sum ~axis:a y in
-      let n = (shape x).(a) - 1 |> Pervasives.max 1 |> float_of_int |> _float_typ_elt _kind in
+      let n = (shape x).(a) - 1 |> Stdlib.max 1 |> float_of_int |> _float_typ_elt _kind in
       _owl_div_scalar _kind (numel y) y y n;
       _owl_sqrt _kind (numel y) y y;
       y
@@ -7413,7 +7413,7 @@ let _search_top_elements ?(sorted=true) x n cmp_fun =
   if n <= 0 then [||]
   else (
     let m = numel x in
-    let n = Pervasives.min n m in
+    let n = Stdlib.min n m in
     let y = flatten x |> array1_of_genarray in
     let cmp_ids i j = cmp_fun y.{i} y.{j} in
     let heap = Owl_utils.Heap.make_int ~initial_size:n cmp_ids in
@@ -7448,11 +7448,11 @@ let _search_top_elements ?(sorted=true) x n cmp_fun =
 
 (* FIXME:
   the (<) and (>) functions needs to be changed for complex numbers, since
-  Pervasives module may have different way to compare complex numbers.
+  Stdlib module may have different way to compare complex numbers.
  *)
-let top x n = _search_top_elements x n Pervasives.compare
+let top x n = _search_top_elements x n Stdlib.compare
 
-let bottom x n = _search_top_elements x n (fun a b -> -Pervasives.compare a b)
+let bottom x n = _search_top_elements x n (fun a b -> -Stdlib.compare a b)
 
 
 
@@ -8135,12 +8135,12 @@ let eye k n =
 let diag ?(k=0) x =
   let m, n = _matrix_shape x in
   let l = match k >= 0 with
-    | true  -> Pervasives.(max 0 (min m (n - k)))
-    | false -> Pervasives.(max 0 (min n (m + k)))
+    | true  -> Stdlib.(max 0 (min m (n - k)))
+    | false -> Stdlib.(max 0 (min n (m + k)))
   in
   let i, j = match k >= 0 with
     | true  -> 0, k
-    | false -> Pervasives.abs k, 0
+    | false -> Stdlib.abs k, 0
   in
   let y = empty (kind x) [|1;l|] in
   for k = 0 to l - 1 do

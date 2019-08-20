@@ -115,10 +115,10 @@ let min_float32 = ~-.340282346638528859811704183484516925440.0
 let max_float32 = 340282346638528859811704183484516925440.0
 
 
-let min_float64 = Pervasives.min_float
+let min_float64 = Stdlib.min_float
 
 
-let max_float64 = Pervasives.max_float
+let max_float64 = Stdlib.max_float
 
 
 (** Unit prefixes *)

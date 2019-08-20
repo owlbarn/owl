@@ -29,7 +29,7 @@ let logabs x =
     if r >= i then r, i /. r
     else i, r /. i
   in
-  Pervasives.(log m) +. 0.5 *. (log1p (u *. u))
+  Stdlib.(log m) +. 0.5 *. (log1p (u *. u))
 
 
 let log2 x = div (log x) (log {re = 2.; im = 0.})
@@ -71,13 +71,13 @@ let sin x =
 
 
 let cos x =
-  let open Pervasives in
+  let open Stdlib in
   if x.im = 0. then { re = cos x.re; im = 0. }
   else { re = (cos x.re) *. (cosh x.im) ; im = (sin x.re) *. (sinh (-.x.im)) }
 
 
 let tan x =
-  let open Pervasives in
+  let open Stdlib in
   if abs_float x.im < 1. then (
     let d = ((cos x.re) ** 2.) +. ((sinh x.im) ** 2.) in
     { re = 0.5 *. (sin (2. *. x.re)) /. d; im = 0.5 *. (sinh (2. *. x.im)) /. d }
@@ -99,17 +99,17 @@ let csc x = inv (sin x)
 
 
 let sinh x =
-  let open Pervasives in
+  let open Stdlib in
   { re = (sinh x.re) *. (cos x.im); im = (cosh x.re) *. (sin x.im) }
 
 
 let cosh x =
-  let open Pervasives in
+  let open Stdlib in
   { re = (cosh x.re) *. (cos x.im); im = (sinh x.re) *. (sin x.im) }
 
 
 let tanh x =
-  let open Pervasives in
+  let open Stdlib in
   if abs_float x.re < 1. then (
     let d = ((cos x.im) ** 2.) +. ((sinh x.re) ** 2.) in
     { re = (sinh x.re) *. (cosh x.re) /. d; im = 0.5 *. (sin (2. *. x.im)) /. d }
@@ -131,7 +131,7 @@ let coth x = inv (tanh x)
 
 
 let asin x =
-  let open Pervasives in
+  let open Stdlib in
   if x.im = 0. then { re = asin x.re; im = 0. }
   else (
     let x0 = abs_float x.re in
@@ -180,7 +180,7 @@ let asin x =
 
 
 let acos x =
-  let open Pervasives in
+  let open Stdlib in
   if x.im = 0. then { re = acos x.re; im = 0. }
   else (
     let x0 = abs_float x.re in
@@ -229,7 +229,7 @@ let acos x =
 
 
 let atan x =
-  let open Pervasives in
+  let open Stdlib in
   if x.im = 0. then { re = atan x.re; im = 0. }
   else (
     let r = hypot x.re x.im in
@@ -294,8 +294,8 @@ let phase x = atan2 x.im x.re
 
 
 let rect r phi =
-  let re = r *. Pervasives.cos phi in
-  let im = r *. Pervasives.sin phi in
+  let re = r *. Stdlib.cos phi in
+  let im = r *. Stdlib.sin phi in
   { re; im }
 
 

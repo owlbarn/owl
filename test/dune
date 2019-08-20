@@ -3,6 +3,7 @@
  (libraries 
   alcotest
   owl
+  stdlib-shims
   )
  (flags (:standard -safe-string))
  )

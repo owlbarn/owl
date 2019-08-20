@@ -17,7 +17,7 @@ let broadcast_align_shape x0 x1 =
   (* align the rank of inputs *)
   let d0 = num_dims x0 in
   let d1 = num_dims x1 in
-  let d3 = Pervasives.max d0 d1 in
+  let d3 = Stdlib.max d0 d1 in
   let y0 = expand x0 d3 in
   let y1 = expand x1 d3 in
   (* check whether the shape is valid *)
@@ -37,7 +37,7 @@ let broadcast_align_shape x0 x1 =
 let broadcast_op0 op x0 x1 n =
   (* align the input rank, calculate the output shape and stride *)
   let y0, y1, s0, s1, t0, t1 = broadcast_align_shape x0 x1 in
-  let s2 = Array.(map2 Pervasives.max s0 s1 |> append [|n|]) in
+  let s2 = Array.(map2 Stdlib.max s0 s1 |> append [|n|]) in
   let t2 = Owl_utils.calc_stride s2 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
   let y2 = empty (kind x0) s2 in
   (* call the specific map function *)

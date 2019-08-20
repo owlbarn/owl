@@ -14,7 +14,7 @@ module Make (CM : Owl_countmin_sketch_sig.Sig) : Owl_heavyhitters_sketch_sig.Sig
     let module PQPair = struct
       type t = a * int
 
-      let compare (_, p0) (_, p1) = Pervasives.compare p0 p1
+      let compare (_, p0) (_, p1) = Stdlib.compare p0 p1
     end
     in
     let module S = Set.Make (PQPair) in

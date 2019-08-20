@@ -37,28 +37,28 @@ let _min_val_elt : type a b. (a, b) kind -> a = function
 
 
 let _max_elt : type a b. (a, b) kind -> (a -> a -> a) = function
-  | Float32        -> Pervasives.max
-  | Float64        -> Pervasives.max
-  | Int8_signed    -> Pervasives.max
-  | Int8_unsigned  -> Pervasives.max
-  | Int16_signed   -> Pervasives.max
-  | Int16_unsigned -> Pervasives.max
-  | Int32          -> Pervasives.max
-  | Int64          -> Pervasives.max
+  | Float32        -> Stdlib.max
+  | Float64        -> Stdlib.max
+  | Int8_signed    -> Stdlib.max
+  | Int8_unsigned  -> Stdlib.max
+  | Int16_signed   -> Stdlib.max
+  | Int16_unsigned -> Stdlib.max
+  | Int32          -> Stdlib.max
+  | Int64          -> Stdlib.max
   | Complex32      -> failwith "_max_elt: unsupported operation"
   | Complex64      -> failwith "_max_elt: unsupported operation"
   | _              -> failwith "_max_elt: unsupported operation"
 
 
 let _min_elt : type a b. (a, b) kind -> (a -> a -> a) = function
-  | Float32        -> Pervasives.min
-  | Float64        -> Pervasives.min
-  | Int8_signed    -> Pervasives.min
-  | Int8_unsigned  -> Pervasives.min
-  | Int16_signed   -> Pervasives.min
-  | Int16_unsigned -> Pervasives.min
-  | Int32          -> Pervasives.min
-  | Int64          -> Pervasives.min
+  | Float32        -> Stdlib.min
+  | Float64        -> Stdlib.min
+  | Int8_signed    -> Stdlib.min
+  | Int8_unsigned  -> Stdlib.min
+  | Int16_signed   -> Stdlib.min
+  | Int16_unsigned -> Stdlib.min
+  | Int32          -> Stdlib.min
+  | Int64          -> Stdlib.min
   | Complex32      -> failwith "_min_elt: unsupported operation"
   | Complex64      -> failwith "_min_elt: unsupported operation"
   | _              -> failwith "_min_elt: unsupported operation"
@@ -157,8 +157,8 @@ let _abs_elt : type a b. (a, b) kind -> (a -> a) = function
 
 
 let _log_elt : type a b. (a, b) kind -> (a -> a) = function
-  | Float32   -> Pervasives.log
-  | Float64   -> Pervasives.log
+  | Float32   -> Stdlib.log
+  | Float64   -> Stdlib.log
   | Complex32 -> Complex.log
   | Complex64 -> Complex.log
   | _         -> failwith "_log_elt: unsupported operation"
@@ -245,8 +245,8 @@ let _sqr_elt : type a b. (a, b) kind -> (a -> a) = function
 
 
 let _sqrt_elt : type a b. (a, b) kind -> (a -> a) = function
-  | Float32   -> Pervasives.sqrt
-  | Float64   -> Pervasives.sqrt
+  | Float32   -> Stdlib.sqrt
+  | Float64   -> Stdlib.sqrt
   | Complex32 -> Complex.sqrt
   | Complex64 -> Complex.sqrt
   | _         -> failwith "_sqrt_elt: unsupported operation"

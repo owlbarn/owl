@@ -238,7 +238,7 @@ let for_all f x = Array.for_all f x.data
 
 (* some comparison functions *)
 
-let is_equal ?(cmp=Pervasives.compare) x y =
+let is_equal ?(cmp=Stdlib.compare) x y =
   assert (x.shape = y.shape);
   let r = ref true in
   try iter2 (fun a b ->
@@ -249,7 +249,7 @@ let is_equal ?(cmp=Pervasives.compare) x y =
   ) x y; !r
   with Failure _ -> !r
 
-let not_equal ?(cmp=Pervasives.compare) x y =
+let not_equal ?(cmp=Stdlib.compare) x y =
   assert (x.shape = y.shape);
   let r = ref true in
   try iter2 (fun a b ->
@@ -260,7 +260,7 @@ let not_equal ?(cmp=Pervasives.compare) x y =
   ) x y; !r
   with Failure _ -> !r
 
-let greater ?(cmp=Pervasives.compare) x y =
+let greater ?(cmp=Stdlib.compare) x y =
   assert (x.shape = y.shape);
   let r = ref true in
   try iter2 (fun a b ->
@@ -271,7 +271,7 @@ let greater ?(cmp=Pervasives.compare) x y =
   ) x y; !r
   with Failure _ -> !r
 
-let less ?(cmp=Pervasives.compare) x y =
+let less ?(cmp=Stdlib.compare) x y =
   assert (x.shape = y.shape);
   let r = ref true in
   try iter2 (fun a b ->
@@ -282,7 +282,7 @@ let less ?(cmp=Pervasives.compare) x y =
   ) x y; !r
   with Failure _ -> !r
 
-let greater_equal ?(cmp=Pervasives.compare) x y =
+let greater_equal ?(cmp=Stdlib.compare) x y =
   assert (x.shape = y.shape);
   let r = ref true in
   try iter2 (fun a b ->
@@ -293,7 +293,7 @@ let greater_equal ?(cmp=Pervasives.compare) x y =
   ) x y; !r
   with Failure _ -> !r
 
-let less_equal ?(cmp=Pervasives.compare) x y =
+let less_equal ?(cmp=Stdlib.compare) x y =
   assert (x.shape = y.shape);
   let r = ref true in
   try iter2 (fun a b ->
@@ -304,33 +304,33 @@ let less_equal ?(cmp=Pervasives.compare) x y =
   ) x y; !r
   with Failure _ -> !r
 
-let elt_equal ?(cmp=Pervasives.compare) x y = map2 (fun a b -> cmp a b = 0) x y
+let elt_equal ?(cmp=Stdlib.compare) x y = map2 (fun a b -> cmp a b = 0) x y
 
-let elt_not_equal ?(cmp=Pervasives.compare) x y = map2 (fun a b -> cmp a b <> 0) x y
+let elt_not_equal ?(cmp=Stdlib.compare) x y = map2 (fun a b -> cmp a b <> 0) x y
 
-let elt_greater ?(cmp=Pervasives.compare) x y = map2 (fun a b -> cmp a b = 1) x y
+let elt_greater ?(cmp=Stdlib.compare) x y = map2 (fun a b -> cmp a b = 1) x y
 
-let elt_less ?(cmp=Pervasives.compare) x y = map2 (fun a b -> cmp a b = (-1)) x y
+let elt_less ?(cmp=Stdlib.compare) x y = map2 (fun a b -> cmp a b = (-1)) x y
 
-let elt_greater_equal ?(cmp=Pervasives.compare) x y = map2 (fun a b -> cmp a b <> (-1)) x y
+let elt_greater_equal ?(cmp=Stdlib.compare) x y = map2 (fun a b -> cmp a b <> (-1)) x y
 
-let elt_less_equal ?(cmp=Pervasives.compare) x y = map2 (fun a b -> cmp a b <> 1) x y
+let elt_less_equal ?(cmp=Stdlib.compare) x y = map2 (fun a b -> cmp a b <> 1) x y
 
-let elt_equal_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b = 0) x
+let elt_equal_scalar ?(cmp=Stdlib.compare) x b = map (fun a -> cmp a b = 0) x
 
-let elt_not_equal_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b <> 0) x
+let elt_not_equal_scalar ?(cmp=Stdlib.compare) x b = map (fun a -> cmp a b <> 0) x
 
-let elt_greater_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b = 1) x
+let elt_greater_scalar ?(cmp=Stdlib.compare) x b = map (fun a -> cmp a b = 1) x
 
-let elt_less_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b = (-1)) x
+let elt_less_scalar ?(cmp=Stdlib.compare) x b = map (fun a -> cmp a b = (-1)) x
 
-let elt_greater_equal_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b <> (-1)) x
+let elt_greater_equal_scalar ?(cmp=Stdlib.compare) x b = map (fun a -> cmp a b <> (-1)) x
 
-let elt_less_equal_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b <> 1) x
+let elt_less_equal_scalar ?(cmp=Stdlib.compare) x b = map (fun a -> cmp a b <> 1) x
 
-let sort ?(cmp=Pervasives.compare) x = Array.sort cmp x.data
+let sort ?(cmp=Stdlib.compare) x = Array.sort cmp x.data
 
-let max ?(cmp=Pervasives.compare) x =
+let max ?(cmp=Stdlib.compare) x =
   let r = ref x.data.(0) in
   iter (fun a ->
     match cmp a !r with
@@ -339,7 +339,7 @@ let max ?(cmp=Pervasives.compare) x =
   ) x;
   !r
 
-let min ?(cmp=Pervasives.compare) x =
+let min ?(cmp=Stdlib.compare) x =
   let r = ref x.data.(0) in
   iter (fun a ->
     match cmp !r a with
@@ -348,7 +348,7 @@ let min ?(cmp=Pervasives.compare) x =
   ) x;
   !r
 
-let max_i ?(cmp=Pervasives.compare) x =
+let max_i ?(cmp=Stdlib.compare) x =
   let r = ref x.data.(0) in
   let j = ref 0 in
   iteri (fun i a ->
@@ -358,7 +358,7 @@ let max_i ?(cmp=Pervasives.compare) x =
   ) x;
   !r, !j
 
-let min_i ?(cmp=Pervasives.compare) x =
+let min_i ?(cmp=Stdlib.compare) x =
   let r = ref x.data.(0) in
   let j = ref 0 in
   iteri (fun i a ->

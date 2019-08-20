@@ -18,7 +18,7 @@ let error_binop op x y =
 
 module F_F = struct
 
-  module M = Pervasives
+  module M = Stdlib
 
   let ( + ) x y = F M.(x +. y)
   let ( - ) x y = F M.(x -. y)
@@ -48,12 +48,12 @@ module F_C = struct
   let ( * ) x y = C M.(mul {re = x; im = 0.} y)
   let ( / ) x y = C M.(add {re = x; im = 0.} y)
   let ( ** ) x y = C M.(pow {re = x; im = 0.} y)
-  let ( = ) x y = Pervasives.(M.({re = x; im = 0.}) = y)
-  let ( <> ) x y = Pervasives.(M.({re = x; im = 0.}) <> y)
-  let ( > ) x y = Pervasives.(M.({re = x; im = 0.}) > y)
-  let ( < ) x y = Pervasives.(M.({re = x; im = 0.}) < y)
-  let ( >= ) x y = Pervasives.(M.({re = x; im = 0.}) >= y)
-  let ( <= ) x y = Pervasives.(M.({re = x; im = 0.}) <= y)
+  let ( = ) x y = Stdlib.(M.({re = x; im = 0.}) = y)
+  let ( <> ) x y = Stdlib.(M.({re = x; im = 0.}) <> y)
+  let ( > ) x y = Stdlib.(M.({re = x; im = 0.}) > y)
+  let ( < ) x y = Stdlib.(M.({re = x; im = 0.}) < y)
+  let ( >= ) x y = Stdlib.(M.({re = x; im = 0.}) >= y)
+  let ( <= ) x y = Stdlib.(M.({re = x; im = 0.}) <= y)
 
 end
 
@@ -67,12 +67,12 @@ module C_F = struct
   let ( * ) x y = C M.(mul x {re = y; im = 0.})
   let ( / ) x y = C M.(div x {re = y; im = 0.})
   let ( ** ) x y = C M.(pow x {re = y; im = 0.})
-  let ( = ) x y = Pervasives.(x = M.({re = y; im = 0.}))
-  let ( <> ) x y = Pervasives.(x <> M.({re = y; im = 0.}))
-  let ( > ) x y = Pervasives.(x > M.({re = y; im = 0.}))
-  let ( < ) x y = Pervasives.(x < M.({re = y; im = 0.}))
-  let ( >= ) x y = Pervasives.(x >= M.({re = y; im = 0.}))
-  let ( <= ) x y = Pervasives.(x <= M.({re = y; im = 0.}))
+  let ( = ) x y = Stdlib.(x = M.({re = y; im = 0.}))
+  let ( <> ) x y = Stdlib.(x <> M.({re = y; im = 0.}))
+  let ( > ) x y = Stdlib.(x > M.({re = y; im = 0.}))
+  let ( < ) x y = Stdlib.(x < M.({re = y; im = 0.}))
+  let ( >= ) x y = Stdlib.(x >= M.({re = y; im = 0.}))
+  let ( <= ) x y = Stdlib.(x <= M.({re = y; im = 0.}))
 
 end
 
@@ -86,12 +86,12 @@ module C_C = struct
   let ( * ) x y = C M.(mul x y)
   let ( / ) x y = C M.(div x y)
   let ( ** ) x y = C M.(pow x y)
-  let ( = ) x y = Pervasives.(x = y)
-  let ( <> ) x y = Pervasives.(x <> y)
-  let ( > ) x y = Pervasives.(x > y)
-  let ( < ) x y = Pervasives.(x < y)
-  let ( >= ) x y = Pervasives.(x >= y)
-  let ( <= ) x y = Pervasives.(x <= y)
+  let ( = ) x y = Stdlib.(x = y)
+  let ( <> ) x y = Stdlib.(x <> y)
+  let ( > ) x y = Stdlib.(x > y)
+  let ( < ) x y = Stdlib.(x < y)
+  let ( >= ) x y = Stdlib.(x >= y)
+  let ( <= ) x y = Stdlib.(x <= y)
 
 end
 
