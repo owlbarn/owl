@@ -1,9 +1,4 @@
 #!/usr/bin/env owl
-<<<<<<< HEAD
-(* Get the most common words in the news.txt corpus at
- * https://github.com/ryanrhymes/owl_dataset using a 
- * count-min sketch *)
-=======
 (* This example demonstrates the use of the HeavyHitters sketch,
  * which is based on the Count-Min sketch in Owl_base library.  
  * This example finds the words which appear with relative frequency
@@ -11,7 +6,6 @@
  * WARNING: This example will download the file news.txt.gz (96.5MB) onto
  * your machine and expand it into news.txt (340.3MB).
  *)
->>>>>>> c858d29f49cac42c60c8067d7ef99b5f66b5ca40
 
 module HH = Owl_base.HeavyHitters_sketch.Native
 
@@ -38,11 +32,7 @@ let fill_sketch inch k epsilon delta =
 
 let get_heavy_hitters () =
   let inch = get_corpus () in
-<<<<<<< HEAD
-  let h = fill_sketch inch 100. 0.001 0.01 in
-=======
   let h = fill_sketch inch 100. 0.001 0.001 in
->>>>>>> c858d29f49cac42c60c8067d7ef99b5f66b5ca40
   HH.get h |> List.iter (fun (x,c) -> Printf.printf "%s: %d\n" x c)
 
 let _ = get_heavy_hitters ()
