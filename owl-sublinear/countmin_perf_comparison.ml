@@ -152,7 +152,7 @@ let get_data_news_txt inch =
 
 let _ = 
   Owl.Log.set_level WARN;
-  let epsvals = [0.01; 0.001; 0.0001; 0.00001] in
+  let epsvals = [0.001; 0.0001; 0.00001; 0.000001] in
   let del = Sys.argv.(1) |> float_of_string in
   let phis = [0.1; 0.05; 0.01; 0.005; 0.001] in
   let outf = open_out ("logs/perfcomp_phi_logdel" ^ string_of_int (int_of_float (log10 del)) ^ ".log") in

@@ -17,7 +17,7 @@
 |] *)
 
 let read_data () = 
-  let inch = Scanf.Scanning.open_in "logs/perfcomp.log" in
+  let inch = Scanf.Scanning.open_in "logs/perfcomp_fixed.log" in
   let data = 
     let rec read_parse_line acc = 
       try
@@ -37,15 +37,18 @@ let mat_to_vars data =
   let l1_diffs = Owl.Mat.col data 3 in
   memusage, avgdiffs, meddiffs, l1_diffs
 
-let filter_nozero data =
+(* let filter_nozero data =
   Owl.Mat.rows data 
-    (Owl.Mat.filter_rows (Owl.Mat.not_exists (fun x -> x = 0.)) data)
+    (Owl.Mat.filter_rows (Owl.Mat.not_exists (fun x -> x = 0.)) data) *)
+
+let fix_zeros = 
+  Owl.Mat.map (fun x -> if x = 0. then 0.0000001 else x)
 
 let make_plot data h title r g b =
   let open Owl_plplot.Plot in
   let memusage, avgdiffs, meddiffs, l1_diffs = data |> mat_to_vars in
   let memusage', avgdiffs', meddiffs', l1_diffs' = 
-    data |> filter_nozero |> Owl.Mat.map (Owl.Maths.log10) |> mat_to_vars in
+    data |> fix_zeros |> Owl.Mat.map (Owl.Maths.log10) |> mat_to_vars in
   set_background_color h 255 255 255;
   set_title h title;
   subplot h 0 0; set_foreground_color h 0 0 0;
