@@ -40,40 +40,38 @@ module type Sig = sig
   val error_uniop : string -> t -> 'a
 
   (* single input single output operation *)
-  val op_siso : t -> (t -> t) -> (t -> t) -> (t -> t -> t -> t) -> (t -> op) -> t
+  val op_siso : (t -> t) -> (t -> t) -> (t -> t -> t -> t) -> (t -> op) -> t -> t
 
   (* single input pair outputs operation *)
   val op_sipo
-    :  t
-    -> (t -> t * t)
+    :  (t -> t * t)
     -> (t -> t * t)
     -> (t -> t -> t -> t)
     -> (t * (t ref * t ref) * (t ref * t ref) -> op)
+    -> t
     -> t * t
 
   (* single input triple outputs operation *)
   val op_sito
-    :  t
-    -> (t -> t * t * t)
+    :  (t -> t * t * t)
     -> (t -> t * t * t)
     -> (t -> t -> t -> t)
     -> (t * (t ref * t ref * t ref) * (t ref * t ref * t ref) -> op)
+    -> t
     -> t * t * t
 
   (* single input array outputs operation *)
   val op_siao
-    :  t
-    -> (t -> t array)
+    :  (t -> t array)
     -> (t -> t array)
     -> (t -> t -> t -> t)
     -> (t * t ref array * t ref array -> op)
+    -> t
     -> t array
 
   (* pair inputs single output operation *)
   val op_piso
-    :  t
-    -> t
-    -> (t -> t -> t)
+    :  (t -> t -> t)
     -> (t -> t -> t)
     -> (t -> t -> t -> t)
     -> (t -> t -> t -> t)
@@ -81,5 +79,7 @@ module type Sig = sig
     -> (t -> t -> op)
     -> (t -> t -> op)
     -> (t -> t -> op)
+    -> t
+    -> t
     -> t
 end

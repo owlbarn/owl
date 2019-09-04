@@ -24,7 +24,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let label = S.label, [ a ] in
         adjoint, register, label
       in
-      op_siso a ff fd S.df r
+      op_siso ff fd S.df r a
     in
     f
 
@@ -37,7 +37,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     val dr : t -> t -> t ref * t ref -> t ref * t ref -> t
   end
 
-  let build_sipo (module S : Sipo) a =
+  let build_sipo (module S : Sipo) =
     let rec f a =
       let open S in
       let ff = function
@@ -52,9 +52,9 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let label = S.label, [ a ] in
         adjoint, register, label
       in
-      op_sipo a ff fd df r
+      op_sipo ff fd df r a
     in
-    f a
+    f
 
 
   module type Sito = sig
@@ -65,7 +65,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     val dr : t -> t -> t ref * t ref * t ref -> t ref * t ref * t ref -> t
   end
 
-  let build_sito (module S : Sito) a =
+  let build_sito (module S : Sito) =
     let rec f a =
       let open S in
       let ff = function
@@ -80,9 +80,9 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let label = S.label, [ a ] in
         adjoint, register, label
       in
-      op_sito a ff fd df r
+      op_sito ff fd df r a
     in
-    f a
+    f
 
 
   module type Siao = sig
@@ -93,7 +93,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     val dr : t -> t -> t ref array -> t ref array -> t
   end
 
-  let build_siao (module S : Siao) a =
+  let build_siao (module S : Siao) =
     let rec f a =
       let open S in
       let ff = function
@@ -108,9 +108,9 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let label = S.label, [ a ] in
         adjoint, register, label
       in
-      op_siao a ff fd df r
+      op_siao ff fd df r a
     in
-    f a
+    f
 
 
   module type Piso = sig
@@ -123,11 +123,11 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     val df_db : t -> t -> t -> t
     val df_dab : t -> t -> t -> t -> t -> t
     val dr_ab : t -> t -> t -> t ref -> t * t
-    val dr_a :  t -> t -> t -> t ref -> t
+    val dr_a : t -> t -> t -> t ref -> t
     val dr_b : t -> t -> t -> t ref -> t
   end
 
-  let build_piso (module S : Piso) a b =
+  let build_piso (module S : Piso) =
     let rec f a b =
       let ff a b =
         match a, b with
@@ -159,7 +159,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let label = S.label ^ "_c_d", [ a; b ] in
         adjoint, register, label
       in
-      op_piso a b ff fd S.df_da S.df_db S.df_dab r_d_d r_d_c r_c_d
+      op_piso ff fd S.df_da S.df_db S.df_dab r_d_d r_d_c r_c_d a b
     in
-    f a b
+    f
 end
