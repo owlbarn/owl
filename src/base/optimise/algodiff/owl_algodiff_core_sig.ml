@@ -40,45 +40,51 @@ module type Sig = sig
   val error_uniop : string -> t -> 'a
 
   (* single input single output operation *)
-  val op_siso : (t -> t) -> (t -> t) -> (t -> t -> t -> t) -> (t -> op) -> t -> t
+  val op_siso
+    :  ff:(t -> t)
+    -> fd:(t -> t)
+    -> df:(t -> t -> t -> t)
+    -> r:(t -> op)
+    -> t
+    -> t
 
   (* single input pair outputs operation *)
   val op_sipo
-    :  (t -> t * t)
-    -> (t -> t * t)
-    -> (t -> t -> t -> t)
-    -> (t * (t ref * t ref) * (t ref * t ref) -> op)
+    :  ff:(t -> t * t)
+    -> fd:(t -> t * t)
+    -> df:(t -> t -> t -> t)
+    -> r:(t * (t ref * t ref) * (t ref * t ref) -> op)
     -> t
     -> t * t
 
   (* single input triple outputs operation *)
   val op_sito
-    :  (t -> t * t * t)
-    -> (t -> t * t * t)
-    -> (t -> t -> t -> t)
-    -> (t * (t ref * t ref * t ref) * (t ref * t ref * t ref) -> op)
+    :  ff:(t -> t * t * t)
+    -> fd:(t -> t * t * t)
+    -> df:(t -> t -> t -> t)
+    -> r:(t * (t ref * t ref * t ref) * (t ref * t ref * t ref) -> op)
     -> t
     -> t * t * t
 
   (* single input array outputs operation *)
   val op_siao
-    :  (t -> t array)
-    -> (t -> t array)
-    -> (t -> t -> t -> t)
-    -> (t * t ref array * t ref array -> op)
+    :  ff:(t -> t array)
+    -> fd:(t -> t array)
+    -> df:(t -> t -> t -> t)
+    -> r:(t * t ref array * t ref array -> op)
     -> t
     -> t array
 
   (* pair inputs single output operation *)
   val op_piso
-    :  (t -> t -> t)
-    -> (t -> t -> t)
-    -> (t -> t -> t -> t)
-    -> (t -> t -> t -> t)
-    -> (t -> t -> t -> t -> t -> t)
-    -> (t -> t -> op)
-    -> (t -> t -> op)
-    -> (t -> t -> op)
+    :  ff:(t -> t -> t)
+    -> fd:(t -> t -> t)
+    -> df_da:(t -> t -> t -> t)
+    -> df_db:(t -> t -> t -> t)
+    -> df_dab:(t -> t -> t -> t -> t -> t)
+    -> r_d_d:(t -> t -> op)
+    -> r_d_c:(t -> t -> op)
+    -> r_c_d:(t -> t -> op)
     -> t
     -> t
     -> t

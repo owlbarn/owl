@@ -155,7 +155,7 @@ module Make (Types : Owl_algodiff_types_sig.Sig) = struct
 
 
   (* single input single output operation *)
-  let op_siso ff fd df r a =
+  let op_siso ~ff ~fd ~df ~r a =
     match a with
     | DF (ap, at, ai) ->
       let cp = fd ap in
@@ -167,7 +167,7 @@ module Make (Types : Owl_algodiff_types_sig.Sig) = struct
 
 
   (* single input pair outputs operation *)
-  and op_sipo ff fd df r a =
+  and op_sipo ~ff ~fd ~df ~r a =
     match a with
     | DF (ap, at, ai) ->
       let cp1, cp2 = fd ap in
@@ -200,7 +200,7 @@ module Make (Types : Owl_algodiff_types_sig.Sig) = struct
 
 
   (* single input three outputs operation *)
-  and op_sito ff fd df r a =
+  and op_sito ~ff ~fd ~df ~r a =
     match a with
     | DF (ap, at, ai) ->
       let cp1, cp2, cp3 = fd ap in
@@ -239,7 +239,7 @@ module Make (Types : Owl_algodiff_types_sig.Sig) = struct
 
 
   (* single input array outputs operation *)
-  and op_siao ff fd df r a =
+  and op_siao ~ff ~fd ~df ~r a =
     match a with
     | DF (ap, at, ai) ->
       let cp_arr = fd ap in
@@ -258,7 +258,7 @@ module Make (Types : Owl_algodiff_types_sig.Sig) = struct
 
 
   (* pair input single output operation *)
-  and op_piso ff fd df_da df_db df_dab r_d_d r_d_c r_c_d a b =
+  and op_piso ~ff ~fd ~df_da ~df_db ~df_dab ~r_d_d ~r_d_c ~r_c_d a b =
     match a, b with
     | F _ap, DF (bp, bt, bi) ->
       let cp = fd a bp in

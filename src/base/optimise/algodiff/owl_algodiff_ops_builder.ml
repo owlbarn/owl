@@ -24,7 +24,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let label = S.label, [ a ] in
         adjoint, register, label
       in
-      op_siso ff fd S.df r a
+      op_siso ~ff ~fd ~df:S.df ~r a
     in
     f
 
@@ -52,7 +52,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let label = S.label, [ a ] in
         adjoint, register, label
       in
-      op_sipo ff fd df r a
+      op_sipo ~ff ~fd ~df ~r a
     in
     f
 
@@ -80,7 +80,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let label = S.label, [ a ] in
         adjoint, register, label
       in
-      op_sito ff fd df r a
+      op_sito ~ff ~fd ~df ~r a
     in
     f
 
@@ -108,7 +108,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let label = S.label, [ a ] in
         adjoint, register, label
       in
-      op_siao ff fd df r a
+      op_siao ~ff ~fd ~df ~r a
     in
     f
 
@@ -159,7 +159,17 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let label = S.label ^ "_c_d", [ a; b ] in
         adjoint, register, label
       in
-      op_piso ff fd S.df_da S.df_db S.df_dab r_d_d r_d_c r_c_d a b
+      op_piso
+        ~ff
+        ~fd
+        ~df_da:S.df_da
+        ~df_db:S.df_db
+        ~df_dab:S.df_dab
+        ~r_d_d
+        ~r_d_c
+        ~r_c_d
+        a
+        b
     in
     f
 end

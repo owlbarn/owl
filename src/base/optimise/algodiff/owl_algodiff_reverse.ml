@@ -34,7 +34,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
          let label = "Reverse_Add_C_D", [ a; b ] in
          adjoint, register, label
        in
-       op_piso ff fd df_da df_db df_dab r_d_d r_d_c r_c_d)
+       op_piso ~ff ~fd ~df_da ~df_db ~df_dab ~r_d_d ~r_d_c ~r_c_d)
 
 
   and _reverse_add a = Lazy.force __reverse_add a
