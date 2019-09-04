@@ -12,553 +12,591 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     let rec noop = ()
 
     (* single input single output operations *)
-    and neg a =
-      build_siso
-        (module struct
-          let label = "neg"
-          let ff_f a = F A.Scalar.(neg a)
-          let ff_arr a = Arr A.(neg a)
-          let df _cp _ap at = pack_flt 0. - at
-          let dr _a _cp ca = neg !ca
-        end
-        : Siso)
-        a
+    and _neg =
+      lazy
+        (build_siso
+           (module struct
+             let label = "neg"
+             let ff_f a = F A.Scalar.(neg a)
+             let ff_arr a = Arr A.(neg a)
+             let df _cp _ap at = pack_flt 0. - at
+             let dr _a _cp ca = neg !ca
+           end : Siso))
 
 
-    and abs a =
-      build_siso
-        (module struct
-          let label = "abs"
-          let ff_f a = F A.Scalar.(abs a)
-          let ff_arr a = Arr A.(abs a)
-          let df _cp ap at = at * signum ap
-          let dr a _cp ca = !ca * signum (primal a)
-        end
-        : Siso)
-        a
+    and neg a = Lazy.force _neg a
+
+    and _abs =
+      lazy
+        (build_siso
+           (module struct
+             let label = "abs"
+             let ff_f a = F A.Scalar.(abs a)
+             let ff_arr a = Arr A.(abs a)
+             let df _cp ap at = at * signum ap
+             let dr a _cp ca = !ca * signum (primal a)
+           end : Siso))
 
 
-    and signum a =
-      build_siso
-        (module struct
-          let label = "signum"
-          let ff_f a = F A.Scalar.(signum a)
-          let ff_arr a = Arr A.(signum a)
-          let df _cp ap _at = zero ap
-          let dr a _cp _ca = zero a
-        end
-        : Siso)
-        a
+    and abs a = Lazy.force _abs a
+
+    and _signum =
+      lazy
+        (build_siso
+           (module struct
+             let label = "signum"
+             let ff_f a = F A.Scalar.(signum a)
+             let ff_arr a = Arr A.(signum a)
+             let df _cp ap _at = zero ap
+             let dr a _cp _ca = zero a
+           end : Siso))
 
 
-    and floor a =
-      build_siso
-        (module struct
-          let label = "floor"
-          let ff_f a = F A.Scalar.(floor a)
-          let ff_arr a = Arr A.(floor a)
-          let df _cp ap _at = zero ap
-          let dr a _cp _ca = zero a
-        end
-        : Siso)
-        a
+    and signum a = Lazy.force _signum a
+
+    and _floor =
+      lazy
+        (build_siso
+           (module struct
+             let label = "floor"
+             let ff_f a = F A.Scalar.(floor a)
+             let ff_arr a = Arr A.(floor a)
+             let df _cp ap _at = zero ap
+             let dr a _cp _ca = zero a
+           end : Siso))
 
 
-    and ceil a =
-      build_siso
-        (module struct
-          let label = "ceil"
-          let ff_f a = F A.Scalar.(ceil a)
-          let ff_arr a = Arr A.(ceil a)
-          let df _cp ap _at = zero ap
-          let dr a _cp _ca = zero a
-        end
-        : Siso)
-        a
+    and floor a = Lazy.force _floor a
+
+    and _ceil =
+      lazy
+        (build_siso
+           (module struct
+             let label = "ceil"
+             let ff_f a = F A.Scalar.(ceil a)
+             let ff_arr a = Arr A.(ceil a)
+             let df _cp ap _at = zero ap
+             let dr a _cp _ca = zero a
+           end : Siso))
 
 
-    and round a =
-      build_siso
-        (module struct
-          let label = "round"
-          let ff_f a = F A.Scalar.(round a)
-          let ff_arr a = Arr A.(round a)
-          let df _cp ap _at = zero ap
-          let dr a _cp _ca = zero a
-        end
-        : Siso)
-        a
+    and ceil a = Lazy.force _ceil a
+
+    and _round =
+      lazy
+        (build_siso
+           (module struct
+             let label = "round"
+             let ff_f a = F A.Scalar.(round a)
+             let ff_arr a = Arr A.(round a)
+             let df _cp ap _at = zero ap
+             let dr a _cp _ca = zero a
+           end : Siso))
 
 
-    and sqr a =
-      build_siso
-        (module struct
-          let label = "sqr"
-          let ff_f a = F A.Scalar.(sqr a)
-          let ff_arr a = Arr A.(sqr a)
-          let df _cp ap at = pack_flt 2. * at * ap
-          let dr a _cp ca = !ca * primal a * pack_flt 2.
-        end
-        : Siso)
-        a
+    and round a = Lazy.force _round a
+
+    and _sqr =
+      lazy
+        (build_siso
+           (module struct
+             let label = "sqr"
+             let ff_f a = F A.Scalar.(sqr a)
+             let ff_arr a = Arr A.(sqr a)
+             let df _cp ap at = pack_flt 2. * at * ap
+             let dr a _cp ca = !ca * primal a * pack_flt 2.
+           end : Siso))
 
 
-    and sqrt a =
-      build_siso
-        (module struct
-          let label = "sqrt"
-          let ff_f a = F A.Scalar.(sqrt a)
-          let ff_arr a = Arr A.(sqrt a)
-          let df cp _ap at = at / (pack_flt 2. * cp)
-          let dr _a cp ca = !ca / (pack_flt 2. * cp)
-        end
-        : Siso)
-        a
+    and sqr a = Lazy.force _sqr a
+
+    and _sqrt =
+      lazy
+        (build_siso
+           (module struct
+             let label = "sqrt"
+             let ff_f a = F A.Scalar.(sqrt a)
+             let ff_arr a = Arr A.(sqrt a)
+             let df cp _ap at = at / (pack_flt 2. * cp)
+             let dr _a cp ca = !ca / (pack_flt 2. * cp)
+           end : Siso))
 
 
-    and log a =
-      build_siso
-        (module struct
-          let label = "log"
-          let ff_f a = F A.Scalar.(log a)
-          let ff_arr a = Arr A.(log a)
-          let df _cp ap at = at / ap
-          let dr a _cp ca = !ca / primal a
-        end
-        : Siso)
-        a
+    and sqrt a = Lazy.force _sqrt a
+
+    and _log =
+      lazy
+        (build_siso
+           (module struct
+             let label = "log"
+             let ff_f a = F A.Scalar.(log a)
+             let ff_arr a = Arr A.(log a)
+             let df _cp ap at = at / ap
+             let dr a _cp ca = !ca / primal a
+           end : Siso))
 
 
-    and log2 a =
-      build_siso
-        (module struct
-          let label = "log2"
-          let ff_f a = F A.Scalar.(log2 a)
-          let ff_arr a = Arr A.(log2 a)
-          let df _cp ap at = at / (ap * pack_flt Owl_const.log2e)
-          let dr a _cp ca = !ca / (primal a * pack_flt Owl_const.log2e)
-        end
-        : Siso)
-        a
+    and log a = Lazy.force _log a
+
+    and _log2 =
+      lazy
+        (build_siso
+           (module struct
+             let label = "log2"
+             let ff_f a = F A.Scalar.(log2 a)
+             let ff_arr a = Arr A.(log2 a)
+             let df _cp ap at = at / (ap * pack_flt Owl_const.log2e)
+             let dr a _cp ca = !ca / (primal a * pack_flt Owl_const.log2e)
+           end : Siso))
 
 
-    and log10 a =
-      build_siso
-        (module struct
-          let label = "log10"
-          let ff_f a = F A.Scalar.(log10 a)
-          let ff_arr a = Arr A.(log10 a)
-          let df _cp ap at = at / (ap * pack_flt Owl_const.log10e)
-          let dr a _cp ca = !ca / (primal a * pack_flt Owl_const.log10e)
-        end
-        : Siso)
-        a
+    and log2 a = Lazy.force _log2 a
+
+    and _log10 =
+      lazy
+        (build_siso
+           (module struct
+             let label = "log10"
+             let ff_f a = F A.Scalar.(log10 a)
+             let ff_arr a = Arr A.(log10 a)
+             let df _cp ap at = at / (ap * pack_flt Owl_const.log10e)
+             let dr a _cp ca = !ca / (primal a * pack_flt Owl_const.log10e)
+           end : Siso))
 
 
-    and exp a =
-      build_siso
-        (module struct
-          let label = "exp"
-          let ff_f a = F A.Scalar.(exp a)
-          let ff_arr a = Arr A.(exp a)
-          let df cp _ap at = at * cp
-          let dr _a cp ca = !ca * cp
-        end
-        : Siso)
-        a
+    and log10 a = Lazy.force _log10 a
+
+    and _exp =
+      lazy
+        (build_siso
+           (module struct
+             let label = "exp"
+             let ff_f a = F A.Scalar.(exp a)
+             let ff_arr a = Arr A.(exp a)
+             let df cp _ap at = at * cp
+             let dr _a cp ca = !ca * cp
+           end : Siso))
 
 
-    and sin a =
-      build_siso
-        (module struct
-          let label = "sin"
-          let ff_f a = F A.Scalar.(sin a)
-          let ff_arr a = Arr A.(sin a)
-          let df _cp ap at = at * cos ap
-          let dr a _cp ca = !ca * cos (primal a)
-        end
-        : Siso)
-        a
+    and exp a = Lazy.force _exp a
+
+    and _sin =
+      lazy
+        (build_siso
+           (module struct
+             let label = "sin"
+             let ff_f a = F A.Scalar.(sin a)
+             let ff_arr a = Arr A.(sin a)
+             let df _cp ap at = at * cos ap
+             let dr a _cp ca = !ca * cos (primal a)
+           end : Siso))
 
 
-    and cos a =
-      build_siso
-        (module struct
-          let label = "cos"
-          let ff_f a = F A.Scalar.(cos a)
-          let ff_arr a = Arr A.(cos a)
-          let df _cp ap at = neg (at * sin ap)
-          let dr a _cp ca = !ca * neg (sin (primal a))
-        end
-        : Siso)
-        a
+    and sin a = Lazy.force _sin a
+
+    and _cos =
+      lazy
+        (build_siso
+           (module struct
+             let label = "cos"
+             let ff_f a = F A.Scalar.(cos a)
+             let ff_arr a = Arr A.(cos a)
+             let df _cp ap at = neg (at * sin ap)
+             let dr a _cp ca = !ca * neg (sin (primal a))
+           end : Siso))
 
 
-    and tan a =
-      build_siso
-        (module struct
-          let label = "tan"
-          let ff_f a = F A.Scalar.(tan a)
-          let ff_arr a = Arr A.(tan a)
-          let df _cp ap at = at / sqr (cos ap)
-          let dr a _cp ca = !ca / sqr (cos (primal a))
-        end
-        : Siso)
-        a
+    and cos a = Lazy.force _cos a
+
+    and _tan =
+      lazy
+        (build_siso
+           (module struct
+             let label = "tan"
+             let ff_f a = F A.Scalar.(tan a)
+             let ff_arr a = Arr A.(tan a)
+             let df _cp ap at = at / sqr (cos ap)
+             let dr a _cp ca = !ca / sqr (cos (primal a))
+           end : Siso))
 
 
-    and sinh a =
-      build_siso
-        (module struct
-          let label = "sinh"
-          let ff_f a = F A.Scalar.(sinh a)
-          let ff_arr a = Arr A.(sinh a)
-          let df _cp ap at = at * cosh ap
-          let dr a _cp ca = !ca * cosh (primal a)
-        end
-        : Siso)
-        a
+    and tan a = Lazy.force _tan a
+
+    and _sinh =
+      lazy
+        (build_siso
+           (module struct
+             let label = "sinh"
+             let ff_f a = F A.Scalar.(sinh a)
+             let ff_arr a = Arr A.(sinh a)
+             let df _cp ap at = at * cosh ap
+             let dr a _cp ca = !ca * cosh (primal a)
+           end : Siso))
 
 
-    and cosh a =
-      build_siso
-        (module struct
-          let label = "cosh"
-          let ff_f a = F A.Scalar.(cosh a)
-          let ff_arr a = Arr A.(cosh a)
-          let df _cp ap at = at * sinh ap
-          let dr a _cp ca = !ca * sinh (primal a)
-        end
-        : Siso)
-        a
+    and sinh a = Lazy.force _sinh a
+
+    and _cosh =
+      lazy
+        (build_siso
+           (module struct
+             let label = "cosh"
+             let ff_f a = F A.Scalar.(cosh a)
+             let ff_arr a = Arr A.(cosh a)
+             let df _cp ap at = at * sinh ap
+             let dr a _cp ca = !ca * sinh (primal a)
+           end : Siso))
 
 
-    and tanh a =
-      build_siso
-        (module struct
-          let label = "tanh"
-          let ff_f a = F A.Scalar.(tanh a)
-          let ff_arr a = Arr A.(tanh a)
-          let df _cp ap at = at / sqr (cosh ap)
-          let dr a _cp ca = !ca / sqr (cosh (primal a))
-        end
-        : Siso)
-        a
+    and cosh a = Lazy.force _cosh a
+
+    and _tanh =
+      lazy
+        (build_siso
+           (module struct
+             let label = "tanh"
+             let ff_f a = F A.Scalar.(tanh a)
+             let ff_arr a = Arr A.(tanh a)
+             let df _cp ap at = at / sqr (cosh ap)
+             let dr a _cp ca = !ca / sqr (cosh (primal a))
+           end : Siso))
 
 
-    and asin a =
-      build_siso
-        (module struct
-          let label = "asin"
-          let ff_f a = F A.Scalar.(asin a)
-          let ff_arr a = Arr A.(asin a)
-          let df _cp ap at = at / sqrt (pack_flt 1. - sqr ap)
-          let dr a _cp ca = !ca / sqrt (pack_flt 1. - sqr (primal a))
-        end
-        : Siso)
-        a
+    and tanh a = Lazy.force _tanh a
+
+    and _asin =
+      lazy
+        (build_siso
+           (module struct
+             let label = "asin"
+             let ff_f a = F A.Scalar.(asin a)
+             let ff_arr a = Arr A.(asin a)
+             let df _cp ap at = at / sqrt (pack_flt 1. - sqr ap)
+             let dr a _cp ca = !ca / sqrt (pack_flt 1. - sqr (primal a))
+           end : Siso))
 
 
-    and acos a =
-      build_siso
-        (module struct
-          let label = "acos"
-          let ff_f a = F A.Scalar.(acos a)
-          let ff_arr a = Arr A.(acos a)
-          let df _cp ap at = neg at / sqrt (pack_flt 1. - sqr ap)
-          let dr a _cp ca = neg !ca / sqrt (pack_flt 1. - sqr (primal a))
-        end
-        : Siso)
-        a
+    and asin a = Lazy.force _asin a
+
+    and _acos =
+      lazy
+        (build_siso
+           (module struct
+             let label = "acos"
+             let ff_f a = F A.Scalar.(acos a)
+             let ff_arr a = Arr A.(acos a)
+             let df _cp ap at = neg at / sqrt (pack_flt 1. - sqr ap)
+             let dr a _cp ca = neg !ca / sqrt (pack_flt 1. - sqr (primal a))
+           end : Siso))
 
 
-    and atan a =
-      build_siso
-        (module struct
-          let label = "atan"
-          let ff_f a = F A.Scalar.(atan a)
-          let ff_arr a = Arr A.(atan a)
-          let df _cp ap at = at / (pack_flt 1. + sqr ap)
-          let dr a _cp ca = !ca / (pack_flt 1. + sqr (primal a))
-        end
-        : Siso)
-        a
+    and acos a = Lazy.force _acos a
+
+    and _atan =
+      lazy
+        (build_siso
+           (module struct
+             let label = "atan"
+             let ff_f a = F A.Scalar.(atan a)
+             let ff_arr a = Arr A.(atan a)
+             let df _cp ap at = at / (pack_flt 1. + sqr ap)
+             let dr a _cp ca = !ca / (pack_flt 1. + sqr (primal a))
+           end : Siso))
 
 
-    and asinh a =
-      build_siso
-        (module struct
-          let label = "asinh"
-          let ff_f a = F A.Scalar.(asinh a)
-          let ff_arr a = Arr A.(asinh a)
-          let df _cp ap at = at / sqrt (sqr ap + pack_flt 1.)
-          let dr a _cp ca = !ca / sqrt (sqr (primal a) + pack_flt 1.)
-        end
-        : Siso)
-        a
+    and atan a = Lazy.force _atan a
+
+    and _asinh =
+      lazy
+        (build_siso
+           (module struct
+             let label = "asinh"
+             let ff_f a = F A.Scalar.(asinh a)
+             let ff_arr a = Arr A.(asinh a)
+             let df _cp ap at = at / sqrt (sqr ap + pack_flt 1.)
+             let dr a _cp ca = !ca / sqrt (sqr (primal a) + pack_flt 1.)
+           end : Siso))
 
 
-    and acosh a =
-      build_siso
-        (module struct
-          let label = "acosh"
-          let ff_f a = F A.Scalar.(acosh a)
-          let ff_arr a = Arr A.(acosh a)
-          let df _cp ap at = at / sqrt (sqr ap - pack_flt 1.)
-          let dr a _cp ca = !ca / sqrt (sqr (primal a) - pack_flt 1.)
-        end
-        : Siso)
-        a
+    and asinh a = Lazy.force _asinh a
+
+    and _acosh =
+      lazy
+        (build_siso
+           (module struct
+             let label = "acosh"
+             let ff_f a = F A.Scalar.(acosh a)
+             let ff_arr a = Arr A.(acosh a)
+             let df _cp ap at = at / sqrt (sqr ap - pack_flt 1.)
+             let dr a _cp ca = !ca / sqrt (sqr (primal a) - pack_flt 1.)
+           end : Siso))
 
 
-    and atanh a =
-      build_siso
-        (module struct
-          let label = "atanh"
-          let ff_f a = F A.Scalar.(atanh a)
-          let ff_arr a = Arr A.(atanh a)
-          let df _cp ap at = at / (pack_flt 1. - sqr ap)
-          let dr a _cp ca = !ca / (pack_flt 1. - sqr (primal a))
-        end
-        : Siso)
-        a
+    and acosh a = Lazy.force _acosh a
+
+    and _atanh =
+      lazy
+        (build_siso
+           (module struct
+             let label = "atanh"
+             let ff_f a = F A.Scalar.(atanh a)
+             let ff_arr a = Arr A.(atanh a)
+             let df _cp ap at = at / (pack_flt 1. - sqr ap)
+             let dr a _cp ca = !ca / (pack_flt 1. - sqr (primal a))
+           end : Siso))
 
 
-    and get_slice i a =
-      build_siso
-        (module struct
-          let label = "get_slice"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = Arr A.(get_slice i a)
-          let df _cp _ap at = get_slice i at
-          let dr a _cp ca = set_slice i (zero a) !ca
-        end
-        : Siso)
-        a
+    and atanh a = Lazy.force _atanh a
+
+    and _get_slice i =
+      lazy
+        (build_siso
+           (module struct
+             let label = "get_slice"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = Arr A.(get_slice i a)
+             let df _cp _ap at = get_slice i at
+             let dr a _cp ca = set_slice i (zero a) !ca
+           end : Siso))
 
 
-    and sum' a =
-      build_siso
-        (module struct
-          let label = "sum'"
-          let ff_f a = F a
-          let ff_arr a = F A.(sum' a)
-          let df _cp _ap at = sum' at
-          let dr _a _cp ca = !ca
-        end
-        : Siso)
-        a
+    and get_slice i = Lazy.force (_get_slice i)
+
+    and _sum' =
+      lazy
+        (build_siso
+           (module struct
+             let label = "sum'"
+             let ff_f a = F a
+             let ff_arr a = F A.(sum' a)
+             let df _cp _ap at = sum' at
+             let dr _a _cp ca = !ca
+           end : Siso))
 
 
-    and sum ?(axis = -1) a =
-      build_siso
-        (module struct
-          let label = "sum axis"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = Arr A.(sum ~axis a)
-          let df _cp _ap at = sum ~axis at
+    and sum' a = Lazy.force _sum' a
 
-          let dr a _cp ca =
-            let s = shape a in
-            let reps = Array.(make (length s) 1) in
-            reps.(axis) <- s.(axis);
-            repeat !ca reps
-        end
-        : Siso)
-        a
+    and _sum ~axis =
+      lazy
+        (build_siso
+           (module struct
+             let label = "sum axis"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = Arr A.(sum ~axis a)
+             let df _cp _ap at = sum ~axis at
 
-
-    and sum_reduce ?(axis = [| 0 |]) a =
-      build_siso
-        (module struct
-          let label = "sum_reduce"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = Arr A.(sum_reduce ~axis a)
-          let df _cp _ap at = sum_reduce ~axis at
-
-          let dr a _cp ca =
-            let s = shape a in
-            let reps = Array.(make (length s) 1) in
-            Array.iter (fun j -> reps.(j) <- s.(j)) axis;
-            repeat !ca reps
-        end
-        : Siso)
-        a
+             let dr a _cp ca =
+               let s = shape a in
+               let reps = Array.(make (length s) 1) in
+               reps.(axis) <- s.(axis);
+               repeat !ca reps
+           end : Siso))
 
 
+    and sum ?(axis = -1) = Lazy.force (_sum ~axis)
+
+    and _sum_reduce ~axis =
+      lazy
+        (build_siso
+           (module struct
+             let label = "sum_reduce"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = Arr A.(sum_reduce ~axis a)
+             let df _cp _ap at = sum_reduce ~axis at
+
+             let dr a _cp ca =
+               let s = shape a in
+               let reps = Array.(make (length s) 1) in
+               Array.iter (fun j -> reps.(j) <- s.(j)) axis;
+               repeat !ca reps
+           end : Siso))
+
+
+    and sum_reduce ?(axis = [| 0 |]) = Lazy.force (_sum_reduce ~axis)
     and mean a = sum' a / F (numel a |> float_of_int |> A.float_to_elt)
 
-    and transpose a =
-      build_siso
-        (module struct
-          let label = "transpose"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = Arr A.(transpose a)
-          let df _cp _ap at = transpose at
-          let dr _a _cp ca = transpose !ca
-        end
-        : Siso)
-        a
+    and _transpose =
+      lazy
+        (build_siso
+           (module struct
+             let label = "transpose"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = Arr A.(transpose a)
+             let df _cp _ap at = transpose at
+             let dr _a _cp ca = transpose !ca
+           end : Siso))
 
 
-    and l1norm' a =
-      build_siso
-        (module struct
-          let label = "l1norm'"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = F A.(l1norm' a)
-          let df _cp ap at = at * signum ap
-          let dr a _cp ca = !ca * signum (primal a)
-        end
-        : Siso)
-        a
+    and transpose a = Lazy.force _transpose a
+
+    and _l1norm' =
+      lazy
+        (build_siso
+           (module struct
+             let label = "l1norm'"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = F A.(l1norm' a)
+             let df _cp ap at = at * signum ap
+             let dr a _cp ca = !ca * signum (primal a)
+           end : Siso))
 
 
-    and l2norm' a =
-      build_siso
-        (module struct
-          let label = "l2norm'"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = F A.(l2norm' a)
-          let df cp ap at = ap * at / cp
-          let dr a cp ca = !ca / cp * primal a
-        end
-        : Siso)
-        a
+    and l1norm' a = Lazy.force _l1norm' a
+
+    and _l2norm' =
+      lazy
+        (build_siso
+           (module struct
+             let label = "l2norm'"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = F A.(l2norm' a)
+             let df cp ap at = ap * at / cp
+             let dr a cp ca = !ca / cp * primal a
+           end : Siso))
 
 
-    and l2norm_sqr' a =
-      build_siso
-        (module struct
-          let label = "l2norm_sqr'"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = F A.(l2norm_sqr' a)
-          let df _cp ap at = pack_flt 2. * (ap * at)
-          let dr a _cp ca = !ca * pack_flt 2. * primal a
-        end
-        : Siso)
-        a
+    and l2norm' a = Lazy.force _l2norm' a
+
+    and _l2norm_sqr' =
+      lazy
+        (build_siso
+           (module struct
+             let label = "l2norm_sqr'"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = F A.(l2norm_sqr' a)
+             let df _cp ap at = pack_flt 2. * (ap * at)
+             let dr a _cp ca = !ca * pack_flt 2. * primal a
+           end : Siso))
 
 
-    and sigmoid a =
-      build_siso
-        (module struct
-          let label = "sigmoid"
-          let ff_f a = F A.Scalar.(sigmoid a)
-          let ff_arr a = Arr A.(sigmoid a)
-          let df cp _ap at = at * cp * (pack_flt 1. - cp)
-          let dr _a cp ca = !ca * cp * (pack_flt 1. - cp)
-        end
-        : Siso)
-        a
+    and l2norm_sqr' a = Lazy.force _l2norm_sqr' a
+
+    and _sigmoid =
+      lazy
+        (build_siso
+           (module struct
+             let label = "sigmoid"
+             let ff_f a = F A.Scalar.(sigmoid a)
+             let ff_arr a = Arr A.(sigmoid a)
+             let df cp _ap at = at * cp * (pack_flt 1. - cp)
+             let dr _a cp ca = !ca * cp * (pack_flt 1. - cp)
+           end : Siso))
 
 
-    and relu a =
-      build_siso
-        (module struct
-          let label = "relu"
-          let ff_f a = F A.Scalar.(relu a)
-          let ff_arr a = Arr A.(relu a)
-          let df _cp ap at = at * (pack_flt 1. + signum ap) / pack_flt 2.
-          let dr a _cp ca = !ca * ((signum (primal a) + pack_flt 1.) / pack_flt 2.)
-        end
-        : Siso)
-        a
+    and sigmoid a = Lazy.force _sigmoid a
+
+    and _relu =
+      lazy
+        (build_siso
+           (module struct
+             let label = "relu"
+             let ff_f a = F A.Scalar.(relu a)
+             let ff_arr a = Arr A.(relu a)
+             let df _cp ap at = at * (pack_flt 1. + signum ap) / pack_flt 2.
+             let dr a _cp ca = !ca * ((signum (primal a) + pack_flt 1.) / pack_flt 2.)
+           end : Siso))
 
 
-    and diag ?(k = 0) a =
-      build_siso
-        (module struct
-          let label = "diag"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = Arr A.(diag ~k a |> copy)
-          let df _cp _ap at = diag ~k at
+    and relu a = Lazy.force _relu a
 
-          let dr a _cp ca =
-            let m = col_num a in
-            let l = Stdlib.(m - k) in
-            let rec accu i a_ =
-              if i < l
-              then accu (succ i) (set_item a_ i Stdlib.(k + i) (get_item !ca 0 i))
-              else a_
-            in
-            accu 0 (zero a)
-        end
-        : Siso)
-        a
+    and _diag ~k =
+      lazy
+        (build_siso
+           (module struct
+             let label = "diag"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = Arr A.(diag ~k a |> copy)
+             let df _cp _ap at = diag ~k at
 
-
-    and diagm ?(k = 0) a =
-      build_siso
-        (module struct
-          let label = "diagm"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = Arr A.(diagm ~k a |> copy)
-          let df _cp _ap at = diagm ~k at
-          let dr _a _cp ca = diag ~k !ca
-        end
-        : Siso)
-        a
+             let dr a _cp ca =
+               let m = col_num a in
+               let l = Stdlib.(m - k) in
+               let rec accu i a_ =
+                 if i < l
+                 then accu (succ i) (set_item a_ i Stdlib.(k + i) (get_item !ca 0 i))
+                 else a_
+               in
+               accu 0 (zero a)
+           end : Siso))
 
 
-    and trace a =
-      build_siso
-        (module struct
-          let label = "trace"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = F A.(trace a)
-          let df _cp _ap at = trace at
+    and diag ?(k = 0) = Lazy.force (_diag ~k)
 
-          let dr a _cp ca =
-            let m = col_num a in
-            !ca * diagm (pack_arr A.(ones [| 1; m |]))
-        end
-        : Siso)
-        a
+    and _diagm ~k =
+      lazy
+        (build_siso
+           (module struct
+             let label = "diagm"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = Arr A.(diagm ~k a |> copy)
+             let df _cp _ap at = diagm ~k at
+             let dr _a _cp ca = diag ~k !ca
+           end : Siso))
 
 
-    and triu ?(k = 0) a =
-      build_siso
-        (module struct
-          let label = "triu"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = Arr A.(triu ~k a)
-          let df _cp _ap at = triu ~k at
-          let dr _a _cp ca = triu ~k !ca
-        end
-        : Siso)
-        a
+    and diagm ?(k = 0) = Lazy.force (_diagm ~k)
+
+    and _trace =
+      lazy
+        (build_siso
+           (module struct
+             let label = "trace"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = F A.(trace a)
+             let df _cp _ap at = trace at
+
+             let dr a _cp ca =
+               let m = col_num a in
+               !ca * diagm (pack_arr A.(ones [| 1; m |]))
+           end : Siso))
 
 
-    and tril ?(k = 0) a =
-      build_siso
-        (module struct
-          let label = "tril"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = Arr A.(tril ~k a)
-          let df _cp _ap at = tril ~k at
-          let dr _a _cp ca = tril ~k !ca
-        end
-        : Siso)
-        a
+    and trace a = Lazy.force _trace a
+
+    and _triu ~k =
+      lazy
+        (build_siso
+           (module struct
+             let label = "triu"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = Arr A.(triu ~k a)
+             let df _cp _ap at = triu ~k at
+             let dr _a _cp ca = triu ~k !ca
+           end : Siso))
 
 
-    and inv a =
-      build_siso
-        (module struct
-          let label = "inv"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = Arr A.(inv a)
-          let df cp _ap at = neg cp *@ at *@ cp
+    and triu ?(k = 0) = Lazy.force (_triu ~k)
 
-          let dr _a cp ca =
-            let dpt = transpose cp in
-            neg dpt *@ !ca *@ dpt
-        end
-        : Siso)
-        a
+    and _tril ~k =
+      lazy
+        (build_siso
+           (module struct
+             let label = "tril"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = Arr A.(tril ~k a)
+             let df _cp _ap at = tril ~k at
+             let dr _a _cp ca = tril ~k !ca
+           end : Siso))
 
 
+    and tril ?(k = 0) = Lazy.force (_tril ~k)
+
+    and _inv =
+      lazy
+        (build_siso
+           (module struct
+             let label = "inv"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = Arr A.(inv a)
+             let df cp _ap at = neg cp *@ at *@ cp
+
+             let dr _a cp ca =
+               let dpt = transpose cp in
+               neg dpt *@ !ca *@ dpt
+           end : Siso))
+
+
+    and inv a = Lazy.force _inv a
     and softplus x = log (pack_flt 1. + exp x)
     and softsign x = x / (pack_flt 1. + abs x)
 
@@ -577,8 +615,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let ff_arr a = Arr A.(reshape a s)
           let df _cp _ap at = reshape at s
           let dr a _cp ca = reshape !ca (shape (primal a))
-        end
-        : Siso)
+        end : Siso)
         a
 
 
@@ -607,56 +644,53 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let dr a _cp ca =
             adjref a := add_row (adjval a) !ca i;
             zero a
-        end
-        : Siso)
+        end : Siso)
         a
 
 
     (* pair inputs single output operations *)
     and ( + ) a b = add a b
 
-    and add a b =
-      build_piso
-        (module struct
-          let label = "add"
-          let ff_aa a b = F A.Scalar.(add a b)
-          let ff_ab a b = Arr A.(scalar_add a b)
-          let ff_ba a b = Arr A.(add_scalar a b)
-          let ff_bb a b = Arr A.(add a b)
-          let df_da _cp _ap at = at
-          let df_db _cp _bp bt = bt
-          let df_dab _cp _ap at _bp bt = at + bt
-          let dr_ab _a _b _cp ca = !ca, !ca
-          let dr_a _a _b _cp ca = !ca
-          let dr_b _a _b _cp ca = !ca
-        end
-        : Piso)
-        a
-        b
+    and _add =
+      lazy
+        (build_piso
+           (module struct
+             let label = "add"
+             let ff_aa a b = F A.Scalar.(add a b)
+             let ff_ab a b = Arr A.(scalar_add a b)
+             let ff_ba a b = Arr A.(add_scalar a b)
+             let ff_bb a b = Arr A.(add a b)
+             let df_da _cp _ap at = at
+             let df_db _cp _bp bt = bt
+             let df_dab _cp _ap at _bp bt = at + bt
+             let dr_ab _a _b _cp ca = !ca, !ca
+             let dr_a _a _b _cp ca = !ca
+             let dr_b _a _b _cp ca = !ca
+           end : Piso))
 
 
+    and add a = Lazy.force _add a
     and ( - ) a b = sub a b
 
-    and sub a b =
-      build_piso
-        (module struct
-          let label = "sub"
-          let ff_aa a b = F A.Scalar.(sub a b)
-          let ff_ab a b = Arr A.(scalar_sub a b)
-          let ff_ba a b = Arr A.(sub_scalar a b)
-          let ff_bb a b = Arr A.(sub a b)
-          let df_da _cp _ap at = at
-          let df_db _cp _bp bt = bt
-          let df_dab _cp _ap at _bp bt = at - bt
-          let dr_ab _a _b _cp ca = !ca, neg !ca
-          let dr_a _a _b _cp ca = !ca
-          let dr_b _a _b _cp ca = neg !ca
-        end
-        : Piso)
-        a
-        b
+    and _sub =
+      lazy
+        (build_piso
+           (module struct
+             let label = "sub"
+             let ff_aa a b = F A.Scalar.(sub a b)
+             let ff_ab a b = Arr A.(scalar_sub a b)
+             let ff_ba a b = Arr A.(sub_scalar a b)
+             let ff_bb a b = Arr A.(sub a b)
+             let df_da _cp _ap at = at
+             let df_db _cp _bp bt = bt
+             let df_dab _cp _ap at _bp bt = at - bt
+             let dr_ab _a _b _cp ca = !ca, neg !ca
+             let dr_a _a _b _cp ca = !ca
+             let dr_b _a _b _cp ca = neg !ca
+           end : Piso))
 
 
+    and sub a = Lazy.force _sub a
     and ( * ) a b = mul a b
 
     and mul a b =
@@ -673,8 +707,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let dr_ab a b _cp ca = !ca * primal b, !ca * primal a
           let dr_a _a b _cp ca = !ca * b
           let dr_b a _b _cp ca = !ca * a
-        end
-        : Piso)
+        end : Piso)
         a
         b
 
@@ -699,8 +732,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
           let dr_a _a b _cp ca = !ca / b
           let dr_b a b _cp ca = !ca * (neg a / (primal b * primal b))
-        end
-        : Piso)
+        end : Piso)
         a
         b
 
@@ -729,8 +761,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
           let dr_a a b _cp ca = !ca * (primal a ** (primal b - pack_flt 1.)) * primal b
           let dr_b a b _cp ca = !ca * (primal a ** primal b) * log (primal a)
-        end
-        : Piso)
+        end : Piso)
         a
         b
 
@@ -760,8 +791,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let dr_b a b _cp ca =
             let d = sqr (primal a) + sqr (primal b) in
             !ca * neg (primal a) / d
-        end
-        : Piso)
+        end : Piso)
         a
         b
 
@@ -789,8 +819,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let dr_ab _a _b _cp ca = set_item !ca i j (pack_flt 0.), get_item !ca i j
           let dr_a _a _b _cp ca = set_item !ca i j (pack_flt 0.)
           let dr_b _a _b _cp ca = get_item !ca i j
-        end
-        : Piso)
+        end : Piso)
         a
         b
 
@@ -815,8 +844,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let dr_ab _a _b _cp ca = !ca, get_item !ca i j
           let dr_a _a _b _cp ca = !ca
           let dr_b _a _b _cp ca = get_item !ca i j
-        end
-        : Piso)
+        end : Piso)
         a
         b
 
@@ -841,8 +869,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let dr_ab _a b _cp ca = set_slice i !ca (zero b), get_slice i !ca
           let dr_a _a b _cp ca = set_slice i !ca (zero b)
           let dr_b _a _b _cp ca = get_slice i !ca
-        end
-        : Piso)
+        end : Piso)
         a
         b
 
@@ -867,8 +894,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
           let dr_a _a b _cp ca = dot !ca (transpose (primal b))
           let dr_b a _b _cp ca = dot (transpose (primal a)) !ca
-        end
-        : Piso)
+        end : Piso)
         a
         b
 
@@ -895,8 +921,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let dr_ab _a _b _cp ca = !ca, get_row !ca i
           let dr_a _a _b _cp ca = !ca
           let dr_b _a _b _cp ca = get_row !ca i
-        end
-        : Piso)
+        end : Piso)
         a
         b
 
@@ -926,8 +951,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let dr_b a b _cp ca =
             let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !ca in
             s.(1)
-        end
-        : Piso)
+        end : Piso)
         a
         b
 
@@ -1026,12 +1050,14 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let label = "split"
           let ff_f a = error_uniop "label" (pack_elt a)
           let ff_arr a = A.(split ~axis parts a) |> Array.map (fun x -> Arr x)
-          let df _cp _ap _at = raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.split")
+
+          let df _cp _ap _at =
+            raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.split")
+
 
           let dr _a _cp _cp_ref_arr ca_ref_arr =
             concatenate ~axis (Array.map (fun ca -> !ca) ca_ref_arr)
-        end
-        : Siao)
+        end : Siao)
         a
 
 
@@ -1075,7 +1101,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         in
         let register t = List.append List.(map (fun i -> a.(i)) idxs) t in
         let label = "Concatenate_D", List.(map (fun i -> a.(i)) idxs) in
-        DR (cp, ref (zero cp), (adjoint , register, label), ref 0, !ai_ref, ref 0)
+        DR (cp, ref (zero cp), (adjoint, register, label), ref 0, !ai_ref, ref 0)
       | 2 ->
         let at =
           a
@@ -1103,8 +1129,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let ff_arr a = F A.(logdet a)
           let df _cp ap at = trace (transpose (inv ap) *@ at)
           let dr a _cp ca = !ca * transpose (inv (primal a))
-        end
-        : Siso)
+        end : Siso)
         a
 
 
@@ -1144,8 +1169,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             let ff_arr a = Arr A.(chol ~upper a)
             let df cp _ap at = _chol_forward cp at upper
             let dr _a cp ca = _chol_backward cp !ca upper
-          end
-          : Siso)
+          end : Siso)
           a
 
 
@@ -1169,10 +1193,13 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               let q, r = A.(qr a) in
               Arr q, Arr r
 
-            let df _cp _ap _at = raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.qr")
+
+            let df _cp _ap _at =
+              raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.qr")
+
+
             let dr _a _cp cp_ref ca_ref = _qr_backward cp_ref ca_ref
-          end
-          : Sipo)
+          end : Sipo)
           a
 
 
@@ -1196,10 +1223,12 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               Arr l, Arr q
 
 
-            let df _cp _ap _at = raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.lq")
+            let df _cp _ap _at =
+              raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.lq")
+
+
             let dr _a _cp o ca = _lq_backward o ca
-          end
-          : Sipo)
+          end : Sipo)
           a
 
 
@@ -1231,7 +1260,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                     1. /. (s2_j -. s2_i) |> float_to_elt)))
         in
         let inv_s = pack_flt 1. / s in
-        if thin then
+        if thin
+        then
           (u * sbar *@ vt)
           + (((u *@ (f * ((ut *@ ubar) - (ubart *@ u))) * s)
              + ((e_m - (u *@ ut)) *@ ubar * inv_s))
@@ -1239,8 +1269,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           + (u
             *@ ((transpose s * (f * ((vt *@ vbar) - (vbart *@ v))) *@ vt)
                + (transpose inv_s * vbart *@ (e_n - (v *@ vt)))))
-        else
-          raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.svd")
+        else raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.svd")
       in
       fun ?(thin = true) a ->
         build_sito
@@ -1253,10 +1282,12 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               Arr u, Arr s, Arr vt
 
 
-            let df _cp _ap _at = raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.svd")
+            let df _cp _ap _at =
+              raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.svd")
+
+
             let dr _a _cp o ca = _svd_backward o ca thin
-          end
-          : Sito)
+          end : Sito)
           a
 
 
@@ -1294,8 +1325,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
             let dr_a a _q cp ca = _lyapunov_backward_a (primal a) !ca cp
             let dr_b a _q _cp ca = _lyapunov_backward_q (primal a) !ca
-          end
-          : Piso)
+          end : Piso)
           a
           q
 
@@ -1341,8 +1371,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
             let dr_a a _q cp ca = _discrete_lyapunov_backward_a (primal a) !ca cp
             let dr_b a _q _cp ca = _discrete_lyapunov_backward_q (primal a) !ca
-          end
-          : Piso)
+          end : Piso)
           a
           q
 
@@ -1399,8 +1428,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
             let dr_b a _b _cp ca = _linsolve_backward_b trans typ a !ca
-          end
-          : Piso)
+          end : Piso)
           a
           q
   end
@@ -1457,8 +1485,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
             let dr_a a b _cp ca = conv1d_backward_input a b s !ca
             let dr_b a b _cp ca = conv1d_backward_kernel a b s !ca
-          end
-          : Piso)
+          end : Piso)
           a
           b
 
@@ -1497,8 +1524,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
             let dr_a a b _cp ca = conv2d_backward_input a b s !ca
             let dr_b a b _cp ca = conv2d_backward_kernel a b s !ca
-          end
-          : Piso)
+          end : Piso)
           a
           b
 
@@ -1536,8 +1562,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
             let dr_a a b _cp ca = conv3d_backward_input a b s !ca
             let dr_b a b _cp ca = conv3d_backward_kernel a b s !ca
-          end
-          : Piso)
+          end : Piso)
           a
           b
 
@@ -1576,8 +1601,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
             let dr_a a b _cp ca = dilated_conv1d_backward_input a b s r !ca
             let dr_b a b _cp ca = dilated_conv1d_backward_kernel a b s r !ca
-          end
-          : Piso)
+          end : Piso)
           a
           b
 
@@ -1616,8 +1640,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
             let dr_a a b _cp ca = dilated_conv2d_backward_input a b s r !ca
             let dr_b a b _cp ca = dilated_conv2d_backward_kernel a b s r !ca
-          end
-          : Piso)
+          end : Piso)
           a
           b
 
@@ -1656,8 +1679,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
             let dr_a a b _cp ca = dilated_conv3d_backward_input a b s r !ca
             let dr_b a b _cp ca = dilated_conv3d_backward_kernel a b s r !ca
-          end
-          : Piso)
+          end : Piso)
           a
           b
 
@@ -1696,8 +1718,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
             let dr_a a b _cp ca = transpose_conv1d_backward_input a b s !ca
             let dr_b a b _cp ca = transpose_conv1d_backward_kernel a b s !ca
-          end
-          : Piso)
+          end : Piso)
           a
           b
 
@@ -1736,8 +1757,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
             let dr_a a b _cp ca = transpose_conv2d_backward_input a b s !ca
             let dr_b a b _cp ca = transpose_conv2d_backward_kernel a b s !ca
-          end
-          : Piso)
+          end : Piso)
           a
           b
 
@@ -1776,8 +1796,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
             let dr_a a b _cp ca = transpose_conv3d_backward_input a b s !ca
             let dr_b a b _cp ca = transpose_conv3d_backward_kernel a b s !ca
-          end
-          : Piso)
+          end : Piso)
           a
           b
 
@@ -1798,8 +1817,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             let ff_arr a = Arr A.(max_pool1d ~padding a b s)
             let df _cp _ap _at = failwith "max_pool1d:df"
             let dr a _cp ca = max_pool1d_backward padding (primal a) b s !ca
-          end
-          : Siso)
+          end : Siso)
           a
 
 
@@ -1819,8 +1837,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             let ff_arr a = Arr A.(max_pool2d ~padding a b s)
             let df _cp _ap _at = failwith "max_pool2d:df"
             let dr a _cp ca = max_pool2d_backward padding (primal a) b s !ca
-          end
-          : Siso)
+          end : Siso)
           a
 
 
@@ -1840,8 +1857,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             let ff_arr a = Arr A.(max_pool3d ~padding a b s)
             let df _cp _ap _at = failwith "max_pool3d:df"
             let dr a _cp ca = max_pool3d_backward padding (primal a) b s !ca
-          end
-          : Siso)
+          end : Siso)
           a
 
 
@@ -1861,8 +1877,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             let ff_arr a = Arr A.(avg_pool1d ~padding a b s)
             let df _cp _ap _at = failwith "avg_pool1d:df"
             let dr a _cp ca = avg_pool1d_backward padding (primal a) b s !ca
-          end
-          : Siso)
+          end : Siso)
           a
 
 
@@ -1882,8 +1897,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             let ff_arr a = Arr A.(avg_pool2d ~padding a b s)
             let df _cp _ap _at = failwith "avg_pool2d:df"
             let dr a _cp ca = avg_pool2d_backward padding (primal a) b s !ca
-          end
-          : Siso)
+          end : Siso)
           a
 
 
@@ -1903,8 +1917,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             let ff_arr a = Arr A.(avg_pool3d ~padding a b s)
             let df _cp _ap _at = failwith "avg_pool3d:df"
             let dr a _cp ca = avg_pool3d_backward padding (primal a) b s !ca
-          end
-          : Siso)
+          end : Siso)
           a
 
 
@@ -1924,8 +1937,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             let ff_arr a = Arr A.(upsampling2d a s)
             let df _cp _ap _at = failwith "upsampling2d:df"
             let dr a _cp ca = upsampling2d_backward (primal a) s !ca
-          end
-          : Siso)
+          end : Siso)
           a
 
 
@@ -1950,8 +1962,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             let ff_arr a = Arr A.(pad ?v p a)
             let df _cp _ap _at = failwith "pad:df"
             let dr _a _cp ca = pad_backward !ca p
-          end
-          : Siso)
+          end : Siso)
           a
   end
 

@@ -2,7 +2,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
   open Core
 
   (* add function specifically for the reverse module *)
-  let rec _reverse_add a b =
+  let rec _reverse_add =
     let ff a b =
       match a, b with
       | F a, F b -> F A.Scalar.(add a b)
@@ -11,7 +11,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
       | Arr a, Arr b -> Arr A.(add a b)
       | _ -> error_binop "( reverse_add )" a b
     in
-    let fd a b = _reverse_add a b in
+    let fd = _reverse_add in
     let df_da _cp _ap at = at in
     let df_db _cp _bp bt = bt in
     let df_dab _cp _ap at _bp bt = _reverse_add at bt in
@@ -33,7 +33,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
       let label = "Reverse_Add_C_D", [ a; b ] in
       adjoint, register, label
     in
-    op_piso a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+    fun a b -> op_piso a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
 
   (* core of reverse mode functions *)
