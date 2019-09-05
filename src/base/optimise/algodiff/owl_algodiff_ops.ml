@@ -348,19 +348,20 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and atanh a = Lazy.force _atanh a
 
-    and _get_slice i =
+    and _get_slice =
       lazy
-        (build_siso
-           (module struct
-             let label = "get_slice"
-             let ff_f a = error_uniop label (pack_elt a)
-             let ff_arr a = Arr A.(get_slice i a)
-             let df _cp _ap at = get_slice i at
-             let dr a _cp ca = set_slice i (zero a) !ca
-           end : Siso))
+        (fun i ->
+          build_siso
+            (module struct
+              let label = "get_slice"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(get_slice i a)
+              let df _cp _ap at = get_slice i at
+              let dr a _cp ca = set_slice i (zero a) !ca
+            end : Siso))
 
 
-    and get_slice i = Lazy.force (_get_slice i)
+    and get_slice i = Lazy.force _get_slice i
 
     and _sum' =
       lazy
@@ -376,43 +377,45 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and sum' a = Lazy.force _sum' a
 
-    and _sum ~axis =
+    and _sum =
       lazy
-        (build_siso
-           (module struct
-             let label = "sum axis"
-             let ff_f a = error_uniop label (pack_elt a)
-             let ff_arr a = Arr A.(sum ~axis a)
-             let df _cp _ap at = sum ~axis at
+        (fun ~axis ->
+          build_siso
+            (module struct
+              let label = "sum axis"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(sum ~axis a)
+              let df _cp _ap at = sum ~axis at
 
-             let dr a _cp ca =
-               let s = shape a in
-               let reps = Array.(make (length s) 1) in
-               reps.(axis) <- s.(axis);
-               repeat !ca reps
-           end : Siso))
+              let dr a _cp ca =
+                let s = shape a in
+                let reps = Array.(make (length s) 1) in
+                reps.(axis) <- s.(axis);
+                repeat !ca reps
+            end : Siso))
 
 
-    and sum ?(axis = -1) = Lazy.force (_sum ~axis)
+    and sum ?(axis = -1) = Lazy.force _sum ~axis
 
-    and _sum_reduce ~axis =
+    and _sum_reduce =
       lazy
-        (build_siso
-           (module struct
-             let label = "sum_reduce"
-             let ff_f a = error_uniop label (pack_elt a)
-             let ff_arr a = Arr A.(sum_reduce ~axis a)
-             let df _cp _ap at = sum_reduce ~axis at
+        (fun ~axis ->
+          build_siso
+            (module struct
+              let label = "sum_reduce"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(sum_reduce ~axis a)
+              let df _cp _ap at = sum_reduce ~axis at
 
-             let dr a _cp ca =
-               let s = shape a in
-               let reps = Array.(make (length s) 1) in
-               Array.iter (fun j -> reps.(j) <- s.(j)) axis;
-               repeat !ca reps
-           end : Siso))
+              let dr a _cp ca =
+                let s = shape a in
+                let reps = Array.(make (length s) 1) in
+                Array.iter (fun j -> reps.(j) <- s.(j)) axis;
+                repeat !ca reps
+            end : Siso))
 
 
-    and sum_reduce ?(axis = [| 0 |]) = Lazy.force (_sum_reduce ~axis)
+    and sum_reduce ?(axis = [| 0 |]) = Lazy.force _sum_reduce ~axis
     and mean a = sum' a / F (numel a |> float_of_int |> A.float_to_elt)
 
     and _transpose =
@@ -499,42 +502,44 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and relu a = Lazy.force _relu a
 
-    and _diag ~k =
+    and _diag =
       lazy
-        (build_siso
-           (module struct
-             let label = "diag"
-             let ff_f a = error_uniop label (pack_elt a)
-             let ff_arr a = Arr A.(diag ~k a |> copy)
-             let df _cp _ap at = diag ~k at
+        (fun ~k ->
+          build_siso
+            (module struct
+              let label = "diag"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(diag ~k a |> copy)
+              let df _cp _ap at = diag ~k at
 
-             let dr a _cp ca =
-               let m = col_num a in
-               let l = Stdlib.(m - k) in
-               let rec accu i a_ =
-                 if i < l
-                 then accu (succ i) (set_item a_ i Stdlib.(k + i) (get_item !ca 0 i))
-                 else a_
-               in
-               accu 0 (zero a)
-           end : Siso))
+              let dr a _cp ca =
+                let m = col_num a in
+                let l = Stdlib.(m - k) in
+                let rec accu i a_ =
+                  if i < l
+                  then accu (succ i) (set_item a_ i Stdlib.(k + i) (get_item !ca 0 i))
+                  else a_
+                in
+                accu 0 (zero a)
+            end : Siso))
 
 
-    and diag ?(k = 0) = Lazy.force (_diag ~k)
+    and diag ?(k = 0) = Lazy.force _diag ~k
 
-    and _diagm ~k =
+    and _diagm =
       lazy
-        (build_siso
-           (module struct
-             let label = "diagm"
-             let ff_f a = error_uniop label (pack_elt a)
-             let ff_arr a = Arr A.(diagm ~k a |> copy)
-             let df _cp _ap at = diagm ~k at
-             let dr _a _cp ca = diag ~k !ca
-           end : Siso))
+        (fun ~k ->
+          build_siso
+            (module struct
+              let label = "diagm"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(diagm ~k a |> copy)
+              let df _cp _ap at = diagm ~k at
+              let dr _a _cp ca = diag ~k !ca
+            end : Siso))
 
 
-    and diagm ?(k = 0) = Lazy.force (_diagm ~k)
+    and diagm ?(k = 0) = Lazy.force _diagm ~k
 
     and _trace =
       lazy
@@ -553,33 +558,35 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and trace a = Lazy.force _trace a
 
-    and _triu ~k =
+    and _triu =
       lazy
-        (build_siso
-           (module struct
-             let label = "triu"
-             let ff_f a = error_uniop label (pack_elt a)
-             let ff_arr a = Arr A.(triu ~k a)
-             let df _cp _ap at = triu ~k at
-             let dr _a _cp ca = triu ~k !ca
-           end : Siso))
+        (fun ~k ->
+          build_siso
+            (module struct
+              let label = "triu"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(triu ~k a)
+              let df _cp _ap at = triu ~k at
+              let dr _a _cp ca = triu ~k !ca
+            end : Siso))
 
 
-    and triu ?(k = 0) = Lazy.force (_triu ~k)
+    and triu ?(k = 0) = Lazy.force _triu ~k
 
-    and _tril ~k =
+    and _tril =
       lazy
-        (build_siso
-           (module struct
-             let label = "tril"
-             let ff_f a = error_uniop label (pack_elt a)
-             let ff_arr a = Arr A.(tril ~k a)
-             let df _cp _ap at = tril ~k at
-             let dr _a _cp ca = tril ~k !ca
-           end : Siso))
+        (fun ~k ->
+          build_siso
+            (module struct
+              let label = "tril"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(tril ~k a)
+              let df _cp _ap at = tril ~k at
+              let dr _a _cp ca = tril ~k !ca
+            end : Siso))
 
 
-    and tril ?(k = 0) = Lazy.force (_tril ~k)
+    and tril ?(k = 0) = Lazy.force _tril ~k
 
     and _inv =
       lazy
@@ -607,18 +614,21 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
       y / a
 
 
-    and reshape a s =
-      build_siso
-        (module struct
-          let label = "reshape"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = Arr A.(reshape a s)
-          let df _cp _ap at = reshape at s
-          let dr a _cp ca = reshape !ca (shape (primal a))
-        end : Siso)
-        a
+    and _reshape =
+      lazy
+        (fun a s ->
+          build_siso
+            (module struct
+              let label = "reshape"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(reshape a s)
+              let df _cp _ap at = reshape at s
+              let dr a _cp ca = reshape !ca (shape (primal a))
+            end : Siso)
+            a)
 
 
+    and reshape a = Lazy.force _reshape a
     and flatten a = reshape a [| 1; numel a |]
 
     and get_item a i j =
@@ -633,21 +643,24 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
       | _ -> error_uniop "get_item" a
 
 
-    and get_row a i =
-      build_siso
-        (module struct
-          let label = "get_row"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = Arr A.(row a i |> copy)
-          let df _cp _ap at = get_row at i
+    and _get_row =
+      lazy
+        (fun a i ->
+          build_siso
+            (module struct
+              let label = "get_row"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(row a i |> copy)
+              let df _cp _ap at = get_row at i
 
-          let dr a _cp ca =
-            adjref a := add_row (adjval a) !ca i;
-            zero a
-        end : Siso)
-        a
+              let dr a _cp ca =
+                adjref a := add_row (adjval a) !ca i;
+                zero a
+            end : Siso)
+            a)
 
 
+    and get_row a = Lazy.force _get_row a
     (* pair inputs single output operations *)
     and ( + ) a b = add a b
 
@@ -660,8 +673,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let ff_ab a b = Arr A.(scalar_add a b)
              let ff_ba a b = Arr A.(add_scalar a b)
              let ff_bb a b = Arr A.(add a b)
-             let df_da _cp _ap at = at
-             let df_db _cp _bp bt = bt
+             let df_da _cp _ap at _bp = at
+             let df_db _cp _ap _bp bt = bt
              let df_dab _cp _ap at _bp bt = at + bt
              let dr_ab _a _b _cp ca = !ca, !ca
              let dr_a _a _b _cp ca = !ca
@@ -681,8 +694,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let ff_ab a b = Arr A.(scalar_sub a b)
              let ff_ba a b = Arr A.(sub_scalar a b)
              let ff_bb a b = Arr A.(sub a b)
-             let df_da _cp _ap at = at
-             let df_db _cp _bp bt = bt
+             let df_da _cp _ap at _bp = at
+             let df_db _cp _ap _bp bt = bt
              let df_dab _cp _ap at _bp bt = at - bt
              let dr_ab _a _b _cp ca = !ca, neg !ca
              let dr_a _a _b _cp ca = !ca
@@ -693,269 +706,286 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     and sub a = Lazy.force _sub a
     and ( * ) a b = mul a b
 
-    and mul a b =
-      build_piso
-        (module struct
-          let label = "mul"
-          let ff_aa a b = F A.Scalar.(mul a b)
-          let ff_ab a b = Arr A.(scalar_mul a b)
-          let ff_ba a b = Arr A.(mul_scalar a b)
-          let ff_bb a b = Arr A.(mul a b)
-          let df_da _cp _ap at = at * b
-          let df_db _cp _bp bt = a * bt
-          let df_dab _cp ap at bp bt = (ap * bt) + (at * bp)
-          let dr_ab a b _cp ca = !ca * primal b, !ca * primal a
-          let dr_a _a b _cp ca = !ca * b
-          let dr_b a _b _cp ca = !ca * a
-        end : Piso)
-        a
-        b
+    and _mul =
+      lazy
+        (build_piso
+           (module struct
+             let label = "mul"
+             let ff_aa a b = F A.Scalar.(mul a b)
+             let ff_ab a b = Arr A.(scalar_mul a b)
+             let ff_ba a b = Arr A.(mul_scalar a b)
+             let ff_bb a b = Arr A.(mul a b)
+             let df_da _cp _ap at bp = at * bp
+             let df_db _cp ap _bp bt = ap * bt
+             let df_dab _cp ap at bp bt = (ap * bt) + (at * bp)
+             let dr_ab a b _cp ca = !ca * primal b, !ca * primal a
+             let dr_a _a b _cp ca = !ca * b
+             let dr_b a _b _cp ca = !ca * a
+           end : Piso))
 
 
+    and mul a = Lazy.force _mul a
     and ( / ) a b = div a b
 
-    and div a b =
-      build_piso
-        (module struct
-          let label = "div"
-          let ff_aa a b = F A.Scalar.(div a b)
-          let ff_ab a b = Arr A.(scalar_div a b)
-          let ff_ba a b = Arr A.(div_scalar a b)
-          let ff_bb a b = Arr A.(div a b)
-          let df_da _cp _ap at = at / b
-          let df_db cp bp bt = neg bt * cp / bp
-          let df_dab cp _ap at bp bt = (at - (bt * cp)) / bp
+    and _div =
+      lazy
+        (build_piso
+           (module struct
+             let label = "div"
+             let ff_aa a b = F A.Scalar.(div a b)
+             let ff_ab a b = Arr A.(scalar_div a b)
+             let ff_ba a b = Arr A.(div_scalar a b)
+             let ff_bb a b = Arr A.(div a b)
+             let df_da _cp _ap at bp = at / bp
+             let df_db cp _ap bp bt = neg bt * cp / bp
+             let df_dab cp _ap at bp bt = (at - (bt * cp)) / bp
 
-          let dr_ab a b _cp ca =
-            !ca / primal b, !ca * (neg (primal a) / (primal b * primal b))
-
-
-          let dr_a _a b _cp ca = !ca / b
-          let dr_b a b _cp ca = !ca * (neg a / (primal b * primal b))
-        end : Piso)
-        a
-        b
+             let dr_ab a b _cp ca =
+               !ca / primal b, !ca * (neg (primal a) / (primal b * primal b))
 
 
+             let dr_a _a b _cp ca = !ca / b
+             let dr_b a b _cp ca = !ca * (neg a / (primal b * primal b))
+           end : Piso))
+
+
+    and div a = Lazy.force _div a
     and ( ** ) a b = pow a b
 
-    and pow a b =
-      build_piso
-        (module struct
-          let label = "pow"
-          let ff_aa a b = F A.Scalar.(pow a b)
-          let ff_ab a b = Arr A.(scalar_pow a b)
-          let ff_ba a b = Arr A.(pow_scalar a b)
-          let ff_bb a b = Arr A.(pow a b)
-          let df_da _cp ap at = at * (ap ** (b - pack_flt 1.)) * b
-          let df_db cp _bp bt = bt * cp * log a
+    and _pow =
+      lazy
+        (build_piso
+           (module struct
+             let label = "pow"
+             let ff_aa a b = F A.Scalar.(pow a b)
+             let ff_ab a b = Arr A.(scalar_pow a b)
+             let ff_ba a b = Arr A.(pow_scalar a b)
+             let ff_bb a b = Arr A.(pow a b)
+             let df_da _cp ap at bp = at * (ap ** (bp - pack_flt 1.)) * bp
+             let df_db cp ap _bp bt = bt * cp * log ap
 
-          let df_dab _cp ap at bp bt =
-            (ap ** (bp - pack_flt 1.)) * ((at * bp) + (ap * bt * log ap))
-
-
-          let dr_ab a b _cp ca =
-            ( !ca * (primal a ** (primal b - pack_flt 1.)) * primal b
-            , !ca * (primal a ** primal b) * log (primal a) )
+             let df_dab _cp ap at bp bt =
+               (ap ** (bp - pack_flt 1.)) * ((at * bp) + (ap * bt * log ap))
 
 
-          let dr_a a b _cp ca = !ca * (primal a ** (primal b - pack_flt 1.)) * primal b
-          let dr_b a b _cp ca = !ca * (primal a ** primal b) * log (primal a)
-        end : Piso)
-        a
-        b
+             let dr_ab a b _cp ca =
+               ( !ca * (primal a ** (primal b - pack_flt 1.)) * primal b
+               , !ca * (primal a ** primal b) * log (primal a) )
 
 
-    and atan2 a b =
-      build_piso
-        (module struct
-          let label = "atan2"
-          let ff_aa a b = F A.Scalar.(atan2 a b)
-          let ff_ab a b = Arr A.(scalar_atan2 a b)
-          let ff_ba a b = Arr A.(atan2_scalar a b)
-          let ff_bb a b = Arr A.(atan2 a b)
-          let df_da _cp ap at = at * b / (sqr ap + sqr b)
-          let df_db _cp bp bt = neg bt * a / (sqr a + sqr bp)
-          let df_dab _cp ap at bp bt = ((at * bp) - (bt * ap)) / (sqr ap + sqr bp)
-
-          let dr_ab a b _cp ca =
-            let d = sqr (primal a) + sqr (primal b) in
-            !ca * primal b / d, !ca * neg (primal a) / d
+             let dr_a a b _cp ca =
+               !ca * (primal a ** (primal b - pack_flt 1.)) * primal b
 
 
-          let dr_a a b _cp ca =
-            let d = sqr (primal a) + sqr (primal b) in
-            !ca * primal b / d
+             let dr_b a b _cp ca = !ca * (primal a ** primal b) * log (primal a)
+           end : Piso))
 
 
-          let dr_b a b _cp ca =
-            let d = sqr (primal a) + sqr (primal b) in
-            !ca * neg (primal a) / d
-        end : Piso)
-        a
-        b
+    and pow a = Lazy.force _pow a
+
+    and _atan2 =
+      lazy
+        (build_piso
+           (module struct
+             let label = "atan2"
+             let ff_aa a b = F A.Scalar.(atan2 a b)
+             let ff_ab a b = Arr A.(scalar_atan2 a b)
+             let ff_ba a b = Arr A.(atan2_scalar a b)
+             let ff_bb a b = Arr A.(atan2 a b)
+             let df_da _cp ap at bp = at * bp / (sqr ap + sqr bp)
+             let df_db _cp ap bp bt = neg bt * ap / (sqr ap + sqr bp)
+             let df_dab _cp ap at bp bt = ((at * bp) - (bt * ap)) / (sqr ap + sqr bp)
+
+             let dr_ab a b _cp ca =
+               let d = sqr (primal a) + sqr (primal b) in
+               !ca * primal b / d, !ca * neg (primal a) / d
 
 
+             let dr_a a b _cp ca =
+               let d = sqr (primal a) + sqr (primal b) in
+               !ca * primal b / d
+
+
+             let dr_b a b _cp ca =
+               let d = sqr (primal a) + sqr (primal b) in
+               !ca * neg (primal a) / d
+           end : Piso))
+
+
+    and atan2 a = Lazy.force _atan2 a
     and min2 a b = (a + b - abs (a - b)) / pack_flt 2.
     and max2 a b = (a + b + abs (b - a)) / pack_flt 2.
 
-    and set_item a i j b =
-      build_piso
-        (module struct
-          let label = "set_item"
-          let ff_aa a _b = error_uniop label (pack_elt a)
-          let ff_ab a _b = error_uniop label (pack_elt a)
+    and _set_item =
+      lazy
+        (fun a i j b ->
+          build_piso
+            (module struct
+              let label = "set_item"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
 
-          let ff_ba a b =
-            let aa = A.copy a in
-            A.set aa [| i; j |] b;
-            Arr aa
-
-
-          let ff_bb a _b = error_uniop label (pack_arr a)
-          let df_da _cp _ap at = set_item at i j (pack_flt 0.)
-          let df_db _cp _bp bt = add_item (zero a) i j bt
-          let df_dab _cp _ap at _bp bt = set_item at i j bt
-          let dr_ab _a _b _cp ca = set_item !ca i j (pack_flt 0.), get_item !ca i j
-          let dr_a _a _b _cp ca = set_item !ca i j (pack_flt 0.)
-          let dr_b _a _b _cp ca = get_item !ca i j
-        end : Piso)
-        a
-        b
+              let ff_ba a b =
+                let aa = A.copy a in
+                A.set aa [| i; j |] b;
+                Arr aa
 
 
-    and add_item a i j b =
-      build_piso
-        (module struct
-          let label = "add_item"
-          let ff_aa a _b = error_uniop label (pack_elt a)
-          let ff_ab a _b = error_uniop label (pack_elt a)
-
-          let ff_ba a b =
-            let aa = A.copy a in
-            A.set aa [| i; j |] A.Scalar.(add (A.get aa [| i; j |]) b);
-            Arr aa
-
-
-          let ff_bb a _b = error_uniop label (pack_arr a)
-          let df_da _cp _ap at = at
-          let df_db _cp _bp bt = add_item (zero a) i j bt
-          let df_dab _cp _ap at _bp bt = add_item at i j bt
-          let dr_ab _a _b _cp ca = !ca, get_item !ca i j
-          let dr_a _a _b _cp ca = !ca
-          let dr_b _a _b _cp ca = get_item !ca i j
-        end : Piso)
-        a
-        b
+              let ff_bb a _b = error_uniop label (pack_arr a)
+              let df_da _cp _ap at _bp = set_item at i j (pack_flt 0.)
+              let df_db _cp _ap _bp bt = add_item (zero a) i j bt
+              let df_dab _cp _ap at _bp bt = set_item at i j bt
+              let dr_ab _a _b _cp ca = set_item !ca i j (pack_flt 0.), get_item !ca i j
+              let dr_a _a _b _cp ca = set_item !ca i j (pack_flt 0.)
+              let dr_b _a _b _cp ca = get_item !ca i j
+            end : Piso)
+            a
+            b)
 
 
-    and set_slice i a b =
-      build_piso
-        (module struct
-          let label = "set_slice"
-          let ff_aa a _b = error_uniop label (pack_elt a)
-          let ff_ab a _b = error_uniop label (pack_elt a)
-          let ff_ba _a b = error_uniop label (pack_elt b)
+    and set_item a = Lazy.force _set_item a
 
-          let ff_bb a b =
-            let a = A.copy a in
-            A.(set_slice i a b);
-            Arr a
+    and _add_item =
+      lazy
+        (fun a i j b ->
+          build_piso
+            (module struct
+              let label = "add_item"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
 
-
-          let df_da _cp _ap at = set_slice i at (zero b)
-          let df_db _cp _bp bt = set_slice i (zero a) bt
-          let df_dab _cp _ap at _bp bt = set_slice i at bt
-          let dr_ab _a b _cp ca = set_slice i !ca (zero b), get_slice i !ca
-          let dr_a _a b _cp ca = set_slice i !ca (zero b)
-          let dr_b _a _b _cp ca = get_slice i !ca
-        end : Piso)
-        a
-        b
+              let ff_ba a b =
+                let aa = A.copy a in
+                A.set aa [| i; j |] A.Scalar.(add (A.get aa [| i; j |]) b);
+                Arr aa
 
 
+              let ff_bb a _b = error_uniop label (pack_arr a)
+              let df_da _cp _ap at _bp = at
+              let df_db _cp ap _bp bt = add_item (zero ap) i j bt
+              let df_dab _cp _ap at _bp bt = add_item at i j bt
+              let dr_ab _a _b _cp ca = !ca, get_item !ca i j
+              let dr_a _a _b _cp ca = !ca
+              let dr_b _a _b _cp ca = get_item !ca i j
+            end : Piso)
+            a
+            b)
+
+
+    and add_item a = Lazy.force _add_item a
+
+    and _set_slice =
+      lazy
+        (fun i ->
+          build_piso
+            (module struct
+              let label = "set_slice"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
+              let ff_ba _a b = error_uniop label (pack_elt b)
+
+              let ff_bb a b =
+                let a = A.copy a in
+                A.(set_slice i a b);
+                Arr a
+
+
+              let df_da _cp _ap at bp = set_slice i at (zero bp)
+              let df_db _cp ap _bp bt = set_slice i (zero ap) bt
+              let df_dab _cp _ap at _bp bt = set_slice i at bt
+              let dr_ab _a b _cp ca = set_slice i !ca (zero b), get_slice i !ca
+              let dr_a _a b _cp ca = set_slice i !ca (zero b)
+              let dr_b _a _b _cp ca = get_slice i !ca
+            end : Piso))
+
+
+    and set_slice i = Lazy.force _set_slice i
     and ( *@ ) a b = dot a b
 
-    and dot a b =
-      build_piso
-        (module struct
-          let label = "dot"
-          let ff_aa a _b = error_uniop label (pack_elt a)
-          let ff_ab a _b = error_uniop label (pack_elt a)
-          let ff_ba _a b = error_uniop label (pack_elt b)
-          let ff_bb a b = Arr A.(dot a b)
-          let df_da _cp _ap at = at *@ b
-          let df_db _cp _bp bt = a *@ bt
-          let df_dab _cp ap at bp bt = (ap *@ bt) + (at *@ bp)
+    and _dot =
+      lazy
+        (build_piso
+           (module struct
+             let label = "dot"
+             let ff_aa a _b = error_uniop label (pack_elt a)
+             let ff_ab a _b = error_uniop label (pack_elt a)
+             let ff_ba _a b = error_uniop label (pack_elt b)
+             let ff_bb a b = Arr A.(dot a b)
+             let df_da _cp _ap at bp = at *@ bp
+             let df_db _cp ap _bp bt = ap *@ bt
+             let df_dab _cp ap at bp bt = (ap *@ bt) + (at *@ bp)
 
-          let dr_ab a b _cp ca =
-            dot !ca (transpose (primal b)), dot (transpose (primal a)) !ca
-
-
-          let dr_a _a b _cp ca = dot !ca (transpose (primal b))
-          let dr_b a _b _cp ca = dot (transpose (primal a)) !ca
-        end : Piso)
-        a
-        b
+             let dr_ab a b _cp ca =
+               dot !ca (transpose (primal b)), dot (transpose (primal a)) !ca
 
 
+             let dr_a _a b _cp ca = dot !ca (transpose (primal b))
+             let dr_b a _b _cp ca = dot (transpose (primal a)) !ca
+           end : Piso))
+
+
+    and dot a = Lazy.force _dot a
     and cross_entropy x y = x * log y |> sum' |> neg
 
-    and add_row a b i =
-      build_piso
-        (module struct
-          let label = "add_row"
-          let ff_aa a _b = error_uniop label (pack_elt a)
-          let ff_ab a _b = error_uniop label (pack_elt a)
-          let ff_ba _a b = error_uniop label (pack_elt b)
+    and _add_row =
+      lazy
+        (fun a b i ->
+          build_piso
+            (module struct
+              let label = "add_row"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
+              let ff_ba _a b = error_uniop label (pack_elt b)
 
-          let ff_bb a b =
-            A.(
-              copy_row_to (add (row a i) b) a i;
-              Arr a)
-
-
-          let df_da _cp _ap at = at
-          let df_db _cp _bp bt = add_row (zero a) bt i
-          let df_dab _cp _ap at _bp bt = add_row at bt i
-          let dr_ab _a _b _cp ca = !ca, get_row !ca i
-          let dr_a _a _b _cp ca = !ca
-          let dr_b _a _b _cp ca = get_row !ca i
-        end : Piso)
-        a
-        b
+              let ff_bb a b =
+                A.(
+                  copy_row_to (add (row a i) b) a i;
+                  Arr a)
 
 
-    and concat axis a b =
-      build_piso
-        (module struct
-          let label = "concat"
-          let ff_aa a _b = error_uniop label (pack_elt a)
-          let ff_ab a _b = error_uniop label (pack_elt a)
-          let ff_ba _a b = error_uniop label (pack_elt b)
-          let ff_bb a b = Arr A.(concatenate ~axis [| a; b |])
-          let df_da _cp _ap at = concat axis at (zero b)
-          let df_db _cp _bp bt = concat axis (zero a) bt
-          let df_dab _cp _ap at _bp bt = concat axis at bt
-
-          let dr_ab a b _cp ca =
-            let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !ca in
-            s.(0), s.(1)
+              let df_da _cp _ap at _bp = at
+              let df_db _cp ap _bp bt = add_row (zero ap) bt i
+              let df_dab _cp _ap at _bp bt = add_row at bt i
+              let dr_ab _a _b _cp ca = !ca, get_row !ca i
+              let dr_a _a _b _cp ca = !ca
+              let dr_b _a _b _cp ca = get_row !ca i
+            end : Piso)
+            a
+            b)
 
 
-          let dr_a a b _cp ca =
-            let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !ca in
-            s.(0)
+    and add_row a = Lazy.force _add_row a
+
+    and _concat axis =
+      lazy
+        (build_piso
+           (module struct
+             let label = "concat"
+             let ff_aa a _b = error_uniop label (pack_elt a)
+             let ff_ab a _b = error_uniop label (pack_elt a)
+             let ff_ba _a b = error_uniop label (pack_elt b)
+             let ff_bb a b = Arr A.(concatenate ~axis [| a; b |])
+             let df_da _cp _ap at bp = concat axis at (zero bp)
+             let df_db _cp ap _bp bt = concat axis (zero ap) bt
+             let df_dab _cp _ap at _bp bt = concat axis at bt
+
+             let dr_ab a b _cp ca =
+               let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !ca in
+               s.(0), s.(1)
 
 
-          let dr_b a b _cp ca =
-            let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !ca in
-            s.(1)
-        end : Piso)
-        a
-        b
+             let dr_a a b _cp ca =
+               let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !ca in
+               s.(0)
 
 
+             let dr_b a b _cp ca =
+               let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !ca in
+               s.(1)
+           end : Piso))
+
+
+    and concat axis = Lazy.force (_concat axis)
     and to_rows a = Array.init (row_num a) (fun i -> get_row a i)
 
     and of_rows a =
@@ -982,135 +1012,149 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
       | _ -> error_uniop "of_rows a.(0)" a.(0)
 
 
-    and of_arrays a =
-      (* mode: 0 constant, 1 reverse, 2 tangent *)
-      let mode = ref 0 in
-      let idxs = ref [] in
-      let ai_ref = ref 0 in
-      let cp =
-        Array.mapi
-          (fun i xs ->
+    and _of_arrays =
+      lazy
+        (fun a ->
+          (* mode: 0 constant, 1 reverse, 2 tangent *)
+          let mode = ref 0 in
+          let idxs = ref [] in
+          let ai_ref = ref 0 in
+          let cp =
             Array.mapi
-              (fun j x ->
-                match x, !mode with
-                | F _, _ -> unpack_elt x
-                | DR (_, _, _, _, ai, _), 0 ->
-                  ai_ref := ai;
-                  mode := 1;
-                  idxs := (i, j) :: !idxs;
-                  unpack_elt x
-                | DR (_, _, _, _, ai, _), 1 ->
-                  ai_ref := ai;
-                  idxs := (i, j) :: !idxs;
-                  unpack_elt x
-                | DF (_, _, ai), 0 ->
-                  ai_ref := ai;
-                  mode := 1;
-                  idxs := (i, j) :: !idxs;
-                  unpack_elt x
-                | DF (_, _, ai), 2 ->
-                  ai_ref := ai;
-                  mode := 2;
-                  unpack_elt x
-                | _, _ -> error_uniop "of_arrays: inconsistent array" x)
-              xs)
-          a
-        |> A.of_arrays
-        |> pack_arr
-      in
-      match !mode with
-      | 0 -> cp
-      | 1 ->
-        let idxs = List.rev !idxs in
-        let reverse _cp ca t =
-          let ca_arrays = to_arrays !ca in
-          t |> List.append (idxs |> List.map (fun (i, j) -> ca_arrays.(i).(j), a.(i).(j)))
-        in
-        let input t = List.(append (map (fun (i, j) -> a.(i).(j)) idxs) t) in
-        let label = "Of_Arrays_D", List.map (fun (i, j) -> a.(i).(j)) idxs in
-        DR (cp, ref (zero cp), (reverse, input, label), ref 0, !ai_ref, ref 0)
-      | 2 ->
-        let at =
-          a
-          |> Array.map (Array.map (fun x -> x |> tangent |> unpack_elt))
-          |> A.of_arrays
-          |> pack_arr
-        in
-        DF (cp, at, !ai_ref)
-      | _ -> error_uniop "of_arrays" a.(0).(0)
+              (fun i xs ->
+                Array.mapi
+                  (fun j x ->
+                    match x, !mode with
+                    | F _, _ -> unpack_elt x
+                    | DR (_, _, _, _, ai, _), 0 ->
+                      ai_ref := ai;
+                      mode := 1;
+                      idxs := (i, j) :: !idxs;
+                      unpack_elt x
+                    | DR (_, _, _, _, ai, _), 1 ->
+                      ai_ref := ai;
+                      idxs := (i, j) :: !idxs;
+                      unpack_elt x
+                    | DF (_, _, ai), 0 ->
+                      ai_ref := ai;
+                      mode := 1;
+                      idxs := (i, j) :: !idxs;
+                      unpack_elt x
+                    | DF (_, _, ai), 2 ->
+                      ai_ref := ai;
+                      mode := 2;
+                      unpack_elt x
+                    | _, _ -> error_uniop "of_arrays: inconsistent array" x)
+                  xs)
+              a
+            |> A.of_arrays
+            |> pack_arr
+          in
+          match !mode with
+          | 0 -> cp
+          | 1 ->
+            let idxs = List.rev !idxs in
+            let reverse _cp ca t =
+              let ca_arrays = to_arrays !ca in
+              t
+              |> List.append
+                   (idxs |> List.map (fun (i, j) -> ca_arrays.(i).(j), a.(i).(j)))
+            in
+            let input t = List.(append (map (fun (i, j) -> a.(i).(j)) idxs) t) in
+            let label = "Of_Arrays_D", List.map (fun (i, j) -> a.(i).(j)) idxs in
+            DR (cp, ref (zero cp), (reverse, input, label), ref 0, !ai_ref, ref 0)
+          | 2 ->
+            let at =
+              a
+              |> Array.map (Array.map (fun x -> x |> tangent |> unpack_elt))
+              |> A.of_arrays
+              |> pack_arr
+            in
+            DF (cp, at, !ai_ref)
+          | _ -> error_uniop "of_arrays" a.(0).(0))
 
+
+    and of_arrays a = Lazy.force _of_arrays a
 
     and to_arrays a =
       Array.init (row_num a) (fun i -> Array.init (col_num a) (fun j -> get_item a i j))
 
 
-    and split ~axis parts a =
-      build_siao
-        (module struct
-          let label = "split"
-          let ff_f a = error_uniop "label" (pack_elt a)
-          let ff_arr a = A.(split ~axis parts a) |> Array.map (fun x -> Arr x)
+    and _split =
+      lazy
+        (fun ~axis parts ->
+          build_siao
+            (module struct
+              let label = "split"
+              let ff_f a = error_uniop "label" (pack_elt a)
+              let ff_arr a = A.(split ~axis parts a) |> Array.map (fun x -> Arr x)
 
-          let df _cp _ap _at =
-            raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.split")
-
-
-          let dr _a _cp _cp_ref_arr ca_ref_arr =
-            concatenate ~axis (Array.map (fun ca -> !ca) ca_ref_arr)
-        end : Siao)
-        a
+              let df _cp _ap _at =
+                raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.split")
 
 
-    and concatenate ~axis a =
-      (* mode: 0 constant, 1 reverse, 2 tangent *)
-      let mode = ref 0 in
-      let idxs = ref [] in
-      let ai_ref = ref 0 in
-      let cp =
-        Array.mapi
-          (fun i x ->
-            match x, !mode with
-            | Arr _, _ -> unpack_arr x
-            | DR (_, _, _, _, ai, _), 0 ->
-              ai_ref := ai;
-              idxs := i :: !idxs;
-              mode := 1;
-              unpack_arr x
-            | DR (_, _, _, _, ai, _), 1 ->
-              ai_ref := ai;
-              idxs := i :: !idxs;
-              unpack_arr x
-            | DF (_, _, ai), 0 ->
-              ai_ref := ai;
-              unpack_arr x
-            | DF (_, _, ai), 2 ->
-              ai_ref := ai;
-              unpack_arr x
-            | _ -> error_uniop "concatenate: inconsistent array" x)
-          a
-        |> A.concatenate ~axis
-        |> pack_arr
-      in
-      match !mode with
-      | 0 -> cp
-      | 1 ->
-        let idxs = List.rev !idxs in
-        let adjoint _cp ca t =
-          let ca_arr = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !ca in
-          t |> List.(append (map (fun i -> ca_arr.(i), a.(i)) idxs))
-        in
-        let register t = List.append List.(map (fun i -> a.(i)) idxs) t in
-        let label = "Concatenate_D", List.(map (fun i -> a.(i)) idxs) in
-        DR (cp, ref (zero cp), (adjoint, register, label), ref 0, !ai_ref, ref 0)
-      | 2 ->
-        let at =
-          a
-          |> Array.map (fun x -> x |> tangent |> unpack_arr)
-          |> A.concatenate ~axis
-          |> pack_arr
-        in
-        DF (cp, at, !ai_ref)
-      | _ -> error_uniop "concatenate" a.(0)
+              let dr _a _cp _cp_ref_arr ca_ref_arr =
+                concatenate ~axis (Array.map (fun ca -> !ca) ca_ref_arr)
+            end : Siao))
+
+
+    and split ~axis parts = Lazy.force _split ~axis parts
+
+    and _concatenate =
+      lazy
+        (fun ~axis a ->
+          (* mode: 0 constant, 1 reverse, 2 tangent *)
+          let mode = ref 0 in
+          let idxs = ref [] in
+          let ai_ref = ref 0 in
+          let cp =
+            Array.mapi
+              (fun i x ->
+                match x, !mode with
+                | Arr _, _ -> unpack_arr x
+                | DR (_, _, _, _, ai, _), 0 ->
+                  ai_ref := ai;
+                  idxs := i :: !idxs;
+                  mode := 1;
+                  unpack_arr x
+                | DR (_, _, _, _, ai, _), 1 ->
+                  ai_ref := ai;
+                  idxs := i :: !idxs;
+                  unpack_arr x
+                | DF (_, _, ai), 0 ->
+                  ai_ref := ai;
+                  unpack_arr x
+                | DF (_, _, ai), 2 ->
+                  ai_ref := ai;
+                  unpack_arr x
+                | _ -> error_uniop "concatenate: inconsistent array" x)
+              a
+            |> A.concatenate ~axis
+            |> pack_arr
+          in
+          match !mode with
+          | 0 -> cp
+          | 1 ->
+            let idxs = List.rev !idxs in
+            let adjoint _cp ca t =
+              let ca_arr = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !ca in
+              t |> List.(append (map (fun i -> ca_arr.(i), a.(i)) idxs))
+            in
+            let register t = List.append List.(map (fun i -> a.(i)) idxs) t in
+            let label = "Concatenate_D", List.(map (fun i -> a.(i)) idxs) in
+            DR (cp, ref (zero cp), (adjoint, register, label), ref 0, !ai_ref, ref 0)
+          | 2 ->
+            let at =
+              a
+              |> Array.map (fun x -> x |> tangent |> unpack_arr)
+              |> A.concatenate ~axis
+              |> pack_arr
+            in
+            DF (cp, at, !ai_ref)
+          | _ -> error_uniop "concatenate" a.(0))
+
+
+    and concatenate ~axis = Lazy.force _concatenate ~axis
   end
 
   module Linalg = struct
@@ -1121,22 +1165,23 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     let rec noop _ = ()
     and inv = Maths.inv
 
-    and logdet a =
-      build_siso
-        (module struct
-          let label = "logdet"
-          let ff_f a = error_uniop label (pack_elt a)
-          let ff_arr a = F A.(logdet a)
-          let df _cp ap at = trace (transpose (inv ap) *@ at)
-          let dr a _cp ca = !ca * transpose (inv (primal a))
-        end : Siso)
-        a
+    and _logdet =
+      lazy
+        (build_siso
+           (module struct
+             let label = "logdet"
+             let ff_f a = error_uniop label (pack_elt a)
+             let ff_arr a = F A.(logdet a)
+             let df _cp ap at = trace (transpose (inv ap) *@ at)
+             let dr a _cp ca = !ca * transpose (inv (primal a))
+           end : Siso))
 
 
+    and logdet a = Lazy.force _logdet a
     and copyltu x = tril x + transpose (tril ~k:(-1) x)
     and copyutl x = triu x + transpose (triu ~k:1 x)
 
-    and chol =
+    and _chol =
       let _chol_forward cp at upper =
         let inv_cp = inv cp in
         let tr_inv_cp = transpose inv_cp in
@@ -1161,20 +1206,22 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           let x = linsolve ~trans:true ~typ:`l o (transpose x) in
           pack_flt 0.5 * transpose x)
       in
-      fun ?(upper = true) a ->
-        build_siso
-          (module struct
-            let label = "chol"
-            let ff_f a = error_uniop "chol" (pack_elt a)
-            let ff_arr a = Arr A.(chol ~upper a)
-            let df cp _ap at = _chol_forward cp at upper
-            let dr _a cp ca = _chol_backward cp !ca upper
-          end : Siso)
-          a
+      lazy
+        (fun ~upper ->
+          build_siso
+            (module struct
+              let label = "chol"
+              let ff_f a = error_uniop "chol" (pack_elt a)
+              let ff_arr a = Arr A.(chol ~upper a)
+              let df cp _ap at = _chol_forward cp at upper
+              let dr _a cp ca = _chol_backward cp !ca upper
+            end : Siso))
 
+
+    and chol ?(upper = true) = Lazy.force _chol ~upper
 
     (* single input pair outputs *)
-    and qr =
+    and _qr =
       let _qr_backward (cp1, cp2) (ca1, ca2) =
         let q = !cp1
         and r = !cp2
@@ -1183,27 +1230,28 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let m = (rbar *@ transpose r) - (transpose q *@ qbar) in
         linsolve r (transpose (qbar + (q *@ copyutl m))) |> transpose
       in
-      fun a ->
-        build_sipo
-          (module struct
-            let label = "qr"
-            let ff_f _ = error_uniop "qr" a
+      lazy
+        (build_sipo
+           (module struct
+             let label = "qr"
+             let ff_f a = error_uniop "qr" (pack_elt a)
 
-            let ff_arr a =
-              let q, r = A.(qr a) in
-              Arr q, Arr r
-
-
-            let df _cp _ap _at =
-              raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.qr")
+             let ff_arr a =
+               let q, r = A.(qr a) in
+               Arr q, Arr r
 
 
-            let dr _a _cp cp_ref ca_ref = _qr_backward cp_ref ca_ref
-          end : Sipo)
-          a
+             let df _cp _ap _at =
+               raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.qr")
 
 
-    and lq =
+             let dr _a _cp cp_ref ca_ref = _qr_backward cp_ref ca_ref
+           end : Sipo))
+
+
+    and qr a = Lazy.force _qr a
+
+    and _lq =
       let _lq_backward (o1, o2) (ca1, ca2) =
         let l = !o1
         and q = !o2
@@ -1212,28 +1260,29 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let m = (transpose l *@ lbar) - (qbar *@ transpose q) in
         linsolve ~trans:true ~typ:`l l (qbar + (copyltu m *@ q))
       in
-      fun a ->
-        build_sipo
-          (module struct
-            let label = "lq"
-            let ff_f _ = error_uniop "lq" a
+      lazy
+        (build_sipo
+           (module struct
+             let label = "lq"
+             let ff_f a = error_uniop "lq" (pack_elt a)
 
-            let ff_arr a =
-              let l, q = A.(lq a) in
-              Arr l, Arr q
-
-
-            let df _cp _ap _at =
-              raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.lq")
+             let ff_arr a =
+               let l, q = A.(lq a) in
+               Arr l, Arr q
 
 
-            let dr _a _cp o ca = _lq_backward o ca
-          end : Sipo)
-          a
+             let df _cp _ap _at =
+               raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.lq")
 
+
+             let dr _a _cp o ca = _lq_backward o ca
+           end : Sipo))
+
+
+    and lq a = Lazy.force _lq a
 
     (* single input triple outputs *)
-    and svd =
+    and _svd =
       let _svd_backward (o1, o2, o3) (ca1, ca2, ca3) thin =
         let u, s, vt = !o1, !o2, !o3
         and ubar, sbar, vbart = !ca1, !ca2, !ca3 in
@@ -1271,28 +1320,30 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                + (transpose inv_s * vbart *@ (e_n - (v *@ vt)))))
         else raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.svd")
       in
-      fun ?(thin = true) a ->
-        build_sito
-          (module struct
-            let label = "svd"
-            let ff_f _ = error_uniop "svd" a
+      lazy
+        (fun ~thin ->
+          build_sito
+            (module struct
+              let label = "svd"
+              let ff_f a = error_uniop "svd" (pack_elt a)
 
-            let ff_arr a =
-              let u, s, vt = A.(svd ~thin a) in
-              Arr u, Arr s, Arr vt
-
-
-            let df _cp _ap _at =
-              raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.svd")
+              let ff_arr a =
+                let u, s, vt = A.(svd ~thin a) in
+                Arr u, Arr s, Arr vt
 
 
-            let dr _a _cp o ca = _svd_backward o ca thin
-          end : Sito)
-          a
+              let df _cp _ap _at =
+                raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.svd")
 
+
+              let dr _a _cp o ca = _svd_backward o ca thin
+            end : Sito))
+
+
+    and svd ?(thin = true) = Lazy.force _svd ~thin
 
     (* pair outputs single input *)
-    and lyapunov =
+    and _lyapunov =
       let _lyapunov_backward_a a ca cp =
         let s = lyapunov (transpose a) (neg ca) in
         pack_flt 2. * s *@ cp
@@ -1302,35 +1353,39 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let s = lyapunov (transpose a) (neg ca) in
         pack_flt 2. * s *@ cp, neg s
       in
-      fun a q ->
-        build_piso
-          (module struct
-            let label = "lyapunov"
-            let ff_aa a _q = error_uniop label (pack_elt a)
-            let ff_ab a _q = error_uniop label (pack_elt a)
-            let ff_ba _a q = error_uniop label (pack_elt q)
-            let ff_bb a q = Arr A.(lyapunov a q)
-            let df_da cp ap at = lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at)))
-            let df_db _cp _qp qt = lyapunov a (neg qt)
+      lazy
+        (build_piso
+           (module struct
+             let label = "lyapunov"
+             let ff_aa a _q = error_uniop label (pack_elt a)
+             let ff_ab a _q = error_uniop label (pack_elt a)
+             let ff_ba _a q = error_uniop label (pack_elt q)
+             let ff_bb a q = Arr A.(lyapunov a q)
 
-            let df_dab cp ap at _qp qt =
-              lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at)))
-              + lyapunov ap (neg qt)
+             let df_da cp ap at _qp =
+               lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at)))
 
 
-            let dr_ab _a _b cp ca =
-              let abar, qbar = _lyapunov_backward_aq (primal a) !ca cp in
-              abar, qbar
+             let df_db _cp ap _qp qt = lyapunov ap (neg qt)
+
+             let df_dab cp ap at _qp qt =
+               lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at)))
+               + lyapunov ap (neg qt)
 
 
-            let dr_a a _q cp ca = _lyapunov_backward_a (primal a) !ca cp
-            let dr_b a _q _cp ca = _lyapunov_backward_q (primal a) !ca
-          end : Piso)
-          a
-          q
+             let dr_ab a _b cp ca =
+               let abar, qbar = _lyapunov_backward_aq (primal a) !ca cp in
+               abar, qbar
 
 
-    and discrete_lyapunov =
+             let dr_a a _q cp ca = _lyapunov_backward_a (primal a) !ca cp
+             let dr_b a _q _cp ca = _lyapunov_backward_q (primal a) !ca
+           end : Piso))
+
+
+    and lyapunov a = Lazy.force _lyapunov a
+
+    and _discrete_lyapunov =
       let _discrete_lyapunov_backward_a a ca cp =
         let s = discrete_lyapunov (transpose a) ca in
         pack_flt 2. * s *@ a *@ cp
@@ -1340,45 +1395,45 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let s = discrete_lyapunov (transpose a) ca in
         pack_flt 2. * s *@ a *@ cp, s
       in
-      fun ?(solver = `default) a q ->
-        build_piso
-          (module struct
-            let label = "discrete_lyapunov"
-            let ff_aa a _q = error_uniop label (pack_elt a)
-            let ff_ab a _q = error_uniop label (pack_elt a)
-            let ff_ba _a q = error_uniop label (pack_elt q)
-            let ff_bb a q = Arr A.(discrete_lyapunov ~solver a q)
+      lazy
+        (fun ~solver ->
+          build_piso
+            (module struct
+              let label = "discrete_lyapunov"
+              let ff_aa a _q = error_uniop label (pack_elt a)
+              let ff_ab a _q = error_uniop label (pack_elt a)
+              let ff_ba _a q = error_uniop label (pack_elt q)
+              let ff_bb a q = Arr A.(discrete_lyapunov ~solver a q)
 
-            let df_da cp ap at =
-              discrete_lyapunov
-                ap
-                ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose a))
-
-
-            let df_db _cp _qp qt = discrete_lyapunov a qt
-
-            let df_dab cp ap at _qp qt =
-              discrete_lyapunov
-                ap
-                ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose a))
-              + discrete_lyapunov ap qt
+              let df_da cp ap at _qp =
+                discrete_lyapunov
+                  ap
+                  ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose ap))
 
 
-            let dr_ab a _b cp ca =
-              let abar, qbar = _discrete_lyapunov_backward_aq (primal a) !ca cp in
-              abar, qbar
+              let df_db _cp ap _qp qt = discrete_lyapunov ap qt
+
+              let df_dab cp ap at _qp qt =
+                discrete_lyapunov
+                  ap
+                  ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose ap))
+                + discrete_lyapunov ap qt
 
 
-            let dr_a a _q cp ca = _discrete_lyapunov_backward_a (primal a) !ca cp
-            let dr_b a _q _cp ca = _discrete_lyapunov_backward_q (primal a) !ca
-          end : Piso)
-          a
-          q
+              let dr_ab a _b cp ca =
+                let abar, qbar = _discrete_lyapunov_backward_aq (primal a) !ca cp in
+                abar, qbar
 
 
+              let dr_a a _q cp ca = _discrete_lyapunov_backward_a (primal a) !ca cp
+              let dr_b a _q _cp ca = _discrete_lyapunov_backward_q (primal a) !ca
+            end : Piso))
+
+
+    and discrete_lyapunov ?(solver = `default) = Lazy.force _discrete_lyapunov ~solver
     and ( /@ ) a b = linsolve ~trans:false ~typ:`n a b
 
-    and linsolve =
+    and _linsolve =
       let _linsolve_backward_b trans typ a cbar =
         linsolve ~trans:(not trans) ~typ (primal a) cbar
       in
@@ -1390,47 +1445,49 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         | `u -> triu abar
         | `l -> tril abar
       in
-      fun ?(trans = false) ?(typ = `n) a q ->
-        build_piso
-          (module struct
-            let label = "linsolve"
-            let ff_aa a _q = error_uniop label (pack_elt a)
-            let ff_ab a _q = error_uniop label (pack_elt a)
-            let ff_ba _a q = error_uniop label (pack_elt q)
-            let ff_bb a q = Arr A.(linsolve ~trans ~typ a q)
+      lazy
+        (fun ~trans ~typ ->
+          build_piso
+            (module struct
+              let label = "linsolve"
+              let ff_aa a _q = error_uniop label (pack_elt a)
+              let ff_ab a _q = error_uniop label (pack_elt a)
+              let ff_ba _a q = error_uniop label (pack_elt q)
+              let ff_bb a q = Arr A.(linsolve ~trans ~typ a q)
 
-            let df_da cp ap at =
-              linsolve
-                ~trans
-                ap
-                (if trans then neg (transpose at) *@ cp else neg at *@ cp)
-
-
-            let df_db _cp _bp bt = linsolve ~trans a bt
-
-            let df_dab cp ap at _bp bt =
-              linsolve
-                ~trans
-                ap
-                (if trans then bt - (transpose at *@ cp) else bt - (at *@ cp))
+              let df_da cp ap at _qp =
+                linsolve
+                  ~trans
+                  ap
+                  (if trans then neg (transpose at) *@ cp else neg at *@ cp)
 
 
-            let dr_ab a _b cp ca =
-              let bbar = _linsolve_backward_b trans typ a !ca in
-              let abar = _linsolve_backward_a trans typ cp bbar in
-              abar, bbar
+              let df_db _cp ap _bp bt = linsolve ~trans ap bt
+
+              let df_dab cp ap at _bp bt =
+                linsolve
+                  ~trans
+                  ap
+                  (if trans then bt - (transpose at *@ cp) else bt - (at *@ cp))
 
 
-            let dr_a a _b cp ca =
-              let bbar = _linsolve_backward_b trans typ a !ca in
-              let abar = _linsolve_backward_a trans typ cp bbar in
-              abar
+              let dr_ab a _b cp ca =
+                let bbar = _linsolve_backward_b trans typ a !ca in
+                let abar = _linsolve_backward_a trans typ cp bbar in
+                abar, bbar
 
 
-            let dr_b a _b _cp ca = _linsolve_backward_b trans typ a !ca
-          end : Piso)
-          a
-          q
+              let dr_a a _b cp ca =
+                let bbar = _linsolve_backward_b trans typ a !ca in
+                let abar = _linsolve_backward_a trans typ cp bbar in
+                abar
+
+
+              let dr_b a _b _cp ca = _linsolve_backward_b trans typ a !ca
+            end : Piso))
+
+
+    and linsolve ?(trans = false) ?(typ = `n) = Lazy.force _linsolve ~trans ~typ
   end
 
   (* neural network module: for specialised neural network operations *)
@@ -1452,7 +1509,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
     (* a:input; b:kernel; s:stride *)
-    and conv1d =
+    let _conv1d =
       (* a:input; b:kernel; s:stride; o:output' *)
       let conv1d_backward_input a b s o =
         let a = unpack_arr a in
@@ -1467,31 +1524,34 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let o = unpack_arr o in
         A.conv1d_backward_kernel a b s o |> pack_arr
       in
-      fun ?padding a b s ->
-        build_piso
-          (module struct
-            let label = "conv1d"
-            let ff_aa a _b = error_uniop label (pack_elt a)
-            let ff_ab a _b = error_uniop label (pack_elt a)
-            let ff_ba _a b = error_uniop label (pack_elt b)
-            let ff_bb a b = Arr A.(conv1d ?padding a b s)
-            let df_da _cp _ap at = at
-            let df_db _cp _bp bt = bt
-            let df_dab _cp _ap at _bp bt = at + bt
+      lazy
+        (fun ~padding a b s ->
+          build_piso
+            (module struct
+              let label = "conv1d"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
+              let ff_ba _a b = error_uniop label (pack_elt b)
+              let ff_bb a b = Arr A.(conv1d ?padding a b s)
+              let df_da _cp _ap at _bp = at
+              let df_db _cp _ap _bp bt = bt
+              let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab a b _cp ca =
-              conv1d_backward_input a b s !ca, conv1d_backward_kernel a b s !ca
+              let dr_ab a b _cp ca =
+                conv1d_backward_input a b s !ca, conv1d_backward_kernel a b s !ca
 
 
-            let dr_a a b _cp ca = conv1d_backward_input a b s !ca
-            let dr_b a b _cp ca = conv1d_backward_kernel a b s !ca
-          end : Piso)
-          a
-          b
+              let dr_a a b _cp ca = conv1d_backward_input a b s !ca
+              let dr_b a b _cp ca = conv1d_backward_kernel a b s !ca
+            end : Piso)
+            a
+            b)
 
+
+    let conv1d ?padding = Lazy.force _conv1d ~padding
 
     (* a:input; b:kernel; s:stride *)
-    and conv2d =
+    let _conv2d =
       (* a:input; b:kernel; s:stride; o:output' *)
       let conv2d_backward_input a b s o =
         let a = unpack_arr a in
@@ -1506,31 +1566,34 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let o = unpack_arr o in
         A.conv2d_backward_kernel a b s o |> pack_arr
       in
-      fun ?padding a b s ->
-        build_piso
-          (module struct
-            let label = "conv2d"
-            let ff_aa a _b = error_uniop label (pack_elt a)
-            let ff_ab a _b = error_uniop label (pack_elt a)
-            let ff_ba _a b = error_uniop label (pack_elt b)
-            let ff_bb a b = Arr A.(conv2d ?padding a b s)
-            let df_da _cp _ap at = at
-            let df_db _cp _bp bt = bt
-            let df_dab _cp _ap at _bp bt = at + bt
+      lazy
+        (fun ~padding a b s ->
+          build_piso
+            (module struct
+              let label = "conv2d"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
+              let ff_ba _a b = error_uniop label (pack_elt b)
+              let ff_bb a b = Arr A.(conv2d ?padding a b s)
+              let df_da _cp _ap at _bp = at
+              let df_db _cp _ap _bp bt = bt
+              let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab a b _cp ca =
-              conv2d_backward_input a b s !ca, conv2d_backward_kernel a b s !ca
+              let dr_ab a b _cp ca =
+                conv2d_backward_input a b s !ca, conv2d_backward_kernel a b s !ca
 
 
-            let dr_a a b _cp ca = conv2d_backward_input a b s !ca
-            let dr_b a b _cp ca = conv2d_backward_kernel a b s !ca
-          end : Piso)
-          a
-          b
+              let dr_a a b _cp ca = conv2d_backward_input a b s !ca
+              let dr_b a b _cp ca = conv2d_backward_kernel a b s !ca
+            end : Piso)
+            a
+            b)
 
+
+    let conv2d ?padding = Lazy.force _conv2d ~padding
 
     (* a:input; b:kernel; s:stride *)
-    and conv3d =
+    let _conv3d =
       (* a:input; b:kernel; s:stride; o:output' *)
       let conv3d_backward_input a b s o =
         let a = unpack_arr a in
@@ -1544,31 +1607,34 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let o = unpack_arr o in
         A.conv3d_backward_kernel a b s o |> pack_arr
       in
-      fun ?padding a b s ->
-        build_piso
-          (module struct
-            let label = "conv3d"
-            let ff_aa a _b = error_uniop label (pack_elt a)
-            let ff_ab a _b = error_uniop label (pack_elt a)
-            let ff_ba _a b = error_uniop label (pack_elt b)
-            let ff_bb a b = Arr A.(conv3d ?padding a b s)
-            let df_da _cp _ap at = at
-            let df_db _cp _bp bt = bt
-            let df_dab _cp _ap at _bp bt = at + bt
+      lazy
+        (fun ~padding a b s ->
+          build_piso
+            (module struct
+              let label = "conv3d"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
+              let ff_ba _a b = error_uniop label (pack_elt b)
+              let ff_bb a b = Arr A.(conv3d ?padding a b s)
+              let df_da _cp _ap at _bp = at
+              let df_db _cp _ap _bp bt = bt
+              let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab a b _cp ca =
-              conv3d_backward_input a b s !ca, conv3d_backward_kernel a b s !ca
+              let dr_ab a b _cp ca =
+                conv3d_backward_input a b s !ca, conv3d_backward_kernel a b s !ca
 
 
-            let dr_a a b _cp ca = conv3d_backward_input a b s !ca
-            let dr_b a b _cp ca = conv3d_backward_kernel a b s !ca
-          end : Piso)
-          a
-          b
+              let dr_a a b _cp ca = conv3d_backward_input a b s !ca
+              let dr_b a b _cp ca = conv3d_backward_kernel a b s !ca
+            end : Piso)
+            a
+            b)
 
+
+    let conv3d ?padding = Lazy.force _conv3d ~padding
 
     (* a:input; b:kernel; s:stride; r:rate *)
-    and dilated_conv1d =
+    let _dilated_conv1d =
       (* a:input; b:kernel; o:output'; s:stride; r:rate *)
       let dilated_conv1d_backward_input a b s r o =
         let a = unpack_arr a in
@@ -1582,32 +1648,35 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let o = unpack_arr o in
         A.dilated_conv1d_backward_kernel a b s r o |> pack_arr
       in
-      fun ?padding a b s r ->
-        build_piso
-          (module struct
-            let label = "dilated_conv1d"
-            let ff_aa a _b = error_uniop label (pack_elt a)
-            let ff_ab a _b = error_uniop label (pack_elt a)
-            let ff_ba _a b = error_uniop label (pack_elt b)
-            let ff_bb a b = Arr A.(dilated_conv1d ?padding a b s r)
-            let df_da _cp _ap at = at
-            let df_db _cp _bp bt = bt
-            let df_dab _cp _ap at _bp bt = at + bt
+      lazy
+        (fun ~padding a b s r ->
+          build_piso
+            (module struct
+              let label = "dilated_conv1d"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
+              let ff_ba _a b = error_uniop label (pack_elt b)
+              let ff_bb a b = Arr A.(dilated_conv1d ?padding a b s r)
+              let df_da _cp _ap at _bp = at
+              let df_db _cp _ap _bp bt = bt
+              let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab a b _cp ca =
-              ( dilated_conv1d_backward_input a b s r !ca
-              , dilated_conv1d_backward_kernel a b s r !ca )
+              let dr_ab a b _cp ca =
+                ( dilated_conv1d_backward_input a b s r !ca
+                , dilated_conv1d_backward_kernel a b s r !ca )
 
 
-            let dr_a a b _cp ca = dilated_conv1d_backward_input a b s r !ca
-            let dr_b a b _cp ca = dilated_conv1d_backward_kernel a b s r !ca
-          end : Piso)
-          a
-          b
+              let dr_a a b _cp ca = dilated_conv1d_backward_input a b s r !ca
+              let dr_b a b _cp ca = dilated_conv1d_backward_kernel a b s r !ca
+            end : Piso)
+            a
+            b)
 
+
+    let dilated_conv1d ?padding = Lazy.force _dilated_conv1d ~padding
 
     (* a:input; b:kernel; s:stride; r:rate *)
-    and dilated_conv2d =
+    let _dilated_conv2d =
       (* a:input; b:kernel; o:output'; s:stride; r:rate *)
       let dilated_conv2d_backward_input a b s r o =
         let a = unpack_arr a in
@@ -1621,32 +1690,35 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let o = unpack_arr o in
         A.dilated_conv2d_backward_kernel a b s r o |> pack_arr
       in
-      fun ?padding a b s r ->
-        build_piso
-          (module struct
-            let label = "dilated_conv2d"
-            let ff_aa a _b = error_uniop label (pack_elt a)
-            let ff_ab a _b = error_uniop label (pack_elt a)
-            let ff_ba _a b = error_uniop label (pack_elt b)
-            let ff_bb a b = Arr A.(dilated_conv2d ?padding a b s r)
-            let df_da _cp _ap at = at
-            let df_db _cp _bp bt = bt
-            let df_dab _cp _ap at _bp bt = at + bt
+      lazy
+        (fun ~padding a b s r ->
+          build_piso
+            (module struct
+              let label = "dilated_conv2d"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
+              let ff_ba _a b = error_uniop label (pack_elt b)
+              let ff_bb a b = Arr A.(dilated_conv2d ?padding a b s r)
+              let df_da _cp _ap at _bp = at
+              let df_db _cp _ap _bp bt = bt
+              let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab a b _cp ca =
-              ( dilated_conv2d_backward_input a b s r !ca
-              , dilated_conv2d_backward_kernel a b s r !ca )
+              let dr_ab a b _cp ca =
+                ( dilated_conv2d_backward_input a b s r !ca
+                , dilated_conv2d_backward_kernel a b s r !ca )
 
 
-            let dr_a a b _cp ca = dilated_conv2d_backward_input a b s r !ca
-            let dr_b a b _cp ca = dilated_conv2d_backward_kernel a b s r !ca
-          end : Piso)
-          a
-          b
+              let dr_a a b _cp ca = dilated_conv2d_backward_input a b s r !ca
+              let dr_b a b _cp ca = dilated_conv2d_backward_kernel a b s r !ca
+            end : Piso)
+            a
+            b)
 
+
+    let dilated_conv2d ?padding = Lazy.force _dilated_conv2d ~padding
 
     (* a:input; b:kernel; s:stride; r:rate *)
-    and dilated_conv3d =
+    let _dilated_conv3d =
       (* a:input; b:kernel; o:output'; s:stride; r:rate *)
       let dilated_conv3d_backward_input a b s r o =
         let a = unpack_arr a in
@@ -1660,32 +1732,35 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let o = unpack_arr o in
         A.dilated_conv3d_backward_kernel a b s r o |> pack_arr
       in
-      fun ?padding a b s r ->
-        build_piso
-          (module struct
-            let label = "dilated_conv3d"
-            let ff_aa a _b = error_uniop label (pack_elt a)
-            let ff_ab a _b = error_uniop label (pack_elt a)
-            let ff_ba _a b = error_uniop label (pack_elt b)
-            let ff_bb a b = Arr A.(dilated_conv3d ?padding a b s r)
-            let df_da _cp _ap at = at
-            let df_db _cp _bp bt = bt
-            let df_dab _cp _ap at _bp bt = at + bt
+      lazy
+        (fun ~padding a b s r ->
+          build_piso
+            (module struct
+              let label = "dilated_conv3d"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
+              let ff_ba _a b = error_uniop label (pack_elt b)
+              let ff_bb a b = Arr A.(dilated_conv3d ?padding a b s r)
+              let df_da _cp _ap at _bp = at
+              let df_db _cp _ap _bp bt = bt
+              let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab a b _cp ca =
-              ( dilated_conv3d_backward_input a b s r !ca
-              , dilated_conv3d_backward_kernel a b s r !ca )
+              let dr_ab a b _cp ca =
+                ( dilated_conv3d_backward_input a b s r !ca
+                , dilated_conv3d_backward_kernel a b s r !ca )
 
 
-            let dr_a a b _cp ca = dilated_conv3d_backward_input a b s r !ca
-            let dr_b a b _cp ca = dilated_conv3d_backward_kernel a b s r !ca
-          end : Piso)
-          a
-          b
+              let dr_a a b _cp ca = dilated_conv3d_backward_input a b s r !ca
+              let dr_b a b _cp ca = dilated_conv3d_backward_kernel a b s r !ca
+            end : Piso)
+            a
+            b)
 
+
+    let dilated_conv3d ?padding = Lazy.force _dilated_conv3d ~padding
 
     (* a:input; b:kernel; s:stride *)
-    and transpose_conv1d =
+    let _transpose_conv1d =
       (* a:input; b:kernel; s:stride; o:output' *)
       let transpose_conv1d_backward_input a b s o =
         let a = unpack_arr a in
@@ -1699,32 +1774,35 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let o = unpack_arr o in
         A.transpose_conv1d_backward_kernel a b s o |> pack_arr
       in
-      fun ?padding a b s ->
-        build_piso
-          (module struct
-            let label = "transpose_conv1d"
-            let ff_aa a _b = error_uniop label (pack_elt a)
-            let ff_ab a _b = error_uniop label (pack_elt a)
-            let ff_ba _a b = error_uniop label (pack_elt b)
-            let ff_bb a b = Arr A.(transpose_conv1d ?padding a b s)
-            let df_da _cp _ap at = at
-            let df_db _cp _bp bt = bt
-            let df_dab _cp _ap at _bp bt = at + bt
+      lazy
+        (fun ~padding a b s ->
+          build_piso
+            (module struct
+              let label = "transpose_conv1d"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
+              let ff_ba _a b = error_uniop label (pack_elt b)
+              let ff_bb a b = Arr A.(transpose_conv1d ?padding a b s)
+              let df_da _cp _ap at _bp = at
+              let df_db _cp _ap _bp bt = bt
+              let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab a b _cp ca =
-              ( transpose_conv1d_backward_input a b s !ca
-              , transpose_conv1d_backward_kernel a b s !ca )
+              let dr_ab a b _cp ca =
+                ( transpose_conv1d_backward_input a b s !ca
+                , transpose_conv1d_backward_kernel a b s !ca )
 
 
-            let dr_a a b _cp ca = transpose_conv1d_backward_input a b s !ca
-            let dr_b a b _cp ca = transpose_conv1d_backward_kernel a b s !ca
-          end : Piso)
-          a
-          b
+              let dr_a a b _cp ca = transpose_conv1d_backward_input a b s !ca
+              let dr_b a b _cp ca = transpose_conv1d_backward_kernel a b s !ca
+            end : Piso)
+            a
+            b)
 
+
+    let transpose_conv1d ?padding = Lazy.force _transpose_conv1d ~padding
 
     (* a:input; b:kernel; s:stride *)
-    and transpose_conv2d =
+    and _transpose_conv2d =
       (* a:input; b:kernel; s:stride; o:output' *)
       let transpose_conv2d_backward_input a b s o =
         let a = unpack_arr a in
@@ -1738,32 +1816,35 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let o = unpack_arr o in
         A.transpose_conv2d_backward_kernel a b s o |> pack_arr
       in
-      fun ?padding a b s ->
-        build_piso
-          (module struct
-            let label = "transpose_conv2d"
-            let ff_aa a _b = error_uniop label (pack_elt a)
-            let ff_ab a _b = error_uniop label (pack_elt a)
-            let ff_ba _a b = error_uniop label (pack_elt b)
-            let ff_bb a b = Arr A.(transpose_conv2d ?padding a b s)
-            let df_da _cp _ap at = at
-            let df_db _cp _bp bt = bt
-            let df_dab _cp _ap at _bp bt = at + bt
+      lazy
+        (fun ~padding a b s ->
+          build_piso
+            (module struct
+              let label = "transpose_conv2d"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
+              let ff_ba _a b = error_uniop label (pack_elt b)
+              let ff_bb a b = Arr A.(transpose_conv2d ?padding a b s)
+              let df_da _cp _ap at _bp = at
+              let df_db _cp _ap _bp bt = bt
+              let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab a b _cp ca =
-              ( transpose_conv2d_backward_input a b s !ca
-              , transpose_conv2d_backward_kernel a b s !ca )
+              let dr_ab a b _cp ca =
+                ( transpose_conv2d_backward_input a b s !ca
+                , transpose_conv2d_backward_kernel a b s !ca )
 
 
-            let dr_a a b _cp ca = transpose_conv2d_backward_input a b s !ca
-            let dr_b a b _cp ca = transpose_conv2d_backward_kernel a b s !ca
-          end : Piso)
-          a
-          b
+              let dr_a a b _cp ca = transpose_conv2d_backward_input a b s !ca
+              let dr_b a b _cp ca = transpose_conv2d_backward_kernel a b s !ca
+            end : Piso)
+            a
+            b)
 
+
+    let transpose_conv2d ?padding = Lazy.force _transpose_conv2d ~padding
 
     (* a:input; b:kernel; s:stride *)
-    and transpose_conv3d =
+    let _transpose_conv3d =
       (* a:input; b:kernel; s:stride; o:output' *)
       let transpose_conv3d_backward_input a b s o =
         let a = unpack_arr a in
@@ -1777,172 +1858,196 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let o = unpack_arr o in
         A.transpose_conv3d_backward_kernel a b s o |> pack_arr
       in
-      fun ?padding a b s ->
-        build_piso
-          (module struct
-            let label = "transpose_conv3d"
-            let ff_aa a _b = error_uniop label (pack_elt a)
-            let ff_ab a _b = error_uniop label (pack_elt a)
-            let ff_ba _a b = error_uniop label (pack_elt b)
-            let ff_bb a b = Arr A.(transpose_conv3d ?padding a b s)
-            let df_da _cp _ap at = at
-            let df_db _cp _bp bt = bt
-            let df_dab _cp _ap at _bp bt = at + bt
+      lazy
+        (fun ~padding a b s ->
+          build_piso
+            (module struct
+              let label = "transpose_conv3d"
+              let ff_aa a _b = error_uniop label (pack_elt a)
+              let ff_ab a _b = error_uniop label (pack_elt a)
+              let ff_ba _a b = error_uniop label (pack_elt b)
+              let ff_bb a b = Arr A.(transpose_conv3d ?padding a b s)
+              let df_da _cp _ap at _bp = at
+              let df_db _cp _ap _bp bt = bt
+              let df_dab _cp _ap at _bp bt = at + bt
 
-            let dr_ab a b _cp ca =
-              ( transpose_conv3d_backward_input a b s !ca
-              , transpose_conv3d_backward_kernel a b s !ca )
+              let dr_ab a b _cp ca =
+                ( transpose_conv3d_backward_input a b s !ca
+                , transpose_conv3d_backward_kernel a b s !ca )
 
 
-            let dr_a a b _cp ca = transpose_conv3d_backward_input a b s !ca
-            let dr_b a b _cp ca = transpose_conv3d_backward_kernel a b s !ca
-          end : Piso)
-          a
-          b
+              let dr_a a b _cp ca = transpose_conv3d_backward_input a b s !ca
+              let dr_b a b _cp ca = transpose_conv3d_backward_kernel a b s !ca
+            end : Piso)
+            a
+            b)
 
+
+    let transpose_conv3d ?padding = Lazy.force _transpose_conv3d ~padding
 
     (* a:input; b:kernel; s:stride *)
-    and max_pool1d =
+    let _max_pool1d =
       (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
       let max_pool1d_backward p a b s o =
         let a = unpack_arr a in
         let o = unpack_arr o in
         A.max_pool1d_backward p a b s o |> pack_arr
       in
-      fun padding a b s ->
-        build_siso
-          (module struct
-            let label = "max_pool1d"
-            let ff_f a = error_uniop label (pack_elt a)
-            let ff_arr a = Arr A.(max_pool1d ~padding a b s)
-            let df _cp _ap _at = failwith "max_pool1d:df"
-            let dr a _cp ca = max_pool1d_backward padding (primal a) b s !ca
-          end : Siso)
-          a
+      lazy
+        (fun padding a b s ->
+          build_siso
+            (module struct
+              let label = "max_pool1d"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(max_pool1d ~padding a b s)
+              let df _cp _ap _at = failwith "max_pool1d:df"
+              let dr a _cp ca = max_pool1d_backward padding (primal a) b s !ca
+            end : Siso)
+            a)
 
+
+    let max_pool1d padding = Lazy.force _max_pool1d padding
 
     (* a:input; b:kernel; s:stride *)
-    and max_pool2d =
+    let _max_pool2d =
       (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
       let max_pool2d_backward p a b s o =
         let a = unpack_arr a in
         let o = unpack_arr o in
         A.max_pool2d_backward p a b s o |> pack_arr
       in
-      fun padding a b s ->
-        build_siso
-          (module struct
-            let label = "max_pool2d"
-            let ff_f a = error_uniop label (pack_elt a)
-            let ff_arr a = Arr A.(max_pool2d ~padding a b s)
-            let df _cp _ap _at = failwith "max_pool2d:df"
-            let dr a _cp ca = max_pool2d_backward padding (primal a) b s !ca
-          end : Siso)
-          a
+      lazy
+        (fun padding a b s ->
+          build_siso
+            (module struct
+              let label = "max_pool2d"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(max_pool2d ~padding a b s)
+              let df _cp _ap _at = failwith "max_pool2d:df"
+              let dr a _cp ca = max_pool2d_backward padding (primal a) b s !ca
+            end : Siso)
+            a)
 
+
+    let max_pool2d padding = Lazy.force _max_pool2d padding
 
     (* a:input; b:kernel; s:stride *)
-    and max_pool3d =
+    let _max_pool3d =
       (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
       let max_pool3d_backward p a b s o =
         let a = unpack_arr a in
         let o = unpack_arr o in
         A.max_pool3d_backward p a b s o |> pack_arr
       in
-      fun padding a b s ->
-        build_siso
-          (module struct
-            let label = "max_pool3d"
-            let ff_f a = error_uniop label (pack_elt a)
-            let ff_arr a = Arr A.(max_pool3d ~padding a b s)
-            let df _cp _ap _at = failwith "max_pool3d:df"
-            let dr a _cp ca = max_pool3d_backward padding (primal a) b s !ca
-          end : Siso)
-          a
+      lazy
+        (fun padding a b s ->
+          build_siso
+            (module struct
+              let label = "max_pool3d"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(max_pool3d ~padding a b s)
+              let df _cp _ap _at = failwith "max_pool3d:df"
+              let dr a _cp ca = max_pool3d_backward padding (primal a) b s !ca
+            end : Siso)
+            a)
 
+
+    let max_pool3d padding = Lazy.force _max_pool3d padding
 
     (* a:input; b:kernel; s:stride *)
-    and avg_pool1d =
+    let _avg_pool1d =
       (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
       let avg_pool1d_backward p a b s o =
         let a = unpack_arr a in
         let o = unpack_arr o in
         A.avg_pool1d_backward p a b s o |> pack_arr
       in
-      fun padding a b s ->
-        build_siso
-          (module struct
-            let label = "avg_pool1d"
-            let ff_f a = error_uniop label (pack_elt a)
-            let ff_arr a = Arr A.(avg_pool1d ~padding a b s)
-            let df _cp _ap _at = failwith "avg_pool1d:df"
-            let dr a _cp ca = avg_pool1d_backward padding (primal a) b s !ca
-          end : Siso)
-          a
+      lazy
+        (fun padding a b s ->
+          build_siso
+            (module struct
+              let label = "avg_pool1d"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(avg_pool1d ~padding a b s)
+              let df _cp _ap _at = failwith "avg_pool1d:df"
+              let dr a _cp ca = avg_pool1d_backward padding (primal a) b s !ca
+            end : Siso)
+            a)
 
+
+    let avg_pool1d padding = Lazy.force _avg_pool1d padding
 
     (* a:input; b:kernel; s:stride *)
-    and avg_pool2d =
+    and _avg_pool2d =
       (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
       let avg_pool2d_backward p a b s o =
         let a = unpack_arr a in
         let o = unpack_arr o in
         A.avg_pool2d_backward p a b s o |> pack_arr
       in
-      fun padding a b s ->
-        build_siso
-          (module struct
-            let label = "avg_pool2d"
-            let ff_f a = error_uniop label (pack_elt a)
-            let ff_arr a = Arr A.(avg_pool2d ~padding a b s)
-            let df _cp _ap _at = failwith "avg_pool2d:df"
-            let dr a _cp ca = avg_pool2d_backward padding (primal a) b s !ca
-          end : Siso)
-          a
+      lazy
+        (fun padding a b s ->
+          build_siso
+            (module struct
+              let label = "avg_pool2d"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(avg_pool2d ~padding a b s)
+              let df _cp _ap _at = failwith "avg_pool2d:df"
+              let dr a _cp ca = avg_pool2d_backward padding (primal a) b s !ca
+            end : Siso)
+            a)
 
+
+    let avg_pool2d padding = Lazy.force _avg_pool2d padding
 
     (* a:input; b:kernel; s:stride *)
-    and avg_pool3d =
+    let _avg_pool3d =
       (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
       let avg_pool3d_backward p a b s o =
         let a = unpack_arr a in
         let o = unpack_arr o in
         A.avg_pool3d_backward p a b s o |> pack_arr
       in
-      fun padding a b s ->
-        build_siso
-          (module struct
-            let label = "avg_pool3d"
-            let ff_f a = error_uniop label (pack_elt a)
-            let ff_arr a = Arr A.(avg_pool3d ~padding a b s)
-            let df _cp _ap _at = failwith "avg_pool3d:df"
-            let dr a _cp ca = avg_pool3d_backward padding (primal a) b s !ca
-          end : Siso)
-          a
+      lazy
+        (fun padding a b s ->
+          build_siso
+            (module struct
+              let label = "avg_pool3d"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(avg_pool3d ~padding a b s)
+              let df _cp _ap _at = failwith "avg_pool3d:df"
+              let dr a _cp ca = avg_pool3d_backward padding (primal a) b s !ca
+            end : Siso)
+            a)
 
+
+    let avg_pool3d padding = Lazy.force _avg_pool3d padding
 
     (* a:input; s:size *)
-    and upsampling2d =
+    let _upsampling2d =
       (* a:input; s:size; o:output' *)
       let upsampling2d_backward a s o =
         let a = unpack_arr a in
         let o = unpack_arr o in
         A.upsampling2d_backward a s o |> pack_arr
       in
-      fun a s ->
-        build_siso
-          (module struct
-            let label = "upsampling2d"
-            let ff_f a = error_uniop label (pack_elt a)
-            let ff_arr a = Arr A.(upsampling2d a s)
-            let df _cp _ap _at = failwith "upsampling2d:df"
-            let dr a _cp ca = upsampling2d_backward (primal a) s !ca
-          end : Siso)
-          a
+      lazy
+        (fun a s ->
+          build_siso
+            (module struct
+              let label = "upsampling2d"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(upsampling2d a s)
+              let df _cp _ap _at = failwith "upsampling2d:df"
+              let dr a _cp ca = upsampling2d_backward (primal a) s !ca
+            end : Siso)
+            a)
 
+
+    let upsampling2d a = Lazy.force _upsampling2d a
 
     (* v: padded value; p:padding index; a:input *)
-    and pad =
+    let _pad =
       (* TODO: sources required to confirm this backward op *)
       (* o:outut'; p: padding index *)
       let pad_backward o p =
@@ -1954,16 +2059,20 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let q = Owl_utils.aarr2llss q in
         A.(get_slice q o) |> pack_arr
       in
-      fun ?v p a ->
-        build_siso
-          (module struct
-            let label = "pad"
-            let ff_f a = error_uniop label (pack_elt a)
-            let ff_arr a = Arr A.(pad ?v p a)
-            let df _cp _ap _at = failwith "pad:df"
-            let dr _a _cp ca = pad_backward !ca p
-          end : Siso)
-          a
+      lazy
+        (fun ~v p a ->
+          build_siso
+            (module struct
+              let label = "pad"
+              let ff_f a = error_uniop label (pack_elt a)
+              let ff_arr a = Arr A.(pad ?v p a)
+              let df _cp _ap _at = failwith "pad:df"
+              let dr _a _cp ca = pad_backward !ca p
+            end : Siso)
+            a)
+
+
+    let pad ?v = Lazy.force _pad ~v
   end
 
   module Mat = struct

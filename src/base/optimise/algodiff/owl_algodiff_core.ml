@@ -262,16 +262,16 @@ module Make (Types : Owl_algodiff_types_sig.Sig) = struct
     match a, b with
     | F _ap, DF (bp, bt, bi) ->
       let cp = fd a bp in
-      DF (cp, df_db cp bp bt, bi)
+      DF (cp, df_db cp a bp bt, bi)
     | DF (ap, at, ai), F _bp ->
       let cp = fd ap b in
-      DF (cp, df_da cp ap at, ai)
+      DF (cp, df_da cp ap at b, ai)
     | Arr _ap, DF (bp, bt, bi) ->
       let cp = fd a bp in
-      DF (cp, df_db cp bp bt, bi)
+      DF (cp, df_db cp a bp bt, bi)
     | DF (ap, at, ai), Arr _bp ->
       let cp = fd ap b in
-      DF (cp, df_da cp ap at, ai)
+      DF (cp, df_da cp ap at b, ai)
     | F _ap, DR (bp, _, _, _, bi, _) ->
       let cp = fd a bp in
       DR (cp, ref (zero cp), r_c_d a b, ref 0, bi, ref 0)
@@ -288,7 +288,7 @@ module Make (Types : Owl_algodiff_types_sig.Sig) = struct
       (match cmp_tag ai bi with
       | 1 ->
         let cp = fd ap b in
-        DF (cp, df_da cp ap at, ai)
+        DF (cp, df_da cp ap at b, ai)
       | -1 ->
         let cp = fd a bp in
         DR (cp, ref (zero cp), r_c_d a b, ref 0, bi, ref 0)
@@ -297,7 +297,7 @@ module Make (Types : Owl_algodiff_types_sig.Sig) = struct
       (match cmp_tag ai bi with
       | -1 ->
         let cp = fd a bp in
-        DF (cp, df_db cp bp bt, bi)
+        DF (cp, df_db cp a bp bt, bi)
       | 1 ->
         let cp = fd ap b in
         DR (cp, ref (zero cp), r_d_c a b, ref 0, ai, ref 0)
@@ -309,10 +309,10 @@ module Make (Types : Owl_algodiff_types_sig.Sig) = struct
         DF (cp, df_dab cp ap at bp bt, ai)
       | 1 ->
         let cp = fd ap b in
-        DF (cp, df_da cp ap at, ai)
+        DF (cp, df_da cp ap at b, ai)
       | _ ->
         let cp = fd a bp in
-        DF (cp, df_db cp bp bt, bi))
+        DF (cp, df_db cp a bp bt, bi))
     | DR (ap, _, _, _, ai, _), DR (bp, _, _, _, bi, _) ->
       (match cmp_tag ai bi with
       | 0 ->

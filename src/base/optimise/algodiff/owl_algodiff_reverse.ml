@@ -13,8 +13,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
          | _ -> error_binop "( reverse_add )" a b
        in
        let fd = _reverse_add in
-       let df_da _cp _ap at = at in
-       let df_db _cp _bp bt = bt in
+       let df_da _cp _ap at _bp = at in
+       let df_db _cp _ap _bp bt = bt in
        let df_dab _cp _ap at _bp bt = _reverse_add at bt in
        let r_d_d a b =
          let adjoint _ap aa t = (!aa, a) :: (!aa, b) :: t in

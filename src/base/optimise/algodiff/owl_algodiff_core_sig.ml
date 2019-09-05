@@ -79,8 +79,8 @@ module type Sig = sig
   val op_piso
     :  ff:(t -> t -> t)
     -> fd:(t -> t -> t)
-    -> df_da:(t -> t -> t -> t)
-    -> df_db:(t -> t -> t -> t)
+    -> df_da:(t -> t -> t -> t -> t)
+    -> df_db:(t -> t -> t -> t -> t)
     -> df_dab:(t -> t -> t -> t -> t -> t)
     -> r_d_d:(t -> t -> op)
     -> r_d_c:(t -> t -> op)

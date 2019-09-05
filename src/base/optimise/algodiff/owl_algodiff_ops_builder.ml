@@ -119,8 +119,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     val ff_ab : A.elt -> A.arr -> t
     val ff_ba : A.arr -> A.elt -> t
     val ff_bb : A.arr -> A.arr -> t
-    val df_da : t -> t -> t -> t
-    val df_db : t -> t -> t -> t
+    val df_da : t -> t -> t -> t -> t
+    val df_db : t -> t -> t -> t -> t
     val df_dab : t -> t -> t -> t -> t -> t
     val dr_ab : t -> t -> t -> t ref -> t * t
     val dr_a : t -> t -> t -> t ref -> t
