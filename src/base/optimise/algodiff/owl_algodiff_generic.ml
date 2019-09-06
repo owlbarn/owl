@@ -31,6 +31,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
 
   (* instantiate operations *)
   module Ops = Owl_algodiff_ops.Make (Core)
+  module Builder = Ops.Builder
   module Maths = Ops.Maths
   module Mat = Ops.Mat
   module Arr = Ops.Arr

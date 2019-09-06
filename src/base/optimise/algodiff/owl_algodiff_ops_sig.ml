@@ -3,6 +3,14 @@ open Owl_types
 module type Sig = sig
   type t
   type elt
+  type arr
+
+  (** {6 Ops Builder } *)
+  module Builder :
+    Owl_algodiff_ops_builder_sig.Sig
+      with type t := t
+       and type elt := elt
+       and type arr := arr
 
   (** {6 Supported Maths functions} *)
 
@@ -194,7 +202,7 @@ module type Sig = sig
     val to_arrays : t -> t array array
 
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val concatenate : axis:int -> t array -> t 
+    val concatenate : axis:int -> t array -> t
 
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
     val get_slice : int list list -> t -> t
@@ -332,7 +340,7 @@ module type Sig = sig
     val get : t -> int -> int -> t
     val set : t -> int -> int -> t -> t
     val row : t -> int -> t
-    val mean : t -> t 
+    val mean : t -> t
     val add : t -> t -> t
     val sub : t -> t -> t
     val mul : t -> t -> t

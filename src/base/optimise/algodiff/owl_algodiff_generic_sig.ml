@@ -12,10 +12,8 @@ module type Sig = sig
 
   (** Abstract number type *)
 
-  (** {6 Supported Maths functions} *)
+  include Owl_algodiff_ops_sig.Sig with type t := t and type elt := A.elt and type arr := A.arr
 
-  include Owl_algodiff_ops_sig.Sig with type t := t and type elt := A.elt
- 
   (** {6 Core functions} *)
 
   (** ``diff f x`` returns the exat derivative of a function ``f : scalar -> scalar`` at
@@ -147,6 +145,15 @@ module type Sig = sig
 
   (** A shortcut function for ``F A.(float_to_elt x)``. *)
   val _f : float -> t
+
+  (** number of rows *)
+  val row_num : t -> int 
+
+  (** number of columns *)
+  val col_num : t -> int 
+
+  (** number of elements *)
+  val numel : t -> int
 
   (** other functions, without tracking gradient *)
   val clip_by_value : amin:A.elt -> amax:A.elt -> t -> t
