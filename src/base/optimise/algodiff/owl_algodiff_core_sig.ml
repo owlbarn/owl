@@ -1,5 +1,6 @@
 module type Sig = sig
-  include Owl_algodiff_types_sig.Sig
+  module A : Owl_types_ndarray_algodiff.Sig
+  include Owl_algodiff_types_sig.Sig with type elt := A.elt and type arr := A.arr
 
   (* hepler functions of the core AD component *)
 

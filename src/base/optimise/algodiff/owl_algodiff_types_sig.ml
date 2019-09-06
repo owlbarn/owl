@@ -1,9 +1,10 @@
 module type Sig = sig
-  module A : Owl_types_ndarray_algodiff.Sig
+  type elt
+  type arr
 
   type t =
-    | F of A.elt
-    | Arr of A.arr
+    | F of elt
+    | Arr of arr
     (* primal, tangent, tag *)
     | DF of t * t * int
     (* primal, adjoint, op, fanout, tag, tracker *)

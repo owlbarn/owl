@@ -1,5 +1,4 @@
 module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
-  module A = A
   type t =
     | F of A.elt
     | Arr of A.arr
@@ -13,7 +12,6 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   and register = t list -> t list
 
   and label = string * t list
-                
+
   and op = adjoint * register * label
 end
- 

@@ -1,5 +1,6 @@
-module Make (Types : Owl_algodiff_types_sig.Sig) = struct
-  include Types
+module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
+  include Owl_algodiff_types.Make (A)
+  module A = A
 
   (* hepler functions of the core AD component *)
 

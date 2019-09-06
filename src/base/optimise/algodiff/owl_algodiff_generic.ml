@@ -23,7 +23,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
 
 
   (* include functions in the Core module *)
-  module Core = Owl_algodiff_core.Make (Owl_algodiff_types.Make (A))
+  module Core = Owl_algodiff_core.Make (A)
   include Core
 
   (* include graph conversion functions *)

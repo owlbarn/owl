@@ -9,10 +9,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
   open Builder
 
   module Maths = struct
-    let rec noop = ()
-
     (* single input single output operations *)
-    and _neg =
+    let rec _neg =
       lazy
         (build_siso
            (module struct
@@ -1162,8 +1160,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     (* single input single output *)
 
-    let rec noop _ = ()
-    and inv = Maths.inv
+    let rec inv = Maths.inv
 
     and _logdet =
       lazy
