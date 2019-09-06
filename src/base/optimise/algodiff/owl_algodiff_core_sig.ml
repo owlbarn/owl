@@ -1,46 +1,105 @@
 module type Sig = sig
   module A : Owl_types_ndarray_algodiff.Sig
-  include Owl_algodiff_types_sig.Sig with type elt := A.elt and type arr := A.arr
 
-  (* hepler functions of the core AD component *)
+  (** {6 Type definition} *)
+  include
+    Owl_algodiff_types_sig.Sig with type elt := A.elt and type arr := A.arr
 
-  val cmp_tag : int -> int -> int
-  val reset_zero : t -> t
+  (** {6 Core functions} *)
+
+  (** TODO *)
+  val tag : unit -> int
+
+  (** TODO *)
   val primal : t -> t
+
+  (** TODO *)
   val primal' : t -> t
+
+  (** TODO *)
   val zero : t -> t
+
+  (** TODO *)
+  val reset_zero : t -> t
+
+  (** TODO *)
   val tangent : t -> t
+
+  (** TODO *)
   val adjref : t -> t ref
+
+  (** TODO *)
   val adjval : t -> t
+
+  (** TODO *)
+  val make_forward : t -> t -> int -> t
+
+  (** TODO *)
+  val make_reverse : t -> int -> t
+
+  (** TODO *)
   val shape : t -> int array
+
+  (** number of rows *)
   val row_num : t -> int
+
+  (** number of columns *)
   val col_num : t -> int
+
+  (** number of elements *)
   val numel : t -> int
+
+  (** other functions, without tracking gradient *)
   val clip_by_value : amin:A.elt -> amax:A.elt -> t -> t
+
+  (** other functions, without tracking gradient *)
   val clip_by_l2norm : A.elt -> t -> t
+
+  (** TODO *)
   val copy_primal' : t -> t
+
+  (** TODO *)
   val tile : t -> int array -> t
+
+  (** TODO *)
   val repeat : t -> int array -> t
 
-  (* packing and unpacking functions *)
+  (** convert from ``elt`` type to ``t`` type. *)
   val pack_elt : A.elt -> t
+
+  (** convert from ``t`` type to ``elt`` type. *)
   val unpack_elt : t -> A.elt
+
+  (** convert from ``float`` type to ``t`` type. *)
   val pack_flt : float -> t
 
-  (* shorcut for type conversion *)
+  (** A shortcut function for ``F A.(float_to_elt x)``. *)
   val _f : float -> t
+
+  (** convert from ``t`` type to ``float`` type. *)
   val unpack_flt : t -> float
+
+  (** convert from ``arr`` type to ``t`` type. *)
   val pack_arr : A.arr -> t
+
+  (** convert from ``t`` type to ``arr`` type. *)
   val unpack_arr : t -> A.arr
 
   (* functions to report errors, help in debugging *)
 
+  (** TODO *)
   val deep_info : t -> string
+
+  (** TODO *)
   val type_info : t -> string
+
+  (** TODO *)
   val error_binop : string -> t -> t -> 'a
+
+  (** TODO *)
   val error_uniop : string -> t -> 'a
 
-  (* single input single output operation *)
+  (** single input single output operation *)
   val op_siso
     :  ff:(t -> t)
     -> fd:(t -> t)
@@ -49,7 +108,7 @@ module type Sig = sig
     -> t
     -> t
 
-  (* single input pair outputs operation *)
+  (** single input pair outputs operation *)
   val op_sipo
     :  ff:(t -> t * t)
     -> fd:(t -> t * t)
@@ -58,7 +117,7 @@ module type Sig = sig
     -> t
     -> t * t
 
-  (* single input triple outputs operation *)
+  (** single input triple outputs operation *)
   val op_sito
     :  ff:(t -> t * t * t)
     -> fd:(t -> t * t * t)
@@ -67,7 +126,7 @@ module type Sig = sig
     -> t
     -> t * t * t
 
-  (* single input array outputs operation *)
+  (** single input array outputs operation *)
   val op_siao
     :  ff:(t -> t array)
     -> fd:(t -> t array)
@@ -76,7 +135,7 @@ module type Sig = sig
     -> t
     -> t array
 
-  (* pair inputs single output operation *)
+  (** pair inputs single output operation *)
   val op_piso
     :  ff:(t -> t -> t)
     -> fd:(t -> t -> t)

@@ -14,13 +14,6 @@
 (* Functor of making AD module of different precisions *)
 
 module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
-  (* generate global tags *)
-  let _global_tag = ref 0
-
-  let tag () =
-    _global_tag := !_global_tag + 1;
-    !_global_tag
-
 
   (* include functions in the Core module *)
   module Core = Owl_algodiff_core.Make (A)
@@ -42,17 +35,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   module Reverse = Owl_algodiff_reverse.Make (Core)
   include Reverse
 
-  (* convenient wrappers *)
-
-  let make_forward p t i = DF (p, t, i)
-
-  let make_reverse p i =
-    let adjoint _cp _ca t = t in
-    let register t = t in
-    let label = "Noop", [] in
-    DR (p, ref (zero p), (adjoint, register, label), ref 0, i, ref 0)
-
-
+  
   (* derivative of f (scalar -> scalr) at x, forward ad *)
   let diff' f x =
     let x = make_forward x (pack_flt 1.) (tag ()) in

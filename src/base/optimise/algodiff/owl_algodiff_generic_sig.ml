@@ -4,17 +4,11 @@
  *)
 
 module type Sig = sig
-  module A : Owl_types_ndarray_algodiff.Sig
 
-  (** {6 Type definition} *)
-
-  include Owl_algodiff_types_sig.Sig with type elt := A.elt and type arr := A.arr
-
-  (** Abstract number type *)
-
-  include Owl_algodiff_ops_sig.Sig with type t := t and type elt := A.elt and type arr := A.arr
-
-  (** {6 Core functions} *)
+  include Owl_algodiff_core_sig.Sig
+  
+  (** TODO *)
+  val reverse_prop : t -> t -> unit
 
   (** ``diff f x`` returns the exat derivative of a function ``f : scalar -> scalar`` at
       point ``x``. Simply calling ``diff f`` will return its derivative function ``g`` of
@@ -85,93 +79,11 @@ module type Sig = sig
   (** return ``(f x, grad f x v, hessian f x v)`` *)
   val gradhessianv' : (t -> t) -> t -> t -> t * t * t
 
-  (** {6 Low-level functions} *)
-
-  (* low-level functions, only use them if you know what you are doing. *)
-
-  (** convert from ``elt`` type to ``t`` type. *)
-  val pack_elt : A.elt -> t
-
-  (** convert from ``t`` type to ``elt`` type. *)
-  val unpack_elt : t -> A.elt
-
-  (** convert from ``float`` type to ``t`` type. *)
-  val pack_flt : float -> t
-
-  (** convert from ``t`` type to ``float`` type. *)
-  val unpack_flt : t -> float
-
-  (** convert from ``arr`` type to ``t`` type. *)
-  val pack_arr : A.arr -> t
-
-  (** convert from ``t`` type to ``arr`` type. *)
-  val unpack_arr : t -> A.arr
-
-  (** TODO *)
-  val tag : unit -> int
-
-  (** TODO *)
-  val primal : t -> t
-
-  (** TODO *)
-  val primal' : t -> t
-
-  (** TODO *)
-  val adjval : t -> t
-
-  (** TODO *)
-  val adjref : t -> t ref
-
-  (** TODO *)
-  val tangent : t -> t
-
-  (** TODO *)
-  val make_forward : t -> t -> int -> t
-
-  (** TODO *)
-  val make_reverse : t -> int -> t
-
-  (** TODO *)
-  val reverse_prop : t -> t -> unit
-
-  (** TODO *)
-  val type_info : t -> string
-
-  (** TODO *)
-  val shape : t -> int array
-
-  (** TODO *)
-  val copy_primal' : t -> t
-
-  (** A shortcut function for ``F A.(float_to_elt x)``. *)
-  val _f : float -> t
-
-  (** number of rows *)
-  val row_num : t -> int 
-
-  (** number of columns *)
-  val col_num : t -> int 
-
-  (** number of elements *)
-  val numel : t -> int
-
-  (** other functions, without tracking gradient *)
-  val clip_by_value : amin:A.elt -> amax:A.elt -> t -> t
-
-  (** other functions, without tracking gradient *)
-  val clip_by_l2norm : A.elt -> t -> t
+  (* Operations *)
+  include
+    Owl_algodiff_ops_sig.Sig with type t := t and type elt := A.elt and type arr := A.arr
 
   (** {6 Helper functions} *)
 
-  (** ``to_trace [t0; t1; ...]`` outputs the trace of computation graph on the terminal
-      in a human-readable format. *)
-  val to_trace : t list -> string
-
-  (** ``to_dot [t0; t1; ...]`` outputs the trace of computation graph in the dot file
-      format which you can use other tools further visualisation, such as Graphviz. *)
-  val to_dot : t list -> string
-
-  (** ``pp_num t`` pretty prints the abstract number used in ``Algodiff``. *)
-  val pp_num : Format.formatter -> t -> unit
-    [@@ocaml.toplevel_printer]
+  include Owl_algodiff_graph_convert_sig.Sig with type t := t
 end

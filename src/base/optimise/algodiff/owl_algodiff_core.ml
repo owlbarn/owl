@@ -2,6 +2,13 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   include Owl_algodiff_types.Make (A)
   module A = A
 
+  (* generate global tags *)
+  let _global_tag = ref 0
+
+  let tag () =
+    _global_tag := !_global_tag + 1;
+    !_global_tag
+ 
   (* hepler functions of the core AD component *)
 
   let cmp_tag ai bi = if ai > bi then 1 else if ai < bi then -1 else 0
@@ -49,6 +56,17 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     | DF _ -> failwith "error: no adjval for DF"
     | DR (_, at, _, _, _, _) -> !at
     | ap -> zero ap
+
+   
+  (* convenient wrappers *)
+
+  let make_forward p t i = DF (p, t, i)
+
+  let make_reverse p i =
+    let adjoint _cp _ca t = t in
+    let register t = t in
+    let label = "Noop", [] in
+    DR (p, ref (zero p), (adjoint, register, label), ref 0, i, ref 0)
 
 
   let shape x =
