@@ -4,6 +4,7 @@ module type Sig = sig
   type t
   type elt
   type arr
+  type op
 
   (** {6 Ops Builder } *)
   module Builder :
@@ -11,6 +12,7 @@ module type Sig = sig
       with type t := t
        and type elt := elt
        and type arr := arr
+       and type op := op
 
   (** {6 Supported Maths functions} *)
 

@@ -4,9 +4,14 @@
  *)
 
 module type Sig = sig
-
   include Owl_algodiff_core_sig.Sig
-  
+
+  (** TODO *)
+  val make_forward : t -> t -> int -> t
+
+  (** TODO *)
+  val make_reverse : t -> int -> t
+
   (** TODO *)
   val reverse_prop : t -> t -> unit
 
@@ -81,7 +86,11 @@ module type Sig = sig
 
   (* Operations *)
   include
-    Owl_algodiff_ops_sig.Sig with type t := t and type elt := A.elt and type arr := A.arr
+    Owl_algodiff_ops_sig.Sig
+      with type t := t
+       and type elt := A.elt
+       and type arr := A.arr
+       and type op := op
 
   (** {6 Helper functions} *)
 

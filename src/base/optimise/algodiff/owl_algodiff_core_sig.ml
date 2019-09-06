@@ -2,8 +2,8 @@ module type Sig = sig
   module A : Owl_types_ndarray_algodiff.Sig
 
   (** {6 Type definition} *)
-  include
-    Owl_algodiff_types_sig.Sig with type elt := A.elt and type arr := A.arr
+
+  include Owl_algodiff_types_sig.Sig with type elt := A.elt and type arr := A.arr
 
   (** {6 Core functions} *)
 
@@ -30,12 +30,6 @@ module type Sig = sig
 
   (** TODO *)
   val adjval : t -> t
-
-  (** TODO *)
-  val make_forward : t -> t -> int -> t
-
-  (** TODO *)
-  val make_reverse : t -> int -> t
 
   (** TODO *)
   val shape : t -> int array
@@ -98,54 +92,4 @@ module type Sig = sig
 
   (** TODO *)
   val error_uniop : string -> t -> 'a
-
-  (** single input single output operation *)
-  val op_siso
-    :  ff:(t -> t)
-    -> fd:(t -> t)
-    -> df:(t -> t -> t -> t)
-    -> r:(t -> op)
-    -> t
-    -> t
-
-  (** single input pair outputs operation *)
-  val op_sipo
-    :  ff:(t -> t * t)
-    -> fd:(t -> t * t)
-    -> df:(t -> t -> t -> t)
-    -> r:(t * (t ref * t ref) * (t ref * t ref) -> op)
-    -> t
-    -> t * t
-
-  (** single input triple outputs operation *)
-  val op_sito
-    :  ff:(t -> t * t * t)
-    -> fd:(t -> t * t * t)
-    -> df:(t -> t -> t -> t)
-    -> r:(t * (t ref * t ref * t ref) * (t ref * t ref * t ref) -> op)
-    -> t
-    -> t * t * t
-
-  (** single input array outputs operation *)
-  val op_siao
-    :  ff:(t -> t array)
-    -> fd:(t -> t array)
-    -> df:(t -> t -> t -> t)
-    -> r:(t * t ref array * t ref array -> op)
-    -> t
-    -> t array
-
-  (** pair inputs single output operation *)
-  val op_piso
-    :  ff:(t -> t -> t)
-    -> fd:(t -> t -> t)
-    -> df_da:(t -> t -> t -> t -> t)
-    -> df_db:(t -> t -> t -> t -> t)
-    -> df_dab:(t -> t -> t -> t -> t -> t)
-    -> r_d_d:(t -> t -> op)
-    -> r_d_c:(t -> t -> op)
-    -> r_c_d:(t -> t -> op)
-    -> t
-    -> t
-    -> t
 end

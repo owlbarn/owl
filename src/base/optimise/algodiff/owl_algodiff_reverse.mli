@@ -1,5 +1,10 @@
-module Make : functor (Core: Owl_algodiff_core_sig.Sig) -> sig 
-   val reverse_push : Core.t -> Core.t -> unit 
-   val reverse_prop : Core.t -> Core.t -> unit 
-   val reverse_reset : Core.t -> unit 
+module Make : functor (
+   C : sig 
+      include Owl_algodiff_core_sig.Sig
+      val reverse_add : t -> t ->t
+   end
+) -> sig 
+   val reverse_push : C.t -> C.t -> unit 
+   val reverse_prop : C.t -> C.t -> unit 
+   val reverse_reset : C.t -> unit 
 end
