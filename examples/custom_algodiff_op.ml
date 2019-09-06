@@ -21,7 +21,7 @@ open Algodiff.D
 
 
 let custom_cos =
-  let open Algodiff.D.Ops.Builder in
+  let open Algodiff.D.Builder in
       build_siso
         (module struct
           let label = "custom_cos"
