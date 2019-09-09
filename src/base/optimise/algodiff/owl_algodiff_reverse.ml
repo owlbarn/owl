@@ -1,40 +1,10 @@
-module Make (Core : Owl_algodiff_core_sig.Sig) = struct
-  open Core
+module Make (C : sig
+  include Owl_algodiff_core_sig.Sig
 
-  (* add function specifically for the reverse module *)
-  let rec _reverse_add a b =
-    let ff a b =
-      match a, b with
-      | F a, F b -> F A.Scalar.(add a b)
-      | F a, Arr b -> Arr A.(scalar_add a b)
-      | Arr a, F b -> Arr A.(add_scalar a b)
-      | Arr a, Arr b -> Arr A.(add a b)
-      | _ -> error_binop "( reverse_add )" a b
-    in
-    let fd a b = _reverse_add a b in
-    let df_da _cp _ap at = at in
-    let df_db _cp _bp bt = bt in
-    let df_dab _cp _ap at _bp bt = _reverse_add at bt in
-    let r_d_d a b =
-      let adjoint _ap aa t = (!aa, a) :: (!aa, b) :: t in
-      let register t = a :: b :: t in
-      let label = "Reverse_Add_D_D", [ a; b ] in
-      adjoint, register, label
-    in
-    let r_d_c a b =
-      let adjoint _ap aa t = (!aa, a) :: t in
-      let register t = a :: t in
-      let label = "Reverse_Add_D_C", [ a; b ] in
-      adjoint, register, label
-    in
-    let r_c_d a b =
-      let adjoint _ap aa t = (!aa, b) :: t in
-      let register t = b :: t in
-      let label = "Reverse_Add_C_D", [ a; b ] in
-      adjoint, register, label
-    in
-    op_piso a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
+  val reverse_add : t -> t -> t
+end) =
+struct
+  open C
 
   (* core of reverse mode functions *)
 
@@ -80,7 +50,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         (match x with
         | DR (cp, aa, (adjoint, _, _), af, _ai, tracker) ->
           let v = _shrink !aa v in
-          aa := _reverse_add !aa v;
+          aa := reverse_add !aa v;
           (af := Stdlib.(!af - 1));
           if !af = 0 && !tracker = 1
           then push (adjoint cp aa t)

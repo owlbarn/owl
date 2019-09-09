@@ -14,16 +14,8 @@
 (* Functor of making AD module of different precisions *)
 
 module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
-  (* generate global tags *)
-  let _global_tag = ref 0
-
-  let tag () =
-    _global_tag := !_global_tag + 1;
-    !_global_tag
-
-
   (* include functions in the Core module *)
-  module Core = Owl_algodiff_core.Make (Owl_algodiff_types.Make (A))
+  module Core = Owl_algodiff_core.Make (A)
   include Core
 
   (* include graph conversion functions *)
@@ -31,15 +23,14 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
 
   (* instantiate operations *)
   module Ops = Owl_algodiff_ops.Make (Core)
-  module Maths = Ops.Maths
-  module Mat = Ops.Mat
-  module Arr = Ops.Arr
-  module Linalg = Ops.Linalg
-  module NN = Ops.NN
+  include Ops
 
   (* include core reverse mode functions *)
-  module Reverse = Owl_algodiff_reverse.Make (Core)
-  include Reverse
+  module Reverse = Owl_algodiff_reverse.Make (struct
+    include Core
+
+    let reverse_add = Maths.add
+  end)
 
   (* convenient wrappers *)
 
@@ -51,6 +42,9 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     let label = "Noop", [] in
     DR (p, ref (zero p), (adjoint, register, label), ref 0, i, ref 0)
 
+
+  (* expose reverse prop: propagate gradients *)
+  let reverse_prop = Reverse.reverse_prop
 
   (* derivative of f (scalar -> scalr) at x, forward ad *)
   let diff' f x =
@@ -66,8 +60,8 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   let grad' f x =
     let x = make_reverse x (tag ()) in
     let y = f x in
-    reverse_reset y;
-    reverse_push (pack_flt 1.) y;
+    Reverse.reverse_reset y;
+    Reverse.reverse_push (pack_flt 1.) y;
     primal y, x |> adjval
 
 
@@ -88,8 +82,8 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   let jacobianTv' f x v =
     let x = make_reverse x (tag ()) in
     let y = f x in
-    reverse_reset y;
-    reverse_push v y;
+    Reverse.reverse_reset y;
+    Reverse.reverse_push v y;
     primal y, x |> adjval |> primal
 
 
