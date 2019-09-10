@@ -45,5 +45,6 @@ let () =
     "base: maths_root",     Unit_maths_root.test_set;
     "base: complex",        Unit_base_complex.test_set;
     "base: ndarray core",   Unit_base_ndarray_core.test_set;
-    "algodiff matrix",      Unit_algodiff_matrix.test_set;
+    "algodiff reverse matrix",      Unit_algodiff_reverse_matrix.test_set;
+    "algodiff forward matrix",      Unit_algodiff_forward_matrix.test_set;
   ]

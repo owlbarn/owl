@@ -451,7 +451,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let label = "l2norm'"
              let ff_f a = error_uniop label (pack_elt a)
              let ff_arr a = F A.(l2norm' a)
-             let df cp ap at = ap * at / cp
+             let df cp ap at = sum' (ap * at) / cp
              let dr a cp ca = !ca / cp * primal a
            end : Siso))
 
@@ -465,7 +465,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let label = "l2norm_sqr'"
              let ff_f a = error_uniop label (pack_elt a)
              let ff_arr a = F A.(l2norm_sqr' a)
-             let df _cp ap at = pack_flt 2. * (ap * at)
+             let df _cp ap at = pack_flt 2. * sum' (ap * at)
              let dr a _cp ca = !ca * pack_flt 2. * primal a
            end : Siso))
 
@@ -963,27 +963,43 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let ff_ab a _b = error_uniop label (pack_elt a)
              let ff_ba _a b = error_uniop label (pack_elt b)
              let ff_bb a b = Arr A.(concatenate ~axis [| a; b |])
-             let df_da _cp _ap at bp = concat axis at (zero bp)
-             let df_db _cp ap _bp bt = concat axis (zero ap) bt
-             let df_dab _cp _ap at _bp bt = concat axis at bt
+             let df_da _cp _ap at bp = concat ~axis at (zero bp)
+             let df_db _cp ap _bp bt = concat ~axis (zero ap) bt
+             let df_dab _cp _ap at _bp bt = concat ~axis at bt
 
-             let dr_ab a b _cp ca =
-               let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !ca in
-               s.(0), s.(1)
+             let dr_ab a _b _cp ca =
+               let sa = shape a in
+               let l = sa.(axis) in
+               let dim = Array.length sa in
+               ( get_slice
+                   (List.init dim (fun i ->
+                        if i = axis then [ 0; pred l ] else [ 0; -1 ]))
+                   !ca
+               , get_slice
+                   (List.init dim (fun i -> if i = axis then [ l; -1 ] else [ 0; -1 ]))
+                   !ca )
 
 
-             let dr_a a b _cp ca =
-               let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !ca in
-               s.(0)
+             let dr_a a _b _cp ca =
+               let sa = shape a in
+               let l = sa.(axis) in
+               let dim = Array.length sa in
+               get_slice
+                 (List.init dim (fun i -> if i = axis then [ 0; pred l ] else [ 0; -1 ]))
+                 !ca
 
 
-             let dr_b a b _cp ca =
-               let s = split ~axis [| (shape a).(axis); (shape b).(axis) |] !ca in
-               s.(1)
+             let dr_b a _b _cp ca =
+               let sa = shape a in
+               let l = sa.(axis) in
+               let dim = Array.length sa in
+               get_slice
+                 (List.init dim (fun i -> if i = axis then [ l; -1 ] else [ 0; -1 ]))
+                 !ca
            end : Piso))
 
 
-    and concat axis = Lazy.force (_concat axis)
+    and concat ~axis = Lazy.force (_concat axis)
     and to_rows a = Array.init (row_num a) (fun i -> get_row a i)
 
     and of_rows a =
@@ -1101,55 +1117,79 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     and _concatenate =
       lazy
         (fun ~axis a ->
-          (* mode: 0 constant, 1 reverse, 2 tangent *)
-          let mode = ref 0 in
-          let idxs = ref [] in
-          let ai_ref = ref 0 in
-          let cp =
-            Array.mapi
-              (fun i x ->
-                match x, !mode with
-                | Arr _, _ -> unpack_arr x
-                | DR (_, _, _, _, ai, _), 0 ->
-                  ai_ref := ai;
-                  idxs := i :: !idxs;
-                  mode := 1;
-                  unpack_arr x
-                | DR (_, _, _, _, ai, _), 1 ->
-                  ai_ref := ai;
-                  idxs := i :: !idxs;
-                  unpack_arr x
-                | DF (_, _, ai), 0 ->
-                  ai_ref := ai;
-                  unpack_arr x
-                | DF (_, _, ai), 2 ->
-                  ai_ref := ai;
-                  unpack_arr x
-                | _ -> error_uniop "concatenate: inconsistent array" x)
+          let _, t, mode, idxs =
+            Array.fold_left
+              (fun (i, t, m, idxs) x ->
+                match m, x with
+                | _, F _ -> assert false
+                | _, Arr _ -> succ i, t, m, idxs
+                | `n, DR (_, _, _, _, t', _) -> succ i, t', `r, [ i ]
+                | `f, DR (_, _, _, _, t', _) ->
+                  if t' > t
+                  then succ i, t', `r, []
+                  else if t' = t
+                  then failwith "clash"
+                  else succ i, t, `f, idxs
+                | `r, DR (_, _, _, _, t', _) ->
+                  if t' > t
+                  then succ i, t', `r, []
+                  else if t' = t
+                  then succ i, t', `r, i :: idxs
+                  else succ i, t, m, idxs
+                | `n, DF (_, _, t') -> succ i, t', `f, [ i ]
+                | `f, DF (_, _, t') ->
+                  if t' > t
+                  then succ i, t', `f, []
+                  else if t' = t
+                  then succ i, t', `f, i :: idxs
+                  else succ i, t, `f, idxs
+                | `r, DF (_, _, t') ->
+                  if t' > t
+                  then succ i, t', `f, []
+                  else if t' = t
+                  then failwith "clash"
+                  else succ i, t, `r, idxs
+                | _ -> assert false)
+              (0, -10000, `n, [])
               a
-            |> A.concatenate ~axis
-            |> pack_arr
           in
-          match !mode with
-          | 0 -> cp
-          | 1 ->
-            let idxs = List.rev !idxs in
-            let adjoint _cp ca t =
-              let ca_arr = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !ca in
-              t |> List.(append (map (fun i -> ca_arr.(i), a.(i)) idxs))
+          match mode with
+          | `n -> Array.map unpack_arr a |> A.concatenate ~axis |> pack_arr
+          | `f ->
+            let cp =
+              Array.map
+                (fun x ->
+                  match x with
+                  | DF (p, _, t') -> if t = t' then p else x
+                  | x -> x)
+                a
+              |> concatenate ~axis
             in
-            let register t = List.append List.(map (fun i -> a.(i)) idxs) t in
-            let label = "Concatenate_D", List.(map (fun i -> a.(i)) idxs) in
-            DR (cp, ref (zero cp), (adjoint, register, label), ref 0, !ai_ref, ref 0)
-          | 2 ->
             let at =
               a
               |> Array.map (fun x -> x |> tangent |> unpack_arr)
               |> A.concatenate ~axis
               |> pack_arr
             in
-            DF (cp, at, !ai_ref)
-          | _ -> error_uniop "concatenate" a.(0))
+            DF (cp, at, t)
+          | `r ->
+            let cp =
+              Array.map
+                (fun x ->
+                  match x with
+                  | DR (p, _, _, _, t', _) -> if t = t' then p else x
+                  | x -> x)
+                a
+              |> concatenate ~axis
+            in
+            let idxs = List.rev idxs in
+            let adjoint _cp ca t =
+              let ca_arr = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !ca in
+              t |> List.(append (map (fun i -> ca_arr.(i), a.(i)) idxs))
+            in
+            let register t = List.append List.(map (fun i -> a.(i)) idxs) t in
+            let label = "Concatenate_D", List.(map (fun i -> a.(i)) idxs) in
+            DR (cp, ref (zero cp), (adjoint, register, label), ref 0, t, ref 0))
 
 
     and concatenate ~axis = Lazy.force _concatenate ~axis
@@ -1217,6 +1257,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and chol ?(upper = true) = Lazy.force _chol ~upper
 
+    and chol ?(upper = true) = Lazy.force _chol ~upper
+
     (* single input pair outputs *)
     and _qr =
       let _qr_backward (cp1, cp2) (ca1, ca2) =
@@ -1271,10 +1313,13 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df _cp _ap _at =
                raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.lq")
 
+             let dr _a _cp o ca = _lq_backward o ca
+           end : Sipo))
 
              let dr _a _cp o ca = _lq_backward o ca
            end : Sipo))
 
+    and lq a = Lazy.force _lq a
 
     and lq a = Lazy.force _lq a
 
@@ -1339,6 +1384,12 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and svd ?(thin = true) = Lazy.force _svd ~thin
 
+              let dr _a _cp o ca = _svd_backward o ca thin
+            end : Sito))
+
+
+    and svd ?(thin = true) = Lazy.force _svd ~thin
+
     (* pair outputs single input *)
     and _lyapunov =
       let _lyapunov_backward_a a ca cp =
@@ -1369,16 +1420,23 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at)))
                + lyapunov ap (neg qt)
 
+             let dr_ab a _b cp ca =
+               let abar, qbar = _lyapunov_backward_aq (primal a) !ca cp in
+               abar, qbar
 
              let dr_ab a _b cp ca =
                let abar, qbar = _lyapunov_backward_aq (primal a) !ca cp in
                abar, qbar
 
+             let dr_a a _q cp ca = _lyapunov_backward_a (primal a) !ca cp
+             let dr_b a _q _cp ca = _lyapunov_backward_q (primal a) !ca
+           end : Piso))
 
              let dr_a a _q cp ca = _lyapunov_backward_a (primal a) !ca cp
              let dr_b a _q _cp ca = _lyapunov_backward_q (primal a) !ca
            end : Piso))
 
+    and lyapunov a = Lazy.force _lyapunov a
 
     and lyapunov a = Lazy.force _lyapunov a
 
@@ -1627,6 +1685,14 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             a
             b)
 
+              let dr_a a b _cp ca = conv3d_backward_input a b s !ca
+              let dr_b a b _cp ca = conv3d_backward_kernel a b s !ca
+            end : Piso)
+            a
+            b)
+
+
+    let conv3d ?padding = Lazy.force _conv3d ~padding
 
     let conv3d ?padding = Lazy.force _conv3d ~padding
 
@@ -1662,6 +1728,15 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                 ( dilated_conv1d_backward_input a b s r !ca
                 , dilated_conv1d_backward_kernel a b s r !ca )
 
+
+              let dr_a a b _cp ca = dilated_conv1d_backward_input a b s r !ca
+              let dr_b a b _cp ca = dilated_conv1d_backward_kernel a b s r !ca
+            end : Piso)
+            a
+            b)
+
+
+    let dilated_conv1d ?padding = Lazy.force _dilated_conv1d ~padding
 
               let dr_a a b _cp ca = dilated_conv1d_backward_input a b s r !ca
               let dr_b a b _cp ca = dilated_conv1d_backward_kernel a b s r !ca
@@ -1746,6 +1821,15 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                 ( dilated_conv3d_backward_input a b s r !ca
                 , dilated_conv3d_backward_kernel a b s r !ca )
 
+
+              let dr_a a b _cp ca = dilated_conv3d_backward_input a b s r !ca
+              let dr_b a b _cp ca = dilated_conv3d_backward_kernel a b s r !ca
+            end : Piso)
+            a
+            b)
+
+
+    let dilated_conv3d ?padding = Lazy.force _dilated_conv3d ~padding
 
               let dr_a a b _cp ca = dilated_conv3d_backward_input a b s r !ca
               let dr_b a b _cp ca = dilated_conv3d_backward_kernel a b s r !ca
@@ -1905,6 +1989,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     let max_pool1d padding = Lazy.force _max_pool1d padding
 
+    let max_pool1d padding = Lazy.force _max_pool1d padding
+
     (* a:input; b:kernel; s:stride *)
     let _max_pool2d =
       (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
@@ -1925,6 +2011,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             end : Siso)
             a)
 
+    let max_pool2d padding = Lazy.force _max_pool2d padding
 
     let max_pool2d padding = Lazy.force _max_pool2d padding
 
@@ -1948,6 +2035,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             end : Siso)
             a)
 
+
+    let max_pool3d padding = Lazy.force _max_pool3d padding
 
     let max_pool3d padding = Lazy.force _max_pool3d padding
 
