@@ -1443,18 +1443,15 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               let ff_bb a q = Arr A.(discrete_lyapunov ~solver a q)
 
               let df_da cp ap at _qp =
-                discrete_lyapunov
-                  ap
-                  ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose ap))
+                let g = ap *@ cp *@ transpose at in
+                discrete_lyapunov ap (g + transpose g)
 
 
               let df_db _cp ap _qp qt = discrete_lyapunov ap qt
 
               let df_dab cp ap at _qp qt =
-                discrete_lyapunov
-                  ap
-                  ((ap *@ cp *@ transpose at) + (at *@ cp *@ transpose ap))
-                + discrete_lyapunov ap qt
+                let g = ap *@ cp *@ transpose at in
+                discrete_lyapunov ap (g + transpose g) + discrete_lyapunov ap qt
 
 
               let dr_ab a _b cp ca =
