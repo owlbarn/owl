@@ -1257,8 +1257,6 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and chol ?(upper = true) = Lazy.force _chol ~upper
 
-    and chol ?(upper = true) = Lazy.force _chol ~upper
-
     (* single input pair outputs *)
     and _qr =
       let _qr_backward (cp1, cp2) (ca1, ca2) =
@@ -1313,13 +1311,10 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df _cp _ap _at =
                raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.lq")
 
-             let dr _a _cp o ca = _lq_backward o ca
-           end : Sipo))
 
              let dr _a _cp o ca = _lq_backward o ca
            end : Sipo))
 
-    and lq a = Lazy.force _lq a
 
     and lq a = Lazy.force _lq a
 
@@ -1384,12 +1379,6 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and svd ?(thin = true) = Lazy.force _svd ~thin
 
-              let dr _a _cp o ca = _svd_backward o ca thin
-            end : Sito))
-
-
-    and svd ?(thin = true) = Lazy.force _svd ~thin
-
     (* pair outputs single input *)
     and _lyapunov =
       let _lyapunov_backward_a a ca cp =
@@ -1420,23 +1409,16 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at)))
                + lyapunov ap (neg qt)
 
-             let dr_ab a _b cp ca =
-               let abar, qbar = _lyapunov_backward_aq (primal a) !ca cp in
-               abar, qbar
 
              let dr_ab a _b cp ca =
                let abar, qbar = _lyapunov_backward_aq (primal a) !ca cp in
                abar, qbar
 
-             let dr_a a _q cp ca = _lyapunov_backward_a (primal a) !ca cp
-             let dr_b a _q _cp ca = _lyapunov_backward_q (primal a) !ca
-           end : Piso))
 
              let dr_a a _q cp ca = _lyapunov_backward_a (primal a) !ca cp
              let dr_b a _q _cp ca = _lyapunov_backward_q (primal a) !ca
            end : Piso))
 
-    and lyapunov a = Lazy.force _lyapunov a
 
     and lyapunov a = Lazy.force _lyapunov a
 
@@ -1685,14 +1667,6 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             a
             b)
 
-              let dr_a a b _cp ca = conv3d_backward_input a b s !ca
-              let dr_b a b _cp ca = conv3d_backward_kernel a b s !ca
-            end : Piso)
-            a
-            b)
-
-
-    let conv3d ?padding = Lazy.force _conv3d ~padding
 
     let conv3d ?padding = Lazy.force _conv3d ~padding
 
@@ -1728,15 +1702,6 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                 ( dilated_conv1d_backward_input a b s r !ca
                 , dilated_conv1d_backward_kernel a b s r !ca )
 
-
-              let dr_a a b _cp ca = dilated_conv1d_backward_input a b s r !ca
-              let dr_b a b _cp ca = dilated_conv1d_backward_kernel a b s r !ca
-            end : Piso)
-            a
-            b)
-
-
-    let dilated_conv1d ?padding = Lazy.force _dilated_conv1d ~padding
 
               let dr_a a b _cp ca = dilated_conv1d_backward_input a b s r !ca
               let dr_b a b _cp ca = dilated_conv1d_backward_kernel a b s r !ca
@@ -1821,15 +1786,6 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                 ( dilated_conv3d_backward_input a b s r !ca
                 , dilated_conv3d_backward_kernel a b s r !ca )
 
-
-              let dr_a a b _cp ca = dilated_conv3d_backward_input a b s r !ca
-              let dr_b a b _cp ca = dilated_conv3d_backward_kernel a b s r !ca
-            end : Piso)
-            a
-            b)
-
-
-    let dilated_conv3d ?padding = Lazy.force _dilated_conv3d ~padding
 
               let dr_a a b _cp ca = dilated_conv3d_backward_input a b s r !ca
               let dr_b a b _cp ca = dilated_conv3d_backward_kernel a b s r !ca
@@ -1989,8 +1945,6 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     let max_pool1d padding = Lazy.force _max_pool1d padding
 
-    let max_pool1d padding = Lazy.force _max_pool1d padding
-
     (* a:input; b:kernel; s:stride *)
     let _max_pool2d =
       (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
@@ -2011,7 +1965,6 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             end : Siso)
             a)
 
-    let max_pool2d padding = Lazy.force _max_pool2d padding
 
     let max_pool2d padding = Lazy.force _max_pool2d padding
 
@@ -2035,8 +1988,6 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             end : Siso)
             a)
 
-
-    let max_pool3d padding = Lazy.force _max_pool3d padding
 
     let max_pool3d padding = Lazy.force _max_pool3d padding
 

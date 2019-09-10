@@ -15,12 +15,14 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   let threshold = 1E-6
   let eps = 1E-5
 
-  module FD = Owl_algodiff_grad_check.Make (AlgoM)
+  module FD = Owl_algodiff_check.Make (AlgoM)
 
-  let samples, directions = FD.generate_test_samples (n, n) n_samples
-  let test_func f = FD.check_grad ~threshold ~eps ~directions ~f samples
+  module Make_tests (P : sig
+    val test_func : (t -> t) -> bool * int
+  end) =
+  struct
+    open P
 
-  module To_test = struct
     let sin () = test_func Maths.sin
     let cos () = test_func Maths.cos
 
@@ -220,47 +222,57 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
         Maths.(atl *@ atu)
       in
       test_func f
+
+
+    let alco_fun s f =
+      let check, c = f () in
+      Alcotest.(check bool) (sprintf "%s: %i/%i passed" s c n_samples) true check
+
+
+    let test_set =
+      [ "sin", `Slow, sin
+      ; "cos", `Slow, cos
+      ; "tan", `Slow, tan
+      ; "sinh", `Slow, sinh
+      ; "cosh", `Slow, cosh
+      ; "tanh", `Slow, tanh
+      ; "exp", `Slow, exp
+      ; "diag", `Slow, diag
+      ; "diagm", `Slow, diagm
+      ; "trace", `Slow, trace
+      ; "l2norm'", `Slow, l2norm'
+      ; "l2norm_sqr'", `Slow, l2norm_sqr'
+      ; "tril", `Slow, tril
+      ; "triu", `Slow, triu
+      ; "inv", `Slow, inv
+      ; "logdet", `Slow, logdet
+      ; "chol", `Slow, chol
+      ; "qr", `Slow, qr
+      ; "lq", `Slow, lq
+      ; "split", `Slow, split
+      ; "concat", `Slow, concat
+      ; "concatenate", `Slow, concatenate
+      ; "svd", `Slow, svd
+      ; "of_arrays", `Slow, of_arrays
+      ; "to_arrays", `Slow, to_arrays
+      ; "init_2d", `Slow, init_2d
+      ; "lyapunov", `Slow, lyapunov
+      ; "discrete_lyapunov", `Slow, discrete_lyapunov
+      ; "linsolve", `Slow, linsolve
+      ; "linsolve_triangular", `Slow, linsolve_triangular
+      ]
+      |> List.map (fun (s, m, f) ->
+             let f () = alco_fun s f in
+             s, m, f)
   end
 
-  let alco_fun s f =
-    let check, c = f () in
-    Alcotest.(check bool) (sprintf "%s: %i/%i passed" s c n_samples) true check
+  let samples, directions = FD.generate_test_samples (n, n) n_samples
 
+  module Reverse = Make_tests (struct
+    let test_func f = FD.Reverse.check ~threshold ~eps ~directions ~f samples
+  end)
 
-  let test_set =
-    let open To_test in
-    [ "sin", `Slow, sin
-    ; "cos", `Slow, cos
-    ; "tan", `Slow, tan
-    ; "sinh", `Slow, sinh
-    ; "cosh", `Slow, cosh
-    ; "tanh", `Slow, tanh
-    ; "exp", `Slow, exp
-    ; "diag", `Slow, diag
-    ; "diagm", `Slow, diagm
-    ; "trace", `Slow, trace
-    ; "l2norm'", `Slow, l2norm'
-    ; "l2norm_sqr'", `Slow, l2norm_sqr'
-    ; "tril", `Slow, tril
-    ; "triu", `Slow, triu
-    ; "inv", `Slow, inv
-    ; "logdet", `Slow, logdet
-    ; "chol", `Slow, chol
-    ; "qr", `Slow, qr
-    ; "lq", `Slow, lq
-    ; "split", `Slow, split
-    ; "concat", `Slow, concat
-    ; "concatenate", `Slow, concatenate
-    ; "svd", `Slow, svd
-    ; "of_arrays", `Slow, of_arrays
-    ; "to_arrays", `Slow, to_arrays
-    ; "init_2d", `Slow, init_2d
-    ; "lyapunov", `Slow, lyapunov
-    ; "discrete_lyapunov", `Slow, discrete_lyapunov
-    ; "linsolve", `Slow, linsolve
-    ; "linsolve_triangular", `Slow, linsolve_triangular
-    ]
-    |> List.map (fun (s, m, f) ->
-           let f () = alco_fun s f in
-           s, m, f)
+  module Forward = Make_tests (struct
+    let test_func f = FD.Forward.check ~threshold ~directions ~f samples
+  end)
 end
