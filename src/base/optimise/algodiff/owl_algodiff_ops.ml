@@ -437,7 +437,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let label = "l1norm'"
              let ff_f a = error_uniop label (pack_elt a)
              let ff_arr a = F A.(l1norm' a)
-             let df _cp ap at = at * signum ap
+             let df _cp ap at = sum' (at * signum ap)
              let dr a _cp ca = !ca * signum (primal a)
            end : Siso))
 

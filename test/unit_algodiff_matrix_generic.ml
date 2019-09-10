@@ -23,6 +23,15 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   struct
     open P
 
+    let neg () = test_func Maths.neg
+    let abs () = test_func Maths.abs
+    let signum () = test_func Maths.signum
+    let floor () = test_func Maths.floor
+    let ceil () = test_func Maths.ceil
+    let round () = test_func Maths.round
+    let sqr () = test_func Maths.sqr
+    let sqrt () = test_func (fun x -> Maths.(sqrt (x * x)))
+    let log () = test_func (fun x -> Maths.(log ((F 1.) + (x * x))))
     let sin () = test_func Maths.sin
     let cos () = test_func Maths.cos
 
@@ -35,6 +44,9 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
     let cosh () = test_func Maths.cosh
     let exp () = test_func Maths.exp
     let tanh () = test_func Maths.tanh
+    let sigmoid () = test_func Maths.sigmoid
+    let relu () = test_func Maths.relu
+    let transpose () = test_func Maths.transpose
     let diag () = test_func Maths.diag
 
     let diagm () =
@@ -43,6 +55,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
 
     let trace () = test_func Maths.trace
+    let l1norm' () = test_func Maths.l1norm'
     let l2norm' () = test_func Maths.l2norm'
     let l2norm_sqr' () = test_func Maths.l2norm_sqr'
     let tril () = test_func Maths.tril
@@ -233,16 +246,31 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
 
     let test_set =
-      [ "sin", `Slow, sin
+      [ 
+         
+      "neg", `Slow, neg   
+      ; "abs", `Slow, abs
+      ; "signum", `Slow, signum
+      ; "floor", `Slow, floor
+      ; "ceil", `Slow, ceil
+      ; "round", `Slow, round
+      ; "sqr", `Slow, sqr
+      ; "sqrt", `Slow, sqrt
+      ; "log", `Slow, log
+      ;  "sin", `Slow, sin
       ; "cos", `Slow, cos
       ; "tan", `Slow, tan
       ; "sinh", `Slow, sinh
       ; "cosh", `Slow, cosh
       ; "tanh", `Slow, tanh
+      ; "sigmoid", `Slow, sigmoid
+      ; "relu", `Slow, relu
       ; "exp", `Slow, exp
+      ; "transpose", `Slow, transpose
       ; "diag", `Slow, diag
       ; "diagm", `Slow, diagm
       ; "trace", `Slow, trace
+      ; "l1norm'", `Slow, l1norm'
       ; "l2norm'", `Slow, l2norm'
       ; "l2norm_sqr'", `Slow, l2norm_sqr'
       ; "tril", `Slow, tril
