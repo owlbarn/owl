@@ -1051,7 +1051,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                       unpack_elt x
                     | DF (_, _, ai), 0 ->
                       ai_ref := ai;
-                      mode := 1;
+                      mode := 2;
                       idxs := (i, j) :: !idxs;
                       unpack_elt x
                     | DF (_, _, ai), 2 ->
