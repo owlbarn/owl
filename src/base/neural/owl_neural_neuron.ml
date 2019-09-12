@@ -2630,7 +2630,7 @@ module Make
       assert (n > 1);
       let acc = ref x.(0) in
       for i = 1 to n - 1 do
-        acc := Maths.(concat l.axis !acc x.(i))
+        acc := Maths.(concat ~axis:l.axis !acc x.(i))
       done;
       !acc
 

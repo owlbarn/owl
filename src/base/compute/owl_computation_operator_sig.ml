@@ -98,6 +98,9 @@ module type Sig = sig
   val concatenate : ?axis:int -> arr array -> arr
   (** TODO *)
 
+  val concat: axis:int -> arr -> arr -> arr
+  (** TODO *)
+
   val split : ?axis:int -> 'a -> 'b -> 'c
   (** TODO *)
 

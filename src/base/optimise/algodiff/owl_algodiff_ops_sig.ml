@@ -192,7 +192,7 @@ module type Sig = sig
     val get_row : t -> int -> t
 
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
-    val concat : int -> t -> t -> t
+    val concat : axis:int -> t -> t -> t
 
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
     val split : axis:int -> int array -> t -> t array
