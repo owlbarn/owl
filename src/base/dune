@@ -8,6 +8,7 @@
 (copy_files# optimise/algodiff/*)
 (copy_files# neural/*)
 (copy_files# linalg/*)
+(copy_files# onnx/*)
 (copy_files# misc/*)
 
 (library
@@ -16,5 +17,5 @@
  (wrapped false)
 
  (flags (:standard -safe-string))
- (libraries bigarray stdlib-shims)
+ (libraries bigarray integers stdlib-shims)
  )
