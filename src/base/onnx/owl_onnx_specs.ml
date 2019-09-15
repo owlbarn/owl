@@ -4,6 +4,8 @@
  *)
 
 
+(* Model definition *)
+
 module rec Model
 : sig
 
@@ -26,6 +28,8 @@ end
 
 end
 
+
+(* Graph definition *)
 
 and Graph
 : sig
@@ -50,6 +54,8 @@ end
 end
 
 
+(* Node definition *)
+
 and Node
 : sig
 
@@ -71,18 +77,7 @@ end
 end
 
 
-and Operator
-: sig
-
-  type t
-
-end
-= struct
-
-  type t
-
-end
-
+(* OperatorSet definition *)
 
 and OperatorSetId
 : sig
@@ -100,6 +95,8 @@ end
 end
 
 
+(* TensorAnnotation definition *)
+
 and TensorAnnotation
 : sig
 
@@ -116,6 +113,8 @@ end
 end
 
 
+(* TensorShape definition *)
+
 and TensorShape
 : sig
 
@@ -124,10 +123,24 @@ and TensorShape
 end
 = struct
 
-  type t
+  type t = {
+    dim : dimension list;
+  }
+
+  and dimension = {
+    value : value;
+    denotation : string option;
+  }
+
+  and value = {
+    dim_value : Int64.t option;
+    dim_param : string option;
+  }
 
 end
 
+
+(* Tensor definition *)
 
 and Tensor
 : sig
@@ -197,6 +210,8 @@ end
 end
 
 
+(* SparseTensor definition *)
+
 and SparseTensor
 : sig
 
@@ -214,6 +229,8 @@ end
 end
 
 
+(* ValueInfo definition *)
+
 and ValueInfo
 : sig
 
@@ -222,10 +239,16 @@ and ValueInfo
 end
 = struct
 
-  type t
+  type t = {
+    name       : string option;
+    typ        : Type.t;
+    doc_string : string option;
+  }
 
 end
 
+
+(* Attribute definition *)
 
 and Attribute
 : sig
@@ -270,6 +293,8 @@ end
 end
 
 
+(* StringStringEntry definition *)
+
 and StringStringEntry
 : sig
 
@@ -282,5 +307,20 @@ end
     key   : string option;
     value : string option;
   }
+
+end
+
+
+(* Type definition *)
+
+and Type
+: sig
+
+  type t
+
+end
+= struct
+
+  type t
 
 end
