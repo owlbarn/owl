@@ -72,6 +72,10 @@ module type Sig = sig
 
   val split : ?axis:int -> int array -> arr -> arr array
 
+  val expand : ?hi:bool -> arr -> int -> arr
+
+  val squeeze : ?axis:int array -> arr -> arr
+
   val draw : ?axis:int -> arr -> int -> arr * int array
 
   val map : (elt -> elt) -> arr -> arr
