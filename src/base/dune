@@ -8,6 +8,7 @@
 (copy_files# optimise/algodiff/*)
 (copy_files# neural/*)
 (copy_files# linalg/*)
+(copy_files# onnx/*)
 (copy_files# misc/*)
 
 (library
