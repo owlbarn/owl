@@ -95,6 +95,12 @@ module type Sig = sig
   val pad : ?v:elt -> int list list -> arr -> arr
   (** TODO *)
 
+  val expand : ?hi:bool -> arr -> int -> arr
+  (** TODO *)
+
+  val squeeze : ?axis:int array -> arr -> arr
+  (** TODO *)
+   
   val concatenate : ?axis:int -> arr array -> arr
   (** TODO *)
 

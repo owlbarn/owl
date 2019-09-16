@@ -135,6 +135,10 @@ module Make
     in
     make_then_connect (Pad (v, padding)) [|arr_to_node x|] |> node_to_arr
 
+  let expand ?(hi=false) _x _d = ignore hi; failwith "expand: not implemented" 
+
+  let squeeze ?(axis=[||]) _x = ignore axis; failwith "squeeze: not implemented"
+   
   let concatenate ?(axis=0) xs =
     make_then_connect (Concatenate axis) (Array.map arr_to_node xs) |> node_to_arr
 
