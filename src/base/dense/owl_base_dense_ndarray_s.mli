@@ -77,6 +77,10 @@ val repeat : arr -> int array -> arr
 
 val concatenate : ?axis:int -> arr array -> arr
 
+val squeeze : ?axis:int array -> arr -> arr
+
+val expand : ?hi:bool -> arr -> int -> arr
+
 val split : ?axis:int -> int array -> arr -> arr array
 
 val draw : ?axis:int -> arr -> int -> arr * int array
