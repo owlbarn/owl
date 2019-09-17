@@ -1,20 +1,29 @@
 (copy_files# types/*)
+
 (copy_files# maths/*)
+
 (copy_files# stats/*)
+
 (copy_files# dense/*)
+
 (copy_files# core/*)
+
 (copy_files# compute/*)
+
 (copy_files# optimise/*)
-(copy_files# optimise/algodiff/*)
+
+(copy_files# algodiff/*)
+
 (copy_files# neural/*)
+
 (copy_files# linalg/*)
+
 (copy_files# misc/*)
 
 (library
  (name owl_base)
  (public_name owl-base)
  (wrapped false)
-
- (flags (:standard -safe-string))
- (libraries bigarray integers stdlib-shims)
- )
+ (flags
+  (:standard -safe-string))
+ (libraries bigarray integers stdlib-shims))

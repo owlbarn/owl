@@ -3,9 +3,6 @@
  (public_name owl-top)
  (wrapped false)
  (modes byte)
- (flags (:standard -safe-string))
- (libraries
-  owl
-  owl-zoo
-  )
- )
+ (flags
+  (:standard -safe-string))
+ (libraries owl owl-zoo))

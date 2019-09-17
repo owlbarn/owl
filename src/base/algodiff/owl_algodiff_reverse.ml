@@ -11,7 +11,7 @@ struct
   let reverse_reset x =
     let rec reset xs =
       match xs with
-      | [] -> ()
+      | []        -> ()
       | x :: t ->
         (match x with
         | DR (_cp, aa, (_, register, _), af, _ai, tracker) ->
@@ -19,7 +19,7 @@ struct
           af := !af + 1;
           tracker := succ !tracker;
           if !af = 1 && !tracker = 1 then reset (register t) else reset t
-        | _ -> reset t)
+        | _                                                -> reset t)
     in
     reset [ x ]
 
@@ -31,7 +31,7 @@ struct
        function called in broadcasting. *)
     let _shrink a v =
       match a, v with
-      | F _, Arr v -> F (A.sum' v)
+      | F _, Arr v   -> F (A.sum' v)
       | Arr a, Arr v ->
         let shp_a = A.shape a in
         let shp_v = A.shape v in
@@ -41,11 +41,11 @@ struct
           let axis = Owl_utils_array.filter2_i ( <> ) shp_a shp_v in
           Arr (A.sum_reduce ~axis v))
         else Arr v
-      | _a, v -> v
+      | _a, v            -> v
     in
     let rec push xs =
       match xs with
-      | [] -> ()
+      | []             -> ()
       | (v, x) :: t ->
         (match x with
         | DR (cp, aa, (adjoint, _, _), af, _ai, tracker) ->
@@ -57,7 +57,7 @@ struct
           else (
             tracker := pred !tracker;
             push t)
-        | _ -> push t)
+        | _                                              -> push t)
     in
     fun v x -> push [ v, x ]
 
