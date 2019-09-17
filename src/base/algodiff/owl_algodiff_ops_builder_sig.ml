@@ -4,7 +4,6 @@ module type Sig = sig
   type t
   type op
 
-  (** single input single output operation *)
   val op_siso
     :  ff:(t -> t)
     -> fd:(t -> t)
@@ -12,8 +11,8 @@ module type Sig = sig
     -> r:(t -> op)
     -> t
     -> t
+  (** single input single output operation *)
 
-  (** single input pair outputs operation *)
   val op_sipo
     :  ff:(t -> t * t)
     -> fd:(t -> t * t)
@@ -21,8 +20,8 @@ module type Sig = sig
     -> r:(t * (t ref * t ref) * (t ref * t ref) -> op)
     -> t
     -> t * t
+  (** single input pair outputs operation *)
 
-  (** single input triple outputs operation *)
   val op_sito
     :  ff:(t -> t * t * t)
     -> fd:(t -> t * t * t)
@@ -30,8 +29,8 @@ module type Sig = sig
     -> r:(t * (t ref * t ref * t ref) * (t ref * t ref * t ref) -> op)
     -> t
     -> t * t * t
+  (** single input triple outputs operation *)
 
-  (** single input array outputs operation *)
   val op_siao
     :  ff:(t -> t array)
     -> fd:(t -> t array)
@@ -39,8 +38,8 @@ module type Sig = sig
     -> r:(t * t ref array * t ref array -> op)
     -> t
     -> t array
+  (** single input array outputs operation *)
 
-  (** pair inputs single output operation *)
   val op_piso
     :  ff:(t -> t -> t)
     -> fd:(t -> t -> t)
@@ -53,6 +52,7 @@ module type Sig = sig
     -> t
     -> t
     -> t
+  (** pair inputs single output operation *)
 
   module type Siso = sig
     val label : string
