@@ -12,7 +12,7 @@
 
 (copy_files# optimise/*)
 
-(copy_files# optimise/algodiff/*)
+(copy_files# algodiff/*)
 
 (copy_files# neural/*)
 
