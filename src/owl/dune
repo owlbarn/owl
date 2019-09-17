@@ -1,22 +1,41 @@
 (copy_files# ext/*)
+
 (copy_files# core/*)
+
 (copy_files# core/openmp/*)
+
 (copy_files# dense/*)
+
 (copy_files# sparse/*)
+
 (copy_files# maths/*)
+
 (copy_files# maths/cdflib/*)
+
 (copy_files# maths/cephes/*)
+
 (copy_files# stats/*)
+
 (copy_files# stats/sfmt/*)
+
 (copy_files# cblas/*)
+
 (copy_files# lapacke/*)
+
 (copy_files# linalg/*)
+
 (copy_files# optimise/*)
+
 (copy_files# neural/*)
+
 (copy_files# fftpack/*)
+
 (copy_files# misc/*)
+
 (copy_files# nlp/*)
+
 (copy_files# ppl/*)
+
 (copy_files# working/*)
 
 (library
@@ -24,7 +43,6 @@
  (public_name owl)
  (wrapped false)
  (c_names
-
   ;; Core
   owl_cblas_generated_stub
   owl_core_utils
@@ -45,11 +63,9 @@
   owl_ndarray_utils_stub
   owl_slicing_basic_stub
   owl_slicing_fancy_stub
-
   ;; FFTPACK
   owl_fftpack_float32
   owl_fftpack_float64
-
   ;; stats
   SFMT
   owl_stats_dist_beta
@@ -92,11 +108,9 @@
   owl_stats_extend_stub
   owl_stats_prng_stub
   owl_stats_ziggurat
-
   ;; CDFlib
   owl_dcdflib
   owl_ipmpar
-
   ;; maths
   airy
   bdtr
@@ -161,30 +175,25 @@
   unity
   yn
   zeta
-  zetac
-  )
- (c_flags :standard (:include c_flags.sexp))
- (c_library_flags :standard (:include c_library_flags.sexp))
- (flags :standard (:include ocaml_flags.sexp))
- (libraries
-  ctypes
-  ctypes.stubs
-  eigen
-  owl-base
-  stdlib-shims
-  )
-)
+  zetac)
+ (c_flags
+  :standard
+  (:include c_flags.sexp))
+ (c_library_flags
+  :standard
+  (:include c_library_flags.sexp))
+ (flags
+  :standard
+  (:include ocaml_flags.sexp))
+ (libraries ctypes ctypes.stubs eigen owl-base stdlib-shims))
 
 (rule
- (targets c_flags.sexp
-          c_library_flags.sexp
-          ocaml_flags.sexp
-          owl_aeos_params_generated.h
-          )
-  (deps   (:deps-conf config/configure.exe)
-          (:deps-aeos ../aeos/owl_aeos_gen.exe))
-  (action
-   (progn (run %{deps-conf})
-   (run %{deps-aeos}))
-  )
-)
+ (targets c_flags.sexp c_library_flags.sexp ocaml_flags.sexp
+   owl_aeos_params_generated.h)
+ (deps
+  (:deps-conf config/configure.exe)
+  (:deps-aeos ../aeos/owl_aeos_gen.exe))
+ (action
+  (progn
+   (run %{deps-conf})
+   (run %{deps-aeos}))))

@@ -2,4 +2,3 @@
  (name owl_plplot)
  (public_name owl-plplot)
  (libraries owl plplot))
-
