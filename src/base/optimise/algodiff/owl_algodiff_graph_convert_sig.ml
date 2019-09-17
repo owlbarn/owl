@@ -1,7 +1,7 @@
 module type Sig = sig
-  type t 
+  type t
 
- (** ``to_trace [t0; t1; ...]`` outputs the trace of computation graph on the terminal
+  (** ``to_trace [t0; t1; ...]`` outputs the trace of computation graph on the terminal
       in a human-readable format. *)
   val to_trace : t list -> string
 
@@ -11,5 +11,5 @@ module type Sig = sig
 
   (** ``pp_num t`` pretty prints the abstract number used in ``Algodiff``. *)
   val pp_num : Format.formatter -> t -> unit
-    [@@ocaml.toplevel_printer] 
+    [@@ocaml.toplevel_printer]
 end
