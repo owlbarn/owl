@@ -631,14 +631,14 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and get_item a i j =
       match a with
-      | Arr ap -> F (A.get ap [| i; j |])
-      | DF (ap, at, ai) -> DF (get_item ap i j, get_item at i j, ai)
+      | Arr ap                  -> F (A.get ap [| i; j |])
+      | DF (ap, at, ai)         -> DF (get_item ap i j, get_item at i j, ai)
       | DR (ap, _, _, _, ai, _) ->
         let reverse _ap ca t = (set_item (zero a) i j (sum' !ca), a) :: t in
         let input t = a :: t in
         let label = "Get_Item", [ a ] in
         DR (get_item ap i j, ref (pack_flt 0.), (reverse, input, label), ref 0, ai, ref 0)
-      | _ -> error_uniop "get_item" a
+      | _                       -> error_uniop "get_item" a
 
 
     and _get_row =
@@ -1005,8 +1005,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     and of_rows a =
       (* TODO: this can be further optimised by incorporating t array type as t *)
       match a.(0) with
-      | Arr _ -> Array.map unpack_arr a |> A.of_rows |> pack_arr
-      | DF (_, _, ai) ->
+      | Arr _                  -> Array.map unpack_arr a |> A.of_rows |> pack_arr
+      | DF (_, _, ai)          ->
         let ap =
           a |> Array.map (fun x -> x |> primal |> unpack_arr) |> A.of_rows |> pack_arr
         in
@@ -1023,7 +1023,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let input t = List.append (Array.to_list a) t in
         let label = "Of_Rows_D", Array.to_list a in
         DR (cp, ref (zero cp), (reverse, input, label), ref 0, ai, ref 0)
-      | _ -> error_uniop "of_rows a.(0)" a.(0)
+      | _                      -> error_uniop "of_rows a.(0)" a.(0)
 
 
     and _of_arrays =
@@ -1039,7 +1039,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                 Array.mapi
                   (fun j x ->
                     match x, !mode with
-                    | F _, _ -> unpack_elt x
+                    | F _, _                    -> unpack_elt x
                     | DR (_, _, _, _, ai, _), 0 ->
                       ai_ref := ai;
                       mode := 1;
@@ -1049,16 +1049,18 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                       ai_ref := ai;
                       idxs := (i, j) :: !idxs;
                       unpack_elt x
-                    | DF (_, _, ai), 0 ->
+                    | DF (_, _, ai), 0          ->
                       ai_ref := ai;
                       mode := 2;
                       idxs := (i, j) :: !idxs;
                       unpack_elt x
-                    | DF (_, _, ai), 2 ->
+                    | DF (_, _, ai), 2          ->
                       ai_ref := ai;
                       mode := 2;
                       unpack_elt x
-                    | _, _ -> error_uniop "of_arrays: inconsistent array" x)
+                    | _, _                        -> error_uniop
+                                                       "of_arrays: inconsistent array"
+                                                       x)
                   xs)
               a
             |> A.of_arrays
@@ -1121,8 +1123,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             Array.fold_left
               (fun (i, t, m, idxs) x ->
                 match m, x with
-                | _, F _ -> assert false
-                | _, Arr _ -> succ i, t, m, idxs
+                | _, F _                     -> assert false
+                | _, Arr _                   -> succ i, t, m, idxs
                 | `n, DR (_, _, _, _, t', _) -> succ i, t', `r, [ i ]
                 | `f, DR (_, _, _, _, t', _) ->
                   if t' > t
@@ -1136,20 +1138,20 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                   else if t' = t
                   then succ i, t', `r, i :: idxs
                   else succ i, t, m, idxs
-                | `n, DF (_, _, t') -> succ i, t', `f, [ i ]
-                | `f, DF (_, _, t') ->
+                | `n, DF (_, _, t')          -> succ i, t', `f, [ i ]
+                | `f, DF (_, _, t')          ->
                   if t' > t
                   then succ i, t', `f, []
                   else if t' = t
                   then succ i, t', `f, i :: idxs
                   else succ i, t, `f, idxs
-                | `r, DF (_, _, t') ->
+                | `r, DF (_, _, t')          ->
                   if t' > t
                   then succ i, t', `f, []
                   else if t' = t
                   then failwith "clash"
                   else succ i, t, `r, idxs
-                | _ -> assert false)
+                | _                            -> assert false)
               (0, -10000, `n, [])
               a
           in
@@ -1161,7 +1163,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                 (fun x ->
                   match x with
                   | DF (p, _, t') -> if t = t' then p else x
-                  | x -> x)
+                  | x             -> x)
                 a
               |> concatenate ~axis
             in
@@ -1178,7 +1180,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                 (fun x ->
                   match x with
                   | DR (p, _, _, _, t', _) -> if t = t' then p else x
-                  | x -> x)
+                  | x                      -> x)
                 a
               |> concatenate ~axis
             in
@@ -1537,7 +1539,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
       let b =
         match primal' a with
         | Arr a -> Arr (A.bernoulli ~p (A.shape a))
-        | _ -> error_uniop "dropout" a
+        | _     -> error_uniop "dropout" a
       in
       a * b
 

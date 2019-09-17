@@ -73,10 +73,10 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
     let check_tangent_dimensions ~f x =
       (* tangent at x should have the same dimension as f x *)
       match primal' (f x), primal' (jacobianv f x x) with
-      | F _, F _ -> ()
+      | F _, F _     -> ()
       | Arr a, Arr b ->
         if A.shape a <> A.shape b then failwith "tangent dimension mismatch" else ()
-      | _ -> failwith "tangent dimension mismatch"
+      | _                -> failwith "tangent dimension mismatch"
 
 
     let check ~threshold ~f ~directions samples =

@@ -99,7 +99,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   let jacobian' =
     let dim_typ x =
       match primal' x with
-      | F _ -> `float
+      | F _   -> `float
       | Arr x ->
         let s = A.shape x in
         let d = Array.length s in
@@ -110,7 +110,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         else if s.(1) = 1
         then `col s.(0)
         else `mat
-      | _ -> assert false
+      | _     -> assert false
     in
     fun f x ->
       let y = f x |> primal in
@@ -118,11 +118,12 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         match dim_typ y, dim_typ x with
         | `row a, `row 1 -> a, 1
         | `row a, `row b -> a, b
-        | _ -> failwith "jacobian: input and output must both be row vectors"
+        | _                  -> failwith
+                                  "jacobian: input and output must both be row vectors"
       in
       let z = A.empty [| m; n |] in
       (match m > n with
-      | true ->
+      | true  ->
         Array.init n (fun i ->
             let v = A.zeros [| 1; n |] in
             A.(set v [| 0; i |] (float_to_elt 1.));
@@ -130,7 +131,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         |> Array.iteri (fun i v ->
                match v with
                | Arr v -> A.copy_col_to (A.transpose v) z i
-               | _ -> failwith "error: jacobian")
+               | _     -> failwith "error: jacobian")
       | false ->
         Array.init m (fun i ->
             let v = A.zeros [| 1; m |] in
@@ -139,7 +140,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         |> Array.iteri (fun i v ->
                match v with
                | Arr v -> A.copy_row_to v z i
-               | _ -> failwith "error: jacobian"));
+               | _     -> failwith "error: jacobian"));
       y, Arr z
 
 
