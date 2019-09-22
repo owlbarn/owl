@@ -762,20 +762,13 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df_da _cp ap at bp = at * (ap ** (bp - pack_flt 1.)) * bp
              let df_db cp ap _bp bt = bt * cp * log ap
 
-             let df_dab _cp ap at bp bt =
-               (ap ** (bp - pack_flt 1.)) * ((at * bp) + (ap * bt * log ap))
+             let df_dab cp ap at bp bt =
+               ((ap ** (bp - pack_flt 1.)) * (at * bp)) + (cp * bt * log ap)
 
 
-             let dr_ab a b _cp ca =
-               ( !ca * (primal a ** (primal b - pack_flt 1.)) * primal b
-               , !ca * (primal a ** primal b) * log (primal a) )
-
-
-             let dr_a a b _cp ca =
-               !ca * (primal a ** (primal b - pack_flt 1.)) * primal b
-
-
-             let dr_b a b _cp ca = !ca * (primal a ** primal b) * log (primal a)
+             let dr_ab a b cp ca = !ca * (a ** (b - pack_flt 1.)) * b, !ca * cp * log a
+             let dr_a a b _cp ca = !ca * (a ** (b - pack_flt 1.)) * b
+             let dr_b a _b cp ca = !ca * cp * log a
            end : Piso))
 
 
