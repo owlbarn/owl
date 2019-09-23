@@ -32,6 +32,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
     let sqr () = test_func Maths.sqr
     let sqrt () = test_func (fun x -> Maths.(sqrt (x * x)))
     let log () = test_func (fun x -> Maths.(log ((F 1.) + (x * x))))
+    let pow () = test_func (fun x -> Maths.(log ((F 1.) + (pow (sqr x) (F 2.9 + x)))))
     let sin () = test_func Maths.sin
     let cos () = test_func Maths.cos
 
@@ -151,10 +152,10 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       let f x =
         let y =
           Array.init n (fun i ->
-              Array.init n (fun j -> if i = 0 then F 3. else Maths.get_item x i j))
+              Array.init n (fun j -> if i = 0 then Maths.get_item x j i else Maths.get_item x i j))
           |> Maths.of_arrays
         in
-        Maths.(x * sin y)
+        Maths.(x * sin (y+x))
       in
       test_func f
 
@@ -257,7 +258,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; "sqr", `Slow, sqr
       ; "sqrt", `Slow, sqrt
       ; "log", `Slow, log
-      ;  "sin", `Slow, sin
+      ; "pow", `Slow, pow
+      ; "sin", `Slow, sin
       ; "cos", `Slow, cos
       ; "tan", `Slow, tan
       ; "sinh", `Slow, sinh
