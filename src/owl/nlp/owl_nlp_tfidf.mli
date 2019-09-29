@@ -45,7 +45,7 @@ val doc_count_of : t -> string -> float
 (** ``doc_count_of tfidf w`` calculate document frequency for a given word ``w``. *)
 
 val doc_count : Owl_nlp_vocabulary.t -> string -> float array * int
-(** ``doc_count vocab fname``count occurrency in all documents contained in the raw text corpus of file ``fname``, for all words *)
+(** ``doc_count vocab fname`` count occurrency in all documents contained in the raw text corpus of file ``fname``, for all words *)
 
 val term_count : ('a, float) Hashtbl.t -> 'a array -> unit
 (** ``term_count count doc`` counts the term occurrency in a document, and saves the result in count hashtbl. *)
