@@ -319,7 +319,8 @@ let _supported_device = [
 let _set_device h =
   try let x = Owl_utils.get_suffix h.output in
     Plplot.plsdev x;
-    Plplot.plsfnam h.output;
+    if String.length h.output = 0 then () else
+      Plplot.plsfnam h.output;
   with _exn -> ()
 
 
