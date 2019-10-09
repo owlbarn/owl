@@ -715,5 +715,39 @@ val power_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 val mpow : ('a, 'b) t -> float -> ('a, 'b) t
 (** TODO: not implemented, just a place holder. *)
 
+val sparse_LU : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t option
+(**
+``sparse_LU a b`` solves the linear system a * x = b using eigen's LU method
+*)
+
+val sparse_QR : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t option
+(**
+``sparse_QR a b`` solves the linear system a * x = b using eigen's QR method
+*)
+
+val simplicial_LLT : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t option
+(**
+``simplicial_LLT a b`` solves the linear system a * x = b using eigen's simplicial LLT method
+*)
+
+val simplicial_LDLT : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t option
+(**
+``simplicial_LDLT a b`` solves the linear system a * x = b using eigen's simplicial LDLT method
+*)
+
+val conjugate_gradient : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t option
+(**
+``conjugate_gradient a b`` solves the linear system a * x = b using eigen's conjugate gradient method
+*)
+
+val least_squares_conjugate_gradient : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t option
+(**
+``least_squares_conjugate_gradient a b`` solves the linear system a * x = b using eigen's least squares conjugate gradient method
+*)
+
+val biCGSTAB : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t option
+(**
+``biCGSTAB a b`` solves the linear system a * x = b using eigen's BiCGSTAB method
+*)
 
 (** ends here *)

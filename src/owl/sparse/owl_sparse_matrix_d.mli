@@ -282,3 +282,19 @@ val scalar_div : elt -> mat -> mat
 val power_scalar : mat -> elt -> mat
 
 val mpow : mat -> float -> mat
+
+
+(** {6 Direct and Iterative Sparse Linear System Solvers *)
+val sparse_LU : mat -> mat -> mat option
+
+val sparse_QR : mat -> mat -> mat option
+
+val simplicial_LLT : mat -> mat -> mat option
+
+val simplicial_LDLT : mat -> mat -> mat option
+
+val conjugate_gradient : mat -> mat -> mat option
+
+val least_squares_conjugate_gradient : mat -> mat -> mat option
+
+val biCGSTAB : mat -> mat -> mat option

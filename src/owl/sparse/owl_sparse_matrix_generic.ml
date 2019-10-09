@@ -67,8 +67,8 @@ let copy x = {
 }
 
 let transpose x = {
-  m = x.m;
-  n = x.n;
+  m = x.n;
+  n = x.m;
   k = x.k;
   d = _eigen_transpose x.d;
 }
@@ -608,3 +608,66 @@ let concat_horizontal _x _y =
   failwith "owl_sparse_matrix_generic:concat_horizontal:not implemented"
 
 let mpow _x _a = failwith "owl_sparse_matrix_generic:mpow:not implemented"
+
+let sparse_LU a b =
+  Option.map (fun d ->
+    { m = _eigen_rows d
+    ; n = _eigen_cols d
+    ; k = a.k
+    ; d
+    })
+    (_eigen_sparse_LU a.d b.d)
+
+let sparse_QR a b =
+  Option.map (fun d ->
+    { m = _eigen_rows d
+    ; n = _eigen_cols d
+    ; k = a.k
+    ; d
+    })
+    (_eigen_sparse_QR a.d b.d)
+
+let simplicial_LLT a b =
+  Option.map (fun d ->
+    { m = _eigen_rows d
+    ; n = _eigen_cols d
+    ; k = a.k
+    ; d
+    })
+    (_eigen_simplicial_LLT a.d b.d)
+
+let simplicial_LDLT a b =
+  Option.map (fun d ->
+    { m = _eigen_rows d
+    ; n = _eigen_cols d
+    ; k = a.k
+    ; d
+    })
+    (_eigen_simplicial_LDLT a.d b.d)
+
+let conjugate_gradient a b =
+  Option.map (fun d ->
+    { m = _eigen_rows d
+    ; n = _eigen_cols d
+    ; k = a.k
+    ; d
+    })
+    (_eigen_conjugate_gradient a.d b.d)
+
+let least_squares_conjugate_gradient a b =
+  Option.map (fun d ->
+    { m = _eigen_rows d
+    ; n = _eigen_cols d
+    ; k = a.k
+    ; d
+    })
+    (_eigen_least_squares_conjugate_gradient a.d b.d)
+
+let biCGSTAB a b =
+  Option.map (fun d ->
+    { m = _eigen_rows d
+    ; n = _eigen_cols d
+    ; k = a.k
+    ; d
+    })
+    (_eigen_BiCGSTAB a.d b.d)
