@@ -363,79 +363,79 @@ let _eigen_neg : type a b . (a, b) eigen_mat -> (a, b) eigen_mat =
 let _eigen_sparse_LU : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat option =
   fun a b -> match a, b with
     | SPMAT_S a, SPMAT_S b ->
-      Option.map (fun v -> SPMAT_S v) (Eigen.Sparse.S.sparse_LU a b)
+      Core.Option.map ~f:(fun v -> SPMAT_S v) (Eigen.Sparse.S.sparse_LU a b)
     | SPMAT_D a, SPMAT_D b ->
-      Option.map (fun v -> SPMAT_D v) (Eigen.Sparse.D.sparse_LU a b)
+      Core.Option.map ~f:(fun v -> SPMAT_D v) (Eigen.Sparse.D.sparse_LU a b)
     | SPMAT_C a, SPMAT_C b ->
-      Option.map (fun v -> SPMAT_C v) (Eigen.Sparse.C.sparse_LU a b)
+      Core.Option.map ~f:(fun v -> SPMAT_C v) (Eigen.Sparse.C.sparse_LU a b)
     | SPMAT_Z a, SPMAT_Z b ->
-      Option.map (fun v -> SPMAT_Z v) (Eigen.Sparse.Z.sparse_LU a b)
+      Core.Option.map ~f:(fun v -> SPMAT_Z v) (Eigen.Sparse.Z.sparse_LU a b)
 
 let _eigen_sparse_QR : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat option =
   fun a b -> match a, b with
     | SPMAT_S a, SPMAT_S b ->
-      Option.map (fun v -> SPMAT_S v) (Eigen.Sparse.S.sparse_QR a b)
+      Core.Option.map ~f:(fun v -> SPMAT_S v) (Eigen.Sparse.S.sparse_QR a b)
     | SPMAT_D a, SPMAT_D b ->
-      Option.map (fun v -> SPMAT_D v) (Eigen.Sparse.D.sparse_QR a b)
+      Core.Option.map ~f:(fun v -> SPMAT_D v) (Eigen.Sparse.D.sparse_QR a b)
     | SPMAT_C a, SPMAT_C b ->
-      Option.map (fun v -> SPMAT_C v) (Eigen.Sparse.C.sparse_QR a b)
+      Core.Option.map ~f:(fun v -> SPMAT_C v) (Eigen.Sparse.C.sparse_QR a b)
     | SPMAT_Z a, SPMAT_Z b ->
-      Option.map (fun v -> SPMAT_Z v) (Eigen.Sparse.Z.sparse_QR a b)
+      Core.Option.map ~f:(fun v -> SPMAT_Z v) (Eigen.Sparse.Z.sparse_QR a b)
 
 let _eigen_simplicial_LLT : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat option =
   fun a b -> match a, b with
     | SPMAT_S a, SPMAT_S b ->
-      Option.map (fun v -> SPMAT_S v) (Eigen.Sparse.S.simplicial_LLT a b)
+      Core.Option.map ~f:(fun v -> SPMAT_S v) (Eigen.Sparse.S.simplicial_LLT a b)
     | SPMAT_D a, SPMAT_D b ->
-      Option.map (fun v -> SPMAT_D v) (Eigen.Sparse.D.simplicial_LLT a b)
+      Core.Option.map ~f:(fun v -> SPMAT_D v) (Eigen.Sparse.D.simplicial_LLT a b)
     | SPMAT_C a, SPMAT_C b ->
-      Option.map (fun v -> SPMAT_C v) (Eigen.Sparse.C.simplicial_LLT a b)
+      Core.Option.map ~f:(fun v -> SPMAT_C v) (Eigen.Sparse.C.simplicial_LLT a b)
     | SPMAT_Z a, SPMAT_Z b ->
-      Option.map (fun v -> SPMAT_Z v) (Eigen.Sparse.Z.simplicial_LLT a b)
+      Core.Option.map ~f:(fun v -> SPMAT_Z v) (Eigen.Sparse.Z.simplicial_LLT a b)
 
 let _eigen_simplicial_LDLT : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat option =
   fun a b -> match a, b with
     | SPMAT_S a, SPMAT_S b ->
-      Option.map (fun v -> SPMAT_S v) (Eigen.Sparse.S.simplicial_LDLT a b)
+      Core.Option.map ~f:(fun v -> SPMAT_S v) (Eigen.Sparse.S.simplicial_LDLT a b)
     | SPMAT_D a, SPMAT_D b ->
-      Option.map (fun v -> SPMAT_D v) (Eigen.Sparse.D.simplicial_LDLT a b)
+      Core.Option.map ~f:(fun v -> SPMAT_D v) (Eigen.Sparse.D.simplicial_LDLT a b)
     | SPMAT_C a, SPMAT_C b ->
-      Option.map (fun v -> SPMAT_C v) (Eigen.Sparse.C.simplicial_LDLT a b)
+      Core.Option.map ~f:(fun v -> SPMAT_C v) (Eigen.Sparse.C.simplicial_LDLT a b)
     | SPMAT_Z a, SPMAT_Z b ->
-      Option.map (fun v -> SPMAT_Z v) (Eigen.Sparse.Z.simplicial_LDLT a b)
+      Core.Option.map ~f:(fun v -> SPMAT_Z v) (Eigen.Sparse.Z.simplicial_LDLT a b)
 
 let _eigen_conjugate_gradient : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat option =
   fun a b -> match a, b with
     | SPMAT_S a, SPMAT_S b ->
-      Option.map (fun v -> SPMAT_S v) (Eigen.Sparse.S.conjugate_gradient a b)
+      Core.Option.map ~f:(fun v -> SPMAT_S v) (Eigen.Sparse.S.conjugate_gradient a b)
     | SPMAT_D a, SPMAT_D b ->
-      Option.map (fun v -> SPMAT_D v) (Eigen.Sparse.D.conjugate_gradient a b)
+      Core.Option.map ~f:(fun v -> SPMAT_D v) (Eigen.Sparse.D.conjugate_gradient a b)
     | SPMAT_C a, SPMAT_C b ->
-      Option.map (fun v -> SPMAT_C v) (Eigen.Sparse.C.conjugate_gradient a b)
+      Core.Option.map ~f:(fun v -> SPMAT_C v) (Eigen.Sparse.C.conjugate_gradient a b)
     | SPMAT_Z a, SPMAT_Z b ->
-      Option.map (fun v -> SPMAT_Z v) (Eigen.Sparse.Z.conjugate_gradient a b)
+      Core.Option.map ~f:(fun v -> SPMAT_Z v) (Eigen.Sparse.Z.conjugate_gradient a b)
 
 let _eigen_least_squares_conjugate_gradient : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat option =
   fun a b -> match a, b with
     | SPMAT_S a, SPMAT_S b ->
-      Option.map (fun v -> SPMAT_S v) (Eigen.Sparse.S.least_squares_conjugate_gradient a b)
+      Core.Option.map ~f:(fun v -> SPMAT_S v) (Eigen.Sparse.S.least_squares_conjugate_gradient a b)
     | SPMAT_D a, SPMAT_D b ->
-      Option.map (fun v -> SPMAT_D v) (Eigen.Sparse.D.least_squares_conjugate_gradient a b)
+      Core.Option.map ~f:(fun v -> SPMAT_D v) (Eigen.Sparse.D.least_squares_conjugate_gradient a b)
     | SPMAT_C a, SPMAT_C b ->
-      Option.map (fun v -> SPMAT_C v) (Eigen.Sparse.C.least_squares_conjugate_gradient a b)
+      Core.Option.map ~f:(fun v -> SPMAT_C v) (Eigen.Sparse.C.least_squares_conjugate_gradient a b)
     | SPMAT_Z a, SPMAT_Z b ->
-      Option.map (fun v -> SPMAT_Z v) (Eigen.Sparse.Z.least_squares_conjugate_gradient a b)
+      Core.Option.map ~f:(fun v -> SPMAT_Z v) (Eigen.Sparse.Z.least_squares_conjugate_gradient a b)
 
 let _eigen_BiCGSTAB : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat option =
   fun a b -> match a, b with
     | SPMAT_S a, SPMAT_S b ->
-      Option.map (fun v -> SPMAT_S v) (Eigen.Sparse.S.biCGSTAB a b)
+      Core.Option.map ~f:(fun v -> SPMAT_S v) (Eigen.Sparse.S.biCGSTAB a b)
     | SPMAT_D a, SPMAT_D b ->
-      Option.map (fun v -> SPMAT_D v) (Eigen.Sparse.D.biCGSTAB a b)
+      Core.Option.map ~f:(fun v -> SPMAT_D v) (Eigen.Sparse.D.biCGSTAB a b)
     | SPMAT_C a, SPMAT_C b ->
-      Option.map (fun v -> SPMAT_C v) (Eigen.Sparse.C.biCGSTAB a b)
+      Core.Option.map ~f:(fun v -> SPMAT_C v) (Eigen.Sparse.C.biCGSTAB a b)
     | SPMAT_Z a, SPMAT_Z b ->
-      Option.map (fun v -> SPMAT_Z v) (Eigen.Sparse.Z.biCGSTAB a b)
+      Core.Option.map ~f:(fun v -> SPMAT_Z v) (Eigen.Sparse.Z.biCGSTAB a b)
 
 
 (* ends here *)

@@ -610,7 +610,7 @@ let concat_horizontal _x _y =
 let mpow _x _a = failwith "owl_sparse_matrix_generic:mpow:not implemented"
 
 let sparse_LU a b =
-  Option.map (fun d ->
+  Core.Option.map ~f:(fun d ->
     { m = _eigen_rows d
     ; n = _eigen_cols d
     ; k = a.k
@@ -619,7 +619,7 @@ let sparse_LU a b =
     (_eigen_sparse_LU a.d b.d)
 
 let sparse_QR a b =
-  Option.map (fun d ->
+  Core.Option.map ~f:(fun d ->
     { m = _eigen_rows d
     ; n = _eigen_cols d
     ; k = a.k
@@ -628,7 +628,7 @@ let sparse_QR a b =
     (_eigen_sparse_QR a.d b.d)
 
 let simplicial_LLT a b =
-  Option.map (fun d ->
+  Core.Option.map ~f:(fun d ->
     { m = _eigen_rows d
     ; n = _eigen_cols d
     ; k = a.k
@@ -637,7 +637,7 @@ let simplicial_LLT a b =
     (_eigen_simplicial_LLT a.d b.d)
 
 let simplicial_LDLT a b =
-  Option.map (fun d ->
+  Core.Option.map ~f:(fun d ->
     { m = _eigen_rows d
     ; n = _eigen_cols d
     ; k = a.k
@@ -646,7 +646,7 @@ let simplicial_LDLT a b =
     (_eigen_simplicial_LDLT a.d b.d)
 
 let conjugate_gradient a b =
-  Option.map (fun d ->
+  Core.Option.map ~f:(fun d ->
     { m = _eigen_rows d
     ; n = _eigen_cols d
     ; k = a.k
@@ -655,7 +655,7 @@ let conjugate_gradient a b =
     (_eigen_conjugate_gradient a.d b.d)
 
 let least_squares_conjugate_gradient a b =
-  Option.map (fun d ->
+  Core.Option.map ~f:(fun d ->
     { m = _eigen_rows d
     ; n = _eigen_cols d
     ; k = a.k
@@ -664,7 +664,7 @@ let least_squares_conjugate_gradient a b =
     (_eigen_least_squares_conjugate_gradient a.d b.d)
 
 let biCGSTAB a b =
-  Option.map (fun d ->
+  Core.Option.map ~f:(fun d ->
     { m = _eigen_rows d
     ; n = _eigen_cols d
     ; k = a.k
