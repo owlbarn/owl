@@ -242,6 +242,27 @@ let ludcmp a =
     done
   done;
 
-  lu
+  lu, indx
+
+
+let lu_solve_vec a b =
+  (*TODO: check shape; b and x are vectors *)
+  let n = (M.shape a).(0) in
+  if ((M.shape b).(0) != n || (M.shape x).(0) != n) then
+    failwith "LUdcmp::solve bad sizes";
+
+  let sum = ref 0. in
+  let x = M.copy b in
+
+  let lu, indx = ludcmp a in
+
+  for i = 0 to n - 1 do
+    let ip = indx.(i) in
+    let sum = x.(ip) in
+    x.(ip) <- x.(i) 
+  done
+
+
+
 
 (* ends here *)
