@@ -10,3 +10,4 @@ src/opencl/bindings/opencl20/* linguist-vendored
 src/opencl/bindings/opencl22/* linguist-vendored
 src/owl/maths/cdflib/* linguist-vendored
 test/*.py linguist-vendored
+doc/* linguist-vendored

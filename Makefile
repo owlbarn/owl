@@ -41,6 +41,7 @@ uninstall:
 doc:
 	opam install -y odoc
 	dune build @doc
+	cat doc/mathjax.js doc/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
 
 .PHONY: distclean cleanall
 distclean cleanall:
