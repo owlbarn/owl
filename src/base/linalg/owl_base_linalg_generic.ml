@@ -85,17 +85,26 @@ let is_diag x = is_triu x && is_tril x
   M.set a [ia; ja|] v
 *)
 
+let _check_is_matrix dims =
+  if (Array.length dims) != 2
+  then raise (Invalid_argument "The given NDarray is not a matrix!")
+  else ()
+
+
 (* Linear equation solution by Gauss-Jordan elimination *)
-let gaussj a b =
-  (*TODO: shape check *)
+(* Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_basic.py#L496 *)
+let linsolv_gauss a b =
+  let (dims_a, dims_b) = (M.shape a, M.shape b) in
+  let (_, _) = (_check_is_matrix dims_a, _check_is_matrix dims_b) in
+
   let a = M.copy a in
   let b = M.copy b in
 
-  let n = (M.shape a).(0) in
-  let m = (M.shape b).(1) in
+  let n = dims_a.(0) in
+  let m = dims_b.(1) in
   let icol = ref 0 in
   let irow = ref 0 in
-  let dum = ref 0.0 in
+  let dum  = ref 0.0 in
   let pivinv = ref 0.0 in
   let indxc = Array.make n 0 in
   let indxr = Array.make n 0 in
@@ -181,6 +190,7 @@ let gaussj a b =
 
   a, b
 
+(** Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_decomp.py *)
 
 let ludcmp a =
   let _aref = M.copy a in
@@ -244,6 +254,7 @@ let ludcmp a =
 
   lu, indx
 
+(*
 
 let lu_solve_vec a b =
   (*TODO: check shape; b and x are vectors *)
@@ -259,9 +270,9 @@ let lu_solve_vec a b =
   for i = 0 to n - 1 do
     let ip = indx.(i) in
     let sum = x.(ip) in
-    x.(ip) <- x.(i) 
+    x.(ip) <- x.(i)
   done
-
+*)
 
 
 

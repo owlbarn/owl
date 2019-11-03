@@ -2,7 +2,7 @@
 
 let () =
   Alcotest.run "Owl" [
-    "stats_rvs",            Unit_stats_rvs.test_set;
+    (* "stats_rvs",            Unit_stats_rvs.test_set;
     "stats",                Unit_stats.test_set;
     "maths",                Unit_maths.test_set;
     "graph",                Unit_graph.test_set;
@@ -46,5 +46,6 @@ let () =
     "base: complex",        Unit_base_complex.test_set;
     "base: ndarray core",   Unit_base_ndarray_core.test_set;
     "algodiff reverse matrix",      Unit_algodiff_matrix.Reverse.test_set;
-    "algodiff forward matrix",      Unit_algodiff_matrix.Forward.test_set;
+    "algodiff forward matrix",      Unit_algodiff_matrix.Forward.test_set;*)
+    "base: linalg",         Unit_linalg_solver.test_set;
   ]
