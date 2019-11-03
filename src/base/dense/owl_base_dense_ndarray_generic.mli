@@ -142,6 +142,12 @@ val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val squeeze : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val expand : ?hi:bool -> ('a, 'b) t -> int -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val split : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

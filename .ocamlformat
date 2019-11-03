@@ -1,3 +1,5 @@
 profile=janestreet
 wrap-comments=false
 let-binding-spacing=sparse
+doc-comments=after
+align-cases=true

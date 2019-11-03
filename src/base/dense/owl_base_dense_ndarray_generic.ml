@@ -597,6 +597,27 @@ let split ?(axis=0) parts varr =
   in
   (Array.map (fun def -> get_slice def varr) slices_defs)
 
+let squeeze ?(axis=[||]) x =
+  let a = match Array.length axis with
+    | 0 -> Array.init (num_dims x) (fun i -> i)
+    | _ -> axis
+  in
+  let s = Owl_utils.Array.filteri (fun i v ->
+    not (v == 1 && Array.mem i a)
+  ) (shape x)
+  in
+  reshape x s
+
+let expand ?(hi=false) x d =
+  let d0 = d - (num_dims x) in
+  match d0 > 0 with
+  | true  -> (
+      if hi = true then
+        Owl_utils.Array.pad `Right 1 d0 (shape x) |> reshape x
+      else
+        Owl_utils.Array.pad `Left 1 d0 (shape x) |> reshape x
+    )
+  | false -> x
 
 (* TODO : ensure this is desired behaviour *)
 (* Similar to draw rows for matrices *)

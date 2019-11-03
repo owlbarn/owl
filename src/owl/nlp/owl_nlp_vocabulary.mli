@@ -116,10 +116,10 @@ val w2i_to_tuples : t -> (string * int) list
 (** ``w2w2i_to_tuples v`` converts vocabulary ``v`` to a list of ``(word, index)`` tuples. *)
 
 val to_array : t -> (int * string) array
-(** ``to_array v`` converts a vocabulary to a (word, index) array. *)
+(** ``to_array v`` converts a vocabulary to a (index, word) array. *)
 
 val of_array : (int * string) array -> t
-(** ``of_array v`` converts a (word, index) array to a vocabulary. *)
+(** ``of_array v`` converts a (index, word) array to a vocabulary. *)
 
 
 (** {6 I/O functions} *)

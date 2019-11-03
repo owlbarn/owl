@@ -250,7 +250,7 @@ let _get_axis l default_val =
 
 let _create_page () = {
   title           = "";
-  fgcolor         = (255, 0, 0);
+  fgcolor         = (0, 0, 0);
   fontsize        = -1.;
   is_3d           = false;
   no_axes         = false;
@@ -284,7 +284,7 @@ let _create_page () = {
 let _create_handle () = {
   holdon       = true;
   output       = "";
-  bgcolor      = (0, 0, 0);
+  bgcolor      = (255, 255, 255);
   pensize      = 0.;
   page_size    = (0,0);
   shape        = (1, 1);
@@ -319,7 +319,8 @@ let _supported_device = [
 let _set_device h =
   try let x = Owl_utils.get_suffix h.output in
     Plplot.plsdev x;
-    Plplot.plsfnam h.output;
+    if String.length h.output = 0 then () else
+      Plplot.plsfnam h.output;
   with _exn -> ()
 
 

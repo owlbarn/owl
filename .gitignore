@@ -23,3 +23,6 @@ setup.log
 .merlin
 !pkg/.merlin
 *.install
+
+# editor config files
+.vscode
