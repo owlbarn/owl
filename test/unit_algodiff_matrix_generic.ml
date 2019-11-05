@@ -236,6 +236,23 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       in
       test_func f
 
+    let care () =
+      let b = Mat.gaussian n n in
+      let q = Mat.gaussian n n in
+      let f x =
+        let a = x in
+        let b = Maths.((tril x) + b) in
+        let r =
+          let e = Mat.eye n in
+          let r = Maths.(e + (a *@ transpose a)) in
+          Maths.(r *@ (transpose r)) in
+        let q =
+          let q = Maths.(q + a) in
+          Maths.(q *@ transpose q + Mat.(eye n)) in
+        Linalg.care a b q r
+      in
+      test_func f
+
 
     let alco_fun s f =
       let check, c =
@@ -247,9 +264,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
 
     let test_set =
-      [ 
-         
-      "neg", `Slow, neg   
+      [
+      "neg", `Slow, neg
       ; "abs", `Slow, abs
       ; "signum", `Slow, signum
       ; "floor", `Slow, floor
@@ -293,6 +309,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; "discrete_lyapunov", `Slow, discrete_lyapunov
       ; "linsolve", `Slow, linsolve
       ; "linsolve_triangular", `Slow, linsolve_triangular
+      ; "care", `Slow, care
       ]
       |> List.map (fun (s, m, f) ->
              let f () = alco_fun s f in
