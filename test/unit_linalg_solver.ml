@@ -7,7 +7,7 @@ module L = Owl_base_linalg_generic
 (* define the test error *)
 
 let approx_equal a b =
-  let eps = 1e-6 in
+  let eps = 1e-5 in
   Stdlib.(abs_float (a -. b) < eps)
 
 
