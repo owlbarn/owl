@@ -362,41 +362,40 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         (fun (i, t, m, idxs) x ->
           match m, x with
           | _, F _ | _, Arr _ -> succ i, t, m, idxs
-          | `n, DR (_, _, _, _, t', _) -> succ i, t', `r, [ i ]
-          | `f, DR (_, _, _, _, t', _) ->
+          | `normal, DR (_, _, _, _, t', _) -> succ i, t', `reverse, [ i ]
+          | `forward, DR (_, _, _, _, t', _) ->
             if t' > t
-            then succ i, t', `r, []
+            then succ i, t', `reverse, []
             else if t' = t
-            then failwith "clash"
-            else succ i, t, `f, idxs
-          | `r, DR (_, _, _, _, t', _) ->
+            then failwith "error: forward and reverse clash on the same level"
+            else succ i, t, `forward, idxs
+          | `reverse, DR (_, _, _, _, t', _) ->
             if t' > t
-            then succ i, t', `r, []
+            then succ i, t', `reverse, []
             else if t' = t
-            then succ i, t', `r, i :: idxs
+            then succ i, t', `reverse, i :: idxs
             else succ i, t, m, idxs
-          | `n, DF (_, _, t') -> succ i, t', `f, [ i ]
-          | `f, DF (_, _, t') ->
+          | `normal, DF (_, _, t') -> succ i, t', `forward, [ i ]
+          | `forward, DF (_, _, t') ->
             if t' > t
-            then succ i, t', `f, []
+            then succ i, t', `forward, []
             else if t' = t
-            then succ i, t', `f, i :: idxs
-            else succ i, t, `f, idxs
-          | `r, DF (_, _, t') ->
+            then succ i, t', `forward, i :: idxs
+            else succ i, t, `forward, idxs
+          | `reverse, DF (_, _, t') ->
             if t' > t
-            then succ i, t', `f, []
+            then succ i, t', `forward, []
             else if t' = t
-            then failwith "clash"
-            else succ i, t, `r, idxs
-          | _ -> assert false)
-        (0, -10000, `n, [])
+            then failwith "error: forward and reverse clash on the same level"
+            else succ i, t, `reverse, idxs)
+        (0, -10000, `normal, [])
     in
     fun (module S : Aiso) ->
       let rec f a =
         let _, t, mode, idxs = build_info a in
         match mode with
-        | `n -> S.ff a
-        | `f ->
+        | `normal  -> S.ff a
+        | `forward ->
           let cp =
             Array.map
               (fun x ->
@@ -411,7 +410,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             S.df (Array.of_list idxs) cp a at
           in
           DF (cp, at, t)
-        | `r ->
+        | `reverse ->
           let cp =
             Array.map
               (fun x ->
