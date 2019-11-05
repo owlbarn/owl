@@ -34,7 +34,8 @@ module To_test_gauss = struct
     let a = N.uniform [|n; n|] in
     for i = 0 to n - 1 do
       let v = N.get a [|i; i|] in
-      N.set a [|i; i|] ((v +. 0.1) *. 20.) (* NOTE: this limite datatype to float and double *)
+      (* NOTE: this step limits datatype to float and double *)
+      N.set a [|i; i|] ((v +. 0.1) *. 20.)
     done;
     let flag = ref true in
     for i = 0 to 9 do
