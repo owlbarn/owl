@@ -16,7 +16,7 @@ module To_test_gauss = struct
   let test01 () =
     let a = N.of_array [|1.;20.;-30.;4.|] [|2;2|] in
     let b = N.of_array [|1.;0.;1.;2.;-30.;0.;1.;0.; 1.;4.|] [|2; 5|]in
-    let a_inv, x = L.linsolv_gauss a b in
+    let a_inv, x = L.linsolve_gauss a b in
     let flag01 = approx_equal N.(((dot a a_inv) - N.eye 2 |> sum')) 0. in
     let flag02 = approx_equal N.(((dot a x) - b) |> sum') 0. in
     flag01 && flag02
@@ -24,7 +24,7 @@ module To_test_gauss = struct
   let test02 () =
     let a = N.of_array [|2.;3.;3.;5.|] [|2;2|] in
     let b = N.of_array [|1.;0.;1.;0.;1.;0.|] [|2; 3|]  in
-    let a_inv, x = L.linsolv_gauss a b in
+    let a_inv, x = L.linsolve_gauss a b in
     let flag01 = approx_equal N.(((dot a a_inv) - N.eye 2 |> sum')) 0. in
     let flag02 = approx_equal N.(((dot a x) - b) |> sum') 0. in
     flag01 && flag02
@@ -40,7 +40,7 @@ module To_test_gauss = struct
     let flag = ref true in
     for i = 0 to 9 do
       let b = N.uniform [|n; 3|] in
-      let a_inv, x = L.linsolv_gauss a b in
+      let a_inv, x = L.linsolve_gauss a b in
       let flag01 = approx_equal N.(((dot a a_inv) - N.eye n |> sum')) 0. in
       let flag02 = approx_equal N.(((dot a x) - b) |> sum') 0. in
       flag := !flag && flag01 && flag02
@@ -62,7 +62,7 @@ module To_test_gauss = struct
   let b = N.uniform [|9; 1|] in
   let flag = ref false in
   let _ = try
-    L.linsolv_gauss a b |> ignore
+    L.linsolve_gauss a b |> ignore
   with SINGULAR ->
     flag := true
   in
