@@ -1515,9 +1515,9 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               let dr_b a _b _cp ca = _linsolve_backward_b trans typ a !ca
             end : Piso))
 
-
     and linsolve ?(trans = false) ?(typ = `n) = Lazy.force _linsolve ~trans ~typ
-    and care _a _b _q _r = failwith "ignore"
+
+    and care _a _b _q _r = failwith "notimplemented"
   end
 
   (* neural network module: for specialised neural network operations *)

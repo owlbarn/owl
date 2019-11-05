@@ -109,4 +109,13 @@ module type Sig = sig
   end
 
   val build_piso : (module Piso) -> t -> t -> t
+
+  module type Aiso = sig
+    val label : string
+    val ff : t array -> t
+    val df : int array -> t -> t array -> t array -> t
+    val dr : int array -> t array -> t -> t ref -> (t * t) list
+  end
+
+  val build_aiso : (module Aiso) -> t array -> t
 end
