@@ -88,11 +88,12 @@ let _check_is_matrix dims =
 
 
 (* Linear equation solution by Gauss-Jordan elimination.
- * Input matrix: a[n][n], b[n][m]; solve x so that ax = b.
+ * Input matrix: a[n][n], b[n][m];
+ * Output: ``ainv``, inversed matrix of a; ``x``, so that ax = b.
  * TODO: Extend to multiple types: double, complex; unify with existing owl
  * structures e.g. naming.
  * Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_basic.py#L496 *)
-let linsolv_gauss a b =
+let linsolve_gauss a b =
   let (dims_a, dims_b) = (M.shape a, M.shape b) in
   let (_, _) = (_check_is_matrix dims_a, _check_is_matrix dims_b) in
 
