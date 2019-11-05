@@ -260,6 +260,9 @@ module type Sig = sig
 
     val linsolve : ?trans:bool -> ?typ:[ `n | `u | `l ] -> t -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val care : t -> t -> t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
   end
 
   (** {6 Supported Neural Network functions} *)

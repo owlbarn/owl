@@ -39,6 +39,7 @@ module Generic = struct
 
   let linsolve ?(trans=false) ?(typ=`n) a b = Owl_linalg_generic.linsolve ~trans ~typ a b
 
+  let care = Owl_linalg_generic.care
 end
 
 
@@ -79,6 +80,7 @@ module S = struct
 
   let linsolve ?(trans=false) ?(typ=`n) a b = Owl_linalg_s.linsolve ~trans ~typ a b
 
+  let care = Owl_linalg_s.care
 end
 
 
@@ -118,6 +120,8 @@ module D = struct
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_d.discrete_lyapunov ~solver a q
 
   let linsolve ?(trans=false) ?(typ=`n) a b = Owl_linalg_d.linsolve ~trans ~typ a b
+
+  let care = Owl_linalg_d.care
 end
 
 

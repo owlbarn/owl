@@ -1517,6 +1517,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
     and linsolve ?(trans = false) ?(typ = `n) = Lazy.force _linsolve ~trans ~typ
+    and care _a _b _q _r = failwith "ignore"
   end
 
   (* neural network module: for specialised neural network operations *)

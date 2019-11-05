@@ -5007,6 +5007,9 @@ let linsolve ?(trans=false) ?(typ=`n) _a _b =
   trans |> ignore; typ |> ignore;
   raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.linsolve")
 
+let care _a _b _q _r = 
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.care")
+
 let diag ?(k=0) _x =
   k |> ignore;
   raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.diag")

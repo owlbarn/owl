@@ -105,7 +105,6 @@ val care : mat -> mat -> mat -> mat -> mat
 
 val dare : mat -> mat -> mat -> mat -> mat
 
-
 (** {6 Low-level factorisation functions} *)
 
 val lufact : mat -> mat * int32_mat
