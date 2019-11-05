@@ -7,6 +7,8 @@ type ('a, 'b) t = ('a, 'b) Owl_base_dense_ndarray_generic.t
 
 module M = Owl_base_dense_ndarray_generic
 
+open Owl_exception
+
 
 (* Check matrix properties *)
 
@@ -91,8 +93,11 @@ let _check_is_matrix dims =
   else ()
 
 
-(* Linear equation solution by Gauss-Jordan elimination *)
-(* Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_basic.py#L496 *)
+(* Linear equation solution by Gauss-Jordan elimination.
+ * Input matrix: a[n][n], b[n][m]; solve x so that ax = b.
+ * TODO: Extend to multiple types: double, complex; unify with existing owl
+ * structures e.g. naming. 
+ * Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_basic.py#L496 *)
 let linsolv_gauss a b =
   let (dims_a, dims_b) = (M.shape a, M.shape b) in
   let (_, _) = (_check_is_matrix dims_a, _check_is_matrix dims_b) in
@@ -109,8 +114,11 @@ let linsolv_gauss a b =
   let indxc = Array.make n 0 in
   let indxr = Array.make n 0 in
   let ipiv  = Array.make n 0 in
+
+  (* Main loop over the columns to be reduced. *)
   for i = 0 to n - 1  do
     let big = ref 0.0 in
+    (* Outer loop of the search for at pivot element *)
     for j = 0 to n - 1 do
       if ipiv.(j) != 1 then (
         for k = 0 to n - 1 do
@@ -127,7 +135,7 @@ let linsolv_gauss a b =
     ipiv.(!icol) <- ipiv.(!icol) + 1;
 
     (* TODO: how to swap elegantly? *)
-    if (!irow != !icol) then (
+    if (!irow <> !icol) then (
       for l = 0 to n - 1 do
         let u = M.get a [|!irow; l|] in
         let v = M.get a [|!icol; l|] in
@@ -135,7 +143,7 @@ let linsolv_gauss a b =
         M.set a [|!irow; l|] v
       done;
 
-      for l = 0 to n - 1 do
+      for l = 0 to m - 1 do
         let u = M.get b [|!irow; l|] in
         let v = M.get b [|!icol; l|] in
         M.set b [|!icol; l|] u;
@@ -146,7 +154,7 @@ let linsolv_gauss a b =
     indxr.(i) <- !irow;
     indxc.(i) <- !icol;
     let p = M.get a [|!icol; !icol|] in
-    if (p == 0.0) then failwith "gaussj: Singular Matrix";
+    if (p = 0.0) then raise SINGULAR;
     pivinv :=  1.0 /. p;
     M.set a [|!icol; !icol|] 1.0;
     for l = 0 to n - 1 do
@@ -167,7 +175,7 @@ let linsolv_gauss a b =
           let prev = M.get a [|ll; l|] in
           M.set a [|ll; l|] (prev -. p *. !dum)
         done;
-        for l = 0 to n - 1 do
+        for l = 0 to m - 1 do
           let p = M.get b [|!icol; l|] in
           let prev = M.get b [|ll; l|] in
           M.set b [|ll; l|] (prev -. p *. !dum)
