@@ -502,6 +502,10 @@ module Make
     trans |> ignore; typ |> ignore;
     raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.linsolve")
 
+  let care ?(diag_r = false) _a _b _q _r =
+    diag_r |> ignore;
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.care")
+
   let diag ?k _x =
     k |> ignore;
     raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.diag")

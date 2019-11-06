@@ -101,10 +101,9 @@ val lyapunov : mat -> mat -> mat
 
 val discrete_lyapunov : ?solver:[`default | `direct | `bilinear] -> mat -> mat -> mat
 
-val care : mat -> mat -> mat -> mat -> mat
+val care : ?diag_r:bool -> mat -> mat -> mat -> mat -> mat
 
 val dare : mat -> mat -> mat -> mat -> mat
-
 
 (** {6 Low-level factorisation functions} *)
 

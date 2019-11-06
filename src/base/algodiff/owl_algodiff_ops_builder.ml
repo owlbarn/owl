@@ -16,7 +16,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
   (* single input pair outputs operation *)
-  and op_sipo ~ff ~fd ~df ~r a =
+  let op_sipo ~ff ~fd ~df ~r a =
     match a with
     | DF (ap, at, ai)         ->
       let cp1, cp2 = fd ap in
@@ -49,7 +49,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
   (* single input three outputs operation *)
-  and op_sito ~ff ~fd ~df ~r a =
+  let op_sito ~ff ~fd ~df ~r a =
     match a with
     | DF (ap, at, ai)         ->
       let cp1, cp2, cp3 = fd ap in
@@ -88,7 +88,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
   (* single input array outputs operation *)
-  and op_siao ~ff ~fd ~df ~r a =
+  let op_siao ~ff ~fd ~df ~r a =
     match a with
     | DF (ap, at, ai)         ->
       let cp_arr = fd ap in
@@ -107,7 +107,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
   (* pair input single output operation *)
-  and op_piso ~ff ~fd ~df_da ~df_db ~df_dab ~r_d_d ~r_d_c ~r_c_d a b =
+  let op_piso ~ff ~fd ~df_da ~df_db ~df_dab ~r_d_d ~r_d_c ~r_c_d a b =
     match a, b with
     | F _ap, DF (bp, bt, bi)                           ->
       let cp = fd a bp in
@@ -347,4 +347,84 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         b
     in
     f
+
+
+  module type Aiso = sig
+    val label : string
+    val ff : t array -> t
+    val df : int array -> t -> t array -> t array -> t
+    val dr : int array -> t array -> t -> t ref -> (t * t) list
+  end
+
+  let build_aiso =
+    let build_info =
+      Array.fold_left
+        (fun (i, t, m, idxs) x ->
+          match m, x with
+          | _, F _ | _, Arr _ -> succ i, t, m, idxs
+          | `normal, DR (_, _, _, _, t', _) -> succ i, t', `reverse, [ i ]
+          | `forward, DR (_, _, _, _, t', _) ->
+            if t' > t
+            then succ i, t', `reverse, []
+            else if t' = t
+            then failwith "error: forward and reverse clash on the same level"
+            else succ i, t, `forward, idxs
+          | `reverse, DR (_, _, _, _, t', _) ->
+            if t' > t
+            then succ i, t', `reverse, []
+            else if t' = t
+            then succ i, t', `reverse, i :: idxs
+            else succ i, t, m, idxs
+          | `normal, DF (_, _, t') -> succ i, t', `forward, [ i ]
+          | `forward, DF (_, _, t') ->
+            if t' > t
+            then succ i, t', `forward, []
+            else if t' = t
+            then succ i, t', `forward, i :: idxs
+            else succ i, t, `forward, idxs
+          | `reverse, DF (_, _, t') ->
+            if t' > t
+            then succ i, t', `forward, []
+            else if t' = t
+            then failwith "error: forward and reverse clash on the same level"
+            else succ i, t, `reverse, idxs)
+        (0, -10000, `normal, [])
+    in
+    fun (module S : Aiso) ->
+      let rec f a =
+        let _, t, mode, idxs = build_info a in
+        match mode with
+        | `normal  -> S.ff a
+        | `forward ->
+          let cp =
+            Array.map
+              (fun x ->
+                match x with
+                | DF (p, _, t') -> if t = t' then p else x
+                | x             -> x)
+              a
+            |> f
+          in
+          let at =
+            let at = a |> Array.map (fun x -> x |> tangent) in
+            S.df (Array.of_list idxs) cp a at
+          in
+          DF (cp, at, t)
+        | `reverse ->
+          let cp =
+            Array.map
+              (fun x ->
+                match x with
+                | DR (p, _, _, _, t', _) -> if t = t' then p else x
+                | x                      -> x)
+              a
+            |> f
+          in
+          let idxs = List.rev idxs in
+          let adjoint cp ca t = List.append (S.dr (Array.of_list idxs) a cp ca) t in
+          let register t = List.append List.(map (fun i -> a.(i)) idxs) t in
+          let label = S.label, List.(map (fun i -> a.(i)) idxs) in
+          DR (cp, ref (zero cp), (adjoint, register, label), ref 0, t, ref 0)
+      in
+      f
 end

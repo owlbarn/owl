@@ -533,6 +533,9 @@ module type Sig = sig
   val linsolve : ?trans:bool -> ?typ:[`n | `u | `l] -> arr -> arr -> arr
   (** TODO *)
 
+  val care : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr
+  (** TODO *)
+
   val diag: ?k:int -> arr -> arr
   (** TODO *)
 

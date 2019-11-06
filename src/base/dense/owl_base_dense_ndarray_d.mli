@@ -423,8 +423,8 @@ val svd : ?thin:bool -> arr -> arr * arr * arr
 val qr : arr -> arr * arr
 
 val lq : arr -> arr * arr
-                
-val chol : ?upper:bool -> arr -> arr 
+
+val chol : ?upper:bool -> arr -> arr
 
 val lyapunov : arr -> arr -> arr
 
@@ -432,13 +432,15 @@ val discrete_lyapunov : ?solver:[`default | `direct | `bilinear] -> arr -> arr -
 
 val linsolve: ?trans:bool -> ?typ:[`n | `u | `l] -> arr -> arr -> arr
 
-val diag: ?k:int -> arr -> arr 
+val care : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr
 
-val diagm: ?k:int -> arr -> arr 
+val diag: ?k:int -> arr -> arr
 
-val triu: ?k:int -> arr -> arr 
+val diagm: ?k:int -> arr -> arr
 
-val tril: ?k:int -> arr -> arr 
+val triu: ?k:int -> arr -> arr
+
+val tril: ?k:int -> arr -> arr
 
 val trace : arr -> elt
 

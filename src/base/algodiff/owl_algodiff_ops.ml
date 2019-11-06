@@ -1517,6 +1517,97 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
     and linsolve ?(trans = false) ?(typ = `n) = Lazy.force _linsolve ~trans ~typ
+
+    and _care =
+      lazy
+        (let unpack a = a.(0), a.(1), a.(2), a.(3) in
+         let care_forward ~diag_r p a b r at bt qt rt =
+           let tr_b = transpose b in
+           let r = if diag_r then diag r else r in
+           let inv_r = if diag_r then pack_flt 1. / r else inv r in
+           let atilde =
+             if diag_r
+             then a - (b * inv_r *@ tr_b *@ p)
+             else a - (b *@ inv_r *@ tr_b *@ p)
+           in
+           let tr_atilde = transpose atilde in
+           let dp_da () =
+             let pat = p *@ at in
+             lyapunov tr_atilde (neg (transpose pat) - pat)
+           in
+           let dp_dq () = lyapunov tr_atilde (neg qt) in
+           let dp_dr () =
+             let pbinv_r = if diag_r then p *@ (b * inv_r) else p *@ b *@ inv_r in
+             lyapunov tr_atilde (neg (pbinv_r *@ rt *@ transpose pbinv_r))
+           in
+           let dp_db () =
+             let x =
+               if diag_r
+               then p *@ (bt * inv_r) *@ tr_b *@ p
+               else p *@ bt *@ inv_r *@ tr_b *@ p
+             in
+             lyapunov tr_atilde (x + transpose x)
+           in
+           [| dp_da; dp_db; dp_dq; dp_dr |]
+         in
+         let care_backward ~diag_r a b q r p pbar =
+           let tr_b = transpose b in
+           let inv_r = if diag_r then pack_flt 1. / diag r else inv r in
+           let atilde =
+             if diag_r
+             then a - (b * inv_r *@ tr_b *@ p)
+             else a - (b *@ inv_r *@ tr_b *@ p)
+           in
+           let s = lyapunov atilde (neg pbar) in
+           (* the following calculations are not calculated unless needed *)
+           let qbar () = s in
+           let rbar () =
+             let pbinv_r = if diag_r then p *@ (b * inv_r) else p *@ b *@ inv_r in
+             transpose pbinv_r *@ s *@ pbinv_r
+           in
+           let abar () = pack_flt 2. * p *@ s in
+           let bbar () =
+             if diag_r
+             then neg (pack_flt 2.) * p *@ s *@ p *@ (b * inv_r)
+             else neg (pack_flt 2.) * p *@ s *@ p *@ b *@ inv_r
+           in
+           [| abar, a; bbar, b; qbar, q; rbar, r |]
+         in
+         fun ~diag_r ->
+           build_aiso
+             (module struct
+               let label = "care"
+
+               let ff a =
+                 match unpack a with
+                 | Arr a, Arr b, Arr q, Arr r -> A.care ~diag_r a b q r |> pack_arr
+                 | _                                  -> error_uniop "care" a.(0)
+
+
+               let df idxs p inp tangents =
+                 let a, b, _, r = unpack inp in
+                 let at, bt, qt, rt = unpack tangents in
+                 let dp = care_forward ~diag_r p a b r at bt qt rt in
+                 Array.map (fun k -> dp.(k) ()) idxs
+                 |> Array.fold_left ( + ) (pack_flt 0.)
+
+
+               let dr idxs inp p pbar_ref =
+                 let pbar = !pbar_ref in
+                 let bars =
+                   let a, b, q, r = unpack inp in
+                   care_backward ~diag_r a b q r p pbar
+                 in
+                 Array.map
+                   (fun k ->
+                     let bar, x = bars.(k) in
+                     bar (), x)
+                   idxs
+                 |> Array.to_list
+             end : Aiso))
+
+
+    and care ?(diag_r = false) a b q r = Lazy.force _care ~diag_r [| a; b; q; r |]
   end
 
   (* neural network module: for specialised neural network operations *)

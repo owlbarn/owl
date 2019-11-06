@@ -20,7 +20,7 @@ module Generic = struct
   (* inject function aliases *)
 
   let inv = Owl_linalg_generic.inv
-              
+
   let mpow = Owl_linalg_generic.mpow
 
   let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
@@ -30,8 +30,8 @@ module Generic = struct
   let qr x =
     let q, r, _ = Owl_linalg_generic.qr ~thin:true ~pivot:false x in
     (q,r)
-  
-  let lq x = Owl_linalg_generic.lq ~thin:true x 
+
+  let lq x = Owl_linalg_generic.lq ~thin:true x
 
   let lyapunov a q = Owl_linalg_generic.lyapunov a q
 
@@ -39,6 +39,7 @@ module Generic = struct
 
   let linsolve ?(trans=false) ?(typ=`n) a b = Owl_linalg_generic.linsolve ~trans ~typ a b
 
+  let care = Owl_linalg_generic.care
 end
 
 
@@ -55,11 +56,11 @@ module S = struct
 
   let svd ?(thin=true) = Owl_linalg_s.svd ~thin
 
-  let chol = Owl_linalg_s.chol 
+  let chol = Owl_linalg_s.chol
 
   let mpow = Owl_linalg_s.mpow
 
-  let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x 
+  let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x
 
   let eye n = Owl_dense_matrix_s.eye n
 
@@ -71,7 +72,7 @@ module S = struct
     let q, r, _ = Owl_linalg_s.qr ~thin:true ~pivot:false x in
     (q,r)
 
-  let lq x = Owl_linalg_s.lq ~thin:true x 
+  let lq x = Owl_linalg_s.lq ~thin:true x
 
   let lyapunov = Owl_linalg_s.lyapunov
 
@@ -79,6 +80,7 @@ module S = struct
 
   let linsolve ?(trans=false) ?(typ=`n) a b = Owl_linalg_s.linsolve ~trans ~typ a b
 
+  let care = Owl_linalg_s.care
 end
 
 
@@ -94,12 +96,12 @@ module D = struct
   let logdet = Owl_linalg_d.logdet
 
   let svd ?(thin=true) = Owl_linalg_d.svd ~thin
-              
-  let chol = Owl_linalg_d.chol 
+
+  let chol = Owl_linalg_d.chol
 
   let mpow = Owl_linalg_d.mpow
 
-  let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x 
+  let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x
 
   let eye n = Owl_dense_matrix_d.eye n
 
@@ -111,13 +113,15 @@ module D = struct
     let q, r, _ = Owl_linalg_d.qr ~thin:true ~pivot:false x in
     (q,r)
 
-  let lq x = Owl_linalg_d.lq ~thin:true x 
+  let lq x = Owl_linalg_d.lq ~thin:true x
 
   let lyapunov = Owl_linalg_d.lyapunov
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_d.discrete_lyapunov ~solver a q
 
   let linsolve ?(trans=false) ?(typ=`n) a b = Owl_linalg_d.linsolve ~trans ~typ a b
+
+  let care = Owl_linalg_d.care
 end
 
 
@@ -141,7 +145,7 @@ module C = struct
     let q, r, _ = Owl_linalg_c.qr ~thin:true ~pivot:false x in
     (q,r)
 
-  let lq x = Owl_linalg_c.lq ~thin:true x 
+  let lq x = Owl_linalg_c.lq ~thin:true x
 
   let lyapunov = Owl_linalg_c.lyapunov
 
@@ -171,9 +175,9 @@ module Z = struct
     let q, r, _ = Owl_linalg_z.qr ~thin:true ~pivot:false x in
     (q,r)
 
-  let lq x = Owl_linalg_z.lq ~thin:true x 
+  let lq x = Owl_linalg_z.lq ~thin:true x
 
-  let lyapunov = Owl_linalg_z.lyapunov 
+  let lyapunov = Owl_linalg_z.lyapunov
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_z.discrete_lyapunov ~solver a q
 
