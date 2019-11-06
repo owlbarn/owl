@@ -8,7 +8,7 @@ module L = Owl_base_linalg_generic
 
 let approx_equal a b =
   let eps = 1e-5 in
-  Stdlib.(abs_float (a -. b) < eps)
+  N.approx_equal ~eps a b
 
 
 module To_test_gauss = struct
@@ -17,16 +17,16 @@ module To_test_gauss = struct
     let a = N.of_array [|1.;20.;-30.;4.|] [|2;2|] in
     let b = N.of_array [|1.;0.;1.;2.;-30.;0.;1.;0.; 1.;4.|] [|2; 5|]in
     let a_inv, x = L.linsolve_gauss a b in
-    let flag01 = approx_equal N.(((dot a a_inv) - N.eye 2 |> sum')) 0. in
-    let flag02 = approx_equal N.(((dot a x) - b) |> sum') 0. in
+    let flag01 = approx_equal (N.dot a a_inv) (N.eye 2) in
+    let flag02 = approx_equal (N.dot a x) b in
     flag01 && flag02
 
   let test02 () =
     let a = N.of_array [|2.;3.;3.;5.|] [|2;2|] in
     let b = N.of_array [|1.;0.;1.;0.;1.;0.|] [|2; 3|]  in
     let a_inv, x = L.linsolve_gauss a b in
-    let flag01 = approx_equal N.(((dot a a_inv) - N.eye 2 |> sum')) 0. in
-    let flag02 = approx_equal N.(((dot a x) - b) |> sum') 0. in
+    let flag01 = approx_equal (N.dot a a_inv) (N.eye 2) in
+    let flag02 = approx_equal (N.dot a x) b in
     flag01 && flag02
 
   let test03 () =
@@ -41,8 +41,8 @@ module To_test_gauss = struct
     for i = 0 to 9 do
       let b = N.uniform [|n; 3|] in
       let a_inv, x = L.linsolve_gauss a b in
-      let flag01 = approx_equal N.(((dot a a_inv) - N.eye n |> sum')) 0. in
-      let flag02 = approx_equal N.(((dot a x) - b) |> sum') 0. in
+      let flag01 = approx_equal (N.dot a a_inv) (N.eye n) in
+      let flag02 = approx_equal (N.dot a x) b in
       flag := !flag && flag01 && flag02
     done;
     !flag

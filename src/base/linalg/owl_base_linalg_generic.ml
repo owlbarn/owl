@@ -7,8 +7,6 @@ type ('a, 'b) t = ('a, 'b) Owl_base_dense_ndarray_generic.t
 
 module M = Owl_base_dense_ndarray_generic
 
-open Owl_exception
-
 
 (* Check matrix properties *)
 
@@ -129,7 +127,6 @@ let linsolve_gauss a b =
     done;
     ipiv.(!icol) <- ipiv.(!icol) + 1;
 
-    (* TODO: how to swap elegantly? *)
     if (!irow <> !icol) then (
       for l = 0 to n - 1 do
         let u = M.get a [|!irow; l|] in
@@ -149,7 +146,7 @@ let linsolve_gauss a b =
     indxr.(i) <- !irow;
     indxc.(i) <- !icol;
     let p = M.get a [|!icol; !icol|] in
-    if (p = 0.0) then raise SINGULAR;
+    if (p = 0.0) then raise Owl_exception.SINGULAR;
     pivinv :=  1.0 /. p;
     M.set a [|!icol; !icol|] 1.0;
     for l = 0 to n - 1 do
