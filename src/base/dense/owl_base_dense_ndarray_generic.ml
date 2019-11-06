@@ -164,9 +164,6 @@ let ones kind dims = create kind dims (Owl_const.one kind)
 let ones_ ~out = Genarray.(fill out (Owl_const.one (kind out)))
 
 
-let eye _kind _n = raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.eye")
-
-
 let shape x = Genarray.dims x
 
 
@@ -186,6 +183,14 @@ let get x index = (Genarray.get x index)
 
 
 let set x index value = (Genarray.set x index value)
+
+
+let eye kind n =
+  let m = zeros kind [|n; n|] in
+  for i = 0 to n - 1 do
+    set m [|i; i|] (Owl_const.one kind)
+  done;
+  m
 
 
 (*TODO: optimise, test *)
