@@ -1021,46 +1021,74 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     and _of_arrays =
       lazy
         (fun a ->
-          (* mode: 0 constant, 1 reverse, 2 tangent *)
-          let mode = ref 0 in
+          (* mode: `normal , `reverse, `forward *)
+          let mode = ref `normal in
           let idxs = ref [] in
           let ai_ref = ref 0 in
-          let cp =
-            Array.mapi
-              (fun i xs ->
-                Array.mapi
-                  (fun j x ->
-                    match x, !mode with
-                    | F _, _                    -> unpack_elt x
-                    | DR (_, _, _, _, ai, _), 0 ->
-                      ai_ref := ai;
-                      mode := 1;
-                      idxs := (i, j) :: !idxs;
-                      unpack_elt x
-                    | DR (_, _, _, _, ai, _), 1 ->
-                      ai_ref := ai;
-                      idxs := (i, j) :: !idxs;
-                      unpack_elt x
-                    | DF (_, _, ai), 0          ->
-                      ai_ref := ai;
-                      mode := 2;
-                      idxs := (i, j) :: !idxs;
-                      unpack_elt x
-                    | DF (_, _, ai), 2          ->
-                      ai_ref := ai;
-                      mode := 2;
-                      unpack_elt x
-                    | _, _                      -> error_uniop
-                                                     "of_arrays: inconsistent array"
-                                                     x)
-                  xs)
-              a
-            |> A.of_arrays
-            |> pack_arr
-          in
+          a
+          (* TODO: the following checks can probably be refactored into ops_builder *)
+          |> Array.iteri (fun i xs ->
+                 Array.iteri
+                   (fun j x ->
+                     match x, !mode with
+                     | F _, _ -> ()
+                     | Arr _, _ ->
+                       error_uniop "of_arrays: array elements should be F not Arr" x
+                     | DR (_, _, _, _, ai, _), `normal ->
+                       mode := `reverse;
+                       ai_ref := ai;
+                       idxs := [ i, j ]
+                     | DR (_, _, _, _, ai, _), `reverse ->
+                       if ai > !ai_ref
+                       then (
+                         idxs := [ i, j ];
+                         ai_ref := ai)
+                       else if ai = !ai_ref
+                       then idxs := (i, j) :: !idxs
+                       else ()
+                     | DR (_, _, _, _, ai, _), `forward ->
+                       if ai > !ai_ref
+                       then (
+                         mode := `reverse;
+                         idxs := [ i, j ];
+                         ai_ref := ai)
+                       else if ai = !ai_ref
+                       then failwith "error: forward and reverse clash on the same level"
+                       else ()
+                     | DF (_, _, ai), `normal ->
+                       mode := `forward;
+                       ai_ref := ai;
+                       idxs := [ i, j ]
+                     | DF (_, _, ai), `reverse ->
+                       if ai > !ai_ref
+                       then (
+                         mode := `forward;
+                         idxs := [ i, j ];
+                         ai_ref := ai)
+                       else if ai = !ai_ref
+                       then failwith "error: forward and reverse clash on the same level"
+                       else ()
+                     | DF (_, _, ai), `forward ->
+                       if ai > !ai_ref
+                       then (
+                         idxs := [ i, j ];
+                         ai_ref := ai)
+                       else if ai = !ai_ref
+                       then idxs := (i, j) :: !idxs
+                       else ())
+                   xs);
           match !mode with
-          | 0 -> cp
-          | 1 ->
+          | `normal  -> Array.map (Array.map unpack_elt) a |> A.of_arrays |> pack_arr
+          | `reverse ->
+            let cp =
+              Array.map
+                (Array.map (fun x ->
+                     match x with
+                     | DR (p, _, _, _, ai, _) -> if ai = !ai_ref then p else x
+                     | x                      -> x))
+                a
+              |> of_arrays
+            in
             let idxs = List.rev !idxs in
             let reverse _cp ca t =
               let ca_arrays = to_arrays !ca in
@@ -1071,15 +1099,22 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             let input t = List.(append (map (fun (i, j) -> a.(i).(j)) idxs) t) in
             let label = "Of_Arrays_D", List.map (fun (i, j) -> a.(i).(j)) idxs in
             DR (cp, ref (zero cp), (reverse, input, label), ref 0, !ai_ref, ref 0)
-          | 2 ->
-            let at =
-              a
-              |> Array.map (Array.map (fun x -> x |> tangent |> unpack_elt))
-              |> A.of_arrays
-              |> pack_arr
+          | `forward ->
+            let cp =
+              Array.map
+                (Array.map (fun x ->
+                     match x with
+                     | DF (p, _, ai) -> if ai = !ai_ref then p else x
+                     | x             -> x))
+                a
+              |> of_arrays
             in
-            DF (cp, at, !ai_ref)
-          | _ -> error_uniop "of_arrays" a.(0).(0))
+            let at =
+              let at = Array.map (Array.map zero) a in
+              List.iter (fun (i, j) -> at.(i).(j) <- tangent a.(i).(j)) !idxs;
+              at |> of_arrays
+            in
+            DF (cp, at, !ai_ref))
 
 
     and of_arrays a = Lazy.force _of_arrays a
@@ -1122,7 +1157,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                 Array.map (fun k -> ca.(k), a.(k)) idxs |> Array.to_list
             end : Aiso))
 
-        and concatenate ~axis = Lazy.force _concatenate ~axis
+
+    and concatenate ~axis = Lazy.force _concatenate ~axis
   end
 
   module Linalg = struct
