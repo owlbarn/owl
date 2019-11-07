@@ -965,8 +965,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                let l = sa.(axis) in
                let dim = Array.length sa in
                ( get_slice
-                   (List.init dim (fun i ->
-                        if i = axis then [ 0; pred l ] else [ 0; -1 ]))
+                   (List.init dim (fun i -> if i = axis then [ 0; pred l ] else [ 0; -1 ]))
                    !ca
                , get_slice
                    (List.init dim (fun i -> if i = axis then [ l; -1 ] else [ 0; -1 ]))
@@ -1051,9 +1050,9 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                       ai_ref := ai;
                       mode := 2;
                       unpack_elt x
-                    | _, _                        -> error_uniop
-                                                       "of_arrays: inconsistent array"
-                                                       x)
+                    | _, _                      -> error_uniop
+                                                     "of_arrays: inconsistent array"
+                                                     x)
                   xs)
               a
             |> A.of_arrays
@@ -1111,83 +1110,19 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and _concatenate =
       lazy
-        (fun ~axis a ->
-          let _, t, mode, idxs =
-            Array.fold_left
-              (fun (i, t, m, idxs) x ->
-                match m, x with
-                | _, F _                     -> assert false
-                | _, Arr _                   -> succ i, t, m, idxs
-                | `n, DR (_, _, _, _, t', _) -> succ i, t', `r, [ i ]
-                | `f, DR (_, _, _, _, t', _) ->
-                  if t' > t
-                  then succ i, t', `r, []
-                  else if t' = t
-                  then failwith "clash"
-                  else succ i, t, `f, idxs
-                | `r, DR (_, _, _, _, t', _) ->
-                  if t' > t
-                  then succ i, t', `r, []
-                  else if t' = t
-                  then succ i, t', `r, i :: idxs
-                  else succ i, t, m, idxs
-                | `n, DF (_, _, t')          -> succ i, t', `f, [ i ]
-                | `f, DF (_, _, t')          ->
-                  if t' > t
-                  then succ i, t', `f, []
-                  else if t' = t
-                  then succ i, t', `f, i :: idxs
-                  else succ i, t, `f, idxs
-                | `r, DF (_, _, t')          ->
-                  if t' > t
-                  then succ i, t', `f, []
-                  else if t' = t
-                  then failwith "clash"
-                  else succ i, t, `r, idxs
-                | _                            -> assert false)
-              (0, -10000, `n, [])
-              a
-          in
-          match mode with
-          | `n -> Array.map unpack_arr a |> A.concatenate ~axis |> pack_arr
-          | `f ->
-            let cp =
-              Array.map
-                (fun x ->
-                  match x with
-                  | DF (p, _, t') -> if t = t' then p else x
-                  | x             -> x)
-                a
-              |> concatenate ~axis
-            in
-            let at =
-              a
-              |> Array.map (fun x -> x |> tangent |> unpack_arr)
-              |> A.concatenate ~axis
-              |> pack_arr
-            in
-            DF (cp, at, t)
-          | `r ->
-            let cp =
-              Array.map
-                (fun x ->
-                  match x with
-                  | DR (p, _, _, _, t', _) -> if t = t' then p else x
-                  | x                      -> x)
-                a
-              |> concatenate ~axis
-            in
-            let idxs = List.rev idxs in
-            let adjoint _cp ca t =
-              let ca_arr = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !ca in
-              t |> List.(append (map (fun i -> ca_arr.(i), a.(i)) idxs))
-            in
-            let register t = List.append List.(map (fun i -> a.(i)) idxs) t in
-            let label = "Concatenate_D", List.(map (fun i -> a.(i)) idxs) in
-            DR (cp, ref (zero cp), (adjoint, register, label), ref 0, t, ref 0))
+        (fun ~axis ->
+          build_aiso
+            (module struct
+              let label = "Concatenate_D"
+              let ff a = Array.map unpack_arr a |> A.concatenate |> pack_arr
+              let df _ _ _ tangents = concatenate ~axis tangents
 
+              let dr idxs a _ ca =
+                let ca = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !ca in
+                Array.map (fun k -> ca.(k), a.(k)) idxs |> Array.to_list
+            end : Aiso))
 
-    and concatenate ~axis = Lazy.force _concatenate ~axis
+        and concatenate ~axis = Lazy.force _concatenate ~axis
   end
 
   module Linalg = struct
@@ -1526,9 +1461,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
            let r = if diag_r then diag r else r in
            let inv_r = if diag_r then pack_flt 1. / r else inv r in
            let atilde =
-             if diag_r
-             then a - (b * inv_r *@ tr_b *@ p)
-             else a - (b *@ inv_r *@ tr_b *@ p)
+             if diag_r then a - (b * inv_r *@ tr_b *@ p) else a - (b *@ inv_r *@ tr_b *@ p)
            in
            let tr_atilde = transpose atilde in
            let dp_da () =
@@ -1554,9 +1487,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
            let tr_b = transpose b in
            let inv_r = if diag_r then pack_flt 1. / diag r else inv r in
            let atilde =
-             if diag_r
-             then a - (b * inv_r *@ tr_b *@ p)
-             else a - (b *@ inv_r *@ tr_b *@ p)
+             if diag_r then a - (b * inv_r *@ tr_b *@ p) else a - (b *@ inv_r *@ tr_b *@ p)
            in
            let s = lyapunov atilde (neg pbar) in
            (* the following calculations are not calculated unless needed *)
@@ -1581,7 +1512,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                let ff a =
                  match unpack a with
                  | Arr a, Arr b, Arr q, Arr r -> A.care ~diag_r a b q r |> pack_arr
-                 | _                                  -> error_uniop "care" a.(0)
+                 | _                          -> error_uniop "care" a.(0)
 
 
                let df idxs p inp tangents =
