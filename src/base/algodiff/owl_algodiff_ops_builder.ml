@@ -343,8 +343,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
   module type Aiso = sig
     val label : string
     val ff : t array -> t
-    val df : int array -> t -> t array -> t array -> t
-    val dr : int array -> t array -> t -> t ref -> (t * t) list
+    val df : int list -> t -> t array -> t array -> t
+    val dr : int list -> t array -> t -> t ref -> (t * t) list
   end
 
   let build_aiso =
@@ -384,7 +384,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     fun (module S : Aiso) ->
       let rec f a =
         let _, t, mode, idxs = build_info a in
-        let idxs = idxs |> List.rev |> Array.of_list in
+        let idxs = idxs |> List.rev in
         match mode with
         | `normal  -> S.ff a
         | `forward ->
@@ -399,7 +399,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           in
           let at =
             let at = a |> Array.map zero in
-            Array.iter (fun k -> at.(k) <- tangent a.(k)) idxs;
+            List.iter (fun k -> at.(k) <- tangent a.(k)) idxs;
             S.df idxs cp a at
           in
           DF (cp, at, t)
@@ -414,8 +414,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             |> f
           in
           let adjoint cp ca t = List.append (S.dr idxs a cp ca) t in
-          let register t = Array.fold_left (fun t i -> a.(i) :: t) t idxs in
-          let label = S.label, Array.(map (fun i -> a.(i)) idxs) |> Array.to_list in
+          let register t = List.fold_left (fun t i -> a.(i) :: t) t idxs in
+          let label = S.label, List.(map (fun i -> a.(i)) idxs) in
           DR (cp, ref (zero cp), (adjoint, register, label), ref 0, t, ref 0)
       in
       f

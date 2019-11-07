@@ -1154,7 +1154,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let dr idxs a _ ca =
                 let ca = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !ca in
-                Array.map (fun k -> ca.(k), a.(k)) idxs |> Array.to_list
+                List.map (fun k -> ca.(k), a.(k)) idxs
             end : Aiso))
 
 
@@ -1555,8 +1555,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                  let a, b, _, r = unpack inp in
                  let at, bt, qt, rt = unpack tangents in
                  let dp = care_forward ~diag_r p a b r at bt qt rt in
-                 Array.map (fun k -> dp.(k) ()) idxs
-                 |> Array.fold_left ( + ) (pack_flt 0.)
+                 List.map (fun k -> dp.(k) ()) idxs |> List.fold_left ( + ) (pack_flt 0.)
 
 
                let dr idxs inp p pbar_ref =
@@ -1565,12 +1564,11 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                    let a, b, q, r = unpack inp in
                    care_backward ~diag_r a b q r p pbar
                  in
-                 Array.map
+                 List.map
                    (fun k ->
                      let bar, x = bars.(k) in
                      bar (), x)
                    idxs
-                 |> Array.to_list
              end : Aiso))
 
 

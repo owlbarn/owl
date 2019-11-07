@@ -113,8 +113,8 @@ module type Sig = sig
   module type Aiso = sig
     val label : string
     val ff : t array -> t
-    val df : int array -> t -> t array -> t array -> t
-    val dr : int array -> t array -> t -> t ref -> (t * t) list
+    val df : int list -> t -> t array -> t array -> t
+    val dr : int list -> t array -> t -> t ref -> (t * t) list
   end
 
   val build_aiso : (module Aiso) -> t array -> t
