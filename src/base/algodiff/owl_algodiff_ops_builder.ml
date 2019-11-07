@@ -32,19 +32,10 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
          cp1 and cp2 has been called such that in reverse_push, we do not update the
          adjoint of ap before we've fully updated both ca1 and ca2 *)
       ( DR
-          ( cp1
-          , ca1_ref
-          , r (a, (cp1_ref, cp2_ref), (ca1_ref, ca2_ref))
-          , ref 0
-          , ai
-          , tracker )
+          (cp1, ca1_ref, r (a, (cp1_ref, cp2_ref), (ca1_ref, ca2_ref)), ref 0, ai, tracker)
       , DR
-          ( cp2
-          , ca2_ref
-          , r (a, (cp1_ref, cp2_ref), (ca1_ref, ca2_ref))
-          , ref 0
-          , ai
-          , tracker ) )
+          (cp2, ca2_ref, r (a, (cp1_ref, cp2_ref), (ca1_ref, ca2_ref)), ref 0, ai, tracker)
+      )
     | ap                      -> ff ap
 
 
@@ -109,31 +100,31 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
   (* pair input single output operation *)
   let op_piso ~ff ~fd ~df_da ~df_db ~df_dab ~r_d_d ~r_d_c ~r_c_d a b =
     match a, b with
-    | F _ap, DF (bp, bt, bi)                           ->
+    | F _ap, DF (bp, bt, bi) ->
       let cp = fd a bp in
       DF (cp, df_db cp a bp bt, bi)
-    | DF (ap, at, ai), F _bp                           ->
+    | DF (ap, at, ai), F _bp ->
       let cp = fd ap b in
       DF (cp, df_da cp ap at b, ai)
-    | Arr _ap, DF (bp, bt, bi)                         ->
+    | Arr _ap, DF (bp, bt, bi) ->
       let cp = fd a bp in
       DF (cp, df_db cp a bp bt, bi)
-    | DF (ap, at, ai), Arr _bp                         ->
+    | DF (ap, at, ai), Arr _bp ->
       let cp = fd ap b in
       DF (cp, df_da cp ap at b, ai)
-    | F _ap, DR (bp, _, _, _, bi, _)                   ->
+    | F _ap, DR (bp, _, _, _, bi, _) ->
       let cp = fd a bp in
       DR (cp, ref (zero cp), r_c_d a b, ref 0, bi, ref 0)
-    | DR (ap, _, _, _, ai, _), F _bp                   ->
+    | DR (ap, _, _, _, ai, _), F _bp ->
       let cp = fd ap b in
       DR (cp, ref (zero cp), r_d_c a b, ref 0, ai, ref 0)
-    | Arr _ap, DR (bp, _, _, _, bi, _)                 ->
+    | Arr _ap, DR (bp, _, _, _, bi, _) ->
       let cp = fd a bp in
       DR (cp, ref (zero cp), r_c_d a b, ref 0, bi, ref 0)
-    | DR (ap, _, _, _, ai, _), Arr _bp                 ->
+    | DR (ap, _, _, _, ai, _), Arr _bp ->
       let cp = fd ap b in
       DR (cp, ref (zero cp), r_d_c a b, ref 0, ai, ref 0)
-    | DF (ap, at, ai), DR (bp, _, _, _, bi, _)         ->
+    | DF (ap, at, ai), DR (bp, _, _, _, bi, _) ->
       (match cmp_tag ai bi with
       | 1  ->
         let cp = fd ap b in
@@ -142,7 +133,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let cp = fd a bp in
         DR (cp, ref (zero cp), r_c_d a b, ref 0, bi, ref 0)
       | _  -> failwith "error: forward and reverse clash at the same level")
-    | DR (ap, _, _, _, ai, _), DF (bp, bt, bi)         ->
+    | DR (ap, _, _, _, ai, _), DF (bp, bt, bi) ->
       (match cmp_tag ai bi with
       | -1 ->
         let cp = fd a bp in
@@ -151,7 +142,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let cp = fd ap b in
         DR (cp, ref (zero cp), r_d_c a b, ref 0, ai, ref 0)
       | _  -> failwith "error: forward and reverse clash at the same level")
-    | DF (ap, at, ai), DF (bp, bt, bi)                 ->
+    | DF (ap, at, ai), DF (bp, bt, bi) ->
       (match cmp_tag ai bi with
       | 0 ->
         let cp = fd ap bp in
@@ -173,7 +164,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
       | _ ->
         let cp = fd a bp in
         DR (cp, ref (zero cp), r_c_d a b, ref 0, bi, ref 0))
-    | a, b                                                 -> ff a b
+    | a, b -> ff a b
 
 
   module type Siso = sig
@@ -310,7 +301,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         | F a, Arr b   -> S.ff_ab a b
         | Arr a, F b   -> S.ff_ba a b
         | Arr a, Arr b -> S.ff_bb a b
-        | _                -> error_binop S.label a b
+        | _            -> error_binop S.label a b
       in
       let fd = f in
       let r_d_d a b =
@@ -393,6 +384,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     fun (module S : Aiso) ->
       let rec f a =
         let _, t, mode, idxs = build_info a in
+        let idxs = idxs |> List.rev |> Array.of_list in
         match mode with
         | `normal  -> S.ff a
         | `forward ->
@@ -406,8 +398,9 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             |> f
           in
           let at =
-            let at = a |> Array.map (fun x -> x |> tangent) in
-            S.df (Array.of_list idxs) cp a at
+            let at = a |> Array.map zero in
+            Array.iter (fun k -> at.(k) <- tangent a.(k)) idxs;
+            S.df idxs cp a at
           in
           DF (cp, at, t)
         | `reverse ->
@@ -420,10 +413,9 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               a
             |> f
           in
-          let idxs = List.rev idxs in
-          let adjoint cp ca t = List.append (S.dr (Array.of_list idxs) a cp ca) t in
-          let register t = List.append List.(map (fun i -> a.(i)) idxs) t in
-          let label = S.label, List.(map (fun i -> a.(i)) idxs) in
+          let adjoint cp ca t = List.append (S.dr idxs a cp ca) t in
+          let register t = Array.fold_left (fun t i -> a.(i) :: t) t idxs in
+          let label = S.label, Array.(map (fun i -> a.(i)) idxs) |> Array.to_list in
           DR (cp, ref (zero cp), (adjoint, register, label), ref 0, t, ref 0)
       in
       f
