@@ -191,4 +191,88 @@ let linsolve_gauss a b =
   a, b
 
 
+(** Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_decomp.py *)
+
+let ludcmp a =
+  let _aref = M.copy a in
+  let lu = M.copy a in
+  let n = (M.shape a).(0) in (* row *)
+  let indx = Array.make n 0 in
+  let vv = Array.make n 0. in
+
+  let tiny = 1.0e-40 in
+  let big = ref 0. in
+  let temp = ref 0. in
+  let d = ref 1.0 in
+
+  let imax = ref 0 in
+
+  for i = 0 to n - 1 do
+    big := 0.;
+    for j = 0 to n - 1 do
+      temp := M.get lu [|i; j|] |> abs_float;
+      if !temp > !big then big := !temp
+    done;
+
+    if (!big = 0.) then failwith "ludcmp: Singular matrix.";
+    vv.(i) <- 1.0 /. !big
+  done;
+
+  for k = 0 to n - 1 do
+    big := 0.;
+    for i = k to n - 1 do
+      temp := (M.get lu [|i; k|] |> abs_float) *. vv.(i);
+      if (!temp > !big) then (
+        big := !temp;
+        imax := i
+      )
+    done;
+
+    if (k != !imax) then (
+      for j = 0 to n - 1 do
+        temp := M.get lu [|!imax; j|];
+        let tmp = M.get lu [|k; j|] in
+        M.set lu [|!imax; j|] tmp;
+        M.set lu [|k; j|] !temp
+      done;
+      d := !d *. (-1.);
+      vv.(!imax) <- vv.(k);
+    );
+
+    indx.(k) <- !imax;
+    if (M.get lu [|k; k|] == 0.) then M.set lu [|k; k|] tiny;
+
+    for i = k + 1 to n - 1 do
+      let tmp0 = M.get lu [|i; k|] in
+      let tmp1 = M.get lu [|k; k|] in
+      temp := tmp0 /. tmp1;
+      for j = k + 1 to n - 1 do
+        let prev = M.get lu [|i; j|] in
+        M.set lu [|i; j|] (prev -. !temp *. (M.get lu [|k; j|]))
+      done
+    done
+  done;
+
+  lu, indx
+
+(*
+
+let lu_solve_vec a b =
+  (*TODO: check shape; b and x are vectors *)
+  let n = (M.shape a).(0) in
+  if ((M.shape b).(0) != n || (M.shape x).(0) != n) then
+    failwith "LUdcmp::solve bad sizes";
+
+  let sum = ref 0. in
+  let x = M.copy b in
+
+  let lu, indx = ludcmp a in
+
+  for i = 0 to n - 1 do
+    let ip = indx.(i) in
+    let sum = x.(ip) in
+    x.(ip) <- x.(i)
+  done
+*)
+
 (* ends here *)
