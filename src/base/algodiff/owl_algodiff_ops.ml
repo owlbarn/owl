@@ -1344,6 +1344,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
     and svd ?(thin = true) = Lazy.force _svd ~thin
+    and sylvester = raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.sylvester")
 
     (* pair outputs single input *)
     and _lyapunov =

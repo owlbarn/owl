@@ -741,6 +741,9 @@ val lq : (float, 'b) t -> (float, 'b) t * (float, 'b) t
 val svd : ?thin:bool -> (float, 'b) t -> (float, 'b) t * (float, 'b) t * (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
+val sylvester : (float, 'b) t -> (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
 val lyapunov : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 

@@ -426,6 +426,8 @@ val lq : arr -> arr * arr
 
 val chol : ?upper:bool -> arr -> arr
 
+val sylvester : arr -> arr -> arr -> arr
+
 val lyapunov : arr -> arr -> arr
 
 val discrete_lyapunov : ?solver:[`default | `direct | `bilinear] -> arr -> arr -> arr

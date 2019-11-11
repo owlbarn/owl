@@ -321,6 +321,8 @@ module type Sig = sig
 
   val lq : arr -> arr * arr
 
+  val sylvester: arr -> arr -> arr -> arr
+
   val lyapunov: arr -> arr -> arr
 
   val discrete_lyapunov: ?solver:[`default | `bilinear | `direct] -> arr -> arr -> arr
