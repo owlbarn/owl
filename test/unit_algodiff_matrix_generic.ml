@@ -177,6 +177,19 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       in
       test_func f
 
+    let sylvester () =
+      let r = Mat.gaussian n n in
+      let identity = Arr Owl.Mat.(eye n) in
+      let f x =
+        let q = Maths.(F 0.5 * (x + transpose x + identity)) in
+        let s = Maths.(r - transpose r) in
+        let p = Maths.(((r + x) *@ transpose (r + x)) + identity) in
+        let a = Maths.((s - (F 0.5 * q)) *@ inv p) in
+        let b = Maths.(a - (x *@ transpose x)) in
+        Linalg.sylvester a b x
+      in
+      test_func f
+
 
     let lyapunov () =
       let r = Mat.gaussian n n in
