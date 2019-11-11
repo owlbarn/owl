@@ -1344,7 +1344,56 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
     and svd ?(thin = true) = Lazy.force _svd ~thin
-    and sylvester = raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.sylvester")
+
+    and _sylvester =
+      lazy
+        (let unpack a = a.(0), a.(1), a.(2) in
+         let sylv_forward p a b _c at bt ct =
+           let dp_da () = sylvester a b (neg at *@ p) in
+           let dp_db () = sylvester a b (neg p *@ bt) in
+           let dp_dc () = sylvester a b ct in
+           [| dp_da; dp_db; dp_dc |]
+         in
+         let sylv_backward a b c p pbar =
+           let st = sylvester (transpose a) (transpose b) (neg pbar) in
+           (* the following calculations are not calculated unless needed *)
+           let abar () = st *@ transpose p in
+           let bbar () = transpose p *@ st in
+           let cbar () = neg st in
+           [| abar, a; bbar, b; cbar, c |]
+         in
+         build_aiso
+           (module struct
+             let label = "sylvester"
+
+             let ff a =
+               match unpack a with
+               | Arr a, Arr b, Arr c -> A.sylvester a b c |> pack_arr
+               | _                   -> error_uniop "sylvester" a.(0)
+
+
+             let df idxs p inp tangents =
+               let a, b, c = unpack inp in
+               let at, bt, ct = unpack tangents in
+               let dp = sylv_forward p a b c at bt ct in
+               List.map (fun k -> dp.(k) ()) idxs |> List.fold_left ( + ) (pack_flt 0.)
+
+
+             let dr idxs inp p pbar_ref =
+               let pbar = !pbar_ref in
+               let bars =
+                 let a, b, c = unpack inp in
+                 sylv_backward a b c p pbar
+               in
+               List.map
+                 (fun k ->
+                   let bar, x = bars.(k) in
+                   bar (), x)
+                 idxs
+           end : Aiso))
+
+
+    and sylvester a b c = Lazy.force _sylvester [| a; b; c |]
 
     (* pair outputs single input *)
     and _lyapunov =

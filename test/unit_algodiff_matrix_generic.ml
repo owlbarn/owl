@@ -11,7 +11,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   open AlgoM
 
   let n = 3
-  let n_samples = 20
+  let n_samples = 10 
   let threshold = 1E-6
   let eps = 1E-5
 
@@ -179,16 +179,12 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
     let sylvester () =
       let r = Mat.gaussian n n in
-      let identity = Arr Owl.Mat.(eye n) in
-      let f x =
-        let q = Maths.(F 0.5 * (x + transpose x + identity)) in
-        let s = Maths.(r - transpose r) in
-        let p = Maths.(((r + x) *@ transpose (r + x)) + identity) in
-        let a = Maths.((s - (F 0.5 * q)) *@ inv p) in
-        let b = Maths.(a - (x *@ transpose x)) in
-        Linalg.sylvester a b x
-      in
-      test_func f
+      let b = Mat.gaussian n n in 
+      let f x = 
+        let a = Maths.(x + r) in
+        let c = Maths.(a *@ x + x *@ b) in
+        Linalg.sylvester a x c in
+    test_func f
 
 
     let lyapunov () =
@@ -320,6 +316,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; "of_arrays", `Slow, of_arrays
       ; "to_arrays", `Slow, to_arrays
       ; "init_2d", `Slow, init_2d
+      ; "sylvester", `Slow, sylvester
       ; "lyapunov", `Slow, lyapunov
       ; "discrete_lyapunov", `Slow, discrete_lyapunov
       ; "linsolve", `Slow, linsolve
