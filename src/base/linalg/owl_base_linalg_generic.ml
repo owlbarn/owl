@@ -193,20 +193,23 @@ let linsolve_gauss a b =
 
 (** Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_decomp.py *)
 
+(* Linear equation solution by Gauss-Jordan elimination.
+ * Input matrix: a[n][n]
+ *)
 let ludcmp a =
   let _aref = M.copy a in
   let lu = M.copy a in
   let n = (M.shape a).(0) in (* row *)
   let indx = Array.make n 0 in
-  let vv = Array.make n 0. in
+  let vv = Array.make n 0. in (* implicit scaling of each row *)
 
   let tiny = 1.0e-40 in
   let big = ref 0. in
   let temp = ref 0. in
-  let d = ref 1.0 in
-
+  let d = ref 1.0 in (* flag of row exchange *)
   let imax = ref 0 in
 
+  (* loop over rows to get the implicit scaling information *)
   for i = 0 to n - 1 do
     big := 0.;
     for j = 0 to n - 1 do
@@ -220,6 +223,8 @@ let ludcmp a =
 
   for k = 0 to n - 1 do
     big := 0.;
+    imax := k;
+    (* choose suitable pivot *)
     for i = k to n - 1 do
       temp := (M.get lu [|i; k|] |> abs_float) *. vv.(i);
       if (!temp > !big) then (
@@ -227,8 +232,8 @@ let ludcmp a =
         imax := i
       )
     done;
-
-    if (k != !imax) then (
+    (* interchange rows *)
+    if (k <> !imax) then (
       for j = 0 to n - 1 do
         temp := M.get lu [|!imax; j|];
         let tmp = M.get lu [|k; j|] in
@@ -240,7 +245,7 @@ let ludcmp a =
     );
 
     indx.(k) <- !imax;
-    if (M.get lu [|k; k|] == 0.) then M.set lu [|k; k|] tiny;
+    if (M.get lu [|k; k|] = 0.) then M.set lu [|k; k|] tiny;
 
     for i = k + 1 to n - 1 do
       let tmp0 = M.get lu [|i; k|] in
