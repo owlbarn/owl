@@ -11,7 +11,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   open AlgoM
 
   let n = 3
-  let n_samples = 10 
+  let n_samples = 20 
   let threshold = 1E-6
   let eps = 1E-5
 
@@ -178,10 +178,11 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       test_func f
 
     let sylvester () =
-      let r = Mat.gaussian n n in
-      let b = Mat.gaussian n n in 
+      let r1 = Mat.gaussian n n in
+      let r2 = Mat.gaussian n n in
       let f x = 
-        let a = Maths.(x + r) in
+        let a = Maths.(x + r1) in
+        let b = Maths.(x + r2) in
         let c = Maths.(a *@ x + x *@ b) in
         Linalg.sylvester a x c in
     test_func f
