@@ -398,9 +398,10 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             |> f
           in
           let at =
+            let ap = a |> Array.map primal in
             let at = a |> Array.map zero in
             List.iter (fun k -> at.(k) <- tangent a.(k)) idxs;
-            S.df idxs cp a at
+            S.df idxs cp ap at
           in
           DF (cp, at, t)
         | `reverse ->
