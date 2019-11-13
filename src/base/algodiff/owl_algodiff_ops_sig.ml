@@ -249,6 +249,9 @@ module type Sig = sig
     val svd : ?thin:bool -> t -> t * t * t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val sylvester : t -> t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val lyapunov : t -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

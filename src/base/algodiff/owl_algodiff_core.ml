@@ -144,10 +144,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   let type_info x =
     match x with
     | F _a                          -> Printf.sprintf "[%s]" (deep_info x)
-    | DF (ap, _at, ai)              -> Printf.sprintf
-                                         "[DF tag:%i ap:%s]"
-                                         ai
-                                         (deep_info ap)
+    | DF (ap, _at, ai)              -> Printf.sprintf "[DF tag:%i ap:%s]" ai (deep_info ap)
     | DR (ap, _at, _ao, _af, ai, _) ->
       Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
     | _                             -> Printf.sprintf "[%s]" (deep_info x)

@@ -524,6 +524,9 @@ module type Sig = sig
   val svd : ?thin:bool -> arr -> arr * arr * arr
   (** TODO *)
 
+  val sylvester: arr -> arr -> arr -> arr
+  (** TODO *)
+
   val lyapunov : arr -> arr -> arr
   (** TODO *)
 

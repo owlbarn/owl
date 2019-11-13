@@ -5001,6 +5001,9 @@ let svd ?(thin=true) _x =
   thin |> ignore;
   raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.svd")
 
+let sylvester _a _b _c =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.sylvester")
+
 let lyapunov _a _q =
   raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.lyapunov")
 

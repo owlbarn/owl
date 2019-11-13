@@ -965,8 +965,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                let l = sa.(axis) in
                let dim = Array.length sa in
                ( get_slice
-                   (List.init dim (fun i ->
-                        if i = axis then [ 0; pred l ] else [ 0; -1 ]))
+                   (List.init dim (fun i -> if i = axis then [ 0; pred l ] else [ 0; -1 ]))
                    !ca
                , get_slice
                    (List.init dim (fun i -> if i = axis then [ l; -1 ] else [ 0; -1 ]))
@@ -1022,46 +1021,74 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     and _of_arrays =
       lazy
         (fun a ->
-          (* mode: 0 constant, 1 reverse, 2 tangent *)
-          let mode = ref 0 in
+          (* mode: `normal , `reverse, `forward *)
+          let mode = ref `normal in
           let idxs = ref [] in
           let ai_ref = ref 0 in
-          let cp =
-            Array.mapi
-              (fun i xs ->
-                Array.mapi
-                  (fun j x ->
-                    match x, !mode with
-                    | F _, _                    -> unpack_elt x
-                    | DR (_, _, _, _, ai, _), 0 ->
-                      ai_ref := ai;
-                      mode := 1;
-                      idxs := (i, j) :: !idxs;
-                      unpack_elt x
-                    | DR (_, _, _, _, ai, _), 1 ->
-                      ai_ref := ai;
-                      idxs := (i, j) :: !idxs;
-                      unpack_elt x
-                    | DF (_, _, ai), 0          ->
-                      ai_ref := ai;
-                      mode := 2;
-                      idxs := (i, j) :: !idxs;
-                      unpack_elt x
-                    | DF (_, _, ai), 2          ->
-                      ai_ref := ai;
-                      mode := 2;
-                      unpack_elt x
-                    | _, _                        -> error_uniop
-                                                       "of_arrays: inconsistent array"
-                                                       x)
-                  xs)
-              a
-            |> A.of_arrays
-            |> pack_arr
-          in
+          a
+          (* TODO: the following checks can probably be refactored into ops_builder *)
+          |> Array.iteri (fun i xs ->
+                 Array.iteri
+                   (fun j x ->
+                     match x, !mode with
+                     | F _, _ -> ()
+                     | Arr _, _ ->
+                       error_uniop "of_arrays: array elements should be F not Arr" x
+                     | DR (_, _, _, _, ai, _), `normal ->
+                       mode := `reverse;
+                       ai_ref := ai;
+                       idxs := [ i, j ]
+                     | DR (_, _, _, _, ai, _), `reverse ->
+                       if ai > !ai_ref
+                       then (
+                         idxs := [ i, j ];
+                         ai_ref := ai)
+                       else if ai = !ai_ref
+                       then idxs := (i, j) :: !idxs
+                       else ()
+                     | DR (_, _, _, _, ai, _), `forward ->
+                       if ai > !ai_ref
+                       then (
+                         mode := `reverse;
+                         idxs := [ i, j ];
+                         ai_ref := ai)
+                       else if ai = !ai_ref
+                       then failwith "error: forward and reverse clash on the same level"
+                       else ()
+                     | DF (_, _, ai), `normal ->
+                       mode := `forward;
+                       ai_ref := ai;
+                       idxs := [ i, j ]
+                     | DF (_, _, ai), `reverse ->
+                       if ai > !ai_ref
+                       then (
+                         mode := `forward;
+                         idxs := [ i, j ];
+                         ai_ref := ai)
+                       else if ai = !ai_ref
+                       then failwith "error: forward and reverse clash on the same level"
+                       else ()
+                     | DF (_, _, ai), `forward ->
+                       if ai > !ai_ref
+                       then (
+                         idxs := [ i, j ];
+                         ai_ref := ai)
+                       else if ai = !ai_ref
+                       then idxs := (i, j) :: !idxs
+                       else ())
+                   xs);
           match !mode with
-          | 0 -> cp
-          | 1 ->
+          | `normal  -> Array.map (Array.map unpack_elt) a |> A.of_arrays |> pack_arr
+          | `reverse ->
+            let cp =
+              Array.map
+                (Array.map (fun x ->
+                     match x with
+                     | DR (p, _, _, _, ai, _) -> if ai = !ai_ref then p else x
+                     | x                      -> x))
+                a
+              |> of_arrays
+            in
             let idxs = List.rev !idxs in
             let reverse _cp ca t =
               let ca_arrays = to_arrays !ca in
@@ -1072,15 +1099,22 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             let input t = List.(append (map (fun (i, j) -> a.(i).(j)) idxs) t) in
             let label = "Of_Arrays_D", List.map (fun (i, j) -> a.(i).(j)) idxs in
             DR (cp, ref (zero cp), (reverse, input, label), ref 0, !ai_ref, ref 0)
-          | 2 ->
-            let at =
-              a
-              |> Array.map (Array.map (fun x -> x |> tangent |> unpack_elt))
-              |> A.of_arrays
-              |> pack_arr
+          | `forward ->
+            let cp =
+              Array.map
+                (Array.map (fun x ->
+                     match x with
+                     | DF (p, _, ai) -> if ai = !ai_ref then p else x
+                     | x             -> x))
+                a
+              |> of_arrays
             in
-            DF (cp, at, !ai_ref)
-          | _ -> error_uniop "of_arrays" a.(0).(0))
+            let at =
+              let at = Array.map (Array.map zero) a in
+              List.iter (fun (i, j) -> at.(i).(j) <- tangent a.(i).(j)) !idxs;
+              at |> of_arrays
+            in
+            DF (cp, at, !ai_ref))
 
 
     and of_arrays a = Lazy.force _of_arrays a
@@ -1111,80 +1145,17 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and _concatenate =
       lazy
-        (fun ~axis a ->
-          let _, t, mode, idxs =
-            Array.fold_left
-              (fun (i, t, m, idxs) x ->
-                match m, x with
-                | _, F _                     -> assert false
-                | _, Arr _                   -> succ i, t, m, idxs
-                | `n, DR (_, _, _, _, t', _) -> succ i, t', `r, [ i ]
-                | `f, DR (_, _, _, _, t', _) ->
-                  if t' > t
-                  then succ i, t', `r, []
-                  else if t' = t
-                  then failwith "clash"
-                  else succ i, t, `f, idxs
-                | `r, DR (_, _, _, _, t', _) ->
-                  if t' > t
-                  then succ i, t', `r, []
-                  else if t' = t
-                  then succ i, t', `r, i :: idxs
-                  else succ i, t, m, idxs
-                | `n, DF (_, _, t')          -> succ i, t', `f, [ i ]
-                | `f, DF (_, _, t')          ->
-                  if t' > t
-                  then succ i, t', `f, []
-                  else if t' = t
-                  then succ i, t', `f, i :: idxs
-                  else succ i, t, `f, idxs
-                | `r, DF (_, _, t')          ->
-                  if t' > t
-                  then succ i, t', `f, []
-                  else if t' = t
-                  then failwith "clash"
-                  else succ i, t, `r, idxs
-                | _                            -> assert false)
-              (0, -10000, `n, [])
-              a
-          in
-          match mode with
-          | `n -> Array.map unpack_arr a |> A.concatenate ~axis |> pack_arr
-          | `f ->
-            let cp =
-              Array.map
-                (fun x ->
-                  match x with
-                  | DF (p, _, t') -> if t = t' then p else x
-                  | x             -> x)
-                a
-              |> concatenate ~axis
-            in
-            let at =
-              a
-              |> Array.map (fun x -> x |> tangent |> unpack_arr)
-              |> A.concatenate ~axis
-              |> pack_arr
-            in
-            DF (cp, at, t)
-          | `r ->
-            let cp =
-              Array.map
-                (fun x ->
-                  match x with
-                  | DR (p, _, _, _, t', _) -> if t = t' then p else x
-                  | x                      -> x)
-                a
-              |> concatenate ~axis
-            in
-            let idxs = List.rev idxs in
-            let adjoint _cp ca t =
-              let ca_arr = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !ca in
-              t |> List.(append (map (fun i -> ca_arr.(i), a.(i)) idxs))
-            in
-            let register t = List.append List.(map (fun i -> a.(i)) idxs) t in
-            let label = "Concatenate_D", List.(map (fun i -> a.(i)) idxs) in
-            DR (cp, ref (zero cp), (adjoint, register, label), ref 0, t, ref 0))
+        (fun ~axis ->
+          build_aiso
+            (module struct
+              let label = "Concatenate_D"
+              let ff a = Array.map unpack_arr a |> A.concatenate |> pack_arr
+              let df _ _ _ tangents = concatenate ~axis tangents
+
+              let dr idxs a _ ca =
+                let ca = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !ca in
+                List.map (fun k -> ca.(k), a.(k)) idxs
+            end : Aiso))
 
 
     and concatenate ~axis = Lazy.force _concatenate ~axis
@@ -1374,6 +1345,56 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and svd ?(thin = true) = Lazy.force _svd ~thin
 
+    and _sylvester =
+      lazy
+        (let unpack a = a.(0), a.(1), a.(2) in
+         let sylv_forward p a b _c at bt ct =
+           let dp_da () = sylvester a b (neg at *@ p) in
+           let dp_db () = sylvester a b (neg p *@ bt) in
+           let dp_dc () = sylvester a b ct in
+           [| dp_da; dp_db; dp_dc |]
+         in
+         let sylv_backward a b c p pbar =
+           let st = sylvester (transpose a) (transpose b) (neg pbar) in
+           (* the following calculations are not calculated unless needed *)
+           let abar () = st *@ transpose p in
+           let bbar () = transpose p *@ st in
+           let cbar () = neg st in
+           [| abar, a; bbar, b; cbar, c |]
+         in
+         build_aiso
+           (module struct
+             let label = "sylvester"
+
+             let ff a =
+               match unpack a with
+               | Arr a, Arr b, Arr c -> A.sylvester a b c |> pack_arr
+               | _                   -> error_uniop "sylvester" a.(0)
+
+
+             let df idxs p inp tangents =
+               let a, b, c = unpack inp in
+               let at, bt, ct = unpack tangents in
+               let dp = sylv_forward p a b c at bt ct in
+               List.map (fun k -> dp.(k) ()) idxs |> List.fold_left ( + ) (pack_flt 0.)
+
+
+             let dr idxs inp p pbar_ref =
+               let pbar = !pbar_ref in
+               let bars =
+                 let a, b, c = unpack inp in
+                 sylv_backward a b c p pbar
+               in
+               List.map
+                 (fun k ->
+                   let bar, x = bars.(k) in
+                   bar (), x)
+                 idxs
+           end : Aiso))
+
+
+    and sylvester a b c = Lazy.force _sylvester [| a; b; c |]
+
     (* pair outputs single input *)
     and _lyapunov =
       let _lyapunov_backward_a a ca cp =
@@ -1526,9 +1547,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
            let r = if diag_r then diag r else r in
            let inv_r = if diag_r then pack_flt 1. / r else inv r in
            let atilde =
-             if diag_r
-             then a - (b * inv_r *@ tr_b *@ p)
-             else a - (b *@ inv_r *@ tr_b *@ p)
+             if diag_r then a - (b * inv_r *@ tr_b *@ p) else a - (b *@ inv_r *@ tr_b *@ p)
            in
            let tr_atilde = transpose atilde in
            let dp_da () =
@@ -1554,9 +1573,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
            let tr_b = transpose b in
            let inv_r = if diag_r then pack_flt 1. / diag r else inv r in
            let atilde =
-             if diag_r
-             then a - (b * inv_r *@ tr_b *@ p)
-             else a - (b *@ inv_r *@ tr_b *@ p)
+             if diag_r then a - (b * inv_r *@ tr_b *@ p) else a - (b *@ inv_r *@ tr_b *@ p)
            in
            let s = lyapunov atilde (neg pbar) in
            (* the following calculations are not calculated unless needed *)
@@ -1581,15 +1598,14 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                let ff a =
                  match unpack a with
                  | Arr a, Arr b, Arr q, Arr r -> A.care ~diag_r a b q r |> pack_arr
-                 | _                                  -> error_uniop "care" a.(0)
+                 | _                          -> error_uniop "care" a.(0)
 
 
                let df idxs p inp tangents =
                  let a, b, _, r = unpack inp in
                  let at, bt, qt, rt = unpack tangents in
                  let dp = care_forward ~diag_r p a b r at bt qt rt in
-                 Array.map (fun k -> dp.(k) ()) idxs
-                 |> Array.fold_left ( + ) (pack_flt 0.)
+                 List.map (fun k -> dp.(k) ()) idxs |> List.fold_left ( + ) (pack_flt 0.)
 
 
                let dr idxs inp p pbar_ref =
@@ -1598,12 +1614,11 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                    let a, b, q, r = unpack inp in
                    care_backward ~diag_r a b q r p pbar
                  in
-                 Array.map
+                 List.map
                    (fun k ->
                      let bar, x = bars.(k) in
                      bar (), x)
                    idxs
-                 |> Array.to_list
              end : Aiso))
 
 
