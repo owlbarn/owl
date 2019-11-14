@@ -24,11 +24,11 @@ build: [
 depends: [
   "ocaml" {>= "4.06.0"}
   "alcotest" {with-test}
-  "base" {>= "1.7.0" & build}
+  "base" {build}
   "base-bigarray"
   "conf-openblas" {>= "0.2.0"}
   "ctypes"
-  "dune" {build & >= "1.2.1"}
+  "dune" {build & >= "1.7.0"}
   "eigen" {>= "0.1.0"}
   "owl-base" {>= version}
   "stdio" {build}
