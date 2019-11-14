@@ -22,7 +22,7 @@ build: [
 
 depends: [
   "ocaml" {>= "4.06.0"}
-  "dune" {>= "1.7.0" & build}
+  "dune" {>= "1.7.0"}
   "owl" {>= "0.5.0"}
   "plplot"
 ]
