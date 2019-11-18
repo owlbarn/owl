@@ -70,6 +70,28 @@ module To_test_gauss = struct
 
 end
 
+module To_test_gauss = struct
+
+  let test01 () =
+    let x = N.of_array [|7.;3.;-1.;2.;3.;8.;1.;-4.;-1.;1.;4.;-1.;2.;-4.;-1.;6.|] [|4;4|]
+    let l, u, p = L.lu x in
+    let l_expected = N.of_array
+      [|1.0; 0.; 0.;, 0.; 0.42857142857142855; 1.0; 0.0; 0.0;
+      -0.14285714285714285; 0.2127659574468085; 1.0; 0.0; 0.2857142857142857;
+      -0.7234042553191489; 0.0898203592814371; 1.0|]
+    in
+    let u_expected = N.of_array
+      [|7.0; 3.0; -1.0; 2.0; 0.0; 6.714285714285714; 1.4285714285714286;
+       -4.857142857142857; 0.0; 0.0; 3.5531914893617023; 0.31914893617021267;
+       0.0; 0.0; 0.0; 1.88622754491018|]
+    in
+    let flag01 = approx_equal l l_expected in
+    let flag02 = approx_equal u u_expected in
+    let flag03 = p = [|0;1;2;3|] in
+    flag01 && flag02 && flag03
+
+end
+
 
 let test_gauss_01 () =
   Alcotest.(check bool) "test_guass_01" true (To_test_gauss.test01 ())

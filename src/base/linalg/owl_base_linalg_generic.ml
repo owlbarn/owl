@@ -196,7 +196,7 @@ let linsolve_gauss a b =
 (* Linear equation solution by Gauss-Jordan elimination.
  * Input matrix: a[n][n]
  *)
-let ludcmp a =
+let lu_base a =
   let _aref = M.copy a in
   let lu = M.copy a in
   let n = (M.shape a).(0) in (* row *)
@@ -223,7 +223,6 @@ let ludcmp a =
 
   for k = 0 to n - 1 do
     big := 0.;
-    imax := k;
     (* choose suitable pivot *)
     for i = k to n - 1 do
       temp := (M.get lu [|i; k|] |> abs_float) *. vv.(i);
@@ -257,8 +256,25 @@ let ludcmp a =
       done
     done
   done;
-
+  M.print lu;
   lu, indx
+
+
+let lu a =
+  let k = M.kind a in
+  let lu, indx = lu_base a in
+  let n = (M.shape lu).(0) in
+  let m = (M.shape lu).(1) in
+  assert (n = m && n >= 2);
+  let l = M.eye k n in
+  for r = 1 to n - 1 do
+    for c = 0 to r - 1 do
+      let v = M.get lu [|r; c|] in
+      M.set l [|r; c|] v;
+      M.set lu [|r; c|] 0.;
+    done
+  done;
+  l, lu, indx
 
 (*
 
