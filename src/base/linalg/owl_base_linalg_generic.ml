@@ -196,7 +196,7 @@ let linsolve_gauss a b =
 (* Linear equation solution by Gauss-Jordan elimination.
  * Input matrix: a[n][n]
  *)
-let lu_base a =
+let _lu_base a =
   let _aref = M.copy a in
   let lu = M.copy a in
   let n = (M.shape a).(0) in (* row *)
@@ -250,19 +250,21 @@ let lu_base a =
       let tmp0 = M.get lu [|i; k|] in
       let tmp1 = M.get lu [|k; k|] in
       temp := tmp0 /. tmp1;
+      M.set lu [|i; k|] !temp; (* ? *)
       for j = k + 1 to n - 1 do
         let prev = M.get lu [|i; j|] in
         M.set lu [|i; j|] (prev -. !temp *. (M.get lu [|k; j|]))
       done
     done
   done;
-  M.print lu;
+
   lu, indx
 
+  (* What the hell is this indx? how to change it to a "permutation matrix"? *)
 
 let lu a =
   let k = M.kind a in
-  let lu, indx = lu_base a in
+  let lu, indx = _lu_base a in
   let n = (M.shape lu).(0) in
   let m = (M.shape lu).(1) in
   assert (n = m && n >= 2);
