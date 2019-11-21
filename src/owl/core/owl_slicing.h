@@ -12,7 +12,7 @@
 struct slice_pair {
   int64_t dim;          // number of dimensions, x and y must be the same
   int64_t dep;          // the depth of current recursion.
-  int64_t *n;           // number of iteration in each dimension, i.e. y's shape
+  intnat *n;            // number of iteration in each dimension, i.e. y's shape
   void *x;              // x, source if operation is get, destination if set.
   int64_t posx;         // current offest of x.
   int64_t *ofsx;        // offset of x in each dimension.
@@ -45,7 +45,7 @@ struct slice_pair {
 struct fancy_pair {
   int64_t dim;          // number of dimensions, x and y must be the same
   int64_t dep;          // the depth of current recursion.
-  int64_t *n;           // number of iteration in each dimension, i.e. y's shape
+  intnat *n;            // number of iteration in each dimension, i.e. y's shape
   int64_t *slice;       // (a,b,c) triplet, if a >= 0 then normal slice.
   int64_t *index;       // combined use with slice, check the details above.
   void *x;              // x, source if operation is get, destination if set.
