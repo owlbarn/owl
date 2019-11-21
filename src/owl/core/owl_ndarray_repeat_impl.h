@@ -37,10 +37,10 @@ CAMLprim value FUNCTION (stub, repeat_native) (
     return Val_unit;
   }
 
-  int stride_y[highest_dim + 1];
+  int64_t stride_y[highest_dim + 1];
   c_ndarray_stride(Y, stride_y);
 
-  int slice_x[highest_dim + 1];
+  int64_t slice_x[highest_dim + 1];
   c_ndarray_slice(X, slice_x);
 
   int HD = highest_dim + 1; /* Highest non-one-repeat dimension */
@@ -194,7 +194,7 @@ CAMLprim value FUNCTION (stub, tile_native) (
     return Val_unit;
   }
 
-  int slice_x[highest_dim + 1];
+  int64_t slice_x[highest_dim + 1];
   c_ndarray_slice(X, slice_x);
 
   int block_idx[highest_dim + 1]; /* Block size for copy in each dimension */

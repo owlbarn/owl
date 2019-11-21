@@ -1496,10 +1496,10 @@ let transpose ?axis x =
       let b = Array.make d 0 in
       Array.iteri (fun i j -> b.(j) <- i) a;
       let _incy = strides y in
-      let _incy = Array.map (fun j -> Int32.of_int _incy.(j)) b in
-      let _incx = Array.map Int32.of_int (strides x) in
-      let incx = Array1.of_array Int32 C_layout _incx |> genarray_of_array1 in
-      let incy = Array1.of_array Int32 C_layout _incy |> genarray_of_array1 in
+      let _incy = Array.map (fun j -> Int64.of_int _incy.(j)) b in
+      let _incx = Array.map Int64.of_int (strides x) in
+      let incx = Array1.of_array Int64 C_layout _incx |> genarray_of_array1 in
+      let incy = Array1.of_array Int64 C_layout _incy |> genarray_of_array1 in
       Owl_ndarray._ndarray_transpose (kind x) x y incx incy;
       y
     )
@@ -1525,10 +1525,10 @@ let transpose_ ~out ?axis x =
       let b = Array.make d 0 in
       Array.iteri (fun i j -> b.(j) <- i) a;
       let _incy = Owl_utils.calc_stride sy in
-      let _incy = Array.map (fun j -> Int32.of_int _incy.(j)) b in
-      let _incx = Array.map Int32.of_int (strides x) in
-      let incx = Array1.of_array Int32 C_layout _incx |> genarray_of_array1 in
-      let incy = Array1.of_array Int32 C_layout _incy |> genarray_of_array1 in
+      let _incy = Array.map (fun j -> Int64.of_int _incy.(j)) b in
+      let _incx = Array.map Int64.of_int (strides x) in
+      let incx = Array1.of_array Int64 C_layout _incx |> genarray_of_array1 in
+      let incy = Array1.of_array Int64 C_layout _incy |> genarray_of_array1 in
       Owl_ndarray._ndarray_transpose (kind x) x out incx incy
     )
   )
