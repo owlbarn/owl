@@ -70,21 +70,25 @@ module To_test_gauss = struct
 
 end
 
+
 module To_test_lu = struct
 
   (* change the permutation index vector to matrix; perhaps should be included in main code. *)
   let perm_vec_to_mat vec =
     let n = Array.length vec in
     let mat = ref (N.eye n) in
-    Array.iteri (fun i j ->
+    (* reverse the permutation order *)
+    for i = n - 1 downto 0 do
+      let j = vec.(i) in
       let a = N.eye n in
       N.set a [|i; i|] 0.;
       N.set a [|j; j|] 0.;
       N.set a [|i; j|] 1.;
       N.set a [|j; i|] 1.;
       mat := N.dot a !mat
-    ) vec;
+    done;
     !mat
+
 
   (* Src: https://www.quantstart.com/articles/LU-Decomposition-in-Python-and-NumPy *)
   let test01 () =
@@ -116,9 +120,9 @@ module To_test_lu = struct
 
 
   let test03 () =
-    let n = 10 in
+    let n = 20 in
     let flag = ref true in
-    for i = 0 to 1 do
+    for i = 0 to 9 do
       let x = N.uniform [|n; n|] in
       let l, u, perm = L.lu x in
       let perm_mat = perm_vec_to_mat perm in
@@ -127,6 +131,12 @@ module To_test_lu = struct
       flag := !flag && f
     done;
     !flag
+
+  let test01 () =
+    let a = N.of_array [|1.;20.;-30.;4.|] [|2;2|] in
+    let b = N.of_array [|1.;0.|] [|2|]in
+    let x = L.lu_solve_vec a b in
+    approx_equal (N.dot a x) b
 
 end
 
@@ -160,5 +170,5 @@ let test_set = [
   "test_gauss_04", `Slow, test_gauss_04;
   "test_lu_01",    `Slow, test_lu_01;
   "test_lu_02",    `Slow, test_lu_02;
-  (* "test_lu_03",    `Slow, test_lu_03; --> does not work *)
+  "test_lu_03",    `Slow, test_lu_03;
 ]

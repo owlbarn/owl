@@ -277,24 +277,43 @@ let lu a =
   done;
   l, lu, indx
 
-(*
 
 let lu_solve_vec a b =
   (*TODO: check shape; b and x are vectors *)
+  assert (Array.length (M.shape b) = 1);
   let n = (M.shape a).(0) in
-  if ((M.shape b).(0) != n || (M.shape x).(0) != n) then
+  if ((M.shape b).(0) != n) then
     failwith "LUdcmp::solve bad sizes";
 
+  let ii = ref 0 in
   let sum = ref 0. in
   let x = M.copy b in
 
-  let lu, indx = ludcmp a in
+  let lu, indx = _lu_base a in
 
   for i = 0 to n - 1 do
     let ip = indx.(i) in
-    let sum = x.(ip) in
-    x.(ip) <- x.(i)
-  done
-*)
+    sum := M.get x [|ip|];
+    M.set x [|ip|] (M.get x [|i|]);
+    if (!ii <> 0) then (
+      for j = !ii - 1 to i - 1 do
+        sum := !sum -. (M.get lu [|i;j|]) *. (M.get x [|j|])
+      done
+    ) else if (!sum <> 0. ) then (
+      ii := !ii + 1
+    );
+    M.set x [|i|] !sum;
+  done;
+
+  for i = n - 1 downto 0 do
+    sum := M.get x [|i|];
+    for j = i + 1 to n do
+      sum := !sum -. (M.get lu [|i;j|]) *. (M.get x [|j|])
+    done;
+    M.set x [|i|] (!sum /. (M.get lu [|i; i|]))
+  done;
+
+  x
+
 
 (* ends here *)
