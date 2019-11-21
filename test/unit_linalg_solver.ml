@@ -72,6 +72,20 @@ end
 
 module To_test_lu = struct
 
+  (* change the permutation index vector to matrix; perhaps should be included in main code. *)
+  let perm_vec_to_mat vec =
+    let n = Array.length vec in
+    let mat = ref (N.eye n) in
+    Array.iteri (fun i j ->
+      let a = N.eye n in
+      N.set a [|i; i|] 0.;
+      N.set a [|j; j|] 0.;
+      N.set a [|i; j|] 1.;
+      N.set a [|j; i|] 1.;
+      mat := N.dot a !mat
+    ) vec;
+    !mat
+
   (* Src: https://www.quantstart.com/articles/LU-Decomposition-in-Python-and-NumPy *)
   let test01 () =
     let x = N.of_array [|7.;3.;-1.;2.;3.;8.;1.;-4.;-1.;1.;4.;-1.;2.;-4.;-1.;6.|] [|4;4|] in
@@ -91,6 +105,29 @@ module To_test_lu = struct
     let flag03 = p = [|0;1;2;3|] in
     flag01 && flag02 && flag03
 
+
+  let test02 () =
+    let x = N.of_array [|1.;2.;3.;1.;2.;3.;2.;5.;6.|] [|3;3|] in
+    let l, u, perm = L.lu x in
+    let perm_mat = perm_vec_to_mat perm in
+    let result = N.dot (N.dot perm_mat l) u in
+    let flag = approx_equal result x in
+    flag
+
+
+  let test03 () =
+    let n = 10 in
+    let flag = ref true in
+    for i = 0 to 1 do
+      let x = N.uniform [|n; n|] in
+      let l, u, perm = L.lu x in
+      let perm_mat = perm_vec_to_mat perm in
+      let result = N.dot (N.dot perm_mat l) u in
+      let f = approx_equal result x in
+      flag := !flag && f
+    done;
+    !flag
+
 end
 
 
@@ -109,6 +146,12 @@ let test_gauss_04 () =
 let test_lu_01 () =
   Alcotest.(check bool) "test_lu_01" true (To_test_lu.test01 ())
 
+let test_lu_02 () =
+  Alcotest.(check bool) "test_lu_02" true (To_test_lu.test02 ())
+
+let test_lu_03 () =
+  Alcotest.(check bool) "test_lu_03" true (To_test_lu.test03 ())
+
 
 let test_set = [
   "test_gauss_01", `Slow, test_gauss_01;
@@ -116,4 +159,6 @@ let test_set = [
   "test_gauss_03", `Slow, test_gauss_03;
   "test_gauss_04", `Slow, test_gauss_04;
   "test_lu_01",    `Slow, test_lu_01;
+  "test_lu_02",    `Slow, test_lu_02;
+  (* "test_lu_03",    `Slow, test_lu_03; --> does not work *)
 ]

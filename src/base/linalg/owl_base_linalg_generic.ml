@@ -260,7 +260,6 @@ let _lu_base a =
 
   lu, indx
 
-  (* What the hell is this indx? how to change it to a "permutation matrix"? *)
 
 let lu a =
   let k = M.kind a in
