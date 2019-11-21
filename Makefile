@@ -64,3 +64,7 @@ release:
 	dune-release opam pkg -p owl-zoo
 	dune-release opam pkg -p owl-top
 	dune-release opam submit -p $(PKGS)
+
+.PHONY: cloc
+loc:
+	cloc src/

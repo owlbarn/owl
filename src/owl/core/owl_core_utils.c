@@ -113,8 +113,8 @@ int int64_cmp_r (const void * i, const void * j, const void * z) {
 
 
 // calculate the number of elements given a bigarray
-int c_ndarray_numel (struct caml_ba_array *X) {
-  int n = 1;
+int64_t c_ndarray_numel (struct caml_ba_array *X) {
+  int64_t n = 1;
 
   for (int i = 0; i < X->num_dims; i ++)
     n *= X->dim[i];
@@ -124,8 +124,8 @@ int c_ndarray_numel (struct caml_ba_array *X) {
 
 
 // calculate the stride of a given dimension of a bigarray
-int c_ndarray_stride_dim (struct caml_ba_array *X, int d) {
-  int s = 1;
+int64_t c_ndarray_stride_dim (struct caml_ba_array *X, int d) {
+  int64_t s = 1;
 
   for (int i = X->num_dims - 1; i > d; i--)
     s *= X->dim[i];
@@ -135,8 +135,8 @@ int c_ndarray_stride_dim (struct caml_ba_array *X, int d) {
 
 
 // calculate the slice size of a given dimension of a bigarray
-int c_ndarray_slice_dim (struct caml_ba_array *X, int d) {
-  int s = 1;
+int64_t c_ndarray_slice_dim (struct caml_ba_array *X, int d) {
+  int64_t s = 1;
 
   for (int i = X->num_dims - 1; i >= d; i--)
     s *= X->dim[i];
@@ -146,8 +146,8 @@ int c_ndarray_slice_dim (struct caml_ba_array *X, int d) {
 
 
 // calculate the stride size of all dimensions of a bigarray
-void c_ndarray_stride (struct caml_ba_array *X, int *stride) {
-  int i = X->num_dims - 1;
+void c_ndarray_stride (struct caml_ba_array *X, int64_t *stride) {
+  int64_t i = X->num_dims - 1;
   *(stride + i) = 1;
 
   for ( ; i > 0; i--)
@@ -156,8 +156,8 @@ void c_ndarray_stride (struct caml_ba_array *X, int *stride) {
 
 
 // calculate the slice size of all dimensions of a bigarray
-void c_ndarray_slice (struct caml_ba_array *X, int *slice) {
-  int i = X->num_dims - 1;
+void c_ndarray_slice (struct caml_ba_array *X, int64_t *slice) {
+  int64_t i = X->num_dims - 1;
   *(slice + i) = X->dim[i];
 
   for (; i > 0; i--)
@@ -172,10 +172,10 @@ void c_ndarray_slice (struct caml_ba_array *X, int *slice) {
  * Note that slice may encode information for fancy slicing. In case of L, the
  * stride remains the same.
  */
-void c_slicing_stride (struct caml_ba_array *X, int64_t *slice, int *stride) {
+void c_slicing_stride (struct caml_ba_array *X, int64_t *slice, int64_t *stride) {
   c_ndarray_stride(X, stride);
 
-  for (int i = 0; i < X->num_dims; i++) {
+  for (int64_t i = 0; i < X->num_dims; i++) {
     int64_t start = *(slice + 3 * i);
     int64_t step = *(slice + 3 * i + 2);
     *(stride + i) *= start < 0 ? 1 : step;
@@ -190,10 +190,10 @@ void c_slicing_stride (struct caml_ba_array *X, int64_t *slice, int *stride) {
  * Note that slice may encode information for fancy slicing. In case of L, we
  * set offset to zero since the elements in L will be used to calculate ofsx.
  */
-void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int *offset) {
+void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int64_t *offset) {
   c_ndarray_stride(X, offset);
 
-  for (int i = 0; i < X->num_dims; i++) {
+  for (int64_t i = 0; i < X->num_dims; i++) {
     int64_t start = *(slice + 3 * i);
     *(offset + i) *= start < 0 ? 0 : start;
   }

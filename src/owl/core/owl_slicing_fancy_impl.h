@@ -10,26 +10,26 @@
 void FUNCTION (c, fancy) (struct fancy_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
-  const int d = p->dep;
-  const int n = p->n[d];
-  const int e = d + d + d;
-  const int a = p->slice[e];
-  const int b = p->slice[e + 1];
-  const int c = p->slice[e + 2];
-  const int incx = p->incx[d];
-  const int incy = p->incy[d];
-  const int save_posx = p->posx;
-  const int save_posy = p->posy;
+  const int64_t d = p->dep;
+  const int64_t n = p->n[d];
+  const int64_t e = d + d + d;
+  const int64_t a = p->slice[e];
+  const int64_t b = p->slice[e + 1];
+  const int64_t c = p->slice[e + 2];
+  const int64_t incx = p->incx[d];
+  const int64_t incy = p->incy[d];
+  const int64_t save_posx = p->posx;
+  const int64_t save_posy = p->posy;
   p->posx += p->ofsx[d];
   p->posy += p->ofsy[d];
 
   if (p->dep == p->dim - 1) {
-    int posx = p->posx;
-    int posy = p->posy;
+    int64_t posx = p->posx;
+    int64_t posy = p->posy;
 
     if (a < 0) {
       // fancy slicing, (a, b, c) = (_, start, stop) in index
-      for (int i = b; i <= c; i++) {
+      for (int64_t i = b; i <= c; i++) {
         posx = save_posx + incx * p->index[i];
         MAPFUN (*(x + posx), *(y + posy));
         posy += incy;
@@ -37,7 +37,7 @@ void FUNCTION (c, fancy) (struct fancy_pair *p) {
     }
     else {
       // basic slicing, (a, b, c) = (start, stop, step)
-      for (int i = 0; i < n; i++) {
+      for (int64_t i = 0; i < n; i++) {
         MAPFUN (*(x + posx), *(y + posy));
         posx += incx;
         posy += incy;
@@ -47,7 +47,7 @@ void FUNCTION (c, fancy) (struct fancy_pair *p) {
   else {
     if (a < 0) {
       // fancy slicing, (a, b, c) = (_, start, stop) in index
-      for (int i = b; i <= c; i++) {
+      for (int64_t i = b; i <= c; i++) {
         p->posx = save_posx + incx * p->index[i];
         p->dep += 1;
         FUNCTION (c, fancy) (p);
@@ -57,7 +57,7 @@ void FUNCTION (c, fancy) (struct fancy_pair *p) {
     }
     else {
       // basic slicing, (a, b, c) = (start, stop, step)
-      for (int i = 0; i < n; i++) {
+      for (int64_t i = 0; i < n; i++) {
         p->dep += 1;
         FUNCTION (c, fancy) (p);
         p->dep -= 1;
@@ -96,10 +96,10 @@ CAMLprim value FUNCTION (stub, fancy) (value vX, value vY, value vA, value vB) {
   fp->y = Y_data;
   fp->posx = 0;
   fp->posy = 0;
-  fp->ofsx = calloc(fp->dim, sizeof(int));
-  fp->ofsy = calloc(fp->dim, sizeof(int));
-  fp->incx = calloc(fp->dim, sizeof(int));
-  fp->incy = calloc(fp->dim, sizeof(int));
+  fp->ofsx = calloc(fp->dim, sizeof(int64_t));
+  fp->ofsy = calloc(fp->dim, sizeof(int64_t));
+  fp->incx = calloc(fp->dim, sizeof(int64_t));
+  fp->incy = calloc(fp->dim, sizeof(int64_t));
   c_slicing_offset(X, slice, fp->ofsx);
   c_slicing_stride(X, slice, fp->incx);
   c_ndarray_stride(Y, fp->incy);

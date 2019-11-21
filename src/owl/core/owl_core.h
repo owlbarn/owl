@@ -15,11 +15,11 @@
 /** Core function declaration **/
 
 
-extern int c_ndarray_numel (struct caml_ba_array *X);
+extern int64_t c_ndarray_numel (struct caml_ba_array *X);
 
-extern int c_ndarray_stride_dim (struct caml_ba_array *X, int d);
+extern int64_t c_ndarray_stride_dim (struct caml_ba_array *X, int d);
 
-extern int c_ndarray_slice_dim (struct caml_ba_array *X, int d);
+extern int64_t c_ndarray_slice_dim (struct caml_ba_array *X, int d);
 
 extern void c_float32_ndarray_transpose (struct slice_pair *sp);
 
@@ -69,13 +69,13 @@ extern void c_complex32_matrix_transpose (_Complex float *x, _Complex float *y, 
 
 extern void c_complex64_matrix_transpose (_Complex double *x, _Complex double *y, int m, int n);
 
-extern void c_ndarray_stride (struct caml_ba_array *X, int *stride);
+extern void c_ndarray_stride (struct caml_ba_array *X, int64_t *stride);
 
-extern void c_ndarray_slice (struct caml_ba_array *X, int *slice);
+extern void c_ndarray_slice (struct caml_ba_array *X, int64_t *slice);
 
-extern void c_slicing_stride (struct caml_ba_array *X, int64_t *slice, int *stride);
+extern void c_slicing_stride (struct caml_ba_array *X, int64_t *slice, int64_t *stride);
 
-extern void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int *offset);
+extern void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int64_t *offset);
 
 extern void c_float32_ndarray_get_slice (struct slice_pair *sp);
 
