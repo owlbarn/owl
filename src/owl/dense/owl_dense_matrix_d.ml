@@ -49,6 +49,8 @@ let meshgrid xa xb ya yb xn yn = M.meshgrid Float64 xa xb ya yb xn yn
 
 let bernoulli ?p d = M.bernoulli Float64 ?p d
 
+let unit_basis n i = M.unit_basis Float64 n i
+
 let hadamard n = M.hadamard Float64 n
 
 let magic n = M.magic Float64 n

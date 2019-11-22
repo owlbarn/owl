@@ -58,6 +58,8 @@ val meshup : mat -> mat -> mat * mat
 
 val bernoulli : ?p:float -> int -> int -> mat
 
+val unit_basis : int -> int -> mat
+
 val diagm : ?k:int -> mat -> mat
 
 val triu : ?k:int -> mat -> mat

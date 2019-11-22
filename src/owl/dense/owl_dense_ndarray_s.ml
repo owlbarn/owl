@@ -40,6 +40,8 @@ let logspace ?base a b n = M.logspace Float32 ?base a b n
 
 let bernoulli ?p d = M.bernoulli Float32 ?p d
 
+let unit_basis n i = M.unit_basis Float32 n i
+
 let load f = M.load Float32 f
 
 let of_array x d = M.of_array Float32 x d

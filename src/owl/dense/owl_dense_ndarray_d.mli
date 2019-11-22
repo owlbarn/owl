@@ -43,6 +43,8 @@ val logspace : ?base:float -> elt -> elt -> int -> arr
 
 val bernoulli : ?p:float -> int array -> arr
 
+val unit_basis : int -> int -> arr
+
 
 (** {6 Obtain basic properties} *)
 

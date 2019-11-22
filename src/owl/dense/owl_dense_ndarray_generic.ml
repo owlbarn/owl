@@ -1267,6 +1267,13 @@ let argsort x =
   y
 
 
+let unit_basis k n i =
+  let x = zeros k [|n|] in
+  let a1 = Owl_const.one k in
+  Genarray.set x [|i|] a1;
+  x
+
+
 (* advanced operations *)
 
 let iteri f x =

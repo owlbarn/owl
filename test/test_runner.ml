@@ -13,8 +13,9 @@ let () =
     "dense ndarray",        Unit_dense_ndarray.test_set;
     "sparse matrix",        Unit_sparse_matrix.test_set;
     "sparse ndarray",       Unit_sparse_ndarray.test_set;
-    "ndarray primitive",    Unit_ndarray_primitive.test_set;
     "ndarray core",         Unit_ndarray_core.test_set;
+    "ndarray primitive",    Unit_ndarray_primitive.test_set;
+    "ndarray operation",    Unit_ndarray_operation.test_set;
     "lazy evaluation",      Unit_lazy.test_set;
     "linear algebra",       Unit_linalg.test_set;
     "slicing basic",        Unit_slicing_basic.test_set;

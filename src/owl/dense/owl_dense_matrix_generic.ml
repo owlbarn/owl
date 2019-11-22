@@ -198,6 +198,11 @@ let gaussian k ?mu ?sigma m n = Owl_dense_ndarray_generic.gaussian k ?mu ?sigma 
 let bernoulli k ?p m n = Owl_dense_ndarray_generic.bernoulli k ?p [|m;n|]
 
 
+let unit_basis k n i = 
+  let x = Owl_dense_ndarray_generic.unit_basis k n i in
+  reshape x [|1; n|]
+
+
 let toeplitz ?c r =
   let c = match c with
     | Some c -> c

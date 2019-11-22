@@ -97,6 +97,11 @@ contains phase angles. Note that the behaviour is undefined if ``rho`` has
 negative elelments or ``theta`` has infinity elelments.
  *)
 
+val unit_basis : ('a, 'b) kind -> int -> int -> ('a, 'b) t
+(**
+``unit_basis k n i`` returns a unit basis vector with ``i``th element set to 1.
+ *)
+
 val sequential : ('a, 'b) kind -> ?a:'a -> ?step:'a -> int -> int -> ('a, 'b) t
 (**
 ``sequential ~a ~step m n`` creates an ``m`` by ``n`` matrix. The elements in ``x``
