@@ -88,7 +88,6 @@ module To_test_lu = struct
     done;
     !mat
 
-
   (* Src: https://www.quantstart.com/articles/LU-Decomposition-in-Python-and-NumPy *)
   let test01 () =
     let x = N.of_array [|7.;3.;-1.;2.;3.;8.;1.;-4.;-1.;1.;4.;-1.;2.;-4.;-1.;6.|] [|4;4|] in
@@ -108,7 +107,6 @@ module To_test_lu = struct
     let flag03 = p = [|0;1;2;3|] in
     flag01 && flag02 && flag03
 
-
   let test02 () =
     let x = N.of_array [|1.;2.;3.;1.;2.;3.;2.;5.;6.|] [|3;3|] in
     let l, u, perm = L.lu x in
@@ -116,7 +114,6 @@ module To_test_lu = struct
     let result = N.dot (N.dot perm_mat l) u in
     let flag = approx_equal result x in
     flag
-
 
   let test03 () =
     let n = 20 in
@@ -131,11 +128,54 @@ module To_test_lu = struct
     done;
     !flag
 
-  let test01 () =
+  let test04 () =
     let a = N.of_array [|1.;20.;-30.;4.|] [|2;2|] in
-    let b = N.of_array [|1.;0.|] [|2|]in
-    let x = L.lu_solve_vec a b in
+    let b = N.of_array [|1.;0.;1.;2.;-30.;0.;1.;0.; 1.;4.|] [|2; 5|]in
+    let x = L.linsolve_lu a b in
     approx_equal (N.dot a x) b
+
+  let test05 () =
+    let a = N.of_array [|2.;3.;3.;5.|] [|2;2|] in
+    let b = N.of_array [|1.;0.;1.;0.;1.;0.|] [|2; 3|]  in
+    let x = L.linsolve_lu a b in
+    approx_equal (N.dot a x) b
+
+  let test06 () =
+    let n = 20 in
+    let a = N.uniform [|n; n|] in
+    for i = 0 to n - 1 do
+      let v = N.get a [|i; i|] in
+      N.set a [|i; i|] ((v +. 0.1) *. 20.)
+    done;
+    let flag = ref true in
+    for _ = 0 to 9 do
+      let b = N.uniform [|n; 3|] in
+      let x = L.linsolve_lu a b in
+      let f = approx_equal (N.dot a x) b in
+      flag := !flag && f
+    done;
+    !flag
+
+  let test07 () =
+    let a = N.of_array [|
+      1.; 0.; 0.; 0.; 0.; 0.; 1.; 0.; 1.;
+      1.; 1.; 1.; 0.; 0.; 0.; 1.; 0.; 1.;
+      0.; 1.; 1.; 0.; 0.; 0.; 1.; 0.; 1.;
+      1.; 0.; 1.; 1.; 1.; 1.; 0.; 0.; 0.;
+      1.; 0.; 1.; 1.; 1.; 1.; 0.; 0.; 0.;
+      1.; 0.; 1.; 1.; 1.; 1.; 0.; 0.; 0.;
+      1.; 0.; 1.; 1.; 1.; 1.; 0.; 0.; 0.;
+      1.; 1.; 1.; 1.; 1.; 1.; 1.; 1.; 1.;
+      1.; 1.; 1.; 1.; 1.; 1.; 1.; 1.; 1.;
+    |] [|9; 9|] in
+  let b = N.uniform [|9; 1|] in
+  let flag = ref false in
+  let _ = try
+    L.linsolve_lu a b |> ignore
+  with SINGULAR ->
+    flag := true
+  in
+  !flag
 
 end
 
@@ -161,6 +201,18 @@ let test_lu_02 () =
 let test_lu_03 () =
   Alcotest.(check bool) "test_lu_03" true (To_test_lu.test03 ())
 
+let test_lu_04 () =
+  Alcotest.(check bool) "test_lu_04" true (To_test_lu.test04 ())
+
+let test_lu_05 () =
+  Alcotest.(check bool) "test_lu_05" true (To_test_lu.test05 ())
+
+let test_lu_06 () =
+  Alcotest.(check bool) "test_lu_06" true (To_test_lu.test06 ())
+
+let test_lu_07 () =
+  Alcotest.(check bool) "test_lu_07" true (To_test_lu.test07 ())
+
 
 let test_set = [
   "test_gauss_01", `Slow, test_gauss_01;
@@ -170,4 +222,8 @@ let test_set = [
   "test_lu_01",    `Slow, test_lu_01;
   "test_lu_02",    `Slow, test_lu_02;
   "test_lu_03",    `Slow, test_lu_03;
+  "test_lu_04",    `Slow, test_lu_04;
+  "test_lu_05",    `Slow, test_lu_05;
+  "test_lu_06",    `Slow, test_lu_06;
+  (* "test_lu_07",    `Slow, test_lu_07; *)
 ]

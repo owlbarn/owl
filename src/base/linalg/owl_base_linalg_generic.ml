@@ -80,10 +80,12 @@ let is_diag x = is_triu x && is_tril x
 
 
 let _check_is_matrix dims =
-  if (Array.length dims) != 2
+  if (Array.length dims) <> 2
   then raise (Invalid_argument "The given NDarray is not a matrix!")
   else ()
 
+
+(* ====== WARNING: the linalg functions below are experimental ============== *)
 
 (* Linear equation solution by Gauss-Jordan elimination.
  * Input matrix: a[n][n], b[n][m];
@@ -113,7 +115,7 @@ let linsolve_gauss a b =
     let big = ref 0.0 in
     (* Outer loop of the search for at pivot element *)
     for j = 0 to n - 1 do
-      if ipiv.(j) != 1 then (
+      if ipiv.(j) <> 1 then (
         for k = 0 to n - 1 do
           if ipiv.(k) == 0 then (
             let v = M.get a [|j; k|] |> abs_float in
@@ -159,7 +161,7 @@ let linsolve_gauss a b =
     done;
 
     for ll = 0 to n - 1 do
-      if (ll != !icol) then (
+      if (ll <> !icol) then (
         dum := M.get a [|ll; !icol|];
         M.set a [|ll; !icol|] 0.0;
         for l = 0 to n - 1 do
@@ -178,7 +180,7 @@ let linsolve_gauss a b =
   done;
 
   for l = n - 1 downto 0 do
-    if (indxr.(l) != indxc.(l)) then (
+    if (indxr.(l) <> indxc.(l)) then (
       for k = 0 to n - 1 do
         let u = M.get a [|k; indxr.(l)|] in
         let v = M.get a [|k; indxc.(l)|] in
@@ -191,22 +193,25 @@ let linsolve_gauss a b =
   a, b
 
 
-(** Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_decomp.py *)
 
-(* Linear equation solution by Gauss-Jordan elimination.
- * Input matrix: a[n][n]
+(* LU decomposition.
+ * Input matrix: a[n][n]; return L/U in one matrix, and the row permutation vector.
+ * Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_decomp.py
  *)
 let _lu_base a =
-  let _aref = M.copy a in
   let lu = M.copy a in
-  let n = (M.shape a).(0) in (* row *)
+  let n = (M.shape a).(0) in
+  let m = (M.shape a).(1) in
+  assert (n = m);
   let indx = Array.make n 0 in
-  let vv = Array.make n 0. in (* implicit scaling of each row *)
+   (* implicit scaling of each row *)
+  let vv = Array.make n 0. in
 
   let tiny = 1.0e-40 in
   let big = ref 0. in
   let temp = ref 0. in
-  let d = ref 1.0 in (* flag of row exchange *)
+  (* flag of row exchange *)
+  let d = ref 1.0 in
   let imax = ref 0 in
 
   (* loop over rows to get the implicit scaling information *)
@@ -217,7 +222,7 @@ let _lu_base a =
       if !temp > !big then big := !temp
     done;
 
-    if (!big = 0.) then failwith "ludcmp: Singular matrix.";
+    if (!big = 0.) then raise Owl_exception.SINGULAR;
     vv.(i) <- 1.0 /. !big
   done;
 
@@ -250,7 +255,7 @@ let _lu_base a =
       let tmp0 = M.get lu [|i; k|] in
       let tmp1 = M.get lu [|k; k|] in
       temp := tmp0 /. tmp1;
-      M.set lu [|i; k|] !temp; (* ? *)
+      M.set lu [|i; k|] !temp;
       for j = k + 1 to n - 1 do
         let prev = M.get lu [|i; j|] in
         M.set lu [|i; j|] (prev -. !temp *. (M.get lu [|k; j|]))
@@ -261,6 +266,7 @@ let _lu_base a =
   lu, indx
 
 
+(* LU decomposition, return L, U, and permutation vector *)
 let lu a =
   let k = M.kind a in
   let lu, indx = _lu_base a in
@@ -278,11 +284,10 @@ let lu a =
   l, lu, indx
 
 
-let lu_solve_vec a b =
-  (*TODO: check shape; b and x are vectors *)
+let _lu_solve_vec a b =
   assert (Array.length (M.shape b) = 1);
   let n = (M.shape a).(0) in
-  if ((M.shape b).(0) != n) then
+  if ((M.shape b).(0) <> n) then
     failwith "LUdcmp::solve bad sizes";
 
   let ii = ref 0 in
@@ -307,13 +312,33 @@ let lu_solve_vec a b =
 
   for i = n - 1 downto 0 do
     sum := M.get x [|i|];
-    for j = i + 1 to n do
+    for j = i + 1 to n - 1 do
       sum := !sum -. (M.get lu [|i;j|]) *. (M.get x [|j|])
     done;
     M.set x [|i|] (!sum /. (M.get lu [|i; i|]))
   done;
-
   x
 
+
+(* Linear equation solution by LU decomposition.
+ * Input matrix: a[n][n], b[n][m];
+ * Output: ``x``, so that ax = b. *)
+let linsolve_lu a b =
+  let (dims_a, dims_b) = (M.shape a, M.shape b) in
+  let (_, _) = (_check_is_matrix dims_a, _check_is_matrix dims_b) in
+  let m = dims_b.(1) in
+  let b = M.copy b in
+  for j = 0 to m - 1 do
+    let vec = M.get_slice [[];[j]] b |> M.flatten in
+    let x = _lu_solve_vec a vec in
+    M.set_slice [[];[j]] b x
+  done;
+  b
+
+
+let inv _a = ()
+
+
+let det _a = ()
 
 (* ends here *)
