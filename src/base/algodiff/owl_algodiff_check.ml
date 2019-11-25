@@ -76,7 +76,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       | F _, F _     -> ()
       | Arr a, Arr b ->
         if A.shape a <> A.shape b then failwith "tangent dimension mismatch" else ()
-      | _                -> failwith "tangent dimension mismatch"
+      | _            -> failwith "tangent dimension mismatch"
 
 
     let check ~threshold ~f ~directions samples =

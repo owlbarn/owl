@@ -118,8 +118,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         match dim_typ y, dim_typ x with
         | `row a, `row 1 -> a, 1
         | `row a, `row b -> a, b
-        | _                  -> failwith
-                                  "jacobian: input and output must both be row vectors"
+        | _              -> failwith "jacobian: input and output must both be row vectors"
       in
       let z = A.empty [| m; n |] in
       (match m > n with

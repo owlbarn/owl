@@ -1,4 +1,3 @@
-open Owl
 open Owl_exception
 
 module N = Owl_base_dense_ndarray.D
@@ -38,7 +37,7 @@ module To_test_gauss = struct
       N.set a [|i; i|] ((v +. 0.1) *. 20.)
     done;
     let flag = ref true in
-    for i = 0 to 9 do
+    for _ = 0 to 9 do
       let b = N.uniform [|n; 3|] in
       let a_inv, x = L.linsolve_gauss a b in
       let flag01 = approx_equal (N.dot a a_inv) (N.eye n) in

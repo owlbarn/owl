@@ -10,17 +10,17 @@
 /* Define structure for copying a basic slice from x to y. */
 
 struct slice_pair {
-  int dim;          // number of dimensions, x and y must be the same
-  int dep;          // the depth of current recursion.
-  long *n;          // number of iteration in each dimension, i.e. y's shape
-  void *x;          // x, source if operation is get, destination if set.
-  int posx;         // current offest of x.
-  int *ofsx;        // offset of x in each dimension.
-  int *incx;        // stride size of x in each dimension.
-  void *y;          // y, destination if operation is get, source if set.
-  int posy;         // current offest of y.
-  int *ofsy;        // offset of y in each dimension.
-  int *incy;        // stride size of y in each dimension.
+  int64_t dim;          // number of dimensions, x and y must be the same
+  int64_t dep;          // the depth of current recursion.
+  intnat *n;            // number of iteration in each dimension, i.e. y's shape
+  void *x;              // x, source if operation is get, destination if set.
+  int64_t posx;         // current offest of x.
+  int64_t *ofsx;        // offset of x in each dimension.
+  int64_t *incx;        // stride size of x in each dimension.
+  void *y;              // y, destination if operation is get, source if set.
+  int64_t posy;         // current offest of y.
+  int64_t *ofsy;        // offset of y in each dimension.
+  int64_t *incy;        // stride size of y in each dimension.
 };
 
 
@@ -43,19 +43,19 @@ struct slice_pair {
 **/
 
 struct fancy_pair {
-  int dim;          // number of dimensions, x and y must be the same
-  int dep;          // the depth of current recursion.
-  long *n;          // number of iteration in each dimension, i.e. y's shape
-  int64_t *slice;   // (a,b,c) triplet, if a >= 0 then normal slice.
-  int64_t *index;   // combined use with slice, check the details above.
-  void *x;          // x, source if operation is get, destination if set.
-  int posx;         // current offest of x.
-  int *ofsx;        // offset of x in each dimension.
-  int *incx;        // stride size of x in each dimension.
-  void *y;          // y, destination if operation is get, source if set.
-  int posy;         // current offest of y.
-  int *ofsy;        // offset of y in each dimension.
-  int *incy;        // stride size of y in each dimension.
+  int64_t dim;          // number of dimensions, x and y must be the same
+  int64_t dep;          // the depth of current recursion.
+  intnat *n;            // number of iteration in each dimension, i.e. y's shape
+  int64_t *slice;       // (a,b,c) triplet, if a >= 0 then normal slice.
+  int64_t *index;       // combined use with slice, check the details above.
+  void *x;              // x, source if operation is get, destination if set.
+  int64_t posx;         // current offest of x.
+  int64_t *ofsx;        // offset of x in each dimension.
+  int64_t *incx;        // stride size of x in each dimension.
+  void *y;              // y, destination if operation is get, source if set.
+  int64_t posy;         // current offest of y.
+  int64_t *ofsy;        // offset of y in each dimension.
+  int64_t *incy;        // stride size of y in each dimension.
 };
 
 

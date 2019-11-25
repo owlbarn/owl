@@ -491,6 +491,9 @@ module Make
   let lq _x =
     raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.lq")
 
+  let sylvester _a _b _c =
+    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.sylvester")
+
   let lyapunov _a _q =
     raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.lyapunov")
 

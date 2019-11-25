@@ -33,7 +33,9 @@ module Generic = struct
 
   let lq x = Owl_linalg_generic.lq ~thin:true x
 
-  let lyapunov a q = Owl_linalg_generic.lyapunov a q
+  let sylvester = Owl_linalg_generic.lyapunov 
+
+  let lyapunov = Owl_linalg_generic.lyapunov
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_generic.discrete_lyapunov ~solver a q
 
@@ -73,6 +75,8 @@ module S = struct
     (q,r)
 
   let lq x = Owl_linalg_s.lq ~thin:true x
+
+  let sylvester = Owl_linalg_s.sylvester
 
   let lyapunov = Owl_linalg_s.lyapunov
 
@@ -115,6 +119,8 @@ module D = struct
 
   let lq x = Owl_linalg_d.lq ~thin:true x
 
+  let sylvester = Owl_linalg_d.sylvester
+
   let lyapunov = Owl_linalg_d.lyapunov
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_d.discrete_lyapunov ~solver a q
@@ -147,6 +153,8 @@ module C = struct
 
   let lq x = Owl_linalg_c.lq ~thin:true x
 
+  let sylvester = Owl_linalg_c.sylvester
+
   let lyapunov = Owl_linalg_c.lyapunov
 
   let discrete_lyapunov ?(solver=`default) a q = Owl_linalg_c.discrete_lyapunov ~solver a q
@@ -176,6 +184,8 @@ module Z = struct
     (q,r)
 
   let lq x = Owl_linalg_z.lq ~thin:true x
+
+  let sylvester = Owl_linalg_z.sylvester
 
   let lyapunov = Owl_linalg_z.lyapunov
 

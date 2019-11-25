@@ -41,6 +41,8 @@ let logspace ?base a b n = M.logspace Complex32 ?base a b n
 
 let bernoulli ?p d = M.bernoulli Complex32 ?p d
 
+let unit_basis n i = M.unit_basis Complex32 n i
+
 let load f = M.load Complex32 f
 
 let of_array x d = M.of_array Complex32 x d

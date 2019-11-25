@@ -11,16 +11,16 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     (* local function to traverse the nodes *)
     let rec push tlist =
       match tlist with
-      | []          -> ()
+      | []       -> ()
       | hd :: tl ->
         if Hashtbl.mem nodes hd = false
         then (
           let op, prev =
             match hd with
             | DR (_ap, _aa, (_, _, label), _af, _ai, _) -> label
-            | F _a                                      -> Printf.sprintf "Const", []
-            | Arr _a                                    -> Printf.sprintf "Const", []
-            | DF (_, _, _)                              -> Printf.sprintf "DF", []
+            | F _a -> Printf.sprintf "Const", []
+            | Arr _a -> Printf.sprintf "Const", []
+            | DF (_, _, _) -> Printf.sprintf "DF", []
           in
           (* check if the node has been visited before *)
           Hashtbl.add nodes hd (!index, op, prev);

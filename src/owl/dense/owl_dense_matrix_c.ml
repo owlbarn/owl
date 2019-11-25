@@ -47,6 +47,8 @@ let meshgrid xa xb ya yb xn yn = M.meshgrid Complex32 xa xb ya yb xn yn
 
 let bernoulli ?p d = M.bernoulli Complex32 ?p d
 
+let unit_basis n i = M.unit_basis Complex32 n i
+
 let hadamard n = M.hadamard Complex32 n
 
 let magic n = M.magic Complex32 n
