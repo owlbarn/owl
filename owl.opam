@@ -31,7 +31,7 @@ depends: [
   "dune" {>= "1.7.0"}
   "dune-configurator"
   "eigen" {>= "0.1.0"}
-  "owl-base" {>= version}
+  "owl-base" {= version}
   "stdio" {build & < "v0.13"}
   "stdlib-shims"
 ]
