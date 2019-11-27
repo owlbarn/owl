@@ -1,8 +1,14 @@
+### 0.7.1 (2019-11-27)
+
+* Add unit basis
+* Fix issue #337 and #457 (#458)
+* owl-base: drop seemingly unnecessary dependency on integers (#456)
+
 ### 0.7.0 (2019-11-14)
 
 * Add unsafe network save (owlbarn/owl#429)
 * Sketch Count-Min and Heavy-Hitters
-* Various ugfixes
+* Various bugfixes
 * Owl_io.marshal_to_file: use to_channel
 * Do not create .owl folder when loading owl library
 * Re-design of exceptions and replace asserts with verify
