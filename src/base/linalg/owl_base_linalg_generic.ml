@@ -85,7 +85,8 @@ let _check_is_matrix dims =
   else ()
 
 
-(* ====== WARNING: the linalg functions below are experimental ============== *)
+(* ======= WARNING: the linalg functions below are experimental. ======= *)
+(* ========= Corner cases etc. are not sufficiently tested. ============ *)
 
 (* Linear equation solution by Gauss-Jordan elimination.
  * Input matrix: a[n][n], b[n][m];
@@ -263,13 +264,13 @@ let _lu_base a =
     done
   done;
 
-  lu, indx
+  lu, indx, !d
 
 
 (* LU decomposition, return L, U, and permutation vector *)
 let lu a =
   let k = M.kind a in
-  let lu, indx = _lu_base a in
+  let lu, indx, _ = _lu_base a in
   let n = (M.shape lu).(0) in
   let m = (M.shape lu).(1) in
   assert (n = m && n >= 2);
@@ -294,7 +295,7 @@ let _lu_solve_vec a b =
   let sum = ref 0. in
   let x = M.copy b in
 
-  let lu, indx = _lu_base a in
+  let lu, indx, _ = _lu_base a in
 
   for i = 0 to n - 1 do
     let ip = indx.(i) in
@@ -326,6 +327,7 @@ let _lu_solve_vec a b =
 let linsolve_lu a b =
   let (dims_a, dims_b) = (M.shape a, M.shape b) in
   let (_, _) = (_check_is_matrix dims_a, _check_is_matrix dims_b) in
+  assert (dims_a.(0) = dims_a.(1));
   let m = dims_b.(1) in
   let b = M.copy b in
   for j = 0 to m - 1 do
@@ -336,9 +338,28 @@ let linsolve_lu a b =
   b
 
 
-let inv _a = ()
+(* Matrix inverse *)
+let inv a =
+  let dims_a = M.shape a in
+  _check_is_matrix dims_a |> ignore;
+  assert (dims_a.(0) = dims_a.(1));
+  let n = dims_a.(0) in
+  let b = M.eye (M.kind a) n in
+  linsolve_lu a b
 
 
-let det _a = ()
+(* Determinant of matrix a *)
+let det a =
+  let dims_a = M.shape a in
+  _check_is_matrix dims_a |> ignore;
+  assert (dims_a.(0) = dims_a.(1));
+  let n = dims_a.(0) in
+  let lu, _, sign = _lu_base a in
+  let big = ref sign in
+  for i = 0 to n - 1 do
+    big := !big *. (M.get lu [|i;i|])
+  done;
+  !big
+
 
 (* ends here *)

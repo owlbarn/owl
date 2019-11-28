@@ -128,6 +128,8 @@ module To_test_lu = struct
     done;
     !flag
 
+  (*  LU-based linear solver *)
+
   let test04 () =
     let a = N.of_array [|1.;20.;-30.;4.|] [|2;2|] in
     let b = N.of_array [|1.;0.;1.;2.;-30.;0.;1.;0.; 1.;4.|] [|2; 5|]in
@@ -177,6 +179,41 @@ module To_test_lu = struct
   in
   !flag
 
+  (* LU-based det *)
+
+  let test08 () =
+    let a = N.of_array [|1.; 2.; 3.; 4.|] [|2; 2|] in
+    let det = L.det a in
+    let result = N.of_array [| det |] [|1|] in
+    let expect = N.of_array [| -2. |] [|1|] in
+    approx_equal result expect
+
+
+  let test09 () =
+    let a = N.of_array [|6.; 1.; 1.; 4.; -2.; 5.; 2.; 8.; 7.|] [|3; 3|] in
+    let det = L.det a in
+    let result = N.of_array [| det |] [|1|] in
+    let expect = N.of_array [| -306. |] [|1|] in
+    approx_equal result expect
+
+
+  (* LU-based inv *)
+
+  let test10 () =
+    let n = 20 in
+    let a = N.uniform [|n; n|] in
+    for i = 0 to n - 1 do
+      let v = N.get a [|i; i|] in
+      N.set a [|i; i|] ((v +. 0.1) *. 20.)
+    done;
+    let flag = ref true in
+    for _ = 0 to 9 do
+      let a_inv = L.inv a in
+      let f = approx_equal (N.dot a a_inv) (N.eye n) in
+      flag := !flag && f
+    done;
+    !flag
+
 end
 
 
@@ -213,6 +250,15 @@ let test_lu_06 () =
 let test_lu_07 () =
   Alcotest.(check bool) "test_lu_07" true (To_test_lu.test07 ())
 
+let test_lu_08 () =
+  Alcotest.(check bool) "test_lu_08" true (To_test_lu.test08 ())
+
+let test_lu_09 () =
+  Alcotest.(check bool) "test_lu_09" true (To_test_lu.test09 ())
+
+let test_lu_10 () =
+  Alcotest.(check bool) "test_lu_10" true (To_test_lu.test10 ())
+
 
 let test_set = [
   "test_gauss_01", `Slow, test_gauss_01;
@@ -225,5 +271,9 @@ let test_set = [
   "test_lu_04",    `Slow, test_lu_04;
   "test_lu_05",    `Slow, test_lu_05;
   "test_lu_06",    `Slow, test_lu_06;
-  (* "test_lu_07",    `Slow, test_lu_07; *)
+  "test_lu_08",    `Slow, test_lu_08;
+  "test_lu_09",    `Slow, test_lu_09;
+  "test_lu_10",    `Slow, test_lu_10;
+  (* "test_lu_07",    `Slow, test_lu_07;
+   TODO: The singular matrix is not detected *)
 ]
