@@ -361,5 +361,40 @@ let det a =
   done;
   !big
 
+(* Solver for tridiagonal matrix
+ * Input: a[n], b[n], c[n], which together consit the tridiagonal matrix A, and the right side vector r[n]. Return: x[n].
+ *)
+
+let tridiag_solve_vec a b c r =
+  let n = Array.length a in
+  let n1 = Array.length b in
+  let n2 = Array.length c in
+  assert (n = n1 && n = n2);
+
+  if (b.(0) = 0.) then (
+    Owl_log.error "Error in tridiag_solve_vec: zero element at the beginning of diagonal vector.";
+    exit 1
+  );
+
+  let bet = ref b.(0) in
+  let gam = Array.make n 0. in
+  let x = Array.make n 0. in
+  x.(0) <- r.(0) /. !bet;
+
+  for j = 1 to n - 1 do
+    gam.(j) <- c.(j - 1) /. !bet;
+    bet := b.(j) -. a.(j) *. gam.(j);
+    if (!bet = 0.) then (
+      Owl_log.error "Error in tridiag_solve_vec: algorithm fails";
+      exit 1
+    );
+    x.(j) <- (r.(j) -. a.(j) *. x.(j - 1)) /. !bet
+  done;
+
+  for j = n - 2 downto 0 do
+    x.(j) <- x.(j) -. gam.(j + 1) *. x.(j + 1)
+  done;
+
+  x
 
 (* ends here *)

@@ -217,6 +217,64 @@ module To_test_lu = struct
 end
 
 
+module To_test_bandiag = struct
+
+  let _test_tridiag n =
+    (* TODO: we need a `to_array` in N module *)
+    let a = N.uniform [|n|] in
+    let trimat = N.zeros [|n; n|] in
+
+    let a_vec = Array.make n 0. in
+    for i = 1 to n - 1 do
+      let v = N.get a [|i|] in
+      a_vec.(i) <- v;
+      N.set trimat [|i; i - 1|] v
+    done;
+
+    let b = N.uniform [|n|] in
+    let b_vec = Array.make n 0. in
+    for i = 0 to n - 1 do
+      let v = N.get b [|i|] in
+      b_vec.(i) <- v;
+      N.set trimat [|i; i|] v
+    done;
+
+    let c = N.uniform [|n|] in
+    let c_vec = Array.make n 0. in
+    for i = 0 to n - 2 do
+      let v = N.get c [|i|] in
+      c_vec.(i) <- v;
+      N.set trimat [|i; i+1|] v
+    done;
+
+    let r = N.uniform [|n|] in
+    let r_vec = Array.make n 0. in
+    for i = 0 to n - 1 do
+      r_vec.(i) <- N.get r [|i|]
+    done;
+
+    let x = L.tridiag_solve_vec a_vec b_vec c_vec r_vec in
+    let x = N.of_array x [|n; 1|] in
+
+    N.print trimat;
+    N.print x;
+    N.print r;
+
+    let result = N.dot trimat x  in
+    approx_equal (N.reshape result [|n|]) r
+
+
+  let test01 () =
+    let n = 20 in
+    let repeat = 10 in
+    let flag = ref true in
+    for _ = 0 to repeat - 1 do
+      flag := !flag && (_test_tridiag n)
+    done;
+    !flag
+
+end
+
 let test_gauss_01 () =
   Alcotest.(check bool) "test_guass_01" true (To_test_gauss.test01 ())
 
@@ -259,21 +317,25 @@ let test_lu_09 () =
 let test_lu_10 () =
   Alcotest.(check bool) "test_lu_10" true (To_test_lu.test10 ())
 
+let test_bandiag_01 () =
+  Alcotest.(check bool) "To_test_bandiag_01" true (To_test_bandiag.test01 ())
+
 
 let test_set = [
-  "test_gauss_01", `Slow, test_gauss_01;
-  "test_gauss_02", `Slow, test_gauss_02;
-  "test_gauss_03", `Slow, test_gauss_03;
-  "test_gauss_04", `Slow, test_gauss_04;
-  "test_lu_01",    `Slow, test_lu_01;
-  "test_lu_02",    `Slow, test_lu_02;
-  "test_lu_03",    `Slow, test_lu_03;
-  "test_lu_04",    `Slow, test_lu_04;
-  "test_lu_05",    `Slow, test_lu_05;
-  "test_lu_06",    `Slow, test_lu_06;
-  "test_lu_08",    `Slow, test_lu_08;
-  "test_lu_09",    `Slow, test_lu_09;
-  "test_lu_10",    `Slow, test_lu_10;
+  "test_gauss_01",   `Slow, test_gauss_01;
+  "test_gauss_02",   `Slow, test_gauss_02;
+  "test_gauss_03",   `Slow, test_gauss_03;
+  "test_gauss_04",   `Slow, test_gauss_04;
+  "test_lu_01",      `Slow, test_lu_01;
+  "test_lu_02",      `Slow, test_lu_02;
+  "test_lu_03",      `Slow, test_lu_03;
+  "test_lu_04",      `Slow, test_lu_04;
+  "test_lu_05",      `Slow, test_lu_05;
+  "test_lu_06",      `Slow, test_lu_06;
+  "test_lu_08",      `Slow, test_lu_08;
+  "test_lu_09",      `Slow, test_lu_09;
+  "test_lu_10",      `Slow, test_lu_10;
   (* "test_lu_07",    `Slow, test_lu_07;
    TODO: The singular matrix is not detected *)
+  "test_bandiag_01", `Slow, test_bandiag_01;
 ]
