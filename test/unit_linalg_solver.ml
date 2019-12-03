@@ -72,7 +72,7 @@ end
 
 module To_test_lu = struct
 
-  (* change the permutation index vector to matrix; perhaps should be included in main code. *)
+  (* Change the permutation index vector to matrix; perhaps should be included in main code. *)
   let perm_vec_to_mat vec =
     let n = Array.length vec in
     let mat = ref (N.eye n) in
@@ -220,7 +220,7 @@ end
 module To_test_bandiag = struct
 
   let _test_tridiag n =
-    (* TODO: we need a `to_array` in N module *)
+    (* TODO: we need a `to_array` in Owl_base_dense_ndarray module *)
     let a = N.uniform [|n|] in
     let trimat = N.zeros [|n; n|] in
 
@@ -255,10 +255,6 @@ module To_test_bandiag = struct
 
     let x = L.tridiag_solve_vec a_vec b_vec c_vec r_vec in
     let x = N.of_array x [|n; 1|] in
-
-    N.print trimat;
-    N.print x;
-    N.print r;
 
     let result = N.dot trimat x  in
     approx_equal (N.reshape result [|n|]) r
