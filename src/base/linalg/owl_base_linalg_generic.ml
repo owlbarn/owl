@@ -369,7 +369,7 @@ let tridiag_solve_vec a b c r =
     gam.(j) <- c.(j - 1) /. !bet;
     bet := b.(j) -. (a.(j) *. gam.(j));
     if !bet = 0.
-    then raise (Invalid_argument "Error in tridiag_solve_vec: algorithm fails");
+    then raise (Invalid_argument "tridiag_solve_vec: algorithm fails");
     x.(j) <- (r.(j) -. (a.(j) *. x.(j - 1))) /. !bet
   done;
   for j = n - 2 downto 0 do
