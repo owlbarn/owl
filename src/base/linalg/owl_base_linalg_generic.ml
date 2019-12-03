@@ -360,7 +360,8 @@ let tridiag_solve_vec a b c r =
   let n2 = Array.length c in
   assert (n = n1 && n = n2);
   if b.(0) = 0.
-  then raise (Invalid_argument "tridiag_solve_vec: zero element at the beginning of diagonal vector.");
+  then raise (Invalid_argument 
+    "tridiag_solve_vec: 0 at the beginning of diagonal vector");
   let bet = ref b.(0) in
   let gam = Array.make n 0. in
   let x = Array.make n 0. in
