@@ -11,7 +11,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   open AlgoM
 
   let n = 3
-  let n_samples = 20 
+  let n_samples = 20
   let threshold = 1E-6
   let eps = 1E-5
 
@@ -332,7 +332,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   let samples, directions = FD.generate_test_samples (n, n) n_samples
 
   module Reverse = Make_tests (struct
-    let test_func f = FD.Reverse.check ~threshold ~eps ~directions ~f samples
+    let test_func f = FD.Reverse.check ~threshold ~order:`fourth ~eps ~directions ~f samples
   end)
 
   module Forward = Make_tests (struct

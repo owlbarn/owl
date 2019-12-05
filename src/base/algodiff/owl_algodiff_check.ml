@@ -15,12 +15,25 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
 
 
   module Reverse = struct
-    let finite_difference_grad ~f ?(eps = 1E-5) x d =
-      let dx = Maths.(F A.(float_to_elt eps) * d) in
-      Maths.((f (x + dx) - f (x - dx)) / F A.(float_to_elt (2. *. eps)))
+    let finite_difference_grad =
+      let two = F A.(float_to_elt 2.) in
+      fun ~order ~f ?(eps = 1E-5) x d ->
+        let eps = F A.(float_to_elt eps) in
+        let dx = Maths.(eps * d) in
+        let df1 = Maths.(f (x + dx) - f (x - dx)) in
+        match order with
+        | `fourth ->
+          let eight = F A.(float_to_elt 8.) in
+          let twelve = F A.(float_to_elt 12.) in
+          let df2 =
+            let twodx = Maths.(two * dx) in
+            Maths.(f (x + twodx) - f (x - twodx))
+          in
+          Maths.(((eight * df1) - df2) / (twelve * eps))
+        | `second -> Maths.(df1 / (two * eps))
 
 
-    let check ~threshold ?(verbose = false) ?(eps = 1E-5) ~f =
+    let check ~threshold ~order ?(verbose = false) ?(eps = 1E-5) ~f =
       let compare rs =
         let n_d = Array.length rs in
         let r_fds = Array.map snd rs in
@@ -46,7 +59,9 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
                    Array.map
                      (fun d ->
                        let r_ad = Maths.(sum' (g x * d)) |> unpack_flt in
-                       let r_fd = finite_difference_grad ~f ~eps x d |> unpack_flt in
+                       let r_fd =
+                         finite_difference_grad ~order ~f ~eps x d |> unpack_flt
+                       in
                        r_ad, r_fd)
                      directions
                    |> compare
