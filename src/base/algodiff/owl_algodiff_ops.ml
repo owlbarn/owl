@@ -1149,7 +1149,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           build_aiso
             (module struct
               let label = "Concatenate_D"
-              let ff a = Array.map unpack_arr a |> A.concatenate |> pack_arr
+              let ff a = Array.map unpack_arr a |> A.concatenate ~axis |> pack_arr
               let df _ _ _ tangents = concatenate ~axis tangents
 
               let dr idxs a _ ca =
