@@ -50,32 +50,8 @@ module To_test_transpose_conv3d = struct
   (* SingleStrideValid *)
   let fun00 () =
     let expected =
-      [| 1.0
-       ; 2.0
-       ; 3.0
-       ; 2.0
-       ; 1.0
-       ; 2.0
-       ; 4.0
-       ; 6.0
-       ; 4.0
-       ; 2.0
-       ; 3.0
-       ; 6.0
-       ; 9.0
-       ; 6.0
-       ; 3.0
-       ; 2.0
-       ; 4.0
-       ; 6.0
-       ; 4.0
-       ; 2.0
-       ; 1.0
-       ; 2.0
-       ; 3.0
-       ; 2.0
-       ; 1.0
-      |]
+      [| 1.0; 2.0; 3.0; 2.0; 1.0; 2.0; 4.0; 6.0; 4.0; 2.0; 3.0; 6.0; 9.0; 6.0; 3.0; 2.0
+       ; 4.0; 6.0; 4.0; 2.0; 1.0; 2.0; 3.0; 2.0; 1.0 |]
     in
     verify_value
       compute_trans_conv3d
@@ -113,23 +89,8 @@ module To_test_transpose_conv3d = struct
   (* SequantialKernelSame *)
   let fun03 () =
     let expected =
-      [| 1.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-       ; 4.0
-       ; 5.0
-       ; 10.0
-       ; 5.0
-       ; 8.0
-       ; 10.0
-       ; 20.0
-       ; 10.0
-       ; 4.0
-       ; 5.0
-       ; 10.0
-       ; 5.0
-      |]
+      [| 1.0; 2.0; 4.0; 2.0; 4.0; 5.0; 10.0; 5.0; 8.0; 10.0; 20.0; 10.0; 4.0; 5.0; 10.0
+       ; 5.0 |]
     in
     verify_value
       compute_trans_conv3d
@@ -144,103 +105,12 @@ module To_test_transpose_conv3d = struct
   (* WithDepthSame *)
   let fun04 () =
     let expected =
-      [| 2.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-       ; 2.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-       ; 4.0
-       ; 4.0
-       ; 8.0
-       ; 4.0
-       ; 2.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-       ; 4.0
-       ; 4.0
-       ; 8.0
-       ; 4.0
-       ; 2.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-       ; 2.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-       ; 2.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-       ; 4.0
-       ; 4.0
-       ; 8.0
-       ; 4.0
-       ; 2.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-       ; 4.0
-       ; 4.0
-       ; 8.0
-       ; 4.0
-       ; 2.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-       ; 4.0
-       ; 4.0
-       ; 8.0
-       ; 4.0
-       ; 4.0
-       ; 4.0
-       ; 8.0
-       ; 4.0
-       ; 8.0
-       ; 8.0
-       ; 16.0
-       ; 8.0
-       ; 4.0
-       ; 4.0
-       ; 8.0
-       ; 4.0
-       ; 8.0
-       ; 8.0
-       ; 16.0
-       ; 8.0
-       ; 4.0
-       ; 4.0
-       ; 8.0
-       ; 4.0
-       ; 2.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-       ; 2.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-       ; 4.0
-       ; 4.0
-       ; 8.0
-       ; 4.0
-       ; 2.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-       ; 4.0
-       ; 4.0
-       ; 8.0
-       ; 4.0
-       ; 2.0
-       ; 2.0
-       ; 4.0
-       ; 2.0
-      |]
+      [| 2.0; 2.0; 4.0; 2.0; 2.0; 2.0; 4.0; 2.0; 4.0; 4.0; 8.0; 4.0; 2.0; 2.0; 4.0; 2.0
+       ; 4.0; 4.0; 8.0; 4.0; 2.0; 2.0; 4.0; 2.0; 2.0; 2.0; 4.0; 2.0; 2.0; 2.0; 4.0; 2.0
+       ; 4.0; 4.0; 8.0; 4.0; 2.0; 2.0; 4.0; 2.0; 4.0; 4.0; 8.0; 4.0; 2.0; 2.0; 4.0; 2.0
+       ; 4.0; 4.0; 8.0; 4.0; 4.0; 4.0; 8.0; 4.0; 8.0; 8.0; 16.0; 8.0; 4.0; 4.0; 8.0; 4.0
+       ; 8.0; 8.0; 16.0; 8.0; 4.0; 4.0; 8.0; 4.0; 2.0; 2.0; 4.0; 2.0; 2.0; 2.0; 4.0; 2.0
+       ; 4.0; 4.0; 8.0; 4.0; 2.0; 2.0; 4.0; 2.0; 4.0; 4.0; 8.0; 4.0; 2.0; 2.0; 4.0; 2.0 |]
     in
     verify_value
       compute_trans_conv3d
@@ -439,43 +309,8 @@ module To_test_transpose_conv3d_backward = struct
   (* BackwardInputMultiChannelSame *)
   let fun15 () =
     let expected =
-      [| 4.
-       ; 4.
-       ; 4.
-       ; 4.
-       ; 4.
-       ; 4.
-       ; 4.
-       ; 4.
-       ; 2.
-       ; 2.
-       ; 2.
-       ; 2.
-       ; 4.
-       ; 4.
-       ; 4.
-       ; 4.
-       ; 4.
-       ; 4.
-       ; 4.
-       ; 4.
-       ; 2.
-       ; 2.
-       ; 2.
-       ; 2.
-       ; 2.
-       ; 2.
-       ; 2.
-       ; 2.
-       ; 2.
-       ; 2.
-       ; 2.
-       ; 2.
-       ; 1.
-       ; 1.
-       ; 1.
-       ; 1.
-      |]
+      [| 4.; 4.; 4.; 4.; 4.; 4.; 4.; 4.; 2.; 2.; 2.; 2.; 4.; 4.; 4.; 4.; 4.; 4.; 4.; 4.
+       ; 2.; 2.; 2.; 2.; 2.; 2.; 2.; 2.; 2.; 2.; 2.; 2.; 1.; 1.; 1.; 1. |]
     in
     verify_value
       compute_trans_conv3d_bk
@@ -575,25 +410,14 @@ let fun_ctb15 () =
 
 
 let test_set =
-  [ "fun_ctf00", `Slow, fun_ctf00
-  ; "fun_ctf01", `Slow, fun_ctf01
-  ; "fun_ctf02", `Slow, fun_ctf02
-  ; "fun_ctf03", `Slow, fun_ctf03
-  ; "fun_ctf04", `Slow, fun_ctf04
-  ; "fun_ctb00", `Slow, fun_ctb00
-  ; "fun_ctb01", `Slow, fun_ctb01
-  ; "fun_ctb02", `Slow, fun_ctb02
-  ; "fun_ctb03", `Slow, fun_ctb03
-  ; "fun_ctb04", `Slow, fun_ctb04
-  ; "fun_ctb05", `Slow, fun_ctb05
-  ; "fun_ctb06", `Slow, fun_ctb06
-  ; "fun_ctb07", `Slow, fun_ctb07
-  ; "fun_ctb08", `Slow, fun_ctb08
-  ; "fun_ctb09", `Slow, fun_ctb09
-  ; "fun_ctb10", `Slow, fun_ctb10
-  ; "fun_ctb11", `Slow, fun_ctb11
-  ; "fun_ctb12", `Slow, fun_ctb12
-  ; "fun_ctb13", `Slow, fun_ctb13
-  ; "fun_ctb14", `Slow, fun_ctb14
-  ; "fun_ctb15", `Slow, fun_ctb15
-  ]
+  [ "fun_ctf00", `Slow, fun_ctf00; "fun_ctf01", `Slow, fun_ctf01
+  ; "fun_ctf02", `Slow, fun_ctf02; "fun_ctf03", `Slow, fun_ctf03
+  ; "fun_ctf04", `Slow, fun_ctf04; "fun_ctb00", `Slow, fun_ctb00
+  ; "fun_ctb01", `Slow, fun_ctb01; "fun_ctb02", `Slow, fun_ctb02
+  ; "fun_ctb03", `Slow, fun_ctb03; "fun_ctb04", `Slow, fun_ctb04
+  ; "fun_ctb05", `Slow, fun_ctb05; "fun_ctb06", `Slow, fun_ctb06
+  ; "fun_ctb07", `Slow, fun_ctb07; "fun_ctb08", `Slow, fun_ctb08
+  ; "fun_ctb09", `Slow, fun_ctb09; "fun_ctb10", `Slow, fun_ctb10
+  ; "fun_ctb11", `Slow, fun_ctb11; "fun_ctb12", `Slow, fun_ctb12
+  ; "fun_ctb13", `Slow, fun_ctb13; "fun_ctb14", `Slow, fun_ctb14
+  ; "fun_ctb15", `Slow, fun_ctb15 ]

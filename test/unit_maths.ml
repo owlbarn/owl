@@ -65,14 +65,9 @@ module To_test = struct
     let x = [| 0; 1; 10; 50; 100; 150; 170 |] in
     let y = Array.map M.fact x in
     let z =
-      [| 1.
-       ; 1.
-       ; 3628800.
-       ; 3.04140932017133780436126081661e+64
-       ; 9.33262154439441526816992388563e+157
-       ; 5.71338395644585459047893286526e+262
-       ; 7.25741561530799896739672821113e+306
-      |]
+      [| 1.; 1.; 3628800.; 3.04140932017133780436126081661e+64
+       ; 9.33262154439441526816992388563e+157; 5.71338395644585459047893286526e+262
+       ; 7.25741561530799896739672821113e+306 |]
     in
     let z = Array.map2 approx_equal y z in
     Array.for_all (fun a -> a = true) z
@@ -82,14 +77,8 @@ module To_test = struct
     let x = [| 0; 1; 10; 50; 100; 150; 170 |] in
     let y = Array.map M.log_fact x in
     let z =
-      [| 0.
-       ; 0.
-       ; 15.1044125730755159
-       ; 148.47776695177302
-       ; 363.73937555556347
-       ; 605.020105849423658
-       ; 706.573062245787355
-      |]
+      [| 0.; 0.; 15.1044125730755159; 148.47776695177302; 363.73937555556347
+       ; 605.020105849423658; 706.573062245787355 |]
     in
     let z = Array.map2 approx_equal y z in
     Array.for_all (fun a -> a = true) z
@@ -100,13 +89,8 @@ module To_test = struct
     let x = [| 0; 1; 10; 30; 50; 80 |] in
     let y = Array.map (M.combination_float n) x in
     let z =
-      [| 1.
-       ; 100.
-       ; 17310309456440.
-       ; 2.93723398216109426e+25
-       ; 1.0089134454556422e+29
-       ; 5.35983370403809657e+20
-      |]
+      [| 1.; 100.; 17310309456440.; 2.93723398216109426e+25; 1.0089134454556422e+29
+       ; 5.35983370403809657e+20 |]
     in
     let z = Array.map2 (fun a b -> a -. b) y z in
     Array.for_all (fun a -> a < 1e-8) z
@@ -115,17 +99,8 @@ module To_test = struct
   let test_mulmod () =
     let i = max_int in
     let x =
-      [| 0, 1, 2
-       ; 1, 2, 1
-       ; 2, 1, 2
-       ; 2, 2, 3
-       ; 4, 5, 3
-       ; 1847, 5516, 15268
-       ; 4549, 9581, 2679
-       ; i - 1, i - 1, 2
-       ; i - 1, i - 1, 10
-       ; i - 1, i - 1, i
-      |]
+      [| 0, 1, 2; 1, 2, 1; 2, 1, 2; 2, 2, 3; 4, 5, 3; 1847, 5516, 15268; 4549, 9581, 2679
+       ; i - 1, i - 1, 2; i - 1, i - 1, 10; i - 1, i - 1, i |]
     in
     let y = [| 0; 0; 0; 1; 2; 4296; 1997; 0; 4; 1 |] in
     let b = Array.map (fun (a, b, m) -> M.mulmod a b m) x in
@@ -136,18 +111,8 @@ module To_test = struct
   let test_powmod () =
     let i = max_int in
     let x =
-      [| 0, 0, 1
-       ; 0, 0, 2
-       ; 0, 2, 2
-       ; 1, 2, 1
-       ; 2, 1, 2
-       ; 5, 3, 3
-       ; 1847, 5516, 15268
-       ; 4549, 9581, 2679
-       ; i - 1, i - 1, 2
-       ; i - 1, i - 1, 10
-       ; i - 1, i - 1, i
-      |]
+      [| 0, 0, 1; 0, 0, 2; 0, 2, 2; 1, 2, 1; 2, 1, 2; 5, 3, 3; 1847, 5516, 15268
+       ; 4549, 9581, 2679; i - 1, i - 1, 2; i - 1, i - 1, 10; i - 1, i - 1, i |]
     in
     let y = [| 0; 1; 0; 0; 0; 2; 4973; 1513; 0; 4; 1 |] in
     let b = Array.map (fun (a, b, m) -> M.powmod a b m) x in
@@ -249,47 +214,22 @@ let test_is_prime () =
 
 
 let test_set =
-  [ "test j0", `Slow, test_j0
-  ; "test j1", `Slow, test_j1
-  ; "test jv", `Slow, test_jv
-  ; "test y0", `Slow, test_y0
-  ; "test y1", `Slow, test_y1
-  ; "test yv", `Slow, test_yv
-  ; "test i0", `Slow, test_i0
-  ; "test i0e", `Slow, test_i0e
-  ; "test i1", `Slow, test_i1
-  ; "test i1e", `Slow, test_i1e
-  ; "test iv", `Slow, test_iv
-  ; "test k0", `Slow, test_k0
-  ; "test k0e", `Slow, test_k0e
-  ; "test k1", `Slow, test_k1
-  ; "test k1e", `Slow, test_k1e
-  ; "test ellipj", `Slow, test_ellipj
-  ; "test airy", `Slow, test_airy
-  ; "test ellipj", `Slow, test_ellipj
-  ; "test ellipk", `Slow, test_ellipk
-  ; "test ellipkm1", `Slow, test_ellipkm1
-  ; "test ellipkinc", `Slow, test_ellipkinc
-  ; "test ellipe", `Slow, test_ellipe
-  ; "test ellipeinc", `Slow, test_ellipeinc
-  ; "test gamma", `Slow, test_gamma
-  ; "test rgamma", `Slow, test_rgamma
-  ; "test loggamma", `Slow, test_loggamma
-  ; "test gammainc", `Slow, test_gammainc
-  ; "test gammaincc", `Slow, test_gammaincc
-  ; "test gammainccinv", `Slow, test_gammainccinv
-  ; "test psi", `Slow, test_psi
-  ; "test beta", `Slow, test_beta
-  ; "test betainc", `Slow, test_betainc
-  ; "test bdtr", `Slow, test_bdtr
-  ; "test bdtrc", `Slow, test_bdtrc
-  ; "test bdtri", `Slow, test_bdtri
-  ; "test btdtr", `Slow, test_btdtr
-  ; "test btdtri", `Slow, test_btdtri
-  ; "test fact", `Slow, test_fact
-  ; "test log_fact", `Slow, test_log_fact
-  ; "test combination", `Slow, test_combination
-  ; "test mulmod", `Slow, test_mulmod
-  ; "test powmod", `Slow, test_powmod
-  ; "test is_prime", `Slow, test_is_prime
-  ]
+  [ "test j0", `Slow, test_j0; "test j1", `Slow, test_j1; "test jv", `Slow, test_jv
+  ; "test y0", `Slow, test_y0; "test y1", `Slow, test_y1; "test yv", `Slow, test_yv
+  ; "test i0", `Slow, test_i0; "test i0e", `Slow, test_i0e; "test i1", `Slow, test_i1
+  ; "test i1e", `Slow, test_i1e; "test iv", `Slow, test_iv; "test k0", `Slow, test_k0
+  ; "test k0e", `Slow, test_k0e; "test k1", `Slow, test_k1; "test k1e", `Slow, test_k1e
+  ; "test ellipj", `Slow, test_ellipj; "test airy", `Slow, test_airy
+  ; "test ellipj", `Slow, test_ellipj; "test ellipk", `Slow, test_ellipk
+  ; "test ellipkm1", `Slow, test_ellipkm1; "test ellipkinc", `Slow, test_ellipkinc
+  ; "test ellipe", `Slow, test_ellipe; "test ellipeinc", `Slow, test_ellipeinc
+  ; "test gamma", `Slow, test_gamma; "test rgamma", `Slow, test_rgamma
+  ; "test loggamma", `Slow, test_loggamma; "test gammainc", `Slow, test_gammainc
+  ; "test gammaincc", `Slow, test_gammaincc; "test gammainccinv", `Slow, test_gammainccinv
+  ; "test psi", `Slow, test_psi; "test beta", `Slow, test_beta
+  ; "test betainc", `Slow, test_betainc; "test bdtr", `Slow, test_bdtr
+  ; "test bdtrc", `Slow, test_bdtrc; "test bdtri", `Slow, test_bdtri
+  ; "test btdtr", `Slow, test_btdtr; "test btdtri", `Slow, test_btdtri
+  ; "test fact", `Slow, test_fact; "test log_fact", `Slow, test_log_fact
+  ; "test combination", `Slow, test_combination; "test mulmod", `Slow, test_mulmod
+  ; "test powmod", `Slow, test_powmod; "test is_prime", `Slow, test_is_prime ]

@@ -187,8 +187,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       , ( "xy^2"
         , (fun v -> Maths.((Mat.get v 0 0 * Mat.get v 0 1) ** F 2.))
         , [| (fun v -> 2. *. (v.(0) *. (v.(1) ** 2.)))
-           ; (fun v -> 2. *. ((v.(0) ** 2.) *. v.(1)))
-          |]
+           ; (fun v -> 2. *. ((v.(0) ** 2.) *. v.(1))) |]
         , vs ) )
     ; ( "xy_cube"
       , ( "xy^3"
@@ -201,17 +200,14 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
               * Mat.get v 0 0
               * Mat.get v 0 1))
         , [| (fun v -> 3. *. ((v.(0) ** 2.) *. (v.(1) ** 3.)))
-           ; (fun v -> 3. *. ((v.(0) ** 3.) *. (v.(1) ** 2.)))
-          |]
+           ; (fun v -> 3. *. ((v.(0) ** 3.) *. (v.(1) ** 2.))) |]
         , vs ) )
     ; ( "x_pow_y"
       , ( "x^y"
         , (fun v -> Maths.(Mat.get v 0 0 ** Mat.get v 0 1))
         , [| (fun v -> v.(1) *. (v.(0) ** (v.(1) -. 1.)))
-           ; (fun v -> log v.(0) *. (v.(0) ** v.(1)))
-          |]
-        , vs_x_pos ) )
-    ]
+           ; (fun v -> log v.(0) *. (v.(0) ** v.(1))) |]
+        , vs_x_pos ) ) ]
 
 
   (* grad_tests_other provide tests for min, max, neg, abs, sign, floor/ceil/round *)
@@ -220,15 +216,13 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       , ( "min(x,y)"
         , (fun v -> Maths.(min2 (Mat.get v 0 0) (Mat.get v 0 1)))
         , [| (fun v -> if v.(0) < v.(1) then 1. else 0.)
-           ; (fun v -> if v.(1) < v.(0) then 1. else 0.)
-          |]
+           ; (fun v -> if v.(1) < v.(0) then 1. else 0.) |]
         , vs_diff ) )
     ; ( "max_x_y"
       , ( "max(x,y)"
         , (fun v -> Maths.(max2 (Mat.get v 0 0) (Mat.get v 0 1)))
         , [| (fun v -> if v.(0) > v.(1) then 1. else 0.)
-           ; (fun v -> if v.(1) > v.(0) then 1. else 0.)
-          |]
+           ; (fun v -> if v.(1) > v.(0) then 1. else 0.) |]
         , vs_diff ) )
     ; ( "neg_y"
       , ( "-y)"
@@ -244,8 +238,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       , ( "abs(x^2-y^2)"
         , (fun v -> Maths.(abs ((Mat.get v 0 0 ** F 2.) - (Mat.get v 0 1 ** F 2.))))
         , [| (fun v -> (if v.(0) ** 2. < v.(1) ** 2. then -1. else 1.) *. 2. *. v.(0))
-           ; (fun v -> (if v.(0) ** 2. < v.(1) ** 2. then -1. else 1.) *. -2. *. v.(1))
-          |]
+           ; (fun v -> (if v.(0) ** 2. < v.(1) ** 2. then -1. else 1.) *. -2. *. v.(1)) |]
         , vs_sq_diff ) )
     ; ( "sign_x2_m_y2"
       , ( "sign(x^2-y^2)"
@@ -266,8 +259,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       , ( "round(x^2-y^2)"
         , (fun v -> Maths.(round ((Mat.get v 0 0 ** F 2.) - (Mat.get v 0 1 ** F 2.))))
         , [| (fun _ -> 0.); (fun _ -> 0.) |]
-        , vs ) )
-    ]
+        , vs ) ) ]
 
 
   (* grad_tests_logexp provides tests for sqr, sqrt, log, log2, log10, exp *)
@@ -281,8 +273,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       , ( "sqrt(xy)"
         , (fun v -> Maths.(sqrt (Mat.get v 0 0 * Mat.get v 0 1)))
         , [| (fun v -> 0.5 *. v.(1) /. sqrt (v.(0) *. v.(1)))
-           ; (fun v -> 0.5 *. v.(0) /. sqrt (v.(0) *. v.(1)))
-          |]
+           ; (fun v -> 0.5 *. v.(0) /. sqrt (v.(0) *. v.(1))) |]
         , vs_prod_positive ) )
     ; ( "log_xy"
       , ( "log(xy)"
@@ -303,10 +294,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       , ( "exp(xy)"
         , (fun v -> Maths.(exp (Mat.get v 0 0 * Mat.get v 0 1)))
         , [| (fun v -> v.(1) *. exp (v.(1) *. v.(0)))
-           ; (fun v -> v.(0) *. exp (v.(1) *. v.(0)))
-          |]
-        , vs ) )
-    ]
+           ; (fun v -> v.(0) *. exp (v.(1) *. v.(0))) |]
+        , vs ) ) ]
 
 
   (* grad_tests_trig provide tests for sin, cos, tan, asin, acos, atan, atan2 *)
@@ -325,29 +314,25 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       , ( "sin(xy)"
         , (fun v -> Maths.(sin (Mat.get v 0 0 * Mat.get v 0 1)))
         , [| (fun v -> v.(1) *. cos (v.(0) *. v.(1)))
-           ; (fun v -> v.(0) *. cos (v.(0) *. v.(1)))
-          |]
+           ; (fun v -> v.(0) *. cos (v.(0) *. v.(1))) |]
         , vs ) )
     ; ( "cos_xy"
       , ( "cos(xy)"
         , (fun v -> Maths.(cos (Mat.get v 0 0 * Mat.get v 0 1)))
         , [| (fun v -> -1. *. v.(1) *. sin (v.(0) *. v.(1)))
-           ; (fun v -> -1. *. v.(0) *. sin (v.(0) *. v.(1)))
-          |]
+           ; (fun v -> -1. *. v.(0) *. sin (v.(0) *. v.(1))) |]
         , vs ) )
     ; ( "cos_y_div_x"
       , ( "cos(y/x)"
         , (fun v -> Maths.(cos (Mat.get v 0 1 / Mat.get v 0 0)))
         , [| (fun v -> 1. *. v.(1) /. (v.(0) ** 2.) *. sin (v.(1) /. v.(0)))
-           ; (fun v -> -1. /. v.(0) *. sin (v.(1) /. v.(0)))
-          |]
+           ; (fun v -> -1. /. v.(0) *. sin (v.(1) /. v.(0))) |]
         , vs_x_nonzero ) )
     ; ( "tan_x_p_y"
       , ( "tan(x+y)"
         , (fun v -> Maths.(tan (Mat.get v 0 0 + Mat.get v 0 1)))
         , [| (fun v -> 1. /. (cos (v.(0) +. v.(1)) ** 2.))
-           ; (fun v -> 1. /. (cos (v.(0) +. v.(1)) ** 2.))
-          |]
+           ; (fun v -> 1. /. (cos (v.(0) +. v.(1)) ** 2.)) |]
         , vs ) )
     ; ( "asin_x"
       , ( "asin(x)"
@@ -368,10 +353,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       , ( "atan2(y,x)"
         , (fun v -> Maths.(atan2 (Mat.get v 0 1) (Mat.get v 0 0)))
         , [| (fun v -> -1. /. (1. +. ((v.(1) /. v.(0)) ** 2.)) *. v.(1) /. (v.(0) ** 2.))
-           ; (fun v -> 1. /. (1. +. ((v.(1) /. v.(0)) ** 2.)) /. v.(0))
-          |]
-        , vs_x_nonzero ) )
-    ]
+           ; (fun v -> 1. /. (1. +. ((v.(1) /. v.(0)) ** 2.)) /. v.(0)) |]
+        , vs_x_nonzero ) ) ]
 
 
   (* grad_tests_hype provide tests for sinh, cosh, tanh, asinh, acosh, atanh *)
@@ -390,29 +373,25 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       , ( "sinh(xy)"
         , (fun v -> Maths.(sinh (Mat.get v 0 0 * Mat.get v 0 1)))
         , [| (fun v -> v.(1) *. cosh (v.(0) *. v.(1)))
-           ; (fun v -> v.(0) *. cosh (v.(0) *. v.(1)))
-          |]
+           ; (fun v -> v.(0) *. cosh (v.(0) *. v.(1))) |]
         , vs ) )
     ; ( "cosh_xy"
       , ( "cosh(xy)"
         , (fun v -> Maths.(cosh (Mat.get v 0 0 * Mat.get v 0 1)))
         , [| (fun v -> 1. *. v.(1) *. sinh (v.(0) *. v.(1)))
-           ; (fun v -> 1. *. v.(0) *. sinh (v.(0) *. v.(1)))
-          |]
+           ; (fun v -> 1. *. v.(0) *. sinh (v.(0) *. v.(1))) |]
         , vs ) )
     ; ( "cosh_y_div_x"
       , ( "cosh(y/x)"
         , (fun v -> Maths.(cosh (Mat.get v 0 1 / Mat.get v 0 0)))
         , [| (fun v -> -1. *. v.(1) /. (v.(0) ** 2.) *. sinh (v.(1) /. v.(0)))
-           ; (fun v -> 1. /. v.(0) *. sinh (v.(1) /. v.(0)))
-          |]
+           ; (fun v -> 1. /. v.(0) *. sinh (v.(1) /. v.(0))) |]
         , vs_x_nonzero ) )
     ; ( "tanh_x_p_y"
       , ( "tanh(x+y)"
         , (fun v -> Maths.(tanh (Mat.get v 0 0 + Mat.get v 0 1)))
         , [| (fun v -> 1. /. (cosh (v.(0) +. v.(1)) ** 2.))
-           ; (fun v -> 1. /. (cosh (v.(0) +. v.(1)) ** 2.))
-          |]
+           ; (fun v -> 1. /. (cosh (v.(0) +. v.(1)) ** 2.)) |]
         , vs ) )
     ; ( "asinh_x"
       , ( "asinh(x)"
@@ -428,8 +407,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       , ( "atan(y)"
         , (fun v -> Maths.(atanh (Mat.get v 0 1)))
         , [| (fun _ -> 0.); (fun v -> 1. /. (1. -. (v.(1) ** 2.))) |]
-        , vs_y_abs_lt_one ) )
-    ]
+        , vs_y_abs_lt_one ) ) ]
 
 
   (* test_set - create the test_set for Alcotest *)
@@ -439,6 +417,5 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; make_grad_test_set "logexp" grad_tests_logexp
       ; make_grad_test_set "other" grad_tests_other
       ; make_grad_test_set "trig" grad_tests_trig
-      ; make_grad_test_set "hyperbolic" grad_tests_hype
-      ]
+      ; make_grad_test_set "hyperbolic" grad_tests_hype ]
 end

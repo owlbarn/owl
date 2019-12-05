@@ -174,18 +174,9 @@ module To_test = struct
 
   let of_array () =
     let a =
-      [| [| 0; 1 |], 1.
-       ; [| 0; 2 |], 2.
-       ; [| 0; 3 |], 3.
-       ; [| 1; 0 |], 4.
-       ; [| 1; 1 |], 5.
-       ; [| 1; 2 |], 6.
-       ; [| 1; 3 |], 7.
-       ; [| 2; 0 |], 8.
-       ; [| 2; 1 |], 9.
-       ; [| 2; 2 |], 10.
-       ; [| 2; 3 |], 11.
-      |]
+      [| [| 0; 1 |], 1.; [| 0; 2 |], 2.; [| 0; 3 |], 3.; [| 1; 0 |], 4.; [| 1; 1 |], 5.
+       ; [| 1; 2 |], 6.; [| 1; 3 |], 7.; [| 2; 0 |], 8.; [| 2; 1 |], 9.; [| 2; 2 |], 10.
+       ; [| 2; 3 |], 11. |]
     in
     let y = M.of_array Float64 3 4 a in
     M.equal y x2
@@ -260,48 +251,19 @@ let of_array () = Alcotest.(check bool) "of_array" true (To_test.of_array ())
 let save_load () = Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
 let test_set =
-  [ "sequential", `Slow, sequential
-  ; "row_num", `Slow, row_num
-  ; "col_num", `Slow, col_num
-  ; "numel", `Slow, numel
-  ; "transpose", `Slow, transpose
-  ; "get", `Slow, get
-  ; "set", `Slow, set
-  ; "row", `Slow, row
-  ; "col", `Slow, col
-  ; "fill", `Slow, fill
-  ; "trace", `Slow, trace
-  ; "sum", `Slow, sum
-  ; "exists", `Slow, exists
-  ; "not_exists", `Slow, not_exists
-  ; "for_all", `Slow, for_all
-  ; "equal", `Slow, equal
-  ; "not_equal", `Slow, not_equal
-  ; "less", `Slow, less
-  ; "greater", `Slow, greater
-  ; "greater_equal", `Slow, greater_equal
-  ; "less_equal", `Slow, less_equal
-  ; "is_zero", `Slow, is_zero
-  ; "is_positive", `Slow, is_positive
-  ; "is_negative", `Slow, is_negative
-  ; "is_nonnegative", `Slow, is_nonnegative
-  ; "is_nonpositive", `Slow, is_nonpositive
-  ; "add", `Slow, add
-  ; "mul", `Slow, mul
-  ; "dot", `Slow, dot
-  ; "add_scalar", `Slow, add_scalar
-  ; "mul_scalar", `Slow, mul_scalar
-  ; "min", `Slow, min
-  ; "max", `Slow, max
-  ; "map", `Slow, map
-  ; "fold", `Slow, fold
-  ; "foldi", `Slow, foldi
-  ; "foldi_nz", `Slow, foldi_nz
-  ; "filter", `Slow, filter
-  ; "fold_rows", `Slow, fold_rows
-  ; "fold_cols", `Slow, fold_cols
-  ; "sum_rows", `Slow, sum_rows
-  ; "sum_cols", `Slow, sum_cols
-  ; "of_array", `Slow, of_array
-  ; "save_load", `Slow, save_load
-  ]
+  [ "sequential", `Slow, sequential; "row_num", `Slow, row_num; "col_num", `Slow, col_num
+  ; "numel", `Slow, numel; "transpose", `Slow, transpose; "get", `Slow, get
+  ; "set", `Slow, set; "row", `Slow, row; "col", `Slow, col; "fill", `Slow, fill
+  ; "trace", `Slow, trace; "sum", `Slow, sum; "exists", `Slow, exists
+  ; "not_exists", `Slow, not_exists; "for_all", `Slow, for_all; "equal", `Slow, equal
+  ; "not_equal", `Slow, not_equal; "less", `Slow, less; "greater", `Slow, greater
+  ; "greater_equal", `Slow, greater_equal; "less_equal", `Slow, less_equal
+  ; "is_zero", `Slow, is_zero; "is_positive", `Slow, is_positive
+  ; "is_negative", `Slow, is_negative; "is_nonnegative", `Slow, is_nonnegative
+  ; "is_nonpositive", `Slow, is_nonpositive; "add", `Slow, add; "mul", `Slow, mul
+  ; "dot", `Slow, dot; "add_scalar", `Slow, add_scalar; "mul_scalar", `Slow, mul_scalar
+  ; "min", `Slow, min; "max", `Slow, max; "map", `Slow, map; "fold", `Slow, fold
+  ; "foldi", `Slow, foldi; "foldi_nz", `Slow, foldi_nz; "filter", `Slow, filter
+  ; "fold_rows", `Slow, fold_rows; "fold_cols", `Slow, fold_cols
+  ; "sum_rows", `Slow, sum_rows; "sum_cols", `Slow, sum_cols; "of_array", `Slow, of_array
+  ; "save_load", `Slow, save_load ]

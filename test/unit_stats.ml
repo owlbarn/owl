@@ -526,16 +526,7 @@ let quantiles () =
     (Some [| 0.106500; 0.190700; 0.376750; 0.767625; 0.978800 |])
     (To_test.quantiles
        ~p:[| 0.; 0.25; 0.5; 0.75; 1. |]
-       [| 0.1182
-        ; 0.8388
-        ; 0.4569
-        ; 0.1902
-        ; 0.8652
-        ; 0.2966
-        ; 0.9788
-        ; 0.5541
-        ; 0.1065
-        ; 0.1922
+       [| 0.1182; 0.8388; 0.4569; 0.1902; 0.8652; 0.2966; 0.9788; 0.5541; 0.1065; 0.1922
        |])
 
 
@@ -556,32 +547,21 @@ let test_set =
   ; "fisher_test_both_side", `Slow, fisher_test_both_side
   ; "fisher_test_right_side", `Slow, fisher_test_right_side
   ; "fisher_test_left_side", `Slow, fisher_test_left_side
-  ; "ks_teststat1", `Slow, ks_teststat1
-  ; "ks_teststat2", `Slow, ks_teststat2
-  ; "ks_pval_test1", `Slow, ks_pval_test1
-  ; "ks_pval_test2", `Slow, ks_pval_test2
-  ; "ks_pval_test3", `Slow, ks_pval_test3
-  ; "ks_pval_test4", `Slow, ks_pval_test4
-  ; "ks_pval_test5", `Slow, ks_pval_test5
-  ; "ks2_pval_test1", `Slow, ks2_pval_test1
-  ; "ks2_pval_test2", `Slow, ks2_pval_test2
-  ; "ks2_pval_test3", `Slow, ks2_pval_test3
-  ; "ks2_teststat", `Slow, ks2_teststat
-  ; "hist_uni_1", `Slow, hist_uni_1
-  ; "hist_uni_sorted_1", `Slow, hist_uni_sorted_1
-  ; "hist_bins_1", `Slow, hist_bins_1
-  ; "hist_bins_low", `Slow, hist_bins_low
-  ; "hist_bins_high", `Slow, hist_bins_high
+  ; "ks_teststat1", `Slow, ks_teststat1; "ks_teststat2", `Slow, ks_teststat2
+  ; "ks_pval_test1", `Slow, ks_pval_test1; "ks_pval_test2", `Slow, ks_pval_test2
+  ; "ks_pval_test3", `Slow, ks_pval_test3; "ks_pval_test4", `Slow, ks_pval_test4
+  ; "ks_pval_test5", `Slow, ks_pval_test5; "ks2_pval_test1", `Slow, ks2_pval_test1
+  ; "ks2_pval_test2", `Slow, ks2_pval_test2; "ks2_pval_test3", `Slow, ks2_pval_test3
+  ; "ks2_teststat", `Slow, ks2_teststat; "hist_uni_1", `Slow, hist_uni_1
+  ; "hist_uni_sorted_1", `Slow, hist_uni_sorted_1; "hist_bins_1", `Slow, hist_bins_1
+  ; "hist_bins_low", `Slow, hist_bins_low; "hist_bins_high", `Slow, hist_bins_high
   ; "hist_bins_sorted_low", `Slow, hist_bins_low
   ; "hist_bins_sorted_high", `Slow, hist_bins_high
-  ; "hist_bins_wrong", `Slow, hist_bins_wrong
-  ; "hist_bins_2", `Slow, hist_bins_2
+  ; "hist_bins_wrong", `Slow, hist_bins_wrong; "hist_bins_2", `Slow, hist_bins_2
   ; "hist_bins_sorted_2", `Slow, hist_bins_sorted_2
   ; "hist_bins_weights", `Slow, hist_bins_weights
   ; "hist_bins_weights_sorted", `Slow, hist_bins_weights_sorted
   ; "hist_bins_normalise", `Slow, hist_bins_normalise
   ; "hist_bins_normalise_weights", `Slow, hist_bins_normalise_weights
   ; "hist_bins_normalise_binf", `Slow, hist_bins_normalise_binf
-  ; "tukey_fences", `Slow, tukey_fences
-  ; "quantiles", `Slow, quantiles
-  ]
+  ; "tukey_fences", `Slow, tukey_fences; "quantiles", `Slow, quantiles ]

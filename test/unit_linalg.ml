@@ -163,16 +163,9 @@ module To_test = struct
     let x = Mat.sequential ~a:1. 3 3 in
     let y =
       Mat.of_array
-        [| 1118906.6994132
-         ; 1374815.06293582
-         ; 1630724.42645844
-         ; 2533881.04189899
-         ; 3113415.03138058
-         ; 3692947.02086217
-         ; 3948856.38438479
-         ; 4852012.99982535
-         ; 5755170.6152659
-        |]
+        [| 1118906.6994132; 1374815.06293582; 1630724.42645844; 2533881.04189899
+         ; 3113415.03138058; 3692947.02086217; 3948856.38438479; 4852012.99982535
+         ; 5755170.6152659 |]
         3
         3
     in
@@ -184,16 +177,8 @@ module To_test = struct
     let x = Mat.(sequential ~a:1. 3 3 /$ 10.) in
     let y =
       Mat.of_array
-        [| 1.37316027
-         ; 0.53148466
-         ; 0.68980905
-         ; 1.00926035
-         ; 2.2481482
-         ; 1.48703605
-         ; 1.64536043
-         ; 1.96481174
-         ; 3.28426304
-        |]
+        [| 1.37316027; 0.53148466; 0.68980905; 1.00926035; 2.2481482; 1.48703605
+         ; 1.64536043; 1.96481174; 3.28426304 |]
         3
         3
     in
@@ -205,16 +190,8 @@ module To_test = struct
     let x = Mat.(sequential ~a:1. 3 3 /$ 50.) in
     let y =
       Mat.of_array
-        [| 1.02667783
-         ; 0.04803414
-         ; 0.06939044
-         ; 0.09473789
-         ; 1.11808977
-         ; 0.14144165
-         ; 0.16279795
-         ; 0.1881454
-         ; 1.21349285
-        |]
+        [| 1.02667783; 0.04803414; 0.06939044; 0.09473789; 1.11808977; 0.14144165
+         ; 0.16279795; 0.1881454; 1.21349285 |]
         3
         3
     in
@@ -226,16 +203,8 @@ module To_test = struct
     let x = Mat.(sequential ~a:1. 3 3 /$ 200.) in
     let y =
       Mat.of_array
-        [| 1.00538495
-         ; 0.01046225
-         ; 0.01553954
-         ; 0.02084758
-         ; 1.02604024
-         ; 0.03123291
-         ; 0.03631021
-         ; 0.04161824
-         ; 1.04692628
-        |]
+        [| 1.00538495; 0.01046225; 0.01553954; 0.02084758; 1.02604024; 0.03123291
+         ; 0.03631021; 0.04161824; 1.04692628 |]
         3
         3
     in
@@ -352,44 +321,19 @@ let tanhm () = Alcotest.(check bool) "tanhm" true (To_test.tanhm ())
 let sinhcoshm () = Alcotest.(check bool) "sinhcoshm" true (To_test.sinhcoshm ())
 
 let test_set =
-  [ "rank", `Slow, rank
-  ; "det", `Slow, det
-  ; "inv", `Slow, inv
-  ; "vecnorm_01", `Slow, vecnorm_01
-  ; "vecnorm_02", `Slow, vecnorm_02
-  ; "vecnorm_03", `Slow, vecnorm_03
-  ; "vecnorm_04", `Slow, vecnorm_04
-  ; "vecnorm_05", `Slow, vecnorm_05
-  ; "vecnorm_06", `Slow, vecnorm_06
-  ; "vecnorm_07", `Slow, vecnorm_07
-  ; "vecnorm_08", `Slow, vecnorm_08
-  ; "vecnorm_09", `Slow, vecnorm_09
-  ; "vecnorm_10", `Slow, vecnorm_10
-  ; "norm_01", `Slow, norm_01
-  ; "norm_02", `Slow, norm_02
-  ; "norm_03", `Slow, norm_03
-  ; "norm_04", `Slow, norm_04
-  ; "norm_05", `Slow, norm_05
-  ; "norm_06", `Slow, norm_06
-  ; "is_triu_1", `Slow, is_triu_1
-  ; "is_triu_2", `Slow, is_triu_2
-  ; "is_tril_1", `Slow, is_tril_1
-  ; "is_tril_2", `Slow, is_tril_2
-  ; "is_symmetric_1", `Slow, is_symmetric_1
-  ; "is_symmetric_2", `Slow, is_symmetric_2
-  ; "is_diag_1", `Slow, is_diag_1
-  ; "is_diag_2", `Slow, is_diag_2
-  ; "mpow", `Slow, mpow
-  ; "expm_1", `Slow, expm_1
-  ; "expm_2", `Slow, expm_2
-  ; "expm_3", `Slow, expm_3
-  ; "expm_4", `Slow, expm_4
-  ; "sinm", `Slow, sinm
-  ; "cosm", `Slow, cosm
-  ; "tanm", `Slow, tanm
-  ; "sincosm", `Slow, sincosm
-  ; "sinhm", `Slow, sinhm
-  ; "coshm", `Slow, coshm
-  ; "tanhm", `Slow, tanhm
-  ; "sinhcoshm", `Slow, sinhcoshm
-  ]
+  [ "rank", `Slow, rank; "det", `Slow, det; "inv", `Slow, inv
+  ; "vecnorm_01", `Slow, vecnorm_01; "vecnorm_02", `Slow, vecnorm_02
+  ; "vecnorm_03", `Slow, vecnorm_03; "vecnorm_04", `Slow, vecnorm_04
+  ; "vecnorm_05", `Slow, vecnorm_05; "vecnorm_06", `Slow, vecnorm_06
+  ; "vecnorm_07", `Slow, vecnorm_07; "vecnorm_08", `Slow, vecnorm_08
+  ; "vecnorm_09", `Slow, vecnorm_09; "vecnorm_10", `Slow, vecnorm_10
+  ; "norm_01", `Slow, norm_01; "norm_02", `Slow, norm_02; "norm_03", `Slow, norm_03
+  ; "norm_04", `Slow, norm_04; "norm_05", `Slow, norm_05; "norm_06", `Slow, norm_06
+  ; "is_triu_1", `Slow, is_triu_1; "is_triu_2", `Slow, is_triu_2
+  ; "is_tril_1", `Slow, is_tril_1; "is_tril_2", `Slow, is_tril_2
+  ; "is_symmetric_1", `Slow, is_symmetric_1; "is_symmetric_2", `Slow, is_symmetric_2
+  ; "is_diag_1", `Slow, is_diag_1; "is_diag_2", `Slow, is_diag_2; "mpow", `Slow, mpow
+  ; "expm_1", `Slow, expm_1; "expm_2", `Slow, expm_2; "expm_3", `Slow, expm_3
+  ; "expm_4", `Slow, expm_4; "sinm", `Slow, sinm; "cosm", `Slow, cosm; "tanm", `Slow, tanm
+  ; "sincosm", `Slow, sincosm; "sinhm", `Slow, sinhm; "coshm", `Slow, coshm
+  ; "tanhm", `Slow, tanhm; "sinhcoshm", `Slow, sinhcoshm ]

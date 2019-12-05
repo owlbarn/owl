@@ -67,10 +67,5 @@ let num0 () = Alcotest.(check bool) "num0" true (To_test.num0 ())
 (* the tests *)
 
 let test_set =
-  [ "topo0", `Slow, topo0
-  ; "topo1", `Slow, topo1
-  ; "dfs0", `Slow, dfs0
-  ; "dfs1", `Slow, dfs1
-  ; "bfs0", `Slow, bfs0
-  ; "num0", `Slow, num0
-  ]
+  [ "topo0", `Slow, topo0; "topo1", `Slow, topo1; "dfs0", `Slow, dfs0; "dfs1", `Slow, dfs1
+  ; "bfs0", `Slow, bfs0; "num0", `Slow, num0 ]

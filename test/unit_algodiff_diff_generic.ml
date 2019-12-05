@@ -140,38 +140,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
   (* Test data *)
   let xs =
-    [| -4.
-     ; -3.
-     ; -2.
-     ; -1.2
-     ; -1.1
-     ; -1.
-     ; -0.9
-     ; -0.8
-     ; -0.7
-     ; -0.6
-     ; -0.5
-     ; -0.4
-     ; -0.3
-     ; -0.2
-     ; -0.1
-     ; 0.
-     ; 0.1
-     ; 0.2
-     ; 0.3
-     ; 0.4
-     ; 0.5
-     ; 0.6
-     ; 0.7
-     ; 0.8
-     ; 0.9
-     ; 1.
-     ; 1.1
-     ; 1.2
-     ; 2.
-     ; 3.
-     ; 4.
-    |]
+    [| -4.; -3.; -2.; -1.2; -1.1; -1.; -0.9; -0.8; -0.7; -0.6; -0.5; -0.4; -0.3; -0.2
+     ; -0.1; 0.; 0.1; 0.2; 0.3; 0.4; 0.5; 0.6; 0.7; 0.8; 0.9; 1.; 1.1; 1.2; 2.; 3.; 4. |]
 
 
   let xs_filter f =
@@ -537,62 +507,25 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   let poly9 () = Alcotest.(check bool) "poly9" true (To_test.poly9 (F 4.))
 
   let test_set =
-    [ (* "new",            `Slow, newtest;*)
-      "constant", `Slow, constant
-    ; "linear", `Slow, linear
-    ; "square", `Slow, square
-    ; "cube", `Slow, cube
-    ; "sum_x_x", `Slow, sum_x_x
-    ; "diff_2x_x", `Slow, diff_2x_x
-    ; "div_x_x", `Slow, div_x_x
-    ; "div_x2_x", `Slow, div_x2_x
-    ; "pow_2_5_x", `Slow, pow_2_5_x
-    ; "pow_x_2_5", `Slow, pow_x_2_5
-    ; "min_x_x2", `Slow, min_x_x2
-    ; "max_x_x2", `Slow, max_x_x2
-    ; "neg_x", `Slow, neg_x
-    ; "abs_x2", `Slow, abs_x2
-    ; "abs_x2_m_1", `Slow, abs_x2_m_1
-    ; "sign_x2_m_1", `Slow, sign_x2_m_1
-    ; "floor_x2_m_1", `Slow, floor_x2_m_1
-    ; "ceil_x2_m_1", `Slow, ceil_x2_m_1
-    ; "round_x2_m_1", `Slow, round_x2_m_1
-    ; "sqr_x", `Slow, sqr_x
-    ; "sqr_x_x", `Slow, sqr_x_x
-    ; "sqrt_x", `Slow, sqrt_x
-    ; "log_x", `Slow, log_x
-    ; "log_x_x", `Slow, log_x_x
-    ; "log2_x", `Slow, log2_x
-    ; "log10_x", `Slow, log10_x
-    ; "exp_x", `Slow, exp_x
-    ; "sin_x", `Slow, sin_x
-    ; "sin_x_x", `Slow, sin_x_x
-    ; "cos_x", `Slow, cos_x
-    ; "tan_x", `Slow, tan_x
-    ; "asin_x", `Slow, asin_x
-    ; "acos_x", `Slow, acos_x
-    ; "atan_x", `Slow, atan_x
-    ; "atan2_x2_x", `Slow, atan2_x2_x
-    ; "atan2_x_x2", `Slow, atan2_x_x2
-    ; "sinh_x", `Slow, sinh_x
-    ; "sinh_x_x", `Slow, sinh_x_x
-    ; "cosh_x", `Slow, cosh_x
-    ; "tanh_x", `Slow, tanh_x
-    ; "asinh_x", `Slow, asinh_x
-    ; "acosh_x", `Slow, acosh_x
-    ; "atanh_x", `Slow, atanh_x
-    ; "dumb", `Slow, dumb
-    ; "sin1", `Slow, sin1
-    ; "sin2", `Slow, sin2
-    ; "sin3", `Slow, sin3
-    ; "poly1", `Slow, poly1
-    ; "poly2", `Slow, poly2
-    ; "poly3", `Slow, poly3
-    ; "poly4", `Slow, poly4
-    ; "poly5", `Slow, poly5
-    ; "poly6", `Slow, poly6
-    ; "poly7", `Slow, poly7
-    ; "poly8", `Slow, poly8
-    ; "poly9", `Slow, poly9
-    ]
+    [ (* "new",            `Slow, newtest;*) "constant", `Slow, constant
+    ; "linear", `Slow, linear; "square", `Slow, square; "cube", `Slow, cube
+    ; "sum_x_x", `Slow, sum_x_x; "diff_2x_x", `Slow, diff_2x_x; "div_x_x", `Slow, div_x_x
+    ; "div_x2_x", `Slow, div_x2_x; "pow_2_5_x", `Slow, pow_2_5_x
+    ; "pow_x_2_5", `Slow, pow_x_2_5; "min_x_x2", `Slow, min_x_x2
+    ; "max_x_x2", `Slow, max_x_x2; "neg_x", `Slow, neg_x; "abs_x2", `Slow, abs_x2
+    ; "abs_x2_m_1", `Slow, abs_x2_m_1; "sign_x2_m_1", `Slow, sign_x2_m_1
+    ; "floor_x2_m_1", `Slow, floor_x2_m_1; "ceil_x2_m_1", `Slow, ceil_x2_m_1
+    ; "round_x2_m_1", `Slow, round_x2_m_1; "sqr_x", `Slow, sqr_x
+    ; "sqr_x_x", `Slow, sqr_x_x; "sqrt_x", `Slow, sqrt_x; "log_x", `Slow, log_x
+    ; "log_x_x", `Slow, log_x_x; "log2_x", `Slow, log2_x; "log10_x", `Slow, log10_x
+    ; "exp_x", `Slow, exp_x; "sin_x", `Slow, sin_x; "sin_x_x", `Slow, sin_x_x
+    ; "cos_x", `Slow, cos_x; "tan_x", `Slow, tan_x; "asin_x", `Slow, asin_x
+    ; "acos_x", `Slow, acos_x; "atan_x", `Slow, atan_x; "atan2_x2_x", `Slow, atan2_x2_x
+    ; "atan2_x_x2", `Slow, atan2_x_x2; "sinh_x", `Slow, sinh_x
+    ; "sinh_x_x", `Slow, sinh_x_x; "cosh_x", `Slow, cosh_x; "tanh_x", `Slow, tanh_x
+    ; "asinh_x", `Slow, asinh_x; "acosh_x", `Slow, acosh_x; "atanh_x", `Slow, atanh_x
+    ; "dumb", `Slow, dumb; "sin1", `Slow, sin1; "sin2", `Slow, sin2; "sin3", `Slow, sin3
+    ; "poly1", `Slow, poly1; "poly2", `Slow, poly2; "poly3", `Slow, poly3
+    ; "poly4", `Slow, poly4; "poly5", `Slow, poly5; "poly6", `Slow, poly6
+    ; "poly7", `Slow, poly7; "poly8", `Slow, poly8; "poly9", `Slow, poly9 ]
 end

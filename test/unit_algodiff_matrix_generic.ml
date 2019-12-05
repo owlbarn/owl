@@ -273,53 +273,17 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
 
     let test =
-      [ "neg", neg
-      ; "abs", abs
-      ; "signum", signum
-      ; "floor", floor
-      ; "ceil", ceil
-      ; "round", round
-      ; "sqr", sqr
-      ; "sqrt", sqrt
-      ; "log", log
-      ; "pow", pow
-      ; "sin", sin
-      ; "cos", cos
-      ; "tan", tan
-      ; "sinh", sinh
-      ; "cosh", cosh
-      ; "tanh", tanh
-      ; "sigmoid", sigmoid
-      ; "relu", relu
-      ; "exp", exp
-      ; "transpose", transpose
-      ; "diag", diag
-      ; "diagm", diagm
-      ; "trace", trace
-      ; "l1norm'", l1norm'
-      ; "l2norm'", l2norm'
-      ; "l2norm_sqr'", l2norm_sqr'
-      ; "tril", tril
-      ; "triu", triu
-      ; "inv", inv
-      ; "logdet", logdet
-      ; "chol", chol
-      ; "qr", qr
-      ; "lq", lq
-      ; "split", split
-      ; "concat", concat
-      ; "concatenate", concatenate
-      ; "svd", svd
-      ; "of_arrays", of_arrays
-      ; "to_arrays", to_arrays
-      ; "init_2d", init_2d
-      ; "sylvester", sylvester
-      ; "lyapunov", lyapunov
-      ; "discrete_lyapunov", discrete_lyapunov
-      ; "linsolve", linsolve
-      ; "linsolve_triangular", linsolve_triangular
-      ; "care", care
-      ]
+      [ "neg", neg; "abs", abs; "signum", signum; "floor", floor; "ceil", ceil
+      ; "round", round; "sqr", sqr; "sqrt", sqrt; "log", log; "pow", pow; "sin", sin
+      ; "cos", cos; "tan", tan; "sinh", sinh; "cosh", cosh; "tanh", tanh
+      ; "sigmoid", sigmoid; "relu", relu; "exp", exp; "transpose", transpose; "diag", diag
+      ; "diagm", diagm; "trace", trace; "l1norm'", l1norm'; "l2norm'", l2norm'
+      ; "l2norm_sqr'", l2norm_sqr'; "tril", tril; "triu", triu; "inv", inv
+      ; "logdet", logdet; "chol", chol; "qr", qr; "lq", lq; "split", split
+      ; "concat", concat; "concatenate", concatenate; "svd", svd; "of_arrays", of_arrays
+      ; "to_arrays", to_arrays; "init_2d", init_2d; "sylvester", sylvester
+      ; "lyapunov", lyapunov; "discrete_lyapunov", discrete_lyapunov; "linsolve", linsolve
+      ; "linsolve_triangular", linsolve_triangular; "care", care ]
       |> List.fold_left
            (fun (b, error_msg) (s, f) ->
              let b', c =

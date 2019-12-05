@@ -80,37 +80,8 @@ module To_test = struct
     let y = V.get_slice s x1 in
     let z =
       N.of_array
-        [| 0.
-         ; 1.
-         ; 2.
-         ; 3.
-         ; 4.
-         ; 5.
-         ; 6.
-         ; 7.
-         ; 8.
-         ; 9.
-         ; 20.
-         ; 21.
-         ; 22.
-         ; 23.
-         ; 24.
-         ; 25.
-         ; 26.
-         ; 27.
-         ; 28.
-         ; 29.
-         ; 40.
-         ; 41.
-         ; 42.
-         ; 43.
-         ; 44.
-         ; 45.
-         ; 46.
-         ; 47.
-         ; 48.
-         ; 49.
-        |]
+        [| 0.; 1.; 2.; 3.; 4.; 5.; 6.; 7.; 8.; 9.; 20.; 21.; 22.; 23.; 24.; 25.; 26.; 27.
+         ; 28.; 29.; 40.; 41.; 42.; 43.; 44.; 45.; 46.; 47.; 48.; 49. |]
         [| 3; 10 |]
     in
     V.equal y (V.of_arr z)
@@ -121,37 +92,8 @@ module To_test = struct
     let y = V.get_slice s x1 in
     let z =
       N.of_array
-        [| 50.
-         ; 51.
-         ; 52.
-         ; 53.
-         ; 54.
-         ; 55.
-         ; 56.
-         ; 57.
-         ; 58.
-         ; 59.
-         ; 30.
-         ; 31.
-         ; 32.
-         ; 33.
-         ; 34.
-         ; 35.
-         ; 36.
-         ; 37.
-         ; 38.
-         ; 39.
-         ; 10.
-         ; 11.
-         ; 12.
-         ; 13.
-         ; 14.
-         ; 15.
-         ; 16.
-         ; 17.
-         ; 18.
-         ; 19.
-        |]
+        [| 50.; 51.; 52.; 53.; 54.; 55.; 56.; 57.; 58.; 59.; 30.; 31.; 32.; 33.; 34.; 35.
+         ; 36.; 37.; 38.; 39.; 10.; 11.; 12.; 13.; 14.; 15.; 16.; 17.; 18.; 19. |]
         [| 3; 10 |]
     in
     V.equal y (V.of_arr z)
@@ -367,34 +309,13 @@ let test_29 () = Alcotest.(check bool) "test 29" true (To_test.test_29 ())
 let test_30 () = Alcotest.(check bool) "test 30" true (To_test.test_30 ())
 
 let test_set =
-  [ "test 01", `Slow, test_01
-  ; "test 02", `Slow, test_02
-  ; "test 03", `Slow, test_03
-  ; "test 04", `Slow, test_04
-  ; "test 05", `Slow, test_05
-  ; "test 06", `Slow, test_06
-  ; "test 07", `Slow, test_07
-  ; "test 08", `Slow, test_08
-  ; "test 09", `Slow, test_09
-  ; "test 10", `Slow, test_10
-  ; "test 11", `Slow, test_11
-  ; "test 12", `Slow, test_12
-  ; "test 13", `Slow, test_13
-  ; "test 14", `Slow, test_14
-  ; "test 15", `Slow, test_15
-  ; "test 16", `Slow, test_16
-  ; "test 17", `Slow, test_17
-  ; "test 18", `Slow, test_18
-  ; "test 19", `Slow, test_19
-  ; "test 20", `Slow, test_20
-  ; "test 21", `Slow, test_21
-  ; "test 22", `Slow, test_22
-  ; "test 23", `Slow, test_23
-  ; "test 24", `Slow, test_24
-  ; "test 25", `Slow, test_25
-  ; "test 26", `Slow, test_26
-  ; "test 27", `Slow, test_27
-  ; "test 28", `Slow, test_28
-  ; "test 29", `Slow, test_29
-  ; "test 30", `Slow, test_30
-  ]
+  [ "test 01", `Slow, test_01; "test 02", `Slow, test_02; "test 03", `Slow, test_03
+  ; "test 04", `Slow, test_04; "test 05", `Slow, test_05; "test 06", `Slow, test_06
+  ; "test 07", `Slow, test_07; "test 08", `Slow, test_08; "test 09", `Slow, test_09
+  ; "test 10", `Slow, test_10; "test 11", `Slow, test_11; "test 12", `Slow, test_12
+  ; "test 13", `Slow, test_13; "test 14", `Slow, test_14; "test 15", `Slow, test_15
+  ; "test 16", `Slow, test_16; "test 17", `Slow, test_17; "test 18", `Slow, test_18
+  ; "test 19", `Slow, test_19; "test 20", `Slow, test_20; "test 21", `Slow, test_21
+  ; "test 22", `Slow, test_22; "test 23", `Slow, test_23; "test 24", `Slow, test_24
+  ; "test 25", `Slow, test_25; "test 26", `Slow, test_26; "test 27", `Slow, test_27
+  ; "test 28", `Slow, test_28; "test 29", `Slow, test_29; "test 30", `Slow, test_30 ]

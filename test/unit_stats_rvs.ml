@@ -895,69 +895,45 @@ let run_random_tests test_name pretest sampler tests =
 
 (*f tests to run if p=1/2 *)
 let tests_for_p_0_5 =
-  [ bin_frequency, false, 0, 2000
-  ; bin_frequency, false, 0, 10000
-  ; bin_frequency_1_of_3, true, 0, 1000
-  ; bin_frequency_1_of_3, true, 0, 10000
-  ; bin_block_frequency_7, false, 0, 100
-  ; bin_block_frequency_7, false, 0, 1000
-  ; bin_block_frequency_70, false, 0, 1000
-  ; bin_block_frequency_70, false, 0, 10000
-  ; bin_block_frequency_700, false, 0, 10000
-  ; bin_block_frequency_700, false, 0, 100000
+  [ bin_frequency, false, 0, 2000; bin_frequency, false, 0, 10000
+  ; bin_frequency_1_of_3, true, 0, 1000; bin_frequency_1_of_3, true, 0, 10000
+  ; bin_block_frequency_7, false, 0, 100; bin_block_frequency_7, false, 0, 1000
+  ; bin_block_frequency_70, false, 0, 1000; bin_block_frequency_70, false, 0, 10000
+  ; bin_block_frequency_700, false, 0, 10000; bin_block_frequency_700, false, 0, 100000
   ; bin_block_frequency_1_of_3_70, true, 0, 1000
   ; bin_block_frequency_1_of_3_70, true, 0, 10000
   ; bin_block_frequency_1_of_3_700, true, 0, 10000
-  ; bin_block_frequency_1_of_3_700, true, 0, 100000
-  ; bin_patterns_2, false, 0, 1000
-  ; bin_patterns_3, false, 0, 1000
-  ; bin_patterns_4, false, 0, 1000
-  ; bin_patterns_5, false, 0, 1000
-  ; bin_patterns_6, false, 0, 1000
-  ; bin_patterns_7, false, 0, 1000
-  ; bin_patterns_7, false, 0, 10000
-  ; bin_patterns_8, false, 0, 10000
-  ; bin_patterns_9, false, 0, 10000
-  ; bin_patterns_10, false, 0, 10000
-  ; bin_fft_64, false, 0, 1024
-  ; bin_fft_1024, false, 0, 1024
-  ]
+  ; bin_block_frequency_1_of_3_700, true, 0, 100000; bin_patterns_2, false, 0, 1000
+  ; bin_patterns_3, false, 0, 1000; bin_patterns_4, false, 0, 1000
+  ; bin_patterns_5, false, 0, 1000; bin_patterns_6, false, 0, 1000
+  ; bin_patterns_7, false, 0, 1000; bin_patterns_7, false, 0, 10000
+  ; bin_patterns_8, false, 0, 10000; bin_patterns_9, false, 0, 10000
+  ; bin_patterns_10, false, 0, 10000; bin_fft_64, false, 0, 1024
+  ; bin_fft_1024, false, 0, 1024 ]
 
 
 (*f tests to run if p=1/3 *)
 let tests_for_p_0_3 =
-  [ bin_frequency, true, 0, 1000
-  ; bin_frequency, true, 0, 10000
-  ; bin_frequency_1_of_3, false, 0, 100
-  ; bin_frequency_1_of_3, false, 0, 1000
-  ; bin_frequency_1_of_3, false, 0, 10000
-  ; bin_block_frequency_7, false, 0, 100
+  [ bin_frequency, true, 0, 1000; bin_frequency, true, 0, 10000
+  ; bin_frequency_1_of_3, false, 0, 100; bin_frequency_1_of_3, false, 0, 1000
+  ; bin_frequency_1_of_3, false, 0, 10000; bin_block_frequency_7, false, 0, 100
   ; (* one might expect this one to reject, but 0.33~0.5 for length 7 *)
     bin_block_frequency_7, false, 0, 1000
   ; (* one might expect this one to reject, but 0.33~0.5 for length 7 *)
-    bin_block_frequency_70, true, 0, 1000
-  ; bin_block_frequency_70, true, 0, 10000
-  ; bin_block_frequency_700, true, 0, 10000
-  ; bin_block_frequency_700, true, 0, 100000
+    bin_block_frequency_70, true, 0, 1000; bin_block_frequency_70, true, 0, 10000
+  ; bin_block_frequency_700, true, 0, 10000; bin_block_frequency_700, true, 0, 100000
   ; bin_block_frequency_1_of_3_7, false, 0, 100
   ; bin_block_frequency_1_of_3_7, false, 0, 1000
   ; bin_block_frequency_1_of_3_70, false, 0, 1000
   ; bin_block_frequency_1_of_3_70, false, 0, 10000
   ; bin_block_frequency_1_of_3_700, false, 0, 10000
-  ; bin_block_frequency_1_of_3_700, false, 0, 100000
-  ; bin_patterns_2, false, 0, 1000
-  ; bin_patterns_3, false, 0, 1000
-  ; bin_patterns_4, false, 0, 1000
-  ; bin_patterns_5, false, 0, 1000
-  ; bin_patterns_6, false, 0, 1000
-  ; bin_patterns_7, false, 0, 1000
-  ; bin_patterns_7, false, 0, 10000
-  ; bin_patterns_8, false, 0, 10000
-  ; bin_patterns_9, false, 0, 10000
-  ; bin_patterns_10, false, 0, 10000
-  ; bin_fft_64, false, 0, 1024
-  ; bin_fft_1024, false, 0, 1024
-  ]
+  ; bin_block_frequency_1_of_3_700, false, 0, 100000; bin_patterns_2, false, 0, 1000
+  ; bin_patterns_3, false, 0, 1000; bin_patterns_4, false, 0, 1000
+  ; bin_patterns_5, false, 0, 1000; bin_patterns_6, false, 0, 1000
+  ; bin_patterns_7, false, 0, 1000; bin_patterns_7, false, 0, 10000
+  ; bin_patterns_8, false, 0, 10000; bin_patterns_9, false, 0, 10000
+  ; bin_patterns_10, false, 0, 10000; bin_fft_64, false, 0, 1024
+  ; bin_fft_1024, false, 0, 1024 ]
 
 
 (*f test_true_is_not_random - Test that a constant 'true' is not random
@@ -973,12 +949,9 @@ let test_true_is_not_random _ =
   let pretest _ = () in
   let sampler _ length = length, fun _ -> true in
   let tests =
-    [ bin_frequency, true, 0, 100
-    ; bin_block_frequency_7, true, 0, 100
-    ; bin_fft_64, false, 0, 1024
-    ; bin_fft_1024, true, 0, 1024
-      (* there is one frequency here - expect others randomly to exceed 95% too *)
-    ]
+    [ bin_frequency, true, 0, 100; bin_block_frequency_7, true, 0, 100
+    ; bin_fft_64, false, 0, 1024; bin_fft_1024, true, 0, 1024
+      (* there is one frequency here - expect others randomly to exceed 95% too *) ]
   in
   run_random_tests test_name pretest sampler tests
 
@@ -998,11 +971,8 @@ let test_alternate_is_not_random _ =
   let pretest _ = () in
   let sampler _ length = length, fun x -> x land 1 == 0 in
   let tests =
-    [ bin_frequency, false, 0, 100
-    ; bin_block_frequency_7, false, 0, 100
-    ; bin_patterns_2, true, 0, 1000
-    ; bin_patterns_3, true, 0, 1000
-    ]
+    [ bin_frequency, false, 0, 100; bin_block_frequency_7, false, 0, 100
+    ; bin_patterns_2, true, 0, 1000; bin_patterns_3, true, 0, 1000 ]
   in
   run_random_tests test_name pretest sampler tests
 
@@ -1020,13 +990,9 @@ let test_three_of_four_is_not_random _ =
   let pretest _ = () in
   let sampler _ length = length, fun x -> x land 3 == 0 in
   let tests =
-    [ bin_frequency, true, 0, 100
-    ; bin_block_frequency_7, false, 0, 100
-    ; bin_block_frequency_7, false, 0, 1000
-    ; bin_block_frequency_70, true, 0, 1000
-    ; bin_patterns_2, true, 0, 1000
-    ; bin_patterns_3, true, 0, 1000
-    ]
+    [ bin_frequency, true, 0, 100; bin_block_frequency_7, false, 0, 100
+    ; bin_block_frequency_7, false, 0, 1000; bin_block_frequency_70, true, 0, 1000
+    ; bin_patterns_2, true, 0, 1000; bin_patterns_3, true, 0, 1000 ]
   in
   run_random_tests test_name pretest sampler tests
 
@@ -1048,14 +1014,10 @@ let test_two_of_four_is_not_random _ =
   let pretest _ = () in
   let sampler _ length = length, fun x -> x land 3 < 2 in
   let tests =
-    [ bin_frequency, false, 0, 100
-    ; bin_block_frequency_7, false, 0, 100
-    ; bin_block_frequency_7, false, 0, 1000
-    ; bin_block_frequency_70, false, 0, 1000
-    ; bin_patterns_2, false, 0, 1000
-    ; bin_patterns_3, true, 0, 1000
-    ; bin_patterns_4, true, 0, 1000
-    ]
+    [ bin_frequency, false, 0, 100; bin_block_frequency_7, false, 0, 100
+    ; bin_block_frequency_7, false, 0, 1000; bin_block_frequency_70, false, 0, 1000
+    ; bin_patterns_2, false, 0, 1000; bin_patterns_3, true, 0, 1000
+    ; bin_patterns_4, true, 0, 1000 ]
   in
   run_random_tests test_name pretest sampler tests
 
@@ -1071,14 +1033,10 @@ let test_uniform_ints_0_1 _ =
   let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = length, fun _ -> M.uniform_int_rvs ~a:0 ~b:1 == 0 in
   let tests =
-    [ bin_frequency, false, 0, 100
-    ; bin_frequency, false, 0, 1000
-    ; bin_frequency, false, 0, 10000
-    ; bin_block_frequency_7, false, 0, 100
-    ; bin_block_frequency_7, false, 0, 1000
-    ; bin_block_frequency_70, false, 0, 1000
-    ; bin_patterns_3, false, 0, 1000
-    ]
+    [ bin_frequency, false, 0, 100; bin_frequency, false, 0, 1000
+    ; bin_frequency, false, 0, 10000; bin_block_frequency_7, false, 0, 100
+    ; bin_block_frequency_7, false, 0, 1000; bin_block_frequency_70, false, 0, 1000
+    ; bin_patterns_3, false, 0, 1000 ]
   in
   run_random_tests test_name pretest sampler tests
 
@@ -1094,26 +1052,16 @@ let test_uniform_ints_1_100 _ =
   let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = length, fun _ -> M.uniform_int_rvs ~a:1 ~b:100 < 51 in
   let tests =
-    [ bin_frequency, false, 0, 100
-    ; bin_frequency, false, 0, 1000
-    ; bin_frequency, false, 0, 10000
-    ; bin_block_frequency_7, false, 0, 100
-    ; bin_block_frequency_7, false, 0, 1000
-    ; bin_block_frequency_70, false, 0, 1000
-    ; bin_block_frequency_70, false, 0, 10000
-    ; bin_block_frequency_700, false, 0, 10000
-    ; bin_block_frequency_700, false, 0, 100000
-    ; bin_patterns_2, false, 0, 1000
-    ; bin_patterns_3, false, 0, 1000
-    ; bin_patterns_4, false, 0, 1000
-    ; bin_patterns_5, false, 0, 1000
-    ; bin_patterns_6, false, 0, 1000
-    ; bin_patterns_7, false, 0, 1000
-    ; bin_patterns_7, false, 0, 10000
-    ; bin_patterns_8, false, 0, 10000
-    ; bin_patterns_9, false, 0, 10000
-    ; bin_patterns_10, false, 0, 10000
-    ]
+    [ bin_frequency, false, 0, 100; bin_frequency, false, 0, 1000
+    ; bin_frequency, false, 0, 10000; bin_block_frequency_7, false, 0, 100
+    ; bin_block_frequency_7, false, 0, 1000; bin_block_frequency_70, false, 0, 1000
+    ; bin_block_frequency_70, false, 0, 10000; bin_block_frequency_700, false, 0, 10000
+    ; bin_block_frequency_700, false, 0, 100000; bin_patterns_2, false, 0, 1000
+    ; bin_patterns_3, false, 0, 1000; bin_patterns_4, false, 0, 1000
+    ; bin_patterns_5, false, 0, 1000; bin_patterns_6, false, 0, 1000
+    ; bin_patterns_7, false, 0, 1000; bin_patterns_7, false, 0, 10000
+    ; bin_patterns_8, false, 0, 10000; bin_patterns_9, false, 0, 10000
+    ; bin_patterns_10, false, 0, 10000 ]
   in
   run_random_tests test_name pretest sampler tests
 
@@ -1178,30 +1126,18 @@ let test_uniform_ints_1_100_48 _ =
   let pretest _ = Owl_stats_prng.sfmt_seed 0 in
   let sampler _ length = length, fun _ -> M.uniform_int_rvs ~a:1 ~b:100 <= 48 in
   let tests =
-    [ bin_frequency, false, 0, 100
-    ; bin_frequency, false, 0, 1000
-    ; bin_frequency, true, 0, 10000
-    ; bin_block_frequency_7, false, 0, 100
-    ; bin_block_frequency_7, false, 0, 1000
-    ; bin_block_frequency_70, false, 0, 1000
-    ; bin_block_frequency_70, false, 0, 10000
-    ; bin_block_frequency_700, false, 0, 10000
-    ; bin_block_frequency_700, true, 0, 100000
-    ; bin_patterns_2, false, 0, 1000
-    ; bin_patterns_3, false, 0, 1000
-    ; bin_patterns_4, false, 0, 1000
-    ; bin_patterns_5, false, 0, 1000
-    ; bin_patterns_6, false, 0, 1000
-    ; bin_patterns_7, false, 0, 1000
-    ; bin_patterns_7, false, 0, 10000
-    ; bin_patterns_8, false, 0, 10000
-    ; bin_patterns_9, false, 0, 10000
-    ; bin_patterns_10, false, 0, 10000
-    ; bin_patterns_7, false, 0, 100000
-    ; bin_patterns_8, false, 0, 100000
-    ; bin_patterns_9, false, 0, 100000
-    ; bin_patterns_10, false, 0, 100000
-    ]
+    [ bin_frequency, false, 0, 100; bin_frequency, false, 0, 1000
+    ; bin_frequency, true, 0, 10000; bin_block_frequency_7, false, 0, 100
+    ; bin_block_frequency_7, false, 0, 1000; bin_block_frequency_70, false, 0, 1000
+    ; bin_block_frequency_70, false, 0, 10000; bin_block_frequency_700, false, 0, 10000
+    ; bin_block_frequency_700, true, 0, 100000; bin_patterns_2, false, 0, 1000
+    ; bin_patterns_3, false, 0, 1000; bin_patterns_4, false, 0, 1000
+    ; bin_patterns_5, false, 0, 1000; bin_patterns_6, false, 0, 1000
+    ; bin_patterns_7, false, 0, 1000; bin_patterns_7, false, 0, 10000
+    ; bin_patterns_8, false, 0, 10000; bin_patterns_9, false, 0, 10000
+    ; bin_patterns_10, false, 0, 10000; bin_patterns_7, false, 0, 100000
+    ; bin_patterns_8, false, 0, 100000; bin_patterns_9, false, 0, 100000
+    ; bin_patterns_10, false, 0, 100000 ]
   in
   run_random_tests test_name pretest sampler tests
 
@@ -1219,26 +1155,16 @@ let test_uniform_ints_1_100_45 _ =
   let pretest _ = Owl_stats_prng.sfmt_seed 0 in
   let sampler _ length = length, fun _ -> M.uniform_int_rvs ~a:1 ~b:100 <= 45 in
   let tests =
-    [ bin_frequency, false, 0, 100
-    ; bin_frequency, true, 0, 1000
-    ; bin_frequency, true, 0, 10000
-    ; bin_block_frequency_7, false, 0, 100
-    ; bin_block_frequency_7, false, 0, 1000
-    ; bin_block_frequency_70, false, 0, 1000
-    ; bin_block_frequency_70, false, 0, 10000
-    ; bin_block_frequency_700, true, 0, 10000
-    ; bin_block_frequency_700, true, 0, 100000
-    ; bin_patterns_2, false, 0, 1000
-    ; bin_patterns_3, false, 0, 1000
-    ; bin_patterns_4, false, 0, 1000
-    ; bin_patterns_5, false, 0, 1000
-    ; bin_patterns_6, false, 0, 1000
-    ; bin_patterns_7, false, 0, 1000
-    ; bin_patterns_7, false, 0, 10000
-    ; bin_patterns_8, false, 0, 10000
-    ; bin_patterns_9, false, 0, 10000
-    ; bin_patterns_10, false, 0, 10000
-    ]
+    [ bin_frequency, false, 0, 100; bin_frequency, true, 0, 1000
+    ; bin_frequency, true, 0, 10000; bin_block_frequency_7, false, 0, 100
+    ; bin_block_frequency_7, false, 0, 1000; bin_block_frequency_70, false, 0, 1000
+    ; bin_block_frequency_70, false, 0, 10000; bin_block_frequency_700, true, 0, 10000
+    ; bin_block_frequency_700, true, 0, 100000; bin_patterns_2, false, 0, 1000
+    ; bin_patterns_3, false, 0, 1000; bin_patterns_4, false, 0, 1000
+    ; bin_patterns_5, false, 0, 1000; bin_patterns_6, false, 0, 1000
+    ; bin_patterns_7, false, 0, 1000; bin_patterns_7, false, 0, 10000
+    ; bin_patterns_8, false, 0, 10000; bin_patterns_9, false, 0, 10000
+    ; bin_patterns_10, false, 0, 10000 ]
   in
   run_random_tests test_name pretest sampler tests
 
@@ -1261,37 +1187,26 @@ let test_uniform_ints_1_300_100 _ =
   let pretest _ = Owl_stats_prng.sfmt_seed 1 in
   let sampler _ length = length, fun _ -> M.uniform_int_rvs ~a:1 ~b:300 mod 3 = 0 in
   let tests =
-    [ bin_frequency, true, 0, 100
-    ; bin_frequency, true, 0, 1000
-    ; bin_frequency, true, 0, 10000
-    ; bin_frequency_1_of_3, false, 0, 100
-    ; bin_frequency_1_of_3, false, 0, 1000
-    ; bin_frequency_1_of_3, false, 0, 10000
+    [ bin_frequency, true, 0, 100; bin_frequency, true, 0, 1000
+    ; bin_frequency, true, 0, 10000; bin_frequency_1_of_3, false, 0, 100
+    ; bin_frequency_1_of_3, false, 0, 1000; bin_frequency_1_of_3, false, 0, 10000
     ; bin_block_frequency_7, false, 0, 100
     ; (* one might expect this one to reject, but 0.33~0.5 for length 7 *)
       bin_block_frequency_7, false, 0, 1000
     ; (* one might expect this one to reject, but 0.33~0.5 for length 7 *)
-      bin_block_frequency_70, true, 0, 1000
-    ; bin_block_frequency_70, true, 0, 10000
-    ; bin_block_frequency_700, true, 0, 10000
-    ; bin_block_frequency_700, true, 0, 100000
+      bin_block_frequency_70, true, 0, 1000; bin_block_frequency_70, true, 0, 10000
+    ; bin_block_frequency_700, true, 0, 10000; bin_block_frequency_700, true, 0, 100000
     ; bin_block_frequency_1_of_3_7, false, 0, 100
     ; bin_block_frequency_1_of_3_7, false, 0, 1000
     ; bin_block_frequency_1_of_3_70, false, 0, 1000
     ; bin_block_frequency_1_of_3_70, false, 0, 10000
     ; bin_block_frequency_1_of_3_700, false, 0, 10000
-    ; bin_block_frequency_1_of_3_700, false, 0, 100000
-    ; bin_patterns_2, false, 0, 1000
-    ; bin_patterns_3, false, 0, 1000
-    ; bin_patterns_4, false, 0, 1000
-    ; bin_patterns_5, false, 0, 1000
-    ; bin_patterns_6, false, 0, 1000
-    ; bin_patterns_7, false, 0, 1000
-    ; bin_patterns_7, false, 0, 10000
-    ; bin_patterns_8, false, 0, 10000
-    ; bin_patterns_9, false, 0, 10000
-    ; bin_patterns_10, false, 0, 10000
-    ]
+    ; bin_block_frequency_1_of_3_700, false, 0, 100000; bin_patterns_2, false, 0, 1000
+    ; bin_patterns_3, false, 0, 1000; bin_patterns_4, false, 0, 1000
+    ; bin_patterns_5, false, 0, 1000; bin_patterns_6, false, 0, 1000
+    ; bin_patterns_7, false, 0, 1000; bin_patterns_7, false, 0, 10000
+    ; bin_patterns_8, false, 0, 10000; bin_patterns_9, false, 0, 10000
+    ; bin_patterns_10, false, 0, 10000 ]
   in
   run_random_tests test_name pretest sampler tests
 
@@ -1611,8 +1526,7 @@ let test_set =
     "three_of_four_is_not_random", `Slow, test_three_of_four_is_not_random
   ; (* tests the test infrastructure *)
     "two_of_four_is_not_random", `Slow, test_two_of_four_is_not_random
-  ; (* tests the test infrastructure *)
-    "uniform_int_0_or_1", `Slow, test_uniform_ints_0_1
+  ; (* tests the test infrastructure *) "uniform_int_0_or_1", `Slow, test_uniform_ints_0_1
   ; "uniform_ints_1_to_100", `Slow, test_uniform_ints_1_100
   ; "uniform_ints_1_to_100_even", `Slow, test_uniform_ints_1_100_even
   ; "uniform_ints_1_to_100_48", `Slow, test_uniform_ints_1_100_48
@@ -1654,5 +1568,4 @@ let test_set =
   ; "uniform_ints_0_to_65536_bit_13", `Slow, test_uniform_ints_0_to_65535_bit_13
   ; "uniform_ints_0_to_65536_bit_14", `Slow, test_uniform_ints_0_to_65535_bit_14
   ; "uniform_ints_0_to_65536_bit_15", `Slow, test_uniform_ints_0_to_65535_bit_15
-  ; "rough_cdf_matches", `Slow, test_rough_cdf_matches
-  ]
+  ; "rough_cdf_matches", `Slow, test_rough_cdf_matches ]

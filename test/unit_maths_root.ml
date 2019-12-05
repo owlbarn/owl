@@ -36,8 +36,5 @@ let test_03 () = Alcotest.(check bool) "test 03" true (To_test.test_03 ())
 let test_04 () = Alcotest.(check bool) "test 04" true (To_test.test_04 ())
 
 let test_set =
-  [ "test 01", `Slow, test_01
-  ; "test 02", `Slow, test_02
-  ; "test 03", `Slow, test_03
-  ; "test 04", `Slow, test_04
-  ]
+  [ "test 01", `Slow, test_01; "test 02", `Slow, test_02; "test 03", `Slow, test_03
+  ; "test 04", `Slow, test_04 ]

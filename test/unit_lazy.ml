@@ -193,18 +193,8 @@ let fun12 () = Alcotest.(check bool) "fun12" true (To_test.fun12 ())
 let fun13 () = Alcotest.(check bool) "fun13" true (To_test.fun13 ())
 
 let test_set =
-  [ "fun00", `Slow, fun00
-  ; "fun01", `Slow, fun01
-  ; "fun02", `Slow, fun02
-  ; "fun03", `Slow, fun03
-  ; "fun04", `Slow, fun04
-  ; "fun05", `Slow, fun05
-  ; "fun06", `Slow, fun06
-  ; "fun07", `Slow, fun07
-  ; "fun08", `Slow, fun08
-  ; "fun09", `Slow, fun09
-  ; "fun10", `Slow, fun10
-  ; "fun11", `Slow, fun11
-  ; "fun12", `Slow, fun12
-  ; "fun13", `Slow, fun13
-  ]
+  [ "fun00", `Slow, fun00; "fun01", `Slow, fun01; "fun02", `Slow, fun02
+  ; "fun03", `Slow, fun03; "fun04", `Slow, fun04; "fun05", `Slow, fun05
+  ; "fun06", `Slow, fun06; "fun07", `Slow, fun07; "fun08", `Slow, fun08
+  ; "fun09", `Slow, fun09; "fun10", `Slow, fun10; "fun11", `Slow, fun11
+  ; "fun12", `Slow, fun12; "fun13", `Slow, fun13 ]

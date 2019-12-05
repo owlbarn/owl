@@ -126,11 +126,8 @@ module To_test = struct
     let c =
       M.of_arrays
         Float64
-        [| [| 0.; 1.; 0.; 0. |]
-         ; [| 2.; 3.; 0.; 0. |]
-         ; [| 0.; 0.; 0.; 1. |]
-         ; [| 0.; 0.; 2.; 3. |]
-        |]
+        [| [| 0.; 1.; 0.; 0. |]; [| 2.; 3.; 0.; 0. |]; [| 0.; 0.; 0.; 1. |]
+         ; [| 0.; 0.; 2.; 3. |] |]
     in
     M.equal (M.kron b a) c
 
@@ -346,58 +343,23 @@ let concat_02 () = Alcotest.(check bool) "concat_02" true (To_test.concat_02 ())
 let concat_03 () = Alcotest.(check bool) "concat_03" true (To_test.concat_03 ())
 
 let test_set =
-  [ "sequential", `Slow, sequential
-  ; "row_num", `Slow, row_num
-  ; "col_num", `Slow, col_num
-  ; "numel", `Slow, numel
-  ; "get", `Slow, get
-  ; "set", `Slow, set
-  ; "row0", `Slow, row0
-  ; "row1", `Slow, row1
-  ; "col0", `Slow, col0
-  ; "col1", `Slow, col1
-  ; "fill", `Slow, fill
-  ; "trace", `Slow, trace
-  ; "add_diag", `Slow, add_diag
-  ; "sum'", `Slow, sum'
-  ; "exists", `Slow, exists
-  ; "not_exists", `Slow, not_exists
-  ; "for_all", `Slow, for_all
-  ; "equal", `Slow, equal
-  ; "not_equal", `Slow, not_equal
-  ; "less", `Slow, less
-  ; "greater", `Slow, greater
-  ; "greater_equal", `Slow, greater_equal
-  ; "less_equal", `Slow, less_equal
-  ; "is_zero", `Slow, is_zero
-  ; "is_positive", `Slow, is_positive
-  ; "is_negative", `Slow, is_negative
-  ; "is_nonnegative", `Slow, is_nonnegative
-  ; "is_nonpositive", `Slow, is_nonpositive
-  ; "add", `Slow, add
-  ; "mul", `Slow, mul
-  ; "dot", `Slow, dot
-  ; "kron", `Slow, kron
-  ; "add_scalar", `Slow, add_scalar
-  ; "mul_scalar", `Slow, mul_scalar
-  ; "min'", `Slow, min'
-  ; "max'", `Slow, max'
-  ; "min_i", `Slow, min_i
-  ; "max_i", `Slow, max_i
-  ; "map", `Slow, map
-  ; "fold", `Slow, fold
-  ; "foldi", `Slow, foldi
-  ; "filter", `Slow, filter
-  ; "fold_rows", `Slow, fold_rows
-  ; "fold_cols", `Slow, fold_cols
-  ; "sum_rows", `Slow, sum_rows
-  ; "sum_cols", `Slow, sum_cols
-  ; "save_load", `Slow, save_load
-  ; "swap_rows", `Slow, swap_rows
-  ; "swap_cols", `Slow, swap_cols
-  ; "transpose", `Slow, transpose
-  ; "ctranspose", `Slow, ctranspose
-  ; "concat_01", `Slow, concat_01
-  ; "concat_02", `Slow, concat_02
-  ; "concat_03", `Slow, concat_03
-  ]
+  [ "sequential", `Slow, sequential; "row_num", `Slow, row_num; "col_num", `Slow, col_num
+  ; "numel", `Slow, numel; "get", `Slow, get; "set", `Slow, set; "row0", `Slow, row0
+  ; "row1", `Slow, row1; "col0", `Slow, col0; "col1", `Slow, col1; "fill", `Slow, fill
+  ; "trace", `Slow, trace; "add_diag", `Slow, add_diag; "sum'", `Slow, sum'
+  ; "exists", `Slow, exists; "not_exists", `Slow, not_exists; "for_all", `Slow, for_all
+  ; "equal", `Slow, equal; "not_equal", `Slow, not_equal; "less", `Slow, less
+  ; "greater", `Slow, greater; "greater_equal", `Slow, greater_equal
+  ; "less_equal", `Slow, less_equal; "is_zero", `Slow, is_zero
+  ; "is_positive", `Slow, is_positive; "is_negative", `Slow, is_negative
+  ; "is_nonnegative", `Slow, is_nonnegative; "is_nonpositive", `Slow, is_nonpositive
+  ; "add", `Slow, add; "mul", `Slow, mul; "dot", `Slow, dot; "kron", `Slow, kron
+  ; "add_scalar", `Slow, add_scalar; "mul_scalar", `Slow, mul_scalar; "min'", `Slow, min'
+  ; "max'", `Slow, max'; "min_i", `Slow, min_i; "max_i", `Slow, max_i; "map", `Slow, map
+  ; "fold", `Slow, fold; "foldi", `Slow, foldi; "filter", `Slow, filter
+  ; "fold_rows", `Slow, fold_rows; "fold_cols", `Slow, fold_cols
+  ; "sum_rows", `Slow, sum_rows; "sum_cols", `Slow, sum_cols
+  ; "save_load", `Slow, save_load; "swap_rows", `Slow, swap_rows
+  ; "swap_cols", `Slow, swap_cols; "transpose", `Slow, transpose
+  ; "ctranspose", `Slow, ctranspose; "concat_01", `Slow, concat_01
+  ; "concat_02", `Slow, concat_02; "concat_03", `Slow, concat_03 ]

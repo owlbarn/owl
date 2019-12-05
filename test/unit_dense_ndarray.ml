@@ -418,32 +418,8 @@ module To_test = struct
     let arr = M.sequential Float32 [| 3; 3; 1 |] in
     let pads = M.pad [ [ 1 ]; [ 0; 2 ]; [] ] arr in
     let expected =
-      [| 0.
-       ; 0.
-       ; 0.
-       ; 0.
-       ; 0.
-       ; 0.
-       ; 1.
-       ; 2.
-       ; 0.
-       ; 0.
-       ; 3.
-       ; 4.
-       ; 5.
-       ; 0.
-       ; 0.
-       ; 6.
-       ; 7.
-       ; 8.
-       ; 0.
-       ; 0.
-       ; 0.
-       ; 0.
-       ; 0.
-       ; 0.
-       ; 0.
-      |]
+      [| 0.; 0.; 0.; 0.; 0.; 0.; 1.; 2.; 0.; 0.; 3.; 4.; 5.; 0.; 0.; 6.; 7.; 8.; 0.; 0.
+       ; 0.; 0.; 0.; 0.; 0. |]
     in
     let expected = M.of_array Float32 expected [| 5; 5; 1 |] in
     M.equal pads expected
@@ -554,86 +530,36 @@ let bottom_2 () = Alcotest.(check bool) "bottom_2" true (To_test.bottom_2 ())
 let pad () = Alcotest.(check bool) "pad" true (To_test.pad ())
 
 let test_set =
-  [ "shape", `Slow, shape
-  ; "num_dims", `Slow, num_dims
-  ; "nth_dim", `Slow, nth_dim
-  ; "numel", `Slow, numel
-  ; "nnz", `Slow, nnz
-  ; "density", `Slow, density
-  ; "get", `Slow, get
-  ; "set", `Slow, set
-  ; "get_slice", `Slow, get_slice
-  ; "copy", `Slow, copy
-  ; "fill", `Slow, fill
-  ; "map", `Slow, map
-  ; "fold", `Slow, fold
-  ; "add", `Slow, add
-  ; "mul", `Slow, mul
-  ; "add_scalar", `Slow, add_scalar
-  ; "mul_scalar", `Slow, mul_scalar
-  ; "abs", `Slow, abs
-  ; "neg", `Slow, neg
-  ; "sum'", `Slow, sum'
-  ; "median'", `Slow, median'
-  ; "median", `Slow, median
-  ; "sort1", `Slow, sort1
-  ; "sum_reduce", `Slow, sum_reduce
-  ; "min'", `Slow, min'
-  ; "max'", `Slow, max'
-  ; "minmax_i", `Slow, minmax_i
-  ; "init_nd", `Slow, init_nd
-  ; "is_zero", `Slow, is_zero
-  ; "is_positive", `Slow, is_positive
-  ; "is_negative", `Slow, is_negative
-  ; "is_nonnegative", `Slow, is_nonnegative
-  ; "equal", `Slow, equal
-  ; "greater", `Slow, greater
-  ; "greater_equal", `Slow, greater_equal
-  ; "exists", `Slow, exists
-  ; "not_exists", `Slow, not_exists
-  ; "for_all", `Slow, for_all
-  ; "transpose", `Slow, transpose
-  ; "flatten", `Slow, flatten
-  ; "reshape", `Slow, reshape
-  ; "l2norm'", `Slow, l2norm'
-  ; "save_load", `Slow, save_load
-  ; "broadcast_add", `Slow, broadcast_add
-  ; "reverse", `Slow, reverse
-  ; "rotate", `Slow, rotate
-  ; "same_shape_1", `Slow, same_shape_1
-  ; "same_shape_2", `Slow, same_shape_2
-  ; "same_shape_3", `Slow, same_shape_3
-  ; "same_shape_4", `Slow, same_shape_4
-  ; "same_shape_5", `Slow, same_shape_5
-  ; "linspace", `Slow, linspace
-  ; "logspace_2", `Slow, logspace_2
-  ; "logspace_10", `Slow, logspace_10
-  ; "logspace_e", `Slow, logspace_e
-  ; "vecnorm_01", `Slow, vecnorm_01
-  ; "vecnorm_02", `Slow, vecnorm_02
-  ; "vecnorm_03", `Slow, vecnorm_03
-  ; "vecnorm_04", `Slow, vecnorm_04
-  ; "vecnorm_05", `Slow, vecnorm_05
-  ; "vecnorm_06", `Slow, vecnorm_06
-  ; "vecnorm_07", `Slow, vecnorm_07
-  ; "vecnorm_08", `Slow, vecnorm_08
-  ; "vecnorm_09", `Slow, vecnorm_09
-  ; "vecnorm_10", `Slow, vecnorm_10
-  ; "expand_01", `Slow, expand_01
-  ; "expand_02", `Slow, expand_02
-  ; "concatenate_01", `Slow, concatenate_01
-  ; "concatenate_02", `Slow, concatenate_02
-  ; "diff_1", `Slow, diff_1
-  ; "diff_2", `Slow, diff_2
-  ; "one_hot_1", `Slow, one_hot_1
-  ; "one_hot_2", `Slow, one_hot_2
-  ; "sort", `Slow, sort
-  ; "argsort_1", `Slow, argsort_1
-  ; "argsort_2", `Slow, argsort_2
-  ; "top_1", `Slow, top_1
-  ; "top_2", `Slow, top_2
-  ; "top_3", `Slow, top_3
-  ; "bottom_1", `Slow, bottom_1
-  ; "bottom_2", `Slow, bottom_2
-  ; "pad", `Slow, pad
-  ]
+  [ "shape", `Slow, shape; "num_dims", `Slow, num_dims; "nth_dim", `Slow, nth_dim
+  ; "numel", `Slow, numel; "nnz", `Slow, nnz; "density", `Slow, density; "get", `Slow, get
+  ; "set", `Slow, set; "get_slice", `Slow, get_slice; "copy", `Slow, copy
+  ; "fill", `Slow, fill; "map", `Slow, map; "fold", `Slow, fold; "add", `Slow, add
+  ; "mul", `Slow, mul; "add_scalar", `Slow, add_scalar; "mul_scalar", `Slow, mul_scalar
+  ; "abs", `Slow, abs; "neg", `Slow, neg; "sum'", `Slow, sum'; "median'", `Slow, median'
+  ; "median", `Slow, median; "sort1", `Slow, sort1; "sum_reduce", `Slow, sum_reduce
+  ; "min'", `Slow, min'; "max'", `Slow, max'; "minmax_i", `Slow, minmax_i
+  ; "init_nd", `Slow, init_nd; "is_zero", `Slow, is_zero
+  ; "is_positive", `Slow, is_positive; "is_negative", `Slow, is_negative
+  ; "is_nonnegative", `Slow, is_nonnegative; "equal", `Slow, equal
+  ; "greater", `Slow, greater; "greater_equal", `Slow, greater_equal
+  ; "exists", `Slow, exists; "not_exists", `Slow, not_exists; "for_all", `Slow, for_all
+  ; "transpose", `Slow, transpose; "flatten", `Slow, flatten; "reshape", `Slow, reshape
+  ; "l2norm'", `Slow, l2norm'; "save_load", `Slow, save_load
+  ; "broadcast_add", `Slow, broadcast_add; "reverse", `Slow, reverse
+  ; "rotate", `Slow, rotate; "same_shape_1", `Slow, same_shape_1
+  ; "same_shape_2", `Slow, same_shape_2; "same_shape_3", `Slow, same_shape_3
+  ; "same_shape_4", `Slow, same_shape_4; "same_shape_5", `Slow, same_shape_5
+  ; "linspace", `Slow, linspace; "logspace_2", `Slow, logspace_2
+  ; "logspace_10", `Slow, logspace_10; "logspace_e", `Slow, logspace_e
+  ; "vecnorm_01", `Slow, vecnorm_01; "vecnorm_02", `Slow, vecnorm_02
+  ; "vecnorm_03", `Slow, vecnorm_03; "vecnorm_04", `Slow, vecnorm_04
+  ; "vecnorm_05", `Slow, vecnorm_05; "vecnorm_06", `Slow, vecnorm_06
+  ; "vecnorm_07", `Slow, vecnorm_07; "vecnorm_08", `Slow, vecnorm_08
+  ; "vecnorm_09", `Slow, vecnorm_09; "vecnorm_10", `Slow, vecnorm_10
+  ; "expand_01", `Slow, expand_01; "expand_02", `Slow, expand_02
+  ; "concatenate_01", `Slow, concatenate_01; "concatenate_02", `Slow, concatenate_02
+  ; "diff_1", `Slow, diff_1; "diff_2", `Slow, diff_2; "one_hot_1", `Slow, one_hot_1
+  ; "one_hot_2", `Slow, one_hot_2; "sort", `Slow, sort; "argsort_1", `Slow, argsort_1
+  ; "argsort_2", `Slow, argsort_2; "top_1", `Slow, top_1; "top_2", `Slow, top_2
+  ; "top_3", `Slow, top_3; "bottom_1", `Slow, bottom_1; "bottom_2", `Slow, bottom_2
+  ; "pad", `Slow, pad ]

@@ -167,44 +167,17 @@ let of_array () = Alcotest.(check bool) "of_array" true (To_test.of_array ())
 let save_load () = Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
 let test_set =
-  [ "shape", `Slow, shape
-  ; "num_dims", `Slow, num_dims
-  ; "nth_dim", `Slow, nth_dim
-  ; "numel", `Slow, numel
-  ; "nnz", `Slow, nnz
-  ; "density", `Slow, density
-  ; "get", `Slow, get
-  ; "set", `Slow, set
-  ; "slice", `Slow, slice
-  ; "copy", `Slow, copy
-  ; "map", `Slow, map
-  ; "map_nz", `Slow, map_nz
-  ; "fold", `Slow, fold
-  ; "foldi", `Slow, foldi
-  ; "fold_nz", `Slow, fold_nz
-  ; "foldi_nz", `Slow, foldi_nz
-  ; "add", `Slow, add
-  ; "mul", `Slow, mul
-  ; "add_scalar", `Slow, add_scalar
-  ; "mul_scalar", `Slow, mul_scalar
-  ; "abs", `Slow, abs
-  ; "neg", `Slow, neg
-  ; "sum", `Slow, sum
-  ; "min", `Slow, min
-  ; "max", `Slow, max
-  ; "is_zero", `Slow, is_zero
-  ; "is_positive", `Slow, is_positive
-  ; "is_negative", `Slow, is_negative
-  ; "is_nonnegative", `Slow, is_nonnegative
-  ; "equal", `Slow, equal
-  ; "greater", `Slow, greater
-  ; "greater_equal", `Slow, greater_equal
-  ; "filter", `Slow, filter
-  ; "filteri", `Slow, filteri
-  ; "filteri_nz", `Slow, filteri_nz
-  ; "transpose", `Slow, transpose
-  ; "flatten", `Slow, flatten
-  ; "reshape", `Slow, reshape
-  ; "of_array", `Slow, of_array
-  ; "save_load", `Slow, save_load
-  ]
+  [ "shape", `Slow, shape; "num_dims", `Slow, num_dims; "nth_dim", `Slow, nth_dim
+  ; "numel", `Slow, numel; "nnz", `Slow, nnz; "density", `Slow, density; "get", `Slow, get
+  ; "set", `Slow, set; "slice", `Slow, slice; "copy", `Slow, copy; "map", `Slow, map
+  ; "map_nz", `Slow, map_nz; "fold", `Slow, fold; "foldi", `Slow, foldi
+  ; "fold_nz", `Slow, fold_nz; "foldi_nz", `Slow, foldi_nz; "add", `Slow, add
+  ; "mul", `Slow, mul; "add_scalar", `Slow, add_scalar; "mul_scalar", `Slow, mul_scalar
+  ; "abs", `Slow, abs; "neg", `Slow, neg; "sum", `Slow, sum; "min", `Slow, min
+  ; "max", `Slow, max; "is_zero", `Slow, is_zero; "is_positive", `Slow, is_positive
+  ; "is_negative", `Slow, is_negative; "is_nonnegative", `Slow, is_nonnegative
+  ; "equal", `Slow, equal; "greater", `Slow, greater
+  ; "greater_equal", `Slow, greater_equal; "filter", `Slow, filter
+  ; "filteri", `Slow, filteri; "filteri_nz", `Slow, filteri_nz
+  ; "transpose", `Slow, transpose; "flatten", `Slow, flatten; "reshape", `Slow, reshape
+  ; "of_array", `Slow, of_array; "save_load", `Slow, save_load ]

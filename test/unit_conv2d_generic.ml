@@ -48,25 +48,8 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
     (* conv2D1x1Kernel *)
     let fun00 () =
       let expected =
-        [| 30.0
-         ; 36.0
-         ; 42.0
-         ; 66.0
-         ; 81.0
-         ; 96.0
-         ; 102.0
-         ; 126.0
-         ; 150.0
-         ; 138.0
-         ; 171.0
-         ; 204.0
-         ; 174.0
-         ; 216.0
-         ; 258.0
-         ; 210.0
-         ; 261.0
-         ; 312.0
-        |]
+        [| 30.0; 36.0; 42.0; 66.0; 81.0; 96.0; 102.0; 126.0; 150.0; 138.0; 171.0; 204.0
+         ; 174.0; 216.0; 258.0; 210.0; 261.0; 312.0 |]
       in
       verify_value test_conv2d [| 1; 2; 3; 3 |] [| 1; 1; 3; 3 |] [| 1; 1 |] VALID expected
 
@@ -80,19 +63,8 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
     (* conv2D1x2Kernel *)
     let fun02 () =
       let expected =
-        [| 231.0
-         ; 252.0
-         ; 273.0
-         ; 384.0
-         ; 423.0
-         ; 462.0
-         ; 690.0
-         ; 765.0
-         ; 840.0
-         ; 843.0
-         ; 936.0
-         ; 1029.0
-        |]
+        [| 231.0; 252.0; 273.0; 384.0; 423.0; 462.0; 690.0; 765.0; 840.0; 843.0; 936.0
+         ; 1029.0 |]
       in
       verify_value test_conv2d [| 1; 2; 3; 3 |] [| 1; 2; 3; 3 |] [| 1; 1 |] VALID expected
 
@@ -115,55 +87,10 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
     (* conv2D1x1Kernel *)
     let fun00 () =
       let expected =
-        [| 5.
-         ; 11.
-         ; 17.
-         ; 11.
-         ; 25.
-         ; 39.
-         ; 17.
-         ; 39.
-         ; 61.
-         ; 23.
-         ; 53.
-         ; 83.
-         ; 29.
-         ; 67.
-         ; 105.
-         ; 35.
-         ; 81.
-         ; 127.
-         ; 41.
-         ; 95.
-         ; 149.
-         ; 47.
-         ; 109.
-         ; 171.
-         ; 53.
-         ; 123.
-         ; 193.
-         ; 59.
-         ; 137.
-         ; 215.
-         ; 65.
-         ; 151.
-         ; 237.
-         ; 71.
-         ; 165.
-         ; 259.
-         ; 77.
-         ; 179.
-         ; 281.
-         ; 83.
-         ; 193.
-         ; 303.
-         ; 89.
-         ; 207.
-         ; 325.
-         ; 95.
-         ; 221.
-         ; 347.
-        |]
+        [| 5.; 11.; 17.; 11.; 25.; 39.; 17.; 39.; 61.; 23.; 53.; 83.; 29.; 67.; 105.; 35.
+         ; 81.; 127.; 41.; 95.; 149.; 47.; 109.; 171.; 53.; 123.; 193.; 59.; 137.; 215.
+         ; 65.; 151.; 237.; 71.; 165.; 259.; 77.; 179.; 281.; 83.; 193.; 303.; 89.; 207.
+         ; 325.; 95.; 221.; 347. |]
       in
       verify_value
         test_conv2d_back_input
@@ -225,25 +152,8 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
     (* conv2D2x2Kernel *)
     let fun05 () =
       let expected =
-        [| 14.
-         ; 32.
-         ; 50.
-         ; 100.
-         ; 163.
-         ; 226.
-         ; 167.
-         ; 212.
-         ; 257.
-         ; 122.
-         ; 140.
-         ; 158.
-         ; 478.
-         ; 541.
-         ; 604.
-         ; 437.
-         ; 482.
-         ; 527.
-        |]
+        [| 14.; 32.; 50.; 100.; 163.; 226.; 167.; 212.; 257.; 122.; 140.; 158.; 478.; 541.
+         ; 604.; 437.; 482.; 527. |]
       in
       verify_value
         test_conv2d_back_input
@@ -257,25 +167,8 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
     (* conv2D2x2KernelSame *)
     let fun06 () =
       let expected =
-        [| 14.
-         ; 32.
-         ; 50.
-         ; 100.
-         ; 163.
-         ; 226.
-         ; 217.
-         ; 334.
-         ; 451.
-         ; 190.
-         ; 307.
-         ; 424.
-         ; 929.
-         ; 1217.
-         ; 1505.
-         ; 1487.
-         ; 1883.
-         ; 2279.
-        |]
+        [| 14.; 32.; 50.; 100.; 163.; 226.; 217.; 334.; 451.; 190.; 307.; 424.; 929.
+         ; 1217.; 1505.; 1487.; 1883.; 2279. |]
       in
       verify_value
         test_conv2d_back_input
@@ -364,43 +257,9 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
     (* conv2D2x2Kernel *)
     let fun03 () =
       let expected =
-        [| 17.
-         ; 22.
-         ; 27.
-         ; 22.
-         ; 29.
-         ; 36.
-         ; 27.
-         ; 36.
-         ; 45.
-         ; 32.
-         ; 43.
-         ; 54.
-         ; 37.
-         ; 50.
-         ; 63.
-         ; 42.
-         ; 57.
-         ; 72.
-         ; 62.
-         ; 85.
-         ; 108.
-         ; 67.
-         ; 92.
-         ; 117.
-         ; 72.
-         ; 99.
-         ; 126.
-         ; 77.
-         ; 106.
-         ; 135.
-         ; 82.
-         ; 113.
-         ; 144.
-         ; 87.
-         ; 120.
-         ; 153.
-        |]
+        [| 17.; 22.; 27.; 22.; 29.; 36.; 27.; 36.; 45.; 32.; 43.; 54.; 37.; 50.; 63.; 42.
+         ; 57.; 72.; 62.; 85.; 108.; 67.; 92.; 117.; 72.; 99.; 126.; 77.; 106.; 135.; 82.
+         ; 113.; 144.; 87.; 120.; 153. |]
       in
       verify_value
         test_conv2d_back_kernel
@@ -705,32 +564,18 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
 
 
   let test_set =
-    [ "fun_conv00", `Slow, fun_conv00
-    ; "fun_conv01", `Slow, fun_conv01
-    ; "fun_conv02", `Slow, fun_conv02
-    ; "fun_conv03", `Slow, fun_conv03
-    ; "fun_conv04", `Slow, fun_conv04
-    ; "fun_cbi00", `Slow, fun_cbi00
-    ; "fun_cbi01", `Slow, fun_cbi01
-    ; "fun_cbi02", `Slow, fun_cbi02
-    ; "fun_cbi03", `Slow, fun_cbi03
-    ; "fun_cbi04", `Slow, fun_cbi04
-    ; "fun_cbi05", `Slow, fun_cbi05
-    ; "fun_cbi06", `Slow, fun_cbi06
-    ; "fun_cbi07", `Slow, fun_cbi07
-    ; "fun_cbi08", `Slow, fun_cbi08
-    ; "fun_cbk00", `Slow, fun_cbk00
-    ; "fun_cbk01", `Slow, fun_cbk01
-    ; "fun_cbk02", `Slow, fun_cbk02
-    ; "fun_cbk03", `Slow, fun_cbk03
-    ; "fun_cbk04", `Slow, fun_cbk04
-    ; "fun_cbk05", `Slow, fun_cbk05
-    ; "fun_cbk06", `Slow, fun_cbk06
-    ; "fun_cbk07", `Slow, fun_cbk07
-    ; "fun_cbk08", `Slow, fun_cbk08
-    ; "fun_cbk09", `Slow, fun_cbk09
-    ; "fun_cbk10", `Slow, fun_cbk10
-    ; "fun_cbk11", `Slow, fun_cbk11
-    ; "fun_cbk12", `Slow, fun_cbk12
-    ]
+    [ "fun_conv00", `Slow, fun_conv00; "fun_conv01", `Slow, fun_conv01
+    ; "fun_conv02", `Slow, fun_conv02; "fun_conv03", `Slow, fun_conv03
+    ; "fun_conv04", `Slow, fun_conv04; "fun_cbi00", `Slow, fun_cbi00
+    ; "fun_cbi01", `Slow, fun_cbi01; "fun_cbi02", `Slow, fun_cbi02
+    ; "fun_cbi03", `Slow, fun_cbi03; "fun_cbi04", `Slow, fun_cbi04
+    ; "fun_cbi05", `Slow, fun_cbi05; "fun_cbi06", `Slow, fun_cbi06
+    ; "fun_cbi07", `Slow, fun_cbi07; "fun_cbi08", `Slow, fun_cbi08
+    ; "fun_cbk00", `Slow, fun_cbk00; "fun_cbk01", `Slow, fun_cbk01
+    ; "fun_cbk02", `Slow, fun_cbk02; "fun_cbk03", `Slow, fun_cbk03
+    ; "fun_cbk04", `Slow, fun_cbk04; "fun_cbk05", `Slow, fun_cbk05
+    ; "fun_cbk06", `Slow, fun_cbk06; "fun_cbk07", `Slow, fun_cbk07
+    ; "fun_cbk08", `Slow, fun_cbk08; "fun_cbk09", `Slow, fun_cbk09
+    ; "fun_cbk10", `Slow, fun_cbk10; "fun_cbk11", `Slow, fun_cbk11
+    ; "fun_cbk12", `Slow, fun_cbk12 ]
 end
