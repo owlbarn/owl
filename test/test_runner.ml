@@ -48,6 +48,5 @@ let () =
     ; "base: complex", Unit_base_complex.test_set
     ; "base: ndarray core", Unit_base_ndarray_core.test_set
     ; "base: linalg", Unit_linalg_solver.test_set
-    ; "algodiff reverse matrix", Unit_algodiff_matrix.Reverse.test_set
-    ; "algodiff forward matrix", Unit_algodiff_matrix.Forward.test_set
+    ; ("algodiff matrix", Unit_algodiff_matrix.[ Reverse.test; Forward.test ])
     ]
