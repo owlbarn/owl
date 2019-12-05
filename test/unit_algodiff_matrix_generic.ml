@@ -184,7 +184,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
         let a = Maths.(x + r1) in
         let b = Maths.(x + r2) in
         let c = Maths.(a *@ x + x *@ b) in
-        Linalg.sylvester a x c in
+        Linalg.sylvester a b c in
     test_func f
 
 
@@ -208,8 +208,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
         let q = Maths.(F 0.5 * ((x *@ transpose x) + identity)) in
         let s = Maths.(x - transpose x) in
         let p = Maths.(((r + x) *@ transpose (r + x)) + identity) in
-        let a = Maths.((s - (F 0.5 * q)) *@ inv p) in
-        Linalg.discrete_lyapunov a Maths.((r *@ transpose r) + identity)
+        let a = Maths.(((s - (F 0.5 * q)) *@ inv p) - identity) in
+        Linalg.discrete_lyapunov a q
       in
       test_func f
 
