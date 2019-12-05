@@ -31,8 +31,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
     let round () = test_func Maths.round
     let sqr () = test_func Maths.sqr
     let sqrt () = test_func (fun x -> Maths.(sqrt (x * x)))
-    let log () = test_func (fun x -> Maths.(log ((F 1.) + (x * x))))
-    let pow () = test_func (fun x -> Maths.(log ((F 1.) + (pow (sqr x) (F 2.9 + x)))))
+    let log () = test_func (fun x -> Maths.(log (F 1. + (x * x))))
+    let pow () = test_func (fun x -> Maths.(log (F 1. + pow (sqr x) (F 2.9 + x))))
     let sin () = test_func Maths.sin
     let cos () = test_func Maths.cos
 
@@ -152,10 +152,11 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       let f x =
         let y =
           Array.init n (fun i ->
-              Array.init n (fun j -> if i = 0 then Maths.get_item x j i else Maths.get_item x i j))
+              Array.init n (fun j ->
+                  if i = 0 then Maths.get_item x j i else Maths.get_item x i j))
           |> Maths.of_arrays
         in
-        Maths.(x * sin (y+x))
+        Maths.(x * sin (y + x))
       in
       test_func f
 
@@ -177,15 +178,17 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       in
       test_func f
 
+
     let sylvester () =
       let r1 = Mat.gaussian n n in
       let r2 = Mat.gaussian n n in
-      let f x = 
+      let f x =
         let a = Maths.(x + r1) in
         let b = Maths.(x + r2) in
-        let c = Maths.(a *@ x + x *@ b) in
-        Linalg.sylvester a b c in
-    test_func f
+        let c = Maths.((a *@ x) + (x *@ b)) in
+        Linalg.sylvester a b c
+      in
+      test_func f
 
 
     let lyapunov () =
@@ -246,21 +249,24 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       in
       test_func f
 
+
     let care () =
       let b = Mat.gaussian n n in
       let q = Mat.gaussian n n in
       let f x =
         let a = x in
-        let b = Maths.((tril x) + b) in
+        let b = Maths.(tril x + b) in
         let r =
           let e = Mat.eye n in
           let r = Maths.(e + (a *@ transpose a)) in
-          Maths.(r *@ (transpose r)) in
+          Maths.(r *@ transpose r)
+        in
         let q =
           let q = Maths.(q + a) in
-          Maths.(q *@ transpose q + Mat.(eye n)) in
-        let c1 = (Linalg.care a b q r) in
-        let c2 = (Linalg.care ~diag_r:true a b q Maths.(diagm (diag r))) in
+          Maths.((q *@ transpose q) + Mat.(eye n))
+        in
+        let c1 = Linalg.care a b q r in
+        let c2 = Linalg.care ~diag_r:true a b q Maths.(diagm (diag r)) in
         Maths.(c1 + c2)
       in
       test_func f
@@ -276,8 +282,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
 
     let test_set =
-      [
-      "neg", `Slow, neg
+      [ "neg", `Slow, neg
       ; "abs", `Slow, abs
       ; "signum", `Slow, signum
       ; "floor", `Slow, floor
@@ -332,7 +337,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   let samples, directions = FD.generate_test_samples (n, n) n_samples
 
   module Reverse = Make_tests (struct
-    let test_func f = FD.Reverse.check ~threshold ~order:`fourth ~eps ~directions ~f samples
+    let test_func f =
+      FD.Reverse.check ~threshold ~order:`fourth ~eps ~directions ~f samples
   end)
 
   module Forward = Make_tests (struct
