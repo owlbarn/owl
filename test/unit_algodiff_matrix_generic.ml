@@ -5,7 +5,6 @@ open Owl_types
 (* functor to generate test unit. *)
 
 module Make (M : Ndarray_Algodiff with type elt = float) = struct
-  open Printf
   module M = Owl.Mat
   module AlgoM = Owl.Algodiff.D
   open AlgoM
@@ -18,6 +17,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   module FD = Owl_algodiff_check.Make (AlgoM)
 
   module Make_tests (P : sig
+    val label : string
     val test_func : (t -> t) -> bool * int
   end) =
   struct
@@ -31,8 +31,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
     let round () = test_func Maths.round
     let sqr () = test_func Maths.sqr
     let sqrt () = test_func (fun x -> Maths.(sqrt (x * x)))
-    let log () = test_func (fun x -> Maths.(log ((F 1.) + (x * x))))
-    let pow () = test_func (fun x -> Maths.(log ((F 1.) + (pow (sqr x) (F 2.9 + x)))))
+    let log () = test_func (fun x -> Maths.(log (F 1. + (x * x))))
+    let pow () = test_func (fun x -> Maths.(log (F 1. + pow (sqr x) (F 2.9 + x))))
     let sin () = test_func Maths.sin
     let cos () = test_func Maths.cos
 
@@ -152,10 +152,11 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       let f x =
         let y =
           Array.init n (fun i ->
-              Array.init n (fun j -> if i = 0 then Maths.get_item x j i else Maths.get_item x i j))
+              Array.init n (fun j ->
+                  if i = 0 then Maths.get_item x j i else Maths.get_item x i j))
           |> Maths.of_arrays
         in
-        Maths.(x * sin (y+x))
+        Maths.(x * sin (y + x))
       in
       test_func f
 
@@ -177,15 +178,17 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       in
       test_func f
 
+
     let sylvester () =
       let r1 = Mat.gaussian n n in
       let r2 = Mat.gaussian n n in
-      let f x = 
+      let f x =
         let a = Maths.(x + r1) in
         let b = Maths.(x + r2) in
-        let c = Maths.(a *@ x + x *@ b) in
-        Linalg.sylvester a b c in
-    test_func f
+        let c = Maths.((a *@ x) + (x *@ b)) in
+        Linalg.sylvester a b c
+      in
+      test_func f
 
 
     let lyapunov () =
@@ -246,96 +249,76 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       in
       test_func f
 
+
     let care () =
       let b = Mat.gaussian n n in
       let q = Mat.gaussian n n in
       let f x =
         let a = x in
-        let b = Maths.((tril x) + b) in
+        let b = Maths.(tril x + b) in
         let r =
           let e = Mat.eye n in
           let r = Maths.(e + (a *@ transpose a)) in
-          Maths.(r *@ (transpose r)) in
+          Maths.(r *@ transpose r)
+        in
         let q =
           let q = Maths.(q + a) in
-          Maths.(q *@ transpose q + Mat.(eye n)) in
-        let c1 = (Linalg.care a b q r) in
-        let c2 = (Linalg.care ~diag_r:true a b q Maths.(diagm (diag r))) in
+          Maths.((q *@ transpose q) + Mat.(eye n))
+        in
+        let c1 = Linalg.care a b q r in
+        let c2 = Linalg.care ~diag_r:true a b q Maths.(diagm (diag r)) in
         Maths.(c1 + c2)
       in
       test_func f
 
 
-    let alco_fun s f =
-      let check, c =
-        match f () with
-        | x -> x
-        | exception Owl_exception.NOT_IMPLEMENTED _ -> true, 0
-      in
-      Alcotest.(check bool) (sprintf "%s: %i/%i passed" s c n_samples) true check
-
-
-    let test_set =
-      [
-      "neg", `Slow, neg
-      ; "abs", `Slow, abs
-      ; "signum", `Slow, signum
-      ; "floor", `Slow, floor
-      ; "ceil", `Slow, ceil
-      ; "round", `Slow, round
-      ; "sqr", `Slow, sqr
-      ; "sqrt", `Slow, sqrt
-      ; "log", `Slow, log
-      ; "pow", `Slow, pow
-      ; "sin", `Slow, sin
-      ; "cos", `Slow, cos
-      ; "tan", `Slow, tan
-      ; "sinh", `Slow, sinh
-      ; "cosh", `Slow, cosh
-      ; "tanh", `Slow, tanh
-      ; "sigmoid", `Slow, sigmoid
-      ; "relu", `Slow, relu
-      ; "exp", `Slow, exp
-      ; "transpose", `Slow, transpose
-      ; "diag", `Slow, diag
-      ; "diagm", `Slow, diagm
-      ; "trace", `Slow, trace
-      ; "l1norm'", `Slow, l1norm'
-      ; "l2norm'", `Slow, l2norm'
-      ; "l2norm_sqr'", `Slow, l2norm_sqr'
-      ; "tril", `Slow, tril
-      ; "triu", `Slow, triu
-      ; "inv", `Slow, inv
-      ; "logdet", `Slow, logdet
-      ; "chol", `Slow, chol
-      ; "qr", `Slow, qr
-      ; "lq", `Slow, lq
-      ; "split", `Slow, split
-      ; "concat", `Slow, concat
-      ; "concatenate", `Slow, concatenate
-      ; "svd", `Slow, svd
-      ; "of_arrays", `Slow, of_arrays
-      ; "to_arrays", `Slow, to_arrays
-      ; "init_2d", `Slow, init_2d
-      ; "sylvester", `Slow, sylvester
-      ; "lyapunov", `Slow, lyapunov
-      ; "discrete_lyapunov", `Slow, discrete_lyapunov
-      ; "linsolve", `Slow, linsolve
-      ; "linsolve_triangular", `Slow, linsolve_triangular
-      ; "care", `Slow, care
-      ]
-      |> List.map (fun (s, m, f) ->
-             let f () = alco_fun s f in
-             s, m, f)
+    let test =
+      [ "neg", neg; "abs", abs; "signum", signum; "floor", floor; "ceil", ceil
+      ; "round", round; "sqr", sqr; "sqrt", sqrt; "log", log; "pow", pow; "sin", sin
+      ; "cos", cos; "tan", tan; "sinh", sinh; "cosh", cosh; "tanh", tanh
+      ; "sigmoid", sigmoid; "relu", relu; "exp", exp; "transpose", transpose; "diag", diag
+      ; "diagm", diagm; "trace", trace; "l1norm'", l1norm'; "l2norm'", l2norm'
+      ; "l2norm_sqr'", l2norm_sqr'; "tril", tril; "triu", triu; "inv", inv
+      ; "logdet", logdet; "chol", chol; "qr", qr; "lq", lq; "split", split
+      ; "concat", concat; "concatenate", concatenate; "svd", svd; "of_arrays", of_arrays
+      ; "to_arrays", to_arrays; "init_2d", init_2d; "sylvester", sylvester
+      ; "lyapunov", lyapunov; "discrete_lyapunov", discrete_lyapunov; "linsolve", linsolve
+      ; "linsolve_triangular", linsolve_triangular; "care", care ]
+      |> List.fold_left
+           (fun (b, error_msg) (s, f) ->
+             let b', c =
+               match f () with
+               | x -> x
+               | exception Owl_exception.NOT_IMPLEMENTED _ -> true, n
+             in
+             if b'
+             then b && b', error_msg
+             else (
+               let msg =
+                 Printf.sprintf
+                   "%s\n       %s (%i/%i)"
+                   error_msg
+                   s
+                   (n_samples - c)
+                   n_samples
+               in
+               false, msg))
+           (true, Printf.sprintf "\nfailed %s operations" label)
+      |> fun (b, error_msg) ->
+      label, `Slow, fun () -> if b then () else failwith error_msg
   end
 
   let samples, directions = FD.generate_test_samples (n, n) n_samples
 
   module Reverse = Make_tests (struct
-    let test_func f = FD.Reverse.check ~threshold ~order:`fourth ~eps ~directions ~f samples
+    let label = "reverse mode"
+
+    let test_func f =
+      FD.Reverse.check ~threshold ~order:`fourth ~eps ~directions ~f samples
   end)
 
   module Forward = Make_tests (struct
+    let label = "forward mode"
     let test_func f = FD.Forward.check ~threshold ~directions ~f samples
   end)
 end
