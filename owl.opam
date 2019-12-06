@@ -24,7 +24,7 @@ build: [
 depends: [
   "ocaml" {>= "4.06.0"}
   "alcotest" {with-test}
-  "base" {build & < "v0.13"}
+  "base" {build}
   "base-bigarray"
   "conf-openblas" {>= "0.2.0"}
   "ctypes"
@@ -32,6 +32,6 @@ depends: [
   "dune-configurator"
   "eigen" {>= "0.1.0"}
   "owl-base" {= version}
-  "stdio" {build & < "v0.13"}
+  "stdio" {build}
   "stdlib-shims"
 ]
