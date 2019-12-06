@@ -1,3 +1,13 @@
+### 0.7.2 (2019-12-06)
+
+* fourth order finite diff approx to grad
+* changes to improve stability of sylv/discrete_lyap
+* fix bug in concatenate function
+* add mli for owl_base_linalg_generic
+* Owl-base linalg routines: LU decomposition  (#465)
+* bug fixes
+* Update owl.opam
+
 ### 0.7.1 (2019-11-27)
 
 * Add unit basis
