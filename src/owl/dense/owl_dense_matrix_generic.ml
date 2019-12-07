@@ -600,6 +600,15 @@ let load_txt ?(sep="\t") k f =
   close_in h; x
 
 
+let save_npy x ~out = Npy.write x out
+
+
+let load_npy kind file =
+  match Npy.read_copy file |> Npy.to_bigarray Bigarray.c_layout kind with
+  | Some x -> x
+  | None -> failwith Printf.(sprintf "%s: incorrect format" file)
+
+
 let semidef k n =
   let x = uniform k n n in
   dot (transpose x) x
@@ -630,6 +639,7 @@ let meshgrid k xa xb ya yb xn yn =
   let x = map_by_row xn (fun _ -> u) (empty k yn xn) in
   let y = map_by_row yn (fun _ -> v) (empty k xn yn) in
   x, transpose y
+
 
 let meshup x y =
   let k = kind x in

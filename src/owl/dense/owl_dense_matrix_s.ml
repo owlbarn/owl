@@ -60,6 +60,8 @@ let load f = M.load Float32 f
 
 let load_txt ?sep f = M.load_txt Float32 ?sep f
 
+let load_npy f = M.load_npy Float32 f
+
 (* specific functions for float64 matrix *)
 
 let vector n = empty 1 n

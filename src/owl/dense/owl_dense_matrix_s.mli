@@ -404,6 +404,9 @@ val save_txt : ?sep:string -> ?append:bool -> mat -> string -> unit
 
 val load_txt : ?sep:string -> string -> mat
 
+val save_npy : mat -> out:string -> unit
+
+val load_npy : string -> mat
 
 (** {6 Unary mathematical operations } *)
 
