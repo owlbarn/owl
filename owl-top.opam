@@ -20,5 +20,4 @@ depends: [
   "ocaml-compiler-libs"
   "owl" {>= version}
   "owl-zoo"
-  "npy"
 ]
