@@ -1050,9 +1050,9 @@ val pp_dsnda : Format.formatter -> ('a, 'b) t -> unit [@@ocaml.toplevel_printer]
 ``pp_dsnda`` only prints out parts of the ndarray.
  *)
 
-val save : ('a, 'b) t -> string -> unit
+val save : ('a, 'b) t -> out:string -> unit
 (**
-``save x s`` serialises a ndarray ``x`` to a file of name ``s``.
+``save x ~out`` serialises a ndarray ``x`` to a file of name ``out``.
  *)
 
 val load : ('a, 'b) kind -> string -> ('a, 'b) t

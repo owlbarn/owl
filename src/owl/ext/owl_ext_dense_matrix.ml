@@ -347,7 +347,7 @@ module type BasicSig = sig
 
   val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> mat -> unit
 
-  val save : mat -> string -> unit
+  val save : mat -> out:string -> unit
 
   val load : string -> mat
 
@@ -645,7 +645,7 @@ module Make_Basic
 
   let print x = M.print (unpack_box x)
 
-  let save x f = M.save (unpack_box x) f
+  let save x ~out = M.save (unpack_box x) ~out
 
   let load f = M.load f |> pack_box
 

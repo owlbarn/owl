@@ -1189,9 +1189,9 @@ val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:('a -> string) 
 ``print x`` pretty prints matrix ``x`` without headings.
  *)
 
-val save : ('a, 'b) t -> string -> unit
+val save : ('a, 'b) t -> out:string -> unit
 (**
-``save x f`` saves the matrix ``x`` to a file with the name ``f``. The format
+``save x ~out`` saves the matrix ``x`` to a file with the name ``out``. The format
 is binary by using ``Marshal`` module to serialise the matrix.
  *)
 
@@ -1201,9 +1201,9 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 by using ``save`` function.
  *)
 
-val save_txt : ?sep:string -> ?append:bool -> ('a, 'b) t -> string -> unit
+val save_txt : ?sep:string -> ?append:bool -> ('a, 'b) t -> out:string -> unit
 (**
-``save_txt ~sep ~append x f`` saves the matrix ``x`` into a text file ``f``
+``save_txt ~sep ~append x ~out`` saves the matrix ``x`` into a text file ``out``
 delimited by the specified string ``sep`` (default: tab).  If ``append`` is
 ``false`` (it is by default), an existing file will be truncated and overwritten.
 If ``append`` is ``true`` and the file exists, new rows will be appended to it.

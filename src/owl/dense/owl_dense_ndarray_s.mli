@@ -310,7 +310,7 @@ val to_array : arr -> elt array
 
 val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
 
-val save : arr -> string -> unit
+val save : arr -> out:string -> unit
 
 val load : string -> arr
 

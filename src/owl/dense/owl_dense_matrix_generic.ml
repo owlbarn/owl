@@ -565,14 +565,14 @@ let of_array k x m n =
   Owl_dense_ndarray_generic.reshape y [|m; n|]
 
 
-let save_txt ?(sep="\t") ?(append=false) x f =
+let save_txt ?(sep="\t") ?(append=false) x ~out =
   let perm = 0o666 in (* will be AND'ed with user's umask *)
   let open_flags = if append
                    then [Open_wronly; Open_creat; Open_append; Open_text]
 		   else [Open_wronly; Open_creat; Open_trunc;  Open_text]
   in
   let _op = Owl_utils.elt_to_str (kind x) in
-  let h = open_out_gen open_flags perm f in
+  let h = open_out_gen open_flags perm out in
   iter_rows (fun y ->
     iter (fun z -> Printf.fprintf h "%s%s" (_op z) sep) y;
     Printf.fprintf h "\n"

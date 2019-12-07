@@ -411,11 +411,11 @@ val of_cols : mat array -> mat
 
 val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> mat -> unit
 
-val save : mat -> string -> unit
+val save : mat -> out:string -> unit
 
 val load : string -> mat
 
-val save_txt : ?sep:string -> ?append:bool -> mat -> string -> unit
+val save_txt : ?sep:string -> ?append:bool -> mat -> out:string -> unit
 
 val load_txt : ?sep:string -> string -> mat
 

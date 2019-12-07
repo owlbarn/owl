@@ -1828,7 +1828,7 @@ let print ?max_row ?max_col ?header ?fmt x =
 
 let pp_dsnda formatter x = Owl_pretty.pp_dsnda formatter x
 
-let save x f = Owl_io.marshal_to_file x f
+let save x ~out = Owl_io.marshal_to_file x out
 
 let load _k f = Owl_io.marshal_from_file f
 
