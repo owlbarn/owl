@@ -1061,6 +1061,18 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 It is necesssary to specify the type of the ndarray with paramater ``k``.
 *)
 
+val save_npy : ('a, 'b) t -> out:string -> unit
+(**
+``save_npy x ~out`` saves the matrix ``x`` into a npy file ``out``. This function
+is implemented using npy-ocaml https://github.com/LaurentMazare/npy-ocaml.
+ *)
+
+val load_npy : ('a, 'b) kind -> string -> ('a, 'b) t
+(**
+``load_npy file`` load a npy ``file`` into a matrix of type ``k``. If the matrix is
+in the file is not of type ``k``, fails with ``[file]: incorrect format``. This
+function is implemented using npy-ocaml https://github.com/LaurentMazare/npy-ocaml.
+ *)
 
 (** {6 Unary math operators }  *)
 

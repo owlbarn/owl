@@ -1832,6 +1832,13 @@ let save x ~out = Owl_io.marshal_to_file x out
 
 let load _k f = Owl_io.marshal_from_file f
 
+let save_npy x ~out = Npy.write x out
+
+let load_npy kind file =
+  match Npy.read_copy file |> Npy.to_bigarray Bigarray.c_layout kind with
+  | Some x -> x
+  | None -> failwith Printf.(sprintf "%s: incorrect format" file)
+
 let of_array k x d =
   let n = Array.fold_left (fun a b -> a * b) 1 d in
   let s = Printf.sprintf "x size = %i, output size = %i" (Array.length x) n in

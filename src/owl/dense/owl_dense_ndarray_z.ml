@@ -45,6 +45,8 @@ let unit_basis n i = M.unit_basis Complex64 n i
 
 let load f = M.load Complex64 f
 
+let load_npy f = M.load_npy Complex64 f
+
 let of_array x d = M.of_array Complex64 x d
 
 let mmap fd ?pos shared dims = Unix.map_file fd ?pos Complex64 c_layout shared dims

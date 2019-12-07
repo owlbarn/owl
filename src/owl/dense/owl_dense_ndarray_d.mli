@@ -314,6 +314,10 @@ val save : arr -> out:string -> unit
 
 val load : string -> arr
 
+val save_npy : arr -> out:string -> unit
+
+val load_npy : string -> arr
+
 
 (** {6 Unary mathematical operations } *)
 

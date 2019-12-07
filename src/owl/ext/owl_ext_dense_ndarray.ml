@@ -466,7 +466,6 @@ module Make_Basic
 
   let load f = M.load f |> pack_box
 
-
   let sum' x = M.sum' (unpack_box x) |> pack_elt
 
   let prod' x = M.prod' (unpack_box x) |> pack_elt

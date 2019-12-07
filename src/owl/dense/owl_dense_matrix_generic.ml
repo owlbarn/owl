@@ -600,15 +600,6 @@ let load_txt ?(sep="\t") k f =
   close_in h; x
 
 
-let save_npy x ~out = Npy.write x out
-
-
-let load_npy kind file =
-  match Npy.read_copy file |> Npy.to_bigarray Bigarray.c_layout kind with
-  | Some x -> x
-  | None -> failwith Printf.(sprintf "%s: incorrect format" file)
-
-
 let semidef k n =
   let x = uniform k n n in
   dot (transpose x) x

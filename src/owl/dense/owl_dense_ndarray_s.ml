@@ -44,6 +44,8 @@ let unit_basis n i = M.unit_basis Float32 n i
 
 let load f = M.load Float32 f
 
+let load_npy f = M.load_npy Float32 f
+
 let of_array x d = M.of_array Float32 x d
 
 let mmap fd ?pos shared dims = Unix.map_file fd ?pos Float32 c_layout shared dims
