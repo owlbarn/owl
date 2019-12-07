@@ -26,4 +26,5 @@ depends: [
   "dune" {>= "1.7.0"}
   "ocaml-compiler-libs"
   "owl" {>= version}
+  "npy"
 ]

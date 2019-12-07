@@ -34,4 +34,5 @@ depends: [
   "owl-base" {= version}
   "stdio" {build}
   "stdlib-shims"
+  "npy"
 ]
