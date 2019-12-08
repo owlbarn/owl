@@ -1189,7 +1189,7 @@ val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:('a -> string) 
 ``print x`` pretty prints matrix ``x`` without headings.
  *)
 
-val save : ('a, 'b) t -> out:string -> unit
+val save : out:string -> ('a, 'b) t -> unit
 (**
 ``save x ~out`` saves the matrix ``x`` to a file with the name ``out``. The format
 is binary by using ``Marshal`` module to serialise the matrix.
@@ -1201,9 +1201,9 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 by using ``save`` function.
  *)
 
-val save_txt : ?sep:string -> ?append:bool -> ('a, 'b) t -> out:string -> unit
+val save_txt : ?sep:string -> ?append:bool -> out:string -> ('a, 'b) t -> unit
 (**
-``save_txt ~sep ~append x ~out`` saves the matrix ``x`` into a text file ``out``
+``save_txt ~sep ~append ~out x`` saves the matrix ``x`` into a text file ``out``
 delimited by the specified string ``sep`` (default: tab).  If ``append`` is
 ``false`` (it is by default), an existing file will be truncated and overwritten.
 If ``append`` is ``true`` and the file exists, new rows will be appended to it.
@@ -1217,9 +1217,9 @@ val load_txt : ?sep:string -> ('a, 'b) kind -> string -> ('a, 'b) t
 delimitor is specified by ``sep`` which can be a regular expression.
  *)
 
-val save_npy : ('a, 'b) t -> out:string -> unit
+val save_npy : out:string -> ('a, 'b) t -> unit
 (**
-``save_npy x ~out`` saves the matrix ``x`` into a npy file ``out``. This function
+``save_npy ~out x`` saves the matrix ``x`` into a npy file ``out``. This function
 is implemented using npy-ocaml https://github.com/LaurentMazare/npy-ocaml.
  *)
 

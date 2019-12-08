@@ -565,7 +565,7 @@ let of_array k x m n =
   Owl_dense_ndarray_generic.reshape y [|m; n|]
 
 
-let save_txt ?(sep="\t") ?(append=false) x ~out =
+let save_txt ?(sep="\t") ?(append=false) ~out x =
   let perm = 0o666 in (* will be AND'ed with user's umask *)
   let open_flags = if append
                    then [Open_wronly; Open_creat; Open_append; Open_text]

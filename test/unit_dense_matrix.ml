@@ -200,7 +200,7 @@ module To_test = struct
 
 
   let save_load () =
-    M.save x2 "ds_mat.tmp";
+    M.save x2 ~out:"ds_mat.tmp";
     let y = M.load Float64 "ds_mat.tmp" in
     M.equal x2 y
 

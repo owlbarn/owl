@@ -1828,11 +1828,11 @@ let print ?max_row ?max_col ?header ?fmt x =
 
 let pp_dsnda formatter x = Owl_pretty.pp_dsnda formatter x
 
-let save x ~out = Owl_io.marshal_to_file x out
+let save ~out x = Owl_io.marshal_to_file x out
 
 let load _k f = Owl_io.marshal_from_file f
 
-let save_npy x ~out = Npy.write x out
+let save_npy ~out x = Npy.write x out
 
 let load_npy kind file =
   match Npy.read_copy file |> Npy.to_bigarray Bigarray.c_layout kind with

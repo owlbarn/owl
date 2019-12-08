@@ -316,11 +316,11 @@ val to_array : arr -> elt array
 
 val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
 
-val save : arr -> out:string -> unit
+val save : out:string -> arr -> unit
 
 val load : string -> arr
 
-val save_npy : arr -> out:string -> unit
+val save_npy : out:string -> arr -> unit
 
 val load_npy : string -> arr
 
