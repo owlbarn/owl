@@ -49,6 +49,8 @@ let load_npy f = M.load_npy Complex32 f
 
 let of_array x d = M.of_array Complex32 x d
 
+let of_arrays = M.of_arrays Complex32
+
 let mmap fd ?pos shared dims = Unix.map_file fd ?pos Complex32 c_layout shared dims
 
 (* specific functions for complex32 ndarray *)
