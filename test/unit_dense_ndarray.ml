@@ -158,7 +158,7 @@ module To_test = struct
   let l2norm' () = M.l2norm' vec = { Complex.re = 5.0; im = 0. }
 
   let save_load () =
-    M.save x0 "ds_nda.tmp";
+    M.save x0 ~out:"ds_nda.tmp";
     let y = M.load Float64 "ds_nda.tmp" in
     M.equal x0 y
 

@@ -411,14 +411,17 @@ val of_cols : mat array -> mat
 
 val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> mat -> unit
 
-val save : mat -> string -> unit
+val save : out:string -> mat -> unit
 
 val load : string -> mat
 
-val save_txt : ?sep:string -> ?append:bool -> mat -> string -> unit
+val save_txt : ?sep:string -> ?append:bool -> out:string -> mat -> unit
 
 val load_txt : ?sep:string -> string -> mat
 
+val save_npy : out:string -> mat -> unit
+
+val load_npy : string -> mat
 
 (** {6 Unary mathematical operations } *)
 

@@ -61,6 +61,8 @@ let load f = M.load Complex32 f
 
 let load_txt ?sep f = M.load_txt Complex32 ?sep f
 
+let load_npy f = M.load_npy Complex32 f
+
 (* specific functions for complex64 matrix *)
 
 let vector n = empty 1 n
