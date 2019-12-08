@@ -19,9 +19,7 @@ aforementioned conventions.
  *)
 
 open Bigarray
-
 open Owl_types
-
 
 (** {6 Type definition} *)
 
@@ -35,7 +33,6 @@ type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 Type of the ndarray, e.g., Bigarray.Float32, Bigarray.Complex64, and etc.
  *)
 
-
 (** {6 Create Ndarrays}  *)
 
 val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
@@ -48,7 +45,6 @@ is faster than ``zeros`` to create a ndarray.
 The module only supports the following four types of ndarray: ``Bigarray.Float32``,
 ``Bigarray.Float64``, ``Bigarray.Complex32``, and ``Bigarray.Complex64``.
  *)
-
 
 val create : ('a, 'b) kind -> int array -> 'a -> ('a, 'b) t
 (**
@@ -153,7 +149,6 @@ val unit_basis : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 ``unit_basis k n i`` returns a unit basis vector with ``i``th element set to 1.
  *)
 
-
 (** {6 Obtain basic properties}  *)
 
 val shape : ('a, 'b) t -> int array
@@ -234,7 +229,6 @@ val i1d : ('a, 'b) t -> int array -> int
 (**
 ``i1d x i`` converts ``x``'s n-dimensional index ``i`` to one-dimensional one.
 *)
-
 
 (** {6 Manipulate Ndarrays}  *)
 
@@ -555,7 +549,6 @@ val sort1 : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 as result, the original ``x`` remains intact. 
  *)
 
-
 val sort : ('a, 'b) t -> ('a, 'b) t
 (**
 ``sort x`` performs quicksort of the elelments in ``x``. A new copy is returned
@@ -577,15 +570,20 @@ with replacement. ``axis`` is set to zero by default. The return is a tuple
 of both samples and the indices of the selected samples.
  *)
 
-val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -> ('a, 'b) t
+val mmap
+  :  Unix.file_descr
+  -> ?pos:int64
+  -> ('a, 'b) kind
+  -> bool
+  -> int array
+  -> ('a, 'b) t
 (**
 ``mmap fd kind layout shared dims`` ...
  *)
 
-
 (** {6 Iteration functions}  *)
 
-val iteri :(int -> 'a -> unit) -> ('a, 'b) t -> unit
+val iteri : (int -> 'a -> unit) -> ('a, 'b) t -> unit
 (**
 ``iteri f x`` applies function ``f`` to each element in ``x``. Note that 1d index
 is passed to function ``f``, you need to convert it to nd-index by yourself.
@@ -666,13 +664,18 @@ val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 ``map2 f x y`` is similar to ``map2i f x y`` except the index is not passed.
  *)
 
-val iteri_nd :(int array -> 'a -> unit) -> ('a, 'b) t -> unit
+val iteri_nd : (int array -> 'a -> unit) -> ('a, 'b) t -> unit
 (** Similar to ``iteri`` but n-d indices are passed to the user function. *)
 
 val mapi_nd : (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** Similar to ``mapi`` but n-d indices are passed to the user function. *)
 
-val foldi_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
+val foldi_nd
+  :  ?axis:int
+  -> (int array -> 'a -> 'a -> 'a)
+  -> 'a
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** Similar to ``foldi`` but n-d indices are passed to the user function. *)
 
 val scani_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
@@ -681,7 +684,7 @@ val scani_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 
 val filteri_nd : (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
 (** Similar to ``filteri`` but n-d indices are returned. *)
 
-val iter2i_nd :(int array -> 'a -> 'c -> unit) -> ('a, 'b) t -> ('c, 'd) t -> unit
+val iter2i_nd : (int array -> 'a -> 'c -> unit) -> ('a, 'b) t -> ('c, 'd) t -> unit
 (** Similar to ``iter2i`` but n-d indices are passed to the user function. *)
 
 val map2i_nd : (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -716,7 +719,11 @@ Please refer to ``iteri_slice`` for more details.
 val map_slice : ?axis:int -> (('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
 (** Similar to ``mapi_slice`` but slice index is not passed in. *)
 
-val filteri_slice : ?axis:int -> (int -> ('a, 'b) t -> bool) -> ('a, 'b) t -> ('a, 'b) t array
+val filteri_slice
+  :  ?axis:int
+  -> (int -> ('a, 'b) t -> bool)
+  -> ('a, 'b) t
+  -> ('a, 'b) t array
 (**
 ``filteri_slice ~axis f x`` filters the slices along the specified ``axis`` in
 ``x``. The slices which satisfy the predicate ``f`` are returned in an array.
@@ -737,7 +744,6 @@ Please refer to ``iteri_slice`` for more details.
 
 val fold_slice : ?axis:int -> ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 (** Similar to ``foldi_slice`` but slice index is not passed in. *)
-
 
 (** {6 Examination & Comparison}  *)
 
@@ -1021,7 +1027,6 @@ ndarray/matrix wherein ``1`` indicates that the element ``b`` from ``x`` is
 considered as approximately equal to ``a``, namely ``abs (a - b) < eps``.
  *)
 
-
 (** {6 Input/Output functions}  *)
 
 val of_array : ('a, 'b) kind -> 'a array -> int array -> ('a, 'b) t
@@ -1036,7 +1041,13 @@ val to_array : ('a, 'b) t -> 'a array
 ndarray ``x`` is flattened before convertion.
  *)
 
-val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:('a -> string) -> ('a, 'b) t -> unit
+val print
+  :  ?max_row:int
+  -> ?max_col:int
+  -> ?header:bool
+  -> ?fmt:('a -> string)
+  -> ('a, 'b) t
+  -> unit
 (**
 ``print x`` prints all the elements in ``x`` as well as their indices. ``max_row``
 and ``max_col`` specify the maximum number of rows and columns to display.
@@ -1044,7 +1055,8 @@ and ``max_col`` specify the maximum number of rows and columns to display.
 function to format every element into string.
  *)
 
-val pp_dsnda : Format.formatter -> ('a, 'b) t -> unit [@@ocaml.toplevel_printer]
+val pp_dsnda : Format.formatter -> ('a, 'b) t -> unit
+  [@@ocaml.toplevel_printer]
 (**
 ``pp_dsnda x`` prints ``x`` in OCaml toplevel. If the ndarray is too long,
 ``pp_dsnda`` only prints out parts of the ndarray.
@@ -1216,7 +1228,7 @@ val max_i : ('a, 'b) t -> 'a * int array
 ``max_i x`` returns the maximum of all elements in ``x`` as well as its index.
  *)
 
-val minmax_i : ('a, 'b) t -> ('a * (int array)) * ('a * (int array))
+val minmax_i : ('a, 'b) t -> ('a * int array) * ('a * int array)
 (**
 ``minmax_i x`` returns ``((min_v,min_i), (max_v,max_i))`` where
 ``(min_v,min_i)`` is the minimum value in ``x`` along with its index while
@@ -1642,7 +1654,6 @@ val lgamma : ('a, 'b) t -> ('a, 'b) t
 ``lgamma x`` computes the loggamma of the elements in ``x`` and returns the result
 in a new ndarray.
  *)
- 
 
 (** {6 Binary math operators}  *)
 
@@ -1822,7 +1833,6 @@ val clip_by_l2norm : 'a -> ('a, 'b) t -> ('a, 'b) t
 val fma : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** ``fma x y z`` calculates the `fused multiply add`, i.e. ``(x * y) + z``. *)
 
-
 (** {6 Tensor Calculus}  *)
 
 val contract1 : (int * int) array -> ('a, 'b) t -> ('a, 'b) t
@@ -1844,7 +1854,6 @@ of ``y``.
 Caveat: Not well tested yet, use with care! Also, consider to use TTGT in
 future for better perfomance.
  *)
-
 
 (** {6 Cast functions}  *)
 
@@ -1895,7 +1904,6 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 ``cast_d2c x`` casts ``x`` from ``float64`` to ``complex32``.
  *)
 
-
 (** {6 Neural network related}  *)
 
 val conv1d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
@@ -1907,22 +1915,55 @@ val conv2d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, '
 val conv3d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (** TODO *)
 
-val dilated_conv1d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
+val dilated_conv1d
+  :  ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
 (** TODO *)
 
-val dilated_conv2d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
+val dilated_conv2d
+  :  ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
 (** TODO *)
 
-val dilated_conv3d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
+val dilated_conv3d
+  :  ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
 (** TODO *)
 
-val transpose_conv1d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
+val transpose_conv1d
+  :  ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
 (** TODO *)
 
-val transpose_conv2d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
+val transpose_conv2d
+  :  ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
 (** TODO *)
 
-val transpose_conv3d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
+val transpose_conv3d
+  :  ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
 (** TODO *)
 
 val max_pool1d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
@@ -1943,87 +1984,223 @@ val avg_pool2d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a
 val avg_pool3d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
 (** TODO *)
 
-val max_pool2d_argmax : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t * (int64, int64_elt) t
+val max_pool2d_argmax
+  :  ?padding:padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t * (int64, int64_elt) t
 (** TODO *)
 
 val upsampling2d : ('a, 'b) t -> int array -> ('a, 'b) t
 (** TODO *)
 
-val conv1d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+val conv1d_backward_input
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val conv1d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+val conv1d_backward_kernel
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val conv2d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+val conv2d_backward_input
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val conv2d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+val conv2d_backward_kernel
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val conv3d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+val conv3d_backward_input
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val conv3d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+val conv3d_backward_kernel
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val dilated_conv1d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+val dilated_conv1d_backward_input
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val dilated_conv1d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+val dilated_conv1d_backward_kernel
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val dilated_conv2d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+val dilated_conv2d_backward_input
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val dilated_conv2d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+val dilated_conv2d_backward_kernel
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val dilated_conv3d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+val dilated_conv3d_backward_input
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val dilated_conv3d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+val dilated_conv3d_backward_kernel
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val transpose_conv1d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+val transpose_conv1d_backward_input
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val transpose_conv1d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+val transpose_conv1d_backward_kernel
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val transpose_conv2d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+val transpose_conv2d_backward_input
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val transpose_conv2d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+val transpose_conv2d_backward_kernel
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val transpose_conv3d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+val transpose_conv3d_backward_input
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val transpose_conv3d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+val transpose_conv3d_backward_kernel
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val max_pool1d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+val max_pool1d_backward
+  :  padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val max_pool2d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+val max_pool2d_backward
+  :  padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val max_pool3d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+val max_pool3d_backward
+  :  padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val avg_pool1d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+val avg_pool1d_backward
+  :  padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val avg_pool2d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+val avg_pool2d_backward
+  :  padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
-val avg_pool3d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+val avg_pool3d_backward
+  :  padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
 val upsampling2d_backward : ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
-
 
 (** {6 Helper functions }  *)
 
@@ -2077,7 +2254,6 @@ Parameters:
   * ``window`` is the size of the sliding window.
  *)
 
-
 (** {6 In-place modification}  *)
 
 val create_ : out:('a, 'b) t -> 'a -> unit
@@ -2089,7 +2265,7 @@ val uniform_ : ?a:'a -> ?b:'a -> out:('a, 'b) t -> unit
 val gaussian_ : ?mu:'a -> ?sigma:'a -> out:('a, 'b) t -> unit
 (** TODO *)
 
-val sequential_ :?a:'a -> ?step:'a -> out:('a, 'b) t -> unit
+val sequential_ : ?a:'a -> ?step:'a -> out:('a, 'b) t -> unit
 (** TODO *)
 
 val bernoulli_ : ?p:float -> out:('a, 'b) t -> unit
@@ -2317,7 +2493,15 @@ val fma_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 written to ``out``.
  *)
 
-val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:'a -> ?beta:'a -> c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
+val dot_
+  :  ?transa:bool
+  -> ?transb:bool
+  -> ?alpha:'a
+  -> ?beta:'a
+  -> c:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> unit
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val conj_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
@@ -2623,136 +2807,394 @@ val elt_greater_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 function but the output is written to ``x``.
  *)
 
-val conv1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+val conv1d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> unit
 (** TODO *)
 
-val conv2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+val conv2d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> unit
 (** TODO *)
 
-val conv3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+val conv3d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> unit
 (** TODO *)
 
-val dilated_conv1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> unit
+val dilated_conv1d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> unit
 (** TODO *)
 
-val dilated_conv2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> unit
+val dilated_conv2d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> unit
 (** TODO *)
 
-val dilated_conv3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> unit
+val dilated_conv3d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> unit
 (** TODO *)
 
-val transpose_conv1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+val transpose_conv1d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> unit
 (** TODO *)
 
-val transpose_conv2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+val transpose_conv2d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> unit
 (** TODO *)
 
-val transpose_conv3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> unit
+val transpose_conv3d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> unit
 (** TODO *)
 
-val max_pool1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+val max_pool1d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> unit
 (** TODO *)
 
-val max_pool2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+val max_pool2d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> unit
 (** TODO *)
 
-val max_pool3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+val max_pool3d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> unit
 (** TODO *)
 
-val avg_pool1d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+val avg_pool1d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> unit
 (** TODO *)
 
-val avg_pool2d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+val avg_pool2d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> unit
 (** TODO *)
 
-val avg_pool3d_ : out:('a, 'b) t -> ?padding:padding -> ('a, 'b) t -> int array -> int array -> unit
+val avg_pool3d_
+  :  out:('a, 'b) t
+  -> ?padding:padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> unit
 (** TODO *)
 
 val upsampling2d_ : out:('a, 'b) t -> ('a, 'b) t -> int array -> unit
 (** TODO *)
 
-val conv1d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val conv1d_backward_input_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val conv1d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val conv1d_backward_kernel_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val conv2d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val conv2d_backward_input_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val conv2d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val conv2d_backward_kernel_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val conv3d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val conv3d_backward_input_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val conv3d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val conv3d_backward_kernel_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val dilated_conv1d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+val dilated_conv1d_backward_input_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val dilated_conv1d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+val dilated_conv1d_backward_kernel_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val dilated_conv2d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+val dilated_conv2d_backward_input_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val dilated_conv2d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+val dilated_conv2d_backward_kernel_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val dilated_conv3d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+val dilated_conv3d_backward_input_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val dilated_conv3d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+val dilated_conv3d_backward_kernel_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val transpose_conv1d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val transpose_conv1d_backward_input_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val transpose_conv1d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val transpose_conv1d_backward_kernel_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val transpose_conv2d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val transpose_conv2d_backward_input_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val transpose_conv2d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val transpose_conv2d_backward_kernel_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val transpose_conv3d_backward_input_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val transpose_conv3d_backward_input_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val transpose_conv3d_backward_kernel_ : out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val transpose_conv3d_backward_kernel_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val max_pool1d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+val max_pool1d_backward_
+  :  out:('a, 'b) t
+  -> padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val max_pool2d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+val max_pool2d_backward_
+  :  out:('a, 'b) t
+  -> padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val max_pool3d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+val max_pool3d_backward_
+  :  out:('a, 'b) t
+  -> padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val avg_pool1d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+val avg_pool1d_backward_
+  :  out:('a, 'b) t
+  -> padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val avg_pool2d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+val avg_pool2d_backward_
+  :  out:('a, 'b) t
+  -> padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val avg_pool3d_backward_ : out:('a, 'b) t -> padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> unit
+val avg_pool3d_backward_
+  :  out:('a, 'b) t
+  -> padding
+  -> ('a, 'b) t
+  -> int array
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
-val upsampling2d_backward_ : out:('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> unit
+val upsampling2d_backward_
+  :  out:('a, 'b) t
+  -> ('a, 'b) t
+  -> int array
+  -> ('a, 'b) t
+  -> unit
 (** TODO *)
 
 val fused_adagrad_ : ?out:('a, 'b) t -> rate:'a -> eps:'a -> ('a, 'b) t -> unit
 (** TODO *)
 
-
 (** {6 Matrix functions}  *)
 
-type area = { a : int; b : int; c : int; d : int }
+type area =
+  { a : int
+  ; b : int
+  ; c : int
+  ; d : int
+  }
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val area : int -> int -> int -> int -> area
@@ -2818,10 +3260,20 @@ val draw_rows : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 val draw_cols : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
+val draw_rows2
+  :  ?replacement:bool
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int
+  -> ('a, 'b) t * ('a, 'b) t * int array
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val draw_cols2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
+val draw_cols2
+  :  ?replacement:bool
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> int
+  -> ('a, 'b) t * ('a, 'b) t * int array
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 (** {6 Helper functions}  *)
