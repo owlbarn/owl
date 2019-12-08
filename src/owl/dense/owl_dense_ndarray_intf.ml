@@ -17,18 +17,92 @@ module type Base = sig
   (** {6 Create N-dimensional array} *)
 
   val empty : int array -> arr
+  (**
+``empty [|3;4;5|]`` creates a three diemensional array of
+Each dimension has the following size: 3, 4, and 5.
+The elements in the array are not initialised, they can be any value. ``empty``
+is faster than ``zeros`` to create a ndarray.
+ *)
+
   val create : int array -> elt -> arr
+  (**
+``create [|3;4;5|] 2.`` creates a three-diemensional array.
+Each dimension has the following size: 3, 4, and 5.
+The elements in the array are initialised to ``2.``
+ *)
+
   val init : int array -> (int -> elt) -> arr
+  (**
+``init d f`` creates a ndarray ``x`` of shape ``d``, then using
+``f`` to initialise the elements in ``x``. The input of ``f`` is 1-dimensional
+index of the ndarray. You need to explicitly convert it if you need N-dimensional
+index. The function ``ind`` can help you.
+ *)
+
   val init_nd : int array -> (int array -> elt) -> arr
+  (**
+``init_nd`` is almost the same as ``init`` but ``f`` receives n-dimensional index
+as input. It is more convenient since you don't have to convert the index by
+yourself, but this also means ``init_nd`` is slower than ``init``.
+ *)
+
   val zeros : int array -> arr
+  (**
+``zeros [|3;4;5|]`` creates a three-diemensional array.
+Each dimension has the following size: 3, 4, and 5.
+The elements in the array are initialised to "zero". 
+ *)
+
   val ones : int array -> arr
+  (**
+``ones [|3;4;5|]`` creates a three-diemensional array of type.
+Each dimension has the following size: 3, 4, and 5.
+The elements in the array are initialised to "one".
+ *)
+
   val uniform : ?a:elt -> ?b:elt -> int array -> arr
+  (**
+``uniform [|3;4;5|]`` creates a three-diemensional array.
+Each dimension has the following size: 3, 4, and 5. The
+elements in the array follow a uniform distribution ``0,1``.
+ *)
+
   val gaussian : ?mu:elt -> ?sigma:elt -> int array -> arr
+  (**
+``gaussian [|3;4;5|]`` creates a three-diemensional array.
+Each dimension has the following size: 3, 4, and 5. The
+elements in the array follow a normal distribution.
+ *)
+
   val sequential : ?a:elt -> ?step:elt -> int array -> arr
+  (**
+``sequential [|3;4;5|] 2.`` creates a three-diemensional.
+Each dimension has the following size: 3, 4,
+and 5. The elements in the array are assigned sequential values.
+
+``?a`` specifies the starting value and the default value is zero; whilst
+``?step`` specifies the step size with default value one.
+ *)
+
   val linspace : elt -> elt -> int -> arr
+  (**
+``linspace k 0. 9. 10`` ...
+ *)
+
   val logspace : ?base:float -> elt -> elt -> int -> arr
+  (**
+``logspace k 0. 9. 10`` ...
+ *)
+
   val bernoulli : ?p:float -> int array -> arr
+  (**
+``bernoulli k ~p:0.3 [|2;3;4|]``
+ *)
+
   val unit_basis : int -> int -> arr
+  (**
+``unit_basis k n i`` returns a unit basis vector with ``i``th element set to 1.
+ *)
 
   (** {6 Obtain basic properties} *)
 
@@ -719,8 +793,23 @@ module type Complex = sig
   (** {6 Complex operations} *)
 
   val complex : cast_arr -> cast_arr -> arr
+  (**
+``complex re im`` constructs a complex ndarray/matrix from ``re`` and ``im``.
+``re`` and ``im`` contain the real and imaginary part of ``x`` respectively.
+
+Note that both ``re`` and ``im`` can be complex but must have same type. The real
+part of ``re`` will be the real part of ``x`` and the imaginary part of ``im`` will
+be the imaginary part of ``x``.
+ *)
+
   val polar : cast_arr -> cast_arr -> arr
-  val unit_basis : int -> int -> arr
+  (**
+``polar rho theta`` constructs a complex ndarray/matrix from polar
+coordinates ``rho`` and ``theta``. ``rho`` contains the magnitudes and ``theta``
+contains phase angles. Note that the behaviour is undefined if ``rho`` has
+negative elelments or ``theta`` has infinity elelments.
+ *)
+
   val re : arr -> cast_arr
   val im : arr -> cast_arr
   val sum' : arr -> elt
