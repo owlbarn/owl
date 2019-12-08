@@ -19,8 +19,11 @@ aforementioned conventions.
  *)
 
 open Bigarray
+
 open Owl_types
+
 open Owl_dense_ndarray_generic
+
 
 (** {6 Type definition} *)
 
@@ -29,7 +32,9 @@ type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 N-dimensional array type, i.e. Bigarray Genarray type.
  *)
 
+
 (** {6 Create matrices}  *)
+
 
 val empty : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 (**
@@ -112,7 +117,7 @@ follow a uniform distribution in ``(0,1)`` interval. ``uniform ~scale:a m n``
 adjusts the interval to ``(0,a)``.
  *)
 
-val gaussian : ('a, 'b) kind -> ?mu:'a -> ?sigma:'a -> int -> int -> ('a, 'b) t
+ val gaussian : ('a, 'b) kind -> ?mu:'a -> ?sigma:'a -> int -> int -> ('a, 'b) t
 (**
 ``gaussian m n`` creates an ``m`` by ``n`` matrix where all the elements in ``x``
 follow a Gaussian distribution with specified sigma. By default ``sigma = 1``.
@@ -135,15 +140,7 @@ val logspace : ('a, 'b) kind -> ?base:float -> 'a -> 'a -> int -> ('a, 'b) t
 ``logspace base a b n`` ... the default value of base is ``e``.
  *)
 
-val meshgrid
-  :  ('a, 'b) kind
-  -> 'a
-  -> 'a
-  -> 'a
-  -> 'a
-  -> int
-  -> int
-  -> ('a, 'b) t * ('a, 'b) t
+val meshgrid : ('a, 'b) kind -> 'a -> 'a -> 'a -> 'a -> int -> int -> ('a, 'b) t * ('a, 'b) t
 (**
 ``meshgrid a1 b1 a2 b2 n1 n2`` is similar to the ``meshgrid`` function in
 Matlab. It returns two matrices ``x`` and ``y`` where the row vectors in ``x`` are
@@ -249,6 +246,7 @@ There are three different algorithms to deal with ``n`` is odd, singly even,
 and doubly even respectively.
  *)
 
+
 (** {6 Obtain basic properties}  *)
 
 val shape : ('a, 'b) t -> int * int
@@ -300,6 +298,7 @@ val kind : ('a, 'b) t -> ('a, 'b) kind
 (**
 ``kind x`` returns the type of matrix ``x``.
  *)
+
 
 (** {6 Manipulate a matrix}  *)
 
@@ -406,7 +405,7 @@ val resize : ?head:bool -> ('a, 'b) t -> int array -> ('a, 'b) t
 ``resize x s`` please refer to the Ndarray document.
  *)
 
-val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
+val reshape :('a, 'b) t -> int array -> ('a, 'b) t
 (**
 ``reshape x s`` returns a new ``m`` by ``n`` matrix from the ``m'`` by ``n'``
 matrix ``x``. Note that ``(m * n)`` must be equal to ``(m' * n')``, and the
@@ -587,6 +586,7 @@ increasing order. Note that the returned index ndarray has the same shape as
 that of ``x``, and the indices are 1D indices.
  *)
 
+
 (**{6 Iteration functions} *)
 
 val iteri : (int -> 'a -> unit) -> ('a, 'b) t -> unit
@@ -661,12 +661,7 @@ val iteri_2d : (int -> int -> 'a -> unit) -> ('a, 'b) t -> unit
 val mapi_2d : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** Similar to `mapi` but 2d indices ``(i,j)`` are passed to the user function. *)
 
-val foldi_2d
-  :  ?axis:int
-  -> (int -> int -> 'a -> 'a -> 'a)
-  -> 'a
-  -> ('a, 'b) t
-  -> ('a, 'b) t
+val foldi_2d : ?axis:int -> (int -> int -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Similar to `foldi` but 2d indices ``(i,j)`` are passed to the user function. *)
 
 val scani_2d : ?axis:int -> (int -> int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
@@ -712,11 +707,7 @@ val iter_rows : (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 Similar to ``iteri_rows`` except row number is not passed to ``f``.
  *)
 
-val iter2i_rows
-  :  (int -> ('a, 'b) t -> ('a, 'b) t -> unit)
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-  -> unit
+val iter2i_rows : (int -> ('a, 'b) t -> ('a, 'b) t -> unit) -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** ``iter2_rows f x y`` iterates rows of two matrices ``x`` and ```y``. *)
 
 val iter2_rows : (('a, 'b) t -> ('a, 'b) t -> unit) -> ('a, 'b) t -> ('a, 'b) t -> unit
@@ -842,6 +833,7 @@ val map_at_col : ('a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
 ``map_at_col f x i`` is similar to ``mapi_at_col`` except that the coordinates
 of an element is not passed to ``f``.
  *)
+
 
 (** {6 Examination & Comparison} *)
 
@@ -1111,6 +1103,7 @@ ndarray/matrix wherein ``1`` indicates that the element ``b`` from ``x`` is
 considered as approximately equal to ``a``, namely ``abs (a - b) < eps``.
  *)
 
+
 (** {6 Randomisation functions}  *)
 
 val draw_rows : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
@@ -1127,22 +1120,12 @@ also returned in an int array along with the selected columns. The parameter
 ``replacement`` indicates whether the drawing is by replacement or not.
  *)
 
-val draw_rows2
-  :  ?replacement:bool
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-  -> int
-  -> ('a, 'b) t * ('a, 'b) t * int array
+val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
 (**
 ``draw_rows2 x y c`` is similar to ``draw_rows`` but applies to two matrices.
  *)
 
-val draw_cols2
-  :  ?replacement:bool
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-  -> int
-  -> ('a, 'b) t * ('a, 'b) t * int array
+val draw_cols2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
 (**
 ``draw_col2 x y c`` is similar to ``draw_cols`` but applies to two matrices.
  *)
@@ -1157,11 +1140,12 @@ val shuffle_cols : ('a, 'b) t -> ('a, 'b) t
 ``shuffle_cols x`` shuffles all the columns in matrix ``x``.
  *)
 
-val shuffle : ('a, 'b) t -> ('a, 'b) t
+val shuffle: ('a, 'b) t -> ('a, 'b) t
 (**
 ``shuffle x`` shuffles all the elements in ``x`` by first shuffling along the
 rows then shuffling along columns. It is equivalent to ``shuffle_cols (shuffle_rows x)``.
  *)
+
 
 (** {6 Input/Output functions}  *)
 
@@ -1193,17 +1177,14 @@ an ``m`` by ``n`` matrix.
  *)
 
 val to_rows : ('a, 'b) t -> ('a, 'b) t array
+
 val of_rows : ('a, 'b) t array -> ('a, 'b) t
+
 val to_cols : ('a, 'b) t -> ('a, 'b) t array
+
 val of_cols : ('a, 'b) t array -> ('a, 'b) t
 
-val print
-  :  ?max_row:int
-  -> ?max_col:int
-  -> ?header:bool
-  -> ?fmt:('a -> string)
-  -> ('a, 'b) t
-  -> unit
+val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:('a -> string) -> ('a, 'b) t -> unit
 (**
 ``print x`` pretty prints matrix ``x`` without headings.
  *)
@@ -1340,7 +1321,7 @@ val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 ``sum_ axis x`` sums the elements in ``x`` along specified ``axis``.
  *)
 
-val sum' : ('a, 'b) t -> 'a
+val sum': ('a, 'b) t -> 'a
 (**
 ``sum x`` returns the summation of all the elements in ``x``.
  *)
@@ -1767,20 +1748,10 @@ val vecnorm : ?axis:int -> ?p:float -> ('a, 'b) t -> ('a, 'b) t
 val vecnorm' : ?p:float -> ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic`. *)
 
-val max_pool
-  :  ?padding:padding
-  -> (float, 'a) t
-  -> int array
-  -> int array
-  -> (float, 'a) t
+val max_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic`. *)
 
-val avg_pool
-  :  ?padding:padding
-  -> (float, 'a) t
-  -> int array
-  -> int array
-  -> (float, 'a) t
+val avg_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic`. *)
 
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1835,7 +1806,7 @@ The elements in ``x`` are clipped by ``amin`` and ``amax``, and they will be bet
 ``0.`` and ``1.`` after conversion to represents the intensity.
  *)
 
-val lgamma : ('a, 'b) t -> ('a, 'b) t
+val lgamma : ('a, 'b) t-> ('a, 'b) t
 (**
 ``lgamma x`` computes the loggamma of the elements in ``x`` and returns the result in
 a new matrix.
@@ -2043,6 +2014,7 @@ between the elements of ``a`` and the matrix ``b``.
 val fma : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** ``fma x y z`` calculates the `fused multiply add`, i.e. ``(x * y) + z``. *)
 
+
 (** {6 Cast functions}  *)
 
 val cast : ('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
@@ -2091,6 +2063,7 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 (**
 ``cast_d2c x`` casts ``x`` from ``float64`` to ``complex32``.
  *)
+
 
 (** {6 In-place modification}  *)
 
@@ -2289,15 +2262,7 @@ val fma_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 written to ``out``.
  *)
 
-val dot_
-  :  ?transa:bool
-  -> ?transb:bool
-  -> ?alpha:'a
-  -> ?beta:'a
-  -> c:('a, 'b) t
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-  -> unit
+val dot_ : ?transa:bool -> ?transb:bool -> ?alpha:'a -> ?beta:'a -> c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val conj_ : ?out:('a, 'b) t -> ('a, 'b) t -> unit
@@ -2602,3 +2567,7 @@ val elt_greater_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 ``elt_greater_equal_scalar_ x a`` is simiar to ``elt_greater_equal_scalar``
 function but the output is written to ``x``.
  *)
+
+
+
+
