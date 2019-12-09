@@ -5,7 +5,6 @@
 
 (** Numerical Integration *)
 
-
 (** {6 Integration functions} *)
 
 val trapz : ?n:int -> ?eps:float -> (float -> float) -> float -> float -> float
@@ -57,7 +56,6 @@ Returns:
   * ``y``: the integral of ``f`` on ``[a, b]``.
  *)
 
-
 val gaussian_fixed : ?n:int -> (float -> float) -> float -> float -> float
 (**
 ``gaussian_fixed f a b`` computes the integral of ``f`` on the interval
@@ -90,7 +88,6 @@ Returns:
   * ``y``: the integral of ``f`` on ``[a, b]``.
  *)
 
-
 (** {6 Helper functions} *)
 
 val trapzd : (float -> float) -> float -> float -> int -> float
@@ -109,7 +106,12 @@ Returns:
   * ``y``: the integral of ``f`` on ``[a, b]``.
  *)
 
-val gauss_legendre : ?eps:float -> ?a:float -> ?b:float -> int -> float array * float array
+val gauss_legendre
+  :  ?eps:float
+  -> ?a:float
+  -> ?b:float
+  -> int
+  -> float array * float array
 (**
 Given the lower and upper limits of integration ``a`` and ``b``, and order
 ``n``, the function computes the abscissas and weights of the Gauss-Legendre

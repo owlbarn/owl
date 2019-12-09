@@ -3,11 +3,9 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 (** {6 Types and constants}  *)
 
 type ('a, 'b) t = ('a, 'b) Owl_base_dense_ndarray_generic.t
-
 
 (** {6 Core functions}  *)
 
@@ -31,4 +29,9 @@ val linsolve_lu : (float, 'a) t -> (float, 'b) t -> (float, 'b) t
 
 val linsolve_gauss : (float, 'a) t -> (float, 'b) t -> (float, 'a) t * (float, 'b) t
 
-val tridiag_solve_vec : float array -> float array -> float array -> float array -> float array
+val tridiag_solve_vec
+  :  float array
+  -> float array
+  -> float array
+  -> float array
+  -> float array

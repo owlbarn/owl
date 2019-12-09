@@ -6,9 +6,7 @@
 (** Plot: high-level plotting functions. *)
 
 (** The input to a plot function is supposed to be a row-based matrix/vector.
-The functions in this module are built atop of Plplot library.
- *)
-
+  * The functions in this module are built atop of Plplot library. *)
 
 (** {6 Type definition} *)
 
@@ -18,36 +16,48 @@ type dsmat = Owl_dense_matrix.D.mat
 type handle
 (** Handle of a figure *)
 
-type color = RED | GREEN | BLUE
-(** colour type *)
+type color =
+  | RED
+  | GREEN
+  | BLUE (** colour type *)
 
-type legend_position = North | South | West | East | NorthWest | NorthEast | SouthWest | SouthEast
-(** legend position type *)
+type legend_position =
+  | North
+  | South
+  | West
+  | East
+  | NorthWest
+  | NorthEast
+  | SouthWest
+  | SouthEast (** legend position type *)
 
-type axis = X | Y | Z | XY | XZ | YZ | XYZ
-(** axis type *)
+type axis =
+  | X
+  | Y
+  | Z
+  | XY
+  | XZ
+  | YZ
+  | XYZ (** axis type *)
 
 type spec =
-  | RGB         of int * int * int
-  | LineStyle   of int
-  | LineWidth   of float
-  | Marker      of string
-  | MarkerSize  of float
+  | RGB of int * int * int
+  | LineStyle of int
+  | LineWidth of float
+  | Marker of string
+  | MarkerSize of float
   | Fill
   | FillPattern of int
   | Contour
-  | Altitude    of float
-  | Azimuth     of float
-  | ZLine       of axis
+  | Altitude of float
+  | Azimuth of float
+  | ZLine of axis
   | NoMagColor
   | Curtain
   | Faceted
-  | Axis        of axis
-(** specification of a figure *)
-
+  | Axis of axis (** specification of a figure *)
 
 (** {6 Config functions} *)
-
 
 val create : ?m:int -> ?n:int -> string -> handle
 (**
@@ -159,7 +169,6 @@ val legend_off : handle -> unit
 ``legend_off``
  *)
 
-
 (** {6 Basic plot functions} *)
 
 (** Line style is an integer ranging from 1 to 8. *)
@@ -213,13 +222,21 @@ val autocorr : ?h:handle -> ?spec:spec list -> dsmat -> unit
 Parameters: ``RGB``, ``Marker``, ``MarkerSize``, ``LineStyle``, ``LineWidth``.
  *)
 
-val text : ?h:handle -> ?spec:spec list -> float -> float -> ?dx:float -> ?dy:float -> string -> unit
+val text
+  :  ?h:handle
+  -> ?spec:spec list
+  -> float
+  -> float
+  -> ?dx:float
+  -> ?dy:float
+  -> string
+  -> unit
 (** ``text x y s`` draws a text string at ``(x,y)``. ``dx`` and ``dy`` indicate ...
 
 Parameters: ``RGB``.
  *)
 
-val draw_line: ?h:handle -> ?spec:spec list -> float -> float -> float -> float -> unit
+val draw_line : ?h:handle -> ?spec:spec list -> float -> float -> float -> float -> unit
 (** ``draw_line x0 y0 x1 y0`` draws a straight line from ``(x0,y0)`` to ``(x1,y1)``.
 
 Parameters: ``RGB``, ``LineStyle``, ``LineWidth``.
@@ -306,7 +323,6 @@ non-zero elements are plotted as dots, and zeros are ignored.
 Parameters: ``RGB``, ``Marker``, ``MarkerSize``.
  *)
 
-
 (** {6 Plot 3D figures} *)
 
 val plot3d : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
@@ -340,11 +356,15 @@ val heatmap : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 (** ``heatmap x y z`` generates a heatmap defined by ``x``, ``y``, and ``z``.
  *)
 
-
 (** {6 Advanced statistical plot} *)
 
-
-val probplot : ?h:handle -> ?spec:spec list -> ?dist:(float -> float) -> ?noref:bool -> dsmat -> unit
+val probplot
+  :  ?h:handle
+  -> ?spec:spec list
+  -> ?dist:(float -> float)
+  -> ?noref:bool
+  -> dsmat
+  -> unit
 (**
 ``probplot ~dist ~noref x`` creates a probability plot comparing the
 distribution of the data in ``x`` to the given distribution. The ``dist`` is
@@ -381,7 +401,13 @@ on x-axis.
 Parameters: ``RGB``, ``Marker``, ``MarkerSize``.
  *)
 
-val qqplot : ?h:handle -> ?spec:spec list -> ?pd:(float -> float) -> ?x:dsmat -> dsmat -> unit
+val qqplot
+  :  ?h:handle
+  -> ?spec:spec list
+  -> ?pd:(float -> float)
+  -> ?x:dsmat
+  -> dsmat
+  -> unit
 (**
 ``qqplot ~pd ~x y `` displays a quantile-quantile plot of the quantiles of the
 sample data x versus the theoretical quantiles values from ``pd``, which by

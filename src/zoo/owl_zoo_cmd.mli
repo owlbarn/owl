@@ -3,7 +3,6 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 (** {6 Manipulate gists} *)
 
 val remove_gist : string -> unit
@@ -24,7 +23,6 @@ val update_gist : string array -> unit
 val show_info : string -> unit
 (** Show the gist's detail information of given gist id. *)
 
-
 (** {6 Execute gists} *)
 
 val eval : string -> unit
@@ -38,7 +36,6 @@ val run : string array -> string -> unit
 
 val run_gist : string -> string array -> unit
 (** ``run_gist gist-id`` runs a zoo gist with the given ``gist-id`` and parameters. *)
-
 
 (** {6 Helper functions} *)
 

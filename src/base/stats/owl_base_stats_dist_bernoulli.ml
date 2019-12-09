@@ -3,8 +3,6 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 let bernoulli_rvs ~p =
   assert (p >= 0. && p <= 1.);
-  if (Random.float 1.) <= p then 1.
-  else 0.
+  if Random.float 1. <= p then 1. else 0.

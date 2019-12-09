@@ -3,9 +3,7 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 (** Root finding algorithms for nonlinear functions *)
-
 
 (** {6 Type definition} *)
 
@@ -13,13 +11,18 @@ type solver =
   | Bisec
   | FalsePos
   | Ridder
-  | Brent
-(** Type of root functions of univariate functions. *)
-
+  | Brent (** Type of root functions of univariate functions. *)
 
 (** {6 Core functions} *)
 
-val fzero : ?solver:solver -> ?max_iter:int -> ?xtol:float -> (float -> float) -> float -> float -> float
+val fzero
+  :  ?solver:solver
+  -> ?max_iter:int
+  -> ?xtol:float
+  -> (float -> float)
+  -> float
+  -> float
+  -> float
 (**
 ``fzero ~solver f a b`` tries to find the root of univariate function ``f`` in
 the bracket ``[a, b]`` using method ``solver``. This is the hub function of the
@@ -34,7 +37,6 @@ Parameters:
   * ``a``: boundary of bracket.
   * ``b``: boundary of bracket.
  *)
-
 
 (** {6 Root of univariate functions} *)
 
@@ -51,7 +53,13 @@ Parameters:
   * ``b``: boundary of bracket.
  *)
 
-val false_pos : ?max_iter:int -> ?xtol:float -> (float -> float) -> float -> float -> float
+val false_pos
+  :  ?max_iter:int
+  -> ?xtol:float
+  -> (float -> float)
+  -> float
+  -> float
+  -> float
 (**
 ``false_pos f a b`` tries to find the root of univariate function ``f`` in the
 bracket defined by ``[a, b]``.
@@ -92,10 +100,15 @@ Parameters:
 Refer to :cite:`brent2013algorithms`
  *)
 
-
 (** {6 Helper functions} *)
 
-val bracket_expand : ?rate:float -> ?max_iter:int -> (float -> float) -> float -> float -> (float * float) option
+val bracket_expand
+  :  ?rate:float
+  -> ?max_iter:int
+  -> (float -> float)
+  -> float
+  -> float
+  -> (float * float) option
 (**
 ``bracket_expand f a b`` expands the bracket ``[a, b]`` for a given function
 ``f`` until it finds ``f a`` and ``f b`` have different signs.

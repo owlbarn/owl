@@ -3,7 +3,6 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 (** {6 Type definition and constants} *)
 
 type t = Complex.t
@@ -17,7 +16,6 @@ val one : t
 
 val i : t
 (** Constant value i. *)
-
 
 (** {6 Unary functions} *)
 
@@ -159,7 +157,6 @@ val trunc : t -> t
 val fix : t -> t
 (** ``fix x`` *)
 
-
 (** {6 Binary functions} *)
 
 val add : t -> t -> t
@@ -207,7 +204,6 @@ val polar : float -> float -> t
 val rect : float -> float -> t
 (** ``rect r phi`` return a complex number with polar coordinates ``r`` and ``phi``. *)
 
-
 (** {6 Comparison functions} *)
 
 val equal : t -> t -> bool
@@ -227,7 +223,6 @@ val less_equal : t -> t -> bool
 
 val greater_equal : t -> t -> bool
 (** TODO *)
-
 
 (** {6 Helper functions} *)
 

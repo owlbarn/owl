@@ -9,7 +9,6 @@ tests. The module also includes some basic statistical functions such as mean,
 variance, skew, and etc.
 *)
 
-
 (** {6 Randomisation functions} *)
 
 val shuffle : 'a array -> 'a array
@@ -20,7 +19,6 @@ val choose : 'a array -> int -> 'a array
 
 val sample : 'a array -> int -> 'a array
 (** Refer to :doc:`owl_stats`. *)
-
 
 (** {6 Basic statistical functions} *)
 
@@ -108,20 +106,27 @@ val interquartile : float array -> float
 val median : float array -> float
 (** Refer to :doc:`owl_stats`. *)
 
-type histogram = {
-  bins              : float array;
-  counts            : int array;
-  weighted_counts   : float array option;
-  normalised_counts : float array option;
-  density           : float array option
-}
+type histogram =
+  { bins : float array
+  ; counts : int array
+  ; weighted_counts : float array option
+  ; normalised_counts : float array option
+  ; density : float array option
+  }
 (** Refer to :doc:`owl_stats`. *)
 
-val histogram : [ `Bins of float array | `N of int ] -> ?weights:float array ->
-  float array -> histogram
+val histogram
+  :  [ `Bins of float array | `N of int ]
+  -> ?weights:float array
+  -> float array
+  -> histogram
 (** Refer to :doc:`owl_stats`. *)
 
-val histogram_sorted : [ `Bins of float array | `N of int ] -> ?weights:float array -> float array -> histogram
+val histogram_sorted
+  :  [ `Bins of float array | `N of int ]
+  -> ?weights:float array
+  -> float array
+  -> histogram
 (** Refer to :doc:`owl_stats`. *)
 
 val normalise : histogram -> histogram
@@ -130,15 +135,19 @@ val normalise : histogram -> histogram
 val normalise_density : histogram -> histogram
 (** Refer to :doc:`owl_stats`. *)
 
-val pp_hist: Format.formatter -> histogram -> unit [@@ocaml.toplevel_printer]
+val pp_hist : Format.formatter -> histogram -> unit
+  [@@ocaml.toplevel_printer]
 (** Refer to :doc:`owl_stats`. *)
 
 val tukey_fences : ?k:float -> float array -> float * float
 (** Refer to :doc:`owl_stats`. *)
 
-val gaussian_kde : ?bandwidth:[ `Silverman | `Scott ] -> ?n_points:int -> float array -> (float array * float array)
+val gaussian_kde
+  :  ?bandwidth:[ `Silverman | `Scott ]
+  -> ?n_points:int
+  -> float array
+  -> float array * float array
 (** Refer to :doc:`owl_stats`. *)
-
 
 (** {6 Random variables} *)
 
@@ -168,6 +177,5 @@ val gumbel1_rvs : a:float -> b:float -> float
 
 val gumbel2_rvs : a:float -> b:float -> float
 (** Refer to :doc:`owl_stats`. *)
-
 
 (* ends here *)

@@ -5,4 +5,4 @@
 
 let gumbel1_rvs ~a ~b =
   let x = Random.float 1. in
-  ((log b) -. (log (-.(log x)))) /. a
+  (log b -. log (-.log x)) /. a

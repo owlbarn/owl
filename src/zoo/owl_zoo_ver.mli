@@ -3,7 +3,6 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 val exist : string -> string -> bool
 (** ``check_log gid vid`` checks if version `vid` of a gist `gid` exists in the
 zoo repository. *)

@@ -5,7 +5,6 @@
 
 (** Interpolation and Extrapolation *)
 
-
 val polint : float array -> float array -> float -> float * float
 (**
 ``polint xs ys x`` performs polynomial interpolation of the given arrays ``xs``
@@ -22,7 +21,6 @@ Parameters:
 Returns:
   * ``(y, dy)`` wherein ``y`` is the returned value ``y = P(x)``, and ``dy`` is the estimated error.
  *)
-
 
 val ratint : float array -> float array -> float -> float * float
 (**

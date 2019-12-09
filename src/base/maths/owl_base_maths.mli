@@ -5,7 +5,6 @@
 
 (** Maths: fundamental and advanced mathematical functions. *)
 
-
 (** {6 Basic functions} *)
 
 val add : float -> float -> float
@@ -185,7 +184,6 @@ val log1mexp : float -> float
 val log1pexp : float -> float
 (** ``log1pexp(x)`` *)
 
-
 (** {6 Error functions} *)
 
 val erf : float -> float
@@ -196,7 +194,6 @@ val erfc : float -> float
 
 val erfcx : float -> float
 (** ``erfcx(x)`` *)
-
 
 (** {6 Helper functions} *)
 
@@ -233,6 +230,7 @@ val is_simplex : float array -> bool
  *)
 
 val is_int : float -> bool
+
 (* ``is_int x`` checks if ``x`` is an integer, i.e. fractional part is zero. *)
 
 val is_sqr : int -> bool
@@ -256,6 +254,5 @@ val fermat_fact : int -> int * int
 ``fermat_fact x`` performs Fermat factorisation over ``x``, i.e. into two
 roughly equal factors. ``x`` must be an odd number.
  *)
-
 
 (* ends here *)

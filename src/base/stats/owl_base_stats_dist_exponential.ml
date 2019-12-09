@@ -3,10 +3,9 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 let std_exponential_rvs () =
   let u = Random.float 1. in
-  -.(log1p (-.u))
+  -.log1p (-.u)
 
 
 let exponential_rvs ~lambda =

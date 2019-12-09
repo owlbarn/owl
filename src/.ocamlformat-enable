@@ -1,2 +1,7 @@
 base/algodiff/*
+base/linalg/*
+base/maths/*
+base/stats/*
+plplot/*
 top/*
+zoo/*
