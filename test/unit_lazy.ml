@@ -4,13 +4,18 @@ open Owl
 module M = Owl.Lazy.Make (Arr)
 
 let tol = 20.0 *. epsilon_float
+
 let cmp a b = Arr.(l1norm' (a - b)) < tol
 
 (* some test input *)
 let x0 = Arr.zeros [| 3; 4 |]
+
 let x1 = Arr.ones [| 3; 4 |]
+
 let x2 = Arr.sequential ~a:1. [| 3; 4 |]
+
 let x3 = Arr.(uniform [| 3; 4 |] - x1)
+
 let x4 = Arr.(uniform [| 4; 4 |] -$ 1.)
 
 (* a module with functions to test *)
@@ -178,18 +183,31 @@ end
 (* the tests *)
 
 let fun00 () = Alcotest.(check bool) "fun00" true (To_test.fun00 ())
+
 let fun01 () = Alcotest.(check bool) "fun01" true (To_test.fun01 ())
+
 let fun02 () = Alcotest.(check bool) "fun02" true (To_test.fun02 ())
+
 let fun03 () = Alcotest.(check bool) "fun03" true (To_test.fun03 ())
+
 let fun04 () = Alcotest.(check bool) "fun04" true (To_test.fun04 ())
+
 let fun05 () = Alcotest.(check bool) "fun05" true (To_test.fun05 ())
+
 let fun06 () = Alcotest.(check bool) "fun06" true (To_test.fun06 ())
+
 let fun07 () = Alcotest.(check bool) "fun07" true (To_test.fun07 ())
+
 let fun08 () = Alcotest.(check bool) "fun08" true (To_test.fun08 ())
+
 let fun09 () = Alcotest.(check bool) "fun09" true (To_test.fun09 ())
+
 let fun10 () = Alcotest.(check bool) "fun10" true (To_test.fun10 ())
+
 let fun11 () = Alcotest.(check bool) "fun11" true (To_test.fun11 ())
+
 let fun12 () = Alcotest.(check bool) "fun12" true (To_test.fun12 ())
+
 let fun13 () = Alcotest.(check bool) "fun13" true (To_test.fun13 ())
 
 let test_set =

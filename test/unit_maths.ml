@@ -4,24 +4,39 @@ module M = Owl_maths
 
 (* define the test error *)
 let eps = 1e-10
+
 let approx_equal a b = Stdlib.(abs_float (a -. b) < eps)
 
 (* a module with functions to test *)
 module To_test = struct
   let test_j0 () = approx_equal (M.j0 0.5) 0.93846980724081297
+
   let test_j1 () = approx_equal (M.j1 0.5) 0.24226845767487387
+
   let test_jv () = approx_equal (M.jv 0.1 0.3) 0.85180759557596664
+
   let test_y0 () = approx_equal (M.y0 0.5) (-0.44451873350670662)
+
   let test_y1 () = approx_equal (M.y1 0.3) (-2.2931051383885293)
+
   let test_yv () = approx_equal (M.yv 0.3 0.2) (-1.470298525261079)
+
   let test_i0 () = approx_equal (M.i0 0.3) 1.0226268793515974
+
   let test_i0e () = approx_equal (M.i0e 0.3) 0.7575806251825481
+
   let test_i1 () = approx_equal (M.i1 0.3) 0.15169384000359282
+
   let test_i1e () = approx_equal (M.i1e 0.3) 0.11237756063983881
+
   let test_iv () = approx_equal (M.iv 0.3 0.1) 0.45447035229197424
+
   let test_k0 () = approx_equal (M.k0 0.3) 1.3724600605442983
+
   let test_k0e () = approx_equal (M.k0e 0.3) 1.8526273007720155
+
   let test_k1 () = approx_equal (M.k1 0.3) 3.0559920334573252
+
   let test_k1e () = approx_equal (M.k1e 0.3) 4.12515776224447
 
   let test_airy () =
@@ -41,24 +56,43 @@ module To_test = struct
 
 
   let test_ellipk () = approx_equal (M.ellipk 0.3) 1.713889448178791
+
   let test_ellipkm1 () = approx_equal (M.ellipkm1 0.3) 2.0753631352924691
+
   let test_ellipkinc () = approx_equal (M.ellipkinc 0.2 0.3) 0.20039894647982787
+
   let test_ellipe () = approx_equal (M.ellipe 0.3) 1.4453630644126654
+
   let test_ellipeinc () = approx_equal (M.ellipeinc 0.2 0.3) 0.19960247841509551
+
   let test_gamma () = approx_equal (M.gamma 0.7) 1.2980553326475581
+
   let test_rgamma () = approx_equal (M.rgamma 0.7) 0.7703831838665659
+
   let test_loggamma () = approx_equal (M.loggamma 0.7) 0.26086724653166637
+
   let test_gammainc () = approx_equal (M.gammainc 0.2 0.7) 0.91521960195630503
+
   let test_gammaincinv () = approx_equal (M.gammaincinv 0.2 0.7) 0.12103758588873516
+
   let test_gammaincc () = approx_equal (M.gammaincc 0.2 0.7) 0.084780398043694499
+
   let test_gammainccinv () = approx_equal (M.gammainccinv 0.2 0.7) 0.0015877907243441165
+
   let test_psi () = approx_equal (M.psi 0.7) (-1.2200235536979349)
+
   let test_beta () = approx_equal (M.beta 0.2 0.7) 5.5764636958498768
+
   let test_betainc () = approx_equal (M.betainc 0.1 0.2 0.7) 0.71632698299586095
+
   let test_bdtr () = approx_equal (M.bdtr 5 25 0.2) 0.6166894117793692
+
   let test_bdtrc () = approx_equal (M.bdtrc 5 25 0.2) 0.3833105882206313
+
   let test_bdtri () = approx_equal (M.bdtri 5 25 0.2) 0.29781277333188838
+
   let test_btdtr () = approx_equal (M.btdtr 5. 25. 0.2) 0.71605354811801325
+
   let test_btdtri () = approx_equal (M.btdtri 5. 25. 0.2) 0.10833617793798132
 
   let test_fact () =
@@ -133,22 +167,39 @@ end
 (* the tests *)
 
 let test_j0 () = Alcotest.(check bool) "test j0" true (To_test.test_j0 ())
+
 let test_j1 () = Alcotest.(check bool) "test j1" true (To_test.test_j1 ())
+
 let test_jv () = Alcotest.(check bool) "test jv" true (To_test.test_jv ())
+
 let test_y0 () = Alcotest.(check bool) "test y0" true (To_test.test_y0 ())
+
 let test_y1 () = Alcotest.(check bool) "test y1" true (To_test.test_y1 ())
+
 let test_yv () = Alcotest.(check bool) "test yv" true (To_test.test_yv ())
+
 let test_i0 () = Alcotest.(check bool) "test i0" true (To_test.test_i0 ())
+
 let test_i0e () = Alcotest.(check bool) "test i0e" true (To_test.test_i0e ())
+
 let test_i1 () = Alcotest.(check bool) "test i1" true (To_test.test_i1 ())
+
 let test_i1e () = Alcotest.(check bool) "test i1e" true (To_test.test_i1e ())
+
 let test_iv () = Alcotest.(check bool) "test iv" true (To_test.test_iv ())
+
 let test_k0 () = Alcotest.(check bool) "test k0" true (To_test.test_k0 ())
+
 let test_k0e () = Alcotest.(check bool) "test k0e" true (To_test.test_k0e ())
+
 let test_k1 () = Alcotest.(check bool) "test k1" true (To_test.test_k1 ())
+
 let test_k1e () = Alcotest.(check bool) "test k1e" true (To_test.test_k1e ())
+
 let test_airy () = Alcotest.(check bool) "test airy" true (To_test.test_airy ())
+
 let test_ellipj () = Alcotest.(check bool) "test ellipj" true (To_test.test_ellipj ())
+
 let test_ellipk () = Alcotest.(check bool) "test ellipk" true (To_test.test_ellipk ())
 
 let test_ellipkm1 () =
@@ -166,6 +217,7 @@ let test_ellipeinc () =
 
 
 let test_gamma () = Alcotest.(check bool) "test gamma" true (To_test.test_gamma ())
+
 let test_rgamma () = Alcotest.(check bool) "test rgamma" true (To_test.test_rgamma ())
 
 let test_loggamma () =
@@ -189,13 +241,21 @@ let test_gammainccinv () =
 
 
 let test_psi () = Alcotest.(check bool) "test psi" true (To_test.test_psi ())
+
 let test_beta () = Alcotest.(check bool) "test beta" true (To_test.test_beta ())
+
 let test_betainc () = Alcotest.(check bool) "test betainc" true (To_test.test_betainc ())
+
 let test_bdtr () = Alcotest.(check bool) "test bdtr" true (To_test.test_bdtr ())
+
 let test_bdtrc () = Alcotest.(check bool) "test bdtrc" true (To_test.test_bdtrc ())
+
 let test_bdtri () = Alcotest.(check bool) "test bdtri" true (To_test.test_bdtri ())
+
 let test_btdtr () = Alcotest.(check bool) "test btdtr" true (To_test.test_btdtr ())
+
 let test_btdtri () = Alcotest.(check bool) "test btdtri" true (To_test.test_btdtri ())
+
 let test_fact () = Alcotest.(check bool) "test fact" true (To_test.test_fact ())
 
 let test_log_fact () =
@@ -207,6 +267,7 @@ let test_combination () =
 
 
 let test_mulmod () = Alcotest.(check bool) "test mulmod" true (To_test.test_mulmod ())
+
 let test_powmod () = Alcotest.(check bool) "test powmod" true (To_test.test_powmod ())
 
 let test_is_prime () =

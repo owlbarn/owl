@@ -5,6 +5,7 @@ module M = Owl_dense_ndarray_generic
 
 (* define the test error *)
 let eps = 5e-10
+
 let approx_equal a b = Stdlib.(abs_float (a -. b) < eps)
 
 (* make testable *)
@@ -46,17 +47,25 @@ let _ =
 
 
 let x3 = M.sequential Float64 ~a:1. [| 6 |]
+
 let x4 = M.ones Float64 [| 2; 3; 4 |]
+
 let x5 = M.of_arrays Float64 [| [| 2.; -1.; 3.5 |]; [| 0.4; 0.6; 0.2 |] |]
 
 (* a module with functions to test *)
 module To_test = struct
   let shape () = M.shape x0 = [| 2; 2; 3 |]
+
   let num_dims () = M.num_dims x0 = 3
+
   let nth_dim () = M.nth_dim x0 2 = 3
+
   let numel () = M.numel x0 = 12
+
   let nnz () = M.nnz x0 = 3
+
   let density () = M.density x0 = 3. /. 12.
+
   let get () = M.get x0 [| 0; 1; 0 |] = 2.
 
   let set () =
@@ -88,12 +97,19 @@ module To_test = struct
 
 
   let add () = M.equal (M.add x0 x1) x2
+
   let mul () = M.mul x0 x1 |> M.sum' = 13.
+
   let add_scalar () = M.add_scalar x0 2. |> M.sum' = 30.
+
   let mul_scalar () = M.mul_scalar x0 2. |> M.sum' = 12.
+
   let abs () = M.equal (M.abs x0) x0
+
   let neg () = M.equal (M.map (fun a -> -1. *. a) x0) (M.neg x0)
+
   let sum' () = M.sum' x0 = 6.
+
   let median' () = M.median' x5 = 0.5
 
   (* [|[|2.;-1.;3.5|];[|0.4;0.6;0.2|]|] *)
@@ -118,6 +134,7 @@ module To_test = struct
 
 
   let min' () = M.min' x0 = 0.
+
   let max' () = M.max' x0 = 3.
 
   let minmax_i () =
@@ -137,14 +154,23 @@ module To_test = struct
 
 
   let is_zero () = M.is_zero x0
+
   let is_positive () = M.is_positive x0
+
   let is_negative () = M.is_negative x0
+
   let is_nonnegative () = M.is_nonnegative x0
+
   let equal () = M.equal x0 x1
+
   let greater () = M.greater x2 x0
+
   let greater_equal () = M.greater_equal x2 x0
+
   let exists () = M.exists (( < ) 0.) x0
+
   let not_exists () = M.not_exists (( > ) 0.) x0
+
   let for_all () = M.for_all (( <= ) 0.) x0
 
   let transpose () =
@@ -154,7 +180,9 @@ module To_test = struct
 
 
   let flatten () = M.get (M.flatten x0) [| 3 |] = 2.
+
   let reshape () = M.get (M.reshape x0 [| 2; 3; 2 |]) [| 0; 1; 1 |] = 2.
+
   let l2norm' () = M.l2norm' vec = { Complex.re = 5.0; im = 0. }
 
   let save_load () =
@@ -428,35 +456,65 @@ end
 (* the tests *)
 
 let shape () = Alcotest.(check bool) "shape" true (To_test.shape ())
+
 let num_dims () = Alcotest.(check bool) "num_dims" true (To_test.num_dims ())
+
 let nth_dim () = Alcotest.(check bool) "nth_dim" true (To_test.nth_dim ())
+
 let numel () = Alcotest.(check bool) "numel" true (To_test.numel ())
+
 let nnz () = Alcotest.(check bool) "nnz" true (To_test.nnz ())
+
 let density () = Alcotest.(check bool) "density" true (To_test.density ())
+
 let get () = Alcotest.(check bool) "get" true (To_test.get ())
+
 let set () = Alcotest.(check bool) "set" true (To_test.set ())
+
 let get_slice () = Alcotest.(check bool) "get_slice" true (To_test.get_slice ())
+
 let copy () = Alcotest.(check bool) "copy" true (To_test.copy ())
+
 let fill () = Alcotest.(check bool) "fill" true (To_test.fill ())
+
 let map () = Alcotest.(check bool) "map" true (To_test.map ())
+
 let fold () = Alcotest.(check bool) "fold" true (To_test.fold ())
+
 let add () = Alcotest.(check bool) "add" true (To_test.add ())
+
 let mul () = Alcotest.(check bool) "mul" true (To_test.mul ())
+
 let add_scalar () = Alcotest.(check bool) "add_scalar" true (To_test.add_scalar ())
+
 let mul_scalar () = Alcotest.(check bool) "mul_scalar" true (To_test.mul_scalar ())
+
 let abs () = Alcotest.(check bool) "abs" true (To_test.abs ())
+
 let neg () = Alcotest.(check bool) "neg" true (To_test.neg ())
+
 let sum' () = Alcotest.(check bool) "sum'" true (To_test.sum' ())
+
 let median' () = Alcotest.(check bool) "median'" true (To_test.median' ())
+
 let median () = Alcotest.(check bool) "median" true (To_test.median ())
+
 let sort1 () = Alcotest.(check bool) "sort1" true (To_test.sort1 ())
+
 let sum_reduce () = Alcotest.(check bool) "sum_reduce" true (To_test.sum_reduce ())
+
 let min' () = Alcotest.(check bool) "min'" true (To_test.min' ())
+
 let max' () = Alcotest.(check bool) "max'" true (To_test.max' ())
+
 let minmax_i () = Alcotest.(check bool) "minmax_i" true (To_test.minmax_i ())
+
 let init_nd () = Alcotest.(check bool) "init_nd" true (To_test.init_nd ())
+
 let is_zero () = Alcotest.(check bool) "is_zero" false (To_test.is_zero ())
+
 let is_positive () = Alcotest.(check bool) "is_positive" false (To_test.is_positive ())
+
 let is_negative () = Alcotest.(check bool) "is_negative" false (To_test.is_negative ())
 
 let is_nonnegative () =
@@ -464,6 +522,7 @@ let is_nonnegative () =
 
 
 let equal () = Alcotest.(check bool) "equal" false (To_test.equal ())
+
 let greater () = Alcotest.(check bool) "greater" false (To_test.greater ())
 
 let greater_equal () =
@@ -471,12 +530,19 @@ let greater_equal () =
 
 
 let exists () = Alcotest.(check bool) "exists" true (To_test.exists ())
+
 let not_exists () = Alcotest.(check bool) "not_exists" true (To_test.not_exists ())
+
 let for_all () = Alcotest.(check bool) "for_all" true (To_test.for_all ())
+
 let transpose () = Alcotest.(check bool) "transpose" true (To_test.transpose ())
+
 let flatten () = Alcotest.(check bool) "flatten" true (To_test.flatten ())
+
 let reshape () = Alcotest.(check bool) "reshape" true (To_test.reshape ())
+
 let l2norm' () = Alcotest.(check bool) "l2norm'" true (To_test.l2norm' ())
+
 let save_load () = Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
 let broadcast_add () =
@@ -484,27 +550,49 @@ let broadcast_add () =
 
 
 let reverse () = Alcotest.(check bool) "reverse" true (To_test.reverse ())
+
 let rotate () = Alcotest.(check bool) "rotate" true (To_test.rotate ())
+
 let same_shape_1 () = Alcotest.(check bool) "same_shape_1" true (To_test.same_shape_1 ())
+
 let same_shape_2 () = Alcotest.(check bool) "same_shape_2" true (To_test.same_shape_2 ())
+
 let same_shape_3 () = Alcotest.(check bool) "same_shape_3" true (To_test.same_shape_3 ())
+
 let same_shape_4 () = Alcotest.(check bool) "same_shape_4" true (To_test.same_shape_4 ())
+
 let same_shape_5 () = Alcotest.(check bool) "same_shape_5" true (To_test.same_shape_5 ())
+
 let linspace () = Alcotest.(check bool) "linspace" true (To_test.linspace ())
+
 let logspace_2 () = Alcotest.(check bool) "logspace_2" true (To_test.logspace_2 ())
+
 let logspace_10 () = Alcotest.(check bool) "logspace_10" true (To_test.logspace_10 ())
+
 let logspace_e () = Alcotest.(check bool) "logspace_e" true (To_test.logspace_e ())
+
 let vecnorm_01 () = Alcotest.(check bool) "vecnorm_01" true (To_test.vecnorm_01 ())
+
 let vecnorm_02 () = Alcotest.(check bool) "vecnorm_02" true (To_test.vecnorm_02 ())
+
 let vecnorm_03 () = Alcotest.(check bool) "vecnorm_03" true (To_test.vecnorm_03 ())
+
 let vecnorm_04 () = Alcotest.(check bool) "vecnorm_04" true (To_test.vecnorm_04 ())
+
 let vecnorm_05 () = Alcotest.(check bool) "vecnorm_05" true (To_test.vecnorm_05 ())
+
 let vecnorm_06 () = Alcotest.(check bool) "vecnorm_06" true (To_test.vecnorm_06 ())
+
 let vecnorm_07 () = Alcotest.(check bool) "vecnorm_07" true (To_test.vecnorm_07 ())
+
 let vecnorm_08 () = Alcotest.(check bool) "vecnorm_08" true (To_test.vecnorm_08 ())
+
 let vecnorm_09 () = Alcotest.(check bool) "vecnorm_09" true (To_test.vecnorm_09 ())
+
 let vecnorm_10 () = Alcotest.(check bool) "vecnorm_10" true (To_test.vecnorm_10 ())
+
 let expand_01 () = Alcotest.(check bool) "expand_01" true (To_test.expand_01 ())
+
 let expand_02 () = Alcotest.(check bool) "expand_02" true (To_test.expand_02 ())
 
 let concatenate_01 () =
@@ -516,17 +604,29 @@ let concatenate_02 () =
 
 
 let diff_1 () = Alcotest.(check bool) "diff_1" true (To_test.diff_1 ())
+
 let diff_2 () = Alcotest.(check bool) "diff_2" true (To_test.diff_2 ())
+
 let one_hot_1 () = Alcotest.(check bool) "one_hot_1" true (To_test.one_hot_1 ())
+
 let one_hot_2 () = Alcotest.(check bool) "one_hot_2" true (To_test.one_hot_2 ())
+
 let sort () = Alcotest.(check bool) "sort" true (To_test.sort ())
+
 let argsort_1 () = Alcotest.(check bool) "argsort_1" true (To_test.argsort_1 ())
+
 let argsort_2 () = Alcotest.(check bool) "argsort_2" true (To_test.argsort_2 ())
+
 let top_1 () = Alcotest.(check bool) "top_1" true (To_test.top_1 ())
+
 let top_2 () = Alcotest.(check bool) "top_2" true (To_test.top_2 ())
+
 let top_3 () = Alcotest.(check bool) "top_3" true (To_test.top_3 ())
+
 let bottom_1 () = Alcotest.(check bool) "bottom_1" true (To_test.bottom_1 ())
+
 let bottom_2 () = Alcotest.(check bool) "bottom_2" true (To_test.bottom_2 ())
+
 let pad () = Alcotest.(check bool) "pad" true (To_test.pad ())
 
 let test_set =

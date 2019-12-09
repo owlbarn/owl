@@ -10,30 +10,45 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   open AlgoM
 
   let n = 3
+
   let n_samples = 20
+
   let threshold = 1E-6
+
   let eps = 1E-5
 
   module FD = Owl_algodiff_check.Make (AlgoM)
 
   module Make_tests (P : sig
     val label : string
+
     val test_func : (t -> t) -> bool * int
   end) =
   struct
     open P
 
     let neg () = test_func Maths.neg
+
     let abs () = test_func Maths.abs
+
     let signum () = test_func Maths.signum
+
     let floor () = test_func Maths.floor
+
     let ceil () = test_func Maths.ceil
+
     let round () = test_func Maths.round
+
     let sqr () = test_func Maths.sqr
+
     let sqrt () = test_func (fun x -> Maths.(sqrt (x * x)))
+
     let log () = test_func (fun x -> Maths.(log (F 1. + (x * x))))
+
     let pow () = test_func (fun x -> Maths.(log (F 1. + pow (sqr x) (F 2.9 + x))))
+
     let sin () = test_func Maths.sin
+
     let cos () = test_func Maths.cos
 
     let tan () =
@@ -42,12 +57,19 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
 
     let sinh () = test_func Maths.sinh
+
     let cosh () = test_func Maths.cosh
+
     let exp () = test_func Maths.exp
+
     let tanh () = test_func Maths.tanh
+
     let sigmoid () = test_func Maths.sigmoid
+
     let relu () = test_func Maths.relu
+
     let transpose () = test_func Maths.transpose
+
     let diag () = test_func Maths.diag
 
     let diagm () =
@@ -56,10 +78,15 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
 
     let trace () = test_func Maths.trace
+
     let l1norm' () = test_func Maths.l1norm'
+
     let l2norm' () = test_func Maths.l2norm'
+
     let l2norm_sqr' () = test_func Maths.l2norm_sqr'
+
     let tril () = test_func Maths.tril
+
     let triu () = test_func Maths.triu
 
     let inv () =
@@ -319,6 +346,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
   module Forward = Make_tests (struct
     let label = "forward mode"
+
     let test_func f = FD.Forward.check ~threshold ~directions ~f samples
   end)
 end

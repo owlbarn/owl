@@ -8,7 +8,9 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
   (* Functions used in tests *)
 
   let tolerance_f64 = 1e-8
+
   let tolerance_f32 = 5e-4
+
   let close a b = N.(sub a b |> abs |> sum') < tolerance_f32
 
   let test_sum_reduce ?(seq = false) ?(a = true) expected shape axis =
@@ -135,7 +137,9 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
 
   module To_test_repeat = struct
     let fun00 () = test_repeat [| 1.; 2. |] [| 1.; 2. |] [| 2 |] [| 1 |] [| 1 |]
+
     let fun01 () = test_repeat [| 1.; 1.; 2.; 2. |] [| 1.; 2. |] [| 2 |] [| 2 |] [| 1 |]
+
     let fun02 () = test_repeat [| 1.; 2.; 1.; 2. |] [| 1.; 2. |] [| 2 |] [| 1 |] [| 2 |]
 
     let fun03 () =
@@ -581,9 +585,13 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
 
 
     let fun46 () = test_repeat_along_axis [| 10; 10; 10; 10 |] [| 1; 4; 3; 1 |]
+
     let fun47 () = test_repeat_along_axis [| 4; 4; 4; 4; 4 |] [| 3; 3; 3; 3; 3 |]
+
     let fun48 () = test_repeat_along_axis [| 4; 3; 2; 3; 4 |] [| 3; 3; 3; 1; 1 |]
+
     let fun49 () = test_repeat_along_axis [| 4; 3; 4; 4; 3; 4 |] [| 1; 1; 6; 5; 1; 1 |]
+
     let fun50 () = test_repeat_along_axis [| 3; 4; 5; 3; 4; 5 |] [| 3; 3; 1; 1; 4; 2 |]
 
     let fun51 () =
@@ -672,9 +680,13 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
 
 
     let fun55 () = test_tile_along_axis [| 10; 10; 10; 10 |] [| 1; 4; 3; 1 |]
+
     let fun56 () = test_tile_along_axis [| 4; 4; 4; 4; 4 |] [| 3; 3; 3; 3; 3 |]
+
     let fun57 () = test_tile_along_axis [| 4; 3; 2; 3; 4 |] [| 3; 3; 3; 1; 1 |]
+
     let fun58 () = test_tile_along_axis [| 4; 3; 4; 4; 3; 4 |] [| 1; 1; 6; 5; 1; 1 |]
+
     let fun59 () = test_tile_along_axis [| 3; 4; 5; 3; 4; 5 |] [| 3; 3; 1; 1; 4; 2 |]
   end
 
@@ -733,64 +745,123 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
 
 
   let fun_rt00 () = Alcotest.(check bool) "repeat_tile 00" true (To_test_repeat.fun00 ())
+
   let fun_rt01 () = Alcotest.(check bool) "repeat_tile 01" true (To_test_repeat.fun01 ())
+
   let fun_rt02 () = Alcotest.(check bool) "repeat_tile 02" true (To_test_repeat.fun02 ())
+
   let fun_rt03 () = Alcotest.(check bool) "repeat_tile 03" true (To_test_repeat.fun03 ())
+
   let fun_rt04 () = Alcotest.(check bool) "repeat_tile 04" true (To_test_repeat.fun04 ())
+
   let fun_rt05 () = Alcotest.(check bool) "repeat_tile 05" true (To_test_repeat.fun05 ())
+
   let fun_rt06 () = Alcotest.(check bool) "repeat_tile 06" true (To_test_repeat.fun06 ())
+
   let fun_rt07 () = Alcotest.(check bool) "repeat_tile 07" true (To_test_repeat.fun07 ())
+
   let fun_rt08 () = Alcotest.(check bool) "repeat_tile 08" true (To_test_repeat.fun08 ())
+
   let fun_rt09 () = Alcotest.(check bool) "repeat_tile 09" true (To_test_repeat.fun09 ())
+
   let fun_rt10 () = Alcotest.(check bool) "repeat_tile 10" true (To_test_repeat.fun10 ())
+
   let fun_rt11 () = Alcotest.(check bool) "repeat_tile 11" true (To_test_repeat.fun11 ())
+
   let fun_rt12 () = Alcotest.(check bool) "repeat_tile 12" true (To_test_repeat.fun12 ())
+
   let fun_rt13 () = Alcotest.(check bool) "repeat_tile 13" true (To_test_repeat.fun13 ())
+
   let fun_rt14 () = Alcotest.(check bool) "repeat_tile 14" true (To_test_repeat.fun14 ())
+
   let fun_rt15 () = Alcotest.(check bool) "repeat_tile 15" true (To_test_repeat.fun15 ())
+
   let fun_rt16 () = Alcotest.(check bool) "repeat_tile 16" true (To_test_repeat.fun16 ())
+
   let fun_rt17 () = Alcotest.(check bool) "repeat_tile 17" true (To_test_repeat.fun17 ())
+
   let fun_rt18 () = Alcotest.(check bool) "repeat_tile 18" true (To_test_repeat.fun18 ())
+
   let fun_rt19 () = Alcotest.(check bool) "repeat_tile 19" true (To_test_repeat.fun19 ())
+
   let fun_rt20 () = Alcotest.(check bool) "repeat_tile 20" true (To_test_repeat.fun20 ())
+
   let fun_rt21 () = Alcotest.(check bool) "repeat_tile 21" true (To_test_repeat.fun21 ())
+
   let fun_rt22 () = Alcotest.(check bool) "repeat_tile 22" true (To_test_repeat.fun22 ())
+
   let fun_rt23 () = Alcotest.(check bool) "repeat_tile 23" true (To_test_repeat.fun23 ())
+
   let fun_rt24 () = Alcotest.(check bool) "repeat_tile 24" true (To_test_repeat.fun24 ())
+
   let fun_rt25 () = Alcotest.(check bool) "repeat_tile 25" true (To_test_repeat.fun25 ())
+
   let fun_rt26 () = Alcotest.(check bool) "repeat_tile 26" true (To_test_repeat.fun26 ())
+
   let fun_rt27 () = Alcotest.(check bool) "repeat_tile 27" true (To_test_repeat.fun27 ())
+
   let fun_rt28 () = Alcotest.(check bool) "repeat_tile 28" true (To_test_repeat.fun28 ())
+
   let fun_rt29 () = Alcotest.(check bool) "repeat_tile 29" true (To_test_repeat.fun29 ())
+
   let fun_rt30 () = Alcotest.(check bool) "repeat_tile 30" true (To_test_repeat.fun30 ())
+
   let fun_rt31 () = Alcotest.(check bool) "repeat_tile 31" true (To_test_repeat.fun31 ())
+
   let fun_rt32 () = Alcotest.(check bool) "repeat_tile 32" true (To_test_repeat.fun32 ())
+
   let fun_rt33 () = Alcotest.(check bool) "repeat_tile 33" true (To_test_repeat.fun33 ())
+
   let fun_rt34 () = Alcotest.(check bool) "repeat_tile 34" true (To_test_repeat.fun34 ())
+
   let fun_rt35 () = Alcotest.(check bool) "repeat_tile 35" true (To_test_repeat.fun35 ())
+
   let fun_rt36 () = Alcotest.(check bool) "repeat_tile 36" true (To_test_repeat.fun36 ())
+
   let fun_rt37 () = Alcotest.(check bool) "repeat_tile 37" true (To_test_repeat.fun37 ())
+
   let fun_rt38 () = Alcotest.(check bool) "repeat_tile 38" true (To_test_repeat.fun38 ())
+
   let fun_rt39 () = Alcotest.(check bool) "repeat_tile 39" true (To_test_repeat.fun39 ())
+
   let fun_rt40 () = Alcotest.(check bool) "repeat_tile 40" true (To_test_repeat.fun40 ())
+
   let fun_rt41 () = Alcotest.(check bool) "repeat_tile 41" true (To_test_repeat.fun41 ())
+
   let fun_rt42 () = Alcotest.(check bool) "repeat_tile 42" true (To_test_repeat.fun42 ())
+
   let fun_rt43 () = Alcotest.(check bool) "repeat_tile 43" true (To_test_repeat.fun43 ())
+
   let fun_rt44 () = Alcotest.(check bool) "repeat_tile 44" true (To_test_repeat.fun44 ())
+
   let fun_rt45 () = Alcotest.(check bool) "repeat_tile 45" true (To_test_repeat.fun45 ())
+
   let fun_rt46 () = Alcotest.(check bool) "repeat_tile 46" true (To_test_repeat.fun46 ())
+
   let fun_rt47 () = Alcotest.(check bool) "repeat_tile 47" true (To_test_repeat.fun47 ())
+
   let fun_rt48 () = Alcotest.(check bool) "repeat_tile 48" true (To_test_repeat.fun48 ())
+
   let fun_rt49 () = Alcotest.(check bool) "repeat_tile 49" true (To_test_repeat.fun49 ())
+
   let fun_rt50 () = Alcotest.(check bool) "repeat_tile 50" true (To_test_repeat.fun50 ())
+
   let fun_rt51 () = Alcotest.(check bool) "repeat_tile 51" true (To_test_repeat.fun51 ())
+
   let fun_rt52 () = Alcotest.(check bool) "repeat_tile 52" true (To_test_repeat.fun52 ())
+
   let fun_rt53 () = Alcotest.(check bool) "repeat_tile 53" true (To_test_repeat.fun53 ())
+
   let fun_rt54 () = Alcotest.(check bool) "repeat_tile 54" true (To_test_repeat.fun54 ())
+
   let fun_rt55 () = Alcotest.(check bool) "repeat_tile 55" true (To_test_repeat.fun55 ())
+
   let fun_rt56 () = Alcotest.(check bool) "repeat_tile 56" true (To_test_repeat.fun56 ())
+
   let fun_rt57 () = Alcotest.(check bool) "repeat_tile 57" true (To_test_repeat.fun57 ())
+
   let fun_rt58 () = Alcotest.(check bool) "repeat_tile 58" true (To_test_repeat.fun58 ())
+
   let fun_rt59 () = Alcotest.(check bool) "repeat_tile 59" true (To_test_repeat.fun59 ())
 
   let test_set =

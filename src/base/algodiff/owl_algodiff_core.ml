@@ -64,6 +64,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
 
 
   let row_num x = (shape x).(0)
+
   let col_num x = (shape x).(1)
 
   let numel x =
@@ -113,6 +114,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
 
 
   let pack_flt x = F A.(float_to_elt x)
+
   let _f x = F A.(float_to_elt x)
 
   (* shorcut for type conversion *)

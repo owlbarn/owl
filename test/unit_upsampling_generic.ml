@@ -8,7 +8,9 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
   (* Functions used in tests *)
 
   let tolerance_f64 = 1e-8
+
   let tolerance_f32 = 5e-4
+
   let close a b = N.(sub a b |> abs |> sum') < tolerance_f32
 
   let test_upsampling2d_forward input_shape size =
@@ -38,8 +40,11 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
 
   module To_test_upsampling2d = struct
     let fun00 () = test_upsampling2d_forward [| 1; 8; 7; 1 |] [| 2; 2 |]
+
     let fun01 () = test_upsampling2d_forward [| 1; 8; 7; 1 |] [| 2; 3 |]
+
     let fun02 () = test_upsampling2d_forward [| 4; 8; 7; 3 |] [| 3; 2 |]
+
     let fun03 () = test_upsampling2d_forward [| 4; 8; 7; 3 |] [| 1; 1 |]
 
     let fun04 () =

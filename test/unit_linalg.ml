@@ -13,6 +13,7 @@ let approx_equal a b =
 (* some test input *)
 
 let x0 = Mat.sequential ~a:1. 1 6
+
 let x1 = Mat.sequential ~a:1. 3 3
 
 (* a module with functions to test *)
@@ -273,27 +274,49 @@ end
 (* the tests *)
 
 let rank () = Alcotest.(check bool) "rank" true (To_test.rank ())
+
 let det () = Alcotest.(check bool) "det" true (To_test.det ())
+
 let inv () = Alcotest.(check bool) "inv" true (To_test.inv ())
+
 let vecnorm_01 () = Alcotest.(check bool) "vecnorm_01" true (To_test.vecnorm_01 ())
+
 let vecnorm_02 () = Alcotest.(check bool) "vecnorm_02" true (To_test.vecnorm_02 ())
+
 let vecnorm_03 () = Alcotest.(check bool) "vecnorm_03" true (To_test.vecnorm_03 ())
+
 let vecnorm_04 () = Alcotest.(check bool) "vecnorm_04" true (To_test.vecnorm_04 ())
+
 let vecnorm_05 () = Alcotest.(check bool) "vecnorm_05" true (To_test.vecnorm_05 ())
+
 let vecnorm_06 () = Alcotest.(check bool) "vecnorm_06" true (To_test.vecnorm_06 ())
+
 let vecnorm_07 () = Alcotest.(check bool) "vecnorm_07" true (To_test.vecnorm_07 ())
+
 let vecnorm_08 () = Alcotest.(check bool) "vecnorm_08" true (To_test.vecnorm_08 ())
+
 let vecnorm_09 () = Alcotest.(check bool) "vecnorm_09" true (To_test.vecnorm_09 ())
+
 let vecnorm_10 () = Alcotest.(check bool) "vecnorm_10" true (To_test.vecnorm_10 ())
+
 let norm_01 () = Alcotest.(check bool) "norm_01" true (To_test.norm_01 ())
+
 let norm_02 () = Alcotest.(check bool) "norm_02" true (To_test.norm_02 ())
+
 let norm_03 () = Alcotest.(check bool) "norm_03" true (To_test.norm_03 ())
+
 let norm_04 () = Alcotest.(check bool) "norm_04" true (To_test.norm_04 ())
+
 let norm_05 () = Alcotest.(check bool) "norm_05" true (To_test.norm_05 ())
+
 let norm_06 () = Alcotest.(check bool) "norm_06" true (To_test.norm_06 ())
+
 let is_triu_1 () = Alcotest.(check bool) "is_triu_1" true (To_test.is_triu_1 ())
+
 let is_triu_2 () = Alcotest.(check bool) "is_triu_2" true (To_test.is_triu_2 ())
+
 let is_tril_1 () = Alcotest.(check bool) "is_tril_1" true (To_test.is_tril_1 ())
+
 let is_tril_2 () = Alcotest.(check bool) "is_tril_2" true (To_test.is_tril_2 ())
 
 let is_symmetric_1 () =
@@ -305,19 +328,33 @@ let is_symmetric_2 () =
 
 
 let is_diag_1 () = Alcotest.(check bool) "is_diag_1" true (To_test.is_diag_1 ())
+
 let is_diag_2 () = Alcotest.(check bool) "is_diag_2" true (To_test.is_diag_2 ())
+
 let mpow () = Alcotest.(check bool) "mpow" true (To_test.mpow ())
+
 let expm_1 () = Alcotest.(check bool) "expm_1" true (To_test.expm_1 ())
+
 let expm_2 () = Alcotest.(check bool) "expm_2" true (To_test.expm_2 ())
+
 let expm_3 () = Alcotest.(check bool) "expm_3" true (To_test.expm_3 ())
+
 let expm_4 () = Alcotest.(check bool) "expm_4" true (To_test.expm_4 ())
+
 let sinm () = Alcotest.(check bool) "sinm" true (To_test.sinm ())
+
 let cosm () = Alcotest.(check bool) "cosm" true (To_test.cosm ())
+
 let tanm () = Alcotest.(check bool) "tanm" true (To_test.tanm ())
+
 let sincosm () = Alcotest.(check bool) "sincosm" true (To_test.sincosm ())
+
 let sinhm () = Alcotest.(check bool) "sinhm" true (To_test.sinhm ())
+
 let coshm () = Alcotest.(check bool) "coshm" true (To_test.coshm ())
+
 let tanhm () = Alcotest.(check bool) "tanhm" true (To_test.tanhm ())
+
 let sinhcoshm () = Alcotest.(check bool) "sinhcoshm" true (To_test.sinhcoshm ())
 
 let test_set =

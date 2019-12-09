@@ -22,7 +22,9 @@ end
 (* the tests *)
 
 let test_fun00 () = Alcotest.(check bool) "basic operation 00" true (To_test.fun00 ())
+
 let test_fun01 () = Alcotest.(check bool) "basic operation 01" true (To_test.fun01 ())
+
 let test_fun02 () = Alcotest.(check bool) "basic operation 02" true (To_test.fun02 ())
 
 let test_set =

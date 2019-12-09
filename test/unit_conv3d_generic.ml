@@ -8,7 +8,9 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
   (* Functions used in tests *)
 
   let tolerance_f64 = 1e-8
+
   let tolerance_f32 = 5e-4
+
   let close a b = N.(sub a b |> abs |> sum') < tolerance_f32
 
   let test_conv3d input_shape kernel_shape stride pad =
@@ -532,17 +534,29 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
   (* tests for conv3d forward operation *)
 
   let fun_conv00 () = Alcotest.(check bool) "fun_conv00" true (To_test_conv3d.fun00 ())
+
   let fun_conv01 () = Alcotest.(check bool) "fun_conv01" true (To_test_conv3d.fun01 ())
+
   let fun_conv02 () = Alcotest.(check bool) "fun_conv02" true (To_test_conv3d.fun02 ())
+
   let fun_conv03 () = Alcotest.(check bool) "fun_conv03" true (To_test_conv3d.fun03 ())
+
   let fun_conv04 () = Alcotest.(check bool) "fun_conv04" true (To_test_conv3d.fun04 ())
+
   let fun_conv05 () = Alcotest.(check bool) "fun_conv05" true (To_test_conv3d.fun05 ())
+
   let fun_conv06 () = Alcotest.(check bool) "fun_conv06" true (To_test_conv3d.fun06 ())
+
   let fun_conv07 () = Alcotest.(check bool) "fun_conv07" true (To_test_conv3d.fun07 ())
+
   let fun_conv08 () = Alcotest.(check bool) "fun_conv08" true (To_test_conv3d.fun08 ())
+
   let fun_conv09 () = Alcotest.(check bool) "fun_conv09" true (To_test_conv3d.fun09 ())
+
   let fun_conv10 () = Alcotest.(check bool) "fun_conv10" true (To_test_conv3d.fun10 ())
+
   let fun_conv11 () = Alcotest.(check bool) "fun_conv11" true (To_test_conv3d.fun11 ())
+
   let fun_conv12 () = Alcotest.(check bool) "fun_conv12" true (To_test_conv3d.fun12 ())
 
   (* tests for conv3d input backward operation *)

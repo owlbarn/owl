@@ -11,6 +11,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   (* define the test error *)
 
   let eps = 1e-14
+
   let approx_equal a b = Stdlib.abs_float (a -. b) < eps
 
   let approx_equal_arr ?(eps = eps) a b =
@@ -27,25 +28,36 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
   module To_test = struct
     let dumb () = true
+
     let sin1 x = x |> diff Maths.sin |> unpack_flt
+
     let sin2 x = x |> diff (diff Maths.sin) |> unpack_flt
+
     let sin3 x = x |> diff (diff (diff Maths.sin)) |> unpack_flt
 
     (* define a new function to test *)
     let pfuna x = Maths.((F 2. * (x * x * x)) + (F 3. * (x * x)) - (F 5. * x) + F 1.)
+
     let poly1 x = x |> diff pfuna |> unpack_flt
+
     let poly2 x = x |> diff (diff pfuna) |> unpack_flt
+
     let poly3 x = x |> diff (diff (diff pfuna)) |> unpack_flt
 
     (* define a new function to test *)
     let pfunb x = Maths.((F 2. * x * x) + (F 3. * sin x) - (F 1. / x))
+
     let poly4 x = x |> diff pfunb |> unpack_flt
+
     let poly5 x = x |> diff (diff pfunb) |> unpack_flt
+
     let poly6 x = x |> diff (diff (diff pfunb)) |> unpack_flt
 
     (* define a new function to test *)
     let pfunc x = Maths.((F 2. * sqr x) + sqrt x - tanh x)
+
     let poly7 x = x |> diff pfunc |> unpack_flt
+
     let poly8 x = x |> diff (diff pfunc) |> unpack_flt
 
     let poly9 x =
@@ -151,16 +163,24 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
 
   let x_ne_y x y = abs_float (x -. y) > 0.00000001
+
   let xs_gt_one = xs_filter (fun x -> x > 1.0)
+
   let xs_abs_lt_one = xs_filter (fun x -> x > -1. && x < 1.0)
+
   let xs_nonones = xs_filter (fun x -> x_ne_y x 1.0 && x_ne_y x (-1.))
+
   let xs_nonzero = xs_filter (fun x -> x_ne_y x 0.0)
+
   let xs_nonzero_nonone = xs_filter (fun x -> x_ne_y x 0.0 && x_ne_y x 1.0)
+
   let xs_positive = xs_filter (fun x -> x >= 0.0)
+
   let xs_positive_nonzero = xs_filter (fun x -> x > 0.0)
 
   (* Simple powers/multiples of x *)
   let constant () = check_derivative "f(x) = 1" (fun _ -> F 1.) (fun _ -> 0.) xs
+
   let linear () = check_derivative "f(x) = x" (fun x -> x) (fun _ -> 1.) xs
 
   let square () =
@@ -460,11 +480,17 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   (* the tests *)
 
   let dumb () = Alcotest.(check bool) "dumb" true (To_test.dumb ())
+
   let sin1 () = Alcotest.(check (float eps)) "sin1" (cos 1.) (To_test.sin1 (F 1.))
+
   let sin2 () = Alcotest.(check (float eps)) "sin2" (-.sin 1.) (To_test.sin2 (F 1.))
+
   let sin3 () = Alcotest.(check (float eps)) "sin3" (-.cos 1.) (To_test.sin3 (F 1.))
+
   let poly1 () = Alcotest.(check (float eps)) "poly1" 31. (To_test.poly1 (F 2.))
+
   let poly2 () = Alcotest.(check (float eps)) "poly2" 30. (To_test.poly2 (F 2.))
+
   let poly3 () = Alcotest.(check (float eps)) "poly3" 12. (To_test.poly3 (F 2.))
 
   let poly4 () =

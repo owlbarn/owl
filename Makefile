@@ -65,6 +65,10 @@ release:
 	dune-release opam pkg -p owl-top
 	dune-release opam submit -p $(PKGS)
 
+.PHONY: format
+format:
+	dune build @fmt --auto-promote
+
 .PHONY: cloc
 loc:
 	cloc src/

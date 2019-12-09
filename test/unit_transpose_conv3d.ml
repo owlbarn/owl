@@ -6,7 +6,9 @@ module N = Owl.Dense.Ndarray.S
 (* Functions used in tests *)
 
 let tolerance_f64 = 1e-8
+
 let tolerance_f32 = 5e-4
+
 let close a b = N.(sub a b |> abs |> sum') < tolerance_f32
 
 let compute_trans_conv3d seq input_shape kernel_shape stride pad =

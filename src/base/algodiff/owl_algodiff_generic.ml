@@ -187,6 +187,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
 
   (* laplacian of f *)
   let laplacian f x = F (hessian f x |> unpack_arr |> A.trace)
+
   let laplacian' f x = f x, laplacian f x
 end
 

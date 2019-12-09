@@ -4,9 +4,13 @@ open Owl_algodiff.S
 module LR = Owl_optimise.S.Learning_Rate
 
 let close a b = Maths.(a - b < F 1e-5)
+
 let init_ch = [| F 0.; F 0. |]
+
 let rate_adagrad = LR.Adagrad 3.
+
 let rate_rmsprop = LR.RMSprop (3., 0.9)
+
 let rate_adam = LR.Adam (0.001, 0.9, 0.999)
 
 (* Function for testing an optimiser's `update_ch` and `run` implementation *)
@@ -93,22 +97,31 @@ end
 (* tests for adagrad *)
 
 let fun00 () = Alcotest.(check bool) "fun00" true (To_test_adagrad.fun00 ())
+
 let fun01 () = Alcotest.(check bool) "fun01" true (To_test_adagrad.fun01 ())
+
 let fun02 () = Alcotest.(check bool) "fun02" true (To_test_adagrad.fun02 ())
+
 let fun03 () = Alcotest.(check bool) "fun03" true (To_test_adagrad.fun03 ())
 
 (* tests for rmsprop *)
 
 let fun04 () = Alcotest.(check bool) "fun04" true (To_test_rmsprop.fun00 ())
+
 let fun05 () = Alcotest.(check bool) "fun05" true (To_test_rmsprop.fun01 ())
+
 let fun06 () = Alcotest.(check bool) "fun06" true (To_test_rmsprop.fun02 ())
+
 let fun07 () = Alcotest.(check bool) "fun07" true (To_test_rmsprop.fun03 ())
 
 (* tests for adam *)
 
 let fun08 () = Alcotest.(check bool) "fun08" true (To_test_adam.fun00 ())
+
 let fun09 () = Alcotest.(check bool) "fun09" true (To_test_adam.fun01 ())
+
 let fun10 () = Alcotest.(check bool) "fun10" true (To_test_adam.fun02 ())
+
 let fun11 () = Alcotest.(check bool) "fun11" true (To_test_adam.fun03 ())
 
 let test_set =

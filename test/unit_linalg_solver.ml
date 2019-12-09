@@ -286,14 +286,23 @@ let test_gauss_04 () =
 
 
 let test_lu_01 () = Alcotest.(check bool) "test_lu_01" true (To_test_lu.test01 ())
+
 let test_lu_02 () = Alcotest.(check bool) "test_lu_02" true (To_test_lu.test02 ())
+
 let test_lu_03 () = Alcotest.(check bool) "test_lu_03" true (To_test_lu.test03 ())
+
 let test_lu_04 () = Alcotest.(check bool) "test_lu_04" true (To_test_lu.test04 ())
+
 let test_lu_05 () = Alcotest.(check bool) "test_lu_05" true (To_test_lu.test05 ())
+
 let test_lu_06 () = Alcotest.(check bool) "test_lu_06" true (To_test_lu.test06 ())
+
 let test_lu_07 () = Alcotest.(check bool) "test_lu_07" true (To_test_lu.test07 ())
+
 let test_lu_08 () = Alcotest.(check bool) "test_lu_08" true (To_test_lu.test08 ())
+
 let test_lu_09 () = Alcotest.(check bool) "test_lu_09" true (To_test_lu.test09 ())
+
 let test_lu_10 () = Alcotest.(check bool) "test_lu_10" true (To_test_lu.test10 ())
 
 let test_bandiag_01 () =

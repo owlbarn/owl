@@ -4,6 +4,7 @@ module M = Owl_maths_root
 
 (* define the test error *)
 let eps = 1e-6
+
 let approx_equal a b = Stdlib.(abs_float (a -. b) < eps)
 
 (* a module with functions to test *)
@@ -31,8 +32,11 @@ end
 (* the tests *)
 
 let test_01 () = Alcotest.(check bool) "test 01" true (To_test.test_01 ())
+
 let test_02 () = Alcotest.(check bool) "test 02" true (To_test.test_02 ())
+
 let test_03 () = Alcotest.(check bool) "test 03" true (To_test.test_03 ())
+
 let test_04 () = Alcotest.(check bool) "test 04" true (To_test.test_04 ())
 
 let test_set =

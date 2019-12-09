@@ -30,5 +30,7 @@ end
 (* the tests *)
 
 let test_add () = Alcotest.(check bool) "test add" true (To_test.test_add ())
+
 let test_sub () = Alcotest.(check bool) "test sub" true (To_test.test_sub ())
+
 let test_set = [ "test add", `Slow, test_add; "test sub", `Slow, test_sub ]

@@ -8,7 +8,9 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
   (* Functions used in tests *)
 
   let tolerance_f64 = 1e-8
+
   let tolerance_f32 = 5e-4
+
   let close a b = N.(sub a b |> abs |> sum') < tolerance_f32
 
   let test_maxpool3d input_shape kernel stride pad =

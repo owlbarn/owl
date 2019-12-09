@@ -5,6 +5,7 @@ module Maths = Owl_maths
 
 (* define the test error *)
 let eps = 1e-10
+
 let sfmt = Printf.sprintf
 
 (*a To test
@@ -872,6 +873,7 @@ let bin_patterns_10 = IIIIOfBool (BinaryTest.occurrences_of_patterns 8 10)
 (* Distribution of overlapping 10-bit patterns is uniform *)
 
 let bin_fft_64 = IOfBool (BinaryTest.fft ~n:64)
+
 let bin_fft_1024 = IOfBool (BinaryTest.fft ~n:1024)
 
 (*f run_random_tests *)
@@ -1097,20 +1099,35 @@ let test_uniform_ints_0_to_65535 (bit : int) _ =
 
 
 let test_uniform_ints_0_to_65535_bit_0 _ = test_uniform_ints_0_to_65535 0 ()
+
 let test_uniform_ints_0_to_65535_bit_1 _ = test_uniform_ints_0_to_65535 1 ()
+
 let test_uniform_ints_0_to_65535_bit_2 _ = test_uniform_ints_0_to_65535 2 ()
+
 let test_uniform_ints_0_to_65535_bit_3 _ = test_uniform_ints_0_to_65535 3 ()
+
 let test_uniform_ints_0_to_65535_bit_4 _ = test_uniform_ints_0_to_65535 4 ()
+
 let test_uniform_ints_0_to_65535_bit_5 _ = test_uniform_ints_0_to_65535 5 ()
+
 let test_uniform_ints_0_to_65535_bit_6 _ = test_uniform_ints_0_to_65535 6 ()
+
 let test_uniform_ints_0_to_65535_bit_7 _ = test_uniform_ints_0_to_65535 7 ()
+
 let test_uniform_ints_0_to_65535_bit_8 _ = test_uniform_ints_0_to_65535 8 ()
+
 let test_uniform_ints_0_to_65535_bit_9 _ = test_uniform_ints_0_to_65535 9 ()
+
 let test_uniform_ints_0_to_65535_bit_10 _ = test_uniform_ints_0_to_65535 10 ()
+
 let test_uniform_ints_0_to_65535_bit_11 _ = test_uniform_ints_0_to_65535 11 ()
+
 let test_uniform_ints_0_to_65535_bit_12 _ = test_uniform_ints_0_to_65535 12 ()
+
 let test_uniform_ints_0_to_65535_bit_13 _ = test_uniform_ints_0_to_65535 13 ()
+
 let test_uniform_ints_0_to_65535_bit_14 _ = test_uniform_ints_0_to_65535 14 ()
+
 let test_uniform_ints_0_to_65535_bit_15 _ = test_uniform_ints_0_to_65535 15 ()
 
 (*f test_uniform_ints_1_100_48 - Test the Uniform random variable in Owl with 1-100<=48

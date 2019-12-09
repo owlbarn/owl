@@ -8,8 +8,11 @@ module Make (N : Ndarray_Compare with type elt = float) = struct
   (* some test input *)
 
   let x0 = N.sequential [| 10 |]
+
   let x1 = N.sequential [| 10; 10 |]
+
   let x2 = N.sequential [| 10; 10; 10 |]
+
   let x3 = N.sequential [| 5; 5; 5; 5 |]
 
   (* a module with functions to test *)
@@ -280,34 +283,63 @@ module Make (N : Ndarray_Compare with type elt = float) = struct
   (* the tests *)
 
   let test_01 () = Alcotest.(check bool) "test 01" true (To_test.test_01 ())
+
   let test_02 () = Alcotest.(check bool) "test 02" true (To_test.test_02 ())
+
   let test_03 () = Alcotest.(check bool) "test 03" true (To_test.test_03 ())
+
   let test_04 () = Alcotest.(check bool) "test 04" true (To_test.test_04 ())
+
   let test_05 () = Alcotest.(check bool) "test 05" true (To_test.test_05 ())
+
   let test_06 () = Alcotest.(check bool) "test 06" true (To_test.test_06 ())
+
   let test_07 () = Alcotest.(check bool) "test 07" true (To_test.test_07 ())
+
   let test_08 () = Alcotest.(check bool) "test 08" true (To_test.test_08 ())
+
   let test_09 () = Alcotest.(check bool) "test 09" true (To_test.test_09 ())
+
   let test_10 () = Alcotest.(check bool) "test 10" true (To_test.test_10 ())
+
   let test_11 () = Alcotest.(check bool) "test 11" true (To_test.test_11 ())
+
   let test_12 () = Alcotest.(check bool) "test 12" true (To_test.test_12 ())
+
   let test_13 () = Alcotest.(check bool) "test 13" true (To_test.test_13 ())
+
   let test_14 () = Alcotest.(check bool) "test 14" true (To_test.test_14 ())
+
   let test_15 () = Alcotest.(check bool) "test 15" true (To_test.test_15 ())
+
   let test_16 () = Alcotest.(check bool) "test 16" true (To_test.test_16 ())
+
   let test_17 () = Alcotest.(check bool) "test 17" true (To_test.test_17 ())
+
   let test_18 () = Alcotest.(check bool) "test 18" true (To_test.test_18 ())
+
   let test_19 () = Alcotest.(check bool) "test 19" true (To_test.test_19 ())
+
   let test_20 () = Alcotest.(check bool) "test 20" true (To_test.test_20 ())
+
   let test_21 () = Alcotest.(check bool) "test 21" true (To_test.test_21 ())
+
   let test_22 () = Alcotest.(check bool) "test 22" true (To_test.test_22 ())
+
   let test_23 () = Alcotest.(check bool) "test 23" true (To_test.test_23 ())
+
   let test_24 () = Alcotest.(check bool) "test 24" true (To_test.test_24 ())
+
   let test_25 () = Alcotest.(check bool) "test 25" true (To_test.test_25 ())
+
   let test_26 () = Alcotest.(check bool) "test 26" true (To_test.test_26 ())
+
   let test_27 () = Alcotest.(check bool) "test 27" true (To_test.test_27 ())
+
   let test_28 () = Alcotest.(check bool) "test 28" true (To_test.test_28 ())
+
   let test_29 () = Alcotest.(check bool) "test 29" true (To_test.test_29 ())
+
   let test_30 () = Alcotest.(check bool) "test 30" true (To_test.test_30 ())
 
   let test_set =

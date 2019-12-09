@@ -11,14 +11,19 @@ let matrix = Alcotest.testable (fun _p _x -> ()) M.equal
 
 (* some test input *)
 let x0 = M.zeros Float64 3 4
+
 let x1 = M.ones Float64 3 4
+
 let x2 = M.sequential Float64 3 4
 
 (* a module with functions to test *)
 module To_test = struct
   let sequential () = M.sequential Float64 3 4
+
   let row_num x = M.row_num x
+
   let col_num x = M.col_num x
+
   let numel x = M.numel x
 
   let transpose () =
@@ -51,11 +56,17 @@ module To_test = struct
 
 
   let trace x = M.trace x
+
   let sum x = M.sum x
+
   let exists x = M.exists (fun a -> a = 6.) x
+
   let not_exists x = M.not_exists (fun a -> a > 13.) x
+
   let for_all x = M.for_all (fun a -> a < 11.) x
+
   let equal x y = M.equal x y
+
   let not_equal x y = M.not_equal x y
 
   let less () =
@@ -74,11 +85,17 @@ module To_test = struct
 
 
   let greater_equal x = M.greater_equal x x
+
   let less_equal x = M.less_equal x x
+
   let is_zero x = M.is_zero x
+
   let is_positive x = M.is_positive x
+
   let is_negative x = M.is_negative x
+
   let is_nonnegative x = M.is_nonnegative x
+
   let is_nonpositive x = M.is_nonpositive x
 
   let add x =
@@ -110,6 +127,7 @@ module To_test = struct
 
 
   let add_scalar () = M.add_scalar x1 2. |> M.sum = 36.
+
   let mul_scalar () = M.mul_scalar x1 2. |> M.sum = 24.
 
   let min () =
@@ -191,19 +209,33 @@ end
 (* the tests *)
 
 let sequential () = Alcotest.(check matrix) "sequential" x2 (To_test.sequential ())
+
 let row_num () = Alcotest.(check int) "row_num" 3 (To_test.row_num x2)
+
 let col_num () = Alcotest.(check int) "col_num" 4 (To_test.col_num x0)
+
 let numel () = Alcotest.(check int) "numel" 12 (To_test.numel x0)
+
 let transpose () = Alcotest.(check bool) "transpose" true (To_test.transpose ())
+
 let get () = Alcotest.(check (float eps)) "get" 6. (To_test.get x2)
+
 let set () = Alcotest.(check (float eps)) "set" 5. (To_test.set ())
+
 let fill () = Alcotest.(check matrix) "fill" x1 (To_test.fill ())
+
 let row () = Alcotest.(check matrix) "row" (M.row x2 1) (To_test.row ())
+
 let col () = Alcotest.(check matrix) "col" (M.col x2 1) (To_test.col ())
+
 let trace () = Alcotest.(check (float eps)) "trace" 15. (To_test.trace x2)
+
 let sum () = Alcotest.(check (float eps)) "sum" 66. (To_test.sum x2)
+
 let exists () = Alcotest.(check bool) "exits" true (To_test.exists x2)
+
 let not_exists () = Alcotest.(check bool) "not_exists" true (To_test.not_exists x2)
+
 let for_all () = Alcotest.(check bool) "for_all" false (To_test.for_all x2)
 
 let equal () =
@@ -211,7 +243,9 @@ let equal () =
 
 
 let not_equal () = Alcotest.(check bool) "not_equal" true (To_test.not_equal x0 x1)
+
 let less () = Alcotest.(check bool) "less" true (To_test.less ())
+
 let greater () = Alcotest.(check bool) "greater" false (To_test.greater ())
 
 let greater_equal () =
@@ -219,8 +253,11 @@ let greater_equal () =
 
 
 let less_equal () = Alcotest.(check bool) "less_equal" true (To_test.less_equal x2)
+
 let is_zero () = Alcotest.(check bool) "is_zero" true (To_test.is_zero x0)
+
 let is_positive () = Alcotest.(check bool) "is_positive" true (To_test.is_positive x1)
+
 let is_negative () = Alcotest.(check bool) "is_negative" false (To_test.is_negative x1)
 
 let is_nonnegative () =
@@ -232,22 +269,39 @@ let is_nonpositive () =
 
 
 let add () = Alcotest.(check bool) "add" true (To_test.add x2)
+
 let mul () = Alcotest.(check bool) "mul" true (To_test.mul x2)
+
 let dot () = Alcotest.(check bool) "dot" true (To_test.dot ())
+
 let add_scalar () = Alcotest.(check bool) "add_scalar" true (To_test.add_scalar ())
+
 let mul_scalar () = Alcotest.(check bool) "mul_scalar" true (To_test.mul_scalar ())
+
 let min () = Alcotest.(check bool) "min" true (To_test.min ())
+
 let max () = Alcotest.(check bool) "max" true (To_test.max ())
+
 let map () = Alcotest.(check bool) "map" true (To_test.map ())
+
 let fold () = Alcotest.(check (float eps)) "fold" (M.sum x2) (To_test.fold x2)
+
 let foldi () = Alcotest.(check bool) "foldi" true (To_test.foldi ())
+
 let foldi_nz () = Alcotest.(check bool) "foldi_nz" true (To_test.foldi_nz ())
+
 let filter () = Alcotest.(check bool) "filter" true (To_test.filter ())
+
 let fold_rows () = Alcotest.(check bool) "fold_rows" true (To_test.fold_rows ())
+
 let fold_cols () = Alcotest.(check bool) "fold_cols" true (To_test.fold_cols ())
+
 let sum_rows () = Alcotest.(check bool) "sum_rows" true (To_test.sum_rows ())
+
 let sum_cols () = Alcotest.(check bool) "sum_cols" true (To_test.sum_cols ())
+
 let of_array () = Alcotest.(check bool) "of_array" true (To_test.of_array ())
+
 let save_load () = Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
 let test_set =

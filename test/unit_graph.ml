@@ -58,10 +58,15 @@ module To_test = struct
 end
 
 let topo0 () = Alcotest.(check bool) "topo0" true (To_test.topo0 ())
+
 let topo1 () = Alcotest.(check bool) "topo1" true (To_test.topo1 ())
+
 let dfs0 () = Alcotest.(check bool) "dfs0" true (To_test.dfs0 ())
+
 let dfs1 () = Alcotest.(check bool) "dfs1" true (To_test.dfs1 ())
+
 let bfs0 () = Alcotest.(check bool) "bfs0" true (To_test.bfs0 ())
+
 let num0 () = Alcotest.(check bool) "num0" true (To_test.num0 ())
 
 (* the tests *)

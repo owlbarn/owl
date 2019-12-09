@@ -34,6 +34,7 @@ module To_test = struct
 end
 
 let multimap0 () = Alcotest.(check bool) "multimap0" true (To_test.multimap0 ())
+
 let multimap1 () = Alcotest.(check bool) "multimap1" true (To_test.multimap1 ())
 
 (* the tests *)

@@ -4,6 +4,7 @@ open Owl_types
 
 (* define the test error *)
 let eps = 1e-16
+
 let approx_equal ?(eps = 1e-12) a b = Stdlib.abs_float (a -. b) < eps
 
 (* functor to generate test unit. *)
@@ -64,6 +65,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
 
   let vs = Array.of_list vs_list
+
   let x_ne_y x y = abs_float (x -. y) > 0.00000001
 
   let vs_filter f vs =
@@ -73,12 +75,19 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
 
   let vs_x_nonzero = vs_filter (fun v -> x_ne_y v.(0) 0.) vs
+
   let vs_x_pos = vs_filter (fun v -> v.(0) > 0.0000001) vs
+
   let vs_x_abs_lt_one = vs_filter (fun v -> v.(0) > -1. && v.(0) < 1.0) vs
+
   let vs_y_abs_lt_one = vs_filter (fun v -> v.(1) > -1. && v.(1) < 1.0) vs
+
   let vs_y_gt_one = vs_filter (fun v -> v.(1) > 1.) vs
+
   let vs_prod_positive = vs_filter (fun v -> v.(1) *. v.(0) > 0.00001) vs
+
   let vs_diff = vs_filter (fun v -> x_ne_y v.(1) v.(0)) vs
+
   let vs_sq_diff = vs_filter (fun v -> x_ne_y (v.(1) ** 2.) (v.(0) ** 2.)) vs
 
   (* Functions to simplify testing of grad *)

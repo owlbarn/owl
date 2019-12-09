@@ -2,8 +2,11 @@ open Owl_types
 
 module type Sig = sig
   type t
+
   type elt
+
   type arr
+
   type op
 
   (** {6 Ops Builder } *)
@@ -334,29 +337,53 @@ module type Sig = sig
 
   module Mat : sig
     val empty : int -> int -> t
+
     val zeros : int -> int -> t
+
     val eye : int -> t
+
     val ones : int -> int -> t
+
     val uniform : ?a:elt -> ?b:elt -> int -> int -> t
+
     val gaussian : ?mu:elt -> ?sigma:elt -> int -> int -> t
+
     val shape : t -> int * int
+
     val numel : t -> int
+
     val row_num : t -> int
+
     val col_num : t -> int
+
     val reset : t -> unit
+
     val reshape : int -> int -> t -> t
+
     val get : t -> int -> int -> t
+
     val set : t -> int -> int -> t -> t
+
     val row : t -> int -> t
+
     val mean : t -> t
+
     val add : t -> t -> t
+
     val sub : t -> t -> t
+
     val mul : t -> t -> t
+
     val div : t -> t -> t
+
     val dot : t -> t -> t
+
     val map_by_row : (t -> t) -> t -> t
+
     val of_arrays : elt array array -> t
+
     val init_2d : int -> int -> (int -> int -> t) -> t
+
     val print : t -> unit
   end
 
@@ -364,18 +391,31 @@ module type Sig = sig
 
   module Arr : sig
     val empty : int array -> t
+
     val zeros : int array -> t
+
     val ones : int array -> t
+
     val uniform : ?a:elt -> ?b:elt -> int array -> t
+
     val gaussian : ?mu:elt -> ?sigma:elt -> int array -> t
+
     val shape : t -> int array
+
     val numel : t -> int
+
     val reset : t -> unit
+
     val reshape : t -> int array -> t
+
     val add : t -> t -> t
+
     val sub : t -> t -> t
+
     val mul : t -> t -> t
+
     val div : t -> t -> t
+
     val dot : t -> t -> t
   end
 end

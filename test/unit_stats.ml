@@ -116,18 +116,31 @@ end
 
 module Data = struct
   let x1 = [| 0.; -1.; 0.; sqrt 0.5; 2. |]
+
   let x1_sorted = [| -1.; 0.; 0.; sqrt 0.5; 2. |]
+
   let w1 = [| 0.; 2.; 1.; 1.; 0.2 |]
+
   let w1_sorted = [| 2.; 0.; 1.; 1.; 0.2 |]
+
   let bin1 = [| -1.; 0. |]
+
   let bin_wrong = [| 4. |]
+
   let bin_low = [| -3.; -2. |]
+
   let bin_high = [| 3.; 4. |]
+
   let x2 = Array.append x1 [| infinity |]
+
   let x2_sorted = Array.append x1_sorted [| infinity |]
+
   let w2 = Array.append w1 [| 0.2 |]
+
   let bin2 = [| -1.; 0.; sqrt 0.5; 3. |]
+
   let bin2_inf = [| -.infinity; 0.; sqrt 0.5; infinity |]
+
   let with_outliers = [| -10000.0; 0.0; 1.0; 2.0; 10000.0 |]
 end
 

@@ -8,7 +8,9 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
   (* Functions used in tests *)
 
   let tolerance_f64 = 1e-8
+
   let tolerance_f32 = 5e-4
+
   let close a b = N.(sub a b |> abs |> sum') < tolerance_f32
 
   let test_conv2d input_shape kernel_shape stride pad =
@@ -393,9 +395,13 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
   (* tests for conv2d forward operation *)
 
   let fun_conv00 () = Alcotest.(check bool) "fun_conv00" true (To_test_conv2d.fun00 ())
+
   let fun_conv01 () = Alcotest.(check bool) "fun_conv01" true (To_test_conv2d.fun01 ())
+
   let fun_conv02 () = Alcotest.(check bool) "fun_conv02" true (To_test_conv2d.fun02 ())
+
   let fun_conv03 () = Alcotest.(check bool) "fun_conv03" true (To_test_conv2d.fun03 ())
+
   let fun_conv04 () = Alcotest.(check bool) "fun_conv04" true (To_test_conv2d.fun04 ())
 
   (* tests for conv2d input backward operation *)
