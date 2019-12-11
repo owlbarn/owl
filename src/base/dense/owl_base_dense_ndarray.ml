@@ -32,27 +32,30 @@ module S = struct
 
   let tril = Owl_base_dense_matrix_s.tril
 
-  let inv = Owl_base_linalg_generic.inv
+  let inv = Owl_base_linalg_s.inv
 
-  let chol = Owl_base_linalg_generic.chol
+  let chol = Owl_base_linalg_s.chol
 
-  let logdet = Owl_base_linalg_generic.logdet
+  let logdet = Owl_base_linalg_s.logdet
 
-  let svd = Owl_base_linalg_generic.svd
+  let svd = Owl_base_linalg_s.svd
 
-  let lq = Owl_base_linalg_generic.lq
+  let lq x = Owl_base_linalg_s.lq x
 
-  let qr = Owl_base_linalg_generic.qr
+let qr x =
+    let q, r, _ = Owl_base_linalg_s.qr ~thin:true ~pivot:false x in
+    (q,r)
 
-  let sylvester = Owl_base_linalg_generic.sylvester
 
-  let lyapunov = Owl_base_linalg_generic.lyapunov
+  let sylvester = Owl_base_linalg_s.sylvester
 
-  let discrete_lyapunov = Owl_base_linalg_generic.discrete_lyapunov
+  let lyapunov = Owl_base_linalg_s.lyapunov
 
-  let linsolve = Owl_base_linalg_generic.linsolve
+  let discrete_lyapunov = Owl_base_linalg_s.discrete_lyapunov
 
-  let care = Owl_base_linalg_generic.care
+  let linsolve = Owl_base_linalg_s.linsolve
+
+  let care = Owl_base_linalg_s.care
 end
 
 
@@ -69,27 +72,29 @@ module D = struct
 
   let tril = Owl_base_dense_matrix_d.tril
 
-  let inv = Owl_base_linalg_generic.inv
+  let inv = Owl_base_linalg_d.inv
 
-  let chol = Owl_base_linalg_generic.chol
+  let chol = Owl_base_linalg_d.chol
 
-  let logdet = Owl_base_linalg_generic.logdet
+  let logdet = Owl_base_linalg_d.logdet
 
-  let svd = Owl_base_linalg_generic.svd
+  let svd = Owl_base_linalg_d.svd
 
-  let lq = Owl_base_linalg_generic.lq
+  let lq x = Owl_base_linalg_d.lq x
 
-  let qr = Owl_base_linalg_generic.qr
+  let qr x =
+    let q, r, _ = Owl_base_linalg_d.qr ~thin:true ~pivot:false x in
+    (q,r)
 
-  let sylvester = Owl_base_linalg_generic.sylvester
+  let sylvester = Owl_base_linalg_d.sylvester
 
-  let lyapunov = Owl_base_linalg_generic.lyapunov
+  let lyapunov = Owl_base_linalg_d.lyapunov
 
-  let discrete_lyapunov = Owl_base_linalg_generic.discrete_lyapunov
+  let discrete_lyapunov = Owl_base_linalg_d.discrete_lyapunov
 
-  let linsolve = Owl_base_linalg_generic.linsolve
+  let linsolve = Owl_base_linalg_d.linsolve
 
-  let care = Owl_base_linalg_generic.care
+  let care = Owl_base_linalg_d.care
 end
 
 
