@@ -527,7 +527,7 @@ module type NN = sig
     -> int array
     -> arr * (int64, int64_elt, c_layout) Genarray.t
 
-val conv1d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
+  val conv1d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
   val conv2d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
   val conv3d_ : out:arr -> ?padding:padding -> arr -> arr -> int array -> unit
 
