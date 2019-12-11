@@ -370,7 +370,6 @@ let tridiag_solve_vec a b c r =
   let b = M.eye (M.kind a) n in
   linsolve_lu a b *)
 
-
 (* TODO: optimise and test *)
 (*
  Implementing the following algorithm:
@@ -421,10 +420,15 @@ let logdet _x =
   raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.logdet")
 
 
-let qr _x = raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.qr")
+let qr ?(thin = true) ?(pivot = false) _x =
+  ignore thin;
+  ignore pivot;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.qr")
 
 
-let lq _x = raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.lq")
+let lq ?(thin = true) _x =
+  ignore thin;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.lq")
 
 
 let chol ?(upper = true) _x =

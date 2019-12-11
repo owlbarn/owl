@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Bigarray
+
 (** {6 Types and constants}  *)
 
 type ('a, 'b) t = ('a, 'b) Owl_base_dense_ndarray_generic.t
@@ -44,10 +46,14 @@ val logdet : ('a, 'b) t -> 'a
 val chol : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val qr : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+val qr
+  :  ?thin:bool
+  -> ?pivot:bool
+  -> ('a, 'b) t
+  -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val lq : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+val lq : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val svd : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t

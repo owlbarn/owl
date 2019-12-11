@@ -18,9 +18,9 @@ module type Common = sig
 
   val chol : ?upper:bool -> mat -> mat
 
-  val qr : mat -> mat * mat
+  val qr : ?thin:bool -> ?pivot:bool -> mat -> mat * mat * int32_mat
 
-  val lq : mat -> mat * mat
+  val lq : ?thin:bool -> mat -> mat * mat
 
   val sylvester : mat -> mat -> mat -> mat
 
