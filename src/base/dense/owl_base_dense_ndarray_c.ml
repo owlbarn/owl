@@ -29,6 +29,9 @@ let init_nd dims f = M.init_nd Complex32 dims f
 let zeros dims = M.zeros Complex32 dims
 
 
+let eye = M.eye Complex32
+
+
 let ones dims = M.ones Complex32 dims
 
 

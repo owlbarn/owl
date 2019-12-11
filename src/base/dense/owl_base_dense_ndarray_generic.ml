@@ -4935,90 +4935,6 @@ let draw_rows2 ?(replacement=true) varr_a varr_b count =
   let extracted_b = rows varr_b indices in
   (extracted_a, extracted_b, indices)
 
-
-(* TODO: optimise and test *)
-(*
- Implementing the following algorithm:
- http://www.irma-international.org/viewtitle/41011/ *)
-let inv varr =
-  let dims = shape varr in
-  let _ = _check_is_matrix dims in
-  let n = Array.unsafe_get dims 0 in
-  if (Array.unsafe_get dims 1) != n
-  then failwith "no inverse - the matrix is not square"
-  else
-    let pivot_row = Array.make n 0. in
-    let result_varr = copy varr in
-    begin
-      for p = 0 to n - 1 do
-        let pivot_elem = get result_varr [|p; p|] in
-        if get result_varr [|p; p|] = 0.
-        then failwith "the matrix does not have an inverse";
-        (* update elements of the pivot row, save old vals *)
-        for j = 0 to n - 1 do
-          pivot_row.(j) <- get result_varr [|p; j|];
-          if j != p
-          then set result_varr [|p; j|] (pivot_row.(j) /. pivot_elem)
-        done;
-        (* update elements of the pivot col *)
-        for i = 0 to n - 1 do
-          if i != p
-          then set result_varr [|i; p|]
-              ((get result_varr [|i; p|]) /. (~-. pivot_elem))
-        done;
-        (* update the rest of the matrix *)
-        for i = 0 to n - 1 do
-          let pivot_col_elem = get result_varr [|i; p|] in
-          for j = 0 to n - 1 do
-            if i != p && j != p
-            then
-              let pivot_row_elem = pivot_row.(j) in (* use old value *)
-              let old_val = get result_varr [|i; j|] in
-              let new_val = old_val +. (pivot_row_elem *. pivot_col_elem) in
-              (set result_varr [|i; j|] new_val)
-          done;
-        done;
-        (* update the pivot element *)
-        set result_varr [|p; p|] (1. /. pivot_elem)
-      done;
-      result_varr
-    end
-
-let logdet _x =
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.logdet")
-
-let qr _x =
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.qr")
-
-let lq _x =
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.lq")
-
-let chol ?(upper=true) _x =
-  upper |> ignore;
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.chol")
-
-let svd ?(thin=true) _x =
-  thin |> ignore;
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.svd")
-
-let sylvester _a _b _c =
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.sylvester")
-
-let lyapunov _a _q =
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.lyapunov")
-
-let discrete_lyapunov ?(solver=`default) _a _q =
-  solver |> ignore;
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.discrete_lyapunov")
-
-let linsolve ?(trans=false) ?(typ=`n) _a _b =
-  trans |> ignore; typ |> ignore;
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.linsolve")
-
-let care ?(diag_r = false)_a _b _q _r =
-  diag_r |> ignore;
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.care")
-
 let diag ?(k=0) _x =
   k |> ignore;
   raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.diag")
@@ -5066,7 +4982,5 @@ let one_hot _depth _x = failwith "Owl_base_dense_ndarray_generic:one_hot: not im
 let float_to_elt x = x
 
 let elt_to_float x = x
-
-
 
 (* ends here *)
