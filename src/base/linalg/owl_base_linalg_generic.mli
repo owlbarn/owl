@@ -21,8 +21,6 @@ val is_hermitian : (Complex.t, 'b) t -> bool
 
 val lu : (float, 'a) t -> (float, 'a) t * (float, 'a) t * int array
 
-val inv : (float, 'a) t -> (float, 'a) t
-
 val det : (float, 'a) t -> float
 
 val linsolve_lu : (float, 'a) t -> (float, 'b) t -> (float, 'b) t
@@ -35,3 +33,53 @@ val tridiag_solve_vec
   -> float array
   -> float array
   -> float array
+
+(* TODO: change float to 'a *)
+val inv : (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val logdet : (float, 'b) t -> float
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+(* TODO: change float to 'a *)
+val chol : ?upper:bool -> (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val qr : (float, 'b) t -> (float, 'b) t * (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val lq : (float, 'b) t -> (float, 'b) t * (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val svd : ?thin:bool -> (float, 'b) t -> (float, 'b) t * (float, 'b) t * (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val sylvester : (float, 'b) t -> (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val lyapunov : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val discrete_lyapunov
+  :  ?solver:[ `default | `bilinear | `direct ]
+  -> (float, 'b) t
+  -> (float, 'b) t
+  -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val linsolve
+  :  ?trans:bool
+  -> ?typ:[ `n | `u | `l ]
+  -> (float, 'b) t
+  -> (float, 'b) t
+  -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
+val care
+  :  ?diag_r:bool
+  -> (float, 'b) t
+  -> (float, 'b) t
+  -> (float, 'b) t
+  -> (float, 'b) t
+  -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
