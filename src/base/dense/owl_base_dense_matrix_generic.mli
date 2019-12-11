@@ -40,4 +40,3 @@ val tril: ?k:int -> ('a, 'b) t -> ('a, 'b) t
 
 val triu: ?k:int -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
-

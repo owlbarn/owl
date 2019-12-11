@@ -24,6 +24,14 @@ module S = struct
   include Operator
   module Scalar = Owl_base_maths
 
+  let eye = Owl_base_dense_matrix_s.eye
+
+  let diagm = Owl_base_dense_matrix_s.diagm
+
+  let triu = Owl_base_dense_matrix_s.triu
+
+  let tril = Owl_base_dense_matrix_s.tril
+
   let inv = Owl_base_linalg_generic.inv
 
   let chol = Owl_base_linalg_generic.chol
@@ -52,6 +60,14 @@ module D = struct
   include Owl_base_dense_ndarray_d
   include Operator
   module Scalar = Owl_base_maths
+
+  let eye = Owl_base_dense_matrix_d.eye
+
+  let diagm = Owl_base_dense_matrix_d.diagm
+
+  let triu = Owl_base_dense_matrix_d.triu
+
+  let tril = Owl_base_dense_matrix_d.tril
 
   let inv = Owl_base_linalg_generic.inv
 
