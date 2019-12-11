@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module type Base = sig
+module type Common = sig
   type elt
   type mat
   type complex_mat
