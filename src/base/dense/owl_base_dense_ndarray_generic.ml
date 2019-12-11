@@ -4939,18 +4939,6 @@ let diag ?(k=0) _x =
   k |> ignore;
   raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.diag")
 
-let diagm ?(k=0) _x =
-  k |> ignore;
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.diagm")
-
-let tril ?(k=0) _x =
-  k |> ignore;
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.tril")
-
-let triu ?(k=0) _x =
-  k |> ignore;
-  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.triu")
-
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
 let load _k f = Owl_io.marshal_from_file f
 

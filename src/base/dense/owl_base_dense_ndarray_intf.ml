@@ -23,8 +23,6 @@ module type Common = sig
 
   val ones : int array -> arr
 
-  val eye : int -> arr
-
   val create : int array -> elt -> arr
 
   val init : int array -> (int -> elt) -> arr
@@ -279,8 +277,7 @@ module type Common = sig
 
   val elt_greater_equal_scalar : arr -> elt -> arr
 
-  
-    (* matrix functions *)
+  (* matrix functions *)
 
   val row_num : arr -> int
 
@@ -296,12 +293,6 @@ module type Common = sig
 
   val diag : ?k:int -> arr -> arr
 
-  val diagm : ?k:int -> arr -> arr
-
-  val tril : ?k:int -> arr -> arr
-
-  val triu : ?k:int -> arr -> arr
-
   val transpose : ?axis:int array -> arr -> arr
 
   val to_rows : arr -> arr array
@@ -316,8 +307,7 @@ module type Common = sig
 
   val of_arrays : elt array array -> arr
 
-
-  end
+end
 
 module type Real = sig
 
@@ -373,7 +363,7 @@ module type NN = sig
 
   type arr
 
-(* Neural network related functions *)
+  (* Neural network related functions *)
 
   val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
 
@@ -456,5 +446,4 @@ module type NN = sig
   val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
   val upsampling2d_backward : arr -> int array -> arr -> arr
-
 end

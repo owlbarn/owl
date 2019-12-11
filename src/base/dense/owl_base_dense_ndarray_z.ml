@@ -29,9 +29,6 @@ let init_nd dims f = M.init_nd Complex64 dims f
 let zeros dims = M.zeros Complex64 dims
 
 
-let eye = M.eye Complex64
-
-
 let ones dims = M.ones Complex64 dims
 
 

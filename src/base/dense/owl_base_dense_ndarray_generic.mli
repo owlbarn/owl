@@ -724,15 +724,6 @@ val dot : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
 val diag: ?k:int -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val diagm: ?k:int -> ('a, 'b) t -> ('a, 'b) t
-(** Refer to :doc:`owl_dense_matrix_generic` *)
-
-val tril: ?k:int -> ('a, 'b) t -> ('a, 'b) t
-(** Refer to :doc:`owl_dense_matrix_generic` *)
-
-val triu: ?k:int -> ('a, 'b) t -> ('a, 'b) t
-(** Refer to :doc:`owl_dense_matrix_generic` *)
-
 (* TODO: change float to 'a *)
 val trace : (float, 'b) t -> float
 (** Refer to :doc:`owl_dense_matrix_generic` *)
