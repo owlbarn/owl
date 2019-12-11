@@ -11,6 +11,4 @@ type mat = Owl_base_dense_matrix_c.mat
 
 type int32_mat = (int32, int32_elt) Owl_base_dense_matrix_generic.t
 
-
 include Owl_base_linalg_generic
-

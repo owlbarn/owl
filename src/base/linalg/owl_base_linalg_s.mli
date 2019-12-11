@@ -20,7 +20,4 @@ include
      and type complex_mat := complex_mat
      and type int32_mat := int32_mat
 
-include
-  Owl_base_linalg_intf.Real
-    with type elt := elt
-     and type mat := mat
+include Owl_base_linalg_intf.Real with type elt := elt and type mat := mat
