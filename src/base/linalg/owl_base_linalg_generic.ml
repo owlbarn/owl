@@ -360,6 +360,8 @@ let tridiag_solve_vec a b c r =
 
 
 (* Matrix inverse *)
+
+(* NOTE: deprecated implementation? *)
 (* let inv a =
   let dims_a = M.shape a in
   _check_is_matrix dims_a |> ignore;
@@ -421,7 +423,9 @@ let logdet _x =
 
 let qr _x = raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.qr")
 
+
 let lq _x = raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.lq")
+
 
 let chol ?(upper = true) _x =
   upper |> ignore;

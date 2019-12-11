@@ -3,30 +3,40 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
-module type Linalg = sig
+module type Common = sig
   type elt
-  type arr
 
-  val inv : arr -> arr
+  type mat
 
-  val logdet : arr -> elt
+  type complex_mat
 
-  val svd: ?thin:bool -> arr -> arr * arr * arr
+  type int32_mat
 
-  val chol : ?upper:bool -> arr -> arr
+  val logdet : mat -> elt
 
-  val qr : arr -> arr * arr
+  val svd : ?thin:bool -> mat -> mat * mat * mat
 
-  val lq : arr -> arr * arr
+  val chol : ?upper:bool -> mat -> mat
 
-  val sylvester : arr -> arr -> arr -> arr
+  val qr : mat -> mat * mat
 
-  val lyapunov : arr -> arr -> arr
+  val lq : mat -> mat * mat
 
-  val discrete_lyapunov : ?solver:[`default | `direct | `bilinear] -> arr -> arr -> arr
+  val sylvester : mat -> mat -> mat -> mat
 
-  val linsolve : ?trans:bool -> ?typ:[`n | `u | `l] -> arr -> arr -> arr
+  val lyapunov : mat -> mat -> mat
 
-  val care : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr
+  val discrete_lyapunov : ?solver:[ `default | `direct | `bilinear ] -> mat -> mat -> mat
+
+  val linsolve : ?trans:bool -> ?typ:[ `n | `u | `l ] -> mat -> mat -> mat
+end
+
+module type Real = sig
+  type elt
+
+  type mat
+
+  val inv : mat -> mat
+
+  val care : ?diag_r:bool -> mat -> mat -> mat -> mat -> mat
 end

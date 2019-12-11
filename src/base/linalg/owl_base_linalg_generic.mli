@@ -38,41 +38,40 @@ val tridiag_solve_vec
 val inv : (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val logdet : (float, 'b) t -> float
+val logdet : ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-(* TODO: change float to 'a *)
-val chol : ?upper:bool -> (float, 'b) t -> (float, 'b) t
+val chol : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val qr : (float, 'b) t -> (float, 'b) t * (float, 'b) t
+val qr : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val lq : (float, 'b) t -> (float, 'b) t * (float, 'b) t
+val lq : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val svd : ?thin:bool -> (float, 'b) t -> (float, 'b) t * (float, 'b) t * (float, 'b) t
+val svd : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val sylvester : (float, 'b) t -> (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+val sylvester : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val lyapunov : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+val lyapunov : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val discrete_lyapunov
   :  ?solver:[ `default | `bilinear | `direct ]
-  -> (float, 'b) t
-  -> (float, 'b) t
-  -> (float, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val linsolve
   :  ?trans:bool
   -> ?typ:[ `n | `u | `l ]
-  -> (float, 'b) t
-  -> (float, 'b) t
-  -> (float, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val care
