@@ -9,7 +9,7 @@ type elt = Complex.t
 type arr = (Complex.t, complex32_elt, c_layout) Genarray.t
 type cast_arr = (float, float32_elt, c_layout) Genarray.t
 
-include Owl_dense_ndarray_intf.Base with type elt := elt and type arr := arr
+include Owl_dense_ndarray_intf.Common with type elt := elt and type arr := arr
 
 include
   Owl_dense_ndarray_intf.Complex

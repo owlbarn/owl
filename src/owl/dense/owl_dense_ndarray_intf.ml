@@ -6,7 +6,7 @@
 open Bigarray
 open Owl_types
 
-module type Base = sig
+module type Common = sig
   (** {6 Types and constants} *)
 
   type elt
