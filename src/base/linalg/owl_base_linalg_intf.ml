@@ -36,6 +36,7 @@ module type Real = sig
 
   type mat
 
+  (* TODO: implement inv for both real and complex matrices *)
   val inv : mat -> mat
 
   val care : ?diag_r:bool -> mat -> mat -> mat -> mat -> mat
