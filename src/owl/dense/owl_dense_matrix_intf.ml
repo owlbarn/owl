@@ -1,7 +1,7 @@
 open Owl_types
 open Bigarray
 
-module type Base = sig
+module type Common = sig
   type elt
   type mat
 

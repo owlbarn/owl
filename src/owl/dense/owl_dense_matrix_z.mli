@@ -21,5 +21,5 @@ type elt = Complex.t
 type mat = (Complex.t, complex64_elt) Owl_dense_matrix_generic.t
 type cast_mat = (float, float64_elt) Owl_dense_matrix_generic.t
 
-include Owl_dense_matrix_intf.Base with type elt := elt and type mat := mat
+include Owl_dense_matrix_intf.Common with type elt := elt and type mat := mat
 include Owl_dense_matrix_intf.Complex with type mat := mat and type cast_mat := cast_mat
