@@ -42,7 +42,7 @@ module S = struct
 
   let lq x = Owl_base_linalg_s.lq x
 
-let qr x =
+  let qr x =
     let q, r, _ = Owl_base_linalg_s.qr ~thin:true ~pivot:false x in
     (q,r)
 
