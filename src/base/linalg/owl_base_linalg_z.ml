@@ -7,6 +7,8 @@ open Bigarray
 
 type elt = Complex.t
 
-type arr = (Complex.t, complex32_elt, c_layout) Genarray.t
+type mat = Owl_base_dense_matrix_z.mat
 
-include Owl_base_dense_ndarray_intf.Common with type arr := arr and type elt := elt
+type int32_mat = (int32, int32_elt) Owl_base_dense_matrix_generic.t
+
+include Owl_base_linalg_generic

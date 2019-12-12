@@ -318,16 +318,6 @@ let linsolve_lu a b =
   b
 
 
-(* Matrix inverse *)
-let inv a =
-  let dims_a = M.shape a in
-  _check_is_matrix dims_a |> ignore;
-  assert (dims_a.(0) = dims_a.(1));
-  let n = dims_a.(0) in
-  let b = M.eye (M.kind a) n in
-  linsolve_lu a b
-
-
 (* Determinant of matrix a *)
 let det a =
   let dims_a = M.shape a in
@@ -367,5 +357,111 @@ let tridiag_solve_vec a b c r =
     x.(j) <- x.(j) -. (gam.(j + 1) *. x.(j + 1))
   done;
   x
+
+
+(* Matrix inverse *)
+
+(* NOTE: deprecated implementation? *)
+(* let inv a =
+  let dims_a = M.shape a in
+  _check_is_matrix dims_a |> ignore;
+  assert (dims_a.(0) = dims_a.(1));
+  let n = dims_a.(0) in
+  let b = M.eye (M.kind a) n in
+  linsolve_lu a b *)
+
+(* TODO: optimise and test *)
+(*
+ Implementing the following algorithm:
+ http://www.irma-international.org/viewtitle/41011/ *)
+let inv varr =
+  let dims = M.shape varr in
+  let _ = _check_is_matrix dims in
+  let n = Array.unsafe_get dims 0 in
+  if Array.unsafe_get dims 1 != n
+  then failwith "no inverse - the matrix is not square"
+  else (
+    let pivot_row = Array.make n 0. in
+    let result_varr = M.copy varr in
+    for p = 0 to n - 1 do
+      let pivot_elem = M.get result_varr [| p; p |] in
+      if M.get result_varr [| p; p |] = 0.
+      then failwith "the matrix does not have an inverse";
+      (* update elements of the pivot row, save old vals *)
+      for j = 0 to n - 1 do
+        pivot_row.(j) <- M.get result_varr [| p; j |];
+        if j != p then M.set result_varr [| p; j |] (pivot_row.(j) /. pivot_elem)
+      done;
+      (* update elements of the pivot col *)
+      for i = 0 to n - 1 do
+        if i != p
+        then M.set result_varr [| i; p |] (M.get result_varr [| i; p |] /. ~-.pivot_elem)
+      done;
+      (* update the rest of the matrix *)
+      for i = 0 to n - 1 do
+        let pivot_col_elem = M.get result_varr [| i; p |] in
+        for j = 0 to n - 1 do
+          if i != p && j != p
+          then (
+            let pivot_row_elem = pivot_row.(j) in
+            (* use old value *)
+            let old_val = M.get result_varr [| i; j |] in
+            let new_val = old_val +. (pivot_row_elem *. pivot_col_elem) in
+            M.set result_varr [| i; j |] new_val)
+        done
+      done;
+      (* update the pivot element *)
+      M.set result_varr [| p; p |] (1. /. pivot_elem)
+    done;
+    result_varr)
+
+
+let logdet _x =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.logdet")
+
+
+let qr ?(thin = true) ?(pivot = false) _x =
+  ignore thin;
+  ignore pivot;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.qr")
+
+
+let lq ?(thin = true) _x =
+  ignore thin;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.lq")
+
+
+let chol ?(upper = true) _x =
+  upper |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.chol")
+
+
+let svd ?(thin = true) _x =
+  thin |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.svd")
+
+
+let sylvester _a _b _c =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.sylvester")
+
+
+let lyapunov _a _q =
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.lyapunov")
+
+
+let discrete_lyapunov ?(solver = `default) _a _q =
+  solver |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.discrete_lyapunov")
+
+
+let linsolve ?(trans = false) ?(typ = `n) _a _b =
+  trans |> ignore;
+  typ |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.linsolve")
+
+
+let care ?(diag_r = false) _a _b _q _r =
+  diag_r |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.care")
 
 (* ends here *)

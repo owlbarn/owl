@@ -3,18 +3,15 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module type Base = sig
-  type elt
-  type mat
-  type complex_mat
-  type int32_mat
+module type Common = sig
+  include Owl_base_linalg_intf.Common
+  (* NOTE: functions below have not been implemented in Base Linalg *)
 
   (** {6 Basic functions} *)
 
   val inv : mat -> mat
   val pinv : ?tol:float -> mat -> mat
   val det : mat -> elt
-  val logdet : mat -> elt
   val rank : ?tol:float -> mat -> int
   val norm : ?p:float -> mat -> float
   val vecnorm : ?p:float -> mat -> float
@@ -29,10 +26,6 @@ module type Base = sig
   (** {6 Factorisation} *)
 
   val lu : mat -> mat * mat * int32_mat
-  val lq : ?thin:bool -> mat -> mat * mat
-  val qr : ?thin:bool -> ?pivot:bool -> mat -> mat * mat * int32_mat
-  val chol : ?upper:bool -> mat -> mat
-  val svd : ?thin:bool -> mat -> mat * mat * mat
   val svdvals : mat -> mat
   val gsvd : mat -> mat -> mat * mat * mat * mat * mat * mat
   val gsvdvals : mat -> mat -> mat
@@ -61,11 +54,7 @@ module type Base = sig
 
   val null : mat -> mat
   val triangular_solve : upper:bool -> ?trans:bool -> mat -> mat -> mat
-  val linsolve : ?trans:bool -> ?typ:[ `n | `u | `l ] -> mat -> mat -> mat
   val linreg : mat -> mat -> elt * elt
-  val sylvester : mat -> mat -> mat -> mat
-  val lyapunov : mat -> mat -> mat
-  val discrete_lyapunov : ?solver:[ `default | `direct | `bilinear ] -> mat -> mat -> mat
 
   (** {6 Low-level factorisation functions} *)
 
@@ -94,8 +83,8 @@ module type Base = sig
 end
 
 module type Real = sig
-  type mat
+  include Owl_base_linalg_intf.Real
+  (* NOTE: functions below have not been implemented in Base Linalg *)
 
-  val care : ?diag_r:bool -> mat -> mat -> mat -> mat -> mat
   val dare : mat -> mat -> mat -> mat -> mat
 end
