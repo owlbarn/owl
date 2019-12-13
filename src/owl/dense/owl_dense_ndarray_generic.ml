@@ -145,26 +145,24 @@ let flatten x = reshape x [|numel x|]
 
 
 let init k d f =
-  let x = empty k d in
-  let y = array1_of_genarray (flatten x) in
-  let n = numel x in
+  let n = Array.fold_right (fun c a -> c * a) d 1 in
+  let y = Array1.create k c_layout n in
   for i = 0 to n - 1 do
     Array1.unsafe_set y i (f i)
   done;
-  x
+  reshape (genarray_of_array1 y) d
 
 
 let init_nd k d f =
-  let x = empty k d in
-  let y = array1_of_genarray (flatten x) in
-  let n = numel x in
+  let n = Array.fold_right (fun c a -> c * a) d 1 in
+  let y = Array1.create k c_layout n in
   let s = Owl_utils.calc_stride d in
   let j = Array.copy s in
   for i = 0 to n - 1 do
     Owl_utils.index_1d_nd i j s;
     Array1.unsafe_set y i (f j)
   done;
-  x
+  reshape (genarray_of_array1 y) d
 
 
 let same_shape x y = (shape x) = (shape y)
