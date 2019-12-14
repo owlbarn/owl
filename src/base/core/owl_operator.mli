@@ -5,11 +5,9 @@
 
 open Owl_types_operator
 
-
 (** {6 Basic operators} *)
 
 module Make_Basic (M : BasicSig) : sig
-
   val ( + ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
   (** Operator of ``add`` *)
 
@@ -66,14 +64,11 @@ module Make_Basic (M : BasicSig) : sig
 
   val ( <= ) : ('a, 'b) M.t -> ('a, 'b) M.t -> bool
   (** Operator of ``less_equal`` *)
-
 end
-
 
 (** {6 Extended operators} *)
 
 module Make_Extend (M : ExtendSig) : sig
-
   val ( =$ ) : ('a, 'b) M.t -> 'a -> bool
   (** Operator of ``equal_scalar`` *)
 
@@ -205,14 +200,11 @@ module Make_Extend (M : ExtendSig) : sig
 
   val ( .${}<- ) : ('a, 'b) M.t -> int list list -> ('a, 'b) M.t -> unit
   (** Operator of ``set_slice`` *)
-
 end
-
 
 (** {6 Matrix-specific operators} *)
 
 module Make_Matrix (M : MatrixSig) : sig
-
   val ( *@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
   (** Operator of ``dot a b``, i.e. matrix multiplication ``a * b``. *)
 
@@ -221,32 +213,24 @@ module Make_Matrix (M : MatrixSig) : sig
 
   val ( .%{}<- ) : ('a, 'b) M.t -> int array -> 'a -> unit
   (** Operator of ``set`` *)
-
 end
-
 
 (** {6 Ndarray-specific operators} *)
 
 module Make_Ndarray (M : NdarraySig) : sig
-
   val ( .%{} ) : ('a, 'b) M.t -> int array -> 'a
   (** Operator of ``get`` *)
 
   val ( .%{}<- ) : ('a, 'b) M.t -> int array -> 'a -> unit
   (** Operator of ``set`` *)
-
 end
-
-
 
 (** {6 Linalg-specific operators} *)
 
 module Make_Linalg (M : LinalgSig) : sig
-
-  val ( **@ ) :  ('a, 'b) M.t -> float -> ('a, 'b) M.t
+  val ( **@ ) : ('a, 'b) M.t -> float -> ('a, 'b) M.t
   (** Operator of ``mpow``, i.e. matrix power. *)
 
   val ( /@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
   (** Operator of ``linsolve a b``, i.e. for solving a linear system ``a * x = b``. *)
-
 end

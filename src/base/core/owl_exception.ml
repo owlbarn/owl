@@ -3,7 +3,6 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 (* Exception definition *)
 
 exception CONV_INVALID_ARGUMENT
@@ -50,16 +49,11 @@ exception INDEX_OUT_OF_BOUND
 
 exception ZOO_ILLEGAL_GIST_NAME
 
-
 (* Core functions *)
 
-let check p e =
-  if p = false then raise e
+let check p e = if p = false then raise e
 
-
-let verify p f =
-  if p = false then raise (f ())
-
+let verify p f = if p = false then raise (f ())
 
 let different_shape sx sy =
   let prefix = "Owl_exception.DIFFERENT_SHAPE:" in
@@ -84,7 +78,7 @@ let invalid_probability p =
 
 
 let linalg_matrix_dot_shape combined_shape =
-  let (xm, xn, ym, yn) = combined_shape in
+  let xm, xn, ym, yn = combined_shape in
   let prefix = "Owl_exception.LINALG_MATRIX_DOT_SHAPE:" in
   Printf.sprintf "%s x[%i,%i] *@ y[%i,%i] is invalid." prefix xm xn ym yn
 

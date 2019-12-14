@@ -3,101 +3,87 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+type 'a node =
+  { mutable id : int
+  ; (* unique identifier *)
+    mutable name : string
+  ; (* name of the node *)
+    mutable prev : 'a node array
+  ; (* parents of the node *)
+    mutable next : 'a node array
+  ; (* children of the node *)
+    mutable attr : 'a (* indicate the validity *)
+  }
 
-type 'a node = {
-  mutable id   : int;            (* unique identifier *)
-  mutable name : string;         (* name of the node *)
-  mutable prev : 'a node array;  (* parents of the node *)
-  mutable next : 'a node array;  (* children of the node *)
-  mutable attr : 'a;             (* indicate the validity *)
-}
+type order =
+  | BFS
+  | DFS
 
-type order = BFS | DFS
+type traversal =
+  | PreOrder
+  | PostOrder
 
-type traversal = PreOrder | PostOrder
-
-type dir = Ancestor | Descendant
-
+type dir =
+  | Ancestor
+  | Descendant
 
 let _global_id = ref 0
 
-
 let id x = x.id
-
 
 let name x = x.name
 
-
 let set_name x s = x.name <- s
-
 
 let parents x = x.prev
 
-
 let set_parents x parents = x.prev <- parents
-
 
 let children x = x.next
 
-
 let set_children x children = x.next <- children
-
 
 let indegree x = Array.length x.prev
 
-
 let outdegree x = Array.length x.next
-
 
 let degree x = Array.(length x.prev + length x.next)
 
-
 let attr x = x.attr
-
 
 let set_attr x a = x.attr <- a
 
-
-let node ?id ?(name="") ?(prev=[||]) ?(next=[||]) attr =
-  let id = match id with
+let node ?id ?(name = "") ?(prev = [||]) ?(next = [||]) attr =
+  let id =
+    match id with
     | Some i -> i
-    | None   -> (
-        _global_id := !_global_id + 1;
-        !_global_id
-      )
+    | None   ->
+      _global_id := !_global_id + 1;
+      !_global_id
   in
   { id; name; prev; next; attr }
 
 
 let connect parents children =
-  Array.iter (fun parent ->
-    parent.next <- Array.append parent.next children;
-    Array.iter (fun child ->
-      child.prev <- Array.append child.prev parents
-    ) children
-  ) parents
+  Array.iter
+    (fun parent ->
+      parent.next <- Array.append parent.next children;
+      Array.iter (fun child -> child.prev <- Array.append child.prev parents) children)
+    parents
 
 
 let connect_descendants parents children =
-  Array.iter (fun parent ->
-    parent.next <- Array.append parent.next children
-  ) parents
+  Array.iter (fun parent -> parent.next <- Array.append parent.next children) parents
 
 
 let connect_ancestors parents children =
-  Array.iter (fun child ->
-    child.prev <- Array.append child.prev parents
-  ) children
+  Array.iter (fun child -> child.prev <- Array.append child.prev parents) children
 
 
 let remove_node x =
-  let f = fun y -> y.id <> x.id in
-  Array.iter (fun parent ->
-    parent.next <- Owl_utils.Array.filter f parent.next
-  ) x.prev;
-  Array.iter (fun child ->
-    child.prev <- Owl_utils.Array.filter f child.prev
-  ) x.next
+  let f y = y.id <> x.id in
+  Array.iter (fun parent -> parent.next <- Owl_utils.Array.filter f parent.next) x.prev;
+  Array.iter (fun child -> child.prev <- Owl_utils.Array.filter f child.prev) x.next
 
 
 let remove_edge src dst =
@@ -106,23 +92,23 @@ let remove_edge src dst =
 
 
 let replace_child child_0 child_1 =
-  Array.iter (fun parent ->
-    let next = Array.map (fun v ->
-      if v.id = child_0.id then child_1 else v
-    ) parent.next
-    in
-    parent.next <- next;
-  ) child_0.prev
+  Array.iter
+    (fun parent ->
+      let next =
+        Array.map (fun v -> if v.id = child_0.id then child_1 else v) parent.next
+      in
+      parent.next <- next)
+    child_0.prev
 
 
 let replace_parent parent_0 parent_1 =
-  Array.iter (fun child ->
-    let prev = Array.map (fun v ->
-      if v.id = parent_0.id then parent_1 else v
-    ) child.prev
-    in
-    child.prev <- prev;
-  ) parent_0.next
+  Array.iter
+    (fun child ->
+      let prev =
+        Array.map (fun v -> if v.id = parent_0.id then parent_1 else v) child.prev
+      in
+      child.prev <- prev)
+    parent_0.next
 
 
 (* depth-first search from [x]; [f : node -> unit] is applied to each node;
@@ -131,15 +117,19 @@ let replace_parent parent_0 parent_1 =
 let dfs_iter traversal f x next =
   let h = Hashtbl.create 512 in
   let rec _dfs_iter y =
-    if not (Hashtbl.mem h y.id) then (
+    if not (Hashtbl.mem h y.id)
+    then (
       Hashtbl.add h y.id None;
-      update y;
-    )
-  and relax y =
-    Array.iter (fun z -> _dfs_iter z) (next y)
-  and update y = match traversal with
-    | PreOrder -> f y; relax y
-    | PostOrder -> relax y; f y
+      update y)
+  and relax y = Array.iter (fun z -> _dfs_iter z) (next y)
+  and update y =
+    match traversal with
+    | PreOrder  ->
+      f y;
+      relax y
+    | PostOrder ->
+      relax y;
+      f y
   in
   Array.iter _dfs_iter x
 
@@ -150,40 +140,44 @@ let dfs_iter traversal f x next =
 let bfs_iter traversal f x next =
   match traversal with
   | PostOrder -> Owl_log.warn "PostOrder BFS not implemented. PreOrder is used."
-  | PreOrder  -> ();
-  let h = Hashtbl.create 512 in
-  let q = Queue.create () in
-  let relax y =
-    Array.iter (fun z ->
-      if not (Hashtbl.mem h z.id) then (
-        Hashtbl.add h z.id None;
-        Queue.push z q
-      )
-    ) (next y)
-  in
-  let update y = f y; relax y in
+  | PreOrder  ->
+    ();
+    let h = Hashtbl.create 512 in
+    let q = Queue.create () in
+    let relax y =
+      Array.iter
+        (fun z ->
+          if not (Hashtbl.mem h z.id)
+          then (
+            Hashtbl.add h z.id None;
+            Queue.push z q))
+        (next y)
+    in
+    let update y =
+      f y;
+      relax y
+    in
+    Array.iter (fun y -> Queue.push y q) x;
+    Array.iter (fun y -> Hashtbl.add h y.id None) x;
+    while not (Queue.is_empty q) do
+      let y = Queue.pop q in
+      update y
+    done
 
-  Array.iter (fun y -> Queue.push y q) x;
-  Array.iter (fun y -> Hashtbl.add h y.id None) x;
-  while not (Queue.is_empty q) do
-    let y = Queue.pop q in
-    update y
-  done
 
-
-let iter_ancestors ?(order=DFS) ?(traversal=PreOrder) f x =
+let iter_ancestors ?(order = DFS) ?(traversal = PreOrder) f x =
   match order with
   | BFS -> bfs_iter traversal f x parents
   | DFS -> dfs_iter traversal f x parents
 
 
-let iter_descendants ?(order=DFS) ?(traversal=PreOrder) f x =
+let iter_descendants ?(order = DFS) ?(traversal = PreOrder) f x =
   match order with
   | BFS -> bfs_iter traversal f x children
   | DFS -> dfs_iter traversal f x children
 
 
-let _iter ?(dir=Ancestor) ?order ?traversal f x =
+let _iter ?(dir = Ancestor) ?order ?traversal f x =
   match dir with
   | Ancestor   -> iter_ancestors ?order ?traversal f x
   | Descendant -> iter_descendants ?order ?traversal f x
@@ -214,15 +208,11 @@ let fold_descendants f a x =
 
 
 let iter_in_edges ?order f x =
-  iter_ancestors ?order (fun dst ->
-    Array.iter (fun src -> f src dst) dst.prev
-  ) x
+  iter_ancestors ?order (fun dst -> Array.iter (fun src -> f src dst) dst.prev) x
 
 
 let iter_out_edges ?order f x =
-  iter_descendants ?order (fun src ->
-    Array.iter (fun dst -> f src dst) src.next
-  ) x
+  iter_descendants ?order (fun src -> Array.iter (fun dst -> f src dst) src.next) x
 
 
 let fold_in_edges f a x =
@@ -240,24 +230,24 @@ let fold_out_edges f a x =
 (* TODO *)
 let _map _f _x = None
 
-
 (* TODO: optimise *)
-let copy ?(dir=Ancestor) x =
+let copy ?(dir = Ancestor) x =
   let _make_if_not_exists h n =
-    if Hashtbl.mem h n.id = true then Hashtbl.find h n.id
+    if Hashtbl.mem h n.id = true
+    then Hashtbl.find h n.id
     else (
       let n' = node ~id:n.id ~name:n.name ~prev:[||] ~next:[||] n.attr in
       Hashtbl.add h n'.id n';
-      n'
-    )
+      n')
   in
   let h = Hashtbl.create 128 in
   let _copy src dst =
     let src' = _make_if_not_exists h src in
     let dst' = _make_if_not_exists h dst in
-    connect [|src'|] [|dst'|]
+    connect [| src' |] [| dst' |]
   in
-  let _ = match dir with
+  let _ =
+    match dir with
     | Ancestor   -> iter_in_edges _copy x
     | Descendant -> iter_out_edges _copy x
   in
@@ -269,7 +259,6 @@ let _to_array = None
 
 (* TODO *)
 let _to_hashtbl = None
-
 
 let num_ancestor x =
   let n = ref 0 in
@@ -283,8 +272,7 @@ let num_descendant x =
   !n
 
 
-let length x = (num_ancestor x) + (num_descendant x) - (Array.length x)
-
+let length x = num_ancestor x + num_descendant x - Array.length x
 
 let node_to_str x =
   Printf.sprintf "[ #%i %s in:%i out:%i ]" x.id x.name (indegree x) (outdegree x)
@@ -308,6 +296,5 @@ let topo_sort nodes =
   let f u = Owl_utils.Stack.push s u in
   iter_ancestors ~order:DFS ~traversal:PostOrder f nodes;
   Owl_utils_stack.to_array s
-
 
 (* ends here *)

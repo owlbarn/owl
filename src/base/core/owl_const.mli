@@ -21,7 +21,6 @@
   http://www.npl.co.uk/upload/pdf/units-of-measurement-poster.pdf
 *)
 
-
 (** {6 Maths constants} *)
 
 val e : float
@@ -72,9 +71,8 @@ val pi_2 : float
 val pi_4 : float
 (** pi_4 = 0.785398163397448309615660845819875721 *)
 
-val eps  : float
+val eps : float
 (** eps = 1e-15 *)
-
 
 (** {6 Constants depending on Bigarray kind} *)
 
@@ -105,11 +103,9 @@ val min_float64 : float
 val max_float64 : float
 (** Maximum value of double precision float number. *)
 
-
 (** {6 Unit prefixes} *)
 
 module Prefix : sig
-
   val fine_structure : float
   (** fine_structure = 7.297352533e-3 *)
 
@@ -175,14 +171,11 @@ module Prefix : sig
 
   val yocto : float
   (** yocto = 1e-24 *)
-
 end
-
 
 (** {6 SI: International System of Units} *)
 
 module SI : sig
-
   val speed_of_light : float
   (** speed_of_light = 2.99792458e8 *)
 
@@ -485,14 +478,11 @@ module SI : sig
 
   val gauss : float
   (** gauss = 1e-4 *)
-
 end
-
 
 (** {6 MKS: MKS system of units} *)
 
 module MKS : sig
-
   val speed_of_light : float
   (** speed_of_light = 2.99792458e8 *)
 
@@ -795,14 +785,11 @@ module MKS : sig
 
   val gauss : float
   (** gauss = 1e-4 *)
-
 end
-
 
 (** {6 CGS: Centimetre–gram–second system of units} *)
 
 module CGS : sig
-
   val speed_of_light : float
   (** speed_of_light = 2.99792458e10 *)
 
@@ -1075,14 +1062,11 @@ module CGS : sig
 
   val thomson_cross_section : float
   (** thomson_cross_section = 6.65245893699e-25 *)
-
 end
-
 
 (** {6 CGSM: Unit Systems in Electromagnetism} *)
 
 module CGSM : sig
-
   val speed_of_light : float
   (** speed_of_light = 2.99792458e10 *)
 
@@ -1373,5 +1357,4 @@ module CGSM : sig
 
   val electron_charge : float
   (** electron_charge = 1.602176487e-20 *)
-
 end

@@ -7,12 +7,9 @@
 
 open Owl_types_operator
 
-
 (* define basic operators *)
 
 module Make_Basic (M : BasicSig) = struct
-
-  [@warning "-34"]
   type ('a, 'b) op_t0 = ('a, 'b) M.t
 
   let ( + ) = M.add
@@ -52,13 +49,10 @@ module Make_Basic (M : BasicSig) = struct
   let ( >= ) = M.greater_equal
 
   let ( <= ) = M.less_equal
-
 end
-
+[@warning "-34"]
 
 module Make_Extend (M : ExtendSig) = struct
-
-  [@warning "-34"]
   type ('a, 'b) op_t1 = ('a, 'b) M.t
 
   let ( =$ ) = M.equal_scalar
@@ -141,54 +135,43 @@ module Make_Extend (M : ExtendSig) = struct
 
   let ( @|| ) = M.concat_horizontal
 
-  let ( .!{ } ) x s = M.get_fancy s x
+  let ( .!{} ) x s = M.get_fancy s x
 
-  let ( .!{ }<- ) x s = M.set_fancy s x
+  let ( .!{}<- ) x s = M.set_fancy s x
 
-  let ( .${ } ) x s = M.get_slice s x
+  let ( .${} ) x s = M.get_slice s x
 
-  let ( .${ }<- ) x s = M.set_slice s x
-
+  let ( .${}<- ) x s = M.set_slice s x
 end
-
+[@warning "-34"]
 
 module Make_Matrix (M : MatrixSig) = struct
-
-  [@warning "-34"]
   type ('a, 'b) op_t2 = ('a, 'b) M.t
 
-  let ( .%{ } ) x i = M.get x i.(0) i.(1)
+  let ( .%{} ) x i = M.get x i.(0) i.(1)
 
-  let ( .%{ }<- ) x i = M.set x i.(0) i.(1)
+  let ( .%{}<- ) x i = M.set x i.(0) i.(1)
 
   let ( *@ ) a b = M.dot a b
-
 end
-
+[@warning "-34"]
 
 module Make_Ndarray (M : NdarraySig) = struct
-
-  [@warning "-34"]
   type ('a, 'b) op_t3 = ('a, 'b) M.t
 
-  let ( .%{ } ) x i = M.get x i
+  let ( .%{} ) x i = M.get x i
 
-  let ( .%{ }<- ) x i = M.set x i
-
+  let ( .%{}<- ) x i = M.set x i
 end
-
+[@warning "-34"]
 
 module Make_Linalg (M : LinalgSig) = struct
-
-  [@warning "-34"]
   type ('a, 'b) op_t4 = ('a, 'b) M.t
 
   let ( **@ ) x a = M.mpow x a
 
   let ( /@ ) a b = M.linsolve a b
-
 end
-
-
+[@warning "-34"]
 
 (* ends here *)
