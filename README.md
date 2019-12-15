@@ -50,5 +50,4 @@ https://github.com/owlbarn/owl/issues/394#issuecomment-471364916
 
 A common source of frustration when installing `owl` is the possible appearence of linking errors (see for example https://github.com/owlbarn/owl/issues/450).
 This usually happens when installing `owl` on ubuntu (where it depends on how openblas is complied and packaged), but could happen in other distributions (see for example https://discuss.ocaml.org/t/owl-undefined-symbols-after-standard-installation/4186/13).
-
 The only way we could solve those issues is to recompile `openblas` and install it manually. You can see how we do it by looking at the Docker files in the repository: https://github.com/owlbarn/owl/blob/master/docker/Dockerfile.ubuntu
