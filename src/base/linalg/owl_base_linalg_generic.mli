@@ -21,11 +21,11 @@ val is_symmetric : ('a, 'b) t -> bool
 
 val is_hermitian : (Complex.t, 'b) t -> bool
 
-val lu : (float, 'a) t -> (float, 'a) t * (float, 'a) t * int array
+val lu : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * int array
 
-val det : (float, 'a) t -> float
+val det : ('a, 'b) t -> 'a
 
-val linsolve_lu : (float, 'a) t -> (float, 'b) t -> (float, 'b) t
+val linsolve_lu : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 val linsolve_gauss : (float, 'a) t -> (float, 'b) t -> (float, 'a) t * (float, 'b) t
 
@@ -36,8 +36,7 @@ val tridiag_solve_vec
   -> float array
   -> float array
 
-(* TODO: change float to 'a *)
-val inv : (float, 'b) t -> (float, 'b) t
+val inv : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val logdet : ('a, 'b) t -> 'a

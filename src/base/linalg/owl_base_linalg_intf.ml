@@ -16,6 +16,8 @@ module type Common = sig
 
   val svd : ?thin:bool -> mat -> mat * mat * mat
 
+  val inv : mat -> mat
+
   val chol : ?upper:bool -> mat -> mat
 
   val qr : ?thin:bool -> ?pivot:bool -> mat -> mat * mat * int32_mat
@@ -34,10 +36,7 @@ end
 module type Real = sig
   type elt
 
-  type mat
-
-  (* TODO: implement inv for both real and complex matrices *)
-  val inv : mat -> mat
+  type mat  
 
   val care : ?diag_r:bool -> mat -> mat -> mat -> mat -> mat
 end

@@ -192,34 +192,43 @@ let linsolve_gauss a b =
  * Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_decomp.py
  *)
 let _lu_base a =
+  let k = M.kind a in 
+  let _abs = Owl_base_dense_common._abs_elt k in
+  let _mul = Owl_base_dense_common._mul_elt k in
+  let _div = Owl_base_dense_common._div_elt k in
+  let _sub = Owl_base_dense_common._sub_elt k in
+  let _flt = Owl_base_dense_common._float_typ_elt k in 
+  let _zero = Owl_const.zero k in 
+  let _one  = Owl_const.one k in 
+
   let lu = M.copy a in
   let n = (M.shape a).(0) in
   let m = (M.shape a).(1) in
   assert (n = m);
   let indx = Array.make n 0 in
   (* implicit scaling of each row *)
-  let vv = Array.make n 0. in
-  let tiny = 1.0e-40 in
-  let big = ref 0. in
-  let temp = ref 0. in
+  let vv = Array.make n _zero in
+  let tiny = _flt 1.0e-40 in
+  let big = ref _zero in
+  let temp = ref _zero in
   (* flag of row exchange *)
   let d = ref 1.0 in
   let imax = ref 0 in
   (* loop over rows to get the implicit scaling information *)
   for i = 0 to n - 1 do
-    big := 0.;
+    big := _zero;
     for j = 0 to n - 1 do
-      temp := M.get lu [| i; j |] |> abs_float;
+      temp := M.get lu [| i; j |] |> _abs;
       if !temp > !big then big := !temp
     done;
-    if !big = 0. then raise Owl_exception.SINGULAR;
-    vv.(i) <- 1.0 /. !big
+    if !big = _zero then raise Owl_exception.SINGULAR;
+    vv.(i) <- _div _one !big
   done;
   for k = 0 to n - 1 do
-    big := 0.;
+    big := _zero;
     (* choose suitable pivot *)
     for i = k to n - 1 do
-      temp := (M.get lu [| i; k |] |> abs_float) *. vv.(i);
+      temp := _mul (M.get lu [| i; k |] |> _abs) vv.(i);
       if !temp > !big
       then (
         big := !temp;
@@ -237,15 +246,15 @@ let _lu_base a =
       d := !d *. -1.;
       vv.(!imax) <- vv.(k));
     indx.(k) <- !imax;
-    if M.get lu [| k; k |] = 0. then M.set lu [| k; k |] tiny;
+    if M.get lu [| k; k |] = _zero then M.set lu [| k; k |] tiny;
     for i = k + 1 to n - 1 do
       let tmp0 = M.get lu [| i; k |] in
       let tmp1 = M.get lu [| k; k |] in
-      temp := tmp0 /. tmp1;
+      temp := _div tmp0 tmp1;
       M.set lu [| i; k |] !temp;
       for j = k + 1 to n - 1 do
         let prev = M.get lu [| i; j |] in
-        M.set lu [| i; j |] (prev -. (!temp *. M.get lu [| k; j |]))
+        M.set lu [| i; j |] (_sub prev (_mul !temp (M.get lu [| k; j |])))
       done
     done
   done;
@@ -255,6 +264,7 @@ let _lu_base a =
 (* LU decomposition, return L, U, and permutation vector *)
 let lu a =
   let k = M.kind a in
+  let _zero = Owl_const.zero k in 
   let lu, indx, _ = _lu_base a in
   let n = (M.shape lu).(0) in
   let m = (M.shape lu).(1) in
@@ -264,18 +274,24 @@ let lu a =
     for c = 0 to r - 1 do
       let v = M.get lu [| r; c |] in
       M.set l [| r; c |] v;
-      M.set lu [| r; c |] 0.
+      M.set lu [| r; c |] _zero
     done
   done;
   l, lu, indx
 
 
 let _lu_solve_vec a b =
+  let _k = M.kind a in
+  let _mul = Owl_base_dense_common._mul_elt _k in
+  let _div = Owl_base_dense_common._div_elt _k in
+  let _sub = Owl_base_dense_common._sub_elt _k in
+  let _zero = Owl_const.zero _k in 
+
   assert (Array.length (M.shape b) = 1);
   let n = (M.shape a).(0) in
   if (M.shape b).(0) <> n then failwith "LUdcmp::solve bad sizes";
   let ii = ref 0 in
-  let sum = ref 0. in
+  let sum = ref _zero in
   let x = M.copy b in
   let lu, indx, _ = _lu_base a in
   for i = 0 to n - 1 do
@@ -285,18 +301,18 @@ let _lu_solve_vec a b =
     if !ii <> 0
     then
       for j = !ii - 1 to i - 1 do
-        sum := !sum -. (M.get lu [| i; j |] *. M.get x [| j |])
+        sum := _sub !sum (_mul (M.get lu [| i; j |]) (M.get x [| j |]))
       done
-    else if !sum <> 0.
+    else if !sum <> _zero
     then ii := !ii + 1;
     M.set x [| i |] !sum
   done;
   for i = n - 1 downto 0 do
     sum := M.get x [| i |];
     for j = i + 1 to n - 1 do
-      sum := !sum -. (M.get lu [| i; j |] *. M.get x [| j |])
+      sum := _sub !sum (_mul (M.get lu [| i; j |])  (M.get x [| j |]))
     done;
-    M.set x [| i |] (!sum /. M.get lu [| i; i |])
+    M.set x [| i |] (_div !sum (M.get lu [| i; i |]))
   done;
   x
 
@@ -320,14 +336,18 @@ let linsolve_lu a b =
 
 (* Determinant of matrix a *)
 let det a =
+  let k = M.kind a in 
+  let _mul = Owl_base_dense_common._mul_elt k in
+  let _flt = Owl_base_dense_common._float_typ_elt k in 
+
   let dims_a = M.shape a in
   _check_is_matrix dims_a |> ignore;
   assert (dims_a.(0) = dims_a.(1));
   let n = dims_a.(0) in
   let lu, _, sign = _lu_base a in
-  let big = ref sign in
+  let big = ref (_flt sign) in
   for i = 0 to n - 1 do
-    big := !big *. M.get lu [| i; i |]
+    big := _mul !big (M.get lu [| i; i |])
   done;
   !big
 
@@ -361,20 +381,19 @@ let tridiag_solve_vec a b c r =
 
 (* Matrix inverse *)
 
-(* NOTE: deprecated implementation? *)
-(* let inv a =
+let inv a =
   let dims_a = M.shape a in
   _check_is_matrix dims_a |> ignore;
   assert (dims_a.(0) = dims_a.(1));
   let n = dims_a.(0) in
   let b = M.eye (M.kind a) n in
-  linsolve_lu a b *)
+  linsolve_lu a b
 
-(* TODO: optimise and test *)
+(* TODO: optimise and test; compare performance *)
 (*
  Implementing the following algorithm:
  http://www.irma-international.org/viewtitle/41011/ *)
-let inv varr =
+(* let inv varr =
   let dims = M.shape varr in
   let _ = _check_is_matrix dims in
   let n = Array.unsafe_get dims 0 in
@@ -414,7 +433,7 @@ let inv varr =
       M.set result_varr [| p; p |] (1. /. pivot_elem)
     done;
     result_varr)
-
+*)
 
 let logdet _x =
   raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.logdet")
