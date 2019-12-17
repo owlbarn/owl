@@ -381,40 +381,43 @@ let tridiag_solve_vec a b c r =
 
 (* Matrix inverse *)
 
-let inv a =
-  let dims_a = M.shape a in
-  _check_is_matrix dims_a |> ignore;
-  assert (dims_a.(0) = dims_a.(1));
-  let n = dims_a.(0) in
-  let b = M.eye (M.kind a) n in
-  linsolve_lu a b
-
-(* TODO: optimise and test; compare performance *)
-(*
- Implementing the following algorithm:
+(* TODO: optimise and test  *)
+(* Implementing the following algorithm:
  http://www.irma-international.org/viewtitle/41011/ *)
-(* let inv varr =
+let inv varr =
+  let _k = M.kind varr in
+  let _add = Owl_base_dense_common._add_elt _k in
+  let _mul = Owl_base_dense_common._mul_elt _k in
+  let _div = Owl_base_dense_common._div_elt _k in
+  let _neg = Owl_base_dense_common._neg_elt _k in
+  let _zero = Owl_const.zero _k in
+  let _one = Owl_const.one _k in
+  
   let dims = M.shape varr in
   let _ = _check_is_matrix dims in
   let n = Array.unsafe_get dims 0 in
   if Array.unsafe_get dims 1 != n
   then failwith "no inverse - the matrix is not square"
   else (
-    let pivot_row = Array.make n 0. in
+    let pivot_row = Array.make n _zero in
     let result_varr = M.copy varr in
     for p = 0 to n - 1 do
       let pivot_elem = M.get result_varr [| p; p |] in
-      if M.get result_varr [| p; p |] = 0.
+      if M.get result_varr [| p; p |] = _zero
       then failwith "the matrix does not have an inverse";
       (* update elements of the pivot row, save old vals *)
       for j = 0 to n - 1 do
         pivot_row.(j) <- M.get result_varr [| p; j |];
-        if j != p then M.set result_varr [| p; j |] (pivot_row.(j) /. pivot_elem)
+        if j != p then M.set result_varr [| p; j |] (_div pivot_row.(j) pivot_elem)
       done;
       (* update elements of the pivot col *)
       for i = 0 to n - 1 do
         if i != p
-        then M.set result_varr [| i; p |] (M.get result_varr [| i; p |] /. ~-.pivot_elem)
+        then
+          M.set
+            result_varr
+            [| i; p |]
+            (_div (M.get result_varr [| i; p |]) (_neg pivot_elem))
       done;
       (* update the rest of the matrix *)
       for i = 0 to n - 1 do
@@ -425,15 +428,15 @@ let inv a =
             let pivot_row_elem = pivot_row.(j) in
             (* use old value *)
             let old_val = M.get result_varr [| i; j |] in
-            let new_val = old_val +. (pivot_row_elem *. pivot_col_elem) in
+            let new_val = _add old_val (_mul pivot_row_elem pivot_col_elem) in
             M.set result_varr [| i; j |] new_val)
         done
       done;
       (* update the pivot element *)
-      M.set result_varr [| p; p |] (1. /. pivot_elem)
+      M.set result_varr [| p; p |] (_div _one pivot_elem)
     done;
     result_varr)
-*)
+
 
 let logdet _x =
   raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.logdet")
