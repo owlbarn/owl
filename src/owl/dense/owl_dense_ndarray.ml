@@ -22,10 +22,6 @@ module Generic = struct
   let inv = Owl_linalg_generic.inv
 
   let mpow = Owl_linalg_generic.mpow
-
-  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
-
-  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
 end
 
 
@@ -38,14 +34,6 @@ module S = struct
   let inv = Owl_linalg_s.inv
 
   let mpow = Owl_linalg_s.mpow
-
-  let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x
-
-  let eye n = Owl_dense_matrix_s.eye n
-
-  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
-
-  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
 end
 
 
@@ -59,14 +47,6 @@ module D = struct
 
   let mpow = Owl_linalg_d.mpow
 
-  let diagm ?(k=0) x = Owl_dense_matrix_generic.diagm ~k x
-
-  let eye n = Owl_dense_matrix_d.eye n
-
-  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
-
-  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
-
 end
 
 
@@ -79,12 +59,6 @@ module C = struct
   let inv = Owl_linalg_c.inv
 
   let mpow = Owl_linalg_c.mpow
-
-  let eye n = Owl_dense_matrix_c.eye n
-
-  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
-
-  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
 end
 
 
@@ -97,12 +71,6 @@ module Z = struct
   let inv = Owl_linalg_z.inv
 
   let mpow = Owl_linalg_z.mpow
-
-  let eye n = Owl_dense_matrix_z.eye n
-
-  let tril ?(k=0) x = Owl_dense_matrix_generic.tril ~k x
-
-  let triu ?(k=0) x = Owl_dense_matrix_generic.triu ~k x
 end
 
 

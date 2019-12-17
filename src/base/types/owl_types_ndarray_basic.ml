@@ -24,8 +24,6 @@ module type Sig = sig
 
   val zeros : int array -> arr
 
-  val eye : int -> arr
-
   val ones : int array -> arr
 
   val create : int array -> elt -> arr
@@ -312,12 +310,6 @@ module type Sig = sig
   val inv : arr -> arr
 
   val diag : ?k:int -> arr -> arr
-
-  val diagm : ?k:int -> arr -> arr
-
-  val triu: ?k:int -> arr -> arr
-
-  val tril: ?k:int -> arr -> arr
 
   val trace : arr -> elt
 

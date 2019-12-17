@@ -34,8 +34,6 @@ module Make
   let ones shape =
     make_node ~shape:[|Some shape|] (Ones shape) |> node_to_arr
 
-  let eye _n = raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.eye")
-
   let create shape v =
     make_then_connect ~shape:[|Some shape|] (Create shape) [|elt_to_node v|] |> node_to_arr
 
@@ -474,23 +472,11 @@ module Make
 
   let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
 
+  let trace x = make_then_connect Trace [|arr_to_node x|] |> node_to_elt
+
   let diag ?k _x =
     k |> ignore;
     raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.diag")
-
-  let diagm ?k _x =
-    k |> ignore;
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.diagm")
-
-  let tril ?k _x =
-    k |> ignore;
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.tril")
-
-  let triu ?k _x =
-    k |> ignore;
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.triu")
-
-  let trace x = make_then_connect Trace [|arr_to_node x|] |> node_to_elt
 
   let dot x y =
     let transa = false in
@@ -604,6 +590,24 @@ module Make
     let relu x = make_then_connect Scalar_Relu [|elt_to_node x|] |> node_to_elt
 
     let sigmoid x = make_then_connect Scalar_Sigmoid [|elt_to_node x|] |> node_to_elt
+
+  end
+
+  module Mat = struct
+
+    let eye _n = raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.eye")
+
+    let diagm ?k _x =
+      k |> ignore;
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.diagm")
+
+    let tril ?k _x =
+      k |> ignore;
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.tril")
+
+    let triu ?k _x =
+      k |> ignore;
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.triu")
 
   end
 

@@ -29,9 +29,6 @@ module type Sig = sig
   val ones : int array -> arr
   (** TODO *)
 
-  val eye : int -> arr
-  (** TODO *)
-
   val create : int array -> elt -> arr
   (** TODO *)
 
@@ -512,15 +509,6 @@ module type Sig = sig
   val diag: ?k:int -> arr -> arr
   (** TODO *)
 
-  val diagm: ?k:int -> arr -> arr
-  (** TODO *)
-
-  val triu: ?k:int -> arr -> arr
-  (** TODO *)
-
-  val tril: ?k:int -> arr -> arr
-  (** TODO *)
-
   val trace : arr -> elt
   (** TODO *)
 
@@ -648,6 +636,22 @@ module type Sig = sig
     (** TODO *)
 
     val sigmoid : elt -> elt
+    (** TODO *)
+
+  end
+
+  module Mat : sig
+
+    val eye : int -> arr
+    (** TODO *)
+
+    val diagm: ?k:int -> arr -> arr
+    (** TODO *)
+
+    val triu: ?k:int -> arr -> arr
+    (** TODO *)
+
+    val tril: ?k:int -> arr -> arr
     (** TODO *)
 
   end

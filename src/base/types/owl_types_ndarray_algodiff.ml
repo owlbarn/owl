@@ -77,6 +77,15 @@ module type Sig = sig
 
   end
 
+  module Mat : sig
+    val diagm : ?k:int -> arr -> arr
+
+    val triu: ?k:int -> arr -> arr
+
+    val tril: ?k:int -> arr -> arr
+
+    val eye : int -> arr
+  end
 
   module Linalg : sig
     val logdet: arr -> elt
@@ -98,7 +107,7 @@ module type Sig = sig
     val linsolve: ?trans:bool -> ?typ:[`n | `u | `l] -> arr -> arr -> arr
 
     val care : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr
-
   end
+
 
 end

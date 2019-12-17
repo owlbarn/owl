@@ -671,7 +671,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let ff_f a = error_uniop label (pack_elt a)
 
-              let ff_arr a = Arr A.(diagm ~k a |> copy)
+              let ff_arr a = Arr A.(Mat.diagm ~k a |> copy)
 
               let df _cp _ap at = diagm ~k at
 
@@ -710,7 +710,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let ff_f a = error_uniop label (pack_elt a)
 
-              let ff_arr a = Arr A.(triu ~k a)
+              let ff_arr a = Arr A.(Mat.triu ~k a)
 
               let df _cp _ap at = triu ~k at
 
@@ -729,7 +729,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let ff_f a = error_uniop label (pack_elt a)
 
-              let ff_arr a = Arr A.(tril ~k a)
+              let ff_arr a = Arr A.(Mat.tril ~k a)
 
               let df _cp _ap at = tril ~k at
 
@@ -2627,7 +2627,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     let zeros m n = A.zeros [| m; n |] |> pack_arr
 
-    let eye n = A.eye n |> pack_arr
+    let eye n = A.Mat.eye n |> pack_arr
 
     let ones m n = A.ones [| m; n |] |> pack_arr
 
