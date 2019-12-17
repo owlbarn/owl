@@ -509,36 +509,6 @@ module type Sig = sig
   val inv : arr -> arr
   (** TODO *)
 
-  val logdet: arr -> elt
-  (** TODO *)
-
-  val chol: ?upper:bool -> arr -> arr
-  (** TODO *)
-
-  val qr : arr -> arr * arr
-  (** TODO *)
-
-  val lq : arr -> arr * arr
-  (** TODO *)
-
-  val svd : ?thin:bool -> arr -> arr * arr * arr
-  (** TODO *)
-
-  val sylvester: arr -> arr -> arr -> arr
-  (** TODO *)
-
-  val lyapunov : arr -> arr -> arr
-  (** TODO *)
-
-  val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> arr -> arr -> arr
-  (** TODO *)
-
-  val linsolve : ?trans:bool -> ?typ:[`n | `u | `l] -> arr -> arr -> arr
-  (** TODO *)
-
-  val care : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr
-  (** TODO *)
-
   val diag: ?k:int -> arr -> arr
   (** TODO *)
 
@@ -680,6 +650,38 @@ module type Sig = sig
     val sigmoid : elt -> elt
     (** TODO *)
 
+  end
+
+  module Linalg : sig
+    val logdet: arr -> elt
+    (** TODO *)
+
+    val chol: ?upper:bool -> arr -> arr
+    (** TODO *)
+
+    val qr : arr -> arr * arr
+    (** TODO *)
+
+    val lq : arr -> arr * arr
+    (** TODO *)
+
+    val svd : ?thin:bool -> arr -> arr * arr * arr
+    (** TODO *)
+
+    val sylvester: arr -> arr -> arr -> arr
+    (** TODO *)
+
+    val lyapunov : arr -> arr -> arr
+    (** TODO *)
+
+    val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> arr -> arr -> arr
+    (** TODO *)
+
+    val linsolve : ?trans:bool -> ?typ:[`n | `u | `l] -> arr -> arr -> arr
+    (** TODO *)
+
+    val care : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr
+    (** TODO *)
   end
 
 end
