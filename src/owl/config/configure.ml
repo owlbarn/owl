@@ -223,7 +223,7 @@ some details on how your openblas has been installed and the output of
             |> not
           )
         in
-        if needs_lapacke_flag then [] else []
+        if needs_lapacke_flag then ["-llapacke"] else []
       in
       let openmp_config = get_openmp_config c in
 
