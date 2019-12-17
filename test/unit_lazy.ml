@@ -1,7 +1,7 @@
 (** Unit test for Owl_lazy module *)
 
 open Owl
-module M = Owl.Lazy.Make (Arr)
+module M = Owl.Lazy.Make (Owl_algodiff_baseops.D)
 
 let tol = 20.0 *. epsilon_float
 
