@@ -18,11 +18,11 @@ end
 
 
 (* Optimise module of Float32 type *)
-module S = Make_Embedded (Owl_algodiff_baseops.S)
+module S = Make_Embedded (Owl_algodiff_primal_ops.S)
 
 
 (* Optimise module of Float64 type *)
-module D = Make_Embedded (Owl_algodiff_baseops.D)
+module D = Make_Embedded (Owl_algodiff_primal_ops.D)
 
 
 (* ends here *)
