@@ -38,7 +38,6 @@ module type Common = sig
 
   val lq : ?thin:bool -> mat -> mat * mat
 
-
   (** {6 Linear system of equations} *)
 
   val linsolve : ?trans:bool -> ?typ:[ `n | `u | `l ] -> mat -> mat -> mat
@@ -48,13 +47,12 @@ module type Common = sig
   val lyapunov : mat -> mat -> mat
 
   val discrete_lyapunov : ?solver:[ `default | `direct | `bilinear ] -> mat -> mat -> mat
-  
 end
 
 module type Real = sig
   type elt
 
-  type mat  
+  type mat
 
   val care : ?diag_r:bool -> mat -> mat -> mat -> mat -> mat
 end

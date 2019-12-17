@@ -192,15 +192,14 @@ let linsolve_gauss a b =
  * Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_decomp.py
  *)
 let _lu_base a =
-  let k = M.kind a in 
+  let k = M.kind a in
   let _abs = Owl_base_dense_common._abs_elt k in
   let _mul = Owl_base_dense_common._mul_elt k in
   let _div = Owl_base_dense_common._div_elt k in
   let _sub = Owl_base_dense_common._sub_elt k in
-  let _flt = Owl_base_dense_common._float_typ_elt k in 
-  let _zero = Owl_const.zero k in 
-  let _one  = Owl_const.one k in 
-
+  let _flt = Owl_base_dense_common._float_typ_elt k in
+  let _zero = Owl_const.zero k in
+  let _one = Owl_const.one k in
   let lu = M.copy a in
   let n = (M.shape a).(0) in
   let m = (M.shape a).(1) in
@@ -264,7 +263,7 @@ let _lu_base a =
 (* LU decomposition, return L, U, and permutation vector *)
 let lu a =
   let k = M.kind a in
-  let _zero = Owl_const.zero k in 
+  let _zero = Owl_const.zero k in
   let lu, indx, _ = _lu_base a in
   let n = (M.shape lu).(0) in
   let m = (M.shape lu).(1) in
@@ -285,8 +284,7 @@ let _lu_solve_vec a b =
   let _mul = Owl_base_dense_common._mul_elt _k in
   let _div = Owl_base_dense_common._div_elt _k in
   let _sub = Owl_base_dense_common._sub_elt _k in
-  let _zero = Owl_const.zero _k in 
-
+  let _zero = Owl_const.zero _k in
   assert (Array.length (M.shape b) = 1);
   let n = (M.shape a).(0) in
   if (M.shape b).(0) <> n then failwith "LUdcmp::solve bad sizes";
@@ -310,7 +308,7 @@ let _lu_solve_vec a b =
   for i = n - 1 downto 0 do
     sum := M.get x [| i |];
     for j = i + 1 to n - 1 do
-      sum := _sub !sum (_mul (M.get lu [| i; j |])  (M.get x [| j |]))
+      sum := _sub !sum (_mul (M.get lu [| i; j |]) (M.get x [| j |]))
     done;
     M.set x [| i |] (_div !sum (M.get lu [| i; i |]))
   done;
@@ -336,10 +334,9 @@ let linsolve_lu a b =
 
 (* Determinant of matrix a *)
 let det a =
-  let k = M.kind a in 
+  let k = M.kind a in
   let _mul = Owl_base_dense_common._mul_elt k in
-  let _flt = Owl_base_dense_common._float_typ_elt k in 
-
+  let _flt = Owl_base_dense_common._float_typ_elt k in
   let dims_a = M.shape a in
   _check_is_matrix dims_a |> ignore;
   assert (dims_a.(0) = dims_a.(1));
@@ -379,8 +376,6 @@ let tridiag_solve_vec a b c r =
   x
 
 
-(* Matrix inverse *)
-
 (* TODO: optimise and test  *)
 (* Implementing the following algorithm:
  http://www.irma-international.org/viewtitle/41011/ *)
@@ -392,7 +387,6 @@ let inv varr =
   let _neg = Owl_base_dense_common._neg_elt _k in
   let _zero = Owl_const.zero _k in
   let _one = Owl_const.one _k in
-  
   let dims = M.shape varr in
   let _ = _check_is_matrix dims in
   let n = Array.unsafe_get dims 0 in

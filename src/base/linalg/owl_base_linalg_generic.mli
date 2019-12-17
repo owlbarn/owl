@@ -41,7 +41,6 @@ val is_symmetric : ('a, 'b) t -> bool
 val is_hermitian : (Complex.t, 'b) t -> bool
 (** ``is_hermitian x`` returns ``true`` if ``x`` is hermitian otherwise ``false``. *)
 
-
 (** {6 Factorisation} *)
 
 val lu : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * int array
@@ -66,7 +65,6 @@ val svd : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
 val chol : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-
 (** {6 Linear system of equations} *)
 
 val linsolve
@@ -79,7 +77,6 @@ val linsolve
 
 val sylvester : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
-
 
 val lyapunov : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
@@ -99,7 +96,6 @@ val care
   -> (float, 'b) t
   -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
-
 
 (** {6 Non-standard functions} *)
 
