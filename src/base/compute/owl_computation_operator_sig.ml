@@ -503,9 +503,6 @@ module type Sig = sig
   val copy_col_to : arr -> 'a -> 'b -> unit
   (** TODO *)
 
-  val inv : arr -> arr
-  (** TODO *)
-
   val diag: ?k:int -> arr -> arr
   (** TODO *)
 
@@ -657,6 +654,9 @@ module type Sig = sig
   end
 
   module Linalg : sig
+    val inv : arr -> arr
+    (** TODO *)
+
     val logdet: arr -> elt
     (** TODO *)
 
@@ -687,5 +687,4 @@ module type Sig = sig
     val care : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr
     (** TODO *)
   end
-
 end

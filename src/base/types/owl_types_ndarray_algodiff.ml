@@ -88,6 +88,8 @@ module type Sig = sig
   end
 
   module Linalg : sig
+    val inv : arr -> arr
+
     val logdet: arr -> elt
 
     val chol : ?upper:bool -> arr -> arr

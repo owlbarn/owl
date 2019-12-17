@@ -470,8 +470,6 @@ module Make
 
   let copy_col_to x _y _j = make_then_connect CopyColTo [|arr_to_node x|] |> ignore
 
-  let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
-
   let trace x = make_then_connect Trace [|arr_to_node x|] |> node_to_elt
 
   let diag ?k _x =
@@ -612,6 +610,8 @@ module Make
   end
 
   module Linalg = struct
+
+    let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
 
     let logdet _x =
         raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.logdet")

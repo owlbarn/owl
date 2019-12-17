@@ -19,8 +19,6 @@ module Generic = struct
 
   (* inject function aliases *)
 
-  let inv = Owl_linalg_generic.inv
-
   let mpow = Owl_linalg_generic.mpow
 end
 
@@ -31,8 +29,6 @@ module S = struct
 
   (* inject function aliases *)
 
-  let inv = Owl_linalg_s.inv
-
   let mpow = Owl_linalg_s.mpow
 end
 
@@ -42,8 +38,6 @@ module D = struct
   include Operator
 
   (* inject function aliases *)
-
-  let inv = Owl_linalg_d.inv
 
   let mpow = Owl_linalg_d.mpow
 
@@ -56,8 +50,6 @@ module C = struct
 
   (* inject function aliases *)
 
-  let inv = Owl_linalg_c.inv
-
   let mpow = Owl_linalg_c.mpow
 end
 
@@ -67,8 +59,6 @@ module Z = struct
   include Operator
 
   (* inject function aliases *)
-
-  let inv = Owl_linalg_z.inv
 
   let mpow = Owl_linalg_z.mpow
 end

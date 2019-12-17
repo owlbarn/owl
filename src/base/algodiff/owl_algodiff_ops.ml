@@ -747,7 +747,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let ff_f a = error_uniop label (pack_elt a)
 
-             let ff_arr a = Arr A.(inv a)
+             let ff_arr a = Arr A.(Linalg.inv a)
 
              let df cp _ap at = neg cp *@ at *@ cp
 

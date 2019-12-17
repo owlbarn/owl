@@ -514,9 +514,6 @@ module Make (A : Ndarray_Mutable) : sig
   val copy_col_to : arr -> 'a -> 'b -> unit
   (** TODO *)
 
-  val inv : arr -> arr
-  (** TODO *)
-
   val trace : arr -> elt
   (** TODO *)
 

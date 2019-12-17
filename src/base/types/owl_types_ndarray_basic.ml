@@ -307,8 +307,6 @@ module type Sig = sig
 
   val dot : arr -> arr -> arr
 
-  val inv : arr -> arr
-
   val diag : ?k:int -> arr -> arr
 
   val trace : arr -> elt
