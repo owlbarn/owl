@@ -11,7 +11,7 @@
  * Code heavily inspired by Eigen (http://eigen.tuxfamily.org/).
  */
 
-#define IM2COL_THRESHOLD 512 * 1024
+#define IM2COL_THRESHOLD LONG_MAX // TODO: a temp hack to disable the second conv algorithm
 #define ALIGN_SIZE 32 // for AVX address alignment
 
 

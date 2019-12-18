@@ -6,6 +6,7 @@
 #include "owl_core.h"
 #include "cblas.h"
 #include <string.h>
+#include <limits.h>
 
 
 #define OWL_ENABLE_TEMPLATE
