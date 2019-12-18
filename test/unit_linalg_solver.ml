@@ -2,6 +2,8 @@ open Owl_exception
 module N = Owl_base_dense_ndarray.D
 module L = Owl_base_linalg_generic
 
+(* TODO: add complex input cases *)
+
 (* define the test error *)
 
 let approx_equal a b =
