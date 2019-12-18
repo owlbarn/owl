@@ -26,6 +26,8 @@
 
 (copy_files# optimise/*)
 
+(copy_files# algodiff/*)
+
 (copy_files# neural/*)
 
 (copy_files# fftpack/*)
