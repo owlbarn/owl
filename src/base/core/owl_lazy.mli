@@ -4,7 +4,6 @@
  *)
 
 open Owl_types
-
 open Owl_graph
 
 (*
@@ -13,8 +12,6 @@ open Owl_graph
  *)
 
 module Make (A : Ndarray_Mutable) : sig
-
-
   (** {6 Type definition} *)
 
   type arr
@@ -31,7 +28,6 @@ module Make (A : Ndarray_Mutable) : sig
 
   type graph
   (** TODO *)
-
 
   (** {6 Type conversion functions} *)
 
@@ -80,7 +76,6 @@ module Make (A : Ndarray_Mutable) : sig
   val elt_to_float : elt -> float
   (** TODO *)
 
-
   (** {6 Utility functions} *)
 
   val graph_to_dot : graph -> string
@@ -88,7 +83,6 @@ module Make (A : Ndarray_Mutable) : sig
 
   val graph_to_trace : graph -> string
   (** TODO *)
-
 
   (** {6 Create variables} *)
 
@@ -112,7 +106,6 @@ module Make (A : Ndarray_Mutable) : sig
 
   val unsafe_assign_arr : arr -> A.arr -> unit
   (** TODO *)
-
 
   (** {6 Maths funcitons} *)
 
@@ -203,7 +196,13 @@ module Make (A : Ndarray_Mutable) : sig
   val one_hot : int -> arr -> arr
   (** TODO *)
 
-  val lazy_print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(A.elt -> string) -> arr -> arr
+  val lazy_print
+    :  ?max_row:int
+    -> ?max_col:int
+    -> ?header:bool
+    -> ?fmt:(A.elt -> string)
+    -> arr
+    -> arr
   (** TODO *)
 
   val print : ?max_row:'a -> ?max_col:'b -> ?header:'c -> ?fmt:'d -> 'e -> unit
@@ -515,9 +514,6 @@ module Make (A : Ndarray_Mutable) : sig
   val copy_col_to : arr -> 'a -> 'b -> unit
   (** TODO *)
 
-  val inv : arr -> arr
-  (** TODO *)
-
   val trace : arr -> elt
   (** TODO *)
 
@@ -544,7 +540,6 @@ module Make (A : Ndarray_Mutable) : sig
 
   val of_arrays : elt array array -> arr
   (** TODO *)
-
 
   (** {6 Evaluation functions} *)
 
@@ -577,6 +572,4 @@ module Make (A : Ndarray_Mutable) : sig
 
   val eval_graph : graph -> unit
   (** TODO *)
-
-
 end

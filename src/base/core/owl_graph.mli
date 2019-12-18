@@ -5,21 +5,22 @@
 
 (** Graph module supports basic operations on DAG. *)
 
-
 (** {6 Type definition} *)
 
-type order = BFS | DFS
-(** Order to traverse a graph, BFS or DFS. *)
+type order =
+  | BFS
+  | DFS (** Order to traverse a graph, BFS or DFS. *)
 
-type traversal = PreOrder | PostOrder
-(** Order of the function evaluation. *)
+type traversal =
+  | PreOrder
+  | PostOrder (** Order of the function evaluation. *)
 
-type dir = Ancestor | Descendant
-(** Iteration direction, i.e. ancestors or descendants *)
+type dir =
+  | Ancestor
+  | Descendant (** Iteration direction, i.e. ancestors or descendants *)
 
 type 'a node
 (** type definition of a node *)
-
 
 (** {6 Obtaining properties} *)
 
@@ -68,10 +69,15 @@ val num_descendant : 'a node array -> int
 val length : 'a node array -> int
 (** ``length x`` returns the total number of ancestors and descendants of ``x``. *)
 
-
 (** {6 Manipulation functions} *)
 
-val node : ?id:int -> ?name:string -> ?prev:'a node array -> ?next:'a node array -> 'a -> 'a node
+val node
+  :  ?id:int
+  -> ?name:string
+  -> ?prev:'a node array
+  -> ?next:'a node array
+  -> 'a
+  -> 'a node
 (**
 ``node ~id ~name ~prev ~next attr`` creates a node with given id and name
 string. The created node is also connected to parents in ``prev`` and children
@@ -142,13 +148,22 @@ fileds of the nodes in the new graph share the same memory with those in the
 original graph.
  *)
 
-
 (** {6 Iterators} *)
 
-val iter_ancestors : ?order:order -> ?traversal:traversal -> ('a node -> unit) -> 'a node array -> unit
+val iter_ancestors
+  :  ?order:order
+  -> ?traversal:traversal
+  -> ('a node -> unit)
+  -> 'a node array
+  -> unit
 (** Iterate the ancestors of a given node. *)
 
-val iter_descendants : ?order:order -> ?traversal:traversal -> ('a node -> unit) -> 'a node array -> unit
+val iter_descendants
+  :  ?order:order
+  -> ?traversal:traversal
+  -> ('a node -> unit)
+  -> 'a node array
+  -> unit
 (** Iterate the descendants of a given node. *)
 
 val filter_ancestors : ('a node -> bool) -> 'a node array -> 'a node array
@@ -175,7 +190,6 @@ val fold_in_edges : ('b -> 'a node -> 'a node -> 'b) -> 'b -> 'a node array -> '
 val fold_out_edges : ('b -> 'a node -> 'a node -> 'b) -> 'b -> 'a node array -> 'b
 (** Fold all the out-edges of a given node. *)
 
-
 (** {6 Helper functions} *)
 
 val topo_sort : 'a node array -> 'a node array
@@ -184,7 +198,8 @@ Topological sort of a given graph using a DFS order. Assumes that the graph is
 acyclic.
  *)
 
-val pp_node : Format.formatter -> 'a node -> unit [@@ocaml.toplevel_printer]
+val pp_node : Format.formatter -> 'a node -> unit
+  [@@ocaml.toplevel_printer]
 (** Pretty print a given node. *)
 
 val to_string : bool -> 'a node array -> string

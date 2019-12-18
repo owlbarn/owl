@@ -671,7 +671,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let ff_f a = error_uniop label (pack_elt a)
 
-              let ff_arr a = Arr A.(diagm ~k a |> copy)
+              let ff_arr a = Arr A.(Mat.diagm ~k a |> copy)
 
               let df _cp _ap at = diagm ~k at
 
@@ -710,7 +710,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let ff_f a = error_uniop label (pack_elt a)
 
-              let ff_arr a = Arr A.(triu ~k a)
+              let ff_arr a = Arr A.(Mat.triu ~k a)
 
               let df _cp _ap at = triu ~k at
 
@@ -729,7 +729,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let ff_f a = error_uniop label (pack_elt a)
 
-              let ff_arr a = Arr A.(tril ~k a)
+              let ff_arr a = Arr A.(Mat.tril ~k a)
 
               let df _cp _ap at = tril ~k at
 
@@ -747,7 +747,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let ff_f a = error_uniop label (pack_elt a)
 
-             let ff_arr a = Arr A.(inv a)
+             let ff_arr a = Arr A.(Linalg.inv a)
 
              let df cp _ap at = neg cp *@ at *@ cp
 
@@ -1456,7 +1456,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let ff_f a = error_uniop label (pack_elt a)
 
-             let ff_arr a = F A.(logdet a)
+             let ff_arr a = F A.(Linalg.logdet a)
 
              let df _cp ap at = trace (transpose (inv ap) *@ at)
 
@@ -1503,7 +1503,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let ff_f a = error_uniop "chol" (pack_elt a)
 
-              let ff_arr a = Arr A.(chol ~upper a)
+              let ff_arr a = Arr A.(Linalg.chol ~upper a)
 
               let df cp _ap at = _chol_forward cp at upper
 
@@ -1531,7 +1531,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let ff_f a = error_uniop "qr" (pack_elt a)
 
              let ff_arr a =
-               let q, r = A.(qr a) in
+               let q, r = A.(Linalg.qr a) in
                Arr q, Arr r
 
 
@@ -1562,7 +1562,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let ff_f a = error_uniop "lq" (pack_elt a)
 
              let ff_arr a =
-               let l, q = A.(lq a) in
+               let l, q = A.(Linalg.lq a) in
                Arr l, Arr q
 
 
@@ -1624,7 +1624,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               let ff_f a = error_uniop "svd" (pack_elt a)
 
               let ff_arr a =
-                let u, s, vt = A.(svd ~thin a) in
+                let u, s, vt = A.(Linalg.svd ~thin a) in
                 Arr u, Arr s, Arr vt
 
 
@@ -1661,7 +1661,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let ff a =
                match unpack a with
-               | Arr a, Arr b, Arr c -> A.sylvester a b c |> pack_arr
+               | Arr a, Arr b, Arr c -> A.Linalg.sylvester a b c |> pack_arr
                | _                   -> error_uniop "sylvester" a.(0)
 
 
@@ -1710,7 +1710,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let ff_ba _a q = error_uniop label (pack_elt q)
 
-             let ff_bb a q = Arr A.(lyapunov a q)
+             let ff_bb a q = Arr A.(Linalg.lyapunov a q)
 
              let df_da cp ap at _qp =
                lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at)))
@@ -1758,7 +1758,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let ff_ba _a q = error_uniop label (pack_elt q)
 
-              let ff_bb a q = Arr A.(discrete_lyapunov ~solver a q)
+              let ff_bb a q = Arr A.(Linalg.discrete_lyapunov ~solver a q)
 
               let df_da cp ap at _qp =
                 let g = ap *@ cp *@ transpose at in
@@ -1811,7 +1811,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let ff_ba _a q = error_uniop label (pack_elt q)
 
-              let ff_bb a q = Arr A.(linsolve ~trans ~typ a q)
+              let ff_bb a q = Arr A.(Linalg.linsolve ~trans ~typ a q)
 
               let df_da cp ap at _qp =
                 linsolve
@@ -1905,7 +1905,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
                let ff a =
                  match unpack a with
-                 | Arr a, Arr b, Arr q, Arr r -> A.care ~diag_r a b q r |> pack_arr
+                 | Arr a, Arr b, Arr q, Arr r -> A.Linalg.care ~diag_r a b q r |> pack_arr
                  | _                          -> error_uniop "care" a.(0)
 
 
@@ -2627,7 +2627,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     let zeros m n = A.zeros [| m; n |] |> pack_arr
 
-    let eye n = A.eye n |> pack_arr
+    let eye n = A.Mat.eye n |> pack_arr
 
     let ones m n = A.ones [| m; n |] |> pack_arr
 

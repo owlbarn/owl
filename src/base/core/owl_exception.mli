@@ -3,7 +3,6 @@
  * Copyright (c) 2016-2019 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 (** {6 Core function} *)
 
 val check : bool -> exn -> unit
@@ -38,9 +37,9 @@ val to_string : exn -> string
 detailed information for debugging the code.
  *)
 
-val pp_exception : Format.formatter -> exn -> unit [@@ocaml.toplevel_printer]
+val pp_exception : Format.formatter -> exn -> unit
+  [@@ocaml.toplevel_printer]
 (** ``pp_exception`` is the pretty printer for Owl exceptions. *)
-
 
 (** {6 Exception definition} *)
 

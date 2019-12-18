@@ -34,8 +34,6 @@ module Make
   let ones shape =
     make_node ~shape:[|Some shape|] (Ones shape) |> node_to_arr
 
-  let eye _n = raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.eye")
-
   let create shape v =
     make_then_connect ~shape:[|Some shape|] (Create shape) [|elt_to_node v|] |> node_to_arr
 
@@ -472,60 +470,11 @@ module Make
 
   let copy_col_to x _y _j = make_then_connect CopyColTo [|arr_to_node x|] |> ignore
 
-  let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
-
-  let logdet _x =
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.logdet")
-
-  let chol ?(upper=true) _x =
-    upper |> ignore;
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.chol")
-
-  let svd ?(thin=true) _x =
-    thin |> ignore;
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.svd")
-
-  let qr _x =
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.qr")
-
-  let lq _x =
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.lq")
-
-  let sylvester _a _b _c =
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.sylvester")
-
-  let lyapunov _a _q =
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.lyapunov")
-
-  let discrete_lyapunov ?(solver=`default) _a _q =
-    solver |> ignore;
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.discrete_lyapunov")
-
-  let linsolve ?trans ?(typ=`n) _a _b =
-    trans |> ignore; typ |> ignore;
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.linsolve")
-
-  let care ?(diag_r = false) _a _b _q _r =
-    diag_r |> ignore;
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.care")
+  let trace x = make_then_connect Trace [|arr_to_node x|] |> node_to_elt
 
   let diag ?k _x =
     k |> ignore;
     raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.diag")
-
-  let diagm ?k _x =
-    k |> ignore;
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.diagm")
-
-  let tril ?k _x =
-    k |> ignore;
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.tril")
-
-  let triu ?k _x =
-    k |> ignore;
-    raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.triu")
-
-  let trace x = make_then_connect Trace [|arr_to_node x|] |> node_to_elt
 
   let dot x y =
     let transa = false in
@@ -642,6 +591,64 @@ module Make
 
   end
 
+  module Mat = struct
+
+    let eye _n = raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.eye")
+
+    let diagm ?k _x =
+      k |> ignore;
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.diagm")
+
+    let tril ?k _x =
+      k |> ignore;
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.tril")
+
+    let triu ?k _x =
+      k |> ignore;
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.triu")
+
+  end
+
+  module Linalg = struct
+
+    let inv x = make_then_connect Inv [|arr_to_node x|] |> node_to_arr
+
+    let logdet _x =
+        raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.logdet")
+
+    let chol ?(upper=true) _x =
+      upper |> ignore;
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.chol")
+
+    let svd ?(thin=true) _x =
+      thin |> ignore;
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.svd")
+
+    let qr _x =
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.qr")
+
+    let lq _x =
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.lq")
+
+    let sylvester _a _b _c =
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.sylvester")
+
+    let lyapunov _a _q =
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.lyapunov")
+
+    let discrete_lyapunov ?(solver=`default) _a _q =
+      solver |> ignore;
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.discrete_lyapunov")
+
+    let linsolve ?trans ?(typ=`n) _a _b =
+      trans |> ignore; typ |> ignore;
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.linsolve")
+
+    let care ?(diag_r = false) _a _b _q _r =
+      diag_r |> ignore;
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.care")
+
+  end
 
 end
 

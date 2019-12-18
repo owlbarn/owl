@@ -5,13 +5,10 @@
 
 open Owl_types
 
-
 (* Functor of making a Lazy engine, just an alias of CPU engine. *)
 
 module Make (A : Ndarray_Mutable) = struct
-
   include Owl_computation_cpu_engine.Make (A)
-
 end
 
 (* Make functor ends *)

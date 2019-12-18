@@ -8,9 +8,9 @@ open Owl
 
 (* all supported modules by computation graph *)
 
-module CGraph_S = Owl_computation_engine.Make_Graph (Owl_computation_cpu_device.Make (Dense.Ndarray.S))
+module CGraph_S = Owl_computation_engine.Make_Graph (Owl_computation_cpu_device.Make (Owl_algodiff_primal_ops.S))
 
-module CGraph_D = Owl_computation_engine.Make_Graph (Owl_computation_cpu_device.Make (Dense.Ndarray.D))
+module CGraph_D = Owl_computation_engine.Make_Graph (Owl_computation_cpu_device.Make (Owl_algodiff_primal_ops.D))
 
 
 (* core functions *)

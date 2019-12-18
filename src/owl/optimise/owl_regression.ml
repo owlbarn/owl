@@ -24,10 +24,10 @@ module Make_Embedded
 end
 
 
-module S = Make_Embedded (Owl_dense_ndarray.S)
+module S = Make_Embedded (Owl_algodiff_primal_ops.S)
 
 
-module D = Make_Embedded (Owl_dense_ndarray.D)
+module D = Make_Embedded (Owl_algodiff_primal_ops.D)
 
 
 (* ends here *)

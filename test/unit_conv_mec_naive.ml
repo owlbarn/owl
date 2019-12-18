@@ -1,7 +1,7 @@
 (** Unit test for different Convolution implementations *)
 
 open Owl_types
-module N = Owl_dense_ndarray.S
+module N = Owl_algodiff_primal_ops.S
 
 module type CONV_IMPL = sig
   val owl_spatial_conv
