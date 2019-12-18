@@ -1,5 +1,6 @@
 open Owl_exception
 module N = Owl_base_dense_ndarray.D
+module M = Owl_base_dense_matrix_d
 module L = Owl_base_linalg_generic
 
 (* define the test error *)
@@ -14,7 +15,7 @@ module To_test_gauss = struct
     let a = N.of_array [| 1.; 20.; -30.; 4. |] [| 2; 2 |] in
     let b = N.of_array [| 1.; 0.; 1.; 2.; -30.; 0.; 1.; 0.; 1.; 4. |] [| 2; 5 |] in
     let a_inv, x = L.linsolve_gauss a b in
-    let flag01 = approx_equal (N.dot a a_inv) (N.eye 2) in
+    let flag01 = approx_equal (N.dot a a_inv) (M.eye 2) in
     let flag02 = approx_equal (N.dot a x) b in
     flag01 && flag02
 
@@ -23,7 +24,7 @@ module To_test_gauss = struct
     let a = N.of_array [| 2.; 3.; 3.; 5. |] [| 2; 2 |] in
     let b = N.of_array [| 1.; 0.; 1.; 0.; 1.; 0. |] [| 2; 3 |] in
     let a_inv, x = L.linsolve_gauss a b in
-    let flag01 = approx_equal (N.dot a a_inv) (N.eye 2) in
+    let flag01 = approx_equal (N.dot a a_inv) (M.eye 2) in
     let flag02 = approx_equal (N.dot a x) b in
     flag01 && flag02
 
@@ -40,7 +41,7 @@ module To_test_gauss = struct
     for _ = 0 to 9 do
       let b = N.uniform [| n; 3 |] in
       let a_inv, x = L.linsolve_gauss a b in
-      let flag01 = approx_equal (N.dot a a_inv) (N.eye n) in
+      let flag01 = approx_equal (N.dot a a_inv) (M.eye n) in
       let flag02 = approx_equal (N.dot a x) b in
       flag := !flag && flag01 && flag02
     done;
@@ -70,11 +71,11 @@ module To_test_lu = struct
   (* Change the permutation index vector to matrix; perhaps should be included in main code. *)
   let perm_vec_to_mat vec =
     let n = Array.length vec in
-    let mat = ref (N.eye n) in
+    let mat = ref (M.eye n) in
     (* reverse the permutation order *)
     for i = n - 1 downto 0 do
       let j = vec.(i) in
-      let a = N.eye n in
+      let a = M.eye n in
       N.set a [| i; i |] 0.;
       N.set a [| j; j |] 0.;
       N.set a [| i; j |] 1.;
@@ -217,7 +218,7 @@ module To_test_lu = struct
     let flag = ref true in
     for _ = 0 to 9 do
       let a_inv = L.inv a in
-      let f = approx_equal (N.dot a a_inv) (N.eye n) in
+      let f = approx_equal (N.dot a a_inv) (M.eye n) in
       flag := !flag && f
     done;
     !flag

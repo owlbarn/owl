@@ -7,56 +7,6 @@ module type Sig = sig
 
   type op
 
-  val op_siso
-    :  ff:(t -> t)
-    -> fd:(t -> t)
-    -> df:(t -> t -> t -> t)
-    -> r:(t -> op)
-    -> t
-    -> t
-  (** single input single output operation *)
-
-  val op_sipo
-    :  ff:(t -> t * t)
-    -> fd:(t -> t * t)
-    -> df:(t -> t -> t -> t)
-    -> r:(t * (t ref * t ref) * (t ref * t ref) -> op)
-    -> t
-    -> t * t
-  (** single input pair outputs operation *)
-
-  val op_sito
-    :  ff:(t -> t * t * t)
-    -> fd:(t -> t * t * t)
-    -> df:(t -> t -> t -> t)
-    -> r:(t * (t ref * t ref * t ref) * (t ref * t ref * t ref) -> op)
-    -> t
-    -> t * t * t
-  (** single input triple outputs operation *)
-
-  val op_siao
-    :  ff:(t -> t array)
-    -> fd:(t -> t array)
-    -> df:(t -> t -> t -> t)
-    -> r:(t * t ref array * t ref array -> op)
-    -> t
-    -> t array
-  (** single input array outputs operation *)
-
-  val op_piso
-    :  ff:(t -> t -> t)
-    -> fd:(t -> t -> t)
-    -> df_da:(t -> t -> t -> t -> t)
-    -> df_db:(t -> t -> t -> t -> t)
-    -> df_dab:(t -> t -> t -> t -> t -> t)
-    -> r_d_d:(t -> t -> op)
-    -> r_d_c:(t -> t -> op)
-    -> r_c_d:(t -> t -> op)
-    -> t
-    -> t
-    -> t
-  (** pair inputs single output operation *)
-
   module type Siso = sig
     val label : string
 
@@ -70,6 +20,7 @@ module type Sig = sig
   end
 
   val build_siso : (module Siso) -> t -> t
+  (** build single input single output operations *)
 
   module type Sipo = sig
     val label : string
@@ -84,6 +35,7 @@ module type Sig = sig
   end
 
   val build_sipo : (module Sipo) -> t -> t * t
+  (** build single input pair outputs operations *)
 
   module type Sito = sig
     val label : string
@@ -98,6 +50,7 @@ module type Sig = sig
   end
 
   val build_sito : (module Sito) -> t -> t * t * t
+  (** build single input triple outputs operations *)
 
   module type Siao = sig
     val label : string
@@ -112,6 +65,7 @@ module type Sig = sig
   end
 
   val build_siao : (module Siao) -> t -> t array
+  (** build single input array output operations *)
 
   module type Piso = sig
     val label : string
@@ -138,6 +92,7 @@ module type Sig = sig
   end
 
   val build_piso : (module Piso) -> t -> t -> t
+  (** build pair inputs single output operations *)
 
   module type Aiso = sig
     val label : string
@@ -150,4 +105,5 @@ module type Sig = sig
   end
 
   val build_aiso : (module Aiso) -> t array -> t
+  (** build array input single output operations *)
 end

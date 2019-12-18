@@ -77,5 +77,39 @@ module type Sig = sig
 
   end
 
+  module Mat : sig
+    val diagm : ?k:int -> arr -> arr
+
+    val triu: ?k:int -> arr -> arr
+
+    val tril: ?k:int -> arr -> arr
+
+    val eye : int -> arr
+  end
+
+  module Linalg : sig
+    val inv : arr -> arr
+
+    val logdet: arr -> elt
+
+    val chol : ?upper:bool -> arr -> arr
+
+    val svd : ?thin:bool -> arr -> arr * arr * arr
+
+    val qr : arr -> arr * arr
+
+    val lq : arr -> arr * arr
+
+    val sylvester: arr -> arr -> arr -> arr
+
+    val lyapunov: arr -> arr -> arr
+
+    val discrete_lyapunov: ?solver:[`default | `bilinear | `direct] -> arr -> arr -> arr
+
+    val linsolve: ?trans:bool -> ?typ:[`n | `u | `l] -> arr -> arr -> arr
+
+    val care : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr
+  end
+
 
 end

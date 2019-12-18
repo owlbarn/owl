@@ -13,17 +13,16 @@ module Make_Embedded
     Owl_optimise_generic.Make (
       Owl_algodiff_generic.Make (A)
     )
-
 end
 
 
 
 (* Optimise module of Float32 type *)
-module S = Make_Embedded (Owl_dense_ndarray.S)
+module S = Make_Embedded (Owl_algodiff_primal_ops.S)
 
 
 (* Optimise module of Float64 type *)
-module D = Make_Embedded (Owl_dense_ndarray.D)
+module D = Make_Embedded (Owl_algodiff_primal_ops.D)
 
 
 (* ends here *)
