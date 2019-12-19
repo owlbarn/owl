@@ -3,6 +3,8 @@ module N = Owl_base_dense_ndarray.D
 module M = Owl_base_dense_matrix_d
 module L = Owl_base_linalg_generic
 
+(* TODO: add complex input cases *)
+
 (* define the test error *)
 
 let approx_equal a b =
