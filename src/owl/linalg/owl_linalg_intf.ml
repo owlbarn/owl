@@ -9,18 +9,12 @@ module type Common = sig
 
   (** {6 Basic functions} *)
 
-  val inv : mat -> mat
   val pinv : ?tol:float -> mat -> mat
-  val det : mat -> elt
   val rank : ?tol:float -> mat -> int
   val norm : ?p:float -> mat -> float
   val vecnorm : ?p:float -> mat -> float
   val cond : ?p:float -> mat -> float
   val rcond : mat -> float
-  val is_triu : mat -> bool
-  val is_tril : mat -> bool
-  val is_symmetric : mat -> bool
-  val is_diag : mat -> bool
   val is_posdef : mat -> bool
 
   (** {6 Factorisation} *)
