@@ -18,7 +18,7 @@ RUN opam update -q
 ################## INSTALL OWL LIBRARY #####################
 
 ENV OWLPATH /home/opam/owl
-RUN opam install owl owl-plplot -y
+RUN opam install owl owl-top owl-plplot utop -y
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
