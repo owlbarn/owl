@@ -24,7 +24,7 @@ RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit \
 ####################   INSTALL OWL  #######################
 
 ENV OWLPATH /home/opam/owl
-RUN opam install owl -y
+RUN opam install owl owl-top utop -y
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
