@@ -19,7 +19,8 @@ RUN ldconfig /opt/OpenBLAS/lib/
 ##################### PREREQUISITES ########################
 
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get install -y pkg-config m4 zlib1g libplplot-dev
+RUN apt-get update && apt-get install -y pkg-config m4 zlib1g libplplot-dev plplot-driver-cairo
+RUN apt-get remove plplot-driver-qt -y
 RUN opam install utop
 
 ####################   INSTALL OWL  #######################
