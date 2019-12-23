@@ -3,7 +3,7 @@
 
 open Owl
 
-module M = Lazy.Make (Arr)
+module M = Lazy.Make (Owl_algodiff_primal_ops.D)
 
 
 (* an example for lazy evaluation using computation graph *)

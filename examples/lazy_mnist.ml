@@ -3,7 +3,7 @@
 
 open Owl
 
-module CPU_Engine = Owl_computation_cpu_engine.Make (Dense.Ndarray.S)
+module CPU_Engine = Owl_computation_cpu_engine.Make (Owl_algodiff_primal_ops.S)
 module CGCompiler = Owl_neural_compiler.Make (CPU_Engine)
 
 open CGCompiler.Neural
