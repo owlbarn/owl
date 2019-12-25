@@ -1,74 +1,46 @@
 # How to Contribute
 
-The following is a set of guidelines for proposing changes to the
-OCaml distribution. These are just guidelines, not rules, use your
-best judgment and feel free to propose changes to this document itself
-in a pull request.
+Owl is a large open source project, to guarantee quality of the software and sustainable development, we enforce the following rules in day-to-day research, development, and project mangement.
 
-Owl is currently under active maintaining. Besides coding, there are many other
-ways you can contribute. Bug reporting, typo fix, asking/answering questions,
-and improvement of existing documents are all well appreciated.
+Besides coding, there are many other ways you can contribute. Bug reporting, typo fix, asking/answering questions, and improvement of existing documents are all well welcome.
 
 
-## Coding Guidelines
+## Coding Style
 
-Generally we follow the coding style specified in this file:
-http://www.cs.cornell.edu/courses/cs3110/2011sp/Handouts/style.htm
+Coding style guarantees a consistent taste of code written by different people. It improves code readability and maintainability in large software projects. 
 
-A few more points:
+- OCaml is the main developing language in Owl. We use [ocamlformat](https://github.com/ocaml-ppx/ocamlformat) to enforce the style of OCaml code. 
 
-- When using patterns,
-1) format the code a bit by making two "->" aligned,
-2) use the first default `|` explicitly, and
-3) the `None` condition should come after `Some` condition. For example:
+- There is also a significant amount of C code in the project. For the C code, we apply the [Linux kernel coding style](https://www.kernel.org/doc/html/v4.10/process/coding-style.html). 
 
-```ocaml
-match l with
-  | Some list -> List.map float_of_int list
-  | None      -> []
-```
-- Do not have line longer than 80 columns.
-- Use spaces rather than tab.
+- The coding style does not apply to the vendor's code direcly imported into Owl source code tree.
 
 
-## Test before a PR
+## Unit Tests
 
-- `utop` provides a convenient environment for playing with `Owl`. However, a
-piece of code running correctly in `utop` doesn't always mean that it is
-error-free. Compile the code and run `.native`.
+All the code must be well tested before submitting a pull request.
 
-- With the  `zoo` system finished, you can test an example script with `owl`
-command.
+- If existing functions are modified, you need to run the unit tests to make sure the changes do not break any tests.
 
-- `make` your code base locally before the PR to ensure no compilation errors.
+- If existing functions are modified, you may also need to add more unit tests for various edge cases which are not covered before.
 
-- If you want to improve a current example of `owl`, make sure its perforamce
-is no worse than the original one.
-
-- That being said, you are encouraged to use the `zoo` system to share any code
-snippets in `owl`.
-
-- Keep corner cases in mind. For example, does your code also work for complex
- +numbers?
+- If new functions are added, you must add corresponding unit tests and make sure edge cases are well covered.
 
 
-## Submit a Proposal
+## Pull Requests
 
-Before you start implementing something, especially something significant.
-Please submit a proposal first on
-[Owl's issue tracker](https://github.com/ryanrhymes/owl/issues). This first
-can ensure you get enough support from me in the following development. Second,
-this avoids unnecessary duplicated work in case someone else already started
-working the same feature, which indeed happened before. Last, you may find
-someone who is willing to help you in tackling the the problem together.
+- Minor improvement changes can be submitted directly in a pull request. The title and description of the pull request shall clearly describe the purpose of the PR, potential issues and caveats.
 
-The format of the proposal aims to be light: state what algorithm/feature you
-want to contribute to which module. In case something more significant that
-can be a standalone module, please also briefly specify the included functions,
-although these can be subject to changes in future implementation.
+- For significant changes, please first submit a proposal on Owl's [issue tracker](https://github.com/ryanrhymes/owl/issues) to initialise the discussion with Owl Team.
+
+- For sub libraries building atop of Owl, if you want the library to be included in the owlbarn organisation, please also submit the proposal on issue tracker. Note that the license of the library must be compliant with owlbarn, i.e. MIT or BSD compliant. Exception is possible but must be discussed with Owl Team first.
+
+- Pull requests must be reviewed and approved by at least two key developers in Owl Team. A designated person in Owl Team will be responsible for assigning reviewers, tagging a pull request, and final merging to the master branch.
 
 
 ## Documentation
+
+The following rules apply to the inline documents. For serious technical writing, please refer to Owl's [Tutorial Book](https://github.com/owlbarn/owl_tutorials).
 
 - Be concise, simple, and correct.
 - Make sure the grammar is correct.
@@ -78,9 +50,7 @@ although these can be subject to changes in future implementation.
 
 ## Agreement on Commits
 
-This is a must read before committing your code to Owl's repository. You should
-use `git commit -s` to sign off your commits. If omitted, I will assume you are
-complied with DCO and implicitly signed off.
+You must read the following agreement before committing any code to Owl's repository. You should use `git commit -s` to sign off your commits. If omitted, we will assume you have agreed with with the DCO and implicitly signed off.
 
 ```text
 Developer's Certificate of Origin 1.1
