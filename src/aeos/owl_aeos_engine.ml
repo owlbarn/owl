@@ -3,5 +3,4 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-let eval tuners =
-  Array.iter Owl_aeos_tuners.tuning tuners
+let eval tuners = Array.iter Owl_aeos_tuners.tuning tuners

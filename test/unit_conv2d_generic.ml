@@ -35,7 +35,7 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
     let output_shape = N.shape output in
     let output' = N.sequential ~a:1. output_shape in
     N.conv2d_backward_kernel inp kernel stride output'
-  
+
 
   let test_conv2d_back_kernel_02 input_shape kernel_shape stride pad =
     let inp = N.ones input_shape in
@@ -399,28 +399,28 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
         [| 2; 2 |]
         SAME
         expected
-    
+
+
     (* large input/kernel size *)
     let fun14 () =
-      let expected = [| 
-        5194; 5195; 5196; 5197; 5198; 5199; 5200; 5201; 5202; 5203; 5204; 5205; 
-        5206; 5207; 5208; 5209; 5210; 5211; 5212; 5213; 5214; 5215; 5216; 5217; 
-        5218; 5219; 5220; 5221; 5222; 5223; 5224; 5225; 5226; 5227; 5228; 5229; 
-        5230; 5231; 5232; 5233; 5234; 5235; 5236; 5237; 5238; 5239; 5240; 5241; 
-        5242; 5243; 5242; 5241; 5240; 5239; 5238; 5237; 5236; 5235; 5234; 5233; 
-        5232; 5231; 5230; 5229; 5228; 5227; 5226; 5225; 5224; 5223; 5222; 5221; 
-        5220; 5219; 5218; 5217; 5216; 5215; 5214; 5213; 5212; 5211; 5210; 5209; 
-        5208; 5207; 5206; 5205; 5204; 5203; 5202; 5201; 5200; 5199; 5198; 5197; 
-        5196; 5195; 5194; 5193 |] in
-      let expected = Array.map float_of_int expected in 
+      let expected =
+        [| 5194; 5195; 5196; 5197; 5198; 5199; 5200; 5201; 5202; 5203; 5204; 5205; 5206
+         ; 5207; 5208; 5209; 5210; 5211; 5212; 5213; 5214; 5215; 5216; 5217; 5218; 5219
+         ; 5220; 5221; 5222; 5223; 5224; 5225; 5226; 5227; 5228; 5229; 5230; 5231; 5232
+         ; 5233; 5234; 5235; 5236; 5237; 5238; 5239; 5240; 5241; 5242; 5243; 5242; 5241
+         ; 5240; 5239; 5238; 5237; 5236; 5235; 5234; 5233; 5232; 5231; 5230; 5229; 5228
+         ; 5227; 5226; 5225; 5224; 5223; 5222; 5221; 5220; 5219; 5218; 5217; 5216; 5215
+         ; 5214; 5213; 5212; 5211; 5210; 5209; 5208; 5207; 5206; 5205; 5204; 5203; 5202
+         ; 5201; 5200; 5199; 5198; 5197; 5196; 5195; 5194; 5193 |]
+      in
+      let expected = Array.map float_of_int expected in
       verify_value
         test_conv2d_back_kernel_02
-        [|1; 1; 5243; 1|]
-        [|1; 100; 1;  1|]
-        [|1; 1|]
+        [| 1; 1; 5243; 1 |]
+        [| 1; 100; 1; 1 |]
+        [| 1; 1 |]
         SAME
         expected
-    
   end
 
   (* tests for conv2d forward operation *)
@@ -598,14 +598,14 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
       "fun_conv2d_back_kernel_12"
       true
       (To_test_conv2d_back_kernel.fun12 ())
-  
+
 
   let fun_cbk13 () =
     Alcotest.(check bool)
       "fun_conv2d_back_kernel_13"
       true
       (To_test_conv2d_back_kernel.fun13 ())
-  
+
 
   let fun_cbk14 () =
     Alcotest.(check bool)
@@ -628,6 +628,6 @@ module Make (N : Ndarray_Algodiff with type elt = float) = struct
     ; "fun_cbk06", `Slow, fun_cbk06; "fun_cbk07", `Slow, fun_cbk07
     ; "fun_cbk08", `Slow, fun_cbk08; "fun_cbk09", `Slow, fun_cbk09
     ; "fun_cbk10", `Slow, fun_cbk10; "fun_cbk11", `Slow, fun_cbk11
-    ; "fun_cbk12", `Slow, fun_cbk12; "fun_cbk13", `Slow, fun_cbk13 
-    ; "fun_cbk14", `Slow, fun_cbk14]
+    ; "fun_cbk12", `Slow, fun_cbk12; "fun_cbk13", `Slow, fun_cbk13
+    ; "fun_cbk14", `Slow, fun_cbk14 ]
 end

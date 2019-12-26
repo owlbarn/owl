@@ -8,12 +8,11 @@ open Owl_aeos_utils
 
 let default_threshold = 10000
 
-
-let generate_sizes_fold ?(dims=4) start step n =
+let generate_sizes_fold ?(dims = 4) start step n =
   let u = Array.make dims start in
   let x = Array.make n u in
   for i = 0 to n - 1 do
-    x.(i) <- Array.make dims (start + i * step)
+    x.(i) <- Array.make dims (start + (i * step))
   done;
   x
 
@@ -21,9 +20,7 @@ let generate_sizes_fold ?(dims=4) start step n =
 let size2arr_fold a =
   let n = Array.length a in
   let s = Array.make n 0. in
-  Array.iteri (fun i x ->
-    s.(i) <- Array.fold_left ( * ) 1 x |> float_of_int
-  ) a;
+  Array.iteri (fun i x -> s.(i) <- Array.fold_left ( * ) 1 x |> float_of_int) a;
   s
 
 
@@ -52,22 +49,22 @@ let step_measure_fold_arr xs f base_f msg =
 
 
 module Cumsum = struct
+  type t =
+    { mutable name : string
+    ; mutable param : string
+    ; mutable value : int
+    ; mutable input : int array array
+    ; mutable y : float array
+    }
 
-  type t = {
-    mutable name  : string;
-    mutable param : string;
-    mutable value : int;
-    mutable input : int array array;
-    mutable y     : float array
-  }
+  let make () =
+    { name = "cumsum"
+    ; param = "OWL_OMP_THRESHOLD_CUMSUM"
+    ; value = default_threshold
+    ; input = generate_sizes_fold 10 2 15
+    ; y = [| 0. |]
+    }
 
-  let make () = {
-    name  = "cumsum";
-    param = "OWL_OMP_THRESHOLD_CUMSUM";
-    value = default_threshold;
-    input = generate_sizes_fold 10 2 15;
-    y = [|0.|]
-  }
 
   let tune t =
     Owl_aeos_log.info "AEOS: tune %s ..." t.name;
@@ -78,35 +75,34 @@ module Cumsum = struct
     let f, sign = linear_reg x t.y in
     t.value <- find_root f sign
 
+
   let save_data t =
     let x = size2arr_fold t.input in
     let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
     to_csv x t.y y' t.name
 
-  let to_string t =
-    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
+  let to_string t = Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 end
 
-
 module Cumprod = struct
+  type t =
+    { mutable name : string
+    ; mutable param : string
+    ; mutable value : int
+    ; mutable input : int array array
+    ; mutable y : float array
+    }
 
-  type t = {
-    mutable name  : string;
-    mutable param : string;
-    mutable value : int;
-    mutable input : int array array;
-    mutable y     : float array
-  }
+  let make () =
+    { name = "cumprod"
+    ; param = "OWL_OMP_THRESHOLD_CUMPROD"
+    ; value = default_threshold
+    ; input = generate_sizes_fold 10 2 15
+    ; y = [| 0. |]
+    }
 
-  let make () = {
-    name  = "cumprod";
-    param = "OWL_OMP_THRESHOLD_CUMPROD";
-    value = default_threshold;
-    input = generate_sizes_fold 10 2 15;
-    y = [|0.|]
-  }
 
   let tune t =
     Owl_aeos_log.info "AEOS: tune %s ..." t.name;
@@ -117,35 +113,34 @@ module Cumprod = struct
     let f, sign = linear_reg x t.y in
     t.value <- find_root f sign
 
+
   let save_data t =
     let x = size2arr_fold t.input in
     let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
     to_csv x t.y y' t.name
 
-  let to_string t =
-    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
+  let to_string t = Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 end
 
-
 module Cummax = struct
+  type t =
+    { mutable name : string
+    ; mutable param : string
+    ; mutable value : int
+    ; mutable input : int array array
+    ; mutable y : float array
+    }
 
-  type t = {
-    mutable name  : string;
-    mutable param : string;
-    mutable value : int;
-    mutable input : int array array;
-    mutable y     : float array
-  }
+  let make () =
+    { name = "cummax"
+    ; param = "OWL_OMP_THRESHOLD_CUMMAX"
+    ; value = default_threshold
+    ; input = generate_sizes_fold 10 2 15
+    ; y = [| 0. |]
+    }
 
-  let make () = {
-    name  = "cummax";
-    param = "OWL_OMP_THRESHOLD_CUMMAX";
-    value = default_threshold;
-    input = generate_sizes_fold 10 2 15;
-    y = [|0.|]
-  }
 
   let tune t =
     Owl_aeos_log.info "AEOS: tune %s ..." t.name;
@@ -156,35 +151,34 @@ module Cummax = struct
     let f, sign = linear_reg x t.y in
     t.value <- find_root f sign
 
+
   let save_data t =
     let x = size2arr_fold t.input in
     let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
     to_csv x t.y y' t.name
 
-  let to_string t =
-    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
+  let to_string t = Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 end
 
-
 module Diff = struct
+  type t =
+    { mutable name : string
+    ; mutable param : string
+    ; mutable value : int
+    ; mutable input : int array array
+    ; mutable y : float array
+    }
 
-  type t = {
-    mutable name  : string;
-    mutable param : string;
-    mutable value : int;
-    mutable input : int array array;
-    mutable y     : float array
-  }
+  let make () =
+    { name = "diff"
+    ; param = "OWL_OMP_THRESHOLD_DIFF"
+    ; value = default_threshold
+    ; input = generate_sizes_fold 10 2 15
+    ; y = [| 0. |]
+    }
 
-  let make () = {
-    name  = "diff";
-    param = "OWL_OMP_THRESHOLD_DIFF";
-    value = default_threshold;
-    input = generate_sizes_fold 10 2 15;
-    y = [|0.|]
-  }
 
   let tune t =
     Owl_aeos_log.info "AEOS: tune %s ..." t.name;
@@ -195,35 +189,34 @@ module Diff = struct
     let f, sign = linear_reg x t.y in
     t.value <- find_root f sign
 
+
   let save_data t =
     let x = size2arr_fold t.input in
     let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
     to_csv x t.y y' t.name
 
-  let to_string t =
-    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
+  let to_string t = Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 end
 
-
 module Repeat = struct
+  type t =
+    { mutable name : string
+    ; mutable param : string
+    ; mutable value : int
+    ; mutable input : int array array
+    ; mutable y : float array
+    }
 
-  type t = {
-    mutable name  : string;
-    mutable param : string;
-    mutable value : int;
-    mutable input : int array array;
-    mutable y     : float array
-  }
+  let make () =
+    { name = "repeat"
+    ; param = "OWL_OMP_THRESHOLD_REPEAT"
+    ; value = default_threshold
+    ; input = generate_sizes_fold 10 2 15
+    ; y = [| 0. |]
+    }
 
-  let make () = {
-    name  = "repeat";
-    param = "OWL_OMP_THRESHOLD_REPEAT";
-    value = default_threshold;
-    input = generate_sizes_fold 10 2 15;
-    y = [|0.|]
-  }
 
   let tune t =
     Owl_aeos_log.info "AEOS: tune %s ..." t.name;
@@ -234,13 +227,13 @@ module Repeat = struct
     let f, sign = linear_reg x t.y in
     t.value <- find_root f sign
 
+
   let save_data t =
     let x = size2arr_fold t.input in
     let f, _ = linear_reg x t.y in
     let y' = Array.map f x in
     to_csv x t.y y' t.name
 
-  let to_string t =
-    Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 
+  let to_string t = Printf.sprintf "#define %s %s" t.param (string_of_int t.value)
 end
