@@ -3,9 +3,7 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 module type Sig = sig
-
   include Owl_types_ndarray_basic.Sig
 
   val mapi : (int -> elt -> elt) -> arr -> arr
@@ -27,5 +25,4 @@ module type Sig = sig
   val ( *$ ) : arr -> elt -> arr
 
   val ( /$ ) : arr -> elt -> arr
-
 end

@@ -3,11 +3,8 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 module type Sig = sig
-
   include Owl_types_ndarray_mutable.Sig
-  
 
   val uniform_rvs : a:arr -> b:arr -> n:int -> arr
 
@@ -296,5 +293,4 @@ module type Sig = sig
   val rayleigh_logsf : sigma:arr -> arr -> arr
 
   val rayleigh_isf : sigma:arr -> arr -> arr
-
 end

@@ -3,11 +3,8 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 module type Sig = sig
-
   include Owl_types_ndarray_basic.Sig
-
 
   val elt_equal : arr -> arr -> arr
 
@@ -32,5 +29,4 @@ module type Sig = sig
   val elt_less_equal_scalar : arr -> elt -> arr
 
   val elt_greater_equal_scalar : arr -> elt -> arr
-
 end

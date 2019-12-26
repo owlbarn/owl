@@ -8,6 +8,7 @@ base/misc/*
 base/neural/*
 base/optimise/*
 base/stats/*
+base/types/*
 plplot/*
 top/*
 zoo/*

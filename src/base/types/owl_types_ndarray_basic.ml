@@ -3,12 +3,9 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 open Owl_types_common
 
-
 module type Sig = sig
-
   (* types and constants *)
 
   type arr
@@ -16,7 +13,6 @@ module type Sig = sig
   type elt
 
   val number : number
-
 
   (* creation and operation functions *)
 
@@ -54,7 +50,7 @@ module type Sig = sig
 
   val copy : arr -> arr
 
-  val copy_ : out:arr -> arr -> unit  (* FIXME: move to mutable? *)
+  val copy_ : out:arr -> arr -> unit (* FIXME: move to mutable? *)
 
   val reset : arr -> unit
 
@@ -86,8 +82,13 @@ module type Sig = sig
 
   val pad : ?v:elt -> int list list -> arr -> arr
 
-  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
-
+  val print
+    :  ?max_row:int
+    -> ?max_col:int
+    -> ?header:bool
+    -> ?fmt:(elt -> string)
+    -> arr
+    -> unit
 
   (* mathematical functions *)
 
@@ -205,7 +206,6 @@ module type Sig = sig
 
   val fma : arr -> arr -> arr -> arr
 
-
   (* Neural network related functions *)
 
   val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
@@ -290,7 +290,6 @@ module type Sig = sig
 
   val upsampling2d_backward : arr -> int array -> arr -> arr
 
-
   (* matrix functions *)
 
   val row_num : arr -> int
@@ -325,12 +324,9 @@ module type Sig = sig
 
   val of_arrays : elt array array -> arr
 
-
   (* helper functions *)
 
   val float_to_elt : float -> elt
 
   val elt_to_float : elt -> float
-
-
 end

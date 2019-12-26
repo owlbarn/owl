@@ -3,15 +3,12 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 (**
 Operator definitions such as add, sub, mul, and div.
 This signature defines the functions need to be implemented.
 *)
 
-
 module type BasicSig = sig
-
   type ('a, 'b) t
 
   val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -49,12 +46,9 @@ module type BasicSig = sig
   val greater_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
   val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
-
 end
 
-
 module type ExtendSig = sig
-
   type ('a, 'b) t
 
   val equal_scalar : ('a, 'b) t -> 'a -> bool
@@ -138,12 +132,9 @@ module type ExtendSig = sig
   val get_slice : int list list -> ('a, 'b) t -> ('a, 'b) t
 
   val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
-
 end
 
-
 module type MatrixSig = sig
-
   type ('a, 'b) t
 
   val get : ('a, 'b) t -> int -> int -> 'a
@@ -151,30 +142,27 @@ module type MatrixSig = sig
   val set : ('a, 'b) t -> int -> int -> 'a -> unit
 
   val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-
 end
 
-
 module type NdarraySig = sig
-
   type ('a, 'b) t
 
   val get : ('a, 'b) t -> int array -> 'a
 
   val set : ('a, 'b) t -> int array -> 'a -> unit
-
 end
 
-
 module type LinalgSig = sig
-
   type ('a, 'b) t
 
   val mpow : ('a, 'b) t -> float -> ('a, 'b) t
 
-  val linsolve : ?trans:bool -> ?typ:[`n | `u | `l] -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-
+  val linsolve
+    :  ?trans:bool
+    -> ?typ:[ `n | `u | `l ]
+    -> ('a, 'b) t
+    -> ('a, 'b) t
+    -> ('a, 'b) t
 end
-
 
 (* ends here *)
