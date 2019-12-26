@@ -3,28 +3,24 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 (** {6 Type definition} *)
 
 type t
 (** Abstract dataframe type. *)
 
 type series =
-  | Bool_Series   of bool array
-  | Int_Series    of int array
-  | Float_Series  of float array
+  | Bool_Series of bool array
+  | Int_Series of int array
+  | Float_Series of float array
   | String_Series of string array
-  | Any_Series
-(** Abstract series type. *)
+  | Any_Series (** Abstract series type. *)
 
 type elt =
-  | Bool   of bool
-  | Int    of int
-  | Float  of float
+  | Bool of bool
+  | Int of int
+  | Float of float
   | String of string
-  | Any
-(** Type of the elements in a series. *)
-
+  | Any (** Type of the elements in a series. *)
 
 (** {6 Pakcking & unpacking element} *)
 
@@ -52,7 +48,6 @@ val unpack_float : elt -> float
 val unpack_string : elt -> string
 (** Unpack ``elt`` type to string value. *)
 
-
 (** {6 Pakcking & unpacking series} *)
 
 val pack_bool_series : bool array -> series
@@ -78,7 +73,6 @@ val unpack_float_series : series -> float array
 
 val unpack_string_series : series -> string array
 (** Unpack ``series`` type to string array. *)
-
 
 (** {6 Obtain properties} *)
 
@@ -108,7 +102,6 @@ val id_to_head : t -> int -> string
 
 val head_to_id : t -> string -> int
 (** ``head_to_id i`` converts column index ``i`` to its corresponding head name. *)
-
 
 (** {6 Basic get and set functions} *)
 
@@ -156,7 +149,6 @@ val head : int -> t -> t
 
 val tail : int -> t -> t
 (** ``tail n x`` returns bottom ``n`` rows of ``x``. *)
-
 
 (** {6 Core operations} *)
 
@@ -247,13 +239,12 @@ val concat_vertical : t -> t -> t
 and the same column names.
  *)
 
-
 (** {6 Iteration functions} *)
 
 val iteri_row : (int -> elt array -> unit) -> t -> unit
 (** ``iteri_row f x`` iterates the rows of ``x`` and applies ``f``. *)
 
-val iter_row :  (elt array -> unit) -> t -> unit
+val iter_row : (elt array -> unit) -> t -> unit
 (** ``iter_row`` is simiar to ``iteri_row`` without passing in row indices. *)
 
 val mapi_row : (int -> elt array -> elt array) -> t -> t
@@ -286,19 +277,18 @@ dataframe; if ``f`` returns ``Some row`` then the row is included.
 val filter_map_row : (elt array -> elt array option) -> t -> t
 (** ``filter_map_row`` is similar to ``filter_mapi_row`` without passing in row indices. *)
 
-
 (** {6 Extended indexing operators} *)
 
-val ( .%( ) ) : t -> int * string -> elt
+val ( .%() ) : t -> int * string -> elt
 (** Extended indexing operator associated with ``get_by_name`` function. *)
 
-val ( .%( )<- ) : t -> int * string -> elt -> unit
+val ( .%()<- ) : t -> int * string -> elt -> unit
 (** Extended indexing operator associated with ``set_by_name`` function. *)
 
-val ( .?( ) ) : t -> (elt array -> bool) -> t
+val ( .?() ) : t -> (elt array -> bool) -> t
 (** Extended indexing operator associated with ``filter_row`` function. *)
 
-val ( .?( )<- ) : t -> (elt array -> bool) -> (elt array -> elt array) -> t
+val ( .?()<- ) : t -> (elt array -> bool) -> (elt array -> elt array) -> t
 (**
 Extended indexing operator associated with ``filter_map_row`` function.
 Given a dataframe ``x``, ``f`` is used for filtering and ``g`` is used for
@@ -306,9 +296,8 @@ transforming. In other words, ``x.?(f) <- g`` means that if ``f row`` is
 ``true`` then ``g row`` is included in the returned dataframe.
  *)
 
-val ( .$( ) ) : t -> int list * string list -> t
+val ( .$() ) : t -> int list * string list -> t
 (** Extended indexing operator associated with ``get_slice_by_name`` function. *)
-
 
 (** {6 IO & helper functions} *)
 

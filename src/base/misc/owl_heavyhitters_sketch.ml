@@ -30,7 +30,10 @@ module Make (CM : Owl_countmin_sketch_sig.Sig) : Owl_heavyhitters_sketch_sig.Sig
     if v_count |> float_of_int > threshold
     then
       h.queue
-      <- h.queue |> PQSet.partition (fun (x, _) -> x = v) |> snd |> PQSet.add (v, v_count)
+        <- h.queue
+           |> PQSet.partition (fun (x, _) -> x = v)
+           |> snd
+           |> PQSet.add (v, v_count)
     else ();
     let rec clean_queue queue =
       match PQSet.min_elt_opt queue with
@@ -38,7 +41,7 @@ module Make (CM : Owl_countmin_sketch_sig.Sig) : Owl_heavyhitters_sketch_sig.Sig
         if float_of_int c < threshold
         then clean_queue (PQSet.remove (x, c) queue)
         else queue
-      | None -> queue
+      | None        -> queue
     in
     h.queue <- clean_queue h.queue
 

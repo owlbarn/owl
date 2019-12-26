@@ -28,27 +28,31 @@ module Make (T : Owl_countmin_table.Sig) : Owl_countmin_sketch_sig.Sig = struct
       Owl_base_maths.(1. /. delta |> log2 |> ceil |> int_of_float)
       Owl_base_maths.(1. /. epsilon |> ceil |> int_of_float)
 
+
   let incr s x =
     let xh = Hashtbl.hash x in
     let iterfn (i, ai, bi) = T.incr i (hash31 xh ai bi mod s.w) s.tbl in
     Array.iter iterfn s.hash_fns
+
 
   let count s x =
     let xh = Hashtbl.hash x in
     let foldfn prv (i, ai, bi) = T.get i (hash31 xh ai bi mod s.w) s.tbl |> min prv in
     Array.fold_left foldfn max_int s.hash_fns
 
-  let init_from { tbl = _; w; hash_fns} = 
+
+  let init_from { tbl = _; w; hash_fns } =
     let l = Array.length hash_fns in
     { tbl = T.init l w; w; hash_fns = Array.copy hash_fns }
 
-  let merge s1 s2 = 
+
+  let merge s1 s2 =
     let open Owl_exception in
     let exn = INVALID_ARGUMENT "Attempt to merge non-mergeable count-min sketches" in
     check (s1.w = s2.w) exn;
     check (s1.hash_fns = s2.hash_fns) exn;
-    try { tbl = T.merge s1.tbl s2.tbl; w = s1.w; hash_fns = s1.hash_fns }
-    with INVALID_ARGUMENT _ -> raise exn
+    try { tbl = T.merge s1.tbl s2.tbl; w = s1.w; hash_fns = s1.hash_fns } with
+    | INVALID_ARGUMENT _ -> raise exn
 end
 
 module Native = Make (Owl_countmin_table.Native)

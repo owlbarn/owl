@@ -3,7 +3,6 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 (** {6 Basic functions} *)
 
 val length : 'a array -> int
@@ -119,7 +118,6 @@ val unsafe_get : 'a array -> int -> 'a
 val unsafe_set : 'a array -> int -> 'a -> unit
 (** Refer to OCaml native array. *)
 
-
 (** {6 Extended functions} *)
 
 val ( @ ) : 'a array -> 'a array -> 'a array
@@ -187,16 +185,32 @@ val iter3i : (int -> 'a -> 'b -> 'c -> unit) -> 'a array -> 'b array -> 'c array
 val iter3 : ('a -> 'b -> 'c -> unit) -> 'a array -> 'b array -> 'c array -> unit
 (** TODO *)
 
-val iter4i : (int -> 'a -> 'b -> 'c -> 'd -> unit) -> 'a array -> 'b array -> 'c array -> 'd array -> unit
+val iter4i
+  :  (int -> 'a -> 'b -> 'c -> 'd -> unit)
+  -> 'a array
+  -> 'b array
+  -> 'c array
+  -> 'd array
+  -> unit
 (** TODO *)
 
-val iter4 : ('a -> 'b -> 'c -> 'd -> unit) -> 'a array -> 'b array -> 'c array -> 'd array -> unit
+val iter4
+  :  ('a -> 'b -> 'c -> 'd -> unit)
+  -> 'a array
+  -> 'b array
+  -> 'c array
+  -> 'd array
+  -> unit
 (** TODO *)
 
 val map2i : (int -> 'a -> 'b -> 'c) -> 'a array -> 'b array -> 'c array
 (** TODO *)
 
-val map2i_split2 : (int -> 'a -> 'b -> 'c * 'd) -> 'a array -> 'b array -> 'c array * 'd array
+val map2i_split2
+  :  (int -> 'a -> 'b -> 'c * 'd)
+  -> 'a array
+  -> 'b array
+  -> 'c array * 'd array
 (** TODO *)
 
 val map3i : (int -> 'a -> 'b -> 'c -> 'd) -> 'a array -> 'b array -> 'c array -> 'd array
@@ -205,10 +219,22 @@ val map3i : (int -> 'a -> 'b -> 'c -> 'd) -> 'a array -> 'b array -> 'c array ->
 val map3 : ('a -> 'b -> 'c -> 'd) -> 'a array -> 'b array -> 'c array -> 'd array
 (** TODO *)
 
-val map4i : (int -> 'a -> 'b -> 'c -> 'd -> 'e) -> 'a array -> 'b array -> 'c array -> 'd array -> 'e array
+val map4i
+  :  (int -> 'a -> 'b -> 'c -> 'd -> 'e)
+  -> 'a array
+  -> 'b array
+  -> 'c array
+  -> 'd array
+  -> 'e array
 (** TODO *)
 
-val map4 : ('a -> 'b -> 'c -> 'd -> 'e) -> 'a array -> 'b array -> 'c array -> 'd array -> 'e array
+val map4
+  :  ('a -> 'b -> 'c -> 'd -> 'e)
+  -> 'a array
+  -> 'b array
+  -> 'c array
+  -> 'd array
+  -> 'e array
 (** TODO *)
 
 val filteri_v : (int -> 'a -> bool * 'b) -> 'a array -> 'b array
@@ -261,7 +287,7 @@ val resize : ?head:bool -> 'a -> int -> 'a array -> 'a array
 extended, the extra space is filled with value ``v``.
  *)
 
-val fold2: ('a -> 'b -> 'c -> 'a) -> 'a -> 'b array -> 'c array -> 'a
+val fold2 : ('a -> 'b -> 'c -> 'a) -> 'a -> 'b array -> 'c array -> 'a
 (**
 ``fold2 a x y`` folds both ``x`` and ``y`` from left with starting value ``a``.
  *)
@@ -275,7 +301,13 @@ val align : [ `Left | `Right ] -> 'a -> 'a array -> 'a array -> 'a array * 'a ar
 with value ``v``. The copies of two arrays are returned.
  *)
 
-val align3 : [ `Left | `Right ] -> 'a -> 'a array -> 'a array -> 'a array -> 'a array * 'a array * 'a array
+val align3
+  :  [ `Left | `Right ]
+  -> 'a
+  -> 'a array
+  -> 'a array
+  -> 'a array
+  -> 'a array * 'a array * 'a array
 (** ``align3 side v x y z`` aligns three arrays ``x``, ``y``, and ``z``. *)
 
 val greater_eqaul : 'a array -> 'a array -> bool
@@ -291,6 +323,7 @@ val of_tuples : ('a * 'a) array -> 'a array
 (** TODO *)
 
 val complement : 'a array -> 'a array -> 'a array
+
 (* Given set x and y, return complement of y, i.e. x \ y *)
 
 val balance_last : float -> float array -> float array
@@ -303,7 +336,7 @@ length of ``x``, if ``i < l - 1``, then ``x.(i) = x.(i)``, otherwise
 val index_of : 'a array -> 'a -> int
 (** ``index_of x a`` returns the index of first occurrence of ``a`` in ``x``. *)
 
-val bsearch : cmp:('a -> 'a -> int) -> 'a  -> 'a array -> int
+val bsearch : cmp:('a -> 'a -> int) -> 'a -> 'a array -> int
 (**
 Binary search. ``bsearch cmp x a`` returns the index of the largest value
 in the sorted array ``a`` less than or equal to ``x``, according to the
@@ -311,5 +344,11 @@ comparison function ``cmp``. If ``x`` is smaller than all elements, returns -1.
 The function raises an exception if ``a`` is empty.
 *)
 
-val to_string : ?prefix:string -> ?suffix:string -> ?sep:string -> ('a -> string) -> 'a array -> string
+val to_string
+  :  ?prefix:string
+  -> ?suffix:string
+  -> ?sep:string
+  -> ('a -> string)
+  -> 'a array
+  -> string
 (** TODO *)

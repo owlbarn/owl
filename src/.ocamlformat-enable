@@ -4,6 +4,7 @@ base/core/*
 base/dense/*
 base/linalg/*
 base/maths/*
+base/misc/*
 base/stats/*
 plplot/*
 top/*

@@ -10,15 +10,11 @@
  * Refer to http://dimacs.rutgers.edu/~graham/pubs/papers/cm-full.pdf
  * section 5.2 (page 12) for more details. *)
 
-
 module type Sig = sig
-
-
   (** {6 Type definition} *)
 
   type 'a t
   (** The type of heavy-hitters sketches *)
-
 
   (** {6 Core functions} *)
 
@@ -36,6 +32,4 @@ factor epsilon, and failure probability delta.
 `get h` returns a list of all heavy-hitters in sketch `h`, as a
 (value, frequency) pair, sorted in decreasing order of frequency.
   *)
-
-
 end

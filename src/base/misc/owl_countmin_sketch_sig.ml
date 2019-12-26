@@ -12,15 +12,11 @@
  * Refer to http://dimacs.rutgers.edu/~graham/pubs/papers/cm-full.pdf
  * for more details. *)
 
-
 module type Sig = sig
-
-
   (** {6 Type definition} *)
 
   type 'a sketch
   (** The type of Count-Min sketches *)
-
 
   (** {6 Core functions} *)
 
@@ -47,5 +43,4 @@ module type Sig = sig
   ``merge s1 s2`` returns a new sketch whose counts are the sum of those in ``s1`` and ``s2``.
   Raises ``INVALID_ARGUMENT`` if the parameters of ``s1`` and ``s2`` do not match.
   *)
-
 end
