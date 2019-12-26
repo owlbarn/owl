@@ -5,6 +5,7 @@ base/dense/*
 base/linalg/*
 base/maths/*
 base/misc/*
+base/neural/*
 base/stats/*
 plplot/*
 top/*
