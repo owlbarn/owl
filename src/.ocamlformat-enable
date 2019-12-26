@@ -6,6 +6,7 @@ base/linalg/*
 base/maths/*
 base/misc/*
 base/neural/*
+base/optimise/*
 base/stats/*
 plplot/*
 top/*
