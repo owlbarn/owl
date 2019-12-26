@@ -6,7 +6,6 @@
 open Owl_types_common
 
 module type Common = sig
-
   (* types and constants *)
 
   type arr
@@ -85,7 +84,13 @@ module type Common = sig
 
   val one_hot : int -> arr -> arr
 
-  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
+  val print
+    :  ?max_row:int
+    -> ?max_col:int
+    -> ?header:bool
+    -> ?fmt:(elt -> string)
+    -> arr
+    -> unit
 
   (* mathematical functions *)
 
@@ -181,7 +186,6 @@ module type Common = sig
 
   val fma : arr -> arr -> arr -> arr
 
-
   (** {6 Iterate array elements}  *)
 
   val iteri : (int -> elt -> unit) -> arr -> unit
@@ -203,7 +207,6 @@ module type Common = sig
   val scani : ?axis:int -> (int -> elt -> elt -> elt) -> arr -> arr
 
   val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
-
 
   (** {6 Examination & Comparison}  *)
 
@@ -306,11 +309,9 @@ module type Common = sig
   val of_array : elt array -> int array -> arr
 
   val of_arrays : elt array array -> arr
-
 end
 
 module type Real = sig
-
   type elt
 
   type arr
@@ -356,11 +357,9 @@ module type Real = sig
   val float_to_elt : float -> elt
 
   val elt_to_float : elt -> float
-
 end
 
 module type NN = sig
-
   type arr
 
   (* Neural network related functions *)

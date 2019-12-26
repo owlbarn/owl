@@ -32,11 +32,11 @@ val eye : ('a, 'b) kind -> int -> ('a, 'b) t
 ``eye m`` creates an ``m`` by ``m`` identity matrix.
  *)
 
-val diagm: ?k:int -> ('a, 'b) t -> ('a, 'b) t
+val diagm : ?k:int -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val tril: ?k:int -> ('a, 'b) t -> ('a, 'b) t
+val tril : ?k:int -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-val triu: ?k:int -> ('a, 'b) t -> ('a, 'b) t
+val triu : ?k:int -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)

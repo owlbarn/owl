@@ -1,6 +1,7 @@
 aeos/*
 base/algodiff/*
 base/core/*
+base/dense/*
 base/linalg/*
 base/maths/*
 base/stats/*
