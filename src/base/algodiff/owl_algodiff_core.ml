@@ -1,3 +1,8 @@
+(*
+ * OWL - OCaml Scientific and Engineering Computing
+ * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
+
 module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   include Owl_algodiff_types.Make (A)
   module A = A

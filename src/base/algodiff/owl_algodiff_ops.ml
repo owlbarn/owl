@@ -1,3 +1,8 @@
+(*
+ * OWL - OCaml Scientific and Engineering Computing
+ * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
+
 (* Below the variable naming convention is based on c = f(a), where f is the operation we
    are defining. Therefore we use `cp` to denote the primal of the output, `ca` as the
    adjoin of the output, `ap` as the primal of the input, and `at` as the tangent at the

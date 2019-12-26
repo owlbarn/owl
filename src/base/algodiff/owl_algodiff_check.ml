@@ -1,3 +1,8 @@
+(*
+ * OWL - OCaml Scientific and Engineering Computing
+ * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
+
 module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
   open Algodiff
 
