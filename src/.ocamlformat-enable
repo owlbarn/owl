@@ -1,5 +1,6 @@
 aeos/*
 base/*
+opencl/*
 plplot/*
 top/*
 zoo/*

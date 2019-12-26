@@ -7,8 +7,6 @@
 
 open Ctypes
 
-
-
 (** {6 Type definition} *)
 
 type cl_platform_id
@@ -23,7 +21,6 @@ val cl_platform_id_null : cl_platform_id
 val cl_platform_id_ptr_null : cl_platform_id Ctypes.ptr
 (** Null pointer of cl_platform_id *)
 
-
 type cl_device_id
 (** Type of cl_device_id *)
 
@@ -35,7 +32,6 @@ val cl_device_id_null : cl_device_id
 
 val cl_device_id_ptr_null : cl_device_id Ctypes.ptr
 (** Null pointer of cl_device_id *)
-
 
 type cl_context
 (** Type of cl_context *)
@@ -49,7 +45,6 @@ val cl_context_null : cl_context
 val cl_context_ptr_null : cl_context Ctypes.ptr
 (** Null pointer of cl_context *)
 
-
 type cl_command_queue
 (** Type of cl_command_queue *)
 
@@ -61,7 +56,6 @@ val cl_command_queue_null : cl_command_queue
 
 val cl_command_queue_ptr_null : cl_command_queue Ctypes.ptr
 (** Null pointer of cl_command_queue *)
-
 
 type cl_mem
 (** Type of cl_mem *)
@@ -75,7 +69,6 @@ val cl_mem_null : cl_mem
 val cl_mem_ptr_null : cl_mem Ctypes.ptr
 (** Null pointer of cl_mem *)
 
-
 type cl_program
 (** Type of cl_program *)
 
@@ -87,7 +80,6 @@ val cl_program_null : cl_program
 
 val cl_program_ptr_null : cl_program Ctypes.ptr
 (** Null pointer of cl_program *)
-
 
 type cl_kernel
 (** Type of cl_kernel *)
@@ -101,7 +93,6 @@ val cl_kernel_null : cl_kernel
 val cl_kernel_ptr_null : cl_kernel Ctypes.ptr
 (** Null pointer of cl_kernel *)
 
-
 type cl_event
 (** Type of cl_event *)
 
@@ -113,7 +104,6 @@ val cl_event_null : cl_event
 
 val cl_event_ptr_null : cl_event Ctypes.ptr
 (** Null pointer of cl_event *)
-
 
 type cl_sampler
 (** Type of cl_sampler *)
@@ -127,27 +117,52 @@ val cl_sampler_null : cl_sampler
 val cl_sampler_ptr_null : cl_sampler Ctypes.ptr
 (** Null pointer of cl_sampler *)
 
-
-
-
 (** {6 Function definition} *)
 
 val cl_check_err : int32 -> unit
 (** ``cl_check_err`` checks error code of return value. *)
 
-val clGetPlatformIDs : Unsigned.uint32 -> cl_platform_id ptr -> Unsigned.uint32 ptr -> int32
+val clGetPlatformIDs
+  :  Unsigned.uint32
+  -> cl_platform_id ptr
+  -> Unsigned.uint32 ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetPlatformInfo : cl_platform_id -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetPlatformInfo
+  :  cl_platform_id
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetDeviceIDs : cl_platform_id -> Unsigned.ULong.t -> Unsigned.uint32 -> cl_device_id ptr -> Unsigned.uint32 ptr -> int32
+val clGetDeviceIDs
+  :  cl_platform_id
+  -> Unsigned.ULong.t
+  -> Unsigned.uint32
+  -> cl_device_id ptr
+  -> Unsigned.uint32 ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetDeviceInfo : cl_device_id -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetDeviceInfo
+  :  cl_device_id
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clCreateSubDevices : cl_device_id -> Intptr.t ptr -> Unsigned.uint32 -> cl_device_id ptr -> Unsigned.uint32 ptr -> int32
+val clCreateSubDevices
+  :  cl_device_id
+  -> Intptr.t ptr
+  -> Unsigned.uint32
+  -> cl_device_id ptr
+  -> Unsigned.uint32 ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clRetainDevice : cl_device_id -> int32
@@ -156,10 +171,23 @@ val clRetainDevice : cl_device_id -> int32
 val clReleaseDevice : cl_device_id -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clCreateContext : Intptr.t ptr -> Unsigned.uint32 -> cl_device_id ptr -> unit ptr -> unit ptr -> int32 ptr -> cl_context
+val clCreateContext
+  :  Intptr.t ptr
+  -> Unsigned.uint32
+  -> cl_device_id ptr
+  -> unit ptr
+  -> unit ptr
+  -> int32 ptr
+  -> cl_context
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clCreateContextFromType : Intptr.t ptr -> Unsigned.ULong.t -> unit ptr -> unit ptr -> int32 ptr -> cl_context
+val clCreateContextFromType
+  :  Intptr.t ptr
+  -> Unsigned.ULong.t
+  -> unit ptr
+  -> unit ptr
+  -> int32 ptr
+  -> cl_context
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clRetainContext : cl_context -> int32
@@ -168,10 +196,21 @@ val clRetainContext : cl_context -> int32
 val clReleaseContext : cl_context -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetContextInfo : cl_context -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetContextInfo
+  :  cl_context
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clCreateCommandQueue : cl_context -> cl_device_id -> Unsigned.ULong.t -> int32 ptr -> cl_command_queue
+val clCreateCommandQueue
+  :  cl_context
+  -> cl_device_id
+  -> Unsigned.ULong.t
+  -> int32 ptr
+  -> cl_command_queue
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clRetainCommandQueue : cl_command_queue -> int32
@@ -180,13 +219,31 @@ val clRetainCommandQueue : cl_command_queue -> int32
 val clReleaseCommandQueue : cl_command_queue -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetCommandQueueInfo : cl_command_queue -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetCommandQueueInfo
+  :  cl_command_queue
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clCreateBuffer : cl_context -> Unsigned.ULong.t -> Unsigned.size_t -> unit ptr -> int32 ptr -> cl_mem
+val clCreateBuffer
+  :  cl_context
+  -> Unsigned.ULong.t
+  -> Unsigned.size_t
+  -> unit ptr
+  -> int32 ptr
+  -> cl_mem
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clCreateSubBuffer : cl_mem -> Unsigned.ULong.t -> Unsigned.uint32 -> unit ptr -> int32 ptr -> cl_mem
+val clCreateSubBuffer
+  :  cl_mem
+  -> Unsigned.ULong.t
+  -> Unsigned.uint32
+  -> unit ptr
+  -> int32 ptr
+  -> cl_mem
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clRetainMemObject : cl_mem -> int32
@@ -195,16 +252,34 @@ val clRetainMemObject : cl_mem -> int32
 val clReleaseMemObject : cl_mem -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetMemObjectInfo : cl_mem -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetMemObjectInfo
+  :  cl_mem
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetImageInfo : cl_mem -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetImageInfo
+  :  cl_mem
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clSetMemObjectDestructorCallback : cl_mem -> unit ptr -> unit ptr -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clCreateSampler : cl_context -> Unsigned.uint32 -> Unsigned.uint32 -> Unsigned.uint32 -> int32 ptr -> cl_sampler
+val clCreateSampler
+  :  cl_context
+  -> Unsigned.uint32
+  -> Unsigned.uint32
+  -> Unsigned.uint32
+  -> int32 ptr
+  -> cl_sampler
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clRetainSampler : cl_sampler -> int32
@@ -213,16 +288,42 @@ val clRetainSampler : cl_sampler -> int32
 val clReleaseSampler : cl_sampler -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetSamplerInfo : cl_sampler -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetSamplerInfo
+  :  cl_sampler
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clCreateProgramWithSource : cl_context -> Unsigned.uint32 -> char ptr ptr -> Unsigned.size_t ptr -> int32 ptr -> cl_program
+val clCreateProgramWithSource
+  :  cl_context
+  -> Unsigned.uint32
+  -> char ptr ptr
+  -> Unsigned.size_t ptr
+  -> int32 ptr
+  -> cl_program
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clCreateProgramWithBinary : cl_context -> Unsigned.uint32 -> cl_device_id ptr -> Unsigned.size_t ptr -> Unsigned.UChar.t ptr ptr -> int32 ptr -> int32 ptr -> cl_program
+val clCreateProgramWithBinary
+  :  cl_context
+  -> Unsigned.uint32
+  -> cl_device_id ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.UChar.t ptr ptr
+  -> int32 ptr
+  -> int32 ptr
+  -> cl_program
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clCreateProgramWithBuiltInKernels : cl_context -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> int32 ptr -> cl_program
+val clCreateProgramWithBuiltInKernels
+  :  cl_context
+  -> Unsigned.uint32
+  -> cl_device_id ptr
+  -> char ptr
+  -> int32 ptr
+  -> cl_program
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clRetainProgram : cl_program -> int32
@@ -231,28 +332,73 @@ val clRetainProgram : cl_program -> int32
 val clReleaseProgram : cl_program -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clBuildProgram : cl_program -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> unit ptr -> unit ptr -> int32
+val clBuildProgram
+  :  cl_program
+  -> Unsigned.uint32
+  -> cl_device_id ptr
+  -> char ptr
+  -> unit ptr
+  -> unit ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clCompileProgram : cl_program -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> Unsigned.uint32 -> cl_program ptr -> char ptr ptr -> unit ptr -> unit ptr -> int32
+val clCompileProgram
+  :  cl_program
+  -> Unsigned.uint32
+  -> cl_device_id ptr
+  -> char ptr
+  -> Unsigned.uint32
+  -> cl_program ptr
+  -> char ptr ptr
+  -> unit ptr
+  -> unit ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clLinkProgram : cl_context -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> Unsigned.uint32 -> cl_program ptr -> unit ptr -> unit ptr -> int32 ptr -> cl_program
+val clLinkProgram
+  :  cl_context
+  -> Unsigned.uint32
+  -> cl_device_id ptr
+  -> char ptr
+  -> Unsigned.uint32
+  -> cl_program ptr
+  -> unit ptr
+  -> unit ptr
+  -> int32 ptr
+  -> cl_program
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clUnloadPlatformCompiler : cl_platform_id -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetProgramInfo : cl_program -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetProgramInfo
+  :  cl_program
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetProgramBuildInfo : cl_program -> cl_device_id -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetProgramBuildInfo
+  :  cl_program
+  -> cl_device_id
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clCreateKernel : cl_program -> char ptr -> int32 ptr -> cl_kernel
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clCreateKernelsInProgram : cl_program -> Unsigned.uint32 -> cl_kernel ptr -> Unsigned.uint32 ptr -> int32
+val clCreateKernelsInProgram
+  :  cl_program
+  -> Unsigned.uint32
+  -> cl_kernel ptr
+  -> Unsigned.uint32 ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clRetainKernel : cl_kernel -> int32
@@ -264,19 +410,45 @@ val clReleaseKernel : cl_kernel -> int32
 val clSetKernelArg : cl_kernel -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetKernelInfo : cl_kernel -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetKernelInfo
+  :  cl_kernel
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetKernelArgInfo : cl_kernel -> Unsigned.uint32 -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetKernelArgInfo
+  :  cl_kernel
+  -> Unsigned.uint32
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetKernelWorkGroupInfo : cl_kernel -> cl_device_id -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetKernelWorkGroupInfo
+  :  cl_kernel
+  -> cl_device_id
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clWaitForEvents : Unsigned.uint32 -> cl_event ptr -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetEventInfo : cl_event -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetEventInfo
+  :  cl_event
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clCreateUserEvent : cl_context -> int32 ptr -> cl_event
@@ -294,7 +466,13 @@ val clSetUserEventStatus : cl_event -> int32 -> int32
 val clSetEventCallback : cl_event -> int32 -> unit ptr -> unit ptr -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clGetEventProfilingInfo : cl_event -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetEventProfilingInfo
+  :  cl_event
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clFlush : cl_command_queue -> int32
@@ -303,76 +481,297 @@ val clFlush : cl_command_queue -> int32
 val clFinish : cl_command_queue -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueReadBuffer : cl_command_queue -> cl_mem -> Unsigned.uint32 -> Unsigned.size_t -> Unsigned.size_t -> unit ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueReadBuffer
+  :  cl_command_queue
+  -> cl_mem
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueReadBufferRect : cl_command_queue -> cl_mem -> Unsigned.uint32 -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> unit ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueReadBufferRect
+  :  cl_command_queue
+  -> cl_mem
+  -> Unsigned.uint32
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueWriteBuffer : cl_command_queue -> cl_mem -> Unsigned.uint32 -> Unsigned.size_t -> Unsigned.size_t -> unit ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueWriteBuffer
+  :  cl_command_queue
+  -> cl_mem
+  -> Unsigned.uint32
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueWriteBufferRect : cl_command_queue -> cl_mem -> Unsigned.uint32 -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> unit ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueWriteBufferRect
+  :  cl_command_queue
+  -> cl_mem
+  -> Unsigned.uint32
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueFillBuffer : cl_command_queue -> cl_mem -> unit ptr -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueFillBuffer
+  :  cl_command_queue
+  -> cl_mem
+  -> unit ptr
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueCopyBuffer : cl_command_queue -> cl_mem -> cl_mem -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueCopyBuffer
+  :  cl_command_queue
+  -> cl_mem
+  -> cl_mem
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueCopyBufferRect : cl_command_queue -> cl_mem -> cl_mem -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueCopyBufferRect
+  :  cl_command_queue
+  -> cl_mem
+  -> cl_mem
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueReadImage : cl_command_queue -> cl_mem -> Unsigned.uint32 -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t -> Unsigned.size_t -> unit ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueReadImage
+  :  cl_command_queue
+  -> cl_mem
+  -> Unsigned.uint32
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueWriteImage : cl_command_queue -> cl_mem -> Unsigned.uint32 -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t -> Unsigned.size_t -> unit ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueWriteImage
+  :  cl_command_queue
+  -> cl_mem
+  -> Unsigned.uint32
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> unit ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueFillImage : cl_command_queue -> cl_mem -> unit ptr -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueFillImage
+  :  cl_command_queue
+  -> cl_mem
+  -> unit ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueCopyImage : cl_command_queue -> cl_mem -> cl_mem -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueCopyImage
+  :  cl_command_queue
+  -> cl_mem
+  -> cl_mem
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueCopyImageToBuffer : cl_command_queue -> cl_mem -> cl_mem -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueCopyImageToBuffer
+  :  cl_command_queue
+  -> cl_mem
+  -> cl_mem
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueCopyBufferToImage : cl_command_queue -> cl_mem -> cl_mem -> Unsigned.size_t -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueCopyBufferToImage
+  :  cl_command_queue
+  -> cl_mem
+  -> cl_mem
+  -> Unsigned.size_t
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueMapBuffer : cl_command_queue -> cl_mem -> Unsigned.uint32 -> Unsigned.ULong.t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32 ptr -> unit ptr
+val clEnqueueMapBuffer
+  :  cl_command_queue
+  -> cl_mem
+  -> Unsigned.uint32
+  -> Unsigned.ULong.t
+  -> Unsigned.size_t
+  -> Unsigned.size_t
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32 ptr
+  -> unit ptr
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueMapImage : cl_command_queue -> cl_mem -> Unsigned.uint32 -> Unsigned.ULong.t -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32 ptr -> unit ptr
+val clEnqueueMapImage
+  :  cl_command_queue
+  -> cl_mem
+  -> Unsigned.uint32
+  -> Unsigned.ULong.t
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32 ptr
+  -> unit ptr
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueUnmapMemObject : cl_command_queue -> cl_mem -> unit ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueUnmapMemObject
+  :  cl_command_queue
+  -> cl_mem
+  -> unit ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueMigrateMemObjects : cl_command_queue -> Unsigned.uint32 -> cl_mem ptr -> Unsigned.ULong.t -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueMigrateMemObjects
+  :  cl_command_queue
+  -> Unsigned.uint32
+  -> cl_mem ptr
+  -> Unsigned.ULong.t
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueNDRangeKernel : cl_command_queue -> cl_kernel -> Unsigned.uint32 -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.size_t ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueNDRangeKernel
+  :  cl_command_queue
+  -> cl_kernel
+  -> Unsigned.uint32
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.size_t ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueTask : cl_command_queue -> cl_kernel -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueTask
+  :  cl_command_queue
+  -> cl_kernel
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueNativeKernel : cl_command_queue -> unit ptr -> unit ptr -> Unsigned.size_t -> Unsigned.uint32 -> cl_mem ptr -> unit ptr ptr -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueNativeKernel
+  :  cl_command_queue
+  -> unit ptr
+  -> unit ptr
+  -> Unsigned.size_t
+  -> Unsigned.uint32
+  -> cl_mem ptr
+  -> unit ptr ptr
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueMarkerWithWaitList : cl_command_queue -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueMarkerWithWaitList
+  :  cl_command_queue
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-val clEnqueueBarrierWithWaitList : cl_command_queue -> Unsigned.uint32 -> cl_event ptr -> cl_event ptr -> int32
+val clEnqueueBarrierWithWaitList
+  :  cl_command_queue
+  -> Unsigned.uint32
+  -> cl_event ptr
+  -> cl_event ptr
+  -> int32
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
 val clGetExtensionFunctionAddressForPlatform : cl_platform_id -> char ptr -> unit ptr
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
-
-
 
 (** {6 Constant definition} *)
 
@@ -1465,8 +1864,6 @@ val cl_PROFILING_COMMAND_START : int
 val cl_PROFILING_COMMAND_END : int
 (** Constant ``PROFILING_COMMAND_END = 0x1283``. *)
 
-
-
 (** {6 Exception definition} *)
 
 exception EXN_SUCCESS
@@ -1645,4 +2042,3 @@ exception EXN_INVALID_LINKER_OPTIONS
 
 exception EXN_INVALID_DEVICE_PARTITION_COUNT
 (** Exception ``EXN_INVALID_DEVICE_PARTITION_COUNT``. *)
-

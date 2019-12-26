@@ -3,15 +3,11 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 (* NOTE: Obsoleted, do not use! *)
 
 open Bigarray
-
 module G = Owl_opencl_dense_ndarray
-
 include Owl.Dense.Ndarray.S
-
 
 (* unary operator definitions *)
 
@@ -95,7 +91,6 @@ let softplus x = G.(of_ndarray x |> softplus |> to_ndarray float32)
 
 let softsign x = G.(of_ndarray x |> softsign |> to_ndarray float32)
 
-
 (* binary operator definitions *)
 
 let add_scalar x a =
@@ -152,7 +147,6 @@ let scalar_div a x =
   let a = Owl_opencl_primitive.pack_flt a in
   let y = G.scalar_div a x in
   G.to_ndarray float32 y
-
 
 (*
 let add x y =

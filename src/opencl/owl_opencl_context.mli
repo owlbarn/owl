@@ -4,9 +4,7 @@
  *)
 
 open Bigarray
-
 open Owl_opencl_generated
-
 
 (** {6 Type definition} *)
 
@@ -14,20 +12,19 @@ type num =
   | F of float
   | F32 of (float, float32_elt) Owl_dense_ndarray_generic.t
   | F64 of (float, float64_elt) Owl_dense_ndarray_generic.t
-(** Type of supported number types in the `param` of `eval` function. *)
+      (** Type of supported number types in the `param` of `eval` function. *)
 
-type t = {
-  mutable device : cl_device_id array;
-  mutable context : cl_context;
-  mutable program : cl_program;
-  mutable progsrc : string array;
-  mutable command_queue : (cl_device_id, cl_command_queue) Hashtbl.t;
-}
+type t =
+  { mutable device : cl_device_id array
+  ; mutable context : cl_context
+  ; mutable program : cl_program
+  ; mutable progsrc : string array
+  ; mutable command_queue : (cl_device_id, cl_command_queue) Hashtbl.t
+  }
 (** Type of context. Note this is different from OpenCL's context object. *)
 
 val default : t
 (** Default context, with all GPU devices included and pre-compiled core kernels. *)
-
 
 (** {6 Query platform} *)
 
@@ -46,7 +43,6 @@ val gpu_devices : unit -> cl_device_id array
 val accelerators : unit -> cl_device_id array
 (** List all the accelerators on this computer. *)
 
-
 (** {6 Manipulate context} *)
 
 val create : cl_device_id array -> string array -> t
@@ -63,7 +59,6 @@ val get_dev : t -> int -> cl_device_id
 
 val get_cmdq : t -> cl_device_id -> cl_command_queue
 (** Return the corresponding command queue object of the given device object and its associated with the context. *)
-
 
 (** {6 Manipulate kernels} *)
 
@@ -84,10 +79,16 @@ val make_kernel : t -> string -> cl_kernel
 val ba_kernel : ('a, 'b) kind -> string -> cl_program -> cl_kernel
 (** This function is similar to ``make_kernel`` but specifically for making Bigarray function. *)
 
-
 (** {6 Evaluate kernels} *)
 
-val eval : ?param:num array -> ?ctx:t -> ?dev_id:int -> ?work_dim:int -> ?work_size:int array -> string -> unit
+val eval
+  :  ?param:num array
+  -> ?ctx:t
+  -> ?dev_id:int
+  -> ?work_dim:int
+  -> ?work_size:int array
+  -> string
+  -> unit
 (**
 ``eval fun_name`` evaluates a kernel function in the given context, by calling
 ``Kernel.enqueue_ndrange`` function.

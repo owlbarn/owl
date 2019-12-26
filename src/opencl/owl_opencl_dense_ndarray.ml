@@ -5,7 +5,6 @@
 
 open Owl_opencl_primitive
 
-
 (* unary operator definitions *)
 
 let erf x = map_arr "erf" x
@@ -90,7 +89,6 @@ let softplus x = map_arr "softplus" x
 
 let softsign x = map_arr "softsign" x
 
-
 (* binary operator definitions *)
 
 let add x y = map2_arr "add" x y
@@ -147,18 +145,16 @@ let scalar_atan2 a x = map_arr_scalar "scalar_atan2" x a
 
 let scalar_atan2pi a x = map_arr_scalar "scalar_atan2pi" x a
 
-
 (* helper functions *)
 
-let to_ndarray
-  : type a b . (a, b) Bigarray.kind -> t -> (a, b) Owl_dense_ndarray_generic.t
-  = fun _k x ->
+let to_ndarray : type a b. (a, b) Bigarray.kind -> t -> (a, b) Owl_dense_ndarray_generic.t
+  =
+ fun _k x ->
   eval x |> ignore;
   let y = unpack_trace x in
-  (y.outval.(0) |> unpack_arr)
+  y.outval.(0) |> unpack_arr
 
 
 let of_ndarray x = pack_arr (Owl_dense_ndarray_generic.copy x)
-
 
 (* ends here *)
