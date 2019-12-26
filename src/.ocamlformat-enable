@@ -1,14 +1,5 @@
 aeos/*
-base/algodiff/*
-base/core/*
-base/dense/*
-base/linalg/*
-base/maths/*
-base/misc/*
-base/neural/*
-base/optimise/*
-base/stats/*
-base/types/*
+base/*
 plplot/*
 top/*
 zoo/*
