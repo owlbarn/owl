@@ -6,7 +6,6 @@
 open Bigarray
 open Owl_dense_ndarray_generic
 
-
 val fft : ?axis:int -> (Complex.t, complex32_elt) t -> (Complex.t, complex32_elt) t
 
 val ifft : ?axis:int -> (Complex.t, complex32_elt) t -> (Complex.t, complex32_elt) t

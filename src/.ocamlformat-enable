@@ -6,4 +6,6 @@ opencl/*
 opencl/*/*
 plplot/*
 top/*
+owl/*
+owl/*/*
 zoo/*

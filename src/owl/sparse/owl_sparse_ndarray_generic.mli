@@ -5,7 +5,6 @@
 
 (** Sparse N-dimensional array module *)
 
-
 (** {6 Type definition} *)
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
@@ -13,7 +12,6 @@ type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 type ('a, 'b) t
 (** Abstract type of sparse ndarray. *)
-
 
 (** {6 Create sparse ndarray} *)
 
@@ -25,7 +23,6 @@ val binary : ?density:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
 
 val uniform : ?scale:float -> ?density:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
 (** TODO *)
-
 
 (** {6 Obtain basic properties} *)
 
@@ -53,7 +50,6 @@ val same_shape : ('a, 'b) t -> ('a, 'b) t -> bool
 val kind : ('a, 'b) t -> ('a, 'b) kind
 (** TODO *)
 
-
 (** {6 Manipulate a N-dimensional array} *)
 
 val get : ('a, 'b) t -> int array -> 'a
@@ -80,7 +76,6 @@ val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
 
-
 (** {6 Iterate array elements} *)
 
 val iteri : ?axis:int option array -> (int array -> 'a -> unit) -> ('a, 'b) t -> unit
@@ -95,13 +90,22 @@ val mapi : ?axis:int option array -> (int array -> 'a -> 'a) -> ('a, 'b) t -> ('
 val map : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
 
-val filteri : ?axis:int option array -> (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
+val filteri
+  :  ?axis:int option array
+  -> (int array -> 'a -> bool)
+  -> ('a, 'b) t
+  -> int array array
 (** TODO *)
 
 val filter : ?axis:int option array -> ('a -> bool) -> ('a, 'b) t -> int array array
 (** TODO *)
 
-val foldi : ?axis:int option array -> (int array -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
+val foldi
+  :  ?axis:int option array
+  -> (int array -> 'c -> 'a -> 'c)
+  -> 'c
+  -> ('a, 'b) t
+  -> 'c
 (** TODO *)
 
 val fold : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
@@ -113,24 +117,36 @@ val iteri_nz : ?axis:int option array -> (int array -> 'a -> unit) -> ('a, 'b) t
 val iter_nz : ?axis:int option array -> ('a -> unit) -> ('a, 'b) t -> unit
 (** TODO *)
 
-val mapi_nz : ?axis:int option array -> (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+val mapi_nz
+  :  ?axis:int option array
+  -> (int array -> 'a -> 'a)
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (** TODO *)
 
 val map_nz : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
 
-val filteri_nz : ?axis:int option array -> (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
+val filteri_nz
+  :  ?axis:int option array
+  -> (int array -> 'a -> bool)
+  -> ('a, 'b) t
+  -> int array array
 (** TODO *)
 
 val filter_nz : ?axis:int option array -> ('a -> bool) -> ('a, 'b) t -> int array array
 (** TODO *)
 
-val foldi_nz : ?axis:int option array -> (int array -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
+val foldi_nz
+  :  ?axis:int option array
+  -> (int array -> 'c -> 'a -> 'c)
+  -> 'c
+  -> ('a, 'b) t
+  -> 'c
 (** TODO *)
 
 val fold_nz : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 (** TODO *)
-
 
 (** {6 Examine array elements or compare two arrays } *)
 
@@ -176,7 +192,6 @@ val greater_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 (** TODO *)
 
-
 (** {6 Input/Output and helper functions} *)
 
 val to_array : ('a, 'b) t -> (int array * 'a) array
@@ -197,7 +212,6 @@ val save : ('a, 'b) t -> string -> unit
 val load : ('a, 'b) kind -> string -> ('a, 'b) t
 (** TODO *)
 
-
 (** {6 Unary mathematical operations } *)
 
 val min : ('a, 'b) t -> 'a
@@ -209,10 +223,10 @@ val max : ('a, 'b) t -> 'a
 val minmax : ('a, 'b) t -> 'a * 'a
 (** TODO *)
 
-val abs : ('a, 'b) t ->('a, 'b) t
+val abs : ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
 
-val neg : ('a, 'b) t ->('a, 'b) t
+val neg : ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
 
 val sum : ('a, 'b) t -> 'a
@@ -220,7 +234,6 @@ val sum : ('a, 'b) t -> 'a
 
 val mean : ('a, 'b) t -> 'a
 (** TODO *)
-
 
 (** {6 Binary mathematical operations } *)
 
@@ -236,16 +249,16 @@ val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
 
-val add_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** TODO *)
 
-val sub_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** TODO *)
 
-val mul_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** TODO *)
 
-val div_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** TODO *)
 
 val scalar_add : 'a -> ('a, 'b) t -> ('a, 'b) t
@@ -259,6 +272,5 @@ val scalar_mul : 'a -> ('a, 'b) t -> ('a, 'b) t
 
 val scalar_div : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
-
 
 (* ends here *)

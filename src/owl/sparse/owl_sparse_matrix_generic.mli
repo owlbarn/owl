@@ -5,7 +5,6 @@
 
 (** Sparse matrix module *)
 
-
 (** {6 Type definition} *)
 
 type ('a, 'b) t
@@ -17,7 +16,6 @@ type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 (**
 Type of sparse matrices. It is defined in ``types.ml`` as record type.
  *)
-
 
 (** {6 Create sparse matrices} *)
 
@@ -54,7 +52,6 @@ adjusts the interval to ``(0,a)``.
 
 val sequential : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 (** TODO *)
-
 
 (** {6 Obtain the basic properties} *)
 
@@ -113,7 +110,6 @@ equivalent to ``nnz x`` divided by ``numel x``.
  *)
 
 val kind : ('a, 'b) t -> ('a, 'b) kind
-
 
 (** {6 Manipulate a matrix} *)
 
@@ -191,7 +187,6 @@ val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``concat_horizontal x y`` not implemented yet
  *)
-
 
 (** {6 Iterate elements, columns, and rows} *)
 
@@ -398,7 +393,6 @@ val fold_cols_nz : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 columns in ``x`` using function ``f``. Zero columns will be dropped in iterating ``x``.
  *)
 
-
 (** {6 Examin elements and compare two matrices} *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
@@ -429,7 +423,7 @@ val not_exists_nz : ('a -> bool) -> ('a, 'b) t -> bool
 ``not_exists_nz f x`` is similar to ``not_exists`` but only checks non-zero elements.
  *)
 
-val for_all_nz :  ('a -> bool) -> ('a, 'b) t -> bool
+val for_all_nz : ('a -> bool) -> ('a, 'b) t -> bool
 (**
 ``for_all_nz f x`` is similar to ``for_all_nz`` but only checks non-zero elements.
  *)
@@ -494,7 +488,6 @@ val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 greater than the corresponding elements in ``y``.
  *)
 
-
 (** {6 Randomisation functions} *)
 
 val permutation_matrix : ('a, 'b) kind -> int -> ('a, 'b) t
@@ -532,7 +525,6 @@ val shuffle : ('a, 'b) t -> ('a, 'b) t
 rows then shuffling along columns. It is equivalent to ``shuffle_cols (shuffle_rows x)``.
  *)
 
-
 (** {6 Input/Output and helper functions} *)
 
 val to_array : ('a, 'b) t -> (int array * 'a) array
@@ -556,7 +548,8 @@ val print : ('a, 'b) t -> unit
 ``print x`` pretty prints matrix ``x`` without headings.
  *)
 
-val pp_spmat : ('a, 'b) t -> unit [@@ocaml.toplevel_printer]
+val pp_spmat : ('a, 'b) t -> unit
+  [@@ocaml.toplevel_printer]
 (**
 ``pp_spmat x`` pretty prints matrix ``x`` with headings. Toplevel uses this
 function to print out the matrices.
@@ -573,7 +566,6 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 ``load k f`` loads a sparse matrix from file ``f``. The file must be previously
 saved by using ``save`` function.
  *)
-
 
 (** {6 Unary mathematical operations } *)
 
@@ -618,25 +610,25 @@ val sum_cols : ('a, 'b) t -> ('a, 'b) t
 ``sum_cols`` returns the summation of all the column vectors in ``x``.
  *)
 
-val mean_rows : ('a, 'b) t ->('a, 'b) t
+val mean_rows : ('a, 'b) t -> ('a, 'b) t
 (**
 ``mean_rows x`` returns the mean value of all row vectors in ``x``. It is
 equivalent to ``div_scalar (sum_rows x) (float_of_int (row_num x))``.
  *)
 
-val mean_cols : ('a, 'b) t ->('a, 'b) t
+val mean_cols : ('a, 'b) t -> ('a, 'b) t
 (**
 ``mean_cols x`` returns the mean value of all column vectors in ``x``.
 It is equivalent to ``div_scalar (sum_cols x) (float_of_int (col_num x))``.
  *)
 
-val abs : (float, 'a) t ->(float, 'a) t
+val abs : (float, 'a) t -> (float, 'a) t
 (**
 ``abs x`` returns a new matrix where each element has the absolute value of
 that in the original matrix ``x``.
  *)
 
-val neg : ('a, 'b) t ->('a, 'b) t
+val neg : ('a, 'b) t -> ('a, 'b) t
 (**
 ``neg x`` returns a new matrix where each element has the negative value of
 that in the original matrix ``x``.
@@ -647,7 +639,6 @@ val l1norm : (float, 'b) t -> float
 
 val l2norm : (float, 'b) t -> float
 (** TODO *)
-
 
 (** {6 Binary mathematical operations } *)
 
@@ -680,9 +671,11 @@ another ``n`` by ``p`` matrix ``y``.
  *)
 
 val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
 (* ``add_scalar`` only applies to non-zero elements .*)
 
 val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
 (* ``sub_scalar`` only applies to non-zero elements .*)
 
 val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
@@ -714,6 +707,5 @@ val power_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
 val mpow : ('a, 'b) t -> float -> ('a, 'b) t
 (** TODO: not implemented, just a place holder. *)
-
 
 (** ends here *)

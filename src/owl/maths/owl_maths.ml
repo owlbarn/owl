@@ -5,7 +5,6 @@
 
 module CI = Cstubs_internals
 
-
 (** Basic and advanced math functions *)
 
 let add = ( +. )
@@ -27,13 +26,14 @@ let neg x = 0. -. x
 let reci x = 1. /. x
 
 let signum x =
-  if FP_nan = classify_float x then nan
-  else (
-    if x > 0. then 1.
-    else (
-      if x < 0. then (~-. 1.) else 0.
-    )
-  )
+  if FP_nan = classify_float x
+  then nan
+  else if x > 0.
+  then 1.
+  else if x < 0.
+  then ~-.1.
+  else 0.
+
 
 let softsign x = x /. (1. +. abs x)
 
@@ -46,11 +46,12 @@ let floor x = floor x
 let ceil x = ceil x
 
 let round_lb = -.(2. ** 52.)
+
 let round_ub = 2. ** 52.
+
 let round t =
-  if t >= round_lb && t <= round_ub then
-    floor (t +. 0.49999999999999994)
-  else t
+  if t >= round_lb && t <= round_ub then floor (t +. 0.49999999999999994) else t
+
 
 let trunc x = modf x |> snd
 
@@ -72,15 +73,15 @@ let log x = log x
 
 let log1p x = log1p x
 
-let log2 x = (log x) /. Owl_const.loge2
+let log2 x = log x /. Owl_const.loge2
 
-let log10 x = (log x) /. Owl_const.loge10
+let log10 x = log x /. Owl_const.loge10
 
-let logn base x = (log x) /. (log base)
+let logn base x = log x /. log base
 
 let logabs x = Owl_maths_special.logabs x
 
-let sigmoid x = 1. /. ((exp (-.x)) +. 1.)
+let sigmoid x = 1. /. (exp (-.x) +. 1.)
 
 let sin x = sin x
 
@@ -88,11 +89,11 @@ let cos x = cos x
 
 let tan x = tan x
 
-let cot x = 1. /. (tan x)
+let cot x = 1. /. tan x
 
-let sec x = 1. /. (cos x)
+let sec x = 1. /. cos x
 
-let csc x = 1. /. (sin x)
+let csc x = 1. /. sin x
 
 let asin x = asin x
 
@@ -100,7 +101,7 @@ let acos x = acos x
 
 let atan x = atan x
 
-let acot x = (Owl_const.pi /. 2.) -. (atan x)
+let acot x = (Owl_const.pi /. 2.) -. atan x
 
 let asec x = acos (1. /. x)
 
@@ -114,7 +115,10 @@ let cosh x = cosh x
 
 let tanh x = tanh x
 
-let coth x = let a = exp (-2. *. x) in (1. +. a) /. (1. -. a)
+let coth x =
+  let a = exp (-2. *. x) in
+  (1. +. a) /. (1. -. a)
+
 
 let sech x = 1. /. cosh x
 
@@ -167,6 +171,7 @@ let airy x =
   Owl_maths_special.airy x ai aip bi bip |> ignore;
   Ctypes.(!@ai, !@aip, !@bi, !@bip)
 
+
 let ellipj u m =
   let sn = Ctypes.(allocate double 0.) in
   let cn = Ctypes.(allocate double 0.) in
@@ -174,6 +179,7 @@ let ellipj u m =
   let ph = Ctypes.(allocate double 0.) in
   Owl_maths_special.ellipj u m sn cn dn ph |> ignore;
   Ctypes.(!@sn, !@cn, !@dn, !@ph)
+
 
 let ellipk m = Owl_maths_special.ellipk m
 
@@ -225,6 +231,7 @@ let shichi x =
   Owl_maths_special.shichi x si ci |> ignore;
   Ctypes.(!@si, !@ci)
 
+
 let shi x = shichi x |> fst
 
 let chi x = shichi x |> snd
@@ -234,6 +241,7 @@ let sici x =
   let ci = Ctypes.(allocate double 0.) in
   Owl_maths_special.sici x si ci |> ignore;
   Ctypes.(!@si, !@ci)
+
 
 let si x = sici x |> fst
 
@@ -259,17 +267,21 @@ let fact x =
   Owl_exception.(check (x >= 0) (NON_NEGATIVE_INT x));
   Owl_maths_special.fact x
 
+
 let log_fact x =
   Owl_exception.(check (x >= 0) (NON_NEGATIVE_INT x));
   Owl_maths_special.log_fact x
+
 
 let doublefact x =
   Owl_exception.(check (x >= 0) (NON_NEGATIVE_INT x));
   Owl_maths_special.doublefact x
 
+
 let log_doublefact x =
   Owl_exception.(check (x >= 0) (NON_NEGATIVE_INT x));
   Owl_maths_special.log_doublefact x
+
 
 let beta a b = Owl_maths_special.beta a b
 
@@ -294,6 +306,7 @@ let permutation_float n k =
   done;
   !r |> trunc
 
+
 let permutation n k = permutation_float n k |> int_of_float
 
 let erf x = Owl_maths_special.erf x
@@ -313,6 +326,7 @@ let fresnel x =
   let csa = Ctypes.(allocate double 0.) in
   Owl_maths_special.fresnel x ssa csa |> ignore;
   Ctypes.(!@ssa, !@csa)
+
 
 let struve v x = Owl_maths_special.struve v x
 
@@ -359,7 +373,5 @@ let bdtri k n y = Owl_maths_special.bdtri k n y
 let btdtr a b x = Owl_maths_special.btdtr a b x
 
 let btdtri a b p = Owl_maths_special.btdtri a b p
-
-
 
 (* ends here *)

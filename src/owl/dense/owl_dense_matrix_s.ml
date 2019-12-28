@@ -6,13 +6,12 @@
 (** [ Real dense matrix ]  *)
 
 open Bigarray
-
 module M = Owl_dense_matrix_generic
 include M
 
 type elt = float
-type mat = (float, float32_elt) M.t
 
+type mat = (float, float32_elt) M.t
 
 (* overload functions in Owl_dense_matrix_generic *)
 

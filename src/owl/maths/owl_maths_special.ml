@@ -5,19 +5,34 @@
 
 module CI = Cstubs_internals
 
-
 (* Airy functions *)
 
-external airy : float -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> int = "stub_sf_airy"
+external airy
+  :  float
+  -> _ CI.fatptr
+  -> _ CI.fatptr
+  -> _ CI.fatptr
+  -> _ CI.fatptr
+  -> int
+  = "stub_sf_airy"
 
 let airy x ai aip bi bip = airy x (CI.cptr ai) (CI.cptr aip) (CI.cptr bi) (CI.cptr bip)
 
-
 (* Elliptic Functions *)
 
-external ellipj : float -> float -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> int = "stub_sf_ellipj_byte6" "stub_sf_ellipj"
+external ellipj
+  :  float
+  -> float
+  -> _ CI.fatptr
+  -> _ CI.fatptr
+  -> _ CI.fatptr
+  -> _ CI.fatptr
+  -> int
+  = "stub_sf_ellipj_byte6" "stub_sf_ellipj"
 
-let ellipj u m sn cn dn phi = ellipj u m (CI.cptr sn) (CI.cptr cn) (CI.cptr dn) (CI.cptr phi)
+let ellipj u m sn cn dn phi =
+  ellipj u m (CI.cptr sn) (CI.cptr cn) (CI.cptr dn) (CI.cptr phi)
+
 
 external ellipk : float -> float = "owl_stub_sf_ellipk"
 
@@ -28,7 +43,6 @@ external ellipkinc : float -> float -> float = "owl_stub_sf_ellipkinc"
 external ellipe : float -> float = "owl_stub_sf_ellipe"
 
 external ellipeinc : float -> float -> float = "owl_stub_sf_ellipeinc"
-
 
 (* Bessel functions *)
 
@@ -64,7 +78,6 @@ external k1 : float -> float = "owl_stub_sf_k1"
 
 external k1e : float -> float = "owl_stub_sf_k1e"
 
-
 (* Gamma functions *)
 
 external gamma : float -> float = "owl_stub_sf_gamma"
@@ -83,7 +96,6 @@ external gammainccinv : float -> float -> float = "owl_stub_sf_gammainccinv"
 
 external psi : float -> float = "owl_stub_sf_psi"
 
-
 (* Beta functions *)
 
 external beta : float -> float -> float = "owl_stub_sf_beta"
@@ -91,7 +103,6 @@ external beta : float -> float -> float = "owl_stub_sf_beta"
 external betainc : float -> float -> float -> float = "owl_stub_sf_betainc"
 
 external betaincinv : float -> float -> float -> float = "owl_stub_sf_betaincinv"
-
 
 (* Error Function and Fresnel Integrals *)
 
@@ -110,7 +121,6 @@ external dawsn : float -> float = "owl_stub_sf_dawsn"
 external fresnel : float -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_fresnel"
 
 let fresnel x ssa csa = fresnel x (CI.cptr ssa) (CI.cptr csa)
-
 
 (* Other special functions *)
 
@@ -135,7 +145,6 @@ external zeta : float -> float -> float = "owl_stub_sf_zeta"
 external zetac : float -> float = "owl_stub_sf_zetac"
 
 external struve : float -> float -> float = "owl_stub_sf_struve"
-
 
 (* From owl_maths_special_impl.c file *)
 
@@ -171,7 +180,6 @@ external tandg : float -> float = "owl_stub_sf_tandg"
 
 external cotdg : float -> float = "owl_stub_sf_cotdg"
 
-
 (* Raw statistical functions *)
 
 external bdtr : int -> int -> float -> float = "owl_stub_sf_bdtr"
@@ -183,7 +191,6 @@ external bdtri : int -> int -> float -> float = "owl_stub_sf_bdtri"
 external btdtr : float -> float -> float -> float = "owl_stub_sf_btdtr"
 
 external btdtri : float -> float -> float -> float = "owl_stub_sf_btdtri"
-
 
 (* Factorial functions *)
 
@@ -199,13 +206,11 @@ external combination : int -> int -> float = "owl_stub_sf_combination"
 
 external log_combination : int -> int -> float = "owl_stub_sf_log_combination"
 
-
 (* Modular arithmetic *)
 
 external mulmod : int -> int -> int -> int = "owl_stub_mulmod"
 
 external powmod : int -> int -> int -> int = "owl_stub_powmod"
-
 
 (* Other helper functions *)
 

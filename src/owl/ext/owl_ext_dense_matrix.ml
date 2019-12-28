@@ -4,91 +4,129 @@
  *)
 
 open Owl_types
-
 open Owl_ext_types
 
 (* modules for packing and unpacking *)
 
 module type PackSig = sig
-
   type mat
+
   type elt
+
   type cast_mat
 
-  val pack_box      : mat -> ext_typ
-  val unpack_box    : ext_typ -> mat
-  val pack_elt      : elt -> ext_typ
-  val unpack_elt    : ext_typ -> elt
-  val pack_cast_box : cast_mat -> ext_typ
+  val pack_box : mat -> ext_typ
 
+  val unpack_box : ext_typ -> mat
+
+  val pack_elt : elt -> ext_typ
+
+  val unpack_elt : ext_typ -> elt
+
+  val pack_cast_box : cast_mat -> ext_typ
 end
 
-
 module Pack_DMS = struct
-
   type mat = dms
+
   type elt = float
+
   type cast_mat = dms
 
   let pack_box x = DMS x
-  let unpack_box = function DMS x -> x | _ -> failwith "Pack_DMS:unpack_box"
-  let pack_elt x = F x
-  let unpack_elt = function F x -> x | _ -> failwith "Pack_DMS:unpack_elt"
-  let pack_cast_box x = DMS x
 
+  let unpack_box = function
+    | DMS x -> x
+    | _     -> failwith "Pack_DMS:unpack_box"
+
+
+  let pack_elt x = F x
+
+  let unpack_elt = function
+    | F x -> x
+    | _   -> failwith "Pack_DMS:unpack_elt"
+
+
+  let pack_cast_box x = DMS x
 end
 
-
 module Pack_DMD = struct
-
   type mat = dmd
+
   type elt = float
+
   type cast_mat = dmd
 
   let pack_box x = DMD x
-  let unpack_box = function DMD x -> x | _ -> failwith "Pack_DMD:unpack_dmd:"
-  let pack_elt x = F x
-  let unpack_elt = function F x -> x | _ -> failwith "Pack_DMD:unpack_elt"
-  let pack_cast_box x = DMD x
 
+  let unpack_box = function
+    | DMD x -> x
+    | _     -> failwith "Pack_DMD:unpack_dmd:"
+
+
+  let pack_elt x = F x
+
+  let unpack_elt = function
+    | F x -> x
+    | _   -> failwith "Pack_DMD:unpack_elt"
+
+
+  let pack_cast_box x = DMD x
 end
 
-
 module Pack_DMC = struct
-
   type mat = dmc
+
   type elt = Complex.t
+
   type cast_mat = dms
 
   let pack_box x = DMC x
-  let unpack_box = function DMC x -> x | _ -> failwith "Pack_DMC:unpack_dmc"
-  let pack_elt x = C x
-  let unpack_elt = function C x -> x | _ -> failwith "Pack_DMC:unpack_elt"
-  let pack_cast_box x = DMS x
 
+  let unpack_box = function
+    | DMC x -> x
+    | _     -> failwith "Pack_DMC:unpack_dmc"
+
+
+  let pack_elt x = C x
+
+  let unpack_elt = function
+    | C x -> x
+    | _   -> failwith "Pack_DMC:unpack_elt"
+
+
+  let pack_cast_box x = DMS x
 end
 
-
 module Pack_DMZ = struct
-
   type mat = dmz
+
   type elt = Complex.t
+
   type cast_mat = dmd
 
   let pack_box x = DMZ x
-  let unpack_box = function DMZ x -> x | _ -> failwith "Pack_DMZ:unpack_dmz"
+
+  let unpack_box = function
+    | DMZ x -> x
+    | _     -> failwith "Pack_DMZ:unpack_dmz"
+
+
   let pack_elt x = C x
-  let unpack_elt = function C x -> x | _ -> failwith "Pack_DMZ:unpack_elt"
+
+  let unpack_elt = function
+    | C x -> x
+    | _   -> failwith "Pack_DMZ:unpack_elt"
+
+
   let pack_cast_box x = DMD x
-
 end
-
 
 (* module for basic matrix operations *)
 
 module type BasicSig = sig
-
   type mat
+
   type elt
 
   val empty : int -> int -> mat
@@ -179,7 +217,6 @@ module type BasicSig = sig
 
   val repeat : mat -> int array -> mat
 
-
   val iteri : (int -> elt -> unit) -> mat -> unit
 
   val iter : (elt -> unit) -> mat -> unit
@@ -248,7 +285,6 @@ module type BasicSig = sig
 
   val map_at_col : (elt -> elt) -> mat -> int -> mat
 
-
   val exists : (elt -> bool) -> mat -> bool
 
   val not_exists : (elt -> bool) -> mat -> bool
@@ -313,7 +349,6 @@ module type BasicSig = sig
 
   val elt_greater_equal_scalar : mat -> elt -> mat
 
-
   val draw_rows : ?replacement:bool -> mat -> int -> mat * int array
 
   val draw_cols : ?replacement:bool -> mat -> int -> mat * int array
@@ -326,8 +361,7 @@ module type BasicSig = sig
 
   val shuffle_cols : mat -> mat
 
-  val shuffle: mat -> mat
-
+  val shuffle : mat -> mat
 
   val to_array : mat -> elt array
 
@@ -345,12 +379,17 @@ module type BasicSig = sig
 
   val of_cols : mat array -> mat
 
-  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> mat -> unit
+  val print
+    :  ?max_row:int
+    -> ?max_col:int
+    -> ?header:bool
+    -> ?fmt:(elt -> string)
+    -> mat
+    -> unit
 
   val save : out:string -> mat -> unit
 
   val load : string -> mat
-
 
   val inv : mat -> mat
 
@@ -369,7 +408,6 @@ module type BasicSig = sig
   val mean_rows : mat -> mat
 
   val mean_cols : mat -> mat
-
 
   val add : mat -> mat -> mat
 
@@ -396,15 +434,12 @@ module type BasicSig = sig
   val scalar_div : elt -> mat -> mat
 
   val dot : mat -> mat -> mat
-
 end
 
-
 module Make_Basic
-  (P : PackSig)
-  (M : BasicSig with type mat := P.mat and type elt := P.elt)
-  = struct
-
+    (P : PackSig)
+    (M : BasicSig with type mat := P.mat and type elt := P.elt) =
+struct
   open P
 
   let empty m n = M.empty m n |> pack_box
@@ -423,9 +458,14 @@ module Make_Basic
 
   let linspace a b n = M.linspace a b n |> pack_box
 
-  let meshgrid xa xb ya yb xn yn = let u, v = M.meshgrid xa xb ya yb xn yn in (pack_box u, pack_box v)
+  let meshgrid xa xb ya yb xn yn =
+    let u, v = M.meshgrid xa xb ya yb xn yn in
+    pack_box u, pack_box v
 
-  let meshup x y = let u, v = M.meshup (unpack_box x) (unpack_box y) in (pack_box u, pack_box v)
+
+  let meshup x y =
+    let u, v = M.meshup (unpack_box x) (unpack_box y) in
+    pack_box u, pack_box v
 
 
   let shape x = M.shape (unpack_box x)
@@ -443,7 +483,6 @@ module Make_Basic
   let size_in_bytes x = M.size_in_bytes (unpack_box x)
 
   let same_shape x y = M.same_shape (unpack_box x) (unpack_box y)
-
 
   let get x i j = M.get (unpack_box x) i j |> pack_elt
 
@@ -479,7 +518,9 @@ module Make_Basic
 
   let concat_vertical x y = M.concat_vertical (unpack_box x) (unpack_box y) |> pack_box
 
-  let concat_horizontal x y = M.concat_horizontal (unpack_box x) (unpack_box y) |> pack_box
+  let concat_horizontal x y =
+    M.concat_horizontal (unpack_box x) (unpack_box y) |> pack_box
+
 
   let transpose x = M.transpose (unpack_box x) |> pack_box
 
@@ -492,7 +533,6 @@ module Make_Basic
   let tile x reps = M.tile (unpack_box x) reps |> pack_box
 
   let repeat x reps = M.repeat (unpack_box x) reps |> pack_box
-
 
   let iteri f x = M.iteri f (unpack_box x)
 
@@ -558,7 +598,6 @@ module Make_Basic
 
   let map_at_col f x j = M.map_at_col f (unpack_box x) j |> pack_box
 
-
   let exists f x = M.exists f (unpack_box x)
 
   let not_exists f x = M.not_exists f (unpack_box x)
@@ -597,7 +636,9 @@ module Make_Basic
 
   let elt_less_equal x y = M.elt_less_equal (unpack_box x) (unpack_box y) |> pack_box
 
-  let elt_greater_equal x y = M.elt_greater_equal (unpack_box x) (unpack_box y) |> pack_box
+  let elt_greater_equal x y =
+    M.elt_greater_equal (unpack_box x) (unpack_box y) |> pack_box
+
 
   let equal_scalar x a = M.equal_scalar (unpack_box x) (unpack_elt a)
 
@@ -613,27 +654,39 @@ module Make_Basic
 
   let elt_equal_scalar x a = M.elt_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-  let elt_not_equal_scalar x a = M.elt_not_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+  let elt_not_equal_scalar x a =
+    M.elt_not_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
 
   let elt_less_scalar x a = M.elt_less_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-  let elt_greater_scalar x a = M.elt_greater_scalar (unpack_box x) (unpack_elt a) |> pack_box
-
-  let elt_less_equal_scalar x a = M.elt_less_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
-
-  let elt_greater_equal_scalar x a = M.elt_greater_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+  let elt_greater_scalar x a =
+    M.elt_greater_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
 
-  let draw_rows ?(replacement=true) x c = let r, i = M.draw_rows ~replacement (unpack_box x) c in (pack_box r), i
+  let elt_less_equal_scalar x a =
+    M.elt_less_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-  let draw_cols ?(replacement=true) x c = let r, i = M.draw_cols ~replacement (unpack_box x) c in (pack_box r), i
+
+  let elt_greater_equal_scalar x a =
+    M.elt_greater_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+
+  let draw_rows ?(replacement = true) x c =
+    let r, i = M.draw_rows ~replacement (unpack_box x) c in
+    pack_box r, i
+
+
+  let draw_cols ?(replacement = true) x c =
+    let r, i = M.draw_cols ~replacement (unpack_box x) c in
+    pack_box r, i
+
 
   let shuffle_rows x = M.shuffle_rows (unpack_box x)
 
   let shuffle_cols x = M.shuffle_cols (unpack_box x)
 
   let shuffle x = M.shuffle (unpack_box x)
-
 
   let to_array x = M.to_array (unpack_box x)
 
@@ -648,7 +701,6 @@ module Make_Basic
   let save ~out x = M.save (unpack_box x) ~out
 
   let load f = M.load f |> pack_box
-
 
   let inv x = M.inv (unpack_box x) |> pack_box
 
@@ -667,7 +719,6 @@ module Make_Basic
   let mean_rows x = M.sum_rows (unpack_box x) |> pack_box
 
   let mean_cols x = M.sum_rows (unpack_box x) |> pack_box
-
 
   let add x y = M.add (unpack_box x) (unpack_box y) |> pack_box
 
@@ -694,15 +745,13 @@ module Make_Basic
   let scalar_div a x = M.scalar_div (unpack_elt a) (unpack_box x) |> pack_box
 
   let dot x y = M.dot (unpack_box x) (unpack_box y) |> pack_box
-
 end
-
 
 (* module for float32 and float64 matrices *)
 
 module type SD_Sig = sig
-
   type mat
+
   type elt
 
   val min' : mat -> elt
@@ -791,7 +840,7 @@ module type SD_Sig = sig
 
   val softsign : mat -> mat
 
-  val softmax :?axis:int -> mat -> mat
+  val softmax : ?axis:int -> mat -> mat
 
   val sigmoid : mat -> mat
 
@@ -830,28 +879,35 @@ module type SD_Sig = sig
   val ssqr' : mat -> elt -> elt
 
   val ssqr_diff' : mat -> mat -> elt
-
 end
 
-
-module Make_SD
-  (P : PackSig)
-  (M : SD_Sig with type mat := P.mat and type elt := P.elt)
-  = struct
-
+module Make_SD (P : PackSig) (M : SD_Sig with type mat := P.mat and type elt := P.elt) =
+struct
   open P
 
   let min' x = M.min' (unpack_box x) |> pack_elt
 
   let max' x = M.max' (unpack_box x) |> pack_elt
 
-  let minmax' x = let (a, b) = M.minmax' (unpack_box x) in (pack_elt a, pack_elt b)
+  let minmax' x =
+    let a, b = M.minmax' (unpack_box x) in
+    pack_elt a, pack_elt b
 
-  let min_i x = let (a, i) = M.min_i (unpack_box x) in (pack_elt a, i)
 
-  let max_i x = let (a, i) = M.max_i (unpack_box x) in (pack_elt a, i)
+  let min_i x =
+    let a, i = M.min_i (unpack_box x) in
+    pack_elt a, i
 
-  let minmax_i x = let (a, i), (b, j) = M.minmax_i (unpack_box x) in (pack_elt a, i), (pack_elt b, j)
+
+  let max_i x =
+    let a, i = M.max_i (unpack_box x) in
+    pack_elt a, i
+
+
+  let minmax_i x =
+    let (a, i), (b, j) = M.minmax_i (unpack_box x) in
+    (pack_elt a, i), (pack_elt b, j)
+
 
   let abs x = M.abs (unpack_box x) |> pack_box
 
@@ -945,7 +1001,6 @@ module Make_SD
 
   let pow_scalar x a = M.pow_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-
   let atan2 x y = M.atan2 (unpack_box x) (unpack_box y) |> pack_box
 
   let scalar_atan2 a x = M.scalar_atan2 (unpack_elt a) (unpack_box x) |> pack_box
@@ -967,16 +1022,15 @@ module Make_SD
   let ssqr' x a = M.ssqr' (unpack_box x) (unpack_elt a) |> pack_elt
 
   let ssqr_diff' x y = M.ssqr_diff' (unpack_box x) (unpack_box y) |> pack_elt
-
 end
-
 
 (* module for complex32 and complex64 matrices *)
 
 module type CZ_Sig = sig
-
   type mat
+
   type elt
+
   type cast_mat
 
   val re : mat -> cast_mat
@@ -1002,15 +1056,15 @@ module type CZ_Sig = sig
   val ssqr' : mat -> elt -> elt
 
   val ssqr_diff' : mat -> mat -> elt
-
 end
 
-
 module Make_CZ
-  (P : PackSig)
-  (M : CZ_Sig with type mat := P.mat and type elt := P.elt and type cast_mat := P.cast_mat)
-  = struct
-
+    (P : PackSig)
+    (M : CZ_Sig
+           with type mat := P.mat
+            and type elt := P.elt
+            and type cast_mat := P.cast_mat) =
+struct
   open P
 
   let re x = M.re (unpack_box x) |> pack_cast_box
@@ -1036,9 +1090,7 @@ module Make_CZ
   let ssqr' x a = M.ssqr' (unpack_box x) (unpack_elt a) |> pack_elt
 
   let ssqr_diff' x y = M.ssqr_diff' (unpack_box x) (unpack_box y) |> pack_elt
-
 end
-
 
 (* matrix modules of four types *)
 
@@ -1047,18 +1099,15 @@ module S = struct
   include Make_SD (Pack_DMS) (Owl_dense_matrix.S)
 end
 
-
 module D = struct
   include Make_Basic (Pack_DMD) (Owl_dense_matrix.D)
   include Make_SD (Pack_DMD) (Owl_dense_matrix.D)
 end
 
-
 module C = struct
   include Make_Basic (Pack_DMC) (Owl_dense_matrix.C)
   include Make_CZ (Pack_DMC) (Owl_dense_matrix.C)
 end
-
 
 module Z = struct
   include Make_Basic (Pack_DMZ) (Owl_dense_matrix.Z)

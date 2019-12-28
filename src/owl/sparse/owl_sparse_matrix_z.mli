@@ -4,8 +4,8 @@
  *)
 
 type elt = Complex.t
-type mat = (Complex.t, Bigarray.complex64_elt) Owl_sparse_matrix_generic.t
 
+type mat = (Complex.t, Bigarray.complex64_elt) Owl_sparse_matrix_generic.t
 
 (** {6 Create sparse matrices} *)
 
@@ -22,7 +22,6 @@ val uniform : ?scale:float -> int -> int -> mat
 val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
 
 val sequential : int -> int -> mat
-
 
 (** {6 Obtain the basic properties of a matrix} *)
 
@@ -45,7 +44,6 @@ val nnz_rows : mat -> int array
 val nnz_cols : mat -> int array
 
 val density : mat -> float
-
 
 (** {6 Manipulate a matrix} *)
 
@@ -74,7 +72,6 @@ val rows : mat -> int array -> mat
 val cols : mat -> int array -> mat
 
 val prune : mat -> elt -> float -> unit
-
 
 (** {6 Iterate elements, columns, and rows} *)
 
@@ -150,7 +147,6 @@ val fold_rows_nz : ('a -> mat -> 'a) -> 'a -> mat -> 'a
 
 val fold_cols_nz : ('a -> mat -> 'a) -> 'a -> mat -> 'a
 
-
 (** {6 Examin elements and compare two matrices} *)
 
 val exists : (elt -> bool) -> mat -> bool
@@ -163,7 +159,7 @@ val exists_nz : (elt -> bool) -> mat -> bool
 
 val not_exists_nz : (elt -> bool) -> mat -> bool
 
-val for_all_nz :  (elt -> bool) -> mat -> bool
+val for_all_nz : (elt -> bool) -> mat -> bool
 
 val is_zero : mat -> bool
 
@@ -185,7 +181,6 @@ val greater_equal : mat -> mat -> bool
 
 val less_equal : mat -> mat -> bool
 
-
 (** {6 Randomisation functions} *)
 
 val permutation_matrix : int -> mat
@@ -199,7 +194,6 @@ val shuffle_rows : mat -> mat
 val shuffle_cols : mat -> mat
 
 val shuffle : mat -> mat
-
 
 (** {6 Input/Output and helper functions} *)
 
@@ -216,7 +210,6 @@ val print : mat -> unit
 val save : mat -> string -> unit
 
 val load : string -> mat
-
 
 (** {6 Unary mathematical operations } *)
 
@@ -239,7 +232,6 @@ val neg : mat -> mat
 (* val l1norm : mat -> elt *)
 
 (* val l2norm : mat -> elt *)
-
 
 (** {6 Binary mathematical operations } *)
 

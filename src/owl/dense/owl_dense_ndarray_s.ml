@@ -4,15 +4,14 @@
  *)
 
 open Bigarray
-
 module M = Owl_dense_ndarray_generic
 include M
 
 type elt = float
+
 type arr = (float, float32_elt, c_layout) Genarray.t
 
 let number = Owl_types.F32
-
 
 (* overload functions in Owl_dense_ndarray_generic *)
 

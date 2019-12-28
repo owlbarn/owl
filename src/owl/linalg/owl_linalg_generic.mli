@@ -16,9 +16,7 @@
   sparse matrices will be provided in future.
  *)
 
-
 open Bigarray
-
 
 (** {6 Type definition} *)
 
@@ -26,7 +24,6 @@ type ('a, 'b) t = ('a, 'b) Owl_dense_matrix_generic.t
 (**
 Matrix type, a special case of N-dimensional array.
  *)
-
 
 (** {6 Basic functions} *)
 
@@ -119,7 +116,6 @@ If ``x`` is well conditioned, the returned result is near ``1.0``. If ``x`` is b
 conditioned, the result is near ``0.``
  *)
 
-
 (** {6 Check matrix types} *)
 
 val is_square : ('a, 'b) t -> bool
@@ -143,7 +139,6 @@ val is_diag : ('a, 'b) t -> bool
 val is_posdef : ('a, 'b) t -> bool
 (** ``is_posdef x`` checks whether ``x`` is a positive semi-definite matrix. *)
 
-
 (** {6 Factorisation} *)
 
 val lu : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
@@ -159,7 +154,11 @@ reduced LQ decomposition is performed. But you can get full ``Q`` by setting
 parameter ``thin = false``.
  *)
 
-val qr : ?thin:bool -> ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
+val qr
+  :  ?thin:bool
+  -> ?pivot:bool
+  -> ('a, 'b) t
+  -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
 (**
 ``qr x`` calculates QR decomposition for an ``m`` by ``n`` matrix ``x`` as
 ``x = Q R``. ``Q`` is an ``m`` by ``n`` matrix (where ``Q^T Q = I``) and ``R`` is
@@ -202,7 +201,10 @@ val svdvals : ('a, 'b) t -> ('a, 'b) t
 ``vt``. Note that for complex numbers, the return is also complex type.
  *)
 
-val gsvd : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
+val gsvd
+  :  ('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
 (**
 ``gsvd x y -> (u, v, q, d1, d2, r)`` computes the generalised singular value
 decomposition of a pair of general rectangular matrices ``x`` and ``y``. ``d1`` and
@@ -253,7 +255,12 @@ Returns:
 val schur_tz : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** ``schur_tz x`` is similar to ``schur`` but only returns ``(t, z)``. *)
 
-val ordschur : otyp:('c, 'd) kind -> select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
+val ordschur
+  :  otyp:('c, 'd) kind
+  -> select:(int32, int32_elt) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
 (**
 ``ordschur ~select t z -> (r, p)`` reorders ``t`` and ``z`` returned by Schur
 factorization ``schur x -> (t, z)`` according ``select`` such that
@@ -272,7 +279,11 @@ Returns:
   * ``p``: reordered orthogonal matrix ``z``.
 *)
 
-val qz : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
+val qz
+  :  otyp:('c, 'd) kind
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
 (**
 ``qz x -> (s, t, q, z, w)`` calculates generalised Schur factorisation of ``x``
 in the following form. It is also known as QZ decomposition.
@@ -294,7 +305,14 @@ Returns:
   * ``w``: the generalised eigenvalue for a pair of matrices (X,Y).
  *)
 
-val ordqz : otyp:('c, 'd) kind -> select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
+val ordqz
+  :  otyp:('c, 'd) kind
+  -> select:(int32, int32_elt) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
 (**
 ``ordqz ~select a b q z`` reorders the generalised Schur decomposition of a pair
 of matrices (X,Y) so that a selected cluster of eigenvalues appears in the
@@ -318,10 +336,14 @@ Both Hessenberg matrix ``h`` and unitary matrix ``q`` is returned, such that
 
  *)
 
-
 (** {6 Eigenvalues & eigenvectors} *)
 
-val eig : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t * ('a, 'b) t
+val eig
+  :  ?permute:bool
+  -> ?scale:bool
+  -> otyp:('a, 'b) kind
+  -> ('c, 'd) t
+  -> ('a, 'b) t * ('a, 'b) t
 (**
 ``eig x -> v, w`` computes the right eigenvectors ``v`` and eigenvalues ``w``
 of an arbitrary square matrix ``x``. The eigenvectors are column vectors in
@@ -332,12 +354,16 @@ Note that ``otyp`` specifies the complex type of the output, but you do not
 need worry about this parameter if you use S, D, C, Z modules in Linalg.
  *)
 
-val eigvals : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
+val eigvals
+  :  ?permute:bool
+  -> ?scale:bool
+  -> otyp:('a, 'b) kind
+  -> ('c, 'd) t
+  -> ('a, 'b) t
 (**
 ``eigvals x -> w`` is similar to ``eig`` but only computes the eigenvalues of
 an arbitrary square matrix ``x``.
  *)
-
 
 (** {6 Linear system of equations} *)
 
@@ -369,8 +395,13 @@ complex matrices.
 .. math::
   A^H X = B
 *)
- 
-val linsolve : ?trans:bool -> ?typ:[`n | `u | `l] -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val linsolve
+  :  ?trans:bool
+  -> ?typ:[ `n | `u | `l ]
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (**
 ``linsolve a b -> x`` solves a linear system of equations ``a * x = b`` in the
 following form. By default, ``typ=`n`` and the function use LU factorisation with partial pivoting when
@@ -435,7 +466,11 @@ Returns:
   * ``x`` : ``m x n`` matrix X.
  *)
 
-val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+val discrete_lyapunov
+  :  ?solver:[ `default | `bilinear | `direct ]
+  -> ('a, 'b) t
+  -> ('a, 'b) t
+  -> ('a, 'b) t
 (**
 ``discrete_lyapunov a q`` solves a discrete-time Lyapunov equation in the following form.
 
@@ -450,9 +485,13 @@ Returns:
   * ``x`` : ``m x n`` matrix X.
  *)
 
-
-
-val care : ?diag_r:bool -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val care
+  :  ?diag_r:bool
+  -> (float, 'a) t
+  -> (float, 'a) t
+  -> (float, 'a) t
+  -> (float, 'a) t
+  -> (float, 'a) t
 (**
 ``care ?diag_r a b q r`` solves the continuous-time algebraic Riccati equation system
 in the following form. The algorithm is based on :cite:`laub1979schur`.
@@ -471,7 +510,12 @@ Returns:
   * ``x`` : a solution matrix X.
  *)
 
-val dare : (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val dare
+  :  (float, 'a) t
+  -> (float, 'a) t
+  -> (float, 'a) t
+  -> (float, 'a) t
+  -> (float, 'a) t
 (**
 ``dare a b q r`` solves the discrete-time algebraic Riccati equation system
 in the following form. The algorithm is based on :cite:`laub1979schur`.
@@ -489,7 +533,6 @@ Returns:
   * ``x`` : a symmetric solution matrix X.
  *)
 
-
 (** {6 Low-level factorisation functions} *)
 
 val lufact : ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
@@ -504,7 +547,12 @@ val qrfact : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int3
 matrix ``x``.
  *)
 
-val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
+val bkfact
+  :  ?upper:bool
+  -> ?symmetric:bool
+  -> ?rook:bool
+  -> ('a, 'b) t
+  -> ('a, 'b) t * (int32, int32_elt) t
 (**
 ``bk x -> (a, ipiv)`` calculates Bunch-Kaufman factorisation of ``x``.
 If ``symmetric = true`` then ``x`` is symmetric, if ``symmetric = false`` then ``x``
@@ -521,7 +569,6 @@ For ``ipiv``, it indicates the details of the interchanges and the block
 structure of ``d``. Please refer to the function ``sytrf``, ``hetrf`` in MKL
 documentation for more details.
  *)
-
 
 (** {6 Matrix functions} *)
 
@@ -591,7 +638,6 @@ val sinhcoshm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
 ``sinhcoshm x`` returns both hyperbolic matrix sine and cosine of ``x``.
  *)
-
 
 (** {6 Helper functions} *)
 

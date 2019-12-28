@@ -7,7 +7,6 @@
 
 open Owl_dense_ndarray_generic
 
-
 (** {6 Basic functions} *)
 
 val fft : ?axis:int -> (Complex.t, 'a) t -> (Complex.t, 'a) t
@@ -30,7 +29,12 @@ precision with input ``x``. You can skip this parameter by using a submodule
 with specific precision such as ``Owl.Fft.S`` or ``Owl.Fft.D``.
  *)
 
-val irfft : ?axis:int -> ?n:int -> otyp:(float, 'a) kind -> (Complex.t, 'b) t -> (float, 'a) t
+val irfft
+  :  ?axis:int
+  -> ?n:int
+  -> otyp:(float, 'a) kind
+  -> (Complex.t, 'b) t
+  -> (float, 'a) t
 (**
 ``irfft ~axis ~n x`` is the inverse function of ``rfft``. Note the ``n`` parameter
 is used to specified the size of output.

@@ -12,7 +12,6 @@
   Please refer to Scipy documentation.
 *)
 
-
 (** {6 Basic functions} *)
 
 val add : float -> float -> float
@@ -225,7 +224,6 @@ val log1mexp : float -> float
 val log1pexp : float -> float
 (** ``log1pexp(x)`` returns :math:`log(1+exp(x))`. *)
 
-
 (** {6 Airy functions} *)
 
 val airy : float -> float * float * float * float
@@ -233,7 +231,6 @@ val airy : float -> float * float * float * float
 Airy function ``airy x`` returns ``(Ai, Ai', Bi, Bi')`` evaluated at :math:`x`.
 ``Ai'`` is the derivative of ``Ai`` whilst ``Bi'`` is the derivative of ``Bi``.
 *)
-
 
 (** {6 Bessel functions} *)
 
@@ -285,7 +282,6 @@ val k1 : float -> float
 val k1e : float -> float
 (** Exponentially scaled modified Bessel function K of order 1. *)
 
-
 (** {6 Elliptic functions} *)
 
 val ellipj : float -> float -> float * float * float * float
@@ -305,7 +301,6 @@ val ellipe : float -> float
 
 val ellipeinc : float -> float -> float
 (** ``ellipeinc phi m`` incomplete elliptic integral of the second kind. *)
-
 
 (** {6 Gamma Functions} *)
 
@@ -342,7 +337,6 @@ val gammainccinv : float -> float -> float
 val psi : float -> float
 (** The digamma function. *)
 
-
 (** {6 Beta functions} *)
 
 val beta : float -> float -> float
@@ -358,7 +352,6 @@ val betainc : float -> float -> float -> float
 
 val betaincinv : float -> float -> float -> float
 (** Inverse function of ``betainc``. *)
-
 
 (** {6 Factorials} *)
 
@@ -395,7 +388,6 @@ val combination_float : int -> int -> float
 val log_combination : int -> int -> float
 (** ``log_combination n k`` returns the logarithm of :math:`\binom{n}{k}`. *)
 
-
 (** {6 Error functions} *)
 
 val erf : float -> float
@@ -413,7 +405,6 @@ val erfinv : float -> float
 val erfcinv : float -> float
 (** Inverse function of ``erfc``. *)
 
-
 (** {6 Dawson & Fresnel integrals} *)
 
 val dawsn : float -> float
@@ -422,7 +413,6 @@ val dawsn : float -> float
 val fresnel : float -> float * float
 (** Fresnel trigonometric integrals. ``fresnel x`` returns a tuple consisting of
 ``(Fresnel sin integral, Fresnel cos integral)``. *)
-
 
 (** {6 Struve functions} *)
 
@@ -436,7 +426,6 @@ order :math:`v` at :math:`x`. The Struve function is defined as,
 where :math:`\Gamma` is the gamma function. :math:`x` must be positive unless :math:`v` is an integer
 
  *)
-
 
 (** {6 Other special functions} *)
 
@@ -512,7 +501,6 @@ Finds the event probability :math:`p` such that the sum of the terms 0 through
 probability :math:`y`.
  *)
 
-
 val btdtr : float -> float -> float -> float
 (**
 Cumulative density function of the beta distribution.
@@ -557,7 +545,6 @@ Returns:
   * The quantile corresponding to :math:`p`.
  *)
 
-
 (** {6 Helper functions} *)
 
 val is_nan : float -> bool
@@ -594,6 +581,7 @@ other words, :math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall i \in
  *)
 
 val is_int : float -> bool
+
 (* ``is_int x`` checks if ``x`` is an integer, i.e. fractional part is zero. *)
 
 val is_sqr : int -> bool
@@ -629,6 +617,5 @@ val nextafterf : float -> float -> float
 of ``from`` in the direction of ``to``. If ``from`` equals ``to``, this value
 is returned.
  *)
-
 
 (* ends here *)

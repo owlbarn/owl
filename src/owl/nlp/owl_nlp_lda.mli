@@ -5,15 +5,16 @@
 
 (** NLP: LDA module *)
 
-
 (** {6 Type definition} *)
 
-type lda_typ = SimpleLDA | FTreeLDA | LightLDA | SparseLDA
-(** Type of LDA training algorithms. *)
+type lda_typ =
+  | SimpleLDA
+  | FTreeLDA
+  | LightLDA
+  | SparseLDA (** Type of LDA training algorithms. *)
 
 type model
 (** Type of LDA model. *)
-
 
 (** {6 Core functions} *)
 
@@ -31,7 +32,6 @@ Parameters:
 
 val train : lda_typ -> model -> unit
 (** After calling ``init``, calling this function starts the training. *)
-
 
 (** {6 Helper functions} *)
 

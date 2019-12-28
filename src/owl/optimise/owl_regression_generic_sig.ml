@@ -4,11 +4,9 @@
  *)
 
 module type Sig = sig
-
   module Optimise : Owl_optimise_generic_sig.Sig
 
   open Optimise.Algodiff
-
 
   (** {6 Type definition} *)
 
@@ -17,7 +15,6 @@ module type Sig = sig
 
   type elt = A.elt
   (** Type of scalar values. *)
-
 
   (** {6 Regression models} *)
 
@@ -44,6 +41,4 @@ module type Sig = sig
 
   val poly : arr -> arr -> int -> arr
   (** TODO *)
-
-
 end

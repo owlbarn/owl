@@ -4,11 +4,11 @@
  *)
 
 open Bigarray
-
 module M = Owl_sparse_ndarray_generic
 include M
 
 type elt = float
+
 type arr = (float, float64_elt) Owl_sparse_ndarray_generic.t
 
 (* overload functions in Owl_dense_ndarray_generic *)

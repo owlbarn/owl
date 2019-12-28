@@ -6,7 +6,9 @@
 open Bigarray
 
 type elt = Complex.t
+
 type mat = Owl_dense_matrix_c.mat
+
 type int32_mat = (int32, int32_elt) Owl_dense_matrix_generic.t
 
 include

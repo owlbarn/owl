@@ -5,7 +5,10 @@
 
 open Owl_core_types
 
-
-external owl_ndarray_same_data : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int = "stub_ndarray_same_data"
+external owl_ndarray_same_data
+  :  ('a, 'b) owl_arr
+  -> ('a, 'b) owl_arr
+  -> int
+  = "stub_ndarray_same_data"
 
 let _owl_ndarray_same_data x y = owl_ndarray_same_data x y = 1

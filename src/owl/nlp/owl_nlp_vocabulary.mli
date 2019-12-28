@@ -5,12 +5,10 @@
 
 (** NLP: Vocabulary module *)
 
-
 (** {6 Type definition} *)
 
 type t
 (** Type of vocabulary (or dictionary). *)
-
 
 (** {6 Query vocabulary} *)
 
@@ -31,7 +29,6 @@ val word2index : t -> string -> int
 
 val index2word : t -> int -> string
 (** ``index2word v i`` converts index ``i`` to its corresponding word using vocabulary ``v``. *)
-
 
 (** {6 Obtain properties} *)
 
@@ -59,10 +56,15 @@ val bottom : t -> int -> (string * int) array
 val re_index : t -> t
 (** ``re_index v`` re-indexes the indices of words in vocabulary ``v``. *)
 
-
 (** {6 Core functions} *)
 
-val build : ?lo:float -> ?hi:float -> ?alphabet:bool -> ?stopwords:(string, 'a) Hashtbl.t -> string -> t
+val build
+  :  ?lo:float
+  -> ?hi:float
+  -> ?alphabet:bool
+  -> ?stopwords:(string, 'a) Hashtbl.t
+  -> string
+  -> t
 (**
 ``build ~lo ~hi ~stopwords fname`` builds a vocabulary from a text corpus file
 of name ``fname``. If ``alphabet=false`` then tokens are the words separated by
@@ -76,8 +78,13 @@ Parameters:
   * ``fname``: file name of the text corpus, each line contains a doc.
  *)
 
-
-val build_from_string : ?lo:float -> ?hi:float -> ?alphabet:bool -> ?stopwords:(string, 'a) Hashtbl.t -> string -> t
+val build_from_string
+  :  ?lo:float
+  -> ?hi:float
+  -> ?alphabet:bool
+  -> ?stopwords:(string, 'a) Hashtbl.t
+  -> string
+  -> t
 (**
 ``build_from_string`` is similar to ``build`` but builds the vocabulary from an
 input string rather than a file.
@@ -121,7 +128,6 @@ val to_array : t -> (int * string) array
 val of_array : (int * string) array -> t
 (** ``of_array v`` converts a (index, word) array to a vocabulary. *)
 
-
 (** {6 I/O functions} *)
 
 val save : t -> string -> unit
@@ -136,5 +142,6 @@ val save_txt : t -> string -> unit
 val to_string : t -> string
 (** ``to_string v`` returns the summary information of a vocabulary. *)
 
-val pp_vocab : Format.formatter -> t -> unit [@@ocaml.toplevel_printer]
+val pp_vocab : Format.formatter -> t -> unit
+  [@@ocaml.toplevel_printer]
 (** Pretty printer for vocabulary type. *)

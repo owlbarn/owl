@@ -4,91 +4,129 @@
  *)
 
 open Owl_types
-
 open Owl_ext_types
 
 (* modules for packing and unpacking *)
 
 module type PackSig = sig
-
   type arr
+
   type elt
+
   type cast_arr
 
-  val pack_box      : arr -> ext_typ
-  val unpack_box    : ext_typ -> arr
-  val pack_elt      : elt -> ext_typ
-  val unpack_elt    : ext_typ -> elt
-  val pack_cast_box : cast_arr -> ext_typ
+  val pack_box : arr -> ext_typ
 
+  val unpack_box : ext_typ -> arr
+
+  val pack_elt : elt -> ext_typ
+
+  val unpack_elt : ext_typ -> elt
+
+  val pack_cast_box : cast_arr -> ext_typ
 end
 
-
 module Pack_DAS = struct
-
   type arr = das
+
   type elt = float
+
   type cast_arr = das
 
   let pack_box x = DAS x
-  let unpack_box = function DAS x -> x | _ -> failwith "Pack_DAS:unpack_das"
-  let pack_elt x = F x
-  let unpack_elt = function F x -> x | _ -> failwith "Pack_DAS:unpack_elt"
-  let pack_cast_box x = DAS x
 
+  let unpack_box = function
+    | DAS x -> x
+    | _     -> failwith "Pack_DAS:unpack_das"
+
+
+  let pack_elt x = F x
+
+  let unpack_elt = function
+    | F x -> x
+    | _   -> failwith "Pack_DAS:unpack_elt"
+
+
+  let pack_cast_box x = DAS x
 end
 
-
 module Pack_DAD = struct
-
   type arr = dad
+
   type elt = float
+
   type cast_arr = dad
 
   let pack_box x = DAD x
-  let unpack_box = function DAD x -> x | _ -> failwith "Pack_DAD:unpack_dad"
-  let pack_elt x = F x
-  let unpack_elt = function F x -> x | _ -> failwith "Pack_DAD:unpack_elt"
-  let pack_cast_box x = DAD x
 
+  let unpack_box = function
+    | DAD x -> x
+    | _     -> failwith "Pack_DAD:unpack_dad"
+
+
+  let pack_elt x = F x
+
+  let unpack_elt = function
+    | F x -> x
+    | _   -> failwith "Pack_DAD:unpack_elt"
+
+
+  let pack_cast_box x = DAD x
 end
 
-
 module Pack_DAC = struct
-
   type arr = dac
+
   type elt = Complex.t
+
   type cast_arr = das
 
   let pack_box x = DAC x
-  let unpack_box = function DAC x -> x | _ -> failwith "Pack_DAC:unpack_dac"
-  let pack_elt x = C x
-  let unpack_elt = function C x -> x | _ -> failwith "Pack_DAC:unpack_elt"
-  let pack_cast_box x = DAS x
 
+  let unpack_box = function
+    | DAC x -> x
+    | _     -> failwith "Pack_DAC:unpack_dac"
+
+
+  let pack_elt x = C x
+
+  let unpack_elt = function
+    | C x -> x
+    | _   -> failwith "Pack_DAC:unpack_elt"
+
+
+  let pack_cast_box x = DAS x
 end
 
-
 module Pack_DAZ = struct
-
   type arr = daz
+
   type elt = Complex.t
+
   type cast_arr = dad
 
   let pack_box x = DAZ x
-  let unpack_box = function DAZ x -> x | _ -> failwith "Pack_DAZ:unpack_daz"
+
+  let unpack_box = function
+    | DAZ x -> x
+    | _     -> failwith "Pack_DAZ:unpack_daz"
+
+
   let pack_elt x = C x
-  let unpack_elt = function C x -> x | _ -> failwith "Pack_DAZ:unpack_elt"
+
+  let unpack_elt = function
+    | C x -> x
+    | _   -> failwith "Pack_DAZ:unpack_elt"
+
+
   let pack_cast_box x = DAD x
-
 end
-
 
 (* module for basic ndarray operations *)
 
 module type BasicSig = sig
-
   type arr
+
   type elt
 
   val empty : int array -> arr [@@warning "-32"]
@@ -109,7 +147,6 @@ module type BasicSig = sig
 
   val logspace : ?base:float -> elt -> elt -> int -> arr
 
-
   val shape : arr -> int array
 
   val num_dims : arr -> int
@@ -125,7 +162,6 @@ module type BasicSig = sig
   val size_in_bytes : arr -> int
 
   val same_shape : arr -> arr -> bool
-
 
   val get : arr -> int array -> elt
 
@@ -163,7 +199,6 @@ module type BasicSig = sig
 
   val squeeze : ?axis:int array -> arr -> arr
 
-
   val iteri : (int -> elt -> unit) -> arr -> unit
 
   val iter : (elt -> unit) -> arr -> unit
@@ -188,7 +223,6 @@ module type BasicSig = sig
 
   val map2 : (elt -> elt -> elt) -> arr -> arr -> arr
 
-
   val exists : (elt -> bool) -> arr -> bool
 
   val not_exists : (elt -> bool) -> arr -> bool
@@ -204,7 +238,6 @@ module type BasicSig = sig
   val is_nonpositive : arr -> bool
 
   val is_nonnegative : arr -> bool
-
 
   val equal : arr -> arr -> bool
 
@@ -254,13 +287,17 @@ module type BasicSig = sig
 
   val elt_greater_equal_scalar : arr -> elt -> arr
 
-
-  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
+  val print
+    :  ?max_row:int
+    -> ?max_col:int
+    -> ?header:bool
+    -> ?fmt:(elt -> string)
+    -> arr
+    -> unit
 
   val save : out:string -> arr -> unit
 
   val load : string -> arr
-
 
   val sum' : arr -> elt
 
@@ -289,15 +326,12 @@ module type BasicSig = sig
   val scalar_mul : elt -> arr -> arr
 
   val scalar_div : elt -> arr -> arr
-
 end
 
-
 module Make_Basic
-  (P : PackSig)
-  (M : BasicSig with type arr := P.arr and type elt := P.elt)
-  = struct
-
+    (P : PackSig)
+    (M : BasicSig with type arr := P.arr and type elt := P.elt) =
+struct
   open P
 
   let empty i = M.empty i |> pack_box
@@ -316,7 +350,6 @@ module Make_Basic
 
   let logspace ?base a b n = M.logspace a b n |> pack_box [@@warning "-27"]
 
-
   let shape x = M.shape (unpack_box x)
 
   let num_dims x = M.num_dims (unpack_box x)
@@ -332,7 +365,6 @@ module Make_Basic
   let size_in_bytes x = M.size_in_bytes (unpack_box x)
 
   let same_shape x = M.same_shape (unpack_box x)
-
 
   let get x i = M.get (unpack_box x) i |> pack_elt
 
@@ -366,8 +398,7 @@ module Make_Basic
 
   let repeat x reps = M.repeat (unpack_box x) reps
 
-  let squeeze ?(axis=[||]) x = M.squeeze ~axis (unpack_box x) |> pack_box
-
+  let squeeze ?(axis = [||]) x = M.squeeze ~axis (unpack_box x) |> pack_box
 
   let iteri f x = M.iteri f (unpack_box x)
 
@@ -393,7 +424,6 @@ module Make_Basic
 
   let map2 f x y = M.map2i f (unpack_box x) (unpack_box y) |> pack_box
 
-
   let exists f x = M.exists f (unpack_box x)
 
   let not_exists f x = M.not_exists f (unpack_box x)
@@ -409,7 +439,6 @@ module Make_Basic
   let is_nonpositive x = M.is_nonpositive (unpack_box x)
 
   let is_nonnegative x = M.is_nonnegative (unpack_box x)
-
 
   let equal x y = M.equal (unpack_box x) (unpack_box y)
 
@@ -433,7 +462,9 @@ module Make_Basic
 
   let elt_less_equal x y = M.elt_less_equal (unpack_box x) (unpack_box y) |> pack_box
 
-  let elt_greater_equal x y = M.elt_greater_equal (unpack_box x) (unpack_box y) |> pack_box
+  let elt_greater_equal x y =
+    M.elt_greater_equal (unpack_box x) (unpack_box y) |> pack_box
+
 
   let equal_scalar x a = M.equal_scalar (unpack_box x) (unpack_elt a)
 
@@ -449,15 +480,22 @@ module Make_Basic
 
   let elt_equal_scalar x a = M.elt_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-  let elt_not_equal_scalar x a = M.elt_not_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+  let elt_not_equal_scalar x a =
+    M.elt_not_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
 
   let elt_less_scalar x a = M.elt_less_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-  let elt_greater_scalar x a = M.elt_greater_scalar (unpack_box x) (unpack_elt a) |> pack_box
+  let elt_greater_scalar x a =
+    M.elt_greater_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-  let elt_less_equal_scalar x a = M.elt_less_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-  let elt_greater_equal_scalar x a = M.elt_greater_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+  let elt_less_equal_scalar x a =
+    M.elt_less_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+
+  let elt_greater_equal_scalar x a =
+    M.elt_greater_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
 
   let print x = M.print (unpack_box x)
@@ -493,15 +531,13 @@ module Make_Basic
   let scalar_mul a x = M.scalar_mul (unpack_elt a) (unpack_box x) |> pack_box
 
   let scalar_div a x = M.scalar_div (unpack_elt a) (unpack_box x) |> pack_box
-
 end
-
 
 (* module for float32 and float64 ndarray *)
 
 module type SD_Sig = sig
-
   type arr
+
   type elt
 
   val min' : arr -> elt
@@ -514,7 +550,7 @@ module type SD_Sig = sig
 
   val max_i : arr -> elt * int array
 
-  val minmax_i : arr -> (elt * (int array)) * (elt * (int array))
+  val minmax_i : arr -> (elt * int array) * (elt * int array)
 
   val abs : arr -> arr
 
@@ -631,28 +667,35 @@ module type SD_Sig = sig
   val ssqr_diff' : arr -> arr -> elt
 
   val cross_entropy' : arr -> arr -> elt
-
 end
 
-
-module Make_SD
-  (P : PackSig)
-  (M : SD_Sig with type arr := P.arr and type elt := P.elt)
-  = struct
-
+module Make_SD (P : PackSig) (M : SD_Sig with type arr := P.arr and type elt := P.elt) =
+struct
   open P
 
   let min' x = M.min' (unpack_box x) |> pack_elt
 
   let max' x = M.max' (unpack_box x) |> pack_elt
 
-  let minmax' x = let a, b = M.minmax' (unpack_box x) in (pack_elt a, pack_elt b)
+  let minmax' x =
+    let a, b = M.minmax' (unpack_box x) in
+    pack_elt a, pack_elt b
 
-  let min_i x = let a, i = M.min_i (unpack_box x) in (pack_elt a, i)
 
-  let max_i x = let a, i = M.max_i (unpack_box x) in (pack_elt a, i)
+  let min_i x =
+    let a, i = M.min_i (unpack_box x) in
+    pack_elt a, i
 
-  let minmax_i x = let (a,i), (b,_j) = M.minmax_i (unpack_box x) in (pack_elt a,i), (pack_elt b, i)
+
+  let max_i x =
+    let a, i = M.max_i (unpack_box x) in
+    pack_elt a, i
+
+
+  let minmax_i x =
+    let (a, i), (b, _j) = M.minmax_i (unpack_box x) in
+    (pack_elt a, i), (pack_elt b, i)
+
 
   let abs x = M.abs (unpack_box x) |> pack_box
 
@@ -740,7 +783,6 @@ module Make_SD
 
   let l2norm_sqr' x = M.l2norm_sqr' (unpack_box x) |> pack_elt
 
-
   let pow x y = M.pow (unpack_box x) (unpack_box y) |> pack_box
 
   let scalar_pow a x = M.scalar_pow (unpack_elt a) (unpack_box x) |> pack_box
@@ -770,16 +812,15 @@ module Make_SD
   let ssqr_diff' x y = M.ssqr_diff' (unpack_box x) (unpack_box y) |> pack_elt
 
   let cross_entropy' x y = M.cross_entropy' (unpack_box x) (unpack_box y) |> pack_elt
-
 end
-
 
 (* module for complex32 and complex64 ndarray *)
 
 module type CZ_Sig = sig
-
   type arr
+
   type elt
+
   type cast_arr
 
   val re : arr -> cast_arr
@@ -809,15 +850,15 @@ module type CZ_Sig = sig
   val ssqr' : arr -> elt -> elt
 
   val ssqr_diff' : arr -> arr -> elt
-
 end
 
-
 module Make_CZ
-  (P : PackSig)
-  (M : CZ_Sig with type arr := P.arr and type elt := P.elt and type cast_arr := P.cast_arr)
-  = struct
-
+    (P : PackSig)
+    (M : CZ_Sig
+           with type arr := P.arr
+            and type elt := P.elt
+            and type cast_arr := P.cast_arr) =
+struct
   open P
 
   let re x = M.re (unpack_box x) |> pack_cast_box
@@ -847,9 +888,7 @@ module Make_CZ
   let ssqr' x a = M.ssqr' (unpack_box x) (unpack_elt a) |> pack_elt
 
   let ssqr_diff' x y = M.ssqr_diff' (unpack_box x) (unpack_box y) |> pack_elt
-
 end
-
 
 (* ndarray modules of four types *)
 
@@ -858,18 +897,15 @@ module S = struct
   include Make_SD (Pack_DAS) (Owl_dense_ndarray.S)
 end
 
-
 module D = struct
   include Make_Basic (Pack_DAD) (Owl_dense_ndarray.D)
   include Make_SD (Pack_DAD) (Owl_dense_ndarray.D)
 end
 
-
 module C = struct
   include Make_Basic (Pack_DAC) (Owl_dense_ndarray.C)
   include Make_CZ (Pack_DAC) (Owl_dense_ndarray.C)
 end
-
 
 module Z = struct
   include Make_Basic (Pack_DAZ) (Owl_dense_ndarray.Z)

@@ -16,29 +16,30 @@ let to_string = function
 
 let kl_distance _ _ = 0.
 
-
 let cosine_distance x y =
   let hy = Hashtbl.create (Array.length y) in
   Array.iter (fun (k, v) -> Hashtbl.add hy k v) y;
   let z = ref 0. in
-  Array.iter (fun (k,v) ->
-    match Hashtbl.mem hy k with
-    | true  -> z := !z +. v *. (Hashtbl.find hy k)
-    | false -> ()
-  ) x;
+  Array.iter
+    (fun (k, v) ->
+      match Hashtbl.mem hy k with
+      | true  -> z := !z +. (v *. Hashtbl.find hy k)
+      | false -> ())
+    x;
   (* return the negative since high similarity indicates small distance *)
-  -.(!z)
+  -. !z
 
 
 let inner_product x y =
   let hy = Hashtbl.create (Array.length y) in
   Array.iter (fun (k, v) -> Hashtbl.add hy k v) y;
   let z = ref 0. in
-  Array.iter (fun (k,v) ->
-    match Hashtbl.mem hy k with
-    | true  -> z := !z +. v *. (Hashtbl.find hy k)
-    | false -> ()
-  ) x;
+  Array.iter
+    (fun (k, v) ->
+      match Hashtbl.mem hy k with
+      | true  -> z := !z +. (v *. Hashtbl.find hy k)
+      | false -> ())
+    x;
   !z
 
 
@@ -58,30 +59,32 @@ let inner_product_fast x y =
   while !xi < xn && !yi < yn do
     let xk, xv = x.(!xi) in
     let yk, yv = y.(!yi) in
-    if xk = yk then (
-      z := !z +. xv *. yv;
+    if xk = yk
+    then (
+      z := !z +. (xv *. yv);
       xi := !xi + 1;
-      yi := !yi + 1;
-    )
-    else if xk < yk then
-      xi := !xi + 1
-    else if xk > yk then
-      yi := !yi + 1
+      yi := !yi + 1)
+    else if xk < yk
+    then xi := !xi + 1
+    else if xk > yk
+    then yi := !yi + 1
   done;
   !z
+
 
 let euclidean_distance x y =
   let h = Hashtbl.create (Array.length x) in
   Array.iter (fun (k, a) -> Hashtbl.add h k a) x;
-  Array.iter (fun (k, b) ->
-    match Hashtbl.mem h k with
-    | true  ->
+  Array.iter
+    (fun (k, b) ->
+      match Hashtbl.mem h k with
+      | true  ->
         let a = Hashtbl.find h k in
         Hashtbl.replace h k (a -. b)
-    | false -> Hashtbl.add h k b
-  ) y;
+      | false -> Hashtbl.add h k b)
+    y;
   let z = ref 0. in
-  Hashtbl.iter (fun _ v -> z := !z +. v *. v) h;
+  Hashtbl.iter (fun _ v -> z := !z +. (v *. v)) h;
   sqrt !z
 
 
@@ -89,7 +92,5 @@ let distance = function
   | Cosine    -> cosine_distance
   | Euclidean -> euclidean_distance
   | KL_D      -> kl_distance
-
-
 
 (* ends here *)

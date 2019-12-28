@@ -4,8 +4,8 @@
  *)
 
 type elt = float
-type arr = (float, Bigarray.float32_elt) Owl_sparse_ndarray_generic.t
 
+type arr = (float, Bigarray.float32_elt) Owl_sparse_ndarray_generic.t
 
 (** {6 Create sparse ndarray} *)
 
@@ -14,7 +14,6 @@ val zeros : int array -> arr
 val binary : ?density:float -> int array -> arr
 
 val uniform : ?scale:float -> ?density:float -> int array -> arr
-
 
 (** {6 Obtain basic properties} *)
 
@@ -34,7 +33,6 @@ val same_shape : arr -> arr -> bool
 
 val kind : arr -> (elt, Bigarray.float32_elt) Bigarray.kind
 
-
 (** {6 Manipulate a N-dimensional array} *)
 
 val get : arr -> int array -> elt
@@ -53,7 +51,6 @@ val transpose : ?axis:int array -> arr -> arr
 
 val swap : int -> int -> arr -> arr
 
-
 (** {6 Iterate array elements} *)
 
 val iteri : ?axis:int option array -> (int array -> elt -> unit) -> arr -> unit
@@ -64,7 +61,11 @@ val mapi : ?axis:int option array -> (int array -> elt -> elt) -> arr -> arr
 
 val map : ?axis:int option array -> (elt -> elt) -> arr -> arr
 
-val filteri : ?axis:int option array -> (int array -> elt -> bool) -> arr -> int array array
+val filteri
+  :  ?axis:int option array
+  -> (int array -> elt -> bool)
+  -> arr
+  -> int array array
 
 val filter : ?axis:int option array -> (elt -> bool) -> arr -> int array array
 
@@ -80,14 +81,17 @@ val mapi_nz : ?axis:int option array -> (int array -> elt -> elt) -> arr -> arr
 
 val map_nz : ?axis:int option array -> (elt -> elt) -> arr -> arr
 
-val filteri_nz : ?axis:int option array -> (int array -> elt -> bool) -> arr -> int array array
+val filteri_nz
+  :  ?axis:int option array
+  -> (int array -> elt -> bool)
+  -> arr
+  -> int array array
 
 val filter_nz : ?axis:int option array -> (elt -> bool) -> arr -> int array array
 
 val foldi_nz : ?axis:int option array -> (int array -> 'c -> elt -> 'c) -> 'c -> arr -> 'c
 
 val fold_nz : ?axis:int option array -> ('c -> elt -> 'c) -> 'c -> arr -> 'c
-
 
 (** {6 Examine array elements or compare two arrays } *)
 
@@ -119,7 +123,6 @@ val greater_equal : arr -> arr -> bool
 
 val less_equal : arr -> arr -> bool
 
-
 (** {6 Input/Output and helper functions} *)
 
 val to_array : arr -> (int array * elt) array
@@ -131,7 +134,6 @@ val print : arr -> unit
 val save : arr -> string -> unit
 
 val load : string -> arr
-
 
 (** {6 Unary mathematical operations } *)
 
@@ -148,7 +150,6 @@ val neg : arr -> arr
 val sum : arr -> elt
 
 val mean : arr -> elt
-
 
 (** {6 Binary mathematical operations } *)
 

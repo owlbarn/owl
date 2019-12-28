@@ -5,12 +5,10 @@
 
 (** NLP: Corpus module *)
 
-
 (** {6 Type definition} *)
 
 type t
 (** Type of a text corpus. *)
-
 
 (** {6 Query corpus} *)
 
@@ -47,7 +45,6 @@ val get_vocab : t -> Owl_nlp_vocabulary.t
 val get_docid : t -> int array
 (** Return a list of document ids which are mapped back to the original file where the corpus is built. *)
 
-
 (** {6 Iteration functions} *)
 
 val next : t -> string
@@ -77,10 +74,17 @@ val next_batch_tok : ?size:int -> t -> int array array
 val reset_iterators : t -> unit
 (** Reset the iterator to the begining of the corpus. *)
 
-
 (** {6 Core functions} *)
 
-val build : ?docid:int array -> ?stopwords:(string, 'a) Hashtbl.t -> ?lo:float -> ?hi:float -> ?vocab:Owl_nlp_vocabulary.t -> ?minlen:int -> string -> t
+val build
+  :  ?docid:int array
+  -> ?stopwords:(string, 'a) Hashtbl.t
+  -> ?lo:float
+  -> ?hi:float
+  -> ?vocab:Owl_nlp_vocabulary.t
+  -> ?minlen:int
+  -> string
+  -> t
 (**
 This function builds up a corpus of type ``t`` from a given raw text corpus. We
 assume that each line in the raw text corpus represents a document.
@@ -114,7 +118,6 @@ E.g., you can plug in ``simple_process`` function to clean up the text. Note
 this function will not change the number of lines in a corpus.
  *)
 
-
 (** {6 I/O functions} *)
 
 val save : t -> string -> unit
@@ -132,10 +135,18 @@ val to_string : t -> string
 val print : t -> unit
 (** Pretty print the summary of a text corpus. *)
 
-
 (** {6 Helper functions} *)
 
-val create : string -> int array -> int array -> in_channel option -> in_channel option -> Owl_nlp_vocabulary.t option -> int -> int array -> t
+val create
+  :  string
+  -> int array
+  -> int array
+  -> in_channel option
+  -> in_channel option
+  -> Owl_nlp_vocabulary.t option
+  -> int
+  -> int array
+  -> t
 (**
 ```create uri bin_ofs tok_ofs bin_fh tok_fh vocab minlen docid` wraps up the
 corpus into a record of type ``t``.

@@ -6,7 +6,5 @@
 (** Sparse data structures: matrix & ndarray  *)
 
 module Ndarray = Owl_sparse_ndarray
-
 module Matrix = Owl_sparse_matrix
-
 module Dok_matrix = Owl_sparse_dok_matrix
