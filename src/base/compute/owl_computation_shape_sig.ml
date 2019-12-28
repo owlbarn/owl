@@ -6,7 +6,6 @@
 (* Functor of making the symbols of a computation graph. *)
 
 module type Sig = sig
-
   module Type : Owl_computation_type_sig.Sig
 
   open Type
@@ -15,5 +14,4 @@ module type Sig = sig
 
   val infer_shape : op -> attr Owl_graph.node array -> int array option array
   (** TODO *)
-
 end

@@ -16,14 +16,14 @@ module Make (Optimise : Owl_optimise_generic_sig.Sig) = struct
   (* module for initialising weight matrix *)
   module Init = struct
     type typ =
-      | Uniform of float * float
-      | Gaussian of float * float
+      | Uniform       of float * float
+      | Gaussian      of float * float
       | Standard
       | Tanh
       | GlorotNormal
       | GlorotUniform
       | LecunNormal
-      | Custom of (int array -> t)
+      | Custom        of (int array -> t)
 
     let calc_fans s =
       let _prod x = Array.fold_left (fun p q -> p * q) 1 x in
@@ -132,14 +132,14 @@ module Make (Optimise : Owl_optimise_generic_sig.Sig) = struct
       | Relu (* Rectified linear unit *)
       | Sigmoid (* Element-wise sigmoid *)
       | HardSigmoid (* Linear approximation of sigmoid *)
-      | Softmax of int (* Softmax along specified axis *)
+      | Softmax     of int (* Softmax along specified axis *)
       | Softplus (* Element-wise softplus *)
       | Softsign (* Element-wise softsign *)
       | Tanh (* Element-wise tanh *)
       | Relu6 (* Element-wise relu6 *)
-      | LeakyRelu of float (* Leaky version of a Rectified Linear Unit *)
-      | TRelu of float (* Thresholded Rectified Linear Unit *)
-      | Custom of (t -> t) (* Element-wise customised activation *)
+      | LeakyRelu   of float (* Leaky version of a Rectified Linear Unit *)
+      | TRelu       of float (* Thresholded Rectified Linear Unit *)
+      | Custom      of (t -> t) (* Element-wise customised activation *)
       | None
 
     (* None activation *)
@@ -3154,49 +3154,49 @@ module Make (Optimise : Owl_optimise_generic_sig.Sig) = struct
   (* type definition and basic functions of neurons *)
 
   type neuron =
-    | Input of Input.neuron_typ
-    | Linear of Linear.neuron_typ
-    | LinearNoBias of LinearNoBias.neuron_typ
-    | Embedding of Embedding.neuron_typ
-    | LSTM of LSTM.neuron_typ
-    | GRU of GRU.neuron_typ
-    | Recurrent of Recurrent.neuron_typ
-    | Conv1D of Conv1D.neuron_typ
-    | Conv2D of Conv2D.neuron_typ
-    | Conv3D of Conv3D.neuron_typ
-    | DilatedConv1D of DilatedConv1D.neuron_typ
-    | DilatedConv2D of DilatedConv2D.neuron_typ
-    | DilatedConv3D of DilatedConv3D.neuron_typ
+    | Input           of Input.neuron_typ
+    | Linear          of Linear.neuron_typ
+    | LinearNoBias    of LinearNoBias.neuron_typ
+    | Embedding       of Embedding.neuron_typ
+    | LSTM            of LSTM.neuron_typ
+    | GRU             of GRU.neuron_typ
+    | Recurrent       of Recurrent.neuron_typ
+    | Conv1D          of Conv1D.neuron_typ
+    | Conv2D          of Conv2D.neuron_typ
+    | Conv3D          of Conv3D.neuron_typ
+    | DilatedConv1D   of DilatedConv1D.neuron_typ
+    | DilatedConv2D   of DilatedConv2D.neuron_typ
+    | DilatedConv3D   of DilatedConv3D.neuron_typ
     | TransposeConv1D of TransposeConv1D.neuron_typ
     | TransposeConv2D of TransposeConv2D.neuron_typ
     | TransposeConv3D of TransposeConv3D.neuron_typ
-    | FullyConnected of FullyConnected.neuron_typ
-    | MaxPool1D of MaxPool1D.neuron_typ
-    | MaxPool2D of MaxPool2D.neuron_typ
-    | AvgPool1D of AvgPool1D.neuron_typ
-    | AvgPool2D of AvgPool2D.neuron_typ
+    | FullyConnected  of FullyConnected.neuron_typ
+    | MaxPool1D       of MaxPool1D.neuron_typ
+    | MaxPool2D       of MaxPool2D.neuron_typ
+    | AvgPool1D       of AvgPool1D.neuron_typ
+    | AvgPool2D       of AvgPool2D.neuron_typ
     | GlobalMaxPool1D of GlobalMaxPool1D.neuron_typ
     | GlobalMaxPool2D of GlobalMaxPool2D.neuron_typ
     | GlobalAvgPool1D of GlobalAvgPool1D.neuron_typ
     | GlobalAvgPool2D of GlobalAvgPool2D.neuron_typ
-    | UpSampling2D of UpSampling2D.neuron_typ
-    | Padding2D of Padding2D.neuron_typ
-    | Dropout of Dropout.neuron_typ
-    | Reshape of Reshape.neuron_typ
-    | Flatten of Flatten.neuron_typ
-    | Lambda of Lambda.neuron_typ
-    | LambdaArray of LambdaArray.neuron_typ
-    | Activation of Activation.neuron_typ
-    | GaussianNoise of GaussianNoise.neuron_typ
+    | UpSampling2D    of UpSampling2D.neuron_typ
+    | Padding2D       of Padding2D.neuron_typ
+    | Dropout         of Dropout.neuron_typ
+    | Reshape         of Reshape.neuron_typ
+    | Flatten         of Flatten.neuron_typ
+    | Lambda          of Lambda.neuron_typ
+    | LambdaArray     of LambdaArray.neuron_typ
+    | Activation      of Activation.neuron_typ
+    | GaussianNoise   of GaussianNoise.neuron_typ
     | GaussianDropout of GaussianDropout.neuron_typ
-    | AlphaDropout of AlphaDropout.neuron_typ
-    | Normalisation of Normalisation.neuron_typ
-    | Add of Add.neuron_typ
-    | Mul of Mul.neuron_typ
-    | Dot of Dot.neuron_typ
-    | Max of Max.neuron_typ
-    | Average of Average.neuron_typ
-    | Concatenate of Concatenate.neuron_typ
+    | AlphaDropout    of AlphaDropout.neuron_typ
+    | Normalisation   of Normalisation.neuron_typ
+    | Add             of Add.neuron_typ
+    | Mul             of Mul.neuron_typ
+    | Dot             of Dot.neuron_typ
+    | Max             of Max.neuron_typ
+    | Average         of Average.neuron_typ
+    | Concatenate     of Concatenate.neuron_typ
 
   let get_in_out_shape = function
     | Input l           -> Input.(l.in_shape, l.out_shape)

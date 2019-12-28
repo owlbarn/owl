@@ -140,7 +140,7 @@ type t_cubic = Cubic.t
  *)
 module CdfTree = struct
   type binary_node =
-    | Leaf of int
+    | Leaf    of int
     | Balance of (float * binary_node * binary_node)
 
   let rec create_node cdf_x_of_p logn p dp i di =
@@ -796,7 +796,7 @@ let _ =
 let one_third = 1. /. 3.
 
 type t_bin_iter =
-  | IOfBool of ((int, bool) t_iter -> RandomTest.test_hypothesis)
+  | IOfBool    of ((int, bool) t_iter -> RandomTest.test_hypothesis)
   | IIIIOfBool of ((int * int * int * int, bool) t_iter -> RandomTest.test_hypothesis)
   | IIFIOfBool of ((int * int * float * int, bool) t_iter -> RandomTest.test_hypothesis)
 

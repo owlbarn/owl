@@ -9,7 +9,7 @@ open Owl_opencl_generated
 open Owl_opencl_utils
 
 type num =
-  | F of float
+  | F   of float
   | F32 of (float, float32_elt) Owl_dense_ndarray_generic.t
   | F64 of (float, float64_elt) Owl_dense_ndarray_generic.t
 

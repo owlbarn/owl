@@ -5,15 +5,12 @@
 
 open Owl_types
 
-
 (* Functor of making the symbols of a computation graph. *)
 
 module type Sig = sig
-
   module Symbol : Owl_computation_symbol_sig.Sig
 
   open Symbol.Shape.Type
-
 
   (** {6 Vectorised functions} *)
 
@@ -97,11 +94,11 @@ module type Sig = sig
 
   val squeeze : ?axis:int array -> arr -> arr
   (** TODO *)
-   
+
   val concatenate : ?axis:int -> arr array -> arr
   (** TODO *)
 
-  val concat: axis:int -> arr -> arr -> arr
+  val concat : axis:int -> arr -> arr -> arr
   (** TODO *)
 
   val split : ?axis:int -> 'a -> 'b -> 'c
@@ -129,14 +126,19 @@ module type Sig = sig
      same shape as the input.
   *)
 
-  val delay_array : int array -> (Device.A.arr array -> Device.A.arr) ->
-    arr array -> arr
+  val delay_array : int array -> (Device.A.arr array -> Device.A.arr) -> arr array -> arr
   (**
      ``delay_array out_shape f x`` works in the same way as ``delay`` but is applied
      on an array of ndarrays. Needs the shape of the output as an argument.
   *)
 
-  val lazy_print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(Device.A.elt -> string) -> arr -> arr
+  val lazy_print
+    :  ?max_row:int
+    -> ?max_col:int
+    -> ?header:bool
+    -> ?fmt:(Device.A.elt -> string)
+    -> arr
+    -> arr
   (**
      ``lazy_print x`` prints the output of ``x`` when it is evaluated. Is implemented
      as an identity node. For information about the optional parameters, refer to the
@@ -380,13 +382,31 @@ module type Sig = sig
   val transpose_conv3d : ?padding:Owl_types.padding -> arr -> arr -> int array -> arr
   (** TODO *)
 
-  val dilated_conv1d : ?padding:Owl_types.padding -> arr -> arr -> int array -> int array -> arr
+  val dilated_conv1d
+    :  ?padding:Owl_types.padding
+    -> arr
+    -> arr
+    -> int array
+    -> int array
+    -> arr
   (** TODO *)
 
-  val dilated_conv2d : ?padding:Owl_types.padding -> arr -> arr -> int array -> int array -> arr
+  val dilated_conv2d
+    :  ?padding:Owl_types.padding
+    -> arr
+    -> arr
+    -> int array
+    -> int array
+    -> arr
   (** TODO *)
 
-  val dilated_conv3d : ?padding:Owl_types.padding -> arr -> arr -> int array -> int array -> arr
+  val dilated_conv3d
+    :  ?padding:Owl_types.padding
+    -> arr
+    -> arr
+    -> int array
+    -> int array
+    -> arr
   (** TODO *)
 
   val max_pool1d : ?padding:Owl_types.padding -> arr -> int array -> int array -> arr
@@ -503,7 +523,7 @@ module type Sig = sig
   val copy_col_to : arr -> 'a -> 'b -> unit
   (** TODO *)
 
-  val diag: ?k:int -> arr -> arr
+  val diag : ?k:int -> arr -> arr
   (** TODO *)
 
   val trace : arr -> elt
@@ -634,33 +654,30 @@ module type Sig = sig
 
     val sigmoid : elt -> elt
     (** TODO *)
-
   end
 
   module Mat : sig
-
     val eye : int -> arr
     (** TODO *)
 
-    val diagm: ?k:int -> arr -> arr
+    val diagm : ?k:int -> arr -> arr
     (** TODO *)
 
-    val triu: ?k:int -> arr -> arr
+    val triu : ?k:int -> arr -> arr
     (** TODO *)
 
-    val tril: ?k:int -> arr -> arr
+    val tril : ?k:int -> arr -> arr
     (** TODO *)
-
   end
 
   module Linalg : sig
     val inv : arr -> arr
     (** TODO *)
 
-    val logdet: arr -> elt
+    val logdet : arr -> elt
     (** TODO *)
 
-    val chol: ?upper:bool -> arr -> arr
+    val chol : ?upper:bool -> arr -> arr
     (** TODO *)
 
     val qr : arr -> arr * arr
@@ -672,16 +689,20 @@ module type Sig = sig
     val svd : ?thin:bool -> arr -> arr * arr * arr
     (** TODO *)
 
-    val sylvester: arr -> arr -> arr -> arr
+    val sylvester : arr -> arr -> arr -> arr
     (** TODO *)
 
     val lyapunov : arr -> arr -> arr
     (** TODO *)
 
-    val discrete_lyapunov : ?solver:[`default | `bilinear | `direct] -> arr -> arr -> arr
+    val discrete_lyapunov
+      :  ?solver:[ `default | `bilinear | `direct ]
+      -> arr
+      -> arr
+      -> arr
     (** TODO *)
 
-    val linsolve : ?trans:bool -> ?typ:[`n | `u | `l] -> arr -> arr -> arr
+    val linsolve : ?trans:bool -> ?typ:[ `n | `u | `l ] -> arr -> arr -> arr
     (** TODO *)
 
     val care : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr

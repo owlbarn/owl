@@ -12,14 +12,14 @@ module type Sig = sig
 
   module Init : sig
     type typ =
-      | Uniform of float * float
-      | Gaussian of float * float
+      | Uniform       of float * float
+      | Gaussian      of float * float
       | Standard
       | Tanh
       | GlorotNormal
       | GlorotUniform
       | LecunNormal
-      | Custom of (int array -> t) (** Initialisation types *)
+      | Custom        of (int array -> t) (** Initialisation types *)
 
     val calc_fans : int array -> float * float
     (** Calculate fan-in and fan-out of weights. *)
@@ -67,14 +67,14 @@ module type Sig = sig
       | Relu
       | Sigmoid
       | HardSigmoid
-      | Softmax of int
+      | Softmax     of int
       | Softplus
       | Softsign
       | Tanh
       | Relu6
-      | LeakyRelu of float
-      | TRelu of float
-      | Custom of (t -> t)
+      | LeakyRelu   of float
+      | TRelu       of float
+      | Custom      of (t -> t)
       | None (** Types of activation functions. *)
 
     type neuron_typ =
@@ -1845,49 +1845,49 @@ module type Sig = sig
   (** {6 Core functions} *)
 
   type neuron =
-    | Input of Input.neuron_typ
-    | Linear of Linear.neuron_typ
-    | LinearNoBias of LinearNoBias.neuron_typ
-    | Embedding of Embedding.neuron_typ
-    | LSTM of LSTM.neuron_typ
-    | GRU of GRU.neuron_typ
-    | Recurrent of Recurrent.neuron_typ
-    | Conv1D of Conv1D.neuron_typ
-    | Conv2D of Conv2D.neuron_typ
-    | Conv3D of Conv3D.neuron_typ
-    | DilatedConv1D of DilatedConv1D.neuron_typ
-    | DilatedConv2D of DilatedConv2D.neuron_typ
-    | DilatedConv3D of DilatedConv3D.neuron_typ
+    | Input           of Input.neuron_typ
+    | Linear          of Linear.neuron_typ
+    | LinearNoBias    of LinearNoBias.neuron_typ
+    | Embedding       of Embedding.neuron_typ
+    | LSTM            of LSTM.neuron_typ
+    | GRU             of GRU.neuron_typ
+    | Recurrent       of Recurrent.neuron_typ
+    | Conv1D          of Conv1D.neuron_typ
+    | Conv2D          of Conv2D.neuron_typ
+    | Conv3D          of Conv3D.neuron_typ
+    | DilatedConv1D   of DilatedConv1D.neuron_typ
+    | DilatedConv2D   of DilatedConv2D.neuron_typ
+    | DilatedConv3D   of DilatedConv3D.neuron_typ
     | TransposeConv1D of TransposeConv1D.neuron_typ
     | TransposeConv2D of TransposeConv2D.neuron_typ
     | TransposeConv3D of TransposeConv3D.neuron_typ
-    | FullyConnected of FullyConnected.neuron_typ
-    | MaxPool1D of MaxPool1D.neuron_typ
-    | MaxPool2D of MaxPool2D.neuron_typ
-    | AvgPool1D of AvgPool1D.neuron_typ
-    | AvgPool2D of AvgPool2D.neuron_typ
+    | FullyConnected  of FullyConnected.neuron_typ
+    | MaxPool1D       of MaxPool1D.neuron_typ
+    | MaxPool2D       of MaxPool2D.neuron_typ
+    | AvgPool1D       of AvgPool1D.neuron_typ
+    | AvgPool2D       of AvgPool2D.neuron_typ
     | GlobalMaxPool1D of GlobalMaxPool1D.neuron_typ
     | GlobalMaxPool2D of GlobalMaxPool2D.neuron_typ
     | GlobalAvgPool1D of GlobalAvgPool1D.neuron_typ
     | GlobalAvgPool2D of GlobalAvgPool2D.neuron_typ
-    | UpSampling2D of UpSampling2D.neuron_typ
-    | Padding2D of Padding2D.neuron_typ
-    | Dropout of Dropout.neuron_typ
-    | Reshape of Reshape.neuron_typ
-    | Flatten of Flatten.neuron_typ
-    | Lambda of Lambda.neuron_typ
-    | LambdaArray of LambdaArray.neuron_typ
-    | Activation of Activation.neuron_typ
-    | GaussianNoise of GaussianNoise.neuron_typ
+    | UpSampling2D    of UpSampling2D.neuron_typ
+    | Padding2D       of Padding2D.neuron_typ
+    | Dropout         of Dropout.neuron_typ
+    | Reshape         of Reshape.neuron_typ
+    | Flatten         of Flatten.neuron_typ
+    | Lambda          of Lambda.neuron_typ
+    | LambdaArray     of LambdaArray.neuron_typ
+    | Activation      of Activation.neuron_typ
+    | GaussianNoise   of GaussianNoise.neuron_typ
     | GaussianDropout of GaussianDropout.neuron_typ
-    | AlphaDropout of AlphaDropout.neuron_typ
-    | Normalisation of Normalisation.neuron_typ
-    | Add of Add.neuron_typ
-    | Mul of Mul.neuron_typ
-    | Dot of Dot.neuron_typ
-    | Max of Max.neuron_typ
-    | Average of Average.neuron_typ
-    | Concatenate of Concatenate.neuron_typ (** Types of neuron. *)
+    | AlphaDropout    of AlphaDropout.neuron_typ
+    | Normalisation   of Normalisation.neuron_typ
+    | Add             of Add.neuron_typ
+    | Mul             of Mul.neuron_typ
+    | Dot             of Dot.neuron_typ
+    | Max             of Max.neuron_typ
+    | Average         of Average.neuron_typ
+    | Concatenate     of Concatenate.neuron_typ (** Types of neuron. *)
 
   val get_in_out_shape : neuron -> int array * int array
   (** Get both input and output shapes of a neuron. *)

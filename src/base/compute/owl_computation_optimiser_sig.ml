@@ -6,7 +6,6 @@
 (* Functor of making the symbols of a computation graph. *)
 
 module type Sig = sig
-
   module Operator : Owl_computation_operator_sig.Sig
 
   open Operator.Symbol.Shape.Type
@@ -18,6 +17,4 @@ module type Sig = sig
 
   val optimise_nodes : attr Owl_graph.node array -> unit
   (** TODO *)
-
-
 end

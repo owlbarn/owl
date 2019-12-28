@@ -3,21 +3,16 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 module type Sig = sig
-
   module Optimiser : Owl_computation_optimiser_sig.Sig
 
   open Optimiser.Operator.Symbol.Shape.Type
-
   open Optimiser.Operator.Symbol.Shape.Type.Device
-
 
   (** {6 Type definition} *)
 
   type graph
   (** TODO *)
-
 
   (** {6 Core functions} *)
 
@@ -42,7 +37,11 @@ module type Sig = sig
   val invalidate_rvs : graph -> unit
   (** TODO *)
 
-  val make_graph : input:attr Owl_graph.node array -> output:attr Owl_graph.node array -> string -> graph
+  val make_graph
+    :  input:attr Owl_graph.node array
+    -> output:attr Owl_graph.node array
+    -> string
+    -> graph
   (** TODO *)
 
   val get_inputs : graph -> attr Owl_graph.node array
@@ -66,13 +65,20 @@ module type Sig = sig
   val is_iopair_safe : 'a Owl_graph.node -> 'a Owl_graph.node -> bool
   (** TODO *)
 
-  val make_iopair : graph -> attr Owl_graph.node array -> attr Owl_graph.node array -> unit
+  val make_iopair
+    :  graph
+    -> attr Owl_graph.node array
+    -> attr Owl_graph.node array
+    -> unit
   (** TODO *)
 
   val update_iopair : graph -> unit
   (** TODO *)
 
-  val remove_unused_iopair : 'a Owl_graph.node array -> 'b array -> 'a Owl_graph.node array * 'b array
+  val remove_unused_iopair
+    :  'a Owl_graph.node array
+    -> 'b array
+    -> 'a Owl_graph.node array * 'b array
   (** TODO *)
 
   val init_inputs : (attr Owl_graph.node -> value) -> graph -> unit
@@ -80,6 +86,4 @@ module type Sig = sig
 
   val optimise : graph -> unit
   (** TODO *)
-
-
 end

@@ -1,6 +1,9 @@
 aeos/*
+aeos/*/*
 base/*
+base/*/*
 opencl/*
+opencl/*/*
 plplot/*
 top/*
 zoo/*

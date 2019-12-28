@@ -32,13 +32,13 @@ along axis 0.
 
   module Learning_Rate : sig
     type typ =
-      | Adagrad of float
-      | Const of float
-      | Decay of float * float
+      | Adagrad   of float
+      | Const     of float
+      | Decay     of float * float
       | Exp_decay of float * float
-      | RMSprop of float * float
-      | Adam of float * float * float
-      | Schedule of float array (** types of learning rate *)
+      | RMSprop   of float * float
+      | Adam      of float * float * float
+      | Schedule  of float array (** types of learning rate *)
 
     val run : typ -> int -> t -> t array -> t
     (** Execute the computations defined in module ``typ``. *)
@@ -58,8 +58,8 @@ along axis 0.
   module Batch : sig
     type typ =
       | Full
-      | Mini of int
-      | Sample of int
+      | Mini       of int
+      | Sample     of int
       | Stochastic (** Types of batches. *)
 
     val run : typ -> t -> t -> int -> t * t
@@ -81,7 +81,7 @@ along axis 0.
       | L2norm
       | Quadratic
       | Cross_entropy
-      | Custom of (t -> t -> t) (** Types of loss functions. *)
+      | Custom        of (t -> t -> t) (** Types of loss functions. *)
 
     val run : typ -> t -> t -> t
     (** Execute the computations defined in module ``typ``. *)
@@ -131,8 +131,8 @@ along axis 0.
 
   module Regularisation : sig
     type typ =
-      | L1norm of float
-      | L2norm of float
+      | L1norm      of float
+      | L2norm      of float
       | Elastic_net of float * float
       | None (** Types of regularisation functions. *)
 
@@ -148,7 +148,7 @@ along axis 0.
   module Clipping : sig
     type typ =
       | L2norm of float
-      | Value of float * float
+      | Value  of float * float
       | None (** Types of clipping functions. *)
 
     val run : typ -> t -> t
@@ -198,8 +198,8 @@ along axis 0.
     (** Type definition of checkpoint *)
 
     type typ =
-      | Batch of int
-      | Epoch of float
+      | Batch  of int
+      | Epoch  of float
       | Custom of (state -> unit)
       | None (** Batch type. *)
 

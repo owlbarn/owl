@@ -6,13 +6,10 @@
 (* Functor of making the symbols of a computation graph. *)
 
 module type Sig = sig
-
   module Shape : Owl_computation_shape_sig.Sig
 
   open Shape
-
   open Type
-
   open Device
 
   (** {6 Core functions} *)
@@ -56,10 +53,22 @@ module type Sig = sig
   val elt_to_node : elt -> t
   (** TODO *)
 
-  val make_node : ?name:string -> ?value:value array -> ?shape:int array option array -> ?freeze:bool -> ?reuse:bool -> ?state:state -> op -> attr Owl_graph.node
+  val make_node
+    :  ?name:string
+    -> ?value:value array
+    -> ?shape:int array option array
+    -> ?freeze:bool
+    -> ?reuse:bool
+    -> ?state:state
+    -> op
+    -> attr Owl_graph.node
   (** TODO *)
 
-  val make_then_connect : ?shape:int array option array -> op -> attr Owl_graph.node array -> attr Owl_graph.node
+  val make_then_connect
+    :  ?shape:int array option array
+    -> op
+    -> attr Owl_graph.node array
+    -> attr Owl_graph.node
   (** TODO *)
 
   val var_arr : ?shape:int array -> string -> arr
@@ -98,7 +107,7 @@ module type Sig = sig
   the block.
    *)
 
-  val get_active_node : block -> (attr Owl_graph.node) option
+  val get_active_node : block -> attr Owl_graph.node option
   (** Return the node that is currently using the memory of the block. *)
 
   val set_active_node : block -> attr Owl_graph.node -> unit
@@ -131,7 +140,7 @@ module type Sig = sig
   val is_shared : attr Owl_graph.node -> bool
   (** TODO *)
 
-  val get_shared_nodes : attr Owl_graph.node -> (attr Owl_graph.node) array
+  val get_shared_nodes : attr Owl_graph.node -> attr Owl_graph.node array
   (**
   ``get_shared_nodes node`` returns the nodes sharing the same block of memory
   as ``node``.
@@ -211,6 +220,4 @@ module type Sig = sig
 
   val elt_to_float : elt -> float
   (** TODO *)
-
-
 end

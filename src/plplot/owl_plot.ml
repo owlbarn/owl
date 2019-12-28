@@ -104,21 +104,21 @@ type axis =
 (* Specification to configure a plot *)
 
 type spec =
-  | RGB of int * int * int
-  | LineStyle of int
-  | LineWidth of float
-  | Marker of string
-  | MarkerSize of float
+  | RGB         of int * int * int
+  | LineStyle   of int
+  | LineWidth   of float
+  | Marker      of string
+  | MarkerSize  of float
   | Fill
   | FillPattern of int
   | Contour
-  | Altitude of float
-  | Azimuth of float
-  | ZLine of axis
+  | Altitude    of float
+  | Azimuth     of float
+  | ZLine       of axis
   | NoMagColor
   | Curtain
   | Faceted
-  | Axis of axis
+  | Axis        of axis
 
 let _get_rgb l default_val =
   let l =

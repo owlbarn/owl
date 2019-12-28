@@ -3,16 +3,11 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 module type Make_Graph_Sig = sig
-
   include Owl_computation_graph_sig.Sig
-
 end
 
-
 module type Flatten_Sig = sig
-
   include Owl_types_computation_engine.Sig
 
   include Owl_computation_graph_sig.Sig
@@ -30,5 +25,4 @@ module type Flatten_Sig = sig
   include Owl_types_computation_device.Sig
 
   val number : Owl_types_common.number
-
 end

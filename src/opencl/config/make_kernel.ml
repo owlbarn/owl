@@ -3,13 +3,11 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
 let gcc_preprocess in_file =
   let out_file = Filename.temp_file "" "" in
   let cmd = Printf.sprintf "gcc -E -P %s -o %s" in_file out_file in
   let r = Sys.command cmd in
   if r <> 0 then failwith "gcc preprocess";
-
   let ic = open_in out_file in
   let n = in_channel_length ic in
   let s = Bytes.create n in
@@ -18,9 +16,7 @@ let gcc_preprocess in_file =
   Bytes.to_string s
 
 
-let post_process kernel_code =
-  String.trim kernel_code
-
+let post_process kernel_code = String.trim kernel_code
 
 let make_kernel fname kernel_code =
   let h = open_out fname in

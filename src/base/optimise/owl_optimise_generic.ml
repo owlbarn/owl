@@ -65,13 +65,13 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
 
   module Learning_Rate = struct
     type typ =
-      | Adagrad of float
-      | Const of float
-      | Decay of float * float
+      | Adagrad   of float
+      | Const     of float
+      | Decay     of float * float
       | Exp_decay of float * float
-      | RMSprop of float * float
-      | Adam of float * float * float
-      | Schedule of float array
+      | RMSprop   of float * float
+      | Adam      of float * float * float
+      | Schedule  of float array
 
     let run = function
       | Adagrad a        -> fun _ _ c -> Maths.(_f a / sqrt (c.(0) + _f 1e-32))
@@ -127,8 +127,8 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
   module Batch = struct
     type typ =
       | Full
-      | Mini of int
-      | Sample of int
+      | Mini       of int
+      | Sample     of int
       | Stochastic
 
     let run typ x y i =
@@ -161,7 +161,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       | L2norm
       | Quadratic
       | Cross_entropy
-      | Custom of (t -> t -> t)
+      | Custom        of (t -> t -> t)
 
     let run typ y y' =
       match typ with
@@ -264,8 +264,8 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
 
   module Regularisation = struct
     type typ =
-      | L1norm of float
-      | L2norm of float
+      | L1norm      of float
+      | L2norm      of float
       | Elastic_net of float * float
       | None
 
@@ -287,7 +287,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
   module Clipping = struct
     type typ =
       | L2norm of float
-      | Value of float * float (* min, max *)
+      | Value  of float * float (* min, max *)
       | None
 
     let run typ x =
@@ -360,8 +360,8 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       }
 
     type typ =
-      | Batch of int (* default checkpoint at every specified batch interval *)
-      | Epoch of float (* default checkpoint at every specified epoch interval *)
+      | Batch  of int (* default checkpoint at every specified batch interval *)
+      | Epoch  of float (* default checkpoint at every specified epoch interval *)
       | Custom of (state -> unit) (* customised checkpoint called at every batch *)
       | None
 

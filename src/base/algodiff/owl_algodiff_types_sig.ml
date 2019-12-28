@@ -9,12 +9,12 @@ module type Sig = sig
   type arr
 
   type t =
-    | F of elt
+    | F   of elt
     | Arr of arr
     (* primal, tangent, tag *)
-    | DF of t * t * int
+    | DF  of t * t * int
     (* primal, adjoint, op, fanout, tag, tracker *)
-    | DR of t * t ref * op * int ref * int * int ref
+    | DR  of t * t ref * op * int ref * int * int ref
 
   and adjoint = t -> t ref -> (t * t) list -> (t * t) list
 

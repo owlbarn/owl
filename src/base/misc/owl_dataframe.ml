@@ -6,16 +6,16 @@
 open Owl_types
 
 type elt =
-  | Bool of bool
-  | Int of int
-  | Float of float
+  | Bool   of bool
+  | Int    of int
+  | Float  of float
   | String of string
   | Any
 
 type series =
-  | Bool_Series of bool array
-  | Int_Series of int array
-  | Float_Series of float array
+  | Bool_Series   of bool array
+  | Int_Series    of int array
+  | Float_Series  of float array
   | String_Series of string array
   | Any_Series
 
