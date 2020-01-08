@@ -2424,11 +2424,18 @@ module Make (Optimise : Owl_optimise_generic_sig.Sig) = struct
       ; mutable out_shape : int array
       }
 
-    let create lambda = { lambda; in_shape = [||]; out_shape = [||] }
+    let create ?out_shape lambda =
+      let shp =
+        match out_shape with
+        | Some o -> o
+        | None   -> [||]
+      in
+      { lambda; in_shape = [||]; out_shape = shp }
+
 
     let connect out_shape l =
       l.in_shape <- Array.copy out_shape;
-      l.out_shape <- Array.copy out_shape
+      if l.out_shape = [||] then l.out_shape <- Array.copy out_shape
 
 
     let copy l = create l.lambda

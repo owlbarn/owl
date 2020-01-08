@@ -1329,7 +1329,7 @@ module type Sig = sig
       }
     (** Neuron type definition. *)
 
-    val create : (t -> t) -> neuron_typ
+    val create : ?out_shape:int array -> (t -> t) -> neuron_typ
     (** Create the neuron. *)
 
     val connect : int array -> neuron_typ -> unit
