@@ -302,6 +302,10 @@ type tail =
   | LeftSide
       (** Types of alternative hypothesis tests: one-side, left-side, or right-side. *)
 
+val pp_hypothesis : Format.formatter -> hypothesis -> unit
+  [@@ocaml.toplevel_printer]
+(** Pretty printer of hypothesis type *)
+
 val z_test
   :  mu:float
   -> sigma:float

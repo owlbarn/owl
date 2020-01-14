@@ -245,6 +245,21 @@ type hypothesis =
 
 let make_hypothesis reject p_value score = { reject; p_value; score }
 
+let pp_hypothesis formatter hypothesis =
+  let s =
+    Printf.sprintf
+      {|  reject  : %b
+  p value : %f
+  score   : %f|}
+      hypothesis.reject
+      hypothesis.p_value
+      hypothesis.score
+  in
+  Format.open_box 0;
+  Format.fprintf formatter "%s" s;
+  Format.close_box ()
+
+
 let z_test ~mu ~sigma ?(alpha = 0.05) ?(side = BothSide) x =
   let n = float_of_int (Array.length x) in
   let z = (mean x -. mu) *. sqrt n /. sigma in
