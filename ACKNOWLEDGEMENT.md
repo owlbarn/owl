@@ -12,6 +12,8 @@ Because Owl is always under active development, there might be a lag between the
 
 - The early versions heavily relied on [Markus Mottl](http://www.ocaml.info/) and [Christophe Troestler](https://github.com/Chris00)'s projects: [Lacaml](https://github.com/mmottl/lacaml), [Gsl](https://github.com/mmottl/gsl-ocaml).
 
+- [DiffSharp](https://github.com/DiffSharp/DiffSharp) and [Hype](https://github.com/hypelib/Hype) code by [Atilim Gunes Baydin](http://www.robots.ox.ac.uk/~gunes/), [Barak Pearlmutter](http://www.bcl.hamilton.ie/~barak/), [Don Syme](https://www.microsoft.com/en-us/research/people/dsyme/) ported from F# to Algodiff and Optimise modules.
+
 - [Richard Mortier](https://github.com/mor1) has been providing great support and constructive feedback. We two together have been running interesting sub-projects on top of Owl.
 
 - [Ben Catterall](https://www.linkedin.com/in/ben-catterall-38643287/?ppe=1) did excellent theoretical work for Owl's underlying distributed computation engine. He also contributed to the NLP module.
