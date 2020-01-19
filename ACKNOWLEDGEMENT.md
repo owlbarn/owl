@@ -30,7 +30,7 @@ Because Owl is always under active development, there might be a lag between the
 
 - [Sergei Lebedev](https://github.com/superbobry) and [bagmanas](https://github.com/bagmanas) contributed various hypothesis test functions in Stats module.
 
-[Francois BERENGER](https://github.com/UnixJunkie) implemented a light and neat logging module which Owl borrows many ideas. The older version of Owl directly used Francois' library.
+- [Francois BERENGER](https://github.com/UnixJunkie) implemented a light and neat logging module which Owl borrows many ideas. The older version of Owl directly used Francois' library.
 
 - Interfacing to other C/C++ libraries (e.g., CBLAS, LAPACKE, Eigen, OpenCL, and etc.) relies on [Jeremy Yallop](https://www.cl.cam.ac.uk/~jdy22/)'s [ocaml-ctypes](https://github.com/ocamllabs/ocaml-ctypes).
 
