@@ -12,6 +12,8 @@ Because Owl is always under active development, there might be a lag between the
 
 - The early versions heavily relied on [Markus Mottl](http://www.ocaml.info/) and [Christophe Troestler](https://github.com/Chris00)'s projects: [Lacaml](https://github.com/mmottl/lacaml), [Gsl](https://github.com/mmottl/gsl-ocaml).
 
+- [DiffSharp](https://github.com/DiffSharp/DiffSharp) and [Hype](https://github.com/hypelib/Hype) code by [Atilim Gunes Baydin](http://www.robots.ox.ac.uk/~gunes/), [Barak Pearlmutter](http://www.bcl.hamilton.ie/~barak/), [Don Syme](https://www.microsoft.com/en-us/research/people/dsyme/) ported from F# to Algodiff and Optimise modules.
+
 - [Richard Mortier](https://github.com/mor1) has been providing great support and constructive feedback. We two together have been running interesting sub-projects on top of Owl.
 
 - [Ben Catterall](https://www.linkedin.com/in/ben-catterall-38643287/?ppe=1) did excellent theoretical work for Owl's underlying distributed computation engine. He also contributed to the NLP module.
@@ -27,6 +29,8 @@ Because Owl is always under active development, there might be a lag between the
 - [Marshall Abrams](https://github.com/mars0i) has been contributing code to Plot and other modules, improving the documentation. Moreover, he always provide useful feedback and constructive discussion.
 
 - [Sergei Lebedev](https://github.com/superbobry) and [bagmanas](https://github.com/bagmanas) contributed various hypothesis test functions in Stats module.
+
+[Francois BERENGER](https://github.com/UnixJunkie) implemented a light and neat logging module which Owl borrows many ideas. The older version of Owl directly used Francois' library.
 
 - Interfacing to other C/C++ libraries (e.g., CBLAS, LAPACKE, Eigen, OpenCL, and etc.) relies on [Jeremy Yallop](https://www.cl.cam.ac.uk/~jdy22/)'s [ocaml-ctypes](https://github.com/ocamllabs/ocaml-ctypes).
 
