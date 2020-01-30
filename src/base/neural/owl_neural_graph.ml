@@ -315,10 +315,13 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
     let neurons = Array.map (fun s -> Input (Input.create s)) input_shapes in
     let nn = make_network 0 [||] [||] in
     let ns =
-      Array.map2 (fun n name -> make_node ?name [||] [||] n None nn) neurons names
+      Array.map2
+        (fun n name -> make_node ?name [||] [||] n None nn |> add_node nn [||])
+        neurons
+        names
     in
     nn.roots <- ns;
-    Array.map (fun n -> add_node nn [||] n) ns
+    ns
 
 
   let activation ?name act_typ input_node =
