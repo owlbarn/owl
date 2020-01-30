@@ -678,6 +678,9 @@ name of their associated neurons are saved as key-value pairs in a hash table.
    Constructs a subnetwork of nodes on which ``node`` depends, replacing
    nodes with names in ``in_names`` with input nodes. If ``in_names`` is
    empty or unspecified, the original input nodes are used.
+   
+   Note: the weights in the new network are the references of those in
+   the old one.
    *)
 
   (** {6 Train Networks} *)
