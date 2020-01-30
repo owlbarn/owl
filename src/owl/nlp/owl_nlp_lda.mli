@@ -18,7 +18,7 @@ type model
 
 (** {6 Core functions} *)
 
-val init : ?iter:int -> int -> (string, int) Hashtbl.t -> Owl_nlp_corpus.t -> model
+val init : ?iter:int -> int -> Owl_nlp_corpus.t -> model
 (**
 ``init ~iter k v d`` inits an LDA model for training. The default iteration is
 100.
@@ -26,7 +26,6 @@ val init : ?iter:int -> int -> (string, int) Hashtbl.t -> Owl_nlp_corpus.t -> mo
 Parameters:
   * ``iter``: number of iterations.
   * ``k``: number of topics.
-  * ``v``: vocabulary.
   * ``d``: corpus.
  *)
 

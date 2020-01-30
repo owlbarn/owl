@@ -254,7 +254,9 @@ module LightLDA = struct
 end
 
 (* init the model based on: topics, vocabulary, tokens *)
-let init ?(iter = 100) k v d =
+let init ?(iter = 100) k d =
+  let vocab = Owl_nlp_corpus.get_vocab d in
+  let v = Owl_nlp_vocabulary.get_w2i vocab in
   Owl_log.info "init the model";
   (* set basic model stats *)
   let n_d = Owl_nlp_corpus.length d in
