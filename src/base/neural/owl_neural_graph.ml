@@ -761,51 +761,61 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
         Neuron.load_weights n.neuron ws)
       nn.topo
 
-  let get_subnetwork ?(in_names=[||]) out_node =
+
+  let get_subnetwork ?(in_names = [||]) out_node =
     let nn = out_node.network in
-    let in_names = match in_names with
-    | [||] -> Array.map (fun n -> n.name) nn.roots
-    | x -> x
+    let in_names =
+      match in_names with
+      | [||] -> Array.map (fun n -> n.name) nn.roots
+      | x    -> x
     in
     let subnn = make_network 0 [||] [||] in
     (* collect neurons belonging to subnetwork *)
     let rec collect_subnn_nodes n acc =
       if List.exists (fun in_acc -> in_acc.name = n.name) acc
       then acc
-      else if Array.mem n.name in_names then
+      else if Array.mem n.name in_names
+      then (
         let new_in = input ~name:n.name (get_out_shape n.neuron) in
-        new_in::acc
-      else match n.neuron with
-      | Neuron.Input _ ->
-          failwith ("Owl_neural_graph:get_subnetwork Subnetwork depends on input " ^ n.name)
-      | neur ->
+        new_in :: acc)
+      else (
+        match n.neuron with
+        | Neuron.Input _ ->
+          failwith
+            ("Owl_neural_graph:get_subnetwork Subnetwork depends on input " ^ n.name)
+        | neur           ->
           (* no neuron copy *)
           let n' = make_node ~name:n.name ~train:n.train [||] [||] neur None subnn in
-          let acc = n'::acc in
-          Array.fold_left (fun a prev -> collect_subnn_nodes prev a) acc n.prev
+          let acc = n' :: acc in
+          Array.fold_left (fun a prev -> collect_subnn_nodes prev a) acc n.prev)
     in
     let new_nodes = collect_subnn_nodes out_node [] in
     (* sorts the new topology *)
-    let new_topo = Array.fold_left
+    let new_topo =
+      Array.fold_left
         (fun acc n ->
           match List.find_opt (fun n' -> n'.name = n.name) new_nodes with
-          | Some n' -> n'::acc
-          | None -> acc)
-        [] nn.topo
-      |> List.rev |> Array.of_list
+          | Some n' -> n' :: acc
+          | None    -> acc)
+        []
+        nn.topo
+      |> List.rev
+      |> Array.of_list
     in
     subnn.topo <- new_topo;
     (* re-construct network structure *)
     Array.iter
       (fun node' ->
         let node = get_node nn node'.name in
-        (if not (Array.mem node.name in_names) then
-          node'.prev <- Array.map (fun n -> get_node subnn n.name) node.prev);
-        (if not (node.name = out_node.name) then
+        if not (Array.mem node.name in_names)
+        then node'.prev <- Array.map (fun n -> get_node subnn n.name) node.prev;
+        if not (node.name = out_node.name)
+        then (
           (* only process nodes that are part of the subnetwork *)
-          let next = Owl_utils_array.filter
-            (fun n -> Array.exists (fun n' -> n'.name = n.name) subnn.topo)
-            node.next
+          let next =
+            Owl_utils_array.filter
+              (fun n -> Array.exists (fun n' -> n'.name = n.name) subnn.topo)
+              node.next
           in
           node'.next <- Array.map (fun n -> get_node subnn n.name) next);
         connect_to_parents node'.prev node')
