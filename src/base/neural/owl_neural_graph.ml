@@ -274,6 +274,8 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
 
 
   let model nn =
+    if Array.length nn.roots > 1
+    then failwith "Owl_neural_graph:model Did you mean to use model_inputs?";
     let nn = copy nn in
     _remove_training_nodes nn;
     let inference x =
