@@ -39,6 +39,12 @@ module type Sig = sig
   val shape : t -> int array
   (** TODO *)
 
+  val is_float : t -> bool
+  (** TODO *)
+
+  val is_arr : t -> bool
+  (** TODO *)
+
   val row_num : t -> int
   (** number of rows *)
 
