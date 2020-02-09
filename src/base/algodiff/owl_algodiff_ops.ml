@@ -15,7 +15,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
   module Maths = struct
     (* squeeze x so that it has shape s *)
-    let rec squeeze_broadcast x s =
+    let rec _squeeze_broadcast x s =
       let sx = shape x in
       let lx = Array.length sx in
       let ls = Array.length s in
@@ -885,12 +885,12 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df_dab _cp _ap at _bp bt = at + bt
 
              let dr_ab a b _cp ca =
-               squeeze_broadcast !ca (shape a), squeeze_broadcast !ca (shape b)
+               _squeeze_broadcast !ca (shape a), _squeeze_broadcast !ca (shape b)
 
 
-             let dr_a a _b _cp ca = squeeze_broadcast !ca (shape a)
+             let dr_a a _b _cp ca = _squeeze_broadcast !ca (shape a)
 
-             let dr_b _a b _cp ca = squeeze_broadcast !ca (shape b)
+             let dr_b _a b _cp ca = _squeeze_broadcast !ca (shape b)
            end : Piso))
 
 
@@ -919,12 +919,12 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df_dab _cp _ap at _bp bt = at - bt
 
              let dr_ab a b _cp ca =
-               squeeze_broadcast !ca (shape a), neg (squeeze_broadcast !ca (shape b))
+               _squeeze_broadcast !ca (shape a), neg (_squeeze_broadcast !ca (shape b))
 
 
-             let dr_a a _b _cp ca = squeeze_broadcast !ca (shape a)
+             let dr_a a _b _cp ca = _squeeze_broadcast !ca (shape a)
 
-             let dr_b _a b _cp ca = neg (squeeze_broadcast !ca (shape b))
+             let dr_b _a b _cp ca = neg (_squeeze_broadcast !ca (shape b))
            end : Piso))
 
 
@@ -953,13 +953,13 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df_dab _cp ap at bp bt = (ap * bt) + (at * bp)
 
              let dr_ab a b _cp ca =
-               ( squeeze_broadcast (!ca * primal b) (shape a)
-               , squeeze_broadcast (!ca * primal a) (shape b) )
+               ( _squeeze_broadcast (!ca * primal b) (shape a)
+               , _squeeze_broadcast (!ca * primal a) (shape b) )
 
 
-             let dr_a a b _cp ca = squeeze_broadcast (!ca * b) (shape a)
+             let dr_a a b _cp ca = _squeeze_broadcast (!ca * b) (shape a)
 
-             let dr_b a b _cp ca = squeeze_broadcast (!ca * a) (shape b)
+             let dr_b a b _cp ca = _squeeze_broadcast (!ca * a) (shape b)
            end : Piso))
 
 
@@ -988,16 +988,16 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df_dab cp _ap at bp bt = (at - (bt * cp)) / bp
 
              let dr_ab a b _cp ca =
-               ( squeeze_broadcast (!ca / primal b) (shape a)
-               , squeeze_broadcast
+               ( _squeeze_broadcast (!ca / primal b) (shape a)
+               , _squeeze_broadcast
                    (!ca * (neg (primal a) / (primal b * primal b)))
                    (shape b) )
 
 
-             let dr_a a b _cp ca = squeeze_broadcast (!ca / b) (shape a)
+             let dr_a a b _cp ca = _squeeze_broadcast (!ca / b) (shape a)
 
              let dr_b a b _cp ca =
-               squeeze_broadcast (!ca * (neg a / (primal b * primal b))) (shape b)
+               _squeeze_broadcast (!ca * (neg a / (primal b * primal b))) (shape b)
            end : Piso))
 
 
@@ -1028,15 +1028,15 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
              let dr_ab a b cp ca =
-               ( squeeze_broadcast (!ca * (a ** (b - pack_flt 1.)) * b) (shape a)
-               , squeeze_broadcast (!ca * cp * log a) (shape b) )
+               ( _squeeze_broadcast (!ca * (a ** (b - pack_flt 1.)) * b) (shape a)
+               , _squeeze_broadcast (!ca * cp * log a) (shape b) )
 
 
              let dr_a a b _cp ca =
-               squeeze_broadcast (!ca * (a ** (b - pack_flt 1.)) * b) (shape a)
+               _squeeze_broadcast (!ca * (a ** (b - pack_flt 1.)) * b) (shape a)
 
 
-             let dr_b a b cp ca = squeeze_broadcast (!ca * cp * log a) (shape b)
+             let dr_b a b cp ca = _squeeze_broadcast (!ca * cp * log a) (shape b)
            end : Piso))
 
 
