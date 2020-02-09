@@ -64,6 +64,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
 
   let shape x =
     match primal' x with
+    | F _    -> [||]
     | Arr ap -> A.shape ap
     | _      -> failwith "error: AD.shape"
 
