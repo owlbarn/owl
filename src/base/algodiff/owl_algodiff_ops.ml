@@ -38,7 +38,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               else
                 failwith
                   Printf.(
-                    sprintf "there ought to be a broadcasting error %i, %i\n%!" s.(k) sx))
+                    sprintf "_squeeze_broadcast: unkonwn broadcasting error %i, %i\n%!" s.(k) sx))
             (0, [])
             sx
         in
