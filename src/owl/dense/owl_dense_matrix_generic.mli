@@ -1388,6 +1388,16 @@ val std' : ('a, 'b) t -> 'a
 ``std' x`` calculates the standard deviation of all the elements in ``x``.
  *)
 
+val sem : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(**
+``sem ~axis`` calculates the standard deviation along specified ``axis``.
+ *)
+
+val sem' : ('a, 'b) t -> 'a
+(**
+``sem' x`` calculates the standard deviation of all the elements in ``x``.
+ *)
+
 val sum_rows : ('a, 'b) t -> ('a, 'b) t
 (**
 ``sum_rows x`` returns the summation of all the row vectors in ``x``.

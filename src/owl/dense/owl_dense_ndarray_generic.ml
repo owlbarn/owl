@@ -8603,6 +8603,24 @@ let std ?axis x =
   | None   -> std' x |> create _kind [| 1 |]
 
 
+let sem' x = 
+  let _kind = kind x in
+  let sqrt_n = numel x |> float_of_int |> _float_typ_elt _kind |> _sqrt_elt _kind in
+  let y = std' x in
+  _div_elt _kind y sqrt_n
+
+
+let sem ?axis x = 
+  let _kind = kind x in
+  match axis with
+  | None -> sem' x |> create _kind [| 1 |]
+  | Some a ->
+    let y = std ?axis x in
+    let n = (shape x).(a) |> float_of_int |> _float_typ_elt _kind |> _sqrt_elt _kind in
+    _owl_div_scalar _kind (numel y) y y n;
+    y
+
+
 let l1norm ?axis x =
   let _kind = kind x in
   match axis with

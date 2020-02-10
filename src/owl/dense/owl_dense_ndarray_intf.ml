@@ -181,6 +181,10 @@ module type Common = sig
 
   val std' : arr -> elt
 
+  val sem : ?axis:int -> arr -> arr
+
+  val sem' : arr -> elt
+
   val minmax : ?axis:int -> arr -> arr * arr
 
   val minmax' : arr -> elt * elt
