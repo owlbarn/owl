@@ -22,7 +22,9 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
       if sx = s
       then x
       else if lx < ls
-      then failwith "x should have higher dimensions than that specified by s"
+      then failwith Printf.(
+          sprintf "_squeeze_broadcase: x must have dimension greater than %i, instead has dimension %i" ls lx
+          )
       else if ls = 0
       then sum' x
       else (
