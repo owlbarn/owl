@@ -7044,6 +7044,28 @@ let _owl_exponential : type a b. (a, b) kind -> (a, b) owl_arr_op13 = function
   | _       -> failwith "_owl_exponential: unsupported operation"
 
 
+external owl_float32_poisson
+  :  int
+  -> ('a, 'b) owl_arr
+  -> float
+  -> int
+  -> unit
+  = "float32_poisson"
+
+external owl_float64_poisson
+  :  int
+  -> ('a, 'b) owl_arr
+  -> float
+  -> int
+  -> unit
+  = "float64_poisson"
+
+let _owl_poisson : type a b. (a, b) kind -> (a, b) owl_arr_op12 = function
+  | Float32 -> owl_float32_poisson
+  | Float64 -> owl_float64_poisson
+  | _       -> failwith "_owl_poisson: unsupported operation"
+
+
 external owl_float32_diff
   :  int
   -> int
