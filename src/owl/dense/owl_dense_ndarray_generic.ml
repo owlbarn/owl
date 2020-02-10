@@ -1277,12 +1277,14 @@ let gaussian_ ?mu ?sigma ~out =
 
 
 let poisson k ~mu d =
+  if mu < 0. then failwith Printf.(sprintf "poisson rate must be nonnegative: mu = %f" mu);
   let x = empty k d in
   _owl_poisson k (numel x) x mu 0;
   x
 
 
 let poisson_ ~mu ~out =
+  if mu < 0. then failwith Printf.(sprintf "poisson rate must be nonnegative: mu = %f" mu);
   let k = kind out in
   _owl_poisson k (numel out) out mu 0
 
