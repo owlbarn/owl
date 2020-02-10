@@ -442,6 +442,10 @@ module type Common = sig
 
   val std' : mat -> elt
 
+  val sem : ?axis:int -> mat -> mat [@@warning "-32"]
+
+  val sem' : mat -> elt
+
   val sum_rows : mat -> mat
 
   val sum_cols : mat -> mat
