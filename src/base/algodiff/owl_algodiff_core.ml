@@ -64,8 +64,25 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
 
   let shape x =
     match primal' x with
+    | F _    -> [||]
     | Arr ap -> A.shape ap
     | _      -> failwith "error: AD.shape"
+
+
+  let rec is_float x =
+    match x with
+    | Arr _ -> false
+    | F _   -> true
+    | DF _  -> is_float (primal' x)
+    | DR _  -> is_float (primal' x)
+
+
+  let rec is_arr x =
+    match x with
+    | Arr _ -> false
+    | F _   -> true
+    | DF _  -> is_arr (primal' x)
+    | DR _  -> is_arr (primal' x)
 
 
   let row_num x = (shape x).(0)
