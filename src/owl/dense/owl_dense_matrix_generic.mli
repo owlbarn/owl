@@ -118,6 +118,12 @@ val gaussian : ('a, 'b) kind -> ?mu:'a -> ?sigma:'a -> int -> int -> ('a, 'b) t
 follow a Gaussian distribution with specified sigma. By default ``sigma = 1``.
  *)
 
+val poisson : ('a, 'b) kind -> mu:float -> int -> int -> ('a, 'b) t
+(**
+``poisson m n`` creates an ``m`` by ``n`` matrix where all the elements in ``x``
+follow a Poisson distribution with specified rate mu.
+ *)
+
 val semidef : (float, 'b) kind -> int -> (float, 'b) t
 (**
 `` semidef n `` returns an random ``n`` by ``n`` positive semi-definite matrix.

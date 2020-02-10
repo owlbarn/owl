@@ -35,6 +35,8 @@ let uniform ?a ?b m n = M.uniform Float32 ?a ?b m n
 
 let gaussian ?mu ?sigma m n = M.gaussian Float32 ?mu ?sigma m n
 
+let poisson ~mu m n = M.poisson Float32 ~mu m n
+
 let semidef m = M.semidef Float32 m
 
 let linspace a b n = M.linspace Float32 a b n

@@ -556,6 +556,10 @@ module type Real = sig
   val cross_entropy' : arr -> arr -> float
 
   val fused_adagrad_ : ?out:arr -> rate:float -> eps:float -> arr -> unit
+
+  val poisson : mu:elt -> int array -> arr
+
+  val poisson_ : mu:elt -> out:arr -> unit
 end
 
 module type Complex = sig
