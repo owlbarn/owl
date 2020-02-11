@@ -164,6 +164,8 @@ let exponential_isf ~lambda x =
   broadcast_op2 (_owl_exponential_isf (kind x)) lambda lambda x
 
 
+let poisson_rvs ~mu ~n = broadcast_op1 (_owl_poisson_rvs (kind mu)) mu n
+
 let gamma_rvs ~shape ~scale ~n = broadcast_op0 (_owl_gamma_rvs (kind shape)) shape scale n
 
 let gamma_pdf ~shape ~scale x = broadcast_op2 (_owl_gamma_pdf (kind x)) shape scale x
