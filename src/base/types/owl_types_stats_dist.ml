@@ -60,6 +60,8 @@ module type Sig = sig
 
   val exponential_isf : lambda:arr -> arr -> arr
 
+  val poisson_rvs : mu:arr -> n:int -> arr
+
   val gamma_rvs : shape:arr -> scale:arr -> n:int -> arr
 
   val gamma_pdf : shape:arr -> scale:arr -> arr -> arr

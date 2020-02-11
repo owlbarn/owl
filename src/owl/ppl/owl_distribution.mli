@@ -123,6 +123,19 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
+  (** {6 Poisson distribtion} *)
+
+  module Poisson : sig
+    type t = { mu : A.arr }
+    (** Type definition of a specific distribution *)
+
+    val make : mu:A.arr -> t
+    (** Make a distribution of the given parameters. *)
+
+    val sample : t -> int -> A.arr
+    (** Sample a distribution of the given parameters. *)
+  end
+
   (** {6 Gamma distribtion} *)
 
   module Gamma : sig
