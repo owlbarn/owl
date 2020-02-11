@@ -45,8 +45,8 @@ long hypergeometric_hrua_rvs(long good, long bad, long sample) {
   d7 = sqrt((double) (popsize - m) * sample * d4 * d5 / (popsize - 1) + 0.5);
   d8 = D1 * d7 + D2;
   d9 = (long) floor((double) (m + 1) * (mingoodbad + 1) / (popsize + 2));
-  d10 = (loggam(d9 + 1) + loggam(mingoodbad - d9 + 1) + loggam(m - d9 + 1) +
-         loggam(maxgoodbad - m + d9 + 1));
+  d10 = (lgam(d9 + 1) + lgam(mingoodbad - d9 + 1) + lgam(m - d9 + 1) +
+         lgam(maxgoodbad - m + d9 + 1));
   d11 = fmin(fmin(m, mingoodbad) + 1., floor(d6 + 16 * d7));
 
   while (1) {
@@ -57,8 +57,8 @@ long hypergeometric_hrua_rvs(long good, long bad, long sample) {
     if ((W < 0.) || (W >= d11)) continue;
 
     Z = (long) floor(W);
-    T = d10 - (loggam(Z + 1) + loggam(mingoodbad - Z + 1) + loggam(m - Z + 1) +
-               loggam(maxgoodbad - m + Z + 1));
+    T = d10 - (lgam(Z + 1) + lgam(mingoodbad - Z + 1) + lgam(m - Z + 1) +
+               lgam(maxgoodbad - m + Z + 1));
 
     if ((X * (4. - X) - 3.) <= T) break;
     if (X * (X - T) >= 1) continue;

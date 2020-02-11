@@ -710,6 +710,32 @@ let _owl_exponential_isf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = functi
   | _       -> failwith "_owl_exponential_isf: unsupported operation"
 
 
+external owl_float32_poisson_rvs
+  :  ('a, 'b) owl_arr
+  -> (int64, int64_elt) owl_arr
+  -> ('a, 'b) owl_arr
+  -> (int64, int64_elt) owl_arr
+  -> ('a, 'b) owl_arr
+  -> (int64, int64_elt) owl_arr
+  -> unit
+  = "float32_poisson_rvs" "float32_poisson_rvs_impl"
+
+external owl_float64_poisson_rvs
+  :  ('a, 'b) owl_arr
+  -> (int64, int64_elt) owl_arr
+  -> ('a, 'b) owl_arr
+  -> (int64, int64_elt) owl_arr
+  -> ('a, 'b) owl_arr
+  -> (int64, int64_elt) owl_arr
+  -> unit
+  = "float64_poisson_rvs" "float64_poisson_rvs_impl"
+
+let _owl_poisson_rvs : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32 -> owl_float32_poisson_rvs
+  | Float64 -> owl_float64_poisson_rvs
+  | _       -> failwith "_owl_poisson_rvs: unsupported operation"
+
+
 external owl_float32_gamma_rvs
   :  ('a, 'b) owl_arr
   -> (int64, int64_elt) owl_arr

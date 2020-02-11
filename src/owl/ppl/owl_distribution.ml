@@ -118,6 +118,17 @@ module Make (A : Stats_Dist) = struct
     let isf t x = A.exponential_isf ~lambda:t.lambda x
   end
 
+  module Poisson = struct
+    type t = { mu : A.arr }
+
+    let make ~mu =
+      Utility._check_broadcast_shape [| mu |];
+      { mu }
+
+
+    let sample t n = A.poisson_rvs ~mu:t.mu ~n
+  end
+
   module Gamma = struct
     type t =
       { shape : A.arr
