@@ -101,6 +101,11 @@ val gaussian : ('a, 'b) kind -> ?mu:'a -> ?sigma:'a -> int array -> ('a, 'b) t
 ``gaussian Float64 [|3;4;5|]`` ...
  *)
 
+val poisson : ('a, 'b) kind -> mu:float -> int array -> ('a, 'b) t
+(**
+``poisson Float64 [|3;4;5|]`` ...
+ *)
+
 val sequential : ('a, 'b) kind -> ?a:'a -> ?step:'a -> int array -> ('a, 'b) t
 (**
 ``sequential Bigarray.Float64 [|3;4;5|] 2.`` creates a three-diemensional
@@ -2273,6 +2278,9 @@ val uniform_ : ?a:'a -> ?b:'a -> out:('a, 'b) t -> unit
 (** TODO *)
 
 val gaussian_ : ?mu:'a -> ?sigma:'a -> out:('a, 'b) t -> unit
+(** TODO *)
+
+val poisson_ : mu:float -> out:('a, 'b) t -> unit
 (** TODO *)
 
 val sequential_ : ?a:'a -> ?step:'a -> out:('a, 'b) t -> unit

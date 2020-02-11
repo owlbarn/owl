@@ -31,6 +31,8 @@ let uniform ?a ?b dimension = M.uniform Float32 ?a ?b dimension
 
 let gaussian ?mu ?sigma dimension = M.gaussian ?mu ?sigma Float32 dimension
 
+let poisson ~mu dimension = M.poisson ~mu Float32 dimension
+
 let sequential ?a ?step dimension = M.sequential Float32 ?a ?step dimension
 
 let linspace a b n = M.linspace Float32 a b n

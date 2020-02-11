@@ -875,6 +875,8 @@ module type Real = sig
   val cross_entropy' : mat -> mat -> elt
 
   val clip_by_l2norm : elt -> mat -> mat
+  
+  val poisson : mu:elt -> int -> int -> mat
 end
 
 module type Complex = sig

@@ -5190,6 +5190,19 @@
 #define MAPFN(X) *X = a * f64_exponential
 #include OWL_NDARRAY_MATHS_MAP
 
+// poisson
+#define FUN18 float32_poisson
+#define INIT double a = Double_val(vA)
+#define NUMBER float 
+#define MAPFN(X) *X = poisson_rvs(a)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN18 float64_poisson
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define MAPFN(X) *X = poisson_rvs(a)
+#include OWL_NDARRAY_MATHS_MAP
+
 // diff
 
 #define FUN20 float32_diff

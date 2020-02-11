@@ -172,6 +172,8 @@ let uniform k ?a ?b m n = Owl_dense_ndarray_generic.uniform k ?a ?b [| m; n |]
 
 let gaussian k ?mu ?sigma m n = Owl_dense_ndarray_generic.gaussian k ?mu ?sigma [| m; n |]
 
+let poisson k ~mu m n = Owl_dense_ndarray_generic.poisson k ~mu [| m; n |]
+
 let bernoulli k ?p m n = Owl_dense_ndarray_generic.bernoulli k ?p [| m; n |]
 
 let unit_basis k n i =

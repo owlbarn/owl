@@ -1276,6 +1276,19 @@ let gaussian_ ?mu ?sigma ~out =
   _owl_gaussian k (numel out) out mu sigma
 
 
+let poisson k ~mu d =
+  if mu < 0. then failwith Printf.(sprintf "poisson rate must be nonnegative: mu = %f" mu);
+  let x = empty k d in
+  _owl_poisson k (numel x) x mu 0;
+  x
+
+
+let poisson_ ~mu ~out =
+  if mu < 0. then failwith Printf.(sprintf "poisson rate must be nonnegative: mu = %f" mu);
+  let k = kind out in
+  _owl_poisson k (numel out) out mu 0
+
+
 let linspace k a b n =
   let x = empty k [| n |] in
   _owl_linspace k n a b x;
