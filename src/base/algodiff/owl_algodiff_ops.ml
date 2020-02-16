@@ -22,9 +22,14 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
       if sx = s
       then x
       else if lx < ls
-      then failwith Printf.(
-          sprintf "_squeeze_broadcast: x must have dimension greater than %i, instead has dimension %i" ls lx
-          )
+      then
+        failwith
+          Printf.(
+            sprintf
+              "_squeeze_broadcast: x must have dimension greater than %i, instead has \
+               dimension %i"
+              ls
+              lx)
       else if ls = 0
       then sum' x
       else (
@@ -38,7 +43,10 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               else
                 failwith
                   Printf.(
-                    sprintf "_squeeze_broadcast: unkonwn broadcasting error %i, %i\n%!" s.(k) sx))
+                    sprintf
+                      "_squeeze_broadcast: unkonwn broadcasting error %i, %i\n%!"
+                      s.(k)
+                      sx))
             (0, [])
             sx
         in
@@ -1485,9 +1493,9 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let df _ _ _ tangents = concatenate ~axis tangents
 
-              let dr idxs a _ ca =
-                let ca = split ~axis (Array.map (fun x -> (shape x).(axis)) a) !ca in
-                List.map (fun k -> ca.(k), a.(k)) idxs
+              let dr idxs ap _ ca =
+                let ca = split ~axis (Array.map (fun x -> (shape x).(axis)) ap) !ca in
+                List.map (fun k -> ca.(k)) idxs
             end : Aiso))
 
 
@@ -1700,13 +1708,13 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
            let dp_dc () = sylvester a b ct in
            [| dp_da; dp_db; dp_dc |]
          in
-         let sylv_backward a b c p pbar =
+         let sylv_backward a b _c p pbar =
            let st = sylvester (transpose a) (transpose b) (neg pbar) in
            (* the following calculations are not calculated unless needed *)
            let abar () = st *@ transpose p in
            let bbar () = transpose p *@ st in
            let cbar () = neg st in
-           [| abar, a; bbar, b; cbar, c |]
+           [| abar; bbar; cbar |]
          in
          build_aiso
            (module struct
@@ -1733,8 +1741,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                in
                List.map
                  (fun k ->
-                   let bar, x = bars.(k) in
-                   bar (), x)
+                   let bar = bars.(k) in
+                   bar ())
                  idxs
            end : Aiso))
 
@@ -1930,7 +1938,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
            in
            [| dp_da; dp_db; dp_dq; dp_dr |]
          in
-         let care_backward ~diag_r a b q r p pbar =
+         let care_backward ~diag_r a b _q r p pbar =
            let tr_b = transpose b in
            let inv_r = if diag_r then pack_flt 1. / diag r else inv r in
            let atilde =
@@ -1949,7 +1957,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              then neg (pack_flt 2.) * p *@ s *@ p *@ (b * inv_r)
              else neg (pack_flt 2.) * p *@ s *@ p *@ b *@ inv_r
            in
-           [| abar, a; bbar, b; qbar, q; rbar, r |]
+           [| abar; bbar; qbar; rbar |]
          in
          fun ~diag_r ->
            build_aiso
@@ -1975,11 +1983,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                    let a, b, q, r = unpack inp in
                    care_backward ~diag_r a b q r p pbar
                  in
-                 List.map
-                   (fun k ->
-                     let bar, x = bars.(k) in
-                     bar (), x)
-                   idxs
+                 List.map (fun k -> bars.(k) ()) idxs
              end : Aiso))
 
 
