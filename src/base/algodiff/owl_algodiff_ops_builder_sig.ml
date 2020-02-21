@@ -106,7 +106,7 @@ module type Sig = sig
 
     val df : int list -> t -> t array -> t array -> t
 
-    val dr : int list -> t array -> t -> t ref -> (t * t) list
+    val dr : int list -> t array -> t -> t ref -> t list
   end
 
   val build_aiso : (module Aiso) -> t array -> t
