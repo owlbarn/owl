@@ -1860,6 +1860,12 @@ val lgamma : ('a, 'b) t -> ('a, 'b) t
 a new matrix.
  *)
 
+val dawsn : ('a, 'b) t -> ('a, 'b) t
+(**
+``dawsn x`` computes the Dawson function of the elements in ``x`` and returns the result in
+a new matrix.
+ *)
+
 (** {6 Binary math operators}  *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t

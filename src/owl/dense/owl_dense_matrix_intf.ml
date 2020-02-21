@@ -558,6 +558,8 @@ module type Common = sig
 
   val lgamma : mat -> mat
 
+  val dawsn : mat -> mat
+
   (** {6 Binary mathematical operations } *)
 
   val add : mat -> mat -> mat

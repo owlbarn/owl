@@ -3965,6 +3965,28 @@ let _owl_lgamma : type a b. (a, b) kind -> (a, b) owl_arr_op09 =
   | Float64 -> owl_float64_lgamma l x y
   | _       -> failwith "_owl_lgamma: unsupported operation"
 
+(* Dawson functions *)
+external owl_float32_dawsn
+  :  int
+  -> ('a, 'b) owl_arr
+  -> ('a, 'b) owl_arr
+  -> unit
+  = "float32_dawsn"
+
+external owl_float64_dawsn
+  :  int
+  -> ('a, 'b) owl_arr
+  -> ('a, 'b) owl_arr
+  -> unit
+  = "float64_dawsn"
+
+let _owl_dawsn : type a b. (a, b) kind -> (a, b) owl_arr_op09 =
+ fun k l x y ->
+  match k with
+  | Float32 -> owl_float32_dawsn l x y
+  | Float64 -> owl_float64_dawsn l x y
+  | _       -> failwith "_owl_dawsn: unsupported operation"
+
 
 external owl_float32_floor
   :  int
