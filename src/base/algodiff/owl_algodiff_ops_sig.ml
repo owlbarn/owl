@@ -178,6 +178,9 @@ module type Sig = sig
     val relu : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val dawsn : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val softplus : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

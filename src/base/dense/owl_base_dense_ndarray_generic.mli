@@ -455,6 +455,9 @@ val erfc : (float, 'b) t -> (float, 'b) t
 val relu : (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val dawsn : (float, 'a) t -> (float, 'a) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val softsign : (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

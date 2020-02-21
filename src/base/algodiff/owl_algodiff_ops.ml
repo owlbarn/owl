@@ -22,9 +22,14 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
       if sx = s
       then x
       else if lx < ls
-      then failwith Printf.(
-          sprintf "_squeeze_broadcast: x must have dimension greater than %i, instead has dimension %i" ls lx
-          )
+      then
+        failwith
+          Printf.(
+            sprintf
+              "_squeeze_broadcast: x must have dimension greater than %i, instead has \
+               dimension %i"
+              ls
+              lx)
       else if ls = 0
       then sum' x
       else (
@@ -38,7 +43,10 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               else
                 failwith
                   Printf.(
-                    sprintf "_squeeze_broadcast: unkonwn broadcasting error %i, %i\n%!" s.(k) sx))
+                    sprintf
+                      "_squeeze_broadcast: unkonwn broadcasting error %i, %i\n%!"
+                      s.(k)
+                      sx))
             (0, [])
             sx
         in
@@ -671,6 +679,24 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
     and relu a = Lazy.force _relu a
+
+    and _dawsn =
+      lazy
+        (build_siso
+           (module struct
+             let label = "dawsn"
+
+             let ff_f a = F A.Scalar.(dawsn a)
+
+             let ff_arr a = Arr A.(dawsn a)
+
+             let df cp ap at = at * (pack_flt 1. - (pack_flt 2. * ap * cp))
+
+             let dr a cp ca = !ca * (pack_flt 1. - (pack_flt 2. * primal a * cp))
+           end : Siso))
+
+
+    and dawsn a = Lazy.force _dawsn a
 
     and _diag =
       lazy

@@ -115,6 +115,8 @@ let acsch x = asinh (1. /. x)
 
 let relu x = Stdlib.max 0. x
 
+let dawsn _x = raise (Owl_exception.NOT_IMPLEMENTED "Owl_base_maths.dawsn")
+
 let sigmoid x = 1. /. (1. +. log ~-.x)
 
 let xlogy x y = if x = 0. && classify_float y <> FP_nan then 0. else x *. log y

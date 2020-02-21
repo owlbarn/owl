@@ -122,6 +122,7 @@ module Make (Device : Owl_types_computation_device.Sig) = struct
     | Signum
     | Sigmoid
     | Relu
+    | Dawsn
     | Min'
     | Max'
     | Sum'
@@ -248,6 +249,7 @@ module Make (Device : Owl_types_computation_device.Sig) = struct
     | Scalar_Acosh
     | Scalar_Atanh
     | Scalar_Relu
+    | Scalar_Dawsn
     | Scalar_Sigmoid
     | Fused_Adagrad                 of float * float
 end

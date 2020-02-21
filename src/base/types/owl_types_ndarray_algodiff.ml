@@ -69,6 +69,8 @@ module type Sig = sig
 
     val relu : elt -> elt
 
+    val dawsn : elt -> elt
+
     val sigmoid : elt -> elt
   end
 

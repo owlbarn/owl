@@ -124,6 +124,7 @@ module type Sig = sig
     | Signum
     | Sigmoid
     | Relu
+    | Dawsn
     | Min'
     | Max'
     | Sum'
@@ -250,6 +251,7 @@ module type Sig = sig
     | Scalar_Acosh
     | Scalar_Atanh
     | Scalar_Relu
+    | Scalar_Dawsn
     | Scalar_Sigmoid
     | Fused_Adagrad                 of float * float (** TODO *)
 end

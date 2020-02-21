@@ -238,6 +238,9 @@ module type Sig = sig
   val relu : arr -> arr
   (** TODO *)
 
+  val dawsn : arr -> arr
+  (** TODO *)
+
   val min' : arr -> elt
   (** TODO *)
 
@@ -650,6 +653,9 @@ module type Sig = sig
     (** TODO *)
 
     val relu : elt -> elt
+    (** TODO *)
+
+    val dawsn : elt -> elt
     (** TODO *)
 
     val sigmoid : elt -> elt
