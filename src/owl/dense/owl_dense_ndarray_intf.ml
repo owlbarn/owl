@@ -247,8 +247,6 @@ module type Common = sig
 
   val lgamma : arr -> arr
 
-  val dawsn : arr -> arr
-
   (** {6 Binary mathematical operations } *)
 
   val min2 : arr -> arr -> arr
