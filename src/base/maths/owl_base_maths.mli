@@ -103,6 +103,9 @@ val softplus : float -> float
 val relu : float -> float
 (** ``relu x`` *)
 
+val dawsn : float -> float
+(** ``dawsn x`` *)
+
 val sin : float -> float
 (** ``sin x`` *)
 

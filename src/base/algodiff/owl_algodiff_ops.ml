@@ -680,6 +680,24 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and relu a = Lazy.force _relu a
 
+    and _dawsn =
+      lazy
+        (build_siso
+           (module struct
+             let label = "dawsn"
+
+             let ff_f a = F A.Scalar.(dawsn a)
+
+             let ff_arr a = Arr A.(dawsn a)
+
+             let df cp ap at = at * (pack_flt 1. - (pack_flt 2. * ap * cp))
+
+             let dr a cp ca = !ca * (pack_flt 1. - (pack_flt 2. * primal a * cp))
+           end : Siso))
+
+
+    and dawsn a = Lazy.force _dawsn a
+
     and _diag =
       lazy
         (fun ~k ->

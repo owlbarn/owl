@@ -267,6 +267,8 @@ module Make (Symbol : Owl_computation_symbol_sig.Sig) = struct
 
   let relu x = make_then_connect Relu [| arr_to_node x |] |> node_to_arr
 
+  let dawsn x = make_then_connect Dawsn [| arr_to_node x |] |> node_to_arr
+
   let min' x = make_then_connect Min' [| arr_to_node x |] |> node_to_elt
 
   let max' x = make_then_connect Max' [| arr_to_node x |] |> node_to_elt
@@ -850,6 +852,8 @@ module Make (Symbol : Owl_computation_symbol_sig.Sig) = struct
     let atanh x = make_then_connect Scalar_Atanh [| elt_to_node x |] |> node_to_elt
 
     let relu x = make_then_connect Scalar_Relu [| elt_to_node x |] |> node_to_elt
+
+    let dawsn x = make_then_connect Scalar_Dawsn [| elt_to_node x |] |> node_to_elt
 
     let sigmoid x = make_then_connect Scalar_Sigmoid [| elt_to_node x |] |> node_to_elt
   end

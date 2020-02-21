@@ -152,6 +152,8 @@ module type Sig = sig
 
   val relu : arr -> arr
 
+  val dawsn : arr -> arr
+
   val min' : arr -> elt
 
   val max' : arr -> elt

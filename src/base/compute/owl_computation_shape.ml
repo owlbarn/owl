@@ -308,6 +308,7 @@ module Make (Type : Owl_computation_type_sig.Sig) = struct
     | Signum -> _infer_shape_01 input_shapes
     | Sigmoid -> _infer_shape_01 input_shapes
     | Relu -> _infer_shape_01 input_shapes
+    | Dawsn -> _infer_shape_01 input_shapes
     | Min' -> _infer_shape_00 input_shapes
     | Max' -> _infer_shape_00 input_shapes
     | Sum' -> _infer_shape_00 input_shapes
@@ -439,6 +440,7 @@ module Make (Type : Owl_computation_type_sig.Sig) = struct
     | Scalar_Acosh -> _infer_shape_00 input_shapes
     | Scalar_Atanh -> _infer_shape_00 input_shapes
     | Scalar_Relu -> _infer_shape_00 input_shapes
+    | Scalar_Dawsn -> _infer_shape_00 input_shapes
     | Scalar_Sigmoid -> _infer_shape_00 input_shapes
     | Fused_Adagrad (_rate, _eps) -> _infer_shape_01 input_shapes
     | _ -> [| None |]

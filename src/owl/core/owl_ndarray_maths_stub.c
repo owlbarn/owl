@@ -3651,7 +3651,19 @@
 #define MAPFN(X) (lgam(X))
 #include OWL_NDARRAY_MATHS_MAP
  
-
+//  Dawson functions
+#define FUN4 float32_dawsn
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (dawsnf(X))
+#include OWL_NDARRAY_MATHS_MAP
+ 
+#define FUN4 float64_dawsn
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (dawsn(X))
+#include OWL_NDARRAY_MATHS_MAP
+ 
 ////// binary math operator //////
 
 // add

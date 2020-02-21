@@ -203,6 +203,7 @@ extern double kolmogi ( double p );
 
 extern double lanczos_sum_expg_scaled( double x );
 
+extern float dawsnf ( float xx );
 #ifdef __cplusplus
 }
 #endif

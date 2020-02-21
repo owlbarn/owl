@@ -324,6 +324,8 @@ module type Real = sig
 
   val relu : arr -> arr
 
+  val dawsn : arr -> arr
+
   val l1norm' : arr -> elt
 
   val l2norm' : arr -> elt

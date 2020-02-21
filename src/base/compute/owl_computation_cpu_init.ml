@@ -109,6 +109,7 @@ module Make (Graph : Owl_computation_graph_sig.Sig) = struct
     | Signum -> split_01 p
     | Sigmoid -> split_01 p
     | Relu -> split_01 p
+    | Dawsn -> split_01 p
     | Min' -> split_01 p
     | Max' -> split_01 p
     | Sum' -> split_01 p
@@ -236,6 +237,7 @@ module Make (Graph : Owl_computation_graph_sig.Sig) = struct
     | Scalar_Acosh -> split_01 p
     | Scalar_Atanh -> split_01 p
     | Scalar_Relu -> split_01 p
+    | Scalar_Dawsn -> split_01 p
     | Scalar_Sigmoid -> split_01 p
     | Fused_Adagrad (_rate, _eps) -> split_00 p
 

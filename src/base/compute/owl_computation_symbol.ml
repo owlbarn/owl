@@ -79,6 +79,7 @@ module Make (Shape : Owl_computation_shape_sig.Sig) = struct
     | Signum -> "Signum"
     | Sigmoid -> "Sigmoid"
     | Relu -> "Relu"
+    | Dawsn -> "Dawsn"
     | Min' -> "Min'"
     | Max' -> "Max'"
     | Sum' -> "Sum'"
@@ -206,6 +207,7 @@ module Make (Shape : Owl_computation_shape_sig.Sig) = struct
     | Scalar_Acosh -> "Scalar Acosh"
     | Scalar_Atanh -> "Scalar Atanh"
     | Scalar_Relu -> "Scalar Relu"
+    | Scalar_Dawsn -> "Scalar Dawsn"
     | Scalar_Sigmoid -> "Scalar Sigmoid"
     | Fused_Adagrad (_rate, _eps) -> "Fused_Adagrad"
 
