@@ -1038,15 +1038,19 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
              let dr_ab a b cp ca =
-               ( _squeeze_broadcast (!ca * (a ** (b - pack_flt 1.)) * b) (shape a)
-               , _squeeze_broadcast (!ca * cp * log a) (shape b) )
+               ( _squeeze_broadcast
+                   (!ca * (primal a ** (primal b - pack_flt 1.)) * primal b)
+                   (shape a)
+               , _squeeze_broadcast (!ca * cp * log (primal a)) (shape b) )
 
 
              let dr_a a b _cp ca =
-               _squeeze_broadcast (!ca * (a ** (b - pack_flt 1.)) * b) (shape a)
+               _squeeze_broadcast
+                 (!ca * (primal a ** (primal b - pack_flt 1.)) * b)
+                 (shape a)
 
 
-             let dr_b a b cp ca = _squeeze_broadcast (!ca * cp * log a) (shape b)
+             let dr_b a b cp ca = _squeeze_broadcast (!ca * cp * log (primal a)) (shape b)
            end : Piso))
 
 
