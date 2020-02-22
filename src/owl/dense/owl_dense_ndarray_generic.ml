@@ -70,6 +70,9 @@ let set_fancy_ ~out axis x y =
   if Owl_ndarray._owl_ndarray_same_data out x = false then copy_ ~out x;
   Owl_slicing.set_fancy_list_typ axis out y
 
+let get_fancy_ext axis x = Owl_slicing.get_fancy_ext_idx_typ axis x
+
+let set_fancy_ext axis x y = Owl_slicing.set_fancy_ext_idx_typ axis x y
 
 let get_slice axis x = Owl_slicing.get_slice_list_typ axis x
 
@@ -81,6 +84,9 @@ let set_slice_ ~out axis x y =
   if Owl_ndarray._owl_ndarray_same_data out x = false then copy_ ~out x;
   Owl_slicing.set_slice_list_typ axis out y
 
+let get_slice_ext axis x = Owl_slicing.get_slice_ext_idx_typ axis x
+
+let set_slice_ext axis x y = Owl_slicing.set_slice_ext_idx_typ axis x y
 
 let fill x a = Genarray.fill x a
 

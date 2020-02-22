@@ -355,6 +355,18 @@ the values in ``y``. ``y`` must have the same shape as the one defined by ``axis
 About the slice definition of ``axis``, please refer to ``slice`` function.
  *)
 
+val get_fancy_ext : index array -> ('a, 'b) t -> ('a, 'b) t
+(**
+This function is used for extended  indexing operator since  ocaml 4.10.0.
+The indexing and slicing syntax become much ligher.
+ *)
+
+val set_fancy_ext : index array -> ('a, 'b) t -> ('a, 'b) t -> unit
+(**
+This function is used for extended  indexing operator since  ocaml 4.10.0.
+The indexing and slicing syntax become much ligher.
+ *)
+
 val get_slice : int list list -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``get_slice axis x`` aims to provide a simpler version of ``get_fancy``.
@@ -372,6 +384,16 @@ represents a range, i.e., ``R`` constructor.
 
 E.g., ``[[];[0;3];[0]]`` is equivalent to ``[R []; R [0;3]; R [0]]``.
  *)
+
+val get_slice_ext : int list array -> ('a, 'b) t -> ('a, 'b) t
+(**
+Please refer to Ndarray document.
+*) 
+
+val set_slice_ext : int list array -> ('a, 'b) t -> ('a, 'b) t -> unit
+(**
+Please refer to Ndarray document.
+*) 
 
 val row : ('a, 'b) t -> int -> ('a, 'b) t
 (**

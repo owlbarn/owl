@@ -135,22 +135,22 @@ module Make_Extend (M : ExtendSig) = struct
 
   let ( @|| ) = M.concat_horizontal
 
-  let ( .!{} ) x s = M.get_fancy s x
+  let ( .!{;..} ) x s = M.get_fancy_ext s x
 
-  let ( .!{}<- ) x s = M.set_fancy s x
+  let ( .!{;..}<- ) x s = M.set_fancy_ext s x
 
-  let ( .${} ) x s = M.get_slice s x
+  let ( .${;..} ) x s = M.get_slice_ext s x
 
-  let ( .${}<- ) x s = M.set_slice s x
+  let ( .${;..}<- ) x s = M.set_slice_ext s x
 end
 [@warning "-34"]
 
 module Make_Matrix (M : MatrixSig) = struct
   type ('a, 'b) op_t2 = ('a, 'b) M.t
 
-  let ( .%{} ) x i = M.get x i.(0) i.(1)
+  let ( .%{;..} ) x i = M.get x i.(0) i.(1)
 
-  let ( .%{}<- ) x i = M.set x i.(0) i.(1)
+  let ( .%{;..}<- ) x i = M.set x i.(0) i.(1)
 
   let ( *@ ) a b = M.dot a b
 end
@@ -159,9 +159,9 @@ end
 module Make_Ndarray (M : NdarraySig) = struct
   type ('a, 'b) op_t3 = ('a, 'b) M.t
 
-  let ( .%{} ) x i = M.get x i
+  let ( .%{;..} ) x i = M.get x i
 
-  let ( .%{}<- ) x i = M.set x i
+  let ( .%{;..}<- ) x i = M.set x i
 end
 [@warning "-34"]
 

@@ -125,13 +125,13 @@ module type ExtendSig = sig
 
   val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  val get_fancy : Owl_types.index list -> ('a, 'b) t -> ('a, 'b) t
+  val get_fancy_ext : Owl_types.index array -> ('a, 'b) t -> ('a, 'b) t
 
-  val set_fancy : Owl_types.index list -> ('a, 'b) t -> ('a, 'b) t -> unit
+  val set_fancy_ext : Owl_types.index array -> ('a, 'b) t -> ('a, 'b) t -> unit
 
-  val get_slice : int list list -> ('a, 'b) t -> ('a, 'b) t
+  val get_slice_ext : int list array -> ('a, 'b) t -> ('a, 'b) t
 
-  val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+  val set_slice_ext : int list array -> ('a, 'b) t -> ('a, 'b) t -> unit
 end
 
 module type MatrixSig = sig

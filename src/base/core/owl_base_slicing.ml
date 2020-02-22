@@ -17,6 +17,14 @@ let sdlist_to_sdarray axis =
   |> Array.of_list
 
 
+let sdarray_to_sdarray axis =
+  Array.map
+    (function
+      | I i -> I_ i
+      | L i -> L_ (Array.of_list i)
+      | R i -> R_ (Array.of_list i))
+    axis
+
 (* return true if slicing (all R_) or false if fancy indexing (has L_) *)
 let is_basic_slicing =
   Array.for_all (function
