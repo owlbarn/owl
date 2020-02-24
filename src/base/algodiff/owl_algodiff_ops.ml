@@ -523,26 +523,31 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and _sum =
       lazy
-        (fun ~axis ->
+        (fun ?axis ->
           build_siso
             (module struct
               let label = "sum axis"
 
               let ff_f a = error_uniop label (pack_elt a)
 
-              let ff_arr a = Arr A.(sum ~axis a)
+              let ff_arr a = Arr A.(sum ?axis a)
 
-              let df _cp _ap at = sum ~axis at
+              let df _cp _ap at = sum ?axis at
 
               let dr a _cp ca =
-                let s = shape a in
-                let reps = Array.(make (length s) 1) in
-                reps.(axis) <- s.(axis);
-                repeat !ca reps
+                match axis with
+                | Some axis ->
+                  let s = shape a in
+                  let ndim = Array.length s in
+                  let reps = Array.(make ndim 1) in
+                  let axis = Owl_utils.adjust_index axis ndim in
+                  reps.(axis) <- s.(axis);
+                  repeat !ca reps
+                | None      -> !ca
             end : Siso))
 
 
-    and sum ?(axis = -1) = Lazy.force _sum ~axis
+    and sum ?axis = Lazy.force _sum ?axis
 
     and _sum_reduce =
       lazy
