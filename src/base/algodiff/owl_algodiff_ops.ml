@@ -16,27 +16,26 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
   module Maths = struct
     (* squeeze x so that it has shape s *)
     let rec _squeeze_broadcast x s =
-      let sx = shape x in
-      let lx = Array.length sx in
-      let ls = Array.length s in
-      if sx = s
+      let shp_x = shape x in
+      let dim_x = Array.length shp_x in
+      let dim = Array.length s in
+      if shp_x = s
       then x
-      else if lx < ls
+      else if dim_x < dim
       then
-        failwith
-          Printf.(
-            sprintf
-              "_squeeze_broadcast: x must have dimension greater than %i, instead has \
-               dimension %i"
-              ls
-              lx)
-      else if ls = 0
+        Printf.sprintf
+          "_squeeze_broadcast: x must have dimension greater than %i, instead has  \
+           dimension %i"
+          dim
+          dim_x
+        |> failwith
+      else if dim = 0
       then sum' x
       else (
-        let _, idxs =
-          Array.fold_left
-            (fun (k, accu) sx ->
-              if s.(k) = sx
+        let s, shp_x = Owl_utils_array.align `Left 1 s shp_x in
+        let fold =
+          Array.fold_left (fun (k, accu) shp_x ->
+              if s.(k) = shp_x
               then succ k, accu
               else if s.(k) = 1
               then succ k, k :: accu
@@ -44,13 +43,11 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                 failwith
                   Printf.(
                     sprintf
-                      "_squeeze_broadcast: unkonwn broadcasting error %i, %i\n%!"
-                      s.(k)
-                      sx))
-            (0, [])
-            sx
+                      "_squeeze_broadcast: there ought to have been a broadcasting error \
+                       in the forward pass"))
         in
-        let idxs = Array.of_list idxs in
+        let _, axis = fold (0, []) shp_x in
+        let idxs = Array.of_list axis in
         sum_reduce ~axis:idxs x)
 
 
@@ -526,26 +523,31 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and _sum =
       lazy
-        (fun ~axis ->
+        (fun ?axis ->
           build_siso
             (module struct
               let label = "sum axis"
 
               let ff_f a = error_uniop label (pack_elt a)
 
-              let ff_arr a = Arr A.(sum ~axis a)
+              let ff_arr a = Arr A.(sum ?axis a)
 
-              let df _cp _ap at = sum ~axis at
+              let df _cp _ap at = sum ?axis at
 
               let dr a _cp ca =
-                let s = shape a in
-                let reps = Array.(make (length s) 1) in
-                reps.(axis) <- s.(axis);
-                repeat !ca reps
+                match axis with
+                | Some axis ->
+                  let s = shape a in
+                  let ndim = Array.length s in
+                  let reps = Array.(make ndim 1) in
+                  let axis = Owl_utils.adjust_index axis ndim in
+                  reps.(axis) <- s.(axis);
+                  repeat !ca reps
+                | None      -> !ca
             end : Siso))
 
 
-    and sum ?(axis = -1) = Lazy.force _sum ~axis
+    and sum ?axis = Lazy.force _sum ?axis
 
     and _sum_reduce =
       lazy
