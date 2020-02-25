@@ -1,3 +1,30 @@
+## 0.8.0 (2020-02-25)
+
+*  Fix bug in _squeeze_broadcast (#503)
+*  Added the Dawson function (Ndarray + Matrix + Algodiff op) (#502)
+*  Fix bug in reverse mode gradients of aiso operations and pow (#501)
+*  Added poisson_rvs to Owl_distribution (#499)
+*  Draw poisson RVs in Ndarray and Mat modules (#498)
+*  Broadcast bug for higher order derivatives (#495)
+*  add sem to dense ndarray and matrix (#497)
+*  Avoid input duplication with Graph.model and multi-input nn (#494)
+*  Added Graph.get_subnetwork for constructing subnetworks (#491)
+*  Make Graph.inputs give unique names to inputs (#493)
+*  modify nlp interfaces
+*  Re-add removed DiffSharp acknowledgment (#486)
+*  add pretty printer for hypothesis type
+*  update lambda neuron (#485)
+*  fix example due to #476
+*  Extend base linalg functions to complex numbers (#479)
+*  [breaking] use a separate module for algodiff instead of ndarray directly (#476)
+*  temp workaround and unittest (#478)
+*  [breaking] Interface files for base/dense and base/linalg (#472)
+*  Port code to dune2 (#474)
+*  [breaking]  interface files to simplify .mli files in owl/dense (#471)
+*  Save and load Npy files (#470)
+*  Owl: relax bounds on base and stdio (#469)
+*  Merged tests for different AD operations into one big test + autoformat tests with ocamlformat (#468)
+
 ### 0.7.2 (2019-12-06)
 
 * fourth order finite diff approx to grad
