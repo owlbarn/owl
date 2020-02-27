@@ -1,11 +1,11 @@
 all:
 	# generate cblas bindings
 	ocamlfind ocamlc -linkpkg -package str,unix owl_cblas_parser.ml -o owl_cblas_parser.native
-	./owl_cblas_parser.native ../cblas.h owl_cblas_bindings.ml owl_cblas_generated.ml
+	./owl_cblas_parser.native ../cblas/cblas.h owl_cblas_bindings.ml owl_cblas_generated.ml
 
 	# generate lapacke bindings
 	ocamlfind ocamlc -linkpkg -package str,unix owl_lapacke_parser.ml -o owl_lapacke_parser.native
-	./owl_lapacke_parser.native ../lapacke.h owl_lapacke_bindings.ml owl_lapacke_generated.ml
+	./owl_lapacke_parser.native ../lapacke/lapacke.h owl_lapacke_bindings.ml owl_lapacke_generated.ml
 
 	# compile interface generation application
 	ocamlfind ocamlc -c -linkpkg -package ctypes.stubs owl_cblas_bindings.ml
@@ -17,8 +17,8 @@ all:
 	./owl_cblas_stubgen.native -c > owl_cblas_generated_stub.c
 	./owl_lapacke_stubgen.native -c > owl_lapacke_generated_stub.c
 install:
-	cp owl_cblas_generated* ../
-	cp owl_lapacke_generated* ../
+	cp owl_cblas_generated* ../cblas/
+	cp owl_lapacke_generated* ../lapacke/
 test:
 	ocamlfind ocamlc -c -linkpkg -package ctypes.stubs owl_cblas_generated.ml
 	ocamlfind ocamlc -c -linkpkg -package ctypes.stubs owl_lapacke_generated.ml
