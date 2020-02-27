@@ -72,6 +72,8 @@ module type Common = sig
 
   val concatenate : ?axis:int -> arr array -> arr
 
+  val stack : ?axis:int -> arr array -> arr
+
   val squeeze : ?axis:int array -> arr -> arr
 
   val expand : ?hi:bool -> arr -> int -> arr

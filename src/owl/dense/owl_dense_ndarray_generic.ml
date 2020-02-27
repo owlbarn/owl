@@ -70,6 +70,7 @@ let set_fancy_ ~out axis x y =
   if Owl_ndarray._owl_ndarray_same_data out x = false then copy_ ~out x;
   Owl_slicing.set_fancy_list_typ axis out y
 
+
 let get_fancy_ext axis x = Owl_slicing.get_fancy_ext_idx_typ axis x
 
 let set_fancy_ext axis x y = Owl_slicing.set_fancy_ext_idx_typ axis x y
@@ -83,6 +84,7 @@ let set_slice axis x y = Owl_slicing.set_slice_list_typ axis x y
 let set_slice_ ~out axis x y =
   if Owl_ndarray._owl_ndarray_same_data out x = false then copy_ ~out x;
   Owl_slicing.set_slice_list_typ axis out y
+
 
 let get_slice_ext axis x = Owl_slicing.get_slice_ext_idx_typ axis x
 
@@ -394,6 +396,26 @@ let concat_vertical x1 x2 = concatenate ~axis:0 [| x1; x2 |]
 let concat_horizontal x1 x2 = concatenate ~axis:(num_dims x1 - 1) [| x1; x2 |]
 
 let concat_vh xs = Array.map (concatenate ~axis:1) xs |> concatenate ~axis:0
+
+let stack ?(axis = 0) xs =
+  let shp = shape xs.(0) in
+  let ndim = Array.length shp + 1 in
+  let axis = Owl_utils.adjust_index axis ndim in
+  let new_shp =
+    Array.init ndim (fun i ->
+        if i < axis then shp.(i) else if i = axis then 1 else shp.(i - 1))
+  in
+  let y =
+    Array.map
+      (fun x ->
+        let shp' = shape x in
+        if shp' <> shp
+        then failwith "stack: ndarrays in [xs] must all have the same shape";
+        reshape x new_shp)
+      xs
+  in
+  concatenate ~axis y
+
 
 let squeeze ?(axis = [||]) x =
   let a =
@@ -1067,11 +1089,13 @@ let lgamma x =
   _owl_lgamma (kind x) (numel y) x y;
   y
 
+
 (* Dawson functions *)
 let dawsn x =
   let y = copy x in
   _owl_dawsn (kind x) (numel y) x y;
   y
+
 
 let scalar_pow a x =
   let x = copy x in
@@ -8627,17 +8651,17 @@ let std ?axis x =
   | None   -> std' x |> create _kind [| 1 |]
 
 
-let sem' x = 
+let sem' x =
   let _kind = kind x in
   let sqrt_n = numel x |> float_of_int |> _float_typ_elt _kind |> _sqrt_elt _kind in
   let y = std' x in
   _div_elt _kind y sqrt_n
 
 
-let sem ?axis x = 
+let sem ?axis x =
   let _kind = kind x in
   match axis with
-  | None -> sem' x |> create _kind [| 1 |]
+  | None   -> sem' x |> create _kind [| 1 |]
   | Some a ->
     let y = std ?axis x in
     let n = (shape x).(a) |> float_of_int |> _float_typ_elt _kind |> _sqrt_elt _kind in
