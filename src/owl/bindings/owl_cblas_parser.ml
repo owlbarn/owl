@@ -227,6 +227,12 @@ let convert_argrec_to_caml fun_caml args =
     Array.fold_left
       (fun a arg ->
         let s = String.trim arg.name |> String.lowercase_ascii in
+        let t = String.trim arg.typ in
+        let s =
+          if t.[String.length t - 1] = '*'
+          then Printf.sprintf "%s:(CI.CPointer %s)" s s
+          else s
+        in
         Printf.sprintf "%s ~%s" a s)
       ""
       args
@@ -235,10 +241,6 @@ let convert_argrec_to_caml fun_caml args =
     Array.fold_left
       (fun a arg ->
         let s = String.trim arg.name |> String.lowercase_ascii in
-        let t = String.trim arg.typ in
-        let s =
-          if t.[String.length t - 1] = '*' then Printf.sprintf "(CI.cptr %s)" s else s
-        in
         Printf.sprintf "%s %s" a s)
       ""
       args
@@ -294,7 +296,6 @@ let convert_cblas_header_to_extern fname funs =
     h_ml
     "(** auto-generated cblas interface file, timestamp:%.0f *)\n\n"
     (Unix.gettimeofday ());
-  Printf.fprintf h_ml "open Ctypes\n\n";
   Printf.fprintf h_ml "module CI = Cstubs_internals\n\n";
   Array.iter
     (fun (fun_caml, fun_stub_s, args, fun_rval) -> Printf.fprintf h_ml "%s\n" fun_stub_s)
