@@ -366,7 +366,12 @@ module To_test = struct
           if i < axis then shp.(i) else if i = axis then k else shp.(i - 1))
     in
     let result_shp = M.shape y in
-    result_shp = expected_shp
+    let y0 =
+      let idx = List.init ndim (fun i -> if i = axis then [ 0 ] else []) in
+      M.get_slice idx y
+      |> M.squeeze ~axis:[|axis|]
+    in
+    result_shp = expected_shp && y0 = x.(0)
 
 
   let stack_1 () = test_stack ~k:10 ~axis:0 [| 2; 3 |]
