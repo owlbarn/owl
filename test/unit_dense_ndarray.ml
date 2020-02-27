@@ -356,6 +356,29 @@ module To_test = struct
     M.equal a z
 
 
+  let test_stack ~k ~axis shp =
+    let ndim = Array.length shp + 1 in
+    let axis = Owl_utils.adjust_index axis ndim in
+    let x = Array.init k (fun _ -> M.sequential Float64 shp) in
+    let y = M.stack ~axis x in
+    let expected_shp =
+      Array.init ndim (fun i ->
+          if i < axis then shp.(i) else if i = axis then k else shp.(i - 1))
+    in
+    let result_shp = M.shape y in
+    result_shp = expected_shp
+
+
+  let stack_1 () = test_stack ~k:10 ~axis:0 [| 2; 3 |]
+
+  let stack_2 () = test_stack ~k:10 ~axis:1 [| 2; 3 |]
+
+  let stack_3 () = test_stack ~k:10 ~axis:2 [| 2; 3 |]
+
+  let stack_4 () = test_stack ~k:10 ~axis:(-1) [| 2; 3 |]
+
+  let stack_5 () = test_stack ~k:10 ~axis:(-2) [| 2; 3 |]
+
   let diff_1 () =
     let x = M.sequential Float64 [| 3; 3 |] in
     let y = M.create Float64 [| 2; 3 |] 3. in
@@ -603,6 +626,16 @@ let concatenate_02 () =
   Alcotest.(check bool) "concatenate_02" true (To_test.concatenate_02 ())
 
 
+let stack_1 () = Alcotest.(check bool) "stack_1" true (To_test.stack_1 ())
+
+let stack_2 () = Alcotest.(check bool) "stack_2" true (To_test.stack_2 ())
+
+let stack_3 () = Alcotest.(check bool) "stack_3" true (To_test.stack_3 ())
+
+let stack_4 () = Alcotest.(check bool) "stack_4" true (To_test.stack_4 ())
+
+let stack_5 () = Alcotest.(check bool) "stack_5" true (To_test.stack_5 ())
+
 let diff_1 () = Alcotest.(check bool) "diff_1" true (To_test.diff_1 ())
 
 let diff_2 () = Alcotest.(check bool) "diff_2" true (To_test.diff_2 ())
@@ -658,8 +691,9 @@ let test_set =
   ; "vecnorm_09", `Slow, vecnorm_09; "vecnorm_10", `Slow, vecnorm_10
   ; "expand_01", `Slow, expand_01; "expand_02", `Slow, expand_02
   ; "concatenate_01", `Slow, concatenate_01; "concatenate_02", `Slow, concatenate_02
-  ; "diff_1", `Slow, diff_1; "diff_2", `Slow, diff_2; "one_hot_1", `Slow, one_hot_1
-  ; "one_hot_2", `Slow, one_hot_2; "sort", `Slow, sort; "argsort_1", `Slow, argsort_1
-  ; "argsort_2", `Slow, argsort_2; "top_1", `Slow, top_1; "top_2", `Slow, top_2
-  ; "top_3", `Slow, top_3; "bottom_1", `Slow, bottom_1; "bottom_2", `Slow, bottom_2
-  ; "pad", `Slow, pad ]
+  ; "stack_1", `Slow, stack_1; "stack_2", `Slow, stack_2; "stack_3", `Slow, stack_3
+  ; "stack_4", `Slow, stack_4; "stack_5", `Slow, stack_5; "diff_1", `Slow, diff_1
+  ; "diff_2", `Slow, diff_2; "one_hot_1", `Slow, one_hot_1; "one_hot_2", `Slow, one_hot_2
+  ; "sort", `Slow, sort; "argsort_1", `Slow, argsort_1; "argsort_2", `Slow, argsort_2
+  ; "top_1", `Slow, top_1; "top_2", `Slow, top_2; "top_3", `Slow, top_3
+  ; "bottom_1", `Slow, bottom_1; "bottom_2", `Slow, bottom_2; "pad", `Slow, pad ]
