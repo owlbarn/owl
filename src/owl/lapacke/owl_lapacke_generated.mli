@@ -5,7 +5,7 @@
 
 (** LAPACKE interface: low-level interface to the LAPACKE functions *)
 
-(** auto-generated lapacke interface file, timestamp:1498396312 *)
+(** auto-generated lapacke interface file, timestamp:1582875920 *)
 
 open Ctypes
 
@@ -23,7 +23,6 @@ val sbdsdc
   -> q:float ptr
   -> iq:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dbdsdc
   :  layout:int
@@ -39,7 +38,6 @@ val dbdsdc
   -> q:float ptr
   -> iq:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sbdsqr
   :  layout:int
@@ -57,7 +55,6 @@ val sbdsqr
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dbdsqr
   :  layout:int
@@ -75,7 +72,6 @@ val dbdsqr
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cbdsqr
   :  layout:int
@@ -93,7 +89,6 @@ val cbdsqr
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zbdsqr
   :  layout:int
@@ -111,7 +106,6 @@ val zbdsqr
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sbdsvdx
   :  layout:int
@@ -131,7 +125,6 @@ val sbdsvdx
   -> ldz:int
   -> superb:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dbdsvdx
   :  layout:int
@@ -151,13 +144,10 @@ val dbdsvdx
   -> ldz:int
   -> superb:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sdisna : job:char -> m:int -> n:int -> d:float ptr -> sep:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ddisna : job:char -> m:int -> n:int -> d:float ptr -> sep:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgbbrd
   :  layout:int
@@ -178,7 +168,6 @@ val sgbbrd
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgbbrd
   :  layout:int
@@ -199,7 +188,6 @@ val dgbbrd
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgbbrd
   :  layout:int
@@ -220,7 +208,6 @@ val cgbbrd
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgbbrd
   :  layout:int
@@ -241,7 +228,6 @@ val zgbbrd
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgbcon
   :  layout:int
@@ -255,7 +241,6 @@ val sgbcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgbcon
   :  layout:int
@@ -269,7 +254,6 @@ val dgbcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgbcon
   :  layout:int
@@ -283,7 +267,6 @@ val cgbcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgbcon
   :  layout:int
@@ -297,7 +280,6 @@ val zgbcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgbequ
   :  layout:int
@@ -313,7 +295,6 @@ val sgbequ
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgbequ
   :  layout:int
@@ -329,7 +310,6 @@ val dgbequ
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgbequ
   :  layout:int
@@ -345,7 +325,6 @@ val cgbequ
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgbequ
   :  layout:int
@@ -361,7 +340,6 @@ val zgbequ
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgbequb
   :  layout:int
@@ -377,7 +355,6 @@ val sgbequb
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgbequb
   :  layout:int
@@ -393,7 +370,6 @@ val dgbequb
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgbequb
   :  layout:int
@@ -409,7 +385,6 @@ val cgbequb
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgbequb
   :  layout:int
@@ -425,7 +400,6 @@ val zgbequb
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgbrfs
   :  layout:int
@@ -446,7 +420,6 @@ val sgbrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgbrfs
   :  layout:int
@@ -467,7 +440,6 @@ val dgbrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgbrfs
   :  layout:int
@@ -488,7 +460,6 @@ val cgbrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgbrfs
   :  layout:int
@@ -509,7 +480,6 @@ val zgbrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgbsv
   :  layout:int
@@ -523,7 +493,6 @@ val sgbsv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgbsv
   :  layout:int
@@ -537,7 +506,6 @@ val dgbsv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgbsv
   :  layout:int
@@ -551,7 +519,6 @@ val cgbsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgbsv
   :  layout:int
@@ -565,7 +532,6 @@ val zgbsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgbsvx
   :  layout:int
@@ -592,7 +558,6 @@ val sgbsvx
   -> berr:float ptr
   -> rpivot:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgbsvx
   :  layout:int
@@ -619,7 +584,6 @@ val dgbsvx
   -> berr:float ptr
   -> rpivot:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgbsvx
   :  layout:int
@@ -646,7 +610,6 @@ val cgbsvx
   -> berr:float ptr
   -> rpivot:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgbsvx
   :  layout:int
@@ -673,7 +636,6 @@ val zgbsvx
   -> berr:float ptr
   -> rpivot:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgbtrf
   :  layout:int
@@ -685,7 +647,6 @@ val sgbtrf
   -> ldab:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgbtrf
   :  layout:int
@@ -697,7 +658,6 @@ val dgbtrf
   -> ldab:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgbtrf
   :  layout:int
@@ -709,7 +669,6 @@ val cgbtrf
   -> ldab:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgbtrf
   :  layout:int
@@ -721,7 +680,6 @@ val zgbtrf
   -> ldab:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgbtrs
   :  layout:int
@@ -736,7 +694,6 @@ val sgbtrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgbtrs
   :  layout:int
@@ -751,7 +708,6 @@ val dgbtrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgbtrs
   :  layout:int
@@ -766,7 +722,6 @@ val cgbtrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgbtrs
   :  layout:int
@@ -781,7 +736,6 @@ val zgbtrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgebak
   :  layout:int
@@ -795,7 +749,6 @@ val sgebak
   -> v:float ptr
   -> ldv:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgebak
   :  layout:int
@@ -809,7 +762,6 @@ val dgebak
   -> v:float ptr
   -> ldv:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgebak
   :  layout:int
@@ -823,7 +775,6 @@ val cgebak
   -> v:Complex.t ptr
   -> ldv:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgebak
   :  layout:int
@@ -837,7 +788,6 @@ val zgebak
   -> v:Complex.t ptr
   -> ldv:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgebal
   :  layout:int
@@ -849,7 +799,6 @@ val sgebal
   -> ihi:int32 ptr
   -> scale:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgebal
   :  layout:int
@@ -861,7 +810,6 @@ val dgebal
   -> ihi:int32 ptr
   -> scale:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgebal
   :  layout:int
@@ -873,7 +821,6 @@ val cgebal
   -> ihi:int32 ptr
   -> scale:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgebal
   :  layout:int
@@ -885,7 +832,6 @@ val zgebal
   -> ihi:int32 ptr
   -> scale:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgebrd
   :  layout:int
@@ -898,7 +844,6 @@ val sgebrd
   -> tauq:float ptr
   -> taup:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgebrd
   :  layout:int
@@ -911,7 +856,6 @@ val dgebrd
   -> tauq:float ptr
   -> taup:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgebrd
   :  layout:int
@@ -924,7 +868,6 @@ val cgebrd
   -> tauq:Complex.t ptr
   -> taup:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgebrd
   :  layout:int
@@ -937,7 +880,6 @@ val zgebrd
   -> tauq:Complex.t ptr
   -> taup:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgecon
   :  layout:int
@@ -948,7 +890,6 @@ val sgecon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgecon
   :  layout:int
@@ -959,7 +900,6 @@ val dgecon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgecon
   :  layout:int
@@ -970,7 +910,6 @@ val cgecon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgecon
   :  layout:int
@@ -981,7 +920,6 @@ val zgecon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeequ
   :  layout:int
@@ -995,7 +933,6 @@ val sgeequ
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeequ
   :  layout:int
@@ -1009,7 +946,6 @@ val dgeequ
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeequ
   :  layout:int
@@ -1023,7 +959,6 @@ val cgeequ
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeequ
   :  layout:int
@@ -1037,7 +972,6 @@ val zgeequ
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeequb
   :  layout:int
@@ -1051,7 +985,6 @@ val sgeequb
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeequb
   :  layout:int
@@ -1065,7 +998,6 @@ val dgeequb
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeequb
   :  layout:int
@@ -1079,7 +1011,6 @@ val cgeequb
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeequb
   :  layout:int
@@ -1093,7 +1024,6 @@ val zgeequb
   -> colcnd:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgees
   :  layout:int
@@ -1109,7 +1039,6 @@ val sgees
   -> vs:float ptr
   -> ldvs:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgees
   :  layout:int
@@ -1125,7 +1054,6 @@ val dgees
   -> vs:float ptr
   -> ldvs:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgees
   :  layout:int
@@ -1140,7 +1068,6 @@ val cgees
   -> vs:Complex.t ptr
   -> ldvs:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgees
   :  layout:int
@@ -1155,7 +1082,6 @@ val zgees
   -> vs:Complex.t ptr
   -> ldvs:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeesx
   :  layout:int
@@ -1174,7 +1100,6 @@ val sgeesx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeesx
   :  layout:int
@@ -1193,7 +1118,6 @@ val dgeesx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeesx
   :  layout:int
@@ -1211,7 +1135,6 @@ val cgeesx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeesx
   :  layout:int
@@ -1229,7 +1152,6 @@ val zgeesx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeev
   :  layout:int
@@ -1245,7 +1167,6 @@ val sgeev
   -> vr:float ptr
   -> ldvr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeev
   :  layout:int
@@ -1261,7 +1182,6 @@ val dgeev
   -> vr:float ptr
   -> ldvr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeev
   :  layout:int
@@ -1276,7 +1196,6 @@ val cgeev
   -> vr:Complex.t ptr
   -> ldvr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeev
   :  layout:int
@@ -1291,7 +1210,6 @@ val zgeev
   -> vr:Complex.t ptr
   -> ldvr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeevx
   :  layout:int
@@ -1315,7 +1233,6 @@ val sgeevx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeevx
   :  layout:int
@@ -1339,7 +1256,6 @@ val dgeevx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeevx
   :  layout:int
@@ -1362,7 +1278,6 @@ val cgeevx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeevx
   :  layout:int
@@ -1385,7 +1300,6 @@ val zgeevx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgehrd
   :  layout:int
@@ -1396,7 +1310,6 @@ val sgehrd
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgehrd
   :  layout:int
@@ -1407,7 +1320,6 @@ val dgehrd
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgehrd
   :  layout:int
@@ -1418,7 +1330,6 @@ val cgehrd
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgehrd
   :  layout:int
@@ -1429,7 +1340,6 @@ val zgehrd
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgejsv
   :  layout:int
@@ -1451,7 +1361,6 @@ val sgejsv
   -> stat:float ptr
   -> istat:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgejsv
   :  layout:int
@@ -1473,7 +1382,6 @@ val dgejsv
   -> stat:float ptr
   -> istat:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgejsv
   :  layout:int
@@ -1495,7 +1403,6 @@ val cgejsv
   -> stat:float ptr
   -> istat:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgejsv
   :  layout:int
@@ -1517,7 +1424,6 @@ val zgejsv
   -> stat:float ptr
   -> istat:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgelq2
   :  layout:int
@@ -1527,7 +1433,6 @@ val sgelq2
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgelq2
   :  layout:int
@@ -1537,7 +1442,6 @@ val dgelq2
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgelq2
   :  layout:int
@@ -1547,7 +1451,6 @@ val cgelq2
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgelq2
   :  layout:int
@@ -1557,7 +1460,6 @@ val zgelq2
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgelqf
   :  layout:int
@@ -1567,7 +1469,6 @@ val sgelqf
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgelqf
   :  layout:int
@@ -1577,7 +1478,6 @@ val dgelqf
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgelqf
   :  layout:int
@@ -1587,7 +1487,6 @@ val cgelqf
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgelqf
   :  layout:int
@@ -1597,7 +1496,6 @@ val zgelqf
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgels
   :  layout:int
@@ -1610,7 +1508,6 @@ val sgels
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgels
   :  layout:int
@@ -1623,7 +1520,6 @@ val dgels
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgels
   :  layout:int
@@ -1636,7 +1532,6 @@ val cgels
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgels
   :  layout:int
@@ -1649,7 +1544,6 @@ val zgels
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgelsd
   :  layout:int
@@ -1664,7 +1558,6 @@ val sgelsd
   -> rcond:float
   -> rank:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgelsd
   :  layout:int
@@ -1679,7 +1572,6 @@ val dgelsd
   -> rcond:float
   -> rank:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgelsd
   :  layout:int
@@ -1694,7 +1586,6 @@ val cgelsd
   -> rcond:float
   -> rank:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgelsd
   :  layout:int
@@ -1709,7 +1600,6 @@ val zgelsd
   -> rcond:float
   -> rank:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgelss
   :  layout:int
@@ -1724,7 +1614,6 @@ val sgelss
   -> rcond:float
   -> rank:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgelss
   :  layout:int
@@ -1739,7 +1628,6 @@ val dgelss
   -> rcond:float
   -> rank:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgelss
   :  layout:int
@@ -1754,7 +1642,6 @@ val cgelss
   -> rcond:float
   -> rank:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgelss
   :  layout:int
@@ -1769,7 +1656,6 @@ val zgelss
   -> rcond:float
   -> rank:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgelsy
   :  layout:int
@@ -1784,7 +1670,6 @@ val sgelsy
   -> rcond:float
   -> rank:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgelsy
   :  layout:int
@@ -1799,7 +1684,6 @@ val dgelsy
   -> rcond:float
   -> rank:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgelsy
   :  layout:int
@@ -1814,7 +1698,6 @@ val cgelsy
   -> rcond:float
   -> rank:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgelsy
   :  layout:int
@@ -1829,7 +1712,6 @@ val zgelsy
   -> rcond:float
   -> rank:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeqlf
   :  layout:int
@@ -1839,7 +1721,6 @@ val sgeqlf
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeqlf
   :  layout:int
@@ -1849,7 +1730,6 @@ val dgeqlf
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeqlf
   :  layout:int
@@ -1859,7 +1739,6 @@ val cgeqlf
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeqlf
   :  layout:int
@@ -1869,7 +1748,6 @@ val zgeqlf
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeqp3
   :  layout:int
@@ -1880,7 +1758,6 @@ val sgeqp3
   -> jpvt:int32 ptr
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeqp3
   :  layout:int
@@ -1891,7 +1768,6 @@ val dgeqp3
   -> jpvt:int32 ptr
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeqp3
   :  layout:int
@@ -1902,7 +1778,6 @@ val cgeqp3
   -> jpvt:int32 ptr
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeqp3
   :  layout:int
@@ -1913,7 +1788,6 @@ val zgeqp3
   -> jpvt:int32 ptr
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeqr2
   :  layout:int
@@ -1923,7 +1797,6 @@ val sgeqr2
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeqr2
   :  layout:int
@@ -1933,7 +1806,6 @@ val dgeqr2
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeqr2
   :  layout:int
@@ -1943,7 +1815,6 @@ val cgeqr2
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeqr2
   :  layout:int
@@ -1953,7 +1824,6 @@ val zgeqr2
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeqrf
   :  layout:int
@@ -1963,7 +1833,6 @@ val sgeqrf
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeqrf
   :  layout:int
@@ -1973,7 +1842,6 @@ val dgeqrf
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeqrf
   :  layout:int
@@ -1983,7 +1851,6 @@ val cgeqrf
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeqrf
   :  layout:int
@@ -1993,7 +1860,6 @@ val zgeqrf
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeqrfp
   :  layout:int
@@ -2003,7 +1869,6 @@ val sgeqrfp
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeqrfp
   :  layout:int
@@ -2013,7 +1878,6 @@ val dgeqrfp
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeqrfp
   :  layout:int
@@ -2023,7 +1887,6 @@ val cgeqrfp
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeqrfp
   :  layout:int
@@ -2033,7 +1896,6 @@ val zgeqrfp
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgerfs
   :  layout:int
@@ -2052,7 +1914,6 @@ val sgerfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgerfs
   :  layout:int
@@ -2071,7 +1932,6 @@ val dgerfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgerfs
   :  layout:int
@@ -2090,7 +1950,6 @@ val cgerfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgerfs
   :  layout:int
@@ -2109,7 +1968,6 @@ val zgerfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgerqf
   :  layout:int
@@ -2119,7 +1977,6 @@ val sgerqf
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgerqf
   :  layout:int
@@ -2129,7 +1986,6 @@ val dgerqf
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgerqf
   :  layout:int
@@ -2139,7 +1995,6 @@ val cgerqf
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgerqf
   :  layout:int
@@ -2149,7 +2004,6 @@ val zgerqf
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgesdd
   :  layout:int
@@ -2164,7 +2018,6 @@ val sgesdd
   -> vt:float ptr
   -> ldvt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgesdd
   :  layout:int
@@ -2179,7 +2032,6 @@ val dgesdd
   -> vt:float ptr
   -> ldvt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgesdd
   :  layout:int
@@ -2194,7 +2046,6 @@ val cgesdd
   -> vt:Complex.t ptr
   -> ldvt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgesdd
   :  layout:int
@@ -2209,7 +2060,6 @@ val zgesdd
   -> vt:Complex.t ptr
   -> ldvt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgesv
   :  layout:int
@@ -2221,7 +2071,6 @@ val sgesv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgesv
   :  layout:int
@@ -2233,7 +2082,6 @@ val dgesv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgesv
   :  layout:int
@@ -2245,7 +2093,6 @@ val cgesv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgesv
   :  layout:int
@@ -2257,7 +2104,6 @@ val zgesv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsgesv
   :  layout:int
@@ -2272,7 +2118,6 @@ val dsgesv
   -> ldx:int
   -> iter:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zcgesv
   :  layout:int
@@ -2287,7 +2132,6 @@ val zcgesv
   -> ldx:int
   -> iter:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgesvd
   :  layout:int
@@ -2304,7 +2148,6 @@ val sgesvd
   -> ldvt:int
   -> superb:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgesvd
   :  layout:int
@@ -2321,7 +2164,6 @@ val dgesvd
   -> ldvt:int
   -> superb:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgesvd
   :  layout:int
@@ -2338,7 +2180,6 @@ val cgesvd
   -> ldvt:int
   -> superb:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgesvd
   :  layout:int
@@ -2355,7 +2196,6 @@ val zgesvd
   -> ldvt:int
   -> superb:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgesvdx
   :  layout:int
@@ -2378,7 +2218,6 @@ val sgesvdx
   -> ldvt:int
   -> superb:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgesvdx
   :  layout:int
@@ -2401,7 +2240,6 @@ val dgesvdx
   -> ldvt:int
   -> superb:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgesvdx
   :  layout:int
@@ -2424,7 +2262,6 @@ val cgesvdx
   -> ldvt:int
   -> superb:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgesvdx
   :  layout:int
@@ -2447,7 +2284,6 @@ val zgesvdx
   -> ldvt:int
   -> superb:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgesvj
   :  layout:int
@@ -2464,7 +2300,6 @@ val sgesvj
   -> ldv:int
   -> stat:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgesvj
   :  layout:int
@@ -2481,7 +2316,6 @@ val dgesvj
   -> ldv:int
   -> stat:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgesvj
   :  layout:int
@@ -2498,7 +2332,6 @@ val cgesvj
   -> ldv:int
   -> stat:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgesvj
   :  layout:int
@@ -2515,7 +2348,6 @@ val zgesvj
   -> ldv:int
   -> stat:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgesvx
   :  layout:int
@@ -2540,7 +2372,6 @@ val sgesvx
   -> berr:float ptr
   -> rpivot:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgesvx
   :  layout:int
@@ -2565,7 +2396,6 @@ val dgesvx
   -> berr:float ptr
   -> rpivot:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgesvx
   :  layout:int
@@ -2590,7 +2420,6 @@ val cgesvx
   -> berr:float ptr
   -> rpivot:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgesvx
   :  layout:int
@@ -2615,7 +2444,6 @@ val zgesvx
   -> berr:float ptr
   -> rpivot:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgetf2
   :  layout:int
@@ -2625,7 +2453,6 @@ val sgetf2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgetf2
   :  layout:int
@@ -2635,7 +2462,6 @@ val dgetf2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgetf2
   :  layout:int
@@ -2645,7 +2471,6 @@ val cgetf2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgetf2
   :  layout:int
@@ -2655,7 +2480,6 @@ val zgetf2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgetrf
   :  layout:int
@@ -2665,7 +2489,6 @@ val sgetrf
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgetrf
   :  layout:int
@@ -2675,7 +2498,6 @@ val dgetrf
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgetrf
   :  layout:int
@@ -2685,7 +2507,6 @@ val cgetrf
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgetrf
   :  layout:int
@@ -2695,7 +2516,6 @@ val zgetrf
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgetrf2
   :  layout:int
@@ -2705,7 +2525,6 @@ val sgetrf2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgetrf2
   :  layout:int
@@ -2715,7 +2534,6 @@ val dgetrf2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgetrf2
   :  layout:int
@@ -2725,7 +2543,6 @@ val cgetrf2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgetrf2
   :  layout:int
@@ -2735,19 +2552,14 @@ val zgetrf2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgetri : layout:int -> n:int -> a:float ptr -> lda:int -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgetri : layout:int -> n:int -> a:float ptr -> lda:int -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgetri : layout:int -> n:int -> a:Complex.t ptr -> lda:int -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgetri : layout:int -> n:int -> a:Complex.t ptr -> lda:int -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgetrs
   :  layout:int
@@ -2760,7 +2572,6 @@ val sgetrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgetrs
   :  layout:int
@@ -2773,7 +2584,6 @@ val dgetrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgetrs
   :  layout:int
@@ -2786,7 +2596,6 @@ val cgetrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgetrs
   :  layout:int
@@ -2799,7 +2608,6 @@ val zgetrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sggbak
   :  layout:int
@@ -2814,7 +2622,6 @@ val sggbak
   -> v:float ptr
   -> ldv:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dggbak
   :  layout:int
@@ -2829,7 +2636,6 @@ val dggbak
   -> v:float ptr
   -> ldv:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cggbak
   :  layout:int
@@ -2844,7 +2650,6 @@ val cggbak
   -> v:Complex.t ptr
   -> ldv:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zggbak
   :  layout:int
@@ -2859,7 +2664,6 @@ val zggbak
   -> v:Complex.t ptr
   -> ldv:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sggbal
   :  layout:int
@@ -2874,7 +2678,6 @@ val sggbal
   -> lscale:float ptr
   -> rscale:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dggbal
   :  layout:int
@@ -2889,7 +2692,6 @@ val dggbal
   -> lscale:float ptr
   -> rscale:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cggbal
   :  layout:int
@@ -2904,7 +2706,6 @@ val cggbal
   -> lscale:float ptr
   -> rscale:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zggbal
   :  layout:int
@@ -2919,7 +2720,6 @@ val zggbal
   -> lscale:float ptr
   -> rscale:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgges
   :  layout:int
@@ -2941,7 +2741,6 @@ val sgges
   -> vsr:float ptr
   -> ldvsr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgges
   :  layout:int
@@ -2963,7 +2762,6 @@ val dgges
   -> vsr:float ptr
   -> ldvsr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgges
   :  layout:int
@@ -2984,7 +2782,6 @@ val cgges
   -> vsr:Complex.t ptr
   -> ldvsr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgges
   :  layout:int
@@ -3005,7 +2802,6 @@ val zgges
   -> vsr:Complex.t ptr
   -> ldvsr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgges3
   :  layout:int
@@ -3027,7 +2823,6 @@ val sgges3
   -> vsr:float ptr
   -> ldvsr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgges3
   :  layout:int
@@ -3049,7 +2844,6 @@ val dgges3
   -> vsr:float ptr
   -> ldvsr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgges3
   :  layout:int
@@ -3070,7 +2864,6 @@ val cgges3
   -> vsr:Complex.t ptr
   -> ldvsr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgges3
   :  layout:int
@@ -3091,7 +2884,6 @@ val zgges3
   -> vsr:Complex.t ptr
   -> ldvsr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sggesx
   :  layout:int
@@ -3116,7 +2908,6 @@ val sggesx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dggesx
   :  layout:int
@@ -3141,7 +2932,6 @@ val dggesx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cggesx
   :  layout:int
@@ -3165,7 +2955,6 @@ val cggesx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zggesx
   :  layout:int
@@ -3189,7 +2978,6 @@ val zggesx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sggev
   :  layout:int
@@ -3208,7 +2996,6 @@ val sggev
   -> vr:float ptr
   -> ldvr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dggev
   :  layout:int
@@ -3227,7 +3014,6 @@ val dggev
   -> vr:float ptr
   -> ldvr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cggev
   :  layout:int
@@ -3245,7 +3031,6 @@ val cggev
   -> vr:Complex.t ptr
   -> ldvr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zggev
   :  layout:int
@@ -3263,7 +3048,6 @@ val zggev
   -> vr:Complex.t ptr
   -> ldvr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sggev3
   :  layout:int
@@ -3282,7 +3066,6 @@ val sggev3
   -> vr:float ptr
   -> ldvr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dggev3
   :  layout:int
@@ -3301,7 +3084,6 @@ val dggev3
   -> vr:float ptr
   -> ldvr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cggev3
   :  layout:int
@@ -3319,7 +3101,6 @@ val cggev3
   -> vr:Complex.t ptr
   -> ldvr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zggev3
   :  layout:int
@@ -3337,7 +3118,6 @@ val zggev3
   -> vr:Complex.t ptr
   -> ldvr:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sggevx
   :  layout:int
@@ -3366,7 +3146,6 @@ val sggevx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dggevx
   :  layout:int
@@ -3395,7 +3174,6 @@ val dggevx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cggevx
   :  layout:int
@@ -3423,7 +3201,6 @@ val cggevx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zggevx
   :  layout:int
@@ -3451,7 +3228,6 @@ val zggevx
   -> rconde:float ptr
   -> rcondv:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sggglm
   :  layout:int
@@ -3466,7 +3242,6 @@ val sggglm
   -> x:float ptr
   -> y:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dggglm
   :  layout:int
@@ -3481,7 +3256,6 @@ val dggglm
   -> x:float ptr
   -> y:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cggglm
   :  layout:int
@@ -3496,7 +3270,6 @@ val cggglm
   -> x:Complex.t ptr
   -> y:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zggglm
   :  layout:int
@@ -3511,7 +3284,6 @@ val zggglm
   -> x:Complex.t ptr
   -> y:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgghrd
   :  layout:int
@@ -3529,7 +3301,6 @@ val sgghrd
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgghrd
   :  layout:int
@@ -3547,7 +3318,6 @@ val dgghrd
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgghrd
   :  layout:int
@@ -3565,7 +3335,6 @@ val cgghrd
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgghrd
   :  layout:int
@@ -3583,7 +3352,6 @@ val zgghrd
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgghd3
   :  layout:int
@@ -3601,7 +3369,6 @@ val sgghd3
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgghd3
   :  layout:int
@@ -3619,7 +3386,6 @@ val dgghd3
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgghd3
   :  layout:int
@@ -3637,7 +3403,6 @@ val cgghd3
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgghd3
   :  layout:int
@@ -3655,7 +3420,6 @@ val zgghd3
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgglse
   :  layout:int
@@ -3670,7 +3434,6 @@ val sgglse
   -> d:float ptr
   -> x:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgglse
   :  layout:int
@@ -3685,7 +3448,6 @@ val dgglse
   -> d:float ptr
   -> x:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgglse
   :  layout:int
@@ -3700,7 +3462,6 @@ val cgglse
   -> d:Complex.t ptr
   -> x:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgglse
   :  layout:int
@@ -3715,7 +3476,6 @@ val zgglse
   -> d:Complex.t ptr
   -> x:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sggqrf
   :  layout:int
@@ -3729,7 +3489,6 @@ val sggqrf
   -> ldb:int
   -> taub:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dggqrf
   :  layout:int
@@ -3743,7 +3502,6 @@ val dggqrf
   -> ldb:int
   -> taub:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cggqrf
   :  layout:int
@@ -3757,7 +3515,6 @@ val cggqrf
   -> ldb:int
   -> taub:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zggqrf
   :  layout:int
@@ -3771,7 +3528,6 @@ val zggqrf
   -> ldb:int
   -> taub:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sggrqf
   :  layout:int
@@ -3785,7 +3541,6 @@ val sggrqf
   -> ldb:int
   -> taub:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dggrqf
   :  layout:int
@@ -3799,7 +3554,6 @@ val dggrqf
   -> ldb:int
   -> taub:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cggrqf
   :  layout:int
@@ -3813,7 +3567,6 @@ val cggrqf
   -> ldb:int
   -> taub:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zggrqf
   :  layout:int
@@ -3827,7 +3580,6 @@ val zggrqf
   -> ldb:int
   -> taub:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sggsvd3
   :  layout:int
@@ -3853,7 +3605,6 @@ val sggsvd3
   -> ldq:int
   -> iwork:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dggsvd3
   :  layout:int
@@ -3879,7 +3630,6 @@ val dggsvd3
   -> ldq:int
   -> iwork:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cggsvd3
   :  layout:int
@@ -3905,7 +3655,6 @@ val cggsvd3
   -> ldq:int
   -> iwork:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zggsvd3
   :  layout:int
@@ -3931,7 +3680,6 @@ val zggsvd3
   -> ldq:int
   -> iwork:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sggsvp3
   :  layout:int
@@ -3956,7 +3704,6 @@ val sggsvp3
   -> q:float ptr
   -> ldq:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dggsvp3
   :  layout:int
@@ -3981,7 +3728,6 @@ val dggsvp3
   -> q:float ptr
   -> ldq:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cggsvp3
   :  layout:int
@@ -4006,7 +3752,6 @@ val cggsvp3
   -> q:Complex.t ptr
   -> ldq:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zggsvp3
   :  layout:int
@@ -4031,7 +3776,6 @@ val zggsvp3
   -> q:Complex.t ptr
   -> ldq:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgtcon
   :  norm:char
@@ -4044,7 +3788,6 @@ val sgtcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgtcon
   :  norm:char
@@ -4057,7 +3800,6 @@ val dgtcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgtcon
   :  norm:char
@@ -4070,7 +3812,6 @@ val cgtcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgtcon
   :  norm:char
@@ -4083,7 +3824,6 @@ val zgtcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgtrfs
   :  layout:int
@@ -4105,7 +3845,6 @@ val sgtrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgtrfs
   :  layout:int
@@ -4127,7 +3866,6 @@ val dgtrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgtrfs
   :  layout:int
@@ -4149,7 +3887,6 @@ val cgtrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgtrfs
   :  layout:int
@@ -4171,7 +3908,6 @@ val zgtrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgtsv
   :  layout:int
@@ -4183,7 +3919,6 @@ val sgtsv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgtsv
   :  layout:int
@@ -4195,7 +3930,6 @@ val dgtsv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgtsv
   :  layout:int
@@ -4207,7 +3941,6 @@ val cgtsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgtsv
   :  layout:int
@@ -4219,7 +3952,6 @@ val zgtsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgtsvx
   :  layout:int
@@ -4243,7 +3975,6 @@ val sgtsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgtsvx
   :  layout:int
@@ -4267,7 +3998,6 @@ val dgtsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgtsvx
   :  layout:int
@@ -4291,7 +4021,6 @@ val cgtsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgtsvx
   :  layout:int
@@ -4315,7 +4044,6 @@ val zgtsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgttrf
   :  n:int
@@ -4325,7 +4053,6 @@ val sgttrf
   -> du2:float ptr
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgttrf
   :  n:int
@@ -4335,7 +4062,6 @@ val dgttrf
   -> du2:float ptr
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgttrf
   :  n:int
@@ -4345,7 +4071,6 @@ val cgttrf
   -> du2:Complex.t ptr
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgttrf
   :  n:int
@@ -4355,7 +4080,6 @@ val zgttrf
   -> du2:Complex.t ptr
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgttrs
   :  layout:int
@@ -4370,7 +4094,6 @@ val sgttrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgttrs
   :  layout:int
@@ -4385,7 +4108,6 @@ val dgttrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgttrs
   :  layout:int
@@ -4400,7 +4122,6 @@ val cgttrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgttrs
   :  layout:int
@@ -4415,7 +4136,6 @@ val zgttrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chbev
   :  layout:int
@@ -4429,7 +4149,6 @@ val chbev
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhbev
   :  layout:int
@@ -4443,7 +4162,6 @@ val zhbev
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chbevd
   :  layout:int
@@ -4457,7 +4175,6 @@ val chbevd
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhbevd
   :  layout:int
@@ -4471,7 +4188,6 @@ val zhbevd
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chbevx
   :  layout:int
@@ -4495,7 +4211,6 @@ val chbevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhbevx
   :  layout:int
@@ -4519,7 +4234,6 @@ val zhbevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chbgst
   :  layout:int
@@ -4535,7 +4249,6 @@ val chbgst
   -> x:Complex.t ptr
   -> ldx:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhbgst
   :  layout:int
@@ -4551,7 +4264,6 @@ val zhbgst
   -> x:Complex.t ptr
   -> ldx:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chbgv
   :  layout:int
@@ -4568,7 +4280,6 @@ val chbgv
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhbgv
   :  layout:int
@@ -4585,7 +4296,6 @@ val zhbgv
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chbgvd
   :  layout:int
@@ -4602,7 +4312,6 @@ val chbgvd
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhbgvd
   :  layout:int
@@ -4619,7 +4328,6 @@ val zhbgvd
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chbgvx
   :  layout:int
@@ -4646,7 +4354,6 @@ val chbgvx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhbgvx
   :  layout:int
@@ -4673,7 +4380,6 @@ val zhbgvx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chbtrd
   :  layout:int
@@ -4688,7 +4394,6 @@ val chbtrd
   -> q:Complex.t ptr
   -> ldq:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhbtrd
   :  layout:int
@@ -4703,7 +4408,6 @@ val zhbtrd
   -> q:Complex.t ptr
   -> ldq:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val checon
   :  layout:int
@@ -4715,7 +4419,6 @@ val checon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhecon
   :  layout:int
@@ -4727,7 +4430,6 @@ val zhecon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cheequb
   :  layout:int
@@ -4739,7 +4441,6 @@ val cheequb
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zheequb
   :  layout:int
@@ -4751,7 +4452,6 @@ val zheequb
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cheev
   :  layout:int
@@ -4762,7 +4462,6 @@ val cheev
   -> lda:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zheev
   :  layout:int
@@ -4773,7 +4472,6 @@ val zheev
   -> lda:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cheevd
   :  layout:int
@@ -4784,7 +4482,6 @@ val cheevd
   -> lda:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zheevd
   :  layout:int
@@ -4795,7 +4492,6 @@ val zheevd
   -> lda:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cheevr
   :  layout:int
@@ -4816,7 +4512,6 @@ val cheevr
   -> ldz:int
   -> isuppz:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zheevr
   :  layout:int
@@ -4837,7 +4532,6 @@ val zheevr
   -> ldz:int
   -> isuppz:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cheevx
   :  layout:int
@@ -4858,7 +4552,6 @@ val cheevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zheevx
   :  layout:int
@@ -4879,7 +4572,6 @@ val zheevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chegst
   :  layout:int
@@ -4891,7 +4583,6 @@ val chegst
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhegst
   :  layout:int
@@ -4903,7 +4594,6 @@ val zhegst
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chegv
   :  layout:int
@@ -4917,7 +4607,6 @@ val chegv
   -> ldb:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhegv
   :  layout:int
@@ -4931,7 +4620,6 @@ val zhegv
   -> ldb:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chegvd
   :  layout:int
@@ -4945,7 +4633,6 @@ val chegvd
   -> ldb:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhegvd
   :  layout:int
@@ -4959,7 +4646,6 @@ val zhegvd
   -> ldb:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chegvx
   :  layout:int
@@ -4983,7 +4669,6 @@ val chegvx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhegvx
   :  layout:int
@@ -5007,7 +4692,6 @@ val zhegvx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cherfs
   :  layout:int
@@ -5026,7 +4710,6 @@ val cherfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zherfs
   :  layout:int
@@ -5045,7 +4728,6 @@ val zherfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chesv
   :  layout:int
@@ -5058,7 +4740,6 @@ val chesv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhesv
   :  layout:int
@@ -5071,7 +4752,6 @@ val zhesv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chesvx
   :  layout:int
@@ -5092,7 +4772,6 @@ val chesvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhesvx
   :  layout:int
@@ -5113,7 +4792,6 @@ val zhesvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chetrd
   :  layout:int
@@ -5125,7 +4803,6 @@ val chetrd
   -> e:float ptr
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhetrd
   :  layout:int
@@ -5137,7 +4814,6 @@ val zhetrd
   -> e:float ptr
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chetrf
   :  layout:int
@@ -5147,7 +4823,6 @@ val chetrf
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhetrf
   :  layout:int
@@ -5157,7 +4832,6 @@ val zhetrf
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chetri
   :  layout:int
@@ -5167,7 +4841,6 @@ val chetri
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhetri
   :  layout:int
@@ -5177,7 +4850,6 @@ val zhetri
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chetrs
   :  layout:int
@@ -5190,7 +4862,6 @@ val chetrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhetrs
   :  layout:int
@@ -5203,7 +4874,6 @@ val zhetrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chfrk
   :  layout:int
@@ -5218,7 +4888,6 @@ val chfrk
   -> beta:float
   -> c:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhfrk
   :  layout:int
@@ -5233,7 +4902,6 @@ val zhfrk
   -> beta:float
   -> c:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val shgeqz
   :  layout:int
@@ -5255,7 +4923,6 @@ val shgeqz
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dhgeqz
   :  layout:int
@@ -5277,7 +4944,6 @@ val dhgeqz
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chgeqz
   :  layout:int
@@ -5298,7 +4964,6 @@ val chgeqz
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhgeqz
   :  layout:int
@@ -5319,7 +4984,6 @@ val zhgeqz
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chpcon
   :  layout:int
@@ -5330,7 +4994,6 @@ val chpcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhpcon
   :  layout:int
@@ -5341,7 +5004,6 @@ val zhpcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chpev
   :  layout:int
@@ -5353,7 +5015,6 @@ val chpev
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhpev
   :  layout:int
@@ -5365,7 +5026,6 @@ val zhpev
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chpevd
   :  layout:int
@@ -5377,7 +5037,6 @@ val chpevd
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhpevd
   :  layout:int
@@ -5389,7 +5048,6 @@ val zhpevd
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chpevx
   :  layout:int
@@ -5409,7 +5067,6 @@ val chpevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhpevx
   :  layout:int
@@ -5429,7 +5086,6 @@ val zhpevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chpgst
   :  layout:int
@@ -5439,7 +5095,6 @@ val chpgst
   -> ap:Complex.t ptr
   -> bp:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhpgst
   :  layout:int
@@ -5449,7 +5104,6 @@ val zhpgst
   -> ap:Complex.t ptr
   -> bp:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chpgv
   :  layout:int
@@ -5463,7 +5117,6 @@ val chpgv
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhpgv
   :  layout:int
@@ -5477,7 +5130,6 @@ val zhpgv
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chpgvd
   :  layout:int
@@ -5491,7 +5143,6 @@ val chpgvd
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhpgvd
   :  layout:int
@@ -5505,7 +5156,6 @@ val zhpgvd
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chpgvx
   :  layout:int
@@ -5527,7 +5177,6 @@ val chpgvx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhpgvx
   :  layout:int
@@ -5549,7 +5198,6 @@ val zhpgvx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chprfs
   :  layout:int
@@ -5566,7 +5214,6 @@ val chprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhprfs
   :  layout:int
@@ -5583,7 +5230,6 @@ val zhprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chpsv
   :  layout:int
@@ -5595,7 +5241,6 @@ val chpsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhpsv
   :  layout:int
@@ -5607,7 +5252,6 @@ val zhpsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chpsvx
   :  layout:int
@@ -5626,7 +5270,6 @@ val chpsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhpsvx
   :  layout:int
@@ -5645,7 +5288,6 @@ val zhpsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chptrd
   :  layout:int
@@ -5656,7 +5298,6 @@ val chptrd
   -> e:float ptr
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhptrd
   :  layout:int
@@ -5667,19 +5308,14 @@ val zhptrd
   -> e:float ptr
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chptrf : layout:int -> uplo:char -> n:int -> ap:Complex.t ptr -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhptrf : layout:int -> uplo:char -> n:int -> ap:Complex.t ptr -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chptri : layout:int -> uplo:char -> n:int -> ap:Complex.t ptr -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhptri : layout:int -> uplo:char -> n:int -> ap:Complex.t ptr -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chptrs
   :  layout:int
@@ -5691,7 +5327,6 @@ val chptrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhptrs
   :  layout:int
@@ -5703,7 +5338,6 @@ val zhptrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val shsein
   :  layout:int
@@ -5725,7 +5359,6 @@ val shsein
   -> ifaill:int32 ptr
   -> ifailr:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dhsein
   :  layout:int
@@ -5747,7 +5380,6 @@ val dhsein
   -> ifaill:int32 ptr
   -> ifailr:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chsein
   :  layout:int
@@ -5768,7 +5400,6 @@ val chsein
   -> ifaill:int32 ptr
   -> ifailr:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhsein
   :  layout:int
@@ -5789,7 +5420,6 @@ val zhsein
   -> ifaill:int32 ptr
   -> ifailr:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val shseqr
   :  layout:int
@@ -5805,7 +5435,6 @@ val shseqr
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dhseqr
   :  layout:int
@@ -5821,7 +5450,6 @@ val dhseqr
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chseqr
   :  layout:int
@@ -5836,7 +5464,6 @@ val chseqr
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhseqr
   :  layout:int
@@ -5851,13 +5478,10 @@ val zhseqr
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clacgv : n:int -> x:Complex.t ptr -> incx:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlacgv : n:int -> x:Complex.t ptr -> incx:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slacn2
   :  n:int
@@ -5868,7 +5492,6 @@ val slacn2
   -> kase:int32 ptr
   -> isave:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlacn2
   :  n:int
@@ -5879,7 +5502,6 @@ val dlacn2
   -> kase:int32 ptr
   -> isave:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clacn2
   :  n:int
@@ -5889,7 +5511,6 @@ val clacn2
   -> kase:int32 ptr
   -> isave:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlacn2
   :  n:int
@@ -5899,7 +5520,6 @@ val zlacn2
   -> kase:int32 ptr
   -> isave:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slacpy
   :  layout:int
@@ -5911,7 +5531,6 @@ val slacpy
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlacpy
   :  layout:int
@@ -5923,7 +5542,6 @@ val dlacpy
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clacpy
   :  layout:int
@@ -5935,7 +5553,6 @@ val clacpy
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlacpy
   :  layout:int
@@ -5947,7 +5564,6 @@ val zlacpy
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clacp2
   :  layout:int
@@ -5959,7 +5575,6 @@ val clacp2
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlacp2
   :  layout:int
@@ -5971,7 +5586,6 @@ val zlacp2
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlag2c
   :  layout:int
@@ -5982,7 +5596,6 @@ val zlag2c
   -> sa:Complex.t ptr
   -> ldsa:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slag2d
   :  layout:int
@@ -5993,7 +5606,6 @@ val slag2d
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlag2s
   :  layout:int
@@ -6004,7 +5616,6 @@ val dlag2s
   -> sa:float ptr
   -> ldsa:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clag2z
   :  layout:int
@@ -6015,7 +5626,6 @@ val clag2z
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slagge
   :  layout:int
@@ -6028,7 +5638,6 @@ val slagge
   -> lda:int
   -> iseed:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlagge
   :  layout:int
@@ -6041,7 +5650,6 @@ val dlagge
   -> lda:int
   -> iseed:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clagge
   :  layout:int
@@ -6054,7 +5662,6 @@ val clagge
   -> lda:int
   -> iseed:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlagge
   :  layout:int
@@ -6067,7 +5674,6 @@ val zlagge
   -> lda:int
   -> iseed:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slarfb
   :  layout:int
@@ -6085,7 +5691,6 @@ val slarfb
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlarfb
   :  layout:int
@@ -6103,7 +5708,6 @@ val dlarfb
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clarfb
   :  layout:int
@@ -6121,7 +5725,6 @@ val clarfb
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlarfb
   :  layout:int
@@ -6139,13 +5742,10 @@ val zlarfb
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slarfg : n:int -> alpha:float ptr -> x:float ptr -> incx:int -> tau:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlarfg : n:int -> alpha:float ptr -> x:float ptr -> incx:int -> tau:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clarfg
   :  n:int
@@ -6154,7 +5754,6 @@ val clarfg
   -> incx:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlarfg
   :  n:int
@@ -6163,7 +5762,6 @@ val zlarfg
   -> incx:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slarft
   :  layout:int
@@ -6177,7 +5775,6 @@ val slarft
   -> t:float ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlarft
   :  layout:int
@@ -6191,7 +5788,6 @@ val dlarft
   -> t:float ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clarft
   :  layout:int
@@ -6205,7 +5801,6 @@ val clarft
   -> t:Complex.t ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlarft
   :  layout:int
@@ -6219,7 +5814,6 @@ val zlarft
   -> t:Complex.t ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slarfx
   :  layout:int
@@ -6232,7 +5826,6 @@ val slarfx
   -> ldc:int
   -> work:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlarfx
   :  layout:int
@@ -6245,7 +5838,6 @@ val dlarfx
   -> ldc:int
   -> work:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clarfx
   :  layout:int
@@ -6258,7 +5850,6 @@ val clarfx
   -> ldc:int
   -> work:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlarfx
   :  layout:int
@@ -6271,19 +5862,14 @@ val zlarfx
   -> ldc:int
   -> work:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slarnv : idist:int -> iseed:int32 ptr -> n:int -> x:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlarnv : idist:int -> iseed:int32 ptr -> n:int -> x:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clarnv : idist:int -> iseed:int32 ptr -> n:int -> x:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlarnv : idist:int -> iseed:int32 ptr -> n:int -> x:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slascl
   :  layout:int
@@ -6297,7 +5883,6 @@ val slascl
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlascl
   :  layout:int
@@ -6311,7 +5896,6 @@ val dlascl
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clascl
   :  layout:int
@@ -6325,7 +5909,6 @@ val clascl
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlascl
   :  layout:int
@@ -6339,7 +5922,6 @@ val zlascl
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slaset
   :  layout:int
@@ -6351,7 +5933,6 @@ val slaset
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlaset
   :  layout:int
@@ -6363,7 +5944,6 @@ val dlaset
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val claset
   :  layout:int
@@ -6375,7 +5955,6 @@ val claset
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlaset
   :  layout:int
@@ -6387,13 +5966,10 @@ val zlaset
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slasrt : id:char -> n:int -> d:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlasrt : id:char -> n:int -> d:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slaswp
   :  layout:int
@@ -6405,7 +5981,6 @@ val slaswp
   -> ipiv:int32 ptr
   -> incx:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlaswp
   :  layout:int
@@ -6417,7 +5992,6 @@ val dlaswp
   -> ipiv:int32 ptr
   -> incx:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val claswp
   :  layout:int
@@ -6429,7 +6003,6 @@ val claswp
   -> ipiv:int32 ptr
   -> incx:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlaswp
   :  layout:int
@@ -6441,7 +6014,6 @@ val zlaswp
   -> ipiv:int32 ptr
   -> incx:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slatms
   :  layout:int
@@ -6460,7 +6032,6 @@ val slatms
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlatms
   :  layout:int
@@ -6479,7 +6050,6 @@ val dlatms
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clatms
   :  layout:int
@@ -6498,7 +6068,6 @@ val clatms
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlatms
   :  layout:int
@@ -6517,19 +6086,14 @@ val zlatms
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slauum : layout:int -> uplo:char -> n:int -> a:float ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlauum : layout:int -> uplo:char -> n:int -> a:float ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clauum : layout:int -> uplo:char -> n:int -> a:Complex.t ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlauum : layout:int -> uplo:char -> n:int -> a:Complex.t ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sopgtr
   :  layout:int
@@ -6540,7 +6104,6 @@ val sopgtr
   -> q:float ptr
   -> ldq:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dopgtr
   :  layout:int
@@ -6551,7 +6114,6 @@ val dopgtr
   -> q:float ptr
   -> ldq:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sopmtr
   :  layout:int
@@ -6565,7 +6127,6 @@ val sopmtr
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dopmtr
   :  layout:int
@@ -6579,7 +6140,6 @@ val dopmtr
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sorgbr
   :  layout:int
@@ -6591,7 +6151,6 @@ val sorgbr
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dorgbr
   :  layout:int
@@ -6603,7 +6162,6 @@ val dorgbr
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sorghr
   :  layout:int
@@ -6614,7 +6172,6 @@ val sorghr
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dorghr
   :  layout:int
@@ -6625,7 +6182,6 @@ val dorghr
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sorglq
   :  layout:int
@@ -6636,7 +6192,6 @@ val sorglq
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dorglq
   :  layout:int
@@ -6647,7 +6202,6 @@ val dorglq
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sorgql
   :  layout:int
@@ -6658,7 +6212,6 @@ val sorgql
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dorgql
   :  layout:int
@@ -6669,7 +6222,6 @@ val dorgql
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sorgqr
   :  layout:int
@@ -6680,7 +6232,6 @@ val sorgqr
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dorgqr
   :  layout:int
@@ -6691,7 +6242,6 @@ val dorgqr
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sorgrq
   :  layout:int
@@ -6702,7 +6252,6 @@ val sorgrq
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dorgrq
   :  layout:int
@@ -6713,7 +6262,6 @@ val dorgrq
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sorgtr
   :  layout:int
@@ -6723,7 +6271,6 @@ val sorgtr
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dorgtr
   :  layout:int
@@ -6733,7 +6280,6 @@ val dorgtr
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sormbr
   :  layout:int
@@ -6749,7 +6295,6 @@ val sormbr
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dormbr
   :  layout:int
@@ -6765,7 +6310,6 @@ val dormbr
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sormhr
   :  layout:int
@@ -6781,7 +6325,6 @@ val sormhr
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dormhr
   :  layout:int
@@ -6797,7 +6340,6 @@ val dormhr
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sormlq
   :  layout:int
@@ -6812,7 +6354,6 @@ val sormlq
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dormlq
   :  layout:int
@@ -6827,7 +6368,6 @@ val dormlq
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sormql
   :  layout:int
@@ -6842,7 +6382,6 @@ val sormql
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dormql
   :  layout:int
@@ -6857,7 +6396,6 @@ val dormql
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sormqr
   :  layout:int
@@ -6872,7 +6410,6 @@ val sormqr
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dormqr
   :  layout:int
@@ -6887,7 +6424,6 @@ val dormqr
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sormrq
   :  layout:int
@@ -6902,7 +6438,6 @@ val sormrq
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dormrq
   :  layout:int
@@ -6917,7 +6452,6 @@ val dormrq
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sormrz
   :  layout:int
@@ -6933,7 +6467,6 @@ val sormrz
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dormrz
   :  layout:int
@@ -6949,7 +6482,6 @@ val dormrz
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sormtr
   :  layout:int
@@ -6964,7 +6496,6 @@ val sormtr
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dormtr
   :  layout:int
@@ -6979,7 +6510,6 @@ val dormtr
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spbcon
   :  layout:int
@@ -6991,7 +6521,6 @@ val spbcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpbcon
   :  layout:int
@@ -7003,7 +6532,6 @@ val dpbcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpbcon
   :  layout:int
@@ -7015,7 +6543,6 @@ val cpbcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpbcon
   :  layout:int
@@ -7027,7 +6554,6 @@ val zpbcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spbequ
   :  layout:int
@@ -7040,7 +6566,6 @@ val spbequ
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpbequ
   :  layout:int
@@ -7053,7 +6578,6 @@ val dpbequ
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpbequ
   :  layout:int
@@ -7066,7 +6590,6 @@ val cpbequ
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpbequ
   :  layout:int
@@ -7079,7 +6602,6 @@ val zpbequ
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spbrfs
   :  layout:int
@@ -7098,7 +6620,6 @@ val spbrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpbrfs
   :  layout:int
@@ -7117,7 +6638,6 @@ val dpbrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpbrfs
   :  layout:int
@@ -7136,7 +6656,6 @@ val cpbrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpbrfs
   :  layout:int
@@ -7155,13 +6674,10 @@ val zpbrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spbstf : layout:int -> uplo:char -> n:int -> kb:int -> bb:float ptr -> ldbb:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpbstf : layout:int -> uplo:char -> n:int -> kb:int -> bb:float ptr -> ldbb:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpbstf
   :  layout:int
@@ -7171,7 +6687,6 @@ val cpbstf
   -> bb:Complex.t ptr
   -> ldbb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpbstf
   :  layout:int
@@ -7181,7 +6696,6 @@ val zpbstf
   -> bb:Complex.t ptr
   -> ldbb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spbsv
   :  layout:int
@@ -7194,7 +6708,6 @@ val spbsv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpbsv
   :  layout:int
@@ -7207,7 +6720,6 @@ val dpbsv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpbsv
   :  layout:int
@@ -7220,7 +6732,6 @@ val cpbsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpbsv
   :  layout:int
@@ -7233,7 +6744,6 @@ val zpbsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spbsvx
   :  layout:int
@@ -7256,7 +6766,6 @@ val spbsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpbsvx
   :  layout:int
@@ -7279,7 +6788,6 @@ val dpbsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpbsvx
   :  layout:int
@@ -7302,7 +6810,6 @@ val cpbsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpbsvx
   :  layout:int
@@ -7325,13 +6832,10 @@ val zpbsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spbtrf : layout:int -> uplo:char -> n:int -> kd:int -> ab:float ptr -> ldab:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpbtrf : layout:int -> uplo:char -> n:int -> kd:int -> ab:float ptr -> ldab:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpbtrf
   :  layout:int
@@ -7341,7 +6845,6 @@ val cpbtrf
   -> ab:Complex.t ptr
   -> ldab:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpbtrf
   :  layout:int
@@ -7351,7 +6854,6 @@ val zpbtrf
   -> ab:Complex.t ptr
   -> ldab:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spbtrs
   :  layout:int
@@ -7364,7 +6866,6 @@ val spbtrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpbtrs
   :  layout:int
@@ -7377,7 +6878,6 @@ val dpbtrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpbtrs
   :  layout:int
@@ -7390,7 +6890,6 @@ val cpbtrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpbtrs
   :  layout:int
@@ -7403,31 +6902,22 @@ val zpbtrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spftrf : layout:int -> transr:char -> uplo:char -> n:int -> a:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpftrf : layout:int -> transr:char -> uplo:char -> n:int -> a:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpftrf : layout:int -> transr:char -> uplo:char -> n:int -> a:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpftrf : layout:int -> transr:char -> uplo:char -> n:int -> a:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spftri : layout:int -> transr:char -> uplo:char -> n:int -> a:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpftri : layout:int -> transr:char -> uplo:char -> n:int -> a:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpftri : layout:int -> transr:char -> uplo:char -> n:int -> a:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpftri : layout:int -> transr:char -> uplo:char -> n:int -> a:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spftrs
   :  layout:int
@@ -7439,7 +6929,6 @@ val spftrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpftrs
   :  layout:int
@@ -7451,7 +6940,6 @@ val dpftrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpftrs
   :  layout:int
@@ -7463,7 +6951,6 @@ val cpftrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpftrs
   :  layout:int
@@ -7475,7 +6962,6 @@ val zpftrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spocon
   :  layout:int
@@ -7486,7 +6972,6 @@ val spocon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpocon
   :  layout:int
@@ -7497,7 +6982,6 @@ val dpocon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpocon
   :  layout:int
@@ -7508,7 +6992,6 @@ val cpocon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpocon
   :  layout:int
@@ -7519,7 +7002,6 @@ val zpocon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spoequ
   :  layout:int
@@ -7530,7 +7012,6 @@ val spoequ
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpoequ
   :  layout:int
@@ -7541,7 +7022,6 @@ val dpoequ
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpoequ
   :  layout:int
@@ -7552,7 +7032,6 @@ val cpoequ
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpoequ
   :  layout:int
@@ -7563,7 +7042,6 @@ val zpoequ
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spoequb
   :  layout:int
@@ -7574,7 +7052,6 @@ val spoequb
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpoequb
   :  layout:int
@@ -7585,7 +7062,6 @@ val dpoequb
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpoequb
   :  layout:int
@@ -7596,7 +7072,6 @@ val cpoequb
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpoequb
   :  layout:int
@@ -7607,7 +7082,6 @@ val zpoequb
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sporfs
   :  layout:int
@@ -7625,7 +7099,6 @@ val sporfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dporfs
   :  layout:int
@@ -7643,7 +7116,6 @@ val dporfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cporfs
   :  layout:int
@@ -7661,7 +7133,6 @@ val cporfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zporfs
   :  layout:int
@@ -7679,7 +7150,6 @@ val zporfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sposv
   :  layout:int
@@ -7691,7 +7161,6 @@ val sposv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dposv
   :  layout:int
@@ -7703,7 +7172,6 @@ val dposv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cposv
   :  layout:int
@@ -7715,7 +7183,6 @@ val cposv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zposv
   :  layout:int
@@ -7727,7 +7194,6 @@ val zposv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsposv
   :  layout:int
@@ -7742,7 +7208,6 @@ val dsposv
   -> ldx:int
   -> iter:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zcposv
   :  layout:int
@@ -7757,7 +7222,6 @@ val zcposv
   -> ldx:int
   -> iter:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sposvx
   :  layout:int
@@ -7779,7 +7243,6 @@ val sposvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dposvx
   :  layout:int
@@ -7801,7 +7264,6 @@ val dposvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cposvx
   :  layout:int
@@ -7823,7 +7285,6 @@ val cposvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zposvx
   :  layout:int
@@ -7845,43 +7306,30 @@ val zposvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spotrf2 : layout:int -> uplo:char -> n:int -> a:float ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpotrf2 : layout:int -> uplo:char -> n:int -> a:float ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpotrf2 : layout:int -> uplo:char -> n:int -> a:Complex.t ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpotrf2 : layout:int -> uplo:char -> n:int -> a:Complex.t ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spotrf : layout:int -> uplo:char -> n:int -> a:float ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpotrf : layout:int -> uplo:char -> n:int -> a:float ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpotrf : layout:int -> uplo:char -> n:int -> a:Complex.t ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpotrf : layout:int -> uplo:char -> n:int -> a:Complex.t ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spotri : layout:int -> uplo:char -> n:int -> a:float ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpotri : layout:int -> uplo:char -> n:int -> a:float ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpotri : layout:int -> uplo:char -> n:int -> a:Complex.t ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpotri : layout:int -> uplo:char -> n:int -> a:Complex.t ptr -> lda:int -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spotrs
   :  layout:int
@@ -7893,7 +7341,6 @@ val spotrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpotrs
   :  layout:int
@@ -7905,7 +7352,6 @@ val dpotrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpotrs
   :  layout:int
@@ -7917,7 +7363,6 @@ val cpotrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpotrs
   :  layout:int
@@ -7929,7 +7374,6 @@ val zpotrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sppcon
   :  layout:int
@@ -7939,7 +7383,6 @@ val sppcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dppcon
   :  layout:int
@@ -7949,7 +7392,6 @@ val dppcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cppcon
   :  layout:int
@@ -7959,7 +7401,6 @@ val cppcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zppcon
   :  layout:int
@@ -7969,7 +7410,6 @@ val zppcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sppequ
   :  layout:int
@@ -7980,7 +7420,6 @@ val sppequ
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dppequ
   :  layout:int
@@ -7991,7 +7430,6 @@ val dppequ
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cppequ
   :  layout:int
@@ -8002,7 +7440,6 @@ val cppequ
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zppequ
   :  layout:int
@@ -8013,7 +7450,6 @@ val zppequ
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spprfs
   :  layout:int
@@ -8029,7 +7465,6 @@ val spprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpprfs
   :  layout:int
@@ -8045,7 +7480,6 @@ val dpprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpprfs
   :  layout:int
@@ -8061,7 +7495,6 @@ val cpprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpprfs
   :  layout:int
@@ -8077,7 +7510,6 @@ val zpprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sppsv
   :  layout:int
@@ -8088,7 +7520,6 @@ val sppsv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dppsv
   :  layout:int
@@ -8099,7 +7530,6 @@ val dppsv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cppsv
   :  layout:int
@@ -8110,7 +7540,6 @@ val cppsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zppsv
   :  layout:int
@@ -8121,7 +7550,6 @@ val zppsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sppsvx
   :  layout:int
@@ -8141,7 +7569,6 @@ val sppsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dppsvx
   :  layout:int
@@ -8161,7 +7588,6 @@ val dppsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cppsvx
   :  layout:int
@@ -8181,7 +7607,6 @@ val cppsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zppsvx
   :  layout:int
@@ -8201,31 +7626,22 @@ val zppsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spptrf : layout:int -> uplo:char -> n:int -> ap:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpptrf : layout:int -> uplo:char -> n:int -> ap:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpptrf : layout:int -> uplo:char -> n:int -> ap:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpptrf : layout:int -> uplo:char -> n:int -> ap:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spptri : layout:int -> uplo:char -> n:int -> ap:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpptri : layout:int -> uplo:char -> n:int -> ap:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpptri : layout:int -> uplo:char -> n:int -> ap:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpptri : layout:int -> uplo:char -> n:int -> ap:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spptrs
   :  layout:int
@@ -8236,7 +7652,6 @@ val spptrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpptrs
   :  layout:int
@@ -8247,7 +7662,6 @@ val dpptrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpptrs
   :  layout:int
@@ -8258,7 +7672,6 @@ val cpptrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpptrs
   :  layout:int
@@ -8269,7 +7682,6 @@ val zpptrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spstrf
   :  layout:int
@@ -8281,7 +7693,6 @@ val spstrf
   -> rank:int32 ptr
   -> tol:float
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpstrf
   :  layout:int
@@ -8293,7 +7704,6 @@ val dpstrf
   -> rank:int32 ptr
   -> tol:float
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpstrf
   :  layout:int
@@ -8305,7 +7715,6 @@ val cpstrf
   -> rank:int32 ptr
   -> tol:float
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpstrf
   :  layout:int
@@ -8317,13 +7726,10 @@ val zpstrf
   -> rank:int32 ptr
   -> tol:float
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sptcon : n:int -> d:float ptr -> e:float ptr -> anorm:float -> rcond:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dptcon : n:int -> d:float ptr -> e:float ptr -> anorm:float -> rcond:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cptcon
   :  n:int
@@ -8332,7 +7738,6 @@ val cptcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zptcon
   :  n:int
@@ -8341,7 +7746,6 @@ val zptcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spteqr
   :  layout:int
@@ -8352,7 +7756,6 @@ val spteqr
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpteqr
   :  layout:int
@@ -8363,7 +7766,6 @@ val dpteqr
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpteqr
   :  layout:int
@@ -8374,7 +7776,6 @@ val cpteqr
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpteqr
   :  layout:int
@@ -8385,7 +7786,6 @@ val zpteqr
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sptrfs
   :  layout:int
@@ -8402,7 +7802,6 @@ val sptrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dptrfs
   :  layout:int
@@ -8419,7 +7818,6 @@ val dptrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cptrfs
   :  layout:int
@@ -8437,7 +7835,6 @@ val cptrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zptrfs
   :  layout:int
@@ -8455,7 +7852,6 @@ val zptrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sptsv
   :  layout:int
@@ -8466,7 +7862,6 @@ val sptsv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dptsv
   :  layout:int
@@ -8477,7 +7872,6 @@ val dptsv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cptsv
   :  layout:int
@@ -8488,7 +7882,6 @@ val cptsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zptsv
   :  layout:int
@@ -8499,7 +7892,6 @@ val zptsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sptsvx
   :  layout:int
@@ -8518,7 +7910,6 @@ val sptsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dptsvx
   :  layout:int
@@ -8537,7 +7928,6 @@ val dptsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cptsvx
   :  layout:int
@@ -8556,7 +7946,6 @@ val cptsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zptsvx
   :  layout:int
@@ -8575,19 +7964,14 @@ val zptsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spttrf : n:int -> d:float ptr -> e:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpttrf : n:int -> d:float ptr -> e:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpttrf : n:int -> d:float ptr -> e:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpttrf : n:int -> d:float ptr -> e:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val spttrs
   :  layout:int
@@ -8598,7 +7982,6 @@ val spttrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dpttrs
   :  layout:int
@@ -8609,7 +7992,6 @@ val dpttrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cpttrs
   :  layout:int
@@ -8621,7 +8003,6 @@ val cpttrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zpttrs
   :  layout:int
@@ -8633,7 +8014,6 @@ val zpttrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssbev
   :  layout:int
@@ -8647,7 +8027,6 @@ val ssbev
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsbev
   :  layout:int
@@ -8661,7 +8040,6 @@ val dsbev
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssbevd
   :  layout:int
@@ -8675,7 +8053,6 @@ val ssbevd
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsbevd
   :  layout:int
@@ -8689,7 +8066,6 @@ val dsbevd
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssbevx
   :  layout:int
@@ -8713,7 +8089,6 @@ val ssbevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsbevx
   :  layout:int
@@ -8737,7 +8112,6 @@ val dsbevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssbgst
   :  layout:int
@@ -8753,7 +8127,6 @@ val ssbgst
   -> x:float ptr
   -> ldx:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsbgst
   :  layout:int
@@ -8769,7 +8142,6 @@ val dsbgst
   -> x:float ptr
   -> ldx:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssbgv
   :  layout:int
@@ -8786,7 +8158,6 @@ val ssbgv
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsbgv
   :  layout:int
@@ -8803,7 +8174,6 @@ val dsbgv
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssbgvd
   :  layout:int
@@ -8820,7 +8190,6 @@ val ssbgvd
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsbgvd
   :  layout:int
@@ -8837,7 +8206,6 @@ val dsbgvd
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssbgvx
   :  layout:int
@@ -8864,7 +8232,6 @@ val ssbgvx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsbgvx
   :  layout:int
@@ -8891,7 +8258,6 @@ val dsbgvx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssbtrd
   :  layout:int
@@ -8906,7 +8272,6 @@ val ssbtrd
   -> q:float ptr
   -> ldq:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsbtrd
   :  layout:int
@@ -8921,7 +8286,6 @@ val dsbtrd
   -> q:float ptr
   -> ldq:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssfrk
   :  layout:int
@@ -8936,7 +8300,6 @@ val ssfrk
   -> beta:float
   -> c:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsfrk
   :  layout:int
@@ -8951,7 +8314,6 @@ val dsfrk
   -> beta:float
   -> c:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sspcon
   :  layout:int
@@ -8962,7 +8324,6 @@ val sspcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dspcon
   :  layout:int
@@ -8973,7 +8334,6 @@ val dspcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cspcon
   :  layout:int
@@ -8984,7 +8344,6 @@ val cspcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zspcon
   :  layout:int
@@ -8995,7 +8354,6 @@ val zspcon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sspev
   :  layout:int
@@ -9007,7 +8365,6 @@ val sspev
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dspev
   :  layout:int
@@ -9019,7 +8376,6 @@ val dspev
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sspevd
   :  layout:int
@@ -9031,7 +8387,6 @@ val sspevd
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dspevd
   :  layout:int
@@ -9043,7 +8398,6 @@ val dspevd
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sspevx
   :  layout:int
@@ -9063,7 +8417,6 @@ val sspevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dspevx
   :  layout:int
@@ -9083,7 +8436,6 @@ val dspevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sspgst
   :  layout:int
@@ -9093,7 +8445,6 @@ val sspgst
   -> ap:float ptr
   -> bp:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dspgst
   :  layout:int
@@ -9103,7 +8454,6 @@ val dspgst
   -> ap:float ptr
   -> bp:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sspgv
   :  layout:int
@@ -9117,7 +8467,6 @@ val sspgv
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dspgv
   :  layout:int
@@ -9131,7 +8480,6 @@ val dspgv
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sspgvd
   :  layout:int
@@ -9145,7 +8493,6 @@ val sspgvd
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dspgvd
   :  layout:int
@@ -9159,7 +8506,6 @@ val dspgvd
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sspgvx
   :  layout:int
@@ -9181,7 +8527,6 @@ val sspgvx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dspgvx
   :  layout:int
@@ -9203,7 +8548,6 @@ val dspgvx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssprfs
   :  layout:int
@@ -9220,7 +8564,6 @@ val ssprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsprfs
   :  layout:int
@@ -9237,7 +8580,6 @@ val dsprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csprfs
   :  layout:int
@@ -9254,7 +8596,6 @@ val csprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsprfs
   :  layout:int
@@ -9271,7 +8612,6 @@ val zsprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sspsv
   :  layout:int
@@ -9283,7 +8623,6 @@ val sspsv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dspsv
   :  layout:int
@@ -9295,7 +8634,6 @@ val dspsv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cspsv
   :  layout:int
@@ -9307,7 +8645,6 @@ val cspsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zspsv
   :  layout:int
@@ -9319,7 +8656,6 @@ val zspsv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sspsvx
   :  layout:int
@@ -9338,7 +8674,6 @@ val sspsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dspsvx
   :  layout:int
@@ -9357,7 +8692,6 @@ val dspsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cspsvx
   :  layout:int
@@ -9376,7 +8710,6 @@ val cspsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zspsvx
   :  layout:int
@@ -9395,7 +8728,6 @@ val zspsvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssptrd
   :  layout:int
@@ -9406,7 +8738,6 @@ val ssptrd
   -> e:float ptr
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsptrd
   :  layout:int
@@ -9417,31 +8748,22 @@ val dsptrd
   -> e:float ptr
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssptrf : layout:int -> uplo:char -> n:int -> ap:float ptr -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsptrf : layout:int -> uplo:char -> n:int -> ap:float ptr -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csptrf : layout:int -> uplo:char -> n:int -> ap:Complex.t ptr -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsptrf : layout:int -> uplo:char -> n:int -> ap:Complex.t ptr -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssptri : layout:int -> uplo:char -> n:int -> ap:float ptr -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsptri : layout:int -> uplo:char -> n:int -> ap:float ptr -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csptri : layout:int -> uplo:char -> n:int -> ap:Complex.t ptr -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsptri : layout:int -> uplo:char -> n:int -> ap:Complex.t ptr -> ipiv:int32 ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssptrs
   :  layout:int
@@ -9453,7 +8775,6 @@ val ssptrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsptrs
   :  layout:int
@@ -9465,7 +8786,6 @@ val dsptrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csptrs
   :  layout:int
@@ -9477,7 +8797,6 @@ val csptrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsptrs
   :  layout:int
@@ -9489,7 +8808,6 @@ val zsptrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sstebz
   :  range:char
@@ -9508,7 +8826,6 @@ val sstebz
   -> iblock:int32 ptr
   -> isplit:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dstebz
   :  range:char
@@ -9527,7 +8844,6 @@ val dstebz
   -> iblock:int32 ptr
   -> isplit:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sstedc
   :  layout:int
@@ -9538,7 +8854,6 @@ val sstedc
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dstedc
   :  layout:int
@@ -9549,7 +8864,6 @@ val dstedc
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cstedc
   :  layout:int
@@ -9560,7 +8874,6 @@ val cstedc
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zstedc
   :  layout:int
@@ -9571,7 +8884,6 @@ val zstedc
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sstegr
   :  layout:int
@@ -9591,7 +8903,6 @@ val sstegr
   -> ldz:int
   -> isuppz:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dstegr
   :  layout:int
@@ -9611,7 +8922,6 @@ val dstegr
   -> ldz:int
   -> isuppz:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cstegr
   :  layout:int
@@ -9631,7 +8941,6 @@ val cstegr
   -> ldz:int
   -> isuppz:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zstegr
   :  layout:int
@@ -9651,7 +8960,6 @@ val zstegr
   -> ldz:int
   -> isuppz:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sstein
   :  layout:int
@@ -9666,7 +8974,6 @@ val sstein
   -> ldz:int
   -> ifailv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dstein
   :  layout:int
@@ -9681,7 +8988,6 @@ val dstein
   -> ldz:int
   -> ifailv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cstein
   :  layout:int
@@ -9696,7 +9002,6 @@ val cstein
   -> ldz:int
   -> ifailv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zstein
   :  layout:int
@@ -9711,7 +9016,6 @@ val zstein
   -> ldz:int
   -> ifailv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sstemr
   :  layout:int
@@ -9732,7 +9036,6 @@ val sstemr
   -> isuppz:int32 ptr
   -> tryrac:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dstemr
   :  layout:int
@@ -9753,7 +9056,6 @@ val dstemr
   -> isuppz:int32 ptr
   -> tryrac:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cstemr
   :  layout:int
@@ -9774,7 +9076,6 @@ val cstemr
   -> isuppz:int32 ptr
   -> tryrac:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zstemr
   :  layout:int
@@ -9795,7 +9096,6 @@ val zstemr
   -> isuppz:int32 ptr
   -> tryrac:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssteqr
   :  layout:int
@@ -9806,7 +9106,6 @@ val ssteqr
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsteqr
   :  layout:int
@@ -9817,7 +9116,6 @@ val dsteqr
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csteqr
   :  layout:int
@@ -9828,7 +9126,6 @@ val csteqr
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsteqr
   :  layout:int
@@ -9839,13 +9136,10 @@ val zsteqr
   -> z:Complex.t ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssterf : n:int -> d:float ptr -> e:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsterf : n:int -> d:float ptr -> e:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sstev
   :  layout:int
@@ -9856,7 +9150,6 @@ val sstev
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dstev
   :  layout:int
@@ -9867,7 +9160,6 @@ val dstev
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sstevd
   :  layout:int
@@ -9878,7 +9170,6 @@ val sstevd
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dstevd
   :  layout:int
@@ -9889,7 +9180,6 @@ val dstevd
   -> z:float ptr
   -> ldz:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sstevr
   :  layout:int
@@ -9909,7 +9199,6 @@ val sstevr
   -> ldz:int
   -> isuppz:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dstevr
   :  layout:int
@@ -9929,7 +9218,6 @@ val dstevr
   -> ldz:int
   -> isuppz:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sstevx
   :  layout:int
@@ -9949,7 +9237,6 @@ val sstevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dstevx
   :  layout:int
@@ -9969,7 +9256,6 @@ val dstevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssycon
   :  layout:int
@@ -9981,7 +9267,6 @@ val ssycon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsycon
   :  layout:int
@@ -9993,7 +9278,6 @@ val dsycon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csycon
   :  layout:int
@@ -10005,7 +9289,6 @@ val csycon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsycon
   :  layout:int
@@ -10017,7 +9300,6 @@ val zsycon
   -> anorm:float
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssyequb
   :  layout:int
@@ -10029,7 +9311,6 @@ val ssyequb
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsyequb
   :  layout:int
@@ -10041,7 +9322,6 @@ val dsyequb
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csyequb
   :  layout:int
@@ -10053,7 +9333,6 @@ val csyequb
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsyequb
   :  layout:int
@@ -10065,7 +9344,6 @@ val zsyequb
   -> scond:float ptr
   -> amax:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssyev
   :  layout:int
@@ -10076,7 +9354,6 @@ val ssyev
   -> lda:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsyev
   :  layout:int
@@ -10087,7 +9364,6 @@ val dsyev
   -> lda:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssyevd
   :  layout:int
@@ -10098,7 +9374,6 @@ val ssyevd
   -> lda:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsyevd
   :  layout:int
@@ -10109,7 +9384,6 @@ val dsyevd
   -> lda:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssyevr
   :  layout:int
@@ -10130,7 +9404,6 @@ val ssyevr
   -> ldz:int
   -> isuppz:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsyevr
   :  layout:int
@@ -10151,7 +9424,6 @@ val dsyevr
   -> ldz:int
   -> isuppz:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssyevx
   :  layout:int
@@ -10172,7 +9444,6 @@ val ssyevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsyevx
   :  layout:int
@@ -10193,7 +9464,6 @@ val dsyevx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssygst
   :  layout:int
@@ -10205,7 +9475,6 @@ val ssygst
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsygst
   :  layout:int
@@ -10217,7 +9486,6 @@ val dsygst
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssygv
   :  layout:int
@@ -10231,7 +9499,6 @@ val ssygv
   -> ldb:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsygv
   :  layout:int
@@ -10245,7 +9512,6 @@ val dsygv
   -> ldb:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssygvd
   :  layout:int
@@ -10259,7 +9525,6 @@ val ssygvd
   -> ldb:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsygvd
   :  layout:int
@@ -10273,7 +9538,6 @@ val dsygvd
   -> ldb:int
   -> w:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssygvx
   :  layout:int
@@ -10297,7 +9561,6 @@ val ssygvx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsygvx
   :  layout:int
@@ -10321,7 +9584,6 @@ val dsygvx
   -> ldz:int
   -> ifail:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssyrfs
   :  layout:int
@@ -10340,7 +9602,6 @@ val ssyrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsyrfs
   :  layout:int
@@ -10359,7 +9620,6 @@ val dsyrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csyrfs
   :  layout:int
@@ -10378,7 +9638,6 @@ val csyrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsyrfs
   :  layout:int
@@ -10397,7 +9656,6 @@ val zsyrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssysv
   :  layout:int
@@ -10410,7 +9668,6 @@ val ssysv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsysv
   :  layout:int
@@ -10423,7 +9680,6 @@ val dsysv
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csysv
   :  layout:int
@@ -10436,7 +9692,6 @@ val csysv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsysv
   :  layout:int
@@ -10449,7 +9704,6 @@ val zsysv
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssysvx
   :  layout:int
@@ -10470,7 +9724,6 @@ val ssysvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsysvx
   :  layout:int
@@ -10491,7 +9744,6 @@ val dsysvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csysvx
   :  layout:int
@@ -10512,7 +9764,6 @@ val csysvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsysvx
   :  layout:int
@@ -10533,7 +9784,6 @@ val zsysvx
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssytrd
   :  layout:int
@@ -10545,7 +9795,6 @@ val ssytrd
   -> e:float ptr
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsytrd
   :  layout:int
@@ -10557,7 +9806,6 @@ val dsytrd
   -> e:float ptr
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssytrf
   :  layout:int
@@ -10567,7 +9815,6 @@ val ssytrf
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsytrf
   :  layout:int
@@ -10577,7 +9824,6 @@ val dsytrf
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csytrf
   :  layout:int
@@ -10587,7 +9833,6 @@ val csytrf
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsytrf
   :  layout:int
@@ -10597,7 +9842,6 @@ val zsytrf
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssytri
   :  layout:int
@@ -10607,7 +9851,6 @@ val ssytri
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsytri
   :  layout:int
@@ -10617,7 +9860,6 @@ val dsytri
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csytri
   :  layout:int
@@ -10627,7 +9869,6 @@ val csytri
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsytri
   :  layout:int
@@ -10637,7 +9878,6 @@ val zsytri
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssytrs
   :  layout:int
@@ -10650,7 +9890,6 @@ val ssytrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsytrs
   :  layout:int
@@ -10663,7 +9902,6 @@ val dsytrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csytrs
   :  layout:int
@@ -10676,7 +9914,6 @@ val csytrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsytrs
   :  layout:int
@@ -10689,7 +9926,6 @@ val zsytrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stbcon
   :  layout:int
@@ -10702,7 +9938,6 @@ val stbcon
   -> ldab:int
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtbcon
   :  layout:int
@@ -10715,7 +9950,6 @@ val dtbcon
   -> ldab:int
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctbcon
   :  layout:int
@@ -10728,7 +9962,6 @@ val ctbcon
   -> ldab:int
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztbcon
   :  layout:int
@@ -10741,7 +9974,6 @@ val ztbcon
   -> ldab:int
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stbrfs
   :  layout:int
@@ -10760,7 +9992,6 @@ val stbrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtbrfs
   :  layout:int
@@ -10779,7 +10010,6 @@ val dtbrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctbrfs
   :  layout:int
@@ -10798,7 +10028,6 @@ val ctbrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztbrfs
   :  layout:int
@@ -10817,7 +10046,6 @@ val ztbrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stbtrs
   :  layout:int
@@ -10832,7 +10060,6 @@ val stbtrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtbtrs
   :  layout:int
@@ -10847,7 +10074,6 @@ val dtbtrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctbtrs
   :  layout:int
@@ -10862,7 +10088,6 @@ val ctbtrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztbtrs
   :  layout:int
@@ -10877,7 +10102,6 @@ val ztbtrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stfsm
   :  layout:int
@@ -10893,7 +10117,6 @@ val stfsm
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtfsm
   :  layout:int
@@ -10909,7 +10132,6 @@ val dtfsm
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctfsm
   :  layout:int
@@ -10925,7 +10147,6 @@ val ctfsm
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztfsm
   :  layout:int
@@ -10941,7 +10162,6 @@ val ztfsm
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stftri
   :  layout:int
@@ -10951,7 +10171,6 @@ val stftri
   -> n:int
   -> a:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtftri
   :  layout:int
@@ -10961,7 +10180,6 @@ val dtftri
   -> n:int
   -> a:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctftri
   :  layout:int
@@ -10971,7 +10189,6 @@ val ctftri
   -> n:int
   -> a:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztftri
   :  layout:int
@@ -10981,7 +10198,6 @@ val ztftri
   -> n:int
   -> a:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stfttp
   :  layout:int
@@ -10991,7 +10207,6 @@ val stfttp
   -> arf:float ptr
   -> ap:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtfttp
   :  layout:int
@@ -11001,7 +10216,6 @@ val dtfttp
   -> arf:float ptr
   -> ap:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctfttp
   :  layout:int
@@ -11011,7 +10225,6 @@ val ctfttp
   -> arf:Complex.t ptr
   -> ap:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztfttp
   :  layout:int
@@ -11021,7 +10234,6 @@ val ztfttp
   -> arf:Complex.t ptr
   -> ap:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stfttr
   :  layout:int
@@ -11032,7 +10244,6 @@ val stfttr
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtfttr
   :  layout:int
@@ -11043,7 +10254,6 @@ val dtfttr
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctfttr
   :  layout:int
@@ -11054,7 +10264,6 @@ val ctfttr
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztfttr
   :  layout:int
@@ -11065,7 +10274,6 @@ val ztfttr
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stgevc
   :  layout:int
@@ -11084,7 +10292,6 @@ val stgevc
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtgevc
   :  layout:int
@@ -11103,7 +10310,6 @@ val dtgevc
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctgevc
   :  layout:int
@@ -11122,7 +10328,6 @@ val ctgevc
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztgevc
   :  layout:int
@@ -11141,7 +10346,6 @@ val ztgevc
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stgexc
   :  layout:int
@@ -11159,7 +10363,6 @@ val stgexc
   -> ifst:int32 ptr
   -> ilst:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtgexc
   :  layout:int
@@ -11177,7 +10380,6 @@ val dtgexc
   -> ifst:int32 ptr
   -> ilst:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctgexc
   :  layout:int
@@ -11195,7 +10397,6 @@ val ctgexc
   -> ifst:int
   -> ilst:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztgexc
   :  layout:int
@@ -11213,7 +10414,6 @@ val ztgexc
   -> ifst:int
   -> ilst:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stgsen
   :  layout:int
@@ -11238,7 +10438,6 @@ val stgsen
   -> pr:float ptr
   -> dif:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtgsen
   :  layout:int
@@ -11263,7 +10462,6 @@ val dtgsen
   -> pr:float ptr
   -> dif:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctgsen
   :  layout:int
@@ -11287,7 +10485,6 @@ val ctgsen
   -> pr:float ptr
   -> dif:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztgsen
   :  layout:int
@@ -11311,7 +10508,6 @@ val ztgsen
   -> pr:float ptr
   -> dif:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stgsja
   :  layout:int
@@ -11339,7 +10535,6 @@ val stgsja
   -> ldq:int
   -> ncycle:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtgsja
   :  layout:int
@@ -11367,7 +10562,6 @@ val dtgsja
   -> ldq:int
   -> ncycle:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctgsja
   :  layout:int
@@ -11395,7 +10589,6 @@ val ctgsja
   -> ldq:int
   -> ncycle:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztgsja
   :  layout:int
@@ -11423,7 +10616,6 @@ val ztgsja
   -> ldq:int
   -> ncycle:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stgsna
   :  layout:int
@@ -11444,7 +10636,6 @@ val stgsna
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtgsna
   :  layout:int
@@ -11465,7 +10656,6 @@ val dtgsna
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctgsna
   :  layout:int
@@ -11486,7 +10676,6 @@ val ctgsna
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztgsna
   :  layout:int
@@ -11507,7 +10696,6 @@ val ztgsna
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stgsyl
   :  layout:int
@@ -11530,7 +10718,6 @@ val stgsyl
   -> scale:float ptr
   -> dif:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtgsyl
   :  layout:int
@@ -11553,7 +10740,6 @@ val dtgsyl
   -> scale:float ptr
   -> dif:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctgsyl
   :  layout:int
@@ -11576,7 +10762,6 @@ val ctgsyl
   -> scale:float ptr
   -> dif:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztgsyl
   :  layout:int
@@ -11599,7 +10784,6 @@ val ztgsyl
   -> scale:float ptr
   -> dif:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stpcon
   :  layout:int
@@ -11610,7 +10794,6 @@ val stpcon
   -> ap:float ptr
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtpcon
   :  layout:int
@@ -11621,7 +10804,6 @@ val dtpcon
   -> ap:float ptr
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctpcon
   :  layout:int
@@ -11632,7 +10814,6 @@ val ctpcon
   -> ap:Complex.t ptr
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztpcon
   :  layout:int
@@ -11643,7 +10824,6 @@ val ztpcon
   -> ap:Complex.t ptr
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stprfs
   :  layout:int
@@ -11660,7 +10840,6 @@ val stprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtprfs
   :  layout:int
@@ -11677,7 +10856,6 @@ val dtprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctprfs
   :  layout:int
@@ -11694,7 +10872,6 @@ val ctprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztprfs
   :  layout:int
@@ -11711,19 +10888,14 @@ val ztprfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stptri : layout:int -> uplo:char -> diag:char -> n:int -> ap:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtptri : layout:int -> uplo:char -> diag:char -> n:int -> ap:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctptri : layout:int -> uplo:char -> diag:char -> n:int -> ap:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztptri : layout:int -> uplo:char -> diag:char -> n:int -> ap:Complex.t ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stptrs
   :  layout:int
@@ -11736,7 +10908,6 @@ val stptrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtptrs
   :  layout:int
@@ -11749,7 +10920,6 @@ val dtptrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctptrs
   :  layout:int
@@ -11762,7 +10932,6 @@ val ctptrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztptrs
   :  layout:int
@@ -11775,7 +10944,6 @@ val ztptrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stpttf
   :  layout:int
@@ -11785,7 +10953,6 @@ val stpttf
   -> ap:float ptr
   -> arf:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtpttf
   :  layout:int
@@ -11795,7 +10962,6 @@ val dtpttf
   -> ap:float ptr
   -> arf:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctpttf
   :  layout:int
@@ -11805,7 +10971,6 @@ val ctpttf
   -> ap:Complex.t ptr
   -> arf:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztpttf
   :  layout:int
@@ -11815,7 +10980,6 @@ val ztpttf
   -> ap:Complex.t ptr
   -> arf:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stpttr
   :  layout:int
@@ -11825,7 +10989,6 @@ val stpttr
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtpttr
   :  layout:int
@@ -11835,7 +10998,6 @@ val dtpttr
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctpttr
   :  layout:int
@@ -11845,7 +11007,6 @@ val ctpttr
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztpttr
   :  layout:int
@@ -11855,7 +11016,6 @@ val ztpttr
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val strcon
   :  layout:int
@@ -11867,7 +11027,6 @@ val strcon
   -> lda:int
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtrcon
   :  layout:int
@@ -11879,7 +11038,6 @@ val dtrcon
   -> lda:int
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctrcon
   :  layout:int
@@ -11891,7 +11049,6 @@ val ctrcon
   -> lda:int
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztrcon
   :  layout:int
@@ -11903,7 +11060,6 @@ val ztrcon
   -> lda:int
   -> rcond:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val strevc
   :  layout:int
@@ -11920,7 +11076,6 @@ val strevc
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtrevc
   :  layout:int
@@ -11937,7 +11092,6 @@ val dtrevc
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctrevc
   :  layout:int
@@ -11954,7 +11108,6 @@ val ctrevc
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztrevc
   :  layout:int
@@ -11971,7 +11124,6 @@ val ztrevc
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val strexc
   :  layout:int
@@ -11984,7 +11136,6 @@ val strexc
   -> ifst:int32 ptr
   -> ilst:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtrexc
   :  layout:int
@@ -11997,7 +11148,6 @@ val dtrexc
   -> ifst:int32 ptr
   -> ilst:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctrexc
   :  layout:int
@@ -12010,7 +11160,6 @@ val ctrexc
   -> ifst:int
   -> ilst:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztrexc
   :  layout:int
@@ -12023,7 +11172,6 @@ val ztrexc
   -> ifst:int
   -> ilst:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val strrfs
   :  layout:int
@@ -12041,7 +11189,6 @@ val strrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtrrfs
   :  layout:int
@@ -12059,7 +11206,6 @@ val dtrrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctrrfs
   :  layout:int
@@ -12077,7 +11223,6 @@ val ctrrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztrrfs
   :  layout:int
@@ -12095,7 +11240,6 @@ val ztrrfs
   -> ferr:float ptr
   -> berr:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val strsen
   :  layout:int
@@ -12113,7 +11257,6 @@ val strsen
   -> s:float ptr
   -> sep:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtrsen
   :  layout:int
@@ -12131,7 +11274,6 @@ val dtrsen
   -> s:float ptr
   -> sep:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctrsen
   :  layout:int
@@ -12148,7 +11290,6 @@ val ctrsen
   -> s:float ptr
   -> sep:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztrsen
   :  layout:int
@@ -12165,7 +11306,6 @@ val ztrsen
   -> s:float ptr
   -> sep:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val strsna
   :  layout:int
@@ -12184,7 +11324,6 @@ val strsna
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtrsna
   :  layout:int
@@ -12203,7 +11342,6 @@ val dtrsna
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctrsna
   :  layout:int
@@ -12222,7 +11360,6 @@ val ctrsna
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztrsna
   :  layout:int
@@ -12241,7 +11378,6 @@ val ztrsna
   -> mm:int
   -> m:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val strsyl
   :  layout:int
@@ -12258,7 +11394,6 @@ val strsyl
   -> ldc:int
   -> scale:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtrsyl
   :  layout:int
@@ -12275,7 +11410,6 @@ val dtrsyl
   -> ldc:int
   -> scale:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctrsyl
   :  layout:int
@@ -12292,7 +11426,6 @@ val ctrsyl
   -> ldc:int
   -> scale:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztrsyl
   :  layout:int
@@ -12309,7 +11442,6 @@ val ztrsyl
   -> ldc:int
   -> scale:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val strtri
   :  layout:int
@@ -12319,7 +11451,6 @@ val strtri
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtrtri
   :  layout:int
@@ -12329,7 +11460,6 @@ val dtrtri
   -> a:float ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctrtri
   :  layout:int
@@ -12339,7 +11469,6 @@ val ctrtri
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztrtri
   :  layout:int
@@ -12349,7 +11478,6 @@ val ztrtri
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val strtrs
   :  layout:int
@@ -12363,7 +11491,6 @@ val strtrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtrtrs
   :  layout:int
@@ -12377,7 +11504,6 @@ val dtrtrs
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctrtrs
   :  layout:int
@@ -12391,7 +11517,6 @@ val ctrtrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztrtrs
   :  layout:int
@@ -12405,7 +11530,6 @@ val ztrtrs
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val strttf
   :  layout:int
@@ -12416,7 +11540,6 @@ val strttf
   -> lda:int
   -> arf:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtrttf
   :  layout:int
@@ -12427,7 +11550,6 @@ val dtrttf
   -> lda:int
   -> arf:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctrttf
   :  layout:int
@@ -12438,7 +11560,6 @@ val ctrttf
   -> lda:int
   -> arf:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztrttf
   :  layout:int
@@ -12449,7 +11570,6 @@ val ztrttf
   -> lda:int
   -> arf:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val strttp
   :  layout:int
@@ -12459,7 +11579,6 @@ val strttp
   -> lda:int
   -> ap:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtrttp
   :  layout:int
@@ -12469,7 +11588,6 @@ val dtrttp
   -> lda:int
   -> ap:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctrttp
   :  layout:int
@@ -12479,7 +11597,6 @@ val ctrttp
   -> lda:int
   -> ap:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztrttp
   :  layout:int
@@ -12489,7 +11606,6 @@ val ztrttp
   -> lda:int
   -> ap:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stzrzf
   :  layout:int
@@ -12499,7 +11615,6 @@ val stzrzf
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtzrzf
   :  layout:int
@@ -12509,7 +11624,6 @@ val dtzrzf
   -> lda:int
   -> tau:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctzrzf
   :  layout:int
@@ -12519,7 +11633,6 @@ val ctzrzf
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztzrzf
   :  layout:int
@@ -12529,7 +11642,6 @@ val ztzrzf
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cungbr
   :  layout:int
@@ -12541,7 +11653,6 @@ val cungbr
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zungbr
   :  layout:int
@@ -12553,7 +11664,6 @@ val zungbr
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cunghr
   :  layout:int
@@ -12564,7 +11674,6 @@ val cunghr
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zunghr
   :  layout:int
@@ -12575,7 +11684,6 @@ val zunghr
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cunglq
   :  layout:int
@@ -12586,7 +11694,6 @@ val cunglq
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zunglq
   :  layout:int
@@ -12597,7 +11704,6 @@ val zunglq
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cungql
   :  layout:int
@@ -12608,7 +11714,6 @@ val cungql
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zungql
   :  layout:int
@@ -12619,7 +11724,6 @@ val zungql
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cungqr
   :  layout:int
@@ -12630,7 +11734,6 @@ val cungqr
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zungqr
   :  layout:int
@@ -12641,7 +11744,6 @@ val zungqr
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cungrq
   :  layout:int
@@ -12652,7 +11754,6 @@ val cungrq
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zungrq
   :  layout:int
@@ -12663,7 +11764,6 @@ val zungrq
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cungtr
   :  layout:int
@@ -12673,7 +11773,6 @@ val cungtr
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zungtr
   :  layout:int
@@ -12683,7 +11782,6 @@ val zungtr
   -> lda:int
   -> tau:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cunmbr
   :  layout:int
@@ -12699,7 +11797,6 @@ val cunmbr
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zunmbr
   :  layout:int
@@ -12715,7 +11812,6 @@ val zunmbr
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cunmhr
   :  layout:int
@@ -12731,7 +11827,6 @@ val cunmhr
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zunmhr
   :  layout:int
@@ -12747,7 +11842,6 @@ val zunmhr
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cunmlq
   :  layout:int
@@ -12762,7 +11856,6 @@ val cunmlq
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zunmlq
   :  layout:int
@@ -12777,7 +11870,6 @@ val zunmlq
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cunmql
   :  layout:int
@@ -12792,7 +11884,6 @@ val cunmql
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zunmql
   :  layout:int
@@ -12807,7 +11898,6 @@ val zunmql
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cunmqr
   :  layout:int
@@ -12822,7 +11912,6 @@ val cunmqr
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zunmqr
   :  layout:int
@@ -12837,7 +11926,6 @@ val zunmqr
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cunmrq
   :  layout:int
@@ -12852,7 +11940,6 @@ val cunmrq
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zunmrq
   :  layout:int
@@ -12867,7 +11954,6 @@ val zunmrq
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cunmrz
   :  layout:int
@@ -12883,7 +11969,6 @@ val cunmrz
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zunmrz
   :  layout:int
@@ -12899,7 +11984,6 @@ val zunmrz
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cunmtr
   :  layout:int
@@ -12914,7 +11998,6 @@ val cunmtr
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zunmtr
   :  layout:int
@@ -12929,7 +12012,6 @@ val zunmtr
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cupgtr
   :  layout:int
@@ -12940,7 +12022,6 @@ val cupgtr
   -> q:Complex.t ptr
   -> ldq:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zupgtr
   :  layout:int
@@ -12951,7 +12032,6 @@ val zupgtr
   -> q:Complex.t ptr
   -> ldq:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cupmtr
   :  layout:int
@@ -12965,7 +12045,6 @@ val cupmtr
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zupmtr
   :  layout:int
@@ -12979,7 +12058,6 @@ val zupmtr
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val claghe
   :  layout:int
@@ -12990,7 +12068,6 @@ val claghe
   -> lda:int
   -> iseed:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlaghe
   :  layout:int
@@ -13001,7 +12078,6 @@ val zlaghe
   -> lda:int
   -> iseed:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slagsy
   :  layout:int
@@ -13012,7 +12088,6 @@ val slagsy
   -> lda:int
   -> iseed:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlagsy
   :  layout:int
@@ -13023,7 +12098,6 @@ val dlagsy
   -> lda:int
   -> iseed:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clagsy
   :  layout:int
@@ -13034,7 +12108,6 @@ val clagsy
   -> lda:int
   -> iseed:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlagsy
   :  layout:int
@@ -13045,7 +12118,6 @@ val zlagsy
   -> lda:int
   -> iseed:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slapmr
   :  layout:int
@@ -13056,7 +12128,6 @@ val slapmr
   -> ldx:int
   -> k:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlapmr
   :  layout:int
@@ -13067,7 +12138,6 @@ val dlapmr
   -> ldx:int
   -> k:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clapmr
   :  layout:int
@@ -13078,7 +12148,6 @@ val clapmr
   -> ldx:int
   -> k:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlapmr
   :  layout:int
@@ -13089,7 +12158,6 @@ val zlapmr
   -> ldx:int
   -> k:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slapmt
   :  layout:int
@@ -13100,7 +12168,6 @@ val slapmt
   -> ldx:int
   -> k:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlapmt
   :  layout:int
@@ -13111,7 +12178,6 @@ val dlapmt
   -> ldx:int
   -> k:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val clapmt
   :  layout:int
@@ -13122,7 +12188,6 @@ val clapmt
   -> ldx:int
   -> k:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zlapmt
   :  layout:int
@@ -13133,19 +12198,14 @@ val zlapmt
   -> ldx:int
   -> k:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slartgp : f:float -> g:float -> cs:float ptr -> sn:float ptr -> r:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlartgp : f:float -> g:float -> cs:float ptr -> sn:float ptr -> r:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val slartgs : x:float -> y:float -> sigma:float -> cs:float ptr -> sn:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dlartgs : x:float -> y:float -> sigma:float -> cs:float ptr -> sn:float ptr -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cbbcsd
   :  layout:int
@@ -13176,7 +12236,6 @@ val cbbcsd
   -> b22d:float ptr
   -> b22e:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cheswapr
   :  layout:int
@@ -13187,7 +12246,6 @@ val cheswapr
   -> i1:int
   -> i2:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chetri2
   :  layout:int
@@ -13197,7 +12255,6 @@ val chetri2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chetri2x
   :  layout:int
@@ -13208,7 +12265,6 @@ val chetri2x
   -> ipiv:int32 ptr
   -> nb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chetrs2
   :  layout:int
@@ -13221,7 +12277,6 @@ val chetrs2
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csyconv
   :  layout:int
@@ -13233,7 +12288,6 @@ val csyconv
   -> ipiv:int32 ptr
   -> e:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csyswapr
   :  layout:int
@@ -13244,7 +12298,6 @@ val csyswapr
   -> i1:int
   -> i2:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csytri2
   :  layout:int
@@ -13254,7 +12307,6 @@ val csytri2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csytri2x
   :  layout:int
@@ -13265,7 +12317,6 @@ val csytri2x
   -> ipiv:int32 ptr
   -> nb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csytrs2
   :  layout:int
@@ -13278,7 +12329,6 @@ val csytrs2
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cunbdb
   :  layout:int
@@ -13302,7 +12352,6 @@ val cunbdb
   -> tauq1:Complex.t ptr
   -> tauq2:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cuncsd
   :  layout:int
@@ -13333,7 +12382,6 @@ val cuncsd
   -> v2t:Complex.t ptr
   -> ldv2t:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cuncsd2by1
   :  layout:int
@@ -13355,7 +12403,6 @@ val cuncsd2by1
   -> v1t:Complex.t ptr
   -> ldv1t:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dbbcsd
   :  layout:int
@@ -13386,7 +12433,6 @@ val dbbcsd
   -> b22d:float ptr
   -> b22e:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dorbdb
   :  layout:int
@@ -13410,7 +12456,6 @@ val dorbdb
   -> tauq1:float ptr
   -> tauq2:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dorcsd
   :  layout:int
@@ -13441,7 +12486,6 @@ val dorcsd
   -> v2t:float ptr
   -> ldv2t:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dorcsd2by1
   :  layout:int
@@ -13463,7 +12507,6 @@ val dorcsd2by1
   -> v1t:float ptr
   -> ldv1t:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsyconv
   :  layout:int
@@ -13475,7 +12518,6 @@ val dsyconv
   -> ipiv:int32 ptr
   -> e:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsyswapr
   :  layout:int
@@ -13486,7 +12528,6 @@ val dsyswapr
   -> i1:int
   -> i2:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsytri2
   :  layout:int
@@ -13496,7 +12537,6 @@ val dsytri2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsytri2x
   :  layout:int
@@ -13507,7 +12547,6 @@ val dsytri2x
   -> ipiv:int32 ptr
   -> nb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsytrs2
   :  layout:int
@@ -13520,7 +12559,6 @@ val dsytrs2
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sbbcsd
   :  layout:int
@@ -13551,7 +12589,6 @@ val sbbcsd
   -> b22d:float ptr
   -> b22e:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sorbdb
   :  layout:int
@@ -13575,7 +12612,6 @@ val sorbdb
   -> tauq1:float ptr
   -> tauq2:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sorcsd
   :  layout:int
@@ -13606,7 +12642,6 @@ val sorcsd
   -> v2t:float ptr
   -> ldv2t:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sorcsd2by1
   :  layout:int
@@ -13628,7 +12663,6 @@ val sorcsd2by1
   -> v1t:float ptr
   -> ldv1t:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssyconv
   :  layout:int
@@ -13640,7 +12674,6 @@ val ssyconv
   -> ipiv:int32 ptr
   -> e:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssyswapr
   :  layout:int
@@ -13651,7 +12684,6 @@ val ssyswapr
   -> i1:int
   -> i2:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssytri2
   :  layout:int
@@ -13661,7 +12693,6 @@ val ssytri2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssytri2x
   :  layout:int
@@ -13672,7 +12703,6 @@ val ssytri2x
   -> ipiv:int32 ptr
   -> nb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssytrs2
   :  layout:int
@@ -13685,7 +12715,6 @@ val ssytrs2
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zbbcsd
   :  layout:int
@@ -13716,7 +12745,6 @@ val zbbcsd
   -> b22d:float ptr
   -> b22e:float ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zheswapr
   :  layout:int
@@ -13727,7 +12755,6 @@ val zheswapr
   -> i1:int
   -> i2:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhetri2
   :  layout:int
@@ -13737,7 +12764,6 @@ val zhetri2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhetri2x
   :  layout:int
@@ -13748,7 +12774,6 @@ val zhetri2x
   -> ipiv:int32 ptr
   -> nb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhetrs2
   :  layout:int
@@ -13761,7 +12786,6 @@ val zhetrs2
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsyconv
   :  layout:int
@@ -13773,7 +12797,6 @@ val zsyconv
   -> ipiv:int32 ptr
   -> e:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsyswapr
   :  layout:int
@@ -13784,7 +12807,6 @@ val zsyswapr
   -> i1:int
   -> i2:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsytri2
   :  layout:int
@@ -13794,7 +12816,6 @@ val zsytri2
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsytri2x
   :  layout:int
@@ -13805,7 +12826,6 @@ val zsytri2x
   -> ipiv:int32 ptr
   -> nb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsytrs2
   :  layout:int
@@ -13818,7 +12838,6 @@ val zsytrs2
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zunbdb
   :  layout:int
@@ -13842,7 +12861,6 @@ val zunbdb
   -> tauq1:Complex.t ptr
   -> tauq2:Complex.t ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zuncsd
   :  layout:int
@@ -13873,7 +12891,6 @@ val zuncsd
   -> v2t:Complex.t ptr
   -> ldv2t:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zuncsd2by1
   :  layout:int
@@ -13895,7 +12912,6 @@ val zuncsd2by1
   -> v1t:Complex.t ptr
   -> ldv1t:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgemqrt
   :  layout:int
@@ -13912,7 +12928,6 @@ val sgemqrt
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgemqrt
   :  layout:int
@@ -13929,7 +12944,6 @@ val dgemqrt
   -> c:float ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgemqrt
   :  layout:int
@@ -13946,7 +12960,6 @@ val cgemqrt
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgemqrt
   :  layout:int
@@ -13963,7 +12976,6 @@ val zgemqrt
   -> c:Complex.t ptr
   -> ldc:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeqrt
   :  layout:int
@@ -13975,7 +12987,6 @@ val sgeqrt
   -> t:float ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeqrt
   :  layout:int
@@ -13987,7 +12998,6 @@ val dgeqrt
   -> t:float ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeqrt
   :  layout:int
@@ -13999,7 +13009,6 @@ val cgeqrt
   -> t:Complex.t ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeqrt
   :  layout:int
@@ -14011,7 +13020,6 @@ val zgeqrt
   -> t:Complex.t ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeqrt2
   :  layout:int
@@ -14022,7 +13030,6 @@ val sgeqrt2
   -> t:float ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeqrt2
   :  layout:int
@@ -14033,7 +13040,6 @@ val dgeqrt2
   -> t:float ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeqrt2
   :  layout:int
@@ -14044,7 +13050,6 @@ val cgeqrt2
   -> t:Complex.t ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeqrt2
   :  layout:int
@@ -14055,7 +13060,6 @@ val zgeqrt2
   -> t:Complex.t ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val sgeqrt3
   :  layout:int
@@ -14066,7 +13070,6 @@ val sgeqrt3
   -> t:float ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dgeqrt3
   :  layout:int
@@ -14077,7 +13080,6 @@ val dgeqrt3
   -> t:float ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val cgeqrt3
   :  layout:int
@@ -14088,7 +13090,6 @@ val cgeqrt3
   -> t:Complex.t ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zgeqrt3
   :  layout:int
@@ -14099,7 +13100,6 @@ val zgeqrt3
   -> t:Complex.t ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stpmqrt
   :  layout:int
@@ -14119,7 +13119,6 @@ val stpmqrt
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtpmqrt
   :  layout:int
@@ -14139,7 +13138,6 @@ val dtpmqrt
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctpmqrt
   :  layout:int
@@ -14159,7 +13157,6 @@ val ctpmqrt
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztpmqrt
   :  layout:int
@@ -14179,7 +13176,6 @@ val ztpmqrt
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stpqrt
   :  layout:int
@@ -14194,7 +13190,6 @@ val stpqrt
   -> t:float ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtpqrt
   :  layout:int
@@ -14209,7 +13204,6 @@ val dtpqrt
   -> t:float ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctpqrt
   :  layout:int
@@ -14224,7 +13218,6 @@ val ctpqrt
   -> t:Complex.t ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztpqrt
   :  layout:int
@@ -14239,7 +13232,6 @@ val ztpqrt
   -> t:Complex.t ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stpqrt2
   :  layout:int
@@ -14253,7 +13245,6 @@ val stpqrt2
   -> t:float ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtpqrt2
   :  layout:int
@@ -14267,7 +13258,6 @@ val dtpqrt2
   -> t:float ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctpqrt2
   :  layout:int
@@ -14281,7 +13271,6 @@ val ctpqrt2
   -> t:Complex.t ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztpqrt2
   :  layout:int
@@ -14295,7 +13284,6 @@ val ztpqrt2
   -> t:Complex.t ptr
   -> ldt:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val stprfb
   :  layout:int
@@ -14316,7 +13304,6 @@ val stprfb
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dtprfb
   :  layout:int
@@ -14337,7 +13324,6 @@ val dtprfb
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ctprfb
   :  layout:int
@@ -14358,7 +13344,6 @@ val ctprfb
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ztprfb
   :  layout:int
@@ -14379,7 +13364,6 @@ val ztprfb
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssysv_rook
   :  layout:int
@@ -14392,7 +13376,6 @@ val ssysv_rook
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsysv_rook
   :  layout:int
@@ -14405,7 +13388,6 @@ val dsysv_rook
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csysv_rook
   :  layout:int
@@ -14418,7 +13400,6 @@ val csysv_rook
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsysv_rook
   :  layout:int
@@ -14431,7 +13412,6 @@ val zsysv_rook
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssytrf_rook
   :  layout:int
@@ -14441,7 +13421,6 @@ val ssytrf_rook
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsytrf_rook
   :  layout:int
@@ -14451,7 +13430,6 @@ val dsytrf_rook
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csytrf_rook
   :  layout:int
@@ -14461,7 +13439,6 @@ val csytrf_rook
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsytrf_rook
   :  layout:int
@@ -14471,7 +13448,6 @@ val zsytrf_rook
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val ssytrs_rook
   :  layout:int
@@ -14484,7 +13460,6 @@ val ssytrs_rook
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val dsytrs_rook
   :  layout:int
@@ -14497,7 +13472,6 @@ val dsytrs_rook
   -> b:float ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csytrs_rook
   :  layout:int
@@ -14510,7 +13484,6 @@ val csytrs_rook
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsytrs_rook
   :  layout:int
@@ -14523,7 +13496,6 @@ val zsytrs_rook
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chetrf_rook
   :  layout:int
@@ -14533,7 +13505,6 @@ val chetrf_rook
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhetrf_rook
   :  layout:int
@@ -14543,7 +13514,6 @@ val zhetrf_rook
   -> lda:int
   -> ipiv:int32 ptr
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val chetrs_rook
   :  layout:int
@@ -14556,7 +13526,6 @@ val chetrs_rook
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zhetrs_rook
   :  layout:int
@@ -14569,7 +13538,6 @@ val zhetrs_rook
   -> b:Complex.t ptr
   -> ldb:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val csyr
   :  layout:int
@@ -14581,7 +13549,6 @@ val csyr
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)
 
 val zsyr
   :  layout:int
@@ -14593,4 +13560,3 @@ val zsyr
   -> a:Complex.t ptr
   -> lda:int
   -> int
-(** Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_ *)

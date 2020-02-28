@@ -79,8 +79,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let cp2_ref = ref cp2 in
         let tracker = ref 0 in
         (* tracker: int reference In reverse_reset, i keeps track of the number of times
-         cp1 and cp2 has been called such that in reverse_push, we do not update the
-         adjoint of ap before we've fully updated both ca1 and ca2 *)
+           cp1 and cp2 has been called such that in reverse_push, we do not update the
+           adjoint of ap before we've fully updated both ca1 and ca2 *)
         ( DR
             ( cp1
             , ca1_ref

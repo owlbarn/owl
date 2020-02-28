@@ -16,7 +16,9 @@ external airy
   -> int
   = "stub_sf_airy"
 
-let airy x ai aip bi bip = airy x (CI.cptr ai) (CI.cptr aip) (CI.cptr bi) (CI.cptr bip)
+let airy x (CI.CPointer ai) (CI.CPointer aip) (CI.CPointer bi) (CI.CPointer bip) =
+  airy x ai aip bi bip
+
 
 (* Elliptic Functions *)
 
@@ -30,8 +32,8 @@ external ellipj
   -> int
   = "stub_sf_ellipj_byte6" "stub_sf_ellipj"
 
-let ellipj u m sn cn dn phi =
-  ellipj u m (CI.cptr sn) (CI.cptr cn) (CI.cptr dn) (CI.cptr phi)
+let ellipj u m (CI.CPointer sn) (CI.CPointer cn) (CI.CPointer dn) (CI.CPointer phi) =
+  ellipj u m sn cn dn phi
 
 
 external ellipk : float -> float = "owl_stub_sf_ellipk"
@@ -120,7 +122,7 @@ external dawsn : float -> float = "owl_stub_sf_dawsn"
 
 external fresnel : float -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_fresnel"
 
-let fresnel x ssa csa = fresnel x (CI.cptr ssa) (CI.cptr csa)
+let fresnel x (CI.CPointer ssa) (CI.CPointer csa) = fresnel x ssa csa
 
 (* Other special functions *)
 
@@ -134,11 +136,11 @@ external expm1 : float -> float = "owl_stub_sf_expm1"
 
 external shichi : float -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_shichi"
 
-let shichi x si ci = shichi x (CI.cptr si) (CI.cptr ci)
+let shichi x (CI.CPointer si) (CI.CPointer ci) = shichi x si ci
 
 external sici : float -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_sici"
 
-let sici x si ci = sici x (CI.cptr si) (CI.cptr ci)
+let sici x (CI.CPointer si) (CI.CPointer ci) = sici x si ci
 
 external zeta : float -> float -> float = "owl_stub_sf_zeta"
 

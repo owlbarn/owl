@@ -10,7 +10,7 @@ module type Common = sig
   include Owl_base_dense_ndarray_intf.Common
 
   (* NOTE: below are all the functions that have
-    not been implemented in Base*)
+     not been implemented in Base*)
 
   (** {6 Create N-dimensional array} *)
 
@@ -521,7 +521,7 @@ module type Real = sig
   include Owl_base_dense_ndarray_intf.Real
 
   (* NOTE: below are all the functions that have
-    not been implemented in Base*)
+     not been implemented in Base*)
 
   (** {6 Real operations} *)
 
@@ -898,7 +898,7 @@ module type NN = sig
   include Owl_base_dense_ndarray_intf.NN
 
   (* NOTE: below are all the functions that have
-    not been implemented in Base*)
+     not been implemented in Base*)
 
   (** {6 Neural network related functions} *)
 

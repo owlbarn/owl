@@ -388,12 +388,12 @@ E.g., ``[[];[0;3];[0]]`` is equivalent to ``[R []; R [0;3]; R [0]]``.
 val get_slice_ext : int list array -> ('a, 'b) t -> ('a, 'b) t
 (**
 Please refer to Ndarray document.
-*) 
+*)
 
 val set_slice_ext : int list array -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
 Please refer to Ndarray document.
-*) 
+*)
 
 val row : ('a, 'b) t -> int -> ('a, 'b) t
 (**

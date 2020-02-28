@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** auto-generated lapacke interface file, timestamp:1498396311 *)
+(** auto-generated lapacke interface file, timestamp:1582875918 *)
 
 module CI = Cstubs_internals
 
@@ -15035,420 +15035,448 @@ external lapacke_zsyr
   -> int
   = "owl_stub_1034_LAPACKE_zsyr_byte8" "owl_stub_1034_LAPACKE_zsyr"
 
-let sbdsdc ~layout ~uplo ~compq ~n ~d ~e ~u ~ldu ~vt ~ldvt ~q ~iq =
-  lapacke_sbdsdc
-    layout
-    uplo
-    compq
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr q)
-    (CI.cptr iq)
+let sbdsdc
+    ~layout
+    ~uplo
+    ~compq
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+    ~q:(CI.CPointer q)
+    ~iq:(CI.CPointer iq)
+  =
+  lapacke_sbdsdc layout uplo compq n d e u ldu vt ldvt q iq
 
 
-let dbdsdc ~layout ~uplo ~compq ~n ~d ~e ~u ~ldu ~vt ~ldvt ~q ~iq =
-  lapacke_dbdsdc
-    layout
-    uplo
-    compq
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr q)
-    (CI.cptr iq)
+let dbdsdc
+    ~layout
+    ~uplo
+    ~compq
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+    ~q:(CI.CPointer q)
+    ~iq:(CI.CPointer iq)
+  =
+  lapacke_dbdsdc layout uplo compq n d e u ldu vt ldvt q iq
 
 
-let sbdsqr ~layout ~uplo ~n ~ncvt ~nru ~ncc ~d ~e ~vt ~ldvt ~u ~ldu ~c ~ldc =
-  lapacke_sbdsqr
-    layout
-    uplo
-    n
-    ncvt
-    nru
-    ncc
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr u)
-    ldu
-    (CI.cptr c)
-    ldc
+let sbdsqr
+    ~layout
+    ~uplo
+    ~n
+    ~ncvt
+    ~nru
+    ~ncc
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_sbdsqr layout uplo n ncvt nru ncc d e vt ldvt u ldu c ldc
 
 
-let dbdsqr ~layout ~uplo ~n ~ncvt ~nru ~ncc ~d ~e ~vt ~ldvt ~u ~ldu ~c ~ldc =
-  lapacke_dbdsqr
-    layout
-    uplo
-    n
-    ncvt
-    nru
-    ncc
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr u)
-    ldu
-    (CI.cptr c)
-    ldc
+let dbdsqr
+    ~layout
+    ~uplo
+    ~n
+    ~ncvt
+    ~nru
+    ~ncc
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dbdsqr layout uplo n ncvt nru ncc d e vt ldvt u ldu c ldc
 
 
-let cbdsqr ~layout ~uplo ~n ~ncvt ~nru ~ncc ~d ~e ~vt ~ldvt ~u ~ldu ~c ~ldc =
-  lapacke_cbdsqr
-    layout
-    uplo
-    n
-    ncvt
-    nru
-    ncc
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr u)
-    ldu
-    (CI.cptr c)
-    ldc
+let cbdsqr
+    ~layout
+    ~uplo
+    ~n
+    ~ncvt
+    ~nru
+    ~ncc
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_cbdsqr layout uplo n ncvt nru ncc d e vt ldvt u ldu c ldc
 
 
-let zbdsqr ~layout ~uplo ~n ~ncvt ~nru ~ncc ~d ~e ~vt ~ldvt ~u ~ldu ~c ~ldc =
-  lapacke_zbdsqr
-    layout
-    uplo
-    n
-    ncvt
-    nru
-    ncc
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr u)
-    ldu
-    (CI.cptr c)
-    ldc
+let zbdsqr
+    ~layout
+    ~uplo
+    ~n
+    ~ncvt
+    ~nru
+    ~ncc
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zbdsqr layout uplo n ncvt nru ncc d e vt ldvt u ldu c ldc
 
 
-let sbdsvdx ~layout ~uplo ~jobz ~range ~n ~d ~e ~vl ~vu ~il ~iu ~ns ~s ~z ~ldz ~superb =
-  lapacke_sbdsvdx
-    layout
-    uplo
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    (CI.cptr ns)
-    (CI.cptr s)
-    (CI.cptr z)
-    ldz
-    (CI.cptr superb)
+let sbdsvdx
+    ~layout
+    ~uplo
+    ~jobz
+    ~range
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~ns:(CI.CPointer ns)
+    ~s:(CI.CPointer s)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~superb:(CI.CPointer superb)
+  =
+  lapacke_sbdsvdx layout uplo jobz range n d e vl vu il iu ns s z ldz superb
 
 
-let dbdsvdx ~layout ~uplo ~jobz ~range ~n ~d ~e ~vl ~vu ~il ~iu ~ns ~s ~z ~ldz ~superb =
-  lapacke_dbdsvdx
-    layout
-    uplo
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    (CI.cptr ns)
-    (CI.cptr s)
-    (CI.cptr z)
-    ldz
-    (CI.cptr superb)
+let dbdsvdx
+    ~layout
+    ~uplo
+    ~jobz
+    ~range
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~ns:(CI.CPointer ns)
+    ~s:(CI.CPointer s)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~superb:(CI.CPointer superb)
+  =
+  lapacke_dbdsvdx layout uplo jobz range n d e vl vu il iu ns s z ldz superb
 
 
-let sdisna ~job ~m ~n ~d ~sep = lapacke_sdisna job m n (CI.cptr d) (CI.cptr sep)
-
-let ddisna ~job ~m ~n ~d ~sep = lapacke_ddisna job m n (CI.cptr d) (CI.cptr sep)
-
-let sgbbrd ~layout ~vect ~m ~n ~ncc ~kl ~ku ~ab ~ldab ~d ~e ~q ~ldq ~pt ~ldpt ~c ~ldc =
-  lapacke_sgbbrd
-    layout
-    vect
-    m
-    n
-    ncc
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr q)
-    ldq
-    (CI.cptr pt)
-    ldpt
-    (CI.cptr c)
-    ldc
+let sdisna ~job ~m ~n ~d:(CI.CPointer d) ~sep:(CI.CPointer sep) =
+  lapacke_sdisna job m n d sep
 
 
-let dgbbrd ~layout ~vect ~m ~n ~ncc ~kl ~ku ~ab ~ldab ~d ~e ~q ~ldq ~pt ~ldpt ~c ~ldc =
-  lapacke_dgbbrd
-    layout
-    vect
-    m
-    n
-    ncc
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr q)
-    ldq
-    (CI.cptr pt)
-    ldpt
-    (CI.cptr c)
-    ldc
+let ddisna ~job ~m ~n ~d:(CI.CPointer d) ~sep:(CI.CPointer sep) =
+  lapacke_ddisna job m n d sep
 
 
-let cgbbrd ~layout ~vect ~m ~n ~ncc ~kl ~ku ~ab ~ldab ~d ~e ~q ~ldq ~pt ~ldpt ~c ~ldc =
-  lapacke_cgbbrd
-    layout
-    vect
-    m
-    n
-    ncc
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr q)
-    ldq
-    (CI.cptr pt)
-    ldpt
-    (CI.cptr c)
-    ldc
+let sgbbrd
+    ~layout
+    ~vect
+    ~m
+    ~n
+    ~ncc
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~pt:(CI.CPointer pt)
+    ~ldpt
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_sgbbrd layout vect m n ncc kl ku ab ldab d e q ldq pt ldpt c ldc
 
 
-let zgbbrd ~layout ~vect ~m ~n ~ncc ~kl ~ku ~ab ~ldab ~d ~e ~q ~ldq ~pt ~ldpt ~c ~ldc =
-  lapacke_zgbbrd
-    layout
-    vect
-    m
-    n
-    ncc
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr q)
-    ldq
-    (CI.cptr pt)
-    ldpt
-    (CI.cptr c)
-    ldc
+let dgbbrd
+    ~layout
+    ~vect
+    ~m
+    ~n
+    ~ncc
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~pt:(CI.CPointer pt)
+    ~ldpt
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dgbbrd layout vect m n ncc kl ku ab ldab d e q ldq pt ldpt c ldc
 
 
-let sgbcon ~layout ~norm ~n ~kl ~ku ~ab ~ldab ~ipiv ~anorm ~rcond =
-  lapacke_sgbcon
-    layout
-    norm
-    n
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr ipiv)
-    anorm
-    (CI.cptr rcond)
+let cgbbrd
+    ~layout
+    ~vect
+    ~m
+    ~n
+    ~ncc
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~pt:(CI.CPointer pt)
+    ~ldpt
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_cgbbrd layout vect m n ncc kl ku ab ldab d e q ldq pt ldpt c ldc
 
 
-let dgbcon ~layout ~norm ~n ~kl ~ku ~ab ~ldab ~ipiv ~anorm ~rcond =
-  lapacke_dgbcon
-    layout
-    norm
-    n
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr ipiv)
-    anorm
-    (CI.cptr rcond)
+let zgbbrd
+    ~layout
+    ~vect
+    ~m
+    ~n
+    ~ncc
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~pt:(CI.CPointer pt)
+    ~ldpt
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zgbbrd layout vect m n ncc kl ku ab ldab d e q ldq pt ldpt c ldc
 
 
-let cgbcon ~layout ~norm ~n ~kl ~ku ~ab ~ldab ~ipiv ~anorm ~rcond =
-  lapacke_cgbcon
-    layout
-    norm
-    n
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr ipiv)
-    anorm
-    (CI.cptr rcond)
+let sgbcon
+    ~layout
+    ~norm
+    ~n
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_sgbcon layout norm n kl ku ab ldab ipiv anorm rcond
 
 
-let zgbcon ~layout ~norm ~n ~kl ~ku ~ab ~ldab ~ipiv ~anorm ~rcond =
-  lapacke_zgbcon
-    layout
-    norm
-    n
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr ipiv)
-    anorm
-    (CI.cptr rcond)
+let dgbcon
+    ~layout
+    ~norm
+    ~n
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_dgbcon layout norm n kl ku ab ldab ipiv anorm rcond
 
 
-let sgbequ ~layout ~m ~n ~kl ~ku ~ab ~ldab ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_sgbequ
-    layout
-    m
-    n
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
+let cgbcon
+    ~layout
+    ~norm
+    ~n
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_cgbcon layout norm n kl ku ab ldab ipiv anorm rcond
 
 
-let dgbequ ~layout ~m ~n ~kl ~ku ~ab ~ldab ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_dgbequ
-    layout
-    m
-    n
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
+let zgbcon
+    ~layout
+    ~norm
+    ~n
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_zgbcon layout norm n kl ku ab ldab ipiv anorm rcond
 
 
-let cgbequ ~layout ~m ~n ~kl ~ku ~ab ~ldab ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_cgbequ
-    layout
-    m
-    n
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
+let sgbequ
+    ~layout
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_sgbequ layout m n kl ku ab ldab r c rowcnd colcnd amax
 
 
-let zgbequ ~layout ~m ~n ~kl ~ku ~ab ~ldab ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_zgbequ
-    layout
-    m
-    n
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
+let dgbequ
+    ~layout
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_dgbequ layout m n kl ku ab ldab r c rowcnd colcnd amax
 
 
-let sgbequb ~layout ~m ~n ~kl ~ku ~ab ~ldab ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_sgbequb
-    layout
-    m
-    n
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
+let cgbequ
+    ~layout
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_cgbequ layout m n kl ku ab ldab r c rowcnd colcnd amax
 
 
-let dgbequb ~layout ~m ~n ~kl ~ku ~ab ~ldab ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_dgbequb
-    layout
-    m
-    n
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
+let zgbequ
+    ~layout
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_zgbequ layout m n kl ku ab ldab r c rowcnd colcnd amax
 
 
-let cgbequb ~layout ~m ~n ~kl ~ku ~ab ~ldab ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_cgbequb
-    layout
-    m
-    n
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
+let sgbequb
+    ~layout
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_sgbequb layout m n kl ku ab ldab r c rowcnd colcnd amax
 
 
-let zgbequb ~layout ~m ~n ~kl ~ku ~ab ~ldab ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_zgbequb
-    layout
-    m
-    n
-    kl
-    ku
-    (CI.cptr ab)
-    ldab
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
+let dgbequb
+    ~layout
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_dgbequb layout m n kl ku ab ldab r c rowcnd colcnd amax
+
+
+let cgbequb
+    ~layout
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_cgbequb layout m n kl ku ab ldab r c rowcnd colcnd amax
+
+
+let zgbequb
+    ~layout
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_zgbequb layout m n kl ku ab ldab r c rowcnd colcnd amax
 
 
 let sgbrfs
@@ -15458,36 +15486,19 @@ let sgbrfs
     ~kl
     ~ku
     ~nrhs
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~afb
+    ~afb:(CI.CPointer afb)
     ~ldafb
-    ~ipiv
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~ferr
-    ~berr
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_sgbrfs
-    layout
-    trans
-    n
-    kl
-    ku
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr afb)
-    ldafb
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_sgbrfs layout trans n kl ku nrhs ab ldab afb ldafb ipiv b ldb x ldx ferr berr
 
 
 let dgbrfs
@@ -15497,36 +15508,19 @@ let dgbrfs
     ~kl
     ~ku
     ~nrhs
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~afb
+    ~afb:(CI.CPointer afb)
     ~ldafb
-    ~ipiv
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~ferr
-    ~berr
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_dgbrfs
-    layout
-    trans
-    n
-    kl
-    ku
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr afb)
-    ldafb
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_dgbrfs layout trans n kl ku nrhs ab ldab afb ldafb ipiv b ldb x ldx ferr berr
 
 
 let cgbrfs
@@ -15536,36 +15530,19 @@ let cgbrfs
     ~kl
     ~ku
     ~nrhs
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~afb
+    ~afb:(CI.CPointer afb)
     ~ldafb
-    ~ipiv
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~ferr
-    ~berr
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_cgbrfs
-    layout
-    trans
-    n
-    kl
-    ku
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr afb)
-    ldafb
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_cgbrfs layout trans n kl ku nrhs ab ldab afb ldafb ipiv b ldb x ldx ferr berr
 
 
 let zgbrfs
@@ -15575,52 +15552,79 @@ let zgbrfs
     ~kl
     ~ku
     ~nrhs
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~afb
+    ~afb:(CI.CPointer afb)
     ~ldafb
-    ~ipiv
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~ferr
-    ~berr
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_zgbrfs
-    layout
-    trans
-    n
-    kl
-    ku
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr afb)
-    ldafb
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_zgbrfs layout trans n kl ku nrhs ab ldab afb ldafb ipiv b ldb x ldx ferr berr
 
 
-let sgbsv ~layout ~n ~kl ~ku ~nrhs ~ab ~ldab ~ipiv ~b ~ldb =
-  lapacke_sgbsv layout n kl ku nrhs (CI.cptr ab) ldab (CI.cptr ipiv) (CI.cptr b) ldb
+let sgbsv
+    ~layout
+    ~n
+    ~kl
+    ~ku
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_sgbsv layout n kl ku nrhs ab ldab ipiv b ldb
 
 
-let dgbsv ~layout ~n ~kl ~ku ~nrhs ~ab ~ldab ~ipiv ~b ~ldb =
-  lapacke_dgbsv layout n kl ku nrhs (CI.cptr ab) ldab (CI.cptr ipiv) (CI.cptr b) ldb
+let dgbsv
+    ~layout
+    ~n
+    ~kl
+    ~ku
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dgbsv layout n kl ku nrhs ab ldab ipiv b ldb
 
 
-let cgbsv ~layout ~n ~kl ~ku ~nrhs ~ab ~ldab ~ipiv ~b ~ldb =
-  lapacke_cgbsv layout n kl ku nrhs (CI.cptr ab) ldab (CI.cptr ipiv) (CI.cptr b) ldb
+let cgbsv
+    ~layout
+    ~n
+    ~kl
+    ~ku
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_cgbsv layout n kl ku nrhs ab ldab ipiv b ldb
 
 
-let zgbsv ~layout ~n ~kl ~ku ~nrhs ~ab ~ldab ~ipiv ~b ~ldb =
-  lapacke_zgbsv layout n kl ku nrhs (CI.cptr ab) ldab (CI.cptr ipiv) (CI.cptr b) ldb
+let zgbsv
+    ~layout
+    ~n
+    ~kl
+    ~ku
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zgbsv layout n kl ku nrhs ab ldab ipiv b ldb
 
 
 let sgbsvx
@@ -15631,22 +15635,22 @@ let sgbsvx
     ~kl
     ~ku
     ~nrhs
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~afb
+    ~afb:(CI.CPointer afb)
     ~ldafb
-    ~ipiv
-    ~equed
-    ~r
-    ~c
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~equed:(CI.CPointer equed)
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
-    ~rpivot
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+    ~rpivot:(CI.CPointer rpivot)
   =
   lapacke_sgbsvx
     layout
@@ -15656,22 +15660,22 @@ let sgbsvx
     kl
     ku
     nrhs
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr afb)
+    afb
     ldafb
-    (CI.cptr ipiv)
-    (CI.cptr equed)
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr b)
+    ipiv
+    equed
+    r
+    c
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-    (CI.cptr rpivot)
+    rcond
+    ferr
+    berr
+    rpivot
 
 
 let dgbsvx
@@ -15682,22 +15686,22 @@ let dgbsvx
     ~kl
     ~ku
     ~nrhs
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~afb
+    ~afb:(CI.CPointer afb)
     ~ldafb
-    ~ipiv
-    ~equed
-    ~r
-    ~c
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~equed:(CI.CPointer equed)
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
-    ~rpivot
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+    ~rpivot:(CI.CPointer rpivot)
   =
   lapacke_dgbsvx
     layout
@@ -15707,22 +15711,22 @@ let dgbsvx
     kl
     ku
     nrhs
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr afb)
+    afb
     ldafb
-    (CI.cptr ipiv)
-    (CI.cptr equed)
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr b)
+    ipiv
+    equed
+    r
+    c
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-    (CI.cptr rpivot)
+    rcond
+    ferr
+    berr
+    rpivot
 
 
 let cgbsvx
@@ -15733,22 +15737,22 @@ let cgbsvx
     ~kl
     ~ku
     ~nrhs
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~afb
+    ~afb:(CI.CPointer afb)
     ~ldafb
-    ~ipiv
-    ~equed
-    ~r
-    ~c
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~equed:(CI.CPointer equed)
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
-    ~rpivot
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+    ~rpivot:(CI.CPointer rpivot)
   =
   lapacke_cgbsvx
     layout
@@ -15758,22 +15762,22 @@ let cgbsvx
     kl
     ku
     nrhs
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr afb)
+    afb
     ldafb
-    (CI.cptr ipiv)
-    (CI.cptr equed)
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr b)
+    ipiv
+    equed
+    r
+    c
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-    (CI.cptr rpivot)
+    rcond
+    ferr
+    berr
+    rpivot
 
 
 let zgbsvx
@@ -15784,22 +15788,22 @@ let zgbsvx
     ~kl
     ~ku
     ~nrhs
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~afb
+    ~afb:(CI.CPointer afb)
     ~ldafb
-    ~ipiv
-    ~equed
-    ~r
-    ~c
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~equed:(CI.CPointer equed)
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
-    ~rpivot
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+    ~rpivot:(CI.CPointer rpivot)
   =
   lapacke_zgbsvx
     layout
@@ -15809,570 +15813,616 @@ let zgbsvx
     kl
     ku
     nrhs
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr afb)
+    afb
     ldafb
-    (CI.cptr ipiv)
-    (CI.cptr equed)
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr b)
+    ipiv
+    equed
+    r
+    c
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-    (CI.cptr rpivot)
-
-
-let sgbtrf ~layout ~m ~n ~kl ~ku ~ab ~ldab ~ipiv =
-  lapacke_sgbtrf layout m n kl ku (CI.cptr ab) ldab (CI.cptr ipiv)
-
-
-let dgbtrf ~layout ~m ~n ~kl ~ku ~ab ~ldab ~ipiv =
-  lapacke_dgbtrf layout m n kl ku (CI.cptr ab) ldab (CI.cptr ipiv)
-
-
-let cgbtrf ~layout ~m ~n ~kl ~ku ~ab ~ldab ~ipiv =
-  lapacke_cgbtrf layout m n kl ku (CI.cptr ab) ldab (CI.cptr ipiv)
-
-
-let zgbtrf ~layout ~m ~n ~kl ~ku ~ab ~ldab ~ipiv =
-  lapacke_zgbtrf layout m n kl ku (CI.cptr ab) ldab (CI.cptr ipiv)
-
-
-let sgbtrs ~layout ~trans ~n ~kl ~ku ~nrhs ~ab ~ldab ~ipiv ~b ~ldb =
-  lapacke_sgbtrs
-    layout
-    trans
-    n
-    kl
-    ku
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-
-
-let dgbtrs ~layout ~trans ~n ~kl ~ku ~nrhs ~ab ~ldab ~ipiv ~b ~ldb =
-  lapacke_dgbtrs
-    layout
-    trans
-    n
-    kl
-    ku
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-
-
-let cgbtrs ~layout ~trans ~n ~kl ~ku ~nrhs ~ab ~ldab ~ipiv ~b ~ldb =
-  lapacke_cgbtrs
-    layout
-    trans
-    n
-    kl
-    ku
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-
-
-let zgbtrs ~layout ~trans ~n ~kl ~ku ~nrhs ~ab ~ldab ~ipiv ~b ~ldb =
-  lapacke_zgbtrs
-    layout
-    trans
-    n
-    kl
-    ku
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-
-
-let sgebak ~layout ~job ~side ~n ~ilo ~ihi ~scale ~m ~v ~ldv =
-  lapacke_sgebak layout job side n ilo ihi (CI.cptr scale) m (CI.cptr v) ldv
-
-
-let dgebak ~layout ~job ~side ~n ~ilo ~ihi ~scale ~m ~v ~ldv =
-  lapacke_dgebak layout job side n ilo ihi (CI.cptr scale) m (CI.cptr v) ldv
-
-
-let cgebak ~layout ~job ~side ~n ~ilo ~ihi ~scale ~m ~v ~ldv =
-  lapacke_cgebak layout job side n ilo ihi (CI.cptr scale) m (CI.cptr v) ldv
-
-
-let zgebak ~layout ~job ~side ~n ~ilo ~ihi ~scale ~m ~v ~ldv =
-  lapacke_zgebak layout job side n ilo ihi (CI.cptr scale) m (CI.cptr v) ldv
-
-
-let sgebal ~layout ~job ~n ~a ~lda ~ilo ~ihi ~scale =
-  lapacke_sgebal layout job n (CI.cptr a) lda (CI.cptr ilo) (CI.cptr ihi) (CI.cptr scale)
-
-
-let dgebal ~layout ~job ~n ~a ~lda ~ilo ~ihi ~scale =
-  lapacke_dgebal layout job n (CI.cptr a) lda (CI.cptr ilo) (CI.cptr ihi) (CI.cptr scale)
-
-
-let cgebal ~layout ~job ~n ~a ~lda ~ilo ~ihi ~scale =
-  lapacke_cgebal layout job n (CI.cptr a) lda (CI.cptr ilo) (CI.cptr ihi) (CI.cptr scale)
-
-
-let zgebal ~layout ~job ~n ~a ~lda ~ilo ~ihi ~scale =
-  lapacke_zgebal layout job n (CI.cptr a) lda (CI.cptr ilo) (CI.cptr ihi) (CI.cptr scale)
-
-
-let sgebrd ~layout ~m ~n ~a ~lda ~d ~e ~tauq ~taup =
-  lapacke_sgebrd
-    layout
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr tauq)
-    (CI.cptr taup)
-
-
-let dgebrd ~layout ~m ~n ~a ~lda ~d ~e ~tauq ~taup =
-  lapacke_dgebrd
-    layout
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr tauq)
-    (CI.cptr taup)
-
-
-let cgebrd ~layout ~m ~n ~a ~lda ~d ~e ~tauq ~taup =
-  lapacke_cgebrd
-    layout
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr tauq)
-    (CI.cptr taup)
-
-
-let zgebrd ~layout ~m ~n ~a ~lda ~d ~e ~tauq ~taup =
-  lapacke_zgebrd
-    layout
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr tauq)
-    (CI.cptr taup)
-
-
-let sgecon ~layout ~norm ~n ~a ~lda ~anorm ~rcond =
-  lapacke_sgecon layout norm n (CI.cptr a) lda anorm (CI.cptr rcond)
-
-
-let dgecon ~layout ~norm ~n ~a ~lda ~anorm ~rcond =
-  lapacke_dgecon layout norm n (CI.cptr a) lda anorm (CI.cptr rcond)
-
-
-let cgecon ~layout ~norm ~n ~a ~lda ~anorm ~rcond =
-  lapacke_cgecon layout norm n (CI.cptr a) lda anorm (CI.cptr rcond)
-
-
-let zgecon ~layout ~norm ~n ~a ~lda ~anorm ~rcond =
-  lapacke_zgecon layout norm n (CI.cptr a) lda anorm (CI.cptr rcond)
-
-
-let sgeequ ~layout ~m ~n ~a ~lda ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_sgeequ
-    layout
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
-
-
-let dgeequ ~layout ~m ~n ~a ~lda ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_dgeequ
-    layout
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
-
-
-let cgeequ ~layout ~m ~n ~a ~lda ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_cgeequ
-    layout
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
-
-
-let zgeequ ~layout ~m ~n ~a ~lda ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_zgeequ
-    layout
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
-
-
-let sgeequb ~layout ~m ~n ~a ~lda ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_sgeequb
-    layout
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
-
-
-let dgeequb ~layout ~m ~n ~a ~lda ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_dgeequb
-    layout
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
-
-
-let cgeequb ~layout ~m ~n ~a ~lda ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_cgeequb
-    layout
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
-
-
-let zgeequb ~layout ~m ~n ~a ~lda ~r ~c ~rowcnd ~colcnd ~amax =
-  lapacke_zgeequb
-    layout
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr rowcnd)
-    (CI.cptr colcnd)
-    (CI.cptr amax)
-
-
-let sgees ~layout ~jobvs ~sort ~select ~n ~a ~lda ~sdim ~wr ~wi ~vs ~ldvs =
-  lapacke_sgees
-    layout
-    jobvs
-    sort
-    (CI.cptr select)
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sdim)
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr vs)
-    ldvs
-
-
-let dgees ~layout ~jobvs ~sort ~select ~n ~a ~lda ~sdim ~wr ~wi ~vs ~ldvs =
-  lapacke_dgees
-    layout
-    jobvs
-    sort
-    (CI.cptr select)
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sdim)
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr vs)
-    ldvs
-
-
-let cgees ~layout ~jobvs ~sort ~select ~n ~a ~lda ~sdim ~w ~vs ~ldvs =
-  lapacke_cgees
-    layout
-    jobvs
-    sort
-    (CI.cptr select)
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sdim)
-    (CI.cptr w)
-    (CI.cptr vs)
-    ldvs
-
-
-let zgees ~layout ~jobvs ~sort ~select ~n ~a ~lda ~sdim ~w ~vs ~ldvs =
-  lapacke_zgees
-    layout
-    jobvs
-    sort
-    (CI.cptr select)
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sdim)
-    (CI.cptr w)
-    (CI.cptr vs)
-    ldvs
+    rcond
+    ferr
+    berr
+    rpivot
+
+
+let sgbtrf ~layout ~m ~n ~kl ~ku ~ab:(CI.CPointer ab) ~ldab ~ipiv:(CI.CPointer ipiv) =
+  lapacke_sgbtrf layout m n kl ku ab ldab ipiv
+
+
+let dgbtrf ~layout ~m ~n ~kl ~ku ~ab:(CI.CPointer ab) ~ldab ~ipiv:(CI.CPointer ipiv) =
+  lapacke_dgbtrf layout m n kl ku ab ldab ipiv
+
+
+let cgbtrf ~layout ~m ~n ~kl ~ku ~ab:(CI.CPointer ab) ~ldab ~ipiv:(CI.CPointer ipiv) =
+  lapacke_cgbtrf layout m n kl ku ab ldab ipiv
+
+
+let zgbtrf ~layout ~m ~n ~kl ~ku ~ab:(CI.CPointer ab) ~ldab ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zgbtrf layout m n kl ku ab ldab ipiv
+
+
+let sgbtrs
+    ~layout
+    ~trans
+    ~n
+    ~kl
+    ~ku
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_sgbtrs layout trans n kl ku nrhs ab ldab ipiv b ldb
+
+
+let dgbtrs
+    ~layout
+    ~trans
+    ~n
+    ~kl
+    ~ku
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dgbtrs layout trans n kl ku nrhs ab ldab ipiv b ldb
+
+
+let cgbtrs
+    ~layout
+    ~trans
+    ~n
+    ~kl
+    ~ku
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_cgbtrs layout trans n kl ku nrhs ab ldab ipiv b ldb
+
+
+let zgbtrs
+    ~layout
+    ~trans
+    ~n
+    ~kl
+    ~ku
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zgbtrs layout trans n kl ku nrhs ab ldab ipiv b ldb
+
+
+let sgebak
+    ~layout
+    ~job
+    ~side
+    ~n
+    ~ilo
+    ~ihi
+    ~scale:(CI.CPointer scale)
+    ~m
+    ~v:(CI.CPointer v)
+    ~ldv
+  =
+  lapacke_sgebak layout job side n ilo ihi scale m v ldv
+
+
+let dgebak
+    ~layout
+    ~job
+    ~side
+    ~n
+    ~ilo
+    ~ihi
+    ~scale:(CI.CPointer scale)
+    ~m
+    ~v:(CI.CPointer v)
+    ~ldv
+  =
+  lapacke_dgebak layout job side n ilo ihi scale m v ldv
+
+
+let cgebak
+    ~layout
+    ~job
+    ~side
+    ~n
+    ~ilo
+    ~ihi
+    ~scale:(CI.CPointer scale)
+    ~m
+    ~v:(CI.CPointer v)
+    ~ldv
+  =
+  lapacke_cgebak layout job side n ilo ihi scale m v ldv
+
+
+let zgebak
+    ~layout
+    ~job
+    ~side
+    ~n
+    ~ilo
+    ~ihi
+    ~scale:(CI.CPointer scale)
+    ~m
+    ~v:(CI.CPointer v)
+    ~ldv
+  =
+  lapacke_zgebak layout job side n ilo ihi scale m v ldv
+
+
+let sgebal
+    ~layout
+    ~job
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~scale:(CI.CPointer scale)
+  =
+  lapacke_sgebal layout job n a lda ilo ihi scale
+
+
+let dgebal
+    ~layout
+    ~job
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~scale:(CI.CPointer scale)
+  =
+  lapacke_dgebal layout job n a lda ilo ihi scale
+
+
+let cgebal
+    ~layout
+    ~job
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~scale:(CI.CPointer scale)
+  =
+  lapacke_cgebal layout job n a lda ilo ihi scale
+
+
+let zgebal
+    ~layout
+    ~job
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~scale:(CI.CPointer scale)
+  =
+  lapacke_zgebal layout job n a lda ilo ihi scale
+
+
+let sgebrd
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~tauq:(CI.CPointer tauq)
+    ~taup:(CI.CPointer taup)
+  =
+  lapacke_sgebrd layout m n a lda d e tauq taup
+
+
+let dgebrd
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~tauq:(CI.CPointer tauq)
+    ~taup:(CI.CPointer taup)
+  =
+  lapacke_dgebrd layout m n a lda d e tauq taup
+
+
+let cgebrd
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~tauq:(CI.CPointer tauq)
+    ~taup:(CI.CPointer taup)
+  =
+  lapacke_cgebrd layout m n a lda d e tauq taup
+
+
+let zgebrd
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~tauq:(CI.CPointer tauq)
+    ~taup:(CI.CPointer taup)
+  =
+  lapacke_zgebrd layout m n a lda d e tauq taup
+
+
+let sgecon ~layout ~norm ~n ~a:(CI.CPointer a) ~lda ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_sgecon layout norm n a lda anorm rcond
+
+
+let dgecon ~layout ~norm ~n ~a:(CI.CPointer a) ~lda ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_dgecon layout norm n a lda anorm rcond
+
+
+let cgecon ~layout ~norm ~n ~a:(CI.CPointer a) ~lda ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_cgecon layout norm n a lda anorm rcond
+
+
+let zgecon ~layout ~norm ~n ~a:(CI.CPointer a) ~lda ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_zgecon layout norm n a lda anorm rcond
+
+
+let sgeequ
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_sgeequ layout m n a lda r c rowcnd colcnd amax
+
+
+let dgeequ
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_dgeequ layout m n a lda r c rowcnd colcnd amax
+
+
+let cgeequ
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_cgeequ layout m n a lda r c rowcnd colcnd amax
+
+
+let zgeequ
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_zgeequ layout m n a lda r c rowcnd colcnd amax
+
+
+let sgeequb
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_sgeequb layout m n a lda r c rowcnd colcnd amax
+
+
+let dgeequb
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_dgeequb layout m n a lda r c rowcnd colcnd amax
+
+
+let cgeequb
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_cgeequb layout m n a lda r c rowcnd colcnd amax
+
+
+let zgeequb
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~rowcnd:(CI.CPointer rowcnd)
+    ~colcnd:(CI.CPointer colcnd)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_zgeequb layout m n a lda r c rowcnd colcnd amax
+
+
+let sgees
+    ~layout
+    ~jobvs
+    ~sort
+    ~select:(CI.CPointer select)
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~sdim:(CI.CPointer sdim)
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~vs:(CI.CPointer vs)
+    ~ldvs
+  =
+  lapacke_sgees layout jobvs sort select n a lda sdim wr wi vs ldvs
+
+
+let dgees
+    ~layout
+    ~jobvs
+    ~sort
+    ~select:(CI.CPointer select)
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~sdim:(CI.CPointer sdim)
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~vs:(CI.CPointer vs)
+    ~ldvs
+  =
+  lapacke_dgees layout jobvs sort select n a lda sdim wr wi vs ldvs
+
+
+let cgees
+    ~layout
+    ~jobvs
+    ~sort
+    ~select:(CI.CPointer select)
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~sdim:(CI.CPointer sdim)
+    ~w:(CI.CPointer w)
+    ~vs:(CI.CPointer vs)
+    ~ldvs
+  =
+  lapacke_cgees layout jobvs sort select n a lda sdim w vs ldvs
+
+
+let zgees
+    ~layout
+    ~jobvs
+    ~sort
+    ~select:(CI.CPointer select)
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~sdim:(CI.CPointer sdim)
+    ~w:(CI.CPointer w)
+    ~vs:(CI.CPointer vs)
+    ~ldvs
+  =
+  lapacke_zgees layout jobvs sort select n a lda sdim w vs ldvs
 
 
 let sgeesx
     ~layout
     ~jobvs
     ~sort
-    ~select
+    ~select:(CI.CPointer select)
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~sdim
-    ~wr
-    ~wi
-    ~vs
+    ~sdim:(CI.CPointer sdim)
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~vs:(CI.CPointer vs)
     ~ldvs
-    ~rconde
-    ~rcondv
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
-  lapacke_sgeesx
-    layout
-    jobvs
-    sort
-    (CI.cptr select)
-    sense
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sdim)
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr vs)
-    ldvs
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+  lapacke_sgeesx layout jobvs sort select sense n a lda sdim wr wi vs ldvs rconde rcondv
 
 
 let dgeesx
     ~layout
     ~jobvs
     ~sort
-    ~select
+    ~select:(CI.CPointer select)
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~sdim
-    ~wr
-    ~wi
-    ~vs
+    ~sdim:(CI.CPointer sdim)
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~vs:(CI.CPointer vs)
     ~ldvs
-    ~rconde
-    ~rcondv
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
-  lapacke_dgeesx
-    layout
-    jobvs
-    sort
-    (CI.cptr select)
-    sense
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sdim)
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr vs)
-    ldvs
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+  lapacke_dgeesx layout jobvs sort select sense n a lda sdim wr wi vs ldvs rconde rcondv
 
 
 let cgeesx
     ~layout
     ~jobvs
     ~sort
-    ~select
+    ~select:(CI.CPointer select)
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~sdim
-    ~w
-    ~vs
+    ~sdim:(CI.CPointer sdim)
+    ~w:(CI.CPointer w)
+    ~vs:(CI.CPointer vs)
     ~ldvs
-    ~rconde
-    ~rcondv
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
-  lapacke_cgeesx
-    layout
-    jobvs
-    sort
-    (CI.cptr select)
-    sense
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sdim)
-    (CI.cptr w)
-    (CI.cptr vs)
-    ldvs
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+  lapacke_cgeesx layout jobvs sort select sense n a lda sdim w vs ldvs rconde rcondv
 
 
 let zgeesx
     ~layout
     ~jobvs
     ~sort
-    ~select
+    ~select:(CI.CPointer select)
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~sdim
-    ~w
-    ~vs
+    ~sdim:(CI.CPointer sdim)
+    ~w:(CI.CPointer w)
+    ~vs:(CI.CPointer vs)
     ~ldvs
-    ~rconde
-    ~rcondv
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
-  lapacke_zgeesx
-    layout
-    jobvs
-    sort
-    (CI.cptr select)
-    sense
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sdim)
-    (CI.cptr w)
-    (CI.cptr vs)
-    ldvs
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+  lapacke_zgeesx layout jobvs sort select sense n a lda sdim w vs ldvs rconde rcondv
 
 
-let sgeev ~layout ~jobvl ~jobvr ~n ~a ~lda ~wr ~wi ~vl ~ldvl ~vr ~ldvr =
-  lapacke_sgeev
-    layout
-    jobvl
-    jobvr
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
+let sgeev
+    ~layout
+    ~jobvl
+    ~jobvr
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+  =
+  lapacke_sgeev layout jobvl jobvr n a lda wr wi vl ldvl vr ldvr
 
 
-let dgeev ~layout ~jobvl ~jobvr ~n ~a ~lda ~wr ~wi ~vl ~ldvl ~vr ~ldvr =
-  lapacke_dgeev
-    layout
-    jobvl
-    jobvr
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
+let dgeev
+    ~layout
+    ~jobvl
+    ~jobvr
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+  =
+  lapacke_dgeev layout jobvl jobvr n a lda wr wi vl ldvl vr ldvr
 
 
-let cgeev ~layout ~jobvl ~jobvr ~n ~a ~lda ~w ~vl ~ldvl ~vr ~ldvr =
-  lapacke_cgeev
-    layout
-    jobvl
-    jobvr
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr w)
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
+let cgeev
+    ~layout
+    ~jobvl
+    ~jobvr
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~w:(CI.CPointer w)
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+  =
+  lapacke_cgeev layout jobvl jobvr n a lda w vl ldvl vr ldvr
 
 
-let zgeev ~layout ~jobvl ~jobvr ~n ~a ~lda ~w ~vl ~ldvl ~vr ~ldvr =
-  lapacke_zgeev
-    layout
-    jobvl
-    jobvr
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr w)
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
+let zgeev
+    ~layout
+    ~jobvl
+    ~jobvr
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~w:(CI.CPointer w)
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+  =
+  lapacke_zgeev layout jobvl jobvr n a lda w vl ldvl vr ldvr
 
 
 let sgeevx
@@ -16382,20 +16432,20 @@ let sgeevx
     ~jobvr
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~wr
-    ~wi
-    ~vl
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
-    ~ilo
-    ~ihi
-    ~scale
-    ~abnrm
-    ~rconde
-    ~rcondv
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~scale:(CI.CPointer scale)
+    ~abnrm:(CI.CPointer abnrm)
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
   lapacke_sgeevx
     layout
@@ -16404,20 +16454,20 @@ let sgeevx
     jobvr
     sense
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr vl)
+    wr
+    wi
+    vl
     ldvl
-    (CI.cptr vr)
+    vr
     ldvr
-    (CI.cptr ilo)
-    (CI.cptr ihi)
-    (CI.cptr scale)
-    (CI.cptr abnrm)
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+    ilo
+    ihi
+    scale
+    abnrm
+    rconde
+    rcondv
 
 
 let dgeevx
@@ -16427,20 +16477,20 @@ let dgeevx
     ~jobvr
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~wr
-    ~wi
-    ~vl
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
-    ~ilo
-    ~ihi
-    ~scale
-    ~abnrm
-    ~rconde
-    ~rcondv
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~scale:(CI.CPointer scale)
+    ~abnrm:(CI.CPointer abnrm)
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
   lapacke_dgeevx
     layout
@@ -16449,20 +16499,20 @@ let dgeevx
     jobvr
     sense
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr vl)
+    wr
+    wi
+    vl
     ldvl
-    (CI.cptr vr)
+    vr
     ldvr
-    (CI.cptr ilo)
-    (CI.cptr ihi)
-    (CI.cptr scale)
-    (CI.cptr abnrm)
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+    ilo
+    ihi
+    scale
+    abnrm
+    rconde
+    rcondv
 
 
 let cgeevx
@@ -16472,19 +16522,19 @@ let cgeevx
     ~jobvr
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~w
-    ~vl
+    ~w:(CI.CPointer w)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
-    ~ilo
-    ~ihi
-    ~scale
-    ~abnrm
-    ~rconde
-    ~rcondv
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~scale:(CI.CPointer scale)
+    ~abnrm:(CI.CPointer abnrm)
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
   lapacke_cgeevx
     layout
@@ -16493,19 +16543,19 @@ let cgeevx
     jobvr
     sense
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr w)
-    (CI.cptr vl)
+    w
+    vl
     ldvl
-    (CI.cptr vr)
+    vr
     ldvr
-    (CI.cptr ilo)
-    (CI.cptr ihi)
-    (CI.cptr scale)
-    (CI.cptr abnrm)
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+    ilo
+    ihi
+    scale
+    abnrm
+    rconde
+    rcondv
 
 
 let zgeevx
@@ -16515,19 +16565,19 @@ let zgeevx
     ~jobvr
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~w
-    ~vl
+    ~w:(CI.CPointer w)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
-    ~ilo
-    ~ihi
-    ~scale
-    ~abnrm
-    ~rconde
-    ~rcondv
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~scale:(CI.CPointer scale)
+    ~abnrm:(CI.CPointer abnrm)
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
   lapacke_zgeevx
     layout
@@ -16536,35 +16586,35 @@ let zgeevx
     jobvr
     sense
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr w)
-    (CI.cptr vl)
+    w
+    vl
     ldvl
-    (CI.cptr vr)
+    vr
     ldvr
-    (CI.cptr ilo)
-    (CI.cptr ihi)
-    (CI.cptr scale)
-    (CI.cptr abnrm)
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+    ilo
+    ihi
+    scale
+    abnrm
+    rconde
+    rcondv
 
 
-let sgehrd ~layout ~n ~ilo ~ihi ~a ~lda ~tau =
-  lapacke_sgehrd layout n ilo ihi (CI.cptr a) lda (CI.cptr tau)
+let sgehrd ~layout ~n ~ilo ~ihi ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sgehrd layout n ilo ihi a lda tau
 
 
-let dgehrd ~layout ~n ~ilo ~ihi ~a ~lda ~tau =
-  lapacke_dgehrd layout n ilo ihi (CI.cptr a) lda (CI.cptr tau)
+let dgehrd ~layout ~n ~ilo ~ihi ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dgehrd layout n ilo ihi a lda tau
 
 
-let cgehrd ~layout ~n ~ilo ~ihi ~a ~lda ~tau =
-  lapacke_cgehrd layout n ilo ihi (CI.cptr a) lda (CI.cptr tau)
+let cgehrd ~layout ~n ~ilo ~ihi ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cgehrd layout n ilo ihi a lda tau
 
 
-let zgehrd ~layout ~n ~ilo ~ihi ~a ~lda ~tau =
-  lapacke_zgehrd layout n ilo ihi (CI.cptr a) lda (CI.cptr tau)
+let zgehrd ~layout ~n ~ilo ~ihi ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zgehrd layout n ilo ihi a lda tau
 
 
 let sgejsv
@@ -16577,35 +16627,17 @@ let sgejsv
     ~jobp
     ~m
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~sva
-    ~u
+    ~sva:(CI.CPointer sva)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~stat
-    ~istat
+    ~stat:(CI.CPointer stat)
+    ~istat:(CI.CPointer istat)
   =
-  lapacke_sgejsv
-    layout
-    joba
-    jobu
-    jobv
-    jobr
-    jobt
-    jobp
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sva)
-    (CI.cptr u)
-    ldu
-    (CI.cptr v)
-    ldv
-    (CI.cptr stat)
-    (CI.cptr istat)
+  lapacke_sgejsv layout joba jobu jobv jobr jobt jobp m n a lda sva u ldu v ldv stat istat
 
 
 let dgejsv
@@ -16618,35 +16650,17 @@ let dgejsv
     ~jobp
     ~m
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~sva
-    ~u
+    ~sva:(CI.CPointer sva)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~stat
-    ~istat
+    ~stat:(CI.CPointer stat)
+    ~istat:(CI.CPointer istat)
   =
-  lapacke_dgejsv
-    layout
-    joba
-    jobu
-    jobv
-    jobr
-    jobt
-    jobp
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sva)
-    (CI.cptr u)
-    ldu
-    (CI.cptr v)
-    ldv
-    (CI.cptr stat)
-    (CI.cptr istat)
+  lapacke_dgejsv layout joba jobu jobv jobr jobt jobp m n a lda sva u ldu v ldv stat istat
 
 
 let cgejsv
@@ -16659,35 +16673,17 @@ let cgejsv
     ~jobp
     ~m
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~sva
-    ~u
+    ~sva:(CI.CPointer sva)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~stat
-    ~istat
+    ~stat:(CI.CPointer stat)
+    ~istat:(CI.CPointer istat)
   =
-  lapacke_cgejsv
-    layout
-    joba
-    jobu
-    jobv
-    jobr
-    jobt
-    jobp
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sva)
-    (CI.cptr u)
-    ldu
-    (CI.cptr v)
-    ldv
-    (CI.cptr stat)
-    (CI.cptr istat)
+  lapacke_cgejsv layout joba jobu jobv jobr jobt jobp m n a lda sva u ldu v ldv stat istat
 
 
 let zgejsv
@@ -16700,609 +16696,685 @@ let zgejsv
     ~jobp
     ~m
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~sva
-    ~u
+    ~sva:(CI.CPointer sva)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~stat
-    ~istat
+    ~stat:(CI.CPointer stat)
+    ~istat:(CI.CPointer istat)
   =
-  lapacke_zgejsv
-    layout
-    joba
-    jobu
-    jobv
-    jobr
-    jobt
-    jobp
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sva)
-    (CI.cptr u)
-    ldu
-    (CI.cptr v)
-    ldv
-    (CI.cptr stat)
-    (CI.cptr istat)
+  lapacke_zgejsv layout joba jobu jobv jobr jobt jobp m n a lda sva u ldu v ldv stat istat
 
 
-let sgelq2 ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_sgelq2 layout m n (CI.cptr a) lda (CI.cptr tau)
+let sgelq2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sgelq2 layout m n a lda tau
 
 
-let dgelq2 ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_dgelq2 layout m n (CI.cptr a) lda (CI.cptr tau)
+let dgelq2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dgelq2 layout m n a lda tau
 
 
-let cgelq2 ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_cgelq2 layout m n (CI.cptr a) lda (CI.cptr tau)
+let cgelq2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cgelq2 layout m n a lda tau
 
 
-let zgelq2 ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_zgelq2 layout m n (CI.cptr a) lda (CI.cptr tau)
+let zgelq2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zgelq2 layout m n a lda tau
 
 
-let sgelqf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_sgelqf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let dgelqf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_dgelqf layout m n (CI.cptr a) lda (CI.cptr tau)
-
+let sgelqf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sgelqf layout m n a lda tau
 
-let cgelqf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_cgelqf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let zgelqf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_zgelqf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let sgels ~layout ~trans ~m ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_sgels layout trans m n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let dgels ~layout ~trans ~m ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_dgels layout trans m n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let cgels ~layout ~trans ~m ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_cgels layout trans m n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let zgels ~layout ~trans ~m ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_zgels layout trans m n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let sgelsd ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~s ~rcond ~rank =
-  lapacke_sgelsd
-    layout
-    m
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr s)
-    rcond
-    (CI.cptr rank)
-
-
-let dgelsd ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~s ~rcond ~rank =
-  lapacke_dgelsd
-    layout
-    m
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr s)
-    rcond
-    (CI.cptr rank)
-
-
-let cgelsd ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~s ~rcond ~rank =
-  lapacke_cgelsd
-    layout
-    m
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr s)
-    rcond
-    (CI.cptr rank)
-
-
-let zgelsd ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~s ~rcond ~rank =
-  lapacke_zgelsd
-    layout
-    m
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr s)
-    rcond
-    (CI.cptr rank)
-
-
-let sgelss ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~s ~rcond ~rank =
-  lapacke_sgelss
-    layout
-    m
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr s)
-    rcond
-    (CI.cptr rank)
-
-
-let dgelss ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~s ~rcond ~rank =
-  lapacke_dgelss
-    layout
-    m
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr s)
-    rcond
-    (CI.cptr rank)
-
-
-let cgelss ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~s ~rcond ~rank =
-  lapacke_cgelss
-    layout
-    m
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr s)
-    rcond
-    (CI.cptr rank)
-
-
-let zgelss ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~s ~rcond ~rank =
-  lapacke_zgelss
-    layout
-    m
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr s)
-    rcond
-    (CI.cptr rank)
-
-
-let sgelsy ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~jpvt ~rcond ~rank =
-  lapacke_sgelsy
-    layout
-    m
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr jpvt)
-    rcond
-    (CI.cptr rank)
-
-
-let dgelsy ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~jpvt ~rcond ~rank =
-  lapacke_dgelsy
-    layout
-    m
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr jpvt)
-    rcond
-    (CI.cptr rank)
-
-
-let cgelsy ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~jpvt ~rcond ~rank =
-  lapacke_cgelsy
-    layout
-    m
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr jpvt)
-    rcond
-    (CI.cptr rank)
 
+let dgelqf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dgelqf layout m n a lda tau
 
-let zgelsy ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~jpvt ~rcond ~rank =
-  lapacke_zgelsy
-    layout
-    m
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr jpvt)
-    rcond
-    (CI.cptr rank)
-
 
-let sgeqlf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_sgeqlf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let dgeqlf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_dgeqlf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let cgeqlf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_cgeqlf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let zgeqlf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_zgeqlf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let sgeqp3 ~layout ~m ~n ~a ~lda ~jpvt ~tau =
-  lapacke_sgeqp3 layout m n (CI.cptr a) lda (CI.cptr jpvt) (CI.cptr tau)
-
-
-let dgeqp3 ~layout ~m ~n ~a ~lda ~jpvt ~tau =
-  lapacke_dgeqp3 layout m n (CI.cptr a) lda (CI.cptr jpvt) (CI.cptr tau)
-
-
-let cgeqp3 ~layout ~m ~n ~a ~lda ~jpvt ~tau =
-  lapacke_cgeqp3 layout m n (CI.cptr a) lda (CI.cptr jpvt) (CI.cptr tau)
-
-
-let zgeqp3 ~layout ~m ~n ~a ~lda ~jpvt ~tau =
-  lapacke_zgeqp3 layout m n (CI.cptr a) lda (CI.cptr jpvt) (CI.cptr tau)
-
-
-let sgeqr2 ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_sgeqr2 layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let dgeqr2 ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_dgeqr2 layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let cgeqr2 ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_cgeqr2 layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let zgeqr2 ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_zgeqr2 layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let sgeqrf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_sgeqrf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let dgeqrf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_dgeqrf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let cgeqrf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_cgeqrf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let zgeqrf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_zgeqrf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let sgeqrfp ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_sgeqrfp layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let dgeqrfp ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_dgeqrfp layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let cgeqrfp ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_cgeqrfp layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let zgeqrfp ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_zgeqrfp layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let sgerfs ~layout ~trans ~n ~nrhs ~a ~lda ~af ~ldaf ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_sgerfs
-    layout
-    trans
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let dgerfs ~layout ~trans ~n ~nrhs ~a ~lda ~af ~ldaf ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_dgerfs
-    layout
-    trans
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let cgerfs ~layout ~trans ~n ~nrhs ~a ~lda ~af ~ldaf ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_cgerfs
-    layout
-    trans
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let zgerfs ~layout ~trans ~n ~nrhs ~a ~lda ~af ~ldaf ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_zgerfs
-    layout
-    trans
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let sgerqf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_sgerqf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let dgerqf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_dgerqf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let cgerqf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_cgerqf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let zgerqf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_zgerqf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let sgesdd ~layout ~jobz ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt =
-  lapacke_sgesdd
-    layout
-    jobz
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr s)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-
-
-let dgesdd ~layout ~jobz ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt =
-  lapacke_dgesdd
-    layout
-    jobz
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr s)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-
-
-let cgesdd ~layout ~jobz ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt =
-  lapacke_cgesdd
-    layout
-    jobz
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr s)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-
-
-let zgesdd ~layout ~jobz ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt =
-  lapacke_zgesdd
-    layout
-    jobz
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr s)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-
-
-let sgesv ~layout ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_sgesv layout n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let dgesv ~layout ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_dgesv layout n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let cgesv ~layout ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_cgesv layout n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let zgesv ~layout ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_zgesv layout n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let dsgesv ~layout ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb ~x ~ldx ~iter =
-  lapacke_dsgesv
-    layout
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr iter)
-
-
-let zcgesv ~layout ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb ~x ~ldx ~iter =
-  lapacke_zcgesv
-    layout
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr iter)
-
-
-let sgesvd ~layout ~jobu ~jobvt ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt ~superb =
-  lapacke_sgesvd
-    layout
-    jobu
-    jobvt
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr s)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr superb)
-
-
-let dgesvd ~layout ~jobu ~jobvt ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt ~superb =
-  lapacke_dgesvd
-    layout
-    jobu
-    jobvt
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr s)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr superb)
-
-
-let cgesvd ~layout ~jobu ~jobvt ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt ~superb =
-  lapacke_cgesvd
-    layout
-    jobu
-    jobvt
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr s)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr superb)
-
-
-let zgesvd ~layout ~jobu ~jobvt ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt ~superb =
-  lapacke_zgesvd
-    layout
-    jobu
-    jobvt
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr s)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr superb)
+let cgelqf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cgelqf layout m n a lda tau
+
+
+let zgelqf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zgelqf layout m n a lda tau
+
+
+let sgels ~layout ~trans ~m ~n ~nrhs ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_sgels layout trans m n nrhs a lda b ldb
+
+
+let dgels ~layout ~trans ~m ~n ~nrhs ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_dgels layout trans m n nrhs a lda b ldb
+
+
+let cgels ~layout ~trans ~m ~n ~nrhs ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_cgels layout trans m n nrhs a lda b ldb
+
+
+let zgels ~layout ~trans ~m ~n ~nrhs ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_zgels layout trans m n nrhs a lda b ldb
+
+
+let sgelsd
+    ~layout
+    ~m
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~s:(CI.CPointer s)
+    ~rcond
+    ~rank:(CI.CPointer rank)
+  =
+  lapacke_sgelsd layout m n nrhs a lda b ldb s rcond rank
+
+
+let dgelsd
+    ~layout
+    ~m
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~s:(CI.CPointer s)
+    ~rcond
+    ~rank:(CI.CPointer rank)
+  =
+  lapacke_dgelsd layout m n nrhs a lda b ldb s rcond rank
+
+
+let cgelsd
+    ~layout
+    ~m
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~s:(CI.CPointer s)
+    ~rcond
+    ~rank:(CI.CPointer rank)
+  =
+  lapacke_cgelsd layout m n nrhs a lda b ldb s rcond rank
+
+
+let zgelsd
+    ~layout
+    ~m
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~s:(CI.CPointer s)
+    ~rcond
+    ~rank:(CI.CPointer rank)
+  =
+  lapacke_zgelsd layout m n nrhs a lda b ldb s rcond rank
+
+
+let sgelss
+    ~layout
+    ~m
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~s:(CI.CPointer s)
+    ~rcond
+    ~rank:(CI.CPointer rank)
+  =
+  lapacke_sgelss layout m n nrhs a lda b ldb s rcond rank
+
+
+let dgelss
+    ~layout
+    ~m
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~s:(CI.CPointer s)
+    ~rcond
+    ~rank:(CI.CPointer rank)
+  =
+  lapacke_dgelss layout m n nrhs a lda b ldb s rcond rank
+
+
+let cgelss
+    ~layout
+    ~m
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~s:(CI.CPointer s)
+    ~rcond
+    ~rank:(CI.CPointer rank)
+  =
+  lapacke_cgelss layout m n nrhs a lda b ldb s rcond rank
+
+
+let zgelss
+    ~layout
+    ~m
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~s:(CI.CPointer s)
+    ~rcond
+    ~rank:(CI.CPointer rank)
+  =
+  lapacke_zgelss layout m n nrhs a lda b ldb s rcond rank
+
+
+let sgelsy
+    ~layout
+    ~m
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~jpvt:(CI.CPointer jpvt)
+    ~rcond
+    ~rank:(CI.CPointer rank)
+  =
+  lapacke_sgelsy layout m n nrhs a lda b ldb jpvt rcond rank
+
+
+let dgelsy
+    ~layout
+    ~m
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~jpvt:(CI.CPointer jpvt)
+    ~rcond
+    ~rank:(CI.CPointer rank)
+  =
+  lapacke_dgelsy layout m n nrhs a lda b ldb jpvt rcond rank
+
+
+let cgelsy
+    ~layout
+    ~m
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~jpvt:(CI.CPointer jpvt)
+    ~rcond
+    ~rank:(CI.CPointer rank)
+  =
+  lapacke_cgelsy layout m n nrhs a lda b ldb jpvt rcond rank
+
+
+let zgelsy
+    ~layout
+    ~m
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~jpvt:(CI.CPointer jpvt)
+    ~rcond
+    ~rank:(CI.CPointer rank)
+  =
+  lapacke_zgelsy layout m n nrhs a lda b ldb jpvt rcond rank
+
+
+let sgeqlf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sgeqlf layout m n a lda tau
+
+
+let dgeqlf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dgeqlf layout m n a lda tau
+
+
+let cgeqlf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cgeqlf layout m n a lda tau
+
+
+let zgeqlf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zgeqlf layout m n a lda tau
+
+
+let sgeqp3
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~jpvt:(CI.CPointer jpvt)
+    ~tau:(CI.CPointer tau)
+  =
+  lapacke_sgeqp3 layout m n a lda jpvt tau
+
+
+let dgeqp3
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~jpvt:(CI.CPointer jpvt)
+    ~tau:(CI.CPointer tau)
+  =
+  lapacke_dgeqp3 layout m n a lda jpvt tau
+
+
+let cgeqp3
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~jpvt:(CI.CPointer jpvt)
+    ~tau:(CI.CPointer tau)
+  =
+  lapacke_cgeqp3 layout m n a lda jpvt tau
+
+
+let zgeqp3
+    ~layout
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~jpvt:(CI.CPointer jpvt)
+    ~tau:(CI.CPointer tau)
+  =
+  lapacke_zgeqp3 layout m n a lda jpvt tau
+
+
+let sgeqr2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sgeqr2 layout m n a lda tau
+
+
+let dgeqr2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dgeqr2 layout m n a lda tau
+
+
+let cgeqr2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cgeqr2 layout m n a lda tau
+
+
+let zgeqr2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zgeqr2 layout m n a lda tau
+
+
+let sgeqrf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sgeqrf layout m n a lda tau
+
+
+let dgeqrf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dgeqrf layout m n a lda tau
+
+
+let cgeqrf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cgeqrf layout m n a lda tau
+
+
+let zgeqrf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zgeqrf layout m n a lda tau
+
+
+let sgeqrfp ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sgeqrfp layout m n a lda tau
+
+
+let dgeqrfp ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dgeqrfp layout m n a lda tau
+
+
+let cgeqrfp ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cgeqrfp layout m n a lda tau
+
+
+let zgeqrfp ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zgeqrfp layout m n a lda tau
+
+
+let sgerfs
+    ~layout
+    ~trans
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_sgerfs layout trans n nrhs a lda af ldaf ipiv b ldb x ldx ferr berr
+
+
+let dgerfs
+    ~layout
+    ~trans
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_dgerfs layout trans n nrhs a lda af ldaf ipiv b ldb x ldx ferr berr
+
+
+let cgerfs
+    ~layout
+    ~trans
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_cgerfs layout trans n nrhs a lda af ldaf ipiv b ldb x ldx ferr berr
+
+
+let zgerfs
+    ~layout
+    ~trans
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_zgerfs layout trans n nrhs a lda af ldaf ipiv b ldb x ldx ferr berr
+
+
+let sgerqf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sgerqf layout m n a lda tau
+
+
+let dgerqf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dgerqf layout m n a lda tau
+
+
+let cgerqf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cgerqf layout m n a lda tau
+
+
+let zgerqf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zgerqf layout m n a lda tau
+
+
+let sgesdd
+    ~layout
+    ~jobz
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+  =
+  lapacke_sgesdd layout jobz m n a lda s u ldu vt ldvt
+
+
+let dgesdd
+    ~layout
+    ~jobz
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+  =
+  lapacke_dgesdd layout jobz m n a lda s u ldu vt ldvt
+
+
+let cgesdd
+    ~layout
+    ~jobz
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+  =
+  lapacke_cgesdd layout jobz m n a lda s u ldu vt ldvt
+
+
+let zgesdd
+    ~layout
+    ~jobz
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+  =
+  lapacke_zgesdd layout jobz m n a lda s u ldu vt ldvt
+
+
+let sgesv
+    ~layout
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_sgesv layout n nrhs a lda ipiv b ldb
+
+
+let dgesv
+    ~layout
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dgesv layout n nrhs a lda ipiv b ldb
+
+
+let cgesv
+    ~layout
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_cgesv layout n nrhs a lda ipiv b ldb
+
+
+let zgesv
+    ~layout
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zgesv layout n nrhs a lda ipiv b ldb
+
+
+let dsgesv
+    ~layout
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~iter:(CI.CPointer iter)
+  =
+  lapacke_dsgesv layout n nrhs a lda ipiv b ldb x ldx iter
+
+
+let zcgesv
+    ~layout
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~iter:(CI.CPointer iter)
+  =
+  lapacke_zcgesv layout n nrhs a lda ipiv b ldb x ldx iter
+
+
+let sgesvd
+    ~layout
+    ~jobu
+    ~jobvt
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+    ~superb:(CI.CPointer superb)
+  =
+  lapacke_sgesvd layout jobu jobvt m n a lda s u ldu vt ldvt superb
+
+
+let dgesvd
+    ~layout
+    ~jobu
+    ~jobvt
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+    ~superb:(CI.CPointer superb)
+  =
+  lapacke_dgesvd layout jobu jobvt m n a lda s u ldu vt ldvt superb
+
+
+let cgesvd
+    ~layout
+    ~jobu
+    ~jobvt
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+    ~superb:(CI.CPointer superb)
+  =
+  lapacke_cgesvd layout jobu jobvt m n a lda s u ldu vt ldvt superb
+
+
+let zgesvd
+    ~layout
+    ~jobu
+    ~jobvt
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~u:(CI.CPointer u)
+    ~ldu
+    ~vt:(CI.CPointer vt)
+    ~ldvt
+    ~superb:(CI.CPointer superb)
+  =
+  lapacke_zgesvd layout jobu jobvt m n a lda s u ldu vt ldvt superb
 
 
 let sgesvdx
@@ -17312,40 +17384,21 @@ let sgesvdx
     ~range
     ~m
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
     ~vl
     ~vu
     ~il
     ~iu
-    ~ns
-    ~s
-    ~u
+    ~ns:(CI.CPointer ns)
+    ~s:(CI.CPointer s)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~vt
+    ~vt:(CI.CPointer vt)
     ~ldvt
-    ~superb
+    ~superb:(CI.CPointer superb)
   =
-  lapacke_sgesvdx
-    layout
-    jobu
-    jobvt
-    range
-    m
-    n
-    (CI.cptr a)
-    lda
-    vl
-    vu
-    il
-    iu
-    (CI.cptr ns)
-    (CI.cptr s)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr superb)
+  lapacke_sgesvdx layout jobu jobvt range m n a lda vl vu il iu ns s u ldu vt ldvt superb
 
 
 let dgesvdx
@@ -17355,40 +17408,21 @@ let dgesvdx
     ~range
     ~m
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
     ~vl
     ~vu
     ~il
     ~iu
-    ~ns
-    ~s
-    ~u
+    ~ns:(CI.CPointer ns)
+    ~s:(CI.CPointer s)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~vt
+    ~vt:(CI.CPointer vt)
     ~ldvt
-    ~superb
+    ~superb:(CI.CPointer superb)
   =
-  lapacke_dgesvdx
-    layout
-    jobu
-    jobvt
-    range
-    m
-    n
-    (CI.cptr a)
-    lda
-    vl
-    vu
-    il
-    iu
-    (CI.cptr ns)
-    (CI.cptr s)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr superb)
+  lapacke_dgesvdx layout jobu jobvt range m n a lda vl vu il iu ns s u ldu vt ldvt superb
 
 
 let cgesvdx
@@ -17398,40 +17432,21 @@ let cgesvdx
     ~range
     ~m
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
     ~vl
     ~vu
     ~il
     ~iu
-    ~ns
-    ~s
-    ~u
+    ~ns:(CI.CPointer ns)
+    ~s:(CI.CPointer s)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~vt
+    ~vt:(CI.CPointer vt)
     ~ldvt
-    ~superb
+    ~superb:(CI.CPointer superb)
   =
-  lapacke_cgesvdx
-    layout
-    jobu
-    jobvt
-    range
-    m
-    n
-    (CI.cptr a)
-    lda
-    vl
-    vu
-    il
-    iu
-    (CI.cptr ns)
-    (CI.cptr s)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr superb)
+  lapacke_cgesvdx layout jobu jobvt range m n a lda vl vu il iu ns s u ldu vt ldvt superb
 
 
 let zgesvdx
@@ -17441,108 +17456,93 @@ let zgesvdx
     ~range
     ~m
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
     ~vl
     ~vu
     ~il
     ~iu
-    ~ns
-    ~s
-    ~u
+    ~ns:(CI.CPointer ns)
+    ~s:(CI.CPointer s)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~vt
+    ~vt:(CI.CPointer vt)
     ~ldvt
-    ~superb
+    ~superb:(CI.CPointer superb)
   =
-  lapacke_zgesvdx
-    layout
-    jobu
-    jobvt
-    range
-    m
-    n
-    (CI.cptr a)
-    lda
-    vl
-    vu
-    il
-    iu
-    (CI.cptr ns)
-    (CI.cptr s)
-    (CI.cptr u)
-    ldu
-    (CI.cptr vt)
-    ldvt
-    (CI.cptr superb)
+  lapacke_zgesvdx layout jobu jobvt range m n a lda vl vu il iu ns s u ldu vt ldvt superb
 
 
-let sgesvj ~layout ~joba ~jobu ~jobv ~m ~n ~a ~lda ~sva ~mv ~v ~ldv ~stat =
-  lapacke_sgesvj
-    layout
-    joba
-    jobu
-    jobv
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sva)
-    mv
-    (CI.cptr v)
-    ldv
-    (CI.cptr stat)
+let sgesvj
+    ~layout
+    ~joba
+    ~jobu
+    ~jobv
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~sva:(CI.CPointer sva)
+    ~mv
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~stat:(CI.CPointer stat)
+  =
+  lapacke_sgesvj layout joba jobu jobv m n a lda sva mv v ldv stat
 
 
-let dgesvj ~layout ~joba ~jobu ~jobv ~m ~n ~a ~lda ~sva ~mv ~v ~ldv ~stat =
-  lapacke_dgesvj
-    layout
-    joba
-    jobu
-    jobv
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sva)
-    mv
-    (CI.cptr v)
-    ldv
-    (CI.cptr stat)
+let dgesvj
+    ~layout
+    ~joba
+    ~jobu
+    ~jobv
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~sva:(CI.CPointer sva)
+    ~mv
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~stat:(CI.CPointer stat)
+  =
+  lapacke_dgesvj layout joba jobu jobv m n a lda sva mv v ldv stat
 
 
-let cgesvj ~layout ~joba ~jobu ~jobv ~m ~n ~a ~lda ~sva ~mv ~v ~ldv ~stat =
-  lapacke_cgesvj
-    layout
-    joba
-    jobu
-    jobv
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sva)
-    mv
-    (CI.cptr v)
-    ldv
-    (CI.cptr stat)
+let cgesvj
+    ~layout
+    ~joba
+    ~jobu
+    ~jobv
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~sva:(CI.CPointer sva)
+    ~mv
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~stat:(CI.CPointer stat)
+  =
+  lapacke_cgesvj layout joba jobu jobv m n a lda sva mv v ldv stat
 
 
-let zgesvj ~layout ~joba ~jobu ~jobv ~m ~n ~a ~lda ~sva ~mv ~v ~ldv ~stat =
-  lapacke_zgesvj
-    layout
-    joba
-    jobu
-    jobv
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr sva)
-    mv
-    (CI.cptr v)
-    ldv
-    (CI.cptr stat)
+let zgesvj
+    ~layout
+    ~joba
+    ~jobu
+    ~jobv
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~sva:(CI.CPointer sva)
+    ~mv
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~stat:(CI.CPointer stat)
+  =
+  lapacke_zgesvj layout joba jobu jobv m n a lda sva mv v ldv stat
 
 
 let sgesvx
@@ -17551,22 +17551,22 @@ let sgesvx
     ~trans
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~ipiv
-    ~equed
-    ~r
-    ~c
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~equed:(CI.CPointer equed)
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
-    ~rpivot
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+    ~rpivot:(CI.CPointer rpivot)
   =
   lapacke_sgesvx
     layout
@@ -17574,22 +17574,22 @@ let sgesvx
     trans
     n
     nrhs
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr af)
+    af
     ldaf
-    (CI.cptr ipiv)
-    (CI.cptr equed)
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr b)
+    ipiv
+    equed
+    r
+    c
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-    (CI.cptr rpivot)
+    rcond
+    ferr
+    berr
+    rpivot
 
 
 let dgesvx
@@ -17598,22 +17598,22 @@ let dgesvx
     ~trans
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~ipiv
-    ~equed
-    ~r
-    ~c
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~equed:(CI.CPointer equed)
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
-    ~rpivot
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+    ~rpivot:(CI.CPointer rpivot)
   =
   lapacke_dgesvx
     layout
@@ -17621,22 +17621,22 @@ let dgesvx
     trans
     n
     nrhs
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr af)
+    af
     ldaf
-    (CI.cptr ipiv)
-    (CI.cptr equed)
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr b)
+    ipiv
+    equed
+    r
+    c
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-    (CI.cptr rpivot)
+    rcond
+    ferr
+    berr
+    rpivot
 
 
 let cgesvx
@@ -17645,22 +17645,22 @@ let cgesvx
     ~trans
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~ipiv
-    ~equed
-    ~r
-    ~c
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~equed:(CI.CPointer equed)
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
-    ~rpivot
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+    ~rpivot:(CI.CPointer rpivot)
   =
   lapacke_cgesvx
     layout
@@ -17668,22 +17668,22 @@ let cgesvx
     trans
     n
     nrhs
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr af)
+    af
     ldaf
-    (CI.cptr ipiv)
-    (CI.cptr equed)
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr b)
+    ipiv
+    equed
+    r
+    c
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-    (CI.cptr rpivot)
+    rcond
+    ferr
+    berr
+    rpivot
 
 
 let zgesvx
@@ -17692,22 +17692,22 @@ let zgesvx
     ~trans
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~ipiv
-    ~equed
-    ~r
-    ~c
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~equed:(CI.CPointer equed)
+    ~r:(CI.CPointer r)
+    ~c:(CI.CPointer c)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
-    ~rpivot
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+    ~rpivot:(CI.CPointer rpivot)
   =
   lapacke_zgesvx
     layout
@@ -17715,222 +17715,270 @@ let zgesvx
     trans
     n
     nrhs
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr af)
+    af
     ldaf
-    (CI.cptr ipiv)
-    (CI.cptr equed)
-    (CI.cptr r)
-    (CI.cptr c)
-    (CI.cptr b)
+    ipiv
+    equed
+    r
+    c
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-    (CI.cptr rpivot)
+    rcond
+    ferr
+    berr
+    rpivot
 
 
-let sgetf2 ~layout ~m ~n ~a ~lda ~ipiv =
-  lapacke_sgetf2 layout m n (CI.cptr a) lda (CI.cptr ipiv)
+let sgetf2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_sgetf2 layout m n a lda ipiv
 
 
-let dgetf2 ~layout ~m ~n ~a ~lda ~ipiv =
-  lapacke_dgetf2 layout m n (CI.cptr a) lda (CI.cptr ipiv)
+let dgetf2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_dgetf2 layout m n a lda ipiv
 
 
-let cgetf2 ~layout ~m ~n ~a ~lda ~ipiv =
-  lapacke_cgetf2 layout m n (CI.cptr a) lda (CI.cptr ipiv)
+let cgetf2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_cgetf2 layout m n a lda ipiv
 
 
-let zgetf2 ~layout ~m ~n ~a ~lda ~ipiv =
-  lapacke_zgetf2 layout m n (CI.cptr a) lda (CI.cptr ipiv)
+let zgetf2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zgetf2 layout m n a lda ipiv
 
 
-let sgetrf ~layout ~m ~n ~a ~lda ~ipiv =
-  lapacke_sgetrf layout m n (CI.cptr a) lda (CI.cptr ipiv)
+let sgetrf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_sgetrf layout m n a lda ipiv
 
 
-let dgetrf ~layout ~m ~n ~a ~lda ~ipiv =
-  lapacke_dgetrf layout m n (CI.cptr a) lda (CI.cptr ipiv)
+let dgetrf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_dgetrf layout m n a lda ipiv
 
 
-let cgetrf ~layout ~m ~n ~a ~lda ~ipiv =
-  lapacke_cgetrf layout m n (CI.cptr a) lda (CI.cptr ipiv)
+let cgetrf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_cgetrf layout m n a lda ipiv
 
 
-let zgetrf ~layout ~m ~n ~a ~lda ~ipiv =
-  lapacke_zgetrf layout m n (CI.cptr a) lda (CI.cptr ipiv)
+let zgetrf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zgetrf layout m n a lda ipiv
 
 
-let sgetrf2 ~layout ~m ~n ~a ~lda ~ipiv =
-  lapacke_sgetrf2 layout m n (CI.cptr a) lda (CI.cptr ipiv)
+let sgetrf2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_sgetrf2 layout m n a lda ipiv
 
 
-let dgetrf2 ~layout ~m ~n ~a ~lda ~ipiv =
-  lapacke_dgetrf2 layout m n (CI.cptr a) lda (CI.cptr ipiv)
+let dgetrf2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_dgetrf2 layout m n a lda ipiv
 
 
-let cgetrf2 ~layout ~m ~n ~a ~lda ~ipiv =
-  lapacke_cgetrf2 layout m n (CI.cptr a) lda (CI.cptr ipiv)
+let cgetrf2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_cgetrf2 layout m n a lda ipiv
 
 
-let zgetrf2 ~layout ~m ~n ~a ~lda ~ipiv =
-  lapacke_zgetrf2 layout m n (CI.cptr a) lda (CI.cptr ipiv)
+let zgetrf2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zgetrf2 layout m n a lda ipiv
 
 
-let sgetri ~layout ~n ~a ~lda ~ipiv =
-  lapacke_sgetri layout n (CI.cptr a) lda (CI.cptr ipiv)
+let sgetri ~layout ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_sgetri layout n a lda ipiv
 
 
-let dgetri ~layout ~n ~a ~lda ~ipiv =
-  lapacke_dgetri layout n (CI.cptr a) lda (CI.cptr ipiv)
+let dgetri ~layout ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_dgetri layout n a lda ipiv
 
 
-let cgetri ~layout ~n ~a ~lda ~ipiv =
-  lapacke_cgetri layout n (CI.cptr a) lda (CI.cptr ipiv)
+let cgetri ~layout ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_cgetri layout n a lda ipiv
 
 
-let zgetri ~layout ~n ~a ~lda ~ipiv =
-  lapacke_zgetri layout n (CI.cptr a) lda (CI.cptr ipiv)
+let zgetri ~layout ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zgetri layout n a lda ipiv
 
 
-let sgetrs ~layout ~trans ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_sgetrs layout trans n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let sgetrs
+    ~layout
+    ~trans
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_sgetrs layout trans n nrhs a lda ipiv b ldb
 
 
-let dgetrs ~layout ~trans ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_dgetrs layout trans n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let dgetrs
+    ~layout
+    ~trans
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dgetrs layout trans n nrhs a lda ipiv b ldb
 
 
-let cgetrs ~layout ~trans ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_cgetrs layout trans n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let cgetrs
+    ~layout
+    ~trans
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_cgetrs layout trans n nrhs a lda ipiv b ldb
 
 
-let zgetrs ~layout ~trans ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_zgetrs layout trans n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let zgetrs
+    ~layout
+    ~trans
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zgetrs layout trans n nrhs a lda ipiv b ldb
 
 
-let sggbak ~layout ~job ~side ~n ~ilo ~ihi ~lscale ~rscale ~m ~v ~ldv =
-  lapacke_sggbak
-    layout
-    job
-    side
-    n
-    ilo
-    ihi
-    (CI.cptr lscale)
-    (CI.cptr rscale)
-    m
-    (CI.cptr v)
-    ldv
+let sggbak
+    ~layout
+    ~job
+    ~side
+    ~n
+    ~ilo
+    ~ihi
+    ~lscale:(CI.CPointer lscale)
+    ~rscale:(CI.CPointer rscale)
+    ~m
+    ~v:(CI.CPointer v)
+    ~ldv
+  =
+  lapacke_sggbak layout job side n ilo ihi lscale rscale m v ldv
 
 
-let dggbak ~layout ~job ~side ~n ~ilo ~ihi ~lscale ~rscale ~m ~v ~ldv =
-  lapacke_dggbak
-    layout
-    job
-    side
-    n
-    ilo
-    ihi
-    (CI.cptr lscale)
-    (CI.cptr rscale)
-    m
-    (CI.cptr v)
-    ldv
+let dggbak
+    ~layout
+    ~job
+    ~side
+    ~n
+    ~ilo
+    ~ihi
+    ~lscale:(CI.CPointer lscale)
+    ~rscale:(CI.CPointer rscale)
+    ~m
+    ~v:(CI.CPointer v)
+    ~ldv
+  =
+  lapacke_dggbak layout job side n ilo ihi lscale rscale m v ldv
 
 
-let cggbak ~layout ~job ~side ~n ~ilo ~ihi ~lscale ~rscale ~m ~v ~ldv =
-  lapacke_cggbak
-    layout
-    job
-    side
-    n
-    ilo
-    ihi
-    (CI.cptr lscale)
-    (CI.cptr rscale)
-    m
-    (CI.cptr v)
-    ldv
+let cggbak
+    ~layout
+    ~job
+    ~side
+    ~n
+    ~ilo
+    ~ihi
+    ~lscale:(CI.CPointer lscale)
+    ~rscale:(CI.CPointer rscale)
+    ~m
+    ~v:(CI.CPointer v)
+    ~ldv
+  =
+  lapacke_cggbak layout job side n ilo ihi lscale rscale m v ldv
 
 
-let zggbak ~layout ~job ~side ~n ~ilo ~ihi ~lscale ~rscale ~m ~v ~ldv =
-  lapacke_zggbak
-    layout
-    job
-    side
-    n
-    ilo
-    ihi
-    (CI.cptr lscale)
-    (CI.cptr rscale)
-    m
-    (CI.cptr v)
-    ldv
+let zggbak
+    ~layout
+    ~job
+    ~side
+    ~n
+    ~ilo
+    ~ihi
+    ~lscale:(CI.CPointer lscale)
+    ~rscale:(CI.CPointer rscale)
+    ~m
+    ~v:(CI.CPointer v)
+    ~ldv
+  =
+  lapacke_zggbak layout job side n ilo ihi lscale rscale m v ldv
 
 
-let sggbal ~layout ~job ~n ~a ~lda ~b ~ldb ~ilo ~ihi ~lscale ~rscale =
-  lapacke_sggbal
-    layout
-    job
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr ilo)
-    (CI.cptr ihi)
-    (CI.cptr lscale)
-    (CI.cptr rscale)
+let sggbal
+    ~layout
+    ~job
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~lscale:(CI.CPointer lscale)
+    ~rscale:(CI.CPointer rscale)
+  =
+  lapacke_sggbal layout job n a lda b ldb ilo ihi lscale rscale
 
 
-let dggbal ~layout ~job ~n ~a ~lda ~b ~ldb ~ilo ~ihi ~lscale ~rscale =
-  lapacke_dggbal
-    layout
-    job
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr ilo)
-    (CI.cptr ihi)
-    (CI.cptr lscale)
-    (CI.cptr rscale)
+let dggbal
+    ~layout
+    ~job
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~lscale:(CI.CPointer lscale)
+    ~rscale:(CI.CPointer rscale)
+  =
+  lapacke_dggbal layout job n a lda b ldb ilo ihi lscale rscale
 
 
-let cggbal ~layout ~job ~n ~a ~lda ~b ~ldb ~ilo ~ihi ~lscale ~rscale =
-  lapacke_cggbal
-    layout
-    job
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr ilo)
-    (CI.cptr ihi)
-    (CI.cptr lscale)
-    (CI.cptr rscale)
+let cggbal
+    ~layout
+    ~job
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~lscale:(CI.CPointer lscale)
+    ~rscale:(CI.CPointer rscale)
+  =
+  lapacke_cggbal layout job n a lda b ldb ilo ihi lscale rscale
 
 
-let zggbal ~layout ~job ~n ~a ~lda ~b ~ldb ~ilo ~ihi ~lscale ~rscale =
-  lapacke_zggbal
-    layout
-    job
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr ilo)
-    (CI.cptr ihi)
-    (CI.cptr lscale)
-    (CI.cptr rscale)
+let zggbal
+    ~layout
+    ~job
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~lscale:(CI.CPointer lscale)
+    ~rscale:(CI.CPointer rscale)
+  =
+  lapacke_zggbal layout job n a lda b ldb ilo ihi lscale rscale
 
 
 let sgges
@@ -17938,19 +17986,19 @@ let sgges
     ~jobvsl
     ~jobvsr
     ~sort
-    ~selctg
+    ~selctg:(CI.CPointer selctg)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~sdim
-    ~alphar
-    ~alphai
-    ~beta
-    ~vsl
+    ~sdim:(CI.CPointer sdim)
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~vsl:(CI.CPointer vsl)
     ~ldvsl
-    ~vsr
+    ~vsr:(CI.CPointer vsr)
     ~ldvsr
   =
   lapacke_sgges
@@ -17958,19 +18006,19 @@ let sgges
     jobvsl
     jobvsr
     sort
-    (CI.cptr selctg)
+    selctg
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr sdim)
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr vsl)
+    sdim
+    alphar
+    alphai
+    beta
+    vsl
     ldvsl
-    (CI.cptr vsr)
+    vsr
     ldvsr
 
 
@@ -17979,19 +18027,19 @@ let dgges
     ~jobvsl
     ~jobvsr
     ~sort
-    ~selctg
+    ~selctg:(CI.CPointer selctg)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~sdim
-    ~alphar
-    ~alphai
-    ~beta
-    ~vsl
+    ~sdim:(CI.CPointer sdim)
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~vsl:(CI.CPointer vsl)
     ~ldvsl
-    ~vsr
+    ~vsr:(CI.CPointer vsr)
     ~ldvsr
   =
   lapacke_dgges
@@ -17999,19 +18047,19 @@ let dgges
     jobvsl
     jobvsr
     sort
-    (CI.cptr selctg)
+    selctg
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr sdim)
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr vsl)
+    sdim
+    alphar
+    alphai
+    beta
+    vsl
     ldvsl
-    (CI.cptr vsr)
+    vsr
     ldvsr
 
 
@@ -18020,18 +18068,18 @@ let cgges
     ~jobvsl
     ~jobvsr
     ~sort
-    ~selctg
+    ~selctg:(CI.CPointer selctg)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~sdim
-    ~alpha
-    ~beta
-    ~vsl
+    ~sdim:(CI.CPointer sdim)
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~vsl:(CI.CPointer vsl)
     ~ldvsl
-    ~vsr
+    ~vsr:(CI.CPointer vsr)
     ~ldvsr
   =
   lapacke_cgges
@@ -18039,18 +18087,18 @@ let cgges
     jobvsl
     jobvsr
     sort
-    (CI.cptr selctg)
+    selctg
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr sdim)
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr vsl)
+    sdim
+    alpha
+    beta
+    vsl
     ldvsl
-    (CI.cptr vsr)
+    vsr
     ldvsr
 
 
@@ -18059,18 +18107,18 @@ let zgges
     ~jobvsl
     ~jobvsr
     ~sort
-    ~selctg
+    ~selctg:(CI.CPointer selctg)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~sdim
-    ~alpha
-    ~beta
-    ~vsl
+    ~sdim:(CI.CPointer sdim)
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~vsl:(CI.CPointer vsl)
     ~ldvsl
-    ~vsr
+    ~vsr:(CI.CPointer vsr)
     ~ldvsr
   =
   lapacke_zgges
@@ -18078,18 +18126,18 @@ let zgges
     jobvsl
     jobvsr
     sort
-    (CI.cptr selctg)
+    selctg
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr sdim)
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr vsl)
+    sdim
+    alpha
+    beta
+    vsl
     ldvsl
-    (CI.cptr vsr)
+    vsr
     ldvsr
 
 
@@ -18098,19 +18146,19 @@ let sgges3
     ~jobvsl
     ~jobvsr
     ~sort
-    ~selctg
+    ~selctg:(CI.CPointer selctg)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~sdim
-    ~alphar
-    ~alphai
-    ~beta
-    ~vsl
+    ~sdim:(CI.CPointer sdim)
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~vsl:(CI.CPointer vsl)
     ~ldvsl
-    ~vsr
+    ~vsr:(CI.CPointer vsr)
     ~ldvsr
   =
   lapacke_sgges3
@@ -18118,19 +18166,19 @@ let sgges3
     jobvsl
     jobvsr
     sort
-    (CI.cptr selctg)
+    selctg
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr sdim)
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr vsl)
+    sdim
+    alphar
+    alphai
+    beta
+    vsl
     ldvsl
-    (CI.cptr vsr)
+    vsr
     ldvsr
 
 
@@ -18139,19 +18187,19 @@ let dgges3
     ~jobvsl
     ~jobvsr
     ~sort
-    ~selctg
+    ~selctg:(CI.CPointer selctg)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~sdim
-    ~alphar
-    ~alphai
-    ~beta
-    ~vsl
+    ~sdim:(CI.CPointer sdim)
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~vsl:(CI.CPointer vsl)
     ~ldvsl
-    ~vsr
+    ~vsr:(CI.CPointer vsr)
     ~ldvsr
   =
   lapacke_dgges3
@@ -18159,19 +18207,19 @@ let dgges3
     jobvsl
     jobvsr
     sort
-    (CI.cptr selctg)
+    selctg
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr sdim)
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr vsl)
+    sdim
+    alphar
+    alphai
+    beta
+    vsl
     ldvsl
-    (CI.cptr vsr)
+    vsr
     ldvsr
 
 
@@ -18180,18 +18228,18 @@ let cgges3
     ~jobvsl
     ~jobvsr
     ~sort
-    ~selctg
+    ~selctg:(CI.CPointer selctg)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~sdim
-    ~alpha
-    ~beta
-    ~vsl
+    ~sdim:(CI.CPointer sdim)
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~vsl:(CI.CPointer vsl)
     ~ldvsl
-    ~vsr
+    ~vsr:(CI.CPointer vsr)
     ~ldvsr
   =
   lapacke_cgges3
@@ -18199,18 +18247,18 @@ let cgges3
     jobvsl
     jobvsr
     sort
-    (CI.cptr selctg)
+    selctg
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr sdim)
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr vsl)
+    sdim
+    alpha
+    beta
+    vsl
     ldvsl
-    (CI.cptr vsr)
+    vsr
     ldvsr
 
 
@@ -18219,18 +18267,18 @@ let zgges3
     ~jobvsl
     ~jobvsr
     ~sort
-    ~selctg
+    ~selctg:(CI.CPointer selctg)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~sdim
-    ~alpha
-    ~beta
-    ~vsl
+    ~sdim:(CI.CPointer sdim)
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~vsl:(CI.CPointer vsl)
     ~ldvsl
-    ~vsr
+    ~vsr:(CI.CPointer vsr)
     ~ldvsr
   =
   lapacke_zgges3
@@ -18238,18 +18286,18 @@ let zgges3
     jobvsl
     jobvsr
     sort
-    (CI.cptr selctg)
+    selctg
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr sdim)
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr vsl)
+    sdim
+    alpha
+    beta
+    vsl
     ldvsl
-    (CI.cptr vsr)
+    vsr
     ldvsr
 
 
@@ -18258,46 +18306,46 @@ let sggesx
     ~jobvsl
     ~jobvsr
     ~sort
-    ~selctg
+    ~selctg:(CI.CPointer selctg)
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~sdim
-    ~alphar
-    ~alphai
-    ~beta
-    ~vsl
+    ~sdim:(CI.CPointer sdim)
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~vsl:(CI.CPointer vsl)
     ~ldvsl
-    ~vsr
+    ~vsr:(CI.CPointer vsr)
     ~ldvsr
-    ~rconde
-    ~rcondv
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
   lapacke_sggesx
     layout
     jobvsl
     jobvsr
     sort
-    (CI.cptr selctg)
+    selctg
     sense
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr sdim)
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr vsl)
+    sdim
+    alphar
+    alphai
+    beta
+    vsl
     ldvsl
-    (CI.cptr vsr)
+    vsr
     ldvsr
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+    rconde
+    rcondv
 
 
 let dggesx
@@ -18305,46 +18353,46 @@ let dggesx
     ~jobvsl
     ~jobvsr
     ~sort
-    ~selctg
+    ~selctg:(CI.CPointer selctg)
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~sdim
-    ~alphar
-    ~alphai
-    ~beta
-    ~vsl
+    ~sdim:(CI.CPointer sdim)
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~vsl:(CI.CPointer vsl)
     ~ldvsl
-    ~vsr
+    ~vsr:(CI.CPointer vsr)
     ~ldvsr
-    ~rconde
-    ~rcondv
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
   lapacke_dggesx
     layout
     jobvsl
     jobvsr
     sort
-    (CI.cptr selctg)
+    selctg
     sense
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr sdim)
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr vsl)
+    sdim
+    alphar
+    alphai
+    beta
+    vsl
     ldvsl
-    (CI.cptr vsr)
+    vsr
     ldvsr
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+    rconde
+    rcondv
 
 
 let cggesx
@@ -18352,44 +18400,44 @@ let cggesx
     ~jobvsl
     ~jobvsr
     ~sort
-    ~selctg
+    ~selctg:(CI.CPointer selctg)
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~sdim
-    ~alpha
-    ~beta
-    ~vsl
+    ~sdim:(CI.CPointer sdim)
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~vsl:(CI.CPointer vsl)
     ~ldvsl
-    ~vsr
+    ~vsr:(CI.CPointer vsr)
     ~ldvsr
-    ~rconde
-    ~rcondv
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
   lapacke_cggesx
     layout
     jobvsl
     jobvsr
     sort
-    (CI.cptr selctg)
+    selctg
     sense
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr sdim)
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr vsl)
+    sdim
+    alpha
+    beta
+    vsl
     ldvsl
-    (CI.cptr vsr)
+    vsr
     ldvsr
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+    rconde
+    rcondv
 
 
 let zggesx
@@ -18397,44 +18445,44 @@ let zggesx
     ~jobvsl
     ~jobvsr
     ~sort
-    ~selctg
+    ~selctg:(CI.CPointer selctg)
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~sdim
-    ~alpha
-    ~beta
-    ~vsl
+    ~sdim:(CI.CPointer sdim)
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~vsl:(CI.CPointer vsl)
     ~ldvsl
-    ~vsr
+    ~vsr:(CI.CPointer vsr)
     ~ldvsr
-    ~rconde
-    ~rcondv
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
   lapacke_zggesx
     layout
     jobvsl
     jobvsr
     sort
-    (CI.cptr selctg)
+    selctg
     sense
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr sdim)
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr vsl)
+    sdim
+    alpha
+    beta
+    vsl
     ldvsl
-    (CI.cptr vsr)
+    vsr
     ldvsr
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+    rconde
+    rcondv
 
 
 let sggev
@@ -18442,34 +18490,19 @@ let sggev
     ~jobvl
     ~jobvr
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alphar
-    ~alphai
-    ~beta
-    ~vl
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
   =
-  lapacke_sggev
-    layout
-    jobvl
-    jobvr
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
+  lapacke_sggev layout jobvl jobvr n a lda b ldb alphar alphai beta vl ldvl vr ldvr
 
 
 let dggev
@@ -18477,70 +18510,57 @@ let dggev
     ~jobvl
     ~jobvr
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alphar
-    ~alphai
-    ~beta
-    ~vl
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
   =
-  lapacke_dggev
-    layout
-    jobvl
-    jobvr
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
+  lapacke_dggev layout jobvl jobvr n a lda b ldb alphar alphai beta vl ldvl vr ldvr
 
 
-let cggev ~layout ~jobvl ~jobvr ~n ~a ~lda ~b ~ldb ~alpha ~beta ~vl ~ldvl ~vr ~ldvr =
-  lapacke_cggev
-    layout
-    jobvl
-    jobvr
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
+let cggev
+    ~layout
+    ~jobvl
+    ~jobvr
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+  =
+  lapacke_cggev layout jobvl jobvr n a lda b ldb alpha beta vl ldvl vr ldvr
 
 
-let zggev ~layout ~jobvl ~jobvr ~n ~a ~lda ~b ~ldb ~alpha ~beta ~vl ~ldvl ~vr ~ldvr =
-  lapacke_zggev
-    layout
-    jobvl
-    jobvr
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
+let zggev
+    ~layout
+    ~jobvl
+    ~jobvr
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+  =
+  lapacke_zggev layout jobvl jobvr n a lda b ldb alpha beta vl ldvl vr ldvr
 
 
 let sggev3
@@ -18548,34 +18568,19 @@ let sggev3
     ~jobvl
     ~jobvr
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alphar
-    ~alphai
-    ~beta
-    ~vl
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
   =
-  lapacke_sggev3
-    layout
-    jobvl
-    jobvr
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
+  lapacke_sggev3 layout jobvl jobvr n a lda b ldb alphar alphai beta vl ldvl vr ldvr
 
 
 let dggev3
@@ -18583,70 +18588,57 @@ let dggev3
     ~jobvl
     ~jobvr
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alphar
-    ~alphai
-    ~beta
-    ~vl
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
   =
-  lapacke_dggev3
-    layout
-    jobvl
-    jobvr
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
+  lapacke_dggev3 layout jobvl jobvr n a lda b ldb alphar alphai beta vl ldvl vr ldvr
 
 
-let cggev3 ~layout ~jobvl ~jobvr ~n ~a ~lda ~b ~ldb ~alpha ~beta ~vl ~ldvl ~vr ~ldvr =
-  lapacke_cggev3
-    layout
-    jobvl
-    jobvr
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
+let cggev3
+    ~layout
+    ~jobvl
+    ~jobvr
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+  =
+  lapacke_cggev3 layout jobvl jobvr n a lda b ldb alpha beta vl ldvl vr ldvr
 
 
-let zggev3 ~layout ~jobvl ~jobvr ~n ~a ~lda ~b ~ldb ~alpha ~beta ~vl ~ldvl ~vr ~ldvr =
-  lapacke_zggev3
-    layout
-    jobvl
-    jobvr
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
+let zggev3
+    ~layout
+    ~jobvl
+    ~jobvr
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+  =
+  lapacke_zggev3 layout jobvl jobvr n a lda b ldb alpha beta vl ldvl vr ldvr
 
 
 let sggevx
@@ -18656,25 +18648,25 @@ let sggevx
     ~jobvr
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alphar
-    ~alphai
-    ~beta
-    ~vl
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
-    ~ilo
-    ~ihi
-    ~lscale
-    ~rscale
-    ~abnrm
-    ~bbnrm
-    ~rconde
-    ~rcondv
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~lscale:(CI.CPointer lscale)
+    ~rscale:(CI.CPointer rscale)
+    ~abnrm:(CI.CPointer abnrm)
+    ~bbnrm:(CI.CPointer bbnrm)
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
   lapacke_sggevx
     layout
@@ -18683,25 +18675,25 @@ let sggevx
     jobvr
     sense
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr vl)
+    alphar
+    alphai
+    beta
+    vl
     ldvl
-    (CI.cptr vr)
+    vr
     ldvr
-    (CI.cptr ilo)
-    (CI.cptr ihi)
-    (CI.cptr lscale)
-    (CI.cptr rscale)
-    (CI.cptr abnrm)
-    (CI.cptr bbnrm)
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+    ilo
+    ihi
+    lscale
+    rscale
+    abnrm
+    bbnrm
+    rconde
+    rcondv
 
 
 let dggevx
@@ -18711,25 +18703,25 @@ let dggevx
     ~jobvr
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alphar
-    ~alphai
-    ~beta
-    ~vl
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
-    ~ilo
-    ~ihi
-    ~lscale
-    ~rscale
-    ~abnrm
-    ~bbnrm
-    ~rconde
-    ~rcondv
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~lscale:(CI.CPointer lscale)
+    ~rscale:(CI.CPointer rscale)
+    ~abnrm:(CI.CPointer abnrm)
+    ~bbnrm:(CI.CPointer bbnrm)
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
   lapacke_dggevx
     layout
@@ -18738,25 +18730,25 @@ let dggevx
     jobvr
     sense
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr vl)
+    alphar
+    alphai
+    beta
+    vl
     ldvl
-    (CI.cptr vr)
+    vr
     ldvr
-    (CI.cptr ilo)
-    (CI.cptr ihi)
-    (CI.cptr lscale)
-    (CI.cptr rscale)
-    (CI.cptr abnrm)
-    (CI.cptr bbnrm)
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+    ilo
+    ihi
+    lscale
+    rscale
+    abnrm
+    bbnrm
+    rconde
+    rcondv
 
 
 let cggevx
@@ -18766,24 +18758,24 @@ let cggevx
     ~jobvr
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alpha
-    ~beta
-    ~vl
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
-    ~ilo
-    ~ihi
-    ~lscale
-    ~rscale
-    ~abnrm
-    ~bbnrm
-    ~rconde
-    ~rcondv
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~lscale:(CI.CPointer lscale)
+    ~rscale:(CI.CPointer rscale)
+    ~abnrm:(CI.CPointer abnrm)
+    ~bbnrm:(CI.CPointer bbnrm)
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
   lapacke_cggevx
     layout
@@ -18792,24 +18784,24 @@ let cggevx
     jobvr
     sense
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr vl)
+    alpha
+    beta
+    vl
     ldvl
-    (CI.cptr vr)
+    vr
     ldvr
-    (CI.cptr ilo)
-    (CI.cptr ihi)
-    (CI.cptr lscale)
-    (CI.cptr rscale)
-    (CI.cptr abnrm)
-    (CI.cptr bbnrm)
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
+    ilo
+    ihi
+    lscale
+    rscale
+    abnrm
+    bbnrm
+    rconde
+    rcondv
 
 
 let zggevx
@@ -18819,24 +18811,24 @@ let zggevx
     ~jobvr
     ~sense
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alpha
-    ~beta
-    ~vl
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
-    ~ilo
-    ~ihi
-    ~lscale
-    ~rscale
-    ~abnrm
-    ~bbnrm
-    ~rconde
-    ~rcondv
+    ~ilo:(CI.CPointer ilo)
+    ~ihi:(CI.CPointer ihi)
+    ~lscale:(CI.CPointer lscale)
+    ~rscale:(CI.CPointer rscale)
+    ~abnrm:(CI.CPointer abnrm)
+    ~bbnrm:(CI.CPointer bbnrm)
+    ~rconde:(CI.CPointer rconde)
+    ~rcondv:(CI.CPointer rcondv)
   =
   lapacke_zggevx
     layout
@@ -18845,400 +18837,424 @@ let zggevx
     jobvr
     sense
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr vl)
+    alpha
+    beta
+    vl
     ldvl
-    (CI.cptr vr)
+    vr
     ldvr
-    (CI.cptr ilo)
-    (CI.cptr ihi)
-    (CI.cptr lscale)
-    (CI.cptr rscale)
-    (CI.cptr abnrm)
-    (CI.cptr bbnrm)
-    (CI.cptr rconde)
-    (CI.cptr rcondv)
-
-
-let sggglm ~layout ~n ~m ~p ~a ~lda ~b ~ldb ~d ~x ~y =
-  lapacke_sggglm
-    layout
-    n
-    m
-    p
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr d)
-    (CI.cptr x)
-    (CI.cptr y)
-
-
-let dggglm ~layout ~n ~m ~p ~a ~lda ~b ~ldb ~d ~x ~y =
-  lapacke_dggglm
-    layout
-    n
-    m
-    p
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr d)
-    (CI.cptr x)
-    (CI.cptr y)
-
-
-let cggglm ~layout ~n ~m ~p ~a ~lda ~b ~ldb ~d ~x ~y =
-  lapacke_cggglm
-    layout
-    n
-    m
-    p
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr d)
-    (CI.cptr x)
-    (CI.cptr y)
-
-
-let zggglm ~layout ~n ~m ~p ~a ~lda ~b ~ldb ~d ~x ~y =
-  lapacke_zggglm
-    layout
-    n
-    m
-    p
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr d)
-    (CI.cptr x)
-    (CI.cptr y)
-
-
-let sgghrd ~layout ~compq ~compz ~n ~ilo ~ihi ~a ~lda ~b ~ldb ~q ~ldq ~z ~ldz =
-  lapacke_sgghrd
-    layout
-    compq
-    compz
-    n
     ilo
     ihi
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
+    lscale
+    rscale
+    abnrm
+    bbnrm
+    rconde
+    rcondv
 
 
-let dgghrd ~layout ~compq ~compz ~n ~ilo ~ihi ~a ~lda ~b ~ldb ~q ~ldq ~z ~ldz =
-  lapacke_dgghrd
-    layout
-    compq
-    compz
-    n
-    ilo
-    ihi
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
+let sggglm
+    ~layout
+    ~n
+    ~m
+    ~p
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~d:(CI.CPointer d)
+    ~x:(CI.CPointer x)
+    ~y:(CI.CPointer y)
+  =
+  lapacke_sggglm layout n m p a lda b ldb d x y
 
 
-let cgghrd ~layout ~compq ~compz ~n ~ilo ~ihi ~a ~lda ~b ~ldb ~q ~ldq ~z ~ldz =
-  lapacke_cgghrd
-    layout
-    compq
-    compz
-    n
-    ilo
-    ihi
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
+let dggglm
+    ~layout
+    ~n
+    ~m
+    ~p
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~d:(CI.CPointer d)
+    ~x:(CI.CPointer x)
+    ~y:(CI.CPointer y)
+  =
+  lapacke_dggglm layout n m p a lda b ldb d x y
 
 
-let zgghrd ~layout ~compq ~compz ~n ~ilo ~ihi ~a ~lda ~b ~ldb ~q ~ldq ~z ~ldz =
-  lapacke_zgghrd
-    layout
-    compq
-    compz
-    n
-    ilo
-    ihi
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
+let cggglm
+    ~layout
+    ~n
+    ~m
+    ~p
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~d:(CI.CPointer d)
+    ~x:(CI.CPointer x)
+    ~y:(CI.CPointer y)
+  =
+  lapacke_cggglm layout n m p a lda b ldb d x y
 
 
-let sgghd3 ~layout ~compq ~compz ~n ~ilo ~ihi ~a ~lda ~b ~ldb ~q ~ldq ~z ~ldz =
-  lapacke_sgghd3
-    layout
-    compq
-    compz
-    n
-    ilo
-    ihi
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
+let zggglm
+    ~layout
+    ~n
+    ~m
+    ~p
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~d:(CI.CPointer d)
+    ~x:(CI.CPointer x)
+    ~y:(CI.CPointer y)
+  =
+  lapacke_zggglm layout n m p a lda b ldb d x y
 
 
-let dgghd3 ~layout ~compq ~compz ~n ~ilo ~ihi ~a ~lda ~b ~ldb ~q ~ldq ~z ~ldz =
-  lapacke_dgghd3
-    layout
-    compq
-    compz
-    n
-    ilo
-    ihi
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
+let sgghrd
+    ~layout
+    ~compq
+    ~compz
+    ~n
+    ~ilo
+    ~ihi
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_sgghrd layout compq compz n ilo ihi a lda b ldb q ldq z ldz
 
 
-let cgghd3 ~layout ~compq ~compz ~n ~ilo ~ihi ~a ~lda ~b ~ldb ~q ~ldq ~z ~ldz =
-  lapacke_cgghd3
-    layout
-    compq
-    compz
-    n
-    ilo
-    ihi
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
+let dgghrd
+    ~layout
+    ~compq
+    ~compz
+    ~n
+    ~ilo
+    ~ihi
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_dgghrd layout compq compz n ilo ihi a lda b ldb q ldq z ldz
 
 
-let zgghd3 ~layout ~compq ~compz ~n ~ilo ~ihi ~a ~lda ~b ~ldb ~q ~ldq ~z ~ldz =
-  lapacke_zgghd3
-    layout
-    compq
-    compz
-    n
-    ilo
-    ihi
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
+let cgghrd
+    ~layout
+    ~compq
+    ~compz
+    ~n
+    ~ilo
+    ~ihi
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_cgghrd layout compq compz n ilo ihi a lda b ldb q ldq z ldz
 
 
-let sgglse ~layout ~m ~n ~p ~a ~lda ~b ~ldb ~c ~d ~x =
-  lapacke_sgglse
-    layout
-    m
-    n
-    p
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr c)
-    (CI.cptr d)
-    (CI.cptr x)
+let zgghrd
+    ~layout
+    ~compq
+    ~compz
+    ~n
+    ~ilo
+    ~ihi
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_zgghrd layout compq compz n ilo ihi a lda b ldb q ldq z ldz
 
 
-let dgglse ~layout ~m ~n ~p ~a ~lda ~b ~ldb ~c ~d ~x =
-  lapacke_dgglse
-    layout
-    m
-    n
-    p
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr c)
-    (CI.cptr d)
-    (CI.cptr x)
+let sgghd3
+    ~layout
+    ~compq
+    ~compz
+    ~n
+    ~ilo
+    ~ihi
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_sgghd3 layout compq compz n ilo ihi a lda b ldb q ldq z ldz
 
 
-let cgglse ~layout ~m ~n ~p ~a ~lda ~b ~ldb ~c ~d ~x =
-  lapacke_cgglse
-    layout
-    m
-    n
-    p
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr c)
-    (CI.cptr d)
-    (CI.cptr x)
+let dgghd3
+    ~layout
+    ~compq
+    ~compz
+    ~n
+    ~ilo
+    ~ihi
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_dgghd3 layout compq compz n ilo ihi a lda b ldb q ldq z ldz
 
 
-let zgglse ~layout ~m ~n ~p ~a ~lda ~b ~ldb ~c ~d ~x =
-  lapacke_zgglse
-    layout
-    m
-    n
-    p
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr c)
-    (CI.cptr d)
-    (CI.cptr x)
+let cgghd3
+    ~layout
+    ~compq
+    ~compz
+    ~n
+    ~ilo
+    ~ihi
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_cgghd3 layout compq compz n ilo ihi a lda b ldb q ldq z ldz
 
 
-let sggqrf ~layout ~n ~m ~p ~a ~lda ~taua ~b ~ldb ~taub =
-  lapacke_sggqrf
-    layout
-    n
-    m
-    p
-    (CI.cptr a)
-    lda
-    (CI.cptr taua)
-    (CI.cptr b)
-    ldb
-    (CI.cptr taub)
+let zgghd3
+    ~layout
+    ~compq
+    ~compz
+    ~n
+    ~ilo
+    ~ihi
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_zgghd3 layout compq compz n ilo ihi a lda b ldb q ldq z ldz
 
 
-let dggqrf ~layout ~n ~m ~p ~a ~lda ~taua ~b ~ldb ~taub =
-  lapacke_dggqrf
-    layout
-    n
-    m
-    p
-    (CI.cptr a)
-    lda
-    (CI.cptr taua)
-    (CI.cptr b)
-    ldb
-    (CI.cptr taub)
+let sgglse
+    ~layout
+    ~m
+    ~n
+    ~p
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~c:(CI.CPointer c)
+    ~d:(CI.CPointer d)
+    ~x:(CI.CPointer x)
+  =
+  lapacke_sgglse layout m n p a lda b ldb c d x
 
 
-let cggqrf ~layout ~n ~m ~p ~a ~lda ~taua ~b ~ldb ~taub =
-  lapacke_cggqrf
-    layout
-    n
-    m
-    p
-    (CI.cptr a)
-    lda
-    (CI.cptr taua)
-    (CI.cptr b)
-    ldb
-    (CI.cptr taub)
+let dgglse
+    ~layout
+    ~m
+    ~n
+    ~p
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~c:(CI.CPointer c)
+    ~d:(CI.CPointer d)
+    ~x:(CI.CPointer x)
+  =
+  lapacke_dgglse layout m n p a lda b ldb c d x
 
 
-let zggqrf ~layout ~n ~m ~p ~a ~lda ~taua ~b ~ldb ~taub =
-  lapacke_zggqrf
-    layout
-    n
-    m
-    p
-    (CI.cptr a)
-    lda
-    (CI.cptr taua)
-    (CI.cptr b)
-    ldb
-    (CI.cptr taub)
+let cgglse
+    ~layout
+    ~m
+    ~n
+    ~p
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~c:(CI.CPointer c)
+    ~d:(CI.CPointer d)
+    ~x:(CI.CPointer x)
+  =
+  lapacke_cgglse layout m n p a lda b ldb c d x
 
 
-let sggrqf ~layout ~m ~p ~n ~a ~lda ~taua ~b ~ldb ~taub =
-  lapacke_sggrqf
-    layout
-    m
-    p
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr taua)
-    (CI.cptr b)
-    ldb
-    (CI.cptr taub)
+let zgglse
+    ~layout
+    ~m
+    ~n
+    ~p
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~c:(CI.CPointer c)
+    ~d:(CI.CPointer d)
+    ~x:(CI.CPointer x)
+  =
+  lapacke_zgglse layout m n p a lda b ldb c d x
 
 
-let dggrqf ~layout ~m ~p ~n ~a ~lda ~taua ~b ~ldb ~taub =
-  lapacke_dggrqf
-    layout
-    m
-    p
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr taua)
-    (CI.cptr b)
-    ldb
-    (CI.cptr taub)
+let sggqrf
+    ~layout
+    ~n
+    ~m
+    ~p
+    ~a:(CI.CPointer a)
+    ~lda
+    ~taua:(CI.CPointer taua)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~taub:(CI.CPointer taub)
+  =
+  lapacke_sggqrf layout n m p a lda taua b ldb taub
 
 
-let cggrqf ~layout ~m ~p ~n ~a ~lda ~taua ~b ~ldb ~taub =
-  lapacke_cggrqf
-    layout
-    m
-    p
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr taua)
-    (CI.cptr b)
-    ldb
-    (CI.cptr taub)
+let dggqrf
+    ~layout
+    ~n
+    ~m
+    ~p
+    ~a:(CI.CPointer a)
+    ~lda
+    ~taua:(CI.CPointer taua)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~taub:(CI.CPointer taub)
+  =
+  lapacke_dggqrf layout n m p a lda taua b ldb taub
 
 
-let zggrqf ~layout ~m ~p ~n ~a ~lda ~taua ~b ~ldb ~taub =
-  lapacke_zggrqf
-    layout
-    m
-    p
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr taua)
-    (CI.cptr b)
-    ldb
-    (CI.cptr taub)
+let cggqrf
+    ~layout
+    ~n
+    ~m
+    ~p
+    ~a:(CI.CPointer a)
+    ~lda
+    ~taua:(CI.CPointer taua)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~taub:(CI.CPointer taub)
+  =
+  lapacke_cggqrf layout n m p a lda taua b ldb taub
+
+
+let zggqrf
+    ~layout
+    ~n
+    ~m
+    ~p
+    ~a:(CI.CPointer a)
+    ~lda
+    ~taua:(CI.CPointer taua)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~taub:(CI.CPointer taub)
+  =
+  lapacke_zggqrf layout n m p a lda taua b ldb taub
+
+
+let sggrqf
+    ~layout
+    ~m
+    ~p
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~taua:(CI.CPointer taua)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~taub:(CI.CPointer taub)
+  =
+  lapacke_sggrqf layout m p n a lda taua b ldb taub
+
+
+let dggrqf
+    ~layout
+    ~m
+    ~p
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~taua:(CI.CPointer taua)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~taub:(CI.CPointer taub)
+  =
+  lapacke_dggrqf layout m p n a lda taua b ldb taub
+
+
+let cggrqf
+    ~layout
+    ~m
+    ~p
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~taua:(CI.CPointer taua)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~taub:(CI.CPointer taub)
+  =
+  lapacke_cggrqf layout m p n a lda taua b ldb taub
+
+
+let zggrqf
+    ~layout
+    ~m
+    ~p
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~taua:(CI.CPointer taua)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~taub:(CI.CPointer taub)
+  =
+  lapacke_zggrqf layout m p n a lda taua b ldb taub
 
 
 let sggsvd3
@@ -19249,21 +19265,21 @@ let sggsvd3
     ~m
     ~n
     ~p
-    ~k
-    ~l
-    ~a
+    ~k:(CI.CPointer k)
+    ~l:(CI.CPointer l)
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alpha
-    ~beta
-    ~u
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
-    ~iwork
+    ~iwork:(CI.CPointer iwork)
   =
   lapacke_sggsvd3
     layout
@@ -19273,21 +19289,21 @@ let sggsvd3
     m
     n
     p
-    (CI.cptr k)
-    (CI.cptr l)
-    (CI.cptr a)
+    k
+    l
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr u)
+    alpha
+    beta
+    u
     ldu
-    (CI.cptr v)
+    v
     ldv
-    (CI.cptr q)
+    q
     ldq
-    (CI.cptr iwork)
+    iwork
 
 
 let dggsvd3
@@ -19298,21 +19314,21 @@ let dggsvd3
     ~m
     ~n
     ~p
-    ~k
-    ~l
-    ~a
+    ~k:(CI.CPointer k)
+    ~l:(CI.CPointer l)
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alpha
-    ~beta
-    ~u
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
-    ~iwork
+    ~iwork:(CI.CPointer iwork)
   =
   lapacke_dggsvd3
     layout
@@ -19322,21 +19338,21 @@ let dggsvd3
     m
     n
     p
-    (CI.cptr k)
-    (CI.cptr l)
-    (CI.cptr a)
+    k
+    l
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr u)
+    alpha
+    beta
+    u
     ldu
-    (CI.cptr v)
+    v
     ldv
-    (CI.cptr q)
+    q
     ldq
-    (CI.cptr iwork)
+    iwork
 
 
 let cggsvd3
@@ -19347,21 +19363,21 @@ let cggsvd3
     ~m
     ~n
     ~p
-    ~k
-    ~l
-    ~a
+    ~k:(CI.CPointer k)
+    ~l:(CI.CPointer l)
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alpha
-    ~beta
-    ~u
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
-    ~iwork
+    ~iwork:(CI.CPointer iwork)
   =
   lapacke_cggsvd3
     layout
@@ -19371,21 +19387,21 @@ let cggsvd3
     m
     n
     p
-    (CI.cptr k)
-    (CI.cptr l)
-    (CI.cptr a)
+    k
+    l
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr u)
+    alpha
+    beta
+    u
     ldu
-    (CI.cptr v)
+    v
     ldv
-    (CI.cptr q)
+    q
     ldq
-    (CI.cptr iwork)
+    iwork
 
 
 let zggsvd3
@@ -19396,21 +19412,21 @@ let zggsvd3
     ~m
     ~n
     ~p
-    ~k
-    ~l
-    ~a
+    ~k:(CI.CPointer k)
+    ~l:(CI.CPointer l)
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alpha
-    ~beta
-    ~u
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
-    ~iwork
+    ~iwork:(CI.CPointer iwork)
   =
   lapacke_zggsvd3
     layout
@@ -19420,21 +19436,21 @@ let zggsvd3
     m
     n
     p
-    (CI.cptr k)
-    (CI.cptr l)
-    (CI.cptr a)
+    k
+    l
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr u)
+    alpha
+    beta
+    u
     ldu
-    (CI.cptr v)
+    v
     ldv
-    (CI.cptr q)
+    q
     ldq
-    (CI.cptr iwork)
+    iwork
 
 
 let sggsvp3
@@ -19445,43 +19461,22 @@ let sggsvp3
     ~m
     ~p
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
     ~tola
     ~tolb
-    ~k
-    ~l
-    ~u
+    ~k:(CI.CPointer k)
+    ~l:(CI.CPointer l)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
   =
-  lapacke_sggsvp3
-    layout
-    jobu
-    jobv
-    jobq
-    m
-    p
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    tola
-    tolb
-    (CI.cptr k)
-    (CI.cptr l)
-    (CI.cptr u)
-    ldu
-    (CI.cptr v)
-    ldv
-    (CI.cptr q)
-    ldq
+  lapacke_sggsvp3 layout jobu jobv jobq m p n a lda b ldb tola tolb k l u ldu v ldv q ldq
 
 
 let dggsvp3
@@ -19492,43 +19487,22 @@ let dggsvp3
     ~m
     ~p
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
     ~tola
     ~tolb
-    ~k
-    ~l
-    ~u
+    ~k:(CI.CPointer k)
+    ~l:(CI.CPointer l)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
   =
-  lapacke_dggsvp3
-    layout
-    jobu
-    jobv
-    jobq
-    m
-    p
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    tola
-    tolb
-    (CI.cptr k)
-    (CI.cptr l)
-    (CI.cptr u)
-    ldu
-    (CI.cptr v)
-    ldv
-    (CI.cptr q)
-    ldq
+  lapacke_dggsvp3 layout jobu jobv jobq m p n a lda b ldb tola tolb k l u ldu v ldv q ldq
 
 
 let cggsvp3
@@ -19539,43 +19513,22 @@ let cggsvp3
     ~m
     ~p
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
     ~tola
     ~tolb
-    ~k
-    ~l
-    ~u
+    ~k:(CI.CPointer k)
+    ~l:(CI.CPointer l)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
   =
-  lapacke_cggsvp3
-    layout
-    jobu
-    jobv
-    jobq
-    m
-    p
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    tola
-    tolb
-    (CI.cptr k)
-    (CI.cptr l)
-    (CI.cptr u)
-    ldu
-    (CI.cptr v)
-    ldv
-    (CI.cptr q)
-    ldq
+  lapacke_cggsvp3 layout jobu jobv jobq m p n a lda b ldb tola tolb k l u ldu v ldv q ldq
 
 
 let zggsvp3
@@ -19586,95 +19539,78 @@ let zggsvp3
     ~m
     ~p
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
     ~tola
     ~tolb
-    ~k
-    ~l
-    ~u
+    ~k:(CI.CPointer k)
+    ~l:(CI.CPointer l)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
   =
-  lapacke_zggsvp3
-    layout
-    jobu
-    jobv
-    jobq
-    m
-    p
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    tola
-    tolb
-    (CI.cptr k)
-    (CI.cptr l)
-    (CI.cptr u)
-    ldu
-    (CI.cptr v)
-    ldv
-    (CI.cptr q)
-    ldq
+  lapacke_zggsvp3 layout jobu jobv jobq m p n a lda b ldb tola tolb k l u ldu v ldv q ldq
 
 
-let sgtcon ~norm ~n ~dl ~d ~du ~du2 ~ipiv ~anorm ~rcond =
-  lapacke_sgtcon
-    norm
-    n
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    anorm
-    (CI.cptr rcond)
+let sgtcon
+    ~norm
+    ~n
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_sgtcon norm n dl d du du2 ipiv anorm rcond
 
 
-let dgtcon ~norm ~n ~dl ~d ~du ~du2 ~ipiv ~anorm ~rcond =
-  lapacke_dgtcon
-    norm
-    n
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    anorm
-    (CI.cptr rcond)
+let dgtcon
+    ~norm
+    ~n
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_dgtcon norm n dl d du du2 ipiv anorm rcond
 
 
-let cgtcon ~norm ~n ~dl ~d ~du ~du2 ~ipiv ~anorm ~rcond =
-  lapacke_cgtcon
-    norm
-    n
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    anorm
-    (CI.cptr rcond)
+let cgtcon
+    ~norm
+    ~n
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_cgtcon norm n dl d du du2 ipiv anorm rcond
 
 
-let zgtcon ~norm ~n ~dl ~d ~du ~du2 ~ipiv ~anorm ~rcond =
-  lapacke_zgtcon
-    norm
-    n
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    anorm
-    (CI.cptr rcond)
+let zgtcon
+    ~norm
+    ~n
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_zgtcon norm n dl d du du2 ipiv anorm rcond
 
 
 let sgtrfs
@@ -19682,40 +19618,22 @@ let sgtrfs
     ~trans
     ~n
     ~nrhs
-    ~dl
-    ~d
-    ~du
-    ~dlf
-    ~df
-    ~duf
-    ~du2
-    ~ipiv
-    ~b
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~dlf:(CI.CPointer dlf)
+    ~df:(CI.CPointer df)
+    ~duf:(CI.CPointer duf)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~ferr
-    ~berr
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_sgtrfs
-    layout
-    trans
-    n
-    nrhs
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr dlf)
-    (CI.cptr df)
-    (CI.cptr duf)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_sgtrfs layout trans n nrhs dl d du dlf df duf du2 ipiv b ldb x ldx ferr berr
 
 
 let dgtrfs
@@ -19723,40 +19641,22 @@ let dgtrfs
     ~trans
     ~n
     ~nrhs
-    ~dl
-    ~d
-    ~du
-    ~dlf
-    ~df
-    ~duf
-    ~du2
-    ~ipiv
-    ~b
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~dlf:(CI.CPointer dlf)
+    ~df:(CI.CPointer df)
+    ~duf:(CI.CPointer duf)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~ferr
-    ~berr
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_dgtrfs
-    layout
-    trans
-    n
-    nrhs
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr dlf)
-    (CI.cptr df)
-    (CI.cptr duf)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_dgtrfs layout trans n nrhs dl d du dlf df duf du2 ipiv b ldb x ldx ferr berr
 
 
 let cgtrfs
@@ -19764,40 +19664,22 @@ let cgtrfs
     ~trans
     ~n
     ~nrhs
-    ~dl
-    ~d
-    ~du
-    ~dlf
-    ~df
-    ~duf
-    ~du2
-    ~ipiv
-    ~b
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~dlf:(CI.CPointer dlf)
+    ~df:(CI.CPointer df)
+    ~duf:(CI.CPointer duf)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~ferr
-    ~berr
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_cgtrfs
-    layout
-    trans
-    n
-    nrhs
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr dlf)
-    (CI.cptr df)
-    (CI.cptr duf)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_cgtrfs layout trans n nrhs dl d du dlf df duf du2 ipiv b ldb x ldx ferr berr
 
 
 let zgtrfs
@@ -19805,56 +19687,74 @@ let zgtrfs
     ~trans
     ~n
     ~nrhs
-    ~dl
-    ~d
-    ~du
-    ~dlf
-    ~df
-    ~duf
-    ~du2
-    ~ipiv
-    ~b
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~dlf:(CI.CPointer dlf)
+    ~df:(CI.CPointer df)
+    ~duf:(CI.CPointer duf)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~ferr
-    ~berr
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_zgtrfs
-    layout
-    trans
-    n
-    nrhs
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr dlf)
-    (CI.cptr df)
-    (CI.cptr duf)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_zgtrfs layout trans n nrhs dl d du dlf df duf du2 ipiv b ldb x ldx ferr berr
 
 
-let sgtsv ~layout ~n ~nrhs ~dl ~d ~du ~b ~ldb =
-  lapacke_sgtsv layout n nrhs (CI.cptr dl) (CI.cptr d) (CI.cptr du) (CI.cptr b) ldb
+let sgtsv
+    ~layout
+    ~n
+    ~nrhs
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_sgtsv layout n nrhs dl d du b ldb
 
 
-let dgtsv ~layout ~n ~nrhs ~dl ~d ~du ~b ~ldb =
-  lapacke_dgtsv layout n nrhs (CI.cptr dl) (CI.cptr d) (CI.cptr du) (CI.cptr b) ldb
+let dgtsv
+    ~layout
+    ~n
+    ~nrhs
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dgtsv layout n nrhs dl d du b ldb
 
 
-let cgtsv ~layout ~n ~nrhs ~dl ~d ~du ~b ~ldb =
-  lapacke_cgtsv layout n nrhs (CI.cptr dl) (CI.cptr d) (CI.cptr du) (CI.cptr b) ldb
+let cgtsv
+    ~layout
+    ~n
+    ~nrhs
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_cgtsv layout n nrhs dl d du b ldb
 
 
-let zgtsv ~layout ~n ~nrhs ~dl ~d ~du ~b ~ldb =
-  lapacke_zgtsv layout n nrhs (CI.cptr dl) (CI.cptr d) (CI.cptr du) (CI.cptr b) ldb
+let zgtsv
+    ~layout
+    ~n
+    ~nrhs
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zgtsv layout n nrhs dl d du b ldb
 
 
 let sgtsvx
@@ -19863,21 +19763,21 @@ let sgtsvx
     ~trans
     ~n
     ~nrhs
-    ~dl
-    ~d
-    ~du
-    ~dlf
-    ~df
-    ~duf
-    ~du2
-    ~ipiv
-    ~b
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~dlf:(CI.CPointer dlf)
+    ~df:(CI.CPointer df)
+    ~duf:(CI.CPointer duf)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
   lapacke_sgtsvx
     layout
@@ -19885,21 +19785,21 @@ let sgtsvx
     trans
     n
     nrhs
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr dlf)
-    (CI.cptr df)
-    (CI.cptr duf)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    (CI.cptr b)
+    dl
+    d
+    du
+    dlf
+    df
+    duf
+    du2
+    ipiv
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+    rcond
+    ferr
+    berr
 
 
 let dgtsvx
@@ -19908,21 +19808,21 @@ let dgtsvx
     ~trans
     ~n
     ~nrhs
-    ~dl
-    ~d
-    ~du
-    ~dlf
-    ~df
-    ~duf
-    ~du2
-    ~ipiv
-    ~b
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~dlf:(CI.CPointer dlf)
+    ~df:(CI.CPointer df)
+    ~duf:(CI.CPointer duf)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
   lapacke_dgtsvx
     layout
@@ -19930,21 +19830,21 @@ let dgtsvx
     trans
     n
     nrhs
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr dlf)
-    (CI.cptr df)
-    (CI.cptr duf)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    (CI.cptr b)
+    dl
+    d
+    du
+    dlf
+    df
+    duf
+    du2
+    ipiv
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+    rcond
+    ferr
+    berr
 
 
 let cgtsvx
@@ -19953,21 +19853,21 @@ let cgtsvx
     ~trans
     ~n
     ~nrhs
-    ~dl
-    ~d
-    ~du
-    ~dlf
-    ~df
-    ~duf
-    ~du2
-    ~ipiv
-    ~b
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~dlf:(CI.CPointer dlf)
+    ~df:(CI.CPointer df)
+    ~duf:(CI.CPointer duf)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
   lapacke_cgtsvx
     layout
@@ -19975,21 +19875,21 @@ let cgtsvx
     trans
     n
     nrhs
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr dlf)
-    (CI.cptr df)
-    (CI.cptr duf)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    (CI.cptr b)
+    dl
+    d
+    du
+    dlf
+    df
+    duf
+    du2
+    ipiv
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+    rcond
+    ferr
+    berr
 
 
 let zgtsvx
@@ -19998,21 +19898,21 @@ let zgtsvx
     ~trans
     ~n
     ~nrhs
-    ~dl
-    ~d
-    ~du
-    ~dlf
-    ~df
-    ~duf
-    ~du2
-    ~ipiv
-    ~b
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~dlf:(CI.CPointer dlf)
+    ~df:(CI.CPointer df)
+    ~duf:(CI.CPointer duf)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
   lapacke_zgtsvx
     layout
@@ -20020,113 +19920,189 @@ let zgtsvx
     trans
     n
     nrhs
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr dlf)
-    (CI.cptr df)
-    (CI.cptr duf)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    (CI.cptr b)
+    dl
+    d
+    du
+    dlf
+    df
+    duf
+    du2
+    ipiv
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+    rcond
+    ferr
+    berr
 
 
-let sgttrf ~n ~dl ~d ~du ~du2 ~ipiv =
-  lapacke_sgttrf n (CI.cptr dl) (CI.cptr d) (CI.cptr du) (CI.cptr du2) (CI.cptr ipiv)
+let sgttrf
+    ~n
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+  =
+  lapacke_sgttrf n dl d du du2 ipiv
 
 
-let dgttrf ~n ~dl ~d ~du ~du2 ~ipiv =
-  lapacke_dgttrf n (CI.cptr dl) (CI.cptr d) (CI.cptr du) (CI.cptr du2) (CI.cptr ipiv)
+let dgttrf
+    ~n
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+  =
+  lapacke_dgttrf n dl d du du2 ipiv
 
 
-let cgttrf ~n ~dl ~d ~du ~du2 ~ipiv =
-  lapacke_cgttrf n (CI.cptr dl) (CI.cptr d) (CI.cptr du) (CI.cptr du2) (CI.cptr ipiv)
+let cgttrf
+    ~n
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+  =
+  lapacke_cgttrf n dl d du du2 ipiv
 
 
-let zgttrf ~n ~dl ~d ~du ~du2 ~ipiv =
-  lapacke_zgttrf n (CI.cptr dl) (CI.cptr d) (CI.cptr du) (CI.cptr du2) (CI.cptr ipiv)
+let zgttrf
+    ~n
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+  =
+  lapacke_zgttrf n dl d du du2 ipiv
 
 
-let sgttrs ~layout ~trans ~n ~nrhs ~dl ~d ~du ~du2 ~ipiv ~b ~ldb =
-  lapacke_sgttrs
-    layout
-    trans
-    n
-    nrhs
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
+let sgttrs
+    ~layout
+    ~trans
+    ~n
+    ~nrhs
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_sgttrs layout trans n nrhs dl d du du2 ipiv b ldb
 
 
-let dgttrs ~layout ~trans ~n ~nrhs ~dl ~d ~du ~du2 ~ipiv ~b ~ldb =
-  lapacke_dgttrs
-    layout
-    trans
-    n
-    nrhs
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
+let dgttrs
+    ~layout
+    ~trans
+    ~n
+    ~nrhs
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dgttrs layout trans n nrhs dl d du du2 ipiv b ldb
 
 
-let cgttrs ~layout ~trans ~n ~nrhs ~dl ~d ~du ~du2 ~ipiv ~b ~ldb =
-  lapacke_cgttrs
-    layout
-    trans
-    n
-    nrhs
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
+let cgttrs
+    ~layout
+    ~trans
+    ~n
+    ~nrhs
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_cgttrs layout trans n nrhs dl d du du2 ipiv b ldb
 
 
-let zgttrs ~layout ~trans ~n ~nrhs ~dl ~d ~du ~du2 ~ipiv ~b ~ldb =
-  lapacke_zgttrs
-    layout
-    trans
-    n
-    nrhs
-    (CI.cptr dl)
-    (CI.cptr d)
-    (CI.cptr du)
-    (CI.cptr du2)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
+let zgttrs
+    ~layout
+    ~trans
+    ~n
+    ~nrhs
+    ~dl:(CI.CPointer dl)
+    ~d:(CI.CPointer d)
+    ~du:(CI.CPointer du)
+    ~du2:(CI.CPointer du2)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zgttrs layout trans n nrhs dl d du du2 ipiv b ldb
 
 
-let chbev ~layout ~jobz ~uplo ~n ~kd ~ab ~ldab ~w ~z ~ldz =
-  lapacke_chbev layout jobz uplo n kd (CI.cptr ab) ldab (CI.cptr w) (CI.cptr z) ldz
+let chbev
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_chbev layout jobz uplo n kd ab ldab w z ldz
 
 
-let zhbev ~layout ~jobz ~uplo ~n ~kd ~ab ~ldab ~w ~z ~ldz =
-  lapacke_zhbev layout jobz uplo n kd (CI.cptr ab) ldab (CI.cptr w) (CI.cptr z) ldz
+let zhbev
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_zhbev layout jobz uplo n kd ab ldab w z ldz
 
 
-let chbevd ~layout ~jobz ~uplo ~n ~kd ~ab ~ldab ~w ~z ~ldz =
-  lapacke_chbevd layout jobz uplo n kd (CI.cptr ab) ldab (CI.cptr w) (CI.cptr z) ldz
+let chbevd
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_chbevd layout jobz uplo n kd ab ldab w z ldz
 
 
-let zhbevd ~layout ~jobz ~uplo ~n ~kd ~ab ~ldab ~w ~z ~ldz =
-  lapacke_zhbevd layout jobz uplo n kd (CI.cptr ab) ldab (CI.cptr w) (CI.cptr z) ldz
+let zhbevd
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_zhbevd layout jobz uplo n kd ab ldab w z ldz
 
 
 let chbevx
@@ -20136,20 +20112,20 @@ let chbevx
     ~uplo
     ~n
     ~kd
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
   lapacke_chbevx
     layout
@@ -20158,20 +20134,20 @@ let chbevx
     uplo
     n
     kd
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr q)
+    q
     ldq
     vl
     vu
     il
     iu
     abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
+    m
+    w
+    z
     ldz
-    (CI.cptr ifail)
+    ifail
 
 
 let zhbevx
@@ -20181,20 +20157,20 @@ let zhbevx
     ~uplo
     ~n
     ~kd
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
   lapacke_zhbevx
     layout
@@ -20203,120 +20179,126 @@ let zhbevx
     uplo
     n
     kd
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr q)
+    q
     ldq
     vl
     vu
     il
     iu
     abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
+    m
+    w
+    z
     ldz
-    (CI.cptr ifail)
+    ifail
 
 
-let chbgst ~layout ~vect ~uplo ~n ~ka ~kb ~ab ~ldab ~bb ~ldbb ~x ~ldx =
-  lapacke_chbgst
-    layout
-    vect
-    uplo
-    n
-    ka
-    kb
-    (CI.cptr ab)
-    ldab
-    (CI.cptr bb)
-    ldbb
-    (CI.cptr x)
-    ldx
+let chbgst
+    ~layout
+    ~vect
+    ~uplo
+    ~n
+    ~ka
+    ~kb
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~bb:(CI.CPointer bb)
+    ~ldbb
+    ~x:(CI.CPointer x)
+    ~ldx
+  =
+  lapacke_chbgst layout vect uplo n ka kb ab ldab bb ldbb x ldx
 
 
-let zhbgst ~layout ~vect ~uplo ~n ~ka ~kb ~ab ~ldab ~bb ~ldbb ~x ~ldx =
-  lapacke_zhbgst
-    layout
-    vect
-    uplo
-    n
-    ka
-    kb
-    (CI.cptr ab)
-    ldab
-    (CI.cptr bb)
-    ldbb
-    (CI.cptr x)
-    ldx
+let zhbgst
+    ~layout
+    ~vect
+    ~uplo
+    ~n
+    ~ka
+    ~kb
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~bb:(CI.CPointer bb)
+    ~ldbb
+    ~x:(CI.CPointer x)
+    ~ldx
+  =
+  lapacke_zhbgst layout vect uplo n ka kb ab ldab bb ldbb x ldx
 
 
-let chbgv ~layout ~jobz ~uplo ~n ~ka ~kb ~ab ~ldab ~bb ~ldbb ~w ~z ~ldz =
-  lapacke_chbgv
-    layout
-    jobz
-    uplo
-    n
-    ka
-    kb
-    (CI.cptr ab)
-    ldab
-    (CI.cptr bb)
-    ldbb
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let chbgv
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ka
+    ~kb
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~bb:(CI.CPointer bb)
+    ~ldbb
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_chbgv layout jobz uplo n ka kb ab ldab bb ldbb w z ldz
 
 
-let zhbgv ~layout ~jobz ~uplo ~n ~ka ~kb ~ab ~ldab ~bb ~ldbb ~w ~z ~ldz =
-  lapacke_zhbgv
-    layout
-    jobz
-    uplo
-    n
-    ka
-    kb
-    (CI.cptr ab)
-    ldab
-    (CI.cptr bb)
-    ldbb
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let zhbgv
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ka
+    ~kb
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~bb:(CI.CPointer bb)
+    ~ldbb
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_zhbgv layout jobz uplo n ka kb ab ldab bb ldbb w z ldz
 
 
-let chbgvd ~layout ~jobz ~uplo ~n ~ka ~kb ~ab ~ldab ~bb ~ldbb ~w ~z ~ldz =
-  lapacke_chbgvd
-    layout
-    jobz
-    uplo
-    n
-    ka
-    kb
-    (CI.cptr ab)
-    ldab
-    (CI.cptr bb)
-    ldbb
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let chbgvd
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ka
+    ~kb
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~bb:(CI.CPointer bb)
+    ~ldbb
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_chbgvd layout jobz uplo n ka kb ab ldab bb ldbb w z ldz
 
 
-let zhbgvd ~layout ~jobz ~uplo ~n ~ka ~kb ~ab ~ldab ~bb ~ldbb ~w ~z ~ldz =
-  lapacke_zhbgvd
-    layout
-    jobz
-    uplo
-    n
-    ka
-    kb
-    (CI.cptr ab)
-    ldab
-    (CI.cptr bb)
-    ldbb
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let zhbgvd
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ka
+    ~kb
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~bb:(CI.CPointer bb)
+    ~ldbb
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_zhbgvd layout jobz uplo n ka kb ab ldab bb ldbb w z ldz
 
 
 let chbgvx
@@ -20327,22 +20309,22 @@ let chbgvx
     ~n
     ~ka
     ~kb
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~bb
+    ~bb:(CI.CPointer bb)
     ~ldbb
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
   lapacke_chbgvx
     layout
@@ -20352,22 +20334,22 @@ let chbgvx
     n
     ka
     kb
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr bb)
+    bb
     ldbb
-    (CI.cptr q)
+    q
     ldq
     vl
     vu
     il
     iu
     abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
+    m
+    w
+    z
     ldz
-    (CI.cptr ifail)
+    ifail
 
 
 let zhbgvx
@@ -20378,22 +20360,22 @@ let zhbgvx
     ~n
     ~ka
     ~kb
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~bb
+    ~bb:(CI.CPointer bb)
     ~ldbb
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
   lapacke_zhbgvx
     layout
@@ -20403,84 +20385,122 @@ let zhbgvx
     n
     ka
     kb
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr bb)
+    bb
     ldbb
-    (CI.cptr q)
+    q
     ldq
     vl
     vu
     il
     iu
     abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
+    m
+    w
+    z
     ldz
-    (CI.cptr ifail)
+    ifail
 
 
-let chbtrd ~layout ~vect ~uplo ~n ~kd ~ab ~ldab ~d ~e ~q ~ldq =
-  lapacke_chbtrd
-    layout
-    vect
-    uplo
-    n
-    kd
-    (CI.cptr ab)
-    ldab
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr q)
-    ldq
+let chbtrd
+    ~layout
+    ~vect
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~q:(CI.CPointer q)
+    ~ldq
+  =
+  lapacke_chbtrd layout vect uplo n kd ab ldab d e q ldq
 
 
-let zhbtrd ~layout ~vect ~uplo ~n ~kd ~ab ~ldab ~d ~e ~q ~ldq =
-  lapacke_zhbtrd
-    layout
-    vect
-    uplo
-    n
-    kd
-    (CI.cptr ab)
-    ldab
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr q)
-    ldq
+let zhbtrd
+    ~layout
+    ~vect
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~q:(CI.CPointer q)
+    ~ldq
+  =
+  lapacke_zhbtrd layout vect uplo n kd ab ldab d e q ldq
 
 
-let checon ~layout ~uplo ~n ~a ~lda ~ipiv ~anorm ~rcond =
-  lapacke_checon layout uplo n (CI.cptr a) lda (CI.cptr ipiv) anorm (CI.cptr rcond)
+let checon
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_checon layout uplo n a lda ipiv anorm rcond
 
 
-let zhecon ~layout ~uplo ~n ~a ~lda ~ipiv ~anorm ~rcond =
-  lapacke_zhecon layout uplo n (CI.cptr a) lda (CI.cptr ipiv) anorm (CI.cptr rcond)
+let zhecon
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_zhecon layout uplo n a lda ipiv anorm rcond
 
 
-let cheequb ~layout ~uplo ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_cheequb layout uplo n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let cheequb
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_cheequb layout uplo n a lda s scond amax
 
 
-let zheequb ~layout ~uplo ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_zheequb layout uplo n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let zheequb
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_zheequb layout uplo n a lda s scond amax
 
 
-let cheev ~layout ~jobz ~uplo ~n ~a ~lda ~w =
-  lapacke_cheev layout jobz uplo n (CI.cptr a) lda (CI.cptr w)
+let cheev ~layout ~jobz ~uplo ~n ~a:(CI.CPointer a) ~lda ~w:(CI.CPointer w) =
+  lapacke_cheev layout jobz uplo n a lda w
 
 
-let zheev ~layout ~jobz ~uplo ~n ~a ~lda ~w =
-  lapacke_zheev layout jobz uplo n (CI.cptr a) lda (CI.cptr w)
+let zheev ~layout ~jobz ~uplo ~n ~a:(CI.CPointer a) ~lda ~w:(CI.CPointer w) =
+  lapacke_zheev layout jobz uplo n a lda w
 
 
-let cheevd ~layout ~jobz ~uplo ~n ~a ~lda ~w =
-  lapacke_cheevd layout jobz uplo n (CI.cptr a) lda (CI.cptr w)
+let cheevd ~layout ~jobz ~uplo ~n ~a:(CI.CPointer a) ~lda ~w:(CI.CPointer w) =
+  lapacke_cheevd layout jobz uplo n a lda w
 
 
-let zheevd ~layout ~jobz ~uplo ~n ~a ~lda ~w =
-  lapacke_zheevd layout jobz uplo n (CI.cptr a) lda (CI.cptr w)
+let zheevd ~layout ~jobz ~uplo ~n ~a:(CI.CPointer a) ~lda ~w:(CI.CPointer w) =
+  lapacke_zheevd layout jobz uplo n a lda w
 
 
 let cheevr
@@ -20489,37 +20509,20 @@ let cheevr
     ~range
     ~uplo
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~isuppz
+    ~isuppz:(CI.CPointer isuppz)
   =
-  lapacke_cheevr
-    layout
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr a)
-    lda
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr isuppz)
+  lapacke_cheevr layout jobz range uplo n a lda vl vu il iu abstol m w z ldz isuppz
 
 
 let zheevr
@@ -20528,37 +20531,20 @@ let zheevr
     ~range
     ~uplo
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~isuppz
+    ~isuppz:(CI.CPointer isuppz)
   =
-  lapacke_zheevr
-    layout
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr a)
-    lda
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr isuppz)
+  lapacke_zheevr layout jobz range uplo n a lda vl vu il iu abstol m w z ldz isuppz
 
 
 let cheevx
@@ -20567,37 +20553,20 @@ let cheevx
     ~range
     ~uplo
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
-  lapacke_cheevx
-    layout
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr a)
-    lda
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+  lapacke_cheevx layout jobz range uplo n a lda vl vu il iu abstol m w z ldz ifail
 
 
 let zheevx
@@ -20606,61 +20575,88 @@ let zheevx
     ~range
     ~uplo
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
-  lapacke_zheevx
-    layout
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr a)
-    lda
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+  lapacke_zheevx layout jobz range uplo n a lda vl vu il iu abstol m w z ldz ifail
 
 
-let chegst ~layout ~ityp ~uplo ~n ~a ~lda ~b ~ldb =
-  lapacke_chegst layout ityp uplo n (CI.cptr a) lda (CI.cptr b) ldb
+let chegst ~layout ~ityp ~uplo ~n ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_chegst layout ityp uplo n a lda b ldb
 
 
-let zhegst ~layout ~ityp ~uplo ~n ~a ~lda ~b ~ldb =
-  lapacke_zhegst layout ityp uplo n (CI.cptr a) lda (CI.cptr b) ldb
+let zhegst ~layout ~ityp ~uplo ~n ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_zhegst layout ityp uplo n a lda b ldb
 
 
-let chegv ~layout ~ityp ~jobz ~uplo ~n ~a ~lda ~b ~ldb ~w =
-  lapacke_chegv layout ityp jobz uplo n (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr w)
+let chegv
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~w:(CI.CPointer w)
+  =
+  lapacke_chegv layout ityp jobz uplo n a lda b ldb w
 
 
-let zhegv ~layout ~ityp ~jobz ~uplo ~n ~a ~lda ~b ~ldb ~w =
-  lapacke_zhegv layout ityp jobz uplo n (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr w)
+let zhegv
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~w:(CI.CPointer w)
+  =
+  lapacke_zhegv layout ityp jobz uplo n a lda b ldb w
 
 
-let chegvd ~layout ~ityp ~jobz ~uplo ~n ~a ~lda ~b ~ldb ~w =
-  lapacke_chegvd layout ityp jobz uplo n (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr w)
+let chegvd
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~w:(CI.CPointer w)
+  =
+  lapacke_chegvd layout ityp jobz uplo n a lda b ldb w
 
 
-let zhegvd ~layout ~ityp ~jobz ~uplo ~n ~a ~lda ~b ~ldb ~w =
-  lapacke_zhegvd layout ityp jobz uplo n (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr w)
+let zhegvd
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~w:(CI.CPointer w)
+  =
+  lapacke_zhegvd layout ityp jobz uplo n a lda b ldb w
 
 
 let chegvx
@@ -20670,20 +20666,20 @@ let chegvx
     ~range
     ~uplo
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
   lapacke_chegvx
     layout
@@ -20692,20 +20688,20 @@ let chegvx
     range
     uplo
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
     vl
     vu
     il
     iu
     abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
+    m
+    w
+    z
     ldz
-    (CI.cptr ifail)
+    ifail
 
 
 let zhegvx
@@ -20715,20 +20711,20 @@ let zhegvx
     ~range
     ~uplo
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
   lapacke_zhegvx
     layout
@@ -20737,66 +20733,88 @@ let zhegvx
     range
     uplo
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
     vl
     vu
     il
     iu
     abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
+    m
+    w
+    z
     ldz
-    (CI.cptr ifail)
+    ifail
 
 
-let cherfs ~layout ~uplo ~n ~nrhs ~a ~lda ~af ~ldaf ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_cherfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let cherfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_cherfs layout uplo n nrhs a lda af ldaf ipiv b ldb x ldx ferr berr
 
 
-let zherfs ~layout ~uplo ~n ~nrhs ~a ~lda ~af ~ldaf ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_zherfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let zherfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_zherfs layout uplo n nrhs a lda af ldaf ipiv b ldb x ldx ferr berr
 
 
-let chesv ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_chesv layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let chesv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_chesv layout uplo n nrhs a lda ipiv b ldb
 
 
-let zhesv ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_zhesv layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let zhesv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zhesv layout uplo n nrhs a lda ipiv b ldb
 
 
 let chesvx
@@ -20805,37 +20823,20 @@ let chesvx
     ~uplo
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~ipiv
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_chesvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_chesvx layout fact uplo n nrhs a lda af ldaf ipiv b ldb x ldx rcond ferr berr
 
 
 let zhesvx
@@ -20844,77 +20845,122 @@ let zhesvx
     ~uplo
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~ipiv
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_zhesvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_zhesvx layout fact uplo n nrhs a lda af ldaf ipiv b ldb x ldx rcond ferr berr
 
 
-let chetrd ~layout ~uplo ~n ~a ~lda ~d ~e ~tau =
-  lapacke_chetrd layout uplo n (CI.cptr a) lda (CI.cptr d) (CI.cptr e) (CI.cptr tau)
+let chetrd
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~tau:(CI.CPointer tau)
+  =
+  lapacke_chetrd layout uplo n a lda d e tau
 
 
-let zhetrd ~layout ~uplo ~n ~a ~lda ~d ~e ~tau =
-  lapacke_zhetrd layout uplo n (CI.cptr a) lda (CI.cptr d) (CI.cptr e) (CI.cptr tau)
+let zhetrd
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~tau:(CI.CPointer tau)
+  =
+  lapacke_zhetrd layout uplo n a lda d e tau
 
 
-let chetrf ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_chetrf layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let chetrf ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_chetrf layout uplo n a lda ipiv
 
 
-let zhetrf ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_zhetrf layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let zhetrf ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zhetrf layout uplo n a lda ipiv
 
 
-let chetri ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_chetri layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let chetri ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_chetri layout uplo n a lda ipiv
 
 
-let zhetri ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_zhetri layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let zhetri ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zhetri layout uplo n a lda ipiv
 
 
-let chetrs ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_chetrs layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let chetrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_chetrs layout uplo n nrhs a lda ipiv b ldb
 
 
-let zhetrs ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_zhetrs layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let zhetrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zhetrs layout uplo n nrhs a lda ipiv b ldb
 
 
-let chfrk ~layout ~transr ~uplo ~trans ~n ~k ~alpha ~a ~lda ~beta ~c =
-  lapacke_chfrk layout transr uplo trans n k alpha (CI.cptr a) lda beta (CI.cptr c)
+let chfrk
+    ~layout
+    ~transr
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~beta
+    ~c:(CI.CPointer c)
+  =
+  lapacke_chfrk layout transr uplo trans n k alpha a lda beta c
 
 
-let zhfrk ~layout ~transr ~uplo ~trans ~n ~k ~alpha ~a ~lda ~beta ~c =
-  lapacke_zhfrk layout transr uplo trans n k alpha (CI.cptr a) lda beta (CI.cptr c)
+let zhfrk
+    ~layout
+    ~transr
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~beta
+    ~c:(CI.CPointer c)
+  =
+  lapacke_zhfrk layout transr uplo trans n k alpha a lda beta c
 
 
 let shgeqz
@@ -20925,16 +20971,16 @@ let shgeqz
     ~n
     ~ilo
     ~ihi
-    ~h
+    ~h:(CI.CPointer h)
     ~ldh
-    ~t
+    ~t:(CI.CPointer t)
     ~ldt
-    ~alphar
-    ~alphai
-    ~beta
-    ~q
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~q:(CI.CPointer q)
     ~ldq
-    ~z
+    ~z:(CI.CPointer z)
     ~ldz
   =
   lapacke_shgeqz
@@ -20945,16 +20991,16 @@ let shgeqz
     n
     ilo
     ihi
-    (CI.cptr h)
+    h
     ldh
-    (CI.cptr t)
+    t
     ldt
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr q)
+    alphar
+    alphai
+    beta
+    q
     ldq
-    (CI.cptr z)
+    z
     ldz
 
 
@@ -20966,16 +21012,16 @@ let dhgeqz
     ~n
     ~ilo
     ~ihi
-    ~h
+    ~h:(CI.CPointer h)
     ~ldh
-    ~t
+    ~t:(CI.CPointer t)
     ~ldt
-    ~alphar
-    ~alphai
-    ~beta
-    ~q
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~q:(CI.CPointer q)
     ~ldq
-    ~z
+    ~z:(CI.CPointer z)
     ~ldz
   =
   lapacke_dhgeqz
@@ -20986,16 +21032,16 @@ let dhgeqz
     n
     ilo
     ihi
-    (CI.cptr h)
+    h
     ldh
-    (CI.cptr t)
+    t
     ldt
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr q)
+    alphar
+    alphai
+    beta
+    q
     ldq
-    (CI.cptr z)
+    z
     ldz
 
 
@@ -21007,35 +21053,18 @@ let chgeqz
     ~n
     ~ilo
     ~ihi
-    ~h
+    ~h:(CI.CPointer h)
     ~ldh
-    ~t
+    ~t:(CI.CPointer t)
     ~ldt
-    ~alpha
-    ~beta
-    ~q
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~q:(CI.CPointer q)
     ~ldq
-    ~z
+    ~z:(CI.CPointer z)
     ~ldz
   =
-  lapacke_chgeqz
-    layout
-    job
-    compq
-    compz
-    n
-    ilo
-    ihi
-    (CI.cptr h)
-    ldh
-    (CI.cptr t)
-    ldt
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
+  lapacke_chgeqz layout job compq compz n ilo ihi h ldh t ldt alpha beta q ldq z ldz
 
 
 let zhgeqz
@@ -21046,163 +21075,204 @@ let zhgeqz
     ~n
     ~ilo
     ~ihi
-    ~h
+    ~h:(CI.CPointer h)
     ~ldh
-    ~t
+    ~t:(CI.CPointer t)
     ~ldt
-    ~alpha
-    ~beta
-    ~q
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~q:(CI.CPointer q)
     ~ldq
-    ~z
+    ~z:(CI.CPointer z)
     ~ldz
   =
-  lapacke_zhgeqz
-    layout
-    job
-    compq
-    compz
-    n
-    ilo
-    ihi
-    (CI.cptr h)
-    ldh
-    (CI.cptr t)
-    ldt
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
+  lapacke_zhgeqz layout job compq compz n ilo ihi h ldh t ldt alpha beta q ldq z ldz
 
 
-let chpcon ~layout ~uplo ~n ~ap ~ipiv ~anorm ~rcond =
-  lapacke_chpcon layout uplo n (CI.cptr ap) (CI.cptr ipiv) anorm (CI.cptr rcond)
+let chpcon
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_chpcon layout uplo n ap ipiv anorm rcond
 
 
-let zhpcon ~layout ~uplo ~n ~ap ~ipiv ~anorm ~rcond =
-  lapacke_zhpcon layout uplo n (CI.cptr ap) (CI.cptr ipiv) anorm (CI.cptr rcond)
+let zhpcon
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_zhpcon layout uplo n ap ipiv anorm rcond
 
 
-let chpev ~layout ~jobz ~uplo ~n ~ap ~w ~z ~ldz =
-  lapacke_chpev layout jobz uplo n (CI.cptr ap) (CI.cptr w) (CI.cptr z) ldz
+let chpev
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_chpev layout jobz uplo n ap w z ldz
 
 
-let zhpev ~layout ~jobz ~uplo ~n ~ap ~w ~z ~ldz =
-  lapacke_zhpev layout jobz uplo n (CI.cptr ap) (CI.cptr w) (CI.cptr z) ldz
+let zhpev
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_zhpev layout jobz uplo n ap w z ldz
 
 
-let chpevd ~layout ~jobz ~uplo ~n ~ap ~w ~z ~ldz =
-  lapacke_chpevd layout jobz uplo n (CI.cptr ap) (CI.cptr w) (CI.cptr z) ldz
+let chpevd
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_chpevd layout jobz uplo n ap w z ldz
 
 
-let zhpevd ~layout ~jobz ~uplo ~n ~ap ~w ~z ~ldz =
-  lapacke_zhpevd layout jobz uplo n (CI.cptr ap) (CI.cptr w) (CI.cptr z) ldz
+let zhpevd
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_zhpevd layout jobz uplo n ap w z ldz
 
 
-let chpevx ~layout ~jobz ~range ~uplo ~n ~ap ~vl ~vu ~il ~iu ~abstol ~m ~w ~z ~ldz ~ifail =
-  lapacke_chpevx
-    layout
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr ap)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+let chpevx
+    ~layout
+    ~jobz
+    ~range
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifail:(CI.CPointer ifail)
+  =
+  lapacke_chpevx layout jobz range uplo n ap vl vu il iu abstol m w z ldz ifail
 
 
-let zhpevx ~layout ~jobz ~range ~uplo ~n ~ap ~vl ~vu ~il ~iu ~abstol ~m ~w ~z ~ldz ~ifail =
-  lapacke_zhpevx
-    layout
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr ap)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+let zhpevx
+    ~layout
+    ~jobz
+    ~range
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifail:(CI.CPointer ifail)
+  =
+  lapacke_zhpevx layout jobz range uplo n ap vl vu il iu abstol m w z ldz ifail
 
 
-let chpgst ~layout ~ityp ~uplo ~n ~ap ~bp =
-  lapacke_chpgst layout ityp uplo n (CI.cptr ap) (CI.cptr bp)
+let chpgst ~layout ~ityp ~uplo ~n ~ap:(CI.CPointer ap) ~bp:(CI.CPointer bp) =
+  lapacke_chpgst layout ityp uplo n ap bp
 
 
-let zhpgst ~layout ~ityp ~uplo ~n ~ap ~bp =
-  lapacke_zhpgst layout ityp uplo n (CI.cptr ap) (CI.cptr bp)
+let zhpgst ~layout ~ityp ~uplo ~n ~ap:(CI.CPointer ap) ~bp:(CI.CPointer bp) =
+  lapacke_zhpgst layout ityp uplo n ap bp
 
 
-let chpgv ~layout ~ityp ~jobz ~uplo ~n ~ap ~bp ~w ~z ~ldz =
-  lapacke_chpgv
-    layout
-    ityp
-    jobz
-    uplo
-    n
-    (CI.cptr ap)
-    (CI.cptr bp)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let chpgv
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~bp:(CI.CPointer bp)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_chpgv layout ityp jobz uplo n ap bp w z ldz
 
 
-let zhpgv ~layout ~ityp ~jobz ~uplo ~n ~ap ~bp ~w ~z ~ldz =
-  lapacke_zhpgv
-    layout
-    ityp
-    jobz
-    uplo
-    n
-    (CI.cptr ap)
-    (CI.cptr bp)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let zhpgv
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~bp:(CI.CPointer bp)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_zhpgv layout ityp jobz uplo n ap bp w z ldz
 
 
-let chpgvd ~layout ~ityp ~jobz ~uplo ~n ~ap ~bp ~w ~z ~ldz =
-  lapacke_chpgvd
-    layout
-    ityp
-    jobz
-    uplo
-    n
-    (CI.cptr ap)
-    (CI.cptr bp)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let chpgvd
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~bp:(CI.CPointer bp)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_chpgvd layout ityp jobz uplo n ap bp w z ldz
 
 
-let zhpgvd ~layout ~ityp ~jobz ~uplo ~n ~ap ~bp ~w ~z ~ldz =
-  lapacke_zhpgvd
-    layout
-    ityp
-    jobz
-    uplo
-    n
-    (CI.cptr ap)
-    (CI.cptr bp)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let zhpgvd
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~bp:(CI.CPointer bp)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_zhpgvd layout ityp jobz uplo n ap bp w z ldz
 
 
 let chpgvx
@@ -21212,38 +21282,20 @@ let chpgvx
     ~range
     ~uplo
     ~n
-    ~ap
-    ~bp
+    ~ap:(CI.CPointer ap)
+    ~bp:(CI.CPointer bp)
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
-  lapacke_chpgvx
-    layout
-    ityp
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr ap)
-    (CI.cptr bp)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+  lapacke_chpgvx layout ityp jobz range uplo n ap bp vl vu il iu abstol m w z ldz ifail
 
 
 let zhpgvx
@@ -21253,150 +21305,188 @@ let zhpgvx
     ~range
     ~uplo
     ~n
-    ~ap
-    ~bp
+    ~ap:(CI.CPointer ap)
+    ~bp:(CI.CPointer bp)
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
-  lapacke_zhpgvx
-    layout
-    ityp
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr ap)
-    (CI.cptr bp)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+  lapacke_zhpgvx layout ityp jobz range uplo n ap bp vl vu il iu abstol m w z ldz ifail
 
 
-let chprfs ~layout ~uplo ~n ~nrhs ~ap ~afp ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_chprfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let chprfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_chprfs layout uplo n nrhs ap afp ipiv b ldb x ldx ferr berr
 
 
-let zhprfs ~layout ~uplo ~n ~nrhs ~ap ~afp ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_zhprfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let zhprfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_zhprfs layout uplo n nrhs ap afp ipiv b ldb x ldx ferr berr
 
 
-let chpsv ~layout ~uplo ~n ~nrhs ~ap ~ipiv ~b ~ldb =
-  lapacke_chpsv layout uplo n nrhs (CI.cptr ap) (CI.cptr ipiv) (CI.cptr b) ldb
+let chpsv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_chpsv layout uplo n nrhs ap ipiv b ldb
 
 
-let zhpsv ~layout ~uplo ~n ~nrhs ~ap ~ipiv ~b ~ldb =
-  lapacke_zhpsv layout uplo n nrhs (CI.cptr ap) (CI.cptr ipiv) (CI.cptr b) ldb
+let zhpsv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zhpsv layout uplo n nrhs ap ipiv b ldb
 
 
-let chpsvx ~layout ~fact ~uplo ~n ~nrhs ~ap ~afp ~ipiv ~b ~ldb ~x ~ldx ~rcond ~ferr ~berr =
-  lapacke_chpsvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let chpsvx
+    ~layout
+    ~fact
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_chpsvx layout fact uplo n nrhs ap afp ipiv b ldb x ldx rcond ferr berr
 
 
-let zhpsvx ~layout ~fact ~uplo ~n ~nrhs ~ap ~afp ~ipiv ~b ~ldb ~x ~ldx ~rcond ~ferr ~berr =
-  lapacke_zhpsvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let zhpsvx
+    ~layout
+    ~fact
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_zhpsvx layout fact uplo n nrhs ap afp ipiv b ldb x ldx rcond ferr berr
 
 
-let chptrd ~layout ~uplo ~n ~ap ~d ~e ~tau =
-  lapacke_chptrd layout uplo n (CI.cptr ap) (CI.cptr d) (CI.cptr e) (CI.cptr tau)
+let chptrd
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~tau:(CI.CPointer tau)
+  =
+  lapacke_chptrd layout uplo n ap d e tau
 
 
-let zhptrd ~layout ~uplo ~n ~ap ~d ~e ~tau =
-  lapacke_zhptrd layout uplo n (CI.cptr ap) (CI.cptr d) (CI.cptr e) (CI.cptr tau)
+let zhptrd
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~tau:(CI.CPointer tau)
+  =
+  lapacke_zhptrd layout uplo n ap d e tau
 
 
-let chptrf ~layout ~uplo ~n ~ap ~ipiv =
-  lapacke_chptrf layout uplo n (CI.cptr ap) (CI.cptr ipiv)
+let chptrf ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~ipiv:(CI.CPointer ipiv) =
+  lapacke_chptrf layout uplo n ap ipiv
 
 
-let zhptrf ~layout ~uplo ~n ~ap ~ipiv =
-  lapacke_zhptrf layout uplo n (CI.cptr ap) (CI.cptr ipiv)
+let zhptrf ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zhptrf layout uplo n ap ipiv
 
 
-let chptri ~layout ~uplo ~n ~ap ~ipiv =
-  lapacke_chptri layout uplo n (CI.cptr ap) (CI.cptr ipiv)
+let chptri ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~ipiv:(CI.CPointer ipiv) =
+  lapacke_chptri layout uplo n ap ipiv
 
 
-let zhptri ~layout ~uplo ~n ~ap ~ipiv =
-  lapacke_zhptri layout uplo n (CI.cptr ap) (CI.cptr ipiv)
+let zhptri ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zhptri layout uplo n ap ipiv
 
 
-let chptrs ~layout ~uplo ~n ~nrhs ~ap ~ipiv ~b ~ldb =
-  lapacke_chptrs layout uplo n nrhs (CI.cptr ap) (CI.cptr ipiv) (CI.cptr b) ldb
+let chptrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_chptrs layout uplo n nrhs ap ipiv b ldb
 
 
-let zhptrs ~layout ~uplo ~n ~nrhs ~ap ~ipiv ~b ~ldb =
-  lapacke_zhptrs layout uplo n nrhs (CI.cptr ap) (CI.cptr ipiv) (CI.cptr b) ldb
+let zhptrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zhptrs layout uplo n nrhs ap ipiv b ldb
 
 
 let shsein
@@ -21404,40 +21494,40 @@ let shsein
     ~job
     ~eigsrc
     ~initv
-    ~select
+    ~select:(CI.CPointer select)
     ~n
-    ~h
+    ~h:(CI.CPointer h)
     ~ldh
-    ~wr
-    ~wi
-    ~vl
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
     ~mm
-    ~m
-    ~ifaill
-    ~ifailr
+    ~m:(CI.CPointer m)
+    ~ifaill:(CI.CPointer ifaill)
+    ~ifailr:(CI.CPointer ifailr)
   =
   lapacke_shsein
     layout
     job
     eigsrc
     initv
-    (CI.cptr select)
+    select
     n
-    (CI.cptr h)
+    h
     ldh
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr vl)
+    wr
+    wi
+    vl
     ldvl
-    (CI.cptr vr)
+    vr
     ldvr
     mm
-    (CI.cptr m)
-    (CI.cptr ifaill)
-    (CI.cptr ifailr)
+    m
+    ifaill
+    ifailr
 
 
 let dhsein
@@ -21445,40 +21535,40 @@ let dhsein
     ~job
     ~eigsrc
     ~initv
-    ~select
+    ~select:(CI.CPointer select)
     ~n
-    ~h
+    ~h:(CI.CPointer h)
     ~ldh
-    ~wr
-    ~wi
-    ~vl
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
     ~mm
-    ~m
-    ~ifaill
-    ~ifailr
+    ~m:(CI.CPointer m)
+    ~ifaill:(CI.CPointer ifaill)
+    ~ifailr:(CI.CPointer ifailr)
   =
   lapacke_dhsein
     layout
     job
     eigsrc
     initv
-    (CI.cptr select)
+    select
     n
-    (CI.cptr h)
+    h
     ldh
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr vl)
+    wr
+    wi
+    vl
     ldvl
-    (CI.cptr vr)
+    vr
     ldvr
     mm
-    (CI.cptr m)
-    (CI.cptr ifaill)
-    (CI.cptr ifailr)
+    m
+    ifaill
+    ifailr
 
 
 let chsein
@@ -21486,38 +21576,38 @@ let chsein
     ~job
     ~eigsrc
     ~initv
-    ~select
+    ~select:(CI.CPointer select)
     ~n
-    ~h
+    ~h:(CI.CPointer h)
     ~ldh
-    ~w
-    ~vl
+    ~w:(CI.CPointer w)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
     ~mm
-    ~m
-    ~ifaill
-    ~ifailr
+    ~m:(CI.CPointer m)
+    ~ifaill:(CI.CPointer ifaill)
+    ~ifailr:(CI.CPointer ifailr)
   =
   lapacke_chsein
     layout
     job
     eigsrc
     initv
-    (CI.cptr select)
+    select
     n
-    (CI.cptr h)
+    h
     ldh
-    (CI.cptr w)
-    (CI.cptr vl)
+    w
+    vl
     ldvl
-    (CI.cptr vr)
+    vr
     ldvr
     mm
-    (CI.cptr m)
-    (CI.cptr ifaill)
-    (CI.cptr ifailr)
+    m
+    ifaill
+    ifailr
 
 
 let zhsein
@@ -21525,792 +21615,1206 @@ let zhsein
     ~job
     ~eigsrc
     ~initv
-    ~select
+    ~select:(CI.CPointer select)
     ~n
-    ~h
+    ~h:(CI.CPointer h)
     ~ldh
-    ~w
-    ~vl
+    ~w:(CI.CPointer w)
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
     ~mm
-    ~m
-    ~ifaill
-    ~ifailr
+    ~m:(CI.CPointer m)
+    ~ifaill:(CI.CPointer ifaill)
+    ~ifailr:(CI.CPointer ifailr)
   =
   lapacke_zhsein
     layout
     job
     eigsrc
     initv
-    (CI.cptr select)
+    select
     n
-    (CI.cptr h)
+    h
     ldh
-    (CI.cptr w)
-    (CI.cptr vl)
+    w
+    vl
     ldvl
-    (CI.cptr vr)
+    vr
     ldvr
     mm
-    (CI.cptr m)
-    (CI.cptr ifaill)
-    (CI.cptr ifailr)
-
-
-let shseqr ~layout ~job ~compz ~n ~ilo ~ihi ~h ~ldh ~wr ~wi ~z ~ldz =
-  lapacke_shseqr
-    layout
-    job
-    compz
-    n
-    ilo
-    ihi
-    (CI.cptr h)
-    ldh
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr z)
-    ldz
-
-
-let dhseqr ~layout ~job ~compz ~n ~ilo ~ihi ~h ~ldh ~wr ~wi ~z ~ldz =
-  lapacke_dhseqr
-    layout
-    job
-    compz
-    n
-    ilo
-    ihi
-    (CI.cptr h)
-    ldh
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr z)
-    ldz
-
-
-let chseqr ~layout ~job ~compz ~n ~ilo ~ihi ~h ~ldh ~w ~z ~ldz =
-  lapacke_chseqr layout job compz n ilo ihi (CI.cptr h) ldh (CI.cptr w) (CI.cptr z) ldz
-
-
-let zhseqr ~layout ~job ~compz ~n ~ilo ~ihi ~h ~ldh ~w ~z ~ldz =
-  lapacke_zhseqr layout job compz n ilo ihi (CI.cptr h) ldh (CI.cptr w) (CI.cptr z) ldz
-
-
-let clacgv ~n ~x ~incx = lapacke_clacgv n (CI.cptr x) incx
-
-let zlacgv ~n ~x ~incx = lapacke_zlacgv n (CI.cptr x) incx
-
-let slacn2 ~n ~v ~x ~isgn ~est ~kase ~isave =
-  lapacke_slacn2
-    n
-    (CI.cptr v)
-    (CI.cptr x)
-    (CI.cptr isgn)
-    (CI.cptr est)
-    (CI.cptr kase)
-    (CI.cptr isave)
-
-
-let dlacn2 ~n ~v ~x ~isgn ~est ~kase ~isave =
-  lapacke_dlacn2
-    n
-    (CI.cptr v)
-    (CI.cptr x)
-    (CI.cptr isgn)
-    (CI.cptr est)
-    (CI.cptr kase)
-    (CI.cptr isave)
-
-
-let clacn2 ~n ~v ~x ~est ~kase ~isave =
-  lapacke_clacn2 n (CI.cptr v) (CI.cptr x) (CI.cptr est) (CI.cptr kase) (CI.cptr isave)
-
-
-let zlacn2 ~n ~v ~x ~est ~kase ~isave =
-  lapacke_zlacn2 n (CI.cptr v) (CI.cptr x) (CI.cptr est) (CI.cptr kase) (CI.cptr isave)
-
-
-let slacpy ~layout ~uplo ~m ~n ~a ~lda ~b ~ldb =
-  lapacke_slacpy layout uplo m n (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let dlacpy ~layout ~uplo ~m ~n ~a ~lda ~b ~ldb =
-  lapacke_dlacpy layout uplo m n (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let clacpy ~layout ~uplo ~m ~n ~a ~lda ~b ~ldb =
-  lapacke_clacpy layout uplo m n (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let zlacpy ~layout ~uplo ~m ~n ~a ~lda ~b ~ldb =
-  lapacke_zlacpy layout uplo m n (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let clacp2 ~layout ~uplo ~m ~n ~a ~lda ~b ~ldb =
-  lapacke_clacp2 layout uplo m n (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let zlacp2 ~layout ~uplo ~m ~n ~a ~lda ~b ~ldb =
-  lapacke_zlacp2 layout uplo m n (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let zlag2c ~layout ~m ~n ~a ~lda ~sa ~ldsa =
-  lapacke_zlag2c layout m n (CI.cptr a) lda (CI.cptr sa) ldsa
-
-
-let slag2d ~layout ~m ~n ~sa ~ldsa ~a ~lda =
-  lapacke_slag2d layout m n (CI.cptr sa) ldsa (CI.cptr a) lda
-
-
-let dlag2s ~layout ~m ~n ~a ~lda ~sa ~ldsa =
-  lapacke_dlag2s layout m n (CI.cptr a) lda (CI.cptr sa) ldsa
-
-
-let clag2z ~layout ~m ~n ~sa ~ldsa ~a ~lda =
-  lapacke_clag2z layout m n (CI.cptr sa) ldsa (CI.cptr a) lda
-
-
-let slagge ~layout ~m ~n ~kl ~ku ~d ~a ~lda ~iseed =
-  lapacke_slagge layout m n kl ku (CI.cptr d) (CI.cptr a) lda (CI.cptr iseed)
-
-
-let dlagge ~layout ~m ~n ~kl ~ku ~d ~a ~lda ~iseed =
-  lapacke_dlagge layout m n kl ku (CI.cptr d) (CI.cptr a) lda (CI.cptr iseed)
-
-
-let clagge ~layout ~m ~n ~kl ~ku ~d ~a ~lda ~iseed =
-  lapacke_clagge layout m n kl ku (CI.cptr d) (CI.cptr a) lda (CI.cptr iseed)
-
-
-let zlagge ~layout ~m ~n ~kl ~ku ~d ~a ~lda ~iseed =
-  lapacke_zlagge layout m n kl ku (CI.cptr d) (CI.cptr a) lda (CI.cptr iseed)
-
-
-let slarfb ~layout ~side ~trans ~direct ~storev ~m ~n ~k ~v ~ldv ~t ~ldt ~c ~ldc =
-  lapacke_slarfb
-    layout
-    side
-    trans
-    direct
-    storev
     m
-    n
-    k
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr c)
-    ldc
+    ifaill
+    ifailr
+
+
+let shseqr
+    ~layout
+    ~job
+    ~compz
+    ~n
+    ~ilo
+    ~ihi
+    ~h:(CI.CPointer h)
+    ~ldh
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_shseqr layout job compz n ilo ihi h ldh wr wi z ldz
+
+
+let dhseqr
+    ~layout
+    ~job
+    ~compz
+    ~n
+    ~ilo
+    ~ihi
+    ~h:(CI.CPointer h)
+    ~ldh
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_dhseqr layout job compz n ilo ihi h ldh wr wi z ldz
+
+
+let chseqr
+    ~layout
+    ~job
+    ~compz
+    ~n
+    ~ilo
+    ~ihi
+    ~h:(CI.CPointer h)
+    ~ldh
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_chseqr layout job compz n ilo ihi h ldh w z ldz
+
+
+let zhseqr
+    ~layout
+    ~job
+    ~compz
+    ~n
+    ~ilo
+    ~ihi
+    ~h:(CI.CPointer h)
+    ~ldh
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_zhseqr layout job compz n ilo ihi h ldh w z ldz
+
+
+let clacgv ~n ~x:(CI.CPointer x) ~incx = lapacke_clacgv n x incx
+
+let zlacgv ~n ~x:(CI.CPointer x) ~incx = lapacke_zlacgv n x incx
+
+let slacn2
+    ~n
+    ~v:(CI.CPointer v)
+    ~x:(CI.CPointer x)
+    ~isgn:(CI.CPointer isgn)
+    ~est:(CI.CPointer est)
+    ~kase:(CI.CPointer kase)
+    ~isave:(CI.CPointer isave)
+  =
+  lapacke_slacn2 n v x isgn est kase isave
+
+
+let dlacn2
+    ~n
+    ~v:(CI.CPointer v)
+    ~x:(CI.CPointer x)
+    ~isgn:(CI.CPointer isgn)
+    ~est:(CI.CPointer est)
+    ~kase:(CI.CPointer kase)
+    ~isave:(CI.CPointer isave)
+  =
+  lapacke_dlacn2 n v x isgn est kase isave
+
+
+let clacn2
+    ~n
+    ~v:(CI.CPointer v)
+    ~x:(CI.CPointer x)
+    ~est:(CI.CPointer est)
+    ~kase:(CI.CPointer kase)
+    ~isave:(CI.CPointer isave)
+  =
+  lapacke_clacn2 n v x est kase isave
 
 
-let dlarfb ~layout ~side ~trans ~direct ~storev ~m ~n ~k ~v ~ldv ~t ~ldt ~c ~ldc =
-  lapacke_dlarfb
-    layout
-    side
-    trans
-    direct
-    storev
-    m
-    n
-    k
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr c)
-    ldc
+let zlacn2
+    ~n
+    ~v:(CI.CPointer v)
+    ~x:(CI.CPointer x)
+    ~est:(CI.CPointer est)
+    ~kase:(CI.CPointer kase)
+    ~isave:(CI.CPointer isave)
+  =
+  lapacke_zlacn2 n v x est kase isave
 
 
-let clarfb ~layout ~side ~trans ~direct ~storev ~m ~n ~k ~v ~ldv ~t ~ldt ~c ~ldc =
-  lapacke_clarfb
-    layout
-    side
-    trans
-    direct
-    storev
-    m
-    n
-    k
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr c)
-    ldc
+let slacpy ~layout ~uplo ~m ~n ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_slacpy layout uplo m n a lda b ldb
 
 
-let zlarfb ~layout ~side ~trans ~direct ~storev ~m ~n ~k ~v ~ldv ~t ~ldt ~c ~ldc =
-  lapacke_zlarfb
-    layout
-    side
-    trans
-    direct
-    storev
-    m
-    n
-    k
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr c)
-    ldc
+let dlacpy ~layout ~uplo ~m ~n ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_dlacpy layout uplo m n a lda b ldb
 
 
-let slarfg ~n ~alpha ~x ~incx ~tau =
-  lapacke_slarfg n (CI.cptr alpha) (CI.cptr x) incx (CI.cptr tau)
+let clacpy ~layout ~uplo ~m ~n ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_clacpy layout uplo m n a lda b ldb
+
+
+let zlacpy ~layout ~uplo ~m ~n ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_zlacpy layout uplo m n a lda b ldb
+
 
-
-let dlarfg ~n ~alpha ~x ~incx ~tau =
-  lapacke_dlarfg n (CI.cptr alpha) (CI.cptr x) incx (CI.cptr tau)
-
-
-let clarfg ~n ~alpha ~x ~incx ~tau =
-  lapacke_clarfg n (CI.cptr alpha) (CI.cptr x) incx (CI.cptr tau)
-
-
-let zlarfg ~n ~alpha ~x ~incx ~tau =
-  lapacke_zlarfg n (CI.cptr alpha) (CI.cptr x) incx (CI.cptr tau)
-
-
-let slarft ~layout ~direct ~storev ~n ~k ~v ~ldv ~tau ~t ~ldt =
-  lapacke_slarft layout direct storev n k (CI.cptr v) ldv (CI.cptr tau) (CI.cptr t) ldt
-
-
-let dlarft ~layout ~direct ~storev ~n ~k ~v ~ldv ~tau ~t ~ldt =
-  lapacke_dlarft layout direct storev n k (CI.cptr v) ldv (CI.cptr tau) (CI.cptr t) ldt
-
-
-let clarft ~layout ~direct ~storev ~n ~k ~v ~ldv ~tau ~t ~ldt =
-  lapacke_clarft layout direct storev n k (CI.cptr v) ldv (CI.cptr tau) (CI.cptr t) ldt
-
-
-let zlarft ~layout ~direct ~storev ~n ~k ~v ~ldv ~tau ~t ~ldt =
-  lapacke_zlarft layout direct storev n k (CI.cptr v) ldv (CI.cptr tau) (CI.cptr t) ldt
-
-
-let slarfx ~layout ~side ~m ~n ~v ~tau ~c ~ldc ~work =
-  lapacke_slarfx layout side m n (CI.cptr v) tau (CI.cptr c) ldc (CI.cptr work)
-
-
-let dlarfx ~layout ~side ~m ~n ~v ~tau ~c ~ldc ~work =
-  lapacke_dlarfx layout side m n (CI.cptr v) tau (CI.cptr c) ldc (CI.cptr work)
-
-
-let clarfx ~layout ~side ~m ~n ~v ~tau ~c ~ldc ~work =
-  lapacke_clarfx layout side m n (CI.cptr v) tau (CI.cptr c) ldc (CI.cptr work)
-
-
-let zlarfx ~layout ~side ~m ~n ~v ~tau ~c ~ldc ~work =
-  lapacke_zlarfx layout side m n (CI.cptr v) tau (CI.cptr c) ldc (CI.cptr work)
-
-
-let slarnv ~idist ~iseed ~n ~x = lapacke_slarnv idist (CI.cptr iseed) n (CI.cptr x)
-
-let dlarnv ~idist ~iseed ~n ~x = lapacke_dlarnv idist (CI.cptr iseed) n (CI.cptr x)
-
-let clarnv ~idist ~iseed ~n ~x = lapacke_clarnv idist (CI.cptr iseed) n (CI.cptr x)
-
-let zlarnv ~idist ~iseed ~n ~x = lapacke_zlarnv idist (CI.cptr iseed) n (CI.cptr x)
-
-let slascl ~layout ~typ ~kl ~ku ~cfrom ~cto ~m ~n ~a ~lda =
-  lapacke_slascl layout typ kl ku cfrom cto m n (CI.cptr a) lda
-
-
-let dlascl ~layout ~typ ~kl ~ku ~cfrom ~cto ~m ~n ~a ~lda =
-  lapacke_dlascl layout typ kl ku cfrom cto m n (CI.cptr a) lda
-
-
-let clascl ~layout ~typ ~kl ~ku ~cfrom ~cto ~m ~n ~a ~lda =
-  lapacke_clascl layout typ kl ku cfrom cto m n (CI.cptr a) lda
-
-
-let zlascl ~layout ~typ ~kl ~ku ~cfrom ~cto ~m ~n ~a ~lda =
-  lapacke_zlascl layout typ kl ku cfrom cto m n (CI.cptr a) lda
-
-
-let slaset ~layout ~uplo ~m ~n ~alpha ~beta ~a ~lda =
-  lapacke_slaset layout uplo m n alpha beta (CI.cptr a) lda
-
-
-let dlaset ~layout ~uplo ~m ~n ~alpha ~beta ~a ~lda =
-  lapacke_dlaset layout uplo m n alpha beta (CI.cptr a) lda
-
-
-let claset ~layout ~uplo ~m ~n ~alpha ~beta ~a ~lda =
-  lapacke_claset layout uplo m n alpha beta (CI.cptr a) lda
-
-
-let zlaset ~layout ~uplo ~m ~n ~alpha ~beta ~a ~lda =
-  lapacke_zlaset layout uplo m n alpha beta (CI.cptr a) lda
-
-
-let slasrt ~id ~n ~d = lapacke_slasrt id n (CI.cptr d)
-
-let dlasrt ~id ~n ~d = lapacke_dlasrt id n (CI.cptr d)
-
-let slaswp ~layout ~n ~a ~lda ~k1 ~k2 ~ipiv ~incx =
-  lapacke_slaswp layout n (CI.cptr a) lda k1 k2 (CI.cptr ipiv) incx
-
-
-let dlaswp ~layout ~n ~a ~lda ~k1 ~k2 ~ipiv ~incx =
-  lapacke_dlaswp layout n (CI.cptr a) lda k1 k2 (CI.cptr ipiv) incx
-
-
-let claswp ~layout ~n ~a ~lda ~k1 ~k2 ~ipiv ~incx =
-  lapacke_claswp layout n (CI.cptr a) lda k1 k2 (CI.cptr ipiv) incx
-
-
-let zlaswp ~layout ~n ~a ~lda ~k1 ~k2 ~ipiv ~incx =
-  lapacke_zlaswp layout n (CI.cptr a) lda k1 k2 (CI.cptr ipiv) incx
-
-
-let slatms ~layout ~m ~n ~dist ~iseed ~sym ~d ~mode ~cond ~dmax ~kl ~ku ~pack ~a ~lda =
-  lapacke_slatms
-    layout
-    m
-    n
-    dist
-    (CI.cptr iseed)
-    sym
-    (CI.cptr d)
-    mode
-    cond
-    dmax
-    kl
-    ku
-    pack
-    (CI.cptr a)
-    lda
-
-
-let dlatms ~layout ~m ~n ~dist ~iseed ~sym ~d ~mode ~cond ~dmax ~kl ~ku ~pack ~a ~lda =
-  lapacke_dlatms
-    layout
-    m
-    n
-    dist
-    (CI.cptr iseed)
-    sym
-    (CI.cptr d)
-    mode
-    cond
-    dmax
-    kl
-    ku
-    pack
-    (CI.cptr a)
-    lda
-
-
-let clatms ~layout ~m ~n ~dist ~iseed ~sym ~d ~mode ~cond ~dmax ~kl ~ku ~pack ~a ~lda =
-  lapacke_clatms
-    layout
-    m
-    n
-    dist
-    (CI.cptr iseed)
-    sym
-    (CI.cptr d)
-    mode
-    cond
-    dmax
-    kl
-    ku
-    pack
-    (CI.cptr a)
-    lda
-
-
-let zlatms ~layout ~m ~n ~dist ~iseed ~sym ~d ~mode ~cond ~dmax ~kl ~ku ~pack ~a ~lda =
-  lapacke_zlatms
-    layout
-    m
-    n
-    dist
-    (CI.cptr iseed)
-    sym
-    (CI.cptr d)
-    mode
-    cond
-    dmax
-    kl
-    ku
-    pack
-    (CI.cptr a)
-    lda
-
-
-let slauum ~layout ~uplo ~n ~a ~lda = lapacke_slauum layout uplo n (CI.cptr a) lda
-
-let dlauum ~layout ~uplo ~n ~a ~lda = lapacke_dlauum layout uplo n (CI.cptr a) lda
-
-let clauum ~layout ~uplo ~n ~a ~lda = lapacke_clauum layout uplo n (CI.cptr a) lda
-
-let zlauum ~layout ~uplo ~n ~a ~lda = lapacke_zlauum layout uplo n (CI.cptr a) lda
-
-let sopgtr ~layout ~uplo ~n ~ap ~tau ~q ~ldq =
-  lapacke_sopgtr layout uplo n (CI.cptr ap) (CI.cptr tau) (CI.cptr q) ldq
-
-
-let dopgtr ~layout ~uplo ~n ~ap ~tau ~q ~ldq =
-  lapacke_dopgtr layout uplo n (CI.cptr ap) (CI.cptr tau) (CI.cptr q) ldq
-
-
-let sopmtr ~layout ~side ~uplo ~trans ~m ~n ~ap ~tau ~c ~ldc =
-  lapacke_sopmtr layout side uplo trans m n (CI.cptr ap) (CI.cptr tau) (CI.cptr c) ldc
-
-
-let dopmtr ~layout ~side ~uplo ~trans ~m ~n ~ap ~tau ~c ~ldc =
-  lapacke_dopmtr layout side uplo trans m n (CI.cptr ap) (CI.cptr tau) (CI.cptr c) ldc
-
-
-let sorgbr ~layout ~vect ~m ~n ~k ~a ~lda ~tau =
-  lapacke_sorgbr layout vect m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let dorgbr ~layout ~vect ~m ~n ~k ~a ~lda ~tau =
-  lapacke_dorgbr layout vect m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let sorghr ~layout ~n ~ilo ~ihi ~a ~lda ~tau =
-  lapacke_sorghr layout n ilo ihi (CI.cptr a) lda (CI.cptr tau)
-
-
-let dorghr ~layout ~n ~ilo ~ihi ~a ~lda ~tau =
-  lapacke_dorghr layout n ilo ihi (CI.cptr a) lda (CI.cptr tau)
-
-
-let sorglq ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_sorglq layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let dorglq ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_dorglq layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let sorgql ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_sorgql layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let dorgql ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_dorgql layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let sorgqr ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_sorgqr layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let dorgqr ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_dorgqr layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let sorgrq ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_sorgrq layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let dorgrq ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_dorgrq layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let sorgtr ~layout ~uplo ~n ~a ~lda ~tau =
-  lapacke_sorgtr layout uplo n (CI.cptr a) lda (CI.cptr tau)
-
-
-let dorgtr ~layout ~uplo ~n ~a ~lda ~tau =
-  lapacke_dorgtr layout uplo n (CI.cptr a) lda (CI.cptr tau)
-
-
-let sormbr ~layout ~vect ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_sormbr
-    layout
-    vect
-    side
-    trans
-    m
-    n
-    k
-    (CI.cptr a)
-    lda
-    (CI.cptr tau)
-    (CI.cptr c)
-    ldc
-
-
-let dormbr ~layout ~vect ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_dormbr
-    layout
-    vect
-    side
-    trans
-    m
-    n
-    k
-    (CI.cptr a)
-    lda
-    (CI.cptr tau)
-    (CI.cptr c)
-    ldc
-
-
-let sormhr ~layout ~side ~trans ~m ~n ~ilo ~ihi ~a ~lda ~tau ~c ~ldc =
-  lapacke_sormhr
-    layout
-    side
-    trans
-    m
-    n
-    ilo
-    ihi
-    (CI.cptr a)
-    lda
-    (CI.cptr tau)
-    (CI.cptr c)
-    ldc
-
-
-let dormhr ~layout ~side ~trans ~m ~n ~ilo ~ihi ~a ~lda ~tau ~c ~ldc =
-  lapacke_dormhr
-    layout
-    side
-    trans
-    m
-    n
-    ilo
-    ihi
-    (CI.cptr a)
-    lda
-    (CI.cptr tau)
-    (CI.cptr c)
-    ldc
-
-
-let sormlq ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_sormlq layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let dormlq ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_dormlq layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let sormql ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_sormql layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let dormql ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_dormql layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let sormqr ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_sormqr layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let dormqr ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_dormqr layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let sormrq ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_sormrq layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let dormrq ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_dormrq layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let sormrz ~layout ~side ~trans ~m ~n ~k ~l ~a ~lda ~tau ~c ~ldc =
-  lapacke_sormrz layout side trans m n k l (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let dormrz ~layout ~side ~trans ~m ~n ~k ~l ~a ~lda ~tau ~c ~ldc =
-  lapacke_dormrz layout side trans m n k l (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let sormtr ~layout ~side ~uplo ~trans ~m ~n ~a ~lda ~tau ~c ~ldc =
-  lapacke_sormtr layout side uplo trans m n (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let dormtr ~layout ~side ~uplo ~trans ~m ~n ~a ~lda ~tau ~c ~ldc =
-  lapacke_dormtr layout side uplo trans m n (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let spbcon ~layout ~uplo ~n ~kd ~ab ~ldab ~anorm ~rcond =
-  lapacke_spbcon layout uplo n kd (CI.cptr ab) ldab anorm (CI.cptr rcond)
-
-
-let dpbcon ~layout ~uplo ~n ~kd ~ab ~ldab ~anorm ~rcond =
-  lapacke_dpbcon layout uplo n kd (CI.cptr ab) ldab anorm (CI.cptr rcond)
-
-
-let cpbcon ~layout ~uplo ~n ~kd ~ab ~ldab ~anorm ~rcond =
-  lapacke_cpbcon layout uplo n kd (CI.cptr ab) ldab anorm (CI.cptr rcond)
-
-
-let zpbcon ~layout ~uplo ~n ~kd ~ab ~ldab ~anorm ~rcond =
-  lapacke_zpbcon layout uplo n kd (CI.cptr ab) ldab anorm (CI.cptr rcond)
-
-
-let spbequ ~layout ~uplo ~n ~kd ~ab ~ldab ~s ~scond ~amax =
-  lapacke_spbequ
-    layout
-    uplo
-    n
-    kd
-    (CI.cptr ab)
-    ldab
-    (CI.cptr s)
-    (CI.cptr scond)
-    (CI.cptr amax)
-
-
-let dpbequ ~layout ~uplo ~n ~kd ~ab ~ldab ~s ~scond ~amax =
-  lapacke_dpbequ
-    layout
-    uplo
-    n
-    kd
-    (CI.cptr ab)
-    ldab
-    (CI.cptr s)
-    (CI.cptr scond)
-    (CI.cptr amax)
-
-
-let cpbequ ~layout ~uplo ~n ~kd ~ab ~ldab ~s ~scond ~amax =
-  lapacke_cpbequ
-    layout
-    uplo
-    n
-    kd
-    (CI.cptr ab)
-    ldab
-    (CI.cptr s)
-    (CI.cptr scond)
-    (CI.cptr amax)
-
-
-let zpbequ ~layout ~uplo ~n ~kd ~ab ~ldab ~s ~scond ~amax =
-  lapacke_zpbequ
-    layout
-    uplo
-    n
-    kd
-    (CI.cptr ab)
-    ldab
-    (CI.cptr s)
-    (CI.cptr scond)
-    (CI.cptr amax)
-
-
-let spbrfs ~layout ~uplo ~n ~kd ~nrhs ~ab ~ldab ~afb ~ldafb ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_spbrfs
-    layout
-    uplo
-    n
-    kd
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr afb)
-    ldafb
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let dpbrfs ~layout ~uplo ~n ~kd ~nrhs ~ab ~ldab ~afb ~ldafb ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_dpbrfs
-    layout
-    uplo
-    n
-    kd
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr afb)
-    ldafb
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let cpbrfs ~layout ~uplo ~n ~kd ~nrhs ~ab ~ldab ~afb ~ldafb ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_cpbrfs
-    layout
-    uplo
-    n
-    kd
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr afb)
-    ldafb
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let zpbrfs ~layout ~uplo ~n ~kd ~nrhs ~ab ~ldab ~afb ~ldafb ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_zpbrfs
-    layout
-    uplo
-    n
-    kd
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr afb)
-    ldafb
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let spbstf ~layout ~uplo ~n ~kb ~bb ~ldbb =
-  lapacke_spbstf layout uplo n kb (CI.cptr bb) ldbb
-
-
-let dpbstf ~layout ~uplo ~n ~kb ~bb ~ldbb =
-  lapacke_dpbstf layout uplo n kb (CI.cptr bb) ldbb
-
-
-let cpbstf ~layout ~uplo ~n ~kb ~bb ~ldbb =
-  lapacke_cpbstf layout uplo n kb (CI.cptr bb) ldbb
-
-
-let zpbstf ~layout ~uplo ~n ~kb ~bb ~ldbb =
-  lapacke_zpbstf layout uplo n kb (CI.cptr bb) ldbb
-
-
-let spbsv ~layout ~uplo ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb =
-  lapacke_spbsv layout uplo n kd nrhs (CI.cptr ab) ldab (CI.cptr b) ldb
-
-
-let dpbsv ~layout ~uplo ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb =
-  lapacke_dpbsv layout uplo n kd nrhs (CI.cptr ab) ldab (CI.cptr b) ldb
-
-
-let cpbsv ~layout ~uplo ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb =
-  lapacke_cpbsv layout uplo n kd nrhs (CI.cptr ab) ldab (CI.cptr b) ldb
-
-
-let zpbsv ~layout ~uplo ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb =
-  lapacke_zpbsv layout uplo n kd nrhs (CI.cptr ab) ldab (CI.cptr b) ldb
+let clacp2 ~layout ~uplo ~m ~n ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_clacp2 layout uplo m n a lda b ldb
+
+
+let zlacp2 ~layout ~uplo ~m ~n ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_zlacp2 layout uplo m n a lda b ldb
+
+
+let zlag2c ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~sa:(CI.CPointer sa) ~ldsa =
+  lapacke_zlag2c layout m n a lda sa ldsa
+
+
+let slag2d ~layout ~m ~n ~sa:(CI.CPointer sa) ~ldsa ~a:(CI.CPointer a) ~lda =
+  lapacke_slag2d layout m n sa ldsa a lda
+
+
+let dlag2s ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~sa:(CI.CPointer sa) ~ldsa =
+  lapacke_dlag2s layout m n a lda sa ldsa
+
+
+let clag2z ~layout ~m ~n ~sa:(CI.CPointer sa) ~ldsa ~a:(CI.CPointer a) ~lda =
+  lapacke_clag2z layout m n sa ldsa a lda
+
+
+let slagge
+    ~layout
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~d:(CI.CPointer d)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~iseed:(CI.CPointer iseed)
+  =
+  lapacke_slagge layout m n kl ku d a lda iseed
+
+
+let dlagge
+    ~layout
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~d:(CI.CPointer d)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~iseed:(CI.CPointer iseed)
+  =
+  lapacke_dlagge layout m n kl ku d a lda iseed
+
+
+let clagge
+    ~layout
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~d:(CI.CPointer d)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~iseed:(CI.CPointer iseed)
+  =
+  lapacke_clagge layout m n kl ku d a lda iseed
+
+
+let zlagge
+    ~layout
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~d:(CI.CPointer d)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~iseed:(CI.CPointer iseed)
+  =
+  lapacke_zlagge layout m n kl ku d a lda iseed
+
+
+let slarfb
+    ~layout
+    ~side
+    ~trans
+    ~direct
+    ~storev
+    ~m
+    ~n
+    ~k
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_slarfb layout side trans direct storev m n k v ldv t ldt c ldc
+
+
+let dlarfb
+    ~layout
+    ~side
+    ~trans
+    ~direct
+    ~storev
+    ~m
+    ~n
+    ~k
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dlarfb layout side trans direct storev m n k v ldv t ldt c ldc
+
+
+let clarfb
+    ~layout
+    ~side
+    ~trans
+    ~direct
+    ~storev
+    ~m
+    ~n
+    ~k
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_clarfb layout side trans direct storev m n k v ldv t ldt c ldc
+
+
+let zlarfb
+    ~layout
+    ~side
+    ~trans
+    ~direct
+    ~storev
+    ~m
+    ~n
+    ~k
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zlarfb layout side trans direct storev m n k v ldv t ldt c ldc
+
+
+let slarfg ~n ~alpha:(CI.CPointer alpha) ~x:(CI.CPointer x) ~incx ~tau:(CI.CPointer tau) =
+  lapacke_slarfg n alpha x incx tau
+
+
+let dlarfg ~n ~alpha:(CI.CPointer alpha) ~x:(CI.CPointer x) ~incx ~tau:(CI.CPointer tau) =
+  lapacke_dlarfg n alpha x incx tau
+
+
+let clarfg ~n ~alpha:(CI.CPointer alpha) ~x:(CI.CPointer x) ~incx ~tau:(CI.CPointer tau) =
+  lapacke_clarfg n alpha x incx tau
+
+
+let zlarfg ~n ~alpha:(CI.CPointer alpha) ~x:(CI.CPointer x) ~incx ~tau:(CI.CPointer tau) =
+  lapacke_zlarfg n alpha x incx tau
+
+
+let slarft
+    ~layout
+    ~direct
+    ~storev
+    ~n
+    ~k
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~tau:(CI.CPointer tau)
+    ~t:(CI.CPointer t)
+    ~ldt
+  =
+  lapacke_slarft layout direct storev n k v ldv tau t ldt
+
+
+let dlarft
+    ~layout
+    ~direct
+    ~storev
+    ~n
+    ~k
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~tau:(CI.CPointer tau)
+    ~t:(CI.CPointer t)
+    ~ldt
+  =
+  lapacke_dlarft layout direct storev n k v ldv tau t ldt
+
+
+let clarft
+    ~layout
+    ~direct
+    ~storev
+    ~n
+    ~k
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~tau:(CI.CPointer tau)
+    ~t:(CI.CPointer t)
+    ~ldt
+  =
+  lapacke_clarft layout direct storev n k v ldv tau t ldt
+
+
+let zlarft
+    ~layout
+    ~direct
+    ~storev
+    ~n
+    ~k
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~tau:(CI.CPointer tau)
+    ~t:(CI.CPointer t)
+    ~ldt
+  =
+  lapacke_zlarft layout direct storev n k v ldv tau t ldt
+
+
+let slarfx
+    ~layout
+    ~side
+    ~m
+    ~n
+    ~v:(CI.CPointer v)
+    ~tau
+    ~c:(CI.CPointer c)
+    ~ldc
+    ~work:(CI.CPointer work)
+  =
+  lapacke_slarfx layout side m n v tau c ldc work
+
+
+let dlarfx
+    ~layout
+    ~side
+    ~m
+    ~n
+    ~v:(CI.CPointer v)
+    ~tau
+    ~c:(CI.CPointer c)
+    ~ldc
+    ~work:(CI.CPointer work)
+  =
+  lapacke_dlarfx layout side m n v tau c ldc work
+
+
+let clarfx
+    ~layout
+    ~side
+    ~m
+    ~n
+    ~v:(CI.CPointer v)
+    ~tau
+    ~c:(CI.CPointer c)
+    ~ldc
+    ~work:(CI.CPointer work)
+  =
+  lapacke_clarfx layout side m n v tau c ldc work
+
+
+let zlarfx
+    ~layout
+    ~side
+    ~m
+    ~n
+    ~v:(CI.CPointer v)
+    ~tau
+    ~c:(CI.CPointer c)
+    ~ldc
+    ~work:(CI.CPointer work)
+  =
+  lapacke_zlarfx layout side m n v tau c ldc work
+
+
+let slarnv ~idist ~iseed:(CI.CPointer iseed) ~n ~x:(CI.CPointer x) =
+  lapacke_slarnv idist iseed n x
+
+
+let dlarnv ~idist ~iseed:(CI.CPointer iseed) ~n ~x:(CI.CPointer x) =
+  lapacke_dlarnv idist iseed n x
+
+
+let clarnv ~idist ~iseed:(CI.CPointer iseed) ~n ~x:(CI.CPointer x) =
+  lapacke_clarnv idist iseed n x
+
+
+let zlarnv ~idist ~iseed:(CI.CPointer iseed) ~n ~x:(CI.CPointer x) =
+  lapacke_zlarnv idist iseed n x
+
+
+let slascl ~layout ~typ ~kl ~ku ~cfrom ~cto ~m ~n ~a:(CI.CPointer a) ~lda =
+  lapacke_slascl layout typ kl ku cfrom cto m n a lda
+
+
+let dlascl ~layout ~typ ~kl ~ku ~cfrom ~cto ~m ~n ~a:(CI.CPointer a) ~lda =
+  lapacke_dlascl layout typ kl ku cfrom cto m n a lda
+
+
+let clascl ~layout ~typ ~kl ~ku ~cfrom ~cto ~m ~n ~a:(CI.CPointer a) ~lda =
+  lapacke_clascl layout typ kl ku cfrom cto m n a lda
+
+
+let zlascl ~layout ~typ ~kl ~ku ~cfrom ~cto ~m ~n ~a:(CI.CPointer a) ~lda =
+  lapacke_zlascl layout typ kl ku cfrom cto m n a lda
+
+
+let slaset ~layout ~uplo ~m ~n ~alpha ~beta ~a:(CI.CPointer a) ~lda =
+  lapacke_slaset layout uplo m n alpha beta a lda
+
+
+let dlaset ~layout ~uplo ~m ~n ~alpha ~beta ~a:(CI.CPointer a) ~lda =
+  lapacke_dlaset layout uplo m n alpha beta a lda
+
+
+let claset ~layout ~uplo ~m ~n ~alpha ~beta ~a:(CI.CPointer a) ~lda =
+  lapacke_claset layout uplo m n alpha beta a lda
+
+
+let zlaset ~layout ~uplo ~m ~n ~alpha ~beta ~a:(CI.CPointer a) ~lda =
+  lapacke_zlaset layout uplo m n alpha beta a lda
+
+
+let slasrt ~id ~n ~d:(CI.CPointer d) = lapacke_slasrt id n d
+
+let dlasrt ~id ~n ~d:(CI.CPointer d) = lapacke_dlasrt id n d
+
+let slaswp ~layout ~n ~a:(CI.CPointer a) ~lda ~k1 ~k2 ~ipiv:(CI.CPointer ipiv) ~incx =
+  lapacke_slaswp layout n a lda k1 k2 ipiv incx
+
+
+let dlaswp ~layout ~n ~a:(CI.CPointer a) ~lda ~k1 ~k2 ~ipiv:(CI.CPointer ipiv) ~incx =
+  lapacke_dlaswp layout n a lda k1 k2 ipiv incx
+
+
+let claswp ~layout ~n ~a:(CI.CPointer a) ~lda ~k1 ~k2 ~ipiv:(CI.CPointer ipiv) ~incx =
+  lapacke_claswp layout n a lda k1 k2 ipiv incx
+
+
+let zlaswp ~layout ~n ~a:(CI.CPointer a) ~lda ~k1 ~k2 ~ipiv:(CI.CPointer ipiv) ~incx =
+  lapacke_zlaswp layout n a lda k1 k2 ipiv incx
+
+
+let slatms
+    ~layout
+    ~m
+    ~n
+    ~dist
+    ~iseed:(CI.CPointer iseed)
+    ~sym
+    ~d:(CI.CPointer d)
+    ~mode
+    ~cond
+    ~dmax
+    ~kl
+    ~ku
+    ~pack
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  lapacke_slatms layout m n dist iseed sym d mode cond dmax kl ku pack a lda
+
+
+let dlatms
+    ~layout
+    ~m
+    ~n
+    ~dist
+    ~iseed:(CI.CPointer iseed)
+    ~sym
+    ~d:(CI.CPointer d)
+    ~mode
+    ~cond
+    ~dmax
+    ~kl
+    ~ku
+    ~pack
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  lapacke_dlatms layout m n dist iseed sym d mode cond dmax kl ku pack a lda
+
+
+let clatms
+    ~layout
+    ~m
+    ~n
+    ~dist
+    ~iseed:(CI.CPointer iseed)
+    ~sym
+    ~d:(CI.CPointer d)
+    ~mode
+    ~cond
+    ~dmax
+    ~kl
+    ~ku
+    ~pack
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  lapacke_clatms layout m n dist iseed sym d mode cond dmax kl ku pack a lda
+
+
+let zlatms
+    ~layout
+    ~m
+    ~n
+    ~dist
+    ~iseed:(CI.CPointer iseed)
+    ~sym
+    ~d:(CI.CPointer d)
+    ~mode
+    ~cond
+    ~dmax
+    ~kl
+    ~ku
+    ~pack
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  lapacke_zlatms layout m n dist iseed sym d mode cond dmax kl ku pack a lda
+
+
+let slauum ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_slauum layout uplo n a lda
+
+let dlauum ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_dlauum layout uplo n a lda
+
+let clauum ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_clauum layout uplo n a lda
+
+let zlauum ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_zlauum layout uplo n a lda
+
+let sopgtr
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~tau:(CI.CPointer tau)
+    ~q:(CI.CPointer q)
+    ~ldq
+  =
+  lapacke_sopgtr layout uplo n ap tau q ldq
+
+
+let dopgtr
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~tau:(CI.CPointer tau)
+    ~q:(CI.CPointer q)
+    ~ldq
+  =
+  lapacke_dopgtr layout uplo n ap tau q ldq
+
+
+let sopmtr
+    ~layout
+    ~side
+    ~uplo
+    ~trans
+    ~m
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_sopmtr layout side uplo trans m n ap tau c ldc
+
+
+let dopmtr
+    ~layout
+    ~side
+    ~uplo
+    ~trans
+    ~m
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dopmtr layout side uplo trans m n ap tau c ldc
+
+
+let sorgbr ~layout ~vect ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sorgbr layout vect m n k a lda tau
+
+
+let dorgbr ~layout ~vect ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dorgbr layout vect m n k a lda tau
+
+
+let sorghr ~layout ~n ~ilo ~ihi ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sorghr layout n ilo ihi a lda tau
+
+
+let dorghr ~layout ~n ~ilo ~ihi ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dorghr layout n ilo ihi a lda tau
+
+
+let sorglq ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sorglq layout m n k a lda tau
+
+
+let dorglq ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dorglq layout m n k a lda tau
+
+
+let sorgql ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sorgql layout m n k a lda tau
+
+
+let dorgql ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dorgql layout m n k a lda tau
+
+
+let sorgqr ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sorgqr layout m n k a lda tau
+
+
+let dorgqr ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dorgqr layout m n k a lda tau
+
+
+let sorgrq ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sorgrq layout m n k a lda tau
+
+
+let dorgrq ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dorgrq layout m n k a lda tau
+
+
+let sorgtr ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_sorgtr layout uplo n a lda tau
+
+
+let dorgtr ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dorgtr layout uplo n a lda tau
+
+
+let sormbr
+    ~layout
+    ~vect
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_sormbr layout vect side trans m n k a lda tau c ldc
+
+
+let dormbr
+    ~layout
+    ~vect
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dormbr layout vect side trans m n k a lda tau c ldc
+
+
+let sormhr
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~ilo
+    ~ihi
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_sormhr layout side trans m n ilo ihi a lda tau c ldc
+
+
+let dormhr
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~ilo
+    ~ihi
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dormhr layout side trans m n ilo ihi a lda tau c ldc
+
+
+let sormlq
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_sormlq layout side trans m n k a lda tau c ldc
+
+
+let dormlq
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dormlq layout side trans m n k a lda tau c ldc
+
+
+let sormql
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_sormql layout side trans m n k a lda tau c ldc
+
+
+let dormql
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dormql layout side trans m n k a lda tau c ldc
+
+
+let sormqr
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_sormqr layout side trans m n k a lda tau c ldc
+
+
+let dormqr
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dormqr layout side trans m n k a lda tau c ldc
+
+
+let sormrq
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_sormrq layout side trans m n k a lda tau c ldc
+
+
+let dormrq
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dormrq layout side trans m n k a lda tau c ldc
+
+
+let sormrz
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~l
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_sormrz layout side trans m n k l a lda tau c ldc
+
+
+let dormrz
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~l
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dormrz layout side trans m n k l a lda tau c ldc
+
+
+let sormtr
+    ~layout
+    ~side
+    ~uplo
+    ~trans
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_sormtr layout side uplo trans m n a lda tau c ldc
+
+
+let dormtr
+    ~layout
+    ~side
+    ~uplo
+    ~trans
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dormtr layout side uplo trans m n a lda tau c ldc
+
+
+let spbcon
+    ~layout
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_spbcon layout uplo n kd ab ldab anorm rcond
+
+
+let dpbcon
+    ~layout
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_dpbcon layout uplo n kd ab ldab anorm rcond
+
+
+let cpbcon
+    ~layout
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_cpbcon layout uplo n kd ab ldab anorm rcond
+
+
+let zpbcon
+    ~layout
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_zpbcon layout uplo n kd ab ldab anorm rcond
+
+
+let spbequ
+    ~layout
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_spbequ layout uplo n kd ab ldab s scond amax
+
+
+let dpbequ
+    ~layout
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_dpbequ layout uplo n kd ab ldab s scond amax
+
+
+let cpbequ
+    ~layout
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_cpbequ layout uplo n kd ab ldab s scond amax
+
+
+let zpbequ
+    ~layout
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_zpbequ layout uplo n kd ab ldab s scond amax
+
+
+let spbrfs
+    ~layout
+    ~uplo
+    ~n
+    ~kd
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~afb:(CI.CPointer afb)
+    ~ldafb
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_spbrfs layout uplo n kd nrhs ab ldab afb ldafb b ldb x ldx ferr berr
+
+
+let dpbrfs
+    ~layout
+    ~uplo
+    ~n
+    ~kd
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~afb:(CI.CPointer afb)
+    ~ldafb
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_dpbrfs layout uplo n kd nrhs ab ldab afb ldafb b ldb x ldx ferr berr
+
+
+let cpbrfs
+    ~layout
+    ~uplo
+    ~n
+    ~kd
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~afb:(CI.CPointer afb)
+    ~ldafb
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_cpbrfs layout uplo n kd nrhs ab ldab afb ldafb b ldb x ldx ferr berr
+
+
+let zpbrfs
+    ~layout
+    ~uplo
+    ~n
+    ~kd
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~afb:(CI.CPointer afb)
+    ~ldafb
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_zpbrfs layout uplo n kd nrhs ab ldab afb ldafb b ldb x ldx ferr berr
+
+
+let spbstf ~layout ~uplo ~n ~kb ~bb:(CI.CPointer bb) ~ldbb =
+  lapacke_spbstf layout uplo n kb bb ldbb
+
+
+let dpbstf ~layout ~uplo ~n ~kb ~bb:(CI.CPointer bb) ~ldbb =
+  lapacke_dpbstf layout uplo n kb bb ldbb
+
+
+let cpbstf ~layout ~uplo ~n ~kb ~bb:(CI.CPointer bb) ~ldbb =
+  lapacke_cpbstf layout uplo n kb bb ldbb
+
+
+let zpbstf ~layout ~uplo ~n ~kb ~bb:(CI.CPointer bb) ~ldbb =
+  lapacke_zpbstf layout uplo n kb bb ldbb
+
+
+let spbsv ~layout ~uplo ~n ~kd ~nrhs ~ab:(CI.CPointer ab) ~ldab ~b:(CI.CPointer b) ~ldb =
+  lapacke_spbsv layout uplo n kd nrhs ab ldab b ldb
+
+
+let dpbsv ~layout ~uplo ~n ~kd ~nrhs ~ab:(CI.CPointer ab) ~ldab ~b:(CI.CPointer b) ~ldb =
+  lapacke_dpbsv layout uplo n kd nrhs ab ldab b ldb
+
+
+let cpbsv ~layout ~uplo ~n ~kd ~nrhs ~ab:(CI.CPointer ab) ~ldab ~b:(CI.CPointer b) ~ldb =
+  lapacke_cpbsv layout uplo n kd nrhs ab ldab b ldb
+
+
+let zpbsv ~layout ~uplo ~n ~kd ~nrhs ~ab:(CI.CPointer ab) ~ldab ~b:(CI.CPointer b) ~ldb =
+  lapacke_zpbsv layout uplo n kd nrhs ab ldab b ldb
 
 
 let spbsvx
@@ -22320,19 +22824,19 @@ let spbsvx
     ~n
     ~kd
     ~nrhs
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~afb
+    ~afb:(CI.CPointer afb)
     ~ldafb
-    ~equed
-    ~s
-    ~b
+    ~equed:(CI.CPointer equed)
+    ~s:(CI.CPointer s)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
   lapacke_spbsvx
     layout
@@ -22341,19 +22845,19 @@ let spbsvx
     n
     kd
     nrhs
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr afb)
+    afb
     ldafb
-    (CI.cptr equed)
-    (CI.cptr s)
-    (CI.cptr b)
+    equed
+    s
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+    rcond
+    ferr
+    berr
 
 
 let dpbsvx
@@ -22363,19 +22867,19 @@ let dpbsvx
     ~n
     ~kd
     ~nrhs
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~afb
+    ~afb:(CI.CPointer afb)
     ~ldafb
-    ~equed
-    ~s
-    ~b
+    ~equed:(CI.CPointer equed)
+    ~s:(CI.CPointer s)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
   lapacke_dpbsvx
     layout
@@ -22384,19 +22888,19 @@ let dpbsvx
     n
     kd
     nrhs
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr afb)
+    afb
     ldafb
-    (CI.cptr equed)
-    (CI.cptr s)
-    (CI.cptr b)
+    equed
+    s
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+    rcond
+    ferr
+    berr
 
 
 let cpbsvx
@@ -22406,19 +22910,19 @@ let cpbsvx
     ~n
     ~kd
     ~nrhs
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~afb
+    ~afb:(CI.CPointer afb)
     ~ldafb
-    ~equed
-    ~s
-    ~b
+    ~equed:(CI.CPointer equed)
+    ~s:(CI.CPointer s)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
   lapacke_cpbsvx
     layout
@@ -22427,19 +22931,19 @@ let cpbsvx
     n
     kd
     nrhs
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr afb)
+    afb
     ldafb
-    (CI.cptr equed)
-    (CI.cptr s)
-    (CI.cptr b)
+    equed
+    s
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+    rcond
+    ferr
+    berr
 
 
 let zpbsvx
@@ -22449,19 +22953,19 @@ let zpbsvx
     ~n
     ~kd
     ~nrhs
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~afb
+    ~afb:(CI.CPointer afb)
     ~ldafb
-    ~equed
-    ~s
-    ~b
+    ~equed:(CI.CPointer equed)
+    ~s:(CI.CPointer s)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
   lapacke_zpbsvx
     layout
@@ -22470,249 +22974,335 @@ let zpbsvx
     n
     kd
     nrhs
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr afb)
+    afb
     ldafb
-    (CI.cptr equed)
-    (CI.cptr s)
-    (CI.cptr b)
+    equed
+    s
+    b
     ldb
-    (CI.cptr x)
+    x
     ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+    rcond
+    ferr
+    berr
 
 
-let spbtrf ~layout ~uplo ~n ~kd ~ab ~ldab =
-  lapacke_spbtrf layout uplo n kd (CI.cptr ab) ldab
+let spbtrf ~layout ~uplo ~n ~kd ~ab:(CI.CPointer ab) ~ldab =
+  lapacke_spbtrf layout uplo n kd ab ldab
 
 
-let dpbtrf ~layout ~uplo ~n ~kd ~ab ~ldab =
-  lapacke_dpbtrf layout uplo n kd (CI.cptr ab) ldab
+let dpbtrf ~layout ~uplo ~n ~kd ~ab:(CI.CPointer ab) ~ldab =
+  lapacke_dpbtrf layout uplo n kd ab ldab
 
 
-let cpbtrf ~layout ~uplo ~n ~kd ~ab ~ldab =
-  lapacke_cpbtrf layout uplo n kd (CI.cptr ab) ldab
+let cpbtrf ~layout ~uplo ~n ~kd ~ab:(CI.CPointer ab) ~ldab =
+  lapacke_cpbtrf layout uplo n kd ab ldab
 
 
-let zpbtrf ~layout ~uplo ~n ~kd ~ab ~ldab =
-  lapacke_zpbtrf layout uplo n kd (CI.cptr ab) ldab
+let zpbtrf ~layout ~uplo ~n ~kd ~ab:(CI.CPointer ab) ~ldab =
+  lapacke_zpbtrf layout uplo n kd ab ldab
 
 
-let spbtrs ~layout ~uplo ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb =
-  lapacke_spbtrs layout uplo n kd nrhs (CI.cptr ab) ldab (CI.cptr b) ldb
+let spbtrs ~layout ~uplo ~n ~kd ~nrhs ~ab:(CI.CPointer ab) ~ldab ~b:(CI.CPointer b) ~ldb =
+  lapacke_spbtrs layout uplo n kd nrhs ab ldab b ldb
 
 
-let dpbtrs ~layout ~uplo ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb =
-  lapacke_dpbtrs layout uplo n kd nrhs (CI.cptr ab) ldab (CI.cptr b) ldb
+let dpbtrs ~layout ~uplo ~n ~kd ~nrhs ~ab:(CI.CPointer ab) ~ldab ~b:(CI.CPointer b) ~ldb =
+  lapacke_dpbtrs layout uplo n kd nrhs ab ldab b ldb
 
 
-let cpbtrs ~layout ~uplo ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb =
-  lapacke_cpbtrs layout uplo n kd nrhs (CI.cptr ab) ldab (CI.cptr b) ldb
+let cpbtrs ~layout ~uplo ~n ~kd ~nrhs ~ab:(CI.CPointer ab) ~ldab ~b:(CI.CPointer b) ~ldb =
+  lapacke_cpbtrs layout uplo n kd nrhs ab ldab b ldb
 
 
-let zpbtrs ~layout ~uplo ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb =
-  lapacke_zpbtrs layout uplo n kd nrhs (CI.cptr ab) ldab (CI.cptr b) ldb
+let zpbtrs ~layout ~uplo ~n ~kd ~nrhs ~ab:(CI.CPointer ab) ~ldab ~b:(CI.CPointer b) ~ldb =
+  lapacke_zpbtrs layout uplo n kd nrhs ab ldab b ldb
 
 
-let spftrf ~layout ~transr ~uplo ~n ~a = lapacke_spftrf layout transr uplo n (CI.cptr a)
+let spftrf ~layout ~transr ~uplo ~n ~a:(CI.CPointer a) =
+  lapacke_spftrf layout transr uplo n a
 
-let dpftrf ~layout ~transr ~uplo ~n ~a = lapacke_dpftrf layout transr uplo n (CI.cptr a)
 
-let cpftrf ~layout ~transr ~uplo ~n ~a = lapacke_cpftrf layout transr uplo n (CI.cptr a)
+let dpftrf ~layout ~transr ~uplo ~n ~a:(CI.CPointer a) =
+  lapacke_dpftrf layout transr uplo n a
 
-let zpftrf ~layout ~transr ~uplo ~n ~a = lapacke_zpftrf layout transr uplo n (CI.cptr a)
 
-let spftri ~layout ~transr ~uplo ~n ~a = lapacke_spftri layout transr uplo n (CI.cptr a)
+let cpftrf ~layout ~transr ~uplo ~n ~a:(CI.CPointer a) =
+  lapacke_cpftrf layout transr uplo n a
 
-let dpftri ~layout ~transr ~uplo ~n ~a = lapacke_dpftri layout transr uplo n (CI.cptr a)
 
-let cpftri ~layout ~transr ~uplo ~n ~a = lapacke_cpftri layout transr uplo n (CI.cptr a)
+let zpftrf ~layout ~transr ~uplo ~n ~a:(CI.CPointer a) =
+  lapacke_zpftrf layout transr uplo n a
 
-let zpftri ~layout ~transr ~uplo ~n ~a = lapacke_zpftri layout transr uplo n (CI.cptr a)
 
-let spftrs ~layout ~transr ~uplo ~n ~nrhs ~a ~b ~ldb =
-  lapacke_spftrs layout transr uplo n nrhs (CI.cptr a) (CI.cptr b) ldb
+let spftri ~layout ~transr ~uplo ~n ~a:(CI.CPointer a) =
+  lapacke_spftri layout transr uplo n a
 
 
-let dpftrs ~layout ~transr ~uplo ~n ~nrhs ~a ~b ~ldb =
-  lapacke_dpftrs layout transr uplo n nrhs (CI.cptr a) (CI.cptr b) ldb
+let dpftri ~layout ~transr ~uplo ~n ~a:(CI.CPointer a) =
+  lapacke_dpftri layout transr uplo n a
 
 
-let cpftrs ~layout ~transr ~uplo ~n ~nrhs ~a ~b ~ldb =
-  lapacke_cpftrs layout transr uplo n nrhs (CI.cptr a) (CI.cptr b) ldb
+let cpftri ~layout ~transr ~uplo ~n ~a:(CI.CPointer a) =
+  lapacke_cpftri layout transr uplo n a
 
 
-let zpftrs ~layout ~transr ~uplo ~n ~nrhs ~a ~b ~ldb =
-  lapacke_zpftrs layout transr uplo n nrhs (CI.cptr a) (CI.cptr b) ldb
+let zpftri ~layout ~transr ~uplo ~n ~a:(CI.CPointer a) =
+  lapacke_zpftri layout transr uplo n a
 
 
-let spocon ~layout ~uplo ~n ~a ~lda ~anorm ~rcond =
-  lapacke_spocon layout uplo n (CI.cptr a) lda anorm (CI.cptr rcond)
+let spftrs ~layout ~transr ~uplo ~n ~nrhs ~a:(CI.CPointer a) ~b:(CI.CPointer b) ~ldb =
+  lapacke_spftrs layout transr uplo n nrhs a b ldb
 
 
-let dpocon ~layout ~uplo ~n ~a ~lda ~anorm ~rcond =
-  lapacke_dpocon layout uplo n (CI.cptr a) lda anorm (CI.cptr rcond)
+let dpftrs ~layout ~transr ~uplo ~n ~nrhs ~a:(CI.CPointer a) ~b:(CI.CPointer b) ~ldb =
+  lapacke_dpftrs layout transr uplo n nrhs a b ldb
 
 
-let cpocon ~layout ~uplo ~n ~a ~lda ~anorm ~rcond =
-  lapacke_cpocon layout uplo n (CI.cptr a) lda anorm (CI.cptr rcond)
+let cpftrs ~layout ~transr ~uplo ~n ~nrhs ~a:(CI.CPointer a) ~b:(CI.CPointer b) ~ldb =
+  lapacke_cpftrs layout transr uplo n nrhs a b ldb
 
 
-let zpocon ~layout ~uplo ~n ~a ~lda ~anorm ~rcond =
-  lapacke_zpocon layout uplo n (CI.cptr a) lda anorm (CI.cptr rcond)
+let zpftrs ~layout ~transr ~uplo ~n ~nrhs ~a:(CI.CPointer a) ~b:(CI.CPointer b) ~ldb =
+  lapacke_zpftrs layout transr uplo n nrhs a b ldb
 
 
-let spoequ ~layout ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_spoequ layout n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let spocon ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_spocon layout uplo n a lda anorm rcond
 
 
-let dpoequ ~layout ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_dpoequ layout n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let dpocon ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_dpocon layout uplo n a lda anorm rcond
 
 
-let cpoequ ~layout ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_cpoequ layout n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let cpocon ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_cpocon layout uplo n a lda anorm rcond
 
 
-let zpoequ ~layout ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_zpoequ layout n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let zpocon ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_zpocon layout uplo n a lda anorm rcond
 
 
-let spoequb ~layout ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_spoequb layout n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
-
-
-let dpoequb ~layout ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_dpoequb layout n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
-
-
-let cpoequb ~layout ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_cpoequb layout n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
-
-
-let zpoequb ~layout ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_zpoequb layout n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
-
-
-let sporfs ~layout ~uplo ~n ~nrhs ~a ~lda ~af ~ldaf ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_sporfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let dporfs ~layout ~uplo ~n ~nrhs ~a ~lda ~af ~ldaf ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_dporfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let cporfs ~layout ~uplo ~n ~nrhs ~a ~lda ~af ~ldaf ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_cporfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let zporfs ~layout ~uplo ~n ~nrhs ~a ~lda ~af ~ldaf ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_zporfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let sposv ~layout ~uplo ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_sposv layout uplo n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let dposv ~layout ~uplo ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_dposv layout uplo n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let cposv ~layout ~uplo ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_cposv layout uplo n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let zposv ~layout ~uplo ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_zposv layout uplo n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let dsposv ~layout ~uplo ~n ~nrhs ~a ~lda ~b ~ldb ~x ~ldx ~iter =
-  lapacke_dsposv
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr iter)
-
-
-let zcposv ~layout ~uplo ~n ~nrhs ~a ~lda ~b ~ldb ~x ~ldx ~iter =
-  lapacke_zcposv
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr iter)
+let spoequ
+    ~layout
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_spoequ layout n a lda s scond amax
+
+
+let dpoequ
+    ~layout
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_dpoequ layout n a lda s scond amax
+
+
+let cpoequ
+    ~layout
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_cpoequ layout n a lda s scond amax
+
+
+let zpoequ
+    ~layout
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_zpoequ layout n a lda s scond amax
+
+
+let spoequb
+    ~layout
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_spoequb layout n a lda s scond amax
+
+
+let dpoequb
+    ~layout
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_dpoequb layout n a lda s scond amax
+
+
+let cpoequb
+    ~layout
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_cpoequb layout n a lda s scond amax
+
+
+let zpoequb
+    ~layout
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_zpoequb layout n a lda s scond amax
+
+
+let sporfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_sporfs layout uplo n nrhs a lda af ldaf b ldb x ldx ferr berr
+
+
+let dporfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_dporfs layout uplo n nrhs a lda af ldaf b ldb x ldx ferr berr
+
+
+let cporfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_cporfs layout uplo n nrhs a lda af ldaf b ldb x ldx ferr berr
+
+
+let zporfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_zporfs layout uplo n nrhs a lda af ldaf b ldb x ldx ferr berr
+
+
+let sposv ~layout ~uplo ~n ~nrhs ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_sposv layout uplo n nrhs a lda b ldb
+
+
+let dposv ~layout ~uplo ~n ~nrhs ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_dposv layout uplo n nrhs a lda b ldb
+
+
+let cposv ~layout ~uplo ~n ~nrhs ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_cposv layout uplo n nrhs a lda b ldb
+
+
+let zposv ~layout ~uplo ~n ~nrhs ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_zposv layout uplo n nrhs a lda b ldb
+
+
+let dsposv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~iter:(CI.CPointer iter)
+  =
+  lapacke_dsposv layout uplo n nrhs a lda b ldb x ldx iter
+
+
+let zcposv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~iter:(CI.CPointer iter)
+  =
+  lapacke_zcposv layout uplo n nrhs a lda b ldb x ldx iter
 
 
 let sposvx
@@ -22721,39 +23311,21 @@ let sposvx
     ~uplo
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~equed
-    ~s
-    ~b
+    ~equed:(CI.CPointer equed)
+    ~s:(CI.CPointer s)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_sposvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr equed)
-    (CI.cptr s)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_sposvx layout fact uplo n nrhs a lda af ldaf equed s b ldb x ldx rcond ferr berr
 
 
 let dposvx
@@ -22762,39 +23334,21 @@ let dposvx
     ~uplo
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~equed
-    ~s
-    ~b
+    ~equed:(CI.CPointer equed)
+    ~s:(CI.CPointer s)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_dposvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr equed)
-    (CI.cptr s)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_dposvx layout fact uplo n nrhs a lda af ldaf equed s b ldb x ldx rcond ferr berr
 
 
 let cposvx
@@ -22803,39 +23357,21 @@ let cposvx
     ~uplo
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~equed
-    ~s
-    ~b
+    ~equed:(CI.CPointer equed)
+    ~s:(CI.CPointer s)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_cposvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr equed)
-    (CI.cptr s)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_cposvx layout fact uplo n nrhs a lda af ldaf equed s b ldb x ldx rcond ferr berr
 
 
 let zposvx
@@ -22844,191 +23380,209 @@ let zposvx
     ~uplo
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~equed
-    ~s
-    ~b
+    ~equed:(CI.CPointer equed)
+    ~s:(CI.CPointer s)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_zposvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr equed)
-    (CI.cptr s)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_zposvx layout fact uplo n nrhs a lda af ldaf equed s b ldb x ldx rcond ferr berr
 
 
-let spotrf2 ~layout ~uplo ~n ~a ~lda = lapacke_spotrf2 layout uplo n (CI.cptr a) lda
+let spotrf2 ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_spotrf2 layout uplo n a lda
 
-let dpotrf2 ~layout ~uplo ~n ~a ~lda = lapacke_dpotrf2 layout uplo n (CI.cptr a) lda
+let dpotrf2 ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_dpotrf2 layout uplo n a lda
 
-let cpotrf2 ~layout ~uplo ~n ~a ~lda = lapacke_cpotrf2 layout uplo n (CI.cptr a) lda
+let cpotrf2 ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_cpotrf2 layout uplo n a lda
 
-let zpotrf2 ~layout ~uplo ~n ~a ~lda = lapacke_zpotrf2 layout uplo n (CI.cptr a) lda
+let zpotrf2 ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_zpotrf2 layout uplo n a lda
 
-let spotrf ~layout ~uplo ~n ~a ~lda = lapacke_spotrf layout uplo n (CI.cptr a) lda
+let spotrf ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_spotrf layout uplo n a lda
 
-let dpotrf ~layout ~uplo ~n ~a ~lda = lapacke_dpotrf layout uplo n (CI.cptr a) lda
+let dpotrf ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_dpotrf layout uplo n a lda
 
-let cpotrf ~layout ~uplo ~n ~a ~lda = lapacke_cpotrf layout uplo n (CI.cptr a) lda
+let cpotrf ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_cpotrf layout uplo n a lda
 
-let zpotrf ~layout ~uplo ~n ~a ~lda = lapacke_zpotrf layout uplo n (CI.cptr a) lda
+let zpotrf ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_zpotrf layout uplo n a lda
 
-let spotri ~layout ~uplo ~n ~a ~lda = lapacke_spotri layout uplo n (CI.cptr a) lda
+let spotri ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_spotri layout uplo n a lda
 
-let dpotri ~layout ~uplo ~n ~a ~lda = lapacke_dpotri layout uplo n (CI.cptr a) lda
+let dpotri ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_dpotri layout uplo n a lda
 
-let cpotri ~layout ~uplo ~n ~a ~lda = lapacke_cpotri layout uplo n (CI.cptr a) lda
+let cpotri ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_cpotri layout uplo n a lda
 
-let zpotri ~layout ~uplo ~n ~a ~lda = lapacke_zpotri layout uplo n (CI.cptr a) lda
+let zpotri ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda = lapacke_zpotri layout uplo n a lda
 
-let spotrs ~layout ~uplo ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_spotrs layout uplo n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let dpotrs ~layout ~uplo ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_dpotrs layout uplo n nrhs (CI.cptr a) lda (CI.cptr b) ldb
+let spotrs ~layout ~uplo ~n ~nrhs ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_spotrs layout uplo n nrhs a lda b ldb
 
 
-let cpotrs ~layout ~uplo ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_cpotrs layout uplo n nrhs (CI.cptr a) lda (CI.cptr b) ldb
+let dpotrs ~layout ~uplo ~n ~nrhs ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_dpotrs layout uplo n nrhs a lda b ldb
 
 
-let zpotrs ~layout ~uplo ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_zpotrs layout uplo n nrhs (CI.cptr a) lda (CI.cptr b) ldb
+let cpotrs ~layout ~uplo ~n ~nrhs ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_cpotrs layout uplo n nrhs a lda b ldb
 
 
-let sppcon ~layout ~uplo ~n ~ap ~anorm ~rcond =
-  lapacke_sppcon layout uplo n (CI.cptr ap) anorm (CI.cptr rcond)
+let zpotrs ~layout ~uplo ~n ~nrhs ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_zpotrs layout uplo n nrhs a lda b ldb
 
 
-let dppcon ~layout ~uplo ~n ~ap ~anorm ~rcond =
-  lapacke_dppcon layout uplo n (CI.cptr ap) anorm (CI.cptr rcond)
+let sppcon ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_sppcon layout uplo n ap anorm rcond
 
 
-let cppcon ~layout ~uplo ~n ~ap ~anorm ~rcond =
-  lapacke_cppcon layout uplo n (CI.cptr ap) anorm (CI.cptr rcond)
+let dppcon ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_dppcon layout uplo n ap anorm rcond
 
 
-let zppcon ~layout ~uplo ~n ~ap ~anorm ~rcond =
-  lapacke_zppcon layout uplo n (CI.cptr ap) anorm (CI.cptr rcond)
+let cppcon ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_cppcon layout uplo n ap anorm rcond
 
 
-let sppequ ~layout ~uplo ~n ~ap ~s ~scond ~amax =
-  lapacke_sppequ layout uplo n (CI.cptr ap) (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let zppcon ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_zppcon layout uplo n ap anorm rcond
 
 
-let dppequ ~layout ~uplo ~n ~ap ~s ~scond ~amax =
-  lapacke_dppequ layout uplo n (CI.cptr ap) (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let sppequ
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_sppequ layout uplo n ap s scond amax
 
 
-let cppequ ~layout ~uplo ~n ~ap ~s ~scond ~amax =
-  lapacke_cppequ layout uplo n (CI.cptr ap) (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let dppequ
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_dppequ layout uplo n ap s scond amax
 
 
-let zppequ ~layout ~uplo ~n ~ap ~s ~scond ~amax =
-  lapacke_zppequ layout uplo n (CI.cptr ap) (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let cppequ
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_cppequ layout uplo n ap s scond amax
 
 
-let spprfs ~layout ~uplo ~n ~nrhs ~ap ~afp ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_spprfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let zppequ
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_zppequ layout uplo n ap s scond amax
 
 
-let dpprfs ~layout ~uplo ~n ~nrhs ~ap ~afp ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_dpprfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let spprfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_spprfs layout uplo n nrhs ap afp b ldb x ldx ferr berr
 
 
-let cpprfs ~layout ~uplo ~n ~nrhs ~ap ~afp ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_cpprfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let dpprfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_dpprfs layout uplo n nrhs ap afp b ldb x ldx ferr berr
 
 
-let zpprfs ~layout ~uplo ~n ~nrhs ~ap ~afp ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_zpprfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let cpprfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_cpprfs layout uplo n nrhs ap afp b ldb x ldx ferr berr
 
 
-let sppsv ~layout ~uplo ~n ~nrhs ~ap ~b ~ldb =
-  lapacke_sppsv layout uplo n nrhs (CI.cptr ap) (CI.cptr b) ldb
+let zpprfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_zpprfs layout uplo n nrhs ap afp b ldb x ldx ferr berr
 
 
-let dppsv ~layout ~uplo ~n ~nrhs ~ap ~b ~ldb =
-  lapacke_dppsv layout uplo n nrhs (CI.cptr ap) (CI.cptr b) ldb
+let sppsv ~layout ~uplo ~n ~nrhs ~ap:(CI.CPointer ap) ~b:(CI.CPointer b) ~ldb =
+  lapacke_sppsv layout uplo n nrhs ap b ldb
 
 
-let cppsv ~layout ~uplo ~n ~nrhs ~ap ~b ~ldb =
-  lapacke_cppsv layout uplo n nrhs (CI.cptr ap) (CI.cptr b) ldb
+let dppsv ~layout ~uplo ~n ~nrhs ~ap:(CI.CPointer ap) ~b:(CI.CPointer b) ~ldb =
+  lapacke_dppsv layout uplo n nrhs ap b ldb
 
 
-let zppsv ~layout ~uplo ~n ~nrhs ~ap ~b ~ldb =
-  lapacke_zppsv layout uplo n nrhs (CI.cptr ap) (CI.cptr b) ldb
+let cppsv ~layout ~uplo ~n ~nrhs ~ap:(CI.CPointer ap) ~b:(CI.CPointer b) ~ldb =
+  lapacke_cppsv layout uplo n nrhs ap b ldb
+
+
+let zppsv ~layout ~uplo ~n ~nrhs ~ap:(CI.CPointer ap) ~b:(CI.CPointer b) ~ldb =
+  lapacke_zppsv layout uplo n nrhs ap b ldb
 
 
 let sppsvx
@@ -23037,35 +23591,19 @@ let sppsvx
     ~uplo
     ~n
     ~nrhs
-    ~ap
-    ~afp
-    ~equed
-    ~s
-    ~b
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~equed:(CI.CPointer equed)
+    ~s:(CI.CPointer s)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_sppsvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr equed)
-    (CI.cptr s)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_sppsvx layout fact uplo n nrhs ap afp equed s b ldb x ldx rcond ferr berr
 
 
 let dppsvx
@@ -23074,35 +23612,19 @@ let dppsvx
     ~uplo
     ~n
     ~nrhs
-    ~ap
-    ~afp
-    ~equed
-    ~s
-    ~b
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~equed:(CI.CPointer equed)
+    ~s:(CI.CPointer s)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_dppsvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr equed)
-    (CI.cptr s)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_dppsvx layout fact uplo n nrhs ap afp equed s b ldb x ldx rcond ferr berr
 
 
 let cppsvx
@@ -23111,35 +23633,19 @@ let cppsvx
     ~uplo
     ~n
     ~nrhs
-    ~ap
-    ~afp
-    ~equed
-    ~s
-    ~b
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~equed:(CI.CPointer equed)
+    ~s:(CI.CPointer s)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_cppsvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr equed)
-    (CI.cptr s)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_cppsvx layout fact uplo n nrhs ap afp equed s b ldb x ldx rcond ferr berr
 
 
 let zppsvx
@@ -23148,317 +23654,411 @@ let zppsvx
     ~uplo
     ~n
     ~nrhs
-    ~ap
-    ~afp
-    ~equed
-    ~s
-    ~b
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~equed:(CI.CPointer equed)
+    ~s:(CI.CPointer s)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_zppsvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr equed)
-    (CI.cptr s)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_zppsvx layout fact uplo n nrhs ap afp equed s b ldb x ldx rcond ferr berr
 
 
-let spptrf ~layout ~uplo ~n ~ap = lapacke_spptrf layout uplo n (CI.cptr ap)
+let spptrf ~layout ~uplo ~n ~ap:(CI.CPointer ap) = lapacke_spptrf layout uplo n ap
 
-let dpptrf ~layout ~uplo ~n ~ap = lapacke_dpptrf layout uplo n (CI.cptr ap)
+let dpptrf ~layout ~uplo ~n ~ap:(CI.CPointer ap) = lapacke_dpptrf layout uplo n ap
 
-let cpptrf ~layout ~uplo ~n ~ap = lapacke_cpptrf layout uplo n (CI.cptr ap)
+let cpptrf ~layout ~uplo ~n ~ap:(CI.CPointer ap) = lapacke_cpptrf layout uplo n ap
 
-let zpptrf ~layout ~uplo ~n ~ap = lapacke_zpptrf layout uplo n (CI.cptr ap)
+let zpptrf ~layout ~uplo ~n ~ap:(CI.CPointer ap) = lapacke_zpptrf layout uplo n ap
 
-let spptri ~layout ~uplo ~n ~ap = lapacke_spptri layout uplo n (CI.cptr ap)
+let spptri ~layout ~uplo ~n ~ap:(CI.CPointer ap) = lapacke_spptri layout uplo n ap
 
-let dpptri ~layout ~uplo ~n ~ap = lapacke_dpptri layout uplo n (CI.cptr ap)
+let dpptri ~layout ~uplo ~n ~ap:(CI.CPointer ap) = lapacke_dpptri layout uplo n ap
 
-let cpptri ~layout ~uplo ~n ~ap = lapacke_cpptri layout uplo n (CI.cptr ap)
+let cpptri ~layout ~uplo ~n ~ap:(CI.CPointer ap) = lapacke_cpptri layout uplo n ap
 
-let zpptri ~layout ~uplo ~n ~ap = lapacke_zpptri layout uplo n (CI.cptr ap)
+let zpptri ~layout ~uplo ~n ~ap:(CI.CPointer ap) = lapacke_zpptri layout uplo n ap
 
-let spptrs ~layout ~uplo ~n ~nrhs ~ap ~b ~ldb =
-  lapacke_spptrs layout uplo n nrhs (CI.cptr ap) (CI.cptr b) ldb
+let spptrs ~layout ~uplo ~n ~nrhs ~ap:(CI.CPointer ap) ~b:(CI.CPointer b) ~ldb =
+  lapacke_spptrs layout uplo n nrhs ap b ldb
 
 
-let dpptrs ~layout ~uplo ~n ~nrhs ~ap ~b ~ldb =
-  lapacke_dpptrs layout uplo n nrhs (CI.cptr ap) (CI.cptr b) ldb
+let dpptrs ~layout ~uplo ~n ~nrhs ~ap:(CI.CPointer ap) ~b:(CI.CPointer b) ~ldb =
+  lapacke_dpptrs layout uplo n nrhs ap b ldb
 
 
-let cpptrs ~layout ~uplo ~n ~nrhs ~ap ~b ~ldb =
-  lapacke_cpptrs layout uplo n nrhs (CI.cptr ap) (CI.cptr b) ldb
+let cpptrs ~layout ~uplo ~n ~nrhs ~ap:(CI.CPointer ap) ~b:(CI.CPointer b) ~ldb =
+  lapacke_cpptrs layout uplo n nrhs ap b ldb
 
 
-let zpptrs ~layout ~uplo ~n ~nrhs ~ap ~b ~ldb =
-  lapacke_zpptrs layout uplo n nrhs (CI.cptr ap) (CI.cptr b) ldb
+let zpptrs ~layout ~uplo ~n ~nrhs ~ap:(CI.CPointer ap) ~b:(CI.CPointer b) ~ldb =
+  lapacke_zpptrs layout uplo n nrhs ap b ldb
 
 
-let spstrf ~layout ~uplo ~n ~a ~lda ~piv ~rank ~tol =
-  lapacke_spstrf layout uplo n (CI.cptr a) lda (CI.cptr piv) (CI.cptr rank) tol
+let spstrf
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~piv:(CI.CPointer piv)
+    ~rank:(CI.CPointer rank)
+    ~tol
+  =
+  lapacke_spstrf layout uplo n a lda piv rank tol
 
 
-let dpstrf ~layout ~uplo ~n ~a ~lda ~piv ~rank ~tol =
-  lapacke_dpstrf layout uplo n (CI.cptr a) lda (CI.cptr piv) (CI.cptr rank) tol
+let dpstrf
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~piv:(CI.CPointer piv)
+    ~rank:(CI.CPointer rank)
+    ~tol
+  =
+  lapacke_dpstrf layout uplo n a lda piv rank tol
 
 
-let cpstrf ~layout ~uplo ~n ~a ~lda ~piv ~rank ~tol =
-  lapacke_cpstrf layout uplo n (CI.cptr a) lda (CI.cptr piv) (CI.cptr rank) tol
+let cpstrf
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~piv:(CI.CPointer piv)
+    ~rank:(CI.CPointer rank)
+    ~tol
+  =
+  lapacke_cpstrf layout uplo n a lda piv rank tol
 
 
-let zpstrf ~layout ~uplo ~n ~a ~lda ~piv ~rank ~tol =
-  lapacke_zpstrf layout uplo n (CI.cptr a) lda (CI.cptr piv) (CI.cptr rank) tol
+let zpstrf
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~piv:(CI.CPointer piv)
+    ~rank:(CI.CPointer rank)
+    ~tol
+  =
+  lapacke_zpstrf layout uplo n a lda piv rank tol
 
 
-let sptcon ~n ~d ~e ~anorm ~rcond =
-  lapacke_sptcon n (CI.cptr d) (CI.cptr e) anorm (CI.cptr rcond)
+let sptcon ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_sptcon n d e anorm rcond
 
 
-let dptcon ~n ~d ~e ~anorm ~rcond =
-  lapacke_dptcon n (CI.cptr d) (CI.cptr e) anorm (CI.cptr rcond)
+let dptcon ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_dptcon n d e anorm rcond
+
+
+let cptcon ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_cptcon n d e anorm rcond
 
 
-let cptcon ~n ~d ~e ~anorm ~rcond =
-  lapacke_cptcon n (CI.cptr d) (CI.cptr e) anorm (CI.cptr rcond)
-
-
-let zptcon ~n ~d ~e ~anorm ~rcond =
-  lapacke_zptcon n (CI.cptr d) (CI.cptr e) anorm (CI.cptr rcond)
-
-
-let spteqr ~layout ~compz ~n ~d ~e ~z ~ldz =
-  lapacke_spteqr layout compz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
-
-
-let dpteqr ~layout ~compz ~n ~d ~e ~z ~ldz =
-  lapacke_dpteqr layout compz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
-
-
-let cpteqr ~layout ~compz ~n ~d ~e ~z ~ldz =
-  lapacke_cpteqr layout compz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
-
-
-let zpteqr ~layout ~compz ~n ~d ~e ~z ~ldz =
-  lapacke_zpteqr layout compz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
-
-
-let sptrfs ~layout ~n ~nrhs ~d ~e ~df ~ef ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_sptrfs
-    layout
-    n
-    nrhs
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr df)
-    (CI.cptr ef)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let dptrfs ~layout ~n ~nrhs ~d ~e ~df ~ef ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_dptrfs
-    layout
-    n
-    nrhs
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr df)
-    (CI.cptr ef)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let cptrfs ~layout ~uplo ~n ~nrhs ~d ~e ~df ~ef ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_cptrfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr df)
-    (CI.cptr ef)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let zptrfs ~layout ~uplo ~n ~nrhs ~d ~e ~df ~ef ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_zptrfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr df)
-    (CI.cptr ef)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let sptsv ~layout ~n ~nrhs ~d ~e ~b ~ldb =
-  lapacke_sptsv layout n nrhs (CI.cptr d) (CI.cptr e) (CI.cptr b) ldb
-
-
-let dptsv ~layout ~n ~nrhs ~d ~e ~b ~ldb =
-  lapacke_dptsv layout n nrhs (CI.cptr d) (CI.cptr e) (CI.cptr b) ldb
-
-
-let cptsv ~layout ~n ~nrhs ~d ~e ~b ~ldb =
-  lapacke_cptsv layout n nrhs (CI.cptr d) (CI.cptr e) (CI.cptr b) ldb
-
-
-let zptsv ~layout ~n ~nrhs ~d ~e ~b ~ldb =
-  lapacke_zptsv layout n nrhs (CI.cptr d) (CI.cptr e) (CI.cptr b) ldb
-
-
-let sptsvx ~layout ~fact ~n ~nrhs ~d ~e ~df ~ef ~b ~ldb ~x ~ldx ~rcond ~ferr ~berr =
-  lapacke_sptsvx
-    layout
-    fact
-    n
-    nrhs
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr df)
-    (CI.cptr ef)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let dptsvx ~layout ~fact ~n ~nrhs ~d ~e ~df ~ef ~b ~ldb ~x ~ldx ~rcond ~ferr ~berr =
-  lapacke_dptsvx
-    layout
-    fact
-    n
-    nrhs
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr df)
-    (CI.cptr ef)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let cptsvx ~layout ~fact ~n ~nrhs ~d ~e ~df ~ef ~b ~ldb ~x ~ldx ~rcond ~ferr ~berr =
-  lapacke_cptsvx
-    layout
-    fact
-    n
-    nrhs
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr df)
-    (CI.cptr ef)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let zptsvx ~layout ~fact ~n ~nrhs ~d ~e ~df ~ef ~b ~ldb ~x ~ldx ~rcond ~ferr ~berr =
-  lapacke_zptsvx
-    layout
-    fact
-    n
-    nrhs
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr df)
-    (CI.cptr ef)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let spttrf ~n ~d ~e = lapacke_spttrf n (CI.cptr d) (CI.cptr e)
-
-let dpttrf ~n ~d ~e = lapacke_dpttrf n (CI.cptr d) (CI.cptr e)
-
-let cpttrf ~n ~d ~e = lapacke_cpttrf n (CI.cptr d) (CI.cptr e)
-
-let zpttrf ~n ~d ~e = lapacke_zpttrf n (CI.cptr d) (CI.cptr e)
-
-let spttrs ~layout ~n ~nrhs ~d ~e ~b ~ldb =
-  lapacke_spttrs layout n nrhs (CI.cptr d) (CI.cptr e) (CI.cptr b) ldb
-
-
-let dpttrs ~layout ~n ~nrhs ~d ~e ~b ~ldb =
-  lapacke_dpttrs layout n nrhs (CI.cptr d) (CI.cptr e) (CI.cptr b) ldb
-
-
-let cpttrs ~layout ~uplo ~n ~nrhs ~d ~e ~b ~ldb =
-  lapacke_cpttrs layout uplo n nrhs (CI.cptr d) (CI.cptr e) (CI.cptr b) ldb
-
-
-let zpttrs ~layout ~uplo ~n ~nrhs ~d ~e ~b ~ldb =
-  lapacke_zpttrs layout uplo n nrhs (CI.cptr d) (CI.cptr e) (CI.cptr b) ldb
-
-
-let ssbev ~layout ~jobz ~uplo ~n ~kd ~ab ~ldab ~w ~z ~ldz =
-  lapacke_ssbev layout jobz uplo n kd (CI.cptr ab) ldab (CI.cptr w) (CI.cptr z) ldz
-
-
-let dsbev ~layout ~jobz ~uplo ~n ~kd ~ab ~ldab ~w ~z ~ldz =
-  lapacke_dsbev layout jobz uplo n kd (CI.cptr ab) ldab (CI.cptr w) (CI.cptr z) ldz
-
-
-let ssbevd ~layout ~jobz ~uplo ~n ~kd ~ab ~ldab ~w ~z ~ldz =
-  lapacke_ssbevd layout jobz uplo n kd (CI.cptr ab) ldab (CI.cptr w) (CI.cptr z) ldz
-
-
-let dsbevd ~layout ~jobz ~uplo ~n ~kd ~ab ~ldab ~w ~z ~ldz =
-  lapacke_dsbevd layout jobz uplo n kd (CI.cptr ab) ldab (CI.cptr w) (CI.cptr z) ldz
+let zptcon ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~anorm ~rcond:(CI.CPointer rcond) =
+  lapacke_zptcon n d e anorm rcond
+
+
+let spteqr ~layout ~compz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz
+  =
+  lapacke_spteqr layout compz n d e z ldz
+
+
+let dpteqr ~layout ~compz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz
+  =
+  lapacke_dpteqr layout compz n d e z ldz
+
+
+let cpteqr ~layout ~compz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz
+  =
+  lapacke_cpteqr layout compz n d e z ldz
+
+
+let zpteqr ~layout ~compz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz
+  =
+  lapacke_zpteqr layout compz n d e z ldz
+
+
+let sptrfs
+    ~layout
+    ~n
+    ~nrhs
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~df:(CI.CPointer df)
+    ~ef:(CI.CPointer ef)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_sptrfs layout n nrhs d e df ef b ldb x ldx ferr berr
+
+
+let dptrfs
+    ~layout
+    ~n
+    ~nrhs
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~df:(CI.CPointer df)
+    ~ef:(CI.CPointer ef)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_dptrfs layout n nrhs d e df ef b ldb x ldx ferr berr
+
+
+let cptrfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~df:(CI.CPointer df)
+    ~ef:(CI.CPointer ef)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_cptrfs layout uplo n nrhs d e df ef b ldb x ldx ferr berr
+
+
+let zptrfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~df:(CI.CPointer df)
+    ~ef:(CI.CPointer ef)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_zptrfs layout uplo n nrhs d e df ef b ldb x ldx ferr berr
+
+
+let sptsv ~layout ~n ~nrhs ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~b:(CI.CPointer b) ~ldb =
+  lapacke_sptsv layout n nrhs d e b ldb
+
+
+let dptsv ~layout ~n ~nrhs ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~b:(CI.CPointer b) ~ldb =
+  lapacke_dptsv layout n nrhs d e b ldb
+
+
+let cptsv ~layout ~n ~nrhs ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~b:(CI.CPointer b) ~ldb =
+  lapacke_cptsv layout n nrhs d e b ldb
+
+
+let zptsv ~layout ~n ~nrhs ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~b:(CI.CPointer b) ~ldb =
+  lapacke_zptsv layout n nrhs d e b ldb
+
+
+let sptsvx
+    ~layout
+    ~fact
+    ~n
+    ~nrhs
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~df:(CI.CPointer df)
+    ~ef:(CI.CPointer ef)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_sptsvx layout fact n nrhs d e df ef b ldb x ldx rcond ferr berr
+
+
+let dptsvx
+    ~layout
+    ~fact
+    ~n
+    ~nrhs
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~df:(CI.CPointer df)
+    ~ef:(CI.CPointer ef)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_dptsvx layout fact n nrhs d e df ef b ldb x ldx rcond ferr berr
+
+
+let cptsvx
+    ~layout
+    ~fact
+    ~n
+    ~nrhs
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~df:(CI.CPointer df)
+    ~ef:(CI.CPointer ef)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_cptsvx layout fact n nrhs d e df ef b ldb x ldx rcond ferr berr
+
+
+let zptsvx
+    ~layout
+    ~fact
+    ~n
+    ~nrhs
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~df:(CI.CPointer df)
+    ~ef:(CI.CPointer ef)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_zptsvx layout fact n nrhs d e df ef b ldb x ldx rcond ferr berr
+
+
+let spttrf ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) = lapacke_spttrf n d e
+
+let dpttrf ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) = lapacke_dpttrf n d e
+
+let cpttrf ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) = lapacke_cpttrf n d e
+
+let zpttrf ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) = lapacke_zpttrf n d e
+
+let spttrs ~layout ~n ~nrhs ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~b:(CI.CPointer b) ~ldb =
+  lapacke_spttrs layout n nrhs d e b ldb
+
+
+let dpttrs ~layout ~n ~nrhs ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~b:(CI.CPointer b) ~ldb =
+  lapacke_dpttrs layout n nrhs d e b ldb
+
+
+let cpttrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_cpttrs layout uplo n nrhs d e b ldb
+
+
+let zpttrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zpttrs layout uplo n nrhs d e b ldb
+
+
+let ssbev
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_ssbev layout jobz uplo n kd ab ldab w z ldz
+
+
+let dsbev
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_dsbev layout jobz uplo n kd ab ldab w z ldz
+
+
+let ssbevd
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_ssbevd layout jobz uplo n kd ab ldab w z ldz
+
+
+let dsbevd
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_dsbevd layout jobz uplo n kd ab ldab w z ldz
 
 
 let ssbevx
@@ -23468,20 +24068,20 @@ let ssbevx
     ~uplo
     ~n
     ~kd
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
   lapacke_ssbevx
     layout
@@ -23490,20 +24090,20 @@ let ssbevx
     uplo
     n
     kd
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr q)
+    q
     ldq
     vl
     vu
     il
     iu
     abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
+    m
+    w
+    z
     ldz
-    (CI.cptr ifail)
+    ifail
 
 
 let dsbevx
@@ -23513,20 +24113,20 @@ let dsbevx
     ~uplo
     ~n
     ~kd
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
   lapacke_dsbevx
     layout
@@ -23535,120 +24135,126 @@ let dsbevx
     uplo
     n
     kd
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr q)
+    q
     ldq
     vl
     vu
     il
     iu
     abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
+    m
+    w
+    z
     ldz
-    (CI.cptr ifail)
+    ifail
 
 
-let ssbgst ~layout ~vect ~uplo ~n ~ka ~kb ~ab ~ldab ~bb ~ldbb ~x ~ldx =
-  lapacke_ssbgst
-    layout
-    vect
-    uplo
-    n
-    ka
-    kb
-    (CI.cptr ab)
-    ldab
-    (CI.cptr bb)
-    ldbb
-    (CI.cptr x)
-    ldx
+let ssbgst
+    ~layout
+    ~vect
+    ~uplo
+    ~n
+    ~ka
+    ~kb
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~bb:(CI.CPointer bb)
+    ~ldbb
+    ~x:(CI.CPointer x)
+    ~ldx
+  =
+  lapacke_ssbgst layout vect uplo n ka kb ab ldab bb ldbb x ldx
 
 
-let dsbgst ~layout ~vect ~uplo ~n ~ka ~kb ~ab ~ldab ~bb ~ldbb ~x ~ldx =
-  lapacke_dsbgst
-    layout
-    vect
-    uplo
-    n
-    ka
-    kb
-    (CI.cptr ab)
-    ldab
-    (CI.cptr bb)
-    ldbb
-    (CI.cptr x)
-    ldx
+let dsbgst
+    ~layout
+    ~vect
+    ~uplo
+    ~n
+    ~ka
+    ~kb
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~bb:(CI.CPointer bb)
+    ~ldbb
+    ~x:(CI.CPointer x)
+    ~ldx
+  =
+  lapacke_dsbgst layout vect uplo n ka kb ab ldab bb ldbb x ldx
 
 
-let ssbgv ~layout ~jobz ~uplo ~n ~ka ~kb ~ab ~ldab ~bb ~ldbb ~w ~z ~ldz =
-  lapacke_ssbgv
-    layout
-    jobz
-    uplo
-    n
-    ka
-    kb
-    (CI.cptr ab)
-    ldab
-    (CI.cptr bb)
-    ldbb
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let ssbgv
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ka
+    ~kb
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~bb:(CI.CPointer bb)
+    ~ldbb
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_ssbgv layout jobz uplo n ka kb ab ldab bb ldbb w z ldz
 
 
-let dsbgv ~layout ~jobz ~uplo ~n ~ka ~kb ~ab ~ldab ~bb ~ldbb ~w ~z ~ldz =
-  lapacke_dsbgv
-    layout
-    jobz
-    uplo
-    n
-    ka
-    kb
-    (CI.cptr ab)
-    ldab
-    (CI.cptr bb)
-    ldbb
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let dsbgv
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ka
+    ~kb
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~bb:(CI.CPointer bb)
+    ~ldbb
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_dsbgv layout jobz uplo n ka kb ab ldab bb ldbb w z ldz
 
 
-let ssbgvd ~layout ~jobz ~uplo ~n ~ka ~kb ~ab ~ldab ~bb ~ldbb ~w ~z ~ldz =
-  lapacke_ssbgvd
-    layout
-    jobz
-    uplo
-    n
-    ka
-    kb
-    (CI.cptr ab)
-    ldab
-    (CI.cptr bb)
-    ldbb
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let ssbgvd
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ka
+    ~kb
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~bb:(CI.CPointer bb)
+    ~ldbb
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_ssbgvd layout jobz uplo n ka kb ab ldab bb ldbb w z ldz
 
 
-let dsbgvd ~layout ~jobz ~uplo ~n ~ka ~kb ~ab ~ldab ~bb ~ldbb ~w ~z ~ldz =
-  lapacke_dsbgvd
-    layout
-    jobz
-    uplo
-    n
-    ka
-    kb
-    (CI.cptr ab)
-    ldab
-    (CI.cptr bb)
-    ldbb
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let dsbgvd
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ka
+    ~kb
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~bb:(CI.CPointer bb)
+    ~ldbb
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_dsbgvd layout jobz uplo n ka kb ab ldab bb ldbb w z ldz
 
 
 let ssbgvx
@@ -23659,22 +24265,22 @@ let ssbgvx
     ~n
     ~ka
     ~kb
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~bb
+    ~bb:(CI.CPointer bb)
     ~ldbb
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
   lapacke_ssbgvx
     layout
@@ -23684,22 +24290,22 @@ let ssbgvx
     n
     ka
     kb
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr bb)
+    bb
     ldbb
-    (CI.cptr q)
+    q
     ldq
     vl
     vu
     il
     iu
     abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
+    m
+    w
+    z
     ldz
-    (CI.cptr ifail)
+    ifail
 
 
 let dsbgvx
@@ -23710,22 +24316,22 @@ let dsbgvx
     ~n
     ~ka
     ~kb
-    ~ab
+    ~ab:(CI.CPointer ab)
     ~ldab
-    ~bb
+    ~bb:(CI.CPointer bb)
     ~ldbb
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
   lapacke_dsbgvx
     layout
@@ -23735,196 +24341,296 @@ let dsbgvx
     n
     ka
     kb
-    (CI.cptr ab)
+    ab
     ldab
-    (CI.cptr bb)
+    bb
     ldbb
-    (CI.cptr q)
+    q
     ldq
     vl
     vu
     il
     iu
     abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
+    m
+    w
+    z
     ldz
-    (CI.cptr ifail)
+    ifail
 
 
-let ssbtrd ~layout ~vect ~uplo ~n ~kd ~ab ~ldab ~d ~e ~q ~ldq =
-  lapacke_ssbtrd
-    layout
-    vect
-    uplo
-    n
-    kd
-    (CI.cptr ab)
-    ldab
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr q)
-    ldq
+let ssbtrd
+    ~layout
+    ~vect
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~q:(CI.CPointer q)
+    ~ldq
+  =
+  lapacke_ssbtrd layout vect uplo n kd ab ldab d e q ldq
 
 
-let dsbtrd ~layout ~vect ~uplo ~n ~kd ~ab ~ldab ~d ~e ~q ~ldq =
-  lapacke_dsbtrd
-    layout
-    vect
-    uplo
-    n
-    kd
-    (CI.cptr ab)
-    ldab
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr q)
-    ldq
+let dsbtrd
+    ~layout
+    ~vect
+    ~uplo
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~q:(CI.CPointer q)
+    ~ldq
+  =
+  lapacke_dsbtrd layout vect uplo n kd ab ldab d e q ldq
 
 
-let ssfrk ~layout ~transr ~uplo ~trans ~n ~k ~alpha ~a ~lda ~beta ~c =
-  lapacke_ssfrk layout transr uplo trans n k alpha (CI.cptr a) lda beta (CI.cptr c)
+let ssfrk
+    ~layout
+    ~transr
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~beta
+    ~c:(CI.CPointer c)
+  =
+  lapacke_ssfrk layout transr uplo trans n k alpha a lda beta c
 
 
-let dsfrk ~layout ~transr ~uplo ~trans ~n ~k ~alpha ~a ~lda ~beta ~c =
-  lapacke_dsfrk layout transr uplo trans n k alpha (CI.cptr a) lda beta (CI.cptr c)
+let dsfrk
+    ~layout
+    ~transr
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~beta
+    ~c:(CI.CPointer c)
+  =
+  lapacke_dsfrk layout transr uplo trans n k alpha a lda beta c
 
 
-let sspcon ~layout ~uplo ~n ~ap ~ipiv ~anorm ~rcond =
-  lapacke_sspcon layout uplo n (CI.cptr ap) (CI.cptr ipiv) anorm (CI.cptr rcond)
+let sspcon
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_sspcon layout uplo n ap ipiv anorm rcond
 
 
-let dspcon ~layout ~uplo ~n ~ap ~ipiv ~anorm ~rcond =
-  lapacke_dspcon layout uplo n (CI.cptr ap) (CI.cptr ipiv) anorm (CI.cptr rcond)
+let dspcon
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_dspcon layout uplo n ap ipiv anorm rcond
 
 
-let cspcon ~layout ~uplo ~n ~ap ~ipiv ~anorm ~rcond =
-  lapacke_cspcon layout uplo n (CI.cptr ap) (CI.cptr ipiv) anorm (CI.cptr rcond)
+let cspcon
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_cspcon layout uplo n ap ipiv anorm rcond
 
 
-let zspcon ~layout ~uplo ~n ~ap ~ipiv ~anorm ~rcond =
-  lapacke_zspcon layout uplo n (CI.cptr ap) (CI.cptr ipiv) anorm (CI.cptr rcond)
+let zspcon
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_zspcon layout uplo n ap ipiv anorm rcond
 
 
-let sspev ~layout ~jobz ~uplo ~n ~ap ~w ~z ~ldz =
-  lapacke_sspev layout jobz uplo n (CI.cptr ap) (CI.cptr w) (CI.cptr z) ldz
+let sspev
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_sspev layout jobz uplo n ap w z ldz
 
 
-let dspev ~layout ~jobz ~uplo ~n ~ap ~w ~z ~ldz =
-  lapacke_dspev layout jobz uplo n (CI.cptr ap) (CI.cptr w) (CI.cptr z) ldz
+let dspev
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_dspev layout jobz uplo n ap w z ldz
 
 
-let sspevd ~layout ~jobz ~uplo ~n ~ap ~w ~z ~ldz =
-  lapacke_sspevd layout jobz uplo n (CI.cptr ap) (CI.cptr w) (CI.cptr z) ldz
+let sspevd
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_sspevd layout jobz uplo n ap w z ldz
 
 
-let dspevd ~layout ~jobz ~uplo ~n ~ap ~w ~z ~ldz =
-  lapacke_dspevd layout jobz uplo n (CI.cptr ap) (CI.cptr w) (CI.cptr z) ldz
+let dspevd
+    ~layout
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_dspevd layout jobz uplo n ap w z ldz
 
 
-let sspevx ~layout ~jobz ~range ~uplo ~n ~ap ~vl ~vu ~il ~iu ~abstol ~m ~w ~z ~ldz ~ifail =
-  lapacke_sspevx
-    layout
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr ap)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+let sspevx
+    ~layout
+    ~jobz
+    ~range
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifail:(CI.CPointer ifail)
+  =
+  lapacke_sspevx layout jobz range uplo n ap vl vu il iu abstol m w z ldz ifail
 
 
-let dspevx ~layout ~jobz ~range ~uplo ~n ~ap ~vl ~vu ~il ~iu ~abstol ~m ~w ~z ~ldz ~ifail =
-  lapacke_dspevx
-    layout
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr ap)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+let dspevx
+    ~layout
+    ~jobz
+    ~range
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifail:(CI.CPointer ifail)
+  =
+  lapacke_dspevx layout jobz range uplo n ap vl vu il iu abstol m w z ldz ifail
 
 
-let sspgst ~layout ~ityp ~uplo ~n ~ap ~bp =
-  lapacke_sspgst layout ityp uplo n (CI.cptr ap) (CI.cptr bp)
+let sspgst ~layout ~ityp ~uplo ~n ~ap:(CI.CPointer ap) ~bp:(CI.CPointer bp) =
+  lapacke_sspgst layout ityp uplo n ap bp
 
 
-let dspgst ~layout ~ityp ~uplo ~n ~ap ~bp =
-  lapacke_dspgst layout ityp uplo n (CI.cptr ap) (CI.cptr bp)
+let dspgst ~layout ~ityp ~uplo ~n ~ap:(CI.CPointer ap) ~bp:(CI.CPointer bp) =
+  lapacke_dspgst layout ityp uplo n ap bp
 
 
-let sspgv ~layout ~ityp ~jobz ~uplo ~n ~ap ~bp ~w ~z ~ldz =
-  lapacke_sspgv
-    layout
-    ityp
-    jobz
-    uplo
-    n
-    (CI.cptr ap)
-    (CI.cptr bp)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let sspgv
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~bp:(CI.CPointer bp)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_sspgv layout ityp jobz uplo n ap bp w z ldz
 
 
-let dspgv ~layout ~ityp ~jobz ~uplo ~n ~ap ~bp ~w ~z ~ldz =
-  lapacke_dspgv
-    layout
-    ityp
-    jobz
-    uplo
-    n
-    (CI.cptr ap)
-    (CI.cptr bp)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let dspgv
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~bp:(CI.CPointer bp)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_dspgv layout ityp jobz uplo n ap bp w z ldz
 
 
-let sspgvd ~layout ~ityp ~jobz ~uplo ~n ~ap ~bp ~w ~z ~ldz =
-  lapacke_sspgvd
-    layout
-    ityp
-    jobz
-    uplo
-    n
-    (CI.cptr ap)
-    (CI.cptr bp)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let sspgvd
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~bp:(CI.CPointer bp)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_sspgvd layout ityp jobz uplo n ap bp w z ldz
 
 
-let dspgvd ~layout ~ityp ~jobz ~uplo ~n ~ap ~bp ~w ~z ~ldz =
-  lapacke_dspgvd
-    layout
-    ityp
-    jobz
-    uplo
-    n
-    (CI.cptr ap)
-    (CI.cptr bp)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
+let dspgvd
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~bp:(CI.CPointer bp)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+  =
+  lapacke_dspgvd layout ityp jobz uplo n ap bp w z ldz
 
 
 let sspgvx
@@ -23934,38 +24640,20 @@ let sspgvx
     ~range
     ~uplo
     ~n
-    ~ap
-    ~bp
+    ~ap:(CI.CPointer ap)
+    ~bp:(CI.CPointer bp)
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
-  lapacke_sspgvx
-    layout
-    ityp
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr ap)
-    (CI.cptr bp)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+  lapacke_sspgvx layout ityp jobz range uplo n ap bp vl vu il iu abstol m w z ldz ifail
 
 
 let dspgvx
@@ -23975,448 +24663,540 @@ let dspgvx
     ~range
     ~uplo
     ~n
-    ~ap
-    ~bp
+    ~ap:(CI.CPointer ap)
+    ~bp:(CI.CPointer bp)
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
-  lapacke_dspgvx
-    layout
-    ityp
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr ap)
-    (CI.cptr bp)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
-
-
-let ssprfs ~layout ~uplo ~n ~nrhs ~ap ~afp ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_ssprfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let dsprfs ~layout ~uplo ~n ~nrhs ~ap ~afp ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_dsprfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let csprfs ~layout ~uplo ~n ~nrhs ~ap ~afp ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_csprfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let zsprfs ~layout ~uplo ~n ~nrhs ~ap ~afp ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_zsprfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let sspsv ~layout ~uplo ~n ~nrhs ~ap ~ipiv ~b ~ldb =
-  lapacke_sspsv layout uplo n nrhs (CI.cptr ap) (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let dspsv ~layout ~uplo ~n ~nrhs ~ap ~ipiv ~b ~ldb =
-  lapacke_dspsv layout uplo n nrhs (CI.cptr ap) (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let cspsv ~layout ~uplo ~n ~nrhs ~ap ~ipiv ~b ~ldb =
-  lapacke_cspsv layout uplo n nrhs (CI.cptr ap) (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let zspsv ~layout ~uplo ~n ~nrhs ~ap ~ipiv ~b ~ldb =
-  lapacke_zspsv layout uplo n nrhs (CI.cptr ap) (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let sspsvx ~layout ~fact ~uplo ~n ~nrhs ~ap ~afp ~ipiv ~b ~ldb ~x ~ldx ~rcond ~ferr ~berr =
-  lapacke_sspsvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let dspsvx ~layout ~fact ~uplo ~n ~nrhs ~ap ~afp ~ipiv ~b ~ldb ~x ~ldx ~rcond ~ferr ~berr =
-  lapacke_dspsvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let cspsvx ~layout ~fact ~uplo ~n ~nrhs ~ap ~afp ~ipiv ~b ~ldb ~x ~ldx ~rcond ~ferr ~berr =
-  lapacke_cspsvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let zspsvx ~layout ~fact ~uplo ~n ~nrhs ~ap ~afp ~ipiv ~b ~ldb ~x ~ldx ~rcond ~ferr ~berr =
-  lapacke_zspsvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr afp)
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let ssptrd ~layout ~uplo ~n ~ap ~d ~e ~tau =
-  lapacke_ssptrd layout uplo n (CI.cptr ap) (CI.cptr d) (CI.cptr e) (CI.cptr tau)
-
-
-let dsptrd ~layout ~uplo ~n ~ap ~d ~e ~tau =
-  lapacke_dsptrd layout uplo n (CI.cptr ap) (CI.cptr d) (CI.cptr e) (CI.cptr tau)
-
-
-let ssptrf ~layout ~uplo ~n ~ap ~ipiv =
-  lapacke_ssptrf layout uplo n (CI.cptr ap) (CI.cptr ipiv)
-
-
-let dsptrf ~layout ~uplo ~n ~ap ~ipiv =
-  lapacke_dsptrf layout uplo n (CI.cptr ap) (CI.cptr ipiv)
-
-
-let csptrf ~layout ~uplo ~n ~ap ~ipiv =
-  lapacke_csptrf layout uplo n (CI.cptr ap) (CI.cptr ipiv)
-
-
-let zsptrf ~layout ~uplo ~n ~ap ~ipiv =
-  lapacke_zsptrf layout uplo n (CI.cptr ap) (CI.cptr ipiv)
-
-
-let ssptri ~layout ~uplo ~n ~ap ~ipiv =
-  lapacke_ssptri layout uplo n (CI.cptr ap) (CI.cptr ipiv)
-
-
-let dsptri ~layout ~uplo ~n ~ap ~ipiv =
-  lapacke_dsptri layout uplo n (CI.cptr ap) (CI.cptr ipiv)
-
-
-let csptri ~layout ~uplo ~n ~ap ~ipiv =
-  lapacke_csptri layout uplo n (CI.cptr ap) (CI.cptr ipiv)
-
-
-let zsptri ~layout ~uplo ~n ~ap ~ipiv =
-  lapacke_zsptri layout uplo n (CI.cptr ap) (CI.cptr ipiv)
-
-
-let ssptrs ~layout ~uplo ~n ~nrhs ~ap ~ipiv ~b ~ldb =
-  lapacke_ssptrs layout uplo n nrhs (CI.cptr ap) (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let dsptrs ~layout ~uplo ~n ~nrhs ~ap ~ipiv ~b ~ldb =
-  lapacke_dsptrs layout uplo n nrhs (CI.cptr ap) (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let csptrs ~layout ~uplo ~n ~nrhs ~ap ~ipiv ~b ~ldb =
-  lapacke_csptrs layout uplo n nrhs (CI.cptr ap) (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let zsptrs ~layout ~uplo ~n ~nrhs ~ap ~ipiv ~b ~ldb =
-  lapacke_zsptrs layout uplo n nrhs (CI.cptr ap) (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let sstebz ~range ~order ~n ~vl ~vu ~il ~iu ~abstol ~d ~e ~m ~nsplit ~w ~iblock ~isplit =
-  lapacke_sstebz
-    range
-    order
-    n
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr m)
-    (CI.cptr nsplit)
-    (CI.cptr w)
-    (CI.cptr iblock)
-    (CI.cptr isplit)
-
-
-let dstebz ~range ~order ~n ~vl ~vu ~il ~iu ~abstol ~d ~e ~m ~nsplit ~w ~iblock ~isplit =
-  lapacke_dstebz
-    range
-    order
-    n
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr d)
-    (CI.cptr e)
-    (CI.cptr m)
-    (CI.cptr nsplit)
-    (CI.cptr w)
-    (CI.cptr iblock)
-    (CI.cptr isplit)
-
-
-let sstedc ~layout ~compz ~n ~d ~e ~z ~ldz =
-  lapacke_sstedc layout compz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
-
-
-let dstedc ~layout ~compz ~n ~d ~e ~z ~ldz =
-  lapacke_dstedc layout compz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
-
-
-let cstedc ~layout ~compz ~n ~d ~e ~z ~ldz =
-  lapacke_cstedc layout compz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
-
-
-let zstedc ~layout ~compz ~n ~d ~e ~z ~ldz =
-  lapacke_zstedc layout compz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
-
-
-let sstegr ~layout ~jobz ~range ~n ~d ~e ~vl ~vu ~il ~iu ~abstol ~m ~w ~z ~ldz ~isuppz =
-  lapacke_sstegr
-    layout
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr isuppz)
-
-
-let dstegr ~layout ~jobz ~range ~n ~d ~e ~vl ~vu ~il ~iu ~abstol ~m ~w ~z ~ldz ~isuppz =
-  lapacke_dstegr
-    layout
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr isuppz)
-
-
-let cstegr ~layout ~jobz ~range ~n ~d ~e ~vl ~vu ~il ~iu ~abstol ~m ~w ~z ~ldz ~isuppz =
-  lapacke_cstegr
-    layout
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr isuppz)
-
-
-let zstegr ~layout ~jobz ~range ~n ~d ~e ~vl ~vu ~il ~iu ~abstol ~m ~w ~z ~ldz ~isuppz =
-  lapacke_zstegr
-    layout
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr isuppz)
-
-
-let sstein ~layout ~n ~d ~e ~m ~w ~iblock ~isplit ~z ~ldz ~ifailv =
-  lapacke_sstein
-    layout
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    m
-    (CI.cptr w)
-    (CI.cptr iblock)
-    (CI.cptr isplit)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifailv)
-
-
-let dstein ~layout ~n ~d ~e ~m ~w ~iblock ~isplit ~z ~ldz ~ifailv =
-  lapacke_dstein
-    layout
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    m
-    (CI.cptr w)
-    (CI.cptr iblock)
-    (CI.cptr isplit)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifailv)
-
-
-let cstein ~layout ~n ~d ~e ~m ~w ~iblock ~isplit ~z ~ldz ~ifailv =
-  lapacke_cstein
-    layout
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    m
-    (CI.cptr w)
-    (CI.cptr iblock)
-    (CI.cptr isplit)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifailv)
-
-
-let zstein ~layout ~n ~d ~e ~m ~w ~iblock ~isplit ~z ~ldz ~ifailv =
-  lapacke_zstein
-    layout
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    m
-    (CI.cptr w)
-    (CI.cptr iblock)
-    (CI.cptr isplit)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifailv)
+  lapacke_dspgvx layout ityp jobz range uplo n ap bp vl vu il iu abstol m w z ldz ifail
+
+
+let ssprfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_ssprfs layout uplo n nrhs ap afp ipiv b ldb x ldx ferr berr
+
+
+let dsprfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_dsprfs layout uplo n nrhs ap afp ipiv b ldb x ldx ferr berr
+
+
+let csprfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_csprfs layout uplo n nrhs ap afp ipiv b ldb x ldx ferr berr
+
+
+let zsprfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_zsprfs layout uplo n nrhs ap afp ipiv b ldb x ldx ferr berr
+
+
+let sspsv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_sspsv layout uplo n nrhs ap ipiv b ldb
+
+
+let dspsv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dspsv layout uplo n nrhs ap ipiv b ldb
+
+
+let cspsv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_cspsv layout uplo n nrhs ap ipiv b ldb
+
+
+let zspsv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zspsv layout uplo n nrhs ap ipiv b ldb
+
+
+let sspsvx
+    ~layout
+    ~fact
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_sspsvx layout fact uplo n nrhs ap afp ipiv b ldb x ldx rcond ferr berr
+
+
+let dspsvx
+    ~layout
+    ~fact
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_dspsvx layout fact uplo n nrhs ap afp ipiv b ldb x ldx rcond ferr berr
+
+
+let cspsvx
+    ~layout
+    ~fact
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_cspsvx layout fact uplo n nrhs ap afp ipiv b ldb x ldx rcond ferr berr
+
+
+let zspsvx
+    ~layout
+    ~fact
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~afp:(CI.CPointer afp)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_zspsvx layout fact uplo n nrhs ap afp ipiv b ldb x ldx rcond ferr berr
+
+
+let ssptrd
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~tau:(CI.CPointer tau)
+  =
+  lapacke_ssptrd layout uplo n ap d e tau
+
+
+let dsptrd
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~tau:(CI.CPointer tau)
+  =
+  lapacke_dsptrd layout uplo n ap d e tau
+
+
+let ssptrf ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~ipiv:(CI.CPointer ipiv) =
+  lapacke_ssptrf layout uplo n ap ipiv
+
+
+let dsptrf ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~ipiv:(CI.CPointer ipiv) =
+  lapacke_dsptrf layout uplo n ap ipiv
+
+
+let csptrf ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~ipiv:(CI.CPointer ipiv) =
+  lapacke_csptrf layout uplo n ap ipiv
+
+
+let zsptrf ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zsptrf layout uplo n ap ipiv
+
+
+let ssptri ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~ipiv:(CI.CPointer ipiv) =
+  lapacke_ssptri layout uplo n ap ipiv
+
+
+let dsptri ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~ipiv:(CI.CPointer ipiv) =
+  lapacke_dsptri layout uplo n ap ipiv
+
+
+let csptri ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~ipiv:(CI.CPointer ipiv) =
+  lapacke_csptri layout uplo n ap ipiv
+
+
+let zsptri ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zsptri layout uplo n ap ipiv
+
+
+let ssptrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ssptrs layout uplo n nrhs ap ipiv b ldb
+
+
+let dsptrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dsptrs layout uplo n nrhs ap ipiv b ldb
+
+
+let csptrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_csptrs layout uplo n nrhs ap ipiv b ldb
+
+
+let zsptrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zsptrs layout uplo n nrhs ap ipiv b ldb
+
+
+let sstebz
+    ~range
+    ~order
+    ~n
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~m:(CI.CPointer m)
+    ~nsplit:(CI.CPointer nsplit)
+    ~w:(CI.CPointer w)
+    ~iblock:(CI.CPointer iblock)
+    ~isplit:(CI.CPointer isplit)
+  =
+  lapacke_sstebz range order n vl vu il iu abstol d e m nsplit w iblock isplit
+
+
+let dstebz
+    ~range
+    ~order
+    ~n
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~m:(CI.CPointer m)
+    ~nsplit:(CI.CPointer nsplit)
+    ~w:(CI.CPointer w)
+    ~iblock:(CI.CPointer iblock)
+    ~isplit:(CI.CPointer isplit)
+  =
+  lapacke_dstebz range order n vl vu il iu abstol d e m nsplit w iblock isplit
+
+
+let sstedc ~layout ~compz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz
+  =
+  lapacke_sstedc layout compz n d e z ldz
+
+
+let dstedc ~layout ~compz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz
+  =
+  lapacke_dstedc layout compz n d e z ldz
+
+
+let cstedc ~layout ~compz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz
+  =
+  lapacke_cstedc layout compz n d e z ldz
+
+
+let zstedc ~layout ~compz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz
+  =
+  lapacke_zstedc layout compz n d e z ldz
+
+
+let sstegr
+    ~layout
+    ~jobz
+    ~range
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~isuppz:(CI.CPointer isuppz)
+  =
+  lapacke_sstegr layout jobz range n d e vl vu il iu abstol m w z ldz isuppz
+
+
+let dstegr
+    ~layout
+    ~jobz
+    ~range
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~isuppz:(CI.CPointer isuppz)
+  =
+  lapacke_dstegr layout jobz range n d e vl vu il iu abstol m w z ldz isuppz
+
+
+let cstegr
+    ~layout
+    ~jobz
+    ~range
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~isuppz:(CI.CPointer isuppz)
+  =
+  lapacke_cstegr layout jobz range n d e vl vu il iu abstol m w z ldz isuppz
+
+
+let zstegr
+    ~layout
+    ~jobz
+    ~range
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~isuppz:(CI.CPointer isuppz)
+  =
+  lapacke_zstegr layout jobz range n d e vl vu il iu abstol m w z ldz isuppz
+
+
+let sstein
+    ~layout
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~m
+    ~w:(CI.CPointer w)
+    ~iblock:(CI.CPointer iblock)
+    ~isplit:(CI.CPointer isplit)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifailv:(CI.CPointer ifailv)
+  =
+  lapacke_sstein layout n d e m w iblock isplit z ldz ifailv
+
+
+let dstein
+    ~layout
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~m
+    ~w:(CI.CPointer w)
+    ~iblock:(CI.CPointer iblock)
+    ~isplit:(CI.CPointer isplit)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifailv:(CI.CPointer ifailv)
+  =
+  lapacke_dstein layout n d e m w iblock isplit z ldz ifailv
+
+
+let cstein
+    ~layout
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~m
+    ~w:(CI.CPointer w)
+    ~iblock:(CI.CPointer iblock)
+    ~isplit:(CI.CPointer isplit)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifailv:(CI.CPointer ifailv)
+  =
+  lapacke_cstein layout n d e m w iblock isplit z ldz ifailv
+
+
+let zstein
+    ~layout
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~m
+    ~w:(CI.CPointer w)
+    ~iblock:(CI.CPointer iblock)
+    ~isplit:(CI.CPointer isplit)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifailv:(CI.CPointer ifailv)
+  =
+  lapacke_zstein layout n d e m w iblock isplit z ldz ifailv
 
 
 let sstemr
@@ -24424,38 +25204,21 @@ let sstemr
     ~jobz
     ~range
     ~n
-    ~d
-    ~e
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
     ~vl
     ~vu
     ~il
     ~iu
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
     ~nzc
-    ~isuppz
-    ~tryrac
+    ~isuppz:(CI.CPointer isuppz)
+    ~tryrac:(CI.CPointer tryrac)
   =
-  lapacke_sstemr
-    layout
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    nzc
-    (CI.cptr isuppz)
-    (CI.cptr tryrac)
+  lapacke_sstemr layout jobz range n d e vl vu il iu m w z ldz nzc isuppz tryrac
 
 
 let dstemr
@@ -24463,38 +25226,21 @@ let dstemr
     ~jobz
     ~range
     ~n
-    ~d
-    ~e
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
     ~vl
     ~vu
     ~il
     ~iu
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
     ~nzc
-    ~isuppz
-    ~tryrac
+    ~isuppz:(CI.CPointer isuppz)
+    ~tryrac:(CI.CPointer tryrac)
   =
-  lapacke_dstemr
-    layout
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    nzc
-    (CI.cptr isuppz)
-    (CI.cptr tryrac)
+  lapacke_dstemr layout jobz range n d e vl vu il iu m w z ldz nzc isuppz tryrac
 
 
 let cstemr
@@ -24502,38 +25248,21 @@ let cstemr
     ~jobz
     ~range
     ~n
-    ~d
-    ~e
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
     ~vl
     ~vu
     ~il
     ~iu
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
     ~nzc
-    ~isuppz
-    ~tryrac
+    ~isuppz:(CI.CPointer isuppz)
+    ~tryrac:(CI.CPointer tryrac)
   =
-  lapacke_cstemr
-    layout
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    nzc
-    (CI.cptr isuppz)
-    (CI.cptr tryrac)
+  lapacke_cstemr layout jobz range n d e vl vu il iu m w z ldz nzc isuppz tryrac
 
 
 let zstemr
@@ -24541,202 +25270,265 @@ let zstemr
     ~jobz
     ~range
     ~n
-    ~d
-    ~e
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
     ~vl
     ~vu
     ~il
     ~iu
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
     ~nzc
-    ~isuppz
-    ~tryrac
+    ~isuppz:(CI.CPointer isuppz)
+    ~tryrac:(CI.CPointer tryrac)
   =
-  lapacke_zstemr
-    layout
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    nzc
-    (CI.cptr isuppz)
-    (CI.cptr tryrac)
+  lapacke_zstemr layout jobz range n d e vl vu il iu m w z ldz nzc isuppz tryrac
 
 
-let ssteqr ~layout ~compz ~n ~d ~e ~z ~ldz =
-  lapacke_ssteqr layout compz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
+let ssteqr ~layout ~compz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz
+  =
+  lapacke_ssteqr layout compz n d e z ldz
 
 
-let dsteqr ~layout ~compz ~n ~d ~e ~z ~ldz =
-  lapacke_dsteqr layout compz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
+let dsteqr ~layout ~compz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz
+  =
+  lapacke_dsteqr layout compz n d e z ldz
 
 
-let csteqr ~layout ~compz ~n ~d ~e ~z ~ldz =
-  lapacke_csteqr layout compz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
+let csteqr ~layout ~compz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz
+  =
+  lapacke_csteqr layout compz n d e z ldz
 
 
-let zsteqr ~layout ~compz ~n ~d ~e ~z ~ldz =
-  lapacke_zsteqr layout compz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
+let zsteqr ~layout ~compz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz
+  =
+  lapacke_zsteqr layout compz n d e z ldz
 
 
-let ssterf ~n ~d ~e = lapacke_ssterf n (CI.cptr d) (CI.cptr e)
+let ssterf ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) = lapacke_ssterf n d e
 
-let dsterf ~n ~d ~e = lapacke_dsterf n (CI.cptr d) (CI.cptr e)
+let dsterf ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) = lapacke_dsterf n d e
 
-let sstev ~layout ~jobz ~n ~d ~e ~z ~ldz =
-  lapacke_sstev layout jobz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
-
-
-let dstev ~layout ~jobz ~n ~d ~e ~z ~ldz =
-  lapacke_dstev layout jobz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
+let sstev ~layout ~jobz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz =
+  lapacke_sstev layout jobz n d e z ldz
 
 
-let sstevd ~layout ~jobz ~n ~d ~e ~z ~ldz =
-  lapacke_sstevd layout jobz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
+let dstev ~layout ~jobz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz =
+  lapacke_dstev layout jobz n d e z ldz
 
 
-let dstevd ~layout ~jobz ~n ~d ~e ~z ~ldz =
-  lapacke_dstevd layout jobz n (CI.cptr d) (CI.cptr e) (CI.cptr z) ldz
+let sstevd ~layout ~jobz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz =
+  lapacke_sstevd layout jobz n d e z ldz
 
 
-let sstevr ~layout ~jobz ~range ~n ~d ~e ~vl ~vu ~il ~iu ~abstol ~m ~w ~z ~ldz ~isuppz =
-  lapacke_sstevr
-    layout
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr isuppz)
+let dstevd ~layout ~jobz ~n ~d:(CI.CPointer d) ~e:(CI.CPointer e) ~z:(CI.CPointer z) ~ldz =
+  lapacke_dstevd layout jobz n d e z ldz
 
 
-let dstevr ~layout ~jobz ~range ~n ~d ~e ~vl ~vu ~il ~iu ~abstol ~m ~w ~z ~ldz ~isuppz =
-  lapacke_dstevr
-    layout
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr isuppz)
+let sstevr
+    ~layout
+    ~jobz
+    ~range
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~isuppz:(CI.CPointer isuppz)
+  =
+  lapacke_sstevr layout jobz range n d e vl vu il iu abstol m w z ldz isuppz
 
 
-let sstevx ~layout ~jobz ~range ~n ~d ~e ~vl ~vu ~il ~iu ~abstol ~m ~w ~z ~ldz ~ifail =
-  lapacke_sstevx
-    layout
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+let dstevr
+    ~layout
+    ~jobz
+    ~range
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~isuppz:(CI.CPointer isuppz)
+  =
+  lapacke_dstevr layout jobz range n d e vl vu il iu abstol m w z ldz isuppz
 
 
-let dstevx ~layout ~jobz ~range ~n ~d ~e ~vl ~vu ~il ~iu ~abstol ~m ~w ~z ~ldz ~ifail =
-  lapacke_dstevx
-    layout
-    jobz
-    range
-    n
-    (CI.cptr d)
-    (CI.cptr e)
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+let sstevx
+    ~layout
+    ~jobz
+    ~range
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifail:(CI.CPointer ifail)
+  =
+  lapacke_sstevx layout jobz range n d e vl vu il iu abstol m w z ldz ifail
 
 
-let ssycon ~layout ~uplo ~n ~a ~lda ~ipiv ~anorm ~rcond =
-  lapacke_ssycon layout uplo n (CI.cptr a) lda (CI.cptr ipiv) anorm (CI.cptr rcond)
+let dstevx
+    ~layout
+    ~jobz
+    ~range
+    ~n
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~vl
+    ~vu
+    ~il
+    ~iu
+    ~abstol
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifail:(CI.CPointer ifail)
+  =
+  lapacke_dstevx layout jobz range n d e vl vu il iu abstol m w z ldz ifail
 
 
-let dsycon ~layout ~uplo ~n ~a ~lda ~ipiv ~anorm ~rcond =
-  lapacke_dsycon layout uplo n (CI.cptr a) lda (CI.cptr ipiv) anorm (CI.cptr rcond)
+let ssycon
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_ssycon layout uplo n a lda ipiv anorm rcond
 
 
-let csycon ~layout ~uplo ~n ~a ~lda ~ipiv ~anorm ~rcond =
-  lapacke_csycon layout uplo n (CI.cptr a) lda (CI.cptr ipiv) anorm (CI.cptr rcond)
+let dsycon
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_dsycon layout uplo n a lda ipiv anorm rcond
 
 
-let zsycon ~layout ~uplo ~n ~a ~lda ~ipiv ~anorm ~rcond =
-  lapacke_zsycon layout uplo n (CI.cptr a) lda (CI.cptr ipiv) anorm (CI.cptr rcond)
+let csycon
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_csycon layout uplo n a lda ipiv anorm rcond
 
 
-let ssyequb ~layout ~uplo ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_ssyequb layout uplo n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let zsycon
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~anorm
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_zsycon layout uplo n a lda ipiv anorm rcond
 
 
-let dsyequb ~layout ~uplo ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_dsyequb layout uplo n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let ssyequb
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_ssyequb layout uplo n a lda s scond amax
 
 
-let csyequb ~layout ~uplo ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_csyequb layout uplo n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let dsyequb
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_dsyequb layout uplo n a lda s scond amax
 
 
-let zsyequb ~layout ~uplo ~n ~a ~lda ~s ~scond ~amax =
-  lapacke_zsyequb layout uplo n (CI.cptr a) lda (CI.cptr s) (CI.cptr scond) (CI.cptr amax)
+let csyequb
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_csyequb layout uplo n a lda s scond amax
 
 
-let ssyev ~layout ~jobz ~uplo ~n ~a ~lda ~w =
-  lapacke_ssyev layout jobz uplo n (CI.cptr a) lda (CI.cptr w)
+let zsyequb
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~s:(CI.CPointer s)
+    ~scond:(CI.CPointer scond)
+    ~amax:(CI.CPointer amax)
+  =
+  lapacke_zsyequb layout uplo n a lda s scond amax
 
 
-let dsyev ~layout ~jobz ~uplo ~n ~a ~lda ~w =
-  lapacke_dsyev layout jobz uplo n (CI.cptr a) lda (CI.cptr w)
+let ssyev ~layout ~jobz ~uplo ~n ~a:(CI.CPointer a) ~lda ~w:(CI.CPointer w) =
+  lapacke_ssyev layout jobz uplo n a lda w
 
 
-let ssyevd ~layout ~jobz ~uplo ~n ~a ~lda ~w =
-  lapacke_ssyevd layout jobz uplo n (CI.cptr a) lda (CI.cptr w)
+let dsyev ~layout ~jobz ~uplo ~n ~a:(CI.CPointer a) ~lda ~w:(CI.CPointer w) =
+  lapacke_dsyev layout jobz uplo n a lda w
 
 
-let dsyevd ~layout ~jobz ~uplo ~n ~a ~lda ~w =
-  lapacke_dsyevd layout jobz uplo n (CI.cptr a) lda (CI.cptr w)
+let ssyevd ~layout ~jobz ~uplo ~n ~a:(CI.CPointer a) ~lda ~w:(CI.CPointer w) =
+  lapacke_ssyevd layout jobz uplo n a lda w
+
+
+let dsyevd ~layout ~jobz ~uplo ~n ~a:(CI.CPointer a) ~lda ~w:(CI.CPointer w) =
+  lapacke_dsyevd layout jobz uplo n a lda w
 
 
 let ssyevr
@@ -24745,37 +25537,20 @@ let ssyevr
     ~range
     ~uplo
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~isuppz
+    ~isuppz:(CI.CPointer isuppz)
   =
-  lapacke_ssyevr
-    layout
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr a)
-    lda
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr isuppz)
+  lapacke_ssyevr layout jobz range uplo n a lda vl vu il iu abstol m w z ldz isuppz
 
 
 let dsyevr
@@ -24784,37 +25559,20 @@ let dsyevr
     ~range
     ~uplo
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~isuppz
+    ~isuppz:(CI.CPointer isuppz)
   =
-  lapacke_dsyevr
-    layout
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr a)
-    lda
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr isuppz)
+  lapacke_dsyevr layout jobz range uplo n a lda vl vu il iu abstol m w z ldz isuppz
 
 
 let ssyevx
@@ -24823,37 +25581,20 @@ let ssyevx
     ~range
     ~uplo
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
-  lapacke_ssyevx
-    layout
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr a)
-    lda
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+  lapacke_ssyevx layout jobz range uplo n a lda vl vu il iu abstol m w z ldz ifail
 
 
 let dsyevx
@@ -24862,61 +25603,88 @@ let dsyevx
     ~range
     ~uplo
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
-  lapacke_dsyevx
-    layout
-    jobz
-    range
-    uplo
-    n
-    (CI.cptr a)
-    lda
-    vl
-    vu
-    il
-    iu
-    abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifail)
+  lapacke_dsyevx layout jobz range uplo n a lda vl vu il iu abstol m w z ldz ifail
 
 
-let ssygst ~layout ~ityp ~uplo ~n ~a ~lda ~b ~ldb =
-  lapacke_ssygst layout ityp uplo n (CI.cptr a) lda (CI.cptr b) ldb
+let ssygst ~layout ~ityp ~uplo ~n ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_ssygst layout ityp uplo n a lda b ldb
 
 
-let dsygst ~layout ~ityp ~uplo ~n ~a ~lda ~b ~ldb =
-  lapacke_dsygst layout ityp uplo n (CI.cptr a) lda (CI.cptr b) ldb
+let dsygst ~layout ~ityp ~uplo ~n ~a:(CI.CPointer a) ~lda ~b:(CI.CPointer b) ~ldb =
+  lapacke_dsygst layout ityp uplo n a lda b ldb
 
 
-let ssygv ~layout ~ityp ~jobz ~uplo ~n ~a ~lda ~b ~ldb ~w =
-  lapacke_ssygv layout ityp jobz uplo n (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr w)
+let ssygv
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~w:(CI.CPointer w)
+  =
+  lapacke_ssygv layout ityp jobz uplo n a lda b ldb w
 
 
-let dsygv ~layout ~ityp ~jobz ~uplo ~n ~a ~lda ~b ~ldb ~w =
-  lapacke_dsygv layout ityp jobz uplo n (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr w)
+let dsygv
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~w:(CI.CPointer w)
+  =
+  lapacke_dsygv layout ityp jobz uplo n a lda b ldb w
 
 
-let ssygvd ~layout ~ityp ~jobz ~uplo ~n ~a ~lda ~b ~ldb ~w =
-  lapacke_ssygvd layout ityp jobz uplo n (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr w)
+let ssygvd
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~w:(CI.CPointer w)
+  =
+  lapacke_ssygvd layout ityp jobz uplo n a lda b ldb w
 
 
-let dsygvd ~layout ~ityp ~jobz ~uplo ~n ~a ~lda ~b ~ldb ~w =
-  lapacke_dsygvd layout ityp jobz uplo n (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr w)
+let dsygvd
+    ~layout
+    ~ityp
+    ~jobz
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~w:(CI.CPointer w)
+  =
+  lapacke_dsygvd layout ityp jobz uplo n a lda b ldb w
 
 
 let ssygvx
@@ -24926,20 +25694,20 @@ let ssygvx
     ~range
     ~uplo
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
   lapacke_ssygvx
     layout
@@ -24948,20 +25716,20 @@ let ssygvx
     range
     uplo
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
     vl
     vu
     il
     iu
     abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
+    m
+    w
+    z
     ldz
-    (CI.cptr ifail)
+    ifail
 
 
 let dsygvx
@@ -24971,20 +25739,20 @@ let dsygvx
     ~range
     ~uplo
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
     ~vl
     ~vu
     ~il
     ~iu
     ~abstol
-    ~m
-    ~w
-    ~z
+    ~m:(CI.CPointer m)
+    ~w:(CI.CPointer w)
+    ~z:(CI.CPointer z)
     ~ldz
-    ~ifail
+    ~ifail:(CI.CPointer ifail)
   =
   lapacke_dsygvx
     layout
@@ -24993,112 +25761,156 @@ let dsygvx
     range
     uplo
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
     vl
     vu
     il
     iu
     abstol
-    (CI.cptr m)
-    (CI.cptr w)
-    (CI.cptr z)
+    m
+    w
+    z
     ldz
-    (CI.cptr ifail)
+    ifail
 
 
-let ssyrfs ~layout ~uplo ~n ~nrhs ~a ~lda ~af ~ldaf ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_ssyrfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let ssyrfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_ssyrfs layout uplo n nrhs a lda af ldaf ipiv b ldb x ldx ferr berr
 
 
-let dsyrfs ~layout ~uplo ~n ~nrhs ~a ~lda ~af ~ldaf ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_dsyrfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let dsyrfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_dsyrfs layout uplo n nrhs a lda af ldaf ipiv b ldb x ldx ferr berr
 
 
-let csyrfs ~layout ~uplo ~n ~nrhs ~a ~lda ~af ~ldaf ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_csyrfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let csyrfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_csyrfs layout uplo n nrhs a lda af ldaf ipiv b ldb x ldx ferr berr
 
 
-let zsyrfs ~layout ~uplo ~n ~nrhs ~a ~lda ~af ~ldaf ~ipiv ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_zsyrfs
-    layout
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+let zsyrfs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~af:(CI.CPointer af)
+    ~ldaf
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_zsyrfs layout uplo n nrhs a lda af ldaf ipiv b ldb x ldx ferr berr
 
 
-let ssysv ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_ssysv layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let ssysv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ssysv layout uplo n nrhs a lda ipiv b ldb
 
 
-let dsysv ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_dsysv layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let dsysv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dsysv layout uplo n nrhs a lda ipiv b ldb
 
 
-let csysv ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_csysv layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let csysv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_csysv layout uplo n nrhs a lda ipiv b ldb
 
 
-let zsysv ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_zsysv layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let zsysv
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zsysv layout uplo n nrhs a lda ipiv b ldb
 
 
 let ssysvx
@@ -25107,37 +25919,20 @@ let ssysvx
     ~uplo
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~ipiv
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_ssysvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_ssysvx layout fact uplo n nrhs a lda af ldaf ipiv b ldb x ldx rcond ferr berr
 
 
 let dsysvx
@@ -25146,37 +25941,20 @@ let dsysvx
     ~uplo
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~ipiv
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_dsysvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_dsysvx layout fact uplo n nrhs a lda af ldaf ipiv b ldb x ldx rcond ferr berr
 
 
 let csysvx
@@ -25185,37 +25963,20 @@ let csysvx
     ~uplo
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~ipiv
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_csysvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_csysvx layout fact uplo n nrhs a lda af ldaf ipiv b ldb x ldx rcond ferr berr
 
 
 let zsysvx
@@ -25224,413 +25985,606 @@ let zsysvx
     ~uplo
     ~n
     ~nrhs
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~af
+    ~af:(CI.CPointer af)
     ~ldaf
-    ~ipiv
-    ~b
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
     ~ldb
-    ~x
+    ~x:(CI.CPointer x)
     ~ldx
-    ~rcond
-    ~ferr
-    ~berr
+    ~rcond:(CI.CPointer rcond)
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
   =
-  lapacke_zsysvx
-    layout
-    fact
-    uplo
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr af)
-    ldaf
-    (CI.cptr ipiv)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr rcond)
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_zsysvx layout fact uplo n nrhs a lda af ldaf ipiv b ldb x ldx rcond ferr berr
 
 
-let ssytrd ~layout ~uplo ~n ~a ~lda ~d ~e ~tau =
-  lapacke_ssytrd layout uplo n (CI.cptr a) lda (CI.cptr d) (CI.cptr e) (CI.cptr tau)
-
-
-let dsytrd ~layout ~uplo ~n ~a ~lda ~d ~e ~tau =
-  lapacke_dsytrd layout uplo n (CI.cptr a) lda (CI.cptr d) (CI.cptr e) (CI.cptr tau)
-
-
-let ssytrf ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_ssytrf layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
-
-
-let dsytrf ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_dsytrf layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
-
-
-let csytrf ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_csytrf layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
-
-
-let zsytrf ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_zsytrf layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
-
-
-let ssytri ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_ssytri layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
-
-
-let dsytri ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_dsytri layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
-
-
-let csytri ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_csytri layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
-
-
-let zsytri ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_zsytri layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
-
-
-let ssytrs ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_ssytrs layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let dsytrs ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_dsytrs layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let csytrs ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_csytrs layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let zsytrs ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_zsytrs layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
-
-
-let stbcon ~layout ~norm ~uplo ~diag ~n ~kd ~ab ~ldab ~rcond =
-  lapacke_stbcon layout norm uplo diag n kd (CI.cptr ab) ldab (CI.cptr rcond)
-
-
-let dtbcon ~layout ~norm ~uplo ~diag ~n ~kd ~ab ~ldab ~rcond =
-  lapacke_dtbcon layout norm uplo diag n kd (CI.cptr ab) ldab (CI.cptr rcond)
-
-
-let ctbcon ~layout ~norm ~uplo ~diag ~n ~kd ~ab ~ldab ~rcond =
-  lapacke_ctbcon layout norm uplo diag n kd (CI.cptr ab) ldab (CI.cptr rcond)
-
-
-let ztbcon ~layout ~norm ~uplo ~diag ~n ~kd ~ab ~ldab ~rcond =
-  lapacke_ztbcon layout norm uplo diag n kd (CI.cptr ab) ldab (CI.cptr rcond)
-
-
-let stbrfs ~layout ~uplo ~trans ~diag ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_stbrfs
-    layout
-    uplo
-    trans
-    diag
-    n
-    kd
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let dtbrfs ~layout ~uplo ~trans ~diag ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_dtbrfs
-    layout
-    uplo
-    trans
-    diag
-    n
-    kd
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let ctbrfs ~layout ~uplo ~trans ~diag ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_ctbrfs
-    layout
-    uplo
-    trans
-    diag
-    n
-    kd
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let ztbrfs ~layout ~uplo ~trans ~diag ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_ztbrfs
-    layout
-    uplo
-    trans
-    diag
-    n
-    kd
-    nrhs
-    (CI.cptr ab)
-    ldab
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let stbtrs ~layout ~uplo ~trans ~diag ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb =
-  lapacke_stbtrs layout uplo trans diag n kd nrhs (CI.cptr ab) ldab (CI.cptr b) ldb
-
-
-let dtbtrs ~layout ~uplo ~trans ~diag ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb =
-  lapacke_dtbtrs layout uplo trans diag n kd nrhs (CI.cptr ab) ldab (CI.cptr b) ldb
-
-
-let ctbtrs ~layout ~uplo ~trans ~diag ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb =
-  lapacke_ctbtrs layout uplo trans diag n kd nrhs (CI.cptr ab) ldab (CI.cptr b) ldb
-
-
-let ztbtrs ~layout ~uplo ~trans ~diag ~n ~kd ~nrhs ~ab ~ldab ~b ~ldb =
-  lapacke_ztbtrs layout uplo trans diag n kd nrhs (CI.cptr ab) ldab (CI.cptr b) ldb
-
-
-let stfsm ~layout ~transr ~side ~uplo ~trans ~diag ~m ~n ~alpha ~a ~b ~ldb =
-  lapacke_stfsm layout transr side uplo trans diag m n alpha (CI.cptr a) (CI.cptr b) ldb
-
-
-let dtfsm ~layout ~transr ~side ~uplo ~trans ~diag ~m ~n ~alpha ~a ~b ~ldb =
-  lapacke_dtfsm layout transr side uplo trans diag m n alpha (CI.cptr a) (CI.cptr b) ldb
-
-
-let ctfsm ~layout ~transr ~side ~uplo ~trans ~diag ~m ~n ~alpha ~a ~b ~ldb =
-  lapacke_ctfsm layout transr side uplo trans diag m n alpha (CI.cptr a) (CI.cptr b) ldb
-
-
-let ztfsm ~layout ~transr ~side ~uplo ~trans ~diag ~m ~n ~alpha ~a ~b ~ldb =
-  lapacke_ztfsm layout transr side uplo trans diag m n alpha (CI.cptr a) (CI.cptr b) ldb
-
-
-let stftri ~layout ~transr ~uplo ~diag ~n ~a =
-  lapacke_stftri layout transr uplo diag n (CI.cptr a)
-
-
-let dtftri ~layout ~transr ~uplo ~diag ~n ~a =
-  lapacke_dtftri layout transr uplo diag n (CI.cptr a)
-
-
-let ctftri ~layout ~transr ~uplo ~diag ~n ~a =
-  lapacke_ctftri layout transr uplo diag n (CI.cptr a)
-
-
-let ztftri ~layout ~transr ~uplo ~diag ~n ~a =
-  lapacke_ztftri layout transr uplo diag n (CI.cptr a)
-
-
-let stfttp ~layout ~transr ~uplo ~n ~arf ~ap =
-  lapacke_stfttp layout transr uplo n (CI.cptr arf) (CI.cptr ap)
-
-
-let dtfttp ~layout ~transr ~uplo ~n ~arf ~ap =
-  lapacke_dtfttp layout transr uplo n (CI.cptr arf) (CI.cptr ap)
-
-
-let ctfttp ~layout ~transr ~uplo ~n ~arf ~ap =
-  lapacke_ctfttp layout transr uplo n (CI.cptr arf) (CI.cptr ap)
-
-
-let ztfttp ~layout ~transr ~uplo ~n ~arf ~ap =
-  lapacke_ztfttp layout transr uplo n (CI.cptr arf) (CI.cptr ap)
-
-
-let stfttr ~layout ~transr ~uplo ~n ~arf ~a ~lda =
-  lapacke_stfttr layout transr uplo n (CI.cptr arf) (CI.cptr a) lda
-
-
-let dtfttr ~layout ~transr ~uplo ~n ~arf ~a ~lda =
-  lapacke_dtfttr layout transr uplo n (CI.cptr arf) (CI.cptr a) lda
-
-
-let ctfttr ~layout ~transr ~uplo ~n ~arf ~a ~lda =
-  lapacke_ctfttr layout transr uplo n (CI.cptr arf) (CI.cptr a) lda
-
-
-let ztfttr ~layout ~transr ~uplo ~n ~arf ~a ~lda =
-  lapacke_ztfttr layout transr uplo n (CI.cptr arf) (CI.cptr a) lda
-
-
-let stgevc ~layout ~side ~howmny ~select ~n ~s ~lds ~p ~ldp ~vl ~ldvl ~vr ~ldvr ~mm ~m =
-  lapacke_stgevc
-    layout
-    side
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr s)
-    lds
-    (CI.cptr p)
-    ldp
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    mm
-    (CI.cptr m)
-
-
-let dtgevc ~layout ~side ~howmny ~select ~n ~s ~lds ~p ~ldp ~vl ~ldvl ~vr ~ldvr ~mm ~m =
-  lapacke_dtgevc
-    layout
-    side
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr s)
-    lds
-    (CI.cptr p)
-    ldp
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    mm
-    (CI.cptr m)
-
-
-let ctgevc ~layout ~side ~howmny ~select ~n ~s ~lds ~p ~ldp ~vl ~ldvl ~vr ~ldvr ~mm ~m =
-  lapacke_ctgevc
-    layout
-    side
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr s)
-    lds
-    (CI.cptr p)
-    ldp
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    mm
-    (CI.cptr m)
-
-
-let ztgevc ~layout ~side ~howmny ~select ~n ~s ~lds ~p ~ldp ~vl ~ldvl ~vr ~ldvr ~mm ~m =
-  lapacke_ztgevc
-    layout
-    side
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr s)
-    lds
-    (CI.cptr p)
-    ldp
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    mm
-    (CI.cptr m)
-
-
-let stgexc ~layout ~wantq ~wantz ~n ~a ~lda ~b ~ldb ~q ~ldq ~z ~ldz ~ifst ~ilst =
-  lapacke_stgexc
-    layout
-    wantq
-    wantz
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifst)
-    (CI.cptr ilst)
-
-
-let dtgexc ~layout ~wantq ~wantz ~n ~a ~lda ~b ~ldb ~q ~ldq ~z ~ldz ~ifst ~ilst =
-  lapacke_dtgexc
-    layout
-    wantq
-    wantz
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
-    (CI.cptr ifst)
-    (CI.cptr ilst)
-
-
-let ctgexc ~layout ~wantq ~wantz ~n ~a ~lda ~b ~ldb ~q ~ldq ~z ~ldz ~ifst ~ilst =
-  lapacke_ctgexc
-    layout
-    wantq
-    wantz
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
-    ifst
-    ilst
-
-
-let ztgexc ~layout ~wantq ~wantz ~n ~a ~lda ~b ~ldb ~q ~ldq ~z ~ldz ~ifst ~ilst =
-  lapacke_ztgexc
-    layout
-    wantq
-    wantz
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr q)
-    ldq
-    (CI.cptr z)
-    ldz
-    ifst
-    ilst
+let ssytrd
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~tau:(CI.CPointer tau)
+  =
+  lapacke_ssytrd layout uplo n a lda d e tau
+
+
+let dsytrd
+    ~layout
+    ~uplo
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~d:(CI.CPointer d)
+    ~e:(CI.CPointer e)
+    ~tau:(CI.CPointer tau)
+  =
+  lapacke_dsytrd layout uplo n a lda d e tau
+
+
+let ssytrf ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_ssytrf layout uplo n a lda ipiv
+
+
+let dsytrf ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_dsytrf layout uplo n a lda ipiv
+
+
+let csytrf ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_csytrf layout uplo n a lda ipiv
+
+
+let zsytrf ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zsytrf layout uplo n a lda ipiv
+
+
+let ssytri ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_ssytri layout uplo n a lda ipiv
+
+
+let dsytri ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_dsytri layout uplo n a lda ipiv
+
+
+let csytri ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_csytri layout uplo n a lda ipiv
+
+
+let zsytri ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zsytri layout uplo n a lda ipiv
+
+
+let ssytrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ssytrs layout uplo n nrhs a lda ipiv b ldb
+
+
+let dsytrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dsytrs layout uplo n nrhs a lda ipiv b ldb
+
+
+let csytrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_csytrs layout uplo n nrhs a lda ipiv b ldb
+
+
+let zsytrs
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zsytrs layout uplo n nrhs a lda ipiv b ldb
+
+
+let stbcon
+    ~layout
+    ~norm
+    ~uplo
+    ~diag
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_stbcon layout norm uplo diag n kd ab ldab rcond
+
+
+let dtbcon
+    ~layout
+    ~norm
+    ~uplo
+    ~diag
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_dtbcon layout norm uplo diag n kd ab ldab rcond
+
+
+let ctbcon
+    ~layout
+    ~norm
+    ~uplo
+    ~diag
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_ctbcon layout norm uplo diag n kd ab ldab rcond
+
+
+let ztbcon
+    ~layout
+    ~norm
+    ~uplo
+    ~diag
+    ~n
+    ~kd
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_ztbcon layout norm uplo diag n kd ab ldab rcond
+
+
+let stbrfs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~kd
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_stbrfs layout uplo trans diag n kd nrhs ab ldab b ldb x ldx ferr berr
+
+
+let dtbrfs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~kd
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_dtbrfs layout uplo trans diag n kd nrhs ab ldab b ldb x ldx ferr berr
+
+
+let ctbrfs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~kd
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_ctbrfs layout uplo trans diag n kd nrhs ab ldab b ldb x ldx ferr berr
+
+
+let ztbrfs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~kd
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_ztbrfs layout uplo trans diag n kd nrhs ab ldab b ldb x ldx ferr berr
+
+
+let stbtrs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~kd
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_stbtrs layout uplo trans diag n kd nrhs ab ldab b ldb
+
+
+let dtbtrs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~kd
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dtbtrs layout uplo trans diag n kd nrhs ab ldab b ldb
+
+
+let ctbtrs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~kd
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ctbtrs layout uplo trans diag n kd nrhs ab ldab b ldb
+
+
+let ztbtrs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~kd
+    ~nrhs
+    ~ab:(CI.CPointer ab)
+    ~ldab
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ztbtrs layout uplo trans diag n kd nrhs ab ldab b ldb
+
+
+let stfsm
+    ~layout
+    ~transr
+    ~side
+    ~uplo
+    ~trans
+    ~diag
+    ~m
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_stfsm layout transr side uplo trans diag m n alpha a b ldb
+
+
+let dtfsm
+    ~layout
+    ~transr
+    ~side
+    ~uplo
+    ~trans
+    ~diag
+    ~m
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dtfsm layout transr side uplo trans diag m n alpha a b ldb
+
+
+let ctfsm
+    ~layout
+    ~transr
+    ~side
+    ~uplo
+    ~trans
+    ~diag
+    ~m
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ctfsm layout transr side uplo trans diag m n alpha a b ldb
+
+
+let ztfsm
+    ~layout
+    ~transr
+    ~side
+    ~uplo
+    ~trans
+    ~diag
+    ~m
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ztfsm layout transr side uplo trans diag m n alpha a b ldb
+
+
+let stftri ~layout ~transr ~uplo ~diag ~n ~a:(CI.CPointer a) =
+  lapacke_stftri layout transr uplo diag n a
+
+
+let dtftri ~layout ~transr ~uplo ~diag ~n ~a:(CI.CPointer a) =
+  lapacke_dtftri layout transr uplo diag n a
+
+
+let ctftri ~layout ~transr ~uplo ~diag ~n ~a:(CI.CPointer a) =
+  lapacke_ctftri layout transr uplo diag n a
+
+
+let ztftri ~layout ~transr ~uplo ~diag ~n ~a:(CI.CPointer a) =
+  lapacke_ztftri layout transr uplo diag n a
+
+
+let stfttp ~layout ~transr ~uplo ~n ~arf:(CI.CPointer arf) ~ap:(CI.CPointer ap) =
+  lapacke_stfttp layout transr uplo n arf ap
+
+
+let dtfttp ~layout ~transr ~uplo ~n ~arf:(CI.CPointer arf) ~ap:(CI.CPointer ap) =
+  lapacke_dtfttp layout transr uplo n arf ap
+
+
+let ctfttp ~layout ~transr ~uplo ~n ~arf:(CI.CPointer arf) ~ap:(CI.CPointer ap) =
+  lapacke_ctfttp layout transr uplo n arf ap
+
+
+let ztfttp ~layout ~transr ~uplo ~n ~arf:(CI.CPointer arf) ~ap:(CI.CPointer ap) =
+  lapacke_ztfttp layout transr uplo n arf ap
+
+
+let stfttr ~layout ~transr ~uplo ~n ~arf:(CI.CPointer arf) ~a:(CI.CPointer a) ~lda =
+  lapacke_stfttr layout transr uplo n arf a lda
+
+
+let dtfttr ~layout ~transr ~uplo ~n ~arf:(CI.CPointer arf) ~a:(CI.CPointer a) ~lda =
+  lapacke_dtfttr layout transr uplo n arf a lda
+
+
+let ctfttr ~layout ~transr ~uplo ~n ~arf:(CI.CPointer arf) ~a:(CI.CPointer a) ~lda =
+  lapacke_ctfttr layout transr uplo n arf a lda
+
+
+let ztfttr ~layout ~transr ~uplo ~n ~arf:(CI.CPointer arf) ~a:(CI.CPointer a) ~lda =
+  lapacke_ztfttr layout transr uplo n arf a lda
+
+
+let stgevc
+    ~layout
+    ~side
+    ~howmny
+    ~select:(CI.CPointer select)
+    ~n
+    ~s:(CI.CPointer s)
+    ~lds
+    ~p:(CI.CPointer p)
+    ~ldp
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+    ~mm
+    ~m:(CI.CPointer m)
+  =
+  lapacke_stgevc layout side howmny select n s lds p ldp vl ldvl vr ldvr mm m
+
+
+let dtgevc
+    ~layout
+    ~side
+    ~howmny
+    ~select:(CI.CPointer select)
+    ~n
+    ~s:(CI.CPointer s)
+    ~lds
+    ~p:(CI.CPointer p)
+    ~ldp
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+    ~mm
+    ~m:(CI.CPointer m)
+  =
+  lapacke_dtgevc layout side howmny select n s lds p ldp vl ldvl vr ldvr mm m
+
+
+let ctgevc
+    ~layout
+    ~side
+    ~howmny
+    ~select:(CI.CPointer select)
+    ~n
+    ~s:(CI.CPointer s)
+    ~lds
+    ~p:(CI.CPointer p)
+    ~ldp
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+    ~mm
+    ~m:(CI.CPointer m)
+  =
+  lapacke_ctgevc layout side howmny select n s lds p ldp vl ldvl vr ldvr mm m
+
+
+let ztgevc
+    ~layout
+    ~side
+    ~howmny
+    ~select:(CI.CPointer select)
+    ~n
+    ~s:(CI.CPointer s)
+    ~lds
+    ~p:(CI.CPointer p)
+    ~ldp
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+    ~mm
+    ~m:(CI.CPointer m)
+  =
+  lapacke_ztgevc layout side howmny select n s lds p ldp vl ldvl vr ldvr mm m
+
+
+let stgexc
+    ~layout
+    ~wantq
+    ~wantz
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifst:(CI.CPointer ifst)
+    ~ilst:(CI.CPointer ilst)
+  =
+  lapacke_stgexc layout wantq wantz n a lda b ldb q ldq z ldz ifst ilst
+
+
+let dtgexc
+    ~layout
+    ~wantq
+    ~wantz
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifst:(CI.CPointer ifst)
+    ~ilst:(CI.CPointer ilst)
+  =
+  lapacke_dtgexc layout wantq wantz n a lda b ldb q ldq z ldz ifst ilst
+
+
+let ctgexc
+    ~layout
+    ~wantq
+    ~wantz
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifst
+    ~ilst
+  =
+  lapacke_ctgexc layout wantq wantz n a lda b ldb q ldq z ldz ifst ilst
+
+
+let ztgexc
+    ~layout
+    ~wantq
+    ~wantz
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~z:(CI.CPointer z)
+    ~ldz
+    ~ifst
+    ~ilst
+  =
+  lapacke_ztgexc layout wantq wantz n a lda b ldb q ldq z ldz ifst ilst
 
 
 let stgsen
@@ -25638,46 +26592,46 @@ let stgsen
     ~ijob
     ~wantq
     ~wantz
-    ~select
+    ~select:(CI.CPointer select)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alphar
-    ~alphai
-    ~beta
-    ~q
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~q:(CI.CPointer q)
     ~ldq
-    ~z
+    ~z:(CI.CPointer z)
     ~ldz
-    ~m
-    ~pl
-    ~pr
-    ~dif
+    ~m:(CI.CPointer m)
+    ~pl:(CI.CPointer pl)
+    ~pr:(CI.CPointer pr)
+    ~dif:(CI.CPointer dif)
   =
   lapacke_stgsen
     layout
     ijob
     wantq
     wantz
-    (CI.cptr select)
+    select
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr q)
+    alphar
+    alphai
+    beta
+    q
     ldq
-    (CI.cptr z)
+    z
     ldz
-    (CI.cptr m)
-    (CI.cptr pl)
-    (CI.cptr pr)
-    (CI.cptr dif)
+    m
+    pl
+    pr
+    dif
 
 
 let dtgsen
@@ -25685,46 +26639,46 @@ let dtgsen
     ~ijob
     ~wantq
     ~wantz
-    ~select
+    ~select:(CI.CPointer select)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alphar
-    ~alphai
-    ~beta
-    ~q
+    ~alphar:(CI.CPointer alphar)
+    ~alphai:(CI.CPointer alphai)
+    ~beta:(CI.CPointer beta)
+    ~q:(CI.CPointer q)
     ~ldq
-    ~z
+    ~z:(CI.CPointer z)
     ~ldz
-    ~m
-    ~pl
-    ~pr
-    ~dif
+    ~m:(CI.CPointer m)
+    ~pl:(CI.CPointer pl)
+    ~pr:(CI.CPointer pr)
+    ~dif:(CI.CPointer dif)
   =
   lapacke_dtgsen
     layout
     ijob
     wantq
     wantz
-    (CI.cptr select)
+    select
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr alphar)
-    (CI.cptr alphai)
-    (CI.cptr beta)
-    (CI.cptr q)
+    alphar
+    alphai
+    beta
+    q
     ldq
-    (CI.cptr z)
+    z
     ldz
-    (CI.cptr m)
-    (CI.cptr pl)
-    (CI.cptr pr)
-    (CI.cptr dif)
+    m
+    pl
+    pr
+    dif
 
 
 let ctgsen
@@ -25732,44 +26686,44 @@ let ctgsen
     ~ijob
     ~wantq
     ~wantz
-    ~select
+    ~select:(CI.CPointer select)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alpha
-    ~beta
-    ~q
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~q:(CI.CPointer q)
     ~ldq
-    ~z
+    ~z:(CI.CPointer z)
     ~ldz
-    ~m
-    ~pl
-    ~pr
-    ~dif
+    ~m:(CI.CPointer m)
+    ~pl:(CI.CPointer pl)
+    ~pr:(CI.CPointer pr)
+    ~dif:(CI.CPointer dif)
   =
   lapacke_ctgsen
     layout
     ijob
     wantq
     wantz
-    (CI.cptr select)
+    select
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr q)
+    alpha
+    beta
+    q
     ldq
-    (CI.cptr z)
+    z
     ldz
-    (CI.cptr m)
-    (CI.cptr pl)
-    (CI.cptr pr)
-    (CI.cptr dif)
+    m
+    pl
+    pr
+    dif
 
 
 let ztgsen
@@ -25777,44 +26731,44 @@ let ztgsen
     ~ijob
     ~wantq
     ~wantz
-    ~select
+    ~select:(CI.CPointer select)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~alpha
-    ~beta
-    ~q
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~q:(CI.CPointer q)
     ~ldq
-    ~z
+    ~z:(CI.CPointer z)
     ~ldz
-    ~m
-    ~pl
-    ~pr
-    ~dif
+    ~m:(CI.CPointer m)
+    ~pl:(CI.CPointer pl)
+    ~pr:(CI.CPointer pr)
+    ~dif:(CI.CPointer dif)
   =
   lapacke_ztgsen
     layout
     ijob
     wantq
     wantz
-    (CI.cptr select)
+    select
     n
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr q)
+    alpha
+    beta
+    q
     ldq
-    (CI.cptr z)
+    z
     ldz
-    (CI.cptr m)
-    (CI.cptr pl)
-    (CI.cptr pr)
-    (CI.cptr dif)
+    m
+    pl
+    pr
+    dif
 
 
 let stgsja
@@ -25827,21 +26781,21 @@ let stgsja
     ~n
     ~k
     ~l
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
     ~tola
     ~tolb
-    ~alpha
-    ~beta
-    ~u
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
-    ~ncycle
+    ~ncycle:(CI.CPointer ncycle)
   =
   lapacke_stgsja
     layout
@@ -25853,21 +26807,21 @@ let stgsja
     n
     k
     l
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
     tola
     tolb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr u)
+    alpha
+    beta
+    u
     ldu
-    (CI.cptr v)
+    v
     ldv
-    (CI.cptr q)
+    q
     ldq
-    (CI.cptr ncycle)
+    ncycle
 
 
 let dtgsja
@@ -25880,21 +26834,21 @@ let dtgsja
     ~n
     ~k
     ~l
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
     ~tola
     ~tolb
-    ~alpha
-    ~beta
-    ~u
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
-    ~ncycle
+    ~ncycle:(CI.CPointer ncycle)
   =
   lapacke_dtgsja
     layout
@@ -25906,21 +26860,21 @@ let dtgsja
     n
     k
     l
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
     tola
     tolb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr u)
+    alpha
+    beta
+    u
     ldu
-    (CI.cptr v)
+    v
     ldv
-    (CI.cptr q)
+    q
     ldq
-    (CI.cptr ncycle)
+    ncycle
 
 
 let ctgsja
@@ -25933,21 +26887,21 @@ let ctgsja
     ~n
     ~k
     ~l
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
     ~tola
     ~tolb
-    ~alpha
-    ~beta
-    ~u
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
-    ~ncycle
+    ~ncycle:(CI.CPointer ncycle)
   =
   lapacke_ctgsja
     layout
@@ -25959,21 +26913,21 @@ let ctgsja
     n
     k
     l
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
     tola
     tolb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr u)
+    alpha
+    beta
+    u
     ldu
-    (CI.cptr v)
+    v
     ldv
-    (CI.cptr q)
+    q
     ldq
-    (CI.cptr ncycle)
+    ncycle
 
 
 let ztgsja
@@ -25986,21 +26940,21 @@ let ztgsja
     ~n
     ~k
     ~l
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
     ~tola
     ~tolb
-    ~alpha
-    ~beta
-    ~u
+    ~alpha:(CI.CPointer alpha)
+    ~beta:(CI.CPointer beta)
+    ~u:(CI.CPointer u)
     ~ldu
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~q
+    ~q:(CI.CPointer q)
     ~ldq
-    ~ncycle
+    ~ncycle:(CI.CPointer ncycle)
   =
   lapacke_ztgsja
     layout
@@ -26012,177 +26966,109 @@ let ztgsja
     n
     k
     l
-    (CI.cptr a)
+    a
     lda
-    (CI.cptr b)
+    b
     ldb
     tola
     tolb
-    (CI.cptr alpha)
-    (CI.cptr beta)
-    (CI.cptr u)
+    alpha
+    beta
+    u
     ldu
-    (CI.cptr v)
+    v
     ldv
-    (CI.cptr q)
+    q
     ldq
-    (CI.cptr ncycle)
+    ncycle
 
 
 let stgsna
     ~layout
     ~job
     ~howmny
-    ~select
+    ~select:(CI.CPointer select)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~vl
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
-    ~s
-    ~dif
+    ~s:(CI.CPointer s)
+    ~dif:(CI.CPointer dif)
     ~mm
-    ~m
+    ~m:(CI.CPointer m)
   =
-  lapacke_stgsna
-    layout
-    job
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    (CI.cptr s)
-    (CI.cptr dif)
-    mm
-    (CI.cptr m)
+  lapacke_stgsna layout job howmny select n a lda b ldb vl ldvl vr ldvr s dif mm m
 
 
 let dtgsna
     ~layout
     ~job
     ~howmny
-    ~select
+    ~select:(CI.CPointer select)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~vl
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
-    ~s
-    ~dif
+    ~s:(CI.CPointer s)
+    ~dif:(CI.CPointer dif)
     ~mm
-    ~m
+    ~m:(CI.CPointer m)
   =
-  lapacke_dtgsna
-    layout
-    job
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    (CI.cptr s)
-    (CI.cptr dif)
-    mm
-    (CI.cptr m)
+  lapacke_dtgsna layout job howmny select n a lda b ldb vl ldvl vr ldvr s dif mm m
 
 
 let ctgsna
     ~layout
     ~job
     ~howmny
-    ~select
+    ~select:(CI.CPointer select)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~vl
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
-    ~s
-    ~dif
+    ~s:(CI.CPointer s)
+    ~dif:(CI.CPointer dif)
     ~mm
-    ~m
+    ~m:(CI.CPointer m)
   =
-  lapacke_ctgsna
-    layout
-    job
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    (CI.cptr s)
-    (CI.cptr dif)
-    mm
-    (CI.cptr m)
+  lapacke_ctgsna layout job howmny select n a lda b ldb vl ldvl vr ldvr s dif mm m
 
 
 let ztgsna
     ~layout
     ~job
     ~howmny
-    ~select
+    ~select:(CI.CPointer select)
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~vl
+    ~vl:(CI.CPointer vl)
     ~ldvl
-    ~vr
+    ~vr:(CI.CPointer vr)
     ~ldvr
-    ~s
-    ~dif
+    ~s:(CI.CPointer s)
+    ~dif:(CI.CPointer dif)
     ~mm
-    ~m
+    ~m:(CI.CPointer m)
   =
-  lapacke_ztgsna
-    layout
-    job
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    (CI.cptr s)
-    (CI.cptr dif)
-    mm
-    (CI.cptr m)
+  lapacke_ztgsna layout job howmny select n a lda b ldb vl ldvl vr ldvr s dif mm m
 
 
 let stgsyl
@@ -26191,41 +27077,22 @@ let stgsyl
     ~ijob
     ~m
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~c
+    ~c:(CI.CPointer c)
     ~ldc
-    ~d
+    ~d:(CI.CPointer d)
     ~ldd
-    ~e
+    ~e:(CI.CPointer e)
     ~lde
-    ~f
+    ~f:(CI.CPointer f)
     ~ldf
-    ~scale
-    ~dif
+    ~scale:(CI.CPointer scale)
+    ~dif:(CI.CPointer dif)
   =
-  lapacke_stgsyl
-    layout
-    trans
-    ijob
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr c)
-    ldc
-    (CI.cptr d)
-    ldd
-    (CI.cptr e)
-    lde
-    (CI.cptr f)
-    ldf
-    (CI.cptr scale)
-    (CI.cptr dif)
+  lapacke_stgsyl layout trans ijob m n a lda b ldb c ldc d ldd e lde f ldf scale dif
 
 
 let dtgsyl
@@ -26234,41 +27101,22 @@ let dtgsyl
     ~ijob
     ~m
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~c
+    ~c:(CI.CPointer c)
     ~ldc
-    ~d
+    ~d:(CI.CPointer d)
     ~ldd
-    ~e
+    ~e:(CI.CPointer e)
     ~lde
-    ~f
+    ~f:(CI.CPointer f)
     ~ldf
-    ~scale
-    ~dif
+    ~scale:(CI.CPointer scale)
+    ~dif:(CI.CPointer dif)
   =
-  lapacke_dtgsyl
-    layout
-    trans
-    ijob
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr c)
-    ldc
-    (CI.cptr d)
-    ldd
-    (CI.cptr e)
-    lde
-    (CI.cptr f)
-    ldf
-    (CI.cptr scale)
-    (CI.cptr dif)
+  lapacke_dtgsyl layout trans ijob m n a lda b ldb c ldc d ldd e lde f ldf scale dif
 
 
 let ctgsyl
@@ -26277,41 +27125,22 @@ let ctgsyl
     ~ijob
     ~m
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~c
+    ~c:(CI.CPointer c)
     ~ldc
-    ~d
+    ~d:(CI.CPointer d)
     ~ldd
-    ~e
+    ~e:(CI.CPointer e)
     ~lde
-    ~f
+    ~f:(CI.CPointer f)
     ~ldf
-    ~scale
-    ~dif
+    ~scale:(CI.CPointer scale)
+    ~dif:(CI.CPointer dif)
   =
-  lapacke_ctgsyl
-    layout
-    trans
-    ijob
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr c)
-    ldc
-    (CI.cptr d)
-    ldd
-    (CI.cptr e)
-    lde
-    (CI.cptr f)
-    ldf
-    (CI.cptr scale)
-    (CI.cptr dif)
+  lapacke_ctgsyl layout trans ijob m n a lda b ldb c ldc d ldd e lde f ldf scale dif
 
 
 let ztgsyl
@@ -26320,914 +27149,1261 @@ let ztgsyl
     ~ijob
     ~m
     ~n
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
-    ~c
+    ~c:(CI.CPointer c)
     ~ldc
-    ~d
+    ~d:(CI.CPointer d)
     ~ldd
-    ~e
+    ~e:(CI.CPointer e)
     ~lde
-    ~f
+    ~f:(CI.CPointer f)
     ~ldf
-    ~scale
-    ~dif
+    ~scale:(CI.CPointer scale)
+    ~dif:(CI.CPointer dif)
   =
-  lapacke_ztgsyl
-    layout
-    trans
-    ijob
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr c)
-    ldc
-    (CI.cptr d)
-    ldd
-    (CI.cptr e)
-    lde
-    (CI.cptr f)
-    ldf
-    (CI.cptr scale)
-    (CI.cptr dif)
-
-
-let stpcon ~layout ~norm ~uplo ~diag ~n ~ap ~rcond =
-  lapacke_stpcon layout norm uplo diag n (CI.cptr ap) (CI.cptr rcond)
-
-
-let dtpcon ~layout ~norm ~uplo ~diag ~n ~ap ~rcond =
-  lapacke_dtpcon layout norm uplo diag n (CI.cptr ap) (CI.cptr rcond)
-
-
-let ctpcon ~layout ~norm ~uplo ~diag ~n ~ap ~rcond =
-  lapacke_ctpcon layout norm uplo diag n (CI.cptr ap) (CI.cptr rcond)
-
-
-let ztpcon ~layout ~norm ~uplo ~diag ~n ~ap ~rcond =
-  lapacke_ztpcon layout norm uplo diag n (CI.cptr ap) (CI.cptr rcond)
-
-
-let stprfs ~layout ~uplo ~trans ~diag ~n ~nrhs ~ap ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_stprfs
-    layout
-    uplo
-    trans
-    diag
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
+  lapacke_ztgsyl layout trans ijob m n a lda b ldb c ldc d ldd e lde f ldf scale dif
+
+
+let stpcon ~layout ~norm ~uplo ~diag ~n ~ap:(CI.CPointer ap) ~rcond:(CI.CPointer rcond) =
+  lapacke_stpcon layout norm uplo diag n ap rcond
+
+
+let dtpcon ~layout ~norm ~uplo ~diag ~n ~ap:(CI.CPointer ap) ~rcond:(CI.CPointer rcond) =
+  lapacke_dtpcon layout norm uplo diag n ap rcond
+
+
+let ctpcon ~layout ~norm ~uplo ~diag ~n ~ap:(CI.CPointer ap) ~rcond:(CI.CPointer rcond) =
+  lapacke_ctpcon layout norm uplo diag n ap rcond
+
+
+let ztpcon ~layout ~norm ~uplo ~diag ~n ~ap:(CI.CPointer ap) ~rcond:(CI.CPointer rcond) =
+  lapacke_ztpcon layout norm uplo diag n ap rcond
+
+
+let stprfs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_stprfs layout uplo trans diag n nrhs ap b ldb x ldx ferr berr
+
+
+let dtprfs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_dtprfs layout uplo trans diag n nrhs ap b ldb x ldx ferr berr
+
+
+let ctprfs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_ctprfs layout uplo trans diag n nrhs ap b ldb x ldx ferr berr
+
+
+let ztprfs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_ztprfs layout uplo trans diag n nrhs ap b ldb x ldx ferr berr
+
+
+let stptri ~layout ~uplo ~diag ~n ~ap:(CI.CPointer ap) =
+  lapacke_stptri layout uplo diag n ap
+
 
+let dtptri ~layout ~uplo ~diag ~n ~ap:(CI.CPointer ap) =
+  lapacke_dtptri layout uplo diag n ap
 
-let dtprfs ~layout ~uplo ~trans ~diag ~n ~nrhs ~ap ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_dtprfs
-    layout
-    uplo
-    trans
-    diag
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
 
+let ctptri ~layout ~uplo ~diag ~n ~ap:(CI.CPointer ap) =
+  lapacke_ctptri layout uplo diag n ap
 
-let ctprfs ~layout ~uplo ~trans ~diag ~n ~nrhs ~ap ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_ctprfs
-    layout
-    uplo
-    trans
-    diag
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
 
+let ztptri ~layout ~uplo ~diag ~n ~ap:(CI.CPointer ap) =
+  lapacke_ztptri layout uplo diag n ap
 
-let ztprfs ~layout ~uplo ~trans ~diag ~n ~nrhs ~ap ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_ztprfs
-    layout
-    uplo
-    trans
-    diag
-    n
-    nrhs
-    (CI.cptr ap)
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
 
+let stptrs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_stptrs layout uplo trans diag n nrhs ap b ldb
 
-let stptri ~layout ~uplo ~diag ~n ~ap = lapacke_stptri layout uplo diag n (CI.cptr ap)
 
-let dtptri ~layout ~uplo ~diag ~n ~ap = lapacke_dtptri layout uplo diag n (CI.cptr ap)
+let dtptrs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dtptrs layout uplo trans diag n nrhs ap b ldb
 
-let ctptri ~layout ~uplo ~diag ~n ~ap = lapacke_ctptri layout uplo diag n (CI.cptr ap)
 
-let ztptri ~layout ~uplo ~diag ~n ~ap = lapacke_ztptri layout uplo diag n (CI.cptr ap)
+let ctptrs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ctptrs layout uplo trans diag n nrhs ap b ldb
 
-let stptrs ~layout ~uplo ~trans ~diag ~n ~nrhs ~ap ~b ~ldb =
-  lapacke_stptrs layout uplo trans diag n nrhs (CI.cptr ap) (CI.cptr b) ldb
 
+let ztptrs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~ap:(CI.CPointer ap)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ztptrs layout uplo trans diag n nrhs ap b ldb
+
+
+let stpttf ~layout ~transr ~uplo ~n ~ap:(CI.CPointer ap) ~arf:(CI.CPointer arf) =
+  lapacke_stpttf layout transr uplo n ap arf
+
+
+let dtpttf ~layout ~transr ~uplo ~n ~ap:(CI.CPointer ap) ~arf:(CI.CPointer arf) =
+  lapacke_dtpttf layout transr uplo n ap arf
+
+
+let ctpttf ~layout ~transr ~uplo ~n ~ap:(CI.CPointer ap) ~arf:(CI.CPointer arf) =
+  lapacke_ctpttf layout transr uplo n ap arf
+
+
+let ztpttf ~layout ~transr ~uplo ~n ~ap:(CI.CPointer ap) ~arf:(CI.CPointer arf) =
+  lapacke_ztpttf layout transr uplo n ap arf
+
+
+let stpttr ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~a:(CI.CPointer a) ~lda =
+  lapacke_stpttr layout uplo n ap a lda
+
+
+let dtpttr ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~a:(CI.CPointer a) ~lda =
+  lapacke_dtpttr layout uplo n ap a lda
+
+
+let ctpttr ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~a:(CI.CPointer a) ~lda =
+  lapacke_ctpttr layout uplo n ap a lda
+
+
+let ztpttr ~layout ~uplo ~n ~ap:(CI.CPointer ap) ~a:(CI.CPointer a) ~lda =
+  lapacke_ztpttr layout uplo n ap a lda
+
+
+let strcon ~layout ~norm ~uplo ~diag ~n ~a:(CI.CPointer a) ~lda ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_strcon layout norm uplo diag n a lda rcond
+
+
+let dtrcon ~layout ~norm ~uplo ~diag ~n ~a:(CI.CPointer a) ~lda ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_dtrcon layout norm uplo diag n a lda rcond
+
+
+let ctrcon ~layout ~norm ~uplo ~diag ~n ~a:(CI.CPointer a) ~lda ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_ctrcon layout norm uplo diag n a lda rcond
+
+
+let ztrcon ~layout ~norm ~uplo ~diag ~n ~a:(CI.CPointer a) ~lda ~rcond:(CI.CPointer rcond)
+  =
+  lapacke_ztrcon layout norm uplo diag n a lda rcond
+
+
+let strevc
+    ~layout
+    ~side
+    ~howmny
+    ~select:(CI.CPointer select)
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+    ~mm
+    ~m:(CI.CPointer m)
+  =
+  lapacke_strevc layout side howmny select n t ldt vl ldvl vr ldvr mm m
+
+
+let dtrevc
+    ~layout
+    ~side
+    ~howmny
+    ~select:(CI.CPointer select)
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+    ~mm
+    ~m:(CI.CPointer m)
+  =
+  lapacke_dtrevc layout side howmny select n t ldt vl ldvl vr ldvr mm m
+
+
+let ctrevc
+    ~layout
+    ~side
+    ~howmny
+    ~select:(CI.CPointer select)
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+    ~mm
+    ~m:(CI.CPointer m)
+  =
+  lapacke_ctrevc layout side howmny select n t ldt vl ldvl vr ldvr mm m
+
+
+let ztrevc
+    ~layout
+    ~side
+    ~howmny
+    ~select:(CI.CPointer select)
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+    ~mm
+    ~m:(CI.CPointer m)
+  =
+  lapacke_ztrevc layout side howmny select n t ldt vl ldvl vr ldvr mm m
+
+
+let strexc
+    ~layout
+    ~compq
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~ifst:(CI.CPointer ifst)
+    ~ilst:(CI.CPointer ilst)
+  =
+  lapacke_strexc layout compq n t ldt q ldq ifst ilst
+
+
+let dtrexc
+    ~layout
+    ~compq
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~ifst:(CI.CPointer ifst)
+    ~ilst:(CI.CPointer ilst)
+  =
+  lapacke_dtrexc layout compq n t ldt q ldq ifst ilst
+
+
+let ctrexc ~layout ~compq ~n ~t:(CI.CPointer t) ~ldt ~q:(CI.CPointer q) ~ldq ~ifst ~ilst =
+  lapacke_ctrexc layout compq n t ldt q ldq ifst ilst
+
+
+let ztrexc ~layout ~compq ~n ~t:(CI.CPointer t) ~ldt ~q:(CI.CPointer q) ~ldq ~ifst ~ilst =
+  lapacke_ztrexc layout compq n t ldt q ldq ifst ilst
+
+
+let strrfs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_strrfs layout uplo trans diag n nrhs a lda b ldb x ldx ferr berr
+
+
+let dtrrfs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_dtrrfs layout uplo trans diag n nrhs a lda b ldb x ldx ferr berr
+
+
+let ctrrfs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_ctrrfs layout uplo trans diag n nrhs a lda b ldb x ldx ferr berr
+
+
+let ztrrfs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~x:(CI.CPointer x)
+    ~ldx
+    ~ferr:(CI.CPointer ferr)
+    ~berr:(CI.CPointer berr)
+  =
+  lapacke_ztrrfs layout uplo trans diag n nrhs a lda b ldb x ldx ferr berr
+
+
+let strsen
+    ~layout
+    ~job
+    ~compq
+    ~select:(CI.CPointer select)
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~m:(CI.CPointer m)
+    ~s:(CI.CPointer s)
+    ~sep:(CI.CPointer sep)
+  =
+  lapacke_strsen layout job compq select n t ldt q ldq wr wi m s sep
+
+
+let dtrsen
+    ~layout
+    ~job
+    ~compq
+    ~select:(CI.CPointer select)
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~wr:(CI.CPointer wr)
+    ~wi:(CI.CPointer wi)
+    ~m:(CI.CPointer m)
+    ~s:(CI.CPointer s)
+    ~sep:(CI.CPointer sep)
+  =
+  lapacke_dtrsen layout job compq select n t ldt q ldq wr wi m s sep
+
+
+let ctrsen
+    ~layout
+    ~job
+    ~compq
+    ~select:(CI.CPointer select)
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~w:(CI.CPointer w)
+    ~m:(CI.CPointer m)
+    ~s:(CI.CPointer s)
+    ~sep:(CI.CPointer sep)
+  =
+  lapacke_ctrsen layout job compq select n t ldt q ldq w m s sep
+
+
+let ztrsen
+    ~layout
+    ~job
+    ~compq
+    ~select:(CI.CPointer select)
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~q:(CI.CPointer q)
+    ~ldq
+    ~w:(CI.CPointer w)
+    ~m:(CI.CPointer m)
+    ~s:(CI.CPointer s)
+    ~sep:(CI.CPointer sep)
+  =
+  lapacke_ztrsen layout job compq select n t ldt q ldq w m s sep
+
+
+let strsna
+    ~layout
+    ~job
+    ~howmny
+    ~select:(CI.CPointer select)
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+    ~s:(CI.CPointer s)
+    ~sep:(CI.CPointer sep)
+    ~mm
+    ~m:(CI.CPointer m)
+  =
+  lapacke_strsna layout job howmny select n t ldt vl ldvl vr ldvr s sep mm m
+
+
+let dtrsna
+    ~layout
+    ~job
+    ~howmny
+    ~select:(CI.CPointer select)
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+    ~s:(CI.CPointer s)
+    ~sep:(CI.CPointer sep)
+    ~mm
+    ~m:(CI.CPointer m)
+  =
+  lapacke_dtrsna layout job howmny select n t ldt vl ldvl vr ldvr s sep mm m
+
+
+let ctrsna
+    ~layout
+    ~job
+    ~howmny
+    ~select:(CI.CPointer select)
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+    ~s:(CI.CPointer s)
+    ~sep:(CI.CPointer sep)
+    ~mm
+    ~m:(CI.CPointer m)
+  =
+  lapacke_ctrsna layout job howmny select n t ldt vl ldvl vr ldvr s sep mm m
+
+
+let ztrsna
+    ~layout
+    ~job
+    ~howmny
+    ~select:(CI.CPointer select)
+    ~n
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~vl:(CI.CPointer vl)
+    ~ldvl
+    ~vr:(CI.CPointer vr)
+    ~ldvr
+    ~s:(CI.CPointer s)
+    ~sep:(CI.CPointer sep)
+    ~mm
+    ~m:(CI.CPointer m)
+  =
+  lapacke_ztrsna layout job howmny select n t ldt vl ldvl vr ldvr s sep mm m
+
+
+let strsyl
+    ~layout
+    ~trana
+    ~tranb
+    ~isgn
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~c:(CI.CPointer c)
+    ~ldc
+    ~scale:(CI.CPointer scale)
+  =
+  lapacke_strsyl layout trana tranb isgn m n a lda b ldb c ldc scale
+
+
+let dtrsyl
+    ~layout
+    ~trana
+    ~tranb
+    ~isgn
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~c:(CI.CPointer c)
+    ~ldc
+    ~scale:(CI.CPointer scale)
+  =
+  lapacke_dtrsyl layout trana tranb isgn m n a lda b ldb c ldc scale
+
+
+let ctrsyl
+    ~layout
+    ~trana
+    ~tranb
+    ~isgn
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~c:(CI.CPointer c)
+    ~ldc
+    ~scale:(CI.CPointer scale)
+  =
+  lapacke_ctrsyl layout trana tranb isgn m n a lda b ldb c ldc scale
+
+
+let ztrsyl
+    ~layout
+    ~trana
+    ~tranb
+    ~isgn
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~c:(CI.CPointer c)
+    ~ldc
+    ~scale:(CI.CPointer scale)
+  =
+  lapacke_ztrsyl layout trana tranb isgn m n a lda b ldb c ldc scale
+
+
+let strtri ~layout ~uplo ~diag ~n ~a:(CI.CPointer a) ~lda =
+  lapacke_strtri layout uplo diag n a lda
+
+
+let dtrtri ~layout ~uplo ~diag ~n ~a:(CI.CPointer a) ~lda =
+  lapacke_dtrtri layout uplo diag n a lda
+
+
+let ctrtri ~layout ~uplo ~diag ~n ~a:(CI.CPointer a) ~lda =
+  lapacke_ctrtri layout uplo diag n a lda
+
+
+let ztrtri ~layout ~uplo ~diag ~n ~a:(CI.CPointer a) ~lda =
+  lapacke_ztrtri layout uplo diag n a lda
+
+
+let strtrs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_strtrs layout uplo trans diag n nrhs a lda b ldb
+
+
+let dtrtrs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dtrtrs layout uplo trans diag n nrhs a lda b ldb
+
+
+let ctrtrs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ctrtrs layout uplo trans diag n nrhs a lda b ldb
+
+
+let ztrtrs
+    ~layout
+    ~uplo
+    ~trans
+    ~diag
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ztrtrs layout uplo trans diag n nrhs a lda b ldb
+
+
+let strttf ~layout ~transr ~uplo ~n ~a:(CI.CPointer a) ~lda ~arf:(CI.CPointer arf) =
+  lapacke_strttf layout transr uplo n a lda arf
+
+
+let dtrttf ~layout ~transr ~uplo ~n ~a:(CI.CPointer a) ~lda ~arf:(CI.CPointer arf) =
+  lapacke_dtrttf layout transr uplo n a lda arf
+
+
+let ctrttf ~layout ~transr ~uplo ~n ~a:(CI.CPointer a) ~lda ~arf:(CI.CPointer arf) =
+  lapacke_ctrttf layout transr uplo n a lda arf
+
+
+let ztrttf ~layout ~transr ~uplo ~n ~a:(CI.CPointer a) ~lda ~arf:(CI.CPointer arf) =
+  lapacke_ztrttf layout transr uplo n a lda arf
+
+
+let strttp ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ap:(CI.CPointer ap) =
+  lapacke_strttp layout uplo n a lda ap
+
+
+let dtrttp ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ap:(CI.CPointer ap) =
+  lapacke_dtrttp layout uplo n a lda ap
+
+
+let ctrttp ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ap:(CI.CPointer ap) =
+  lapacke_ctrttp layout uplo n a lda ap
+
+
+let ztrttp ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ap:(CI.CPointer ap) =
+  lapacke_ztrttp layout uplo n a lda ap
+
+
+let stzrzf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_stzrzf layout m n a lda tau
+
+
+let dtzrzf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_dtzrzf layout m n a lda tau
+
+
+let ctzrzf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_ctzrzf layout m n a lda tau
+
+
+let ztzrzf ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_ztzrzf layout m n a lda tau
+
+
+let cungbr ~layout ~vect ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cungbr layout vect m n k a lda tau
+
+
+let zungbr ~layout ~vect ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zungbr layout vect m n k a lda tau
+
+
+let cunghr ~layout ~n ~ilo ~ihi ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cunghr layout n ilo ihi a lda tau
+
+
+let zunghr ~layout ~n ~ilo ~ihi ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zunghr layout n ilo ihi a lda tau
+
+
+let cunglq ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cunglq layout m n k a lda tau
+
+
+let zunglq ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zunglq layout m n k a lda tau
+
+
+let cungql ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cungql layout m n k a lda tau
+
+
+let zungql ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zungql layout m n k a lda tau
+
+
+let cungqr ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cungqr layout m n k a lda tau
+
+
+let zungqr ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zungqr layout m n k a lda tau
+
+
+let cungrq ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cungrq layout m n k a lda tau
+
+
+let zungrq ~layout ~m ~n ~k ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zungrq layout m n k a lda tau
+
+
+let cungtr ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_cungtr layout uplo n a lda tau
+
+
+let zungtr ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~tau:(CI.CPointer tau) =
+  lapacke_zungtr layout uplo n a lda tau
+
+
+let cunmbr
+    ~layout
+    ~vect
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_cunmbr layout vect side trans m n k a lda tau c ldc
+
+
+let zunmbr
+    ~layout
+    ~vect
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zunmbr layout vect side trans m n k a lda tau c ldc
+
+
+let cunmhr
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~ilo
+    ~ihi
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_cunmhr layout side trans m n ilo ihi a lda tau c ldc
+
+
+let zunmhr
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~ilo
+    ~ihi
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zunmhr layout side trans m n ilo ihi a lda tau c ldc
+
+
+let cunmlq
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_cunmlq layout side trans m n k a lda tau c ldc
+
+
+let zunmlq
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zunmlq layout side trans m n k a lda tau c ldc
+
+
+let cunmql
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_cunmql layout side trans m n k a lda tau c ldc
+
+
+let zunmql
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zunmql layout side trans m n k a lda tau c ldc
+
+
+let cunmqr
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_cunmqr layout side trans m n k a lda tau c ldc
+
+
+let zunmqr
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zunmqr layout side trans m n k a lda tau c ldc
+
+
+let cunmrq
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_cunmrq layout side trans m n k a lda tau c ldc
+
+
+let zunmrq
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zunmrq layout side trans m n k a lda tau c ldc
+
+
+let cunmrz
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~l
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_cunmrz layout side trans m n k l a lda tau c ldc
+
+
+let zunmrz
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~l
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zunmrz layout side trans m n k l a lda tau c ldc
+
+
+let cunmtr
+    ~layout
+    ~side
+    ~uplo
+    ~trans
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_cunmtr layout side uplo trans m n a lda tau c ldc
+
+
+let zunmtr
+    ~layout
+    ~side
+    ~uplo
+    ~trans
+    ~m
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zunmtr layout side uplo trans m n a lda tau c ldc
+
+
+let cupgtr
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~tau:(CI.CPointer tau)
+    ~q:(CI.CPointer q)
+    ~ldq
+  =
+  lapacke_cupgtr layout uplo n ap tau q ldq
+
+
+let zupgtr
+    ~layout
+    ~uplo
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~tau:(CI.CPointer tau)
+    ~q:(CI.CPointer q)
+    ~ldq
+  =
+  lapacke_zupgtr layout uplo n ap tau q ldq
+
+
+let cupmtr
+    ~layout
+    ~side
+    ~uplo
+    ~trans
+    ~m
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_cupmtr layout side uplo trans m n ap tau c ldc
+
+
+let zupmtr
+    ~layout
+    ~side
+    ~uplo
+    ~trans
+    ~m
+    ~n
+    ~ap:(CI.CPointer ap)
+    ~tau:(CI.CPointer tau)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zupmtr layout side uplo trans m n ap tau c ldc
+
+
+let claghe
+    ~layout
+    ~n
+    ~k
+    ~d:(CI.CPointer d)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~iseed:(CI.CPointer iseed)
+  =
+  lapacke_claghe layout n k d a lda iseed
+
+
+let zlaghe
+    ~layout
+    ~n
+    ~k
+    ~d:(CI.CPointer d)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~iseed:(CI.CPointer iseed)
+  =
+  lapacke_zlaghe layout n k d a lda iseed
+
+
+let slagsy
+    ~layout
+    ~n
+    ~k
+    ~d:(CI.CPointer d)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~iseed:(CI.CPointer iseed)
+  =
+  lapacke_slagsy layout n k d a lda iseed
+
+
+let dlagsy
+    ~layout
+    ~n
+    ~k
+    ~d:(CI.CPointer d)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~iseed:(CI.CPointer iseed)
+  =
+  lapacke_dlagsy layout n k d a lda iseed
+
+
+let clagsy
+    ~layout
+    ~n
+    ~k
+    ~d:(CI.CPointer d)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~iseed:(CI.CPointer iseed)
+  =
+  lapacke_clagsy layout n k d a lda iseed
+
+
+let zlagsy
+    ~layout
+    ~n
+    ~k
+    ~d:(CI.CPointer d)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~iseed:(CI.CPointer iseed)
+  =
+  lapacke_zlagsy layout n k d a lda iseed
+
+
+let slapmr ~layout ~forwrd ~m ~n ~x:(CI.CPointer x) ~ldx ~k:(CI.CPointer k) =
+  lapacke_slapmr layout forwrd m n x ldx k
+
+
+let dlapmr ~layout ~forwrd ~m ~n ~x:(CI.CPointer x) ~ldx ~k:(CI.CPointer k) =
+  lapacke_dlapmr layout forwrd m n x ldx k
+
+
+let clapmr ~layout ~forwrd ~m ~n ~x:(CI.CPointer x) ~ldx ~k:(CI.CPointer k) =
+  lapacke_clapmr layout forwrd m n x ldx k
+
+
+let zlapmr ~layout ~forwrd ~m ~n ~x:(CI.CPointer x) ~ldx ~k:(CI.CPointer k) =
+  lapacke_zlapmr layout forwrd m n x ldx k
+
+
+let slapmt ~layout ~forwrd ~m ~n ~x:(CI.CPointer x) ~ldx ~k:(CI.CPointer k) =
+  lapacke_slapmt layout forwrd m n x ldx k
+
+
+let dlapmt ~layout ~forwrd ~m ~n ~x:(CI.CPointer x) ~ldx ~k:(CI.CPointer k) =
+  lapacke_dlapmt layout forwrd m n x ldx k
+
+
+let clapmt ~layout ~forwrd ~m ~n ~x:(CI.CPointer x) ~ldx ~k:(CI.CPointer k) =
+  lapacke_clapmt layout forwrd m n x ldx k
+
+
+let zlapmt ~layout ~forwrd ~m ~n ~x:(CI.CPointer x) ~ldx ~k:(CI.CPointer k) =
+  lapacke_zlapmt layout forwrd m n x ldx k
+
+
+let slartgp ~f ~g ~cs:(CI.CPointer cs) ~sn:(CI.CPointer sn) ~r:(CI.CPointer r) =
+  lapacke_slartgp f g cs sn r
+
+
+let dlartgp ~f ~g ~cs:(CI.CPointer cs) ~sn:(CI.CPointer sn) ~r:(CI.CPointer r) =
+  lapacke_dlartgp f g cs sn r
+
+
+let slartgs ~x ~y ~sigma ~cs:(CI.CPointer cs) ~sn:(CI.CPointer sn) =
+  lapacke_slartgs x y sigma cs sn
+
+
+let dlartgs ~x ~y ~sigma ~cs:(CI.CPointer cs) ~sn:(CI.CPointer sn) =
+  lapacke_dlartgs x y sigma cs sn
 
-let dtptrs ~layout ~uplo ~trans ~diag ~n ~nrhs ~ap ~b ~ldb =
-  lapacke_dtptrs layout uplo trans diag n nrhs (CI.cptr ap) (CI.cptr b) ldb
-
-
-let ctptrs ~layout ~uplo ~trans ~diag ~n ~nrhs ~ap ~b ~ldb =
-  lapacke_ctptrs layout uplo trans diag n nrhs (CI.cptr ap) (CI.cptr b) ldb
-
-
-let ztptrs ~layout ~uplo ~trans ~diag ~n ~nrhs ~ap ~b ~ldb =
-  lapacke_ztptrs layout uplo trans diag n nrhs (CI.cptr ap) (CI.cptr b) ldb
-
-
-let stpttf ~layout ~transr ~uplo ~n ~ap ~arf =
-  lapacke_stpttf layout transr uplo n (CI.cptr ap) (CI.cptr arf)
-
-
-let dtpttf ~layout ~transr ~uplo ~n ~ap ~arf =
-  lapacke_dtpttf layout transr uplo n (CI.cptr ap) (CI.cptr arf)
-
-
-let ctpttf ~layout ~transr ~uplo ~n ~ap ~arf =
-  lapacke_ctpttf layout transr uplo n (CI.cptr ap) (CI.cptr arf)
-
-
-let ztpttf ~layout ~transr ~uplo ~n ~ap ~arf =
-  lapacke_ztpttf layout transr uplo n (CI.cptr ap) (CI.cptr arf)
-
-
-let stpttr ~layout ~uplo ~n ~ap ~a ~lda =
-  lapacke_stpttr layout uplo n (CI.cptr ap) (CI.cptr a) lda
-
-
-let dtpttr ~layout ~uplo ~n ~ap ~a ~lda =
-  lapacke_dtpttr layout uplo n (CI.cptr ap) (CI.cptr a) lda
-
-
-let ctpttr ~layout ~uplo ~n ~ap ~a ~lda =
-  lapacke_ctpttr layout uplo n (CI.cptr ap) (CI.cptr a) lda
-
-
-let ztpttr ~layout ~uplo ~n ~ap ~a ~lda =
-  lapacke_ztpttr layout uplo n (CI.cptr ap) (CI.cptr a) lda
-
-
-let strcon ~layout ~norm ~uplo ~diag ~n ~a ~lda ~rcond =
-  lapacke_strcon layout norm uplo diag n (CI.cptr a) lda (CI.cptr rcond)
-
-
-let dtrcon ~layout ~norm ~uplo ~diag ~n ~a ~lda ~rcond =
-  lapacke_dtrcon layout norm uplo diag n (CI.cptr a) lda (CI.cptr rcond)
-
-
-let ctrcon ~layout ~norm ~uplo ~diag ~n ~a ~lda ~rcond =
-  lapacke_ctrcon layout norm uplo diag n (CI.cptr a) lda (CI.cptr rcond)
-
-
-let ztrcon ~layout ~norm ~uplo ~diag ~n ~a ~lda ~rcond =
-  lapacke_ztrcon layout norm uplo diag n (CI.cptr a) lda (CI.cptr rcond)
-
-
-let strevc ~layout ~side ~howmny ~select ~n ~t ~ldt ~vl ~ldvl ~vr ~ldvr ~mm ~m =
-  lapacke_strevc
-    layout
-    side
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    mm
-    (CI.cptr m)
-
-
-let dtrevc ~layout ~side ~howmny ~select ~n ~t ~ldt ~vl ~ldvl ~vr ~ldvr ~mm ~m =
-  lapacke_dtrevc
-    layout
-    side
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    mm
-    (CI.cptr m)
-
-
-let ctrevc ~layout ~side ~howmny ~select ~n ~t ~ldt ~vl ~ldvl ~vr ~ldvr ~mm ~m =
-  lapacke_ctrevc
-    layout
-    side
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    mm
-    (CI.cptr m)
-
-
-let ztrevc ~layout ~side ~howmny ~select ~n ~t ~ldt ~vl ~ldvl ~vr ~ldvr ~mm ~m =
-  lapacke_ztrevc
-    layout
-    side
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    mm
-    (CI.cptr m)
-
-
-let strexc ~layout ~compq ~n ~t ~ldt ~q ~ldq ~ifst ~ilst =
-  lapacke_strexc
-    layout
-    compq
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr q)
-    ldq
-    (CI.cptr ifst)
-    (CI.cptr ilst)
-
-
-let dtrexc ~layout ~compq ~n ~t ~ldt ~q ~ldq ~ifst ~ilst =
-  lapacke_dtrexc
-    layout
-    compq
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr q)
-    ldq
-    (CI.cptr ifst)
-    (CI.cptr ilst)
-
-
-let ctrexc ~layout ~compq ~n ~t ~ldt ~q ~ldq ~ifst ~ilst =
-  lapacke_ctrexc layout compq n (CI.cptr t) ldt (CI.cptr q) ldq ifst ilst
-
-
-let ztrexc ~layout ~compq ~n ~t ~ldt ~q ~ldq ~ifst ~ilst =
-  lapacke_ztrexc layout compq n (CI.cptr t) ldt (CI.cptr q) ldq ifst ilst
-
-
-let strrfs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a ~lda ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_strrfs
-    layout
-    uplo
-    trans
-    diag
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let dtrrfs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a ~lda ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_dtrrfs
-    layout
-    uplo
-    trans
-    diag
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let ctrrfs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a ~lda ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_ctrrfs
-    layout
-    uplo
-    trans
-    diag
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let ztrrfs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a ~lda ~b ~ldb ~x ~ldx ~ferr ~berr =
-  lapacke_ztrrfs
-    layout
-    uplo
-    trans
-    diag
-    n
-    nrhs
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr x)
-    ldx
-    (CI.cptr ferr)
-    (CI.cptr berr)
-
-
-let strsen ~layout ~job ~compq ~select ~n ~t ~ldt ~q ~ldq ~wr ~wi ~m ~s ~sep =
-  lapacke_strsen
-    layout
-    job
-    compq
-    (CI.cptr select)
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr q)
-    ldq
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr m)
-    (CI.cptr s)
-    (CI.cptr sep)
-
-
-let dtrsen ~layout ~job ~compq ~select ~n ~t ~ldt ~q ~ldq ~wr ~wi ~m ~s ~sep =
-  lapacke_dtrsen
-    layout
-    job
-    compq
-    (CI.cptr select)
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr q)
-    ldq
-    (CI.cptr wr)
-    (CI.cptr wi)
-    (CI.cptr m)
-    (CI.cptr s)
-    (CI.cptr sep)
-
-
-let ctrsen ~layout ~job ~compq ~select ~n ~t ~ldt ~q ~ldq ~w ~m ~s ~sep =
-  lapacke_ctrsen
-    layout
-    job
-    compq
-    (CI.cptr select)
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr q)
-    ldq
-    (CI.cptr w)
-    (CI.cptr m)
-    (CI.cptr s)
-    (CI.cptr sep)
-
-
-let ztrsen ~layout ~job ~compq ~select ~n ~t ~ldt ~q ~ldq ~w ~m ~s ~sep =
-  lapacke_ztrsen
-    layout
-    job
-    compq
-    (CI.cptr select)
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr q)
-    ldq
-    (CI.cptr w)
-    (CI.cptr m)
-    (CI.cptr s)
-    (CI.cptr sep)
-
-
-let strsna ~layout ~job ~howmny ~select ~n ~t ~ldt ~vl ~ldvl ~vr ~ldvr ~s ~sep ~mm ~m =
-  lapacke_strsna
-    layout
-    job
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    (CI.cptr s)
-    (CI.cptr sep)
-    mm
-    (CI.cptr m)
-
-
-let dtrsna ~layout ~job ~howmny ~select ~n ~t ~ldt ~vl ~ldvl ~vr ~ldvr ~s ~sep ~mm ~m =
-  lapacke_dtrsna
-    layout
-    job
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    (CI.cptr s)
-    (CI.cptr sep)
-    mm
-    (CI.cptr m)
-
-
-let ctrsna ~layout ~job ~howmny ~select ~n ~t ~ldt ~vl ~ldvl ~vr ~ldvr ~s ~sep ~mm ~m =
-  lapacke_ctrsna
-    layout
-    job
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    (CI.cptr s)
-    (CI.cptr sep)
-    mm
-    (CI.cptr m)
-
-
-let ztrsna ~layout ~job ~howmny ~select ~n ~t ~ldt ~vl ~ldvl ~vr ~ldvr ~s ~sep ~mm ~m =
-  lapacke_ztrsna
-    layout
-    job
-    howmny
-    (CI.cptr select)
-    n
-    (CI.cptr t)
-    ldt
-    (CI.cptr vl)
-    ldvl
-    (CI.cptr vr)
-    ldvr
-    (CI.cptr s)
-    (CI.cptr sep)
-    mm
-    (CI.cptr m)
-
-
-let strsyl ~layout ~trana ~tranb ~isgn ~m ~n ~a ~lda ~b ~ldb ~c ~ldc ~scale =
-  lapacke_strsyl
-    layout
-    trana
-    tranb
-    isgn
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr c)
-    ldc
-    (CI.cptr scale)
-
-
-let dtrsyl ~layout ~trana ~tranb ~isgn ~m ~n ~a ~lda ~b ~ldb ~c ~ldc ~scale =
-  lapacke_dtrsyl
-    layout
-    trana
-    tranb
-    isgn
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr c)
-    ldc
-    (CI.cptr scale)
-
-
-let ctrsyl ~layout ~trana ~tranb ~isgn ~m ~n ~a ~lda ~b ~ldb ~c ~ldc ~scale =
-  lapacke_ctrsyl
-    layout
-    trana
-    tranb
-    isgn
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr c)
-    ldc
-    (CI.cptr scale)
-
-
-let ztrsyl ~layout ~trana ~tranb ~isgn ~m ~n ~a ~lda ~b ~ldb ~c ~ldc ~scale =
-  lapacke_ztrsyl
-    layout
-    trana
-    tranb
-    isgn
-    m
-    n
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr c)
-    ldc
-    (CI.cptr scale)
-
-
-let strtri ~layout ~uplo ~diag ~n ~a ~lda =
-  lapacke_strtri layout uplo diag n (CI.cptr a) lda
-
-
-let dtrtri ~layout ~uplo ~diag ~n ~a ~lda =
-  lapacke_dtrtri layout uplo diag n (CI.cptr a) lda
-
-
-let ctrtri ~layout ~uplo ~diag ~n ~a ~lda =
-  lapacke_ctrtri layout uplo diag n (CI.cptr a) lda
-
-
-let ztrtri ~layout ~uplo ~diag ~n ~a ~lda =
-  lapacke_ztrtri layout uplo diag n (CI.cptr a) lda
-
-
-let strtrs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_strtrs layout uplo trans diag n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let dtrtrs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_dtrtrs layout uplo trans diag n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let ctrtrs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_ctrtrs layout uplo trans diag n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let ztrtrs ~layout ~uplo ~trans ~diag ~n ~nrhs ~a ~lda ~b ~ldb =
-  lapacke_ztrtrs layout uplo trans diag n nrhs (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let strttf ~layout ~transr ~uplo ~n ~a ~lda ~arf =
-  lapacke_strttf layout transr uplo n (CI.cptr a) lda (CI.cptr arf)
-
-
-let dtrttf ~layout ~transr ~uplo ~n ~a ~lda ~arf =
-  lapacke_dtrttf layout transr uplo n (CI.cptr a) lda (CI.cptr arf)
-
-
-let ctrttf ~layout ~transr ~uplo ~n ~a ~lda ~arf =
-  lapacke_ctrttf layout transr uplo n (CI.cptr a) lda (CI.cptr arf)
-
-
-let ztrttf ~layout ~transr ~uplo ~n ~a ~lda ~arf =
-  lapacke_ztrttf layout transr uplo n (CI.cptr a) lda (CI.cptr arf)
-
-
-let strttp ~layout ~uplo ~n ~a ~lda ~ap =
-  lapacke_strttp layout uplo n (CI.cptr a) lda (CI.cptr ap)
-
-
-let dtrttp ~layout ~uplo ~n ~a ~lda ~ap =
-  lapacke_dtrttp layout uplo n (CI.cptr a) lda (CI.cptr ap)
-
-
-let ctrttp ~layout ~uplo ~n ~a ~lda ~ap =
-  lapacke_ctrttp layout uplo n (CI.cptr a) lda (CI.cptr ap)
-
-
-let ztrttp ~layout ~uplo ~n ~a ~lda ~ap =
-  lapacke_ztrttp layout uplo n (CI.cptr a) lda (CI.cptr ap)
-
-
-let stzrzf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_stzrzf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let dtzrzf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_dtzrzf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let ctzrzf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_ctzrzf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let ztzrzf ~layout ~m ~n ~a ~lda ~tau =
-  lapacke_ztzrzf layout m n (CI.cptr a) lda (CI.cptr tau)
-
-
-let cungbr ~layout ~vect ~m ~n ~k ~a ~lda ~tau =
-  lapacke_cungbr layout vect m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let zungbr ~layout ~vect ~m ~n ~k ~a ~lda ~tau =
-  lapacke_zungbr layout vect m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let cunghr ~layout ~n ~ilo ~ihi ~a ~lda ~tau =
-  lapacke_cunghr layout n ilo ihi (CI.cptr a) lda (CI.cptr tau)
-
-
-let zunghr ~layout ~n ~ilo ~ihi ~a ~lda ~tau =
-  lapacke_zunghr layout n ilo ihi (CI.cptr a) lda (CI.cptr tau)
-
-
-let cunglq ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_cunglq layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let zunglq ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_zunglq layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let cungql ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_cungql layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let zungql ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_zungql layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let cungqr ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_cungqr layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let zungqr ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_zungqr layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let cungrq ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_cungrq layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let zungrq ~layout ~m ~n ~k ~a ~lda ~tau =
-  lapacke_zungrq layout m n k (CI.cptr a) lda (CI.cptr tau)
-
-
-let cungtr ~layout ~uplo ~n ~a ~lda ~tau =
-  lapacke_cungtr layout uplo n (CI.cptr a) lda (CI.cptr tau)
-
-
-let zungtr ~layout ~uplo ~n ~a ~lda ~tau =
-  lapacke_zungtr layout uplo n (CI.cptr a) lda (CI.cptr tau)
-
-
-let cunmbr ~layout ~vect ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_cunmbr
-    layout
-    vect
-    side
-    trans
-    m
-    n
-    k
-    (CI.cptr a)
-    lda
-    (CI.cptr tau)
-    (CI.cptr c)
-    ldc
-
-
-let zunmbr ~layout ~vect ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_zunmbr
-    layout
-    vect
-    side
-    trans
-    m
-    n
-    k
-    (CI.cptr a)
-    lda
-    (CI.cptr tau)
-    (CI.cptr c)
-    ldc
-
-
-let cunmhr ~layout ~side ~trans ~m ~n ~ilo ~ihi ~a ~lda ~tau ~c ~ldc =
-  lapacke_cunmhr
-    layout
-    side
-    trans
-    m
-    n
-    ilo
-    ihi
-    (CI.cptr a)
-    lda
-    (CI.cptr tau)
-    (CI.cptr c)
-    ldc
-
-
-let zunmhr ~layout ~side ~trans ~m ~n ~ilo ~ihi ~a ~lda ~tau ~c ~ldc =
-  lapacke_zunmhr
-    layout
-    side
-    trans
-    m
-    n
-    ilo
-    ihi
-    (CI.cptr a)
-    lda
-    (CI.cptr tau)
-    (CI.cptr c)
-    ldc
-
-
-let cunmlq ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_cunmlq layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let zunmlq ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_zunmlq layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let cunmql ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_cunmql layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let zunmql ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_zunmql layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let cunmqr ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_cunmqr layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let zunmqr ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_zunmqr layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let cunmrq ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_cunmrq layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let zunmrq ~layout ~side ~trans ~m ~n ~k ~a ~lda ~tau ~c ~ldc =
-  lapacke_zunmrq layout side trans m n k (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let cunmrz ~layout ~side ~trans ~m ~n ~k ~l ~a ~lda ~tau ~c ~ldc =
-  lapacke_cunmrz layout side trans m n k l (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let zunmrz ~layout ~side ~trans ~m ~n ~k ~l ~a ~lda ~tau ~c ~ldc =
-  lapacke_zunmrz layout side trans m n k l (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let cunmtr ~layout ~side ~uplo ~trans ~m ~n ~a ~lda ~tau ~c ~ldc =
-  lapacke_cunmtr layout side uplo trans m n (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let zunmtr ~layout ~side ~uplo ~trans ~m ~n ~a ~lda ~tau ~c ~ldc =
-  lapacke_zunmtr layout side uplo trans m n (CI.cptr a) lda (CI.cptr tau) (CI.cptr c) ldc
-
-
-let cupgtr ~layout ~uplo ~n ~ap ~tau ~q ~ldq =
-  lapacke_cupgtr layout uplo n (CI.cptr ap) (CI.cptr tau) (CI.cptr q) ldq
-
-
-let zupgtr ~layout ~uplo ~n ~ap ~tau ~q ~ldq =
-  lapacke_zupgtr layout uplo n (CI.cptr ap) (CI.cptr tau) (CI.cptr q) ldq
-
-
-let cupmtr ~layout ~side ~uplo ~trans ~m ~n ~ap ~tau ~c ~ldc =
-  lapacke_cupmtr layout side uplo trans m n (CI.cptr ap) (CI.cptr tau) (CI.cptr c) ldc
-
-
-let zupmtr ~layout ~side ~uplo ~trans ~m ~n ~ap ~tau ~c ~ldc =
-  lapacke_zupmtr layout side uplo trans m n (CI.cptr ap) (CI.cptr tau) (CI.cptr c) ldc
-
-
-let claghe ~layout ~n ~k ~d ~a ~lda ~iseed =
-  lapacke_claghe layout n k (CI.cptr d) (CI.cptr a) lda (CI.cptr iseed)
-
-
-let zlaghe ~layout ~n ~k ~d ~a ~lda ~iseed =
-  lapacke_zlaghe layout n k (CI.cptr d) (CI.cptr a) lda (CI.cptr iseed)
-
-
-let slagsy ~layout ~n ~k ~d ~a ~lda ~iseed =
-  lapacke_slagsy layout n k (CI.cptr d) (CI.cptr a) lda (CI.cptr iseed)
-
-
-let dlagsy ~layout ~n ~k ~d ~a ~lda ~iseed =
-  lapacke_dlagsy layout n k (CI.cptr d) (CI.cptr a) lda (CI.cptr iseed)
-
-
-let clagsy ~layout ~n ~k ~d ~a ~lda ~iseed =
-  lapacke_clagsy layout n k (CI.cptr d) (CI.cptr a) lda (CI.cptr iseed)
-
-
-let zlagsy ~layout ~n ~k ~d ~a ~lda ~iseed =
-  lapacke_zlagsy layout n k (CI.cptr d) (CI.cptr a) lda (CI.cptr iseed)
-
-
-let slapmr ~layout ~forwrd ~m ~n ~x ~ldx ~k =
-  lapacke_slapmr layout forwrd m n (CI.cptr x) ldx (CI.cptr k)
-
-
-let dlapmr ~layout ~forwrd ~m ~n ~x ~ldx ~k =
-  lapacke_dlapmr layout forwrd m n (CI.cptr x) ldx (CI.cptr k)
-
-
-let clapmr ~layout ~forwrd ~m ~n ~x ~ldx ~k =
-  lapacke_clapmr layout forwrd m n (CI.cptr x) ldx (CI.cptr k)
-
-
-let zlapmr ~layout ~forwrd ~m ~n ~x ~ldx ~k =
-  lapacke_zlapmr layout forwrd m n (CI.cptr x) ldx (CI.cptr k)
-
-
-let slapmt ~layout ~forwrd ~m ~n ~x ~ldx ~k =
-  lapacke_slapmt layout forwrd m n (CI.cptr x) ldx (CI.cptr k)
-
-
-let dlapmt ~layout ~forwrd ~m ~n ~x ~ldx ~k =
-  lapacke_dlapmt layout forwrd m n (CI.cptr x) ldx (CI.cptr k)
-
-
-let clapmt ~layout ~forwrd ~m ~n ~x ~ldx ~k =
-  lapacke_clapmt layout forwrd m n (CI.cptr x) ldx (CI.cptr k)
-
-
-let zlapmt ~layout ~forwrd ~m ~n ~x ~ldx ~k =
-  lapacke_zlapmt layout forwrd m n (CI.cptr x) ldx (CI.cptr k)
-
-
-let slartgp ~f ~g ~cs ~sn ~r = lapacke_slartgp f g (CI.cptr cs) (CI.cptr sn) (CI.cptr r)
-
-let dlartgp ~f ~g ~cs ~sn ~r = lapacke_dlartgp f g (CI.cptr cs) (CI.cptr sn) (CI.cptr r)
-
-let slartgs ~x ~y ~sigma ~cs ~sn = lapacke_slartgs x y sigma (CI.cptr cs) (CI.cptr sn)
-
-let dlartgs ~x ~y ~sigma ~cs ~sn = lapacke_dlartgs x y sigma (CI.cptr cs) (CI.cptr sn)
 
 let cbbcsd
     ~layout
@@ -27239,24 +28415,24 @@ let cbbcsd
     ~m
     ~p
     ~q
-    ~theta
-    ~phi
-    ~u1
+    ~theta:(CI.CPointer theta)
+    ~phi:(CI.CPointer phi)
+    ~u1:(CI.CPointer u1)
     ~ldu1
-    ~u2
+    ~u2:(CI.CPointer u2)
     ~ldu2
-    ~v1t
+    ~v1t:(CI.CPointer v1t)
     ~ldv1t
-    ~v2t
+    ~v2t:(CI.CPointer v2t)
     ~ldv2t
-    ~b11d
-    ~b11e
-    ~b12d
-    ~b12e
-    ~b21d
-    ~b21e
-    ~b22d
-    ~b22e
+    ~b11d:(CI.CPointer b11d)
+    ~b11e:(CI.CPointer b11e)
+    ~b12d:(CI.CPointer b12d)
+    ~b12e:(CI.CPointer b12e)
+    ~b21d:(CI.CPointer b21d)
+    ~b21e:(CI.CPointer b21e)
+    ~b22d:(CI.CPointer b22d)
+    ~b22e:(CI.CPointer b22e)
   =
   lapacke_cbbcsd
     layout
@@ -27268,60 +28444,89 @@ let cbbcsd
     m
     p
     q
-    (CI.cptr theta)
-    (CI.cptr phi)
-    (CI.cptr u1)
+    theta
+    phi
+    u1
     ldu1
-    (CI.cptr u2)
+    u2
     ldu2
-    (CI.cptr v1t)
+    v1t
     ldv1t
-    (CI.cptr v2t)
+    v2t
     ldv2t
-    (CI.cptr b11d)
-    (CI.cptr b11e)
-    (CI.cptr b12d)
-    (CI.cptr b12e)
-    (CI.cptr b21d)
-    (CI.cptr b21e)
-    (CI.cptr b22d)
-    (CI.cptr b22e)
+    b11d
+    b11e
+    b12d
+    b12e
+    b21d
+    b21e
+    b22d
+    b22e
 
 
-let cheswapr ~layout ~uplo ~n ~a ~lda ~i1 ~i2 =
-  lapacke_cheswapr layout uplo n (CI.cptr a) lda i1 i2
+let cheswapr ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~i1 ~i2 =
+  lapacke_cheswapr layout uplo n a lda i1 i2
 
 
-let chetri2 ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_chetri2 layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let chetri2 ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_chetri2 layout uplo n a lda ipiv
 
 
-let chetri2x ~layout ~uplo ~n ~a ~lda ~ipiv ~nb =
-  lapacke_chetri2x layout uplo n (CI.cptr a) lda (CI.cptr ipiv) nb
+let chetri2x ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) ~nb =
+  lapacke_chetri2x layout uplo n a lda ipiv nb
 
 
-let chetrs2 ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_chetrs2 layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let chetrs2
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_chetrs2 layout uplo n nrhs a lda ipiv b ldb
 
 
-let csyconv ~layout ~uplo ~way ~n ~a ~lda ~ipiv ~e =
-  lapacke_csyconv layout uplo way n (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr e)
+let csyconv
+    ~layout
+    ~uplo
+    ~way
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~e:(CI.CPointer e)
+  =
+  lapacke_csyconv layout uplo way n a lda ipiv e
 
 
-let csyswapr ~layout ~uplo ~n ~a ~lda ~i1 ~i2 =
-  lapacke_csyswapr layout uplo n (CI.cptr a) lda i1 i2
+let csyswapr ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~i1 ~i2 =
+  lapacke_csyswapr layout uplo n a lda i1 i2
 
 
-let csytri2 ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_csytri2 layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let csytri2 ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_csytri2 layout uplo n a lda ipiv
 
 
-let csytri2x ~layout ~uplo ~n ~a ~lda ~ipiv ~nb =
-  lapacke_csytri2x layout uplo n (CI.cptr a) lda (CI.cptr ipiv) nb
+let csytri2x ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) ~nb =
+  lapacke_csytri2x layout uplo n a lda ipiv nb
 
 
-let csytrs2 ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_csytrs2 layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let csytrs2
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_csytrs2 layout uplo n nrhs a lda ipiv b ldb
 
 
 let cunbdb
@@ -27331,20 +28536,20 @@ let cunbdb
     ~m
     ~p
     ~q
-    ~x11
+    ~x11:(CI.CPointer x11)
     ~ldx11
-    ~x12
+    ~x12:(CI.CPointer x12)
     ~ldx12
-    ~x21
+    ~x21:(CI.CPointer x21)
     ~ldx21
-    ~x22
+    ~x22:(CI.CPointer x22)
     ~ldx22
-    ~theta
-    ~phi
-    ~taup1
-    ~taup2
-    ~tauq1
-    ~tauq2
+    ~theta:(CI.CPointer theta)
+    ~phi:(CI.CPointer phi)
+    ~taup1:(CI.CPointer taup1)
+    ~taup2:(CI.CPointer taup2)
+    ~tauq1:(CI.CPointer tauq1)
+    ~tauq2:(CI.CPointer tauq2)
   =
   lapacke_cunbdb
     layout
@@ -27353,20 +28558,20 @@ let cunbdb
     m
     p
     q
-    (CI.cptr x11)
+    x11
     ldx11
-    (CI.cptr x12)
+    x12
     ldx12
-    (CI.cptr x21)
+    x21
     ldx21
-    (CI.cptr x22)
+    x22
     ldx22
-    (CI.cptr theta)
-    (CI.cptr phi)
-    (CI.cptr taup1)
-    (CI.cptr taup2)
-    (CI.cptr tauq1)
-    (CI.cptr tauq2)
+    theta
+    phi
+    taup1
+    taup2
+    tauq1
+    tauq2
 
 
 let cuncsd
@@ -27380,22 +28585,22 @@ let cuncsd
     ~m
     ~p
     ~q
-    ~x11
+    ~x11:(CI.CPointer x11)
     ~ldx11
-    ~x12
+    ~x12:(CI.CPointer x12)
     ~ldx12
-    ~x21
+    ~x21:(CI.CPointer x21)
     ~ldx21
-    ~x22
+    ~x22:(CI.CPointer x22)
     ~ldx22
-    ~theta
-    ~u1
+    ~theta:(CI.CPointer theta)
+    ~u1:(CI.CPointer u1)
     ~ldu1
-    ~u2
+    ~u2:(CI.CPointer u2)
     ~ldu2
-    ~v1t
+    ~v1t:(CI.CPointer v1t)
     ~ldv1t
-    ~v2t
+    ~v2t:(CI.CPointer v2t)
     ~ldv2t
   =
   lapacke_cuncsd
@@ -27409,22 +28614,22 @@ let cuncsd
     m
     p
     q
-    (CI.cptr x11)
+    x11
     ldx11
-    (CI.cptr x12)
+    x12
     ldx12
-    (CI.cptr x21)
+    x21
     ldx21
-    (CI.cptr x22)
+    x22
     ldx22
-    (CI.cptr theta)
-    (CI.cptr u1)
+    theta
+    u1
     ldu1
-    (CI.cptr u2)
+    u2
     ldu2
-    (CI.cptr v1t)
+    v1t
     ldv1t
-    (CI.cptr v2t)
+    v2t
     ldv2t
 
 
@@ -27436,16 +28641,16 @@ let cuncsd2by1
     ~m
     ~p
     ~q
-    ~x11
+    ~x11:(CI.CPointer x11)
     ~ldx11
-    ~x21
+    ~x21:(CI.CPointer x21)
     ~ldx21
-    ~theta
-    ~u1
+    ~theta:(CI.CPointer theta)
+    ~u1:(CI.CPointer u1)
     ~ldu1
-    ~u2
+    ~u2:(CI.CPointer u2)
     ~ldu2
-    ~v1t
+    ~v1t:(CI.CPointer v1t)
     ~ldv1t
   =
   lapacke_cuncsd2by1
@@ -27456,16 +28661,16 @@ let cuncsd2by1
     m
     p
     q
-    (CI.cptr x11)
+    x11
     ldx11
-    (CI.cptr x21)
+    x21
     ldx21
-    (CI.cptr theta)
-    (CI.cptr u1)
+    theta
+    u1
     ldu1
-    (CI.cptr u2)
+    u2
     ldu2
-    (CI.cptr v1t)
+    v1t
     ldv1t
 
 
@@ -27479,24 +28684,24 @@ let dbbcsd
     ~m
     ~p
     ~q
-    ~theta
-    ~phi
-    ~u1
+    ~theta:(CI.CPointer theta)
+    ~phi:(CI.CPointer phi)
+    ~u1:(CI.CPointer u1)
     ~ldu1
-    ~u2
+    ~u2:(CI.CPointer u2)
     ~ldu2
-    ~v1t
+    ~v1t:(CI.CPointer v1t)
     ~ldv1t
-    ~v2t
+    ~v2t:(CI.CPointer v2t)
     ~ldv2t
-    ~b11d
-    ~b11e
-    ~b12d
-    ~b12e
-    ~b21d
-    ~b21e
-    ~b22d
-    ~b22e
+    ~b11d:(CI.CPointer b11d)
+    ~b11e:(CI.CPointer b11e)
+    ~b12d:(CI.CPointer b12d)
+    ~b12e:(CI.CPointer b12e)
+    ~b21d:(CI.CPointer b21d)
+    ~b21e:(CI.CPointer b21e)
+    ~b22d:(CI.CPointer b22d)
+    ~b22e:(CI.CPointer b22e)
   =
   lapacke_dbbcsd
     layout
@@ -27508,24 +28713,24 @@ let dbbcsd
     m
     p
     q
-    (CI.cptr theta)
-    (CI.cptr phi)
-    (CI.cptr u1)
+    theta
+    phi
+    u1
     ldu1
-    (CI.cptr u2)
+    u2
     ldu2
-    (CI.cptr v1t)
+    v1t
     ldv1t
-    (CI.cptr v2t)
+    v2t
     ldv2t
-    (CI.cptr b11d)
-    (CI.cptr b11e)
-    (CI.cptr b12d)
-    (CI.cptr b12e)
-    (CI.cptr b21d)
-    (CI.cptr b21e)
-    (CI.cptr b22d)
-    (CI.cptr b22e)
+    b11d
+    b11e
+    b12d
+    b12e
+    b21d
+    b21e
+    b22d
+    b22e
 
 
 let dorbdb
@@ -27535,20 +28740,20 @@ let dorbdb
     ~m
     ~p
     ~q
-    ~x11
+    ~x11:(CI.CPointer x11)
     ~ldx11
-    ~x12
+    ~x12:(CI.CPointer x12)
     ~ldx12
-    ~x21
+    ~x21:(CI.CPointer x21)
     ~ldx21
-    ~x22
+    ~x22:(CI.CPointer x22)
     ~ldx22
-    ~theta
-    ~phi
-    ~taup1
-    ~taup2
-    ~tauq1
-    ~tauq2
+    ~theta:(CI.CPointer theta)
+    ~phi:(CI.CPointer phi)
+    ~taup1:(CI.CPointer taup1)
+    ~taup2:(CI.CPointer taup2)
+    ~tauq1:(CI.CPointer tauq1)
+    ~tauq2:(CI.CPointer tauq2)
   =
   lapacke_dorbdb
     layout
@@ -27557,20 +28762,20 @@ let dorbdb
     m
     p
     q
-    (CI.cptr x11)
+    x11
     ldx11
-    (CI.cptr x12)
+    x12
     ldx12
-    (CI.cptr x21)
+    x21
     ldx21
-    (CI.cptr x22)
+    x22
     ldx22
-    (CI.cptr theta)
-    (CI.cptr phi)
-    (CI.cptr taup1)
-    (CI.cptr taup2)
-    (CI.cptr tauq1)
-    (CI.cptr tauq2)
+    theta
+    phi
+    taup1
+    taup2
+    tauq1
+    tauq2
 
 
 let dorcsd
@@ -27584,22 +28789,22 @@ let dorcsd
     ~m
     ~p
     ~q
-    ~x11
+    ~x11:(CI.CPointer x11)
     ~ldx11
-    ~x12
+    ~x12:(CI.CPointer x12)
     ~ldx12
-    ~x21
+    ~x21:(CI.CPointer x21)
     ~ldx21
-    ~x22
+    ~x22:(CI.CPointer x22)
     ~ldx22
-    ~theta
-    ~u1
+    ~theta:(CI.CPointer theta)
+    ~u1:(CI.CPointer u1)
     ~ldu1
-    ~u2
+    ~u2:(CI.CPointer u2)
     ~ldu2
-    ~v1t
+    ~v1t:(CI.CPointer v1t)
     ~ldv1t
-    ~v2t
+    ~v2t:(CI.CPointer v2t)
     ~ldv2t
   =
   lapacke_dorcsd
@@ -27613,22 +28818,22 @@ let dorcsd
     m
     p
     q
-    (CI.cptr x11)
+    x11
     ldx11
-    (CI.cptr x12)
+    x12
     ldx12
-    (CI.cptr x21)
+    x21
     ldx21
-    (CI.cptr x22)
+    x22
     ldx22
-    (CI.cptr theta)
-    (CI.cptr u1)
+    theta
+    u1
     ldu1
-    (CI.cptr u2)
+    u2
     ldu2
-    (CI.cptr v1t)
+    v1t
     ldv1t
-    (CI.cptr v2t)
+    v2t
     ldv2t
 
 
@@ -27640,16 +28845,16 @@ let dorcsd2by1
     ~m
     ~p
     ~q
-    ~x11
+    ~x11:(CI.CPointer x11)
     ~ldx11
-    ~x21
+    ~x21:(CI.CPointer x21)
     ~ldx21
-    ~theta
-    ~u1
+    ~theta:(CI.CPointer theta)
+    ~u1:(CI.CPointer u1)
     ~ldu1
-    ~u2
+    ~u2:(CI.CPointer u2)
     ~ldu2
-    ~v1t
+    ~v1t:(CI.CPointer v1t)
     ~ldv1t
   =
   lapacke_dorcsd2by1
@@ -27660,37 +28865,56 @@ let dorcsd2by1
     m
     p
     q
-    (CI.cptr x11)
+    x11
     ldx11
-    (CI.cptr x21)
+    x21
     ldx21
-    (CI.cptr theta)
-    (CI.cptr u1)
+    theta
+    u1
     ldu1
-    (CI.cptr u2)
+    u2
     ldu2
-    (CI.cptr v1t)
+    v1t
     ldv1t
 
 
-let dsyconv ~layout ~uplo ~way ~n ~a ~lda ~ipiv ~e =
-  lapacke_dsyconv layout uplo way n (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr e)
+let dsyconv
+    ~layout
+    ~uplo
+    ~way
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~e:(CI.CPointer e)
+  =
+  lapacke_dsyconv layout uplo way n a lda ipiv e
 
 
-let dsyswapr ~layout ~uplo ~n ~a ~lda ~i1 ~i2 =
-  lapacke_dsyswapr layout uplo n (CI.cptr a) lda i1 i2
+let dsyswapr ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~i1 ~i2 =
+  lapacke_dsyswapr layout uplo n a lda i1 i2
 
 
-let dsytri2 ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_dsytri2 layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let dsytri2 ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_dsytri2 layout uplo n a lda ipiv
 
 
-let dsytri2x ~layout ~uplo ~n ~a ~lda ~ipiv ~nb =
-  lapacke_dsytri2x layout uplo n (CI.cptr a) lda (CI.cptr ipiv) nb
+let dsytri2x ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) ~nb =
+  lapacke_dsytri2x layout uplo n a lda ipiv nb
 
 
-let dsytrs2 ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_dsytrs2 layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let dsytrs2
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dsytrs2 layout uplo n nrhs a lda ipiv b ldb
 
 
 let sbbcsd
@@ -27703,24 +28927,24 @@ let sbbcsd
     ~m
     ~p
     ~q
-    ~theta
-    ~phi
-    ~u1
+    ~theta:(CI.CPointer theta)
+    ~phi:(CI.CPointer phi)
+    ~u1:(CI.CPointer u1)
     ~ldu1
-    ~u2
+    ~u2:(CI.CPointer u2)
     ~ldu2
-    ~v1t
+    ~v1t:(CI.CPointer v1t)
     ~ldv1t
-    ~v2t
+    ~v2t:(CI.CPointer v2t)
     ~ldv2t
-    ~b11d
-    ~b11e
-    ~b12d
-    ~b12e
-    ~b21d
-    ~b21e
-    ~b22d
-    ~b22e
+    ~b11d:(CI.CPointer b11d)
+    ~b11e:(CI.CPointer b11e)
+    ~b12d:(CI.CPointer b12d)
+    ~b12e:(CI.CPointer b12e)
+    ~b21d:(CI.CPointer b21d)
+    ~b21e:(CI.CPointer b21e)
+    ~b22d:(CI.CPointer b22d)
+    ~b22e:(CI.CPointer b22e)
   =
   lapacke_sbbcsd
     layout
@@ -27732,24 +28956,24 @@ let sbbcsd
     m
     p
     q
-    (CI.cptr theta)
-    (CI.cptr phi)
-    (CI.cptr u1)
+    theta
+    phi
+    u1
     ldu1
-    (CI.cptr u2)
+    u2
     ldu2
-    (CI.cptr v1t)
+    v1t
     ldv1t
-    (CI.cptr v2t)
+    v2t
     ldv2t
-    (CI.cptr b11d)
-    (CI.cptr b11e)
-    (CI.cptr b12d)
-    (CI.cptr b12e)
-    (CI.cptr b21d)
-    (CI.cptr b21e)
-    (CI.cptr b22d)
-    (CI.cptr b22e)
+    b11d
+    b11e
+    b12d
+    b12e
+    b21d
+    b21e
+    b22d
+    b22e
 
 
 let sorbdb
@@ -27759,20 +28983,20 @@ let sorbdb
     ~m
     ~p
     ~q
-    ~x11
+    ~x11:(CI.CPointer x11)
     ~ldx11
-    ~x12
+    ~x12:(CI.CPointer x12)
     ~ldx12
-    ~x21
+    ~x21:(CI.CPointer x21)
     ~ldx21
-    ~x22
+    ~x22:(CI.CPointer x22)
     ~ldx22
-    ~theta
-    ~phi
-    ~taup1
-    ~taup2
-    ~tauq1
-    ~tauq2
+    ~theta:(CI.CPointer theta)
+    ~phi:(CI.CPointer phi)
+    ~taup1:(CI.CPointer taup1)
+    ~taup2:(CI.CPointer taup2)
+    ~tauq1:(CI.CPointer tauq1)
+    ~tauq2:(CI.CPointer tauq2)
   =
   lapacke_sorbdb
     layout
@@ -27781,20 +29005,20 @@ let sorbdb
     m
     p
     q
-    (CI.cptr x11)
+    x11
     ldx11
-    (CI.cptr x12)
+    x12
     ldx12
-    (CI.cptr x21)
+    x21
     ldx21
-    (CI.cptr x22)
+    x22
     ldx22
-    (CI.cptr theta)
-    (CI.cptr phi)
-    (CI.cptr taup1)
-    (CI.cptr taup2)
-    (CI.cptr tauq1)
-    (CI.cptr tauq2)
+    theta
+    phi
+    taup1
+    taup2
+    tauq1
+    tauq2
 
 
 let sorcsd
@@ -27808,22 +29032,22 @@ let sorcsd
     ~m
     ~p
     ~q
-    ~x11
+    ~x11:(CI.CPointer x11)
     ~ldx11
-    ~x12
+    ~x12:(CI.CPointer x12)
     ~ldx12
-    ~x21
+    ~x21:(CI.CPointer x21)
     ~ldx21
-    ~x22
+    ~x22:(CI.CPointer x22)
     ~ldx22
-    ~theta
-    ~u1
+    ~theta:(CI.CPointer theta)
+    ~u1:(CI.CPointer u1)
     ~ldu1
-    ~u2
+    ~u2:(CI.CPointer u2)
     ~ldu2
-    ~v1t
+    ~v1t:(CI.CPointer v1t)
     ~ldv1t
-    ~v2t
+    ~v2t:(CI.CPointer v2t)
     ~ldv2t
   =
   lapacke_sorcsd
@@ -27837,22 +29061,22 @@ let sorcsd
     m
     p
     q
-    (CI.cptr x11)
+    x11
     ldx11
-    (CI.cptr x12)
+    x12
     ldx12
-    (CI.cptr x21)
+    x21
     ldx21
-    (CI.cptr x22)
+    x22
     ldx22
-    (CI.cptr theta)
-    (CI.cptr u1)
+    theta
+    u1
     ldu1
-    (CI.cptr u2)
+    u2
     ldu2
-    (CI.cptr v1t)
+    v1t
     ldv1t
-    (CI.cptr v2t)
+    v2t
     ldv2t
 
 
@@ -27864,16 +29088,16 @@ let sorcsd2by1
     ~m
     ~p
     ~q
-    ~x11
+    ~x11:(CI.CPointer x11)
     ~ldx11
-    ~x21
+    ~x21:(CI.CPointer x21)
     ~ldx21
-    ~theta
-    ~u1
+    ~theta:(CI.CPointer theta)
+    ~u1:(CI.CPointer u1)
     ~ldu1
-    ~u2
+    ~u2:(CI.CPointer u2)
     ~ldu2
-    ~v1t
+    ~v1t:(CI.CPointer v1t)
     ~ldv1t
   =
   lapacke_sorcsd2by1
@@ -27884,37 +29108,56 @@ let sorcsd2by1
     m
     p
     q
-    (CI.cptr x11)
+    x11
     ldx11
-    (CI.cptr x21)
+    x21
     ldx21
-    (CI.cptr theta)
-    (CI.cptr u1)
+    theta
+    u1
     ldu1
-    (CI.cptr u2)
+    u2
     ldu2
-    (CI.cptr v1t)
+    v1t
     ldv1t
 
 
-let ssyconv ~layout ~uplo ~way ~n ~a ~lda ~ipiv ~e =
-  lapacke_ssyconv layout uplo way n (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr e)
+let ssyconv
+    ~layout
+    ~uplo
+    ~way
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~e:(CI.CPointer e)
+  =
+  lapacke_ssyconv layout uplo way n a lda ipiv e
 
 
-let ssyswapr ~layout ~uplo ~n ~a ~lda ~i1 ~i2 =
-  lapacke_ssyswapr layout uplo n (CI.cptr a) lda i1 i2
+let ssyswapr ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~i1 ~i2 =
+  lapacke_ssyswapr layout uplo n a lda i1 i2
 
 
-let ssytri2 ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_ssytri2 layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let ssytri2 ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_ssytri2 layout uplo n a lda ipiv
 
 
-let ssytri2x ~layout ~uplo ~n ~a ~lda ~ipiv ~nb =
-  lapacke_ssytri2x layout uplo n (CI.cptr a) lda (CI.cptr ipiv) nb
+let ssytri2x ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) ~nb =
+  lapacke_ssytri2x layout uplo n a lda ipiv nb
 
 
-let ssytrs2 ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_ssytrs2 layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let ssytrs2
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ssytrs2 layout uplo n nrhs a lda ipiv b ldb
 
 
 let zbbcsd
@@ -27927,24 +29170,24 @@ let zbbcsd
     ~m
     ~p
     ~q
-    ~theta
-    ~phi
-    ~u1
+    ~theta:(CI.CPointer theta)
+    ~phi:(CI.CPointer phi)
+    ~u1:(CI.CPointer u1)
     ~ldu1
-    ~u2
+    ~u2:(CI.CPointer u2)
     ~ldu2
-    ~v1t
+    ~v1t:(CI.CPointer v1t)
     ~ldv1t
-    ~v2t
+    ~v2t:(CI.CPointer v2t)
     ~ldv2t
-    ~b11d
-    ~b11e
-    ~b12d
-    ~b12e
-    ~b21d
-    ~b21e
-    ~b22d
-    ~b22e
+    ~b11d:(CI.CPointer b11d)
+    ~b11e:(CI.CPointer b11e)
+    ~b12d:(CI.CPointer b12d)
+    ~b12e:(CI.CPointer b12e)
+    ~b21d:(CI.CPointer b21d)
+    ~b21e:(CI.CPointer b21e)
+    ~b22d:(CI.CPointer b22d)
+    ~b22e:(CI.CPointer b22e)
   =
   lapacke_zbbcsd
     layout
@@ -27956,60 +29199,89 @@ let zbbcsd
     m
     p
     q
-    (CI.cptr theta)
-    (CI.cptr phi)
-    (CI.cptr u1)
+    theta
+    phi
+    u1
     ldu1
-    (CI.cptr u2)
+    u2
     ldu2
-    (CI.cptr v1t)
+    v1t
     ldv1t
-    (CI.cptr v2t)
+    v2t
     ldv2t
-    (CI.cptr b11d)
-    (CI.cptr b11e)
-    (CI.cptr b12d)
-    (CI.cptr b12e)
-    (CI.cptr b21d)
-    (CI.cptr b21e)
-    (CI.cptr b22d)
-    (CI.cptr b22e)
+    b11d
+    b11e
+    b12d
+    b12e
+    b21d
+    b21e
+    b22d
+    b22e
 
 
-let zheswapr ~layout ~uplo ~n ~a ~lda ~i1 ~i2 =
-  lapacke_zheswapr layout uplo n (CI.cptr a) lda i1 i2
+let zheswapr ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~i1 ~i2 =
+  lapacke_zheswapr layout uplo n a lda i1 i2
 
 
-let zhetri2 ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_zhetri2 layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let zhetri2 ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zhetri2 layout uplo n a lda ipiv
 
 
-let zhetri2x ~layout ~uplo ~n ~a ~lda ~ipiv ~nb =
-  lapacke_zhetri2x layout uplo n (CI.cptr a) lda (CI.cptr ipiv) nb
+let zhetri2x ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) ~nb =
+  lapacke_zhetri2x layout uplo n a lda ipiv nb
 
 
-let zhetrs2 ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_zhetrs2 layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let zhetrs2
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zhetrs2 layout uplo n nrhs a lda ipiv b ldb
 
 
-let zsyconv ~layout ~uplo ~way ~n ~a ~lda ~ipiv ~e =
-  lapacke_zsyconv layout uplo way n (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr e)
+let zsyconv
+    ~layout
+    ~uplo
+    ~way
+    ~n
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~e:(CI.CPointer e)
+  =
+  lapacke_zsyconv layout uplo way n a lda ipiv e
 
 
-let zsyswapr ~layout ~uplo ~n ~a ~lda ~i1 ~i2 =
-  lapacke_zsyswapr layout uplo n (CI.cptr a) lda i1 i2
+let zsyswapr ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~i1 ~i2 =
+  lapacke_zsyswapr layout uplo n a lda i1 i2
 
 
-let zsytri2 ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_zsytri2 layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let zsytri2 ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zsytri2 layout uplo n a lda ipiv
 
 
-let zsytri2x ~layout ~uplo ~n ~a ~lda ~ipiv ~nb =
-  lapacke_zsytri2x layout uplo n (CI.cptr a) lda (CI.cptr ipiv) nb
+let zsytri2x ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) ~nb =
+  lapacke_zsytri2x layout uplo n a lda ipiv nb
 
 
-let zsytrs2 ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_zsytrs2 layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let zsytrs2
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zsytrs2 layout uplo n nrhs a lda ipiv b ldb
 
 
 let zunbdb
@@ -28019,20 +29291,20 @@ let zunbdb
     ~m
     ~p
     ~q
-    ~x11
+    ~x11:(CI.CPointer x11)
     ~ldx11
-    ~x12
+    ~x12:(CI.CPointer x12)
     ~ldx12
-    ~x21
+    ~x21:(CI.CPointer x21)
     ~ldx21
-    ~x22
+    ~x22:(CI.CPointer x22)
     ~ldx22
-    ~theta
-    ~phi
-    ~taup1
-    ~taup2
-    ~tauq1
-    ~tauq2
+    ~theta:(CI.CPointer theta)
+    ~phi:(CI.CPointer phi)
+    ~taup1:(CI.CPointer taup1)
+    ~taup2:(CI.CPointer taup2)
+    ~tauq1:(CI.CPointer tauq1)
+    ~tauq2:(CI.CPointer tauq2)
   =
   lapacke_zunbdb
     layout
@@ -28041,20 +29313,20 @@ let zunbdb
     m
     p
     q
-    (CI.cptr x11)
+    x11
     ldx11
-    (CI.cptr x12)
+    x12
     ldx12
-    (CI.cptr x21)
+    x21
     ldx21
-    (CI.cptr x22)
+    x22
     ldx22
-    (CI.cptr theta)
-    (CI.cptr phi)
-    (CI.cptr taup1)
-    (CI.cptr taup2)
-    (CI.cptr tauq1)
-    (CI.cptr tauq2)
+    theta
+    phi
+    taup1
+    taup2
+    tauq1
+    tauq2
 
 
 let zuncsd
@@ -28068,22 +29340,22 @@ let zuncsd
     ~m
     ~p
     ~q
-    ~x11
+    ~x11:(CI.CPointer x11)
     ~ldx11
-    ~x12
+    ~x12:(CI.CPointer x12)
     ~ldx12
-    ~x21
+    ~x21:(CI.CPointer x21)
     ~ldx21
-    ~x22
+    ~x22:(CI.CPointer x22)
     ~ldx22
-    ~theta
-    ~u1
+    ~theta:(CI.CPointer theta)
+    ~u1:(CI.CPointer u1)
     ~ldu1
-    ~u2
+    ~u2:(CI.CPointer u2)
     ~ldu2
-    ~v1t
+    ~v1t:(CI.CPointer v1t)
     ~ldv1t
-    ~v2t
+    ~v2t:(CI.CPointer v2t)
     ~ldv2t
   =
   lapacke_zuncsd
@@ -28097,22 +29369,22 @@ let zuncsd
     m
     p
     q
-    (CI.cptr x11)
+    x11
     ldx11
-    (CI.cptr x12)
+    x12
     ldx12
-    (CI.cptr x21)
+    x21
     ldx21
-    (CI.cptr x22)
+    x22
     ldx22
-    (CI.cptr theta)
-    (CI.cptr u1)
+    theta
+    u1
     ldu1
-    (CI.cptr u2)
+    u2
     ldu2
-    (CI.cptr v1t)
+    v1t
     ldv1t
-    (CI.cptr v2t)
+    v2t
     ldv2t
 
 
@@ -28124,16 +29396,16 @@ let zuncsd2by1
     ~m
     ~p
     ~q
-    ~x11
+    ~x11:(CI.CPointer x11)
     ~ldx11
-    ~x21
+    ~x21:(CI.CPointer x21)
     ~ldx21
-    ~theta
-    ~u1
+    ~theta:(CI.CPointer theta)
+    ~u1:(CI.CPointer u1)
     ~ldu1
-    ~u2
+    ~u2:(CI.CPointer u2)
     ~ldu2
-    ~v1t
+    ~v1t:(CI.CPointer v1t)
     ~ldv1t
   =
   lapacke_zuncsd2by1
@@ -28144,245 +29416,345 @@ let zuncsd2by1
     m
     p
     q
-    (CI.cptr x11)
+    x11
     ldx11
-    (CI.cptr x21)
+    x21
     ldx21
-    (CI.cptr theta)
-    (CI.cptr u1)
+    theta
+    u1
     ldu1
-    (CI.cptr u2)
+    u2
     ldu2
-    (CI.cptr v1t)
+    v1t
     ldv1t
 
 
-let sgemqrt ~layout ~side ~trans ~m ~n ~k ~nb ~v ~ldv ~t ~ldt ~c ~ldc =
-  lapacke_sgemqrt
-    layout
-    side
-    trans
-    m
-    n
-    k
-    nb
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr c)
-    ldc
+let sgemqrt
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~nb
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_sgemqrt layout side trans m n k nb v ldv t ldt c ldc
 
 
-let dgemqrt ~layout ~side ~trans ~m ~n ~k ~nb ~v ~ldv ~t ~ldt ~c ~ldc =
-  lapacke_dgemqrt
-    layout
-    side
-    trans
-    m
-    n
-    k
-    nb
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr c)
-    ldc
+let dgemqrt
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~nb
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_dgemqrt layout side trans m n k nb v ldv t ldt c ldc
 
 
-let cgemqrt ~layout ~side ~trans ~m ~n ~k ~nb ~v ~ldv ~t ~ldt ~c ~ldc =
-  lapacke_cgemqrt
-    layout
-    side
-    trans
-    m
-    n
-    k
-    nb
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr c)
-    ldc
+let cgemqrt
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~nb
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_cgemqrt layout side trans m n k nb v ldv t ldt c ldc
 
 
-let zgemqrt ~layout ~side ~trans ~m ~n ~k ~nb ~v ~ldv ~t ~ldt ~c ~ldc =
-  lapacke_zgemqrt
-    layout
-    side
-    trans
-    m
-    n
-    k
-    nb
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr c)
-    ldc
+let zgemqrt
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~nb
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  lapacke_zgemqrt layout side trans m n k nb v ldv t ldt c ldc
 
 
-let sgeqrt ~layout ~m ~n ~nb ~a ~lda ~t ~ldt =
-  lapacke_sgeqrt layout m n nb (CI.cptr a) lda (CI.cptr t) ldt
+let sgeqrt ~layout ~m ~n ~nb ~a:(CI.CPointer a) ~lda ~t:(CI.CPointer t) ~ldt =
+  lapacke_sgeqrt layout m n nb a lda t ldt
 
 
-let dgeqrt ~layout ~m ~n ~nb ~a ~lda ~t ~ldt =
-  lapacke_dgeqrt layout m n nb (CI.cptr a) lda (CI.cptr t) ldt
+let dgeqrt ~layout ~m ~n ~nb ~a:(CI.CPointer a) ~lda ~t:(CI.CPointer t) ~ldt =
+  lapacke_dgeqrt layout m n nb a lda t ldt
 
 
-let cgeqrt ~layout ~m ~n ~nb ~a ~lda ~t ~ldt =
-  lapacke_cgeqrt layout m n nb (CI.cptr a) lda (CI.cptr t) ldt
+let cgeqrt ~layout ~m ~n ~nb ~a:(CI.CPointer a) ~lda ~t:(CI.CPointer t) ~ldt =
+  lapacke_cgeqrt layout m n nb a lda t ldt
 
 
-let zgeqrt ~layout ~m ~n ~nb ~a ~lda ~t ~ldt =
-  lapacke_zgeqrt layout m n nb (CI.cptr a) lda (CI.cptr t) ldt
+let zgeqrt ~layout ~m ~n ~nb ~a:(CI.CPointer a) ~lda ~t:(CI.CPointer t) ~ldt =
+  lapacke_zgeqrt layout m n nb a lda t ldt
 
 
-let sgeqrt2 ~layout ~m ~n ~a ~lda ~t ~ldt =
-  lapacke_sgeqrt2 layout m n (CI.cptr a) lda (CI.cptr t) ldt
+let sgeqrt2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~t:(CI.CPointer t) ~ldt =
+  lapacke_sgeqrt2 layout m n a lda t ldt
 
 
-let dgeqrt2 ~layout ~m ~n ~a ~lda ~t ~ldt =
-  lapacke_dgeqrt2 layout m n (CI.cptr a) lda (CI.cptr t) ldt
+let dgeqrt2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~t:(CI.CPointer t) ~ldt =
+  lapacke_dgeqrt2 layout m n a lda t ldt
 
 
-let cgeqrt2 ~layout ~m ~n ~a ~lda ~t ~ldt =
-  lapacke_cgeqrt2 layout m n (CI.cptr a) lda (CI.cptr t) ldt
+let cgeqrt2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~t:(CI.CPointer t) ~ldt =
+  lapacke_cgeqrt2 layout m n a lda t ldt
 
 
-let zgeqrt2 ~layout ~m ~n ~a ~lda ~t ~ldt =
-  lapacke_zgeqrt2 layout m n (CI.cptr a) lda (CI.cptr t) ldt
+let zgeqrt2 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~t:(CI.CPointer t) ~ldt =
+  lapacke_zgeqrt2 layout m n a lda t ldt
 
 
-let sgeqrt3 ~layout ~m ~n ~a ~lda ~t ~ldt =
-  lapacke_sgeqrt3 layout m n (CI.cptr a) lda (CI.cptr t) ldt
+let sgeqrt3 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~t:(CI.CPointer t) ~ldt =
+  lapacke_sgeqrt3 layout m n a lda t ldt
 
 
-let dgeqrt3 ~layout ~m ~n ~a ~lda ~t ~ldt =
-  lapacke_dgeqrt3 layout m n (CI.cptr a) lda (CI.cptr t) ldt
+let dgeqrt3 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~t:(CI.CPointer t) ~ldt =
+  lapacke_dgeqrt3 layout m n a lda t ldt
 
 
-let cgeqrt3 ~layout ~m ~n ~a ~lda ~t ~ldt =
-  lapacke_cgeqrt3 layout m n (CI.cptr a) lda (CI.cptr t) ldt
+let cgeqrt3 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~t:(CI.CPointer t) ~ldt =
+  lapacke_cgeqrt3 layout m n a lda t ldt
 
 
-let zgeqrt3 ~layout ~m ~n ~a ~lda ~t ~ldt =
-  lapacke_zgeqrt3 layout m n (CI.cptr a) lda (CI.cptr t) ldt
+let zgeqrt3 ~layout ~m ~n ~a:(CI.CPointer a) ~lda ~t:(CI.CPointer t) ~ldt =
+  lapacke_zgeqrt3 layout m n a lda t ldt
 
 
-let stpmqrt ~layout ~side ~trans ~m ~n ~k ~l ~nb ~v ~ldv ~t ~ldt ~a ~lda ~b ~ldb =
-  lapacke_stpmqrt
-    layout
-    side
-    trans
-    m
-    n
-    k
-    l
-    nb
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
+let stpmqrt
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~l
+    ~nb
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_stpmqrt layout side trans m n k l nb v ldv t ldt a lda b ldb
 
 
-let dtpmqrt ~layout ~side ~trans ~m ~n ~k ~l ~nb ~v ~ldv ~t ~ldt ~a ~lda ~b ~ldb =
-  lapacke_dtpmqrt
-    layout
-    side
-    trans
-    m
-    n
-    k
-    l
-    nb
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
+let dtpmqrt
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~l
+    ~nb
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dtpmqrt layout side trans m n k l nb v ldv t ldt a lda b ldb
 
 
-let ctpmqrt ~layout ~side ~trans ~m ~n ~k ~l ~nb ~v ~ldv ~t ~ldt ~a ~lda ~b ~ldb =
-  lapacke_ctpmqrt
-    layout
-    side
-    trans
-    m
-    n
-    k
-    l
-    nb
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
+let ctpmqrt
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~l
+    ~nb
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ctpmqrt layout side trans m n k l nb v ldv t ldt a lda b ldb
 
 
-let ztpmqrt ~layout ~side ~trans ~m ~n ~k ~l ~nb ~v ~ldv ~t ~ldt ~a ~lda ~b ~ldb =
-  lapacke_ztpmqrt
-    layout
-    side
-    trans
-    m
-    n
-    k
-    l
-    nb
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
+let ztpmqrt
+    ~layout
+    ~side
+    ~trans
+    ~m
+    ~n
+    ~k
+    ~l
+    ~nb
+    ~v:(CI.CPointer v)
+    ~ldv
+    ~t:(CI.CPointer t)
+    ~ldt
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ztpmqrt layout side trans m n k l nb v ldv t ldt a lda b ldb
 
 
-let stpqrt ~layout ~m ~n ~l ~nb ~a ~lda ~b ~ldb ~t ~ldt =
-  lapacke_stpqrt layout m n l nb (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr t) ldt
+let stpqrt
+    ~layout
+    ~m
+    ~n
+    ~l
+    ~nb
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~t:(CI.CPointer t)
+    ~ldt
+  =
+  lapacke_stpqrt layout m n l nb a lda b ldb t ldt
 
 
-let dtpqrt ~layout ~m ~n ~l ~nb ~a ~lda ~b ~ldb ~t ~ldt =
-  lapacke_dtpqrt layout m n l nb (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr t) ldt
+let dtpqrt
+    ~layout
+    ~m
+    ~n
+    ~l
+    ~nb
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~t:(CI.CPointer t)
+    ~ldt
+  =
+  lapacke_dtpqrt layout m n l nb a lda b ldb t ldt
 
 
-let ctpqrt ~layout ~m ~n ~l ~nb ~a ~lda ~b ~ldb ~t ~ldt =
-  lapacke_ctpqrt layout m n l nb (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr t) ldt
+let ctpqrt
+    ~layout
+    ~m
+    ~n
+    ~l
+    ~nb
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~t:(CI.CPointer t)
+    ~ldt
+  =
+  lapacke_ctpqrt layout m n l nb a lda b ldb t ldt
 
 
-let ztpqrt ~layout ~m ~n ~l ~nb ~a ~lda ~b ~ldb ~t ~ldt =
-  lapacke_ztpqrt layout m n l nb (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr t) ldt
+let ztpqrt
+    ~layout
+    ~m
+    ~n
+    ~l
+    ~nb
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~t:(CI.CPointer t)
+    ~ldt
+  =
+  lapacke_ztpqrt layout m n l nb a lda b ldb t ldt
 
 
-let stpqrt2 ~layout ~m ~n ~l ~a ~lda ~b ~ldb ~t ~ldt =
-  lapacke_stpqrt2 layout m n l (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr t) ldt
+let stpqrt2
+    ~layout
+    ~m
+    ~n
+    ~l
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~t:(CI.CPointer t)
+    ~ldt
+  =
+  lapacke_stpqrt2 layout m n l a lda b ldb t ldt
 
 
-let dtpqrt2 ~layout ~m ~n ~l ~a ~lda ~b ~ldb ~t ~ldt =
-  lapacke_dtpqrt2 layout m n l (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr t) ldt
+let dtpqrt2
+    ~layout
+    ~m
+    ~n
+    ~l
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~t:(CI.CPointer t)
+    ~ldt
+  =
+  lapacke_dtpqrt2 layout m n l a lda b ldb t ldt
 
 
-let ctpqrt2 ~layout ~m ~n ~l ~a ~lda ~b ~ldb ~t ~ldt =
-  lapacke_ctpqrt2 layout m n l (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr t) ldt
+let ctpqrt2
+    ~layout
+    ~m
+    ~n
+    ~l
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~t:(CI.CPointer t)
+    ~ldt
+  =
+  lapacke_ctpqrt2 layout m n l a lda b ldb t ldt
 
 
-let ztpqrt2 ~layout ~m ~n ~l ~a ~lda ~b ~ldb ~t ~ldt =
-  lapacke_ztpqrt2 layout m n l (CI.cptr a) lda (CI.cptr b) ldb (CI.cptr t) ldt
+let ztpqrt2
+    ~layout
+    ~m
+    ~n
+    ~l
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~t:(CI.CPointer t)
+    ~ldt
+  =
+  lapacke_ztpqrt2 layout m n l a lda b ldb t ldt
 
 
 let stprfb
@@ -28395,33 +29767,16 @@ let stprfb
     ~n
     ~k
     ~l
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~t
+    ~t:(CI.CPointer t)
     ~ldt
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
   =
-  lapacke_stprfb
-    layout
-    side
-    trans
-    direct
-    storev
-    m
-    n
-    k
-    l
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
+  lapacke_stprfb layout side trans direct storev m n k l v ldv t ldt a lda b ldb
 
 
 let dtprfb
@@ -28434,33 +29789,16 @@ let dtprfb
     ~n
     ~k
     ~l
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~t
+    ~t:(CI.CPointer t)
     ~ldt
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
   =
-  lapacke_dtprfb
-    layout
-    side
-    trans
-    direct
-    storev
-    m
-    n
-    k
-    l
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
+  lapacke_dtprfb layout side trans direct storev m n k l v ldv t ldt a lda b ldb
 
 
 let ctprfb
@@ -28473,33 +29811,16 @@ let ctprfb
     ~n
     ~k
     ~l
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~t
+    ~t:(CI.CPointer t)
     ~ldt
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
   =
-  lapacke_ctprfb
-    layout
-    side
-    trans
-    direct
-    storev
-    m
-    n
-    k
-    l
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
+  lapacke_ctprfb layout side trans direct storev m n k l v ldv t ldt a lda b ldb
 
 
 let ztprfb
@@ -28512,102 +29833,185 @@ let ztprfb
     ~n
     ~k
     ~l
-    ~v
+    ~v:(CI.CPointer v)
     ~ldv
-    ~t
+    ~t:(CI.CPointer t)
     ~ldt
-    ~a
+    ~a:(CI.CPointer a)
     ~lda
-    ~b
+    ~b:(CI.CPointer b)
     ~ldb
   =
-  lapacke_ztprfb
-    layout
-    side
-    trans
-    direct
-    storev
-    m
-    n
-    k
-    l
-    (CI.cptr v)
-    ldv
-    (CI.cptr t)
-    ldt
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
+  lapacke_ztprfb layout side trans direct storev m n k l v ldv t ldt a lda b ldb
 
 
-let ssysv_rook ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_ssysv_rook layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let ssysv_rook
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ssysv_rook layout uplo n nrhs a lda ipiv b ldb
 
 
-let dsysv_rook ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_dsysv_rook layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let dsysv_rook
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dsysv_rook layout uplo n nrhs a lda ipiv b ldb
 
 
-let csysv_rook ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_csysv_rook layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let csysv_rook
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_csysv_rook layout uplo n nrhs a lda ipiv b ldb
 
 
-let zsysv_rook ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_zsysv_rook layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let zsysv_rook
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zsysv_rook layout uplo n nrhs a lda ipiv b ldb
 
 
-let ssytrf_rook ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_ssytrf_rook layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let ssytrf_rook ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_ssytrf_rook layout uplo n a lda ipiv
 
 
-let dsytrf_rook ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_dsytrf_rook layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let dsytrf_rook ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_dsytrf_rook layout uplo n a lda ipiv
 
 
-let csytrf_rook ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_csytrf_rook layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let csytrf_rook ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_csytrf_rook layout uplo n a lda ipiv
 
 
-let zsytrf_rook ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_zsytrf_rook layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let zsytrf_rook ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zsytrf_rook layout uplo n a lda ipiv
 
 
-let ssytrs_rook ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_ssytrs_rook layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let ssytrs_rook
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_ssytrs_rook layout uplo n nrhs a lda ipiv b ldb
 
 
-let dsytrs_rook ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_dsytrs_rook layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let dsytrs_rook
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_dsytrs_rook layout uplo n nrhs a lda ipiv b ldb
 
 
-let csytrs_rook ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_csytrs_rook layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let csytrs_rook
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_csytrs_rook layout uplo n nrhs a lda ipiv b ldb
 
 
-let zsytrs_rook ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_zsytrs_rook layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let zsytrs_rook
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zsytrs_rook layout uplo n nrhs a lda ipiv b ldb
 
 
-let chetrf_rook ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_chetrf_rook layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let chetrf_rook ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_chetrf_rook layout uplo n a lda ipiv
 
 
-let zhetrf_rook ~layout ~uplo ~n ~a ~lda ~ipiv =
-  lapacke_zhetrf_rook layout uplo n (CI.cptr a) lda (CI.cptr ipiv)
+let zhetrf_rook ~layout ~uplo ~n ~a:(CI.CPointer a) ~lda ~ipiv:(CI.CPointer ipiv) =
+  lapacke_zhetrf_rook layout uplo n a lda ipiv
 
 
-let chetrs_rook ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_chetrs_rook layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let chetrs_rook
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_chetrs_rook layout uplo n nrhs a lda ipiv b ldb
 
 
-let zhetrs_rook ~layout ~uplo ~n ~nrhs ~a ~lda ~ipiv ~b ~ldb =
-  lapacke_zhetrs_rook layout uplo n nrhs (CI.cptr a) lda (CI.cptr ipiv) (CI.cptr b) ldb
+let zhetrs_rook
+    ~layout
+    ~uplo
+    ~n
+    ~nrhs
+    ~a:(CI.CPointer a)
+    ~lda
+    ~ipiv:(CI.CPointer ipiv)
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  lapacke_zhetrs_rook layout uplo n nrhs a lda ipiv b ldb
 
 
-let csyr ~layout ~uplo ~n ~alpha ~x ~incx ~a ~lda =
-  lapacke_csyr layout uplo n alpha (CI.cptr x) incx (CI.cptr a) lda
+let csyr ~layout ~uplo ~n ~alpha ~x:(CI.CPointer x) ~incx ~a:(CI.CPointer a) ~lda =
+  lapacke_csyr layout uplo n alpha x incx a lda
 
 
-let zsyr ~layout ~uplo ~n ~alpha ~x ~incx ~a ~lda =
-  lapacke_zsyr layout uplo n alpha (CI.cptr x) incx (CI.cptr a) lda
+let zsyr ~layout ~uplo ~n ~alpha ~x:(CI.CPointer x) ~incx ~a:(CI.CPointer a) ~lda =
+  lapacke_zsyr layout uplo n alpha x incx a lda

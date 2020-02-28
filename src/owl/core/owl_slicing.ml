@@ -95,21 +95,16 @@ let set_slice_array_typ axis x y =
 (* same as slice_array_typ function but take list type as slice definition *)
 let get_fancy_list_typ axis x = get_fancy_array_typ (sdlist_to_sdarray axis) x
 
-
 let get_fancy_list_typ_ axis x y = get_fancy_array_typ_ (sdlist_to_sdarray axis) x y
-
 
 (* used for extended index since ocaml 4.10.0 *)
 let get_fancy_ext_idx_typ axis x = get_fancy_array_typ (sdarray_to_sdarray axis) x
 
-
 (* same as set_slice_array_typ function but take list type as slice definition *)
 let set_fancy_list_typ axis x y = set_fancy_array_typ (sdlist_to_sdarray axis) x y
 
-
 (* used for extended index since ocaml 4.10.0 *)
 let set_fancy_ext_idx_typ axis x y = set_fancy_array_typ (sdarray_to_sdarray axis) x y
-
 
 (* simplified get_slice function which accept list of list as slice definition *)
 let get_slice_list_typ axis x =

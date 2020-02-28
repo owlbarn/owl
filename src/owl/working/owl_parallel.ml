@@ -111,11 +111,11 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
 
 
   (* make a distributed version of [create_fun d], the elements will be
-    distributed among the working nodes.
+     distributed among the working nodes.
 
-    [create_fun] receives three paramaters: shape, starting pos (1d), and
-    length of the chunk (1d).
-   *)
+     [create_fun] receives three paramaters: shape, starting pos (1d), and
+     length of the chunk (1d).
+  *)
   let distributed_create_basic create_fun d =
     let workers = E.workers () in
     let chunks = divide_to_chunks d (List.length workers) in
@@ -280,8 +280,8 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
   let fill _x a = map_chunk (fun y -> M.fill y a) |> ignore
 
   (* of_ndarray and to_ndarray convert between distributed ndarray and local
-    ndarray. They are equivalent to [distribute] and [collect] in some other
-    distributed data processing frameworks. *)
+     ndarray. They are equivalent to [distribute] and [collect] in some other
+     distributed data processing frameworks. *)
 
   let of_ndarray _x = None
 

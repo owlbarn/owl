@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** auto-generated cblas interface file, timestamp:1498396302 *)
+(** auto-generated cblas interface file, timestamp:1582875911 *)
 
 module CI = Cstubs_internals
 
@@ -1770,975 +1770,1443 @@ external cblas_zher2k
   -> unit
   = "owl_stub_142_cblas_zher2k_byte13" "owl_stub_142_cblas_zher2k"
 
-let sdsdot ~n ~alpha ~x ~incx ~y ~incy =
-  cblas_sdsdot n alpha (CI.cptr x) incx (CI.cptr y) incy
+let sdsdot ~n ~alpha ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_sdsdot n alpha x incx y incy
 
 
-let dsdot ~n ~x ~incx ~y ~incy = cblas_dsdot n (CI.cptr x) incx (CI.cptr y) incy
+let dsdot ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_dsdot n x incx y incy
 
-let sdot ~n ~x ~incx ~y ~incy = cblas_sdot n (CI.cptr x) incx (CI.cptr y) incy
 
-let ddot ~n ~x ~incx ~y ~incy = cblas_ddot n (CI.cptr x) incx (CI.cptr y) incy
+let sdot ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy = cblas_sdot n x incx y incy
 
-let cdotu ~n ~x ~incx ~y ~incy ~dotu =
-  cblas_cdotu n (CI.cptr x) incx (CI.cptr y) incy (CI.cptr dotu)
+let ddot ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy = cblas_ddot n x incx y incy
 
+let cdotu ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy ~dotu:(CI.CPointer dotu) =
+  cblas_cdotu n x incx y incy dotu
 
-let cdotc ~n ~x ~incx ~y ~incy ~dotc =
-  cblas_cdotc n (CI.cptr x) incx (CI.cptr y) incy (CI.cptr dotc)
 
+let cdotc ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy ~dotc:(CI.CPointer dotc) =
+  cblas_cdotc n x incx y incy dotc
 
-let zdotu ~n ~x ~incx ~y ~incy ~dotu =
-  cblas_zdotu n (CI.cptr x) incx (CI.cptr y) incy (CI.cptr dotu)
 
+let zdotu ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy ~dotu:(CI.CPointer dotu) =
+  cblas_zdotu n x incx y incy dotu
 
-let zdotc ~n ~x ~incx ~y ~incy ~dotc =
-  cblas_zdotc n (CI.cptr x) incx (CI.cptr y) incy (CI.cptr dotc)
 
+let zdotc ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy ~dotc:(CI.CPointer dotc) =
+  cblas_zdotc n x incx y incy dotc
 
-let snrm2 ~n ~x ~incx = cblas_snrm2 n (CI.cptr x) incx
 
-let sasum ~n ~x ~incx = cblas_sasum n (CI.cptr x) incx
+let snrm2 ~n ~x:(CI.CPointer x) ~incx = cblas_snrm2 n x incx
 
-let dnrm2 ~n ~x ~incx = cblas_dnrm2 n (CI.cptr x) incx
+let sasum ~n ~x:(CI.CPointer x) ~incx = cblas_sasum n x incx
 
-let dasum ~n ~x ~incx = cblas_dasum n (CI.cptr x) incx
+let dnrm2 ~n ~x:(CI.CPointer x) ~incx = cblas_dnrm2 n x incx
 
-let scnrm2 ~n ~x ~incx = cblas_scnrm2 n (CI.cptr x) incx
+let dasum ~n ~x:(CI.CPointer x) ~incx = cblas_dasum n x incx
 
-let scasum ~n ~x ~incx = cblas_scasum n (CI.cptr x) incx
+let scnrm2 ~n ~x:(CI.CPointer x) ~incx = cblas_scnrm2 n x incx
 
-let dznrm2 ~n ~x ~incx = cblas_dznrm2 n (CI.cptr x) incx
+let scasum ~n ~x:(CI.CPointer x) ~incx = cblas_scasum n x incx
 
-let dzasum ~n ~x ~incx = cblas_dzasum n (CI.cptr x) incx
+let dznrm2 ~n ~x:(CI.CPointer x) ~incx = cblas_dznrm2 n x incx
 
-let isamax ~n ~x ~incx = cblas_isamax n (CI.cptr x) incx
+let dzasum ~n ~x:(CI.CPointer x) ~incx = cblas_dzasum n x incx
 
-let idamax ~n ~x ~incx = cblas_idamax n (CI.cptr x) incx
+let isamax ~n ~x:(CI.CPointer x) ~incx = cblas_isamax n x incx
 
-let icamax ~n ~x ~incx = cblas_icamax n (CI.cptr x) incx
+let idamax ~n ~x:(CI.CPointer x) ~incx = cblas_idamax n x incx
 
-let izamax ~n ~x ~incx = cblas_izamax n (CI.cptr x) incx
+let icamax ~n ~x:(CI.CPointer x) ~incx = cblas_icamax n x incx
 
-let sswap ~n ~x ~incx ~y ~incy = cblas_sswap n (CI.cptr x) incx (CI.cptr y) incy
+let izamax ~n ~x:(CI.CPointer x) ~incx = cblas_izamax n x incx
 
-let scopy ~n ~x ~incx ~y ~incy = cblas_scopy n (CI.cptr x) incx (CI.cptr y) incy
+let sswap ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_sswap n x incx y incy
 
-let saxpy ~n ~alpha ~x ~incx ~y ~incy =
-  cblas_saxpy n alpha (CI.cptr x) incx (CI.cptr y) incy
 
+let scopy ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_scopy n x incx y incy
 
-let dswap ~n ~x ~incx ~y ~incy = cblas_dswap n (CI.cptr x) incx (CI.cptr y) incy
 
-let dcopy ~n ~x ~incx ~y ~incy = cblas_dcopy n (CI.cptr x) incx (CI.cptr y) incy
+let saxpy ~n ~alpha ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_saxpy n alpha x incx y incy
 
-let daxpy ~n ~alpha ~x ~incx ~y ~incy =
-  cblas_daxpy n alpha (CI.cptr x) incx (CI.cptr y) incy
 
+let dswap ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_dswap n x incx y incy
 
-let cswap ~n ~x ~incx ~y ~incy = cblas_cswap n (CI.cptr x) incx (CI.cptr y) incy
 
-let ccopy ~n ~x ~incx ~y ~incy = cblas_ccopy n (CI.cptr x) incx (CI.cptr y) incy
+let dcopy ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_dcopy n x incx y incy
 
-let caxpy ~n ~alpha ~x ~incx ~y ~incy =
-  cblas_caxpy n (CI.cptr alpha) (CI.cptr x) incx (CI.cptr y) incy
 
+let daxpy ~n ~alpha ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_daxpy n alpha x incx y incy
 
-let zswap ~n ~x ~incx ~y ~incy = cblas_zswap n (CI.cptr x) incx (CI.cptr y) incy
 
-let zcopy ~n ~x ~incx ~y ~incy = cblas_zcopy n (CI.cptr x) incx (CI.cptr y) incy
+let cswap ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_cswap n x incx y incy
 
-let zaxpy ~n ~alpha ~x ~incx ~y ~incy =
-  cblas_zaxpy n (CI.cptr alpha) (CI.cptr x) incx (CI.cptr y) incy
 
+let ccopy ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_ccopy n x incx y incy
 
-let srotg ~a ~b ~c ~s = cblas_srotg (CI.cptr a) (CI.cptr b) (CI.cptr c) (CI.cptr s)
 
-let srotmg ~d1 ~d2 ~b1 ~b2 ~p =
-  cblas_srotmg (CI.cptr d1) (CI.cptr d2) (CI.cptr b1) b2 (CI.cptr p)
+let caxpy ~n ~alpha:(CI.CPointer alpha) ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_caxpy n alpha x incx y incy
 
 
-let srot ~n ~x ~incx ~y ~incy ~c ~s = cblas_srot n (CI.cptr x) incx (CI.cptr y) incy c s
+let zswap ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_zswap n x incx y incy
 
-let srotm ~n ~x ~incx ~y ~incy ~p =
-  cblas_srotm n (CI.cptr x) incx (CI.cptr y) incy (CI.cptr p)
 
+let zcopy ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_zcopy n x incx y incy
 
-let drotg ~a ~b ~c ~s = cblas_drotg (CI.cptr a) (CI.cptr b) (CI.cptr c) (CI.cptr s)
 
-let drotmg ~d1 ~d2 ~b1 ~b2 ~p =
-  cblas_drotmg (CI.cptr d1) (CI.cptr d2) (CI.cptr b1) b2 (CI.cptr p)
+let zaxpy ~n ~alpha:(CI.CPointer alpha) ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy =
+  cblas_zaxpy n alpha x incx y incy
 
 
-let drot ~n ~x ~incx ~y ~incy ~c ~s = cblas_drot n (CI.cptr x) incx (CI.cptr y) incy c s
+let srotg ~a:(CI.CPointer a) ~b:(CI.CPointer b) ~c:(CI.CPointer c) ~s:(CI.CPointer s) =
+  cblas_srotg a b c s
 
-let drotm ~n ~x ~incx ~y ~incy ~p =
-  cblas_drotm n (CI.cptr x) incx (CI.cptr y) incy (CI.cptr p)
 
+let srotmg
+    ~d1:(CI.CPointer d1)
+    ~d2:(CI.CPointer d2)
+    ~b1:(CI.CPointer b1)
+    ~b2
+    ~p:(CI.CPointer p)
+  =
+  cblas_srotmg d1 d2 b1 b2 p
 
-let sscal ~n ~alpha ~x ~incx = cblas_sscal n alpha (CI.cptr x) incx
 
-let dscal ~n ~alpha ~x ~incx = cblas_dscal n alpha (CI.cptr x) incx
+let srot ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy ~c ~s =
+  cblas_srot n x incx y incy c s
 
-let cscal ~n ~alpha ~x ~incx = cblas_cscal n (CI.cptr alpha) (CI.cptr x) incx
 
-let zscal ~n ~alpha ~x ~incx = cblas_zscal n (CI.cptr alpha) (CI.cptr x) incx
+let srotm ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy ~p:(CI.CPointer p) =
+  cblas_srotm n x incx y incy p
 
-let csscal ~n ~alpha ~x ~incx = cblas_csscal n alpha (CI.cptr x) incx
 
-let zdscal ~n ~alpha ~x ~incx = cblas_zdscal n alpha (CI.cptr x) incx
+let drotg ~a:(CI.CPointer a) ~b:(CI.CPointer b) ~c:(CI.CPointer c) ~s:(CI.CPointer s) =
+  cblas_drotg a b c s
 
-let sgemv ~order ~transa ~m ~n ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_sgemv
-    order
-    transa
-    m
-    n
-    alpha
-    (CI.cptr a)
-    lda
-    (CI.cptr x)
-    incx
-    beta
-    (CI.cptr y)
-    incy
 
+let drotmg
+    ~d1:(CI.CPointer d1)
+    ~d2:(CI.CPointer d2)
+    ~b1:(CI.CPointer b1)
+    ~b2
+    ~p:(CI.CPointer p)
+  =
+  cblas_drotmg d1 d2 b1 b2 p
 
-let sgbmv ~order ~transa ~m ~n ~kl ~ku ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_sgbmv
-    order
-    transa
-    m
-    n
-    kl
-    ku
-    alpha
-    (CI.cptr a)
-    lda
-    (CI.cptr x)
-    incx
-    beta
-    (CI.cptr y)
-    incy
 
+let drot ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy ~c ~s =
+  cblas_drot n x incx y incy c s
 
-let strmv ~order ~uplo ~transa ~diag ~n ~a ~lda ~x ~incx =
-  cblas_strmv order uplo transa diag n (CI.cptr a) lda (CI.cptr x) incx
 
+let drotm ~n ~x:(CI.CPointer x) ~incx ~y:(CI.CPointer y) ~incy ~p:(CI.CPointer p) =
+  cblas_drotm n x incx y incy p
 
-let stbmv ~order ~uplo ~transa ~diag ~n ~k ~a ~lda ~x ~incx =
-  cblas_stbmv order uplo transa diag n k (CI.cptr a) lda (CI.cptr x) incx
 
+let sscal ~n ~alpha ~x:(CI.CPointer x) ~incx = cblas_sscal n alpha x incx
 
-let stpmv ~order ~uplo ~transa ~diag ~n ~ap ~x ~incx =
-  cblas_stpmv order uplo transa diag n (CI.cptr ap) (CI.cptr x) incx
+let dscal ~n ~alpha ~x:(CI.CPointer x) ~incx = cblas_dscal n alpha x incx
 
+let cscal ~n ~alpha:(CI.CPointer alpha) ~x:(CI.CPointer x) ~incx =
+  cblas_cscal n alpha x incx
 
-let strsv ~order ~uplo ~transa ~diag ~n ~a ~lda ~x ~incx =
-  cblas_strsv order uplo transa diag n (CI.cptr a) lda (CI.cptr x) incx
 
+let zscal ~n ~alpha:(CI.CPointer alpha) ~x:(CI.CPointer x) ~incx =
+  cblas_zscal n alpha x incx
 
-let stbsv ~order ~uplo ~transa ~diag ~n ~k ~a ~lda ~x ~incx =
-  cblas_stbsv order uplo transa diag n k (CI.cptr a) lda (CI.cptr x) incx
 
+let csscal ~n ~alpha ~x:(CI.CPointer x) ~incx = cblas_csscal n alpha x incx
 
-let stpsv ~order ~uplo ~transa ~diag ~n ~ap ~x ~incx =
-  cblas_stpsv order uplo transa diag n (CI.cptr ap) (CI.cptr x) incx
+let zdscal ~n ~alpha ~x:(CI.CPointer x) ~incx = cblas_zdscal n alpha x incx
 
-
-let dgemv ~order ~transa ~m ~n ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_dgemv
-    order
-    transa
-    m
-    n
-    alpha
-    (CI.cptr a)
-    lda
-    (CI.cptr x)
-    incx
-    beta
-    (CI.cptr y)
-    incy
-
-
-let dgbmv ~order ~transa ~m ~n ~kl ~ku ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_dgbmv
-    order
-    transa
-    m
-    n
-    kl
-    ku
-    alpha
-    (CI.cptr a)
-    lda
-    (CI.cptr x)
-    incx
-    beta
-    (CI.cptr y)
-    incy
-
-
-let dtrmv ~order ~uplo ~transa ~diag ~n ~a ~lda ~x ~incx =
-  cblas_dtrmv order uplo transa diag n (CI.cptr a) lda (CI.cptr x) incx
-
-
-let dtbmv ~order ~uplo ~transa ~diag ~n ~k ~a ~lda ~x ~incx =
-  cblas_dtbmv order uplo transa diag n k (CI.cptr a) lda (CI.cptr x) incx
-
-
-let dtpmv ~order ~uplo ~transa ~diag ~n ~ap ~x ~incx =
-  cblas_dtpmv order uplo transa diag n (CI.cptr ap) (CI.cptr x) incx
-
-
-let dtrsv ~order ~uplo ~transa ~diag ~n ~a ~lda ~x ~incx =
-  cblas_dtrsv order uplo transa diag n (CI.cptr a) lda (CI.cptr x) incx
-
-
-let dtbsv ~order ~uplo ~transa ~diag ~n ~k ~a ~lda ~x ~incx =
-  cblas_dtbsv order uplo transa diag n k (CI.cptr a) lda (CI.cptr x) incx
-
-
-let dtpsv ~order ~uplo ~transa ~diag ~n ~ap ~x ~incx =
-  cblas_dtpsv order uplo transa diag n (CI.cptr ap) (CI.cptr x) incx
-
-
-let cgemv ~order ~transa ~m ~n ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_cgemv
-    order
-    transa
-    m
-    n
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr x)
-    incx
-    (CI.cptr beta)
-    (CI.cptr y)
-    incy
-
-
-let cgbmv ~order ~transa ~m ~n ~kl ~ku ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_cgbmv
-    order
-    transa
-    m
-    n
-    kl
-    ku
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr x)
-    incx
-    (CI.cptr beta)
-    (CI.cptr y)
-    incy
-
-
-let ctrmv ~order ~uplo ~transa ~diag ~n ~a ~lda ~x ~incx =
-  cblas_ctrmv order uplo transa diag n (CI.cptr a) lda (CI.cptr x) incx
-
-
-let ctbmv ~order ~uplo ~transa ~diag ~n ~k ~a ~lda ~x ~incx =
-  cblas_ctbmv order uplo transa diag n k (CI.cptr a) lda (CI.cptr x) incx
-
-
-let ctpmv ~order ~uplo ~transa ~diag ~n ~ap ~x ~incx =
-  cblas_ctpmv order uplo transa diag n (CI.cptr ap) (CI.cptr x) incx
-
-
-let ctrsv ~order ~uplo ~transa ~diag ~n ~a ~lda ~x ~incx =
-  cblas_ctrsv order uplo transa diag n (CI.cptr a) lda (CI.cptr x) incx
-
-
-let ctbsv ~order ~uplo ~transa ~diag ~n ~k ~a ~lda ~x ~incx =
-  cblas_ctbsv order uplo transa diag n k (CI.cptr a) lda (CI.cptr x) incx
-
-
-let ctpsv ~order ~uplo ~transa ~diag ~n ~ap ~x ~incx =
-  cblas_ctpsv order uplo transa diag n (CI.cptr ap) (CI.cptr x) incx
-
-
-let zgemv ~order ~transa ~m ~n ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_zgemv
-    order
-    transa
-    m
-    n
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr x)
-    incx
-    (CI.cptr beta)
-    (CI.cptr y)
-    incy
-
-
-let zgbmv ~order ~transa ~m ~n ~kl ~ku ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_zgbmv
-    order
-    transa
-    m
-    n
-    kl
-    ku
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr x)
-    incx
-    (CI.cptr beta)
-    (CI.cptr y)
-    incy
-
-
-let ztrmv ~order ~uplo ~transa ~diag ~n ~a ~lda ~x ~incx =
-  cblas_ztrmv order uplo transa diag n (CI.cptr a) lda (CI.cptr x) incx
-
-
-let ztbmv ~order ~uplo ~transa ~diag ~n ~k ~a ~lda ~x ~incx =
-  cblas_ztbmv order uplo transa diag n k (CI.cptr a) lda (CI.cptr x) incx
-
-
-let ztpmv ~order ~uplo ~transa ~diag ~n ~ap ~x ~incx =
-  cblas_ztpmv order uplo transa diag n (CI.cptr ap) (CI.cptr x) incx
-
-
-let ztrsv ~order ~uplo ~transa ~diag ~n ~a ~lda ~x ~incx =
-  cblas_ztrsv order uplo transa diag n (CI.cptr a) lda (CI.cptr x) incx
-
-
-let ztbsv ~order ~uplo ~transa ~diag ~n ~k ~a ~lda ~x ~incx =
-  cblas_ztbsv order uplo transa diag n k (CI.cptr a) lda (CI.cptr x) incx
-
-
-let ztpsv ~order ~uplo ~transa ~diag ~n ~ap ~x ~incx =
-  cblas_ztpsv order uplo transa diag n (CI.cptr ap) (CI.cptr x) incx
-
-
-let ssymv ~order ~uplo ~n ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_ssymv order uplo n alpha (CI.cptr a) lda (CI.cptr x) incx beta (CI.cptr y) incy
-
-
-let ssbmv ~order ~uplo ~n ~k ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_ssbmv order uplo n k alpha (CI.cptr a) lda (CI.cptr x) incx beta (CI.cptr y) incy
-
-
-let sspmv ~order ~uplo ~n ~alpha ~ap ~x ~incx ~beta ~y ~incy =
-  cblas_sspmv order uplo n alpha (CI.cptr ap) (CI.cptr x) incx beta (CI.cptr y) incy
-
-
-let sger ~order ~m ~n ~alpha ~x ~incx ~y ~incy ~a ~lda =
-  cblas_sger order m n alpha (CI.cptr x) incx (CI.cptr y) incy (CI.cptr a) lda
-
-
-let ssyr ~order ~uplo ~n ~alpha ~x ~incx ~a ~lda =
-  cblas_ssyr order uplo n alpha (CI.cptr x) incx (CI.cptr a) lda
-
-
-let sspr ~order ~uplo ~n ~alpha ~x ~incx ~ap =
-  cblas_sspr order uplo n alpha (CI.cptr x) incx (CI.cptr ap)
-
-
-let ssyr2 ~order ~uplo ~n ~alpha ~x ~incx ~y ~incy ~a ~lda =
-  cblas_ssyr2 order uplo n alpha (CI.cptr x) incx (CI.cptr y) incy (CI.cptr a) lda
-
-
-let sspr2 ~order ~uplo ~n ~alpha ~x ~incx ~y ~incy ~a =
-  cblas_sspr2 order uplo n alpha (CI.cptr x) incx (CI.cptr y) incy (CI.cptr a)
-
-
-let dsymv ~order ~uplo ~n ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_dsymv order uplo n alpha (CI.cptr a) lda (CI.cptr x) incx beta (CI.cptr y) incy
-
-
-let dsbmv ~order ~uplo ~n ~k ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_dsbmv order uplo n k alpha (CI.cptr a) lda (CI.cptr x) incx beta (CI.cptr y) incy
-
-
-let dspmv ~order ~uplo ~n ~alpha ~ap ~x ~incx ~beta ~y ~incy =
-  cblas_dspmv order uplo n alpha (CI.cptr ap) (CI.cptr x) incx beta (CI.cptr y) incy
-
-
-let dger ~order ~m ~n ~alpha ~x ~incx ~y ~incy ~a ~lda =
-  cblas_dger order m n alpha (CI.cptr x) incx (CI.cptr y) incy (CI.cptr a) lda
-
-
-let dsyr ~order ~uplo ~n ~alpha ~x ~incx ~a ~lda =
-  cblas_dsyr order uplo n alpha (CI.cptr x) incx (CI.cptr a) lda
-
-
-let dspr ~order ~uplo ~n ~alpha ~x ~incx ~ap =
-  cblas_dspr order uplo n alpha (CI.cptr x) incx (CI.cptr ap)
-
-
-let dsyr2 ~order ~uplo ~n ~alpha ~x ~incx ~y ~incy ~a ~lda =
-  cblas_dsyr2 order uplo n alpha (CI.cptr x) incx (CI.cptr y) incy (CI.cptr a) lda
-
-
-let dspr2 ~order ~uplo ~n ~alpha ~x ~incx ~y ~incy ~a =
-  cblas_dspr2 order uplo n alpha (CI.cptr x) incx (CI.cptr y) incy (CI.cptr a)
-
-
-let chemv ~order ~uplo ~n ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_chemv
-    order
-    uplo
-    n
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr x)
-    incx
-    (CI.cptr beta)
-    (CI.cptr y)
-    incy
-
-
-let chbmv ~order ~uplo ~n ~k ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_chbmv
-    order
-    uplo
-    n
-    k
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr x)
-    incx
-    (CI.cptr beta)
-    (CI.cptr y)
-    incy
-
-
-let chpmv ~order ~uplo ~n ~alpha ~ap ~x ~incx ~beta ~y ~incy =
-  cblas_chpmv
-    order
-    uplo
-    n
-    (CI.cptr alpha)
-    (CI.cptr ap)
-    (CI.cptr x)
-    incx
-    (CI.cptr beta)
-    (CI.cptr y)
-    incy
-
-
-let cgeru ~order ~m ~n ~alpha ~x ~incx ~y ~incy ~a ~lda =
-  cblas_cgeru order m n (CI.cptr alpha) (CI.cptr x) incx (CI.cptr y) incy (CI.cptr a) lda
-
-
-let cgerc ~order ~m ~n ~alpha ~x ~incx ~y ~incy ~a ~lda =
-  cblas_cgerc order m n (CI.cptr alpha) (CI.cptr x) incx (CI.cptr y) incy (CI.cptr a) lda
-
-
-let cher ~order ~uplo ~n ~alpha ~x ~incx ~a ~lda =
-  cblas_cher order uplo n alpha (CI.cptr x) incx (CI.cptr a) lda
-
-
-let chpr ~order ~uplo ~n ~alpha ~x ~incx ~a =
-  cblas_chpr order uplo n alpha (CI.cptr x) incx (CI.cptr a)
-
-
-let cher2 ~order ~uplo ~n ~alpha ~x ~incx ~y ~incy ~a ~lda =
-  cblas_cher2
-    order
-    uplo
-    n
-    (CI.cptr alpha)
-    (CI.cptr x)
-    incx
-    (CI.cptr y)
-    incy
-    (CI.cptr a)
-    lda
-
-
-let chpr2 ~order ~uplo ~n ~alpha ~x ~incx ~y ~incy ~ap =
-  cblas_chpr2 order uplo n (CI.cptr alpha) (CI.cptr x) incx (CI.cptr y) incy (CI.cptr ap)
-
-
-let zhemv ~order ~uplo ~n ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_zhemv
-    order
-    uplo
-    n
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr x)
-    incx
-    (CI.cptr beta)
-    (CI.cptr y)
-    incy
-
-
-let zhbmv ~order ~uplo ~n ~k ~alpha ~a ~lda ~x ~incx ~beta ~y ~incy =
-  cblas_zhbmv
-    order
-    uplo
-    n
-    k
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr x)
-    incx
-    (CI.cptr beta)
-    (CI.cptr y)
-    incy
-
-
-let zhpmv ~order ~uplo ~n ~alpha ~ap ~x ~incx ~beta ~y ~incy =
-  cblas_zhpmv
-    order
-    uplo
-    n
-    (CI.cptr alpha)
-    (CI.cptr ap)
-    (CI.cptr x)
-    incx
-    (CI.cptr beta)
-    (CI.cptr y)
-    incy
-
-
-let zgeru ~order ~m ~n ~alpha ~x ~incx ~y ~incy ~a ~lda =
-  cblas_zgeru order m n (CI.cptr alpha) (CI.cptr x) incx (CI.cptr y) incy (CI.cptr a) lda
-
-
-let zgerc ~order ~m ~n ~alpha ~x ~incx ~y ~incy ~a ~lda =
-  cblas_zgerc order m n (CI.cptr alpha) (CI.cptr x) incx (CI.cptr y) incy (CI.cptr a) lda
-
-
-let zher ~order ~uplo ~n ~alpha ~x ~incx ~a ~lda =
-  cblas_zher order uplo n alpha (CI.cptr x) incx (CI.cptr a) lda
-
-
-let zhpr ~order ~uplo ~n ~alpha ~x ~incx ~a =
-  cblas_zhpr order uplo n alpha (CI.cptr x) incx (CI.cptr a)
-
-
-let zher2 ~order ~uplo ~n ~alpha ~x ~incx ~y ~incy ~a ~lda =
-  cblas_zher2
-    order
-    uplo
-    n
-    (CI.cptr alpha)
-    (CI.cptr x)
-    incx
-    (CI.cptr y)
-    incy
-    (CI.cptr a)
-    lda
-
-
-let zhpr2 ~order ~uplo ~n ~alpha ~x ~incx ~y ~incy ~ap =
-  cblas_zhpr2 order uplo n (CI.cptr alpha) (CI.cptr x) incx (CI.cptr y) incy (CI.cptr ap)
-
-
-let sgemm ~order ~transa ~transb ~m ~n ~k ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_sgemm
-    order
-    transa
-    transb
-    m
-    n
-    k
-    alpha
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    beta
-    (CI.cptr c)
-    ldc
-
-
-let ssymm ~order ~side ~uplo ~m ~n ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_ssymm
-    order
-    side
-    uplo
-    m
-    n
-    alpha
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    beta
-    (CI.cptr c)
-    ldc
-
-
-let ssyrk ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~beta ~c ~ldc =
-  cblas_ssyrk order uplo trans n k alpha (CI.cptr a) lda beta (CI.cptr c) ldc
-
-
-let ssyr2k ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_ssyr2k
-    order
-    uplo
-    trans
-    n
-    k
-    alpha
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    beta
-    (CI.cptr c)
-    ldc
-
-
-let strmm ~order ~side ~uplo ~transa ~diag ~m ~n ~alpha ~a ~lda ~b ~ldb =
-  cblas_strmm order side uplo transa diag m n alpha (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let strsm ~order ~side ~uplo ~transa ~diag ~m ~n ~alpha ~a ~lda ~b ~ldb =
-  cblas_strsm order side uplo transa diag m n alpha (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let dgemm ~order ~transa ~transb ~m ~n ~k ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_dgemm
-    order
-    transa
-    transb
-    m
-    n
-    k
-    alpha
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    beta
-    (CI.cptr c)
-    ldc
-
-
-let dsymm ~order ~side ~uplo ~m ~n ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_dsymm
-    order
-    side
-    uplo
-    m
-    n
-    alpha
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    beta
-    (CI.cptr c)
-    ldc
-
-
-let dsyrk ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~beta ~c ~ldc =
-  cblas_dsyrk order uplo trans n k alpha (CI.cptr a) lda beta (CI.cptr c) ldc
-
-
-let dsyr2k ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_dsyr2k
-    order
-    uplo
-    trans
-    n
-    k
-    alpha
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    beta
-    (CI.cptr c)
-    ldc
-
-
-let dtrmm ~order ~side ~uplo ~transa ~diag ~m ~n ~alpha ~a ~lda ~b ~ldb =
-  cblas_dtrmm order side uplo transa diag m n alpha (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let dtrsm ~order ~side ~uplo ~transa ~diag ~m ~n ~alpha ~a ~lda ~b ~ldb =
-  cblas_dtrsm order side uplo transa diag m n alpha (CI.cptr a) lda (CI.cptr b) ldb
-
-
-let cgemm ~order ~transa ~transb ~m ~n ~k ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_cgemm
-    order
-    transa
-    transb
-    m
-    n
-    k
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr beta)
-    (CI.cptr c)
-    ldc
-
-
-let csymm ~order ~side ~uplo ~m ~n ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_csymm
-    order
-    side
-    uplo
-    m
-    n
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr beta)
-    (CI.cptr c)
-    ldc
-
-
-let csyrk ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~beta ~c ~ldc =
-  cblas_csyrk
-    order
-    uplo
-    trans
-    n
-    k
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr beta)
-    (CI.cptr c)
-    ldc
-
-
-let csyr2k ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_csyr2k
-    order
-    uplo
-    trans
-    n
-    k
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr beta)
-    (CI.cptr c)
-    ldc
-
-
-let ctrmm ~order ~side ~uplo ~transa ~diag ~m ~n ~alpha ~a ~lda ~b ~ldb =
-  cblas_ctrmm
-    order
-    side
-    uplo
-    transa
-    diag
-    m
-    n
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-
-
-let ctrsm ~order ~side ~uplo ~transa ~diag ~m ~n ~alpha ~a ~lda ~b ~ldb =
-  cblas_ctrsm
-    order
-    side
-    uplo
-    transa
-    diag
-    m
-    n
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-
-
-let zgemm ~order ~transa ~transb ~m ~n ~k ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_zgemm
-    order
-    transa
-    transb
-    m
-    n
-    k
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr beta)
-    (CI.cptr c)
-    ldc
-
-
-let zsymm ~order ~side ~uplo ~m ~n ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_zsymm
-    order
-    side
-    uplo
-    m
-    n
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr beta)
-    (CI.cptr c)
-    ldc
-
-
-let zsyrk ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~beta ~c ~ldc =
-  cblas_zsyrk
-    order
-    uplo
-    trans
-    n
-    k
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr beta)
-    (CI.cptr c)
-    ldc
-
-
-let zsyr2k ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_zsyr2k
-    order
-    uplo
-    trans
-    n
-    k
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr beta)
-    (CI.cptr c)
-    ldc
-
-
-let ztrmm ~order ~side ~uplo ~transa ~diag ~m ~n ~alpha ~a ~lda ~b ~ldb =
-  cblas_ztrmm
-    order
-    side
-    uplo
-    transa
-    diag
-    m
-    n
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-
-
-let ztrsm ~order ~side ~uplo ~transa ~diag ~m ~n ~alpha ~a ~lda ~b ~ldb =
-  cblas_ztrsm
-    order
-    side
-    uplo
-    transa
-    diag
-    m
-    n
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-
-
-let chemm ~order ~side ~uplo ~m ~n ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_chemm
-    order
-    side
-    uplo
-    m
-    n
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr beta)
-    (CI.cptr c)
-    ldc
-
-
-let cherk ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~beta ~c ~ldc =
-  cblas_cherk order uplo trans n k alpha (CI.cptr a) lda beta (CI.cptr c) ldc
-
-
-let cher2k ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_cher2k
-    order
-    uplo
-    trans
-    n
-    k
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    beta
-    (CI.cptr c)
-    ldc
-
-
-let zhemm ~order ~side ~uplo ~m ~n ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_zhemm
-    order
-    side
-    uplo
-    m
-    n
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    (CI.cptr beta)
-    (CI.cptr c)
-    ldc
-
-
-let zherk ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~beta ~c ~ldc =
-  cblas_zherk order uplo trans n k alpha (CI.cptr a) lda beta (CI.cptr c) ldc
-
-
-let zher2k ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
-  cblas_zher2k
-    order
-    uplo
-    trans
-    n
-    k
-    (CI.cptr alpha)
-    (CI.cptr a)
-    lda
-    (CI.cptr b)
-    ldb
-    beta
-    (CI.cptr c)
-    ldc
+let sgemv
+    ~order
+    ~transa
+    ~m
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_sgemv order transa m n alpha a lda x incx beta y incy
+
+
+let sgbmv
+    ~order
+    ~transa
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_sgbmv order transa m n kl ku alpha a lda x incx beta y incy
+
+
+let strmv ~order ~uplo ~transa ~diag ~n ~a:(CI.CPointer a) ~lda ~x:(CI.CPointer x) ~incx =
+  cblas_strmv order uplo transa diag n a lda x incx
+
+
+let stbmv
+    ~order
+    ~uplo
+    ~transa
+    ~diag
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+  =
+  cblas_stbmv order uplo transa diag n k a lda x incx
+
+
+let stpmv ~order ~uplo ~transa ~diag ~n ~ap:(CI.CPointer ap) ~x:(CI.CPointer x) ~incx =
+  cblas_stpmv order uplo transa diag n ap x incx
+
+
+let strsv ~order ~uplo ~transa ~diag ~n ~a:(CI.CPointer a) ~lda ~x:(CI.CPointer x) ~incx =
+  cblas_strsv order uplo transa diag n a lda x incx
+
+
+let stbsv
+    ~order
+    ~uplo
+    ~transa
+    ~diag
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+  =
+  cblas_stbsv order uplo transa diag n k a lda x incx
+
+
+let stpsv ~order ~uplo ~transa ~diag ~n ~ap:(CI.CPointer ap) ~x:(CI.CPointer x) ~incx =
+  cblas_stpsv order uplo transa diag n ap x incx
+
+
+let dgemv
+    ~order
+    ~transa
+    ~m
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_dgemv order transa m n alpha a lda x incx beta y incy
+
+
+let dgbmv
+    ~order
+    ~transa
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_dgbmv order transa m n kl ku alpha a lda x incx beta y incy
+
+
+let dtrmv ~order ~uplo ~transa ~diag ~n ~a:(CI.CPointer a) ~lda ~x:(CI.CPointer x) ~incx =
+  cblas_dtrmv order uplo transa diag n a lda x incx
+
+
+let dtbmv
+    ~order
+    ~uplo
+    ~transa
+    ~diag
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+  =
+  cblas_dtbmv order uplo transa diag n k a lda x incx
+
+
+let dtpmv ~order ~uplo ~transa ~diag ~n ~ap:(CI.CPointer ap) ~x:(CI.CPointer x) ~incx =
+  cblas_dtpmv order uplo transa diag n ap x incx
+
+
+let dtrsv ~order ~uplo ~transa ~diag ~n ~a:(CI.CPointer a) ~lda ~x:(CI.CPointer x) ~incx =
+  cblas_dtrsv order uplo transa diag n a lda x incx
+
+
+let dtbsv
+    ~order
+    ~uplo
+    ~transa
+    ~diag
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+  =
+  cblas_dtbsv order uplo transa diag n k a lda x incx
+
+
+let dtpsv ~order ~uplo ~transa ~diag ~n ~ap:(CI.CPointer ap) ~x:(CI.CPointer x) ~incx =
+  cblas_dtpsv order uplo transa diag n ap x incx
+
+
+let cgemv
+    ~order
+    ~transa
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta:(CI.CPointer beta)
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_cgemv order transa m n alpha a lda x incx beta y incy
+
+
+let cgbmv
+    ~order
+    ~transa
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta:(CI.CPointer beta)
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_cgbmv order transa m n kl ku alpha a lda x incx beta y incy
+
+
+let ctrmv ~order ~uplo ~transa ~diag ~n ~a:(CI.CPointer a) ~lda ~x:(CI.CPointer x) ~incx =
+  cblas_ctrmv order uplo transa diag n a lda x incx
+
+
+let ctbmv
+    ~order
+    ~uplo
+    ~transa
+    ~diag
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+  =
+  cblas_ctbmv order uplo transa diag n k a lda x incx
+
+
+let ctpmv ~order ~uplo ~transa ~diag ~n ~ap:(CI.CPointer ap) ~x:(CI.CPointer x) ~incx =
+  cblas_ctpmv order uplo transa diag n ap x incx
+
+
+let ctrsv ~order ~uplo ~transa ~diag ~n ~a:(CI.CPointer a) ~lda ~x:(CI.CPointer x) ~incx =
+  cblas_ctrsv order uplo transa diag n a lda x incx
+
+
+let ctbsv
+    ~order
+    ~uplo
+    ~transa
+    ~diag
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+  =
+  cblas_ctbsv order uplo transa diag n k a lda x incx
+
+
+let ctpsv ~order ~uplo ~transa ~diag ~n ~ap:(CI.CPointer ap) ~x:(CI.CPointer x) ~incx =
+  cblas_ctpsv order uplo transa diag n ap x incx
+
+
+let zgemv
+    ~order
+    ~transa
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta:(CI.CPointer beta)
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_zgemv order transa m n alpha a lda x incx beta y incy
+
+
+let zgbmv
+    ~order
+    ~transa
+    ~m
+    ~n
+    ~kl
+    ~ku
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta:(CI.CPointer beta)
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_zgbmv order transa m n kl ku alpha a lda x incx beta y incy
+
+
+let ztrmv ~order ~uplo ~transa ~diag ~n ~a:(CI.CPointer a) ~lda ~x:(CI.CPointer x) ~incx =
+  cblas_ztrmv order uplo transa diag n a lda x incx
+
+
+let ztbmv
+    ~order
+    ~uplo
+    ~transa
+    ~diag
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+  =
+  cblas_ztbmv order uplo transa diag n k a lda x incx
+
+
+let ztpmv ~order ~uplo ~transa ~diag ~n ~ap:(CI.CPointer ap) ~x:(CI.CPointer x) ~incx =
+  cblas_ztpmv order uplo transa diag n ap x incx
+
+
+let ztrsv ~order ~uplo ~transa ~diag ~n ~a:(CI.CPointer a) ~lda ~x:(CI.CPointer x) ~incx =
+  cblas_ztrsv order uplo transa diag n a lda x incx
+
+
+let ztbsv
+    ~order
+    ~uplo
+    ~transa
+    ~diag
+    ~n
+    ~k
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+  =
+  cblas_ztbsv order uplo transa diag n k a lda x incx
+
+
+let ztpsv ~order ~uplo ~transa ~diag ~n ~ap:(CI.CPointer ap) ~x:(CI.CPointer x) ~incx =
+  cblas_ztpsv order uplo transa diag n ap x incx
+
+
+let ssymv
+    ~order
+    ~uplo
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_ssymv order uplo n alpha a lda x incx beta y incy
+
+
+let ssbmv
+    ~order
+    ~uplo
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_ssbmv order uplo n k alpha a lda x incx beta y incy
+
+
+let sspmv
+    ~order
+    ~uplo
+    ~n
+    ~alpha
+    ~ap:(CI.CPointer ap)
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_sspmv order uplo n alpha ap x incx beta y incy
+
+
+let sger
+    ~order
+    ~m
+    ~n
+    ~alpha
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  cblas_sger order m n alpha x incx y incy a lda
+
+
+let ssyr ~order ~uplo ~n ~alpha ~x:(CI.CPointer x) ~incx ~a:(CI.CPointer a) ~lda =
+  cblas_ssyr order uplo n alpha x incx a lda
+
+
+let sspr ~order ~uplo ~n ~alpha ~x:(CI.CPointer x) ~incx ~ap:(CI.CPointer ap) =
+  cblas_sspr order uplo n alpha x incx ap
+
+
+let ssyr2
+    ~order
+    ~uplo
+    ~n
+    ~alpha
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  cblas_ssyr2 order uplo n alpha x incx y incy a lda
+
+
+let sspr2
+    ~order
+    ~uplo
+    ~n
+    ~alpha
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~a:(CI.CPointer a)
+  =
+  cblas_sspr2 order uplo n alpha x incx y incy a
+
+
+let dsymv
+    ~order
+    ~uplo
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_dsymv order uplo n alpha a lda x incx beta y incy
+
+
+let dsbmv
+    ~order
+    ~uplo
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_dsbmv order uplo n k alpha a lda x incx beta y incy
+
+
+let dspmv
+    ~order
+    ~uplo
+    ~n
+    ~alpha
+    ~ap:(CI.CPointer ap)
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_dspmv order uplo n alpha ap x incx beta y incy
+
+
+let dger
+    ~order
+    ~m
+    ~n
+    ~alpha
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  cblas_dger order m n alpha x incx y incy a lda
+
+
+let dsyr ~order ~uplo ~n ~alpha ~x:(CI.CPointer x) ~incx ~a:(CI.CPointer a) ~lda =
+  cblas_dsyr order uplo n alpha x incx a lda
+
+
+let dspr ~order ~uplo ~n ~alpha ~x:(CI.CPointer x) ~incx ~ap:(CI.CPointer ap) =
+  cblas_dspr order uplo n alpha x incx ap
+
+
+let dsyr2
+    ~order
+    ~uplo
+    ~n
+    ~alpha
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  cblas_dsyr2 order uplo n alpha x incx y incy a lda
+
+
+let dspr2
+    ~order
+    ~uplo
+    ~n
+    ~alpha
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~a:(CI.CPointer a)
+  =
+  cblas_dspr2 order uplo n alpha x incx y incy a
+
+
+let chemv
+    ~order
+    ~uplo
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta:(CI.CPointer beta)
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_chemv order uplo n alpha a lda x incx beta y incy
+
+
+let chbmv
+    ~order
+    ~uplo
+    ~n
+    ~k
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta:(CI.CPointer beta)
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_chbmv order uplo n k alpha a lda x incx beta y incy
+
+
+let chpmv
+    ~order
+    ~uplo
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~ap:(CI.CPointer ap)
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta:(CI.CPointer beta)
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_chpmv order uplo n alpha ap x incx beta y incy
+
+
+let cgeru
+    ~order
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  cblas_cgeru order m n alpha x incx y incy a lda
+
+
+let cgerc
+    ~order
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  cblas_cgerc order m n alpha x incx y incy a lda
+
+
+let cher ~order ~uplo ~n ~alpha ~x:(CI.CPointer x) ~incx ~a:(CI.CPointer a) ~lda =
+  cblas_cher order uplo n alpha x incx a lda
+
+
+let chpr ~order ~uplo ~n ~alpha ~x:(CI.CPointer x) ~incx ~a:(CI.CPointer a) =
+  cblas_chpr order uplo n alpha x incx a
+
+
+let cher2
+    ~order
+    ~uplo
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  cblas_cher2 order uplo n alpha x incx y incy a lda
+
+
+let chpr2
+    ~order
+    ~uplo
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~ap:(CI.CPointer ap)
+  =
+  cblas_chpr2 order uplo n alpha x incx y incy ap
+
+
+let zhemv
+    ~order
+    ~uplo
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta:(CI.CPointer beta)
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_zhemv order uplo n alpha a lda x incx beta y incy
+
+
+let zhbmv
+    ~order
+    ~uplo
+    ~n
+    ~k
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta:(CI.CPointer beta)
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_zhbmv order uplo n k alpha a lda x incx beta y incy
+
+
+let zhpmv
+    ~order
+    ~uplo
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~ap:(CI.CPointer ap)
+    ~x:(CI.CPointer x)
+    ~incx
+    ~beta:(CI.CPointer beta)
+    ~y:(CI.CPointer y)
+    ~incy
+  =
+  cblas_zhpmv order uplo n alpha ap x incx beta y incy
+
+
+let zgeru
+    ~order
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  cblas_zgeru order m n alpha x incx y incy a lda
+
+
+let zgerc
+    ~order
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  cblas_zgerc order m n alpha x incx y incy a lda
+
+
+let zher ~order ~uplo ~n ~alpha ~x:(CI.CPointer x) ~incx ~a:(CI.CPointer a) ~lda =
+  cblas_zher order uplo n alpha x incx a lda
+
+
+let zhpr ~order ~uplo ~n ~alpha ~x:(CI.CPointer x) ~incx ~a:(CI.CPointer a) =
+  cblas_zhpr order uplo n alpha x incx a
+
+
+let zher2
+    ~order
+    ~uplo
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~a:(CI.CPointer a)
+    ~lda
+  =
+  cblas_zher2 order uplo n alpha x incx y incy a lda
+
+
+let zhpr2
+    ~order
+    ~uplo
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~x:(CI.CPointer x)
+    ~incx
+    ~y:(CI.CPointer y)
+    ~incy
+    ~ap:(CI.CPointer ap)
+  =
+  cblas_zhpr2 order uplo n alpha x incx y incy ap
+
+
+let sgemm
+    ~order
+    ~transa
+    ~transb
+    ~m
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_sgemm order transa transb m n k alpha a lda b ldb beta c ldc
+
+
+let ssymm
+    ~order
+    ~side
+    ~uplo
+    ~m
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_ssymm order side uplo m n alpha a lda b ldb beta c ldc
+
+
+let ssyrk
+    ~order
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~beta
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_ssyrk order uplo trans n k alpha a lda beta c ldc
+
+
+let ssyr2k
+    ~order
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_ssyr2k order uplo trans n k alpha a lda b ldb beta c ldc
+
+
+let strmm
+    ~order
+    ~side
+    ~uplo
+    ~transa
+    ~diag
+    ~m
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  cblas_strmm order side uplo transa diag m n alpha a lda b ldb
+
+
+let strsm
+    ~order
+    ~side
+    ~uplo
+    ~transa
+    ~diag
+    ~m
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  cblas_strsm order side uplo transa diag m n alpha a lda b ldb
+
+
+let dgemm
+    ~order
+    ~transa
+    ~transb
+    ~m
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_dgemm order transa transb m n k alpha a lda b ldb beta c ldc
+
+
+let dsymm
+    ~order
+    ~side
+    ~uplo
+    ~m
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_dsymm order side uplo m n alpha a lda b ldb beta c ldc
+
+
+let dsyrk
+    ~order
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~beta
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_dsyrk order uplo trans n k alpha a lda beta c ldc
+
+
+let dsyr2k
+    ~order
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_dsyr2k order uplo trans n k alpha a lda b ldb beta c ldc
+
+
+let dtrmm
+    ~order
+    ~side
+    ~uplo
+    ~transa
+    ~diag
+    ~m
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  cblas_dtrmm order side uplo transa diag m n alpha a lda b ldb
+
+
+let dtrsm
+    ~order
+    ~side
+    ~uplo
+    ~transa
+    ~diag
+    ~m
+    ~n
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  cblas_dtrsm order side uplo transa diag m n alpha a lda b ldb
+
+
+let cgemm
+    ~order
+    ~transa
+    ~transb
+    ~m
+    ~n
+    ~k
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta:(CI.CPointer beta)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_cgemm order transa transb m n k alpha a lda b ldb beta c ldc
+
+
+let csymm
+    ~order
+    ~side
+    ~uplo
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta:(CI.CPointer beta)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_csymm order side uplo m n alpha a lda b ldb beta c ldc
+
+
+let csyrk
+    ~order
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~beta:(CI.CPointer beta)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_csyrk order uplo trans n k alpha a lda beta c ldc
+
+
+let csyr2k
+    ~order
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta:(CI.CPointer beta)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_csyr2k order uplo trans n k alpha a lda b ldb beta c ldc
+
+
+let ctrmm
+    ~order
+    ~side
+    ~uplo
+    ~transa
+    ~diag
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  cblas_ctrmm order side uplo transa diag m n alpha a lda b ldb
+
+
+let ctrsm
+    ~order
+    ~side
+    ~uplo
+    ~transa
+    ~diag
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  cblas_ctrsm order side uplo transa diag m n alpha a lda b ldb
+
+
+let zgemm
+    ~order
+    ~transa
+    ~transb
+    ~m
+    ~n
+    ~k
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta:(CI.CPointer beta)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_zgemm order transa transb m n k alpha a lda b ldb beta c ldc
+
+
+let zsymm
+    ~order
+    ~side
+    ~uplo
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta:(CI.CPointer beta)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_zsymm order side uplo m n alpha a lda b ldb beta c ldc
+
+
+let zsyrk
+    ~order
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~beta:(CI.CPointer beta)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_zsyrk order uplo trans n k alpha a lda beta c ldc
+
+
+let zsyr2k
+    ~order
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta:(CI.CPointer beta)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_zsyr2k order uplo trans n k alpha a lda b ldb beta c ldc
+
+
+let ztrmm
+    ~order
+    ~side
+    ~uplo
+    ~transa
+    ~diag
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  cblas_ztrmm order side uplo transa diag m n alpha a lda b ldb
+
+
+let ztrsm
+    ~order
+    ~side
+    ~uplo
+    ~transa
+    ~diag
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+  =
+  cblas_ztrsm order side uplo transa diag m n alpha a lda b ldb
+
+
+let chemm
+    ~order
+    ~side
+    ~uplo
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta:(CI.CPointer beta)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_chemm order side uplo m n alpha a lda b ldb beta c ldc
+
+
+let cherk
+    ~order
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~beta
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_cherk order uplo trans n k alpha a lda beta c ldc
+
+
+let cher2k
+    ~order
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_cher2k order uplo trans n k alpha a lda b ldb beta c ldc
+
+
+let zhemm
+    ~order
+    ~side
+    ~uplo
+    ~m
+    ~n
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta:(CI.CPointer beta)
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_zhemm order side uplo m n alpha a lda b ldb beta c ldc
+
+
+let zherk
+    ~order
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha
+    ~a:(CI.CPointer a)
+    ~lda
+    ~beta
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_zherk order uplo trans n k alpha a lda beta c ldc
+
+
+let zher2k
+    ~order
+    ~uplo
+    ~trans
+    ~n
+    ~k
+    ~alpha:(CI.CPointer alpha)
+    ~a:(CI.CPointer a)
+    ~lda
+    ~b:(CI.CPointer b)
+    ~ldb
+    ~beta
+    ~c:(CI.CPointer c)
+    ~ldc
+  =
+  cblas_zher2k order uplo trans n k alpha a lda b ldb beta c ldc

@@ -321,5 +321,5 @@ let test_set =
   ; "test_lu_08", `Slow, test_lu_08; "test_lu_09", `Slow, test_lu_09
   ; "test_lu_10", `Slow, test_lu_10
   ; (* "test_lu_07",    `Slow, test_lu_07;
-   TODO: The singular matrix is not detected *)
+       TODO: The singular matrix is not detected *)
     "test_bandiag_01", `Slow, test_bandiag_01 ]
