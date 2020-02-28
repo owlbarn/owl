@@ -1713,7 +1713,7 @@ let wblplot ?(h = _default_handle) ?(spec = []) ?(lambda = 1.) ?(k = 1.) x =
 
 let _ecdf_dist a b p =
   (* find the ecdf value of probability value p; (a, b) is the output of
-    Stats.ecdf *)
+     Stats.ecdf *)
   let rec _find_rec x lst i =
     match lst with
     | hd :: tl -> if hd > x then i - 1 else _find_rec x tl (i + 1)
@@ -1732,7 +1732,7 @@ let qqplot
     y
   =
   (* TODO: support matrix input; add support for `pvec` argument;
-    plot the larger data input on x-axis *)
+     plot the larger data input on x-axis *)
   let open Plplot in
   let y = Owl_dense_matrix.D.to_array y |> Owl_stats.sort ~inc:true in
   let n = Array.length y in

@@ -10,8 +10,8 @@ open Owl_types
 module Make (A : Stats_Dist) = struct
   module Utility = struct
     (* check the elements in [xs] and make sure their shapes are broadcastable,
-      by satisfying either of the following rules: 1) equal; 2) equal to one.
-     *)
+       by satisfying either of the following rules: 1) equal; 2) equal to one.
+    *)
     let _check_broadcast_shape xs =
       let xs = Array.map A.shape xs in
       let s = Array.copy xs.(0) in

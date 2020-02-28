@@ -431,10 +431,10 @@ let geqrt : type a b. nb:int -> a:(a, b) t -> (a, b) t * (a, b) t =
   let layout = lapacke_layout _layout in
   let _a = bigarray_start Ctypes_static.Genarray a in
   (* FIXME: there ~might be something wrong with the lapacke interface. The
-    behaviour of this function is not consistent with what has been documented
-    on Intel's MKL website. I.e., if we allocate [nb x minmn] space for t, it
-    is likely there will be ~memory fault. The lapacke code turns out to use
-    [minmn x minmn] space actually.
+     behaviour of this function is not consistent with what has been documented
+     on Intel's MKL website. I.e., if we allocate [nb x minmn] space for t, it
+     is likely there will be ~memory fault. The lapacke code turns out to use
+     [minmn x minmn] space actually.
   *)
   let t = Genarray.create _kind _layout [| minmn; minmn |] in
   let _t = bigarray_start Ctypes_static.Genarray t in
@@ -2843,8 +2843,8 @@ let trevc
   let _layout = Genarray.layout t in
   let layout = lapacke_layout _layout in
   (* NOTE: I ~might allocate too ~much ~memory for vl and vr, please refer to Intel
-    MKL documentation for ~more detailed ~memory allocation strategy. Fix later.
-    url: https://software.intel.com/en-us/mkl-developer-reference-c-trevc
+     MKL documentation for ~more detailed ~memory allocation strategy. Fix later.
+     url: https://software.intel.com/en-us/mkl-developer-reference-c-trevc
   *)
   let vl = Genarray.create _kind _layout [| n; n |] in
   let vr = Genarray.create _kind _layout [| n; n |] in

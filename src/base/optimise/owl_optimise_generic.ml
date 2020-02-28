@@ -540,7 +540,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
   (* This function minimises the weight [w] of passed-in function [f].
      [f] is a function [f : w -> x -> y].
      [w] is a row vector but [y] can have any shape.
-   *)
+  *)
   let minimise_weight ?state params f w x y =
     let open Params in
     if params.verbosity = true && state = None
@@ -624,7 +624,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
   (* This function is specifically designed for minimising the weights in a
      neural network of graph structure. In Owl's earlier versions, the functions
      in the regression module were actually implemented using this function.
-   *)
+  *)
   let minimise_network ?state params forward backward update save x y =
     let open Params in
     if params.verbosity = true && state = None
@@ -722,8 +722,8 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
 
 
   (* This function minimises [f : x -> y] wrt [x].
-    [x] is an ndarray; and [y] is an scalar value.
-   *)
+     [x] is an ndarray; and [y] is an scalar value.
+  *)
   let minimise_fun ?state params f x =
     let open Params in
     if params.verbosity = true && state = None

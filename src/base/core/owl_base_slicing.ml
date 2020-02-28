@@ -25,6 +25,7 @@ let sdarray_to_sdarray axis =
       | R i -> R_ (Array.of_list i))
     axis
 
+
 (* return true if slicing (all R_) or false if fancy indexing (has L_) *)
 let is_basic_slicing =
   Array.for_all (function
@@ -106,8 +107,8 @@ let calc_continuous_blksz axis shp =
     try
       for l = Array.length shp - 1 downto -1 do
         (* note: d is actually the corresponding dimension of continuous block
-         plus one; also note the loop is down to -1 so the lowest dimension is
-         also considered, in which case the whole array is copied. *)
+           plus one; also note the loop is down to -1 so the lowest dimension is
+           also considered, in which case the whole array is copied. *)
         d := l + 1;
         if l < 0 then failwith "stop";
         match axis.(l) with

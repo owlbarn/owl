@@ -95,7 +95,7 @@ module Cubic = struct
     x0 = (rx+lx)/2
     x1 = x0 - (f(x0) - p) / f'(x0)
     n times over
-     *)
+  *)
   let find_x_of_value t p =
     let rec iter n x =
       if n > 0
@@ -123,12 +123,12 @@ module Cubic = struct
     let b = (3. *. (f1 -. f0)) -. (f'1 +. (2. *. f'0)) in
     let t = { lx; rx; dx; p0; p1; p'0; p'1; poly = [| a; b; c; d |] } in
     (* check to see the maths is correct:
-    Printf.printf "lx %f, rx %f\n" lx rx;
-    Printf.printf "f(lx) = %f/%f\n" (f t lx) p0;
-    Printf.printf "f(rx) = %f/%f\n" (f t rx) p1;
-    Printf.printf "f'(lx) = %f/%f\n" (df t lx) p'0;
-    Printf.printf "f'(rx) = %f/%f\n" (df t rx) p'1;
-     *)
+       Printf.printf "lx %f, rx %f\n" lx rx;
+       Printf.printf "f(lx) = %f/%f\n" (f t lx) p0;
+       Printf.printf "f(rx) = %f/%f\n" (f t rx) p1;
+       Printf.printf "f'(lx) = %f/%f\n" (df t lx) p'0;
+       Printf.printf "f'(rx) = %f/%f\n" (df t rx) p'1;
+    *)
     t
 
   (*f All done *)
@@ -478,8 +478,7 @@ module BinaryTest = struct
      Mean(Y') = 0, Variance(Y') = 1/2
 
      If Y' is normally distributed then the probability of observing a value outside of [-|s|;|s|] for Y' is erfc(|s|)
-
-    *)
+  *)
   let frequency ?(significance = 0.01) ?(p = 0.5) iter =
     let q = 1. -. p in
     let inc_if_true_else_dec acc _ b = if b then acc + 1 else acc - 1 in
@@ -507,7 +506,7 @@ module BinaryTest = struct
     Assume that the probability of a 1 is 0.5, under the null hypothesis that 0s and 1s are equally likely.
 
     The probability of an observed value x2 for Chi^2 can be found from the Chi^2 distribution for N degrees of freedom.
-    *)
+  *)
   let block_frequency ?(significance = 0.01) ?(p = 0.5) m iter =
     let number_ones_in_block (i_of_m, acc, chi2, n) _ b =
       let v = if b then 1 else 0 in
@@ -540,7 +539,7 @@ module BinaryTest = struct
 
     Chi^2 = Sum( (Obs(patm) - Em)^2 / Em ) where Em = (N-m+1)*p^Npmt*q^(M-Npmt),
     where Npmt is the number of true/1 bits in pattern m
-   *)
+  *)
   let occurrence_of_patterns ?(significance = 0.01) m iter =
     let num_pats = 1 lsl m in
     let mask = num_pats - 1 in
@@ -601,8 +600,7 @@ module BinaryTest = struct
     So, this test runs occurrence_of_patterns a number of times and
     uses a chi2 test to determine if the number of failures is outside
     the significance level
-
-   *)
+  *)
   let occurrences_of_patterns ?(significance = 0.01) n m iter =
     let rec accum_n acc f n = if n <= 0 then acc else accum_n (f acc) f (n - 1) in
     let accum acc = occurrence_of_patterns ~significance:0.01 m iter :: acc in

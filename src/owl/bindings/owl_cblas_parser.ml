@@ -279,11 +279,7 @@ let convert_to_extern_fun funs =
       in
       (* assemble the function string *)
       let fun_stub_s =
-        Printf.sprintf
-          "external cblas_%s\n  : %s\n  = %s\n"
-          _fun_caml
-          args_s
-          fun_extern_s
+        Printf.sprintf "external cblas_%s\n  : %s\n  = %s\n" _fun_caml args_s fun_extern_s
       in
       _fun_caml, fun_stub_s, args, _fun_rval)
     funs

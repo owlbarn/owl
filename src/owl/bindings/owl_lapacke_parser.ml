@@ -285,7 +285,7 @@ let convert_argrec_to_caml fun_caml args =
         let s =
           (* this is for LAPACK_X_SELECTX cases *)
           if String.length t > 7 && Str.string_before t 7 = "LAPACK_"
-          then Printf.sprintf "%s:(CI.CPointer %s)" s s 
+          then Printf.sprintf "%s:(CI.CPointer %s)" s s
           else if t.[String.length t - 1] = '*'
           then Printf.sprintf "%s:(CI.CPointer %s)" s s
           else s

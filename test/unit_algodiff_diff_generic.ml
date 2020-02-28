@@ -147,7 +147,6 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
      Array: sum mean dot transpose inv relu
 
      and a few more
-
   *)
 
   (* Test data *)

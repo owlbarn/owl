@@ -514,7 +514,7 @@ let repeat x reps =
     if x_dims = 1
     then (
       (* TODO: omg, cannot use blit, so have to copy one by one, I need to
-      fiugre out a more efficient way to copy at the highest dimension. *)
+         fiugre out a more efficient way to copy at the highest dimension. *)
       let ofsy = ref 0 in
       for i = 0 to numel x - 1 do
         for _j = 0 to reps.(0) - 1 do

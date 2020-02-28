@@ -838,7 +838,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
      backward: function to run the backward pass
      update: function to update the weights according to the gradient
      save: function to save the model for checkpoint
-   *)
+  *)
   let train_generic ?state ?params ?(init_model = true) nn x y =
     if init_model = true then init nn;
     let f = forward nn in

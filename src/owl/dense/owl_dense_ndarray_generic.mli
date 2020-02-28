@@ -336,7 +336,7 @@ val get_slice_ext : int list array -> ('a, 'b) t -> ('a, 'b) t
 ocaml 4.10.0. The indexing and slicing syntax become much ligher.
 
 E.g., ``x.%{0;1;2}``.
- *) 
+ *)
 
 val set_slice_ext : int list array -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**

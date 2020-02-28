@@ -404,8 +404,8 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
 
 
   (* ``model network`` transforms the network into a computation graph and
-  optimises it. Returns a function that takes the input of the network as an
-  argument and returns the output. *)
+     optimises it. Returns a function that takes the input of the network as an
+     argument and returns the output. *)
   let model ?optimise ?batch_size network =
     let eval = model_inputs ?optimise ?batch_size network in
     fun xt' -> (eval [| xt' |]).(0)
