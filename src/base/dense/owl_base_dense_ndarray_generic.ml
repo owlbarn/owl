@@ -738,6 +738,26 @@ let concatenate ?(axis = 0) varrs =
   result_varr
 
 
+let stack ?(axis = 0) xs =
+  let shp = shape xs.(0) in
+  let ndim = Array.length shp + 1 in
+  let axis = Owl_utils.adjust_index axis ndim in
+  let new_shp =
+    Array.init ndim (fun i ->
+        if i < axis then shp.(i) else if i = axis then 1 else shp.(i - 1))
+  in
+  let y =
+    Array.map
+      (fun x ->
+        let shp' = shape x in
+        if shp' <> shp
+        then failwith "stack: ndarrays in [xs] must all have the same shape";
+        reshape x new_shp)
+      xs
+  in
+  concatenate ~axis y
+
+
 (* TODO: is there a more efficient way to do copy? *)
 let repeat x reps =
   (* check the validity of reps *)

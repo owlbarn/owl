@@ -137,6 +137,9 @@ val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val stack : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val squeeze : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

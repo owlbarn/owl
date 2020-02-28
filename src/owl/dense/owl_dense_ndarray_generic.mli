@@ -513,6 +513,15 @@ dimension specified by ``axis``. The default value of ``axis`` is 0, i.e., the
 lowest dimension of a matrix/ndarray.
  *)
 
+val stack : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
+(**
+``stack ~axis x`` stacks an array of ndarrays along the ``axis`` dimension. 
+For example, if ``x`` contains K ndarrays of shape [|2;3|], then
+``stack ~axis:1 x`` will return an ndarray of dimensions [|2;K;3|].
+The ndarrays in ``x``, they must all have the same shape. 
+The default value of ``axis`` is 0.
+ *)
+
 val split : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
 (**
 ``split ~axis parts x`` splits an ndarray ``x`` into parts along the specified
