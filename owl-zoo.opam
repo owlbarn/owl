@@ -25,5 +25,5 @@ depends: [
   "ocaml" {>= "4.10.0"}
   "dune" {>= "2.0.0"}
   "ocaml-compiler-libs"
-  "owl" {>= version}
+  "owl" {= version}
 ]
