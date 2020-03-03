@@ -1,3 +1,12 @@
+## 0.9.0 (2020-03-03)
+
+* owl: sync opam files versioning
+* added stack function (#506)
+* Owl now compatible with latest version of Ctypes (#508)
+* Fix bug in _squeeze_broadcast (#503)
+* using extended indexing operator since ocaml 4.10.0
+* [breaking] Drop support for ocaml < 4.10.0
+
 ## 0.8.0 (2020-02-25)
 
 *  Fix bug in _squeeze_broadcast (#503)
