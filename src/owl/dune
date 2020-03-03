@@ -193,7 +193,7 @@
  (flags
   :standard
   (:include ocaml_flags.sexp))
- (libraries ctypes ctypes.stubs eigen owl-base stdlib-shims npy))
+ (libraries ctypes ctypes.stubs eigen owl-base npy))
 
 (rule
  (targets c_flags.sexp c_library_flags.sexp ocaml_flags.sexp

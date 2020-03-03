@@ -33,6 +33,5 @@ depends: [
   "eigen" {>= "0.1.0"}
   "owl-base" {= version}
   "stdio" {build}
-  "stdlib-shims"
   "npy"
 ]

@@ -3,6 +3,4 @@
  (public_name owl-zoo)
  (wrapped false)
  (modes byte)
- (flags
-  (:standard -safe-string))
  (libraries ocaml-compiler-libs.toplevel owl))

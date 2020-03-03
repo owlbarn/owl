@@ -17,5 +17,4 @@ depends: [
   "ocaml" {>= "4.10.0"}
   "base-bigarray"
   "dune" {>= "2.0.0"}
-  "stdlib-shims"
 ]

@@ -1,8 +1,6 @@
 (library
  (name owl_aeos)
  (wrapped false)
- (flags
-  (:standard -safe-string))
  (modules
   (:standard \ owl_aeos_gen))
  (libraries str unix bigarray)
