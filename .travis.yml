@@ -9,7 +9,7 @@ env:
   global:
     - EIGENCPP_OPTFLAGS="-Wno-ignored-attributes -O3 -Ofast -march=native -mfpmath=sse -funroll-loops -ffast-math"
     - PACKAGE="owl"
-    - PINS="owl-base:. owl-plplot:. owl-top:. owl-zoo:. owl:."
+    - PINS="owl-base.master:. owl-plplot.master:. owl-top.master:. owl-zoo.master:. owl.master:."
 
 matrix:
   include:
