@@ -1,4 +1,4 @@
-# Owl - OCaml Scientific and Engineering Computing
+# Owl - OCaml Scientific and Engineering Computing [![Build Status](https://travis-ci.org/owlbarn/owl.svg?branch=master)](https://travis-ci.org/owlbarn/owl)
 
 Owl is a dedicated system for scientific and engineering computing in the
 functional programming language OCaml.
