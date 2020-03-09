@@ -211,7 +211,7 @@ let _ =
 
   'Correct' distribution parameters can be generated (e.g. in Scipy) - and checked elsewhere, and then these distributions can be used to validate the CDFs in Owl.
 
-  The Distribution can also then be mapped from an 'x' value to the CDF of x, for example to bucket up values from a continous random variable, where buckets can then be selected to determine patterns for checking for independence
+  The Distribution can also then be mapped from an 'x' value to the CDF of x, for example to bucket up values from a continuous random variable, where buckets can then be selected to determine patterns for checking for independence
 
 *)
 module Distribution = struct
@@ -305,7 +305,7 @@ module Distribution = struct
     Cubic.df t.cubics.(li) x
 
   (*f plot_comparison - plot comparison of CDF/PDF distributions
-   * disable this to avoid dependency on plplot, this simplies many things
+   * disable this to avoid dependency on plplot, this simplifies many things
    * including building docker images.
 
   let plot_comparison t dut_cdf dut_pdf filename  =
@@ -470,7 +470,7 @@ module BinaryTest = struct
                   = 4*p*(1-p)
                   = 4pq  (= 1 if p is 0.5)
 
-     For Y = N occurences of Yi:
+     For Y = N occurrences of Yi:
      Mean(Y) = N*(p-q) (= 0 if p=0.5)
      Variance(Y) = N*4pq = 4Npq (= N if p=0.5)
 
@@ -1193,7 +1193,7 @@ let test_uniform_ints_1_100_45 _ =
 
     The pattern tests are inherently based on the actual distribution probability, so they are
     not effected (except that large pattern lengths are less reliable as the expected number of a pattern
-    of ten 1's in 10000 is (1/3)^10*10000 = 0.17; probaby one should not go below about 10 for this...
+    of ten 1's in 10000 is (1/3)^10*10000 = 0.17; probably one should not go below about 10 for this...
     so max length of patterns should probably be 6
 
  *)
@@ -1251,7 +1251,7 @@ let test_gaussian_mean_0 _ =
 
     The pattern tests are inherently based on the actual distribution probability, so they are
     not effected (except that large pattern lengths are less reliable as the expected number of a pattern
-    of ten 1's in 10000 is (1/3)^10*10000 = 0.17; probaby one should not go below about 10 for this...
+    of ten 1's in 10000 is (1/3)^10*10000 = 0.17; probably one should not go below about 10 for this...
     so max length of patterns should probably be 6
 
  *)
@@ -1272,7 +1272,7 @@ let test_gaussian_mean_0_p0_3_left _ =
 
     The pattern tests are inherently based on the actual distribution probability, so they are
     not effected (except that large pattern lengths are less reliable as the expected number of a pattern
-    of ten 1's in 10000 is (1/3)^10*10000 = 0.17; probaby one should not go below about 10 for this...
+    of ten 1's in 10000 is (1/3)^10*10000 = 0.17; probably one should not go below about 10 for this...
     so max length of patterns should probably be 6
 
  *)

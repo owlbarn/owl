@@ -11,7 +11,7 @@ open Algodiff.D
  * the `build_siso` function. This function takes a module of type 
  * Siso. Both of these are defined in side `Ops.Builder`. Inside, this
  * module we define the forward pass functions `ff_f` and `ff_arr` 
- * to handle float and Arr inputs repsectively. We define the 
+ * to handle float and Arr inputs respectively. We define the 
  * forward-mode and reverse-mode gradients with `df` and `dr` respectively.
  * Below the variable naming conventions here are based on c = cos(a). 
  * Therefore, `cp` is the primal of the output, `ca` is the adjoin of the 
