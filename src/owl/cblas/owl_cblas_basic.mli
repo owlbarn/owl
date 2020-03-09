@@ -4,7 +4,7 @@
  *)
 
 (**
-  CBLAS interface: high-level interface beween Owl and level-1, level-2,
+  CBLAS interface: high-level interface between Owl and level-1, level-2,
   level-3 BLAS functions.
  *)
 

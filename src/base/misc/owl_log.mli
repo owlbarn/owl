@@ -16,7 +16,7 @@ type level =
       (**
 Type definition of log levels, priority is from low to high. Using ``set_level``
 function to set global logging level to high one can mask the output from low
-level loggging.
+level logging.
 *)
 
 (** {6 Configuration functions} *)

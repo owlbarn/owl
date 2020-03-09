@@ -156,7 +156,7 @@ clrngStatus clrngPhilox432ChangeStreamsSpacing(clrngPhilox432StreamCreator* crea
 	clrngPhilox432AdvanceStreams(1, dumpStream, e, c);
 	creator->JumpDistance = dumpStream->current.ctr;
 
-	//Free ressources
+	//Free resources
 	clrngPhilox432DestroyStreamCreator(baseCreator);
 	clrngPhilox432DestroyStreams(dumpStream);
 

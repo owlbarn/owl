@@ -242,7 +242,7 @@ length, the return will be an rectangular matrix.
 val hadamard : ('a, 'b) kind -> int -> ('a, 'b) t
 (**
 ``hadamard k n`` constructs a hadamard matrix of order ``n``. For a hadamard ``H``,
-we have ``H'*H = n*I``. Currrently, this function handles only the cases where
+we have ``H'*H = n*I``. Currently, this function handles only the cases where
 ``n``, ``n/12``, or ``n/20`` is a power of 2.
  *)
 
@@ -648,7 +648,7 @@ val foldi : ?axis:int -> (int -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b)
 ``foldi ~axis f a x`` folds (or reduces) the elements in ``x`` from left along
 the specified ``axis`` using passed in function ``f``. ``a`` is the initial
 element and in ``f i acc b`` ``acc`` is the accumulater and ``b`` is one of the
-elemets in ``x`` along the same axis. Note that ``i`` is 1d index of ``b``.
+elements in ``x`` along the same axis. Note that ``i`` is 1d index of ``b``.
  *)
 
 val fold : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
@@ -721,7 +721,7 @@ val iter2 : ('a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 val map2i : (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``map2i f x y`` applies ``f`` to two elements of the same position in both ``x``
-and ``y``. Note that 1d index is passed to funciton ``f``.
+and ``y``. Note that 1d index is passed to function ``f``.
  *)
 
 val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -1520,7 +1520,7 @@ val reci_tol : ?tol:'a -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``reci_tol ~tol x`` computes the reciprocal of every element in ``x``. Different
 from ``reci``, ``reci_tol`` sets the elements whose ``abs`` value smaller than ``tol``
-to zeros. If ``tol`` is not specified, the defautl ``Owl_utils.eps Float32`` will
+to zeros. If ``tol`` is not specified, the default ``Owl_utils.eps Float32`` will
 be used. For complex numbers, refer to Owl's doc to see how to compare.
  *)
 
@@ -2188,151 +2188,151 @@ val max_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
 
 val add_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``add_ x y`` is simiar to ``add`` function but the output is written to
+``add_ x y`` is similar to ``add`` function but the output is written to
 ``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
 val sub_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``sub_ x y`` is simiar to ``sub`` function but the output is written to
+``sub_ x y`` is similar to ``sub`` function but the output is written to
 ``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
 val mul_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``mul_ x y`` is simiar to ``mul`` function but the output is written to
+``mul_ x y`` is similar to ``mul`` function but the output is written to
 ``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
 val div_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``div_ x y`` is simiar to ``div`` function but the output is written to
+``div_ x y`` is similar to ``div`` function but the output is written to
 ``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
 val pow_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``pow_ x y`` is simiar to ``pow`` function but the output is written to
+``pow_ x y`` is similar to ``pow`` function but the output is written to
 ``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
 val atan2_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``atan2_ x y`` is simiar to ``atan2`` function but the output is written to
+``atan2_ x y`` is similar to ``atan2`` function but the output is written to
 ``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
 val hypot_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``hypot_ x y`` is simiar to ``hypot`` function but the output is written to
+``hypot_ x y`` is similar to ``hypot`` function but the output is written to
 ``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
 val fmod_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``fmod_ x y`` is simiar to ``fmod`` function but the output is written to
+``fmod_ x y`` is similar to ``fmod`` function but the output is written to
 ``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
 val min2_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``min2_ x y`` is simiar to ``min2`` function but the output is written to
+``min2_ x y`` is similar to ``min2`` function but the output is written to
 ``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
 val max2_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``max2_ x y`` is simiar to ``max2`` function but the output is written to
+``max2_ x y`` is similar to ``max2`` function but the output is written to
 ``out``. You need to make sure ``out`` is big enough to hold the output result.
  *)
 
 val add_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``add_scalar_ x y`` is simiar to ``add_scalar`` function but the output is
+``add_scalar_ x y`` is similar to ``add_scalar`` function but the output is
 written to ``x``.
  *)
 
 val sub_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``sub_scalar_ x y`` is simiar to ``sub_scalar`` function but the output is
+``sub_scalar_ x y`` is similar to ``sub_scalar`` function but the output is
 written to ``x``.
  *)
 
 val mul_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``mul_scalar_ x y`` is simiar to ``mul_scalar`` function but the output is
+``mul_scalar_ x y`` is similar to ``mul_scalar`` function but the output is
 written to ``x``.
  *)
 
 val div_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``div_scalar_ x y`` is simiar to ``div_scalar`` function but the output is
+``div_scalar_ x y`` is similar to ``div_scalar`` function but the output is
 written to ``x``.
  *)
 
 val pow_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``pow_scalar_ x y`` is simiar to ``pow_scalar`` function but the output is
+``pow_scalar_ x y`` is similar to ``pow_scalar`` function but the output is
 written to ``x``.
  *)
 
 val atan2_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``atan2_scalar_ x y`` is simiar to ``atan2_scalar`` function but the output is
+``atan2_scalar_ x y`` is similar to ``atan2_scalar`` function but the output is
 written to ``x``.
  *)
 
 val fmod_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``fmod_scalar_ x y`` is simiar to ``fmod_scalar`` function but the output is
+``fmod_scalar_ x y`` is similar to ``fmod_scalar`` function but the output is
 written to ``x``.
  *)
 
 val scalar_add_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
-``scalar_add_ a x`` is simiar to ``scalar_add`` function but the output is
+``scalar_add_ a x`` is similar to ``scalar_add`` function but the output is
 written to ``x``.
  *)
 
 val scalar_sub_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
-``scalar_sub_ a x`` is simiar to ``scalar_sub`` function but the output is
+``scalar_sub_ a x`` is similar to ``scalar_sub`` function but the output is
 written to ``x``.
  *)
 
 val scalar_mul_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
-``scalar_mul_ a x`` is simiar to ``scalar_mul`` function but the output is
+``scalar_mul_ a x`` is similar to ``scalar_mul`` function but the output is
 written to ``x``.
  *)
 
 val scalar_div_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
-``scalar_div_ a x`` is simiar to ``scalar_div`` function but the output is
+``scalar_div_ a x`` is similar to ``scalar_div`` function but the output is
 written to ``x``.
  *)
 
 val scalar_pow_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
-``scalar_pow_ a x`` is simiar to ``scalar_pow`` function but the output is
+``scalar_pow_ a x`` is similar to ``scalar_pow`` function but the output is
 written to ``x``.
  *)
 
 val scalar_atan2_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
-``scalar_atan2_ a x`` is simiar to ``scalar_atan2`` function but the output is
+``scalar_atan2_ a x`` is similar to ``scalar_atan2`` function but the output is
 written to ``x``.
  *)
 
 val scalar_fmod_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
 (**
-``scalar_fmod_ a x`` is simiar to ``scalar_fmod`` function but the output is
+``scalar_fmod_ a x`` is similar to ``scalar_fmod`` function but the output is
 written to ``x``.
  *)
 
 val fma_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``fma_ ~out x y z`` is simiar to ``fma x y z`` function but the output is
+``fma_ ~out x y z`` is similar to ``fma x y z`` function but the output is
 written to ``out``.
  *)
 
@@ -2574,78 +2574,78 @@ val dropout_ : ?out:('a, 'b) t -> ?rate:float -> ('a, 'b) t -> unit
 
 val elt_equal_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``elt_equal_ x y`` is simiar to ``elt_equal`` function but the output is
+``elt_equal_ x y`` is similar to ``elt_equal`` function but the output is
 written to ``out``. You need to make sure ``out`` is big enough to hold the
 output result.
  *)
 
 val elt_not_equal_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``elt_not_equal_ x y`` is simiar to ``elt_not_equal`` function but the output is
+``elt_not_equal_ x y`` is similar to ``elt_not_equal`` function but the output is
 written to ``out``. You need to make sure ``out`` is big enough to hold the
 output result.
  *)
 
 val elt_less_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``elt_less_ x y`` is simiar to ``elt_less`` function but the output is written
+``elt_less_ x y`` is similar to ``elt_less`` function but the output is written
 to ``out``. You need to make sure ``out`` is big enough to hold the output
 result.
  *)
 
 val elt_greater_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``elt_greater_ x y`` is simiar to ``elt_greater`` function but the output is
+``elt_greater_ x y`` is similar to ``elt_greater`` function but the output is
 written to ``out``. You need to make sure ``out`` is big enough to hold the
 output result.
  *)
 
 val elt_less_equal_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``elt_less_equal_ x y`` is simiar to ``elt_less_equal`` function but the output
+``elt_less_equal_ x y`` is similar to ``elt_less_equal`` function but the output
 is written to ``out``. You need to make sure ``out`` is big enough to hold the
 output result.
  *)
 
 val elt_greater_equal_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
-``elt_greater_equal_ x y`` is simiar to ``elt_greater_equal`` function but the
+``elt_greater_equal_ x y`` is similar to ``elt_greater_equal`` function but the
 output is written to ``out``. You need to make sure ``out`` is big enough to
 hold the output result.
  *)
 
 val elt_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``elt_equal_scalar_ x a`` is simiar to ``elt_equal_scalar`` function but the
+``elt_equal_scalar_ x a`` is similar to ``elt_equal_scalar`` function but the
 output is written to ``x``.
  *)
 
 val elt_not_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``elt_not_equal_scalar_ x a`` is simiar to ``elt_not_equal_scalar`` function but
+``elt_not_equal_scalar_ x a`` is similar to ``elt_not_equal_scalar`` function but
 the output is written to ``x``.
  *)
 
 val elt_less_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``elt_less_scalar_ x a`` is simiar to ``elt_less_scalar`` function but the
+``elt_less_scalar_ x a`` is similar to ``elt_less_scalar`` function but the
 output is written to ``x``.
  *)
 
 val elt_greater_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``elt_greater_scalar_ x a`` is simiar to ``elt_greater_scalar`` function but the
+``elt_greater_scalar_ x a`` is similar to ``elt_greater_scalar`` function but the
 output is written to ``x``.
  *)
 
 val elt_less_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``elt_less_equal_scalar_ x a`` is simiar to ``elt_less_equal_scalar`` function
+``elt_less_equal_scalar_ x a`` is similar to ``elt_less_equal_scalar`` function
 but the output is written to ``x``.
  *)
 
 val elt_greater_equal_scalar_ : ?out:('a, 'b) t -> ('a, 'b) t -> 'a -> unit
 (**
-``elt_greater_equal_scalar_ x a`` is simiar to ``elt_greater_equal_scalar``
+``elt_greater_equal_scalar_ x a`` is similar to ``elt_greater_equal_scalar``
 function but the output is written to ``x``.
  *)

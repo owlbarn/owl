@@ -15,15 +15,15 @@ struct contract_pair {
   long drt;         // number of outer loops.
   long *n;          // number of iteration in each dimension, i.e. y's shape
   void *x;          // x, operand.
-  long posx;        // current offest of x.
+  long posx;        // current offset of x.
   long *ofsx;       // offset of x in each dimension.
   long *incx;       // stride size of x in each dimension.
   void *y;          // y, operand.
-  long posy;        // current offest of y.
+  long posy;        // current offset of y.
   long *ofsy;       // offset of y in each dimension.
   long *incy;       // stride size of y in each dimension.
   void *z;          // z, operand.
-  long posz;        // current offest of z.
+  long posz;        // current offset of z.
   long *ofsz;       // offset of z in each dimension.
   long *incz;       // stride size of z in each dimension.
 };

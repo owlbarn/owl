@@ -59,7 +59,7 @@ module Make (A : Ndarray_Basic) : sig
   val iteri : (int -> A.elt -> unit) -> t -> unit
   (**
 ``iteri f x`` iterates and applies ``f`` to every element in ``x``. ``f`` has type
-``f : int array -> elt -> unit``, the first paramater is index. 1d indices are
+``f : int array -> elt -> unit``, the first parameter is index. 1d indices are
 passed to the user function.
    *)
 

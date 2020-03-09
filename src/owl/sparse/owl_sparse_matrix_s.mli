@@ -149,7 +149,7 @@ val fold_rows_nz : ('a -> mat -> 'a) -> 'a -> mat -> 'a
 
 val fold_cols_nz : ('a -> mat -> 'a) -> 'a -> mat -> 'a
 
-(** {6 Examin elements and compare two matrices} *)
+(** {6 Examine elements and compare two matrices} *)
 
 val exists : (elt -> bool) -> mat -> bool
 

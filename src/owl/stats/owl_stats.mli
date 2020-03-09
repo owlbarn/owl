@@ -415,7 +415,7 @@ val runs_test : ?alpha:float -> ?side:tail -> ?v:float -> float array -> hypothe
 (**
 ``runs_test ~alpha ~v x`` returns a test decision for the null hypothesis that
 the data ``x`` comes in random order, against the alternative that they do not,
-by runnign Wald–Wolfowitz runs test. The test is based on the number of runs
+by running Wald–Wolfowitz runs test. The test is based on the number of runs
 of consecutive values above or below the mean of ``x``. ``~v`` is the reference
 value, the default value is the median of ``x``.
  *)
@@ -522,12 +522,12 @@ log-transformed result from ``hypergeometric_pdf``.
 val multinomial_rvs : int -> p:float array -> int array
 (**
 ``multinomial_rvs n ~p`` generates random numbers of multinomial distribution
-from ``n`` trials. The probabilty mass function is as follows.
+from ``n`` trials. The probability mass function is as follows.
 
 .. math::
   P(x) = \frac{n!}{{x_1}! \cdot\cdot\cdot {x_k}!} p_{1}^{x_1} \cdot\cdot\cdot p_{k}^{x_k}
 
-``p`` is the probabilty mass of ``k`` categories. The elements in ``p`` should
+``p`` is the probability mass of ``k`` categories. The elements in ``p`` should
 all be positive (result is undefined if there are negative values), but they 
 don't need to sum to 1: the result is the same whether or not ``p`` is normalized. 
 For implementation details, refer to :cite:`davis1993computer`.
@@ -535,14 +535,14 @@ For implementation details, refer to :cite:`davis1993computer`.
 
 val multinomial_pdf : int array -> p:float array -> float
 (**
-``multinomial_rvs x ~p`` return the probabilty of ``x`` given the probabilty
+``multinomial_rvs x ~p`` return the probability of ``x`` given the probability
 mass of a multinomial distribution.
  *)
 
 val multinomial_logpdf : int array -> p:float array -> float
 (**
-``multinomial_rvs x ~p`` returns the logarithm probabilty of ``x`` given the
-probabilty mass of a multinomial distribution.
+``multinomial_rvs x ~p`` returns the logarithm probability of ``x`` given the
+probability mass of a multinomial distribution.
  *)
 
 val categorical_rvs : float array -> int
@@ -1065,7 +1065,7 @@ val rayleigh_isf : float -> sigma:float -> float
 val dirichlet_rvs : alpha:float array -> float array
 (**
 ``dirichlet_rvs ~alpha`` returns random variables of ``K-1`` order Dirichlet
-distribution, follows the following probabilty dense function.
+distribution, follows the following probability dense function.
 
 .. math::
   f(x_1,...,x_K; \alpha_1,...,\alpha_K) = \frac{1}{\mathbf{B(\alpha)}} \prod_{i=1}^K x_i^{\alpha_i - 1}

@@ -116,7 +116,7 @@ from all its parent nodes and child nodes.
 val remove_edge : 'a node -> 'a node -> unit
 (**
 ``remove_edge src dst`` removes a link ``src -> dst`` from the graph. Namely,
-the correponding entry of ``dst`` in ``src.next`` and ``src`` in ``dst.prev``
+the corresponding entry of ``dst`` in ``src.next`` and ``src`` in ``dst.prev``
 will be removed. Note that it does not remove [dst -> src] if there exists one.
  *)
 
@@ -144,7 +144,7 @@ val copy : ?dir:dir -> 'a node array -> 'a node array
 (if ``dir = Ancestor``) or all its descendants (if ``dir = Descendant``).
 
 Note that this function only makes a copy of the graph structure, ``attr``
-fileds of the nodes in the new graph share the same memory with those in the
+fields of the nodes in the new graph share the same memory with those in the
 original graph.
  *)
 
@@ -203,4 +203,4 @@ val pp_node : Format.formatter -> 'a node -> unit
 (** Pretty print a given node. *)
 
 val to_string : bool -> 'a node array -> string
-(** Convert a given node to its string representaion. *)
+(** Convert a given node to its string representation. *)

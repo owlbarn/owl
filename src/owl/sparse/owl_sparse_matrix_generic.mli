@@ -136,7 +136,7 @@ val fill : ('a, 'b) t -> 'a -> unit
 val copy : ('a, 'b) t -> ('a, 'b) t
 (**
 ``copy x`` makes an exact copy of matrix ``x``. Note that the copy becomes
-mutable no matter ``w`` is mutable or not. This is expecially useful if you
+mutable no matter ``w`` is mutable or not. This is especially useful if you
 want to modify certain elements in an immutable matrix from math operations.
  *)
 
@@ -393,7 +393,7 @@ val fold_cols_nz : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 columns in ``x`` using function ``f``. Zero columns will be dropped in iterating ``x``.
  *)
 
-(** {6 Examin elements and compare two matrices} *)
+(** {6 Examine elements and compare two matrices} *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
 (**

@@ -133,7 +133,7 @@ inline R123_CUDA_DEVICE value_type assemble_from_u32(uint32_t *p32){
     R123_CUDA_DEVICE r123array##_N##x##W& incr(R123_ULONG_LONG n=1){                         \
         /* This test is tricky because we're trying to avoid spurious   \
            complaints about illegal shifts, yet still be compile-time   \
-           evaulated. */                                                \
+           evaluated. */                                                \
         if(sizeof(T)<sizeof(n) && n>>((sizeof(T)<sizeof(n))?8*sizeof(T):0) ) \
             return incr_carefully(n);                                   \
         if(n==1){                                                       \
@@ -147,7 +147,7 @@ inline R123_CUDA_DEVICE value_type assemble_from_u32(uint32_t *p32){
            constant-folded/optimized away by the compiler, so only the  \
            overflow tests (!!v[i]) remain to be done at runtime.  For  \
            small values of N, it would be better to do this as an       \
-           uncondtional sequence of adc.  An experiment/optimization    \
+           unconditional sequence of adc.  An experiment/optimization    \
            for another day...                                           \
            N.B.  The weird subscripting: v[_N>3?3:0] is to silence      \
            a spurious error from icpc                                   \

@@ -95,7 +95,7 @@ void compute_block_sizes(int* kp, int* mp, int* np, int typesize) {
 
 /*
  * Fill in temporary input matrix from input tensor with vectorisation.
- * Currently only support AVX instruciton set.
+ * Currently only support AVX instruction set.
  */
 
 void ACX_FUN_LOAD (load_sub_matrix_fast, spatial) (

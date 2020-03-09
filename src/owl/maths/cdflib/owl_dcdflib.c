@@ -1432,7 +1432,7 @@ void cdfbet(int *which,double *p,double *q,double *x,double *y,
      Digit Computation of the Incomplete  Beta  Function Ratios.  ACM
      Trans. Math.  Softw. 18 (1993), 360-373.
 
-     Computation of other parameters involve a seach for a value that
+     Computation of other parameters involve a search for a value that
      produces  the desired  value  of P.   The search relies  on  the
      monotinicity of P with the other parameter.
 
@@ -1804,7 +1804,7 @@ void cdfbin(int *which,double *p,double *q,double *s,double *xn,
      Mathematical   Functions (1966) is   used  to reduce the  binomial
      distribution  to  the  cumulative incomplete    beta distribution.
 
-     Computation of other parameters involve a seach for a value that
+     Computation of other parameters involve a search for a value that
      produces  the desired  value  of P.   The search relies  on  the
      monotinicity of P with the other parameter.
 
@@ -2165,7 +2165,7 @@ void cdfchi(int *which,double *p,double *q,double *x,double *df,
      Mathematical Functions   (1966) is used   to reduce the chisqure
      distribution to the incomplete distribution.
 
-     Computation of other parameters involve a seach for a value that
+     Computation of other parameters involve a search for a value that
      produces  the desired  value  of P.   The search relies  on  the
      monotinicity of P with the other parameter.
 
@@ -2452,7 +2452,7 @@ void cdfchn(int *which,double *p,double *q,double *x,double *df,
      Mathematical  Functions (1966) is used to compute the cumulative
      distribution function.
 
-     Computation of other parameters involve a seach for a value that
+     Computation of other parameters involve a search for a value that
      produces  the desired  value  of P.   The search relies  on  the
      monotinicity of P with the other parameter.
 
@@ -2723,7 +2723,7 @@ void cdff(int *which,double *p,double *q,double *f,double *dfn,
      of the  cumulative  distribution function for the  F  variate to
      that of an incomplete beta.
 
-     Computation of other parameters involve a seach for a value that
+     Computation of other parameters involve a search for a value that
      produces  the desired  value  of P.   The search relies  on  the
      monotinicity of P with the other parameter.
 
@@ -3044,7 +3044,7 @@ void cdffnc(int *which,double *p,double *q,double *f,double *dfn,
      Mathematical  Functions (1966) is used to compute the cumulative
      distribution function.
 
-     Computation of other parameters involve a seach for a value that
+     Computation of other parameters involve a search for a value that
      produces  the desired  value  of P.   The search relies  on  the
      monotinicity of P with the other parameter.
 
@@ -3368,7 +3368,7 @@ void cdfgam(int *which,double *p,double *q,double *x,double *shape,
      gamma function  ratios  and their  inverse.   ACM  Trans.  Math.
      Softw. 12 (1986), 377-393.
 
-     Computation of other parameters involve a seach for a value that
+     Computation of other parameters involve a search for a value that
      produces  the desired  value  of P.   The search relies  on  the
      monotinicity of P with the other parameter.
 
@@ -3678,7 +3678,7 @@ void cdfnbn(int *which,double *p,double *q,double *s,double *xn,
      the cumulative distribution  function to that of  an  incomplete
      beta.
 
-     Computation of other parameters involve a seach for a value that
+     Computation of other parameters involve a search for a value that
      produces  the desired  value  of P.   The search relies  on  the
      monotinicity of P with the other parameter.
 
@@ -4032,7 +4032,7 @@ void cdfnor(int *which,double *p,double *q,double *x,double *mean,
      Package of Special Function Routines and Test Drivers"
      acm Transactions on Mathematical Software. 19, 22-32.
 
-     is used to calulate the  cumulative standard normal distribution.
+     is used to calculate the  cumulative standard normal distribution.
 
      The rational functions from pages  90-95  of Kennedy and Gentle,
      Statistical  Computing,  Marcel  Dekker, NY,  1980 are  used  as
@@ -4232,7 +4232,7 @@ void cdfpoi(int *which,double *p,double *q,double *s,double *xlam,
      chi-square, hence an incomplete gamma function.
 
      Cumulative  distribution function  (P) is  calculated  directly.
-     Computation of other parameters involve a seach for a value that
+     Computation of other parameters involve a search for a value that
      produces  the desired value of  P.   The  search relies  on  the
      monotinicity of P with the other parameter.
 
@@ -4487,7 +4487,7 @@ void cdft(int *which,double *p,double *q,double *t,double *df,
      of the cumulative distribution function to that of an incomplete
      beta.
 
-     Computation of other parameters involve a seach for a value that
+     Computation of other parameters involve a search for a value that
      produces  the desired  value  of P.   The search relies  on  the
      monotinicity of P with the other parameter.
 
@@ -4963,7 +4963,7 @@ S20:
     xnonc = *pnonc/2.0e0;
 /*
 **********************************************************************
-     The following code calcualtes the weight, chi-square, and
+     The following code calculates the weight, chi-square, and
      adjustment term for the central term in the infinite series.
      The central term is the one in which the poisson weight is
      greatest.  The adjustment term is the amount that must
@@ -5986,7 +5986,7 @@ S20:
     strtx = stvaln(&pp);
     xcur = strtx;
 /*
-     NEWTON INTERATIONS
+     NEWTON ITERATIONS
 */
     for(i=1; i<=maxit; i++) {
         cumnor(&xcur,&cum,&ccum);
@@ -6002,7 +6002,7 @@ S20:
     return dinvnr;
 S40:
 /*
-     IF WE GET HERE, NEWTON HAS SUCCEDED
+     IF WE GET HERE, NEWTON HAS SUCCEEDED
 */
     dinvnr = xcur;
     if(!qporq) dinvnr = -dinvnr;
@@ -6269,8 +6269,8 @@ void dinvr(int *status,double *x,double *fx,
 
      QLEFT <-- Defined only if QMFINV returns .FALSE.  In that
           case it is .TRUE. If the stepping search terminated
-          unsucessfully at SMALL.  If it is .FALSE. the search
-          terminated unsucessfully at BIG.
+          unsuccessfully at SMALL.  If it is .FALSE. the search
+          terminated unsuccessfully at BIG.
                     QLEFT is LOGICAL
 
      QHI <-- Defined only if QMFINV returns .FALSE.  In that
@@ -6803,7 +6803,7 @@ double dt1(double *p,double *q,double *df)
 **********************************************************************
 
      double dt1(double *p,double *q,double *df)
-     Double precision Initalize Approximation to
+     Double precision Initialize Approximation to
            INVerse of the cumulative T distribution
 
 
@@ -7070,16 +7070,16 @@ void dzror(int *status,double *x,double *fx,double *xlo,
                          DOUBLE PRECISION FX
 
      XLO <-- When ZROR returns with STATUS = 0, XLO bounds the
-             inverval in X containing the solution below.
+             interval in X containing the solution below.
                          DOUBLE PRECISION XLO
 
      XHI <-- When ZROR returns with STATUS = 0, XHI bounds the
-             inverval in X containing the solution above.
+             interval in X containing the solution above.
                          DOUBLE PRECISION XHI
 
-     QLEFT <-- .TRUE. if the stepping search terminated unsucessfully
+     QLEFT <-- .TRUE. if the stepping search terminated unsuccessfully
                 at XLO.  If it is .FALSE. the search terminated
-                unsucessfully at XHI.
+                unsuccessfully at XHI.
                     QLEFT is LOGICAL
 
      QHI <-- .TRUE. if F(X) .GT. Y at the termination of the
@@ -9170,7 +9170,7 @@ transfers the sign of the variable "sign" to the variable "mag"
 ************************************************************************/
 double fifdsign(double mag,double sign)
 /* mag     -     magnitude */
-/* sign    -     sign to be transfered */
+/* sign    -     sign to be transferred */
 {
   if (mag < 0) mag = -mag;
   if (sign < 0) mag = -mag;

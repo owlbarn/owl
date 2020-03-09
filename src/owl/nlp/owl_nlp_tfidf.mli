@@ -81,13 +81,13 @@ val mapi : (int -> (int * float) array -> 'a) -> t -> 'a array
 (** Map all the document vectors in a TFIDF model. The format of document vector is ``(vocabulary index, weight)`` tuple array of a document. *)
 
 val reset_iterators : t -> unit
-(** Reset the iterator to the begining of the TFIDF model. *)
+(** Reset the iterator to the beginning of the TFIDF model. *)
 
 (** {6 Core functions} *)
 
 val build : ?norm:bool -> ?sort:bool -> ?tf:tf_typ -> ?df:df_typ -> Owl_nlp_corpus.t -> t
 (**
-This function builds up a TFIDF model according to the passed in paramaters.
+This function builds up a TFIDF model according to the passed in parameters.
 
 Parameters:
 * ``norm``: whether to normalise the vectors in the TFIDF model, default is ``false``.

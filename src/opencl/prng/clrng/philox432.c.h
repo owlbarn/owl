@@ -88,7 +88,7 @@ void clrngPhilox432GenerateDeck(clrngPhilox432StreamState *currentState)
 	//Default key
 	philox4x32_key_t k = { { 0, 0 } };
 
-	//get the currect state
+	//get the current state
 	philox4x32_ctr_t c = { { 0 } };
 	c.v[0] = currentState->ctr.L.lsb;
 	c.v[1] = currentState->ctr.L.msb;

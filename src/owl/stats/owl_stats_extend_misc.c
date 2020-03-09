@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-/** TODO recursive definiton of mean, etc., only need to traverse data once.
+/** TODO recursive definition of mean, etc., only need to traverse data once.
   Current implementation is very fast but may be subject to overflow.
  **/
 

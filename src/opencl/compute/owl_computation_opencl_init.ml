@@ -275,7 +275,7 @@ module Make (Device : Owl_types_computation_opencl_device.Sig) = struct
 
   and _init_xx _ _ = ()
 
-  (* varibles, consts, creation *)
+  (* variables, consts, creation *)
   and _init_00 x param =
     let ctx, _, _ = param in
     allocate_from_parent_0 ctx x

@@ -36,7 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The Random123 library is portable across C, C++, CUDA, OpenCL environments,
 and multiple operating systems (Linux, Windows 7, Mac OS X, FreeBSD, Solaris).
 This level of portability requires the abstraction of some features
-and idioms that are either not standardized (e.g., asm statments), or for which 
+and idioms that are either not standardized (e.g., asm statements), or for which 
 different vendors have their own standards (e.g., SSE intrinsics) or for
 which vendors simply refuse to conform to well-established standards (e.g., <inttypes.h>).
 
@@ -116,7 +116,7 @@ If the XXXINTRIN_H macros are true, then one should
 @code
 #include <xxxintrin.h>
 @endcode
-to gain accesss to compiler intrinsics.
+to gain access to compiler intrinsics.
 
 The CXX11_SOME_FEATURE macros allow the code to use specific
 features of the C++11 language and library.  The catchall

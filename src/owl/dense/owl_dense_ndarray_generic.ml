@@ -245,7 +245,7 @@ let repeat_ ~out x reps =
 
 let tile x reps =
   (* check the validity of reps *)
-  if Array.exists (( > ) 1) reps then failwith "tile: repitition must be >= 1";
+  if Array.exists (( > ) 1) reps then failwith "tile: repetition must be >= 1";
   (* case 1: all repeats equal to 1 *)
   if Array.for_all (( = ) 1) reps = true
   then copy x
@@ -301,7 +301,7 @@ let tile x reps =
 
 let tile_ ~out x reps =
   (* check the validity of reps *)
-  if Array.exists (( > ) 1) reps then failwith "tile: repitition must be >= 1";
+  if Array.exists (( > ) 1) reps then failwith "tile: repetition must be >= 1";
   (* case 1: all repeats equal to 1 *)
   if Array.for_all (( = ) 1) reps = true
   then copy_ x ~out
@@ -2151,7 +2151,7 @@ let rec _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1 =
     _owl_copy (kind x0) ls.(d0) ~ofsx:j0 ~incx:1 ~ofsy:j1 ~incy:1 x0 x1)
 
 
-(* according to the expanded padding index, calcuate the highest dimension
+(* according to the expanded padding index, calculate the highest dimension
   with padding, so we can figure out the minimum continuous block size.
  *)
 let _highest_padding_dimension p =
@@ -7286,7 +7286,7 @@ let max_pool3d_ ~out ?(padding = SAME) input kernel stride =
     pad_typ
 
 
-(* simiar to max_pool3d *)
+(* similar to max_pool3d *)
 let avg_pool3d ?(padding = SAME) input kernel stride =
   let p0 = num_dims input = 5 in
   let p1 = Array.length kernel = 3 in
@@ -8410,7 +8410,7 @@ let sum' x = _owl_sum (kind x) (numel x) x
 let prod' x = _owl_prod (kind x) (numel x) x
 
 (* TODO: performance can be optimised by removing embedded loops *)
-(* generic fold funtion *)
+(* generic fold function *)
 let foldi ?axis f a x =
   let x' = flatten x |> array1_of_genarray in
   match axis with
@@ -9972,7 +9972,7 @@ let draw_cols2 ?(replacement = true) x y c =
 
 
 (*
-  simiar to sum_rows in matrix, sum all the slices along an axis.
+  similar to sum_rows in matrix, sum all the slices along an axis.
   The default [axis] is the highest dimension. E.g., for [x] of [|2;3;4;5|],
   [sum_slices ~axis:2] returns an ndarray of shape [|4;5|].
 
@@ -9999,7 +9999,7 @@ let sum_slices ?axis x =
 
 
 (*
-  Simiar to ``sum``, but sums the elements along multiple axes specified in an
+  Similar to ``sum``, but sums the elements along multiple axes specified in an
   array. E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an
   ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of
   shape [|1;1;1;1|].

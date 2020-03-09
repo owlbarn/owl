@@ -1684,7 +1684,7 @@ let wblplot ?(h = _default_handle) ?(spec = []) ?(lambda = 1.) ?(k = 1.) x =
   let p3y, p3x = Owl_stats.third_quartile y, Owl_stats.third_quartile x in
   let left, right = Owl_stats.minmax x in
   let up, down = Owl_stats.minmax y in
-  (* prepare the closure; note the change to log sacle *)
+  (* prepare the closure; note the change to log scale *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
   let r, g, b = color in

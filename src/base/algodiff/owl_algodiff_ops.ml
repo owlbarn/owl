@@ -2018,7 +2018,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
   module NN = struct
     open Maths
 
-    (* NOTE: these fucntions are for neural network. There are many restrictions at the
+    (* NOTE: these functions are for neural network. There are many restrictions at the
        moment. E.g. they do not support higher-order derivatives, and some do not support
        forward mode, so use them when you know what you are doing. *)
 

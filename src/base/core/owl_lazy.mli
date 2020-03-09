@@ -107,7 +107,7 @@ module Make (A : Ndarray_Mutable) : sig
   val unsafe_assign_arr : arr -> A.arr -> unit
   (** TODO *)
 
-  (** {6 Maths funcitons} *)
+  (** {6 Maths functions} *)
 
   val noop : arr -> arr
   (** TODO *)

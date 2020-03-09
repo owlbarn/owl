@@ -15,7 +15,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
     !_global_tag
 
 
-  (* hepler functions of the core AD component *)
+  (* helper functions of the core AD component *)
 
   let reset_zero = function
     | F _    -> F A.(float_to_elt 0.)

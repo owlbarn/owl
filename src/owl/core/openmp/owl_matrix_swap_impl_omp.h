@@ -47,7 +47,7 @@ CAMLprim value FUNCTION (stub, swap_rows) (value vX, value vM, value vN, value v
 }
 
 
-// swap column i and colum j in x(m,n)
+// swap column i and column j in x(m,n)
 void FUNCTION (c, swap_cols) (TYPE *x, int m, int n, int i, int j) {
   if (i != j) {
     TYPE * src = x + i;

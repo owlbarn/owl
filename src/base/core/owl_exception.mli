@@ -44,7 +44,7 @@ val pp_exception : Format.formatter -> exn -> unit
 (** {6 Exception definition} *)
 
 exception CONV_INVALID_ARGUMENT
-(** Input arugments of convolution operations are invalid. *)
+(** Input arguments of convolution operations are invalid. *)
 
 exception NOT_IMPLEMENTED of string
 (** Exception of not implemented yet. *)
@@ -65,10 +65,10 @@ exception TEST_FAIL
 (** Unit Test fails. *)
 
 exception INVALID_ARGUMENT of string
-(** Input arugments are invalid. *)
+(** Input arguments are invalid. *)
 
 exception INVALID_PROBABILITY of float
-(** Invalide probability value, not within [0,1] range. *)
+(** Invalid probability value, not within [0,1] range. *)
 
 exception LINALG_MATRIX_DOT_SHAPE of (int * int * int * int)
 (** Invalid matrix shapes for matrix dot product. *)

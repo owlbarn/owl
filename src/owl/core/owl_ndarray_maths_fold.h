@@ -184,7 +184,7 @@ CAMLprim value FUN11(value vN, value vX, value vY)
 #endif /* FUN11 */
 
 
-// function to fold all the elements in x with extra paramaters A and B
+// function to fold all the elements in x with extra parameters A and B
 #ifdef FUN23
 
 CAMLprim value FUN23(value vN, value vX, value vA, vB)
