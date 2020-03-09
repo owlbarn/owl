@@ -116,7 +116,7 @@ let get_tok corpus i : int array =
   doc
 
 
-(* reset all the file pointers at offest 0 *)
+(* reset all the file pointers at offset 0 *)
 let reset_iterators corpus =
   let _reset_offset = function
     | Some h -> seek_in h 0
@@ -180,12 +180,12 @@ let build ?docid ?stopwords ?lo ?hi ?vocab ?(minlen = 10) fname =
   let tok_f = fname ^ ".tok" |> open_out in
   set_binary_mode_out bin_f true;
   set_binary_mode_out tok_f true;
-  (* initalise the offset array *)
+  (* initialise the offset array *)
   let b_ofs = Owl_utils.Stack.make () in
   let t_ofs = Owl_utils.Stack.make () in
   Owl_utils.Stack.push b_ofs 0;
   Owl_utils.Stack.push t_ofs 0;
-  (* initalise the doc_id stack *)
+  (* initialise the doc_id stack *)
   let doc_s = Owl_utils.Stack.make () in
   (* binarise and tokenise at the same time *)
   Owl_log.info "convert to binary and tokenise ...";

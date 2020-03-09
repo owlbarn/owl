@@ -33,7 +33,7 @@ let mk_temp_dir ?(mode = 0o700) ?dir pat =
   let raise_err msg = raise (Sys_error ("mk_temp_dir: " ^ msg)) in
   let rec loop count =
     if count < 0
-    then raise_err "too many failing attemps"
+    then raise_err "too many failing attempts"
     else (
       let dir = Printf.sprintf "%s/%s%s" dir pat (rand_digits ()) in
       try

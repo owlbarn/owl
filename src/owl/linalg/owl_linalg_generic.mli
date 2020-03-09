@@ -164,7 +164,7 @@ val qr
 ``x = Q R``. ``Q`` is an ``m`` by ``n`` matrix (where ``Q^T Q = I``) and ``R`` is
 an ``n`` by ``n`` upper-triangular matrix.
 
-The function returns a 3-tuple, the first two are ``q`` and ``r``, and the thrid
+The function returns a 3-tuple, the first two are ``q`` and ``r``, and the third
 is the permutation vector of columns. The default value of ``pivot`` is ``false``,
 setting ``pivot = true`` lets ``qr`` performs pivoted factorisation. Note that
 the returned indices are not adjusted to 0-based C layout.

@@ -31,7 +31,7 @@
 #endif  /* _OPENMP */
 
 
-/* Default tunable OpemMP paramters */
+/* Default tunable OpemMP parameters */
 
 #define OWL_OMP_THRESHOLD_FUN_(A) OMP_THRESHOLD ## _ ## A
 #define OWL_OMP_THRESHOLD_FUN(A) OWL_OMP_THRESHOLD_FUN_(A)

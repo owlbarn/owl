@@ -236,7 +236,7 @@ let fzero ?(solver = Brent) ?(max_iter = 1000) ?(xtol = 1e-6) f a b =
 
 let bracket_expand ?(rate = 1.6) ?(max_iter = 100) f a b =
   let error () =
-    let s = Printf.sprintf "bracket_expand requries a < b, but a = %g and b = %g" a b in
+    let s = Printf.sprintf "bracket_expand requires a < b, but a = %g and b = %g" a b in
     Owl_exception.INVALID_ARGUMENT s
   in
   Owl_exception.verify (a < b) error;

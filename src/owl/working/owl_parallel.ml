@@ -113,7 +113,7 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
   (* make a distributed version of [create_fun d], the elements will be
      distributed among the working nodes.
 
-     [create_fun] receives three paramaters: shape, starting pos (1d), and
+     [create_fun] receives three parameters: shape, starting pos (1d), and
      length of the chunk (1d).
   *)
   let distributed_create_basic create_fun d =

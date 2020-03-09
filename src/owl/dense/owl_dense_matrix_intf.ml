@@ -266,7 +266,7 @@ module type Common = sig
 
   val map_at_col : (elt -> elt) -> mat -> int -> mat
 
-  (** {6 Examin elements and compare two matrices} *)
+  (** {6 Examine elements and compare two matrices} *)
 
   val exists : (elt -> bool) -> mat -> bool
 
@@ -612,7 +612,7 @@ module type Common = sig
 
   val fma : mat -> mat -> mat -> mat
 
-  (** {6 Fucntions of in-place modification } *)
+  (** {6 Functions of in-place modification } *)
 
   val create_ : out:mat -> elt -> unit
 

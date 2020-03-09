@@ -134,7 +134,7 @@ let allocate_from_arr ctx a =
   (a_val, a_mem, a_ptr), (b_val, b_mem, b_ptr)
 
 
-(* evalution function for the map-reduce primitives *)
+(* evaluation function for the map-reduce primitives *)
 
 (* FIXME: scalar is not taken into account *)
 let allocate_from_inputs ctx x =

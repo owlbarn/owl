@@ -150,7 +150,7 @@ struct r123m128i{
 #if R123_USE_CXX11_UNRESTRICTED_UNIONS
     // C++98 forbids a union member from having *any* constructors.
     // C++11 relaxes this, and allows union members to have constructors
-    // as long as there is a "trivial" default construtor.  So in C++11
+    // as long as there is a "trivial" default constructor.  So in C++11
     // we can provide a r123m128i constructor with an __m128i argument, and still
     // have the default (and hence trivial) default constructor.
     r123m128i() = default;

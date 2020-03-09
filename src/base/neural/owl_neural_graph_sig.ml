@@ -92,7 +92,7 @@ module type Sig = sig
   (** Initialise the network. *)
 
   val reset : network -> unit
-  (** Reset the network, i.e. all the paramters in the neurons. *)
+  (** Reset the network, i.e. all the parameters in the neurons. *)
 
   val mktag : int -> network -> unit
   (** Tag the neurons, used by ``Algodiff`` module. *)

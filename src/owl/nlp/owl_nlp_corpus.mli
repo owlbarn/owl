@@ -72,7 +72,7 @@ val next_batch_tok : ?size:int -> t -> int array array
 (** Return the next batch of tokenised documents in a corpus as a string array. The default ``size`` is 100. *)
 
 val reset_iterators : t -> unit
-(** Reset the iterator to the begining of the corpus. *)
+(** Reset the iterator to the beginning of the corpus. *)
 
 (** {6 Core functions} *)
 

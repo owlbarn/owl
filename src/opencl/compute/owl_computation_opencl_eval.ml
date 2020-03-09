@@ -250,7 +250,7 @@ module Make (Device : Owl_types_computation_opencl_device.Sig) = struct
   (* dummy map *)
   and _eval_map_xx _ = ()
 
-  (* varibles and consts, copy cpu -> gpu *)
+  (* variables and consts, copy cpu -> gpu *)
   and _eval_map_00 x param =
     if is_valid x = false
     then (

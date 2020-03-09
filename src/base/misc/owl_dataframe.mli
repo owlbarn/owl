@@ -245,7 +245,7 @@ val iteri_row : (int -> elt array -> unit) -> t -> unit
 (** ``iteri_row f x`` iterates the rows of ``x`` and applies ``f``. *)
 
 val iter_row : (elt array -> unit) -> t -> unit
-(** ``iter_row`` is simiar to ``iteri_row`` without passing in row indices. *)
+(** ``iter_row`` is similar to ``iteri_row`` without passing in row indices. *)
 
 val mapi_row : (int -> elt array -> elt array) -> t -> t
 (**
@@ -256,7 +256,7 @@ will occur.
  *)
 
 val map_row : (elt array -> elt array) -> t -> t
-(** ``map_row`` is simiar to ``mapi_row`` but without passing in row indices. *)
+(** ``map_row`` is similar to ``mapi_row`` but without passing in row indices. *)
 
 val filteri_row : (int -> elt array -> bool) -> t -> t
 (**

@@ -70,7 +70,7 @@ module type Sig = sig
   (** laplacian of ``f : (scalar -> scalar)`` at ``x``. *)
 
   val laplacian' : (t -> t) -> t -> t * t
-  (** simiar to ``laplacian``, but return ``(f x, laplacian f x)``. *)
+  (** similar to ``laplacian``, but return ``(f x, laplacian f x)``. *)
 
   val gradhessian : (t -> t) -> t -> t * t
   (** return ``(grad f x, hessian f x)``, ``f : (scalar -> scalar)`` *)

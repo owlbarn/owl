@@ -350,7 +350,7 @@ let det a =
 
 
 (* Solver for tridiagonal matrix
- * Input: a[n], b[n], c[n], which together consit the tridiagonal matrix A, and the right side vector r[n]. Return: x[n].
+ * Input: a[n], b[n], c[n], which together consist the tridiagonal matrix A, and the right side vector r[n]. Return: x[n].
  *)
 
 let tridiag_solve_vec a b c r =

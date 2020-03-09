@@ -327,7 +327,7 @@ let strides x = x |> shape |> Owl_utils.calc_stride
 let slice_size x = x |> shape |> Owl_utils.calc_slice
 
 (* TODO: performance can be optimised by removing embedded loops *)
-(* generic fold funtion *)
+(* generic fold function *)
 let foldi ?axis f a x =
   let x' = flatten x |> array1_of_genarray in
   match axis with
@@ -3101,7 +3101,7 @@ let avg_pool1d ?(padding = SAME) input kernel stride =
   output
 
 
-(* simiar to max_pool3d *)
+(* similar to max_pool3d *)
 let avg_pool3d ?(padding = SAME) input kernel stride =
   let sum_pool = ref 0. in
   let cnt = ref 0. in
@@ -5352,7 +5352,7 @@ let dot varr_a varr_b =
   let cdim = dims_a.(1) in
   let n = dims_b.(1) in
   if dims_b.(0) != cdim
-  then raise (Invalid_argument "Matrices cannot be multipled")
+  then raise (Invalid_argument "Matrices cannot be multiplied")
   else (
     let varr_c = empty (kind varr_a) [| m; n |] in
     let sum = ref 0. in

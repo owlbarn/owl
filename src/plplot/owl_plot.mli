@@ -412,7 +412,7 @@ val qqplot
 ``qqplot ~pd ~x y `` displays a quantile-quantile plot of the quantiles of the
 sample data x versus the theoretical quantiles values from ``pd``, which by
 default is standard normal distribution. If the second argument ``x`` is a
-vector, the empirical CDF of it is used as the distribtion of x-axis data,
+vector, the empirical CDF of it is used as the distribution of x-axis data,
 otherwise the qqplot is similar to ``probplot``, showing the inverseCDF of
 meadian ``(i - 0.5)/n`` on x-axis.
 

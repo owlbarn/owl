@@ -134,7 +134,7 @@ val set_slice : int array -> 'a array -> 'a array -> unit
 (**
 ``set_slice slice x y`` sets the elements in ``x`` to the corresponding value
 of the elements in ``y`` based on the slice definition ``slice``. Please refer
-to ``get_slice`` function for the information on the format of slice definiton.
+to ``get_slice`` function for the information on the format of slice definition.
  *)
 
 val flatten : 'a array array -> 'a array

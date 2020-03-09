@@ -891,6 +891,6 @@ module Image = struct end
 (** image definition *)
 
 module SVM = struct end
-(** shared virtual memroy definition, required opencl 2.0 *)
+(** shared virtual memory definition, required opencl 2.0 *)
 
 (* ends here *)

@@ -241,7 +241,7 @@ number of batches per epoch and the number of epochs in total.
       ; mutable checkpoint : Checkpoint.typ
       ; mutable verbosity : bool
       }
-    (** Type definition of paramater. *)
+    (** Type definition of parameter. *)
 
     val default : unit -> typ
     (** Create module ``typ`` with default values. *)

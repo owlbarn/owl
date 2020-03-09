@@ -273,7 +273,7 @@ module type Common = sig
 
   val slide : ?axis:int -> ?ofs:int -> ?step:int -> window:int -> arr -> arr
 
-  (** {6 Fucntions of in-place modification } *)
+  (** {6 Functions of in-place modification } *)
 
   val create_ : out:arr -> elt -> unit
 

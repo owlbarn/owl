@@ -24,7 +24,7 @@ type t =
     mutable df_typ : df_typ
   ; (* function to calculate doc freq *)
     mutable offset : int array
-  ; (* record the offest each document *)
+  ; (* record the offset each document *)
     mutable doc_freq : float array
   ; (* document frequency *)
     mutable corpus : Owl_nlp_corpus.t
@@ -32,7 +32,7 @@ type t =
     mutable handle : in_channel option (* file descriptor of the tfidf *)
   }
 
-(* variouis types of TF and IDF fucntions *)
+(* various types of TF and IDF functions *)
 
 let term_freq = function
   | Binary    -> fun _tc _tn -> 1.
@@ -148,7 +148,7 @@ let _build_with norm sort tf_fun df_fun m =
   let fo = open_out fname in
   (* buffer for calculate term frequency *)
   let _h = Hashtbl.create 1024 in
-  (* variable for tracking the offest in output model *)
+  (* variable for tracking the offset in output model *)
   let offset = Owl_utils.Stack.make () in
   Owl_utils.Stack.push offset 0;
   Owl_io.iteri_lines_of_marshal

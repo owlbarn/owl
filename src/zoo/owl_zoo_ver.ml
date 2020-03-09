@@ -79,7 +79,7 @@ let get_latest_vid (gid : string) (tol : float) =
     v.(Array.length v - 1))
   else (
     Owl_log.debug
-      "owl-zoo: Gist %s exceeds time tolerence %f; fetching newest vid from server"
+      "owl-zoo: Gist %s exceeds time tolerance %f; fetching newest vid from server"
       gid
       tol;
     Hashtbl.replace tb gid (v, t);

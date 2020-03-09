@@ -263,7 +263,7 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
         Owl_graph.set_name c0 s0;
         Owl_graph.set_name c1 s1)
       ch';
-    (* contruct a computation graph with inputs and outputs *)
+    (* construct a computation graph with inputs and outputs *)
     let network_name = Graph.get_network_name network in
     let ch, ch' = Owl_utils_array.(flatten ch, flatten ch') in
     let _to_nodes = Array.map (fun v -> unpack_arr v |> Engine.arr_to_node) in

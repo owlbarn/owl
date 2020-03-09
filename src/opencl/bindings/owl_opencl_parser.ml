@@ -561,7 +561,7 @@ let parse_opencl_header_funlist fname funlist =
        let _fun_name = Str.matched_group 2 _s in
        let _fun_vars = Str.matched_group 3 _s in
        let _fun_vers = Str.matched_group 4 _s in
-       (* only accept thos in funlist *)
+       (* only accept those in funlist *)
        if is_in_funlist t _fun_name = true
        then funs := Array.append !funs [| _fun_rval, _fun_name, _fun_vars, _fun_vers |]
        else Printf.printf "opencl %s @ %s\n" _fun_name _fun_vars;
