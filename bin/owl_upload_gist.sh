@@ -15,7 +15,7 @@ cd $DIRNAME
 NAME=`head -n 1 \#readme.md`
 FILES=`ls * | xargs echo`
 
-# add new or upate a gist
+# add new or update a gist
 NAME="Owl's Gist"
 GISTFILE=gist.id
 if [ ! -f $GISTFILE ]; then

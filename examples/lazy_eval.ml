@@ -14,11 +14,11 @@ let lazy_eval x () =
   M.eval_arr [| z |]
 
 
-(* an exmaple for eager evaluation *)
+(* an example for eager evaluation *)
 let eager_eval x () =
   ignore Arr.(add x x |> log |> sin |> neg |> cos |> abs |> sinh |> round |> atan)
 
-(* test incremental compuation by changing part of inputs *)
+(* test incremental computation by changing part of inputs *)
 let incremental x =
   let a = M.var_arr "a" in
   let b = M.var_elt "b" in

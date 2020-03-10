@@ -125,7 +125,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       an iterated mapping of each element of *xs* to a new element in a Bigarray
       for df. These two arrays are then compared using the Owl 'approx_equal'
       array comparison function, and if any elements differ by more than eps then
-      an error is displayed (the failing entry numebr is not displayed at
+      an error is displayed (the failing entry number is not displayed at
       present)
 
    **)
