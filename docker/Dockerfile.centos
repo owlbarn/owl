@@ -11,7 +11,7 @@ USER opam
 
 RUN sudo yum update -y
 RUN sudo yum -y install git wget unzip m4 pkg-config gcc-gfortran epel-release
-RUN sudo yum -y install openblas-devel plplot-devel
+RUN sudo yum -y install openblas-devel plplot-devel zlib-devel
 RUN cd /home/opam/opam-repository && git pull --quiet origin master
 RUN opam update -q
 

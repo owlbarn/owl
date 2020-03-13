@@ -10,7 +10,7 @@ USER opam
 ##################### PREREQUISITES ########################
 
 RUN sudo apk update
-RUN sudo apk add m4 wget unzip aspcud openblas-dev
+RUN sudo apk add m4 wget unzip aspcud openblas-dev zlib-dev
 RUN cd /home/opam/opam-repository && git pull --quiet origin master
 RUN opam update -q
 
