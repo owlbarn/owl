@@ -368,8 +368,7 @@ module To_test = struct
     let result_shp = M.shape y in
     let y0 =
       let idx = List.init ndim (fun i -> if i = axis then [ 0 ] else []) in
-      M.get_slice idx y
-      |> M.squeeze ~axis:[|axis|]
+      M.get_slice idx y |> M.squeeze ~axis:[| axis |]
     in
     result_shp = expected_shp && y0 = x.(0)
 
