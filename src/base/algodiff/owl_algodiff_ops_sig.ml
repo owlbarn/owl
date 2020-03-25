@@ -55,6 +55,9 @@ module type Sig = sig
     val div : t -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val kron : t -> t -> t
+    (** Refer to :doc:`owl_dense_matrix_generic` *)
+
     val dot : t -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

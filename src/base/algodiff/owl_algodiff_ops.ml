@@ -1043,6 +1043,23 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and div a = Lazy.force _div a
 
+    and kron a b =
+      let na, ma =
+        let s = shape a in
+        s.(0), s.(1)
+      in
+      let nb, mb =
+        let s = shape b in
+        s.(0), s.(1)
+      in
+      let a = reshape a [| -1; 1 |] in
+      let b = reshape a [| 1; -1 |] in
+      let c = a *@ b in
+      let c = reshape c [| na; ma; nb; mb |] in
+      let c = transpose ~axis:[| 0; 2; 1; 3 |] c in
+      reshape c [| Stdlib.(na * nb); Stdlib.(ma * mb) |]
+
+
     and ( ** ) a b = pow a b
 
     and _pow =
