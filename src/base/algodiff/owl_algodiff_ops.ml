@@ -1053,7 +1053,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         s.(0), s.(1)
       in
       let a = reshape a [| -1; 1 |] in
-      let b = reshape a [| 1; -1 |] in
+      let b = reshape b [| 1; -1 |] in
       let c = a *@ b in
       let c = reshape c [| na; ma; nb; mb |] in
       let c = transpose ~axis:[| 0; 2; 1; 3 |] c in
