@@ -576,21 +576,31 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and _transpose =
       lazy
-        (build_siso
-           (module struct
-             let label = "transpose"
+        (fun ?axis ->
+          build_siso
+            (module struct
+              let label = "transpose"
 
-             let ff_f a = error_uniop label (pack_elt a)
+              let ff_f a = error_uniop label (pack_elt a)
 
-             let ff_arr a = Arr A.(transpose a)
+              let ff_arr a = Arr A.(transpose ?axis a)
 
-             let df _cp _ap at = transpose at
+              let df _cp _ap at = transpose ?axis at
 
-             let dr _a _cp ca = transpose !ca
-           end : Siso))
+              let dr _a _cp ca = transpose ?axis !ca
+            end : Siso))
 
 
-    and transpose a = Lazy.force _transpose a
+    and transpose ?axis = Lazy.force _transpose ?axis
+
+    and swap a0 a1 x =
+      let d = Array.length (shape x) in
+      let a = Array.init d (fun i -> i) in
+      let t = a.(a0) in
+      a.(a0) <- a.(a1);
+      a.(a1) <- t;
+      transpose ~axis:a x
+
 
     and _l1norm' =
       lazy

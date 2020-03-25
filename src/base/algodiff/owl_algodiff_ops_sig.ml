@@ -160,7 +160,10 @@ module type Sig = sig
     val mean : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-    val transpose : t -> t
+    val transpose : ?axis:int array -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val swap : int -> int -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val l1norm' : t -> t
