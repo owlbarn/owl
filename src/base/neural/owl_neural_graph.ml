@@ -766,6 +766,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
         Neuron.load_weights n.neuron ws)
       nn.topo
 
+
   let get_subnetwork_array ?(copy = false) ?(make_inputs = [||]) nn outputs =
     let subnn = make_network 0 [||] [||] in
     let in_nodes = ref [] in
@@ -791,7 +792,12 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
           let acc = new_node :: acc in
           Array.fold_left (fun a prev -> collect_subnn_nodes prev a) acc n.prev)
     in
-    let new_nodes = Array.fold_left (fun acc name -> collect_subnn_nodes (get_node nn name) acc) [] outputs in
+    let new_nodes =
+      Array.fold_left
+        (fun acc name -> collect_subnn_nodes (get_node nn name) acc)
+        []
+        outputs
+    in
     (* sorts the new topology *)
     let new_topo =
       Array.fold_left
@@ -819,6 +825,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
               (fun n -> Array.exists (fun n' -> n'.name = n.name) subnn.topo)
               node.next
           in
+          (* With custom input nodes, next could contain an input node. *)
           node'.next <- Array.map (fun n -> get_node subnn n.name) next);
         connect_to_parents node'.prev node')
       subnn.topo;
