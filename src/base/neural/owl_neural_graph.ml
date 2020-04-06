@@ -767,7 +767,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
       nn.topo
 
 
-  let get_subnetwork ?(copy = true) ?(make_inputs = [||]) nn output_names =
+  let make_subnetwork ?(copy = true) ?(make_inputs = [||]) nn output_names =
     let subnn = make_network 0 [||] [||] in
     let in_nodes = ref [] in
     (* collect neurons belonging to subnetwork *)
