@@ -673,17 +673,19 @@ Load the weights from a file of the given name. Note that the weights and the
 name of their associated neurons are saved as key-value pairs in a hash table.
   *)
 
-  val get_subnetwork : ?make_inputs:string array -> node -> network
+  val get_subnetwork : ?copy:bool -> ?make_inputs:string array -> node -> network
   (**
    Constructs a subnetwork of nodes on which ``node`` depends, replacing
    nodes with names in ``make_inputs`` with input nodes. If ``make_inputs``
-   is empty or unspecified, the original input nodes are used.
-   
-   Note: the weights in the new network are the references of those in
-   the old one.
+   is empty or unspecified, the original input nodes are used.  ``copy`` is
+   a bool controlling whether the weights of the new network are copies or
+   references to those of the old network (defaults to ``false``).
    *)
 
-  val get_subnetwork_array : ?make_inputs:string array -> network -> string array -> network
+  val get_subnetwork_array : ?copy:bool -> ?make_inputs:string array -> network -> string array -> network
+  (**
+   Like ``get_subnetwork``, but allows for multiple output nodes in the subnetwork.
+   *)
 
   (** {6 Train Networks} *)
 

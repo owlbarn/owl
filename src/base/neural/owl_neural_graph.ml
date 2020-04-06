@@ -766,7 +766,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
         Neuron.load_weights n.neuron ws)
       nn.topo
 
-  let get_subnetwork_array ?(make_inputs = [||]) nn outputs =
+  let get_subnetwork_array ?(copy = false) ?(make_inputs = [||]) nn outputs =
     let subnn = make_network 0 [||] [||] in
     let in_nodes = ref [] in
     (* collect neurons belonging to subnetwork *)
@@ -781,8 +781,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
         in_nodes := new_in :: !in_nodes;
         new_in :: acc)
       else (
-        (* no neuron copy *)
-        let neur = n.neuron in
+        let neur = if copy then Neuron.copy n.neuron else n.neuron in
         let new_node = make_node ~name:n.name ~train:n.train [||] [||] neur None subnn in
         match neur with
         | Input _ ->
@@ -828,8 +827,8 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
     subnn.outputs <- Array.map (fun name -> get_node subnn name) outputs;
     subnn
 
-  let get_subnetwork ?make_inputs out_node =
-    get_subnetwork_array ?make_inputs (get_network out_node) [| out_node.name |]
+  let get_subnetwork ?copy ?make_inputs out_node =
+    get_subnetwork_array ?copy ?make_inputs (get_network out_node) [| out_node.name |]
 
 
   (* training functions *)
