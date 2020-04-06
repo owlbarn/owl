@@ -767,7 +767,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
       nn.topo
 
 
-  let get_subnetwork_array ?(copy = false) ?(make_inputs = [||]) nn outputs =
+  let get_subnetwork ?(copy = true) ?(make_inputs = [||]) nn output_names =
     let subnn = make_network 0 [||] [||] in
     let in_nodes = ref [] in
     (* collect neurons belonging to subnetwork *)
@@ -796,7 +796,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
       Array.fold_left
         (fun acc name -> collect_subnn_nodes (get_node nn name) acc)
         []
-        outputs
+        output_names
     in
     (* sorts the new topology *)
     let new_topo =
@@ -817,7 +817,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
         let node = get_node nn node'.name in
         if not (List.memq node' !in_nodes)
         then node'.prev <- Array.map (fun n -> get_node subnn n.name) node.prev;
-        if not (Array.mem node.name outputs)
+        if not (Array.mem node.name output_names)
         then (
           (* only process nodes that are part of the subnetwork *)
           let next =
@@ -831,11 +831,8 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
       subnn.topo;
     (* TODO: Warn if not all names in in_names were used? *)
     subnn.roots <- Array.of_list !in_nodes;
-    subnn.outputs <- Array.map (fun name -> get_node subnn name) outputs;
+    subnn.outputs <- Array.map (fun name -> get_node subnn name) output_names;
     subnn
-
-  let get_subnetwork ?copy ?make_inputs out_node =
-    get_subnetwork_array ?copy ?make_inputs (get_network out_node) [| out_node.name |]
 
 
   (* training functions *)
