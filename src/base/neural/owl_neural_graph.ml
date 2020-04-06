@@ -766,9 +766,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
         Neuron.load_weights n.neuron ws)
       nn.topo
 
-
-  let get_subnetwork ?(make_inputs = [||]) out_node =
-    let nn = out_node.network in
+  let get_subnetwork_array ?(make_inputs = [||]) nn outputs =
     let subnn = make_network 0 [||] [||] in
     let in_nodes = ref [] in
     (* collect neurons belonging to subnetwork *)
@@ -794,7 +792,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
           let acc = new_node :: acc in
           Array.fold_left (fun a prev -> collect_subnn_nodes prev a) acc n.prev)
     in
-    let new_nodes = collect_subnn_nodes out_node [] in
+    let new_nodes = Array.fold_left (fun acc name -> collect_subnn_nodes (get_node nn name) acc) [] outputs in
     (* sorts the new topology *)
     let new_topo =
       Array.fold_left
@@ -814,7 +812,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
         let node = get_node nn node'.name in
         if not (List.memq node' !in_nodes)
         then node'.prev <- Array.map (fun n -> get_node subnn n.name) node.prev;
-        if not (node.name = out_node.name)
+        if not (Array.mem node.name outputs)
         then (
           (* only process nodes that are part of the subnetwork *)
           let next =
@@ -827,8 +825,11 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
       subnn.topo;
     (* TODO: Warn if not all names in in_names were used? *)
     subnn.roots <- Array.of_list !in_nodes;
-    subnn.outputs <- Array.map (fun n -> get_node subnn n.name) [| out_node |];
+    subnn.outputs <- Array.map (fun name -> get_node subnn name) outputs;
     subnn
+
+  let get_subnetwork ?make_inputs out_node =
+    get_subnetwork_array ?make_inputs (get_network out_node) [| out_node.name |]
 
 
   (* training functions *)

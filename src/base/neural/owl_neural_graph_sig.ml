@@ -683,6 +683,8 @@ name of their associated neurons are saved as key-value pairs in a hash table.
    the old one.
    *)
 
+  val get_subnetwork_array : ?make_inputs:string array -> network -> string array -> network
+
   (** {6 Train Networks} *)
 
   val train_generic
