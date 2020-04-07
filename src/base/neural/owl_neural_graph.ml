@@ -767,8 +767,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
       nn.topo
 
 
-  let get_subnetwork ?(make_inputs = [||]) out_node =
-    let nn = out_node.network in
+  let make_subnetwork ?(copy = true) ?(make_inputs = [||]) nn output_names =
     let subnn = make_network 0 [||] [||] in
     let in_nodes = ref [] in
     (* collect neurons belonging to subnetwork *)
@@ -783,8 +782,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
         in_nodes := new_in :: !in_nodes;
         new_in :: acc)
       else (
-        (* no neuron copy *)
-        let neur = n.neuron in
+        let neur = if copy then Neuron.copy n.neuron else n.neuron in
         let new_node = make_node ~name:n.name ~train:n.train [||] [||] neur None subnn in
         match neur with
         | Input _ ->
@@ -794,7 +792,12 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
           let acc = new_node :: acc in
           Array.fold_left (fun a prev -> collect_subnn_nodes prev a) acc n.prev)
     in
-    let new_nodes = collect_subnn_nodes out_node [] in
+    let new_nodes =
+      Array.fold_left
+        (fun acc name -> collect_subnn_nodes (get_node nn name) acc)
+        []
+        output_names
+    in
     (* sorts the new topology *)
     let new_topo =
       Array.fold_left
@@ -814,7 +817,7 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
         let node = get_node nn node'.name in
         if not (List.memq node' !in_nodes)
         then node'.prev <- Array.map (fun n -> get_node subnn n.name) node.prev;
-        if not (node.name = out_node.name)
+        if not (Array.mem node.name output_names)
         then (
           (* only process nodes that are part of the subnetwork *)
           let next =
@@ -822,12 +825,13 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
               (fun n -> Array.exists (fun n' -> n'.name = n.name) subnn.topo)
               node.next
           in
+          (* With custom input nodes, next could contain an input node. *)
           node'.next <- Array.map (fun n -> get_node subnn n.name) next);
         connect_to_parents node'.prev node')
       subnn.topo;
     (* TODO: Warn if not all names in in_names were used? *)
     subnn.roots <- Array.of_list !in_nodes;
-    subnn.outputs <- Array.map (fun n -> get_node subnn n.name) [| out_node |];
+    subnn.outputs <- Array.map (fun name -> get_node subnn name) output_names;
     subnn
 
 
