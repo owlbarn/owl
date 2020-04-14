@@ -651,6 +651,13 @@ module Make (Neuron : Owl_neural_neuron_sig.Sig) = struct
     add_node nn [| input_node |] n
 
 
+  let slice ?name slice input_node =
+    let neuron = Slice (Slice.create slice) in
+    let nn = get_network input_node in
+    let n = make_node ?name [||] [||] neuron None nn in
+    add_node nn [| input_node |] n
+
+
   let lambda ?name ?act_typ ?out_shape lambda input_node =
     let neuron = Lambda (Lambda.create ?out_shape lambda) in
     let nn = get_network input_node in
