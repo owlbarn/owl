@@ -2641,10 +2641,18 @@ module Make (Optimise : Owl_optimise_generic_sig.Sig) = struct
     let run x l = Maths.get_slice ([] :: l.slice) x
 
     let to_string l =
-      (* TODO: print slice? *)
       let in_str = Owl_utils_array.to_string string_of_int l.in_shape in
       let out_str = Owl_utils_array.to_string string_of_int l.out_shape in
+      let slice_str =
+        List.mapi
+          (fun i l ->
+            let s = List.map string_of_int l |> String.concat "; " in
+            Printf.sprintf "%i:[%s]" i s)
+          l.slice
+        |> String.concat " "
+      in
       Printf.sprintf "    Slice : in:[*,%s] out:[*,%s]\n" in_str out_str
+      ^ Printf.sprintf "    Axes  : %s\n" slice_str
 
 
     let to_name () = "slice"
