@@ -2599,41 +2599,8 @@ module Make (Optimise : Owl_optimise_generic_sig.Sig) = struct
     let connect out_shape l =
       assert (List.length l.slice <= Array.length out_shape);
       (* Calculate the output shape based on input and slice *)
-      let deduce_shape orig_shape slice =
-        let slice_len length start stop ?step () =
-          let start = if start < 0 then length + start else start in
-          let stop = if stop < 0 then length + stop else stop in
-          let step =
-            match step with
-            | Some x -> x
-            | None   -> if start <= stop then 1 else -1
-          in
-          assert (
-            (start <= stop && step > 0 && stop < length)
-            || (start > stop && step < 0 && start < length));
-          let step_abs = abs step in
-          (abs (stop - start) + step_abs) / step_abs
-        in
-        let shape' =
-          List.mapi
-            (fun i slicei ->
-              let length = orig_shape.(i) in
-              let slicei_len = slice_len length in
-              match slicei with
-              | []                    -> length
-              | [ index ]             -> slicei_len index index ()
-              | [ start; stop ]       -> slicei_len start stop ()
-              | [ start; stop; step ] -> slicei_len start stop ~step ()
-              | _                     -> failwith
-                                           "owl_neural_neuron: invalid slice specification")
-            slice
-        in
-        let shape = Array.copy orig_shape in
-        List.iteri (fun i len -> shape.(i) <- len) shape';
-        shape
-      in
       l.in_shape <- Array.copy out_shape;
-      l.out_shape <- deduce_shape out_shape l.slice
+      l.out_shape <- Owl_utils_infer_shape.slice out_shape l.slice
 
 
     let copy l = create l.slice
