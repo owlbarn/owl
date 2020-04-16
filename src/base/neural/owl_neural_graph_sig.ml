@@ -570,6 +570,11 @@ Arguments:
 ``flatten node`` flattens the input. Does not affect the batch size.
   *)
 
+  val slice : ?name:string -> int list list -> node -> node
+  (**
+``slice node`` slices the input. Does not affect the batch size.
+  *)
+
   val lambda
     :  ?name:string
     -> ?act_typ:Activation.typ

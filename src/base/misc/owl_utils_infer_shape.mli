@@ -99,6 +99,8 @@ val concatenate : int array array -> int -> int array
 
 val split : int array -> int -> int array -> int array array
 
+val slice : int array -> int list list -> int array
+
 val draw : 'a array -> int -> 'a -> 'a array
 
 val reduce : int array -> int array -> int array

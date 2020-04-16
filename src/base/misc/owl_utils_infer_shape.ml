@@ -320,6 +320,40 @@ let split shape axis parts =
     parts
 
 
+let slice shape slice_spec =
+  let infer_len orig_len start stop ?step () =
+    let start = if start < 0 then orig_len + start else start in
+    let stop = if stop < 0 then orig_len + stop else stop in
+    let step =
+      match step with
+      | Some x -> x
+      | None   -> if start <= stop then 1 else -1
+    in
+    assert (
+      (start <= stop && step > 0 && stop < orig_len)
+      || (start > stop && step < 0 && start < orig_len));
+    let step_abs = abs step in
+    (abs (stop - start) + step_abs) / step_abs
+  in
+  let shape' =
+    List.mapi
+      (fun i slicei ->
+        let length = shape.(i) in
+        let infer_len_i = infer_len length in
+        match slicei with
+        | []                    -> length
+        | [ index ]             -> infer_len_i index index ()
+        | [ start; stop ]       -> infer_len_i start stop ()
+        | [ start; stop; step ] -> infer_len_i start stop ~step ()
+        | _                     -> failwith
+                                     "owl_utils_infer_shape: invalid slice specification")
+      slice_spec
+  in
+  let s = Array.copy shape in
+  List.iteri (fun i len -> s.(i) <- len) shape';
+  s
+
+
 let draw shape axis n =
   let d = Array.length shape in
   let a = Owl_utils_ndarray.adjust_index axis d in

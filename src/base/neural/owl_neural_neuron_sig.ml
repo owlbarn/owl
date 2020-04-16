@@ -1462,6 +1462,36 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
+  (** {6 Slice neuron} *)
+
+  module Slice : sig
+    type neuron_typ =
+      { mutable in_shape : int array
+      ; mutable out_shape : int array
+      ; mutable slice : int list list
+      }
+
+    (** Neuron type definition. *)
+
+    val create : int list list -> neuron_typ
+    (** Create the neuron. *)
+
+    val connect : int array -> neuron_typ -> unit
+    (** Connect this neuron to others in a neural network. *)
+
+    val copy : neuron_typ -> neuron_typ
+    (** Make a deep copy of the neuron and its parameters. *)
+
+    val run : t -> neuron_typ -> t
+    (** Execute the computation in this neuron. *)
+
+    val to_string : neuron_typ -> string
+    (** Convert the neuron to its string representation. The string is often a summary of the parameters defined in the neuron. *)
+
+    val to_name : unit -> string
+    (** Return the name of the neuron. *)
+  end
+
   (** {6 Add neuron} *)
 
   module Add : sig
@@ -1875,6 +1905,7 @@ module type Sig = sig
     | Dropout         of Dropout.neuron_typ
     | Reshape         of Reshape.neuron_typ
     | Flatten         of Flatten.neuron_typ
+    | Slice           of Slice.neuron_typ
     | Lambda          of Lambda.neuron_typ
     | LambdaArray     of LambdaArray.neuron_typ
     | Activation      of Activation.neuron_typ
