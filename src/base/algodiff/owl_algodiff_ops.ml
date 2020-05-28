@@ -572,6 +572,26 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and sum_reduce ?(axis = [| 0 |]) = Lazy.force _sum_reduce ~axis
 
+    and _log_sum_exp' =
+      lazy
+        (build_siso
+           (module struct
+             let label = "log_sum_exp'"
+
+             let ff_f _ = raise Owl_exception.(NOT_IMPLEMENTED "log_sum_exp'")
+
+             let ff_arr x = pack_elt (A.log_sum_exp' x)
+
+             let df cp ap at = at * exp (ap - cp)
+
+             let dr x y ybar =
+               let x = primal x in
+               !ybar * exp (x - y)
+           end : Siso))
+
+
+    and log_sum_exp' x = Lazy.force _log_sum_exp' x
+
     and mean a = sum' a / F (numel a |> float_of_int |> A.float_to_elt)
 
     and _transpose =

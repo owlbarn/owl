@@ -83,6 +83,7 @@ module Make (Shape : Owl_computation_shape_sig.Sig) = struct
     | Min' -> "Min'"
     | Max' -> "Max'"
     | Sum' -> "Sum'"
+    | LogSumExp' -> "LogSumExp'"
     | L1norm' -> "L1norm'"
     | L2norm' -> "L2norm'"
     | L2NormSqr' -> "L2NormSqr'"

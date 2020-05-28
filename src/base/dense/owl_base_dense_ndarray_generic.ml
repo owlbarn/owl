@@ -1524,6 +1524,9 @@ let sum' x =
   _fold_left (Owl_base_dense_common._add_elt _kind) (Owl_const.zero _kind) x
 
 
+(* log sum of exp all elements *)
+let log_sum_exp' _ = raise (Owl_exception.NOT_IMPLEMENTED "base ndarray: log_sum_exp'")
+
 (* Folding along a specified axis, aka reduction. The
    f: function of type 'a -> 'a -> 'a.
    m: number of slices.
