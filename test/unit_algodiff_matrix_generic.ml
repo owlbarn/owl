@@ -81,6 +81,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
     let trace () = test_func Maths.trace
 
+    let log_sum_exp' () = test_func Maths.log_sum_exp'
+
     let l1norm' () = test_func Maths.l1norm'
 
     let l2norm' () = test_func Maths.l2norm'
