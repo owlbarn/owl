@@ -525,6 +525,30 @@ module type Real = sig
 
   (** {6 Real operations} *)
 
+  val i0 : arr -> arr
+
+  val i0e : arr -> arr
+
+  val i1 : arr -> arr
+
+  val i1e : arr -> arr
+
+  val iv : arr -> arr -> arr
+
+  val scalar_iv : elt -> arr -> arr
+
+  val iv_scalar : arr -> elt -> arr
+
+  val j0 : arr -> arr
+
+  val j1 : arr -> arr
+
+  val jv : arr -> arr -> arr
+
+  val scalar_jv : elt -> arr -> arr
+
+  val jv_scalar : arr -> elt -> arr
+
   val erf : arr -> arr
 
   val erfc : arr -> arr
