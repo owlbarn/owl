@@ -1128,27 +1128,27 @@ let i1e x =
 
 
 (* scalar iv *)
-let scalar_iv a x =
+let scalar_iv ~v x =
   let x = copy x in
-  _owl_scalar_iv (kind x) (numel x) x x a;
+  _owl_scalar_iv (kind x) (numel x) x x v;
   x
 
 
 (* iv scalar *)
-let iv_scalar x a =
-  let x = copy x in
-  _owl_iv_scalar (kind x) (numel x) x x a;
-  x
+let iv_scalar ~v x =
+  let v = copy v in
+  _owl_iv_scalar (kind v) (numel v) v v x;
+  v
 
 
 (* iv *)
-let iv x y =
-  match same_shape x y with
+let iv ~v x =
+  match same_shape v x with
   | true  ->
-    let y = copy y in
-    _owl_iv (kind x) (numel x) x y y;
-    y
-  | false -> broadcast_op (_owl_broadcast_iv (kind x)) x y
+    let x = copy x in
+    _owl_iv (kind v) (numel v) v x x;
+    x
+  | false -> broadcast_op (_owl_broadcast_iv (kind v)) v x
 
 
 (* j0 *)
@@ -1166,27 +1166,27 @@ let j1 x =
 
 
 (* scalar jv *)
-let scalar_jv a x =
+let scalar_jv ~v x =
   let x = copy x in
-  _owl_scalar_jv (kind x) (numel x) x x a;
+  _owl_scalar_jv (kind x) (numel x) x x v;
   x
 
 
 (* jv scalar *)
-let jv_scalar x a =
-  let x = copy x in
-  _owl_jv_scalar (kind x) (numel x) x x a;
-  x
+let jv_scalar ~v x =
+  let v = copy v in
+  _owl_jv_scalar (kind v) (numel v) v v x;
+  v
 
 
 (* jv *)
-let jv x y =
-  match same_shape x y with
+let jv ~v y =
+  match same_shape v y with
   | true  ->
     let y = copy y in
-    _owl_iv (kind x) (numel x) x y y;
+    _owl_iv (kind v) (numel v) v y y;
     y
-  | false -> broadcast_op (_owl_broadcast_jv (kind x)) x y
+  | false -> broadcast_op (_owl_broadcast_jv (kind v)) v y
 
 
 let scalar_pow a x =

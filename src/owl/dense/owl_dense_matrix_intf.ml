@@ -830,21 +830,21 @@ module type Real = sig
 
   val i1e : mat -> mat
 
-  val iv : mat -> mat -> mat
+  val iv : v:mat -> mat -> mat
 
-  val scalar_iv : elt -> mat -> mat
+  val scalar_iv : v:elt -> mat -> mat
 
-  val iv_scalar : mat -> elt -> mat
+  val iv_scalar : v:mat -> elt -> mat
 
   val j0 : mat -> mat
 
   val j1 : mat -> mat
 
-  val jv : mat -> mat -> mat
+  val jv : v:mat -> mat -> mat
 
-  val scalar_jv : elt -> mat -> mat
+  val scalar_jv : v:elt -> mat -> mat
 
-  val jv_scalar : mat -> elt -> mat
+  val jv_scalar : v:mat -> elt -> mat
 
   val semidef : int -> mat
 

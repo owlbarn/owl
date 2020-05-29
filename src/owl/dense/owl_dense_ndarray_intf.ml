@@ -533,21 +533,21 @@ module type Real = sig
 
   val i1e : arr -> arr
 
-  val iv : arr -> arr -> arr
+  val iv : v:arr -> arr -> arr
 
-  val scalar_iv : elt -> arr -> arr
+  val scalar_iv : v:elt -> arr -> arr
 
-  val iv_scalar : arr -> elt -> arr
+  val iv_scalar : v:arr -> elt -> arr
 
   val j0 : arr -> arr
 
   val j1 : arr -> arr
 
-  val jv : arr -> arr -> arr
+  val jv : v:arr -> arr -> arr
 
-  val scalar_jv : elt -> arr -> arr
+  val scalar_jv : v:elt -> arr -> arr
 
-  val jv_scalar : arr -> elt -> arr
+  val jv_scalar : v:arr -> elt -> arr
 
   val erf : arr -> arr
 
