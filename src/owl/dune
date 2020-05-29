@@ -119,6 +119,7 @@
    owl_ipmpar
    ;; maths
    airy
+   airyf
    bdtr
    beta
    btdtr
@@ -142,14 +143,17 @@
    fdtr
    fresnl
    gamma
+   gammaf
    gdtr
    gels
    hyp2f1
    hyperg
+   hypergf
    i0
    i0f
    i1
    i1f
+   ivf
    igam
    igami
    incbet
@@ -159,6 +163,7 @@
    j1
    j1f
    jv
+   jvf
    jnf
    k0
    k0f
@@ -187,6 +192,7 @@
    spence
    stdtr
    struve
+   struvef
    sqrtf
    tandg
    tukey

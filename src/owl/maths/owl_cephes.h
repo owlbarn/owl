@@ -203,6 +203,7 @@ extern double kolmogi ( double p );
 
 extern double lanczos_sum_expg_scaled( double x );
 
+extern int airyf ( float xx, float *ai, float *aip, float *bi, float *bip );
 extern float dawsnf ( float xx );
 extern float i0f ( float xx );
 extern float i0ef ( float xx );
@@ -222,6 +223,7 @@ extern float y1f ( float xx );
 extern float ynf ( int nn, float xx );
 extern float yvf ( float vv, float xx );
 
+extern float struvef ( float vv, float xx );
 
 #ifdef __cplusplus
 }

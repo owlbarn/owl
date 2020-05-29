@@ -8,7 +8,9 @@
 /*
 extern float acosf ( float x );
 extern float acoshf ( float xx );
+*/
 extern int airyf ( float xx, float *ai, float *aip, float *bi, float *bip );
+/*
 extern float asinf ( float xx );
 extern float asinhf ( float xx );
 extern float atan2f ( float y, float x );
@@ -74,13 +76,15 @@ extern float fdtrif ( int ia, int ib, float yy );
 extern float floorf ( float x );
 extern void fresnlf ( float xxa, float *ssa, float *cca );
 extern float frexpf ( float x, int *pw2 );
+*/
 extern float gammaf ( float xx );
+/*
 extern float gdtrcf ( float aa, float bb, float xx );
 extern float gdtrf ( float aa, float bb, float xx );
 extern float hyp2f0f ( float aa, float bb, float xx, int type, float *err );
 extern float hyp2f1f ( float aa, float bb, float cc, float xx );
-extern float hypergf ( float aa, float bb, float xx );
 */
+extern float hypergf ( float aa, float bb, float xx );
 extern float i0ef ( float x );
 extern float i0f ( float x );
 extern float i1ef ( float xx );
@@ -106,7 +110,9 @@ extern float knf ( int nnn, float xx );
 /*
 extern float ldexpf ( float x, int pw2 );
 extern int ldprec ( void );
+*/
 extern float lgamf ( float xx );
+/*
 extern float log10f ( float xx );
 extern float log2f ( float xx );
 extern float logf ( float xx );
@@ -149,7 +155,9 @@ extern float spencef ( float xx );
 extern int sprec ( void );
 extern float sqrtf ( float xx );
 extern float stdtrf ( int k, float tt );
+*/
 extern float struvef ( float vv, float xx );
+/*
 extern float tandgf ( float x );
 extern float tanf ( float x );
 extern float tanhf ( float xx );
@@ -158,8 +166,8 @@ extern float threef0f ( float aa, float bb, float cc, float xx, float *err );
 extern float y0f ( float xx );
 extern float y1f ( float xx );
 extern float ynf ( int nn, float xx );
-extern float yvf ( float vv, float xx );
 /*
+extern float yvf ( float vv, float xx );
 extern float zetacf ( float xx );
 extern float zetaf ( float xx, float qq );
 */

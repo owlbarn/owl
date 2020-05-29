@@ -3718,6 +3718,21 @@
 #define MAPFN(X) (i1e(X))
 #include OWL_NDARRAY_MATHS_MAP
 
+// iv
+#define FUN15 float32_iv
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 float
+#define MAPFN(X,Y,Z) *Z = ivf(*X, *Y)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN15 float64_iv
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 double
+#define MAPFN(X,Y,Z) *Z = iv(*X, *Y)
+#include OWL_NDARRAY_MATHS_MAP
+
 // j0
 #define FUN4 float32_j0
 #define NUMBER float
@@ -3742,6 +3757,21 @@
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (j1(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// jv
+#define FUN15 float32_jv
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 float
+#define MAPFN(X,Y,Z) *Z = jvf(*X, *Y)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN15 float64_jv
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 double
+#define MAPFN(X,Y,Z) *Z = jv(*X, *Y)
 #include OWL_NDARRAY_MATHS_MAP
 
 // k0
@@ -3820,6 +3850,21 @@
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (y1(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// yv
+#define FUN15 float32_yv
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 float
+#define MAPFN(X,Y,Z) *Z = yvf(*X, *Y)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN15 float64_yv
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 double
+#define MAPFN(X,Y,Z) *Z = yv(*X, *Y)
 #include OWL_NDARRAY_MATHS_MAP
 
 ////// binary math operator //////
