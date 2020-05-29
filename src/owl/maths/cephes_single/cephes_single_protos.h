@@ -30,7 +30,9 @@ extern void ccotf ( cmplxf *z, cmplxf *w );
 extern void cdivf ( cmplxf *a, cmplxf *b, cmplxf *c );
 extern float ceilf ( float x );
 extern void cexpf ( cmplxf *z, cmplxf *w );
+*/
 extern float chbevlf ( float x, float *array, int n );
+/*
 extern float chdtrcf ( float dff, float xx );
 extern float chdtrf ( float dff, float xx );
 extern float chdtrif ( float dff, float yy );
@@ -61,7 +63,9 @@ extern float erfcf ( float aa );
 extern float erff ( float xx );
 extern float exp10f ( float xx );
 extern float exp2f ( float xx );
+*/
 extern float expf ( float xx );
+/*
 extern float expnf ( int n, float xx );
 extern float facf ( int i );
 extern float fdtrcf ( int ia, int ib, float xx );
@@ -76,16 +80,19 @@ extern float gdtrf ( float aa, float bb, float xx );
 extern float hyp2f0f ( float aa, float bb, float xx, int type, float *err );
 extern float hyp2f1f ( float aa, float bb, float cc, float xx );
 extern float hypergf ( float aa, float bb, float xx );
+*/
 extern float i0ef ( float x );
 extern float i0f ( float x );
 extern float i1ef ( float xx );
 extern float i1f ( float xx );
+/*
 extern float igamcf ( float aa, float xx );
 extern float igamf ( float aa, float xx );
 extern float igamif ( float aa, float yy0 );
 extern float incbetf ( float aaa, float bbb, float xxx );
 extern float incbif ( float aaa, float bbb, float yyy0 );
 extern float incbpsf ( float aa, float bb, float xx );
+*/
 extern float ivf ( float v, float x );
 extern float j0f ( float xx );
 extern float j1f ( float xx );
@@ -96,13 +103,16 @@ extern float k0f ( float xx );
 extern float k1ef ( float xx );
 extern float k1f ( float xx );
 extern float knf ( int nnn, float xx );
+/*
 extern float ldexpf ( float x, int pw2 );
 extern int ldprec ( void );
 extern float lgamf ( float xx );
 extern float log10f ( float xx );
 extern float log2f ( float xx );
 extern float logf ( float xx );
+*/
 extern int mtherr ( char *name, int code );
+/*
 extern float nbdtrcf ( int k, int n, float pp );
 extern float nbdtrf ( int k, int n, float pp );
 extern float ndtrf ( float aa );
@@ -144,10 +154,12 @@ extern float tandgf ( float x );
 extern float tanf ( float x );
 extern float tanhf ( float xx );
 extern float threef0f ( float aa, float bb, float cc, float xx, float *err );
+*/
 extern float y0f ( float xx );
 extern float y1f ( float xx );
 extern float ynf ( int nn, float xx );
 extern float yvf ( float vv, float xx );
+/*
 extern float zetacf ( float xx );
 extern float zetaf ( float xx, float qq );
 */

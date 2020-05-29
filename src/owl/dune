@@ -124,8 +124,10 @@
    btdtr
    cbrt
    chbevl
+   chbevlf
    chdtr
    const
+   constf
    dawsn
    dawsnf
    polevlf
@@ -145,16 +147,23 @@
    hyp2f1
    hyperg
    i0
+   i0f
    i1
+   i1f
    igam
    igami
    incbet
    incbi
    j0
+   j0f
    j1
+   j1f
    jv
+   jnf
    k0
+   k0f
    k1
+   k1f
    kn
    kolmogorov
    lanczos
@@ -178,10 +187,12 @@
    spence
    stdtr
    struve
+   sqrtf
    tandg
    tukey
    unity
    yn
+   ynf
    zeta
    zetac)
   (flags

@@ -204,6 +204,25 @@ extern double kolmogi ( double p );
 extern double lanczos_sum_expg_scaled( double x );
 
 extern float dawsnf ( float xx );
+extern float i0f ( float xx );
+extern float i0ef ( float xx );
+extern float i1f ( float xx );
+extern float i1ef ( float xx );
+extern float ivf ( float v, float x );
+extern float j0f ( float xx );
+extern float j1f ( float xx );
+extern float jnf ( int nn, float xx );
+extern float k0f ( float xx );
+extern float k0ef ( float xx );
+extern float k1f ( float xx );
+extern float k1ef ( float xx );
+extern float knf ( int nnn, float xx );
+extern float y0f ( float xx );
+extern float y1f ( float xx );
+extern float ynf ( int nn, float xx );
+extern float yvf ( float vv, float xx );
+
+
 #ifdef __cplusplus
 }
 #endif
