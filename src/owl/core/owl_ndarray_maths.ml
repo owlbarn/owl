@@ -3988,6 +3988,7 @@ let _owl_dawsn : type a b. (a, b) kind -> (a, b) owl_arr_op09 =
   | Float64 -> owl_float64_dawsn l x y
   | _       -> failwith "_owl_dawsn: unsupported operation"
 
+
 (* Bessel functions *)
 
 (* i0 *)
@@ -4035,6 +4036,7 @@ let _owl_i0e : type a b. (a, b) kind -> (a, b) owl_arr_op09 =
   | Float64 -> owl_float64_i0e l x y
   | _       -> failwith "_owl_i0e: unsupported operation"
 
+
 (* i1 *)
 external owl_float32_i1
   :  int
@@ -4056,6 +4058,7 @@ let _owl_i1 : type a b. (a, b) kind -> (a, b) owl_arr_op09 =
   | Float32 -> owl_float32_i1 l x y
   | Float64 -> owl_float64_i1 l x y
   | _       -> failwith "_owl_i1: unsupported operation"
+
 
 (* i1e *)
 external owl_float32_i1e
@@ -4098,9 +4101,10 @@ external owl_float64_scalar_iv
   = "float64_scalar_iv"
 
 let _owl_scalar_iv : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
-  | Float32   -> owl_float32_scalar_iv
-  | Float64   -> owl_float64_scalar_iv
-  | _         -> failwith "_owl_scalar_iv: unsupported operation"
+  | Float32 -> owl_float32_scalar_iv
+  | Float64 -> owl_float64_scalar_iv
+  | _       -> failwith "_owl_scalar_iv: unsupported operation"
+
 
 (* iv scalar *)
 external owl_float32_iv_scalar
@@ -4120,9 +4124,9 @@ external owl_float64_iv_scalar
   = "float64_iv_scalar"
 
 let _owl_iv_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
-  | Float32   -> owl_float32_iv_scalar
-  | Float64   -> owl_float64_iv_scalar
-  | _         -> failwith "_owl_iv_scalar: unsupported operation"
+  | Float32 -> owl_float32_iv_scalar
+  | Float64 -> owl_float64_iv_scalar
+  | _       -> failwith "_owl_iv_scalar: unsupported operation"
 
 
 (* iv *)
@@ -4146,9 +4150,10 @@ external owl_float64_iv
 let _owl_iv : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
  fun k l x y z ->
   match k with
-  | Float32   -> owl_float32_iv l x y z
-  | Float64   -> owl_float64_iv l x y z
-  | _         -> failwith "_owl_iv: unsupported operation"
+  | Float32 -> owl_float32_iv l x y z
+  | Float64 -> owl_float64_iv l x y z
+  | _       -> failwith "_owl_iv: unsupported operation"
+
 
 (* broadcast iv *)
 external owl_float32_broadcast_iv
@@ -4172,9 +4177,10 @@ external owl_float64_broadcast_iv
   = "float64_broadcast_iv" "float64_broadcast_iv_impl"
 
 let _owl_broadcast_iv : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
-  | Float32   -> owl_float32_broadcast_iv
-  | Float64   -> owl_float64_broadcast_iv
-  | _         -> failwith "_owl_broadcast_iv: unsupported operation"
+  | Float32 -> owl_float32_broadcast_iv
+  | Float64 -> owl_float64_broadcast_iv
+  | _       -> failwith "_owl_broadcast_iv: unsupported operation"
+
 
 (* j0 *)
 external owl_float32_j0
@@ -4198,6 +4204,7 @@ let _owl_j0 : type a b. (a, b) kind -> (a, b) owl_arr_op09 =
   | Float64 -> owl_float64_j0 l x y
   | _       -> failwith "_owl_j0: unsupported operation"
 
+
 (* j1 *)
 external owl_float32_j1
   :  int
@@ -4220,6 +4227,7 @@ let _owl_j1 : type a b. (a, b) kind -> (a, b) owl_arr_op09 =
   | Float64 -> owl_float64_j1 l x y
   | _       -> failwith "_owl_j1: unsupported operation"
 
+
 (* scalar jv *)
 
 external owl_float32_scalar_jv
@@ -4239,9 +4247,10 @@ external owl_float64_scalar_jv
   = "float64_scalar_jv"
 
 let _owl_scalar_jv : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
-  | Float32   -> owl_float32_scalar_jv
-  | Float64   -> owl_float64_scalar_jv
-  | _         -> failwith "_owl_scalar_jv: unsupported operation"
+  | Float32 -> owl_float32_scalar_jv
+  | Float64 -> owl_float64_scalar_jv
+  | _       -> failwith "_owl_scalar_jv: unsupported operation"
+
 
 (* jv scalar *)
 external owl_float32_jv_scalar
@@ -4261,9 +4270,10 @@ external owl_float64_jv_scalar
   = "float64_jv_scalar"
 
 let _owl_jv_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
-  | Float32   -> owl_float32_jv_scalar
-  | Float64   -> owl_float64_jv_scalar
-  | _         -> failwith "_owl_jv_scalar: unsupported operation"
+  | Float32 -> owl_float32_jv_scalar
+  | Float64 -> owl_float64_jv_scalar
+  | _       -> failwith "_owl_jv_scalar: unsupported operation"
+
 
 external owl_float32_jv
   :  int
@@ -4284,9 +4294,9 @@ external owl_float64_jv
 let _owl_jv : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
  fun k l x y z ->
   match k with
-  | Float32   -> owl_float32_jv l x y z
-  | Float64   -> owl_float64_jv l x y z
-  | _         -> failwith "_owl_jv: unsupported operation"
+  | Float32 -> owl_float32_jv l x y z
+  | Float64 -> owl_float64_jv l x y z
+  | _       -> failwith "_owl_jv: unsupported operation"
 
 
 (* broadcast jv *)
@@ -4311,9 +4321,10 @@ external owl_float64_broadcast_jv
   = "float64_broadcast_jv" "float64_broadcast_jv_impl"
 
 let _owl_broadcast_jv : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
-  | Float32   -> owl_float32_broadcast_jv
-  | Float64   -> owl_float64_broadcast_jv
-  | _         -> failwith "_owl_broadcast_jv: unsupported operation"
+  | Float32 -> owl_float32_broadcast_jv
+  | Float64 -> owl_float64_broadcast_jv
+  | _       -> failwith "_owl_broadcast_jv: unsupported operation"
+
 
 (* floor *)
 

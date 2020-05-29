@@ -1778,7 +1778,6 @@ val jv_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 ``jv_scalar v x`` computes Bessel function of the first kind of ``x`` of real order ``v``
  *)
 
-
 (** {6 Binary math operators}  *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
