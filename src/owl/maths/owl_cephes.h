@@ -212,6 +212,7 @@ extern float i1ef ( float xx );
 extern float ivf ( float v, float x );
 extern float j0f ( float xx );
 extern float j1f ( float xx );
+extern float jvf ( float v, float x );
 extern float jnf ( int nn, float xx );
 extern float k0f ( float xx );
 extern float k0ef ( float xx );

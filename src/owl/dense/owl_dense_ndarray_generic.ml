@@ -1096,6 +1096,89 @@ let dawsn x =
   _owl_dawsn (kind x) (numel y) x y;
   y
 
+(* Bessel functions *)
+
+(* i0 *)
+let i0 x =
+  let y = copy x in
+  _owl_i0 (kind x) (numel y) x y;
+  y
+
+(* i0e *)
+let i0e x =
+  let y = copy x in
+  _owl_i0e (kind x) (numel y) x y;
+  y
+
+(* i1 *)
+let i1 x =
+  let y = copy x in
+  _owl_i1 (kind x) (numel y) x y;
+  y
+
+(* i1e *)
+let i1e x =
+  let y = copy x in
+  _owl_i1e (kind x) (numel y) x y;
+  y
+
+(* scalar iv *)
+let scalar_iv a x =
+  let x = copy x in
+  _owl_scalar_iv (kind x) (numel x) x x a;
+  x
+
+(* iv scalar *)
+let iv_scalar x a =
+  let x = copy x in
+  _owl_iv_scalar (kind x) (numel x) x x a;
+  x
+
+(* iv *)
+let iv x y =
+  match same_shape x y with
+  | true  ->
+    let y = copy y in
+    _owl_iv (kind x) (numel x) x y y;
+    y
+  | false -> broadcast_op (_owl_broadcast_iv (kind x)) x y
+
+
+
+(* j0 *)
+let j0 x =
+  let y = copy x in
+  _owl_j0 (kind x) (numel y) x y;
+  y
+
+
+(* j1 *)
+let j1 x =
+  let y = copy x in
+  _owl_j1 (kind x) (numel y) x y;
+  y
+
+(* scalar jv *)
+let scalar_jv a x =
+  let x = copy x in
+  _owl_scalar_jv (kind x) (numel x) x x a;
+  x
+
+(* jv scalar *)
+let jv_scalar x a =
+  let x = copy x in
+  _owl_jv_scalar (kind x) (numel x) x x a;
+  x
+
+(* jv *)
+let jv x y =
+  match same_shape x y with
+  | true  ->
+    let y = copy y in
+    _owl_iv (kind x) (numel x) x y y;
+    y
+  | false -> broadcast_op (_owl_broadcast_jv (kind x)) x y
+
 
 let scalar_pow a x =
   let x = copy x in
