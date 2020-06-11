@@ -318,8 +318,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; "of_arrays", of_arrays; "to_arrays", to_arrays; "init_2d", init_2d
       ; "sylvester", sylvester; "lyapunov", lyapunov
       ; "discrete_lyapunov", discrete_lyapunov; "linsolve", linsolve
-      ; "linsolve_triangular", linsolve_triangular; "care", care ; "log_sum_exp'", log_sum_exp'; 
-      "log_sum_exp", log_sum_exp]
+      ; "linsolve_triangular", linsolve_triangular; "care", care
+      ; "log_sum_exp'", log_sum_exp'; "log_sum_exp", log_sum_exp ]
       |> List.fold_left
            (fun (b, error_msg) (s, f) ->
              let b', c =

@@ -277,7 +277,9 @@ module Make (Symbol : Owl_computation_symbol_sig.Sig) = struct
 
   let log_sum_exp' x = make_then_connect LogSumExp' [| arr_to_node x |] |> node_to_elt
 
-  let log_sum_exp ?(axis=0) x = make_then_connect (LogSumExp axis) [| arr_to_node x |] |> node_to_arr
+  let log_sum_exp ?(axis = 0) x =
+    make_then_connect (LogSumExp axis) [| arr_to_node x |] |> node_to_arr
+
 
   let l1norm' x = make_then_connect L1norm' [| arr_to_node x |] |> node_to_elt
 
