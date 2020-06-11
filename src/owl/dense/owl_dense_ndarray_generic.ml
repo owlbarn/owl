@@ -9890,7 +9890,7 @@ let trace x = sum' (diag x)
 
 let log_sum_exp ?(axis=0) x =
   let xmax = max ~axis x in
-  let y = add x xmax in
+  let y = sub x xmax in
   add (log (sum ~axis (exp y))) xmax
 
 let to_rows x = Array.init (row_num x) (fun i -> row x i)
