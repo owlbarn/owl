@@ -582,7 +582,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let ff_arr x = pack_elt (A.log_sum_exp' x)
 
-             let df cp ap at = at * exp (ap - cp)
+             let df cp ap at = sum' (at * exp (ap - cp))
 
              let dr x y ybar =
                let x = primal x in
@@ -602,7 +602,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let ff_arr x = pack_arr (A.log_sum_exp ~axis x)
 
-             let df cp ap at = at * exp (ap - cp)
+             let df cp ap at = sum ~axis (at * exp (ap - cp))
 
              let dr x y ybar =
                let x = primal x in

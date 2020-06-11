@@ -1,4 +1,5 @@
 (** Unit test for Algodiff module *)
+let () = Printexc.record_backtrace true
 
 open Owl_types
 
@@ -82,6 +83,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
     let trace () = test_func Maths.trace
 
     let log_sum_exp' () = test_func Maths.log_sum_exp'
+
+    let log_sum_exp () = test_func Maths.(log_sum_exp ~axis:1)
 
     let l1norm' () = test_func Maths.l1norm'
 
@@ -315,7 +318,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; "of_arrays", of_arrays; "to_arrays", to_arrays; "init_2d", init_2d
       ; "sylvester", sylvester; "lyapunov", lyapunov
       ; "discrete_lyapunov", discrete_lyapunov; "linsolve", linsolve
-      ; "linsolve_triangular", linsolve_triangular; "care", care ]
+      ; "linsolve_triangular", linsolve_triangular; "care", care ; "log_sum_exp'", log_sum_exp'; 
+      "log_sum_exp", log_sum_exp]
       |> List.fold_left
            (fun (b, error_msg) (s, f) ->
              let b', c =
