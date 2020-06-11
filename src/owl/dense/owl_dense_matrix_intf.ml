@@ -856,6 +856,8 @@ module type Real = sig
 
   val log_sum_exp' : mat -> elt
 
+  val log_sum_exp : ?axis:int -> mat -> mat
+
   val max_pool : ?padding:padding -> mat -> int array -> int array -> mat
 
   val avg_pool : ?padding:padding -> mat -> int array -> int array -> mat
