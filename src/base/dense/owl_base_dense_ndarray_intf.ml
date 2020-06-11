@@ -320,6 +320,8 @@ module type Real = sig
 
   val log_sum_exp': arr -> elt
 
+  val log_sum_exp: ?axis:int -> arr -> arr 
+
   val sum_slices : ?axis:int -> arr -> arr
 
   val signum : arr -> arr

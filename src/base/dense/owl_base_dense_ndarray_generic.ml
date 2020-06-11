@@ -1527,6 +1527,9 @@ let sum' x =
 (* log sum of exp all elements *)
 let log_sum_exp' _ = raise (Owl_exception.NOT_IMPLEMENTED "base ndarray: log_sum_exp'")
 
+(* log sum of exp all elements *)
+let log_sum_exp ?axis:_ _ = raise (Owl_exception.NOT_IMPLEMENTED "base ndarray: log_sum_exp")
+
 (* Folding along a specified axis, aka reduction. The
    f: function of type 'a -> 'a -> 'a.
    m: number of slices.

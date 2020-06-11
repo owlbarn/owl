@@ -114,6 +114,7 @@ module Make (Graph : Owl_computation_graph_sig.Sig) = struct
     | Max' -> split_01 p
     | Sum' -> split_01 p
     | LogSumExp' -> split_01 p
+    | LogSumExp _axis -> split_00 p
     | L1norm' -> split_01 p
     | L2norm' -> split_01 p
     | L2NormSqr' -> split_01 p
