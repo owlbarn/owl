@@ -69,6 +69,7 @@ module Make (Graph : Owl_computation_graph_sig.Sig) = struct
     | Repeat _repeats -> split_00 p (* ? *)
     | Pad (_v, _padding) -> split_00 p
     | Concatenate axis -> split_03 p axis
+    | Stack axis -> split_03 p axis
     | Split (_axis, _parts) -> failwith "Split"
     | Draw (_axis, _n) -> failwith "Draw"
     | Map _f -> split_01 p

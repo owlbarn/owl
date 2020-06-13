@@ -39,6 +39,7 @@ module Make (Shape : Owl_computation_shape_sig.Sig) = struct
     | Tile _repeats -> "Tile"
     | Repeat _repeats -> "Repeat"
     | Concatenate _axis -> "Concatenate"
+    | Stack _axis -> "Stack"
     | Split (_axis, _parts) -> "Split"
     | Draw (_axis, _n) -> "Draw"
     | Map _f -> "Map"
