@@ -177,6 +177,17 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       test_func f
 
 
+    let stack () =
+      let f =
+        let y1 = Mat.gaussian n n in
+        let y2 = Mat.gaussian n n in
+        let h x = Maths.(y1 *@ x) in
+        let h' = grad h in
+        fun x -> Maths.stack ~axis:(-1) [| y1; x; y2; h' x |]
+      in
+      test_func f
+
+
     let of_arrays () =
       let f x =
         let y =
@@ -309,8 +320,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; "transpose", transpose; "diag", diag; "diagm", diagm; "trace", trace
       ; "l1norm'", l1norm'; "l2norm'", l2norm'; "l2norm_sqr'", l2norm_sqr'; "tril", tril
       ; "triu", triu; "inv", inv; "logdet", logdet; "chol", chol; "qr", qr; "lq", lq
-      ; "split", split; "concat", concat; "concatenate", concatenate; "svd", svd
-      ; "of_arrays", of_arrays; "to_arrays", to_arrays; "init_2d", init_2d
+      ; "split", split; "concat", concat; "concatenate", concatenate; "stack", stack
+      ; "svd", svd; "of_arrays", of_arrays; "to_arrays", to_arrays; "init_2d", init_2d
       ; "sylvester", sylvester; "lyapunov", lyapunov
       ; "discrete_lyapunov", discrete_lyapunov; "linsolve", linsolve
       ; "linsolve_triangular", linsolve_triangular; "care", care ]
