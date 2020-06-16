@@ -312,6 +312,8 @@ module Make (Type : Owl_computation_type_sig.Sig) = struct
     | Min' -> _infer_shape_00 input_shapes
     | Max' -> _infer_shape_00 input_shapes
     | Sum' -> _infer_shape_00 input_shapes
+    | LogSumExp' -> _infer_shape_00 input_shapes
+    | LogSumExp axis -> _infer_shape_04 input_shapes axis
     | L1norm' -> _infer_shape_00 input_shapes
     | L2norm' -> _infer_shape_00 input_shapes
     | L2NormSqr' -> _infer_shape_00 input_shapes

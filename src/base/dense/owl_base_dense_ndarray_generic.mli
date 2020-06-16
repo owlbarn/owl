@@ -341,6 +341,12 @@ val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 val sum' : ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val log_sum_exp' : ('a, 'b) t -> 'a
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val log_sum_exp : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val sum_reduce : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

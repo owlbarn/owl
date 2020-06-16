@@ -1594,6 +1594,12 @@ val log_sum_exp' : (float, 'a) t -> float
 the elements in ``x``.
  *)
 
+val log_sum_exp : ?axis:int -> (float, 'a) t -> (float, 'a) t
+(**
+``log_sum_exp ~axis x`` computes the logarithm of the sum of exponentials of all
+the elements in ``x`` along axis ``axis``.
+ *)
+
 val l1norm : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``l1norm x`` calculates the l1-norm of of ``x`` along specified axis.

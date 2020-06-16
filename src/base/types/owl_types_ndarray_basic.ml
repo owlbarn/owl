@@ -160,6 +160,10 @@ module type Sig = sig
 
   val sum' : arr -> elt
 
+  val log_sum_exp' : arr -> elt
+
+  val log_sum_exp : ?axis:int -> arr -> arr
+
   val l1norm' : arr -> elt
 
   val l2norm' : arr -> elt

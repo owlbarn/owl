@@ -128,6 +128,8 @@ module type Sig = sig
     | Min'
     | Max'
     | Sum'
+    | LogSumExp'
+    | LogSumExp                     of int
     | L1norm'
     | L2norm'
     | L2NormSqr'

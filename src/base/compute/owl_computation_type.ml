@@ -126,6 +126,8 @@ module Make (Device : Owl_types_computation_device.Sig) = struct
     | Min'
     | Max'
     | Sum'
+    | LogSumExp'
+    | LogSumExp                     of int
     | L1norm'
     | L2norm'
     | L2NormSqr'

@@ -154,6 +154,12 @@ module type Sig = sig
     val sum' : t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val log_sum_exp' : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val log_sum_exp : ?axis:int -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val sum : ?axis:int -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

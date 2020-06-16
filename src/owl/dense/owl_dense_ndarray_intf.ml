@@ -569,6 +569,8 @@ module type Real = sig
 
   val log_sum_exp' : arr -> float
 
+  val log_sum_exp : ?axis:int -> arr -> arr
+
   val scalar_atan2 : elt -> arr -> arr
 
   val atan2_scalar : arr -> elt -> arr
