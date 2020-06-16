@@ -8571,7 +8571,7 @@ let scan ?axis f x = scani ?axis (fun _ a b -> f a b) x
 
 let scani_nd ?axis f x = scani ?axis (fun i a b -> f (Owl_utils.ind x i) a b) x
 
-let sum ?axis ?(keep_dims = false) x =
+let sum ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8590,7 +8590,7 @@ let sum_ ~out ~axis x =
   _owl_sum_along _kind m n o x out
 
 
-let prod ?axis ?(keep_dims = false) x =
+let prod ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8601,7 +8601,7 @@ let prod ?axis ?(keep_dims = false) x =
   | None   -> _owl_prod _kind (numel x) x |> create _kind [| 1 |]
 
 
-let min ?axis ?(keep_dims = false) x =
+let min ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8620,7 +8620,7 @@ let min_ ~out ~axis x =
   _owl_min_along _kind m n o x out
 
 
-let max ?axis ?(keep_dims = false) x =
+let max ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8639,7 +8639,7 @@ let max_ ~out ~axis x =
   _owl_max_along _kind m n o x out
 
 
-let minmax ?axis ?(keep_dims = false) x = min ?axis ~keep_dims x, max ?axis ~keep_dims x
+let minmax ?axis ?(keep_dims = true) x = min ?axis ~keep_dims x, max ?axis ~keep_dims x
 
 let mean' x =
   let _kind = kind x in
@@ -8648,7 +8648,7 @@ let mean' x =
   _mean_elt _kind y _numel
 
 
-let mean ?axis ?(keep_dims = false) x =
+let mean ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8674,7 +8674,7 @@ let median' x =
   else get _rsht [| 0; _numel / 2 |]
 
 
-let median ?axis ?(keep_dims = false) x =
+let median ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   let x1 = copy x in
   match axis with
@@ -8702,7 +8702,7 @@ let var' x =
   _div_elt _kind y n
 
 
-let var ?axis ?(keep_dims = false) x =
+let var ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8727,7 +8727,7 @@ let std' x =
   _div_elt _kind y n |> _sqrt_elt _kind
 
 
-let std ?axis ?(keep_dims = false) x =
+let std ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8750,7 +8750,7 @@ let sem' x =
   _div_elt _kind y sqrt_n
 
 
-let sem ?axis ?(keep_dims = false) x =
+let sem ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   match axis with
   | None   -> sem' x |> create _kind [| 1 |]
@@ -8761,7 +8761,7 @@ let sem ?axis ?(keep_dims = false) x =
     if keep_dims then y else squeeze ~axis:[| a |] y
 
 
-let l1norm ?axis ?(keep_dims = false) x =
+let l1norm ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8772,7 +8772,7 @@ let l1norm ?axis ?(keep_dims = false) x =
   | None   -> l1norm' x |> create _kind [| 1 |]
 
 
-let l2norm_sqr ?axis ?(keep_dims = false) x =
+let l2norm_sqr ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8783,7 +8783,7 @@ let l2norm_sqr ?axis ?(keep_dims = false) x =
   | None   -> l2norm_sqr' x |> create _kind [| 1 |]
 
 
-let l2norm ?axis ?(keep_dims = false) x =
+let l2norm ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8795,7 +8795,7 @@ let l2norm ?axis ?(keep_dims = false) x =
   | None   -> l2norm' x |> create _kind [| 1 |]
 
 
-let vecnorm ?axis ?(p = 2.) ?(keep_dims = false) x =
+let vecnorm ?axis ?(p = 2.) ?(keep_dims = true) x =
   if p = 1.
   then l1norm ?axis ~keep_dims x
   else if p = 2.
@@ -9980,7 +9980,7 @@ let diag ?(k = 0) x =
 
 let trace x = sum' (diag x)
 
-let log_sum_exp ?(axis = 0) ?(keep_dims = false) x =
+let log_sum_exp ?(axis = 0) ?(keep_dims = true) x =
   let xmax = max ~axis ~keep_dims x in
   let y = sub x xmax in
   if keep_dims

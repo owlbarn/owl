@@ -1528,7 +1528,7 @@ let sum' x =
 let log_sum_exp' _ = raise (Owl_exception.NOT_IMPLEMENTED "base ndarray: log_sum_exp'")
 
 (* log sum of exp all elements *)
-let log_sum_exp ?axis:_ ?(keep_dims = false) _ =
+let log_sum_exp ?axis:_ ?(keep_dims = true) _ =
   ignore keep_dims;
   raise (Owl_exception.NOT_IMPLEMENTED "base ndarray: log_sum_exp")
 
@@ -1563,7 +1563,7 @@ let _fold_along ?out f m n o x ys nelem =
   reshape y ys
 
 
-let sum ?axis ?(keep_dims = false) x =
+let sum ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   let zero = Owl_const.zero _kind in
   match axis with
@@ -1615,7 +1615,7 @@ let sum_reduce ?axis x =
   | None   -> create (kind x) (Array.make _dims 1) (sum' x)
 
 
-let min ?axis ?(keep_dims = false) x =
+let min ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   let max_val = Owl_base_dense_common._max_val_elt _kind in
   match axis with
@@ -1640,7 +1640,7 @@ let min_ ~out ~axis x =
     set y [| 0 |] (min' x)
 
 
-let max ?axis ?(keep_dims = false) x =
+let max ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   let min_val = Owl_base_dense_common._min_val_elt _kind in
   match axis with

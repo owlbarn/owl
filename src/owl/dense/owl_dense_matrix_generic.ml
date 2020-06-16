@@ -467,13 +467,13 @@ let map2i_2d f x y =
   z
 
 
-let sum_cols ?(keep_dims = false) x = sum ~axis:1 ~keep_dims x
+let sum_cols ?(keep_dims = true) x = sum ~axis:1 ~keep_dims x
 
-let sum_rows ?(keep_dims = false) x = sum ~axis:0 ~keep_dims x
+let sum_rows ?(keep_dims = true) x = sum ~axis:0 ~keep_dims x
 
-let mean_cols ?(keep_dims = false) x = mean ~axis:1 ~keep_dims x
+let mean_cols ?(keep_dims = true) x = mean ~axis:1 ~keep_dims x
 
-let mean_rows ?(keep_dims = false) x = mean ~axis:0 ~keep_dims x
+let mean_rows ?(keep_dims = true) x = mean ~axis:0 ~keep_dims x
 
 let min_cols x =
   mapi_cols

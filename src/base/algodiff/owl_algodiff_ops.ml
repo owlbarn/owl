@@ -551,7 +551,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             end : Siso))
 
 
-    and sum ?axis ?(keep_dims = false) = Lazy.force _sum ?axis ~keep_dims
+    and sum ?axis ?(keep_dims = true) = Lazy.force _sum ?axis ~keep_dims
 
     and _sum_reduce =
       lazy
