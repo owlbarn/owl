@@ -822,6 +822,30 @@ module type Real = sig
 
   (** {6 Specific real functions } *)
 
+  val i0 : mat -> mat
+
+  val i0e : mat -> mat
+
+  val i1 : mat -> mat
+
+  val i1e : mat -> mat
+
+  val iv : v:mat -> mat -> mat
+
+  val scalar_iv : v:elt -> mat -> mat
+
+  val iv_scalar : v:mat -> elt -> mat
+
+  val j0 : mat -> mat
+
+  val j1 : mat -> mat
+
+  val jv : v:mat -> mat -> mat
+
+  val scalar_jv : v:elt -> mat -> mat
+
+  val jv_scalar : v:mat -> elt -> mat
+
   val semidef : int -> mat
 
   val min_rows : mat -> (elt * int * int) array

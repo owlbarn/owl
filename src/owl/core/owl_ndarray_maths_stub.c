@@ -3663,7 +3663,306 @@
 #define NUMBER1 double
 #define MAPFN(X) (dawsn(X))
 #include OWL_NDARRAY_MATHS_MAP
+
+// Bessel functions
+
+// i0
+#define FUN4 float32_i0
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (i0f(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN4 float64_i0
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (i0(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// i0e
+#define FUN4 float32_i0e
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (i0ef(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN4 float64_i0e
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (i0e(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// i1
+#define FUN4 float32_i1
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (i1f(X))
+#include OWL_NDARRAY_MATHS_MAP
  
+#define FUN4 float64_i1
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (i1(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// i1e
+#define FUN4 float32_i1e
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (i1ef(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN4 float64_i1e
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (i1e(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// scalar_iv
+
+#define FUN17 float32_scalar_iv
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = ivf(a,*X)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN17 float64_scalar_iv
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = iv(a,*X)
+#include OWL_NDARRAY_MATHS_MAP
+
+// iv_scalar
+
+#define FUN17 float32_iv_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = ivf(*X,a)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN17 float64_iv_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = iv(*X,a)
+#include OWL_NDARRAY_MATHS_MAP
+
+// iv
+#define FUN15 float32_iv
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 float
+#define MAPFN(X,Y,Z) *Z = ivf(*X, *Y)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN15 float64_iv
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 double
+#define MAPFN(X,Y,Z) *Z = iv(*X, *Y)
+#include OWL_NDARRAY_MATHS_MAP
+
+// broadcast_iv
+
+#define FUN24 float32_broadcast_iv
+#define FUN24_IMPL float32_broadcast_iv_impl
+#define FUN24_CODE float32_broadcast_iv_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = ivf(*X,*Y)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN24 float64_broadcast_iv
+#define FUN24_IMPL float64_broadcast_iv_impl
+#define FUN24_CODE float64_broadcast_iv_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = iv(*X,*Y)
+#include OWL_NDARRAY_MATHS_MAP
+
+// j0
+#define FUN4 float32_j0
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (j0f(X))
+#include OWL_NDARRAY_MATHS_MAP
+ 
+#define FUN4 float64_j0
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (j0(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// j1
+#define FUN4 float32_j1
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (j1f(X))
+#include OWL_NDARRAY_MATHS_MAP
+ 
+#define FUN4 float64_j1
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (j1(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// scalar_jv
+
+#define FUN17 float32_scalar_jv
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = jvf(a,*X)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN17 float64_scalar_jv
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = jv(a,*X)
+#include OWL_NDARRAY_MATHS_MAP
+
+// jv_scalar
+
+#define FUN17 float32_jv_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = jvf(*X,a)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN17 float64_jv_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = jv(*X,a)
+#include OWL_NDARRAY_MATHS_MAP
+
+// jv
+#define FUN15 float32_jv
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 float
+#define MAPFN(X,Y,Z) *Z = jvf(*X, *Y)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN15 float64_jv
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 double
+#define MAPFN(X,Y,Z) *Z = jv(*X, *Y)
+#include OWL_NDARRAY_MATHS_MAP
+
+// broadcast_jv
+
+#define FUN24 float32_broadcast_jv
+#define FUN24_IMPL float32_broadcast_jv_impl
+#define FUN24_CODE float32_broadcast_jv_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = jvf(*X,*Y)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN24 float64_broadcast_jv
+#define FUN24_IMPL float64_broadcast_jv_impl
+#define FUN24_CODE float64_broadcast_jv_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = jv(*X,*Y)
+#include OWL_NDARRAY_MATHS_MAP
+
+// k0
+#define FUN4 float32_k0
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (k0f(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN4 float64_k0
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (k0(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// k0e
+#define FUN4 float32_k0e
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (k0ef(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN4 float64_k0e
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (k0e(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// k1
+#define FUN4 float32_k1
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (k1f(X))
+#include OWL_NDARRAY_MATHS_MAP
+ 
+#define FUN4 float64_k1
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (k1(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// k1e
+#define FUN4 float32_k1e
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (k1ef(X))
+#include OWL_NDARRAY_MATHS_MAP
+ 
+#define FUN4 float64_k1e
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (k1e(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// y0
+#define FUN4 float32_y0
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (y0f(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN4 float64_y0
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (y0(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// y1
+#define FUN4 float32_y1
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (y1f(X))
+#include OWL_NDARRAY_MATHS_MAP
+ 
+#define FUN4 float64_y1
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (y1(X))
+#include OWL_NDARRAY_MATHS_MAP
+
+// yv
+#define FUN15 float32_yv
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 float
+#define MAPFN(X,Y,Z) *Z = yvf(*X, *Y)
+#include OWL_NDARRAY_MATHS_MAP
+
+#define FUN15 float64_yv
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 double
+#define MAPFN(X,Y,Z) *Z = yv(*X, *Y)
+#include OWL_NDARRAY_MATHS_MAP
+
 ////// binary math operator //////
 
 // add

@@ -119,13 +119,16 @@
    owl_ipmpar
    ;; maths
    airy
+   airyf
    bdtr
    beta
    btdtr
    cbrt
    chbevl
+   chbevlf
    chdtr
    const
+   constf
    dawsn
    dawsnf
    polevlf
@@ -140,21 +143,32 @@
    fdtr
    fresnl
    gamma
+   gammaf
    gdtr
    gels
    hyp2f1
    hyperg
+   hypergf
    i0
+   i0f
    i1
+   i1f
+   ivf
    igam
    igami
    incbet
    incbi
    j0
+   j0f
    j1
+   j1f
    jv
+   jvf
+   jnf
    k0
+   k0f
    k1
+   k1f
    kn
    kolmogorov
    lanczos
@@ -178,10 +192,13 @@
    spence
    stdtr
    struve
+   struvef
+   sqrtf
    tandg
    tukey
    unity
    yn
+   ynf
    zeta
    zetac)
   (flags

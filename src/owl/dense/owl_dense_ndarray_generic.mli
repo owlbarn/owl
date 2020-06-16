@@ -1712,6 +1712,72 @@ val dawsn : ('a, 'b) t -> ('a, 'b) t
 in a new ndarray.
  *)
 
+val i0 : ('a, 'b) t -> ('a, 'b) t
+(**
+``i0 x`` computes the modified Bessel function of order 0 of the elements in ``x`` and returns the result
+in a new ndarray.
+ *)
+
+val i0e : ('a, 'b) t -> ('a, 'b) t
+(**
+``i0e x`` computes the exponentially scaled modified Bessel function of order 0 of the elements in ``x`` 
+and returns the result in a new ndarray.
+ *)
+
+val i1 : ('a, 'b) t -> ('a, 'b) t
+(**
+``i1 x`` computes the modified Bessel function of order 1 of the elements in ``x`` and returns the result
+in a new ndarray.
+ *)
+
+val i1e : ('a, 'b) t -> ('a, 'b) t
+(**
+``i1e x`` computes the exponentially scaled modified Bessel function of order 1 of the elements in ``x`` 
+and returns the result in a new ndarray.
+ *)
+
+val iv : v:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``iv v x`` computes modified Bessel function of ``x`` of real order ``v``
+ *)
+
+val scalar_iv : v:'a -> ('a, 'b) t -> ('a, 'b) t
+(**
+``scalar_iv v x`` computes the modified Bessel function of ``x`` of real order ``v``.
+ *)
+
+val iv_scalar : v:('a, 'b) t -> 'a -> ('a, 'b) t
+(**
+``iv_scalar v x`` computes modified Bessel function of ``x`` of real order ``v``
+ *)
+
+val j0 : ('a, 'b) t -> ('a, 'b) t
+(**
+``j0 x`` computes the Bessel function of order 0 of the elements in ``x`` and returns the result
+in a new ndarray.
+ *)
+
+val j1 : ('a, 'b) t -> ('a, 'b) t
+(**
+``j1 x`` computes the Bessel function of order 1 of the elements in ``x`` and returns the result
+in a new ndarray.
+ *)
+
+val jv : v:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``jv v x`` computes Bessel function the first kind of ``x`` of real order ``v``
+ *)
+
+val scalar_jv : v:'a -> ('a, 'b) t -> ('a, 'b) t
+(**
+``scalar_jv v x`` computes the Bessel function of the first kind of ``x`` of real order ``v``.
+ *)
+
+val jv_scalar : v:('a, 'b) t -> 'a -> ('a, 'b) t
+(**
+``jv_scalar v x`` computes Bessel function of the first kind of ``x`` of real order ``v``
+ *)
+
 (** {6 Binary math operators}  *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
