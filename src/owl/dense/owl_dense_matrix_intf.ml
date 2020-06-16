@@ -402,15 +402,15 @@ module type Common = sig
 
   (** {6 Unary mathematical operations } *)
 
-  val min : ?axis:int -> mat -> mat
+  val min : ?axis:int -> ?keep_dims:bool -> mat -> mat
 
   val min' : mat -> elt
 
-  val max : ?axis:int -> mat -> mat
+  val max : ?axis:int -> ?keep_dims:bool -> mat -> mat
 
   val max' : mat -> elt
 
-  val minmax : ?axis:int -> mat -> mat * mat
+  val minmax : ?axis:int -> ?keep_dims:bool -> mat -> mat * mat
 
   val minmax' : mat -> elt * elt
 
@@ -422,37 +422,37 @@ module type Common = sig
 
   val trace : mat -> elt
 
-  val sum : ?axis:int -> mat -> mat
+  val sum : ?axis:int -> ?keep_dims:bool -> mat -> mat
 
   val sum' : mat -> elt
 
-  val prod : ?axis:int -> mat -> mat
+  val prod : ?axis:int -> ?keep_dims:bool -> mat -> mat
 
   val prod' : mat -> elt
 
-  val mean : ?axis:int -> mat -> mat
+  val mean : ?axis:int -> ?keep_dims:bool -> mat -> mat
 
   val mean' : mat -> elt
 
-  val var : ?axis:int -> mat -> mat [@@warning "-32"]
+  val var : ?axis:int -> ?keep_dims:bool -> mat -> mat [@@warning "-32"]
 
   val var' : mat -> elt
 
-  val std : ?axis:int -> mat -> mat [@@warning "-32"]
+  val std : ?axis:int -> ?keep_dims:bool -> mat -> mat [@@warning "-32"]
 
   val std' : mat -> elt
 
-  val sem : ?axis:int -> mat -> mat [@@warning "-32"]
+  val sem : ?axis:int -> ?keep_dims:bool -> mat -> mat [@@warning "-32"]
 
   val sem' : mat -> elt
 
-  val sum_rows : mat -> mat
+  val sum_rows : ?keep_dims:bool -> mat -> mat
 
-  val sum_cols : mat -> mat
+  val sum_cols : ?keep_dims:bool -> mat -> mat
 
-  val mean_rows : mat -> mat
+  val mean_rows : ?keep_dims:bool -> mat -> mat
 
-  val mean_cols : mat -> mat
+  val mean_cols : ?keep_dims:bool -> mat -> mat
 
   val abs : mat -> mat
 
@@ -524,19 +524,19 @@ module type Common = sig
 
   val modf : mat -> mat * mat
 
-  val l1norm : ?axis:int -> mat -> mat
+  val l1norm : ?axis:int -> ?keep_dims:bool -> mat -> mat
 
   val l1norm' : mat -> elt
 
-  val l2norm : ?axis:int -> mat -> mat
+  val l2norm : ?axis:int -> ?keep_dims:bool -> mat -> mat
 
   val l2norm' : mat -> elt
 
-  val l2norm_sqr : ?axis:int -> mat -> mat
+  val l2norm_sqr : ?axis:int -> ?keep_dims:bool -> mat -> mat
 
   val l2norm_sqr' : mat -> elt
 
-  val vecnorm : ?axis:int -> ?p:float -> mat -> mat
+  val vecnorm : ?axis:int -> ?p:float -> ?keep_dims:bool -> mat -> mat
 
   val vecnorm' : ?p:float -> mat -> elt
 
@@ -550,9 +550,9 @@ module type Common = sig
 
   val diff : ?axis:int -> ?n:int -> mat -> mat
 
-  val var : ?axis:int -> mat -> mat
+  val var : ?axis:int -> ?keep_dims:bool -> mat -> mat
 
-  val std : ?axis:int -> mat -> mat
+  val std : ?axis:int -> ?keep_dims:bool -> mat -> mat
 
   val mat2gray : ?amin:elt -> ?amax:elt -> mat -> mat
 
@@ -880,7 +880,7 @@ module type Real = sig
 
   val log_sum_exp' : mat -> elt
 
-  val log_sum_exp : ?axis:int -> mat -> mat
+  val log_sum_exp : ?axis:int -> ?keep_dims:bool -> mat -> mat
 
   val max_pool : ?padding:padding -> mat -> int array -> int array -> mat
 

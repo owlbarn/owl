@@ -161,31 +161,31 @@ module type Common = sig
 
   (** {6 Unary mathematical operations } *)
 
-  val prod : ?axis:int -> arr -> arr
+  val prod : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
   val prod' : arr -> elt
 
-  val mean : ?axis:int -> arr -> arr
+  val mean : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
   val mean' : arr -> elt
 
   val median' : arr -> elt
 
-  val median : ?axis:int -> arr -> arr
+  val median : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
-  val var : ?axis:int -> arr -> arr
+  val var : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
   val var' : arr -> elt
 
-  val std : ?axis:int -> arr -> arr
+  val std : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
   val std' : arr -> elt
 
-  val sem : ?axis:int -> arr -> arr
+  val sem : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
   val sem' : arr -> elt
 
-  val minmax : ?axis:int -> arr -> arr * arr
+  val minmax : ?axis:int -> ?keep_dims:bool -> arr -> arr * arr
 
   val minmax' : arr -> elt * elt
 
@@ -219,19 +219,19 @@ module type Common = sig
 
   val modf : arr -> arr * arr
 
-  val l1norm : ?axis:int -> arr -> arr
+  val l1norm : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
   val l1norm' : arr -> elt
 
-  val l2norm : ?axis:int -> arr -> arr
+  val l2norm : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
   val l2norm' : arr -> elt
 
-  val l2norm_sqr : ?axis:int -> arr -> arr
+  val l2norm_sqr : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
   val l2norm_sqr' : arr -> elt
 
-  val vecnorm : ?axis:int -> ?p:float -> arr -> arr
+  val vecnorm : ?axis:int -> ?p:float -> ?keep_dims:bool -> arr -> arr
 
   val vecnorm' : ?p:float -> arr -> elt
 
@@ -569,7 +569,7 @@ module type Real = sig
 
   val log_sum_exp' : arr -> float
 
-  val log_sum_exp : ?axis:int -> arr -> arr
+  val log_sum_exp : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
   val scalar_atan2 : elt -> arr -> arr
 

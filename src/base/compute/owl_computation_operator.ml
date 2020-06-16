@@ -255,11 +255,20 @@ module Make (Symbol : Owl_computation_symbol_sig.Sig) = struct
 
   let atanh x = make_then_connect Atanh [| arr_to_node x |] |> node_to_arr
 
-  let min ?(axis = -1) x = make_then_connect (Min axis) [| arr_to_node x |] |> node_to_arr
+  let min ?(axis = -1) ?(keep_dims = false) x =
+    ignore keep_dims;
+    make_then_connect (Min axis) [| arr_to_node x |] |> node_to_arr
 
-  let max ?(axis = -1) x = make_then_connect (Max axis) [| arr_to_node x |] |> node_to_arr
 
-  let sum ?(axis = -1) x = make_then_connect (Sum axis) [| arr_to_node x |] |> node_to_arr
+  let max ?(axis = -1) ?(keep_dims = false) x =
+    ignore keep_dims;
+    make_then_connect (Max axis) [| arr_to_node x |] |> node_to_arr
+
+
+  let sum ?(axis = -1) ?(keep_dims = false) x =
+    ignore keep_dims;
+    make_then_connect (Sum axis) [| arr_to_node x |] |> node_to_arr
+
 
   let sum_reduce ?(axis = [| -1 |]) x =
     make_then_connect (SumReduce axis) [| arr_to_node x |] |> node_to_arr
@@ -281,7 +290,8 @@ module Make (Symbol : Owl_computation_symbol_sig.Sig) = struct
 
   let log_sum_exp' x = make_then_connect LogSumExp' [| arr_to_node x |] |> node_to_elt
 
-  let log_sum_exp ?(axis = 0) x =
+  let log_sum_exp ?(axis = 0) ?(keep_dims = false) x =
+    ignore keep_dims;
     make_then_connect (LogSumExp axis) [| arr_to_node x |] |> node_to_arr
 
 

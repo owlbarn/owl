@@ -1302,7 +1302,7 @@ val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 ``im_d2z x`` returns all the imaginary components of ``x`` in a new ndarray of same shape.
  *)
 
-val min : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val min : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``min x`` returns the minimum of all elements in ``x`` along specified ``axis``.
 If no axis is specified, ``x`` will be flattened and the minimum of all the
@@ -1317,7 +1317,7 @@ val min' : ('a, 'b) t -> 'a
 in scalar value.
  *)
 
-val max : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val max : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``max x`` returns the maximum of all elements in ``x`` along specified ``axis``.
 If no axis is specified, ``x`` will be flattened and the maximum of all the
@@ -1332,7 +1332,7 @@ val max' : ('a, 'b) t -> 'a
 in scalar value.
  *)
 
-val minmax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+val minmax : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
 ``minmax' x`` returns ``(min_v, max_v)``, ``min_v`` is the minimum value in ``x``
 while ``max_v`` is the maximum.
@@ -1366,7 +1366,7 @@ val trace : ('a, 'b) t -> 'a
 ``trace x`` returns the sum of diagonal elements in ``x``.
  *)
 
-val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val sum : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``sum_ axis x`` sums the elements in ``x`` along specified ``axis``.
  *)
@@ -1376,7 +1376,7 @@ val sum' : ('a, 'b) t -> 'a
 ``sum x`` returns the summation of all the elements in ``x``.
  *)
 
-val prod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val prod : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``prod_ axis x`` multiplies the elements in ``x`` along specified ``axis``.
  *)
@@ -1386,7 +1386,7 @@ val prod' : ('a, 'b) t -> 'a
 ``prod x`` returns the product of all the elements in ``x``.
  *)
 
-val mean : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val mean : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``mean ~axis x`` calculates the mean along specified ``axis``.
  *)
@@ -1396,7 +1396,7 @@ val mean' : ('a, 'b) t -> 'a
 ``mean' x`` calculates the mean of all the elements in ``x``.
  *)
 
-val var : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val var : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``var ~axis x`` calculates the variance along specified ``axis``.
  *)
@@ -1406,7 +1406,7 @@ val var' : ('a, 'b) t -> 'a
 ``var' x`` calculates the variance of all the elements in ``x``.
  *)
 
-val std : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val std : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``std ~axis`` calculates the standard deviation along specified ``axis``.
  *)
@@ -1416,7 +1416,7 @@ val std' : ('a, 'b) t -> 'a
 ``std' x`` calculates the standard deviation of all the elements in ``x``.
  *)
 
-val sem : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val sem : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``sem ~axis`` calculates the standard deviation along specified ``axis``.
  *)
@@ -1426,23 +1426,23 @@ val sem' : ('a, 'b) t -> 'a
 ``sem' x`` calculates the standard deviation of all the elements in ``x``.
  *)
 
-val sum_rows : ('a, 'b) t -> ('a, 'b) t
+val sum_rows : ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``sum_rows x`` returns the summation of all the row vectors in ``x``.
  *)
 
-val sum_cols : ('a, 'b) t -> ('a, 'b) t
+val sum_cols : ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``sum_cols`` returns the summation of all the column vectors in ``x``.
  *)
 
-val mean_rows : ('a, 'b) t -> ('a, 'b) t
+val mean_rows : ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``mean_rows x`` returns the mean value of all row vectors in ``x``. It is
  equivalent to ``div_scalar (sum_rows x) (float_of_int (row_num x))``.
  *)
 
-val mean_cols : ('a, 'b) t -> ('a, 'b) t
+val mean_cols : ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``mean_cols x`` returns the mean value of all column vectors in ``x``.
  It is equivalent to ``div_scalar (sum_cols x) (float_of_int (col_num x))``.
@@ -1770,13 +1770,13 @@ val log_sum_exp' : (float, 'a) t -> float
 the elements in ``x``.
  *)
 
-val log_sum_exp : ?axis:int -> (float, 'a) t -> (float, 'a) t
+val log_sum_exp : ?axis:int -> ?keep_dims:bool -> (float, 'a) t -> (float, 'a) t
 (**
 ``log_sum_exp ~axis x`` computes the logarithm of the sum of exponentials of all
 the elements in ``x`` along axis ``axis``.
  *)
 
-val l1norm : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val l1norm : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``l1norm x`` calculates the l1-norm of of ``x`` along specified axis.
  *)
@@ -1786,7 +1786,7 @@ val l1norm' : ('a, 'b) t -> 'a
 ``l1norm x`` calculates the l1-norm of all the element in ``x``.
  *)
 
-val l2norm : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val l2norm : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``l2norm x`` calculates the l2-norm of of ``x`` along specified axis.
  *)
@@ -1796,7 +1796,7 @@ val l2norm' : ('a, 'b) t -> 'a
 ``l2norm x`` calculates the l2-norm of all the element in ``x``.
  *)
 
-val l2norm_sqr : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val l2norm_sqr : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``l2norm x`` calculates the square l2-norm of of ``x`` along specified axis.
  *)
@@ -1808,7 +1808,7 @@ of all elements in ``x``. The function uses conjugate transpose in the product,
 hence it always returns a float number.
  *)
 
-val vecnorm : ?axis:int -> ?p:float -> ('a, 'b) t -> ('a, 'b) t
+val vecnorm : ?axis:int -> ?p:float -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic`. *)
 
 val vecnorm' : ?p:float -> ('a, 'b) t -> 'a

@@ -329,13 +329,13 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 
 (** {6 Unary math operators }  *)
 
-val min : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val min : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val max : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val max : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val sum : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val sum' : ('a, 'b) t -> 'a
@@ -344,7 +344,7 @@ val sum' : ('a, 'b) t -> 'a
 val log_sum_exp' : ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-val log_sum_exp : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val log_sum_exp : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 val sum_reduce : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t

@@ -8417,31 +8417,31 @@ let cumulative_op ?(axis = -1) _cumop x y =
   _cumop m n x ofsx incx_m incx_n y ofsy incy_m incy_n
 
 
-let cumsum ?axis x =
+let cumsum ?(axis = -1) x =
   let x = copy x in
   let _cumop = _owl_cumsum (kind x) in
-  cumulative_op ?axis _cumop x x;
+  cumulative_op ~axis _cumop x x;
   x
 
 
-let cumprod ?axis x =
+let cumprod ?(axis = -1) x =
   let x = copy x in
   let _cumop = _owl_cumprod (kind x) in
-  cumulative_op ?axis _cumop x x;
+  cumulative_op ~axis _cumop x x;
   x
 
 
-let cummin ?axis x =
+let cummin ?(axis = -1) x =
   let x = copy x in
   let _cumop = _owl_cummin (kind x) in
-  cumulative_op ?axis _cumop x x;
+  cumulative_op ~axis _cumop x x;
   x
 
 
-let cummax ?axis x =
+let cummax ?(axis = -1) x =
   let x = copy x in
   let _cumop = _owl_cummax (kind x) in
-  cumulative_op ?axis _cumop x x;
+  cumulative_op ~axis _cumop x x;
   x
 
 
@@ -8571,14 +8571,14 @@ let scan ?axis f x = scani ?axis (fun _ a b -> f a b) x
 
 let scani_nd ?axis f x = scani ?axis (fun i a b -> f (Owl_utils.ind x i) a b) x
 
-let sum ?axis x =
+let sum ?axis ?(keep_dims = false) x =
   let _kind = kind x in
   match axis with
   | Some a ->
     let m, n, o, s = Owl_utils.reduce_params a x in
     let y = zeros _kind s in
     _owl_sum_along _kind m n o x y;
-    y
+    if keep_dims then y else squeeze ~axis:[| a |] y
   | None   -> _owl_sum _kind (numel x) x |> create _kind [| 1 |]
 
 
@@ -8590,25 +8590,25 @@ let sum_ ~out ~axis x =
   _owl_sum_along _kind m n o x out
 
 
-let prod ?axis x =
+let prod ?axis ?(keep_dims = false) x =
   let _kind = kind x in
   match axis with
   | Some a ->
     let m, n, o, s = Owl_utils.reduce_params a x in
     let y = ones _kind s in
     _owl_prod_along _kind m n o x y;
-    y
+    if keep_dims then y else squeeze ~axis:[| a |] y
   | None   -> _owl_prod _kind (numel x) x |> create _kind [| 1 |]
 
 
-let min ?axis x =
+let min ?axis ?(keep_dims = false) x =
   let _kind = kind x in
   match axis with
   | Some a ->
     let m, n, o, s = Owl_utils.reduce_params a x in
     let y = create _kind s (Owl_const.pos_inf _kind) in
     _owl_min_along _kind m n o x y;
-    y
+    if keep_dims then y else squeeze ~axis:[| a |] y
   | None   -> min' x |> create _kind [| 1 |]
 
 
@@ -8620,14 +8620,14 @@ let min_ ~out ~axis x =
   _owl_min_along _kind m n o x out
 
 
-let max ?axis x =
+let max ?axis ?(keep_dims = false) x =
   let _kind = kind x in
   match axis with
   | Some a ->
     let m, n, o, s = Owl_utils.reduce_params a x in
     let y = create _kind s (Owl_const.neg_inf _kind) in
     _owl_max_along _kind m n o x y;
-    y
+    if keep_dims then y else squeeze ~axis:[| a |] y
   | None   -> max' x |> create _kind [| 1 |]
 
 
@@ -8639,7 +8639,7 @@ let max_ ~out ~axis x =
   _owl_max_along _kind m n o x out
 
 
-let minmax ?axis x = min ?axis x, max ?axis x
+let minmax ?axis ?(keep_dims = false) x = min ?axis ~keep_dims x, max ?axis ~keep_dims x
 
 let mean' x =
   let _kind = kind x in
@@ -8648,14 +8648,14 @@ let mean' x =
   _mean_elt _kind y _numel
 
 
-let mean ?axis x =
+let mean ?axis ?(keep_dims = false) x =
   let _kind = kind x in
   match axis with
   | Some a ->
-    let y = sum ~axis:a x in
+    let y = sum ~axis:a ~keep_dims:true x in
     let n = (shape x).(a) |> float_of_int |> _float_typ_elt _kind in
     _owl_div_scalar _kind (numel y) y y n;
-    y
+    if keep_dims then y else squeeze ~axis:[| a |] y
   | None   -> mean' x |> create _kind [| 1 |]
 
 
@@ -8674,7 +8674,7 @@ let median' x =
   else get _rsht [| 0; _numel / 2 |]
 
 
-let median ?axis x =
+let median ?axis ?(keep_dims = false) x =
   let _kind = kind x in
   let x1 = copy x in
   match axis with
@@ -8688,7 +8688,7 @@ let median ?axis x =
     let s = (strides x1).(a) in
     let o = (Genarray.dims x1).(a) in
     _owl_median_along _kind n s o x1 y;
-    y
+    if keep_dims then y else squeeze ~axis:[| a |] y
   | None   -> median' x |> create _kind [| 1 |]
 
 
@@ -8702,18 +8702,18 @@ let var' x =
   _div_elt _kind y n
 
 
-let var ?axis x =
+let var ?axis ?(keep_dims = false) x =
   let _kind = kind x in
   match axis with
   | Some a ->
     let a = Owl_utils.adjust_index a (num_dims x) in
-    let mu = mean ~axis:a x in
+    let mu = mean ~axis:a ~keep_dims:true x in
     let y = sub x mu in
     _owl_sqr _kind (numel y) y y;
-    let y = sum ~axis:a y in
+    let y = sum ~axis:a ~keep_dims:true y in
     let n = (shape x).(a) - 1 |> Stdlib.max 1 |> float_of_int |> _float_typ_elt _kind in
     _owl_div_scalar _kind (numel y) y y n;
-    y
+    if keep_dims then y else squeeze ~axis:[| a |] y
   | None   -> var' x |> create _kind [| 1 |]
 
 
@@ -8727,19 +8727,19 @@ let std' x =
   _div_elt _kind y n |> _sqrt_elt _kind
 
 
-let std ?axis x =
+let std ?axis ?(keep_dims = false) x =
   let _kind = kind x in
   match axis with
   | Some a ->
     let a = Owl_utils.adjust_index a (num_dims x) in
-    let mu = mean ~axis:a x in
+    let mu = mean ~axis:a ~keep_dims:true x in
     let y = sub x mu in
     _owl_sqr _kind (numel y) y y;
-    let y = sum ~axis:a y in
+    let y = sum ~axis:a ~keep_dims:true y in
     let n = (shape x).(a) - 1 |> Stdlib.max 1 |> float_of_int |> _float_typ_elt _kind in
     _owl_div_scalar _kind (numel y) y y n;
     _owl_sqrt _kind (numel y) y y;
-    y
+    if keep_dims then y else squeeze ~axis:[| a |] y
   | None   -> std' x |> create _kind [| 1 |]
 
 
@@ -8750,40 +8750,40 @@ let sem' x =
   _div_elt _kind y sqrt_n
 
 
-let sem ?axis x =
+let sem ?axis ?(keep_dims = false) x =
   let _kind = kind x in
   match axis with
   | None   -> sem' x |> create _kind [| 1 |]
   | Some a ->
-    let y = std ?axis x in
+    let y = std ?axis ~keep_dims:true x in
     let n = (shape x).(a) |> float_of_int |> _float_typ_elt _kind |> _sqrt_elt _kind in
     _owl_div_scalar _kind (numel y) y y n;
-    y
+    if keep_dims then y else squeeze ~axis:[| a |] y
 
 
-let l1norm ?axis x =
+let l1norm ?axis ?(keep_dims = false) x =
   let _kind = kind x in
   match axis with
   | Some a ->
     let m, n, o, s = Owl_utils.reduce_params a x in
     let y = zeros _kind s in
     _owl_l1norm_along _kind m n o x y;
-    y
+    if keep_dims then y else squeeze ~axis:[| a |] y
   | None   -> l1norm' x |> create _kind [| 1 |]
 
 
-let l2norm_sqr ?axis x =
+let l2norm_sqr ?axis ?(keep_dims = false) x =
   let _kind = kind x in
   match axis with
   | Some a ->
     let m, n, o, s = Owl_utils.reduce_params a x in
     let y = zeros _kind s in
     _owl_l2norm_sqr_along _kind m n o x y;
-    y
+    if keep_dims then y else squeeze ~axis:[| a |] y
   | None   -> l2norm_sqr' x |> create _kind [| 1 |]
 
 
-let l2norm ?axis x =
+let l2norm ?axis ?(keep_dims = false) x =
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8791,25 +8791,25 @@ let l2norm ?axis x =
     let y = zeros _kind s in
     _owl_l2norm_sqr_along _kind m n o x y;
     _owl_sqrt _kind (numel y) y y;
-    y
+    if keep_dims then y else squeeze ~axis:[| a |] y
   | None   -> l2norm' x |> create _kind [| 1 |]
 
 
-let vecnorm ?axis ?(p = 2.) x =
+let vecnorm ?axis ?(p = 2.) ?(keep_dims = false) x =
   if p = 1.
-  then l1norm ?axis x
+  then l1norm ?axis ~keep_dims x
   else if p = 2.
-  then l2norm ?axis x
+  then l2norm ?axis ~keep_dims x
   else (
     let y = abs x in
     if p = infinity
-    then max ?axis y
+    then max ?axis ~keep_dims y
     else if p = neg_infinity
-    then min ?axis y
+    then min ?axis ~keep_dims y
     else (
       let q = _float_typ_elt (kind x) (1. /. p) in
       let p = _float_typ_elt (kind x) p in
-      let z = pow_scalar y p |> sum ?axis in
+      let z = pow_scalar y p |> sum ?axis ~keep_dims in
       pow_scalar z q))
 
 
@@ -9980,10 +9980,12 @@ let diag ?(k = 0) x =
 
 let trace x = sum' (diag x)
 
-let log_sum_exp ?(axis = 0) x =
-  let xmax = max ~axis x in
+let log_sum_exp ?(axis = 0) ?(keep_dims = false) x =
+  let xmax = max ~axis ~keep_dims x in
   let y = sub x xmax in
-  add (log (sum ~axis (exp y))) xmax
+  if keep_dims
+  then add (log (sum ~axis ~keep_dims (exp y))) xmax
+  else add (log (sum ~axis ~keep_dims (exp y))) (squeeze ~axis:[| axis |] xmax)
 
 
 let to_rows x = Array.init (row_num x) (fun i -> row x i)

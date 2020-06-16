@@ -1,5 +1,4 @@
 (** Unit test for Algodiff module *)
-let () = Printexc.record_backtrace true
 
 open Owl_types
 

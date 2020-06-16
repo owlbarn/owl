@@ -523,16 +523,16 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and _sum =
       lazy
-        (fun ?axis ->
+        (fun ?axis ~keep_dims ->
           build_siso
             (module struct
               let label = "sum axis"
 
               let ff_f a = error_uniop label (pack_elt a)
 
-              let ff_arr a = Arr A.(sum ?axis a)
+              let ff_arr a = Arr A.(sum ?axis ~keep_dims a)
 
-              let df _cp _ap at = sum ?axis at
+              let df _cp _ap at = sum ?axis ~keep_dims at
 
               let dr a _cp ca =
                 match axis with
@@ -542,12 +542,16 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                   let reps = Array.(make ndim 1) in
                   let axis = Owl_utils.adjust_index axis ndim in
                   reps.(axis) <- s.(axis);
-                  repeat !ca reps
+                  if keep_dims
+                  then repeat !ca reps
+                  else (
+                    s.(axis) <- 1;
+                    repeat (reshape !ca s) reps)
                 | None      -> !ca
             end : Siso))
 
 
-    and sum ?axis = Lazy.force _sum ?axis
+    and sum ?axis ?(keep_dims = false) = Lazy.force _sum ?axis ~keep_dims
 
     and _sum_reduce =
       lazy
@@ -592,26 +596,48 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and log_sum_exp' x = Lazy.force _log_sum_exp' x
 
+    and print_dim x =
+      let shp = shape x in
+      Array.iter (fun i -> Printf.printf "%i, %!" i) shp;
+      print_newline ()
+
+
     and _log_sum_exp =
       lazy
-        (fun ?(axis = 0) ->
+        (fun ?(axis = 0) ~keep_dims ->
           build_siso
             (module struct
               let label = "log_sum_exp"
 
               let ff_f _ = raise Owl_exception.(NOT_IMPLEMENTED "log_sum_exp")
 
-              let ff_arr x = pack_arr (A.log_sum_exp ~axis x)
+              let ff_arr x = pack_arr (A.log_sum_exp ~axis ~keep_dims x)
 
-              let df cp ap at = sum ~axis (at * exp (ap - cp))
+              let df cp ap at =
+                print_dim cp;
+                print_dim ap;
+                print_dim at;
+                let z = sum ~axis ~keep_dims (at * exp (ap - cp)) in
+                print_dim z;
+                z
+
 
               let dr x y ybar =
                 let x = primal x in
-                !ybar * exp (x - y)
+                if keep_dims
+                then !ybar * exp (x - y)
+                else (
+                  let shp = shape x in
+                  shp.(axis) <- 1;
+                  let y = reshape y shp in
+                  print_dim !ybar;
+                  let ybar = reshape !ybar shp in
+                  print_dim ybar;
+                  ybar * exp (x - y))
             end : Siso))
 
 
-    and log_sum_exp ?axis = Lazy.force _log_sum_exp ?axis
+    and log_sum_exp ?axis ?(keep_dims = true) = Lazy.force _log_sum_exp ?axis ~keep_dims
 
     and mean a = sum' a / F (numel a |> float_of_int |> A.float_to_elt)
 

@@ -114,9 +114,9 @@ module To_test = struct
 
   (* [|[|2.;-1.;3.5|];[|0.4;0.6;0.2|]|] *)
   let median () =
-    let x1 = M.median ~axis:0 x5 in
+    let x1 = M.median ~axis:0 ~keep_dims:true x5 in
     let y1 = M.of_arrays Float64 [| [| 1.2; -0.2; 1.85 |] |] in
-    let x2 = M.median ~axis:1 x5 in
+    let x2 = M.median ~axis:1 ~keep_dims:true x5 in
     let y2 = M.of_arrays Float64 [| [| 2. |]; [| 0.4 |] |] in
     M.equal x1 y1 && M.equal x2 y2
 
