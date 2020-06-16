@@ -1,7 +1,7 @@
 version=0.14.2
 profile=janestreet
 wrap-comments=false
-doc-comments=after
+doc-comments=after-when-possible
 align-cases=true
 align-constructors-decl
 let-binding-spacing=sparse
