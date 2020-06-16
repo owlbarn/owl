@@ -83,6 +83,7 @@ module type Sig = sig
     | Repeat                        of int array
     | Pad                           of elt * int list list
     | Concatenate                   of int
+    | Stack                         of int
     | Split                         of int * int array
     | Draw                          of int * int
     | Map                           of (elt -> elt)

@@ -162,6 +162,10 @@ module Make (Symbol : Owl_computation_symbol_sig.Sig) = struct
     make_then_connect (Concatenate axis) (Array.map arr_to_node xs) |> node_to_arr
 
 
+  let stack ?(axis = 0) xs =
+    make_then_connect (Stack axis) (Array.map arr_to_node xs) |> node_to_arr
+
+
   let concat ~axis =
     axis |> ignore;
     failwith "concat: not implemented"

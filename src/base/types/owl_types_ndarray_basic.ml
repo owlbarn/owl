@@ -64,6 +64,8 @@ module type Sig = sig
 
   val concatenate : ?axis:int -> arr array -> arr
 
+  val stack : ?axis:int -> arr array -> arr
+
   val split : ?axis:int -> int array -> arr -> arr array
 
   val expand : ?hi:bool -> arr -> int -> arr

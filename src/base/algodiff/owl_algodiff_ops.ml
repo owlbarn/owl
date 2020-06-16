@@ -1592,6 +1592,32 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
     and concatenate ~axis = Lazy.force _concatenate ~axis
+
+    and _stack =
+      lazy
+        (fun ~axis ->
+          build_aiso
+            (module struct
+              let label = "Stack_D"
+
+              let ff a = Array.map unpack_arr a |> A.stack ~axis |> pack_arr
+
+              let df _ _ _ tangents = stack ~axis tangents
+
+              let dr idxs ap _ ca =
+                let shp = shape !ca in
+                let ndim = Array.length shp in
+                let axis = Owl_utils.adjust_index axis ndim in
+                let inp_shp = shape ap.(0) in
+                let ca =
+                  split ~axis (Array.make shp.(axis) 1) !ca
+                  |> Array.map (fun x -> reshape x inp_shp)
+                in
+                List.map (fun k -> ca.(k)) idxs
+            end : Aiso))
+
+
+    and stack ~axis = Lazy.force _stack ~axis
   end
 
   module Linalg = struct

@@ -229,6 +229,9 @@ module type Sig = sig
     val concatenate : axis:int -> t array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val stack : axis:int -> t array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val get_slice : int list list -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
