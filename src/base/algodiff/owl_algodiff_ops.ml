@@ -62,7 +62,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let ff_arr a = Arr A.(neg a)
 
-             let df _cp _ap at = pack_flt 0. - at
+             let df _cp _ap at = neg at
 
              let dr _a _cp ca = neg !ca
            end : Siso))
@@ -995,7 +995,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df_da _cp _ap at _bp = at
 
-             let df_db _cp _ap _bp bt = bt
+             let df_db _cp _ap _bp bt = neg bt
 
              let df_dab _cp _ap at _bp bt = at - bt
 
@@ -1895,11 +1895,10 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at)))
 
 
-             let df_db _cp ap _qp qt = lyapunov ap (neg qt)
+             let df_db _cp ap _qp qt = lyapunov ap qt
 
              let df_dab cp ap at _qp qt =
-               lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at)))
-               + lyapunov ap (neg qt)
+               lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at))) + lyapunov ap qt
 
 
              let dr_ab a _b cp ca =
