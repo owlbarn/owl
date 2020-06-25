@@ -2045,7 +2045,7 @@ let print_element k v =
 
 
 let print ?max_row ?max_col ?header ?fmt x =
-  let n = (shape x).(num_dims x - 1) in
+  let n = if num_dims x = 0 then 1 else (shape x).(num_dims x - 1) in
   let max_row =
     match max_row with
     | Some a -> Some a
