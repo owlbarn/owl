@@ -16,6 +16,10 @@ the magnitude of ``y``; in case both ``x`` and ``y`` have the same magnitudes, `
 is less than ``y`` if the phase of ``x`` is less than the phase of ``y``; 3) less or
 equal, greater, greater or equal relation can be further defined atop of the
 aforementioned conventions.
+
+The generic module supports operations for the following Bigarry element types:
+Int8_signed, Int8_unsigned, Int16_signed, Int16_unsigned, Int32, Int64,
+Float32, Float64, Complex32, Complex64.
  *)
 
 open Bigarray
