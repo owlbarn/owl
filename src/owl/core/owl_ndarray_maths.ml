@@ -177,6 +177,10 @@ let _owl_copy : type a b. (a, b) kind -> (a, b) owl_arr_op18 =
   | Int16_unsigned -> owl_uint16_copy n x ofsx incx y ofsy incy
   | Int32          -> owl_int32_copy n x ofsx incx y ofsy incy
   | Int64          -> owl_int64_copy n x ofsx incx y ofsy incy
+  | Int            ->
+    failwith
+      "_owl_copy: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_copy: unsupported operation"
 
 
@@ -256,6 +260,10 @@ let _owl_less : type a b. (a, b) kind -> (a, b) owl_arr_op00 = function
   | Int16_unsigned -> owl_uint16_less
   | Int32          -> owl_int32_less
   | Int64          -> owl_int64_less
+  | Int            ->
+    failwith
+      "_owl_less: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_less: unsupported operation"
 
 
@@ -340,6 +348,10 @@ let _owl_greater : type a b. (a, b) kind -> (a, b) owl_arr_op00 = function
   | Int16_unsigned -> owl_uint16_greater
   | Int32          -> owl_int32_greater
   | Int64          -> owl_int64_greater
+  | Int            ->
+    failwith
+      "_owl_greater: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_greater: unsupported operation"
 
 
@@ -424,6 +436,10 @@ let _owl_less_equal : type a b. (a, b) kind -> (a, b) owl_arr_op00 = function
   | Int16_unsigned -> owl_uint16_less_equal
   | Int32          -> owl_int32_less_equal
   | Int64          -> owl_int64_less_equal
+  | Int            ->
+    failwith
+      "_owl_less_equal: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_less_equal: unsupported operation"
 
 
@@ -508,6 +524,10 @@ let _owl_greater_equal : type a b. (a, b) kind -> (a, b) owl_arr_op00 = function
   | Int16_unsigned -> owl_uint16_greater_equal
   | Int32          -> owl_int32_greater_equal
   | Int64          -> owl_int64_greater_equal
+  | Int            ->
+    failwith
+      "_owl_greater_equal: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_greater_equal: unsupported operation"
 
 
@@ -542,6 +562,10 @@ let _owl_is_zero : type a b. (a, b) kind -> (a, b) owl_arr_op01 = function
   | Int16_unsigned -> owl_uint16_is_zero
   | Int32          -> owl_int32_is_zero
   | Int64          -> owl_int64_is_zero
+  | Int            ->
+    failwith
+      "_owl_is_zero: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_is_zero: unsupported operation"
 
 
@@ -584,6 +608,10 @@ let _owl_is_positive : type a b. (a, b) kind -> (a, b) owl_arr_op01 = function
   | Int16_unsigned -> owl_uint16_is_positive
   | Int32          -> owl_int32_is_positive
   | Int64          -> owl_int64_is_positive
+  | Int            ->
+    failwith
+      "_owl_is_positive: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_is_positive: unsupported operation"
 
 
@@ -626,6 +654,10 @@ let _owl_is_negative : type a b. (a, b) kind -> (a, b) owl_arr_op01 = function
   | Int16_unsigned -> owl_uint16_is_negative
   | Int32          -> owl_int32_is_negative
   | Int64          -> owl_int64_is_negative
+  | Int            ->
+    failwith
+      "_owl_is_negative: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_is_negative: unsupported operation"
 
 
@@ -696,6 +728,10 @@ let _owl_is_nonnegative : type a b. (a, b) kind -> (a, b) owl_arr_op01 = functio
   | Int16_unsigned -> owl_uint16_is_nonnegative
   | Int32          -> owl_int32_is_nonnegative
   | Int64          -> owl_int64_is_nonnegative
+  | Int            ->
+    failwith
+      "_owl_is_nonnegative: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_is_nonnegative: unsupported operation"
 
 
@@ -766,6 +802,10 @@ let _owl_is_nonpositive : type a b. (a, b) kind -> (a, b) owl_arr_op01 = functio
   | Int16_unsigned -> owl_uint16_is_nonpositive
   | Int32          -> owl_int32_is_nonpositive
   | Int64          -> owl_int64_is_nonpositive
+  | Int            ->
+    failwith
+      "_owl_is_nonpositive: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_is_nonpositive: unsupported operation"
 
 
@@ -910,6 +950,10 @@ let _owl_elt_equal : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
   | Int16_unsigned -> owl_uint16_elt_equal l x y z
   | Int32          -> owl_int32_elt_equal l x y z
   | Int64          -> owl_int64_elt_equal l x y z
+  | Int            ->
+    failwith
+      "_owl_elt_equal: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_elt_equal: unsupported operation"
 
 
@@ -1006,6 +1050,10 @@ let _owl_elt_not_equal : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
   | Int16_unsigned -> owl_uint16_elt_not_equal l x y z
   | Int32          -> owl_int32_elt_not_equal l x y z
   | Int64          -> owl_int64_elt_not_equal l x y z
+  | Int            ->
+    failwith
+      "_owl_elt_not_equal: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_elt_not_equal: unsupported operation"
 
 
@@ -1102,6 +1150,10 @@ let _owl_elt_less : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
   | Int16_unsigned -> owl_uint16_elt_less l x y z
   | Int32          -> owl_int32_elt_less l x y z
   | Int64          -> owl_int64_elt_less l x y z
+  | Int            ->
+    failwith
+      "_owl_elt_less: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_elt_less: unsupported operation"
 
 
@@ -1198,6 +1250,10 @@ let _owl_elt_greater : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
   | Int16_unsigned -> owl_uint16_elt_greater l x y z
   | Int32          -> owl_int32_elt_greater l x y z
   | Int64          -> owl_int64_elt_greater l x y z
+  | Int            ->
+    failwith
+      "_owl_elt_greater: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_elt_greater: unsupported operation"
 
 
@@ -1294,6 +1350,10 @@ let _owl_elt_less_equal : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
   | Int16_unsigned -> owl_uint16_elt_less_equal l x y z
   | Int32          -> owl_int32_elt_less_equal l x y z
   | Int64          -> owl_int64_elt_less_equal l x y z
+  | Int            ->
+    failwith
+      "_owl_elt_less_equal: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_elt_less_equal: unsupported operation"
 
 
@@ -1390,6 +1450,10 @@ let _owl_elt_greater_equal : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
   | Int16_unsigned -> owl_uint16_elt_greater_equal l x y z
   | Int32          -> owl_int32_elt_greater_equal l x y z
   | Int64          -> owl_int64_elt_greater_equal l x y z
+  | Int            ->
+    failwith
+      "_owl_elt_greater_equal: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_elt_greater_equal: unsupported operation"
 
 
@@ -1474,6 +1538,10 @@ let _owl_equal_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op10 = function
   | Int16_unsigned -> owl_uint16_equal_scalar
   | Int32          -> owl_int32_equal_scalar
   | Int64          -> owl_int64_equal_scalar
+  | Int            ->
+    failwith
+      "_owl_equal_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_equal_scalar: unsupported operation"
 
 
@@ -1558,6 +1626,10 @@ let _owl_not_equal_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op10 = funct
   | Int16_unsigned -> owl_uint16_not_equal_scalar
   | Int32          -> owl_int32_not_equal_scalar
   | Int64          -> owl_int64_not_equal_scalar
+  | Int            ->
+    failwith
+      "_owl_not_equal_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_not_equal_scalar: unsupported operation"
 
 
@@ -1637,6 +1709,10 @@ let _owl_less_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op10 = function
   | Int16_unsigned -> owl_uint16_less_scalar
   | Int32          -> owl_int32_less_scalar
   | Int64          -> owl_int64_less_scalar
+  | Int            ->
+    failwith
+      "_owl_less_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_less_scalar: unsupported operation"
 
 
@@ -1721,6 +1797,10 @@ let _owl_greater_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op10 = functio
   | Int16_unsigned -> owl_uint16_greater_scalar
   | Int32          -> owl_int32_greater_scalar
   | Int64          -> owl_int64_greater_scalar
+  | Int            ->
+    failwith
+      "_owl_greater_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_greater_scalar: unsupported operation"
 
 
@@ -1805,6 +1885,10 @@ let _owl_less_equal_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op10 = func
   | Int16_unsigned -> owl_uint16_less_equal_scalar
   | Int32          -> owl_int32_less_equal_scalar
   | Int64          -> owl_int64_less_equal_scalar
+  | Int            ->
+    failwith
+      "_owl_less_equal_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_less_equal_scalar: unsupported operation"
 
 
@@ -1889,6 +1973,10 @@ let _owl_greater_equal_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op10 = f
   | Int16_unsigned -> owl_uint16_greater_equal_scalar
   | Int32          -> owl_int32_greater_equal_scalar
   | Int64          -> owl_int64_greater_equal_scalar
+  | Int            ->
+    failwith
+      "_owl_greater_equal_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_greater_equal_scalar: unsupported operation"
 
 
@@ -1983,6 +2071,10 @@ let _owl_elt_equal_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11 = funct
   | Int16_unsigned -> owl_uint16_elt_equal_scalar
   | Int32          -> owl_int32_elt_equal_scalar
   | Int64          -> owl_int64_elt_equal_scalar
+  | Int            ->
+    failwith
+      "_owl_elt_equal_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_elt_equal_scalar: unsupported operation"
 
 
@@ -2077,6 +2169,10 @@ let _owl_elt_not_equal_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11 = f
   | Int16_unsigned -> owl_uint16_elt_not_equal_scalar
   | Int32          -> owl_int32_elt_not_equal_scalar
   | Int64          -> owl_int64_elt_not_equal_scalar
+  | Int            ->
+    failwith
+      "_owl_elt_not_equal_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_elt_not_equal_scalar: unsupported operation"
 
 
@@ -2171,6 +2267,10 @@ let _owl_elt_less_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11 = functi
   | Int16_unsigned -> owl_uint16_elt_less_scalar
   | Int32          -> owl_int32_elt_less_scalar
   | Int64          -> owl_int64_elt_less_scalar
+  | Int            ->
+    failwith
+      "_owl_elt_less_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_elt_less_scalar: unsupported operation"
 
 
@@ -2265,6 +2365,10 @@ let _owl_elt_greater_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11 = fun
   | Int16_unsigned -> owl_uint16_elt_greater_scalar
   | Int32          -> owl_int32_elt_greater_scalar
   | Int64          -> owl_int64_elt_greater_scalar
+  | Int            ->
+    failwith
+      "_owl_elt_greater_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_elt_greater_scalar: unsupported operation"
 
 
@@ -2359,6 +2463,10 @@ let _owl_elt_less_equal_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11 = 
   | Int16_unsigned -> owl_uint16_elt_less_equal_scalar
   | Int32          -> owl_int32_elt_less_equal_scalar
   | Int64          -> owl_int64_elt_less_equal_scalar
+  | Int            ->
+    failwith
+      "_owl_elt_less_equal_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_elt_less_equal_scalar: unsupported operation"
 
 
@@ -2454,6 +2562,10 @@ let _owl_elt_greater_equal_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11
   | Int16_unsigned -> owl_uint16_elt_greater_equal_scalar
   | Int32          -> owl_int32_elt_greater_equal_scalar
   | Int64          -> owl_int64_elt_greater_equal_scalar
+  | Int            ->
+    failwith
+      "_owl_elt_greater_equal_scalar: unsupported operation. Try using one of \
+       Int8_signed, Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_elt_greater_equal_scalar: unsupported operation"
 
 
@@ -2488,6 +2600,10 @@ let _owl_nnz : type a b. (a, b) kind -> (a, b) owl_arr_op01 = function
   | Int16_unsigned -> owl_uint16_nnz
   | Int32          -> owl_int32_nnz
   | Int64          -> owl_int64_nnz
+  | Int            ->
+    failwith
+      "_owl_nnz: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_nnz: unsupported operation"
 
 
@@ -2522,6 +2638,10 @@ let _owl_min_i : type a b. (a, b) kind -> (a, b) owl_arr_op01 = function
   | Int16_unsigned -> owl_uint16_min_i
   | Int32          -> owl_int32_min_i
   | Int64          -> owl_int64_min_i
+  | Int            ->
+    failwith
+      "_owl_min_i: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_min_i: unsupported operation"
 
 
@@ -2626,6 +2746,10 @@ let _owl_min_along : type a b. (a, b) kind -> (a, b) owl_arr_op21 = function
   | Int16_unsigned -> owl_uint16_min_along
   | Int32          -> owl_int32_min_along
   | Int64          -> owl_int64_min_along
+  | Int            ->
+    failwith
+      "_owl_min_along: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_min_along: unsupported operation"
 
 
@@ -2660,6 +2784,10 @@ let _owl_max_i : type a b. (a, b) kind -> (a, b) owl_arr_op01 = function
   | Int16_unsigned -> owl_uint16_max_i
   | Int32          -> owl_int32_max_i
   | Int64          -> owl_int64_max_i
+  | Int            ->
+    failwith
+      "_owl_max_i: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_max_i: unsupported operation"
 
 
@@ -2764,6 +2892,10 @@ let _owl_max_along : type a b. (a, b) kind -> (a, b) owl_arr_op21 = function
   | Int16_unsigned -> owl_uint16_max_along
   | Int32          -> owl_int32_max_along
   | Int64          -> owl_int64_max_along
+  | Int            ->
+    failwith
+      "_owl_max_along: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_max_along: unsupported operation"
 
 
@@ -2890,6 +3022,10 @@ let _owl_neg : type a b. (a, b) kind -> (a, b) owl_arr_op18 =
   | Int16_unsigned -> owl_uint16_neg n x ofsx incx y ofsy incy
   | Int32          -> owl_int32_neg n x ofsx incx y ofsy incy
   | Int64          -> owl_int64_neg n x ofsx incx y ofsy incy
+  | Int            ->
+    failwith
+      "_owl_neg: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_neg: unsupported operation"
 
 
@@ -4936,6 +5072,10 @@ let _owl_sum : type a b. (a, b) kind -> (a, b) owl_arr_op04 = function
   | Int16_unsigned -> owl_uint16_sum
   | Int32          -> owl_int32_sum
   | Int64          -> owl_int64_sum
+  | Int            ->
+    failwith
+      "_owl_sum: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_sum: unsupported operation"
 
 
@@ -5040,6 +5180,10 @@ let _owl_sum_along : type a b. (a, b) kind -> (a, b) owl_arr_op21 = function
   | Int16_unsigned -> owl_uint16_sum_along
   | Int32          -> owl_int32_sum_along
   | Int64          -> owl_int64_sum_along
+  | Int            ->
+    failwith
+      "_owl_sum_along: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_sum_along: unsupported operation"
 
 
@@ -5153,6 +5297,10 @@ let _owl_sum_reduce
   | Int16_unsigned -> owl_uint16_sum_reduce
   | Int32          -> owl_int32_sum_reduce
   | Int64          -> owl_int64_sum_reduce
+  | Int            ->
+    failwith
+      "_owl_sum_reduce: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_sum_reduce: unsupported operation"
 
 
@@ -5187,6 +5335,10 @@ let _owl_prod : type a b. (a, b) kind -> (a, b) owl_arr_op04 = function
   | Int16_unsigned -> owl_uint16_prod
   | Int32          -> owl_int32_prod
   | Int64          -> owl_int64_prod
+  | Int            ->
+    failwith
+      "_owl_prod: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_prod: unsupported operation"
 
 
@@ -5291,6 +5443,10 @@ let _owl_prod_along : type a b. (a, b) kind -> (a, b) owl_arr_op21 = function
   | Int16_unsigned -> owl_uint16_prod_along
   | Int32          -> owl_int32_prod_along
   | Int64          -> owl_int64_prod_along
+  | Int            ->
+    failwith
+      "_owl_prod_along: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_prod_along: unsupported operation"
 
 
@@ -5467,6 +5623,10 @@ let _owl_add : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
   | Int16_unsigned -> owl_uint16_add l x y z
   | Int32          -> owl_int32_add l x y z
   | Int64          -> owl_int64_add l x y z
+  | Int            ->
+    failwith
+      "_owl_add: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_add: unsupported operation"
 
 
@@ -5563,6 +5723,10 @@ let _owl_sub : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
   | Int16_unsigned -> owl_uint16_sub l x y z
   | Int32          -> owl_int32_sub l x y z
   | Int64          -> owl_int64_sub l x y z
+  | Int            ->
+    failwith
+      "_owl_sub: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_sub: unsupported operation"
 
 
@@ -5659,6 +5823,10 @@ let _owl_mul : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
   | Int16_unsigned -> owl_uint16_mul l x y z
   | Int32          -> owl_int32_mul l x y z
   | Int64          -> owl_int64_mul l x y z
+  | Int            ->
+    failwith
+      "_owl_mul: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_mul: unsupported operation"
 
 
@@ -5755,6 +5923,10 @@ let _owl_div : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
   | Int16_unsigned -> owl_uint16_div l x y z
   | Int32          -> owl_int32_div l x y z
   | Int64          -> owl_int64_div l x y z
+  | Int            ->
+    failwith
+      "_owl_div: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_div: unsupported operation"
 
 
@@ -5849,6 +6021,10 @@ let _owl_add_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
   | Int16_unsigned -> owl_uint16_add_scalar
   | Int32          -> owl_int32_add_scalar
   | Int64          -> owl_int64_add_scalar
+  | Int            ->
+    failwith
+      "_owl_add_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_add_scalar: unsupported operation"
 
 
@@ -5943,6 +6119,10 @@ let _owl_mul_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
   | Int16_unsigned -> owl_uint16_mul_scalar
   | Int32          -> owl_int32_mul_scalar
   | Int64          -> owl_int64_mul_scalar
+  | Int            ->
+    failwith
+      "_owl_mul_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_mul_scalar: unsupported operation"
 
 
@@ -6037,6 +6217,10 @@ let _owl_div_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
   | Int16_unsigned -> owl_uint16_div_scalar
   | Int32          -> owl_int32_div_scalar
   | Int64          -> owl_int64_div_scalar
+  | Int            ->
+    failwith
+      "_owl_div_scalar: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_div_scalar: unsupported operation"
 
 
@@ -6131,6 +6315,10 @@ let _owl_scalar_sub : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
   | Int16_unsigned -> owl_uint16_scalar_sub
   | Int32          -> owl_int32_scalar_sub
   | Int64          -> owl_int64_scalar_sub
+  | Int            ->
+    failwith
+      "_owl_scalar_sub: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_scalar_sub: unsupported operation"
 
 
@@ -6225,6 +6413,10 @@ let _owl_scalar_div : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
   | Int16_unsigned -> owl_uint16_scalar_div
   | Int32          -> owl_int32_scalar_div
   | Int64          -> owl_int64_scalar_div
+  | Int            ->
+    failwith
+      "_owl_scalar_div: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_scalar_div: unsupported operation"
 
 
@@ -6535,6 +6727,10 @@ let _owl_min2 : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
   | Int16_unsigned -> owl_uint16_min2 l x y z
   | Int32          -> owl_int32_min2 l x y z
   | Int64          -> owl_int64_min2 l x y z
+  | Int            ->
+    failwith
+      "_owl_min2: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_min2: unsupported operation"
 
 
@@ -6631,6 +6827,10 @@ let _owl_max2 : type a b. (a, b) kind -> (a, b) owl_arr_op03 =
   | Int16_unsigned -> owl_uint16_max2 l x y z
   | Int32          -> owl_int32_max2 l x y z
   | Int64          -> owl_int64_max2 l x y z
+  | Int            ->
+    failwith
+      "_owl_max2: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_max2: unsupported operation"
 
 
@@ -7113,6 +7313,10 @@ let _owl_bernoulli : type a b. (a, b) kind -> (a, b) owl_arr_op12 = function
   | Int16_unsigned -> owl_uint16_bernoulli
   | Int32          -> owl_int32_bernoulli
   | Int64          -> owl_int64_bernoulli
+  | Int            ->
+    failwith
+      "_owl_bernoulli: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_bernoulli: unsupported operation"
 
 
@@ -7207,6 +7411,10 @@ let _owl_dropout : type a b. (a, b) kind -> (a, b) owl_arr_op12 = function
   | Int16_unsigned -> owl_uint16_dropout
   | Int32          -> owl_int32_dropout
   | Int64          -> owl_int64_dropout
+  | Int            ->
+    failwith
+      "_owl_dropout: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_dropout: unsupported operation"
 
 
@@ -7301,6 +7509,10 @@ let _owl_sequential : type a b. (a, b) kind -> (a, b) owl_arr_op13 = function
   | Int16_unsigned -> owl_uint16_sequential
   | Int32          -> owl_int32_sequential
   | Int64          -> owl_int64_sequential
+  | Int            ->
+    failwith
+      "_owl_sequential: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_sequential: unsupported operation"
 
 
@@ -7579,6 +7791,10 @@ let _owl_diff : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
   | Int16_unsigned -> owl_uint16_diff
   | Int32          -> owl_int32_diff
   | Int64          -> owl_int64_diff
+  | Int            ->
+    failwith
+      "_owl_diff: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_diff: unsupported operation"
 
 
@@ -7733,6 +7949,10 @@ let _owl_cumsum : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
   | Int16_unsigned -> owl_uint16_cumsum
   | Int32          -> owl_int32_cumsum
   | Int64          -> owl_int64_cumsum
+  | Int            ->
+    failwith
+      "_owl_cumsum: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_cumsum: unsupported operation"
 
 
@@ -7887,6 +8107,10 @@ let _owl_cumprod : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
   | Int16_unsigned -> owl_uint16_cumprod
   | Int32          -> owl_int32_cumprod
   | Int64          -> owl_int64_cumprod
+  | Int            ->
+    failwith
+      "_owl_cumprod: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_cumprod: unsupported operation"
 
 
@@ -8041,6 +8265,10 @@ let _owl_cummin : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
   | Int16_unsigned -> owl_uint16_cummin
   | Int32          -> owl_int32_cummin
   | Int64          -> owl_int64_cummin
+  | Int            ->
+    failwith
+      "_owl_cummin: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_cummin: unsupported operation"
 
 
@@ -8195,6 +8423,10 @@ let _owl_cummax : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
   | Int16_unsigned -> owl_uint16_cummax
   | Int32          -> owl_int32_cummax
   | Int64          -> owl_int64_cummax
+  | Int            ->
+    failwith
+      "_owl_cummax: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_cummax: unsupported operation"
 
 
@@ -8659,6 +8891,10 @@ let _owl_repeat : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
   | Int16_unsigned -> owl_uint16_repeat
   | Int32          -> owl_int32_repeat
   | Int64          -> owl_int64_repeat
+  | Int            ->
+    failwith
+      "_owl_repeat: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_repeat: unsupported operation"
 
 
@@ -8785,6 +9021,10 @@ let _owl_one_hot : type a b. (a, b) kind -> (a, b) owl_arr_op18 =
   | Int16_unsigned -> owl_uint16_one_hot n x ofsx incx y ofsy incy
   | Int32          -> owl_int32_one_hot n x ofsx incx y ofsy incy
   | Int64          -> owl_int64_one_hot n x ofsx incx y ofsy incy
+  | Int            ->
+    failwith
+      "_owl_one_hot: unsupported operation. Try using one of Int8_signed, Int8_unsigned, \
+       Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_one_hot: unsupported operation"
 
 
@@ -8899,6 +9139,10 @@ let _owl_broadcast_add : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
   | Int16_unsigned -> owl_uint16_broadcast_add
   | Int32          -> owl_int32_broadcast_add
   | Int64          -> owl_int64_broadcast_add
+  | Int            ->
+    failwith
+      "_owl_broadcast_add: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_broadcast_add: unsupported operation"
 
 
@@ -9013,6 +9257,10 @@ let _owl_broadcast_sub : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
   | Int16_unsigned -> owl_uint16_broadcast_sub
   | Int32          -> owl_int32_broadcast_sub
   | Int64          -> owl_int64_broadcast_sub
+  | Int            ->
+    failwith
+      "_owl_broadcast_sub: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_broadcast_sub: unsupported operation"
 
 
@@ -9127,6 +9375,10 @@ let _owl_broadcast_mul : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
   | Int16_unsigned -> owl_uint16_broadcast_mul
   | Int32          -> owl_int32_broadcast_mul
   | Int64          -> owl_int64_broadcast_mul
+  | Int            ->
+    failwith
+      "_owl_broadcast_mul: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_broadcast_mul: unsupported operation"
 
 
@@ -9241,6 +9493,10 @@ let _owl_broadcast_div : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
   | Int16_unsigned -> owl_uint16_broadcast_div
   | Int32          -> owl_int32_broadcast_div
   | Int64          -> owl_int64_broadcast_div
+  | Int            ->
+    failwith
+      "_owl_broadcast_div: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_broadcast_div: unsupported operation"
 
 
@@ -9355,6 +9611,10 @@ let _owl_broadcast_min2 : type a b. (a, b) kind -> (a, b) owl_arr_op17 = functio
   | Int16_unsigned -> owl_uint16_broadcast_min2
   | Int32          -> owl_int32_broadcast_min2
   | Int64          -> owl_int64_broadcast_min2
+  | Int            ->
+    failwith
+      "_owl_broadcast_min2: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_broadcast_min2: unsupported operation"
 
 
@@ -9469,6 +9729,10 @@ let _owl_broadcast_max2 : type a b. (a, b) kind -> (a, b) owl_arr_op17 = functio
   | Int16_unsigned -> owl_uint16_broadcast_max2
   | Int32          -> owl_int32_broadcast_max2
   | Int64          -> owl_int64_broadcast_max2
+  | Int            ->
+    failwith
+      "_owl_broadcast_max2: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_broadcast_max2: unsupported operation"
 
 
@@ -9709,6 +9973,10 @@ let _owl_broadcast_elt_equal : type a b. (a, b) kind -> (a, b) owl_arr_op17 = fu
   | Int16_unsigned -> owl_uint16_broadcast_elt_equal
   | Int32          -> owl_int32_broadcast_elt_equal
   | Int64          -> owl_int64_broadcast_elt_equal
+  | Int            ->
+    failwith
+      "_owl_broadcast_elt_equal: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_broadcast_elt_equal: unsupported operation"
 
 
@@ -9823,6 +10091,10 @@ let _owl_broadcast_elt_not_equal : type a b. (a, b) kind -> (a, b) owl_arr_op17 
   | Int16_unsigned -> owl_uint16_broadcast_elt_not_equal
   | Int32          -> owl_int32_broadcast_elt_not_equal
   | Int64          -> owl_int64_broadcast_elt_not_equal
+  | Int            ->
+    failwith
+      "_owl_broadcast_elt_not_equal: unsupported operation. Try using one of \
+       Int8_signed, Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_broadcast_elt_not_equal: unsupported operation"
 
 
@@ -9937,6 +10209,10 @@ let _owl_broadcast_elt_less : type a b. (a, b) kind -> (a, b) owl_arr_op17 = fun
   | Int16_unsigned -> owl_uint16_broadcast_elt_less
   | Int32          -> owl_int32_broadcast_elt_less
   | Int64          -> owl_int64_broadcast_elt_less
+  | Int            ->
+    failwith
+      "_owl_broadcast_elt_less: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_broadcast_elt_less: unsupported operation"
 
 
@@ -10051,6 +10327,10 @@ let _owl_broadcast_elt_greater : type a b. (a, b) kind -> (a, b) owl_arr_op17 = 
   | Int16_unsigned -> owl_uint16_broadcast_elt_greater
   | Int32          -> owl_int32_broadcast_elt_greater
   | Int64          -> owl_int64_broadcast_elt_greater
+  | Int            ->
+    failwith
+      "_owl_broadcast_elt_greater: unsupported operation. Try using one of Int8_signed, \
+       Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_broadcast_elt_greater: unsupported operation"
 
 
@@ -10166,6 +10446,10 @@ let _owl_broadcast_elt_less_equal : type a b. (a, b) kind -> (a, b) owl_arr_op17
   | Int16_unsigned -> owl_uint16_broadcast_elt_less_equal
   | Int32          -> owl_int32_broadcast_elt_less_equal
   | Int64          -> owl_int64_broadcast_elt_less_equal
+  | Int            ->
+    failwith
+      "_owl_broadcast_elt_less_equal: unsupported operation. Try using one of \
+       Int8_signed, Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_broadcast_elt_less_equal: unsupported operation"
 
 
@@ -10281,6 +10565,10 @@ let _owl_broadcast_elt_greater_equal : type a b. (a, b) kind -> (a, b) owl_arr_o
   | Int16_unsigned -> owl_uint16_broadcast_elt_greater_equal
   | Int32          -> owl_int32_broadcast_elt_greater_equal
   | Int64          -> owl_int64_broadcast_elt_greater_equal
+  | Int            ->
+    failwith
+      "_owl_broadcast_elt_greater_equal: unsupported operation. Try using one of \
+       Int8_signed, Int8_unsigned, Int16_signed, Int16_unsigned, Int32 or Int64"
   | _              -> failwith "_owl_broadcast_elt_greater_equal: unsupported operation"
 
 
