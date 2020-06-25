@@ -178,57 +178,60 @@ let build ?docid ?stopwords ?lo ?hi ?vocab ?(minlen = 10) fname =
   (* prepare the output file *)
   let bin_f = fname ^ ".bin" |> open_out in
   let tok_f = fname ^ ".tok" |> open_out in
-  set_binary_mode_out bin_f true;
-  set_binary_mode_out tok_f true;
-  (* initialise the offset array *)
-  let b_ofs = Owl_utils.Stack.make () in
-  let t_ofs = Owl_utils.Stack.make () in
-  Owl_utils.Stack.push b_ofs 0;
-  Owl_utils.Stack.push t_ofs 0;
-  (* initialise the doc_id stack *)
-  let doc_s = Owl_utils.Stack.make () in
-  (* binarise and tokenise at the same time *)
-  Owl_log.info "convert to binary and tokenise ...";
-  Owl_io.iteri_lines_of_file
-    (fun i s ->
-      let t =
-        Str.split Owl_nlp_utils.regexp_split s
-        |> List.filter (Owl_nlp_vocabulary.exits_w vocab)
-        |> List.map (Owl_nlp_vocabulary.word2index vocab)
-        |> Array.of_list
-      in
-      (* only save those having at least minlen words *)
-      if Array.length t >= minlen
-      then (
-        Marshal.to_channel bin_f s [];
-        Marshal.to_channel tok_f t [];
-        (* keep tracking of doc id *)
-        let id =
-          match docid with
-          | Some d -> d.(i)
-          | None   -> i
-        in
-        Owl_utils.Stack.push doc_s id;
-        (* keep tracking of doc offset *)
-        Owl_utils.Stack.push b_ofs (LargeFile.pos_out bin_f |> Int64.to_int);
-        Owl_utils.Stack.push t_ofs (LargeFile.pos_out tok_f |> Int64.to_int)))
-    fname;
-  (* save the corpus file *)
   let mdl_f = fname ^ ".mdl" |> open_out in
-  let b_ofs = Owl_utils.Stack.to_array b_ofs in
-  let t_ofs = Owl_utils.Stack.to_array t_ofs in
-  let doc_s = Owl_utils.Stack.to_array doc_s in
-  let corpus = create fname b_ofs t_ofs None None None minlen doc_s in
-  Marshal.to_channel mdl_f corpus [];
-  (* done, close the files *)
-  close_out bin_f;
-  close_out tok_f;
-  close_out mdl_f;
-  (* return the finished corpus *)
-  get_bin_fh corpus |> ignore;
-  get_tok_fh corpus |> ignore;
-  get_vocab corpus |> ignore;
-  corpus
+  Fun.protect
+    (fun () ->
+      set_binary_mode_out bin_f true;
+      set_binary_mode_out tok_f true;
+      (* initialise the offset array *)
+      let b_ofs = Owl_utils.Stack.make () in
+      let t_ofs = Owl_utils.Stack.make () in
+      Owl_utils.Stack.push b_ofs 0;
+      Owl_utils.Stack.push t_ofs 0;
+      (* initialise the doc_id stack *)
+      let doc_s = Owl_utils.Stack.make () in
+      (* binarise and tokenise at the same time *)
+      Owl_log.info "convert to binary and tokenise ...";
+      Owl_io.iteri_lines_of_file
+        (fun i s ->
+          let t =
+            Str.split Owl_nlp_utils.regexp_split s
+            |> List.filter (Owl_nlp_vocabulary.exits_w vocab)
+            |> List.map (Owl_nlp_vocabulary.word2index vocab)
+            |> Array.of_list
+          in
+          (* only save those having at least minlen words *)
+          if Array.length t >= minlen
+          then (
+            Marshal.to_channel bin_f s [];
+            Marshal.to_channel tok_f t [];
+            (* keep tracking of doc id *)
+            let id =
+              match docid with
+              | Some d -> d.(i)
+              | None   -> i
+            in
+            Owl_utils.Stack.push doc_s id;
+            (* keep tracking of doc offset *)
+            Owl_utils.Stack.push b_ofs (LargeFile.pos_out bin_f |> Int64.to_int);
+            Owl_utils.Stack.push t_ofs (LargeFile.pos_out tok_f |> Int64.to_int)))
+        fname;
+      (* save the corpus file *)
+      let b_ofs = Owl_utils.Stack.to_array b_ofs in
+      let t_ofs = Owl_utils.Stack.to_array t_ofs in
+      let doc_s = Owl_utils.Stack.to_array doc_s in
+      let corpus = create fname b_ofs t_ofs None None None minlen doc_s in
+      Marshal.to_channel mdl_f corpus [];
+      (* return the finished corpus *)
+      get_bin_fh corpus |> ignore;
+      get_tok_fh corpus |> ignore;
+      get_vocab corpus |> ignore;
+      corpus)
+    ~finally:(fun () ->
+      (* done, close the files *)
+      close_out bin_f;
+      close_out tok_f;
+      close_out mdl_f)
 
 
 (* remove duplicates in a text corpus, the ids of the removed files are returned *)
@@ -236,17 +239,19 @@ let unique fi_name fo_name =
   let h = Hashtbl.create 1024 in
   let rm = Owl_utils.Stack.make () in
   let fo = open_out fo_name in
-  Owl_io.iteri_lines_of_file
-    (fun i s ->
-      match Hashtbl.mem h s with
-      | true  -> Owl_utils.Stack.push rm i
-      | false ->
-        output_string fo s;
-        output_char fo '\n';
-        Hashtbl.add h s None)
-    fi_name;
-  close_out fo;
-  Owl_utils.Stack.to_array rm
+  Fun.protect
+    (fun () ->
+      Owl_io.iteri_lines_of_file
+        (fun i s ->
+          match Hashtbl.mem h s with
+          | true  -> Owl_utils.Stack.push rm i
+          | false ->
+            output_string fo s;
+            output_char fo '\n';
+            Hashtbl.add h s None)
+        fi_name;
+      Owl_utils.Stack.to_array rm)
+    ~finally:(fun () -> close_out fo)
 
 
 (* a simple function for pre-processing a given string *)
@@ -263,12 +268,14 @@ let simple_process s =
  *)
 let preprocess f fi_name fo_name =
   let fo = open_out fo_name in
-  Owl_io.iteri_lines_of_file
-    (fun _i s ->
-      output_bytes fo (f s);
-      output_char fo '\n')
-    fi_name;
-  close_out fo
+  Fun.protect
+    (fun () ->
+      Owl_io.iteri_lines_of_file
+        (fun _i s ->
+          output_bytes fo (f s);
+          output_char fo '\n')
+        fi_name)
+    ~finally:(fun () -> close_out fo)
 
 
 (* i/o: save and load corpus *)
@@ -302,15 +309,17 @@ let load f : t =
 (* convert tokenised corpus back to text file *)
 let save_txt corpus f =
   let fh = open_out f in
-  let vocab = get_vocab corpus in
-  let i2w_f = Owl_nlp_vocabulary.index2word vocab in
-  iteri_tok
-    (fun _i t ->
-      let s = t |> Array.map i2w_f |> Array.to_list |> String.concat " " in
-      output_string fh s;
-      output_char fh '\n')
-    corpus;
-  close_out fh
+  Fun.protect
+    (fun () ->
+      let vocab = get_vocab corpus in
+      let i2w_f = Owl_nlp_vocabulary.index2word vocab in
+      iteri_tok
+        (fun _i t ->
+          let s = t |> Array.map i2w_f |> Array.to_list |> String.concat " " in
+          output_string fh s;
+          output_char fh '\n')
+        corpus)
+    ~finally:(fun () -> close_out fh)
 
 
 let to_string corpus =

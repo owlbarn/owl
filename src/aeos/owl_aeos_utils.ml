@@ -220,38 +220,41 @@ let find_root ?(l = -10000.) ?(u = 1000000.) f pos_slope =
 
 let write_file f s =
   let h = open_out f in
-  Printf.fprintf h "%s" s;
-  close_out h
+  Fun.protect (fun () -> Printf.fprintf h "%s" s) ~finally:(fun () -> close_out h)
 
 
 let write_csv ?(sep = '\t') x fname =
   let h = open_out fname in
-  Array.iter
-    (fun row ->
-      let s =
-        Array.fold_left (fun acc elt -> Printf.sprintf "%s%s%c" acc elt sep) "" row
-      in
-      Printf.fprintf h "%s\n" s)
-    x;
-  close_out h
+  Fun.protect
+    (fun () ->
+      Array.iter
+        (fun row ->
+          let s =
+            Array.fold_left (fun acc elt -> Printf.sprintf "%s%s%c" acc elt sep) "" row
+          in
+          Printf.fprintf h "%s\n" s)
+        x)
+    ~finally:(fun () -> close_out h)
 
 
 let read_file ?(trim = true) f =
   let h = open_in f in
-  let s = ref [ "" ] in
-  (try
-     while true do
-       let l =
-         match trim with
-         | true  -> input_line h |> String.trim
-         | false -> input_line h
-       in
-       s := List.append !s [ l ]
-     done
-   with
-  | End_of_file -> ());
-  close_in h;
-  Array.of_list !s
+  Fun.protect
+    (fun () ->
+      let s = ref [ "" ] in
+      (try
+         while true do
+           let l =
+             match trim with
+             | true  -> input_line h |> String.trim
+             | false -> input_line h
+           in
+           s := List.append !s [ l ]
+         done
+       with
+      | End_of_file -> ());
+      Array.of_list !s)
+    ~finally:(fun () -> close_in h)
 
 
 let to_csv x y y' m =

@@ -286,6 +286,7 @@ let _get_content h =
 
 let _get_funlist fname =
   let h = open_in fname in
+  Fun.protect (fun () ->
   let t = Hashtbl.create 1024 in
   (try
      while true do
@@ -294,7 +295,8 @@ let _get_funlist fname =
      done
    with
   | End_of_file -> ());
-  t
+  t)
+  ~finally:(fun () -> close_in h)
 
 
 let is_in_funlist t fun_name = Hashtbl.mem t fun_name
@@ -449,7 +451,7 @@ let replace_const_val s =
 (* parse through opencl header file, filter out the constants *)
 let parse_opencl_header_consts fname =
   let h = open_in fname in
-  let s = _get_content h in
+  let s = Fun.protect (fun () -> _get_content h) ~finally:(fun () -> close_in h) in
   let regex = Str.regexp "^#define CL_[^\n^\r]+" in
   let ofs = ref 0 in
   let consts = ref [||] in
@@ -473,7 +475,7 @@ let parse_opencl_header_consts fname =
 (* parse through opencl header file to filtr out exception typs *)
 let parse_opencl_header_exnfun fname =
   let h = open_in fname in
-  let s = _get_content h in
+  let s = Fun.protect (fun () -> _get_content h) ~finally:(fun () -> close_in h) in
   let regex = Str.regexp "/\\* Error Codes \\*/\\([^\\*]+\\)/" in
   Str.search_forward regex s 0 |> ignore;
   let s = Str.matched_group 0 s in
@@ -518,7 +520,7 @@ let make_check_err_fun exns =
 (* parse through opencl header file, filter out the structs *)
 let parse_opencl_header_structs fname =
   let h = open_in fname in
-  let s = _get_content h in
+  let s = Fun.protect (fun () -> _get_content h) ~finally:(fun () -> close_in h) in
   let regex = Str.regexp "^typedef struct [^;]+;" in
   let ofs = ref 0 in
   let structs = ref [||] in
@@ -541,7 +543,7 @@ let parse_opencl_header_structs fname =
 (* parse through opencl header file, filter out the functions *)
 let parse_opencl_header_funlist fname funlist =
   let h = open_in fname in
-  let s = _get_content h in
+  let s = Fun.protect (fun () -> _get_content h) ~finally:(fun () -> close_in h) in
   let t = _get_funlist funlist in
   let regex = Str.regexp "^extern CL_API_ENTRY [^;]+;" in
   let ofs = ref 0 in
@@ -575,6 +577,7 @@ let parse_opencl_header_funlist fname funlist =
 (* generate ctypes file *)
 let convert_opencl_header_to_ctypes fname funs structs =
   let h = open_out fname in
+  Fun.protect (fun () ->
   Printf.fprintf
     h
     "(** auto-generated opencl interface file, timestamp:%.0f *)\n\n"
@@ -588,14 +591,15 @@ let convert_opencl_header_to_ctypes fname funs structs =
       Printf.fprintf h "  let _%s : _%s structure typ = structure \"_%s\"\n\n" s s s)
     structs;
   Array.iter (fun s -> Printf.fprintf h "%s\n" s) (convert_to_ctypes_fun funs);
-  Printf.fprintf h "end";
-  close_out h
+  Printf.fprintf h "end")
+  ~finally: (fun () -> close_out h)
 
 
 (* generate ml and mli files *)
 let convert_opencl_header_to_extern fname funs structs consts exns =
   (* generate opencl ml file *)
   let h_ml = open_out fname in
+  Fun.protect (fun () ->
   Printf.fprintf h_ml "%s\n" copyright;
   Printf.fprintf
     h_ml
@@ -632,10 +636,11 @@ let convert_opencl_header_to_extern fname funs structs consts exns =
   Array.iter
     (fun (exn_name, exn_val) -> Printf.fprintf h_ml "exception %s\n\n" exn_name)
     exns;
-  Printf.fprintf h_ml "%s\n" (make_check_err_fun exns);
-  close_out h_ml;
+  Printf.fprintf h_ml "%s\n" (make_check_err_fun exns))
+  ~finally: (fun () -> close_out h_ml);
   (* generate mli file *)
   let h_mli = open_out (fname ^ "i") in
+  Fun.protect (fun () ->
   Printf.fprintf h_mli "%s\n" copyright;
   Printf.fprintf
     h_mli
@@ -675,8 +680,8 @@ let convert_opencl_header_to_extern fname funs structs consts exns =
     (fun (exn_name, exn_val) ->
       Printf.fprintf h_mli "exception %s\n" exn_name;
       Printf.fprintf h_mli "(** Exception ``%s``. *)\n\n" exn_name)
-    exns;
-  close_out h_mli
+    exns)
+    ~finally: (fun () -> close_out h_mli)
 
 
 let _ =

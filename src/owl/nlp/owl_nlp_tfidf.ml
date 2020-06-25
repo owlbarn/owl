@@ -146,47 +146,49 @@ let _build_with norm sort tf_fun df_fun m =
   m.doc_freq <- d_f;
   Owl_log.info "calculate tf-idf ...";
   let fo = open_out fname in
-  (* buffer for calculate term frequency *)
-  let _h = Hashtbl.create 1024 in
-  (* variable for tracking the offset in output model *)
-  let offset = Owl_utils.Stack.make () in
-  Owl_utils.Stack.push offset 0;
-  Owl_io.iteri_lines_of_marshal
-    (fun _i doc ->
-      (* first count terms in one doc *)
-      term_count _h doc;
-      (* prepare temporary variables *)
-      let tfs = Array.make (Hashtbl.length _h) (0, 0.) in
-      let tn = Array.length doc |> float_of_int in
-      let j = ref 0 in
-      (* calculate tf-idf values *)
-      Hashtbl.iter
-        (fun w tc ->
-          let tf_df = tf_fun tc tn *. df_fun d_f.(w) n_d in
-          tfs.(!j) <- w, tf_df;
-          j := !j + 1)
-        _h;
-      (* check if we need to normalise *)
-      let tfs =
-        match norm with
-        | true  -> normalise tfs
-        | false -> tfs
-      in
-      (* check if we need to sort term id in increasing order *)
-      let _ =
-        match sort with
-        | true  -> Array.sort (fun a b -> Stdlib.compare (fst a) (fst b)) tfs
-        | false -> ()
-      in
-      (* save to file and update offset *)
-      Marshal.to_channel fo tfs [];
-      Owl_utils.Stack.push offset (LargeFile.pos_out fo |> Int64.to_int);
-      (* remember to clear the buffer *)
-      Hashtbl.clear _h)
-    tfile;
-  (* finished, clean up *)
-  m.offset <- offset |> Owl_utils.Stack.to_array;
-  close_out fo
+  Fun.protect
+    (fun () ->
+      (* buffer for calculate term frequency *)
+      let _h = Hashtbl.create 1024 in
+      (* variable for tracking the offset in output model *)
+      let offset = Owl_utils.Stack.make () in
+      Owl_utils.Stack.push offset 0;
+      Owl_io.iteri_lines_of_marshal
+        (fun _i doc ->
+          (* first count terms in one doc *)
+          term_count _h doc;
+          (* prepare temporary variables *)
+          let tfs = Array.make (Hashtbl.length _h) (0, 0.) in
+          let tn = Array.length doc |> float_of_int in
+          let j = ref 0 in
+          (* calculate tf-idf values *)
+          Hashtbl.iter
+            (fun w tc ->
+              let tf_df = tf_fun tc tn *. df_fun d_f.(w) n_d in
+              tfs.(!j) <- w, tf_df;
+              j := !j + 1)
+            _h;
+          (* check if we need to normalise *)
+          let tfs =
+            match norm with
+            | true  -> normalise tfs
+            | false -> tfs
+          in
+          (* check if we need to sort term id in increasing order *)
+          let _ =
+            match sort with
+            | true  -> Array.sort (fun a b -> Stdlib.compare (fst a) (fst b)) tfs
+            | false -> ()
+          in
+          (* save to file and update offset *)
+          Marshal.to_channel fo tfs [];
+          Owl_utils.Stack.push offset (LargeFile.pos_out fo |> Int64.to_int);
+          (* remember to clear the buffer *)
+          Hashtbl.clear _h)
+        tfile;
+      (* finished, clean up *)
+      m.offset <- offset |> Owl_utils.Stack.to_array)
+    ~finally:(fun () -> close_out fo)
 
 
 let build ?(norm = false) ?(sort = false) ?(tf = Count) ?(df = Idf) corpus =
@@ -218,10 +220,12 @@ let mapi f m = Owl_io.mapi_lines_of_marshal f m.uri
 
 let get m i : (int * float) array =
   let fh = open_in m.uri in
-  seek_in fh m.offset.(i);
-  let doc = Marshal.from_channel fh in
-  close_in fh;
-  doc
+  Fun.protect
+    (fun () ->
+      seek_in fh m.offset.(i);
+      let doc = Marshal.from_channel fh in
+      doc)
+    ~finally:(fun () -> close_in fh)
 
 
 let reset_iterators m =

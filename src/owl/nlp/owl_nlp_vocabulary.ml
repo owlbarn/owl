@@ -256,12 +256,14 @@ let load fname : t = Owl_io.marshal_from_file fname
 
 let save_txt d fname =
   let fh = open_out fname in
-  let vl = w2i_to_tuples d in
-  List.fast_sort (fun x y -> String.compare (fst x) (fst y)) vl
-  |> List.iter (fun (w, i) ->
-         let s = Printf.sprintf "%s %i\n" w i in
-         output_string fh s);
-  close_out fh
+  Fun.protect
+    (fun () ->
+      let vl = w2i_to_tuples d in
+      List.fast_sort (fun x y -> String.compare (fst x) (fst y)) vl
+      |> List.iter (fun (w, i) ->
+             let s = Printf.sprintf "%s %i\n" w i in
+             output_string fh s))
+    ~finally:(fun () -> close_out fh)
 
 
 let to_string x =
