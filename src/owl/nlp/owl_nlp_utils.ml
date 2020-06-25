@@ -27,23 +27,25 @@ let load_from_file ?stopwords f =
   let c = ref 0 in
   let w = ref 0 in
   let h = open_in f in
-  (try
-     while true do
-       if !c = Array.length !x - 1 then x := _allocate_space !x;
-       let s =
-         Str.split (Str.regexp " ") (input_line h)
-         |> List.filter (fun w -> Hashtbl.mem t w = false)
-         |> Array.of_list
-       in
-       !x.(!c) <- s;
-       c := !c + 1;
-       w := !w + Array.length s
-     done
-   with
-  | End_of_file -> ());
-  close_in h;
-  Owl_log.info "load %i docs, %i words" !c !w;
-  Array.sub !x 0 !c
+  Fun.protect
+    (fun () ->
+      (try
+         while true do
+           if !c = Array.length !x - 1 then x := _allocate_space !x;
+           let s =
+             Str.split (Str.regexp " ") (input_line h)
+             |> List.filter (fun w -> Hashtbl.mem t w = false)
+             |> Array.of_list
+           in
+           !x.(!c) <- s;
+           c := !c + 1;
+           w := !w + Array.length s
+         done
+       with
+      | End_of_file -> ());
+      Owl_log.info "load %i docs, %i words" !c !w;
+      Array.sub !x 0 !c)
+    ~finally:(fun () -> close_in h)
 
 
 let load_from_string ?stopwords s =
@@ -61,15 +63,17 @@ let load_stopwords f =
   Owl_log.info "load stopwords";
   let x = Hashtbl.create (64 * 1024) in
   let h = open_in f in
-  (try
-     while true do
-       let w = input_line h in
-       if Hashtbl.mem x w = false then Hashtbl.add x w 0
-     done
-   with
-  | End_of_file -> ());
-  close_in h;
-  x
+  Fun.protect
+    (fun () ->
+      (try
+         while true do
+           let w = input_line h in
+           if Hashtbl.mem x w = false then Hashtbl.add x w 0
+         done
+       with
+      | End_of_file -> ());
+      x)
+    ~finally:(fun () -> close_in h)
 
 
 (* return both word->index and index->word hashtbl *)

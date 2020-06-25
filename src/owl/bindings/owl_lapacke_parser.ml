@@ -121,15 +121,18 @@ let _get_content h =
 
 let _get_funlist fname =
   let h = open_in fname in
-  let t = Hashtbl.create 1024 in
-  (try
-     while true do
-       let s = input_line h |> String.trim in
-       Hashtbl.add t s None
-     done
-   with
-  | End_of_file -> ());
-  t
+  Fun.protect
+    (fun () ->
+      let t = Hashtbl.create 1024 in
+      (try
+         while true do
+           let s = input_line h |> String.trim in
+           Hashtbl.add t s None
+         done
+       with
+      | End_of_file -> ());
+      t)
+    ~finally:(fun () -> close_in h)
 
 
 (* check is it ???_work function *)
@@ -155,7 +158,7 @@ let is_in_funlist t s =
  *)
 let parse_lapacke_header fname =
   let h = open_in fname in
-  let s = _get_content h in
+  let s = Fun.protect (fun () -> _get_content h) ~finally:(fun () -> close_in h) in
   let t = _get_funlist "lapacke_funlist.txt" in
   let regex = Str.regexp "^lapack_int [^;]+;" in
   let ofs = ref 0 in
@@ -173,7 +176,7 @@ let parse_lapacke_header fname =
        ofs := _ofs + String.length _s
      done
    with
-  | exn -> ());
+  | _exn -> ());
   (* FIXME : DEBUG *)
   (* funs := Array.sub !funs 0 1; *)
   !funs
@@ -250,16 +253,18 @@ let convert_to_ctypes_fun funs =
 
 let convert_lapacke_header_to_ctypes fname funs =
   let h = open_out fname in
-  Printf.fprintf
-    h
-    "(** auto-generated lapacke interface file, timestamp:%.0f *)\n\n"
-    (Unix.gettimeofday ());
-  Printf.fprintf h "open Ctypes\n\n";
-  Printf.fprintf h "module Bindings (F : Cstubs.FOREIGN) = struct\n\n";
-  Printf.fprintf h "  open F\n\n";
-  Array.iter (fun s -> Printf.fprintf h "%s\n" s) (convert_to_ctypes_fun funs);
-  Printf.fprintf h "end";
-  close_out h
+  Fun.protect
+    (fun () ->
+      Printf.fprintf
+        h
+        "(** auto-generated lapacke interface file, timestamp:%.0f *)\n\n"
+        (Unix.gettimeofday ());
+      Printf.fprintf h "open Ctypes\n\n";
+      Printf.fprintf h "module Bindings (F : Cstubs.FOREIGN) = struct\n\n";
+      Printf.fprintf h "  open F\n\n";
+      Array.iter (fun s -> Printf.fprintf h "%s\n" s) (convert_to_ctypes_fun funs);
+      Printf.fprintf h "end")
+    ~finally:(fun () -> close_out h)
 
 
 (* FOR EXTERN INTERFACE FILE *)
@@ -357,36 +362,40 @@ let convert_to_extern_fun funs =
 
 let convert_lapacke_header_to_extern fname funs =
   let h_ml = open_out fname in
-  Printf.fprintf h_ml "%s\n" copyright;
-  Printf.fprintf
-    h_ml
-    "(** auto-generated lapacke interface file, timestamp:%.0f *)\n\n"
-    (Unix.gettimeofday ());
-  Printf.fprintf h_ml "module CI = Cstubs_internals\n\n";
-  Array.iter
-    (fun (fun_caml, fun_stub_s, args) -> Printf.fprintf h_ml "%s\n" fun_stub_s)
-    (convert_to_extern_fun funs);
-  Array.iter
-    (fun (fun_caml, fun_stub_s, args) ->
-      Printf.fprintf h_ml "%s\n" (convert_argrec_to_caml fun_caml args))
-    (convert_to_extern_fun funs);
-  close_out h_ml;
+  Fun.protect
+    (fun () ->
+      Printf.fprintf h_ml "%s\n" copyright;
+      Printf.fprintf
+        h_ml
+        "(** auto-generated lapacke interface file, timestamp:%.0f *)\n\n"
+        (Unix.gettimeofday ());
+      Printf.fprintf h_ml "module CI = Cstubs_internals\n\n";
+      Array.iter
+        (fun (fun_caml, fun_stub_s, args) -> Printf.fprintf h_ml "%s\n" fun_stub_s)
+        (convert_to_extern_fun funs);
+      Array.iter
+        (fun (fun_caml, fun_stub_s, args) ->
+          Printf.fprintf h_ml "%s\n" (convert_argrec_to_caml fun_caml args))
+        (convert_to_extern_fun funs))
+    ~finally:(fun () -> close_out h_ml);
   let h_mli = open_out (fname ^ "i") in
-  Printf.fprintf h_mli "%s\n" copyright;
-  Printf.fprintf
-    h_mli
-    "(** LAPACKE interface: low-level interface to the LAPACKE functions *) \n\n";
-  Printf.fprintf
-    h_mli
-    "(** auto-generated lapacke interface file, timestamp:%.0f *)\n\n"
-    (Unix.gettimeofday ());
-  Printf.fprintf h_mli "open Ctypes\n\n";
-  Array.iter
-    (fun (fun_caml, fun_stub_s, args) ->
-      let val_s = convert_argrec_to_vals fun_caml args in
-      Printf.fprintf h_mli "%s\n" val_s)
-    (convert_to_extern_fun funs);
-  close_out h_mli
+  Fun.protect
+    (fun () ->
+      Printf.fprintf h_mli "%s\n" copyright;
+      Printf.fprintf
+        h_mli
+        "(** LAPACKE interface: low-level interface to the LAPACKE functions *) \n\n";
+      Printf.fprintf
+        h_mli
+        "(** auto-generated lapacke interface file, timestamp:%.0f *)\n\n"
+        (Unix.gettimeofday ());
+      Printf.fprintf h_mli "open Ctypes\n\n";
+      Array.iter
+        (fun (fun_caml, fun_stub_s, args) ->
+          let val_s = convert_argrec_to_vals fun_caml args in
+          Printf.fprintf h_mli "%s\n" val_s)
+        (convert_to_extern_fun funs))
+    ~finally:(fun () -> close_out h_mli)
 
 
 let _ =
