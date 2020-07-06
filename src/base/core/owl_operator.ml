@@ -49,8 +49,7 @@ module Make_Basic (M : BasicSig) = struct
   let ( >= ) = M.greater_equal
 
   let ( <= ) = M.less_equal
-end
-[@warning "-34"]
+end [@warning "-34"]
 
 module Make_Extend (M : ExtendSig) = struct
   type ('a, 'b) op_t1 = ('a, 'b) M.t
@@ -142,8 +141,7 @@ module Make_Extend (M : ExtendSig) = struct
   let ( .${;..} ) x s = M.get_slice_ext s x
 
   let ( .${;..}<- ) x s = M.set_slice_ext s x
-end
-[@warning "-34"]
+end [@warning "-34"]
 
 module Make_Matrix (M : MatrixSig) = struct
   type ('a, 'b) op_t2 = ('a, 'b) M.t
@@ -153,8 +151,7 @@ module Make_Matrix (M : MatrixSig) = struct
   let ( .%{;..}<- ) x i = M.set x i.(0) i.(1)
 
   let ( *@ ) a b = M.dot a b
-end
-[@warning "-34"]
+end [@warning "-34"]
 
 module Make_Ndarray (M : NdarraySig) = struct
   type ('a, 'b) op_t3 = ('a, 'b) M.t
@@ -162,8 +159,7 @@ module Make_Ndarray (M : NdarraySig) = struct
   let ( .%{;..} ) x i = M.get x i
 
   let ( .%{;..}<- ) x i = M.set x i
-end
-[@warning "-34"]
+end [@warning "-34"]
 
 module Make_Linalg (M : LinalgSig) = struct
   type ('a, 'b) op_t4 = ('a, 'b) M.t
@@ -171,7 +167,6 @@ module Make_Linalg (M : LinalgSig) = struct
   let ( **@ ) x a = M.mpow x a
 
   let ( /@ ) a b = M.linsolve a b
-end
-[@warning "-34"]
+end [@warning "-34"]
 
 (* ends here *)
