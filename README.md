@@ -6,9 +6,9 @@ functional programming language OCaml.
 This software is currently maintained by [Komposio](http://komposio.com), a
 Helsinki-based software consulting company.
 
-Visit the project website at [ocaml.xyz](http://ocaml.xyz)
-
-
+Visit the project website at [ocaml.xyz](http://ocaml.xyz).
+The Owl programming API is hosted here [ocaml.xyz](https://ocaml.xyz/package/index.html).
+There is also a book about Owl here [ocaml.xyz](https://ocaml.xyz/book).
 
 ## Optional features
 
