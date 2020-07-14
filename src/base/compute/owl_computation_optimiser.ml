@@ -74,9 +74,9 @@ module Make (Operator : Owl_computation_operator_sig.Sig) = struct
       | Asinh -> pattern_000 x
       | Acosh -> pattern_000 x
       | Atanh -> pattern_000 x
-      | Min (keep_dims, _axis) -> if keep_dims then pattern_000 x else pattern_024 x
-      | Max (keep_dims, _axis) -> if keep_dims then pattern_000 x else pattern_024 x
-      | Sum (keep_dims, _axis) -> if keep_dims then pattern_000 x else pattern_024 x
+      | Min (_keep_dims, _axis) -> pattern_000 x
+      | Max (_keep_dims, _axis) -> pattern_000 x
+      | Sum (_keep_dims, _axis) -> pattern_000 x
       | SumReduce _axis -> pattern_024 x
       | Signum -> pattern_000 x
       | Sigmoid -> pattern_000 x
