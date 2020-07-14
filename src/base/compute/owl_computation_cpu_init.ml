@@ -103,9 +103,9 @@ module Make (Graph : Owl_computation_graph_sig.Sig) = struct
     | Asinh -> split_01 p
     | Acosh -> split_01 p
     | Atanh -> split_01 p
-    | Min _axis -> split_00 p (* ? *)
-    | Max _axis -> split_00 p (* ? *)
-    | Sum _axis -> split_00 p (* ? *)
+    | Min (_keep_dims, _axis) -> split_00 p (* ? *)
+    | Max (_keep_dims, _axis) -> split_00 p (* ? *)
+    | Sum (_keep_dims, _axis) -> split_00 p (* ? *)
     | SumReduce _axis -> split_00 p (* ? *)
     | Signum -> split_01 p
     | Sigmoid -> split_01 p
@@ -115,7 +115,7 @@ module Make (Graph : Owl_computation_graph_sig.Sig) = struct
     | Max' -> split_01 p
     | Sum' -> split_01 p
     | LogSumExp' -> split_01 p
-    | LogSumExp _axis -> split_00 p
+    | LogSumExp (_keep_dims, _axis) -> split_00 p
     | L1norm' -> split_01 p
     | L2norm' -> split_01 p
     | L2NormSqr' -> split_01 p

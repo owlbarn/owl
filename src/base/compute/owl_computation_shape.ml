@@ -254,6 +254,12 @@ module Make (Type : Owl_computation_type_sig.Sig) = struct
     | _          -> [| None |]
 
 
+  let _infer_shape_31 keep_dims input_shapes axis =
+    if keep_dims
+    then _infer_shape_04 input_shapes axis
+    else _infer_shape_10 input_shapes [| axis |]
+
+
   let infer_shape operator args =
     let input_shapes = Array.map (fun a -> (Owl_graph.attr a).shape) args in
     match operator with
@@ -301,9 +307,9 @@ module Make (Type : Owl_computation_type_sig.Sig) = struct
     | Asinh -> _infer_shape_01 input_shapes
     | Acosh -> _infer_shape_01 input_shapes
     | Atanh -> _infer_shape_01 input_shapes
-    | Min axis -> _infer_shape_04 input_shapes axis
-    | Max axis -> _infer_shape_04 input_shapes axis
-    | Sum axis -> _infer_shape_04 input_shapes axis
+    | Min (keep_dims, axis) -> _infer_shape_31 keep_dims input_shapes axis
+    | Max (keep_dims, axis) -> _infer_shape_31 keep_dims input_shapes axis
+    | Sum (keep_dims, axis) -> _infer_shape_31 keep_dims input_shapes axis
     | SumReduce axis -> _infer_shape_10 input_shapes axis
     | Signum -> _infer_shape_01 input_shapes
     | Sigmoid -> _infer_shape_01 input_shapes
@@ -313,7 +319,7 @@ module Make (Type : Owl_computation_type_sig.Sig) = struct
     | Max' -> _infer_shape_00 input_shapes
     | Sum' -> _infer_shape_00 input_shapes
     | LogSumExp' -> _infer_shape_00 input_shapes
-    | LogSumExp axis -> _infer_shape_04 input_shapes axis
+    | LogSumExp (keep_dims, axis) -> _infer_shape_31 keep_dims input_shapes axis
     | L1norm' -> _infer_shape_00 input_shapes
     | L2norm' -> _infer_shape_00 input_shapes
     | L2NormSqr' -> _infer_shape_00 input_shapes

@@ -102,9 +102,18 @@ module Make (Graph : Owl_computation_graph_sig.Sig) = struct
             | Asinh -> _eval_map_01 x (fun ~out x -> A.asinh_ ~out x.(0))
             | Acosh -> _eval_map_01 x (fun ~out x -> A.acosh_ ~out x.(0))
             | Atanh -> _eval_map_01 x (fun ~out x -> A.atanh_ ~out x.(0))
-            | Min axis -> _eval_map_01 x (fun ~out x -> A.min_ ~out ~axis x.(0))
-            | Max axis -> _eval_map_01 x (fun ~out x -> A.max_ ~out ~axis x.(0))
-            | Sum axis -> _eval_map_01 x (fun ~out x -> A.sum_ ~out ~axis x.(0))
+            | Min (keep_dims, axis) ->
+              if keep_dims
+              then _eval_map_01 x (fun ~out x -> A.min_ ~out ~axis x.(0))
+              else _eval_map_00 x (fun x -> A.min ~keep_dims ~axis x.(0))
+            | Max (keep_dims, axis) ->
+              if keep_dims
+              then _eval_map_01 x (fun ~out x -> A.max_ ~out ~axis x.(0))
+              else _eval_map_00 x (fun x -> A.max ~keep_dims ~axis x.(0))
+            | Sum (keep_dims, axis) ->
+              if keep_dims
+              then _eval_map_01 x (fun ~out x -> A.sum_ ~out ~axis x.(0))
+              else _eval_map_00 x (fun x -> A.sum ~keep_dims ~axis x.(0))
             | SumReduce axis -> _eval_map_00 x (fun x -> A.sum_reduce ~axis x.(0))
             | Signum -> _eval_map_01 x (fun ~out x -> A.signum_ ~out x.(0))
             | Sigmoid -> _eval_map_01 x (fun ~out x -> A.sigmoid_ ~out x.(0))

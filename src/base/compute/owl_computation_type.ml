@@ -116,9 +116,9 @@ module Make (Device : Owl_types_computation_device.Sig) = struct
     | Asinh
     | Acosh
     | Atanh
-    | Min                           of int
-    | Max                           of int
-    | Sum                           of int
+    | Min                           of bool * int
+    | Max                           of bool * int
+    | Sum                           of bool * int
     | SumReduce                     of int array
     | Signum
     | Sigmoid
@@ -128,7 +128,7 @@ module Make (Device : Owl_types_computation_device.Sig) = struct
     | Max'
     | Sum'
     | LogSumExp'
-    | LogSumExp                     of int
+    | LogSumExp                     of bool * int
     | L1norm'
     | L2norm'
     | L2NormSqr'
