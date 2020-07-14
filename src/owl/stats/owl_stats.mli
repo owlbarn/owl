@@ -222,6 +222,7 @@ val ecdf : float array -> float array * float array
 ``ecdf x`` returns ``(x',f)`` which are the empirical cumulative distribution
 function ``f`` of ``x`` at points ``x'``. ``x'`` is just ``x`` sorted in increasing
 order with duplicates removed.
+The function does not support ``nan`` values in the array ``x``.
  *)
 
 val z_score : mu:float -> sigma:float -> float array -> float array
