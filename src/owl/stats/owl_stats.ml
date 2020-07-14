@@ -171,6 +171,10 @@ let normalise_density = Owl_base_stats.normalise_density
 let pp_hist = Owl_base_stats.pp_hist
 
 let ecdf x =
+  if Array.exists Float.is_nan x
+  then
+    raise
+      (Invalid_argument "Owl_stats.ecdf: nan values in the array x are not supported.");
   let x = sort ~inc:true x in
   let n = Array.length x in
   let m = float_of_int n in
