@@ -85,7 +85,8 @@ module Make (Shape : Owl_computation_shape_sig.Sig) = struct
     | Max' -> "Max'"
     | Sum' -> "Sum'"
     | LogSumExp' -> "LogSumExp'"
-    | LogSumExp (keep_dims, axis) -> Printf.sprintf "LogSumExp keep_dims: %b, axis:%i" keep_dims axis
+    | LogSumExp (keep_dims, axis) ->
+      Printf.sprintf "LogSumExp keep_dims: %b, axis:%i" keep_dims axis
     | L1norm' -> "L1norm'"
     | L2norm' -> "L2norm'"
     | L2NormSqr' -> "L2NormSqr'"
