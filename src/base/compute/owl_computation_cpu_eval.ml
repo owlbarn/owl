@@ -103,14 +103,23 @@ module Make (Graph : Owl_computation_graph_sig.Sig) = struct
             | Acosh -> _eval_map_01 x (fun ~out x -> A.acosh_ ~out x.(0))
             | Atanh -> _eval_map_01 x (fun ~out x -> A.atanh_ ~out x.(0))
             | Min (keep_dims, axis) ->
+              (* reuse memory (_eval_map_01) when keep_dims=true else create new node 
+                 (_eval_map_00) *)
+              (* TODO: implement keep_dims for A.min_ in Ndarray to reuse memory *)
               if keep_dims
               then _eval_map_01 x (fun ~out x -> A.min_ ~out ~axis x.(0))
               else _eval_map_00 x (fun x -> A.min ~keep_dims ~axis x.(0))
             | Max (keep_dims, axis) ->
+              (* reuse memory (_eval_map_01) when keep_dims=true else create new node 
+                 (_eval_map_00) *)
+              (* TODO: implement keep_dims for A.max_ in Ndarray to reuse memory *)
               if keep_dims
               then _eval_map_01 x (fun ~out x -> A.max_ ~out ~axis x.(0))
               else _eval_map_00 x (fun x -> A.max ~keep_dims ~axis x.(0))
             | Sum (keep_dims, axis) ->
+              (* reuse memory (_eval_map_01) when keep_dims=true else create new node 
+                 (_eval_map_00) *)
+              (* TODO: implement keep_dims for A.sum_ in Ndarray to reuse memory *)
               if keep_dims
               then _eval_map_01 x (fun ~out x -> A.sum_ ~out ~axis x.(0))
               else _eval_map_00 x (fun x -> A.sum ~keep_dims ~axis x.(0))
