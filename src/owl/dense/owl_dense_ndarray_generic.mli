@@ -1155,7 +1155,7 @@ val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 same shape.
  *)
 
-val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val sum : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``sum ~axis x`` sums the elements in ``x`` along specified ``axis``.
  *)
@@ -1171,7 +1171,7 @@ val sum_reduce : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 in the ``axis`` array.
  *)
 
-val prod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val prod : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``prod ~axis x`` multiples the elements in ``x`` along specified ``axis``.
  *)
@@ -1181,7 +1181,7 @@ val prod' : ('a, 'b) t -> 'a
 ``prod x`` returns the product of all elements in ``x`` along passed in axises.
  *)
 
-val mean : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val mean : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``mean ~axis x`` calculates the mean along specified ``axis``.
  *)
@@ -1191,7 +1191,7 @@ val mean' : ('a, 'b) t -> 'a
 ``mean' x`` calculates the mean of all the elements in ``x``.
  *)
 
-val median : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val median : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``median ~axis x`` calculates the median along specified ``axis`` of ``x``.
 *)
@@ -1201,7 +1201,7 @@ val median' : ('a, 'b) t -> 'a
 ``median x`` calculates the median of a flattened version of ``x``.
 *)
 
-val var : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val var : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``var ~axis x`` calculates the variance along specified ``axis``.
  *)
@@ -1211,7 +1211,7 @@ val var' : ('a, 'b) t -> 'a
 ``var' x`` calculates the variance of all the elements in ``x``.
  *)
 
-val std : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val std : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``std ~axis`` calculates the standard deviation along specified ``axis``.
  *)
@@ -1221,7 +1221,7 @@ val std' : ('a, 'b) t -> 'a
 ``std' x`` calculates the standard deviation of all the elements in ``x``.
  *)
 
-val sem : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val sem : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``sem ~axis`` calculates the standard error of mean along specified ``axis``.
  *)
@@ -1231,7 +1231,7 @@ val sem' : ('a, 'b) t -> 'a
 ``sem' x`` calculates the standard error of mean of all the elements in ``x``.
  *)
 
-val min : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val min : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``min x`` returns the minimum of all elements in ``x`` along specified ``axis``.
 If no axis is specified, ``x`` will be flattened and the minimum of all the
@@ -1246,7 +1246,7 @@ val min' : ('a, 'b) t -> 'a
 ``x`` in scalar value.
  *)
 
-val max : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val max : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``max x`` returns the maximum of all elements in ``x`` along specified ``axis``.
 If no axis is specified, ``x`` will be flattened and the maximum of all the
@@ -1261,7 +1261,7 @@ val max' : ('a, 'b) t -> 'a
 ``x`` in scalar value.
  *)
 
-val minmax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+val minmax : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
 ``minmax' x`` returns ``(min_v, max_v)``, ``min_v`` is the minimum value in
 ``x`` while ``max_v`` is the maximum.
@@ -1598,13 +1598,13 @@ val log_sum_exp' : (float, 'a) t -> float
 the elements in ``x``.
  *)
 
-val log_sum_exp : ?axis:int -> (float, 'a) t -> (float, 'a) t
+val log_sum_exp : ?axis:int -> ?keep_dims:bool -> (float, 'a) t -> (float, 'a) t
 (**
 ``log_sum_exp ~axis x`` computes the logarithm of the sum of exponentials of all
 the elements in ``x`` along axis ``axis``.
  *)
 
-val l1norm : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val l1norm : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``l1norm x`` calculates the l1-norm of of ``x`` along specified axis.
  *)
@@ -1614,7 +1614,7 @@ val l1norm' : ('a, 'b) t -> 'a
 ``l1norm x`` calculates the l1-norm of all the element in ``x``.
  *)
 
-val l2norm : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val l2norm : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``l2norm x`` calculates the l2-norm of of ``x`` along specified axis.
  *)
@@ -1624,7 +1624,7 @@ val l2norm' : ('a, 'b) t -> 'a
 ``l2norm x`` calculates the l2-norm of all the element in ``x``.
  *)
 
-val l2norm_sqr : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val l2norm_sqr : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``l2norm_sqr x`` calculates the square l2-norm of of ``x`` along specified axis.
  *)
@@ -1636,7 +1636,7 @@ of all elements in ``x``. The function uses conjugate transpose in the product,
 hence it always returns a float number.
  *)
 
-val vecnorm : ?axis:int -> ?p:float -> ('a, 'b) t -> ('a, 'b) t
+val vecnorm : ?axis:int -> ?p:float -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``vecnorm ~axis ~p x`` calculates the generalised vector p-norm along the
 specified ``axis``. The generalised p-norm is defined as below.

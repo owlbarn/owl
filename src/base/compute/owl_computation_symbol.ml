@@ -73,9 +73,9 @@ module Make (Shape : Owl_computation_shape_sig.Sig) = struct
     | Asinh -> "Asinh"
     | Acosh -> "Acosh"
     | Atanh -> "Atanh"
-    | Min axis -> Printf.sprintf "Min axis:%i" axis
-    | Max axis -> Printf.sprintf "Max axis:%i" axis
-    | Sum axis -> Printf.sprintf "Sum axis:%i" axis
+    | Min (keep_dims, axis) -> Printf.sprintf "Min keep_dims: %b, axis:%i" keep_dims axis
+    | Max (keep_dims, axis) -> Printf.sprintf "Max keep_dims: %b, axis:%i" keep_dims axis
+    | Sum (keep_dims, axis) -> Printf.sprintf "Sum keep_dims: %b, axis:%i" keep_dims axis
     | SumReduce _axis -> "SumReduce"
     | Signum -> "Signum"
     | Sigmoid -> "Sigmoid"
@@ -85,7 +85,8 @@ module Make (Shape : Owl_computation_shape_sig.Sig) = struct
     | Max' -> "Max'"
     | Sum' -> "Sum'"
     | LogSumExp' -> "LogSumExp'"
-    | LogSumExp axis -> Printf.sprintf "LogSumExp axis:%i" axis
+    | LogSumExp (keep_dims, axis) ->
+      Printf.sprintf "LogSumExp keep_dims: %b, axis:%i" keep_dims axis
     | L1norm' -> "L1norm'"
     | L2norm' -> "L2norm'"
     | L2NormSqr' -> "L2NormSqr'"

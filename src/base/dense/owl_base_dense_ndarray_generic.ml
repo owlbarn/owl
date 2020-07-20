@@ -1528,7 +1528,8 @@ let sum' x =
 let log_sum_exp' _ = raise (Owl_exception.NOT_IMPLEMENTED "base ndarray: log_sum_exp'")
 
 (* log sum of exp all elements *)
-let log_sum_exp ?axis:_ _ =
+let log_sum_exp ?axis:_ ?(keep_dims = true) _ =
+  ignore keep_dims;
   raise (Owl_exception.NOT_IMPLEMENTED "base ndarray: log_sum_exp")
 
 
@@ -1562,14 +1563,15 @@ let _fold_along ?out f m n o x ys nelem =
   reshape y ys
 
 
-let sum ?axis x =
+let sum ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   let zero = Owl_const.zero _kind in
   match axis with
   | Some a ->
     let m, n, o, s = Owl_utils.reduce_params a x in
     let _op = Owl_base_dense_common._add_elt _kind in
-    _fold_along _op m n o x s zero
+    let x = _fold_along _op m n o x s zero in
+    if keep_dims then x else squeeze ~axis:[| a |] x
   | None   -> create (kind x) (Array.make 1 1) (sum' x)
 
 
@@ -1613,13 +1615,14 @@ let sum_reduce ?axis x =
   | None   -> create (kind x) (Array.make _dims 1) (sum' x)
 
 
-let min ?axis x =
+let min ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   let max_val = Owl_base_dense_common._max_val_elt _kind in
   match axis with
   | Some a ->
     let m, n, o, s = Owl_utils.reduce_params a x in
-    _fold_along (Owl_base_dense_common._min_elt _kind) m n o x s max_val
+    let x = _fold_along (Owl_base_dense_common._min_elt _kind) m n o x s max_val in
+    if keep_dims then x else squeeze ~axis:[| a |] x
   | None   -> min' x |> create _kind [| 1 |]
 
 
@@ -1637,13 +1640,14 @@ let min_ ~out ~axis x =
     set y [| 0 |] (min' x)
 
 
-let max ?axis x =
+let max ?axis ?(keep_dims = true) x =
   let _kind = kind x in
   let min_val = Owl_base_dense_common._min_val_elt _kind in
   match axis with
   | Some a ->
     let m, n, o, s = Owl_utils.reduce_params a x in
-    _fold_along (Owl_base_dense_common._max_elt _kind) m n o x s min_val
+    let x = _fold_along (Owl_base_dense_common._max_elt _kind) m n o x s min_val in
+    if keep_dims then x else squeeze ~axis:[| a |] x
   | None   -> max' x |> create _kind [| 1 |]
 
 

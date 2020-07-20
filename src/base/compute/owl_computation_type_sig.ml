@@ -118,9 +118,9 @@ module type Sig = sig
     | Asinh
     | Acosh
     | Atanh
-    | Min                           of int
-    | Max                           of int
-    | Sum                           of int
+    | Min                           of bool * int
+    | Max                           of bool * int
+    | Sum                           of bool * int
     | SumReduce                     of int array
     | Signum
     | Sigmoid
@@ -130,7 +130,7 @@ module type Sig = sig
     | Max'
     | Sum'
     | LogSumExp'
-    | LogSumExp                     of int
+    | LogSumExp                     of bool * int
     | L1norm'
     | L2norm'
     | L2NormSqr'

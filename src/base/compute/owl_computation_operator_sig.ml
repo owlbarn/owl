@@ -220,13 +220,13 @@ module type Sig = sig
   val atanh : arr -> arr
   (** TODO *)
 
-  val min : ?axis:int -> arr -> arr
+  val min : ?axis:int -> ?keep_dims:bool -> arr -> arr
   (** TODO *)
 
-  val max : ?axis:int -> arr -> arr
+  val max : ?axis:int -> ?keep_dims:bool -> arr -> arr
   (** TODO *)
 
-  val sum : ?axis:int -> arr -> arr
+  val sum : ?axis:int -> ?keep_dims:bool -> arr -> arr
   (** TODO *)
 
   val sum_reduce : ?axis:int array -> arr -> arr
@@ -256,7 +256,7 @@ module type Sig = sig
   val log_sum_exp' : arr -> elt
   (** TODO *)
 
-  val log_sum_exp : ?axis:int -> arr -> arr
+  val log_sum_exp : ?axis:int -> ?keep_dims:bool -> arr -> arr
   (** TODO *)
 
   val l1norm' : arr -> elt

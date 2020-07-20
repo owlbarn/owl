@@ -207,12 +207,12 @@ module To_test = struct
 
 
   let sum_rows () =
-    let x = M.sum_rows x2 |> M.to_arrays in
+    let x = M.sum_rows ~keep_dims:true x2 |> M.to_arrays in
     x = [| [| 12.; 15.; 18.; 21. |] |]
 
 
   let sum_cols () =
-    let x = M.sum_cols x2 |> M.to_arrays in
+    let x = M.sum_cols ~keep_dims:true x2 |> M.to_arrays in
     x = [| [| 6. |]; [| 22. |]; [| 38. |] |]
 
 

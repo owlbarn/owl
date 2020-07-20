@@ -401,13 +401,13 @@ module type BasicSig = sig
 
   val mean' : mat -> elt
 
-  val sum_rows : mat -> mat
+  val sum_rows : ?keep_dims:bool -> mat -> mat
 
-  val sum_cols : mat -> mat
+  val sum_cols : ?keep_dims:bool -> mat -> mat
 
-  val mean_rows : mat -> mat
+  val mean_rows : ?keep_dims:bool -> mat -> mat
 
-  val mean_cols : mat -> mat
+  val mean_cols : ?keep_dims:bool -> mat -> mat
 
   val add : mat -> mat -> mat
 

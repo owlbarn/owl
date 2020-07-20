@@ -277,13 +277,13 @@ module Make (A : Ndarray_Mutable) : sig
   val atanh : arr -> arr
   (** TODO *)
 
-  val min : ?axis:int -> arr -> arr
+  val min : ?axis:int -> ?keep_dims:bool -> arr -> arr
   (** TODO *)
 
-  val max : ?axis:int -> arr -> arr
+  val max : ?axis:int -> ?keep_dims:bool -> arr -> arr
   (** TODO *)
 
-  val sum : ?axis:int -> arr -> arr
+  val sum : ?axis:int -> ?keep_dims:bool -> arr -> arr
   (** TODO *)
 
   val sum_reduce : ?axis:int array -> arr -> arr

@@ -200,23 +200,23 @@ module type Sig = sig
 
   val max_ : out:arr -> axis:int -> arr -> unit
 
-  val sum : ?axis:int -> arr -> arr
+  val sum : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
-  val prod : ?axis:int -> arr -> arr
+  val prod : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
-  val min : ?axis:int -> arr -> arr
+  val min : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
-  val max : ?axis:int -> arr -> arr
+  val max : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
-  val mean : ?axis:int -> arr -> arr
+  val mean : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
-  val var : ?axis:int -> arr -> arr
+  val var : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
-  val std : ?axis:int -> arr -> arr
+  val std : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
-  val l1norm : ?axis:int -> arr -> arr
+  val l1norm : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
-  val l2norm : ?axis:int -> arr -> arr
+  val l2norm : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
   val cumsum_ : ?out:arr -> ?axis:int -> arr -> unit
 
