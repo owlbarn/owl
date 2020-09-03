@@ -280,6 +280,18 @@ module To_test = struct
     Arr.set z [| 9; 5; 0 |] 1.;
     Arr.set z [| 9; 6; 0 |] 2.;
     Arr.(x = z)
+
+
+  let test_35 () =
+    (* This just checks that the extended accessor syntax compiles *)
+    let open Arr in
+    let x = of_array [| 0.5; 0.7 |] [| 2 |] in
+    let y = of_array [| 0.8; 0.9; 1.1; 1.2 |] [| 2; 2 |] in
+    let v1 = l2norm' (x.${[ 1 ]} - of_array [| 0.7 |] [| 1 |]) in
+    let v2 = abs_float (x.%{1} -. 0.7) in
+    let v3 = abs_float (y.%{0; 1} -. 0.9) in
+    let v4 = l2norm' (y.${[ 0 ]; [ 0; -1 ]} - of_array [| 0.8; 0.9 |] [| 2 |]) in
+    Stdlib.(v1 < 1e-10 && v2 < 1e-10 && v3 < 1e-10 && v4 < 1e-10)
 end
 
 (* the tests *)
@@ -351,6 +363,8 @@ let test_32 () = Alcotest.(check bool) "test 32" true (To_test.test_32 ())
 let test_33 () = Alcotest.(check bool) "test 33" true (To_test.test_33 ())
 
 let test_34 () = Alcotest.(check bool) "test 34" true (To_test.test_34 ())
+
+let test_35 () = Alcotest.(check bool) "test 35" true (To_test.test_35 ())
 
 let test_set =
   [ "test 01", `Slow, test_01; "test 02", `Slow, test_02; "test 03", `Slow, test_03
