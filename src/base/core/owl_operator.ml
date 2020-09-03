@@ -138,7 +138,11 @@ module Make_Extend (M : ExtendSig) = struct
 
   let ( .!{;..}<- ) x s = M.set_fancy_ext s x
 
+  let ( .${} ) x s = M.get_slice_ext [| s |] x
+
   let ( .${;..} ) x s = M.get_slice_ext s x
+
+  let ( .${}<- ) x s = M.set_slice_ext [| s |] x
 
   let ( .${;..}<- ) x s = M.set_slice_ext s x
 end [@warning "-34"]
@@ -156,7 +160,11 @@ end [@warning "-34"]
 module Make_Ndarray (M : NdarraySig) = struct
   type ('a, 'b) op_t3 = ('a, 'b) M.t
 
+  let ( .%{} ) x i = M.get x [| i |]
+
   let ( .%{;..} ) x i = M.get x i
+
+  let ( .%{}<- ) x i = M.set x [| i |]
 
   let ( .%{;..}<- ) x i = M.set x i
 end [@warning "-34"]
