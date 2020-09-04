@@ -150,9 +150,29 @@ end [@warning "-34"]
 module Make_Matrix (M : MatrixSig) = struct
   type ('a, 'b) op_t2 = ('a, 'b) M.t
 
-  let ( .%{;..} ) x i = M.get x i.(0) i.(1)
+  let ( .%{} ) x (i1, i2) = M.get x i1 i2
 
-  let ( .%{;..}<- ) x i = M.set x i.(0) i.(1)
+  let ( .%{;..} ) x i =
+    if Array.length i = 2
+    then M.get x i.(0) i.(1)
+    else
+      failwith
+        (".%{} requires two indices but "
+        ^ (string_of_int @@ Array.length i)
+        ^ " was given")
+
+
+  let ( .%{}<- ) x (i1, i2) = M.set x i1 i2
+
+  let ( .%{;..}<- ) x i =
+    if Array.length i = 2
+    then M.set x i.(0) i.(1)
+    else
+      failwith
+        (".%{}<- requires two indices but "
+        ^ (string_of_int @@ Array.length i)
+        ^ " was given")
+
 
   let ( *@ ) a b = M.dot a b
 end [@warning "-34"]

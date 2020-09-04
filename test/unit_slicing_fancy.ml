@@ -292,6 +292,13 @@ module To_test = struct
     let v3 = abs_float (y.%{0; 1} -. 0.9) in
     let v4 = l2norm' (y.${[ 0 ]; [ 0; -1 ]} - of_array [| 0.8; 0.9 |] [| 2 |]) in
     Stdlib.(v1 < 1e-10 && v2 < 1e-10 && v3 < 1e-10 && v4 < 1e-10)
+
+
+  let test_36 () =
+    (* This just checks that the extended accessor syntax compiles *)
+    let open Mat in
+    let x = gaussian 2 2 in
+    Stdlib.(x.%{0; 1} = x.%{0, 1})
 end
 
 (* the tests *)
@@ -366,6 +373,8 @@ let test_34 () = Alcotest.(check bool) "test 34" true (To_test.test_34 ())
 
 let test_35 () = Alcotest.(check bool) "test 35" true (To_test.test_35 ())
 
+let test_36 () = Alcotest.(check bool) "test 36" true (To_test.test_36 ())
+
 let test_set =
   [ "test 01", `Slow, test_01; "test 02", `Slow, test_02; "test 03", `Slow, test_03
   ; "test 04", `Slow, test_04; "test 05", `Slow, test_05; "test 06", `Slow, test_06
@@ -378,4 +387,4 @@ let test_set =
   ; "test 25", `Slow, test_25; "test 26", `Slow, test_26; "test 27", `Slow, test_27
   ; "test 28", `Slow, test_28; "test 29", `Slow, test_29; "test 30", `Slow, test_30
   ; "test 31", `Slow, test_31; "test 32", `Slow, test_32; "test 33", `Slow, test_33
-  ; "test 34", `Slow, test_34 ]
+  ; "test 34", `Slow, test_34; "test 35", `Slow, test_35; "test 36", `Slow, test_36 ]

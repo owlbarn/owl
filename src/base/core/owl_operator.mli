@@ -212,8 +212,12 @@ module Make_Matrix (M : MatrixSig) : sig
   val ( *@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
   (** Operator of ``dot a b``, i.e. matrix multiplication ``a * b``. *)
 
+  val ( .%{} ) : ('a, 'b) M.t -> int * int -> 'a
+
   val ( .%{;..} ) : ('a, 'b) M.t -> int array -> 'a
   (** Operator of ``get`` *)
+
+  val ( .%{}<- ) : ('a, 'b) M.t -> int * int -> 'a -> unit
 
   val ( .%{;..}<- ) : ('a, 'b) M.t -> int array -> 'a -> unit
   (** Operator of ``set`` *)
