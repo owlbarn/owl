@@ -157,9 +157,9 @@ module Make_Matrix (M : MatrixSig) = struct
     then M.get x i.(0) i.(1)
     else
       failwith
-        (".%{} requires two indices but "
-        ^ (string_of_int @@ Array.length i)
-        ^ " was given")
+        (".%{} on matrices requires exactly two indices but I got "
+        ^ string_of_int
+        @@ Array.length i)
 
 
   let ( .%{}<- ) x (i1, i2) = M.set x i1 i2
@@ -169,9 +169,9 @@ module Make_Matrix (M : MatrixSig) = struct
     then M.set x i.(0) i.(1)
     else
       failwith
-        (".%{}<- requires two indices but "
-        ^ (string_of_int @@ Array.length i)
-        ^ " was given")
+        (".%{}<- on matrices requires exactly two indices but I got "
+        ^ string_of_int
+        @@ Array.length i)
 
 
   let ( *@ ) a b = M.dot a b
