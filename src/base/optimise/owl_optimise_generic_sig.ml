@@ -57,11 +57,13 @@ module type Sig = sig
 
   (** Batch module *)
   module Batch : sig
+
+    (** Types of batches. *)
     type typ =
       | Full
       | Mini       of int
       | Sample     of int
-      | Stochastic (** Types of batches. *)
+      | Stochastic
 
     val run : typ -> t -> t -> int -> t * t
     (** Execute the computations defined in module ``typ``. *)
@@ -75,13 +77,15 @@ module type Sig = sig
 
   (** Loss module *)
   module Loss : sig
+
+    (** Types of loss functions. *)
     type typ =
       | Hinge
       | L1norm
       | L2norm
       | Quadratic
       | Cross_entropy
-      | Custom        of (t -> t -> t) (** Types of loss functions. *)
+      | Custom        of (t -> t -> t)
 
     val run : typ -> t -> t -> t
     (** Execute the computations defined in module ``typ``. *)
@@ -92,6 +96,8 @@ module type Sig = sig
 
   (** Gradient module *)
   module Gradient : sig
+
+    (** Types of gradient function. *)
     type typ =
       | GD
       | CG
@@ -99,7 +105,7 @@ module type Sig = sig
       | NonlinearCG
       | DaiYuanCG
       | NewtonCG
-      | Newton (** Types of gradient function. *)
+      | Newton
 
     val run : typ -> (t -> t) -> t -> t -> t -> t -> t
     (** Execute the computations defined in module ``typ``. *)
@@ -110,10 +116,12 @@ module type Sig = sig
 
   (** Momentum module *)
   module Momentum : sig
+
+    (** Types of momentum functions. *)
     type typ =
       | Standard of float
       | Nesterov of float
-      | None (** Types of momentum functions. *)
+      | None
 
     val run : typ -> t -> t -> t
     (** Execute the computations defined in module ``typ``. *)
@@ -127,11 +135,13 @@ module type Sig = sig
 
   (** Regularisation module *)
   module Regularisation : sig
+
+    (** Types of regularisation functions. *)
     type typ =
       | L1norm      of float
       | L2norm      of float
       | Elastic_net of float * float
-      | None (** Types of regularisation functions. *)
+      | None
 
     val run : typ -> t -> t
     (** Execute the computations defined in module ``typ``. *)
@@ -142,10 +152,12 @@ module type Sig = sig
 
   (** Clipping module *)
   module Clipping : sig
+
+    (** Types of clipping functions. *)
     type typ =
       | L2norm of float
       | Value  of float * float
-      | None (** Types of clipping functions. *)
+      | None
 
     val run : typ -> t -> t
     (** Execute the computations defined in module ``typ``. *)
@@ -159,10 +171,12 @@ module type Sig = sig
 
   (** Stopping module *)
   module Stopping : sig
+
+    (** Types of stopping functions. *)
     type typ =
       | Const of float
       | Early of int * int
-      | None (** Types of stopping functions. *)
+      | None
 
     val run : typ -> float -> bool
     (** Execute the computations defined in module ``typ``. *)
@@ -176,6 +190,8 @@ module type Sig = sig
 
   (** Checkpoint module *)
   module Checkpoint : sig
+
+    (** Type definition of checkpoint *)
     type state =
       { mutable current_batch : int
       ; mutable batches_per_epoch : int
@@ -189,13 +205,13 @@ module type Sig = sig
       ; mutable us : t array array
       ; mutable ch : t array array array
       }
-    (** Type definition of checkpoint *)
 
+    (** Batch type. *)
     type typ =
       | Batch  of int
       | Epoch  of float
       | Custom of (state -> unit)
-      | None (** Batch type. *)
+      | None
 
     val init_state : int -> float -> state
     (**
@@ -221,6 +237,8 @@ module type Sig = sig
 
   (** Params module *)
   module Params : sig
+
+    (** Type definition of parameter. *)
     type typ =
       { mutable epochs : float
       ; mutable batch : Batch.typ
@@ -234,7 +252,6 @@ module type Sig = sig
       ; mutable checkpoint : Checkpoint.typ
       ; mutable verbosity : bool
       }
-    (** Type definition of parameter. *)
 
     val default : unit -> typ
     (** Create module ``typ`` with default values. *)
