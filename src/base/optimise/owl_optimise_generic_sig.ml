@@ -8,29 +8,31 @@ module type Sig = sig
 
   open Algodiff
 
-  (** {6 Utils module} *)
-
+  (** Utils module *)
   module Utils : sig
     val sample_num : t -> int
     (** Return the total number of samples in passed in ndarray. *)
 
     val draw_samples : t -> t -> int -> t * t
     (**
-``draw_samples x y`` draws samples from both ``x`` (observations) and ``y``
-(labels). The samples will be drew along axis 0, so ``x`` and ``y`` must agree
-along axis 0.
-     *)
+       ``draw_samples x y`` draws samples from both ``x`` (observations) and ``y``
+       (labels). The samples will be drew along axis 0, so ``x`` and ``y`` must agree
+       along axis 0.
+    *)
 
     val get_chunk : t -> t -> int -> int -> t * t
     (**
-``get_chunk x y i c`` gets a continuous chunk of ``c`` samples from position
-``i`` from  ``x`` (observations) and ``y`` (labels).
-     *)
+       ``get_chunk x y i c`` gets a continuous chunk of ``c`` samples from position
+       ``i`` from  ``x`` (observations) and ``y`` (labels).
+    *)
   end
 
-  (** {7 Learning_Rate module} *)
-
+  (** Strategies for learning rate update *)
   module Learning_Rate : sig
+
+    (** Representation of learning rate update strategies. Possible values include:
+        - ``Adam (alpha, beta1, beta2)``, see {{: https://arxiv.org/abs/1412.6980 }ref} for parameter meaning
+    *)
     type typ =
       | Adagrad   of float
       | Const     of float
@@ -38,7 +40,7 @@ along axis 0.
       | Exp_decay of float * float
       | RMSprop   of float * float
       | Adam      of float * float * float
-      | Schedule  of float array (** types of learning rate *)
+      | Schedule  of float array
 
     val run : typ -> int -> t -> t array -> t
     (** Execute the computations defined in module ``typ``. *)
@@ -53,8 +55,7 @@ along axis 0.
     (** Convert the module ``typ`` to its string representation. *)
   end
 
-  (** {6 Batch module} *)
-
+  (** Batch module *)
   module Batch : sig
     type typ =
       | Full
@@ -72,8 +73,7 @@ along axis 0.
     (** Convert the module ``typ`` to its string representation. *)
   end
 
-  (** {6 Loss module} *)
-
+  (** Loss module *)
   module Loss : sig
     type typ =
       | Hinge
@@ -90,8 +90,7 @@ along axis 0.
     (** Convert the module ``typ`` to its string representation. *)
   end
 
-  (** {6 Gradient module} *)
-
+  (** Gradient module *)
   module Gradient : sig
     type typ =
       | GD
@@ -109,8 +108,7 @@ along axis 0.
     (** Convert the module ``typ`` to its string representation. *)
   end
 
-  (** {6 Momentum module} *)
-
+  (** Momentum module *)
   module Momentum : sig
     type typ =
       | Standard of float
@@ -127,8 +125,7 @@ along axis 0.
     (** Convert the module ``typ`` to its string representation. *)
   end
 
-  (** {6 Regularisation module} *)
-
+  (** Regularisation module *)
   module Regularisation : sig
     type typ =
       | L1norm      of float
@@ -143,8 +140,7 @@ along axis 0.
     (** Convert the module ``typ`` to its string representation. *)
   end
 
-  (** {6 Clipping module} *)
-
+  (** Clipping module *)
   module Clipping : sig
     type typ =
       | L2norm of float
@@ -161,8 +157,7 @@ along axis 0.
     (** Convert the module ``typ`` to its string representation. *)
   end
 
-  (** {6 Stopping module} *)
-
+  (** Stopping module *)
   module Stopping : sig
     type typ =
       | Const of float
@@ -179,8 +174,7 @@ along axis 0.
     (** Convert the module ``typ`` to its string representation. *)
   end
 
-  (** {6 Checkpoint module} *)
-
+  (** Checkpoint module *)
   module Checkpoint : sig
     type state =
       { mutable current_batch : int
@@ -205,9 +199,9 @@ along axis 0.
 
     val init_state : int -> float -> state
     (**
-``init_state batches_per_epoch epochs`` initialises a state by specifying the
-number of batches per epoch and the number of epochs in total.
-     *)
+       ``init_state batches_per_epoch epochs`` initialises a state by specifying the
+       number of batches per epoch and the number of epochs in total.
+    *)
 
     val default_checkpoint_fun : (string -> 'a) -> 'a
     (** This function is used for saving intermediate files during optimisation. *)
@@ -225,8 +219,7 @@ number of batches per epoch and the number of epochs in total.
     (** Convert the module ``typ`` to its string representation. *)
   end
 
-  (** {6 Params module} *)
-
+  (** Params module *)
   module Params : sig
     type typ =
       { mutable epochs : float
@@ -265,7 +258,7 @@ number of batches per epoch and the number of epochs in total.
     (** Convert the module ``typ`` to its string representation. *)
   end
 
-  (** {6 Core functions} *)
+  (** {5 Core functions} *)
 
   val minimise_weight
     :  ?state:Checkpoint.state
@@ -276,11 +269,11 @@ number of batches per epoch and the number of epochs in total.
     -> t
     -> Checkpoint.state * t
   (**
-This function minimises the weight ``w`` of passed-in function ``f``.
+     This function minimises the weight ``w`` of passed-in function ``f``.
 
-* ``f`` is a function ``f : w -> x -> y``.
-* ``w`` is a row vector but ``y`` can have any shape.
-   *)
+   * ``f`` is a function ``f : w -> x -> y``.
+   * ``w`` is a row vector but ``y`` can have any shape.
+  *)
 
   val minimise_network
     :  ?state:Checkpoint.state
@@ -293,10 +286,10 @@ This function minimises the weight ``w`` of passed-in function ``f``.
     -> t
     -> Checkpoint.state
   (**
-This function is specifically designed for minimising the weights in a neural
-network of graph structure. In Owl's earlier versions, the functions in the
-regression module were actually implemented using this function.
-   *)
+     This function is specifically designed for minimising the weights in a neural
+     network of graph structure. In Owl's earlier versions, the functions in the
+     regression module were actually implemented using this function.
+  *)
 
   val minimise_fun
     :  ?state:Checkpoint.state
@@ -305,10 +298,10 @@ regression module were actually implemented using this function.
     -> t
     -> Checkpoint.state * t
   (**
-This function minimises ``f : x -> y`` w.r.t ``x``.
+     This function minimises ``f : x -> y`` w.r.t ``x``.
 
-``x`` is an ndarray; and ``y`` is an scalar value.
-   *)
+     ``x`` is an ndarray; and ``y`` is an scalar value.
+  *)
 
   val minimise_compiled_network
     :  ?state:Checkpoint.state
@@ -319,5 +312,5 @@ This function minimises ``f : x -> y`` w.r.t ``x``.
     -> t
     -> t
     -> Checkpoint.state
-  (** TODO *)
+    (** TODO *)
 end
