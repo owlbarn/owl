@@ -195,8 +195,12 @@ module Make_Extend (M : ExtendSig) : sig
   val ( .!{;..}<- ) : ('a, 'b) M.t -> Owl_types.index array -> ('a, 'b) M.t -> unit
   (** Operator of ``set_fancy`` *)
 
+  val ( .${} ) : ('a, 'b) M.t -> int list -> ('a, 'b) M.t
+
   val ( .${;..} ) : ('a, 'b) M.t -> int list array -> ('a, 'b) M.t
   (** Operator of ``get_slice`` *)
+
+  val ( .${}<- ) : ('a, 'b) M.t -> int list -> ('a, 'b) M.t -> unit
 
   val ( .${;..}<- ) : ('a, 'b) M.t -> int list array -> ('a, 'b) M.t -> unit
   (** Operator of ``set_slice`` *)
@@ -208,8 +212,12 @@ module Make_Matrix (M : MatrixSig) : sig
   val ( *@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
   (** Operator of ``dot a b``, i.e. matrix multiplication ``a * b``. *)
 
+  val ( .%{} ) : ('a, 'b) M.t -> int * int -> 'a
+
   val ( .%{;..} ) : ('a, 'b) M.t -> int array -> 'a
   (** Operator of ``get`` *)
+
+  val ( .%{}<- ) : ('a, 'b) M.t -> int * int -> 'a -> unit
 
   val ( .%{;..}<- ) : ('a, 'b) M.t -> int array -> 'a -> unit
   (** Operator of ``set`` *)
@@ -218,8 +226,12 @@ end
 (** {6 Ndarray-specific operators} *)
 
 module Make_Ndarray (M : NdarraySig) : sig
+  val ( .%{} ) : ('a, 'b) M.t -> int -> 'a
+
   val ( .%{;..} ) : ('a, 'b) M.t -> int array -> 'a
   (** Operator of ``get`` *)
+
+  val ( .%{}<- ) : ('a, 'b) M.t -> int -> 'a -> unit
 
   val ( .%{;..}<- ) : ('a, 'b) M.t -> int array -> 'a -> unit
   (** Operator of ``set`` *)
