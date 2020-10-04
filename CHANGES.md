@@ -1,3 +1,23 @@
+## 0.10.0 (2020-10-04)
+* various documentation improvements (thanks @pveber, @UnixJunkie, @Fourchaux)
+* Fix use of access operators (#543)
+* Upgrade to ocamlformat 0.15.0 (thanks @gpetiot #535)
+* keep_dims option (#531)
+* stats: fix infinite loop in ecdf
+* Use Fun.protect to ensure all file descriptors are being closed
+* owl_ndarray_maths: improve user experience in case of errors
+* owl_io: close file descriptors also in case of errors
+* owl_dense_ndarray_generic: fix error on printing 0-ary arrays
+* fixed bug in sub forward mode (#533)
+* Add stack to Algodiff (#528)
+* added log_sum_exp to Ndarray and Algodiff (#527)
+* added single-precision and double-precision Bessel functions to Ndarray  (#526)
+* Fixes #518 by introducing another `/` to resolve data directory (@jotterbach #519)
+* Graph Slice node (resolves #483) (@mreppen #517)
+* Graph subnetwork: Multiple outputs (@mreppen #515)
+* Added kron and swap to Algodiff operations (#512)
+* various other small fixes
+
 ## 0.9.0 (2020-03-03)
 
 * owl: sync opam files versioning
