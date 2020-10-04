@@ -7,11 +7,11 @@ type ('a, 'b) t
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
-(** {6 Create sparse matrices} *)
+(** {5 Create sparse matrices} *)
 
 val zeros : ?density:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
-(** {6 Obtain the basic properties} *)
+(** {5 Obtain the basic properties} *)
 
 val shape : ('a, 'b) t -> int * int
 
@@ -27,7 +27,7 @@ val density : ('a, 'b) t -> float
 
 val kind : ('a, 'b) t -> ('a, 'b) kind
 
-(** {6 Manipulate a matrix} *)
+(** {5 Manipulate a matrix} *)
 
 val set : ('a, 'b) t -> int -> int -> 'a -> unit
 
@@ -37,11 +37,11 @@ val reset : ('a, 'b) t -> unit
 
 val copy : ('a, 'b) t -> ('a, 'b) t
 
-(** {6 Iterate elements, columns, and rows} *)
+(** {5 Iterate elements, columns, and rows} *)
 
 val iteri_nz : (int -> int -> 'a -> unit) -> ('a, 'b) t -> unit
 
-(** {6 Input/Output and helper functions} *)
+(** {5 Input/Output and helper functions} *)
 
 val save : ('a, 'b) t -> string -> unit
 

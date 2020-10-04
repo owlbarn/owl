@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** {6 Core functions} *)
+(** {5 Core functions} *)
 
 val printers : string list
 (** List of registered pretty printers for Owl. *)

@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** {6 Type definition and constants} *)
+(** {5 Type definition and constants} *)
 
 type t = Complex.t
 (** Type definition of a complex number. *)
@@ -17,7 +17,7 @@ val one : t
 val i : t
 (** Constant value i. *)
 
-(** {6 Unary functions} *)
+(** {5 Unary functions} *)
 
 val neg : t -> t
 (** TODO *)
@@ -157,7 +157,7 @@ val trunc : t -> t
 val fix : t -> t
 (** ``fix x`` *)
 
-(** {6 Binary functions} *)
+(** {5 Binary functions} *)
 
 val add : t -> t -> t
 (** TODO *)
@@ -204,7 +204,7 @@ val polar : float -> float -> t
 val rect : float -> float -> t
 (** ``rect r phi`` return a complex number with polar coordinates ``r`` and ``phi``. *)
 
-(** {6 Comparison functions} *)
+(** {5 Comparison functions} *)
 
 val equal : t -> t -> bool
 (** TODO *)
@@ -224,7 +224,7 @@ val less_equal : t -> t -> bool
 val greater_equal : t -> t -> bool
 (** TODO *)
 
-(** {6 Helper functions} *)
+(** {5 Helper functions} *)
 
 val complex : float -> float -> t
 (** ``complex re im`` returns a complex number ``{re; im}``. *)

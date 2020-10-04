@@ -6,7 +6,7 @@
 (** Functor to generate distribution module *)
 
 module Make (A : Owl_types.Stats_Dist) : sig
-  (** {6 Uniform distribution} *)
+  (** {5 Uniform distribution} *)
 
   module Uniform : sig
     type t =
@@ -46,7 +46,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Gaussian distribution} *)
+  (** {5 Gaussian distribution} *)
 
   module Gaussian : sig
     type t =
@@ -86,7 +86,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Exponential distribution} *)
+  (** {5 Exponential distribution} *)
 
   module Exponential : sig
     type t = { lambda : A.arr }
@@ -123,7 +123,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Poisson distribution} *)
+  (** {5 Poisson distribution} *)
 
   module Poisson : sig
     type t = { mu : A.arr }
@@ -136,7 +136,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Sample a distribution of the given parameters. *)
   end
 
-  (** {6 Gamma distribution} *)
+  (** {5 Gamma distribution} *)
 
   module Gamma : sig
     type t =
@@ -176,7 +176,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Beta distribution} *)
+  (** {5 Beta distribution} *)
 
   module Beta : sig
     type t =
@@ -216,7 +216,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Chi2 distribution} *)
+  (** {5 Chi2 distribution} *)
 
   module Chi2 : sig
     type t = { df : A.arr }
@@ -253,7 +253,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 F distribution} *)
+  (** {5 F distribution} *)
 
   module F : sig
     type t =
@@ -293,7 +293,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Cauchy distribution} *)
+  (** {5 Cauchy distribution} *)
 
   module Cauchy : sig
     type t =
@@ -333,7 +333,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Lomax distribution} *)
+  (** {5 Lomax distribution} *)
 
   module Lomax : sig
     type t =
@@ -373,7 +373,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Weibull distribution} *)
+  (** {5 Weibull distribution} *)
 
   module Weibull : sig
     type t =
@@ -413,7 +413,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Laplace distribution} *)
+  (** {5 Laplace distribution} *)
 
   module Laplace : sig
     type t =
@@ -453,7 +453,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Gumbel1 distribution} *)
+  (** {5 Gumbel1 distribution} *)
 
   module Gumbel1 : sig
     type t =
@@ -493,7 +493,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Gumbel2 distribution} *)
+  (** {5 Gumbel2 distribution} *)
 
   module Gumbel2 : sig
     type t =
@@ -533,7 +533,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Logistic distribution} *)
+  (** {5 Logistic distribution} *)
 
   module Logistic : sig
     type t =
@@ -573,7 +573,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Lognormal distribution} *)
+  (** {5 Lognormal distribution} *)
 
   module Lognormal : sig
     type t =
@@ -613,7 +613,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Rayleigh distribution} *)
+  (** {5 Rayleigh distribution} *)
 
   module Rayleigh : sig
     type t = { sigma : A.arr }
@@ -650,7 +650,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     (** Inverse survival function of the distribution. *)
   end
 
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type dist =
     | Uniform     of Uniform.t
@@ -670,7 +670,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     | Lognormal   of Lognormal.t
     | Rayleigh    of Rayleigh.t (** Type definition of various distributions *)
 
-  (** {6 Core functions} *)
+  (** {5 Core functions} *)
 
   val sample : dist -> int -> A.arr
   (** Sample a given distribution of the given parameters. *)

@@ -8,7 +8,7 @@ module type Sig = sig
 
   open Optimise.Algodiff
 
-  (** {6 Init neuron} *)
+  (** {5 Init neuron} *)
 
   module Init : sig
     type typ =
@@ -34,7 +34,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Input neuron} *)
+  (** {5 Input neuron} *)
 
   module Input : sig
     type neuron_typ =
@@ -59,7 +59,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Activation neuron} *)
+  (** {5 Activation neuron} *)
 
   module Activation : sig
     type typ =
@@ -109,7 +109,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Linear neuron} *)
+  (** {5 Linear neuron} *)
 
   module Linear : sig
     type neuron_typ =
@@ -161,7 +161,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 LinearNoBias neuron} *)
+  (** {5 LinearNoBias neuron} *)
 
   module LinearNoBias : sig
     type neuron_typ =
@@ -212,7 +212,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Recurrent neuron} *)
+  (** {5 Recurrent neuron} *)
 
   module Recurrent : sig
     type neuron_typ =
@@ -277,7 +277,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 LSTM neuron} *)
+  (** {5 LSTM neuron} *)
 
   module LSTM : sig
     type neuron_typ =
@@ -341,7 +341,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 GRU neuron} *)
+  (** {5 GRU neuron} *)
 
   module GRU : sig
     type neuron_typ =
@@ -401,7 +401,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Conv1D neuron} *)
+  (** {5 Conv1D neuron} *)
 
   module Conv1D : sig
     type neuron_typ =
@@ -462,7 +462,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Conv2D neuron} *)
+  (** {5 Conv2D neuron} *)
 
   module Conv2D : sig
     type neuron_typ =
@@ -523,7 +523,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Conv3D neuron} *)
+  (** {5 Conv3D neuron} *)
 
   module Conv3D : sig
     type neuron_typ =
@@ -584,7 +584,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 DilatedConv1D neuron} *)
+  (** {5 DilatedConv1D neuron} *)
 
   module DilatedConv1D : sig
     type neuron_typ =
@@ -647,7 +647,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 DilatedConv2D neuron} *)
+  (** {5 DilatedConv2D neuron} *)
 
   module DilatedConv2D : sig
     type neuron_typ =
@@ -710,7 +710,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 DilatedConv3D neuron} *)
+  (** {5 DilatedConv3D neuron} *)
 
   module DilatedConv3D : sig
     type neuron_typ =
@@ -773,7 +773,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 TransposeConv1D neuron} *)
+  (** {5 TransposeConv1D neuron} *)
 
   module TransposeConv1D : sig
     type neuron_typ =
@@ -834,7 +834,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 TransposeConv2D neuron} *)
+  (** {5 TransposeConv2D neuron} *)
 
   module TransposeConv2D : sig
     type neuron_typ =
@@ -895,7 +895,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 TransposeConv3D neuron} *)
+  (** {5 TransposeConv3D neuron} *)
 
   module TransposeConv3D : sig
     type neuron_typ =
@@ -956,7 +956,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 FullyConnected neuron} *)
+  (** {5 FullyConnected neuron} *)
 
   module FullyConnected : sig
     type neuron_typ =
@@ -1008,7 +1008,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 MaxPool1D neuron} *)
+  (** {5 MaxPool1D neuron} *)
 
   module MaxPool1D : sig
     type neuron_typ =
@@ -1039,7 +1039,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 MaxPool2D neuron} *)
+  (** {5 MaxPool2D neuron} *)
 
   module MaxPool2D : sig
     type neuron_typ =
@@ -1070,7 +1070,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 AvgPool1D neuron} *)
+  (** {5 AvgPool1D neuron} *)
 
   module AvgPool1D : sig
     type neuron_typ =
@@ -1101,7 +1101,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 AvgPool2D neuron} *)
+  (** {5 AvgPool2D neuron} *)
 
   module AvgPool2D : sig
     type neuron_typ =
@@ -1132,7 +1132,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 GlobalMaxPool1D neuron} *)
+  (** {5 GlobalMaxPool1D neuron} *)
 
   module GlobalMaxPool1D : sig
     type neuron_typ =
@@ -1160,7 +1160,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 GlobalMaxPool2D neuron} *)
+  (** {5 GlobalMaxPool2D neuron} *)
 
   module GlobalMaxPool2D : sig
     type neuron_typ =
@@ -1188,7 +1188,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 GlobalAvgPool1D neuron} *)
+  (** {5 GlobalAvgPool1D neuron} *)
 
   module GlobalAvgPool1D : sig
     type neuron_typ =
@@ -1216,7 +1216,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 GlobalAvgPool2D neuron} *)
+  (** {5 GlobalAvgPool2D neuron} *)
 
   module GlobalAvgPool2D : sig
     type neuron_typ =
@@ -1244,11 +1244,11 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 UpSampling1D neuron} *)
+  (** {5 UpSampling1D neuron} *)
 
   module UpSampling1D : sig end
 
-  (** {6 UpSampling2D neuron} *)
+  (** {5 UpSampling2D neuron} *)
 
   module UpSampling2D : sig
     type neuron_typ =
@@ -1277,15 +1277,15 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 UpSampling3D neuron} *)
+  (** {5 UpSampling3D neuron} *)
 
   module UpSampling3D : sig end
 
-  (** {6 Padding1D neuron} *)
+  (** {5 Padding1D neuron} *)
 
   module Padding1D : sig end
 
-  (** {6 Padding2D neuron} *)
+  (** {5 Padding2D neuron} *)
 
   module Padding2D : sig
     type neuron_typ =
@@ -1315,11 +1315,11 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Padding3D neuron} *)
+  (** {5 Padding3D neuron} *)
 
   module Padding3D : sig end
 
-  (** {6 Lambda neuron} *)
+  (** {5 Lambda neuron} *)
 
   module Lambda : sig
     type neuron_typ =
@@ -1348,7 +1348,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 LambdaArray neuron} *)
+  (** {5 LambdaArray neuron} *)
 
   module LambdaArray : sig
     type neuron_typ =
@@ -1377,7 +1377,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Dropout neuron} *)
+  (** {5 Dropout neuron} *)
 
   module Dropout : sig
     type neuron_typ =
@@ -1406,7 +1406,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Reshape neuron} *)
+  (** {5 Reshape neuron} *)
 
   module Reshape : sig
     type neuron_typ =
@@ -1434,7 +1434,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Flatten neuron} *)
+  (** {5 Flatten neuron} *)
 
   module Flatten : sig
     type neuron_typ =
@@ -1462,7 +1462,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Slice neuron} *)
+  (** {5 Slice neuron} *)
 
   module Slice : sig
     type neuron_typ =
@@ -1492,7 +1492,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Add neuron} *)
+  (** {5 Add neuron} *)
 
   module Add : sig
     type neuron_typ =
@@ -1520,7 +1520,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Mul neuron} *)
+  (** {5 Mul neuron} *)
 
   module Mul : sig
     type neuron_typ =
@@ -1548,7 +1548,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Dot neuron} *)
+  (** {5 Dot neuron} *)
 
   module Dot : sig
     type neuron_typ =
@@ -1576,7 +1576,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Max neuron} *)
+  (** {5 Max neuron} *)
 
   module Max : sig
     type neuron_typ =
@@ -1604,7 +1604,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Average neuron} *)
+  (** {5 Average neuron} *)
 
   module Average : sig
     type neuron_typ =
@@ -1632,7 +1632,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Concatenate neuron} *)
+  (** {5 Concatenate neuron} *)
 
   module Concatenate : sig
     type neuron_typ =
@@ -1661,7 +1661,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Normalisation neuron} *)
+  (** {5 Normalisation neuron} *)
 
   module Normalisation : sig
     type neuron_typ =
@@ -1729,7 +1729,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 GaussianNoise neuron} *)
+  (** {5 GaussianNoise neuron} *)
 
   module GaussianNoise : sig
     type neuron_typ =
@@ -1758,7 +1758,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 GaussianDropout neuron} *)
+  (** {5 GaussianDropout neuron} *)
 
   module GaussianDropout : sig
     type neuron_typ =
@@ -1787,7 +1787,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 AlphaDropout neuron} *)
+  (** {5 AlphaDropout neuron} *)
 
   module AlphaDropout : sig
     type neuron_typ =
@@ -1816,7 +1816,7 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Embedding neuron} *)
+  (** {5 Embedding neuron} *)
 
   module Embedding : sig
     type neuron_typ =
@@ -1868,11 +1868,11 @@ module type Sig = sig
     (** Return the name of the neuron. *)
   end
 
-  (** {6 Masking neuron} *)
+  (** {5 Masking neuron} *)
 
   module Masking : sig end
 
-  (** {6 Core functions} *)
+  (** {5 Core functions} *)
 
   type neuron =
     | Input           of Input.neuron_typ

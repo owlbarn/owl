@@ -12,7 +12,7 @@ module type Common = sig
 
   type int32_mat
 
-  (** {6 Basic functions} *)
+  (** {5 Basic functions} *)
 
   val inv : mat -> mat
 
@@ -28,7 +28,7 @@ module type Common = sig
 
   val is_diag : mat -> bool
 
-  (** {6 Factorisation} *)
+  (** {5 Factorisation} *)
 
   val svd : ?thin:bool -> mat -> mat * mat * mat
 
@@ -38,7 +38,7 @@ module type Common = sig
 
   val lq : ?thin:bool -> mat -> mat * mat
 
-  (** {6 Linear system of equations} *)
+  (** {5 Linear system of equations} *)
 
   val linsolve : ?trans:bool -> ?typ:[ `n | `u | `l ] -> mat -> mat -> mat
 

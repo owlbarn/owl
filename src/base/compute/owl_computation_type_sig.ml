@@ -12,7 +12,7 @@ module type Sig = sig
 
   open Device
 
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type state =
     | Valid

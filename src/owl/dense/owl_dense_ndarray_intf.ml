@@ -12,7 +12,7 @@ module type Common = sig
   (* NOTE: below are all the functions that have
      not been implemented in Base*)
 
-  (** {6 Create N-dimensional array} *)
+  (** {5 Create N-dimensional array} *)
 
   val linspace : elt -> elt -> int -> arr
   (**
@@ -29,7 +29,7 @@ module type Common = sig
 ``unit_basis k n i`` returns a unit basis vector with ``i``th element set to 1.
  *)
 
-  (** {6 Obtain basic properties} *)
+  (** {5 Obtain basic properties} *)
 
   val num_dims : arr -> int
 
@@ -49,7 +49,7 @@ module type Common = sig
 
   val i1d : arr -> int array -> int
 
-  (** {6 Manipulate a N-dimensional array} *)
+  (** {5 Manipulate a N-dimensional array} *)
 
   val get_index : arr -> int array array -> elt array
 
@@ -97,7 +97,7 @@ module type Common = sig
 
   val mmap : Unix.file_descr -> ?pos:int64 -> bool -> int array -> arr
 
-  (** {6 Iterate array elements} *)
+  (** {5 Iterate array elements} *)
 
   val iter2i : (int -> elt -> elt -> unit) -> arr -> arr -> unit
 
@@ -137,7 +137,7 @@ module type Common = sig
 
   val fold_slice : ?axis:int -> ('c -> arr -> 'c) -> 'c -> arr -> 'c
 
-  (** {6 Examine array elements or compare two arrays } *)
+  (** {5 Examine array elements or compare two arrays } *)
 
   val approx_equal : ?eps:float -> arr -> arr -> bool
 
@@ -147,7 +147,7 @@ module type Common = sig
 
   val approx_elt_equal_scalar : ?eps:float -> arr -> elt -> arr
 
-  (** {6 Input/Output functions} *)
+  (** {5 Input/Output functions} *)
 
   val to_array : arr -> elt array
 
@@ -159,7 +159,7 @@ module type Common = sig
 
   val load_npy : string -> arr
 
-  (** {6 Unary mathematical operations } *)
+  (** {5 Unary mathematical operations } *)
 
   val prod : ?axis:int -> ?keep_dims:bool -> arr -> arr
 
@@ -247,7 +247,7 @@ module type Common = sig
 
   val lgamma : arr -> arr
 
-  (** {6 Binary mathematical operations } *)
+  (** {5 Binary mathematical operations } *)
 
   val min2 : arr -> arr -> arr
 
@@ -261,19 +261,19 @@ module type Common = sig
 
   val clip_by_l2norm : elt -> arr -> arr
 
-  (** {6 Tensor Calculus}  *)
+  (** {5 Tensor Calculus} *)
 
   val contract1 : (int * int) array -> arr -> arr
 
   val contract2 : (int * int) array -> arr -> arr -> arr
 
-  (** {6 Experimental functions} *)
+  (** {5 Experimental functions} *)
 
   val sum_slices : ?axis:int -> arr -> arr
 
   val slide : ?axis:int -> ?ofs:int -> ?step:int -> window:int -> arr -> arr
 
-  (** {6 Functions of in-place modification } *)
+  (** {5 Functions of in-place modification } *)
 
   val create_ : out:arr -> elt -> unit
 
@@ -496,7 +496,7 @@ module type Common = sig
   val elt_less_equal_scalar_ : ?out:arr -> arr -> elt -> unit
 
   val elt_greater_equal_scalar_ : ?out:arr -> arr -> elt -> unit
-  (** {6 Matrix functions} *)
+  (** {5 Matrix functions} *)
 
   val col : arr -> int -> arr
 
@@ -523,7 +523,7 @@ module type Real = sig
   (* NOTE: below are all the functions that have
      not been implemented in Base*)
 
-  (** {6 Real operations} *)
+  (** {5 Real operations} *)
 
   val i0 : arr -> arr
 
@@ -599,7 +599,7 @@ module type Complex = sig
 
   type cast_arr
 
-  (** {6 Complex operations} *)
+  (** {5 Complex operations} *)
 
   val complex : cast_arr -> cast_arr -> arr
   (**
@@ -629,7 +629,7 @@ end
 module type Distribution = sig
   type arr
 
-  (** {6 Stats & distribution functions} *)
+  (** {5 Stats & distribution functions} *)
 
   val uniform_rvs : a:arr -> b:arr -> n:int -> arr
 
@@ -926,7 +926,7 @@ module type NN = sig
   (* NOTE: below are all the functions that have
      not been implemented in Base*)
 
-  (** {6 Neural network related functions} *)
+  (** {5 Neural network related functions} *)
 
   val max_pool2d_argmax
     :  ?padding:padding

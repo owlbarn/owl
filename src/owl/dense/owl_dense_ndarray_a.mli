@@ -11,7 +11,7 @@ type 'a arr =
   ; mutable data : 'a array
   }
 
-(** {6 Create N-dimensional array} *)
+(** {5 Create N-dimensional array} *)
 
 val create : int array -> 'a -> 'a arr
 
@@ -25,7 +25,7 @@ val zeros : int array -> float arr
 
 val ones : int array -> float arr
 
-(** {6 Obtain basic properties} *)
+(** {5 Obtain basic properties} *)
 
 val shape : 'a arr -> int array
 
@@ -45,7 +45,7 @@ val index_1d_nd : int -> int array -> int array
 
 val index_nd_1d : int array -> int array -> int
 
-(** {6 Manipulate a N-dimensional array} *)
+(** {5 Manipulate a N-dimensional array} *)
 
 val get : 'a arr -> int array -> 'a
 
@@ -93,7 +93,7 @@ val concatenate : ?axis:int -> 'a arr array -> 'a arr
 
 val pad : 'a -> int list list -> 'a arr -> 'a arr
 
-(** {6 Iterate array elements} *)
+(** {5 Iterate array elements} *)
 
 val iter : ('a -> unit) -> 'a arr -> unit
 
@@ -119,7 +119,7 @@ val map2 : ('a -> 'b -> 'c) -> 'a arr -> 'b arr -> 'c arr
 
 val map2i : (int -> 'a -> 'b -> 'c) -> 'a arr -> 'b arr -> 'c arr
 
-(** {6 Examine array elements or compare two arrays } *)
+(** {5 Examine array elements or compare two arrays } *)
 
 val exists : ('a -> bool) -> 'a arr -> bool
 
@@ -173,7 +173,7 @@ val min_i : ?cmp:('a -> 'a -> int) -> 'a arr -> 'a * int
 
 val max_i : ?cmp:('a -> 'a -> int) -> 'a arr -> 'a * int
 
-(** {6 Input/Output functions} *)
+(** {5 Input/Output functions} *)
 
 val of_array : 'a array -> int array -> 'a arr
 

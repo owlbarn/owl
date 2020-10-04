@@ -5,7 +5,7 @@
 
 (** Maths: fundamental and advanced mathematical functions. *)
 
-(** {6 Basic functions} *)
+(** {5 Basic functions} *)
 
 val add : float -> float -> float
 (** ``add x y`` *)
@@ -187,7 +187,7 @@ val log1mexp : float -> float
 val log1pexp : float -> float
 (** ``log1pexp(x)`` *)
 
-(** {6 Error functions} *)
+(** {5 Error functions} *)
 
 val erf : float -> float
 (** ``erf(x)`` *)
@@ -198,7 +198,7 @@ val erfc : float -> float
 val erfcx : float -> float
 (** ``erfcx(x)`` *)
 
-(** {6 Helper functions} *)
+(** {5 Helper functions} *)
 
 val is_nan : float -> bool
 (** ``is_nan x`` returns ``true`` if ``x`` is ``nan``. *)

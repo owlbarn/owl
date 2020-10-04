@@ -20,7 +20,7 @@ aforementioned conventions.
 
 open Bigarray
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 (**

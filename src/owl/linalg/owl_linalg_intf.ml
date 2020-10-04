@@ -8,7 +8,7 @@ module type Common = sig
 
   (* NOTE: functions below have not been implemented in Base Linalg *)
 
-  (** {6 Basic functions} *)
+  (** {5 Basic functions} *)
 
   val pinv : ?tol:float -> mat -> mat
 
@@ -24,7 +24,7 @@ module type Common = sig
 
   val is_posdef : mat -> bool
 
-  (** {6 Factorisation} *)
+  (** {5 Factorisation} *)
 
   val lu : mat -> mat * mat * int32_mat
 
@@ -54,13 +54,13 @@ module type Common = sig
 
   val hess : mat -> mat * mat
 
-  (** {6 Eigenvalues & eigenvectors} *)
+  (** {5 Eigenvalues & eigenvectors} *)
 
   val eig : ?permute:bool -> ?scale:bool -> mat -> complex_mat * complex_mat
 
   val eigvals : ?permute:bool -> ?scale:bool -> mat -> complex_mat
 
-  (** {6 Linear system of equations} *)
+  (** {5 Linear system of equations} *)
 
   val null : mat -> mat
 
@@ -68,7 +68,7 @@ module type Common = sig
 
   val linreg : mat -> mat -> elt * elt
 
-  (** {6 Low-level factorisation functions} *)
+  (** {5 Low-level factorisation functions} *)
 
   val lufact : mat -> mat * int32_mat
 
@@ -76,7 +76,7 @@ module type Common = sig
 
   val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> mat -> mat * int32_mat
 
-  (** {6 Matrix functions} *)
+  (** {5 Matrix functions} *)
 
   val mpow : mat -> float -> mat
 
@@ -100,7 +100,7 @@ module type Common = sig
 
   val sinhcoshm : mat -> mat * mat
 
-  (** {6 Helper functions} *)
+  (** {5 Helper functions} *)
 
   val select_ev : [ `LHP | `RHP | `UDI | `UDO ] -> mat -> int32_mat
 

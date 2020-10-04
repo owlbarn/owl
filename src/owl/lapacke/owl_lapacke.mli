@@ -5,7 +5,7 @@
 
 open Bigarray
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 (** Default data type *)
@@ -31,7 +31,7 @@ type lapacke_side =
   | Left
   | Right (** Side type. *)
 
-(** {6 Basic functions} *)
+(** {5 Basic functions} *)
 
 val gbtrs
   :  trans:lapacke_transpose

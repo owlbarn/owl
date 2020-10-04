@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** {6 Core function} *)
+(** {5 Core function} *)
 
 val check : bool -> exn -> unit
 (**
@@ -41,7 +41,7 @@ val pp_exception : Format.formatter -> exn -> unit
   [@@ocaml.toplevel_printer]
 (** ``pp_exception`` is the pretty printer for Owl exceptions. *)
 
-(** {6 Exception definition} *)
+(** {5 Exception definition} *)
 
 exception CONV_INVALID_ARGUMENT
 (** Input arguments of convolution operations are invalid. *)

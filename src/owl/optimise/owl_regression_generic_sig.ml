@@ -8,7 +8,7 @@ module type Sig = sig
 
   open Optimise.Algodiff
 
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type arr = A.arr
   (** Type of ndarray values. *)
@@ -16,7 +16,7 @@ module type Sig = sig
   type elt = A.elt
   (** Type of scalar values. *)
 
-  (** {6 Regression models} *)
+  (** {5 Regression models} *)
 
   val ols : ?i:bool -> arr -> arr -> arr array
   (** TODO *)

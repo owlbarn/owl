@@ -8,7 +8,7 @@ open Owl_opencl_generated
 module type Sig = sig
   module A : Owl_types_ndarray_mutable.Sig
 
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type device
   (** TODO *)
@@ -24,7 +24,7 @@ module type Sig = sig
     }
   (** TODO *)
 
-  (** {6 Core functions} *)
+  (** {5 Core functions} *)
 
   val make_device : unit -> device
   (** TODO *)
@@ -44,7 +44,7 @@ module type Sig = sig
   val value_to_float : value -> float
   (** TODO *)
 
-  (** {6 OpenCL functions} *)
+  (** {5 OpenCL functions} *)
 
   val make_value
     :  cpu_mem array

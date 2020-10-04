@@ -5,7 +5,7 @@
 
 (** NLP: LDA module *)
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type lda_typ =
   | SimpleLDA
@@ -16,7 +16,7 @@ type lda_typ =
 type model
 (** Type of LDA model. *)
 
-(** {6 Core functions} *)
+(** {5 Core functions} *)
 
 val init : ?iter:int -> int -> Owl_nlp_corpus.t -> model
 (**
@@ -32,7 +32,7 @@ Parameters:
 val train : lda_typ -> model -> unit
 (** After calling ``init``, calling this function starts the training. *)
 
-(** {6 Helper functions} *)
+(** {5 Helper functions} *)
 
 val show_info : model -> int -> float -> unit
 (** Function for printing out log information, tailored for LDA training. *)

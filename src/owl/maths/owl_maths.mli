@@ -12,7 +12,7 @@
   Please refer to Scipy documentation.
 *)
 
-(** {6 Basic functions} *)
+(** {5 Basic functions} *)
 
 val add : float -> float -> float
 (** ``add x y`` returns :math:`x + y`. *)
@@ -224,7 +224,7 @@ val log1mexp : float -> float
 val log1pexp : float -> float
 (** ``log1pexp(x)`` returns :math:`log(1+exp(x))`. *)
 
-(** {6 Airy functions} *)
+(** {5 Airy functions} *)
 
 val airy : float -> float * float * float * float
 (**
@@ -232,7 +232,7 @@ Airy function ``airy x`` returns ``(Ai, Ai', Bi, Bi')`` evaluated at :math:`x`.
 ``Ai'`` is the derivative of ``Ai`` whilst ``Bi'`` is the derivative of ``Bi``.
 *)
 
-(** {6 Bessel functions} *)
+(** {5 Bessel functions} *)
 
 val j0 : float -> float
 (** Bessel function of the first kind of order 0. *)
@@ -282,7 +282,7 @@ val k1 : float -> float
 val k1e : float -> float
 (** Exponentially scaled modified Bessel function K of order 1. *)
 
-(** {6 Elliptic functions} *)
+(** {5 Elliptic functions} *)
 
 val ellipj : float -> float -> float * float * float * float
 (** Jacobian Elliptic function ``ellipj u m`` returns ``(sn, cn, dn, phi)``. *)
@@ -302,7 +302,7 @@ val ellipe : float -> float
 val ellipeinc : float -> float -> float
 (** ``ellipeinc phi m`` incomplete elliptic integral of the second kind. *)
 
-(** {6 Gamma Functions} *)
+(** {5 Gamma Functions} *)
 
 val gamma : float -> float
 (**
@@ -337,7 +337,7 @@ val gammainccinv : float -> float -> float
 val psi : float -> float
 (** The digamma function. *)
 
-(** {6 Beta functions} *)
+(** {5 Beta functions} *)
 
 val beta : float -> float -> float
 (**
@@ -353,7 +353,7 @@ val betainc : float -> float -> float -> float
 val betaincinv : float -> float -> float -> float
 (** Inverse function of ``betainc``. *)
 
-(** {6 Factorials} *)
+(** {5 Factorials} *)
 
 val fact : int -> float
 (** Factorial function ``fact n`` calculates :math:`n!`. *)
@@ -388,7 +388,7 @@ val combination_float : int -> int -> float
 val log_combination : int -> int -> float
 (** ``log_combination n k`` returns the logarithm of :math:`\binom{n}{k}`. *)
 
-(** {6 Error functions} *)
+(** {5 Error functions} *)
 
 val erf : float -> float
 (** Error function. :math:`\int_{-\infty}^x \frac{1}{\sqrt(2\pi)} \exp(-(1/2) y^2) dy` *)
@@ -405,7 +405,7 @@ val erfinv : float -> float
 val erfcinv : float -> float
 (** Inverse function of ``erfc``. *)
 
-(** {6 Dawson & Fresnel integrals} *)
+(** {5 Dawson & Fresnel integrals} *)
 
 val dawsn : float -> float
 (** Dawson’s integral. *)
@@ -414,7 +414,7 @@ val fresnel : float -> float * float
 (** Fresnel trigonometric integrals. ``fresnel x`` returns a tuple consisting of
 ``(Fresnel sin integral, Fresnel cos integral)``. *)
 
-(** {6 Struve functions} *)
+(** {5 Struve functions} *)
 
 val struve : float -> float -> float
 (** ``struve v x`` returns the value of the Struve function of
@@ -427,7 +427,7 @@ where :math:`\Gamma` is the gamma function. :math:`x` must be positive unless :m
 
  *)
 
-(** {6 Other special functions} *)
+(** {5 Other special functions} *)
 
 val expn : int -> float -> float
 (** Exponential integral :math:`E_n`. *)
@@ -458,7 +458,7 @@ val zeta : float -> float -> float
 val zetac : float -> float
 (** Riemann zeta function minus 1. *)
 
-(** {6 Raw statistical functions} *)
+(** {5 Raw statistical functions} *)
 
 val bdtr : int -> int -> float -> float
 (**
@@ -545,7 +545,7 @@ Returns:
   * The quantile corresponding to :math:`p`.
  *)
 
-(** {6 Helper functions} *)
+(** {5 Helper functions} *)
 
 val is_nan : float -> bool
 (** ``is_nan x`` returns ``true`` exactly if ``x`` is ``nan``. *)

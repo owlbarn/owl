@@ -13,12 +13,12 @@
  * for more details. *)
 
 module type Sig = sig
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type 'a sketch
   (** The type of Count-Min sketches *)
 
-  (** {6 Core functions} *)
+  (** {5 Core functions} *)
 
   val init : epsilon:float -> delta:float -> 'a sketch
   (**

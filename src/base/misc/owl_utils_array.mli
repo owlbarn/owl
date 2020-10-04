@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** {6 Basic functions} *)
+(** {5 Basic functions} *)
 
 val length : 'a array -> int
 (** Refer to OCaml native array. *)
@@ -118,7 +118,7 @@ val unsafe_get : 'a array -> int -> 'a
 val unsafe_set : 'a array -> int -> 'a -> unit
 (** Refer to OCaml native array. *)
 
-(** {6 Extended functions} *)
+(** {5 Extended functions} *)
 
 val ( @ ) : 'a array -> 'a array -> 'a array
 (** Operator of array concatenation. *)

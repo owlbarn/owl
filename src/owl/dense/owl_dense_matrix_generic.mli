@@ -26,14 +26,14 @@ open Bigarray
 open Owl_types
 open Owl_dense_ndarray_generic
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 (**
 N-dimensional array type, i.e. Bigarray Genarray type.
  *)
 
-(** {6 Create matrices}  *)
+(** {5 Create matrices} *)
 
 val empty : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 (**
@@ -259,7 +259,7 @@ There are three different algorithms to deal with ``n`` is odd, singly even,
 and doubly even respectively.
  *)
 
-(** {6 Obtain basic properties}  *)
+(** {5 Obtain basic properties} *)
 
 val shape : ('a, 'b) t -> int * int
 (**
@@ -311,7 +311,7 @@ val kind : ('a, 'b) t -> ('a, 'b) kind
 ``kind x`` returns the type of matrix ``x``.
  *)
 
-(** {6 Manipulate a matrix}  *)
+(** {5 Manipulate a matrix} *)
 
 val get : ('a, 'b) t -> int -> int -> 'a
 (**
@@ -619,7 +619,7 @@ increasing order. Note that the returned index ndarray has the same shape as
 that of ``x``, and the indices are 1D indices.
  *)
 
-(**{6 Iteration functions} *)
+(** {5 Iteration functions} *)
 
 val iteri : (int -> 'a -> unit) -> ('a, 'b) t -> unit
 (**
@@ -875,7 +875,7 @@ val map_at_col : ('a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
 of an element is not passed to ``f``.
  *)
 
-(** {6 Examination & Comparison} *)
+(** {5 Examination & Comparison} *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
 (**
@@ -1143,7 +1143,7 @@ ndarray/matrix wherein ``1`` indicates that the element ``b`` from ``x`` is
 considered as approximately equal to ``a``, namely ``abs (a - b) < eps``.
  *)
 
-(** {6 Randomisation functions}  *)
+(** {5 Randomisation functions} *)
 
 val draw_rows : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 (**
@@ -1195,7 +1195,7 @@ val shuffle : ('a, 'b) t -> ('a, 'b) t
 rows then shuffling along columns. It is equivalent to ``shuffle_cols (shuffle_rows x)``.
  *)
 
-(** {6 Input/Output functions}  *)
+(** {5 Input/Output functions} *)
 
 val to_array : ('a, 'b) t -> 'a array
 (**
@@ -1284,7 +1284,7 @@ in the file is not of type ``k``, fails with ``[file]: incorrect format``. This
 function is implemented using npy-ocaml https://github.com/LaurentMazare/npy-ocaml.
  *)
 
-(** {6 Unary math operators}  *)
+(** {5 Unary math operators} *)
 
 val re_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 (**
@@ -1964,7 +1964,7 @@ val jv_scalar : v:('a, 'b) t -> 'a -> ('a, 'b) t
 ``jv_scalar v x`` computes Bessel function of the first kind of ``x`` of real order ``v``
  *)
 
-(** {6 Binary math operators}  *)
+(** {5 Binary math operators} *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
@@ -2166,7 +2166,7 @@ between the elements of ``a`` and the matrix ``b``.
 val fma : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** ``fma x y z`` calculates the `fused multiply add`, i.e. ``(x * y) + z``. *)
 
-(** {6 Cast functions}  *)
+(** {5 Cast functions} *)
 
 val cast : ('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
 (**
@@ -2215,7 +2215,7 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 ``cast_d2c x`` casts ``x`` from ``float64`` to ``complex32``.
  *)
 
-(** {6 In-place modification}  *)
+(** {5 In-place modification} *)
 
 val create_ : out:('a, 'b) t -> 'a -> unit
 (** TODO *)

@@ -9,7 +9,7 @@ tests. The module also includes some basic statistical functions such as mean,
 variance, skew, and etc.
  *)
 
-(** {6 Randomisation functions} *)
+(** {5 Randomisation functions} *)
 
 val shuffle : 'a array -> 'a array
 (** ``shuffle x`` return a new array of the shuffled ``x``.  *)
@@ -20,7 +20,7 @@ val choose : 'a array -> int -> 'a array
 val sample : 'a array -> int -> 'a array
 (** ``sample x n`` draw ``n`` samples from ``x`` with replacement.  *)
 
-(** {6 Basic statistical functions} *)
+(** {5 Basic statistical functions} *)
 
 val sum : float array -> float
 (** ``sum x`` returns the summation of the elements in ``x``. *)
@@ -264,7 +264,7 @@ Bandwidth selection rules is as follows:
 The default bandwidth value is ``Scott``.
  *)
 
-(** {6 MCMC: Markov Chain Monte Carlo} *)
+(** {5 MCMC: Markov Chain Monte Carlo} *)
 
 val metropolis_hastings
   :  (float array -> float)
@@ -286,7 +286,7 @@ TODO: ``gibbs_sampling f p n`` is Gibbs sampler. f is a sampler based on the ful
 conditional function of all variables
  *)
 
-(** {6 Hypothesis tests} *)
+(** {5 Hypothesis tests} *)
 
 type hypothesis =
   { reject : bool
@@ -433,7 +433,7 @@ Statistica Sinica 7 805-813), else usning asymptotic normal distribution.
 val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypothesis
 (** TODO *)
 
-(** {6 Discrete random variables} *)
+(** {5 Discrete random variables} *)
 
 (**
     The ``_rvs`` functions generate random numbers according to
@@ -553,7 +553,7 @@ categorical distribution. This is equavalent to only one trial from
 ``multinomial_rvs`` function, so it is just a simple wrapping.
  *)
 
-(** {6 Continuous random variables} *)
+(** {5 Continuous random variables} *)
 
 val std_uniform_rvs : unit -> float
 (** TODO *)

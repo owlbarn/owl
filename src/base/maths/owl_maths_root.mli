@@ -5,7 +5,7 @@
 
 (** Root finding algorithms for nonlinear functions *)
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type solver =
   | Bisec
@@ -13,7 +13,7 @@ type solver =
   | Ridder
   | Brent (** Type of root functions of univariate functions. *)
 
-(** {6 Core functions} *)
+(** {5 Core functions} *)
 
 val fzero
   :  ?solver:solver
@@ -38,7 +38,7 @@ Parameters:
   * ``b``: boundary of bracket.
  *)
 
-(** {6 Root of univariate functions} *)
+(** {5 Root of univariate functions} *)
 
 val bisec : ?max_iter:int -> ?xtol:float -> (float -> float) -> float -> float -> float
 (**
@@ -100,7 +100,7 @@ Parameters:
 Refer to :cite:`brent2013algorithms`
  *)
 
-(** {6 Helper functions} *)
+(** {5 Helper functions} *)
 
 val bracket_expand
   :  ?rate:float

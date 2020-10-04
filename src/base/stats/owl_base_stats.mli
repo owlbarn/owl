@@ -9,7 +9,7 @@ tests. The module also includes some basic statistical functions such as mean,
 variance, skew, and etc.
 *)
 
-(** {6 Randomisation functions} *)
+(** {5 Randomisation functions} *)
 
 val shuffle : 'a array -> 'a array
 (** Refer to :doc:`owl_stats`. *)
@@ -20,7 +20,7 @@ val choose : 'a array -> int -> 'a array
 val sample : 'a array -> int -> 'a array
 (** Refer to :doc:`owl_stats`. *)
 
-(** {6 Basic statistical functions} *)
+(** {5 Basic statistical functions} *)
 
 val sum : float array -> float
 (** Refer to :doc:`owl_stats`. *)
@@ -149,7 +149,7 @@ val gaussian_kde
   -> float array * float array
 (** Refer to :doc:`owl_stats`. *)
 
-(** {6 Random variables} *)
+(** {5 Random variables} *)
 
 val uniform_rvs : a:float -> b:float -> float
 (** Refer to :doc:`owl_stats`. *)

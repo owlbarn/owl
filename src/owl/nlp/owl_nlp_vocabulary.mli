@@ -5,12 +5,12 @@
 
 (** NLP: Vocabulary module *)
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type t
 (** Type of vocabulary (or dictionary). *)
 
-(** {6 Query vocabulary} *)
+(** {5 Query vocabulary} *)
 
 val get_w2i : t -> (string, int) Hashtbl.t
 (** ``get_w2i v`` returns word -> index mapping of ``v``. *)
@@ -30,7 +30,7 @@ val word2index : t -> string -> int
 val index2word : t -> int -> string
 (** ``index2word v i`` converts index ``i`` to its corresponding word using vocabulary ``v``. *)
 
-(** {6 Obtain properties} *)
+(** {5 Obtain properties} *)
 
 val length : t -> int
 (** ``length v`` returns the size of vocabulary ``v``. *)
@@ -56,7 +56,7 @@ val bottom : t -> int -> (string * int) array
 val re_index : t -> t
 (** ``re_index v`` re-indexes the indices of words in vocabulary ``v``. *)
 
-(** {6 Core functions} *)
+(** {5 Core functions} *)
 
 val build
   :  ?lo:float
@@ -128,7 +128,7 @@ val to_array : t -> (int * string) array
 val of_array : (int * string) array -> t
 (** ``of_array v`` converts a (index, word) array to a vocabulary. *)
 
-(** {6 I/O functions} *)
+(** {5 I/O functions} *)
 
 val save : t -> string -> unit
 (** ``save v fname`` serialises the vocabulary and saves it to a file of name ``s``. *)

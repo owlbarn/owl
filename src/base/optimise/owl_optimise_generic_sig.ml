@@ -275,7 +275,7 @@ module type Sig = sig
     (** Convert the module ``typ`` to its string representation. *)
   end
 
-  (** {5 Core functions} *)
+  (** {4 Core functions} *)
 
   val minimise_weight
     :  ?state:Checkpoint.state

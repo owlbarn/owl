@@ -5,11 +5,11 @@
 
 open Bigarray
 
-(** {6 Types and constants}  *)
+(** {5 Types and constants} *)
 
 type ('a, 'b) t = ('a, 'b) Owl_base_dense_ndarray_generic.t
 
-(** {6 Basic functions} *)
+(** {5 Basic functions} *)
 
 val inv : ('a, 'b) t -> ('a, 'b) t
 (**
@@ -24,7 +24,7 @@ val det : ('a, 'b) t -> 'a
 val logdet : ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-(** {6 Check matrix types} *)
+(** {5 Check matrix types} *)
 
 val is_tril : ('a, 'b) t -> bool
 (** ``is_tril x`` returns ``true`` if ``x`` is lower triangular otherwise ``false``. *)
@@ -41,7 +41,7 @@ val is_symmetric : ('a, 'b) t -> bool
 val is_hermitian : (Complex.t, 'b) t -> bool
 (** ``is_hermitian x`` returns ``true`` if ``x`` is hermitian otherwise ``false``. *)
 
-(** {6 Factorisation} *)
+(** {5 Factorisation} *)
 
 val lu : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * int array
 (**
@@ -65,7 +65,7 @@ val svd : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
 val chol : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-(** {6 Linear system of equations} *)
+(** {5 Linear system of equations} *)
 
 val linsolve
   :  ?trans:bool
@@ -97,7 +97,7 @@ val care
   -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-(** {6 Non-standard functions} *)
+(** {5 Non-standard functions} *)
 
 val linsolve_lu : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 

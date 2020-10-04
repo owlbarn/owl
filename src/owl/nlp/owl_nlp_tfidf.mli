@@ -5,7 +5,7 @@
 
 (** NLP: TFIDF module *)
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type tf_typ =
   | Binary
@@ -21,7 +21,7 @@ type df_typ =
 type t
 (** Type of a TFIDF model *)
 
-(** {6 Query model} *)
+(** {5 Query model} *)
 
 val length : t -> int
 (** Size of Tfidf model, i.e. number of documents contained. *)
@@ -63,7 +63,7 @@ val doc_to_vec
   -> (float, 'a) Owl_dense.Ndarray.Generic.t
 (** ``doc_to_vec kind tfidf vec`` converts a TFIDF vector from its sparse represents to dense ndarray vector whose length equals the vocabulary size. *)
 
-(** {6 Iteration functions} *)
+(** {5 Iteration functions} *)
 
 val get : t -> int -> (int * float) array
 (** Return the ith TFIDF vector in the model. The format of return is ``(vocabulary index, weight)`` tuple array of a document. *)
@@ -83,7 +83,7 @@ val mapi : (int -> (int * float) array -> 'a) -> t -> 'a array
 val reset_iterators : t -> unit
 (** Reset the iterator to the beginning of the TFIDF model. *)
 
-(** {6 Core functions} *)
+(** {5 Core functions} *)
 
 val build : ?norm:bool -> ?sort:bool -> ?tf:tf_typ -> ?df:df_typ -> Owl_nlp_corpus.t -> t
 (**
@@ -97,7 +97,7 @@ Parameters:
 * ``corpus``: the corpus built by ``Owl_nlp_corpus`` model atop of which TFIDF will be built.
  *)
 
-(** {6 I/O functions} *)
+(** {5 I/O functions} *)
 
 val save : t -> string -> unit
 (** ``save tfidf fname`` saves the TFIDF to a file of given file name ``fname``. *)
@@ -111,7 +111,7 @@ val to_string : t -> string
 val print : t -> unit
 (** Pretty print out the summary information of a TFIDF model. *)
 
-(** {6 Helper functions} *)
+(** {5 Helper functions} *)
 
 val tf_typ_string : tf_typ -> string
 (** Convert term frequency type into string. *)

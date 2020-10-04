@@ -7,7 +7,7 @@ type elt = float
 
 type mat = (float, Bigarray.float32_elt) Owl_sparse_matrix_generic.t
 
-(** {6 Create sparse matrices} *)
+(** {5 Create sparse matrices} *)
 
 val zeros : int -> int -> mat
 
@@ -25,7 +25,7 @@ val sequential : int -> int -> mat
 
 val linspace : elt -> elt -> int -> mat
 
-(** {6 Obtain the basic properties of a matrix} *)
+(** {5 Obtain the basic properties of a matrix} *)
 
 val shape : mat -> int * int
 
@@ -47,7 +47,7 @@ val nnz_cols : mat -> int array
 
 val density : mat -> float
 
-(** {6 Manipulate a matrix} *)
+(** {5 Manipulate a matrix} *)
 
 val insert : mat -> int -> int -> elt -> unit
 
@@ -75,7 +75,7 @@ val cols : mat -> int array -> mat
 
 val prune : mat -> elt -> float -> unit
 
-(** {6 Iterate elements, columns, and rows} *)
+(** {5 Iterate elements, columns, and rows} *)
 
 val iteri : (int -> int -> elt -> unit) -> mat -> unit
 
@@ -149,7 +149,7 @@ val fold_rows_nz : ('a -> mat -> 'a) -> 'a -> mat -> 'a
 
 val fold_cols_nz : ('a -> mat -> 'a) -> 'a -> mat -> 'a
 
-(** {6 Examine elements and compare two matrices} *)
+(** {5 Examine elements and compare two matrices} *)
 
 val exists : (elt -> bool) -> mat -> bool
 
@@ -183,7 +183,7 @@ val greater_equal : mat -> mat -> bool
 
 val less_equal : mat -> mat -> bool
 
-(** {6 Randomisation functions} *)
+(** {5 Randomisation functions} *)
 
 val permutation_matrix : int -> mat
 
@@ -197,7 +197,7 @@ val shuffle_cols : mat -> mat
 
 val shuffle : mat -> mat
 
-(** {6 Input/Output and helper functions} *)
+(** {5 Input/Output and helper functions} *)
 
 val to_array : mat -> (int array * elt) array
 
@@ -213,7 +213,7 @@ val save : mat -> string -> unit
 
 val load : string -> mat
 
-(** {6 Unary mathematical operations } *)
+(** {5 Unary mathematical operations } *)
 
 val min : mat -> elt
 
@@ -243,7 +243,7 @@ val l1norm : mat -> elt
 
 val l2norm : mat -> elt
 
-(** {6 Binary mathematical operations } *)
+(** {5 Binary mathematical operations } *)
 
 val add : mat -> mat -> mat
 

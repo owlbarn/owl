@@ -5,7 +5,7 @@
 
 (** Log module provides logging functionality. *)
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type level =
   | DEBUG
@@ -19,7 +19,7 @@ function to set global logging level to high one can mask the output from low
 level logging.
 *)
 
-(** {6 Configuration functions} *)
+(** {5 Configuration functions} *)
 
 val set_level : level -> unit
 (**
@@ -37,7 +37,7 @@ val set_color : bool -> unit
 ``set_color true`` turns on the colour; ``set_color false`` turns it off.
 *)
 
-(** {6 Log functions} *)
+(** {5 Log functions} *)
 
 val debug : ('a, out_channel, unit) format -> 'a
 (** This function outputs log at ``DEBUG`` level. *)

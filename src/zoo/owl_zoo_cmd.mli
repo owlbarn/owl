@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** {6 Manipulate gists} *)
+(** {5 Manipulate gists} *)
 
 val remove_gist : string -> unit
 (** Remove a local gist of given id. *)
@@ -23,7 +23,7 @@ val update_gist : string array -> unit
 val show_info : string -> unit
 (** Show the gist's detail information of given gist id. *)
 
-(** {6 Execute gists} *)
+(** {5 Execute gists} *)
 
 val eval : string -> unit
 (** Evaluate an OCaml expression in toplevel. *)
@@ -37,7 +37,7 @@ val run : string array -> string -> unit
 val run_gist : string -> string array -> unit
 (** ``run_gist gist-id`` runs a zoo gist with the given ``gist-id`` and parameters. *)
 
-(** {6 Helper functions} *)
+(** {5 Helper functions} *)
 
 val print_info : unit -> unit
 (** Print out help information of ``owl`` command line. *)

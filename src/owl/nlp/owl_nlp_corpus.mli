@@ -5,12 +5,12 @@
 
 (** NLP: Corpus module *)
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type t
 (** Type of a text corpus. *)
 
-(** {6 Query corpus} *)
+(** {5 Query corpus} *)
 
 val length : t -> int
 (** Return the size of the corpus, i.e. number of documents. *)
@@ -45,7 +45,7 @@ val get_vocab : t -> Owl_nlp_vocabulary.t
 val get_docid : t -> int array
 (** Return a list of document ids which are mapped back to the original file where the corpus is built. *)
 
-(** {6 Iteration functions} *)
+(** {5 Iteration functions} *)
 
 val next : t -> string
 (** Return the next document in the corpus. *)
@@ -74,7 +74,7 @@ val next_batch_tok : ?size:int -> t -> int array array
 val reset_iterators : t -> unit
 (** Reset the iterator to the beginning of the corpus. *)
 
-(** {6 Core functions} *)
+(** {5 Core functions} *)
 
 val build
   :  ?docid:int array
@@ -118,7 +118,7 @@ E.g., you can plug in ``simple_process`` function to clean up the text. Note
 this function will not change the number of lines in a corpus.
  *)
 
-(** {6 I/O functions} *)
+(** {5 I/O functions} *)
 
 val save : t -> string -> unit
 (** Serialise the corpus and save it to a file of given name. *)
@@ -135,7 +135,7 @@ val to_string : t -> string
 val print : t -> unit
 (** Pretty print the summary of a text corpus. *)
 
-(** {6 Helper functions} *)
+(** {5 Helper functions} *)
 
 val create
   :  string

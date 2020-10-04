@@ -6,7 +6,7 @@
 open Bigarray
 open Owl_opencl_generated
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type num =
   | F   of float
@@ -26,7 +26,7 @@ type t =
 val default : t
 (** Default context, with all GPU devices included and pre-compiled core kernels. *)
 
-(** {6 Query platform} *)
+(** {5 Query platform} *)
 
 val platforms : unit -> cl_platform_id array
 (** List all the platforms on this computer. *)
@@ -43,7 +43,7 @@ val gpu_devices : unit -> cl_device_id array
 val accelerators : unit -> cl_device_id array
 (** List all the accelerators on this computer. *)
 
-(** {6 Manipulate context} *)
+(** {5 Manipulate context} *)
 
 val create : cl_device_id array -> string array -> t
 (** Create a context with the given devices. The corresponding command queues are created and core kernels are compiled. *)
@@ -60,7 +60,7 @@ val get_dev : t -> int -> cl_device_id
 val get_cmdq : t -> cl_device_id -> cl_command_queue
 (** Return the corresponding command queue object of the given device object and its associated with the context. *)
 
-(** {6 Manipulate kernels} *)
+(** {5 Manipulate kernels} *)
 
 val kernels : t -> string array
 (** List all the installed kernels in the given context. *)
@@ -79,7 +79,7 @@ val make_kernel : t -> string -> cl_kernel
 val ba_kernel : ('a, 'b) kind -> string -> cl_program -> cl_kernel
 (** This function is similar to ``make_kernel`` but specifically for making Bigarray function. *)
 
-(** {6 Evaluate kernels} *)
+(** {5 Evaluate kernels} *)
 
 val eval
   :  ?param:num array

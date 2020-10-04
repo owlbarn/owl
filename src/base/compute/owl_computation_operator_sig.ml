@@ -12,7 +12,7 @@ module type Sig = sig
 
   open Symbol.Shape.Type
 
-  (** {6 Vectorised functions} *)
+  (** {5 Vectorised functions} *)
 
   val noop : arr -> arr
   (** TODO *)
@@ -568,7 +568,7 @@ module type Sig = sig
   val to_arrays : arr -> elt array array
   (** TODO *)
 
-  (** {6 Scalar functions} *)
+  (** {5 Scalar functions} *)
 
   module Scalar : sig
     val add : elt -> elt -> elt

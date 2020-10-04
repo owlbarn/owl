@@ -9,12 +9,12 @@ module type Sig = sig
   open Optimiser.Operator.Symbol.Shape.Type
   open Optimiser.Operator.Symbol.Shape.Type.Device
 
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type graph
   (** TODO *)
 
-  (** {6 Core functions} *)
+  (** {5 Core functions} *)
 
   val shape_or_value : t -> string
   (** TODO *)

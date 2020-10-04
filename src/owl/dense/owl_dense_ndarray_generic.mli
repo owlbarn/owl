@@ -25,7 +25,7 @@ Float32, Float64, Complex32, Complex64.
 open Bigarray
 open Owl_types
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 (**
@@ -37,7 +37,7 @@ type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 Type of the ndarray, e.g., Bigarray.Float32, Bigarray.Complex64, and etc.
  *)
 
-(** {6 Create Ndarrays}  *)
+(** {5 Create Ndarrays} *)
 
 val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
 (**
@@ -158,7 +158,7 @@ val unit_basis : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 ``unit_basis k n i`` returns a unit basis vector with ``i``th element set to 1.
  *)
 
-(** {6 Obtain basic properties}  *)
+(** {5 Obtain basic properties} *)
 
 val shape : ('a, 'b) t -> int array
 (**
@@ -239,7 +239,7 @@ val i1d : ('a, 'b) t -> int array -> int
 ``i1d x i`` converts ``x``'s n-dimensional index ``i`` to one-dimensional one.
 *)
 
-(** {6 Manipulate Ndarrays}  *)
+(** {5 Manipulate Ndarrays} *)
 
 val get : ('a, 'b) t -> int array -> 'a
 (**
@@ -626,7 +626,7 @@ val mmap
 ``mmap fd kind layout shared dims`` ...
  *)
 
-(** {6 Iteration functions}  *)
+(** {5 Iteration functions} *)
 
 val iteri : (int -> 'a -> unit) -> ('a, 'b) t -> unit
 (**
@@ -790,7 +790,7 @@ Please refer to ``iteri_slice`` for more details.
 val fold_slice : ?axis:int -> ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 (** Similar to ``foldi_slice`` but slice index is not passed in. *)
 
-(** {6 Examination & Comparison}  *)
+(** {5 Examination & Comparison} *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
 (**
@@ -1072,7 +1072,7 @@ ndarray/matrix wherein ``1`` indicates that the element ``b`` from ``x`` is
 considered as approximately equal to ``a``, namely ``abs (a - b) < eps``.
  *)
 
-(** {6 Input/Output functions}  *)
+(** {5 Input/Output functions} *)
 
 val of_array : ('a, 'b) kind -> 'a array -> int array -> ('a, 'b) t
 (**
@@ -1131,7 +1131,7 @@ in the file is not of type ``k``, fails with ``[file]: incorrect format``. This
 function is implemented using npy-ocaml https://github.com/LaurentMazare/npy-ocaml.
  *)
 
-(** {6 Unary math operators }  *)
+(** {5 Unary math operators } *)
 
 val re_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 (**
@@ -1788,7 +1788,7 @@ val jv_scalar : v:('a, 'b) t -> 'a -> ('a, 'b) t
 ``jv_scalar v x`` computes Bessel function of the first kind of ``x`` of real order ``v``
  *)
 
-(** {6 Binary math operators}  *)
+(** {5 Binary math operators} *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
@@ -1966,7 +1966,7 @@ val clip_by_l2norm : 'a -> ('a, 'b) t -> ('a, 'b) t
 val fma : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** ``fma x y z`` calculates the `fused multiply add`, i.e. ``(x * y) + z``. *)
 
-(** {6 Tensor Calculus}  *)
+(** {5 Tensor Calculus} *)
 
 val contract1 : (int * int) array -> ('a, 'b) t -> ('a, 'b) t
 (**
@@ -1988,7 +1988,7 @@ Caveat: Not well tested yet, use with care! Also, consider to use TTGT in
 future for better performance.
  *)
 
-(** {6 Cast functions}  *)
+(** {5 Cast functions} *)
 
 val cast : ('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
 (**
@@ -2037,7 +2037,7 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 ``cast_d2c x`` casts ``x`` from ``float64`` to ``complex32``.
  *)
 
-(** {6 Neural network related}  *)
+(** {5 Neural network related} *)
 
 val conv1d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
 (** TODO *)
@@ -2335,7 +2335,7 @@ val avg_pool3d_backward
 val upsampling2d_backward : ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
 
-(** {6 Helper functions }  *)
+(** {5 Helper functions } *)
 
 (**
 The following functions are helper functions for some other functions in
@@ -2387,7 +2387,7 @@ Parameters:
   * ``window`` is the size of the sliding window.
  *)
 
-(** {6 In-place modification}  *)
+(** {5 In-place modification} *)
 
 val create_ : out:('a, 'b) t -> 'a -> unit
 (** TODO *)
@@ -3323,7 +3323,7 @@ val upsampling2d_backward_
 val fused_adagrad_ : ?out:('a, 'b) t -> rate:'a -> eps:'a -> ('a, 'b) t -> unit
 (** TODO *)
 
-(** {6 Matrix functions}  *)
+(** {5 Matrix functions} *)
 
 type area =
   { a : int
@@ -3412,7 +3412,7 @@ val draw_cols2
   -> ('a, 'b) t * ('a, 'b) t * int array
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
-(** {6 Helper functions}  *)
+(** {5 Helper functions} *)
 
 val float_to_elt : 'a -> 'a
 (** Identity function to deal with the type conversion required by other functors. *)

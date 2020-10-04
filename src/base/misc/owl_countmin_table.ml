@@ -1,11 +1,11 @@
 (* A module type for the tables used to implement the CountMin sketch. *)
 module type Sig = sig
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type t
   (** The type of count-min tables *)
 
-  (** {6 Core functions} *)
+  (** {5 Core functions} *)
 
   val init : int -> int -> t
   (** 

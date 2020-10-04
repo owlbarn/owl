@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type t
 (** Abstract dataframe type. *)
@@ -22,7 +22,7 @@ type elt =
   | String of string
   | Any (** Type of the elements in a series. *)
 
-(** {6 Pakcking & unpacking element} *)
+(** {5 Pakcking & unpacking element} *)
 
 val pack_bool : bool -> elt
 (** Pack the boolean value to ``elt`` type. *)
@@ -48,7 +48,7 @@ val unpack_float : elt -> float
 val unpack_string : elt -> string
 (** Unpack ``elt`` type to string value. *)
 
-(** {6 Pakcking & unpacking series} *)
+(** {5 Pakcking & unpacking series} *)
 
 val pack_bool_series : bool array -> series
 (** Pack boolean array to ``series`` type. *)
@@ -74,7 +74,7 @@ val unpack_float_series : series -> float array
 val unpack_string_series : series -> string array
 (** Unpack ``series`` type to string array. *)
 
-(** {6 Obtain properties} *)
+(** {5 Obtain properties} *)
 
 val row_num : t -> int
 (** ``row_num x`` returns the number of rows in ``x``. *)
@@ -103,7 +103,7 @@ val id_to_head : t -> int -> string
 val head_to_id : t -> string -> int
 (** ``head_to_id i`` converts column index ``i`` to its corresponding head name. *)
 
-(** {6 Basic get and set functions} *)
+(** {5 Basic get and set functions} *)
 
 val get : t -> int -> int -> elt
 (** ``get x i j`` returns the element at ``(i,j)``. *)
@@ -150,7 +150,7 @@ val head : int -> t -> t
 val tail : int -> t -> t
 (** ``tail n x`` returns bottom ``n`` rows of ``x``. *)
 
-(** {6 Core operations} *)
+(** {5 Core operations} *)
 
 val make : ?data:series array -> string array -> t
 (**
@@ -239,7 +239,7 @@ val concat_vertical : t -> t -> t
 and the same column names.
  *)
 
-(** {6 Iteration functions} *)
+(** {5 Iteration functions} *)
 
 val iteri_row : (int -> elt array -> unit) -> t -> unit
 (** ``iteri_row f x`` iterates the rows of ``x`` and applies ``f``. *)
@@ -277,7 +277,7 @@ dataframe; if ``f`` returns ``Some row`` then the row is included.
 val filter_map_row : (elt array -> elt array option) -> t -> t
 (** ``filter_map_row`` is similar to ``filter_mapi_row`` without passing in row indices. *)
 
-(** {6 Extended indexing operators} *)
+(** {5 Extended indexing operators} *)
 
 val ( .%() ) : t -> int * string -> elt
 (** Extended indexing operator associated with ``get_by_name`` function. *)
@@ -299,7 +299,7 @@ transforming. In other words, ``x.?(f) <- g`` means that if ``f row`` is
 val ( .$() ) : t -> int list * string list -> t
 (** Extended indexing operator associated with ``get_slice_by_name`` function. *)
 
-(** {6 IO & helper functions} *)
+(** {5 IO & helper functions} *)
 
 val of_csv : ?sep:char -> ?head:string array -> ?types:string array -> string -> t
 (**

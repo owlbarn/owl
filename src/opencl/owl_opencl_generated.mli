@@ -7,7 +7,7 @@
 
 open Ctypes
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type cl_platform_id
 (** Type of cl_platform_id *)
@@ -117,7 +117,7 @@ val cl_sampler_null : cl_sampler
 val cl_sampler_ptr_null : cl_sampler Ctypes.ptr
 (** Null pointer of cl_sampler *)
 
-(** {6 Function definition} *)
+(** {5 Function definition} *)
 
 val cl_check_err : int32 -> unit
 (** ``cl_check_err`` checks error code of return value. *)
@@ -773,7 +773,7 @@ val clEnqueueBarrierWithWaitList
 val clGetExtensionFunctionAddressForPlatform : cl_platform_id -> char ptr -> unit ptr
 (** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)
 
-(** {6 Constant definition} *)
+(** {5 Constant definition} *)
 
 val cl_SUCCESS : int
 (** Constant ``SUCCESS = 0``. *)
@@ -1864,7 +1864,7 @@ val cl_PROFILING_COMMAND_START : int
 val cl_PROFILING_COMMAND_END : int
 (** Constant ``PROFILING_COMMAND_END = 0x1283``. *)
 
-(** {6 Exception definition} *)
+(** {5 Exception definition} *)
 
 exception EXN_SUCCESS
 (** Exception ``EXN_SUCCESS``. *)

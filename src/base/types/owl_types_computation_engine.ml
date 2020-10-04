@@ -9,7 +9,7 @@ module type Sig = sig
   open Graph
   open Graph.Optimiser.Operator.Symbol.Shape.Type
 
-  (** {6 Core evaluation functions of the engine} *)
+  (** {5 Core evaluation functions of the engine} *)
 
   val eval_arr : arr array -> unit
   (** TODO *)

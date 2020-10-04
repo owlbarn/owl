@@ -5,7 +5,7 @@
 
 (** Sparse N-dimensional array module *)
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 (** Type of ``kind``. *)
@@ -13,7 +13,7 @@ type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 type ('a, 'b) t
 (** Abstract type of sparse ndarray. *)
 
-(** {6 Create sparse ndarray} *)
+(** {5 Create sparse ndarray} *)
 
 val zeros : ('a, 'b) kind -> int array -> ('a, 'b) t
 (** TODO *)
@@ -24,7 +24,7 @@ val binary : ?density:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
 val uniform : ?scale:float -> ?density:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
 (** TODO *)
 
-(** {6 Obtain basic properties} *)
+(** {5 Obtain basic properties} *)
 
 val shape : ('a, 'b) t -> int array
 (** TODO *)
@@ -50,7 +50,7 @@ val same_shape : ('a, 'b) t -> ('a, 'b) t -> bool
 val kind : ('a, 'b) t -> ('a, 'b) kind
 (** TODO *)
 
-(** {6 Manipulate a N-dimensional array} *)
+(** {5 Manipulate a N-dimensional array} *)
 
 val get : ('a, 'b) t -> int array -> 'a
 (** TODO *)
@@ -76,7 +76,7 @@ val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
 
-(** {6 Iterate array elements} *)
+(** {5 Iterate array elements} *)
 
 val iteri : ?axis:int option array -> (int array -> 'a -> unit) -> ('a, 'b) t -> unit
 (** TODO *)
@@ -148,7 +148,7 @@ val foldi_nz
 val fold_nz : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 (** TODO *)
 
-(** {6 Examine array elements or compare two arrays } *)
+(** {5 Examine array elements or compare two arrays } *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
 (** TODO *)
@@ -192,7 +192,7 @@ val greater_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 (** TODO *)
 
-(** {6 Input/Output and helper functions} *)
+(** {5 Input/Output and helper functions} *)
 
 val to_array : ('a, 'b) t -> (int array * 'a) array
 (** TODO *)
@@ -212,7 +212,7 @@ val save : ('a, 'b) t -> string -> unit
 val load : ('a, 'b) kind -> string -> ('a, 'b) t
 (** TODO *)
 
-(** {6 Unary mathematical operations } *)
+(** {5 Unary mathematical operations } *)
 
 val min : ('a, 'b) t -> 'a
 (** TODO *)
@@ -235,7 +235,7 @@ val sum : ('a, 'b) t -> 'a
 val mean : ('a, 'b) t -> 'a
 (** TODO *)
 
-(** {6 Binary mathematical operations } *)
+(** {5 Binary mathematical operations } *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)

@@ -8,7 +8,7 @@
 open Ctypes
 module CI = Cstubs_internals
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type cl_platform_id = unit Ctypes.ptr
 
@@ -82,7 +82,7 @@ let cl_sampler_null : cl_sampler = Ctypes.null
 
 let cl_sampler_ptr_null : cl_sampler Ctypes.ptr = Obj.magic Ctypes.null
 
-(** {6 Function definition} *)
+(** {5 Function definition} *)
 
 external owl_opencl_clGetPlatformIDs
   :  Unsigned.uint32
@@ -797,7 +797,7 @@ external owl_opencl_clGetExtensionFunctionAddressForPlatform
   -> CI.voidp
   = "owl_opencl_stub_79_clGetExtensionFunctionAddressForPlatform"
 
-(** {6 Stub function definition} *)
+(** {5 Stub function definition} *)
 
 let clGetPlatformIDs x0 x1 x2 = owl_opencl_clGetPlatformIDs x0 (CI.cptr x1) (CI.cptr x2)
 
@@ -1333,7 +1333,7 @@ let clGetExtensionFunctionAddressForPlatform x0 x1 =
   |> CI.make_ptr void
 
 
-(** {6 Constants definition} *)
+(** {5 Constants definition} *)
 
 let cl_SUCCESS = 0
 
@@ -2061,7 +2061,7 @@ let cl_PROFILING_COMMAND_START = 0x1282
 
 let cl_PROFILING_COMMAND_END = 0x1283
 
-(** {6 Exception definition} *)
+(** {5 Exception definition} *)
 
 exception EXN_SUCCESS
 

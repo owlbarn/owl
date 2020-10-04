@@ -12,7 +12,7 @@ open Owl_types
 (* TODO: unit test *)
 
 module type Sig = sig
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type arr
   (** General ndarray type *)
@@ -20,7 +20,7 @@ module type Sig = sig
   type elt
   (** Scalar type *)
 
-  (** {6 Basic functions} *)
+  (** {5 Basic functions} *)
 
   val diff : (elt -> elt) -> elt -> elt
   (** derivative of ``f : scalar -> scalar``. *)

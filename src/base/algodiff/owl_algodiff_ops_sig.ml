@@ -14,7 +14,7 @@ module type Sig = sig
 
   type op
 
-  (** {6 Ops Builder } *)
+  (** {5 Ops Builder } *)
   module Builder :
     Owl_algodiff_ops_builder_sig.Sig
       with type t := t
@@ -22,7 +22,7 @@ module type Sig = sig
        and type arr := arr
        and type op := op
 
-  (** {6 Supported Maths functions} *)
+  (** {5 Supported Maths functions} *)
 
   module Maths : sig
     val ( + ) : t -> t -> t
@@ -254,7 +254,7 @@ module type Sig = sig
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
   end
 
-  (** {6 Supported Linalg functions} *)
+  (** {5 Supported Linalg functions} *)
 
   module Linalg : sig
     val inv : t -> t
@@ -294,7 +294,7 @@ module type Sig = sig
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
   end
 
-  (** {6 Supported Neural Network functions} *)
+  (** {5 Supported Neural Network functions} *)
 
   module NN : sig
     val dropout : ?rate:float -> t -> t
@@ -356,7 +356,7 @@ module type Sig = sig
      stuff all the time. Some operations just interface to those already defined in the
      Maths module. *)
 
-  (** {6 Supported Mat functions} *)
+  (** {5 Supported Mat functions} *)
 
   module Mat : sig
     val empty : int -> int -> t
@@ -410,7 +410,7 @@ module type Sig = sig
     val print : t -> unit
   end
 
-  (** {6 Supported Arr functions} *)
+  (** {5 Supported Arr functions} *)
 
   module Arr : sig
     val empty : int array -> t

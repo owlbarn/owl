@@ -11,12 +11,12 @@
  * section 5.2 (page 12) for more details. *)
 
 module type Sig = sig
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type 'a t
   (** The type of heavy-hitters sketches *)
 
-  (** {6 Core functions} *)
+  (** {5 Core functions} *)
 
   val init : k:float -> epsilon:float -> delta:float -> 'a t
   (**

@@ -6,11 +6,11 @@
 module type Sig = sig
   module A : Owl_types_ndarray_algodiff.Sig
 
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   include Owl_algodiff_types_sig.Sig with type elt := A.elt and type arr := A.arr
 
-  (** {6 Core functions} *)
+  (** {5 Core functions} *)
 
   val tag : unit -> int
   (** TODO *)

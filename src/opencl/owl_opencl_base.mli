@@ -5,7 +5,7 @@
 
 open Owl_opencl_generated
 
-(** {6 Platform module} *)
+(** {5 Platform module} *)
 
 module Platform : sig
   type info =
@@ -27,7 +27,7 @@ module Platform : sig
   (** Get an array of all the available platforms. *)
 end
 
-(** {6 Device module} *)
+(** {5 Device module} *)
 
 module Device : sig
   type info =
@@ -68,7 +68,7 @@ module Device : sig
   (** Get an array of all the available devices on a given platform. *)
 end
 
-(** {6 Context module} *)
+(** {5 Context module} *)
 
 module Context : sig
   type info =
@@ -97,7 +97,7 @@ module Context : sig
   (** Release a resource by decreasing its reference number by 1. *)
 end
 
-(** {6 Program module} *)
+(** {5 Program module} *)
 
 module Program : sig
   type info =
@@ -132,7 +132,7 @@ module Program : sig
   (** Release a resource by decreasing its reference number by 1. *)
 end
 
-(** {6 Kernel module} *)
+(** {5 Kernel module} *)
 
 module Kernel : sig
   type info =
@@ -179,7 +179,7 @@ module Kernel : sig
   (** Release a resource by decreasing its reference number by 1. *)
 end
 
-(** {6 CommandQueue module} *)
+(** {5 CommandQueue module} *)
 
 module CommandQueue : sig
   type info =
@@ -218,7 +218,7 @@ module CommandQueue : sig
   (** Release a resource by decreasing its reference number by 1. *)
 end
 
-(** {6 Event module} *)
+(** {5 Event module} *)
 
 module Event : sig
   type info =
@@ -252,7 +252,7 @@ module Event : sig
   (** Release a resource by decreasing its reference number by 1. *)
 end
 
-(** {6 Buffer module} *)
+(** {5 Buffer module} *)
 
 module Buffer : sig
   type info =

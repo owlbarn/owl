@@ -188,7 +188,7 @@ module type Common = sig
 
   val fma : arr -> arr -> arr -> arr
 
-  (** {6 Iterate array elements}  *)
+  (** {5 Iterate array elements} *)
 
   val iteri : (int -> elt -> unit) -> arr -> unit
 
@@ -210,7 +210,7 @@ module type Common = sig
 
   val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
 
-  (** {6 Examination & Comparison}  *)
+  (** {5 Examination & Comparison} *)
 
   val exists : (elt -> bool) -> arr -> bool
 
@@ -360,7 +360,7 @@ module type Real = sig
 
   val trace : arr -> elt
 
-  (** {6 Helper functions}  *)
+  (** {5 Helper functions} *)
 
   val float_to_elt : float -> elt
 
