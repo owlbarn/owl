@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** {6 Single precision neural network} *)
+(** {5 Single precision neural network} *)
 
 module S = struct
   include Owl_neural_generic.Make (Owl_algodiff_primal_ops.S)
@@ -11,7 +11,7 @@ module S = struct
   (* module Parallel = Owl_neural_parallel.Make (Graph) *)
 end
 
-(** {6 Double precision neural network} *)
+(** {5 Double precision neural network} *)
 
 module D = struct
   include Owl_neural_generic.Make (Owl_algodiff_primal_ops.D)

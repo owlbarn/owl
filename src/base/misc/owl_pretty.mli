@@ -5,7 +5,7 @@
 
 (** Pretty print the n-dimensional array *)
 
-(** {6 Ndarray pretty printer} *)
+(** {5 Ndarray pretty printer} *)
 
 val pp_dsnda : Format.formatter -> ('a, 'b, 'c) Bigarray.Genarray.t -> unit
   [@@ocaml.toplevel_printer]
@@ -35,7 +35,7 @@ rows and columns to display. [header] specifies whether or not to print out
 the headers. [fmt] is the function to format every element into string.
  *)
 
-(** {6 Dataframe pretty printer} *)
+(** {5 Dataframe pretty printer} *)
 
 val pp_dataframe : Format.formatter -> Owl_dataframe.t -> unit
   [@@ocaml.toplevel_printer]

@@ -5,7 +5,7 @@
 
 open Owl_opencl_primitive
 
-(** {6 Core functions} *)
+(** {5 Core functions} *)
 
 val of_ndarray : ('a, 'b) Owl_dense_ndarray_generic.t -> t
 (** ``of_ndarray x`` *)
@@ -13,7 +13,7 @@ val of_ndarray : ('a, 'b) Owl_dense_ndarray_generic.t -> t
 val to_ndarray : ('a, 'b) Bigarray.kind -> t -> ('a, 'b) Owl_dense_ndarray_generic.t
 (** ``to_ndarray otyp x`` *)
 
-(** {6 Unary math functions} *)
+(** {5 Unary math functions} *)
 
 val erf : t -> t
 (** ``erf x`` *)
@@ -138,7 +138,7 @@ val softplus : t -> t
 val softsign : t -> t
 (** ``softsign x`` *)
 
-(** {6 Binary math functions} *)
+(** {5 Binary math functions} *)
 
 val add : t -> t -> t
 (** ``add x y`` *)

@@ -12,7 +12,7 @@ open Owl_graph
  *)
 
 module Make (A : Ndarray_Mutable) : sig
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type arr
   (** TODO *)
@@ -29,7 +29,7 @@ module Make (A : Ndarray_Mutable) : sig
   type graph
   (** TODO *)
 
-  (** {6 Type conversion functions} *)
+  (** {5 Type conversion functions} *)
 
   val arr_to_value : A.arr -> value
   (** TODO *)
@@ -76,7 +76,7 @@ module Make (A : Ndarray_Mutable) : sig
   val elt_to_float : elt -> float
   (** TODO *)
 
-  (** {6 Utility functions} *)
+  (** {5 Utility functions} *)
 
   val graph_to_dot : graph -> string
   (** TODO *)
@@ -84,7 +84,7 @@ module Make (A : Ndarray_Mutable) : sig
   val graph_to_trace : graph -> string
   (** TODO *)
 
-  (** {6 Create variables} *)
+  (** {5 Create variables} *)
 
   val var_arr : ?shape:int array -> string -> arr
   (** TODO *)
@@ -107,7 +107,7 @@ module Make (A : Ndarray_Mutable) : sig
   val unsafe_assign_arr : arr -> A.arr -> unit
   (** TODO *)
 
-  (** {6 Maths functions} *)
+  (** {5 Maths functions} *)
 
   val noop : arr -> arr
   (** TODO *)
@@ -541,7 +541,7 @@ module Make (A : Ndarray_Mutable) : sig
   val of_arrays : elt array array -> arr
   (** TODO *)
 
-  (** {6 Evaluation functions} *)
+  (** {5 Evaluation functions} *)
 
   val make_graph : input:attr node array -> output:attr node array -> string -> graph
   (** TODO *)

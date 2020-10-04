@@ -13,7 +13,7 @@
 
 open Bigarray
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type ('a, 'b) t = ('a, 'b, Bigarray.c_layout) Bigarray.Array1.t
 (** The default type is Bigarray's ``Array1.t``. *)
@@ -39,7 +39,7 @@ type cblas_side =
   | CblasLeft
   | CblasRight (** Side type *)
 
-(** {6 Level-1 BLAS: vector-vector operations} *)
+(** {5 Level-1 BLAS: vector-vector operations} *)
 
 val rotg : float -> float -> float * float * float * float
 (** Computes the parameters for a Givens rotation. *)
@@ -101,7 +101,7 @@ val asum : int -> ('a, 'b) t -> int -> float
 val amax : int -> ('a, 'b) t -> int -> int
 (** Finds the index of the element with maximum absolute value. *)
 
-(** {6 Level-2 BLAS: matrix-vector operations} *)
+(** {5 Level-2 BLAS: matrix-vector operations} *)
 
 val gemv
   :  cblas_layout
@@ -424,7 +424,7 @@ val hpr2
   -> unit
 (** Performs a rank-2 update of a Hermitian packed matrix. *)
 
-(** {6 Level-3 BLAS: matrix-matrix operations} *)
+(** {5 Level-3 BLAS: matrix-matrix operations} *)
 
 val gemm
   :  cblas_layout

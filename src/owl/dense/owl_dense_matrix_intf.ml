@@ -6,7 +6,7 @@ module type Common = sig
 
   type mat
 
-  (** {6 Create dense matrices} *)
+  (** {5 Create dense matrices} *)
 
   val empty : int -> int -> mat
 
@@ -50,7 +50,7 @@ module type Common = sig
 
   val magic : int -> mat
 
-  (** {7 Dense row vectors and meshgrids} *)
+  (** {5 Dense row vectors and meshgrids} *)
 
   val vector : int -> mat
 
@@ -68,7 +68,7 @@ module type Common = sig
 
   val meshup : mat -> mat -> mat * mat
 
-  (** {6 Obtain the basic properties of a matrix} *)
+  (** {5 Obtain the basic properties of a matrix} *)
 
   val shape : mat -> int * int
 
@@ -88,7 +88,7 @@ module type Common = sig
 
   val same_data : mat -> mat -> bool
 
-  (** {6 Manipulate a matrix} *)
+  (** {5 Manipulate a matrix} *)
 
   val get : mat -> int -> int -> elt
 
@@ -174,7 +174,7 @@ module type Common = sig
 
   val argsort : mat -> (int64, int64_elt, c_layout) Genarray.t
 
-  (** {6 Iterate elements, columns, and rows.} *)
+  (** {5 Iterate elements, columns, and rows.} *)
 
   val iteri : (int -> elt -> unit) -> mat -> unit
 
@@ -266,7 +266,7 @@ module type Common = sig
 
   val map_at_col : (elt -> elt) -> mat -> int -> mat
 
-  (** {6 Examine elements and compare two matrices} *)
+  (** {5 Examine elements and compare two matrices} *)
 
   val exists : (elt -> bool) -> mat -> bool
 
@@ -346,7 +346,7 @@ module type Common = sig
 
   val approx_elt_equal_scalar : ?eps:float -> mat -> elt -> mat
 
-  (** {6 Randomisation functions} *)
+  (** {5 Randomisation functions} *)
 
   val draw_rows : ?replacement:bool -> mat -> int -> mat * int array
 
@@ -362,7 +362,7 @@ module type Common = sig
 
   val shuffle : mat -> mat
 
-  (** {6 Input/Output and helper functions} *)
+  (** {5 Input/Output and helper functions} *)
 
   val to_array : mat -> elt array
 
@@ -400,7 +400,7 @@ module type Common = sig
 
   val load_npy : string -> mat
 
-  (** {6 Unary mathematical operations } *)
+  (** {5 Unary mathematical operations } *)
 
   val min : ?axis:int -> ?keep_dims:bool -> mat -> mat
 
@@ -560,7 +560,7 @@ module type Common = sig
 
   val dawsn : mat -> mat
 
-  (** {6 Binary mathematical operations } *)
+  (** {5 Binary mathematical operations } *)
 
   val add : mat -> mat -> mat
 
@@ -612,7 +612,7 @@ module type Common = sig
 
   val fma : mat -> mat -> mat -> mat
 
-  (** {6 Functions of in-place modification } *)
+  (** {5 Functions of in-place modification } *)
 
   val create_ : out:mat -> elt -> unit
 
@@ -820,7 +820,7 @@ module type Real = sig
 
   type mat
 
-  (** {6 Specific real functions } *)
+  (** {5 Specific real functions } *)
 
   val i0 : mat -> mat
 
@@ -912,7 +912,7 @@ module type Complex = sig
 
   type cast_mat
 
-  (** {6 Specific complex functions } *)
+  (** {5 Specific complex functions } *)
 
   val complex : cast_mat -> cast_mat -> mat
 

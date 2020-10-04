@@ -3,12 +3,12 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type 'a t
 (** Type of a min heap. *)
 
-(** {6 Basic functions} *)
+(** {5 Basic functions} *)
 
 val make : ('a -> 'a -> int) -> 'a t
 (**

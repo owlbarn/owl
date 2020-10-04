@@ -21,7 +21,7 @@
   http://www.npl.co.uk/upload/pdf/units-of-measurement-poster.pdf
 *)
 
-(** {6 Maths constants} *)
+(** {5 Maths constants} *)
 
 val e : float
 (** e = 2.718281828459045235360287471352662498 *)
@@ -74,7 +74,7 @@ val pi_4 : float
 val eps : float
 (** eps = 1e-15 *)
 
-(** {6 Constants depending on Bigarray kind} *)
+(** {5 Constants depending on Bigarray kind} *)
 
 val zero : ('a, 'b) Bigarray.kind -> 'a
 (** ``zero kind`` returns value zero of the given number type ``kind``. *)
@@ -103,7 +103,7 @@ val min_float64 : float
 val max_float64 : float
 (** Maximum value of double precision float number. *)
 
-(** {6 Unit prefixes} *)
+(** {5 Unit prefixes} *)
 
 module Prefix : sig
   val fine_structure : float
@@ -173,7 +173,7 @@ module Prefix : sig
   (** yocto = 1e-24 *)
 end
 
-(** {6 SI: International System of Units} *)
+(** {5 SI: International System of Units} *)
 
 module SI : sig
   val speed_of_light : float
@@ -480,7 +480,7 @@ module SI : sig
   (** gauss = 1e-4 *)
 end
 
-(** {6 MKS: MKS system of units} *)
+(** {5 MKS: MKS system of units} *)
 
 module MKS : sig
   val speed_of_light : float
@@ -787,7 +787,7 @@ module MKS : sig
   (** gauss = 1e-4 *)
 end
 
-(** {6 CGS: Centimetre–gram–second system of units} *)
+(** {5 CGS: Centimetre–gram–second system of units} *)
 
 module CGS : sig
   val speed_of_light : float
@@ -1064,7 +1064,7 @@ module CGS : sig
   (** thomson_cross_section = 6.65245893699e-25 *)
 end
 
-(** {6 CGSM: Unit Systems in Electromagnetism} *)
+(** {5 CGSM: Unit Systems in Electromagnetism} *)
 
 module CGSM : sig
   val speed_of_light : float

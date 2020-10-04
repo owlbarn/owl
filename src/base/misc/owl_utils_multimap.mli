@@ -4,7 +4,7 @@
  *)
 
 module Make (Ord : Map.OrderedType) : sig
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type key = Ord.t
   (** Type of the multimap keys. *)
@@ -12,7 +12,7 @@ module Make (Ord : Map.OrderedType) : sig
   type 'a t
   (** Type of a multimap. *)
 
-  (** {6 Basic functions} *)
+  (** {5 Basic functions} *)
 
   val empty : 'a t
   (** The empty multimap. *)

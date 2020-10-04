@@ -5,7 +5,7 @@
 
 open Owl_types_operator
 
-(** {6 Basic operators} *)
+(** {5 Basic operators} *)
 
 module Make_Basic (M : BasicSig) : sig
   val ( + ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
@@ -66,7 +66,7 @@ module Make_Basic (M : BasicSig) : sig
   (** Operator of ``less_equal`` *)
 end
 
-(** {6 Extended operators} *)
+(** {5 Extended operators} *)
 
 module Make_Extend (M : ExtendSig) : sig
   val ( =$ ) : ('a, 'b) M.t -> 'a -> bool
@@ -206,7 +206,7 @@ module Make_Extend (M : ExtendSig) : sig
   (** Operator of ``set_slice`` *)
 end
 
-(** {6 Matrix-specific operators} *)
+(** {5 Matrix-specific operators} *)
 
 module Make_Matrix (M : MatrixSig) : sig
   val ( *@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
@@ -223,7 +223,7 @@ module Make_Matrix (M : MatrixSig) : sig
   (** Operator of ``set`` *)
 end
 
-(** {6 Ndarray-specific operators} *)
+(** {5 Ndarray-specific operators} *)
 
 module Make_Ndarray (M : NdarraySig) : sig
   val ( .%{} ) : ('a, 'b) M.t -> int -> 'a
@@ -237,7 +237,7 @@ module Make_Ndarray (M : NdarraySig) : sig
   (** Operator of ``set`` *)
 end
 
-(** {6 Linalg-specific operators} *)
+(** {5 Linalg-specific operators} *)
 
 module Make_Linalg (M : LinalgSig) : sig
   val ( **@ ) : ('a, 'b) M.t -> float -> ('a, 'b) M.t

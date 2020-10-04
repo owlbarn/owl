@@ -5,7 +5,7 @@
 
 (** Sparse matrix module *)
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type ('a, 'b) t
 (**
@@ -17,7 +17,7 @@ type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 Type of sparse matrices. It is defined in ``types.ml`` as record type.
  *)
 
-(** {6 Create sparse matrices} *)
+(** {5 Create sparse matrices} *)
 
 val zeros : ?density:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
 (**
@@ -53,7 +53,7 @@ adjusts the interval to ``(0,a)``.
 val sequential : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 (** TODO *)
 
-(** {6 Obtain the basic properties} *)
+(** {5 Obtain the basic properties} *)
 
 val shape : ('a, 'b) t -> int * int
 (**
@@ -111,7 +111,7 @@ equivalent to ``nnz x`` divided by ``numel x``.
 
 val kind : ('a, 'b) t -> ('a, 'b) kind
 
-(** {6 Manipulate a matrix} *)
+(** {5 Manipulate a matrix} *)
 
 val get : ('a, 'b) t -> int -> int -> 'a
 (**
@@ -188,7 +188,7 @@ val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 ``concat_horizontal x y`` not implemented yet
  *)
 
-(** {6 Iterate elements, columns, and rows} *)
+(** {5 Iterate elements, columns, and rows} *)
 
 val iteri : (int -> int -> 'a -> unit) -> ('a, 'b) t -> unit
 (**
@@ -393,7 +393,7 @@ val fold_cols_nz : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 columns in ``x`` using function ``f``. Zero columns will be dropped in iterating ``x``.
  *)
 
-(** {6 Examine elements and compare two matrices} *)
+(** {5 Examine elements and compare two matrices} *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
 (**
@@ -488,7 +488,7 @@ val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 greater than the corresponding elements in ``y``.
  *)
 
-(** {6 Randomisation functions} *)
+(** {5 Randomisation functions} *)
 
 val permutation_matrix : ('a, 'b) kind -> int -> ('a, 'b) t
 (**
@@ -525,7 +525,7 @@ val shuffle : ('a, 'b) t -> ('a, 'b) t
 rows then shuffling along columns. It is equivalent to ``shuffle_cols (shuffle_rows x)``.
  *)
 
-(** {6 Input/Output and helper functions} *)
+(** {5 Input/Output and helper functions} *)
 
 val to_array : ('a, 'b) t -> (int array * 'a) array
 (** TODO *)
@@ -567,7 +567,7 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 saved by using ``save`` function.
  *)
 
-(** {6 Unary mathematical operations } *)
+(** {5 Unary mathematical operations } *)
 
 val min : (float, 'a) t -> float
 (**
@@ -640,7 +640,7 @@ val l1norm : (float, 'b) t -> float
 val l2norm : (float, 'b) t -> float
 (** TODO *)
 
-(** {6 Binary mathematical operations } *)
+(** {5 Binary mathematical operations } *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**

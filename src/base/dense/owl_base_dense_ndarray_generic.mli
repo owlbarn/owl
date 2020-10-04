@@ -21,7 +21,7 @@ aforementioned conventions.
 open Bigarray
 open Owl_types
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -29,7 +29,7 @@ type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(** {6 Create Ndarrays}  *)
+(** {5 Create Ndarrays} *)
 
 val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -64,7 +64,7 @@ val sequential : ('a, 'b) kind -> ?a:'a -> ?step:'a -> int array -> ('a, 'b) t
 val bernoulli : ('a, 'b) kind -> ?p:float -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(** {6 Obtain basic properties}  *)
+(** {5 Obtain basic properties} *)
 
 val shape : ('a, 'b) t -> int array
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -87,7 +87,7 @@ val strides : ('a, 'b) t -> int array
 val slice_size : ('a, 'b) t -> int array
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(** {6 Manipulate Ndarrays}  *)
+(** {5 Manipulate Ndarrays} *)
 
 val get : ('a, 'b) t -> int array -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -155,7 +155,7 @@ val draw : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 val one_hot : int -> ('a, 'b) t -> ('a, 'b) t
 (** TODO: not implemented *)
 
-(** {6 Iterate array elements}  *)
+(** {5 Iterate array elements} *)
 
 val iteri : (int -> 'a -> unit) -> ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -187,7 +187,7 @@ val scani : ?axis:int -> (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 val scan : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(** {6 Examination & Comparison}  *)
+(** {5 Examination & Comparison} *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -310,7 +310,7 @@ val approx_elt_equal : ?eps:float -> (float, 'b) t -> (float, 'b) t -> (float, '
 val approx_elt_equal_scalar : ?eps:float -> (float, 'b) t -> float -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(** {6 Input/Output functions}  *)
+(** {5 Input/Output functions} *)
 
 val of_array : ('a, 'b) kind -> 'a array -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -327,7 +327,7 @@ val print
 val load : ('a, 'b) kind -> string -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(** {6 Unary math operators }  *)
+(** {5 Unary math operators } *)
 
 val min : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -490,7 +490,7 @@ val l2norm' : (float, 'b) t -> float
 val l2norm_sqr' : (float, 'b) t -> float
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(** {6 Binary math operators}  *)
+(** {5 Binary math operators} *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -571,7 +571,7 @@ val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 val fma : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(** {6 Neural network related}  *)
+(** {5 Neural network related} *)
 
 val conv1d
   :  ?padding:padding
@@ -906,13 +906,13 @@ val avg_pool3d_backward
 val upsampling2d_backward : (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(** {6 Helper functions }  *)
+(** {5 Helper functions } *)
 
 (* TODO: change float to 'a *)
 val sum_slices : ?axis:int -> (float, 'b) t -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(** {6 Matrix functions}  *)
+(** {5 Matrix functions} *)
 
 val row_num : ('a, 'b) t -> int
 (** Refer to :doc:`owl_dense_matrix_generic` *)
@@ -970,7 +970,7 @@ val draw_rows2
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 (*
-(** {6 In-place modification}  *)
+(** {5 In-place modification} *)
 
 val create_ : out:('a, 'b) t -> 'a -> unit
 (** TODO *)
@@ -1423,7 +1423,7 @@ val fused_adagrad_ : ?out:('a, 'b) t -> rate:'a -> eps:'a -> ('a, 'b) t -> unit
 (** TODO *)
 *)
 
-(** {6 Helper functions}  *)
+(** {5 Helper functions} *)
 
 val float_to_elt : 'a -> 'a
 (** Identity function to deal with the type conversion required by other functors. *)

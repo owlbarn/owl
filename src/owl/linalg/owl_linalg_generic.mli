@@ -18,14 +18,14 @@
 
 open Bigarray
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type ('a, 'b) t = ('a, 'b) Owl_dense_matrix_generic.t
 (**
 Matrix type, a special case of N-dimensional array.
  *)
 
-(** {6 Basic functions} *)
+(** {5 Basic functions} *)
 
 val inv : ('a, 'b) t -> ('a, 'b) t
 (**
@@ -116,7 +116,7 @@ If ``x`` is well conditioned, the returned result is near ``1.0``. If ``x`` is b
 conditioned, the result is near ``0.``
  *)
 
-(** {6 Check matrix types} *)
+(** {5 Check matrix types} *)
 
 val is_square : ('a, 'b) t -> bool
 (** ``is_square x`` returns ``true`` if ``x`` is a square matrix otherwise ``false``. *)
@@ -139,7 +139,7 @@ val is_diag : ('a, 'b) t -> bool
 val is_posdef : ('a, 'b) t -> bool
 (** ``is_posdef x`` checks whether ``x`` is a positive semi-definite matrix. *)
 
-(** {6 Factorisation} *)
+(** {5 Factorisation} *)
 
 val lu : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
 (**
@@ -336,7 +336,7 @@ Both Hessenberg matrix ``h`` and unitary matrix ``q`` is returned, such that
 
  *)
 
-(** {6 Eigenvalues & eigenvectors} *)
+(** {5 Eigenvalues & eigenvectors} *)
 
 val eig
   :  ?permute:bool
@@ -365,7 +365,7 @@ val eigvals
 an arbitrary square matrix ``x``.
  *)
 
-(** {6 Linear system of equations} *)
+(** {5 Linear system of equations} *)
 
 val null : ('a, 'b) t -> ('a, 'b) t
 (**
@@ -533,7 +533,7 @@ Returns:
   * ``x`` : a symmetric solution matrix X.
  *)
 
-(** {6 Low-level factorisation functions} *)
+(** {5 Low-level factorisation functions} *)
 
 val lufact : ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
 (**
@@ -570,7 +570,7 @@ structure of ``d``. Please refer to the function ``sytrf``, ``hetrf`` in MKL
 documentation for more details.
  *)
 
-(** {6 Matrix functions} *)
+(** {5 Matrix functions} *)
 
 val mpow : ('a, 'b) t -> float -> ('a, 'b) t
 (**
@@ -639,7 +639,7 @@ val sinhcoshm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 ``sinhcoshm x`` returns both hyperbolic matrix sine and cosine of ``x``.
  *)
 
-(** {6 Helper functions} *)
+(** {5 Helper functions} *)
 
 val select_ev : [ `LHP | `RHP | `UDI | `UDO ] -> ('a, 'b) t -> (int32, int32_elt) t
 (**

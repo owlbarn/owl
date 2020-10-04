@@ -10,7 +10,7 @@ module type Sig = sig
   open Neuron.Optimise
   open Neuron.Optimise.Algodiff
 
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type node =
     { mutable name : string
@@ -31,7 +31,7 @@ module type Sig = sig
     }
   (** Type definition of a node and a neural network. *)
 
-  (** {6 Manipulate networks} *)
+  (** {5 Manipulate networks} *)
 
   val make_network : ?nnid:string -> int -> node array -> node array -> network
   (** Create an empty neural network. *)
@@ -86,7 +86,7 @@ module type Sig = sig
   val input_shapes : network -> int array array
   (** Get input shapes of a network (without batch dimension), i.e. shape of input neurons. *)
 
-  (** {6 Interface to optimisation engine} *)
+  (** {5 Interface to optimisation engine} *)
 
   val init : network -> unit
   (** Initialise the network. *)
@@ -133,7 +133,7 @@ module type Sig = sig
   val model_inputs : network -> A.arr array -> A.arr array
   (** Make a deep copy of the given network, excluding the neurons marked with ``training = true``. *)
 
-  (** {6 Create Neurons} *)
+  (** {5 Create Neurons} *)
 
   val input : ?name:string -> int array -> node
   (**
@@ -647,7 +647,7 @@ Arguments:
   * ``axis``: Axis along which to concatenate.
   *)
 
-  (** {6 Helper functions} *)
+  (** {5 Helper functions} *)
 
   val to_string : network -> string
   (** Convert a neural network to its string representation. *)
@@ -696,7 +696,7 @@ name of their associated neurons are saved as key-value pairs in a hash table.
      ``output_names``: Names of nodes to use as outputs.
    *)
 
-  (** {6 Train Networks} *)
+  (** {5 Train Networks} *)
 
   val train_generic
     :  ?state:Checkpoint.state

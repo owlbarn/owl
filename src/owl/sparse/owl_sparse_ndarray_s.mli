@@ -7,7 +7,7 @@ type elt = float
 
 type arr = (float, Bigarray.float32_elt) Owl_sparse_ndarray_generic.t
 
-(** {6 Create sparse ndarray} *)
+(** {5 Create sparse ndarray} *)
 
 val zeros : int array -> arr
 
@@ -15,7 +15,7 @@ val binary : ?density:float -> int array -> arr
 
 val uniform : ?scale:float -> ?density:float -> int array -> arr
 
-(** {6 Obtain basic properties} *)
+(** {5 Obtain basic properties} *)
 
 val shape : arr -> int array
 
@@ -33,7 +33,7 @@ val same_shape : arr -> arr -> bool
 
 val kind : arr -> (elt, Bigarray.float32_elt) Bigarray.kind
 
-(** {6 Manipulate a N-dimensional array} *)
+(** {5 Manipulate a N-dimensional array} *)
 
 val get : arr -> int array -> elt
 
@@ -51,7 +51,7 @@ val transpose : ?axis:int array -> arr -> arr
 
 val swap : int -> int -> arr -> arr
 
-(** {6 Iterate array elements} *)
+(** {5 Iterate array elements} *)
 
 val iteri : ?axis:int option array -> (int array -> elt -> unit) -> arr -> unit
 
@@ -93,7 +93,7 @@ val foldi_nz : ?axis:int option array -> (int array -> 'c -> elt -> 'c) -> 'c ->
 
 val fold_nz : ?axis:int option array -> ('c -> elt -> 'c) -> 'c -> arr -> 'c
 
-(** {6 Examine array elements or compare two arrays } *)
+(** {5 Examine array elements or compare two arrays } *)
 
 val exists : (elt -> bool) -> arr -> bool
 
@@ -123,7 +123,7 @@ val greater_equal : arr -> arr -> bool
 
 val less_equal : arr -> arr -> bool
 
-(** {6 Input/Output and helper functions} *)
+(** {5 Input/Output and helper functions} *)
 
 val to_array : arr -> (int array * elt) array
 
@@ -135,7 +135,7 @@ val save : arr -> string -> unit
 
 val load : string -> arr
 
-(** {6 Unary mathematical operations } *)
+(** {5 Unary mathematical operations } *)
 
 val min : arr -> elt
 
@@ -151,7 +151,7 @@ val sum : arr -> elt
 
 val mean : arr -> elt
 
-(** {6 Binary mathematical operations } *)
+(** {5 Binary mathematical operations } *)
 
 val add : arr -> arr -> arr
 

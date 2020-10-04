@@ -92,7 +92,7 @@ module type Sig = sig
        and type arr := A.arr
        and type op := op
 
-  (** {6 Helper functions} *)
+  (** {5 Helper functions} *)
 
   include Owl_algodiff_graph_convert_sig.Sig with type t := t
 end

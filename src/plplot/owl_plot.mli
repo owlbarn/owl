@@ -8,7 +8,7 @@
 (** The input to a plot function is supposed to be a row-based matrix/vector.
   * The functions in this module are built atop of Plplot library. *)
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type dsmat = Owl_dense_matrix.D.mat
 (** Default input type is double precision matrices. *)
@@ -57,7 +57,7 @@ type spec =
   | Faceted
   | Axis        of axis (** specification of a figure *)
 
-(** {6 Config functions} *)
+(** {5 Config functions} *)
 
 val create : ?m:int -> ?n:int -> string -> handle
 (**
@@ -169,7 +169,7 @@ val legend_off : handle -> unit
 ``legend_off``
  *)
 
-(** {6 Basic plot functions} *)
+(** {5 Basic plot functions} *)
 
 (** Line style is an integer ranging from 1 to 8. *)
 
@@ -323,7 +323,7 @@ non-zero elements are plotted as dots, and zeros are ignored.
 Parameters: ``RGB``, ``Marker``, ``MarkerSize``.
  *)
 
-(** {6 Plot 3D figures} *)
+(** {5 Plot 3D figures} *)
 
 val plot3d : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 (** Note ``plot3d`` is just an alias of ``surf`` function.
@@ -356,7 +356,7 @@ val heatmap : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 (** ``heatmap x y z`` generates a heatmap defined by ``x``, ``y``, and ``z``.
  *)
 
-(** {6 Advanced statistical plot} *)
+(** {5 Advanced statistical plot} *)
 
 val probplot
   :  ?h:handle

@@ -5,7 +5,7 @@
 
 (** Graph module supports basic operations on DAG. *)
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type order =
   | BFS
@@ -22,7 +22,7 @@ type dir =
 type 'a node
 (** type definition of a node *)
 
-(** {6 Obtaining properties} *)
+(** {5 Obtaining properties} *)
 
 val id : 'a node -> int
 (** ``id x`` returns the id of node ``x``. *)
@@ -69,7 +69,7 @@ val num_descendant : 'a node array -> int
 val length : 'a node array -> int
 (** ``length x`` returns the total number of ancestors and descendants of ``x``. *)
 
-(** {6 Manipulation functions} *)
+(** {5 Manipulation functions} *)
 
 val node
   :  ?id:int
@@ -148,7 +148,7 @@ fields of the nodes in the new graph share the same memory with those in the
 original graph.
  *)
 
-(** {6 Iterators} *)
+(** {5 Iterators} *)
 
 val iter_ancestors
   :  ?order:order
@@ -190,7 +190,7 @@ val fold_in_edges : ('b -> 'a node -> 'a node -> 'b) -> 'b -> 'a node array -> '
 val fold_out_edges : ('b -> 'a node -> 'a node -> 'b) -> 'b -> 'a node array -> 'b
 (** Fold all the out-edges of a given node. *)
 
-(** {6 Helper functions} *)
+(** {5 Helper functions} *)
 
 val topo_sort : 'a node array -> 'a node array
 (**

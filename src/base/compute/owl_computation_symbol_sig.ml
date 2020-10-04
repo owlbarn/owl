@@ -12,7 +12,7 @@ module type Sig = sig
   open Type
   open Device
 
-  (** {6 Core functions} *)
+  (** {5 Core functions} *)
 
   val op_to_str : op -> string
   (** TODO *)

@@ -5,7 +5,7 @@
 
 (** Numerical Integration *)
 
-(** {6 Integration functions} *)
+(** {5 Integration functions} *)
 
 val trapz : ?n:int -> ?eps:float -> (float -> float) -> float -> float -> float
 (**
@@ -88,7 +88,7 @@ Returns:
   * ``y``: the integral of ``f`` on ``[a, b]``.
  *)
 
-(** {6 Helper functions} *)
+(** {5 Helper functions} *)
 
 val trapzd : (float -> float) -> float -> float -> int -> float
 (**

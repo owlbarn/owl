@@ -5,7 +5,7 @@
 
 open Bigarray
 
-(** {6 Type definition} *)
+(** {5 Type definition} *)
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 (** The default type is Bigarray's Genarray. *)
@@ -16,9 +16,9 @@ type side = Owl_cblas_basic.cblas_side
 type uplo = Owl_cblas_basic.cblas_uplo
 (** Side type *)
 
-(** {6 Level-1 BLAS: vector-vector operations} *)
+(** {5 Level-1 BLAS: vector-vector operations} *)
 
-(** {6 Level-2 BLAS: matrix-vector operations} *)
+(** {5 Level-2 BLAS: matrix-vector operations} *)
 
 val gemv
   :  ?trans:bool
@@ -46,7 +46,7 @@ val gbmv
   -> unit
 (** Computes a matrix-vector product using a general band matrix *)
 
-(** {6 Level-3 BLAS: matrix-matrix operations} *)
+(** {5 Level-3 BLAS: matrix-matrix operations} *)
 
 val gemm
   :  ?transa:bool

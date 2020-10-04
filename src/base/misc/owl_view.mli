@@ -15,12 +15,12 @@
 open Owl_types
 
 module Make (A : Ndarray_Basic) : sig
-  (** {6 Type definition} *)
+  (** {5 Type definition} *)
 
   type t
   (** ``t`` is the abstract type to represent a view atop of an ndarray. *)
 
-  (** {6 Conversion functions} *)
+  (** {5 Conversion functions} *)
 
   val of_arr : A.arr -> t
   (** ``of_arr x`` creates a view from ndarray ``x``. *)
@@ -28,7 +28,7 @@ module Make (A : Ndarray_Basic) : sig
   val to_arr : t -> A.arr
   (** ``to_arr x`` creates an new ndarray based on the view ``x``. *)
 
-  (** {6 Manipulation functions} *)
+  (** {5 Manipulation functions} *)
 
   val get : t -> int array -> A.elt
   (** Refer to :doc:`owl_dense_ndarray_generic` *)
@@ -54,7 +54,7 @@ module Make (A : Ndarray_Basic) : sig
   val numel : t -> int
   (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-  (** {6 Iteration functions} *)
+  (** {5 Iteration functions} *)
 
   val iteri : (int -> A.elt -> unit) -> t -> unit
   (**
@@ -103,7 +103,7 @@ Similar to `mapi` but n-d indices are passed in. This function is much slower
 than `mapi`.
    *)
 
-  (** {6 Examination & Comparison}  *)
+  (** {5 Examination & Comparison} *)
 
   val exists : (A.elt -> bool) -> t -> bool
   (**

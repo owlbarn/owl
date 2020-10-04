@@ -7,7 +7,7 @@
 
 open Owl_dense_ndarray_generic
 
-(** {6 Basic functions} *)
+(** {5 Basic functions} *)
 
 val fft : ?axis:int -> (Complex.t, 'a) t -> (Complex.t, 'a) t
 (**
