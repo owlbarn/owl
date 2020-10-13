@@ -344,7 +344,7 @@ CAMLprim value FUN_NATIVE (spatial) (
 
 #ifdef AVX_PSIZE && _WIN32
   int fast_flag = (in_channel % AVX_PSIZE == 0);
-  TYPE *temp_mk = aligned_alloc(ALIGN_SIZE, mc * kc * sizeof(TYPE));
+  TYPE *temp_mk = _aligned_malloc(mc * kc * sizeof(TYPE), ALIGN_SIZE);
   if (temp_mk == NULL) exit(1);
 #elif AVX_PSIZE
   int fast_flag = (in_channel % AVX_PSIZE == 0);
@@ -557,7 +557,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_input) (
 
 #ifdef AVX_PSIZE && _WIN32
   int fast_flag = (in_channel % AVX_PSIZE == 0);
-  TYPE *temp_mk = aligned_alloc(ALIGN_SIZE, mc * kc * sizeof(TYPE));
+  TYPE *temp_mk = _aligned_malloc(mc * kc * sizeof(TYPE), ALIGN_SIZE);
   if (temp_mk == NULL) exit(1);
 #elif AVX_PSIZE
   int fast_flag = (in_channel % AVX_PSIZE == 0);
@@ -778,7 +778,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
 
 #ifdef AVX_PSIZE && _WIN32
   int fast_flag = (in_channel % AVX_PSIZE == 0);
-  TYPE *temp_mk = aligned_alloc(ALIGN_SIZE, mc * kc * sizeof(TYPE));
+  TYPE *temp_mk = _aligned_malloc(mc * kc * sizeof(TYPE), ALIGN_SIZE);
   if (temp_mk == NULL) exit(1);
 #elif AVX_PSIZE
   int fast_flag = (in_channel % AVX_PSIZE == 0);
