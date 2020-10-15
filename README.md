@@ -1,69 +1,43 @@
 # Owl - OCaml Scientific and Engineering Computing [![Build Status](https://travis-ci.org/owlbarn/owl.svg?branch=master)](https://travis-ci.org/owlbarn/owl)
 
-Owl is a dedicated system for scientific and engineering computing in the
-functional programming language OCaml.
+Owl is a dedicated system for scientific and engineering computing in the functional programming language OCaml. The project website is hosted at [ocaml.xyz](https://ocaml.xyz/), as well as Owl book at [ocaml.xyz/book](https://ocaml.xyz/book/).
 
-This software is currently maintained by [Komposio](http://komposio.com), a
-Helsinki-based software consulting company.
+## Roles and Responsibilities
 
-Visit the project website at [ocaml.xyz](http://ocaml.xyz).
-The Owl programming API is hosted here [ocaml.xyz](https://ocaml.xyz/package/index.html).
-There is also a book about Owl here [ocaml.xyz](https://ocaml.xyz/book).
+### BDFL
 
-## Optional features
+The Owl Project follows a *BDFL* ([Benevolent Dictator for Life](https://en.wikipedia.org/wiki/Benevolent_dictator_for_life)) governance model. The BDFL consists of [Liang Wang](https://liang.ocaml.xyz/) and [Jianxin Zhao](https://jianxin.ocaml.xyz/). Liang is the project originator of and project leader of Owl. Jianxin worked on the project for his PhD thesis. He is currently managing daily practicalities of the project and leading the Owl book project. The BDFL are in charge of setting out the roadmap and maintaining the architecture of Owl. In principle, only the BDFL has write permission to the code base.
 
-You can enable optional features by setting the following variables to `1`
-before compilation:
+### Contributors
 
-- `OWL_ENABLE_EXPMODE=1`: turn on experiment features like `-flto`
+The project is developed and maintained by a team of *contributors*. A contributor is an individual who contributes code, documentation, or who helps with the management, event organisation, financing, etc. of the project. Anyone can potentially become a contributor given sufficient contributions recognised by the community. Contributors can be affiliated with any legal entity or none. 
 
-- `OWL_ENABLE_DEVMODE=1`: turn on all the warnings in development
+A subset of the code contributors are the *committers*, who have proved to make several valuable and significant contributions to the project in both quality and quantity. Typically a committer focuses on one specific aspect of the project and is a domain expert. In principle any change to the code base is made via a GitHub Pull Request (PR). A committer can request temporary write permission to the code base from the BDFL when it can be justified, such as frequent updates are required in a short period of time. The permission shall be revoked once the necessary job is done. The committers have no explicit authority over the project, but the BDFL should heed their counsel in making project decisions. In practice, they are given informal control over their specific areas of expertise.
 
-- `OWL_ENABLE_OPENMP=1`: turn on OpenMP support in core module and
-  the automatic parameter tuning (AEOS)
+### Owl Team
 
-- `OWL_CFLAGS` allows to change the default flags passed to the C targets,
-  it defaults to
-  ```
-  OWL_CFLAGS="-g -O3 -Ofast -march=native -mfpmath=sse -funroll-loops -ffast-math -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing -Wno-tautological-constant-out-of-range-compare"`
-  ```
+The BDFL has the authority to make all final decisions for the project. In practice, the BDFL tries to reach a consensus within the *Owl Team*. The Owl Team consists of the BDFL and a small subset of the project contributors who have produced contributions that are of outstanding quality and quantity, and have actively participated in the Owl project for at least two years. The team structure is dynamic with members joining or leaving.
 
-- `OWL_AEOS_CFLAGS` allows to change the default flags passed to the C targets
-  when compiling AEOS. It defaults to
-  ```
-  OWL_AEOS_CFLAGS="-g -O3 -Ofast -march=native -funroll-loops -ffast-math -DSFMT_MEXP=19937 -fno-strict-aliasing"
-  ```
+## Development
 
-- `OWL_DISABLE_LAPACKE_LINKING_FLAG=1` disables the `-llapacke` flag in the
-  linking options. This is useful when you have lapacke installed on
-  non-standard localtion.
+The development of Owl includes adding new functionalities and fixing bugs in the form of PR from the contributors. In order to be merged, a PR must be reviewed and acquire two approvals from the Owl Team. If a PR is large or involves significant changes to the code structure, it requires the review of the BDFL. A wide-open discussion from all contributors about the PR is encouraged. A BDFL accepts the PR once the reviewers approve it and the team decides that this PR is sufficiently discussed. When enough PRs are accumulated, a new version should be released. A new release should be discussed within the Owl team and approved by the BDFL.
 
-If you are not using `opam`, you should run `make clean` before recompiling
-the library after having changed any of those environment variables.
+## Documentation
 
-For examples of use of this feature, you can refer to the `Docker.ubuntu`
-and `Docker.ubuntu.arm` docker files, or to the snippet in
-https://github.com/owlbarn/owl/issues/394#issuecomment-471364916
-(which also shows how to use it within `esy`).
+The documentation of Owl includes two parts: the [book](https://ocaml.xyz/book/), and the inline document. The inline document follows a certain format listed in the [contribution guide](https://github.com/owlbarn/owl/blob/master/CONTRIBUTING.md), and it shall not be broken in each PR. The code reviewers are responsible for making sure the rules in the  contribution guide are followed.
 
-## Troubleshooting
+## Research
 
-A common source of frustration when installing `owl` is the possible appearence of linking errors (see for example https://github.com/owlbarn/owl/issues/450).
-This usually happens when installing `owl` on ubuntu (where it depends on how openblas is complied and packaged), but could happen in other distributions (see for example https://discuss.ocaml.org/t/owl-undefined-symbols-after-standard-installation/4186/13).
-The only way we could solve those issues is to recompile `openblas` and install it manually. You can see how we do it by looking at the Docker files in the repository: https://github.com/owlbarn/owl/blob/master/docker/Dockerfile.ubuntu
+Owl originated from academia. To this day, many of our core contributors have academic positions and active research programs. 
+The subprojects are listed at the [finished](https://ocaml.xyz/project/proposal.html) and [proposed](https://ocaml.xyz/project/proposal.html) projects. We welcome anyone to discuss potential research proposals with the team. A research project based on Owl should be explicitly made known to all team members, and provides a clear attribute to Owl.
 
-## Statistics
+## Community
 
-```text
--------------------------------------------------------------------------------
-Language                     files          blank        comment           code
--------------------------------------------------------------------------------
-OCaml                          357          31341          17275         130905
-C                              140           5783           9874          69686
-C/C++ Header                    91           4897           2784          36291
-make                             2              6              5             34
-Markdown                         1              6              0             16
--------------------------------------------------------------------------------
-SUM:                           591          42033          29938         236932
--------------------------------------------------------------------------------
-```
+The current community of Owl is based on the Slack channel. All participants in the community are encouraged to provide support for new users within the project management infrastructure. Those seeking technical support should also recognise that all support activities within the project is voluntary and is therefore provided as and when time permits.
+
+## Contact Us
+
+Liang is a senior researcher at the University of Cambridge. Email: liang.wang@cl.cam.ac.uk
+
+Jianxin is a PhD from the University of Cambridge. Email: jianxin.zhao@cl.cam.ac.uk
+
