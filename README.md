@@ -29,7 +29,7 @@ The documentation of Owl includes two parts: the [book](https://ocaml.xyz/book/)
 ## Research
 
 Owl originated from academia. To this day, many of our core contributors have academic positions and active research programs. 
-The subprojects are listed at the [finished](https://ocaml.xyz/project/proposal.html) and [proposed](https://ocaml.xyz/project/proposal.html) projects. We welcome anyone to discuss potential research proposals with the team. A research project based on Owl should be explicitly made known to all team members, and provides a clear attribute to Owl.
+The subprojects are listed at the [finished](https://ocaml.xyz/project/finished.html) and [proposed](https://ocaml.xyz/project/proposal.html) projects. We welcome anyone to discuss potential research proposals with the team. A research project based on Owl should be explicitly made known to all team members, and provides a clear attribute to Owl.
 
 ## Community
 
