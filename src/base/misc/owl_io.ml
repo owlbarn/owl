@@ -82,7 +82,7 @@ let mapi_lines_of_file f fname =
 (* similar to iteri_lines_of_file but for marshaled file *)
 let iteri_lines_of_marshal ?(verbose = true) f fname =
   let i = ref 0 in
-  let h = open_in fname in
+  let h = open_in_bin fname in
   Fun.protect
     (fun () ->
       let t1 = ref (Unix.gettimeofday ()) in
@@ -116,13 +116,13 @@ let mapi_lines_of_marshal f fname =
 
 (* save a marshalled object to a file *)
 let marshal_to_file ?(flags = []) x f =
-  let h = open_out f in
+  let h = open_out_bin f in
   Fun.protect (fun () -> Marshal.to_channel h x flags) ~finally:(fun () -> close_out h)
 
 
 (* load a marshalled object from a file *)
 let marshal_from_file f =
-  let h = open_in f in
+  let h = open_in_bin f in
   Fun.protect
     (fun () ->
       let s = really_input_string h (in_channel_length h) in

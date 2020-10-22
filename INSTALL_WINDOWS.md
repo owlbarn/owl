@@ -54,6 +54,6 @@ Crashed tests:
 * `math`: test `pow_mod`
 
 Failed tests:
-* `dense matrix`: test `save_load` (-> maybe a Windows filesystem issue?)
+_none_
 
 
