@@ -47,5 +47,13 @@ opam install owl owl-top
 
 ## Status
 
-Porting to Windows is still work-in-progress. At the moment `owl`, `owl-top`, and `owl-zoo` can be installed and basic functionality works. Netherless, compiling `owl` still generates quite a lot fo warnings and at least one test fails (crashes).
+Porting to Windows is still work-in-progress. At the moment `owl`, `owl-top`, and `owl-zoo` can be installed and basic functionality works. Netherless, compiling `owl` still generates quite a lot of warnings and test failures:
+
+Crashed tests:
+* `math`: test `mulmod`
+* `math`: test `pow_mod`
+
+Failed tests:
+* `dense matrix`: test `save_load` (-> maybe a Windows filesystem issue?)
+
 
