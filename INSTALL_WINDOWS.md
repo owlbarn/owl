@@ -6,7 +6,7 @@ This document gives instructions on how to install Owl on Windows, natively. For
 
 The recommended way to build native apps from OCaml is the [OCaml for Windows](https://fdopen.github.io/opam-repository-mingw/) setup, which uses a `Cygwin` environment, but compiles to native Windows (without relying on `Cygwin.dll`). OCaml for Windows (_OfW_) features an opam repository and sets up the needed toolchains, e.g., `gcc`, `make`, `pc-config`, so that most opam packages build out-of-the-box, even the ones relying on C-code.
 
-Please make sure the path is correctly setup, as described on the OfW website: [depext cygwin](https://fdopen.github.io/opam-repository-mingw/depext-cygwin/). Otherwise, theh cross-compiling tools might not find the correct binaries.
+Please make sure the path is correctly setup, as described on the OfW website: [depext cygwin](https://fdopen.github.io/opam-repository-mingw/depext-cygwin/). Otherwise, the cross-compiling tools might not find the correct binaries.
 
 ## Pre-Requisites
 
@@ -21,7 +21,7 @@ make CC=x86_64-w64-mingw32-gcc FC=x86_64-w64-mingw32-gfortran TARGET=HASWELL
 make CC=x86_64-w64-mingw32-gcc FC=x86_64-w64-mingw32-gfortran TARGET=HASWELL PREFIX=/usr/x86_64-w64-mingw32/sys-root/mingw install
 ```
 
-### PlPLot
+### PLplot
 
 __TODO__
 
