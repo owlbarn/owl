@@ -26,11 +26,11 @@ depends: [
   "alcotest" {with-test}
   "base" {build}
   "base-bigarray"
-  "conf-openblas" {>= "0.2.0"}
+  "conf-openblas" {>= "0.2.1"}
   "ctypes" {>= "0.16.0"}
   "dune" {>= "2.0.0"}
   "dune-configurator"
-  "eigen" {>= "0.1.0"}
+  "eigen" {>= "0.3.0"}
   "owl-base" {= version}
   "stdio" {build}
   "npy"
