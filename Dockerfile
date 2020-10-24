@@ -19,20 +19,23 @@ RUN ldconfig /opt/OpenBLAS/lib/
 ##################### PREREQUISITES ########################
 
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get install -y pkg-config m4 zlib1g libplplot-dev plplot-driver-cairo
-RUN apt-get remove plplot-driver-qt -y
-RUN opam install alcotest utop
+RUN apt-get update -y
+RUN apt-get install -y m4 wget unzip aspcud libshp-dev libplplot-dev gfortran pkg-config git
+RUN cd /home/opam/opam-repository && git pull --quiet origin master
+RUN opam update -q
 
 ####################   INSTALL OWL  #######################
 
-COPY . owl
-WORKDIR /home/opam/owl
+ENV OWLPATH /home/opam/owl
 ENV OWL_DISABLE_LAPACKE_LINKING_FLAG 1
 ENV OWL_COMPILE_CFLAGS "-I/opt/OpenBLAS/include -I/home/opam/OpenBLAS/lapack-netlib/LAPACKE/include/ -L/opt/OpenBLAS/lib"
-RUN CFLAGS=${OWL_COMPILE_CFLAGS} opam pin .
+RUN CFLAGS=${OWL_COMPILE_CFLAGS} opam install owl owl-top owl-plplot utop -y
 
-####################   POST CONFIG  #######################
+############## SET UP DEFAULT CONTAINER VARS ##############
 
-RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit
-RUN echo 'eval $(opam env)' >> /home/opam/.bashrc
+RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit \
+    && echo 'eval $(opam env)' >> /home/opam/.bashrc
+
+WORKDIR $OWLPATH
 ENTRYPOINT /bin/bash
+
