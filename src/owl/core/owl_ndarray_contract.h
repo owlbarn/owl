@@ -10,22 +10,22 @@
 /* Define structure for contracting indices of a tensor. */
 
 struct contract_pair {
-  long dim;         // number of dimensions, x and y must be the same.
-  long dep;         // the depth of current recursion.
-  long drt;         // number of outer loops.
+  int64_t dim;         // number of dimensions, x and y must be the same.
+  int64_t dep;         // the depth of current recursion.
+  int64_t drt;         // number of outer loops.
   int64_t *n;       // number of iteration in each dimension, i.e. y's shape
   void *x;          // x, operand.
-  long posx;        // current offset of x.
-  long *ofsx;       // offset of x in each dimension.
-  long *incx;       // stride size of x in each dimension.
+  int64_t posx;        // current offset of x.
+  int64_t *ofsx;       // offset of x in each dimension.
+  int64_t *incx;       // stride size of x in each dimension.
   void *y;          // y, operand.
-  long posy;        // current offset of y.
-  long *ofsy;       // offset of y in each dimension.
-  long *incy;       // stride size of y in each dimension.
+  int64_t posy;        // current offset of y.
+  int64_t *ofsy;       // offset of y in each dimension.
+  int64_t *incy;       // stride size of y in each dimension.
   void *z;          // z, operand.
-  long posz;        // current offset of z.
-  long *ofsz;       // offset of z in each dimension.
-  long *incz;       // stride size of z in each dimension.
+  int64_t posz;        // current offset of z.
+  int64_t *ofsz;       // offset of z in each dimension.
+  int64_t *incz;       // stride size of z in each dimension.
 };
 
 
