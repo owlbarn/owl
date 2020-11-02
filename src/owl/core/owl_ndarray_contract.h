@@ -13,7 +13,7 @@ struct contract_pair {
   long dim;         // number of dimensions, x and y must be the same.
   long dep;         // the depth of current recursion.
   long drt;         // number of outer loops.
-  long *n;          // number of iteration in each dimension, i.e. y's shape
+  int64_t *n;       // number of iteration in each dimension, i.e. y's shape
   void *x;          // x, operand.
   long posx;        // current offset of x.
   long *ofsx;       // offset of x in each dimension.
