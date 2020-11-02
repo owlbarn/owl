@@ -138,19 +138,14 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
         | F _         -> failwith "input to jacobian must be a row vector not a float"
         | Arr _       ->
           let z = A.zeros [| n; m |] in
-          if m > n
-          then
-            jvps
-            |> Array.iteri (fun i v ->
-                   match v with
-                   | Arr v -> A.copy_col_to (A.transpose v) z i
-                   | _     -> failwith "error: jacobian")
-          else
-            jvps
-            |> Array.iteri (fun i v ->
-                   match v with
-                   | Arr v -> A.copy_row_to v z i
-                   | _     -> failwith "error: jacobian");
+          jvps
+          |> Array.iteri (fun i v ->
+                 match v with
+                 | Arr v ->
+                   if m > n
+                   then A.copy_col_to (A.transpose v) z i
+                   else A.copy_row_to v z i
+                 | _     -> failwith "error: jacobian");
           Arr z
         | DF _ | DR _ ->
           if m > n
