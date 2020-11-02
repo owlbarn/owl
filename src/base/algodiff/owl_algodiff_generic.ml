@@ -113,34 +113,51 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       | _     -> assert false
     in
     fun f x ->
-      let y = f x |> primal in
+      let y = f x in
       let m, n =
         match dim_typ y, dim_typ x with
         | `row a, `row 1 -> a, 1
         | `row a, `row b -> a, b
         | _              -> failwith "jacobian: input and output must both be row vectors"
       in
-      let z = A.empty [| m; n |] in
-      (match m > n with
-      | true  ->
-        Array.init n (fun i ->
-            let v = A.zeros [| 1; n |] in
-            A.(set v [| 0; i |] (float_to_elt 1.));
-            jacobianv f x (Arr v))
-        |> Array.iteri (fun i v ->
-               match v with
-               | Arr v -> A.copy_col_to (A.transpose v) z i
-               | _     -> failwith "error: jacobian")
-      | false ->
-        Array.init m (fun i ->
-            let v = A.zeros [| 1; m |] in
-            A.(set v [| 0; i |] (float_to_elt 1.));
-            jacobianTv f x (Arr v))
-        |> Array.iteri (fun i v ->
-               match v with
-               | Arr v -> A.copy_row_to v z i
-               | _     -> failwith "error: jacobian"));
-      y, Arr z
+      let z =
+        let jvps =
+          if m > n
+          then
+            Array.init n (fun i ->
+                let v = A.zeros [| 1; n |] in
+                A.(set v [| 0; i |] (float_to_elt 1.));
+                jacobianv f x (Arr v))
+          else
+            Array.init m (fun i ->
+                let v = A.zeros [| 1; m |] in
+                A.(set v [| 0; i |] (float_to_elt 1.));
+                jacobianTv f x (Arr v))
+        in
+        match y with
+        | F _         -> failwith "input to jacobian must be a row vector not a float"
+        | Arr _       ->
+          let z = A.zeros [| n; m |] in
+          if m > n
+          then
+            jvps
+            |> Array.iteri (fun i v ->
+                   match v with
+                   | Arr v -> A.copy_col_to (A.transpose v) z i
+                   | _     -> failwith "error: jacobian")
+          else
+            jvps
+            |> Array.iteri (fun i v ->
+                   match v with
+                   | Arr v -> A.copy_row_to v z i
+                   | _     -> failwith "error: jacobian");
+          Arr z
+        | DF _ | DR _ ->
+          if m > n
+          then Ops.Maths.concatenate ~axis:1 jvps
+          else Ops.Maths.concatenate ~axis:0 jvps
+      in
+      primal y, z
 
 
   (* jacobian of f *)
