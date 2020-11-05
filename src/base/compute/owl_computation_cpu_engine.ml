@@ -36,9 +36,9 @@ end
 (* Functor of making CPU-based engine with unrolled module hierarchy *)
 
 module Make (A : Ndarray_Mutable) = struct
-  include Owl_computation_engine.Flatten
-            (Make_Nested
-               (Owl_computation_engine.Make_Graph (Owl_computation_cpu_device.Make (A))))
+  include
+    Owl_computation_engine.Flatten
+      (Make_Nested (Owl_computation_engine.Make_Graph (Owl_computation_cpu_device.Make (A))))
 end
 
 (* Make functor ends *)

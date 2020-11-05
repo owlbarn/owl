@@ -198,12 +198,13 @@ let () =
           ~default:openblas_default
           (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"openblas")
       in
-      if not
-         @@ C.c_test
-              c
-              test_linking
-              ~c_flags:openblas_conf.cflags
-              ~link_flags:openblas_conf.libs
+      if
+        not
+        @@ C.c_test
+             c
+             test_linking
+             ~c_flags:openblas_conf.cflags
+             ~link_flags:openblas_conf.libs
       then (
         Printf.printf
           {|
