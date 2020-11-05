@@ -11,7 +11,7 @@
  * Code heavily inspired by Eigen (http://eigen.tuxfamily.org/).
  */
 
-#define IM2COL_THRESHOLD LONG_MAX // TODO: a temp hack to disable the second conv algorithm
+#define IM2COL_THRESHOLD 0 // 512 * 1024
 #define ALIGN_SIZE 32 // for AVX address alignment
 
 
@@ -873,7 +873,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel) (
         for (int jn = 0; jn < actual_nc; jn++) {
           for (int ik = 0; ik < actual_kc; ik++) {
             int index_kn = idx_kn_base + ik * out_channel + jn;
-            kernel_ptr[index_kn] = temp_kn[cnk++];
+            kernel_ptr[index_kn] += temp_kn[cnk++];
           }
         }
       }
