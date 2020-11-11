@@ -1,3 +1,12 @@
+## 1.0.0 (2020-11-10)
+* Update project governance 
+* Fix bug in convolution operation 
+* Fix bug in AEOS module
+* Enable differentiation through the Jacobian in Algodiff
+* Fix windows compatibility issue (@kkirstein #549)
+* Fix bitwidth issue in mingw by replacing long type with int64_t (thanks @kkirstein)
+* Fix Dockerfile for master branch
+
 ## 0.10.0 (2020-10-04)
 * various documentation improvements (thanks @pveber, @UnixJunkie, @Fourchaux)
 * Fix use of access operators (#543)

@@ -625,18 +625,18 @@ value owl_stub_sf_expm1(value vX) {
 
 
 value owl_stub_mulmod(value vA, value vB, value vM) {
-  long a = Long_val(vA);
-  long b = Long_val(vB);
-  long m = Long_val(vM);
-  long r = mulmod(a, b, m);
+  int64_t a = Long_val(vA);
+  int64_t b = Long_val(vB);
+  int64_t m = Long_val(vM);
+  int64_t r = mulmod(a, b, m);
   return Val_long(r);
 }
 
 
 value owl_stub_powmod(value vA, value vB, value vM) {
-  long a = Long_val(vA);
-  long b = Long_val(vB);
-  long m = Long_val(vM);
-  long r = powmod(a, b, m);
+  int64_t a = Long_val(vA);
+  int64_t b = Long_val(vB);
+  int64_t m = Long_val(vM);
+  int64_t r = powmod(a, b, m);
   return Val_long(r);
 }
