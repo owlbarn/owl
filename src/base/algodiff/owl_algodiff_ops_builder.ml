@@ -42,7 +42,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         in
         let fd a = f a in
         let r a =
-          let adjoint cp ca t = (S.dr a cp ca, a) :: t in
+          let adjoint cp ca t = (S.dr (primal a) cp ca, a) :: t in
           let register t = a :: t in
           let label = S.label, [ a ] in
           adjoint, register, label
@@ -107,7 +107,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         in
         let fd = f in
         let r (a, cp_ref, ca_ref) =
-          let adjoint cp _ca t = (S.dr a cp cp_ref ca_ref, a) :: t in
+          let adjoint cp _ca t = (S.dr (primal a) cp cp_ref ca_ref, a) :: t in
           let register t = a :: t in
           let label = S.label, [ a ] in
           adjoint, register, label
@@ -178,7 +178,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         in
         let fd = f in
         let r (a, cp_ref, ca_ref) =
-          let adjoint cp _ca t = (S.dr a cp cp_ref ca_ref, a) :: t in
+          let adjoint cp _ca t = (S.dr (primal a) cp cp_ref ca_ref, a) :: t in
           let register t = a :: t in
           let label = S.label, [ a ] in
           adjoint, register, label
@@ -229,7 +229,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         in
         let fd = f in
         let r (a, cp_arr_ref, ca_arr_ref) =
-          let adjoint cp _ca_ref t = (S.dr a cp cp_arr_ref ca_arr_ref, a) :: t in
+          let adjoint cp _ca_ref t = (S.dr (primal a) cp cp_arr_ref ca_arr_ref, a) :: t in
           let register t = a :: t in
           let label = S.label, [ a ] in
           adjoint, register, label
@@ -346,7 +346,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
         let fd = f in
         let r_d_d a b =
           let adjoint cp ca_ref t =
-            let abar, bbar = S.dr_ab a b cp ca_ref in
+            let abar, bbar = S.dr_ab (primal a) (primal b) cp ca_ref in
             (abar, a) :: (bbar, b) :: t
           in
           let register t = a :: b :: t in
@@ -354,13 +354,13 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           adjoint, register, label
         in
         let r_d_c a b =
-          let adjoint cp ca_ref t = (S.dr_a a b cp ca_ref, a) :: t in
+          let adjoint cp ca_ref t = (S.dr_a (primal a) b cp ca_ref, a) :: t in
           let register t = a :: t in
           let label = S.label ^ "_d_c", [ a; b ] in
           adjoint, register, label
         in
         let r_c_d a b =
-          let adjoint cp ca_ref t = (S.dr_b a b cp ca_ref, b) :: t in
+          let adjoint cp ca_ref t = (S.dr_b a (primal b) cp ca_ref, b) :: t in
           let register t = b :: t in
           let label = S.label ^ "_c_d", [ a; b ] in
           adjoint, register, label

@@ -316,6 +316,21 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       test_func f
 
 
+    let nested_grad1 () =
+      let x = Mat.gaussian 1 (n * n) in
+      let r ~theta x = Maths.(sum' (sqr x *@ transpose (theta * theta))) in
+      let quad ~theta x =
+        let rlx ~theta = grad (r ~theta) in
+        jacobian (rlx ~theta) x
+      in
+      let test_theta x theta = quad ~theta x |> Maths.l2norm_sqr' in
+      let f theta =
+        let theta = Arr.reshape theta [| 1; n * n |] in
+        test_theta x theta
+      in
+      test_func f
+
+
     let test =
       [ "neg", neg; "abs", abs; "signum", signum; "floor", floor; "ceil", ceil
       ; "round", round; "sqr", sqr; "sqrt", sqrt; "log", log; "pow", pow; "sin", sin
@@ -329,7 +344,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; "sylvester", sylvester; "lyapunov", lyapunov
       ; "discrete_lyapunov", discrete_lyapunov; "linsolve", linsolve
       ; "linsolve_triangular", linsolve_triangular; "care", care
-      ; "log_sum_exp'", log_sum_exp'; "log_sum_exp", log_sum_exp ]
+      ; "log_sum_exp'", log_sum_exp'; "log_sum_exp", log_sum_exp
+      ; "nested_grad1", nested_grad1 ]
       |> List.fold_left
            (fun (b, error_msg) (s, f) ->
              let b', c =
