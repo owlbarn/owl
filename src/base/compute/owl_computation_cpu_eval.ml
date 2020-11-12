@@ -37,7 +37,7 @@ module Make (Graph : Owl_computation_graph_sig.Sig) = struct
             | Noop -> _eval_map_00 x (fun x -> x.(0))
             | Var -> check_assigned x
             | Const -> check_assigned x
-            | Empty _shape -> (_eval_map_01 x (fun ~out _x -> ()) [@warning "-27"])
+            | Empty _shape -> _eval_map_01 x (fun ~out _x -> ()) [@warning "-27"]
             | Zeros _shape -> _eval_map_01 x (fun ~out _x -> A.zeros_ ~out)
             | Ones _shape -> _eval_map_01 x (fun ~out _x -> A.ones_ ~out)
             | Create _shape -> _eval_map_02 x (fun ~out x -> A.create_ ~out x.(0))
@@ -56,7 +56,7 @@ module Make (Graph : Owl_computation_graph_sig.Sig) = struct
               _eval_map_01 x (fun ~out x -> A.get_slice_ ~out slice x.(0))
             | SetSlice slice ->
               _eval_map_01 x (fun ~out x -> A.set_slice_ ~out slice x.(0) x.(1))
-            | Copy -> (_eval_map_01 x (fun ~out x -> A.copy_ ~out x.(0)) [@warning "-27"])
+            | Copy -> _eval_map_01 x (fun ~out x -> A.copy_ ~out x.(0)) [@warning "-27"]
             | Reset -> _eval_map_01 x (fun ~out _x -> A.reset out)
             | Reshape _shape -> _eval_map_01 x (fun ~out x -> A.reshape_ ~out x.(0))
             | Reverse -> _eval_map_01 x (fun ~out x -> A.reverse_ ~out x.(0))

@@ -1,4 +1,4 @@
-version=0.15.0
+version=0.16.0
 profile=janestreet
 wrap-comments=false
 doc-comments=after-when-possible
