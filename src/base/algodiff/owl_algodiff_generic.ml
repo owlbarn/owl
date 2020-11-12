@@ -95,7 +95,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   let jacobianTv f x v = jacobianTv' f x v |> snd
 
   (* jacobian of f (vector -> vector) at x, both x and y are row vectors, also return the
-     original value *)
+     original value. The jacobian J satisfies dx = J df *)
   let jacobian' =
     let dim_typ x =
       match primal' x with
@@ -143,14 +143,14 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
                  match v with
                  | Arr v ->
                    if m > n
-                   then A.copy_col_to (A.transpose v) z i
-                   else A.copy_row_to v z i
+                   then A.copy_row_to v z i
+                   else A.copy_col_to (A.transpose v) z i
                  | _     -> failwith "error: jacobian");
           Arr z
         | DF _ | DR _ ->
           if m > n
-          then Ops.Maths.concatenate ~axis:1 jvps
-          else Ops.Maths.concatenate ~axis:0 jvps
+          then Ops.Maths.concatenate ~axis:0 jvps
+          else Ops.Maths.concatenate ~axis:0 jvps |> Ops.Maths.transpose
       in
       primal y, z
 
