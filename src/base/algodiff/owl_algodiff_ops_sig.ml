@@ -238,6 +238,12 @@ module type Sig = sig
     val set_slice : int list list -> t -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val get_fancy : index list -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val set_fancy : index list -> t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val diag : ?k:int -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

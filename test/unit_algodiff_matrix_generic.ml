@@ -91,6 +91,24 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
     let l2norm_sqr' () = test_func Maths.l2norm_sqr'
 
+    let get_slice () =
+      let f x =
+        let y1 = Maths.get_slice [ [ 0 ] ] x in
+        let y2 = Maths.get_slice [ [ 2 ] ] x in
+        Maths.(sum' (sin (y1 * y2)))
+      in
+      test_func f
+
+
+    let get_fancy () =
+      let f x =
+        let y1 = Maths.get_fancy [ R [ 0; 1 ]; L [ 0; 2 ] ] x in
+        let y2 = Maths.get_fancy [ R [ 1; 2 ]; L [ 0; 1 ] ] x in
+        Maths.(sum' (tan (y1 * y2)))
+      in
+      test_func f
+
+
     let tril () = test_func Maths.tril
 
     let triu () = test_func Maths.triu
@@ -337,10 +355,11 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; "cos", cos; "tan", tan; "sinh", sinh; "cosh", cosh; "tanh", tanh
       ; "sigmoid", sigmoid; "relu", relu; "dawsn", dawsn; "exp", exp
       ; "transpose", transpose; "diag", diag; "diagm", diagm; "trace", trace
-      ; "l1norm'", l1norm'; "l2norm'", l2norm'; "l2norm_sqr'", l2norm_sqr'; "tril", tril
-      ; "triu", triu; "inv", inv; "logdet", logdet; "chol", chol; "qr", qr; "lq", lq
-      ; "split", split; "concat", concat; "concatenate", concatenate; "stack", stack
-      ; "svd", svd; "of_arrays", of_arrays; "to_arrays", to_arrays; "init_2d", init_2d
+      ; "l1norm'", l1norm'; "l2norm'", l2norm'; "l2norm_sqr'", l2norm_sqr'
+      ; "get_slice", get_slice; "get_fancy", get_fancy; "tril", tril; "triu", triu
+      ; "inv", inv; "logdet", logdet; "chol", chol; "qr", qr; "lq", lq; "split", split
+      ; "concat", concat; "concatenate", concatenate; "stack", stack; "svd", svd
+      ; "of_arrays", of_arrays; "to_arrays", to_arrays; "init_2d", init_2d
       ; "sylvester", sylvester; "lyapunov", lyapunov
       ; "discrete_lyapunov", discrete_lyapunov; "linsolve", linsolve
       ; "linsolve_triangular", linsolve_triangular; "care", care
