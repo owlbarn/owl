@@ -503,6 +503,25 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and get_slice i = Lazy.force _get_slice i
 
+    and _get_fancy =
+      lazy
+        (fun i ->
+          build_siso
+            (module struct
+              let label = "get_fancy"
+
+              let ff_f a = error_uniop label (pack_elt a)
+
+              let ff_arr a = Arr A.(get_fancy i a)
+
+              let df _cp _ap at = get_fancy i at
+
+              let dr a _cp ca = set_fancy i (zero a) !ca
+            end : Siso))
+
+
+    and get_fancy i = Lazy.force _get_fancy i
+
     and _sum' =
       lazy
         (build_siso
@@ -1302,6 +1321,41 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
     and set_slice i = Lazy.force _set_slice i
+
+    and _set_fancy =
+      lazy
+        (fun i ->
+          build_piso
+            (module struct
+              let label = "set_fancy"
+
+              let ff_aa a _b = error_uniop label (pack_elt a)
+
+              let ff_ab a _b = error_uniop label (pack_elt a)
+
+              let ff_ba _a b = error_uniop label (pack_elt b)
+
+              let ff_bb a b =
+                let a = A.copy a in
+                A.(set_fancy i a b);
+                Arr a
+
+
+              let df_da _cp _ap at bp = set_fancy i at (zero bp)
+
+              let df_db _cp ap _bp bt = set_fancy i (zero ap) bt
+
+              let df_dab _cp _ap at _bp bt = set_fancy i at bt
+
+              let dr_ab _a b _cp ca = set_fancy i !ca (zero b), get_fancy i !ca
+
+              let dr_a _a b _cp ca = set_fancy i !ca (zero b)
+
+              let dr_b _a _b _cp ca = get_fancy i !ca
+            end : Piso))
+
+
+    and set_fancy i = Lazy.force _set_fancy i
 
     and ( *@ ) a b = dot a b
 

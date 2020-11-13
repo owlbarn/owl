@@ -214,6 +214,14 @@ let set_slice index_list varr slice_varr =
   done
 
 
+(*TODO: optimise, test *)
+let get_fancy _indices _varr = raise (Owl_exception.NOT_IMPLEMENTED "base: get_fancy")
+
+(*TODO: optimise, test *)
+let set_fancy _indices _target _input =
+  raise (Owl_exception.NOT_IMPLEMENTED "base: set_fancy")
+
+
 (* The result shares the underlying buffer with original, not a copy *)
 let reshape x d =
   let minus_one = Owl_utils.Array.count d (-1) in
@@ -2619,11 +2627,10 @@ let conv2d ?(padding = SAME) input kernel stride =
                 let in_col = (i * col_stride) + di - pad_left in
                 let in_row = (j * row_stride) + dj - pad_top in
                 let in_val =
-                  if
-                    0 <= in_col
-                    && in_col < input_cols
-                    && 0 <= in_row
-                    && in_row < input_rows
+                  if 0 <= in_col
+                     && in_col < input_cols
+                     && 0 <= in_row
+                     && in_row < input_rows
                   then get input [| b; in_col; in_row; q |]
                   else 0.
                 in
@@ -2792,13 +2799,12 @@ let conv3d ?(padding = SAME) input kernel stride =
                     let in_row = (j * row_stride) + dj - pad_top in
                     let in_dpt = (dpt * dpt_stride) + d_dpt - pad_shallow in
                     let in_val =
-                      if
-                        0 <= in_col
-                        && in_col < input_cols
-                        && 0 <= in_row
-                        && in_row < input_rows
-                        && 0 <= in_dpt
-                        && in_dpt < input_dpts
+                      if 0 <= in_col
+                         && in_col < input_cols
+                         && 0 <= in_row
+                         && in_row < input_rows
+                         && 0 <= in_dpt
+                         && in_dpt < input_dpts
                       then get input [| b; in_col; in_row; in_dpt; q |]
                       else 0.
                     in
@@ -2981,13 +2987,12 @@ let _pool3d
                   let in_col = (i * col_stride) + di - pad_left in
                   let in_row = (j * row_stride) + dj - pad_top in
                   let in_dpt = (dpt * dpt_stride) + d_dpt - pad_shallow in
-                  if
-                    0 <= in_col
-                    && in_col < input_cols
-                    && 0 <= in_row
-                    && in_row < input_rows
-                    && 0 <= in_dpt
-                    && in_dpt < input_dpts
+                  if 0 <= in_col
+                     && in_col < input_cols
+                     && 0 <= in_row
+                     && in_row < input_rows
+                     && 0 <= in_dpt
+                     && in_dpt < input_dpts
                   then add_val_pool_fun (get input [| b; in_col; in_row; in_dpt; k |])
                 done
                 (*d_dpt*)
@@ -3219,17 +3224,15 @@ let conv2d_backward_input input kernel stride output' =
           let sum = ref 0. in
           for di = 0 to kernel_cols - 1 do
             for dj = 0 to kernel_rows - 1 do
-              if
-                Stdlib.( mod ) (in_i + pad_left - di) col_stride = 0
-                && Stdlib.( mod ) (in_j + pad_top - dj) row_stride = 0
+              if Stdlib.( mod ) (in_i + pad_left - di) col_stride = 0
+                 && Stdlib.( mod ) (in_j + pad_top - dj) row_stride = 0
               then (
                 let out_col = (in_i + pad_left - di) / col_stride in
                 let out_row = (in_j + pad_top - dj) / row_stride in
-                if
-                  0 <= out_col
-                  && out_col < output_cols
-                  && 0 <= out_row
-                  && out_row < output_rows
+                if 0 <= out_col
+                   && out_col < output_cols
+                   && 0 <= out_row
+                   && out_row < output_rows
                 then
                   for k = 0 to out_channel - 1 do
                     let out_grad = get output' [| b; out_col; out_row; k |] in
@@ -3344,8 +3347,10 @@ let conv2d_backward_kernel input kernel stride output' =
               for j = 0 to output_rows - 1 do
                 let in_col = (i * col_stride) + di - pad_left in
                 let in_row = (j * row_stride) + dj - pad_top in
-                if
-                  0 <= in_col && in_col < input_cols && 0 <= in_row && in_row < input_rows
+                if 0 <= in_col
+                   && in_col < input_cols
+                   && 0 <= in_row
+                   && in_row < input_rows
                 then (
                   let out_grad = get output' [| b; i; j; k |] in
                   let input_val = get input [| b; in_col; in_row; q |] in
@@ -4006,21 +4011,19 @@ let conv3d_backward_input input kernel stride output' =
             for di = 0 to kernel_cols - 1 do
               for dj = 0 to kernel_rows - 1 do
                 for d_dpt = 0 to kernel_dpts - 1 do
-                  if
-                    Stdlib.( mod ) (in_i + pad_left - di) col_stride = 0
-                    && Stdlib.( mod ) (in_j + pad_top - dj) row_stride = 0
-                    && Stdlib.( mod ) (in_dpt + pad_shallow - d_dpt) dpt_stride = 0
+                  if Stdlib.( mod ) (in_i + pad_left - di) col_stride = 0
+                     && Stdlib.( mod ) (in_j + pad_top - dj) row_stride = 0
+                     && Stdlib.( mod ) (in_dpt + pad_shallow - d_dpt) dpt_stride = 0
                   then (
                     let out_col = (in_i + pad_left - di) / col_stride in
                     let out_row = (in_j + pad_top - dj) / row_stride in
                     let out_dpt = (in_dpt + pad_shallow - d_dpt) / dpt_stride in
-                    if
-                      0 <= out_col
-                      && out_col < output_cols
-                      && 0 <= out_row
-                      && out_row < output_rows
-                      && 0 <= out_dpt
-                      && out_dpt < output_dpts
+                    if 0 <= out_col
+                       && out_col < output_cols
+                       && 0 <= out_row
+                       && out_row < output_rows
+                       && 0 <= out_dpt
+                       && out_dpt < output_dpts
                     then
                       for k = 0 to out_channel - 1 do
                         let out_grad =
@@ -4152,13 +4155,12 @@ let conv3d_backward_kernel input kernel stride output' =
                     let in_col = (i * col_stride) + di - pad_left in
                     let in_row = (j * row_stride) + dj - pad_top in
                     let in_dpt = (dpt * dpt_stride) + d_dpt - pad_shallow in
-                    if
-                      0 <= in_col
-                      && in_col < input_cols
-                      && 0 <= in_row
-                      && in_row < input_rows
-                      && 0 <= in_dpt
-                      && in_dpt < input_dpts
+                    if 0 <= in_col
+                       && in_col < input_cols
+                       && 0 <= in_row
+                       && in_row < input_rows
+                       && 0 <= in_dpt
+                       && in_dpt < input_dpts
                     then (
                       let out_grad = get output' [| b; i; j; dpt; k |] in
                       let input_val = get input [| b; in_col; in_row; in_dpt; q |] in
@@ -4342,10 +4344,9 @@ let transpose_conv3d_backward_input input kernel stride output' =
       dpt_stride
   in
   let p =
-    if
-      output_cols_same = output_cols
-      && output_rows_same = output_rows
-      && output_dpts_same = output_dpts
+    if output_cols_same = output_cols
+       && output_rows_same = output_rows
+       && output_dpts_same = output_dpts
     then SAME
     else VALID
   in
@@ -4611,13 +4612,12 @@ let _pool3d_backward
                   let in_col = (i * col_stride) + di - pad_left in
                   let in_row = (j * row_stride) + dj - pad_top in
                   let in_dpt = (dpt * dpt_stride) + dk - pad_shallow in
-                  if
-                    0 <= in_col
-                    && in_col < input_cols
-                    && 0 <= in_row
-                    && in_row < input_rows
-                    && 0 <= in_dpt
-                    && in_dpt < input_dpts
+                  if 0 <= in_col
+                     && in_col < input_cols
+                     && 0 <= in_row
+                     && in_row < input_rows
+                     && 0 <= in_dpt
+                     && in_dpt < input_dpts
                   then add_val_pool_fun (get input [| b; in_col; in_row; in_dpt; k |])
                 done
                 (*dk*)
@@ -4633,13 +4633,12 @@ let _pool3d_backward
                   let in_col = (i * col_stride) + di - pad_left in
                   let in_row = (j * row_stride) + dj - pad_top in
                   let in_dpt = (dpt * dpt_stride) + dk - pad_shallow in
-                  if
-                    0 <= in_col
-                    && in_col < input_cols
-                    && 0 <= in_row
-                    && in_row < input_rows
-                    && 0 <= in_dpt
-                    && in_dpt < input_dpts
+                  if 0 <= in_col
+                     && in_col < input_cols
+                     && 0 <= in_row
+                     && in_row < input_rows
+                     && 0 <= in_dpt
+                     && in_dpt < input_dpts
                   then (
                     let input_val = get input [| b; in_col; in_row; in_dpt; k |] in
                     let input_grad = get input' [| b; in_col; in_row; in_dpt; k |] in

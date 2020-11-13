@@ -54,6 +54,10 @@ module type Common = sig
 
   val set_slice : int list list -> arr -> arr -> unit
 
+  val get_fancy : index list -> arr -> arr
+
+  val set_fancy : index list -> arr -> arr -> unit
+
   val copy : arr -> arr
 
   val copy_ : out:arr -> arr -> unit
