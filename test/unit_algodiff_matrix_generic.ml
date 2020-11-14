@@ -190,7 +190,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       let f =
         let y1 = Mat.gaussian 10 n in
         let y2 = Mat.gaussian 15 n in
-        let h x = Maths.(y1 *@ x) in
+        let h x = Maths.(sum' (y1 *@ x)) in
         let h' = grad h in
         fun x ->
           let y = Maths.concatenate ~axis:0 [| y1; x; y2; h' x |] in
@@ -203,7 +203,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       let f =
         let y1 = Mat.gaussian n n in
         let y2 = Mat.gaussian n n in
-        let h x = Maths.(y1 *@ x) in
+        let h x = Maths.(sum' (y1 *@ x)) in
         let h' = grad h in
         fun x -> Maths.stack ~axis:(-1) [| y1; x; y2; h' x |]
       in
