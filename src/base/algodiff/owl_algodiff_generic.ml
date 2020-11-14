@@ -48,6 +48,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
 
   (* derivative of f (scalar -> scalar) at x, forward ad *)
   let diff' f x =
+    if not (is_float x) then failwith "input of `diff` must be a scalar";
     let x = make_forward x (pack_flt 1.) (tag ()) in
     let y = f x in
     primal y, tangent y
@@ -60,6 +61,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   let grad' f x =
     let x = make_reverse x (tag ()) in
     let y = f x in
+    if not (is_float y) then failwith "output of `grad` must be a scalar";
     Reverse.reverse_reset y;
     Reverse.reverse_push (pack_flt 1.) y;
     primal y, x |> adjval
