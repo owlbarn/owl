@@ -400,26 +400,26 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           | `normal, DR (_, _, _, _, t', _) -> succ i, t', `reverse, [ i ]
           | `forward, DR (_, _, _, _, t', _) ->
             if t' > t
-            then succ i, t', `reverse, []
+            then succ i, t', `reverse, [ i ]
             else if t' = t
             then failwith "error: forward and reverse clash on the same level"
             else succ i, t, `forward, idxs
           | `reverse, DR (_, _, _, _, t', _) ->
             if t' > t
-            then succ i, t', `reverse, []
+            then succ i, t', `reverse, [ i ]
             else if t' = t
             then succ i, t', `reverse, i :: idxs
             else succ i, t, m, idxs
           | `normal, DF (_, _, t') -> succ i, t', `forward, [ i ]
           | `forward, DF (_, _, t') ->
             if t' > t
-            then succ i, t', `forward, []
+            then succ i, t', `forward, [ i ]
             else if t' = t
             then succ i, t', `forward, i :: idxs
             else succ i, t, `forward, idxs
           | `reverse, DF (_, _, t') ->
             if t' > t
-            then succ i, t', `forward, []
+            then succ i, t', `forward, [ i ]
             else if t' = t
             then failwith "error: forward and reverse clash on the same level"
             else succ i, t, `reverse, idxs)

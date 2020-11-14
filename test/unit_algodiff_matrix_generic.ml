@@ -334,7 +334,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       test_func f
 
 
-    let nested_grad1 () =
+    let nested_grad1 =
       let x = Mat.gaussian 1 (n * n) in
       let r ~theta x = Maths.(sum' (sqr x *@ transpose (theta * theta))) in
       let quad ~theta x =
@@ -346,7 +346,25 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
         let theta = Arr.reshape theta [| 1; n * n |] in
         test_theta x theta
       in
-      test_func f
+      fun () -> test_func f
+
+
+    let nested_grad2 =
+      (* check aiao build_info: when inputs include DFs and DRs at different levels *)
+      let ff =
+        let z = Mat.gaussian n n in
+        let hfwd = Mat.gaussian n n in
+        let hrev = Mat.gaussian (3 * n) n in
+        fun x ->
+          let zfwd = make_forward z hfwd (tag ()) in
+          let zrev = make_reverse z (tag ()) in
+          let f1 = Maths.(concatenate ~axis:0 [| x; zfwd + sqr x; zfwd |]) |> Maths.sin in
+          let f2 = Maths.(concatenate ~axis:0 [| x; zrev + sqr x; zrev |]) |> Maths.sin in
+          let df = tangent f1 in
+          reverse_prop hrev f2;
+          Maths.(sum' df + sum' (adjval zrev))
+      in
+      fun () -> test_func ff
 
 
     let test =
@@ -364,7 +382,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; "discrete_lyapunov", discrete_lyapunov; "linsolve", linsolve
       ; "linsolve_triangular", linsolve_triangular; "care", care
       ; "log_sum_exp'", log_sum_exp'; "log_sum_exp", log_sum_exp
-      ; "nested_grad1", nested_grad1 ]
+      ; "nested_grad1", nested_grad1; "nested_grad2", nested_grad2 ]
       |> List.fold_left
            (fun (b, error_msg) (s, f) ->
              let b', c =
