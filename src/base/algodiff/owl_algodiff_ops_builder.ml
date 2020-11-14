@@ -195,7 +195,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     val ff_arr : A.arr -> t array
 
-    val df : t -> t -> t -> t
+    val df : t array -> t -> t -> t array
 
     val dr : t -> t -> t ref array -> t ref array -> t
   end
@@ -206,7 +206,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
       match a with
       | DF (ap, at, ai)         ->
         let cp_arr = fd ap in
-        Array.map (fun cp -> DF (cp, df cp ap at, ai)) cp_arr
+        let ct_arr = df cp_arr ap at in
+        Array.map2 (fun cp ct -> DF (cp, ct, ai)) cp_arr ct_arr
       | DR (ap, _, _, _, ai, _) ->
         let cp_arr = fd ap in
         let cp_arr_ref = Array.map (fun cp -> ref cp) cp_arr in
@@ -422,11 +423,11 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             else if t' = t
             then failwith "error: forward and reverse clash on the same level"
             else succ i, t, `reverse, idxs)
-        (0, -10000, `normal, [])
+        (0, -50000, `normal, [])
     in
     fun (module S : Aiso) ->
       let rec f a =
-        let _, t, mode, idxs = build_info a in
+        let _, max_t, mode, idxs = build_info a in
         let idxs = idxs |> List.rev in
         match mode with
         | `normal  -> S.ff a
@@ -435,7 +436,12 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             Array.map
               (fun x ->
                 match x with
-                | DF (p, _, t') -> if t = t' then p else x
+                | DF (p, _, t') ->
+                  if max_t = t'
+                  then p
+                  else if t' > max_t
+                  then failwith "no tags should be higher than max_t"
+                  else x
                 | x             -> x)
               a
           in
@@ -445,13 +451,18 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             List.iter (fun k -> at.(k) <- tangent a.(k)) idxs;
             S.df idxs cp ap at
           in
-          DF (cp, at, t)
+          DF (cp, at, max_t)
         | `reverse ->
           let ap =
             Array.map
               (fun x ->
                 match x with
-                | DR (p, _, _, _, t', _) -> if t = t' then p else x
+                | DR (p, _, _, _, t', _) ->
+                  if max_t = t'
+                  then p
+                  else if t' > max_t
+                  then failwith "no tags should be higher than max_t"
+                  else x
                 | x                      -> x)
               a
           in
@@ -463,7 +474,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
           in
           let register t = List.fold_left (fun t i -> a.(i) :: t) t idxs in
           let label = S.label, List.(map (fun i -> a.(i)) idxs) in
-          DR (cp, ref (zero cp), (adjoint, register, label), ref 0, t, ref 0)
+          DR (cp, ref (zero cp), (adjoint, register, label), ref 0, max_t, ref 0)
       in
       f
 end

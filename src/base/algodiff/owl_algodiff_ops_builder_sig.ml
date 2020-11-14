@@ -64,7 +64,7 @@ module type Sig = sig
 
     val ff_arr : arr -> t array
 
-    val df : t -> t -> t -> t
+    val df : t array -> t -> t -> t array
 
     val dr : t -> t -> t ref array -> t ref array -> t
   end

@@ -1623,9 +1623,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let ff_arr a = A.(split ~axis parts a) |> Array.map (fun x -> Arr x)
 
-              let df _cp _ap _at =
-                raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.split")
-
+              let df _cp _ap at = split ~axis parts at
 
               let dr _a _cp _cp_ref_arr ca_ref_arr =
                 concatenate ~axis (Array.map (fun ca -> !ca) ca_ref_arr)
