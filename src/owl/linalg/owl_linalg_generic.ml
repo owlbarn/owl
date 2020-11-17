@@ -1,3 +1,5 @@
+let () = Printexc.record_backtrace true
+
 (*
  * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
@@ -839,7 +841,41 @@ let discrete_lyapunov ?(solver = `default) a q =
   solve a q
 
 
+let _check_are_shape ~label a b q r =
+  let n, m = M.shape b in
+  let an, am = M.shape a in
+  let qn, qm = M.shape q in
+  let rn, rm = M.shape r in
+  let pass = (an, am) = (n, n) && (qn, qm) = (n, n) && (rn, rm) = (m, m) in
+  if not pass
+  then
+    Printf.sprintf
+      "%s dims mismatch: a (%i, %i), b (%i, %i), q (%i, %i), r (%i, %i)"
+      label
+      an
+      am
+      n
+      m
+      qn
+      qm
+      rn
+      rm
+    |> failwith
+
+
+let _validate_care ~diag_r a b q r =
+  _check_are_shape ~label:"CARE" a b q r;
+  (* check that q is Hermitian *)
+  if not (is_hermitian q) then failwith "CARE: q is not hermitian";
+  (* check that r is Hermitian *)
+  if (not diag_r) && not (is_hermitian r) then failwith "CARE: r is not hermitian";
+  (* check that r is posdef *)
+  if (diag_r && not M.(is_positive (diag r))) || ((not diag_r) && not (is_posdef r))
+  then failwith "CARE: r is not posdef"
+
+
 let care ?(diag_r = false) a b q r =
+  _validate_care ~diag_r a b q r;
   let g =
     if diag_r
     then (
@@ -854,12 +890,36 @@ let care ?(diag_r = false) a b q r =
   M.iteri_2d (fun i j re -> if re < 0. then M.set select i j 1l) wr;
   ignore (Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q:u);
   let m, n = M.shape u in
-  let u0 = M.get_slice [ [ 0; (m / 2) - 1 ]; [ 0; (n / 2) - 1 ] ] u in
-  let u1 = M.get_slice [ [ m / 2; m - 1 ]; [ 0; (n / 2) - 1 ] ] u in
-  M.(u1 *@ inv u0)
+  let u00 = M.get_slice [ [ 0; (m / 2) - 1 ]; [ 0; (n / 2) - 1 ] ] u in
+  let u10 = M.get_slice [ [ m / 2; m - 1 ]; [ 0; (n / 2) - 1 ] ] u in
+  (* check solution *)
+  let a, ipiv = lufact M.(copy u00) in
+  if rcond a < Owl_utils.(eps (M.kind a))
+  then failwith "CARE: failed to find a finite solution";
+  (* check that the solution is symmetric: slightly less stringent condition than is_symmetric *)
+  let u_sym = M.(transpose u00 *@ u10) in
+  let n_u_sym = norm u_sym in
+  let u_sym = M.(u_sym - transpose u_sym) in
+  let thres = max (0.1 *. n_u_sym) (Owl_utils.eps M.(kind u)) in
+  if norm u_sym > thres
+  then
+    failwith
+      "CARE: associated symplectic pencil has eigenvalues too close to the imaginary axis";
+  let x = Owl_lapacke.getrs (_get_trans_code M.(kind a)) a ipiv M.(transpose u10) in
+  (* symmetrise again for numerical stability *)
+  M.(0.5 $* x + transpose x)
+
+
+let _validate_dare ~diag_r a b q r =
+  _check_are_shape ~label:"DARE" a b q r;
+  (* check that q is Hermitian *)
+  if not (is_hermitian q) then failwith "DARE: q is not hermitian";
+  (* check that r is Hermitian *)
+  if (not diag_r) && not (is_hermitian r) then failwith "DARE: r is not hermitian"
 
 
 let dare ?(diag_r = false) a b q r =
+  _validate_dare ~diag_r a b q r;
   let g =
     if diag_r
     then (
@@ -878,9 +938,24 @@ let dare ?(diag_r = false) a b q r =
     wi;
   ignore (Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q:u);
   let m, n = M.shape u in
-  let u0 = M.get_slice [ [ 0; (m / 2) - 1 ]; [ 0; (n / 2) - 1 ] ] u in
-  let u1 = M.get_slice [ [ m / 2; m - 1 ]; [ 0; (n / 2) - 1 ] ] u in
-  M.(u1 *@ inv u0)
+  let u00 = M.get_slice [ [ 0; (m / 2) - 1 ]; [ 0; (n / 2) - 1 ] ] u in
+  let u10 = M.get_slice [ [ m / 2; m - 1 ]; [ 0; (n / 2) - 1 ] ] u in
+  (* check solution *)
+  let a, ipiv = lufact M.(copy u00) in
+  if rcond a < Owl_utils.(eps (M.kind a))
+  then failwith "DARE: failed to find a finite solution";
+  (* check that the solution is symmetric: slightly less stringent condition than is_symmetric *)
+  let u_sym = M.(transpose u00 *@ u10) in
+  let n_u_sym = norm u_sym in
+  let u_sym = M.(u_sym - transpose u_sym) in
+  let thres = max (0.1 *. n_u_sym) (Owl_utils.eps M.(kind u)) in
+  if norm u_sym > thres
+  then
+    failwith
+      "DARE: associated symplectic pencil has eigenvalues too close to the unit circle";
+  let x = Owl_lapacke.getrs (_get_trans_code M.(kind a)) a ipiv M.(transpose u10) in
+  (* symmetrise again for numerical stability *)
+  M.(0.5 $* x + transpose x)
 
 
 (* helper functions *)
