@@ -364,6 +364,28 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       test_func f
 
 
+    let dare () =
+      let b = Mat.gaussian n n in
+      let q = Mat.gaussian n n in
+      let f x =
+        let a = x in
+        let b = Maths.(tril x + b) in
+        let r =
+          let e = Mat.eye n in
+          let r = Maths.(e + (a *@ transpose a)) in
+          Maths.(r *@ transpose r)
+        in
+        let q =
+          let q = Maths.(q + a) in
+          Maths.((q *@ transpose q) + Mat.(eye n))
+        in
+        let c1 = Linalg.care a b q r in
+        let c2 = Linalg.care ~diag_r:true a b q Maths.(diagm (diag r)) in
+        Maths.(c1 + c2)
+      in
+      test_func f
+
+
     let nested_grad1 =
       let x = Mat.gaussian 1 (n * n) in
       let r ~theta x = Maths.(sum' (sqr x *@ transpose (theta * theta))) in
@@ -411,7 +433,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; "sylvester", sylvester; "lyapunov1", lyapunov1; "lyapunov2", lyapunov2
       ; "discrete_lyapunov1", discrete_lyapunov1; "discrete_lyapunov2", discrete_lyapunov2
       ; "linsolve", linsolve; "linsolve_triangular", linsolve_triangular; "care", care
-      ; "log_sum_exp'", log_sum_exp'; "log_sum_exp", log_sum_exp
+      ; "dare", dare; "log_sum_exp'", log_sum_exp'; "log_sum_exp", log_sum_exp
       ; "nested_grad1", nested_grad1; "nested_grad2", nested_grad2 ]
       |> List.fold_left
            (fun (b, error_msg) (s, f) ->

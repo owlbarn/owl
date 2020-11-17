@@ -109,8 +109,4 @@ end
 
 module type Real = sig
   include Owl_base_linalg_intf.Real
-
-  (* NOTE: functions below have not been implemented in Base Linalg *)
-
-  val dare : ?diag_r:bool -> mat -> mat -> mat -> mat -> mat
 end
