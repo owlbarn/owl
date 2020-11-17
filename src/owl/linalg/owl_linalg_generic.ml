@@ -859,8 +859,15 @@ let care ?(diag_r = false) a b q r =
   M.(u1 *@ inv u0)
 
 
-let dare a b q r =
-  let g = M.(b *@ inv r *@ transpose b) in
+let dare ?(diag_r = false) a b q r =
+  let g =
+    if diag_r
+    then (
+      let r = M.diag r in
+      let inv_r = M.reci r in
+      M.(b * inv_r *@ transpose b))
+    else M.(b *@ inv r *@ transpose b)
+  in
   let c = M.transpose (inv a) in
   let z = M.(concat_vh [| [| a + (g *@ c *@ q); neg g *@ c |]; [| neg c *@ q; c |] |]) in
   let t, u, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:z in
