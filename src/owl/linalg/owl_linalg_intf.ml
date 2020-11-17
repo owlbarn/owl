@@ -112,5 +112,5 @@ module type Real = sig
 
   (* NOTE: functions below have not been implemented in Base Linalg *)
 
-  val dare : mat -> mat -> mat -> mat -> mat
+  val dare : ?diag_r:bool -> mat -> mat -> mat -> mat -> mat
 end
