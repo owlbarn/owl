@@ -17,6 +17,7 @@ let fft ?axis x =
   y
 
 
+
 let ifft ?axis x =
   let axis =
     match axis with
@@ -29,7 +30,6 @@ let ifft ?axis x =
   let norm = Complex.{ re = float_of_int (shape y).(axis); im = 0. } in
   div_scalar_ y norm;
   y
-
 
 let rfft ?axis ~otyp x =
   let axis =
@@ -65,3 +65,9 @@ let irfft ?axis ?n ~otyp x =
   let norm = float_of_int s.(axis) in
   div_scalar_ y norm;
   y
+
+let fft2 x =
+  fft ~axis:0 x |> fft ~axis:1
+
+let ifft2 x =
+  ifft ~axis:0 x |> ifft ~axis:1
