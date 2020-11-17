@@ -345,8 +345,9 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
     let care () =
       let b = Mat.gaussian n n in
       let q = Mat.gaussian n n in
+      let id = Mat.eye n in
       let f x =
-        let a = x in
+        let a = Maths.(x - id) in
         let b = Maths.(tril x + b) in
         let r =
           let e = Mat.eye n in
@@ -354,7 +355,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
           Maths.(r *@ transpose r)
         in
         let q =
-          let q = Maths.(q + a) in
+          let q = Maths.(q + x) in
           Maths.((q *@ transpose q) + Mat.(eye n))
         in
         let c1 = Linalg.care a b q r in
