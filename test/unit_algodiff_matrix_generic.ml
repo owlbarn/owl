@@ -253,7 +253,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       test_func f
 
 
-    let lyapunov () =
+    let lyapunov1 () =
+      (* test symmetric q *)
       let r = Mat.gaussian n n in
       let identity = Arr Owl.Mat.(eye n) in
       let f x =
@@ -266,11 +267,40 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       test_func f
 
 
-    let discrete_lyapunov () =
+    let lyapunov2 () =
+      (* test non-symmetric q *)
+      let r = Mat.gaussian n n in
+      let identity = Arr Owl.Mat.(eye n) in
+      let f x =
+        let q = Maths.(x + identity) in
+        let s = Maths.(r - transpose r) in
+        let p = Maths.(((r + x) *@ transpose (r + x)) + identity) in
+        let a = Maths.((s - (F 0.5 * q)) *@ inv p) in
+        Linalg.lyapunov a Maths.(neg q)
+      in
+      test_func f
+
+
+    let discrete_lyapunov1 () =
+      (* test symmetric q *)
       let r = Mat.gaussian n n in
       let identity = Arr Owl.Mat.(eye n) in
       let f x =
         let q = Maths.(F 0.5 * ((x *@ transpose x) + identity)) in
+        let s = Maths.(x - transpose x) in
+        let p = Maths.(((r + x) *@ transpose (r + x)) + identity) in
+        let a = Maths.(((s - (F 0.5 * q)) *@ inv p) - identity) in
+        Linalg.discrete_lyapunov a q
+      in
+      test_func f
+
+
+    let discrete_lyapunov2 () =
+      (* test symmetric q *)
+      let r = Mat.gaussian n n in
+      let identity = Arr Owl.Mat.(eye n) in
+      let f x =
+        let q = x in
         let s = Maths.(x - transpose x) in
         let p = Maths.(((r + x) *@ transpose (r + x)) + identity) in
         let a = Maths.(((s - (F 0.5 * q)) *@ inv p) - identity) in
@@ -378,9 +408,9 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; "inv", inv; "logdet", logdet; "chol", chol; "qr", qr; "lq", lq; "split", split
       ; "concat", concat; "concatenate", concatenate; "stack", stack; "svd", svd
       ; "of_arrays", of_arrays; "to_arrays", to_arrays; "init_2d", init_2d
-      ; "sylvester", sylvester; "lyapunov", lyapunov
-      ; "discrete_lyapunov", discrete_lyapunov; "linsolve", linsolve
-      ; "linsolve_triangular", linsolve_triangular; "care", care
+      ; "sylvester", sylvester; "lyapunov1", lyapunov1; "lyapunov2", lyapunov2
+      ; "discrete_lyapunov1", discrete_lyapunov1; "discrete_lyapunov2", discrete_lyapunov2
+      ; "linsolve", linsolve; "linsolve_triangular", linsolve_triangular; "care", care
       ; "log_sum_exp'", log_sum_exp'; "log_sum_exp", log_sum_exp
       ; "nested_grad1", nested_grad1; "nested_grad2", nested_grad2 ]
       |> List.fold_left

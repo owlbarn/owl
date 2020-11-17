@@ -1929,12 +1929,12 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     and _lyapunov =
       let _lyapunov_backward_a a ca cp =
         let s = lyapunov (transpose a) (neg ca) in
-        pack_flt 2. * s *@ cp
+        (s *@ transpose cp) + (transpose s *@ cp)
       in
       let _lyapunov_backward_q a ca = neg (lyapunov (transpose a) (neg ca)) in
       let _lyapunov_backward_aq a ca cp =
         let s = lyapunov (transpose a) (neg ca) in
-        pack_flt 2. * s *@ cp, neg s
+        (s *@ transpose cp) + (transpose s *@ cp), neg s
       in
       lazy
         (build_piso
@@ -1975,12 +1975,12 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     and _discrete_lyapunov =
       let _discrete_lyapunov_backward_a a ca cp =
         let s = discrete_lyapunov (transpose a) ca in
-        pack_flt 2. * s *@ a *@ cp
+        (s *@ a *@ transpose cp) + (transpose s *@ a *@ cp)
       in
       let _discrete_lyapunov_backward_q a ca = discrete_lyapunov (transpose a) ca in
       let _discrete_lyapunov_backward_aq a ca cp =
         let s = discrete_lyapunov (transpose a) ca in
-        pack_flt 2. * s *@ a *@ cp, s
+        (s *@ a *@ transpose cp) + (transpose s *@ a *@ cp), s
       in
       lazy
         (fun ~solver ->
@@ -1997,15 +1997,17 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               let ff_bb a q = Arr A.(Linalg.discrete_lyapunov ~solver a q)
 
               let df_da cp ap at _qp =
-                let g = ap *@ cp *@ transpose at in
-                discrete_lyapunov ap (g + transpose g)
+                let g1 = ap *@ cp *@ transpose at in
+                let g2 = at *@ cp *@ transpose ap in
+                discrete_lyapunov ap (g1 + g2)
 
 
               let df_db _cp ap _qp qt = discrete_lyapunov ap qt
 
               let df_dab cp ap at _qp qt =
-                let g = ap *@ cp *@ transpose at in
-                discrete_lyapunov ap (g + transpose g) + discrete_lyapunov ap qt
+                let g1 = ap *@ cp *@ transpose at in
+                let g2 = at *@ cp *@ transpose ap in
+                discrete_lyapunov ap (g1 + g2) + discrete_lyapunov ap qt
 
 
               let dr_ab a _b cp ca =
