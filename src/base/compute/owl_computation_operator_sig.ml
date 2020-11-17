@@ -728,5 +728,8 @@ module type Sig = sig
 
     val care : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr
     (** TODO *)
+
+    val dare : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr
+    (** TODO *)
   end
 end

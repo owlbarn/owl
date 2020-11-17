@@ -2162,6 +2162,89 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
     and care ?(diag_r = false) a b q r = Lazy.force _care ~diag_r [| a; b; q; r |]
+
+    and _dare =
+      lazy
+        (let unpack a = a.(0), a.(1), a.(2), a.(3) in
+         let dare_forward ~diag_r:_ p a b r at bt qt rt =
+           let tr_b = transpose b in
+           let k =
+             let r_btpb = r + (tr_b *@ p *@ b) in
+             let h = tr_b *@ p *@ a in
+             linsolve r_btpb h
+           in
+           let acl = a - (b *@ k) in
+           let tr_acl = transpose acl in
+           let dp_da () =
+             let pat = p *@ at in
+             discrete_lyapunov tr_acl (neg (transpose pat) - pat)
+           in
+           let dp_dq () = discrete_lyapunov tr_acl (neg qt) in
+           let dp_dr () = discrete_lyapunov tr_acl (neg (transpose k *@ rt *@ k)) in
+           let dp_db () =
+             let x = tr_acl *@ p *@ bt *@ k in
+             discrete_lyapunov tr_acl (x + transpose x)
+           in
+           [| dp_da; dp_db; dp_dq; dp_dr |]
+         in
+         let dare_backward ~diag_r:_ a b _q r p pbar =
+           let tr_b = transpose b in
+           let k =
+             let r_btpb = r + (tr_b *@ p *@ b) in
+             let h = tr_b *@ p *@ a in
+             linsolve r_btpb h
+           in
+           let tr_k = transpose k in
+           let acl = a - (b *@ k) in
+           let s =
+             (* we can symmetrise without loss of generality as p is symmetric *)
+             let pbar = pack_flt 0.5 * (pbar + transpose pbar) in
+             let s = discrete_lyapunov acl (neg pbar) in
+             pack_flt 0.5 * (s + transpose s)
+           in
+           (* the following calculations are not calculated unless needed *)
+           let qbar () = s in
+           let rbar () = k *@ s *@ tr_k in
+           let abar () = pack_flt 2. * p *@ acl *@ s in
+           let bbar () = neg (pack_flt 2.) * p *@ acl *@ s *@ tr_k in
+           [| abar; bbar; qbar; rbar |]
+         in
+         fun ~diag_r ->
+           build_aiso
+             (module struct
+               let label = "dare"
+
+               let ff a =
+                 match unpack a with
+                 | Arr a, Arr b, Arr q, Arr r -> A.Linalg.dare ~diag_r a b q r |> pack_arr
+                 | _                          -> error_uniop "dare" a.(0)
+
+
+               let df idxs p inp tangents =
+                 let a, b, _, r = unpack inp in
+                 let at, bt, qt, rt = unpack tangents in
+                 let dp = dare_forward ~diag_r p a b r at bt qt rt in
+                 List.map
+                   (fun k ->
+                     (* we can do symmetrise without loss of generality because 
+                   the output of care is symmetric *)
+                     let dp = dp.(k) () in
+                     pack_flt 0.5 * (dp + transpose dp))
+                   idxs
+                 |> List.fold_left ( + ) (pack_flt 0.)
+
+
+               let dr idxs inp p pbar_ref =
+                 let pbar = !pbar_ref in
+                 let bars =
+                   let a, b, q, r = unpack inp in
+                   dare_backward ~diag_r a b q r p pbar
+                 in
+                 List.map (fun k -> bars.(k) ()) idxs
+             end : Aiso))
+
+
+    and dare ?(diag_r = false) a b q r = Lazy.force _dare ~diag_r [| a; b; q; r |]
   end
 
   (* neural network module: for specialised neural network operations *)

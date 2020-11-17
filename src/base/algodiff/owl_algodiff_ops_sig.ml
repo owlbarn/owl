@@ -298,6 +298,9 @@ module type Sig = sig
 
     val care : ?diag_r:bool -> t -> t -> t -> t -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val dare : ?diag_r:bool -> t -> t -> t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
   end
 
   (** {5 Supported Neural Network functions} *)
