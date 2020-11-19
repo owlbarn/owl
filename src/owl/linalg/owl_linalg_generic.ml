@@ -1,5 +1,3 @@
-let () = Printexc.record_backtrace true
-
 (*
  * OWL - OCaml Scientific and Engineering Computing
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
@@ -928,7 +926,10 @@ let dare ?(diag_r = false) a b q r =
       M.(b * inv_r *@ transpose b))
     else M.(b *@ inv r *@ transpose b)
   in
-  let c = M.transpose (inv a) in
+  let c =
+    try M.transpose (inv a) with
+    | _ -> failwith "DARE: currently does not support singular A"
+  in
   let z = M.(concat_vh [| [| a + (g *@ c *@ q); neg g *@ c |]; [| neg c *@ q; c |] |]) in
   let t, u, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:z in
   let select = M.(zeros int32 (row_num wr) (col_num wr)) in
