@@ -1878,11 +1878,11 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     and _sylvester =
       lazy
         (let unpack a = a.(0), a.(1), a.(2) in
-         let sylv_forward p a b _c at bt ct =
-           let dp_da () = sylvester a b (neg at *@ p) in
-           let dp_db () = sylvester a b (neg p *@ bt) in
-           let dp_dc () = sylvester a b ct in
-           [| dp_da; dp_db; dp_dc |]
+         let sylv_forward p at bt ct =
+           let da () = (neg at *@ p) in
+           let db () = (neg p *@ bt) in
+           let dc () = ct in
+           [| da; db; dc |]
          in
          let sylv_backward a b _c p pbar =
            let st = sylvester (transpose a) (transpose b) (neg pbar) in
@@ -1903,10 +1903,11 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
              let df idxs p inp tangents =
-               let a, b, c = unpack inp in
+               let a, b, _ = unpack inp in
                let at, bt, ct = unpack tangents in
-               let dp = sylv_forward p a b c at bt ct in
-               List.map (fun k -> dp.(k) ()) idxs |> List.fold_left ( + ) (pack_flt 0.)
+               let dp = sylv_forward p at bt ct in
+               let dx = List.map (fun k -> dp.(k) ()) idxs |> List.fold_left ( + ) (pack_flt 0.) in
+               sylvester a b dx
 
 
              let dr idxs inp p pbar_ref =
@@ -1956,7 +1957,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df_db _cp ap _qp qt = lyapunov ap qt
 
              let df_dab cp ap at _qp qt =
-               lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at))) + lyapunov ap qt
+               lyapunov ap (qt - ((at *@ cp) + (cp *@ transpose at))) 
 
 
              let dr_ab a _b cp ca =
@@ -2007,7 +2008,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               let df_dab cp ap at _qp qt =
                 let g1 = ap *@ cp *@ transpose at in
                 let g2 = at *@ cp *@ transpose ap in
-                discrete_lyapunov ap (g1 + g2) + discrete_lyapunov ap qt
+                discrete_lyapunov ap (g1 + g2 + qt)
 
 
               let dr_ab a _b cp ca =
@@ -2095,17 +2096,17 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
            let k = if diag_r then transpose inv_r * tr_b *@ p else inv_r *@ tr_b *@ p in
            let acl = a - (b *@ k) in
            let tr_acl = transpose acl in
-           let dp_da () =
+           let da () =
              let pat = p *@ at in
-             lyapunov tr_acl (neg (transpose pat) - pat)
+             (neg (transpose pat) - pat)
            in
-           let dp_dq () = lyapunov tr_acl (neg qt) in
-           let dp_dr () = lyapunov tr_acl (neg (transpose k *@ rt *@ k)) in
-           let dp_db () =
+           let dq () = (neg qt) in
+           let dr () = (neg (transpose k *@ rt *@ k)) in
+           let db () =
              let x = p *@ bt *@ k in
-             lyapunov tr_acl (x + transpose x)
+             (x + transpose x)
            in
-           [| dp_da; dp_db; dp_dq; dp_dr |]
+           tr_acl, [| da; db; dq; dr |]
          in
          let care_backward ~diag_r a b _q r p pbar =
            let tr_b = transpose b in
@@ -2140,15 +2141,16 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                let df idxs p inp tangents =
                  let a, b, _, r = unpack inp in
                  let at, bt, qt, rt = unpack tangents in
-                 let dp = care_forward ~diag_r p a b r at bt qt rt in
-                 List.map
+                 let tr_acl, dp = care_forward ~diag_r p a b r at bt qt rt in
+                 let dx = List.map
                    (fun k ->
                      (* we can do symmetrise without loss of generality because 
                    the output of care is symmetric *)
                      let dp = dp.(k) () in
                      pack_flt 0.5 * (dp + transpose dp))
                    idxs
-                 |> List.fold_left ( + ) (pack_flt 0.)
+                 |> List.fold_left ( + ) (pack_flt 0.) in
+                 lyapunov tr_acl dx
 
 
                let dr idxs inp p pbar_ref =
@@ -2175,17 +2177,17 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
            in
            let acl = a - (b *@ k) in
            let tr_acl = transpose acl in
-           let dp_da () =
+           let da () =
              let g = tr_acl *@ p *@ at in
-             discrete_lyapunov tr_acl (g + transpose g)
+             (g + transpose g)
            in
-           let dp_db () =
+           let db () =
              let x = tr_acl *@ p *@ bt *@ k in
-             discrete_lyapunov tr_acl (neg (x + transpose x))
+             (neg (x + transpose x))
            in
-           let dp_dq () = discrete_lyapunov tr_acl qt in
-           let dp_dr () = discrete_lyapunov tr_acl (transpose k *@ rt *@ k) in
-           [| dp_da; dp_db; dp_dq; dp_dr |]
+           let dq () = qt in
+           let dr () = (transpose k *@ rt *@ k) in
+           tr_acl, [| da; db; dq; dr |]
          in
          let dare_backward ~diag_r:_ a b _q r p pbar =
            let tr_b = transpose b in
@@ -2223,15 +2225,16 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                let df idxs p inp tangents =
                  let a, b, _, r = unpack inp in
                  let at, bt, qt, rt = unpack tangents in
-                 let dp = dare_forward ~diag_r p a b r at bt qt rt in
-                 List.map
+                 let tr_acl, dp = dare_forward ~diag_r p a b r at bt qt rt in
+                 let dx = List.map
                    (fun k ->
                      (* we can do symmetrise without loss of generality because 
                    the output of care is symmetric *)
                      let dp = dp.(k) () in
                      pack_flt 0.5 * (dp + transpose dp))
                    idxs
-                 |> List.fold_left ( + ) (pack_flt 0.)
+                 |> List.fold_left ( + ) (pack_flt 0.) in
+                 discrete_lyapunov tr_acl dx
 
 
                let dr idxs inp p pbar_ref =
