@@ -380,8 +380,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
           let q = Maths.(q + a) in
           Maths.((q *@ transpose q) + Mat.(eye n))
         in
-        let c1 = Linalg.care a b q r in
-        let c2 = Linalg.care ~diag_r:true a b q Maths.(diagm (diag r)) in
+        let c1 = Linalg.dare a b q r in
+        let c2 = Linalg.dare ~diag_r:true a b q Maths.(diagm (diag r)) in
         Maths.(c1 + c2)
       in
       test_func f

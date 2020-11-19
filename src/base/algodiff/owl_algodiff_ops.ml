@@ -2176,15 +2176,15 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
            let acl = a - (b *@ k) in
            let tr_acl = transpose acl in
            let dp_da () =
-             let pat = p *@ at in
-             discrete_lyapunov tr_acl (neg (transpose pat) - pat)
+             let g = tr_acl *@ p *@ at in
+             discrete_lyapunov tr_acl (g + transpose g)
            in
-           let dp_dq () = discrete_lyapunov tr_acl (neg qt) in
-           let dp_dr () = discrete_lyapunov tr_acl (neg (transpose k *@ rt *@ k)) in
            let dp_db () =
              let x = tr_acl *@ p *@ bt *@ k in
-             discrete_lyapunov tr_acl (x + transpose x)
+             discrete_lyapunov tr_acl (neg (x + transpose x))
            in
+           let dp_dq () = discrete_lyapunov tr_acl qt in
+           let dp_dr () = discrete_lyapunov tr_acl (transpose k *@ rt *@ k) in
            [| dp_da; dp_db; dp_dq; dp_dr |]
          in
          let dare_backward ~diag_r:_ a b _q r p pbar =
@@ -2199,7 +2199,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
            let s =
              (* we can symmetrise without loss of generality as p is symmetric *)
              let pbar = pack_flt 0.5 * (pbar + transpose pbar) in
-             let s = discrete_lyapunov acl (neg pbar) in
+             let s = discrete_lyapunov acl pbar in
              pack_flt 0.5 * (s + transpose s)
            in
            (* the following calculations are not calculated unless needed *)
