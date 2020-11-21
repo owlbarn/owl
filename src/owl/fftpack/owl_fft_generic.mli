@@ -47,4 +47,5 @@ val fft2 : (Complex.t, 'a) t -> (Complex.t, 'a) t
 
 val ifft2 : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (**
-``ifft2 x`` performs inverse 2-dimensional FFT on a complex input. *)
+``ifft2 x`` performs inverse 2-dimensional FFT on a complex input.
+ *)
