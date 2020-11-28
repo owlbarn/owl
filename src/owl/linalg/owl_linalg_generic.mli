@@ -504,7 +504,7 @@ Parameters:
   * ``b`` : real cofficient matrix B.
   * ``q`` : real cofficient matrix Q.
   * ``r`` : real cofficient matrix R. R must be non-singular.
-  * ``diag_r`` : true if R is a diagonal matrix. false by default
+  * ``diag_r`` : true if R is a diagonal matrix, false by default.
 
 Returns:
   * ``x`` : a solution matrix X.
@@ -529,6 +529,7 @@ Parameters:
   * ``b`` : real cofficient matrix B.
   * ``q`` : real cofficient matrix Q.
   * ``r`` : real cofficient matrix R. R must be non-singular.
+  * ``diag_r`` : true if R is a diagonal matrix, false by default.
 
 Returns:
   * ``x`` : a symmetric solution matrix X.
