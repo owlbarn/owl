@@ -1,3 +1,18 @@
+## 1.0.1 (2020-12-27)
+
+* Add eighth-order finite difference approximation
+* Fix bug in Jacobian with different input/output dimensions (#557)
+* Fix bug in nested grads (#558)
+* Update to ocamlformat.0.16.0 (thanks @gpetiot #556)
+* Add get_fancy to AD
+* Check input and output type of `diff` operation
+* Fix bug in `build_info` of aiso pattern in AD
+* Implement split forward mode and check max tag of `build_info` 
+* Add initial implementation of fft2 and ifft2
+* Add nonsymmetric qs suppport for continuous and discrete time lyapunov gradients
+* Improve `care` and `dare` operations in AD
+* Improve forward mode efficiency for sylv, clyap and dlyap operations in AD
+
 ## 1.0.0 (2020-11-10)
 * Update project governance 
 * Fix bug in convolution operation 
