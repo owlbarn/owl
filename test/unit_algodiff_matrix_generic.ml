@@ -9,6 +9,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   module AlgoM = Owl.Algodiff.D
   open AlgoM
 
+  let () = Owl_stats_prng.init 0
+
   let n = 3
 
   let n_samples = 20
