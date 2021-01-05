@@ -90,14 +90,16 @@ let default_cflags =
     ; "-Ofast"
     ; (* FIXME: experimental switches *)
       (* "-mavx2"; "-mfma"; "-ffp-contract=fast"; *)
-      (* Experimental switches, -ffast-math may break IEEE754 semantics*)
+      (* Experimental switches, -ffast-math may break IEEE754 semantics *)
       "-march=native"
-    ; "-mfpmath=sse"
+    (* Not supported on ARM64 *)
+    (* ; "-mfpmath=sse" *)
     ; "-funroll-loops"
     ; "-ffast-math"
     ; (* Configure Mersenne Twister RNG *)
       "-DSFMT_MEXP=19937"
-    ; "-msse2"
+    (* Not supported on ARM64 *)
+    (* ; "-msse2" *)
     ; "-fno-strict-aliasing"
     ; "-Wno-tautological-constant-out-of-range-compare"
     ]

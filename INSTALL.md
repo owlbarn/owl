@@ -15,7 +15,7 @@ before compilation:
 - `OWL_CFLAGS` allows to change the default flags passed to the C targets,
   it defaults to
   ```
-  OWL_CFLAGS="-g -O3 -Ofast -march=native -mfpmath=sse -funroll-loops -ffast-math -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing -Wno-tautological-constant-out-of-range-compare"`
+  OWL_CFLAGS="-g -O3 -Ofast -march=native -funroll-loops -ffast-math -DSFMT_MEXP=19937 -fno-strict-aliasing -Wno-tautological-constant-out-of-range-compare"`
   ```
 
 - `OWL_AEOS_CFLAGS` allows to change the default flags passed to the C targets
