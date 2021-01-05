@@ -9,7 +9,7 @@ script: bash -ex ./.travis-docker.sh
 
 env:
   global:
-    - EIGENCPP_OPTFLAGS="-Wno-ignored-attributes -O3 -Ofast -march=native -mfpmath=sse -funroll-loops -ffast-math"
+    - EIGENCPP_OPTFLAGS="-Wno-ignored-attributes -O3 -Ofast -march=native -funroll-loops -ffast-math"
     - PACKAGE="owl"
     - PINS="owl-base.master:. owl-plplot.master:. owl-top.master:. owl-zoo.master:. owl.master:."
 
