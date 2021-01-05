@@ -1,5 +1,7 @@
 language: c
 sudo: false
+# See https://github.com/ocaml/ocaml-ci-scripts/issues/351
+dist: focal
 services: docker
 
 install: wget https://raw.githubusercontent.com/ocaml/ocaml-travisci-skeleton/master/.travis-docker.sh
@@ -18,11 +20,14 @@ matrix:
   #   osx_image: xcode10.1
   #   env: OCAML_VERSION=4.07
   - os: linux
-    env: OCAML_VERSION=4.10 DISTRO=debian-stable
+    env: OCAML_VERSION=4.10 DISTRO=debian
   - os: linux
     env: OCAML_VERSION=4.10 DISTRO=fedora
   - os: linux
     env: OCAML_VERSION=4.10 DISTRO=ubuntu
+  - os: linux
+    arch: arm64
+    env: OCAML_VERSION=4.10 DISTRO=debian
 
   fast_finish: true
   allow_failures:
