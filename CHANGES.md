@@ -1,4 +1,4 @@
-## 1.0.1 (2020-01-06)
+## 1.0.1 (2021-01-06)
 
 * Add eighth-order finite difference approximation
 * Fix bug in Jacobian with different input/output dimensions (#557)
