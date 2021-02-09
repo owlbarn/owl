@@ -55,6 +55,6 @@ module type Real = sig
   type mat
 
   val care : ?diag_r:bool -> mat -> mat -> mat -> mat -> mat
-  
+
   val dare : ?diag_r:bool -> mat -> mat -> mat -> mat -> mat
 end
