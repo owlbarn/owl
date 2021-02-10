@@ -9,7 +9,7 @@ module Make (AD : Owl_algodiff_generic_sig.Sig) : sig
   module Reverse : sig
     val check
       :  threshold:float
-      -> order:[ `second | `fourth ]
+      -> order:[ `second | `fourth | `eighth ]
       -> ?verbose:bool
       -> ?eps:float
       -> f:(AD.t -> AD.t)

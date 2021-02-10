@@ -48,6 +48,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
 
   (* derivative of f (scalar -> scalar) at x, forward ad *)
   let diff' f x =
+    if not (is_float x) then failwith "input of `diff` must be a scalar";
     let x = make_forward x (pack_flt 1.) (tag ()) in
     let y = f x in
     primal y, tangent y
@@ -60,6 +61,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   let grad' f x =
     let x = make_reverse x (tag ()) in
     let y = f x in
+    if not (is_float y) then failwith "output of `grad` must be a scalar";
     Reverse.reverse_reset y;
     Reverse.reverse_push (pack_flt 1.) y;
     primal y, x |> adjval
@@ -95,7 +97,7 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
   let jacobianTv f x v = jacobianTv' f x v |> snd
 
   (* jacobian of f (vector -> vector) at x, both x and y are row vectors, also return the
-     original value *)
+     original value. The jacobian J satisfies dx = J df *)
   let jacobian' =
     let dim_typ x =
       match primal' x with
@@ -113,34 +115,46 @@ module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
       | _     -> assert false
     in
     fun f x ->
-      let y = f x |> primal in
+      let y = f x in
       let m, n =
         match dim_typ y, dim_typ x with
         | `row a, `row 1 -> a, 1
         | `row a, `row b -> a, b
         | _              -> failwith "jacobian: input and output must both be row vectors"
       in
-      let z = A.empty [| m; n |] in
-      (match m > n with
-      | true  ->
-        Array.init n (fun i ->
-            let v = A.zeros [| 1; n |] in
-            A.(set v [| 0; i |] (float_to_elt 1.));
-            jacobianv f x (Arr v))
-        |> Array.iteri (fun i v ->
-               match v with
-               | Arr v -> A.copy_col_to (A.transpose v) z i
-               | _     -> failwith "error: jacobian")
-      | false ->
-        Array.init m (fun i ->
-            let v = A.zeros [| 1; m |] in
-            A.(set v [| 0; i |] (float_to_elt 1.));
-            jacobianTv f x (Arr v))
-        |> Array.iteri (fun i v ->
-               match v with
-               | Arr v -> A.copy_row_to v z i
-               | _     -> failwith "error: jacobian"));
-      y, Arr z
+      let z =
+        let jvps =
+          if m > n
+          then
+            Array.init n (fun i ->
+                let v = A.zeros [| 1; n |] in
+                A.(set v [| 0; i |] (float_to_elt 1.));
+                jacobianv f x (Arr v))
+          else
+            Array.init m (fun i ->
+                let v = A.zeros [| 1; m |] in
+                A.(set v [| 0; i |] (float_to_elt 1.));
+                jacobianTv f x (Arr v))
+        in
+        match y with
+        | F _         -> failwith "input to jacobian must be a row vector not a float"
+        | Arr _       ->
+          let z = A.zeros [| n; m |] in
+          jvps
+          |> Array.iteri (fun i v ->
+                 match v with
+                 | Arr v ->
+                   if m > n
+                   then A.copy_row_to v z i
+                   else A.copy_col_to (A.transpose v) z i
+                 | _     -> failwith "error: jacobian");
+          Arr z
+        | DF _ | DR _ ->
+          if m > n
+          then Ops.Maths.concatenate ~axis:0 jvps
+          else Ops.Maths.concatenate ~axis:0 jvps |> Ops.Maths.transpose
+      in
+      primal y, z
 
 
   (* jacobian of f *)

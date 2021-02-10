@@ -73,6 +73,8 @@ module Make (Device : Owl_types_computation_device.Sig) = struct
     | Set                           of int array
     | GetSlice                      of int list list
     | SetSlice                      of int list list
+    | GetFancy                      of index list
+    | SetFancy                      of index list
     | Copy
     | Reset
     | Reshape                       of int array

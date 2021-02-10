@@ -101,6 +101,12 @@ val get_slice : int list list -> ('a, 'b) t -> ('a, 'b) t
 val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val get_fancy : index list -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val set_fancy : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val reset : ('a, 'b) t -> unit
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 

@@ -9,6 +9,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
   module AlgoM = Owl.Algodiff.D
   open AlgoM
 
+  let () = Owl_stats_prng.init 0
+
   let n = 3
 
   let n_samples = 20
@@ -91,6 +93,24 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
 
     let l2norm_sqr' () = test_func Maths.l2norm_sqr'
 
+    let get_slice () =
+      let f x =
+        let y1 = Maths.get_slice [ [ 0 ] ] x in
+        let y2 = Maths.get_slice [ [ 2 ] ] x in
+        Maths.(sum' (sin (y1 * y2)))
+      in
+      test_func f
+
+
+    let get_fancy () =
+      let f x =
+        let y1 = Maths.get_fancy [ R [ 0; 1 ]; L [ 0; 2 ] ] x in
+        let y2 = Maths.get_fancy [ R [ 1; 2 ]; L [ 0; 1 ] ] x in
+        Maths.(sum' (tan (y1 * y2)))
+      in
+      test_func f
+
+
     let tril () = test_func Maths.tril
 
     let triu () = test_func Maths.triu
@@ -172,7 +192,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       let f =
         let y1 = Mat.gaussian 10 n in
         let y2 = Mat.gaussian 15 n in
-        let h x = Maths.(y1 *@ x) in
+        let h x = Maths.(sum' (y1 *@ x)) in
         let h' = grad h in
         fun x ->
           let y = Maths.concatenate ~axis:0 [| y1; x; y2; h' x |] in
@@ -185,7 +205,7 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       let f =
         let y1 = Mat.gaussian n n in
         let y2 = Mat.gaussian n n in
-        let h x = Maths.(y1 *@ x) in
+        let h x = Maths.(sum' (y1 *@ x)) in
         let h' = grad h in
         fun x -> Maths.stack ~axis:(-1) [| y1; x; y2; h' x |]
       in
@@ -235,7 +255,8 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       test_func f
 
 
-    let lyapunov () =
+    let lyapunov1 () =
+      (* test symmetric q *)
       let r = Mat.gaussian n n in
       let identity = Arr Owl.Mat.(eye n) in
       let f x =
@@ -248,11 +269,40 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       test_func f
 
 
-    let discrete_lyapunov () =
+    let lyapunov2 () =
+      (* test non-symmetric q *)
+      let r = Mat.gaussian n n in
+      let identity = Arr Owl.Mat.(eye n) in
+      let f x =
+        let q = Maths.(x + identity) in
+        let s = Maths.(r - transpose r) in
+        let p = Maths.(((r + x) *@ transpose (r + x)) + identity) in
+        let a = Maths.((s - (F 0.5 * q)) *@ inv p) in
+        Linalg.lyapunov a Maths.(neg q)
+      in
+      test_func f
+
+
+    let discrete_lyapunov1 () =
+      (* test symmetric q *)
       let r = Mat.gaussian n n in
       let identity = Arr Owl.Mat.(eye n) in
       let f x =
         let q = Maths.(F 0.5 * ((x *@ transpose x) + identity)) in
+        let s = Maths.(x - transpose x) in
+        let p = Maths.(((r + x) *@ transpose (r + x)) + identity) in
+        let a = Maths.(((s - (F 0.5 * q)) *@ inv p) - identity) in
+        Linalg.discrete_lyapunov a q
+      in
+      test_func f
+
+
+    let discrete_lyapunov2 () =
+      (* test symmetric q *)
+      let r = Mat.gaussian n n in
+      let identity = Arr Owl.Mat.(eye n) in
+      let f x =
+        let q = x in
         let s = Maths.(x - transpose x) in
         let p = Maths.(((r + x) *@ transpose (r + x)) + identity) in
         let a = Maths.(((s - (F 0.5 * q)) *@ inv p) - identity) in
@@ -297,6 +347,29 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
     let care () =
       let b = Mat.gaussian n n in
       let q = Mat.gaussian n n in
+      let id = Mat.eye n in
+      let f x =
+        let a = Maths.(x - id) in
+        let b = Maths.(tril x + b) in
+        let r =
+          let e = Mat.eye n in
+          let r = Maths.(e + (a *@ transpose a)) in
+          Maths.(r *@ transpose r)
+        in
+        let q =
+          let q = Maths.(q + x) in
+          Maths.((q *@ transpose q) + Mat.(eye n))
+        in
+        let c1 = Linalg.care a b q r in
+        let c2 = Linalg.care ~diag_r:true a b q Maths.(diagm (diag r)) in
+        Maths.(c1 + c2)
+      in
+      test_func f
+
+
+    let dare () =
+      let b = Mat.gaussian n n in
+      let q = Mat.gaussian n n in
       let f x =
         let a = x in
         let b = Maths.(tril x + b) in
@@ -309,11 +382,44 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
           let q = Maths.(q + a) in
           Maths.((q *@ transpose q) + Mat.(eye n))
         in
-        let c1 = Linalg.care a b q r in
-        let c2 = Linalg.care ~diag_r:true a b q Maths.(diagm (diag r)) in
+        let c1 = Linalg.dare a b q r in
+        let c2 = Linalg.dare ~diag_r:true a b q Maths.(diagm (diag r)) in
         Maths.(c1 + c2)
       in
       test_func f
+
+
+    let nested_grad1 =
+      let x = Mat.gaussian 1 (n * n) in
+      let r ~theta x = Maths.(sum' (sqr x *@ transpose (theta * theta))) in
+      let quad ~theta x =
+        let rlx ~theta = grad (r ~theta) in
+        jacobian (rlx ~theta) x
+      in
+      let test_theta x theta = quad ~theta x |> Maths.l2norm_sqr' in
+      let f theta =
+        let theta = Arr.reshape theta [| 1; n * n |] in
+        test_theta x theta
+      in
+      fun () -> test_func f
+
+
+    let nested_grad2 =
+      (* check aiao build_info: when inputs include DFs and DRs at different levels *)
+      let ff =
+        let z = Mat.gaussian n n in
+        let hfwd = Mat.gaussian n n in
+        let hrev = Mat.gaussian (3 * n) n in
+        fun x ->
+          let zfwd = make_forward z hfwd (tag ()) in
+          let zrev = make_reverse z (tag ()) in
+          let f1 = Maths.(concatenate ~axis:0 [| x; zfwd + sqr x; zfwd |]) |> Maths.sin in
+          let f2 = Maths.(concatenate ~axis:0 [| x; zrev + sqr x; zrev |]) |> Maths.sin in
+          let df = tangent f1 in
+          reverse_prop hrev f2;
+          Maths.(sum' df + sum' (adjval zrev))
+      in
+      fun () -> test_func ff
 
 
     let test =
@@ -322,14 +428,16 @@ module Make (M : Ndarray_Algodiff with type elt = float) = struct
       ; "cos", cos; "tan", tan; "sinh", sinh; "cosh", cosh; "tanh", tanh
       ; "sigmoid", sigmoid; "relu", relu; "dawsn", dawsn; "exp", exp
       ; "transpose", transpose; "diag", diag; "diagm", diagm; "trace", trace
-      ; "l1norm'", l1norm'; "l2norm'", l2norm'; "l2norm_sqr'", l2norm_sqr'; "tril", tril
-      ; "triu", triu; "inv", inv; "logdet", logdet; "chol", chol; "qr", qr; "lq", lq
-      ; "split", split; "concat", concat; "concatenate", concatenate; "stack", stack
-      ; "svd", svd; "of_arrays", of_arrays; "to_arrays", to_arrays; "init_2d", init_2d
-      ; "sylvester", sylvester; "lyapunov", lyapunov
-      ; "discrete_lyapunov", discrete_lyapunov; "linsolve", linsolve
-      ; "linsolve_triangular", linsolve_triangular; "care", care
-      ; "log_sum_exp'", log_sum_exp'; "log_sum_exp", log_sum_exp ]
+      ; "l1norm'", l1norm'; "l2norm'", l2norm'; "l2norm_sqr'", l2norm_sqr'
+      ; "get_slice", get_slice; "get_fancy", get_fancy; "tril", tril; "triu", triu
+      ; "inv", inv; "logdet", logdet; "chol", chol; "qr", qr; "lq", lq; "split", split
+      ; "concat", concat; "concatenate", concatenate; "stack", stack; "svd", svd
+      ; "of_arrays", of_arrays; "to_arrays", to_arrays; "init_2d", init_2d
+      ; "sylvester", sylvester; "lyapunov1", lyapunov1; "lyapunov2", lyapunov2
+      ; "discrete_lyapunov1", discrete_lyapunov1; "discrete_lyapunov2", discrete_lyapunov2
+      ; "linsolve", linsolve; "linsolve_triangular", linsolve_triangular; "care", care
+      ; "dare", dare; "log_sum_exp'", log_sum_exp'; "log_sum_exp", log_sum_exp
+      ; "nested_grad1", nested_grad1; "nested_grad2", nested_grad2 ]
       |> List.fold_left
            (fun (b, error_msg) (s, f) ->
              let b', c =

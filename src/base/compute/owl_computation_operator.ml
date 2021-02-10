@@ -114,6 +114,14 @@ module Make (Symbol : Owl_computation_symbol_sig.Sig) = struct
     make_then_connect (SetSlice slice) [| arr_to_node x; arr_to_node y |] |> ignore
 
 
+  let get_fancy indices x =
+    make_then_connect (GetFancy indices) [| arr_to_node x |] |> node_to_arr
+
+
+  let set_fancy indices x y =
+    make_then_connect (SetFancy indices) [| arr_to_node x; arr_to_node y |] |> ignore
+
+
   let copy x = make_then_connect Copy [| arr_to_node x |] |> node_to_arr
 
   let copy_ ~out _x =
@@ -937,6 +945,11 @@ module Make (Symbol : Owl_computation_symbol_sig.Sig) = struct
     let care ?(diag_r = false) _a _b _q _r =
       diag_r |> ignore;
       raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.care")
+
+
+    let dare ?(diag_r = false) _a _b _q _r =
+      diag_r |> ignore;
+      raise (Owl_exception.NOT_IMPLEMENTED "owl_computation_operator.dare")
   end
 end
 

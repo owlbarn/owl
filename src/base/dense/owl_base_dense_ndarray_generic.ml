@@ -214,6 +214,14 @@ let set_slice index_list varr slice_varr =
   done
 
 
+(*TODO: optimise, test *)
+let get_fancy _indices _varr = raise (Owl_exception.NOT_IMPLEMENTED "base: get_fancy")
+
+(*TODO: optimise, test *)
+let set_fancy _indices _target _input =
+  raise (Owl_exception.NOT_IMPLEMENTED "base: set_fancy")
+
+
 (* The result shares the underlying buffer with original, not a copy *)
 let reshape x d =
   let minus_one = Owl_utils.Array.count d (-1) in

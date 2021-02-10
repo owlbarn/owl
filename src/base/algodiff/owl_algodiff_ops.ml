@@ -82,7 +82,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at * signum ap
 
-             let dr a _cp ca = !ca * signum (primal a)
+             let dr a _cp ca = !ca * signum a
            end : Siso))
 
 
@@ -172,7 +172,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = pack_flt 2. * at * ap
 
-             let dr a _cp ca = !ca * primal a * pack_flt 2.
+             let dr a _cp ca = !ca * a * pack_flt 2.
            end : Siso))
 
 
@@ -208,7 +208,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at / ap
 
-             let dr a _cp ca = !ca / primal a
+             let dr a _cp ca = !ca / a
            end : Siso))
 
 
@@ -226,7 +226,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at / (ap * pack_flt Owl_const.log2e)
 
-             let dr a _cp ca = !ca / (primal a * pack_flt Owl_const.log2e)
+             let dr a _cp ca = !ca / (a * pack_flt Owl_const.log2e)
            end : Siso))
 
 
@@ -244,7 +244,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at / (ap * pack_flt Owl_const.log10e)
 
-             let dr a _cp ca = !ca / (primal a * pack_flt Owl_const.log10e)
+             let dr a _cp ca = !ca / (a * pack_flt Owl_const.log10e)
            end : Siso))
 
 
@@ -280,7 +280,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at * cos ap
 
-             let dr a _cp ca = !ca * cos (primal a)
+             let dr a _cp ca = !ca * cos a
            end : Siso))
 
 
@@ -298,7 +298,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = neg (at * sin ap)
 
-             let dr a _cp ca = !ca * neg (sin (primal a))
+             let dr a _cp ca = !ca * neg (sin a)
            end : Siso))
 
 
@@ -316,7 +316,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at / sqr (cos ap)
 
-             let dr a _cp ca = !ca / sqr (cos (primal a))
+             let dr a _cp ca = !ca / sqr (cos a)
            end : Siso))
 
 
@@ -334,7 +334,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at * cosh ap
 
-             let dr a _cp ca = !ca * cosh (primal a)
+             let dr a _cp ca = !ca * cosh a
            end : Siso))
 
 
@@ -352,7 +352,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at * sinh ap
 
-             let dr a _cp ca = !ca * sinh (primal a)
+             let dr a _cp ca = !ca * sinh a
            end : Siso))
 
 
@@ -370,7 +370,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at / sqr (cosh ap)
 
-             let dr a _cp ca = !ca / sqr (cosh (primal a))
+             let dr a _cp ca = !ca / sqr (cosh a)
            end : Siso))
 
 
@@ -388,7 +388,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at / sqrt (pack_flt 1. - sqr ap)
 
-             let dr a _cp ca = !ca / sqrt (pack_flt 1. - sqr (primal a))
+             let dr a _cp ca = !ca / sqrt (pack_flt 1. - sqr a)
            end : Siso))
 
 
@@ -406,7 +406,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = neg at / sqrt (pack_flt 1. - sqr ap)
 
-             let dr a _cp ca = neg !ca / sqrt (pack_flt 1. - sqr (primal a))
+             let dr a _cp ca = neg !ca / sqrt (pack_flt 1. - sqr a)
            end : Siso))
 
 
@@ -424,7 +424,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at / (pack_flt 1. + sqr ap)
 
-             let dr a _cp ca = !ca / (pack_flt 1. + sqr (primal a))
+             let dr a _cp ca = !ca / (pack_flt 1. + sqr a)
            end : Siso))
 
 
@@ -442,7 +442,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at / sqrt (sqr ap + pack_flt 1.)
 
-             let dr a _cp ca = !ca / sqrt (sqr (primal a) + pack_flt 1.)
+             let dr a _cp ca = !ca / sqrt (sqr a + pack_flt 1.)
            end : Siso))
 
 
@@ -460,7 +460,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at / sqrt (sqr ap - pack_flt 1.)
 
-             let dr a _cp ca = !ca / sqrt (sqr (primal a) - pack_flt 1.)
+             let dr a _cp ca = !ca / sqrt (sqr a - pack_flt 1.)
            end : Siso))
 
 
@@ -478,7 +478,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at / (pack_flt 1. - sqr ap)
 
-             let dr a _cp ca = !ca / (pack_flt 1. - sqr (primal a))
+             let dr a _cp ca = !ca / (pack_flt 1. - sqr a)
            end : Siso))
 
 
@@ -502,6 +502,25 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
     and get_slice i = Lazy.force _get_slice i
+
+    and _get_fancy =
+      lazy
+        (fun i ->
+          build_siso
+            (module struct
+              let label = "get_fancy"
+
+              let ff_f a = error_uniop label (pack_elt a)
+
+              let ff_arr a = Arr A.(get_fancy i a)
+
+              let df _cp _ap at = get_fancy i at
+
+              let dr a _cp ca = set_fancy i (zero a) !ca
+            end : Siso))
+
+
+    and get_fancy i = Lazy.force _get_fancy i
 
     and _sum' =
       lazy
@@ -589,7 +608,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df cp ap at = sum' (at * exp (ap - cp))
 
              let dr x y ybar =
-               let x = primal x in
+               let x = x in
                !ybar * exp (x - y)
            end : Siso))
 
@@ -623,7 +642,6 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
               let dr x y ybar =
-                let x = primal x in
                 if keep_dims
                 then !ybar * exp (x - y)
                 else (
@@ -681,7 +699,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = sum' (at * signum ap)
 
-             let dr a _cp ca = !ca * signum (primal a)
+             let dr a _cp ca = !ca * signum a
            end : Siso))
 
 
@@ -699,7 +717,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df cp ap at = sum' (ap * at) / cp
 
-             let dr a cp ca = !ca / cp * primal a
+             let dr a cp ca = !ca / cp * a
            end : Siso))
 
 
@@ -717,7 +735,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = pack_flt 2. * sum' (ap * at)
 
-             let dr a _cp ca = !ca * pack_flt 2. * primal a
+             let dr a _cp ca = !ca * pack_flt 2. * a
            end : Siso))
 
 
@@ -753,7 +771,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = at * (pack_flt 1. + signum ap) / pack_flt 2.
 
-             let dr a _cp ca = !ca * ((signum (primal a) + pack_flt 1.) / pack_flt 2.)
+             let dr a _cp ca = !ca * ((signum a + pack_flt 1.) / pack_flt 2.)
            end : Siso))
 
 
@@ -771,7 +789,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df cp ap at = at * (pack_flt 1. - (pack_flt 2. * ap * cp))
 
-             let dr a cp ca = !ca * (pack_flt 1. - (pack_flt 2. * primal a * cp))
+             let dr a cp ca = !ca * (pack_flt 1. - (pack_flt 2. * a * cp))
            end : Siso))
 
 
@@ -790,15 +808,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let df _cp _ap at = diag ~k at
 
-              let dr a _cp ca =
-                let m = col_num a in
-                let l = Stdlib.(m - k) in
-                let rec accu i a_ =
-                  if i < l
-                  then accu (succ i) (set_item a_ i Stdlib.(k + i) (get_item !ca 0 i))
-                  else a_
-                in
-                accu 0 (zero a)
+              let dr _a _cp ca = diagm ~k !ca
             end : Siso))
 
 
@@ -925,7 +935,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let df _cp _ap at = reshape at s
 
-              let dr a _cp ca = reshape !ca (shape (primal a))
+              let dr a _cp ca = reshape !ca (shape a)
             end : Siso)
             a)
 
@@ -959,9 +969,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let df _cp _ap at = get_row at i
 
-              let dr a _cp ca =
-                adjref a := add_row (adjval a) !ca i;
-                zero a
+              let dr a _cp ca = add_row (zero a) !ca i
             end : Siso)
             a)
 
@@ -1060,8 +1068,8 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df_dab _cp ap at bp bt = (ap * bt) + (at * bp)
 
              let dr_ab a b _cp ca =
-               ( _squeeze_broadcast (!ca * primal b) (shape a)
-               , _squeeze_broadcast (!ca * primal a) (shape b) )
+               ( _squeeze_broadcast (!ca * b) (shape a)
+               , _squeeze_broadcast (!ca * a) (shape b) )
 
 
              let dr_a a b _cp ca = _squeeze_broadcast (!ca * b) (shape a)
@@ -1095,16 +1103,13 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df_dab cp _ap at bp bt = (at - (bt * cp)) / bp
 
              let dr_ab a b _cp ca =
-               ( _squeeze_broadcast (!ca / primal b) (shape a)
-               , _squeeze_broadcast
-                   (!ca * (neg (primal a) / (primal b * primal b)))
-                   (shape b) )
+               ( _squeeze_broadcast (!ca / b) (shape a)
+               , _squeeze_broadcast (!ca * (neg a / (b * b))) (shape b) )
 
 
              let dr_a a b _cp ca = _squeeze_broadcast (!ca / b) (shape a)
 
-             let dr_b a b _cp ca =
-               _squeeze_broadcast (!ca * (neg a / (primal b * primal b))) (shape b)
+             let dr_b a b _cp ca = _squeeze_broadcast (!ca * (neg a / (b * b))) (shape b)
            end : Piso))
 
 
@@ -1152,19 +1157,15 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
              let dr_ab a b cp ca =
-               ( _squeeze_broadcast
-                   (!ca * (primal a ** (primal b - pack_flt 1.)) * primal b)
-                   (shape a)
-               , _squeeze_broadcast (!ca * cp * log (primal a)) (shape b) )
+               ( _squeeze_broadcast (!ca * (a ** (b - pack_flt 1.)) * b) (shape a)
+               , _squeeze_broadcast (!ca * cp * log a) (shape b) )
 
 
              let dr_a a b _cp ca =
-               _squeeze_broadcast
-                 (!ca * (primal a ** (primal b - pack_flt 1.)) * b)
-                 (shape a)
+               _squeeze_broadcast (!ca * (a ** (b - pack_flt 1.)) * b) (shape a)
 
 
-             let dr_b a b cp ca = _squeeze_broadcast (!ca * cp * log (primal a)) (shape b)
+             let dr_b a b cp ca = _squeeze_broadcast (!ca * cp * log a) (shape b)
            end : Piso))
 
 
@@ -1191,18 +1192,18 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df_dab _cp ap at bp bt = ((at * bp) - (bt * ap)) / (sqr ap + sqr bp)
 
              let dr_ab a b _cp ca =
-               let d = sqr (primal a) + sqr (primal b) in
-               !ca * primal b / d, !ca * neg (primal a) / d
+               let d = sqr a + sqr b in
+               !ca * b / d, !ca * neg a / d
 
 
              let dr_a a b _cp ca =
-               let d = sqr (primal a) + sqr (primal b) in
-               !ca * primal b / d
+               let d = sqr a + sqr b in
+               !ca * b / d
 
 
              let dr_b a b _cp ca =
-               let d = sqr (primal a) + sqr (primal b) in
-               !ca * neg (primal a) / d
+               let d = sqr a + sqr b in
+               !ca * neg a / d
            end : Piso))
 
 
@@ -1321,6 +1322,41 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and set_slice i = Lazy.force _set_slice i
 
+    and _set_fancy =
+      lazy
+        (fun i ->
+          build_piso
+            (module struct
+              let label = "set_fancy"
+
+              let ff_aa a _b = error_uniop label (pack_elt a)
+
+              let ff_ab a _b = error_uniop label (pack_elt a)
+
+              let ff_ba _a b = error_uniop label (pack_elt b)
+
+              let ff_bb a b =
+                let a = A.copy a in
+                A.(set_fancy i a b);
+                Arr a
+
+
+              let df_da _cp _ap at bp = set_fancy i at (zero bp)
+
+              let df_db _cp ap _bp bt = set_fancy i (zero ap) bt
+
+              let df_dab _cp _ap at _bp bt = set_fancy i at bt
+
+              let dr_ab _a b _cp ca = set_fancy i !ca (zero b), get_fancy i !ca
+
+              let dr_a _a b _cp ca = set_fancy i !ca (zero b)
+
+              let dr_b _a _b _cp ca = get_fancy i !ca
+            end : Piso))
+
+
+    and set_fancy i = Lazy.force _set_fancy i
+
     and ( *@ ) a b = dot a b
 
     and _dot =
@@ -1343,13 +1379,11 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df_dab _cp ap at bp bt = (ap *@ bt) + (at *@ bp)
 
-             let dr_ab a b _cp ca =
-               dot !ca (transpose (primal b)), dot (transpose (primal a)) !ca
+             let dr_ab a b _cp ca = dot !ca (transpose b), dot (transpose a) !ca
 
+             let dr_a _a b _cp ca = dot !ca (transpose b)
 
-             let dr_a _a b _cp ca = dot !ca (transpose (primal b))
-
-             let dr_b a _b _cp ca = dot (transpose (primal a)) !ca
+             let dr_b a _b _cp ca = dot (transpose a) !ca
            end : Piso))
 
 
@@ -1589,9 +1623,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let ff_arr a = A.(split ~axis parts a) |> Array.map (fun x -> Arr x)
 
-              let df _cp _ap _at =
-                raise (Owl_exception.NOT_IMPLEMENTED "owl_algodiff_ops.split")
-
+              let df _cp _ap at = split ~axis parts at
 
               let dr _a _cp _cp_ref_arr ca_ref_arr =
                 concatenate ~axis (Array.map (fun ca -> !ca) ca_ref_arr)
@@ -1665,7 +1697,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
              let df _cp ap at = trace (transpose (inv ap) *@ at)
 
-             let dr a _cp ca = !ca * transpose (inv (primal a))
+             let dr a _cp ca = !ca * transpose (inv a)
            end : Siso))
 
 
@@ -1846,11 +1878,11 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     and _sylvester =
       lazy
         (let unpack a = a.(0), a.(1), a.(2) in
-         let sylv_forward p a b _c at bt ct =
-           let dp_da () = sylvester a b (neg at *@ p) in
-           let dp_db () = sylvester a b (neg p *@ bt) in
-           let dp_dc () = sylvester a b ct in
-           [| dp_da; dp_db; dp_dc |]
+         let sylv_forward p at bt ct =
+           let da () = (neg at *@ p) in
+           let db () = (neg p *@ bt) in
+           let dc () = ct in
+           [| da; db; dc |]
          in
          let sylv_backward a b _c p pbar =
            let st = sylvester (transpose a) (transpose b) (neg pbar) in
@@ -1871,10 +1903,11 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
              let df idxs p inp tangents =
-               let a, b, c = unpack inp in
+               let a, b, _ = unpack inp in
                let at, bt, ct = unpack tangents in
-               let dp = sylv_forward p a b c at bt ct in
-               List.map (fun k -> dp.(k) ()) idxs |> List.fold_left ( + ) (pack_flt 0.)
+               let dp = sylv_forward p at bt ct in
+               let dx = List.map (fun k -> dp.(k) ()) idxs |> List.fold_left ( + ) (pack_flt 0.) in
+               sylvester a b dx
 
 
              let dr idxs inp p pbar_ref =
@@ -1897,12 +1930,12 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     and _lyapunov =
       let _lyapunov_backward_a a ca cp =
         let s = lyapunov (transpose a) (neg ca) in
-        pack_flt 2. * s *@ cp
+        (s *@ transpose cp) + (transpose s *@ cp)
       in
       let _lyapunov_backward_q a ca = neg (lyapunov (transpose a) (neg ca)) in
       let _lyapunov_backward_aq a ca cp =
         let s = lyapunov (transpose a) (neg ca) in
-        pack_flt 2. * s *@ cp, neg s
+        (s *@ transpose cp) + (transpose s *@ cp), neg s
       in
       lazy
         (build_piso
@@ -1924,17 +1957,17 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
              let df_db _cp ap _qp qt = lyapunov ap qt
 
              let df_dab cp ap at _qp qt =
-               lyapunov ap (neg ((at *@ cp) + (cp *@ transpose at))) + lyapunov ap qt
+               lyapunov ap (qt - ((at *@ cp) + (cp *@ transpose at))) 
 
 
              let dr_ab a _b cp ca =
-               let abar, qbar = _lyapunov_backward_aq (primal a) !ca cp in
+               let abar, qbar = _lyapunov_backward_aq a !ca cp in
                abar, qbar
 
 
-             let dr_a a _q cp ca = _lyapunov_backward_a (primal a) !ca cp
+             let dr_a a _q cp ca = _lyapunov_backward_a a !ca cp
 
-             let dr_b a _q _cp ca = _lyapunov_backward_q (primal a) !ca
+             let dr_b a _q _cp ca = _lyapunov_backward_q a !ca
            end : Piso))
 
 
@@ -1943,12 +1976,12 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     and _discrete_lyapunov =
       let _discrete_lyapunov_backward_a a ca cp =
         let s = discrete_lyapunov (transpose a) ca in
-        pack_flt 2. * s *@ a *@ cp
+        (s *@ a *@ transpose cp) + (transpose s *@ a *@ cp)
       in
       let _discrete_lyapunov_backward_q a ca = discrete_lyapunov (transpose a) ca in
       let _discrete_lyapunov_backward_aq a ca cp =
         let s = discrete_lyapunov (transpose a) ca in
-        pack_flt 2. * s *@ a *@ cp, s
+        (s *@ a *@ transpose cp) + (transpose s *@ a *@ cp), s
       in
       lazy
         (fun ~solver ->
@@ -1965,25 +1998,27 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
               let ff_bb a q = Arr A.(Linalg.discrete_lyapunov ~solver a q)
 
               let df_da cp ap at _qp =
-                let g = ap *@ cp *@ transpose at in
-                discrete_lyapunov ap (g + transpose g)
+                let g1 = ap *@ cp *@ transpose at in
+                let g2 = at *@ cp *@ transpose ap in
+                discrete_lyapunov ap (g1 + g2)
 
 
               let df_db _cp ap _qp qt = discrete_lyapunov ap qt
 
               let df_dab cp ap at _qp qt =
-                let g = ap *@ cp *@ transpose at in
-                discrete_lyapunov ap (g + transpose g) + discrete_lyapunov ap qt
+                let g1 = ap *@ cp *@ transpose at in
+                let g2 = at *@ cp *@ transpose ap in
+                discrete_lyapunov ap (g1 + g2 + qt)
 
 
               let dr_ab a _b cp ca =
-                let abar, qbar = _discrete_lyapunov_backward_aq (primal a) !ca cp in
+                let abar, qbar = _discrete_lyapunov_backward_aq a !ca cp in
                 abar, qbar
 
 
-              let dr_a a _q cp ca = _discrete_lyapunov_backward_a (primal a) !ca cp
+              let dr_a a _q cp ca = _discrete_lyapunov_backward_a a !ca cp
 
-              let dr_b a _q _cp ca = _discrete_lyapunov_backward_q (primal a) !ca
+              let dr_b a _q _cp ca = _discrete_lyapunov_backward_q a !ca
             end : Piso))
 
 
@@ -1993,7 +2028,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and _linsolve =
       let _linsolve_backward_b trans typ a cbar =
-        linsolve ~trans:(not trans) ~typ (primal a) cbar
+        linsolve ~trans:(not trans) ~typ a cbar
       in
       let _linsolve_backward_a trans typ cp bbar =
         let abar = neg bbar *@ transpose cp in
@@ -2058,48 +2093,38 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
            let tr_b = transpose b in
            let r = if diag_r then diag r else r in
            let inv_r = if diag_r then pack_flt 1. / r else inv r in
-           let atilde =
-             if diag_r then a - (b * inv_r *@ tr_b *@ p) else a - (b *@ inv_r *@ tr_b *@ p)
-           in
-           let tr_atilde = transpose atilde in
-           let dp_da () =
+           let k = if diag_r then transpose inv_r * tr_b *@ p else inv_r *@ tr_b *@ p in
+           let acl = a - (b *@ k) in
+           let tr_acl = transpose acl in
+           let da () =
              let pat = p *@ at in
-             lyapunov tr_atilde (neg (transpose pat) - pat)
+             (neg (transpose pat) - pat)
            in
-           let dp_dq () = lyapunov tr_atilde (neg qt) in
-           let dp_dr () =
-             let pbinv_r = if diag_r then p *@ (b * inv_r) else p *@ b *@ inv_r in
-             lyapunov tr_atilde (neg (pbinv_r *@ rt *@ transpose pbinv_r))
+           let dq () = (neg qt) in
+           let dr () = (neg (transpose k *@ rt *@ k)) in
+           let db () =
+             let x = p *@ bt *@ k in
+             (x + transpose x)
            in
-           let dp_db () =
-             let x =
-               if diag_r
-               then p *@ (bt * inv_r) *@ tr_b *@ p
-               else p *@ bt *@ inv_r *@ tr_b *@ p
-             in
-             lyapunov tr_atilde (x + transpose x)
-           in
-           [| dp_da; dp_db; dp_dq; dp_dr |]
+           tr_acl, [| da; db; dq; dr |]
          in
          let care_backward ~diag_r a b _q r p pbar =
            let tr_b = transpose b in
            let inv_r = if diag_r then pack_flt 1. / diag r else inv r in
-           let atilde =
-             if diag_r then a - (b * inv_r *@ tr_b *@ p) else a - (b *@ inv_r *@ tr_b *@ p)
+           let k = if diag_r then transpose inv_r * tr_b *@ p else inv_r *@ tr_b *@ p in
+           let tr_k = transpose k in
+           let acl = a - (b *@ k) in
+           let s =
+             (* we can symmetrise without loss of generality as p is symmetric *)
+             let pbar = pack_flt 0.5 * (pbar + transpose pbar) in
+             let s = lyapunov acl (neg pbar) in
+             pack_flt 0.5 * (s + transpose s)
            in
-           let s = lyapunov atilde (neg pbar) in
            (* the following calculations are not calculated unless needed *)
            let qbar () = s in
-           let rbar () =
-             let pbinv_r = if diag_r then p *@ (b * inv_r) else p *@ b *@ inv_r in
-             transpose pbinv_r *@ s *@ pbinv_r
-           in
+           let rbar () = k *@ s *@ tr_k in
            let abar () = pack_flt 2. * p *@ s in
-           let bbar () =
-             if diag_r
-             then neg (pack_flt 2.) * p *@ s *@ p *@ (b * inv_r)
-             else neg (pack_flt 2.) * p *@ s *@ p *@ b *@ inv_r
-           in
+           let bbar () = neg (pack_flt 2.) * p *@ s *@ tr_k in
            [| abar; bbar; qbar; rbar |]
          in
          fun ~diag_r ->
@@ -2116,8 +2141,16 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
                let df idxs p inp tangents =
                  let a, b, _, r = unpack inp in
                  let at, bt, qt, rt = unpack tangents in
-                 let dp = care_forward ~diag_r p a b r at bt qt rt in
-                 List.map (fun k -> dp.(k) ()) idxs |> List.fold_left ( + ) (pack_flt 0.)
+                 let tr_acl, dp = care_forward ~diag_r p a b r at bt qt rt in
+                 let dx = List.map
+                   (fun k ->
+                     (* we can do symmetrise without loss of generality because 
+                   the output of care is symmetric *)
+                     let dp = dp.(k) () in
+                     pack_flt 0.5 * (dp + transpose dp))
+                   idxs
+                 |> List.fold_left ( + ) (pack_flt 0.) in
+                 lyapunov tr_acl dx
 
 
                let dr idxs inp p pbar_ref =
@@ -2131,6 +2164,90 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
 
     and care ?(diag_r = false) a b q r = Lazy.force _care ~diag_r [| a; b; q; r |]
+
+    and _dare =
+      lazy
+        (let unpack a = a.(0), a.(1), a.(2), a.(3) in
+         let dare_forward ~diag_r:_ p a b r at bt qt rt =
+           let tr_b = transpose b in
+           let k =
+             let r_btpb = r + (tr_b *@ p *@ b) in
+             let h = tr_b *@ p *@ a in
+             linsolve r_btpb h
+           in
+           let acl = a - (b *@ k) in
+           let tr_acl = transpose acl in
+           let da () =
+             let g = tr_acl *@ p *@ at in
+             (g + transpose g)
+           in
+           let db () =
+             let x = tr_acl *@ p *@ bt *@ k in
+             (neg (x + transpose x))
+           in
+           let dq () = qt in
+           let dr () = (transpose k *@ rt *@ k) in
+           tr_acl, [| da; db; dq; dr |]
+         in
+         let dare_backward ~diag_r:_ a b _q r p pbar =
+           let tr_b = transpose b in
+           let k =
+             let r_btpb = r + (tr_b *@ p *@ b) in
+             let h = tr_b *@ p *@ a in
+             linsolve r_btpb h
+           in
+           let tr_k = transpose k in
+           let acl = a - (b *@ k) in
+           let s =
+             (* we can symmetrise without loss of generality as p is symmetric *)
+             let pbar = pack_flt 0.5 * (pbar + transpose pbar) in
+             let s = discrete_lyapunov acl pbar in
+             pack_flt 0.5 * (s + transpose s)
+           in
+           (* the following calculations are not calculated unless needed *)
+           let qbar () = s in
+           let rbar () = k *@ s *@ tr_k in
+           let abar () = pack_flt 2. * p *@ acl *@ s in
+           let bbar () = neg (pack_flt 2.) * p *@ acl *@ s *@ tr_k in
+           [| abar; bbar; qbar; rbar |]
+         in
+         fun ~diag_r ->
+           build_aiso
+             (module struct
+               let label = "dare"
+
+               let ff a =
+                 match unpack a with
+                 | Arr a, Arr b, Arr q, Arr r -> A.Linalg.dare ~diag_r a b q r |> pack_arr
+                 | _                          -> error_uniop "dare" a.(0)
+
+
+               let df idxs p inp tangents =
+                 let a, b, _, r = unpack inp in
+                 let at, bt, qt, rt = unpack tangents in
+                 let tr_acl, dp = dare_forward ~diag_r p a b r at bt qt rt in
+                 let dx = List.map
+                   (fun k ->
+                     (* we can do symmetrise without loss of generality because 
+                   the output of care is symmetric *)
+                     let dp = dp.(k) () in
+                     pack_flt 0.5 * (dp + transpose dp))
+                   idxs
+                 |> List.fold_left ( + ) (pack_flt 0.) in
+                 discrete_lyapunov tr_acl dx
+
+
+               let dr idxs inp p pbar_ref =
+                 let pbar = !pbar_ref in
+                 let bars =
+                   let a, b, q, r = unpack inp in
+                   dare_backward ~diag_r a b q r p pbar
+                 in
+                 List.map (fun k -> bars.(k) ()) idxs
+             end : Aiso))
+
+
+    and dare ?(diag_r = false) a b q r = Lazy.force _dare ~diag_r [| a; b; q; r |]
   end
 
   (* neural network module: for specialised neural network operations *)
@@ -2620,7 +2737,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let df _cp _ap _at = failwith "max_pool1d:df"
 
-              let dr a _cp ca = max_pool1d_backward padding (primal a) b s !ca
+              let dr a _cp ca = max_pool1d_backward padding a b s !ca
             end : Siso)
             a)
 
@@ -2647,7 +2764,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let df _cp _ap _at = failwith "max_pool2d:df"
 
-              let dr a _cp ca = max_pool2d_backward padding (primal a) b s !ca
+              let dr a _cp ca = max_pool2d_backward padding a b s !ca
             end : Siso)
             a)
 
@@ -2674,7 +2791,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let df _cp _ap _at = failwith "max_pool3d:df"
 
-              let dr a _cp ca = max_pool3d_backward padding (primal a) b s !ca
+              let dr a _cp ca = max_pool3d_backward padding a b s !ca
             end : Siso)
             a)
 
@@ -2701,7 +2818,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let df _cp _ap _at = failwith "avg_pool1d:df"
 
-              let dr a _cp ca = avg_pool1d_backward padding (primal a) b s !ca
+              let dr a _cp ca = avg_pool1d_backward padding a b s !ca
             end : Siso)
             a)
 
@@ -2728,7 +2845,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let df _cp _ap _at = failwith "avg_pool2d:df"
 
-              let dr a _cp ca = avg_pool2d_backward padding (primal a) b s !ca
+              let dr a _cp ca = avg_pool2d_backward padding a b s !ca
             end : Siso)
             a)
 
@@ -2755,7 +2872,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let df _cp _ap _at = failwith "avg_pool3d:df"
 
-              let dr a _cp ca = avg_pool3d_backward padding (primal a) b s !ca
+              let dr a _cp ca = avg_pool3d_backward padding a b s !ca
             end : Siso)
             a)
 
@@ -2782,7 +2899,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
               let df _cp _ap _at = failwith "upsampling2d:df"
 
-              let dr a _cp ca = upsampling2d_backward (primal a) s !ca
+              let dr a _cp ca = upsampling2d_backward a s !ca
             end : Siso)
             a)
 

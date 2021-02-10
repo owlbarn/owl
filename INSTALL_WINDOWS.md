@@ -47,7 +47,7 @@ opam install owl owl-top
 
 ## Status
 
-Porting to Windows is still work-in-progress. At the moment `owl`, `owl-top`, and `owl-zoo` can be installed and basic functionality works. Netherless, compiling `owl` still generates quite a lot of warnings and test failures:
+Porting to Windows is still work-in-progress. At the moment `owl`, `owl-top`, and `owl-zoo` can be installed and basic functionality works. Nevertheless, compiling `owl` still generates quite a lot of warnings and test failures:
 
 Crashed tests:
 * `math`: test `mulmod`

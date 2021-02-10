@@ -6,9 +6,9 @@
 (** Functor to create neural networks of different precision. *)
 
 module Make_Embedded (A : Owl_types_ndarray_algodiff.Sig) = struct
-  include Owl_neural_graph.Make
-            (Owl_neural_neuron.Make
-               (Owl_optimise_generic.Make (Owl_algodiff_generic.Make (A))))
+  include
+    Owl_neural_graph.Make
+      (Owl_neural_neuron.Make (Owl_optimise_generic.Make (Owl_algodiff_generic.Make (A))))
 end
 
 module Flatten (Graph : Owl_neural_graph_sig.Sig) = struct

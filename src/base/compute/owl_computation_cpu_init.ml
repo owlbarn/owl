@@ -61,6 +61,8 @@ module Make (Graph : Owl_computation_graph_sig.Sig) = struct
     | Set _i -> split_01 p
     | GetSlice _slice -> split_00 p (* ? *)
     | SetSlice _slice -> split_00 p (* ? *)
+    | GetFancy _indices -> split_00 p (* ? *)
+    | SetFancy _indices -> split_00 p (* ? *)
     | Copy -> split_01 p
     | Reset -> split_01 p
     | Reshape _shape -> split_01 p

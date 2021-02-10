@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types
+open Owl_types_common
 
 (* Functor of making the symbols of a computation graph. *)
 
@@ -75,6 +75,8 @@ module type Sig = sig
     | Set                           of int array
     | GetSlice                      of int list list
     | SetSlice                      of int list list
+    | GetFancy                      of index list
+    | SetFancy                      of index list
     | Copy
     | Reset
     | Reshape                       of int array

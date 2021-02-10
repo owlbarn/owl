@@ -65,6 +65,12 @@ module type Sig = sig
   val set_slice : int list list -> arr -> arr -> unit
   (** TODO *)
 
+  val get_fancy : index list -> arr -> arr
+  (** TODO *)
+
+  val set_fancy : index list -> arr -> arr -> unit
+  (** TODO *)
+
   val copy : arr -> arr
   (** TODO *)
 
@@ -721,6 +727,9 @@ module type Sig = sig
     (** TODO *)
 
     val care : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr
+    (** TODO *)
+
+    val dare : ?diag_r:bool -> arr -> arr -> arr -> arr -> arr
     (** TODO *)
   end
 end

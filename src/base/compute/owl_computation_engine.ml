@@ -9,11 +9,12 @@
  *)
 
 module Make_Graph (Device : Owl_types_computation_device.Sig) = struct
-  include Owl_computation_graph.Make
-            (Owl_computation_optimiser.Make
-               (Owl_computation_operator.Make
-                  (Owl_computation_symbol.Make
-                     (Owl_computation_shape.Make (Owl_computation_type.Make (Device))))))
+  include
+    Owl_computation_graph.Make
+      (Owl_computation_optimiser.Make
+         (Owl_computation_operator.Make
+            (Owl_computation_symbol.Make
+               (Owl_computation_shape.Make (Owl_computation_type.Make (Device))))))
 end
 
 (**
