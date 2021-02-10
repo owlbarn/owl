@@ -69,9 +69,8 @@
  */
 
 /* NOTE: Looks like non-ANSI symbols SING, OVERFLOW, UNDERFLOW,
- * TLOSS, and PLOSS are defined in MINGW's <math.h>.
- * A better approach than #ifndef might be to set the proper
- * C-standard during compile (C99?) <kkirstein, 29.10.2020> */
+ * TLOSS, and PLOSS are already defined in MINGW's <math.h>.
+ * <kkirstein, 29.10.2020> */
 #ifndef DOMAIN
 #define DOMAIN		1	/* argument domain error */
 #endif
