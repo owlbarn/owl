@@ -1,3 +1,4 @@
+
 (copy_files# ext/*)
 
 (copy_files# core/*)
@@ -41,6 +42,8 @@
 (copy_files# ppl/*)
 
 (copy_files# working/*)
+
+(copy_files# signal/*)
 
 (library
  (name owl)
