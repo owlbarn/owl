@@ -34,4 +34,4 @@ let blackman m =
   let mulv2 = D.mul_scalar inter2 (0.08) in
   let mulvf = D.add mulv1 mulv2 in
   let ans = D.add_scalar mulvf 0.42 in
-  D.to_array ans
+  ans
