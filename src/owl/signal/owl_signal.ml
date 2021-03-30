@@ -35,3 +35,39 @@ let blackman m =
   let mulvf = D.add mulv1 mulv2 in
   let ans = D.add_scalar mulvf 0.42 in
   ans
+
+let resize r x =                    (*zero pad the array to 2*x length*)
+  let open Ndarray in
+  let z = Array.make (2*x-(Array.length r)) 0. in
+  let y= Array.append r z in
+  D.of_array y [|2*x|] |> Generic.cast_d2z
+
+
+let dtft r x =                  (*dtft for upper unit circle (i.e whole if false)*)
+  let open Ndarray in
+  let a = resize r x in
+  let b = Owl_fft.D.fft a in
+  Z.get_slice [[0;x-1]] b
+
+let dtftw r x =              (*dtft for full circle (i.e whole is true)*)
+  let a = resize r x in
+  Owl_fft.D.fft a
+
+let freq n =         (*n is the number of frequencies where freqz is to be calculated*)
+  let w = Ndarray.D.linspace 0. Owl_const.pi (n+1) in
+  Ndarray.D.get_slice [[0;n-1]] w
+
+let freqf n =         (*n is the number of frequencies where freqz is to be calculated (if whole is true)*)
+  let w = Ndarray.D.linspace 0. (2. *. Owl_const.pi) (2*n+1) in
+  Ndarray.D.get_slice [[0;(2*n-1)]] w
+
+
+let freqz ?(n=512) ?(whole=false) b a = (*b represents numerator array while a represent denominator array*)
+  if whole then
+    let x = dtftw a n in
+    let y = dtftw b n in
+    Ndarray.Z.div y x
+  else	
+    let x = dtft a n in
+    let y = dtft b n in
+    Ndarray.Z.div y x
