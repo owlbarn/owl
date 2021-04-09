@@ -59,7 +59,8 @@ module To_test = struct
     M.set freqz_ref [|1|] {Complex.re = 0.6536; im = -0.7536};
     M.set freqz_ref [|2|] {Complex.re = -0.5; im = -0.5};
     M.set freqz_ref [|3|] {Complex.re = -0.0536; im = 0.0464};
-    let f = freqz ~n:4 ~whole:false (freqz_num |> M.to_array) (freqz_den |> M.to_array) in
+    let f = (freqz ~n:4 ~whole:false (freqz_num |> M.to_array) (freqz_den |> M.to_array))
+          |> (fun (a, b) -> b) in
     let max_err = (Owl_dense_ndarray.Z.map2 (fun x a-> Complex.sub x a) f freqz_ref |> Owl_dense_ndarray.Z.abs |> Owl_dense_ndarray.Z.max |> Owl_dense_ndarray.Z.re |> Arr.get) [|0|] in
     max_err < 1e-3
 
@@ -74,4 +75,7 @@ let hann () = Alcotest.(check bool) "hann" true (To_test.hann ())
 let freqz () = Alcotest.(check bool) "freqz" true (To_test.freqz ())
 
 let test_set =
-  [ "blackman", `Slow, blackman; "hamming", `Slow, hamming; "hann", `Slow, hann ]
+  [ "blackman", `Slow, blackman;
+    "hamming", `Slow, hamming;
+    "hann", `Slow, hann;
+    "freqz", `Slow, freqz; ]

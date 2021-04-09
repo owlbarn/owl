@@ -53,21 +53,12 @@ let dtftw r x =              (*dtft for full circle (i.e whole is true)*)
   let a = resize r x in
   Owl_fft.D.fft a
 
-let freq n =         (*n is the number of frequencies where freqz is to be calculated*)
-  let w = Ndarray.D.linspace 0. Owl_const.pi (n+1) in
-  Ndarray.D.get_slice [[0;n-1]] w
-
-let freqf n =         (*n is the number of frequencies where freqz is to be calculated (if whole is true)*)
-  let w = Ndarray.D.linspace 0. (2. *. Owl_const.pi) (2*n+1) in
-  Ndarray.D.get_slice [[0;(2*n-1)]] w
-
-
 let freqz ?(n=512) ?(whole=false) b a = (*b represents numerator array while a represent denominator array*)
   if whole then
     let x = dtftw a n in
     let y = dtftw b n in
-    Ndarray.Z.div y x
+    (Ndarray.D.linspace (-1.0 *. Owl_const.pi) Owl_const.pi (n+1), Ndarray.Z.div y x)
   else	
     let x = dtft a n in
     let y = dtft b n in
-    Ndarray.Z.div y x
+    (Ndarray.D.linspace 0. Owl_const.pi (n+1), Ndarray.Z.div y x)
