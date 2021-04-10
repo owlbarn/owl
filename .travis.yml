@@ -25,9 +25,9 @@ matrix:
     env: OCAML_VERSION=4.10 DISTRO=fedora
   - os: linux
     env: OCAML_VERSION=4.10 DISTRO=ubuntu
-  - os: linux
-    arch: arm64
-    env: OCAML_VERSION=4.10 DISTRO=debian
+    #  - os: linux
+    #    arch: arm64
+    #    env: OCAML_VERSION=4.10 DISTRO=debian
 
   fast_finish: true
   allow_failures:
