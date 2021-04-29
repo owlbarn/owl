@@ -8468,7 +8468,7 @@ let split ?(axis = 0) parts x =
   let x_shp = shape x in
   let x_dim = num_dims x in
   let _d = Array.fold_left ( + ) 0 parts in
-  let a = Owl_utils.adjust_index axis _d in
+  let a = Owl_utils.adjust_index axis x_dim in
   let p0 = a < x_dim in
   let p1 = _d = x_shp.(a) in
   let s = Printf.sprintf "parts = %s" (Owl_utils_array.to_string string_of_int parts) in
