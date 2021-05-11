@@ -75,14 +75,4 @@ opam install owl owl-top owl-plplot
 
 ## Status
 
-Porting to Windows is still work-in-progress. At the moment `owl`, `owl-top`, and `owl-zoo` can be installed and basic functionality works. Nevertheless, compiling `owl` still generates quite a lot of warnings and test failures:
-
-Crashed tests:
-* `math`: test `mulmod`
-* `math`: test `pow_mod`
--> both fixed by pending PR
-
-Failed tests:
-_none_
-
-
+Porting to Windows is still work-in-progress. At the moment `owl`, `owl-top`, and `owl-zoo` can be installed and basic functionality works.
