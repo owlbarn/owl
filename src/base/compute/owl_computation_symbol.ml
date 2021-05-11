@@ -32,6 +32,8 @@ module Make (Shape : Owl_computation_shape_sig.Sig) = struct
     | Set _i -> "Set"
     | GetSlice _slice -> "GetSlice"
     | SetSlice _slice -> "SetSlice"
+    | GetFancy _ -> "GetFancy"
+    | SetFancy _ -> "SetFancy"
     | Copy -> "Copy"
     | Reset -> "Reset"
     | Reshape _shape -> "Reshape"

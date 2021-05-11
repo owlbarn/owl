@@ -10,8 +10,8 @@
 *)
 
 module Make_Embedded (A : Owl_types_ndarray_algodiff.Sig) = struct
-  include Owl_regression_generic.Make
-            (Owl_optimise_generic.Make (Owl_algodiff_generic.Make (A)))
+  include
+    Owl_regression_generic.Make (Owl_optimise_generic.Make (Owl_algodiff_generic.Make (A)))
 end
 
 module S = Make_Embedded (Owl_algodiff_primal_ops.S)

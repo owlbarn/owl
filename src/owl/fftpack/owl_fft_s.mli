@@ -13,3 +13,7 @@ val ifft : ?axis:int -> (Complex.t, complex32_elt) t -> (Complex.t, complex32_el
 val rfft : ?axis:int -> (float, float32_elt) t -> (Complex.t, complex32_elt) t
 
 val irfft : ?axis:int -> ?n:int -> (Complex.t, complex32_elt) t -> (float, float32_elt) t
+
+val fft2 : (Complex.t, complex32_elt) t -> (Complex.t, complex32_elt) t
+
+val ifft2 : (Complex.t, complex32_elt) t -> (Complex.t, complex32_elt) t

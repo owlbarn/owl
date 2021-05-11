@@ -504,20 +504,21 @@ Parameters:
   * ``b`` : real cofficient matrix B.
   * ``q`` : real cofficient matrix Q.
   * ``r`` : real cofficient matrix R. R must be non-singular.
-  * ``diag_r`` : true if R is a diagonal matrix. false by default
+  * ``diag_r`` : true if R is a diagonal matrix, false by default.
 
 Returns:
   * ``x`` : a solution matrix X.
  *)
 
 val dare
-  :  (float, 'a) t
+  :  ?diag_r:bool
+  -> (float, 'a) t
   -> (float, 'a) t
   -> (float, 'a) t
   -> (float, 'a) t
   -> (float, 'a) t
 (**
-``dare a b q r`` solves the discrete-time algebraic Riccati equation system
+``dare ?diag_r a b q r`` solves the discrete-time algebraic Riccati equation system
 in the following form. The algorithm is based on :cite:`laub1979schur`.
 
 .. math::
@@ -528,6 +529,7 @@ Parameters:
   * ``b`` : real cofficient matrix B.
   * ``q`` : real cofficient matrix Q.
   * ``r`` : real cofficient matrix R. R must be non-singular.
+  * ``diag_r`` : true if R is a diagonal matrix, false by default.
 
 Returns:
   * ``x`` : a symmetric solution matrix X.

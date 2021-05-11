@@ -65,3 +65,8 @@ let irfft ?axis ?n ~otyp x =
   let norm = float_of_int s.(axis) in
   div_scalar_ y norm;
   y
+
+
+let fft2 x = fft ~axis:0 x |> fft ~axis:1
+
+let ifft2 x = ifft ~axis:0 x |> ifft ~axis:1

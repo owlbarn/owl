@@ -21,15 +21,29 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
 
   module Reverse = struct
     let finite_difference_grad =
-      let two = F A.(float_to_elt 2.) in
+      let h x = F A.(float_to_elt x) in
+      let two = h 2. in
+      let eight = h 8. in
+      let twelve = h 12. in
       fun ~order ~f ?(eps = 1E-5) x d ->
         let eps = F A.(float_to_elt eps) in
         let dx = Maths.(eps * d) in
         let df1 = Maths.(f (x + dx) - f (x - dx)) in
         match order with
+        | `eighth ->
+          let twodx = Maths.(h 2. * dx) in
+          let threedx = Maths.(h 3. * dx) in
+          let fourdx = Maths.(h 4. * dx) in
+          let df2 = Maths.(f (x + twodx) - f (x - twodx)) in
+          let df3 = Maths.(f (x + threedx) - f (x - threedx)) in
+          let df4 = Maths.(f (x + fourdx) - f (x - fourdx)) in
+          Maths.(
+            ((h (4. /. 5.) * df1)
+            + (h (-1. /. 5.) * df2)
+            + (h (4. /. 105.) * df3)
+            + (h (-1. /. 280.) * df4))
+            / eps)
         | `fourth ->
-          let eight = F A.(float_to_elt 8.) in
-          let twelve = F A.(float_to_elt 12.) in
           let df2 =
             let twodx = Maths.(two * dx) in
             Maths.(f (x + twodx) - f (x - twodx))

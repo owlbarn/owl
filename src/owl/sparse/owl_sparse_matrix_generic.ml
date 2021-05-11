@@ -49,7 +49,7 @@ let prune x a eps = _eigen_prune x.d a eps
 
 let copy x = { m = x.m; n = x.n; k = x.k; d = _eigen_copy x.d }
 
-let transpose x = { m = x.m; n = x.n; k = x.k; d = _eigen_transpose x.d }
+let transpose x = { m = x.n; n = x.m; k = x.k; d = _eigen_transpose x.d }
 
 let diag x = { m = min x.m x.n; n = 1; k = x.k; d = _eigen_diagonal x.d }
 

@@ -78,7 +78,7 @@ double erfcinv(double x) {
 }
 
 
-long mulmod(long a, long b, long m) {
+int64_t mulmod(int64_t a, int64_t b, int64_t m) {
   if (a >= m) a %= m;
   if (b >= m) b %= m;
 
@@ -86,12 +86,12 @@ long mulmod(long a, long b, long m) {
     return 0;
 
   // check if a * b overflows
-  if (b < LONG_MAX / a) {
-    long c = a * b;
+  if (b < INT64_MAX / a) {
+    int64_t c = a * b;
     return c < m ? c : c % m;
   }
 
-  long r = 0;
+  int64_t r = 0;
   while (b) {
     if (b & 1) {
       // r = (r + a) % m
@@ -114,13 +114,13 @@ long mulmod(long a, long b, long m) {
 }
 
 
-long powmod(long a, long b, long m) {
+int64_t powmod(int64_t a, int64_t b, int64_t m) {
   if (m == 1 && b == 0)
     return 0;
 
   if (a >= m) a %= m;
 
-  long r = 1;
+  int64_t r = 1;
   while (b) {
     if (b & 1)
       r = mulmod(r, a, m);

@@ -41,6 +41,7 @@ module Graph = Owl_graph
 module Nlp = Owl_nlp
 module Log = Owl_log
 module Computation = Owl_computation
+module Signal = Owl_signal
 
 (* backend modules *)
 

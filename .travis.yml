@@ -1,5 +1,7 @@
 language: c
 sudo: false
+# See https://github.com/ocaml/ocaml-ci-scripts/issues/351
+dist: focal
 services: docker
 
 install: wget https://raw.githubusercontent.com/ocaml/ocaml-travisci-skeleton/master/.travis-docker.sh
@@ -7,7 +9,6 @@ script: bash -ex ./.travis-docker.sh
 
 env:
   global:
-    - EIGENCPP_OPTFLAGS="-Wno-ignored-attributes -O3 -Ofast -march=native -mfpmath=sse -funroll-loops -ffast-math"
     - PACKAGE="owl"
     - PINS="owl-base.master:. owl-plplot.master:. owl-top.master:. owl-zoo.master:. owl.master:."
 
@@ -18,13 +19,16 @@ matrix:
   #   osx_image: xcode10.1
   #   env: OCAML_VERSION=4.07
   - os: linux
-    env: OCAML_VERSION=4.10 DISTRO=debian-stable
+    env: OCAML_VERSION=4.10 DISTRO=debian
   - os: linux
-    env: OCAML_VERSION=4.10 DISTRO=fedora
+    env: OCAML_VERSION=4.11 DISTRO=fedora
   - os: linux
-    env: OCAML_VERSION=4.10 DISTRO=ubuntu
+    env: OCAML_VERSION=4.12 DISTRO=ubuntu
+  - os: linux
+    arch: arm64
+    env: OCAML_VERSION=4.12 DISTRO=debian
 
   fast_finish: true
   allow_failures:
-    - env: OCAML_VERSION=4.10 DISTRO=ubuntu
+    - env: OCAML_VERSION=4.12 DISTRO=debian
 

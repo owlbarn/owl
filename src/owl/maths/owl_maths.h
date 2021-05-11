@@ -10,6 +10,7 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
 #include <math.h>
 #include <assert.h>
 
@@ -207,9 +208,9 @@ extern double sf_combination(int n, int m);
 
 extern double sf_log_combination(int n, int m);
 
-extern long mulmod(long a, long b, long m);
+extern int64_t mulmod(int64_t a, int64_t b, int64_t m);
 
-extern long powmod(long a, long b, long m);
+extern int64_t powmod(int64_t a, int64_t b, int64_t m);
 
 
 #ifdef __cplusplus

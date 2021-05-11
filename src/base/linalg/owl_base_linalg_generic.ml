@@ -480,4 +480,9 @@ let care ?(diag_r = false) _a _b _q _r =
   diag_r |> ignore;
   raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.care")
 
+
+let dare ?(diag_r = false) _a _b _q _r =
+  diag_r |> ignore;
+  raise (Owl_exception.NOT_IMPLEMENTED "owl_base_dense_ndarray_generic.dare")
+
 (* ends here *)

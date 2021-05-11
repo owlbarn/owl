@@ -97,6 +97,15 @@ val care
   -> (float, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
+val dare
+  :  ?diag_r:bool
+  -> (float, 'b) t
+  -> (float, 'b) t
+  -> (float, 'b) t
+  -> (float, 'b) t
+  -> (float, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
+
 (** {5 Non-standard functions} *)
 
 val linsolve_lu : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
