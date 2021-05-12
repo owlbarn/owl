@@ -28,7 +28,7 @@ make CC=x86_64-w64-mingw32-gcc FC=x86_64-w64-mingw32-gfortran TARGET=HASWELL PRE
 PLplot needs to be compiled with the 'native' MinGW compiler `x86_64-w64-mingw32-gcc` like OpenBLAS (see above), but in addition the 'native' Cygwin' C-compiler `gcc-core` is also needed. Thanks to the `cmake` based build system, this is only a matter of configuration.
 In order to enable the `gtk3` backend, one should install the respective dependency with the Cygwin package manager beforehand: `mingw64-x86_64-gtk3`.
 
-Then, start your Cygwin shell and perform the following actions During configure by the `cmake` command, one might see warnings about missing dependencies and disabled language bindings, e.g., for OCaml. These can be ignored, as OCaml binding will be provided by the respective opam package later during installation of `owl-plplot`.
+Then, start your Cygwin shell and perform the following actions. During configure by the `cmake` command, one might see warnings about missing dependencies and disabled language bindings, e.g., for OCaml. These can be ignored, as OCaml binding will be provided by the respective opam package later during installation of `owl-plplot`.
 
 First, clone the repository:
 ```
@@ -44,17 +44,19 @@ cmake -DCMAKE_C_COMPILER=gcc ../PLplot
 make all
 ```
 
-Finally, PLplot can be build for the Mingw toolchain. Make sure, you start in the directory one level above the PLplot source. Unfortunately, the automatic generation of header files with the mingw-toolchain fails in the Cygwin environment due to different path naming of Cygwin & Mingw, but we can "steel" the respective files from the Cygwin build.
+Finally, PLplot can be build for the Mingw toolchain. Make sure, you start in the directory one level above the PLplot source.
+
+For enabling cross-compiling mode of cmake, a toolchain file is needed:
+```
+echo "set(CMAKE_SYSTEM_NAME Windows)" > mingw_toolchain.cmake
+echo "set(CMAKE_C_COMPILER /usr/bin/x86_64-w64-mingw32-gcc)" >> mingw_toolchain.cmake
+```
+
+Now, the native build and installation of PLplot can be started.
 ```
 mkdir build_mingw
 cd build_mingw
-cmake -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc -DCMAKE_INSTALL_PREFIX=/usr/x86_64-w64-mingw32/sys-root/mingw -DCMAKE_NATIVE_BINARY_DIR=../build_cygwin ../PLplot
-
-make all # fails when generating tai-utc.h
-cp ../build_cygwin/lib/qsastime/tai-utc.h ./lib/qsastime/tai-utc.h
-make all # fails when generating deltaT.h
-cp ../build_cygwin/lib/qsastime/deltaT.h ./lib/qsastime/deltaT.h
-cp ../build_cygwin/include/plhershey-unicode.h ./include/plhershey-unicode.h
+cmake -DCMAKE_TOOLCHAIN_FILE=../mingw_toolchain.cmake -DNaNAwareCCompiler=ON -DCMAKE_INSTALL_PREFIX=/usr/x86_64-w64-mingw32/sys-root/mingw -DCMAKE_NATIVE_BINARY_DIR=<absolute path to build_cygwin> ../PLplot
 
 make all
 make install
