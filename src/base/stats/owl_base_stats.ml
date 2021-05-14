@@ -181,9 +181,8 @@ let concordant x0 x1 =
   let c = ref 0 in
   for i = 0 to Array.length x0 - 2 do
     for j = i + 1 to Array.length x0 - 1 do
-      if
-        i <> j
-        && ((x0.(i) < x0.(j) && x1.(i) < x1.(j)) || (x0.(i) > x0.(j) && x1.(i) > x1.(j)))
+      if i <> j
+         && ((x0.(i) < x0.(j) && x1.(i) < x1.(j)) || (x0.(i) > x0.(j) && x1.(i) > x1.(j)))
       then c := !c + 1
     done
   done;
@@ -194,9 +193,8 @@ let discordant x0 x1 =
   let c = ref 0 in
   for i = 0 to Array.length x0 - 2 do
     for j = i + 1 to Array.length x0 - 1 do
-      if
-        i <> j
-        && ((x0.(i) < x0.(j) && x1.(i) > x1.(j)) || (x0.(i) > x0.(j) && x1.(i) < x1.(j)))
+      if i <> j
+         && ((x0.(i) < x0.(j) && x1.(i) > x1.(j)) || (x0.(i) > x0.(j) && x1.(i) < x1.(j)))
       then c := !c + 1
     done
   done;

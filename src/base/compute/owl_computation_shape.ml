@@ -55,12 +55,11 @@ module Make (Type : Owl_computation_type_sig.Sig) = struct
 
   let _infer_shape_07 input_shapes axis =
     let s0 = Array.map (fun s -> s.(0)) input_shapes in
-    if
-      Array.exists
-        (function
-          | Some _ -> false
-          | None   -> true)
-        s0
+    if Array.exists
+         (function
+           | Some _ -> false
+           | None   -> true)
+         s0
     then [| None |]
     else (
       let s1 =

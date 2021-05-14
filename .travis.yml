@@ -9,7 +9,6 @@ script: bash -ex ./.travis-docker.sh
 
 env:
   global:
-    - EIGENCPP_OPTFLAGS="-Wno-ignored-attributes -O3 -Ofast -march=native -funroll-loops -ffast-math"
     - PACKAGE="owl"
     - PINS="owl-base.master:. owl-plplot.master:. owl-top.master:. owl-zoo.master:. owl.master:."
 
@@ -22,14 +21,13 @@ matrix:
   - os: linux
     env: OCAML_VERSION=4.10 DISTRO=debian
   - os: linux
-    env: OCAML_VERSION=4.10 DISTRO=fedora
+    env: OCAML_VERSION=4.11 DISTRO=fedora
   - os: linux
-    env: OCAML_VERSION=4.10 DISTRO=ubuntu
+    env: OCAML_VERSION=4.12 DISTRO=ubuntu
   - os: linux
     arch: arm64
-    env: OCAML_VERSION=4.10 DISTRO=debian
+    env: OCAML_VERSION=4.12 DISTRO=debian
 
   fast_finish: true
   allow_failures:
-    - env: OCAML_VERSION=4.10 DISTRO=ubuntu
-
+    - env: OCAML_VERSION=4.12 DISTRO=debian
