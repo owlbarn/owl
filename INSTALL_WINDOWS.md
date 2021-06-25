@@ -50,6 +50,7 @@ For enabling cross-compiling mode of cmake, a toolchain file is needed:
 ```
 echo "set(CMAKE_SYSTEM_NAME Windows)" > mingw_toolchain.cmake
 echo "set(CMAKE_C_COMPILER /usr/bin/x86_64-w64-mingw32-gcc)" >> mingw_toolchain.cmake
+echo "set(PKG_CONFIG_EXECUTABLE /usr/bin/x86_64-w64-mingw32-pkg-config)" >> mingw_toolchain.cmake
 ```
 
 Now, the native build and installation of PLplot can be started.
