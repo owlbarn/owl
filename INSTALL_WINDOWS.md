@@ -14,6 +14,8 @@ Please make sure the path is correctly setup, as described on the OfW website: [
 
 OpenBLAS supports cross-compiling, like it is used in _OfW_, when building from source. One might need to install the FORTRAN crosscompiler `x86_64-w64-mingw32-gfortran` via Cygwins package manager beforehand. Also, the generated binaries have to be installed at the cross compilers `sys-root` location instead under `/usr/local`. Note that during cross-compiling the target CPU has to be given explicitely (`HASWELL` needs to be replaced with your own model, please consult OpenBLAS documentation for available CPUs).
 
+Start your Cygwin shell and perform the following actions:
+
 ```
 git clone https://github.com/xianyi/OpenBLAS.git
 cd OpenBLAS
@@ -23,37 +25,57 @@ make CC=x86_64-w64-mingw32-gcc FC=x86_64-w64-mingw32-gfortran TARGET=HASWELL PRE
 
 ### PLplot
 
-__TODO__
+PLplot needs to be compiled with the 'native' MinGW compiler `x86_64-w64-mingw32-gcc` like OpenBLAS (see above), but in addition the 'native' Cygwin' C-compiler `gcc-core` is also needed. Thanks to the `cmake` based build system, this is only a matter of configuration.
+In order to enable the `gtk3` backend, one should install the respective dependency with the Cygwin package manager beforehand: `mingw64-x86_64-gtk3`.
+
+Then, start your Cygwin shell and perform the following actions. During configure by the `cmake` command, one might see warnings about missing dependencies and disabled language bindings, e.g., for OCaml. These can be ignored, as OCaml binding will be provided by the respective opam package later during installation of `owl-plplot`.
+
+First, clone the repository:
+```
+git clone https://github.com/PLplot/PLplot.git
+```
+
+Then, a native Cygwin build is needed:
+```
+mkdir build_cygwin
+cd build_cygwin
+cmake -DCMAKE_C_COMPILER=gcc ../PLplot
+
+make all
+```
+
+Finally, PLplot can be build for the Mingw toolchain. Make sure, you start in the directory one level above the PLplot source.
+
+For enabling cross-compiling mode of cmake, a toolchain file is needed:
+```
+echo "set(CMAKE_SYSTEM_NAME Windows)" > mingw_toolchain.cmake
+echo "set(CMAKE_C_COMPILER /usr/bin/x86_64-w64-mingw32-gcc)" >> mingw_toolchain.cmake
+echo "set(PKG_CONFIG_EXECUTABLE /usr/bin/x86_64-w64-mingw32-pkg-config)" >> mingw_toolchain.cmake
+```
+
+Now, the native build and installation of PLplot can be started.
+```
+mkdir build_mingw
+cd build_mingw
+cmake -DCMAKE_TOOLCHAIN_FILE=../mingw_toolchain.cmake -DNaNAwareCCompiler=ON -DCMAKE_INSTALL_PREFIX=/usr/x86_64-w64-mingw32/sys-root/mingw -DCMAKE_NATIVE_BINARY_DIR=<absolute path to build_cygwin> ../PLplot
+
+make all
+make install
+```
+
 
 ## Owl
 
 Now we can install Owl via the usual `opam` tool.
-
-### conf-openblas
-
-`conf-openblas.0.2.1` currently needs a manual installation of the `OpenBLAS` library as described above.
-
-### eigen
-
-`eigen.0.3.0` should work on _OfW_ out of the box.
 
 ### Installation
 
 If all prerequisites are setup, installation of `owl` and `owl-top` can be done via `opam`:
 
 ```
-opam install owl owl-top
+opam install owl owl-top owl-plplot
 ```
 
 ## Status
 
-Porting to Windows is still work-in-progress. At the moment `owl`, `owl-top`, and `owl-zoo` can be installed and basic functionality works. Nevertheless, compiling `owl` still generates quite a lot of warnings and test failures:
-
-Crashed tests:
-* `math`: test `mulmod`
-* `math`: test `pow_mod`
-
-Failed tests:
-_none_
-
-
+Porting to Windows is still work-in-progress. At the moment `owl`, `owl-top`, and `owl-zoo` can be installed and basic functionality works.
