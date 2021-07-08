@@ -124,8 +124,7 @@ module Make (Symbol : Owl_computation_symbol_sig.Sig) = struct
 
   let copy x = make_then_connect Copy [| arr_to_node x |] |> node_to_arr
 
-  let copy_ ~out _x =
-    failwith "Owl_computation_operator:copy_: not implemented"
+  let copy_ ~out _x = failwith "Owl_computation_operator:copy_: not implemented"
     [@@warning "-27"]
 
 
