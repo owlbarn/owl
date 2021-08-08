@@ -68,12 +68,28 @@
 /* Constant definitions for math error conditions
  */
 
+/* NOTE: Looks like non-ANSI symbols SING, OVERFLOW, UNDERFLOW,
+ * TLOSS, and PLOSS are already defined in MINGW's <math.h>.
+ * <kkirstein, 29.10.2020> */
+#ifndef DOMAIN
 #define DOMAIN		1	/* argument domain error */
+#endif
+#ifndef SING
 #define SING		2	/* argument singularity */
+#endif
+#ifndef OVERFLOW
 #define OVERFLOW	3	/* overflow range error */
+#endif
+#ifndef UNDERFLOW
 #define UNDERFLOW	4	/* underflow range error */
+#endif
+#ifndef TLOSS
 #define TLOSS		5	/* total loss of precision */
+#endif
+#ifndef PLOSS
 #define PLOSS		6	/* partial loss of precision */
+#endif
+
 #define TOOMANY         7	/* too many iterations */
 #define MAXITER        500
 
