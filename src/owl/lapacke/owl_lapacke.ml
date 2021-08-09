@@ -196,6 +196,7 @@ let gebal : type a b. ?job:char -> a:(a, b) t -> int * int * (a, b) t =
   let ilo = Int32.to_int !@_ilo in
   let ihi = Int32.to_int !@_ihi in
   ilo, ihi, !scale
+ [@@warning "-unerasable-optional-argument"]
 
 
 (* TODO: need a solution for scale parameter *)
@@ -418,6 +419,7 @@ let geqp3
   in
   check_lapack_error ret;
   a, tau, jpvt
+ [@@warning "-unerasable-optional-argument"]
 
 
 let geqrt : type a b. nb:int -> a:(a, b) t -> (a, b) t * (a, b) t =
@@ -1222,6 +1224,7 @@ let gesdd : type a b. ?jobz:char -> a:(a, b) t -> (a, b) t * (a, b) t * (a, b) t
   | 'O', true  -> a, !s, vt
   | 'O', false -> u, !s, a
   | _, _       -> u, !s, vt
+ [@@warning "-unerasable-optional-argument"]
 
 
 let gesvd
@@ -1366,6 +1369,7 @@ let gesvd
   | 'O', _ -> a, !s, vt
   | _, 'O' -> u, !s, a
   | _, _   -> u, !s, vt
+ [@@warning "-unerasable-optional-argument"]
 
 
 let ggsvd3
@@ -1575,6 +1579,7 @@ let ggsvd3
       Owl_dense_matrix_generic.triu r
   in
   u, v, q, !alpha, !beta, k, l, r
+ [@@warning "-unerasable-optional-argument"]
 
 
 let geevx
@@ -2135,6 +2140,7 @@ let orglq : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t
   match minmn < m with
   | true  -> Owl_dense_matrix_generic.get_slice [ [ 0; minmn - 1 ]; [] ] a
   | false -> a
+ [@@warning "-unerasable-optional-argument"]
 
 
 let unglq
@@ -2167,6 +2173,7 @@ let unglq
   match minmn < m with
   | true  -> Owl_dense_matrix_generic.get_slice [ [ 0; minmn - 1 ]; [] ] a
   | false -> a
+ [@@warning "-unerasable-optional-argument"]
 
 
 let orgqr : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t =
@@ -2197,6 +2204,7 @@ let orgqr : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t
   match minmn < n with
   | true  -> Owl_dense_matrix_generic.get_slice [ []; [ 0; minmn - 1 ] ] a
   | false -> a
+ [@@warning "-unerasable-optional-argument"]
 
 
 let ungqr
@@ -2229,6 +2237,7 @@ let ungqr
   match minmn < n with
   | true  -> Owl_dense_matrix_generic.get_slice [ []; [ 0; minmn - 1 ] ] a
   | false -> a
+ [@@warning "-unerasable-optional-argument"]
 
 
 let orgql : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t =
@@ -2259,6 +2268,7 @@ let orgql : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t
   match minmn < n with
   | true  -> Owl_dense_matrix_generic.get_slice [ []; [ 0; minmn - 1 ] ] a
   | false -> a
+ [@@warning "-unerasable-optional-argument"]
 
 
 let orgrq : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t =
@@ -2289,6 +2299,7 @@ let orgrq : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t
   match minmn < n with
   | true  -> Owl_dense_matrix_generic.get_slice [ []; [ 0; minmn - 1 ] ] a
   | false -> a
+ [@@warning "-unerasable-optional-argument"]
 
 
 let ormlq
@@ -2724,6 +2735,7 @@ let pttrs : type a b. ?uplo:char -> d:(a, b) t -> e:(a, b) t -> b:(a, b) t -> (a
   in
   check_lapack_error ret;
   b
+ [@@warning "-unerasable-optional-argument"]
 
 
 let trtri : type a b. uplo:char -> diag:char -> a:(a, b) t -> (a, b) t =
