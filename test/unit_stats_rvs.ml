@@ -424,12 +424,10 @@ module RandomTest = struct
     in
     let _, _ = iter blah 0 in
     C.print ~max_col:64 x;
-    (*
-     *)
+    (* *)
     let f = Owl.Fft.S.fft x in
     C.print ~max_col:64 f;
-    (*
-     *)
+    (* *)
     let p = 0.95 in
     let q = 1. -. p in
     let t2 = float n *. -.log q in
@@ -950,7 +948,8 @@ let test_true_is_not_random _ =
   let sampler _ length = length, fun _ -> true in
   let tests =
     [ bin_frequency, true, 0, 100; bin_block_frequency_7, true, 0, 100
-    ; bin_fft_64, false, 0, 1024; bin_fft_1024, true, 0, 1024
+    ; bin_fft_64, false, 0, 1024
+    ; bin_fft_1024, true, 0, 1024
       (* there is one frequency here - expect others randomly to exceed 95% too *) ]
   in
   run_random_tests test_name pretest sampler tests
