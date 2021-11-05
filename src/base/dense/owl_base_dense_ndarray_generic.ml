@@ -445,6 +445,7 @@ let sequential_ ?a ?step ~out =
   let _mul = Owl_base_dense_common._mul_elt k in
   let _flt = Owl_base_dense_common._float_typ_elt k in
   mapi_ (fun i _ -> _add a (_mul (_flt (float_of_int i)) step)) out
+  [@@warning "-unerasable-optional-argument"]
 
 
 let sequential k ?a ?step dimension =
@@ -494,6 +495,7 @@ let uniform_ ?a ?b ~out =
   in
   let uniform_fun = Owl_base_dense_common._uniform_elt k a b in
   map_ uniform_fun out
+  [@@warning "-unerasable-optional-argument"]
 
 
 let bernoulli k ?(p = 0.5) dims =
@@ -513,6 +515,7 @@ let bernoulli_ ?(p = 0.5) ~out =
     Owl_base_dense_common._float_typ_elt k a
   in
   map_ bernoulli_fun out
+  [@@warning "-unerasable-optional-argument"]
 
 
 let gaussian k ?mu ?sigma dims =
@@ -546,6 +549,7 @@ let gaussian_ ?mu ?sigma ~out =
   in
   let gaussian_fun = Owl_base_dense_common._gaussian_elt k mu sigma in
   map_ gaussian_fun out
+  [@@warning "-unerasable-optional-argument"]
 
 
 let print ?max_row ?max_col ?header ?fmt x =

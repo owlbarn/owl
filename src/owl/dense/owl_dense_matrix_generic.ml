@@ -1384,6 +1384,7 @@ let cov ?b ~a =
   let c = dot a' a in
   let n = row_num a - 1 |> Stdlib.max 1 |> float_of_int |> _float_typ_elt (kind a) in
   div_scalar c n
+  [@@warning "-unerasable-optional-argument"]
 
 
 let mat2gray ?amin ?amax x =

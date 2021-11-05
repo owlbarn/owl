@@ -1370,6 +1370,7 @@ let uniform_ ?a ?b ~out =
     | None   -> Owl_const.one k
   in
   _owl_uniform k (numel out) out a b
+  [@@warning "-unerasable-optional-argument"]
 
 
 let gaussian k ?mu ?sigma d =
@@ -1401,6 +1402,7 @@ let gaussian_ ?mu ?sigma ~out =
     | None   -> Owl_const.one k
   in
   _owl_gaussian k (numel out) out mu sigma
+  [@@warning "-unerasable-optional-argument"]
 
 
 let poisson k ~mu d =
@@ -1447,6 +1449,7 @@ let bernoulli_ ?(p = 0.5) ~out =
   Owl_exception.check (p >= 0. && p <= 1.) exn;
   let k = kind out in
   (_owl_bernoulli k) (numel out) out p 0
+  [@@warning "-unerasable-optional-argument"]
 
 
 let create kind dimension a =
@@ -1494,6 +1497,7 @@ let sequential_ ?a ?step ~out =
     | None      -> Owl_const.one k
   in
   _owl_sequential k (numel out) out a step
+  [@@warning "-unerasable-optional-argument"]
 
 
 let dropout ?(rate = 0.5) x =

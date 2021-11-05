@@ -70,6 +70,7 @@ let gemv ?(trans = false) ?(incx = 1) ?(incy = 1) ?alpha ?beta ~a ~x ~y =
   let x = _flatten x |> array1_of_genarray in
   let y = _flatten y |> array1_of_genarray in
   Owl_cblas_basic.gemv layout trans m n alpha a lda x incx beta y incy
+  [@@warning "-unerasable-optional-argument"]
 
 
 let gbmv ?(trans = false) ?(incx = 1) ?(incy = 1) ?alpha ?beta ~kl ~ku ~a ~x ~y =
@@ -93,6 +94,7 @@ let gbmv ?(trans = false) ?(incx = 1) ?(incy = 1) ?alpha ?beta ~kl ~ku ~a ~x ~y 
   let x = _flatten x |> array1_of_genarray in
   let y = _flatten y |> array1_of_genarray in
   Owl_cblas_basic.gbmv layout trans m n kl ku alpha a lda x incx beta y incy
+  [@@warning "-unerasable-optional-argument"]
 
 
 (** Level-3 BLAS: matrix-matrix operations *)
@@ -134,6 +136,7 @@ let gemm ?(transa = false) ?(transb = false) ?alpha ?beta ~a ~b ~c =
   let b = _flatten b |> array1_of_genarray in
   let c = _flatten c |> array1_of_genarray in
   Owl_cblas_basic.gemm layout transa transb m n k alpha a lda b ldb beta c ldc
+  [@@warning "-unerasable-optional-argument"]
 
 
 let symm ?(side = CblasRight) ?(uplo = CblasUpper) ?alpha ?beta ~a ~b ~c =
@@ -168,6 +171,7 @@ let symm ?(side = CblasRight) ?(uplo = CblasUpper) ?alpha ?beta ~a ~b ~c =
   let b = _flatten b |> array1_of_genarray in
   let c = _flatten c |> array1_of_genarray in
   Owl_cblas_basic.symm layout side uplo m n alpha a lda b ldb beta c ldc
+  [@@warning "-unerasable-optional-argument"]
 
 
 let syrk ?(uplo = CblasUpper) ?(trans = false) ?alpha ?beta ~a ~c =
@@ -198,6 +202,7 @@ let syrk ?(uplo = CblasUpper) ?(trans = false) ?alpha ?beta ~a ~c =
   let a = _flatten a |> array1_of_genarray in
   let c = _flatten c |> array1_of_genarray in
   Owl_cblas_basic.syrk layout uplo trans n k alpha a lda beta c ldc
+  [@@warning "-unerasable-optional-argument"]
 
 
 let syr2k ?(uplo = CblasUpper) ?(trans = false) ?alpha ?beta ~a ~b ~c =
@@ -237,6 +242,7 @@ let syr2k ?(uplo = CblasUpper) ?(trans = false) ?alpha ?beta ~a ~b ~c =
   let b = _flatten b |> array1_of_genarray in
   let c = _flatten c |> array1_of_genarray in
   Owl_cblas_basic.syr2k layout uplo trans n k alpha a lda b ldb beta c ldc
+  [@@warning "-unerasable-optional-argument"]
 
 
 let trmm
@@ -271,6 +277,7 @@ let trmm
   let a = _flatten a |> array1_of_genarray in
   let b = _flatten b |> array1_of_genarray in
   Owl_cblas_basic.trmm layout side uplo transa diag m n alpha a lda b ldb
+  [@@warning "-unerasable-optional-argument"]
 
 
 let trsm
@@ -305,6 +312,7 @@ let trsm
   let a = _flatten a |> array1_of_genarray in
   let b = _flatten b |> array1_of_genarray in
   Owl_cblas_basic.trsm layout side uplo transa diag m n alpha a lda b ldb
+  [@@warning "-unerasable-optional-argument"]
 
 
 let hemm ?(side = CblasRight) ?(uplo = CblasUpper) ?alpha ?beta ~a ~b ~c =
@@ -336,6 +344,7 @@ let hemm ?(side = CblasRight) ?(uplo = CblasUpper) ?alpha ?beta ~a ~b ~c =
   let b = _flatten b |> array1_of_genarray in
   let c = _flatten c |> array1_of_genarray in
   Owl_cblas_basic.hemm layout side uplo m n alpha a lda b ldb beta c ldc
+  [@@warning "-unerasable-optional-argument"]
 
 
 let herk ?(uplo = CblasUpper) ?(trans = false) ?alpha ?beta ~a ~c =
@@ -366,6 +375,7 @@ let herk ?(uplo = CblasUpper) ?(trans = false) ?alpha ?beta ~a ~c =
   let a = _flatten a |> array1_of_genarray in
   let c = _flatten c |> array1_of_genarray in
   Owl_cblas_basic.herk layout uplo trans n k alpha a lda beta c ldc
+  [@@warning "-unerasable-optional-argument"]
 
 
 let her2k ?(uplo = CblasUpper) ?(trans = false) ?alpha ?beta ~a ~b ~c =
@@ -405,3 +415,4 @@ let her2k ?(uplo = CblasUpper) ?(trans = false) ?alpha ?beta ~a ~b ~c =
   let b = _flatten b |> array1_of_genarray in
   let c = _flatten c |> array1_of_genarray in
   Owl_cblas_basic.her2k layout uplo trans n k alpha a lda b ldb beta c ldc
+  [@@warning "-unerasable-optional-argument"]
