@@ -547,7 +547,7 @@ double sf_log_combination(int n, int m) {
 double sf_combination(int n, int m)
 {
   if(m == n || m == 0)
-    return 0.;
+    return 1.;
   else if (n <= OWL_SF_FACT_NMAX)
     return (fact_table[n].f / fact_table[m].f) / fact_table[n-m].f;
   else {
