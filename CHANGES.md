@@ -1,3 +1,12 @@
+## 1.0.2 (2022-02-14)
+
+* Update Hamming, Hann, Blackman, Freqz functions in `Signal` module
+* Fix a bug in sparse matrix transpose; the dimensions are now swapped properly
+* Fix a bug in the split function in ndarray module
+* Fix a bug in combination calculation
+* Fix some compilation warnings on Windows, using Mingw toolchain
+* Document updates for PLplot and Windows
+
 ## 1.0.1 (2021-01-06)
 
 * Add eighth-order finite difference approximation
