@@ -1,6 +1,6 @@
 # Owl - OCaml Scientific and Engineering Computing [![Build Status](https://travis-ci.org/owlbarn/owl.svg?branch=master)](https://travis-ci.org/owlbarn/owl)
 
-Owl is a dedicated system for scientific and engineering computing in the functional programming language OCaml. The project website is hosted at [ocaml.xyz](https://ocaml.xyz/), as well as Owl book at [ocaml.xyz/book](https://ocaml.xyz/book/).
+Owl is a dedicated system for scientific and engineering computing in OCaml. The project website [ocaml.xyz](https://ocaml.xyz/) hosts various learning materials. Please contact me using [liang@ocaml.xyz](liang@ocaml.xyz).
 
 ## Roles and Responsibilities
 
@@ -22,22 +22,21 @@ The BDFL has the authority to make all final decisions for the project. In pract
 
 The development of Owl includes adding new functionalities and fixing bugs in the form of PR from the contributors. In order to be merged, a PR must be reviewed and acquire two approvals from the Owl Team. If a PR is large or involves significant changes to the code structure, it requires the review of the BDFL. A wide-open discussion from all contributors about the PR is encouraged. A BDFL accepts the PR once the reviewers approve it and the team decides that this PR is sufficiently discussed. When enough PRs are accumulated, a new version should be released. A new release should be discussed within the Owl team and approved by the BDFL.
 
-## Documentation
-
-The documentation of Owl includes two parts: the [book](https://ocaml.xyz/book/), and the inline document. The inline document follows a certain format listed in the [contribution guide](https://github.com/owlbarn/owl/blob/master/CONTRIBUTING.md), and it shall not be broken in each PR. The code reviewers are responsible for making sure the rules in the  contribution guide are followed.
-
 ## Research
 
-Owl originated from academia. To this day, many of our core contributors have academic positions and active research programs. 
-The subprojects are listed at the [finished](https://ocaml.xyz/project/finished.html) and [proposed](https://ocaml.xyz/project/proposal.html) projects. We welcome anyone to discuss potential research proposals with the team. A research project based on Owl should be explicitly made known to all team members, and provides a clear attribute to Owl.
+Owl originated from academia. To this day, many of our core contributors have academic positions and active research programs. The subprojects are listed at the [finished](https://ocaml.xyz/project/finished.html) and [proposed](https://ocaml.xyz/project/proposal.html) projects. We welcome anyone to discuss potential research proposals with the team. A research project based on Owl should be explicitly made known to all team members, and provides a clear attribute to Owl.
 
 ## Community
 
 The current community of Owl is based on the Slack channel. All participants in the community are encouraged to provide support for new users within the project management infrastructure. Those seeking technical support should also recognise that all support activities within the project is voluntary and is therefore provided as and when time permits.
 
-## Contact Us
+## Sponsors
 
-Liang is a senior researcher at the University of Cambridge. Email: liang.wang@cl.cam.ac.uk
+We would like to express our sincerest gratitude for our sponsors' generosity. If you are interested in sponsorship, please [contact me](mailto:liang@ocaml.xyz) or dontate via [PayPal](https://www.paypal.me/ocaml).
 
-Jianxin is a PhD from the University of Cambridge. Email: jianxin.zhao@cl.cam.ac.uk
+<p align="center" width="100%" markdown=1>
+[![image](https://ocaml.xyz/assets/ahrefs-logo.png){: width="180px" }](https://ahrefs.com/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[![image](https://ocaml.xyz/assets/osf-logo.png){: width="180px" }](https://ocaml-sf.org/)
+</p>
 
