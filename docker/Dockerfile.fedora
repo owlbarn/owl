@@ -1,7 +1,7 @@
 ############################################################
 # Dockerfile to build Owl docker image
 # Based on owlbarn/owl master branch
-# By Liang Wang <liang.wang@cl.cam.ac.uk>
+# By Liang Wang <liang@ocaml.xyz>
 ############################################################
 
 FROM ocaml/opam2:fedora-29

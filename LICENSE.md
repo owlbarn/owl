@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
+Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

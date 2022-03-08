@@ -1,6 +1,6 @@
 (*
  * OWL - OCaml Scientific and Engineering Computing
- * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
 open Owl_aeos_tuners
@@ -8,7 +8,7 @@ open Owl_aeos_tuners
 let header =
   "/*\n\
   \ * OWL - OCaml Scientific and Engineering Computing\n\
-  \ * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>\n\
+  \ * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>\n\
   \ */\n\n\
    #ifndef OWL_AEOS_PARAMS_H\n\
    #define OWL_AEOS_PARAMS_H\n"

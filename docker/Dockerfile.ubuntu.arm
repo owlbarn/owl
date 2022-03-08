@@ -1,7 +1,7 @@
 ############################################################
 # Dockerfile to build Owl docker image
 # Based on owlbarn/owl master branch
-# By Liang Wang <liang.wang@cl.cam.ac.uk>
+# By Liang Wang <liang@ocaml.xyz>
 ############################################################
 
 FROM armv7/armhf-ubuntu:16.04

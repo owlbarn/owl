@@ -1,12 +1,12 @@
 (*
  * OWL - OCaml Scientific and Engineering Computing
- * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
 let copyright =
   "(*\n\
   \ * OWL - OCaml Scientific and Engineering Computing\n\
-  \ * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>\n\
+  \ * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>\n\
   \ *)\n"
 
 

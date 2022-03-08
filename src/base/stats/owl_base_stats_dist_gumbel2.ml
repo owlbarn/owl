@@ -1,6 +1,6 @@
 (*
  * OWL - OCaml Scientific and Engineering Computing
- * Copyright (c) 2016-2020 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
 let gumbel2_rvs ~a ~b =

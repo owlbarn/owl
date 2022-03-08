@@ -1,8 +1,8 @@
 (*
  * OWL - OCaml Scientific and Engineering Computing
- * Copyright (c) 2016-2017
+ * Copyright (c) 2016-2022
  *   Ben Catterall <bpwc2@cam.ac.uk>
- *   Liang Wang <liang.wang@cl.cam.ac.uk>
+ *   Liang Wang <liang@ocaml.xyz>
  *)
 
 (* some useful regular expressions *)
