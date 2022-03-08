@@ -1,6 +1,16 @@
 # Owl - OCaml Scientific and Engineering Computing [![Build Status](https://travis-ci.org/owlbarn/owl.svg?branch=master)](https://travis-ci.org/owlbarn/owl)
 
-Owl is a dedicated system for scientific and engineering computing in OCaml. The project website [ocaml.xyz](https://ocaml.xyz/) hosts various learning materials. Please contact me using [liang@ocaml.xyz](liang@ocaml.xyz).
+Owl is a dedicated system for scientific and engineering computing. The system is developed in OCaml and licensed under MIT. The project is led by [Liang Wang](https://liang.ocaml.xyz). The history of the project is on the [Wikipedia](https://en.wikipedia.org/wiki/Owl_Scientific_Computing).
+
+## Sponsors
+
+We would like to express our sincerest gratitude for our sponsors' generosity. If you are interested in sponsorship, please [contact me](mailto:liang@ocaml.xyz) or dontate via [PayPal](https://www.paypal.me/ocaml).
+
+<p align="center" width="100%" markdown=1>
+<a href="https://ahrefs.com/"><img src="https://ocaml.xyz/assets/ahrefs-logo.png" width="180px"></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://ocaml-sf.org/"><img src="https://ocaml.xyz/assets/osf-logo.png" width="180px"></a>
+</p>
 
 ## Roles and Responsibilities
 
@@ -29,14 +39,3 @@ Owl originated from academia. To this day, many of our core contributors have ac
 ## Community
 
 The current community of Owl is based on the Slack channel. All participants in the community are encouraged to provide support for new users within the project management infrastructure. Those seeking technical support should also recognise that all support activities within the project is voluntary and is therefore provided as and when time permits.
-
-## Sponsors
-
-We would like to express our sincerest gratitude for our sponsors' generosity. If you are interested in sponsorship, please [contact me](mailto:liang@ocaml.xyz) or dontate via [PayPal](https://www.paypal.me/ocaml).
-
-<p align="center" width="100%" markdown=1>
-<a href="https://ahrefs.com/"><img src="https://ocaml.xyz/assets/ahrefs-logo.png" width="180px"></a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://ocaml-sf.org/"><img src="https://ocaml.xyz/assets/osf-logo.png" width="180px"></a>
-</p>
-
