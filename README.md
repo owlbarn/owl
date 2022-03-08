@@ -35,8 +35,8 @@ The current community of Owl is based on the Slack channel. All participants in 
 We would like to express our sincerest gratitude for our sponsors' generosity. If you are interested in sponsorship, please [contact me](mailto:liang@ocaml.xyz) or dontate via [PayPal](https://www.paypal.me/ocaml).
 
 <p align="center" width="100%" markdown=1>
-[![image](https://ocaml.xyz/assets/ahrefs-logo.png){: width="180px" }](https://ahrefs.com/)
+<a href="https://ahrefs.com/"><img src="https://ocaml.xyz/assets/ahrefs-logo.png" width="180px"></a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[![image](https://ocaml.xyz/assets/osf-logo.png){: width="180px" }](https://ocaml-sf.org/)
+<a href="https://ocaml-sf.org/"><img src="https://ocaml.xyz/assets/osf-logo.png" width="180px"></a>
 </p>
 
