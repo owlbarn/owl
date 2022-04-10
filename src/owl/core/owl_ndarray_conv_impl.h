@@ -2503,23 +2503,23 @@ CAMLprim value FUN_NATIVE (spatial_naive) (
         for (int l = 0; l < out_channel; ++l) {
           TYPE sum = 0.;
           for (int h = 0; h < in_channel; ++h) {
-            TYPE input_val, kernel_val;
+            TYPE caml_input_val, kernel_val;
             for (int a = cstart; a < cend; ++a) {
               for (int b = rstart; b < rend; ++b) {
                 if (a >= 0 && a < input_cols &&
                     b >= 0 && b < input_rows) {
                   int input_idx =
                      input_idx_base + a * input_ri + b * in_channel + h;
-                  input_val = *(input_ptr + input_idx);
+                  caml_input_val = *(input_ptr + input_idx);
                 } else {
-                  input_val = 0.;
+                  caml_input_val = 0.;
                 }
 
                 int kernel_index =
                   (a - cstart) * kernel_rio + (b - rstart) * kernel_io + h * out_channel + l;
                 kernel_val = *(kernel_ptr + kernel_index);
 
-                sum += input_val * kernel_val;
+                sum += caml_input_val * kernel_val;
               }
             }
           }
@@ -2600,25 +2600,25 @@ CAMLprim value FUN_NATIVE (spatial_backward_kernel_naive) (
         for (int l = 0; l < out_channel; ++l) {
           int output_idx =
             i * output_cri + j * output_ri + k * out_channel + l;
-          TYPE output_val = *(output_ptr + output_idx);
+          TYPE caml_output_val = *(output_ptr + output_idx);
 
           for (int h = 0; h < in_channel; ++h) {
-            TYPE input_val = 0.;
+            TYPE caml_input_val = 0.;
             for (int a = cstart; a < cend; ++a) {
               for (int b = rstart; b < rend; ++b) {
                 if (a >= 0 && a < input_cols &&
                     b >= 0 && b < input_rows) {
                   int input_idx =
                     i * input_cri + a * input_ri + b * in_channel + h;
-                  input_val = *(input_ptr + input_idx);
+                  caml_input_val = *(input_ptr + input_idx);
                 } else {
-                  input_val = 0.;
+                  caml_input_val = 0.;
                 }
 
                 int kernel_index =
                   (a - cstart) * kernel_rio + (b - rstart) * kernel_io + h * out_channel + l;
 
-                *(kernel_ptr + kernel_index) += output_val * input_val;
+                *(kernel_ptr + kernel_index) += caml_output_val * caml_input_val;
               }
             }
           }
@@ -2696,7 +2696,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_input_naive) (
         for (int l = 0; l < out_channel; ++l) {
           int output_idx =
             i * output_cri + j * output_ri + k * out_channel + l;
-          TYPE output_val = *(output_ptr + output_idx);
+          TYPE caml_output_val = *(output_ptr + output_idx);
 
           for (int h = 0; h < in_channel; ++h) {
             TYPE kernel_val = 0.;
@@ -2710,7 +2710,7 @@ CAMLprim value FUN_NATIVE (spatial_backward_input_naive) (
                     b >= 0 && b < input_rows) {
                   int input_idx =
                     i * input_cri + a * input_ri + b * in_channel + h;
-                  *(input_ptr + input_idx) += output_val * kernel_val;
+                  *(input_ptr + input_idx) += caml_output_val * kernel_val;
                 }
               }
             }
@@ -2814,16 +2814,16 @@ CAMLprim value FUN_NATIVE (cuboid_naive) (
               for (int a = cstart; a < cend; ++a) {
                 for (int b = rstart; b < rend; ++b) {
                   for (int c = dstart; c < dend; ++c) {
-                    TYPE input_val, kernel_val;
+                    TYPE caml_input_val, kernel_val;
                     if (a >= 0 && a < input_cols &&
                         b >= 0 && b < input_rows &&
                         c >= 0 && c < input_dpts) {
                       int input_idx =
                         input_idx_base + a * input_rdi + b * input_di +
                         c * in_channel + h;
-                      input_val = *(input_ptr + input_idx);
+                      caml_input_val = *(input_ptr + input_idx);
                     } else {
-                      input_val = 0.;
+                      caml_input_val = 0.;
                     }
 
                     int kernel_index =
@@ -2833,7 +2833,7 @@ CAMLprim value FUN_NATIVE (cuboid_naive) (
                       h * out_channel + l;
                     kernel_val = *(kernel_ptr + kernel_index);
 
-                    sum += input_val * kernel_val;
+                    sum += caml_input_val * kernel_val;
                   }
                 }
               }
@@ -2930,19 +2930,19 @@ CAMLprim value FUN_NATIVE (cuboid_backward_kernel_naive) (
 
           for (int l = 0; l < out_channel; ++l) {
             int output_idx = output_idx_base + l;
-            TYPE output_val = *(output_ptr + output_idx);
+            TYPE caml_output_val = *(output_ptr + output_idx);
             for (int h = 0; h < in_channel; ++h) {
               for (int a = cstart; a < cend; ++a) {
                 for (int b = rstart; b < rend; ++b) {
                   for (int c = dstart; c < dend; ++c) {
-                    TYPE input_val = 0.;
+                    TYPE caml_input_val = 0.;
                     if (a >= 0 && a < input_cols &&
                         b >= 0 && b < input_rows &&
                         c >= 0 && c < input_dpts) {
                       int input_idx =
                         input_idx_base + a * input_rdi + b * input_di +
                         c * in_channel + h;
-                      input_val = *(input_ptr + input_idx);
+                      caml_input_val = *(input_ptr + input_idx);
                     }
 
                     int kernel_index =
@@ -2951,7 +2951,7 @@ CAMLprim value FUN_NATIVE (cuboid_backward_kernel_naive) (
                       (c - dstart) * kernel_io +
                       h * out_channel + l;
 
-                    *(kernel_ptr + kernel_index) += output_val * input_val;
+                    *(kernel_ptr + kernel_index) += caml_output_val * caml_input_val;
                   }
                 }
               }
@@ -3047,7 +3047,7 @@ CAMLprim value FUN_NATIVE (cuboid_backward_input_naive) (
 
           for (int l = 0; l < out_channel; ++l) {
             int output_idx = output_idx_base + l;
-            TYPE output_val = *(output_ptr + output_idx);
+            TYPE caml_output_val = *(output_ptr + output_idx);
             for (int h = 0; h < in_channel; ++h) {
               TYPE kernel_val;
               for (int a = cstart; a < cend; ++a) {
@@ -3066,7 +3066,7 @@ CAMLprim value FUN_NATIVE (cuboid_backward_input_naive) (
                       int input_idx =
                         input_idx_base + a * input_rdi + b * input_di +
                         c * in_channel + h;
-                      *(input_ptr + input_idx) += output_val * kernel_val;
+                      *(input_ptr + input_idx) += caml_output_val * kernel_val;
                     }
                   }
                 }

@@ -99,7 +99,6 @@ let default_cflags =
       "-DSFMT_MEXP=19937"
     ; "-msse2"
     ; "-fno-strict-aliasing"
-    ; "-Wno-tautological-constant-out-of-range-compare"
     ]
 
 
