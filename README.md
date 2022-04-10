@@ -1,4 +1,4 @@
-# Owl - OCaml Scientific and Engineering Computing [![Build Status](https://travis-ci.org/owlbarn/owl.svg?branch=master)](https://travis-ci.org/owlbarn/owl)
+# Owl - OCaml Scientific Computing [![Build Status](https://travis-ci.org/owlbarn/owl.svg?branch=master)](https://travis-ci.org/owlbarn/owl)
 
 Owl is a dedicated system for scientific and engineering computing. The system is developed in OCaml and licensed under MIT. The project is led by [Liang Wang](https://liang.ocaml.xyz). The history of the project is on the [Wikipedia](https://en.wikipedia.org/wiki/Owl_Scientific_Computing).
 
