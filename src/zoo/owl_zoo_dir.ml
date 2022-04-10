@@ -56,7 +56,8 @@ and _dir_zoo_ocaml gid vid added =
          in
          Owl_io.write_file f' f'_str;
          _extract_zoo_gist f' added;
-         Toploop.mod_use_file Format.std_formatter f' |> ignore)
+         let input = Toploop.File f' in
+         Toploop.mod_use_input Format.std_formatter input |> ignore)
 
 
 and process_dir_zoo ?added gist =

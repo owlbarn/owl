@@ -277,7 +277,7 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     E.collect y_id |> List.fold_left (fun b c -> f b (List.nth c 0)) a
 
 
-  let fill _x a = map_chunk (fun y -> M.fill y a) |> ignore
+  let fill x a = map_chunk (fun y -> M.fill y a) x |> ignore
 
   (* of_ndarray and to_ndarray convert between distributed ndarray and local
      ndarray. They are equivalent to [distribute] and [collect] in some other

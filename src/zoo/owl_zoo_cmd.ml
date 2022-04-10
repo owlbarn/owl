@@ -113,7 +113,7 @@ let load_file ?(gist = "") f =
 
 
 let run args script =
-  let new_script = preprocess script in
+  let new_script = Toploop.String (preprocess script) in
   Toploop.initialize_toplevel_env ();
   Toploop.run_script Format.std_formatter new_script args |> ignore
 
