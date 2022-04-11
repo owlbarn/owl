@@ -76,7 +76,7 @@ let get_ocaml_devmode_flags _c =
   if not enable_devmode then [] else [ "-w"; "-32-27-6-37-3" ]
 
 
-let default_cflags =
+let default_cflags c =
   try
     Sys.getenv "OWL_CFLAGS"
     |> String.trim
@@ -268,7 +268,7 @@ some details on how your openblas has been installed and the output of
         []
         @ openblas_conf.cflags
         @ cblas_conf.cflags
-        @ default_cflags
+        @ default_cflags c
         @ get_devmode_cflags c
         @ get_expmode_cflags c
         @ openmp_config.cflags

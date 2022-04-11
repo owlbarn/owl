@@ -92,7 +92,7 @@ let () =
       (* configure link options *)
       let libs = [] @ get_default_libs () @ get_openmp_libs c in
       (* configure compile options *)
-      let cflags = [] @ get_default_cflags @ get_openmp_cflags c in
+      let cflags = [] @ get_default_cflags c @ get_openmp_cflags c in
       (* assemble default config *)
       let conf : C.Pkg_config.package_conf = { cflags; libs } in
       C.Flags.write_sexp "aeos_c_flags.sexp" conf.cflags;
