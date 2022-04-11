@@ -11,7 +11,7 @@
 
 let copyright =
   "(*\n\
-  \ * OWL - OCaml Scientific and Engineering Computing\n\
+  \ * OWL - OCaml Scientific Computing\n\
   \ * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>\n\
   \ *)\n"
 
