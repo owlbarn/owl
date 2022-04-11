@@ -1,7 +1,7 @@
 #!/usr/bin/env ocaml
 
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 ;;

@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2021 Chandra Shekhar <shekharchandra134@gmail.com>, Kumar Appaiah <akumar@ee.iitb.ac.in>
  *)
 
