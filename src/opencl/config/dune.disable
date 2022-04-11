@@ -1,4 +1,0 @@
-(executable
-  (name make_kernel)
-  (libraries )
-)
