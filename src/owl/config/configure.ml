@@ -87,6 +87,7 @@ let default_cflags =
     [ (* Basic optimisation *)
       "-g"
     ; "-O3"
+    ; "-Ofast"
       (* Experimental switches, -ffast-math may break IEEE754 semantics*)
     ; "-funroll-loops"
     ; "-ffast-math"

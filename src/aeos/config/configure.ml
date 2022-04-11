@@ -34,6 +34,7 @@ let get_default_cflags =
   | Not_found ->
     [ "-g"
     ; "-O3"
+    ; "-Ofast"
     ; "-funroll-loops"
     ; "-ffast-math"
     ; "-DSFMT_MEXP=19937"
