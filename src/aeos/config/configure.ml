@@ -24,7 +24,7 @@ let get_os_type c =
   | None   -> ""
 
 
-let get_default_cflags =
+let get_default_cflags c =
   try
     Sys.getenv "OWL_AEOS_CFLAGS"
     |> String.trim
@@ -32,14 +32,31 @@ let get_default_cflags =
     |> List.filter (fun s -> String.trim s <> "")
   with
   | Not_found ->
-    [ "-g"
-    ; "-O3"
-    ; "-Ofast"
-    ; "-funroll-loops"
-    ; "-ffast-math"
-    ; "-DSFMT_MEXP=19937"
-    ; "-fno-strict-aliasing"
-    ]
+    let arch =
+      let defines =
+        C.C_define.import
+          c
+          ~includes:[]
+          [ "__x86_64__", Switch
+          ; "__i386__", Switch
+          ; "__aarch64__", Switch
+          ; "__arm__", Switch
+          ]
+      in
+      let open C in
+      match List.map snd defines with
+      | Switch true :: _ -> `x86_64
+      | _ :: Switch true :: _ -> `x86
+      | _ :: _ :: Switch true :: _ -> `arm64
+      | _ :: _ :: _ :: Switch true :: _ -> `arm
+      | _ -> `unknown
+    in
+    [ "-g"; "-O3"; "-Ofast" ]
+    @ (match arch with
+      | `x86_64 -> [ "-march=native"; "-msse2" ]
+      | `arm64  -> [ "-mcpu=apple-m1" ]
+      | _       -> [])
+    @ [ "-funroll-loops"; "-ffast-math"; "-DSFMT_MEXP=19937"; "-fno-strict-aliasing" ]
 
 
 let get_openmp_cflags c =

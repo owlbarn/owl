@@ -84,17 +84,37 @@ let default_cflags =
     |> List.filter (fun s -> String.trim s <> "")
   with
   | Not_found ->
-    [ (* Basic optimisation *)
-      "-g"
-    ; "-O3"
-    ; "-Ofast"
-      (* Experimental switches, -ffast-math may break IEEE754 semantics*)
-    ; "-funroll-loops"
-    ; "-ffast-math"
-    ; (* Configure Mersenne Twister RNG *)
-      "-DSFMT_MEXP=19937"
-    ; "-fno-strict-aliasing"
-    ]
+    let arch =
+      let defines =
+        C.C_define.import
+          c
+          ~includes:[]
+          [ "__x86_64__", Switch
+          ; "__i386__", Switch
+          ; "__aarch64__", Switch
+          ; "__arm__", Switch
+          ]
+      in
+      let open C in
+      match List.map snd defines with
+      | Switch true :: _ -> `x86_64
+      | _ :: Switch true :: _ -> `x86
+      | _ :: _ :: Switch true :: _ -> `arm64
+      | _ :: _ :: _ :: Switch true :: _ -> `arm
+      | _ -> `unknown
+    in
+    [ (* Basic optimisation *) "-g"; "-O3"; "-Ofast" ]
+    @ (match arch with
+      | `x86_64 -> [ "-march=native"; "-msse2" ]
+      | `arm64  -> [ "-mcpu=apple-m1" ]
+      | _       -> [])
+    @ [ (* Experimental switches, -ffast-math may break IEEE754 semantics*)
+        "-funroll-loops"
+      ; "-ffast-math"
+      ; (* Configure Mersenne Twister RNG *)
+        "-DSFMT_MEXP=19937"
+      ; "-fno-strict-aliasing"
+      ]
 
 
 let default_libs = [ "-lm" ]
