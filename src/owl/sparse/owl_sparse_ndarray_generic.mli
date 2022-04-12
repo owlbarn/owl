@@ -8,7 +8,7 @@
 (** {5 Type definition} *)
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
-(** Type of ``kind``. *)
+(** Type of [kind]. *)
 
 type ('a, 'b) t
 (** Abstract type of sparse ndarray. *)

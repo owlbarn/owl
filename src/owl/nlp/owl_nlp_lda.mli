@@ -20,17 +20,17 @@ type model
 
 val init : ?iter:int -> int -> Owl_nlp_corpus.t -> model
 (**
-``init ~iter k v d`` inits an LDA model for training. The default iteration is
+[init ~iter k v d] inits an LDA model for training. The default iteration is
 100.
 
 Parameters:
-  * ``iter``: number of iterations.
-  * ``k``: number of topics.
-  * ``d``: corpus.
+  * [iter]: number of iterations.
+  * [k]: number of topics.
+  * [d]: corpus.
  *)
 
 val train : lda_typ -> model -> unit
-(** After calling ``init``, calling this function starts the training. *)
+(** After calling [init], calling this function starts the training. *)
 
 (** {5 Helper functions} *)
 
