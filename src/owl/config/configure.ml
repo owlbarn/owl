@@ -135,7 +135,6 @@ let default_cflags c =
           ; "__arm__", Switch
           ]
       in
-      let open C in
       match List.map snd defines with
       | Switch true :: _ -> `x86_64
       | _ :: Switch true :: _ -> `x86
