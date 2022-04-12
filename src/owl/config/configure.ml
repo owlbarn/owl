@@ -5,6 +5,27 @@
 
 module C = Configurator.V1
 
+let detect_system_header =
+  {|
+  #if __APPLE__
+    #include <TargetConditionals.h>
+    #if TARGET_OS_IPHONE
+      #define PLATFORM_NAME "ios"
+    #else
+      #define PLATFORM_NAME "mac"
+    #endif
+  #elif __linux__
+    #if __ANDROID__
+      #define PLATFORM_NAME "android"
+    #else
+      #define PLATFORM_NAME "linux"
+    #endif
+  #elif WIN32
+    #define PLATFORM_NAME "windows"
+  #endif
+|}
+
+
 let bgetenv v =
   let v' =
     try Sys.getenv v |> int_of_string with
@@ -84,6 +105,25 @@ let default_cflags c =
     |> List.filter (fun s -> String.trim s <> "")
   with
   | Not_found ->
+    let os =
+      let header =
+        let file = Filename.temp_file "discover" "os.h" in
+        let fd = open_out file in
+        output_string fd detect_system_header;
+        close_out fd;
+        file
+      in
+      let platform =
+        C.C_define.import c ~includes:[ header ] [ "PLATFORM_NAME", String ]
+      in
+      match List.map snd platform with
+      | [ String "android" ] -> `android
+      | [ String "ios" ]     -> `ios
+      | [ String "linux" ]   -> `linux
+      | [ String "mac" ]     -> `mac
+      | [ String "windows" ] -> `windows
+      | _                    -> `unknown
+    in
     let arch =
       let defines =
         C.C_define.import
@@ -104,10 +144,11 @@ let default_cflags c =
       | _ -> `unknown
     in
     [ (* Basic optimisation *) "-g"; "-O3"; "-Ofast" ]
-    @ (match arch with
-      | `x86_64 -> [ "-march=native"; "-msse2" ]
-      | `arm64  -> [ "-mcpu=apple-m1" ]
-      | _       -> [])
+    @ (match arch, os with
+      | `arm64, `mac -> [ "-mcpu=apple-m1" ]
+      | `arm64, _    -> [ "-march=native" ]
+      | `x86_64, _   -> [ "-march=native"; "-msse2" ]
+      | _            -> [])
     @ [ (* Experimental switches, -ffast-math may break IEEE754 semantics*)
         "-funroll-loops"
       ; "-ffast-math"
