@@ -25,49 +25,49 @@ type 'a node
 (** {5 Obtaining properties} *)
 
 val id : 'a node -> int
-(** ``id x`` returns the id of node ``x``. *)
+(** [id x] returns the id of node [x]. *)
 
 val name : 'a node -> string
-(** ``name x`` returns the name string of node ``x``. *)
+(** [name x] returns the name string of node [x]. *)
 
 val set_name : 'a node -> string -> unit
-(** ``set_name x s`` sets the name string of node ``x`` to ``s``. *)
+(** [set_name x s] sets the name string of node [x] to [s]. *)
 
 val parents : 'a node -> 'a node array
-(** ``parents x`` returns the parents of node ``x``. *)
+(** [parents x] returns the parents of node [x]. *)
 
 val set_parents : 'a node -> 'a node array -> unit
-(** ``set_parents x parents`` set ``x`` parents to ``parents``. *)
+(** [set_parents x parents] set [x] parents to [parents]. *)
 
 val children : 'a node -> 'a node array
-(** ``children x`` returns the children of node ``x``. *)
+(** [children x] returns the children of node [x]. *)
 
 val set_children : 'a node -> 'a node array -> unit
-(** ``set_children x children`` sets ``x`` children to ``children``. *)
+(** [set_children x children] sets [x] children to [children]. *)
 
 val indegree : 'a node -> int
-(** ``indegree x`` returns the in-degree of node ``x``. *)
+(** [indegree x] returns the in-degree of node [x]. *)
 
 val outdegree : 'a node -> int
-(** ``outdegree x`` returns the out-degree of node ``x``. *)
+(** [outdegree x] returns the out-degree of node [x]. *)
 
 val degree : 'a node -> int
-(** ``degree x`` returns the total number of links of ``x``. *)
+(** [degree x] returns the total number of links of [x]. *)
 
 val attr : 'a node -> 'a
-(** ``attr x`` returns the ``attr`` field of node ``x``. *)
+(** [attr x] returns the [attr] field of node [x]. *)
 
 val set_attr : 'a node -> 'a -> unit
-(** ``set_attr x`` sets the ``attr`` field of node ``x``. *)
+(** [set_attr x] sets the [attr] field of node [x]. *)
 
 val num_ancestor : 'a node array -> int
-(** ``num_ancestor x`` returns the number of ancestors of ``x``. *)
+(** [num_ancestor x] returns the number of ancestors of [x]. *)
 
 val num_descendant : 'a node array -> int
-(** ``num_descendant x`` returns the number of descendants of ``x``. *)
+(** [num_descendant x] returns the number of descendants of [x]. *)
 
 val length : 'a node array -> int
-(** ``length x`` returns the total number of ancestors and descendants of ``x``. *)
+(** [length x] returns the total number of ancestors and descendants of [x]. *)
 
 (** {5 Manipulation functions} *)
 
@@ -79,14 +79,14 @@ val node
   -> 'a
   -> 'a node
 (**
-``node ~id ~name ~prev ~next attr`` creates a node with given id and name
-string. The created node is also connected to parents in ``prev`` and children
-in ``next``. The ``attr`` will be saved in ``attr`` field.
+[node ~id ~name ~prev ~next attr] creates a node with given id and name
+string. The created node is also connected to parents in [prev] and children
+in [next]. The [attr] will be saved in [attr] field.
  *)
 
 val connect : 'a node array -> 'a node array -> unit
 (**
-``connect parents children`` connects a set of parents to a set of children.
+[connect parents children] connects a set of parents to a set of children.
 The created links are the Cartesian product of parents and children. In other
 words, they are bidirectional links between parents and children.
 
@@ -95,55 +95,55 @@ NOTE: this function does not eliminate any duplicates in the array.
 
 val connect_descendants : 'a node array -> 'a node array -> unit
 (**
-``connect_descendants parents children`` connects parents to their children.
+[connect_descendants parents children] connects parents to their children.
 This function creates unidirectional links from parents to children. In other
-words, this function save ``children`` to ``parent.next`` field.
+words, this function save [children] to [parent.next] field.
 *)
 
 val connect_ancestors : 'a node array -> 'a node array -> unit
 (**
-``connect_ancestors parents children`` connects children to their parents.
+[connect_ancestors parents children] connects children to their parents.
 This function creates unidirectional links from children to parents. In other
-words, this function save ``parents`` to ``child.prev`` field.
+words, this function save [parents] to [child.prev] field.
 *)
 
 val remove_node : 'a node -> unit
 (**
-``remove_node x`` removes node ``x`` from the graph by disconnecting itself
+[remove_node x] removes node [x] from the graph by disconnecting itself
 from all its parent nodes and child nodes.
  *)
 
 val remove_edge : 'a node -> 'a node -> unit
 (**
-``remove_edge src dst`` removes a link ``src -> dst`` from the graph. Namely,
-the corresponding entry of ``dst`` in ``src.next`` and ``src`` in ``dst.prev``
+[remove_edge src dst] removes a link [src -> dst] from the graph. Namely,
+the corresponding entry of [dst] in [src.next] and [src] in [dst.prev]
 will be removed. Note that it does not remove [dst -> src] if there exists one.
  *)
 
 val replace_child : 'a node -> 'a node -> unit
 (**
-``replace_child x y`` replaces ``x`` with ``y`` in ``x`` parents. Namely, ``x``
-parents now make link to ``y`` rather than ``x`` in ``next`` field.
+[replace_child x y] replaces [x] with [y] in [x] parents. Namely, [x]
+parents now make link to [y] rather than [x] in [next] field.
 
-NOTE: The function does NOT make link from ``y`` to ``x`` parents. Namely,
-the ``prev`` field of ``y`` remains intact.
+NOTE: The function does NOT make link from [y] to [x] parents. Namely,
+the [prev] field of [y] remains intact.
  *)
 
 val replace_parent : 'a node -> 'a node -> unit
 (**
-``replace_parent x y`` replaces ``x`` with ``y`` in ``x`` children. Namely,
-``x`` children now make link to ``y`` rather than ``x`` in ``prev`` field.
+[replace_parent x y] replaces [x] with [y] in [x] children. Namely,
+[x] children now make link to [y] rather than [x] in [prev] field.
 
-NOTE: The function does NOT make link from ``y`` to ``x`` children. Namely,
-the ``next`` field of ``y`` remains intact.
+NOTE: The function does NOT make link from [y] to [x] children. Namely,
+the [next] field of [y] remains intact.
  *)
 
 val copy : ?dir:dir -> 'a node array -> 'a node array
 (**
-``copy ~dir x`` makes a copy of ``x`` and all its ancestors
-(if ``dir = Ancestor``) or all its descendants (if ``dir = Descendant``).
+[copy ~dir x] makes a copy of [x] and all its ancestors
+(if [dir = Ancestor]) or all its descendants (if [dir = Descendant]).
 
-Note that this function only makes a copy of the graph structure, ``attr``
+Note that this function only makes a copy of the graph structure, [attr]
 fields of the nodes in the new graph share the same memory with those in the
 original graph.
  *)

@@ -79,19 +79,19 @@ val memq : 'a -> 'a array -> bool
 
 val min_i : ?cmp:('a -> 'a -> int) -> 'a array -> int
 (**
-``min_i x`` returns the index of minimum value in array ``x``. If ``cmp`` is
-not passed in then ``Stdlib.compare`` is used as default value.
+[min_i x] returns the index of minimum value in array [x]. If [cmp] is
+not passed in then [Stdlib.compare] is used as default value.
 *)
 
 val max_i : ?cmp:('a -> 'a -> int) -> 'a array -> int
 (**
-``max_i x`` returns the index of minimum value in array ``x``. If ``cmp`` is
-not passed in then ``Stdlib.compare`` is used as default value.
+[max_i x] returns the index of minimum value in array [x]. If [cmp] is
+not passed in then [Stdlib.compare] is used as default value.
  *)
 
 val argsort : ?cmp:('a -> 'a -> int) -> 'a array -> int array
 (**
-``argsort cmp x`` sorts ``x`` according to the compare function ``cmp`` and
+[argsort cmp x] sorts [x] according to the compare function [cmp] and
 returns the corresponding indices.
  *)
 
@@ -106,10 +106,10 @@ val fast_sort : ('a -> 'a -> int) -> 'a array -> unit
 
 val sort_fill : ?min:int -> ?max:int -> ?fill:int -> int array -> int array
 (**
-``sort_fill ~min ~max ~fill x`` first sorts ``x``, then expands it to an array
-of length ``max - min + 1``, and fills the holes with ``fill``. E.g.,
-``sort_fill ~min:1 ~max:5 ~fill:0 [|4;2|] x`` returns a new array as follows:
-``[|1; 0; 2; 0; 4; 5|]``.
+[sort_fill ~min ~max ~fill x] first sorts [x], then expands it to an array
+of length [max - min + 1], and fills the holes with [fill]. E.g.,
+[sort_fill ~min:1 ~max:5 ~fill:0 [|4;2|] x] returns a new array as follows:
+[[|1; 0; 2; 0; 4; 5|]].
  *)
 
 val unsafe_get : 'a array -> int -> 'a
@@ -125,16 +125,16 @@ val ( @ ) : 'a array -> 'a array -> 'a array
 
 val get_slice : int array -> 'a array -> 'a array
 (**
-``get_slice slice x`` returns a copy of slice of ``x`` defined by ``slice``.
-The ``slice`` definition must have ``[|start;stop;step|]`` format. The value
+[get_slice slice x] returns a copy of slice of [x] defined by [slice].
+The [slice] definition must have [[|start;stop;step|]] format. The value
 of start, stop, and step can be negative, and the boundary is inclusive.
  *)
 
 val set_slice : int array -> 'a array -> 'a array -> unit
 (**
-``set_slice slice x y`` sets the elements in ``x`` to the corresponding value
-of the elements in ``y`` based on the slice definition ``slice``. Please refer
-to ``get_slice`` function for the information on the format of slice definition.
+[set_slice slice x y] sets the elements in [x] to the corresponding value
+of the elements in [y] based on the slice definition [slice]. Please refer
+to [get_slice] function for the information on the format of slice definition.
  *)
 
 val flatten : 'a array array -> 'a array
@@ -153,10 +153,10 @@ val insert : 'a array -> 'a array -> int -> 'a array
 (** TODO *)
 
 val unique : 'a array -> 'a array
-(** ``unique x`` removes the duplicates in the array ``x``. *)
+(** [unique x] removes the duplicates in the array [x]. *)
 
 val merge : 'a array -> 'a array -> 'a array
-(** ``merge x y`` merges two arrays and removes the duplicates. *)
+(** [merge x y] merges two arrays and removes the duplicates. *)
 
 val remove : 'a array -> int -> 'a array
 (** TODO *)
@@ -165,7 +165,7 @@ val replace : int -> int -> 'a array -> 'a array -> 'a array
 (** TODO *)
 
 val reverse : 'a array -> unit
-(** ``reverse x`` reverse the elements in ``x`` in place. *)
+(** [reverse x] reverse the elements in [x] in place. *)
 
 val mapi : (int -> 'a -> 'b) -> 'a array -> 'b array
 (** TODO *)
@@ -244,52 +244,52 @@ val filter_v : ('a -> bool * 'b) -> 'a array -> 'b array
 (** TODO *)
 
 val filteri : (int -> 'a -> bool) -> 'a array -> 'a array
-(** ``filteri f x`` filters out the elements in ``x`` according to predicate ``f``. *)
+(** [filteri f x] filters out the elements in [x] according to predicate [f]. *)
 
 val filter : ('a -> bool) -> 'a array -> 'a array
-(** ``filter f x`` filters out the elements in ``x`` according to predicate ``f``. *)
+(** [filter f x] filters out the elements in [x] according to predicate [f]. *)
 
 val filter2i : (int -> 'a -> 'b -> bool) -> 'a array -> 'b array -> ('a * 'b) array
 (**
-``filter2i f x y`` filters the elements in ``x`` and ``y`` using passed in
-function ``f``. Both arrays must have same length.
+[filter2i f x y] filters the elements in [x] and [y] using passed in
+function [f]. Both arrays must have same length.
  *)
 
 val filter2 : ('a -> 'b -> bool) -> 'a array -> 'b array -> ('a * 'b) array
 (**
-``filter2 f x y`` is similar to ``filter2i`` but without passing index of
-the elements to function ``f``.
+[filter2 f x y] is similar to [filter2i] but without passing index of
+the elements to function [f].
  *)
 
 val filter2i_i : (int -> 'a -> 'b -> bool) -> 'a array -> 'b array -> int array
 (**
-``filter2i_i f x y`` filters the elements in ``x`` and ``y`` using passed in
-function ``f``. Both arrays must have same length. Note that the indices of
-those satisfying the predicate ``f`` are returned in an array.
+[filter2i_i f x y] filters the elements in [x] and [y] using passed in
+function [f]. Both arrays must have same length. Note that the indices of
+those satisfying the predicate [f] are returned in an array.
  *)
 
 val filter2_i : ('a -> 'b -> bool) -> 'a array -> 'b array -> int array
 (**
-``filter2_i f x y`` is similar to ``filter2i_i`` but without passing index of
-the elements to function ``f``.
+[filter2_i f x y] is similar to [filter2i_i] but without passing index of
+the elements to function [f].
  *)
 
 val filter2_split : ('a -> 'b -> bool) -> 'a array -> 'b array -> 'a array * 'b array
 (**
-``filter2_split f x y`` is similar to ``filter2 f x y``, but the returned
+[filter2_split f x y] is similar to [filter2 f x y], but the returned
 results are two separated arrays rather than merging into one tuple array.
  *)
 
 val resize : ?head:bool -> 'a -> int -> 'a array -> 'a array
 (**
-``resize ~head v n x`` resizes ``x`` of length ``m`` to length ``n``. If
-``m <= n``, a copy of ``x`` subarray is returned. If ``m > n``, then ``x`` is
-extended, the extra space is filled with value ``v``.
+[resize ~head v n x] resizes [x] of length [m] to length [n]. If
+[m <= n], a copy of [x] subarray is returned. If [m > n], then [x] is
+extended, the extra space is filled with value [v].
  *)
 
 val fold2 : ('a -> 'b -> 'c -> 'a) -> 'a -> 'b array -> 'c array -> 'a
 (**
-``fold2 a x y`` folds both ``x`` and ``y`` from left with starting value ``a``.
+[fold2 a x y] folds both [x] and [y] from left with starting value [a].
  *)
 
 val pad : [ `Left | `Right ] -> 'a -> int -> 'a array -> 'a array
@@ -297,8 +297,8 @@ val pad : [ `Left | `Right ] -> 'a -> int -> 'a array -> 'a array
 
 val align : [ `Left | `Right ] -> 'a -> 'a array -> 'a array -> 'a array * 'a array
 (**
-``align side v x y`` aligns two arrays ``x`` and ``y`` along the specified side
-with value ``v``. The copies of two arrays are returned.
+[align side v x y] aligns two arrays [x] and [y] along the specified side
+with value [v]. The copies of two arrays are returned.
  *)
 
 val align3
@@ -308,7 +308,7 @@ val align3
   -> 'a array
   -> 'a array
   -> 'a array * 'a array * 'a array
-(** ``align3 side v x y z`` aligns three arrays ``x``, ``y``, and ``z``. *)
+(** [align3 side v x y z] aligns three arrays [x], [y], and [z]. *)
 
 val greater_eqaul : 'a array -> 'a array -> bool
 (** TODO *)
@@ -328,20 +328,20 @@ val complement : 'a array -> 'a array -> 'a array
 
 val balance_last : float -> float array -> float array
 (**
-``balance_last mass x`` performs the following function. Let ``l`` be the
-length of ``x``, if ``i < l - 1``, then ``x.(i) = x.(i)``, otherwise
-``x.(l - 1) = mass - \sum_{i < l - 1} x.(i)``.
+[balance_last mass x] performs the following function. Let [l] be the
+length of [x], if [i < l - 1], then [x.(i) = x.(i)], otherwise
+[x.(l - 1) = mass - \sum_{i < l - 1} x.(i)].
  *)
 
 val index_of : 'a array -> 'a -> int
-(** ``index_of x a`` returns the index of first occurrence of ``a`` in ``x``. *)
+(** [index_of x a] returns the index of first occurrence of [a] in [x]. *)
 
 val bsearch : cmp:('a -> 'a -> int) -> 'a -> 'a array -> int
 (**
-Binary search. ``bsearch cmp x a`` returns the index of the largest value
-in the sorted array ``a`` less than or equal to ``x``, according to the
-comparison function ``cmp``. If ``x`` is smaller than all elements, returns -1.
-The function raises an exception if ``a`` is empty.
+Binary search. [bsearch cmp x a] returns the index of the largest value
+in the sorted array [a] less than or equal to [x], according to the
+comparison function [cmp]. If [x] is smaller than all elements, returns -1.
+The function raises an exception if [a] is empty.
 *)
 
 val to_string

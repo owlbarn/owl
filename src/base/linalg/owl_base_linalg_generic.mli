@@ -13,13 +13,13 @@ type ('a, 'b) t = ('a, 'b) Owl_base_dense_ndarray_generic.t
 
 val inv : ('a, 'b) t -> ('a, 'b) t
 (**
-``inv x`` calculates the inverse of an invertible square matrix ``x``
-such that ``x *@ x = I`` wherein ``I`` is an identity matrix.  (If ``x``
-is singular, ``inv`` will return a useless result.)
+[inv x] calculates the inverse of an invertible square matrix [x]
+such that [x *@ x = I] wherein [I] is an identity matrix.  (If [x]
+is singular, [inv] will return a useless result.)
  *)
 
 val det : ('a, 'b) t -> 'a
-(** ``det x`` computes the determinant of a square matrix ``x``. *)
+(** [det x] computes the determinant of a square matrix [x]. *)
 
 val logdet : ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_matrix_generic` *)
@@ -27,25 +27,25 @@ val logdet : ('a, 'b) t -> 'a
 (** {5 Check matrix types} *)
 
 val is_tril : ('a, 'b) t -> bool
-(** ``is_tril x`` returns ``true`` if ``x`` is lower triangular otherwise ``false``. *)
+(** [is_tril x] returns [true] if [x] is lower triangular otherwise [false]. *)
 
 val is_triu : ('a, 'b) t -> bool
-(** ``is_triu x`` returns ``true`` if ``x`` is upper triangular otherwise ``false``. *)
+(** [is_triu x] returns [true] if [x] is upper triangular otherwise [false]. *)
 
 val is_diag : ('a, 'b) t -> bool
-(** ``is_diag x`` returns ``true`` if ``x`` is diagonal otherwise ``false``. *)
+(** [is_diag x] returns [true] if [x] is diagonal otherwise [false]. *)
 
 val is_symmetric : ('a, 'b) t -> bool
-(** ``is_symmetric x`` returns ``true`` if ``x`` is symmetric otherwise ``false``. *)
+(** [is_symmetric x] returns [true] if [x] is symmetric otherwise [false]. *)
 
 val is_hermitian : (Complex.t, 'b) t -> bool
-(** ``is_hermitian x`` returns ``true`` if ``x`` is hermitian otherwise ``false``. *)
+(** [is_hermitian x] returns [true] if [x] is hermitian otherwise [false]. *)
 
 (** {5 Factorisation} *)
 
 val lu : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * int array
 (**
-``lu x -> (l, u, ipiv)`` calculates LU decomposition of ``x``. The pivoting is
+[lu x -> (l, u, ipiv)] calculates LU decomposition of [x]. The pivoting is
 used by default.
  *)
 

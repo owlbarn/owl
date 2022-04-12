@@ -9,218 +9,218 @@ open Owl_types_operator
 
 module Make_Basic (M : BasicSig) : sig
   val ( + ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``add`` *)
+  (** Operator of [add] *)
 
   val ( - ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``sub`` *)
+  (** Operator of [sub] *)
 
   val ( * ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``mul`` *)
+  (** Operator of [mul] *)
 
   val ( / ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``div`` *)
+  (** Operator of [div] *)
 
   val ( +$ ) : ('a, 'b) M.t -> 'a -> ('a, 'b) M.t
-  (** Operator of ``add_scalar`` *)
+  (** Operator of [add_scalar] *)
 
   val ( -$ ) : ('a, 'b) M.t -> 'a -> ('a, 'b) M.t
-  (** Operator of ``sub_scalar`` *)
+  (** Operator of [sub_scalar] *)
 
   val ( *$ ) : ('a, 'b) M.t -> 'a -> ('a, 'b) M.t
-  (** Operator of ``mul_scalar`` *)
+  (** Operator of [mul_scalar] *)
 
   val ( /$ ) : ('a, 'b) M.t -> 'a -> ('a, 'b) M.t
-  (** Operator of ``div_scalar`` *)
+  (** Operator of [div_scalar] *)
 
   val ( $+ ) : 'a -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``scalar_add`` *)
+  (** Operator of [scalar_add] *)
 
   val ( $- ) : 'a -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``scalar_sub`` *)
+  (** Operator of [scalar_sub] *)
 
   val ( $* ) : 'a -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``scalar_mul`` *)
+  (** Operator of [scalar_mul] *)
 
   val ( $/ ) : 'a -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``scalar_div`` *)
+  (** Operator of [scalar_div] *)
 
   val ( = ) : ('a, 'b) M.t -> ('a, 'b) M.t -> bool
-  (** Operator of ``equal`` *)
+  (** Operator of [equal] *)
 
   val ( != ) : ('a, 'b) M.t -> ('a, 'b) M.t -> bool
-  (** Operator of ``not_equal`` *)
+  (** Operator of [not_equal] *)
 
   val ( <> ) : ('a, 'b) M.t -> ('a, 'b) M.t -> bool
-  (** Operator of ``not_equal`` *)
+  (** Operator of [not_equal] *)
 
   val ( > ) : ('a, 'b) M.t -> ('a, 'b) M.t -> bool
-  (** Operator of ``greater`` *)
+  (** Operator of [greater] *)
 
   val ( < ) : ('a, 'b) M.t -> ('a, 'b) M.t -> bool
-  (** Operator of ``less`` *)
+  (** Operator of [less] *)
 
   val ( >= ) : ('a, 'b) M.t -> ('a, 'b) M.t -> bool
-  (** Operator of ``greater_equal`` *)
+  (** Operator of [greater_equal] *)
 
   val ( <= ) : ('a, 'b) M.t -> ('a, 'b) M.t -> bool
-  (** Operator of ``less_equal`` *)
+  (** Operator of [less_equal] *)
 end
 
 (** {5 Extended operators} *)
 
 module Make_Extend (M : ExtendSig) : sig
   val ( =$ ) : ('a, 'b) M.t -> 'a -> bool
-  (** Operator of ``equal_scalar`` *)
+  (** Operator of [equal_scalar] *)
 
   val ( !=$ ) : ('a, 'b) M.t -> 'a -> bool
-  (** Operator of ``not_equal_scalar`` *)
+  (** Operator of [not_equal_scalar] *)
 
   val ( <>$ ) : ('a, 'b) M.t -> 'a -> bool
-  (** Operator of ``not_equal_scalar`` *)
+  (** Operator of [not_equal_scalar] *)
 
   val ( <$ ) : ('a, 'b) M.t -> 'a -> bool
-  (** Operator of ``less_scalar`` *)
+  (** Operator of [less_scalar] *)
 
   val ( >$ ) : ('a, 'b) M.t -> 'a -> bool
-  (** Operator of ``greater_scalar`` *)
+  (** Operator of [greater_scalar] *)
 
   val ( <=$ ) : ('a, 'b) M.t -> 'a -> bool
-  (** Operator of ``less_equal_scalar`` *)
+  (** Operator of [less_equal_scalar] *)
 
   val ( >=$ ) : ('a, 'b) M.t -> 'a -> bool
-  (** Operator of ``greater_equal_scalar`` *)
+  (** Operator of [greater_equal_scalar] *)
 
   val ( =. ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``elt_equal`` *)
+  (** Operator of [elt_equal] *)
 
   val ( !=. ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``elt_not_equal`` *)
+  (** Operator of [elt_not_equal] *)
 
   val ( <>. ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``elt_not_equal`` *)
+  (** Operator of [elt_not_equal] *)
 
   val ( <. ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``elt_less`` *)
+  (** Operator of [elt_less] *)
 
   val ( >. ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``elt_greater`` *)
+  (** Operator of [elt_greater] *)
 
   val ( <=. ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``elt_less_equal`` *)
+  (** Operator of [elt_less_equal] *)
 
   val ( >=. ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``elt_greater_equal`` *)
+  (** Operator of [elt_greater_equal] *)
 
   val ( =.$ ) : ('a, 'b) M.t -> 'a -> ('a, 'b) M.t
-  (** Operator of ``elt_equal_scalar`` *)
+  (** Operator of [elt_equal_scalar] *)
 
   val ( !=.$ ) : ('a, 'b) M.t -> 'a -> ('a, 'b) M.t
-  (** Operator of ``elt_not_equal_scalar`` *)
+  (** Operator of [elt_not_equal_scalar] *)
 
   val ( <>.$ ) : ('a, 'b) M.t -> 'a -> ('a, 'b) M.t
-  (** Operator of ``elt_not_equal_scalar`` *)
+  (** Operator of [elt_not_equal_scalar] *)
 
   val ( <.$ ) : ('a, 'b) M.t -> 'a -> ('a, 'b) M.t
-  (** Operator of ``elt_less_scalar`` *)
+  (** Operator of [elt_less_scalar] *)
 
   val ( >.$ ) : ('a, 'b) M.t -> 'a -> ('a, 'b) M.t
-  (** Operator of ``elt_greater_scalar`` *)
+  (** Operator of [elt_greater_scalar] *)
 
   val ( <=.$ ) : ('a, 'b) M.t -> 'a -> ('a, 'b) M.t
-  (** Operator of ``elt_less_equal_scalar`` *)
+  (** Operator of [elt_less_equal_scalar] *)
 
   val ( >=.$ ) : ('a, 'b) M.t -> 'a -> ('a, 'b) M.t
-  (** Operator of ``elt_greater_equal_scalar`` *)
+  (** Operator of [elt_greater_equal_scalar] *)
 
   val ( =~ ) : ?eps:float -> ('a, 'b) M.t -> ('a, 'b) M.t -> bool
-  (** Operator of ``approx_equal`` *)
+  (** Operator of [approx_equal] *)
 
   val ( =~$ ) : ?eps:float -> ('a, 'b) M.t -> 'a -> bool
-  (** Operator of ``approx_equal_scalar`` *)
+  (** Operator of [approx_equal_scalar] *)
 
   val ( =~. ) : ?eps:float -> ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``approx_elt_equal`` *)
+  (** Operator of [approx_elt_equal] *)
 
   val ( =~.$ ) : ?eps:float -> ('a, 'b) M.t -> 'a -> ('a, 'b) M.t
-  (** Operator of ``approx_elt_equal_scalar`` *)
+  (** Operator of [approx_elt_equal_scalar] *)
 
   val ( % ) : (float, 'a) M.t -> (float, 'a) M.t -> (float, 'a) M.t
-  (** Operator of ``fmod`` *)
+  (** Operator of [fmod] *)
 
   val ( %$ ) : (float, 'a) M.t -> float -> (float, 'a) M.t
-  (** Operator of ``fmod_scalar`` *)
+  (** Operator of [fmod_scalar] *)
 
   val ( ** ) : (float, 'a) M.t -> (float, 'a) M.t -> (float, 'a) M.t
-  (** Operator of ``pow`` *)
+  (** Operator of [pow] *)
 
   val ( $** ) : float -> (float, 'a) M.t -> (float, 'a) M.t
-  (** Operator of ``scalar_pow`` *)
+  (** Operator of [scalar_pow] *)
 
   val ( **$ ) : (float, 'a) M.t -> float -> (float, 'a) M.t
-  (** Operator of ``pow_scalar`` *)
+  (** Operator of [pow_scalar] *)
 
   val ( += ) : ('a, 'b) M.t -> ('a, 'b) M.t -> unit
-  (** Operator of ``add_`` *)
+  (** Operator of [add_] *)
 
   val ( -= ) : ('a, 'b) M.t -> ('a, 'b) M.t -> unit
-  (** Operator of ``sub_`` *)
+  (** Operator of [sub_] *)
 
   val ( *= ) : ('a, 'b) M.t -> ('a, 'b) M.t -> unit
-  (** Operator of ``mul_`` *)
+  (** Operator of [mul_] *)
 
   val ( /= ) : ('a, 'b) M.t -> ('a, 'b) M.t -> unit
-  (** Operator of ``div_`` *)
+  (** Operator of [div_] *)
 
   val ( +$= ) : ('a, 'b) M.t -> 'a -> unit
-  (** Operator of ``add_scalar_`` *)
+  (** Operator of [add_scalar_] *)
 
   val ( -$= ) : ('a, 'b) M.t -> 'a -> unit
-  (** Operator of ``sub_scalar_`` *)
+  (** Operator of [sub_scalar_] *)
 
   val ( *$= ) : ('a, 'b) M.t -> 'a -> unit
-  (** Operator of ``mul_scalar_`` *)
+  (** Operator of [mul_scalar_] *)
 
   val ( /$= ) : ('a, 'b) M.t -> 'a -> unit
-  (** Operator of ``div_scalar_`` *)
+  (** Operator of [div_scalar_] *)
 
   val ( @= ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``concat_vertical`` *)
+  (** Operator of [concat_vertical] *)
 
   val ( @|| ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``concat_horizontal`` *)
+  (** Operator of [concat_horizontal] *)
 
   val ( .!{;..} ) : ('a, 'b) M.t -> Owl_types.index array -> ('a, 'b) M.t
-  (** Operator of ``get_fancy`` *)
+  (** Operator of [get_fancy] *)
 
   val ( .!{;..}<- ) : ('a, 'b) M.t -> Owl_types.index array -> ('a, 'b) M.t -> unit
-  (** Operator of ``set_fancy`` *)
+  (** Operator of [set_fancy] *)
 
   val ( .${} ) : ('a, 'b) M.t -> int list -> ('a, 'b) M.t
 
   val ( .${;..} ) : ('a, 'b) M.t -> int list array -> ('a, 'b) M.t
-  (** Operator of ``get_slice`` *)
+  (** Operator of [get_slice] *)
 
   val ( .${}<- ) : ('a, 'b) M.t -> int list -> ('a, 'b) M.t -> unit
 
   val ( .${;..}<- ) : ('a, 'b) M.t -> int list array -> ('a, 'b) M.t -> unit
-  (** Operator of ``set_slice`` *)
+  (** Operator of [set_slice] *)
 end
 
 (** {5 Matrix-specific operators} *)
 
 module Make_Matrix (M : MatrixSig) : sig
   val ( *@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``dot a b``, i.e. matrix multiplication ``a * b``. *)
+  (** Operator of [dot a b], i.e. matrix multiplication [a * b]. *)
 
   val ( .%{} ) : ('a, 'b) M.t -> int * int -> 'a
 
   val ( .%{;..} ) : ('a, 'b) M.t -> int array -> 'a
-  (** Operator of ``get`` *)
+  (** Operator of [get] *)
 
   val ( .%{}<- ) : ('a, 'b) M.t -> int * int -> 'a -> unit
 
   val ( .%{;..}<- ) : ('a, 'b) M.t -> int array -> 'a -> unit
-  (** Operator of ``set`` *)
+  (** Operator of [set] *)
 end
 
 (** {5 Ndarray-specific operators} *)
@@ -229,20 +229,20 @@ module Make_Ndarray (M : NdarraySig) : sig
   val ( .%{} ) : ('a, 'b) M.t -> int -> 'a
 
   val ( .%{;..} ) : ('a, 'b) M.t -> int array -> 'a
-  (** Operator of ``get`` *)
+  (** Operator of [get] *)
 
   val ( .%{}<- ) : ('a, 'b) M.t -> int -> 'a -> unit
 
   val ( .%{;..}<- ) : ('a, 'b) M.t -> int array -> 'a -> unit
-  (** Operator of ``set`` *)
+  (** Operator of [set] *)
 end
 
 (** {5 Linalg-specific operators} *)
 
 module Make_Linalg (M : LinalgSig) : sig
   val ( **@ ) : ('a, 'b) M.t -> float -> ('a, 'b) M.t
-  (** Operator of ``mpow``, i.e. matrix power. *)
+  (** Operator of [mpow], i.e. matrix power. *)
 
   val ( /@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``linsolve a b``, i.e. for solving a linear system ``a * x = b``. *)
+  (** Operator of [linsolve a b], i.e. for solving a linear system [a * x = b]. *)
 end

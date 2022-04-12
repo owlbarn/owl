@@ -70,25 +70,25 @@ module type Sig = sig
   (** TODO *)
 
   val pack_elt : A.elt -> t
-  (** convert from ``elt`` type to ``t`` type. *)
+  (** convert from [elt] type to [t] type. *)
 
   val unpack_elt : t -> A.elt
-  (** convert from ``t`` type to ``elt`` type. *)
+  (** convert from [t] type to [elt] type. *)
 
   val pack_flt : float -> t
-  (** convert from ``float`` type to ``t`` type. *)
+  (** convert from [float] type to [t] type. *)
 
   val _f : float -> t
-  (** A shortcut function for ``F A.(float_to_elt x)``. *)
+  (** A shortcut function for [F A.(float_to_elt x)]. *)
 
   val unpack_flt : t -> float
-  (** convert from ``t`` type to ``float`` type. *)
+  (** convert from [t] type to [float] type. *)
 
   val pack_arr : A.arr -> t
-  (** convert from ``arr`` type to ``t`` type. *)
+  (** convert from [arr] type to [t] type. *)
 
   val unpack_arr : t -> A.arr
-  (** convert from ``t`` type to ``arr`` type. *)
+  (** convert from [t] type to [arr] type. *)
 
   (* functions to report errors, help in debugging *)
 
