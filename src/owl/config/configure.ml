@@ -146,7 +146,7 @@ let default_cflags c =
     @ (match arch, os with
       | `arm64, `mac -> [ "-mcpu=apple-m1" ]
       | `arm64, _    -> [ "-march=native" ]
-      | `x86_64, _   -> [ "-march=native"; "-msse2" ]
+      | `x86_64, _   -> [ "-march=native"; "-mfpmath=sse"; "-msse2" ]
       | _            -> [])
     @ [ (* Experimental switches, -ffast-math may break IEEE754 semantics*)
         "-funroll-loops"
