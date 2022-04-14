@@ -16,7 +16,7 @@ We would like to express our sincerest gratitude for our sponsors' generosity. T
 
 ### BDFL
 
-The Owl Project follows a *BDFL* ([Benevolent Dictator for Life](https://en.wikipedia.org/wiki/Benevolent_dictator_for_life)) governance model. The BDFL consists of [Liang Wang](https://liang.ocaml.xyz/) and [Jianxin Zhao](https://jianxin.ocaml.xyz/). Liang is the project originator of and project leader of Owl. Jianxin worked on the project for his PhD thesis. He is currently managing daily practicalities of the project and leading the Owl book project. The BDFL are in charge of setting out the roadmap and maintaining the architecture of Owl. In principle, only the BDFL has write permission to the code base.
+The Owl Project follows a *BDFL* ([Benevolent Dictator for Life](https://en.wikipedia.org/wiki/Benevolent_dictator_for_life)) governance model. The BDFL consists of [Liang Wang](https://liang.ocaml.xyz/) and [Jianxin Zhao](https://jianxin.ocaml.xyz/). Liang is the project originator of and project leader of Owl. Jianxin worked on the project for his PhD thesis. He is currently managing daily practicalities of the project. The BDFL are in charge of setting out the roadmap and maintaining the architecture of Owl. In principle, only the BDFL has write permission to the code base.
 
 ### Contributors
 
