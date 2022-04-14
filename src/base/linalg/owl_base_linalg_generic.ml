@@ -92,7 +92,7 @@ let _check_is_matrix dims =
 
 (* Linear equation solution by Gauss-Jordan elimination.
  * Input matrix: a[n][n], b[n][m];
- * Output: ``ainv``, inversed matrix of a; ``x``, so that ax = b.
+ * Output: [ainv], inversed matrix of a; [x], so that ax = b.
  * TODO: Extend to multiple types: double, complex; unify with existing owl
  * structures e.g. naming.
  * Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_basic.py#L496 *)
@@ -317,7 +317,7 @@ let _lu_solve_vec a b =
 
 (* Linear equation solution by LU decomposition.
  * Input matrix: a[n][n], b[n][m];
- * Output: ``x``, so that ax = b. *)
+ * Output: [x], so that ax = b. *)
 let linsolve_lu a b =
   let dims_a, dims_b = M.shape a, M.shape b in
   let _, _ = _check_is_matrix dims_a, _check_is_matrix dims_b in

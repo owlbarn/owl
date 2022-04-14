@@ -33,7 +33,7 @@ module type Sig = sig
       mutable nodes : t list (* the nodes sharing the memory block *)
     }
   (**
-  ``block`` type keeps a reference to a block of memory and to the nodes
+  [block] type keeps a reference to a block of memory and to the nodes
   sharing that block.
    *)
 

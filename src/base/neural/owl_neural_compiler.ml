@@ -328,7 +328,7 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     Optimise.minimise_compiled_network ?state params eval update save x y
 
 
-  (* Multi-input/output version of ``model``. *)
+  (* Multi-input/output version of [model]. *)
   let model_inputs ?(optimise = true) ?(batch_size = 1) network =
     let network_name = Graph.get_network_name network in
     Owl_log.info "compile network %s into static graph ..." network_name;
@@ -403,7 +403,7 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     results
 
 
-  (* ``model network`` transforms the network into a computation graph and
+  (* [model network] transforms the network into a computation graph and
      optimises it. Returns a function that takes the input of the network as an
      argument and returns the output. *)
   let model ?optimise ?batch_size network =

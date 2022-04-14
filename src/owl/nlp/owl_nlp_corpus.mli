@@ -66,10 +66,10 @@ val mapi_tok : (int -> 'a -> 'b) -> t -> 'b array
 (** Map all the tokenised ocuments in a corpus into another array. The index (line number) is passed in. *)
 
 val next_batch : ?size:int -> t -> string array
-(** Return the next batch of documents in a corpus as a string array. The default ``size`` is 100. *)
+(** Return the next batch of documents in a corpus as a string array. The default [size] is 100. *)
 
 val next_batch_tok : ?size:int -> t -> int array array
-(** Return the next batch of tokenised documents in a corpus as a string array. The default ``size`` is 100. *)
+(** Return the next batch of tokenised documents in a corpus as a string array. The default [size] is 100. *)
 
 val reset_iterators : t -> unit
 (** Reset the iterator to the beginning of the corpus. *)
@@ -86,21 +86,21 @@ val build
   -> string
   -> t
 (**
-This function builds up a corpus of type ``t`` from a given raw text corpus. We
+This function builds up a corpus of type [t] from a given raw text corpus. We
 assume that each line in the raw text corpus represents a document.
 
 Parameters:
-  * ``?docid``: passed in ``docid`` can be used for tracking back to the original corpus, but this is not compulsory.
-  * ``?stopwords``: stopwords used in building vocabulary.
-  * ``?lo``: any word below this lower bound of the frequency is removed from vocabulary.
-  * ``?hi``: any word above this upper bound of the frequency is removed from vocabulary.
-  * ``?vocab``: an optional vocabulary, if it is not passed, the vocabulary is built from current corpus.
-  * ``?(minlen=10)``: threshold of the document length, any document shorter than this is removed from the corpus.
-  * ``fname``: the file name of the raw text corpus.
+  * [?docid]: passed in [docid] can be used for tracking back to the original corpus, but this is not compulsory.
+  * [?stopwords]: stopwords used in building vocabulary.
+  * [?lo]: any word below this lower bound of the frequency is removed from vocabulary.
+  * [?hi]: any word above this upper bound of the frequency is removed from vocabulary.
+  * [?vocab]: an optional vocabulary, if it is not passed, the vocabulary is built from current corpus.
+  * [?(minlen=10)]: threshold of the document length, any document shorter than this is removed from the corpus.
+  * [fname]: the file name of the raw text corpus.
  *)
 
 val tokenise : t -> string -> int array
-(** ``tokenise corpus doc`` tokenises the document ``doc`` using the ``corpus`` and its associated vocabulary.  *)
+(** [tokenise corpus doc] tokenises the document [doc] using the [corpus] and its associated vocabulary.  *)
 
 val unique : string -> string -> int array
 (** Remove the duplicates in a text corpus, the ids of the removed files are returned. *)
@@ -110,11 +110,11 @@ val simple_process : string -> string
 
 val preprocess : (string -> bytes) -> string -> string -> unit
 (**
-``preprocess f input_file output_file`` pre-processes a given file
-``input_file`` with the passed in function ``f`` then saves the output to
-``output_file``.
+[preprocess f input_file output_file] pre-processes a given file
+[input_file] with the passed in function [f] then saves the output to
+[output_file].
 
-E.g., you can plug in ``simple_process`` function to clean up the text. Note
+E.g., you can plug in [simple_process] function to clean up the text. Note
 this function will not change the number of lines in a corpus.
  *)
 
@@ -149,11 +149,11 @@ val create
   -> t
 (**
 ```create uri bin_ofs tok_ofs bin_fh tok_fh vocab minlen docid` wraps up the
-corpus into a record of type ``t``.
+corpus into a record of type [t].
  *)
 
 val reduce_model : t -> t
-(** Set some fields to ``None`` so it can be safely serialised. *)
+(** Set some fields to [None] so it can be safely serialised. *)
 
 val cleanup : t -> unit
 (** Close the opened file handles associated with the corpus. *)

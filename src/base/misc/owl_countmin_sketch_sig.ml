@@ -22,25 +22,25 @@ module type Sig = sig
 
   val init : epsilon:float -> delta:float -> 'a sketch
   (**
-``init epsilon delta`` initializes a sketch with approximation ratio
-``(1 + epsilon)`` and failure probability ``delta``.
+[init epsilon delta] initializes a sketch with approximation ratio
+[(1 + epsilon)] and failure probability [delta].
   *)
 
   val incr : 'a sketch -> 'a -> unit
-  (** ``incr s x`` increments the frequency count of ``x`` in sketch ``s`` in-place. *)
+  (** [incr s x] increments the frequency count of [x] in sketch [s] in-place. *)
 
   val count : 'a sketch -> 'a -> int
-  (** ``count s x`` returns the estimated frequency of element ``x`` in ``s``. *)
+  (** [count s x] returns the estimated frequency of element [x] in [s]. *)
 
   val init_from : 'a sketch -> 'a sketch
   (** 
-  ``init_from s`` initializes a new empty sketch with the same parameters as ``s``, which
-  can later be merged with ``s``.
+  [init_from s] initializes a new empty sketch with the same parameters as [s], which
+  can later be merged with [s].
   *)
 
   val merge : 'a sketch -> 'a sketch -> 'a sketch
   (** 
-  ``merge s1 s2`` returns a new sketch whose counts are the sum of those in ``s1`` and ``s2``.
-  Raises ``INVALID_ARGUMENT`` if the parameters of ``s1`` and ``s2`` do not match.
+  [merge s1 s2] returns a new sketch whose counts are the sum of those in [s1] and [s2].
+  Raises [INVALID_ARGUMENT] if the parameters of [s1] and [s2] do not match.
   *)
 end

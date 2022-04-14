@@ -9,32 +9,32 @@ module type Sig = sig
 
   val init : int -> int -> t
   (** 
-  ``init l w`` generates a table with length ``l`` and width ``w``,
+  [init l w] generates a table with length [l] and width [w],
   all counters initialized to 0.
   *)
 
   val incr : int -> int -> t -> unit
   (**
-  ``incr i j t`` increments the counter at length index ``i`` 
-  and width index ``j`` in table ``t``.
+  [incr i j t] increments the counter at length index [i] 
+  and width index [j] in table [t].
   *)
 
   val get : int -> int -> t -> int
   (**
-  ``get i j t`` gets the value of the counter at length index ``i`` 
-  and width index ``j`` in table ``t``.
+  [get i j t] gets the value of the counter at length index [i] 
+  and width index [j] in table [t].
   *)
 
   val clone : t -> t
   (**
-  ``clone t`` returns a new table with the same contents as ``t``.
+  [clone t] returns a new table with the same contents as [t].
   *)
 
   val merge : t -> t -> t
   (**
-  ``merge t1 t2`` merges tables ``t1`` and ``t2`` element-wise.  If ``t1`` and ``t2``
+  [merge t1 t2] merges tables [t1] and [t2] element-wise.  If [t1] and [t2]
   have the same dimensions, returns a new table whose elements are the sums of corresponding
-  elements from ``t1`` and ``t2``.  If dimensions do not match, raises ``INVALID_ARGUMENT``.
+  elements from [t1] and [t2].  If dimensions do not match, raises [INVALID_ARGUMENT].
   *)
 end
 
