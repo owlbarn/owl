@@ -164,13 +164,6 @@ let get_expmode_cflags _c =
   if not enable_expmode then [] else [ "-flto" ]
 
 
-let get_devmode_cflags _c =
-  let enable_devmode = bgetenv "OWL_ENABLE_DEVMODE" in
-  if not enable_devmode
-  then [ "-Wno-logical-op-parentheses" ]
-  else [ "-Wall"; "-pedantic"; "-Wextra"; "-Wunused" ]
-
-
 let default_gcc_path =
   let p0 = "/usr/local/lib/gcc/7" in
   if Sys.file_exists p0 then [ "-L" ^ p0 ] else []
@@ -305,11 +298,10 @@ some details on how your openblas has been installed and the output of
       in
       (* configure compile options *)
       let cflags =
-        []
+        [ "-Wall"; "-pedantic"; "-Wextra"; "-Wunused" ]
         @ openblas_conf.cflags
         @ cblas_conf.cflags
         @ default_cflags c
-        @ get_devmode_cflags c
         @ get_expmode_cflags c
         @ openmp_config.cflags
       in
