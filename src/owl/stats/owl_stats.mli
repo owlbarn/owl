@@ -12,53 +12,53 @@ variance, skew, and etc.
 (** {5 Randomisation functions} *)
 
 val shuffle : 'a array -> 'a array
-(** ``shuffle x`` return a new array of the shuffled ``x``.  *)
+(** [shuffle x] return a new array of the shuffled [x].  *)
 
 val choose : 'a array -> int -> 'a array
-(** ``choose x n`` draw ``n`` samples from ``x`` without replecement.  *)
+(** [choose x n] draw [n] samples from [x] without replecement.  *)
 
 val sample : 'a array -> int -> 'a array
-(** ``sample x n`` draw ``n`` samples from ``x`` with replacement.  *)
+(** [sample x n] draw [n] samples from [x] with replacement.  *)
 
 (** {5 Basic statistical functions} *)
 
 val sum : float array -> float
-(** ``sum x`` returns the summation of the elements in ``x``. *)
+(** [sum x] returns the summation of the elements in [x]. *)
 
 val mean : float array -> float
-(** ``mean x`` returns the mean of the elements in ``x``. *)
+(** [mean x] returns the mean of the elements in [x]. *)
 
 val var : ?mean:float -> float array -> float
-(** ``var x`` returns the variance of elements in ``x``. *)
+(** [var x] returns the variance of elements in [x]. *)
 
 val std : ?mean:float -> float array -> float
-(** ``std x`` calculates the standard deviation of ``x``. *)
+(** [std x] calculates the standard deviation of [x]. *)
 
 val sem : ?mean:float -> float array -> float
 (**
-``sem x`` calculates the standard error of ``x``, also referred to as
+[sem x] calculates the standard error of [x], also referred to as
 standard error of the mean.
  *)
 
 val absdev : ?mean:float -> float array -> float
-(** ``absdev x`` calculates the average absolute deviation of ``x``. *)
+(** [absdev x] calculates the average absolute deviation of [x]. *)
 
 val skew : ?mean:float -> ?sd:float -> float array -> float
-(** ``skew x`` calculates the skewness (the third standardized moment) of ``x``. *)
+(** [skew x] calculates the skewness (the third standardized moment) of [x]. *)
 
 val kurtosis : ?mean:float -> ?sd:float -> float array -> float
 (**
-``kurtosis x`` calculates the Pearson's kurtosis of ``x``, i.e. the fourth
-standardized moment of ``x``.
+[kurtosis x] calculates the Pearson's kurtosis of [x], i.e. the fourth
+standardized moment of [x].
  *)
 
 val central_moment : int -> float array -> float
-(** ``central_moment n x`` calculates the ``n`` th central moment of ``x``. *)
+(** [central_moment n x] calculates the [n] th central moment of [x]. *)
 
 val cov : ?m0:float -> ?m1:float -> float array -> float array -> float
 (**
-``cov x0 x1`` calculates the covariance of ``x0`` and ``x1``, the mean of
-``x0`` and ``x1`` can be specified by ``m0`` and ``m1`` respectively.
+[cov x0 x1] calculates the covariance of [x0] and [x1], the mean of
+[x0] and [x1] can be specified by [m0] and [m1] respectively.
  *)
 
 val concordant : 'a array -> 'b array -> int
@@ -69,80 +69,80 @@ val discordant : 'a array -> 'b array -> int
 
 val corrcoef : float array -> float array -> float
 (**
-``corrcoef x y`` calculates the Pearson correlation of ``x`` and ``y``. Namely,
-``corrcoef x y = cov(x, y) / (sigma_x * sigma_y)``.
+[corrcoef x y] calculates the Pearson correlation of [x] and [y]. Namely,
+[corrcoef x y = cov(x, y) / (sigma_x * sigma_y)].
  *)
 
 val kendall_tau : float array -> float array -> float
-(** ``kendall_tau x y`` calculates the Kendall Tau correlation between ``x`` and ``y``. *)
+(** [kendall_tau x y] calculates the Kendall Tau correlation between [x] and [y]. *)
 
 val spearman_rho : float array -> float array -> float
-(** ``spearman_rho x y`` calculates the Spearman Rho correlation between ``x`` and ``y``. *)
+(** [spearman_rho x y] calculates the Spearman Rho correlation between [x] and [y]. *)
 
 val autocorrelation : ?lag:int -> float array -> float
-(** ``autocorrelation ~lag x`` calculates the autocorrelation of ``x`` with the given ``lag``. *)
+(** [autocorrelation ~lag x] calculates the autocorrelation of [x] with the given [lag]. *)
 
 val percentile : float array -> float -> float
-(** ``percentile x p`` returns the ``p`` percentile of the data ``x``. ``p`` is between
-0. and 100. ``x`` does not need to be sorted beforehand.
+(** [percentile x p] returns the [p] percentile of the data [x]. [p] is between
+0. and 100. [x] does not need to be sorted beforehand.
  *)
 
 val quantile : float array -> float -> float
-(** ``quantile x p`` returns the ``p`` quantile of the data
-    ``x``. ``x`` does not need to be sorted beforehand. When computing
+(** [quantile x p] returns the [p] quantile of the data
+    [x]. [x] does not need to be sorted beforehand. When computing
     several quantiles on the same data, it is more efficient to
     "pre-apply" the function, as in ``let f = quantile x in List.map f
     [ 0.1 ; 0.5 ]``, in which case the data is sorted only once.
 
-    @raise Invalid_argument if ``p`` is not between 0 and 1.
+    @raise Invalid_argument if [p] is not between 0 and 1.
 *)
 
 val first_quartile : float array -> float
-(** ``first_quartile x`` returns the first quartile of ``x``, i.e. 25 percentiles. *)
+(** [first_quartile x] returns the first quartile of [x], i.e. 25 percentiles. *)
 
 val third_quartile : float array -> float
-(** ``third_quartile x`` returns the third quartile of ``x``, i.e. 75 percentiles. *)
+(** [third_quartile x] returns the third quartile of [x], i.e. 75 percentiles. *)
 
 val interquartile : float array -> float
-(** ``interquartile x`` returns the interquartile range of ``x``
+(** [interquartile x] returns the interquartile range of [x]
     which is defined as the first quartile subtracted from the third quartile.
 *)
 
 val median : float array -> float
-(** ``median x`` returns the median of ``x``. *)
+(** [median x] returns the median of [x]. *)
 
 val min : float array -> float
-(** ``min x`` returns the minimum element in ``x``. *)
+(** [min x] returns the minimum element in [x]. *)
 
 val max : float array -> float
-(** ``max x`` returns the maximum element in ``x``. *)
+(** [max x] returns the maximum element in [x]. *)
 
 val minmax : float array -> float * float
-(** ``minmax x`` returns both ``(minimum, maximum)`` elements in ``x``. *)
+(** [minmax x] returns both [(minimum, maximum)] elements in [x]. *)
 
 val min_i : float array -> int
-(** ``min_i x`` returns the index of the minimum in ``x``. *)
+(** [min_i x] returns the index of the minimum in [x]. *)
 
 val max_i : float array -> int
-(** ``max_i x`` returns the index of the maximum in ``x``. *)
+(** [max_i x] returns the index of the maximum in [x]. *)
 
 val minmax_i : float array -> int * int
-(** ``minmax_i x`` returns the indices of both minimum and maximum in ``x``. *)
+(** [minmax_i x] returns the indices of both minimum and maximum in [x]. *)
 
 val sort : ?inc:bool -> float array -> float array
 (**
-``sort x`` sorts the elements in the ``x`` in increasing order if
-``inc = true``, otherwise in decreasing order if ``inc=false``. By default,
-``inc`` is ``true``. Note a copy is returned, the original data is not modified.
+[sort x] sorts the elements in the [x] in increasing order if
+[inc = true], otherwise in decreasing order if [inc=false]. By default,
+[inc] is [true]. Note a copy is returned, the original data is not modified.
  *)
 
 val argsort : ?inc:bool -> float array -> int array
 (**
-``argsort x`` sorts the elements in ``x`` and returns the indices mapping of
-the elements in the current array to their original position in ``x``.
+[argsort x] sorts the elements in [x] and returns the indices mapping of
+the elements in the current array to their original position in [x].
 
-The sorting is in increasing order if ``inc = true``, otherwise in decreasing
-order if ``inc=false``. By default, ``inc`` is ``true``.
+The sorting is in increasing order if [inc = true], otherwise in decreasing
+order if [inc=false]. By default, [inc] is [true].
  *)
 
 val rank : ?ties_strategy:[ `Average | `Min | `Max ] -> float array -> float array
@@ -150,15 +150,15 @@ val rank : ?ties_strategy:[ `Average | `Min | `Max ] -> float array -> float arr
 Computes sample's ranks.
 
 The ranking order is from the smallest one to the largest. For example
-``rank [|54.; 74.; 55.; 86.; 56.|]`` returns ``[|1.; 4.; 2.; 5.; 3.|]``.
+[rank [|54.; 74.; 55.; 86.; 56.|]] returns [[|1.; 4.; 2.; 5.; 3.|]].
 Note that the ranking starts with one!
 
-``ties_strategy`` controls which ranks are assigned to equal values:
+[ties_strategy] controls which ranks are assigned to equal values:
 
-- ``Average`` the mean of ranks should be assigned to each value.
+- [Average] the mean of ranks should be assigned to each value.
   {b Default}.
-- ``Min`` the minimum of ranks is assigned to each value.
-- ``Max`` the maximum of ranks is assigned to each value.
+- [Min] the minimum of ranks is assigned to each value.
+- [Max] the maximum of ranks is assigned to each value.
  *)
 
 type histogram = Owl_base_stats.histogram
@@ -173,18 +173,18 @@ val histogram
   -> float array
   -> histogram
 (**
-``histogram bins x`` creates a histogram from values in ``x``. If bins matches
-`` `N n`` it will construct ``n`` equally spaced bins from the minimum to
-the maximum in ``x``. If bins matches `` `Bins b``, ``b`` is taken as the
+[histogram bins x] creates a histogram from values in [x]. If bins matches
+[ `N n] it will construct [n] equally spaced bins from the minimum to
+the maximum in [x]. If bins matches [ `Bins b], [b] is taken as the
 sorted array of boundaries of adjacent bin intervals. Bin boundaries are taken
 as left-inclusive, right-exclusive, except for the last bin which is also
 right-inclusive. Values outside the bins are dropped silently.
 
-``histogram bins ~weights x`` creates a weighted histogram with the given
-``weights`` which must match ``x`` in length. The bare counts are also
+[histogram bins ~weights x] creates a weighted histogram with the given
+[weights] which must match [x] in length. The bare counts are also
 provided.
 
-Returns a histogram including the ``n+1`` bin boundaries, ``n`` counts and
+Returns a histogram including the [n+1] bin boundaries, [n] counts and
 weighted counts if applicable, but without normalisation.
 *)
 
@@ -194,24 +194,24 @@ val histogram_sorted
   -> float array
   -> histogram
 (**
-``histogram_sorted bins x`` is like ``histogram`` but assumes that ``x`` is sorted
+[histogram_sorted bins x] is like [histogram] but assumes that [x] is sorted
 already. This increases efficiency if there are less bins than data. Undefined
-results if ``x`` is not in fact sorted.
+results if [x] is not in fact sorted.
 *)
 
 val normalise : histogram -> histogram
-(** ``normalize hist`` calculates a probability mass function using
-``hist.weighted_counts`` if present, otherwise using ``hist.counts``. The
-result is stored in the ``normalised_counts`` field and sums to one. *)
+(** [normalize hist] calculates a probability mass function using
+[hist.weighted_counts] if present, otherwise using [hist.counts]. The
+result is stored in the [normalised_counts] field and sums to one. *)
 
 val normalise_density : histogram -> histogram
-(** ``normalize_density hist`` calculates a probability density function using
-``hist.weighted_counts`` if present, otherwise using ``hist.counts``. The
+(** [normalize_density hist] calculates a probability density function using
+[hist.weighted_counts] if present, otherwise using [hist.counts]. The
 result is normalized as a density that is piecewise constant over the bin
 intervals. That is, the sum over density times corresponding bin width is
 one. If bins are infinitely wide, their density is 0 and the sum over width
 times density of all finite bins is the total weight in the finite bins. The
-result is stored in the ``density`` field. *)
+result is stored in the [density] field. *)
 
 val pp_hist : Format.formatter -> histogram -> unit
   [@@ocaml.toplevel_printer]
@@ -219,26 +219,26 @@ val pp_hist : Format.formatter -> histogram -> unit
 
 val ecdf : float array -> float array * float array
 (**
-``ecdf x`` returns ``(x',f)`` which are the empirical cumulative distribution
-function ``f`` of ``x`` at points ``x'``. ``x'`` is just ``x`` sorted in increasing
+[ecdf x] returns [(x',f)] which are the empirical cumulative distribution
+function [f] of [x] at points [x']. [x'] is just [x] sorted in increasing
 order with duplicates removed.
-The function does not support ``nan`` values in the array ``x``.
+The function does not support [nan] values in the array [x].
  *)
 
 val z_score : mu:float -> sigma:float -> float array -> float array
-(** ``z_score x`` calculates the z score of a given array ``x``. *)
+(** [z_score x] calculates the z score of a given array [x]. *)
 
 val t_score : float array -> float array
-(** ``t_score x`` calculates the t score of a given array ``x``. *)
+(** [t_score x] calculates the t score of a given array [x]. *)
 
 val normlise_pdf : float array -> float array
 (** TODO *)
 
 val tukey_fences : ?k:float -> float array -> float * float
 (**
-``tukey_fences ?k x`` returns a tuple of the lower and upper boundaries for
-values that are not outliers. ``k`` defaults to the standard coefficient of
-``1.5``. For first and third quartiles ``Q1`` and `Q3`, the range is computed
+[tukey_fences ?k x] returns a tuple of the lower and upper boundaries for
+values that are not outliers. [k] defaults to the standard coefficient of
+[1.5]. For first and third quartiles [Q1] and `Q3`, the range is computed
 as follows:
 
 .. math::
@@ -251,17 +251,17 @@ val gaussian_kde
   -> float array
   -> float array * float array
 (**
-``gaussian_kde x`` is a Gaussian kernel density estimator. The estimation of
+[gaussian_kde x] is a Gaussian kernel density estimator. The estimation of
 the pdf runs in `O(sample_size * n_points)`, and returns an array tuple
-``(a, b)`` where ``a`` is a uniformly spaced points from the sample range at
-which the density function was estimated, and ``b`` is the estimates at these
+[(a, b)] where [a] is a uniformly spaced points from the sample range at
+which the density function was estimated, and [b] is the estimates at these
 points.
 
 Bandwidth selection rules is as follows:
   * Silverman: use `rule-of-thumb` for choosing the bandwidth. It defaults to [0.9 * min(SD, IQR / 1.34) * n^-0.2].
   * Scott: same as Silverman, but with a factor, equal to [1.06].
 
-The default bandwidth value is ``Scott``.
+The default bandwidth value is [Scott].
  *)
 
 (** {5 MCMC: Markov Chain Monte Carlo} *)
@@ -272,7 +272,7 @@ val metropolis_hastings
   -> int
   -> float array array
 (**
-TODO: ``metropolis_hastings f p n`` is Metropolis-Hastings MCMC algorithm.
+TODO: [metropolis_hastings f p n] is Metropolis-Hastings MCMC algorithm.
 f is pdf of the p
  *)
 
@@ -282,7 +282,7 @@ val gibbs_sampling
   -> int
   -> float array array
 (**
-TODO: ``gibbs_sampling f p n`` is Gibbs sampler. f is a sampler based on the full
+TODO: [gibbs_sampling f p n] is Gibbs sampler. f is a sampler based on the full
 conditional function of all variables
  *)
 
@@ -290,7 +290,7 @@ conditional function of all variables
 
 type hypothesis =
   { reject : bool
-  ; (* reject null hypothesis if ``true`` *)
+  ; (* reject null hypothesis if [true] *)
     p_value : float
   ; (* p-value of the hypothesis test *)
     score : float (* score has different meaning in different tests *)
@@ -315,28 +315,28 @@ val z_test
   -> float array
   -> hypothesis
 (**
-``z_test ~mu ~sigma ~alpha ~side x`` returns a test decision for the null
-hypothesis that the data ``x`` comes from a normal distribution with mean ``mu``
-and a standard deviation ``sigma``, using the z-test of ``alpha`` significance
-level. The alternative hypothesis is that the mean is not ``mu``.
+[z_test ~mu ~sigma ~alpha ~side x] returns a test decision for the null
+hypothesis that the data [x] comes from a normal distribution with mean [mu]
+and a standard deviation [sigma], using the z-test of [alpha] significance
+level. The alternative hypothesis is that the mean is not [mu].
 
-The result ``(h,p,z)`` : ``h`` is ``true`` if the test rejects the null hypothesis at
-the ``alpha`` significance level, and ``false`` otherwise. ``p`` is the p-value and
-``z`` is the z-score.
+The result [(h,p,z)] : [h] is [true] if the test rejects the null hypothesis at
+the [alpha] significance level, and [false] otherwise. [p] is the p-value and
+[z] is the z-score.
  *)
 
 val t_test : mu:float -> ?alpha:float -> ?side:tail -> float array -> hypothesis
 (**
-``t_test ~mu ~alpha ~side x`` returns a test decision of one-sample t-test
+[t_test ~mu ~alpha ~side x] returns a test decision of one-sample t-test
 which is a parametric test of the location parameter when the population
-standard deviation is unknown. ``mu`` is population mean, ``alpha`` is the
+standard deviation is unknown. [mu] is population mean, [alpha] is the
 significance level.
  *)
 
 val t_test_paired : ?alpha:float -> ?side:tail -> float array -> float array -> hypothesis
 (**
-``t_test_paired ~alpha ~side x y`` returns a test decision for the null
-hypothesis that the data in ``x – y`` comes from a normal distribution with
+[t_test_paired ~alpha ~side x y] returns a test decision for the null
+hypothesis that the data in [x – y] comes from a normal distribution with
 mean equal to zero and unknown variance, using the paired-sample t-test. *)
 
 val t_test_unpaired
@@ -347,83 +347,83 @@ val t_test_unpaired
   -> float array
   -> hypothesis
 (**
-``t_test_unpaired ~alpha ~side ~equal_var x y`` returns a test decision for
-the null hypothesis that the data in vectors ``x`` and ``y`` comes from
+[t_test_unpaired ~alpha ~side ~equal_var x y] returns a test decision for
+the null hypothesis that the data in vectors [x] and [y] comes from
 independent random samples from normal distributions with equal means and
 equal but unknown variances, using the two-sample t-test. The alternative
-hypothesis is that the data in ``x`` and ``y`` comes from populations with
+hypothesis is that the data in [x] and [y] comes from populations with
 unequal means.
 
-``equal_var`` indicates whether two samples have the same variance. If the
+[equal_var] indicates whether two samples have the same variance. If the
 two variances are not the same, the test is referred to as Welche's t-test.
  *)
 
 val ks_test : ?alpha:float -> float array -> (float -> float) -> hypothesis
 (**
-``ks_test ~alpha x f`` returns a test decision for the null
-hypothesis that the data in vector ``x`` comes from independent
+[ks_test ~alpha x f] returns a test decision for the null
+hypothesis that the data in vector [x] comes from independent
 random samples of the distribution with CDF f. The alternative
-hypothesis is that the data in ``x`` comes from a different
+hypothesis is that the data in [x] comes from a different
 distribution.
 
-The result ``(h,p,d)`` : ``h`` is ``true`` if the test rejects the null
-hypothesis at the ``alpha`` significance level, and ``false``
-otherwise. ``p`` is the p-value and ``d`` is the Kolmogorov-Smirnov
+The result [(h,p,d)] : [h] is [true] if the test rejects the null
+hypothesis at the [alpha] significance level, and [false]
+otherwise. [p] is the p-value and [d] is the Kolmogorov-Smirnov
 test statistic.
 *)
 
 val ks2_test : ?alpha:float -> float array -> float array -> hypothesis
 (**
-``ks2_test ~alpha x y`` returns a test decision for the null
-hypothesis that the data in vectors ``x`` and ``y`` come from
+[ks2_test ~alpha x y] returns a test decision for the null
+hypothesis that the data in vectors [x] and [y] come from
 independent random samples of the same distribution. The
-alternative hypothesis is that the data in ``x`` and ``y`` are sampled
+alternative hypothesis is that the data in [x] and [y] are sampled
 from different distributions.
 
-The result ``(h,p,d)``: ``h`` is ``true`` if the test rejects the null
-hypothesis at the ``alpha`` significance level, and ``false``
-otherwise. ``p`` is the p-value and ``d`` is the Kolmogorov-Smirnov
+The result [(h,p,d)]: [h] is [true] if the test rejects the null
+hypothesis at the [alpha] significance level, and [false]
+otherwise. [p] is the p-value and [d] is the Kolmogorov-Smirnov
 test statistic.
 *)
 
 val var_test : ?alpha:float -> ?side:tail -> variance:float -> float array -> hypothesis
 (**
-``var_test ~alpha ~side ~variance x`` returns a test decision for the null
-hypothesis that the data in ``x`` comes from a normal distribution with input
-``variance``, using the chi-square variance test. The alternative hypothesis
-is that ``x`` comes from a normal distribution with a different variance.
+[var_test ~alpha ~side ~variance x] returns a test decision for the null
+hypothesis that the data in [x] comes from a normal distribution with input
+[variance], using the chi-square variance test. The alternative hypothesis
+is that [x] comes from a normal distribution with a different variance.
  *)
 
 val jb_test : ?alpha:float -> float array -> hypothesis
 (**
-``jb_test ~alpha x`` returns a test decision for the null hypothesis that the
-data ``x`` comes from a normal distribution with an unknown mean and variance,
+[jb_test ~alpha x] returns a test decision for the null hypothesis that the
+data [x] comes from a normal distribution with an unknown mean and variance,
 using the Jarque-Bera test.
  *)
 
 val fisher_test : ?alpha:float -> ?side:tail -> int -> int -> int -> int -> hypothesis
 (**
-``fisher_test ~alpha ~side a b c d`` fisher's exact test for contingency table
-| ``a``, ``b`` |
-| ``c``, ``d`` |
+[fisher_test ~alpha ~side a b c d] fisher's exact test for contingency table
+| [a], [b] |
+| [c], [d] |
 
-The result ``(h,p,z)`` : ``h`` is ``true`` if the test rejects the null hypothesis at
-the ``alpha`` significance level, and ``false`` otherwise. ``p`` is the p-value and
-``z`` is prior odds ratio.
+The result [(h,p,z)] : [h] is [true] if the test rejects the null hypothesis at
+the [alpha] significance level, and [false] otherwise. [p] is the p-value and
+[z] is prior odds ratio.
 *)
 
 val runs_test : ?alpha:float -> ?side:tail -> ?v:float -> float array -> hypothesis
 (**
-``runs_test ~alpha ~v x`` returns a test decision for the null hypothesis that
-the data ``x`` comes in random order, against the alternative that they do not,
+[runs_test ~alpha ~v x] returns a test decision for the null hypothesis that
+the data [x] comes in random order, against the alternative that they do not,
 by running Wald–Wolfowitz runs test. The test is based on the number of runs
-of consecutive values above or below the mean of ``x``. ``~v`` is the reference
-value, the default value is the median of ``x``.
+of consecutive values above or below the mean of [x]. [~v] is the reference
+value, the default value is the median of [x].
  *)
 
 val mannwhitneyu : ?alpha:float -> ?side:tail -> float array -> float array -> hypothesis
 (**
-``mannwhitneyu ~alpha ~side x y`` Computes the Mann-Whitney rank test on
+[mannwhitneyu ~alpha ~side x y] Computes the Mann-Whitney rank test on
 samples x and y. If length of each sample less than 10 and no ties, then
 using exact test (see paper Ying Kuen Cheung and Jerome H. Klotz (1997)
 The Mann Whitney Wilcoxon distribution using linked list
@@ -436,12 +436,12 @@ val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypot
 (** {5 Discrete random variables} *)
 
 (**
-    The ``_rvs`` functions generate random numbers according to
-    the specified distribution.  ``_pdf`` are "density" functions
+    The [_rvs] functions generate random numbers according to
+    the specified distribution.  [_pdf] are "density" functions
     that return the probability of the element specified by the
-    arguments, while ``_cdf`` functions are cumulative distribution
+    arguments, while [_cdf] functions are cumulative distribution
     functions that return the probability of all elements
-    less than or equal to the chosen element, and ``_sf`` functions
+    less than or equal to the chosen element, and [_sf] functions
     are survival functions returning one minus the corresponding CDF
     function.  `log` versions of functions return the
     result for the natural logarithm of a chosen element.
@@ -449,108 +449,108 @@ val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypot
 
 val uniform_int_rvs : a:int -> b:int -> int
 (**
-``uniform_rvs ~a ~b`` returns a random uniformly distributed integer
-between ``a`` and ``b``, inclusive.  *)
+[uniform_rvs ~a ~b] returns a random uniformly distributed integer
+between [a] and [b], inclusive.  *)
 
 val binomial_rvs : p:float -> n:int -> int
 (**
-``binomial_rvs p n`` returns a random integer representing the number of
-successes in ``n`` trials with probability of success ``p`` on each trial.
+[binomial_rvs p n] returns a random integer representing the number of
+successes in [n] trials with probability of success [p] on each trial.
 *)
 
 val binomial_pdf : int -> p:float -> n:int -> float
 (**
-``binomial_pdf k ~p ~n`` returns the binomially distributed probability
-of ``k`` successes in ``n`` trials with probability ``p`` of success on
+[binomial_pdf k ~p ~n] returns the binomially distributed probability
+of [k] successes in [n] trials with probability [p] of success on
 each trial.
 *)
 
 val binomial_logpdf : int -> p:float -> n:int -> float
 (**
-``binomial_logpdf k ~p ~n`` returns the log-binomially distributed probability
-of ``k`` successes in ``n`` trials with probability ``p`` of success on
+[binomial_logpdf k ~p ~n] returns the log-binomially distributed probability
+of [k] successes in [n] trials with probability [p] of success on
 each trial.
 *)
 
 val binomial_cdf : int -> p:float -> n:int -> float
 (**
-``binomial_cdf k ~p ~n`` returns the binomially distributed cumulative
-probability of less than or equal to ``k`` successes in ``n`` trials,
-with probability ``p`` on each trial.
+[binomial_cdf k ~p ~n] returns the binomially distributed cumulative
+probability of less than or equal to [k] successes in [n] trials,
+with probability [p] on each trial.
 *)
 
 val binomial_logcdf : int -> p:float -> n:int -> float
 (**
-``binomial_logcdf k ~p ~n`` returns the log-binomially distributed cumulative
-probability of less than or equal to ``k`` successes in ``n`` trials,
-with probability ``p`` on each trial.
+[binomial_logcdf k ~p ~n] returns the log-binomially distributed cumulative
+probability of less than or equal to [k] successes in [n] trials,
+with probability [p] on each trial.
 *)
 
 val binomial_sf : int -> p:float -> n:int -> float
 (**
-``binomial_sf k ~p ~n`` is the binomial survival function, i.e.
-``1 - (binomial_cdf k ~p ~n)``.
+[binomial_sf k ~p ~n] is the binomial survival function, i.e.
+[1 - (binomial_cdf k ~p ~n)].
 *)
 
 val binomial_logsf : int -> p:float -> n:int -> float
 (**
-``binomial_loggf k ~p ~n`` is the logbinomial survival function, i.e.
-``1 - (binomial_logcdf k ~p ~n)``.
+[binomial_loggf k ~p ~n] is the logbinomial survival function, i.e.
+[1 - (binomial_logcdf k ~p ~n)].
 *)
 
 val hypergeometric_rvs : good:int -> bad:int -> sample:int -> int
 (**
-``hypergeometric_rvs ~good ~bad ~sample`` returns a random hypergeometrically
+[hypergeometric_rvs ~good ~bad ~sample] returns a random hypergeometrically
 distributed integer representing the number of successes in a sample (without
-replacement) of size ``~sample`` from a population with ``~good`` successful
-elements and ``~bad`` unsuccessful elements.
+replacement) of size [~sample] from a population with [~good] successful
+elements and [~bad] unsuccessful elements.
 *)
 
 val hypergeometric_pdf : int -> good:int -> bad:int -> sample:int -> float
 (**
-``hypergeometric_pdf k ~good ~bad ~sample`` returns the hypergeometrically
-distributed probability of ``k`` successes in a sample (without replacement) of
-``~sample`` elements from a population containing ``~good`` successful elements
-and ``~bad`` unsuccessful ones.
+[hypergeometric_pdf k ~good ~bad ~sample] returns the hypergeometrically
+distributed probability of [k] successes in a sample (without replacement) of
+[~sample] elements from a population containing [~good] successful elements
+and [~bad] unsuccessful ones.
 *)
 
 val hypergeometric_logpdf : int -> good:int -> bad:int -> sample:int -> float
 (**
-``hypergeometric_logpdf k ~good ~bad ~sample`` returns a value equivalent to a
-log-transformed result from ``hypergeometric_pdf``.
+[hypergeometric_logpdf k ~good ~bad ~sample] returns a value equivalent to a
+log-transformed result from [hypergeometric_pdf].
 *)
 
 val multinomial_rvs : int -> p:float array -> int array
 (**
-``multinomial_rvs n ~p`` generates random numbers of multinomial distribution
-from ``n`` trials. The probability mass function is as follows.
+[multinomial_rvs n ~p] generates random numbers of multinomial distribution
+from [n] trials. The probability mass function is as follows.
 
 .. math::
   P(x) = \frac{n!}{{x_1}! \cdot\cdot\cdot {x_k}!} p_{1}^{x_1} \cdot\cdot\cdot p_{k}^{x_k}
 
-``p`` is the probability mass of ``k`` categories. The elements in ``p`` should
+[p] is the probability mass of [k] categories. The elements in [p] should
 all be positive (result is undefined if there are negative values), but they 
-don't need to sum to 1: the result is the same whether or not ``p`` is normalized. 
+don't need to sum to 1: the result is the same whether or not [p] is normalized. 
 For implementation details, refer to :cite:`davis1993computer`.
  *)
 
 val multinomial_pdf : int array -> p:float array -> float
 (**
-``multinomial_rvs x ~p`` return the probability of ``x`` given the probability
+[multinomial_rvs x ~p] return the probability of [x] given the probability
 mass of a multinomial distribution.
  *)
 
 val multinomial_logpdf : int array -> p:float array -> float
 (**
-``multinomial_rvs x ~p`` returns the logarithm probability of ``x`` given the
+[multinomial_rvs x ~p] returns the logarithm probability of [x] given the
 probability mass of a multinomial distribution.
  *)
 
 val categorical_rvs : float array -> int
 (**
-``categorical_rvs p`` returns the value of a random variable which follows the
+[categorical_rvs p] returns the value of a random variable which follows the
 categorical distribution. This is equavalent to only one trial from
-``multinomial_rvs`` function, so it is just a simple wrapping.
+[multinomial_rvs] function, so it is just a simple wrapping.
  *)
 
 (** {5 Continuous random variables} *)
@@ -1065,7 +1065,7 @@ val rayleigh_isf : float -> sigma:float -> float
 
 val dirichlet_rvs : alpha:float array -> float array
 (**
-``dirichlet_rvs ~alpha`` returns random variables of ``K-1`` order Dirichlet
+[dirichlet_rvs ~alpha] returns random variables of [K-1] order Dirichlet
 distribution, follows the following probability dense function.
 
 .. math::
@@ -1077,7 +1077,7 @@ expressed in terms of the gamma function:
 .. math::
   \mathbf{B(\alpha)} = \frac{\prod_{i=1}^K \Gamma(\alpha_i)}{\Gamma(\sum_{i=1}^K \alpha_i)}
 
-Note that ``x`` is a standard K-1 simplex, i.e.
+Note that [x] is a standard K-1 simplex, i.e.
 :math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall x_i \in [1,K]`.
 
  *)

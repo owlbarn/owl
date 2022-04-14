@@ -16,17 +16,17 @@ module type Common = sig
 
   val linspace : elt -> elt -> int -> arr
   (**
-``linspace k 0. 9. 10`` ...
+[linspace k 0. 9. 10] ...
  *)
 
   val logspace : ?base:float -> elt -> elt -> int -> arr
   (**
-``logspace k 0. 9. 10`` ...
+[logspace k 0. 9. 10] ...
  *)
 
   val unit_basis : int -> int -> arr
   (**
-``unit_basis k n i`` returns a unit basis vector with ``i``th element set to 1.
+[unit_basis k n i] returns a unit basis vector with [i]th element set to 1.
  *)
 
   (** {5 Obtain basic properties} *)
@@ -603,20 +603,20 @@ module type Complex = sig
 
   val complex : cast_arr -> cast_arr -> arr
   (**
-``complex re im`` constructs a complex ndarray/matrix from ``re`` and ``im``.
-``re`` and ``im`` contain the real and imaginary part of ``x`` respectively.
+[complex re im] constructs a complex ndarray/matrix from [re] and [im].
+[re] and [im] contain the real and imaginary part of [x] respectively.
 
-Note that both ``re`` and ``im`` can be complex but must have same type. The real
-part of ``re`` will be the real part of ``x`` and the imaginary part of ``im`` will
-be the imaginary part of ``x``.
+Note that both [re] and [im] can be complex but must have same type. The real
+part of [re] will be the real part of [x] and the imaginary part of [im] will
+be the imaginary part of [x].
  *)
 
   val polar : cast_arr -> cast_arr -> arr
   (**
-``polar rho theta`` constructs a complex ndarray/matrix from polar
-coordinates ``rho`` and ``theta``. ``rho`` contains the magnitudes and ``theta``
-contains phase angles. Note that the behaviour is undefined if ``rho`` has
-negative elelments or ``theta`` has infinity elelments.
+[polar rho theta] constructs a complex ndarray/matrix from polar
+coordinates [rho] and [theta]. [rho] contains the magnitudes and [theta]
+contains phase angles. Note that the behaviour is undefined if [rho] has
+negative elelments or [theta] has infinity elelments.
  *)
 
   val re : arr -> cast_arr

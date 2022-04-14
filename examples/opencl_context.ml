@@ -5,7 +5,7 @@
 open Owl
 
 
-(* example for ``f : arr -> unit`` *)
+(* example for [f : arr -> unit] *)
 let run_raw_opencl_01 dev_id =
   let code = "
     __kernel void add_one(__global float *a) {
@@ -20,7 +20,7 @@ let run_raw_opencl_01 dev_id =
   Dense.Ndarray.Generic.pp_dsnda Format.std_formatter x
 
 
-(* example for ``f : arr -> arr -> unit`` *)
+(* example for [f : arr -> arr -> unit] *)
 let run_raw_opencl_02 dev_id =
   let code = "
     __kernel void add_xy(__global float *a, __global float *b) {
@@ -36,7 +36,7 @@ let run_raw_opencl_02 dev_id =
   Dense.Ndarray.Generic.pp_dsnda Format.std_formatter x
 
 
-(* example for ``f : arr -> float -> unit`` *)
+(* example for [f : arr -> float -> unit] *)
 let run_raw_opencl_03 dev_id =
   let code = "
     __kernel void add_x_b(__global float *a, float b) {

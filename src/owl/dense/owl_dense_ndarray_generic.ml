@@ -10103,7 +10103,7 @@ let sum_slices ?axis x =
 
 
 (*
-  Similar to ``sum``, but sums the elements along multiple axes specified in an
+  Similar to [sum], but sums the elements along multiple axes specified in an
   array. E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an
   ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of
   shape [|1;1;1;1|].
