@@ -213,7 +213,7 @@ void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
   *l2p = 512 * 1024;
   *l3p = 512 * 1024;
 }
-#elif
+#else
 OWL_INLINE void query_cache_sizes_intel(int* l1p, int* l2p, int* l3p) {
   int cpuinfo[4];
   int l1 = 0, l2 = 0, l3 = 0;
