@@ -25,6 +25,20 @@ let detect_system_header =
   #endif
 |}
 
+let detect_system_arch =
+  {|
+  #if __x86_64__
+    #define PLATFORM_ARCH "x86_64"
+  #elif __i386__
+    #define PLATFORM_ARCH "x86"
+  #elif __aarch64__
+    #define PLATFORM_ARCH "arm64"
+  #elif __arm__
+    #define PLATFORM_ARCH "arm"
+  #else
+    #define PLATFORM_ARCH "unknown"
+  #endif
+|}
 
 let bgetenv v =
   let v' =
@@ -73,21 +87,21 @@ let get_default_cflags c =
       | _                    -> `unknown
     in
     let arch =
-      let defines =
-        C.C_define.import
-          c
-          ~includes:[]
-          [ "__x86_64__", Switch
-          ; "__i386__", Switch
-          ; "__aarch64__", Switch
-          ; "__arm__", Switch
-          ]
+      let header =
+        let file = Filename.temp_file "discover" "arch.h" in
+        let fd = open_out file in
+        output_string fd detect_system_arch;
+        close_out fd;
+        file
       in
-      match List.map snd defines with
-      | Switch true :: _ -> `x86_64
-      | _ :: Switch true :: _ -> `x86
-      | _ :: _ :: Switch true :: _ -> `arm64
-      | _ :: _ :: _ :: Switch true :: _ -> `arm
+      let arch =
+        C.C_define.import c ~includes:[ header ] [ "PLATFORM_ARCH", String ]
+      in
+      match List.map snd arch with
+      | [ String "x86_64" ] -> `x86_64
+      | [ String "x86" ] -> `x86
+      | [ String "arm64" ] -> `arm64
+      | [ String "arm" ] -> `arm
       | _ -> `unknown
     in
     [ "-g"; "-O3"; "-Ofast" ]
