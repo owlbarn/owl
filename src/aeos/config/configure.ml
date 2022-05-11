@@ -25,6 +25,7 @@ let detect_system_header =
   #endif
 |}
 
+
 let detect_system_arch =
   {|
   #if __x86_64__
@@ -39,6 +40,7 @@ let detect_system_arch =
     #define PLATFORM_ARCH "unknown"
   #endif
 |}
+
 
 let bgetenv v =
   let v' =
@@ -94,15 +96,13 @@ let get_default_cflags c =
         close_out fd;
         file
       in
-      let arch =
-        C.C_define.import c ~includes:[ header ] [ "PLATFORM_ARCH", String ]
-      in
+      let arch = C.C_define.import c ~includes:[ header ] [ "PLATFORM_ARCH", String ] in
       match List.map snd arch with
       | [ String "x86_64" ] -> `x86_64
-      | [ String "x86" ] -> `x86
-      | [ String "arm64" ] -> `arm64
-      | [ String "arm" ] -> `arm
-      | _ -> `unknown
+      | [ String "x86" ]    -> `x86
+      | [ String "arm64" ]  -> `arm64
+      | [ String "arm" ]    -> `arm
+      | _                   -> `unknown
     in
     [ "-g"; "-O3"; "-Ofast" ]
     @ (match arch, os with
