@@ -5,7 +5,7 @@
 
 module C = Configurator.V1
 
-let detect_system_header =
+let detect_system_os =
   {|
   #if __APPLE__
     #include <TargetConditionals.h>
@@ -70,15 +70,8 @@ let get_default_cflags c =
   with
   | Not_found ->
     let os =
-      let header =
-        let file = Filename.temp_file "discover" "os.h" in
-        let fd = open_out file in
-        output_string fd detect_system_header;
-        close_out fd;
-        file
-      in
       let platform =
-        C.C_define.import c ~includes:[ header ] [ "PLATFORM_NAME", String ]
+        C.C_define.import c ~includes:[ ] ~prelude:detect_system_os [ "PLATFORM_NAME", String ]
       in
       match List.map snd platform with
       | [ String "android" ] -> `android
@@ -89,14 +82,9 @@ let get_default_cflags c =
       | _                    -> `unknown
     in
     let arch =
-      let header =
-        let file = Filename.temp_file "discover" "arch.h" in
-        let fd = open_out file in
-        output_string fd detect_system_arch;
-        close_out fd;
-        file
+      let arch =
+        C.C_define.import c ~includes:[ ] ~prelude:detect_system_arch [ "PLATFORM_ARCH", String ]
       in
-      let arch = C.C_define.import c ~includes:[ header ] [ "PLATFORM_ARCH", String ] in
       match List.map snd arch with
       | [ String "x86_64" ] -> `x86_64
       | [ String "x86" ]    -> `x86
@@ -107,7 +95,6 @@ let get_default_cflags c =
     [ "-g"; "-O3"; "-Ofast" ]
     @ (match arch, os with
       | `arm64, `mac -> [ "-mcpu=apple-m1" ]
-      | `arm64, _    -> [ "-march=native" ]
       | `x86_64, _   -> [ "-march=native"; "-msse2" ]
       | _            -> [])
     @ [ "-funroll-loops"; "-ffast-math"; "-DSFMT_MEXP=19937"; "-fno-strict-aliasing" ]
