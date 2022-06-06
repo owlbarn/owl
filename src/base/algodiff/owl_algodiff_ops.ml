@@ -916,7 +916,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
     and softsign x = x / (pack_flt 1. + abs x)
 
     and softmax ?(axis = -1) x =
-      let c = Arr A.(max ~axis (unpack_arr x)) in
+      let c = Arr A.(max ~axis (unpack_arr (primal' x))) in
       let y = exp (x - c) in
       let a = sum ~axis y in
       y / a
