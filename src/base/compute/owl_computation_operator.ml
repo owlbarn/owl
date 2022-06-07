@@ -722,15 +722,17 @@ module Make (Symbol : Owl_computation_symbol_sig.Sig) = struct
 
   let row_num x =
     let s = shape x in
+    let p = Array.length s = 2 in
     let exn = Owl_exception.NOT_MATRIX s in
-    Owl_exception.check (Array.length s = 2) exn;
+    Owl_exception.check p exn;
     s.(0)
 
 
   let col_num x =
     let s = shape x in
+    let p = Array.length s = 2 in
     let exn = Owl_exception.NOT_MATRIX s in
-    Owl_exception.check (Array.length s = 2) exn;
+    Owl_exception.check p exn;
     s.(1)
 
 
