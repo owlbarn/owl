@@ -22,7 +22,7 @@ type elt =
   | String of string
   | Any (** Type of the elements in a series. *)
 
-(** {5 Pakcking & unpacking element} *)
+(** {5 Packing & unpacking element} *)
 
 val pack_bool : bool -> elt
 (** Pack the boolean value to [elt] type. *)
@@ -48,7 +48,7 @@ val unpack_float : elt -> float
 val unpack_string : elt -> string
 (** Unpack [elt] type to string value. *)
 
-(** {5 Pakcking & unpacking series} *)
+(** {5 Packing & unpacking series} *)
 
 val pack_bool_series : bool array -> series
 (** Pack boolean array to [series] type. *)
