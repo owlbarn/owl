@@ -74,8 +74,7 @@ module To_test = struct
     M.set freqz_ref [| 2 |] { Complex.re = -0.5; im = -0.5 };
     M.set freqz_ref [| 3 |] { Complex.re = -0.0536; im = 0.0464 };
     let f =
-      freqz ~n:4 ~whole:false (freqz_num |> M.to_array) (freqz_den |> M.to_array)
-      |> fun (a, b) -> b
+      freqz ~n:4 ~whole:false (freqz_num |> M.to_array) (freqz_den |> M.to_array) |> snd
     in
     let max_err =
       (Owl_dense_ndarray.Z.map2 (fun x a -> Complex.sub x a) f freqz_ref
