@@ -158,7 +158,7 @@ let default_config c =
   in
   (* homebrew M1 issue workaround, works only if users use the default homebrew path *)
   let libs =
-    let p0 = "/opt/homebrew/opt/gcc/lib/gcc/11/" in
+    let p0 = "/opt/homebrew/opt/gcc/lib/gcc/current/" in
     if os = `mac && arch = `arm64 && Sys.file_exists p0 then [ "-L" ^ p0 ] else []
   in
   C.Pkg_config.{ cflags; libs }
