@@ -19,6 +19,7 @@ module type Sig = sig
       | GlorotNormal
       | GlorotUniform
       | LecunNormal
+      | HeNormal
       | Custom        of (int array -> t) (** Initialisation types *)
 
     val calc_fans : int array -> float * float
