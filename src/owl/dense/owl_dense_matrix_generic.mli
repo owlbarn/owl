@@ -136,7 +136,7 @@ val semidef : (float, 'b) kind -> int -> (float, 'b) t
 val linspace : ('a, 'b) kind -> 'a -> 'a -> int -> ('a, 'b) t
 (**
 [linspace a b n] linearly divides the interval [[a,b]] into [n] pieces by
-creating an [m] by [1] row vector. E.g., [linspace 0. 5. 5] will create a
+creating an [m] by [1] row vector. E.g., [linspace 0. 5. 6] will create a
 row vector [[0;1;2;3;4;5]].
  *)
 
