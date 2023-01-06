@@ -1,3 +1,14 @@
+## 1.0.3 (2023-01-06)
+
+* Change input/output_val to ocaml_input/output_val
+* Adapt Zoo to the changes in ocaml-compiler-libs
+* Fix a bug about unpack_arr in nested forward/reverse mode (#619)
+* Add NeNormal initializer (#624)
+* Update API document
+* Update several mli files 
+* Fix typos
+
+
 ## 1.0.2 (2022-02-14)
 
 * Update Hamming, Hann, Blackman, Freqz functions in `Signal` module
