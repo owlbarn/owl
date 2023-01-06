@@ -23,6 +23,7 @@ module Make (Optimise : Owl_optimise_generic_sig.Sig) = struct
       | GlorotNormal
       | GlorotUniform
       | LecunNormal
+      | HeNormal
       | Custom        of (int array -> t)
 
     let calc_fans s =
@@ -54,6 +55,7 @@ module Make (Optimise : Owl_optimise_generic_sig.Sig) = struct
       let r0 = sqrt (1. /. fan_in) in
       let r1 = sqrt (6. /. (fan_in +. fan_out)) in
       let r2 = sqrt (2. /. (fan_in +. fan_out)) in
+      let r3 = sqrt (2. /. fan_in) in
       match x with
       | Arr _ ->
         (match t with
@@ -75,6 +77,7 @@ module Make (Optimise : Owl_optimise_generic_sig.Sig) = struct
           Arr.(uniform ~a:(A.float_to_elt (-.r1)) ~b:(A.float_to_elt r1) s)
         | GlorotNormal         -> Arr.(gaussian ~sigma:(A.float_to_elt r2) s)
         | LecunNormal          -> Arr.(gaussian ~sigma:(A.float_to_elt r0) s)
+        | HeNormal             -> Arr.(gaussian ~sigma:(A.float_to_elt r3) s)
         | Custom f             -> f s)
       | _     -> failwith "Owl_neural:init:run"
 
@@ -87,6 +90,7 @@ module Make (Optimise : Owl_optimise_generic_sig.Sig) = struct
       | GlorotUniform   -> Printf.sprintf "glorot_uniform"
       | GlorotNormal    -> Printf.sprintf "glorot_normal"
       | LecunNormal     -> Printf.sprintf "lecun_normal"
+      | HeNormal        -> Printf.sprintf "he_normal"
       | Custom _        -> Printf.sprintf "customise"
 
 
