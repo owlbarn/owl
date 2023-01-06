@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Owl_ndarray_pool (owl.Owl_ndarray_pool)</title><link rel="stylesheet" href="../../odoc.css"/><meta charset="utf-8"/><meta name="generator" content="odoc 2.1.0"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../../highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body class="odoc"><nav class="odoc-nav"><a href="../index.html">Up</a> – <a href="../index.html">owl</a> &#x00BB; Owl_ndarray_pool</nav><header class="odoc-preamble"><h1>Module <code><span>Owl_ndarray_pool</span></code></h1></header><div class="odoc-content"><div class="odoc-spec"><div class="spec value external" id="val-owl_float32_ndarray_maxpool_spatial" class="anchored"><a href="#val-owl_float32_ndarray_maxpool_spatial" class="anchor"></a><code><span><span class="keyword">val</span> owl_float32_ndarray_maxpool_spatial : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float32_ndarray_avgpool_spatial" class="anchored"><a href="#val-owl_float32_ndarray_avgpool_spatial" class="anchor"></a><code><span><span class="keyword">val</span> owl_float32_ndarray_avgpool_spatial : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float32_ndarray_maxpool_spatial_backward" class="anchored"><a href="#val-owl_float32_ndarray_maxpool_spatial_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_float32_ndarray_maxpool_spatial_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-_owl_float32_ndarray_avgpool_spatial_backward" class="anchored"><a href="#val-_owl_float32_ndarray_avgpool_spatial_backward" class="anchor"></a><code><span><span class="keyword">val</span> _owl_float32_ndarray_avgpool_spatial_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-owl_float32_ndarray_avgpool_spatial_backward" class="anchored"><a href="#val-owl_float32_ndarray_avgpool_spatial_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_float32_ndarray_avgpool_spatial_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float32_ndarray_maxpool_argmax_spatial" class="anchored"><a href="#val-owl_float32_ndarray_maxpool_argmax_spatial" class="anchor"></a><code><span><span class="keyword">val</span> owl_float32_ndarray_maxpool_argmax_spatial : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( int64, <span class="type-var">'c</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float32_ndarray_maxpool_cuboid" class="anchored"><a href="#val-owl_float32_ndarray_maxpool_cuboid" class="anchor"></a><code><span><span class="keyword">val</span> owl_float32_ndarray_maxpool_cuboid : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float32_ndarray_avgpool_cuboid" class="anchored"><a href="#val-owl_float32_ndarray_avgpool_cuboid" class="anchor"></a><code><span><span class="keyword">val</span> owl_float32_ndarray_avgpool_cuboid : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float32_ndarray_maxpool_cuboid_backward" class="anchored"><a href="#val-owl_float32_ndarray_maxpool_cuboid_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_float32_ndarray_maxpool_cuboid_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-_owl_float32_ndarray_avgpool_cuboid_backward" class="anchored"><a href="#val-_owl_float32_ndarray_avgpool_cuboid_backward" class="anchor"></a><code><span><span class="keyword">val</span> _owl_float32_ndarray_avgpool_cuboid_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-owl_float32_ndarray_avgpool_cuboid_backward" class="anchored"><a href="#val-owl_float32_ndarray_avgpool_cuboid_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_float32_ndarray_avgpool_cuboid_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float64_ndarray_maxpool_spatial" class="anchored"><a href="#val-owl_float64_ndarray_maxpool_spatial" class="anchor"></a><code><span><span class="keyword">val</span> owl_float64_ndarray_maxpool_spatial : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float64_ndarray_avgpool_spatial" class="anchored"><a href="#val-owl_float64_ndarray_avgpool_spatial" class="anchor"></a><code><span><span class="keyword">val</span> owl_float64_ndarray_avgpool_spatial : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float64_ndarray_maxpool_spatial_backward" class="anchored"><a href="#val-owl_float64_ndarray_maxpool_spatial_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_float64_ndarray_maxpool_spatial_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-_owl_float64_ndarray_avgpool_spatial_backward" class="anchored"><a href="#val-_owl_float64_ndarray_avgpool_spatial_backward" class="anchor"></a><code><span><span class="keyword">val</span> _owl_float64_ndarray_avgpool_spatial_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-owl_float64_ndarray_avgpool_spatial_backward" class="anchored"><a href="#val-owl_float64_ndarray_avgpool_spatial_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_float64_ndarray_avgpool_spatial_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float64_ndarray_maxpool_cuboid" class="anchored"><a href="#val-owl_float64_ndarray_maxpool_cuboid" class="anchor"></a><code><span><span class="keyword">val</span> owl_float64_ndarray_maxpool_cuboid : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float64_ndarray_avgpool_cuboid" class="anchored"><a href="#val-owl_float64_ndarray_avgpool_cuboid" class="anchor"></a><code><span><span class="keyword">val</span> owl_float64_ndarray_avgpool_cuboid : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float64_ndarray_maxpool_cuboid_backward" class="anchored"><a href="#val-owl_float64_ndarray_maxpool_cuboid_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_float64_ndarray_maxpool_cuboid_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-_owl_float64_ndarray_avgpool_cuboid_backward" class="anchored"><a href="#val-_owl_float64_ndarray_avgpool_cuboid_backward" class="anchor"></a><code><span><span class="keyword">val</span> _owl_float64_ndarray_avgpool_cuboid_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-owl_float64_ndarray_avgpool_cuboid_backward" class="anchored"><a href="#val-owl_float64_ndarray_avgpool_cuboid_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_float64_ndarray_avgpool_cuboid_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_float64_ndarray_maxpool_argmax_spatial" class="anchored"><a href="#val-owl_float64_ndarray_maxpool_argmax_spatial" class="anchor"></a><code><span><span class="keyword">val</span> owl_float64_ndarray_maxpool_argmax_spatial : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( int64, <span class="type-var">'c</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex32_ndarray_maxpool_spatial" class="anchored"><a href="#val-owl_complex32_ndarray_maxpool_spatial" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex32_ndarray_maxpool_spatial : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex32_ndarray_avgpool_spatial" class="anchored"><a href="#val-owl_complex32_ndarray_avgpool_spatial" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex32_ndarray_avgpool_spatial : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex32_ndarray_maxpool_spatial_backward" class="anchored"><a href="#val-owl_complex32_ndarray_maxpool_spatial_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex32_ndarray_maxpool_spatial_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-_owl_complex32_ndarray_avgpool_spatial_backward" class="anchored"><a href="#val-_owl_complex32_ndarray_avgpool_spatial_backward" class="anchor"></a><code><span><span class="keyword">val</span> _owl_complex32_ndarray_avgpool_spatial_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-owl_complex32_ndarray_avgpool_spatial_backward" class="anchored"><a href="#val-owl_complex32_ndarray_avgpool_spatial_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex32_ndarray_avgpool_spatial_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex32_ndarray_maxpool_argmax_spatial" class="anchored"><a href="#val-owl_complex32_ndarray_maxpool_argmax_spatial" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex32_ndarray_maxpool_argmax_spatial : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( int64, <span class="type-var">'c</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex32_ndarray_maxpool_cuboid" class="anchored"><a href="#val-owl_complex32_ndarray_maxpool_cuboid" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex32_ndarray_maxpool_cuboid : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex32_ndarray_avgpool_cuboid" class="anchored"><a href="#val-owl_complex32_ndarray_avgpool_cuboid" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex32_ndarray_avgpool_cuboid : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex32_ndarray_maxpool_cuboid_backward" class="anchored"><a href="#val-owl_complex32_ndarray_maxpool_cuboid_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex32_ndarray_maxpool_cuboid_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-_owl_complex32_ndarray_avgpool_cuboid_backward" class="anchored"><a href="#val-_owl_complex32_ndarray_avgpool_cuboid_backward" class="anchor"></a><code><span><span class="keyword">val</span> _owl_complex32_ndarray_avgpool_cuboid_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-owl_complex32_ndarray_avgpool_cuboid_backward" class="anchored"><a href="#val-owl_complex32_ndarray_avgpool_cuboid_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex32_ndarray_avgpool_cuboid_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex64_ndarray_maxpool_spatial" class="anchored"><a href="#val-owl_complex64_ndarray_maxpool_spatial" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex64_ndarray_maxpool_spatial : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex64_ndarray_avgpool_spatial" class="anchored"><a href="#val-owl_complex64_ndarray_avgpool_spatial" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex64_ndarray_avgpool_spatial : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex64_ndarray_maxpool_spatial_backward" class="anchored"><a href="#val-owl_complex64_ndarray_maxpool_spatial_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex64_ndarray_maxpool_spatial_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-_owl_complex64_ndarray_avgpool_spatial_backward" class="anchored"><a href="#val-_owl_complex64_ndarray_avgpool_spatial_backward" class="anchor"></a><code><span><span class="keyword">val</span> _owl_complex64_ndarray_avgpool_spatial_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-owl_complex64_ndarray_avgpool_spatial_backward" class="anchored"><a href="#val-owl_complex64_ndarray_avgpool_spatial_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex64_ndarray_avgpool_spatial_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex64_ndarray_maxpool_cuboid" class="anchored"><a href="#val-owl_complex64_ndarray_maxpool_cuboid" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex64_ndarray_maxpool_cuboid : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex64_ndarray_avgpool_cuboid" class="anchored"><a href="#val-owl_complex64_ndarray_avgpool_cuboid" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex64_ndarray_avgpool_cuboid : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex64_ndarray_maxpool_cuboid_backward" class="anchored"><a href="#val-owl_complex64_ndarray_maxpool_cuboid_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex64_ndarray_maxpool_cuboid_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-_owl_complex64_ndarray_avgpool_cuboid_backward" class="anchored"><a href="#val-_owl_complex64_ndarray_avgpool_cuboid_backward" class="anchor"></a><code><span><span class="keyword">val</span> _owl_complex64_ndarray_avgpool_cuboid_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-owl_complex64_ndarray_avgpool_cuboid_backward" class="anchored"><a href="#val-owl_complex64_ndarray_avgpool_cuboid_backward" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex64_ndarray_avgpool_cuboid_backward : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value external" id="val-owl_complex64_ndarray_maxpool_argmax_spatial" class="anchored"><a href="#val-owl_complex64_ndarray_maxpool_argmax_spatial" class="anchor"></a><code><span><span class="keyword">val</span> owl_complex64_ndarray_maxpool_argmax_spatial : 
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>( int64, <span class="type-var">'c</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr">Owl_core_types.owl_arr</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-_owl_spatial_max_pooling" class="anchored"><a href="#val-_owl_spatial_max_pooling" class="anchor"></a><code><span><span class="keyword">val</span> _owl_spatial_max_pooling : 
+  'a 'b. <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.kind</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr_op26">Owl_core_types.owl_arr_op26</a></span></span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-_owl_spatial_avg_pooling" class="anchored"><a href="#val-_owl_spatial_avg_pooling" class="anchor"></a><code><span><span class="keyword">val</span> _owl_spatial_avg_pooling : 
+  'a 'b. <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.kind</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr_op26">Owl_core_types.owl_arr_op26</a></span></span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-_owl_cuboid_max_pooling" class="anchored"><a href="#val-_owl_cuboid_max_pooling" class="anchor"></a><code><span><span class="keyword">val</span> _owl_cuboid_max_pooling : 
+  'a 'b. <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.kind</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr_op27">Owl_core_types.owl_arr_op27</a></span></span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-_owl_cuboid_avg_pooling" class="anchored"><a href="#val-_owl_cuboid_avg_pooling" class="anchor"></a><code><span><span class="keyword">val</span> _owl_cuboid_avg_pooling : 
+  'a 'b. <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.kind</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr_op27">Owl_core_types.owl_arr_op27</a></span></span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-_owl_spatial_max_pooling_argmax" class="anchored"><a href="#val-_owl_spatial_max_pooling_argmax" class="anchor"></a><code><span><span class="keyword">val</span> _owl_spatial_max_pooling_argmax : 
+  'a 'b. <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.kind</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr_op28">Owl_core_types.owl_arr_op28</a></span></span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-_owl_spatial_max_pooling_backward" class="anchored"><a href="#val-_owl_spatial_max_pooling_backward" class="anchor"></a><code><span><span class="keyword">val</span> _owl_spatial_max_pooling_backward : 
+  'a 'b. <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.kind</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr_op29">Owl_core_types.owl_arr_op29</a></span></span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-_owl_spatial_avg_pooling_backward" class="anchored"><a href="#val-_owl_spatial_avg_pooling_backward" class="anchor"></a><code><span><span class="keyword">val</span> _owl_spatial_avg_pooling_backward : 
+  'a 'b. <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.kind</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr_op30">Owl_core_types.owl_arr_op30</a></span></span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-_owl_cuboid_max_pooling_backward" class="anchored"><a href="#val-_owl_cuboid_max_pooling_backward" class="anchor"></a><code><span><span class="keyword">val</span> _owl_cuboid_max_pooling_backward : 
+  'a 'b. <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.kind</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr_op31">Owl_core_types.owl_arr_op31</a></span></span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-_owl_cuboid_avg_pooling_backward" class="anchored"><a href="#val-_owl_cuboid_avg_pooling_backward" class="anchor"></a><code><span><span class="keyword">val</span> _owl_cuboid_avg_pooling_backward : 
+  'a 'b. <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.kind</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="../Owl_core_types/index.html#type-owl_arr_op32">Owl_core_types.owl_arr_op32</a></span></span></code></div></div></div></body></html>
