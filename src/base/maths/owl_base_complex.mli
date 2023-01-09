@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -137,25 +137,25 @@ val acoth : t -> t
 (** TODO *)
 
 val arg : t -> float
-(** ``arg x`` returns the angle of a complex number ``x``. *)
+(** [arg x] returns the angle of a complex number [x]. *)
 
 val phase : t -> float
-(** ``phase x`` returns the phase of a complex number ``x``. *)
+(** [phase x] returns the phase of a complex number [x]. *)
 
 val floor : t -> t
-(** ``floor x`` *)
+(** [floor x] *)
 
 val ceil : t -> t
-(** ``ceil x`` *)
+(** [ceil x] *)
 
 val round : t -> t
-(** ``round x`` *)
+(** [round x] *)
 
 val trunc : t -> t
-(** ``trunc x`` *)
+(** [trunc x] *)
 
 val fix : t -> t
-(** ``fix x`` *)
+(** [fix x] *)
 
 (** {5 Binary functions} *)
 
@@ -202,7 +202,7 @@ val polar : float -> float -> t
 (** TODO *)
 
 val rect : float -> float -> t
-(** ``rect r phi`` return a complex number with polar coordinates ``r`` and ``phi``. *)
+(** [rect r phi] return a complex number with polar coordinates [r] and [phi]. *)
 
 (** {5 Comparison functions} *)
 
@@ -227,19 +227,19 @@ val greater_equal : t -> t -> bool
 (** {5 Helper functions} *)
 
 val complex : float -> float -> t
-(** ``complex re im`` returns a complex number ``{re; im}``. *)
+(** [complex re im] returns a complex number [{re; im}]. *)
 
 val of_tuple : float * float -> t
-(** ``of_tuple (re, im)`` returns a complex number ``{re; im}``. *)
+(** [of_tuple (re, im)] returns a complex number [{re; im}]. *)
 
 val to_tuple : t -> float * float
-(** ``to_tuple x`` converts a complex number to tuple ``(x.re; x.im)``. *)
+(** [to_tuple x] converts a complex number to tuple [(x.re; x.im)]. *)
 
 val is_nan : t -> bool
-(** ``is_nan x`` returns ``true`` if ``x.re`` is ``nan`` or ``x.im`` is ``nan``. *)
+(** [is_nan x] returns [true] if [x.re] is [nan] or [x.im] is [nan]. *)
 
 val is_inf : t -> bool
-(** ``is_inf x`` returns ``true`` if either ``x.re`` or ``x.im`` is ``infinity`` or ``neg_infinity``. *)
+(** [is_inf x] returns [true] if either [x.re] or [x.im] is [infinity] or [neg_infinity]. *)
 
 val is_normal : t -> bool
-(** ``is_normal x`` returns ``true`` if both ``x.re`` and ``x.im`` are ``normal``. *)
+(** [is_normal x] returns [true] if both [x.re] and [x.im] are [normal]. *)

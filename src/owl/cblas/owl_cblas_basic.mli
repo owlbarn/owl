@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -16,7 +16,7 @@ open Bigarray
 (** {5 Type definition} *)
 
 type ('a, 'b) t = ('a, 'b, Bigarray.c_layout) Bigarray.Array1.t
-(** The default type is Bigarray's ``Array1.t``. *)
+(** The default type is Bigarray's [Array1.t]. *)
 
 type cblas_layout =
   | CblasRowMajor

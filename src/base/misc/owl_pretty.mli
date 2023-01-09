@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -9,7 +9,7 @@
 
 val pp_dsnda : Format.formatter -> ('a, 'b, 'c) Bigarray.Genarray.t -> unit
   [@@ocaml.toplevel_printer]
-(** ``pp_dsnda`` is the pretty printer for n-dimensional arrays. *)
+(** [pp_dsnda] is the pretty printer for n-dimensional arrays. *)
 
 val dsnda_to_string
   :  ?header:bool
@@ -18,7 +18,7 @@ val dsnda_to_string
   -> ?elt_to_str_fun:('a -> string)
   -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t
   -> string
-(** ``dsnda_to_string x`` converts ``x`` into a string for pretty printing *)
+(** [dsnda_to_string x] converts [x] into a string for pretty printing *)
 
 val print_dsnda
   :  ?header:bool
@@ -29,7 +29,7 @@ val print_dsnda
   -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t
   -> unit
 (**
-``print_dsnda`` provides the better control of pretty printing function of owl's
+[print_dsnda] provides the better control of pretty printing function of owl's
 n-dimensional array. [max_row] and [max_col] specify the maximum number of
 rows and columns to display. [header] specifies whether or not to print out
 the headers. [fmt] is the function to format every element into string.
@@ -39,7 +39,7 @@ the headers. [fmt] is the function to format every element into string.
 
 val pp_dataframe : Format.formatter -> Owl_dataframe.t -> unit
   [@@ocaml.toplevel_printer]
-(** ``pp_dataframe`` is the pretty printer for dataframe. *)
+(** [pp_dataframe] is the pretty printer for dataframe. *)
 
 val dataframe_to_string
   :  ?header:bool
@@ -49,7 +49,7 @@ val dataframe_to_string
   -> ?elt_to_str_fun:(Owl_dataframe.elt -> string)
   -> Owl_dataframe.t
   -> string
-(** ``dataframe_to_string x`` converts ``x`` into a string for pretty printing *)
+(** [dataframe_to_string x] converts [x] into a string for pretty printing *)
 
 val print_dataframe
   :  ?header:bool
@@ -60,4 +60,4 @@ val print_dataframe
   -> Format.formatter
   -> Owl_dataframe.t
   -> unit
-(** ``print_dataframe x`` converts ``x`` into a string for pretty printing *)
+(** [print_dataframe x] converts [x] into a string for pretty printing *)

@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -18,15 +18,15 @@ module Make (A : Ndarray_Basic) : sig
   (** {5 Type definition} *)
 
   type t
-  (** ``t`` is the abstract type to represent a view atop of an ndarray. *)
+  (** [t] is the abstract type to represent a view atop of an ndarray. *)
 
   (** {5 Conversion functions} *)
 
   val of_arr : A.arr -> t
-  (** ``of_arr x`` creates a view from ndarray ``x``. *)
+  (** [of_arr x] creates a view from ndarray [x]. *)
 
   val to_arr : t -> A.arr
-  (** ``to_arr x`` creates an new ndarray based on the view ``x``. *)
+  (** [to_arr x] creates an new ndarray based on the view [x]. *)
 
   (** {5 Manipulation functions} *)
 
@@ -58,37 +58,37 @@ module Make (A : Ndarray_Basic) : sig
 
   val iteri : (int -> A.elt -> unit) -> t -> unit
   (**
-``iteri f x`` iterates and applies ``f`` to every element in ``x``. ``f`` has type
-``f : int array -> elt -> unit``, the first parameter is index. 1d indices are
+[iteri f x] iterates and applies [f] to every element in [x]. [f] has type
+[f : int array -> elt -> unit], the first parameter is index. 1d indices are
 passed to the user function.
    *)
 
   val iter : (A.elt -> unit) -> t -> unit
-  (** Similar to ``iteri``, the index is not passed in. *)
+  (** Similar to [iteri], the index is not passed in. *)
 
   val mapi : (int -> A.elt -> A.elt) -> t -> unit
   (**
-``mapi f x`` applies ``f : int array -> elt -> elt`` to every element in ``x``,
+[mapi f x] applies [f : int array -> elt -> elt] to every element in [x],
 then save the result in place. 1d indices are passed to the user function.
    *)
 
   val map : (A.elt -> A.elt) -> t -> unit
   (**
-``map f x`` applies ``f : elt -> elt`` to every element in ``x``, then save the
-the result in place in ``x``.
+[map f x] applies [f : elt -> elt] to every element in [x], then save the
+the result in place in [x].
    *)
 
   val iter2 : (A.elt -> A.elt -> unit) -> t -> t -> unit
   (**
-``iter2 f x y`` applies ``f : elt -> elt -> elt`` every pair of elements in
-``x`` and ``y``. The indices are not passed in the user function.
+[iter2 f x y] applies [f : elt -> elt -> elt] every pair of elements in
+[x] and [y]. The indices are not passed in the user function.
    *)
 
   val map2 : (A.elt -> A.elt -> A.elt) -> t -> t -> unit
   (**
-``map2 f x y`` applies ``f : elt -> elt -> elt`` every pair of elements in ``x``
-and ``y``, then saves the result in ``y``. So be careful with the order, it
-matters, the data reflected by view ``y`` will be modified.
+[map2 f x y] applies [f : elt -> elt -> elt] every pair of elements in [x]
+and [y], then saves the result in [y]. So be careful with the order, it
+matters, the data reflected by view [y] will be modified.
    *)
 
   val iteri_nd : (int array -> A.elt -> unit) -> t -> unit
@@ -107,25 +107,25 @@ than `mapi`.
 
   val exists : (A.elt -> bool) -> t -> bool
   (**
-``exists f x`` checks all the elements in ``x`` using ``f``. If at least one
-element satisfies ``f`` then the function returns ``true`` otherwise ``false``.
+[exists f x] checks all the elements in [x] using [f]. If at least one
+element satisfies [f] then the function returns [true] otherwise [false].
    *)
 
   val not_exists : (A.elt -> bool) -> t -> bool
   (**
-  ``not_exists f x`` checks all the elements in ``x``, the function returns
-  ``true`` only if all the elements fail to satisfy ``f : float -> bool``.
+  [not_exists f x] checks all the elements in [x], the function returns
+  [true] only if all the elements fail to satisfy [f : float -> bool].
    *)
 
   val for_all : (A.elt -> bool) -> t -> bool
   (**
-  ``for_all f x`` checks all the elements in ``x``, the function returns ``true``
-  if and only if all the elements pass the check of function ``f``.
+  [for_all f x] checks all the elements in [x], the function returns [true]
+  if and only if all the elements pass the check of function [f].
    *)
 
   val equal : t -> t -> bool
-  (** ``equal x y`` returns ``true`` if ``x`` and ``y`` are elementwise equal. *)
+  (** [equal x y] returns [true] if [x] and [y] are elementwise equal. *)
 
   val not_equal : t -> t -> bool
-  (** ``not_equal x y`` returns ``true`` if ``x`` and ``y`` are not elementwise equal. *)
+  (** [not_equal x y] returns [true] if [x] and [y] are not elementwise equal. *)
 end

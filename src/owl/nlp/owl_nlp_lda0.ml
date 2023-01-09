@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022
  *   Ben Catterall <bpwc2@cam.ac.uk>
  *   Liang Wang <liang@ocaml.xyz>

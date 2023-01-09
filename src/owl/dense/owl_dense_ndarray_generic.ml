@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -9893,12 +9893,15 @@ let row_num x =
   let p = Array.length s = 2 in
   let exn = Owl_exception.NOT_MATRIX s in
   Owl_exception.check p exn;
-  (shape x).(0)
+  s.(0)
 
 
 let col_num x =
-  if not (num_dims x = 2) then failwith "passed in parameter must be a matrix";
-  (shape x).(1)
+  let s = shape x in
+  let p = Array.length s = 2 in
+  let exn = Owl_exception.NOT_MATRIX s in
+  Owl_exception.check p exn;
+  s.(1)
 
 
 let row x i =
@@ -10103,7 +10106,7 @@ let sum_slices ?axis x =
 
 
 (*
-  Similar to ``sum``, but sums the elements along multiple axes specified in an
+  Similar to [sum], but sums the elements along multiple axes specified in an
   array. E.g., for [x] of [|2;3;4;5|], [sum_reduce ~axis:[|1;3|] x] returns an
   ndarray of shape [|2;1;4;1|]; if axis not specified, it returns an ndarray of
   shape [|1;1;1;1|].

@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -7,39 +7,39 @@
 
 val check : bool -> exn -> unit
 (**
-``check p e`` raises the exception ``e`` if the predicate ``p`` is
-``false``, otherwise returns ``unit``.
+[check p e] raises the exception [e] if the predicate [p] is
+[false], otherwise returns [unit].
 
 Parameters:
-  * ``p``: predicate to check.
-  * ``e``: exception to raise.
+  * [p]: predicate to check.
+  * [e]: exception to raise.
 
 Returns:
-  * ``unit``
+  * [unit]
  *)
 
 val verify : bool -> (unit -> exn) -> unit
 (**
-``verify p f`` calls the function ``f`` which further raises an exception
-if the predicate ``p`` is ``false``, otherwise returns ``unit``.
+[verify p f] calls the function [f] which further raises an exception
+if the predicate [p] is [false], otherwise returns [unit].
 
 Parameters:
-  * ``p``: predicate to check.
-  * ``f``: function to raise the exception.
+  * [p]: predicate to check.
+  * [f]: function to raise the exception.
 
 Returns:
-  * ``unit``
+  * [unit]
  *)
 
 val to_string : exn -> string
 (**
-``to_string e`` converts an exception into a string containing more
+[to_string e] converts an exception into a string containing more
 detailed information for debugging the code.
  *)
 
 val pp_exception : Format.formatter -> exn -> unit
   [@@ocaml.toplevel_printer]
-(** ``pp_exception`` is the pretty printer for Owl exceptions. *)
+(** [pp_exception] is the pretty printer for Owl exceptions. *)
 
 (** {5 Exception definition} *)
 

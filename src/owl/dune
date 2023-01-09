@@ -40,8 +40,6 @@
 
 (copy_files# ppl/*)
 
-(copy_files# working/*)
-
 (copy_files# signal/*)
 
 (library

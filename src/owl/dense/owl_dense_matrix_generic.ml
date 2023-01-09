@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -11,9 +11,11 @@ include Owl_dense_ndarray_generic
 (* area function *)
 
 let shape x =
-  let x_shape = shape x in
-  assert (Array.length x_shape = 2);
-  x_shape.(0), x_shape.(1)
+  let s = shape x in
+  let p = Array.length s = 2 in
+  let exn = Owl_exception.NOT_MATRIX s in
+  Owl_exception.check p exn;
+  s.(0), s.(1)
 
 
 (* creation functions *)

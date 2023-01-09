@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -154,10 +154,10 @@ let array1_copy x =
 let aaarrr_map f x = Array.map (Array.map (Array.map f)) x
 
 (*
-  ``squeeze_continuous_dims shape axes`` first groups the int elements in the
-  ``shape`` array sequentially, depending on whether the index of that element
-  is contained in the array ``axes``, then computes the product of each group and
-  returns them in an int array. Assume ``axes`` only contains non-negative
+  [squeeze_continuous_dims shape axes] first groups the int elements in the
+  [shape] array sequentially, depending on whether the index of that element
+  is contained in the array [axes], then computes the product of each group and
+  returns them in an int array. Assume [axes] only contains non-negative
   integers.
  *)
 let squeeze_continuous_dims shape axes =

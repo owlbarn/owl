@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -8,254 +8,254 @@
 (** {5 Basic functions} *)
 
 val add : float -> float -> float
-(** ``add x y`` *)
+(** [add x y] *)
 
 val sub : float -> float -> float
-(** ``sub x y`` *)
+(** [sub x y] *)
 
 val mul : float -> float -> float
-(** ``mul x y`` *)
+(** [mul x y] *)
 
 val div : float -> float -> float
-(** ``div x y`` *)
+(** [div x y] *)
 
 val fmod : float -> float -> float
-(** ``fmod x y`` *)
+(** [fmod x y] *)
 
 val atan2 : float -> float -> float
-(** ``atan2 x y`` *)
+(** [atan2 x y] *)
 
 val hypot : float -> float -> float
-(** ``hypot x y`` *)
+(** [hypot x y] *)
 
 val abs : float -> float
-(** ``abs x`` *)
+(** [abs x] *)
 
 val neg : float -> float
-(** ``neg x`` *)
+(** [neg x] *)
 
 val reci : float -> float
-(** ``reci x`` *)
+(** [reci x] *)
 
 val floor : float -> float
-(** ``floor x`` *)
+(** [floor x] *)
 
 val ceil : float -> float
-(** ``ceil x`` *)
+(** [ceil x] *)
 
 val round : float -> float
-(** ``round x`` *)
+(** [round x] *)
 
 val trunc : float -> float
-(** ``trunc x`` *)
+(** [trunc x] *)
 
 val fix : float -> float
-(** ``fix x`` *)
+(** [fix x] *)
 
 val sqr : float -> float
-(** ``sqr x`` *)
+(** [sqr x] *)
 
 val sqrt : float -> float
-(** ``sqrt x`` *)
+(** [sqrt x] *)
 
 val cbrt : float -> float
-(** ``cbrt x`` *)
+(** [cbrt x] *)
 
 val pow : float -> float -> float
-(** ``pow x`` *)
+(** [pow x] *)
 
 val exp : float -> float
-(** ``exp x`` *)
+(** [exp x] *)
 
 val exp2 : float -> float
-(** ``exp2 x`` *)
+(** [exp2 x] *)
 
 val exp10 : float -> float
-(** ``exp10 x`` *)
+(** [exp10 x] *)
 
 val expm1 : float -> float
-(** ``expm1 x`` *)
+(** [expm1 x] *)
 
 val log : float -> float
-(** ``log x`` *)
+(** [log x] *)
 
 val log2 : float -> float
-(** ``log2 x`` *)
+(** [log2 x] *)
 
 val log10 : float -> float
-(** ``log10 x`` *)
+(** [log10 x] *)
 
 val log1p : float -> float
-(** ``log1p x`` *)
+(** [log1p x] *)
 
 val sigmoid : float -> float
-(** ``sigmod x`` *)
+(** [sigmod x] *)
 
 val signum : float -> float
-(** ``signum x`` *)
+(** [signum x] *)
 
 val softsign : float -> float
-(** ``softsign x`` *)
+(** [softsign x] *)
 
 val softplus : float -> float
-(** ``softplus x`` *)
+(** [softplus x] *)
 
 val relu : float -> float
-(** ``relu x`` *)
+(** [relu x] *)
 
 val dawsn : float -> float
-(** ``dawsn x`` *)
+(** [dawsn x] *)
 
 val sin : float -> float
-(** ``sin x`` *)
+(** [sin x] *)
 
 val cos : float -> float
-(** ``cos x`` *)
+(** [cos x] *)
 
 val tan : float -> float
-(** ``tan x`` *)
+(** [tan x] *)
 
 val cot : float -> float
-(** ``cot x`` *)
+(** [cot x] *)
 
 val sec : float -> float
-(** ``sec x`` *)
+(** [sec x] *)
 
 val csc : float -> float
-(** ``csc x`` *)
+(** [csc x] *)
 
 val asin : float -> float
-(** ``asin x`` *)
+(** [asin x] *)
 
 val acos : float -> float
-(** ``acos x`` *)
+(** [acos x] *)
 
 val atan : float -> float
-(** ``atan x`` *)
+(** [atan x] *)
 
 val acot : float -> float
-(** ``cot x`` *)
+(** [cot x] *)
 
 val asec : float -> float
-(** ``sec x`` *)
+(** [sec x] *)
 
 val acsc : float -> float
-(** ``csc x`` *)
+(** [csc x] *)
 
 val sinh : float -> float
-(** ``sinh x`` *)
+(** [sinh x] *)
 
 val cosh : float -> float
-(** ``cosh x`` *)
+(** [cosh x] *)
 
 val tanh : float -> float
-(** ``tanh x`` *)
+(** [tanh x] *)
 
 val asinh : float -> float
-(** ``asinh x`` *)
+(** [asinh x] *)
 
 val acosh : float -> float
-(** ``acosh x`` *)
+(** [acosh x] *)
 
 val atanh : float -> float
-(** ``atanh x`` *)
+(** [atanh x] *)
 
 val acoth : float -> float
-(** ``coth x`` *)
+(** [coth x] *)
 
 val asech : float -> float
-(** ``sech x`` *)
+(** [sech x] *)
 
 val acsch : float -> float
-(** ``csch x`` *)
+(** [csch x] *)
 
 val xlogy : float -> float -> float
-(** ``xlogy(x, y)`` *)
+(** [xlogy(x, y)] *)
 
 val xlog1py : float -> float -> float
-(** ``xlog1py(x, y)`` *)
+(** [xlog1py(x, y)] *)
 
 val logit : float -> float
-(** ``logit(x)`` *)
+(** [logit(x)] *)
 
 val expit : float -> float
-(** ``expit(x)`` *)
+(** [expit(x)] *)
 
 val log1mexp : float -> float
-(** ``log1mexp(x)`` *)
+(** [log1mexp(x)] *)
 
 val log1pexp : float -> float
-(** ``log1pexp(x)`` *)
+(** [log1pexp(x)] *)
 
 (** {5 Error functions} *)
 
 val erf : float -> float
-(** ``erf(x)`` *)
+(** [erf(x)] *)
 
 val erfc : float -> float
-(** ``erfc(x)`` *)
+(** [erfc(x)] *)
 
 val erfcx : float -> float
-(** ``erfcx(x)`` *)
+(** [erfcx(x)] *)
 
 (** {5 Helper functions} *)
 
 val is_nan : float -> bool
-(** ``is_nan x`` returns ``true`` if ``x`` is ``nan``. *)
+(** [is_nan x] returns [true] if [x] is [nan]. *)
 
 val is_inf : float -> bool
-(** ``is_inf x`` returns ``true`` if ``x`` is ``infinity`` or ``neg_infinity``. *)
+(** [is_inf x] returns [true] if [x] is [infinity] or [neg_infinity]. *)
 
 val is_normal : float -> bool
-(** ``is_normal x`` returns ``true`` if ``x`` is a normal float number. *)
+(** [is_normal x] returns [true] if [x] is a normal float number. *)
 
 val is_subnormal : float -> bool
-(** ``is_nan x`` returns ``true`` if ``x`` is subnormal float number. *)
+(** [is_nan x] returns [true] if [x] is subnormal float number. *)
 
 val is_odd : int -> bool
-(** ``is_odd x`` returns ``true`` if ``x`` is odd. *)
+(** [is_odd x] returns [true] if [x] is odd. *)
 
 val is_even : int -> bool
-(** ``is_even x`` returns ``true`` if ``x`` is even. *)
+(** [is_even x] returns [true] if [x] is even. *)
 
 val is_pow2 : int -> bool
-(** ``is_pow2 x`` return ``true`` if ``x`` is integer power of 2, e.g. 32, 64, etc. *)
+(** [is_pow2 x] return [true] if [x] is integer power of 2, e.g. 32, 64, etc. *)
 
 val same_sign : float -> float -> bool
-(** ``same_sign x y`` returns ``true`` if ``x`` and ``y`` have the same sign,
-otherwise it returns ``false``. Positive and negative zeros are special cases
-and always returns ``true``. *)
+(** [same_sign x y] returns [true] if [x] and [y] have the same sign,
+otherwise it returns [false]. Positive and negative zeros are special cases
+and always returns [true]. *)
 
 val is_simplex : float array -> bool
 (**
-``is_simplex x`` checks whether ``x`` is simplex. In other words,
+[is_simplex x] checks whether [x] is simplex. In other words,
 :math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall x_i \in [1,K]`.
  *)
 
 val is_int : float -> bool
 
-(* ``is_int x`` checks if ``x`` is an integer, i.e. fractional part is zero. *)
+(* [is_int x] checks if [x] is an integer, i.e. fractional part is zero. *)
 
 val is_sqr : int -> bool
-(** ``is_sqr x`` checks if ``x`` is the square of an integer. *)
+(** [is_sqr x] checks if [x] is the square of an integer. *)
 
 val mulmod : int -> int -> int -> int
-(** ``mulmod a b m`` computes (a*b) mod m. *)
+(** [mulmod a b m] computes (a*b) mod m. *)
 
 val powmod : int -> int -> int -> int
-(** ``powmod a b m`` computes (a^b) mod m. *)
+(** [powmod a b m] computes (a^b) mod m. *)
 
 val is_prime : int -> bool
 (**
-``is_prime x`` returns ``true`` if ``x`` is a prime number. The function is
+[is_prime x] returns [true] if [x] is a prime number. The function is
 deterministic for all numbers representable by an int. The function uses the
 Rabin–Miller primality test.
 *)
 
 val fermat_fact : int -> int * int
 (**
-``fermat_fact x`` performs Fermat factorisation over ``x``, i.e. into two
-roughly equal factors. ``x`` must be an odd number.
+[fermat_fact x] performs Fermat factorisation over [x], i.e. into two
+roughly equal factors. [x] must be an odd number.
  *)
 
 (* ends here *)

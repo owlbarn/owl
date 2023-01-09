@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -14,7 +14,7 @@ type level =
   | ERROR
   | FATAL
       (**
-Type definition of log levels, priority is from low to high. Using ``set_level``
+Type definition of log levels, priority is from low to high. Using [set_level]
 function to set global logging level to high one can mask the output from low
 level logging.
 *)
@@ -34,22 +34,22 @@ standard output.
 
 val set_color : bool -> unit
 (**
-``set_color true`` turns on the colour; ``set_color false`` turns it off.
+[set_color true] turns on the colour; [set_color false] turns it off.
 *)
 
 (** {5 Log functions} *)
 
 val debug : ('a, out_channel, unit) format -> 'a
-(** This function outputs log at ``DEBUG`` level. *)
+(** This function outputs log at [DEBUG] level. *)
 
 val info : ('a, out_channel, unit) format -> 'a
-(** This function outputs log at ``INFO`` level. *)
+(** This function outputs log at [INFO] level. *)
 
 val warn : ('a, out_channel, unit) format -> 'a
-(** This function outputs log at ``WARN`` level. *)
+(** This function outputs log at [WARN] level. *)
 
 val error : ('a, out_channel, unit) format -> 'a
-(** This function outputs log at ``ERROR`` level. *)
+(** This function outputs log at [ERROR] level. *)
 
 val fatal : ('a, out_channel, unit) format -> 'a
-(** This function outputs log at ``FATAL`` level. *)
+(** This function outputs log at [FATAL] level. *)

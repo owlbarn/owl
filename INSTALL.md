@@ -1,4 +1,4 @@
-# Owl - OCaml Scientific and Engineering Computing
+# OWL - OCaml Scientific Computing
 
 ## Optional features
 

@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -77,19 +77,19 @@ val eps : float
 (** {5 Constants depending on Bigarray kind} *)
 
 val zero : ('a, 'b) Bigarray.kind -> 'a
-(** ``zero kind`` returns value zero of the given number type ``kind``. *)
+(** [zero kind] returns value zero of the given number type [kind]. *)
 
 val one : ('a, 'b) Bigarray.kind -> 'a
-(** ``one kind`` returns value one of the given number type ``kind``. *)
+(** [one kind] returns value one of the given number type [kind]. *)
 
 val neg_one : ('a, 'b) Bigarray.kind -> 'a
-(** ``neg_one kind`` returns negative one of the given number type ``kind``. *)
+(** [neg_one kind] returns negative one of the given number type [kind]. *)
 
 val pos_inf : ('a, 'b) Bigarray.kind -> 'a
-(** ``pos_inf kind`` returns positive infinity of the given number type ``kind``. *)
+(** [pos_inf kind] returns positive infinity of the given number type [kind]. *)
 
 val neg_inf : ('a, 'b) Bigarray.kind -> 'a
-(** ``neg_inf kind`` returns negative infinity of the given number type ``kind``. *)
+(** [neg_inf kind] returns negative infinity of the given number type [kind]. *)
 
 val min_float32 : float
 (** Miminum value of single precision float number, i.e. ~-.340282346638528859811704183484516925440.0 *)

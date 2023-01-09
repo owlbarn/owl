@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -15,7 +15,7 @@ val download_gist : ?vid:string -> string -> unit
 (** Download the gist of given id and version; if a version id is not given, the latest version id will be used. *)
 
 val list_gist : string -> unit
-(** ``list_gist ""`` lists all the local gists; ``list_gist gist-id`` lists all the local versions of a gist. *)
+(** [list_gist ""] lists all the local gists; [list_gist gist-id] lists all the local versions of a gist. *)
 
 val update_gist : string array -> unit
 (** Update the zoo gist bundles of an array of gist ids. *)
@@ -32,21 +32,21 @@ val preprocess : string -> string
 (** Preprocess the zoo scripts, inject the necessary directives, functions, and modules. *)
 
 val run : string array -> string -> unit
-(** ``run args script`` executes the zoo script with the given arguments. *)
+(** [run args script] executes the zoo script with the given arguments. *)
 
 val run_gist : string -> string array -> unit
-(** ``run_gist gist-id`` runs a zoo gist with the given ``gist-id`` and parameters. *)
+(** [run_gist gist-id] runs a zoo gist with the given [gist-id] and parameters. *)
 
 (** {5 Helper functions} *)
 
 val print_info : unit -> unit
-(** Print out help information of ``owl`` command line. *)
+(** Print out help information of [owl] command line. *)
 
 val start_toplevel : unit -> unit
 (** Start the toplevel system tailored for Owl's zoo system. *)
 
 val query_path : string -> string
-(** ``query_path gist`` returns the absolute path of a given gist. *)
+(** [query_path gist] returns the absolute path of a given gist. *)
 
 val load_file : ?gist:string -> string -> string
 (** Load a zoo file with the given gist name and file name, the file path is relative to the gist/version folder. *)

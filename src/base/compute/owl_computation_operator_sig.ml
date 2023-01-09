@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -130,14 +130,14 @@ module type Sig = sig
 
   val delay : (Device.A.arr -> Device.A.arr) -> arr -> arr
   (**
-     ``delay f x`` returns ``f x``. It allows to use a function that is not tracked
+     [delay f x] returns [f x]. It allows to use a function that is not tracked
      by the computation graph and delay its evaluation. The output must have the
      same shape as the input.
   *)
 
   val delay_array : int array -> (Device.A.arr array -> Device.A.arr) -> arr array -> arr
   (**
-     ``delay_array out_shape f x`` works in the same way as ``delay`` but is applied
+     [delay_array out_shape f x] works in the same way as [delay] but is applied
      on an array of ndarrays. Needs the shape of the output as an argument.
   *)
 
@@ -149,9 +149,9 @@ module type Sig = sig
     -> arr
     -> arr
   (**
-     ``lazy_print x`` prints the output of ``x`` when it is evaluated. Is implemented
+     [lazy_print x] prints the output of [x] when it is evaluated. Is implemented
      as an identity node. For information about the optional parameters, refer to the
-     ``print`` function of the ``Ndarray`` module.
+     [print] function of the [Ndarray] module.
   *)
 
   val print : ?max_row:'a -> ?max_col:'b -> ?header:'c -> ?fmt:'d -> 'e -> unit

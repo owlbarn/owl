@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -63,10 +63,10 @@ module type Sig = sig
   (** Get the neural network associated with the given output nodes. *)
 
   val get_network_name : network -> string
-  (** ``get_network_name n`` returns the name of the network ``n``. *)
+  (** [get_network_name n] returns the name of the network [n]. *)
 
   val set_network_name : network -> string -> unit
-  (** ``set_network_name n s`` sets the name of the network ``n`` to ``s``. *)
+  (** [set_network_name n s] sets the name of the network [n] to [s]. *)
 
   val collect_output : node array -> t array
   (** Collect the output values of given nodes. *)
@@ -95,19 +95,19 @@ module type Sig = sig
   (** Reset the network, i.e. all the parameters in the neurons. *)
 
   val mktag : int -> network -> unit
-  (** Tag the neurons, used by ``Algodiff`` module. *)
+  (** Tag the neurons, used by [Algodiff] module. *)
 
   val mkpar : network -> t array array
-  (** Collect the parameters of neurons, used by ``Optimise`` module. *)
+  (** Collect the parameters of neurons, used by [Optimise] module. *)
 
   val mkpri : network -> t array array
-  (** Collect the primal values of neurons, used by ``Optimise`` module. *)
+  (** Collect the primal values of neurons, used by [Optimise] module. *)
 
   val mkadj : network -> t array array
-  (** Collect the adjacent values of neurons, used by ``Optimise`` module. *)
+  (** Collect the adjacent values of neurons, used by [Optimise] module. *)
 
   val update : network -> t array array -> unit
-  (** Update the parameters of neurons, used by ``Optimise`` module. *)
+  (** Update the parameters of neurons, used by [Optimise] module. *)
 
   val run : t -> network -> t
   (** Execute the computations in all the neurons in a network with the given input. *)
@@ -128,28 +128,28 @@ module type Sig = sig
   (** Make a deep copy of the given network. *)
 
   val model : network -> A.arr -> A.arr
-  (** Make a deep copy of the given network, excluding the neurons marked with ``training = true``. *)
+  (** Make a deep copy of the given network, excluding the neurons marked with [training = true]. *)
 
   val model_inputs : network -> A.arr array -> A.arr array
-  (** Make a deep copy of the given network, excluding the neurons marked with ``training = true``. *)
+  (** Make a deep copy of the given network, excluding the neurons marked with [training = true]. *)
 
   (** {5 Create Neurons} *)
 
   val input : ?name:string -> int array -> node
   (**
-``input shape`` creates an input node for input data. Note that if your network
-has multiple inputs, you should use ``inputs`` instead.
+[input shape] creates an input node for input data. Note that if your network
+has multiple inputs, you should use [inputs] instead.
 
 Arguments:
-  * ``shape``: shape of input data.
+  * [shape]: shape of input data.
   *)
 
   val inputs : ?names:string array -> int array array -> node array
   (**
-``input shapes`` creates an array of input nodes for input data.
+[input shapes] creates an array of input nodes for input data.
 
 Arguments:
-  * ``shapes``: array of shapes of input data.
+  * [shapes]: array of shapes of input data.
   *)
 
   val activation : ?name:string -> Activation.typ -> node -> node
@@ -157,7 +157,7 @@ Arguments:
 Applies an activation function to an output.
 
 Arguments:
-  * ``activation``: name of activation function to use.
+  * [activation]: name of activation function to use.
   *)
 
   val linear
@@ -168,12 +168,12 @@ Arguments:
     -> node
     -> node
   (**
-``linear ?act_typ units node`` adds the regular densely-connected NN node to
-``node``.
+[linear ?act_typ units node] adds the regular densely-connected NN node to
+[node].
 
 Arguments:
-  * ``units``: Positive integer, dimensionality of the output space.
-  * ``act_typ``: Activation function to use.
+  * [units]: Positive integer, dimensionality of the output space.
+  * [act_typ]: Activation function to use.
   *)
 
   val linear_nobias
@@ -184,7 +184,7 @@ Arguments:
     -> node
     -> node
   (**
-Similar to ``linear``, but does not use the bias vector.
+Similar to [linear], but does not use the bias vector.
   *)
 
   val embedding
@@ -209,18 +209,18 @@ Similar to ``linear``, but does not use the bias vector.
 
   val lstm : ?name:string -> ?init_typ:Init.typ -> int -> node -> node
   (**
-``lstm units node`` adds a LSTM node on previous ``node``.
+[lstm units node] adds a LSTM node on previous [node].
 
 Arguments:
-  * ``units``: Positive integer, dimensionality of the output space.
+  * [units]: Positive integer, dimensionality of the output space.
   *)
 
   val gru : ?name:string -> ?init_typ:Init.typ -> int -> node -> node
   (**
-``gru units node`` adds a Gated Recurrent Unit node on previous ``node``.
+[gru units node] adds a Gated Recurrent Unit node on previous [node].
 
 Arguments:
-  * ``units``: Positive integer, dimensionality of the output space.
+  * [units]: Positive integer, dimensionality of the output space.
   *)
 
   val conv1d
@@ -233,12 +233,12 @@ Arguments:
     -> node
     -> node
   (**
-``conv1d kernel stride node`` adds a 1D convolution node (e.g. temporal
-convolution) on previous ``node``.
+[conv1d kernel stride node] adds a 1D convolution node (e.g. temporal
+convolution) on previous [node].
 
 Arguments:
-  * ``kernel``: int array consists of ``h, i, o``. ``h`` specifies the dimension of the 1D convolution window. ``i`` and ``o`` are the dimensionalities of the input and output space.
-  * ``stride``: int array of 1 integer.
+  * [kernel]: int array consists of [h, i, o]. [h] specifies the dimension of the 1D convolution window. [i] and [o] are the dimensionalities of the input and output space.
+  * [stride]: int array of 1 integer.
   *)
 
   val conv2d
@@ -251,11 +251,11 @@ Arguments:
     -> node
     -> node
   (**
-``conv2d kernel stride node`` adds a 2D convolution node (e.g. spatial convolution over images) on previous ``node``.
+[conv2d kernel stride node] adds a 2D convolution node (e.g. spatial convolution over images) on previous [node].
 
 Arguments:
-  * ``kernel``: int array consists of ``w, h, i, o``. ``w`` and ``h`` specify the width and height of the 2D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``stride``: int array of 2 integers.
+  * [kernel]: int array consists of [w, h, i, o]. [w] and [h] specify the width and height of the 2D convolution window. [i] and [o] are the dimensionality of the input and output space.
+  * [stride]: int array of 2 integers.
   *)
 
   val conv3d
@@ -268,12 +268,12 @@ Arguments:
     -> node
     -> node
   (**
-``conv3d kernel stride node`` adds a 3D convolution node (e.g. spatial
-convolution over volumes) on previous ``node``.
+[conv3d kernel stride node] adds a 3D convolution node (e.g. spatial
+convolution over volumes) on previous [node].
 
 Arguments:
-  * ``kernel``: int array consists of ``w, h, d, i, o``. ``w``, ``h``, and ``d`` specify the 3 dimensionality of the 3D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``stride``: int array of 3 integers.
+  * [kernel]: int array consists of [w, h, d, i, o]. [w], [h], and [d] specify the 3 dimensionality of the 3D convolution window. [i] and [o] are the dimensionality of the input and output space.
+  * [stride]: int array of 3 integers.
   *)
 
   val dilated_conv1d
@@ -287,12 +287,12 @@ Arguments:
     -> node
     -> node
   (**
-``dilated_conv1d kernel stride rate node`` adds a 1D dilated convolution node (e.g. temporal convolution) on previous ``node``.
+[dilated_conv1d kernel stride rate node] adds a 1D dilated convolution node (e.g. temporal convolution) on previous [node].
 
 Arguments:
-  * ``kernel``: int array consists of ``h, i, o``. ``h`` specifies the dimension of the 1D convolution window. ``i`` and ``o`` are the dimensionalities of the input and output space.
-  * ``stride``: int array of 1 integer.
-  * ``rate``: int array of 1 integer.
+  * [kernel]: int array consists of [h, i, o]. [h] specifies the dimension of the 1D convolution window. [i] and [o] are the dimensionalities of the input and output space.
+  * [stride]: int array of 1 integer.
+  * [rate]: int array of 1 integer.
   *)
 
   val dilated_conv2d
@@ -306,12 +306,12 @@ Arguments:
     -> node
     -> node
   (**
-``dilated_conv2d kernel stride rate node`` adds a 2D dilated convolution node (e.g. spatial convolution over images) on previous ``node``.
+[dilated_conv2d kernel stride rate node] adds a 2D dilated convolution node (e.g. spatial convolution over images) on previous [node].
 
 Arguments:
-  * ``kernel`: int array consists of ``w, h, i, o``. ``w`` and ``h`` specify the width and height of the 2D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``stride``: int array of 2 integers.
-  * ``rate``: int array of 2 integers.
+  * [kernel`: int array consists of ]w, h, i, o[. ]w[ and ]h[ specify the width and height of the 2D convolution window. ]i[ and ]o`` are the dimensionality of the input and output space.
+  * [stride]: int array of 2 integers.
+  * [rate]: int array of 2 integers.
   *)
 
   val dilated_conv3d
@@ -325,12 +325,12 @@ Arguments:
     -> node
     -> node
   (**
-``dilated_conv3d kernel stride rate node`` adds a 3D dilated convolution node (e.g. spatial convolution over volumes) on previous ``node``.
+[dilated_conv3d kernel stride rate node] adds a 3D dilated convolution node (e.g. spatial convolution over volumes) on previous [node].
 
 Arguments:
-  * ``kernel``: int array consists of ``w, h, d, i, o``. ``w``, ``h``, and ``d`` specify the 3 dimensionality of the 3D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``stride``: int array of 3 integers.
-  * ``rate``: int array of 3 integers.
+  * [kernel]: int array consists of [w, h, d, i, o]. [w], [h], and [d] specify the 3 dimensionality of the 3D convolution window. [i] and [o] are the dimensionality of the input and output space.
+  * [stride]: int array of 3 integers.
+  * [rate]: int array of 3 integers.
   *)
 
   val transpose_conv1d
@@ -343,11 +343,11 @@ Arguments:
     -> node
     -> node
   (**
-``transpose_conv1d kernel stride node`` adds a 1D transpose convolution node (e.g. temporal convolution) on previous ``node``.
+[transpose_conv1d kernel stride node] adds a 1D transpose convolution node (e.g. temporal convolution) on previous [node].
 
 Arguments:
-  * ``kernel``: int array consists of ``h, i, o``. ``h`` specifies the dimension of the 1D convolution window. ``i`` and ``o`` are the dimensionalities of the input and output space.
-  * ``stride``: int array of 1 integer.
+  * [kernel]: int array consists of [h, i, o]. [h] specifies the dimension of the 1D convolution window. [i] and [o] are the dimensionalities of the input and output space.
+  * [stride]: int array of 1 integer.
   *)
 
   val transpose_conv2d
@@ -360,11 +360,11 @@ Arguments:
     -> node
     -> node
   (**
-``transpose_conv2d kernel stride node`` adds a 2D transpose convolution node on previous ``node``.
+[transpose_conv2d kernel stride node] adds a 2D transpose convolution node on previous [node].
 
 Arguments:
-  * ``kernel``: int array consists of ``w, h, i, o``. ``w`` and ``h`` specify the width and height of the 2D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``stride``: int array of 2 integers.
+  * [kernel]: int array consists of [w, h, i, o]. [w] and [h] specify the width and height of the 2D convolution window. [i] and [o] are the dimensionality of the input and output space.
+  * [stride]: int array of 2 integers.
   *)
 
   val transpose_conv3d
@@ -377,11 +377,11 @@ Arguments:
     -> node
     -> node
   (**
-``transpose_conv3d kernel stride node`` adds a 3D transpose convolution node (e.g. spatial convolution over volumes) on previous ``node``.
+[transpose_conv3d kernel stride node] adds a 3D transpose convolution node (e.g. spatial convolution over volumes) on previous [node].
 
 Arguments:
-  * ``kernel``: int array consists of ``w, h, d, i, o``. ``w``, ``h``, and ``d`` specify the 3 dimensionality of the 3D convolution window. ``i`` and ``o`` are the dimensionality of the input and output space.
-  * ``stride``: int array of 3 integers.
+  * [kernel]: int array consists of [w, h, d, i, o]. [w], [h], and [d] specify the 3 dimensionality of the 3D convolution window. [i] and [o] are the dimensionality of the input and output space.
+  * [stride]: int array of 3 integers.
   *)
 
   val fully_connected
@@ -392,10 +392,10 @@ Arguments:
     -> node
     -> node
   (**
-``fully_connected outputs node`` adds a fully connected node to ``node``.
+[fully_connected outputs node] adds a fully connected node to [node].
 
 Arguments:
-  * ``outputs``: integer, the number of output units in the node.
+  * [outputs]: integer, the number of output units in the node.
   *)
 
   val max_pool1d
@@ -407,12 +407,12 @@ Arguments:
     -> node
     -> node
   (**
-``max_pool1d ~padding ~act_typ pool_size stride node`` adds a max pooling
-operation for temporal data to ``node``.
+[max_pool1d ~padding ~act_typ pool_size stride node] adds a max pooling
+operation for temporal data to [node].
 
 Arguments:
-  * ``pool_size``: Array of one integer, size of the max pooling windows.
-  * ``stride``: Array of one integer, factor by which to downscale.
+  * [pool_size]: Array of one integer, size of the max pooling windows.
+  * [stride]: Array of one integer, factor by which to downscale.
   *)
 
   val max_pool2d
@@ -424,12 +424,12 @@ Arguments:
     -> node
     -> node
   (**
-``max_pool2d ~padding ~act_typ pool_size stride node`` adds a max pooling
-operation for spatial data to ``node``.
+[max_pool2d ~padding ~act_typ pool_size stride node] adds a max pooling
+operation for spatial data to [node].
 
 Arguments:
-  * ``pool_size``: Array of 2 integers, size of the max pooling windows.
-  * ``stride``: Array of 2 integers, factor by which to downscale.
+  * [pool_size]: Array of 2 integers, size of the max pooling windows.
+  * [stride]: Array of 2 integers, factor by which to downscale.
   *)
 
   val avg_pool1d
@@ -441,12 +441,12 @@ Arguments:
     -> node
     -> node
   (**
-``avg_pool1d ~padding ~act_typ pool_size stride node`` adds a average pooling
-operation for temporal data to ``node``.
+[avg_pool1d ~padding ~act_typ pool_size stride node] adds a average pooling
+operation for temporal data to [node].
 
 Arguments:
-  * ``pool_size``: Array of one integer, size of the max pooling windows.
-  * ``stride``: Array of one integer, factor by which to downscale.
+  * [pool_size]: Array of one integer, size of the max pooling windows.
+  * [stride]: Array of one integer, factor by which to downscale.
   *)
 
   val avg_pool2d
@@ -458,39 +458,39 @@ Arguments:
     -> node
     -> node
   (**
-``avg_pool2d ~padding ~act_typ pool_size stride node`` adds a average pooling operation for spatial data to ``node``.
+[avg_pool2d ~padding ~act_typ pool_size stride node] adds a average pooling operation for spatial data to [node].
 
 Arguments:
-  * ``pool_size``: Array of 2 integers, size of the max pooling windows.
-  * ``stride``: Array of 2 integers, factor by which to downscale.
+  * [pool_size]: Array of 2 integers, size of the max pooling windows.
+  * [stride]: Array of 2 integers, factor by which to downscale.
   *)
 
   val global_max_pool1d : ?name:string -> ?act_typ:Activation.typ -> node -> node
   (**
-``global_max_pool1d`` adds global max pooling operation for temporal data.
+[global_max_pool1d] adds global max pooling operation for temporal data.
   *)
 
   val global_max_pool2d : ?name:string -> ?act_typ:Activation.typ -> node -> node
   (**
-``global_max_poo2d`` global max pooling operation for spatial data.
+[global_max_poo2d] global max pooling operation for spatial data.
   *)
 
   val global_avg_pool1d : ?name:string -> ?act_typ:Activation.typ -> node -> node
   (**
-``global_avg_pool1d`` adds global average pooling operation for temporal data.
+[global_avg_pool1d] adds global average pooling operation for temporal data.
   *)
 
   val global_avg_pool2d : ?name:string -> ?act_typ:Activation.typ -> node -> node
   (**
-``global_avg_poo2d`` global average pooling operation for spatial data.
+[global_avg_poo2d] global average pooling operation for spatial data.
   *)
 
   val upsampling2d : ?name:string -> ?act_typ:Activation.typ -> int array -> node -> node
   (**
-``upsampling2d ~act_typ size node`` adds a upsampling operation for spatial data to ``node``.
+[upsampling2d ~act_typ size node] adds a upsampling operation for spatial data to [node].
 
 Arguments:
-  * ``size``: array of two integers, namely the upsampling factors for columns and rows.
+  * [size]: array of two integers, namely the upsampling factors for columns and rows.
   *)
 
   val padding2d
@@ -500,44 +500,44 @@ Arguments:
     -> node
     -> node
   (**
-``padding2d ~act_typ padding node`` adds rows and columns of zeros at the top, bottom, left and right side of an image tensor.
+[padding2d ~act_typ padding node] adds rows and columns of zeros at the top, bottom, left and right side of an image tensor.
 
 Arguments:
-  * ``padding``: array of 2 arrays of 2 integers, interpreted as  [| [|top_pad; bottom_pad|]; [|left_pad; right_pad|]|].
+  * [padding]: array of 2 arrays of 2 integers, interpreted as  [| [|top_pad; bottom_pad|]; [|left_pad; right_pad|]|].
   *)
 
   val dropout : ?name:string -> float -> node -> node
   (**
-``dropout rate node`` applies Dropout to the input to prevent overfitting.
+[dropout rate node] applies Dropout to the input to prevent overfitting.
 
 Arguments:
-  * ``rate``: float between 0 and 1. Fraction of the input units to drop.
+  * [rate]: float between 0 and 1. Fraction of the input units to drop.
   *)
 
   val gaussian_noise : ?name:string -> float -> node -> node
   (**
-``gaussian_noise stddev node`` applies additive zero-centered Gaussian noise.
+[gaussian_noise stddev node] applies additive zero-centered Gaussian noise.
 
 Arguments:
-  * ``stddev``: float, standard deviation of the noise distribution.
+  * [stddev]: float, standard deviation of the noise distribution.
   *)
 
   val gaussian_dropout : ?name:string -> float -> node -> node
   (**
-``gaussian_dropout rate node`` applies multiplicative 1-centered Gaussian noise.
+[gaussian_dropout rate node] applies multiplicative 1-centered Gaussian noise.
 Only active at training time.
 
 Arguments:
-  * ``rates``: float, drop probability
+  * [rates]: float, drop probability
   *)
 
   val alpha_dropout : ?name:string -> float -> node -> node
   (**
-``alpha_dropout rate node`` applies Alpha Dropout to the input ``node``.
+[alpha_dropout rate node] applies Alpha Dropout to the input [node].
 Only active at training time.
 
 Arguments:
-  * ``rates``: float, drop probability
+  * [rates]: float, drop probability
   *)
 
   val normalisation
@@ -550,29 +550,29 @@ Arguments:
     -> node
     -> node
   (**
-``normalisation axis node`` normalise the activations of the previous node at
+[normalisation axis node] normalise the activations of the previous node at
 each batch.
 
 Arguments:
-  * ``axis``:  Integer, the axis that should be normalised (typically the features axis). Default value is 0.
+  * [axis]:  Integer, the axis that should be normalised (typically the features axis). Default value is 0.
   *)
 
   val reshape : ?name:string -> int array -> node -> node
   (**
-``reshape target_shape node`` reshapes an output to a certain shape.
+[reshape target_shape node] reshapes an output to a certain shape.
 
 Arguments:
-  * ``target_shape``: target shape. Array of integers. Does not include the batch axis.
+  * [target_shape]: target shape. Array of integers. Does not include the batch axis.
   *)
 
   val flatten : ?name:string -> node -> node
   (**
-``flatten node`` flattens the input. Does not affect the batch size.
+[flatten node] flattens the input. Does not affect the batch size.
   *)
 
   val slice : ?name:string -> int list list -> node -> node
   (**
-``slice node`` slices the input. Does not affect the batch size.
+[slice node] slices the input. Does not affect the batch size.
   *)
 
   val lambda
@@ -583,11 +583,11 @@ Arguments:
     -> node
     -> node
   (**
-``lambda ?target_shape func node`` wraps arbitrary expression as a Node object.
+[lambda ?target_shape func node] wraps arbitrary expression as a Node object.
 
 Arguments:
-  * ``func``: The function to be evaluated. Takes input tensor as first argument.
-  * ``target_shape``: the shape of the tensor returned by ``func``; set to the same as input shape if not specified.
+  * [func]: The function to be evaluated. Takes input tensor as first argument.
+  * [target_shape]: the shape of the tensor returned by [func]; set to the same as input shape if not specified.
   *)
 
   val lambda_array
@@ -598,11 +598,11 @@ Arguments:
     -> node array
     -> node
   (**
-``lambda_array target_shape func node`` wraps arbitrary expression as a Node object.
+[lambda_array target_shape func node] wraps arbitrary expression as a Node object.
 
 Arguments:
-  * ``target_shape``: the shape of the tensor returned by ``func``.
-  * ``func``: The function to be evaluated. Takes input tensor array as first argument.
+  * [target_shape]: the shape of the tensor returned by [func].
+  * [func]: The function to be evaluated. Takes input tensor array as first argument.
   *)
 
   val add : ?name:string -> ?act_typ:Activation.typ -> node array -> node
@@ -641,10 +641,10 @@ single node (also of the same shape).
 
   val concatenate : ?name:string -> ?act_typ:Activation.typ -> int -> node array -> node
   (**
-``concatenate axis nodes`` concatenates a array of ``nodes`` and return as a single node.
+[concatenate axis nodes] concatenates a array of [nodes] and return as a single node.
 
 Arguments:
-  * ``axis``: Axis along which to concatenate.
+  * [axis]: Axis along which to concatenate.
   *)
 
   (** {5 Helper functions} *)
@@ -685,15 +685,15 @@ name of their associated neurons are saved as key-value pairs in a hash table.
     -> string array
     -> network
   (**
-   ``get_subnetwork ?copy ?make_inputs network output_names`` constructs a
-   subnetwork of nodes on which ``output_names`` depend, replacing nodes with
-   names in ``make_inputs`` with input nodes.
+   [get_subnetwork ?copy ?make_inputs network output_names] constructs a
+   subnetwork of nodes on which [output_names] depend, replacing nodes with
+   names in [make_inputs] with input nodes.
 
    Arguments:
-     ``copy``: Whether to copy or reference the original node weights. Defaults to true.
-     ``make_inputs``: Names of nodes to use as inputs to the subnetwork. Defaults to [||], which uses the original inputs.
-     ``nn``: The neural network from which the subnetwork is constructed.
-     ``output_names``: Names of nodes to use as outputs.
+     [copy]: Whether to copy or reference the original node weights. Defaults to true.
+     [make_inputs]: Names of nodes to use as inputs to the subnetwork. Defaults to [||], which uses the original inputs.
+     [nn]: The neural network from which the subnetwork is constructed.
+     [output_names]: Names of nodes to use as outputs.
    *)
 
   (** {5 Train Networks} *)

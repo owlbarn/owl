@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -8,7 +8,7 @@
 (** {5 Type definition} *)
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
-(** Type of ``kind``. *)
+(** Type of [kind]. *)
 
 type ('a, 'b) t
 (** Abstract type of sparse ndarray. *)

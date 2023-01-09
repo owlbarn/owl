@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -24,33 +24,33 @@ val fzero
   -> float
   -> float
 (**
-``fzero ~solver f a b`` tries to find the root of univariate function ``f`` in
-the bracket ``[a, b]`` using method ``solver``. This is the hub function of the
+[fzero ~solver f a b] tries to find the root of univariate function [f] in
+the bracket [[a, b]] using method [solver]. This is the hub function of the
 individual root finding algorithms in the following sections. You can certainly
 call each individual ones.
 
 Parameters:
-  * ``solver``: solver, default one is Brent method.
-  * ``max_iter``: maximum number of iterations, default value is ``1000``.
-  * ``xtol``: the tolerance of ``x`` on abscissa, default value is ``1e-6``.
-  * ``f``: the univariate scalar function to find root.
-  * ``a``: boundary of bracket.
-  * ``b``: boundary of bracket.
+  * [solver]: solver, default one is Brent method.
+  * [max_iter]: maximum number of iterations, default value is [1000].
+  * [xtol]: the tolerance of [x] on abscissa, default value is [1e-6].
+  * [f]: the univariate scalar function to find root.
+  * [a]: boundary of bracket.
+  * [b]: boundary of bracket.
  *)
 
 (** {5 Root of univariate functions} *)
 
 val bisec : ?max_iter:int -> ?xtol:float -> (float -> float) -> float -> float -> float
 (**
-``bisec f a b`` tries to find the root of univariate function ``f`` in the
-bracket defined by ``[a, b]``.
+[bisec f a b] tries to find the root of univariate function [f] in the
+bracket defined by [[a, b]].
 
 Parameters:
-  * ``max_iter``: maximum number of iterations.
-  * ``xtol``: the tolerance of ``x`` on abscissa.
-  * ``f``: the univariate scalar function to find root.
-  * ``a``: boundary of bracket.
-  * ``b``: boundary of bracket.
+  * [max_iter]: maximum number of iterations.
+  * [xtol]: the tolerance of [x] on abscissa.
+  * [f]: the univariate scalar function to find root.
+  * [a]: boundary of bracket.
+  * [b]: boundary of bracket.
  *)
 
 val false_pos
@@ -61,41 +61,41 @@ val false_pos
   -> float
   -> float
 (**
-``false_pos f a b`` tries to find the root of univariate function ``f`` in the
-bracket defined by ``[a, b]``.
+[false_pos f a b] tries to find the root of univariate function [f] in the
+bracket defined by [[a, b]].
 
 Parameters:
-  * ``max_iter``: maximum number of iterations.
-  * ``xtol``: the tolerance of ``x`` on abscissa.
-  * ``f``: the univariate scalar function to find root.
-  * ``a``: boundary of bracket.
-  * ``b``: boundary of bracket.
+  * [max_iter]: maximum number of iterations.
+  * [xtol]: the tolerance of [x] on abscissa.
+  * [f]: the univariate scalar function to find root.
+  * [a]: boundary of bracket.
+  * [b]: boundary of bracket.
  *)
 
 val ridder : ?max_iter:int -> ?xtol:float -> (float -> float) -> float -> float -> float
 (**
-``ridder f a b`` tries to find the root of univariate function ``f`` in the
-bracket defined by ``[a, b]``.
+[ridder f a b] tries to find the root of univariate function [f] in the
+bracket defined by [[a, b]].
 
 Parameters:
-  * ``max_iter``: maximum number of iterations.
-  * ``xtol``: the tolerance of ``x`` on abscissa.
-  * ``f``: the univariate scalar function to find root.
-  * ``a``: boundary of bracket.
-  * ``b``: boundary of bracket.
+  * [max_iter]: maximum number of iterations.
+  * [xtol]: the tolerance of [x] on abscissa.
+  * [f]: the univariate scalar function to find root.
+  * [a]: boundary of bracket.
+  * [b]: boundary of bracket.
  *)
 
 val brent : ?max_iter:int -> ?xtol:float -> (float -> float) -> float -> float -> float
 (**
-``brent f a b`` tries to find the root of univariate function ``f`` in the
-bracket defined by ``[a, b]``.
+[brent f a b] tries to find the root of univariate function [f] in the
+bracket defined by [[a, b]].
 
 Parameters:
-  * ``max_iter``: maximum number of iterations.
-  * ``xtol``: the tolerance of ``x`` on abscissa.
-  * ``f``: the univariate scalar function to find root.
-  * ``a``: boundary of bracket.
-  * ``b``: boundary of bracket.
+  * [max_iter]: maximum number of iterations.
+  * [xtol]: the tolerance of [x] on abscissa.
+  * [f]: the univariate scalar function to find root.
+  * [a]: boundary of bracket.
+  * [b]: boundary of bracket.
 
 Refer to :cite:`brent2013algorithms`
  *)
@@ -110,13 +110,13 @@ val bracket_expand
   -> float
   -> (float * float) option
 (**
-``bracket_expand f a b`` expands the bracket ``[a, b]`` for a given function
-``f`` until it finds ``f a`` and ``f b`` have different signs.
+[bracket_expand f a b] expands the bracket [[a, b]] for a given function
+[f] until it finds [f a] and [f b] have different signs.
 
 Parameters:
-  * ``max_iter``: maximum number of iterations, the default is 100
-  * ``rate``: rate of growth, the default is 1.6
-  * ``f``: the univariate scalar function to find root.
-  * ``a``: initial boundary of bracket.
-  * ``b``: initial boundary of bracket.
+  * [max_iter]: maximum number of iterations, the default is 100
+  * [rate]: rate of growth, the default is 1.6
+  * [f]: the univariate scalar function to find root.
+  * [a]: initial boundary of bracket.
+  * [b]: initial boundary of bracket.
  *)

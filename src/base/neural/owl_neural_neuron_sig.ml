@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -19,6 +19,7 @@ module type Sig = sig
       | GlorotNormal
       | GlorotUniform
       | LecunNormal
+      | HeNormal
       | Custom        of (int array -> t) (** Initialisation types *)
 
     val calc_fans : int array -> float * float
@@ -134,19 +135,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -185,19 +186,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -250,19 +251,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -314,19 +315,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -374,19 +375,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -435,19 +436,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -496,19 +497,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -557,19 +558,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -620,19 +621,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -683,19 +684,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -746,19 +747,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -807,19 +808,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -868,19 +869,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -929,19 +930,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -981,19 +982,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -1696,19 +1697,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the trainable parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the trainable parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update trainable parameters of the neuron, used by ``Optimise`` module. *)
+    (** Update trainable parameters of the neuron, used by [Optimise] module. *)
 
     val load_weights : neuron_typ -> t array -> unit
     (** Load both trainable and non-trainable parameters into the neuron. *)
@@ -1841,19 +1842,19 @@ module type Sig = sig
     (** Reset the parameters in a neuron. *)
 
     val mktag : int -> neuron_typ -> unit
-    (** Tag the neuron, used by ``Algodiff`` module. *)
+    (** Tag the neuron, used by [Algodiff] module. *)
 
     val mkpar : neuron_typ -> t array
-    (** Assemble all the parameters in an array, used by ``Optimise`` module. *)
+    (** Assemble all the parameters in an array, used by [Optimise] module. *)
 
     val mkpri : neuron_typ -> t array
-    (** Assemble all the primial values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the primial values in an array, used by [Optimise] module. *)
 
     val mkadj : neuron_typ -> t array
-    (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+    (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
     val update : neuron_typ -> t array -> unit
-    (** Update parameters in a neuron, used by ``Optimise`` module. *)
+    (** Update parameters in a neuron, used by [Optimise] module. *)
 
     val copy : neuron_typ -> neuron_typ
     (** Make a deep copy of the neuron and its parameters. *)
@@ -1939,19 +1940,19 @@ module type Sig = sig
   (** Reset the parameters in a neuron. *)
 
   val mktag : int -> neuron -> unit
-  (** Tag the neuron, used by ``Algodiff`` module. *)
+  (** Tag the neuron, used by [Algodiff] module. *)
 
   val mkpar : neuron -> t array
-  (** Assemble all the trainable parameters in an array, used by ``Optimise`` module. *)
+  (** Assemble all the trainable parameters in an array, used by [Optimise] module. *)
 
   val mkpri : neuron -> t array
-  (** Assemble all the primal values in an array, used by ``Optimise`` module. *)
+  (** Assemble all the primal values in an array, used by [Optimise] module. *)
 
   val mkadj : neuron -> t array
-  (** Assemble all the adjacent values in an array, used by ``Optimise`` module. *)
+  (** Assemble all the adjacent values in an array, used by [Optimise] module. *)
 
   val update : neuron -> t array -> unit
-  (** Update trainable parameters in a neuron, used by ``Optimise`` module. *)
+  (** Update trainable parameters in a neuron, used by [Optimise] module. *)
 
   val load_weights : neuron -> t array -> unit
   (** Load both trainable and non-trainable parameters into the neuron. *)

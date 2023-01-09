@@ -1,5 +1,5 @@
 (*
- * OWL - OCaml Scientific and Engineering Computing
+ * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
@@ -84,20 +84,20 @@ module type Sig = sig
   (** TODO *)
 
   val new_block_id : unit -> int
-  (** ``new_block_id ()`` returns an unused block id. *)
+  (** [new_block_id ()] returns an unused block id. *)
 
   val make_empty_block : ?block_id:int -> int -> block
-  (** ``make_empty_block s`` returns an empty block of memory of size ``s``. *)
+  (** [make_empty_block s] returns an empty block of memory of size [s]. *)
 
   val make_value_block : value -> attr Owl_graph.node -> unit
   (**
-  ``make_value_block value node`` creates a block of memory initialised with
-  ``value`` and links the new block to ``node``.
+  [make_value_block value node] creates a block of memory initialised with
+  [value] and links the new block to [node].
    *)
 
   val get_block : attr Owl_graph.node -> block array
   (**
-  ``get_block node`` returns the memory block allocated to ``node``.
+  [get_block node] returns the memory block allocated to [node].
   If no block is allocated, throws an exception.
    *)
 
@@ -115,8 +115,8 @@ module type Sig = sig
 
   val get_block_id : attr Owl_graph.node -> int
   (**
-  ``get_block_id node`` returns the id of the block assigned to ``node``. If
-  ``node`` has not been assigned yet, returns ``-1``.
+  [get_block_id node] returns the id of the block assigned to [node]. If
+  [node] has not been assigned yet, returns [-1].
    *)
 
   val set_value : attr Owl_graph.node -> value array -> unit
@@ -142,8 +142,8 @@ module type Sig = sig
 
   val get_shared_nodes : attr Owl_graph.node -> attr Owl_graph.node array
   (**
-  ``get_shared_nodes node`` returns the nodes sharing the same block of memory
-  as ``node``.
+  [get_shared_nodes node] returns the nodes sharing the same block of memory
+  as [node].
    *)
 
   val is_var : attr Owl_graph.node -> bool
@@ -160,13 +160,13 @@ module type Sig = sig
 
   val is_assigned : attr Owl_graph.node -> bool
   (**
-  ``is_assigned node`` checks if a block of memory has been assigned to
-  ``node``.
+  [is_assigned node] checks if a block of memory has been assigned to
+  [node].
    *)
 
   val check_assigned : attr Owl_graph.node -> unit
   (**
-  ``check_assigned node`` throws an exception if ``node`` has not been
+  [check_assigned node] throws an exception if [node] has not been
   assigned to a block.
    *)
 
