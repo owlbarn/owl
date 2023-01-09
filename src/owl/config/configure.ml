@@ -220,7 +220,7 @@ let get_openmp_config c =
         {|
 You have set OWL_ENABLE_OPENMP = 1 however I am unable to link
 against openmp: the current values for cflags and libs are respectively
-%s and %s.
+(%s) and (%s).
 
 You can disable openmp/aeos by unsetting OWL_ENABLE_OPEN or by setting
 it to 0.
@@ -230,25 +230,23 @@ or `dune clean` before rebuilding the project with a modified flag.
 If you think this is our mistake please open an issue reporting
 the output of `src/owl/config/configure.exe --verbose`.
 |}
-        Base.(string_of_sexp @@ sexp_of_list sexp_of_string cflags)
-        Base.(string_of_sexp @@ sexp_of_list sexp_of_string libs);
+        (String.concat " " cflags)
+        (String.concat " " libs);
       failwith "Unable to link against openmp");
     C.Pkg_config.{ cflags; libs })
 
 
 let () =
   C.main ~name:"owl" (fun c ->
+      let (>>=) = Option.bind in
       let default_config = default_config c in
       let default_pkg_config = { C.Pkg_config.cflags = []; libs = [] } in
       let cblas_conf =
-        let open Base.Option.Monad_infix in
-        Base.Option.value
-          ~default:default_pkg_config
+        Option.value ~default:default_pkg_config
           (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"cblas")
       in
       let openblas_conf =
-        let open Base.Option.Monad_infix in
-        Base.Option.value
+        Option.value
           ~default:openblas_default
           (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"openblas")
       in
@@ -262,7 +260,7 @@ let () =
         Printf.printf
           {|
 Unable to link against openblas: the current values for cflags and libs
-are respectively %s and %s.
+are respectively (%s) and (%s).
 
 Usually this is due to missing paths for pkg-config. Try to re-install
 or re-compile owl by prefixing the command with (or exporting)
@@ -273,8 +271,8 @@ If this does not work please open an issue in the owl repository, adding
 some details on how your openblas has been installed and the output of
 `src/owl/config/configure.exe --verbose`.
 |}
-          Base.(Sexp.to_string @@ sexp_of_list sexp_of_string openblas_conf.cflags)
-          Base.(Sexp.to_string @@ sexp_of_list sexp_of_string openblas_conf.libs);
+        (String.concat " " openblas_conf.cflags)
+        (String.concat " " openblas_conf.libs);
         failwith "Unable to link against openblas.");
       let lapacke_conf =
         let disable_linking_flag = bgetenv "OWL_DISABLE_LAPACKE_LINKING_FLAG" in
@@ -291,8 +289,7 @@ some details on how your openblas has been installed and the output of
         in
         if needs_lapacke_flag
         then
-          let open Base.Option.Monad_infix in
-          Base.Option.value
+          Option.value
             ~default:C.Pkg_config.{ cflags = []; libs = [ "-llapacke" ] }
             (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"llapacke")
         else default_pkg_config
