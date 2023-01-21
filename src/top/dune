@@ -3,4 +3,4 @@
  (public_name owl-top)
  (wrapped false)
  (modes byte)
- (libraries owl owl-zoo))
+ (libraries ocaml-compiler-libs.toplevel owl))

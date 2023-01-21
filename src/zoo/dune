@@ -1,6 +1,0 @@
-(library
- (name owl_zoo)
- (public_name owl-zoo)
- (wrapped false)
- (modes byte)
- (libraries ocaml-compiler-libs.toplevel owl))
