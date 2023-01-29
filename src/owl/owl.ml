@@ -33,7 +33,6 @@ module Neural = Owl_neural
 module Fft = Owl_fft
 module Cluster = Owl_cluster
 module Utils = Owl_utils
-module Ext = Owl_ext
 module Dataset = Owl_dataset
 module Dataframe = Owl_dataframe
 module Lazy = Owl_lazy

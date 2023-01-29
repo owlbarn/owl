@@ -1,5 +1,3 @@
-(copy_files# ext/*)
-
 (copy_files# core/*)
 
 (copy_files# core/openmp/*)
