@@ -4,8 +4,6 @@
 
 (copy_files# dense/*)
 
-(copy_files# sparse/*)
-
 (copy_files# maths/*)
 
 (copy_files# maths/cdflib/*)

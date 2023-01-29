@@ -22,7 +22,6 @@ let complex64 = Bigarray.complex64
 module Const = Owl_const
 module Exception = Owl_exception
 module Dense = Owl_dense
-module Sparse = Owl_sparse
 module Maths = Owl_maths
 module Stats = Owl_stats
 module Linalg = Owl_linalg
