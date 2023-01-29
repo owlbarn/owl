@@ -20,7 +20,7 @@ RUN ldconfig /opt/OpenBLAS/lib/
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y
-RUN apt-get install -y m4 wget unzip aspcud libshp-dev libplplot-dev gfortran pkg-config git
+RUN apt-get install -y m4 wget unzip aspcud libshp-dev gfortran pkg-config git
 RUN cd /home/opam/opam-repository && git pull --quiet origin master
 RUN opam update -q
 
@@ -29,7 +29,7 @@ RUN opam update -q
 ENV OWLPATH /home/opam/owl
 ENV OWL_DISABLE_LAPACKE_LINKING_FLAG 1
 ENV OWL_COMPILE_CFLAGS "-I/opt/OpenBLAS/include -I/home/opam/OpenBLAS/lapack-netlib/LAPACKE/include/ -L/opt/OpenBLAS/lib"
-RUN CFLAGS=${OWL_COMPILE_CFLAGS} opam install owl owl-top owl-plplot utop -y
+RUN CFLAGS=${OWL_COMPILE_CFLAGS} opam install owl owl-top utop -y
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 

@@ -10,7 +10,7 @@ USER opam
 ##################### PREREQUISITES ########################
 
 RUN sudo apt-get -y update
-RUN sudo apt-get -y install m4 wget unzip aspcud libshp-dev libplplot-dev gfortran
+RUN sudo apt-get -y install m4 wget unzip aspcud libshp-dev gfortran
 RUN sudo apt-get -y install pkg-config git camlp4-extra
 RUN sudo apt-get -y install libopenblas-dev liblapacke-dev
 RUN cd /home/opam/opam-repository && git pull --quiet origin master
@@ -19,7 +19,7 @@ RUN opam update -q
 ####################   INSTALL OWL  #######################
 
 ENV OWLPATH /home/opam/owl
-RUN opam install owl owl-top owl-plplot utop -y
+RUN opam install owl owl-top utop -y
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 

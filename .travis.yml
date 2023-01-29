@@ -10,7 +10,7 @@ script: bash -ex ./.travis-docker.sh
 env:
   global:
     - PACKAGE="owl"
-    - PINS="owl-base.master:. owl-plplot.master:. owl-top.master:. owl-zoo.master:. owl.master:."
+    - PINS="owl-base.master:. owl-top.master:. owl.master:."
 
 matrix:
   include:
