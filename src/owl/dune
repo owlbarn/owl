@@ -1,5 +1,3 @@
-(copy_files# ext/*)
-
 (copy_files# core/*)
 
 (copy_files# core/openmp/*)
@@ -20,6 +18,8 @@
 
 (copy_files# stats/sfmt/*)
 
+(copy_files# distribution/*)
+
 (copy_files# cblas/*)
 
 (copy_files# lapacke/*)
@@ -37,8 +37,6 @@
 (copy_files# misc/*)
 
 (copy_files# nlp/*)
-
-(copy_files# ppl/*)
 
 (copy_files# signal/*)
 
