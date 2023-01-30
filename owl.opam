@@ -30,7 +30,6 @@ depends: [
   "ctypes" {>= "0.16.0"}
   "dune" {>= "2.0.0"}
   "dune-configurator"
-  "eigen" {>= "0.3.0"}
   "owl-base" {= version}
   "stdio" {build}
   "npy"
