@@ -135,7 +135,7 @@ let head n fname =
   (try
      iteri_lines_of_file
        (fun i s ->
-         assert (i < n);
+         if i >= n then raise_notrace End_of_file;
          Owl_utils.Stack.push lines s)
        fname
    with
