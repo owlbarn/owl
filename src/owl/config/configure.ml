@@ -154,8 +154,8 @@ let get_openmp_config c =
   else (
     let cflags, libs =
       match get_os_type c with
+      | "linux_elf"
       | "linux"     -> [ "-fopenmp" ], [ "-lgomp" ]
-      | "linux_elf" -> [ "-fopenmp" ], [ "-lgomp" ]
       | "macosx"    -> [ "-Xpreprocessor"; "-fopenmp" ], [ "-lomp" ]
       | "mingw64"   -> [ "-fopenmp" ], [ "-lgomp" ]
       | _           -> [], []
