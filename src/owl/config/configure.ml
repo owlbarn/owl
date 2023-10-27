@@ -110,12 +110,20 @@ let get_os_type c =
 
 let get_ocaml_default_flags _c = []
 
+
 let get_ocaml_devmode_flags _c =
   let enable_devmode = bgetenv "OWL_ENABLE_DEVMODE" in
   if not enable_devmode then [] else [ "-w"; "-32-27-6-37-3" ]
 
 
-let default_config c =
+let clean_env_var env_var =
+  Sys.getenv env_var
+    |> String.trim
+    |> String.split_on_char ' '
+    |> List.filter (fun s -> String.trim s <> "")
+
+
+let get_default_config c =
   let os =
     let platform = C.C_define.import c ~includes:[ ] ~prelude:detect_system_os [ "PLATFORM_NAME", String ] in
     match List.map snd platform with
@@ -136,12 +144,7 @@ let default_config c =
     | _                   -> `unknown
   in
   let cflags =
-    try
-      Sys.getenv "OWL_CFLAGS"
-      |> String.trim
-      |> String.split_on_char ' '
-      |> List.filter (fun s -> String.trim s <> "")
-    with
+    try clean_env_var "OWL_CFLAGS" with
     | Not_found ->
       [ (* Basic optimisation *) "-g"; "-O3"; "-Ofast" ]
       @ (match arch, os with
@@ -163,7 +166,21 @@ let default_config c =
   in
   C.Pkg_config.{ cflags; libs }
 
-let default_libs = [ "-lm" ]
+
+let default_cppflags =
+  try clean_env_var "OWL_CPPFLAGS" with
+    | Not_found -> []
+
+
+let default_ldflags =
+  try clean_env_var "OWL_LDFLAGS" with
+    | Not_found -> []
+
+
+let default_ldlibs =
+  try clean_env_var "OWL_LDLIBS" with
+    | Not_found -> [ "-lm" ]
+
 
 let get_expmode_cflags _c =
   let enable_expmode = bgetenv "OWL_ENABLE_EXPMODE" in
@@ -239,7 +256,7 @@ the output of `src/owl/config/configure.exe --verbose`.
 let () =
   C.main ~name:"owl" (fun c ->
       let (>>=) = Option.bind in
-      let default_config = default_config c in
+      let default_config = get_default_config c in
       let default_pkg_config = { C.Pkg_config.cflags = []; libs = [] } in
       let cblas_conf =
         Option.value ~default:default_pkg_config
@@ -250,12 +267,30 @@ let () =
           ~default:openblas_default
           (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"openblas")
       in
-      if not
-         @@ C.c_test
-              c
-              test_linking
-              ~c_flags:openblas_conf.cflags
-              ~link_flags:(default_config.libs @ openblas_conf.libs)
+      let openmp_config = get_openmp_config c in
+      (* configure link options *)
+      let libs =
+        []
+        @ default_ldflags
+        @ default_ldlibs
+        @ default_config.libs
+        @ openblas_conf.libs
+        @ cblas_conf.libs
+        @ default_gcc_path
+        @ get_accelerate_libs c
+        @ openmp_config.libs
+      in
+      (* configure compile options *)
+      let cflags =
+        []
+        @ default_config.cflags
+        @ default_cppflags
+        @ openblas_conf.cflags
+        @ cblas_conf.cflags
+        @ get_expmode_cflags c
+        @ openmp_config.cflags
+      in
+      if not @@ C.c_test c test_linking ~c_flags:cflags ~link_flags:libs
       then (
         Printf.printf
           {|
@@ -294,29 +329,9 @@ some details on how your openblas has been installed and the output of
             (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"llapacke")
         else default_pkg_config
       in
-      let openmp_config = get_openmp_config c in
       (* configure link options *)
-      let libs =
-        []
-        @ default_config.libs
-        @ lapacke_conf.libs
-        @ openblas_conf.libs
-        @ cblas_conf.libs
-        @ default_libs
-        @ default_gcc_path
-        @ get_accelerate_libs c
-        @ openmp_config.libs
-      in
-      (* configure compile options *)
-      let cflags =
-        [ "-Wall"; "-pedantic"; "-Wextra"; "-Wunused" ]
-        @ lapacke_conf.cflags
-        @ openblas_conf.cflags
-        @ cblas_conf.cflags
-        @ default_config.cflags
-        @ get_expmode_cflags c
-        @ openmp_config.cflags
-      in
+      let libs = lapacke_conf.libs @ libs in
+      let cflags = lapacke_conf.cflags @ cflags in 
       (* configure ocaml options *)
       let ocaml_flags = [] @ get_ocaml_default_flags c @ get_ocaml_devmode_flags c in
       (* assemble default config *)
