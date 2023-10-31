@@ -148,7 +148,7 @@ let get_default_config c =
     | Not_found ->
       [ (* Basic optimisation *) "-g"; "-O3"; "-Ofast" ]
       @ (match arch, os with
-        | `arm64, `mac -> [ "-mcpu=apple-m1" ]
+        | `arm64, `mac -> [ "-march=native" ]
         | `x86_64, _   -> [ "-march=native"; "-mfpmath=sse"; "-msse2" ]
         | _            -> [])
       @ [ (* Experimental switches, -ffast-math may break IEEE754 semantics*)
