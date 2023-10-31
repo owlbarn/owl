@@ -96,7 +96,7 @@ let get_default_cflags c =
     in
     [ "-g"; "-O3"; "-Ofast" ]
     @ (match arch, os with
-      | `arm64, `mac -> [ "-mcpu=apple-m1" ]
+      | `arm64, `mac -> [ "-march=native" ]
       | `x86_64, _   -> [ "-march=native"; "-msse2" ]
       | _            -> [])
     @ [ "-funroll-loops"; "-ffast-math"; "-DSFMT_MEXP=19937"; "-fno-strict-aliasing" ]
