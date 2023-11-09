@@ -2,16 +2,6 @@
 
 Owl is a dedicated system for scientific and engineering computing. The system is developed in OCaml and licensed under MIT. The project is led by [Liang Wang](https://liang.ocaml.xyz). The history of the project is on the [Wikipedia](https://en.wikipedia.org/wiki/Owl_Scientific_Computing).
 
-## Sponsors
-
-We would like to express our sincerest gratitude for our sponsors' generosity. The support is critical for Owl's development and maintenance, so the OCaml community can benefit from a strong numerical library. If you are interested in sponsorship, please [contact me](mailto:liang@ocaml.xyz) or donate via [PayPal](https://www.paypal.me/ocaml).
-
-<p align="center" width="100%" markdown=1>
-<a href="https://ahrefs.com/"><img src="https://ocaml.xyz/assets/ahrefs-logo.png" width="180px"></a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://ocaml-sf.org/"><img src="https://ocaml.xyz/assets/osf-logo.png" width="180px"></a>
-</p>
-
 ## Roles and Responsibilities
 
 ### BDFL
