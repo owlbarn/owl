@@ -4,7 +4,7 @@
  *)
 
 (** This module defines the types shared by various sub-libraries in Owl.
-  Note that they just wrappers, to find the exact module signature, please
+  Note that they are just wrappers, to find the exact module signature, please
   refer to the definition in the corresponding module.
  *)
 
