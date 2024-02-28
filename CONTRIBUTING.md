@@ -1,6 +1,6 @@
 # How to Contribute
 
-Owl is a large open source project, to guarantee quality of the software and sustainable development, we enforce the following rules in day-to-day research, development, and project mangement.
+Owl is a large open source project, to guarantee quality of the software and sustainable development, we enforce the following rules in day-to-day research, development, and project management.
 
 Besides coding, there are many other ways you can contribute. Bug reporting, typo fix, asking/answering questions, and improvement of existing documents are all well welcome.
 
@@ -13,7 +13,7 @@ Coding style guarantees a consistent taste of code written by different people. 
 
 - There is also a significant amount of C code in the project. For the C code, we apply the [Linux kernel coding style](https://www.kernel.org/doc/html/v4.10/process/coding-style.html). 
 
-- The coding style does not apply to the vendor's code direcly imported into Owl source code tree.
+- The coding style does not apply to the vendor's code directly imported into Owl source code tree.
 
 
 ## Unit Tests
@@ -31,7 +31,7 @@ All the code must be well tested before submitting a pull request.
 
 - Minor improvement changes can be submitted directly in a pull request. The title and description of the pull request shall clearly describe the purpose of the PR, potential issues and caveats.
 
-- For significant changes, please first submit a proposal on Owl's [issue tracker](https://github.com/ryanrhymes/owl/issues) to initialise the discussion with Owl Team.
+- For significant changes, please first submit a proposal on Owl's [issue tracker](https://github.com/owlbarn/owl/issues) to initialise the discussion with Owl Team.
 
 - For sub libraries building atop of Owl, if you want the library to be included in the owlbarn organisation, please also submit the proposal on issue tracker. Note that the license of the library must be compliant with owlbarn, i.e. MIT or BSD compliant. Exception is possible but must be discussed with Owl Team first.
 
@@ -49,11 +49,11 @@ For inline documentation in the code, the following rules apply.
 
 For serious technical writing, please contribute to Owl's [Tutorial Book](https://github.com/owlbarn/owl_tutorials).
 
-- Fixing typos, grammar issues, broken links, and improving tutorial tooling are considered as minor changes. You can submit pull requests directly to Tutorial Book reporsitory.
+- Fixing typos, grammar issues, broken links, and improving tutorial tooling are considered as minor changes. You can submit pull requests directly to Tutorial Book repository.
 
 - Extending existing chapters are medium changes and you need to submit a proposal to Tutorial Book issue tracker.
 
-- Contributing a standalone chapter also requires submitting a chapter proposal. Alternatively, you can write to [me](ryanrhymes@gmail.com) directly to discuss about the chapter.
+- Contributing a standalone chapter also requires submitting a chapter proposal. Alternatively, you can write to [me](rho.ajax@gmail.com) directly to discuss about the chapter.
 
 
 ## Agreement on Commits
@@ -89,7 +89,7 @@ By making a contribution to this project, I certify that:
 ```
 
 
-## Becoming A Team Memeber
+## Becoming A Team Member
 
 Owl Team is open and always welcomes new members to join. If you are enthusiastic about scientific computing and numerical algorithms, you can be one of us. As a team member, you need to be aware of the following things.
 
@@ -97,11 +97,11 @@ Owl Team is open and always welcomes new members to join. If you are enthusiasti
 
 - You will have access to Team Channel on Slack and join the R&D discussion. Your opinions matter in Owl's future roadmap.
 
-- You need to be responsible for one aspect (or one or multiple related modules) in Owl and lead its development. E.g. Jianxin is responsible core tensor operations and symbolic maths; Calvin focusses on Algodiff.
+- You need to be responsible for one aspect (or one or multiple related modules) in Owl and lead its development.
 
 - You need to review the pull requests related to the area you are specialised in.
 
 - We value persistence. Being a team member requires you actively get involved in maintaining Owl and contributing to its code base. The team membership becomes invalidated automatically if your contributions cease.
 
-- Team memebership is considered after you have made some significant contributions to Owl's code base or its ecosystem. You can always drop [me](ryanrhymes@gmail.com) a line to discuss.
+- Team membership is considered after you have made some significant contributions to Owl's code base or its ecosystem. You can always drop [me](rho.ajax@gmail.com) a line to discuss.
 
