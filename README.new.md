@@ -16,12 +16,12 @@ Sharing the same set of interface with Ndarray is the `base` system data archite
 
 ![Owl architecture 3](examples/owl-structure3.svg)
 
-Besides these two types of Ndarray, another type is CGraph-Ndarray, which can be used to support symbolic style computing like TensorFlow v1. It facilitate building computation graph and computation optimisation. 
+Besides these two types of Ndarray, another type is CGraph-Ndarray, which can be used to support symbolic style computing like TensorFlow v1. It facilitate building computation graph and computation optimization. 
 The CGraph-Ndarray can be built up by wrapping up either of the previous two types of Ndarray, which are used for actual execution of computing.
-All three types of Ndarray can be used to support advanced computing modules, including algorithmic differentiation, optimisation, and neural networks.
+All three types of Ndarray can be used to support advanced computing modules, including algorithmic differentiation, optimization, and neural networks.
 
 
-## Mission Statement 
+## Mission
 
 Currently Owl does not aim to provide active update. The current mission of this project is to keep the project maintained and to provide the OCaml programming language with a stable numerical computing library. 
 We aim to keep the current code base concise, stable, and self-contained. 
@@ -29,13 +29,13 @@ We encourage anyone who would like to build up their own tools based on Owl to c
 
 ## Owl Team 
 
-To achieve this mission, we are assembling an Owl team. Anyone who can potentially give sufficient contributions recognised by the community can request to be a team member.
+To achieve this mission, we are assembling an *Owl Team*. Anyone who can potentially give sufficient contributions recognized by the community can request to be a team member.
 A team member is expected to make several valuable and significant contributions to the project in both quality and quantity. 
 Typically a committer focuses on one specific aspect of the project and is a domain expert. 
 We hope but cannot guarantee that the team members can cover all aspects of the code base.
 
 
-Emphasis are put on responsibility of each team member.
+Emphasis are put on the responsibility of each team member.
 Each one should take responsibility of certain aspects of the code base, e.g. a module or maintenance for a specific OS platform.
 Team members, together with their domain aspects and responsibilities, will be listed here and also on the [Owl website](https://ocaml.xyz/).
 
@@ -51,9 +51,9 @@ In principle any change to the code base is made via a GitHub Pull Request (PR).
 
 Team members are responsible for the issues and PRs concerning the domain aspects they claim, and are also responsible for fixing the problems caused by accepting such PRs.
 
-If an issue or PR does not belong to any team member's domain aspect, the response will also be on a best-effort basis with no guaranteed response time. 
-
 If a PR is large or involves significant update or changes to the code structure, an issue should be submitted for the community and team members to discuss, and it then can be decided by the corresponding team member and project leader.
+
+If an issue or PR does not belong to any team member's domain aspect, the response will also be on a best-effort basis with no guaranteed response time. 
 
 Please check the full [contributing rules](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md) of the Owl project for more detail. 
 
