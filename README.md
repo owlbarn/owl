@@ -5,8 +5,8 @@ Owl is a dedicated system for scientific and engineering computing. The system i
 
 ## Mission
 
-Owl has been aiming to provide a powerful numerical computing and analysis tool set to the OCaml community.
-Since Owl is the de-facto scientific computing library in the OCaml world, currently we aim to actively maintain it and keep it stable, utilizing the limited time and human resource we have.
+Our mission is to push the frontier of high-performance scientific computing, provide both researchers and industry programmers a powerful framework to write concise, fast and safe analytical code. The system aims to serve as the de-facto tool for computation intensive tasks in OCaml.
+Owl is the de-facto scientific computing library in OCaml. Currently we aim to actively maintain it and keep it stable, utilizing the limited time and human resource we have.
 
 The current code base is designed to be concise and self-contained. 
 We encourage anyone who would like to build up their own tools based on Owl to create new repositories in the [Owlbarn](https://github.com/owlbarn) organization. 
