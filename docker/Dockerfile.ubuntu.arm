@@ -12,7 +12,7 @@ MAINTAINER Roger Stark <rho.ajax@gmail.com>
 
 RUN apt-get update
 RUN apt-get -y install git build-essential ocaml wget unzip aspcud m4 pkg-config
-RUN apt-get -y install libshp-dev libplplot-dev
+RUN apt-get -y install libshp-dev
 RUN apt-get -y install libopenblas-dev liblapacke-dev
 
 ENV VER=2.0.3
@@ -29,7 +29,7 @@ ENV OWLPATH /root/owl
 ENV OWL_CFLAGS "-g -O3 -Ofast -march=native -funroll-loops -ffast-math -DSFMT_MEXP=19937 -fno-strict-aliasing -Wno-tautological-constant-out-of-range-compare"
 ENV EIGENCPP_OPTFLAGS "-Ofast -march=native -funroll-loops -ffast-math"
 ENV EIGEN_FLAGS "-O3 -Ofast -march=native -funroll-loops -ffast-math"
-RUN opam install owl owl-plplot -y
+RUN opam install owl -y
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 

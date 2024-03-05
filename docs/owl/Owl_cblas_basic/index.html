@@ -1,52 +1,45 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Owl_cblas_basic (owl.Owl_cblas_basic)</title><link rel="stylesheet" href="../../odoc.css"/><meta charset="utf-8"/><meta name="generator" content="odoc 2.1.0"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../../highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body class="odoc"><nav class="odoc-nav"><a href="../index.html">Up</a> – <a href="../index.html">owl</a> &#x00BB; Owl_cblas_basic</nav><header class="odoc-preamble"><h1>Module <code><span>Owl_cblas_basic</span></code></h1><p>CBLAS interface: high-level interface between Owl and level-1, level-2, level-3 BLAS functions.</p></header><nav class="odoc-toc"><ul><li><a href="#type-definition">Type definition</a></li><li><a href="#level-1-blas:-vector-vector-operations">Level-1 BLAS: vector-vector operations</a></li><li><a href="#level-2-blas:-matrix-vector-operations">Level-2 BLAS: matrix-vector operations</a></li><li><a href="#level-3-blas:-matrix-matrix-operations">Level-3 BLAS: matrix-matrix operations</a></li></ul></nav><div class="odoc-content"><p>Please refer to: Intel Math Kernel Library in the CBLAS interface url: https://software.intel.com/en-us/mkl-developer-reference-c</p><h6 id="type-definition"><a href="#type-definition" class="anchor"></a>Type definition</h6><div class="odoc-spec"><div class="spec type" id="type-t" class="anchored"><a href="#type-t" class="anchor"></a><code><span><span class="keyword">type</span> <span>('a, 'b) t</span></span><span> = <span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span>, <span class="xref-unresolved">Stdlib</span>.Bigarray.c_layout )</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.Array1.t</span></span></code></div><div class="spec-doc"><p>The default type is Bigarray's <code>Array1.t</code>.</p></div></div><div class="odoc-spec"><div class="spec type" id="type-cblas_layout" class="anchored"><a href="#type-cblas_layout" class="anchor"></a><code><span><span class="keyword">type</span> cblas_layout</span><span> = </span></code><table><tr id="type-cblas_layout.CblasRowMajor" class="anchored"><td class="def variant constructor"><a href="#type-cblas_layout.CblasRowMajor" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasRowMajor</span></span></code></td></tr><tr id="type-cblas_layout.CblasColMajor" class="anchored"><td class="def variant constructor"><a href="#type-cblas_layout.CblasColMajor" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasColMajor</span></span></code></td><td class="def-doc"><span class="comment-delim">(*</span><p>Layout type, Row-major or Column-major.</p><span class="comment-delim">*)</span></td></tr></table></div></div><div class="odoc-spec"><div class="spec type" id="type-cblas_transpose" class="anchored"><a href="#type-cblas_transpose" class="anchor"></a><code><span><span class="keyword">type</span> cblas_transpose</span><span> = </span></code><table><tr id="type-cblas_transpose.CblasNoTrans" class="anchored"><td class="def variant constructor"><a href="#type-cblas_transpose.CblasNoTrans" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasNoTrans</span></span></code></td></tr><tr id="type-cblas_transpose.CblasTrans" class="anchored"><td class="def variant constructor"><a href="#type-cblas_transpose.CblasTrans" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasTrans</span></span></code></td></tr><tr id="type-cblas_transpose.CblasConjTrans" class="anchored"><td class="def variant constructor"><a href="#type-cblas_transpose.CblasConjTrans" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasConjTrans</span></span></code></td><td class="def-doc"><span class="comment-delim">(*</span><p>Transpose type, no transpose, transpose, or conjugate transpose.</p><span class="comment-delim">*)</span></td></tr></table></div></div><div class="odoc-spec"><div class="spec type" id="type-cblas_uplo" class="anchored"><a href="#type-cblas_uplo" class="anchor"></a><code><span><span class="keyword">type</span> cblas_uplo</span><span> = </span></code><table><tr id="type-cblas_uplo.CblasUpper" class="anchored"><td class="def variant constructor"><a href="#type-cblas_uplo.CblasUpper" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasUpper</span></span></code></td></tr><tr id="type-cblas_uplo.CblasLower" class="anchored"><td class="def variant constructor"><a href="#type-cblas_uplo.CblasLower" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasLower</span></span></code></td><td class="def-doc"><span class="comment-delim">(*</span><p>Upper or lower triangular matrix.</p><span class="comment-delim">*)</span></td></tr></table></div></div><div class="odoc-spec"><div class="spec type" id="type-cblas_diag" class="anchored"><a href="#type-cblas_diag" class="anchor"></a><code><span><span class="keyword">type</span> cblas_diag</span><span> = </span></code><table><tr id="type-cblas_diag.CblasNonUnit" class="anchored"><td class="def variant constructor"><a href="#type-cblas_diag.CblasNonUnit" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasNonUnit</span></span></code></td></tr><tr id="type-cblas_diag.CblasUnit" class="anchored"><td class="def variant constructor"><a href="#type-cblas_diag.CblasUnit" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasUnit</span></span></code></td><td class="def-doc"><span class="comment-delim">(*</span><p>Diag type, unit triangular.</p><span class="comment-delim">*)</span></td></tr></table></div></div><div class="odoc-spec"><div class="spec type" id="type-cblas_side" class="anchored"><a href="#type-cblas_side" class="anchor"></a><code><span><span class="keyword">type</span> cblas_side</span><span> = </span></code><table><tr id="type-cblas_side.CblasLeft" class="anchored"><td class="def variant constructor"><a href="#type-cblas_side.CblasLeft" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasLeft</span></span></code></td></tr><tr id="type-cblas_side.CblasRight" class="anchored"><td class="def variant constructor"><a href="#type-cblas_side.CblasRight" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasRight</span></span></code></td><td class="def-doc"><span class="comment-delim">(*</span><p>Side type</p><span class="comment-delim">*)</span></td></tr></table></div></div><h6 id="level-1-blas:-vector-vector-operations"><a href="#level-1-blas:-vector-vector-operations" class="anchor"></a>Level-1 BLAS: vector-vector operations</h6><div class="odoc-spec"><div class="spec value" id="val-rotg" class="anchored"><a href="#val-rotg" class="anchor"></a><code><span><span class="keyword">val</span> rotg : <span>float <span class="arrow">&#45;&gt;</span></span> <span>float <span class="arrow">&#45;&gt;</span></span> float * float * float * float</span></code></div><div class="spec-doc"><p>Computes the parameters for a Givens rotation.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-rotmg" class="anchored"><a href="#val-rotmg" class="anchor"></a><code><span><span class="keyword">val</span> rotmg : 
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.kind</span> <span class="arrow">&#45;&gt;</span></span>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Owl_cblas_basic (owl.Owl_cblas_basic)</title><link rel="stylesheet" href="../../odoc.css"/><meta charset="utf-8"/><meta name="generator" content="odoc 2.2.0"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../../highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body class="odoc"><nav class="odoc-nav"><a href="../index.html">Up</a> – <a href="../index.html">owl</a> &#x00BB; Owl_cblas_basic</nav><header class="odoc-preamble"><h1>Module <code><span>Owl_cblas_basic</span></code></h1><p>CBLAS interface: high-level interface between Owl and level-1, level-2, level-3 BLAS functions.</p></header><nav class="odoc-toc"><ul><li><a href="#type-definition">Type definition</a></li><li><a href="#level-1-blas:-vector-vector-operations">Level-1 BLAS: vector-vector operations</a></li><li><a href="#level-2-blas:-matrix-vector-operations">Level-2 BLAS: matrix-vector operations</a></li><li><a href="#level-3-blas:-matrix-matrix-operations">Level-3 BLAS: matrix-matrix operations</a></li></ul></nav><div class="odoc-content"><p>Please refer to: Intel Math Kernel Library in the CBLAS interface url: https://software.intel.com/en-us/mkl-developer-reference-c</p><h6 id="type-definition"><a href="#type-definition" class="anchor"></a>Type definition</h6><div class="odoc-spec"><div class="spec type anchored" id="type-t"><a href="#type-t" class="anchor"></a><code><span><span class="keyword">type</span> <span>('a, 'b) t</span></span><span> = <span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>, <span class="xref-unresolved">Stdlib</span>.Bigarray.c_layout)</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.Array1.t</span></span></code></div><div class="spec-doc"><p>The default type is Bigarray's <code>Array1.t</code>.</p></div></div><div class="odoc-spec"><div class="spec type anchored" id="type-cblas_layout"><a href="#type-cblas_layout" class="anchor"></a><code><span><span class="keyword">type</span> cblas_layout</span><span> = </span></code><ol><li id="type-cblas_layout.CblasRowMajor" class="def variant constructor anchored"><a href="#type-cblas_layout.CblasRowMajor" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasRowMajor</span></span></code></li><li id="type-cblas_layout.CblasColMajor" class="def variant constructor anchored"><a href="#type-cblas_layout.CblasColMajor" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasColMajor</span></span></code><div class="def-doc"><span class="comment-delim">(*</span><p>Layout type, Row-major or Column-major.</p><span class="comment-delim">*)</span></div></li></ol></div></div><div class="odoc-spec"><div class="spec type anchored" id="type-cblas_transpose"><a href="#type-cblas_transpose" class="anchor"></a><code><span><span class="keyword">type</span> cblas_transpose</span><span> = </span></code><ol><li id="type-cblas_transpose.CblasNoTrans" class="def variant constructor anchored"><a href="#type-cblas_transpose.CblasNoTrans" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasNoTrans</span></span></code></li><li id="type-cblas_transpose.CblasTrans" class="def variant constructor anchored"><a href="#type-cblas_transpose.CblasTrans" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasTrans</span></span></code></li><li id="type-cblas_transpose.CblasConjTrans" class="def variant constructor anchored"><a href="#type-cblas_transpose.CblasConjTrans" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasConjTrans</span></span></code><div class="def-doc"><span class="comment-delim">(*</span><p>Transpose type, no transpose, transpose, or conjugate transpose.</p><span class="comment-delim">*)</span></div></li></ol></div></div><div class="odoc-spec"><div class="spec type anchored" id="type-cblas_uplo"><a href="#type-cblas_uplo" class="anchor"></a><code><span><span class="keyword">type</span> cblas_uplo</span><span> = </span></code><ol><li id="type-cblas_uplo.CblasUpper" class="def variant constructor anchored"><a href="#type-cblas_uplo.CblasUpper" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasUpper</span></span></code></li><li id="type-cblas_uplo.CblasLower" class="def variant constructor anchored"><a href="#type-cblas_uplo.CblasLower" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasLower</span></span></code><div class="def-doc"><span class="comment-delim">(*</span><p>Upper or lower triangular matrix.</p><span class="comment-delim">*)</span></div></li></ol></div></div><div class="odoc-spec"><div class="spec type anchored" id="type-cblas_diag"><a href="#type-cblas_diag" class="anchor"></a><code><span><span class="keyword">type</span> cblas_diag</span><span> = </span></code><ol><li id="type-cblas_diag.CblasNonUnit" class="def variant constructor anchored"><a href="#type-cblas_diag.CblasNonUnit" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasNonUnit</span></span></code></li><li id="type-cblas_diag.CblasUnit" class="def variant constructor anchored"><a href="#type-cblas_diag.CblasUnit" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasUnit</span></span></code><div class="def-doc"><span class="comment-delim">(*</span><p>Diag type, unit triangular.</p><span class="comment-delim">*)</span></div></li></ol></div></div><div class="odoc-spec"><div class="spec type anchored" id="type-cblas_side"><a href="#type-cblas_side" class="anchor"></a><code><span><span class="keyword">type</span> cblas_side</span><span> = </span></code><ol><li id="type-cblas_side.CblasLeft" class="def variant constructor anchored"><a href="#type-cblas_side.CblasLeft" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasLeft</span></span></code></li><li id="type-cblas_side.CblasRight" class="def variant constructor anchored"><a href="#type-cblas_side.CblasRight" class="anchor"></a><code><span>| </span><span><span class="constructor">CblasRight</span></span></code><div class="def-doc"><span class="comment-delim">(*</span><p>Side type</p><span class="comment-delim">*)</span></div></li></ol></div></div><h6 id="level-1-blas:-vector-vector-operations"><a href="#level-1-blas:-vector-vector-operations" class="anchor"></a>Level-1 BLAS: vector-vector operations</h6><div class="odoc-spec"><div class="spec value anchored" id="val-rotg"><a href="#val-rotg" class="anchor"></a><code><span><span class="keyword">val</span> rotg : <span>float <span class="arrow">&#45;&gt;</span></span> <span>float <span class="arrow">&#45;&gt;</span></span> float * float * float * float</span></code></div><div class="spec-doc"><p>Computes the parameters for a Givens rotation.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-rotmg"><a href="#val-rotmg" class="anchor"></a><code><span><span class="keyword">val</span> rotmg : 
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <span class="xref-unresolved">Stdlib</span>.Bigarray.kind</span> <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  float * float * float * <span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span></span></code></div><div class="spec-doc"><p>Computes the parameters for a modified Givens rotation.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-rot" class="anchored"><a href="#val-rot" class="anchor"></a><code><span><span class="keyword">val</span> rot : 
+  float * float * float * <span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span></span></code></div><div class="spec-doc"><p>Computes the parameters for a modified Givens rotation.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-rot"><a href="#val-rot" class="anchor"></a><code><span><span class="keyword">val</span> rot : 
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span>float <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs rotation of points in the plane.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-rotm" class="anchored"><a href="#val-rotm" class="anchor"></a><code><span><span class="keyword">val</span> rotm : 
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs modified Givens rotation of points in the plane</p></div></div><div class="odoc-spec"><div class="spec value" id="val-swap" class="anchored"><a href="#val-swap" class="anchor"></a><code><span><span class="keyword">val</span> swap : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> unit</span></code></div><div class="spec-doc"><p>Swaps a vector with another vector.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-scal" class="anchored"><a href="#val-scal" class="anchor"></a><code><span><span class="keyword">val</span> scal : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> unit</span></code></div><div class="spec-doc"><p>Computes the product of a vector and a scalar.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-cszd_scal" class="anchored"><a href="#val-cszd_scal" class="anchor"></a><code><span><span class="keyword">val</span> cszd_scal : <span>int <span class="arrow">&#45;&gt;</span></span> <span>float <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> unit</span></code></div><div class="spec-doc"><p>Computes the product of a complex vector and a float number.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-copy" class="anchored"><a href="#val-copy" class="anchor"></a><code><span><span class="keyword">val</span> copy : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> unit</span></code></div><div class="spec-doc"><p>Copies vector to another vector.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-axpy" class="anchored"><a href="#val-axpy" class="anchor"></a><code><span><span class="keyword">val</span> axpy : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> unit</span></code></div><div class="spec-doc"><p>Computes a vector-scalar product and adds the result to a vector.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-dot" class="anchored"><a href="#val-dot" class="anchor"></a><code><span><span class="keyword">val</span> dot : <span>?conj:bool <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span class="type-var">'a</span></span></code></div><div class="spec-doc"><p>Computes a vector-vector dot product. <code>conj</code> is for complex numbers, <code>true</code> indicates conjugated, <code>false</code> indicates unconjugated.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-sdsdot" class="anchored"><a href="#val-sdsdot" class="anchor"></a><code><span><span class="keyword">val</span> sdsdot : 
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="xref-unresolved">Stdlib</span>.Bigarray.float32_elt )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>float <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div><div class="spec-doc"><p>Performs rotation of points in the plane.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-rotm"><a href="#val-rotm" class="anchor"></a><code><span><span class="keyword">val</span> rotm : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> unit</span></code></div><div class="spec-doc"><p>Performs modified Givens rotation of points in the plane</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-swap"><a href="#val-swap" class="anchor"></a><code><span><span class="keyword">val</span> swap : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> unit</span></code></div><div class="spec-doc"><p>Swaps a vector with another vector.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-scal"><a href="#val-scal" class="anchor"></a><code><span><span class="keyword">val</span> scal : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> unit</span></code></div><div class="spec-doc"><p>Computes the product of a vector and a scalar.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-cszd_scal"><a href="#val-cszd_scal" class="anchor"></a><code><span><span class="keyword">val</span> cszd_scal : <span>int <span class="arrow">&#45;&gt;</span></span> <span>float <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> unit</span></code></div><div class="spec-doc"><p>Computes the product of a complex vector and a float number.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-copy"><a href="#val-copy" class="anchor"></a><code><span><span class="keyword">val</span> copy : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> unit</span></code></div><div class="spec-doc"><p>Copies vector to another vector.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-axpy"><a href="#val-axpy" class="anchor"></a><code><span><span class="keyword">val</span> axpy : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> unit</span></code></div><div class="spec-doc"><p>Computes a vector-scalar product and adds the result to a vector.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dot"><a href="#val-dot" class="anchor"></a><code><span><span class="keyword">val</span> dot : <span>?conj:bool <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> <span class="type-var">'a</span></span></code></div><div class="spec-doc"><p>Computes a vector-vector dot product. <code>conj</code> is for complex numbers, <code>true</code> indicates conjugated, <code>false</code> indicates unconjugated.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-sdsdot"><a href="#val-sdsdot" class="anchor"></a><code><span><span class="keyword">val</span> sdsdot : 
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="xref-unresolved">Stdlib</span>.Bigarray.float32_elt )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>float <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="xref-unresolved">Stdlib</span>.Bigarray.float32_elt)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  float</span></code></div><div class="spec-doc"><p>Computes a vector-vector dot product extended precision accumulation.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-dsdot" class="anchored"><a href="#val-dsdot" class="anchor"></a><code><span><span class="keyword">val</span> dsdot : 
+  <span><span><span>(float, <span class="xref-unresolved">Stdlib</span>.Bigarray.float32_elt)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="xref-unresolved">Stdlib</span>.Bigarray.float32_elt )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  float</span></code></div><div class="spec-doc"><p>Computes a vector-vector dot product extended precision accumulation.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dsdot"><a href="#val-dsdot" class="anchor"></a><code><span><span class="keyword">val</span> dsdot : 
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="xref-unresolved">Stdlib</span>.Bigarray.float32_elt )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="xref-unresolved">Stdlib</span>.Bigarray.float32_elt)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  float</span></code></div><div class="spec-doc"><p>Computes a vector-vector dot product extended precision accumulation.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-nrm2" class="anchored"><a href="#val-nrm2" class="anchor"></a><code><span><span class="keyword">val</span> nrm2 : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> float</span></code></div><div class="spec-doc"><p>Computes the Euclidean norm of a vector.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-asum" class="anchored"><a href="#val-asum" class="anchor"></a><code><span><span class="keyword">val</span> asum : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> float</span></code></div><div class="spec-doc"><p>Computes the sum of magnitudes of the vector elements.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-amax" class="anchored"><a href="#val-amax" class="anchor"></a><code><span><span class="keyword">val</span> amax : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> int</span></code></div><div class="spec-doc"><p>Finds the index of the element with maximum absolute value.</p></div></div><h6 id="level-2-blas:-matrix-vector-operations"><a href="#level-2-blas:-matrix-vector-operations" class="anchor"></a>Level-2 BLAS: matrix-vector operations</h6><div class="odoc-spec"><div class="spec value" id="val-gemv" class="anchored"><a href="#val-gemv" class="anchor"></a><code><span><span class="keyword">val</span> gemv : 
+  <span><span><span>(float, <span class="xref-unresolved">Stdlib</span>.Bigarray.float32_elt)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  float</span></code></div><div class="spec-doc"><p>Computes a vector-vector dot product extended precision accumulation.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-nrm2"><a href="#val-nrm2" class="anchor"></a><code><span><span class="keyword">val</span> nrm2 : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> float</span></code></div><div class="spec-doc"><p>Computes the Euclidean norm of a vector.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-asum"><a href="#val-asum" class="anchor"></a><code><span><span class="keyword">val</span> asum : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> float</span></code></div><div class="spec-doc"><p>Computes the sum of magnitudes of the vector elements.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-amax"><a href="#val-amax" class="anchor"></a><code><span><span class="keyword">val</span> amax : <span>int <span class="arrow">&#45;&gt;</span></span> <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span> <span>int <span class="arrow">&#45;&gt;</span></span> int</span></code></div><div class="spec-doc"><p>Finds the index of the element with maximum absolute value.</p></div></div><h6 id="level-2-blas:-matrix-vector-operations"><a href="#level-2-blas:-matrix-vector-operations" class="anchor"></a>Level-2 BLAS: matrix-vector operations</h6><div class="odoc-spec"><div class="spec value anchored" id="val-gemv"><a href="#val-gemv" class="anchor"></a><code><span><span class="keyword">val</span> gemv : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a general matrix</p></div></div><div class="odoc-spec"><div class="spec value" id="val-gbmv" class="anchored"><a href="#val-gbmv" class="anchor"></a><code><span><span class="keyword">val</span> gbmv : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a general matrix</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-gbmv"><a href="#val-gbmv" class="anchor"></a><code><span><span class="keyword">val</span> gbmv : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
@@ -54,235 +47,235 @@
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a general band matrix</p></div></div><div class="odoc-spec"><div class="spec value" id="val-trmv" class="anchored"><a href="#val-trmv" class="anchor"></a><code><span><span class="keyword">val</span> trmv : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a general band matrix</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-trmv"><a href="#val-trmv" class="anchor"></a><code><span><span class="keyword">val</span> trmv : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_diag">cblas_diag</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a triangular matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-tbmv" class="anchored"><a href="#val-tbmv" class="anchor"></a><code><span><span class="keyword">val</span> tbmv : 
-  <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_diag">cblas_diag</a> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a triangular band matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-tpmv" class="anchored"><a href="#val-tpmv" class="anchor"></a><code><span><span class="keyword">val</span> tpmv : 
-  <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_diag">cblas_diag</a> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a triangular packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-trsv" class="anchored"><a href="#val-trsv" class="anchor"></a><code><span><span class="keyword">val</span> trsv : 
-  <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_diag">cblas_diag</a> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Solves a system of linear equations whose coefficients are in a triangular matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-tbsv" class="anchored"><a href="#val-tbsv" class="anchor"></a><code><span><span class="keyword">val</span> tbsv : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a triangular matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-tbmv"><a href="#val-tbmv" class="anchor"></a><code><span><span class="keyword">val</span> tbmv : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_diag">cblas_diag</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Solves a system of linear equations whose coefficients are in a triangular band matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-tpsv" class="anchored"><a href="#val-tpsv" class="anchor"></a><code><span><span class="keyword">val</span> tpsv : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a triangular band matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-tpmv"><a href="#val-tpmv" class="anchor"></a><code><span><span class="keyword">val</span> tpmv : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_diag">cblas_diag</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Solves a system of linear equations whose coefficients are in a triangular packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-symv" class="anchored"><a href="#val-symv" class="anchor"></a><code><span><span class="keyword">val</span> symv : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a triangular packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-trsv"><a href="#val-trsv" class="anchor"></a><code><span><span class="keyword">val</span> trsv : 
+  <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_diag">cblas_diag</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div><div class="spec-doc"><p>Solves a system of linear equations whose coefficients are in a triangular matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-tbsv"><a href="#val-tbsv" class="anchor"></a><code><span><span class="keyword">val</span> tbsv : 
+  <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_diag">cblas_diag</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div><div class="spec-doc"><p>Solves a system of linear equations whose coefficients are in a triangular band matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-tpsv"><a href="#val-tpsv" class="anchor"></a><code><span><span class="keyword">val</span> tpsv : 
+  <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_diag">cblas_diag</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div><div class="spec-doc"><p>Solves a system of linear equations whose coefficients are in a triangular packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-symv"><a href="#val-symv" class="anchor"></a><code><span><span class="keyword">val</span> symv : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product for a symmetric matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-sbmv" class="anchored"><a href="#val-sbmv" class="anchor"></a><code><span><span class="keyword">val</span> sbmv : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product for a symmetric matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-sbmv"><a href="#val-sbmv" class="anchor"></a><code><span><span class="keyword">val</span> sbmv : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a symmetric band matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-spmv" class="anchored"><a href="#val-spmv" class="anchor"></a><code><span><span class="keyword">val</span> spmv : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a symmetric band matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-spmv"><a href="#val-spmv" class="anchor"></a><code><span><span class="keyword">val</span> spmv : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a symmetric packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-ger" class="anchored"><a href="#val-ger" class="anchor"></a><code><span><span class="keyword">val</span> ger : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a symmetric packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-ger"><a href="#val-ger" class="anchor"></a><code><span><span class="keyword">val</span> ger : 
   <span>?conj:bool <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs a rank-1 update of a general matrix. <code>conj</code> is for complex numbers, <code>true</code> indicates conjugated, <code>false</code> indicates unconjugated.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-syr" class="anchored"><a href="#val-syr" class="anchor"></a><code><span><span class="keyword">val</span> syr : 
+  unit</span></code></div><div class="spec-doc"><p>Performs a rank-1 update of a general matrix. <code>conj</code> is for complex numbers, <code>true</code> indicates conjugated, <code>false</code> indicates unconjugated.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-syr"><a href="#val-syr" class="anchor"></a><code><span><span class="keyword">val</span> syr : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs a rank-1 update of a symmetric matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-spr" class="anchored"><a href="#val-spr" class="anchor"></a><code><span><span class="keyword">val</span> spr : 
+  unit</span></code></div><div class="spec-doc"><p>Performs a rank-1 update of a symmetric matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-spr"><a href="#val-spr" class="anchor"></a><code><span><span class="keyword">val</span> spr : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs a rank-1 update of a symmetric packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-syr2" class="anchored"><a href="#val-syr2" class="anchor"></a><code><span><span class="keyword">val</span> syr2 : 
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div><div class="spec-doc"><p>Performs a rank-1 update of a symmetric packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-syr2"><a href="#val-syr2" class="anchor"></a><code><span><span class="keyword">val</span> syr2 : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs a rank-2 update of symmetric matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-spr2" class="anchored"><a href="#val-spr2" class="anchor"></a><code><span><span class="keyword">val</span> spr2 : 
+  unit</span></code></div><div class="spec-doc"><p>Performs a rank-2 update of symmetric matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-spr2"><a href="#val-spr2" class="anchor"></a><code><span><span class="keyword">val</span> spr2 : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( float, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs a rank-2 update of a symmetric packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-hemv" class="anchored"><a href="#val-hemv" class="anchor"></a><code><span><span class="keyword">val</span> hemv : 
+  <span><span><span>(float, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div><div class="spec-doc"><p>Performs a rank-2 update of a symmetric packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-hemv"><a href="#val-hemv" class="anchor"></a><code><span><span class="keyword">val</span> hemv : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="xref-unresolved">Stdlib</span>.Complex.t <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="xref-unresolved">Stdlib</span>.Complex.t <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a Hermitian matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-hbmv" class="anchored"><a href="#val-hbmv" class="anchor"></a><code><span><span class="keyword">val</span> hbmv : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a Hermitian matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-hbmv"><a href="#val-hbmv" class="anchor"></a><code><span><span class="keyword">val</span> hbmv : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="xref-unresolved">Stdlib</span>.Complex.t <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="xref-unresolved">Stdlib</span>.Complex.t <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a Hermitian band matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-hpmv" class="anchored"><a href="#val-hpmv" class="anchor"></a><code><span><span class="keyword">val</span> hpmv : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a Hermitian band matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-hpmv"><a href="#val-hpmv" class="anchor"></a><code><span><span class="keyword">val</span> hpmv : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="xref-unresolved">Stdlib</span>.Complex.t <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="xref-unresolved">Stdlib</span>.Complex.t <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a Hermitian packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-her" class="anchored"><a href="#val-her" class="anchor"></a><code><span><span class="keyword">val</span> her : 
-  <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs a rank-1 update of a Hermitian matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-hpr" class="anchored"><a href="#val-hpr" class="anchor"></a><code><span><span class="keyword">val</span> hpr : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-vector product using a Hermitian packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-her"><a href="#val-her" class="anchor"></a><code><span><span class="keyword">val</span> her : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs a rank-1 update of a Hermitian packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-her2" class="anchored"><a href="#val-her2" class="anchor"></a><code><span><span class="keyword">val</span> her2 : 
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div><div class="spec-doc"><p>Performs a rank-1 update of a Hermitian matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-hpr"><a href="#val-hpr" class="anchor"></a><code><span><span class="keyword">val</span> hpr : 
+  <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>float <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div><div class="spec-doc"><p>Performs a rank-1 update of a Hermitian packed matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-her2"><a href="#val-her2" class="anchor"></a><code><span><span class="keyword">val</span> her2 : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="xref-unresolved">Stdlib</span>.Complex.t <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs a rank-2 update of a Hermitian matrix.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-hpr2" class="anchored"><a href="#val-hpr2" class="anchor"></a><code><span><span class="keyword">val</span> hpr2 : 
+  unit</span></code></div><div class="spec-doc"><p>Performs a rank-2 update of a Hermitian matrix.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-hpr2"><a href="#val-hpr2" class="anchor"></a><code><span><span class="keyword">val</span> hpr2 : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="xref-unresolved">Stdlib</span>.Complex.t <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs a rank-2 update of a Hermitian packed matrix.</p></div></div><h6 id="level-3-blas:-matrix-matrix-operations"><a href="#level-3-blas:-matrix-matrix-operations" class="anchor"></a>Level-3 BLAS: matrix-matrix operations</h6><div class="odoc-spec"><div class="spec value" id="val-gemm" class="anchored"><a href="#val-gemm" class="anchor"></a><code><span><span class="keyword">val</span> gemm : 
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div><div class="spec-doc"><p>Performs a rank-2 update of a Hermitian packed matrix.</p></div></div><h6 id="level-3-blas:-matrix-matrix-operations"><a href="#level-3-blas:-matrix-matrix-operations" class="anchor"></a>Level-3 BLAS: matrix-matrix operations</h6><div class="odoc-spec"><div class="spec value anchored" id="val-gemm"><a href="#val-gemm" class="anchor"></a><code><span><span class="keyword">val</span> gemm : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
@@ -290,67 +283,54 @@
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-matrix product with general matrices.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-symm" class="anchored"><a href="#val-symm" class="anchor"></a><code><span><span class="keyword">val</span> symm : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-matrix product with general matrices.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-symm"><a href="#val-symm" class="anchor"></a><code><span><span class="keyword">val</span> symm : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_side">cblas_side</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-matrix product where one input matrix is symmetric.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-syrk" class="anchored"><a href="#val-syrk" class="anchor"></a><code><span><span class="keyword">val</span> syrk : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-matrix product where one input matrix is symmetric.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-syrk"><a href="#val-syrk" class="anchor"></a><code><span><span class="keyword">val</span> syrk : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs a symmetric rank-k update.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-syr2k" class="anchored"><a href="#val-syr2k" class="anchor"></a><code><span><span class="keyword">val</span> syr2k : 
+  unit</span></code></div><div class="spec-doc"><p>Performs a symmetric rank-k update.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-syr2k"><a href="#val-syr2k" class="anchor"></a><code><span><span class="keyword">val</span> syr2k : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs a symmetric rank-2k update.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-trmm" class="anchored"><a href="#val-trmm" class="anchor"></a><code><span><span class="keyword">val</span> trmm : 
-  <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_side">cblas_side</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="#type-cblas_diag">cblas_diag</a> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
-  <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-matrix product where one input matrix is triangular.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-trsm" class="anchored"><a href="#val-trsm" class="anchor"></a><code><span><span class="keyword">val</span> trsm : 
+  unit</span></code></div><div class="spec-doc"><p>Performs a symmetric rank-2k update.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-trmm"><a href="#val-trmm" class="anchor"></a><code><span><span class="keyword">val</span> trmm : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_side">cblas_side</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
@@ -359,48 +339,61 @@
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="type-var">'a</span>, <span class="type-var">'b</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Solves a triangular matrix equation.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-hemm" class="anchored"><a href="#val-hemm" class="anchor"></a><code><span><span class="keyword">val</span> hemm : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-matrix product where one input matrix is triangular.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-trsm"><a href="#val-trsm" class="anchor"></a><code><span><span class="keyword">val</span> trsm : 
+  <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_side">cblas_side</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-cblas_diag">cblas_diag</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="type-var">'a</span>, <span class="type-var">'b</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div><div class="spec-doc"><p>Solves a triangular matrix equation.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-hemm"><a href="#val-hemm" class="anchor"></a><code><span><span class="keyword">val</span> hemm : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_side">cblas_side</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="xref-unresolved">Stdlib</span>.Complex.t <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="xref-unresolved">Stdlib</span>.Complex.t <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-matrix product where one input matrix is Hermitian.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-herk" class="anchored"><a href="#val-herk" class="anchor"></a><code><span><span class="keyword">val</span> herk : 
+  unit</span></code></div><div class="spec-doc"><p>Computes a matrix-matrix product where one input matrix is Hermitian.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-herk"><a href="#val-herk" class="anchor"></a><code><span><span class="keyword">val</span> herk : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  unit</span></code></div><div class="spec-doc"><p>Performs a Hermitian rank-k update.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-her2k" class="anchored"><a href="#val-her2k" class="anchor"></a><code><span><span class="keyword">val</span> her2k : 
+  unit</span></code></div><div class="spec-doc"><p>Performs a Hermitian rank-k update.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-her2k"><a href="#val-her2k" class="anchor"></a><code><span><span class="keyword">val</span> her2k : 
   <span><a href="#type-cblas_layout">cblas_layout</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_uplo">cblas_uplo</a> <span class="arrow">&#45;&gt;</span></span>
   <span><a href="#type-cblas_transpose">cblas_transpose</a> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span><span class="xref-unresolved">Stdlib</span>.Complex.t <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   <span>float <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span>( <span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span> )</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>(<span class="xref-unresolved">Stdlib</span>.Complex.t, <span class="type-var">'a</span>)</span> <a href="#type-t">t</a></span> <span class="arrow">&#45;&gt;</span></span>
   <span>int <span class="arrow">&#45;&gt;</span></span>
   unit</span></code></div><div class="spec-doc"><p>Performs a Hermitian rank-2k update.</p></div></div></div></body></html>

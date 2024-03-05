@@ -1,3 +1,0 @@
-(executable
- (name configure)
- (libraries dune.configurator))

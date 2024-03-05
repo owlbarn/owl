@@ -1,12 +1,8 @@
-(copy_files# ext/*)
-
 (copy_files# core/*)
 
 (copy_files# core/openmp/*)
 
 (copy_files# dense/*)
-
-(copy_files# sparse/*)
 
 (copy_files# maths/*)
 
@@ -19,6 +15,8 @@
 (copy_files# stats/*)
 
 (copy_files# stats/sfmt/*)
+
+(copy_files# distribution/*)
 
 (copy_files# cblas/*)
 
@@ -37,8 +35,6 @@
 (copy_files# misc/*)
 
 (copy_files# nlp/*)
-
-(copy_files# ppl/*)
 
 (copy_files# signal/*)
 
@@ -210,15 +206,12 @@
  (flags
   :standard
   (:include ocaml_flags.sexp))
- (libraries ctypes ctypes.stubs eigen owl-base npy))
+ (libraries ctypes ctypes.stubs owl-base npy))
 
 (rule
- (targets c_flags.sexp c_library_flags.sexp ocaml_flags.sexp
-   owl_aeos_params_generated.h)
+ (targets c_flags.sexp c_library_flags.sexp ocaml_flags.sexp)
  (deps
-  (:deps-conf config/configure.exe)
-  (:deps-aeos ../aeos/owl_aeos_gen.exe))
+  (:deps-conf config/configure.exe))
  (action
   (progn
-   (run %{deps-conf})
-   (run %{deps-aeos}))))
+   (run %{deps-conf}))))

@@ -6,8 +6,6 @@
 #ifndef OWL_CORE_ENGINE_H
 #define OWL_CORE_ENGINE_H
 
-#include "owl_aeos_params_generated.h"
-
 // threshold of the ndarray size to trigger openmp
 #define OWL_OMP_THRESHOLD_DEFAULT 100000
 
@@ -35,8 +33,6 @@
 
 #define OWL_OMP_THRESHOLD_FUN_(A) OMP_THRESHOLD ## _ ## A
 #define OWL_OMP_THRESHOLD_FUN(A) OWL_OMP_THRESHOLD_FUN_(A)
-
-#ifndef OWL_AEOS_PARAMS_H
 
 #define OWL_OMP_THRESHOLD_RECI OWL_OMP_THRESHOLD_DEFAULT
 
@@ -98,7 +94,4 @@
 
 #define OWL_OMP_THRESHOLD_SIGMOID OWL_OMP_THRESHOLD_DEFAULT
 
-#endif
-
-
-#endif  /* OWL_CORE_ENGINE_H */
+#endif /* OWL_CORE_ENGINE_H */

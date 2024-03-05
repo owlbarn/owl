@@ -5,8 +5,6 @@
 
 let printers =
   [ "Owl.Dense.Ndarray.Generic.pp_dsnda"
-  ; "Owl.Sparse.Ndarray.Generic.pp_spnda"
-  ; "Owl.Sparse.Matrix.Generic.pp_spmat"
   ; "Owl.Neural.S.Graph.pp_network"
   ; "Owl.Neural.D.Graph.pp_network"
   ; "Owl.Algodiff.S.pp_num"
@@ -18,14 +16,18 @@ let printers =
   ; "Owl_stats.pp_hist"
   ]
 
+let eval cmd =
+  cmd
+  |> Lexing.from_string
+  |> !Toploop.parse_toplevel_phrase
+  |> Toploop.execute_phrase true Format.err_formatter
+  |> ignore
 
 let install_printers printers =
   List.iter
-    (fun printer -> Printf.sprintf "#install_printer %s;;" printer |> Owl_zoo_cmd.eval)
+    (fun printer -> Printf.sprintf "#install_printer %s;;" printer |> eval)
     printers
 
 
 let () =
-  (* register zoo directive *)
-  Owl_zoo_dir.add_dir_zoo ();
   install_printers printers

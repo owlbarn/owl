@@ -1,3 +1,8 @@
+## 1.1 (2023-020-15)
+
+* remove several components in owl: `aeos`, `plplot`, `zoo`
+* remove the Sparse module in Ndarray and thus Owl's reliance on `eigen` 
+
 ## 1.0.3 (2023-01-06)
 
 * Change input/output_val to ocaml_input/output_val
