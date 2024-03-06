@@ -32,10 +32,11 @@ jobs:
       - name: OCaml Deps
         run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
       
-      - name: Compile Owl, install, and run test
-        run: |
-          opam exec -- dune build @install
-          opam exec -- dune runtest -j 1 --no-buffer -p owl
+      - name: Compile Owl, install
+        run: opam exec -- dune build @install
+      
+      - name: Run tests
+        run: opam exec -- dune runtest -j 1 --no-buffer -p owl
 
       - name: Build doc
         run: | 
