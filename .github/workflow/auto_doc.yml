@@ -1,0 +1,37 @@
+name: github pages
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  deploy:
+    name: Deploy Owl doc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+
+      - name: Use OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: '5.0'
+          dune-cache: true
+          allow-prerelease-opam: true
+      
+      - name: Deps
+        run:  apt install git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
+      
+      - name: OCaml Deps
+        run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
+      
+      - name: Build doc
+        run: make doc 
+      
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          destination_dir: .
+
