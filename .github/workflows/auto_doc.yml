@@ -23,7 +23,7 @@ jobs:
         run:  sudo apt-get install git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
       
       - name: OCaml Deps
-        run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
+        run: opam install dune ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
       
       - name: Build doc
         run: make doc 
