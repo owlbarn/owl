@@ -26,9 +26,10 @@ jobs:
         run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
       
       - name: Build doc
-        run: opam exec -- dune build @doc
-        run: cat docs/mathjax.js docs/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
-	      run: cp -r _build/default/_doc/_html/* docs
+        run: | 
+            opam exec -- dune build @doc 
+            cat docs/mathjax.js docs/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
+	          cp -r _build/default/_doc/_html/* docs
       
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
