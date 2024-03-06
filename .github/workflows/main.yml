@@ -23,10 +23,12 @@ jobs:
         run:  sudo apt-get install git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
       
       - name: OCaml Deps
-        run: opam install dune ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
+        run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
       
       - name: Build doc
-        run: make doc 
+        run: opam exec -- dune build @doc
+        run: cat docs/mathjax.js docs/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
+	      run: cp -r _build/default/_doc/_html/* docs
       
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
