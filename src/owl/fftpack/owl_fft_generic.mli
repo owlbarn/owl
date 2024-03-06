@@ -17,8 +17,8 @@ highest dimension if not specified. The return is not scaled.
 
 val ifft : ?axis:int -> (Complex.t, 'a) t -> (Complex.t, 'a) t
 (**
-[ifft ~axis x] performs inverse 1-dimensional FFT on a complex input. [axis]
-is the highest dimension by default.
+[ifft ~axis x] performs inverse 1-dimensional FFT on a complex input. The parameter [axis]
+indicates the highest dimension by default.
  *)
 
 val rfft : ?axis:int -> otyp:(Complex.t, 'a) kind -> (float, 'b) t -> (Complex.t, 'a) t
@@ -29,7 +29,7 @@ precision with input [x]. You can skip this parameter by using a submodule
 with specific precision such as [Owl.Fft.S] or [Owl.Fft.D].
  *)
 
-val irfft
+ val irfft
   :  ?axis:int
   -> ?n:int
   -> otyp:(float, 'a) kind

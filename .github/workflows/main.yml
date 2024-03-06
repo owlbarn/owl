@@ -6,9 +6,10 @@ on:
       - main 
 
 jobs:
-  deploy:
-    name: Deploy Owl doc
+  deploy-owl:
+    name: Install Owl and build doc
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@main
 
@@ -25,6 +26,9 @@ jobs:
       - name: OCaml Deps
         run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
       
+      - name: Compile Owl and install
+        run: opam exec -- dune build @install
+
       - name: Build doc
         run: | 
             opam exec -- dune build @doc 
