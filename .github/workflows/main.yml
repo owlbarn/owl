@@ -1,9 +1,10 @@
-name: github pages
+name: Build and test on Ubuntu
 
 on:
   push:
-    branches:
-      - main 
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
 
 jobs:
   deploy-owl:
@@ -16,18 +17,17 @@ jobs:
       - name: Use OCaml
         uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-compiler: '5.0'
+          ocaml-compiler: '5.1'
+          # opam-local-packages: |
+          #  *.opam
           dune-cache: true
           allow-prerelease-opam: true
-      
-      - name: Deps
-        run:  sudo apt-get install git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
       
       - name: OCaml Deps
         run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
       
-      - name: Compile Owl and install
-        run: opam exec -- dune build @install
+      - name: Deps
+        run: sudo apt-get install git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
 
       - name: Build doc
         run: | 
@@ -41,3 +41,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
           destination_dir: .
+
+      - name: Compile Owl, install, and run test
+        run: |
+          opam exec -- dune build @install
+          opam exec -- dune runtest -j 1 --no-buffer -p owl
