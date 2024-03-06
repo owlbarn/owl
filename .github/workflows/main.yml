@@ -36,7 +36,10 @@ jobs:
         run: opam exec -- dune build @install
       
       - name: Run tests
-        run: opam exec -- dune runtest -j 1 --no-buffer -p owl
+        # installing owl-base is a temp hack due to some unknown error in testing 
+        run: |
+          opam install owl-base 
+          opam exec -- dune runtest -j 1 --no-buffer -p owl
 
       - name: Build doc
         run: | 
