@@ -20,7 +20,7 @@ jobs:
           allow-prerelease-opam: true
       
       - name: Deps
-        run:  apt install git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
+        run:  sudo apt-get install git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
       
       - name: OCaml Deps
         run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
@@ -34,4 +34,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
           destination_dir: .
-
