@@ -1,0 +1,51 @@
+name: Main workflow
+
+on:
+  - pull_request
+  - push
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-14 # beta runner for macos arm64
+          - macos-latest
+          - ubuntu-latest
+          # - windows-latest
+        ocaml-version:
+          - 5.1.x
+          - 4.14.x
+          - 4.12.x
+          - 4.10.x
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use OCaml ${{ matrix.ocaml-compiler }}
+        uses: avsm/setup-ocaml@v2
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+          opam-local-packages: |
+            *.opam
+
+      - run: opam depext owl --with-test
+    
+      - run: |
+          opam install owl-base --yes --deps-only --with-test
+          opam exec -- dune build -p owl-base
+          opam exec -- dune runtest -p owl-base
+  
+      - run: |
+          opam install owl --yes --deps-only --with-test
+          opam exec -- dune build -p owl
+          opam exec -- dune runtest -p owl
+  
+      - run: |
+          opam install owl-top --yes --deps-only --with-test
+          opam exec -- dune build -p owl-top
+          opam exec -- dune runtest -p owl-top
