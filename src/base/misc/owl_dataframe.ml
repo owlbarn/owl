@@ -414,7 +414,7 @@ let set_by_name x i name a =
   set x i j a
 
 
-let to_cols x = x.data
+let to_cols x = Array.init (Array.length x.data) (get_col x)
 
 let to_rows x =
   let stack = Owl_utils.Stack.make () in
