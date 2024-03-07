@@ -3,7 +3,8 @@ name: Deploy docker (arm64v8)
 on:
   push:
     branches:
-      - 'main'
+      #- 'main'
+      - 'abc'
 
 jobs:
   docker:
