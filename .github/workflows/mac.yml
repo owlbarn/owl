@@ -27,7 +27,7 @@ jobs:
       
       - name: Deps
         # git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
-        run: brew install aspcud libshp-dev libopenblas-dev liblapacke-dev
+        run: brew install aspcud openblas
 
       - name: OCaml Deps
         run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy
