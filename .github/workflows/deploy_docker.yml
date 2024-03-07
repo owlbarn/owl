@@ -1,4 +1,4 @@
-name: Build and deploy docker container 
+name: Deploy docker (arm64v8)
 
 on:
   push:
