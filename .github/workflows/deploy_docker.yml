@@ -26,6 +26,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker/Dockerfile
+          file: ./docker/Dockerfile.test
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl-arm64v8:latest
