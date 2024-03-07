@@ -8,6 +8,10 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
     steps:
       -
         name: Set up QEMU
@@ -26,5 +30,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl-arm64v8:latest
+          tags: matrixanger/owl-arm64v8:latest
