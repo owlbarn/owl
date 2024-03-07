@@ -4992,34 +4992,34 @@
 // ssqr_diff
 
 #define FUN11 float32_ssqr_diff
-#define INIT float r = 0.
+#define INIT float r = 0. ; float diff
 #define NUMBER float
 #define NUMBER1 float
-#define ACCFN(A,X,Y) X -= Y; X *= X; A += X
+#define ACCFN(A,X,Y) diff=X-Y; diff*=diff; A+=diff
 #define COPYNUM(A) (caml_copy_double(A))
 #include OWL_NDARRAY_MATHS_FOLD
 
 #define FUN11 float64_ssqr_diff
-#define INIT double r = 0.
+#define INIT double r = 0. ; double diff
 #define NUMBER double
 #define NUMBER1 double
-#define ACCFN(A,X,Y) X -= Y; X *= X; A += X
+#define ACCFN(A,X,Y) diff=X-Y; diff*=diff; A+=diff
 #define COPYNUM(A) (caml_copy_double(A))
 #include OWL_NDARRAY_MATHS_FOLD
 
 #define FUN11 complex32_ssqr_diff
-#define INIT complex_float r = { 0.0, 0.0 }
+#define INIT complex_float r = { 0.0, 0.0 }; complex_float diff
 #define NUMBER complex_float
 #define NUMBER1 complex_float
-#define ACCFN(A,X,Y) X.r -= Y.r; X.i -= Y.i; A.r += (X.r - X.i) * (X.r + X.i); A.i += 2 * A.r * A.i
+#define ACCFN(A,X,Y) diff.r = X.r - Y.r; diff.i = X.i - Y.i; A.r += (diff.r - diff.i) * (diff.r + diff.i); A.i += 2 * A.r * A.i
 #define COPYNUM(A) (cp_two_doubles(A.r, A.i))
 #include OWL_NDARRAY_MATHS_FOLD
 
 #define FUN11 complex64_ssqr_diff
-#define INIT complex_double r = { 0.0, 0.0 }
+#define INIT complex_double r = { 0.0, 0.0 }; complex_double diff
 #define NUMBER complex_double
 #define NUMBER1 complex_double
-#define ACCFN(A,X,Y) X.r -= Y.r; X.i -= Y.i; A.r += (X.r - X.i) * (X.r + X.i); A.i += 2 * A.r * A.i
+#define ACCFN(A,X,Y) diff.r = X.r - Y.r; diff.i = X.i - Y.i; A.r += (diff.r - diff.i) * (diff.r + diff.i); A.i += 2 * A.r * A.i
 #define COPYNUM(A) (cp_two_doubles(A.r, A.i))
 #include OWL_NDARRAY_MATHS_FOLD
 

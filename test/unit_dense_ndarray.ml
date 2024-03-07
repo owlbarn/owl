@@ -132,7 +132,24 @@ module To_test = struct
   let sum_reduce () =
     M.sum_reduce ~axis:[| 0; 2 |] x4 = M.of_array Float64 [| 8.; 8.; 8. |] [| 1; 3; 1 |]
 
+  let ssqr_diff32 () =
+    let a = M.of_array Float32 [| 3.; 4.; 5.; |] [| 1; 3 |] in
+    let a' = M.copy a in
+    let b = M.of_array Float32 [| 1.; 2.; 3.; |] [| 1; 3 |] in
+    let b' = M.copy b in
+    let ssqrdiff = M.ssqr_diff' a b in
+    ssqrdiff = 12. && a = a' && b = b'
 
+  let ssqr_diff64 () =
+    let a = M.of_array Float64 [| 3.; 4.; 5.; |] [| 1; 3 |] in
+    let a' = M.copy a in
+    let b = M.of_array Float64 [| 1.; 2.; 3.; |] [| 1; 3 |] in
+    let b' = M.copy b in
+    let ssqrdiff = M.ssqr_diff' a b in
+    ssqrdiff = 12. && a = a' && b = b'
+  
+  
+  
   let min' () = M.min' x0 = 0.
 
   let max' () = M.max' x0 = 3.
@@ -530,6 +547,10 @@ let sort1 () = Alcotest.(check bool) "sort1" true (To_test.sort1 ())
 
 let sum_reduce () = Alcotest.(check bool) "sum_reduce" true (To_test.sum_reduce ())
 
+let ssqr_diff32 () = Alcotest.(check bool) "ssqr_diff32" true (To_test.ssqr_diff32 ())
+
+let ssqr_diff64 () = Alcotest.(check bool) "ssqr_diff64" true (To_test.ssqr_diff64 ())
+
 let min' () = Alcotest.(check bool) "min'" true (To_test.min' ())
 
 let max' () = Alcotest.(check bool) "max'" true (To_test.max' ())
@@ -674,6 +695,7 @@ let test_set =
   ; "mul", `Slow, mul; "add_scalar", `Slow, add_scalar; "mul_scalar", `Slow, mul_scalar
   ; "abs", `Slow, abs; "neg", `Slow, neg; "sum'", `Slow, sum'; "median'", `Slow, median'
   ; "median", `Slow, median; "sort1", `Slow, sort1; "sum_reduce", `Slow, sum_reduce
+  ; "ssqr_diff32", `Slow, ssqr_diff32 ; "ssqr_diff64", `Slow, ssqr_diff64
   ; "min'", `Slow, min'; "max'", `Slow, max'; "minmax_i", `Slow, minmax_i
   ; "init_nd", `Slow, init_nd; "is_zero", `Slow, is_zero
   ; "is_positive", `Slow, is_positive; "is_negative", `Slow, is_negative
