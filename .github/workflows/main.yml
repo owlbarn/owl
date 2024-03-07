@@ -45,11 +45,10 @@ jobs:
         run: | 
             opam exec -- dune build @doc 
             cat docs/mathjax.js docs/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
-            cp -r _build/default/_doc/_html/* docs
       
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: _build/default/_doc/_html
           destination_dir: .
