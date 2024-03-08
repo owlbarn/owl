@@ -34,7 +34,8 @@ jobs:
       
       - name: Build doc
         run: | 
-            opam exec -- dune build @doc 
+            opam exec -- dune build @doc --verbose
+            ls _build/default/_doc/_html/owl/Owl_dense_matrix
             cp docs/*.js  _build/default/_doc/_html/
             cp docs/*.css _build/default/_doc/_html/
       # cat docs/mathjax.js docs/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
@@ -42,7 +43,6 @@ jobs:
       - name: inspect
         run: |
           ls _build/default/_doc/_html/owl/Owl
-          ls _build/default/_doc/_html/owl/
           ls _build/default/_doc/_html/
 
       - name: Deploy
