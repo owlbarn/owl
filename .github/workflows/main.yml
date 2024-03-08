@@ -37,8 +37,6 @@ jobs:
       - name: Build doc
         run: | 
           opam exec -- dune build @doc
-          cp docs/*.js  _build/default/_doc/_html/
-          cp docs/*.css _build/default/_doc/_html/
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
