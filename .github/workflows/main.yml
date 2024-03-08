@@ -34,7 +34,8 @@ jobs:
       
       - name: Build doc
         run: | 
-            opam exec -- dune build @doc --verbose
+            odc --version
+            opam exec -- dune build @doc --verbose 2>&1
             ls _build/default/_doc/_html/owl/Owl_dense_matrix
             cp docs/*.js  _build/default/_doc/_html/
             cp docs/*.css _build/default/_doc/_html/
