@@ -32,6 +32,26 @@ jobs:
       - name: OCaml Deps
         run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
       
+      - name: Build doc
+        run: | 
+            opam exec -- dune build @doc 
+            cp docs/*.js  _build/default/_doc/_html/
+            cp docs/*.css _build/default/_doc/_html/
+      # cat docs/mathjax.js docs/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
+
+      - name: inspect
+        run: |
+          ls _build/default/_doc/_html/owl/Owl
+          ls _build/default/_doc/_html/owl/
+          ls _build/default/_doc/_html/
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _build/default/_doc/_html
+          destination_dir: .
+
       - name: Compile Owl, install
         run: opam exec -- dune build @install
       
@@ -40,20 +60,3 @@ jobs:
         run: |
           opam install owl-base 
           opam exec -- dune runtest -j 1 --no-buffer -p owl
-
-      - name: Build doc
-        run: | 
-            opam exec -- dune build @doc 
-            cat docs/mathjax.js docs/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
-      
-      - name: inspect
-        run: |
-          ls _build/default/_doc/_html/owl/Owl
-          ls _build/default/_doc/_html/owl/Owl_fft/
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/default/_doc/_html
-          destination_dir: .
