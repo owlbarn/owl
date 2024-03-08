@@ -61,7 +61,7 @@ val sqrt : float -> float
 (** [sqrt x] square root. *)
 
 val pow : float -> float -> float
-(** [pow x y] returns :math:`x^y`. *)
+(** [pow x y] returns {m x^y}. *)
 
 val exp : float -> float
 (** [exp x] exponential. *)

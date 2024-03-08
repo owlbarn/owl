@@ -36,7 +36,7 @@ uninstall:
 .PHONY: doc
 doc:
 	dune build @doc
-	cat docs/mathjax.js docs/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
+# cat docs/mathjax.js docs/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
 	cp -r _build/default/_doc/_html/* docs
 
 .PHONY: distclean cleanall

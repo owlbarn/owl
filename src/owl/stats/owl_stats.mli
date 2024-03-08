@@ -94,7 +94,7 @@ val quantile : float array -> float -> float
     "pre-apply" the function, as in ``let f = quantile x in List.map f
     [ 0.1 ; 0.5 ]``, in which case the data is sorted only once.
 
-    @raise Invalid_argument if [p] is not between 0 and 1.
+    Raises Invalid_argument if [p] is not between 0 and 1.
 *)
 
 val first_quartile : float array -> float
@@ -525,8 +525,9 @@ val multinomial_rvs : int -> p:float array -> int array
 [multinomial_rvs n ~p] generates random numbers of multinomial distribution
 from [n] trials. The probability mass function is as follows.
 
-.. math::
+{math
   P(x) = \frac{n!}{{x_1}! \cdot\cdot\cdot {x_k}!} p_{1}^{x_1} \cdot\cdot\cdot p_{k}^{x_k}
+}
 
 [p] is the probability mass of [k] categories. The elements in [p] should
 all be positive (result is undefined if there are negative values), but they 
@@ -1067,18 +1068,18 @@ val dirichlet_rvs : alpha:float array -> float array
 (**
 [dirichlet_rvs ~alpha] returns random variables of [K-1] order Dirichlet
 distribution, follows the following probability dense function.
-
-.. math::
-  f(x_1,...,x_K; \alpha_1,...,\alpha_K) = \frac{1}{\mathbf{B(\alpha)}} \prod_{i=1}^K x_i^{\alpha_i - 1}
+ 
+{math f(x_1,...,x_K; \alpha_1,...,\alpha_K) = \frac{1}{\mathbf{B(\alpha)}} \prod_{i=1}^K x_i^{\alpha_i - 1}  }
 
 The normalising constant is the multivariate Beta function, which can be
 expressed in terms of the gamma function:
 
-.. math::
-  \mathbf{B(\alpha)} = \frac{\prod_{i=1}^K \Gamma(\alpha_i)}{\Gamma(\sum_{i=1}^K \alpha_i)}
+{math
+\mathbf{B(\alpha)} = \frac{\prod_{i=1}^K \Gamma(\alpha_i)}{\Gamma(\sum_{i=1}^K \alpha_i)}
+}
 
 Note that [x] is a standard K-1 simplex, i.e.
-:math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall x_i \in [1,K]`.
+{m \sum_i^K x_i = 1} and {m x_i \ge 0, \forall x_i \in [1,K]}.
 
  *)
 
