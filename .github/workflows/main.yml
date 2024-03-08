@@ -33,17 +33,16 @@ jobs:
         run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
       
       - name: Build doc
-        run: | 
-            opam exec -- dune build @doc --verbose
-            ls _build/default/_doc/_html/owl/Owl_dense_matrix
-            cp docs/*.js  _build/default/_doc/_html/
-            cp docs/*.css _build/default/_doc/_html/
-      # cat docs/mathjax.js docs/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
+        run: opam exec -- dune build @doc --verbose
 
       - name: inspect
         run: |
           ls _build/default/_doc/_html/owl/Owl
+          ls _build/default/_doc/_html/owl/Owl_dense_matrix
           ls _build/default/_doc/_html/
+          cp docs/*.js  _build/default/_doc/_html/
+          cp docs/*.css _build/default/_doc/_html/
+        # cat docs/mathjax.js docs/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
@@ -52,7 +51,7 @@ jobs:
           publish_dir: _build/default/_doc/_html
           destination_dir: .
 
-      - name: Compile Owl, install
+      - name: Compile Owl and install
         run: opam exec -- dune build @install
       
       - name: Run tests
