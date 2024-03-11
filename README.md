@@ -4,6 +4,9 @@
 
 Owl is a dedicated system for scientific and engineering computing. The system is developed in OCaml and licensed under MIT. The project is originated by [Liang Wang](https://liang.ocaml.xyz) and currently led by [Jianxin Zhao](https://jianxin.ocaml.xyz). The history of the project is on the [Wikipedia](https://en.wikipedia.org/wiki/Owl_Scientific_Computing).
 
+## Installation
+
+Please follow the [tutorial](https://ocaml.xyz/tutorial/chapters/introduction.html) about installing Owl. 
 
 ## Mission
 
@@ -25,14 +28,24 @@ Emphasis are put on the responsibility of each team member.
 Each one should take responsibility of certain aspects of the code base, e.g. a module or maintenance for a specific OS platform.
 Team members, together with their domain aspects and responsibilities, will be listed here and also on the [Owl website](https://ocaml.xyz/).
 
+For anyone who is willing to contribute, some good starting points could be:
+- Participate in discussion in issues, and help to fix them
+- Fix [documentations](https://ocaml.xyz/docs/), mainly by changing the `.mli` files in the source code, based on which the documentations are generated
+- Fix [tutorials](https://ocaml.xyz/tutorial/); the code could be not runnable, or the content could not display properly
+- Add more examples and tests
+- Fix issues listed in the [TODO list](https://github.com/orgs/owlbarn/projects/2/views/2)
+- Propose to fix/improve anything that interests you during using Owl
+- ... 
 
 **Current team member:**
 
 - [@jzstark](https://github.com/jzstark): Project leader. Manage overall architecture, roadmap，and tech vision. Community communication. Set research agenda.
-
-
 - [@ryanrhymes](https://github.com/ryanrhymes): Potential commercialization, business opportunity & funding seeking.
 
+- [@mikhailazaryan](https://github.com/mikhailazaryan)
+- [@mseri](https://github.com/mseri): multi-platform installation
+- [@patrick-nicodemus](https://github.com/patrick-nicodemus)
+- [@Ramiro Checa-Garcia](https://github.com/RCHG)
 
 ## Code of Contributing 
 
