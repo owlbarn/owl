@@ -211,7 +211,12 @@
 (rule
  (targets c_flags.sexp c_library_flags.sexp ocaml_flags.sexp)
  (deps
-  (:deps-conf config/configure.exe))
+  (:deps-conf config/configure.exe)
+  (env_var OWL_CFLAGS)
+  (env_var OWL_ENABLE_DEVMODE)
+  (env_var OWL_ENABLE_OPENMP)
+  (env_var OWL_DISABLE_LAPACKE_LINKING_FLAG)
+  )
  (action
   (progn
    (run %{deps-conf}))))
