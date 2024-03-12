@@ -1,5 +1,6 @@
 (tests
  (names test_runner)
  (libraries alcotest owl)
+ (package owl)
  (action
   (run %{test})))
