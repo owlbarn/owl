@@ -2,7 +2,7 @@
  * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
-
+open Owl_base_stats_dist_uniform
 let _u1 = ref 0.
 
 let _u2 = ref 0.
