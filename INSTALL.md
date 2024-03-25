@@ -15,18 +15,18 @@ before compilation:
 - `OWL_CFLAGS` allows to change the default flags passed to the C targets,
   it defaults to
   ```
-  OWL_CFLAGS="-g -O3 -Ofast -march=native -mfpmath=sse -funroll-loops -ffast-math -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing -Wno-tautological-constant-out-of-range-compare"`
+  OWL_CFLAGS="-g -O3 -Ofast -funroll-loops -ffast-math -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing"`
   ```
 
 - `OWL_AEOS_CFLAGS` allows to change the default flags passed to the C targets
   when compiling AEOS. It defaults to
   ```
-  OWL_AEOS_CFLAGS="-g -O3 -Ofast -march=native -funroll-loops -ffast-math -DSFMT_MEXP=19937 -fno-strict-aliasing"
+  OWL_AEOS_CFLAGS="-g -O3 -Ofast -funroll-loops -ffast-math -DSFMT_MEXP=19937 -fno-strict-aliasing"
   ```
 
 - `OWL_DISABLE_LAPACKE_LINKING_FLAG=1` disables the `-llapacke` flag in the
-  linking options. This is useful when you have lapacke installed on
-  non-standard location.
+  linking options. This may be useful when you have certain unusual lapacke
+  setups, do not use it unless you know what you are doing.
 
 If you are not using `opam`, you should run `make clean` before recompiling
 the library after having changed any of those environment variables.

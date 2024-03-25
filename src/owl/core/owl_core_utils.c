@@ -207,7 +207,13 @@ void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int64_t *offset)
  * Code heavily inspired by Eigen (http://eigen.tuxfamily.org/).
  */
 
-
+#if defined(__arm__) || defined(__aarch64__)
+void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
+  *l1p = 16 * 1024;
+  *l2p = 512 * 1024;
+  *l3p = 512 * 1024;
+}
+#else
 OWL_INLINE void query_cache_sizes_intel(int* l1p, int* l2p, int* l3p) {
   int cpuinfo[4];
   int l1 = 0, l2 = 0, l3 = 0;
@@ -295,3 +301,4 @@ void query_cache_sizes(int* l1p, int* l2p, int* l3p) {
     *l3p = 512 * 1024;
   }
 }
+#endif
