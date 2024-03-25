@@ -22,13 +22,13 @@ inline double std_exponential_rvs ( ) {
   else {
     for ( ; ; ) {
       if ( iz == 0 ) {
-        value = 7.69711 - log ( sfmt_f64_1 );
+        value = 7.69711 - log ( sfmt_f64_3 );
         break;
       }
 
       x = jz * we[iz];
 
-      if ( fe[iz] + sfmt_f64_1 * ( fe[iz-1] - fe[iz] ) < exp ( - x ) ) {
+      if ( fe[iz] + sfmt_f64_3 * ( fe[iz-1] - fe[iz] ) < exp ( - x ) ) {
         value = x;
         break;
       }
@@ -92,8 +92,8 @@ inline double std_gaussian_rvs ( ) {
     for ( ; ; ) {
       if ( iz == 0 ) {
         for ( ; ; ) {
-          x = - 0.2904764 * log ( sfmt_f64_1 );
-          y = - log ( sfmt_f64_1 );
+          x = - 0.2904764 * log ( sfmt_f64_3 );
+          y = - log ( sfmt_f64_3 );
           if ( x * x <= y + y )
             break;
         }
@@ -103,7 +103,7 @@ inline double std_gaussian_rvs ( ) {
 
       x = hz * wn[iz];
 
-      if ( fn[iz] + ( sfmt_f64_1 ) * ( fn[iz-1] - fn[iz] ) < exp ( - 0.5 * x * x ) ) {
+      if ( fn[iz] + ( sfmt_f64_3 ) * ( fn[iz-1] - fn[iz] ) < exp ( - 0.5 * x * x ) ) {
         value = x;
         break;
       }

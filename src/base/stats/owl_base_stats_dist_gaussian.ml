@@ -2,7 +2,7 @@
  * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
-
+open Owl_base_stats_dist_uniform
 let _u1 = ref 0.
 
 let _u2 = ref 0.
@@ -20,8 +20,8 @@ let std_gaussian_rvs () =
     !_z1)
   else (
     _case := true;
-    _u1 := Random.float 1.;
-    _u2 := Random.float 1.;
+    _u1 := rand01_exclusive ();
+    _u2 := rand01_exclusive ();
     _z0 := sqrt (~-.2. *. log !_u1) *. cos (2. *. Owl_const.pi *. !_u2);
     _z1 := sqrt (~-.2. *. log !_u1) *. sin (2. *. Owl_const.pi *. !_u2);
     !_z0)
@@ -35,8 +35,8 @@ let gaussian_rvs ~mu ~sigma =
     mu +. (sigma *. !_z1))
   else (
     _case := true;
-    _u1 := Random.float 1.;
-    _u2 := Random.float 1.;
+    _u1 := rand01_exclusive ();
+    _u2 := rand01_exclusive ();
     _z0 := sqrt (~-.2. *. log !_u1) *. cos (2. *. Owl_const.pi *. !_u2);
     _z1 := sqrt (~-.2. *. log !_u1) *. sin (2. *. Owl_const.pi *. !_u2);
     mu +. (sigma *. !_z0))
