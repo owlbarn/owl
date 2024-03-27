@@ -76,13 +76,15 @@ let get_ocaml_devmode_flags _c =
   if not enable_devmode then [] else [ "-w"; "-32-27-6-37-3" ]
 
 
+let clean_env_var env_var =
+  Sys.getenv env_var
+  |> String.trim
+  |> String.split_on_char ' '
+  |> List.filter (fun s -> String.trim s <> "")
+
+
 let default_cflags =
-  try
-    Sys.getenv "OWL_CFLAGS"
-    |> String.trim
-    |> String.split_on_char ' '
-    |> List.filter (fun s -> String.trim s <> "")
-  with
+  try clean_env_var "OWL_CFLAGS" with
   | Not_found ->
     [ (* Basic optimisation *)
       "-g"
@@ -102,7 +104,20 @@ let default_cflags =
     ]
 
 
-let default_libs = [ "-lm" ]
+let default_cppflags =
+  try clean_env_var "OWL_CPPFLAGS" with
+  | Not_found -> []
+
+
+let default_ldflags =
+  try clean_env_var "OWL_LDFLAGS" with
+  | Not_found -> []
+
+
+let default_ldlibs =
+  try clean_env_var "OWL_LDLIBS" with
+  | Not_found -> [ "-lm" ]
+
 
 let get_expmode_cflags _c =
   let enable_expmode = bgetenv "OWL_ENABLE_EXPMODE" in
@@ -197,12 +212,30 @@ let () =
           ~default:openblas_default
           (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"openblas")
       in
-      if not
-         @@ C.c_test
-              c
-              test_linking
-              ~c_flags:openblas_conf.cflags
-              ~link_flags:openblas_conf.libs
+      let openmp_config = get_openmp_config c in
+      (* configure link options *)
+      let libs =
+        []
+        @ default_ldflags
+        @ default_ldlibs
+        @ openblas_conf.libs
+        @ cblas_conf.libs
+        @ default_gcc_path
+        @ get_accelerate_libs c
+        @ openmp_config.libs
+      in
+      (* configure compile options *)
+      let cflags =
+        []
+        @ default_cflags
+        @ default_cppflags
+        @ openblas_conf.cflags
+        @ cblas_conf.cflags
+        @ get_devmode_cflags c
+        @ get_expmode_cflags c
+        @ openmp_config.cflags
+      in
+      if not @@ C.c_test c test_linking ~c_flags:cflags ~link_flags:libs
       then (
         Printf.printf
           {|
@@ -230,34 +263,13 @@ some details on how your openblas has been installed and the output of
             C.c_test
               c
               test_lapacke_working_code
-              ~c_flags:openblas_conf.cflags
-              ~link_flags:(openblas_conf.libs @ [ "-lm" ])
+              ~c_flags:cflags
+              ~link_flags:(libs @ [ "-lm" ])
             |> not
         in
         if needs_lapacke_flag then [ "-llapacke" ] else []
       in
-      let openmp_config = get_openmp_config c in
-      (* configure link options *)
-      let libs =
-        []
-        @ lapacke_lib
-        @ openblas_conf.libs
-        @ cblas_conf.libs
-        @ default_libs
-        @ default_gcc_path
-        @ get_accelerate_libs c
-        @ openmp_config.libs
-      in
-      (* configure compile options *)
-      let cflags =
-        []
-        @ openblas_conf.cflags
-        @ cblas_conf.cflags
-        @ default_cflags
-        @ get_devmode_cflags c
-        @ get_expmode_cflags c
-        @ openmp_config.cflags
-      in
+      let libs = lapacke_lib @ libs in
       (* configure ocaml options *)
       let ocaml_flags = [] @ get_ocaml_default_flags c @ get_ocaml_devmode_flags c in
       (* assemble default config *)
