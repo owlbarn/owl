@@ -42,11 +42,6 @@ For anyone who is willing to contribute, some good starting points could be:
 - [@jzstark](https://github.com/jzstark): Project leader. Manage overall architecture, roadmap，and tech vision. Community communication. Set research agenda.
 - [@ryanrhymes](https://github.com/ryanrhymes): Potential commercialization, business opportunity & funding seeking.
 
-- [@mikhailazaryan](https://github.com/mikhailazaryan)
-- [@mseri](https://github.com/mseri): multi-platform installation
-- [@patrick-nicodemus](https://github.com/patrick-nicodemus)
-- [@Ramiro Checa-Garcia](https://github.com/RCHG)
-
 ## Code of Contributing 
 
 In principle any change to the code base is made via a GitHub Pull Request (PR). Pull requests must be reviewed and approved by at least two key developers in the Owl Team.
