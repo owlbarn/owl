@@ -1,3 +1,3 @@
 (executable
  (name configure)
- (libraries dune.configurator stdio))
+ (libraries dune.configurator))

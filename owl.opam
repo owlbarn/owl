@@ -31,6 +31,5 @@ depends: [
   "dune" {>= "2.0.0"}
   "dune-configurator"
   "owl-base" {= version}
-  "stdio" {build}
   "npy"
 ]

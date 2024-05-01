@@ -86,17 +86,18 @@ typedef struct { double r, i; } complex_double;
   #define OWL_ARCH_x86_64 0
 #endif
 
-#if defined(__PIC__) && OWL_ARCH_i386
-  #define CPUID(cpuinfo,func,id) \
-    __asm__ __volatile__ ("xchgl %%ebx, %k1; cpuid; xchgl %%ebx,%k1": "=a" (cpuinfo[0]), "=&r" (cpuinfo[1]), "=c" (cpuinfo[2]), "=d" (cpuinfo[3]) : "a" (func), "c" (id));
-#elif defined(__PIC__) && OWL_ARCH_x86_64
-  #define CPUID(cpuinfo,func,id) \
-    __asm__ __volatile__ ("xchg{q}\t{%%}rbx, %q1; cpuid; xchg{q}\t{%%}rbx, %q1": "=a" (cpuinfo[0]), "=&r" (cpuinfo[1]), "=c" (cpuinfo[2]), "=d" (cpuinfo[3]) : "0" (func), "2" (id));
-#else
-  #define CPUID(cpuinfo,func,id) \
-    __asm__ __volatile__ ("cpuid": "=a" (cpuinfo[0]), "=b" (cpuinfo[1]), "=c" (cpuinfo[2]), "=d" (cpuinfo[3]) : "0" (func), "2" (id) );
+#if !defined(__arm__) && !defined(__aarch64__)
+  #if defined(__PIC__) && OWL_ARCH_i386
+    #define CPUID(cpuinfo,func,id) \
+      __asm__ __volatile__ ("xchgl %%ebx, %k1; cpuid; xchgl %%ebx,%k1": "=a" (cpuinfo[0]), "=&r" (cpuinfo[1]), "=c" (cpuinfo[2]), "=d" (cpuinfo[3]) : "a" (func), "c" (id));
+  #elif defined(__PIC__) && OWL_ARCH_x86_64
+    #define CPUID(cpuinfo,func,id) \
+      __asm__ __volatile__ ("xchg{q}\t{%%}rbx, %q1; cpuid; xchg{q}\t{%%}rbx, %q1": "=a" (cpuinfo[0]), "=&r" (cpuinfo[1]), "=c" (cpuinfo[2]), "=d" (cpuinfo[3]) : "0" (func), "2" (id));
+  #else
+    #define CPUID(cpuinfo,func,id) \
+      __asm__ __volatile__ ("cpuid": "=a" (cpuinfo[0]), "=b" (cpuinfo[1]), "=c" (cpuinfo[2]), "=d" (cpuinfo[3]) : "0" (func), "2" (id) );
+  #endif
 #endif
-
 
 //  Other
 
