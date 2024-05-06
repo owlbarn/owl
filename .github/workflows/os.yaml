@@ -1,4 +1,4 @@
-name: Main workflow
+name: Multiple OSes
 
 on:
   - pull_request
