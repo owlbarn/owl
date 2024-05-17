@@ -57,7 +57,7 @@ Please check the full [contributing rules](CONTRIBUTING.md) and [code of conduct
 
 ## Community 
 
-The Owl community is based on the [OCaml Discourse](https://discuss.ocaml.org/).  All participants in the community are encouraged to provide support for new users within the project management infrastructure. Those seeking technical support should also recognize that all support activities within the project is voluntary and is therefore provided as and when time permits.
+The Owl community is based on the [OCaml Discourse](https://discuss.ocaml.org/) and [Owl Slack channel](https://owl-dev-team.slack.com/).  All participants in the community are encouraged to provide support for new users within the project management infrastructure. Those seeking technical support should also recognize that all support activities within the project is voluntary and is therefore provided as and when time permits.
 
 
 ## Owl Code Structure 
