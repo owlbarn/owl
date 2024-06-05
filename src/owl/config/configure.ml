@@ -146,14 +146,18 @@ let get_default_config c =
   let cflags =
     try clean_env_var "OWL_CFLAGS" with
     | Not_found ->
-      [ (* Basic optimisation *) "-g"; "-O3"; "-Ofast" ]
+       [ (* Basic optimisation *) "-g"; "-O3" ]
       @ (match arch, os with
         | `arm64, `mac -> [ "-march=native" ]
         | `x86_64, _   -> [ "-march=native"; "-mfpmath=sse"; "-msse2" ]
         | _            -> [])
       @ [ (* Experimental switches, -ffast-math may break IEEE754 semantics*)
           "-funroll-loops"
-        ; "-ffast-math"
+        ; "-fno-math-errno"
+        ; "-fno-rounding-math"
+        ; "-fno-signaling-nans"
+        ; "-fcx-limited-range"
+        ; "-fexcess-precision=fast"
         ; (* Configure Mersenne Twister RNG *)
           "-DSFMT_MEXP=19937"
         ; "-fno-strict-aliasing"
