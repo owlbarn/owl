@@ -156,7 +156,6 @@ let get_default_config c =
         ; "-fno-math-errno"
         ; "-fno-rounding-math"
         ; "-fno-signaling-nans"
-        ; "-fcx-limited-range"
         ; "-fexcess-precision=fast"
         ; (* Configure Mersenne Twister RNG *)
           "-DSFMT_MEXP=19937"
