@@ -379,7 +379,7 @@ def show_dist(d):
         pass
     result +="|] \n"
     result +=");\n"
-    print result
+    print(result)
     pass
 
 distributions = [
@@ -474,10 +474,10 @@ distributions = [
                   chi2(df=30.),
                  ]
 
-print "module M = Owl_stats"
-print "let cdf_approximations = M.["
+print("module M = Owl_stats")
+print("let cdf_approximations = M.[")
 for d in distributions:
   show_dist(d)
   pass
-print "]"
+print("]")
 
