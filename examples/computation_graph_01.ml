@@ -1,4 +1,8 @@
-#!/usr/bin/env owl
+(*
+ * Please install the graphvis tool before executing this example. 
+ E.g. on Ubuntu system: `sudo apt install graphviz`
+*)
+
 
 open Owl
 module G = Owl_computation_cpu_engine.Make (Owl_algodiff_primal_ops.D)

@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example shows how to use checkpoint in a stateful optimisation. *)
 
 open Owl
