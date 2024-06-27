@@ -1,3 +1,6 @@
-(executable
- (name backprop)
+(executables
+ (names 
+  backprop
+  custom_algodiff_op 
+ )
  (libraries owl))

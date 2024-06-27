@@ -1,5 +1,3 @@
-#!/usr/bin/env owl
-
 (* This example demonstrates how to build a custom operation in Algodiff . *)
 
 open Owl
