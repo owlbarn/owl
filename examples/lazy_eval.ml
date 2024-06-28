@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example demonstrates the use of lazy evaluation in Owl *)
 
 open Owl

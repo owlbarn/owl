@@ -31,13 +31,13 @@ let custom_cos =
         : Siso)
      
 let _ =
-  let input = Mat.uniform 1 2 in
+  let input = _f 1. in (* Mat.uniform 1 2 in *)
   (* [f] must be [f : vector -> scalar]. *)
-  let g' = grad custom_cos in
-  let h' = grad g' in
-  let g = grad Maths.cos in
-  let h = grad g in
-  Mat.print (g' input);
-  Mat.print (g input);
-  Mat.print (h' input);
-  Mat.print (h input);
+  let g' = diff custom_cos in
+  let h' = diff g' in
+  let g = diff Maths.cos in
+  let h = diff g in
+  print_float (g' input |> unpack_flt); print_endline "\n";
+  print_float (g input  |> unpack_flt); print_endline "\n";
+  print_float (h' input |> unpack_flt); print_endline "\n";
+  print_float (h input  |> unpack_flt); print_endline "\n"

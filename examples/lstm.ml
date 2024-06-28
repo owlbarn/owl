@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* Text Generation using LSTM.
    The book used is Alice’s Adventures in Wonderland by Lewis Carroll.
  *)

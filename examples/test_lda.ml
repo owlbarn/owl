@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* Test Topic Module *)
 
 (*

@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example demonstrates using lazy functor to train a model on mnist. *)
 
 open Owl

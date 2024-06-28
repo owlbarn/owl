@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example demonstrates using lazy functor to train a LSTM network. *)
 
 #zoo "217ef87bc36845c4e78e398d52bc4c5b"

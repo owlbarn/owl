@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example implements LeNet-5 architecture on the MNIST dataset. *)
 
 open Owl

@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example shows how to use linear algebra module in Owl. *)
 
 open Owl

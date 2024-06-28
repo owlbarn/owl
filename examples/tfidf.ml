@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* test TF-IDF model *)
 
 open Owl

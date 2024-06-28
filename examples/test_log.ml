@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* stochastic gradient decent algorithm *)
 
 module MX = Owl.Dense.Matrix.D

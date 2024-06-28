@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 #require "owl-plplot"
 (* Test Regression module *)
 
