@@ -14,7 +14,7 @@ let qr_fact x =
 
 (* LU factorisation *)
 let lu_fact x =
-  let l, u, a = Linalg.D.lu x in
+  let l, u, _a = Linalg.D.lu x in
   (* TODO: permutation *)
   Mat.(l *@ u)
 
@@ -46,10 +46,10 @@ let det_mat x =
 
 let _ =
   let x0 = Mat.uniform 8 8 in
-  let x1 = Mat.uniform 8 10 in
+  let _x1 = Mat.uniform 8 10 in
+  let _ = lu_fact x0 in
   lq_fact x0;
   qr_fact x0;
-  lu_fact x0;
   svd_fact x0;
   inv_mat x0;
   pinv_mat x0;

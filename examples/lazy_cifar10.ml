@@ -7,7 +7,6 @@ module CGCompiler = Owl_neural_compiler.Make (CPU_Engine)
 
 open CGCompiler.Neural
 open CGCompiler.Neural.Graph
-open CGCompiler.Neural.Algodiff
 
 
 let make_network input_shape =

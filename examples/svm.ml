@@ -1,5 +1,6 @@
-#require "owl-plplot"
-(* This example demonstrates SVM regression. *)
+(* This example demonstrates SVM regression. 
+   You need to first execute `#require "owl-plplot;;"`
+*)
 
 open Owl
 open Owl_plplot

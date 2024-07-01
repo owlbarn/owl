@@ -1,5 +1,6 @@
-#require "owl-plplot"
 (* Test Regression module *)
+
+(* You need to run `#require "owl-plplot"` first *)
 
 open Owl
 
@@ -67,4 +68,4 @@ let _ =
   Owl_log.info "test lasso"; test_lasso (); flush_all ();
   Owl_log.info "test ridge"; test_ridge (); flush_all ();
   Owl_log.info "test elastic"; test_elastic (); flush_all ();
-  Owl_log.info "test poly"; test_poly (); flush_all ()
+  Owl_log.info "test poly"; let _ = test_poly () in flush_all ()

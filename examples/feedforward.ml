@@ -160,7 +160,7 @@ let conv2d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel stride 
   |> add_layer ?act_typ nn;
   nn
 
-let conv3d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel_width kernel stride nn =
+let conv3d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ _kernel_width kernel stride nn =
   Conv3D (Conv3D.create padding kernel stride init_typ)
   |> make_layer ?name nn
   |> add_layer ?act_typ nn;
@@ -252,7 +252,7 @@ let train ?state ?params ?(init_model=true) nn x y =
   Optimise.minimise_network ?state p (forward nn) (backward nn) (update nn) (save nn) (Arr x) (Arr y)
 
 let test_model nn x y =
-  Dense.Matrix.S.iter2_rows (fun u v ->
+  Dense.Matrix.S.iter2_rows (fun u _v ->
     Owl_dataset.print_mnist_image u;
     let p = run (Arr u) nn |> unpack_arr in
     Owl_dense_matrix_generic.print p;

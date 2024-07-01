@@ -37,6 +37,7 @@ let download_all () =
     ; "enron.train.gz"
     ; "nips.test.gz"
     ; "nips.train.gz"
+    ; "insurance.csv.gz"
     ; "mnist-test-images.gz"
     ; "mnist-test-labels.gz"
     ; "mnist-test-lblvec.gz"

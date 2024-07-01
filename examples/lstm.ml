@@ -1,9 +1,6 @@
 (* Text Generation using LSTM.
    The book used is Alice’s Adventures in Wonderland by Lewis Carroll.
  *)
-
-#zoo "217ef87bc36845c4e78e398d52bc4c5b"
-
 open Owl
 open Neural.S
 open Neural.S.Graph
@@ -11,14 +8,16 @@ open Neural.S.Graph
 
 let prepare window step =
   Owl_log.info "build vocabulary and tokenise ...";
-  let chars = load_file ~gist:"217ef87bc36845c4e78e398d52bc4c5b" "wonderland.txt" |> String.lowercase_ascii in
+  let chars = Owl_io.read_file ~trim:true (Sys.getenv "HOME" ^ "/.owl/dataset/wonderland.txt") |> Array.to_list in
+  let chars = String.concat "" chars  |> String.lowercase_ascii in
   let vocab = Nlp.Vocabulary.build_from_string ~alphabet:true chars in
   let t_arr = Nlp.Vocabulary.tokenise vocab chars |> Array.map float_of_int in
   let tokens = Dense.Ndarray.S.of_array t_arr [| Array.length t_arr |] in
 
   Owl_log.info "construct x (sliding) and y (one-hot) ...";
   let x = Dense.Ndarray.S.slide ~step:1 ~window tokens in
-  let y = Dense.Ndarray.S.(one_hot (Nlp.Vocabulary.length vocab) tokens.${[[window;-1]]}) in
+  let l = Dense.Ndarray.S.get_slice [[window; -1]] tokens in
+  let y = Dense.Ndarray.S.(one_hot (Nlp.Vocabulary.length vocab) l) in
 
   Owl_log.info "chars:%i, symbols:%i, wndsz:%i, stepsz:%i"
     (String.length chars) (Nlp.Vocabulary.length vocab) window step;
@@ -42,7 +41,8 @@ let sample nn vocab wndsz tlen x =
     let next_i = Stats.(choose (Array.sub (argsort ~inc:false yt) 0 3) 1).(0) in
     Dense.Matrix.S.set all_char 0 (wndsz + i) (float_of_int next_i);
   done;
-  Dense.Matrix.S.(to_array all_char.${ [[];[wndsz;-1]] })
+  Dense.Matrix.S.get_slice [[];[wndsz;-1]] all_char
+  |> Dense.Matrix.S.to_array
   |> Array.fold_left (fun a i -> a ^ Nlp.Vocabulary.index2word vocab (int_of_float i)) ""
   |> Printf.printf "generated text: %s\n"
   |> flush_all

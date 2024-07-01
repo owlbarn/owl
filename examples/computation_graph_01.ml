@@ -4,7 +4,6 @@
 *)
 
 
-open Owl
 module G = Owl_computation_cpu_engine.Make (Owl_algodiff_primal_ops.D)
 include Owl_algodiff_generic.Make (G)
 
@@ -18,7 +17,7 @@ let visualise_01 () =
   let z = f x y in
   let inputs = [| unpack_elt x |> G.elt_to_node; unpack_elt y |> G.elt_to_node |] in
   let outputs = [| unpack_elt z |> G.elt_to_node |] in
-  let graph = G.make_graph inputs outputs "graph" in
+  let graph = G.make_graph ~input:inputs ~output:outputs "graph" in
   let s = G.graph_to_dot graph in
   Owl_io.write_file "cgraph_01.dot" s;
   Sys.command "dot -Tpdf cgraph_01.dot -o cgraph_01.pdf" |> ignore
@@ -30,7 +29,7 @@ let visualise_02 () =
   let z = (grad (f x)) y in
   let inputs = [| unpack_elt x |> G.elt_to_node; unpack_elt y |> G.elt_to_node |] in
   let outputs = [| unpack_elt z |> G.elt_to_node |] in
-  let s = G.make_graph inputs outputs "graph" |> G.graph_to_dot in
+  let s = G.make_graph ~input:inputs ~output:outputs "graph" |> G.graph_to_dot in
   Owl_io.write_file "cgraph_02.dot" s;
   Sys.command "dot -Tpdf cgraph_02.dot -o cgraph_02.pdf" |> ignore
 
@@ -42,7 +41,7 @@ let visualise_03 () =
   let z = f x y in
   let i0 = [| unpack_arr x |> G.arr_to_node; unpack_arr y |> G.arr_to_node |] in
   let o0 = [| primal z |> unpack_elt |> G.elt_to_node |] in
-  let s0 = G.make_graph i0 o0 "graph" |> G.graph_to_dot in
+  let s0 = G.make_graph ~input:i0 ~output:o0 "graph" |> G.graph_to_dot in
   Owl_io.write_file "cgraph_03_forward.dot" s0;
   Sys.command "dot -Tpdf cgraph_03_forward.dot -o cgraph_03_forward.pdf" |> ignore;
 
@@ -50,10 +49,10 @@ let visualise_03 () =
   let x' = adjval x |> unpack_arr |> G.arr_to_node in
   let y' = adjval y |> unpack_arr |> G.arr_to_node in
   let i1 = [| unpack_arr x |> G.arr_to_node |] in
-  let s1 = G.make_graph i1 [| x' |] "graph" |> G.graph_to_dot in
+  let s1 = G.make_graph ~input:i1 ~output:[| x' |] "graph" |> G.graph_to_dot in
   let i2 = [| unpack_arr y |> G.arr_to_node |] in
-  let s2 = G.make_graph i2 [| y' |] "graph" |> G.graph_to_dot in
-  let s3 = G.make_graph i0 [| x'; y' |] "graph" |> G.graph_to_dot in
+  let s2 = G.make_graph ~input:i2 ~output:[| y' |] "graph" |> G.graph_to_dot in
+  let s3 = G.make_graph ~input:i0 ~output:[| x'; y' |] "graph" |> G.graph_to_dot in
   Owl_io.write_file "cgraph_03_backward_x.dot" s1;
   Sys.command "dot -Tpdf cgraph_03_backward_x.dot -o cgraph_03_backward_x.pdf" |> ignore;
   Owl_io.write_file "cgraph_03_backward_y.dot" s2;
