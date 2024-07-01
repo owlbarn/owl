@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example demonstrates the use of distributed count-min sketches. It
  * fills a single count-min sketch using the news.txt corpus at 
  * https://github.com/ryanrhymes/owl_dataset, then initializes two new empty

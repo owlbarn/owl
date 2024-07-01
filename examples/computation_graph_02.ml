@@ -1,4 +1,8 @@
-#!/usr/bin/env owl
+(*
+ * Please install the graphvis tool before executing this example. 
+ E.g. on Ubuntu system: `sudo apt install graphviz`
+*)
+
 
 open Owl
 module G = Owl_computation_cpu_engine.Make (Owl_algodiff_primal_ops.D)
@@ -32,14 +36,14 @@ let visualise_mnist () =
   let _, adj0 = Graph.(backward network loss) in
   let inputs = [| xt |> A.unpack_arr |> G.arr_to_node |] in
   let s0_outputs = [| loss |> A.unpack_elt |> G.elt_to_node |] in
-  let s0 = G.make_graph inputs s0_outputs "mnist_loss" |> G.graph_to_dot in
+  let s0 = G.make_graph ~input:inputs ~output:s0_outputs "mnist_loss" |> G.graph_to_dot in
   Owl_io.write_file "cgraph_04_mnist_loss.dot" s0;
   Sys.command "dot -Tpdf cgraph_04_mnist_loss.dot -o cgraph_04_mnist_loss.pdf" |> ignore;
   let s1_outputs = adj0 
     |> Utils.Array.flatten
     |> Array.map (fun a -> A.unpack_arr a |> G.arr_to_node)
   in
-  let s1 = G.make_graph inputs s1_outputs "mnist_loss" |> G.graph_to_dot in
+  let s1 = G.make_graph ~input:inputs ~output:s1_outputs "mnist_loss" |> G.graph_to_dot in
   Owl_io.write_file "cgraph_04_mnist_grad.dot" s1;
   Sys.command "dot -Tpdf cgraph_04_mnist_grad.dot -o cgraph_04_mnist_grad.pdf" |> ignore
 
@@ -63,14 +67,14 @@ let visualise_lstm () =
   let _, adj0 = Graph.(backward network loss) in
   let inputs = [| xt |> A.unpack_arr |> G.arr_to_node |] in
   let s0_outputs = [| loss |> A.unpack_elt |> G.elt_to_node |] in
-  let s0 = G.make_graph inputs s0_outputs "mnist_loss" |> G.graph_to_dot in
+  let s0 = G.make_graph ~input:inputs ~output:s0_outputs "mnist_loss" |> G.graph_to_dot in
   Owl_io.write_file "cgraph_04_lstm_loss.dot" s0;
   (* Sys.command "dot -Tpdf -Gnslimit=1 cgraph_04_lstm_loss.dot -o cgraph_04_lstm_loss.pdf" |> ignore; *)
   let s1_outputs = adj0 
     |> Utils.Array.flatten
     |> Array.map (fun a -> A.unpack_arr a |> G.arr_to_node)
   in
-  let s1 = G.make_graph inputs s1_outputs "mnist_loss" |> G.graph_to_dot in
+  let s1 = G.make_graph ~input:inputs ~output:s1_outputs "mnist_loss" |> G.graph_to_dot in
   Owl_io.write_file "cgraph_04_lstm_grad.dot" s1
   (* Sys.command "dot -Tpdf -Gnslimit=1 cgraph_04_lstm_grad.dot -o cgraph_04_lstm_grad.pdf" |> ignore *)
 

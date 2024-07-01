@@ -1,8 +1,10 @@
-#!/usr/bin/env owl
 (* This example demonstrates how to write the backpropogation algorithm from
    scratch using Algodiff module. With the backprop algorithm, we further make
    a naive neural network without using Owl' DNN to train on mnist dataset.
+
+   Execute 'Dataset.download_all ()' to accquire all necessary dataset before running this example.'
  *)
+
 
 open Owl
 
@@ -49,7 +51,7 @@ let backprop nn eta x y =
   loss |> unpack_flt
 
 let test nn x y =
-  Dense.Matrix.S.iter2_rows (fun u v ->
+  Dense.Matrix.S.iter2_rows (fun u _ ->
     Dataset.print_mnist_image u;
     let p = run_network (Arr u) nn |> unpack_arr in
     Dense.Matrix.Generic.print p;

@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example demonstrates how to write a gradient descent algorithm. *)
 
 open Owl

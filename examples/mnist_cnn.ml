@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example trains a simple convolutional network on the MNIST dataset. *)
 
 open Owl

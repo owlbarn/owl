@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example demonstrates how to implement Newton method with Algdoff. *)
 
 open Owl

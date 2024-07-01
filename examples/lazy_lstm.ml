@@ -1,7 +1,4 @@
-#!/usr/bin/env owl
 (* This example demonstrates using lazy functor to train a LSTM network. *)
-
-#zoo "217ef87bc36845c4e78e398d52bc4c5b"
 
 open Owl
 
@@ -10,19 +7,20 @@ module CGCompiler = Owl_neural_compiler.Make (CPU_Engine)
 
 open CGCompiler.Neural
 open CGCompiler.Neural.Graph
-open CGCompiler.Neural.Algodiff
 
 
 let prepare window step =
   Owl_log.info "build vocabulary and tokenise ...";
-  let chars = load_file ~gist:"217ef87bc36845c4e78e398d52bc4c5b" "wonderland.txt" |> String.lowercase_ascii in
+  let chars = Owl_io.read_file ~trim:true (Sys.getenv "HOME" ^ "/.owl/dataset/wonderland.txt") |> Array.to_list in
+  let chars = String.concat "" chars  |> String.lowercase_ascii in
   let vocab = Nlp.Vocabulary.build_from_string ~alphabet:true chars in
   let t_arr = Nlp.Vocabulary.tokenise vocab chars |> Array.map float_of_int in
   let tokens = Dense.Ndarray.S.of_array t_arr [| Array.length t_arr |] in
 
   Owl_log.info "construct x (sliding) and y (one-hot) ...";
   let x = Dense.Ndarray.S.slide ~step:1 ~window tokens in
-  let y = Dense.Ndarray.S.(one_hot (Nlp.Vocabulary.length vocab) tokens.${[[window;-1]]}) in
+  let l = Dense.Ndarray.S.get_slice [[window; -1]] tokens in
+  let y = Dense.Ndarray.S.(one_hot (Nlp.Vocabulary.length vocab) l) in
 
   Owl_log.info "chars:%i, symbols:%i, wndsz:%i, stepsz:%i"
     (String.length chars) (Nlp.Vocabulary.length vocab) window step;

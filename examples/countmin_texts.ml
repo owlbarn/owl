@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example demonstrates the use of the HeavyHitters sketch,
  * which is based on the Count-Min sketch in Owl_base library.  
  * This example finds the words which appear with relative frequency

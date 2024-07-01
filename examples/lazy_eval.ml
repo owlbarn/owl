@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example demonstrates the use of lazy evaluation in Owl *)
 
 open Owl
@@ -39,7 +38,7 @@ let print_graph input =
   print_endline "visualise computation graph to dot file ...";
   let inputs = [|M.arr_to_node x; M.arr_to_node y|] in
   let outputs = [|M.arr_to_node z|] in
-  let graph = M.make_graph inputs  outputs "graph" in
+  let graph = M.make_graph ~input:inputs  ~output:outputs "graph" in
   M.assign_arr x input;
   M.assign_arr y input;
   M.graph_to_dot graph |> Owl_io.write_file "plot_lazy.dot";

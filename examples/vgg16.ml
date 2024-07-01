@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example demonstrates how to use Owl to implement VGG16 (https://arxiv.org/abs/1409.1556).
   Note that only the network structure of VGG16 is defined.
 

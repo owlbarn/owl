@@ -1,5 +1,3 @@
-#!/usr/bin/env owl
-
 open Owl
 module LL = Owl_cluster
 
