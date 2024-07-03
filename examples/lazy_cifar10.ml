@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* This example demonstrates using lazy functor to train a model on mnist. *)
 
 open Owl
@@ -8,7 +7,6 @@ module CGCompiler = Owl_neural_compiler.Make (CPU_Engine)
 
 open CGCompiler.Neural
 open CGCompiler.Neural.Graph
-open CGCompiler.Neural.Algodiff
 
 
 let make_network input_shape =

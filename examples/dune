@@ -1,0 +1,30 @@
+(executables
+ (names 
+  backprop
+  checkpoint
+  cifar10_vgg
+  computation_graph_01
+  computation_graph_02
+  countmin_distributed
+  countmin_texts
+  custom_algodiff_op
+  dataframe
+  feedforward
+  gradient_descent
+  inception_v3
+  kmeans
+  lazy_cifar10
+  lazy_eval
+  lazy_lstm
+  lazy_mnist
+  linear_algebra
+  lstm
+  mnist_cnn
+  mnist_lenet
+  newton_method
+  squeezenet
+  test_log
+  tfidf
+  vgg16
+ )
+ (libraries owl))

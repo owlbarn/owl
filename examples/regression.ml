@@ -1,6 +1,6 @@
-#!/usr/bin/env owl
-#require "owl-plplot"
 (* Test Regression module *)
+
+(* You need to run `#require "owl-plplot"` first *)
 
 open Owl
 
@@ -53,12 +53,13 @@ let test_poly () =
   let z = Array.init (n + 1) (fun i -> Mat.(pow_scalar x (float_of_int i)))
     |> Mat.concatenate ~axis:1
   in
-  let y' = Mat.(z *@ p) in
+  Mat.(z *@ p)
+  (* let y' = Mat.(z *@ p) in
   let open Owl_plplot in
   let h = Plot.create "plot_regression.png" in
   Plot.(scatter ~h ~spec:[ RGB (100,100,50) ] x y);
   Plot.(scatter ~h ~spec:[ Marker "+" ] x y');
-  Plot.output h
+  Plot.output h *)
 
 
 let _ =
@@ -67,4 +68,4 @@ let _ =
   Owl_log.info "test lasso"; test_lasso (); flush_all ();
   Owl_log.info "test ridge"; test_ridge (); flush_all ();
   Owl_log.info "test elastic"; test_elastic (); flush_all ();
-  Owl_log.info "test poly"; test_poly (); flush_all ()
+  Owl_log.info "test poly"; let _ = test_poly () in flush_all ()

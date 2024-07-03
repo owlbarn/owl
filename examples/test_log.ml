@@ -1,4 +1,3 @@
-#!/usr/bin/env owl
 (* stochastic gradient decent algorithm *)
 
 module MX = Owl.Dense.Matrix.D
@@ -18,8 +17,8 @@ let generate_data () =
   let y2 = create c 1 ( 0.)in
   let x = concat_vertical x1 x2 in
   let y = concat_vertical y1 y2 in
-  let _ = save_txt x1 "test_log.data1.tmp" in
-  let _ = save_txt x2 "test_log.data2.tmp" in
+  let _ = save_txt x1 ~out:"test_log.data1.tmp" in
+  let _ = save_txt x2 ~out:"test_log.data2.tmp" in
   x, y
 
 

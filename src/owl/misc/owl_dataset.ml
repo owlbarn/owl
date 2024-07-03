@@ -7,7 +7,7 @@
 
 open Owl_types
 
-let remote_data_path () = "https://github.com/ryanrhymes/owl_dataset/raw/master/"
+let remote_data_path () = "https://github.com/owlbarn/owl_dataset/raw/master/"
 
 let local_data_path () : string =
   let home = Sys.getenv "HOME" ^ "/.owl" in
@@ -37,6 +37,7 @@ let download_all () =
     ; "enron.train.gz"
     ; "nips.test.gz"
     ; "nips.train.gz"
+    ; "insurance.csv.gz"
     ; "mnist-test-images.gz"
     ; "mnist-test-labels.gz"
     ; "mnist-test-lblvec.gz"
