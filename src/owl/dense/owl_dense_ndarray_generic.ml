@@ -1939,7 +1939,7 @@ let less_equal x y = _owl_less_equal (kind x) (numel x) x y = 1
 
 let equal_scalar x a = _owl_equal_scalar (kind x) (numel x) x a = 1
 
-let not_equal_scalar x a = _owl_equal_scalar (kind x) (numel x) x a = 1
+let not_equal_scalar x a = _owl_not_equal_scalar (kind x) (numel x) x a = 1
 
 let less_scalar x a = _owl_less_scalar (kind x) (numel x) x a = 1
 
