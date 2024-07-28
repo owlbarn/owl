@@ -16,12 +16,11 @@ let elt_to_str : type a b. (a, b) kind -> a -> string = function
   | Int            -> fun v -> Printf.sprintf "%i" v
   | Int32          -> fun v -> Printf.sprintf "%ld" v
   | Int64          -> fun v -> Printf.sprintf "%Ld" v
-  | Float16        -> fun v -> Printf.sprintf "%G" v
   | Float32        -> fun v -> Printf.sprintf "%G" v
   | Float64        -> fun v -> Printf.sprintf "%G" v
   | Complex32      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
   | Complex64      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
-
+  | _              -> failwith "not implemented"
 
 (* convert an element of string to elt type *)
 let elt_of_str : type a b. (a, b) kind -> string -> a = function
@@ -34,13 +33,13 @@ let elt_of_str : type a b. (a, b) kind -> string -> a = function
   | Int            -> fun v -> int_of_string v
   | Int32          -> fun v -> Int32.of_string v
   | Int64          -> fun v -> Int64.of_string v
-  | Float16        -> fun v -> float_of_string v
   | Float32        -> fun v -> float_of_string v
   | Float64        -> fun v -> float_of_string v
   | Complex32      -> fun v ->
                         Scanf.sscanf v "(%f, %fi)%!" (fun re im -> { Complex.re; im })
   | Complex64      -> fun v ->
                         Scanf.sscanf v "(%f, %fi)%!" (fun re im -> { Complex.re; im })
+  | _              -> failwith "not implemented"
 
 
 (* calculate the number of elements in an ndarray *)
