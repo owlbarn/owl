@@ -2533,8 +2533,8 @@ val create_ : out:('a, 'b) t -> 'a -> unit
 
 val uniform_ : ?a:'a -> ?b:'a -> out:('a, 'b) t -> unit
 (** 
-    [uniform_ ?a ?b ~out] fills the matrix [out] in-place with random values drawn from a uniform distribution over the interval [a, b).
-    If [a] and [b] are not provided, the default interval is [0, 1).
+    [uniform_ ?a ?b ~out] fills the matrix [out] in-place with random values drawn from a uniform distribution over the interval \[a, b\).
+    If [a] and [b] are not provided, the default interval is \[0, 1\).
 *)
 
 val gaussian_ : ?mu:'a -> ?sigma:'a -> out:('a, 'b) t -> unit

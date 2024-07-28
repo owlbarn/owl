@@ -310,7 +310,7 @@ val gamma : float -> float
   {math \Gamma(z) = \int_0^\infty x^{z-1} e^{-x} dx = (z - 1)!.}
 
 The gamma function is often referred to as the generalized factorial since
-{m z\ gamma(z) = \gamma(z+1)} and {m gamma(n+1) = n!}
+{m z\gamma(z) = \gamma(z+1)} and {m \gamma(n+1) = n!}
 for natural number n.
  *)
 
