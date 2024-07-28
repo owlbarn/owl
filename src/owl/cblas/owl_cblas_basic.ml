@@ -860,6 +860,7 @@ let symv
     C.ssymv ~order:_layout ~uplo:_uplo ~n ~alpha ~a:_a ~lda ~x:_x ~incx ~beta ~y:_y ~incy
   | Bigarray.Float64 ->
     C.dsymv ~order:_layout ~uplo:_uplo ~n ~alpha ~a:_a ~lda ~x:_x ~incx ~beta ~y:_y ~incy
+  | _ -> failwith "not implemented" 
 
 
 (* Computes a matrix-vector product using a symmetric band matrix. *)
@@ -915,6 +916,7 @@ let sbmv
       ~beta
       ~y:_y
       ~incy
+  | _ -> failwith "not implemented" 
 
 
 (* Computes a matrix-vector product using a symmetric packed matrix. *)
@@ -945,6 +947,7 @@ let spmv
     C.sspmv ~order:_layout ~uplo:_uplo ~n ~alpha ~ap:_ap ~x:_x ~incx ~beta ~y:_y ~incy
   | Bigarray.Float64 ->
     C.dspmv ~order:_layout ~uplo:_uplo ~n ~alpha ~ap:_ap ~x:_x ~incx ~beta ~y:_y ~incy
+  | _ -> failwith "not implemented" 
 
 
 (* Performs a rank-1 update of a general matrix. *)
@@ -1051,6 +1054,7 @@ let syr
   match Bigarray.Array1.kind x with
   | Bigarray.Float32 -> C.ssyr ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~a:_a ~lda
   | Bigarray.Float64 -> C.dsyr ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~a:_a ~lda
+  | _ -> failwith "not implemented" 
 
 
 (* Performs a rank-1 update of a symmetric packed matrix. *)
@@ -1074,6 +1078,7 @@ let spr
   match Bigarray.Array1.kind x with
   | Bigarray.Float32 -> C.sspr ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~ap:_ap
   | Bigarray.Float64 -> C.dspr ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~ap:_ap
+  | _                -> failwith "not implemented" 
 
 
 (* Performs a rank-2 update of symmetric matrix. *)
@@ -1103,6 +1108,7 @@ let syr2
     C.ssyr2 ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~y:_y ~incy ~a:_a ~lda
   | Bigarray.Float64 ->
     C.dsyr2 ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~y:_y ~incy ~a:_a ~lda
+  | _                -> failwith "not implemented" 
 
 
 (* Performs a rank-2 update of a symmetric packed matrix. *)
@@ -1131,6 +1137,7 @@ let spr2
     C.sspr2 ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~y:_y ~incy ~a:_a
   | Bigarray.Float64 ->
     C.dspr2 ~order:_layout ~uplo:_uplo ~n ~alpha ~x:_x ~incx ~y:_y ~incy ~a:_a
+  | _                -> failwith "not implemented" 
 
 
 (* Computes a matrix-vector product using a Hermitian matrix. *)

@@ -59,6 +59,7 @@ let zero : type a b. (a, b) kind -> a = function
   | Int            -> 0
   | Nativeint      -> 0n
   | Char           -> '\000'
+  | _              -> failwith "not implemented"
 
 
 let one : type a b. (a, b) kind -> a = function
@@ -75,6 +76,7 @@ let one : type a b. (a, b) kind -> a = function
   | Int            -> 1
   | Nativeint      -> 1n
   | Char           -> '\001'
+  | Float16        -> failwith "not implemented"
 
 
 let neg_one : type a b. (a, b) kind -> a = function
@@ -91,6 +93,7 @@ let neg_one : type a b. (a, b) kind -> a = function
   | Int            -> -1
   | Nativeint      -> -1n
   | Char           -> '\255'
+  | Float16        -> failwith "not implemented"
 
 
 let pos_inf : type a b. (a, b) kind -> a = function

@@ -559,6 +559,7 @@ let ormrz
     match _kind with
     | Float32 -> L.sormrz ~layout ~side ~trans ~m ~n ~k ~l ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
     | Float64 -> L.dormrz ~layout ~side ~trans ~m ~n ~k ~l ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   c
@@ -2134,6 +2135,7 @@ let orglq : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t
     match _kind with
     | Float32 -> L.sorglq ~layout ~m:minmn ~n ~k ~a:_a ~lda ~tau:_tau
     | Float64 -> L.dorglq ~layout ~m:minmn ~n ~k ~a:_a ~lda ~tau:_tau
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   (* extract the first leading rows if necessary *)
@@ -2198,6 +2200,7 @@ let orgqr : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t
     match _kind with
     | Float32 -> L.sorgqr ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
     | Float64 -> L.dorgqr ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   (* extract the first leading columns if necessary *)
@@ -2262,6 +2265,7 @@ let orgql : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t
     match _kind with
     | Float32 -> L.sorgql ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
     | Float64 -> L.dorgql ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   (* extract the first leading columns if necessary *)
@@ -2293,6 +2297,7 @@ let orgrq : type a. ?k:int -> a:(float, a) t -> tau:(float, a) t -> (float, a) t
     match _kind with
     | Float32 -> L.sorgrq ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
     | Float64 -> L.dorgrq ~layout ~m ~n:minmn ~k ~a:_a ~lda ~tau:_tau
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   (* extract the first leading columns if necessary *)
@@ -2335,6 +2340,7 @@ let ormlq
     match _kind with
     | Float32 -> L.sormlq ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
     | Float64 -> L.dormlq ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   c
@@ -2373,6 +2379,7 @@ let ormqr
     match _kind with
     | Float32 -> L.sormqr ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
     | Float64 -> L.dormqr ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   c
@@ -2411,6 +2418,7 @@ let ormql
     match _kind with
     | Float32 -> L.sormql ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
     | Float64 -> L.dormql ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   c
@@ -2449,6 +2457,7 @@ let ormrq
     match _kind with
     | Float32 -> L.sormrq ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
     | Float64 -> L.dormrq ~layout ~side ~trans ~m ~n ~k ~a:_a ~lda ~tau:_tau ~c:_c ~ldc
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   c
@@ -3129,6 +3138,7 @@ let stev
     match _kind with
     | Float32 -> L.sstev ~layout ~jobz ~n ~d:_d ~e:_e ~z:_z ~ldz
     | Float64 -> L.dstev ~layout ~jobz ~n ~d:_d ~e:_e ~z:_z ~ldz
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   d, z
@@ -3201,6 +3211,7 @@ let stebz
         ~w:_w
         ~iblock:_iblock
         ~isplit:_isplit
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   let m = Int32.to_int !@_m in
@@ -3786,6 +3797,7 @@ let syev : type a. jobz:char -> uplo:char -> a:(float, a) t -> (float, a) t * (f
     match _kind with
     | Float32 -> L.ssyev ~layout ~jobz ~uplo ~n ~a:_a ~lda ~w:_w
     | Float64 -> L.dsyev ~layout ~jobz ~uplo ~n ~a:_a ~lda ~w:_w
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   match jobz with
@@ -3876,6 +3888,7 @@ let syevr
         ~z:_z
         ~ldz
         ~isuppz:_isuppz
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   let m = Int32.to_int !@_m in
@@ -3916,6 +3929,7 @@ let sygvd
     match _kind with
     | Float32 -> L.ssygvd ~layout ~ityp ~jobz ~uplo ~n ~a:_a ~lda ~b:_b ~ldb ~w:_w
     | Float64 -> L.dsygvd ~layout ~ityp ~jobz ~uplo ~n ~a:_a ~lda ~b:_b ~ldb ~w:_w
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   w, a, b
@@ -4095,6 +4109,7 @@ let bdsdc
       L.sbdsdc ~layout ~uplo ~compq ~n ~d:_d ~e:_e ~u:_u ~ldu ~vt:_vt ~ldvt ~q:_q ~iq:_iq
     | Float64 ->
       L.dbdsdc ~layout ~uplo ~compq ~n ~d:_d ~e:_e ~u:_u ~ldu ~vt:_vt ~ldvt ~q:_q ~iq:_iq
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   d, e, u, vt, q, iq
@@ -4183,6 +4198,7 @@ let orghr
     match _kind with
     | Float32 -> L.sorghr ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
     | Float64 -> L.dorghr ~layout ~n ~ilo ~ihi ~a:_a ~lda ~tau:_tau
+    | _       -> failwith "not implemented" 
   in
   check_lapack_error ret;
   a
