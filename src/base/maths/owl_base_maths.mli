@@ -229,7 +229,7 @@ and always returns [true]. *)
 val is_simplex : float array -> bool
 (**
 [is_simplex x] checks whether [x] is simplex. In other words,
-:math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall x_i \in [1,K]`.
+{m \sum_i^K x_i = 1} and {m x_i \ge 0, \forall x_i \in [1,K]}.
  *)
 
 val is_int : float -> bool

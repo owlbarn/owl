@@ -7,7 +7,7 @@
 
 open Owl_dense
 
-(** {Basic window functions} *)
+(** Basic window functions *)
 
 val blackman : int -> Ndarray.D.arr
 (** Blackman window is a taper formed by using the first three terms of a summation of cosines. It was designed to have close to the minimal leakage possible. 
@@ -24,7 +24,7 @@ val hann : int -> Ndarray.D.arr
 returns a hann window.
 *)
 
-(** {Filter response function} *)
+(** Filter response function *)
 
 val freqz
   :  ?n:int

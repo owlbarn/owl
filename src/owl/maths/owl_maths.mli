@@ -15,38 +15,38 @@
 (** {5 Basic functions} *)
 
 val add : float -> float -> float
-(** [add x y] returns :math:`x + y`. *)
+(** [add x y] returns x + y. *)
 
 val sub : float -> float -> float
-(** [sub x y] returns :math:`x - y`. *)
+(** [sub x y] returns x - y. *)
 
 val mul : float -> float -> float
-(** [mul x y] returns :math:`x * y`. *)
+(** [mul x y] returns x * y. *)
 
 val div : float -> float -> float
-(** [div x y] returns :math:`x / y`. *)
+(** [div x y] returns x / y. *)
 
 val fmod : float -> float -> float
-(** [fmod x y] returns :math:`x % y`. *)
+(** [fmod x y] returns x % y. *)
 
 val atan2 : float -> float -> float
-(** [atan2 y x] returns :math:`\arctan(y/x)`, accounting for the sign of the arguments;
- this is the angle to the vector :math:`(x, y)` counting from the x-axis. *)
+(** [atan2 y x] returns {m \arctan(y/x)}, accounting for the sign of the arguments;
+ this is the angle to the vector {m (x, y)} counting from the x-axis. *)
 
 val abs : float -> float
-(** [abs x] returns :math:`|x|`. *)
+(** [abs x] returns ={m |x|}. *)
 
 val neg : float -> float
-(** [neg x] returns :math:`-x`. *)
+(** [neg x] returns -x. *)
 
 val reci : float -> float
-(** [reci x] returns :math:`1/x`. *)
+(** [reci x] returns 1/x. *)
 
 val floor : float -> float
-(** [floor x] returns the largest integer :math:`\leq x`. *)
+(** [floor x] returns the largest integer {m \leq x}. *)
 
 val ceil : float -> float
-(** [ceil x] returns the smallest integer :math:`\geq x`. *)
+(** [ceil x] returns the smallest integer {m  \geq x}. *)
 
 val round : float -> float
 (** [round x] rounds, towards the bigger integer when on the fence. *)
@@ -73,7 +73,7 @@ val exp10 : float -> float
 (** [exp10 x] exponential. *)
 
 val expm1 : float -> float
-(** [expm1 x] returns :math:`\exp(x) - 1` but more accurate for :math:`x \sim 0`. *)
+(** [expm1 x] returns {m \exp(x) - 1} but more accurate for {m x \sim 0}. *)
 
 val log : float -> float
 (** [log x] natural logarithm *)
@@ -88,54 +88,53 @@ val logn : float -> float -> float
 (** [logn x] base-n logarithm. *)
 
 val log1p : float -> float
-(** [log1p x] returns :math:`\log (x + 1)` but more accurate for :math:`x \sim 0`.
+(** [log1p x] returns {m \log (x + 1)} but more accurate for {m x \sim 0}.
  Inverse of [expm1]. *)
 
 val logabs : float -> float
-(** [logabs x] returns :math:`\log(|x|)`. *)
+(** [logabs x] returns {m \log(|x|)}. *)
 
 val sigmoid : float -> float
 (** [sigmoid x] returns the logistic sigmoid function
-:math:`1 / (1 + \exp(-x))`. *)
+{m 1 / (1 + \exp(-x))}. *)
 
 val signum : float -> float
-(** [signum x] returns the sign of :math:`x`: -1, 0 or 1. *)
+(** [signum x] returns the sign of x -1, 0 or 1. *)
 
 val softsign : float -> float
 (** Smoothed sign function. *)
 
 val softplus : float -> float
-(** [softplus x] returns :math:`\log(1 + \exp(x))`. *)
+(** [softplus x] returns {m \log(1 + \exp(x))}. *)
 
 val relu : float -> float
-(** [relu x] returns :math:`\max(0, x)`. *)
+(** [relu x] returns {m \max(0, x)}. *)
 
 val sin : float -> float
-(** [sin x] returns :math:`\sin(x)`. *)
+(** [sin x] returns {m \sin(x)}. *)
 
 val cos : float -> float
-(** [cos x] returns :math:`\cos(x)`. *)
+(** [cos x] returns {m \cos(x)}. *)
 
 val tan : float -> float
-(** [tan x] returns :math:`\tan(x)`. *)
+(** [tan x] returns {m \tan(x)}. *)
 
 val cot : float -> float
-(** [cot x] returns :math:`1/\tan(x)`. *)
+(** [cot x] returns {m 1/\tan(x)}. *)
 
 val sec : float -> float
-(** [sec x] returns :math:`1/\cos(x)`. *)
+(** [sec x] returns {m 1/\cos(x)}. *)
 
 val csc : float -> float
-(** [csc x] returns :math:`1/\sin(x)`. *)
+(** [csc x] returns {m 1/\sin(x)}. *)
 
 val asin : float -> float
-(** [asin x] returns :math:`\arcsin(x)`. *)
+(** [asin x] returns {m \arcsin(x)}. *)
 
 val acos : float -> float
-(** [acos x] returns :math:`\arccos(x)`. *)
+(** [acos x] returns {m \arccos(x)}. *)
 
 val atan : float -> float
-(** [atan x] returns :math:`\arctan(x)`. *)
 
 val acot : float -> float
 (** Inverse function of [cot]. *)
@@ -147,22 +146,22 @@ val acsc : float -> float
 (** Inverse function of [csc]. *)
 
 val sinh : float -> float
-(** Returns :math:`\sinh(x)`. *)
+(** Returns {m \sinh(x)}. *)
 
 val cosh : float -> float
-(** [cosh x] returns :math:`\cosh(x)`. *)
+(** [cosh x] returns {m \cosh(x)}. *)
 
 val tanh : float -> float
-(** [tanh x] returns :math:`\tanh(x)`. *)
+(** [tanh x] returns {m \tanh(x)}. *)
 
 val coth : float -> float
-(** [coth x] returns :math:`\coth(x)`. *)
+(** [coth x] returns {m \coth(x)}. *)
 
 val sech : float -> float
-(** [sech x] returns :math:`1/\cosh(x)`. *)
+(** [sech x] returns {m 1/\cosh(x)}. *)
 
 val csch : float -> float
-(** [csch x] returns :math:`1/\sinh(x)`. *)
+(** [csch x] returns {m 1/\sinh(x)}. *)
 
 val asinh : float -> float
 (** Inverse function of [sinh]. *)
@@ -183,13 +182,13 @@ val acsch : float -> float
 (** Inverse function of [csch]. *)
 
 val sinc : float -> float
-(** [sinc x] returns :math:`\sin(x)/x` and :math:`1` for :math:`x=0`. *)
+(** [sinc x] returns {m \sin(x)/x} and {m 1} for {m x=0}. *)
 
 val logsinh : float -> float
-(** [logsinh x] returns :math:`\log(\sinh(x))` but handles large :math:`|x|`. *)
+(** [logsinh x] returns {m \log(\sinh(x))} but handles large {m |x|}. *)
 
 val logcosh : float -> float
-(** [logcosh x] returns :math:`\log(\cosh(x))` but handles large :math:`|x|`. *)
+(** [logcosh x] returns {m \log(\cosh(x))} but handles large {m |x|}. *)
 
 val sindg : float -> float
 (** Sine of angle given in degrees. *)
@@ -207,28 +206,28 @@ val hypot : float -> float -> float
 (** [hypot x y] returns {m \sqrt{x^2 + y^2}}. *)
 
 val xlogy : float -> float -> float
-(** [xlogy(x, y)] returns :math:`x \log(y)`. *)
+(** [xlogy(x, y)] returns {m x \log(y)}. *)
 
 val xlog1py : float -> float -> float
-(** [xlog1py(x, y)] returns :math:`x \log(y+1)`. *)
+(** [xlog1py(x, y)] returns {m x \log(y+1)}. *)
 
 val logit : float -> float
-(** [logit(x)] returns :math:`\log[p/(1-p)]`. *)
+(** [logit(x)] returns {m \log\left(\frac{p}{1-p}\right)}. *)
 
 val expit : float -> float
-(** [expit(x)] returns :math:`1/(1+\exp(-x))`. *)
+(** [expit(x)] returns {m \frac{1}{1+\exp(-x)}}. *)
 
 val log1mexp : float -> float
-(** [log1mexp(x)] returns :math:`log(1-exp(x))`. *)
+(** [log1mexp(x)] returns {m \log(1-\exp(x))}. *)
 
 val log1pexp : float -> float
-(** [log1pexp(x)] returns :math:`log(1+exp(x))`. *)
+(** [log1pexp(x)] returns {m \log(1+\exp(x))}. *)
 
 (** {5 Airy functions} *)
 
 val airy : float -> float * float * float * float
 (**
-Airy function [airy x] returns [(Ai, Ai', Bi, Bi')] evaluated at :math:`x`.
+Airy function [airy x] returns [(Ai, Ai', Bi, Bi')] evaluated at x.
 [Ai'] is the derivative of [Ai] whilst [Bi'] is the derivative of [Bi].
 *)
 
@@ -271,13 +270,13 @@ val iv : float -> float -> float
 (** Modified Bessel function of the first kind of real order. *)
 
 val k0 : float -> float
-(** Modified Bessel function of the second kind of order 0, :math:`K_0`.*)
+(** Modified Bessel function of the second kind of order 0, {m K_0}. *)
 
 val k0e : float -> float
 (** Exponentially scaled modified Bessel function K of order 0. *)
 
 val k1 : float -> float
-(** Modified Bessel function of the second kind of order 1, :math:`K_1(x)`. *)
+(** Modified Bessel function of the second kind of order 1, {m K_1(x)}. *)
 
 val k1e : float -> float
 (** Exponentially scaled modified Bessel function K of order 1. *)
@@ -291,7 +290,7 @@ val ellipk : float -> float
 (** [ellipk m] returns the complete elliptic integral of the first kind. *)
 
 val ellipkm1 : float -> float
-(** FIXME. Complete elliptic integral of the first kind around :math:`m = 1`. *)
+(** FIXME. Complete elliptic integral of the first kind around {m m = 1}. *)
 
 val ellipkinc : float -> float -> float
 (** [ellipkinc phi m] incomplete elliptic integral of the first kind. *)
@@ -355,21 +354,22 @@ val betaincinv : float -> float -> float -> float
 (** {5 Factorials} *)
 
 val fact : int -> float
-(** Factorial function [fact n] calculates :math:`n!`. *)
+(** Factorial function [fact n] calculates {m n!}. *)
 
 val log_fact : int -> float
-(** Logarithm of factorial function [log_fact n] calculates :math:`\log n!`. *)
+(** Logarithm of factorial function [log_fact n] calculates {m \log n!}. *)
 
 val doublefact : int -> float
 (** Double factorial function [doublefact n] calculates
-:math:`n!! = n(n-2)(n-4)\dots 2` or :math:`\dots 1` *)
+    {m n!! = n(n-2)(n-4)\dots 2} or {m \dots 1}. *)
 
 val log_doublefact : int -> float
 (** Logarithm of double factorial function. *)
 
 val permutation : int -> int -> int
-(** [permutation n k] returns the number :math:`n!/(n-k)!` of ordered subsets
- * of length :math:`k`, taken from a set of :math:`n` elements. *)
+(** [permutation n k] returns the number {m \frac{n!}{(n-k)!}} of ordered subsets
+    of length {m k}, taken from a set of {m n} elements. *)
+
 
 val permutation_float : int -> int -> float
 (**
@@ -377,7 +377,7 @@ val permutation_float : int -> int -> float
  *)
 
 val combination : int -> int -> int
-(** [combination n k] returns the number :math:`n!/(k!(n-k)!)` of subsets of k elements
+(** [combination n k] returns the number {m n!/(k!(n-k)!)} of subsets of k elements
     of a set of n elements. This is the binomial coefficient
     {m \binom{n}{k}} *)
 
@@ -428,7 +428,7 @@ where {m \Gamma} is the gamma function. {m x} must be positive unless {m v} is a
 (** {5 Other special functions} *)
 
 val expn : int -> float -> float
-(** Exponential integral :math:`E_n`. *)
+(** Exponential integral {m E_n}. *)
 
 val shichi : float -> float * float
 (** Hyperbolic sine and cosine integrals, [shichi x] returns
@@ -462,10 +462,10 @@ val bdtr : int -> int -> float -> float
 (**
 Binomial distribution cumulative distribution function.
 
-[bdtr k n p] calculates the sum of the terms :math:`0` through :math:`k` of
+[bdtr k n p] calculates the sum of the terms {m 0} through {m k} of
 the Binomial probability density.
 
-{math \mathrm{bdtr}(k, n, p) = \sum_{j=0}^k {{n}\choose{j}} p^j (1-p)^{n-j}}
+{m \mathrm{bdtr}(k, n, p) = \sum_{j=0}^k \binom{n}{j} p^j (1-p)^{n-j}}
 
 Parameters:
   * [k]: Number of successes.
@@ -473,28 +473,28 @@ Parameters:
   * [p]: Probability of success in a single event.
 
 Returns:
-  * Probability of :math:`k` or fewer successes in :math:`n` independent events with success
-    probability :math:`p`.
+  * Probability of {m k} or fewer successes in {m n} independent events with success
+    probability {m p}.
  *)
 
 val bdtrc : int -> int -> float -> float
 (**
 Binomial distribution survival function.
 
-[bdtrc k n p] calculates the sum of the terms :math:`k + 1` through :math:`n`
+[bdtrc k n p] calculates the sum of the terms {m k + 1} through {m n}
 of the binomial probability density,
 
-{math \mathrm{bdtrc}(k, n, p) = \sum_{j=k+1}^n {{n}\choose{j}} p^j (1-p)^{n-j}}
+{m \mathrm{bdtrc}(k, n, p) = \sum_{j=k+1}^n \binom{n}{j} p^j (1-p)^{n-j}}
 
  *)
 
 val bdtri : int -> int -> float -> float
 (**
-Inverse function to [bdtr] with respect to :math:`p`.
+Inverse function to [bdtr] with respect to {m p}.
 
-Finds the event probability :math:`p` such that the sum of the terms 0 through
-:math:`k` of the binomial probability density is equal to the given cumulative
-probability :math:`y`.
+Finds the event probability {m p} such that the sum of the terms 0 through
+[k] of the binomial probability density is equal to the given cumulative
+probability {m y}.
  *)
 
 val btdtr : float -> float -> float -> float
@@ -504,40 +504,40 @@ Cumulative density function of the beta distribution.
 [btdtr a b x] returns the integral from 0 to {m x} of the beta probability
 density function,
 
-{math I = \int_0^x \frac{\Gamma(a + b)}{\Gamma(a)\Gamma(b)} t^{a-1} (1-t)^{b-1}\,dt}
+{m I = \int_0^x \frac{\Gamma(a + b)}{\Gamma(a)\Gamma(b)} t^{a-1} (1-t)^{b-1}\,dt}
 
 where {m \Gamma} is the gamma function.
 
 Parameters:
-  * [a]: Shape parameter (:math:`a > 0`).
-  * [b]: Shape parameter (:math:`a > 0`).
-  * [x]: Upper limit of integration, in :math:`[0, 1]`.
+  * [a]: Shape parameter ({m a > 0}).
+  * [b]: Shape parameter ({m b > 0}).
+  * [x]: Upper limit of integration, in {m [0, 1]}.
 
 Returns:
-  * Cumulative density function of the beta distribution with :math:`a` and
-    :math:`b` at :math:`x`.
+  * Cumulative density function of the beta distribution with {m a} and
+    {m b} at {m x}.
  *)
 
 val btdtri : float -> float -> float -> float
 (**
-The :math:`p`-th quantile of the Beta distribution.
+The {m p}-th quantile of the Beta distribution.
 
 This function is the inverse of the beta cumulative distribution function,
-   [btdtr], returning the value of :math:`x` for which
+   [btdtr], returning the value of {m x} for which
    {m \mathrm{btdtr}(a, b, x) = p},
 
-{math
+{math 
   p = \int_0^x \frac{\Gamma(a + b)}{\Gamma(a)\Gamma(b)} t^{a-1} (1-t)^{b-1}\,dt}
 
-where :math:`\Gamma` is the gamma function.
+where {m \Gamma} is the gamma function.
 
 Parameters:
-  * [a]: Shape parameter (:math:`a > 0`).
-  * [b]: Shape parameter (:math:`a > 0`).
-  * [x]: Cumulative probability, in :math:`[0, 1]`.
+  * [a]: Shape parameter ({m a > 0}).
+  * [b]: Shape parameter ({m b > 0}).
+  * [x]: Cumulative probability, in {m [0, 1]}.
 
 Returns:
-  * The quantile corresponding to :math:`p`.
+  * The quantile corresponding to {m p}.
  *)
 
 (** {5 Helper functions} *)
@@ -570,9 +570,9 @@ and always returns [true]. *)
 
 val is_simplex : float array -> bool
 (**
-[is_simplex x] checks whether the vector :math:`x` lies on a simplex. In
-other words, :math:`\sum_i^K x_i = 1` and :math:`x_i \ge 0, \forall i \in
-[1,K]`, where :math:`K` is the dimension of :math:`x`.
+[is_simplex x] checks whether the vector {m x} lies on a simplex. In
+other words, {m \sum_i^K x_i = 1} 
+and {m x_i\ge~0,\forall~i\in~[1,K]}, where {m K} is the dimension of {m x}.
  *)
 
 val is_int : float -> bool

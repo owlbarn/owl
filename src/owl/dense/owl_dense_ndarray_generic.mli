@@ -487,12 +487,13 @@ E.g. In [[| [|a; b; c|]; [|d; e; f|]; [|g; h; i|] |]], wherein `a, b, c ... i`
 are matrices of different shapes. They will be concatenated into a big matrix
 as follows.
 
-.. math::
+{math 
   \begin{bmatrix}
     a & b & c \\
     d & e & f \\
     g & h & i
   \end{bmatrix}
+}
 
 This is achieved by first concatenating along [axis:1] for each element in the
 array, then concatenating along [axis:0]. The number of elements in each
@@ -1641,8 +1642,8 @@ val vecnorm : ?axis:int -> ?p:float -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b)
 [vecnorm ~axis ~p x] calculates the generalised vector p-norm along the
 specified [axis]. The generalised p-norm is defined as below.
 
-.. math::
-  ||v||_p = \Big[ \sum_{k=0}^{N-1} |v_k|^p \Big]^{1/p}
+{math 
+  ||v||_p = \Big[ \sum_{k=0}^{N-1} |v_k|^p \Big]^{1/p}}
 
 Parameters:
   * [axis] is the axis for reduction.
@@ -1650,8 +1651,8 @@ Parameters:
   * [x] is the input ndarray.
 
 Returns:
-  * If [p = infinity], then returns :math:`||v||_{\infty} = \max_i(|v(i)|)`.
-  * If [p = -infinity], then returns :math:`||v||_{-\infty} = \min_i(|v(i)|)`.
+  * If [p = infinity], then returns {m ||v||_{\infty} = \max_i(|v(i)|)}.
+  * If [p = -infinity], then returns {m ||v||_{-\infty} = \min_i(|v(i)|)}.
   * Otherwise returns generalised vector p-norm defined above.
  *)
 

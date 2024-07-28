@@ -241,8 +241,8 @@ values that are not outliers. [k] defaults to the standard coefficient of
 [1.5]. For first and third quartiles [Q1] and `Q3`, the range is computed
 as follows:
 
-.. math::
-  (Q1 - k*(Q3-Q1), Q3 + k*(Q3-Q1))
+{math 
+  (Q1 - k*(Q3-Q1), Q3 + k*(Q3-Q1))}
 *)
 
 val gaussian_kde
@@ -615,8 +615,8 @@ val exponential_isf : float -> lambda:float -> float
 
 val exponpow_rvs : a:float -> b:float -> float
 (**
-.. math::
-  p(x) dx = (1/(2 a Gamma(1+1/b))) * exp(-|x/a|^b) dx
+{math 
+  p(x) dx = (1/(2 a Gamma(1+1/b))) * exp(-|x/a|^b) dx}
 
  *)
 
