@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
+[@@@warning "-56"]
+
 (** Please refer to: Intel Math Kernel Library implements the BLAS
   url: https://software.intel.com/en-us/mkl-developer-reference-c
  *)

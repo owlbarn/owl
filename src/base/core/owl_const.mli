@@ -3,7 +3,6 @@
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
 
-[@@@warning "-11"]
 
 (** Metric system: CGS, MKS, SI, and physical constants. *)
 

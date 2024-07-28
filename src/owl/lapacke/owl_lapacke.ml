@@ -11,6 +11,8 @@
   url: https://software.intel.com/en-us/mkl-developer-reference-c
  *)
 
+[@@@warning "-56"]
+
 open Ctypes
 open Bigarray
 module L = Owl_lapacke_generated
