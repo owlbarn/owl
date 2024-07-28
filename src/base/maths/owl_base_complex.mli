@@ -6,135 +6,225 @@
 (** {5 Type definition and constants} *)
 
 type t = Complex.t
-(** Type definition of a complex number. *)
+(** Type definition for a complex number. *)
 
 val zero : t
-(** Constant value zero. *)
+(** 
+    Constant value representing the complex number zero (0 + 0i).
+*)
 
 val one : t
-(** Constant value one. *)
+(** 
+    Constant value representing the complex number one (1 + 0i).
+*)
 
 val i : t
-(** Constant value i. *)
+(** 
+    Constant value representing the imaginary unit i (0 + 1i).
+*)
 
 (** {5 Unary functions} *)
 
 val neg : t -> t
-(** TODO *)
+(** 
+    [neg z] returns the negation of the complex number [z].
+    If [z = a + bi], then [neg z = -a - bi].
+*)
 
 val abs : t -> float
-(** TODO *)
+(** 
+    [abs z] returns the magnitude (absolute value) of the complex number [z].
+    This is computed as sqrt(Re(z)^2 + Im(z)^2).
+*)
 
 val abs2 : t -> float
-(** TODO *)
+(** 
+    [abs2 z] returns the squared magnitude of the complex number [z].
+    This is computed as Re(z)^2 + Im(z)^2.
+*)
 
 val logabs : t -> float
-(** TODO *)
+(** 
+    [logabs z] returns the natural logarithm of the magnitude of the complex number [z].
+*)
 
 val conj : t -> t
-(** TODO *)
+(** 
+    [conj z] returns the complex conjugate of the complex number [z].
+    If [z = a + bi], then [conj z = a - bi].
+*)
 
 val inv : t -> t
-(** TODO *)
+(** 
+    [inv z] returns the multiplicative inverse of the complex number [z].
+    This is computed as 1 / z.
+*)
 
 val sqrt : t -> t
-(** TODO *)
+(** 
+    [sqrt z] returns the square root of the complex number [z].
+*)
 
 val exp : t -> t
-(** TODO *)
+(** 
+    [exp z] returns the exponential of the complex number [z], calculated as e^z.
+*)
 
 val exp2 : t -> t
-(** TODO *)
+(** 
+    [exp2 z] returns 2 raised to the power of the complex number [z], calculated as 2^z.
+*)
 
 val exp10 : t -> t
-(** TODO *)
+(** 
+    [exp10 z] returns 10 raised to the power of the complex number [z], calculated as 10^z.
+*)
 
 val expm1 : t -> t
-(** TODO *)
+(** 
+    [expm1 z] returns the value of exp(z) - 1, providing a more accurate result for small values of [z].
+*)
 
 val log : t -> t
-(** TODO *)
+(** 
+    [log z] returns the natural logarithm of the complex number [z].
+*)
 
 val log2 : t -> t
-(** TODO *)
+(** 
+    [log2 z] returns the base-2 logarithm of the complex number [z].
+*)
 
 val log10 : t -> t
-(** TODO *)
+(** 
+    [log10 z] returns the base-10 logarithm of the complex number [z].
+*)
 
 val log1p : t -> t
-(** TODO *)
+(** 
+    [log1p z] returns the natural logarithm of (1 + z), providing a more accurate result for small values of [z].
+*)
 
 val sin : t -> t
-(** TODO *)
+(** 
+    [sin z] returns the sine of the complex number [z].
+*)
 
 val cos : t -> t
-(** TODO *)
+(** 
+    [cos z] returns the cosine of the complex number [z].
+*)
 
 val tan : t -> t
-(** TODO *)
+(** 
+    [tan z] returns the tangent of the complex number [z].
+*)
 
 val cot : t -> t
-(** TODO *)
+(** 
+    [cot z] returns the cotangent of the complex number [z].
+*)
 
 val sec : t -> t
-(** TODO *)
+(** 
+    [sec z] returns the secant of the complex number [z].
+*)
 
 val csc : t -> t
-(** TODO *)
+(** 
+    [csc z] returns the cosecant of the complex number [z].
+*)
 
 val sinh : t -> t
-(** TODO *)
+(** 
+    [sinh z] returns the hyperbolic sine of the complex number [z].
+*)
 
 val cosh : t -> t
-(** TODO *)
+(** 
+    [cosh z] returns the hyperbolic cosine of the complex number [z].
+*)
 
 val tanh : t -> t
-(** TODO *)
+(** 
+    [tanh z] returns the hyperbolic tangent of the complex number [z].
+*)
 
 val sech : t -> t
-(** TODO *)
+(** 
+    [sech z] returns the hyperbolic secant of the complex number [z].
+*)
 
 val csch : t -> t
-(** TODO *)
+(** 
+    [csch z] returns the hyperbolic cosecant of the complex number [z].
+*)
 
 val coth : t -> t
-(** TODO *)
+(** 
+    [coth z] returns the hyperbolic cotangent of the complex number [z].
+*)
 
 val asin : t -> t
-(** TODO *)
+(** 
+    [asin z] returns the arcsine of the complex number [z].
+*)
 
 val acos : t -> t
-(** TODO *)
+(** 
+    [acos z] returns the arccosine of the complex number [z].
+*)
 
 val atan : t -> t
-(** TODO *)
+(** 
+    [atan z] returns the arctangent of the complex number [z].
+*)
 
 val asec : t -> t
-(** TODO *)
+(** 
+    [asec z] returns the arcsecant of the complex number [z].
+*)
 
 val acsc : t -> t
-(** TODO *)
+(** 
+    [acsc z] returns the arccosecant of the complex number [z].
+*)
 
 val acot : t -> t
-(** TODO *)
+(** 
+    [acot z] returns the arccotangent of the complex number [z].
+*)
 
 val asinh : t -> t
-(** TODO *)
+(** 
+    [asinh z] returns the inverse hyperbolic sine of the complex number [z].
+*)
 
 val acosh : t -> t
-(** TODO *)
+(** 
+    [acosh z] returns the inverse hyperbolic cosine of the complex number [z].
+*)
 
 val atanh : t -> t
-(** TODO *)
+(** 
+    [atanh z] returns the inverse hyperbolic tangent of the complex number [z].
+*)
 
 val asech : t -> t
-(** TODO *)
+(** 
+    [asech z] returns the inverse hyperbolic secant of the complex number [z].
+*)
 
 val acsch : t -> t
-(** TODO *)
+(** 
+    [acsch z] returns the inverse hyperbolic cosecant of the complex number [z].
+*)
 
 val acoth : t -> t
-(** TODO *)
+(** 
+    [acoth z] returns the inverse hyperbolic cotangent of the complex number [z].
+*)
+
 
 val arg : t -> float
 (** [arg x] returns the angle of a complex number [x]. *)
@@ -160,69 +250,123 @@ val fix : t -> t
 (** {5 Binary functions} *)
 
 val add : t -> t -> t
-(** TODO *)
+(** 
+    [add z1 z2] returns the sum of the complex numbers [z1] and [z2].
+*)
 
 val sub : t -> t -> t
-(** TODO *)
+(** 
+    [sub z1 z2] returns the difference of the complex numbers [z1] and [z2].
+*)
 
 val mul : t -> t -> t
-(** TODO *)
+(** 
+    [mul z1 z2] returns the product of the complex numbers [z1] and [z2].
+*)
 
 val div : t -> t -> t
-(** TODO *)
+(** 
+    [div z1 z2] returns the quotient of the complex numbers [z1] and [z2].
+*)
 
 val add_re : t -> float -> t
-(** TODO *)
+(** 
+    [add_re z r] adds the real number [r] to the real part of the complex number [z].
+    Returns a new complex number with the real part increased by [r].
+*)
 
 val add_im : t -> float -> t
-(** TODO *)
+(** 
+    [add_im z i] adds the real number [i] to the imaginary part of the complex number [z].
+    Returns a new complex number with the imaginary part increased by [i].
+*)
 
 val sub_re : t -> float -> t
-(** TODO *)
+(** 
+    [sub_re z r] subtracts the real number [r] from the real part of the complex number [z].
+    Returns a new complex number with the real part decreased by [r].
+*)
 
 val sub_im : t -> float -> t
-(** TODO *)
+(** 
+    [sub_im z i] subtracts the real number [i] from the imaginary part of the complex number [z].
+    Returns a new complex number with the imaginary part decreased by [i].
+*)
 
 val mul_re : t -> float -> t
-(** TODO *)
+(** 
+    [mul_re z r] multiplies the real part of the complex number [z] by the real number [r].
+    Returns a new complex number with the real part scaled by [r].
+*)
 
 val mul_im : t -> float -> t
-(** TODO *)
+(** 
+    [mul_im z i] multiplies the imaginary part of the complex number [z] by the real number [i].
+    Returns a new complex number with the imaginary part scaled by [i].
+*)
 
 val div_re : t -> float -> t
-(** TODO *)
+(** 
+    [div_re z r] divides the real part of the complex number [z] by the real number [r].
+    Returns a new complex number with the real part divided by [r].
+*)
 
 val div_im : t -> float -> t
-(** TODO *)
+(** 
+    [div_im z i] divides the imaginary part of the complex number [z] by the real number [i].
+    Returns a new complex number with the imaginary part divided by [i].
+*)
 
 val pow : t -> t -> t
-(** TODO *)
+(** 
+    [pow z1 z2] raises the complex number [z1] to the power of [z2].
+    Returns a new complex number representing [z1] raised to [z2].
+*)
 
 val polar : float -> float -> t
-(** TODO *)
+(** 
+    [polar r theta] creates a complex number from the polar coordinates [r] (magnitude) and [theta] (angle in radians).
+    Returns a new complex number.
+*)
 
 val rect : float -> float -> t
-(** [rect r phi] return a complex number with polar coordinates [r] and [phi]. *)
+(** 
+    [rect r phi] returns a complex number with polar coordinates [r] and [phi].
+    Equivalent to [polar r phi].
+*)
 
 (** {5 Comparison functions} *)
 
 val equal : t -> t -> bool
-(** TODO *)
+(** 
+    [equal z1 z2] returns [true] if the complex numbers [z1] and [z2] are equal, [false] otherwise.
+*)
 
 val not_equal : t -> t -> bool
-(** TODO *)
+(** 
+    [not_equal z1 z2] returns [true] if the complex numbers [z1] and [z2] are not equal, [false] otherwise.
+*)
 
 val less : t -> t -> bool
-(** TODO *)
+(** 
+    [less z1 z2] returns [true] if the magnitude of the complex number [z1] is less than that of [z2].
+*)
 
 val greater : t -> t -> bool
-(** TODO *)
+(** 
+    [greater z1 z2] returns [true] if the magnitude of the complex number [z1] is greater than that of [z2].
+*)
 
 val less_equal : t -> t -> bool
-(** TODO *)
+(** 
+    [less_equal z1 z2] returns [true] if the magnitude of the complex number [z1] is less than or equal to that of [z2].
+*)
 
 val greater_equal : t -> t -> bool
-(** TODO *)
+(** 
+    [greater_equal z1 z2] returns [true] if the magnitude of the complex number [z1] is greater than or equal to that of [z2].
+*)
+
 
 (** {5 Helper functions} *)
 

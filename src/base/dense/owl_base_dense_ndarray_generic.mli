@@ -956,10 +956,10 @@ val of_rows : ('a, 'b) t array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val to_cols : ('a, 'b) t -> ('a, 'b) t array
-(** TODO *)
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val of_cols : ('a, 'b) t array -> ('a, 'b) t
-(** TODO *)
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val of_arrays : ('a, 'b) kind -> 'a array array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
