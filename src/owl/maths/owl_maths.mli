@@ -204,7 +204,7 @@ val cotdg : float -> float
 (** Cotangent of the angle given in degrees. *)
 
 val hypot : float -> float -> float
-(** [hypot x y] returns :math:`\sqrt{x^2 + y^2}`. *)
+(** [hypot x y] returns {m \sqrt{x^2 + y^2}}. *)
 
 val xlogy : float -> float -> float
 (** [xlogy(x, y)] returns :math:`x \log(y)`. *)
@@ -308,12 +308,11 @@ val gamma : float -> float
 (**
 [gamma z] returns the value of the Gamma function
 
-.. math::
-  \Gamma(z) = \int_0^\infty x^{z-1} e^{-x} dx = (z - 1)! .
+  {math \Gamma(z) = \int_0^\infty x^{z-1} e^{-x} dx = (z - 1)!.}
 
 The gamma function is often referred to as the generalized factorial since
-:math:`z\ gamma(z) = \gamma(z+1)` and :math:`gamma(n+1) = n!`
-for natural number :math:`n`.
+{m z\ gamma(z) = \gamma(z+1)} and {m gamma(n+1) = n!}
+for natural number n.
  *)
 
 val rgamma : float -> float
@@ -343,9 +342,9 @@ val beta : float -> float -> float
 (**
 Beta function.
 
-.. math::
-  \mathrm{B}(a, b) =  \frac{\Gamma(a) \Gamma(b)}{\Gamma(a+b)}
- *)
+{math
+  \mathrm{B}(a, b) =  \frac{\Gamma(a) \Gamma(b)}{\Gamma(a+b)}}
+  *)
 
 val betainc : float -> float -> float -> float
 (** Incomplete beta integral. *)
@@ -380,24 +379,24 @@ val permutation_float : int -> int -> float
 val combination : int -> int -> int
 (** [combination n k] returns the number :math:`n!/(k!(n-k)!)` of subsets of k elements
     of a set of n elements. This is the binomial coefficient
-    :math:`\binom{n}{k}` *)
+    {m \binom{n}{k}} *)
 
 val combination_float : int -> int -> float
 (** [combination_float] is like [combination] but can deal with a larger range. *)
 
 val log_combination : int -> int -> float
-(** [log_combination n k] returns the logarithm of :math:`\binom{n}{k}`. *)
+(** [log_combination n k] returns the logarithm of {m \binom{n}{k}}. *)
 
 (** {5 Error functions} *)
 
 val erf : float -> float
-(** Error function. :math:`\int_{-\infty}^x \frac{1}{\sqrt(2\pi)} \exp(-(1/2) y^2) dy` *)
+(** Error function. {m \int_{-\infty}^x \frac{1}{\sqrt(2\pi)} \exp(-(1/2) y^2) dy} *)
 
 val erfc : float -> float
-(** Complementary error function, :math:`\int^{\infty}_x \frac{1}{\sqrt(2\pi)} \exp(-(1/2) y^2) dy` *)
+(** Complementary error function, {m \int^{\infty}_x \frac{1}{\sqrt(2\pi)} \exp(-(1/2) y^2) dy} *)
 
 val erfcx : float -> float
-(** Scaled complementary error function, :math:`\exp(x^2) \mathrm{erfc}(x)`. *)
+(** Scaled complementary error function, {m \exp(x^2) \mathrm{erfc}(x)}. *)
 
 val erfinv : float -> float
 (** Inverse function of [erf]. *)
@@ -418,12 +417,11 @@ val fresnel : float -> float * float
 
 val struve : float -> float -> float
 (** [struve v x] returns the value of the Struve function of
-order :math:`v` at :math:`x`. The Struve function is defined as,
+order v at x. The Struve function is defined as,
 
-.. math::
-  H_v(x) = (z/2)^{v + 1} \sum_{n=0}^\infty \frac{(-1)^n (z/2)^{2n}}{\Gamma(n + \frac{3}{2}) \Gamma(n + v + \frac{3}{2})},
+{math  H_v(x) = (z/2)^{v + 1}\sum_{n=0}^\infty \frac{(-1)^n (z/2)^{2n}}{\Gamma(n + \frac{3}{2})\Gamma(n + v + \frac{3}{2})}}
 
-where :math:`\Gamma` is the gamma function. :math:`x` must be positive unless :math:`v` is an integer
+where {m \Gamma} is the gamma function. {m x} must be positive unless {m v} is an integer
 
  *)
 
@@ -434,7 +432,7 @@ val expn : int -> float -> float
 
 val shichi : float -> float * float
 (** Hyperbolic sine and cosine integrals, [shichi x] returns
- * :math:`(\mathrm{shi}, \mathrm{chi})``. *)
+ * {m (\mathrm{shi}, \mathrm{chi})}. *)
 
 val shi : float -> float
 (** Hyperbolic sine integral. *)
@@ -443,7 +441,7 @@ val chi : float -> float
 (** Hyperbolic cosine integral. *)
 
 val sici : float -> float * float
-(** Sine and cosine integrals, [sici x] returns :math:`(\mathrm{si}, \mathrm{ci})`. *)
+(** Sine and cosine integrals, [sici x] returns {m (\mathrm{si}, \mathrm{ci})}. *)
 
 val si : float -> float
 (** Sine integral. *)
@@ -452,8 +450,8 @@ val ci : float -> float
 (** Cosine integral. *)
 
 val zeta : float -> float -> float
-(** [zeta x q] returns the Hurwitz zeta function :math:`\zeta(x, q)`, which
-    reduces to the Riemann zeta function :math:`\zeta(x)` when :math:`q=1`. *)
+(** [zeta x q] returns the Hurwitz zeta function {m \zeta(x, q)}, which
+    reduces to the Riemann zeta function {m \zeta(x)} when {m q=1}. *)
 
 val zetac : float -> float
 (** Riemann zeta function minus 1. *)
@@ -467,8 +465,7 @@ Binomial distribution cumulative distribution function.
 [bdtr k n p] calculates the sum of the terms :math:`0` through :math:`k` of
 the Binomial probability density.
 
-.. math::
-  \mathrm{bdtr}(k, n, p) = \sum_{j=0}^k {{n}\choose{j}} p^j (1-p)^{n-j}
+{math \mathrm{bdtr}(k, n, p) = \sum_{j=0}^k {{n}\choose{j}} p^j (1-p)^{n-j}}
 
 Parameters:
   * [k]: Number of successes.
@@ -487,8 +484,7 @@ Binomial distribution survival function.
 [bdtrc k n p] calculates the sum of the terms :math:`k + 1` through :math:`n`
 of the binomial probability density,
 
-.. math::
-  \mathrm{bdtrc}(k, n, p) = \sum_{j=k+1}^n {{n}\choose{j}} p^j (1-p)^{n-j}
+{math \mathrm{bdtrc}(k, n, p) = \sum_{j=k+1}^n {{n}\choose{j}} p^j (1-p)^{n-j}}
 
  *)
 
@@ -505,13 +501,12 @@ val btdtr : float -> float -> float -> float
 (**
 Cumulative density function of the beta distribution.
 
-[btdtr a b x] returns the integral from 0 to :math:`x` of the beta probability
+[btdtr a b x] returns the integral from 0 to {m x} of the beta probability
 density function,
 
-.. math::
-  I = \int_0^x \frac{\Gamma(a + b)}{\Gamma(a)\Gamma(b)} t^{a-1} (1-t)^{b-1}\,dt
+{math I = \int_0^x \frac{\Gamma(a + b)}{\Gamma(a)\Gamma(b)} t^{a-1} (1-t)^{b-1}\,dt}
 
-where :math:`\Gamma` is the gamma function.
+where {m \Gamma} is the gamma function.
 
 Parameters:
   * [a]: Shape parameter (:math:`a > 0`).
@@ -529,10 +524,10 @@ The :math:`p`-th quantile of the Beta distribution.
 
 This function is the inverse of the beta cumulative distribution function,
    [btdtr], returning the value of :math:`x` for which
-   :math:`\mathrm{btdtr}(a, b, x) = p`,
+   {m \mathrm{btdtr}(a, b, x) = p},
 
-.. math::
-  p = \int_0^x \frac{\Gamma(a + b)}{\Gamma(a)\Gamma(b)} t^{a-1} (1-t)^{b-1}\,dt
+{math
+  p = \int_0^x \frac{\Gamma(a + b)}{\Gamma(a)\Gamma(b)} t^{a-1} (1-t)^{b-1}\,dt}
 
 where :math:`\Gamma` is the gamma function.
 
