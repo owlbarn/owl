@@ -2216,51 +2216,88 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
  *)
 
 (** {5 In-place modification} *)
-
 val create_ : out:('a, 'b) t -> 'a -> unit
-(** TODO *)
+(** 
+    [create_ ~out value] initializes the matrix [out] with the scalar value [value].
+    The operation is performed in-place.
+*)
 
 val uniform_ : ?a:'a -> ?b:'a -> out:('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [uniform_ ?a ?b ~out] fills the matrix [out] with random values drawn from a uniform distribution over the interval \[a, b\).
+    If [a] and [b] are not provided, the default interval is \[0, 1\).
+    The operation is performed in-place.
+*)
 
 val bernoulli_ : ?p:float -> out:('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [bernoulli_ ?p ~out] fills the matrix [out] with random values drawn from a Bernoulli distribution with probability [p] of being 1.
+    If [p] is not provided, the default probability is 0.5.
+    The operation is performed in-place.
+*)
 
 val zeros_ : out:('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [zeros_ ~out] fills the matrix [out] with zeros.
+    The operation is performed in-place.
+*)
 
 val ones_ : out:('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [ones_ ~out] fills the matrix [out] with ones.
+    The operation is performed in-place.
+*)
 
 val one_hot_ : out:('a, 'b) t -> int -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [one_hot_ ~out depth x] converts the matrix [x] into a one-hot encoded matrix with the specified [depth], and stores the result in [out].
+    The operation is performed in-place.
+*)
 
 val sort_ : ('a, 'b) t -> unit
 (**
-[sort_ x] performs in-place quicksort of the elelments in [x].
- *)
+    [sort_ x] performs in-place quicksort of the elements in [x].
+    The elements are sorted in ascending order.
+*)
 
 val copy_ : out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
-[copy_ ~out src] copies the data from ndarray [src] to destination [out].
- *)
+    [copy_ ~out src] copies the data from ndarray [src] to destination [out].
+    The operation is performed in-place.
+*)
 
 val reshape_ : out:('a, 'b) t -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [reshape_ ~out x] reshapes the matrix [x] and stores the result in [out].
+    The total number of elements must remain the same.
+    The operation is performed in-place.
+*)
 
 val transpose_ : out:('a, 'b) t -> ?axis:int array -> ('a, 'b) t -> unit
-(**
-[transpose_ ~out x] is similar to [transpose x] but the output is written to [out].
- *)
+(** 
+    [transpose_ ~out ?axis x] transposes the matrix [x] according to the specified axes and stores the result in [out].
+    If [axis] is not provided, the transpose is performed with the default axes.
+    The operation is performed in-place.
+*)
 
 val sum_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [sum_ ~out ~axis x] computes the sum of elements along the specified [axis] of the matrix [x] and stores the result in [out].
+    The operation is performed in-place.
+*)
 
 val min_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [min_ ~out ~axis x] computes the minimum value along the specified [axis] of the matrix [x] and stores the result in [out].
+    The operation is performed in-place.
+*)
 
 val max_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [max_ ~out ~axis x] computes the maximum value along the specified [axis] of the matrix [x] and stores the result in [out].
+    The operation is performed in-place.
+*)
+
 
 val add_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**

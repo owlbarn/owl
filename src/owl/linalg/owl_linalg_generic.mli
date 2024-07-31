@@ -82,16 +82,16 @@ val vecnorm : ?p:float -> ('a, 'b) t -> float
 function of the same name in :doc:`owl_dense_ndarray_generic`, this function
 assumes the input is either 1d vector or 2d matrix.
 
-.. math::
-  ||v||_p = \Big[ \sum_{k=0}^{N-1} |v_k|^p \Big]^{1/p}
+{math 
+  ||v||_p = \Big[ \sum_{k=0}^{N-1} |v_k|^p \Big]^{1/p}}
 
 Parameters:
   * [p] is the order of norm, the default value is 2.
   * [x] is the input vector or matrix.
 
 Returns:
-  * If [p = infinity], then returns :math:`||v||_{\infty} = \max_i(|v(i)|)`.
-  * If [p = -infinity], then returns :math:`||v||_{-\infty} = \min_i(|v(i)|)`.
+  * If [p = infinity], then returns {m ||v||_{\infty} = \max_i(|v(i)|)}
+  * If [p = -infinity], then returns {m ||v||_{-\infty} = \min_i(|v(i)|)}.
   * If [p = 2] and [x] is a matrix, then returns Frobenius norm of [x].
   * Otherwise returns generalised vector p-norm defined above.
 *)
@@ -232,10 +232,7 @@ values of the generalised singular value decomposition of [x] and [y].
 val schur : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
 (**
 [schur x -> (t, z, w)] calculates Schur factorisation of [x] in the
-following form.
-
-.. math::
-  X = Z T Z^H
+following form: {m X = Z T Z^H}.
 
 Parameters:
   * [otyp]: the complex type of eigen values.
@@ -263,10 +260,7 @@ val ordschur
   -> ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
 (**
 [ordschur ~select t z -> (r, p)] reorders [t] and [z] returned by Schur
-factorization [schur x -> (t, z)] according [select] such that
-
-.. math::
-  X = P R P^H
+factorization [schur x -> (t, z)] according [select] such that X = P R P^H.
 
 Parameters:
   * [otyp]: the complex type of eigen values
@@ -288,7 +282,6 @@ val qz
 [qz x -> (s, t, q, z, w)] calculates generalised Schur factorisation of [x]
 in the following form. It is also known as QZ decomposition.
 
-.. math::
   X = Q S Z^H
   Y = Z T Z^H
 
@@ -331,7 +324,6 @@ val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 Both Hessenberg matrix [h] and unitary matrix [q] is returned, such that
 [x = q *@ h *@ (transpose q)].
 
-.. math::
   X = Q H Q^T
 
  *)
@@ -374,7 +366,6 @@ obtained from the singular value decomposition. Namely, [a *@ x] has
 negligible elements, [M.col_num x] is the nullity of [a], and
 [transpose x *@ x = I]. Namely,
 
-.. math::
   X^T X = I
 
  *)
@@ -385,14 +376,12 @@ val triangular_solve : upper:bool -> ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> 
    where [a] is either a upper or a lower triangular matrix. This function uses
    cblas [trsm] under the hood.
 
-.. math::
   AX = B
 
 By default, [trans = false] indicates no transpose. If [trans = true], then
 function will solve [A^T * x = b] for real matrices; [A^H * x = b] for
 complex matrices.
 
-.. math::
   A^H X = B
 *)
 
@@ -409,14 +398,12 @@ following form. By default, [typ=`n] and the function use LU factorisation with 
 of rows of [a] must equal the number of rows of [b].
 If [a] is a upper(lower) triangular matrix, the function calls the [solve_triangular] function when [typ=`u]([typ=`l]). 
 
-.. math::
   AX = B
 
 By default, [trans = false] indicates no transpose. If [trans = true], then
 function will solve [A^T * x = b] for real matrices; [A^H * x = b] for
 complex matrices.
 
-.. math::
   A^H X = B
 
 The associated operator is [/@], so you can simply use [a /@ b] to solve
@@ -427,7 +414,6 @@ val linreg : ('a, 'b) t -> ('a, 'b) t -> 'a * 'a
 (**
 [linreg x y -> (a, b)] solves [y = a + b*x] using Ordinary Least Squares.
 
-.. math::
   Y = A + BX
 
  *)
@@ -437,7 +423,6 @@ val sylvester : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 [sylvester a b c] solves a Sylvester equation in the following form. The
 function calls LAPACKE function [trsyl] solve the system.
 
-.. math::
   AX + XB = C
 
 Parameters:
@@ -455,7 +440,6 @@ val lyapunov : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 The function calls LAPACKE function [trsyl] solve the system. In Matlab, the
 same function is called [lyap].
 
-.. math::
   AX + XA^H = Q
 
 Parameters:
@@ -474,7 +458,6 @@ val discrete_lyapunov
 (**
 [discrete_lyapunov a q] solves a discrete-time Lyapunov equation in the following form.
 
-.. math::
   X - AXA^H = Q
 
 Parameters:
@@ -496,8 +479,8 @@ val care
 [care ?diag_r a b q r] solves the continuous-time algebraic Riccati equation system
 in the following form. The algorithm is based on :cite:`laub1979schur`.
 
-.. math::
-  A^T X + X A − X B R^{-1} B^T X + Q = 0
+{math 
+  A^T X + X A − X B R^{-1} B^T X + Q = 0}
 
 Parameters:
   * [a] : real cofficient matrix A.
@@ -519,10 +502,10 @@ val dare
   -> (float, 'a) t
 (**
 [dare ?diag_r a b q r] solves the discrete-time algebraic Riccati equation system
-in the following form. The algorithm is based on :cite:`laub1979schur`.
+in the following form.
 
-.. math::
-  A^T X A - X - (A^T X B) (B^T X B + R)^{-1} (B^T X A) + Q = 0
+{math 
+  A^T X A - X - (A^T X B) (B^T X B + R)^{-1} (B^T X A) + Q = 0}
 
 Parameters:
   * [a] : real cofficient matrix A. A must be non-singular.
@@ -588,8 +571,8 @@ val expm : ('a, 'b) t -> ('a, 'b) t
 (**
 [expm x] computes the matrix exponential of [x] defined by
 
-.. math::
-  e^x = \sum_{k=0}^{\infty} \frac{1}{k!} x^k
+{math 
+  e^x = \sum_{k=0}^{\infty} \frac{1}{k!} x^k}
 
 The function implements the scaling and squaring algorithm which uses Padé
 approximation to compute the matrix exponential :cite:`al2009new`.
@@ -648,10 +631,10 @@ val select_ev : [ `LHP | `RHP | `UDI | `UDO ] -> ('a, 'b) t -> (int32, int32_elt
 [select_ev keyword ev] generates a logical vector (of same shape as [ev])
 from eigen values [ev] according to the passed in keywards.
 
-- [LHP]: Left-half plane :math:`(real(e) < 0)`.
-- [RHP]: Left-half plane :math:`(real(e) \ge 0)`.
-- [UDI]: Left-half plane :math:`(abs(e) < 1)`.
-- [UDO]: Left-half plane :math:`(abs(e) \ge 0)`.
+- [LHP]: Left-half plane {m (real(e) < 0)}.
+- [RHP]: Left-half plane {m (real(e) \ge 0)}.
+- [UDI]: Left-half plane {m (abs(e) < 1)}.
+- [UDO]: Left-half plane {m (abs(e) \ge 0)}.
  *)
 
 val peakflops : ?n:int -> unit -> float

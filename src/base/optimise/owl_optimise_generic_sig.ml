@@ -319,5 +319,5 @@ module type Sig = sig
     -> t
     -> t
     -> Checkpoint.state
-  (** TODO *)
+  (** This function is minimize the weights in a compiled neural network of graph structure.  *)
 end

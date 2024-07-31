@@ -487,12 +487,13 @@ E.g. In [[| [|a; b; c|]; [|d; e; f|]; [|g; h; i|] |]], wherein `a, b, c ... i`
 are matrices of different shapes. They will be concatenated into a big matrix
 as follows.
 
-.. math::
+{math 
   \begin{bmatrix}
     a & b & c \\
     d & e & f \\
     g & h & i
   \end{bmatrix}
+}
 
 This is achieved by first concatenating along [axis:1] for each element in the
 array, then concatenating along [axis:0]. The number of elements in each
@@ -1641,8 +1642,8 @@ val vecnorm : ?axis:int -> ?p:float -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b)
 [vecnorm ~axis ~p x] calculates the generalised vector p-norm along the
 specified [axis]. The generalised p-norm is defined as below.
 
-.. math::
-  ||v||_p = \Big[ \sum_{k=0}^{N-1} |v_k|^p \Big]^{1/p}
+{math 
+  ||v||_p = \Big[ \sum_{k=0}^{N-1} |v_k|^p \Big]^{1/p}}
 
 Parameters:
   * [axis] is the axis for reduction.
@@ -1650,8 +1651,8 @@ Parameters:
   * [x] is the input ndarray.
 
 Returns:
-  * If [p = infinity], then returns :math:`||v||_{\infty} = \max_i(|v(i)|)`.
-  * If [p = -infinity], then returns :math:`||v||_{-\infty} = \min_i(|v(i)|)`.
+  * If [p = infinity], then returns {m ||v||_{\infty} = \max_i(|v(i)|)}.
+  * If [p = -infinity], then returns {m ||v||_{-\infty} = \min_i(|v(i)|)}.
   * Otherwise returns generalised vector p-norm defined above.
  *)
 
@@ -2040,300 +2041,435 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 (** {5 Neural network related} *)
 
 val conv1d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
-(** TODO *)
+(** 
+    [conv1d ?padding input kernel strides] applies a 1-dimensional convolution over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    Returns the result of the convolution.
+*)
 
 val conv2d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
-(** TODO *)
+(** 
+    [conv2d ?padding input kernel strides] applies a 2-dimensional convolution over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    Returns the result of the convolution.
+*)
 
 val conv3d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
-(** TODO *)
+(** 
+    [conv3d ?padding input kernel strides] applies a 3-dimensional convolution over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    Returns the result of the convolution.
+*)
 
-val dilated_conv1d
-  :  ?padding:padding
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-(** TODO *)
+val dilated_conv1d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
+(** 
+    [dilated_conv1d ?padding input kernel strides dilations] applies a 1-dimensional dilated convolution over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    Returns the result of the dilated convolution.
+*)
 
-val dilated_conv2d
-  :  ?padding:padding
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-(** TODO *)
+val dilated_conv2d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
+(** 
+    [dilated_conv2d ?padding input kernel strides dilations] applies a 2-dimensional dilated convolution over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    Returns the result of the dilated convolution.
+*)
 
-val dilated_conv3d
-  :  ?padding:padding
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-(** TODO *)
+val dilated_conv3d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
+(** 
+    [dilated_conv3d ?padding input kernel strides dilations] applies a 3-dimensional dilated convolution over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    Returns the result of the dilated convolution.
+*)
 
-val transpose_conv1d
-  :  ?padding:padding
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-(** TODO *)
+val transpose_conv1d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
+(** 
+    [transpose_conv1d ?padding input kernel strides] applies a 1-dimensional transposed convolution (deconvolution) over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    Returns the result of the transposed convolution.
+*)
 
-val transpose_conv2d
-  :  ?padding:padding
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-(** TODO *)
+val transpose_conv2d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
+(** 
+    [transpose_conv2d ?padding input kernel strides] applies a 2-dimensional transposed convolution (deconvolution) over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    Returns the result of the transposed convolution.
+*)
 
-val transpose_conv3d
-  :  ?padding:padding
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-(** TODO *)
+val transpose_conv3d : ?padding:padding -> ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t
+(** 
+    [transpose_conv3d ?padding input kernel strides] applies a 3-dimensional transposed convolution (deconvolution) over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    Returns the result of the transposed convolution.
+*)
 
 val max_pool1d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
-(** TODO *)
+(** 
+    [max_pool1d ?padding input pool_size strides] applies a 1-dimensional max pooling operation over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    Returns the result of the max pooling operation.
+*)
 
 val max_pool2d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
-(** TODO *)
+(** 
+    [max_pool2d ?padding input pool_size strides] applies a 2-dimensional max pooling operation over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    Returns the result of the max pooling operation.
+*)
 
 val max_pool3d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
-(** TODO *)
+(** 
+    [max_pool3d ?padding input pool_size strides] applies a 3-dimensional max pooling operation over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    Returns the result of the max pooling operation.
+*)
 
 val avg_pool1d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
-(** TODO *)
+(** 
+    [avg_pool1d ?padding input pool_size strides] applies a 1-dimensional average pooling operation over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    Returns the result of the average pooling operation.
+*)
 
 val avg_pool2d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
-(** TODO *)
+(** 
+    [avg_pool2d ?padding input pool_size strides] applies a 2-dimensional average pooling operation over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    Returns the result of the average pooling operation.
+*)
 
 val avg_pool3d : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t
-(** TODO *)
+(** 
+    [avg_pool3d ?padding input pool_size strides] applies a 3-dimensional average pooling operation over an input tensor.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    Returns the result of the average pooling operation.
+*)
 
-val max_pool2d_argmax
-  :  ?padding:padding
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t * (int64, int64_elt) t
-(** TODO *)
+val max_pool2d_argmax : ?padding:padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t * (int64, int64_elt) t
+(** 
+    [max_pool2d_argmax ?padding input pool_size strides] applies a 2-dimensional max pooling operation over an input tensor, returning both the pooled output and the indices of the maximum values.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    Returns a tuple containing the pooled output and the indices of the maximum values.
+*)
 
 val upsampling2d : ('a, 'b) t -> int array -> ('a, 'b) t
-(** TODO *)
+(** 
+    [upsampling2d input size] performs a 2-dimensional upsampling on the input tensor [input], scaling it according to the specified [size].
+    Returns the upsampled tensor.
+*)
 
-val conv1d_backward_input
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val conv1d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [conv1d_backward_input input kernel strides grad_output] computes the gradient of the loss with respect to the input tensor of a 1-dimensional convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the convolutional layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val conv1d_backward_kernel
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val conv1d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [conv1d_backward_kernel input kernel strides grad_output] computes the gradient of the loss with respect to the kernel of a 1-dimensional convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the convolutional layer.
+    Returns the gradient of the loss with respect to the kernel.
+*)
 
-val conv2d_backward_input
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val conv2d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [conv2d_backward_input input kernel strides grad_output] computes the gradient of the loss with respect to the input tensor of a 2-dimensional convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the convolutional layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val conv2d_backward_kernel
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val conv2d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [conv2d_backward_kernel input kernel strides grad_output] computes the gradient of the loss with respect to the kernel of a 2-dimensional convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the convolutional layer.
+    Returns the gradient of the loss with respect to the kernel.
+*)
 
-val conv3d_backward_input
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val conv3d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [conv3d_backward_input input kernel strides grad_output] computes the gradient of the loss with respect to the input tensor of a 3-dimensional convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the convolutional layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val conv3d_backward_kernel
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val conv3d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [conv3d_backward_kernel input kernel strides grad_output] computes the gradient of the loss with respect to the kernel of a 3-dimensional convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the convolutional layer.
+    Returns the gradient of the loss with respect to the kernel.
+*)
 
-val dilated_conv1d_backward_input
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val dilated_conv1d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [dilated_conv1d_backward_input input kernel strides dilations grad_output] computes the gradient of the loss with respect to the input tensor of a 1-dimensional dilated convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the dilated convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the dilated convolutional layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val dilated_conv1d_backward_kernel
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val dilated_conv1d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [dilated_conv1d_backward_kernel input kernel strides dilations grad_output] computes the gradient of the loss with respect to the kernel of a 1-dimensional dilated convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the dilated convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the dilated convolutional layer.
+    Returns the gradient of the loss with respect to the kernel.
+*)
 
-val dilated_conv2d_backward_input
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val dilated_conv2d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [dilated_conv2d_backward_input input kernel strides dilations grad_output] computes the gradient of the loss with respect to the input tensor of a 2-dimensional dilated convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the dilated convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the dilated convolutional layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val dilated_conv2d_backward_kernel
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val dilated_conv2d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [dilated_conv2d_backward_kernel input kernel strides dilations grad_output] computes the gradient of the loss with respect to the kernel of a 2-dimensional dilated convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the dilated convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the dilated convolutional layer.
+    Returns the gradient of the loss with respect to the kernel.
+*)
 
-val dilated_conv3d_backward_input
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val dilated_conv3d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [dilated_conv3d_backward_input input kernel strides dilations grad_output] computes the gradient of the loss with respect to the input tensor of a 3-dimensional dilated convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the dilated convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the dilated convolutional layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val dilated_conv3d_backward_kernel
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val dilated_conv3d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [dilated_conv3d_backward_kernel input kernel strides dilations grad_output] computes the gradient of the loss with respect to the kernel of a 3-dimensional dilated convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the dilated convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the dilated convolutional layer.
+    Returns the gradient of the loss with respect to the kernel.
+*)
 
-val transpose_conv1d_backward_input
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val transpose_conv1d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [transpose_conv1d_backward_input input kernel strides grad_output] computes the gradient of the loss with respect to the input tensor of a 1-dimensional transposed convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the transposed convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the transposed convolutional layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val transpose_conv1d_backward_kernel
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val transpose_conv1d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [transpose_conv1d_backward_kernel input kernel strides grad_output] computes the gradient of the loss with respect to the kernel of a 1-dimensional transposed convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the transposed convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the transposed convolutional layer.
+    Returns the gradient of the loss with respect to the kernel.
+*)
 
-val transpose_conv2d_backward_input
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val transpose_conv2d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [transpose_conv2d_backward_input input kernel strides grad_output] computes the gradient of the loss with respect to the input tensor of a 2-dimensional transposed convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the transposed convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the transposed convolutional layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val transpose_conv2d_backward_kernel
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val transpose_conv2d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [transpose_conv2d_backward_kernel input kernel strides grad_output] computes the gradient of the loss with respect to the kernel of a 2-dimensional transposed convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the transposed convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the transposed convolutional layer.
+    Returns the gradient of the loss with respect to the kernel.
+*)
 
-val transpose_conv3d_backward_input
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val transpose_conv3d_backward_input : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [transpose_conv3d_backward_input input kernel strides grad_output] computes the gradient of the loss with respect to the input tensor of a 3-dimensional transposed convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the transposed convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the transposed convolutional layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val transpose_conv3d_backward_kernel
-  :  ('a, 'b) t
-  -> ('a, 'b) t
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val transpose_conv3d_backward_kernel : ('a, 'b) t -> ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [transpose_conv3d_backward_kernel input kernel strides grad_output] computes the gradient of the loss with respect to the kernel of a 3-dimensional transposed convolutional layer.
+    - [input] is the original input tensor.
+    - [kernel] is the transposed convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the transposed convolutional layer.
+    Returns the gradient of the loss with respect to the kernel.
+*)
 
-val max_pool1d_backward
-  :  padding
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val max_pool1d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [max_pool1d_backward padding input pool_size strides grad_output] computes the gradient of the loss with respect to the input tensor of a 1-dimensional max pooling layer.
+    - [padding] specifies the padding strategy used during the forward pass.
+    - [input] is the original input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the max pooling layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val max_pool2d_backward
-  :  padding
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val max_pool2d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [max_pool2d_backward padding input pool_size strides grad_output] computes the gradient of the loss with respect to the input tensor of a 2-dimensional max pooling layer.
+    - [padding] specifies the padding strategy used during the forward pass.
+    - [input] is the original input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the max pooling layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val max_pool3d_backward
-  :  padding
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val max_pool3d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [max_pool3d_backward padding input pool_size strides grad_output] computes the gradient of the loss with respect to the input tensor of a 3-dimensional max pooling layer.
+    - [padding] specifies the padding strategy used during the forward pass.
+    - [input] is the original input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the max pooling layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val avg_pool1d_backward
-  :  padding
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val avg_pool1d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [avg_pool1d_backward padding input pool_size strides grad_output] computes the gradient of the loss with respect to the input tensor of a 1-dimensional average pooling layer.
+    - [padding] specifies the padding strategy used during the forward pass.
+    - [input] is the original input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the average pooling layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val avg_pool2d_backward
-  :  padding
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val avg_pool2d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [avg_pool2d_backward padding input pool_size strides grad_output] computes the gradient of the loss with respect to the input tensor of a 2-dimensional average pooling layer.
+    - [padding] specifies the padding strategy used during the forward pass.
+    - [input] is the original input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the average pooling layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
-val avg_pool3d_backward
-  :  padding
-  -> ('a, 'b) t
-  -> int array
-  -> int array
-  -> ('a, 'b) t
-  -> ('a, 'b) t
-(** TODO *)
+val avg_pool3d_backward : padding -> ('a, 'b) t -> int array -> int array -> ('a, 'b) t -> ('a, 'b) t
+(** 
+    [avg_pool3d_backward padding input pool_size strides grad_output] computes the gradient of the loss with respect to the input tensor of a 3-dimensional average pooling layer.
+    - [padding] specifies the padding strategy used during the forward pass.
+    - [input] is the original input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the average pooling layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
 
 val upsampling2d_backward : ('a, 'b) t -> int array -> ('a, 'b) t -> ('a, 'b) t
-(** TODO *)
+(** 
+    [upsampling2d_backward input size grad_output] computes the gradient of the loss with respect to the input tensor of a 2-dimensional upsampling layer.
+    - [input] is the original input tensor.
+    - [size] specifies the upsampling factors for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the upsampling layer.
+    Returns the gradient of the loss with respect to the input tensor.
+*)
+
 
 (** {5 Helper functions } *)
 
@@ -2390,59 +2526,105 @@ Parameters:
 (** {5 In-place modification} *)
 
 val create_ : out:('a, 'b) t -> 'a -> unit
-(** TODO *)
+(** 
+    [create_ ~out value] initializes the matrix [out] in-place with the scalar value [value].
+    This operation modifies the contents of [out].
+*)
 
 val uniform_ : ?a:'a -> ?b:'a -> out:('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [uniform_ ?a ?b ~out] fills the matrix [out] in-place with random values drawn from a uniform distribution over the interval \[a, b\).
+    If [a] and [b] are not provided, the default interval is \[0, 1\).
+*)
 
 val gaussian_ : ?mu:'a -> ?sigma:'a -> out:('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [gaussian_ ?mu ?sigma ~out] fills the matrix [out] in-place with random values drawn from a Gaussian distribution with mean [mu] and standard deviation [sigma].
+    If [mu] is not provided, the default mean is 0.
+    If [sigma] is not provided, the default standard deviation is 1.
+*)
 
 val poisson_ : mu:float -> out:('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [poisson_ ~mu ~out] fills the matrix [out] in-place with random values drawn from a Poisson distribution with mean [mu].
+*)
 
 val sequential_ : ?a:'a -> ?step:'a -> out:('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [sequential_ ?a ?step ~out] fills the matrix [out] in-place with a sequence of values starting from [a] with a step of [step].
+    If [a] is not provided, the sequence starts from 0.
+    If [step] is not provided, the step size is 1.
+*)
 
 val bernoulli_ : ?p:float -> out:('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [bernoulli_ ?p ~out] fills the matrix [out] in-place with random values drawn from a Bernoulli distribution with probability [p] of being 1.
+    If [p] is not provided, the default probability is 0.5.
+*)
 
 val zeros_ : out:('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [zeros_ ~out] fills the matrix [out] in-place with zeros.
+*)
 
 val ones_ : out:('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [ones_ ~out] fills the matrix [out] in-place with ones.
+*)
 
 val one_hot_ : out:('a, 'b) t -> int -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [one_hot_ ~out depth indices] fills the matrix [out] in-place with one-hot encoded vectors according to the specified [depth] and the [indices].
+*)
 
 val sort_ : ('a, 'b) t -> unit
 (**
-[sort_ x] performs in-place quicksort of the elelments in [x].
+    [sort_ x] performs in-place quicksort on the elements in [x], sorting them in ascending order.
  *)
 
 val get_fancy_ : out:('a, 'b) t -> index list -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [get_fancy_ ~out indices src] extracts elements from the source matrix [src] according to the list of [indices] and stores them in [out].
+    This operation is performed in-place on [out].
+*)
 
 val set_fancy_ : out:('a, 'b) t -> index list -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [set_fancy_ ~out indices src] sets the elements in [out] at the positions specified by [indices] with the values from the source matrix [src].
+    This operation is performed in-place on [out].
+*)
 
 val get_slice_ : out:('a, 'b) t -> int list list -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [get_slice_ ~out slices src] extracts a slice from the source matrix [src] according to the list of [slices] and stores it in [out].
+    This operation is performed in-place on [out].
+*)
 
 val set_slice_ : out:('a, 'b) t -> int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [set_slice_ ~out slices src] sets the slice in [out] defined by [slices] with the values from the source matrix [src].
+    This operation is performed in-place on [out].
+*)
 
 val copy_ : out:('a, 'b) t -> ('a, 'b) t -> unit
 (**
-[copy_ ~out src] copies the data from ndarray [src] to destination [out].
+    [copy_ ~out src] copies the data from the source matrix [src] to the destination matrix [out].
+    This operation is performed in-place on [out].
  *)
 
 val reshape_ : out:('a, 'b) t -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [reshape_ ~out src] reshapes the source matrix [src] and stores the result in [out].
+    The total number of elements must remain the same.
+    This operation is performed in-place on [out].
+*)
 
 val reverse_ : out:('a, 'b) t -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [reverse_ ~out src] reverses the elements of the source matrix [src] along each dimension and stores the result in [out].
+    This operation is performed in-place on [out].
+*)
+
 
 val transpose_ : out:('a, 'b) t -> ?axis:int array -> ('a, 'b) t -> unit
 (**
@@ -2465,13 +2647,28 @@ val pad_ : out:('a, 'b) t -> ?v:'a -> int list list -> ('a, 'b) t -> unit
  *)
 
 val sum_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [sum_ ~out ~axis x] computes the sum of elements along the specified [axis] of the array [x] and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [axis] specifies the axis along which to compute the sum.
+    This operation is performed in-place on [out].
+*)
 
 val min_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [min_ ~out ~axis x] computes the minimum value along the specified [axis] of the array [x] and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [axis] specifies the axis along which to compute the minimum value.
+    This operation is performed in-place on [out].
+*)
 
 val max_ : out:('a, 'b) t -> axis:int -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [max_ ~out ~axis x] computes the maximum value along the specified [axis] of the array [x] and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [axis] specifies the axis along which to compute the maximum value.
+    This operation is performed in-place on [out].
+*)
 
 val add_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
@@ -2618,10 +2815,22 @@ written to [x].
  *)
 
 val clip_by_value_ : ?out:('a, 'b) t -> ?amin:'a -> ?amax:'a -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [clip_by_value_ ?out ?amin ?amax x] clips the values of the array [x] to lie within the range [amin, amax] and stores the result in [out].
+    - [out] is the optional output array where the result will be stored. If not provided, [x] is modified in-place.
+    - [amin] is the optional minimum value to clip to. If not provided, no minimum clipping is applied.
+    - [amax] is the optional maximum value to clip to. If not provided, no maximum clipping is applied.
+    This operation is performed in-place.
+*)
 
 val clip_by_l2norm_ : ?out:('a, 'b) t -> 'a -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [clip_by_l2norm_ ?out l2norm x] clips the L2 norm of the array [x] to the specified value [l2norm] and stores the result in [out].
+    - [out] is the optional output array where the result will be stored. If not provided, [x] is modified in-place.
+    - [l2norm] specifies the maximum L2 norm.
+    This operation is performed in-place.
+*)
+
 
 val fma_ : ?out:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> unit
 (**
@@ -2950,7 +3159,15 @@ val conv1d_
   -> ('a, 'b) t
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [conv1d_ ~out ?padding input kernel strides] applies a 1-dimensional convolution over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val conv2d_
   :  out:('a, 'b) t
@@ -2959,7 +3176,15 @@ val conv2d_
   -> ('a, 'b) t
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [conv2d_ ~out ?padding input kernel strides] applies a 2-dimensional convolution over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val conv3d_
   :  out:('a, 'b) t
@@ -2968,7 +3193,15 @@ val conv3d_
   -> ('a, 'b) t
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [conv3d_ ~out ?padding input kernel strides] applies a 3-dimensional convolution over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val dilated_conv1d_
   :  out:('a, 'b) t
@@ -2978,7 +3211,16 @@ val dilated_conv1d_
   -> int array
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [dilated_conv1d_ ~out ?padding input kernel strides dilations] applies a 1-dimensional dilated convolution over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val dilated_conv2d_
   :  out:('a, 'b) t
@@ -2988,7 +3230,16 @@ val dilated_conv2d_
   -> int array
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [dilated_conv2d_ ~out ?padding input kernel strides dilations] applies a 2-dimensional dilated convolution over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val dilated_conv3d_
   :  out:('a, 'b) t
@@ -2998,7 +3249,16 @@ val dilated_conv3d_
   -> int array
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [dilated_conv3d_ ~out ?padding input kernel strides dilations] applies a 3-dimensional dilated convolution over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val transpose_conv1d_
   :  out:('a, 'b) t
@@ -3007,7 +3267,15 @@ val transpose_conv1d_
   -> ('a, 'b) t
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [transpose_conv1d_ ~out ?padding input kernel strides] applies a 1-dimensional transposed convolution (deconvolution) over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the transposed convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val transpose_conv2d_
   :  out:('a, 'b) t
@@ -3016,7 +3284,15 @@ val transpose_conv2d_
   -> ('a, 'b) t
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [transpose_conv2d_ ~out ?padding input kernel strides] applies a 2-dimensional transposed convolution (deconvolution) over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the transposed convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val transpose_conv3d_
   :  out:('a, 'b) t
@@ -3025,7 +3301,15 @@ val transpose_conv3d_
   -> ('a, 'b) t
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [transpose_conv3d_ ~out ?padding input kernel strides] applies a 3-dimensional transposed convolution (deconvolution) over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [kernel] is the transposed convolutional kernel.
+    - [strides] specify the stride length for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val max_pool1d_
   :  out:('a, 'b) t
@@ -3034,7 +3318,15 @@ val max_pool1d_
   -> int array
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [max_pool1d_ ~out ?padding input pool_size strides] applies a 1-dimensional max pooling operation over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val max_pool2d_
   :  out:('a, 'b) t
@@ -3043,7 +3335,15 @@ val max_pool2d_
   -> int array
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [max_pool2d_ ~out ?padding input pool_size strides] applies a 2-dimensional max pooling operation over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val max_pool3d_
   :  out:('a, 'b) t
@@ -3052,7 +3352,15 @@ val max_pool3d_
   -> int array
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [max_pool3d_ ~out ?padding input pool_size strides] applies a 3-dimensional max pooling operation over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val avg_pool1d_
   :  out:('a, 'b) t
@@ -3061,7 +3369,15 @@ val avg_pool1d_
   -> int array
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [avg_pool1d_ ~out ?padding input pool_size strides] applies a 1-dimensional average pooling operation over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val avg_pool2d_
   :  out:('a, 'b) t
@@ -3070,7 +3386,15 @@ val avg_pool2d_
   -> int array
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [avg_pool2d_ ~out ?padding input pool_size strides] applies a 2-dimensional average pooling operation over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val avg_pool3d_
   :  out:('a, 'b) t
@@ -3079,10 +3403,24 @@ val avg_pool3d_
   -> int array
   -> int array
   -> unit
-(** TODO *)
+(** 
+    [avg_pool3d_ ~out ?padding input pool_size strides] applies a 3-dimensional average pooling operation over an input tensor and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [padding] specifies the padding strategy to use ('valid' or 'same').
+    - [input] is the input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val upsampling2d_ : out:('a, 'b) t -> ('a, 'b) t -> int array -> unit
-(** TODO *)
+(** 
+    [upsampling2d_ ~out input size] performs a 2-dimensional upsampling on the input tensor [input], scaling it according to the specified [size], and stores the result in [out].
+    - [out] is the output array where the result will be stored.
+    - [input] is the input tensor to be upsampled.
+    - [size] specifies the upsampling factors for each dimension.
+    This operation is performed in-place on [out].
+*)
 
 val conv1d_backward_input_
   :  out:('a, 'b) t
@@ -3091,7 +3429,15 @@ val conv1d_backward_input_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [conv1d_backward_input_ ~out input kernel strides grad_output] computes the gradient of the loss with respect to the input tensor of a 1-dimensional convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val conv1d_backward_kernel_
   :  out:('a, 'b) t
@@ -3100,7 +3446,15 @@ val conv1d_backward_kernel_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [conv1d_backward_kernel_ ~out input kernel strides grad_output] computes the gradient of the loss with respect to the kernel of a 1-dimensional convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val conv2d_backward_input_
   :  out:('a, 'b) t
@@ -3109,7 +3463,15 @@ val conv2d_backward_input_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [conv2d_backward_input_ ~out input kernel strides grad_output] computes the gradient of the loss with respect to the input tensor of a 2-dimensional convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val conv2d_backward_kernel_
   :  out:('a, 'b) t
@@ -3118,7 +3480,15 @@ val conv2d_backward_kernel_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [conv2d_backward_kernel_ ~out input kernel strides grad_output] computes the gradient of the loss with respect to the kernel of a 2-dimensional convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val conv3d_backward_input_
   :  out:('a, 'b) t
@@ -3127,7 +3497,15 @@ val conv3d_backward_input_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [conv3d_backward_input_ ~out input kernel strides grad_output] computes the gradient of the loss with respect to the input tensor of a 3-dimensional convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val conv3d_backward_kernel_
   :  out:('a, 'b) t
@@ -3136,7 +3514,15 @@ val conv3d_backward_kernel_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [conv3d_backward_kernel_ ~out input kernel strides grad_output] computes the gradient of the loss with respect to the kernel of a 3-dimensional convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val dilated_conv1d_backward_input_
   :  out:('a, 'b) t
@@ -3146,7 +3532,16 @@ val dilated_conv1d_backward_input_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [dilated_conv1d_backward_input_ ~out input kernel strides dilations grad_output] computes the gradient of the loss with respect to the input tensor of a 1-dimensional dilated convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the dilated convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the dilated convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val dilated_conv1d_backward_kernel_
   :  out:('a, 'b) t
@@ -3156,7 +3551,16 @@ val dilated_conv1d_backward_kernel_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [dilated_conv1d_backward_kernel_ ~out input kernel strides dilations grad_output] computes the gradient of the loss with respect to the kernel of a 1-dimensional dilated convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the dilated convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the dilated convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val dilated_conv2d_backward_input_
   :  out:('a, 'b) t
@@ -3166,7 +3570,16 @@ val dilated_conv2d_backward_input_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [dilated_conv2d_backward_input_ ~out input kernel strides dilations grad_output] computes the gradient of the loss with respect to the input tensor of a 2-dimensional dilated convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the dilated convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the dilated convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val dilated_conv2d_backward_kernel_
   :  out:('a, 'b) t
@@ -3176,7 +3589,16 @@ val dilated_conv2d_backward_kernel_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [dilated_conv2d_backward_kernel_ ~out input kernel strides dilations grad_output] computes the gradient of the loss with respect to the kernel of a 2-dimensional dilated convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the dilated convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the dilated convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val dilated_conv3d_backward_input_
   :  out:('a, 'b) t
@@ -3186,7 +3608,16 @@ val dilated_conv3d_backward_input_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [dilated_conv3d_backward_input_ ~out input kernel strides dilations grad_output] computes the gradient of the loss with respect to the input tensor of a 3-dimensional dilated convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the dilated convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the dilated convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val dilated_conv3d_backward_kernel_
   :  out:('a, 'b) t
@@ -3196,7 +3627,16 @@ val dilated_conv3d_backward_kernel_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [dilated_conv3d_backward_kernel_ ~out input kernel strides dilations grad_output] computes the gradient of the loss with respect to the kernel of a 3-dimensional dilated convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the dilated convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [dilations] specify the dilation factor for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the dilated convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val transpose_conv1d_backward_input_
   :  out:('a, 'b) t
@@ -3205,7 +3645,15 @@ val transpose_conv1d_backward_input_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [transpose_conv1d_backward_input_ ~out input kernel strides grad_output] computes the gradient of the loss with respect to the input tensor of a 1-dimensional transposed convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the transposed convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the transposed convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val transpose_conv1d_backward_kernel_
   :  out:('a, 'b) t
@@ -3214,7 +3662,15 @@ val transpose_conv1d_backward_kernel_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [transpose_conv1d_backward_kernel_ ~out input kernel strides grad_output] computes the gradient of the loss with respect to the kernel of a 1-dimensional transposed convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the transposed convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the transposed convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val transpose_conv2d_backward_input_
   :  out:('a, 'b) t
@@ -3223,7 +3679,15 @@ val transpose_conv2d_backward_input_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [transpose_conv2d_backward_input_ ~out input kernel strides grad_output] computes the gradient of the loss with respect to the input tensor of a 2-dimensional transposed convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the transposed convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the transposed convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val transpose_conv2d_backward_kernel_
   :  out:('a, 'b) t
@@ -3232,7 +3696,15 @@ val transpose_conv2d_backward_kernel_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [transpose_conv2d_backward_kernel_ ~out input kernel strides grad_output] computes the gradient of the loss with respect to the kernel of a 2-dimensional transposed convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the transposed convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the transposed convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val transpose_conv3d_backward_input_
   :  out:('a, 'b) t
@@ -3241,7 +3713,15 @@ val transpose_conv3d_backward_input_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [transpose_conv3d_backward_input_ ~out input kernel strides grad_output] computes the gradient of the loss with respect to the input tensor of a 3-dimensional transposed convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the transposed convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the transposed convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val transpose_conv3d_backward_kernel_
   :  out:('a, 'b) t
@@ -3250,7 +3730,15 @@ val transpose_conv3d_backward_kernel_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [transpose_conv3d_backward_kernel_ ~out input kernel strides grad_output] computes the gradient of the loss with respect to the kernel of a 3-dimensional transposed convolutional layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [kernel] is the transposed convolutional kernel used during the forward pass.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the transposed convolutional layer.
+    This operation is performed in-place on [out].
+*)
 
 val max_pool1d_backward_
   :  out:('a, 'b) t
@@ -3260,7 +3748,16 @@ val max_pool1d_backward_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [max_pool1d_backward_ ~out padding input pool_size strides grad_output] computes the gradient of the loss with respect to the input tensor of a 1-dimensional max pooling layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [padding] specifies the padding strategy used during the forward pass.
+    - [input] is the original input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the max pooling layer.
+    This operation is performed in-place on [out].
+*)
 
 val max_pool2d_backward_
   :  out:('a, 'b) t
@@ -3270,7 +3767,16 @@ val max_pool2d_backward_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [max_pool2d_backward_ ~out padding input pool_size strides grad_output] computes the gradient of the loss with respect to the input tensor of a 2-dimensional max pooling layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [padding] specifies the padding strategy used during the forward pass.
+    - [input] is the original input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the max pooling layer.
+    This operation is performed in-place on [out].
+*)
 
 val max_pool3d_backward_
   :  out:('a, 'b) t
@@ -3280,7 +3786,16 @@ val max_pool3d_backward_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [max_pool3d_backward_ ~out padding input pool_size strides grad_output] computes the gradient of the loss with respect to the input tensor of a 3-dimensional max pooling layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [padding] specifies the padding strategy used during the forward pass.
+    - [input] is the original input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the max pooling layer.
+    This operation is performed in-place on [out].
+*)
 
 val avg_pool1d_backward_
   :  out:('a, 'b) t
@@ -3290,7 +3805,16 @@ val avg_pool1d_backward_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [avg_pool1d_backward_ ~out padding input pool_size strides grad_output] computes the gradient of the loss with respect to the input tensor of a 1-dimensional average pooling layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [padding] specifies the padding strategy used during the forward pass.
+    - [input] is the original input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the average pooling layer.
+    This operation is performed in-place on [out].
+*)
 
 val avg_pool2d_backward_
   :  out:('a, 'b) t
@@ -3300,7 +3824,16 @@ val avg_pool2d_backward_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [avg_pool2d_backward_ ~out padding input pool_size strides grad_output] computes the gradient of the loss with respect to the input tensor of a 2-dimensional average pooling layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [padding] specifies the padding strategy used during the forward pass.
+    - [input] is the original input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the average pooling layer.
+    This operation is performed in-place on [out].
+*)
 
 val avg_pool3d_backward_
   :  out:('a, 'b) t
@@ -3310,7 +3843,16 @@ val avg_pool3d_backward_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [avg_pool3d_backward_ ~out padding input pool_size strides grad_output] computes the gradient of the loss with respect to the input tensor of a 3-dimensional average pooling layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [padding] specifies the padding strategy used during the forward pass.
+    - [input] is the original input tensor.
+    - [pool_size] specifies the size of the pooling window.
+    - [strides] specify the stride length for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the average pooling layer.
+    This operation is performed in-place on [out].
+*)
 
 val upsampling2d_backward_
   :  out:('a, 'b) t
@@ -3318,10 +3860,24 @@ val upsampling2d_backward_
   -> int array
   -> ('a, 'b) t
   -> unit
-(** TODO *)
+(** 
+    [upsampling2d_backward_ ~out input size grad_output] computes the gradient of the loss with respect to the input tensor of a 2-dimensional upsampling layer and stores it in [out].
+    - [out] is the output array where the gradient will be stored.
+    - [input] is the original input tensor.
+    - [size] specifies the upsampling factors for each dimension.
+    - [grad_output] is the gradient of the loss with respect to the output of the upsampling layer.
+    This operation is performed in-place on [out].
+*)
 
 val fused_adagrad_ : ?out:('a, 'b) t -> rate:'a -> eps:'a -> ('a, 'b) t -> unit
-(** TODO *)
+(** 
+    [fused_adagrad_ ?out ~rate ~eps grad] applies the Adagrad optimization algorithm to the gradients [grad] with a given learning [rate] and epsilon [eps] for numerical stability, storing the result in [out].
+    - [out] is the optional output array where the updated parameters will be stored. If not provided, [grad] is modified in-place.
+    - [rate] specifies the learning rate.
+    - [eps] specifies the epsilon value for numerical stability.
+    This operation is performed in-place.
+*)
+
 
 (** {5 Matrix functions} *)
 

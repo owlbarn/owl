@@ -2,6 +2,7 @@
  * OWL - OCaml Scientific Computing
  * Copyright (c) 2016-2022 Liang Wang <liang@ocaml.xyz>
  *)
+[@@@warning "-11"]
 
 open Bigarray
 
@@ -20,7 +21,7 @@ let elt_to_str : type a b. (a, b) kind -> a -> string = function
   | Float64        -> fun v -> Printf.sprintf "%G" v
   | Complex32      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
   | Complex64      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
-
+  | _              -> failwith "not implemented"
 
 (* convert an element of string to elt type *)
 let elt_of_str : type a b. (a, b) kind -> string -> a = function
@@ -39,6 +40,7 @@ let elt_of_str : type a b. (a, b) kind -> string -> a = function
                         Scanf.sscanf v "(%f, %fi)%!" (fun re im -> { Complex.re; im })
   | Complex64      -> fun v ->
                         Scanf.sscanf v "(%f, %fi)%!" (fun re im -> { Complex.re; im })
+  | _              -> failwith "not implemented"
 
 
 (* calculate the number of elements in an ndarray *)
