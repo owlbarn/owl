@@ -141,16 +141,38 @@ val flatten : 'a array array -> 'a array
 (** Flatten an array array into an array. *)
 
 val set_n : 'a array -> int array -> 'a -> unit
-(** TODO *)
+(** [set_n arr indices v] sets the elements at the positions specified by [indices] 
+    in the array [arr] to the value [v].
+
+    @param arr The array in which to set values.
+    @param indices An array of indices specifying the positions in [arr] to be updated.
+    @param v The value to set at each of the specified positions.
+*)
 
 val range : int -> int -> int array
-(** TODO *)
+(** [range start stop] generates an array of integers from [start] to [stop] inclusive.
+
+    @param start The starting value of the range.
+    @param stop The ending value of the range.
+    @return An array of integers from [start] to [stop].
+*)
 
 val count : 'a array -> 'a -> int
-(** TODO *)
+(** [count arr x] counts the number of occurrences of the value [x] in the array [arr].
+
+    @param arr The array in which to count occurrences.
+    @param x The value to count within the array.
+    @return The number of times [x] appears in [arr].
+*)
 
 val insert : 'a array -> 'a array -> int -> 'a array
-(** TODO *)
+(** [insert arr1 arr2 pos] inserts the elements of [arr2] into [arr1] at the specified position [pos].
+
+    @param arr1 The array into which elements are inserted.
+    @param arr2 The array of elements to insert into [arr1].
+    @param pos The position in [arr1] at which to insert [arr2].
+    @return A new array with [arr2] inserted into [arr1] at the position [pos].
+*)
 
 val unique : 'a array -> 'a array
 (** [unique x] removes the duplicates in the array [x]. *)
@@ -158,32 +180,48 @@ val unique : 'a array -> 'a array
 val merge : 'a array -> 'a array -> 'a array
 (** [merge x y] merges two arrays and removes the duplicates. *)
 
+val reverse : 'a array -> unit
+(** [reverse arr] reverses the elements of the array [arr] in place. *)
+
 val remove : 'a array -> int -> 'a array
-(** TODO *)
+(** [remove arr pos] removes the element at position [pos] from the array [arr].*)
 
 val replace : int -> int -> 'a array -> 'a array -> 'a array
-(** TODO *)
-
-val reverse : 'a array -> unit
-(** [reverse x] reverse the elements in [x] in place. *)
+(** [replace pos len arr1 arr2] replaces the subarray of length [len] starting at [pos] 
+    in [arr1] with the elements from [arr2].
+*)
 
 val mapi : (int -> 'a -> 'b) -> 'a array -> 'b array
-(** TODO *)
+(** [mapi f arr] applies the function [f] to each element of the array [arr], 
+    passing the index of the element as the first argument to [f], and returns 
+    a new array of the results.
+*)
 
 val map : ('a -> 'b) -> 'a array -> 'b array
-(** TODO *)
+(** [map f arr] applies the function [f] to each element of the array [arr] 
+    and returns a new array of the results.
+*)
 
 val iter2i : (int -> 'a -> 'b -> unit) -> 'a array -> 'b array -> unit
-(** TODO *)
+(** [iter2i f arr1 arr2] applies the function [f] to each pair of corresponding elements 
+    from [arr1] and [arr2], passing the index as the first argument to [f].
+*)
 
 val iter2 : ('a -> 'b -> unit) -> 'a array -> 'b array -> unit
-(** TODO *)
+(** [iter2 f arr1 arr2] applies the function [f] to each pair of corresponding elements 
+    from [arr1] and [arr2].
+*)
 
 val iter3i : (int -> 'a -> 'b -> 'c -> unit) -> 'a array -> 'b array -> 'c array -> unit
-(** TODO *)
+(** [iter3i f arr1 arr2 arr3] applies the function [f] to each triplet of corresponding elements 
+    from [arr1], [arr2], and [arr3], passing the index as the first argument to [f].
+*)
 
 val iter3 : ('a -> 'b -> 'c -> unit) -> 'a array -> 'b array -> 'c array -> unit
-(** TODO *)
+(** [iter3 f arr1 arr2 arr3] applies the function [f] to each triplet of corresponding elements 
+    from [arr1], [arr2], and [arr3].
+*)
+
 
 val iter4i
   :  (int -> 'a -> 'b -> 'c -> 'd -> unit)
@@ -192,7 +230,9 @@ val iter4i
   -> 'c array
   -> 'd array
   -> unit
-(** TODO *)
+(** [iter4i f arr1 arr2 arr3 arr4] applies the function [f] to each group of corresponding 
+    elements from [arr1], [arr2], [arr3], and [arr4], passing the index of the elements 
+    as the first argument to [f]. *)
 
 val iter4
   :  ('a -> 'b -> 'c -> 'd -> unit)
@@ -201,23 +241,32 @@ val iter4
   -> 'c array
   -> 'd array
   -> unit
-(** TODO *)
+(** [iter4 f arr1 arr2 arr3 arr4] applies the function [f] to each group of corresponding 
+    elements from [arr1], [arr2], [arr3], and [arr4]. *)
 
 val map2i : (int -> 'a -> 'b -> 'c) -> 'a array -> 'b array -> 'c array
-(** TODO *)
+(** [map2i f arr1 arr2] applies the function [f] to each pair of corresponding elements 
+    from [arr1] and [arr2], passing the index of the elements as the first argument to [f], 
+    and returns an array of the results. *)
 
 val map2i_split2
   :  (int -> 'a -> 'b -> 'c * 'd)
   -> 'a array
   -> 'b array
   -> 'c array * 'd array
-(** TODO *)
+(** [map2i_split2 f arr1 arr2] applies the function [f] to each pair of corresponding elements 
+    from [arr1] and [arr2], passing the index of the elements as the first argument to [f], 
+    and returns a tuple of two arrays containing the first and second elements of the results 
+    of [f]. *)
 
 val map3i : (int -> 'a -> 'b -> 'c -> 'd) -> 'a array -> 'b array -> 'c array -> 'd array
-(** TODO *)
+(** [map3i f arr1 arr2 arr3] applies the function [f] to each triplet of corresponding elements 
+    from [arr1], [arr2], and [arr3], passing the index of the elements as the first argument 
+    to [f], and returns an array of the results. *)
 
 val map3 : ('a -> 'b -> 'c -> 'd) -> 'a array -> 'b array -> 'c array -> 'd array
-(** TODO *)
+(** [map3 f arr1 arr2 arr3] applies the function [f] to each triplet of corresponding elements 
+    from [arr1], [arr2], and [arr3], and returns an array of the results. *)
 
 val map4i
   :  (int -> 'a -> 'b -> 'c -> 'd -> 'e)
@@ -226,7 +275,9 @@ val map4i
   -> 'c array
   -> 'd array
   -> 'e array
-(** TODO *)
+(** [map4i f arr1 arr2 arr3 arr4] applies the function [f] to each group of corresponding elements 
+    from [arr1], [arr2], [arr3], and [arr4], passing the index of the elements as the first argument 
+    to [f], and returns an array of the results. *)
 
 val map4
   :  ('a -> 'b -> 'c -> 'd -> 'e)
@@ -235,13 +286,19 @@ val map4
   -> 'c array
   -> 'd array
   -> 'e array
-(** TODO *)
+(** [map4 f arr1 arr2 arr3 arr4] applies the function [f] to each group of corresponding elements 
+    from [arr1], [arr2], [arr3], and [arr4], and returns an array of the results. *)
 
 val filteri_v : (int -> 'a -> bool * 'b) -> 'a array -> 'b array
-(** TODO *)
+(** [filteri_v f arr] applies the function [f] to each element of [arr], passing the index 
+    of the element as the first argument to [f]. The function [f] returns a pair of a boolean 
+    and a value. If the boolean is [true], the value is included in the result array. *)
 
 val filter_v : ('a -> bool * 'b) -> 'a array -> 'b array
-(** TODO *)
+(** [filter_v f arr] applies the function [f] to each element of [arr]. The function [f] 
+    returns a pair of a boolean and a value. If the boolean is [true], the value is included 
+    in the result array. *)
+
 
 val filteri : (int -> 'a -> bool) -> 'a array -> 'a array
 (** [filteri f x] filters out the elements in [x] according to predicate [f]. *)
@@ -292,8 +349,12 @@ val fold2 : ('a -> 'b -> 'c -> 'a) -> 'a -> 'b array -> 'c array -> 'a
 [fold2 a x y] folds both [x] and [y] from left with starting value [a].
  *)
 
-val pad : [ `Left | `Right ] -> 'a -> int -> 'a array -> 'a array
-(** TODO *)
+ val pad : [ `Left | `Right ] -> 'a -> int -> 'a array -> 'a array
+ (** [pad side v len arr] pads the array [arr] with the value [v] on the specified side 
+     (`Left` or `Right`) until the array reaches the desired length [len].
+ 
+     If [len] is less than or equal to the length of [arr], the original array is returned. *)
+ 
 
 val align : [ `Left | `Right ] -> 'a -> 'a array -> 'a array -> 'a array * 'a array
 (**
@@ -310,17 +371,20 @@ val align3
   -> 'a array * 'a array * 'a array
 (** [align3 side v x y z] aligns three arrays [x], [y], and [z]. *)
 
-val greater_eqaul : 'a array -> 'a array -> bool
-(** TODO *)
+val greater_equal : 'a array -> 'a array -> bool
+(** [greater_equal arr1 arr2] returns [true] if all elements in [arr1] are greater than or equal to 
+    the corresponding elements in [arr2], and [false] otherwise. *)
 
 val swap : 'a array -> int -> int -> unit
-(** TODO *)
+(** [swap arr i j] swaps the elements at indices [i] and [j] in the array [arr]. *)
 
 val permute : int array -> 'a array -> 'a array
-(** TODO *)
+(** [permute indices arr] rearranges the elements of [arr] according to the order specified 
+    by [indices], returning a new array with the permuted elements. *)
 
 val of_tuples : ('a * 'a) array -> 'a array
-(** TODO *)
+(** [of_tuples arr] converts an array of pairs into an array containing all the first elements 
+    followed by all the second elements of the pairs in [arr]. *)
 
 val complement : 'a array -> 'a array -> 'a array
 
@@ -351,4 +415,7 @@ val to_string
   -> ('a -> string)
   -> 'a array
   -> string
-(** TODO *)
+(** [to_string ?prefix ?suffix ?sep f arr] converts the array [arr] to a string 
+    representation, applying the function [f] to each element to produce a string. 
+    The elements are separated by [sep] (default is ", "), and the entire output is 
+    optionally wrapped with [prefix] and [suffix]. *)
