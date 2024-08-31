@@ -12,27 +12,26 @@ module type Sig = sig
   (** {5 Type definition} *)
 
   type graph
-  (** TODO *)
 
   (** {5 Core functions} *)
 
   val shape_or_value : t -> string
-  (** TODO *)
+  (** print shape for ndarrays, whilst value for scalars *)
 
   val graph_to_dot : graph -> string
-  (** TODO *)
+  (** generate a string that can be written to a .dot file to draw the graph *)
 
   val graph_to_trace : graph -> string
-  (** TODO *)
+  (** print the graph structure to a string *)
 
   val save_graph : 'a -> string -> unit
-  (** TODO *)
+  (** save the graph object to a file with given name, using marshall format *)
 
   val load_graph : string -> 'a * 'b
-  (** TODO *)
+  (** load the graph object from a file with given name *)
 
   val collect_rvs : attr Owl_graph.node array -> attr Owl_graph.node array
-  (** TODO *)
+  (** traverse each node in the input array, and return the random variable type nodes. *)
 
   val invalidate_rvs : graph -> unit
   (** TODO *)
@@ -42,48 +41,43 @@ module type Sig = sig
     -> output:attr Owl_graph.node array
     -> string
     -> graph
-  (** TODO *)
+  (** Build a graph based on input nodes, output nodes, and graph name *)
 
   val get_inputs : graph -> attr Owl_graph.node array
-  (** TODO *)
+  (** get input nodes of a graph *)
 
   val get_outputs : graph -> attr Owl_graph.node array
-  (** TODO *)
+  (** get output nodes of a graph *)
 
   val get_node_arr_val : attr Owl_graph.node -> A.arr
-  (** TODO *)
 
   val get_node_elt_val : attr Owl_graph.node -> A.elt
-  (** TODO *)
 
   val set_node_arr_val : attr Owl_graph.node -> value -> unit
-  (** TODO *)
 
   val set_node_elt_val : attr Owl_graph.node -> value -> unit
-  (** TODO *)
 
   val is_iopair_safe : 'a Owl_graph.node -> 'a Owl_graph.node -> bool
-  (** TODO *)
 
   val make_iopair
     :  graph
     -> attr Owl_graph.node array
     -> attr Owl_graph.node array
     -> unit
-  (** TODO *)
+  (** create an iopair between the input nodes and output nodes in a graph *)
 
   val update_iopair : graph -> unit
-  (** TODO *)
 
   val remove_unused_iopair
     :  'a Owl_graph.node array
     -> 'b array
     -> 'a Owl_graph.node array * 'b array
-  (** TODO *)
+  (** remove unuserd iopair from an array of nodes *)
 
   val init_inputs : (attr Owl_graph.node -> value) -> graph -> unit
-  (** TODO *)
+  (** initialize inputs nodes of a graph with given function [f] *)
 
   val optimise : graph -> unit
-  (** TODO *)
+  (** optimise the graph structure *)
+  
 end

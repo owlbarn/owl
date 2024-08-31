@@ -15,97 +15,92 @@ module Make (A : Ndarray_Mutable) : sig
   (** {5 Type definition} *)
 
   type arr
-  (** TODO *)
 
   type elt
-  (** TODO *)
 
   type value
-  (** TODO *)
 
   type attr
-  (** TODO *)
 
   type graph
-  (** TODO *)
 
   (** {5 Type conversion functions} *)
 
   val arr_to_value : A.arr -> value
-  (** TODO *)
+  (** pack A.arr type to value type *)
 
   val value_to_arr : value -> A.arr
-  (** TODO *)
+  (** retrieve A.arr type from value type input *)
 
   val elt_to_value : A.elt -> value
-  (** TODO *)
+  (** pack A.elt type to value type *)
 
   val value_to_elt : value -> A.elt
-  (** TODO *)
+  (** retrieve A.elt type from value type input *)
 
   val value_to_float : value -> float
-  (** TODO *)
+  (** retrieve float type from value type input *)
 
   val node_to_arr : attr node -> arr
-  (** TODO *)
+  (** get Arr type from node *)
 
   val arr_to_node : arr -> attr node
-  (** TODO *)
+  (** pack Arr type into node  *)
 
   val node_to_elt : attr node -> elt
-  (** TODO *)
+  (** get Elt type from node *)
 
   val elt_to_node : elt -> attr node
-  (** TODO *)
+  (** pack Elt type into node  *)
 
   val pack_arr : A.arr -> arr
-  (** TODO *)
+  (** pack A.arr type into Arr type *)
 
   val unpack_arr : arr -> A.arr
-  (** TODO *)
+  (** unpack Arr type into A.arr *)
 
   val pack_elt : A.elt -> elt
-  (** TODO *)
+  (** pack A.elt type into Elt type *)
 
   val unpack_elt : elt -> A.elt
-  (** TODO *)
+  (** unpack Elt type into A.elt *)
 
   val float_to_elt : float -> elt
-  (** TODO *)
+  (** build Elt type to float *)
 
   val elt_to_float : elt -> float
-  (** TODO *)
+  (** get float value from Elt type *)
 
   (** {5 Utility functions} *)
 
   val graph_to_dot : graph -> string
-  (** TODO *)
+  (** convert graph to dot string, which can be saved into file and later rendered into figures to show graph structure *)
 
   val graph_to_trace : graph -> string
-  (** TODO *)
+  (** print graph structure *)
 
   (** {5 Create variables} *)
 
   val var_arr : ?shape:int array -> string -> arr
-  (** TODO *)
+  (** create Arr *)
 
   val var_elt : string -> elt
-  (** TODO *)
+  (** create Elt *)
 
   val const_arr : string -> A.arr -> arr
-  (** TODO *)
+  (** create Arr with constant value *)
 
   val const_elt : string -> A.elt -> elt
-  (** TODO *)
+  (** create Elt with constant value *)
 
   val assign_arr : arr -> A.arr -> unit
-  (** TODO *)
+  (** assign A.arr value to Arr *)
 
   val assign_elt : elt -> A.elt -> unit
-  (** TODO *)
+  (** assign A.elt value to Elt *)
 
   val unsafe_assign_arr : arr -> A.arr -> unit
-  (** TODO *)
+  (** assign A.arr value to Arr *)
 
   (** {5 Maths functions} *)
 
@@ -587,32 +582,33 @@ module Make (A : Ndarray_Mutable) : sig
   (** {5 Evaluation functions} *)
 
   val make_graph : input:attr node array -> output:attr node array -> string -> graph
-  (** TODO *)
+  (** build a computation graph *)
 
   val get_inputs : graph -> attr node array
-  (** TODO *)
+  (** get input nodes of graph *)
 
   val get_outputs : graph -> attr node array
-  (** TODO *)
+  (** get output nodes of graph *)
 
   val make_iopair : graph -> attr node array -> attr node array -> unit
-  (** TODO *)
+  (** connect iopairs in a graph *)
 
   val update_iopair : graph -> unit
-  (** TODO *)
+  (** update iopairs in a graph *)
 
   val init_inputs : (attr node -> value) -> graph -> unit
-  (** TODO *)
+  (** initialize input nodes of a graph with given function [f] *)
 
   val optimise : graph -> unit
-  (** TODO *)
+  (** optimise graph structures *)
 
   val eval_elt : elt array -> unit
-  (** TODO *)
+  (** evaluate each Elt element in an array *)
 
   val eval_arr : arr array -> unit
-  (** TODO *)
+  (** evaluate each Arr element in an array *)
 
   val eval_graph : graph -> unit
-  (** TODO *)
+  (** evaluate all nodes in a computation graph *)
+  
 end

@@ -13,46 +13,46 @@ module type Sig = sig
   (** {5 Core functions} *)
 
   val tag : unit -> int
-  (** TODO *)
+  (** start global tagging counter *)
 
   val primal : t -> t
-  (** TODO *)
+  (** get primal component of DF or DR type *)
 
   val primal' : t -> t
-  (** TODO *)
+  (** iteratively get primal component of DF or DR type until the component itself is not DF/DR *)
 
   val zero : t -> t
-  (** TODO *)
+  (** return a zero value, which type decided by the input value *)
 
   val reset_zero : t -> t
-  (** TODO *)
+  (** [reset_zero x] iteratively resets all elements included in [x] *)
 
   val tangent : t -> t
-  (** TODO *)
+  (** get the tangent component of input, if the data type is suitable *)
 
   val adjref : t -> t ref
-  (** TODO *)
+  (** get the adjref component of input, if the data type is suitable *)
 
   val adjval : t -> t
-  (** TODO *)
+  (** get the adjval component of input, if the data type is suitableTODO *)
 
   val shape : t -> int array
-  (** TODO *)
+  (** get the shape of primal' value of input *)
 
   val is_float : t -> bool
-  (** TODO *)
+  (** check if input is of float value; if input is of type DF/DR, check its primal' value *)
 
   val is_arr : t -> bool
-  (** TODO *)
+  (** check if input is of ndarray value; if input is of type DF/DR, check its primal' value *)
 
   val row_num : t -> int
-  (** number of rows *)
+  (** get the shape of primal' value of input; and then get the first dimension *)
 
   val col_num : t -> int
-  (** number of columns *)
+  (** get the shape of primal' value of input; and then get the second dimension *)
 
   val numel : t -> int
-  (** number of elements *)
+  (** for ndarray type input, return its total number of elements. *)
 
   val clip_by_value : amin:A.elt -> amax:A.elt -> t -> t
   (** other functions, without tracking gradient *)
@@ -61,13 +61,13 @@ module type Sig = sig
   (** other functions, without tracking gradient *)
 
   val copy_primal' : t -> t
-  (** TODO *)
+  (** if primal' value of input is ndarray, copy its value in a new AD type ndarray *)
 
   val tile : t -> int array -> t
-  (** TODO *)
+  (** if primal' value of input is ndarray, apply the tile function *)
 
   val repeat : t -> int array -> t
-  (** TODO *)
+  (** if primal' value of input is ndarray, apply the repeat function *)
 
   val pack_elt : A.elt -> t
   (** convert from [elt] type to [t] type. *)
@@ -93,14 +93,11 @@ module type Sig = sig
   (* functions to report errors, help in debugging *)
 
   val deep_info : t -> string
-  (** TODO *)
 
   val type_info : t -> string
-  (** TODO *)
 
   val error_binop : string -> t -> t -> 'a
-  (** TODO *)
 
   val error_uniop : string -> t -> 'a
-  (** TODO *)
+
 end
