@@ -300,7 +300,7 @@ let align3 s v x y z =
 
 
 (* [x] is greater or equal than [y] elementwise *)
-let greater_eqaul x y =
+let greater_equal x y =
   let la = Array.length x in
   let lb = Array.length y in
   assert (la = lb);

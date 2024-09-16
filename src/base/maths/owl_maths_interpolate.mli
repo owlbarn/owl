@@ -23,6 +23,25 @@ Returns:
  *)
 
 val ratint : float array -> float array -> float -> float * float
-(**
-  TODO
- *)
+(** [ratint xs ys x] performs rational function interpolation on the data points 
+    given by [xs] and [ys], and returns the interpolated value at the point [x], 
+    along with an estimate of the error.
+
+    This function fits a rational function (a ratio of two polynomials) to the 
+    provided data points. It is particularly useful when the data exhibits behavior 
+    that might be better captured by such a function, especially in cases where 
+    the data might have singularities or steep gradients.
+
+    The function raises an exception if the lengths of [xs] and [ys] do not match, 
+    or if a pole is encountered during the interpolation process.
+    
+    Parameters:
+    @param xs An array of x-values (the independent variable).
+    @param ys An array of y-values (the dependent variable) corresponding to [xs].
+    @param x The point at which the interpolated value is to be calculated.
+
+    Returns:
+    @return A tuple [(y, dy)], where [y] is the interpolated value at [x], 
+            and [dy] is an estimate of the error in the interpolation. 
+*)
+

@@ -12,11 +12,12 @@ module type Sig = sig
   (** {5 Core evaluation functions of the engine} *)
 
   val eval_arr : arr array -> unit
-  (** TODO *)
+  (** Execute actual computation included in each CGraph element (of output type ndarray) in an array. *)
 
   val eval_elt : elt array -> unit
-  (** TODO *)
+  (** Execute actual computation included in each CGraph element (of output type float) in an array. *)
 
   val eval_graph : graph -> unit
-  (** TODO *)
+  (** Execute actual computation of a computation graph. *)
+  
 end

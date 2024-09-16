@@ -7,13 +7,15 @@ module type Sig = sig
   include Owl_algodiff_core_sig.Sig
 
   val make_forward : t -> t -> int -> t
-  (** TODO *)
+  (** [make_forward p t i] construct a forward algodiff data type DF, consisting of 
+      primal [p], tangent [t], and tag [i]. *)
 
   val make_reverse : t -> int -> t
-  (** TODO *)
+  (** [make_reverse p i ] construct a reverse algodiff data type DR, consisting of 
+      primal, adjoint, op, fanout, tag, and tracker. *)
 
   val reverse_prop : t -> t -> unit
-  (** TODO *)
+  (** [reverse_prop f x]  performs reverse propagation for function [f] using the output value [x]. *)
 
   val diff : (t -> t) -> t -> t
   (** [diff f x] returns the exat derivative of a function [f : scalar -> scalar] at

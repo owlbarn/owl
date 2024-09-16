@@ -15,43 +15,43 @@ module type Sig = sig
   (** {5 Core functions} *)
 
   val op_to_str : op -> string
-  (** TODO *)
+  (** return the name of the operator as string *)
 
   val is_random_variable : op -> bool
-  (** TODO *)
+  (** check if operator is randon variable *)
 
   val refnum : 'a Owl_graph.node -> int
-  (** TODO *)
+  (** return the reference number of the given node  *)
 
   val node_shape : attr Owl_graph.node -> int array
-  (** TODO *)
+  (** return the shape of a node  *)
 
   val node_numel : attr Owl_graph.node -> int
-  (** TODO *)
+  (** return the number of elements of a node *)
 
   val is_shape_unknown : attr Owl_graph.node -> bool
-  (** TODO *)
+  (** check if the shape of the input node is unknown *)
 
   val infer_shape_graph : attr Owl_graph.node array -> unit
-  (** TODO *)
+  (** automatically infer the shape of input node according to its descendents' shapes *)
 
   val shape_to_str : int array option array -> string
-  (** TODO *)
+  (** helper function; return the input array in string format. *)
 
   val node_to_str : attr Owl_graph.node -> string
-  (** TODO *)
+  (** print node's information to string *)
 
   val node_to_arr : t -> arr
-  (** TODO *)
+  (** Wrap computation graph node in an array type *)
 
   val arr_to_node : arr -> t
-  (** TODO *)
+  (** Unwrap the array type to get the computation graph node within *)
 
   val node_to_elt : t -> elt
-  (** TODO *)
+  (** Wrap computation graph node in an Elt type *)
 
   val elt_to_node : elt -> t
-  (** TODO *)
+  (** Unwrap the Elt type to get the computation graph node within *)
 
   val make_node
     :  ?name:string
@@ -62,26 +62,26 @@ module type Sig = sig
     -> ?state:state
     -> op
     -> attr Owl_graph.node
-  (** TODO *)
+  (** crate a computation graph node *)
 
   val make_then_connect
     :  ?shape:int array option array
     -> op
     -> attr Owl_graph.node array
     -> attr Owl_graph.node
-  (** TODO *)
+  (** make nodes and then connect parents and children *)
 
   val var_arr : ?shape:int array -> string -> arr
-  (** TODO *)
+  (** creat a node and wrap in Arr type *)
 
   val var_elt : string -> elt
-  (** TODO *)
+  (** creat a node and wrap in Elt type *)
 
   val const_arr : string -> A.arr -> arr
-  (** TODO *)
+  (** get ndarray value from input and create an node and wrap in Arr type *)
 
   val const_elt : string -> A.elt -> elt
-  (** TODO *)
+  (** get value from input and create an node and wrap in Elt type *)
 
   val new_block_id : unit -> int
   (** [new_block_id ()] returns an unused block id. *)
@@ -120,25 +120,25 @@ module type Sig = sig
    *)
 
   val set_value : attr Owl_graph.node -> value array -> unit
-  (** TODO *)
+  (** set the arrays of value to cgraph node *)
 
   val get_value : attr Owl_graph.node -> value array
-  (** TODO *)
+  (** get the arrays of value of cgraph node *)
 
   val set_operator : attr Owl_graph.node -> op -> unit
-  (** TODO *)
+  (** set the operator of cgraph node *)
 
   val get_operator : attr Owl_graph.node -> op
-  (** TODO *)
+  (** get the operator of cgraph node *)
 
   val set_reuse : attr Owl_graph.node -> bool -> unit
-  (** TODO *)
+  (** set reuse attribute in a node *)
 
   val get_reuse : attr Owl_graph.node -> bool
-  (** TODO *)
+  (** get reuse attribute in a node *)
 
   val is_shared : attr Owl_graph.node -> bool
-  (** TODO *)
+  (** check of the data block of memory is shared in a node *)
 
   val get_shared_nodes : attr Owl_graph.node -> attr Owl_graph.node array
   (**
@@ -147,16 +147,16 @@ module type Sig = sig
    *)
 
   val is_var : attr Owl_graph.node -> bool
-  (** TODO *)
+  (** check if the node's operator is Var type *)
 
   val is_const : attr Owl_graph.node -> bool
-  (** TODO *)
+  (** check if the node's operator is Const type *)
 
   val is_node_arr : attr Owl_graph.node -> bool
-  (** TODO *)
+  (** check the shape of a node's attr and return if it indicates an ndarray *)
 
   val is_node_elt : attr Owl_graph.node -> bool
-  (** TODO *)
+  (** check the shape of a node's attr and return if it indicates an elt *)
 
   val is_assigned : attr Owl_graph.node -> bool
   (**
@@ -171,53 +171,53 @@ module type Sig = sig
    *)
 
   val is_valid : attr Owl_graph.node -> bool
-  (** TODO *)
+  (** check if the state attribute of a node is Valid *)
 
   val validate : attr Owl_graph.node -> unit
-  (** TODO *)
+  (** set Valid to the state attribute of a node *)
 
   val invalidate : attr Owl_graph.node -> unit
-  (** TODO *)
+  (** set Invalid to the state attribute of a node *)
 
   val invalidate_graph : attr Owl_graph.node -> unit
-  (** TODO *)
+  (** iteratively invalidate the nodes in a graph *)
 
   val is_freeze : attr Owl_graph.node -> bool
-  (** TODO *)
+  (** check the freeze attribute of a node *)
 
   val freeze : attr Owl_graph.node -> unit
-  (** TODO *)
+  (** return the freeze attribute of a node *)
 
   val freeze_descendants : attr Owl_graph.node array -> unit
-  (** TODO *)
+  (** iteratively freeze the descendants of a node *)
 
   val freeze_ancestors : attr Owl_graph.node array -> unit
-  (** TODO *)
+  (** iteratively freeze the ancestors of a node *)
 
   val pack_arr : A.arr -> arr
-  (** TODO *)
+  (** pack an A.arr type input into Arr type *)
 
   val unpack_arr : arr -> A.arr
-  (** TODO *)
+  (** unpack input into A.arr type *)
 
   val pack_elt : A.elt -> elt
-  (** TODO *)
+  (** pack an A.elt type input into Elt type *)
 
   val unpack_elt : elt -> A.elt
-  (** TODO *)
+  (** unpack input into A.elt type *)
 
   val unsafe_assign_arr : arr -> A.arr -> unit
-  (** TODO *)
+  (** assign Arr type value *)
 
   val assign_arr : arr -> A.arr -> unit
-  (** TODO *)
+  (** assign Arr type value *)
 
   val assign_elt : elt -> A.elt -> unit
-  (** TODO *)
+  (** assign Elt type value *)
 
   val float_to_elt : float -> elt
-  (** TODO *)
+  (** build an Elt type based on float value *)
 
   val elt_to_float : elt -> float
-  (** TODO *)
+  (** retrive a float value from an Elt type value *)
 end

@@ -221,7 +221,7 @@ let t_score x =
   z_score ~mu ~sigma x
 
 
-let normlise_pdf x =
+let normalise_pdf x =
   let c = Owl_stats_extend.sum x in
   Array.map (fun x -> x /. c) x
 
