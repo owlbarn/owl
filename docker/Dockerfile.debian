@@ -4,27 +4,33 @@
 # By Liang Wang <liang@ocaml.xyz>
 ############################################################
 
-FROM ocaml/opam2:debian-stable
-USER opam
+FROM debian
+USER root
 
 ##################### PREREQUISITES ########################
 
-RUN sudo apt-get -y update
-RUN sudo apt-get -y install m4 wget unzip aspcud libshp-dev gfortran
-RUN sudo apt-get -y install pkg-config git camlp4-extra
-RUN sudo apt-get -y install libopenblas-dev liblapacke-dev
-RUN cd /home/opam/opam-repository && git pull --quiet origin master
-RUN opam update -q
+RUN apt-get update
+RUN apt-get -y install aspcud libshp-dev libopenblas-dev liblapacke-dev build-essential wget 
+RUN apt-get -y install opam pkg-config zlib1g-dev
+
+ENV OCAML_VER=5.1.0
+RUN yes | opam init --disable-sandboxing --comp $OCAML_VER && eval $(opam config env) 
+RUN opam install -y dune ocaml-compiler-libs ctypes alcotest utop conf-openblas dune-configurator stdio npy
 
 ####################   INSTALL OWL  #######################
 
-ENV OWLPATH /home/opam/owl
-RUN opam install owl owl-top utop -y
+RUN cd /root && git clone https://github.com/owlbarn/owl.git
+
+ENV OWLPATH /root/owl
+RUN cd $OWLPATH \
+    && eval `opam config env ` \
+    && make && make install
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
-RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit \
-    && echo 'eval $(opam env)' >> /home/opam/.bashrc
+RUN echo "#require \"owl-top\";; open Owl;;" >> /root/.ocamlinit \
+    && opam config env >> /root/.bashrc \
+    && bash -c "source /root/.bashrc"
 
 WORKDIR $OWLPATH
 ENTRYPOINT /bin/bash

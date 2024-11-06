@@ -4,38 +4,41 @@
 # By Liang Wang <liang@ocaml.xyz>
 ############################################################
 
-FROM owlbarn/openblas:ubuntu
-
-FROM ocaml/opam2:ubuntu
-USER root
+FROM ocaml/opam:ubuntu-20.04-ocaml-5.1
+USER opam
 
 #################### INSTALL OPENBLAS ######################
 
 WORKDIR /home/opam
-COPY --from=0 /home/opam/OpenBLAS OpenBLAS
-RUN make -C OpenBLAS/ install
-RUN ldconfig /opt/OpenBLAS/lib/
+
+RUN sudo apt-get update
+RUN sudo apt-get install -y git gfortran apt-utils
+RUN git clone https://github.com/xianyi/OpenBLAS.git
+RUN make -C OpenBLAS/
+RUN sudo make -C OpenBLAS/ install
+RUN sudo ldconfig /opt/OpenBLAS/lib/
 
 ##################### PREREQUISITES ########################
 
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update -y
-RUN apt-get install -y m4 wget unzip aspcud libshp-dev gfortran pkg-config git
-RUN cd /home/opam/opam-repository && git pull --quiet origin master
-RUN opam update -q
+RUN sudo apt update -y
+RUN sudo apt install -y aspcud libshp-dev build-essential wget pkg-config zlib1g-dev
+RUN opam install -y dune ocaml-compiler-libs ctypes alcotest utop dune-configurator stdio npy
 
 ####################   INSTALL OWL  #######################
 
 ENV OWLPATH /home/opam/owl
-ENV OWL_DISABLE_LAPACKE_LINKING_FLAG 1
-ENV OWL_COMPILE_CFLAGS "-I/opt/OpenBLAS/include -I/home/opam/OpenBLAS/lapack-netlib/LAPACKE/include/ -L/opt/OpenBLAS/lib"
-RUN CFLAGS=${OWL_COMPILE_CFLAGS} opam install owl owl-top utop -y
+
+RUN cd /home/opam && git clone https://github.com/owlbarn/owl.git
+RUN cd $OWLPATH \
+    && eval `opam config env` \
+    && make && make install
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
 RUN echo "#require \"owl-top\";; open Owl;;" >> /home/opam/.ocamlinit \
-    && echo 'eval $(opam env)' >> /home/opam/.bashrc
+    && echo 'eval $(opam env)' >> /home/opam/.bashrc \
+    && bash -c "source /home/opam/.bashrc"
 
-WORKDIR $OWLPATH
+WORKDIR /home/opam
 ENTRYPOINT /bin/bash
 
