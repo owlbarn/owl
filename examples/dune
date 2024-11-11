@@ -19,9 +19,11 @@
   lazy_mnist
   linear_algebra
   lstm
+  max_freq
   mnist_cnn
   mnist_lenet
   newton_method
+  specgram
   squeezenet
   test_log
   tfidf
