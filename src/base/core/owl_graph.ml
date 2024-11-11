@@ -13,7 +13,7 @@ type 'a node =
     mutable next : 'a node array
   ; (* children of the node *)
     mutable attr : 'a (* indicate the validity *)
-  }
+  } [@@warning "-69"]
 
 type order =
   | BFS
