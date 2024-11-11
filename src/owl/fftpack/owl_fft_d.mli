@@ -5,24 +5,25 @@
 
 open Bigarray
 open Owl_dense_ndarray_generic
+open Owl_fft_generic
 
 val fft
   :  ?axis:int
-  -> ?norm:int
+  -> ?norm:tnorm
   -> ?nthreads:int
   -> (Complex.t, complex64_elt) Owl_dense_ndarray_generic.t
   -> (Complex.t, complex64_elt) Owl_dense_ndarray_generic.t
 
 val ifft
   :  ?axis:int
-  -> ?norm:int
+  -> ?norm:tnorm
   -> ?nthreads:int
   -> (Complex.t, complex64_elt) Owl_dense_ndarray_generic.t
   -> (Complex.t, complex64_elt) Owl_dense_ndarray_generic.t
 
 val rfft
   :  ?axis:int
-  -> ?norm:int
+  -> ?norm:tnorm
   -> ?nthreads:int
   -> (float, float64_elt) t
   -> (Complex.t, complex64_elt) t
@@ -30,7 +31,7 @@ val rfft
 val irfft
   :  ?axis:int
   -> ?n:int
-  -> ?norm:int
+  -> ?norm:tnorm
   -> ?nthreads:int
   -> (Complex.t, complex64_elt) t
   -> (float, float64_elt) t
@@ -41,8 +42,8 @@ val ifft2 : (Complex.t, complex64_elt) t -> (Complex.t, complex64_elt) t
 
 val dct
   :  ?axis:int
-  -> ?ttype:int
-  -> ?norm:int
+  -> ?ttype:ttrig_transform
+  -> ?norm:tnorm
   -> ?ortho:bool
   -> ?nthreads:int
   -> (float, float64_elt) t
@@ -50,8 +51,8 @@ val dct
 
 val idct
   :  ?axis:int
-  -> ?ttype:int
-  -> ?norm:int
+  -> ?ttype:ttrig_transform
+  -> ?norm:tnorm
   -> ?ortho:bool
   -> ?nthreads:int
   -> (float, float64_elt) t
@@ -59,8 +60,8 @@ val idct
 
 val dst
   :  ?axis:int
-  -> ?ttype:int
-  -> ?norm:int
+  -> ?ttype:ttrig_transform
+  -> ?norm:tnorm
   -> ?ortho:bool
   -> ?nthreads:int
   -> (float, float64_elt) t
@@ -68,8 +69,8 @@ val dst
 
 val idst
   :  ?axis:int
-  -> ?ttype:int
-  -> ?norm:int
+  -> ?ttype:ttrig_transform
+  -> ?norm:tnorm
   -> ?ortho:bool
   -> ?nthreads:int
   -> (float, float64_elt) t
