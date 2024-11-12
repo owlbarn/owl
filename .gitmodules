@@ -1,0 +1,3 @@
+[submodule "src/owl/fftpack/pocketfft"]
+	path = src/owl/fftpack/pocketfft
+	url = https://github.com/mreineck/pocketfft

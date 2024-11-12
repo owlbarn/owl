@@ -21,7 +21,7 @@ type t =
     mutable minlen : int
   ; (* minimum length of document to save *)
     mutable docid : int array (* document id, can refer to original data *)
-  }
+  } [@@warning "-69"]
 
 let _close_if_open = function
   | Some h -> close_in h

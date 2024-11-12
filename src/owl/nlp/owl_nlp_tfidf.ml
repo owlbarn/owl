@@ -30,7 +30,7 @@ type t =
     mutable corpus : Owl_nlp_corpus.t
   ; (* corpus type *)
     mutable handle : in_channel option (* file descriptor of the tfidf *)
-  }
+  } [@@warning "-69"]
 
 (* various types of TF and IDF functions *)
 

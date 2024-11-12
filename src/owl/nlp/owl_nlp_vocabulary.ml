@@ -11,7 +11,7 @@ type t =
     mutable i2w : (int, string) Hashtbl.t
   ; (* index -> word *)
     mutable i2f : (int, int) Hashtbl.t (* index -> freq *)
-  }
+  } [@@warning "-69"]
 
 let get_w2i d = d.w2i
 

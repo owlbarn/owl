@@ -43,7 +43,7 @@ type model =
     mutable data : Owl_nlp_corpus.t
   ; (* training data, tokenised*)
     mutable vocb : (string, int) Hashtbl.t (* vocabulary, or dictionary if you prefer *)
-  }
+  } [@@warning "-69"]
 
 let include_token m w d k =
   m.t__k.(k) <- m.t__k.(k) +. 1.;
