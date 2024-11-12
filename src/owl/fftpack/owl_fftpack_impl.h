@@ -93,8 +93,8 @@ extern "C"
       Treal norm_factor = compute_norm_factor<Treal>(dims, axes, norm);
       try
       {
-        pocketfft::detail::c2c(dims, stride_in, stride_out, axes, forward,
-                               X_data, Y_data, norm_factor, nthreads);
+        pocketfft::c2c(dims, stride_in, stride_out, axes, forward,
+                       X_data, Y_data, norm_factor, nthreads);
       }
       catch (const std::exception &e)
       {
@@ -294,12 +294,12 @@ extern "C"
 
     shape_t axes{static_cast<size_t>(d)};
     {
-      Treal norm_factor = (type == 1) ? compute_norm_factor<Treal>(dims, axes, norm, 2, 1)
+      Treal norm_factor = (type == 1) ? compute_norm_factor<Treal>(dims, axes, norm, 2, -1)
                                       : compute_norm_factor<Treal>(dims, axes, norm, 2);
       try
       {
-        pocketfft::detail::dct(dims, stride_in, stride_out, axes, type,
-                               X_data, Y_data, norm_factor, ortho, nthreads);
+        pocketfft::dct(dims, stride_in, stride_out, axes, type,
+                       X_data, Y_data, norm_factor, ortho, nthreads);
       }
       catch (const std::exception &e)
       {
@@ -364,8 +364,8 @@ extern "C"
                                       : compute_norm_factor<Treal>(dims, axes, norm, 2);
       try
       {
-        pocketfft::detail::dst(dims, stride_in, stride_out, axes, type,
-                               X_data, Y_data, norm_factor, ortho, nthreads);
+        pocketfft::dst(dims, stride_in, stride_out, axes, type,
+                       X_data, Y_data, norm_factor, ortho, nthreads);
       }
       catch (const std::exception &e)
       {

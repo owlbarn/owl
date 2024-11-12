@@ -181,10 +181,10 @@ let _owl_dctb
     -> int
     -> unit
   =
-  fun ityp x y ttype axis norm ortho nthreads ->
+  fun ityp x y axis ttype norm ortho nthreads ->
   match ityp with
-  | Float32 -> owl_float32_dct x y (inverse_map ttype) axis norm ortho nthreads
-  | Float64 -> owl_float64_dct x y (inverse_map ttype) axis norm ortho nthreads
+  | Float32 -> owl_float32_dct x y axis (inverse_map ttype) norm ortho nthreads
+  | Float64 -> owl_float64_dct x y axis (inverse_map ttype) norm ortho nthreads
   | _ -> failwith "_owl_dctb: unsupported operation"
 
 
@@ -241,8 +241,8 @@ let _owl_dstb
     -> int
     -> unit
   =
-  fun ityp x y ttype axis norm ortho nthreads ->
+  fun ityp x y axis ttype norm ortho nthreads ->
   match ityp with
-  | Float32 -> owl_float32_dst x y (inverse_map ttype) axis norm ortho nthreads
-  | Float64 -> owl_float64_dst x y (inverse_map ttype) axis norm ortho nthreads
+  | Float32 -> owl_float32_dst x y axis (inverse_map ttype) norm ortho nthreads
+  | Float64 -> owl_float64_dst x y axis (inverse_map ttype) norm ortho nthreads
   | _ -> failwith "_owl_dstb: unsupported operation"

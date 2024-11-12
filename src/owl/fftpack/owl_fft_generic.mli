@@ -85,7 +85,7 @@ val dct
   -> ('a, 'b) t
   -> ('a, 'b) t
 (** [dct ?axis ?ttype ?norm ?ortho ?nthreads x] performs 1-dimensional Discrete Cosine Transform (DCT) on a real input.
-    [ttype] is the DCT type to use for this transform. Default value is [II].
+    [ttype] is the DCT type to use for this transform. Default value is [Two].
     [norm] is the normalization option. By default, [norm] is set to [Backward].
     [ortho] constrols whether or not we should use the orthogonalized variant of the DCT. *)
 
@@ -98,7 +98,7 @@ val idct
   -> ('a, 'b) t
   -> ('a, 'b) t
 (** [idct ?axis ?ttype ?norm ?ortho ?nthreads x] performs inverse 1-dimensional Discrete Cosine Transform (DCT) on a real input.
-    [ttype] is the DCT type to use for this transform. Default value is [II].
+    [ttype] is the DCT type to use for this transform. Default value is [Two].
     [norm] is the normalization option. By default, [norm] is set to [Forward].
     [ortho] constrols whether or not we should use the orthogonalized variant of the DCT. *)
 
@@ -111,7 +111,7 @@ val dst
   -> ('a, 'b) t
   -> ('a, 'b) t
 (** [dst ?axis ?ttype ?norm ?ortho ?nthreads x] performs 1-dimensional Discrete Sine Transform (DCT) on a real input.
-    [ttype] is the DCT type to use for this transform. Default value is [II].
+    [ttype] is the DCT type to use for this transform. Default value is [Two].
     [norm] is the normalization option. By default, [norm] is set to [Backward].
     [ortho] constrols whether or not we should use the orthogonalized variant of the DST. *)
 
@@ -124,6 +124,6 @@ val idst
   -> ('a, 'b) t
   -> ('a, 'b) t
 (** [idst ?axis ?ttype ?norm ?ortho ?nthreads x] performs inverse 1-dimensional Discrete Sine Transform (DST) on a real input.
-    [ttype] is the DST type to use for this transform. Default value is [II].
+    [ttype] is the DST type to use for this transform. Default value is [Two].
     [norm] is the normalization option. By default, [norm] is set to [Forward].
     [ortho] constrols whether or not we should use the orthogonalized variant of the DST. *)
