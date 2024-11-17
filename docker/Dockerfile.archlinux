@@ -4,19 +4,22 @@
 # By Liang Wang <liang@ocaml.xyz>
 ############################################################
 
-FROM ocaml/opam:fedora-ocaml-5.1
+FROM ocaml/opam:archlinux-ocaml-5.1
 
 ##################### PREREQUISITES ########################
 
-RUN sudo yum update -y
-RUN sudo yum -y install git wget unzip m4 pkg-config gcc-gfortran
-RUN sudo dnf5 -y install zlib-ng-compat-devel
-RUN sudo dnf5 -y install openblas-devel
+RUN sudo pacman -S --noconfirm base-devel wget zlib shapelib
+RUN sudo pacman -S --noconfirm lapack cblas lapacke openblas 
 RUN opam install -y dune ocaml-compiler-libs ctypes alcotest utop conf-openblas dune-configurator stdio npy
+
+####################   Setup Env  #######################
+
+ENV OWLPATH /home/opam/owl
+ENV PATH /home/opam/.opam/${OCAML_VER}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+ENV CAML_LD_LIBRARY_PATH /root/.opam/${OCAML_VER}/lib/stublibs
 
 ####################   INSTALL OWL  #######################
 
-ENV OWLPATH /home/opam/owl
 RUN cd /home/opam && git clone https://github.com/owlbarn/owl.git
 
 RUN cd $OWLPATH \
