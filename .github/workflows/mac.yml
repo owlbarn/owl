@@ -16,6 +16,13 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
+      - name: Deps
+        # git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
+        # homebrew in the workers comes pre-installed with the old pkg-config, which conflicts with the new pkgconf
+        run: |
+          brew unlink pkg-config
+          brew install aspcud openblas
+
       - name: Use OCaml
         uses: ocaml/setup-ocaml@v2
         with:
@@ -24,10 +31,6 @@ jobs:
           #  *.opam
           dune-cache: true
           allow-prerelease-opam: true
-      
-      - name: Deps
-        # git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
-        run: brew install aspcud openblas
 
       - name: OCaml Deps
         run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy
