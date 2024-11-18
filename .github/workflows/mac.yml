@@ -20,9 +20,10 @@ jobs:
         # git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
         # homebrew in the workers comes pre-installed with the old pkg-config, which conflicts with the new pkgconf
         run: |
-          brew uninstall pkg-config
+          brew unlink pkg-config
           brew install pkgconf aspcud openblas
-          brew link pkgconf
+          brew unlink pkgconf
+          brew link pkg-config
 
       - name: Use OCaml
         uses: ocaml/setup-ocaml@v2
