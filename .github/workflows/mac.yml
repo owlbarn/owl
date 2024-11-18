@@ -21,7 +21,8 @@ jobs:
         # homebrew in the workers comes pre-installed with the old pkg-config, which conflicts with the new pkgconf
         run: |
           brew uninstall pkg-config
-          brew install aspcud openblas
+          brew install pkgconf aspcud openblas
+          brew link pkgconf
 
       - name: Use OCaml
         uses: ocaml/setup-ocaml@v2
