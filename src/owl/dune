@@ -52,6 +52,7 @@
    owl_fftpack_float64)
   (flags
    :standard
+   -std=c++11
    (:include c_flags.sexp)))
  (foreign_stubs
   (language c)

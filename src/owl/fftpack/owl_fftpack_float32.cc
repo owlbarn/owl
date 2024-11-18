@@ -10,6 +10,14 @@
 extern "C"
 {
 #include "owl_core.h"
+    value float32_cfft(value vForward, value vX, value vY, value vD, value vNorm, value vNthreads);
+    value float32_cfft_bytecode(value *argv, int argn);
+    value float32_rfftf(value vX, value vY, value vD, value vNorm, value vNthreads);
+    value float32_rfftb(value vX, value vY, value vD, value vNorm, value vNthreads);
+    value float32_dct(value vX, value vY, value vD, value vType, value vNorm, value vOrtho, value vNthreads);
+    value float32_dct_bytecode(value *argv, int argn);
+    value float32_dst(value vX, value vY, value vD, value vType, value vNorm, value vOrtho, value vNthreads);
+    value float32_dst_bytecode(value *argv, int argn);
 }
 
 #define REAL_COPY owl_float32_copy

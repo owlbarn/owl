@@ -5,7 +5,15 @@
 
 #ifdef Treal
 
+#ifdef CAML_COMPATIBILITY_H
+#undef invalid_argument /* For version < 5.0 of the OCaml compiler, allowing std::invalid_argument to be used */
+#endif
+
 #include "pocketfft_hdronly.h"
+
+#ifdef CAML_COMPATIBILITY_H
+#define invalid_argument caml_invalid_argument
+#endif
 
 /** Owl's interface function to pocketfft **/
 /** Adapted from scipy's pypocketfft.cxx **/
