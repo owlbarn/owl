@@ -36,9 +36,9 @@ val irfft
   -> (Complex.t, complex64_elt) t
   -> (float, float64_elt) t
 
-val fft2 : (Complex.t, complex64_elt) t -> (Complex.t, complex64_elt) t
+val fft2 : ?norm:tnorm -> ?nthreads:int -> (Complex.t, complex64_elt) t -> (Complex.t, complex64_elt) t
 
-val ifft2 : (Complex.t, complex64_elt) t -> (Complex.t, complex64_elt) t
+val ifft2 : ?norm:tnorm -> ?nthreads:int -> (Complex.t, complex64_elt) t -> (Complex.t, complex64_elt) t
 
 val dct
   :  ?axis:int

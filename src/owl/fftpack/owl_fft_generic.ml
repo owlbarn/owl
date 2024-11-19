@@ -77,9 +77,11 @@ let irfft ?axis ?n ?(norm : tnorm = Forward) ?(nthreads : int = 1) ~(otyp : ('a,
   y
 
 
-let fft2 x = fft ~axis:0 x |> fft ~axis:1
+let fft2 ?(norm : tnorm = Backward) ?(nthreads : int = 1) x =
+  (fft ~axis:0 ~norm ~nthreads x) |> (fft ~axis:1 ~norm ~nthreads)
 
-let ifft2 x = ifft ~axis:0 x |> ifft ~axis:1
+let ifft2 ?(norm : tnorm = Forward) ?(nthreads : int = 1) x =
+  (ifft ~axis:0 ~norm ~nthreads x) |> (ifft ~axis:1 ~norm ~nthreads)
 
 type ttrig_transform  =
   | I
