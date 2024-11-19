@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>D (owl.Owl_regression.D)</title><meta charset="utf-8"/><link rel="stylesheet" href="../../../odoc.support/odoc.css"/><meta name="generator" content="odoc 2.4.3"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../../../odoc.support/highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body class="odoc"><nav class="odoc-nav"><a href="../index.html">Up</a> – <a href="../../index.html">owl</a> &#x00BB; <a href="../index.html">Owl_regression</a> &#x00BB; D</nav><header class="odoc-preamble"><h1>Module <code><span>Owl_regression.D</span></code></h1></header><div class="odoc-content"><div class="odoc-spec"><div class="spec module anchored" id="module-Optimise"><a href="#module-Optimise" class="anchor"></a><code><span><span class="keyword">module</span> <a href="Optimise/index.html">Optimise</a></span><span> : <span class="keyword">sig</span> ... <span class="keyword">end</span></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-_linear_reg"><a href="#val-_linear_reg" class="anchor"></a><code><span><span class="keyword">val</span> _linear_reg : 
+  <span>bool <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Params/index.html#type-typ">Optimise.Params.typ</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> array</span></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-ols"><a href="#val-ols" class="anchor"></a><code><span><span class="keyword">val</span> ols : 
+  <span><span class="optlabel">?i</span>:bool <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> array</span></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-ridge"><a href="#val-ridge" class="anchor"></a><code><span><span class="keyword">val</span> ridge : 
+  <span><span class="optlabel">?i</span>:bool <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?alpha</span>:float <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> array</span></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-lasso"><a href="#val-lasso" class="anchor"></a><code><span><span class="keyword">val</span> lasso : 
+  <span><span class="optlabel">?i</span>:bool <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?alpha</span>:float <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> array</span></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-elastic_net"><a href="#val-elastic_net" class="anchor"></a><code><span><span class="keyword">val</span> elastic_net : 
+  <span><span class="optlabel">?i</span>:bool <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?alpha</span>:float <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?l1_ratio</span>:float <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> array</span></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-svm"><a href="#val-svm" class="anchor"></a><code><span><span class="keyword">val</span> svm : 
+  <span><span class="optlabel">?i</span>:bool <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?a</span>:float <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> array</span></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-logistic"><a href="#val-logistic" class="anchor"></a><code><span><span class="keyword">val</span> logistic : 
+  <span><span class="optlabel">?i</span>:bool <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> array</span></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-exponential"><a href="#val-exponential" class="anchor"></a><code><span><span class="keyword">val</span> exponential : 
+  <span><span class="optlabel">?_i</span>:bool <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="Optimise/Algodiff/A/index.html#type-elt">Optimise.Algodiff.A.elt</a> * <a href="Optimise/Algodiff/A/index.html#type-elt">Optimise.Algodiff.A.elt</a> * <a href="Optimise/Algodiff/A/index.html#type-elt">Optimise.Algodiff.A.elt</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-poly"><a href="#val-poly" class="anchor"></a><code><span><span class="keyword">val</span> poly : 
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>int <span class="arrow">&#45;&gt;</span></span>
+  <a href="Optimise/Algodiff/A/index.html#type-arr">Optimise.Algodiff.A.arr</a></span></code></div></div></div></body></html>
