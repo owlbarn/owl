@@ -12,8 +12,8 @@ type tnorm =
 
 let tnorm_to_int = function
   | Backward -> 0
-  | Forward -> 1
-  | Ortho -> 2
+  | Forward -> 2
+  | Ortho -> 1
 
 let fft ?axis ?(norm : tnorm = Backward) ?(nthreads : int = 1) x =
   let axis =
