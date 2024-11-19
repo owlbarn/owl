@@ -63,11 +63,11 @@ val irfft
 
 val fft2 : ?norm:tnorm -> ?nthreads:int -> (Complex.t, 'b) t -> (Complex.t, 'b) t
 (** [fft2 ~norm ~nthreads x] performs 2-dimensional FFT on a complex input. [norm] is the normalization option.
-    By default, [norm] is set to [Forward]. [nthreads] is the desired number of threads used to compute each of the fft. *)
+    By default, [norm] is set to [Backward]. [nthreads] is the desired number of threads used to compute each of the fft. *)
 
 val ifft2 : ?norm:tnorm -> ?nthreads:int -> (Complex.t, 'b) t -> (Complex.t, 'b) t
 (** [ifft2 ~norm ~nthreads x] performs 2-dimensional inverse FFT on a complex input. [norm] is the normalization option.
-    By default, [norm] is set to [Backward]. [nthreads] is the desired number of threads used to compute each of the ifft. *)
+    By default, [norm] is set to [Forward]. [nthreads] is the desired number of threads used to compute each of the ifft. *)
 
 (** {5 Discrete Cosine & Sine Transforms functions} *)
 
