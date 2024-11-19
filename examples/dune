@@ -1,5 +1,5 @@
 (executables
- (names 
+ (names
   backprop
   checkpoint
   cifar10_vgg
@@ -19,12 +19,23 @@
   lazy_mnist
   linear_algebra
   lstm
+  max_freq
   mnist_cnn
   mnist_lenet
   newton_method
+  specgram
   squeezenet
   test_log
   tfidf
-  vgg16
- )
- (libraries owl))
+  vgg16)
+ (libraries owl)
+ (flags ; in order to make the examples compile correctly even with the warnings.
+  (:standard
+   -warn-error
+   -unused-value-declaration
+   -warn-error
+   -unused-var-strict
+   -warn-error
+   -unused-var
+   -warn-error
+   -unused-field)))

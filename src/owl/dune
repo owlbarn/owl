@@ -32,6 +32,8 @@
 
 (copy_files# fftpack/*)
 
+(copy_files# fftpack/pocketfft/*.h)
+
 (copy_files# misc/*)
 
 (copy_files# nlp/*)
@@ -42,6 +44,16 @@
  (name owl)
  (public_name owl)
  (wrapped false)
+ (foreign_stubs
+  (language cxx)
+  (names
+   ;; FFTPACK
+   owl_fftpack_float32
+   owl_fftpack_float64)
+  (flags
+   :standard
+   -std=c++11
+   (:include c_flags.sexp)))
  (foreign_stubs
   (language c)
   (names
@@ -65,9 +77,6 @@
    owl_ndarray_utils_stub
    owl_slicing_basic_stub
    owl_slicing_fancy_stub
-   ;; FFTPACK
-   owl_fftpack_float32
-   owl_fftpack_float64
    ;; stats
    SFMT
    owl_stats_dist_beta
@@ -202,7 +211,8 @@
    (:include c_flags.sexp)))
  (c_library_flags
   :standard
-  (:include c_library_flags.sexp))
+  (:include c_library_flags.sexp)
+  -lstdc++)
  (flags
   :standard
   (:include ocaml_flags.sexp))
