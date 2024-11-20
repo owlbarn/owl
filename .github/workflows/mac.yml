@@ -16,14 +16,17 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
+      - name: macos fix
+        if: runner.os == 'Macos'
+        run: |
+          brew update
+          brew upgrade
+          brew install pkgconf
+          # work around https://github.com/actions/runner-images/issues/10984
+
       - name: Deps
         # git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
-        # homebrew in the workers comes pre-installed with the old pkg-config, which conflicts with the new pkgconf
-        run: |
-          brew unlink pkg-config
-          brew install pkgconf aspcud openblas
-          brew unlink pkgconf
-          brew link pkg-config
+        run: brew install aspcud openblas
 
       - name: Use OCaml
         uses: ocaml/setup-ocaml@v2
