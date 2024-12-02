@@ -37,10 +37,18 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:main
 
-      #- name: Build archlinux image 
-      #  uses: docker/build-push-action@v5
-      #  with:
-      #    context: .
-      #    file: ./docker/Dockerfile.archlinux
-      #    push: true
-      #    tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:archlinux
+      - name: Build debian image 
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/Dockerfile.debian
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:debian
+
+      - name: Build fedora image 
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/Dockerfile.debian
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:fedora
