@@ -35,12 +35,12 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:ubuntu
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:main
 
-      - name: Build archlinux image 
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./docker/Dockerfile.archlinux
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:archlinux
+      #- name: Build archlinux image 
+      #  uses: docker/build-push-action@v5
+      #  with:
+      #    context: .
+      #    file: ./docker/Dockerfile.archlinux
+      #    push: true
+      #    tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:archlinux
