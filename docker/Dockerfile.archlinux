@@ -8,7 +8,8 @@ FROM ocaml/opam:archlinux-ocaml-5.1
 
 ##################### PREREQUISITES ########################
 
-RUN sudo pacman -S --noconfirm base-devel wget zlib shapelib
+# RUN sudo pacman -S --noconfirm base-devel wget zlib shapelib
+RUN sudo pacman -Syu --noconfirm && sudo pacman -S --noconfirm base-devel wget zlib shapelib
 RUN sudo pacman -S --noconfirm lapack cblas lapacke openblas 
 RUN opam install -y dune ocaml-compiler-libs ctypes alcotest utop conf-openblas dune-configurator stdio npy
 
