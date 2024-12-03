@@ -1,10 +1,9 @@
-name: Deploy docker (arm64v8)
+name: Build and Push dockers
 
 on:
   push:
     branches:
-      #- 'main'
-      - 'abc'
+      - 'main'
 
 jobs:
   docker:
@@ -14,7 +13,8 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@main
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -28,10 +28,34 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
-      - name: Build and push
+      - name: Build ubuntu image 
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl-arm64v8:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:main
+
+      - name: Build debian image 
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/Dockerfile.debian
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:debian
+
+      - name: Build fedora image 
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/Dockerfile.fedora
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:fedora
+
+      - name: Build archlinux image 
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/Dockerfile.archlinux
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:archlinux

@@ -1,8 +1,33 @@
 # How to Contribute
 
 Owl is a large open source project, to guarantee quality of the software and sustainable development, we enforce the following rules in day-to-day research, development, and project management.
-
 Besides coding, there are many other ways you can contribute. Bug reporting, typo fix, asking/answering questions, and improvement of existing documents are all well welcome.
+
+## Owl Team 
+
+To achieve our mission, we are assembling an *Owl Team*. Anyone who can potentially give sufficient contributions recognized by the community can request to be a team member.
+A team member is expected to make several valuable and significant contributions to the project in both quality and quantity. 
+Typically a committer focuses on one specific aspect of the project and is a domain expert. 
+We hope but cannot guarantee that the team members can cover all aspects of the code base.
+
+
+Emphasis are put on the responsibility of each team member.
+Each one should take responsibility of certain aspects of the code base, e.g. a module or maintenance for a specific OS platform.
+Team members, together with their domain aspects and responsibilities, will be listed here and also on the [Owl website](https://ocaml.xyz/).
+
+For anyone who is willing to contribute, some good starting points could be:
+- Participate in discussion in issues, and help to fix them
+- Fix [documentations](https://ocaml.xyz/docs/), mainly by changing the `.mli` files in the source code, based on which the documentations are generated
+- Fix [tutorials](https://ocaml.xyz/tutorial/); the code could be not runnable, or the content could not display properly
+- Add more examples and tests
+- Fix issues listed in the [TODO list](https://github.com/orgs/owlbarn/projects/2/views/2)
+- Propose to fix/improve anything that interests you during using Owl
+- ... 
+
+**Current team member:**
+
+- [@jzstark](https://github.com/jzstark): Project leader. Manage overall architecture, roadmap，and tech vision. Community communication. Set research agenda.
+- [@ryanrhymes](https://github.com/ryanrhymes): Potential commercialization, business opportunity & funding seeking.
 
 
 ## Coding Style
@@ -87,21 +112,3 @@ By making a contribution to this project, I certify that:
     maintained indefinitely and may be redistributed consistent with
     this project or the open source license(s) involved.
 ```
-
-
-## Becoming A Team Member
-
-Owl Team is open and always welcomes new members to join. If you are enthusiastic about scientific computing and numerical algorithms, you can be one of us. As a team member, you need to be aware of the following things.
-
-- You will be included in the [owlbarn organisation](https://github.com/owlbarn).
-
-- You will have access to Team Channel on Slack and join the R&D discussion. Your opinions matter in Owl's future roadmap.
-
-- You need to be responsible for one aspect (or one or multiple related modules) in Owl and lead its development.
-
-- You need to review the pull requests related to the area you are specialised in.
-
-- We value persistence. Being a team member requires you actively get involved in maintaining Owl and contributing to its code base. The team membership becomes invalidated automatically if your contributions cease.
-
-- Team membership is considered after you have made some significant contributions to Owl's code base or its ecosystem. You can always drop [me](rho.ajax@gmail.com) a line to discuss.
-
