@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>NN (owl.Owl_dense_ndarray_intf.NN)</title><meta charset="utf-8"/><link rel="stylesheet" href="../../../odoc.support/odoc.css"/><meta name="generator" content="odoc 2.4.3"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../../../odoc.support/highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body class="odoc"><nav class="odoc-nav"><a href="../index.html">Up</a> – <a href="../../index.html">owl</a> &#x00BB; <a href="../index.html">Owl_dense_ndarray_intf</a> &#x00BB; NN</nav><header class="odoc-preamble"><h1>Module type <code><span>Owl_dense_ndarray_intf.NN</span></code></h1></header><nav class="odoc-toc"><ul><li><a href="#neural-network-related-functions">Neural network related functions</a></li></ul></nav><div class="odoc-content"><div class="odoc-include"><details open="open"><summary class="spec include"><code><span><span class="keyword">include</span> <a href="../../../owl-base/Owl_base_dense_ndarray_intf/module-type-NN/index.html">Owl_base_dense_ndarray_intf.NN</a></span></code></summary><div class="odoc-spec"><div class="spec type anchored" id="type-arr"><a href="#type-arr" class="anchor"></a><code><span><span class="keyword">type</span> arr</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv1d"><a href="#val-conv1d" class="anchor"></a><code><span><span class="keyword">val</span> conv1d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv2d"><a href="#val-conv2d" class="anchor"></a><code><span><span class="keyword">val</span> conv2d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv3d"><a href="#val-conv3d" class="anchor"></a><code><span><span class="keyword">val</span> conv3d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv1d"><a href="#val-dilated_conv1d" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv1d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv2d"><a href="#val-dilated_conv2d" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv2d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv3d"><a href="#val-dilated_conv3d" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv3d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv1d"><a href="#val-transpose_conv1d" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv1d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv2d"><a href="#val-transpose_conv2d" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv2d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv3d"><a href="#val-transpose_conv3d" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv3d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool1d"><a href="#val-max_pool1d" class="anchor"></a><code><span><span class="keyword">val</span> max_pool1d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool2d"><a href="#val-max_pool2d" class="anchor"></a><code><span><span class="keyword">val</span> max_pool2d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool3d"><a href="#val-max_pool3d" class="anchor"></a><code><span><span class="keyword">val</span> max_pool3d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-avg_pool1d"><a href="#val-avg_pool1d" class="anchor"></a><code><span><span class="keyword">val</span> avg_pool1d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-avg_pool2d"><a href="#val-avg_pool2d" class="anchor"></a><code><span><span class="keyword">val</span> avg_pool2d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-avg_pool3d"><a href="#val-avg_pool3d" class="anchor"></a><code><span><span class="keyword">val</span> avg_pool3d : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-upsampling2d"><a href="#val-upsampling2d" class="anchor"></a><code><span><span class="keyword">val</span> upsampling2d : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv1d_backward_input"><a href="#val-conv1d_backward_input" class="anchor"></a><code><span><span class="keyword">val</span> conv1d_backward_input : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv1d_backward_kernel"><a href="#val-conv1d_backward_kernel" class="anchor"></a><code><span><span class="keyword">val</span> conv1d_backward_kernel : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv2d_backward_input"><a href="#val-conv2d_backward_input" class="anchor"></a><code><span><span class="keyword">val</span> conv2d_backward_input : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv2d_backward_kernel"><a href="#val-conv2d_backward_kernel" class="anchor"></a><code><span><span class="keyword">val</span> conv2d_backward_kernel : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv3d_backward_input"><a href="#val-conv3d_backward_input" class="anchor"></a><code><span><span class="keyword">val</span> conv3d_backward_input : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv3d_backward_kernel"><a href="#val-conv3d_backward_kernel" class="anchor"></a><code><span><span class="keyword">val</span> conv3d_backward_kernel : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv1d_backward_input"><a href="#val-dilated_conv1d_backward_input" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv1d_backward_input : 
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv1d_backward_kernel"><a href="#val-dilated_conv1d_backward_kernel" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv1d_backward_kernel : 
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv2d_backward_input"><a href="#val-dilated_conv2d_backward_input" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv2d_backward_input : 
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv2d_backward_kernel"><a href="#val-dilated_conv2d_backward_kernel" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv2d_backward_kernel : 
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv3d_backward_input"><a href="#val-dilated_conv3d_backward_input" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv3d_backward_input : 
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv3d_backward_kernel"><a href="#val-dilated_conv3d_backward_kernel" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv3d_backward_kernel : 
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv1d_backward_input"><a href="#val-transpose_conv1d_backward_input" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv1d_backward_input : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv1d_backward_kernel"><a href="#val-transpose_conv1d_backward_kernel" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv1d_backward_kernel : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv2d_backward_input"><a href="#val-transpose_conv2d_backward_input" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv2d_backward_input : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv2d_backward_kernel"><a href="#val-transpose_conv2d_backward_kernel" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv2d_backward_kernel : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv3d_backward_input"><a href="#val-transpose_conv3d_backward_input" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv3d_backward_input : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv3d_backward_kernel"><a href="#val-transpose_conv3d_backward_kernel" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv3d_backward_kernel : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool1d_backward"><a href="#val-max_pool1d_backward" class="anchor"></a><code><span><span class="keyword">val</span> max_pool1d_backward : 
+  <span><a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool2d_backward"><a href="#val-max_pool2d_backward" class="anchor"></a><code><span><span class="keyword">val</span> max_pool2d_backward : 
+  <span><a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool3d_backward"><a href="#val-max_pool3d_backward" class="anchor"></a><code><span><span class="keyword">val</span> max_pool3d_backward : 
+  <span><a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-avg_pool1d_backward"><a href="#val-avg_pool1d_backward" class="anchor"></a><code><span><span class="keyword">val</span> avg_pool1d_backward : 
+  <span><a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-avg_pool2d_backward"><a href="#val-avg_pool2d_backward" class="anchor"></a><code><span><span class="keyword">val</span> avg_pool2d_backward : 
+  <span><a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-avg_pool3d_backward"><a href="#val-avg_pool3d_backward" class="anchor"></a><code><span><span class="keyword">val</span> avg_pool3d_backward : 
+  <span><a href="../../../owl-base/Owl_types_common/index.html#type-padding">Owl_types_common.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-upsampling2d_backward"><a href="#val-upsampling2d_backward" class="anchor"></a><code><span><span class="keyword">val</span> upsampling2d_backward : <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <a href="#type-arr">arr</a></span></code></div></div></details></div><h6 id="neural-network-related-functions"><a href="#neural-network-related-functions" class="anchor"></a>Neural network related functions</h6><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool2d_argmax"><a href="#val-max_pool2d_argmax" class="anchor"></a><code><span><span class="keyword">val</span> max_pool2d_argmax : 
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <a href="#type-arr">arr</a>
+  * <span><span>(int64, <span class="xref-unresolved">Stdlib</span>.Bigarray.int64_elt, <span class="xref-unresolved">Stdlib</span>.Bigarray.c_layout)</span>
+      <span class="xref-unresolved">Stdlib</span>.Bigarray.Genarray.t</span></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv1d_"><a href="#val-conv1d_" class="anchor"></a><code><span><span class="keyword">val</span> conv1d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv2d_"><a href="#val-conv2d_" class="anchor"></a><code><span><span class="keyword">val</span> conv2d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv3d_"><a href="#val-conv3d_" class="anchor"></a><code><span><span class="keyword">val</span> conv3d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv1d_"><a href="#val-dilated_conv1d_" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv1d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv2d_"><a href="#val-dilated_conv2d_" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv2d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv3d_"><a href="#val-dilated_conv3d_" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv3d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv1d_"><a href="#val-transpose_conv1d_" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv1d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv2d_"><a href="#val-transpose_conv2d_" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv2d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv3d_"><a href="#val-transpose_conv3d_" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv3d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool1d_"><a href="#val-max_pool1d_" class="anchor"></a><code><span><span class="keyword">val</span> max_pool1d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool2d_"><a href="#val-max_pool2d_" class="anchor"></a><code><span><span class="keyword">val</span> max_pool2d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool3d_"><a href="#val-max_pool3d_" class="anchor"></a><code><span><span class="keyword">val</span> max_pool3d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-avg_pool1d_"><a href="#val-avg_pool1d_" class="anchor"></a><code><span><span class="keyword">val</span> avg_pool1d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-avg_pool2d_"><a href="#val-avg_pool2d_" class="anchor"></a><code><span><span class="keyword">val</span> avg_pool2d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-avg_pool3d_"><a href="#val-avg_pool3d_" class="anchor"></a><code><span><span class="keyword">val</span> avg_pool3d_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?padding</span>:<a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-upsampling2d_"><a href="#val-upsampling2d_" class="anchor"></a><code><span><span class="keyword">val</span> upsampling2d_ : <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv1d_backward_input_"><a href="#val-conv1d_backward_input_" class="anchor"></a><code><span><span class="keyword">val</span> conv1d_backward_input_ : <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv1d_backward_kernel_"><a href="#val-conv1d_backward_kernel_" class="anchor"></a><code><span><span class="keyword">val</span> conv1d_backward_kernel_ : <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv2d_backward_input_"><a href="#val-conv2d_backward_input_" class="anchor"></a><code><span><span class="keyword">val</span> conv2d_backward_input_ : <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv2d_backward_kernel_"><a href="#val-conv2d_backward_kernel_" class="anchor"></a><code><span><span class="keyword">val</span> conv2d_backward_kernel_ : <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv3d_backward_input_"><a href="#val-conv3d_backward_input_" class="anchor"></a><code><span><span class="keyword">val</span> conv3d_backward_input_ : <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-conv3d_backward_kernel_"><a href="#val-conv3d_backward_kernel_" class="anchor"></a><code><span><span class="keyword">val</span> conv3d_backward_kernel_ : <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv1d_backward_input_"><a href="#val-dilated_conv1d_backward_input_" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv1d_backward_input_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv1d_backward_kernel_"><a href="#val-dilated_conv1d_backward_kernel_" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv1d_backward_kernel_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv2d_backward_input_"><a href="#val-dilated_conv2d_backward_input_" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv2d_backward_input_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv2d_backward_kernel_"><a href="#val-dilated_conv2d_backward_kernel_" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv2d_backward_kernel_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv3d_backward_input_"><a href="#val-dilated_conv3d_backward_input_" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv3d_backward_input_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-dilated_conv3d_backward_kernel_"><a href="#val-dilated_conv3d_backward_kernel_" class="anchor"></a><code><span><span class="keyword">val</span> dilated_conv3d_backward_kernel_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv1d_backward_input_"><a href="#val-transpose_conv1d_backward_input_" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv1d_backward_input_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv1d_backward_kernel_"><a href="#val-transpose_conv1d_backward_kernel_" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv1d_backward_kernel_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv2d_backward_input_"><a href="#val-transpose_conv2d_backward_input_" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv2d_backward_input_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv2d_backward_kernel_"><a href="#val-transpose_conv2d_backward_kernel_" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv2d_backward_kernel_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv3d_backward_input_"><a href="#val-transpose_conv3d_backward_input_" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv3d_backward_input_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-transpose_conv3d_backward_kernel_"><a href="#val-transpose_conv3d_backward_kernel_" class="anchor"></a><code><span><span class="keyword">val</span> transpose_conv3d_backward_kernel_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool1d_backward_"><a href="#val-max_pool1d_backward_" class="anchor"></a><code><span><span class="keyword">val</span> max_pool1d_backward_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool2d_backward_"><a href="#val-max_pool2d_backward_" class="anchor"></a><code><span><span class="keyword">val</span> max_pool2d_backward_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-max_pool3d_backward_"><a href="#val-max_pool3d_backward_" class="anchor"></a><code><span><span class="keyword">val</span> max_pool3d_backward_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-avg_pool1d_backward_"><a href="#val-avg_pool1d_backward_" class="anchor"></a><code><span><span class="keyword">val</span> avg_pool1d_backward_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-avg_pool2d_backward_"><a href="#val-avg_pool2d_backward_" class="anchor"></a><code><span><span class="keyword">val</span> avg_pool2d_backward_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-avg_pool3d_backward_"><a href="#val-avg_pool3d_backward_" class="anchor"></a><code><span><span class="keyword">val</span> avg_pool3d_backward_ : 
+  <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="../../../owl-base/Owl_types/index.html#type-padding">Owl_types.padding</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span>
+  unit</span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-upsampling2d_backward_"><a href="#val-upsampling2d_backward_" class="anchor"></a><code><span><span class="keyword">val</span> upsampling2d_backward_ : <span><span class="label">out</span>:<a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> <span><span>int array</span> <span class="arrow">&#45;&gt;</span></span> <span><a href="#type-arr">arr</a> <span class="arrow">&#45;&gt;</span></span> unit</span></code></div></div></div></body></html>
