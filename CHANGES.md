@@ -1,3 +1,15 @@
+## 1.2 (2024-12-24)
+
+* Revise automatic installation test via GitHub Action
+* Revise dockerfiles; add docker automatic build and deployment
+* Fix compatibility on MacOS and Arm64 architecture
+* Update compilation to OCaml 5.2.0 
+* Revise examples and tests 
+* Update inline document and tutorials 
+* FFT module revamp (@gabyfle)
+* Changed def of ssqr_diff' to not modify inputs (@patrick-nicodemus)
+* Avoid calling log(0) when generating gaussian random variables (@edwintorok)
+
 ## 1.1 (2023-020-15)
 
 * remove several components in owl: `aeos`, `plplot`, `zoo`
