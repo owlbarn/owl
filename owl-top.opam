@@ -20,3 +20,5 @@ depends: [
   "ocaml-compiler-libs"
   "owl" {= version}
 ]
+
+x-maintenance-intent: ["(latest)"]

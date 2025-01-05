@@ -18,3 +18,5 @@ depends: [
   "base-bigarray"
   "dune" {>= "2.0.0"}
 ]
+
+x-maintenance-intent: ["(latest)"]
