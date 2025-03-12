@@ -16,7 +16,7 @@ Recently, Owl has implemented algorithmic differentiation which essentially make
 """
 
 build: [
-  [ "dune" "subst" ] {pinned}
+  [ "dune" "subst" ] {dev}
   [ "dune" "build" "-p" name "-j" jobs ]
   [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
 ]
@@ -28,7 +28,7 @@ depends: [
   "base-bigarray"
   "conf-openblas" {>= "0.2.1"}
   "ctypes" {>= "0.16.0"}
-  "dune" {>= "2.0.0"}
+  "dune" {>= "3.16"}
   "dune-configurator"
   "owl-base" {= version}
   "npy"
