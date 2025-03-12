@@ -33,3 +33,5 @@ depends: [
   "owl-base" {= version}
   "npy"
 ]
+
+x-maintenance-intent: ["(latest)"]
