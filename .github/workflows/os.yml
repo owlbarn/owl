@@ -38,6 +38,7 @@ jobs:
           export CC=/opt/homebrew/opt/llvm/bin/clang
           export CXX=/opt/homebrew/opt/llvm/bin/clang++
           which clang
+          which cc
 
       - run: opam depext owl --with-test
     
