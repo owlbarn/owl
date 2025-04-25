@@ -4,6 +4,7 @@ on:
   push:
     branches: 
       - main
+      - workflow
   pull_request:
     branches: 
       - main
@@ -19,14 +20,13 @@ jobs:
       - name: Use OCaml
         uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-compiler: '5.1'
+          ocaml-compiler: '5.2'
           # opam-local-packages: |
           #  *.opam
           dune-cache: true
           allow-prerelease-opam: true
       
       - name: Deps
-        # run: sudo apt-get install git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
         run: sudo apt-get install aspcud libshp-dev libopenblas-dev liblapacke-dev
 
       - name: OCaml Deps
