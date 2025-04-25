@@ -3,11 +3,17 @@ name: Build and test on Mac
 on:
   push:
     branches: 
-      - main
-      - workflow
+      #- main 
+      - foobar
   pull_request:
     branches: 
-      - main
+      #- main
+      - foobar
+
+### Current problem compiling conf-openblas on MacOS 
+### "# clang: error: unsupported option '-fopenmp'"
+### Compiling uses cc, which is a wrapper of Apple Clang, which does not support openMP
+### And installing brew LLVM and change $CC does not seem to work 
 
 jobs:
   deploy-owl:
