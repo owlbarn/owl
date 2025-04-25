@@ -53,10 +53,10 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:fedora
 
-      - name: Build archlinux image 
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./docker/Dockerfile.archlinux
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:archlinux
+      #- name: Build archlinux image 
+      #  uses: docker/build-push-action@v5
+      #  with:
+      #    context: .
+      #    file: ./docker/Dockerfile.archlinux
+      #    push: true
+      #    tags: ${{ secrets.DOCKERHUB_USERNAME }}/owl:archlinux

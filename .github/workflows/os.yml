@@ -33,6 +33,8 @@ jobs:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
           opam-local-packages: |
             *.opam
+      
+      - run: export OPENBLAS_NO_OPENMP=1
 
       - run: opam depext owl --with-test
     

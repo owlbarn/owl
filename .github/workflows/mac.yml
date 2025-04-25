@@ -27,7 +27,11 @@ jobs:
 
       - name: Deps
         # git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
-        run: brew install aspcud openblas
+        run: |
+          brew install libomp aspcud
+          brew install openblas --cc=gcc-13
+          export CC=gcc-13
+          export CXX=g++-13
 
       - name: Use OCaml
         uses: ocaml/setup-ocaml@v3
@@ -39,8 +43,7 @@ jobs:
           allow-prerelease-opam: true
 
       - name: OCaml Deps
-        # run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy
-        run: opam install ocaml-compiler-libs alcotest ctypes dune-configurator stdio npy
+        run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy
       
       - name: Compile Owl, install
         run: opam exec -- dune build @install
