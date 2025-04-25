@@ -38,7 +38,7 @@ jobs:
           export CC=/opt/homebrew/opt/llvm/bin/clang
           export CXX=/opt/homebrew/opt/llvm/bin/clang++
           which clang
-          which cc 
+          ls -l $(which cc)
 
       - name: Use OCaml
         uses: ocaml/setup-ocaml@v3
