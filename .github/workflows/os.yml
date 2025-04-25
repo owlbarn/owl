@@ -31,10 +31,9 @@ jobs:
 
       - name: Deps
         run: |
-          brew install libomp gcc
-          export CC=gcc-13
-          export CXX=g++-13
-          export PKG_CONFIG_PATH="$(brew --prefix openblas)/lib/pkgconfig:$PKG_CONFIG_PATH"
+          brew install llvm libomp
+          export CC=/usr/local/opt/llvm/bin/clang
+          export CXX=/usr/local/opt/llvm/bin/clang++
 
       - run: opam depext owl --with-test
     
