@@ -28,8 +28,10 @@ jobs:
       - name: Deps
         # git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
         run: |
-          brew install libomp aspcud
-          brew install openblas --cc=gcc-13
+          brew install libomp aspcud gcc
+          export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"
+          brew reinstall openblas --cc=gcc-13
           export CC=gcc-13
           export CXX=g++-13
 
