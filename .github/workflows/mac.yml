@@ -15,7 +15,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@main
+      - uses: actions/checkout@v4
 
       - name: macos fix
         if: runner.os == 'Macos'
@@ -30,9 +30,9 @@ jobs:
         run: brew install aspcud openblas
 
       - name: Use OCaml
-        uses: ocaml/setup-ocaml@v2
+        uses: ocaml/setup-ocaml@v3
         with:
-          ocaml-compiler: '5.1'
+          ocaml-compiler: 5
           # opam-local-packages: |
           #  *.opam
           dune-cache: true
