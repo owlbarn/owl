@@ -1,7 +1,6 @@
 # Owl - OCaml Scientific Computing 
 [![build](https://github.com/owlbarn/owl/actions/workflows/main.yml/badge.svg)](https://github.com/owlbarn/owl/actions/workflows/main.yml)
 [![build](https://github.com/owlbarn/owl/actions/workflows/deploy_docker.yml/badge.svg)](https://github.com/owlbarn/owl/actions/workflows/deploy_docker.yml)
-[![build](https://github.com/owlbarn/owl/actions/workflows/os.yml/badge.svg)](https://github.com/owlbarn/owl/actions/workflows/os.yml)
 
 Owl is a dedicated system for scientific and engineering computing. The system is developed in OCaml and licensed under MIT. The project is originated by [Liang Wang](https://liang.ocaml.xyz) and currently led by [Jianxin Zhao](https://jianxin.ocaml.xyz). The history of the project can be seen on the [Wikipedia](https://en.wikipedia.org/wiki/Owl_Scientific_Computing) page.
 
@@ -36,6 +35,7 @@ The current code base is designed to be concise and self-contained.
 We encourage anyone who would like to build up their own tools based on Owl to create new repositories in the [Owlbarn](https://github.com/owlbarn) organization. 
 
 ## Owl Code Structure 
+
 
 To help potential developers to understand the structure of Owl, here we briefly describe its overall design. More detailed description can be found in the [documentation](https://ocaml.xyz/docs/) and the Owl [books](https://ocaml.xyz/).
 

@@ -3,10 +3,17 @@ name: Build and test on Mac
 on:
   push:
     branches: 
-      - main
+      #- main 
+      - foobar
   pull_request:
     branches: 
-      - main
+      #- main
+      - foobar
+
+### Current problem compiling conf-openblas on MacOS 
+### "# clang: error: unsupported option '-fopenmp'"
+### Compiling uses cc, which is a wrapper of Apple Clang, which does not support openMP
+### And installing brew LLVM and change $CC does not seem to work 
 
 jobs:
   deploy-owl:
@@ -14,7 +21,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@main
+      - uses: actions/checkout@v4
 
       - name: macos fix
         if: runner.os == 'Macos'
@@ -26,12 +33,25 @@ jobs:
 
       - name: Deps
         # git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
-        run: brew install aspcud openblas
+        #  brew install llvm libomp aspcud
+        #  export CC=/usr/local/opt/llvm/bin/clang
+        #  export CXX=/usr/local/opt/llvm/bin/clang++
+        run: |
+          brew install llvm libomp aspcud
+          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+          export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+          export CC=/opt/homebrew/opt/llvm/bin/clang
+          export CXX=/opt/homebrew/opt/llvm/bin/clang++
+          which clang
+          ls -l $(which cc)
+          cc --version
+          type -a cc
 
       - name: Use OCaml
-        uses: ocaml/setup-ocaml@v2
+        uses: ocaml/setup-ocaml@v3
         with:
-          ocaml-compiler: '5.1'
+          ocaml-compiler: 5
           # opam-local-packages: |
           #  *.opam
           dune-cache: true

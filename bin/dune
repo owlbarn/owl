@@ -1,9 +1,0 @@
-
-(executables
- (public_names owlviz)
- (names owl_bin_viz)
- (modules owl_bin_viz)
- (package owl)
- (libraries owl)
- (link_flags (-linkall))
- (modes native))

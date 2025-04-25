@@ -1,8 +1,17 @@
-name: Multiple OSes
+name: Multiple MacOSes
 
 on:
-  - pull_request
-  - push
+  push:
+    branches: 
+      #- main 
+      - foobar
+  pull_request:
+    branches: 
+      #- main
+      - foobar
+
+
+###TODO: currently not in use due to Apple clang -fopenmp issue. 
 
 jobs:
   build:
@@ -12,26 +21,32 @@ jobs:
         os:
           - macos-14 # beta runner for macos arm64
           - macos-latest
-          - ubuntu-latest
-          # - windows-latest
+          # - ubuntu-latest
         ocaml-compiler:
           - "5.2"
-          - "5.1"
-          - "4.14"
-          - "4.12"
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Use OCaml ${{ matrix.ocaml-compiler }}
-        uses: ocaml/setup-ocaml@v2
+        uses: ocaml/setup-ocaml@v3
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
           opam-local-packages: |
             *.opam
+
+      - name: Deps
+        run: |
+          brew install llvm libomp aspcud
+          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+          export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+          export CC=/opt/homebrew/opt/llvm/bin/clang
+          which clang
+          which cc
 
       - run: opam depext owl --with-test
     
