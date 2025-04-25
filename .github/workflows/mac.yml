@@ -27,10 +27,16 @@ jobs:
 
       - name: Deps
         # git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
+        #  brew install llvm libomp aspcud
+        #  export CC=/usr/local/opt/llvm/bin/clang
+        #  export CXX=/usr/local/opt/llvm/bin/clang++
         run: |
           brew install llvm libomp aspcud
-          export CC=/usr/local/opt/llvm/bin/clang
-          export CXX=/usr/local/opt/llvm/bin/clang++
+          export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+          export CC=/opt/homebrew/opt/llvm/bin/clang
+          export CXX=/opt/homebrew/opt/llvm/bin/clang++
+          which clang
 
       - name: Use OCaml
         uses: ocaml/setup-ocaml@v3
