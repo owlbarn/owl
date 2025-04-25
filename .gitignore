@@ -26,3 +26,11 @@ setup.log
 
 # editor config files
 .vscode
+
+# Ignore direnv files
+.envrc
+.direnv/
+
+# Ignore Nix/Flake related files/folders
+result
+result-*
