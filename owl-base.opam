@@ -9,12 +9,12 @@ doc: "https://owlbarn.github.io/"
 synopsis: "OCaml Scientific and Engineering Computing - Base"
 description: "Owl is an OCaml scientific library."
 build: [
-  [ "dune" "subst" ] {pinned}
+  [ "dune" "subst" ] {dev}
   [ "dune" "build" "-p" name "-j" jobs ]
 ]
 
 depends: [
   "ocaml" {>= "4.12.0"}
   "base-bigarray"
-  "dune" {>= "2.0.0"}
+  "dune" {>= "3.16"}
 ]

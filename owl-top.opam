@@ -10,13 +10,13 @@ synopsis: "OCaml Scientific and Engineering Computing - Top"
 description: "Owl is an OCaml scientific library."
 
 build: [
-  [ "dune" "subst" ] {pinned}
+  [ "dune" "subst" ] {dev}
   [ "dune" "build" "-p" name "-j" jobs ]
 ]
 
 depends: [
   "ocaml" {>= "4.12.0"}
-  "dune" {>= "2.0.0"}
+  "dune" {>= "3.16"}
   "ocaml-compiler-libs"
   "owl" {= version}
 ]

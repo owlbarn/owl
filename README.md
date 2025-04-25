@@ -36,6 +36,7 @@ We encourage anyone who would like to build up their own tools based on Owl to c
 
 ## Owl Code Structure 
 
+
 To help potential developers to understand the structure of Owl, here we briefly describe its overall design. More detailed description can be found in the [documentation](https://ocaml.xyz/docs/) and the Owl [books](https://ocaml.xyz/).
 
 ![Owl architecture 1](examples/owl-structure1.svg)
