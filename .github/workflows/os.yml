@@ -17,17 +17,18 @@ jobs:
         ocaml-compiler:
           - "5.2"
           - "5.1"
-          - "4.14"
-          - "4.12"
+          - "5"
+          #- "4.14"
+          #- "4.12"
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Use OCaml ${{ matrix.ocaml-compiler }}
-        uses: ocaml/setup-ocaml@v2
+        uses: ocaml/setup-ocaml@v3
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
           opam-local-packages: |

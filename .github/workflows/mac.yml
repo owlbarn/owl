@@ -39,7 +39,8 @@ jobs:
           allow-prerelease-opam: true
 
       - name: OCaml Deps
-        run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy
+        # run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy
+        run: opam install ocaml-compiler-libs alcotest ctypes dune-configurator stdio npy
       
       - name: Compile Owl, install
         run: opam exec -- dune build @install

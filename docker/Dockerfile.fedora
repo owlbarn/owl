@@ -7,11 +7,12 @@
 FROM ocaml/opam:fedora-41-ocaml-5.1
 
 ##################### PREREQUISITES ########################
+USER root
 
-RUN sudo yum update -y
-RUN sudo yum -y install git wget unzip m4 pkg-config gcc-gfortran
-RUN sudo dnf5 -y install zlib-ng-compat-devel
-RUN sudo dnf5 -y install openblas-devel
+RUN yum update -y
+RUN yum -y install git wget unzip m4 pkg-config gcc-gfortran
+RUN dnf5 -y install zlib-ng-compat-devel
+RUN dnf5 -y install openblas-devel
 RUN opam install -y dune ocaml-compiler-libs ctypes alcotest utop conf-openblas dune-configurator stdio npy
 
 ####################   INSTALL OWL  #######################
