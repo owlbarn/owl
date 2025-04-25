@@ -21,7 +21,8 @@ ENV CAML_LD_LIBRARY_PATH /root/.opam/${OCAML_VER}/lib/stublibs
 
 ####################   INSTALL OWL  #######################
 
-RUN cd /home/opam && git clone https://github.com/owlbarn/owl.git
+#TEMP HACK
+RUN cd /home/opam && git clone -b workflow https://github.com/owlbarn/owl.git
 
 RUN cd $OWLPATH \
     && eval $(opam env) \
