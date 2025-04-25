@@ -13,13 +13,8 @@ jobs:
           - macos-14 # beta runner for macos arm64
           - macos-latest
           # - ubuntu-latest
-          # - windows-latest
         ocaml-compiler:
           - "5.2"
-          # - "5.1"
-          # - "5"
-          # - "4.14"
-          # - "4.12"
 
     runs-on: ${{ matrix.os }}
 
@@ -33,8 +28,13 @@ jobs:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
           opam-local-packages: |
             *.opam
-      
-      - run: export OPENBLAS_NO_OPENMP=1
+
+      - name: Deps
+        run: |
+          brew install libomp gcc
+          export CC=gcc-13
+          export CXX=g++-13
+          export PKG_CONFIG_PATH="$(brew --prefix openblas)/lib/pkgconfig:$PKG_CONFIG_PATH"
 
       - run: opam depext owl --with-test
     
