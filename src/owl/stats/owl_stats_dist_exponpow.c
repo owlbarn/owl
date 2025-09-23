@@ -33,14 +33,14 @@ double exponpow_rvs (const double a, const double b) {
     return a * x;
   }
   else if (b == 2) {
-      return std_gaussian_rvs (a / sqrt (2.0));
+      return gaussian_rvs (0.0, a / sqrt (2.0));
   }
   else {
     double x, h, u;
     double B = pow (1 / b, 1 / b);
 
     do {
-      x = std_gaussian_rvs (B);
+      x = gaussian_rvs (0.0, B);
       u = sfmt_f64_3;
       h = -pow (fabs (x), b) + (x * x) / (2 * B * B) + (1 / b) - 0.5;
     }
