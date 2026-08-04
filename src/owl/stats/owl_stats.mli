@@ -2051,22 +2051,22 @@ val gumbel1_isf : float -> a:float -> b:float -> float
 
 val gumbel2_rvs : a:float -> b:float -> float
 (** [gumbel2_rvs ~a ~b] generates a random variate from the Gumbel Type II distribution 
-    with location parameter [a] and scale parameter [b].
+    with shape parameter [a] and scale parameter [b].
 
     The Gumbel Type II distribution is used for modeling extreme values in various fields.
 
-    @param a The location parameter of the distribution.
+    @param a The shape parameter of the distribution.
     @param b The scale parameter of the distribution.
     @return A float representing a random sample from the Gumbel Type II distribution.
 *)
 
 val gumbel2_pdf : float -> a:float -> b:float -> float
 (** [gumbel2_pdf x ~a ~b] computes the probability density function (PDF) 
-    of the Gumbel Type II distribution at the point [x] with location parameter [a] 
+    of the Gumbel Type II distribution at the point [x] with shape parameter [a] 
     and scale parameter [b].
 
     @param x The point at which to evaluate the PDF.
-    @param a The location parameter of the distribution.
+    @param a The shape parameter of the distribution.
     @param b The scale parameter of the distribution.
     @return The PDF value at [x].
 *)
@@ -2074,21 +2074,21 @@ val gumbel2_pdf : float -> a:float -> b:float -> float
 val gumbel2_logpdf : float -> a:float -> b:float -> float
 (** [gumbel2_logpdf x ~a ~b] computes the natural logarithm of the probability 
     density function (log-PDF) of the Gumbel Type II distribution at the point [x] 
-    with location parameter [a] and scale parameter [b].
+    with shape parameter [a] and scale parameter [b].
 
     @param x The point at which to evaluate the log-PDF.
-    @param a The location parameter of the distribution.
+    @param a The shape parameter of the distribution.
     @param b The scale parameter of the distribution.
     @return The log-PDF value at [x].
 *)
 
 val gumbel2_cdf : float -> a:float -> b:float -> float
 (** [gumbel2_cdf x ~a ~b] computes the cumulative distribution function (CDF) 
-    of the Gumbel Type II distribution at the point [x] with location parameter [a] 
+    of the Gumbel Type II distribution at the point [x] with shape parameter [a] 
     and scale parameter [b].
 
     @param x The point at which to evaluate the CDF.
-    @param a The location parameter of the distribution.
+    @param a The shape parameter of the distribution.
     @param b The scale parameter of the distribution.
     @return The CDF value at [x].
 *)
@@ -2096,10 +2096,10 @@ val gumbel2_cdf : float -> a:float -> b:float -> float
 val gumbel2_logcdf : float -> a:float -> b:float -> float
 (** [gumbel2_logcdf x ~a ~b] computes the natural logarithm of the cumulative 
     distribution function (log-CDF) of the Gumbel Type II distribution at the point [x] 
-    with location parameter [a] and scale parameter [b].
+    with shape parameter [a] and scale parameter [b].
 
     @param x The point at which to evaluate the log-CDF.
-    @param a The location parameter of the distribution.
+    @param a The shape parameter of the distribution.
     @param b The scale parameter of the distribution.
     @return The log-CDF value at [x].
 *)
@@ -2107,10 +2107,10 @@ val gumbel2_logcdf : float -> a:float -> b:float -> float
 val gumbel2_ppf : float -> a:float -> b:float -> float
 (** [gumbel2_ppf q ~a ~b] computes the percent-point function (PPF), also known 
     as the quantile function or inverse CDF, of the Gumbel Type II distribution 
-    for a given probability [q] with location parameter [a] and scale parameter [b].
+    for a given probability [q] with shape parameter [a] and scale parameter [b].
 
     @param q The probability for which to compute the corresponding quantile.
-    @param a The location parameter of the distribution.
+    @param a The shape parameter of the distribution.
     @param b The scale parameter of the distribution.
     @return The quantile corresponding to [q].
 *)
@@ -2118,21 +2118,21 @@ val gumbel2_ppf : float -> a:float -> b:float -> float
 val gumbel2_sf : float -> a:float -> b:float -> float
 (** [gumbel2_sf x ~a ~b] computes the survival function (SF), which is one minus 
     the cumulative distribution function (1 - CDF), of the Gumbel Type II distribution 
-    at the point [x] with location parameter [a] and scale parameter [b].
+    at the point [x] with shape parameter [a] and scale parameter [b].
 
     @param x The point at which to evaluate the SF.
-    @param a The location parameter of the distribution.
+    @param a The shape parameter of the distribution.
     @param b The scale parameter of the distribution.
     @return The SF value at [x].
 *)
 
 val gumbel2_logsf : float -> a:float -> b:float -> float
 (** [gumbel2_logsf x ~a ~b] computes the natural logarithm of the survival function 
-    (log-SF) of the Gumbel Type II distribution at the point [x] with location parameter [a] 
+    (log-SF) of the Gumbel Type II distribution at the point [x] with shape parameter [a] 
     and scale parameter [b].
 
     @param x The point at which to evaluate the log-SF.
-    @param a The location parameter of the distribution.
+    @param a The shape parameter of the distribution.
     @param b The scale parameter of the distribution.
     @return The log-SF value at [x].
 *)
@@ -2140,10 +2140,10 @@ val gumbel2_logsf : float -> a:float -> b:float -> float
 val gumbel2_isf : float -> a:float -> b:float -> float
 (** [gumbel2_isf q ~a ~b] computes the inverse survival function (ISF), 
     which is the inverse of the survival function (SF), of the Gumbel Type II distribution 
-    for a given probability [q] with location parameter [a] and scale parameter [b].
+    for a given probability [q] with shape parameter [a] and scale parameter [b].
 
     @param q The probability for which to compute the corresponding value from the ISF.
-    @param a The location parameter of the distribution.
+    @param a The shape parameter of the distribution.
     @param b The scale parameter of the distribution.
     @return The value corresponding to [q] from the ISF.
 *)
