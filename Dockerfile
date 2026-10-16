@@ -12,7 +12,8 @@ RUN apt-get -y install aspcud libshp-dev libopenblas-dev liblapacke-dev build-es
 RUN apt-get -y install opam pkg-config zlib1g-dev
 
 ENV OCAML_VER=5.1.0
-RUN yes | opam init --disable-sandboxing --comp $OCAML_VER && eval $(opam config env) 
+# Avoid piping "yes": opam's shell setup menu expects a numeric choice.
+RUN opam init --yes --no-setup --disable-sandboxing --comp $OCAML_VER
 RUN opam install -y dune ocaml-compiler-libs ctypes alcotest utop conf-openblas dune-configurator stdio npy
 
 ####################   INSTALL OWL  #######################

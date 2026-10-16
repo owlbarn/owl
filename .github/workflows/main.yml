@@ -25,6 +25,10 @@ jobs:
           #  *.opam
           dune-cache: true
           allow-prerelease-opam: true
+
+      - name: Check Docker opam initialization
+        timeout-minutes: 1
+        run: python3 docker/test_opam_init.py
       
       - name: Deps
         run: sudo apt-get install aspcud libshp-dev libopenblas-dev liblapacke-dev
