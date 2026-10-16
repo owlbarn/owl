@@ -33,6 +33,8 @@ jobs:
           # Discover Homebrew's prefix on both Apple Silicon and Intel, and
           # preserve it for setup-ocaml and all subsequent build steps.
           echo "PKG_CONFIG_PATH=$(brew --prefix openblas)/lib/pkgconfig:${PKG_CONFIG_PATH:-}" >> "$GITHUB_ENV"
+          # OpenBLAS's pkg-config flags enable OpenMP in Owl's C stubs.
+          echo "OWL_LDFLAGS=-L$(brew --prefix libomp)/lib -lomp" >> "$GITHUB_ENV"
 
       - name: Select LLVM before building OCaml
         run: |
