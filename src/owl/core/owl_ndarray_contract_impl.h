@@ -85,7 +85,10 @@ CAMLprim value FUNCTION (stub, contract_one) (value vX, value vY, value vA, valu
   cp->dim = X->num_dims;
   cp->dep = 0;
   cp->drt = N;
-  cp->n = X->dim;
+  // Bigarray dimensions use intnat, which is not int64_t on every platform.
+  cp->n = calloc(cp->dim, sizeof(int64_t));
+  for (int64_t i = 0; i < cp->dim; i++)
+    cp->n[i] = X->dim[i];
   cp->x = X_data;
   cp->y = Y_data;
   cp->posx = 0;
@@ -97,6 +100,7 @@ CAMLprim value FUNCTION (stub, contract_one) (value vX, value vY, value vA, valu
 
   FUNCTION (c, contract_one) (cp);
 
+  free(cp->n);
   free(cp->ofsx);
   free(cp->ofsy);
   free(cp);
