@@ -4,7 +4,7 @@
 # By Liang Wang <liang@ocaml.xyz>
 ############################################################
 
-FROM ocaml/opam:fedora-41-ocaml-5.1
+FROM ocaml/opam:fedora-44-ocaml-5.5
 
 ##################### PREREQUISITES ########################
 USER root

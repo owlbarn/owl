@@ -1,69 +1,58 @@
-name: Build and test on Mac
+name: Build and test on macOS
 
 on:
   push:
-    branches: 
-      #- main 
-      - foobar
+    branches:
+      - main
+      - workflow
   pull_request:
-    branches: 
-      #- main
-      - foobar
-
-### Current problem compiling conf-openblas on MacOS 
-### "# clang: error: unsupported option '-fopenmp'"
-### Compiling uses cc, which is a wrapper of Apple Clang, which does not support openMP
-### And installing brew LLVM and change $CC does not seem to work 
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-  deploy-owl:
-    name: Install Owl
-    runs-on: macos-latest
+  build:
+    name: OCaml 5 / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-latest
+          - macos-26-intel
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: macos fix
-        if: runner.os == 'Macos'
+      - name: Install native dependencies
         run: |
-          brew update
-          brew upgrade
-          brew install pkgconf
-          # work around https://github.com/actions/runner-images/issues/10984
+          brew install pkgconf openblas libomp
+          # Discover Homebrew's prefix on both Apple Silicon and Intel, and
+          # preserve it for setup-ocaml and all subsequent build steps.
+          echo "PKG_CONFIG_PATH=$(brew --prefix openblas)/lib/pkgconfig:${PKG_CONFIG_PATH:-}" >> "$GITHUB_ENV"
 
-      - name: Deps
-        # git build-essential wget unzip aspcud m4 pkg-config libshp-dev libopenblas-dev liblapacke-dev
-        #  brew install llvm libomp aspcud
-        #  export CC=/usr/local/opt/llvm/bin/clang
-        #  export CXX=/usr/local/opt/llvm/bin/clang++
-        run: |
-          brew install llvm libomp aspcud
-          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-          export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-          export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
-          export CC=/opt/homebrew/opt/llvm/bin/clang
-          export CXX=/opt/homebrew/opt/llvm/bin/clang++
-          which clang
-          ls -l $(which cc)
-          cc --version
-          type -a cc
-
-      - name: Use OCaml
+      - name: Use latest OCaml 5
         uses: ocaml/setup-ocaml@v3
         with:
-          ocaml-compiler: 5
-          # opam-local-packages: |
-          #  *.opam
+          ocaml-compiler: "5"
+          opam-local-packages: "*.opam"
           dune-cache: true
-          allow-prerelease-opam: true
 
-      - name: OCaml Deps
-        run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy
-      
-      - name: Compile Owl, install
-        run: opam exec -- dune build @install
-      
-      - name: Run tests
+      - name: Install OCaml dependencies
+        run: opam install . --deps-only --with-test --yes
+
+      - name: Show toolchain
         run: |
-          opam install owl-base 
-          opam exec -- dune runtest -j 1 --no-buffer -p owl
+          opam exec -- ocamlc -version
+          cc --version
+          pkg-config --cflags --libs openblas
+
+      - name: Compile Owl
+        run: opam exec -- dune build @install
+
+      - name: Run tests
+        # Build all local packages together so tests use this checkout's owl-base.
+        run: opam exec -- dune runtest -j 1 --no-buffer
