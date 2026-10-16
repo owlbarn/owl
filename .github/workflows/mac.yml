@@ -29,10 +29,23 @@ jobs:
 
       - name: Install native dependencies
         run: |
-          brew install pkgconf openblas libomp
+          brew install pkgconf openblas libomp llvm
           # Discover Homebrew's prefix on both Apple Silicon and Intel, and
           # preserve it for setup-ocaml and all subsequent build steps.
           echo "PKG_CONFIG_PATH=$(brew --prefix openblas)/lib/pkgconfig:${PKG_CONFIG_PATH:-}" >> "$GITHUB_ENV"
+
+      - name: Select LLVM before building OCaml
+        run: |
+          # OCaml records its C compiler, which Dune then uses for C stubs.
+          # Override cc before setup-ocaml, not just CC in a later build step.
+          llvm_bin="$(brew --prefix llvm)/bin"
+          toolchain_dir="$RUNNER_TEMP/owl-toolchain"
+          mkdir -p "$toolchain_dir"
+          ln -sf "$llvm_bin/clang" "$toolchain_dir/cc"
+          ln -sf "$llvm_bin/clang++" "$toolchain_dir/c++"
+          echo "$toolchain_dir" >> "$GITHUB_PATH"
+          echo "CC=$toolchain_dir/cc" >> "$GITHUB_ENV"
+          echo "CXX=$toolchain_dir/c++" >> "$GITHUB_ENV"
 
       - name: Use latest OCaml 5
         uses: ocaml/setup-ocaml@v3
@@ -40,6 +53,7 @@ jobs:
           ocaml-compiler: "5"
           opam-local-packages: "*.opam"
           dune-cache: true
+          cache-prefix: macos-llvm
 
       - name: Install OCaml dependencies
         run: opam install . --deps-only --with-test --yes
@@ -47,6 +61,7 @@ jobs:
       - name: Show toolchain
         run: |
           opam exec -- ocamlc -version
+          opam exec -- ocamlc -config-var c_compiler
           cc --version
           pkg-config --cflags --libs openblas
 
