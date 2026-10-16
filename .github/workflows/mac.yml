@@ -67,6 +67,11 @@ jobs:
           cc --version
           pkg-config --cflags --libs openblas
 
+      - name: Work around LLVM vector-combine crash on Intel
+        if: runner.arch == 'X64'
+        # LLVM 22 crashes in this pass while optimizing complex32_modf.
+        run: echo "OWL_CPPFLAGS=-mllvm -disable-vector-combine" >> "$GITHUB_ENV"
+
       - name: Compile Owl
         run: opam exec -- dune build @install
 
