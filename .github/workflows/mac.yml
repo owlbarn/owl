@@ -1,13 +1,8 @@
 name: Build and test on macOS
 
 on:
-  push:
-    branches:
-      - main
-      - workflow
-  pull_request:
-    branches:
-      - main
+  # Automatic runs are paused while Clang crashes on Owl's C stubs.
+  # Restore push/PR triggers after both macOS architectures pass.
   workflow_dispatch:
 
 jobs:
