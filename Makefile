@@ -10,7 +10,7 @@ build:
 
 .PHONY: test
 test:
-	dune runtest -j 1 --no-buffer -p owl
+	dune runtest -j 1 --no-buffer
 
 .PHONY: clean
 clean:
