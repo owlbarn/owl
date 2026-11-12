@@ -535,6 +535,89 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       ^ "---"
   end
 
+  (* Standalone single-step optimiser for user-written training loops.
+
+     NOTE: the update rule below deliberately duplicates the one inside
+     [minimise_network], which is left untouched to keep existing training
+     behaviour stable. If you change either of them, check whether the other
+     one should change too. *)
+  module Stepper = struct
+    type state =
+      { mutable count : int
+      ; (* index of the next step, starts from 1 as in [minimise_network] *)
+        mutable gs : t array array
+      ; (* gradient of the previous step *)
+        mutable ps : t array array
+      ; (* direction of the previous step *)
+        mutable us : t array array
+      ; (* weight update of the previous step *)
+        mutable ch : t array array array
+      ; (* gradient cache used by learning rate strategies *)
+        momentum : Momentum.typ
+      ; clip_fun : t -> t
+      ; grad_fun : t -> t -> t -> t -> t
+      ; rate_fun : int -> t -> t array -> t
+      ; momt_fun : t -> t -> t
+      ; upch_fun : t -> t array -> t array
+      }
+
+    let init ?gs params ws =
+      let open Params in
+      let needs_history =
+        match params.gradient with
+        | Gradient.GD -> false
+        | Gradient.CG | Gradient.CD | Gradient.NonlinearCG | Gradient.DaiYuanCG -> true
+        | Gradient.Newton | Gradient.NewtonCG ->
+          invalid_arg "Owl_optimise.Stepper.init: Newton methods are not supported"
+      in
+      let gs =
+        match gs with
+        | Some gs -> gs
+        | None    ->
+          if needs_history
+          then
+            invalid_arg
+              "Owl_optimise.Stepper.init: conjugate gradient methods require ~gs"
+          else Owl_utils.aarr_map (fun _ -> _f 0.) ws
+      in
+      { count = 1
+      ; gs
+      ; ps = Owl_utils.aarr_map Maths.neg gs
+      ; us = Owl_utils.aarr_map (fun _ -> _f 0.) ws
+      ; ch = Owl_utils.aarr_map (fun _ -> [| _f 0.; _f 0. |]) ws
+      ; momentum = params.momentum
+      ; clip_fun = Clipping.run params.clipping
+      ; grad_fun = Gradient.run params.gradient (fun a -> a)
+      ; rate_fun = Learning_Rate.run params.learning_rate
+      ; momt_fun = Momentum.run params.momentum
+      ; upch_fun = Learning_Rate.update_ch params.learning_rate
+      }
+
+
+    let step state ws gs' =
+      let ws = Owl_utils.aarr_map primal' ws in
+      let gs' = Owl_utils.aarr_map (fun g -> primal' g |> state.clip_fun) gs' in
+      let ps' = Owl_utils.aarr_map4 state.grad_fun ws state.gs state.ps gs' in
+      state.ch <- Owl_utils.aarr_map2 state.upch_fun gs' state.ch;
+      let us' =
+        Owl_utils.aarr_map3
+          (fun p' g' c -> Maths.(p' * state.rate_fun state.count g' c))
+          ps'
+          gs'
+          state.ch
+      in
+      let us' = Owl_utils.aarr_map2 state.momt_fun state.us us' in
+      let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
+      if state.momentum <> Momentum.None then state.us <- us';
+      state.gs <- gs';
+      state.ps <- ps';
+      state.count <- state.count + 1;
+      ws'
+
+
+    let count state = state.count - 1
+  end
+
   (* core optimisation functions *)
 
   (* This function minimises the weight [w] of passed-in function [f].
@@ -686,6 +769,8 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       if params.verbosity = true then Checkpoint.print_state_info state;
       (* clip the gradient if necessary *)
       let gs' = Owl_utils.aarr_map clip_fun gs' in
+      (* NOTE: [Stepper.step] duplicates the update rule from here to [update ws'].
+         If you change it, check whether [Stepper] should change too. *)
       (* calculate gradient descent *)
       let ps' =
         Checkpoint.(Owl_utils.aarr_map4 (grad_fun (fun a -> a)) ws state.gs state.ps gs')

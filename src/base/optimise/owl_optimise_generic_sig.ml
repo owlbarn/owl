@@ -265,6 +265,34 @@ module type Sig = sig
     (** Convert the module [typ] to its string representation. *)
   end
 
+  (** Stepper module *)
+  module Stepper : sig
+    type state
+    (** Optimiser state carried between steps: gradient history, momentum and
+        learning rate caches, and the step counter. *)
+
+    val init : ?gs:t array array -> Params.typ -> t array array -> state
+    (**
+       [init ~gs params ws] creates a single-step optimiser for weights [ws],
+       e.g. those returned by [Graph.mkpri]. Only the [gradient],
+       [learning_rate], [momentum] and [clipping] fields of [params] are used;
+       regularisation should be added to the loss by the caller.
+
+       [gs] seeds the gradient history and is required by the conjugate
+       gradient methods. Newton methods are not supported.
+    *)
+
+    val step : state -> t array array -> t array array -> t array array
+    (**
+       [step state ws gs] takes one optimisation step from weights [ws] with
+       gradients [gs] (e.g. as returned by [Graph.backward]) and returns the new
+       weights. The step uses the same update rule as [minimise_network].
+    *)
+
+    val count : state -> int
+    (** [count state] returns the number of steps taken so far. *)
+  end
+
   (** {4 Core functions} *)
 
   val minimise_weight

@@ -37,6 +37,7 @@ module Flatten (Graph : Owl_neural_graph_sig.Sig) = struct
   module Clipping = Graph.Neuron.Optimise.Clipping
   module Stopping = Graph.Neuron.Optimise.Stopping
   module Checkpoint = Graph.Neuron.Optimise.Checkpoint
+  module Stepper = Graph.Neuron.Optimise.Stepper
 end
 
 module Make (A : Owl_types_ndarray_algodiff.Sig) = struct
