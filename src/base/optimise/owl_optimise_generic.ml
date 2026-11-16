@@ -114,6 +114,23 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       | _                -> c
 
 
+    (* The weight update of step [i] from direction [p'], gradient [g'] and the
+       gradient cache [c] already updated by [update_ch].
+
+       Adam's update [-a_t * m / (sqrt v + eps)] is not proportional to the
+       gradient element-wise, so it cannot be written as [p' * run ...] without
+       dividing by [g'] (which breaks for zero and tiny gradients). It therefore
+       ignores [p'] and is only meaningful with [Gradient.GD]. Every other
+       strategy computes exactly [p' * run typ i g' c]. *)
+    let update typ i p' g' c =
+      match typ with
+      | Adam (a, b1, b2) ->
+        let t = float_of_int i in
+        let a_t = a *. sqrt (1. -. (b2 ** t)) /. (1. -. (b1 ** t)) in
+        Maths.(neg (_f a_t * c.(0) / (sqrt c.(1) + _f 1e-8)))
+      | _                -> Maths.(p' * run typ i g' c)
+
+
     let to_string = function
       | Adagrad a        -> Printf.sprintf "adagrad %g" a
       | Const a          -> Printf.sprintf "constant %g" a
@@ -556,7 +573,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
         momentum : Momentum.typ
       ; clip_fun : t -> t
       ; grad_fun : t -> t -> t -> t -> t
-      ; rate_fun : int -> t -> t array -> t
+      ; rate_fun : int -> t -> t -> t array -> t
       ; momt_fun : t -> t -> t
       ; upch_fun : t -> t array -> t array
       }
@@ -588,7 +605,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       ; momentum = params.momentum
       ; clip_fun = Clipping.run params.clipping
       ; grad_fun = Gradient.run params.gradient (fun a -> a)
-      ; rate_fun = Learning_Rate.run params.learning_rate
+      ; rate_fun = Learning_Rate.update params.learning_rate
       ; momt_fun = Momentum.run params.momentum
       ; upch_fun = Learning_Rate.update_ch params.learning_rate
       }
@@ -601,7 +618,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       state.ch <- Owl_utils.aarr_map2 state.upch_fun gs' state.ch;
       let us' =
         Owl_utils.aarr_map3
-          (fun p' g' c -> Maths.(p' * state.rate_fun state.count g' c))
+          (fun p' g' c -> state.rate_fun state.count p' g' c)
           ps'
           gs'
           state.ch
@@ -632,7 +649,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
     let bach_fun = Batch.run params.batch in
     let loss_fun = Loss.run params.loss in
     let grad_fun = Gradient.run params.gradient in
-    let rate_fun = Learning_Rate.run params.learning_rate in
+    let rate_fun = Learning_Rate.update params.learning_rate in
     let regl_fun = Regularisation.run params.regularisation in
     let momt_fun = Momentum.run params.momentum in
     let upch_fun = Learning_Rate.update_ch params.learning_rate in
@@ -683,7 +700,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       Checkpoint.(state.ch.(0).(0) <- upch_fun g' state.ch.(0).(0));
       (* adjust direction based on learning_rate *)
       let u' =
-        Checkpoint.(Maths.(p' * rate_fun state.current_batch g' state.ch.(0).(0)))
+        Checkpoint.(rate_fun state.current_batch p' g' state.ch.(0).(0))
       in
       (* adjust direction based on momentum *)
       let u' = momt_fun Checkpoint.(state.us.(0).(0)) u' in
@@ -716,7 +733,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
     let bach_fun = Batch.run params.batch in
     let loss_fun = Loss.run params.loss in
     let grad_fun = Gradient.run params.gradient in
-    let rate_fun = Learning_Rate.run params.learning_rate in
+    let rate_fun = Learning_Rate.update params.learning_rate in
     let regl_fun = Regularisation.run params.regularisation in
     let momt_fun = Momentum.run params.momentum in
     let upch_fun = Learning_Rate.update_ch params.learning_rate in
@@ -781,7 +798,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       let us' =
         Checkpoint.(
           Owl_utils.aarr_map3
-            (fun p' g' c -> Maths.(p' * rate_fun state.current_batch g' c))
+            (fun p' g' c -> rate_fun state.current_batch p' g' c)
             ps'
             gs'
             state.ch)
@@ -815,7 +832,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
     then print_endline (Params.to_string params);
     (* make alias functions *)
     let grad_fun = Gradient.run params.gradient in
-    let rate_fun = Learning_Rate.run params.learning_rate in
+    let rate_fun = Learning_Rate.update params.learning_rate in
     let regl_fun = Regularisation.run params.regularisation in
     let momt_fun = Momentum.run params.momentum in
     let upch_fun = Learning_Rate.update_ch params.learning_rate in
@@ -863,7 +880,7 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       Checkpoint.(state.ch.(0).(0) <- upch_fun g' state.ch.(0).(0));
       (* adjust direction based on learning_rate *)
       let u' =
-        Checkpoint.(Maths.(p' * rate_fun state.current_batch g' state.ch.(0).(0)))
+        Checkpoint.(rate_fun state.current_batch p' g' state.ch.(0).(0))
       in
       (* adjust direction based on momentum *)
       let u' = momt_fun Checkpoint.(state.us.(0).(0)) u' in

@@ -257,17 +257,15 @@ module To_test = struct
     close_list ~tol:1e-7 (adam_with_stepper ~a ~b1 ~b2 grads w) (adam_reference ~a ~b1 ~b2 grads w)
 
 
-  (* every gradient element is non-zero, so the current formula agrees *)
   let adam_nonzero_gradients () =
     adam_matches [ [ 1.; -2.; 0.5 ]; [ 0.5; -1.; 0.25 ]; [ -0.3; 0.7; 2. ] ]
 
 
-  (* KNOWN BUG: the update is [m / (sqrt v + eps)] multiplied by [g / g], so an
-     element whose current gradient is zero does not move even though its
-     first moment is not zero *)
+  (* an element whose current gradient is zero still moves, driven by its
+     first moment *)
   let adam_zero_gradient () = adam_matches [ [ 1.; 1.; 1. ]; [ 1.; 0.; 1. ] ]
 
-  (* KNOWN BUG: dividing by [g + 1e-32] blows up when [g = -1e-32] *)
+  (* a tiny gradient gives a finite step; Owl once divided by [g + 1e-32] *)
   let adam_tiny_negative_gradient () = adam_matches [ [ 1.; -1e-32; 1. ] ]
 
   (* Batch: row [i] of [x] holds [i] and so does row [i] of [y], which lets us
@@ -350,6 +348,31 @@ module To_test = struct
   let minimise_adam () =
     let _, x = minimise ~learning_rate:(Learning_Rate.Adam (0.1, 0.9, 0.999)) 1000. in
     close_list ~tol:1e-3 x target
+
+
+  (* f(x) = (x0 - 3)^2 + max(0, x1)^2 from x1 = 0.05: after the first step x1
+     is negative and its gradient is zero from then on, so only Adam's first
+     moment keeps moving it. Compared step by step with [adam_reference]. *)
+  let minimise_adam_zero_gradient () =
+    let a, b1, b2 = 0.1, 0.9, 0.999 in
+    let f x =
+      let x0 = Maths.get_item x 0 0
+      and x1 = Maths.get_item x 0 1 in
+      Maths.(sqr (x0 - _f 3.) + sqr (relu x1))
+    in
+    let params = quiet_params ~learning_rate:(Learning_Rate.Adam (a, b1, b2)) 5. in
+    let _, x = minimise_fun params f (row [ 0.; 0.05 ]) in
+    (* replay the same gradients with the reference implementation *)
+    let w = ref [ 0.; 0.05 ]
+    and grads = ref [] in
+    for _ = 1 to 5 do
+      let x0 = List.nth !w 0
+      and x1 = List.nth !w 1 in
+      let g = [ 2. *. (x0 -. 3.); (if x1 > 0. then 2. *. x1 else 0.) ] in
+      grads := !grads @ [ g ];
+      w := adam_reference ~a ~b1 ~b2 !grads [ 0.; 0.05 ]
+    done;
+    close_list ~tol:1e-9 x !w && List.nth !w 1 < -0.2
 
 
   let minimise_newton () =
@@ -448,6 +471,8 @@ let test_set =
   ; "learning rate exp decay", `Quick, check "learning rate exp decay" learning_rate_exp_decay
   ; "learning rate schedule", `Quick, check "learning rate schedule" learning_rate_schedule
   ; "adam nonzero gradients", `Quick, check "adam nonzero gradients" adam_nonzero_gradients
+  ; "adam zero gradient", `Quick, check "adam zero gradient" adam_zero_gradient
+  ; "adam tiny negative gradient", `Quick, check "adam tiny negative gradient" adam_tiny_negative_gradient
   ; "batch full", `Quick, check "batch full" batch_full
   ; "batch mini", `Quick, check "batch mini" batch_mini
   ; "batch sample", `Quick, check "batch sample" batch_sample
@@ -457,13 +482,10 @@ let test_set =
   ; "minimise gd", `Slow, check "minimise gd" minimise_gd
   ; "minimise momentum", `Slow, check "minimise momentum" minimise_momentum
   ; "minimise adam", `Slow, check "minimise adam" minimise_adam
+  ; "minimise adam zero gradient", `Slow, check "minimise adam zero gradient" minimise_adam_zero_gradient
   ; "minimise newton", `Slow, check "minimise newton" minimise_newton
   ; "minimise state", `Slow, check "minimise state" minimise_state
   ; "minimise checkpoint", `Slow, check "minimise checkpoint" minimise_checkpoint
   ; "minimise resume", `Slow, check "minimise resume" minimise_resume
-  ; "known bug: adam zero gradient", `Quick, known_bug "adam zero gradient" adam_zero_gradient
-  ; ( "known bug: adam tiny negative gradient"
-    , `Quick
-    , known_bug "adam tiny negative gradient" adam_tiny_negative_gradient )
   ; "known bug: stopping const ends run", `Slow, known_bug "stopping const ends run" minimise_stops_early
   ; "known bug: stopping early", `Quick, known_bug "stopping early" stopping_early ]

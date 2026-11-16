@@ -50,6 +50,19 @@ module type Sig = sig
     val update_ch : typ -> t -> t array -> t array
     (** Update the cache of gradients. *)
 
+    val update : typ -> int -> t -> t -> t array -> t
+    (**
+       [update typ i p' g' c] returns the weight update of step [i] from the
+       search direction [p'], the gradient [g'] and the gradient cache [c]
+       (already updated with [update_ch]).
+
+       For [Adam] this is [-a_t * m / (sqrt v + 1e-8)] with the bias-corrected
+       step [a_t = alpha * sqrt (1 - beta2^i) / (1 - beta1^i)]; it ignores [p'],
+       so Adam is only meaningful with [Gradient.GD]. For every other strategy
+       it is [p' * run typ i g' c]. Use this rather than [run] for Adam: [run]
+       divides by [g'], which is wrong where the gradient is zero or tiny.
+    *)
+
     val to_string : typ -> string
     (** Convert the module [typ] to its string representation. *)
   end

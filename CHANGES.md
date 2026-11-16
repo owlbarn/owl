@@ -1,3 +1,14 @@
+## Unreleased
+
+* Fix Adam: the update no longer divides by the gradient, so elements with a
+  zero gradient keep moving with their first moment and tiny gradients no
+  longer give infinite steps. Applies to `minimise_weight`, `minimise_fun`,
+  `minimise_network` and `Stepper`; other learning-rate strategies are
+  unchanged bit for bit. Adam results with non-zero gradients may differ in
+  the last ulp. New `Learning_Rate.update` returns the weight update.
+* Add standalone single-step optimiser `Optimise.Stepper`
+* Add unit tests for `Optimise` and `Regression`
+
 ## 1.2 (2024-12-24)
 
 * Revise automatic installation test via GitHub Action
