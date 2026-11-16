@@ -279,12 +279,21 @@ module Make (Optimise : Owl_optimise_generic_sig.Sig) = struct
         let f0 = loss !w
         and slope = _dot g d in
         let step t = Array.mapi (fun a v -> v -. (t *. d.(a))) !w in
+        (* Armijo condition with slack for the rounding error of the loss:
+           close to the optimum the decrease of a Newton step is below it, and
+           without the slack the search would stop there, short of the
+           quadratic convergence that follows *)
+        let slack = 1e-13 *. (1. +. Float.abs f0) in
         let t = ref 1. in
-        while loss (step !t) > f0 -. (1e-4 *. !t *. slope) && !t > 1e-12 do
+        while loss (step !t) > f0 -. (1e-4 *. !t *. slope) +. slack && !t > 1e-12 do
           t := !t /. 2.
         done;
-        (* no further decrease is possible at this precision *)
-        if !t <= 1e-12 || slope <= 0. then finished := true else w := step !t)
+        let w' = step !t in
+        (* stop when no step helps, or when the step no longer changes [w] *)
+        let moved =
+          Array.exists2 (fun a b -> a <> b) w' !w
+        in
+        if !t <= 1e-12 || slope <= 0. || not moved then finished := true else w := w')
     done;
     !w
 
