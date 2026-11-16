@@ -1,5 +1,9 @@
 ## Unreleased
 
+* Fix `Stopping.Const`: `Checkpoint.run` overwrote the stop flag set by the
+  stopping criterion, so training never ended early. It now stops at the
+  first batch whose loss is below the threshold, in `minimise_weight`,
+  `minimise_fun`, `minimise_network` and `minimise_compiled_network`.
 * Fix Adam: the update no longer divides by the gradient, so elements with a
   zero gradient keep moving with their first moment and tiny gradients no
   longer give infinite steps. Applies to `minimise_weight`, `minimise_fun`,

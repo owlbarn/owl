@@ -418,16 +418,64 @@ module To_test = struct
     close_list x' (to_list x20)
 
 
-  (* KNOWN BUG: [Checkpoint.run] overwrites [state.stop] right after the
-     stopping criterion sets it, so [Stopping.Const] never ends a run early *)
+  (* [Stopping.Const a] ends the run at the first batch whose loss is below
+     [a]; that batch's update is still applied. Owl used to overwrite the stop
+     flag in [Checkpoint.run], so the criterion had no effect. *)
   let minimise_stops_early () =
     let state, _ =
-      minimise
+      minimise ~stopping:(Stopping.Const 1.) ~learning_rate:(Learning_Rate.Const 0.1) 50.
+    in
+    let last = Checkpoint.(state.current_batch) - 1 in
+    let loss i = scalar Checkpoint.(state.loss.(i)) in
+    last < 50
+    && loss last < 1.
+    && List.for_all (fun i -> loss i >= 1.) (List.init (last - 1) (fun i -> i + 1))
+
+
+  (* a threshold that is never reached leaves the run at full length *)
+  let minimise_stopping_not_reached () =
+    let state, _ =
+      minimise ~stopping:(Stopping.Const 0.) ~learning_rate:(Learning_Rate.Const 0.1) 50.
+    in
+    Checkpoint.(state.current_batch) = 51
+
+
+  let weight_stops_early () =
+    let x = Arr (Owl_dense_ndarray.D.uniform [| 20; 2 |])
+    and y = Arr (Owl_dense_ndarray.D.uniform [| 20; 1 |]) in
+    let f w x = Maths.(x *@ w) in
+    let params =
+      Params.config
+        ~batch:Batch.Full
+        ~loss:Loss.Quadratic
+        ~learning_rate:(Learning_Rate.Const 0.01)
         ~stopping:(Stopping.Const 1e10)
-        ~learning_rate:(Learning_Rate.Const 0.1)
+        ~verbosity:false
         50.
     in
-    Checkpoint.(state.current_batch) <= 2
+    let state, _ = minimise_weight params f (Arr (Owl_dense_ndarray.D.zeros [| 2; 1 |])) x y in
+    Checkpoint.(state.current_batch) = 2
+
+
+  (* [Graph.train] goes through [minimise_network] *)
+  let network_stops_early () =
+    let open Owl_neural.D in
+    let open Graph in
+    let nn = input [| 3 |] |> linear 2 |> get_network in
+    init nn;
+    let params =
+      Params.config
+        ~batch:Batch.Full
+        ~loss:Loss.Quadratic
+        ~learning_rate:(Learning_Rate.Const 0.01)
+        ~stopping:(Stopping.Const 1e10)
+        ~verbosity:false
+        50.
+    in
+    let x = Algodiff.A.uniform [| 8; 3 |]
+    and y = Algodiff.A.uniform [| 8; 2 |] in
+    let state = train ~params ~init_model:false nn x y in
+    Checkpoint.(state.current_batch) = 2
 
 
   (* KNOWN BUG: [Stopping.Early] is not implemented *)
@@ -487,5 +535,10 @@ let test_set =
   ; "minimise state", `Slow, check "minimise state" minimise_state
   ; "minimise checkpoint", `Slow, check "minimise checkpoint" minimise_checkpoint
   ; "minimise resume", `Slow, check "minimise resume" minimise_resume
-  ; "known bug: stopping const ends run", `Slow, known_bug "stopping const ends run" minimise_stops_early
+  ; "minimise stops early", `Slow, check "minimise stops early" minimise_stops_early
+  ; ( "minimise stopping not reached"
+    , `Slow
+    , check "minimise stopping not reached" minimise_stopping_not_reached )
+  ; "weight stops early", `Slow, check "weight stops early" weight_stops_early
+  ; "network stops early", `Slow, check "network stops early" network_stops_early
   ; "known bug: stopping early", `Quick, known_bug "stopping early" stopping_early ]

@@ -430,7 +430,8 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
 
     let run typ save_fun current_batch current_loss state =
       state.loss.(current_batch) <- primal' current_loss;
-      state.stop <- state.current_batch >= state.batches;
+      (* keep a stop already requested by the stopping criterion *)
+      state.stop <- state.stop || state.current_batch >= state.batches;
       let interval =
         match typ with
         | Batch i  -> i

@@ -233,7 +233,9 @@ module type Sig = sig
     (** Print out the summary of current [state]. *)
 
     val run : typ -> (string -> unit) -> int -> t -> state -> unit
-    (** Execute the computations defined in module [typ]. *)
+    (** Execute the computations defined in module [typ]. It records the loss,
+        sets [state.stop] once all batches are done and keeps it [true] if it
+        was already set, e.g. by the stopping criterion. *)
 
     val to_string : typ -> string
     (** Convert the module [typ] to its string representation. *)
