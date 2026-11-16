@@ -1,5 +1,10 @@
 ## Unreleased
 
+* Fix NaN in cross-entropy when a prediction underflows to 0, e.g. from a
+  saturated softmax: `Algodiff.Maths.cross_entropy` (and so
+  `Loss.Cross_entropy`) and `Ndarray.cross_entropy'` raise predictions below
+  the smallest positive normal float to that value. Results for all other
+  predictions are unchanged bit for bit; NaN predictions still propagate.
 * Change `Regularisation.L2norm a` to `a * ||w||^2` (it was `a * ||w||`), and
   the L2 term of `Regularisation.Elastic_net` likewise. The plain norm has a
   NaN gradient at `w = 0`, so training a network with L2 regularisation

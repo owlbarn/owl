@@ -99,6 +99,78 @@ module To_test = struct
     close (scalar l) (-.log 0.7)
 
 
+  (* a prediction that underflowed to 0: where the target is 0 too the
+     element adds nothing, instead of [0 * log 0 = NaN] *)
+  let cross_entropy_zero_prediction () =
+    let l = Loss.run Loss.Cross_entropy (row [ 0.; 1.; 0. ]) (row [ 0.; 1.; 0. ]) in
+    close (scalar l) 0.
+
+
+  (* where the target is not 0 the loss is large but finite: [-log] of the
+     smallest positive normal double *)
+  let cross_entropy_wrong_and_certain () =
+    let l = Loss.run Loss.Cross_entropy (row [ 1.; 0.; 0. ]) (row [ 0.; 1.; 0. ]) in
+    close ~tol:1e-9 (scalar l) (-.log 2.2250738585072014e-308)
+
+
+  (* the gradient with respect to the prediction stays finite: [-x / y] where
+     [y] is kept and 0 where it was raised *)
+  let cross_entropy_gradient () =
+    let x = row [ 0.; 0.5; 0.5 ] in
+    let g = grad (fun y -> Loss.run Loss.Cross_entropy x y) (row [ 0.; 0.25; 0.75 ]) in
+    close_list g [ 0.; -2.; -.(0.5 /. 0.75) ]
+
+
+  (* for predictions that do not underflow nothing changes, bit for bit *)
+  let cross_entropy_unchanged () =
+    Owl_stats_prng.init 11;
+    let x = Arr (Owl_dense_ndarray.D.uniform [| 4; 5 |])
+    and y = Arr (Owl_dense_ndarray.D.uniform ~a:1e-300 ~b:1. [| 4; 5 |]) in
+    let plain y = Maths.(neg (sum' (x * log y))) in
+    let l = Loss.run Loss.Cross_entropy x in
+    scalar (l y) = scalar (plain y)
+    && Owl_dense_ndarray.D.equal (unpack_arr (grad l y)) (unpack_arr (grad plain y))
+
+
+  (* a softmax saturated so hard that some outputs are exactly 0 *)
+  let cross_entropy_saturated_softmax () =
+    let z = row [ 0.; 800.; 0. ] in
+    let finite v = List.for_all Float.is_finite (to_list v) in
+    List.for_all
+      (fun target ->
+        let f z = Loss.run Loss.Cross_entropy (row target) (Maths.softmax z) in
+        Float.is_finite (scalar (f z)) && finite (grad f z))
+      [ [ 0.; 1.; 0. ]; [ 1.; 0.; 0. ] ]
+
+
+  let cross_entropy_nan_propagates () =
+    let l = Loss.run Loss.Cross_entropy (row [ 1.; 0. ]) (row [ Float.nan; 0.5 ]) in
+    Float.is_nan (scalar l)
+
+
+  (* single precision, through the S instance of the optimiser *)
+  let cross_entropy_single () =
+    let module O = Owl_optimise.S in
+    let open O.Algodiff in
+    let row l = Arr (Owl_dense_ndarray.S.of_array (Array.of_list l) [| 1; List.length l |]) in
+    let l = O.Loss.run O.Loss.Cross_entropy (row [ 1.; 0.; 0. ]) (row [ 0.; 1.; 0. ]) in
+    Float.abs (unpack_flt l -. -.log 1.17549435e-38) < 1e-3
+
+
+  (* the non-differentiable [Ndarray.cross_entropy'] *)
+  let ndarray_cross_entropy () =
+    let module D = Owl_dense_ndarray.D in
+    let module S = Owl_dense_ndarray.S in
+    let t = [| 1.; 0.; 0. |]
+    and p = [| 0.; 1.; 0. |] in
+    D.cross_entropy' (D.of_array t [| 3 |]) (D.of_array p [| 3 |]) = -.log 2.2250738585072014e-308
+    && D.cross_entropy' (D.of_array p [| 3 |]) (D.of_array p [| 3 |]) = 0.
+    && Float.is_finite (S.cross_entropy' (S.of_array t [| 3 |]) (S.of_array p [| 3 |]))
+    && close
+         (D.cross_entropy' (D.of_array [| 0.; 0.5; 0.5 |] [| 3 |]) (D.of_array [| 0.2; 0.3; 0.5 |] [| 3 |]))
+         (-.((0.5 *. log 0.3) +. (0.5 *. log 0.5)))
+
+
   let loss_custom () =
     let l = Loss.run (Loss.Custom (fun a b -> Maths.(sum' (a * b)))) (row y) (row y') in
     close (scalar l) (dot y y')
@@ -539,6 +611,18 @@ let test_set =
   ; "loss hinge", `Quick, check "loss hinge" loss_hinge
   ; "loss cross entropy", `Quick, check "loss cross entropy" loss_cross_entropy
   ; "loss custom", `Quick, check "loss custom" loss_custom
+  ; "cross entropy zero prediction", `Quick, check "cross entropy zero prediction" cross_entropy_zero_prediction
+  ; ( "cross entropy wrong and certain"
+    , `Quick
+    , check "cross entropy wrong and certain" cross_entropy_wrong_and_certain )
+  ; "cross entropy gradient", `Quick, check "cross entropy gradient" cross_entropy_gradient
+  ; "cross entropy unchanged", `Quick, check "cross entropy unchanged" cross_entropy_unchanged
+  ; ( "cross entropy saturated softmax"
+    , `Quick
+    , check "cross entropy saturated softmax" cross_entropy_saturated_softmax )
+  ; "cross entropy nan propagates", `Quick, check "cross entropy nan propagates" cross_entropy_nan_propagates
+  ; "cross entropy single", `Quick, check "cross entropy single" cross_entropy_single
+  ; "ndarray cross entropy", `Quick, check "ndarray cross entropy" ndarray_cross_entropy
   ; "gradient gd", `Quick, check "gradient gd" gradient_gd
   ; "gradient cg", `Quick, check "gradient cg" gradient_cg
   ; "gradient cd", `Quick, check "gradient cd" gradient_cd

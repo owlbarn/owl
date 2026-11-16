@@ -1392,7 +1392,27 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and dot a = Lazy.force _dot a
 
-    and cross_entropy x y = x * log y |> sum' |> neg
+    (* [-sum (x * log y)] with [y] raised to the smallest positive normal float
+       of the precision where it is below that, e.g. where a saturated softmax
+       underflowed to 0. Wherever [y] is at least that value the result and its
+       derivatives are exactly those of the plain formula; elsewhere they stay
+       finite instead of NaN: an element with [x = 0] adds 0 and the gradient
+       through a raised [y] is 0. A NaN in [y] still propagates. *)
+    and cross_entropy x y =
+      let tiny =
+        match A.number with
+        | Owl_types.F32 | Owl_types.C32 -> 1.17549435e-38
+        | Owl_types.F64 | Owl_types.C64 -> 2.2250738585072014e-308
+      in
+      (* 1 where [y] is kept, 0 where it is raised; a constant for AD *)
+      let keep =
+        match primal' y with
+        | F v   -> pack_flt (if A.elt_to_float v < tiny then 0. else 1.)
+        | Arr v -> Arr A.(sub_scalar (elt_less_scalar v (float_to_elt tiny)) (float_to_elt 1.) |> neg)
+        | _     -> failwith "Owl_algodiff.cross_entropy: unsupported argument"
+      in
+      let y = (y * keep) + ((pack_flt 1. - keep) * pack_flt tiny) in
+      x * log y |> sum' |> neg
 
     and _add_row =
       lazy

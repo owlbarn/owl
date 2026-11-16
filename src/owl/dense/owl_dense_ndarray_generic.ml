@@ -9780,8 +9780,16 @@ let cummax_ ?out ?axis x =
   cumulative_op ?axis _cumop x out
 
 
+(* [y] below the smallest positive normal float is raised to it, so that a
+   prediction that underflowed to 0 gives a finite value instead of NaN; see
+   [cross_entropy] in [Owl_algodiff_ops], which does the same. *)
 let cross_entropy' x y =
-  let y = copy y in
+  let tiny =
+    if Bigarray.kind_size_in_bytes (kind y) = 4
+    then 1.17549435e-38
+    else 2.2250738585072014e-308
+  in
+  let y = map (fun v -> if v < tiny then tiny else v) y in
   log_ ~out:y y;
   mul_ ~out:y y x;
   _neg_elt (kind y) (sum' y)
