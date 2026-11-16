@@ -30,10 +30,10 @@ uninstall:
 	$(RM) $(OPAM_STUBS)/dllowl_stubs.so
 
 .PHONY: doc
+# Builds the API documentation into _build/default/_doc/_html. CI publishes
+# it to the gh-pages branch, which GitHub Pages serves.
 doc:
 	dune build @doc
-# cat docs/mathjax.js docs/highlight.pack.js >> _build/default/_doc/_html/highlight.pack.js
-	cp -r _build/default/_doc/_html/* docs
 
 .PHONY: distclean cleanall
 distclean cleanall:

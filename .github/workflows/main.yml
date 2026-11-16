@@ -36,12 +36,18 @@ jobs:
       - name: OCaml Deps
         run: opam install ocaml-compiler-libs alcotest conf-openblas ctypes dune-configurator stdio npy odoc
       
-      # @TODO: the doc for submodules, e.g. Matrix.S, are not generated 
-      # Currently rely on manually update docs into the /docs directory 
+      - name: Compile Owl and install
+        run: opam exec -- dune build @install
+      
+      - name: Run tests
+        # Build all local packages together so tests use this checkout's owl-base.
+        run: opam exec -- dune runtest -j 1 --no-buffer
+
       - name: Build doc
         run: | 
           opam exec -- dune build @doc
 
+      # GitHub Pages serves the gh-pages branch; publish only after the tests pass
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         if: github.ref == 'refs/heads/main'
@@ -49,10 +55,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: _build/default/_doc/_html
           destination_dir: .
-
-      - name: Compile Owl and install
-        run: opam exec -- dune build @install
-      
-      - name: Run tests
-        # Build all local packages together so tests use this checkout's owl-base.
-        run: opam exec -- dune runtest -j 1 --no-buffer
