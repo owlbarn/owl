@@ -5,6 +5,9 @@
   OpenMP (Homebrew, FreeBSD) made Owl compile its `#pragma omp` code without
   linking an OpenMP runtime (undefined `__kmpc_*` symbols, #695) or fail with
   compilers that reject `-fopenmp` (#684).
+* Build: work around Apple Clang 21 (Xcode 26) crashing on arm64 while
+  vectorising the `modf` loops of `owl_ndarray_maths_stub.c`: with Clang,
+  `modf` is called through a function that is not inlined.
 * Build: keep the optional optimisation flags of the default configuration
   only if the C compiler accepts them without a warning, so that GCC-only
   flags are dropped with Clang and `-march=native` with compilers that

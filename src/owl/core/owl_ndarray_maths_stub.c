@@ -5876,32 +5876,47 @@
 
 // modf
 
+/* Apple Clang 21 (Xcode 26) crashes in InstCombine on arm64 when it vectorises
+   a loop of modf calls, which it turns into the struct-returning llvm.modf
+   intrinsic. With Clang, call modf through a function that is never inlined,
+   which keeps these loops scalar; modf is not performance critical. Other
+   compilers call modf directly as before. */
+#if defined(__clang__)
+static __attribute__((noinline)) float owl_modff(float x, float *i) { return modff(x, i); }
+static __attribute__((noinline)) double owl_modf(double x, double *i) { return modf(x, i); }
+#define OWL_MODFF owl_modff
+#define OWL_MODF owl_modf
+#else
+#define OWL_MODFF modff
+#define OWL_MODF modf
+#endif
+
 #define FUN17 float32_modf
 #define NUMBER float
 #define NUMBER1 float
 #define INIT float a, b;
-#define MAPFN(X,Y) a = modff(*X,&b); *X = a; *Y = b
+#define MAPFN(X,Y) a = OWL_MODFF(*X,&b); *X = a; *Y = b
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN17 float64_modf
 #define NUMBER double
 #define NUMBER1 double
 #define INIT double a, b;
-#define MAPFN(X,Y) a = modf(*X,&b); *X = a; *Y = b
+#define MAPFN(X,Y) a = OWL_MODF(*X,&b); *X = a; *Y = b
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN17 complex32_modf
 #define NUMBER complex_float
 #define NUMBER1 complex_float
 #define INIT float a, b;
-#define MAPFN(X,Y) a = modff(X->r,&b); X->r = a; Y->r = b; a = modff(X->i,&b); X->i = a; Y->i = b
+#define MAPFN(X,Y) a = OWL_MODFF(X->r,&b); X->r = a; Y->r = b; a = OWL_MODFF(X->i,&b); X->i = a; Y->i = b
 #include OWL_NDARRAY_MATHS_MAP
 
 #define FUN17 complex64_modf
 #define NUMBER complex_double
 #define NUMBER1 complex_double
 #define INIT double a, b;
-#define MAPFN(X,Y) a = modf(X->r,&b); X->r = a; Y->r = b; a = modf(X->i,&b); X->i = a; Y->i = b
+#define MAPFN(X,Y) a = OWL_MODF(X->r,&b); X->r = a; Y->r = b; a = OWL_MODF(X->i,&b); X->i = a; Y->i = b
 #include OWL_NDARRAY_MATHS_MAP
 
 // not_nan
