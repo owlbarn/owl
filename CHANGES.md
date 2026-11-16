@@ -1,5 +1,12 @@
 ## Unreleased
 
+* Fix resuming a compiled network (`Owl_neural_compiler.train ~state`): the
+  weights were always initialised again and the optimiser state (gradient
+  history, momentum, Adam's moments) started from zero. `train` and
+  `compile_deep` take `?init_model` (default `true`, as in `Graph.train`);
+  pass `~init_model:false` with `~state` to resume. The optimiser state is
+  now saved in the returned state and restored from it. Training an already
+  compiled network a second time no longer fails in `Graph.init`.
 * Fix the learning rate of compiled networks (`Owl_neural_compiler.train`):
   the static graph used the rate of step 999 for every step, so Adam's bias
   correction was wrong and `Decay`, `Exp_decay` and `Schedule` were constant;

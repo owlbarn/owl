@@ -118,7 +118,66 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
 
   (** Deep compilation functions, includes gs, us, ps, ch, and new weights *)
 
-  let compile_deep (params : Params.typ) network full_size =
+  (* The optimiser state of a compiled network lives in graph variables named
+     [gs<i>], [ps<i>], [us<i>], [cha<i>] and [chb<i>], one per weight array
+     [i] of [Owl_utils_array.flatten (Graph.mkpri network)]. [train] copies it
+     into [Checkpoint.state] (gs, ps, us, ch, laid out like [Graph.mkpri], as
+     in eager training) so that a run can be resumed with [~state]. *)
+
+  let _find_input cgraph name =
+    Engine.get_inputs cgraph
+    |> Array.to_list
+    |> List.find_opt (fun n -> Owl_graph.name n = name)
+    |> Option.map Engine.node_to_arr
+
+
+  (* the current value of [a], detached from any graph *)
+  let _detach a =
+    Engine.eval_arr [| a |];
+    Engine.unpack_arr a |> Engine.A.copy |> Engine.pack_arr
+
+
+  let _unflatten_like structure flat =
+    let k = ref 0 in
+    Array.map
+      (Array.map (fun _ ->
+           let v = flat.(!k) in
+           incr k;
+           v))
+      structure
+
+
+  (* the saved state as flat arrays matching the weight shapes, if it has that
+     layout; [None] (and a warning) otherwise *)
+  let _saved_optimiser_state (state : Checkpoint.state) shapes =
+    let n = Array.length shapes in
+    let fits a =
+      Array.length a = n
+      && Array.for_all2
+           (fun v s ->
+             match v with
+             | Arr v -> Engine.shape v = s
+             | _     -> false)
+           a
+           shapes
+    in
+    let flat = Owl_utils_array.flatten in
+    let gs = flat Checkpoint.(state.gs)
+    and ps = flat Checkpoint.(state.ps)
+    and us = flat Checkpoint.(state.us)
+    and ch = flat Checkpoint.(state.ch) in
+    let cha = Array.map (fun c -> c.(0)) ch
+    and chb = Array.map (fun c -> if Array.length c > 1 then c.(1) else c.(0)) ch in
+    if fits gs && fits ps && fits us && fits cha && fits chb
+    then Some (gs, ps, us, cha, chb)
+    else (
+      Owl_log.warn
+        "Owl_neural_compiler: the optimiser state in ~state does not match this \
+         network, starting it from zero";
+      None)
+
+
+  let compile_deep ?state ?(init_model = true) (params : Params.typ) network full_size =
     (* extract configurations of a network *)
     let loss_fun = Loss.run params.loss in
     let grad_fun = Gradient.run params.gradient in
@@ -136,8 +195,8 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     in
     let network_shape = Graph.input_shape network in
     let input_shape = Array.append [| batch |] network_shape in
-    (* initialise the network weight *)
-    Graph.init network;
+    (* initialise the network weight, or keep the current one *)
+    if init_model then Graph.init network;
     Graph.mkpar network
     |> Owl_utils.aarr_map (fun v ->
            let v = Algodiff.unpack_arr v in
@@ -165,6 +224,10 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     Owl_graph.set_name (unpack_elt loss |> Engine.elt_to_node) "loss";
     (* derive the computation graph in reverse mode *)
     let z = Graph.(backward network loss) in
+    (* [backward] leaves the weights of [network] tagged for reverse mode; put
+       back the plain graph variables, which every training step updates in
+       place, so that the network can be initialised or compiled again *)
+    Graph.update network (fst z);
     let ws = Owl_utils_array.flatten (fst z) in
     let gs' = Owl_utils_array.flatten (snd z) in
     (* assign input/output variable names *)
@@ -282,13 +345,31 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     let input = Array.append param_i [| Engine.elt_to_node lr_scale |] in
     let cgraph = Engine.make_graph ~input ~output network_name in
     Engine.make_iopair cgraph param_i param_o;
-    (* initialise values of remaining variables *)
-    Owl_utils.aarr_iter
-      (fun x ->
-        let y = Algodiff.unpack_arr x in
-        let shape = Engine.shape y in
-        Engine.assign_arr y (Engine.A.zeros shape))
-      [| gs; ps; us; ch |];
+    (* initialise values of remaining variables, from [state] if it holds the
+       optimiser state of an earlier run of this network, otherwise to zero *)
+    let shapes = Array.map (fun w -> Engine.shape (unpack_arr w)) ws in
+    let saved =
+      match state with
+      | Some s -> _saved_optimiser_state s shapes
+      | None   -> None
+    in
+    let assign var value =
+      let var = Algodiff.unpack_arr var in
+      match value with
+      | Some v ->
+        Engine.eval_arr [| v |];
+        Engine.assign_arr var (Engine.unpack_arr v)
+      | None   -> Engine.assign_arr var (Engine.A.zeros (Engine.shape var))
+    in
+    let pick f i = Option.map (fun t -> Algodiff.unpack_arr (f t).(i)) saved in
+    Array.iteri
+      (fun i _ ->
+        assign gs.(i) (pick (fun (g, _, _, _, _) -> g) i);
+        assign ps.(i) (pick (fun (_, p, _, _, _) -> p) i);
+        assign us.(i) (pick (fun (_, _, u, _, _) -> u) i);
+        assign ch.(2 * i) (pick (fun (_, _, _, a, _) -> a) i);
+        assign ch.((2 * i) + 1) (pick (fun (_, _, _, _, b) -> b) i))
+      ws;
     (* return key parameters *)
     loss, x, y, cgraph
 
@@ -329,7 +410,33 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     _update
 
 
-  let train ?state ?params network x y =
+  (* copy the optimiser state out of [cgraph] into [state]; variables the
+     graph does not use (removed as unused) are stored as zeros *)
+  let _save_optimiser_state cgraph network (state : Checkpoint.state) =
+    let structure = Graph.mkpri network in
+    let ws = Owl_utils_array.flatten structure in
+    let value name i =
+      match _find_input cgraph (Printf.sprintf "%s%i" name i) with
+      | Some v -> _detach v |> pack_arr
+      | None   -> Engine.A.zeros (Engine.shape (unpack_arr ws.(i))) |> Engine.pack_arr |> pack_arr
+    in
+    let flat name = Array.mapi (fun i _ -> value name i) ws in
+    Checkpoint.(state.gs <- _unflatten_like structure (flat "gs"));
+    Checkpoint.(state.ps <- _unflatten_like structure (flat "ps"));
+    Checkpoint.(state.us <- _unflatten_like structure (flat "us"));
+    let cha = flat "cha"
+    and chb = flat "chb" in
+    Checkpoint.(
+      state.ch <- _unflatten_like structure (Array.mapi (fun i a -> [| a; chb.(i) |]) cha))
+
+
+  (** [train ?state ?params ?init_model network x y] trains a compiled copy of
+      [network]. As with [Graph.train], [init_model] (default [true])
+      initialises the weights first. To resume a run, pass the state it
+      returned as [~state] together with [~init_model:false]; the optimiser
+      state saved in it (gradient history, momentum, learning-rate caches) is
+      restored too. *)
+  let train ?state ?params ?init_model network x y =
     let params =
       match params with
       | Some p -> p
@@ -339,7 +446,7 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     Owl_log.info "compile network %s into static graph ..." network_name;
     (* compile network into static graph *)
     let x_size = (unpack_arr x |> Engine.shape).(0) in
-    let loss, xt, yt, cgraph = compile_deep params network x_size in
+    let loss, xt, yt, cgraph = compile_deep ?state ?init_model params network x_size in
     let eval = make_eval_fun loss xt yt cgraph in
     (* every evaluation is followed by one update, including the one that
        bootstraps the optimisation, so that one is step 1 and the one for batch
@@ -362,7 +469,9 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     Engine.optimise cgraph;
     Engine.save_graph cgraph (network_name ^ "_opt.cgd");
     Owl_log.info "start training %s ..." network_name;
-    Optimise.minimise_compiled_network ?state params eval update save x y
+    let state = Optimise.minimise_compiled_network ?state params eval update save x y in
+    _save_optimiser_state cgraph network state;
+    state
 
 
   (* Multi-input/output version of [model]. *)

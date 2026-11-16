@@ -150,6 +150,126 @@ let split () =
       ; Adagrad 0.1; RMSprop (0.01, 0.9); Adam (0.001, 0.9, 0.999) ]
 
 
+(* resuming a compiled run with [~state ~init_model:false] continues where it
+   stopped: [e1] epochs and then [e2] more give the same weights as one run of
+   [e1 + e2] epochs. This needs both the weights and the optimiser state *)
+let resumes ?momentum learning_rate e1 e2 =
+  let open C.Neural in
+  let open Graph in
+  let fresh () =
+    Owl_stats_prng.init 4;
+    let nn = input [| 3 |] |> linear 4 ~act_typ:Activation.Tanh |> linear 2 |> get_network in
+    let x, y = data () in
+    let pack a = C.Engine.pack_arr a |> Algodiff.pack_arr in
+    nn, pack x, pack y
+  in
+  let params epochs =
+    Params.config
+      ~batch:Batch.Full
+      ~loss:Loss.Quadratic
+      ~learning_rate
+      ?momentum
+      ~verbosity:false
+      epochs
+  in
+  let nn, x, y = fresh () in
+  let state = C.train ~params:(params e1) nn x y in
+  (* extend the finished run by [e2] batches *)
+  let extra = int_of_float e2 in
+  Checkpoint.(state.batches <- state.batches + extra);
+  Checkpoint.(state.loss <- Array.append state.loss (Array.make extra (Algodiff.pack_flt 0.)));
+  Checkpoint.(state.stop <- false);
+  ignore (C.train ~state ~init_model:false ~params:(params e1) nn x y);
+  let nn', x', y' = fresh () in
+  ignore (C.train ~params:(params (e1 +. e2)) nn' x' y');
+  max_diff (compiled_weights nn) (compiled_weights nn') < 1e-10
+
+
+let resume_adam () = resumes (C.Neural.Learning_Rate.Adam (0.05, 0.9, 0.999)) 3. 4.
+
+let resume_momentum () =
+  resumes ~momentum:(C.Neural.Momentum.Standard 0.9) (C.Neural.Learning_Rate.Const 0.05) 3. 4.
+
+
+(* without [~init_model:false] the weights are initialised again. Training an
+   already compiled network a second time used to fail in [Graph.init] *)
+let default_reinitialises () =
+  let w0 = train_compiled (C.Neural.Learning_Rate.Const 0.) 1. in
+  let open C.Neural in
+  let open Graph in
+  Owl_stats_prng.init 4;
+  let nn = input [| 3 |] |> linear 4 ~act_typ:Activation.Tanh |> linear 2 |> get_network in
+  let x, y = data () in
+  let pack a = C.Engine.pack_arr a |> Algodiff.pack_arr in
+  let params lr =
+    Params.config ~batch:Batch.Full ~loss:Loss.Quadratic ~learning_rate:lr ~verbosity:false 3.
+  in
+  let state = C.train ~params:(params (Learning_Rate.Const 0.1)) nn (pack x) (pack y) in
+  (* same random draws as the run that produced [w0] *)
+  ignore (data ());
+  ignore (C.train ~state ~params:(params (Learning_Rate.Const 0.)) nn (pack x) (pack y));
+  max_diff (compiled_weights nn) w0 = 0.
+
+
+(* after training, the network still compiles for inference and gives the
+   same output as an eager network with the trained weights *)
+let model_after_training () =
+  let w = train_compiled (C.Neural.Learning_Rate.Adam (0.05, 0.9, 0.999)) 3. in
+  let open C.Neural in
+  let open Graph in
+  Owl_stats_prng.init 4;
+  let nn = input [| 3 |] |> linear 4 ~act_typ:Activation.Tanh |> linear 2 |> get_network in
+  let x, y = data () in
+  let pack a = C.Engine.pack_arr a |> Algodiff.pack_arr in
+  let params =
+    Params.config
+      ~batch:Batch.Full
+      ~loss:Loss.Quadratic
+      ~learning_rate:(Learning_Rate.Adam (0.05, 0.9, 0.999))
+      ~verbosity:false
+      3.
+  in
+  ignore (C.train ~params nn (pack x) (pack y));
+  let predict = C.model ~batch_size:8 nn in
+  let out = predict (pack x) |> Algodiff.unpack_arr in
+  C.Engine.eval_arr [| out |];
+  let out = C.Engine.unpack_arr out in
+  let eager =
+    let open E in
+    let open Graph in
+    let nn = input [| 3 |] |> linear 4 ~act_typ:Activation.Tanh |> linear 2 |> get_network in
+    init nn;
+    update nn (Owl_utils.aarr_map (fun w -> Algodiff.Arr (N.copy w)) w);
+    model nn x
+  in
+  N.(sub out eager |> abs |> max') < 1e-10
+
+
+(* a state without a saved optimiser state (here a fresh one) is accepted:
+   the optimiser state then starts from zero *)
+let mismatched_state () =
+  let open C.Neural in
+  let open Graph in
+  Owl_stats_prng.init 4;
+  let nn = input [| 3 |] |> linear 4 ~act_typ:Activation.Tanh |> linear 2 |> get_network in
+  let x, y = data () in
+  let pack a = C.Engine.pack_arr a |> Algodiff.pack_arr in
+  let params =
+    Params.config
+      ~batch:Batch.Full
+      ~loss:Loss.Quadratic
+      ~learning_rate:(Learning_Rate.Adam (0.05, 0.9, 0.999))
+      ~verbosity:false
+      3.
+  in
+  ignore (C.train ~params nn (pack x) (pack y));
+  let state = Checkpoint.init_state 1 3. in
+  ignore (C.train ~state ~init_model:false ~params nn (pack x) (pack y));
+  Array.for_all
+    (Array.for_all (fun w -> not (N.exists Float.is_nan w)))
+    (compiled_weights nn)
+
+
 let check name f () = Alcotest.(check bool) name true (f ())
 
 let test_set =
@@ -159,4 +279,9 @@ let test_set =
   ; "exp decay", `Slow, check "exp decay" exp_decay
   ; "schedule", `Slow, check "schedule" schedule
   ; "const", `Slow, check "const" const
-  ; "adagrad", `Slow, check "adagrad" adagrad ]
+  ; "adagrad", `Slow, check "adagrad" adagrad
+  ; "resume adam", `Slow, check "resume adam" resume_adam
+  ; "resume momentum", `Slow, check "resume momentum" resume_momentum
+  ; "default reinitialises", `Slow, check "default reinitialises" default_reinitialises
+  ; "model after training", `Slow, check "model after training" model_after_training
+  ; "mismatched state", `Slow, check "mismatched state" mismatched_state ]
