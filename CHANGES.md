@@ -1,5 +1,11 @@
 ## Unreleased
 
+* Fix `~keep_dims:true` without `~axis` in `sum`, `prod`, `min`, `max`,
+  `minmax`, `mean`, `median`, `var`, `std`, `sem`, `l1norm`, `l2norm`,
+  `l2norm_sqr` and `vecnorm` (and `sum`, `min`, `max` in owl-base and
+  `Algodiff.Maths.sum`): it now keeps every dimension with size 1 instead of
+  returning shape [|1|] (#621). Calls that do not pass `keep_dims` still
+  return [|1|], so default results are unchanged.
 * Fix `Linalg.det` and `Linalg.logdet` on singular matrices: they return 0
   and `neg_infinity` instead of raising `Failure "LAPACKE: i"` (#249). The
   pure-OCaml `Owl_base_linalg_generic.det` returned wrong values (e.g. -4 for

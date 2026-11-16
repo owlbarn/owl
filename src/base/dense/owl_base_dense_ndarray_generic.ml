@@ -1575,7 +1575,17 @@ let _fold_along ?out f m n o x ys nelem =
   reshape y ys
 
 
-let sum ?axis ?(keep_dims = true) x =
+(* Without [axis], [keep_dims] must be passed explicitly as [true] to keep
+   every dimension as 1; the default result shape stays [[|1|]] (#621). See
+   [_keep_dims_opt] in [Owl_dense_ndarray_generic], which does the same. *)
+let _keep_dims_opt keep_dims = keep_dims = Some true, Option.value keep_dims ~default:true
+
+let _reduced_all_shape keep_all x =
+  if keep_all && num_dims x > 0 then Array.make (num_dims x) 1 else [| 1 |]
+
+
+let sum ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   let zero = Owl_const.zero _kind in
   match axis with
@@ -1584,7 +1594,7 @@ let sum ?axis ?(keep_dims = true) x =
     let _op = Owl_base_dense_common._add_elt _kind in
     let x = _fold_along _op m n o x s zero in
     if keep_dims then x else squeeze ~axis:[| a |] x
-  | None   -> create (kind x) (Array.make 1 1) (sum' x)
+  | None   -> create (kind x) (_reduced_all_shape keep_all x) (sum' x)
 
 
 let sum_ ~out ~axis x =
@@ -1627,7 +1637,8 @@ let sum_reduce ?axis x =
   | None   -> create (kind x) (Array.make _dims 1) (sum' x)
 
 
-let min ?axis ?(keep_dims = true) x =
+let min ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   let max_val = Owl_base_dense_common._max_val_elt _kind in
   match axis with
@@ -1635,7 +1646,7 @@ let min ?axis ?(keep_dims = true) x =
     let m, n, o, s = Owl_utils.reduce_params a x in
     let x = _fold_along (Owl_base_dense_common._min_elt _kind) m n o x s max_val in
     if keep_dims then x else squeeze ~axis:[| a |] x
-  | None   -> min' x |> create _kind [| 1 |]
+  | None   -> min' x |> create _kind (_reduced_all_shape keep_all x)
 
 
 let min_ ~out ~axis x =
@@ -1652,7 +1663,8 @@ let min_ ~out ~axis x =
     set y [| 0 |] (min' x)
 
 
-let max ?axis ?(keep_dims = true) x =
+let max ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   let min_val = Owl_base_dense_common._min_val_elt _kind in
   match axis with
@@ -1660,7 +1672,7 @@ let max ?axis ?(keep_dims = true) x =
     let m, n, o, s = Owl_utils.reduce_params a x in
     let x = _fold_along (Owl_base_dense_common._max_elt _kind) m n o x s min_val in
     if keep_dims then x else squeeze ~axis:[| a |] x
-  | None   -> max' x |> create _kind [| 1 |]
+  | None   -> max' x |> create _kind (_reduced_all_shape keep_all x)
 
 
 let max_ ~out ~axis x =

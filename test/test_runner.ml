@@ -28,6 +28,7 @@ let () =
     ; "upsampling", Unit_upsampling.test_set; "learning rate", Unit_learning_rate.test_set
     ; "optimise stepper", Unit_optimise_stepper.test_set
     ; "optimise", Unit_optimise.test_set; "regression", Unit_regression.test_set
+    ; "keep dims", Unit_keep_dims.test_set
     ; "base: algodiff diff", Unit_base_algodiff_diff.test_set
     ; "base: algodiff grad", Unit_base_algodiff_grad.test_set
     ; "base: slicing basic", Unit_base_slicing_basic.test_set

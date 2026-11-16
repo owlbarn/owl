@@ -8575,7 +8575,19 @@ let scan ?axis f x = scani ?axis (fun _ a b -> f a b) x
 
 let scani_nd ?axis f x = scani ?axis (fun i a b -> f (Owl_utils.ind x i) a b) x
 
-let sum ?axis ?(keep_dims = true) x =
+(* Reductions without [axis] return shape [[|1|]] unless [~keep_dims:true] is
+   passed explicitly, in which case every dimension is kept as 1 (#621). So
+   [keep_dims] defaults to [false] without an [axis], which leaves the default
+   result unchanged, and to [true] with an [axis]. Returns the flag for the
+   no-[axis] case and the one for the [axis] case. *)
+let _keep_dims_opt keep_dims = keep_dims = Some true, Option.value keep_dims ~default:true
+
+let _reduced_all_shape keep_all x =
+  if keep_all && num_dims x > 0 then Array.make (num_dims x) 1 else [| 1 |]
+
+
+let sum ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8583,7 +8595,7 @@ let sum ?axis ?(keep_dims = true) x =
     let y = zeros _kind s in
     _owl_sum_along _kind m n o x y;
     if keep_dims then y else squeeze ~axis:[| a |] y
-  | None   -> _owl_sum _kind (numel x) x |> create _kind [| 1 |]
+  | None   -> _owl_sum _kind (numel x) x |> create _kind (_reduced_all_shape keep_all x)
 
 
 let sum_ ~out ~axis x =
@@ -8594,7 +8606,8 @@ let sum_ ~out ~axis x =
   _owl_sum_along _kind m n o x out
 
 
-let prod ?axis ?(keep_dims = true) x =
+let prod ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8602,10 +8615,11 @@ let prod ?axis ?(keep_dims = true) x =
     let y = ones _kind s in
     _owl_prod_along _kind m n o x y;
     if keep_dims then y else squeeze ~axis:[| a |] y
-  | None   -> _owl_prod _kind (numel x) x |> create _kind [| 1 |]
+  | None   -> _owl_prod _kind (numel x) x |> create _kind (_reduced_all_shape keep_all x)
 
 
-let min ?axis ?(keep_dims = true) x =
+let min ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8613,7 +8627,7 @@ let min ?axis ?(keep_dims = true) x =
     let y = create _kind s (Owl_const.pos_inf _kind) in
     _owl_min_along _kind m n o x y;
     if keep_dims then y else squeeze ~axis:[| a |] y
-  | None   -> min' x |> create _kind [| 1 |]
+  | None   -> min' x |> create _kind (_reduced_all_shape keep_all x)
 
 
 let min_ ~out ~axis x =
@@ -8624,7 +8638,8 @@ let min_ ~out ~axis x =
   _owl_min_along _kind m n o x out
 
 
-let max ?axis ?(keep_dims = true) x =
+let max ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8632,7 +8647,7 @@ let max ?axis ?(keep_dims = true) x =
     let y = create _kind s (Owl_const.neg_inf _kind) in
     _owl_max_along _kind m n o x y;
     if keep_dims then y else squeeze ~axis:[| a |] y
-  | None   -> max' x |> create _kind [| 1 |]
+  | None   -> max' x |> create _kind (_reduced_all_shape keep_all x)
 
 
 let max_ ~out ~axis x =
@@ -8643,7 +8658,7 @@ let max_ ~out ~axis x =
   _owl_max_along _kind m n o x out
 
 
-let minmax ?axis ?(keep_dims = true) x = min ?axis ~keep_dims x, max ?axis ~keep_dims x
+let minmax ?axis ?keep_dims x = min ?axis ?keep_dims x, max ?axis ?keep_dims x
 
 let mean' x =
   let _kind = kind x in
@@ -8652,7 +8667,8 @@ let mean' x =
   _mean_elt _kind y _numel
 
 
-let mean ?axis ?(keep_dims = true) x =
+let mean ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8660,7 +8676,7 @@ let mean ?axis ?(keep_dims = true) x =
     let n = (shape x).(a) |> float_of_int |> _float_typ_elt _kind in
     _owl_div_scalar _kind (numel y) y y n;
     if keep_dims then y else squeeze ~axis:[| a |] y
-  | None   -> mean' x |> create _kind [| 1 |]
+  | None   -> mean' x |> create _kind (_reduced_all_shape keep_all x)
 
 
 let median' x =
@@ -8678,7 +8694,8 @@ let median' x =
   else get _rsht [| 0; _numel / 2 |]
 
 
-let median ?axis ?(keep_dims = true) x =
+let median ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   let x1 = copy x in
   match axis with
@@ -8693,7 +8710,7 @@ let median ?axis ?(keep_dims = true) x =
     let o = (Genarray.dims x1).(a) in
     _owl_median_along _kind n s o x1 y;
     if keep_dims then y else squeeze ~axis:[| a |] y
-  | None   -> median' x |> create _kind [| 1 |]
+  | None   -> median' x |> create _kind (_reduced_all_shape keep_all x)
 
 
 let var' x =
@@ -8706,7 +8723,8 @@ let var' x =
   _div_elt _kind y n
 
 
-let var ?axis ?(keep_dims = true) x =
+let var ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8718,7 +8736,7 @@ let var ?axis ?(keep_dims = true) x =
     let n = (shape x).(a) - 1 |> Stdlib.max 1 |> float_of_int |> _float_typ_elt _kind in
     _owl_div_scalar _kind (numel y) y y n;
     if keep_dims then y else squeeze ~axis:[| a |] y
-  | None   -> var' x |> create _kind [| 1 |]
+  | None   -> var' x |> create _kind (_reduced_all_shape keep_all x)
 
 
 let std' x =
@@ -8731,7 +8749,8 @@ let std' x =
   _div_elt _kind y n |> _sqrt_elt _kind
 
 
-let std ?axis ?(keep_dims = true) x =
+let std ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8744,7 +8763,7 @@ let std ?axis ?(keep_dims = true) x =
     _owl_div_scalar _kind (numel y) y y n;
     _owl_sqrt _kind (numel y) y y;
     if keep_dims then y else squeeze ~axis:[| a |] y
-  | None   -> std' x |> create _kind [| 1 |]
+  | None   -> std' x |> create _kind (_reduced_all_shape keep_all x)
 
 
 let sem' x =
@@ -8754,10 +8773,11 @@ let sem' x =
   _div_elt _kind y sqrt_n
 
 
-let sem ?axis ?(keep_dims = true) x =
+let sem ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   match axis with
-  | None   -> sem' x |> create _kind [| 1 |]
+  | None   -> sem' x |> create _kind (_reduced_all_shape keep_all x)
   | Some a ->
     let y = std ?axis ~keep_dims:true x in
     let n = (shape x).(a) |> float_of_int |> _float_typ_elt _kind |> _sqrt_elt _kind in
@@ -8765,7 +8785,8 @@ let sem ?axis ?(keep_dims = true) x =
     if keep_dims then y else squeeze ~axis:[| a |] y
 
 
-let l1norm ?axis ?(keep_dims = true) x =
+let l1norm ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8773,10 +8794,11 @@ let l1norm ?axis ?(keep_dims = true) x =
     let y = zeros _kind s in
     _owl_l1norm_along _kind m n o x y;
     if keep_dims then y else squeeze ~axis:[| a |] y
-  | None   -> l1norm' x |> create _kind [| 1 |]
+  | None   -> l1norm' x |> create _kind (_reduced_all_shape keep_all x)
 
 
-let l2norm_sqr ?axis ?(keep_dims = true) x =
+let l2norm_sqr ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8784,10 +8806,11 @@ let l2norm_sqr ?axis ?(keep_dims = true) x =
     let y = zeros _kind s in
     _owl_l2norm_sqr_along _kind m n o x y;
     if keep_dims then y else squeeze ~axis:[| a |] y
-  | None   -> l2norm_sqr' x |> create _kind [| 1 |]
+  | None   -> l2norm_sqr' x |> create _kind (_reduced_all_shape keep_all x)
 
 
-let l2norm ?axis ?(keep_dims = true) x =
+let l2norm ?axis ?keep_dims x =
+  let keep_all, keep_dims = _keep_dims_opt keep_dims in
   let _kind = kind x in
   match axis with
   | Some a ->
@@ -8796,24 +8819,24 @@ let l2norm ?axis ?(keep_dims = true) x =
     _owl_l2norm_sqr_along _kind m n o x y;
     _owl_sqrt _kind (numel y) y y;
     if keep_dims then y else squeeze ~axis:[| a |] y
-  | None   -> l2norm' x |> create _kind [| 1 |]
+  | None   -> l2norm' x |> create _kind (_reduced_all_shape keep_all x)
 
 
-let vecnorm ?axis ?(p = 2.) ?(keep_dims = true) x =
+let vecnorm ?axis ?(p = 2.) ?keep_dims x =
   if p = 1.
-  then l1norm ?axis ~keep_dims x
+  then l1norm ?axis ?keep_dims x
   else if p = 2.
-  then l2norm ?axis ~keep_dims x
+  then l2norm ?axis ?keep_dims x
   else (
     let y = abs x in
     if p = infinity
-    then max ?axis ~keep_dims y
+    then max ?axis ?keep_dims y
     else if p = neg_infinity
-    then min ?axis ~keep_dims y
+    then min ?axis ?keep_dims y
     else (
       let q = _float_typ_elt (kind x) (1. /. p) in
       let p = _float_typ_elt (kind x) p in
-      let z = pow_scalar y p |> sum ?axis ~keep_dims in
+      let z = pow_scalar y p |> sum ?axis ?keep_dims in
       pow_scalar z q))
 
 

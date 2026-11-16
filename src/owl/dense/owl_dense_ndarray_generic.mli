@@ -1159,6 +1159,12 @@ same shape.
 val sum : ?axis:int -> ?keep_dims:bool -> ('a, 'b) t -> ('a, 'b) t
 (**
 [sum ~axis x] sums the elements in [x] along specified [axis].
+
+With [axis], the reduced dimension is kept with size 1 unless
+[~keep_dims:false] is given, which removes it. Without [axis], all elements
+are summed; the result has shape [[|1|]] unless [~keep_dims:true] is given
+explicitly, which keeps every dimension with size 1. The other reductions
+([prod], [mean], [min], [max], [l2norm], ...) treat [keep_dims] the same way.
  *)
 
 val sum' : ('a, 'b) t -> 'a

@@ -542,20 +542,23 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
 
     and _sum =
       lazy
-        (fun ?axis ~keep_dims ->
+        (fun ?axis ?keep_dims ->
           build_siso
             (module struct
               let label = "sum axis"
 
               let ff_f a = error_uniop label (pack_elt a)
 
-              let ff_arr a = Arr A.(sum ?axis ~keep_dims a)
+              (* pass [keep_dims] on as given: without [axis] it has no default
+                 of [true] (see [Owl_dense_ndarray_generic.sum]) *)
+              let ff_arr a = Arr A.(sum ?axis ?keep_dims a)
 
-              let df _cp _ap at = sum ?axis ~keep_dims at
+              let df _cp _ap at = sum ?axis ?keep_dims at
 
               let dr a _cp ca =
                 match axis with
                 | Some axis ->
+                  let keep_dims = Option.value keep_dims ~default:true in
                   let s = shape a in
                   let ndim = Array.length s in
                   let reps = Array.(make ndim 1) in
@@ -570,7 +573,7 @@ module Make (Core : Owl_algodiff_core_sig.Sig) = struct
             end : Siso))
 
 
-    and sum ?axis ?(keep_dims = true) = Lazy.force _sum ?axis ~keep_dims
+    and sum ?axis ?keep_dims = Lazy.force _sum ?axis ?keep_dims
 
     and _sum_reduce =
       lazy
