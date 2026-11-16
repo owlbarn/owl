@@ -123,6 +123,43 @@ let clean_env_var env_var =
     |> List.filter (fun s -> String.trim s <> "")
 
 
+let starts_with ~prefix s =
+  String.length s >= String.length prefix
+  && String.sub s 0 (String.length prefix) = prefix
+
+
+(* The optional optimisation flags of the default configuration are kept only
+   if the C compiler accepts them without even a warning: for example some
+   Clang versions reject -march=native and -mfpmath=sse for arm64, and Clang
+   ignores the GCC-only -fexcess-precision=fast and -fno-signaling-nans. GCC
+   accepts them all, so its flags are unchanged. If the compiler warns about
+   the empty test program itself, flags are only checked for errors. *)
+let supported_flags c flags =
+  let werror = if C.c_test c test_linking ~c_flags:[ "-Werror" ] then [ "-Werror" ] else [] in
+  let required f = f = "-g" || f = "-O3" || starts_with ~prefix:"-D" f in
+  List.filter
+    (fun f -> required f || C.c_test c test_linking ~c_flags:(werror @ [ f ]))
+    flags
+
+
+(* Without OWL_ENABLE_OPENMP, Owl's own C code must not be compiled with
+   OpenMP. The pkg-config file of an OpenBLAS built with OpenMP may still carry
+   OpenMP flags (Homebrew: "-Xpreprocessor -fopenmp", FreeBSD: "-fopenmp").
+   Passing them on compiled Owl's "#pragma omp" code without linking an OpenMP
+   runtime (undefined __kmpc_* symbols, #695), and failed with compilers that
+   reject -fopenmp, such as older Apple Clang (#684). OpenBLAS itself does not
+   need them: it links its OpenMP runtime on its own. *)
+let strip_openmp_flags flags =
+  let is_openmp f = f = "-fopenmp" || starts_with ~prefix:"-fopenmp=" f || f = "-qopenmp" in
+  let rec strip = function
+    | "-Xpreprocessor" :: f :: rest when is_openmp f -> strip rest
+    | f :: rest when is_openmp f -> strip rest
+    | f :: rest -> f :: strip rest
+    | [] -> []
+  in
+  strip flags
+
+
 let get_default_config c =
   let os =
     let platform = C.C_define.import c ~includes:[ ] ~prelude:detect_system_os [ "PLATFORM_NAME", String ] in
@@ -146,7 +183,8 @@ let get_default_config c =
   let cflags =
     try clean_env_var "OWL_CFLAGS" with
     | Not_found ->
-       [ (* Basic optimisation *) "-g"; "-O3" ]
+      supported_flags c
+      @@ ([ (* Basic optimisation *) "-g"; "-O3" ]
       @ (match arch, os with
         | `arm64, `mac -> [ "-march=native" ]
         | `x86_64, _   -> [ "-march=native"; "-mfpmath=sse"; "-msse2" ]
@@ -160,7 +198,7 @@ let get_default_config c =
         ; (* Configure Mersenne Twister RNG *)
           "-DSFMT_MEXP=19937"
         ; "-fno-strict-aliasing"
-        ]
+        ])
   in
   (* homebrew M1 issue workaround, works only if users use the default homebrew path *)
   let libs =
@@ -261,14 +299,22 @@ let () =
       let (>>=) = Option.bind in
       let default_config = get_default_config c in
       let default_pkg_config = { C.Pkg_config.cflags = []; libs = [] } in
+      (* compile flags from pkg-config, without OpenMP unless Owl enables it *)
+      let without_openmp (conf : C.Pkg_config.package_conf) =
+        if bgetenv "OWL_ENABLE_OPENMP"
+        then conf
+        else { conf with cflags = strip_openmp_flags conf.cflags }
+      in
       let cblas_conf =
         Option.value ~default:default_pkg_config
           (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"cblas")
+        |> without_openmp
       in
       let openblas_conf =
         Option.value
           ~default:openblas_default
           (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"openblas")
+        |> without_openmp
       in
       let openmp_config = get_openmp_config c in
       (* configure link options *)
@@ -330,6 +376,7 @@ some details on how your openblas has been installed and the output of
           Option.value
             ~default:C.Pkg_config.{ cflags = []; libs = [ "-llapacke" ] }
             (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"llapacke")
+          |> without_openmp
         else default_pkg_config
       in
       (* configure link options *)

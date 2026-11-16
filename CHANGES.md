@@ -1,5 +1,14 @@
 ## Unreleased
 
+* Build: do not inherit OpenMP flags from the pkg-config files of OpenBLAS,
+  CBLAS or LAPACKE unless `OWL_ENABLE_OPENMP=1`. An OpenBLAS built with
+  OpenMP (Homebrew, FreeBSD) made Owl compile its `#pragma omp` code without
+  linking an OpenMP runtime (undefined `__kmpc_*` symbols, #695) or fail with
+  compilers that reject `-fopenmp` (#684).
+* Build: keep the optional optimisation flags of the default configuration
+  only if the C compiler accepts them without a warning, so that GCC-only
+  flags are dropped with Clang and `-march=native` with compilers that
+  reject it. Flags with GCC are unchanged.
 * Fix resuming a compiled network (`Owl_neural_compiler.train ~state`): the
   weights were always initialised again and the optimiser state (gradient
   history, momentum, Adam's moments) started from zero. `train` and

@@ -42,11 +42,21 @@ jobs:
       - name: Show toolchain
         run: |
           opam exec -- ocamlc -version
+          opam exec -- ocamlfind ocamlopt -config | grep -E '^(c_compiler|architecture|system):'
           cc --version
           pkg-config --cflags --libs openblas
+          cat "$(brew --prefix openblas)/lib/pkgconfig/openblas.pc"
 
       - name: Compile Owl
-        run: opam exec -- dune build @install
+        # one job and a short display, so that a compiler crash names its file
+        run: opam exec -- dune build @install -j 1 --display short
+
+      - name: Show the flags Owl's configurator chose
+        if: always()
+        run: |
+          cat _build/default/src/owl/c_flags.sexp || true
+          echo
+          cat _build/default/src/owl/c_library_flags.sexp || true
 
       - name: Run tests
         # Build all local packages together so tests use this checkout's owl-base.
