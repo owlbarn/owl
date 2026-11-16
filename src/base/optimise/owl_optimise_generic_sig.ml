@@ -143,7 +143,12 @@ module type Sig = sig
 
   (** Regularisation module *)
   module Regularisation : sig
-    (** Types of regularisation functions. *)
+    (** Types of regularisation functions, added to the loss for each weight
+        array [w]:
+        - [L1norm a] is [a * ||w||_1];
+        - [L2norm a] is [a * ||w||^2], the squared Euclidean norm;
+        - [Elastic_net (a, b)] is [a * ||w||_1 + b * ||w||^2].
+    *)
     type typ =
       | L1norm      of float
       | L2norm      of float

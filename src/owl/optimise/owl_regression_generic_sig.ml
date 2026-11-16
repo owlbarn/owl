@@ -63,8 +63,8 @@ module type Sig = sig
   val svm : ?i:bool -> ?a:float -> arr -> arr -> arr array
   (**
       [svm ?i ?a x y] trains a linear Support Vector Machine by gradient descent
-      on the hinge loss [sum (max 0 (1 - y (x w + b))) + a ||(w, b)||]; unlike
-      the other models here, the intercept is penalised too.
+      on the hinge loss [sum (max 0 (1 - y (x w + b))) + a ||(w, b)||^2];
+      unlike the other models here, the intercept is penalised too.
       - [i] adds an intercept when [true]. The default is [false].
       - [a] is the regularisation strength. The default is [0.001].
       - [y] holds labels in [{-1, 1}].

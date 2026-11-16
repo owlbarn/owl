@@ -1,5 +1,10 @@
 ## Unreleased
 
+* Change `Regularisation.L2norm a` to `a * ||w||^2` (it was `a * ||w||`), and
+  the L2 term of `Regularisation.Elastic_net` likewise. The plain norm has a
+  NaN gradient at `w = 0`, so training a network with L2 regularisation
+  turned every parameter into NaN, starting from the zero-initialised
+  biases. `Regression.svm` uses the squared penalty as a result.
 * Fix `~keep_dims:true` without `~axis` in `sum`, `prod`, `min`, `max`,
   `minmax`, `mean`, `median`, `var`, `std`, `sem`, `l1norm`, `l2norm`,
   `l2norm_sqr` and `vecnorm` (and `sum`, `min`, `max` in owl-base and

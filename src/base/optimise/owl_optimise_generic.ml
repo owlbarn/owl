@@ -286,17 +286,20 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       | Elastic_net of float * float
       | None
 
+    (* The L2 terms are squared norms, i.e. standard L2 regularisation. They
+       used to be plain norms, whose gradient is NaN at [x = 0], e.g. for the
+       zero-initialised biases of a network. *)
     let run typ x =
       match typ with
       | L1norm a           -> Maths.(_f a * l1norm' x)
-      | L2norm a           -> Maths.(_f a * l2norm' x)
-      | Elastic_net (a, b) -> Maths.((_f a * l1norm' x) + (_f b * l2norm' x))
+      | L2norm a           -> Maths.(_f a * l2norm_sqr' x)
+      | Elastic_net (a, b) -> Maths.((_f a * l1norm' x) + (_f b * l2norm_sqr' x))
       | None               -> _f 0.
 
 
     let to_string = function
       | L1norm a           -> Printf.sprintf "l1norm (alpha = %g)" a
-      | L2norm a           -> Printf.sprintf "l2norm (alhpa = %g)" a
+      | L2norm a           -> Printf.sprintf "l2norm (alpha = %g)" a
       | Elastic_net (a, b) -> Printf.sprintf "elastic net (a = %g, b = %g)" a b
       | None               -> "none"
   end

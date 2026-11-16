@@ -168,14 +168,56 @@ module To_test = struct
     close (Regularisation.run (Regularisation.L1norm 0.1) (row w) |> scalar) 0.7
 
 
-  (* the L2 term is the plain norm, not the squared norm *)
+  (* the L2 term is the squared norm *)
   let regularisation_l2 () =
-    close (Regularisation.run (Regularisation.L2norm 0.1) (row w) |> scalar) 0.5
+    close (Regularisation.run (Regularisation.L2norm 0.1) (row w) |> scalar) 2.5
 
 
   let regularisation_elastic_net () =
     let r = Regularisation.run (Regularisation.Elastic_net (0.1, 0.2)) (row w) in
-    close (scalar r) ((0.1 *. 7.) +. (0.2 *. 5.))
+    close (scalar r) ((0.1 *. 7.) +. (0.2 *. 25.))
+
+
+  (* the gradient of [a ||w||^2] is [2 a w], also at [w = 0], where the plain
+     norm used before gave NaN *)
+  let regularisation_l2_gradient () =
+    let g w = grad (Regularisation.run (Regularisation.L2norm 0.1)) (row w) in
+    close_list (g [ 3.; -4. ]) [ 0.6; -0.8 ] && close_list (g [ 0.; 0. ]) [ 0.; 0. ]
+
+
+  let regularisation_elastic_net_gradient_at_zero () =
+    let g = grad (Regularisation.run (Regularisation.Elastic_net (0.1, 0.2))) (row [ 0.; 0. ]) in
+    List.for_all Float.is_finite (to_list g)
+
+
+  (* a network with zero-initialised biases trains with L2 regularisation
+     without turning into NaN, and ends with smaller weights than without *)
+  let regularisation_network () =
+    let open Owl_neural.D in
+    let open Graph in
+    Owl_stats_prng.init 3;
+    let x = Algodiff.A.uniform [| 16; 3 |]
+    and y = Algodiff.A.uniform [| 16; 2 |] in
+    let trained regularisation =
+      let nn = input [| 3 |] |> linear 4 ~act_typ:Activation.Tanh |> linear 2 |> get_network in
+      Owl_stats_prng.init 5;
+      init nn;
+      let params =
+        Params.config
+          ~batch:Batch.Full
+          ~loss:Loss.Quadratic
+          ~learning_rate:(Learning_Rate.Const 0.1)
+          ~regularisation
+          ~verbosity:false
+          50.
+      in
+      ignore (train ~params ~init_model:false nn x y);
+      mkpri nn |> Array.to_list |> Array.concat |> Array.to_list |> List.map unpack_arr
+    in
+    let norm ws = List.fold_left (fun s w -> s +. Owl_dense_ndarray.D.l2norm_sqr' w) 0. ws in
+    let plain = trained Regularisation.None
+    and l2 = trained (Regularisation.L2norm 0.05) in
+    List.for_all (fun w -> not (Owl_dense_ndarray.D.exists Float.is_nan w)) l2 && norm l2 < norm plain
 
 
   (* Clipping *)
@@ -510,6 +552,11 @@ let test_set =
   ; "regularisation l1", `Quick, check "regularisation l1" regularisation_l1
   ; "regularisation l2", `Quick, check "regularisation l2" regularisation_l2
   ; "regularisation elastic net", `Quick, check "regularisation elastic net" regularisation_elastic_net
+  ; "regularisation l2 gradient", `Quick, check "regularisation l2 gradient" regularisation_l2_gradient
+  ; ( "regularisation elastic net gradient at zero"
+    , `Quick
+    , check "regularisation elastic net gradient at zero" regularisation_elastic_net_gradient_at_zero )
+  ; "regularisation network", `Slow, check "regularisation network" regularisation_network
   ; "clipping none", `Quick, check "clipping none" clipping_none
   ; "clipping l2norm large", `Quick, check "clipping l2norm large" clipping_l2norm_large
   ; "clipping l2norm small", `Quick, check "clipping l2norm small" clipping_l2norm_small
