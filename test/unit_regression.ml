@@ -93,6 +93,31 @@ let kkt ?(tol = 1e-6) ~l1 ~l2 x y r =
        (List.init (M.row_num w) Fun.id)
 
 
+(* runs [f] with stdout and stderr redirected to a temporary file and tells
+   whether nothing was written *)
+let silent f =
+  flush stdout;
+  flush stderr;
+  let tmp = Filename.temp_file "owl_regression" ".log" in
+  let fd = Unix.openfile tmp [ Unix.O_WRONLY; Unix.O_TRUNC ] 0o600 in
+  let out = Unix.dup Unix.stdout
+  and err = Unix.dup Unix.stderr in
+  Unix.dup2 fd Unix.stdout;
+  Unix.dup2 fd Unix.stderr;
+  Fun.protect
+    (fun () ->
+      ignore (f ());
+      flush stdout;
+      flush stderr)
+    ~finally:(fun () ->
+      Unix.dup2 out Unix.stdout;
+      Unix.dup2 err Unix.stderr;
+      List.iter Unix.close [ out; err; fd ]);
+  let size = (Unix.stat tmp).Unix.st_size in
+  Sys.remove tmp;
+  size = 0
+
+
 module To_test = struct
   let ols () =
     let x, y = linear_data () in
@@ -294,6 +319,21 @@ module To_test = struct
     Float.abs (M.sum' e) < 1e-8 && M.(transpose x *@ e |> abs |> max') < 1e-8
 
 
+  (* no model prints a training log; [svm] used to print about 1000 lines *)
+  let quiet () =
+    let x, y = linear_data () in
+    let xc, yc = classification_data () in
+    let yc01 = M.((yc +$ 1.) /$ 2.) in
+    silent (fun () -> R.svm ~i:true xc yc)
+    && silent (fun () -> R.ols ~i:true x y)
+    && silent (fun () -> R.ridge ~i:true x y)
+    && silent (fun () -> R.lasso ~i:true x y)
+    && silent (fun () -> R.elastic_net ~i:true x y)
+    && silent (fun () -> R.logistic ~i:true xc yc01)
+    && silent (fun () -> R.poly (M.uniform 50 1) (M.uniform 50 1) 3)
+    && silent (fun () -> R.exponential (M.uniform 50 1) (M.uniform 50 1))
+
+
   (* labels in {-1, 1} are rejected instead of silently giving nonsense *)
   let logistic_rejects_signed_labels () =
     let x, y = classification_data () in
@@ -335,6 +375,7 @@ let test_set =
   ; "exponential degenerate", `Quick, check "exponential degenerate" exponential_degenerate
   ; "logistic separable", `Slow, check "logistic separable" logistic_separable
   ; "logistic mle", `Slow, check "logistic mle" logistic_mle
+  ; "quiet", `Slow, check "quiet" quiet
   ; ( "logistic rejects signed labels"
     , `Quick
     , check "logistic rejects signed labels" logistic_rejects_signed_labels ) ]
