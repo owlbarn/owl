@@ -131,6 +131,30 @@ module Make (Algodiff : Owl_algodiff_generic_sig.Sig) = struct
       | _                -> Maths.(p' * run typ i g' c)
 
 
+    (* [update typ i p' g' c] split as [scale typ i * unscaled_update typ p' g' c]:
+       a scalar that depends only on the step [i], times a part that does not.
+       A compiled network uses this to feed the step-dependent factor into its
+       static graph. If you change [run] or [update], keep these consistent. *)
+    let scale typ i =
+      let t = float_of_int i in
+      match typ with
+      | Const a          -> a
+      | Decay (a, k)     -> a /. (1. +. (k *. t))
+      | Exp_decay (a, k) -> a *. exp (-.k *. t)
+      | Schedule a       -> a.(i mod Array.length a)
+      | Adagrad _        -> 1.
+      | RMSprop _        -> 1.
+      | Adam (a, b1, b2) -> a *. sqrt (1. -. (b2 ** t)) /. (1. -. (b1 ** t))
+
+
+    let unscaled_update typ p' g' c =
+      match typ with
+      | Const _ | Decay _ | Exp_decay _ | Schedule _ -> p'
+      (* the rate of these two does not depend on the step *)
+      | Adagrad _ | RMSprop _ -> Maths.(p' * run typ 0 g' c)
+      | Adam _ -> Maths.(neg (c.(0) / (sqrt c.(1) + _f 1e-8)))
+
+
     let to_string = function
       | Adagrad a        -> Printf.sprintf "adagrad %g" a
       | Const a          -> Printf.sprintf "constant %g" a

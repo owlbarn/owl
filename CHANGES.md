@@ -1,5 +1,12 @@
 ## Unreleased
 
+* Fix the learning rate of compiled networks (`Owl_neural_compiler.train`):
+  the static graph used the rate of step 999 for every step, so Adam's bias
+  correction was wrong and `Decay`, `Exp_decay` and `Schedule` were constant;
+  Adam also still divided by the gradient. The step-dependent factor is now a
+  scalar graph input set before every step (`assign_learning_rate`), using the
+  new `Learning_Rate.scale` and `Learning_Rate.unscaled_update`. Compiled
+  training now matches eager training step for step.
 * Fix NaN in cross-entropy when a prediction underflows to 0, e.g. from a
   saturated softmax: `Algodiff.Maths.cross_entropy` (and so
   `Loss.Cross_entropy`) and `Ndarray.cross_entropy'` raise predictions below

@@ -63,6 +63,17 @@ module type Sig = sig
        divides by [g'], which is wrong where the gradient is zero or tiny.
     *)
 
+    val scale : typ -> int -> float
+    (**
+       [scale typ i] is the factor of the step-[i] update that depends on [i]:
+       [update typ i p' g' c] equals [scale typ i * unscaled_update typ p' g' c]
+       up to rounding. It is [1.] for [Adagrad] and [RMSprop].
+    *)
+
+    val unscaled_update : typ -> t -> t -> t array -> t
+    (** [unscaled_update typ p' g' c] is the part of the update that does not
+        depend on the step; see [scale]. *)
+
     val to_string : typ -> string
     (** Convert the module [typ] to its string representation. *)
   end

@@ -112,13 +112,16 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     x, y, pri, adj, loss
 
 
+  (* name of the scalar graph input holding the step-dependent factor of the
+     learning rate, see [Learning_Rate.scale] *)
+  let lr_scale_name = "lr_scale"
+
   (** Deep compilation functions, includes gs, us, ps, ch, and new weights *)
 
   let compile_deep (params : Params.typ) network full_size =
     (* extract configurations of a network *)
     let loss_fun = Loss.run params.loss in
     let grad_fun = Gradient.run params.gradient in
-    let rate_fun = Learning_Rate.run params.learning_rate in
     let regl_fun = Regularisation.run params.regularisation in
     let momt_fun = Momentum.run params.momentum in
     let upch_fun = Learning_Rate.update_ch params.learning_rate in
@@ -221,12 +224,17 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     let ps' = Owl_utils_array.map4 (grad_fun (fun a -> a)) ws gs ps gs' in
     (* update gcache if necessary *)
     let ch' = Owl_utils_array.map2 upch_fun gs' ch in
-    (* adjust direction based on learning_rate *)
+    (* adjust direction based on learning_rate: the graph is static, so the
+       factor that depends on the step is a scalar input, [lr_scale], which
+       [assign_learning_rate] sets before every step; it starts at step 1 *)
+    let lr_scale = Engine.var_elt lr_scale_name in
+    Engine.assign_elt
+      lr_scale
+      (Engine.A.float_to_elt (Learning_Rate.scale params.learning_rate 1));
     let us' =
       Owl_utils_array.map3
         (fun p' g' c ->
-          (* FIXME: 999 is just place holder *)
-          Maths.(p' * rate_fun 999 g' c))
+          Maths.(pack_elt lr_scale * Learning_Rate.unscaled_update params.learning_rate p' g' c))
         ps'
         gs'
         ch'
@@ -271,7 +279,8 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     let raw_o = Owl_utils_array.(ws' @ gs' @ ps' @ us' @ ch') |> _to_nodes in
     let param_i, param_o = Engine.remove_unused_iopair raw_i raw_o in
     let output = Array.append param_o [| unpack_elt loss |> Engine.elt_to_node |] in
-    let cgraph = Engine.make_graph ~input:param_i ~output network_name in
+    let input = Array.append param_i [| Engine.elt_to_node lr_scale |] in
+    let cgraph = Engine.make_graph ~input ~output network_name in
     Engine.make_iopair cgraph param_i param_o;
     (* initialise values of remaining variables *)
     Owl_utils.aarr_iter
@@ -301,6 +310,20 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     _eval
 
 
+  (** [assign_learning_rate cgraph params step] sets the learning rate of a
+      graph built by [compile_deep] for optimisation step [step], counting from
+      1. [train] calls it before every step; call it yourself when driving
+      [compile_deep] directly, otherwise every step uses the rate of step 1. *)
+  let assign_learning_rate cgraph (params : Params.typ) step =
+    Engine.get_inputs cgraph
+    |> Array.iter (fun n ->
+           if Owl_graph.name n = lr_scale_name
+           then
+             Engine.assign_elt
+               (Engine.node_to_elt n)
+               (Engine.A.float_to_elt (Learning_Rate.scale params.learning_rate step)))
+
+
   let make_update_fun cgraph =
     let _update () = Engine.update_iopair cgraph in
     _update
@@ -318,6 +341,20 @@ module Make (E : Owl_types_computation_engine.Sig) = struct
     let x_size = (unpack_arr x |> Engine.shape).(0) in
     let loss, xt, yt, cgraph = compile_deep params network x_size in
     let eval = make_eval_fun loss xt yt cgraph in
+    (* every evaluation is followed by one update, including the one that
+       bootstraps the optimisation, so that one is step 1 and the one for batch
+       [b] is step [b + 1] *)
+    let step =
+      ref
+        (match state with
+        | Some s -> Optimise.Checkpoint.(s.current_batch) + 1
+        | None   -> 1)
+    in
+    let eval xt yt =
+      assign_learning_rate cgraph params !step;
+      incr step;
+      eval xt yt
+    in
     let update = make_update_fun cgraph in
     let save _fname = () in
     (* Experimental: optimise graph structure *)
