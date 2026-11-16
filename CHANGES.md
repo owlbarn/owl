@@ -6,6 +6,15 @@
   `minimise_network` and `Stepper`; other learning-rate strategies are
   unchanged bit for bit. Adam results with non-zero gradients may differ in
   the last ulp. New `Learning_Rate.update` returns the weight update.
+* Fix `Regression`: `ols` and `ridge` are solved directly via the SVD,
+  `lasso` and `elastic_net` by coordinate descent, so results are exact
+  rather than the outcome of 1000 Adagrad steps (#340). Penalties no longer
+  apply to the intercept, and the L2 penalty of `ridge` and `elastic_net` is
+  now the squared norm. `logistic` now models `sigmoid (x w + b)` with targets
+  in [0, 1] and is solved by Newton's method; it used to take the log of the
+  raw linear output. `exponential` uses variable projection and fits growing
+  exponentials (#650). `svm` no longer prints its training log. Documentation
+  now states the actual defaults (`i = false`, `alpha = 0.001`).
 * Add standalone single-step optimiser `Optimise.Stepper`
 * Add unit tests for `Optimise` and `Regression`
 
