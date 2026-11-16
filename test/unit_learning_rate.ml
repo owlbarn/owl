@@ -3,7 +3,8 @@
 open Owl_algodiff.S
 module LR = Owl_optimise.S.Learning_Rate
 
-let close a b = Maths.(a - b < F 1e-5)
+(* two-sided: |a - b| < 1e-5 *)
+let close a b = Float.abs (unpack_flt a -. unpack_flt b) < 1e-5
 
 let init_ch = [| F 0.; F 0. |]
 
@@ -72,26 +73,29 @@ module To_test_rmsprop = struct
     close o (F 3.89990854)
 end
 
-(* Test Adam optimiser *)
+(* Test Adam optimiser. With a constant gradient each bias-corrected step is
+   about [alpha = 0.001] whatever the gradient's size, so three steps move x by
+   0.003. The expected values used to be off by 0.001 and 0.002, which the old
+   one-sided [close] did not notice. *)
 module To_test_adam = struct
   let fun00 () =
     let o = test_optimiser rate_adam [| 0.; 0. |] 0.1 1. in
-    close o (F 0.998)
+    close o (F 0.997)
 
 
   let fun01 () =
     let o = test_optimiser rate_adam [| 0.; 0. |] 0.1 2. in
-    close o (F 1.998)
+    close o (F 1.997)
 
 
   let fun02 () =
     let o = test_optimiser rate_adam [| 0.; 0. |] 0.01 3. in
-    close o (F 2.999)
+    close o (F 2.997)
 
 
   let fun03 () =
     let o = test_optimiser rate_adam [| 0.; 0. |] 0.01 4. in
-    close o (F 3.999)
+    close o (F 3.997)
 end
 
 (* tests for adagrad *)
