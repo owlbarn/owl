@@ -1,8 +1,12 @@
 name: Build and test on macOS
 
 on:
-  # Automatic runs are paused while Clang crashes on Owl's C stubs.
-  # Restore push/PR triggers after both macOS architectures pass.
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -48,41 +52,7 @@ jobs:
           cat "$(brew --prefix openblas)/lib/pkgconfig/openblas.pc"
 
       - name: Compile Owl
-        # one job and a short display, so that a compiler crash names its file
-        run: opam exec -- dune build @install -j 1 --display short
-
-      - name: Find the flags that make Clang crash
-        # Only runs if the build failed: recompile the stub that crashed with
-        # Apple Clang 21 on arm64 under variations of the configured flags.
-        if: failure()
-        working-directory: _build/default/src/owl
-        run: |
-          set +e
-          flags=$(tr -d '()"' < c_flags.sexp)
-          inc="-I $(opam exec -- ocamlfind ocamlc -where) -I ../base"
-          try () {
-            name=$1; shift
-            /usr/bin/cc -O2 -fno-strict-aliasing -fwrapv -pthread -D_FILE_OFFSET_BITS=64 -w "$@" $inc \
-              -c owl_ndarray_maths_stub.c -o /tmp/probe.o 2> /tmp/probe.err
-            rc=$?
-            if grep -q "Segmentation\|signal" /tmp/probe.err; then r=CRASH; elif [ $rc -eq 0 ]; then r=OK; else r="ERROR($rc)"; fi
-            echo "$r  $name"
-          }
-          try "as configured" $flags
-          try "without -march=native" ${flags/-march=native/}
-          try "-O2 instead of -O3" ${flags/-O3/-O2}
-          try "-O1 instead of -O3" ${flags/-O3/-O1}
-          try "no vectorisation" $flags -fno-vectorize -fno-slp-vectorize
-          try "without -funroll-loops" ${flags/-funroll-loops/}
-          try "-g0" $flags -g0
-          try "without -fexcess-precision=fast" ${flags/-fexcess-precision=fast/}
-          nonative=${flags/-march=native/}
-          try "without -march=native, -O2" ${nonative/-O3/-O2}
-          report=$(ls -t ~/Library/Logs/DiagnosticReports/clang*.crash ~/Library/Logs/DiagnosticReports/clang*.ips 2>/dev/null | head -1)
-          if [ -n "$report" ]; then
-            echo "--- $report"
-            grep -m1 -A40 "Crashed\|\"frames\"" "$report" | head -60
-          fi
+        run: opam exec -- dune build @install
 
       - name: Show the flags Owl's configurator chose
         if: always()
