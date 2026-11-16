@@ -22,16 +22,12 @@ install: build
 	[ -f "$(OPAM_LIB)/stubslibs/dllowl_stubs.so" ] \
 	  && mv "$(OPAM_LIB)/stubslibs/dllowl_stubs.so" \
 	        "$(OPAM_STUBS)/dllowl_stubs.so" || true
-	[ -f "$(OPAM_LIB)/stubslibs/dllowl_opencl_stubs.so" ] \
-	  && mv "$(OPAM_LIB)/stubslibs/dllowl_opencl_stubs.so" \
-	        "$(OPAM_STUBS)/dllowl_opencl_stubs.so" || true
 	$(RM) -d $(OPAM_LIB)/stubslibs || true
 
 .PHONY: uninstall
 uninstall:
 	dune uninstall
 	$(RM) $(OPAM_STUBS)/dllowl_stubs.so
-	$(RM) $(OPAM_STUBS)/dllowl_opencl_stubs.so
 
 .PHONY: doc
 doc:
@@ -42,11 +38,10 @@ doc:
 .PHONY: distclean cleanall
 distclean cleanall:
 	dune uninstall && dune clean
-	$(RM) -r $(find . -name .merlin)
+	$(RM) -r $$(find . -name .merlin)
 	$(RM) $(OPAM_STUBS)/dllowl_stubs.so
-	$(RM) $(OPAM_STUBS)/dllowl_opencl_stubs.so
 
-PKGS=owl-base,owl,owl-zoo,owl-top
+PKGS=owl-base,owl,owl-top
 .PHONY: release
 release:
 	make install # as package distrib steps rely on owl-base etc
@@ -57,7 +52,6 @@ release:
 
 	dune-release opam pkg -p owl-base
 	dune-release opam pkg -p owl
-	dune-release opam pkg -p owl-zoo
 	dune-release opam pkg -p owl-top
 	dune-release opam submit -p $(PKGS)
 
@@ -65,6 +59,6 @@ release:
 format:
 	dune build @fmt --auto-promote
 
-.PHONY: cloc
+.PHONY: loc
 loc:
 	cloc src/

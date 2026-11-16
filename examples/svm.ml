@@ -1,9 +1,7 @@
-(* This example demonstrates SVM regression. 
-   You need to first execute `#require "owl-plplot;;"`
-*)
+(* This example trains a linear SVM on two Gaussian clusters and reports the
+   separating line and the training accuracy. *)
 
 open Owl
-open Owl_plplot
 
 let generate_data () =
   let open Mat in
@@ -23,25 +21,19 @@ let generate_data () =
   x, y
 
 
-let draw_line x0 y0 p =
-  let a, b, c = 0., 20., 100 in
-  let x' = Mat.empty 1 c in
-  let y' = Mat.empty 1 c in
-  for i = 0 to c - 1 do
-    let x = a +. (float_of_int i *. (b -. a) /. float_of_int c) in
-    let y = (Mat.get p 0 0 *. x +. Mat.get p 2 0) /. (Mat.get p 1 0 *. (-1.)) in
-    Mat.set x' 0 i x; Mat.set y' 0 i y
-  done;
-  let h = Plot.create "plot_svm.png" in
-  Plot.(plot ~h ~spec:[ RGB (100,100,100) ] x' y');
-  Plot.(scatter ~h ~spec:[ RGB (150,150,150) ] x0 y0);
-  Plot.output h
+(* the decision boundary is w0 * x + w1 * y + b = 0 *)
+let report x y w b =
+  let w0 = Mat.get w 0 0
+  and w1 = Mat.get w 1 0
+  and b = Mat.get b 0 0 in
+  Printf.printf "separating line: %.4f * x + %.4f * y + %.4f = 0\n" w0 w1 b;
+  let pred = Mat.(signum ((x *@ w) +$ b)) in
+  let hits = Mat.(elt_equal pred y |> sum') in
+  Printf.printf "training accuracy: %.1f%%\n" (100. *. hits /. float_of_int (Mat.row_num y))
 
 
 let _ =
   let _ = Random.self_init () in
   let x, y = generate_data () in
   let r = Regression.D.svm ~i:true x y in
-  let p = Mat.(r.(0) @= r.(1)) in
-  draw_line (Mat.col x 0) (Mat.col x 1) p;
-  Owl_pretty.print_dsnda Mat.(r.(0) @= r.(1))
+  report x y r.(0) r.(1)

@@ -1,5 +1,3 @@
-#!/usr/bin/env owl
-#zoo "5ca2fdebb0ccb9ecee6f4331972a9087"
 (* Performance test of Owl_dense_ndarray module *)
 
 open Owl

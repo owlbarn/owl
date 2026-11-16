@@ -1,7 +1,7 @@
 (executables
  (names
   backprop
-  checkpoint
+  checkpoint_example
   cifar10_vgg
   computation_graph_01
   computation_graph_02
@@ -23,8 +23,10 @@
   mnist_cnn
   mnist_lenet
   newton_method
+  regression_models
   specgram
   squeezenet
+  svm
   test_log
   tfidf
   vgg16)

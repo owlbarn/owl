@@ -1,7 +1,5 @@
 (* Test Regression module *)
 
-(* You need to run `#require "owl-plplot"` first *)
-
 open Owl
 
 let generate_data () =

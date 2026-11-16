@@ -1,5 +1,3 @@
-#!/usr/bin/env owl
-#zoo "5ca2fdebb0ccb9ecee6f4331972a9087"
 
 module M = Owl.Dense.Matrix.D
 
@@ -60,9 +58,9 @@ let _ =
   test_op "@||          " c (fun () -> M.concat_horizontal x y);
   test_op "draw_cols    " c (fun () -> M.draw_cols x 1000);
   test_op "draw_rows    " c (fun () -> M.draw_rows x 1000);
-  test_op "save         " c (fun () -> M.save x "test_matrix0.tmp");
+  test_op "save         " c (fun () -> M.save ~out:"test_matrix0.tmp" x);
   test_op "load         " c (fun () -> M.load "test_matrix0.tmp");
-  test_op "save_txt     " c (fun () -> M.save_txt x "test_matrix1.tmp");
+  test_op "save_txt     " c (fun () -> M.save_txt ~out:"test_matrix1.tmp" x);
   test_op "load_txt     " c (fun () -> M.load_txt "test_matrix1.tmp");
   test_op "bernoulli    " c (fun () -> M.bernoulli m n);
   test_op "uniform      " c (fun () -> M.uniform m n);

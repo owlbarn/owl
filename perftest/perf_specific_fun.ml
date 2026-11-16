@@ -1,11 +1,9 @@
-#!/usr/bin/env owl
-#zoo "5ca2fdebb0ccb9ecee6f4331972a9087"
 
 (* Performance test of a set of specific functions *)
 
 open Bigarray
 
-let _ = let conf = Gc.get () in Gc.(conf.verbose <- 0x80); Gc.set conf
+let _ = Gc.set { (Gc.get ()) with Gc.verbose = 0x80 }
 
 let print_gc_stat () =
   Printf.printf "==================================\n";

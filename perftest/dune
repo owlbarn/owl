@@ -1,0 +1,13 @@
+; Micro-benchmarks, built by `dune build @perftest/all` and run by hand, e.g.
+; `dune exec perftest/perf_dense_matrix.exe`. Not part of the test suite.
+(executables
+ (names
+  perf_dense_matrix
+  perf_dense_ndarray
+  perf_dense_real
+  perf_slicing_basic
+  perf_slicing_fancy
+  perf_specific_fun)
+ (libraries owl unix)
+ ; old benchmark code: keep warnings, but do not fail the build on them
+ (flags (:standard -warn-error -a)))

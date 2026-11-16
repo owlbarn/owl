@@ -1,5 +1,3 @@
-#!/usr/bin/env owl
-#zoo "5ca2fdebb0ccb9ecee6f4331972a9087"
 (* Performance test of Owl_dense_matrix module *)
 
 open Bigarray
@@ -64,9 +62,9 @@ let _ =
   test_op "@||               " c (fun () -> M.concat_horizontal x y);
   test_op "draw_cols         " c (fun () -> M.draw_cols x 1000);
   test_op "draw_rows         " c (fun () -> M.draw_rows x 1000);
-  test_op "save              " c (fun () -> M.save x "test_matrix0.tmp");
+  test_op "save              " c (fun () -> M.save ~out:"test_matrix0.tmp" x);
   test_op "load              " c (fun () -> M.load Float64 "test_matrix0.tmp");
-  test_op "save_txt          " 0 (fun () -> M.save_txt x "test_matrix1.tmp");
+  test_op "save_txt          " 0 (fun () -> M.save_txt ~out:"test_matrix1.tmp" x);
   test_op "load_txt          " 0 (fun () -> M.load_txt Float64 "test_matrix1.tmp");
   test_op "uniform           " c (fun () -> M.uniform Float64 m n);
   test_op "gaussian          " c (fun () -> M.gaussian Float64 m n);
