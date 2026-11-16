@@ -79,11 +79,25 @@ let inv x =
   Owl_lapacke.getri ~a ~ipiv
 
 
+(* [getrf] finishes the factorisation but [Owl_lapacke.check_lapack_error]
+   raises [Failure "LAPACKE: i"] with [i > 0] when U(i,i) is exactly zero, i.e.
+   when the matrix is singular. [Some (a, ipiv)] on success, [None] if singular.
+   NOTE: relies on that message format; if it changes, update this too. *)
+let _getrf_or_singular x =
+  try Some (Owl_lapacke.getrf ~a:x) with
+  | Failure msg as e ->
+    (match String.split_on_char ' ' msg with
+    | [ "LAPACKE:"; i ] when (try int_of_string i > 0 with _ -> false) -> None
+    | _ -> raise e)
+
+
 let det x =
   let x = M.copy x in
   let m, n = M.shape x in
   Owl_exception.(check (m = n) (NOT_SQUARE [| m; n |]));
-  let a, ipiv = Owl_lapacke.getrf ~a:x in
+  match _getrf_or_singular x with
+  | None -> Owl_const.zero (M.kind x)
+  | Some (a, ipiv) ->
   let d = ref (Owl_const.one (M.kind x)) in
   let c = ref 0 in
   let _mul_op = Owl_base_dense_common._mul_elt (M.kind x) in
@@ -92,9 +106,9 @@ let det x =
     (* NOTE: +1 to adjust to Fortran index *)
     if M.get ipiv 0 i <> Int32.of_int (i + 1) then c := !c + 1
   done;
-  match Owl_maths.is_odd !c with
+  (match Owl_maths.is_odd !c with
   | true  -> Owl_base_dense_common._neg_elt (M.kind x) !d
-  | false -> !d
+  | false -> !d)
 
 
 (* FIXME: need to check ... *)
@@ -103,7 +117,11 @@ let logdet x =
   let m, n = M.shape x in
   Owl_exception.(check (m = n) (NOT_SQUARE [| m; n |]));
   let _kind = M.kind x in
-  let a, ipiv = Owl_lapacke.getrf ~a:x in
+  match _getrf_or_singular x with
+  | None ->
+    (* the determinant is zero *)
+    Owl_base_dense_common._log_elt _kind (Owl_const.zero _kind)
+  | Some (a, ipiv) ->
   let d = ref (Owl_const.zero _kind) in
   let c = ref 0 in
   let _add_op = Owl_base_dense_common._add_elt _kind in
@@ -118,9 +136,9 @@ let logdet x =
     (* implement xor *)
     if (p && not q) || ((not p) && q) then c := !c + 1
   done;
-  match Owl_maths.is_odd !c with
+  (match Owl_maths.is_odd !c with
   | true  -> failwith "logdet: det is negative"
-  | false -> !d
+  | false -> !d)
 
 
 (* QR decomposition *)

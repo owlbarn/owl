@@ -1,5 +1,10 @@
 ## Unreleased
 
+* Fix `Linalg.det` and `Linalg.logdet` on singular matrices: they return 0
+  and `neg_infinity` instead of raising `Failure "LAPACKE: i"` (#249). The
+  pure-OCaml `Owl_base_linalg_generic.det` returned wrong values (e.g. -4 for
+  [[1, 2], [2, 4]]) because the LU pivot search reused a stale row when a
+  column was zero; it now returns 0, also for matrices with a zero row.
 * Fix `Stopping.Const`: `Checkpoint.run` overwrote the stop flag set by the
   stopping criterion, so training never ended early. It now stops at the
   first batch whose loss is below the threshold, in `minimise_weight`,

@@ -66,6 +66,8 @@ let _lapacke_side = function
   | Right -> 142
 
 
+(* NOTE: [Owl_linalg_generic._getrf_or_singular] parses the [Failure] message
+   below; if you change its format, update that function too. *)
 let check_lapack_error ret =
   if ret = 0
   then ()

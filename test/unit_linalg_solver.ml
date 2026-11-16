@@ -208,6 +208,32 @@ module To_test_lu = struct
     approx_equal result expect
 
 
+  (* singular matrices (#249): this used to return -4 *)
+  let det_singular () =
+    L.det (N.of_array [| 1.; 2.; 2.; 4. |] [| 2; 2 |]) = 0.
+
+
+  (* a zero row used to raise [SINGULAR] *)
+  let det_zeros () = L.det (N.zeros [| 3; 3 |]) = 0.
+
+  (* after the first elimination step the second column is zero below the
+     diagonal; the old pivot search then swapped in a stale row *)
+  let det_zero_column () =
+    L.det (N.of_array [| 1.; 2.; 3.; 2.; 4.; 5.; 3.; 6.; 7. |] [| 3; 3 |]) = 0.
+
+
+  (* agrees with the LAPACK implementation *)
+  let det_matches_lapack () =
+    Owl_stats_prng.init 7;
+    List.for_all
+      (fun n ->
+        let a = N.uniform [| n; n |] in
+        let d = L.det a
+        and d' = Owl_linalg_generic.det a in
+        Float.abs (d -. d') <= 1e-10 *. Float.max 1. (Float.abs d'))
+      [ 1; 2; 3; 5; 8 ]
+
+
   (* LU-based inv *)
 
   let test10 () =
@@ -320,6 +346,19 @@ let test_set =
   ; "test_lu_05", `Slow, test_lu_05; "test_lu_06", `Slow, test_lu_06
   ; "test_lu_08", `Slow, test_lu_08; "test_lu_09", `Slow, test_lu_09
   ; "test_lu_10", `Slow, test_lu_10
+  ; ( "det singular"
+    , `Quick
+    , fun () -> Alcotest.(check bool) "det singular" true (To_test_lu.det_singular ()) )
+  ; ( "det zeros"
+    , `Quick
+    , fun () -> Alcotest.(check bool) "det zeros" true (To_test_lu.det_zeros ()) )
+  ; ( "det zero column"
+    , `Quick
+    , fun () -> Alcotest.(check bool) "det zero column" true (To_test_lu.det_zero_column ()) )
+  ; ( "det matches lapack"
+    , `Quick
+    , fun () ->
+        Alcotest.(check bool) "det matches lapack" true (To_test_lu.det_matches_lapack ()) )
   ; (* "test_lu_07",    `Slow, test_lu_07;
        TODO: The singular matrix is not detected *)
     "test_bandiag_01", `Slow, test_bandiag_01 ]

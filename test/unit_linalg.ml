@@ -273,6 +273,44 @@ end
 
 (* the tests *)
 
+(* singular matrices (#249): LAPACK reports an exactly zero pivot, which
+   used to surface as [Failure "LAPACKE: i"] *)
+module To_test_singular = struct
+  let singular = Mat.of_arrays [| [| 1.; 2. |]; [| 2.; 4. |] |]
+
+  let det_singular () = M.det singular = 0.
+
+  let det_zeros () = M.det (Mat.zeros 3 3) = 0.
+
+  let det_single () =
+    Owl.Linalg.S.det (Dense.Matrix.S.of_arrays [| [| 1.; 2. |]; [| 2.; 4. |] |]) = 0.
+
+
+  let det_complex () =
+    let c re = Complex.{ re; im = 0. } in
+    let x = Dense.Matrix.Z.of_arrays [| [| c 1.; c 2. |]; [| c 2.; c 4. |] |] in
+    Owl.Linalg.Z.det x = Complex.zero
+
+
+  let logdet_singular () = M.logdet singular = neg_infinity
+
+  (* the input is not modified *)
+  let det_keeps_input () =
+    let x = Mat.copy singular in
+    ignore (M.det x);
+    Mat.equal x singular
+
+
+  let det_not_square () =
+    try
+      ignore (M.det (Mat.zeros 2 3));
+      false
+    with
+    | Owl_exception.NOT_SQUARE _ -> true
+end
+
+let singular_check name f = name, `Quick, fun () -> Alcotest.(check bool) name true (f ())
+
 let rank () = Alcotest.(check bool) "rank" true (To_test.rank ())
 
 let det () = Alcotest.(check bool) "det" true (To_test.det ())
@@ -373,4 +411,11 @@ let test_set =
   ; "expm_1", `Slow, expm_1; "expm_2", `Slow, expm_2; "expm_3", `Slow, expm_3
   ; "expm_4", `Slow, expm_4; "sinm", `Slow, sinm; "cosm", `Slow, cosm; "tanm", `Slow, tanm
   ; "sincosm", `Slow, sincosm; "sinhm", `Slow, sinhm; "coshm", `Slow, coshm
-  ; "tanhm", `Slow, tanhm; "sinhcoshm", `Slow, sinhcoshm ]
+  ; "tanhm", `Slow, tanhm; "sinhcoshm", `Slow, sinhcoshm
+  ; singular_check "det singular" To_test_singular.det_singular
+  ; singular_check "det zeros" To_test_singular.det_zeros
+  ; singular_check "det singular single" To_test_singular.det_single
+  ; singular_check "det singular complex" To_test_singular.det_complex
+  ; singular_check "logdet singular" To_test_singular.logdet_singular
+  ; singular_check "det keeps input" To_test_singular.det_keeps_input
+  ; singular_check "det not square" To_test_singular.det_not_square ]

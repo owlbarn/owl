@@ -191,7 +191,11 @@ let linsolve_gauss a b =
  * Input matrix: a[n][n]; return L/U in one matrix, and the row permutation vector.
  * Test: https://github.com/scipy/scipy/blob/master/scipy/linalg/tests/test_decomp.py
  *)
-let _lu_base a =
+(* With [~keep_zero_pivot:true] an exactly zero pivot is left as it is, which
+   [det] needs, instead of being replaced by a tiny value as [lu] and
+   [linsolve_lu] expect. A zero pivot means the rest of its column is zero
+   too, so that column then needs no elimination. *)
+let _lu_base ?(keep_zero_pivot = false) a =
   let k = M.kind a in
   let _abs = Owl_base_dense_common._abs_elt k in
   let _mul = Owl_base_dense_common._mul_elt k in
@@ -225,6 +229,9 @@ let _lu_base a =
   done;
   for k = 0 to n - 1 do
     big := _zero;
+    (* without this, a column that is zero from row k down would be swapped
+       with a stale row from the previous column *)
+    imax := k;
     (* choose suitable pivot *)
     for i = k to n - 1 do
       temp := _mul (M.get lu [| i; k |] |> _abs) vv.(i);
@@ -245,7 +252,9 @@ let _lu_base a =
       d := !d *. -1.;
       vv.(!imax) <- vv.(k));
     indx.(k) <- !imax;
-    if M.get lu [| k; k |] = _zero then M.set lu [| k; k |] tiny;
+    let zero_pivot = M.get lu [| k; k |] = _zero in
+    if zero_pivot && not keep_zero_pivot then M.set lu [| k; k |] tiny;
+    if not (zero_pivot && keep_zero_pivot) then
     for i = k + 1 to n - 1 do
       let tmp0 = M.get lu [| i; k |] in
       let tmp1 = M.get lu [| k; k |] in
@@ -341,12 +350,15 @@ let det a =
   _check_is_matrix dims_a |> ignore;
   assert (dims_a.(0) = dims_a.(1));
   let n = dims_a.(0) in
-  let lu, _, sign = _lu_base a in
-  let big = ref (_flt sign) in
-  for i = 0 to n - 1 do
-    big := _mul !big (M.get lu [| i; i |])
-  done;
-  !big
+  match _lu_base ~keep_zero_pivot:true a with
+  | lu, _, sign ->
+    let big = ref (_flt sign) in
+    for i = 0 to n - 1 do
+      big := _mul !big (M.get lu [| i; i |])
+    done;
+    !big
+  (* raised for a zero row, so the determinant is zero *)
+  | exception Owl_exception.SINGULAR -> Owl_const.zero k
 
 
 (* Solver for tridiagonal matrix
