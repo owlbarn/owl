@@ -1,4 +1,4 @@
-## Unreleased
+## 1.3 (2026-11-17)
 
 * Build: do not inherit OpenMP flags from the pkg-config files of OpenBLAS,
   CBLAS or LAPACKE unless `OWL_ENABLE_OPENMP=1`. An OpenBLAS built with
@@ -68,6 +68,14 @@
   now states the actual defaults (`i = false`, `alpha = 0.001`).
 * Add standalone single-step optimiser `Optimise.Stepper`
 * Add unit tests for `Optimise` and `Regression`
+* Fix `exponpow_rvs`: it called the standard Gaussian sampler with the scale
+  as its only argument; it now samples a Gaussian with that scale (#694,
+  @maxkuttner)
+* Fix the documentation of the `gumbel2` distributions: the second parameter
+  is a shape, not a location (#696, @tristan-f-r)
+* Publish the documentation from the `gh-pages` branch; the generated HTML is
+  no longer committed in `docs/`
+* Run the tests in CI on Ubuntu and on macOS (arm64 and Intel)
 
 ## 1.2 (2024-12-24)
 
