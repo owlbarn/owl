@@ -5,6 +5,11 @@
   contained AVX-512 instructions from the CPU of the GitHub runner that built
   them and crashed with SIGILL on CPUs without AVX-512. Building Owl from
   source or with opam still uses `-march=native`.
+* opam: `owl` and `owl-top` are not available on Windows, where
+  `conf-openblas` does not provide OpenBLAS; `owl` conflicts with
+  `ocaml-option-no-flat-float-array`, since its C stubs read float arrays as
+  flat arrays of doubles; all three packages declare `x-maintenance-intent`.
+  The same fields were added to the 1.3 packages in opam-repository.
 
 ## 1.3 (2026-11-17)
 

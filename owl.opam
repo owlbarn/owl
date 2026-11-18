@@ -33,3 +33,9 @@ depends: [
   "owl-base" {= version}
   "npy"
 ]
+
+# Owl's C stubs read float arrays as flat arrays of doubles.
+conflicts: [ "ocaml-option-no-flat-float-array" ]
+# conf-openblas does not provide OpenBLAS on Windows.
+available: os != "win32"
+x-maintenance-intent: [ "(latest)" ]

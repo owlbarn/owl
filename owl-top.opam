@@ -20,3 +20,7 @@ depends: [
   "ocaml-compiler-libs"
   "owl" {= version}
 ]
+
+# conf-openblas does not provide OpenBLAS on Windows.
+available: os != "win32"
+x-maintenance-intent: [ "(latest)" ]
