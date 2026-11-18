@@ -1,3 +1,11 @@
+## Unreleased
+
+* Docker: build the x86-64 images (`owl:main`, `debian`, `fedora`,
+  `archlinux`) with `-march=x86-64-v2` instead of `-march=native`. The images
+  contained AVX-512 instructions from the CPU of the GitHub runner that built
+  them and crashed with SIGILL on CPUs without AVX-512. Building Owl from
+  source or with opam still uses `-march=native`.
+
 ## 1.3 (2026-11-17)
 
 * Build: do not inherit OpenMP flags from the pkg-config files of OpenBLAS,

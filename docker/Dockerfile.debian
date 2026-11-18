@@ -23,6 +23,13 @@ RUN opam install -y dune ocaml-compiler-libs ctypes alcotest utop conf-openblas 
 RUN cd /root && git clone https://github.com/owlbarn/owl.git
 
 ENV OWLPATH /root/owl
+# Owl's default C flags with -march=x86-64-v2 instead of -march=native, so
+# that the image runs on any x86-64 CPU from the last 15 years and not only on
+# CPUs like the one that built it (e.g. without AVX-512). Being an ARG, it
+# only applies to this build: compiling Owl again in a container still uses
+# the default flags.
+ARG OWL_CFLAGS="-g -O3 -march=x86-64-v2 -mfpmath=sse -msse2 -funroll-loops -fno-math-errno -fno-rounding-math -fno-signaling-nans -fexcess-precision=fast -DSFMT_MEXP=19937 -fno-strict-aliasing"
+
 RUN cd $OWLPATH \
     && eval `opam config env ` \
     && make && make install
